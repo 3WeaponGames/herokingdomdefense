@@ -248,7 +248,7 @@ test('a pending optional effect never delays the selected simulation and stale f
 });
 
 test('Vanguard preview recomputes exact-expiry strike scaling and preserves zero damage',()=>{
- const m=new Model('vanguard',{duration:1,strikes:2,buffDuration:.5,chargeDecay:0},{mode:'active',targets:1,targetDistance:100,attackRate:1});m.advance(1);const hits=m.events.filter(e=>e.kind==='impact');assert.equal(hits.length,2);close(hits[0].damage,75);close(hits[1].damage,75);
+ const m=new Model('vanguard',{duration:1,strikes:2,buffDuration:.5,chargeDecay:0},{mode:'active',targets:1,targetDistance:100,attackRate:1});m.advance(1);const hits=m.events.filter(e=>e.kind==='impact');assert.equal(hits.length,2);close(hits[0].damage,84.375,'The first hit includes the movement speed from live momentum');close(hits[1].damage,75);
  const zero=new Model('vanguard',{duration:.1,strikes:7,strikeDamage:0},{mode:'active',targets:1,targetDistance:100,attackRate:0});zero.advance(.1);assert.equal(zero.hits,0);assert.equal(zero.damage,0);assert.equal(zero.state.buffRemaining,0);assert.equal(zero.targets[0].hp,100000);
 });
 

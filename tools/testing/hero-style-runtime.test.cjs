@@ -57,6 +57,18 @@ test('Vanguard arc follows a moving hero without changing the cast aim',()=>{
  e.node.x=300;h.rt.update(.36);assert.equal(e.hits.length,1,'target behind the moved hero is outside the locked forward arc');
  assert(h.poses.some(p=>p.moving&&p.rapid));assert(h.poses.at(-1).rapid);
 });
+
+test('Vanguard live movement charge changes the real speed wrapper and its first impact locks bonuses without refresh',()=>{
+ const h=scene('vanguard'),target=h.enemy(100);h.hero.node.x=1;h.rt.update(2);close(h.rt.state.charge,.4);close(h.hero.getSpeed(),420);close(h.hero.getAttSpeed(),1);
+ h.rt.hit(target,1,false,1);close(h.rt.state.buffStrength,.4);close(h.rt.state.charge,.4);close(h.rt.state.buffRemaining,10);close(h.hero.getSpeed(),420);close(h.hero.getAttSpeed(),1.14);
+ h.hero.node.x=2;h.rt.update(2);h.rt.hit(target,1,true,2);close(h.rt.state.buffRemaining,8);close(h.rt.state.charge,.4);close(h.rt.state.buffStrength,.4);h.rt.update(8);close(h.rt.state.charge,0);close(h.hero.getSpeed(),300);close(h.hero.getAttSpeed(),1);
+ h.hero.node.x=3;h.rt.update(1);close(h.rt.state.charge,.2);close(h.hero.getSpeed(),360);close(h.hero.getAttSpeed(),1);
+});
+
+test('a moving Vanguard spear cast locks the first real skill-hit momentum and all later thrusts leave it frozen',()=>{
+ const h=scene('vanguard'),target=h.enemy(100);h.hero.node.x=1;h.rt.update(1);close(h.rt.state.charge,.2);assert(h.rt.cast({x:1,y:0}));h.hero.node.x=2;h.rt.update(.36);const strength=h.rt.state.buffStrength;assert(strength>.2);assert.equal(target.hits.length,1);close(h.rt.state.charge,strength);const deadline=h.rt.state.time+h.rt.state.buffRemaining;
+ h.hero.node.x=3;h.rt.update(2.14);assert.equal(target.hits.length,7);close(h.rt.state.charge,strength);close(h.rt.state.buffStrength,strength);close(h.rt.state.time+h.rt.state.buffRemaining,deadline);assert.equal(h.rt.state.active,null);
+});
 test('Mystic basic beam ticks at APS, remains single target and applies slow, mark and charge',()=>{
  const h=scene('mystic',{attackRate:2}),a=h.enemy(100),nearby=h.enemy(110,30);
  h.rt.update(.49);assert.equal(a.hits.length,0);h.rt.update(.01);assert.equal(a.hits.length,1);

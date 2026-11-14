@@ -56,8 +56,10 @@ function bonuses(state, context) {
     result.damage = stacks * t.stackDamage; result.damageReduction = stacks * t.stackReduction;
     result.tenacity = clamp(stacks * t.stackTenacity, 0, .8);
     if (state.buffRemaining > 0) { result.damage += t.buffDamage; result.attackRate += t.buffAttackRate; }
-  } else if (state.style === "vanguard" && state.buffRemaining > 0) {
-    result.move = state.buffStrength * t.momentumMove; result.attackRate = state.buffStrength * t.momentumAttackRate;
+  } else if (state.style === "vanguard") {
+    var momentum = state.buffRemaining > 0 ? state.buffStrength : state.charge;
+    result.move = momentum * t.momentumMove;
+    if (state.buffRemaining > 0) result.attackRate = state.buffStrength * t.momentumAttackRate;
   } else if (state.style === "guardian") result.allyDamageReduction = t.allyReduction;
   result.damageReduction = clamp(result.damageReduction, 0, .8);
   return result;
@@ -76,12 +78,11 @@ function onHit(state, target, options) {
     state.lastStrikeId = options.strikeId;
   }
   var t = state.tuning;
-  if (state.style === "vanguard" && state.charge > 0) {
+  if (state.style === "vanguard" && state.buffRemaining <= 0 && state.charge > 0) {
     result.charge = state.charge;
-    // Refresh keeps the stronger bonus without adding buffs together. Small
-    // charges must not weaken a stronger ten-second buff on the next attack.
-    state.buffStrength = Math.max(state.buffRemaining > 0 ? state.buffStrength : 0, state.charge);
-    state.charge = 0; state.buffRemaining = t.buffDuration;
+    // The first landed hit locks this amount. Later hits cannot recharge,
+    // strengthen or refresh the same ten-second momentum window.
+    state.buffStrength = state.charge; state.buffRemaining = t.buffDuration;
   } else if (state.style === "fighter" && options.melee !== false) {
     state.stacks = Math.min(Math.max(1, Math.floor(t.maxStacks)), state.stacks + 1); state.stackRemaining = t.stackDuration;
   } else if (state.style === "mystic" && options.kind !== "skill" && target !== null && target !== undefined) {
@@ -144,7 +145,9 @@ function beginActive(state, context) {
 }
 function advance(state, dt, context) {
   state.time += dt; state.cooldown = Math.max(0, state.cooldown - dt);
+  var previousBuff = state.buffRemaining;
   state.buffRemaining = Math.max(0, state.buffRemaining - dt);
+  if (state.style === "vanguard" && state.buffRemaining < 1e-9) state.buffRemaining = 0;
   if (!state.buffRemaining) state.buffStrength = 0;
   state.stackRemaining = Math.max(0, state.stackRemaining - dt);
   if (!state.stackRemaining) state.stacks = 0;
@@ -152,7 +155,16 @@ function advance(state, dt, context) {
   if (!state.shieldRemaining) state.shield = 0;
   var t = state.tuning;
   if (state.style === "skirmisher") state.charge = context.moving ? 0 : clamp(state.charge + dt * t.chargeRate, 0, 1);
-  if (state.style === "vanguard") state.charge = clamp(state.charge + dt * (context.moving ? t.chargeRate : -t.chargeDecay), 0, 1);
+  if (state.style === "vanguard") {
+    if (state.buffRemaining > 0) state.charge = state.buffStrength;
+    else {
+      // Only the portion after expiry can build a fresh charge, so long and
+      // short frames produce the same next momentum cycle.
+      var chargeTime = previousBuff > 0 ? Math.max(0, dt - previousBuff) : dt;
+      if (previousBuff > 0) state.charge = 0;
+      state.charge = clamp(state.charge + chargeTime * (context.moving ? t.chargeRate : -t.chargeDecay), 0, 1);
+    }
+  }
 }
 function step(state, dt, context) {
   context = context || {}; dt = positive(dt);

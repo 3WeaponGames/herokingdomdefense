@@ -163,9 +163,11 @@ function drawCharge(hud,hero,rt) {
   var meter=hud.charge.node,w=hp.width||64,h=(hp.height||10)*.5;
   meter.active=true;meter.setContentSize(w,h);meter.scaleX=hp.scaleX;meter.scaleY=hp.scaleY;meter.angle=hp.angle||0;meter.zIndex=(hp.zIndex||0)+1;
   var center=hp.convertToWorldSpaceAR(vec(hp.width*(.5-hp.anchorX),-hp.height*hp.anchorY-h/2));meter.setPosition(hp.parent.convertToNodeSpaceAR(center));
-  var amount=Math.max(0,Math.min(1,s.charge||0)),signature=[s.style,w,h,amount].join(":");
+  var locked=s.style==="vanguard"&&s.buffRemaining>0,amount=Math.max(0,Math.min(1,(locked?s.buffStrength:s.charge)||0));
+  var opacity=locked&&s.buffRemaining<=3?Math.round(255*(.65+.35*(.5+.5*Math.cos((s.time||0)*Math.PI*2/1.5)))):255;
+  var fill=s.style==="vanguard"?(locked?"#ffab38":"#64d7ff"):"#a4ee53",signature=[s.style,w,h,amount,fill,opacity].join(":");
   if(hud.charge.signature===signature)return;hud.charge.signature=signature;
-  var g=hud.charge.g;g.clear();g.fillColor=color("#151727");g.rect(-w/2,-h/2,w,h);g.fill();if(amount>0){g.fillColor=color(s.style==="vanguard"?"#ffab38":"#a4ee53");g.rect(-w/2+1,-h/2+1,Math.max(0,w-2)*amount,Math.max(0,h-2));g.fill();}
+  var g=hud.charge.g;g.clear();g.fillColor=color("#151727");g.rect(-w/2,-h/2,w,h);g.fill();if(amount>0){g.fillColor=tint(fill,opacity/255);g.rect(-w/2+1,-h/2+1,Math.max(0,w-2)*amount,Math.max(0,h-2));g.fill();}
 }
 function aimOrigin(rt,v) {
   var o=rt.hero.node.getPosition(),controller=rt.hero.ctrPlayAni,maker=require("HeroMakerRider"),world=controller&&maker.skillOrigin&&maker.skillOrigin(controller,rt.aimDirection,v.animation),tip=world&&rt.game.ndMain.convertToNodeSpaceAR(world);

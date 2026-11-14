@@ -31,19 +31,29 @@ test('Skirmisher wind-up and passive result do not depend on frame partition',()
  const a=run([1]),b=run(Array(100).fill(.01));
  close(a.events[0].charge,b.events[0].charge);close(a.events[0].time,b.events[0].time);close(a.s.charge,b.s.charge);
 });
-test('Vanguard momentum grows moving, decays standing, and is consumed on a hit rather than firing',()=>{
+test('Vanguard momentum immediately increases movement speed, decays standing and locks on a landed hit rather than firing',()=>{
  const s=Skills.createState('vanguard');Skills.step(s,3,{moving:true});close(s.charge,.6);
+ close(Skills.bonuses(s).move,.6);assert.equal(Skills.bonuses(s).attackRate,0,'Attack speed begins only after impact');
  Skills.onBasicFire(s);close(s.charge,.6);Skills.step(s,1,{moving:false});close(s.charge,.45);
- const hit=Skills.onHit(s,{},{});close(hit.charge,.45);assert.equal(s.charge,0);assert.equal(s.buffRemaining,10);
+ const hit=Skills.onHit(s,{},{});close(hit.charge,.45);close(s.charge,.45);assert.equal(s.buffRemaining,10);
  close(Skills.bonuses(s).move,.45);close(Skills.bonuses(s).attackRate,.1575);
 });
-test('Vanguard buff refreshes from newly built momentum without stacking and multi-target strike consumes once',()=>{
- const s=Skills.createState('vanguard');s.charge=1;Skills.onHit(s,{}, {strikeId:'one'});
- Skills.step(s,2,{moving:true});close(s.charge,.4);
- Skills.onHit(s,{}, {strikeId:'two'});assert.equal(s.buffRemaining,10);close(s.buffStrength,1);
- s.charge=.1;Skills.onHit(s,{}, {strikeId:'two'});close(s.charge,.1);close(s.buffStrength,1);
- Skills.step(s,10,{moving:false});assert.equal(Skills.bonuses(s).move,0);
+test('Vanguard freezes the locked bar and bonuses for ten seconds without rebuilding or refreshing on later hits',()=>{
+ const s=Skills.createState('vanguard');s.charge=.6;Skills.onHit(s,{}, {strikeId:'one'});
+ Skills.step(s,2,{moving:true});close(s.charge,.6);close(s.buffRemaining,8);
+ const later=Skills.onHit(s,{}, {strikeId:'two',kind:'skill'});assert.equal(later.charge,0);assert.equal(s.buffRemaining,8);close(s.buffStrength,.6);close(s.charge,.6);
+ Skills.onHit(s,{}, {strikeId:'two'});close(s.charge,.6);close(s.buffStrength,.6);
+ Skills.step(s,8,{moving:false});assert.equal(s.charge,0);assert.equal(s.buffStrength,0);assert.equal(s.buffRemaining,0);assert.equal(Skills.bonuses(s).move,0);
  s.charge=.3;Skills.onHit(s,{}, {strikeId:'three'});close(s.buffStrength,.3);
+});
+test('a Vanguard miss or non-hit skill cast keeps charging, while the first successful skill impact locks its current amount',()=>{
+ const s=Skills.createState('vanguard');Skills.step(s,1,{moving:true});Skills.onHit(s,{}, {hit:false});assert.equal(s.buffRemaining,0);close(s.charge,.2);assert(Skills.beginActive(s,{direction:{x:1,y:0}}).ok);Skills.step(s,.5,{moving:true});close(s.charge,.3);assert.equal(s.buffRemaining,0);
+ Skills.onHit(s,{}, {kind:'skill',strikeId:1});close(s.buffStrength,.3);close(s.charge,.3);assert.equal(s.buffRemaining,10);Skills.onHit(s,{}, {kind:'skill',strikeId:1});assert.equal(s.buffRemaining,10);close(s.buffStrength,.3);
+});
+test('Vanguard buff expiry resumes charging only for residual movement time and remains frame independent',()=>{
+ function run(frames){const s=Skills.createState('vanguard');s.charge=.65;Skills.onHit(s,{},{});for(const dt of frames)Skills.step(s,dt,{moving:true});return s;}
+ const a=run([12]),b=run(Array(1200).fill(.01));close(a.charge,.4);close(a.charge,b.charge);close(a.buffRemaining,0);close(b.buffRemaining,0);close(a.buffStrength,0);close(b.buffStrength,0);close(Skills.bonuses(a).move,.4);assert.equal(Skills.bonuses(a).attackRate,0);
+ const exact=run([10]);assert.equal(exact.charge,0);assert.equal(exact.buffRemaining,0);Skills.step(exact,1,{moving:true});close(exact.charge,.2);
 });
 test('Vanguard emits exactly seven independently resolvable thrusts by 2.5 seconds with fixed aim',()=>{
  const s=Skills.createState('vanguard'),cast=Skills.beginActive(s,{direction:{x:3,y:4},moveSpeed:300,attackRate:1});

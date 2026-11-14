@@ -74,6 +74,16 @@ test('momentum is independent of hidden HP and uses its exact width and half hei
  const f=fixture('vanguard'),hp=f.hero.ctrHp.node,charge=f.hero._skillHUD.charge.node;assert.equal(hp.active,false);assert.equal(charge.active,true);assert.equal(charge.parent,hp.parent);assert.equal(charge.width,hp.width);assert.equal(charge.height,hp.height/2);assert.equal(charge.y+charge.height/2,hp.y-hp.height/2);
  const nodes=[f.hero._skillHUD.button,f.hero._skillHUD.visual.node,charge];f.hud.clear(f.hero);assert.equal(f.hero._skillHUD,undefined);for(const n of nodes)assert(n.destroyed);
 });
+
+test('Vanguard locks an orange bar at its hit strength and pulses only that fill during the final three seconds',()=>{
+ const f=fixture('vanguard'),hud=f.hero._skillHUD,g=hud.charge.g,paint=[];f.cc.color=value=>({hex:value,a:255});const fill=g.fill;g.fill=function(){paint.push({...this.fillColor});return fill.apply(this,arguments);};
+ f.rt.state.charge=.6;f.hud.update(f.hero,f.rt);assert.equal(paint.at(-1).hex,'#64d7ff');const chargingWidth=g.ops.filter(op=>op[0]==='rect').at(-1)[3];
+ Object.assign(f.rt.state,{charge:.95,buffStrength:.6,buffRemaining:8,time:2});f.hud.update(f.hero,f.rt);assert.equal(paint.at(-1).hex,'#ffab38');assert.equal(paint.at(-1).a,255);assert.equal(g.ops.filter(op=>op[0]==='rect').at(-1)[3],chargingWidth,'The locked amount ignores further live charge changes');
+ const clears=g.clearCalls;f.rt.state.buffRemaining=7;f.rt.state.time=3;f.hud.update(f.hero,f.rt);assert.equal(g.clearCalls,clears,'A steady locked bar does not rebuild geometry each frame');
+ f.rt.state.buffRemaining=2.5;f.rt.state.time=3.75;paint.length=0;f.hud.update(f.hero,f.rt);assert.equal(paint[0].hex,'#151727');assert.equal(paint[0].a,255,'The HP-adjacent background remains solid');assert.equal(paint.at(-1).hex,'#ffab38');assert(paint.at(-1).a<200&&paint.at(-1).a>150);assert.equal(g.ops.filter(op=>op[0]==='rect').at(-1)[3],chargingWidth);
+ f.rt.state.buffRemaining=1.75;f.rt.state.time=4.5;f.hud.update(f.hero,f.rt);assert.equal(paint.at(-1).a,255,'The slow gameplay-clock pulse returns to full opacity');
+ Object.assign(f.rt.state,{charge:0,buffStrength:0,buffRemaining:0});f.hud.update(f.hero,f.rt);assert.equal(g.ops.filter(op=>op[0]==='rect').length,1,'An expired bar starts empty');
+});
 test('immediate skills require a marked target for Mystic and do not arm directional mode',()=>{
  const f=fixture('mystic'),b=f.hero._skillHUD.button;b.handlers.start(f.event(1));b.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);f.rt.state.marked=true;f.rt.state.target={hp:100};b.handlers.start(f.event(2));b.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);assert.equal(f.rt.aiming,false);
 });

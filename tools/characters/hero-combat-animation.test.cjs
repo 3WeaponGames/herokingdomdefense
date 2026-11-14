@@ -23,6 +23,17 @@ function setup(style='fighter'){
 const track=(actor,key='spAniBody')=>actor[key].getCurrent(0),name=(actor,key)=>track(actor,key).animation.name;
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 
+test('Vanguard restores the authored weapon direction after aimed skills in every direction',()=>{
+ const h=setup('vanguard'),hand=h.actor.spAniBow.findBone('Rider/HandRight'),expected=hand.rotation;
+ for(const moving of [false,true])for(const degrees of [-135,-90,-45,0,45,90,135,180]){
+  h.actor.setBodyLeft(degrees>90||degrees<-90?-1:1);
+  h.rider.setCombatState(h.actor,{rapid:{elapsed:2.4,duration:2.5,strikes:7},aimDirection:{x:Math.cos(degrees*Math.PI/180),y:Math.sin(degrees*Math.PI/180)},moving});
+  h.rider.setCombatState(h.actor,{rapid:false,moving});
+  for(let i=0;i<24;i++)h.step(1/60);
+  close(hand.rotation,expected);assert.equal(name(h.actor),moving?'move':'idle');
+ }
+});
+
 test('moving mounted hero attacks without replacing the horse stride or restarting its rider clock',()=>{
  const h=setup(),{actor,rider}=h;let hits=0;actor.setAttackEvent(()=>hits++);
  rider.setCombatState(actor,{moving:true});actor.setAttack();const body=track(actor),horse=track(actor,'spAniMa');

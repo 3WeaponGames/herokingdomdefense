@@ -284,6 +284,9 @@ function setCombatState(controller,options){
   return true;
 }
 function releaseCombatPose(controller){
+  // Remove gameplay aim before Spine snapshots the outgoing track for mixing.
+  // Otherwise idle/move can inherit the last aimed hand rotation indefinitely.
+  keys.forEach(function(key){Pose.removeAim(controller[key]);});
   if(controller.isDie)return;
   var desired=controller.isMove?'move':'idle';
   keys.concat(['spAniMa']).forEach(function(key){ensureLocomotion(controller[key],desired);});
