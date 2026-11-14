@@ -45,8 +45,10 @@ function create(button,current,cc){
         parts={normal:root.getChildByName("Frame"),armed:root.getChildByName("Frame armed"),disabled:root.getChildByName("Frame disabled"),cooldown:artwork&&artwork.getChildByName("Cooltime")};
         if(!icon||!parts.normal||!parts.armed||!parts.disabled||!parts.cooldown)throw Error("Incomplete skill-button prefab");
         parts.fill=parts.cooldown.getComponent(cc.Sprite);if(!parts.fill)throw Error("Missing skill cooldown sprite");
-        if(cc.Mask){var mask=artwork.getComponent(cc.Mask);if(!mask)throw Error("Missing circular skill mask");mask.type=cc.Mask.Type.ELLIPSE;mask.segments=96;mask.inverted=false;}
-        parts.fill.type=cc.Sprite.Type.FILLED;parts.fill.fillType=cc.Sprite.FillType.RADIAL;parts.fill.fillCenter=cc.v2(.5,.5);parts.fill.fillStart=.25;
+        if(cc.Mask&&!artwork.getComponent(cc.Mask))throw Error("Missing circular skill mask");
+        // Mask and radial-fill geometry are authored in this shared prefab.
+        // Resetting them while the HUD is inactive runs native Mask graphics
+        // before its assembler has been created by component preload.
         paint();
       }catch(error){if(live(root))root.destroy();root=null;parts=null;release(prefab);prefab=null;if(cc.warn)cc.warn("Skill button artwork: "+error.message);}
     });
