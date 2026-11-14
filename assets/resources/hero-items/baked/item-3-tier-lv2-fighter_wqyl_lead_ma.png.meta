@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "c3baa4d7-6441-5a22-a788-15d0bb759b5e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 256,
+  "platformSettings": {},
+  "subMetas": {
+    "item-3-tier-lv2-fighter_wqyl_lead_ma": {
+      "ver": "1.0.6",
+      "uuid": "acb99439-520b-5e10-a0f1-350c1c59a1ce",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "c3baa4d7-6441-5a22-a788-15d0bb759b5e",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 256,
+      "rawWidth": 2048,
+      "rawHeight": 256,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

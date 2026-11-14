@@ -1,8 +1,8 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),Units=require('../../packages/game-data-editor/lib/unit-assets'),Renderer=require('../../packages/game-data-editor/preview/spine-renderer'),Attack=require('../../packages/hkd-characters/lib/mount-attack'),Weapons=require('../../assets/_script/HeroWeapons'),spine=require(Units.enginePath());
-function layers(style='fighter'){
- return Units.describe(root,{type:'hero',id:'hero',heroStyle:style,noRuntime:true}).layers.map(description=>{
+function layers(style='fighter',noAppearance=false){
+ return Units.describe(root,{type:'hero',id:'hero',heroStyle:style,noRuntime:true,noAppearance}).layers.map(description=>{
   const atlas=new spine.TextureAtlas(description.atlas,name=>{const bytes=fs.readFileSync(require('node:url').fileURLToPath(description.pages[name]));return new spine.FakeTexture({width:bytes.readUInt32BE(16),height:bytes.readUInt32BE(20)});});
   const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(description.json),skeleton=new spine.Skeleton(data);skeleton.setSkinByName(description.skin);skeleton.setToSetupPose();skeleton.updateWorldTransform();
   return {description,data,skeleton,atlas,restBones:Object.fromEntries(skeleton.bones.map(b=>[b.data.name,{a:b.a,b:b.b,c:b.c,d:b.d,x:b.worldX,y:b.worldY}]))};
@@ -23,12 +23,12 @@ function controller(style,models){
  return {actor,rider,renderers,step(dt){renderers.forEach(r=>{r.state.update(dt);r.state.apply(r.layer.skeleton);r.layer.skeleton.updateWorldTransform();});rider.update(actor);}};
 }
 test('all original hero horse skins use the same Maker preparation, thrust and recovery phases as every equipped weapon',()=>{
- const models=layers(),horse=models[0],body=models[1];assert(horse.description.json._heroMakerMount);assert.equal(horse.description.source,'assets/resources/hero-maker/wqyl_lead_ma.json');
+ const models=layers('fighter',true),horse=models[0],body=models[1];assert(horse.description.json._heroMakerMount);assert.equal(horse.description.source,'assets/resources/hero-maker/wqyl_lead_ma.json');
  assert.deepEqual(horse.description.skins,['default','lv1','lv2','lv_blue','lv3','lv4','vip1','vip2']);
  for(const style of Weapons.styles){const name=style.id==='skirmisher'?'attack':'attack_'+style.id;const actual=Attack.landmarks(horse.description.json.animations[name],false),expected=Attack.landmarks(body.description.json.animations[name],true);assert(actual&&expected);for(const phase of ['windup','peak','end'])assert(Math.abs(actual[phase]-expected[phase])<1e-6,style.id+' '+phase);assert(Math.abs(body.data.findAnimation(name).duration-.8333)<1e-6);assert.deepEqual(body.description.json.animations[name].events,[{time:.1667,name:'attack'}]);}
 });
 test('all seven horse skins have continuous idle, both walking strides and every attack loop, including weighted mesh deformation',()=>{
- const models=layers(),horse=models[0];let poses=0;
+ const models=layers('fighter',true),horse=models[0];let poses=0;
  for(const skin of horse.description.skins.filter(s=>s!=='default')){
   horse.skeleton.setSkinByName(skin);
   for(const action of ['idle','move',...Weapons.styles.map(s=>s.id==='skirmisher'?'attack':'attack_'+s.id)]){

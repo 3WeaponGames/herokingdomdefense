@@ -185,10 +185,10 @@ exports.moveManual=function(unit,game,localPosition){
   if(unit.rigidBody&&unit.rigidBody.active===false){unit._terrainExit=null;unit.node.setPosition(localPosition);return;}
   var navigation=get(game),grid=navigation.gridFor(unit),radius=navigation.radius(unit),start=point(unit.node,game.ndMain),world=unit.node.parent?unit.node.parent.convertToWorldSpaceAR(localPosition):localPosition,target=game.ndMain.convertToNodeSpaceAR(world);
   recordTerrainExit(unit,navigation,grid,start,radius);
-  if(!grid.canExitBlocked(start,target,radius)){
-    var x={x:target.x,y:start.y},y={x:start.x,y:target.y},canX=distance(start,x)>ARRIVAL_EPSILON&&grid.canExitBlocked(start,x,radius),canY=distance(start,y)>ARRIVAL_EPSILON&&grid.canExitBlocked(start,y,radius);
+  if(!grid.canExitBlocked(start,target,radius,true)){
+    var x={x:target.x,y:start.y},y={x:start.x,y:target.y},canX=distance(start,x)>ARRIVAL_EPSILON&&grid.canExitBlocked(start,x,radius,true),canY=distance(start,y)>ARRIVAL_EPSILON&&grid.canExitBlocked(start,y,radius,true);
     if(canX||canY)target=canX&&(!canY||distance(x,target)<=distance(y,target))?x:y;
-    else{var lo=0,hi=1;for(var i=0;i<12;i++){var f=(lo+hi)/2,p={x:start.x+(target.x-start.x)*f,y:start.y+(target.y-start.y)*f};if(grid.canExitBlocked(start,p,radius))lo=f;else hi=f;}target={x:start.x+(target.x-start.x)*lo,y:start.y+(target.y-start.y)*lo};}
+    else{var lo=0,hi=1;for(var i=0;i<12;i++){var f=(lo+hi)/2,p={x:start.x+(target.x-start.x)*f,y:start.y+(target.y-start.y)*f};if(grid.canExitBlocked(start,p,radius,true))lo=f;else hi=f;}target={x:start.x+(target.x-start.x)*lo,y:start.y+(target.y-start.y)*lo};}
   }
   setMainPosition(unit.node,game.ndMain,target);
 };
@@ -412,6 +412,55 @@ function get(game) {
   return game._navigation;
 }
 exports.moveTo = function (unit, game, target, dt) { return get(game).move(unit, target, dt); };
+// Ordinary path retries and crowd yielding run first. If a moving enemy has
+// made no physical progress for five gameplay seconds, recover to nearby free
+// ground with a clear continuation to its route. Never alter HP or wave counts.
+exports.recoverStranded = function (unit, game, dt) {
+  var speed=unit.getSpeed(),state=unit._navigationState,target=unit._targetSearchCache&&unit._targetSearchCache.target;
+  if (!(dt>0) || !(speed>0) || unit._hitReactionPlaying || target&&target.canAtt || state&&state.job || unit._navigationRequestOwner) { unit._enemyStall=null; return false; }
+  var navigation=get(game),grid=navigation.gridFor(unit),start=point(unit.node,game.ndMain),radius=navigation.radius(unit),record=unit._enemyStall;
+  if (!record || record.owner!==navigation || record.revision!==navigation.revision || record.generation!==unit.node._combatGeneration || distance(record.point,start)>=Math.max(.001,Math.min(8,speed*.25))) {
+    unit._enemyStall={owner:navigation,revision:navigation.revision,generation:unit.node._combatGeneration,point:start,elapsed:0};return false;
+  }
+  record.elapsed+=Math.min(dt,.1);
+  if (record.elapsed<5 || navigation._strandedRecoveryFrame===navigation._frameId) return false;
+  navigation._strandedRecoveryFrame=navigation._frameId;
+  var anchors=[],bounds=grid.bounds,margin=radius+.01;
+  function anchor(value) {
+    if(!value||!isFinite(value.x)||!isFinite(value.y))return;
+    var p={x:Math.max(bounds.minX+margin,Math.min(bounds.maxX-margin,value.x)),y:Math.max(bounds.minY+margin,Math.min(bounds.maxY-margin,value.y))};
+    if(grid.isWalkable(p,radius))anchors.push(p);
+  }
+  if(state&&state.points)state.points.slice(state.index,state.index+8).forEach(anchor);
+  if(state)anchor(state.goal);
+  var route=unit.bornInfo;
+  if(route&&route.pathList)route.pathList.slice(route.nodeIndex,route.nodeIndex+8).forEach(function(node){if(node&&cc.isValid(node,true))anchor(point(node,game.ndMain));});
+  var actors=game.gameData.getEnemyList().concat(game.gameData.getSoldierList(),[game.ctrPlay]),occupied=[];
+  actors.forEach(function(other){if(other!==unit&&other&&other.node&&other.node.activeInHierarchy!==false&&!other._isPooled&&(!other.isDead||!other.isDead()))occupied.push({point:point(other.node,game.ndMain),radius:navigation.radius(other)});});
+  function safe(p) {
+    return distance(start,p)>=Math.max(16,radius*2)&&grid.isWalkable(p,radius)&&
+      anchors.some(function(a){return distance(p,a)>1&&grid.segmentClear(p,a,radius);})&&
+      occupied.every(function(other){return distance(p,other.point)>radius+other.radius+2;});
+  }
+  var step=Math.max(24,radius*2+4),target=anchors[0],angle=target?Math.atan2(target.y-start.y,target.x-start.x):0,candidate=null;
+  for(var ring=1;ring<=8&&!candidate;ring++)for(var turn=0;turn<16;turn++) {
+    var direction=angle+turn*Math.PI/8,p={x:start.x+Math.cos(direction)*step*ring,y:start.y+Math.sin(direction)*step*ring};
+    if(safe(p)){candidate=p;break;}
+  }
+  // A spawn can be isolated beyond the local rings. Authored forward points
+  // provide a final route-owned search area, still requiring body clearance.
+  for(var index=0;index<anchors.length&&!candidate;index++)for(var turn=0;turn<16;turn++) {
+    var a=anchors[index],p={x:a.x+Math.cos(turn*Math.PI/8)*step,y:a.y+Math.sin(turn*Math.PI/8)*step};
+    if(safe(p)){candidate=p;break;}
+  }
+  if(!candidate){record.elapsed=3;return false;}
+  exports.reset(unit);
+  setMainPosition(unit.node,game.ndMain,candidate);
+  if(unit.rigidBody&&unit.rigidBody.syncPosition)unit.rigidBody.syncPosition(true);
+  unit._targetSearchCache=null;unit._routeInterrupted=true;
+  unit._navigationRecoveries=(unit._navigationRecoveries||0)+1;
+  return true;
+};
 // A new building footprint can cover a resting unit without giving it a move
 // order. Temporarily walk out at ordinary speed, then resume the original order.
 exports.recoverBlocked = function (unit, game, dt) {
@@ -512,6 +561,7 @@ exports.reset = function (unit) {
   cancelRequest(unit);
   unit._navigationState = null;
   unit._navigationProgress = null;
+  unit._enemyStall = null;
   unit._terrainExit = null;
   unit._automaticEgress = null;
   unit._standingNavigationOwner = null;

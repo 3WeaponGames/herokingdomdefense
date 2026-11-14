@@ -15,6 +15,19 @@ function fixture(t,primary={},secondary={}){
  const change=(style,field,value)=>service.change(req({style,path:field,value}));
  return {root,service,bytes,req,change,commits:()=>commits};
 }
+
+test('preview descriptions read the saved starting charm and never borrow maximum lifesteal or mutate gear',t=>{
+ const primary={HeroEquipment:{version:1},EquipCfg:[{id:3,levelInfo:[{SecondaryStats:{bruiser:{lifeSteal:.002}}},{SecondaryStats:{bruiser:{lifeSteal:.5}}}]}]},f=fixture(t,primary),before=f.bytes();
+ assert.equal(f.service.describe({style:'bruiser'}).skillSecondaryStats.lifeSteal,.002);
+ assert.equal(f.service.describe({style:'fighter'}).skillSecondaryStats.lifeSteal,undefined);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+});
+
+test('unrelated tuning edits preserve missing legacy assets and animations in both config copies',t=>{
+ const visual={resource:VFX,resourceKind:'spine',resourcePath:'removed/effect',resourceAnimation:'removed-clip',animation:'removed-rider',extension:{keep:true}},audio={cast:{clip:AUDIO,bundle:'resources',path:'removed/sound'}},f=fixture(t,{HeroSkills:{mystic:{visual,audio}}},{HeroSkills:{mystic:{visual:{...visual,extension:{mirror:true}},audio}}});
+ f.service.catalogs={audio:[],vfx:[]};f.change('mystic','cooldown',13);assert.equal(f.service.save(f.req()).result.saved,true);
+ for(const [i,text]of f.bytes().entries()){const skill=JSON.parse(text).HeroSkills.mystic;assert.equal(skill.cooldown,13);assert.deepEqual(skill.visual,{...visual,extension:i?{mirror:true}:{keep:true}});assert.deepEqual(skill.audio,audio);}
+ assert.equal(f.service.save(f.req()).result.saved,false);
+});
 test('all six styles expose their exact current tuning defaults without materializing any override',t=>{
  const f=fixture(t),before=f.bytes(),snapshot=f.service.load();assert.equal(snapshot.styles.length,6);assert.deepEqual(snapshot.data,{});assert.equal(snapshot.dirty,false);
  for(const style of Settings.styles){const effective=snapshot.effective[style.id];for(const [key,value]of Object.entries({...Core.DEFAULTS.common,...Core.DEFAULTS[style.id]}))assert.equal(effective[key],value);assert.equal(effective.visual.scale,1);assert.equal(effective.visual.color,'');assert.equal(effective.visual.lineWidth,0);assert.equal(effective.visual.holdTime,-1);assert.equal(effective.visual.showBuiltin,true);}

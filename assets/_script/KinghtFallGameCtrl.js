@@ -166,12 +166,6 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ctrPlay.ndRange.setParent(this.ndUI);
     this.ndAggFlag.setParent(this.ndMain);
     this.gameData.initMap();
-    var timelineUnits = [];
-    (this.gameData.levelCfg && this.gameData.levelCfg.WaveCfg || []).forEach(function (wave) { (wave.SpawnTimeline || []).forEach(function (entry) { if (timelineUnits.indexOf(entry.unitId) < 0) timelineUnits.push(entry.unitId); }); });
-    if (timelineUnits.length) {
-      var unitConfig = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
-      require("ResourceMgr").ResourceMgr.getInstance().preload($z1KinghtFallConfig.KinghtFallBundelName.Enemy, timelineUnits.map(function (id) { return unitConfig.getSoldierCfgById(id).prefab; }));
-    }
     if (cc.Camera && cc.RenderTexture) this._depthView = new DepthView(this);
     this._bindMapPhysics(t);
   };
@@ -1145,7 +1139,7 @@ var def_KinghtFallGameCtrl = function (t) {
     o.setSkin(this.ctrPlay.ctrPlayAni.arrName);
     this.ndPlayArr2.push(o);
     var r = this.ctrPlay.getAttack(t);
-    var s = this.ctrPlay.crit >= Math.random();
+    var s = this.ctrPlay.crit > Math.random();
     var hero = this.ctrPlay, context = require("RelicCombat").primaryContext(hero, t, r, s, release);
     s && (r *= this.ctrPlay.getCriticalDamage ? this.ctrPlay.getCriticalDamage() : this.ctrPlay.critDam);
     o.combatContext = this;
@@ -1157,11 +1151,12 @@ var def_KinghtFallGameCtrl = function (t) {
           $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGuideTips(2);
         }
         var impactPosition = t.node.getPosition();
-        $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(impactPosition, "jian_" + hero.ctrPlayAni.arrName);
         n.active = false;
+        $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(impactPosition, "jian_" + hero.ctrPlayAni.arrName);
+        if (!require("RelicCombat").primaryCurrent(context, t, hero) || context.used) return;
         var soundDamage = t.onAttacked(r, hero, false, context);
+        if (!require("RelicCombat").primaryCurrent(context, t, hero) || t._isPooled) return;
         if (soundDamage > 0) $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(impactPosition, soundDamage, s);
-        if (!require("RelicCombat").primaryCurrent(context, t, hero)) return;
         if (s && soundDamage > 0 && BattleSounds.effect) BattleSounds.effect("critical-hit", t, { allowDead: true });
       }
     });

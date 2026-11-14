@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "128da6dc-8964-5e3f-ad64-3db2c84600a1",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 512,
+  "height": 64,
+  "platformSettings": {},
+  "subMetas": {
+    "item-3-tier-lv_blue_wqyl_lead_jian": {
+      "ver": "1.0.6",
+      "uuid": "0fb7165d-4478-5a27-a713-9dd8594e7af6",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "128da6dc-8964-5e3f-ad64-3db2c84600a1",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 512,
+      "height": 64,
+      "rawWidth": 512,
+      "rawHeight": 64,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

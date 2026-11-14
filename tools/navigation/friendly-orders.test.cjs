@@ -287,6 +287,9 @@ test('Melee and ranged enemy damage deliver the attacker to the real soldier ret
     attacker.cfg = { ...e.cfg, ID: 90002, AttackRange: 150, Suppressed: -1 };
     delete attacker.attackRange;
     attacker.getAttack = () => 1;
+    // Retaliation isolates the primary hit; the released giant splash snapshot
+    // still needs the authored zero-radius/zero-recipient fixture settings.
+    attacker.cfg.Data = [0, 0, 0];
     attacker.doSplashDamage = () => {};
     e.game.gameData.enemies.push(attacker);
     e.game.ctrPlay.isDead = () => true;

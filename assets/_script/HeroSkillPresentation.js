@@ -117,7 +117,18 @@ function update(runtime) {
   }
   else if(channel&&s.channel&&s.channel.manager.channelState){
     var current=s.channel.manager.channelState(s.channel.source);
-    if(current.active){if(!current.loading){s.channel.loaded=true;s.channelRetries=0;s.channelRetryAt=undefined;}}
+    if(current.active){
+      if(!current.loading){
+        if(!s.channel.loaded)s.channel.startedAt=runtime.state.time;
+        s.channel.loaded=true;s.channelRetries=0;s.channelRetryAt=undefined;
+        var audio=s.channel.source.audio,status=audio&&audio.getState&&audio.getState(),states=cc._Audio&&cc._Audio.State;
+        var ended=states&&(status===states.STOPPED||status===states.ERROR);
+        // Native interruption can end a loop without retiring the manager's
+        // channel intent. Match battle loops' one-second grace/retry interval;
+        // initialization, paused playback and gesture queues remain bounded.
+        if(ended&&!current.paused&&current.started!==false&&runtime.state.time-s.channel.startedAt>=1){stopChannel(s);queue(runtime,"channel");}
+      }
+    }
     else {
       // Optional clips can fail or be disabled. Retry transient failures on the
       // gameplay clock, rather than issuing a new asset request every frame.
@@ -195,21 +206,23 @@ function initialize(record,asset,v,s) {
 }
 function prepare(runtime,s,v,owner) {
   owner=owner||s;
-  var key=[v.resource,v.resourceKind,v.resourceBundle,v.resourcePath,v.resourceAnimation,v.resourceFrames,v.resourceColumns,v.resourceCell,v.resourceFps,v.resourceLoop].join("|");
-  if(s.resourceKey!==key){clearNodes(s);releaseAsset(s);s.resourceKey=key;s.asset=null;s.loading=false;s.loadError=null;}
+  var key=resourceKey(v);
+  if(s.resourceKey!==key){clearArt(s);s.resourceKey=key;}
   if(s.asset||s.loading||s.loadError)return;s.loading=true;
+  var request=s.loadVersion=(s.loadVersion||0)+1;
   try{loadResource(v,function(error,asset){
-    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key)return;
+    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key||s.loadVersion!==request)return;
     s.loading=false;if(error||!asset){s.loadError=error||Error("Empty VFX asset");return;}s.asset=asset.addRef?asset.addRef():asset;
     s.nodes.forEach(function(record){initialize(record,asset,v,s);});
   });}catch(error){s.loading=false;s.loadError=error;}
 }
+function resourceKey(v){return [v.resource,v.resourceKind,v.resourceBundle,v.resourcePath,v.resourceAnimation,v.resourceFrames,v.resourceColumns,v.resourceCell,v.resourceFps,v.resourceLoop].join("|");}
 function attachments(hud,runtime) {
   var v=visual(runtime),iv=Settings.impactVisual(v),s=runtime._presentation;
   if(typeof cc==="undefined"||!cc.Sprite)return;
-  if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearNodes(s);if(s.impactArt)clearNodes(s.impactArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
+  if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
   s=state(runtime);var entities=[];
-  if(v.resource)prepare(runtime,s,v);else clearNodes(s);
+  if(v.resource)prepare(runtime,s,v);else clearArt(s);
   if(runtime.beamTarget&&runtime.beamTarget.node&&runtime.beamTarget.hp>0){
     var beamGeneration=runtime.beamTarget.node._combatGeneration;
     var onset=beamOnset(runtime);
@@ -225,26 +238,29 @@ function attachments(hud,runtime) {
     var art=s.impactArt||(s.impactArt={nodes:new Map(),frames:new Map()});prepare(runtime,art,iv,s);
     var hits=s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}).map(function(item){return{key:item,x:item.x+iv.offsetX,y:item.y+iv.offsetY,angle:iv.rotation,loop:false,age:Math.max(0,runtime.state.time-item.at)};});
     paintEntities(hud,runtime,art,iv,hits);
-  }else if(s.impactArt)clearNodes(s.impactArt);
+  }else if(s.impactArt)clearArt(s.impactArt);
   styleAttachments(hud,runtime);
 }
 function paintEntities(hud,runtime,s,v,entities,parent) {
   parent=parent||hud.visual.node;
   var keep=new Set();
   entities.forEach(function(entity){
+    // Instances may share an atlas and immutable frames while keeping each
+    // slot's authored tint, opacity and scale independent.
+    var view=entity.visual||v;
     keep.add(entity.key);var record=s.nodes.get(entity.key);
     if(!record){
       var node=new cc.Node("Custom skill VFX");node.setParent(parent);record={node:node,resource:v.resource};s.nodes.set(entity.key,record);
     }
-    record.entity=entity;if(s.asset)initialize(record,s.asset,v,s);
+    record.entity=entity;if(s.asset)initialize(record,s.asset,view,s);
     if(!alive(record.node))return;
     var world=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x,entity.y));record.node.setPosition(parent.convertToNodeSpaceAR(world));
     var unit=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x+1,entity.y)),local=parent.convertToNodeSpaceAR(unit),origin=record.node.getPosition();
-    var scale=Math.hypot(local.x-origin.x,local.y-origin.y)*v.scale*(entity.scale===undefined?1:entity.scale);
-    record.node.scaleX=scale*(entity.scaleX===undefined?1:entity.scaleX);record.node.scaleY=scale*(entity.scaleY===undefined?1:entity.scaleY);record.node.angle=entity.angle;record.node.opacity=Math.round(255*v.opacity*(entity.opacity===undefined?1:entity.opacity));record.node.active=true;
+    var scale=Math.hypot(local.x-origin.x,local.y-origin.y)*view.scale*(entity.scale===undefined?1:entity.scale);
+    record.node.scaleX=scale*(entity.scaleX===undefined?1:entity.scaleX);record.node.scaleY=scale*(entity.scaleY===undefined?1:entity.scaleY);record.node.angle=entity.angle;record.node.opacity=Math.round(255*view.opacity*(entity.opacity===undefined?1:entity.opacity));record.node.active=true;
     if(entity.anchorX!==undefined){record.node.anchorX=entity.anchorX;record.node.anchorY=entity.anchorY;}
     if(entity.behind)record.node.zIndex=(runtime.hero.node.zIndex||0)-1;
-    record.node.color=cc.color(v.color||"#ffffff");
+    record.node.color=cc.color(view.color||"#ffffff");
     seek(record);
   });
   s.nodes.forEach(function(record,key){if(!keep.has(key)){dispose(record);s.nodes.delete(key);}});
@@ -271,15 +287,16 @@ function preload(runtime){
   ["passive","beam","mark","buff"].forEach(function(slot){
     var selected=v[slot+"Resource"];if(!selected)return;var clip=VFXLayout.clipFor(selected),seen=new Set();
     ["start","loop","end"].forEach(function(phase){VFXLayout.phaseClips(slot,clip,phase).forEach(function(part){
-      var resource=part?part.uuid:selected;if(seen.has(resource))return;seen.add(resource);var art=arts.get(resource),value=Settings.resourceVisual(v,slot+"Resource");if(part)Settings.applyClip(value,"resource",part);
-      if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:resource};arts.set(resource,art);}prepare(runtime,art,value,s);
+      var value=Settings.resourceVisual(v,slot+"Resource");if(part)Settings.applyClip(value,"resource",part);
+      var key=resourceKey(value);if(seen.has(key))return;seen.add(key);var art=arts.get(key);
+      if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:key};arts.set(key,art);}prepare(runtime,art,value,s);
     });});
   });
 }
 function styleAttachments(hud,runtime){
   var s=state(runtime),v=visual(runtime),frame=advanceVFX(runtime);if(!frame){if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}return;}
   var arts=s.styleArts||(s.styleArts=new Map()),groups=new Map(),entities=VFXLayout.entities(frame,v,s.vfxContext);
-  entities.forEach(function(entity){var key=entity.visual.resource,group=groups.get(key);if(!group){group={visual:entity.visual,entities:[],behind:entity.behind};groups.set(key,group);}group.entities.push(entity);});
+  entities.forEach(function(entity){var key=resourceKey(entity.visual),group=groups.get(key);if(!group){group={visual:entity.visual,entities:[],behind:entity.behind};groups.set(key,group);}group.entities.push(entity);});
   groups.forEach(function(group,key){var art=arts.get(key);if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:key};arts.set(key,art);}prepare(runtime,art,group.visual,s);paintEntities(hud,runtime,art,group.visual,group.entities,group.behind?runtime.hero.node.parent:undefined);});
   arts.forEach(function(art,key){if(!groups.has(key)){art.nodes.forEach(dispose);art.nodes.clear();}});
   // A style owns a small fixed phase set. Drop obsolete authored selections
@@ -289,7 +306,7 @@ function styleAttachments(hud,runtime){
 function suspend(runtime){var s=runtime._presentation;if(s&&s.styleArts)s.styleArts.forEach(function(art){art.nodes.forEach(function(record){if(alive(record.node))record.node.active=false;});});}
 function clearNodes(s) {s.nodes.forEach(function(record){if(typeof cc!=="undefined")dispose(record);});s.nodes.clear();s.frames.forEach(function(frame){frame.destroy();});s.frames.clear();}
 function releaseAsset(s){if(s.asset&&s.asset.decRef)s.asset.decRef();s.asset=null;}
-function clearArt(s){clearNodes(s);releaseAsset(s);}
+function clearArt(s){clearNodes(s);releaseAsset(s);s.loadVersion=(s.loadVersion||0)+1;s.resourceKey=null;s.loading=false;s.loadError=null;}
 function clear(runtime) {
   var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.styleArts)s.styleArts.forEach(clearArt);
   s.sources.forEach(function(entry){if(entry.manager.releaseAudioSource)entry.manager.releaseAudioSource(entry.key,entry.source);else entry.manager.stopSource(entry.source);});s.sources=[];delete runtime._presentation;

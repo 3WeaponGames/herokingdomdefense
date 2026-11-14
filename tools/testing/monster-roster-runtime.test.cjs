@@ -106,6 +106,7 @@ test('every imported monster spawns through the shipped enemy factory with its o
 
 function actorFixture(row) {
   const e = environment();
+  e.game.gameStatus = e.stubs.KinghtFallModle.KinghtFallGameStage.Fight; e.game._combatEpoch = 1;
   e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById = () => row;
   Object.assign(e.stubs.KinghtFallModle.KinghtFallSoldierAniEnum, { Attack: 'attack', Idle: 'idle', Move: 'move' });
   e.game.setPath = () => ({ nodeIndex: 0, pathList: [new Node('objective', e.game.ndMain, 150, 0)] });
@@ -114,7 +115,7 @@ function actorFixture(row) {
   actor.initData(row.ID, 1);
   const effects = [], received = [], projectile = [];
   const target = {
-    uuid: 'target', node: new Node('target', e.game.ndMain, 1, 0), isDead: () => false,
+    uuid: 'target', node: new Node('target', e.game.ndMain, 1, 0), hp: 50, hpMax: 100, isDead: () => false,
     onAttacked(amount) { received.push(amount); return amount; },
     addBuff(type, value) { received.push({ type, value }); },
     addHpPro(amount) { received.push(amount); }

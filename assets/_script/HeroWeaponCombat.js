@@ -16,14 +16,17 @@ function configure(hero, user, config) {
 }
 function melee(game,target,release) {
   var hero=game.ctrPlay;if(hero.heroRanged!==false)return false;
-  if (!cc.isValid(target)||!target.node||target.isDead()) return true;
-  var damage=hero.getAttack(target),critical=hero.crit>=Math.random();
-  var combat=require("RelicCombat"),context=combat.primaryContext(hero,target,damage,critical,release);
+  if (!cc.isValid(target,true)||!target.node||!cc.isValid(target.node,true)||target._isPooled||target.isDead()) return true;
+  var combat=require("RelicCombat"),context=combat.primaryContext(hero,target,0,false,release);
+  var damage=hero.getAttack(target),critical=hero.crit>Math.random();
+  if(!combat.primaryValid(context,target,hero))return true;
+  context.nonCritical=damage;context.critical=critical;
   if(critical)damage*=hero.getCriticalDamage?hero.getCriticalDamage():hero.critDam;
   var position=target.node.getPosition(),ui=require("KinghtFallUIGame").default.instance;
   ui.ctrEffect.onMonsterAttack(position,"xb_gj");
+  if(!combat.primaryValid(context,target,hero))return true;
   var received=target.onAttacked(damage,hero,false,context);
-  if(received>0)ui.ctrEffect.showDamageNum(position,received,critical);
+  if(received>0&&combat.primaryCurrent(context,target,hero)&&!target._isPooled)ui.ctrEffect.showDamageNum(position,received,critical);
   return true;
 }
 exports.configure=configure;exports.melee=melee;

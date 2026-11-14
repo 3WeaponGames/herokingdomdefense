@@ -1,0 +1,55 @@
+
+item-3-tier-lv3_wqyl_lead_jian.png
+size: 512,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+part_Rider_HandLeft_Shield_guardian_lv1
+  rotate: false
+  xy: 2, 2
+  size: 50, 56
+  orig: 50, 56
+  offset: 0, 0
+  index: -1
+part_Rider_HandLeft_Shield_guardian_lv2
+  rotate: false
+  xy: 56, 2
+  size: 50, 56
+  orig: 50, 56
+  offset: 0, 0
+  index: -1
+part_Rider_HandLeft_Shield_guardian_lv3
+  rotate: false
+  xy: 110, 2
+  size: 50, 56
+  orig: 50, 56
+  offset: 0, 0
+  index: -1
+part_Rider_HandLeft_Shield_guardian_lv4
+  rotate: false
+  xy: 164, 2
+  size: 50, 56
+  orig: 50, 56
+  offset: 0, 0
+  index: -1
+part_Rider_HandLeft_Shield_guardian_vip1
+  rotate: false
+  xy: 218, 2
+  size: 50, 56
+  orig: 50, 56
+  offset: 0, 0
+  index: -1
+part_Rider_HandLeft_Shield_guardian_vip2
+  rotate: false
+  xy: 272, 2
+  size: 50, 56
+  orig: 50, 56
+  offset: 0, 0
+  index: -1
+item_arrow
+  rotate: false
+  xy: 326, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1

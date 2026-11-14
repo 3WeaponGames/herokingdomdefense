@@ -4,7 +4,12 @@ const root=path.resolve(__dirname,'../..'),Catalog=require('../../assets/_script
 test('all ten workbook source prefabs have complete bounded transparent flipbooks with stable sprite identities',()=>{
  assert.equal(Catalog.clips.length,18);assert.equal(new Set(Catalog.clips.map(c=>c.source.package+'|'+c.source.prefab)).size,10);
  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,'assets/resources/vfx/hero-skills/catalog.json'))),Catalog);
- assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'Skill VFX.xlsx'))).digest('hex'),Catalog.workbookSha256);
+ // The workbook is an editable plan; this hash belongs to the historical bake.
+ // Validate the reproducible selection manifest without forcing unrelated
+ // planning edits or its rename to regenerate otherwise identical atlases.
+ const selection=require('../skills-vfx/effects.json');assert.equal(selection.workbook,'Characters Plan.xlsx');assert(fs.statSync(path.join(root,selection.workbook)).isFile());assert.match(Catalog.workbookSha256,/^[a-f0-9]{64}$/);
+ const planned=selection.clips.concat(selection.beam.parts.flatMap(part=>selection.beam.phases.map(phase=>({...selection.beam,...part,...phase,id:'mystic-beam-'+part.id+'-'+phase.phase}))));
+ assert.equal(planned.length,Catalog.clips.length);for(const clip of Catalog.clips){const source=planned.find(row=>row.id===clip.id);assert(source,'Missing bake selection: '+clip.id);assert.deepEqual(clip.source,{package:source.package,prefab:source.prefab});for(const key of ['frames','fps'])assert.equal(clip[key],source[key]);assert.equal(clip.cell,source.cell||128);assert.equal(clip.columns,source.columns||16);}
  const ids=new Set();for(const clip of Catalog.clips){assert(!ids.has(clip.uuid));ids.add(clip.uuid);const file=path.join(root,'assets/resources',clip.resource+'.png'),bytes=fs.readFileSync(file),meta=JSON.parse(fs.readFileSync(file+'.meta')),sprite=Object.values(meta.subMetas)[0];assert.equal(sprite.uuid,clip.uuid);assert.equal(sprite.trimType,'none');assert.equal(meta.premultiplyAlpha,false);assert.equal(meta.genMipmaps,false);assert(meta.width<=2048&&meta.height<=2048);assert.equal(bytes.readUInt32BE(16),clip.columns*clip.cell);assert.equal(bytes.readUInt32BE(20),Math.ceil(clip.frames/clip.columns)*clip.cell);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),clip.sha256);assert(clip.visibleFrames>0);assert(clip.fps>=32);}
 });
 test('style presets do not change gameplay tuning, write overrides, or expose incompatible slots',()=>{

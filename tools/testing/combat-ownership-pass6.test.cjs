@@ -74,6 +74,7 @@ function healFixture() {
   const healer = h.actor('KinghtFallEnemyItem09', 0, 0), target = h.actor('KinghtFallEnemyBase', 0, 0);
   healer.uuid = 'healer'; healer.cfg = units[90009]; target.uuid = 'target'; target.hp = 20;
   target.ndEffect = new Effect(); target.hpctrl = { setHp() {}, showAni() {} }; target.node._combatGeneration = 1;
+  h.game.gameStatus = h.stubs.KinghtFallModle.KinghtFallGameStage.Fight; h.game._combatEpoch = 1;
   h.game.gameData.enemies = [healer, target];
   return { healer, target, requests, pool, allocated: () => allocated };
 }

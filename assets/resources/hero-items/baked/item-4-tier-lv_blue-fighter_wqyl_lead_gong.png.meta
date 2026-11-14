@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "7eba73c2-b530-5ca7-aa35-8b81f3fe134b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "item-4-tier-lv_blue-fighter_wqyl_lead_gong": {
+      "ver": "1.0.6",
+      "uuid": "d1598835-1b4f-5691-a71a-794806553629",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "7eba73c2-b530-5ca7-aa35-8b81f3fe134b",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

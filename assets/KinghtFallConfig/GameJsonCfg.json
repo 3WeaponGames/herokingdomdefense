@@ -53260,6 +53260,16 @@
         "AttackDamage": 18,
         "Health": 85
       }
+    },
+    "buildingShadows": {
+      "version": 1,
+      "global": {
+        "angle": 15,
+        "distance": 21,
+        "spread": 100,
+        "size": 0,
+        "opacity": 0.18
+      }
     }
   },
   "AllyCfg": {

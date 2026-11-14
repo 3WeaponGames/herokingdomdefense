@@ -33,10 +33,10 @@ test('Skirmisher wind-up and passive result do not depend on frame partition',()
 });
 test('Vanguard momentum immediately increases movement speed, decays standing and locks on a landed hit rather than firing',()=>{
  const s=Skills.createState('vanguard');Skills.step(s,3,{moving:true});close(s.charge,.6);
- close(Skills.bonuses(s).move,.6);assert.equal(Skills.bonuses(s).attackRate,0,'Attack speed begins only after impact');
+ close(Skills.bonuses(s).move,.3);assert.equal(Skills.bonuses(s).attackRate,0,'Attack speed begins only after impact');
  Skills.onBasicFire(s);close(s.charge,.6);Skills.step(s,1,{moving:false});close(s.charge,.45);
  const hit=Skills.onHit(s,{},{});close(hit.charge,.45);close(s.charge,.45);assert.equal(s.buffRemaining,10);
- close(Skills.bonuses(s).move,.45);close(Skills.bonuses(s).attackRate,.1575);
+ close(Skills.bonuses(s).move,.225);close(Skills.bonuses(s).attackRate,.1575);
 });
 test('Vanguard freezes the locked bar and bonuses for ten seconds without rebuilding or refreshing on later hits',()=>{
  const s=Skills.createState('vanguard');s.charge=.6;Skills.onHit(s,{}, {strikeId:'one'});
@@ -52,7 +52,7 @@ test('a Vanguard miss or non-hit skill cast keeps charging, while the first succ
 });
 test('Vanguard buff expiry resumes charging only for residual movement time and remains frame independent',()=>{
  function run(frames){const s=Skills.createState('vanguard');s.charge=.65;Skills.onHit(s,{},{});for(const dt of frames)Skills.step(s,dt,{moving:true});return s;}
- const a=run([12]),b=run(Array(1200).fill(.01));close(a.charge,.4);close(a.charge,b.charge);close(a.buffRemaining,0);close(b.buffRemaining,0);close(a.buffStrength,0);close(b.buffStrength,0);close(Skills.bonuses(a).move,.4);assert.equal(Skills.bonuses(a).attackRate,0);
+ const a=run([12]),b=run(Array(1200).fill(.01));close(a.charge,.4);close(a.charge,b.charge);close(a.buffRemaining,0);close(b.buffRemaining,0);close(b.buffStrength,0);close(a.buffStrength,0);close(Skills.bonuses(a).move,.2);assert.equal(Skills.bonuses(a).attackRate,0);
  const exact=run([10]);assert.equal(exact.charge,0);assert.equal(exact.buffRemaining,0);Skills.step(exact,1,{moving:true});close(exact.charge,.2);
 });
 test('Vanguard emits exactly seven independently resolvable thrusts by 2.5 seconds with fixed aim',()=>{

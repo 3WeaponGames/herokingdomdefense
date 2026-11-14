@@ -18,7 +18,7 @@ function edits(config,overrides,request,action){
  }else if(action.kind==='source'){
   if(!['texture','polygon'].includes(action.source))throw Error('Choose Texture shadow or Manual polygon mask.');
   const mode=current.mode==='none'?'individual':current.mode;
-  const value=Object.assign({},row.DropShadow,{version:1,mode,source:action.source,settings:current.settings});
+  const value=Object.assign({},row.DropShadow,{version:1,mode,source:action.source,settings:Object.assign({},row.DropShadow&&row.DropShadow.settings,current.settings)});
   if(!equal(value,row.DropShadow))result.push({doc:'A',path:['BuildEnum',String(request.id),'levelList',request.levelIndex,'DropShadow'],value});
   if(action.source==='texture'&&['global','tier'].includes(mode)){const saved=mode==='global'?table.global:table.tiers&&table.tiers[current.group];if(!FX.valid(saved))preset(mode,current.settings);}
  }else if(action.kind==='settings'){

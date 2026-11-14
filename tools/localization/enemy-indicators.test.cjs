@@ -20,7 +20,7 @@ class Node{
   convertToNodeSpaceAR(point){const p=this.parent?this.parent.convertToNodeSpaceAR(point):point,a=-this.angle*Math.PI/180,c=Math.cos(a),s=Math.sin(a),x=p.x-this.x,y=p.y-this.y;return{x:(c*x-s*y)/this.scaleX,y:(s*x+c*y)/this.scaleY};}
 }
 const cc={v2:(x,y)=>({x,y}),isValid:x=>!!x&&!x.destroyed,Label,Sprite,Camera:{main:{getWorldToScreenPoint:p=>p}}};
-const context={cc,$z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getSoldierCfgById:id=>({loadIcon:String(id)})})}},$z1KinghtFallConfig:{KinghtFallBundelName:{Enemy:'enemy'}}};
+const context={cc,$z1KinghtFallModle:{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2}},$z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getSoldierCfgById:id=>({loadIcon:String(id)})})}},$z1KinghtFallConfig:{KinghtFallBundelName:{Enemy:'enemy'}}};
 context.resolveEnemyPictogram=vm.runInNewContext('('+functionAt('function resolveEnemyPictogram')+')',context);
 const loadPictogram=vm.runInNewContext('('+functionAt('_ctor.prototype._loadEnemyPictogram =')+')',context);
 context.placeEnemyIndicator=vm.runInNewContext('('+functionAt('function placeEnemyIndicator')+')',context);
@@ -31,7 +31,7 @@ const update=vm.runInNewContext('('+functionAt('_ctor.prototype.update =')+')',c
 const updateLive=vm.runInNewContext('('+functionAt('_ctor.prototype._updateOffscreenEnemies =')+')',context);
 const updateUpcoming=vm.runInNewContext('('+functionAt('_ctor.prototype._placeUpcomingEnemyIndicators =')+')',context);
 function authored(index,parent,english=true){const source=data[index],node=new Node(source._name,parent),trs=source._trs&&source._trs.array;node.width=source._contentSize?source._contentSize.width:0;node.height=source._contentSize?source._contentSize.height:0;node.active=source._active!==false;if(source._anchorPoint){node.anchorX=source._anchorPoint.x;node.anchorY=source._anchorPoint.y;}if(trs){node.x=trs[0];node.y=trs[1];node.scaleX=trs[7];node.scaleY=trs[8];node.angle=2*Math.atan2(trs[5],trs[6])*180/Math.PI;}for(const ref of source._components||[]){const component=data[ref.__id__];if(component.__type__==='cc.Label'){const label=new Label();label.string=component._string;node.components.push(label);const key='ui.layout.kinghtfalluigame.'+ref.__id__,style=english&&((taskPatch.labelStyles[key]||catalog.labelStyles[key]||{}).en);if(style){if(style.width!==undefined)node.width=style.width;if(style.height!==undefined)node.height=style.height;if(style.x!==undefined)node.x=style.x;if(style.y!==undefined)node.y=style.y;}}else if(component.__type__==='cc.Sprite')node.components.push(new Sprite());}for(const child of source._children||[])authored(child.__id__,node,english);return node;}
-function fixture(english=true){const canvas=new Node('Canvas'),ui=new Node('UI',canvas);ui.width=750;ui.height=1334;const definition=data.find(x=>x.ndEnemyIcon&&x.btnBuildInfo);const state={_updateTestControls(){},_loadEnemyPictogram:loadPictogram,ctrUI:{node:ui,upGuide(){}},_enemyIndicatorObstacles:getObstacles,_placeEnemyIndicator:place,_updateOffscreenEnemies:updateLive,_placeUpcomingEnemyIndicators:updateUpcoming};for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])state[key]=authored(definition[key].__id__,ui,english);state.ndTask.getChildByName('ndAni').active=false;state.ndEnemyIcon=authored(118,ui,english);state.ndEnemyIcon.active=false;return{state,ui,canvas,indicator:()=>authored(118,ui,english)};}
+function fixture(english=true){const canvas=new Node('Canvas'),ui=new Node('UI',canvas);ui.width=750;ui.height=1334;const definition=data.find(x=>x.ndEnemyIcon&&x.btnBuildInfo);const state={_layoutBattleFooter(){},_updateTestControls(){},_loadEnemyPictogram:loadPictogram,ctrUI:{node:ui,upGuide(){}},_enemyIndicatorObstacles:getObstacles,_placeEnemyIndicator:place,_updateOffscreenEnemies:updateLive,_placeUpcomingEnemyIndicators:updateUpcoming};for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])state[key]=authored(definition[key].__id__,ui,english);state.ndTask.getChildByName('ndAni').active=false;state.ndEnemyIcon=authored(118,ui,english);state.ndEnemyIcon.active=false;return{state,ui,canvas,indicator:()=>authored(118,ui,english)};}
 function near(a,b){assert(Math.abs(a-b)<1e-6,`${a} != ${b}`);}
 function clear(a,b,gap=0){return a.maxX+gap<=b.minX+1e-6||a.minX-gap>=b.maxX-1e-6||a.maxY+gap<=b.minY+1e-6||a.minY-gap>=b.maxY-1e-6;}
 function bounds(node,ui){return context.enemyIndicatorBounds(node,ui);}
@@ -39,7 +39,7 @@ function arrowPoints(node,target){const arrow=node.getChildByName('ndArr');asser
 function liveFixture(width=750,height=1334){
  const f=fixture(),enemies=[];f.ui.width=width;f.ui.height=height;
  cc.view={getVisibleSize:()=>({width,height}),getVisibleOrigin:()=>({x:-width/2,y:-height/2})};cc.instantiate=()=>f.indicator();
- Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},camera:{getWorldToScreenPoint:p=>p},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
+ Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{gameStatus:2,onUpdate(){},camera:{getWorldToScreenPoint:p=>p},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
  f.enemy=(x,y,id=90001)=>{const enemy={node:new Node('enemy',f.ui),cfg:{ID:id},isDead:()=>false};enemy.node.setPosition(x,y);enemies.push(enemy);return enemy;};
  f.tick=()=>{update.call(f.state,.016);return Object.values(f.state.enemyIconInfo).filter(record=>record._guideLive&&record.ndItem.active);};
  f.count=()=>f.tick().reduce((total,record)=>total+Number(record.ndItem.getChildByName('labNum').getComponent(Label).string),0);
@@ -51,7 +51,7 @@ test('Actual English and Chinese prefab bounds avoid Buildings, taskbar, and vis
 test('Multiple indicators at the same spawn edge separate without overlap and keep correct arrows',()=>{const f=fixture(),nodes=[f.indicator(),f.indicator(),f.indicator(),f.indicator()],obstacles=getObstacles.call(f.state),count=obstacles.length,target={x:-600,y:650};for(const node of nodes){place.call(f.state,node,target,obstacles);arrowPoints(node,target);}for(let i=count;i<obstacles.length;i++)for(let j=0;j<i;j++)assert(clear(obstacles[i],obstacles[j],12));for(const node of nodes)assert(node.x>=-246&&node.x<=246&&node.y>=-442&&node.y<=442);});
 test('Rotating/previously hidden arrows keep a stable footprint and reactivate after displacement',()=>{const f=fixture(),node=f.indicator(),target={x:-600,y:650};place.call(f.state,node,target,getObstacles.call(f.state));const previous=node.getPosition();for(const angle of[0,31,89,173,270]){node.getChildByName('ndArr').angle=angle;place.call(f.state,node,target,getObstacles.call(f.state));near(node.x,previous.x);near(node.y,previous.y);}place.call(f.state,node,{x:0,y:0},[]);assert.equal(node.getChildByName('ndArr').active,false);place.call(f.state,node,target,[]);assert.equal(node.getChildByName('ndArr').active,true);});
 test('Canvas transforms and inactive controls do not change local placement or leave phantom blockers',()=>{const f=fixture(),node=f.indicator(),target={x:-246,y:396};place.call(f.state,node,target,getObstacles.call(f.state));const first=node.getPosition();f.canvas.x=375;f.canvas.y=667;f.canvas.scaleX=f.canvas.scaleY=0.5;f.canvas.angle=8;place.call(f.state,node,target,getObstacles.call(f.state));near(node.x,first.x);near(node.y,first.y);for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])f.state[key].active=false;assert.equal(getObstacles.call(f.state).length,0);place.call(f.state,node,target,[]);near(node.x,target.x);near(node.y,target.y);});
-test('Live update retains per-spawn enemy counts/visibility and applies separation to new clones',()=>{const f=fixture(),state=f.state,pathNode=new Node('Path',f.ui);new Node('ndEnemy1',pathNode).setPosition(-600,650);new Node('ndEnemy2',pathNode).setPosition(-600,650);Object.assign(state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},ndPath:pathNode,gameData:{baseBuild:{getLevel:()=>1},enemyQueue:{1:[{id:7,num:9}],2:[{id:8,num:3}]}}},loadSpriteFrame(bundle,key,callback){callback({key});}});cc.instantiate=()=>f.indicator();update.call(state,0.016);const a=state.enemyIconInfo[1].ndItem,b=state.enemyIconInfo[2].ndItem;assert(a.active&&b.active);assert.equal(a.getChildByName('labNum').getComponent(Label).string,'9');assert.equal(b.getChildByName('labNum').getComponent(Label).string,'3');assert(clear(bounds(a,f.ui),bounds(b,f.ui),6));delete state.ctrGame.gameData.enemyQueue[2];update.call(state,0.016);assert.equal(b.active,false);assert.equal(a.active,true);});
+test('Live update retains per-spawn enemy counts/visibility and applies separation to new clones',()=>{const f=fixture(),state=f.state,pathNode=new Node('Path',f.ui);new Node('ndEnemy1',pathNode).setPosition(-600,650);new Node('ndEnemy2',pathNode).setPosition(-600,650);Object.assign(state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{gameStatus:0,onUpdate(){},ndPath:pathNode,gameData:{baseBuild:{getLevel:()=>1},enemyQueue:{1:[{id:7,num:9}],2:[{id:8,num:3}]}}},loadSpriteFrame(bundle,key,callback){callback({key});}});cc.instantiate=()=>f.indicator();update.call(state,0.016);const a=state.enemyIconInfo[1].ndItem,b=state.enemyIconInfo[2].ndItem;assert(a.active&&b.active);assert.equal(a.getChildByName('labNum').getComponent(Label).string,'9');assert.equal(b.getChildByName('labNum').getComponent(Label).string,'3');assert(clear(bounds(a,f.ui),bounds(b,f.ui),6));delete state.ctrGame.gameData.enemyQueue[2];update.call(state,0.016);assert.equal(b.active,false);assert.equal(a.active,true);});
 test('Impossible packing still returns a finite bounded position without hiding indicator data',()=>{const p=context.placeEnemyIndicator({x:99,y:99},{minX:-50,maxX:50,minY:-50,maxY:50},{minX:-10,maxX:10,minY:-10,maxY:10},[{minX:-999,maxX:999,minY:-999,maxY:999}],12);assert(Number.isFinite(p.x)&&Number.isFinite(p.y));assert(p.x>=-10&&p.x<=10&&p.y>=-10&&p.y<=10);});
 test('Active offscreen enemies remain represented in all eight directions without a spawn queue or built castle',()=>{
   const f=fixture(),enemies=[];cc.instantiate=()=>f.indicator();
@@ -60,7 +60,7 @@ test('Active offscreen enemies remain represented in all eight directions withou
     const angle=sector*Math.PI/4,node=new Node('enemy',f.ui);node.setPosition(Math.cos(angle)*1800,Math.sin(angle)*1800);
     enemies.push({node,cfg:{ID:90001},isDead:()=>false});
   }
-  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
+  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{gameStatus:2,onUpdate(){},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
   update.call(f.state,.016);
   const markers=Object.values(f.state.enemyIconInfo);assert.equal(markers.length,8);
   assert.equal(markers.reduce((sum,r)=>sum+Number(r.ndItem.getChildByName('labNum').getComponent(Label).string),0),16);
@@ -72,7 +72,7 @@ test('Active offscreen enemies remain represented in all eight directions withou
 test('A large wave shares a bounded directional marker and tracks death and camera movement immediately',()=>{
   const f=fixture(),enemies=Array.from({length:100},()=>({node:new Node('enemy',f.ui),cfg:{ID:90002},isDead:()=>false}));
   enemies.forEach(e=>e.node.setPosition(1800,0));cc.instantiate=()=>f.indicator();
-  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
+  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{gameStatus:2,onUpdate(){},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
   update.call(f.state,.016);const records=Object.values(f.state.enemyIconInfo);assert.equal(records.length,1);assert.equal(records[0].ndItem.getChildByName('labNum').getComponent(Label).string,'100');
   enemies[0].isDead=()=>true;update.call(f.state,.016);assert.equal(records[0].ndItem.getChildByName('labNum').getComponent(Label).string,'99');
   cc.Camera.main.getWorldToScreenPoint=p=>({x:p.x-1800,y:p.y});update.call(f.state,.016);assert(records.every(r=>!r.ndItem.active));cc.Camera.main.getWorldToScreenPoint=p=>p;
@@ -80,7 +80,7 @@ test('A large wave shares a bounded directional marker and tracks death and came
 test('Live markers use the world camera even when a different UI camera becomes main',()=>{
   const f=fixture(),enemy={node:new Node('enemy',f.ui),cfg:{ID:90002},isDead:()=>false};
   enemy.node.setPosition(1800,0);cc.instantiate=()=>f.indicator();
-  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},camera:{getWorldToScreenPoint:()=>({x:0,y:0})},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>[enemy]}},loadSpriteFrame(_bundle,_key,done){done({});}});
+  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{gameStatus:2,onUpdate(){},camera:{getWorldToScreenPoint:()=>({x:0,y:0})},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>[enemy]}},loadSpriteFrame(_bundle,_key,done){done({});}});
   update.call(f.state,.016);assert.equal(Object.keys(f.state.enemyIconInfo).length,0);
   const previous=cc.Camera.main;
   try{cc.Camera.main={getWorldToScreenPoint:()=>({x:0,y:0})};f.state.ctrGame.camera.getWorldToScreenPoint=p=>p;update.call(f.state,.016);assert.equal(Object.values(f.state.enemyIconInfo).filter(r=>r.ndItem.active).length,1);}
@@ -171,5 +171,21 @@ test('Upcoming portraits from one side pack closer together and retain their tru
  assert(Math.max(...positions.map(p=>p.y))-Math.min(...positions.map(p=>p.y))<400,'incoming-side markers still spread across the screen');
  for(let i=0;i<rectangles.length;i++)for(let j=0;j<i;j++)assert(clear(rectangles[i],rectangles[j],6));
  assert.equal(catalog.labelStyles['ui.layout.kinghtfalluigame.133'].en.fontSize,54);
+});
+test('battle start immediately clears every marker and queued portraits stay hidden until planning resumes',()=>{
+ const f=liveFixture(),s=f.state,pathNode=new Node('Path',f.ui);new Node('ndEnemy1',pathNode).setPosition(-600,650);
+ Object.assign(s.ctrGame,{gameStatus:0,ndPath:pathNode,ctrPlay:{ndRange:new Node('Range')}});
+ Object.assign(s.ctrGame.gameData,{baseBuild:{getLevel:()=>1},enemyQueue:{1:[{id:7,num:9}]},getBulidList:()=>[],startRoundGame(){}});
+ s.ctrUI.ndLight=new Node('Light');update.call(s,.016);assert(s.enemyIconInfo[1].ndItem.active);
+ const live={id:7,tag:true,_guideLive:true,ndItem:f.indicator()};s.enemyIconInfo['live:0']=live;live.ndItem.active=true;
+ const tween={set(){return this;},to(){return this;},call(){return this;},start(){}};cc.tween=()=>tween;
+ context.BattleSounds={};context.$z1AudioMgr={AudioMgr:{getInstance:()=>({playMusic(){}})}};
+ Object.assign(context.$z1KinghtFallConfig,{KinghtFallParameter:{BattleNightStrength:1},KinghtFallAudioId:{}});
+ const start=vm.runInNewContext('('+functionAt('_ctor.prototype.startRoundGame =')+')',context);start.call(s);
+ assert.equal(s.ctrGame.gameStatus,1);assert(Object.values(s.enemyIconInfo).every(r=>!r.ndItem.active&&!r.tag),'Markers survived the synchronous start');
+ update.call(s,.016);assert(Object.values(s.enemyIconInfo).every(r=>!r.ndItem.active),'Transition repainted queued markers');
+ s.ctrGame.gameStatus=2;update.call(s,.016);assert(Object.values(s.enemyIconInfo).every(r=>!r.ndItem.active));
+ f.enemy(1800,0,7);update.call(s,.016);assert.equal(s.enemyIconInfo[1].ndItem.active,false);assert(Object.values(s.enemyIconInfo).some(r=>r._guideLive&&r.ndItem.active),'Arrived distant enemies need a live marker');
+ s.ctrGame.gameStatus=0;update.call(s,.016);assert.equal(s.enemyIconInfo[1].ndItem.active,true);assert(Object.values(s.enemyIconInfo).filter(r=>r._guideLive).every(r=>!r.ndItem.active));
 });
 console.log(passed+' enemy indicator HUD-layout checks passed.');

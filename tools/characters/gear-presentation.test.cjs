@@ -6,15 +6,15 @@ function looks(){
  const context={exports:{},require:name=>modules[name],cc:{JsonAsset:function(){},resources:{load(resource,_type,callback){callback(null,{json:resource==='hero-items/catalog'?catalog:defaults});}}}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroItemLooks.js'),'utf8'),context);
  return {api:context.exports,catalog,setStyle(value){style=value;}};
 }
-test('one-weapon loadouts reserve the other slot using the same main weapon, gray and translucent, while keeping a separate bonus upgrade',()=>{
- const f=looks();for(const style of ['fighter','vanguard','mystic','bruiser']){f.setStyle(style);const primary=f.api.gearImage(4,7,'equipment'),linked=f.api.gearImage(3,1,'equipment'),bonus=f.api.gearImage(3,1,'upgrade');assert.equal(linked.resource,primary.resource);assert.equal(linked.gray,true);assert.equal(linked.opacity,110);assert.equal(primary.gray,false);assert.equal(primary.opacity,255);assert.notEqual(bonus.resource,primary.resource);assert.equal(Weapons.gear(style,3,'upgrade').kind,'bonus');assert(Weapons.gear(style,3,'upgrade').bonus.key);assert(fs.existsSync(path.join(root,'assets/resources/'+bonus.resource+'.png')));}
+test('every class displays its own secondary item in both the equipment slot and upgrade card at full opacity',()=>{
+ const f=looks();for(const {id:style} of Weapons.styles){f.setStyle(style);const primary=f.api.gearImage(4,7,'equipment'),secondary=f.api.gearImage(3,1,'equipment'),bonus=f.api.gearImage(3,1,'upgrade');assert.equal(secondary.resource,bonus.resource);assert.equal(secondary.gray,false);assert.equal(secondary.opacity,255);assert.equal(secondary.linked,false);assert.equal(primary.gray,false);assert.equal(primary.opacity,255);assert.notEqual(bonus.resource,primary.resource);assert(fs.existsSync(path.join(root,'assets/resources/'+bonus.resource+'.png')));}
 });
 test('bow/arrow and hammer/shield loadouts show two distinct items; switching away from a linked slot restores full opacity',()=>{
  const f=looks();f.api.gearImage(3,1,'equipment');for(const style of ['skirmisher','guardian']){f.setStyle(style);const main=f.api.gearImage(4,7,'equipment'),other=f.api.gearImage(3,1,'equipment');assert.notEqual(main.resource,other.resource);assert.equal(other.gray,false);assert.equal(other.opacity,255);assert.equal(other.resource,f.api.gearImage(3,1,'upgrade').resource);assert.equal(Weapons.gear(style,3,'upgrade').kind,'offhand');}
  assert(f.api.gearImage(3,1,'equipment').resource.includes('/Shield/'));
 });
-test('a fitted tier supplies the exact chosen icon, while linked equipment follows the primary tier rather than bonus progress',()=>{
- const f=looks(),tier=Tiers.at(equipment.find(row=>row.id===4),7);f.catalog.profiles.weapon={parts:[{sprite:'custom'}],icon:{resource:'test/chosen-sword',width:40,height:80}};f.catalog.assignments[Tiers.key(4,tier.skin,'fighter')]='weapon';f.setStyle('fighter');assert.equal(f.api.gearImage(4,7,'equipment').resource,'test/chosen-sword');assert.equal(f.api.gearImage(3,1,'equipment').resource,'test/chosen-sword');assert(f.api.gearImage(3,1,'upgrade').resource.includes('Fist'));
+test('a fitted main-weapon icon cannot replace the independent secondary icon or borrow its upgrade level',()=>{
+ const f=looks(),tier=Tiers.at(equipment.find(row=>row.id===4),7);f.catalog.profiles.weapon={parts:[{sprite:'custom'}],icon:{resource:'test/chosen-sword',width:40,height:80}};f.catalog.assignments[Tiers.key(4,tier.skin,'fighter')]='weapon';f.setStyle('fighter');assert.equal(f.api.gearImage(4,7,'equipment').resource,'test/chosen-sword');assert.equal(f.api.gearImage(3,1,'equipment').resource,f.api.gearImage(3,1,'upgrade').resource);assert(f.api.gearImage(3,1,'upgrade').resource.includes('Fist'));
 });
 
 test('a fitted secondary sub-item replaces the linked weapon ghost and bonus placeholder with its own icon',()=>{

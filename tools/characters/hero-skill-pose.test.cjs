@@ -46,3 +46,14 @@ test('world commits use the actual native renderer and the browser skeleton behi
  Pose.commitWorld({_skeleton:{updateWorldTransform(){browser++;}},updateWorldTransform(){publicCalls++;}});
  assert.equal(native,1);assert.equal(browser,1);assert.equal(publicCalls,0);
 });
+
+test('removing procedural aim commits the restored world transform immediately',()=>{
+ const bone={rotation:12};let commits=0;const renderer={skeletonData:{},findBone:()=>bone,_skeleton:{updateWorldTransform(){commits++;}}};
+ Pose.applyAim(renderer,{x:0,y:1},1);near(bone.rotation,102);Pose.removeAim(renderer);near(bone.rotation,12);assert.equal(commits,2);
+});
+
+test('staff tips use the fitted attachment upper edge and native bone getters without aiming toward the target',()=>{
+ const bone={getWorldX:()=>10,getWorldY:()=>20,getA:()=>0,getB:()=>-1,getC:()=>1,getD:()=>0};
+ const renderer={findBone:()=>bone,findSlot:()=>({getAttachment:()=>({getOffset:()=>[-4,-10,-4,10,4,10,4,-10]})})};
+ const point=Pose.attachmentTip(renderer,'Staff');near(point.x,0);near(point.y,20);assert.equal(Pose.attachmentTip({findBone:()=>null},'Staff'),null);
+});

@@ -200,11 +200,12 @@ for(const saved of [false,true])test(`actual UIGame.start map-load chain keeps $
  const h=checkpoint(saved),v=fixture();Object.assign(v.modules,h.e.stubs,{KinghtFallGameCtrl:h.load('KinghtFallGameCtrl'),KinghtFallGameCtrlData:h.load('KinghtFallGameCtrlData'),KinghtFallGameEffect:{},KinghtFallGameUICtrl:{},KinghtFallTextConfig:{KinghtFallTextConfig:{}},AudioMgr:{AudioMgr:single({playMusic:noop})},TestMode:{TestMode:single({setGameplayTarget:noop,clearGameplayInput:noop})}});
  delete v.modules.KinghtFallUIGame;
  Object.assign(v.modules,{PlatformSetting:{},SdkMgr:{},Utils:{}});
+ v.modules.StageAssetWarmup={create(view,_config,level){return{dispose(){},reveal(){},run(){return{then(done){view.loadPrefab('maps',level.prefab,done);return{catch(){}};}};}};}};
  const U=v.load('KinghtFallUIGame').default,u=new U();h.e.stubs.KinghtFallUIGame.default.instance=u;
  const widget={getComponent:()=>({}),active:true},button={getChildByName:()=>widget};let mapDone;
  Object.assign(u,{levelId:1,btnAgg:button,btnBuildInfo:{},ndCtrGame:{getComponent:Type=>Type===v.cc.Widget?null:h.g},ctrEffect:{initData:noop},ctrUI:{ndGuide:{setParent:noop},ndLight:{},setRevive:noop},initBtnEvent:noop,initEvent:noop,initView:noop,initBtnView:noop,startGuide:noop,T:x=>x,_stopTestMovement:noop,loadPrefab(_b,_p,done){mapDone=done;},sendEvent(_event,_arg,done){if(typeof done==='function')done();},scheduleOnce:fn=>v.scheduled.push(fn)});
  h.g.initMap=()=>{h.g.gameData.obstacles=[];h.g.gameData.initCom=noop;h.g.ndBg={children:[]};};h.g.onLateUpdate=noop;h.g.onPauseGame=h.g.onResumeGame=noop;v.cc.instantiate=()=>({setParent:noop});
- u.start();assert.equal(h.mission.num,saved?100:106);assert.equal(h.mission.writes,saved?0:1);mapDone({});
+ u.start();assert.equal(h.mission.num,100,'stage loading grants no gameplay credit');assert.equal(h.mission.writes,0);mapDone({});
  assert.equal(h.g.gameData.round,saved?6:1);assert.equal(h.g.gameData.coin,saved?77:6);assert.equal(h.mission.num,saved?100:106);assert.equal(h.mission.writes,saved?0:1);
  if(saved)assert.deepEqual(Array.from(h.g.gameData.buffList,b=>b.id),['Buff10']);
 });

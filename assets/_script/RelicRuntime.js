@@ -52,14 +52,21 @@ function retry(data, dt) {
 function living(actor) {
   return !!actor && !actor._isPooled && !(actor.isDead && actor.isDead()) && typeof actor.hp === "number" && actor.hp > 0 && typeof actor.hpMax === "number" && actor.hpMax > 0;
 }
+function healingLife(actor, node, generation) {
+  return (typeof cc === "undefined" || !cc.isValid || cc.isValid(actor, true) && (!node || cc.isValid(node, true))) &&
+    living(actor) && actor.node === node && (!node || node._combatGeneration === generation);
+}
 function heal(actor, fraction) {
-  if (!living(actor) || !(fraction > 0)) return 0;
+  if (!actor || !(fraction > 0)) return 0;
+  var node = actor.node, generation = node && node._combatGeneration;
+  if (!healingLife(actor, node, generation)) return 0;
   var before = actor.hp; actor.hp = Math.min(actor.hpMax, actor.hp + actor.hpMax * fraction);
   var healed = actor.hp - before;
   var hp = actor.ctrHp || actor.hpctrl;
   if (hp && hp.setHp) hp.setHp(actor.hp, actor.hpMax);
+  if (!healingLife(actor, node, generation)) return healed;
   if (actor.upHpView) actor.upHpView();
-  if (healed > 0) relicSound("healing-receive", actor);
+  if (healed > 0 && healingLife(actor, node, generation)) relicSound("healing-receive", actor);
   return healed;
 }
 function boss(enemy) {

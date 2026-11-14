@@ -66,7 +66,7 @@ test('moving during a sustained beam animates the horse and endpoints without re
  rider.setCombatState(actor,{moving:true,beam:false});assert.equal(name(actor),'move');assert.equal(track(actor).timeScale,1,'ordinary rider playback is unfrozen after range breaks');
 });
 
-test('Mystic beam origin stays on the visible scepter attachment through the held pose and independent saddle movement',()=>{
+test('Mystic beam origin stays on the visible staff tip through the held pose and independent saddle movement',()=>{
  const h=setup('mystic'),{actor,rider}=h,renderer=actor.spAniBow;
  renderer.node.scaleX=-1;
  renderer.node.convertToWorldSpaceAR=p=>({x:400+renderer.node.x+p.x*renderer.node.scaleX*.75,y:200+renderer.node.y+p.y*.75});
@@ -75,8 +75,23 @@ test('Mystic beam origin stays on the visible scepter attachment through the hel
   h.step(.025);if(frame<10)continue;
   const slot=renderer.skeleton.findSlot('Rider/HandRight/Staff'),attachment=slot.getAttachment(),vertices=new Float32Array(8);
   attachment.computeWorldVertices(slot.bone,vertices,0,2);
-  const center=renderer.node.convertToWorldSpaceAR({x:(vertices[0]+vertices[2]+vertices[4]+vertices[6])/4,y:(vertices[1]+vertices[3]+vertices[5]+vertices[7])/4}),origin=rider.projectileOrigin(actor);
-  assert(Math.hypot(center.x-origin.x,center.y-origin.y)<1e-4,'beam follows the equipped staff center, not the head, horse, or its initial idle pose');
+  const tip=renderer.node.convertToWorldSpaceAR({x:(vertices[2]+vertices[4])/2,y:(vertices[3]+vertices[5])/2}),origin=rider.projectileOrigin(actor);
+  assert(Math.hypot(tip.x-origin.x,tip.y-origin.y)<1e-4,'beam follows the equipped staff tip');
+ }
+});
+
+test('moving beam targets and directional spear skills never rotate the held weapon away from its authored mirrored pose',()=>{
+ for(const style of ['mystic','vanguard'])for(const face of [-1,1]){
+  const h=setup(style),{actor,rider}=h;actor.setBodyLeft(face);
+  const options=style==='mystic'?{beam:true,beamElapsed:.5}:{rapid:{elapsed:.8,duration:2.5,strikes:7}};
+  rider.setCombatState(actor,{...options,moving:true,deferUpdate:true});
+  const renderer=actor.spAniBow,hand=renderer.findBone('Rider/HandRight'),expected=hand.rotation;
+  for(let frame=0;frame<160;frame++){
+   const angle=frame*Math.PI/13;h.step(1/60);rider.setCombatState(actor,{...options,moving:true,deferUpdate:true,aimDirection:{x:Math.cos(angle),y:Math.sin(angle)}});
+   close(hand.rotation,expected);assert.equal(Math.sign(renderer.node.scaleX),Math.sign(actor.spAniBody.node.scaleX));
+  }
+  rider.setCombatState(actor,{moving:false});for(let frame=0;frame<30;frame++)h.step(1/60);
+  const idle=setup(style).actor.spAniBow.findBone('Rider/HandRight').rotation;close(hand.rotation,idle);
  }
 });
 

@@ -40,7 +40,7 @@ test('enemy indicators reserve the live skill button but not hidden, destroyed o
 
 test('a gameplay frame lays out and paints the skill once before reserving enemy indicator space',()=>{
  const events=[],hero={_styleRuntime:{}},ui={isPauset:false,speed:1,_updateTestControls(){},ctrUI:{upGuide(){}},ctrGame:{ctrPlay:hero,onUpdate(){events.push('combat');},gameData:{enemyQueue:{},baseBuild:{getLevel:()=>0}}},enemyIconInfo:{},_layoutBattleFooter(){events.push('footer');},_enemyIndicatorObstacles(){events.push('obstacles');return[];},_placeUpcomingEnemyIndicators(){},_updateOffscreenEnemies(){}};
- const update=vm.runInNewContext('('+method('update')+')',{require:name=>{assert.equal(name,'HeroSkillHUD');return{update(actual){assert.equal(actual,hero);events.push('skill-paint');}};}});update.call(ui,.016);assert.deepEqual(events,['combat','footer','skill-paint','obstacles']);events.length=0;ui.isPauset=true;update.call(ui,.016);assert.deepEqual(events,['footer','skill-paint'],'Pause hides the skill without running combat or indicators');
+ const update=vm.runInNewContext('('+method('update')+')',{$z1KinghtFallModle:{KinghtFallGameStage:{Prepare:0,Fight:2}},require:name=>{assert.equal(name,'HeroSkillHUD');return{update(actual){assert.equal(actual,hero);events.push('skill-paint');}};}});update.call(ui,.016);assert.deepEqual(events,['combat','footer','skill-paint','obstacles']);events.length=0;ui.isPauset=true;update.call(ui,.016);assert.deepEqual(events,['footer','skill-paint'],'Pause hides the skill without running combat or indicators');
 });
 
 test('late footer adjustment repositions the skill after command controls without painting combat effects twice',()=>{

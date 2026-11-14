@@ -37,7 +37,7 @@ var HELP = {
   buffDamage:"Attack damage bonus during the active buff. 0.25 means 25%.",
   buffAttackRate:"Attack speed bonus during the active buff. 0.35 means 35%.",
   knockback:"Distance enemies are pushed by the arc attack, in world units.",
-  momentumMove:"Movement speed bonus from a full momentum bar. 1 means 100% additional movement speed.",
+  momentumMove:"Movement speed bonus from a full momentum bar. 0.5 means 50% additional movement speed.",
   momentumAttackRate:"Attack speed bonus from a full momentum bar. 0.35 means 35%.",
   duration:"Total duration of the spear-thrust sequence, in seconds.",
   strikes:"Number of distinct spear impacts spread across the sequence duration.",

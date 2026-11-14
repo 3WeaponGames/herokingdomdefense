@@ -136,7 +136,11 @@ function aimReference(controller,animation){
 }
 function applyAim(controller,state,fresh){
   var master=current(controller.spAniBody),direction=state.aimDirection;
-  if(!direction)return;
+  // Staff channels and spear thrusts retain their authored weapon pose. Only
+  // the hero's horizontal facing mirrors it; beam/damage aim stays in gameplay.
+  var currentStyle=style().id;
+  if(currentStyle==='mystic'||currentStyle==='vanguard'){state.aimDirection=null;keys.forEach(function(key){Pose.removeAim(controller[key]);});return;}
+  if(!direction){keys.forEach(function(key){Pose.removeAim(controller[key]);});return;}
   if(state.mode==='ordinary'&&(!master||loop(master)||state.aimToken!==(attackTokens.get(controller)||0)||state.aimAnimation!==name(master))){state.aimDirection=null;keys.forEach(function(key){Pose.removeAim(controller[key]);});return;}
   var animation=name(master),token=attackTokens.get(controller)||0;
   if(state.referenceToken!==token||state.referenceAnimation!==animation){state.referenceAngle=aimReference(controller,animation);state.referenceToken=token;state.referenceAnimation=animation;}
@@ -317,6 +321,11 @@ function projectileOrigin(controller) {
   var current=style().id,renderer=controller.spAniBow;
   if((current!=='skirmisher'&&current!=='mystic')||!renderer||!renderer.findBone||!renderer.node.convertToWorldSpaceAR)return null;
   var bone=renderer.findBone(current==='mystic'?'Rider/HandRight/Staff':'Rider/HandRight/Bow/Arrow');if(!bone)return null;
+  if(current==='mystic'){
+    Pose.commitWorld(renderer);
+    var tip=Pose.attachmentTip(renderer,'Rider/HandRight/Staff',bone);
+    if(tip)return renderer.node.convertToWorldSpaceAR(cc.v2(tip.x,tip.y));
+  }
   var x=typeof bone.getWorldX==='function'?bone.getWorldX():bone.worldX,y=typeof bone.getWorldY==='function'?bone.getWorldY():bone.worldY;
   return typeof x==='number'&&typeof y==='number'?renderer.node.convertToWorldSpaceAR(cc.v2(x,y)):null;
 }

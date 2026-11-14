@@ -52,12 +52,12 @@ function actualUI() {
   const cc={_decorator:{ccclass:x=>x,property:()=>()=>{}},v2:()=>({x:0,y:0}),
     Camera:{main:{getWorldToScreenPoint:p=>p}},Sprite:function(){},Label:function(){}};
   const guideBindings=[];
-  const context={cc,exports:{},require:name=>name==='EnemyGuide'?{bind(_ui,record){guideBindings.push({id:record.id,ids:Array.from(record._guideIds||[]),live:record._guideLive});}}:{default:Base},__extends:(C,B)=>{C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},__decorate:(_ds,t)=>t};
+  const context={cc,exports:{},require:name=>name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Fight:2}}:name==='EnemyGuide'?{bind(_ui,record){guideBindings.push({id:record.id,ids:Array.from(record._guideIds||[]),live:record._guideLive});}}:{default:Base},__extends:(C,B)=>{C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},__decorate:(_ds,t)=>t};
   vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/KinghtFallUIGame.js'),'utf8'),context);
   const ui=Object.create(context.exports.default.prototype),label={string:''};
   const item={active:true,getChildByName:()=>({getComponent:()=>label})};
   Object.assign(ui,{speed:1,isPauset:false,_updateTestControls(){},_enemyIndicatorObstacles:()=>[],_placeEnemyIndicator(){},_placeUpcomingEnemyIndicators(){},
-    ctrUI:{upGuide(){},node:{convertToNodeSpaceAR:p=>p}},ctrGame:{onUpdate(){},ndPath:{convertToWorldSpaceAR:p=>p},gameData:{baseBuild:{getLevel:()=>1},enemyQueue:{}}},
+    ctrUI:{upGuide(){},node:{convertToNodeSpaceAR:p=>p}},ctrGame:{gameStatus:0,onUpdate(){},ndPath:{convertToWorldSpaceAR:p=>p},gameData:{baseBuild:{getLevel:()=>1},enemyQueue:{}}},
     enemyIconInfo:{1:{id:90001,tag:true,tagNode:{getPosition:()=>({x:0,y:0})},ndItem:item}}});
   return {ui,item,label,guideBindings};
 }

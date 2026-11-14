@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const Shadow=require('../../../assets/_script/BuildingShadow'),Data=require('../buildings/blocker-data'),Clip=require('../worlds/blockers'),Preview=require('../worlds/building-preview'),Maps=require('../lib/map-assets'),Nav=require('../worlds/navigation'),{Service}=require('../worlds/service'),{Store}=require('../lib/store'),Kit=require('../../../assets/_script/WallKit');
 const {Node}=require('../../../tools/navigation/runtime-harness.cjs');
 const root=path.resolve(__dirname,'../../..'),clone=x=>JSON.parse(JSON.stringify(x)),rect=(x,y,w,h)=>Clip.polygonBrush([{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}]);
-function fixture(){const store=new Store(root),service=new Service(root,{previewConfig:()=>store.documents.A.data});return {store,service};}
+function fixture(){const store=new Store(root),service=new Service(root,{previewConfig:()=>{const config=clone(store.documents.A.data);if(config.GameTools)delete config.GameTools.buildingShadows;return config;}});return {store,service};}
 function pixel(image,x,y){const ix=Math.floor((x-image.x)/image.width*image.pixelWidth),iy=Math.floor((image.y+image.height-y)/image.height*image.pixelHeight);return image.pixels[(iy*image.pixelWidth+ix)*4+3];}
 
 test('shadow masks match map-brush alpha, preserve holes and union overlapping copies without dark seams',()=>{
@@ -65,4 +65,8 @@ test('runtime alpha textures stay grounded, reuse unchanged masks and release on
  f.api.hide(owner);state.sync();assert.equal(state.node.active,false);f.api.apply(owner,game);assert.equal(state.node.active,true);
  owner.index=2;owner.buildInfo.cfg={Shadow:{version:1,opacity:.4,body:{mask:[]}}};state.sync();assert(!owner._buildingShadowRuntime);assert.equal(f.listeners.size,0);assert(f.resources.every(r=>r.destroyed));
  owner.buildInfo.cfg=cfg;f.api.apply(owner,game);f.api.dispose(owner);assert(!owner._buildingShadowRuntime);assert.equal(f.listeners.size,0);assert(f.resources.every(r=>r.destroyed));
+});
+test('stage-prepared polygon shadows share their pinned texture and detach sprites before releasing it',()=>{
+ const f=runtime(),owner={node:new Node(),index:1,enabled:true,buildInfo:{cfg:{Shadow:{version:1,opacity:.3,body:{mask:rect(-10,-5,20,10)}}}}},entry=f.api.prepareEntry(owner.buildInfo.cfg.Shadow),game={ndDown:new Node(),_stageAssets:{shadows:{getManual:()=>entry}}};
+ f.api.apply(owner,game);assert.equal(f.resources.length,2);assert.equal(owner._buildingShadowRuntime.frame,entry.frame);assert.equal(entry.refs,2);const sprite=f.sprites[0];f.api.dispose(owner);assert.equal(sprite.spriteFrame,null);assert(!entry.frame.destroyed);assert.equal(entry.refs,1);f.api.releaseEntry(entry);assert(entry.frame.destroyed&&entry.texture.destroyed);
 });

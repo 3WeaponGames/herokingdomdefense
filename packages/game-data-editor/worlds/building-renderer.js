@@ -32,7 +32,7 @@ function create(options){
  function draw(ctx,part,images,runtime){
   const b=part.building,r=part.record,origin=r.origin||b.origin||{x:0,y:0};ctx.save();Paint.apply(ctx,Paint.matrix(b));ctx.translate(-origin.x,-origin.y);
   if(part.dropShadow){
-   const source=silhouette(r,images,runtime);if(source){const settings=part.dropShadow,id=source.key+':'+JSON.stringify([settings.spread,settings.size,settings.opacity]);let entry=drops.get(id);if(!entry){const image=Drop.raster(source,Object.assign({},settings,{angle:0,distance:0})),canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image};drops.set(id,entry);while(drops.size>6){const first=drops.keys().next().value;release(drops.get(first));drops.delete(first);}}const angle=settings.angle*Math.PI/180,d=entry.image;ctx.translate(origin.x+d.x-Math.cos(angle)*settings.distance,origin.y+d.y+d.height-Math.sin(angle)*settings.distance);ctx.scale(d.width/entry.canvas.width,-d.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
+   const settings=Drop.settings(part.dropShadow),ground=settings.projection==='ground',source=silhouette(r,images,runtime,ground);if(source){const id=source.key+':'+JSON.stringify(ground?settings:[settings.spread,settings.size,settings.opacity]);let entry=drops.get(id);if(!entry){const image=Drop.raster(source,ground?settings:Object.assign({},settings,{angle:0,distance:0})),canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image};drops.set(id,entry);while(drops.size>6){const first=drops.keys().next().value;release(drops.get(first));drops.delete(first);}}const angle=settings.angle*Math.PI/180,d=entry.image,distance=ground?0:settings.distance;ctx.translate(origin.x+d.x-Math.cos(angle)*distance,origin.y+d.y+d.height-Math.sin(angle)*distance);ctx.scale(d.width/entry.canvas.width,-d.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
   }
   else if(part.shadow){
    const d=part.shadow,id=JSON.stringify([d.regions,d.opacity]);let entry=shadows.get(id);
@@ -57,9 +57,9 @@ function create(options){
   for(const d of record.skeletons||[]){const entry=cache.get(key(d,runtime));if(entry&&entry.canvas){const b=entry.bounds;add(d.matrix,b.minX,b.maxY-b.height,b.minX+b.width,b.maxY);}}
   if(!points.length)return null;return{minX:Math.min(...points.map(p=>p.x)),minY:Math.min(...points.map(p=>p.y)),maxX:Math.max(...points.map(p=>p.x)),maxY:Math.max(...points.map(p=>p.y))};
  }
- function silhouette(record,images,runtime){
-  if((record.skeletons||[]).some(d=>{const e=cache.get(key(d,runtime));return !e||!e.canvas;}))return null;
-  const source=Object.assign({},record,{shadow:undefined,dropShadow:undefined,sprites:(record.sprites||[]).filter((_s,i)=>!(record.purchaseField&&record.purchaseField.sprites[i]))});delete source.purchaseField;
+ function silhouette(record,images,runtime,groundOnly){
+  const source=Object.assign({},record,{shadow:undefined,dropShadow:undefined,sprites:(record.sprites||[]).filter((s,i)=>!(record.purchaseField&&record.purchaseField.sprites[i])&&(!groundOnly||!s.ground)),skeletons:(record.skeletons||[]).filter(s=>!groundOnly||!s.ground)});delete source.purchaseField;
+  if(source.skeletons.some(d=>{const e=cache.get(key(d,runtime));return !e||!e.canvas;}))return null;
   const id=JSON.stringify([source.origin,source.sprites.map(s=>[s.frame,images[s.frame]&&(images[s.frame].revision||images[s.frame].url||images[s.frame].sha256),s.matrix,s.width,s.height,s.anchor]),source.skeletons.map(d=>[key(d,runtime),d.matrix])]);if(alphas.has(id))return alphas.get(id);
   const b=measure(source,runtime);if(!b)return null;const z=Math.min(1,384/Math.max(1,b.maxX-b.minX,b.maxY-b.minY)),w=Math.max(1,Math.ceil((b.maxX-b.minX)*z)),h=Math.max(1,Math.ceil((b.maxY-b.minY)*z)),canvas=Paint.canvas(w,h),g=canvas.getContext('2d');g.setTransform(z,0,0,-z,-b.minX*z,b.maxY*z);
   for(const p of parts({x:0,y:0,scale:1,angle:0},source))draw(g,p,images,runtime);

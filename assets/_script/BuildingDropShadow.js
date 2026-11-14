@@ -2,8 +2,12 @@
 // Portable alpha-only drop shadows shared by the editor and Cocos runtime.
 var DEFAULTS={angle:135,distance:20,spread:10,size:12,opacity:.28};
 var RANGES={angle:[-180,180],distance:[0,500],spread:[0,100],size:[0,128],opacity:[0,1]};
-function valid(value){return !!value&&Object.keys(RANGES).every(function(k){var n=value[k],r=RANGES[k];return typeof n==="number"&&isFinite(n)&&n>=r[0]&&n<=r[1];});}
-function settings(value){var result={};Object.keys(DEFAULTS).forEach(function(k){result[k]=value&&typeof value[k]==="number"&&isFinite(value[k])?Math.max(RANGES[k][0],Math.min(RANGES[k][1],value[k])):DEFAULTS[k];});return result;}
+// Optional fields keep existing saved presets and their offset rendering intact.
+var GROUND={length:.7,flatten:.6,groundDepth:.18,base:0,taper:.15,fade:.45};
+var GROUND_RANGES={length:[.05,3],flatten:[.05,1.5],groundDepth:[0,.5],base:[0,.5],taper:[-.5,.8],fade:[0,1]};
+function inRange(n,r){return typeof n==="number"&&isFinite(n)&&n>=r[0]&&n<=r[1];}
+function valid(value){return !!value&&Object.keys(RANGES).every(function(k){return inRange(value[k],RANGES[k]);})&&(value.projection===undefined||value.projection==="offset"||value.projection==="ground")&&Object.keys(GROUND_RANGES).every(function(k){return value[k]===undefined||inRange(value[k],GROUND_RANGES[k]);});}
+function settings(value){var result={};Object.keys(DEFAULTS).forEach(function(k){result[k]=value&&typeof value[k]==="number"&&isFinite(value[k])?Math.max(RANGES[k][0],Math.min(RANGES[k][1],value[k])):DEFAULTS[k];});if(value&&(value.projection==="ground"||value.projection==="offset"))result.projection=value.projection;Object.keys(GROUND).forEach(function(k){if(value&&(value.projection==="ground"||value[k]!==undefined))result[k]=typeof value[k]==="number"&&isFinite(value[k])?Math.max(GROUND_RANGES[k][0],Math.min(GROUND_RANGES[k][1],value[k])):GROUND[k];});return result;}
 function mode(row){var m=row&&row.DropShadow&&row.DropShadow.mode;return ["global","tier","individual","none"].indexOf(m)>=0?m:"global";}
 function group(category,row){
  var rows=category&&category.levelList||[],choices=category&&category.InitialChoices||[rows[0]&&rows[0].index];
@@ -27,16 +31,51 @@ function filter(input,w,h,r,horizontal,max){
   else{for(var i=-r;i<=r;i++)sum+=read(i);for(var at=0;at<length;at++){output[horizontal?line*w+at:at*w+line]=Math.round(sum/(2*r+1));sum+=read(at+r+1)-read(at-r);}}
  }return output;
 }
-function raster(source,value){
- var p=settings(value),w=source&&source.pixelWidth,h=source&&source.pixelHeight;
+function validateSource(source){
+ var w=source&&source.pixelWidth,h=source&&source.pixelHeight;
  if(!Number.isInteger(w)||!Number.isInteger(h)||w<1||h<1||w>1024||h>1024||!source.alpha||source.alpha.length!==w*h)throw Error("Invalid building shadow silhouette.");
- var ux=source.width/w,uy=source.height/h;if(!(ux>0&&uy>0&&isFinite(ux+uy)))throw Error("Invalid building shadow dimensions.");
+ var ux=source.width/w,uy=source.height/h;if(!(ux>0&&uy>0&&isFinite(ux+uy)&&isFinite(source.x)&&isFinite(source.y)))throw Error("Invalid building shadow dimensions.");
+}
+// Estimate a shallow ground footprint from each column's lowest opaque pixel.
+// Height above that footprint casts along one sun vector. Roofs therefore lie
+// on the floor instead of leaving an upright duplicate behind the building.
+function project(source,p){
+ var w=source.pixelWidth,h=source.pixelHeight,ux=source.width/w,uy=source.height/h,top=new Int32Array(w),bottom=new Int32Array(w),lo=h,hi=-1,left=w,right=-1;
+ for(var x=0;x<w;x++){top[x]=-1;bottom[x]=-1;for(var y=0;y<h;y++)if(source.alpha[y*w+x]>8){if(top[x]<0)top[x]=y;bottom[x]=y;}if(top[x]>=0){lo=Math.min(lo,top[x]);hi=Math.max(hi,bottom[x]);left=Math.min(left,x);right=Math.max(right,x);}}
+ if(hi<0)return{alpha:new Uint8Array(1),pixelWidth:1,pixelHeight:1,x:source.x,y:source.y,width:ux,height:uy};
+ var height=(hi-lo+1)*uy,base=source.y+(h-hi-1)*uy+height*p.base,center=source.x+(left+right+1)*ux/2,feet=new Float64Array(w),angle=p.angle*Math.PI/180,dx=-Math.cos(angle)*p.length,dy=-Math.sin(angle)*p.length*p.flatten;
+ function foot(i){return bottom[i]<0?base:Math.max(base,Math.min(base+height*p.groundDepth,source.y+(h-bottom[i]-1)*uy));}
+ for(var x=left;x<=right;x++){var sum=0,count=0;for(var j=Math.max(left,x-2);j<=Math.min(right,x+2);j++)if(bottom[j]>=0){sum+=foot(j);count++;}feet[x]=count?Math.min(foot(x),sum/count):base;}
+ function point(x,y,f){var z=Math.max(0,y-f),t=z/height;return{x:center+(x-center)*(1-p.taper*t)+dx*z,y:f+dy*z,t:t};}
+ var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+ for(var x=left;x<=right;x++)if(top[x]>=0){var f=feet[x],low=Math.max(f,source.y+(h-bottom[x]-1)*uy),high=Math.max(low,source.y+(h-top[x])*uy);for(var sx=0;sx<2;sx++)for(var sy=0;sy<2;sy++){var v=point(source.x+(x+sx)*ux,sy?high:low,f);minX=Math.min(minX,v.x);maxX=Math.max(maxX,v.x);minY=Math.min(minY,v.y);maxY=Math.max(maxY,v.y);}}
+ // Downsample extreme projections before allocating; softness gets its own pad.
+ var unit=Math.max(ux,uy,(maxX-minX)/1020,(maxY-minY)/1020),pw=Math.max(1,Math.ceil((maxX-minX)/unit)+2),ph=Math.max(1,Math.ceil((maxY-minY)/unit)+2),alpha=new Uint8Array(pw*ph);minX-=unit;minY-=unit;
+ function span(x,y0,y1,amount){
+  var f=feet[x],a=point(source.x+x*ux,y0,f),b=point(source.x+(x+1)*ux,y0,f),c=point(source.x+x*ux,y1,f),d=point(source.x+(x+1)*ux,y1,f),low=Math.min(a.y,c.y),high=Math.max(a.y,c.y),ystart=Math.max(0,Math.floor((low-minY)/unit)),yend=Math.min(ph-1,Math.floor((high-minY)/unit));
+  for(var row=ystart;row<=yend;row++){
+   var q=Math.abs(c.y-a.y)>1e-9?Math.max(0,Math.min(1,(minY+(row+.5)*unit-a.y)/(c.y-a.y))):.5,l=a.x+(c.x-a.x)*q,r=b.x+(d.x-b.x)*q;
+   if(Math.abs(c.y-a.y)<=1e-9){l=Math.min(a.x,b.x,c.x,d.x);r=Math.max(a.x,b.x,c.x,d.x);}
+   var start=Math.max(0,Math.floor((Math.min(l,r)-minX)/unit)),end=Math.min(pw-1,Math.floor((Math.max(l,r)-minX)/unit));
+   for(var col=start;col<=end;col++){
+    var t=a.t+(c.t-a.t)*q;if(Math.abs(c.y-a.y)<=1e-9&&Math.abs(c.x-a.x)>1e-9)t=a.t+(c.t-a.t)*Math.max(0,Math.min(1,(minX+(col+.5)*unit-(a.x+b.x)/2)/((c.x+d.x-a.x-b.x)/2)));
+    var at=(ph-1-row)*pw+col,n=Math.round(amount*(1-p.fade*Math.min(1,t)));if(n>alpha[at])alpha[at]=n;
+   }
+  }
+ }
+ // Equal-alpha runs make solid pillars cheap, while retaining transparent gaps.
+ for(var x=left;x<=right;x++)if(top[x]>=0){var start=top[x],amount=source.alpha[start*w+x];for(var y=start+1;y<=bottom[x]+1;y++){var next=y<=bottom[x]?source.alpha[y*w+x]:-1;if(next===amount)continue;if(amount>0){var low=Math.max(feet[x],source.y+(h-y)*uy),high=source.y+(h-start)*uy;if(high>low)span(x,low,high,amount);}start=y;amount=next;}}
+ return{alpha:alpha,pixelWidth:pw,pixelHeight:ph,x:minX,y:minY,width:pw*unit,height:ph*unit};
+}
+function raster(source,value){
+ validateSource(source);var p=settings(value);if(p.projection==="ground")source=project(source,p);
+ var w=source.pixelWidth,h=source.pixelHeight,ux=source.width/w,uy=source.height/h;
  var unit=Math.max(ux,uy),dilate=Math.ceil(p.size*p.spread/100/unit),blur=Math.ceil(p.size*(1-p.spread/100)/unit/2),pad=dilate+blur*3+2,ow=w+pad*2,oh=h+pad*2;
  if(ow>2048||oh>2048)throw Error("The shadow exceeds the texture budget. Increase the silhouette scale.");
  var a=new Uint8Array(ow*oh);for(var y=0;y<h;y++)a.set(source.alpha.subarray(y*w,(y+1)*w),(y+pad)*ow+pad);
  if(dilate){a=filter(a,ow,oh,dilate,true,true);a=filter(a,ow,oh,dilate,false,true);}
  if(blur)for(var pass=0;pass<3;pass++){a=filter(a,ow,oh,blur,true,false);a=filter(a,ow,oh,blur,false,false);}
  var pixels=new Uint8Array(ow*oh*4);for(var i=0;i<a.length;i++)pixels[i*4+3]=Math.round(a[i]*p.opacity);
- var angle=p.angle*Math.PI/180;return{pixels:pixels,pixelWidth:ow,pixelHeight:oh,x:source.x-pad*ux-Math.cos(angle)*p.distance,y:source.y-pad*uy-Math.sin(angle)*p.distance,width:ow*ux,height:oh*uy};
+ var angle=p.angle*Math.PI/180,distance=p.projection==="ground"?0:p.distance;return{pixels:pixels,pixelWidth:ow,pixelHeight:oh,x:source.x-pad*ux-Math.cos(angle)*distance,y:source.y-pad*uy-Math.sin(angle)*distance,width:ow*ux,height:oh*uy};
 }
-exports.defaults=DEFAULTS;exports.ranges=RANGES;exports.valid=valid;exports.settings=settings;exports.mode=mode;exports.group=group;exports.resolve=resolve;exports.transition=transition;exports.raster=raster;
+exports.defaults=DEFAULTS;exports.ranges=RANGES;exports.groundDefaults=GROUND;exports.groundRanges=GROUND_RANGES;exports.valid=valid;exports.settings=settings;exports.mode=mode;exports.group=group;exports.resolve=resolve;exports.transition=transition;exports.raster=raster;

@@ -1,13 +1,21 @@
 "use strict";
-var Shadow = require("BuildingShadow");
+var Shadow = require("BuildingShadow"),entries=[];
 function valid(node) { return !!node && (!cc.isValid || cc.isValid(node,true)); }
 function layout(owner) { var main=owner.ndAniMain,json=main&&main.skeletonData&&main.skeletonData.skeletonJson;return json&&json.wallKit&&json.wallKit.layout; }
 function hide(owner) { var state=owner._buildingShadowRuntime;if(state){state.hidden=true;state.node.active=false;} }
+function prepareEntry(value,plan){
+  var signature=JSON.stringify([value,plan]),entry=entries.find(function(e){return e.signature===signature;});if(entry){entry.refs++;return entry;}
+  var image=Shadow.raster(Shadow.regions(value,plan),value.opacity);if(!image)return null;
+  var texture=new cc.Texture2D();texture.initWithData(image.pixels,cc.Texture2D.PixelFormat.RGBA8888,image.pixelWidth,image.pixelHeight);texture.packable=false;texture.setFilters(cc.Texture2D.Filter.LINEAR,cc.Texture2D.Filter.LINEAR);
+  delete image.pixels;entry={signature:signature,image:image,texture:texture,frame:new cc.SpriteFrame(texture),refs:1};entries.push(entry);return entry;
+}
+function releaseEntry(entry){if(!entry||--entry.refs>0)return;var at=entries.indexOf(entry);if(at>=0)entries.splice(at,1);entry.frame.destroy();entry.texture.destroy();}
 function dispose(owner) {
   var state=owner._buildingShadowRuntime;if(!state)return;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.sync);
+  if(valid(state.sprite))state.sprite.spriteFrame=null;
   if(valid(state.node))state.node.destroy();
-  if(state.frame)state.frame.destroy();if(state.texture)state.texture.destroy();
+  releaseEntry(state.entry);
   delete owner._buildingShadowRuntime;
 }
 function apply(owner, game) {
@@ -16,18 +24,17 @@ function apply(owner, game) {
   var signature=JSON.stringify([value,plan]);
   if(prior&&prior.signature===signature){prior.value=value;prior.plan=plan;prior.hidden=false;prior.sync();return;}
   dispose(owner);
-  var image=Shadow.raster(Shadow.regions(value,plan),value.opacity);if(!image)return;
   var parent=game&&(game.ndDown||game.ndMain)||owner.node.parent;
   if(!valid(parent))return;
+  var prepared=game&&game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.getManual&&game._stageAssets.shadows.getManual(owner,cfg,plan),entry=prepared||prepareEntry(value,plan);if(!entry)return;if(prepared)entry.refs++;
+  var image=entry.image,texture=entry.texture,frame=entry.frame;
   var node=new cc.Node("BuildingShadowMask");node.parent=parent;node.group=owner.node.group;node._depthGroundVisual=true;
   var child=new cc.Node("ShadowTexture");child.parent=node;child.group=node.group;child.setAnchorPoint(0,0);child.setPosition(image.x,image.y);child.setContentSize(image.width,image.height);
-  var texture=new cc.Texture2D();texture.initWithData(image.pixels,cc.Texture2D.PixelFormat.RGBA8888,image.pixelWidth,image.pixelHeight);texture.packable=false;
-  texture.setFilters(cc.Texture2D.Filter.LINEAR,cc.Texture2D.Filter.LINEAR);
-  var frame=new cc.SpriteFrame(texture),sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;sprite.spriteFrame=frame;
+  var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;sprite.spriteFrame=frame;
   // Black mask RGB is already premultiplied. Preserve its alpha when the
   // ground is drawn into a transparent target as well as the game framebuffer.
   sprite.srcBlendFactor=cc.macro.BlendFactor.ONE;
-  var state=owner._buildingShadowRuntime={node:node,texture:texture,frame:frame,signature:signature,value:value,plan:plan,hidden:false};
+  var state=owner._buildingShadowRuntime={node:node,texture:texture,frame:frame,sprite:sprite,entry:entry,signature:signature,value:value,plan:plan,hidden:false};
   state.sync=function () {
     if(!valid(owner.node)||!valid(node)){dispose(owner);return;}
     var current=owner.buildInfo&&owner.buildInfo.cfg;
@@ -42,3 +49,4 @@ function apply(owner, game) {
   state.sync();cc.director.on(cc.Director.EVENT_BEFORE_DRAW,state.sync);
 }
 exports.apply=apply;exports.hide=hide;exports.dispose=dispose;
+exports.prepareEntry=prepareEntry;exports.releaseEntry=releaseEntry;

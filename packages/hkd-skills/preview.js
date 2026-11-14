@@ -47,8 +47,8 @@ function create(host,options){
   for(const layer of [canvas,overlay]){layer.style.cssText='position:absolute;inset:0;width:100%;height:100%;';box.appendChild(layer);}
   overlay.tabIndex=0;overlay.setAttribute('aria-label','Skill positioning preview. Drag handles to adjust VFX positions; middle drag pans; Control wheel zooms.');
   const underlay=document.createElement('canvas');underlay.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0';box.appendChild(underlay);canvas.style.zIndex=1;overlay.style.zIndex=2;
-  const ctx=overlay.getContext('2d'),backCtx=underlay.getContext('2d'),styleResources=new Map();let styleSerial=0,styleKey='',styleError=null;
-  let disposed=false,serial=0,rigSerial=0,effectSerial=0,spine=null,heroLayers=[],targetLayers=[],effectLayers=[],effectImage=null,effectPixels=null,effectDescriptor=null;
+  const ctx=overlay.getContext('2d'),backCtx=underlay.getContext('2d'),styleResources=new Map();let styleSerial=0,styleKey='',stylePromise=null,styleError=null;
+  let disposed=false,serial=0,rigSerial=0,effectSerial=0,spine=null,heroLayers=[],targetLayers=[],effectLayers=[],effectImage=null,effectDescriptor=null;
   let style='skirmisher',settings={},description=null,rigDescription=null,rigKey='',rigPromise=null,effectKey='',effectPromise=null,effectError=null,model=new Model(style,settings,{mode:'active'},core),playing=true,last=0,raf=null;
   let view={zoom:1,panX:0,panY:0},fitted=null,drag=null,selectedHandle='origin',handles=[],enemyRegions=[],soundEnabled=false,lastSoundTime=-1;
   let impactSerial=0,impactKey='',impactResource=null,impactPromise=null,impactError=null;
@@ -91,6 +91,7 @@ function create(host,options){
     const visual=settings.visual||{},source=bodyLayer(heroLayers),basicAnimation=attackName(style),activeAnimation=visual.animation&&SkillSettings.riderAnimations(description).includes(visual.animation)?visual.animation:basicAnimation;
     const animation=style==='mystic'||model.lastAttackKind==='skill'?activeAnimation:basicAnimation,clip=clipInfo(source.description,animation),basicClip=clipInfo(source.description,basicAnimation);
     const mount=heroLayers.filter(layer=>layer.description.json&&layer.description.json._heroMakerMount||layer.description.name==='wqyl_lead_ma'),riders=heroLayers.filter(layer=>!mount.includes(layer));
+    for(const layer of riders)layer.description.scaleX=Math.abs(layer._skillPreviewBase.scaleX)*model.bodyFace;
     const playback=finite(description.skillAttackPlayback,1),locomotion=finite(description.unitAnimationSpeed,1),age=Math.max(0,model.time-model.lastAttack),skirmisherCast=style==='skirmisher'&&model.lastAttackKind==='skill'&&model.lastCast===model.lastAttack,castPlayback=skirmisherCast?(settings.windup>0?clip.hit/settings.windup:1):playback,castOffset=skirmisherCast&&settings.windup===0?clip.hit:0;
     let riderAnimation=model.scenario.moving?'move':'idle',riderTime=model.time*locomotion,loop=true;
     if(style==='mystic'&&model.channelTarget){riderAnimation=animation;riderTime=Math.min(model.channelSourceTime,visual.holdTime>=0?Math.min(clip.end,visual.holdTime):clip.hit);loop=false;}
@@ -99,7 +100,7 @@ function create(host,options){
     else if(!(style==='vanguard'&&model.lastAttackKind==='skill')&&castOffset+age*castPlayback<=clip.end){riderAnimation=animation;riderTime=castOffset+age*castPlayback;loop=false;}
     renderer.seek(spine,riders,riderAnimation,riderTime,loop);
     const castDirection=model.state.active&&model.state.active.direction||model.castResult&&model.castResult.direction||model.direction();
-    const aiming=style==='mystic'&&model.channelTarget?{x:model.channelTarget.x-model.hero.x,y:model.channelTarget.y-model.hero.y}:model.lastAttackKind==='skill'&&riderAnimation===activeAnimation&&['skirmisher','fighter','vanguard'].includes(style)?castDirection:null;
+    const aiming=model.lastAttackKind==='skill'&&riderAnimation===activeAnimation&&['skirmisher','fighter'].includes(style)?castDirection:null;
     if(aiming){const face=aiming.x<0?-1:1,arrow=riders.find(layer=>layer.description.json&&layer.description.json._heroMaker&&layer.description.json._heroMaker.role===3),referenceAngle=style==='skirmisher'&&arrow?SkillPose.arrowAimAngle(arrow.skeleton,arrow.description.json,animation,clip.hit):0;for(const layer of riders){layer.description.scaleX=Math.abs(layer._skillPreviewBase.scaleX)*face;SkillPose.applyAim(layer.skeleton,aiming,layer.description.scaleX,{fresh:true,referenceAngle});}}
     let mountAnimation=model.scenario.moving?'move':'idle',mountTime=model.time*locomotion,mountLoop=true;
     if(!model.scenario.moving&&(riderAnimation===animation||riderAnimation===basicAnimation)){
@@ -127,7 +128,7 @@ function create(host,options){
   function world(p,v){return{x:(p.x-v.width/2-v.panX)/v.scale+v.cx,y:(v.height-12+v.bounds.minY*v.scale+v.panY-p.y)/v.scale};}
   function weaponOrigin(){
     const role=style==='skirmisher'?3:4,layer=heroLayers.find(layer=>layer.description.json&&layer.description.json._heroMaker&&layer.description.json._heroMaker.role===role)||heroLayers.find(layer=>layer.description.json&&layer.description.json._heroMaker);
-    if(layer){const name=style==='mystic'?'Rider/HandRight/Staff':style==='skirmisher'?'Rider/HandRight/Bow/Arrow':null,bone=name&&layer.skeleton.findBone(name);if(bone){const tip=style==='skirmisher'?SkillPose.arrowTip(layer.skeleton,model.state.active&&model.state.active.direction||model.direction(),layer.description.scaleX):{x:bone.worldX,y:bone.worldY};return renderer.transformPoint(layer.description,tip.x,tip.y);}}
+    if(layer){const name=style==='mystic'?'Rider/HandRight/Staff':style==='skirmisher'?'Rider/HandRight/Bow/Arrow':null,bone=name&&layer.skeleton.findBone(name);if(bone){const tip=(style==='skirmisher'?SkillPose.arrowTip(layer.skeleton,model.state.active&&model.state.active.direction||model.direction(),layer.description.scaleX):SkillPose.attachmentTip(layer.skeleton,name))||{x:bone.worldX,y:bone.worldY};return renderer.transformPoint(layer.description,tip.x,tip.y);}}
     return{x:model.hero.x,y:model.hero.y+70};
   }
   function arrowOffset(projectile){
@@ -220,7 +221,7 @@ function create(host,options){
     }catch(error){status(error);}
   }
   async function loadEffect(item,token){
-    effectImage=null;effectPixels=null;effectLayers=[];tintImages.clear();effectDescriptor=item||null;if(!item)return;
+    effectImage=null;effectLayers=[];tintImages.clear();effectDescriptor=item||null;if(!item)return;
     if(item.kind==='spine'&&item.description&&item.description.layers){const value=await renderer.createLayers(spine,clone(item.description.layers));if(token===effectSerial&&!disposed)effectLayers=prepare(value);}
     else if(item.url){const image=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error('Cannot load selected VFX texture.'));img.src=item.url;});if(token===effectSerial&&!disposed)effectImage=image;}
   }
@@ -250,9 +251,9 @@ function create(host,options){
     try{await rigPromise;}catch(error){if(disposed||requestId!==serial)return;throw error;}if(disposed||requestId!==serial)return;
     const source=bodyLayer(heroLayers),selectedAnimation=settings.visual&&settings.visual.animation,animation=selectedAnimation&&SkillSettings.riderAnimations(description).includes(selectedAnimation)?selectedAnimation:attackName(style),clip=clipInfo(source.description,animation),basicClip=clipInfo(source.description,attackName(style)),playback=finite(description.skillAttackPlayback,1);
     const hold=settings.visual&&settings.visual.holdTime>=0?Math.min(clip.end,settings.visual.holdTime):clip.hit;
-    const previousTime=reset?0:model.time,scenario=Object.assign({},model.scenario,{impactDelay:playback>0?clip.hit/playback:0,basicImpactDelay:finite(description.skillBasicImpactDelay,playback>0?basicClip.hit/playback:0),holdSource:hold,holdDelay:playback>0?hold/playback:0,attackPlayback:playback});
+    const previousTime=reset?0:model.time,scenario=Object.assign({},model.scenario,{impactDelay:playback>0?clip.hit/playback:0,basicImpactDelay:finite(description.skillBasicImpactDelay,playback>0?basicClip.hit/playback:0),holdSource:hold,holdDelay:playback>0?hold/playback:0,attackPlayback:playback,lifeSteal:finite(description.skillSecondaryStats&&description.skillSecondaryStats.lifeSteal,0)});
     const simulation=state=>JSON.stringify({tuning:Object.fromEntries(Object.entries(state).filter(([key])=>key!=='visual'&&key!=='audio')),duration:state.visual&&state.visual.effectDuration});
-    const clocks=state=>JSON.stringify([state.impactDelay,state.basicImpactDelay,state.holdSource,state.holdDelay,state.attackPlayback]);
+    const clocks=state=>JSON.stringify([state.impactDelay,state.basicImpactDelay,state.holdSource,state.holdDelay,state.attackPlayback,state.lifeSteal]);
     if(reset||simulation(model.settings)!==simulation(settings)||clocks(model.scenario)!==clocks(scenario)){
       if(!stopped){stopSounds();stopped=true;}model=new Model(style,settings,scenario,core);if(previousTime)model.seek(previousTime);last=0;lastSoundTime=model.time;
     }else {model.settings=clone(settings);model.scenario=scenario;}
@@ -267,7 +268,8 @@ function create(host,options){
     try{await impactPromise;}catch(error){if(!disposed&&requestId===serial){impactKey='';impactError=error;}}
     if(disposed||requestId!==serial)return;
     const styleItems=description.styleEffects||[],nextStyleKey=JSON.stringify(styleItems);
-    if(nextStyleKey!==styleKey){styleKey=nextStyleKey;styleError=null;try{await loadStyleEffects(styleItems,++styleSerial);}catch(error){if(!disposed&&requestId===serial){styleKey='';styleError=error;}}}
+    if(nextStyleKey!==styleKey){styleKey=nextStyleKey;styleError=null;stylePromise=loadStyleEffects(styleItems,++styleSerial);}
+    try{await stylePromise;}catch(error){if(!disposed&&requestId===serial){styleKey='';styleError=error;}}
     if(disposed||requestId!==serial)return;draw();
   }
   function play(value){const previous=playing;playing=value===undefined?!playing:!!value;last=0;if(!playing)stopSounds();else if(model.time>=model.duration()-1e-9){model.reset();lastSoundTime=-1;}else if(!previous&&soundEnabled&&model.beam)sound('channel');draw();}

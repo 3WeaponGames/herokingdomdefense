@@ -5,9 +5,10 @@ const path = require('path');
 const url = require('url');
 const AttackTimings = require('./attack-timing-defaults');
 const AssetValidation = require('./asset-validation');
-let cachedRoot = '', cachedIndex = null;
-function index(root) {
-    if (cachedRoot === root && cachedIndex) return cachedIndex;
+let cachedRoot = '', cachedIndex = null, cachedSpineRoot = '', cachedSpineIndex = null;
+function index(root, spineOnly) {
+    if (spineOnly && cachedSpineRoot === root && cachedSpineIndex) return cachedSpineIndex;
+    if (!spineOnly && cachedRoot === root && cachedIndex) return cachedIndex;
     const result = { uuids: {}, files: [] };
     function walk(dir) {
         fs.readdirSync(dir, { withFileTypes: true }).forEach(entry => {
@@ -15,13 +16,16 @@ function index(root) {
             if (entry.isDirectory()) walk(file);
             else {
                 result.files.push(file);
-                if (/\.meta$/.test(file)) {
+                if ((spineOnly ? /\.json\.meta$/i : /\.meta$/).test(file)) {
                     try { const meta = JSON.parse(fs.readFileSync(file, 'utf8')); if (meta.uuid) result.uuids[meta.uuid] = file.slice(0, -5); } catch (_) {}
                 }
             }
         });
     }
-    walk(path.join(root, 'assets')); cachedRoot = root; cachedIndex = result; return result;
+    walk(path.join(root, 'assets'));
+    if (spineOnly) { cachedSpineRoot = root; cachedSpineIndex = result; }
+    else { cachedRoot = root; cachedIndex = result; }
+    return result;
 }
 function enginePath() {
     // A standalone Spine dependency supports asset authoring and headless
@@ -69,7 +73,7 @@ function projectile(prefab, type, id) {
         directHoming: type === 'enemy' && Number(id) === 90008 };
 }
 function describe(root, request) {
-    const files = index(root), type = request.type || 'enemy', id = String(request.id || 'hero');
+    const type = request.type || 'enemy', id = String(request.id || 'hero');
     const documents = request.documents || {}, cfg = documents.A ? documents.A.data : json(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json'));
     if (type === 'building') {
         const record = request.record || cfg.BuildEnum[id], level = record && record.levelList && record.levelList[request.levelIndex || 0];
@@ -84,6 +88,9 @@ function describe(root, request) {
         return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, weaponImage:weaponFile?url.pathToFileURL(weaponFile).href:null, weaponImages, label: level ? level.Icon : 'Building', appearance:level&&level.Appearance||null, runtimePath: null };
     }
     if (['hero', 'enemy', 'ally'].indexOf(type) < 0) throw new Error('Unknown unit category.');
+    // A layered preview resolves only JSON Spine UUIDs. Avoid reading every
+    // texture/sprite metadata file; the full public index remains available.
+    const files = index(root, true);
     const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], boss = type === 'enemy' && UnitRecords.boss(id);
     if (type !== 'hero' && !record) throw new Error('Unit does not exist.');
     const prefabName = type === 'hero' ? null : boss ? 'ItemEnemy10' : (type === 'ally' ? 'Play' : '') + record.prefab;
@@ -160,4 +167,4 @@ function describe(root, request) {
         forms: boss ? [{id:90010,label:'Form 1'},{id:90011,label:'Form 2'},{id:90012,label:'Form 3'}] : [],
         ...(type==='ally'?{levels:levels.length?levels:[1],level:request.level||0}:{}),runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
 }
-module.exports = { describe, index, enginePath, invalidate: function () { cachedIndex = null; } };
+module.exports = { describe, index, enginePath, invalidate: function () { cachedIndex = null; cachedSpineIndex = null; } };

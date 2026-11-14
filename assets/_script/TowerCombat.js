@@ -22,7 +22,7 @@ function valid(value) {
   return value && (typeof cc === "undefined" || cc.isValid(value, true));
 }
 function live(actor) {
-  return valid(actor) && valid(actor.node) && actor.node.activeInHierarchy !== false &&
+  return valid(actor) && !actor._isPooled && valid(actor.node) && actor.node.activeInHierarchy !== false &&
     (!actor.isDead || !actor.isDead()) && !(typeof actor.hp === "number" && actor.hp <= 0);
 }
 function point(node, parent) {
@@ -76,6 +76,8 @@ function damage(game, target, center, amount, behavior, onHit, source) {
     if (!live(entry.actor) || entry.actor.node !== entry.node || entry.node._combatGeneration !== entry.generation || entry.amount <= 0) continue;
     if (onHit) onHit(entry.actor, entry.position, entry.amount);
     if (game._combatEpoch !== epoch || game.gameData !== data) break;
+    // Presentation may retire or recycle this victim before damage commits.
+    if (!live(entry.actor) || entry.actor.node !== entry.node || entry.node._combatGeneration !== entry.generation) continue;
     entry.actor.onAttacked(entry.amount, source);
   }
 }

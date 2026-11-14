@@ -13,6 +13,12 @@ var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+function releaseBuffEffect(record) {
+  var node = record.node;record.node = null;
+  if (!cc.isValid(node, true) || node._statusBuffOwner && node._statusBuffOwner !== record) return;
+  if (node._statusBuffOwner === record) delete node._statusBuffOwner;
+  $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, node);
+}
 var exp_KinghtFallInterface = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -79,11 +85,19 @@ var exp_KinghtFallInterface = function (t) {
     return e;
   };
   _ctor.prototype.addBuff = function (t, e) {
-    var n = this;
+    var n = this, node = this.node, generation = node && node._combatGeneration, buffs = this.debuffInfo;
+    var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, data = game && game.gameData, epoch = game && game._combatEpoch, stage = game && game.gameStatus, effects = ui && ui.ctrEffect;
+    function current() {
+      return cc.isValid(n, true) && !n.isDestroy && !n.isDestroyed && !n._isPooled && n.node === node && cc.isValid(node, true) && node.activeInHierarchy !== false && node._combatGeneration === generation && n.debuffInfo === buffs &&
+        (!n.isDead || !n.isDead()) && !(typeof n.hp === "number" && n.hp <= 0) &&
+        $z1KinghtFallUIGame.default.instance === ui && (!ui || cc.isValid(ui, true) && !ui.isclose && ui.ctrGame === game) &&
+        (!game || cc.isValid(game, true) && (!game.node || cc.isValid(game.node, true)) && game.gameData === data && game._combatEpoch === epoch && game.gameStatus === stage);
+    }
+    if (!current()) return;
     var i = new exp_KinghtFallEnemyBuffInfo(t, e);
     if (BattleSounds.effect && t === p.MoveSpeed && e.subNum > 0) BattleSounds.effect("slow-apply", this);
     if (BattleSounds.effect && t === p.DamageCut) BattleSounds.effect("debuff-apply", this);
-    var generation = this.node && this.node._combatGeneration;
+    if (!current()) return;
     // Pool hits may complete synchronously, so register ownership first.
     this.debuffInfo.push(i);
     switch (t) {
@@ -91,13 +105,15 @@ var exp_KinghtFallInterface = function (t) {
         this.body && (this.body.color = new cc.Color().fromHEX("#FF7676"));
         break;
       case p.DamageCut:
-        $z1KinghtFallUIGame.default.instance.ctrEffect.onBuff($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier10Buff, $z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, function (t) {
-          if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || !cc.isValid(n.ndEffect, true) || n._isPooled || n.node._combatGeneration !== generation || n.debuffInfo.indexOf(i) < 0) {
+        if (!current() || !cc.isValid(effects, true) || ui.ctrEffect !== effects) break;
+        effects.onBuff($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier10Buff, $z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, function (t) {
+          if (!current() || !cc.isValid(effects, true) || ui.ctrEffect !== effects || !cc.isValid(n.ndEffect, true) || buffs.indexOf(i) < 0) {
             $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, t);
             return;
           }
-          t.active = true;
           i.node = t;
+          t._statusBuffOwner = i;
+          t.active = true;
           t.setParent(n.ndEffect);
           t.setPosition(cc.Vec2.ZERO);
           t.getComponentInChildren(sp.Skeleton).setAnimation(0, n.isBig ? "debuff_da" : "debuff_xiao", true);
@@ -105,41 +121,52 @@ var exp_KinghtFallInterface = function (t) {
     }
   };
   _ctor.prototype.delBuff = function (t) {
-    for (var e = 0; e < this.debuffInfo.length; e++) {
-      if (this.debuffInfo[e].type == t) {
-        this.delBuffIdx(e);
-        e--;
-      }
+    var buffs = this.debuffInfo, node = this.node, generation = node && node._combatGeneration;
+    var records = buffs.filter(function (record) { return record.type == t; });
+    for (var e = 0; e < records.length; e++) {
+      if (this.debuffInfo !== buffs || this.node !== node || node && node._combatGeneration !== generation) return;
+      var index = buffs.indexOf(records[e]);
+      if (index >= 0) this.delBuffIdx(index);
     }
   };
   _ctor.prototype.delBuffIdx = function (t) {
-    var e = this.debuffInfo[t];
+    var buffs = this.debuffInfo, e = buffs[t];
+    if (!e) return;
+    buffs.splice(t, 1);
     switch (e.type) {
       case p.AttackSpeed:
-        this.getBuffList(e.type).length <= 1 && this.body && (this.body.color = cc.Color.WHITE);
+        this.getBuffList(e.type).length === 0 && this.body && (this.body.color = cc.Color.WHITE);
         break;
       case p.DamageCut:
-        e.node && $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, e.node);
+        releaseBuffEffect(e);
     }
-    this.debuffInfo.splice(t, 1);
   };
   _ctor.prototype.delAllBuff = function () {
+    var owner = this, buffs = this.debuffInfo, next = [], node = this.node, generation = node && node._combatGeneration, body = this.body, effects = this.ndEffect;
+    var children = effects && Array.isArray(effects.children) ? effects.children.slice() : null, healing = !!(this._healingEffects && this._healingEffects.size), owned = new Set(buffs.map(function (record) { return record.node; }));
+    function current() { return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner.debuffInfo === next; }
+    this.debuffInfo = next;
     this.releaseHealingEffects();
-    this.body && (this.body.color = cc.Color.WHITE);
-    for (var t = 0; t < this.debuffInfo.length; t++) {
-      var e = this.debuffInfo[t];
+    if (current() && this.body === body && body && cc.isValid(body, true)) body.color = cc.Color.WHITE;
+    for (var t = 0; t < buffs.length; t++) {
+      var e = buffs[t];
       switch (e.type) {
         case p.AttackSpeed:
           break;
         case p.DamageCut:
-          e.node && $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, e.node);
+          releaseBuffEffect(e);
       }
     }
-    this.ndEffect.removeAllChildren();
-    this.debuffInfo = [];
+    if (!current() || this.ndEffect !== effects || !cc.isValid(effects, true)) return;
+    // Known status/healing nodes were returned above. Remove only old unowned
+    // children; a pool callback may have attached replacement artwork already.
+    if (children) children.forEach(function (child) {
+      if (!healing && !(owner._healingEffects && owner._healingEffects.size) && !owned.has(child) && cc.isValid(child, true) && child.parent === effects && !child._statusBuffOwner) child.removeFromParent();
+    });
+    else if (!next.length && !(this._healingEffects && this._healingEffects.size)) effects.removeAllChildren();
   };
   _ctor.prototype.releaseHealingEffects = function () {
-    if (this._healingEffects) this._healingEffects.forEach(function (release) { release(); });
+    if (this._healingEffects) Array.from(this._healingEffects).forEach(function (release) { release(); });
   };
   cc__decorate([ccp_property({
     type: cc.Node,

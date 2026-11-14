@@ -229,6 +229,29 @@ test('failed channel loads back off on the gameplay clock and recover with the r
  f.P.clear(f.rt);assert.equal(f.a.manager.audioSourceMap.size,0);
 });
 
+test('native-stopped and failed authored channel loops recover once after a grace period with the real AudioMgr',()=>{
+ for(const ended of [3,-1]){
+  const f=withRealAudio(),states={ERROR:-1,INITIALIZING:0,PLAYING:1,PAUSED:2,STOPPED:3};f.cc._Audio={State:states};f.P.update(f.rt);f.rt.state.time=5;f.a.finish(f.a.pending[0]);f.P.update(f.rt);
+  const source=f.rt._presentation.channel.source,play=source.play;let nativeState=ended;source.isPlaying=false;source.audio.getState=()=>nativeState;source.play=function(){nativeState=states.PLAYING;return play.call(this);};
+  assert.equal(f.a.manager.channelState(source).active,true,'Native interruption preserves the channel intent');
+  f.rt.state.time=5.999;f.P.update(f.rt);assert.equal(source.plays,1,'A newly loaded native channel gets its full grace period');
+  f.rt.state.time=6;f.P.update(f.rt);assert.equal(source.plays,2);assert.equal(source.isPlaying,true);assert.equal(f.a.pending.length,1,'The recovered loop reuses its loaded clip');
+  f.P.clear(f.rt);assert.equal(f.a.manager.audioSourceMap.size,0);
+ }
+});
+
+test('native channel recovery preserves loading, initialization, pause and bounded autoplay retries',()=>{
+ const f=withRealAudio(),states={ERROR:-1,INITIALIZING:0,PLAYING:1,PAUSED:2,STOPPED:3};f.cc._Audio={State:states};f.P.update(f.rt);f.a.finish(f.a.pending[0]);f.P.update(f.rt);
+ const source=f.rt._presentation.channel.source,state=f.a.manager.channelState(source),play=source.play;let nativeState=states.STOPPED;source.audio.getState=()=>nativeState;source.isPlaying=false;
+ state.loading=true;f.rt.state.time=2;f.P.update(f.rt);assert.equal(source.plays,1);state.loading=false;
+ for(const native of [states.INITIALIZING,states.PAUSED]){nativeState=native;f.rt.state.time++;f.P.update(f.rt);assert.equal(source.plays,1);}
+ nativeState=states.STOPPED;state.paused=true;f.rt.state.time++;f.P.update(f.rt);assert.equal(source.plays,1);state.paused=false;
+ f.rt.available=()=>false;f.rt.state.time=20;f.P.update(f.rt);assert.equal(source.plays,1);f.rt.available=()=>true;
+ source.play=function(){play.call(this);this.isPlaying=false;};
+ for(let frame=0;frame<600;frame++){f.rt.state.time=20+frame/60;f.P.update(f.rt);}
+ assert(source.plays<=11,'Blocked native playback retries at most once per gameplay second');assert.equal(f.a.pending.length,1);f.P.clear(f.rt);const plays=source.plays;f.rt.beamTarget=null;f.rt.state.time=60;f.P.update(f.rt);assert.equal(source.plays,plays);
+});
+
 test('channel retry state resets for target, cue and permission changes and cannot survive cleanup or pause',()=>{
  const f=withRealAudio();f.P.update(f.rt);f.a.fail(f.a.pending[0]);f.rt.state.time=.1;f.P.update(f.rt);assert.equal(f.a.pending.length,1);
  f.rt.available=()=>false;f.rt.state.time=5;f.P.update(f.rt);assert.equal(f.a.pending.length,1);f.rt.available=()=>true;f.P.update(f.rt);assert.equal(f.a.pending.length,2);f.a.fail(f.a.pending[1]);f.P.update(f.rt);
@@ -243,4 +266,23 @@ test('disabled custom channel sound retries stay bounded and resume after effect
  for(let frame=1;frame<=120;frame++){f.rt.state.time=frame/60;f.P.update(f.rt);}
  assert.equal(f.a.pending.length,1,'the valid cached clip must not issue repeated loads');assert.equal([...f.a.manager.audioSourceMap.values()][0].plays,0);
  f.a.preferences.effects=true;f.rt.state.time=20;f.P.update(f.rt);assert.equal([...f.a.manager.audioSourceMap.values()][0].plays,1);f.P.clear(f.rt);
+});
+
+test('an A-to-B-to-A selection rejects the original asynchronous A load without retaining its asset',()=>{
+ const f=fixture(),paint=()=>f.P.attachments({visual:{node:f.root}},f.rt);
+ for(const resource of [uuid,uuid.slice(0,-1)+'9',uuid]){f.rt.settings.visual.resource=resource;paint();}
+ assert.equal(f.loads.length,3);
+ function asset(){return{refs:0,addRef(){this.refs++;return this;},decRef(){this.refs--;}};}
+ const original=asset(),replacement=asset();f.loads[0].callback(null,original);assert.equal(original.refs,0);
+ f.loads[2].callback(null,replacement);assert.equal(replacement.refs,1);f.P.clear(f.rt);assert.equal(original.refs,0);assert.equal(replacement.refs,0);
+});
+
+test('disabled main and impact artwork release retained assets and invalidate pending load callbacks',()=>{
+ for(const prefix of ['', 'impact'])for(const finishBeforeDisable of [false,true]){
+  const f=fixture(),key=prefix?'impactResource':'resource',paint=()=>f.P.attachments({visual:{node:f.root}},f.rt),asset={refs:0,addRef(){this.refs++;return this;},decRef(){this.refs--;}};
+  f.rt.settings.visual[key]=uuid;paint();assert.equal(f.loads.length,1);
+  if(finishBeforeDisable)f.loads[0].callback(null,asset);
+  f.rt.settings.visual[key]='';paint();if(!finishBeforeDisable)f.loads[0].callback(null,asset);assert.equal(asset.refs,0);
+  f.rt.settings.visual[key]=uuid;paint();assert.equal(f.loads.length,2,'Re-enabling must create a new owned request');f.loads[1].callback(null,asset);assert.equal(asset.refs,1);f.P.clear(f.rt);assert.equal(asset.refs,0);
+ }
 });

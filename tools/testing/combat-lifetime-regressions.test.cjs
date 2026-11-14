@@ -60,7 +60,7 @@ for (const name of ['KinghtFallBuildBase','KinghtFallBuildWall','KinghtFallBuild
 }
 test('Shaman transformation completes before its health bar is available',()=>{
   const h=environment(), actor=h.actor('KinghtFallEnemyItem10'); actor.hpctrl=null; h.cfg.Data=[0,5];
-  actor.getSpAni=()=>({node:new Node()}); actor.spAniUp={node:{},setAnimation(){return {};},setTrackCompleteListener(){}};
+  const renderer={node:new Node()};actor.getSpAni=()=>renderer; actor.spAniUp={node:{},setAnimation(){return {};},setTrackCompleteListener(){}};
   actor.upData(90001); assert.equal(actor.hp,100); assert.equal(actor.time.SpellMax,5);
 });
 function playableHero() {

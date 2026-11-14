@@ -144,8 +144,18 @@ NavigationGrid.prototype.segmentClear=function(start,end,radius) {
 };
 // One-way terrain: an existing overlap may continue until it exits. Every new
 // obstacle and every re-entry is still forbidden, including the unit's radius.
-function exitPolygonClear(start,end,radius,vertices) {
+function exitPolygonClear(start,end,radius,vertices,outwardOnly) {
   var dx=end.x-start.x,dy=end.y-start.y,rr=radius+EPS,intervals=[],times=[0,1],length2=dx*dx+dy*dy;
+  if(outwardOnly) {
+    // Touching a wall must never become permission to walk through it on the
+    // next frame. An existing manual overlap may slide or move outward only.
+    var previous=clearance(start,vertices),steps=Math.max(1,Math.ceil(Math.sqrt(length2)/2));
+    if(previous<=rr)for(var step=1;step<=steps;step++) {
+      var f=step/steps,current=clearance({x:start.x+dx*f,y:start.y+dy*f},vertices);
+      if(current+EPS<previous)return false;
+      previous=current;
+    }
+  }
   function add(lo,hi){lo=Math.max(0,lo);hi=Math.min(1,hi);if(lo<=hi)intervals.push([lo,hi]);}
   function circle(center){var x=start.x-center.x,y=start.y-center.y,c=x*x+y*y-rr*rr;if(!length2){if(c<=0)add(0,1);return;}var b=x*dx+y*dy,disc=b*b-length2*c;if(disc<0)return;var root=Math.sqrt(disc);add((-b-root)/length2,(-b+root)/length2);}
   function clip(range,p,d,lo,hi){if(Math.abs(d)<EPS)return p>=lo&&p<=hi;var a=(lo-p)/d,b=(hi-p)/d;range[0]=Math.max(range[0],Math.min(a,b));range[1]=Math.min(range[1],Math.max(a,b));return range[0]<=range[1];}
@@ -165,12 +175,12 @@ function exitPolygonClear(start,end,radius,vertices) {
   for(var k=1;k<intervals.length;k++){if(intervals[k][0]>endOfOverlap+EPS)return false;endOfOverlap=Math.max(endOfOverlap,intervals[k][1]);}
   return true;
 }
-NavigationGrid.prototype.canExitBlocked=function(start,end,radius) {
+NavigationGrid.prototype.canExitBlocked=function(start,end,radius,outwardOnly) {
   var a=readPoint(start),b=readPoint(end),r=radiusValue(radius),bounds=this.bounds;
   function inward(from,to,min,max){return from<min-EPS?to>=from-EPS&&to<=max+EPS:from>max+EPS?to<=from+EPS&&to>=min-EPS:to>=min-EPS&&to<=max+EPS;}
   if(!inward(a.x,b.x,bounds.minX+r,bounds.maxX-r)||!inward(a.y,b.y,bounds.minY+r,bounds.maxY-r))return false;
   var ids=this._query(Math.min(a.x,b.x)-r,Math.min(a.y,b.y)-r,Math.max(a.x,b.x)+r,Math.max(a.y,b.y)+r);
-  for(var i=0;i<ids.length;i++)if(!exitPolygonClear(a,b,r,this.polygons[ids[i]].vertices))return false;
+  for(var i=0;i<ids.length;i++)if(!exitPolygonClear(a,b,r,this.polygons[ids[i]].vertices,outwardOnly))return false;
   return true;
 };
 NavigationGrid.prototype._center=function(id) {

@@ -18,9 +18,16 @@ var def_KinghtFallEnemyAuxiliary = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.onUpdate = function (t) {
     if (this.isDead()) return;
-    this.updateCombatTimers(t);
+    var owner = this, ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+    var node = this.node, generation = node && node._combatGeneration, timers = this.time, data = game && game.gameData, epoch = game && game._combatEpoch, stage = game && game.gameStatus;
+    function current() {
+      return cc.isValid(ui, true) && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === game && cc.isValid(game, true) && (!game.node || cc.isValid(game.node, true) && game.node.activeInHierarchy !== false) && game.gameData === data && game._combatEpoch === epoch && game.gameStatus === stage &&
+        cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node.activeInHierarchy !== false && node._combatGeneration === generation && owner.time === timers && !owner._isPooled && !owner.isDead() && owner.hp > 0;
+    }
+    if (!current() || this.updateCombatTimers(t) === false || !current()) return;
     if (this._hitReactionPlaying) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; return; }
     this.time[r.Attack] >= 1 && this.doAttackStart();
+    if (!current()) return;
     switch (this.state) {
       case $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Idle:
       case $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Move:

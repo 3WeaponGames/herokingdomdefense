@@ -40,7 +40,7 @@ function required(row, equipped) {
     var value = row[fields[index]];
     if (value !== undefined && value !== null && value !== "" && !matches(value, equipped)) return false;
   }
-  return row.RequiredAttackType === undefined || Number(row.RequiredAttackType) === (equipped.ranged ? 2 : 1);
+  return row.RequiredAttackType === undefined || row.RequiredAttackType === null || row.RequiredAttackType === "" || Number(row.RequiredAttackType) === (equipped.ranged ? 2 : 1);
 }
 function stylesFor(id, row) {
   // Authored requirements may narrow or broaden the shipped defaults explicitly.

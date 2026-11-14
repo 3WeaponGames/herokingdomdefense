@@ -12,7 +12,12 @@ function valid(value) { return !!value && (typeof cc === "undefined" || !cc.isVa
 function living(actor) { return valid(actor) && valid(actor.node) && !actor._isPooled && actor.node.activeInHierarchy !== false && actor.hp > 0 && (!actor.isDead || !actor.isDead()); }
 function distance(a,b) { return Math.hypot(a.x-b.x,a.y-b.y); }
 function distanceSquared(a,b) { var x=a.x-b.x,y=a.y-b.y;return x*x+y*y; }
-function direction(value) { var n=value && Math.hypot(value.x,value.y); return n>0?{x:value.x/n,y:value.y/n}:{x:1,y:0}; }
+function direction(value) {
+  var x=value&&value.x,y=value&&value.y;
+  if(typeof x!=="number"||typeof y!=="number"||!isFinite(x)||!isFinite(y))return{x:1,y:0};
+  var scale=Math.max(Math.abs(x),Math.abs(y));if(!(scale>0))return{x:1,y:0};
+  x/=scale;y/=scale;var length=Math.hypot(x,y);return{x:x/length,y:y/length};
+}
 function directional(style) { return style==="skirmisher"||style==="fighter"||style==="vanguard"; }
 function generation(actor) { return actor && actor.node && actor.node._combatGeneration; }
 function candidate(actor) { return { enemy: actor, generation: generation(actor) }; }
@@ -45,11 +50,11 @@ Runtime.prototype.scopeCurrent=function(scope){
 Runtime.prototype.available=function(){
   this.refresh();
   var stages=require("KinghtFallModle").KinghtFallGameStage;
-  if(this.hero._styleRuntime!==this || !valid(this.ui) || !valid(this.game) || this.game.ctrPlay!==this.hero || !living(this.hero))return false;
+  if(this.hero._styleRuntime!==this || !valid(this.ui) || !valid(this.game) || this.game.ctrPlay!==this.hero || !valid(this.hero) || !valid(this.hero.node) || this.hero._isPooled || this.hero.node.activeInHierarchy===false)return false;
   if(this.ui.isclose || this.ui.node&&this.ui.node.activeInHierarchy===false)return false;
   if(generation(this.hero)!==this.heroGeneration){this.clear(true);this.heroGeneration=generation(this.hero);return false;}
   if(this.scope && !this.scopeCurrent(this.scope)){this.clear(true);return false;}
-  if(this.ui.isPauset || this.game.gameStatus!==stages.Fight)return false;
+  if(!living(this.hero) || this.ui.isPauset || this.game.gameStatus!==stages.Fight)return false;
   if(!this.scope){
     this.heroGeneration=generation(this.hero);
     this.scope={game:this.game,data:this.game.gameData,epoch:this.game._combatEpoch,generation:this.heroGeneration};
@@ -77,7 +82,7 @@ Runtime.prototype.hit=function(target,multiplier,skill,strike,options){
   options=options||{};
   if(!living(target) || options.generation!==undefined&&generation(target)!==options.generation || !this.available() || this.resolvingState&&this.resolvingState!==this.state)return 0;
   var hero=this.hero,Combat=require("RelicCombat"),damage=options.damage===undefined?hero.getAttack(target)*multiplier:options.damage;
-  var scope=this.scope,critical=hero.crit>=Math.random(),release;
+  var scope=this.scope,critical=hero.crit>Math.random(),release;
   if(!skill){
     release=Combat.heroAttack(hero,target,damage);
     if(!this.scopeCurrent(scope) || !living(target) || options.generation!==undefined&&generation(target)!==options.generation)return 0;
@@ -85,8 +90,11 @@ Runtime.prototype.hit=function(target,multiplier,skill,strike,options){
   var context=Combat.primaryContext(hero,target,damage,critical,release);
   context.styleSkill=!!skill;context.styleStrike=strike;
   if(critical)damage*=hero.getCriticalDamage?hero.getCriticalDamage():hero.critDam;
+  var impact=point(target),targetGeneration=generation(target),state=this.state;
   var dealt=target.onAttacked(damage,hero,false,context);
-  if(dealt>0&&this.ui&&this.ui.ctrEffect&&this.ui.ctrEffect.showDamageNum)this.ui.ctrEffect.showDamageNum(point(target),dealt,critical);
+  // Damage callbacks may retire this cast or immediately recycle its victim.
+  // Keep feedback at the original impact and out of replacement lifetimes.
+  if(dealt>0&&this.state===state&&this.scope===scope&&this.scopeCurrent(scope)&&valid(target.node)&&!target._isPooled&&generation(target)===targetGeneration&&this.ui&&this.ui.ctrEffect&&this.ui.ctrEffect.showDamageNum)this.ui.ctrEffect.showDamageNum(impact,dealt,critical);
   return dealt||0;
 };
 Runtime.prototype.onImpact=function(target,damage,context){
@@ -100,7 +108,12 @@ Runtime.prototype.onImpact=function(target,damage,context){
     var slow=info&&typeof info.slow==="number"?info.slow:.2, duration=info&&typeof info.slowDuration==="number"?info.slowDuration:1.5;
     if(!(slow>0)||!(duration>0))return;
     if(existing){existing.time=0;existing.timeMax=duration;existing.data.subNum=slow;}
-    else {target.addBuff(type,{subNum:slow,time:duration});var list=target.debuffInfo||[];if(list.length)list[list.length-1]._mysticSlow=true;}
+    else {
+      var state=this.state,scope=this.scope,node=target.node,targetGeneration=generation(target),data={subNum:slow,time:duration};
+      target.addBuff(type,data);
+      if(this.state!==state||this.scope!==scope||!this.scopeCurrent(scope)||target.node!==node||generation(target)!==targetGeneration||!living(target))return;
+      var list=target.debuffInfo||[];for(var i=0;i<list.length;i++)if(list[i].type===type&&list[i].data===data){list[i]._mysticSlow=true;break;}
+    }
   }
 };
 Runtime.prototype.deferHitReaction=function(target,context){
@@ -108,7 +121,7 @@ Runtime.prototype.deferHitReaction=function(target,context){
 };
 Runtime.prototype.cast=function(aim){
   if(!this.canCast())return false;
-  var h=this.hero,s=this.state,o=point(h),target=s.target;
+  var h=this.hero,s=this.state,scope=this.scope,o=point(h),target=s.target;
   if(!aim&&!directional(s.style)){
     var nearest=s.style==="mystic"?target:living(h.tagEnemy)&&distance(o,point(h.tagEnemy))<=h.attackRange?h.tagEnemy:this.nearest();
     if(living(nearest))aim={x:point(nearest).x-o.x,y:point(nearest).y-o.y};
@@ -123,10 +136,23 @@ Runtime.prototype.cast=function(aim){
   this.resolvingState=this.state;
   this.aiming=false;this.aimDirection=dir;this.castId=++this.serial;
   Presentation.queue(this,"cast");
+  if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return false;
   overrides.cancel(h);h.time.Attack=0;
   if(cast.hpCost){h.hp=cast.hpAfterCost;h.ctrHp.setHp(h.hp,h.hpMax);}
+  if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope)||!living(h))return false;
   if(h.ctrPlayAni.setBodyLeft)h.ctrPlayAni.setBodyLeft(dir.x);
-  if(s.style!=="vanguard"&&s.style!=="mystic"){h.ctrPlayAni._skillAnimationOverride=this.settings.visual.animation;try{h.ctrPlayAni.setAttack();if(overrides.applyAttackPlayback)overrides.applyAttackPlayback(h,"hero");if(s.style==="skirmisher"&&rider.retimeAttack)rider.retimeAttack(h.ctrPlayAni,s.tuning.windup);}finally{delete h.ctrPlayAni._skillAnimationOverride;}}
+  if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return false;
+  if(s.style!=="vanguard"&&s.style!=="mystic"){
+    var controller=h.ctrPlayAni;controller._skillAnimationOverride=this.settings.visual.animation;
+    try{
+      controller.setAttack();
+      if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return false;
+      if(overrides.applyAttackPlayback)overrides.applyAttackPlayback(h,"hero");
+      if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return false;
+      if(s.style==="skirmisher"&&rider.retimeAttack)rider.retimeAttack(controller,s.tuning.windup);
+    }finally{delete controller._skillAnimationOverride;}
+    if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return false;
+  }
   if(s.active&&/^(fighter|bruiser|mystic)-impact$/.test(s.active.kind)){
     s.active.castId=this.castId;s.active.target=target;s.active.targetGeneration=generation(target);
     s.active.attackBonus=1+this.bonus().damage;
@@ -239,11 +265,19 @@ Runtime.prototype.updateArrows=function(dt){
   if(this.state===state)this.projectiles=arrows;
 };
 Runtime.prototype.update=function(dt){
-  this.refresh();if(!living(this.hero)){this.clear(false);return;}
+  this.refresh();if(!living(this.hero)){
+    // Recovery may already have a planning HUD. Retire combat work once, then
+    // leave that same HUD and its pending art/font loads owned by the hero.
+    var retired=this.hero._styleRuntime!==this||!valid(this.hero)||!valid(this.hero.node)||this.hero._isPooled||!valid(this.ui)||!valid(this.game)||this.ui.isclose||this.game.ctrPlay!==this.hero;
+    if(retired||this.scope||this.aiming||this.projectiles.length||this.effects.length||this.taunted.length||this.channelTarget||this.beamTarget||this.beamWarmup||this.beamClock||this.beamElapsed||this.beamSourceTime||this.state.active||this.state.target||this.state.charge)this.clear(false);
+    return;
+  }
   if(!this.available())return;
   this.resolvingState=this.state;
-  var h=this.hero,pos=point(h),moving=distance(pos,this.lastPosition)>.01;this.lastPosition={x:pos.x,y:pos.y};this.moving=moving;
   dt=typeof dt==="number"&&isFinite(dt)&&dt>0?dt:0;
+  // Compare actual velocity, not one frame's distance: slow movement must not
+  // turn into standing still solely because the display refreshes faster.
+  var h=this.hero,pos=point(h),moving=distance(pos,this.lastPosition)>Math.max(1e-7,.01*dt);this.lastPosition={x:pos.x,y:pos.y};this.moving=moving;
   var prior=this.state.active,remaining=dt,guard=0,self=this;
   var frame=this.state.style==="mystic"?{state:this.state,scope:this.scope,targets:null,blocked:new Set(),ticks:0,aborted:false}:null;this.beamFrame=frame;
   if(this.state.target&&(!living(this.state.target)||this.markGeneration!==undefined&&generation(this.state.target)!==this.markGeneration))Skills.clearTarget(this.state);
@@ -271,10 +305,15 @@ Runtime.prototype.update=function(dt){
   }while(remaining>1e-9&&++guard<102);
   this.taunted=this.taunted.filter(function(record){var enemy=record.enemy;if(enemy._heroTaunt!==record.taunt)return false;if(!living(enemy)||generation(enemy)!==record.taunt.enemyGeneration){delete enemy._heroTaunt;return false;}record.taunt.remaining-=dt;if(record.taunt.remaining<=0){delete enemy._heroTaunt;return false;}return true;});
   Presentation.update(this);
+  // Presentation can discover a retired epoch and clear this runtime. Never
+  // restore the previous skill pose after that cleanup has removed it.
+  if(this.resolvingState!==this.state||!this.scope||!this.scopeCurrent(this.scope))return;
   var active=this.state.active||prior,aim;
-  if(active&&/^(skirmisher|fighter|vanguard)$/.test(this.state.style))aim=active.direction;
-  else if(this.channelTarget)aim=direction({x:point(this.channelTarget).x-pos.x,y:point(this.channelTarget).y-pos.y});
-  require("HeroMakerRider").setCombatState(h.ctrPlayAni,{moving:moving,beam:!!this.channelTarget,beamElapsed:this.beamElapsed,beamSourceTime:this.beamSourceTime,aimDirection:aim,playback:this.beamPlayback,deferUpdate:true,attackRate:h.getAttSpeed(),animation:this.state.style==="mystic"?this.beamAnimation:this.settings.visual.animation||undefined,holdTime:this.settings.visual.holdTime>=0?this.settings.visual.holdTime:undefined,rapid:(this.state.style==="vanguard"&&active)?{elapsed:active.elapsed||0,duration:active.duration,strikes:active.count}:false});
+  if(active&&/^(skirmisher|fighter)$/.test(this.state.style))aim=active.direction;
+  // Locomotion follows input even when collision prevents displacement. Skill
+  // charge and damage above still use actual movement, as before.
+  var input=this.game.moveDir,walking=moving||!!(input&&(input.x||input.y));
+  require("HeroMakerRider").setCombatState(h.ctrPlayAni,{moving:walking,beam:!!this.channelTarget,beamElapsed:this.beamElapsed,beamSourceTime:this.beamSourceTime,aimDirection:aim,playback:this.beamPlayback,deferUpdate:true,attackRate:h.getAttSpeed(),animation:this.state.style==="mystic"?this.beamAnimation:this.settings.visual.animation||undefined,holdTime:this.settings.visual.holdTime>=0?this.settings.visual.holdTime:undefined,rapid:(this.state.style==="vanguard"&&active)?{elapsed:active.elapsed||0,duration:active.duration,strikes:active.count}:false});
 };
 Runtime.prototype.clear=function(reset){
   Presentation.clear(this);this.scope=null;this.aiming=false;this.channelTarget=null;this.beamTarget=null;this.beamVisibleSince=undefined;this.beamVisibleGeneration=undefined;this.beamWarmup=0;this.beamElapsed=0;this.beamSourceTime=0;this.beamAnimation=undefined;this.beamFrame=null;this.projectiles=[];this.effects=[];this.beamClock=0;

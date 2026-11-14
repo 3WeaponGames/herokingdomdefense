@@ -21,7 +21,7 @@ function generation(actor) { return actor && actor.node && actor.node._combatGen
 function sameBattle(record, releasedDamage) {
   return !!record && current() === record.data &&
     record.relicGeneration === (record.data && record.data._relicGeneration) &&
-    (!record.game || record.game._combatEpoch === record.epoch) &&
+    (!record.game || record.game._combatEpoch === record.epoch && (!record.game.ctrPlay || record.game.ctrPlay === record.hero)) &&
     (releasedDamage || living(record.hero) && generation(record.hero) === record.heroGeneration);
 }
 function primaryContext(hero, target, damage, critical, release) {
@@ -124,6 +124,7 @@ function heroAttack(hero, primary, damage) {
   if (!(ratio > 0)) return release;
   state.heroAttackCount = (Number(state.heroAttackCount) || 0) + 1;
   if (state.heroAttackCount % 8) return release;
+  var lifetime = primaryContext(hero, primary, damage, false);
   var center = position(primary);
   if (!center) return;
   var enemies = data.getEnemyList ? data.getEnemyList() : data.enemyList || [], nearby = [];
@@ -131,17 +132,20 @@ function heroAttack(hero, primary, damage) {
     var enemy = enemies[index], point = position(enemy);
     if (enemy === primary || !living(enemy) || !point) continue;
     var dx = point.x - center.x, dy = point.y - center.y, distance = dx * dx + dy * dy;
-    if (distance <= 200 * 200) nearby.push({ enemy: enemy, distance: distance, generation: enemy.node && enemy.node._combatGeneration });
+    if (distance <= 200 * 200) {
+      if (nearby.length === 2 && distance >= nearby[1].distance) continue;
+      var candidate = { enemy: enemy, distance: distance, generation: generation(enemy) };
+      if (nearby.length < 2) nearby.push(candidate); else nearby[1] = candidate;
+      if (nearby.length === 2 && nearby[1].distance < nearby[0].distance) { var first = nearby[0]; nearby[0] = nearby[1]; nearby[1] = first; }
+    }
   }
-  nearby.sort(function (a, b) { return a.distance - b.distance; });
   if (nearby.length) relicSound("chain-lightning", primary);
-  var game = data.ctrPar, epoch = game && game._combatEpoch, heroGeneration = hero.node && hero.node._combatGeneration;
   for (var i = 0; i < Math.min(2, nearby.length); i++) {
-    if (current() !== data || game && game._combatEpoch !== epoch || !living(hero) || hero.node && hero.node._combatGeneration !== heroGeneration) break;
+    if (!sameBattle(lifetime)) break;
     var record = nearby[i], target = record.enemy, amount = damage * ratio;
     if (!living(target) || !target.node || target.node._combatGeneration !== record.generation) continue;
     target.onAttacked(amount, hero, true);
-    if (current() === data && (!game || game._combatEpoch === epoch) && target.node._combatGeneration === record.generation) feedback(target, amount);
+    if (sameBattle(lifetime) && generation(target) === record.generation && !target._isPooled) feedback(target, amount);
   }
   return release;
 }
@@ -150,13 +154,14 @@ function primaryImpact(target, hero, context, damage) {
   context.used = true;
   var data = context.data;
   var gear = hero._heroSecondary || {};
+  // Capture the hit before style callbacks can heal/change the same target.
+  var dealt = Math.min(damage, Math.max(0, target.hp + damage));
   if(hero._styleRuntime)hero._styleRuntime.onImpact(target,damage,context);
   // Style callbacks may recycle the hero or retire this battle synchronously.
   // A dead target with the same generation still grants legitimate kill heals.
   if (!primaryCurrent(context, target, hero) || !sameBattle(context)) return;
   // Life steal uses damage actually removed, excluding overkill and all
   // reflected/splash hits. It cannot revive a dead or recycled hero.
-  var dealt = Math.min(damage, Math.max(0, target.hp + damage));
   if (gear.lifeSteal > 0 && hero.hpMax > 0) Runtime.heal(hero, dealt * gear.lifeSteal / hero.hpMax);
   if (!sameBattle(context)) return;
   if (hero.heroStyle !== "mystic" && gear.splashDamage > 0 && gear.splashRadius > 0 && context.point) {
@@ -175,7 +180,7 @@ function primaryImpact(target, hero, context, damage) {
   }
   var pierce = Runtime.value(data, 120024), cleave = Runtime.value(data, 120035), center = context.point, origin = context.origin;
   if ((pierce > 0 || cleave > 0) && center && origin) {
-    var enemies = data.getEnemyList ? data.getEnemyList() : data.enemyList || [], nearby = [];
+    var enemies = data.getEnemyList ? data.getEnemyList() : data.enemyList || [], pierced = null, cleaved = null;
     var dx = center.x - origin.x, dy = center.y - origin.y, length = Math.sqrt(dx * dx + dy * dy);
     for (var i = 0; i < enemies.length; i++) {
       var enemy = enemies[i], point = position(enemy);
@@ -183,10 +188,11 @@ function primaryImpact(target, hero, context, damage) {
       var x = point.x - center.x, y = point.y - center.y, distance = x * x + y * y;
       var along = length > 0 ? (x * dx + y * dy) / length : -1;
       var across = length > 0 ? Math.abs(x * dy - y * dx) / length : Infinity;
-      if (pierce > 0 ? along > 0 && along <= 70 && across <= 12 : distance <= 100 * 100) nearby.push({ enemy: enemy, generation: generation(enemy), distance: pierce > 0 ? along : distance });
+      if (pierce > 0 && along > 0 && along <= 70 && across <= 12 && (!pierced || along < pierced.distance)) pierced = { enemy: enemy, generation: generation(enemy), distance: along };
+      if (cleave > 0 && distance <= 100 * 100 && (!cleaved || distance < cleaved.distance)) cleaved = { enemy: enemy, generation: generation(enemy), distance: distance };
     }
-    nearby.sort(function (a, b) { return a.distance - b.distance; });
-    if (nearby.length) secondaryHit(nearby[0].enemy, context.nonCritical * (pierce || cleave), context, nearby[0].generation);
+    if (pierced) secondaryHit(pierced.enemy, context.nonCritical * pierce, context, pierced.generation);
+    if (cleaved) secondaryHit(cleaved.enemy, context.nonCritical * cleave, context, cleaved.generation);
   }
   if (context.echo > 0 && living(target)) secondaryHit(target, context.nonCritical * context.echo, context, context.targetGeneration);
   primaryHeroPerks(target, hero, context);
@@ -212,9 +218,13 @@ function primaryHeroPerks(target, hero, context) {
   }
   if (previous) { previous.time = 0; previous.timeMax = 1; previous.data.subNum = amount; }
   else {
-    target.addBuff(require("KinghtFallInterface").KinghtFallEnemyBuffType.MoveSpeed, { subNum: amount, time: 1 });
+    var status = { subNum: amount, time: 1 };
+    target.addBuff(require("KinghtFallInterface").KinghtFallEnemyBuffType.MoveSpeed, status);
+    if (!sameBattle(context) || generation(target) !== context.targetGeneration || !living(target)) return;
     buffs = target.debuffInfo || [];
-    if (buffs.length) buffs[buffs.length - 1]._heroCrippling = { hero: hero, generation: context.heroGeneration };
+    for (var index = 0; index < buffs.length; index++) if (buffs[index].data === status) {
+      buffs[index]._heroCrippling = { hero: hero, generation: context.heroGeneration }; break;
+    }
   }
 }
 function secondaryHit(target, damage, context, targetGeneration) {
@@ -269,7 +279,10 @@ function controlAnimationClock(enemy,factor) {
 function releaseFrozenControl(enemy) {
   var paused = enemy && enemy._relicPausedRenderers;
   if (!paused) return;
-  for (var i = 0; i < paused.length; i++) paused[i].renderer.paused = paused[i].wasPaused;
+  for (var i = 0; i < paused.length; i++) {
+    var renderer = paused[i].renderer;
+    if (renderer && (typeof cc === 'undefined' || !cc.isValid || cc.isValid(renderer, true))) renderer.paused = paused[i].wasPaused;
+  }
   delete enemy._relicPausedRenderers;
 }
 function releaseControl(enemy) {

@@ -271,3 +271,8 @@ exports.reset = function (actor) {
 exports.component = Appearance;
 exports.allyLevel = allyLevel; exports.assignedLook = assignedLook;
 exports.animationSpeed = animationSpeed; exports.preload = preload;
+exports.prime = function (catalog,parts,assets) {
+  looks=catalog;library={};(parts.parts||[]).forEach(function(part){library[part.id]=part;});
+  bakedJobs={};textureJobs={};Object.keys(assets||{}).forEach(function(key){if(key.indexOf("resources/")===0&&/:spine$/.test(key))bakedJobs[key.slice(10,-6)]={asset:assets[key]};});
+  Object.keys(library).forEach(function(id){var image=assets["resources/"+library[id].resource+":texture"];if(image){var adapter=new sp.SkeletonTexture({width:image.width,height:image.height});adapter.setRealTexture(image);textureJobs[id]={texture:adapter};}});
+};

@@ -8,7 +8,7 @@ function frameScale(diameter){return (validDiameter(diameter)?diameter:DEFAULT_D
 function bounds(diameter){var scale=frameScale(diameter);return {left:-FRAME_WIDTH*scale/2,right:FRAME_WIDTH*scale/2,bottom:ROOT_Y-FRAME_HEIGHT*scale/2,top:ROOT_Y+FRAME_HEIGHT*scale/2};}
 function faceCenterY(diameter){return ROOT_Y+FACE_Y*frameScale(diameter);}
 function create(button,current,cc){
-  var disposed=false,version=0,prefab=null,root=null,icon=null,iconFrame=null,iconResource="",desired=null,parts=null,appearance="",diameter=DEFAULT_DIAMETER;
+  var disposed=false,version=0,prefab=null,root=null,icon=null,iconFrame=null,iconResource="",desired=null,parts=null,appearance="",diameter=DEFAULT_DIAMETER,cooldownColor=null,cooldownOpacity=185;
   function live(value){return !!value&&(!cc.isValid||cc.isValid(value,true));}
   function owned(){return !disposed&&live(button)&&current();}
   function release(asset){if(asset&&asset.decRef)asset.decRef();}
@@ -27,10 +27,10 @@ function create(button,current,cc){
   }
   function paint(){
     if(!parts||!desired||!owned())return;
-    var cooling=desired.cooldown>0,signature=[desired.style,desired.usable,desired.aiming,cooling].join(":");
-    if(signature!==appearance){appearance=signature;parts.normal.active=desired.usable&&!desired.aiming;parts.armed.active=desired.usable&&desired.aiming;parts.disabled.active=!desired.usable;icon.node.color=cc.color(desired.usable||cooling?"#ffffff":"#aaa6b4");setIcon(desired.style);}
-    var ratio=Math.max(0,Math.min(1,desired.cooldown/Math.max(1e-9,desired.totalCooldown)));
-    parts.cooldown.active=cooling;
+    var planning=!!desired.planning,cooling=!planning&&desired.cooldown>0,signature=[desired.style,desired.usable,desired.aiming,cooling,planning].join(":");
+    if(signature!==appearance){appearance=signature;parts.normal.active=!planning&&desired.usable&&!desired.aiming;parts.armed.active=!planning&&desired.usable&&desired.aiming;parts.disabled.active=planning||!desired.usable;icon.node.color=cc.color(planning||desired.usable||cooling?"#ffffff":"#aaa6b4");parts.cooldown.color=planning?cc.color("#686b73"):cooldownColor;parts.cooldown.opacity=planning?165:cooldownOpacity;setIcon(desired.style);}
+    var ratio=planning?1:Math.max(0,Math.min(1,desired.cooldown/Math.max(1e-9,desired.totalCooldown)));
+    parts.cooldown.active=planning||cooling;
     // Positive remaining coverage keeps the dark sector counterclockwise from
     // noon, so the uncovered illustration grows clockwise as time elapses.
     if(parts.fill.fillRange!==ratio)parts.fill.fillRange=ratio;
@@ -45,6 +45,7 @@ function create(button,current,cc){
         parts={normal:root.getChildByName("Frame"),armed:root.getChildByName("Frame armed"),disabled:root.getChildByName("Frame disabled"),cooldown:artwork&&artwork.getChildByName("Cooltime")};
         if(!icon||!parts.normal||!parts.armed||!parts.disabled||!parts.cooldown)throw Error("Incomplete skill-button prefab");
         parts.fill=parts.cooldown.getComponent(cc.Sprite);if(!parts.fill)throw Error("Missing skill cooldown sprite");
+        cooldownColor=parts.cooldown.color;cooldownOpacity=parts.cooldown.opacity;
         if(cc.Mask){var mask=artwork.getComponent(cc.Mask);if(!mask)throw Error("Missing circular skill mask");mask.type=cc.Mask.Type.ELLIPSE;mask.segments=96;mask.inverted=false;}
         parts.fill.type=cc.Sprite.Type.FILLED;parts.fill.fillType=cc.Sprite.FillType.RADIAL;parts.fill.fillCenter=cc.v2(.5,.5);parts.fill.fillStart=.25;
         paint();

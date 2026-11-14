@@ -27,6 +27,34 @@ function scene(style,options={}){
  return {...h,hero,rt,enemy,poses,clears,hpUpdates,buffs,retimes};
 }
 
+test('all hero classes keep locomotion while input is blocked or tiny without granting movement-based skill charge',()=>{
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
+  const h=scene(style),origin=h.hero.node.getPosition();h.g.moveDir={x:0,y:.000001};
+  for(let frame=0;frame<20;frame++)h.rt.update(.05);
+  assert(h.poses.every(p=>p.moving),style+' stopped walking against a wall');assert.deepEqual(h.hero.node.getPosition(),origin);assert.equal(h.rt.moving,false);
+  h.g.moveDir={x:0,y:0};h.rt.update(.05);assert.equal(h.poses.at(-1).moving,false);
+  if(style==='vanguard')assert.equal(h.rt.state.charge,0,'Blocked animation must not grant actual movement momentum');
+ }
+});
+
+test('Bruiser damage and attack speed increase as HP falls and its authored charm heals fractional primary-hit damage',()=>{
+ const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),Stats=require('../../assets/_script/HeroEquipmentStats'),h=scene('bruiser');
+ h.hero._heroSecondary=Stats.secondary(config,'bruiser',2);h.hero.hp=900;
+ const high={damage:h.hero.getAttack(),speed:h.hero.getAttSpeed()};h.hero.hp=100;
+ assert(h.hero.getAttack()>high.damage);assert(h.hero.getAttSpeed()>high.speed);
+ const target=h.enemy(100),hp=h.hero.hp,damage=h.rt.hit(target,1,false);
+ assert(damage>0);close(h.hero.hp-hp,damage*h.hero._heroSecondary.lifeSteal);
+ assert(h.hero.hp>hp,'Small life-steal amounts must not be rounded down to zero');
+});
+
+test('Vanguard full Momentum halves the old movement bonus and a landed basic hit grants real attack speed for ten seconds',()=>{
+ const h=scene('vanguard'),target=h.enemy(100),base={move:h.hero.getSpeed(),rate:h.hero.getAttSpeed()};
+ h.rt.state.charge=1;close(h.hero.getSpeed(),base.move*1.5);close(h.hero.getAttSpeed(),base.rate);
+ assert(h.rt.hit(target,1,false)>0);close(h.hero.getAttSpeed(),base.rate*1.35);close(h.hero.getSpeed(),base.move*1.5);close(h.rt.state.buffRemaining,10);
+ h.rt.update(9.5);close(h.hero.getAttSpeed(),base.rate*1.35);h.rt.update(.5);close(h.hero.getAttSpeed(),base.rate);close(h.hero.getSpeed(),base.move);
+ const override=scene('vanguard',{config:{HeroSkills:{vanguard:{momentumMove:.2,momentumAttackRate:.6}}}});override.rt.state.charge=1;override.rt.state.buffStrength=1;override.rt.state.buffRemaining=10;close(override.hero.getSpeed(),300*1.2);close(override.hero.getAttSpeed(),1.6);
+});
+
 // Logic stress coverage complements the separately measured real Cocos FPS;
 // this harness deliberately does not pretend to simulate rendering or physics.
 for(const fps of [10,60,120])test('crowded Vanguard keeps seven strikes per enemy at '+fps+' simulation steps/sec',()=>{
@@ -59,10 +87,10 @@ test('Vanguard arc follows a moving hero without changing the cast aim',()=>{
 });
 
 test('Vanguard live movement charge changes the real speed wrapper and its first impact locks bonuses without refresh',()=>{
- const h=scene('vanguard'),target=h.enemy(100);h.hero.node.x=1;h.rt.update(2);close(h.rt.state.charge,.4);close(h.hero.getSpeed(),420);close(h.hero.getAttSpeed(),1);
- h.rt.hit(target,1,false,1);close(h.rt.state.buffStrength,.4);close(h.rt.state.charge,.4);close(h.rt.state.buffRemaining,10);close(h.hero.getSpeed(),420);close(h.hero.getAttSpeed(),1.14);
+ const h=scene('vanguard'),target=h.enemy(100);h.hero.node.x=1;h.rt.update(2);close(h.rt.state.charge,.4);close(h.hero.getSpeed(),360);close(h.hero.getAttSpeed(),1);
+ h.rt.hit(target,1,false,1);close(h.rt.state.buffStrength,.4);close(h.rt.state.charge,.4);close(h.rt.state.buffRemaining,10);close(h.hero.getSpeed(),360);close(h.hero.getAttSpeed(),1.14);
  h.hero.node.x=2;h.rt.update(2);h.rt.hit(target,1,true,2);close(h.rt.state.buffRemaining,8);close(h.rt.state.charge,.4);close(h.rt.state.buffStrength,.4);h.rt.update(8);close(h.rt.state.charge,0);close(h.hero.getSpeed(),300);close(h.hero.getAttSpeed(),1);
- h.hero.node.x=3;h.rt.update(1);close(h.rt.state.charge,.2);close(h.hero.getSpeed(),360);close(h.hero.getAttSpeed(),1);
+ h.hero.node.x=3;h.rt.update(1);close(h.rt.state.charge,.2);close(h.hero.getSpeed(),330);close(h.hero.getAttSpeed(),1);
 });
 
 test('a moving Vanguard spear cast locks the first real skill-hit momentum and all later thrusts leave it frozen',()=>{

@@ -6,7 +6,7 @@ var DEFAULTS = {
   common: { cooldown: 12 },
   skirmisher: { cooldown: 12, chargeRate: .25, chargedDamage: .5, windup: .35, projectileSpeed: 1000, distanceDamagePer100: .1, projectileWidth: 28 },
   fighter: { cooldown: 12, maxStacks: 5, stackDuration: 5, stackDamage: .03, stackReduction: .025, stackTenacity: .08, buffDuration: 10, buffDamage: .25, buffAttackRate: .35, knockback: 140 },
-  vanguard: { cooldown: 14, chargeRate: .2, chargeDecay: .15, buffDuration: 10, momentumMove: 1, momentumAttackRate: .35, duration: 2.5, strikes: 7, strikeDamage: .5, moveScaling: .25, attackScaling: .25, referenceMove: 300 },
+  vanguard: { cooldown: 14, chargeRate: .2, chargeDecay: .15, buffDuration: 10, momentumMove: .5, momentumAttackRate: .35, duration: 2.5, strikes: 7, strikeDamage: .5, moveScaling: .25, attackScaling: .25, referenceMove: 300 },
   mystic: { cooldown: 12, maxCharges: 10, chargeDamage: .15, activeDamage: 1.5, slow: .2, slowDuration: 1.5 },
   bruiser: { cooldown: 12, missingDamage: .5, missingAttackRate: .75, sacrifice: .5 },
   guardian: { cooldown: 16, allyReduction: .1, shieldHealth: .25, shieldDuration: 5, tauntDuration: 3 }
@@ -28,11 +28,14 @@ function settings(style, overrides) {
 }
 function direction(value) {
   value = value || {};
-  var x = finite(value.x, 1), y = finite(value.y, 0), length = Math.sqrt(x * x + y * y);
-  return length > 0 ? { x: x / length, y: y / length } : { x: 1, y: 0 };
+  var x = finite(value.x, 1), y = finite(value.y, 0), scale = Math.max(Math.abs(x), Math.abs(y));
+  if (!(scale > 0)) return { x: 1, y: 0 };
+  x /= scale; y /= scale;
+  var length = Math.hypot(x, y);
+  return { x: x / length, y: y / length };
 }
 function createState(style, overrides) {
-  style = DEFAULTS[style] && style !== "common" ? style : "skirmisher";
+  style = Object.prototype.hasOwnProperty.call(DEFAULTS, style) && style !== "common" ? style : "skirmisher";
   return { style: style, tuning: settings(style, overrides), time: 0, charge: 0,
     buffRemaining: 0, buffStrength: 0, stacks: 0, stackRemaining: 0,
     target: null, marked: false, mysticCharges: 0, cooldown: 0,

@@ -80,7 +80,7 @@ function formatEffect(row, catalog, language, valuesKey, flagsKey) {
   const values=row[valuesKey || 'Pamer'] || [],flags=row[flagsKey || 'isPerecentage'] || [];
   return resolve(row.Describe || row.LevelUpDescribe || '',catalog,language).replace(/\{(\d+)\}/g,(_,n)=>{
     const value=values[Number(n)];
-    return value === undefined ? '{'+n+'}' : flags[n] ? String(Math.ceil(value * 100))+'%' : String(value);
+    return value === undefined ? '{'+n+'}' : flags[n] ? String(Number((value * 100).toFixed(2)))+'%' : String(value);
   });
 }
 function descriptor(key, context) {
@@ -120,7 +120,7 @@ function descriptor(key, context) {
   if(key==='EffectKey'&&context.table==='TreasureCfg')result.help='Stable implementation identity; changing this text does not create a new combat mechanic.';
   if(key==='RequiredHeroStyles'&&context.table==='TreasureCfg'){
     result.options=HeroWeapons.styles.map(style=>({value:style.id,label:style.name}));
-    result.help='Only these equipped fighting styles activate this relic. Values must be implemented style IDs; omit the field for all styles.';
+    result.help='Only these equipped fighting styles activate this relic. Select all six style IDs to allow every class. Omitting the field restores this relic\'s original style requirements.';
   }
   if(key==='Level'&&context.table==='TreasureCfg')result.readOnly=true;
   if (key==='prefab') result.asset='prefabs';

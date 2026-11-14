@@ -4,6 +4,18 @@ const {NavigationGrid}=require('../../assets/_script/NavigationGrid');
 const {environment,PhysicsBoxCollider,Vec2,distance}=require('./runtime-harness.cjs');
 const box=(x0,y0,x1,y1)=>[{x:x0,y:y0},{x:x1,y:y0},{x:x1,y:y1},{x:x0,y:y1}];
 const bounds={minX:-600,minY:-600,maxX:600,maxY:600};
+
+test('sustained hero input at a tangent or shallow overlap cannot turn contact into permission to cross terrain',()=>{
+ for(const direction of [new Vec2(1,0),new Vec2(1,.05)]){
+  const e=environment();e.game.mapSize={width:1200,height:1200};const hero=e.actor('KinghtFallGamePlayCtrl',-180,0);hero.node.addComponent(PhysicsBoxCollider).size={width:22,height:22};hero.state=0;hero.time.RenSoundTime=1;hero.ctrPlayAni={setMove(){},setIdle(){}};
+  e.box(0,0,200,1000);const radius=e.nav.get(e.game).radius(hero);
+  for(let frame=0;frame<1500;frame++){hero.doMove(direction,.1);assert(hero.node.x<=-100-radius+.001,'Repeated blocked input drilled through a wall');}
+  hero.node.setPosition(-100-radius+.01,0);const before=hero.node.x;
+  for(let frame=0;frame<200;frame++)hero.doMove(new Vec2(1,0),.1);
+  assert(hero.node.x<=before+.001,'A physics overlap was allowed to deepen');
+  hero.doMove(new Vec2(-1,0),.1);assert(hero.node.x<before,'A real existing overlap must still allow outward escape');
+ }
+});
 test('one-way terrain allows movement within a blocker and exit, but prevents entry and re-entry with full body clearance',()=>{
  const grid=new NavigationGrid([box(-100,-100,100,100),box(180,-40,220,40)],bounds,20);
  assert(grid.canExitBlocked({x:90,y:0},{x:0,y:0},12),'existing overlap may move deeper before finding an exit');

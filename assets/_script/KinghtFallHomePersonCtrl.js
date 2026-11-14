@@ -208,8 +208,8 @@ var def_KinghtFallHomePersonCtrl = function (t) {
         var tint = cc.color(require("EquipmentTiers").tint(r.cfg.levelInfo[l - 1]));
         r.ndItem.color = tint; r.ndInfo.getChildByName("ndItem").color = tint;
       });
-      var equippedStyle = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon(), slotView = require('HeroWeapons').gear(equippedStyle.id, r.type, 'equipment'), shownLevel = slotView && slotView.occupiedBy && (!customImage || customImage.linked) ? $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(slotView.occupiedBy) : l;
-      r.ndItem.getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), shownLevel);
+      var equippedStyle = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon();
+      r.ndItem.getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), l);
       r.ndInfo.getChildByName("ndItem").getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), l);
       var g = r.ndInfo.getChildByName("ndLay");
       // Captions have their own localized labels; values never flow into them.
@@ -288,7 +288,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     if(row.type===4){require("LanguageMgr").LanguageMgr.getInstance().bindLabel(layout.getChildByName("labStat").getComponent(cc.Label),"gear.stat.damage");layout.getChildByName("labNum1").getComponent(cc.Label).string=Stats.formatted(current[0]);if(next)layout.getChildByName("labNum2").getComponent(cc.Label).string=Stats.formatted(next[0]);return;}
     ["labStat","labNum1","labNum2","ndArr"].forEach(function(name){layout.getChildByName(name).active=false;});
     var holder=layout.getChildByName("Secondary bonuses");if(!holder){holder=new cc.Node("Secondary bonuses");holder.setParent(layout);}holder.destroyAllChildren();holder.removeAllChildren();
-    current.forEach(function(field,index){var node=new cc.Node(field.key);node.setParent(holder);node.anchorX=0;node.setPosition(-198,-24-index*40);node.setContentSize(300,36);var label=node.addComponent(cc.Label);label.fontSize=32;label.lineHeight=36;label.overflow=cc.Label.Overflow.SHRINK;label.horizontalAlign=cc.Label.HorizontalAlign.LEFT;label.verticalAlign=cc.Label.VerticalAlign.CENTER;label.string=field.label+": "+Stats.formatted(field)+(next?" → "+Stats.formatted(next[index]):"");node.color=cc.color("#667b93");});
+    current.forEach(function(field,index){var node=new cc.Node(field.key);node.setParent(holder);node.anchorX=0;node.setPosition(-198,-24-index*40);var label=node.addComponent(cc.Label);label.fontSize=32;label.lineHeight=36;label.overflow=cc.Label.Overflow.SHRINK;label.horizontalAlign=cc.Label.HorizontalAlign.LEFT;label.verticalAlign=cc.Label.VerticalAlign.CENTER;label.enableWrapText=false;label.string=field.label+": "+Stats.formatted(field)+(next?" → "+Stats.formatted(next[index]):"");node.setContentSize(300,36);node.color=cc.color("#667b93");});
   };
   _ctor.prototype.initBtnView = function () {
     var t = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getGoldNum();

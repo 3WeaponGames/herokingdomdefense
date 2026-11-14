@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "701672a6-b408-5ff0-a4b0-5f39f8a05a68",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "item-4-tier-lv4-bruiser_wqyl_lead_gong": {
+      "ver": "1.0.6",
+      "uuid": "1a9ba71d-fcad-5e10-a6fe-b21429537f55",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "701672a6-b408-5ff0-a4b0-5f39f8a05a68",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

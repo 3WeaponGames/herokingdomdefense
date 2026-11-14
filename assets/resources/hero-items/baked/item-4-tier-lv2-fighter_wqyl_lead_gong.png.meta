@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "9b672c0d-5cd0-588b-ac76-fdc43b9b7aa3",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "item-4-tier-lv2-fighter_wqyl_lead_gong": {
+      "ver": "1.0.6",
+      "uuid": "fab171af-b6b7-56cf-ae53-3541915b26fb",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "9b672c0d-5cd0-588b-ac76-fdc43b9b7aa3",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

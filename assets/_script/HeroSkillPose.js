@@ -21,7 +21,7 @@ function removeAim(target){
   // A skin may replace the whole native rig. Never touch a retained Bone
   // wrapper after that skeleton asset has been disposed/replaced.
   var bone=record.identity===(target.skeletonData||target.data)&&target.findBone&&target.findBone("Rider/HandRight");
-  if(bone&&Math.abs(value(bone,"rotation",record.applied)-record.applied)<1e-6)write(bone,"rotation",record.base);
+  if(bone&&Math.abs(value(bone,"rotation",record.applied)-record.applied)<1e-6){write(bone,"rotation",record.base);commitWorld(target);}
   aimed.delete(target);
 }
 function applyAim(target,direction,mirrorX,options){
@@ -54,6 +54,15 @@ function arrowTip(target,direction,mirrorX){
   var length=Math.hypot(dx,dy)||1;dx/=length;dy/=length;
   var points=[],max=-Infinity;for(var i=0;i<vertices.length;i+=2){var p={x:x+vertices[i]*a+vertices[i+1]*b,y:y+vertices[i]*c+vertices[i+1]*d};p.projection=p.x*dx+p.y*dy;max=Math.max(max,p.projection);points.push(p);}
   var edge=points.filter(function(p){return max-p.projection<.1;});return{x:edge.reduce(function(n,p){return n+p.x;},0)/edge.length,y:edge.reduce(function(n,p){return n+p.y;},0)/edge.length};
+}
+// RegionAttachment's upper edge follows the fitted artwork's own +Y, including
+// its authored rotation. It is independent of the current beam target.
+function attachmentTip(target,name,resolvedBone){
+  var bone=resolvedBone||target&&target.findBone&&target.findBone(name),slot=target&&target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==='function'?slot.getAttachment():slot.attachment),vertices=localVertices(attachment);
+  if(!bone||!vertices)return null;
+  var x=(vertices[2]+vertices[4])/2,y=(vertices[3]+vertices[5])/2,a=value(bone,'a',NaN),b=value(bone,'b',NaN),c=value(bone,'c',NaN),d=value(bone,'d',NaN);
+  if(!isFinite(a+b+c+d))return null;
+  return{x:value(bone,'worldX',0)+x*a+y*b,y:value(bone,'worldY',0)+x*c+y*d};
 }
 function fraction(key,t){
   if(key.curve==="stepped")return 0;if(!Array.isArray(key.curve))return t;
@@ -98,3 +107,4 @@ function arrowTipAt(target,json,animation,time,direction,mirrorX,options){
   return arrowTip({findBone:function(){return fakeBone;},findSlot:function(){return{attachment:attachment};}},direction,mirrorX);
 }
 exports.value=value;exports.commitWorld=commitWorld;exports.applyAim=applyAim;exports.removeAim=removeAim;exports.arrowTip=arrowTip;exports.arrowTipAt=arrowTipAt;exports.arrowAimAngle=arrowAimAngle;
+exports.attachmentTip=attachmentTip;

@@ -23,7 +23,7 @@ test('Mystic basic preview is one tethered target and ticks according to preview
   const distant=new Model('mystic',{}, {mode:'basic',attackRate:2,targetDistance:600});simulate(distant,2);assert.equal(distant.beam,false);assert.equal(distant.hits,0);
 });
 test('Blood Cleave shows the post-sacrifice HP cost before damage and the lifesteal recovery',()=>{
-  const model=new Model('bruiser',{}, {mode:'active',hp:50,targetDistance:100,targets:1});
+  const model=new Model('bruiser',{}, {mode:'active',hp:50,targetDistance:100,targets:1,lifeSteal:.1});
   close(model.castResult.hpAfterCost,250);close(model.castResult.damageMultiplier,1.75);close(model.damage,0);close(model.hero.hp,250);
   simulate(model,.1667);close(model.damage,240.625);close(model.hero.hp,274.0625);
   const missed=new Model('bruiser',{}, {mode:'active',hp:50,targetDistance:700});close(missed.hero.hp,250);assert.equal(missed.hits,0);
@@ -248,7 +248,7 @@ test('a pending optional effect never delays the selected simulation and stale f
 });
 
 test('Vanguard preview recomputes exact-expiry strike scaling and preserves zero damage',()=>{
- const m=new Model('vanguard',{duration:1,strikes:2,buffDuration:.5,chargeDecay:0},{mode:'active',targets:1,targetDistance:100,attackRate:1});m.advance(1);const hits=m.events.filter(e=>e.kind==='impact');assert.equal(hits.length,2);close(hits[0].damage,84.375,'The first hit includes the movement speed from live momentum');close(hits[1].damage,75);
+ const m=new Model('vanguard',{duration:1,strikes:2,buffDuration:.5,chargeDecay:0},{mode:'active',targets:1,targetDistance:100,attackRate:1});m.advance(1);const hits=m.events.filter(e=>e.kind==='impact');assert.equal(hits.length,2);close(hits[0].damage,79.6875,'The first hit includes the reduced movement bonus from live momentum');close(hits[1].damage,75);
  const zero=new Model('vanguard',{duration:.1,strikes:7,strikeDamage:0},{mode:'active',targets:1,targetDistance:100,attackRate:0});zero.advance(.1);assert.equal(zero.hits,0);assert.equal(zero.damage,0);assert.equal(zero.state.buffRemaining,0);assert.equal(zero.targets[0].hp,100000);
 });
 

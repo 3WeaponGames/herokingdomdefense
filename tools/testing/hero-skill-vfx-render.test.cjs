@@ -29,3 +29,24 @@ test('Guardian aura follows the actual shield rather than the short cast ring',(
 test('Mystic phase textures preload once before combat without creating visuals and late loading remains owned',()=>{
  const f=fixture('mystic');f.P.preload(f.rt);assert.equal(f.loads.length,11);assert.equal(f.main.children.length,1);assert.equal(f.hud.visual.node.children.length,0);f.P.preload(f.rt);assert.equal(f.loads.length,11);f.finish();assert.equal(f.assets.length,11);f.P.preload(f.rt);assert.equal(f.loads.length,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
 });
+
+test('beam and mark may share one atlas without inheriting the other slot tint, opacity or scale',()=>{
+ const f=fixture('mystic'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop'),target=f.target();
+ Settings.applyClip(f.rt.settings.visual,'beamResource',clip);Settings.applyClip(f.rt.settings.visual,'markResource',clip);
+ Object.assign(f.rt.settings.visual,{beamOpacity:.2,beamColor:'#111111',markOpacity:.8,markColor:'#eeeeee',markScale:2});
+ f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;
+ f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes(clip.uuid)),mark=[...art.nodes.values()].find(r=>r.entity.slot==='mark'),body=[...art.nodes.values()].find(r=>r.entity.slot==='beam');
+ assert(mark&&body);assert.equal(mark.node.opacity,204);assert.equal(mark.node.color,'#eeeeee');assert.equal(mark.node.scaleX,2);assert.equal(body.node.opacity,51);assert.equal(body.node.color,'#111111');
+ assert.equal(f.assets.filter(a=>a===art.asset).length,1,'Shared atlas should retain a single owner');f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+});
+
+test('a preloaded atlas with different authored playback metadata keeps independent frame caches',()=>{
+ const f=fixture('mystic'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop'),target=f.target();
+ Settings.applyClip(f.rt.settings.visual,'beamResource',clip);Settings.applyClip(f.rt.settings.visual,'markResource',clip);
+ // Non-catalog custom atlases can use the same UUID with different playback.
+ f.rt.settings.visual.markResourceAnimation='alternate';
+ f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;
+ f.P.preload(f.rt);f.finish();f.paint();f.finish();f.paint();
+ const uses=[...f.rt._presentation.styleArts.values()].filter(a=>a.resourceKey.includes(clip.uuid));assert.equal(uses.length,2);assert.notEqual(uses[0].frames,uses[1].frames);assert(uses.every(a=>a.asset.refs===1));
+ f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+});

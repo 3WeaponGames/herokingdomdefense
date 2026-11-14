@@ -98,23 +98,30 @@ function updateHeroAura(data, hero, dt, moving) {
   if (!timer || timer.data !== data || timer.generation !== generation || timer.battleGeneration !== data._relicGeneration || timer.round !== data.round) {
     timer = hero._relicArmyAura = { data: data, generation: generation, battleGeneration: data._relicGeneration, round: data.round, elapsed: 0 };
   }
-  if (!(amount > 0) || !living(hero) || !hero.node || moving) { timer.elapsed = 0; return 0; }
+  if (!(amount > 0) || !living(hero) || !TowerCombat.live(hero) || moving) { timer.elapsed = 0; return 0; }
   if (!(dt > 0) || !isFinite(dt)) return 0;
   timer.elapsed += dt;
   var pulses = Math.floor((timer.elapsed + 1e-9) / 8);
   if (!pulses) return 0;
   timer.elapsed -= pulses * 8;
-  var parent = hero.node.parent, center = TowerCombat.point(hero.node, parent), soldiers = (data.soldierList || []).slice(), entries = [], seen = [];
+  var heroNode = hero.node, owner = data.ctrPar, ownerData = owner && owner.gameData, ownerHero = owner && owner.ctrPlay;
+  var battleGeneration = data._relicGeneration, round = data.round, epoch = owner && owner._combatEpoch;
+  var parent = heroNode.parent, center = TowerCombat.point(heroNode, parent), soldiers = (data.soldierList || []).slice(), entries = [], seen = [];
   soldiers.forEach(function (soldier) {
-    if (!living(soldier) || !soldier.node || seen.indexOf(soldier) >= 0) return;
+    if (!living(soldier) || !TowerCombat.live(soldier) || seen.indexOf(soldier) >= 0) return;
     seen.push(soldier);
     var pos = TowerCombat.point(soldier.node, parent), dx = pos.x - center.x, dy = pos.y - center.y;
     if (isFinite(dx) && isFinite(dy) && dx * dx + dy * dy <= 220 * 220) entries.push({ actor: soldier, node: soldier.node, generation: soldier.node._combatGeneration });
   });
   var healed = 0;
-  entries.forEach(function (entry) {
-    if (entry.actor.node === entry.node && entry.node._combatGeneration === entry.generation && living(entry.actor)) healed += Runtime.heal(entry.actor, amount * pulses);
-  });
+  for (var index = 0; index < entries.length; index++) {
+    // A healing-view callback may restart the battle or replace its hero.
+    if (data._relicGeneration !== battleGeneration || data.round !== round || data.ctrPar !== owner ||
+        owner && (owner.gameData !== ownerData || owner.ctrPlay !== ownerHero || owner._combatEpoch !== epoch) ||
+        hero.node !== heroNode || heroNode._combatGeneration !== generation || !living(hero) || !TowerCombat.live(hero)) break;
+    var entry = entries[index];
+    if (entry.actor.node === entry.node && entry.node._combatGeneration === entry.generation && living(entry.actor) && TowerCombat.live(entry.actor)) healed += Runtime.heal(entry.actor, amount * pulses);
+  }
   return healed;
 }
 function towerImpact(data, tower, target, center, parent) {

@@ -206,6 +206,7 @@ function prepare(shot, owner, key, sourceActor) {
 exports.prepare = prepare;
 exports.select = select;
 exports.Bank = Bank;
+exports.prime = function (data) { catalog=data;loading=false;retryAfter=0;var callbacks=waiting;waiting=[];callbacks.forEach(function(callback){callback(catalog);}); };
 exports.release = function (shot) {
   var view = shot._projectileVisual;
   if (view) view.release();

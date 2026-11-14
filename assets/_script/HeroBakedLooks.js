@@ -33,3 +33,4 @@ function apply(list, profile) {
   });
 }
 exports.apply = apply; exports.originalId = originalId; exports.baked = baked;
+exports.prime = function (assets) { jobs={};Object.keys(assets||{}).forEach(function(key){if(key.indexOf("resources/")===0&&/:spine$/.test(key))jobs[key.slice(10,-6)]={asset:assets[key]};}); };

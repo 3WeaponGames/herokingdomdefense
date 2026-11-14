@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-function fixture(style='skirmisher',maker={}){
+function fixture(style='skirmisher',maker={},buttonArt){
  class Node{
   constructor(name){this.name=name;this.children=[];this.handlers={};this.x=this.y=0;this.width=this.height=0;this.anchorX=this.anchorY=.5;this.scaleX=this.scaleY=1;this.active=this.activeInHierarchy=true;this.zIndex=0;}
   setParent(parent){if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);this.parent=parent;parent.children.push(this);}
@@ -22,7 +22,7 @@ function fixture(style='skirmisher',maker={}){
  const entries=require('../../assets/resources/localization/catalog.json').entries,bindings=new Map();let language='en';
  const manager={bindLabel(label,key,params){bindings.set(label,{key,params});label.string=(entries[key]&&entries[key][language]||key).replace(/\{(\d+)\}/g,(_,i)=>params&&params[i]);}};
  const setLanguage=value=>{language=value;for(const [label,{key,params}]of bindings)manager.bindLabel(label,key,params);};
- const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date,Math,require:name=>name==='HeroMakerRider'?maker:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
+ const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date,Math,require:name=>name==='HeroMakerRider'?maker:name==='./HeroSkillButton'&&buttonArt?buttonArt:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
  const root=new Node('UI');root.setContentSize(750,1334);const main=new Node('Map'),visual=new Node('Effects');visual.setParent(main);
  const actor=new Node('Hero');actor.setParent(main);const hp=new Node('HP');hp.setParent(actor);hp.setContentSize(64,12);hp.y=80;hp.active=false;
  const hero={node:actor,hp:100,hpMax:100,attackRange:200,ctrHp:{node:hp},getAttWpos:()=>actor.convertToWorldSpaceAR({x:0,y:40})};
@@ -232,7 +232,7 @@ test('planning and wave transitions keep the icon visible without enabling casts
  const f=fixture('guardian'),hud=f.hero._skillHUD;f.rt.available=()=>f.game.gameStatus===2;f.rt.heroGeneration=1;f.hero.node._combatGeneration=1;
  for(const stage of [0,1,2,0,1]){f.game.gameStatus=stage;f.rt.aiming=true;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,true);assert.equal(hud.visual.node.active,stage===2);const before=f.rt.casts.length;hud.button.handlers.start(f.event(stage+3));hud.button.handlers.end(f.event(stage+3));assert.equal(f.rt.casts.length,before+(stage===2?1:0));if(stage!==2)assert.equal(f.rt.aiming,false);}
  for(const stage of [3,4]){f.game.gameStatus=stage;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false);}
- f.game.gameStatus=0;f.ui.isPauset=true;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false);f.ui.isPauset=false;f.hero.hp=0;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false);f.hero.hp=100;f.hero.node._combatGeneration=2;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false,'A stale hero generation must not become a planning icon');
+ f.game.gameStatus=0;f.ui.isPauset=true;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false);f.ui.isPauset=false;f.hero.hp=0;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,true,'Planning keeps the disabled icon while the hero recovers');f.hero.hp=100;f.hero.node._combatGeneration=2;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false,'A stale hero generation must not become a planning icon');
 });
 
 test('cooldown uses centered white Lilita One digits for every style and locale, with balanced asset ownership',()=>{
@@ -245,4 +245,57 @@ test('cooldown uses centered white Lilita One digits for every style and locale,
 
 test('late or failed font callbacks cannot retain assets or change a recycled hero HUD',()=>{
  const f=fixture('guardian'),first=f.hero._skillHUD,old=f.fontLoads[0];let refs=0;const font={addRef(){refs++;return this;},decRef(){refs--;}};f.hud.clear(f.hero);f.hero.node._combatGeneration=2;f.hud.update(f.hero,f.rt);const second=f.hero._skillHUD;old.callback(null,font);assert.equal(refs,0);assert.notEqual(second.cooldownCount.font,font);f.fontLoads[1].callback(Error('missing'));f.rt.state.cooldown=4;f.hud.update(f.hero,f.rt);assert.equal(second.cooldownCount.string,'4');assert.equal(first.button.destroyed,true);f.hud.clear(f.hero);assert.equal(refs,0);
+});
+
+test('every class installs its planning icon before the first combat update and after a restarted generation',()=>{
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
+  const f=fixture(style);f.hud.clear(f.hero);f.game.gameStatus=0;
+  f.rt.game=f.rt.ui=null;f.rt.heroGeneration=f.hero.node._combatGeneration=1;
+  f.rt.refresh=function(){this.game=f.game;this.ui=f.ui;};
+  f.rt.available=function(){if(this.heroGeneration!==f.hero.node._combatGeneration){f.hud.clear(f.hero);this.heroGeneration=f.hero.node._combatGeneration;}return f.game.gameStatus===2;};
+  for(let generation=1;generation<=3;generation++){
+   f.hero.node._combatGeneration=generation;f.hud.update(f.hero,f.rt);
+   const hud=f.hero._skillHUD;assert(hud,style+' has no planning HUD');assert.equal(hud.button.active,true);assert(!hud.button.destroyed);assert.equal(hud.visual.node.active,false);
+   f.game.gameStatus=2;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,true);f.game.gameStatus=0;
+  }
+ }
+});
+
+test('all six classes keep the same disabled planning icon through battle transitions and block every skill touch',()=>{
+ const Art=require('../../assets/_script/HeroSkillButton');
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
+  const painted=[],art={...Art,create(){return{set(state){painted.push(state);},destroy(){}};}},f=fixture(style,{},art),hud=f.hero._skillHUD;f.rt.canCast=()=>true;
+  for(const stage of [0,2,0,1,2,0]){
+   f.game.gameStatus=stage;f.rt.state.cooldown=stage===2?0:7;f.rt.aiming=true;f.hud.update(f.hero,f.rt);assert.equal(f.hero._skillHUD,hud);assert.equal(hud.button.active,true);assert.equal(painted.at(-1).planning,stage!==2);assert.equal(painted.at(-1).usable,stage===2);assert.equal(painted.at(-1).cooldown,0);assert.equal(hud.cooldownCount.node.active,false);
+   if(stage!==2){
+    const before=f.rt.casts.length;for(const phase of ['start','move','end','cancel']){const event=f.event(90,50,50);hud.button.handlers[phase](event);assert.equal(event.stopped,true,style+' allowed a disabled icon gesture to reach movement');}
+    assert.equal(f.rt.casts.length,before);assert.equal(f.rt.aiming,false);f.rt.aiming=true;assert.equal(f.hud.handleTouch(f.controller,'start',f.event(91,100,100)),false);f.hud.update(f.hero,f.rt);assert.equal(f.rt.aiming,false);
+   }
+  }
+  f.ui.isclose=true;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false);f.hud.clear(f.hero);
+ }
+});
+
+test('direct skill activation paths cannot bypass planning for any class',()=>{
+ const {setup,hero}=require('./backend-gameplay-harness.cjs');
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
+  const h=setup(),p=hero(h);p.heroStyle=style;p.node._combatGeneration=1;h.g.gameStatus=h.e.stubs.KinghtFallModle.KinghtFallGameStage.Prepare;const Runtime=h.load('HeroStyleRuntime').Runtime,rt=p._styleRuntime=new Runtime(p,{}),hp=p.hp;
+  assert.equal(rt.canCast(),false);assert.equal(rt.cast({x:1,y:0}),false);assert.equal(rt.state.cooldown,0);assert.equal(rt.state.active,null);assert.equal(p.hp,hp);assert.equal(rt.aiming,false);
+ }
+});
+
+test('real runtime keeps every planning icon visible through dead and reborn generation changes',()=>{
+ const {setup}=require('./backend-gameplay-harness.cjs');
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
+  const f=fixture(style);f.hud.clear(f.hero);f.cc.Sprite=class{};f.cc.Prefab=class{};f.cc.instantiate=()=>new f.Node('pending skill artwork');f.hero.node._combatGeneration=1;f.game.gameStatus=0;f.ui.ctrGame=f.game;
+  const h=setup({HeroMakerRider:{clearCombatState(){}},HeroSkillHUD:f.hud});h.e.stubs.KinghtFallUIGame.default.instance=f.ui;const Runtime=h.load('HeroStyleRuntime').Runtime,rt=f.hero._styleRuntime=new Runtime(f.hero,{});f.hud.update(f.hero,rt);assert.equal(f.hero._skillHUD.button.active,true);
+  for(const hp of [0,100]){
+   f.hero.hp=hp;f.hero.isDead=()=>true;f.hero.node._combatGeneration++;f.hud.update(f.hero,rt);assert.equal(rt.heroGeneration,f.hero.node._combatGeneration,style+' retained a stale generation during recovery');const hud=f.hero._skillHUD,art=hud.art,loads=f.fontLoads.length;assert(f.fontLoads.some(r=>r.resource==='gui-pro/skills/active-skill'));assert.equal(hud.button.active,true);assert.equal(hud.visual.node.active,false);assert.equal(rt.canCast(),false);assert.equal(rt.cast({x:1,y:0}),false);
+   // Planning phase atlases own cached resources without active combat.
+   const atlas={refs:1,decRef(){this.refs--;}},preloaded=rt._presentation={pending:[],sources:[],feedback:[],impacts:[],nodes:new Map(),frames:new Map(),styleArts:new Map([['preloaded',{nodes:new Map(),frames:new Map(),asset:atlas}]])};
+   for(let frame=0;frame<10;frame++){rt.update(1/60);f.hud.update(f.hero,rt);assert(f.hero._skillHUD===hud,style+' rebuilt its planning HUD on a recovery frame');assert(hud.art===art);assert.equal(hud.button.active,true);assert.equal(hud.button.destroyed,undefined);assert.equal(f.fontLoads.length,loads,style+' repeated its async HUD asset load');}
+   assert(rt._presentation===preloaded);assert.equal(atlas.refs,1);
+  }
+  f.hud.clear(f.hero);
+ }
 });

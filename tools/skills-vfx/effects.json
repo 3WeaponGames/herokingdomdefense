@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "workbook": "Skill VFX.xlsx",
+  "workbook": "Characters Plan.xlsx",
   "clips": [
     {"id":"fighter-windup","name":"Beam Cast Windup (Fighter)","package":"Anime Powers Pack 1.5.unitypackage","prefab":"Assets/Piloto Studio/Anime_VFX_Pack_Vol1/Beams/Beam_Cast.prefab","style":"fighter","slot":"passive","phase":"loop","group":"fighter-windup","loop":true,"frames":128,"fps":96,"warmup":2,"includeParticles":["Ki_Pickbook_Desaturated","ImpactLightrays_Blurry","Cast_Ray"],"pitch":15},
     {"id":"vanguard-momentum","name":"Destructor Disk Yellow (Vanguard)","package":"Anime Powers Pack 1.5.unitypackage","prefab":"Assets/Piloto Studio/Anime_VFX_Pack_Vol1/DestructorDisk/DestructorDisk_Yellow.prefab","style":"vanguard","slot":"passive","phase":"loop","group":"vanguard-momentum","loop":true,"frames":128,"fps":96,"warmup":2,"pitch":60},

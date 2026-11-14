@@ -1,4 +1,44 @@
 function millAttackTargets(data) { return data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList(); }
+function skillScope(owner) {
+  var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, node = owner.node;
+  return { ui: ui, game: game, data: game && game.gameData, effects: ui && ui.ctrEffect, hero: game && game.ctrPlay,
+    epoch: game && game._combatEpoch, stage: game && game.gameStatus, node: node, generation: node && node._combatGeneration, timers: owner.time };
+}
+function skillCurrent(owner, scope, released) {
+  return scope && scope.ui && scope.game && scope.data && cc.isValid(scope.ui, true) && cc.isValid(scope.effects, true) &&
+    $z1KinghtFallUIGame.default.instance === scope.ui && !scope.ui.isclose && scope.ui.ctrGame === scope.game && scope.ui.ctrEffect === scope.effects && cc.isValid(scope.game, true) &&
+    (!scope.game.node || cc.isValid(scope.game.node, true) && scope.game.node.activeInHierarchy !== false) &&
+    scope.game.gameData === scope.data && scope.game.ctrPlay === scope.hero && scope.game._combatEpoch === scope.epoch && scope.game.gameStatus === scope.stage &&
+    cc.isValid(owner, true) && owner.node === scope.node && cc.isValid(scope.node, true) && scope.node.activeInHierarchy !== false &&
+    scope.node._combatGeneration === scope.generation && owner.time === scope.timers && !owner._isPooled && (released || !owner.isDead() && owner.hp > 0);
+}
+function skillTarget(actor) { return { item: actor, node: actor.node, generation: actor.node && actor.node._combatGeneration }; }
+function targetCurrent(record, live) {
+  var actor = record.item;
+  return cc.isValid(actor, true) && actor.node === record.node && cc.isValid(record.node, true) && record.node._combatGeneration === record.generation && !actor._isPooled &&
+    (!live || (!actor.isDead || !actor.isDead()) && !(typeof actor.hp === "number" && actor.hp <= 0) && (!actor.getIsWork || actor.getIsWork()));
+}
+function splashSnapshot(owner, primary, scope) {
+  var center = primary.node.getPosition(), world = primary.node.convertToWorldSpaceAR(cc.Vec2.ZERO), radius = owner.cfg.Data[1], records = [];
+  function include(actor) {
+    if (!actor || actor.uuid === primary.uuid) return;
+    var record = skillTarget(actor);if (!targetCurrent(record, true)) return;
+    record.position = actor.node.getPosition();record.len = cc.Vec2.distance(record.position, center);
+    if (record.len <= radius) records.push(record);
+  }
+  include(scope.hero);scope.data.getSoldierList().forEach(include);
+  var buildings = millAttackTargets(scope.data), circle = { position: world, radius: radius };
+  for (var index = 0; index < buildings.length; index++) {
+    var building = buildings[index], record = skillTarget(building);
+    if (building.uuid === primary.uuid || !targetCurrent(record, true)) continue;
+    var polygons = building.getWposPhyCol();
+    for (var part = 0; part < polygons.length; part++) if (cc.Intersection.polygonCircle(polygons[part], circle)) {
+      record.position = building.node.getPosition();record.len = cc.Vec2.distance(record.position, center);records.push(record);break;
+    }
+  }
+  records.sort(function (a, b) { return a.len - b.len; });
+  return { scope: scope, records: records, damage: owner.cfg.Data[0], limit: owner.cfg.Data[2] };
+}
 var BattleSounds = require("BattleSounds");
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
@@ -48,7 +88,10 @@ var def_KinghtFallEnemyItem07 = function (t) {
     }
   };
   _ctor.prototype.doAttack = function () {
+    var scope = skillScope(this);
+    if (!skillCurrent(this, scope, false)) return;
     if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
+    if (!skillCurrent(this, scope, false)) return;
     var t = this;
     this.time[r.Attack] = 0;
     this.node.getPosition(this.vec2_1);
@@ -62,7 +105,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
       }
       var e = null;
       var n = -1;
-      var i = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
+      var i = scope.hero;
       if (!i.isDead()) {
         i.node.getPosition(t.vec2_2);
         cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
@@ -70,7 +113,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
           e = i, n = t.vec2_2.len();
         }
       }
-      var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
+      var a = scope.data.getSoldierList();
       for (var o = 0; o < a.length; o++) {
         if (!(c = a[o]).isDead()) {
           c.node.getPosition(t.vec2_2);
@@ -84,7 +127,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
         position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
         radius: t.cfg.AttackRange
       };
-      var s = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
+      var s = millAttackTargets(scope.data);
       for (var l = 0; l < s.length; l++) {
         var c;
         if ((c = s[l]).getIsWork()) {
@@ -92,7 +135,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
           for (var u = 0; u < g.length; u++) {
             var d = g[u];
             if (cc.Intersection.polygonCircle(d.points, r)) {
-              var targetDistance = Navigation.polygonDistance(t, d.points, $z1KinghtFallUIGame.default.instance.ctrGame);
+              var targetDistance = Navigation.polygonDistance(t, d.points, scope.game);
               if (-1 == n || targetDistance < n) {
                 e = c;
                 n = targetDistance;
@@ -104,78 +147,36 @@ var def_KinghtFallEnemyItem07 = function (t) {
       return e;
     }();
     if (n) {
-      n.node.getPosition(this.vec2_2);
+      var victim = skillTarget(n);
+      if (!skillCurrent(this, scope, false) || !targetCurrent(victim, true)) return;
+      var impact = n.node.getPosition(), release = splashSnapshot(this, n, scope), origin = this.vec2_1.clone();
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
-      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e, t));
-      cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
-      this.setLeft(this.vec2_2.x < 0);
-      $z1KinghtFallUIGame.default.instance.ctrEffect.onAttack2(n.node.getPosition(), $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Attack, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Attack, "xiao");
-      return void this.doSplashDamage(n, 2);
+      var dealt = n.onAttacked(e, t);
+      if (!skillCurrent(this, scope, true)) return;
+      if (targetCurrent(victim, false)) scope.effects.showDamageNum(impact, dealt);
+      if (!skillCurrent(this, scope, true)) return;
+      this.setLeft(impact.x - origin.x < 0);
+      if (!skillCurrent(this, scope, true)) return;
+      scope.effects.onAttack2(impact, $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Attack, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Attack, "xiao");
+      if (skillCurrent(this, scope, true)) this.doSplashDamage(n, release);
     }
   };
-  _ctor.prototype.doSplashDamage = function (t) {
-    var e = this;
-    var n = t.node.getPosition();
-    var i = [];
-    (function () {
-      var a = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
-      if (!a.isDead()) {
-        var o = cc.Vec2.distance(a.node.getPosition(), n);
-        a.uuid != t.uuid && o <= e.cfg.Data[1] && i.push({
-          len: o,
-          item: a
-        });
-      }
-    })();
-    (function () {
-      var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
-      for (var o = 0; o < a.length; o++) {
-        var r = a[o];
-        if (!r.isDead()) {
-          var s = cc.Vec2.distance(r.node.getPosition(), n);
-          r.uuid != t.uuid && s <= e.cfg.Data[1] && i.push({
-            len: s,
-            item: r
-          });
-        }
-      }
-    })();
-    (function () {
-      var a = {
-        position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
-        radius: e.cfg.Data[1]
-      };
-      var o = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
-      for (var r = 0; r < o.length; r++) {
-        var s = o[r];
-        if (s.uuid != t.uuid && s.getIsWork()) {
-          var l = s.getWposPhyCol();
-          for (var c = 0; c < l.length; c++) {
-            var g = l[c];
-            if (cc.Intersection.polygonCircle(g, a)) {
-              i.push({
-                len: cc.Vec2.distance(s.node.getPosition(), n),
-                item: s
-              });
-              break;
-            }
-          }
-        }
-      }
-    })();
-    i.sort(function (t, e) {
-      return t.len - e.len;
-    });
-    var a = this.cfg.Data[0];
-    for (var o = 0; o < this.cfg.Data[2]; o++) {
-      var r = i[o];
-      if (!r) {
-        break;
-      }
-      r.item.node.getPosition(this.vec2_2);
-      r.item.onAttacked(a, this);
-      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), a);
-      $z1KinghtFallUIGame.default.instance.ctrEffect.onAttack(this.vec2_2.clone(), $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Attack, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Attack);
+  _ctor.prototype.doSplashDamage = function (target, release) {
+    if (!release || !release.scope) {
+      var scope = skillScope(this);
+      if (!skillCurrent(this, scope, false) || !target || !targetCurrent(skillTarget(target), false)) return;
+      release = splashSnapshot(this, target, scope);
+    }
+    for (var index = 0; index < release.limit; index++) {
+      if (!skillCurrent(this, release.scope, true)) return;
+      var record = release.records[index];if (!record) break;
+      if (!targetCurrent(record, true)) continue;
+      record.item.onAttacked(release.damage, this);
+      if (!skillCurrent(this, release.scope, true)) return;
+      if (!targetCurrent(record, false)) continue;
+      release.scope.effects.showDamageNum(record.position, release.damage);
+      if (!skillCurrent(this, release.scope, true)) return;
+      release.scope.effects.onAttack(record.position, $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Attack, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Attack);
     }
   };
   return cc__decorate([ccp_ccclass], _ctor);

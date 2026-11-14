@@ -210,7 +210,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   _ctor.prototype.onUpdata = function (t) {
     for (var e = 0; e < this.debuffInfo.length; e++) {
       var n = this.debuffInfo[e];
-      if (-1 != n.time) {
+      if (-1 != n.timeMax) {
         n.time += t;
         if (n.time >= n.timeMax) {
           this.delBuffIdx(e), e--;
@@ -252,7 +252,9 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.getSpeed = function () {
     var t = 1;
-    return this.moveSpeed * ((t += this.time[C.MoveSpeed] || 0) + ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] || 0) + RelicRuntime.value(RelicRuntime.current(), 120039));
+    var slows = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeed);
+    for (var i = 0; i < slows.length; i++) t -= slows[i].data.subNum;
+    return this.moveSpeed * Math.max(0, (t += this.time[C.MoveSpeed] || 0) + ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] || 0) + RelicRuntime.value(RelicRuntime.current(), 120039));
   };
   _ctor.prototype.setPause = function (t) {
     this.ctrPlayAni.setPause(t);
@@ -375,12 +377,16 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.time[C.RecoverCd] = 1;
   };
   _ctor.prototype.doAttack = function () {
+    var lifetime = RelicCombat.primaryContext(this, null, 0, false);
+    if (!RelicCombat.primaryValid(lifetime, null, this)) return;
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame;
     // The damage event completes the windup even if its target has left range.
     this.time[C.Attack] = 0;
     if (BattleSounds.attack) BattleSounds.attack(this, "hero");
     else $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.palyer_attack, this);
     this.node.getPosition(this.vec2_1);
-    var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
+    if (!RelicCombat.primaryValid(lifetime, null, this)) return;
+    var t = game.gameData.getEnemyList();
     var e = [];
     for (var n = 0; n < t.length; n++) {
       var i = t[n];
@@ -390,7 +396,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         var a = this.vec2_2.mag();
         a <= this.attackRange && e.push({
           tag: i,
-          len: a
+          len: a,
+          generation: i.node._combatGeneration
         });
       }
     }
@@ -400,8 +407,9 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       });
       var release = RelicCombat.heroAttack(this, e[0].tag, this.getAttack(e[0].tag));
       for (var o = 0; o < this.attNum; o++) {
+        if (!RelicCombat.primaryValid(lifetime, null, this)) break;
         var r = e[o];
-        r && $z1KinghtFallUIGame.default.instance.ctrGame.onPlayAttack(r.tag, o === 0 ? release : undefined);
+        if (r && !r.tag._isPooled && cc.isValid(r.tag.node, true) && !r.tag.isDead() && r.tag.node._combatGeneration === r.generation && cc.Vec2.distance(this.node.getPosition(), r.tag.node.getPosition()) <= this.attackRange) game.onPlayAttack(r.tag, o === 0 ? release : undefined);
       }
     }
   };

@@ -76,12 +76,41 @@ test('partial routes preserve the objective and geometry changes resume it witho
   const e=environment();e.game.mapSize={width:600,height:600};const wall=e.box(0,0,20,600),u=enemy(e,-150,0);
   // Isolate route travel from combat; no destructible targets exist here.
   u.getFind=()=>null;const nav=e.nav.get(e.game);
-  for(let frame=0;frame<120;frame++){e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);}
+  for(let frame=0;frame<90;frame++){e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);}
   assert.equal(u.bornInfo.nodeIndex,0);assert(u.node.x>-150&&u.node.x<-10);const searches=nav.stats.searches;
-  for(let frame=120;frame<150;frame++){e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);}
+  for(let frame=90;frame<100;frame++){e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);}
   assert.equal(nav.stats.searches,searches,'stationary frontier repeated the full search');
   wall.enabled=false;
-  for(let frame=150;frame<300&&u.bornInfo.nodeIndex===0;frame++){e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);}
+  for(let frame=100;frame<300&&u.bornInfo.nodeIndex===0;frame++){e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);}
   // The authored point at x300 is on the map edge and resolves inside bounds.
   assert.equal(u.bornInfo.nodeIndex,1);
+});
+
+test('physically pinned melee, ranged and support enemies recover to unoccupied ground with a clear route continuation',()=>{
+ for(const type of ['KinghtFallEnemyItem02','KinghtFallEnemyItem03','KinghtFallEnemyAuxiliary']){
+  const e=environment();e.game.mapSize={width:1000,height:1000};e.game.ctrPlay.isDead=()=>true;
+  const u=e.actor(type,-300,0);u.cfg={...u.cfg,SearchRange:0};u.bornInfo={nodeIndex:0,pathList:[new Node('objective',e.game.ndMain,300,0)]};u.getFind=()=>null;u.time.Attack=-1;e.game.gameData.enemies.push(u);
+  const original=u.node.position,hp=u.hp;let recovered=false;
+  for(let frame=0;frame<140;frame++){
+   e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);
+   if(u._navigationRecoveries){recovered=true;break;}
+   u.node.setPosition(original); // A persistent native contact cancels the attempted step.
+  }
+  assert(recovered,type+' remained pinned');const nav=e.nav.get(e.game),radius=nav.radius(u);
+  assert(nav.grid.isWalkable(u.node.position,radius));assert(nav.grid.segmentClear(u.node.position,{x:300,y:0},radius));assert.equal(u.hp,hp);assert.equal(e.game.gameData.enemies.length,1);
+  const after=u.node.position;e.nav.beginFrame(e.game);u.onUpdate(.05);assert(distance(after,u.node)>0,type+' did not resume movement');
+ }
+});
+
+test('stationary attacks, support waits, zero speed and deferred navigation never trigger stranded relocation',()=>{
+ for(const mode of ['attack','wait','zero','pending','cooldown']){
+  const e=environment(),u=enemy(e,-150,0);u.state=mode==='attack'?2:mode==='wait'?3:1;if(mode==='zero')u.getSpeed=()=>0;
+  for(let frame=0;frame<140;frame++){
+   if(mode==='pending')u._navigationState={job:{}};
+   if(mode==='cooldown')u._targetSearchCache={target:{canAtt:true}};
+   if(mode==='attack'||mode==='wait')u.state=mode==='attack'?2:3;
+   u.updateCombatTimers(.05);
+  }
+  assert(!u._navigationRecoveries,mode+' was treated as a movement failure');
+ }
 });

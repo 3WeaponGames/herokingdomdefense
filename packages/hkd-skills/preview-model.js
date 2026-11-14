@@ -22,7 +22,7 @@ class Model{
  constructor(style,settings,scenario,core){this.core=core||DefaultCore;this.configure(style,settings,scenario);}
  configure(style,settings,scenario){this.style=style||'skirmisher';this.settings=clone(settings||{});this.scenario=Object.assign({hp:100,targetDistance:120,moving:false,direction:0,speed:1,repeat:true,mode:'active',attackRate:1.5,targets:3},scenario||{});this.scenario.holdSource=Math.max(0,finite(this.scenario.holdSource,finite(this.scenario.holdDelay,finite(this.scenario.impactDelay,.1667))*(finite(this.scenario.attackPlayback,1)||1)));this.reset();}
  reset(){
-  this.time=0;this.hero={x:0,y:0,hp:Math.max(.01,finite(this.scenario.hp,100)/100*1000),maxHp:1000};
+  this.time=0;this.bodyFace=1;this.hero={x:0,y:0,hp:Math.max(.01,finite(this.scenario.hp,100)/100*1000),maxHp:1000};
   const d=finite(this.scenario.targetDistance,120),count=clamp(Math.floor(this.scenario.targets||3),1,5);
   this.targets=Array.from({length:count},(_,i)=>{const at=this.scenario.targetPositions&&this.scenario.targetPositions[i];return {id:i,x:finite(at&&at.x,d+i*85),y:finite(at&&at.y,i?i%2?22:-22:0),hp:100000,maxHp:100000};});
   this.state=this.core.createState(this.style,this.settings);this.effects=[];this.projectiles=[];this.events=[];this.hits=0;this.damage=0;this.attackClock=0;this.basicPending=null;this.lastAttack=-100;this.lastCast=-100;this.lastAttackKind=null;this.serial=0;this.beam=false;this.beamTarget=null;this.channelTarget=null;this.channelWarmup=0;this.channelSourceTime=0;this.channelStarted=0;this.beamVisibleStarted=0;this.castResult=null;this.pendingDamage=null;
@@ -45,7 +45,7 @@ class Model{
  hit(target,multiplier,skill,strike,snapshot,time){
   if(!target||target.hp<=0)return;const damage=snapshot===undefined?this.stats().damage*multiplier:snapshot,removed=Math.min(target.hp,damage);if(!(removed>0))return;target.hp=Math.max(0,target.hp-damage);this.hits++;this.damage+=damage;
   this.core.onHit(this.state,target,{kind:skill?'skill':'basic',strikeId:strike,damage:removed});
-  if(this.style==='bruiser')this.hero.hp=Math.min(this.hero.maxHp,this.hero.hp+removed*.1);
+  const lifeSteal=clamp(finite(this.scenario.lifeSteal,0),0,1);if(lifeSteal>0)this.hero.hp=Math.min(this.hero.maxHp,this.hero.hp+removed*lifeSteal);
   this.event('impact',{target:target.id,x:target.x,y:target.y,damage,skill,strike,time:time===undefined?this.time:time});
  }
  cast(){
@@ -55,7 +55,7 @@ class Model{
   if(this.style==='skirmisher'||this.style==='vanguard')this.state.charge=Math.max(this.state.charge,.75);
   this.state.cooldown=0;this.state.active=null;this.basicPending=null;
   const stats=this.stats(),result=this.core.beginActive(this.state,{hp:this.hero.hp,maxHp:this.hero.maxHp,damage:stats.damage,moveSpeed:stats.moveSpeed,attackRate:stats.attackRate,target,direction:d,impactDelay:Math.max(0,finite(this.scenario.impactDelay,.1667))});
-  if(!result.ok)return false;this.castResult=result;this.lastCast=this.time;this.lastAttack=this.time;this.lastAttackKind='skill';this.event('cast');
+  if(!result.ok)return false;this.bodyFace=d.x<0?-1:1;this.castResult=result;this.lastCast=this.time;this.lastAttack=this.time;this.lastAttackKind='skill';this.event('cast');
   if(result.hpCost)this.hero.hp=result.hpAfterCost;if(this.style==='bruiser')this.pendingDamage=this.stats().damage*result.damageMultiplier;
   if(!result.impactDelay)this.resolveCast(result,target,this.time);return true;
  }
@@ -78,6 +78,7 @@ class Model{
  channel(){
   if(this.style!=='mystic')return;const previous=this.channelTarget,target=previous&&previous.hp>0&&distance(this.hero,previous)<=reach.mystic?previous:this.nearest();
   if(!target){this.channelTarget=null;this.channelWarmup=0;this.channelSourceTime=0;this.attackClock=0;this.visibleBeam(null);if(this.state.target&&this.state.target.hp<=0)this.core.clearTarget(this.state);return;}
+  this.bodyFace=target.x<this.hero.x?-1:1;
   if(target!==previous){if(!previous){this.channelStarted=this.time;this.channelSourceTime=0;}this.attackClock=0;this.channelTarget=target;this.core.setTarget(this.state,target);}
   const playback=Math.max(0,finite(this.scenario.attackPlayback,1)),remaining=Math.max(0,this.scenario.holdSource-this.channelSourceTime);
   this.channelWarmup=remaining>1e-9?(playback>0?remaining/playback:Infinity):0;
@@ -85,6 +86,7 @@ class Model{
  }
  basicStart(){
   if(this.style==='mystic'||this.state.active||this.basicPending||this.scenario.attackPlayback===0||this.attackClock<1-1e-9||!this.nearest())return;
+  this.bodyFace=this.nearest().x<this.hero.x?-1:1;
   this.basicPending={elapsed:0,duration:Math.max(0,finite(this.scenario.basicImpactDelay,finite(this.scenario.impactDelay,.1667)))};this.lastAttack=this.time;this.lastAttackKind='basic';
  }
  basicRelease(){

@@ -475,7 +475,10 @@ test('UIGame settles the ancestor Widget before activating map Rigidbody compone
     btnAgg: { getChildByName: () => ({}) }, initBtnEvent() {}, initEvent() {}, initView() {}, initBtnView() {},
     loadPrefab(bundle, name, callback) { assert.equal(name, 'Map01'); callback({}); },
     ctrEffect: { initData() {} }, sendEvent() {}, ctrUI: { ndGuide: { setParent() {} } } };
-  const context = { cc, BattleSounds: {}, $z1Appcfg: { BaseEventName: {} }, TestMode: { getInstance: () => ({ setGameplayTarget() {} }) },
+  const context = { cc, require(name) {
+    assert.equal(name, 'StageAssetWarmup');
+    return { create: () => ({ reveal() {}, run: () => ({ then(ready) { ready({}); return { catch() {} }; } }) }) };
+  }, BattleSounds: {}, $z1Appcfg: { BaseEventName: {} }, TestMode: { getInstance: () => ({ setGameplayTarget() {} }) },
     $z1KinghtFallConfig: { KinghtFallAudioId: {}, KinghtFallParameter: {}, KinghtFallBundelName: {} },
     $z1AudioMgr: { AudioMgr: { getInstance: () => ({ playMusic() {} }) } }, $z1KinghtFallGameCtrl: { default: function () {} },
     $z1KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getLevelCfgById: () => ({ prefab: 'Map01' }) }) } } };

@@ -5,7 +5,7 @@ const {environment,Node,Vec2}=require('../navigation/runtime-harness.cjs');
 const hostile=['KinghtFallEnemyMelee','KinghtFallEnemyLong','KinghtFallEnemyItem07','KinghtFallEnemyItem08','KinghtFallEnemyItem10'];
 function scene(name){
  const e=environment(),g=e.game,d=g.gameData,shots=[];
- d.ctrPar=g;g._combatEpoch=1;
+ d.ctrPar=g;g._combatEpoch=1;g.gameStatus=e.stubs.KinghtFallModle.KinghtFallGameStage.Fight;
  function target(id,x,y=0){return {uuid:id,node:new Node(id,g.ndMain,x,y),hp:100,hpMax:100,hits:[],buffs:[],heals:[],isDead(){return this.hp<=0;},onAttacked(amount,source){this.hits.push({amount,source});return amount;},addBuff(type,data){this.buffs.push({type,data});},addHpPro(value){this.heals.push(value);}};}
  const hero=target('hero',100),soldier=target('soldier',10);hero.node._combatGeneration=1;g.ctrPlay=hero;d.soldiers.push(soldier);
  const source=e.actor(name,0,0);source.uuid='source';source.node._combatGeneration=1;source.getAttack=()=>5;

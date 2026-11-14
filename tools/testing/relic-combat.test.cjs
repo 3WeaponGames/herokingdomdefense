@@ -24,6 +24,22 @@ function primary(h,target,damage=100,critical=false,release){
  const context=h.Combat.primaryContext(h.p,target,damage,critical,release);
  return target.onAttacked(damage*(critical?h.p.getCriticalDamage():1),h.p,false,context);
 }
+
+test('a chain callback retiring the battle prevents native multishot from releasing stale attacks',()=>{
+ const h=fixture('mystic'),target=h.enemy(),near=h.enemy(20);h.d.enemyList=[target,near];h.d.treasureAdd[120030]=[.4];h.d.relicState={heroAttackCount:7};h.p.attNum=2;h.p.node._combatGeneration=1;let released=0;h.g.onPlayAttack=()=>released++;near.onAttacked=()=>{h.g._combatEpoch++;return 10;};h.p.doAttack();assert.equal(released,0);
+});
+
+test('native multishot skips a target recycled during its release proc',()=>{
+ const h=fixture('mystic'),target=h.enemy(),near=h.enemy(20);h.d.enemyList=[target,near];h.d.treasureAdd[120030]=[.4];h.d.relicState={heroAttackCount:7};h.p.attNum=2;const released=[];h.g.onPlayAttack=e=>released.push(e);near.onAttacked=()=>{near.node._combatGeneration++;return 10;};h.p.doAttack();assert.deepEqual(released,[target]);
+});
+
+test('melee feedback cannot paint the replacement identity after its damage callback recycles a target',()=>{
+ const h=fixture('bruiser'),target=h.enemy();let feedback=0;h.ui.ctrEffect.showDamageNum=()=>feedback++;target.onAttacked=()=>{target.node._combatGeneration++;return 10;};h.load('HeroWeaponCombat').melee(h.g,target);assert.equal(feedback,0);
+});
+
+test('a ranged impact effect retiring the battle prevents old damage and feedback',()=>{
+ const h=fixture(),target=h.enemy(),shot=arrow(h);h.ui.ctrEffect.onMonsterAttack=()=>{h.g._combatEpoch++;};h.g.onPlayAttack(target);shot.callAttack();assert.equal(target.hp,1000);
+});
 function arrow(h){
  const Shot=h.load('KinghtFallBulletPlay').default,shot=new Shot();shot.node=new Node();shot.bullet={active:true};shot.setSkin=()=>{};
  shot.node.getComponent=()=>shot;shot.node.setSiblingIndex=()=>{};h.g.ndUI=new Node();h.g.ndPlayArr1.push(shot.node);h.p.getAttWpos=()=>new Vec2();h.p.ctrPlayAni.arrName='bow';

@@ -53,12 +53,12 @@
       "parts": [
         {
           "id": "sub_item",
-          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
-          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
-          "slot": "Rider/HandLeft/Sub_Item",
-          "bone": "Rider/HandLeft/Sub_Item",
-          "x": 10,
-          "y": 25,
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Red",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Head",
+          "bone": "Mount/Equipment/Sub_Item/Head",
+          "x": 0,
+          "y": 0,
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1,
@@ -69,16 +69,16 @@
         }
       ],
       "bakedLayers": {
-        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
-          "resource": "hero-items/baked/item-3-tier-lv1-vanguard_wqyl_lead_jian",
-          "uuid": "8d319246-38e3-5a09-a606-983cd72afc6f"
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv1-vanguard_wqyl_lead_ma",
+          "uuid": "7602ecd1-c412-5f41-ab76-8eaca68c0e54"
         }
       },
       "bakedVersion": 2,
       "bakedWithHero": "",
       "icon": {
-        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
-        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Red",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Red",
         "width": 68,
         "height": 64,
         "tint": "#ffffff"
@@ -95,11 +95,11 @@
         {
           "id": "sub_item",
           "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
-          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
-          "slot": "Rider/HandLeft/Sub_Item",
-          "bone": "Rider/HandLeft/Sub_Item",
-          "x": 10,
-          "y": 25,
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Head",
+          "bone": "Mount/Equipment/Sub_Item/Head",
+          "x": 0,
+          "y": 0,
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1,
@@ -110,9 +110,9 @@
         }
       ],
       "bakedLayers": {
-        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
-          "resource": "hero-items/baked/item-3-tier-lv2-vanguard_wqyl_lead_jian",
-          "uuid": "f5f7d8dd-cf94-5ab5-a844-0ee0f9988233"
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv2-vanguard_wqyl_lead_ma",
+          "uuid": "198d6d27-ea9b-5ea3-a925-4fb5d332ae0f"
         }
       },
       "bakedVersion": 2,
@@ -135,12 +135,12 @@
       "parts": [
         {
           "id": "sub_item",
-          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
-          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
-          "slot": "Rider/HandLeft/Sub_Item",
-          "bone": "Rider/HandLeft/Sub_Item",
-          "x": 10,
-          "y": 25,
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Purple",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Head",
+          "bone": "Mount/Equipment/Sub_Item/Head",
+          "x": 0,
+          "y": 0,
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1,
@@ -151,16 +151,16 @@
         }
       ],
       "bakedLayers": {
-        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
-          "resource": "hero-items/baked/item-3-tier-lv3-vanguard_wqyl_lead_jian",
-          "uuid": "b4e0276b-9d22-50b9-ab2b-1c139d4be270"
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv3-vanguard_wqyl_lead_ma",
+          "uuid": "6d2dcb61-396c-5535-ab54-2d7ba9508e86"
         }
       },
       "bakedVersion": 2,
       "bakedWithHero": "",
       "icon": {
-        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
-        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Purple",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Purple",
         "width": 68,
         "height": 64,
         "tint": "#ffffff"
@@ -176,12 +176,258 @@
       "parts": [
         {
           "id": "sub_item",
-          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Yellow",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Head",
+          "bone": "Mount/Equipment/Sub_Item/Head",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv4-vanguard_wqyl_lead_ma",
+          "uuid": "73874182-fd6c-51f1-a1c4-2a8c7504705e"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Yellow",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Yellow",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv1-fighter": {
+      "name": "Fighter · Sword · Tier 1",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv1:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sword",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_BlackSilver",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Sword",
+          "bone": "Rider/HandRight/Sword",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv1-fighter_wqyl_lead_gong",
+          "uuid": "242e8426-e94e-563d-a1bb-eb6d54d46cb8"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_BlackSilver",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_BlackSilver",
+        "width": 120,
+        "height": 61,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv2-fighter": {
+      "name": "Fighter · Sword · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv2:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sword",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_Green",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Sword",
+          "bone": "Rider/HandRight/Sword",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv2-fighter_wqyl_lead_gong",
+          "uuid": "bf5d0861-0f99-5faa-a31d-0cf4a7173c76"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_Green",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_Green",
+        "width": 120,
+        "height": 61,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv_blue-fighter": {
+      "name": "Fighter · Sword · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv_blue:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sword",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_Blue",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Sword",
+          "bone": "Rider/HandRight/Sword",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv_blue-fighter_wqyl_lead_gong",
+          "uuid": "6179a93f-d18f-5c21-a39e-27c25efe475b"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_Blue",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_018_Blue",
+        "width": 120,
+        "height": 61,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv3-fighter": {
+      "name": "Fighter · Sword · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv3:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sword",
+          "sprite": "HandRight/Sword/FA_WP_Main_Sword_020_Black",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Sword",
+          "bone": "Rider/HandRight/Sword",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv3-fighter_wqyl_lead_gong",
+          "uuid": "e3e96071-0d29-5255-ade0-165d6b508a32"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Sword/FA_WP_Main_Sword_020_Black",
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_020_Black",
+        "width": 118,
+        "height": 59,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv4-fighter": {
+      "name": "Fighter · Sword · Tier 5",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv4:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sword",
+          "sprite": "HandRight/Sword/FA_WP_Main_Sword_021_Gold",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Sword",
+          "bone": "Rider/HandRight/Sword",
+          "x": 7.5,
+          "y": -4,
+          "rotation": 0,
+          "scaleX": 1.15,
+          "scaleY": 1.1499999999999995,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv4-fighter_wqyl_lead_gong",
+          "uuid": "5a37afdd-5111-57b7-a200-2411d4dea4ff"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Sword/FA_WP_Main_Sword_021_Gold",
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_021_Gold",
+        "width": 118,
+        "height": 59,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv1-mystic": {
+      "name": "Mystic · Crystal Orb · Tier 1",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv1:mystic"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayRed",
           "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
           "slot": "Rider/HandLeft/Sub_Item",
           "bone": "Rider/HandLeft/Sub_Item",
-          "x": 10,
-          "y": 25,
+          "x": 2,
+          "y": 20,
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1,
@@ -193,20 +439,1373 @@
       ],
       "bakedLayers": {
         "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
-          "resource": "hero-items/baked/item-3-tier-lv4-vanguard_wqyl_lead_jian",
-          "uuid": "be20e5b3-50a0-5f58-a263-290c8917f60a"
+          "resource": "hero-items/baked/item-3-tier-lv1-mystic_wqyl_lead_jian",
+          "uuid": "a10a8f49-d6ee-536c-a1a3-0b68a410b61f"
         }
       },
       "bakedVersion": 2,
       "bakedWithHero": "",
       "icon": {
-        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
-        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayRed",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayRed",
         "width": 68,
         "height": 64,
         "tint": "#ffffff"
       }
+    },
+    "item-3-tier-lv2-mystic": {
+      "name": "Mystic · Crystal Orb · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv2:mystic"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayGreen",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Sub_Item",
+          "bone": "Rider/HandLeft/Sub_Item",
+          "x": 2,
+          "y": 20,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv2-mystic_wqyl_lead_jian",
+          "uuid": "946d4b16-ca55-5000-a421-fc5910a039c0"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayGreen",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayGreen",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv_blue-mystic": {
+      "name": "Mystic · Crystal Orb · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv_blue:mystic"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldBlue",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Sub_Item",
+          "bone": "Rider/HandLeft/Sub_Item",
+          "x": 2,
+          "y": 20,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv_blue-mystic_wqyl_lead_jian",
+          "uuid": "327bcca1-bd82-5cb0-a70d-ae862f7c8084"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldBlue",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldBlue",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv3-mystic": {
+      "name": "Mystic · Crystal Orb · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv3:mystic"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldPink",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Sub_Item",
+          "bone": "Rider/HandLeft/Sub_Item",
+          "x": 2,
+          "y": 20,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv3-mystic_wqyl_lead_jian",
+          "uuid": "24dbd7d6-0536-5f62-a45c-aa5b099cad79"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldPink",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldPink",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv4-mystic": {
+      "name": "Mystic · Crystal Orb · Tier 5",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv4:mystic"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldOrange",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Sub_Item",
+          "bone": "Rider/HandLeft/Sub_Item",
+          "x": 2,
+          "y": 20,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv4-mystic_wqyl_lead_jian",
+          "uuid": "48e32926-f916-530e-a4f9-20b038f8c03d"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldOrange",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldOrange",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv1-bruiser": {
+      "name": "Bruiser · Skull Charm · Tier 1",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv1:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldWhite",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 5,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv1-bruiser_wqyl_lead_ma",
+          "uuid": "37e9f23c-eb2c-5b1b-ad30-1e7d691c0564"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldWhite",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldWhite",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv2-bruiser": {
+      "name": "Bruiser · Skull Charm · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv2:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_RedWhite",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 5,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv2-bruiser_wqyl_lead_ma",
+          "uuid": "d2e7ee4a-b43d-559d-abac-034482e81963"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_RedWhite",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_RedWhite",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv_blue-bruiser": {
+      "name": "Bruiser · Skull Charm · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv_blue:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_BlueDark",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 5,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv_blue-bruiser_wqyl_lead_ma",
+          "uuid": "6af8d4bb-dcc5-5868-aaa9-fdd6f8990874"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_BlueDark",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_BlueDark",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv3-bruiser": {
+      "name": "Bruiser · Skull Charm · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv3:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_PurpleDark2",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 5,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv3-bruiser_wqyl_lead_ma",
+          "uuid": "d591e8c6-c14f-5c00-aa16-f5df9191b2bd"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_PurpleDark2",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_PurpleDark2",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv4-bruiser": {
+      "name": "Bruiser · Skull Charm · Tier 5",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv4:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldBlack",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 5,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv4-bruiser_wqyl_lead_ma",
+          "uuid": "55cc7758-d8db-512d-a304-f494177453e4"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldBlack",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldBlack",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv_blue-vanguard": {
+      "name": "Vanguard · Lightning Buff · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv_blue:vanguard"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Blue",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Head",
+          "bone": "Mount/Equipment/Sub_Item/Head",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv_blue-vanguard_wqyl_lead_ma",
+          "uuid": "0ed05697-12dc-5238-a846-ea47b9c25177"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Blue",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Blue",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv1-fighter": {
+      "name": "Fighter · Potion · Tier 1",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv1:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Nature_Orange",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 11,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv1-fighter_wqyl_lead_ma",
+          "uuid": "fe15a0a4-8e3e-5d02-a5c3-c9987c23eecf"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Nature_Orange",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Nature_Orange",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv2-fighter": {
+      "name": "Fighter · Potion · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv2:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Mushroom_001_Green",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 11,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv2-fighter_wqyl_lead_ma",
+          "uuid": "9e2bfdfa-565a-52ca-aa11-b4bc29f65ed1"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Mushroom_001_Green",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Mushroom_001_Green",
+        "width": 70,
+        "height": 66,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv_blue-fighter": {
+      "name": "Fighter · Potion · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv_blue:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Candy_Rainbow",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 11,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv_blue-fighter_wqyl_lead_ma",
+          "uuid": "6b37dd9d-f13e-542b-a323-56096f219dd5"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Candy_Rainbow",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Candy_Rainbow",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv3-fighter": {
+      "name": "Fighter · Potion · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv3:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Food_001_Rainbow",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 11,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv3-fighter_wqyl_lead_ma",
+          "uuid": "d5f2d966-9c61-5a0b-a8c3-0b60318fbea9"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Food_001_Rainbow",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Food_001_Rainbow",
+        "width": 70,
+        "height": 66,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv4-fighter": {
+      "name": "Fighter · Potion · Tier 5",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv4:fighter"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Meat_001_Wood",
+          "layer": "83c8af91-62bc-579c-aa36-580015f9dbaf",
+          "slot": "Mount/Equipment/Sub_Item/Body",
+          "bone": "Mount/Equipment/Sub_Item/Body",
+          "x": 11,
+          "y": 11,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "83c8af91-62bc-579c-aa36-580015f9dbaf": {
+          "resource": "hero-items/baked/item-3-tier-lv4-fighter_wqyl_lead_ma",
+          "uuid": "53ed8c3f-6bc4-5260-a151-4401eb3aaaea"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Meat_001_Wood",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/HandLeft/Sub_Item/FA_WP_Sub_Meat_001_Wood",
+        "width": 70,
+        "height": 66,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv2": {
+      "name": "Skirmisher · Arrow · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv2"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "arrow",
+          "sprite": "HandRight/Arrow/FA_Consumable_Arrow_018",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandRight/Bow/Arrow",
+          "bone": "Rider/HandRight/Bow/Arrow",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv2_wqyl_lead_jian",
+          "uuid": "576ebed3-76e0-5b2a-afd6-81c7b2d538f2"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_018",
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_018",
+        "width": 86,
+        "height": 34,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv_blue": {
+      "name": "Skirmisher · Arrow · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv_blue"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "arrow",
+          "sprite": "HandRight/Arrow/FA_Consumable_Arrow_015",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandRight/Bow/Arrow",
+          "bone": "Rider/HandRight/Bow/Arrow",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv_blue_wqyl_lead_jian",
+          "uuid": "4b5034b6-b539-5fb3-ae46-5bc41414568d"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_015",
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_015",
+        "width": 86,
+        "height": 34,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv3": {
+      "name": "Skirmisher · Arrow · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv3"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "arrow",
+          "sprite": "HandRight/Arrow/FA_Consumable_Arrow_010",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandRight/Bow/Arrow",
+          "bone": "Rider/HandRight/Bow/Arrow",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv3_wqyl_lead_jian",
+          "uuid": "39de55e0-de42-5f64-a507-4a92de220a52"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_010",
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_010",
+        "width": 86,
+        "height": 34,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv4": {
+      "name": "Skirmisher · Arrow · Tier 5",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv4"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "arrow",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_006_Red",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandRight/Bow/Arrow",
+          "bone": "Rider/HandRight/Bow/Arrow",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv4_wqyl_lead_jian",
+          "uuid": "9b6d02ab-2502-5d3d-a971-2feb71112a89"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_006_Red",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_006_Red",
+        "width": 88,
+        "height": 36,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv4-guardian": {
+      "name": "Guardian · Shield · Tier 5",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv4:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "shield",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandLeft/Shield/FA_WP_Sub_Shield_010_Gold",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv4-guardian_wqyl_lead_jian",
+          "uuid": "d24a9e9f-76fa-58f8-a158-9a44d21443a4"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/HandLeft/Shield/FA_WP_Sub_Shield_010_Gold",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/HandLeft/Shield/FA_WP_Sub_Shield_010_Gold",
+        "width": 52,
+        "height": 58,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv1-guardian": {
+      "name": "Guardian · Shield · Tier 1",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv1:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_017_Gray",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv1-guardian_wqyl_lead_jian",
+          "uuid": "54906057-bab8-5c56-a245-a340343b7d93"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Shield/FA_WP_Sub_Shield_017_Gray",
+        "resource": "character-parts/Parts/HandLeft/Shield/FA_WP_Sub_Shield_017_Gray",
+        "width": 50,
+        "height": 56,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv2-guardian": {
+      "name": "Guardian · Shield · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv2:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_017_Green",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv2-guardian_wqyl_lead_jian",
+          "uuid": "283b0f9d-65a0-59b6-a52e-fc7e7f961b00"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Shield/FA_WP_Sub_Shield_017_Green",
+        "resource": "character-parts/Parts/HandLeft/Shield/FA_WP_Sub_Shield_017_Green",
+        "width": 50,
+        "height": 56,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv_blue-guardian": {
+      "name": "Guardian · Shield · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv_blue:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_024_Blue",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv_blue-guardian_wqyl_lead_jian",
+          "uuid": "865a0674-fa5a-5b43-a296-724af4f7c9b1"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Shield/FA_WP_Sub_Shield_024_Blue",
+        "resource": "character-parts/Parts/HandLeft/Shield/FA_WP_Sub_Shield_024_Blue",
+        "width": 50,
+        "height": 56,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv3-guardian": {
+      "name": "Guardian · Shield · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv3:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_024_Purple",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv3-guardian_wqyl_lead_jian",
+          "uuid": "4c1b139c-f528-5c94-a07b-29d45d8144aa"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Shield/FA_WP_Sub_Shield_024_Purple",
+        "resource": "character-parts/Parts/HandLeft/Shield/FA_WP_Sub_Shield_024_Purple",
+        "width": 50,
+        "height": 56,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv1-guardian": {
+      "name": "Guardian · Hammer · Tier 1",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv1:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "blunt",
+          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_011_DarkRed",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Blunt",
+          "bone": "Rider/HandRight/Blunt",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv1-guardian_wqyl_lead_gong",
+          "uuid": "4c45313b-6462-58e0-a568-5aabb0cdcfaf"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_011_DarkRed",
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_011_DarkRed",
+        "width": 113,
+        "height": 75,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv2-guardian": {
+      "name": "Guardian · Hammer · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv2:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "blunt",
+          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_011_DarkGreen",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Blunt",
+          "bone": "Rider/HandRight/Blunt",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv2-guardian_wqyl_lead_gong",
+          "uuid": "3d45664e-ed65-543a-a204-c6fb302f0158"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_011_DarkGreen",
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_011_DarkGreen",
+        "width": 113,
+        "height": 75,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv_blue-guardian": {
+      "name": "Guardian · Hammer · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv_blue:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "blunt",
+          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_018_DarkBlue",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Blunt",
+          "bone": "Rider/HandRight/Blunt",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv_blue-guardian_wqyl_lead_gong",
+          "uuid": "0bbdf600-7e08-5446-a4e5-a4bfb01839f3"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_018_DarkBlue",
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_018_DarkBlue",
+        "width": 113,
+        "height": 75,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv3-guardian": {
+      "name": "Guardian · Hammer · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv3:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "blunt",
+          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_020_DarkPink",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Blunt",
+          "bone": "Rider/HandRight/Blunt",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv3-guardian_wqyl_lead_gong",
+          "uuid": "d16541b1-4fc5-51f0-aff5-1e8551ca4df2"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_020_DarkPink",
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_020_DarkPink",
+        "width": 113,
+        "height": 75,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv4-guardian": {
+      "name": "Guardian · Hammer · Tier 5",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv4:guardian"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "blunt",
+          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Blunt",
+          "bone": "Rider/HandRight/Blunt",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv4-guardian_wqyl_lead_gong",
+          "uuid": "d3929efa-40cf-5a9f-acde-f16f85fe76fb"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+        "width": 113,
+        "height": 75,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv2-bruiser": {
+      "name": "Bruiser · Axe · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv2:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "axe",
+          "sprite": "HandRight/Axe/FA_WP_Main_Axe_019_Green",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Axe",
+          "bone": "Rider/HandRight/Axe",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv2-bruiser_wqyl_lead_gong",
+          "uuid": "e569e3d9-acbd-5eb0-a5fe-514cf0ced176"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Axe/FA_WP_Main_Axe_019_Green",
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_019_Green",
+        "width": 108,
+        "height": 85,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv_blue-bruiser": {
+      "name": "Bruiser · Axe · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv_blue:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "axe",
+          "sprite": "HandRight/Axe/FA_WP_Main_Axe_019_Blue",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Axe",
+          "bone": "Rider/HandRight/Axe",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv_blue-bruiser_wqyl_lead_gong",
+          "uuid": "62daf312-a626-594b-aff1-ef7c04cfec5c"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Axe/FA_WP_Main_Axe_019_Blue",
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_019_Blue",
+        "width": 108,
+        "height": 85,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv3-bruiser": {
+      "name": "Bruiser · Axe · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv3:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "axe",
+          "sprite": "HandRight/Axe/FA_WP_Main_Axe_019_DarkRed",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Axe",
+          "bone": "Rider/HandRight/Axe",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv3-bruiser_wqyl_lead_gong",
+          "uuid": "281b2e09-f525-5d58-acbd-8f65595aea1c"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Axe/FA_WP_Main_Axe_019_DarkRed",
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_019_DarkRed",
+        "width": 108,
+        "height": 85,
+        "tint": "#ffffff"
+      }
+    },
+    "item-4-tier-lv4-bruiser": {
+      "name": "Bruiser · Axe · Tier 5",
+      "base": {
+        "type": "item",
+        "id": "4:tier:lv4:bruiser"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "axe",
+          "sprite": "HandRight/Axe/FA_WP_Main_Axe_013_Gold",
+          "layer": "14f841b1-ef4f-562a-a809-9c812ed7c506",
+          "slot": "Rider/HandRight/Axe",
+          "bone": "Rider/HandRight/Axe",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "14f841b1-ef4f-562a-a809-9c812ed7c506": {
+          "resource": "hero-items/baked/item-4-tier-lv4-bruiser_wqyl_lead_gong",
+          "uuid": "a74f3018-5a5c-5e71-a857-55c00c58369b"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandRight/Axe/FA_WP_Main_Axe_013_Gold",
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_013_Gold",
+        "width": 108,
+        "height": 85,
+        "tint": "#ffffff"
+      }
     }
   },
-  "assignments": { "2:11": "new-item", "3:tier:lv1:vanguard": "item-3-tier-lv1-vanguard", "3:tier:lv2:vanguard": "item-3-tier-lv2-vanguard", "3:tier:lv3:vanguard": "item-3-tier-lv3-vanguard", "3:tier:lv4:vanguard": "item-3-tier-lv4-vanguard" }
+  "assignments": { "2:11": "new-item", "3:tier:lv1:vanguard": "item-3-tier-lv1-vanguard", "3:tier:lv2:vanguard": "item-3-tier-lv2-vanguard", "3:tier:lv3:vanguard": "item-3-tier-lv3-vanguard", "3:tier:lv4:vanguard": "item-3-tier-lv4-vanguard", "4:tier:lv1:fighter": "item-4-tier-lv1-fighter", "4:tier:lv2:fighter": "item-4-tier-lv2-fighter", "4:tier:lv_blue:fighter": "item-4-tier-lv_blue-fighter", "4:tier:lv3:fighter": "item-4-tier-lv3-fighter", "4:tier:lv4:fighter": "item-4-tier-lv4-fighter", "3:tier:lv1:mystic": "item-3-tier-lv1-mystic", "3:tier:lv2:mystic": "item-3-tier-lv2-mystic", "3:tier:lv_blue:mystic": "item-3-tier-lv_blue-mystic", "3:tier:lv3:mystic": "item-3-tier-lv3-mystic", "3:tier:lv4:mystic": "item-3-tier-lv4-mystic", "3:tier:lv1:bruiser": "item-3-tier-lv1-bruiser", "3:tier:lv2:bruiser": "item-3-tier-lv2-bruiser", "3:tier:lv_blue:bruiser": "item-3-tier-lv_blue-bruiser", "3:tier:lv3:bruiser": "item-3-tier-lv3-bruiser", "3:tier:lv4:bruiser": "item-3-tier-lv4-bruiser", "3:tier:lv_blue:vanguard": "item-3-tier-lv_blue-vanguard", "3:tier:lv1:fighter": "item-3-tier-lv1-fighter", "3:tier:lv2:fighter": "item-3-tier-lv2-fighter", "3:tier:lv_blue:fighter": "item-3-tier-lv_blue-fighter", "3:tier:lv3:fighter": "item-3-tier-lv3-fighter", "3:tier:lv4:fighter": "item-3-tier-lv4-fighter", "3:tier:lv2": "item-3-tier-lv2", "3:tier:lv_blue": "item-3-tier-lv_blue", "3:tier:lv3": "item-3-tier-lv3", "3:tier:lv4": "item-3-tier-lv4", "3:tier:lv4:guardian": "item-3-tier-lv4-guardian", "3:tier:lv1:guardian": "item-3-tier-lv1-guardian", "3:tier:lv2:guardian": "item-3-tier-lv2-guardian", "3:tier:lv_blue:guardian": "item-3-tier-lv_blue-guardian", "3:tier:lv3:guardian": "item-3-tier-lv3-guardian", "4:tier:lv1:guardian": "item-4-tier-lv1-guardian", "4:tier:lv2:guardian": "item-4-tier-lv2-guardian", "4:tier:lv_blue:guardian": "item-4-tier-lv_blue-guardian", "4:tier:lv3:guardian": "item-4-tier-lv3-guardian", "4:tier:lv4:guardian": "item-4-tier-lv4-guardian", "4:tier:lv2:bruiser": "item-4-tier-lv2-bruiser", "4:tier:lv_blue:bruiser": "item-4-tier-lv_blue-bruiser", "4:tier:lv3:bruiser": "item-4-tier-lv3-bruiser", "4:tier:lv4:bruiser": "item-4-tier-lv4-bruiser" }
 }

@@ -1,9 +1,27 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs'),FX=require('../../../assets/_script/BuildingDropShadow'),Data=require('../buildings/drop-shadow-data'),{Store}=require('../lib/store');
 const root=path.resolve(__dirname,'../../..'),clone=x=>JSON.parse(JSON.stringify(x));
-function fixture(){const store=new Store(root);return{store,get config(){return store.documents.A.data;},get overrides(){return store.documents.overrides.data;},change(request,action){store.change({version:store.version,edits:Data.edits(store.documents.A.data,store.documents.overrides.data,request,action)});}};}
+function fixture(){const store=new Store(root);for(const state of ['original','data']){for(const category of Object.values(store.documents.A[state].BuildEnum))for(const row of category.levelList||[])delete row.DropShadow;delete store.documents.overrides[state].buildingShadows;}return{store,get config(){return store.documents.A.data;},get overrides(){return store.documents.overrides.data;},change(request,action){store.change({version:store.version,edits:Data.edits(store.documents.A.data,store.documents.overrides.data,request,action)});}};}
 test('Global is a read-only default and untouched projects retain their existing runtime shadows',()=>{
  const f=fixture(),before=f.store.draftState(),request={id:'2',familyRoot:4,levelIndex:3},d=Data.describe(f.config,f.overrides,request);assert.equal(d.mode,'global');assert(!d.active);assert.deepEqual(d.settings,FX.defaults);assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.changes().length,0);assert(f.store.save({version:f.store.version}).result.noChanges);
+});
+function pillar(){const alpha=new Uint8Array(40*120);for(let y=0;y<120;y++)for(let x=10;x<30;x++)alpha[y*40+x]=255;return{alpha,pixelWidth:40,pixelHeight:120,x:-20,y:0,width:40,height:120};}
+function occupied(image){const points=[];for(let y=0;y<image.pixelHeight;y++)for(let x=0;x<image.pixelWidth;x++){const a=image.pixels[(y*image.pixelWidth+x)*4+3];if(a)points.push({x:image.x+(x+.5)*image.width/image.pixelWidth,y:image.y+image.height-(y+.5)*image.height/image.pixelHeight,a});}return points;}
+test('ground projection stays at the feet, flattens tall silhouettes and casts away from the sun',()=>{
+ const source=pillar(),before=source.alpha.slice(),p={...FX.defaults,...FX.groundDefaults,projection:'ground',angle:-90,length:1,flatten:.5,taper:0,fade:0,size:0,opacity:1},points=occupied(FX.raster(source,p));
+ assert(Math.min(...points.map(p=>p.y))<2,'contact stays on the floor');assert(Math.max(...points.map(p=>p.y))<63,'a 120-high pillar is laid onto a 60-high cast');
+ const longer=occupied(FX.raster(source,{...p,length:2}));assert(Math.max(...longer.map(p=>p.y))>115);
+ const left=occupied(FX.raster(source,{...p,angle:0}));assert(Math.min(...left.map(p=>p.x))<-120);assert(Math.max(...left.map(p=>p.y))<3,'no upright copy above the floor for a horizontal cast');
+ assert.deepEqual(source.alpha,before);assert.deepEqual(FX.raster(source,FX.defaults),FX.raster(source,{...FX.defaults,projection:'offset'}),'legacy rendering stays byte identical');
+});
+test('ground projection tapers and fades at its tip without lightening the contact',()=>{
+ const p={...FX.defaults,...FX.groundDefaults,projection:'ground',angle:-90,length:1,flatten:1,groundDepth:0,taper:.7,fade:.8,size:0,opacity:1},points=occupied(FX.raster(pillar(),p)),near=points.filter(p=>p.y<8),far=points.filter(p=>p.y>112),width=ps=>Math.max(...ps.map(p=>p.x))-Math.min(...ps.map(p=>p.x));
+ assert(width(far)<width(near)*.6);assert(Math.max(...far.map(p=>p.a))<90);assert(Math.max(...near.map(p=>p.a))>235);
+ for(const angle of [-180,-90,0,90,180]){const image=FX.raster(pillar(),{...p,angle,length:3,flatten:1.5});assert(image.pixelWidth<=2048&&image.pixelHeight<=2048);assert(Number.isFinite(image.x+image.y+image.width+image.height));}
+});
+test('projected settings are optional, validated and preserved across scope/source changes without losing unknown data',()=>{
+ const f=fixture(),request={id:'2',familyRoot:4,levelIndex:3},p={...FX.defaults,...FX.groundDefaults,projection:'ground'};f.change(request,{kind:'mode',mode:'individual'});const row=f.config.BuildEnum[2].levelList[3];row.DropShadow.settings.future={keep:true};f.change(request,{kind:'settings',settings:p});f.change(request,{kind:'source',source:'polygon'});f.change(request,{kind:'source',source:'texture'});
+ const current=f.config.BuildEnum[2].levelList[3];assert.deepEqual(current.DropShadow.settings.future,{keep:true});assert.equal(FX.resolve(f.config.BuildEnum[2],current,f.overrides).settings.projection,'ground');assert(!FX.valid({...p,length:Infinity}));assert(!FX.valid({...p,projection:'unknown'}));assert(FX.valid(FX.defaults));
 });
 test('global shares all five settings while Individual snapshots the current look and existing Tier presets take precedence',()=>{
  const f=fixture(),request={id:'2',familyRoot:4,levelIndex:3},category=f.config.BuildEnum[2],row=category.levelList[3],preset={angle:65,distance:42,spread:18,size:21,opacity:.37};

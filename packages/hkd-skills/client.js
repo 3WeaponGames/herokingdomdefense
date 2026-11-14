@@ -158,6 +158,7 @@ function mount(host, api) {
   check(scenarios, 'Sound in preview', false, value => { soundEnabled = value; muteBadge.textContent = value ? 'AUDIO ENABLED · PREVIEW ONLY' : 'SILENT · PREVIEW ONLY'; if (preview && preview.setAudioEnabled) preview.setAudioEnabled(value); if (!value) audio.stop(); });
   const facts = el('div', 'Loading preview…', main, 'preview-facts'); facts.setAttribute('aria-live', 'polite');
   el('p', 'Active examples start with 75% Steady Aim or Momentum, and three Mystic charges. Basic attack + passive starts uncharged.', main, 'help');
+  el('p', 'Bruiser lifesteal uses the saved level-1 charm in this isolated example.', main, 'help');
   el('p', 'Click an enemy to target it; drag an enemy to move it. Drag effect handles to fit their position. Middle drag pans; Ctrl+wheel zooms. Drag numeric labels to adjust (Shift: fine, Alt: coarse; Esc: cancel). Changes remain in a draft until Save.', main, 'help');
   const inspector = el('aside', undefined, workspace, 'inspector'), tabList = el('div', undefined, inspector, 'tabs'); tabList.setAttribute('role', 'tablist');
   const tabs = {};

@@ -1,0 +1,97 @@
+
+item-3-tier-lv2-guardian_wqyl_lead_jian.png
+size: 2048,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+item_shield
+  rotate: false
+  xy: 2, 2
+  size: 50, 56
+  orig: 50, 56
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_lv1
+  rotate: false
+  xy: 56, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_lv2
+  rotate: false
+  xy: 146, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_lv3
+  rotate: false
+  xy: 236, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_lv4
+  rotate: false
+  xy: 326, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_skirmisher_lv1
+  rotate: false
+  xy: 416, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_skirmisher_lv2
+  rotate: false
+  xy: 506, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_skirmisher_lv3
+  rotate: false
+  xy: 596, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_skirmisher_lv4
+  rotate: false
+  xy: 686, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_skirmisher_vip1
+  rotate: false
+  xy: 776, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_skirmisher_vip2
+  rotate: false
+  xy: 866, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_vip1
+  rotate: false
+  xy: 956, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Bow_Arrow_vip2
+  rotate: false
+  xy: 1046, 2
+  size: 86, 34
+  orig: 86, 34
+  offset: 0, 0
+  index: -1

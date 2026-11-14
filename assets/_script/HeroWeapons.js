@@ -36,8 +36,7 @@ function upgrade(data, slot, value, style) {
 }
 function itemKey(slot, value, style) { return slot + ":" + value + ((slot === 3 || slot === 4) && style && style !== "skirmisher" ? ":" + style : ""); }
 function skin(style, tier) { return (style || "skirmisher") + "_" + tier; }
-// The visual loadout is separate from upgrade tracks. A linked hand reserves
-// its slot; the secondary upgrade track supplies style-specific bonuses.
+// The secondary slot shows the same item as its style-specific upgrade track.
 function gear(style, slot, area) {
   var selected = find(style) || styles[0], main = selected.id === "guardian" ? "Hammer" : selected.weapon;
   if (Number(slot) === 1) return { name: "Chest", kind: "armor", slot: 1 };
@@ -46,7 +45,6 @@ function gear(style, slot, area) {
   if (Number(slot) !== 3) return null;
   if (selected.id === "skirmisher") return { name: "Arrow", kind: "offhand", slot: 3 };
   if (selected.id === "guardian") return { name: "Shield", kind: "offhand", slot: 3, icon: { id:"HandLeft/Shield/FA_WP_Sub_Shield_012_Blue",resource:"character-parts/Parts/HandLeft/Shield/FA_WP_Sub_Shield_012_Blue",width:50,height:56 } };
-  if (area === "equipment") return { name: main, kind: "linked", slot: 3, occupiedBy: 4, gray: true, opacity: 110 };
   var arcane = selected.id === "mystic";
   return { name: {fighter:"Potion",vanguard:"Lightning Buff",mystic:"Crystal Orb",bruiser:"Skull Charm"}[selected.id], kind: "bonus", slot: 3, bonus: { key: arcane ? "arcane-focus" : "combat-training", parameter: "secondary" }, icon: {resource:arcane?"icons/GUI-Pro/Icons/Icon_Mana":"icons/2d-minimal/Misc/Misc_Fist_01_Gold"} };
 }

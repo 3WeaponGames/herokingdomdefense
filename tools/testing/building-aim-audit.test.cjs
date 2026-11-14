@@ -255,7 +255,7 @@ test('paused battle update preserves the weapon pose and cooldown while enemies 
   const source = fs.readFileSync(path.join(root, 'assets/_script/KinghtFallUIGame.js'), 'utf8');
   const begin = source.indexOf('  _ctor.prototype.update = function'), end = source.indexOf('\n  };', begin) + 5;
   const update = vm.runInNewContext('(' + source.slice(begin, end).split(' = ').slice(1).join(' = ').replace(/;$/, '') + ')');
-  update.call({ isPauset: true, _updateTestControls() {}, ctrGame: { onUpdate: dt => h.owner.doTime(dt) } }, .1);
+  update.call({ isPauset: true, _updateTestControls() {}, _layoutBattleFooter() {}, ctrGame: { onUpdate: dt => h.owner.doTime(dt) } }, .1);
   assert.equal(h.owner._buildingAppearance.weaponPivot.angle, before); assert.equal(h.owner.time.AttackTime, cooldown); assert.equal(h.shots.length, 0);
 });
 

@@ -15,10 +15,14 @@ function text(parent,name,size,y) { var n=node(parent,name);n.y=y||0;var l=n.add
 function location(event) { var touch=event&&event.touch;return touch&&touch.getLocation?touch.getLocation():event&&event.getLocation?event.getLocation():null; }
 function touchId(event) { var touch=event&&event.touch;return touch&&touch.getID?touch.getID():0; }
 function stop(event) { if(event&&event.stopPropagation)event.stopPropagation(); }
-function available(rt) { return !!rt && (!rt.available || rt.available()) && !(rt.ui&&rt.ui.isPauset); }
+function available(rt) {
+  if(!rt||rt.available&&!rt.available()||rt.ui&&rt.ui.isPauset)return false;
+  var status=rt.game&&rt.game.gameStatus,stages=require("KinghtFallModle").KinghtFallGameStage;
+  return status===undefined||status===stages.Fight;
+}
 function waiting(rt) {
   var hero=rt&&rt.hero,game=rt&&rt.game,ui=rt&&rt.ui;
-  if(!hero||hero._styleRuntime!==rt||!game||game.ctrPlay!==hero||!ui||ui.isPauset||ui.isclose||ui.node&&ui.node.activeInHierarchy===false||!live(hero.node)||hero.node.activeInHierarchy===false||hero._isPooled||!(hero.hp>0)||hero.isDead&&hero.isDead())return false;
+  if(!live(hero)||hero._styleRuntime!==rt||!live(game)||game.ctrPlay!==hero||!live(ui)||ui.isPauset||ui.isclose||ui.node&&ui.node.activeInHierarchy===false||!live(hero.node)||hero.node.activeInHierarchy===false||hero._isPooled)return false;
   if(rt.heroGeneration!==undefined&&hero.node._combatGeneration!==rt.heroGeneration||rt.scope&&rt.scopeCurrent&&!rt.scopeCurrent(rt.scope))return false;
   var stages=require("KinghtFallModle").KinghtFallGameStage;
   return game.gameStatus===stages.Prepare||game.gameStatus===stages.Transition;
@@ -151,8 +155,8 @@ function layout(hud,rt) {
   hud.button.setPosition(parent.convertToNodeSpaceAR(vec(best.x,best.y)));
 }
 function paintButton(hud,rt) {
-  var s=rt.state,can=usable(rt),remaining=s.cooldown>COOLDOWN_EPSILON?s.cooldown:0,cooldown=remaining?Math.ceil(remaining):0;
-  if(hud.art)hud.art.set({style:s.style,usable:can,aiming:!!rt.aiming,cooldown:remaining,totalCooldown:s.tuning&&s.tuning.cooldown||rt.settings&&rt.settings.cooldown||12});
+  var s=rt.state,planning=waiting(rt),can=!planning&&usable(rt),remaining=!planning&&s.cooldown>COOLDOWN_EPSILON?s.cooldown:0,cooldown=remaining?Math.ceil(remaining):0;
+  if(hud.art)hud.art.set({style:s.style,usable:can,planning:planning,aiming:!!rt.aiming,cooldown:remaining,totalCooldown:s.tuning&&s.tuning.cooldown||rt.settings&&rt.settings.cooldown||12});
   if(hud.buttonSignature===cooldown)return;hud.buttonSignature=cooldown;
   hud.cooldownCount.node.active=!!cooldown;
   if(cooldown)hud.cooldownCount.string=String(cooldown);
@@ -190,10 +194,15 @@ function draw(hud,hero,rt) {
 }
 function update(hero,rt) {
   if(!ready())return;
+  // A newly loaded/restarted stage has not simulated a combat frame yet.
+  // Resolve ownership before installation; available() can retire an old HUD
+  // when the hero generation or battle epoch changed.
+  if(rt.refresh)rt.refresh();
+  var active=available(rt);
   if(typeof cc.Class==="function")require("./ForestRain").ensure(rt);
   var hud=hero._skillHUD;if(hud&&(!live(hud.button)||hud.runtime!==rt)){clear(hero);hud=null;}
   if(!hud)hud=install(hero,rt);if(!hud)return;hud.runtime=rt;
-  var active=available(rt);hud.button.active=active||waiting(rt);hud.visual.node.active=active;
+  hud.button.active=active||waiting(rt);hud.visual.node.active=active;
   if(!active){if(Presentation.suspend)Presentation.suspend(rt);rt.aiming=false;hud.press=null;hud.worldTouch=null;if(hud.charge)hud.charge.node.active=false;hud.visual.g.clear();hud.visualEmpty=true;if(hud.button.active){layout(hud,rt);paintButton(hud,rt);}return;}
   layout(hud,rt);paintButton(hud,rt);drawCharge(hud,hero,rt);draw(hud,hero,rt);
 }
