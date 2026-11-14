@@ -46,7 +46,10 @@ function create(button,current,cc){
         if(!icon||!parts.normal||!parts.armed||!parts.disabled||!parts.cooldown)throw Error("Incomplete skill-button prefab");
         parts.fill=parts.cooldown.getComponent(cc.Sprite);if(!parts.fill)throw Error("Missing skill cooldown sprite");
         cooldownColor=parts.cooldown.color;cooldownOpacity=parts.cooldown.opacity;
-        if(cc.Mask){var mask=artwork.getComponent(cc.Mask);if(!mask)throw Error("Missing circular skill mask");mask.type=cc.Mask.Type.ELLIPSE;mask.segments=96;mask.inverted=false;}
+        // The prefab owns its ellipse, segments and inversion. Reassigning
+        // Mask.type initializes native materials even when unchanged, before
+        // an inactive HUD has an assembler. Normal activation creates it.
+        if(cc.Mask&&!artwork.getComponent(cc.Mask))throw Error("Missing circular skill mask");
         parts.fill.type=cc.Sprite.Type.FILLED;parts.fill.fillType=cc.Sprite.FillType.RADIAL;parts.fill.fillCenter=cc.v2(.5,.5);parts.fill.fillStart=.25;
         paint();
       }catch(error){if(live(root))root.destroy();root=null;parts=null;release(prefab);prefab=null;if(cc.warn)cc.warn("Skill button artwork: "+error.message);}

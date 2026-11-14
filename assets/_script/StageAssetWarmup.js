@@ -89,12 +89,25 @@ Session.prototype.load = function (item) {
   var self = this;
   if (this.pending[item.key]) return this.pending[item.key];
   return this.pending[item.key] = new Promise(function (resolve, reject) {
-    self.rejectors.push(reject);
-    self.options.load(item, function (error, asset) {
-      if (!self.current()) return reject(Error("Stage preparation cancelled"));
-      if (error || !asset) return reject(error || Error("Empty stage resource: " + item.path));
-      self.assets[item.key] = asset; self.completed++; resolve(asset);
-    }, self);
+    var settled = false;
+    function settle(error, asset) {
+      if (settled) return;
+      settled = true;
+      var index = self.rejectors.indexOf(cancel);
+      if (index !== -1) self.rejectors.splice(index, 1);
+      if (error) reject(error);
+      else resolve(asset);
+    }
+    function cancel(error) { settle(error); }
+    self.rejectors.push(cancel);
+    function loaded(error, asset) {
+      if (settled) return;
+      if (!self.current()) return settle(Error("Stage preparation cancelled"));
+      if (error || !asset) return settle(error || Error("Empty stage resource: " + item.path));
+      self.assets[item.key] = asset; self.completed++; settle(null, asset);
+    }
+    try { self.options.load(item, loaded, self); }
+    catch (error) { settle(error); }
   });
 };
 Session.prototype.run = async function () {
@@ -112,7 +125,8 @@ Session.prototype.run = async function () {
 };
 Session.prototype.cancel = function () {
   this.cancelled=true;
-  this.rejectors.forEach(function(reject){reject(Error("Stage preparation cancelled"));});this.rejectors=[];
+  var rejectors=this.rejectors;this.rejectors=[];
+  rejectors.forEach(function(reject){reject(Error("Stage preparation cancelled"));});
 };
 Session.prototype.dispose = function () {
   if (this.closed) return; this.closed = true; this.cancel();

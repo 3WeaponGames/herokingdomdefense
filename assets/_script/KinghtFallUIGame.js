@@ -215,6 +215,7 @@ var def_KinghtFallUIGame = function (t) {
       });
     }).catch(function(error){
       if(t.isclose)return;
+      console.error("Could not prepare battle stage", error && error.stack || error);
       stageAssets.dispose();
       require("ResourceMgr").ResourceMgr.getInstance().showRuntimeRecovery(error,function(){if(!t.isclose)t.start();},function(){t.closeUI();});
     });

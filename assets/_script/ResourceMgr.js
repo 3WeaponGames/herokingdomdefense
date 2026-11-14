@@ -128,7 +128,6 @@ var exp_ResourceMgr = function () {
       var child = new cc.Node(name);
       child.parent = node;
       child.y = y;
-      child.setContentSize(width, height);
       var text = child.addComponent(cc.Label);
       text.fontSize = fontSize;
       text.lineHeight = fontSize + 8;
@@ -136,23 +135,27 @@ var exp_ResourceMgr = function () {
       text.overflow = cc.Label.Overflow.RESIZE_HEIGHT;
       text.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
       text.verticalAlign = cc.Label.VerticalAlign.CENTER;
+      // Label.onEnable auto-sizes its initially empty string in Overflow.NONE.
+      // Restore the bounds after configuring overflow, before rasterizing text.
+      child.setContentSize(width, height);
       text.string = manager.runtimeRecoveryText(key);
       return text;
     }
     label("Message", "loading.runtimeFailed", 120, 180, 30);
     function button(name, key, y, action) {
-      var text = label(name, key, y, 72, 30);
-      text.overflow = cc.Label.Overflow.CLAMP;
-      text.enableWrapText = false;
-      text.node.height = 72;
+      // Native sibling reordering waits for the next update, which recovery
+      // pauses below. Create the background first so the text is visible now.
       var surface = new cc.Node(name + "Background");
       surface.parent = node;
       surface.y = y;
-      surface.setSiblingIndex(text.node.getSiblingIndex());
       var graphics = surface.addComponent(cc.Graphics);
       graphics.fillColor = new cc.Color(46, 85, 130, 255);
       graphics.roundRect(-width / 2, -40, width, 80, 12);
       graphics.fill();
+      var text = label(name, key, y, 72, 30);
+      text.overflow = cc.Label.Overflow.CLAMP;
+      text.enableWrapText = false;
+      text.node.height = 72;
       text.node.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); action(); });
       if (name === "Cancel") manager.runtimeCancelSurface = surface;
       return text;

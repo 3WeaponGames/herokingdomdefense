@@ -24,6 +24,24 @@ test('a stage cannot become ready until resources, priming and prepared shadows 
 test('cancelling an in-flight stage rejects readiness and releases its resource ownership once',async()=>{
  let releases=0;const session=new Warm.Session({config,level:config.LevelCfg[0],names,load(){},release(){releases++;}}),promise=session.run();session.dispose();await assert.rejects(promise,/cancelled/);assert(!session.ready);assert.equal(releases,1);
 });
+
+test('stage disposal cancels only pending loads and ignores late duplicate completions',async()=>{
+ const callbacks=[],session=new Warm.Session({load(item,done){callbacks.push(done);}});
+ const item=key=>({key,path:key}),asset={},resolved=session.load(item('resolved'));
+ callbacks[0](null,asset);await resolved;callbacks[0](null,{});
+ assert.equal(session.completed,1);assert.equal(session.assets.resolved,asset);assert.equal(session.rejectors.length,0);
+ const first=session.load(item('first')),second=session.load(item('second'));
+ const cancelled=Promise.all([assert.rejects(first,/cancelled/),assert.rejects(second,/cancelled/)]);
+ assert.equal(session.rejectors.length,2);session.dispose();await cancelled;
+ callbacks[1](null,{});callbacks[2](null,{});
+ assert.equal(session.completed,1);assert.deepEqual(session.assets,{});assert.equal(session.rejectors.length,0);
+});
+
+test('a synchronous load failure leaves no cancellation callback behind',async()=>{
+ const issue=Error('decode failed'),session=new Warm.Session({load(){throw issue;}});
+ await assert.rejects(session.load({key:'broken',path:'broken'}),error=>error===issue);
+ assert.equal(session.rejectors.length,0);session.dispose();
+});
 test('stage admission and checkpoint creation remain behind the readiness gate',()=>{
  const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallUIGame.js'),'utf8'),start=source.slice(source.indexOf('_ctor.prototype.start ='),source.indexOf('_ctor.prototype.playPlanningMusic'));
  assert(start.indexOf('stageAssets.run().then')<start.indexOf('game.initData(levelId)'));assert(start.indexOf('stageAssets.run().then')<start.indexOf('player.purchase'));assert(start.indexOf('game._stageAssets=stageAssets')<start.indexOf('game.initMap(map)'));assert(start.indexOf('prepareMap();')<start.indexOf('stageAssets.reveal()'));

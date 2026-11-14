@@ -21,7 +21,7 @@ function fixture(options = {}) {
   if (options.unassigned) config.assignments = {};
   if (options.profile) options.profile(profile, layer);
   const originalCatalog = JSON.stringify(config);
-  const calls = { prepare: 0, apply: 0, restore: 0 };
+  const calls = { prepare: 0, apply: 0, restore: 0 }, webTextures = [], nativeTextures = [];
   const browserCore = {
     actorKey: Core.actorKey,
     skinTint: Core.skinTint,
@@ -35,11 +35,17 @@ function fixture(options = {}) {
   };
   class Component {}
   class Texture {
-    constructor() { if (options.textureFailure === 'constructor') throw Error('adapter construction failed'); }
+    constructor() { if (options.textureFailure === 'constructor') throw Error('adapter construction failed'); webTextures.push(this); }
     setRealTexture(image) {
       if (options.textureFailure === 'binding') throw Error('texture binding failed');
       this.image = image;
     }
+  }
+  class NativeTexture {
+    constructor() { nativeTextures.push(this); }
+    setPixelsWide(value) { this.width = value; }
+    setPixelsHigh(value) { this.height = value; }
+    setNativeTexture(value) { this.impl = value; }
   }
   const sp = { spine: {} };
   if (!native || options.browserApiOnNative) sp.SkeletonTexture = Texture;
@@ -66,7 +72,7 @@ function fixture(options = {}) {
       });
     } }
   };
-  const context = { exports: {}, cc, sp, Date: { now: () => now },
+  const context = { exports: {}, cc, sp, middleware: { Texture2D: NativeTexture }, Date: { now: () => now },
     require(id) {
       if (id === 'CharacterPartsCore') return browserCore;
       if (id === 'UnitLevelStats') return require('../../assets/_script/UnitLevelStats');
@@ -103,7 +109,7 @@ function fixture(options = {}) {
     return unit;
   }
   return {
-    add, units, cc, sp, calls, requests, warnings, notices, config, profile, layer, options, api: context.exports,
+    add, units, cc, sp, calls, requests, warnings, notices, config, profile, layer, options, api: context.exports, webTextures, nativeTextures,
     flush() { while (pending.length) pending.shift()(); },
     step(count = 1) { for (let i = 0; i < count; i++) units.forEach(unit => unit.component.lateUpdate()); },
     setNow(value) { now = value; },
@@ -205,6 +211,36 @@ test('unassigned native actors keep their authored visuals without a compatibili
 test('baked native allies are recognized by their asset UUID even when JSB does not expose skeletonJson',()=>{
   const f=fixture({profile(profile,layer){profile.baked={uuid:layer};profile.scale=1.7;profile.models={[layer]:{x:20,scaleX:1.2,tint:'#80c0ff'}};}}),unit=f.add();
   f.flush();f.step(10);assert.deepEqual(unit.renderer.node,unit.original,'baked transforms were applied a second time');assert.equal(f.partRequests().length,0);assert.equal(f.notices.length,0);assert.equal(f.calls.prepare,0);
+});
+
+test('native stage priming binds GPU textures through JSB and applies the prepared baked appearance',()=>{
+  const resource='characters/baked/native-test',baked={uuid:'native-prepared-rig'};
+  const f=fixture({profile(profile){profile.baked={uuid:baked.uuid,resource};}}),assets={['resources/'+resource+':spine']:baked};
+  const images=f.profile.parts.map((part,index)=>{
+    const entry=library.parts.find(value=>value.id===part.sprite),impl={native:index};
+    const image={width:entry.width,height:entry.height,getImpl:()=>impl};assets['resources/'+entry.resource+':texture']=image;return{image,impl};
+  });
+  assert.equal(f.sp.SkeletonTexture,undefined,'Match Creator 2.4.13 native Simulator');
+  assert.doesNotThrow(()=>f.api.prime(f.config,library,assets));
+  assert.equal(f.nativeTextures.length,images.length);assert.equal(f.webTextures.length,0);
+  for(const {image,impl} of images)assert(f.nativeTextures.some(texture=>texture.width===image.width&&texture.height===image.height&&texture.impl===impl));
+  const unit=f.add(),resumed={},plays=[],track={animation:{name:'idle'},loop:true,trackTime:.37,timeScale:.8};
+  unit.renderer.getCurrent=index=>index===1?null:track;
+  unit.renderer.setAnimation=(index,name,loop)=>{plays.push({index,name,loop});return resumed;};
+  f.step();
+  assert.equal(unit.renderer.skeletonData,baked);assert.deepEqual(plays,[{index:0,name:'idle',loop:true}]);
+  assert.equal(resumed.trackTime,.37);assert.equal(resumed.timeScale,.8);
+  assert.equal(f.requests.length,0,'Stage assets are reused without a deferred reload');
+  assert.equal(f.calls.prepare,0);assert.equal(unit.actor.hp,100);assert.equal(unit.actor.attack,12);f.assertCatalogUntouched();
+});
+
+test('web stage priming reuses loaded part textures through the web adapter',()=>{
+  const f=fixture({native:false}),assets={};
+  for(const part of f.profile.parts){const entry=library.parts.find(value=>value.id===part.sprite);assets['resources/'+entry.resource+':texture']={width:entry.width,height:entry.height};}
+  f.api.prime(f.config,library,assets);f.add();f.step();
+  assert.equal(f.webTextures.length,Object.keys(assets).length);assert.equal(f.nativeTextures.length,0);
+  assert(f.webTextures.every(texture=>Object.values(assets).includes(texture.image)));
+  assert.equal(f.requests.length,0);assert.equal(f.calls.prepare,1);f.assertCatalogUntouched();
 });
 
 for (const kind of ['constructor', 'binding']) test(`web ${kind} failures stay inside the texture callback and recover after shared backoff`, () => {

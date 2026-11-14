@@ -136,6 +136,20 @@ function load() {
     loadLooks();
   });
 }
+function skeletonTexture(image) {
+  if (cc.sys && cc.sys.isNative) {
+    // Creator's JSB Spine adapter uses middleware textures; SkeletonTexture
+    // exists only in the web runtime. Bind the existing GPU texture directly.
+    var native = new middleware.Texture2D();
+    native.setPixelsWide(image.width);
+    native.setPixelsHigh(image.height);
+    native.setNativeTexture(image.getImpl());
+    return native;
+  }
+  var adapter = new sp.SkeletonTexture({ width: image.width, height: image.height });
+  adapter.setRealTexture(image);
+  return adapter;
+}
 function texture(id) {
   var job = textureJobs[id];
   if (job && (!job.retryAt || Date.now() < job.retryAt)) return job.texture;
@@ -153,8 +167,7 @@ function texture(id) {
       if (error || !image) { failed(error); return; }
       // This callback runs after lateUpdate's setup try/catch has returned.
       try {
-        var adapter = new sp.SkeletonTexture({ width: image.width, height: image.height });
-        adapter.setRealTexture(image); job.texture = adapter;
+        job.texture = skeletonTexture(image);
       } catch (issue) { failed(issue); }
     });
   } catch (issue) { failed(issue); }
@@ -274,5 +287,5 @@ exports.animationSpeed = animationSpeed; exports.preload = preload;
 exports.prime = function (catalog,parts,assets) {
   looks=catalog;library={};(parts.parts||[]).forEach(function(part){library[part.id]=part;});
   bakedJobs={};textureJobs={};Object.keys(assets||{}).forEach(function(key){if(key.indexOf("resources/")===0&&/:spine$/.test(key))bakedJobs[key.slice(10,-6)]={asset:assets[key]};});
-  Object.keys(library).forEach(function(id){var image=assets["resources/"+library[id].resource+":texture"];if(image){var adapter=new sp.SkeletonTexture({width:image.width,height:image.height});adapter.setRealTexture(image);textureJobs[id]={texture:adapter};}});
+  Object.keys(library).forEach(function(id){var image=assets["resources/"+library[id].resource+":texture"];if(image)textureJobs[id]={texture:skeletonTexture(image)};});
 };

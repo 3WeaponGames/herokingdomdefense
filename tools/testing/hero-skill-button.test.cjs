@@ -8,13 +8,16 @@ test('all six production skill scenes are opaque and at most 128px with matching
  const ids=new Set();for(const icon of catalog.icons){const bytes=fs.readFileSync(path.join(root,icon.image)),image=PNG.decode(bytes),meta=JSON.parse(fs.readFileSync(path.join(root,icon.image+'.meta'),'utf8')),frames=Object.values(meta.subMetas);assert(image.width>0&&image.width<=128);assert.equal(image.height,image.width);assert.equal(image.width,icon.width);assert.equal(image.height,icon.height);assert.equal(meta.width,image.width);assert.equal(meta.height,image.height);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),icon.sha256);for(let i=3;i<image.rgba.length;i+=4)assert.equal(image.rgba[i],255,icon.id+' must fill its background');assert.equal(frames.length,1);const frame=frames[0];assert.equal(frame.trimType,'none');assert.equal(frame.rawTextureUuid,meta.uuid);assert.equal(frame.width,image.width);assert.equal(frame.rawWidth,image.width);assert.equal(frame.height,image.height);assert.equal(frame.rawHeight,image.height);assert.equal(frame.trimX,0);assert.equal(frame.trimY,0);for(const id of [meta.uuid,frame.uuid]){assert(!ids.has(id));ids.add(id);}}
 });
 function asset(rect={width:100,height:200}){return{refs:0,addRef(){this.refs++;},decRef(){this.refs--;},getRect:()=>rect};}
-function fixture(){
- class Node{constructor(name){this.name=name;this.children=[];this.components=[];this.active=true;this.width=this.height=0;this.scale=1;}setParent(p){this.parent=p;p.children.push(this);}setPosition(x,y){this.x=x;this.y=y;}setContentSize(w,h){this.width=w;this.height=h;}getChildByName(name){return this.children.find(n=>n.name===name);}getComponent(type){return this.components.find(c=>c instanceof type);}setSiblingIndex(index){const a=this.parent.children;a.splice(a.indexOf(this),1);a.splice(index,0,this);}destroy(){this.destroyed=true;this.children.forEach(n=>n.destroy());}}
- class Sprite{};Sprite.SizeMode={CUSTOM:0};Sprite.Type={FILLED:3};Sprite.FillType={RADIAL:2};class Mask{};Mask.Type={ELLIPSE:1};
- const pending=[],cc={Sprite,Mask,Prefab:class{},color:v=>v,v2:(x,y)=>({x,y}),isValid:n=>!!n&&!n.destroyed,resources:{load(resource,type,done){pending.push({resource,type,done});}},instantiate(){const nodes=new Map();function make(index){if(nodes.has(index))return nodes.get(index);const saved=document[index],n=new Node(saved._name);nodes.set(index,n);n.active=saved._active!==false;n.color=saved._color;n.opacity=saved._opacity;n.width=saved._contentSize.width;n.height=saved._contentSize.height;n.x=saved._trs.array[0];n.y=saved._trs.array[1];for(const component of saved._components||[]){const row=document[component.__id__];if(row.__type__==='cc.Sprite'){const s=new Sprite();s.node=n;s.fillRange=row._fillRange;n.components.push(s);}if(row.__type__==='cc.Mask'){const m=new Mask();m.node=n;n.components.push(m);}}for(const child of saved._children||[])make(child.__id__).setParent(n);return n;}return make(1);}};
+function fixture(options={}){
+ class Node{constructor(name){this.name=name;this.children=[];this.components=[];this.active=true;this.width=this.height=0;this.scale=1;}get activeInHierarchy(){return this.active&&(!this.parent||this.parent.activeInHierarchy);}setParent(p){this.parent=p;p.children.push(this);}setPosition(x,y){this.x=x;this.y=y;}setContentSize(w,h){this.width=w;this.height=h;}getChildByName(name){return this.children.find(n=>n.name===name);}getComponent(type){return this.components.find(c=>c instanceof type);}setSiblingIndex(index){const a=this.parent.children;a.splice(a.indexOf(this),1);a.splice(index,0,this);}destroy(){this.destroyed=true;this.children.forEach(n=>n.destroy());}}
+ class Sprite{};Sprite.SizeMode={CUSTOM:0};Sprite.Type={FILLED:3};Sprite.FillType={RADIAL:2};
+ // Creator 2.4.13's native Mask.type setter always activates materials, even
+ // for an unchanged type; its native assembler exists only after activation.
+ class Mask{get type(){return this._type;}set type(value){this._type=value;if(options.native){const assembler=this.node.activeInHierarchy?{setRenderSubHandle(){}}:null;assembler.setRenderSubHandle({});}}};Mask.Type={ELLIPSE:1};
+ const pending=[],warnings=[],cc={Sprite,Mask,Prefab:class{},color:v=>v,v2:(x,y)=>({x,y}),isValid:n=>!!n&&!n.destroyed,warn:message=>warnings.push(message),resources:{load(resource,type,done){pending.push({resource,type,done});}},instantiate(){const nodes=new Map();function make(index){if(nodes.has(index))return nodes.get(index);const saved=document[index],n=new Node(saved._name);nodes.set(index,n);n.active=saved._active!==false;n.color=saved._color;n.opacity=saved._opacity;n.width=saved._contentSize.width;n.height=saved._contentSize.height;n.x=saved._trs.array[0];n.y=saved._trs.array[1];for(const component of saved._components||[]){const row=document[component.__id__];if(row.__type__==='cc.Sprite'){const s=new Sprite();s.node=n;s.fillRange=row._fillRange;n.components.push(s);}if(row.__type__==='cc.Mask'){const m=new Mask();m.node=n;m._type=row._type;m._segments=row._segments;m.inverted=row._inverted;n.components.push(m);}}for(const child of saved._children||[])make(child.__id__).setParent(n);return n;}return make(1);}};
  const button=new Node('button'),caption=new Node('caption');caption.setParent(button);let current=true;const handle=Art.create(button,()=>current,cc),prefab=asset();
  const loadPrefab=()=>pending[0].done(null,prefab),set=state=>handle.set({style:'skirmisher',usable:true,aiming:false,cooldown:0,totalCooldown:12,...state});
- return{cc,button,caption,pending,handle,prefab,loadPrefab,set,retire(){current=false;}};
+ return{cc,button,caption,pending,warnings,handle,prefab,loadPrefab,set,retire(){current=false;}};
 }
 
 test('white GUI PRO frame stays behind one circular mask for artwork and the clockwise cooldown',()=>{
@@ -50,6 +53,19 @@ test('every planning icon has a full gray overlay and restores the authored batt
 
 test('artwork loaded during planning begins gray and a later battle transition removes its overlay',()=>{
  const f=fixture();f.set({style:'guardian',planning:true,usable:false,cooldown:0});f.loadPrefab();const overlay=f.handle.visual.getChildByName('Artwork').getChildByName('Cooltime');assert.equal(overlay.active,true);assert.equal(overlay.color,'#686b73');assert.equal(f.handle.cooldown.fillRange,1);f.pending.at(-1).done(null,asset({width:128,height:128}));assert(f.handle.icon.spriteFrame);f.set({style:'guardian',planning:false,usable:true,cooldown:0});assert.equal(overlay.active,false);f.handle.destroy();
+});
+
+test('native artwork loaded into an inactive HUD retains its authored mask and becomes visible on activation',()=>{
+ const f=fixture({native:true});f.button.active=false;f.set({style:'guardian',planning:true,usable:false});f.loadPrefab();
+ assert(f.handle.visual,'The native mask setter must not destroy the artwork while its HUD is inactive');
+ assert.deepEqual(f.warnings,[]);assert.equal(f.prefab.refs,1);
+ const artwork=f.handle.visual.getChildByName('Artwork'),mask=artwork.getComponent(f.cc.Mask),icon=asset({width:128,height:128});
+ assert.equal(mask.type,f.cc.Mask.Type.ELLIPSE);assert.equal(mask._segments,96);assert.equal(mask.inverted,false);assert.equal(artwork.activeInHierarchy,false);
+ f.pending.at(-1).done(null,icon);assert.equal(f.handle.icon.spriteFrame,icon);assert.equal(icon.refs,1);
+ f.button.active=true;f.set({style:'guardian',planning:false,usable:true,cooldown:0});
+ assert.equal(artwork.activeInHierarchy,true);assert.equal(f.handle.visual.getChildByName('Frame').active,true);assert.equal(artwork.getChildByName('Cooltime').active,false);
+ assert.equal(f.handle.icon.spriteFrame,icon);assert.equal(f.pending.length,2,'Activation reuses the loaded visual and icon');
+ f.handle.destroy();assert.equal(icon.refs,0);assert.equal(f.prefab.refs,0);
 });
 
 test('command-relative resizing works before and after async prefab loading without reloading artwork',()=>{
