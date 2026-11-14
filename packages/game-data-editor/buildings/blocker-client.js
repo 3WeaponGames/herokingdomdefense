@@ -8,8 +8,8 @@ function mount(host,api){
  const tools=make('div'),canvas=make('canvas'),status=make('p'),help=make('p');tools.className='bld-blocker-tools';canvas.className='bld-blocker-canvas';canvas.width=900;canvas.height=430;canvas.tabIndex=0;if(state.previewHeight)canvas.style.height=state.previewHeight+'px';
  help.className=status.className='bld-blocker-help';
  host.appendChild(tools);const guideNote=make('p');guideNote.className='bld-blocker-help';guideNote.hidden=true;host.appendChild(guideNote);host.appendChild(canvas);host.appendChild(help);host.appendChild(status);
- let layer=['shadow','scale'].includes(state.layer)?state.layer:'blocker';
- const mode=make('select');mode.setAttribute('aria-label','Edit layer');for(const [id,label]of [['blocker','Blocker'],['shadow','Shadow'],['scale','Scale']]){const o=make('option',label);o.value=id;mode.appendChild(o);}mode.value=layer;tools.appendChild(mode);
+ let layer=['shadow','scale','nightlight'].includes(state.layer)?state.layer:'blocker';
+ const mode=make('select');mode.setAttribute('aria-label','Edit layer');for(const [id,label]of [['blocker','Blocker'],['shadow','Shadow'],['scale','Scale'],['nightlight','Nightlight']]){const o=make('option',label);o.value=id;mode.appendChild(o);}mode.value=layer;tools.appendChild(mode);
  if(!canvas.getContext)return {destroy(){}};
  let closed=false,data,images={},value,values,layerParts=[],points=state.points||[],pointer=null,busy=false,frame=null,opacityDraft=null,scaleClient=null,drag=null,pan=null,dropPreview=null;
  let scale=1,zoom=state.zoom||1,cx=0,cy=0,tool=state.tool||'paint',partKey=state.part||'body',instance=state.instance||0;
@@ -28,6 +28,7 @@ function mount(host,api){
  const parts=make('select');parts.setAttribute('aria-label','Shape part');parts.onchange=()=>{endPan(false);releaseDrag();partKey=parts.value;instance=0;points=[];pointer=null;refreshCopies();draw();};tools.appendChild(parts);
  const copies=make('select');copies.setAttribute('aria-label','Edit connection point');copies.onchange=()=>{endPan(false);releaseDrag();instance=Number(copies.value);points=[];pointer=null;draw();};tools.appendChild(copies);
  const scaleHost=make('div');host.appendChild(scaleHost);
+ const nightHost=make('div');host.appendChild(nightHost);let nightClient=null;
  const shadowTool=make('select');shadowTool.setAttribute('aria-label','Shadow source');for(const [id,label]of [['texture','Texture shadow'],['polygon','Manual polygon mask']]){const option=make('option',label);option.value=id;shadowTool.appendChild(option);}shadowTool.value=state.shadowTool||'texture';tools.appendChild(shadowTool);
  const styleHost=make('div');host.insertBefore(styleHost,canvas);const dropClient=require('./drop-shadow-client').mount(styleHost,{onChange:action=>api.onShadowStyle(action),onPreview:(params,mode)=>{dropPreview=mode==='none'?null:Object.assign({},params);draw();}});
  shadowTool.onchange=async()=>{releaseDrag();points=[];state.shadowTool=shadowTool.value;syncMode();draw();try{const next=await api.onShadowStyle({kind:'source',source:shadowTool.value});if(!closed)dropClient.setData(next);}catch(error){if(!closed)message(error.message,true);}};
@@ -38,20 +39,24 @@ function mount(host,api){
  function guideView(){return{width:canvas.width,height:canvas.height,scale:scale*zoom,cx,cy};}
  function pickConnection(event){if(event.button!==0||textureMode()||busy||points.length||layer==='scale'||layerParts.length<2)return false;const b=canvas.getBoundingClientRect(),point={x:(event.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth,y:(event.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight},index=Guides.hit(part(),layerParts,guideView(),point);if(index===null)return false;event.preventDefault();copies.value=String(index);copies.onchange();canvas.focus();return true;}
  function syncMode(){
-  const scaling=layer==='scale';guideNote.hidden=scaling||layerParts.length<2;canvas.hidden=help.hidden=status.hidden=scaling;for(const child of tools.children)if(child!==mode)child.hidden=scaling;
+  const scaling=layer==='scale',night=layer==='nightlight',separate=scaling||night;guideNote.hidden=separate||layerParts.length<2;canvas.hidden=help.hidden=status.hidden=separate;for(const child of tools.children)if(child!==mode)child.hidden=separate;
   scaleHost.hidden=!scaling;
+  resizer.setVisible(!separate);
+  nightHost.hidden=!night;
+  if(night&&!nightClient){state.nightView=state.nightView||{};nightClient=require('./nightlight-client').mount(nightHost,{ipc:api.ipc,request:api.request,state:state.nightView,onChange:(next,expected)=>api.onNightlight(next,expected)});}
+  if(!night&&nightClient){nightClient.destroy();nightClient=null;}
   styleHost.hidden=!textureMode();shadowTool.hidden=layer!=='shadow';
-  for(const button of tools.querySelectorAll('button'))if(button.textContent!=='Fit preview')button.hidden=scaling||textureMode();
+  for(const button of tools.querySelectorAll('button'))if(button.textContent!=='Fit preview')button.hidden=separate||textureMode();
   if(scaling&&!scaleClient){state.scaleView=state.scaleView||{};scaleClient=require('./scale-client').mount(scaleHost,{ipc:api.ipc,request:api.request,state:state.scaleView,onChange:next=>api.onChange(next,'scale')});}
   if(!scaling&&scaleClient){scaleClient.destroy();scaleClient=null;}
   canvas.setAttribute('aria-label',layer==='shadow'?'Building shadow preview':'Building blocker preview');
   add.textContent=layer==='shadow'?'Polygon shadow':'Polygon blocker';clear.textContent=layer==='shadow'?'Clear shadow':'Clear blocker';
   opacityLabel.hidden=layer!=='shadow'||textureMode();if(value&&layer==='shadow'){opacity.value=String(value.opacity*100);opacityText.textContent=(value.opacity*100).toFixed(1)+'%';}
   help.textContent='Click polygon points, then double-click or click the first point to finish. Drag round corner handles or square edge handles to reshape a completed polygon. Enter completes; Escape cancels. '+(layer==='shadow'?'Shadows use a translucent black texture mask; blockers are hidden.':'Yellow is blocked; shadows are hidden.')+' Cyan marks the selected copy. Matching numbered markers identify each piece. Wheel to zoom; hold middle mouse to pan.';
-  parts.textContent='';for(const p of layerParts){const o=make('option',Guides.title(p));o.value=p.key;parts.appendChild(o);}if(layerParts.length&&!part())partKey=layerParts[0].key;parts.value=partKey;parts.hidden=scaling||layerParts.length<2;refreshCopies();if(scaling)copies.hidden=true;
+  parts.textContent='';for(const p of layerParts){const o=make('option',Guides.title(p));o.value=p.key;parts.appendChild(o);}if(layerParts.length&&!part())partKey=layerParts[0].key;parts.value=partKey;parts.hidden=separate||layerParts.length<2;refreshCopies();if(separate)copies.hidden=true;
   if(textureMode()){parts.hidden=copies.hidden=guideNote.hidden=true;help.textContent='The shadow follows the visible building artwork. Wheel to zoom; hold middle mouse to pan. Changes stay in the draft until Save.';}
  }
- mode.onchange=()=>{if(busy||!values){mode.value=layer;return;}endPan(false);releaseDrag();layer=mode.value;state.layer=layer;value=values[layer==='scale'?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;points=[];pointer=null;opacityDraft=null;instance=0;syncMode();draw();message('Editing '+layer+'. Changes stay in the shared draft until Save.');};
+ mode.onchange=()=>{if(busy||!values){mode.value=layer;return;}endPan(false);releaseDrag();layer=mode.value;state.layer=layer;value=values[(layer==='scale'||layer==='nightlight')?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;points=[];pointer=null;opacityDraft=null;instance=0;syncMode();draw();message('Editing '+layer+'. Changes stay in the shared draft until Save.');};
  function choose(next,reset=true){releaseDrag();tool=next;if(reset){points=[];pointer=null;}add.className=next==='paint'?'active':'';erase.className=next==='erase'?'active':'';draw();}
  function local(event){const b=canvas.getBoundingClientRect(),world={x:((event.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth-canvas.width/2)/(scale*zoom)+cx,y:-((event.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight-canvas.height/2)/(scale*zoom)+cy};return Maps.point(Maps.inverse(matrix()),world);}
  function screenDistance(a,b){const m=matrix(),p=Maps.point(m,a),q=Maps.point(m,b);return Math.hypot(p.x-q.x,p.y-q.y)*scale*zoom;}
@@ -97,7 +102,7 @@ function mount(host,api){
  function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;state.previewHeight=h;draw();}}
  function maskPath(mask){g.beginPath();for(const region of mask)for(const ring of region){ring.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();}}
  function draw(){if(closed||frame!==null)return;frame=requestAnimationFrame(()=>{
-  frame=null;if(closed||layer==='scale')return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!data)return;
+  frame=null;if(closed||layer==='scale'||layer==='nightlight')return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!data)return;
   guideNote.textContent=Guides.explain(part(),layerParts,instance,layer);
   g.setTransform(scale*zoom,0,0,-scale*zoom,canvas.width/2-cx*scale*zoom,canvas.height/2+cy*scale*zoom);
   let preview=drag&&drag.next||value[partKey]&&value[partKey].mask;
@@ -121,10 +126,10 @@ function mount(host,api){
  // buffer to the content box so world X and Y keep the same screen scale.
  const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;if(observer)observer.observe(canvas);resize();
  const ready=api.ipc('building-blocker-preview',api.request).then(async result=>{
-  if(closed)return;data=result;if(result.dropStyle){shadowTool.value=result.dropStyle.source;dropClient.setData(result.dropStyle);}values={blocker:clone(result.value),shadow:clone(result.shadow)};value=values[layer==='scale'?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;syncMode();choose(tool,false);
+  if(closed)return;data=result;if(result.dropStyle){shadowTool.value=result.dropStyle.source;dropClient.setData(result.dropStyle);}values={blocker:clone(result.value),shadow:clone(result.shadow)};value=values[(layer==='scale'||layer==='nightlight')?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;syncMode();choose(tool,false);
   const frames=new Set(result.record.sprites.map(s=>s.frame)),spec={images:Object.fromEntries(Object.entries(result.images).filter(([key])=>frames.has(key)))};
   renderer.prepare([result.record],result.runtimePath);resize();if(state.view&&state.view.width===canvas.width&&state.view.height===canvas.height){({scale,cx,cy}=state.view);draw();}else fit();images=await Paint.loadImages(spec);if(closed)return;draw();message(data.parts.length>1?'Gate, pillars and connecting walls. Edits repeat at every matching connection point.':'Draw or erase a '+layer+'. Changes stay in the shared draft until Save.');
  }).catch(error=>{if(!closed)message(error.message,true);});
- return {get ready(){return scaleClient?scaleClient.ready:ready;},stats:()=>scaleClient?scaleClient.stats():Object.assign(renderer.stats(),{view:{scale:scale*zoom,cx,cy,width:canvas.width,height:canvas.height},handles:matrix()?editHandles().map(h=>Object.assign({},h,Maps.point(matrix(),h))):[]}),destroy(){if(closed)return;endPan(false);releaseDrag();closed=true;resizer.destroy();Object.assign(state,{layer,tool,part:partKey,instance,zoom,points:clone(points)});if(data)state.view={scale,cx,cy,width:canvas.width,height:canvas.height};if(observer)observer.disconnect();if(scaleClient)scaleClient.destroy();dropClient.destroy();renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=canvas.onauxclick=canvas.onpointerleave=canvas.ondblclick=canvas.onkeydown=canvas.onwheel=null;shadowTool.onchange=mode.onchange=opacity.oninput=opacity.onchange=null;canvas.width=canvas.height=1;}};
+ return {get ready(){return nightClient?nightClient.ready:scaleClient?scaleClient.ready:ready;},stats:()=>nightClient?nightClient.stats():scaleClient?scaleClient.stats():Object.assign(renderer.stats(),{view:{scale:scale*zoom,cx,cy,width:canvas.width,height:canvas.height},handles:matrix()?editHandles().map(h=>Object.assign({},h,Maps.point(matrix(),h))):[]}),destroy(){if(closed)return;endPan(false);releaseDrag();closed=true;resizer.destroy();Object.assign(state,{layer,tool,part:partKey,instance,zoom,points:clone(points)});if(data)state.view={scale,cx,cy,width:canvas.width,height:canvas.height};if(observer)observer.disconnect();if(scaleClient)scaleClient.destroy();if(nightClient)nightClient.destroy();dropClient.destroy();renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=canvas.onauxclick=canvas.onpointerleave=canvas.ondblclick=canvas.onkeydown=canvas.onwheel=null;shadowTool.onchange=mode.onchange=opacity.oninput=opacity.onchange=null;canvas.width=canvas.height=1;}};
 }
 module.exports={mount};

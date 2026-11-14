@@ -20,7 +20,7 @@ function fixture(){
   class Sprite{}Sprite.SizeMode={CUSTOM:0};
   class Graphics{constructor(){this.commands=[];}moveTo(x,y){this.commands.push(['move',x,y]);}lineTo(x,y){this.commands.push(['line',x,y]);}close(){this.commands.push(['close']);}fill(){this.commands.push(['fill']);}}
   const cc={Node,Sprite,Graphics,color,Color:{WHITE:color(255,255,255)},isValid:value=>!!value&&!value.destroyed};
-  const exports={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BuildingLighting.js'),'utf8'),{cc,exports},{filename:'BuildingLighting.js'});
+  const exports={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BuildingLighting.js'),'utf8'),{cc,exports,require:name=>{if(name==='BuildingNightlight')return require('../../assets/_script/BuildingNightlight');throw Error(name);}},{filename:'BuildingLighting.js'});
   const node=new Node('Building'),presentation=new Node('Placement'),base=new Node('Base');presentation.parent=node;base.parent=presentation;base.setPosition(0,-38);base.width=187;base.height=230;
   const lighting=[{points:[{x:-6,y:20},{x:4,y:18},{x:4,y:34},{x:-6,y:36}],glow:true,authorField:'preserve'},
     {points:[{x:15,y:42},{x:22,y:45},{x:22,y:58},{x:15,y:55}],color:'#FFF2B1',opacity:210,glow:{x:18.5,y:50,width:32,height:42,pulse:.2}}];
@@ -32,6 +32,11 @@ function fixture(){
 }
 function record(h){return h.state._buildingLighting;}
 function step(h,dt){h.api.update(h.owner,h.state,dt);}
+ test('lighting detaches all live frame consumers before releasing its retained reference',()=>{
+  const h=fixture();h.api.apply(h.owner,h.state);const f=h.frame('shared');h.requests.forEach(r=>r.done(f));
+  const sprites=Object.values(record(h).resources).flatMap(r=>r.sprites),release=f.decRef;f.decRef=function(){assert(sprites.every(s=>s.spriteFrame===null));return release.call(this);};
+  h.api.dispose(h.owner,h.state);assert.equal(f.releases,1);
+ });
 
 test('native projected fans share one retained frame, keep authored transforms and use the existing phase lifecycle',()=>{
   const h=fixture(),appearance=JSON.parse(JSON.stringify(require('../../assets/KinghtFallConfig/GameJsonCfg.json').BuildEnum[2].levelList.find(row=>row.index===10).Appearance));
@@ -39,7 +44,7 @@ test('native projected fans share one retained frame, keep authored transforms a
   h.owner.buildInfo.cfg.Appearance=appearance;const before=JSON.stringify(appearance);
   h.api.apply(h.owner,h.state);const r=record(h),fans=r.entries.flatMap(entry=>entry.glows);
   assert.equal(r.entries.length,2,'upper lookout apertures and the open entry stay separately registered');assert.equal(fans.length,3);
-  assert.equal(h.requests.length,2,'the exact core mask and one shared original fan are the only frames');
+  assert.equal(h.requests.length,1,'only the shared original light sprite is loaded; hidden custom masks allocate no sprite');
   const shared=h.frame('native fan');for(const request of h.requests)request.done(request.file==='buildings/lighting/native-window-ray'?shared:h.frame('core'));
   assert.equal(shared.adds,1);assert(fans.every(part=>part.sprite.spriteFrame===shared));
   assert.deepEqual([fans[0].node.angle,fans[0].node.skewX,fans[0].node.skewY],[-90,12,-4]);
@@ -48,7 +53,7 @@ test('native projected fans share one retained frame, keep authored transforms a
   const opacity=fans.map(part=>part.node.opacity);step(h,.6);assert(fans.some((part,index)=>part.node.opacity!==opacity[index]));
   assert.deepEqual(fans.map(part=>[part.node.x,part.node.y,part.node.width,part.node.height,part.node.angle,part.node.skewX,part.node.skewY]),transforms,'breathing allocates no new ray geometry or transform work');
   h.api.setNight(h.owner,false);assert.equal(r.node.active,false);h.api.setNight(h.owner,true);step(h,.5);h.api.hide(h.owner,h.state);h.api.apply(h.owner,h.state);step(h,.5);
-  assert.equal(h.requests.length,2);assert.equal(JSON.stringify(appearance),before);h.api.dispose(h.owner,h.state);assert.equal(shared.releases,1);
+  assert.equal(h.requests.length,1);assert.equal(JSON.stringify(appearance),before);h.api.dispose(h.owner,h.state);assert.equal(shared.releases,1);
 });
 
 test('invalid optional fan transforms fall back without repairing saved values',()=>{

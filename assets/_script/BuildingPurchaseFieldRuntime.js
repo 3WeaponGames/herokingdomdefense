@@ -39,4 +39,16 @@ function apply(owner) {
   });
   owner.purchaseSide=value.southwest?"flip":"default";owner.purchaseOffset=cc.v2(value.x*placementScale,value.y*placementScale);
 }
-exports.apply=apply;
+function applyUnbuilt(owner){
+  var first=owner.ndLockList&&owner.ndLockList[0],card=first&&first.getChildByName('ndLock');
+  if(!card||!card.parent||!cc.isValid(card,true))return;
+  var value=Settings.unbuilt(owner.buildCfg,variant(owner,owner._purchaseFieldRuntime)),saved=owner._unbuiltPadRuntime;
+  if(!value){if(saved&&saved.node===card){card.setPosition(saved.x,saved.y);delete owner._unbuiltPadRuntime;}return;}
+  if(!saved||saved.node!==card)owner._unbuiltPadRuntime={node:card,x:card.x,y:card.y};
+  // The name card belongs to the placement, independently of artwork offsets,
+  // body scale and the price pad. Use the unscaled placement coordinate frame.
+  var body=owner._buildingWorldScaleRuntime,node=owner.node,parent=node.parent,a=(node.angle||0)*Math.PI/180,c=Math.cos(a),s=Math.sin(a),sx=body?body.scaleX:node.scaleX,sy=body?body.scaleY:node.scaleY;
+  var p=cc.v2((body?body.x:node.x)+c*sx*value.x-s*sy*value.y,(body?body.y:node.y)+s*sx*value.x+c*sy*value.y);
+  card.setPosition(card.parent.convertToNodeSpaceAR(parent?parent.convertToWorldSpaceAR(p):p));
+}
+exports.applyUnbuilt=applyUnbuilt;exports.apply=apply;

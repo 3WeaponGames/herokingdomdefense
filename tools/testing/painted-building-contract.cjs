@@ -55,6 +55,7 @@ function withoutAuthoring(value){
  const result=clone(value);for(const family of Object.values(result.BuildEnum||{}))for(const row of family.levelList||[])for(const key of ['WorldScale','ModelOffset','PartScale','Blocker','Shadow','PurchaseField','SpawnPositions','AdUnitPosition','DropShadow'])delete row[key];return result;
 }
 function assertConfig(file,config){
+  config=require('./building-night-light-contract.cjs').config(config);
  config=withoutAuthoring(config);
   const contract=fixture.config[file];assert(contract,'documented config '+file);
   assert.deepEqual(Object.keys(config.BuildEnum),Object.keys(contract.originalFamilies),'original building enum identities');

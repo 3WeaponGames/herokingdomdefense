@@ -91,6 +91,7 @@ var def_KinghtFallBuildBase = function (t) {
     var e = this;
     1 == this.ID && (t = $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter);
     this.buildCfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuildCfgById(t);
+    if (this.buildCfg.levelList && this.buildCfg.levelList.some(function(row){return !!row.Nightlight;}) || this._buildingNightlightPrepared) require("BuildingNightlightRuntime").prepare(this, this.buildCfg.levelList);
     if (this.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
       return this.hide(), false;
     } else {
@@ -198,6 +199,7 @@ var def_KinghtFallBuildBase = function (t) {
     var n = this;
     this._stopColliderTweens();
     var cfg = this.getBranchCfg(t);
+    if (cfg && cfg.Nightlight || this._buildingNightlightRuntime) require("BuildingNightlightRuntime").apply(this, cfg);
     this.index = cfg ? cfg.index : 0;
     if (this.index > 0) this._freeInitialBuild = false;
     this.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(this.buildCfg.enumValue, cfg, this.ID);
@@ -256,6 +258,7 @@ var def_KinghtFallBuildBase = function (t) {
     });
     require("BuildingAppearance").apply(this);
     if (cfg && (cfg.WorldScale !== undefined || cfg.ModelOffset)) require("BuildingWorldScale").apply(this);
+    if (this.buildCfg.UnbuiltPad || this._unbuiltPadRuntime) require("BuildingPurchaseFieldRuntime").applyUnbuilt(this);
     var shadowData=$z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
     if(cfg&&cfg.DropShadow||shadowData&&shadowData.GameTools&&shadowData.GameTools.buildingShadows||this._buildingDropShadowRuntime) require("BuildingDropShadowRuntime").apply(this,$z1KinghtFallUIGame.default.instance.ctrGame,shadowData);
     else if (cfg && cfg.Shadow || this._buildingShadowRuntime) require("BuildingShadowRuntime").apply(this, $z1KinghtFallUIGame.default.instance.ctrGame);
@@ -339,6 +342,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (t.prototype.onDisable) t.prototype.onDisable.call(this);
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._buildingNightlightRuntime || this._buildingNightlightPrepared) require("BuildingNightlightRuntime").dispose(this, true);
     require("BuildingDebris").destroy(this);
     // Children and native physics proxies can already be gone during the
     // parent's destruction walk. There is no surviving pose to restore here.
@@ -392,6 +396,7 @@ var def_KinghtFallBuildBase = function (t) {
     artwork.apply(this);
     if (artwork.place) artwork.place(this, this.getLevel() === 1 ? "create" : "upgrade");
     if (this.buildInfo && this.buildInfo.cfg && (this.buildInfo.cfg.WorldScale !== undefined || this.buildInfo.cfg.ModelOffset)) require("BuildingWorldScale").apply(this);
+    if (this.buildCfg.UnbuiltPad || this._unbuiltPadRuntime) require("BuildingPurchaseFieldRuntime").applyUnbuilt(this);
   };
   _ctor.prototype.getWposPhyCol = function () {
     return this.getWposPhyCol2().map(function (part) { return part.points; });

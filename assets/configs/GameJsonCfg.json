@@ -2545,7 +2545,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 72,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 22.4477732,
@@ -2556,7 +2556,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 175,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   },
@@ -2569,7 +2569,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 175,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -2599,7 +2599,7 @@
                   }
                 ],
                 "color": "#FFE89A",
-                "opacity": 120,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 19.3005419,
@@ -2610,7 +2610,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 180,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -2721,7 +2721,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 72,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": -56.7882177,
@@ -2732,7 +2732,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 175,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   },
@@ -2745,7 +2745,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 175,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -2775,7 +2775,7 @@
                   }
                 ],
                 "color": "#FFE89A",
-                "opacity": 120,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 19.6823817,
@@ -2786,7 +2786,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 180,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -2888,7 +2888,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 72,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": -59.3685761,
@@ -2899,7 +2899,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 175,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   },
@@ -2912,7 +2912,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 175,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -2942,7 +2942,7 @@
                   }
                 ],
                 "color": "#FFE89A",
-                "opacity": 120,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 19.0099401,
@@ -2953,7 +2953,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 180,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -3059,7 +3059,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 180,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 22.1731669,
@@ -3070,7 +3070,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 140,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -3279,7 +3279,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 180,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 27.7756851,
@@ -3290,7 +3290,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 140,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -3502,7 +3502,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 180,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 28.4473602,
@@ -3513,7 +3513,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 140,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -3724,7 +3724,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 180,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 15.8713526,
@@ -3735,7 +3735,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 140,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -3949,7 +3949,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 180,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 26.3689138,
@@ -3960,7 +3960,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 140,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -4168,7 +4168,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 180,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 25.5314632,
@@ -4179,7 +4179,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 140,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -4390,7 +4390,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 72,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": -58.954055,
@@ -4401,7 +4401,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 175,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   },
@@ -4414,7 +4414,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 175,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -4444,7 +4444,7 @@
                   }
                 ],
                 "color": "#FFE89A",
-                "opacity": 120,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 20.5912768,
@@ -4455,7 +4455,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 180,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -4560,7 +4560,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 180,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 27.9734387,
@@ -4571,7 +4571,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 140,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }
@@ -4764,7 +4764,7 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 180,
+                "opacity": 0,
                 "glows": [
                   {
                     "x": 25.5517953,
@@ -4775,7 +4775,7 @@
                     "shearX": 0,
                     "shearY": 0,
                     "color": "#FFFFFF",
-                    "opacity": 140,
+                    "opacity": 235,
                     "pulse": 0.08,
                     "sprite": "buildings/lighting/native-window-ray"
                   }

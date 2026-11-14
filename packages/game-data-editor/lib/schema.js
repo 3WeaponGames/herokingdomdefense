@@ -248,6 +248,7 @@ function validate(documents, changes) {
   });
   Object.keys(base.BuildEnum||{}).filter(id=>id!=='0').forEach(id=>{
     const building=base.BuildEnum[id],p=['BuildEnum',id],levels=building.levelList;
+    if(own(building,'UnbuiltPad')&&!require('../../../assets/_script/BuildingPurchaseField').valid(building.UnbuiltPad))issue('A',p.concat('UnbuiltPad'),'Unbuilt name card needs finite X/Y offsets.');
     if(own(building,'PlacementVariants')&&!require('../../../assets/_script/BuildingPurchaseField').validVariants(building.PlacementVariants))issue('A',p.concat('PlacementVariants'),'Placement variants need unique IDs and display names.');
     number('A',p.concat('lockCose'),building.lockCose,0,true);
     if(!Array.isArray(levels)||!levels.length){issue('A',p.concat('levelList'),'A building requires at least one authored branch.');return;}
@@ -367,6 +368,7 @@ function validate(documents, changes) {
       ['Hp','Zoom'].forEach(k=>number('A',q.concat(k),level[k],Number.MIN_VALUE,false));
       ['BuildSliverCost','BuildCost','VedioCount'].forEach(k=>{if(own(level,k))number('A',q.concat(k),level[k],0,true);});
       if(own(level,'Blocker'))require('../buildings/blocker-data').issues(level.Blocker,id==='6').forEach(message=>issue('A',q.concat('Blocker'),message));
+      if(own(level,'Nightlight'))require('../../../assets/_script/BuildingNightlight').issues(level.Nightlight).forEach(message=>issue('A',q.concat('Nightlight'),message));
       if(own(level,'WorldScale')&&!require('../../../assets/_script/BuildingWorldScale').valid(level.WorldScale))issue('A',q.concat('WorldScale'),'World size must be between 5% and 1,000%.');
       if(own(level,'AdUnitPosition')&&!require('../../../assets/_script/BuildingSpawnPositions').point(level.AdUnitPosition))issue('A',q.concat('AdUnitPosition'),'Ad unit position needs finite X/Y offsets between -10,000 and 10,000.');
       if(own(level,'SpawnPositions')&&!require('../../../assets/_script/BuildingSpawnPositions').valid(level.SpawnPositions))issue('A',q.concat('SpawnPositions'),'Unit spawn positions must be finite X/Y offsets between -10,000 and 10,000.');

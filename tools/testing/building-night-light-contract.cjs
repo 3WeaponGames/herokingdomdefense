@@ -18,4 +18,5 @@ function skeleton(rig,value){
 }
 function metadata(rig,value){const contract=fixture.rigs[rig],result=clone(value);if(!contract)return result;assert.equal(result.textures.filter(id=>id===contract.rayTextureUuid).length,1,'Native rays bind exactly one approved page');result.textures=result.textures.filter(id=>id!==contract.rayTextureUuid);return result;}
 function atlas(rig,text){const contract=fixture.rigs[rig];if(!contract)return text;const addition=contract.atlasAddition.replace(/\r\n/g,'\n'),normalized=text.replace(/\r\n/g,'\n');assert(normalized.endsWith(addition),'unknown appended native light page or modified ray layout');return normalized.slice(0,-addition.length);}
-module.exports={fixture,skeleton,metadata,atlas};
+function config(value){const result=clone(value);for(const row of result.BuildEnum?.[2]?.levelList||[]){if(!row.Appearance?.lighting)continue;const candidates=(fixture.towerLighting||[]).filter(p=>p.index===row.index);if(!candidates.length)continue;const current=hash(row.Appearance.lighting),patch=candidates.find(p=>p.afterHash===current);assert(patch,'Original sprite-only tower lighting must match its reviewed delta');row.Appearance.lighting=clone(patch.before);}return result;}
+module.exports={fixture,skeleton,metadata,atlas,config};

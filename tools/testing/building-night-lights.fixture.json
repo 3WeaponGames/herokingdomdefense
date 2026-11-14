@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "authorization": "2026-11-13: remove added lantern fixtures; emit original archer-tower-style light through doors and windows.",
+  "authorization": "2026-11-14: reuse the complete original door/window light sprites at fitted positions; remove custom flat opening fills.",
   "source": {
     "file": "assets/KinghtFallIconMap/com/Ani/jt/jt.png",
     "region": "jt_3_1",
@@ -142,7 +142,7 @@
   "rigs": {
     "cb": {
       "beforeSkeleton": "8ad7924fa150cdf8dcc1672b32d56792e2f3eae87e74c543c1abbf0430317682",
-      "afterSkeleton": "93a5ee4a103f565f868537ba69ea035acc25979c5f232f6120d1ce8cdf2d2ece",
+      "afterSkeleton": "ba5c7e3c5d4dbed9fedaf305329548db1fe15bb9db970172037b5d595e303d96",
       "addedSlot": {
         "name": "building_aperture_rays",
         "bone": "bone3",
@@ -207,7 +207,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "8ea1d65499ee5664de0615e555a09c08cebddf7a42d898146cd7ecceef5044ab"
+          "afterHash": "fcb72215dc62781e8677a7e9bcd15aee591c74c8686b7baaf6d6318b6117bb69"
         },
         {
           "path": [
@@ -218,7 +218,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "d3043b36564015d7b36baefc4af87be6ba9a346cd481a55b285ca74537a87f6a"
+          "afterHash": "16dbf62dfa90e0a54b0957ccc398c5deb165186440b539910ec0b67823f0251f"
         },
         {
           "path": [
@@ -229,7 +229,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "45cf7f6b1bf69ac9a6a580b1366958a32ca702b3d323825e3ee5c5b59bd13cb8"
+          "afterHash": "d3df22cb0c48102cde8c29207ce1ccd68e98e975b195a6636738df08f1f2b1eb"
         },
         {
           "path": [
@@ -240,7 +240,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "cf6a1386dcee3f86d8a5de0a3467a98e0d984472e0b37778ade0e4082039fcd7"
+          "afterHash": "df5f34658a7ebbd9a8d3e70a53c5a1afb73be8816d542766fcf3c9817740e5bf"
         },
         {
           "path": [
@@ -462,7 +462,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "e43b618835d295601ac4037fef481f4295dac70a8f1acbba64b9cb887a91f10b"
+          "afterHash": "08b199d0a4d90d2b34d2fee11908b266de441b179ce20abc93e8eca9bd7ca3a1"
         },
         {
           "path": [
@@ -664,7 +664,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c4bb629cb467248017d1a636d10b35e2f366eced928a458917c5f6d814baa6d1"
+          "afterHash": "a36be4ced00dc97efa68bf75db8c7e48e0c623379be80fabff0612bea1e7ba7e"
         },
         {
           "path": [
@@ -894,7 +894,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "6d57adbfc42b80e51a4b91e41257a8793694f1f58b4dd0860cb4bb0539d26de8"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -905,7 +905,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "48ef71d14d1bf1b7b937403e32553bd3be7c23e7d0c8ce2514133436839c3bdf"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -916,7 +916,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "4453931049372bdc51ec095e26b1c335e29530f5d8890cd5ccfeb52525fe2542"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -927,7 +927,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "ad4074da55bad30df9152910ae9f5f1f2faa7f0c0e53ff5617723bd81addea4d"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -949,7 +949,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "08b199d0a4d90d2b34d2fee11908b266de441b179ce20abc93e8eca9bd7ca3a1"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -971,7 +971,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "95a4eab264f9bae9f92f03c6809ae6f6aabcf5c0949e35a20338b3ca0d51dc46"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -1004,7 +1004,7 @@
     },
     "by": {
       "beforeSkeleton": "d0afb86660d220f8548915c48038a4529f0d8a9d232c5bdbb68bf4e16d667122",
-      "afterSkeleton": "5c694420af292a25ff554ad8a4978cd08c6e4536d53ee944015bb16bf487a066",
+      "afterSkeleton": "eb24c066752d2e40a4d49e3a5852d307bbdd6fb8d4a2bcce2e7dc8bd153df720",
       "addedSlot": {
         "name": "building_aperture_rays",
         "bone": "bone3",
@@ -1058,7 +1058,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "a927c74fadf2957fdc0a7dc231a643cf6e8a0ea80d7bcb88ba7f9098511e522c"
+          "afterHash": "b6a959a2c49488c9069d0a830d409928cf37dc4e8217125e4dc60fbb60b6b45e"
         },
         {
           "path": [
@@ -1107,7 +1107,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "d40fee210b200b26308523abcabadf5c5862b74733ef54cfa342c74cf5c4fd23"
+          "afterHash": "056cbda1ffa0d18bd765187b8206e092d7038af460546c1f0f901adfb898e1e3"
         },
         {
           "path": [
@@ -1156,7 +1156,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "170939e9cc73eac434d6c65c11b47c10719af6fbdd20c6d270ad19821d590372"
+          "afterHash": "ab15030040303a3c6338c42a585ae57176f45dec3a5b1ba6ff92d4d0436c82a6"
         },
         {
           "path": [
@@ -1205,7 +1205,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "e995c6a290b363ea98818adb2d6eb2ae62fde96d3a9bec0b0a838a71b6ab418d"
+          "afterHash": "7faa423d229fa5f5a90859d820df8990c357ad079dfdee05e3669abf1f7b5f2b"
         },
         {
           "path": [
@@ -1254,7 +1254,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "69956c42e64edef66125b43972f3132a8f0d24be58f8065d4cb4448ac2aef7b0"
+          "afterHash": "8db64c52e55752e7fd4218370e7f52cb79cd9d1f67c38a7cafdba7340cb8e41f"
         },
         {
           "path": [
@@ -1265,7 +1265,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "d83b7354e7f1383b4305b5441efe1fa8541ff073c2243af379f5b7d96cde1a36"
+          "afterHash": "260bd554d8ef82ba40699247f2d292d1d6900af9e540413ec517b141158b0c23"
         },
         {
           "path": [
@@ -1276,7 +1276,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "b69926246e260fb876fbd8fa1de950f377b21da33432f625333ee9f5eba14372"
+          "afterHash": "aaa20a708612e21ae30e40aeeeb0d1539bf636a9b78c3b964ed50f94937572d2"
         },
         {
           "path": [
@@ -1287,7 +1287,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "2488df53050813476ae8bada50cafb24a9505a16678ff2aac79791d9c009dab5"
+          "afterHash": "6f45e89525d34728450aeecaa7894ad05ccc10d2f87b598809a7f6ceb44466b7"
         },
         {
           "path": [
@@ -1336,7 +1336,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "44a0f0c551fd7d986d39031728f94acf3f9f26d13ab03dbe916bcff56670f879"
+          "afterHash": "60a5a8e72bf5d242b8cfc0e4b2dbb2e0b933110331fa28c963059ea3cf006bb9"
         },
         {
           "path": [
@@ -1385,7 +1385,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "54a66bcd514d354d2ebc1da8644b86f6f9965ede96ea8fe5e6b8ae297f3dd454"
+          "afterHash": "bcf578e8bde4d3a36a2187852756640b3dddb1d8f76877550add74337e5055e3"
         },
         {
           "path": [
@@ -1396,7 +1396,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "d82dd3e35f87a525e3550b65eed50b4c99cf583a0cbbdc37c099c21cc031cbe6"
+          "afterHash": "a297e39ab2d8c9f66a4ddeeaa2ecf3c9511ae7b5a07a19e678618c80e0dd3826"
         },
         {
           "path": [
@@ -1407,7 +1407,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "af0abf3a23032b480dac223fbccc0b3fcfa521e7ffb99bc7fe630c488dd98c3b"
+          "afterHash": "7709f247faeb7acbdccf61850fa44efd295d20b4c85216c2daf8161d9f824510"
         },
         {
           "path": [
@@ -1418,7 +1418,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "2853ef48bdc4e439088e1f209dafdbc7a36fcd2f8326a9caa6dce3fce4aca7f7"
+          "afterHash": "63fa6d792681d70f2030d1f28f6a38796b197b2c0c30b42e923718e4bb0b13d3"
         },
         {
           "path": [
@@ -1429,7 +1429,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "bf0736cee050daab4b572f029d68945b6c68ec0e5f26bdfed90d4cab17c53332"
+          "afterHash": "754df44c8f6623e7169982be623d42487a02bff6994dd459e54e41f1fc01423a"
         },
         {
           "path": [
@@ -1440,7 +1440,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "7c36bcd7bed8796b2fb7a1caef24b49cb518dac6eea736fbade491461ab80a96"
+          "afterHash": "a39188ab210304c1269e0ddb1f5de93ceeaa4ff473335a7fd82af34369f72b3b"
         },
         {
           "path": [
@@ -1451,7 +1451,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "2e6e37481ed6c16c64432f9a708c4b3b826005b50e1c503e6af8737baedec7f0"
+          "afterHash": "159abcf420318f7b5e419bef0447d8e5ef50b08d2b8a1ee444477328218b9cd2"
         },
         {
           "path": [
@@ -1462,7 +1462,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "cf6a1386dcee3f86d8a5de0a3467a98e0d984472e0b37778ade0e4082039fcd7"
+          "afterHash": "df5f34658a7ebbd9a8d3e70a53c5a1afb73be8816d542766fcf3c9817740e5bf"
         },
         {
           "path": [
@@ -2284,7 +2284,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "e43b618835d295601ac4037fef481f4295dac70a8f1acbba64b9cb887a91f10b"
+          "afterHash": "08b199d0a4d90d2b34d2fee11908b266de441b179ce20abc93e8eca9bd7ca3a1"
         },
         {
           "path": [
@@ -3026,7 +3026,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c4bb629cb467248017d1a636d10b35e2f366eced928a458917c5f6d814baa6d1"
+          "afterHash": "a36be4ced00dc97efa68bf75db8c7e48e0c623379be80fabff0612bea1e7ba7e"
         },
         {
           "path": [
@@ -3944,7 +3944,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "dd0e5a453fcae4f0eed6e166a6fdcbcc0689ee44ee30fa18bd71c22755fc6c65"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -3955,7 +3955,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "63344ce7fcd616131a711951fe3728c97f49875bd68da29f95b2b7cafe568087"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -3966,7 +3966,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "18edf3f2ffb1b64e6f923fe48c7fc47e57f0bb4fb8760d0affc92f61a2794ba8"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -3977,7 +3977,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "8d919d9613bfbcd7166d81a8ba021155bead48cd5eb0b5d71927e78a1a96fcb8"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -3988,7 +3988,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "00e40ab54d25e9fa077c486e02edb1926c862a227ac75464d4e913a0a49dc878"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -3999,7 +3999,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "30fe76e9a5ab47378e1bdc7c0eeff5a89ee2fcb5f4e6cf69ca5a5d29d25a9fce"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4010,7 +4010,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "aec21652b135a2f9c9f46846a74a14847a4a7f2f84c0c8daa7c7c575c59850a3"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4021,7 +4021,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "d7be576cf4629b63363b01edb571218469f4187f59e811951d86e16e7d2a1f4b"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4032,7 +4032,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "029b643498280ee672975375053b30d6d8cc3ed642416f9a8638eeb2b5624d0e"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4043,7 +4043,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "6bdbc7893bb34b7218eddf984638baf06123521d0efe1d15543eb63a956dbecf"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4054,7 +4054,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "84e91540f7ec7bc7abe0955dc90d82c260ba58682778ae264a49402274128e7f"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4065,7 +4065,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "b49de29c2770d15805bf3dad0d0e3741a216244e135961225ef8e66cc3e6ff99"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4076,7 +4076,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "746f0caf0833dc23527d0738d9b181653d08f58debf4af8ff6e18fbe713d762b"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4087,7 +4087,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "69fcb1165db42fbd05fdc8db656ed982d87c0eccf72c3fd5f5bf8a3bc528287d"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4098,7 +4098,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "ea5c5c2f4a745e51c2b69505860e65eee0cbdf673d993f10f94a875dcc15ffeb"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4109,7 +4109,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "ec8e4c555686bc369873fff7311e72d9ea67e1b89132cfeec3368d2172e86381"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4120,7 +4120,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "ad4074da55bad30df9152910ae9f5f1f2faa7f0c0e53ff5617723bd81addea4d"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -4142,7 +4142,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "08b199d0a4d90d2b34d2fee11908b266de441b179ce20abc93e8eca9bd7ca3a1"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -4164,7 +4164,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "95a4eab264f9bae9f92f03c6809ae6f6aabcf5c0949e35a20338b3ca0d51dc46"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -4197,7 +4197,7 @@
     },
     "mz": {
       "beforeSkeleton": "2ef561f467a4b2082646b09ede0c692f690045300a82151a1527120b4573e04a",
-      "afterSkeleton": "39754b345674c8064e5633d5f039f72005e2e02b3e48ac9c52661e222de520bf",
+      "afterSkeleton": "733fce64b9099ba4459e997ab3059a6fa7067a88aefecf25329c5904e23bbc25",
       "addedSlot": {
         "name": "building_aperture_rays",
         "bone": "bone3",
@@ -4213,7 +4213,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c4a6bda02f26251500f146d4eda80674cdbda8f934099b421306678bb04d1ce8"
+          "afterHash": "a8dfade9ff75f25f405f9394a91c4b07e159aa5053598a4febcebb3c0151d033"
         },
         {
           "path": [
@@ -4224,7 +4224,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "d2e99295f9c86b2545ae1e27563da90d6f0cbe117d457729c2412bdeb1023444"
+          "afterHash": "e07e863e84067ee5e78a5ac4d62419d09d744c168c6e36c363d76d863ee9bf1f"
         },
         {
           "path": [
@@ -4235,7 +4235,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "343f4ced8713490cec24a6f1bd45926daf3bfa716d572cd1e2c331eafac21e9d"
+          "afterHash": "d6b96184b1f547b936957e4a5da0cf442c4d557a61013ccc1930d85dcc7c8896"
         },
         {
           "path": [
@@ -4246,7 +4246,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "90dee8d31e44093e52112d85b9f2be57366223b912505a1f469b0425a960e4a1"
+          "afterHash": "7eecdf7d5a7b4f6a7d48a1acc327e68e5c1bc08e41ddcaec5217c01d2f2705f2"
         },
         {
           "path": [
@@ -4257,7 +4257,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "cf6a1386dcee3f86d8a5de0a3467a98e0d984472e0b37778ade0e4082039fcd7"
+          "afterHash": "df5f34658a7ebbd9a8d3e70a53c5a1afb73be8816d542766fcf3c9817740e5bf"
         },
         {
           "path": [
@@ -4279,7 +4279,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "e43b618835d295601ac4037fef481f4295dac70a8f1acbba64b9cb887a91f10b"
+          "afterHash": "08b199d0a4d90d2b34d2fee11908b266de441b179ce20abc93e8eca9bd7ca3a1"
         },
         {
           "path": [
@@ -4311,7 +4311,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c4bb629cb467248017d1a636d10b35e2f366eced928a458917c5f6d814baa6d1"
+          "afterHash": "a36be4ced00dc97efa68bf75db8c7e48e0c623379be80fabff0612bea1e7ba7e"
         },
         {
           "path": [
@@ -4333,7 +4333,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "a22471f617aa2fe7a884826067e5f41e647d49d0a3669254d57a9303825f63e0"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4344,7 +4344,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "1d4a9d32869502fa39a63c3993fbe8c0880d2c5f65f3ef6e89ad5a6375b4eee7"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4355,7 +4355,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "390300988fea8ce5a20fc0415c991d3c46e4559ec4243547c772a44063105599"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4366,7 +4366,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c59d9c7fe6978b183e9fb46d395620c95bc0ab5952a857c43e4788562629afca"
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
           "path": [
@@ -4377,7 +4377,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "ad4074da55bad30df9152910ae9f5f1f2faa7f0c0e53ff5617723bd81addea4d"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -4399,7 +4399,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "08b199d0a4d90d2b34d2fee11908b266de441b179ce20abc93e8eca9bd7ca3a1"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -4421,7 +4421,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "95a4eab264f9bae9f92f03c6809ae6f6aabcf5c0949e35a20338b3ca0d51dc46"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -4454,7 +4454,7 @@
     },
     "mf": {
       "beforeSkeleton": "2089a5fb9d1d80b75a024f0fb39060023ca871282fbe4b2c28c3422cc1099da6",
-      "afterSkeleton": "23d6f27aeaa91d3cd23b0c0e78e39736ef60c61dd17a29d92d4b82ad879933d4",
+      "afterSkeleton": "160b4b7066f82345d81a5a68f8a11ad92f23823315e7d47036d150ae266edd2f",
       "addedSlot": {
         "name": "building_aperture_rays",
         "bone": "bone3",
@@ -4470,7 +4470,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c727714581faa4ece49f19112c22ac3c26263bbd0e7aa7d50ae13384f05f7844"
+          "afterHash": "ab65ae065539400d8fc53fc8cc49910bfbde24bfb9011c61f178a53afcb468df"
         },
         {
           "path": [
@@ -4481,7 +4481,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "8e320546564fb1637bca8affe99818114863806d563c688c1b8814c16337a48f"
+          "afterHash": "51b175e8611a2f0209f9500154bf9843d4c36f4b1074d47d192c3d26784e400f"
         },
         {
           "path": [
@@ -4492,7 +4492,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c059826bb021328d9cde7e36f1d6992709ca0cb50888055ea7baf93e03e79468"
+          "afterHash": "dc5eeb8459cfb937e93c2bbd6b6ce1682ff4e5ebaba7515cb2d90a2fa716c5f0"
         },
         {
           "path": [
@@ -4503,7 +4503,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "e630cd2e5d712e4e2e1be40510ecb8b4fb61fc1a7e0a928253abe88f576a85c4"
+          "afterHash": "f6fd23d79888f8de69c8e92d14f19d777cc8c3444ce78377e008b43b8d99a2bb"
         },
         {
           "path": [
@@ -4514,7 +4514,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "8e320546564fb1637bca8affe99818114863806d563c688c1b8814c16337a48f"
+          "afterHash": "51b175e8611a2f0209f9500154bf9843d4c36f4b1074d47d192c3d26784e400f"
         },
         {
           "path": [
@@ -4525,7 +4525,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c059826bb021328d9cde7e36f1d6992709ca0cb50888055ea7baf93e03e79468"
+          "afterHash": "dc5eeb8459cfb937e93c2bbd6b6ce1682ff4e5ebaba7515cb2d90a2fa716c5f0"
         },
         {
           "path": [
@@ -4536,7 +4536,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "e630cd2e5d712e4e2e1be40510ecb8b4fb61fc1a7e0a928253abe88f576a85c4"
+          "afterHash": "f6fd23d79888f8de69c8e92d14f19d777cc8c3444ce78377e008b43b8d99a2bb"
         },
         {
           "path": [
@@ -4547,7 +4547,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "cf6a1386dcee3f86d8a5de0a3467a98e0d984472e0b37778ade0e4082039fcd7"
+          "afterHash": "df5f34658a7ebbd9a8d3e70a53c5a1afb73be8816d542766fcf3c9817740e5bf"
         },
         {
           "path": [
@@ -4569,7 +4569,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "e43b618835d295601ac4037fef481f4295dac70a8f1acbba64b9cb887a91f10b"
+          "afterHash": "08b199d0a4d90d2b34d2fee11908b266de441b179ce20abc93e8eca9bd7ca3a1"
         },
         {
           "path": [
@@ -4601,7 +4601,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "c4bb629cb467248017d1a636d10b35e2f366eced928a458917c5f6d814baa6d1"
+          "afterHash": "a36be4ced00dc97efa68bf75db8c7e48e0c623379be80fabff0612bea1e7ba7e"
         },
         {
           "path": [
@@ -4623,7 +4623,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "33873891b1f680dd53b2c4cf91397731493c83946a4871beed5870bf0de350f1"
+          "afterHash": "481f8ed35ea650d2d9e3decbe7cd3fc45a2efc262f51575c654d1a3c92cc561b"
         },
         {
           "path": [
@@ -4634,7 +4634,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "76eb3b579796f68f8a87392600481da0302b566005d7bbcb4707de46669a7051"
+          "afterHash": "481f8ed35ea650d2d9e3decbe7cd3fc45a2efc262f51575c654d1a3c92cc561b"
         },
         {
           "path": [
@@ -4645,7 +4645,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "77511909fc412ebc83d40fb740978763203a2099ec8fb436ae21cc6a5ca7f400"
+          "afterHash": "481f8ed35ea650d2d9e3decbe7cd3fc45a2efc262f51575c654d1a3c92cc561b"
         },
         {
           "path": [
@@ -4656,7 +4656,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "f11af75ee119c6ba84c38a2fbbbb58a2bc4a12e363431cc12b70d06c8dc3790e"
+          "afterHash": "481f8ed35ea650d2d9e3decbe7cd3fc45a2efc262f51575c654d1a3c92cc561b"
         },
         {
           "path": [
@@ -4667,7 +4667,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "76eb3b579796f68f8a87392600481da0302b566005d7bbcb4707de46669a7051"
+          "afterHash": "481f8ed35ea650d2d9e3decbe7cd3fc45a2efc262f51575c654d1a3c92cc561b"
         },
         {
           "path": [
@@ -4678,7 +4678,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "77511909fc412ebc83d40fb740978763203a2099ec8fb436ae21cc6a5ca7f400"
+          "afterHash": "481f8ed35ea650d2d9e3decbe7cd3fc45a2efc262f51575c654d1a3c92cc561b"
         },
         {
           "path": [
@@ -4689,7 +4689,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "f11af75ee119c6ba84c38a2fbbbb58a2bc4a12e363431cc12b70d06c8dc3790e"
+          "afterHash": "481f8ed35ea650d2d9e3decbe7cd3fc45a2efc262f51575c654d1a3c92cc561b"
         },
         {
           "path": [
@@ -4722,7 +4722,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "08b199d0a4d90d2b34d2fee11908b266de441b179ce20abc93e8eca9bd7ca3a1"
+          "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
         },
         {
           "path": [
@@ -4744,7 +4744,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "95a4eab264f9bae9f92f03c6809ae6f6aabcf5c0949e35a20338b3ca0d51dc46"
+          "afterHash": "a695b593ff37458914327df4bd6f4a2ee7a9f8d7e1023330627cafa4bb800433"
         },
         {
           "path": [
@@ -4756,6 +4756,1416 @@
           "had": false,
           "before": null,
           "afterHash": "2a29035df35c762757c4cab06ad6ca2e84a19fdc6ad9cbfa3c60df6e18e1194c"
+        },
+        {
+          "path": [
+            "skins",
+            1,
+            "attachments",
+            "guang_1",
+            "td_4"
+          ],
+          "had": true,
+          "before": {
+            "type": "mesh",
+            "hull": 8,
+            "uvs": [
+              1,
+              0.14064,
+              1,
+              0.51671,
+              1,
+              1,
+              0.38383,
+              1,
+              0,
+              1,
+              0.12149,
+              0.21571,
+              0.15491,
+              0,
+              0.29664,
+              0,
+              0.30111,
+              0.16321
+            ],
+            "triangles": [
+              8,
+              7,
+              0,
+              6,
+              7,
+              8,
+              5,
+              6,
+              8,
+              8,
+              0,
+              1,
+              2,
+              3,
+              8,
+              5,
+              8,
+              3,
+              4,
+              5,
+              3,
+              2,
+              8,
+              1
+            ],
+            "vertices": [
+              147.2,
+              -78.22,
+              147.2,
+              -130.87,
+              147.2,
+              -198.53,
+              50.46,
+              -198.53,
+              -9.8,
+              -198.53,
+              9.27,
+              -88.73,
+              14.52,
+              -58.53,
+              36.77,
+              -58.53,
+              37.47,
+              -81.38
+            ]
+          },
+          "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-1",
+            "guang_1",
+            "td_4"
+          ],
+          "had": true,
+          "before": [
+            {
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 1,
+              "curve": 0.25,
+              "c3": 0.75,
+              "vertices": [
+                67.80019,
+                7.82037,
+                67.80019,
+                -20.09777,
+                67.80019,
+                -55.97527,
+                16.50356,
+                -55.97527,
+                -15.45053,
+                -55.97527
+              ]
+            },
+            {
+              "time": 2
+            }
+          ],
+          "afterHash": "bb597d7048bd218e8b11a7105ba42bfade37ebab64023390c9b9ba7e404c8c3a"
+        },
+        {
+          "path": [
+            "skins",
+            2,
+            "attachments",
+            "guang_2",
+            "td_4"
+          ],
+          "had": true,
+          "before": {
+            "type": "mesh",
+            "hull": 8,
+            "uvs": [
+              1,
+              0.14064,
+              1,
+              0.51671,
+              1,
+              1,
+              0.38383,
+              1,
+              0,
+              1,
+              0.12149,
+              0.21571,
+              0.15491,
+              0,
+              0.29664,
+              0,
+              0.30111,
+              0.16321
+            ],
+            "triangles": [
+              8,
+              7,
+              0,
+              6,
+              7,
+              8,
+              5,
+              6,
+              8,
+              8,
+              0,
+              1,
+              2,
+              3,
+              8,
+              5,
+              8,
+              3,
+              4,
+              5,
+              3,
+              2,
+              8,
+              1
+            ],
+            "vertices": [
+              151.2,
+              -78.22,
+              151.2,
+              -130.87,
+              151.2,
+              -198.53,
+              54.46,
+              -198.53,
+              -5.8,
+              -198.53,
+              13.27,
+              -88.73,
+              18.52,
+              -58.53,
+              40.77,
+              -58.53,
+              41.47,
+              -81.38
+            ]
+          },
+          "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-2-1",
+            "guang_2",
+            "td_4"
+          ],
+          "had": true,
+          "before": [
+            {
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 1,
+              "curve": 0.25,
+              "c3": 0.75,
+              "vertices": [
+                67.80019,
+                7.82037,
+                67.80019,
+                -20.09777,
+                67.80019,
+                -55.97527,
+                16.50356,
+                -55.97527,
+                -15.45053,
+                -55.97527
+              ]
+            },
+            {
+              "time": 2
+            }
+          ],
+          "afterHash": "bb597d7048bd218e8b11a7105ba42bfade37ebab64023390c9b9ba7e404c8c3a"
+        },
+        {
+          "path": [
+            "skins",
+            3,
+            "attachments",
+            "guang_3",
+            "td_4"
+          ],
+          "had": true,
+          "before": {
+            "type": "mesh",
+            "hull": 8,
+            "uvs": [
+              1,
+              0.14064,
+              1,
+              0.51671,
+              1,
+              1,
+              0.38383,
+              1,
+              0,
+              1,
+              0.12149,
+              0.21571,
+              0.15491,
+              0,
+              0.29664,
+              0,
+              0.30111,
+              0.16321
+            ],
+            "triangles": [
+              8,
+              7,
+              0,
+              6,
+              7,
+              8,
+              5,
+              6,
+              8,
+              8,
+              0,
+              1,
+              2,
+              3,
+              8,
+              5,
+              8,
+              3,
+              4,
+              5,
+              3,
+              2,
+              8,
+              1
+            ],
+            "vertices": [
+              147.2,
+              -78.22,
+              147.2,
+              -130.87,
+              147.2,
+              -198.53,
+              50.46,
+              -198.53,
+              -9.8,
+              -198.53,
+              9.27,
+              -88.73,
+              14.52,
+              -58.53,
+              36.77,
+              -58.53,
+              37.47,
+              -81.38
+            ]
+          },
+          "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-2-2",
+            "guang_3",
+            "td_4"
+          ],
+          "had": true,
+          "before": [
+            {
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 1,
+              "curve": 0.25,
+              "c3": 0.75,
+              "vertices": [
+                67.80019,
+                7.82037,
+                67.80019,
+                -20.09777,
+                67.80019,
+                -55.97527,
+                16.50356,
+                -55.97527,
+                -15.45053,
+                -55.97527
+              ]
+            },
+            {
+              "time": 2
+            }
+          ],
+          "afterHash": "bb597d7048bd218e8b11a7105ba42bfade37ebab64023390c9b9ba7e404c8c3a"
+        },
+        {
+          "path": [
+            "skins",
+            4,
+            "attachments",
+            "guang_3",
+            "td_4"
+          ],
+          "had": true,
+          "before": {
+            "type": "mesh",
+            "hull": 8,
+            "uvs": [
+              1,
+              0.14064,
+              1,
+              0.51671,
+              1,
+              1,
+              0.38383,
+              1,
+              0,
+              1,
+              0.12149,
+              0.21571,
+              0.15491,
+              0,
+              0.29664,
+              0,
+              0.30111,
+              0.16321
+            ],
+            "triangles": [
+              8,
+              7,
+              0,
+              6,
+              7,
+              8,
+              5,
+              6,
+              8,
+              8,
+              0,
+              1,
+              2,
+              3,
+              8,
+              5,
+              8,
+              3,
+              4,
+              5,
+              3,
+              2,
+              8,
+              1
+            ],
+            "vertices": [
+              147.2,
+              -78.22,
+              147.2,
+              -130.87,
+              147.2,
+              -198.53,
+              50.46,
+              -198.53,
+              -9.8,
+              -198.53,
+              9.27,
+              -88.73,
+              14.52,
+              -58.53,
+              36.77,
+              -58.53,
+              37.47,
+              -81.38
+            ]
+          },
+          "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-3",
+            "guang_3",
+            "td_4"
+          ],
+          "had": true,
+          "before": [
+            {
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 1,
+              "curve": 0.25,
+              "c3": 0.75,
+              "vertices": [
+                67.80019,
+                7.82037,
+                67.80019,
+                -20.09777,
+                67.80019,
+                -55.97527,
+                16.50356,
+                -55.97527,
+                -15.45053,
+                -55.97527
+              ]
+            },
+            {
+              "time": 2
+            }
+          ],
+          "afterHash": "bb597d7048bd218e8b11a7105ba42bfade37ebab64023390c9b9ba7e404c8c3a"
+        },
+        {
+          "path": [
+            "skins",
+            5,
+            "attachments",
+            "guang_2",
+            "td_4"
+          ],
+          "had": true,
+          "before": {
+            "type": "mesh",
+            "hull": 8,
+            "uvs": [
+              1,
+              0.14064,
+              1,
+              0.51671,
+              1,
+              1,
+              0.38383,
+              1,
+              0,
+              1,
+              0.12149,
+              0.21571,
+              0.15491,
+              0,
+              0.29664,
+              0,
+              0.30111,
+              0.16321
+            ],
+            "triangles": [
+              8,
+              7,
+              0,
+              6,
+              7,
+              8,
+              5,
+              6,
+              8,
+              8,
+              0,
+              1,
+              2,
+              3,
+              8,
+              5,
+              8,
+              3,
+              4,
+              5,
+              3,
+              2,
+              8,
+              1
+            ],
+            "vertices": [
+              151.2,
+              -78.22,
+              151.2,
+              -130.87,
+              151.2,
+              -198.53,
+              54.46,
+              -198.53,
+              -5.8,
+              -198.53,
+              13.27,
+              -88.73,
+              18.52,
+              -58.53,
+              40.77,
+              -58.53,
+              41.47,
+              -81.38
+            ]
+          },
+          "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
+        },
+        {
+          "path": [
+            "skins",
+            6,
+            "attachments",
+            "guang_3",
+            "td_4"
+          ],
+          "had": true,
+          "before": {
+            "type": "mesh",
+            "hull": 8,
+            "uvs": [
+              1,
+              0.14064,
+              1,
+              0.51671,
+              1,
+              1,
+              0.38383,
+              1,
+              0,
+              1,
+              0.12149,
+              0.21571,
+              0.15491,
+              0,
+              0.29664,
+              0,
+              0.30111,
+              0.16321
+            ],
+            "triangles": [
+              8,
+              7,
+              0,
+              6,
+              7,
+              8,
+              5,
+              6,
+              8,
+              8,
+              0,
+              1,
+              2,
+              3,
+              8,
+              5,
+              8,
+              3,
+              4,
+              5,
+              3,
+              2,
+              8,
+              1
+            ],
+            "vertices": [
+              147.2,
+              -78.22,
+              147.2,
+              -130.87,
+              147.2,
+              -198.53,
+              50.46,
+              -198.53,
+              -9.8,
+              -198.53,
+              9.27,
+              -88.73,
+              14.52,
+              -58.53,
+              36.77,
+              -58.53,
+              37.47,
+              -81.38
+            ]
+          },
+          "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
+        },
+        {
+          "path": [
+            "skins",
+            7,
+            "attachments",
+            "guang_3",
+            "td_4"
+          ],
+          "had": true,
+          "before": {
+            "type": "mesh",
+            "hull": 8,
+            "uvs": [
+              1,
+              0.14064,
+              1,
+              0.51671,
+              1,
+              1,
+              0.38383,
+              1,
+              0,
+              1,
+              0.12149,
+              0.21571,
+              0.15491,
+              0,
+              0.29664,
+              0,
+              0.30111,
+              0.16321
+            ],
+            "triangles": [
+              8,
+              7,
+              0,
+              6,
+              7,
+              8,
+              5,
+              6,
+              8,
+              8,
+              0,
+              1,
+              2,
+              3,
+              8,
+              5,
+              8,
+              3,
+              4,
+              5,
+              3,
+              2,
+              8,
+              1
+            ],
+            "vertices": [
+              147.2,
+              -78.22,
+              147.2,
+              -130.87,
+              147.2,
+              -198.53,
+              50.46,
+              -198.53,
+              -9.8,
+              -198.53,
+              9.27,
+              -88.73,
+              14.52,
+              -58.53,
+              36.77,
+              -58.53,
+              37.47,
+              -81.38
+            ]
+          },
+          "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
+        },
+        {
+          "path": [
+            "skins",
+            1,
+            "attachments",
+            "guang_1"
+          ],
+          "had": true,
+          "before": {
+            "td_4": {
+              "type": "mesh",
+              "hull": 8,
+              "uvs": [
+                1,
+                0.14064,
+                1,
+                0.51671,
+                1,
+                1,
+                0.38383,
+                1,
+                0,
+                1,
+                0.12149,
+                0.21571,
+                0.15491,
+                0,
+                0.29664,
+                0,
+                0.30111,
+                0.16321
+              ],
+              "triangles": [
+                8,
+                7,
+                0,
+                6,
+                7,
+                8,
+                5,
+                6,
+                8,
+                8,
+                0,
+                1,
+                2,
+                3,
+                8,
+                5,
+                8,
+                3,
+                4,
+                5,
+                3,
+                2,
+                8,
+                1
+              ],
+              "vertices": [
+                140.36950354609928,
+                -66.08960264900662,
+                140.36950354609928,
+                -118.39092715231787,
+                140.36950354609928,
+                -185.60284768211918,
+                51.17659574468085,
+                -185.60284768211918,
+                -4.382269503546098,
+                -185.60284768211918,
+                13.200000000000003,
+                -76.53,
+                18.040425531914895,
+                -46.53,
+                38.55460992907802,
+                -46.53,
+                39.2,
+                -69.22867549668874
+              ]
+            }
+          },
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-1",
+            "building_aperture_cores"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
+        },
+        {
+          "path": [
+            "skins",
+            2,
+            "attachments",
+            "guang_2"
+          ],
+          "had": true,
+          "before": {
+            "td_4": {
+              "type": "mesh",
+              "hull": 8,
+              "uvs": [
+                1,
+                0.14064,
+                1,
+                0.51671,
+                1,
+                1,
+                0.38383,
+                1,
+                0,
+                1,
+                0.12149,
+                0.21571,
+                0.15491,
+                0,
+                0.29664,
+                0,
+                0.30111,
+                0.16321
+              ],
+              "triangles": [
+                8,
+                7,
+                0,
+                6,
+                7,
+                8,
+                5,
+                6,
+                8,
+                8,
+                0,
+                1,
+                2,
+                3,
+                8,
+                5,
+                8,
+                3,
+                4,
+                5,
+                3,
+                2,
+                8,
+                1
+              ],
+              "vertices": [
+                140.36950354609928,
+                -66.08960264900662,
+                140.36950354609928,
+                -118.39092715231787,
+                140.36950354609928,
+                -185.60284768211918,
+                51.17659574468085,
+                -185.60284768211918,
+                -4.382269503546098,
+                -185.60284768211918,
+                13.200000000000003,
+                -76.53,
+                18.040425531914895,
+                -46.53,
+                38.55460992907802,
+                -46.53,
+                39.2,
+                -69.22867549668874
+              ]
+            }
+          },
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-2-1",
+            "building_aperture_cores"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
+        },
+        {
+          "path": [
+            "skins",
+            3,
+            "attachments",
+            "guang_3"
+          ],
+          "had": true,
+          "before": {
+            "td_4": {
+              "type": "mesh",
+              "hull": 8,
+              "uvs": [
+                1,
+                0.14064,
+                1,
+                0.51671,
+                1,
+                1,
+                0.38383,
+                1,
+                0,
+                1,
+                0.12149,
+                0.21571,
+                0.15491,
+                0,
+                0.29664,
+                0,
+                0.30111,
+                0.16321
+              ],
+              "triangles": [
+                8,
+                7,
+                0,
+                6,
+                7,
+                8,
+                5,
+                6,
+                8,
+                8,
+                0,
+                1,
+                2,
+                3,
+                8,
+                5,
+                8,
+                3,
+                4,
+                5,
+                3,
+                2,
+                8,
+                1
+              ],
+              "vertices": [
+                140.36950354609928,
+                -66.08960264900662,
+                140.36950354609928,
+                -118.39092715231787,
+                140.36950354609928,
+                -185.60284768211918,
+                51.17659574468085,
+                -185.60284768211918,
+                -4.382269503546098,
+                -185.60284768211918,
+                13.200000000000003,
+                -76.53,
+                18.040425531914895,
+                -46.53,
+                38.55460992907802,
+                -46.53,
+                39.2,
+                -69.22867549668874
+              ]
+            }
+          },
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-2-2",
+            "building_aperture_cores"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
+        },
+        {
+          "path": [
+            "skins",
+            4,
+            "attachments",
+            "guang_3"
+          ],
+          "had": true,
+          "before": {
+            "td_4": {
+              "type": "mesh",
+              "hull": 8,
+              "uvs": [
+                1,
+                0.14064,
+                1,
+                0.51671,
+                1,
+                1,
+                0.38383,
+                1,
+                0,
+                1,
+                0.12149,
+                0.21571,
+                0.15491,
+                0,
+                0.29664,
+                0,
+                0.30111,
+                0.16321
+              ],
+              "triangles": [
+                8,
+                7,
+                0,
+                6,
+                7,
+                8,
+                5,
+                6,
+                8,
+                8,
+                0,
+                1,
+                2,
+                3,
+                8,
+                5,
+                8,
+                3,
+                4,
+                5,
+                3,
+                2,
+                8,
+                1
+              ],
+              "vertices": [
+                140.36950354609928,
+                -66.08960264900662,
+                140.36950354609928,
+                -118.39092715231787,
+                140.36950354609928,
+                -185.60284768211918,
+                51.17659574468085,
+                -185.60284768211918,
+                -4.382269503546098,
+                -185.60284768211918,
+                13.200000000000003,
+                -76.53,
+                18.040425531914895,
+                -46.53,
+                38.55460992907802,
+                -46.53,
+                39.2,
+                -69.22867549668874
+              ]
+            }
+          },
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-3",
+            "building_aperture_cores"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
+        },
+        {
+          "path": [
+            "skins",
+            5,
+            "attachments",
+            "guang_2"
+          ],
+          "had": true,
+          "before": {
+            "td_4": {
+              "type": "mesh",
+              "hull": 8,
+              "uvs": [
+                1,
+                0.14064,
+                1,
+                0.51671,
+                1,
+                1,
+                0.38383,
+                1,
+                0,
+                1,
+                0.12149,
+                0.21571,
+                0.15491,
+                0,
+                0.29664,
+                0,
+                0.30111,
+                0.16321
+              ],
+              "triangles": [
+                8,
+                7,
+                0,
+                6,
+                7,
+                8,
+                5,
+                6,
+                8,
+                8,
+                0,
+                1,
+                2,
+                3,
+                8,
+                5,
+                8,
+                3,
+                4,
+                5,
+                3,
+                2,
+                8,
+                1
+              ],
+              "vertices": [
+                140.36950354609928,
+                -66.08960264900662,
+                140.36950354609928,
+                -118.39092715231787,
+                140.36950354609928,
+                -185.60284768211918,
+                51.17659574468085,
+                -185.60284768211918,
+                -4.382269503546098,
+                -185.60284768211918,
+                13.200000000000003,
+                -76.53,
+                18.040425531914895,
+                -46.53,
+                38.55460992907802,
+                -46.53,
+                39.2,
+                -69.22867549668874
+              ]
+            }
+          },
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-bomb-2"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-bomb-2",
+            "building_aperture_cores"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
+        },
+        {
+          "path": [
+            "skins",
+            6,
+            "attachments",
+            "guang_3"
+          ],
+          "had": true,
+          "before": {
+            "td_4": {
+              "type": "mesh",
+              "hull": 8,
+              "uvs": [
+                1,
+                0.14064,
+                1,
+                0.51671,
+                1,
+                1,
+                0.38383,
+                1,
+                0,
+                1,
+                0.12149,
+                0.21571,
+                0.15491,
+                0,
+                0.29664,
+                0,
+                0.30111,
+                0.16321
+              ],
+              "triangles": [
+                8,
+                7,
+                0,
+                6,
+                7,
+                8,
+                5,
+                6,
+                8,
+                8,
+                0,
+                1,
+                2,
+                3,
+                8,
+                5,
+                8,
+                3,
+                4,
+                5,
+                3,
+                2,
+                8,
+                1
+              ],
+              "vertices": [
+                140.36950354609928,
+                -66.08960264900662,
+                140.36950354609928,
+                -118.39092715231787,
+                140.36950354609928,
+                -185.60284768211918,
+                51.17659574468085,
+                -185.60284768211918,
+                -4.382269503546098,
+                -185.60284768211918,
+                13.200000000000003,
+                -76.53,
+                18.040425531914895,
+                -46.53,
+                38.55460992907802,
+                -46.53,
+                39.2,
+                -69.22867549668874
+              ]
+            }
+          },
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-bomb-3"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-bomb-3",
+            "building_aperture_cores"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
+        },
+        {
+          "path": [
+            "skins",
+            7,
+            "attachments",
+            "guang_3"
+          ],
+          "had": true,
+          "before": {
+            "td_4": {
+              "type": "mesh",
+              "hull": 8,
+              "uvs": [
+                1,
+                0.14064,
+                1,
+                0.51671,
+                1,
+                1,
+                0.38383,
+                1,
+                0,
+                1,
+                0.12149,
+                0.21571,
+                0.15491,
+                0,
+                0.29664,
+                0,
+                0.30111,
+                0.16321
+              ],
+              "triangles": [
+                8,
+                7,
+                0,
+                6,
+                7,
+                8,
+                5,
+                6,
+                8,
+                8,
+                0,
+                1,
+                2,
+                3,
+                8,
+                5,
+                8,
+                3,
+                4,
+                5,
+                3,
+                2,
+                8,
+                1
+              ],
+              "vertices": [
+                140.36950354609928,
+                -66.08960264900662,
+                140.36950354609928,
+                -118.39092715231787,
+                140.36950354609928,
+                -185.60284768211918,
+                51.17659574468085,
+                -185.60284768211918,
+                -4.382269503546098,
+                -185.60284768211918,
+                13.200000000000003,
+                -76.53,
+                18.040425531914895,
+                -46.53,
+                38.55460992907802,
+                -46.53,
+                39.2,
+                -69.22867549668874
+              ]
+            }
+          },
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-bomb-4"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform",
+            "mf-bomb-4",
+            "building_aperture_cores"
+          ],
+          "had": false,
+          "before": null,
+          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
         }
       ],
       "rayTextureUuid": "de34e91e-cbb0-4692-a4a6-dc348bceb818",
@@ -4793,7 +6203,7 @@
         "width": 40.11818770084561,
         "height": 57.68569912109463
       },
-      "coreVertices": 10,
+      "coreVertices": 0,
       "corePoints": [
         [
           -177.24637353718592,
@@ -4865,7 +6275,8 @@
           -177.24637353718592,
           47.728890344536666
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "cb",
@@ -4883,7 +6294,7 @@
         "width": 42.62557443214846,
         "height": 62.70184687075503
       },
-      "coreVertices": 10,
+      "coreVertices": 0,
       "corePoints": [
         [
           65.97013939919061,
@@ -4955,7 +6366,8 @@
           106.08832710003622,
           43.01362900263262
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "cb",
@@ -4973,7 +6385,7 @@
         "width": 67.69944174517697,
         "height": 183.08939286260468
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           60.95536593658487,
@@ -5037,7 +6449,8 @@
           113.61048729394474,
           -153.6197750701715
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "cb",
@@ -5055,7 +6468,7 @@
         "width": 59.17394675626777,
         "height": 84.55737605621007
       },
-      "coreVertices": 10,
+      "coreVertices": 0,
       "corePoints": [
         [
           -168.9593988849094,
@@ -5127,7 +6540,8 @@
           -168.95939888490943,
           56.269008817532914
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "cb",
@@ -5145,7 +6559,7 @@
         "width": 50.72052579108666,
         "height": 78.92021765246274
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           42.376125244618294,
@@ -5209,7 +6623,8 @@
           90.27884404731125,
           55.2545983017112
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "cb",
@@ -5227,7 +6642,7 @@
         "width": 61.99175374466147,
         "height": 115.56174727682043
       },
-      "coreVertices": 7,
+      "coreVertices": 0,
       "corePoints": [
         [
           98.73226501249242,
@@ -5287,7 +6702,8 @@
           135.36375586161057,
           -143.39849318387465
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "cb",
@@ -5305,7 +6721,7 @@
         "width": 56.44204851752022,
         "height": 87.39259829718051
       },
-      "coreVertices": 9,
+      "coreVertices": 0,
       "corePoints": [
         [
           -169.16343216531902,
@@ -5373,7 +6789,8 @@
           -169.16343216531902,
           58.11043468959918
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "cb",
@@ -5391,7 +6808,7 @@
         "width": 59.26415094339623,
         "height": 87.39259829718051
       },
-      "coreVertices": 12,
+      "coreVertices": 0,
       "corePoints": [
         [
           39.67214734950579,
@@ -5471,7 +6888,8 @@
           96.11419586702601,
           55.62997090660168
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "cb",
@@ -5489,7 +6907,7 @@
         "width": 59.26415094339623,
         "height": 118.40287511230908
       },
-      "coreVertices": 6,
+      "coreVertices": 0,
       "corePoints": [
         [
           113.04681042228214,
@@ -5545,7 +6963,8 @@
           135.62362982929022,
           -126.0381692551234
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -5563,7 +6982,7 @@
         "width": 43.9230174395025,
         "height": 108.70866410460225
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           64.66814113829929,
@@ -5627,7 +7046,8 @@
           104.40801405975392,
           -198.7492790433713
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -5645,7 +7065,7 @@
         "width": 39.644744238336145,
         "height": 55.969050689415745
       },
-      "coreVertices": 6,
+      "coreVertices": 0,
       "corePoints": [
         [
           36.35450133223384,
@@ -5701,7 +7121,8 @@
           73.66720179184432,
           -120.04619739641146
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -5719,7 +7140,7 @@
         "width": 39.644744238336145,
         "height": 48.97291935323878
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           39.07497268502863,
@@ -5783,7 +7204,8 @@
           76.38767314463911,
           -118.32222562182085
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -5801,7 +7223,7 @@
         "width": 16.32430645107959,
         "height": 9.328175114902624
       },
-      "coreVertices": 5,
+      "coreVertices": 0,
       "corePoints": [
         [
           37.653841662344014,
@@ -5853,7 +7275,8 @@
           51.646104334697945,
           79.57633206320797
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -5871,7 +7294,7 @@
         "width": 51.30496313196442,
         "height": 83.95357603412361
       },
-      "coreVertices": 13,
+      "coreVertices": 0,
       "corePoints": [
         [
           44.649972998520944,
@@ -5955,7 +7378,8 @@
           93.6228923517597,
           -7.175696505386435
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -5973,7 +7397,7 @@
         "width": 34.980656680884834,
         "height": 39.64474423833615
       },
-      "coreVertices": 11,
+      "coreVertices": 0,
       "corePoints": [
         [
           65.63836700705187,
@@ -6049,7 +7473,8 @@
           98.28697990921106,
           -156.05337133923229
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6067,7 +7492,7 @@
         "width": 55.96905068941574,
         "height": 86.28561981284928
       },
-      "coreVertices": 12,
+      "coreVertices": 0,
       "corePoints": [
         [
           38.873509587713485,
@@ -6147,7 +7572,8 @@
           92.51051649840358,
           -2.8095589701180526
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6165,7 +7591,7 @@
         "width": 34.980656680884834,
         "height": 39.64474423833615
       },
-      "coreVertices": 9,
+      "coreVertices": 0,
       "corePoints": [
         [
           64.52599115369574,
@@ -6233,7 +7659,8 @@
           97.17460405585493,
           -154.57896808958373
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6251,7 +7678,7 @@
         "width": 97.60489782410853,
         "height": 135.6946140481509
       },
-      "coreVertices": 12,
+      "coreVertices": 0,
       "corePoints": [
         [
           9.5806072640026,
@@ -6331,7 +7758,8 @@
           57.19275254405554,
           -158.57052142988124
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6349,7 +7777,7 @@
         "width": 54.75396707206089,
         "height": 99.98550508811118
       },
-      "coreVertices": 15,
+      "coreVertices": 0,
       "corePoints": [
         [
           23.722429056010583,
@@ -6441,7 +7869,8 @@
           76.09578886406882,
           -150.46494484252702
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6459,7 +7888,7 @@
         "width": 59.51518160006618,
         "height": 78.56003971208736
       },
-      "coreVertices": 18,
+      "coreVertices": 0,
       "corePoints": [
         [
           -216.7189046082568,
@@ -6563,7 +7992,8 @@
           -216.71890460825682,
           -48.39274097226897
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6581,7 +8011,7 @@
         "width": 28.56728716803177,
         "height": 49.99275254405559
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           -97.68854140812446,
@@ -6645,7 +8075,8 @@
           -97.68854140812445,
           -197.32353140827456
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6663,7 +8094,7 @@
         "width": 66.65700339207412,
         "height": 133.31400678414823
       },
-      "coreVertices": 9,
+      "coreVertices": 0,
       "corePoints": [
         [
           71.33457433606351,
@@ -6731,7 +8162,8 @@
           92.76003971208735,
           -176.4694117756114
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6749,7 +8181,7 @@
         "width": 134.025991959799,
         "height": 84.99209246231156
       },
-      "coreVertices": 9,
+      "coreVertices": 0,
       "corePoints": [
         [
           -321.12489534627844,
@@ -6817,7 +8249,8 @@
           -321.12489534627844,
           31.176632079594437
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6835,7 +8268,7 @@
         "width": 52.302826130653266,
         "height": 62.10960603015075
       },
-      "coreVertices": 7,
+      "coreVertices": 0,
       "corePoints": [
         [
           -294.9985850329768,
@@ -6895,7 +8328,8 @@
           -294.99858503297685,
           7.5379787895036126
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6913,7 +8347,7 @@
         "width": 55.57175276381909,
         "height": 55.57175276381909
       },
-      "coreVertices": 7,
+      "coreVertices": 0,
       "corePoints": [
         [
           -226.35112573649445,
@@ -6973,7 +8407,8 @@
           -226.35112573649445,
           -18.221163079843187
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -6991,7 +8426,7 @@
         "width": 160.17740502512564,
         "height": 186.32881809045224
       },
-      "coreVertices": 13,
+      "coreVertices": 0,
       "corePoints": [
         [
           110.34831747958597,
@@ -7075,7 +8510,8 @@
           182.26470340923422,
           65.85562992518204
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7093,7 +8529,7 @@
         "width": 26.151413065326633,
         "height": 35.95819296482412
       },
-      "coreVertices": 6,
+      "coreVertices": 0,
       "corePoints": [
         [
           -160.39182243545474,
@@ -7149,7 +8585,8 @@
           -160.39182243545474,
           251.98240254354795
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7167,7 +8604,7 @@
         "width": 26.151413065326633,
         "height": 35.95819296482412
       },
-      "coreVertices": 6,
+      "coreVertices": 0,
       "corePoints": [
         [
           -114.62684957113316,
@@ -7223,7 +8660,8 @@
           -114.62684957113316,
           225.83098947822137
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7241,7 +8679,7 @@
         "width": 29.420339698492462,
         "height": 39.22711959798995
       },
-      "coreVertices": 6,
+      "coreVertices": 0,
       "corePoints": [
         [
           -68.86187670681157,
@@ -7297,7 +8735,8 @@
           -68.86187670681157,
           200.0718476088746
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7315,7 +8754,7 @@
         "width": 81.72316582914573,
         "height": 13.075706532663316
       },
-      "coreVertices": 7,
+      "coreVertices": 0,
       "corePoints": [
         [
           -75.39972997314318,
@@ -7375,7 +8814,8 @@
           -75.39972997314318,
           180.19677367922634
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7393,7 +8833,7 @@
         "width": 153.63955175879397,
         "height": 107.87457889447236
       },
-      "coreVertices": 9,
+      "coreVertices": 0,
       "corePoints": [
         [
           -359.7963470585703,
@@ -7461,7 +8901,8 @@
           -359.7963470585703,
           -20.384564531828946
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7479,7 +8920,7 @@
         "width": 111.14350552763818,
         "height": 189.5977447236181
       },
-      "coreVertices": 13,
+      "coreVertices": 0,
       "corePoints": [
         [
           120.73586801680656,
@@ -7563,7 +9004,8 @@
           173.0386941474598,
           16.88119908626152
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7581,7 +9023,7 @@
         "width": 26.151413065326633,
         "height": 39.22711959798995
       },
-      "coreVertices": 6,
+      "coreVertices": 0,
       "corePoints": [
         [
           -167.1804364543559,
@@ -7637,7 +9079,8 @@
           -167.1804364543559,
           254.0531185995774
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7655,7 +9098,7 @@
         "width": 29.420339698492462,
         "height": 39.22711959798995
       },
-      "coreVertices": 10,
+      "coreVertices": 0,
       "corePoints": [
         [
           -124.68439022320017,
@@ -7727,7 +9170,8 @@
           -124.68439022320017,
           228.2939767302307
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7745,7 +9189,7 @@
         "width": 29.420339698492462,
         "height": 39.22711959798995
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           -75.65049072571274,
@@ -7809,7 +9253,8 @@
           -75.65049072571274,
           202.14256366490403
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7827,7 +9272,7 @@
         "width": 52.302826130653266,
         "height": 49.03389949748744
       },
-      "coreVertices": 9,
+      "coreVertices": 0,
       "corePoints": [
         [
           -337.164621378979,
@@ -7895,7 +9340,8 @@
           -337.16462137897906,
           8.75286404681355
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7913,7 +9359,7 @@
         "width": 45.76497286432161,
         "height": 45.76497286432161
       },
-      "coreVertices": 6,
+      "coreVertices": 0,
       "corePoints": [
         [
           -261.979308816165,
@@ -7969,7 +9415,8 @@
           -261.979308816165,
           -18.183091410472812
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -7987,7 +9434,7 @@
         "width": 111.14350552763818,
         "height": 183.05989145728643
       },
-      "coreVertices": 14,
+      "coreVertices": 0,
       "corePoints": [
         [
           113.94725399790539,
@@ -8075,7 +9522,8 @@
           162.98115349539282,
           12.02179067997941
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mz",
@@ -8093,7 +9541,7 @@
         "width": 32,
         "height": 78
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           56.2,
@@ -8157,7 +9605,8 @@
           82.2,
           -189.13
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mz",
@@ -8175,7 +9624,7 @@
         "width": 26,
         "height": 66
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           56.2,
@@ -8239,7 +9688,8 @@
           80.2,
           -175.37
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mz",
@@ -8257,7 +9707,7 @@
         "width": 26,
         "height": 54
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           32.2,
@@ -8321,7 +9771,8 @@
           52.2,
           -199.85
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mz",
@@ -8339,7 +9790,7 @@
         "width": 22,
         "height": 56
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           32.2,
@@ -8403,7 +9854,8 @@
           50.2,
           -200.09
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mf",
@@ -8421,7 +9873,7 @@
         "width": 78,
         "height": 102
       },
-      "coreVertices": 17,
+      "coreVertices": 0,
       "corePoints": [
         [
           6.200000000000003,
@@ -8521,7 +9973,8 @@
           54.2,
           -191.77
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mf",
@@ -8539,7 +9992,7 @@
         "width": 82,
         "height": 102
       },
-      "coreVertices": 16,
+      "coreVertices": 0,
       "corePoints": [
         [
           10.200000000000003,
@@ -8635,7 +10088,8 @@
           46.2,
           -193.21
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mf",
@@ -8653,7 +10107,7 @@
         "width": 80,
         "height": 102
       },
-      "coreVertices": 16,
+      "coreVertices": 0,
       "corePoints": [
         [
           12.200000000000003,
@@ -8749,7 +10203,8 @@
           48.2,
           -193.21
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mf",
@@ -8767,7 +10222,7 @@
         "width": 78,
         "height": 96
       },
-      "coreVertices": 15,
+      "coreVertices": 0,
       "corePoints": [
         [
           8.200000000000003,
@@ -8859,7 +10314,8 @@
           46.2,
           -186.97
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mf",
@@ -8877,7 +10333,7 @@
         "width": 82,
         "height": 102
       },
-      "coreVertices": 16,
+      "coreVertices": 0,
       "corePoints": [
         [
           10.200000000000003,
@@ -8973,7 +10429,8 @@
           46.2,
           -193.21
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mf",
@@ -8991,7 +10448,7 @@
         "width": 80,
         "height": 102
       },
-      "coreVertices": 16,
+      "coreVertices": 0,
       "corePoints": [
         [
           12.200000000000003,
@@ -9087,7 +10544,8 @@
           48.2,
           -193.21
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "mf",
@@ -9105,7 +10563,7 @@
         "width": 78,
         "height": 96
       },
-      "coreVertices": 15,
+      "coreVertices": 0,
       "corePoints": [
         [
           8.200000000000003,
@@ -9197,7 +10655,8 @@
           46.2,
           -186.97
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -9215,7 +10674,7 @@
         "width": 54.38087873462215,
         "height": 150.5196887602185
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           48.27673651480327,
@@ -9279,7 +10738,8 @@
           90.10818169528184,
           -109.27518074558652
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -9297,7 +10757,7 @@
         "width": 71.05768154657294,
         "height": 163.01468119507905
       },
-      "coreVertices": 7,
+      "coreVertices": 0,
       "corePoints": [
         [
           61.60325202108963,
@@ -9357,7 +10817,8 @@
           105.49182003514939,
           -135.59262778031635
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -9375,7 +10836,7 @@
         "width": 69.14300328927123,
         "height": 150.46561218512008
       },
-      "coreVertices": 9,
+      "coreVertices": 0,
       "corePoints": [
         [
           70.04516148885683,
@@ -9443,7 +10904,8 @@
           109.85476944328573,
           -194.06080773023052
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -9461,7 +10923,7 @@
         "width": 90.4630760321006,
         "height": 121.41097046413502
       },
-      "coreVertices": 8,
+      "coreVertices": 0,
       "corePoints": [
         [
           60.95396707206088,
@@ -9525,7 +10987,8 @@
           115.70793414412177,
           -131.97140653117137
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -9543,7 +11006,7 @@
         "width": 88.61766359157492,
         "height": 104.94197004265452
       },
-      "coreVertices": 7,
+      "coreVertices": 0,
       "corePoints": [
         [
           143.628515153614,
@@ -9603,7 +11066,8 @@
           169.2809967195962,
           -147.097905229629
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -9621,7 +11085,7 @@
         "width": 88.61766359157492,
         "height": 123.59832027245976
       },
-      "coreVertices": 9,
+      "coreVertices": 0,
       "corePoints": [
         [
           160.3412491787627,
@@ -9689,7 +11153,8 @@
           204.65008097455018,
           -159.45947787854138
         ]
-      ]
+      ],
+      "originalFullSprite": true
     },
     {
       "rig": "by",
@@ -9707,7 +11172,7 @@
         "width": 150.37062512562815,
         "height": 147.1016984924623
       },
-      "coreVertices": 7,
+      "coreVertices": 0,
       "corePoints": [
         [
           156.1383930959326,
@@ -9767,7 +11232,8 @@
           205.17229259342002,
           106.36194464240852
         ]
-      ]
+      ],
+      "originalFullSprite": true
     }
   ],
   "presentation": {
@@ -9784,10 +11250,10 @@
       0.4,
       0.2
     ],
-    "core": "Eroded largest dark interior component, bounded restoration and continuous convex hull. Uniform original warm texel, no bands or fan texture pattern in core. Original fan core triangles are excluded; only outward side/floor projection remains.",
+    "core": "Removed. The complete original sprite UVs and triangle topology now supplies the aperture and projected light together.",
     "separateCoreSlot": "building_aperture_cores",
-    "fanOpacity": 0.25,
-    "coreOpacity": "Original warm texel alpha140/255 × native 0.85–1 pulse",
+    "fanOpacity": 1,
+    "coreOpacity": 0,
     "fixedSlotNames": [
       "building_aperture_rays",
       "building_aperture_cores"
@@ -9830,6 +11296,1806 @@
         }
       ],
       "closedCastle": "cb-painted-1 retains its closed plank doorway and has no light emitter."
+    },
+    "originalFullSprite": true,
+    "customCore": false,
+    "originalWindowSlot": "building_aperture_cores",
+    "originalWindowCapture": "Complete original mill window meshes and animations live in the existing trailing light slot, excluded from solid-body depth captures."
+  },
+  "towerLighting": [
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 1,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/archer-1-window-light",
+          "width": 181.02577197149643,
+          "height": 181.02577197149643,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 72,
+          "glows": [
+            {
+              "x": 22.4477732,
+              "y": 59.5623872,
+              "width": 32.235291,
+              "height": 56.9928029,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            },
+            {
+              "x": -53.073465,
+              "y": 87.8422506,
+              "width": 29.0594002,
+              "height": 61.540101,
+              "angle": -90,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        },
+        {
+          "points": [
+            {
+              "x": 15.3073263,
+              "y": 47.2530508
+            },
+            {
+              "x": 19.9660778,
+              "y": 50.5807304
+            },
+            {
+              "x": 23.2937574,
+              "y": 51.9118023
+            },
+            {
+              "x": 23.2937574,
+              "y": 35.93894
+            },
+            {
+              "x": 15.3073263,
+              "y": 31.2801885
+            }
+          ],
+          "color": "#FFE89A",
+          "opacity": 120,
+          "glows": [
+            {
+              "x": 19.3005419,
+              "y": 24.0591237,
+              "width": 9.9830389,
+              "height": 35.0737435,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 180,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "0a31a846698ec14175fc37ced822111e8df7bb59420ec090da1dfa284929221f"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 2,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/archer-2-window-light",
+          "width": 180.81103202846978,
+          "height": 180.81103202846978,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 72,
+          "glows": [
+            {
+              "x": -56.7882177,
+              "y": 88.1706109,
+              "width": 29.6593535,
+              "height": 68.7341459,
+              "angle": -90,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            },
+            {
+              "x": 22.853707,
+              "y": 59.9387129,
+              "width": 32.8314769,
+              "height": 56.3196085,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        },
+        {
+          "points": [
+            {
+              "x": 15.6791854,
+              "y": 46.7039566
+            },
+            {
+              "x": 20.3495811,
+              "y": 50.0399535
+            },
+            {
+              "x": 23.685578,
+              "y": 51.3743523
+            },
+            {
+              "x": 23.685578,
+              "y": 35.3615671
+            },
+            {
+              "x": 15.6791854,
+              "y": 30.6911715
+            }
+          ],
+          "color": "#FFE89A",
+          "opacity": 120,
+          "glows": [
+            {
+              "x": 19.6823817,
+              "y": 23.4520582,
+              "width": 10.0079907,
+              "height": 35.1614074,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 180,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "60c53a4a2eb2e48b0cac351ce8dba2d70223909ce5f18ed6181a8bf71b9115f1"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 3,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/archer-3-window-light",
+          "width": 182.76223021582734,
+          "height": 182.76223021582734,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 72,
+          "glows": [
+            {
+              "x": -59.3685761,
+              "y": 90.1422962,
+              "width": 30.9413249,
+              "height": 72.5364928,
+              "angle": -90,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            },
+            {
+              "x": 21.6428957,
+              "y": 61.4089838,
+              "width": 34.1476799,
+              "height": 56.0091906,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        },
+        {
+          "points": [
+            {
+              "x": 14.6743397,
+              "y": 48.692127
+            },
+            {
+              "x": 20.0104632,
+              "y": 52.0272042
+            },
+            {
+              "x": 23.3455404,
+              "y": 53.3612351
+            },
+            {
+              "x": 23.3455404,
+              "y": 36.6858491
+            },
+            {
+              "x": 14.6743397,
+              "y": 31.3497256
+            }
+          ],
+          "color": "#FFE89A",
+          "opacity": 120,
+          "glows": [
+            {
+              "x": 19.0099401,
+              "y": 23.6456973,
+              "width": 10.8390009,
+              "height": 37.4195662,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 180,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "8939f8a77ed121b27f551d0883f9c2f273e3fced7ad90ea2bdc676f0c2a89195"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 4,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/cannon-1-window-light",
+          "width": 107.19689320184933,
+          "height": 127.61534904982064,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 22.1731669,
+              "y": 17.4274711,
+              "width": 12.1936466,
+              "height": 23.8481184,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "494895ae84126612b016aacb309d2c2ed586832106dc6d082e6651e947f8858f"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 5,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/cannon-2-window-light",
+          "width": 152.46215466555512,
+          "height": 162.1937815591012,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 27.7756851,
+              "y": 25.7989484,
+              "width": 15.4976158,
+              "height": 30.3099629,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "ee1f4df0b84234eda34fc915a3e5b6c8aa1be15fd32ffeae31464c11de8a64ff"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 6,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/cannon-3-window-light",
+          "width": 182.0631052905442,
+          "height": 174.78058107892244,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 28.4473602,
+              "y": 22.1320462,
+              "width": 17.3961297,
+              "height": 34.0230428,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "48a9ef76fd3b351b1aa2c2c711b2b9b8377e5a65b4ca6144379d64b43d5871bb"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 7,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/sniper-1-window-light",
+          "width": 117.57757155848934,
+          "height": 129.56206232340423,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 15.8713526,
+              "y": 11.5391212,
+              "width": 12.3796551,
+              "height": 24.2119104,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "0cb753a1a6d6a8edb52337bc12bc1f1c0e163a14b12903bdc028bf4e4c872b56"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 8,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/sniper-2-window-light",
+          "width": 135.22519913838963,
+          "height": 180.30026551785284,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 26.3689138,
+              "y": 17.8609951,
+              "width": 17.2276904,
+              "height": 33.6936121,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "776ad13f18478fe680153666d26cf7ff9c2c5e3f15d90e6551d6be5edd383ff2"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 9,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/sniper-3-window-light",
+          "width": 143.44040258590988,
+          "height": 185.68336904324906,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 25.5314632,
+              "y": 23.5005514,
+              "width": 17.7420459,
+              "height": 34.6995796,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "795ae7f1ac59ea8c8a545482aee716b3af837c3f7172268e51bd6d7008ce326b"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 10,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/archer-4-window-light",
+          "width": 184.3994943109987,
+          "height": 201.61011378002527,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 72,
+          "glows": [
+            {
+              "x": -58.954055,
+              "y": 98.0390645,
+              "width": 32.1162453,
+              "height": 71.9619027,
+              "angle": -90,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            },
+            {
+              "x": 21.4364412,
+              "y": 69.411043,
+              "width": 31.9472124,
+              "height": 53.5680531,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        },
+        {
+          "points": [
+            {
+              "x": 16.5959545,
+              "y": 54.7051833
+            },
+            {
+              "x": 20.8986094,
+              "y": 58.3931732
+            },
+            {
+              "x": 24.5865992,
+              "y": 60.2371681
+            },
+            {
+              "x": 24.5865992,
+              "y": 43.0265487
+            },
+            {
+              "x": 16.5959545,
+              "y": 38.7238938
+            }
+          ],
+          "color": "#FFE89A",
+          "opacity": 120,
+          "glows": [
+            {
+              "x": 20.5912768,
+              "y": 31.1942478,
+              "width": 9.9883059,
+              "height": 36.5725663,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 180,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "1d54b0a9691c4530a034cd534680a2d5675c7201206aeb6f2c41d3d2919e17cb"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 11,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/cannon-4-window-light",
+          "width": 181.94106448253515,
+          "height": 174.2085692420274,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 27.9734387,
+              "y": 22.1172107,
+              "width": 17.3844687,
+              "height": 34.0002364,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "eef7439722fd1c98719d7a9ceaf0aa1bd2bf707c9682bad45ae9cb5b9cb15268"
+    },
+    {
+      "file": "assets/KinghtFallConfig/GameJsonCfg.json",
+      "index": 12,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/sniper-4-window-light",
+          "width": 142.62547545040917,
+          "height": 185.83123837186864,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 25.5517953,
+              "y": 23.054688,
+              "width": 17.7561748,
+              "height": 34.7272127,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "567faec1c40195fa1e6199a3bb9965459cbbda5ac53f14254b6255160440cccf"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 1,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/archer-1-window-light",
+          "width": 181.02577197149643,
+          "height": 181.02577197149643,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 72,
+          "glows": [
+            {
+              "x": 22.4477732,
+              "y": 59.5623872,
+              "width": 32.235291,
+              "height": 56.9928029,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            },
+            {
+              "x": -53.073465,
+              "y": 87.8422506,
+              "width": 29.0594002,
+              "height": 61.540101,
+              "angle": -90,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        },
+        {
+          "points": [
+            {
+              "x": 15.3073263,
+              "y": 47.2530508
+            },
+            {
+              "x": 19.9660778,
+              "y": 50.5807304
+            },
+            {
+              "x": 23.2937574,
+              "y": 51.9118023
+            },
+            {
+              "x": 23.2937574,
+              "y": 35.93894
+            },
+            {
+              "x": 15.3073263,
+              "y": 31.2801885
+            }
+          ],
+          "color": "#FFE89A",
+          "opacity": 120,
+          "glows": [
+            {
+              "x": 19.3005419,
+              "y": 24.0591237,
+              "width": 9.9830389,
+              "height": 35.0737435,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 180,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "0a31a846698ec14175fc37ced822111e8df7bb59420ec090da1dfa284929221f"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 2,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/archer-2-window-light",
+          "width": 180.81103202846978,
+          "height": 180.81103202846978,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 72,
+          "glows": [
+            {
+              "x": -56.7882177,
+              "y": 88.1706109,
+              "width": 29.6593535,
+              "height": 68.7341459,
+              "angle": -90,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            },
+            {
+              "x": 22.853707,
+              "y": 59.9387129,
+              "width": 32.8314769,
+              "height": 56.3196085,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        },
+        {
+          "points": [
+            {
+              "x": 15.6791854,
+              "y": 46.7039566
+            },
+            {
+              "x": 20.3495811,
+              "y": 50.0399535
+            },
+            {
+              "x": 23.685578,
+              "y": 51.3743523
+            },
+            {
+              "x": 23.685578,
+              "y": 35.3615671
+            },
+            {
+              "x": 15.6791854,
+              "y": 30.6911715
+            }
+          ],
+          "color": "#FFE89A",
+          "opacity": 120,
+          "glows": [
+            {
+              "x": 19.6823817,
+              "y": 23.4520582,
+              "width": 10.0079907,
+              "height": 35.1614074,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 180,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "60c53a4a2eb2e48b0cac351ce8dba2d70223909ce5f18ed6181a8bf71b9115f1"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 3,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/archer-3-window-light",
+          "width": 182.76223021582734,
+          "height": 182.76223021582734,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 72,
+          "glows": [
+            {
+              "x": -59.3685761,
+              "y": 90.1422962,
+              "width": 30.9413249,
+              "height": 72.5364928,
+              "angle": -90,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            },
+            {
+              "x": 21.6428957,
+              "y": 61.4089838,
+              "width": 34.1476799,
+              "height": 56.0091906,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        },
+        {
+          "points": [
+            {
+              "x": 14.6743397,
+              "y": 48.692127
+            },
+            {
+              "x": 20.0104632,
+              "y": 52.0272042
+            },
+            {
+              "x": 23.3455404,
+              "y": 53.3612351
+            },
+            {
+              "x": 23.3455404,
+              "y": 36.6858491
+            },
+            {
+              "x": 14.6743397,
+              "y": 31.3497256
+            }
+          ],
+          "color": "#FFE89A",
+          "opacity": 120,
+          "glows": [
+            {
+              "x": 19.0099401,
+              "y": 23.6456973,
+              "width": 10.8390009,
+              "height": 37.4195662,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 180,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "8939f8a77ed121b27f551d0883f9c2f273e3fced7ad90ea2bdc676f0c2a89195"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 4,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/cannon-1-window-light",
+          "width": 107.19689320184933,
+          "height": 127.61534904982064,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 22.1731669,
+              "y": 17.4274711,
+              "width": 12.1936466,
+              "height": 23.8481184,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "494895ae84126612b016aacb309d2c2ed586832106dc6d082e6651e947f8858f"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 5,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/cannon-2-window-light",
+          "width": 152.46215466555512,
+          "height": 162.1937815591012,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 27.7756851,
+              "y": 25.7989484,
+              "width": 15.4976158,
+              "height": 30.3099629,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "ee1f4df0b84234eda34fc915a3e5b6c8aa1be15fd32ffeae31464c11de8a64ff"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 6,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/cannon-3-window-light",
+          "width": 182.0631052905442,
+          "height": 174.78058107892244,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 28.4473602,
+              "y": 22.1320462,
+              "width": 17.3961297,
+              "height": 34.0230428,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "48a9ef76fd3b351b1aa2c2c711b2b9b8377e5a65b4ca6144379d64b43d5871bb"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 7,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/sniper-1-window-light",
+          "width": 117.57757155848934,
+          "height": 129.56206232340423,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 15.8713526,
+              "y": 11.5391212,
+              "width": 12.3796551,
+              "height": 24.2119104,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "0cb753a1a6d6a8edb52337bc12bc1f1c0e163a14b12903bdc028bf4e4c872b56"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 8,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/sniper-2-window-light",
+          "width": 135.22519913838963,
+          "height": 180.30026551785284,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 26.3689138,
+              "y": 17.8609951,
+              "width": 17.2276904,
+              "height": 33.6936121,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "776ad13f18478fe680153666d26cf7ff9c2c5e3f15d90e6551d6be5edd383ff2"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 9,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/sniper-3-window-light",
+          "width": 143.44040258590988,
+          "height": 185.68336904324906,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 25.5314632,
+              "y": 23.5005514,
+              "width": 17.7420459,
+              "height": 34.6995796,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "795ae7f1ac59ea8c8a545482aee716b3af837c3f7172268e51bd6d7008ce326b"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 10,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/archer-4-window-light",
+          "width": 184.3994943109987,
+          "height": 201.61011378002527,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 72,
+          "glows": [
+            {
+              "x": -58.954055,
+              "y": 98.0390645,
+              "width": 32.1162453,
+              "height": 71.9619027,
+              "angle": -90,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            },
+            {
+              "x": 21.4364412,
+              "y": 69.411043,
+              "width": 31.9472124,
+              "height": 53.5680531,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 175,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        },
+        {
+          "points": [
+            {
+              "x": 16.5959545,
+              "y": 54.7051833
+            },
+            {
+              "x": 20.8986094,
+              "y": 58.3931732
+            },
+            {
+              "x": 24.5865992,
+              "y": 60.2371681
+            },
+            {
+              "x": 24.5865992,
+              "y": 43.0265487
+            },
+            {
+              "x": 16.5959545,
+              "y": 38.7238938
+            }
+          ],
+          "color": "#FFE89A",
+          "opacity": 120,
+          "glows": [
+            {
+              "x": 20.5912768,
+              "y": 31.1942478,
+              "width": 9.9883059,
+              "height": 36.5725663,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 180,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "1d54b0a9691c4530a034cd534680a2d5675c7201206aeb6f2c41d3d2919e17cb"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 11,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/cannon-4-window-light",
+          "width": 181.94106448253515,
+          "height": 174.2085692420274,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 27.9734387,
+              "y": 22.1172107,
+              "width": 17.3844687,
+              "height": 34.0002364,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "eef7439722fd1c98719d7a9ceaf0aa1bd2bf707c9682bad45ae9cb5b9cb15268"
+    },
+    {
+      "file": "assets/configs/GameJsonCfg.json",
+      "index": 12,
+      "before": [
+        {
+          "sprite": "buildings/redesign/towers/sniper-4-window-light",
+          "width": 142.62547545040917,
+          "height": 185.83123837186864,
+          "offsetX": 0,
+          "offsetY": 0,
+          "color": "#FFE89A",
+          "opacity": 180,
+          "glows": [
+            {
+              "x": 25.5517953,
+              "y": 23.054688,
+              "width": 17.7561748,
+              "height": 34.7272127,
+              "angle": 0,
+              "shearX": 0,
+              "shearY": 0,
+              "color": "#FFFFFF",
+              "opacity": 140,
+              "pulse": 0.08,
+              "sprite": "buildings/lighting/native-window-ray"
+            }
+          ]
+        }
+      ],
+      "afterHash": "567faec1c40195fa1e6199a3bb9965459cbbda5ac53f14254b6255160440cccf"
     }
-  }
+  ],
+  "originalWindowFits": [
+    {
+      "rig": "mf",
+      "skin": "mf-1",
+      "slot": "guang_1",
+      "name": "td_4",
+      "scale": {
+        "x": 0.9219858156028369,
+        "y": 0.9933774834437085
+      },
+      "opening": {
+        "x": 13.200000000000003,
+        "y": -76.53,
+        "width": 26,
+        "height": 30
+      },
+      "sourceMesh": {
+        "type": "mesh",
+        "hull": 8,
+        "uvs": [
+          1,
+          0.14064,
+          1,
+          0.51671,
+          1,
+          1,
+          0.38383,
+          1,
+          0,
+          1,
+          0.12149,
+          0.21571,
+          0.15491,
+          0,
+          0.29664,
+          0,
+          0.30111,
+          0.16321
+        ],
+        "triangles": [
+          8,
+          7,
+          0,
+          6,
+          7,
+          8,
+          5,
+          6,
+          8,
+          8,
+          0,
+          1,
+          2,
+          3,
+          8,
+          5,
+          8,
+          3,
+          4,
+          5,
+          3,
+          2,
+          8,
+          1
+        ],
+        "vertices": [
+          147.2,
+          -78.22,
+          147.2,
+          -130.87,
+          147.2,
+          -198.53,
+          50.46,
+          -198.53,
+          -9.8,
+          -198.53,
+          9.27,
+          -88.73,
+          14.52,
+          -58.53,
+          36.77,
+          -58.53,
+          37.47,
+          -81.38
+        ]
+      },
+      "renderSlot": "building_aperture_cores",
+      "renderAttachment": "building_aperture_cores"
+    },
+    {
+      "rig": "mf",
+      "skin": "mf-2-1",
+      "slot": "guang_2",
+      "name": "td_4",
+      "scale": {
+        "x": 0.9219858156028369,
+        "y": 0.9933774834437085
+      },
+      "opening": {
+        "x": 13.200000000000003,
+        "y": -76.53,
+        "width": 26,
+        "height": 30
+      },
+      "sourceMesh": {
+        "type": "mesh",
+        "hull": 8,
+        "uvs": [
+          1,
+          0.14064,
+          1,
+          0.51671,
+          1,
+          1,
+          0.38383,
+          1,
+          0,
+          1,
+          0.12149,
+          0.21571,
+          0.15491,
+          0,
+          0.29664,
+          0,
+          0.30111,
+          0.16321
+        ],
+        "triangles": [
+          8,
+          7,
+          0,
+          6,
+          7,
+          8,
+          5,
+          6,
+          8,
+          8,
+          0,
+          1,
+          2,
+          3,
+          8,
+          5,
+          8,
+          3,
+          4,
+          5,
+          3,
+          2,
+          8,
+          1
+        ],
+        "vertices": [
+          151.2,
+          -78.22,
+          151.2,
+          -130.87,
+          151.2,
+          -198.53,
+          54.46,
+          -198.53,
+          -5.8,
+          -198.53,
+          13.27,
+          -88.73,
+          18.52,
+          -58.53,
+          40.77,
+          -58.53,
+          41.47,
+          -81.38
+        ]
+      },
+      "renderSlot": "building_aperture_cores",
+      "renderAttachment": "building_aperture_cores"
+    },
+    {
+      "rig": "mf",
+      "skin": "mf-2-2",
+      "slot": "guang_3",
+      "name": "td_4",
+      "scale": {
+        "x": 0.9219858156028369,
+        "y": 0.9933774834437085
+      },
+      "opening": {
+        "x": 13.200000000000003,
+        "y": -76.53,
+        "width": 26,
+        "height": 30
+      },
+      "sourceMesh": {
+        "type": "mesh",
+        "hull": 8,
+        "uvs": [
+          1,
+          0.14064,
+          1,
+          0.51671,
+          1,
+          1,
+          0.38383,
+          1,
+          0,
+          1,
+          0.12149,
+          0.21571,
+          0.15491,
+          0,
+          0.29664,
+          0,
+          0.30111,
+          0.16321
+        ],
+        "triangles": [
+          8,
+          7,
+          0,
+          6,
+          7,
+          8,
+          5,
+          6,
+          8,
+          8,
+          0,
+          1,
+          2,
+          3,
+          8,
+          5,
+          8,
+          3,
+          4,
+          5,
+          3,
+          2,
+          8,
+          1
+        ],
+        "vertices": [
+          147.2,
+          -78.22,
+          147.2,
+          -130.87,
+          147.2,
+          -198.53,
+          50.46,
+          -198.53,
+          -9.8,
+          -198.53,
+          9.27,
+          -88.73,
+          14.52,
+          -58.53,
+          36.77,
+          -58.53,
+          37.47,
+          -81.38
+        ]
+      },
+      "renderSlot": "building_aperture_cores",
+      "renderAttachment": "building_aperture_cores"
+    },
+    {
+      "rig": "mf",
+      "skin": "mf-3",
+      "slot": "guang_3",
+      "name": "td_4",
+      "scale": {
+        "x": 0.9219858156028369,
+        "y": 0.9933774834437085
+      },
+      "opening": {
+        "x": 13.200000000000003,
+        "y": -76.53,
+        "width": 26,
+        "height": 30
+      },
+      "sourceMesh": {
+        "type": "mesh",
+        "hull": 8,
+        "uvs": [
+          1,
+          0.14064,
+          1,
+          0.51671,
+          1,
+          1,
+          0.38383,
+          1,
+          0,
+          1,
+          0.12149,
+          0.21571,
+          0.15491,
+          0,
+          0.29664,
+          0,
+          0.30111,
+          0.16321
+        ],
+        "triangles": [
+          8,
+          7,
+          0,
+          6,
+          7,
+          8,
+          5,
+          6,
+          8,
+          8,
+          0,
+          1,
+          2,
+          3,
+          8,
+          5,
+          8,
+          3,
+          4,
+          5,
+          3,
+          2,
+          8,
+          1
+        ],
+        "vertices": [
+          147.2,
+          -78.22,
+          147.2,
+          -130.87,
+          147.2,
+          -198.53,
+          50.46,
+          -198.53,
+          -9.8,
+          -198.53,
+          9.27,
+          -88.73,
+          14.52,
+          -58.53,
+          36.77,
+          -58.53,
+          37.47,
+          -81.38
+        ]
+      },
+      "renderSlot": "building_aperture_cores",
+      "renderAttachment": "building_aperture_cores"
+    },
+    {
+      "rig": "mf",
+      "skin": "mf-bomb-2",
+      "slot": "guang_2",
+      "name": "td_4",
+      "scale": {
+        "x": 0.9219858156028369,
+        "y": 0.9933774834437085
+      },
+      "opening": {
+        "x": 13.200000000000003,
+        "y": -76.53,
+        "width": 26,
+        "height": 30
+      },
+      "sourceMesh": {
+        "type": "mesh",
+        "hull": 8,
+        "uvs": [
+          1,
+          0.14064,
+          1,
+          0.51671,
+          1,
+          1,
+          0.38383,
+          1,
+          0,
+          1,
+          0.12149,
+          0.21571,
+          0.15491,
+          0,
+          0.29664,
+          0,
+          0.30111,
+          0.16321
+        ],
+        "triangles": [
+          8,
+          7,
+          0,
+          6,
+          7,
+          8,
+          5,
+          6,
+          8,
+          8,
+          0,
+          1,
+          2,
+          3,
+          8,
+          5,
+          8,
+          3,
+          4,
+          5,
+          3,
+          2,
+          8,
+          1
+        ],
+        "vertices": [
+          151.2,
+          -78.22,
+          151.2,
+          -130.87,
+          151.2,
+          -198.53,
+          54.46,
+          -198.53,
+          -5.8,
+          -198.53,
+          13.27,
+          -88.73,
+          18.52,
+          -58.53,
+          40.77,
+          -58.53,
+          41.47,
+          -81.38
+        ]
+      },
+      "renderSlot": "building_aperture_cores",
+      "renderAttachment": "building_aperture_cores"
+    },
+    {
+      "rig": "mf",
+      "skin": "mf-bomb-3",
+      "slot": "guang_3",
+      "name": "td_4",
+      "scale": {
+        "x": 0.9219858156028369,
+        "y": 0.9933774834437085
+      },
+      "opening": {
+        "x": 13.200000000000003,
+        "y": -76.53,
+        "width": 26,
+        "height": 30
+      },
+      "sourceMesh": {
+        "type": "mesh",
+        "hull": 8,
+        "uvs": [
+          1,
+          0.14064,
+          1,
+          0.51671,
+          1,
+          1,
+          0.38383,
+          1,
+          0,
+          1,
+          0.12149,
+          0.21571,
+          0.15491,
+          0,
+          0.29664,
+          0,
+          0.30111,
+          0.16321
+        ],
+        "triangles": [
+          8,
+          7,
+          0,
+          6,
+          7,
+          8,
+          5,
+          6,
+          8,
+          8,
+          0,
+          1,
+          2,
+          3,
+          8,
+          5,
+          8,
+          3,
+          4,
+          5,
+          3,
+          2,
+          8,
+          1
+        ],
+        "vertices": [
+          147.2,
+          -78.22,
+          147.2,
+          -130.87,
+          147.2,
+          -198.53,
+          50.46,
+          -198.53,
+          -9.8,
+          -198.53,
+          9.27,
+          -88.73,
+          14.52,
+          -58.53,
+          36.77,
+          -58.53,
+          37.47,
+          -81.38
+        ]
+      },
+      "renderSlot": "building_aperture_cores",
+      "renderAttachment": "building_aperture_cores"
+    },
+    {
+      "rig": "mf",
+      "skin": "mf-bomb-4",
+      "slot": "guang_3",
+      "name": "td_4",
+      "scale": {
+        "x": 0.9219858156028369,
+        "y": 0.9933774834437085
+      },
+      "opening": {
+        "x": 13.200000000000003,
+        "y": -76.53,
+        "width": 26,
+        "height": 30
+      },
+      "sourceMesh": {
+        "type": "mesh",
+        "hull": 8,
+        "uvs": [
+          1,
+          0.14064,
+          1,
+          0.51671,
+          1,
+          1,
+          0.38383,
+          1,
+          0,
+          1,
+          0.12149,
+          0.21571,
+          0.15491,
+          0,
+          0.29664,
+          0,
+          0.30111,
+          0.16321
+        ],
+        "triangles": [
+          8,
+          7,
+          0,
+          6,
+          7,
+          8,
+          5,
+          6,
+          8,
+          8,
+          0,
+          1,
+          2,
+          3,
+          8,
+          5,
+          8,
+          3,
+          4,
+          5,
+          3,
+          2,
+          8,
+          1
+        ],
+        "vertices": [
+          147.2,
+          -78.22,
+          147.2,
+          -130.87,
+          147.2,
+          -198.53,
+          50.46,
+          -198.53,
+          -9.8,
+          -198.53,
+          9.27,
+          -88.73,
+          14.52,
+          -58.53,
+          36.77,
+          -58.53,
+          37.47,
+          -81.38
+        ]
+      },
+      "renderSlot": "building_aperture_cores",
+      "renderAttachment": "building_aperture_cores"
+    }
+  ]
 }

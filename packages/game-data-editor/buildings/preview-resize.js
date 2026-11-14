@@ -7,6 +7,6 @@ function mount(canvas,state){
  function release(e){if(!drag||e&&e.pointerId!==drag.id)return;const id=drag.id;drag=null;if(handle.hasPointerCapture(id))handle.releasePointerCapture(id);}
  handle.onpointerup=release;handle.onpointercancel=handle.onlostpointercapture=release;
  handle.onkeydown=e=>{if(e.key!=="ArrowUp"&&e.key!=="ArrowDown")return;e.preventDefault();height(canvas.clientHeight+(e.key==="ArrowUp"?-1:1)*(e.shiftKey?100:20));};
- if(state.previewHeight)height(state.previewHeight);return{destroy(){release();handle.remove();}};
+ if(state.previewHeight)height(state.previewHeight);return{setVisible(value){if(!value)release();handle.hidden=!value;handle.style.display=value?'':'none';},destroy(){release();handle.remove();}};
 }
 module.exports={mount};

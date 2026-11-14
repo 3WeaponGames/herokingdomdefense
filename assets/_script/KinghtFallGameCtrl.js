@@ -138,6 +138,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this._rallyMarkerRemaining = 0;
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
+    this._armyFormationJob = this._followFormationJob = this._rallyFormationJob = null;
     this._separateArmyCommands = true;
     var saved = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
     var restoring = saved.hasSave(t);
@@ -648,6 +649,7 @@ var def_KinghtFallGameCtrl = function (t) {
     unit.applyArmyOrder(this);
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
+    this._armyFormationJob = this._followFormationJob = this._rallyFormationJob = null;
     if (cc.resources) require("UnitVoices").follow(this, [unit]);
     return true;
   };
@@ -664,6 +666,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
+    this._armyFormationJob = this._followFormationJob = this._rallyFormationJob = null;
     if (changed && BattleSounds.effect) BattleSounds.effect("order-hold", null, { game: this });
     if (changed && this.gameData.levelCfg) this.saveGame();
   };
@@ -679,6 +682,7 @@ var def_KinghtFallGameCtrl = function (t) {
   _ctor.prototype.applyArmyOrder = function () {
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
+    this._armyFormationJob = this._followFormationJob = this._rallyFormationJob = null;
     var soldiers = this.gameData.getSoldierList();
     for (var i = 0; i < soldiers.length; i++) soldiers[i].applyArmyOrder(this);
   };
@@ -694,6 +698,19 @@ var def_KinghtFallGameCtrl = function (t) {
     navigation.refresh();
     var cache = this._separateArmyCommands ? (rallyGroup ? '_rallyFormation' : '_followFormation') : '_armyFormation';
     var previous = this[cache];
+    var jobKey=cache+'Job',job=this[jobKey];
+    if (job && (job.revision!==navigation.revision || job.order!==this.rallyPoint || job.following!==this.isAgg || job.members.length!==soldiers.length || job.members.some(function(member,i){return member!==soldiers[i] || member._combatGeneration!==job.generations[i];}))) job=this[jobKey]=null;
+    // Share each group's layout across its callers and yield after roughly two
+    // milliseconds per managed frame. A moving hero cannot restart unfinished
+    // work; geometry, orders, roster changes and pooled reuse invalidate it.
+    function advance(owner,work){
+      if(work.frame!==navigation._frameId){work.frame=navigation._frameId;var started=Date.now(),step;
+        do{step=work.iterator.next();}while(!step.done&&(!navigation._frameManaged||Date.now()-started<2));
+        if(step.done){owner[jobKey]=null;return true;}
+      }
+      return false;
+    }
+    if(job){if(advance(this,job))return this[cache].slots.get(unit)||{pending:true};return previous&&previous.revision===navigation.revision&&previous.order===this.rallyPoint&&previous.following===this.isAgg?previous.slots.get(unit)||{pending:true}:{pending:true};}
     if (previous && previous.frame === navigation._frameId) return previous.slots.get(unit) || { pending: true };
     var moved = !previous || cc.Vec2.distance(previous.anchor, anchor) > 20 || !navigation.grid.segmentClear(previous.anchor, anchor, 0);
     var changed = !previous || previous.order !== this.rallyPoint || previous.following !== this.isAgg || moved || previous.revision !== navigation.revision || previous.members.length !== soldiers.length;
@@ -705,14 +722,16 @@ var def_KinghtFallGameCtrl = function (t) {
     // A point inside a wall/open leaf retains normal projected-goal handling.
     // Formation points must be on the command's side of every intact gate.
     if (!navigation.grid.isWalkable(anchor, 0)) return null;
+    var order=this.rallyPoint,following=this.isAgg;
+    var iterator=(function*(){
     var center = !moved && previous ? previous.anchor : { x: anchor.x, y: anchor.y };
     var heroRadius = navigation.radius(this.ctrPlay), radius = 8, radii = new Map();
-    soldiers.forEach(function (soldier) {
-      var r = soldier.isDead() ? soldier._armyBodyRadius || 20 : navigation.radius(soldier);
+    for(var radiusIndex=0;radiusIndex<soldiers.length;radiusIndex++){
+      yield;var soldier=soldiers[radiusIndex],r = soldier.isDead() ? soldier._armyBodyRadius || 20 : navigation.radius(soldier);
       soldier._armyBodyRadius = r;
       radii.set(soldier, r);
       radius = Math.max(radius, r);
-    });
+    }
     // Add modest space between ranks. Tight terrain can use body-clear
     // fallback cells while retaining the same front/rear/flank preferences.
     var spacing = radius * 2 + 6, candidates = [], reserved = [], slots = new Map();
@@ -776,54 +795,66 @@ var def_KinghtFallGameCtrl = function (t) {
     // Use the full rank spacing when the whole planned formation fits. A
     // constrained area keeps the denser fallback lattice so no member is
     // stranded merely because the decorative spacing cannot fit the terrain.
-    var preferExact = soldiers.every(function (soldier) {
-      var desired = layout.preferred.get(soldier);
-      return cc.Vec2.distance(desired, center) <= limit && valid(desired, radii.get(soldier));
-    });
-    if (previous) soldiers.forEach(function (soldier) {
+    var preferExact=true;
+    for(var soldierIndex=0;soldierIndex<soldiers.length;soldierIndex++){
+      yield;var soldier=soldiers[soldierIndex],desired=layout.preferred.get(soldier);
+      if(!(cc.Vec2.distance(desired,center)<=limit&&valid(desired,radii.get(soldier)))){preferExact=false;break;}
+    }
+    if (previous) for(var soldierIndex=0;soldierIndex<soldiers.length;soldierIndex++){
+      yield;var soldier=soldiers[soldierIndex];
       var old = previous.slots.get(soldier);
-      if (!old || !old.pos) return;
+      if (!old || !old.pos) continue;
       var dx = old.pos.x - previous.anchor.x, dy = old.pos.y - previous.anchor.y, oldForward = previous.forward || forward;
       var side = dx * oldForward.y - dy * oldForward.x, along = dx * oldForward.x + dy * oldForward.y;
       var point = { x: center.x + forward.y * side + forward.x * along, y: center.y - forward.x * side + forward.y * along };
       if (cc.Vec2.distance(point, center) <= limit && rolePosition(layout, soldier, point, center) && valid(point, radii.get(soldier))) reserve(soldier, point);
-    });
+    }
+    var candidatesBuilt=false;
+    var assignment=layout.groups.front.concat(layout.groups.rear,layout.groups.flank);
+    for(var soldierIndex=0;soldierIndex<assignment.length;soldierIndex++){
+      var soldier=assignment[soldierIndex];if(slots.has(soldier))continue;
+      // Terrain and gate-side checks are shared at the largest body radius.
+      // Evaluate only candidates reached by this layout, at most once each;
+      // reservations alone change while assigning the remaining bodies.
+      var desired = layout.preferred.get(soldier), best = null, bestScore = Infinity;
+      if (preferExact && valid(desired, radii.get(soldier))) { reserve(soldier, desired); yield;continue; }
     // A hexagonal lattice packs the actual body clearance into narrow outdoor
     // approaches without letting the larger hero inflate every soldier slot.
-    if (slots.size < soldiers.length) {
+    if (!candidatesBuilt) {
+      candidatesBuilt=true;
       // Keep body-clear fallback cells available in tight terrain; preferred
       // role positions use the wider spacing above in open ground.
       var lattice = radius * 2 - 2, rowHeight = lattice * Math.sqrt(3) / 2, rows = Math.ceil(limit / rowHeight), columns = Math.ceil(limit / lattice);
       for (var row = -rows; row <= rows; row++) for (var column = -columns; column <= columns; column++) {
-        var candidate = { x: center.x + (column + (row % 2) / 2) * lattice, y: center.y + row * rowHeight };
+        yield;var candidate = { x: center.x + (column + (row % 2) / 2) * lattice, y: center.y + row * rowHeight };
         var distance = cc.Vec2.distance(candidate, center);
         if (distance <= limit) candidates.push({ pos: candidate, distance: distance });
       }
       candidates.sort(function (a, b) { return a.distance - b.distance || a.pos.y - b.pos.y || a.pos.x - b.pos.x; });
     }
-    layout.groups.front.concat(layout.groups.rear, layout.groups.flank).forEach(function (soldier) {
-      if (slots.has(soldier)) return;
-      // Terrain and gate-side checks are shared at the largest body radius.
-      // Evaluate only candidates reached by this layout, at most once each;
-      // reservations alone change while assigning the remaining bodies.
-      var desired = layout.preferred.get(soldier), best = null, bestScore = Infinity;
-      if (preferExact && valid(desired, radii.get(soldier))) { reserve(soldier, desired); return; }
       for (var j = 0; j < candidates.length; j++) {
-        var candidate = candidates[j];
-        if (candidate.clear === false || !available(candidate.pos, radii.get(soldier))) continue;
+        yield;var candidate = candidates[j];
+        if (candidate.clear === false) continue;
         var dx = candidate.pos.x - desired.x, dy = candidate.pos.y - desired.y;
         var score = dx * dx + dy * dy + (rolePosition(layout, soldier, candidate.pos, center) ? 0 : limit * limit * 4);
         if (score >= bestScore) continue;
+        // Most lattice cells cannot improve this unit's current best slot.
+        // Reject those before walking every reserved body, keeping the same
+        // scores, tie order and final collision-safe destinations.
+        if (!available(candidate.pos, radii.get(soldier))) continue;
         if (candidate.clear === undefined) candidate.clear = clearGateApproach(candidate.pos, radius) && navigation.grid.isWalkable(candidate.pos, radius) && navigation.grid.segmentClear(center, candidate.pos, 0);
         if (!candidate.clear) continue;
         best = candidate; bestScore = score;
       }
       if (best) reserve(soldier, best.pos);
       if (!slots.has(soldier)) slots.set(soldier, { pending: true });
-    });
-    this[cache] = { frame: navigation._frameId, order: this.rallyPoint, following: this.isAgg, anchor: center,
+    }
+    this[cache] = { frame: navigation._frameId, order: order, following: following, anchor: center,
       revision: navigation.revision, members: soldiers.slice(), slots: slots, forward: forward, headingAnchor: headingAnchor, layout: layout };
-    return slots.get(unit);
+    }).call(this);
+    job=this[jobKey]={iterator:iterator,frame:-1,revision:navigation.revision,order:order,following:following,members:soldiers.slice(),generations:soldiers.map(function(soldier){return soldier._combatGeneration;})};
+    if(advance(this,job))return this[cache].slots.get(unit)||{pending:true};
+    return previous&&previous.revision===navigation.revision&&previous.order===this.rallyPoint&&previous.following===this.isAgg?previous.slots.get(unit)||{pending:true}:{pending:true};
   };
   _ctor.prototype.settleArmyCrowd = function (unit, position) {
     var formation = this._separateArmyCommands ? (unit.isAgg ? this._followFormation : this._rallyFormation) : this._armyFormation;
@@ -857,6 +888,7 @@ var def_KinghtFallGameCtrl = function (t) {
     return false;
   };
   _ctor.prototype.clearArmyOrder = function (savePosts) {
+    this._armyFormationJob = this._followFormationJob = this._rallyFormationJob = null;
     if (savePosts !== false && this._usesSelectiveFollow()) this.holdSelectedFollowers();
     this.isAgg = false;
     this.rallyPoint = null;

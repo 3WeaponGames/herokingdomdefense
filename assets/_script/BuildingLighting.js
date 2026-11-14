@@ -1,7 +1,7 @@
 "use strict";
 
-// Presentation-only, base-local window/lantern lights for layered buildings.
-// Reuse the GUI kit's soft glow; no gameplay state, particles, shaders or audio.
+// Presentation-only, base-local opening lights for layered buildings.
+// Retained authored sprites follow the existing night fade and breathing loop.
 var GLOW = "ui/stage-stars/glow", FADE = .5, PERIOD = 2;
 function valid(value) { return !!value && (!cc.isValid || cc.isValid(value, true)); }
 function finite(value, fallback) { return typeof value === "number" && isFinite(value) ? value : fallback; }
@@ -11,7 +11,7 @@ function tint(owner) {
   var value = appearance && appearance.nightTint;
   return typeof value === "string" && /^#?[0-9a-f]{6}$/i.test(value) ? "#" + value.replace(/^#/, "").toUpperCase() : null;
 }
-function signature(owner, lights) { return JSON.stringify({ lights: lights || config(owner), tint: tint(owner) }); }
+function signature(owner, lights) { return JSON.stringify({ lights: lights || config(owner), tint: tint(owner),transform:owner && owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Nightlight }); }
 function colorValue(color) { return { r: finite(color && color.r, 255), g: finite(color && color.g, 255), b: finite(color && color.b, 255), a: finite(color && color.a, 255) }; }
 function setColor(node, color) { if (valid(node)) node.color = cc.color(color.r, color.g, color.b, color.a); }
 function restoreColor(record) {
@@ -60,6 +60,9 @@ function live(owner, state, record) {
 function release(record) {
   Object.keys(record.resources).forEach(function (path) {
     var resource = record.resources[path];
+    // Sprite setters still unsubscribe from their previous frame. Detach every
+    // live consumer before releasing this layout's retained asset reference.
+    resource.sprites.forEach(function(sprite){if(valid(sprite)&&valid(sprite.node))sprite.spriteFrame=null;});
     if (resource.frame && resource.retained && resource.frame.decRef) resource.frame.decRef();
     resource.frame = null; resource.retained = false; resource.token = null;
   });
@@ -137,12 +140,16 @@ function build(owner, state, lights, layoutSignature) {
       glow.setPosition(settings.x, settings.y); glow.setContentSize(settings.width, settings.height); glow.color = cc.color(settings.color);
       // Authored transforms project the retained native window fan outward.
       // They are constant; the existing night loop changes only its opacity.
-      glow.angle = settings.angle; glow.skewX = settings.shearX; glow.skewY = settings.shearY;
+      var adjustment=require("BuildingNightlight").value(owner.buildInfo.cfg,"sprite:"+index+":"+at);
+      glow.setPosition(settings.x+adjustment.x,settings.y+adjustment.y);
+      glow.angle = settings.angle+adjustment.angle; glow.skewX = settings.shearX; glow.skewY = settings.shearY;
+      glow.scaleX=adjustment.scaleX*(adjustment.flipX?-1:1);glow.scaleY=adjustment.scaleY*(adjustment.flipY?-1:1);
       var sprite = glow.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
       entry.glows.push({ node: glow, sprite: sprite, config: settings });
       if (!at) { entry.glow = glow; entry.sprite = sprite; }
       resource(settings.sprite, sprite);
     });
+    if(light.opacity<=0){record.entries.push(entry);return;}
     var window = entry.window = new cc.Node("LitWindow" + index); window.parent = node; window.group = node.group; window.zIndex = 1; window.opacity = light.opacity;
     if (light.sprite) {
       window.setAnchorPoint(.5, 0); window.setPosition(light.offsetX, light.offsetY);
@@ -203,3 +210,4 @@ exports.update = update;
 exports.setNight = setNight;
 exports.hide = hide;
 exports.dispose = dispose;
+exports.config = config;

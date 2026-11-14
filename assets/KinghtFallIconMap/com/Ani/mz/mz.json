@@ -2222,6 +2222,9 @@
               0.1874
             ],
             "triangles": [
+              6,
+              4,
+              5,
               3,
               4,
               6,
@@ -2231,6 +2234,9 @@
               1,
               2,
               6,
+              6,
+              5,
+              0,
               1,
               6,
               0
@@ -2253,69 +2259,7 @@
             ]
           }
         },
-        "building_aperture_cores": {
-          "building_aperture_cores": {
-            "type": "mesh",
-            "path": "building_aperture_rays",
-            "hull": 0,
-            "uvs": [
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2
-            ],
-            "triangles": [
-              0,
-              1,
-              2,
-              0,
-              2,
-              3,
-              0,
-              3,
-              4,
-              0,
-              4,
-              5,
-              0,
-              5,
-              6,
-              0,
-              6,
-              7
-            ],
-            "vertices": [
-              56.2,
-              -138.25,
-              60.2,
-              -134.25,
-              70.2,
-              -128.25,
-              78.2,
-              -124.25,
-              82.2,
-              -124.25,
-              82.2,
-              -180.25,
-              62.2,
-              -192.25,
-              56.2,
-              -192.25
-            ]
-          }
-        }
+        "building_aperture_cores": {}
       }
     },
     {
@@ -2436,6 +2380,9 @@
               0.1874
             ],
             "triangles": [
+              6,
+              4,
+              5,
               3,
               4,
               6,
@@ -2445,6 +2392,9 @@
               1,
               2,
               6,
+              6,
+              5,
+              0,
               1,
               6,
               0
@@ -2467,69 +2417,7 @@
             ]
           }
         },
-        "building_aperture_cores": {
-          "building_aperture_cores": {
-            "type": "mesh",
-            "path": "building_aperture_rays",
-            "hull": 0,
-            "uvs": [
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2
-            ],
-            "triangles": [
-              0,
-              1,
-              2,
-              0,
-              2,
-              3,
-              0,
-              3,
-              4,
-              0,
-              4,
-              5,
-              0,
-              5,
-              6,
-              0,
-              6,
-              7
-            ],
-            "vertices": [
-              56.2,
-              -130.25,
-              58.2,
-              -128.25,
-              76.2,
-              -118.25,
-              80.2,
-              -118.25,
-              80.2,
-              -168.25,
-              70.2,
-              -174.25,
-              62.2,
-              -178.25,
-              56.2,
-              -178.25
-            ]
-          }
-        }
+        "building_aperture_cores": {}
       }
     },
     {
@@ -2708,6 +2596,9 @@
               0.1874
             ],
             "triangles": [
+              6,
+              4,
+              5,
               3,
               4,
               6,
@@ -2717,6 +2608,9 @@
               1,
               2,
               6,
+              6,
+              5,
+              0,
               1,
               6,
               0
@@ -2739,69 +2633,7 @@
             ]
           }
         },
-        "building_aperture_cores": {
-          "building_aperture_cores": {
-            "type": "mesh",
-            "path": "building_aperture_rays",
-            "hull": 0,
-            "uvs": [
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2
-            ],
-            "triangles": [
-              0,
-              1,
-              2,
-              0,
-              2,
-              3,
-              0,
-              3,
-              4,
-              0,
-              4,
-              5,
-              0,
-              5,
-              6,
-              0,
-              6,
-              7
-            ],
-            "vertices": [
-              32.2,
-              -164.25,
-              34.2,
-              -162.25,
-              46.2,
-              -156.25,
-              52.2,
-              -156.25,
-              52.2,
-              -194.25,
-              50.2,
-              -196.25,
-              38.2,
-              -202.25,
-              32.2,
-              -202.25
-            ]
-          }
-        }
+        "building_aperture_cores": {}
       }
     },
     {
@@ -2980,6 +2812,9 @@
               0.1874
             ],
             "triangles": [
+              6,
+              4,
+              5,
               3,
               4,
               6,
@@ -2989,6 +2824,9 @@
               1,
               2,
               6,
+              6,
+              5,
+              0,
               1,
               6,
               0
@@ -3011,69 +2849,7 @@
             ]
           }
         },
-        "building_aperture_cores": {
-          "building_aperture_cores": {
-            "type": "mesh",
-            "path": "building_aperture_rays",
-            "hull": 0,
-            "uvs": [
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2,
-              0.4,
-              0.2
-            ],
-            "triangles": [
-              0,
-              1,
-              2,
-              0,
-              2,
-              3,
-              0,
-              3,
-              4,
-              0,
-              4,
-              5,
-              0,
-              5,
-              6,
-              0,
-              6,
-              7
-            ],
-            "vertices": [
-              32.2,
-              -162.25,
-              34.2,
-              -160.25,
-              46.2,
-              -154.25,
-              50.2,
-              -154.25,
-              50.2,
-              -194.25,
-              48.2,
-              -196.25,
-              36.2,
-              -202.25,
-              32.2,
-              -202.25
-            ]
-          }
-        }
+        "building_aperture_cores": {}
       }
     }
   ],
@@ -3180,7 +2956,7 @@
             },
             {
               "time": 0.5,
-              "color": "ffffff40"
+              "color": "ffffffff"
             }
           ],
           "attachment": [
@@ -3190,20 +2966,14 @@
           ]
         },
         "building_aperture_cores": {
-          "color": [
-            {
-              "color": "ffffff00",
-              "curve": 0.25,
-              "c3": 0.75
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
-            }
-          ],
           "attachment": [
             {
-              "name": "building_aperture_cores"
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
             }
           ]
         }
@@ -3795,7 +3565,7 @@
         "building_aperture_rays": {
           "color": [
             {
-              "color": "ffffff40"
+              "color": "ffffffff"
             }
           ],
           "attachment": [
@@ -3806,15 +3576,14 @@
           ]
         },
         "building_aperture_cores": {
-          "color": [
-            {
-              "color": "ffffffff"
-            }
-          ],
           "attachment": [
             {
-              "time": 0.1667,
               "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
             }
           ]
         }
@@ -4055,30 +3824,6 @@
         "building_aperture_rays": {
           "color": [
             {
-              "color": "ffffff36",
-              "curve": 0.25,
-              "c3": 0.75
-            },
-            {
-              "time": 1,
-              "color": "ffffff40",
-              "curve": 0.25,
-              "c3": 0.75
-            },
-            {
-              "time": 2,
-              "color": "ffffff36"
-            }
-          ],
-          "attachment": [
-            {
-              "name": "building_aperture_rays"
-            }
-          ]
-        },
-        "building_aperture_cores": {
-          "color": [
-            {
               "color": "ffffffd9",
               "curve": 0.25,
               "c3": 0.75
@@ -4096,7 +3841,19 @@
           ],
           "attachment": [
             {
-              "name": "building_aperture_cores"
+              "name": "building_aperture_rays"
+            }
+          ]
+        },
+        "building_aperture_cores": {
+          "attachment": [
+            {
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
             }
           ]
         }
