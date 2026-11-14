@@ -91,7 +91,7 @@ var def_KinghtFallBuildBase = function (t) {
     var e = this;
     1 == this.ID && (t = $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter);
     this.buildCfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuildCfgById(t);
-    if (this.buildCfg.levelList && this.buildCfg.levelList.some(function(row){return !!row.Nightlight;}) || this._buildingNightlightPrepared) require("BuildingNightlightRuntime").prepare(this, this.buildCfg.levelList);
+    require("BuildingNightlightRuntime").prepare(this, this.buildCfg.levelList);
     if (this.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
       return this.hide(), false;
     } else {
@@ -143,6 +143,7 @@ var def_KinghtFallBuildBase = function (t) {
       });
     });
     require("BuildingAppearance").hide(this);
+    require("BuildingLighting").hideOwner(this);
     if (this._buildingShadowRuntime) require("BuildingShadowRuntime").hide(this);
     if (this._buildingDropShadowRuntime) require("BuildingDropShadowRuntime").hide(this);
   };
@@ -199,7 +200,7 @@ var def_KinghtFallBuildBase = function (t) {
     var n = this;
     this._stopColliderTweens();
     var cfg = this.getBranchCfg(t);
-    if (cfg && cfg.Nightlight || this._buildingNightlightRuntime) require("BuildingNightlightRuntime").apply(this, cfg);
+    require("BuildingNightlightRuntime").apply(this, cfg);
     this.index = cfg ? cfg.index : 0;
     if (this.index > 0) this._freeInitialBuild = false;
     this.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(this.buildCfg.enumValue, cfg, this.ID);
@@ -258,10 +259,10 @@ var def_KinghtFallBuildBase = function (t) {
     });
     require("BuildingAppearance").apply(this);
     if (cfg && (cfg.WorldScale !== undefined || cfg.ModelOffset)) require("BuildingWorldScale").apply(this);
+    require("BuildingLighting").syncOwner(this);
     if (this.buildCfg.UnbuiltPad || this._unbuiltPadRuntime) require("BuildingPurchaseFieldRuntime").applyUnbuilt(this);
     var shadowData=$z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
-    if(cfg&&cfg.DropShadow||shadowData&&shadowData.GameTools&&shadowData.GameTools.buildingShadows||this._buildingDropShadowRuntime) require("BuildingDropShadowRuntime").apply(this,$z1KinghtFallUIGame.default.instance.ctrGame,shadowData);
-    else if (cfg && cfg.Shadow || this._buildingShadowRuntime) require("BuildingShadowRuntime").apply(this, $z1KinghtFallUIGame.default.instance.ctrGame);
+    require("BuildingDropShadowRuntime").apply(this,$z1KinghtFallUIGame.default.instance.ctrGame,shadowData);
   };
   _ctor.prototype._alignPurchaseCost = function (field) {
     var origin = field.convertToWorldSpaceAR(cc.v2(0, 0));
@@ -330,6 +331,7 @@ var def_KinghtFallBuildBase = function (t) {
     var artwork = require("BuildingAppearance");
     if (artwork.cancelPlacement) artwork.cancelPlacement(this);
     if (this._buildingAppearance && this._buildingAppearance._buildingLighting) require("BuildingLighting").hide(this, this._buildingAppearance);
+    require("BuildingLighting").hideOwner(this);
     var owner = this, interrupted = this._colliderTweens ? Array.from(this._colliderTweens.keys()) : [];
     this._stopColliderTweens();
     // A disabled component may be enabled again without setLevel. Retain its
@@ -342,6 +344,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (t.prototype.onDisable) t.prototype.onDisable.call(this);
   };
   _ctor.prototype.onDestroy = function () {
+    require("BuildingLighting").disposeOwner(this);
     if (this._buildingNightlightRuntime || this._buildingNightlightPrepared) require("BuildingNightlightRuntime").dispose(this, true);
     require("BuildingDebris").destroy(this);
     // Children and native physics proxies can already be gone during the
@@ -452,6 +455,7 @@ var def_KinghtFallBuildBase = function (t) {
     return t;
   };
   _ctor.prototype.setLight = function (t) {
+    require("BuildingNightlightRuntime").apply(this,this.buildInfo&&this.buildInfo.cfg);
     require("BuildingLighting").setNight(this, t);
     var e = this;
     if (this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
@@ -785,6 +789,7 @@ var def_KinghtFallBuildBase = function (t) {
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.destory, undefined, undefined, { owner: this, game: $z1KinghtFallUIGame.default.instance.ctrGame });
     this.delAllBuff();
     this.isDestroyed = true;
+    require("BuildingLighting").hideOwner(this);
     require("BuildingAppearance").onDead(this);
     this.ndAniMain.setAnimation(0, r.destroy, false);
     this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
@@ -801,6 +806,7 @@ var def_KinghtFallBuildBase = function (t) {
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.MapUpdate);
   };
   _ctor.prototype.onUpdate = function (t) {
+    require("BuildingLighting").updateOwner(this, t);
     require("BuildingDebris").update(this, t);
     if (this.getIsWork()) {
       for (var e = 0; e < this.debuffInfo.length; e++) {

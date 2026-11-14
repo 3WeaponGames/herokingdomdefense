@@ -106,6 +106,10 @@ var def_KinghtFallBuildWall = function (t) {
     return false;
   };
   _ctor.prototype.setLevel = function (e) {
+    // Restore the facing/run data before refitting it. The night presentation
+    // wraps that data; treating its wrapper as a new rig reverses north gates
+    // again on repeated tier selections and disagrees with prepared shadows.
+    require("BuildingNightlightRuntime").dispose(this);
     if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
     if (this._wallRunRuntime || this.ndAniMain && this.ndAniMain.skeletonData && this.ndAniMain.skeletonData.skeletonJson && this.ndAniMain.skeletonData.skeletonJson.wallKit) require("WallRunRuntime").apply(this, e);
@@ -119,6 +123,7 @@ var def_KinghtFallBuildWall = function (t) {
     return require("GateFacing").animation(json,name,this.wallOpening,this.isOpen);
   };
   _ctor.prototype.setLight = function (t) {
+    require("BuildingLighting").setNight(this,t);
     var e = this;
     if (this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
       this.ndLockList.forEach(function (n, i) {

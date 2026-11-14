@@ -4,14 +4,52 @@ function valid(n){return !!n&&(!cc.isValid||cc.isValid(n,true));}
 function dispose(owner){var state=owner._buildingDropShadowRuntime;if(!state)return;delete owner._buildingDropShadowRuntime;cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.sync);if(valid(state.sprite))state.sprite.spriteFrame=null;if(valid(state.node))state.node.destroy();if(state.entry){state.entry.refs--;trim();}}
 function trim(){for(var i=0;bytes>LIMIT&&i<entries.length;){var e=entries[i];if(e.refs){i++;continue;}entries.splice(i,1);bytes-=e.bytes;e.frame.destroy();e.texture.destroy();}}
 function hide(owner){var s=owner._buildingDropShadowRuntime;if(s){s.hidden=true;s.node.active=false;}}
+function parentFor(owner,game,row){return require("BuildingShadow").aboveGround(row,owner.buildCfg&&owner.buildCfg.enumValue)&&owner.ndAniDown&&valid(owner.ndAniDown.node)?owner.ndAniDown.node:game&&(game.ndDown||game.ndMain);}
 function excluded(owner,node){for(var n=node;n;n=n.parent)if(n===owner.ndVideoSoldier||n._structureShadowExcluded)return true;return false;}
-function sources(owner,groundOnly){
- var list=[owner.ndAniMain].concat(groundOnly?[]:[owner.ndAniDown],owner.ndAniOther||[]),a=owner._buildingAppearance;if(a)list.push(a.sprite,a.weaponSprite);
- return list.filter(function(r,i){return r&&list.indexOf(r)===i&&valid(r)&&valid(r.node)&&!excluded(owner,r.node)&&r.enabled!==false&&r.node.activeInHierarchy!==false&&(r.spriteFrame||r.skeletonData);});
+function isWall(owner){return !!(owner.buildCfg&&owner.buildCfg.enumValue===6||owner.buildInfo&&owner.buildInfo.cfg&&owner.buildInfo.cfg.ID===6||[owner.ndAniMain].concat(owner.ndAniOther||[]).some(function(r){var j=r&&r.skeletonData&&r.skeletonData.skeletonJson;return j&&(j.wallKit||j.wallGate);}));}
+function sources(owner){
+ var list=[owner.ndAniMain].concat(isWall(owner)?[owner.ndAniDown]:[],owner.ndAniOther||[]),a=owner._buildingAppearance;if(a)list.push(a.sprite);
+ // Cannon/Sniper mounts aim and recoil independently. Their fixed tower base
+ // alone casts the shared sun shadow, including during stage preparation.
+ return list.filter(function(r,i){return r&&(!a||r!==a.weaponSprite)&&list.indexOf(r)===i&&valid(r)&&valid(r.node)&&!excluded(owner,r.node)&&r.enabled!==false&&r.node.activeInHierarchy!==false&&(r.spriteFrame||r.skeletonData);});
 }
 function ready(owner,list){
  if(owner._buildingAppearance&&(owner._buildingAppearance.loading||owner._buildingAppearance.placement))return false;
  return list.length&&list.every(function(r){if(!r.getCurrent)return true;var track=r.getCurrent(0),a=track&&(track.animation||track.getAnimation&&track.getAnimation()),name=a&&(a.name||a.getName&&a.getName());if(!name||!/create|upgrade|^open|^shut|^Fade_in/.test(name))return true;var duration=a.duration||a.getDuration&&a.getDuration()||0,time=track.trackTime;if(time===undefined&&track.getTrackTime)time=track.getTrackTime();return typeof time==="number"&&time>=duration;});
+}
+function captureLayers(view,object,list,source,read){
+ var Ground=require("WallShadowGround"),pairs=view.nativeCapture?list.map(function(r){return{source:r,visual:r,node:r.node};}):object.visuals||[],leaves=[],ranges=[],active=pairs.map(function(pair){return pair.node.active;});
+ pairs.forEach(function(pair){
+  var target=pair.visual,json=pair.source.skeletonData&&pair.source.skeletonData.skeletonJson;
+  if(!target.setSlotsRange||!target.findSlot||target.isAnimationCached&&target.isAnimationCached())return;
+  Ground.casterSlots(json).forEach(function(entry){var slot=target.findSlot(entry.name),attachment=slot&&slot.getAttachment(),deform=slot&&(slot.getDeform?slot.getDeform():slot.deform);if(!attachment||deform&&deform.length)return;leaves.push({pair:pair,slot:slot,index:entry.index,contacts:entry.post?source.contacts.filter(function(c){return c.slot===entry.name;}):[],attachment:attachment,time:slot.getAttachmentTime?slot.getAttachmentTime():slot.attachmentTime});});
+ });
+ if(!leaves.length)return;
+ pairs.forEach(function(pair){ranges.push({target:pair.visual,start:pair.visual._startSlotIndex===undefined?-1:pair.visual._startSlotIndex,end:pair.visual._endSlotIndex===undefined?-1:pair.visual._endSlotIndex});});
+ function mark(target){if(target.markForRender)target.markForRender(true);}
+ function render(selected){
+  if(view.nativeCapture)view.renderNative(selected.map(function(pair){return pair.source;}),object.center,object.size.height,object.texture);
+  else{pairs.forEach(function(pair,i){pair.node.active=active[i]&&selected.indexOf(pair)>=0;});view.capture.active=true;try{view.camera.render(object.capture);}finally{view.capture.active=false;}}
+  return read();
+ }
+ try{
+  // Web captures edit only detached pose copies. Native captures temporarily
+  // detach generated regions, restoring their exact attachments/time
+  // before this call returns. No gameplay rig, asset or saved data is replaced.
+  leaves.forEach(function(leaf){leaf.slot.setAttachment(null);mark(leaf.pair.visual);});
+  var layers=[Object.assign({},source,{alpha:render(pairs)})];
+  leaves.forEach(function(leaf){
+   var target=leaf.pair.visual,range=ranges.find(function(r){return r.target===target;});
+   leaf.slot.setAttachment(leaf.attachment);target.setSlotsRange(leaf.index,leaf.index);mark(target);
+   layers.push(Object.assign({},source,{alpha:render([leaf.pair]),contacts:leaf.contacts,groundedColumns:true}));
+   leaf.slot.setAttachment(null);target.setSlotsRange(range.start,range.end);mark(target);
+  });
+  return layers;
+ }finally{
+  leaves.forEach(function(leaf){leaf.slot.setAttachment(leaf.attachment);if(leaf.slot.setAttachmentTime)leaf.slot.setAttachmentTime(leaf.time);else leaf.slot.attachmentTime=leaf.time;mark(leaf.pair.visual);});
+  ranges.forEach(function(range){if(range.target.setSlotsRange)range.target.setSlotsRange(range.start,range.end);});
+  if(!view.nativeCapture)pairs.forEach(function(pair,i){pair.node.active=active[i];});
+ }
 }
 function capture(owner,game,list){
  if(!cc.Camera||!cc.RenderTexture||!game||!valid(game.ndMain))return null;
@@ -21,12 +59,16 @@ function capture(owner,game,list){
  var object={sources:list},hidden=[];
  // Native camera.render(node) includes its descendants. Offer units and pads
  // can be children of the very node carrying the building's Spine component.
- [owner.ndVideoSoldier].concat(owner.ndLockList||[]).forEach(function(node){if(valid(node)&&node.active){hidden.push(node);node.active=false;}});
+ [owner.ndVideoSoldier,owner._buildingDropShadowRuntime&&owner._buildingDropShadowRuntime.node,owner._buildingManualLights&&owner._buildingManualLights._buildingLighting&&owner._buildingManualLights._buildingLighting.node].concat(owner.ndLockList||[]).forEach(function(node){if(valid(node)&&node.active){hidden.push(node);node.active=false;}});
  try{
   view.snapshot(object,box);if(!object.texture)return null;var rgba=object.texture.readPixels(),w=object.texture.width,h=object.texture.height;if(!rgba)return null;
-  var alpha=new Uint8Array(w*h);for(var y=0;y<h;y++)for(var x=0;x<w;x++)alpha[y*w+x]=rgba[((h-1-y)*w+x)*4+3];
+  function read(pixels){var data=pixels||object.texture.readPixels();if(!data)throw Error("Could not read a building shadow layer");var alpha=new Uint8Array(w*h);for(var y=0;y<h;y++)for(var x=0;x<w;x++)alpha[y*w+x]=data[((h-1-y)*w+x)*4+3];return alpha;}
+  var alpha=read(rgba);
   var origin=game.ndMain.convertToNodeSpaceAR(owner.node.convertToWorldSpaceAR(cc.v2(0,0)));
-  return{alpha:alpha,pixelWidth:w,pixelHeight:h,x:object.center.x-object.size.width/2-origin.x,y:object.center.y-object.size.height/2-origin.y,width:object.size.width,height:object.size.height};
+  var contacts=[];if(isWall(owner)){var Ground=require("WallShadowGround");list.forEach(function(r){var json=r.skeletonData&&r.skeletonData.skeletonJson;if(!json||!json.wallKit)return;function p(x,y){var v=game.ndMain.convertToNodeSpaceAR(r.node.convertToWorldSpaceAR(cc.v2(x,y)));return{x:v.x-origin.x,y:v.y-origin.y};}var a=p(0,0),b=p(1,0),c=p(0,1),track=r.getCurrent&&r.getCurrent(0),clip=track&&(track.animation||track.getAnimation&&track.getAnimation()),name=clip&&(clip.name||clip.getName&&clip.getName())||"idle";contacts=contacts.concat(Ground.contacts(json,owner.buildInfo&&owner.buildInfo.cfg&&owner.buildInfo.cfg.Skin,[b.x-a.x,b.y-a.y,c.x-a.x,c.y-a.y,a.x,a.y],name));});}
+  var source={alpha:alpha,pixelWidth:w,pixelHeight:h,x:object.center.x-object.size.width/2-origin.x,y:object.center.y-object.size.height/2-origin.y,width:object.size.width,height:object.size.height,groundedColumns:isWall(owner),contacts:contacts};
+  if(source.groundedColumns)source.layers=captureLayers(view,object,list,source,read);
+  return source;
  }finally{hidden.forEach(function(node){if(valid(node))node.active=true;});camera.targetTexture=null;(object.visuals||[]).forEach(function(pair){if(valid(pair.visual)){if(pair.visual.skeletonData)pair.visual.skeletonData=null;if(pair.visual.spriteFrame)pair.visual.spriteFrame=null;}});if(object.frame)object.frame.destroy();if(object.texture)object.texture.destroy();if(valid(view.capture))view.capture.destroy();if(valid(view.cameraNode))view.cameraNode.destroy();}
 }
 function geometry(owner){var r=owner.buildInfo.cfg,main=owner.ndAniMain,json=main&&main.skeletonData&&main.skeletonData.skeletonJson;return JSON.stringify([owner.ID,r.index,r.Skin,r.Appearance,r.PartScale,owner.node.scaleX,owner.node.scaleY,owner.wallFacing,owner.wallRotation,owner.wallOpening,!!owner.isOpen,json&&json.wallKit&&json.wallKit.layout]);}
@@ -40,7 +82,7 @@ function apply(owner,game,data){
  if(!effective||!effective.active){dispose(owner);if(effective&&effective.mode==='none')require("BuildingShadowRuntime").dispose(owner);else require("BuildingShadowRuntime").apply(owner,game);return;}
  require("BuildingShadowRuntime").dispose(owner);
  if(old){old.hidden=false;old.data=data;old.sync();return;}
- var parent=game&&(game.ndDown||game.ndMain);if(!valid(parent))return;
+ var parent=parentFor(owner,game,row);if(!valid(parent))return;
  var node=new cc.Node("BuildingTextureShadow");node.parent=parent;node.group=owner.node.group;node._depthGroundVisual=true;node.active=false;
  var child=new cc.Node("DropShadowTexture");child.parent=node;child.group=node.group;child.setAnchorPoint(0,0);var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;sprite.srcBlendFactor=cc.macro.BlendFactor.ONE;
  var state=owner._buildingDropShadowRuntime={node:node,child:child,sprite:sprite,data:data,hidden:false,wait:2};
@@ -48,14 +90,15 @@ function apply(owner,game,data){
   if(!valid(owner.node)||!valid(node)){dispose(owner);return;}
   var row=owner.buildInfo&&owner.buildInfo.cfg,category=state.data&&state.data.BuildEnum&&state.data.BuildEnum[row&&row.ID||owner.buildCfg&&owner.buildCfg.enumValue],current=row&&category&&FX.resolve(category,row,state.data.GameTools);
   if(!current||!current.active){apply(owner,game,state.data);return;}
+  var nextParent=parentFor(owner,game,row);if(!valid(nextParent)){node.active=false;return;}if(node.parent!==nextParent)node.parent=nextParent;parent=nextParent;
   // Prepared/cache entries must obey the same construction visibility as a
   // fresh capture. Ordinary gate opening/shutting keeps its existing shadow.
   if(state.hidden||owner.enabled===false||owner.node.activeInHierarchy===false||!owner.index||owner.isDestroyed||!require("BuildingShadowRuntime").ready(owner)){node.active=false;return;}
-  var ground=current.settings.projection==='ground',next=geometry(owner)+(ground?':structure':''),settingsKey=JSON.stringify(current.settings),prepared=game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.get(owner,row,current.settings),key=prepared?prepared.key:next+settingsKey,list;
+  var next=geometry(owner)+':ground',settingsKey=JSON.stringify(current.settings),prepared=game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.get(owner,row,current.settings),key=prepared?prepared.key:next+settingsKey,list;
   if(state.key!==key){
    var entry=prepared||entries.find(function(e){return e.key===key;});
    if(entry){entry.refs++;}
-   else{if(state.wait>0){state.wait--;return;}list=sources(owner,ground);if(!ready(owner,list))return;if(state.failedKey===key)return;try{if(state.geometry!==next||!state.source){state.source=capture(owner,game,list);if(!state.source)return;state.geometry=next;}entry=obtain(key,state.source,current.settings);}catch(error){state.failedKey=key;node.active=false;if(cc.warn)cc.warn("Building shadow unavailable",error.message||error);return;}}
+   else{if(state.wait>0){state.wait--;return;}list=sources(owner);if(!ready(owner,list))return;if(state.failedKey===key)return;try{if(state.geometry!==next||!state.source){state.source=capture(owner,game,list);if(!state.source)return;state.geometry=next;}entry=obtain(key,state.source,current.settings);}catch(error){state.failedKey=key;node.active=false;if(cc.warn)cc.warn("Building shadow unavailable",error.message||error);return;}}
    // Detach the old frame while it is still live: cache eviction destroys its
    // texture, and Creator's Sprite setter first removes the old load listener.
    var prior=state.entry;sprite.spriteFrame=entry.frame;state.entry=entry;state.key=key;
@@ -63,7 +106,7 @@ function apply(owner,game,data){
    if(prior){prior.refs--;trim();}
   }
   node.active=!!state.entry;if(!node.active)return;
-  var placement=owner._buildingAppearance&&owner._buildingAppearance.placement;node.opacity=placement?Math.round(255*(.25+.75*Math.min(1,placement.elapsed/.25))):255;
+  var placement=owner._buildingAppearance&&owner._buildingAppearance.placement;node.opacity=Math.round((placement?255*(.25+.75*Math.min(1,placement.elapsed/.25)):255)*(owner._buildingNight ? .05 : 1));
   function p(x,y){return parent.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(x,y)));}
   var origin=game.ndMain.convertToNodeSpaceAR(owner.node.convertToWorldSpaceAR(cc.v2(0,0))),o=p(origin.x,origin.y),x=p(origin.x+1,origin.y),y=p(origin.x,origin.y+1),a=x.x-o.x,b=x.y-o.y,c=y.x-o.x,d=y.y-o.y,sx=Math.hypot(a,b);
   node.setPosition(o);node.angle=Math.atan2(b,a)*180/Math.PI;node.scaleX=sx;node.scaleY=sx?(a*d-b*c)/sx:0;

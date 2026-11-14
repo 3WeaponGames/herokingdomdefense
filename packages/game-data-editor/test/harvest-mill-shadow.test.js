@@ -1,0 +1,7 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict'),path=require('node:path'),{Service}=require('../worlds/service'),Data=require('../buildings/blocker-data'),Renderer=require('../worlds/building-renderer'),Shadow=require('../../../assets/_script/BuildingShadow');
+test('only Harvest Mill tier four draws its shadow over the plots and below the mill body',()=>{
+ const service=new Service(path.resolve(__dirname,'../../..')),config=service.previewConfig('A'),before=JSON.stringify(config.BuildEnum[5]),renderer=Renderer.create();
+ for(let levelIndex=0;levelIndex<config.BuildEnum[5].levelList.length;levelIndex++){const row=config.BuildEnum[5].levelList[levelIndex],data=Data.describe(service,{id:'5',levelIndex}),record={...data.record,shadow:undefined,dropShadow:{}},parts=renderer.parts({x:0,y:0,scale:1,angle:0},record),order=parts.filter(p=>p.ground).concat(parts.filter(p=>!p.ground)),shadow=order.findIndex(p=>p.dropShadow),ground=order.findIndex(p=>p.skeleton?.ground),body=order.findIndex(p=>p.skeleton&&!p.skeleton.ground);assert.equal(record.shadowAboveGround,row.index===4);assert(ground>=0&&body>=0);assert(shadow<body);assert(row.index===4?shadow>ground:shadow<ground);}
+ assert.equal(JSON.stringify(config.BuildEnum[5]),before);renderer.destroy();assert(!Shadow.aboveGround({ID:2,index:4,level:4}));assert(!Shadow.aboveGround({ID:5,index:7,level:4}));
+});

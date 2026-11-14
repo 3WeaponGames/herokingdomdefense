@@ -9,9 +9,9 @@
   },
   "type": "Texture Packer",
   "subMetas": {
-    "original-map01-bottom-ledge-0-0": {
+    "masked-object-6-0-0": {
       "ver": "1.0.6",
-      "uuid": "cfdea614-0461-40b4-a483-afa92de11dae",
+      "uuid": "972ae25d-3d8e-41ac-ae52-174505fc8bb2",
       "importer": "sprite-frame",
       "rawTextureUuid": "4ba6a3ba-a205-4dba-adbc-3c556de19780",
       "trimType": "custom",
@@ -32,9 +32,9 @@
       "spriteType": "normal",
       "subMetas": {}
     },
-    "original-map01-bottom-ledge-2044-0": {
+    "masked-object-6-2044-0": {
       "ver": "1.0.6",
-      "uuid": "9c12bcae-b4f7-41c3-a1d8-11bd00229ee5",
+      "uuid": "cef971a2-06f5-409c-a570-25157ccf2701",
       "importer": "sprite-frame",
       "rawTextureUuid": "4ba6a3ba-a205-4dba-adbc-3c556de19780",
       "trimType": "custom",
@@ -48,6 +48,29 @@
       "height": 724,
       "rawWidth": 128,
       "rawHeight": 724,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "spriteType": "normal",
+      "subMetas": {}
+    },
+    "native-env-58bdcd7446b4d484fbfba94cb6e4a7d5-0-0": {
+      "ver": "1.0.6",
+      "uuid": "57def74a-1d8d-448d-a38f-276327548d36",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "4ba6a3ba-a205-4dba-adbc-3c556de19780",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 134,
+      "trimY": 730,
+      "width": 57,
+      "height": 101,
+      "rawWidth": 57,
+      "rawHeight": 101,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

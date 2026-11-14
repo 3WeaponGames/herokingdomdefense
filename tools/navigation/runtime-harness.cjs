@@ -115,12 +115,13 @@ function environment() {
   const enumModule = new Proxy({}, { get: () => enums() });
   const dataManager = { data: {}, getSoldierCfgById: () => cfg };
   const stubs = {
+    BuildingNightlightRuntime: {apply(){},prepare(){},dispose(){}},
     BuildingWorldScale: {apply(){},restore(){},dispose(){}}, BuildingBlockerRuntime: {apply(){},dispose(){}}, BuildingShadowRuntime: {apply(){},hide(){},dispose(){}}, BuildingDropShadowRuntime: {apply(){},hide(){},dispose(){}},
     BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {}, fire() {}, muzzle: owner => owner.getAttPos() },
     // Rubble rendering is covered by its own presentation suite. Geometry,
     // movement and purchase fixtures still execute the real building methods.
     BuildingDebris: { prepare() {}, capture() {}, update() {}, field() {}, discard() {}, clear() {}, destroy() {}, hideNative() {} },
-    BuildingLighting: { setNight(owner, night) { owner._buildingNight = !!night; } },
+    BuildingLighting: { setNight(owner, night) { owner._buildingNight = !!night; },updateOwner(){},syncOwner(){},hideOwner(){},disposeOwner(){} },
     NavigationGrid: { NavigationGrid }, BaseCtrl: { default: BaseCtrl }, KinghtFallUIGame: ui,
     KinghtFallConfig: { KinghtFallParameter: { FollowRange: 40, FollowMode: 1 }, KinghtFallBundelName: {}, KinghtFallPrefabName: {}, KinghtFallPoolName: {} },
     KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => dataManager } },

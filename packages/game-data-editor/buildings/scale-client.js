@@ -36,13 +36,13 @@ function mount(host,api){
  function union(items){if(!items.length)return null;return{minX:Math.min(...items.map(p=>p.box.minX)),maxX:Math.max(...items.map(p=>p.box.maxX)),minY:Math.min(...items.map(p=>p.box.minY)),maxY:Math.max(...items.map(p=>p.box.maxY))};}
  function heroPosition(b){return{x:Math.max(0,b.maxX)+35-heroBounds.minX,y:0};}
  function fit(){const b=union(layout());if(!b||!heroBounds)return;const p=heroPosition(b),minX=Math.min(b.minX,p.x+heroBounds.minX),maxX=Math.max(b.maxX,p.x+heroBounds.maxX),minY=Math.min(b.minY,heroBounds.minY)-25,maxY=Math.max(b.maxY,heroBounds.maxY);cx=(minX+maxX)/2;cy=(minY+maxY)/2;unit=Math.min((canvas.width-100)/Math.max(1,maxX-minX),(canvas.height-80)/Math.max(1,maxY-minY));fitted=true;draw();}
- function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;state.previewHeight=h;if(enabled()&&!fitted)fit();else draw();}}
+ function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;state.previewHeight=canvas.offsetHeight||h;if(enabled()&&!fitted)fit();else draw();}}
  function loaded(){if(closed)return;sync();if(enabled()&&!fitted)fit();draw();}
  function update(amount){const limits=range();if(!limits||!Number.isFinite(amount)||amount<limits.min-.000001||amount>limits.max+.000001)return;value=Math.max(limits.min,Math.min(limits.max,amount));sync();draw();}
  function commit(){
   if(busy||!enabled()||Math.abs(value-original)<.000001||!range())return;let payload=value;
   try{if(allTiers)payload={tiers:Group.changes(data.tiers,selected,value)};}catch(error){message(error.message,true);return;}
-  busy=true;sync();const next=value;Promise.resolve(api.onChange(payload)).then(()=>{if(!closed){original=next;message('World size draft updated. Save changes to apply it to gameplay.');}}).catch(error=>{if(!closed){value=original;sync();draw();message(error.message,true);}}).finally(()=>{busy=false;if(!closed)sync();});
+  busy=true;sync();const next=value;Promise.resolve(api.onChange(payload)).then(async()=>{if(!closed){original=next;pending=load();await pending;message('World size draft updated. Save changes to apply it to gameplay.');}}).catch(error=>{if(!closed){value=original;sync();draw();message(error.message,true);}}).finally(()=>{busy=false;if(!closed)sync();});
  }
  number.oninput=()=>{if(!busy&&enabled()&&number.value.trim())update(Number(number.value)/100);};number.onchange=()=>{const amount=Number(number.value)/100,limits=range();if(!limits||!Number.isFinite(amount)||amount<limits.min||amount>limits.max){update(original);message('Choose a size that keeps each selected tier between 5% and 1,000%.',true);return;}update(amount);commit();};
  slider.oninput=()=>{if(!busy&&enabled())update(Number(slider.value)/100);};slider.onchange=commit;fitButton.onclick=()=>{zoom=1;fit();};
@@ -79,7 +79,7 @@ function mount(host,api){
  function cancel(){endPan(true);if(drag){const old=drag;drag=null;update(old.before);if(canvas.hasPointerCapture(old.pointer))canvas.releasePointerCapture(old.pointer);}}
  canvas.onpointercancel=canvas.onlostpointercapture=cancel;canvas.onauxclick=e=>{if(e.button===1)e.preventDefault();};canvas.onkeydown=e=>{if(e.key==='Escape'){cancel();e.preventDefault();}};canvas.onwheel=e=>{e.preventDefault();zoom=Math.max(.2,Math.min(8,zoom*Math.exp(-e.deltaY*.001)));draw();};
  function draw(){if(closed||frame!==null)return;frame=requestAnimationFrame(()=>{
-  frame=null;if(closed)return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!enabled())return;
+  frame=null;if(closed||heroImage&&!enabled())return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!enabled())return;
   const items=layout(),b=union(items);if(!b)return;const z=unit*zoom,p=heroPosition(b);g.setTransform(z,0,0,-z,canvas.width/2-cx*z,canvas.height/2+cy*z);
   g.strokeStyle='#ffffff16';g.lineWidth=1/z;for(let x=Math.floor((cx-canvas.width/z/2)/100)*100;x<cx+canvas.width/z/2;x+=100){g.beginPath();g.moveTo(x,cy-canvas.height/z/2);g.lineTo(x,cy+canvas.height/z/2);g.stroke();}for(let y=Math.floor((cy-canvas.height/z/2)/100)*100;y<cy+canvas.height/z/2;y+=100){g.beginPath();g.moveTo(cx-canvas.width/z/2,y);g.lineTo(cx+canvas.width/z/2,y);g.stroke();}
   for(const item of items){const parts=renderer.parts(item.building,item.record);for(const part of parts.filter(p=>p.ground).concat(parts.filter(p=>!p.ground)))renderer.draw(g,part,images,data.runtimePath);if(allTiers){g.strokeStyle=chosen(item.entry)?'#90e8ff99':'#b4c0cc77';g.lineWidth=1/z;g.strokeRect(item.box.minX,item.box.minY,item.box.maxX-item.box.minX,item.box.maxY-item.box.minY);}}

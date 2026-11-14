@@ -30,8 +30,9 @@ function plan(config, level, names) {
   ["characters/catalog", "character-parts/catalog", "projectiles/catalog"].forEach(function (path) { add("resources", path, "json"); });
   buildingKinds(level).forEach(function (id) {
     (config.BuildEnum[id] && config.BuildEnum[id].levelList || []).forEach(function (row) {
+      if(row.Nightlight&&row.Nightlight.emitters&&row.Nightlight.emitters.length)add("resources","buildings/lighting/native-window-ray","frame");
       add(names.IconBuild, row.Icon, "frame");
-      function artwork(value) { if (!value || typeof value !== "object") return; Object.keys(value).forEach(function (key) { if ((key === "sprite" || key === "emptySprite") && typeof value[key] === "string") add("resources", value[key], "frame"); else if (typeof value[key] === "object") artwork(value[key]); }); }
+      function artwork(value) { if (!value || typeof value !== "object") return; Object.keys(value).forEach(function (key) { if(key==="lighting")return;if ((key === "sprite" || key === "emptySprite") && typeof value[key] === "string") add("resources", value[key], "frame"); else if (typeof value[key] === "object") artwork(value[key]); }); }
       artwork(row.Appearance);
       if (id === "3" && row.Data) allies[row.Data[1]] = true;
     });
@@ -133,6 +134,7 @@ Session.prototype.cancel = function () {
 Session.prototype.dispose = function () {
   if (this.closed) return; this.closed = true; this.cancel();
   if (this.shadows) this.shadows.dispose();
+  if (this.lightMasks) this.lightMasks.dispose();
   this.held.forEach(function (asset) { if (asset.decRef) asset.decRef(); }); this.held = [];
   if (this.options.release) this.options.release(this.key); this.assets = {}; this.pending = {};
 };
@@ -154,7 +156,7 @@ function create(view, config, level) {
       if (item.uuid) manager.loadWithRecovery(item.path,function (callback) { cc.assetManager.loadAny({uuid:item.path,type:types[item.type]},callback); },function (asset) { if (!owner.current()) return done(Error("Stage preparation cancelled")); if (asset.addRef) asset.addRef(); owner.held.push(asset);try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },error,function () { return owner.current(); });
       else manager.loadRes(item.bundle,item.path,types[item.type],function (asset) { if(!owner.current()){require("ResCacheMgr").ResCacheMgr.getInstance().releaseAssetsFromMap(owner.key);return done(Error("Stage preparation cancelled"));}try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },false,60,owner.key,{onError:error,isCurrent:function () { return owner.current(); }});
     },
-    prime:function (catalogs,assets) { require("CharacterAppearance").prime(catalogs.characters,catalogs.parts,assets); require("HeroBakedLooks").prime(assets); require("ProjectileLooks").prime(catalogs.projectiles); },
+    prime:function (catalogs,assets) { require("CharacterAppearance").prime(catalogs.characters,catalogs.parts,assets); require("HeroBakedLooks").prime(assets); require("ProjectileLooks").prime(catalogs.projectiles); session.lightMasks=require("WindowLightMaskRuntime").prime(config,buildingKinds(level),assets); },
     shadows:function (prefab,owner,progress) { return require("BuildingShadowPreparation").prepare(prefab,config,level,owner,progress); },
     release:function (key) { require("ResCacheMgr").ResCacheMgr.getInstance().releaseAssetsFromMap(key); loading.destroy(); }
   });

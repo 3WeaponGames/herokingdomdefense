@@ -8,12 +8,13 @@ const SkillSettings=require('../../assets/_script/HeroSkillSettings');
 const SkillPose=require('../../assets/_script/HeroSkillPose');
 const VFXLayout=require('../../assets/_script/HeroSkillVFXLayout');
 const SkillAnimation=require('../../assets/_script/HeroSkillAnimation');
+const Projectile=require('../../assets/_script/HeroSkillProjectile');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const finite=(value,fallback)=>typeof value==='number'&&Number.isFinite(value)?value:fallback;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 function multiplyPixels(source,color){const rgb=[1,3,5].map(start=>parseInt(color.slice(start,start+2),16)/255),result=new Uint8ClampedArray(source.length);for(let i=0;i<source.length;i+=4){result[i]=source[i]*rgb[0];result[i+1]=source[i+1]*rgb[1];result[i+2]=source[i+2]*rgb[2];result[i+3]=source[i+3];}return result;}
 function attackName(style){return style==='skirmisher'?'attack':'attack_'+style;}
-function availableHandles(style,visual){const names=style==='mystic'?['origin','target','effect']:style==='skirmisher'?['origin','effect']:['effect'];for(const slot of ['passive','mark','buff','taunt','shield'])if(visual&&visual[slot+'Resource'])names.push(slot);return names;}
+function availableHandles(style,visual){const names=style==='mystic'?['origin','target','effect']:style==='skirmisher'?[]:['effect'];for(const slot of ['passive','mark','buff','taunt','shield'])if(visual&&visual[slot+'Resource'])names.push(slot);return names;}
 function flipbookFrame(meta,age,width,height){
   if(!meta||!meta.cell||meta.frames<1||meta.columns<1||meta.cell*meta.columns>width||Math.ceil(meta.frames/meta.columns)*meta.cell>height)return null;
   const elapsed=Math.max(0,Math.floor(Math.max(0,finite(age,0))*meta.fps)),index=meta.loop?elapsed%meta.frames:Math.min(meta.frames-1,elapsed);
@@ -93,7 +94,7 @@ function create(host,options){
     const mount=heroLayers.filter(layer=>layer.description.json&&layer.description.json._heroMakerMount||layer.description.name==='wqyl_lead_ma'),riders=heroLayers.filter(layer=>!mount.includes(layer));
     for(const layer of riders)layer.description.scaleX=Math.abs(layer._skillPreviewBase.scaleX)*model.bodyFace;
     const playback=finite(description.skillAttackPlayback,1),locomotion=finite(description.unitAnimationSpeed,1),age=Math.max(0,model.time-model.lastAttack),skirmisherCast=style==='skirmisher'&&model.lastAttackKind==='skill'&&model.lastCast===model.lastAttack,castPlayback=skirmisherCast?(settings.windup>0?clip.hit/settings.windup:1):playback,castOffset=skirmisherCast&&settings.windup===0?clip.hit:0;
-    let riderAnimation=model.scenario.moving?'move':'idle',riderTime=model.time*locomotion,loop=true,chargingBow=false;
+    let riderAnimation=model.isMoving()?'move':'idle',riderTime=model.time*locomotion,loop=true,chargingBow=false;
     if(style==='mystic'&&model.channelTarget){riderAnimation=animation;riderTime=Math.min(model.channelSourceTime,visual.holdTime>=0?Math.min(clip.end,visual.holdTime):clip.hit);loop=false;}
     else if(style==='vanguard'&&model.state.active){const active=model.state.active;riderAnimation=animation;riderTime=SkillAnimation.rapidPose(active.elapsed,active.duration,active.count,clip).time;loop=false;}
     else if(style==='vanguard'&&model.lastAttackKind==='skill'&&Math.abs(model.time-model.lastCast-(settings.duration||2.5))<1e-8){riderAnimation=animation;riderTime=clip.hit;loop=false;}
@@ -101,10 +102,10 @@ function create(host,options){
     else if(style==='skirmisher'&&!model.scenario.moving&&!model.state.active&&model.state.charge>0){riderAnimation=basicAnimation;riderTime=Math.max(0,basicClip.hit-.00001)*model.state.charge;loop=false;chargingBow=true;}
     renderer.seek(spine,riders,riderAnimation,riderTime,loop);
     const castDirection=model.state.active&&model.state.active.direction||model.castResult&&model.castResult.direction||model.direction();
-    const aiming=model.lastAttackKind==='skill'&&riderAnimation===activeAnimation&&['skirmisher','fighter'].includes(style)?castDirection:null;
+    const aiming=model.lastAttackKind==='skill'&&riderAnimation===activeAnimation&&['skirmisher','fighter'].includes(style)?style==='skirmisher'?projectileLaunch().direction:castDirection:null;
     if(aiming){const face=aiming.x<0?-1:1,arrow=riders.find(layer=>layer.description.json&&layer.description.json._heroMaker&&layer.description.json._heroMaker.role===3),referenceAngle=style==='skirmisher'&&arrow?SkillPose.arrowAimAngle(arrow.skeleton,arrow.description.json,animation,clip.hit):0;for(const layer of riders){layer.description.scaleX=Math.abs(layer._skillPreviewBase.scaleX)*face;SkillPose.applyAim(layer.skeleton,aiming,layer.description.scaleX,{fresh:true,referenceAngle});}}
-    let mountAnimation=model.scenario.moving?'move':'idle',mountTime=model.time*locomotion,mountLoop=true;
-    if(!model.scenario.moving&&!chargingBow&&(riderAnimation===animation||riderAnimation===basicAnimation)){
+    let mountAnimation=model.isMoving()?'move':'idle',mountTime=model.time*locomotion,mountLoop=true;
+    if(!model.isMoving()&&!chargingBow&&(riderAnimation===animation||riderAnimation===basicAnimation)){
       const beamSourceTime=model.channelSourceTime;
       if(style!=='mystic'||!model.channelTarget||beamSourceTime<clip.end){mountAnimation=animation;mountTime=style==='mystic'&&model.channelTarget?beamSourceTime:riderTime;mountLoop=false;}
     }
@@ -132,30 +133,37 @@ function create(host,options){
     if(layer){const name=style==='mystic'?'Rider/HandRight/Staff':style==='skirmisher'?'Rider/HandRight/Bow/Arrow':null,bone=name&&layer.skeleton.findBone(name);if(bone){const tip=(style==='skirmisher'?SkillPose.arrowTip(layer.skeleton,model.state.active&&model.state.active.direction||model.direction(),layer.description.scaleX):SkillPose.attachmentTip(layer.skeleton,name))||{x:bone.worldX,y:bone.worldY};return renderer.transformPoint(layer.description,tip.x,tip.y);}}
     return{x:model.hero.x,y:model.hero.y+70};
   }
-  function arrowOffset(projectile){
-    if(projectile.visualOffset)return projectile.visualOffset;
-    const layer=heroLayers.find(layer=>layer.description.json&&layer.description.json._heroMaker&&layer.description.json._heroMaker.role===3);
-    if(!layer)return projectile.visualOffset={x:0,y:0};
-    const chosen=settings.visual&&settings.visual.animation,animation=chosen&&SkillSettings.riderAnimations(description).includes(chosen)?chosen:attackName(style),clip=clipInfo(bodyLayer(heroLayers).description,animation),referenceAngle=SkillPose.arrowAimAngle(layer.skeleton,layer.description.json,animation,clip.hit),tip=SkillPose.arrowTipAt(layer.skeleton,layer.description.json,animation,clip.hit,projectile.direction,layer.description.scaleX,{referenceAngle});
-    if(!tip)return projectile.visualOffset={x:0,y:0};
-    const at=renderer.transformPoint(layer.description,tip.x,tip.y);return projectile.visualOffset={x:at.x-model.hero.x,y:at.y-model.hero.y};
+  function sampleWeaponOffset(direction,origin,basic){
+    const arrow=style==='skirmisher',layer=heroLayers.find(layer=>layer.description.json&&layer.description.json._heroMaker&&layer.description.json._heroMaker.role===(arrow?3:4));if(!layer)return{x:0,y:0};
+    const chosen=basic===false?'':settings.visual&&settings.visual.animation,animation=chosen&&SkillSettings.riderAnimations(description).includes(chosen)?chosen:attackName(style),clip=clipInfo(bodyLayer(heroLayers).description,animation),base=layer._skillPreviewBase,face=direction.x<0?-1:1,placed={...layer.description,x:base.x+origin.x,y:base.y+origin.y,scaleX:Math.abs(base.scaleX)*face};
+    const referenceAngle=arrow?SkillPose.arrowAimAngle(layer.skeleton,layer.description.json,animation,clip.hit):0,tip=arrow?SkillPose.arrowTipAt(layer.skeleton,layer.description.json,animation,clip.hit,direction,placed.scaleX,{referenceAngle}):SkillPose.weaponTipAt(layer.skeleton,layer.description.json,animation,clip.hit,Projectile.bones[style],direction,placed.scaleX,style==='fighter');if(!tip)return{x:0,y:0};
+    delete placed._mountMotion;const follow=placed.followMount,mount=follow&&heroLayers.find(other=>other.description.uuid===follow.layer);
+    if(mount){const mountAnimation=mount.description.json&&mount.description.json._heroMakerMount?animation:'idle',bone=SkillPose.boneMatrixAt(mount.description.json,mountAnimation,clip.hit,follow.bone,0),b=mount._skillPreviewBase;if(bone)followMount([{description:placed},{...mount,description:{...mount.description,x:b.x+origin.x,y:b.y+origin.y},skeleton:{findBone:()=>({...bone,worldX:bone.x,worldY:bone.y})}}]);}
+    const at=renderer.transformPoint(placed,tip.x,tip.y);return{x:at.x-origin.x,y:at.y-origin.y};
   }
-  function anchors(){const v=settings.visual||{},o=weaponOrigin(),target=model.beamTarget||model.state.target||model.selected()||model.targets[0]||{x:150,y:0},beamTarget={x:target.x+finite(v.targetX,0),y:target.y+50+finite(v.targetY,0)},center=style==='mystic'?(model.scenario.mode==='active'?{x:target.x,y:target.y}:beamTarget):{x:model.hero.x,y:model.hero.y};return{taunt:{x:target.x+finite(v.tauntOffsetX,0),y:target.y+100+finite(v.tauntOffsetY,0)},shield:{x:model.hero.x+finite(v.shieldOffsetX,0),y:model.hero.y+80+finite(v.shieldOffsetY,0)},origin:{x:o.x+finite(v.originX,0),y:o.y+finite(v.originY,0)},target:beamTarget,effect:{x:center.x+finite(v.offsetX,0),y:center.y+finite(v.offsetY,0)},passive:{x:model.hero.x+finite(v.passiveOffsetX,0),y:model.hero.y+finite(v.passiveOffsetY,0)},buff:{x:model.hero.x+finite(v.buffOffsetX,0),y:model.hero.y+finite(v.buffOffsetY,0)},mark:{x:target.x+finite(v.markOffsetX,0),y:target.y+100+finite(v.markOffsetY,0)}};}
+  const sampleArrowOffset=sampleWeaponOffset;
+  function targetPoint(target){return Projectile.add(target,description&&description.target&&description.target.projectileTargetOffset);}
+  function projectileLaunch(){const p=model.projectiles.filter(p=>p.skill).slice(-1)[0];return p?{origin:p.origin,direction:p.direction}:model.projectileShot();}
+  function areaShape(){const e=model.effects.filter(e=>e.resolved).slice(-1)[0];return e?{origin:{x:e.x,y:e.y},radius:e.radius,direction:e.direction,halfAngle:e.halfAngle}:model.area(model.state.active&&model.state.active.direction||model.direction(),model.hero,{fighter:130,vanguard:155,bruiser:150,guardian:250}[style]||100);}
+  function anchors(){const v=settings.visual||{},shape=style!=='mystic'&&style!=='skirmisher'?areaShape():null,target=model.beamTarget||model.state.target||model.selected()||model.targets[0]||{x:150,y:0},beamTarget={x:target.x+finite(v.targetX,0),y:target.y+50+finite(v.targetY,0)},o=style==='mystic'?weaponOrigin():style==='skirmisher'?projectileLaunch().origin:{x:shape.origin.x-finite(v.offsetX,0),y:shape.origin.y-finite(v.offsetY,0)};
+    const center=style==='mystic'?(model.scenario.mode==='active'?target:beamTarget):style==='skirmisher'?o:areaShape().origin;
+    return{taunt:{x:target.x+finite(v.tauntOffsetX,0),y:target.y+100+finite(v.tauntOffsetY,0)},shield:{x:model.hero.x+finite(v.shieldOffsetX,0),y:model.hero.y+80+finite(v.shieldOffsetY,0)},origin:style==='mystic'?Projectile.add(o,{x:v.originX,y:v.originY}):o,target:beamTarget,effect:style==='mystic'?Projectile.add(center,{x:v.offsetX,y:v.offsetY}):center,passive:Projectile.add(model.hero,{x:v.passiveOffsetX,y:v.passiveOffsetY}),buff:Projectile.add(model.hero,{x:v.buffOffsetX,y:v.buffOffsetY}),mark:{x:target.x+finite(v.markOffsetX,0),y:target.y+100+finite(v.markOffsetY,0)}};
+  }
   function line(a,b,width,color){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
   function circle(p,r,color,fill){ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);if(fill){ctx.fillStyle=color;ctx.fill();}else{ctx.strokeStyle=color;ctx.stroke();}}
   function customEffect(at,rotation,age,vp,loop,resource,targetContext,placement){
     const ctx=targetContext||overlay.getContext('2d');placement=placement||{};
-    const asset=resource||effectAsset(),visual=asset.visual,effectImage=asset.image,effectLayers=asset.layers,effectDescriptor=asset.descriptor,tintImages=asset.tints,scale=finite(visual.scale,1),alpha=clamp(finite(visual.opacity,1),0,1),p=screen(at,vp);
+    const asset=resource||effectAsset(),visual=asset.visual,effectImage=asset.image,effectLayers=asset.layers,effectDescriptor=asset.descriptor,tintImages=asset.tints,scale=placement.radius?1:finite(visual.scale,1),alpha=clamp(finite(visual.opacity,1),0,1),p=screen(at,vp);
     if(!effectImage&&!effectLayers.length)return;
     ctx.save();ctx.translate(p.x,p.y);ctx.rotate(-rotation*Math.PI/180);ctx.scale(vp.scale*scale,vp.scale*scale);ctx.scale(placement.scaleX===undefined?1:placement.scaleX,placement.scaleY===undefined?1:placement.scaleY);ctx.globalAlpha=alpha*(placement.opacity===undefined?1:placement.opacity);
     if(effectImage){let image=effectImage;
       if(visual.color){const key=visual.color;if(!tintImages.has(key)){const tinted=document.createElement('canvas');tinted.width=image.width;tinted.height=image.height;const context=tinted.getContext('2d');context.drawImage(image,0,0);const source=context.getImageData(0,0,image.width,image.height).data,pixels=context.createImageData(image.width,image.height);pixels.data.set(multiplyPixels(source,key));context.putImageData(pixels,0,0);if(tintImages.size>=16)tintImages.delete(tintImages.keys().next().value);tintImages.set(key,tinted);}image=tintImages.get(key);tintImages.delete(key);tintImages.set(key,image);}
-      const frame=flipbookFrame(SkillSettings.flipbook(visual)||effectDescriptor&&effectDescriptor.flipbook,age,image.width,image.height);
+      const frame=flipbookFrame(SkillSettings.flipbook(visual)||effectDescriptor&&effectDescriptor.flipbook,age,image.width,image.height);if(placement.radius){const fit=placement.radius*2/Math.hypot(frame?frame.width:image.width,frame?frame.height:image.height);ctx.scale(fit,fit);}
       if(frame)ctx.drawImage(image,frame.x,frame.y,frame.width,frame.height,-frame.width*(placement.anchorX===undefined?.5:placement.anchorX),-frame.height*(1-(placement.anchorY===undefined?.5:placement.anchorY)),frame.width,frame.height);else ctx.drawImage(image,-image.width/2,-image.height/2);
     }
     // Keep a Spine effect's authored origin. Re-centering its animated bounds
     // every frame made positioned effects visibly drift and disagree with game.
-    if(effectLayers.length){ctx.scale(1,-1);renderer.seek(spine,effectLayers,visual.resourceAnimation||effectLayers[0].data.animations[0]&&effectLayers[0].data.animations[0].name||'idle',age,!!loop);for(const layer of effectLayers){layer.description.opacity=alpha;const color=visual.color||'#ffffff';if(layer.skeleton.color&&layer.skeleton.color.set)layer.skeleton.color.set(parseInt(color.slice(1,3),16)/255,parseInt(color.slice(3,5),16)/255,parseInt(color.slice(5,7),16)/255,1);}renderer.drawWorld(spine,ctx,effectLayers);}
+    if(effectLayers.length){ctx.scale(1,-1);renderer.seek(spine,effectLayers,visual.resourceAnimation||effectLayers[0].data.animations[0]&&effectLayers[0].data.animations[0].name||'idle',age,!!loop);if(placement.radius){const header=effectLayers[0].description.json&&effectLayers[0].description.json.skeleton,box=header&&header.width>0&&header.height>0?{minX:header.x||0,minY:header.y||0,maxX:(header.x||0)+header.width,maxY:(header.y||0)+header.height}:renderer.bounds(spine,effectLayers),fit=placement.radius*2/Math.max(1,Math.hypot(box.maxX-box.minX,box.maxY-box.minY));ctx.scale(fit,fit);ctx.translate(-(box.minX+box.maxX)/2,-(box.minY+box.maxY)/2);}for(const layer of effectLayers){layer.description.opacity=alpha;const color=visual.color||'#ffffff';if(layer.skeleton.color&&layer.skeleton.color.set)layer.skeleton.color.set(parseInt(color.slice(1,3),16)/255,parseInt(color.slice(3,5),16)/255,parseInt(color.slice(5,7),16)/255,1);}renderer.drawWorld(spine,ctx,effectLayers);}
     ctx.restore();
   }
   function effectAsset(){return{visual:settings.visual||{},image:effectImage,layers:effectLayers,descriptor:effectDescriptor,tints:tintImages};}
@@ -174,24 +182,28 @@ function create(host,options){
     }
   }
   function drawGeometry(vp){
-    const direction=model.state.active&&model.state.active.direction||model.direction(),origin=model.hero,to={x:origin.x+direction.x*1000,y:origin.y+direction.y*1000};ctx.save();ctx.fillStyle='#65d9ff10';ctx.strokeStyle='#65d9ff88';ctx.lineWidth=1;ctx.setLineDash([5,6]);
-    if(style==='skirmisher'){const width=Math.max(1,finite(settings.projectileWidth,core.DEFAULTS.skirmisher.projectileWidth)),n={x:-direction.y*width,y:direction.x*width},points=[{x:origin.x+n.x,y:origin.y+n.y},{x:to.x+n.x,y:to.y+n.y},{x:to.x-n.x,y:to.y-n.y},{x:origin.x-n.x,y:origin.y-n.y}].map(p=>screen(p,vp));ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fill();ctx.stroke();const at={x:origin.x+direction.x*220,y:origin.y+direction.y*220},a=screen({x:at.x+n.x,y:at.y+n.y},vp),b=screen({x:at.x-n.x,y:at.y-n.y},vp);ctx.setLineDash([]);line(a,b,1,'#65d9ff');ctx.fillStyle='#9ee8ff';ctx.font='12px sans-serif';ctx.fillText('Width '+(width*2)+' (±'+width+')',a.x+8,a.y-8);}
-    else if(['fighter','vanguard','bruiser','mystic','guardian'].includes(style)){const radius={fighter:130,vanguard:155,bruiser:150,mystic:100,guardian:250}[style],center=style==='mystic'?(model.selected()||model.state.target||model.targets[0]):origin,p=screen(center,vp),angle=Math.atan2(direction.y,direction.x),half=style==='vanguard'?Math.PI/5:Math.PI/3;ctx.beginPath();if(style==='fighter'||style==='vanguard'){ctx.moveTo(p.x,p.y);ctx.arc(p.x,p.y,radius*vp.scale,-angle-half,-angle+half);ctx.closePath();}else ctx.arc(p.x,p.y,radius*vp.scale,0,Math.PI*2);ctx.fill();ctx.stroke();}
+    ctx.save();ctx.fillStyle='#65d9ff10';ctx.strokeStyle='#65d9ff88';ctx.lineWidth=1;ctx.setLineDash([5,6]);
+    if(style==='skirmisher'){
+      const shot=projectileLaunch(),origin=shot.origin,d=shot.direction,width=Math.max(1,finite(settings.projectileWidth,28)),n={x:-d.y*width,y:d.x*width},to={x:origin.x+d.x*1000,y:origin.y+d.y*1000},points=[Projectile.add(origin,n),Projectile.add(to,n),{x:to.x-n.x,y:to.y-n.y},{x:origin.x-n.x,y:origin.y-n.y}].map(p=>screen(p,vp));
+      ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fill();ctx.stroke();line(screen(origin,vp),screen(to,vp),1,'#65d9ff99');ctx.setLineDash([]);const start=screen(origin,vp);circle(start,4,'#65d9ff',false);ctx.fillStyle='#9ee8ff';ctx.font='12px sans-serif';ctx.fillText('Bow launch',start.x+9,start.y-10);ctx.fillText('Projectile radius '+width,start.x+9,start.y+18);
+    }else if(style==='mystic'){const center=model.selected()||model.state.target||model.targets[0],p=screen(center,vp);ctx.beginPath();ctx.arc(p.x,p.y,100*vp.scale,0,Math.PI*2);ctx.fill();ctx.stroke();}
+    else{const shape=areaShape(),p=screen(shape.origin,vp),angle=Math.atan2(shape.direction.y,shape.direction.x);ctx.beginPath();if(style==='fighter'||style==='vanguard'){ctx.moveTo(p.x,p.y);ctx.arc(p.x,p.y,shape.radius*vp.scale,-angle-shape.halfAngle,-angle+shape.halfAngle);ctx.closePath();}else ctx.arc(p.x,p.y,shape.radius*vp.scale,0,Math.PI*2);ctx.fill();ctx.stroke();}
     ctx.restore();
   }
   function drawEffects(vp){
     const v=settings.visual||{},a=anchors(),scale=finite(v.scale,1),alpha=clamp(finite(v.opacity,1),0,1),builtin=v.showBuiltin!==false;
     ctx.save();ctx.globalAlpha=alpha;ctx.lineCap='round';
     if(model.beam){if(builtin&&!v.beamResource){const from=screen(a.origin,vp),to=screen(a.target,vp);line(from,to,Math.max(1,finite(v.lineWidth,0)||10)*scale*vp.scale,v.color||'#7134a4');line(from,to,Math.max(1,(finite(v.lineWidth,0)||4))*scale*vp.scale,v.color||'#d9a4ff');}customEffect({x:a.target.x+finite(v.offsetX,0),y:a.target.y+finite(v.offsetY,0)},finite(v.rotation,0),model.time-model.beamVisibleStarted,vp,true);}
-    for(const p of model.projectiles){ctx.globalAlpha=p.skill?alpha:1;const pv=p.skill?v:{},ps=p.skill?scale:1,launch=p.skill?arrowOffset(p):{x:0,y:0},center={x:p.x+launch.x+finite(pv.originX,0)+finite(pv.offsetX,0),y:p.y+launch.y+finite(pv.originY,0)+finite(pv.offsetY,0)},angle=Math.atan2(p.direction.y,p.direction.x)*180/Math.PI+finite(pv.rotation,0),r=angle*Math.PI/180,d={x:Math.cos(r),y:Math.sin(r)};
-      if(!p.skill||builtin){const from=screen({x:center.x-d.x*46*ps,y:center.y-d.y*46*ps},vp),to=screen(center,vp);line(from,to,(finite(pv.lineWidth,0)||8)*ps*vp.scale,pv.color||'#fdf1a4');ctx.fillStyle=pv.color||'#ffffff';ctx.beginPath();ctx.moveTo(to.x+d.x*13*ps*vp.scale,to.y-d.y*13*ps*vp.scale);ctx.lineTo(to.x-d.y*10*ps*vp.scale,to.y-d.x*10*ps*vp.scale);ctx.lineTo(to.x+d.y*10*ps*vp.scale,to.y+d.x*10*ps*vp.scale);ctx.closePath();ctx.fill();}if(p.skill)customEffect(center,angle,model.time-(p.started||0),vp,true);
+    for(const p of model.projectiles){ctx.globalAlpha=p.skill?alpha:1;const pv=p.skill?v:{},center=Projectile.point(p),angle=Math.atan2(p.direction.y,p.direction.x)*180/Math.PI,d=p.direction,arrow=Projectile.arrow(p.width),at=screen(center,vp),place=(along,across)=>screen({x:center.x+d.x*along-d.y*across,y:center.y+d.y*along+d.x*across},vp);
+      if(p.skill){ctx.lineWidth=1;circle(at,p.width*vp.scale,'#65d9ff88',false);}
+      if(!p.skill||builtin){line(place(arrow.tail,0),place(arrow.base,0),arrow.stroke*vp.scale,pv.color||'#fdf1a4');ctx.fillStyle=pv.color||'#ffffff';const a=place(arrow.tip,0),b=place(arrow.base,arrow.halfHeight),c=place(arrow.base,-arrow.halfHeight);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.closePath();ctx.fill();}if(p.skill)customEffect(center,angle,model.time-(p.started||0),vp,true,undefined,undefined,{radius:p.width});
     }
     ctx.globalAlpha=alpha;
-    for(const e of model.effects){const age=model.time-e.started,progress=clamp(age/e.duration,0,1),center={x:e.x+finite(v.offsetX,0),y:e.y+finite(v.offsetY,0)},p=screen(center,vp),radius=e.radius*scale*vp.scale*(.65+.35*progress);if(builtin){ctx.lineWidth=(finite(v.lineWidth,0)>0?v.lineWidth:Math.max(2,7*(1-progress)))*scale*vp.scale;ctx.strokeStyle=v.color||(style==='guardian'?'#70c8ff':e.kind==='burst'?'#d69fff':e.kind==='arc'?'#fff5b0':'#ff5b65');ctx.beginPath();if(e.kind==='arc'){const angle=Math.atan2(e.direction.y,e.direction.x)+finite(v.rotation,0)*Math.PI/180;ctx.arc(p.x,p.y,radius,-angle-(e.halfAngle||Math.PI/3),-angle+(e.halfAngle||Math.PI/3));}else ctx.arc(p.x,p.y,radius,0,Math.PI*2);ctx.stroke();}const angle=(e.direction?Math.atan2(e.direction.y,e.direction.x)*180/Math.PI:0)+finite(v.rotation,0);customEffect(center,angle,age,vp,false);}
+    for(const e of model.effects){const age=model.time-e.started,progress=clamp(age/e.duration,0,1),center=e.resolved?{x:e.x,y:e.y}:{x:e.x+finite(v.offsetX,0),y:e.y+finite(v.offsetY,0)},p=screen(center,vp),radius=e.radius*(e.resolved?1:scale)*vp.scale*(e.resolved?1:.65+.35*progress);if(builtin){ctx.lineWidth=(finite(v.lineWidth,0)>0?v.lineWidth:Math.max(2,7*(1-progress)))*scale*vp.scale;ctx.strokeStyle=v.color||(style==='guardian'?'#70c8ff':e.kind==='burst'?'#d69fff':e.kind==='arc'?'#fff5b0':'#ff5b65');ctx.beginPath();if(e.kind==='arc'){const angle=Math.atan2(e.direction.y,e.direction.x)+(e.resolved?0:finite(v.rotation,0)*Math.PI/180);ctx.arc(p.x,p.y,radius,-angle-(e.halfAngle||Math.PI/3),-angle+(e.halfAngle||Math.PI/3));}else ctx.arc(p.x,p.y,radius,0,Math.PI*2);ctx.stroke();}const angle=(e.direction?Math.atan2(e.direction.y,e.direction.x)*180/Math.PI:0)+(e.resolved?0:finite(v.rotation,0));customEffect(center,angle,age,vp,false);}
     ctx.restore();
     if(!v.markResource&&style==='mystic'&&model.state.marked){const target=model.state.target,p=screen({x:target.x,y:target.y+100},vp);ctx.fillStyle='#d790ff';ctx.beginPath();ctx.moveTo(p.x,p.y-9);ctx.lineTo(p.x+7,p.y);ctx.lineTo(p.x,p.y+9);ctx.lineTo(p.x-7,p.y);ctx.closePath();ctx.fill();}
     if(style==='skirmisher'||style==='vanguard'){const p=screen({x:model.hero.x,y:model.hero.y+130},vp),w=60*vp.scale,h=5*vp.scale;ctx.fillStyle='#151727';ctx.fillRect(p.x-w/2,p.y,w,h);ctx.fillStyle=style==='vanguard'?'#ffab38':'#a4ee53';ctx.fillRect(p.x-w/2,p.y,w*model.state.charge,h);}
-    const dir=model.state.active&&model.state.active.direction||model.direction(),origin=style==='skirmisher'||style==='mystic'?a.origin:model.hero,o=screen(origin,vp),end=screen({x:origin.x+dir.x*1000,y:origin.y+dir.y*1000},vp);ctx.setLineDash([5,6]);line(o,end,1,'#d8de9f66');ctx.setLineDash([]);
+
   }
   function drawStyleEffects(vp){
     const a=anchors(),v=settings.visual||{},target=t=>t&&t.hp>0?{id:t.id,generation:0,x:t.x+finite(v.targetX,0),y:t.y+50+finite(v.targetY,0)}:null,marked=model.state.marked&&model.state.target;
@@ -210,9 +222,9 @@ function create(host,options){
     if(token!==styleSerial||disposed)return;styleResources.clear();for(const [id,resource]of results)styleResources.set(id,resource);
   }
   function drawHandles(vp){
-    const a=anchors(),colors={origin:'#65d9ff',target:'#e2a0ff',effect:'#ffdc68',passive:'#8df0a8',mark:'#dcb0ff',buff:'#a2d9ff',taunt:'#e897ff',shield:'#b5dfff'};handles=[];
-    const names=availableHandles(style,settings.visual);if(!names.includes(selectedHandle))selectedHandle=names[0];
-    for(const name of names){const p=screen(a[name],vp);handles.push({name,world:a[name],...p});ctx.lineWidth=name===selectedHandle?3:1.5;circle(p,name===selectedHandle?8:6,colors[name],false);ctx.font='12px sans-serif';ctx.fillStyle=colors[name];ctx.fillText(name[0].toUpperCase()+name.slice(1),p.x+11,p.y+(name==='effect'?19:-8));}
+    const a=anchors(),colors={origin:'#65d9ff',target:'#e2a0ff',effect:'#ffdc68',passive:'#8df0a8',mark:'#dcb0ff',buff:'#a2d9ff',taunt:'#e897ff',shield:'#b5dfff'},labels={};handles=[];
+    if(style!=='mystic'&&style!=='skirmisher')labels.effect='Skill origin';const names=availableHandles(style,settings.visual);if(!names.includes(selectedHandle))selectedHandle=names[0];
+    for(const name of names){const p=screen(a[name],vp);handles.push({name,world:a[name],...p});ctx.lineWidth=name===selectedHandle?3:1.5;circle(p,name===selectedHandle?8:6,colors[name],false);ctx.font='12px sans-serif';ctx.fillStyle=colors[name];ctx.fillText(labels[name]||name[0].toUpperCase()+name.slice(1),p.x+11,p.y+(name==='effect'?19:-8));}
   }
   function draw(){
     if(disposed)return;resize();ctx.clearRect(0,0,overlay.width,overlay.height);backCtx.clearRect(0,0,underlay.width,underlay.height);
@@ -251,12 +263,13 @@ function create(host,options){
     }
     try{await rigPromise;}catch(error){if(disposed||requestId!==serial)return;throw error;}if(disposed||requestId!==serial)return;
     const source=bodyLayer(heroLayers),selectedAnimation=settings.visual&&settings.visual.animation,animation=selectedAnimation&&SkillSettings.riderAnimations(description).includes(selectedAnimation)?selectedAnimation:attackName(style),clip=clipInfo(source.description,animation),basicClip=clipInfo(source.description,attackName(style)),playback=finite(description.skillAttackPlayback,1);
+    model.projectileOrigin=sampleArrowOffset;model.weaponOrigin=sampleWeaponOffset;model.projectileTargetPoint=targetPoint;
     const hold=settings.visual&&settings.visual.holdTime>=0?Math.min(clip.end,settings.visual.holdTime):clip.hit;
     const previousTime=reset?0:model.time,scenario=Object.assign({},model.scenario,{impactDelay:playback>0?clip.hit/playback:0,basicImpactDelay:finite(description.skillBasicImpactDelay,playback>0?basicClip.hit/playback:0),holdSource:hold,holdDelay:playback>0?hold/playback:0,attackPlayback:playback,lifeSteal:finite(description.skillSecondaryStats&&description.skillSecondaryStats.lifeSteal,0)});
-    const simulation=state=>JSON.stringify({tuning:Object.fromEntries(Object.entries(state).filter(([key])=>key!=='visual'&&key!=='audio')),duration:state.visual&&state.visual.effectDuration});
+    const simulation=state=>JSON.stringify({tuning:Object.fromEntries(Object.entries(state).filter(([key])=>key!=='visual'&&key!=='audio')),duration:state.visual&&state.visual.effectDuration,geometry:style==='mystic'?null:style==='skirmisher'?[state.visual&&state.visual.animation]:['offsetX','offsetY','scale','rotation','arcDegrees','animation'].map(k=>state.visual&&state.visual[k])});
     const clocks=state=>JSON.stringify([state.impactDelay,state.basicImpactDelay,state.holdSource,state.holdDelay,state.attackPlayback,state.lifeSteal]);
     if(reset||simulation(model.settings)!==simulation(settings)||clocks(model.scenario)!==clocks(scenario)){
-      if(!stopped){stopSounds();stopped=true;}model=new Model(style,settings,scenario,core);if(previousTime)model.seek(previousTime);last=0;lastSoundTime=model.time;
+      if(!stopped){stopSounds();stopped=true;}model=new Model(style,settings,scenario,core,sampleArrowOffset,sampleWeaponOffset,targetPoint);if(previousTime)model.seek(previousTime);last=0;lastSoundTime=model.time;
     }else {model.settings=clone(settings);model.scenario=scenario;}
     if(stopped&&soundEnabled&&playing&&model.beam)sound('channel');
     // Optional artwork must never gate the selected style or its combat clock.
@@ -276,8 +289,9 @@ function create(host,options){
   function play(value){const previous=playing;playing=value===undefined?!playing:!!value;last=0;if(!playing)stopSounds();else if(model.time>=model.duration()-1e-9){model.reset();lastSoundTime=-1;}else if(!previous&&soundEnabled&&model.beam)sound('channel');draw();}
   function seek(time){stopSounds();playing=false;model.seek(clamp(finite(time,0),0,model.duration()));last=0;lastSoundTime=model.time;draw();}
   function step(delta){seek(Math.max(0,model.time+finite(delta,1/30)));}
-  function cast(){stopSounds();model.scenario.mode='active';model.reset();playing=true;lastSoundTime=-1;if(soundEnabled)forwardSounds();last=0;fitted=null;draw();}
-  function setScenario(value){stopSounds();const time=model.time,next=Object.assign({},model.scenario,value);if(Object.prototype.hasOwnProperty.call(value,'targetDistance'))delete next.targetPositions;if(Object.prototype.hasOwnProperty.call(value,'direction'))delete next.selectedTarget;if(Object.keys(value).every(key=>key==='speed'||key==='repeat'))model.scenario=next;else {model=new Model(style,settings,next,core);model.seek(time);}fitted=null;last=0;lastSoundTime=model.time;if(soundEnabled&&playing&&model.beam)sound('channel');draw();}
+  function restart(){stopSounds();model.reset();playing=true;lastSoundTime=-1;if(soundEnabled)forwardSounds();last=0;fitted=null;draw();}
+  function cast(){model.scenario.mode='active';restart();}
+  function setScenario(value){stopSounds();const time=model.time,next=Object.assign({},model.scenario,value);if(Object.prototype.hasOwnProperty.call(value,'targetDistance'))delete next.targetPositions;if(Object.prototype.hasOwnProperty.call(value,'direction'))delete next.selectedTarget;if(Object.keys(value).every(key=>key==='speed'||key==='repeat'))model.scenario=next;else {model=new Model(style,settings,next,core,sampleArrowOffset,sampleWeaponOffset,targetPoint);model.seek(time);}fitted=null;last=0;lastSoundTime=model.time;if(soundEnabled&&playing&&model.beam)sound('channel');draw();}
   function fit(){view={zoom:1,panX:0,panY:0};fitted=null;draw();}
   function selectHandle(name){const names=availableHandles(style,settings.visual);selectedHandle=names.includes(name)?name:names[0];draw();}
   function setAudioEnabled(enabled){const previous=soundEnabled;soundEnabled=!!enabled;if(!soundEnabled)stopSounds();else if(!previous&&playing&&model.beam)sound('channel');lastSoundTime=model.time;}
@@ -299,6 +313,7 @@ function create(host,options){
     if(drag.kind==='enemy'){const at=world(p,viewport());model.moveTarget(drag.target,{x:drag.at.x+at.x-drag.start.x,y:drag.at.y+at.y-drag.start.y});draw();return;}
     const at=world(p,viewport()),prefix=['passive','mark','buff','taunt','shield'].includes(drag.name)?drag.name+'Offset':drag.name==='effect'?'offset':drag.name,visual=settings.visual||(settings.visual={});
     for(const [axis,delta]of [['X',at.x-drag.start.x],['Y',at.y-drag.start.y]]){const key=prefix+axis,value=Math.round((finite(drag.visual[key],0)+delta)*100)/100;visual[key]=value;if(options.onChange)options.onChange(['visual',key],value);}
+    model.settings=clone(settings);if(style!=='mystic')model.seek(model.time);
     draw();
   }
   function wheel(event){if(!(event.ctrlKey||event.metaKey))return;event.preventDefault();const p=position(event),before=world(p,viewport());view.zoom=clamp(view.zoom*Math.exp(-event.deltaY*.001),.2,6);const after=screen(before,viewport());view.panX+=p.x-after.x;view.panY+=p.y-after.y;draw();}
@@ -321,6 +336,8 @@ function create(host,options){
     last=now;raf=request(frame);
   }
   raf=request(frame);draw();
-  return{set,play,seek,step,cast,setScenario,fit,selectHandle,setAudioEnabled,getState:()=>Object.assign(model.status(),{playing,loaded:!!heroLayers.length,selectedHandle,view:{...view},silent:!soundEnabled,handles:handles.map(handle=>({...handle,world:{...handle.world}})),enemyRegions:enemyRegions.map(region=>({...region})),renderedLayers:heroLayers.length+targetLayers.flat().length,customResourceLoaded:!!effectImage||!!effectLayers.length,impactResourceLoaded:!!impactResource,styleResourcesLoaded:styleResources.size,vfxEntities:model.vfxFrame&&model.vfxFrame.entities.length||0}),destroy(){if(disposed)return;disposed=true;serial++;rigSerial++;effectSerial++;impactSerial++;styleSerial++;styleResources.clear();stopSounds();cancel(raf);endDrag();if(resizeObserver)resizeObserver.disconnect();box.removeEventListener('wheel',wheel);renderer.destroyCanvas(canvas);heroLayers=[];targetLayers=[];effectLayers=[];effectImage=null;impactResource=null;tintImages.clear();box.remove();}};
+  return{set,play,seek,step,cast,restart,setScenario,fit,selectHandle,setAudioEnabled,
+    getState:()=>Object.assign(model.status(),{playing,loaded:!!heroLayers.length,hero:{x:model.hero.x,y:model.hero.y},weaponOrigin:anchors().origin,skillOrigin:anchors().effect,effects:model.effects.map(e=>({x:e.x,y:e.y,radius:e.radius,halfAngle:e.halfAngle,resolved:e.resolved})),selectedHandle,view:{...view},silent:!soundEnabled,handles:handles.map(handle=>({...handle,world:{...handle.world}})),enemyRegions:enemyRegions.map(region=>({...region})),projectilePaths:model.projectiles.map(p=>({skill:p.skill,visual:Projectile.visualPoint(p,p.skill?settings.visual:{}),damage:Projectile.damagePoint(p),direction:{...p.direction}})),renderedLayers:heroLayers.length+targetLayers.flat().length,customResourceLoaded:!!effectImage||!!effectLayers.length,impactResourceLoaded:!!impactResource,styleResourcesLoaded:styleResources.size,vfxEntities:model.vfxFrame&&model.vfxFrame.entities.length||0}),
+    destroy(){if(disposed)return;disposed=true;serial++;rigSerial++;effectSerial++;impactSerial++;styleSerial++;styleResources.clear();stopSounds();cancel(raf);endDrag();if(resizeObserver)resizeObserver.disconnect();box.removeEventListener('wheel',wheel);renderer.destroyCanvas(canvas);heroLayers=[];targetLayers=[];effectLayers=[];effectImage=null;impactResource=null;tintImages.clear();box.remove();}};
 }
 module.exports={create,clipInfo,followMount,attackName,multiplyPixels,availableHandles,flipbookFrame};

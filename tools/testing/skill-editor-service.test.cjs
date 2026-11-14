@@ -38,6 +38,11 @@ test('no-change Save and focusing an inherited default perform no writes and add
  f.change('fighter','cooldown',12);assert.equal(f.service.version,version);assert.equal(f.service.snapshot().dirty,false);assert.equal(f.service.snapshot().canUndo,false);
  assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
 });
+
+test('obsolete separate projectile offsets remain intact on disk but cannot detach the sprite from its collider',t=>{
+ const original={HeroSkills:{skirmisher:{projectileOffsetY:60,projectileFromBow:false,visual:{originX:999,offsetY:800,scale:3,extension:{keep:true}}}}},f=fixture(t,original,original),before=f.bytes(),snapshot=f.service.load();assert.equal(snapshot.effective.skirmisher.visual.originX,0);assert.equal(snapshot.effective.skirmisher.visual.offsetY,0);assert.equal(snapshot.effective.skirmisher.visual.scale,1);assert.equal(snapshot.dirty,false);assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);f.change('skirmisher','projectileWidth',41);assert.deepEqual(f.bytes(),before);f.service.save(f.req());for(const text of f.bytes()){const skill=JSON.parse(text).HeroSkills.skirmisher;assert.equal(skill.projectileWidth,41);assert.equal(skill.projectileOffsetY,60);assert.deepEqual(skill.visual,original.HeroSkills.skirmisher.visual);}
+});
+
 test('editing, undo, redo and discard stay in drafts and preserve unknown fields',t=>{
  const f=fixture(t,{HeroSkills:{fighter:{vendorFlag:{value:'retain'}}}}),before=f.bytes();
  f.change('fighter','visual.offsetX',9.5);assert.equal(f.service.snapshot().effective.fighter.visual.offsetX,9.5);assert.equal(f.service.snapshot().dirty,true);assert.equal(f.service.snapshot().canUndo,true);assert.deepEqual(f.bytes(),before);
@@ -107,7 +112,7 @@ test('rider animation choices exclude horse-only and partial rider-layer clips',
 test('each style exposes only presentation controls that its runtime can use',()=>{
  for(const style of Settings.styles){const fields=Settings.fields(style.id),paths=new Set(fields.visual.concat(fields.audio).map(field=>field.path));const mystic=style.id==='mystic',arrow=style.id==='skirmisher';
   for(const key of ['holdTime','targetX','targetY'])assert.equal(paths.has('visual.'+key),mystic,style.id+' '+key);
-  for(const key of ['originX','originY'])assert.equal(paths.has('visual.'+key),mystic||arrow,style.id+' '+key);
+  for(const key of ['originX','originY'])assert.equal(paths.has('visual.'+key),mystic,style.id+' '+key);
   assert.equal(paths.has('visual.effectDuration'),!arrow);assert.equal(paths.has('audio.channel.clip'),mystic);assert.equal(paths.has('audio.cast.clip'),true);assert.equal(paths.has('audio.impact.clip'),true);
   assert.equal(Settings.defaults(style.id).visual.holdTime,-1,'default data shape remains stable even when a control is irrelevant');
   assert(fields.tuning.every(field=>typeof field.help==='string'&&field.help.length>10),'every numeric skill tuning field explains its units or effect');

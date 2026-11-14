@@ -91,4 +91,22 @@ test('attack playback stays in a draft until Save and preserves defaults, unknow
  const saved=JSON.parse(f.read(p));assert.deepStrictEqual(saved.GameTools.animationSpeeds,{'ally:90004:default':1.2,'enemy:90004:default':.8});assert.equal(saved.unknown.spell,100);assert.equal(JSON.stringify(saved.GameTools.timingDefaults),originalTiming);
  const noOp=f.read(p);assert.equal(s.save({version:s.version}).result.noChanges,true);assert.equal(f.read(p),noOp);
 });
+test('external shadow restoration merges with light drafts without changing review history',()=>{
+ const f=fixture(),s=f.store,p=Object.keys(f.docs)[0],light={version:1,emitters:[{id:'light:1'}],lights:{'light:1':{x:3,y:4}}};
+ edit(s,'A',['Nightlight'],light);edit(s,'overrides',['timings','enemy:1:default'],{attack:.5});
+ const before=JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),latest=JSON.parse(f.read(p)),preset={global:{projection:'ground',angle:-74,length:.89}};
+ latest.GameTools={buildingShadows:preset};fs.writeFileSync(path.join(f.root,p),JSON.stringify(latest));
+ const candidate=s.saveCandidate();assert.deepStrictEqual(candidate.documents.overrides.data.buildingShadows,preset);assert.deepStrictEqual(candidate.documents.A.data.Nightlight,light);
+ assert.equal(JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),before);
+ s.save({version:s.version});const saved=JSON.parse(f.read(p));assert.deepStrictEqual(saved.Nightlight,light);assert.deepStrictEqual(saved.GameTools.buildingShadows,preset);assert.equal(saved.GameTools.timings['enemy:1:default'].attack,.5);
+});
+test('external shadow restore retains overlapping shadow drafts and blocks unrelated external edits',()=>{
+ for(const overlap of [true,false]){const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['Nightlight'],{version:1,lights:{}});if(overlap)edit(s,'overrides',['buildingShadows'],{global:{angle:3}});
+ const before=JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),latest=JSON.parse(f.read(p));latest.GameTools={buildingShadows:{global:{projection:'ground',angle:-74}}};if(!overlap)latest.unknown.spell=900;
+ const bytes=JSON.stringify(latest);fs.writeFileSync(path.join(f.root,p),bytes);assert.throws(()=>s.save({version:s.version}),/changed outside/);assert.equal(f.read(p),bytes);assert.equal(JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),before);}
+});
+test('a failed save after a shadow merge retains the restored file and exact draft history',()=>{
+ const f=fixture({beforeCommit:()=>{throw Error('disk failure');}}),s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['Nightlight'],{version:1,lights:{}});const before=JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),latest=JSON.parse(f.read(p));latest.GameTools={buildingShadows:{global:{projection:'ground'}}};const bytes=JSON.stringify(latest);fs.writeFileSync(path.join(f.root,p),bytes);
+ assert.throws(()=>s.save({version:s.version}),/disk failure/);assert.equal(f.read(p),bytes);assert.equal(JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),before);
+});
 console.log(passed+' store tests passed');

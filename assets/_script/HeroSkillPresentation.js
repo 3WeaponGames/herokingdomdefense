@@ -2,6 +2,7 @@
 // Authored skill presentation only. Gameplay geometry and player progress are
 // unaffected; absent overrides retain the original procedural art and sounds.
 var Settings = require("./HeroSkillSettings"), Pose = require("./HeroSkillPose"), nextOwner = 0;
+var Projectile = require("./HeroSkillProjectile");
 var VFXState=require("./HeroSkillVFXState"),VFXLayout=require("./HeroSkillVFXLayout");
 var MAX_FEEDBACK=256,MAX_IMPACTS=128;
 function visual(runtime) { return (runtime.settings || Settings.effective(runtime.state.style, runtime.config)).visual; }
@@ -10,8 +11,7 @@ function width(runtime, fallback) { var v=visual(runtime);return (v.lineWidth ||
 function offset(point,x,y) { return {x:point.x+(x||0),y:point.y+(y||0)}; }
 function rotated(vector,degrees) { var a=degrees*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return {x:vector.x*c-vector.y*s,y:vector.x*s+vector.y*c}; }
 function projectilePoint(projectile,v) {
-  var launch=projectile.visualOffset||{};
-  return offset(projectile,(launch.x||0)+v.originX+v.offsetX,(launch.y||0)+v.originY+v.offsetY);
+  return Projectile.visualPoint(projectile,v);
 }
 function release(runtime,strike,charge) {
   if(!runtime.available())return;
@@ -191,7 +191,7 @@ function dispose(record) {
 function initialize(record,asset,v,s) {
   if(record.initialized||!alive(record.node))return;record.initialized=true;
   if(v.resourceKind==="spine"&&typeof sp!=="undefined"){
-    var skeleton=record.node.addComponent(sp.Skeleton);skeleton.skeletonData=asset;
+    var host=record.node;if(record.entity.radius){host=record.artNode=new cc.Node('Projectile artwork');host.setParent(record.node);}var skeleton=host.addComponent(sp.Skeleton);skeleton.skeletonData=asset;
     var json=asset.skeletonJson||{},clips=Object.keys(json.animations||{}),clip=v.resourceAnimation||clips[0];
     if(clips.indexOf(clip)<0)clip=clips[0];
     if(clip)record.track=skeleton.setAnimation(0,clip,record.entity.loop);record.skeleton=skeleton;seek(record);
@@ -232,8 +232,8 @@ function attachments(hud,runtime) {
   }else {
     s.beamEntity=null;
   }
-  (runtime.projectiles||[]).forEach(function(p){var at=projectilePoint(p,v);entities.push({key:p,x:at.x,y:at.y,angle:Math.atan2(p.direction.y,p.direction.x)*180/Math.PI+v.rotation,loop:true,age:p.speed>0?p.travelled/p.speed:0});});
-  (runtime.effects||[]).forEach(function(e){entities.push({key:e,x:e.x+v.offsetX,y:e.y+v.offsetY,angle:(e.direction?Math.atan2(e.direction.y,e.direction.x)*180/Math.PI:0)+v.rotation,loop:false,age:Math.max(0,(e.duration||0)-(e.remaining||0))});});
+  (runtime.projectiles||[]).forEach(function(p){var at=projectilePoint(p,v);entities.push({key:p,x:at.x,y:at.y,angle:Math.atan2(p.direction.y,p.direction.x)*180/Math.PI,radius:p.width,loop:true,age:p.speed>0?p.travelled/p.speed:0});});
+  (runtime.effects||[]).forEach(function(e){entities.push({key:e,x:e.x+(e.resolved?0:v.offsetX),y:e.y+(e.resolved?0:v.offsetY),angle:(e.direction?Math.atan2(e.direction.y,e.direction.x)*180/Math.PI:0)+(e.resolved?0:v.rotation),loop:false,age:Math.max(0,(e.duration||0)-(e.remaining||0))});});
   if(v.resource)paintEntities(hud,runtime,s,v,entities);
   if(iv.resource){
     var art=s.impactArt||(s.impactArt={nodes:new Map(),frames:new Map()});prepare(runtime,art,iv,s);
@@ -257,8 +257,13 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     if(!alive(record.node))return;
     var world=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x,entity.y));record.node.setPosition(parent.convertToNodeSpaceAR(world));
     var unit=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x+1,entity.y)),local=parent.convertToNodeSpaceAR(unit),origin=record.node.getPosition();
-    var scale=Math.hypot(local.x-origin.x,local.y-origin.y)*view.scale*(entity.scale===undefined?1:entity.scale);
-    record.node.scaleX=scale*(entity.scaleX===undefined?1:entity.scaleX);record.node.scaleY=scale*(entity.scaleY===undefined?1:entity.scaleY);record.node.angle=entity.angle;record.node.opacity=Math.round(255*view.opacity*(entity.opacity===undefined?1:entity.opacity));record.node.active=true;
+    var scale=Math.hypot(local.x-origin.x,local.y-origin.y)*(entity.radius?1:view.scale)*(entity.scale===undefined?1:entity.scale);
+    if(entity.radius){
+      var frame=record.sprite&&record.sprite.spriteFrame,rect=frame&&frame.getRect&&frame.getRect(),json=record.skeleton&&record.skeleton.skeletonData&&record.skeleton.skeletonData.skeletonJson,box=json&&json.skeleton;
+      var width=view.resourceCell||rect&&rect.width||box&&box.width,height=view.resourceCell||rect&&rect.height||box&&box.height;
+      if(width>0&&height>0){scale*=entity.radius*2/Math.hypot(width,height);if(record.artNode)record.artNode.setPosition(cc.v2(-(box.x||0)-width/2,-(box.y||0)-height/2));}record.node.anchorX=record.node.anchorY=.5;
+    }
+    record.node.scaleX=scale*(entity.scaleX===undefined?1:entity.scaleX);record.node.scaleY=scale*(entity.scaleY===undefined?1:entity.scaleY);record.node.angle=entity.angle;record.node.opacity=Math.round(255*view.opacity*(entity.opacity===undefined?1:entity.opacity));record.node.active=!entity.radius||!!record.initialized;
     if(entity.anchorX!==undefined){record.node.anchorX=entity.anchorX;record.node.anchorY=entity.anchorY;}
     if(entity.behind)record.node.zIndex=(runtime.hero.node.zIndex||0)-1;
     record.node.color=cc.color(view.color||"#ffffff");

@@ -24,7 +24,7 @@ function saveDialog(options) {
 }
 Editor.Panel.extend({
     template: fs.readFileSync(path.join(__dirname, 'panel.html'), 'utf8'),
-    style: fs.readFileSync(path.join(__dirname, 'panel.css'), 'utf8'),
+    style: require('../../game-data-editor/panel/control-theme')(fs.readFileSync(path.join(__dirname, 'panel.css'), 'utf8')),
     $: {
         root: '#root', status: '#status', subtitle: '#subtitle', save: '#save', reload: '#reload',
         search: '#search', missing: '#missing', target: '#target', defaultLanguage: '#defaultLanguage',

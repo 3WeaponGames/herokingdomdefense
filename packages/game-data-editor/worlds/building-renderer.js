@@ -1,10 +1,11 @@
 'use strict';
 // Render-only poses, shared across placements. No Cocos scene or gameplay runs.
 const Spine=require('../preview/spine-renderer'),Paint=require('./paint'),M=require('./model'),Shadow=require('../../../assets/_script/BuildingShadow'),Drop=require('../../../assets/_script/BuildingDropShadow');
+const WallGround=require('../../../assets/_script/WallShadowGround');
 function create(options){
  const cache=new Map(),shadows=new Map(),alphas=new Map(),drops=new Map();let closed=false,shadowBytes=0;
  const key=(d,runtime)=>JSON.stringify([runtime,d.source,d.uuid,d.revision,d.skin,d.animation,d.poseTime,d.pages]);
- function release(entry){if(entry.canvas){entry.canvas.width=entry.canvas.height=1;entry.canvas=null;}}
+ function release(entry){for(const canvas of [entry.canvas,entry.body,...(entry.casters||[]).map(c=>c.canvas)])if(canvas)canvas.width=canvas.height=1;entry.canvas=entry.body=null;entry.casters=[];}
  function ensure(d,runtime){
   const id=key(d,runtime);if(closed||cache.has(id)||!runtime)return;
   const entry={};cache.set(id,entry);
@@ -15,6 +16,15 @@ function create(options){
    Spine.seek(spine,layers,animation,time,false);
    const b=Spine.bounds(spine,layers),padding=2,scale=Math.min(1,2044/b.width,2044/b.height),canvas=Paint.canvas(Math.ceil(b.width*scale)+padding*2,Math.ceil(b.height*scale)+padding*2),ctx=canvas.getContext('2d');
    ctx.setTransform(scale,0,0,-scale,padding-b.minX*scale,padding+b.maxY*scale);Spine.drawWorld(spine,ctx,layers);
+   const skeleton=layers[0].skeleton,leaves=WallGround.casterSlots(d.json).map(entry=>({...entry,slot:skeleton.findSlot(entry.name)})).filter(entry=>entry.slot&&entry.slot.getAttachment());
+   if(leaves.length){
+    const saved=skeleton.slots.map(slot=>({slot,attachment:slot.getAttachment()})),render=()=>{const c=Paint.canvas(canvas.width,canvas.height),g=c.getContext('2d');g.setTransform(scale,0,0,-scale,padding-b.minX*scale,padding+b.maxY*scale);Spine.drawWorld(spine,g,layers);return c;};
+    try{
+     leaves.forEach(({slot})=>slot.setAttachment(null));entry.body=render();
+     saved.forEach(({slot})=>slot.setAttachment(null));
+     entry.casters=leaves.map(({slot,name,post})=>{slot.setAttachment(saved.find(s=>s.slot===slot).attachment);const bounds=Spine.bounds(spine,layers),c=Paint.canvas(Math.ceil(bounds.width*scale)+padding*2,Math.ceil(bounds.height*scale)+padding*2),g=c.getContext('2d');g.setTransform(scale,0,0,-scale,padding-bounds.minX*scale,padding+bounds.maxY*scale);Spine.drawWorld(spine,g,layers);slot.setAttachment(null);return{canvas:c,slot:name,post,bounds:{minX:bounds.minX-padding/scale,maxY:bounds.maxY+padding/scale,width:c.width/scale,height:c.height/scale}};});
+    }finally{saved.forEach(({slot,attachment})=>slot.setAttachment(attachment));}
+   }
    entry.canvas=canvas;entry.bounds={minX:b.minX-padding/scale,maxY:b.maxY+padding/scale,width:canvas.width/scale,height:canvas.height/scale};
    if(options&&options.onLoad)options.onLoad();
   })().catch(error=>{if(!closed&&cache.get(id)===entry&&options&&options.onError)options.onError(error);});
@@ -22,25 +32,27 @@ function create(options){
  function prepare(records,runtime){const keep=new Set();for(const r of records)for(const d of r.skeletons||[]){keep.add(key(d,runtime));ensure(d,runtime);}for(const [id,e] of cache)if(!keep.has(id)){release(e);cache.delete(id);}}
  function parts(building,record){
   if(!record)return [];
-  const origin=record.origin||building.origin||{x:0,y:0},result=[];
-  if(record.shadow&&record.shadow.regions.length)result.push({building,record,shadow:record.shadow,ground:true,y:building.y||0});
-  if(record.dropShadow)result.push({building,record,dropShadow:record.dropShadow,ground:true,y:building.y||0});
+  const origin=record.origin||building.origin||{x:0,y:0},result=[],shadowParts=[];
+  if(record.shadow&&record.shadow.regions.length)shadowParts.push({building,record,shadow:record.shadow,ground:true,y:building.y||0});
+  if(record.dropShadow)shadowParts.push({building,record,dropShadow:record.dropShadow,ground:true,y:building.y||0});
+  if(!record.shadowAboveGround)result.push(...shadowParts);
   for(const sprite of record.sprites||[])result.push({building,record,sprite,ground:!!sprite.ground,y:M.toWorld(building,{x:sprite.matrix[4]-origin.x,y:sprite.matrix[5]-origin.y}).y});
   for(const skeleton of record.skeletons||[])result.push({building,record,skeleton,ground:!!skeleton.ground,y:M.toWorld(building,{x:skeleton.matrix[4]-origin.x,y:skeleton.matrix[5]-origin.y}).y});
+  if(record.shadowAboveGround)result.push(...shadowParts);
   return result;
  }
  function draw(ctx,part,images,runtime){
   const b=part.building,r=part.record,origin=r.origin||b.origin||{x:0,y:0};ctx.save();Paint.apply(ctx,Paint.matrix(b));ctx.translate(-origin.x,-origin.y);
   if(part.dropShadow){
-   const settings=Drop.settings(part.dropShadow),ground=settings.projection==='ground',source=silhouette(r,images,runtime,ground);if(source){const id=source.key+':'+JSON.stringify(ground?settings:[settings.spread,settings.size,settings.opacity]);let entry=drops.get(id);if(!entry){const image=Drop.raster(source,ground?settings:Object.assign({},settings,{angle:0,distance:0})),canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image};drops.set(id,entry);while(drops.size>6){const first=drops.keys().next().value;release(drops.get(first));drops.delete(first);}}const angle=settings.angle*Math.PI/180,d=entry.image,distance=ground?0:settings.distance;ctx.translate(origin.x+d.x-Math.cos(angle)*distance,origin.y+d.y+d.height-Math.sin(angle)*distance);ctx.scale(d.width/entry.canvas.width,-d.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
+   const settings=Drop.settings(part.dropShadow),source=silhouette(r,images,runtime);if(source){const id=source.key+':'+JSON.stringify(settings);let entry=drops.get(id);if(!entry){const image=Drop.raster(source,settings),canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image};drops.set(id,entry);while(drops.size>6){const first=drops.keys().next().value;release(drops.get(first));drops.delete(first);}}const d=entry.image;ctx.translate(origin.x+d.x,origin.y+d.y+d.height);ctx.scale(d.width/entry.canvas.width,-d.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
   }
   else if(part.shadow){
    const d=part.shadow,id=JSON.stringify([d.regions,d.opacity]);let entry=shadows.get(id);
    if(!entry){const image=Shadow.raster(d.regions,d.opacity);if(image){const canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image:{x:image.x,y:image.y,width:image.width,height:image.height},bytes:canvas.width*canvas.height*4};shadows.set(id,entry);shadowBytes+=entry.bytes;while((shadowBytes>32*1024*1024||shadows.size>8)&&shadows.size>1){const first=shadows.keys().next().value,old=shadows.get(first);shadowBytes-=old.bytes;release(old);shadows.delete(first);}}}
    if(entry){Paint.apply(ctx,d.matrix);ctx.translate(entry.image.x,entry.image.y+entry.image.height);ctx.scale(entry.image.width/entry.canvas.width,-entry.image.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
   }
-  else if(part.sprite)Paint.sprites(ctx,[part.sprite],images);
-  else {const d=part.skeleton,e=cache.get(key(d,runtime));if(e&&e.canvas){Paint.apply(ctx,d.matrix);const a=e.bounds;ctx.translate(a.minX,a.maxY);ctx.scale(a.width/e.canvas.width,-a.height/e.canvas.height);ctx.drawImage(e.canvas,0,0);}}
+  else if(part.sprite){if(part.sprite.nightlight&&(part.sprite.warp||part.sprite.warpNodes?.length||part.sprite.erase?.strokes.length))require('../buildings/nightlight-warp').draw(ctx,part.sprite,images);else Paint.sprites(ctx,[part.sprite],images);}
+  else {const d=part.skeleton,e=cache.get(key(d,runtime));if(e&&e.canvas){Paint.apply(ctx,d.matrix);const a=part.silhouetteBounds||e.bounds,c=part.silhouetteCanvas||part.silhouetteBody&&e.body||e.canvas;ctx.translate(a.minX,a.maxY);ctx.scale(a.width/c.width,-a.height/c.height);ctx.drawImage(c,0,0);}}
   ctx.restore();
  }
  function hit(building,record,point,images,runtime){
@@ -53,18 +65,27 @@ function create(options){
  }
  function measure(record,runtime){
   const points=[],origin=record.origin||{x:0,y:0},add=(m,a,b,c,d)=>{for(const x of [a,c])for(const y of [b,d])points.push({x:m[0]*x+m[2]*y+m[4]-origin.x,y:m[1]*x+m[3]*y+m[5]-origin.y});};
-  for(const [i,s]of (record.sprites||[]).entries()){if(record.purchaseField&&record.purchaseField.sprites[i])continue;const a=s.anchor||{x:.5,y:0};add(s.matrix,-a.x*s.width,-a.y*s.height,(1-a.x)*s.width,(1-a.y)*s.height);}
+  for(const [i,s]of (record.sprites||[]).entries()){if(record.purchaseField&&record.purchaseField.sprites[i])continue;if(s.nightlight&&(s.warp||s.warpNodes?.length)){const b=require('../../../assets/_script/WindowLightWarp').mesh(s.warp,s.warpNodes).bounds;add(s.matrix,b.minX,b.minY,b.maxX,b.maxY);}else{const a=s.anchor||{x:.5,y:0};add(s.matrix,-a.x*s.width,-a.y*s.height,(1-a.x)*s.width,(1-a.y)*s.height);}}
   for(const d of record.skeletons||[]){const entry=cache.get(key(d,runtime));if(entry&&entry.canvas){const b=entry.bounds;add(d.matrix,b.minX,b.maxY-b.height,b.minX+b.width,b.maxY);}}
   if(!points.length)return null;return{minX:Math.min(...points.map(p=>p.x)),minY:Math.min(...points.map(p=>p.y)),maxX:Math.max(...points.map(p=>p.x)),maxY:Math.max(...points.map(p=>p.y))};
  }
- function silhouette(record,images,runtime,groundOnly){
-  const source=Object.assign({},record,{shadow:undefined,dropShadow:undefined,sprites:(record.sprites||[]).filter((s,i)=>!(record.purchaseField&&record.purchaseField.sprites[i])&&(!groundOnly||!s.ground)),skeletons:(record.skeletons||[]).filter(s=>!groundOnly||!s.ground)});delete source.purchaseField;
+ function silhouette(record,images,runtime){
+  const source=Object.assign({},record,{shadow:undefined,dropShadow:undefined,sprites:(record.sprites||[]).filter((s,i)=>!(record.purchaseField&&record.purchaseField.sprites[i])&&!s.ground&&!s.shadowExcluded),skeletons:(record.skeletons||[]).filter(s=>!s.ground)});delete source.purchaseField;
   if(source.skeletons.some(d=>{const e=cache.get(key(d,runtime));return !e||!e.canvas;}))return null;
   const id=JSON.stringify([source.origin,source.sprites.map(s=>[s.frame,images[s.frame]&&(images[s.frame].revision||images[s.frame].url||images[s.frame].sha256),s.matrix,s.width,s.height,s.anchor]),source.skeletons.map(d=>[key(d,runtime),d.matrix])]);if(alphas.has(id))return alphas.get(id);
   const b=measure(source,runtime);if(!b)return null;const z=Math.min(1,384/Math.max(1,b.maxX-b.minX,b.maxY-b.minY)),w=Math.max(1,Math.ceil((b.maxX-b.minX)*z)),h=Math.max(1,Math.ceil((b.maxY-b.minY)*z)),canvas=Paint.canvas(w,h),g=canvas.getContext('2d');g.setTransform(z,0,0,-z,-b.minX*z,b.maxY*z);
   for(const p of parts({x:0,y:0,scale:1,angle:0},source))draw(g,p,images,runtime);
-  const rgba=g.getImageData(0,0,w,h).data,alpha=new Uint8Array(w*h);for(let i=0;i<alpha.length;i++)alpha[i]=rgba[i*4+3];canvas.width=canvas.height=1;
-  const result={key:id,alpha,pixelWidth:w,pixelHeight:h,x:b.minX,y:b.maxY-h/z,width:w/z,height:h/z};alphas.set(id,result);while(alphas.size>8)alphas.delete(alphas.keys().next().value);return result;
+  const read=()=>{const rgba=g.getImageData(0,0,w,h).data,alpha=new Uint8Array(w*h);for(let i=0;i<alpha.length;i++)alpha[i]=rgba[i*4+3];return alpha;},alpha=read();
+  const contacts=source.skeletons.flatMap(d=>{const m=d.matrix.slice();m[4]-=source.origin.x;m[5]-=source.origin.y;return WallGround.contacts(d.json,d.skin,m,d.animation||'idle');});
+  const result={key:id,alpha,pixelWidth:w,pixelHeight:h,x:b.minX,y:b.maxY-h/z,width:w/z,height:h/z,groundedColumns:source.skeletons.some(d=>d.json.wallKit||d.json.wallGate),contacts};
+  if(source.skeletons.some(d=>cache.get(key(d,runtime)).body)){
+   const clear=()=>{g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,w,h);g.setTransform(z,0,0,-z,-b.minX*z,b.maxY*z);};clear();
+   for(const p of parts({x:0,y:0,scale:1,angle:0},source))draw(g,{...p,silhouetteBody:true},images,runtime);
+   const layers=[{...result,alpha:read()}];
+   for(const d of source.skeletons)for(const caster of cache.get(key(d,runtime)).casters||[]){clear();draw(g,{building:{x:0,y:0,scale:1,angle:0},record:source,skeleton:d,silhouetteCanvas:caster.canvas,silhouetteBounds:caster.bounds},images,runtime);layers.push({...result,alpha:read(),contacts:caster.post?contacts.filter(c=>c.slot===caster.slot):[],groundedColumns:true});}
+   result.layers=layers;
+  }
+  canvas.width=canvas.height=1;alphas.set(id,result);while(alphas.size>8)alphas.delete(alphas.keys().next().value);return result;
  }
  function clear(){for(const e of cache.values())release(e);cache.clear();for(const e of shadows.values())release(e);shadows.clear();for(const e of drops.values())release(e);drops.clear();alphas.clear();shadowBytes=0;}
  return {prepare,parts,draw,hit,measure,silhouette,clear,destroy(){closed=true;clear();},stats:()=>({poses:cache.size,ready:Array.from(cache.values()).filter(e=>e.canvas).length,shadowMasks:shadows.size,shadowBytes,dropMasks:drops.size,silhouettes:alphas.size})};

@@ -47,10 +47,10 @@ test('empty wall adjustment data preserves the old tier-independent instance cac
 });
 
 test('the wall setLevel forwards the incoming branch to visual fitting before changing the active skin',()=>{
- const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallBuildWall.js'),'utf8'),start=source.indexOf('_ctor.prototype.setLevel = function'),end=source.indexOf('\n  };',start),calls=[],context={result:{},require:name=>{assert.equal(name,'WallRunRuntime');return{apply:(owner,index)=>calls.push(['fit',owner,index])};},t:{prototype:{setLevel:function(index){calls.push(['base',this,index]);}}}};
+ const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallBuildWall.js'),'utf8'),start=source.indexOf('_ctor.prototype.setLevel = function'),end=source.indexOf('\n  };',start),calls=[],context={result:{},require:name=>{if(name==='BuildingNightlightRuntime')return{dispose:owner=>calls.push(['unwrap',owner])};assert.equal(name,'WallRunRuntime');return{apply:(owner,index)=>calls.push(['fit',owner,index])};},t:{prototype:{setLevel:function(index){calls.push(['base',this,index]);}}}};
  require('node:vm').runInNewContext(source.slice(start,end+5).replace('_ctor.prototype.setLevel','result.fn'),context);
  const owner={ndAniMain:{skeletonData:{skeletonJson:{wallKit:{}}}},ndAniEffect:{node:{active:true}}};context.result.fn.call(owner,82);
- assert.deepEqual(calls,[['fit',owner,82],['base',owner,82]]);assert.equal(owner.ndAniEffect.node.active,false);assert.equal(owner.isOpen,false);
+ assert.deepEqual(calls,[['unwrap',owner],['fit',owner,82],['base',owner,82]]);assert.equal(owner.ndAniEffect.node.active,false);assert.equal(owner.isOpen,false);
 });
 
 test('default runs fit matched open and closed images and native fixtures without writing source data',()=>{

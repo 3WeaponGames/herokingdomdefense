@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs'), path = require('path');
 const Spine = require('../preview/spine-renderer');
-const style = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+const style = require('../panel/control-theme')(fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8'));
 const clone = value => JSON.parse(JSON.stringify(value));
 const stable = value => JSON.stringify(value, (_key, item) => item && typeof item === 'object' && !Array.isArray(item) ? Object.keys(item).sort().reduce((out, key) => {out[key] = item[key]; return out;}, {}) : item);
 const node = (tag, text, cls) => {const item = document.createElement(tag); if (text !== undefined) item.textContent = text; if (cls) item.className = cls; return item;};

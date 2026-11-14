@@ -31,7 +31,7 @@ function display(value){if(value===undefined)return '(not set)';if(value===null)
 
 function create(kind){
   return Editor.Panel.extend({
-    template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:''),
+    template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:require('./control-theme')(fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:'')),
     $:{root:'#root',title:'#title',toolbar:'#toolbar',variant:'#variant',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
     ready(){
       this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;this._unitPack='all';this._variant='A';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
@@ -71,7 +71,7 @@ function create(kind){
     _action(action){this._queue=this._queue.catch(()=>{}).then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);throw error;}});return this._queue.catch(()=>null);},
     _change(edits,options){
       this._queue=this._queue.catch(()=>{}).then(async()=>{
-        try{const changes=typeof edits==='function'?edits():edits;if(options&&options.skipEmpty&&!changes.length)return this._snapshot;const snapshot=await ipc('change',{version:this._snapshot.version,edits:changes});if(options&&options.keepDetail===this._selected+':'+this._level){this._snapshot=snapshot;this._lastResult=null;this._toolbar();const row=this._rows().find(r=>r.key===this._selected);if(row)this._renderPreview(row);}else this._apply(snapshot);return snapshot;}
+        try{const changes=typeof edits==='function'?edits():edits;if(options&&options.skipEmpty&&!changes.length)return this._snapshot;const snapshot=await ipc('change',{version:this._snapshot.version,edits:changes});if(options&&options.keepDetail===this._selected+':'+this._level){this._snapshot=snapshot;this._lastResult=null;this._toolbar();if(!options.skipPreview){const row=this._rows().find(r=>r.key===this._selected);if(row)this._renderPreview(row);}}else this._apply(snapshot);return snapshot;}
         catch(error){this._status(error.message,true);throw error;}
       });return this._queue;
     },
@@ -111,15 +111,27 @@ function create(kind){
     _render(){
       if(!this._snapshot)return;this._toolbar();
       if(kind==='maps'){this._renderMaps();return;}
+      let scroll=this.$detail.scrollTop;
+      if(kind==='buildings'&&this._renderedBuildingFamily)this._buildingDetailScroll=scroll;
       if(this._purchaseClient){this._purchaseClient.destroy();this._purchaseClient=null;}
       if(this._blockerClient){this._blockerClient.destroy();this._blockerClient=null;}
-      this._renderList();const scroll=this.$detail.scrollTop;clear(this.$detail);AttackRate.begin(this);
+      this._renderList();clear(this.$detail);AttackRate.begin(this);
       const row=this._rows().find(r=>r.key===this._selected);
       if(!row){this.$detail.appendChild(node('div','Choose an item to inspect its settings.','gt-empty'));return;}
+      if(kind==='buildings'){this._renderedBuildingFamily=!!row.family;if(row.family&&Number.isFinite(this._buildingDetailScroll))scroll=this._buildingDetailScroll;}
       const heading=kind==='buildings'&&row.family?this.$detail.appendChild(node('div',undefined,'bld-sticky-heading')):this.$detail;
       heading.appendChild(node('h2',row.label));if(kind==='units'&&row.unitType==='ally')this._unitLevelTabs(row);if(kind==='buildings')Buildings.levelTabs(this,row,heading);heading.appendChild(node('p',row.subtitle||'Changes are drafts until saved.','gt-subtitle'));
       if(kind==='stages')this._stage(row);else if(kind==='perks')this._perk(row);else if(kind==='buildings')this._building(row);else if(kind==='equipment')this._equipment(row);else if(kind==='talents')this._talent(row);else if(kind==='relics')this._relic(row);else if(kind==='units')this._unit(row);else if(kind==='unit-types')this._unitType(row);else if(kind==='settings')this._setting(row);
       this.$detail.scrollTop=scroll;this._renderPreview(row);
+      if(kind==='buildings'&&this._blockerClient&&this._blockerClient.ready){
+        const client=this._blockerClient,detail=this.$detail;let moved=false;const cancel=()=>{moved=true;};
+        if(detail.addEventListener)for(const event of ['wheel','pointerdown','keydown'])detail.addEventListener(event,cancel,true);
+        const clean=()=>{if(detail.removeEventListener)for(const event of ['wheel','pointerdown','keydown'])detail.removeEventListener(event,cancel,true);};
+        Promise.all([client.ready,this._purchaseClient&&this._purchaseClient.ready]).then(()=>{
+          const frame=typeof requestAnimationFrame==='function'?requestAnimationFrame:fn=>setTimeout(fn,0);
+          frame(()=>frame(()=>{if(!this._closed&&this._blockerClient===client&&!moved)detail.scrollTop=scroll;clean();}));
+        },clean);
+      }
     },
     _rows(){
       const data=this._data('A'),rows=[];
@@ -150,7 +162,7 @@ function create(kind){
       const all=this._rows(),pack=this._unitPack||'all',scoped=kind!=='units'||pack==='all'?all:all.filter(r=>pack==='allies'?r.unitType!=='enemy':r.unitType==='enemy'&&(pack==='campaign'?!r.record.MonsterPack:r.record.MonsterPack===pack)),query=this.$search.value.trim().toLowerCase(),rows=scoped.filter(r=>(r.label+' '+r.subtitle+' '+(r.record.MonsterSource||'')).toLowerCase().indexOf(query)>=0);
       if(!scoped.some(r=>r.key===this._selected))this._selected=rows.length?rows[0].key:null;
       clear(this.$list);const shown=kind==='units'?UnitProfiles.list(this,rows):rows;this.$count.textContent=kind==='units'?shown.length+' models · '+rows.length+' profiles':rows.length+' / '+all.length+' items';
-      shown.forEach(row=>{const b=button('',()=>{this._selected=row.key;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;this.$detail.scrollTop=0;this._render();},'gt-record'+(row.key===this._selected?' active':'')+(kind==='buildings'&&row.indented?' bld-child':'')+(kind==='buildings'&&row.category?' bld-category':''));
+      shown.forEach(row=>{const b=button('',()=>{this._selected=row.key;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;if(kind!=='buildings')this.$detail.scrollTop=0;this._render();},'gt-record'+(row.key===this._selected?' active':'')+(kind==='buildings'&&row.indented?' bld-child':'')+(kind==='buildings'&&row.category?' bld-category':''));
         const asset=kind==='equipment'?this._equipmentIcon(row):this._image(row.icon);if(asset){const image=node('img');image.src=asset.url;image.alt='';b.appendChild(image);}else if(kind!=='equipment')b.appendChild(node('span',row.label.slice(0,2),'gt-initial'));
         const text=node('div');text.appendChild(node('strong',stripRich(row.label)));text.appendChild(node('small',row.subtitle));b.appendChild(text);this.$list.appendChild(b);
       });

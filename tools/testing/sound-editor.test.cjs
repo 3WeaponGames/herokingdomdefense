@@ -189,7 +189,7 @@ test('Creator panel starts no audio on mount and releases the player on close', 
   vm.runInNewContext(fs.readFileSync(path.join(folder, 'panel.js'), 'utf8'), {
     __dirname: folder, document: { createElement() { created++; return {}; } },
     Editor: { Project: { path: root }, Panel: { extend: value => { definition = value; } } },
-    require: name => name === './client' ? { mount(host, api) { mounted++; assert.equal(created, 0); assert.equal(typeof api.createAudio, 'function'); return { destroy() { destroyed++; } }; } } : require(name)
+    require: name => name === './client' ? { mount(host, api) { mounted++; assert.equal(created, 0); assert.equal(typeof api.createAudio, 'function'); return { destroy() { destroyed++; } }; } } : require('node:module').createRequire(path.join(folder,'panel.js'))(name)
   });
   definition.$root = {}; definition.ready(); assert.equal(mounted, 1); assert.equal(created, 0); definition.close(); assert.equal(destroyed, 1);
 });

@@ -188,7 +188,7 @@ test('Skirmisher cast uses the real core wind-up event to launch exactly one arr
 });
 
 test('Skirmisher launch snapshots the same selected clip used by the aim guide',()=>{
- const h=scene('skirmisher',{config:{HeroSkills:{skirmisher:{visual:{animation:'attack_fighter'}}}}}),clips=[];h.e.stubs.HeroMakerRider.skillOrigin=(_controller,_aim,clip)=>{clips.push(clip);return{x:30,y:110};};h.rt.arrow({direction:{x:1,y:0}});assert.deepEqual(clips,['attack_fighter']);close(h.rt.projectiles[0].visualOffset.x,30);close(h.rt.projectiles[0].visualOffset.y,110);
+ const h=scene('skirmisher',{config:{HeroSkills:{skirmisher:{visual:{animation:'attack_fighter'}}}}}),clips=[];h.e.stubs.HeroMakerRider.skillOrigin=(_controller,_aim,clip)=>{clips.push(clip);return{x:30,y:110};};h.rt.arrow({direction:{x:1,y:0}});assert.deepEqual(clips,['attack_fighter']);close(h.rt.projectiles[0].x,30);close(h.rt.projectiles[0].y,110);
 });
 test('Fighter incoming reduction and tenacity use temporary landed-hit stacks',()=>{
  const h=scene('fighter'),e=h.enemy(100);

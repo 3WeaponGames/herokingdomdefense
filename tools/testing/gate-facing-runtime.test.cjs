@@ -17,6 +17,18 @@ function fixture(){
 // The adapter constructs public SkeletonData assets; only the engine object
 // is mocked here. Actual transformed mesh/animation math has real-asset tests.
 function load(){return fixture();}
+
+test('wall level changes restore presentation wrappers before resolving any compass gate facing',()=>{
+ const vm=require('node:vm'),raw=require('../../assets/KinghtFallIconMap/com/Ani/cq/cq1/cq1.json'),Kit=require('../../assets/_script/WallKit'),layout=Kit.layout(null,[{x:-184,y:118},{x:199,y:-137}]),wall=fs.readFileSync(path.join(root,'assets/_script/KinghtFallBuildWall.js'),'utf8'),method=wall.slice(wall.indexOf('  _ctor.prototype.setLevel ='),wall.indexOf('  _ctor.prototype._gateAnimation ='));
+ for(const face of ['NE','NW','SE','SW']){
+  const f=load(),source=f.source();source.skeletonJson=Kit.install(raw,layout,undefined,{mirrorX:Facing.mirrorX(face),tier:1,face});
+  const filename=path.join(root,'assets/_script/BuildingNightlightRuntime.js'),night=new Module(filename,module);night.filename=filename;night.paths=Module._nodeModulePaths(path.dirname(filename));night.require=name=>name==='BuildingNightlight'?require('../../assets/_script/BuildingNightlight'):name==='__Data'?f.Data:Module.prototype.require.call(night,name);night._compile('var sp={SkeletonData:require("__Data")};var cc={isValid:(v)=>!!v&&!v.destroyed};\n'+fs.readFileSync(filename,'utf8'),filename);
+  const owner={wallFacing:face,ndAniMain:f.component(source),ndAniEffect:{node:{}},_wallRunRuntime:{},buildInfo:{cfg:{Skin:'cq-rts-1'}}},context={require:name=>name==='BuildingNightlightRuntime'?night.exports:name==='GateFacingRuntime'?f.unit.exports:name==='WallRunRuntime'?{apply(){}}:assert.fail(name),_ctor:function(){},t:function(){}};
+  context.t.prototype.setLevel=function(){night.exports.apply(this,this.buildInfo.cfg);};vm.runInNewContext(method,context);
+  for(const tier of [1,1,2,3,3,1,2,2]){context._ctor.prototype.setLevel.call(owner,tier);const json=owner.ndAniMain.skeletonData.skeletonJson;assert.equal(json.wallDoor.reverse,Facing.reverse(face),face+' tier '+tier+' must retain exactly one facing reversal');const clip=Facing.animation(json,'open','outward',false),target=require('../../assets/_script/WallDoor').target(clip,Facing.reverse(face)),name=json.animations[clip].slots.rts_wall_leaf_near.attachment[0].name;assert.equal(name,'rts_door_'+target+'_near',face+' open shadow and displayed leaf use the same directional pose');}
+  night.exports.dispose(owner);f.unit.exports.dispose(owner);assert.equal(source.refs,1);
+ }
+});
 test('legacy and southern gates keep their imported assets without creating variants',()=>{
  const f=load(),source=f.source(),owner={ndAniMain:f.component(source),wallFacing:''},before=f.made.length;
  for(const facing of ['',undefined,'SW','SE','invalid']){owner.wallFacing=facing;f.unit.exports.apply(owner);assert.equal(owner.ndAniMain.skeletonData,source);assert(!owner._gateFacingRuntime);}

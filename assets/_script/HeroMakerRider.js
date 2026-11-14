@@ -369,12 +369,22 @@ function projectileOrigin(controller) {
   var x=typeof bone.getWorldX==='function'?bone.getWorldX():bone.worldX,y=typeof bone.getWorldY==='function'?bone.getWorldY():bone.worldY;
   return typeof x==='number'&&typeof y==='number'?renderer.node.convertToWorldSpaceAR(cc.v2(x,y)):null;
 }
+function releaseWorld(controller,renderer,tip,animation,time){
+  var world=renderer.node.convertToWorldSpaceAR(cc.v2(tip.x,tip.y)),info=metadata(controller),horse=controller.spAniMa,parent=renderer.node.parent;
+  if(info.saddle&&horse&&horse.node&&parent&&parent.convertToNodeSpaceAR&&parent.convertToWorldSpaceAR){var mountJson=horse.skeletonData&&horse.skeletonData.skeletonJson,mountAnimation=mountMetadata(controller)?animation:'idle',bone=Pose.boneMatrixAt(mountJson,mountAnimation,time,'bone2',0);if(bone){var x=(bone.x-info.saddle.x)*horse.node.scaleX,y=(bone.y-info.saddle.y)*horse.node.scaleY,r=(horse.node.angle||0)*Math.PI/180,c=Math.cos(r),sn=Math.sin(r),previous=states.get(controller)||{x:0,y:0},at=parent.convertToNodeSpaceAR(world);world=parent.convertToWorldSpaceAR(cc.v2(at.x+x*c-y*sn-previous.x,at.y+x*sn+y*c-previous.y));}}return world;
+}
 function skillOrigin(controller,direction,preferredAnimation){
   if(!metadata(controller))return null;
   var renderer=controller.spAniArrow||controller.spAniBow;if(!renderer||!renderer.node||!renderer.node.convertToWorldSpaceAR)return null;
   var retimed=retimedAttacks.get(controller),currentName=name(current(controller.spAniBody)),animation=supportedPose(controller,preferredAnimation)?preferredAnimation:retimed&&retimed.animation||supportedPose(controller,currentName)&&currentName||attackName(controller),json=renderer.skeletonData&&renderer.skeletonData.skeletonJson,time=clipInfo(controller,animation).hit;
-  var tip=Pose.arrowTipAt(renderer,json,animation,time,direction,renderer.node.scaleX,{referenceAngle:aimReference(controller,animation)});
-  return tip?renderer.node.convertToWorldSpaceAR(cc.v2(tip.x,tip.y)):null;
+  var tip=Pose.arrowTipAt(renderer,json,animation,time,direction,renderer.node.scaleX,{referenceAngle:aimReference(controller,animation)});return tip?releaseWorld(controller,renderer,tip,animation,time):null;
+}
+function weaponOrigin(controller,weaponStyle,direction,preferredAnimation){
+  if(!metadata(controller))return null;if(weaponStyle==='skirmisher')return skillOrigin(controller,direction,preferredAnimation);if(weaponStyle==='mystic')return projectileOrigin(controller);
+  var renderer=controller.spAniBow;if(!renderer||!renderer.node||!renderer.node.convertToWorldSpaceAR)return null;
+  var suffix={fighter:'Sword',vanguard:'Spear',bruiser:'Axe',guardian:'Blunt'}[weaponStyle];if(!suffix)return null;
+  var animation=supportedPose(controller,preferredAnimation)?preferredAnimation:'attack_'+weaponStyle,time=clipInfo(controller,animation).hit,json=renderer.skeletonData&&renderer.skeletonData.skeletonJson;
+  var tip=Pose.weaponTipAt(renderer,json,animation,time,'Rider/HandRight/'+suffix,direction,renderer.node.scaleX,weaponStyle==='fighter');return tip?releaseWorld(controller,renderer,tip,animation,time):null;
 }
 function removeFollow(controller) {
   var previous=states.get(controller);if(!previous)return;
@@ -399,3 +409,5 @@ exports.enableCombatMotion = enableCombatMotion;
 exports.setMoving = setMoving;
 exports.ownsAttackClock = ownsAttackClock;
 exports.skillOrigin = skillOrigin;
+
+exports.weaponOrigin=weaponOrigin;

@@ -12,3 +12,6 @@ test('invalid drags reject crossing edges, collapsed contours and escaped holes'
  const moved=JSON.parse(JSON.stringify(hole));for(const p of moved[0][1])p[0]+=200;assert.throws(()=>H.finish(moved),/overlap|cross/);
  assert.deepEqual(Clip.issues(H.finish(hole)),[]);
 });
+test('shadow selection hits filled regions and nearby edges while respecting erased holes',()=>{
+ const mask=Clip.combineMask(square(),Clip.polygonBrush([[20,20],[40,20],[40,40],[20,40]]),'erase');assert(H.hit(mask,{x:10,y:10}));assert(!H.hit(mask,{x:30,y:30}));assert(!H.hit(mask,{x:-2,y:50}));assert(H.hit(mask,{x:-2,y:50},3));assert(!H.hit(mask,{x:130,y:50},3));
+});

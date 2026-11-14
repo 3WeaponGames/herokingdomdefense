@@ -2,7 +2,7 @@
 const SkillSettings = require('../../assets/_script/HeroSkillSettings');
 const NumericScrub = require('./numeric-scrub');
 const SCRUB_HELP='Drag the label left or right to adjust. Shift: fine; Alt: coarse. Escape cancels the drag.';
-const PREVIEW_HELP={Preview:'Choose an active skill example or ordinary attacks with their passive effects.',Speed:'Playback speed for this isolated preview. Does not change saved animation or combat speed.',Handle:'Choose the effect handle to position in the preview.','Hero HP %':'Hero health percentage used to test missing-health passives and skills. Preview only.','Target distance':'Starting enemy distance in world units. Changing this control resets moved enemy positions. Preview only.','Attacks / second':'Ordinary attack cadence used by the preview. Does not change game stats.','Aim angle':'Skill direction in degrees. Zero points right; positive angles turn counterclockwise. Preview only.','Horse moving':'Preview mounted movement while the rider attacks. Does not move the real game hero.',Repeat:'Repeat the preview timeline after it reaches the end.','Sound in preview':'Explicitly enable this preview’s sound effects. Opening or editing the panel remains silent.'};
+const PREVIEW_HELP={Preview:'Choose an active skill example or ordinary attacks with their passive effects.',Speed:'Playback speed for this isolated preview. Does not change saved animation or combat speed.',Handle:'Choose the effect handle to position in the preview.','Hero HP %':'Hero health percentage used to test missing-health passives and skills. Preview only.','Target distance':'Starting enemy distance in world units. Changing this control resets moved enemy positions. Preview only.','Attacks / second':'Ordinary attack cadence used by the preview. Does not change game stats.','Aim angle':'Skill direction in degrees. Zero points right; positive angles turn counterclockwise. Preview only.','Horse moving':'Preview mounted movement. Out-of-range targets are approached before activating the skill. R restarts the example; game actors are unaffected.',Repeat:'Repeat the preview timeline after it reaches the end.','Sound in preview':'Explicitly enable this preview’s sound effects. Opening or editing the panel remains silent.'};
 
 const clone = value => value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 const parts = path => Array.isArray(path) ? path : String(path).split('.');
@@ -49,12 +49,12 @@ function createSession(api, onChange) {
     }).finally(() => { pending = pending.filter(value => value !== item); emit(); });
     queue = work; return work;
   }
-  function action(name) {
+  function action(name,extra) {
     const work = queue.then(async () => {
       if (closed) return null;
       if (name === 'save' && rejected.size) throw Error(failure || 'Correct the rejected fields or reload the latest draft before saving.');
       if (name === 'save' && (!snapshot || !snapshot.dirty)) return snapshot;
-      const response = await api.ipc(name, name === 'load' ? {} : { version: snapshot.version, revision: snapshot.revision });
+      const response = await api.ipc(name, name === 'load' ? {} : { version: snapshot.version, revision: snapshot.revision,...extra });
       if (!closed) { snapshot = response; rejected.clear(); failure = ''; emit(); }
       return response;
     }).catch(error => { if (!closed) { failure = error.message || String(error); emit(); } return null; });
@@ -129,6 +129,7 @@ function mount(host, api) {
   const previewHost = el('div', undefined, main, 'preview-host'); previewHost.tabIndex = 0; previewHost.setAttribute('aria-label', 'Real-time skill preview');previewHost.title='Click an enemy to target it; drag an enemy to move it. Drag an effect handle to adjust its position. Middle drag pans; Ctrl+wheel zooms.';
   const transport = el('div', undefined, main, 'preview-controls'), row = el('div', undefined, transport, 'row wrap');
   const play = button(row, 'Pause', () => { playback.playing = !playback.playing; if (preview) preview.play(playback.playing); if (!playback.playing) audio.stop(); updatePlayback(); });
+  const restart=button(row,'Restart (R)',restartPreview);restart.title='Restart the current preview from the beginning (R). Keeps the selected preview mode and draft settings.';restart.setAttribute('aria-keyshortcuts','R');
   button(row, '◀ Frame', () => { stopAudio(); if (preview) preview.step(-1 / 60); });
   button(row, 'Frame ▶', () => { stopAudio(); if (preview) preview.step(1 / 60); });
   const cast = button(row, 'Cast skill', () => { scenario.mode='active';mode.value='active';if(preview)preview.cast();return updatePreview(); }, 'primary');
@@ -159,7 +160,7 @@ function mount(host, api) {
   const facts = el('div', 'Loading preview…', main, 'preview-facts'); facts.setAttribute('aria-live', 'polite');
   el('p', 'Active examples start with 75% Steady Aim or Momentum, and three Mystic charges. Basic attack + passive starts uncharged.', main, 'help');
   el('p', 'Bruiser lifesteal uses the saved level-1 charm in this isolated example.', main, 'help');
-  el('p', 'Click an enemy to target it; drag an enemy to move it. Drag effect handles to fit their position. Middle drag pans; Ctrl+wheel zooms. Drag numeric labels to adjust (Shift: fine, Alt: coarse; Esc: cancel). Changes remain in a draft until Save.', main, 'help');
+  el('p', 'R restarts the preview. Horse moving approaches out-of-range targets before casting. Click an enemy to target it; drag an enemy to move it. Drag handles or numeric labels to adjust (Shift: fine, Alt: coarse; Esc: cancel). Middle drag pans; Ctrl+wheel zooms. Changes remain in a draft until Save.', main, 'help');
   const inspector = el('aside', undefined, workspace, 'inspector'), tabList = el('div', undefined, inspector, 'tabs'); tabList.setAttribute('role', 'tablist');
   const tabs = {};
   [['tuning', 'Skill settings'], ['visual', 'Position & VFX'], ['audio', 'SFX']].forEach(([id, label]) => { tabs[id] = button(tabList, label, () => { if(activeScrub)activeScrub.finish(true);flushFields(); tab = id; renderInspector(); }); tabs[id].setAttribute('role', 'tab'); });
@@ -184,12 +185,13 @@ function mount(host, api) {
   function message(value, error) { if (disposed) return; status.textContent = value || ''; status.classList.toggle('error', !!error); }
   function updatePlayback() { play.textContent = playback.playing ? 'Pause' : 'Play'; clock.textContent = Number(playback.time || 0).toFixed(3) + ' s';if(timelinePointer===null){timeline.max = Math.max(.001, playback.duration || 4); timeline.value = playback.time || 0;} }
   function stopAudio() { audio.stop(); }
+  function restartPreview(){if(!preview)return;stopAudio();if(preview.restart)preview.restart();else{preview.seek(0);preview.play(true);}playback.time=0;playback.playing=true;updatePlayback();}
   function setScenario(key, value) { scenario[key] = value; if (preview) preview.setScenario({ [key]: value }); }
   function makeSelect(parent, label, choices, value, change) {
     const wrap = el('label', undefined, parent, 'compact-field'),caption=el('span', label, wrap);wrap.title=caption.title=PREVIEW_HELP[label]||label; const node = el('select', undefined, wrap); node.setAttribute('aria-label', label);node.title=caption.title;
     choices.forEach(([id, text]) => { const option = el('option', text, node); option.value = id; }); node.value = value; node.onchange = () => change(node.value); return node;
   }
-  function check(parent, label, value, change) { const wrap = el('label', undefined, parent, 'check-field'), input = el('input', undefined, wrap); input.type = 'checkbox'; input.checked = value; const caption=el('span', label, wrap);wrap.title=caption.title=input.title=PREVIEW_HELP[label]||label;input.onchange = () => change(input.checked); return input; }
+  function check(parent, label, value, change) { const wrap = el('label', undefined, parent, 'check-field'), input = el('input', undefined, wrap); input.type = 'checkbox'; input.checked = value;input.setAttribute('aria-label',label); const caption=el('span', label, wrap);wrap.title=caption.title=input.title=PREVIEW_HELP[label]||label;input.onchange = () => change(input.checked); return input; }
   function numberScenario(parent, label, key, min, max, step) { const wrap = el('label', undefined, parent, 'compact-field'),caption=el('span', label, wrap);wrap.title=caption.title=(PREVIEW_HELP[label]||label)+' '+SCRUB_HELP; const input = el('input', undefined, wrap); input.type = 'number'; input.min = min; input.max = max; input.step = step; input.value = scenario[key]; input.title=PREVIEW_HELP[label]||label;input.setAttribute('aria-label', label); input.oninput = () => { const n = Number(input.value); if (String(input.value).trim() !== '' && Number.isFinite(n)) setScenario(key, Math.max(min, Math.min(max, n))); };const scrub=NumericScrub.attach(caption,input,{min,max,step,preview:value=>setScenario(key,value),cancel:value=>setScenario(key,value)});scrubbers.add(scrub); return input; }
   function effective() { const result = session.effective(selected); localChanges.forEach(change => { if (change.style === selected) put(result, change.path, clone(change.value)); }); return result; }
   function queueField(path, value, defer) {
@@ -225,12 +227,13 @@ function mount(host, api) {
     if (!snapshot) return;
     const handleKey=JSON.stringify([selected,...['passive','mark','buff','taunt','shield'].map(slot=>get(snapshot.effective[selected],'visual.'+slot+'Resource'))]);
     if (handleStyle !== handleKey) {
-      const previous = handle.value, choices = [['effect', 'Effect position']];
+      const previous = handle.value, choices = selected==='skirmisher'?[]:[['effect',selected==='mystic'?'Effect position':'Weapon skill position']];
       if (selected === 'mystic') choices.unshift(['target', 'Target endpoint']);
-      if (selected === 'mystic' || selected === 'skirmisher') choices.unshift(['origin', 'Skill origin']);
+      if (selected === 'mystic') choices.unshift(['origin','Skill origin']);
+      handle.parentElement.hidden=selected==='skirmisher';const angle=scenarios.querySelector('[aria-label="Aim angle"]');if(angle)angle.parentElement.hidden=selected==='skirmisher';
       for(const [slot,label]of [['passive','Passive aura'],['mark','Target mark'],['buff','Shield aura'],['taunt','Taunted enemy'],['shield','Body shield']])if(get(snapshot.effective[selected],'visual.'+slot+'Resource'))choices.push([slot,label]);
       handle.textContent = ''; choices.forEach(([value, label]) => { const option = el('option', label, handle); option.value = value; });
-      handle.value = choices.some(([value]) => value === previous) ? previous : choices[0][0]; handleStyle = handleKey;
+      handle.value = choices.some(([value]) => value === previous) ? previous : choices.length?choices[0][0]:''; handleStyle = handleKey;
       if (preview && preview.selectHandle) preview.selectHandle(handle.value);
     }
     stylesHost.textContent = '';
@@ -242,7 +245,7 @@ function mount(host, api) {
     });
   }
   function descriptors() { return snapshot && snapshot.fields && snapshot.fields[selected] && snapshot.fields[selected][tab] || []; }
-  function fieldPath(field) { const key = field.path || field.key; return key.includes('.') || tab === 'tuning' ? key : tab + '.' + key; }
+  function fieldPath(field) { if(field.path)return field.path;const key=field.key;return key.includes('.') || tab === 'tuning' ? key : tab + '.' + key; }
   function fieldValue(path) { return get(effective(), path); }
   function catalogValue(item) { return item.id || item.uuid || item.resource || item.file || item.value; }
   function renderInspector() {
@@ -252,9 +255,12 @@ function mount(host, api) {
     Object.keys(tabs).forEach(id => { tabs[id].classList.toggle('active', id === tab); tabs[id].setAttribute('aria-selected', String(id === tab)); });
     if (!snapshot) return;
     el('h2', tab === 'tuning' ? 'SKILL SETTINGS' : tab === 'visual' ? 'POSITION & VFX' : 'SOUND EFFECTS', fieldsHost);
+    if(tab==='visual'&&selected==='skirmisher')el('p','The arrow launches automatically from the bow. Its sprite and blue collider share one position and one straight flight path. Click an enemy to aim; the direction locks when the arrow is released.',fieldsHost,'help');
+    else if(tab==='visual'&&selected!=='mystic')el('p','The active skill starts at the equipped weapon tip automatically. Weapon offset, size and arc angle move or resize its artwork and hit area together.',fieldsHost,'help');
     if (tab === 'audio') el('p', 'Audio stays silent until you enable Sound in preview or press a Test button.', fieldsHost, 'help');
     const all = descriptors();
-    all.forEach(field => {
+    let previousGroup='';all.forEach(field => {
+      if(field.group&&field.group!==previousGroup){el('h3',field.group,fieldsHost,'field-group');previousGroup=field.group;}
       const path = fieldPath(field), value = fieldValue(path), type = field.type || (typeof value === 'boolean' ? 'boolean' : typeof value === 'number' ? 'number' : 'text');
       const wrap = el('div', undefined, fieldsHost, 'setting-field'), heading = el('div', undefined, wrap, 'field-title');
       const label = el('label', field.label || path, heading), reset = button(heading, 'Reset', async () => { const key=selected+':'+path;invalidInputs.delete(key);localChanges.delete(key);flushFields();await session.reset(selected,path); }, 'reset'); reset.title = 'Remove this override and use the built-in default';
@@ -296,7 +302,7 @@ function mount(host, api) {
     if (!preview) {
       preview = api.createPreview(previewHost, { runtime: api.runtime, renderer: api.renderer, core: api.core,
         onChange(path, value) { queueField(path, value); updateFields(); },
-        onStatus(value) { if (disposed) return; Object.assign(playback, value); updatePlayback(); facts.textContent = value.error || ['Charge ' + Math.round((value.charge || 0) * 100) + '%', 'Cooldown ' + Number(value.cooldown || 0).toFixed(1) + ' s', 'Hits ' + (value.hits || 0)].join(' · '); },
+        onStatus(value) { if (disposed) return; Object.assign(playback, value); updatePlayback(); facts.textContent = value.error || (value.approaching?'Moving into skill range · ':'')+['Charge ' + Math.round((value.charge || 0) * 100) + '%', 'Cooldown ' + Number(value.cooldown || 0).toFixed(1) + ' s', 'Hits ' + (value.hits || 0)].join(' · '); },
         onSound(kind, value) { if (kind === 'stop' || kind === 'stopChannel' || soundEnabled) audio.cue(kind, Object.assign({}, value, {delay:(Number(value.delay)||0)/Math.max(.01,scenario.speed)})); }
       }); preview.setScenario(scenario); if (preview.setAudioEnabled) preview.setAudioEnabled(soundEnabled); if (preview.selectHandle) preview.selectHandle(handle.value);
     }
@@ -317,6 +323,8 @@ function mount(host, api) {
     const command = event.ctrlKey || event.metaKey, key = String(event.key).toLowerCase();
     if (command && key === 's') { event.preventDefault(); event.stopPropagation(); perform('save'); return; }
     const editing = event.target && (/^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable);
+    const typing=editing&&!(event.target.tagName==='INPUT'&&/^(checkbox|radio|range|button)$/.test(event.target.type));
+    if(!typing&&!command&&!event.altKey&&!event.repeat&&key==='r'){event.preventDefault();event.stopPropagation();restartPreview();return;}
     if (command && !editing && (key === 'z' || key === 'y')) { event.preventDefault(); event.stopPropagation(); perform(key === 'y' || event.shiftKey ? 'redo' : 'undo'); }
     if (!editing && !command && event.code === 'Space' && previewHost.contains(event.target)) { event.preventDefault(); play.click(); }
   }

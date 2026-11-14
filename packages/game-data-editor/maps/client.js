@@ -11,7 +11,7 @@ function mount(container, options) {
     const state = { snapshot: null, maps: [], map: 'Map01', info: null, selected: null, collider: null, images: {}, zoom: 1, panX: 0, panY: 0,
         filter: 'objects', search: '', showArt: true, showShapes: true, showRoutes: true, showDisabled: false, drag: null, route: null, closed: false };
     const root = el('div', undefined, 'hkd-map');
-    const style = el('style'); style.textContent = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8'); root.appendChild(style);
+    const style = el('style'); style.textContent = require('../panel/control-theme')(fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8')); root.appendChild(style);
     const toolbar = el('div', undefined, 'map-toolbar');
     const picker = el('select'); picker.title = 'Playable map';
     const fit = button('Fit map', fitMap), art = check('Artwork', true, value => { state.showArt = value; draw(); }), shapes = check('Physics', true, value => { state.showShapes = value; draw(); }), routes = check('Paths', true, value => { state.showRoutes = value; draw(); }), disabled = check('Disabled shapes', false, value => { state.showDisabled = value; draw(); });

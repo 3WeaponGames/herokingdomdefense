@@ -26,8 +26,27 @@ test('on-hit reaction waits for feedback delay while hit damage is immediate and
  await f.view.set({style:'fighter',settings:{visual:{impactDelay:.3}},description:f.description});f.view.seek(.2);assert(f.view.getState().hits>0);assert.equal(f.seeks.filter(s=>s.id==='enemy').at(-1).name,'idle');f.view.seek(.5);const hit=f.seeks.filter(s=>s.id==='enemy'&&s.name==='hit').at(-1);assert(hit);assert(Math.abs(hit.time)<1e-6);assert.equal(hit.loop,false);f.view.seek(.8);assert.equal(f.seeks.filter(s=>s.id==='enemy').at(-1).name,'idle');f.view.seek(.5);assert.equal(f.seeks.filter(s=>s.id==='enemy'&&s.name==='hit').at(-1).time,hit.time);assert.equal(f.changes.length,0);
 }));
 test('projectile width guide shows the actual full width and per-side collision distance',()=>withPreview(async f=>{
- await f.view.set({style:'skirmisher',settings:{projectileWidth:42,visual:{}},description:f.description});assert(f.labels.some(([text])=>text==='Width 84 (±42)'));assert.equal(f.changes.length,0);
+ await f.view.set({style:'skirmisher',settings:{projectileWidth:42,visual:{}},description:f.description});assert(f.labels.some(([text])=>text==='Projectile radius 42'));assert.equal(f.changes.length,0);
 }));
+
+test('the projectile has no independent position handles and its sprite stays centered on the swept collider',()=>withPreview(async f=>{
+ const pose=require('../../assets/_script/HeroSkillPose'),previous={tip:pose.arrowTipAt,angle:pose.arrowAimAngle,aim:pose.applyAim};pose.arrowTipAt=()=>({x:30,y:100});pose.arrowAimAngle=()=>0;pose.applyAim=()=>{};f.renderer.transformPoint=(d,x,y)=>({x:d.x+x*d.scaleX,y:d.y+y*d.scaleY});
+ try{const description={...f.description,layers:[{...f.description.layers[0],json:{...f.description.layers[0].json,_heroMaker:{role:3}}}]},settings={windup:.2,visual:{originX:999,offsetY:800,rotation:90}};await f.view.set({style:'skirmisher',settings,description});f.view.seek(.2);let state=f.view.getState();assert.equal(state.handles.length,0);const p=state.projectilePaths[0];assert(Math.abs(p.visual.x-30)<1e-6);assert(Math.abs(p.visual.y-100)<1e-6);assert.deepEqual(p.visual,p.damage);f.view.seek(.3);state=f.view.getState();assert.deepEqual(state.projectilePaths[0].visual,state.projectilePaths[0].damage);assert.equal(f.changes.length,0);}finally{pose.arrowTipAt=previous.tip;pose.arrowAimAngle=previous.angle;pose.applyAim=previous.aim;}
+}));
+
+test('restart resets and plays the current preview mode without drafts or audio',()=>withPreview(async f=>{
+ await f.view.set({style:'fighter',settings:{visual:{}},description:f.description});f.view.setScenario({mode:'basic',moving:true,targetDistance:900});f.view.seek(1);assert(f.view.getState().hero.x>0);f.view.restart();const state=f.view.getState();assert.equal(state.time,0);assert.equal(state.mode,'basic');assert.equal(state.playing,true);assert.equal(state.silent,true);assert.equal(state.approaching,true);assert.equal(state.hero.x,0);assert.equal(f.changes.length,0);
+}));
+
+test('moving horses approach out-of-range targets before casting, including diagonal targets and deterministic seeking',()=>{
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
+  const scenario={mode:'active',moving:true,targets:1,targetDistance:1200,attackRate:0,targetPositions:[{x:900,y:900}]},model=new Model(style,{windup:.2},scenario),arrival=model.approach.duration;
+  assert(model.status().approaching);assert.equal(model.events.some(e=>e.kind==='cast'),false);model.advance(arrival/2);assert(model.hero.x>0&&model.hero.y>0);assert.equal(model.lastAttackKind,null);assert.equal(model.hits,0);model.advance(arrival/2+.001);assert.equal(model.status().approaching,false);assert.equal(model.isMoving(),false);const cast=model.events.find(e=>e.kind==='cast');assert(cast,style);assert(Math.abs(cast.time-arrival)<1e-8,style);assert.equal(model.lastAttackKind,'skill');
+  const expected={x:model.hero.x,y:model.hero.y,time:model.time,events:model.events.map(e=>[e.kind,e.time])};model.seek(expected.time);assert(Math.abs(model.hero.x-expected.x)<1e-8);assert(Math.abs(model.hero.y-expected.y)<1e-8);assert.equal(model.events.filter(e=>e.kind==='cast').length,1);assert(Math.abs(model.events.find(e=>e.kind==='cast').time-arrival)<1e-8);
+ }
+ const basic=new Model('fighter',{}, {mode:'basic',moving:true,targets:1,targetDistance:900});basic.advance(basic.approach.duration+2);assert(basic.hits>0);assert.equal(basic.events.some(e=>e.kind==='cast'),false);
+ const distant=new Model('skirmisher',{windup:.35},{mode:'active',moving:true,targets:1,targetDistance:1500,attackRate:0});distant.advance(distant.approach.duration+.4);assert.equal(distant.projectiles.length,1,'An approaching preview must not clip the arrow inside the old fixed box');distant.advance(.5);assert(distant.hits>0);
+});
 test('Vanguard releases the final pose instead of replaying an ordinary recovery after the seventh hit',()=>withPreview(async f=>{
  await f.view.set({style:'vanguard',settings:{duration:2.5,strikes:7,visual:{}},description:f.description});f.view.seek(2.5);assert.equal(f.view.getState().hits,7);assert.equal(f.seeks.filter(s=>s.id==='hero').at(-1).name,'attack_vanguard');f.view.seek(2.51);assert.equal(f.seeks.filter(s=>s.id==='hero').at(-1).name,'idle');
 }));
@@ -43,14 +62,9 @@ test('an obsolete rejected rig cannot report failure after another style has loa
  const create=f.renderer.createLayers;let reject;f.renderer.createLayers=(runtime,layers)=>layers.some(l=>l.uuid==='obsolete')?new Promise((_resolve,r)=>reject=r):create(runtime,layers);
  const old=f.view.set({style:'fighter',settings:{visual:{}},description:{...f.description,layers:[{...f.description.layers[0],uuid:'obsolete'}]}});await Promise.resolve();assert(reject);await f.view.set({style:'guardian',settings:{visual:{}},description:f.description});reject(Error('Obsolete rig unavailable'));await assert.doesNotReject(old);assert.equal(f.view.getState().loaded,true);
 }));
-test('the arrow Origin handle uses the same locked cast direction after selecting another enemy',()=>withPreview(async f=>{
- const pose=require('../../assets/_script/HeroSkillPose'),original={tip:pose.arrowTip,angle:pose.arrowAimAngle,aim:pose.applyAim},directions=[];
- pose.arrowTip=(_s,d)=>{directions.push({...d});return{x:20,y:20};};pose.arrowAimAngle=()=>0;pose.applyAim=()=>{};
- const create=f.renderer.createLayers;f.renderer.createLayers=async(...args)=>{const layers=await create(...args);for(const layer of layers)layer.skeleton.findBone=()=>({worldX:20,worldY:20});return layers;};
- try{const description={...f.description,layers:[{...f.description.layers[0],json:{...f.description.layers[0].json,_heroMaker:{role:3}}}]};await f.view.set({style:'skirmisher',settings:{windup:.35,visual:{}},description});f.view.seek(.1);const region=f.view.getState().enemyRegions[1],event={button:0,pointerId:8,clientX:(region.left+region.right)/2,clientY:(region.top+region.bottom)/2,preventDefault(){}};f.events().get('pointerdown')(event);f.events().get('pointermove')({...event,clientY:event.clientY-80});f.events().get('pointerup')(event);assert.equal(f.view.getState().selectedTarget,1);assert.deepEqual(directions.at(-1),{x:1,y:0});}
- finally{pose.arrowTip=original.tip;pose.arrowAimAngle=original.angle;pose.applyAim=original.aim;}
+test('moving a preview target after release never steers an existing arrow',()=>withPreview(async f=>{
+ await f.view.set({style:'skirmisher',settings:{windup:.2,visual:{}},description:f.description});f.view.seek(.21);const direction=f.view.getState().projectilePaths[0].direction,region=f.view.getState().enemyRegions[1],event={button:0,pointerId:8,clientX:(region.left+region.right)/2,clientY:(region.top+region.bottom)/2,preventDefault(){}};f.events().get('pointerdown')(event);f.events().get('pointermove')({...event,clientY:event.clientY-80});f.events().get('pointerup')(event);assert.deepEqual(f.view.getState().projectilePaths[0].direction,direction);assert.equal(f.changes.length,0);
 }));
-
 
 test('imported aura, shield and overhead mark handles edit only their own presentation offsets',()=>withPreview(async f=>{
  const Settings=require('../../assets/_script/HeroSkillSettings');

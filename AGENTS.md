@@ -30,3 +30,9 @@
 - Keep maintained automated tests, their required fixtures, production game assets, source/configuration files, and required Cocos-managed caches/state in their proper project locations. A file's name alone is not evidence that it is disposable.
 - Before moving existing artifacts, check for active processes and references, preserve their contents in the external archive, and verify the resolved source/destination paths. Keep files required by an active editor/simulator session in place until that session ends, then archive its disposable output.
 - Cleanup is local unless the user explicitly authorizes a repository cleanup commit and push. Do not rewrite Git history. Preserve unrelated work and record what was moved and where outside the repository.
+
+## Keep structure shadows on the ground
+
+- Generated building, wall and gate shadows always use ground projection. Do not reintroduce a silhouette/offset rendering mode or a shadow-shape selector.
+- Missing or legacy projection fields must use the ground defaults in `assets/_script/BuildingDropShadow.js`. Preserve saved numeric edits; do not reset the global light when opening panels, changing scope, changing buildings or starting a stage.
+- Global, tier and individual numeric settings, manual polygon masks and the explicit None scope remain authorable. Opening or previewing the editor must not write or reseed their saved data.

@@ -11,7 +11,7 @@ function mount(host,api){
  let scale=1,cx=0,cy=0,zoom=state.zoom||1;const inputs={},labels={},building={x:0,y:0,scale:1,angle:0};
  if(variants.length){const label=make('label','Placement variant',right),select=make('select',undefined,label);select.setAttribute('aria-label','Ground pad placement variant');variants.forEach(v=>{const o=make('option',v.label,select);o.value=v.id;});select.value=variant;select.onchange=()=>{cancel();variant=select.value;state.variant=variant;load();};}
  const supported=!!canvas.getContext,g=supported&&canvas.getContext('2d'),renderer=supported&&Renderer.create({onLoad:draw,onError:e=>message(e.message,true)});
- function resize(){if(!supported||closed)return;const b=canvas.getBoundingClientRect(),w=Math.round(b.width),h=Math.round(b.height);if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;state.previewHeight=h;draw();}}
+ function resize(){if(!supported||closed)return;const b=canvas.getBoundingClientRect(),w=Math.round(b.width),h=Math.round(b.height);if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;state.previewHeight=canvas.offsetHeight||h;draw();}}
  const observer=supported&&typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;if(observer)observer.observe(canvas);
  function message(text,error){status.textContent=text;status.className='bld-pad-help'+(error?' error':'');}
  function sync(){for(const axis of ['x','y'])inputs[axis].value=String(value[axis]);inputs.southwest.checked=value.southwest;}

@@ -111,13 +111,13 @@ test('unchanged charge and empty world overlays do not rebuild Graphics every fr
  f.rt.state.charge=.75;f.hud.update(f.hero,f.rt);assert.equal(charge.clearCalls,before.charge+1);
 });
 
-test('Skirmisher guide follows the exact sampled release origin and configured visual offsets',()=>{
+test('Skirmisher guide uses its exact bow release and ignores obsolete independent offsets',()=>{
  const f=fixture('skirmisher',{skillOrigin:()=>({x:30,y:120})});f.hero.ctrPlayAni={};
  f.rt.settings={visual:Object.assign(require('../../assets/_script/HeroSkillSettings').defaults('skirmisher').visual,{originX:4,originY:5,offsetX:6,offsetY:7})};
  f.rt.aiming=true;f.hud.update(f.hero,f.rt);
  const lines=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='moveTo');
- assert.deepEqual(lines.slice(0,2),[['moveTo',40,132],['moveTo',40,132]]);
- const ends=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='lineTo');assert.deepEqual(ends.slice(0,2),[['lineTo',540,132],['lineTo',540,132]]);
+ assert.deepEqual(lines.slice(0,2),[['moveTo',30,120],['moveTo',30,120]]);
+ const ends=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='lineTo');assert.deepEqual(ends.slice(0,2),[['lineTo',500,120],['lineTo',500,120]]);
 });
 
 test('Skirmisher aim prediction uses the selected authored skill clip before the cast begins',()=>{

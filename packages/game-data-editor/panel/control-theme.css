@@ -1,0 +1,21 @@
+/* Shared native-control colours for every authoring panel and popup list. */
+:host, :root { color-scheme: dark; }
+button, input, select, textarea { color-scheme: dark; }
+button { color: #e7ebf3; background-color: #343a48; border-color: #4a5364; }
+select, textarea, input:not([type]), input[type=text], input[type=number],
+input[type=search], input[type=password], input[type=email], input[type=url],
+input[type=tel], input[type=date], input[type=time], input[type=datetime-local],
+input[type=month], input[type=week], input[type=file] {
+  color: #e7ebf3; background-color: #1d222b; border-color: #4a5568; caret-color: #e7ebf3;
+}
+select option, select optgroup { color: #e7ebf3; background-color: #1d222b; }
+select option:checked { color: #ffffff; background-color: #324a6b; }
+select option:disabled { color: #aab9cd; background-color: #252b35; }
+:host input:disabled, :host select:disabled, :host textarea:disabled,
+:root input:disabled, :root select:disabled, :root textarea:disabled {
+  color: #aab9cd; background-color: #252b35; border-color: #354052;
+  -webkit-text-fill-color: #aab9cd; opacity: 1;
+}
+input::placeholder, textarea::placeholder { color: #9babc1; opacity: 1; }
+input[type=checkbox], input[type=radio], input[type=range] { accent-color: #368ced; }
+input[type=file]::-webkit-file-upload-button { color: #e7ebf3; background-color: #343a48; border-color: #4a5364; }

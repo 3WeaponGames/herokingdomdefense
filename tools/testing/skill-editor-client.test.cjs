@@ -13,6 +13,7 @@ function store(catalogs) {
     if (name === 'describe') return { runtimePath: '', layers: [{ json: { animations: { idle: {}, attack: {}, move: {} } } }] };
     if (name !== 'load') { assert.equal(request.version, version); assert.equal(request.revision, 'disk-revision'); }
     if (name === 'change') { undo.push(copy(data)); redo = []; data[request.style] ||= {}; Settings.set(data[request.style], request.path, request.value); version++; }
+    if (name === 'alignProjectile') { undo.push(copy(data));redo=[];data.skirmisher ||= {};for(const [path,value]of Object.entries({projectileFromBow:true,projectileOffsetX:0,projectileOffsetY:0,'visual.originX':0,'visual.originY':0,'visual.offsetX':0,'visual.offsetY':0}))Settings.set(data.skirmisher,path,value);version++; }
     if (name === 'save') { saved = copy(data); version++; return { ...snapshot(), result: { saved: true } }; }
     if (name === 'undo') { redo.push(copy(data)); data = undo.pop(); version++; }
     if (name === 'redo') { undo.push(copy(data)); data = redo.pop(); version++; }
@@ -95,12 +96,23 @@ test('preview attack rate changes tick cadence inputs without staging or saving 
 });
 test('position handles expose only useful anchors for the selected style and reset an unavailable selection', async () => {
   const f = await fixture(), options = () => f.field('Handle').options.map(option => option.value);
-  assert.deepEqual(options(), ['origin', 'effect']);
+  assert.deepEqual(options(), []);assert.equal(f.field('Handle').parentElement.hidden,true);
   await f.client.selectStyle('mystic'); await f.settle(); assert.deepEqual(options(), ['origin', 'target', 'effect', 'mark']);
   f.field('Handle').value = 'target'; f.field('Handle').onchange();
   await f.client.selectStyle('fighter'); await f.settle(); assert.deepEqual(options(), ['effect', 'passive']); assert.equal(f.field('Handle').value, 'effect');
   await f.client.selectStyle('guardian'); await f.settle(); assert.deepEqual(options(), ['effect', 'buff', 'taunt', 'shield']);
   assert.equal(f.backend.calls.some(call => call.name === 'change' || call.name === 'save'), false); f.close();
+});
+
+test('projectile controls expose a single automatic launch and collider size without independent offsets',async()=>{
+ const f=await fixture();f.button('Position & VFX').click();await f.settle();assert(f.field('Projectile radius'));for(const label of ['Launch offset X','Launch offset Y','Artwork offset X','Artwork offset Y','Damage follows projectile','Damage offset X','Damage offset Y','VFX thickness'])assert.equal(f.field(label),null,label);assert.equal(f.button('Align projectile to bow'),undefined);assert.equal(f.backend.snapshot().dirty,false);f.field('Projectile radius').value='41';f.field('Projectile radius').onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.projectileWidth,41);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
+});
+
+test('R restarts the current preview without editing drafts and stays available for typing in fields',async()=>{
+ const f=await fixture(),root=f.host.children[0],key=root.listeners.keydown;let stopped=0;
+ key({key:'r',target:root,preventDefault(){stopped++;},stopPropagation(){}});assert.equal(f.calls.seeks.at(-1),0);assert.equal(f.calls.plays.at(-1),true);assert.equal(stopped,1);
+ const count=f.calls.seeks.length;for(const event of [{target:f.field('Cooldown')},{target:root,ctrlKey:true},{target:root,altKey:true},{target:root,repeat:true}])key({key:'r',preventDefault(){throw Error('Typing or modified keys must remain untouched');},stopPropagation(){},...event});assert.equal(f.calls.seeks.length,count);
+ f.button('Restart (R)').click();await flush();assert.equal(f.calls.seeks.length,count+1);key({key:'R',target:f.field('Horse moving'),preventDefault(){},stopPropagation(){}});assert.equal(f.calls.seeks.length,count+2,'R also works after clicking Horse moving');assert.equal(f.backend.calls.some(c=>c.name==='change'||c.name==='save'),false);f.close();
 });
 test('invalid numeric fields block Ctrl+S and remain visible until corrected or discarded', async () => {
   const f = await fixture(), input = f.field('Cooldown'); input.value = -5; input.oninput();

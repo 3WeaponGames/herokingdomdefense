@@ -21,4 +21,10 @@ function finish(mask){
  if(result.flat(2).some(p=>p.some(n=>Math.abs(n)>10000)))throw Error('Polygon coordinates exceed the allowed range.');
  return result;
 }
-module.exports={handles,move,finish};
+function hit(mask,point,tolerance=0){
+ function inside(ring){let yes=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>point.y)!==(b[1]>point.y)&&point.x<(b[0]-a[0])*(point.y-a[1])/(b[1]-a[1])+a[0])yes=!yes;}return yes;}
+ for(const region of mask){let filled=false;for(const ring of region)if(inside(ring))filled=!filled;if(filled)return true;}
+ if(tolerance>0)for(const region of mask)for(const ring of region)for(let i=1;i<ring.length;i++){const a=ring[i-1],b=ring[i],dx=b[0]-a[0],dy=b[1]-a[1],length=dx*dx+dy*dy,t=length?Math.max(0,Math.min(1,((point.x-a[0])*dx+(point.y-a[1])*dy)/length)):0;if(Math.hypot(point.x-a[0]-dx*t,point.y-a[1]-dy*t)<=tolerance)return true;}
+ return false;
+}
+module.exports={handles,move,finish,hit};

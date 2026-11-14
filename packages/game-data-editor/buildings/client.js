@@ -35,7 +35,7 @@ function rows(panel) {
     return result;
 }
 function select(panel, key, position) {
-    panel._selected = key; panel._level = position || 0; panel.$detail.scrollTop = 0; panel._render();
+    panel._selected = key; panel._level = position || 0; panel._render();
 }
 function artwork(panel, parent, icon, className) {
     const asset = panel._image(icon);
@@ -147,6 +147,13 @@ function towerSettings(panel, row, level, at) {
     panel._note('Attack type, targeting and projectile settings apply to this tower level. Editing a field changes only this level’s draft.',false,section);
     Settings.towerFields(level.Tower).forEach(field=>panel._field(section,field.label,field.value,next=>level.Tower&&typeof level.Tower==='object'&&!Array.isArray(level.Tower)?panel._set('A',at.concat('Tower',field.key),next):panel._set('A',at.concat('Tower'),{[field.key]:next}),field));
 }
+function carryPreviewState(previous){
+    previous=previous||{};const result={};
+    for(const key of ['layer','tool','zoom','previewHeight'])if(previous[key]!==undefined)result[key]=previous[key];
+    if(previous.view)result.view=Object.assign({},previous.view);
+    for(const key of ['scaleView','nightView'])if(previous[key]){const view={};for(const field of ['unit','zoom','cx','cy','fitted','previewHeight','handles'])if(previous[key][field]!==undefined)view[field]=previous[key][field];result[key]=view;}
+    return result;
+}
 function render(panel, row, api) {
     if (row.overview) { overview(panel); return; }
     const building = row.record, at = row.path, id = typeID(row);
@@ -191,10 +198,12 @@ function render(panel, row, api) {
     mechanics(panel, row, level, keys, context);
     towerSettings(panel,row,level,keys);
     const blocker=panel._section('Blocker, shadow, scale & nightlight');
-    const blockerKey=id+':'+level.index;
-    if(panel._blockerStateKey!==blockerKey){panel._blockerStateKey=blockerKey;panel._blockerState={};}
+    const blockerKey=id+':'+row.rootIndex;
+    if(panel._blockerStateKey!==blockerKey){panel._blockerStateKey=blockerKey;panel._blockerState=carryPreviewState(panel._blockerState);}
+    if(panel._blockerRowKey!==id+':'+level.index){panel._blockerRowKey=id+':'+level.index;panel._blockerState.points=[];}
     const scaleRequest={id,levelIndex:branch.position,familyRoot:row.rootIndex,expectedIndex:level.index};
-    panel._blockerClient=require('./blocker-client').mount(blocker,{ipc:api.ipc,request:scaleRequest,state:panel._blockerState,onNightlight:(value,expected)=>panel._change(()=>require('./nightlight-data').edits(panel._data('A'),scaleRequest,value,expected)),onShadowStyle:action=>panel._change(()=>require('./drop-shadow-data').edits(panel._data('A'),panel._data('overrides'),scaleRequest,action),{skipEmpty:true,keepDetail:panel._selected+':'+panel._level}).then(()=>require('./drop-shadow-data').describe(panel._data('A'),panel._data('overrides'),scaleRequest)),onDuplicate:layer=>panel._change(()=>require('./scale-group').duplicateShape(panel._data('A'),scaleRequest,layer==='shadow'?'Shadow':'Blocker'),{skipEmpty:true}),onChange:(value,layer)=>layer==='scale'&&value&&Array.isArray(value.parts)?panel._change(()=>require('./scale-group').partEdits(panel._data('A'),scaleRequest,value.parts)):layer==='scale'&&value&&Array.isArray(value.tiers)?panel._change(()=>require('./scale-group').edits(panel._data('A'),scaleRequest,value.tiers)):panel._change([{doc:'A',path:keys.concat(layer==='scale'?'WorldScale':layer==='shadow'?'Shadow':'Blocker'),value}])});
+    const livePreview={skipEmpty:true,keepDetail:panel._selected+':'+panel._level,skipPreview:true};
+    panel._blockerClient=require('./blocker-client').mount(blocker,{ipc:api.ipc,request:scaleRequest,state:panel._blockerState,onNightlight:(value,expected)=>panel._change(()=>require('./nightlight-data').edits(panel._data('A'),scaleRequest,value,expected),livePreview),onShadowStyle:action=>panel._change(()=>require('./drop-shadow-data').edits(panel._data('A'),panel._data('overrides'),scaleRequest,action),livePreview).then(()=>require('./drop-shadow-data').describe(panel._data('A'),panel._data('overrides'),scaleRequest)),onDuplicate:layer=>panel._change(()=>require('./scale-group').duplicateShape(panel._data('A'),scaleRequest,layer==='shadow'?'Shadow':'Blocker'),livePreview),onChange:(value,layer)=>layer==='scale'&&value&&Array.isArray(value.parts)?panel._change(()=>require('./scale-group').partEdits(panel._data('A'),scaleRequest,value.parts),livePreview):layer==='scale'&&value&&Array.isArray(value.tiers)?panel._change(()=>require('./scale-group').edits(panel._data('A'),scaleRequest,value.tiers),livePreview):panel._change([{doc:'A',path:keys.concat(layer==='scale'?'WorldScale':layer==='shadow'?'Shadow':'Blocker'),value}],livePreview)});
     const costs = panel._section('Health, level & costs');
     ['Hp','level'].filter(key => own(level, key)).forEach(key => {
         if(id==='6'&&key==='level')panel._field(costs,'Unlock level',level.level,next=>panel._set('A',keys.concat('level'),next),{integer:true,min:1,help:'Wall tabs show artwork tiers. This level controls castle unlocks; existing upgrade paths are preserved.'});

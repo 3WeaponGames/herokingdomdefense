@@ -56,6 +56,7 @@ function branchPosition(f, typeID, index) {
     return position;
 }
 function fixture() {
+    const options = arguments[0] && typeof arguments[0] === 'object' ? arguments[0] : {};
     const store = new Store(project), messages = [], previews = [], modules = new Map();
     let previewActions;
     const context = vm.createContext({ document: { createElement: tag => new Element(tag) }, setTimeout, clearTimeout, console });
@@ -91,6 +92,7 @@ function fixture() {
         function requireForPanel(name) {
             const resolved = local.resolve(name);
             if (resolved === path.join(project, 'packages/game-data-editor/preview/client.js')) return preview;
+            if (options.blocker && resolved === path.join(project, 'packages/game-data-editor/buildings/blocker-client.js')) return options.blocker;
             if (resolved.startsWith(path.join(project, 'packages/game-data-editor/buildings') + path.sep)) return load(resolved);
             return local(name);
         }

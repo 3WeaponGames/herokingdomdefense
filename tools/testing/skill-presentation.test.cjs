@@ -11,7 +11,7 @@ function fixture(audioManager){
   loadAny(request,callback){loads.push({request,callback});}
  }};
  const sp={Skeleton:class{setAnimation(track,name,loop){return this.animation={track,name,loop,trackTime:0,timeScale:1};}update(){this.appliedTime=this.animation.trackTime;}},SkeletonData:class{}};
- const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports,cc,sp,require:name=>name==='UnitHitFeedback'?{play:actor=>hitReactions.push(actor)}:name==='./HeroSkillVFXState'?require('../../assets/_script/HeroSkillVFXState'):name==='./HeroSkillVFXLayout'?require('../../assets/_script/HeroSkillVFXLayout'):name==='./HeroSkillPose'?require('../../assets/_script/HeroSkillPose'):name==='AudioMgr'?{AudioMgr:{getInstance:()=>manager}}:name==='BattleSounds'?{attack:(hero,side)=>defaults.push({hero,side}),effect:(id,hero)=>defaults.push({id,hero})}:Settings});
+ const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports,cc,sp,require:name=>name==='UnitHitFeedback'?{play:actor=>hitReactions.push(actor)}:/^\.\/HeroSkill(VFXState|VFXLayout|Pose|Projectile)$/.test(name)?require('../../assets/_script/'+name.slice(2)):name==='AudioMgr'?{AudioMgr:{getInstance:()=>manager}}:name==='BattleSounds'?{attack:(hero,side)=>defaults.push({hero,side}),effect:(id,hero)=>defaults.push({id,hero})}:Settings});
  const target={hp:10,node:{getPosition:()=>({x:100,y:20})}},root=new Node('VFX');
  const rt={heroGeneration:3,hero:{node:{}},state:{style:'mystic',time:0},settings:Settings.defaults('mystic'),game:{_combatEpoch:7,ndMain:{convertToWorldSpaceAR:p=>({x:p.x*2,y:p.y*2})}},ui:{speed:1},projectiles:[],effects:[],available:()=>true};
  Object.assign(rt.settings.visual,{passiveResource:'',beamResource:'',markResource:'',buffResource:'',tauntResource:'',shieldResource:''});
@@ -80,9 +80,13 @@ test('interleaved strikes retain independent impact budgets and delayed audio st
  assert.equal(f.rt._presentation.pending.length,512);assert.equal(f.rt._presentation.impactKeys.size,512);
 });
 
-test('a launch offset follows the actual bow tip without moving the gameplay path',()=>{
+test('projectile artwork is centered on the collider and ignores obsolete independent offsets',()=>{
  const f=fixture(),arrow={x:10,y:20,visualOffset:{x:30,y:114}};const at=f.P.projectilePoint(arrow,f.rt.settings.visual);
- assert.equal(at.x,40);assert.equal(at.y,134);assert.equal(arrow.x,10);assert.equal(arrow.y,20);
+ assert.equal(at.x,10);assert.equal(at.y,20);assert.equal(arrow.x,10);assert.equal(arrow.y,20);
+});
+
+test('imported projectile sprites and Spine artwork fit around the one collider center',()=>{
+ for(const kind of ['sprite','spine']){const f=fixture(),p={x:100,y:40,width:28,direction:{x:1,y:0},speed:100,travelled:0};f.rt.projectiles=[p];Object.assign(f.rt.settings.visual,{resource:uuid,resourceKind:kind,scale:4});f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.root.children[0].active,false);const asset=kind==='sprite'?{getRect:()=>({width:80,height:20})}:{skeletonJson:{skeleton:{x:-20,y:10,width:40,height:60},animations:{idle:{}}}};f.loads[0].callback(null,asset);f.P.attachments({visual:{node:f.root}},f.rt);const node=f.root.children[0];assert.equal(node.x,100);assert.equal(node.y,40);assert.equal(node.active,true);const expected=56/Math.hypot(kind==='sprite'?80:40,kind==='sprite'?20:60);assert(Math.abs(node.scaleX-expected)<1e-8);if(kind==='spine'){assert.equal(node.children[0].x,0);assert.equal(node.children[0].y,-40);}f.P.clear(f.rt);}
 });
 
 test('a stale saved VFX clip falls back to an existing asset clip without throwing',()=>{
@@ -93,7 +97,7 @@ test('a stale saved VFX clip falls back to an existing asset clip without throwi
 test('saved sprite VFX resolves bundle identity and applies visual offsets without changing the projectile',()=>{
  const f=fixture(),projectile={x:10,y:20,direction:{x:1,y:0}};f.rt.projectiles=[projectile];Object.assign(f.rt.settings.visual,{resource:uuid,resourceBundle:'resources',resourcePath:'fx/spark',resourceKind:'sprite',originX:2,originY:3,offsetX:4,offsetY:5,scale:.6,rotation:30,opacity:.4});
  f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.loads.length,1);assert.equal(f.loads[0].resource,'fx/spark');const sprite={name:'spark'};f.loads[0].callback(null,sprite);
- const node=f.root.children[0];assert.equal(node.x,16);assert.equal(node.y,28);assert.equal(node.scale,.6);assert.equal(node.angle,30);assert.equal(node.opacity,102);assert.equal(node.component.spriteFrame,sprite);assert.equal(projectile.x,10);assert.equal(projectile.y,20);
+ const node=f.root.children[0];assert.equal(node.x,10);assert.equal(node.y,20);assert.equal(node.scale,.6);assert.equal(node.angle,0);assert.equal(node.opacity,102);assert.equal(node.component.spriteFrame,sprite);assert.equal(projectile.x,10);assert.equal(projectile.y,20);
  f.rt.projectiles=[];f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(node.destroyed,true);
 });
 test('late VFX asset load cannot attach a component after cleanup, and Spine chooses the authored effect animation',()=>{

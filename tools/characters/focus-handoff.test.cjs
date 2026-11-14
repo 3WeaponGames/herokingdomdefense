@@ -55,7 +55,7 @@ test('game-tools routes exact appearance targets through Characters validation a
 test('a Characters panel claims notifications before or after ready without loading data again',async()=>{
   const filename=path.join(root,'packages/hkd-characters/panel.js'),calls=[],focused=[];let spec,pending={type:'ally',id:'90001',level:3};
   const client={focusUnit:async request=>focused.push(request),destroy:()=>calls.push('destroy')},Editor={Project:{path:root},Panel:{extend:value=>{spec=value;}},Ipc:{sendToMain(message,_payload,callback){calls.push(message);const value=pending;pending=null;callback(null,value);}},warn:message=>{throw Error(message);}};
-  vm.runInNewContext(fs.readFileSync(filename,'utf8'),{Editor,require:name=>name==='./client'?{mount:()=>client}:name==='../game-data-editor/preview/spine-renderer'?{}:name==='../../assets/_script/CharacterPartsCore'?{}:require(name),__dirname:path.dirname(filename)},{filename});
+  vm.runInNewContext(fs.readFileSync(filename,'utf8'),{Editor,require:name=>name==='./client'?{mount:()=>client}:name==='../game-data-editor/preview/spine-renderer'?{}:name==='../../assets/_script/CharacterPartsCore'?{}:createRequire(filename)(name),__dirname:path.dirname(filename)},{filename});
   const panel=Object.assign({},spec,{$root:{}});panel.messages['hkd-characters:focus-available'].call(panel);assert.equal(calls.length,0);panel.ready();await tick();
   assert.deepEqual(focused,[{type:'ally',id:'90001',level:3}]);assert.deepEqual(calls,['hkd-characters:take-focus']);
   pending={type:'ally',id:'90002',level:1};panel.messages['hkd-characters:focus-available'].call(panel);await tick();assert.equal(focused[1].id,'90002');panel.close();

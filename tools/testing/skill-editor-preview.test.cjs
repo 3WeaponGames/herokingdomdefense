@@ -32,9 +32,9 @@ test('active arrows pierce the three preview targets and are removed beyond the 
   const model=new Model('skirmisher',{windup:.1},{mode:'active',targetDistance:120,targets:3,attackRate:0});
   simulate(model,.8);assert.equal(model.hits,3);assert(model.damage>300);simulate(model,2);assert.equal(model.projectiles.length,0);assert.equal(model.hits,3);
 });
-test('visual offsets never change preview collision results and seeking is deterministic',()=>{
+test('weapon-relative area offsets change actual collisions and seeking is deterministic',()=>{
   const settings={visual:{originX:1000,targetX:-900,offsetY:400,scale:5}},a=new Model('vanguard',settings,{targetDistance:100,mode:'active',moving:true}),b=new Model('vanguard',{}, {targetDistance:100,mode:'active',moving:true});
-  a.seek(2.5);b.seek(2.5);assert.equal(a.hits,b.hits);close(a.damage,b.damage);const result=JSON.stringify(a.status());a.seek(2.5);assert.equal(JSON.stringify(a.status()),result);
+  a.seek(2.5);b.seek(2.5);assert.notEqual(a.hits,b.hits);assert.notEqual(a.damage,b.damage);const result=JSON.stringify(a.status());a.seek(2.5);assert.equal(JSON.stringify(a.status()),result);
 });
 test('geometric preview helpers use the current arc position and a swept arrow segment',()=>{
   assert.equal(inArc({x:30,y:0},{x:150,y:0},{x:1,y:0},130,Math.PI/3),true);
@@ -97,7 +97,7 @@ test('custom VFX tint multiplies straight RGB without brightening black shadows 
   assert.deepEqual([...source],[0,0,0,80,255,128,64,128,255,255,255,0]);
 });
 test('positioning handles expose only controls supported by that style',()=>{
-  assert.deepEqual(Preview.availableHandles('mystic'),['origin','target','effect']);assert.deepEqual(Preview.availableHandles('skirmisher'),['origin','effect']);
+  assert.deepEqual(Preview.availableHandles('mystic'),['origin','target','effect']);assert.deepEqual(Preview.availableHandles('skirmisher'),[]);
   for(const style of ['fighter','vanguard','bruiser','guardian'])assert.deepEqual(Preview.availableHandles(style),['effect']);
 });
 test('queued active impacts and their effects use the selected authored delay and current eligible targets',()=>{
@@ -174,9 +174,9 @@ test('a non-repeating preview stops at its end and Play or Cast starts a fresh p
  finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
 
-test('position and color edits preserve the simulation and channel without replaying prior combat',async()=>{
+test('area position edits recompute preview hits without replaying audio or changing timeline position',async()=>{
  const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let steps=0;const Core=require('../../assets/_script/HeroStyleSkills'),core={...Core,step(...args){steps++;return Core.step(...args);}},sounds=[];
- try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),core,onSound:kind=>sounds.push(kind)});await view.set({style:'fighter',settings:{visual:{}},description});view.seek(3);const before=view.getState(),calls=steps,soundCount=sounds.length;await view.set({style:'fighter',settings:{visual:{offsetX:12,color:'#abcdef'}},description});assert.equal(steps,calls);assert.equal(sounds.length,soundCount);assert.equal(view.getState().hits,before.hits);close(view.getState().damage,before.damage);close(view.getState().time,before.time);close(view.getState().handles.find(h=>h.name==='effect').world.x,12);view.destroy();}
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),core,onSound:kind=>sounds.push(kind)});await view.set({style:'fighter',settings:{visual:{}},description});view.seek(3);const before=view.getState(),calls=steps,soundCount=sounds.length;await view.set({style:'fighter',settings:{visual:{offsetX:12,color:'#abcdef'}},description});assert(steps>calls);assert.equal(sounds.filter(x=>x!=='stop').length,0);close(view.getState().time,before.time);close(view.getState().handles.find(h=>h.name==='effect').world.x,12);view.destroy();}
  finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
 
@@ -270,7 +270,15 @@ test('swept arrow contact uses the first circle entry while the closest-point he
 });
 
 test('arrow preview damage and first-contact ordering are independent of rendered frame size',()=>{
- const run=step=>{const m=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0,projectileWidth:28},{mode:'active',targets:2,targetDistance:100,attackRate:0});Object.assign(m.targets[0],{x:100,y:27});Object.assign(m.targets[1],{x:110,y:0});let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.2),b=run(.01),hits=a.events.filter(e=>e.kind==='impact');
+ const run=step=>{const m=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0,projectileWidth:28},{mode:'active',targets:2,targetDistance:100,attackRate:0,manualAim:true});Object.assign(m.targets[0],{x:100,y:27});Object.assign(m.targets[1],{x:110,y:0});let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.2),b=run(.01),hits=a.events.filter(e=>e.kind==='impact');
  assert.deepEqual(hits.map(e=>e.target),[1,0]);assert.deepEqual(b.events.filter(e=>e.kind==='impact').map(e=>e.target),[1,0]);close(a.damage,b.damage);close(hits[0].time,.082/1.75);close(hits[0].damage,108.2);
  const inside=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0},{mode:'active',targets:3,targetDistance:1,attackRate:0});inside.targets.forEach(t=>Object.assign(t,{x:10,y:0}));inside.advance(.1);assert.deepEqual(inside.events.filter(e=>e.kind==='impact').map(e=>e.target),[0,1,2]);
+});
+
+
+test('a legacy projectile artwork scale cannot resize its sprite independently of the collider',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame,oldImage=global.Image,scales=[];global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};global.Image=class{constructor(){this.width=80;this.height=20;}set src(value){this.onload();}};
+ const ctx=h.root.ownerDocument.createElement('canvas').getContext('2d');ctx.scale=(...args)=>scales.push(args);let view;
+ try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});const d={...description,effects:[{id:'fx',kind:'sprite',url:'silent-fixture.png'}]},set=scale=>view.set({style:'skirmisher',settings:{windup:.1,projectileWidth:28,visual:{resource:'fx',scale}},description:d});await set(1);scales.length=0;view.seek(.15);const expected=scales.map(s=>s.slice());assert(expected.length);await set(4);scales.length=0;view.seek(.15);assert.deepEqual(scales,expected);assert.equal(view.getState().projectilePaths.length,1);
+ }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;global.Image=oldImage;}
 });

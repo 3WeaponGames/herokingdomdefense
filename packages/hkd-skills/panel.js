@@ -2,7 +2,7 @@
 const fs = require('fs'), path = require('path'), URL = require('url');
 Editor.Panel.extend({
   template: '<div id="skills"></div>',
-  style: fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8'),
+  style: require('../game-data-editor/panel/control-theme')(fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8')),
   $: { root: '#skills' },
   ready() {
     const root = Editor.Project && Editor.Project.path || Editor.projectPath;

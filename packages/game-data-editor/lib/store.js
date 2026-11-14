@@ -90,7 +90,7 @@ class Store {
     saveCandidate(){
         // Refresh only untouched inputs, in isolation. A failed save must keep
         // the user's draft and its undo/redo history exactly as they were.
-        const documents=Object.assign({},this.documents);
+        const documents=require('./shadow-preset-merge').documents(this)||Object.assign({},this.documents);
         const overridesChanged=!JSONDocument.equal(documents.overrides.original,documents.overrides.data);
         Object.keys(documents).filter(id=>!documents[id].virtual).forEach(id=>{
             const d=documents[id],text=fs.readFileSync(this.absolute(d.path),'utf8');

@@ -7,7 +7,7 @@ function nameOf(row){return String(row.name||row.Name||row.label||row.EquipName|
 function list(value){return Array.isArray(value)?value:Object.keys(value||{}).map(id=>Object.assign({id},value[id]));}
 function integer(value,min,max){const n=Number(value);if(!Number.isInteger(n)||n<min||n>max)throw Error('Enter a whole number between '+min+' and '+max+'.');return n;}
 function mount(container,api){
-  const root=el('div',undefined,container,'hkd-testing'),style=el('style',undefined,root);style.textContent=fs.readFileSync(path.join(__dirname,'style.css'),'utf8');
+  const root=el('div',undefined,container,'hkd-testing'),style=el('style',undefined,root);style.textContent=require('../panel/control-theme')(fs.readFileSync(path.join(__dirname,'style.css'),'utf8'));
   let snapshot=null,disposed=false,busy=false,poll=null,catalogSignature='',lastMessage='';const commandButtons=[];
   const session=el('section',undefined,root,'test-session'),sessionTop=el('div',undefined,session,'test-session-top'),sessionHeading=el('div',undefined,sessionTop);
   el('h2','Managed test player',sessionHeading);el('span','ISOLATED PLAYER · MUTED',sessionTop,'test-managed');

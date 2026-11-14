@@ -9,7 +9,7 @@ function transform(node,frame){
 function place(node,m){var sx=Math.hypot(m[0],m[1]);node.setPosition(m[4],m[5]);node.angle=Math.atan2(m[1],m[0])*180/Math.PI;node.scaleX=sx;node.scaleY=sx?(m[0]*m[3]-m[1]*m[2])/sx:0;}
 function stamp(row,settings,owner){return JSON.stringify([row.ID,row.index,row.Skin,row.Appearance,row.PartScale,row.WorldScale,row.ModelOffset,settings,owner.wallFacing,owner.wallRotation,owner.wallOpening,owner.wallRun]);}
 function geometry(owner){return [owner.node.scaleX,owner.node.scaleY,owner.node.angle,[owner.ndAniMain,owner.ndAniDown].concat(owner.ndAniOther||[]).filter(Boolean).map(function(r){return[r.skeletonData&&(r.skeletonData.uuid||r.skeletonData._uuid),r.spriteFrame&&(r.spriteFrame.uuid||r.spriteFrame._uuid),transform(r.node,owner.node).map(function(n){return Math.round(n*100000)/100000;}),r.node.width,r.node.height,r.node.anchorX,r.node.anchorY];})];}
-function probe(template,row,root,assets,ground,open){
+function probe(template,row,root,assets,open){
   var node=new cc.Node("ShadowStructurePose");node.parent=root;node.angle=template.node.angle;var scale=require("BuildingWorldScale").value(row);node.scaleX=template.node.scaleX*scale;node.scaleY=template.node.scaleY*scale;
   var owner={node:node,ndAniOther:[],buildInfo:{cfg:row},clones:[]};
   var main=template.ndAniMain,kit=main&&main.skeletonData&&main.skeletonData.skeletonJson.wallKit,layout;
@@ -26,9 +26,8 @@ function probe(template,row,root,assets,ground,open){
   function sprite(n,frame,width,height,ax,ay){var r=n.addComponent(cc.Sprite);r.sizeMode=cc.Sprite.SizeMode.CUSTOM;n.setAnchorPoint(ax,ay);n.setContentSize(width,height);r.spriteFrame=frame;return r;}
   try{if(row.Appearance&&row.Appearance.sprite){
     var a=row.Appearance,n=child("StructureArtwork",[1,0,0,1,a.offsetX||0,a.offsetY||0]),base=sprite(n,assets["resources/"+a.sprite+":frame"],a.width||160,a.height||200,.5,0);owner._buildingAppearance={sprite:base};
-    if(a.weapon){var p=require("BuildingWeaponPose").pose(a.weapon,null,require("BuildingPartScale").value(row,"weapon")),angle=p.angle*Math.PI/180,w=child("StructureWeapon",[Math.cos(angle)*p.flipX,Math.sin(angle)*p.flipX,-Math.sin(angle),Math.cos(angle),p.x,p.y]);owner._buildingAppearance.weaponSprite=sprite(w,assets["resources/"+p.sprite+":frame"],p.width,p.height,p.pivotX,p.pivotY);}
   }else{
-    [template.ndAniMain].concat(ground?[]:[template.ndAniDown],template.ndAniOther||[]).filter(Boolean).forEach(function(source){
+    [template.ndAniMain].concat(Number(row.ID)!==6&&!kit?[]:[template.ndAniDown],template.ndAniOther||[]).filter(Boolean).forEach(function(source){
       if(!source.skeletonData)return;var n=child("StructureSpine",transform(source.node,template.node)),r=n.addComponent(sp.Skeleton);owner.ndAniOther.push(r);r.skeletonData=dataFor(source);r.premultipliedAlpha=source.premultipliedAlpha;r.enableBatch=source.enableBatch;
       if(r.setAnimationCacheMode)r.setAnimationCacheMode(sp.Skeleton.AnimationCacheMode.REALTIME);
       if(row.Skin)r.setSkin(row.Skin);if(r.setToSetupPose)r.setToSetupPose();
@@ -44,7 +43,7 @@ function smaller(source){
   var factor=Math.min(1,256/Math.max(source.pixelWidth,source.pixelHeight));if(factor===1)return source;
   var w=Math.max(1,Math.ceil(source.pixelWidth*factor)),h=Math.max(1,Math.ceil(source.pixelHeight*factor)),alpha=new Uint8Array(w*h);
   for(var y=0;y<h;y++)for(var x=0;x<w;x++)alpha[y*w+x]=source.alpha[Math.min(source.pixelHeight-1,Math.floor((y+.5)/factor))*source.pixelWidth+Math.min(source.pixelWidth-1,Math.floor((x+.5)/factor))];
-  return Object.assign({},source,{alpha:alpha,pixelWidth:w,pixelHeight:h});
+  return Object.assign({},source,{alpha:alpha,pixelWidth:w,pixelHeight:h,layers:source.layers&&source.layers.map(smaller)});
 }
 async function prepare(prefab,config,level,session,progress){
   var main=prefab.data.getChildByName("ndMain");if(!main)throw Error("Stage map has no structure layer");
@@ -57,7 +56,7 @@ async function prepare(prefab,config,level,session,progress){
     for(var i=0;i<jobs.length;i++){
       if(!session.current())throw Error("Stage shadow preparation cancelled");
       var job=jobs[i],s=stamp(job.row,job.style.settings,job.template),key="stage-shadow:"+JSON.stringify([s,geometry(job.template),job.open,job.manual&&job.row.Shadow]),entry=cache[key],plan;
-      if(!entry){var owner=probe(job.template,job.row,root,session.assets,job.style.settings.projection==="ground",job.open);try{if(job.manual){var renderer=owner.ndAniOther.find(function(r){return r.skeletonData&&r.skeletonData.skeletonJson.wallKit;}),json=renderer&&renderer.skeletonData.skeletonJson;plan=json&&json.wallKit.layout;entry=Manual.prepareEntry(job.row.Shadow,plan);if(entry)manualPins.push(entry);}else{var source=Runtime.capture(owner,{ndMain:root},Runtime.sources(owner,job.style.settings.projection==="ground"));if(!source)throw Error("Could not prepare structure shadow "+job.template.ID+":"+job.row.index);entry=Runtime.prepareEntry(key,smaller(source),job.style.settings);pins.push(entry);}cache[key]=entry;}finally{owner.node.active=false;owner.ndAniOther.forEach(function(r){r.skeletonData=null;});owner.node.destroy();owner.clones.forEach(function(asset){asset.destroy();});}}
+      if(!entry){var owner=probe(job.template,job.row,root,session.assets,job.open);try{if(job.manual){var renderer=owner.ndAniOther.find(function(r){return r.skeletonData&&r.skeletonData.skeletonJson.wallKit;}),json=renderer&&renderer.skeletonData.skeletonJson;plan=json&&json.wallKit.layout;entry=Manual.prepareEntry(job.row.Shadow,plan);if(entry)manualPins.push(entry);}else{var source=Runtime.capture(owner,{ndMain:root},Runtime.sources(owner));if(!source)throw Error("Could not prepare structure shadow "+job.template.ID+":"+job.row.index);entry=Runtime.prepareEntry(key,smaller(source),job.style.settings);pins.push(entry);}cache[key]=entry;}finally{owner.node.active=false;owner.ndAniOther.forEach(function(r){r.skeletonData=null;});owner.node.destroy();owner.clones.forEach(function(asset){asset.destroy();});}}
       var rows=slots[job.template.ID],value=rows[job.row.index]||(rows[job.row.index]={stamp:s});if(job.manual){value.manual=entry;value.manualStamp=entry&&entry.signature;}else value[job.open?"open":"closed"]=entry;
       if(progress)progress((i+1)/Math.max(1,jobs.length));await new Promise(function(resolve){setTimeout(resolve,0);});
     }

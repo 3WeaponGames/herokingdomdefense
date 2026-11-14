@@ -11,7 +11,7 @@ var styles = [
   {id:"bruiser",name:"Bruiser",weapon:"Axe",skill:"Blood Cleave"},
   {id:"guardian",name:"Guardian",weapon:"Hammer and shield",skill:"Iron Bulwark"}
 ];
-var VISUAL = {originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",showBuiltin:true,animation:"",holdTime:-1,impactResource:"",impactResourceAnimation:"",impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
+var VISUAL = {arcDegrees:120,originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",showBuiltin:true,animation:"",holdTime:-1,impactResource:"",impactResourceAnimation:"",impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
 ["passive","beam","mark","buff","taunt","shield"].forEach(function(slot){
   VISUAL[slot+"Resource"]="";VISUAL[slot+"ResourceAnimation"]="";
   VISUAL[slot+"Scale"]=1;VISUAL[slot+"ScaleX"]=1;VISUAL[slot+"ScaleY"]=1;VISUAL[slot+"OffsetX"]=0;VISUAL[slot+"OffsetY"]=0;
@@ -27,7 +27,7 @@ var HELP = {
   windup:"Seconds between confirming the aimed skill and releasing its arrow.",
   projectileSpeed:"Base arrow speed in world units per second. Momentum scales this from 100% at zero charge to 200% at full charge.",
   distanceDamagePer100:"Added damage multiplier for every 100 units travelled. 0.1 adds 10% per 100 units.",
-  projectileWidth:"Hit distance to either side of the arrow path, measured from an enemy's center.",
+  projectileWidth:"Damage corridor half-width in world units. 28 means 28 on each side (56 total). The blue strip shows actual hits; VFX thickness is separate.",
   maxStacks:"Maximum number of temporary melee-hit stacks.",
   stackDuration:"Time after the latest qualifying hit before the melee stacks expire.",
   stackDamage:"Additional attack damage per stack. 0.03 means 3% per stack.",
@@ -142,10 +142,23 @@ function fields(style){
     if(slot){if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark")return style==="mystic";return style==="guardian";}
     if(["holdTime","targetX","targetY"].indexOf(field.key)>=0)return style==="mystic";
     if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic"||style==="skirmisher";
+    if(field.key==="arcDegrees")return style==="fighter"||style==="vanguard";
     if(field.key==="effectDuration")return style!=="skirmisher";
     return true;
   });
-  return {tuning:tuningFields(style),visual:visual,audio:clone(audioFields).filter(function(field){return field.phase!=="channel"||style==="mystic";})};
+  var tuning=tuningFields(style);
+  if(style==='skirmisher'){
+    var width=tuning.filter(function(field){return field.key==='projectileWidth';})[0];width.label='Projectile radius';width.group='Projectile';width.help='Radius of the blue collider centered on the arrow sprite. The sprite and collider always share the bow launch and flight path.';
+    tuning=tuning.filter(function(field){return field.key!=='projectileWidth';});
+    visual=visual.filter(function(field){return ['resource','resourceAnimation','showBuiltin','animation','color','opacity'].indexOf(field.key)>=0||field.key.indexOf('impact')===0;});
+    visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':'Projectile artwork';});visual.unshift(width);
+  }else if(style!=='mystic')visual.forEach(function(field){
+    if(field.key==='offsetX'||field.key==='offsetY'){field.label='Weapon offset '+field.key.slice(-1);field.help='Moves both the active skill hit area and its artwork relative to the equipped weapon tip. Positive Y moves upward. Zero uses the weapon tip automatically.';}
+    if(field.key==='scale'){field.label=style==='fighter'||style==='vanguard'?'Arc size':'Area size';field.help='Scales the active skill hit area and artwork together around the weapon point. 0.5 is half the reach; 1 uses the normal reach.';}
+    if(field.key==='rotation'){field.label='Skill rotation';field.help='Rotates the active skill hit area and its artwork together around the weapon point.';}
+    if(field.key==='arcDegrees'){field.label='Arc angle';field.min=1;field.max=360;field.step=1;field.unit='degrees';field.help='Total angle of the visible arc and its damage area. A smaller angle makes a narrower swing; 360 makes a complete circle.';}
+  });
+  return {tuning:tuning,visual:visual,audio:clone(audioFields).filter(function(field){return field.phase!=="channel"||style==="mystic";})};
 }
 function descriptors(style){var f=fields(style);return f.tuning.concat(f.visual,f.audio);}
 function get(object,path){return path.split(".").reduce(function(value,key){return value&&typeof value==="object"?value[key]:undefined;},object);}
@@ -166,6 +179,7 @@ function defaults(style){
   if(style==="bruiser")Object.assign(v,{passiveScale:1.8,passiveColor:"#ff5367",passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1});
   if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45});
   if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.25,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85});
+  if(style==="vanguard")v.arcDegrees=72;
   return result;
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}

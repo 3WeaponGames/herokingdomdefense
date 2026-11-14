@@ -108,3 +108,12 @@ function arrowTipAt(target,json,animation,time,direction,mirrorX,options){
 }
 exports.value=value;exports.commitWorld=commitWorld;exports.applyAim=applyAim;exports.removeAim=removeAim;exports.arrowTip=arrowTip;exports.arrowTipAt=arrowTipAt;exports.arrowAimAngle=arrowAimAngle;
 exports.attachmentTip=attachmentTip;
+
+exports.boneMatrixAt=boneMatrixAt;
+
+exports.weaponTipAt=function(target,json,animation,time,name,direction,mirrorX,aim){
+  var rotation=aim&&direction?Math.atan2(direction.y,direction.x*(mirrorX<0?-1:1))*180/Math.PI:0,m=boneMatrixAt(json,animation,time,name,rotation);
+  if(!m)return attachmentTip(target,name)||(target&&target.findBone&&target.findBone(name)?{x:value(target.findBone(name),'worldX',0),y:value(target.findBone(name),'worldY',0)}:null);
+  var slot=target&&target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==='function'?slot.getAttachment():slot.attachment),vertices=localVertices(attachment);
+  if(!vertices)return{x:m.x,y:m.y};var x=(vertices[4]+vertices[6])/2,y=(vertices[5]+vertices[7])/2;return{x:m.x+x*m.a+y*m.b,y:m.y+x*m.c+y*m.d};
+};

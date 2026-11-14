@@ -1,0 +1,30 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const Geometry=require('../../assets/_script/HeroSkillProjectile'),{Model}=require('../../packages/hkd-skills/preview-model'),Settings=require('../../assets/_script/HeroSkillSettings');
+const near=(a,b)=>assert(Math.abs(a-b)<1e-6,`${a} != ${b}`);
+test('the bow release point solves a ray through the target and is the sprite/collider center',()=>{
+ const sample=d=>({x:35+d.x*25,y:80+d.y*25}),shot=Geometry.shot({x:0,y:0},{x:220,y:40},{x:1,y:0},sample),at=sample(shot.direction);near(shot.origin.x,at.x);near(shot.origin.y,at.y);near((220-shot.origin.x)*shot.direction.y-(40-shot.origin.y)*shot.direction.x,0);
+ const p={x:shot.origin.x,y:shot.origin.y,visualOffset:{x:999,y:999},damageOffset:{x:-999,y:-999}};assert.deepEqual(Geometry.visualPoint(p,{offsetY:1000}),Geometry.damagePoint(p));assert.deepEqual(Geometry.visualPoint(p),shot.origin);
+});
+test('horizontal sword, spear, axe and hammer artwork uses the forward edge rather than its upper edge',()=>{
+ const Pose=require('../../assets/_script/HeroSkillPose'),json={bones:[{name:'weapon',x:30,y:80}],animations:{attack:{}}},target={findSlot:()=>({getAttachment:()=>({offset:[-10,-2,-10,2,10,2,10,-2]})})};
+ const tip=Pose.weaponTipAt(target,json,'attack',0,'weapon',{x:1,y:0},1,false);near(tip.x,40);near(tip.y,80);
+});
+test('a target is aimed at on release and can dodge without steering the arrow afterward',()=>{
+ const make=()=>new Model('skirmisher',{windup:.2,projectileSpeed:200,chargeRate:0,chargedDamage:0},{mode:'active',targets:1,targetDistance:250,attackRate:0},undefined,()=>({x:30,y:80}));
+ const hit=make();hit.moveTarget(0,{x:220,y:30});hit.advance(.2);const p=hit.projectiles[0];near(p.x,30);near(p.y,80);near((220-p.x)*p.direction.y-(30-p.y)*p.direction.x,0);hit.advance(2);assert.equal(hit.hits,1);
+ const dodge=make();dodge.advance(.2);const arrow=dodge.projectiles[0],direction={...arrow.direction};dodge.moveTarget(0,{x:250,y:300});dodge.advance(1);assert.deepEqual(arrow.direction,direction);assert.equal(dodge.hits,0);assert(arrow.x>30);
+});
+test('Fighter arc offset, reach and angle change its visible effect and actual selected hits together',()=>{
+ const settings={knockback:0,visual:{offsetY:20,scale:.5,arcDegrees:40}},before=JSON.stringify(settings),m=new Model('fighter',settings,{mode:'active',targets:3,attackRate:0},undefined,undefined,()=>({x:40,y:80}));
+ Object.assign(m.targets[0],{x:90,y:100});Object.assign(m.targets[1],{x:110,y:100});Object.assign(m.targets[2],{x:80,y:150});m.advance(.2);assert.equal(m.hits,1);const e=m.effects[0];near(e.x,40);near(e.y,100);near(e.radius,65);near(e.halfAngle,20*Math.PI/180);assert.equal(e.resolved,true);assert.equal(JSON.stringify(settings),before);
+});
+test('sword, spear, axe and hammer area effects all originate at their equipped weapon point',()=>{
+ for(const style of ['fighter','vanguard','bruiser','guardian']){
+  const offset={x:30,y:80},m=new Model(style,{duration:1,strikes:1,visual:{offsetX:5,offsetY:10,scale:.75,arcDegrees:60}},{mode:'active',targetDistance:100,targets:1,attackRate:0},undefined,undefined,()=>offset);m.advance(style==='vanguard'?1:.2);const effect=m.effects[0];assert(effect,style);near(effect.x,35);near(effect.y,90);near(effect.radius,{fighter:130,vanguard:155,bruiser:150,guardian:250}[style]*.75);assert(effect.resolved,style);
+ }
+});
+test('Skirmisher exposes no separation switch or independent position while melee shapes remain authorable',()=>{
+ const arrow=Settings.fields('skirmisher').visual.map(f=>f.path);for(const field of ['visual.originX','visual.offsetY','visual.rotation','visual.scale','projectileFromBow','projectileOffsetY'])assert(!arrow.includes(field),field);assert(arrow.includes('projectileWidth'));
+ for(const style of ['fighter','vanguard']){const fields=Settings.fields(style).visual;for(const key of ['offsetY','scale','arcDegrees'])assert(fields.some(f=>f.key===key),style+' '+key);}
+});

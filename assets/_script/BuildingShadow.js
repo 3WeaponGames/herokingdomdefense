@@ -56,3 +56,4 @@ function raster(mask, opacity, maxEdge) {
   return {pixels:pixels,pixelWidth:width,pixelHeight:height,x:minX/scale,y:minY/scale,width:width/scale,height:height/scale};
 }
 exports.opacity=OPACITY;exports.transform=transform;exports.regions=regions;exports.raster=raster;
+exports.aboveGround=function(row,kind){return !!row&&Number(kind||row.ID)===5&&row.index===4;};

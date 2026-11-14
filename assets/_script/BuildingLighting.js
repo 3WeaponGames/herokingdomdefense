@@ -1,11 +1,11 @@
 "use strict";
 
-// Presentation-only, base-local opening lights for layered buildings.
-// Retained authored sprites follow the existing night fade and breathing loop.
-var GLOW = "ui/stage-stars/glow", FADE = .5, PERIOD = 2;
+// Explicit window-light sprites in building-local coordinates. Layered artwork
+// retains its independent night tint; light pixels always remain unmodified.
+var FADE = .5, PERIOD = 2;
 function valid(value) { return !!value && (!cc.isValid || cc.isValid(value, true)); }
 function finite(value, fallback) { return typeof value === "number" && isFinite(value) ? value : fallback; }
-function clamp(value, low, high) { return Math.max(low, Math.min(high, value)); }
+function visible(owner){var appearance=owner._buildingAppearance,row=owner.buildInfo&&owner.buildInfo.cfg;if(row&&row.Appearance&&row.Appearance.sprite&&appearance&&(appearance.loading||!valid(appearance.node)||!appearance.node.active))return false;return !owner.ndAniMain||!owner.ndAniMain.node||owner.ndAniMain.node.active!==false;}
 function tint(owner) {
   var appearance = owner && owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
   var value = appearance && appearance.nightTint;
@@ -17,44 +17,13 @@ function setColor(node, color) { if (valid(node)) node.color = cc.color(color.r,
 function restoreColor(record) {
   if (record.tint) { setColor(record.parent, record.dayColor); if (record.weaponDayColor) setColor(record.weapon, record.weaponDayColor); }
 }
-function spriteLight(light) {
-  return light && typeof light.sprite === "string" && light.sprite &&
-    finite(light.width, 0) > 0 && finite(light.height, 0) > 0;
-}
 function config(owner) {
-  var appearance = owner && owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
-  var lights = appearance && appearance.lighting;
-  if (!Array.isArray(lights)) return [];
-  return lights.filter(function (light) {
-    return light && (spriteLight(light) ||
-      Array.isArray(light.points) && light.points.length >= 3 && light.points.every(function (point) {
-      return point && typeof point.x === "number" && isFinite(point.x) && typeof point.y === "number" && isFinite(point.y);
-    }));
-  }).map(function (light) {
-    var result = { color: typeof light.color === "string" ? light.color : "#FFE89A", opacity: clamp(finite(light.opacity, 235), 0, 255) };
-    if (spriteLight(light)) {
-      result.sprite = light.sprite; result.width = light.width; result.height = light.height;
-      result.offsetX = finite(light.offsetX, 0); result.offsetY = finite(light.offsetY, 0);
-    } else result.points = light.points.map(function (point) { return { x: point.x, y: point.y }; });
-    function glowConfig(value) {
-      var glow = value === true ? {} : value;
-      var xs = result.points ? result.points.map(function (point) { return point.x; }) : [result.offsetX - result.width / 2, result.offsetX + result.width / 2];
-      var ys = result.points ? result.points.map(function (point) { return point.y; }) : [result.offsetY, result.offsetY + result.height];
-      var left = Math.min.apply(Math, xs), right = Math.max.apply(Math, xs), bottom = Math.min.apply(Math, ys), top = Math.max.apply(Math, ys);
-      return { x: finite(glow.x, (left + right) / 2), y: finite(glow.y, (bottom + top) / 2),
-        width: Math.max(1, finite(glow.width, (right - left) * 3)), height: Math.max(1, finite(glow.height, (top - bottom) * 3)),
-        angle: finite(glow.angle, 0), shearX: finite(glow.shearX, 0), shearY: finite(glow.shearY, 0),
-        color: typeof glow.color === "string" ? glow.color : "#FFC85B", opacity: clamp(finite(glow.opacity, 100), 0, 255),
-        pulse: clamp(finite(glow.pulse, .08), 0, 1), sprite: typeof glow.sprite === "string" && glow.sprite ? glow.sprite : GLOW };
-    }
-    if (light.glow) result.glow = glowConfig(light.glow);
-    if (Array.isArray(light.glows)) result.glows = light.glows.filter(function (glow) { return glow && typeof glow === "object"; }).map(glowConfig);
-    return result;
-  });
+  var T=require("BuildingNightlight"),row=owner&&owner.buildInfo&&owner.buildInfo.cfg;
+  return T.emitters(row).map(function(emitter){return {id:emitter.id,opacity:0,glows:[{x:0,y:0,width:T.size,height:T.size,angle:0,shearX:0,shearY:0,color:"#FFFFFF",opacity:255,pulse:0,sprite:T.sprite}]};});
 }
 function live(owner, state, record) {
-  return valid(owner) && valid(owner.node) && owner.enabled !== false && owner.node.activeInHierarchy !== false && !owner.isDestroyed &&
-    owner._buildingAppearance === state && state._buildingLighting === record && valid(state.node) && state.node.active &&
+  return valid(owner) && valid(owner.node) && owner.enabled !== false && owner.node.activeInHierarchy !== false && !owner.isDestroyed && (!state.manual||visible(owner)) &&
+    (owner._buildingAppearance === state || owner._buildingManualLights === state) && state._buildingLighting === record && valid(state.node) && state.node.active &&
     state.node.activeInHierarchy !== false && record.parent === state.node && valid(record.node);
 }
 function release(record) {
@@ -66,6 +35,8 @@ function release(record) {
     if (resource.frame && resource.retained && resource.frame.decRef) resource.frame.decRef();
     resource.frame = null; resource.retained = false; resource.token = null;
   });
+  (record.meshFrames||[]).forEach(function(frame){frame.destroy();});record.meshFrames=[];
+  (record.maskEntries||[]).forEach(function(entry){require("WindowLightMaskRuntime").release(entry);});record.maskEntries=[];
 }
 function dispose(owner, state) {
   var record = state && state._buildingLighting;
@@ -116,18 +87,23 @@ function loadGlows(owner, state, record) {
       // releases it when a new light layout replaces this one or it is disposed.
       if (frame.addRef) { frame.addRef(); resource.retained = true; }
       resource.frame = frame;
-      resource.sprites.forEach(function (sprite) { sprite.spriteFrame = frame; });
+      resource.sprites.forEach(function (sprite) {
+        var base=frame;if(sprite._windowLightErase){var entry=require("WindowLightMaskRuntime").acquire(frame,sprite._windowLightErase);if(entry){record.maskEntries.push(entry);base=entry.frame;}}
+        if(sprite._windowLightWarp){var mesh=base.clone(),texture=base.getTexture();mesh.vertices=require("WindowLightWarp").vertices(sprite._windowLightWarp,base.uv,texture.width,texture.height,sprite._windowLightNodes);mesh._uuid=(base._uuid||base.uuid||"window-light")+"@warp:"+record.meshFrames.length;record.meshFrames.push(mesh);sprite.type=cc.Sprite.Type.MESH;sprite.spriteFrame=mesh;}
+        else sprite.spriteFrame = base;
+      });
       // Loading never activates a light. Its phase/fade alone controls visibility.
     });
   });
 }
 function build(owner, state, lights, layoutSignature) {
   var node = new cc.Node("BuildingNightLights"); node.parent = state.node; node.group = owner.node.group; node.zIndex = 1;
+  node._structureShadowExcluded=true;
   node.active = false; node.opacity = 0;
-  var night = tint(owner), nightColor = night ? { r: parseInt(night.slice(1, 3), 16), g: parseInt(night.slice(3, 5), 16), b: parseInt(night.slice(5, 7), 16) } : null;
+  var night = state.manual ? null : tint(owner), nightColor = night ? { r: parseInt(night.slice(1, 3), 16), g: parseInt(night.slice(3, 5), 16), b: parseInt(night.slice(5, 7), 16) } : null;
   var weapon = valid(state.weaponNode) ? state.weaponNode : null;
   var record = state._buildingLighting = { node: node, parent: state.node, signature: layoutSignature, entries: [], resources: {}, tint: nightColor, dayColor: colorValue(state.node.color), weapon: weapon, weaponDayColor: weapon ? colorValue(weapon.color) : null,
-    generation: 0, night: null, blend: 0, from: 0, to: 0, fadeElapsed: 0, clock: 0 };
+    generation: 0, night: null, blend: 0, from: 0, to: 0, fadeElapsed: 0, clock: 0,meshFrames:[],maskEntries:[] };
   lights.forEach(function (light, index) {
     var entry = { config: light, glows: [] };
     function resource(path, sprite) {
@@ -138,38 +114,27 @@ function build(owner, state, lights, layoutSignature) {
     glows.forEach(function (settings, at) {
       var glow = new cc.Node("WindowGlow" + index + "_" + at); glow.parent = node; glow.group = node.group; glow.zIndex = 0;
       glow.setPosition(settings.x, settings.y); glow.setContentSize(settings.width, settings.height); glow.color = cc.color(settings.color);
-      // Authored transforms project the retained native window fan outward.
-      // They are constant; the existing night loop changes only its opacity.
-      var adjustment=owner.buildInfo.cfg.Nightlight?require("BuildingNightlight").value(owner.buildInfo.cfg,"sprite:"+index+":"+at):{x:0,y:0,angle:0,scaleX:1,scaleY:1,flipX:false,flipY:false};
+      // Transform the complete square image; its internal fade stays intact.
+      var adjustment=require("BuildingNightlight").value(owner.buildInfo.cfg,light.id);
       glow.setPosition(settings.x+adjustment.x,settings.y+adjustment.y);
       glow.angle = settings.angle+adjustment.angle; glow.skewX = settings.shearX; glow.skewY = settings.shearY;
       glow.scaleX=adjustment.scaleX*(adjustment.flipX?-1:1);glow.scaleY=adjustment.scaleY*(adjustment.flipY?-1:1);
-      var sprite = glow.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
+      glow.setAnchorPoint(.5,.5);var sprite = glow.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
+      if(adjustment.warp||adjustment.warpNodes&&adjustment.warpNodes.length){sprite._windowLightWarp=adjustment.warp||require("WindowLightWarp").controls();sprite._windowLightNodes=adjustment.warpNodes;}
+      if(adjustment.erase&&adjustment.erase.strokes.length)sprite._windowLightErase=adjustment.erase;
       entry.glows.push({ node: glow, sprite: sprite, config: settings });
       if (!at) { entry.glow = glow; entry.sprite = sprite; }
       resource(settings.sprite, sprite);
     });
-    if(light.opacity<=0){record.entries.push(entry);return;}
-    var window = entry.window = new cc.Node("LitWindow" + index); window.parent = node; window.group = node.group; window.zIndex = 1; window.opacity = light.opacity;
-    if (light.sprite) {
-      window.setAnchorPoint(.5, 0); window.setPosition(light.offsetX, light.offsetY);
-      window.setContentSize(light.width, light.height); window.color = cc.color(light.color);
-      var mask = entry.maskSprite = window.addComponent(cc.Sprite); mask.sizeMode = cc.Sprite.SizeMode.CUSTOM; mask.trim = false;
-      resource(light.sprite, mask);
-    } else {
-      var graphics = window.addComponent(cc.Graphics); graphics.fillColor = cc.color(light.color);
-      light.points.forEach(function (point, at) { if (at) graphics.lineTo(point.x, point.y); else graphics.moveTo(point.x, point.y); });
-      graphics.close(); graphics.fill();
-    }
     record.entries.push(entry);
   });
   return record;
 }
 function apply(owner, state) {
   if (!state) return;
-  var lights = config(owner), record = state._buildingLighting;
-  if (!lights.length && !tint(owner)) { dispose(owner, state); return; }
-  if (!valid(owner) || !valid(owner.node) || owner.enabled === false || owner.isDestroyed || !valid(state.node) || !state.node.active ||
+  var lights = state.manual ? config(owner) : [], record = state._buildingLighting;
+  if (!lights.length && (state.manual || !tint(owner))) { dispose(owner, state); return; }
+  if (!valid(owner) || !valid(owner.node) || owner.enabled === false || owner.isDestroyed || state.manual&&!visible(owner) || !valid(state.node) || !state.node.active ||
       owner.node.activeInHierarchy === false || state.node.activeInHierarchy === false) { hide(owner, state); return; }
   var layoutSignature = signature(owner, lights);
   if (record && (record.signature !== layoutSignature || record.parent !== state.node || !valid(record.node))) { dispose(owner, state); record = null; }
@@ -204,10 +169,20 @@ function setNight(owner, night) {
   if (!owner) return;
   owner._buildingNight = !!night;
   if (owner._buildingAppearance) apply(owner, owner._buildingAppearance);
+  syncOwner(owner);
 }
+function disposeOwner(owner){var state=owner&&owner._buildingManualLights;if(state){dispose(owner,state);delete owner._buildingManualLights;}}
+function hideOwner(owner){if(owner&&owner._buildingManualLights)hide(owner,owner._buildingManualLights);}
+function syncOwner(owner){
+  var row=owner&&owner.buildInfo&&owner.buildInfo.cfg,T=require("BuildingNightlight");
+  if(!row||!T.emitters(row).length){disposeOwner(owner);return;}
+  var state=owner._buildingManualLights;if(!state)state=owner._buildingManualLights={node:owner.node,manual:true};apply(owner,state);
+}
+function updateOwner(owner,dt){syncOwner(owner);if(owner._buildingManualLights)update(owner,owner._buildingManualLights,dt);}
 exports.apply = apply;
 exports.update = update;
 exports.setNight = setNight;
 exports.hide = hide;
 exports.dispose = dispose;
 exports.config = config;
+exports.syncOwner=syncOwner;exports.updateOwner=updateOwner;exports.hideOwner=hideOwner;exports.disposeOwner=disposeOwner;

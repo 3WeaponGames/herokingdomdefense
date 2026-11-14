@@ -22,9 +22,11 @@ function edits(config,overrides,request,action){
   if(!equal(value,row.DropShadow))result.push({doc:'A',path:['BuildEnum',String(request.id),'levelList',request.levelIndex,'DropShadow'],value});
   if(action.source==='texture'&&['global','tier'].includes(mode)){const saved=mode==='global'?table.global:table.tiers&&table.tiers[current.group];if(!FX.valid(saved))preset(mode,current.settings);}
  }else if(action.kind==='settings'){
+  if(action.settings&&action.settings.projection!==undefined&&action.settings.projection!=='ground')throw Error('Ground projection is the only generated shadow shape.');
   if(!FX.valid(action.settings))throw Error('Choose finite shadow settings inside the slider limits.');
   if(current.mode==='none')throw Error('Choose a light mode before editing the shadow.');
-  if(current.mode==='individual')rowEdit(selected,'individual',action.settings);else preset(current.mode,action.settings);
+  const params=Object.assign({},action.settings,FX.settings(action.settings));
+  if(current.mode==='individual')rowEdit(selected,'individual',params);else preset(current.mode,params);
  }else if(action.kind==='tier'){
   const branch=family.branches.find(b=>b.index===action.index&&b.position===action.position);if(!branch||typeof action.checked!=='boolean')throw Error('This building tier changed. Reload before linking it.');
   if(action.checked){if(!FX.valid(table.tiers&&table.tiers[current.group]))preset('tier',current.settings);rowEdit(branch,'tier',FX.settings(table.tiers[current.group]));}

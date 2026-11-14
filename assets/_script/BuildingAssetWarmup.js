@@ -5,7 +5,8 @@ var complete=false,active=null,held=new Map();
 function plan(config,names){
  var rows=[],seen={},add=function(bundle,path,type){if(typeof path!=="string"||!path)return;var key=bundle+"/"+path+":"+type;if(seen[key])return;seen[key]=true;rows.push({bundle:bundle,path:path,type:type});};
  Object.keys(config.BuildEnum||{}).forEach(function(id){(config.BuildEnum[id].levelList||[]).forEach(function(row){
-  var a=row.Appearance;add(names.IconBuild,row.Icon,"frame");if(a){add("resources",a.sprite,"frame");function visit(v){if(!v||typeof v!=="object")return;Object.keys(v).forEach(function(k){if((k==="sprite"||k==="emptySprite")&&typeof v[k]==="string")add("resources",v[k],"frame");else if(typeof v[k]==="object")visit(v[k]);});}visit(a);}
+  if(row.Nightlight&&row.Nightlight.emitters&&row.Nightlight.emitters.length)add("resources","buildings/lighting/native-window-ray","frame");
+  var a=row.Appearance;add(names.IconBuild,row.Icon,"frame");if(a){add("resources",a.sprite,"frame");function visit(v){if(!v||typeof v!=="object")return;Object.keys(v).forEach(function(k){if(k==="lighting")return;if((k==="sprite"||k==="emptySprite")&&typeof v[k]==="string")add("resources",v[k],"frame");else if(typeof v[k]==="object")visit(v[k]);});}visit(a);}
   if(Number(id)===3&&row.Data){var soldier=config.AllyCfg&&config.AllyCfg[row.Data[1]]||config.SoldierCfg&&config.SoldierCfg[row.Data[1]];if(soldier)add(names.Enemy,"Play"+soldier.prefab,"prefab");}
  });});
  add(names.IconBuild,"mill-choice-scarecrow","frame");add(names.IconBuild,"mill-choice-bomb","frame");return rows;

@@ -2,6 +2,7 @@
 // Battle-owned presentation and input only. Damage, targeting and cooldowns
 // remain in HeroStyleRuntime; no editor or progression data is written here.
 var Presentation=require("./HeroSkillPresentation");
+var Projectile=require("./HeroSkillProjectile");
 var ButtonArt=require("./HeroSkillButton");
 var COOLDOWN_EPSILON=1e-9;
 var COUNT_FONT="localization/fonts/Lilita One",COMMAND_SIZE_RATIO=1.15;
@@ -54,10 +55,11 @@ function aimDefault(rt) {
   var hero=rt.hero,target=hero.tagEnemy;
   if(!target||!live(target.node)||!(target.hp>0)||target.isDead&&target.isDead())target=rt.nearest?rt.nearest():null;
   if(target&&live(target.node)){
+    if(rt.state.style==='skirmisher'&&rt.setAimTarget){rt.setAimTarget(target);return;}
     var a=hero.node.getPosition(),b=target.node.getPosition();rt.aimDirection=normalize({x:b.x-a.x,y:b.y-a.y});
   }else{
     var body=hero.ctrPlayAni&&hero.ctrPlayAni.spAniBody,face=body&&body.node?body.node.scaleX:hero.isLeft&&hero.isLeft()?-1:1;
-    rt.aimDirection={x:face<0?-1:1,y:0};
+    if(rt.setFreeAim)rt.setFreeAim({x:face<0?-1:1,y:0});else rt.aimDirection={x:face<0?-1:1,y:0};
   }
 }
 function buttonStart(hud,event) {
@@ -72,7 +74,7 @@ function buttonStart(hud,event) {
 function buttonMove(hud,event) {
   stop(event);var p=hud.press,rt=hud.runtime,at=location(event);if(!p||p.id!==touchId(event)||!at||!p.start)return;
   if(Math.hypot(at.x-p.start.x,at.y-p.start.y)>12)p.dragged=true;
-  if(p.dragged&&directional(rt.state.style)&&available(rt)){rt.aiming=true;rt.aimDirection=localDirection(rt,p.start,at);}
+  if(p.dragged&&directional(rt.state.style)&&available(rt)){rt.aiming=true;var aim=localDirection(rt,p.start,at);if(rt.setFreeAim)rt.setFreeAim(aim);else rt.aimDirection=aim;}
 }
 function buttonEnd(hud,event,cancelled) {
   stop(event);var p=hud.press,rt=hud.runtime;if(!p||p.id!==touchId(event))return;hud.press=null;
@@ -175,8 +177,9 @@ function drawCharge(hud,hero,rt) {
   var g=hud.charge.g;g.clear();g.fillColor=color("#151727");g.rect(-w/2,-h/2,w,h);g.fill();if(amount>0){g.fillColor=tint(fill,opacity/255);g.rect(-w/2+1,-h/2+1,Math.max(0,w-2)*amount,Math.max(0,h-2));g.fill();}
 }
 function aimOrigin(rt,v) {
+  if(rt.projectileAim)return rt.projectileAim().origin;
   var o=rt.hero.node.getPosition(),controller=rt.hero.ctrPlayAni,maker=require("HeroMakerRider"),world=controller&&maker.skillOrigin&&maker.skillOrigin(controller,rt.aimDirection,v.animation),tip=world&&rt.game.ndMain.convertToNodeSpaceAR(world);
-  return Presentation.projectilePoint({x:o.x,y:o.y,visualOffset:tip?{x:tip.x-o.x,y:tip.y-o.y}:null},v);
+  return tip||o;
 }
 function draw(hud,hero,rt) {
   var view=hud.visual,g=view.g,layer=view.node,v=Presentation.visual(rt),builtin=v.showBuiltin!==false;
@@ -185,11 +188,11 @@ function draw(hud,hero,rt) {
   hud.beamVfxPosition=null;
   if(empty&&hud.visualEmpty){Presentation.attachments(hud,rt);return;}
   g.clear();hud.visualEmpty=empty;
-  if(rt.aiming){var o=hero.node.getPosition(),d=normalize(rt.aimDirection),size=rt.game.mapSize||{width:2000,height:2000};if(rt.state.style==="skirmisher"){var end=rayEnd(o,d,{minX:-size.width/2,maxX:size.width/2,minY:-size.height/2,maxY:size.height/2});var launch=aimOrigin(rt,v),finish={x:end.x+launch.x-o.x,y:end.y+launch.y-o.y};line(g,pointIn(rt,layer,launch),pointIn(rt,layer,finish),7,"#26322a");line(g,pointIn(rt,layer,launch),pointIn(rt,layer,finish),3,"#f7ed8c");}else{var tip={x:o.x+d.x*(hero.attackRange||155),y:o.y+d.y*(hero.attackRange||155)};line(g,pointIn(rt,layer,o),pointIn(rt,layer,tip),4,"#ffdf76");}}
+  if(rt.aiming){var o=hero.node.getPosition(),d=normalize(rt.aimDirection),size=rt.game.mapSize||{width:2000,height:2000};if(rt.state.style==='skirmisher'){var shot=rt.projectileAim?rt.projectileAim():{origin:aimOrigin(rt,v),direction:d},launch=shot.origin,end=rayEnd(launch,shot.direction,{minX:-size.width/2,maxX:size.width/2,minY:-size.height/2,maxY:size.height/2});line(g,pointIn(rt,layer,launch),pointIn(rt,layer,end),7,'#26322a');line(g,pointIn(rt,layer,launch),pointIn(rt,layer,end),3,'#f7ed8c');}else{var shape=rt.skillArea?rt.skillArea(d,hero.attackRange||155):{origin:o,direction:d,radius:hero.attackRange||155},tip={x:shape.origin.x+shape.direction.x*shape.radius,y:shape.origin.y+shape.direction.y*shape.radius};line(g,pointIn(rt,layer,shape.origin),pointIn(rt,layer,tip),4,'#ffdf76');}}
   var target=rt.beamTarget;if(target&&live(target.node)&&target.hp>0){var from=hero.getAttWpos?hero.getAttWpos():hero.node.convertToWorldSpaceAR(vec(0,0)),a=offsetIn(rt,layer,worldIn(layer,from),v.originX,v.originY),b=offsetIn(rt,layer,actorPoint(layer,target,false),v.targetX,v.targetY);hud.beamVfxPosition=rt.game.ndMain.convertToNodeSpaceAR(layer.convertToWorldSpaceAR(b));if(builtin&&!v.beamResource){line(g,a,b,Presentation.width(rt,10),Presentation.color(rt,"#7134a4"),v.opacity);line(g,a,b,Presentation.width(rt,4),Presentation.color(rt,"#d9a4ff"),v.opacity);circle(g,b,6*v.scale,Presentation.color(rt,"#f5d3ff"),true,v.opacity);}}
   if(!v.markResource&&rt.state.style==="mystic"&&rt.state.marked&&rt.state.target&&live(rt.state.target.node)&&rt.state.target.hp>0){var m=actorPoint(layer,rt.state.target,true);g.fillColor=color("#d790ff");g.strokeColor=color("#231330");g.lineWidth=2;g.moveTo(m.x,m.y+10);g.lineTo(m.x+7,m.y);g.lineTo(m.x,m.y-10);g.lineTo(m.x-7,m.y);g.close();g.fill();g.stroke();}
-  if(builtin)(rt.projectiles||[]).forEach(function(p){var center=Presentation.projectilePoint(p,v),direction=Presentation.rotated(p.direction,v.rotation),a=pointIn(rt,layer,{x:center.x-direction.x*46*v.scale,y:center.y-direction.y*46*v.scale}),b=pointIn(rt,layer,center);line(g,a,b,Presentation.width(rt,8),Presentation.color(rt,"#fdf1a4"),v.opacity);var d=normalize({x:b.x-a.x,y:b.y-a.y});g.fillColor=tint(Presentation.color(rt,"#ffffff"),v.opacity);g.moveTo(b.x+d.x*13*v.scale,b.y+d.y*13*v.scale);g.lineTo(b.x-d.y*10*v.scale,b.y+d.x*10*v.scale);g.lineTo(b.x+d.y*10*v.scale,b.y-d.x*10*v.scale);g.close();g.fill();});
-  if(builtin)(rt.effects||[]).forEach(function(e){var center=Presentation.offset(e,v.offsetX,v.offsetY),p=pointIn(rt,layer,center),edge=pointIn(rt,layer,{x:center.x+e.radius*v.scale,y:center.y}),r=Math.hypot(edge.x-p.x,edge.y-p.y),progress=1-Math.max(0,e.remaining/e.duration);g.strokeColor=tint(Presentation.color(rt,e.kind==="burst"?"#d69fff":e.kind==="arc"?"#fff5b0":rt.state.style==="guardian"?"#70c8ff":"#ff5b65"),v.opacity);g.lineWidth=Presentation.width(rt,Math.max(2,7*(1-progress)));if(e.kind==="arc"&&e.direction){var direction=Presentation.rotated(e.direction,v.rotation),tip=pointIn(rt,layer,{x:center.x+direction.x,y:center.y+direction.y}),angle=Math.atan2(tip.y-p.y,tip.x-p.x);g.arc(p.x,p.y,r*(.65+progress*.35),angle-(e.halfAngle===undefined?Math.PI/3:e.halfAngle),angle+(e.halfAngle===undefined?Math.PI/3:e.halfAngle),true);}else g.circle(p.x,p.y,r*(.65+progress*.35));g.stroke();});
+  if(builtin)(rt.projectiles||[]).forEach(function(p){var center=Presentation.projectilePoint(p,v),d=p.direction,arrow=Projectile.arrow(p.width),at=function(along,across){return pointIn(rt,layer,{x:center.x+d.x*along-d.y*across,y:center.y+d.y*along+d.x*across});},a=at(arrow.tail,0),b=at(arrow.base,0),tip=at(arrow.tip,0),left=at(arrow.base,arrow.halfHeight),right=at(arrow.base,-arrow.halfHeight);line(g,a,b,arrow.stroke,Presentation.color(rt,'#fdf1a4'),v.opacity);g.fillColor=tint(Presentation.color(rt,'#ffffff'),v.opacity);g.moveTo(tip.x,tip.y);g.lineTo(left.x,left.y);g.lineTo(right.x,right.y);g.close();g.fill();});
+  if(builtin)(rt.effects||[]).forEach(function(e){var center=e.resolved?e:Presentation.offset(e,v.offsetX,v.offsetY),p=pointIn(rt,layer,center),edge=pointIn(rt,layer,{x:center.x+e.radius*(e.resolved?1:v.scale),y:center.y}),r=Math.hypot(edge.x-p.x,edge.y-p.y),progress=1-Math.max(0,e.remaining/e.duration);g.strokeColor=tint(Presentation.color(rt,e.kind==="burst"?"#d69fff":e.kind==="arc"?"#fff5b0":rt.state.style==="guardian"?"#70c8ff":"#ff5b65"),v.opacity);g.lineWidth=Presentation.width(rt,Math.max(2,7*(1-progress)));if(e.kind==="arc"&&e.direction){var direction=e.resolved?e.direction:Presentation.rotated(e.direction,v.rotation),tip=pointIn(rt,layer,{x:center.x+direction.x,y:center.y+direction.y}),angle=Math.atan2(tip.y-p.y,tip.x-p.x);g.arc(p.x,p.y,r*(e.resolved?1:.65+progress*.35),angle-(e.halfAngle===undefined?Math.PI/3:e.halfAngle),angle+(e.halfAngle===undefined?Math.PI/3:e.halfAngle),true);}else g.circle(p.x,p.y,r*(e.resolved?1:.65+progress*.35));g.stroke();});
   Presentation.draw(hud,rt);Presentation.attachments(hud,rt);
 }
 function update(hero,rt) {

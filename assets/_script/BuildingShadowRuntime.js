@@ -1,6 +1,7 @@
 "use strict";
 var Shadow = require("BuildingShadow"),entries=[];
 function valid(node) { return !!node && (!cc.isValid || cc.isValid(node,true)); }
+function parentFor(owner,game,row){return Shadow.aboveGround(row,owner.buildCfg&&owner.buildCfg.enumValue)&&owner.ndAniDown&&valid(owner.ndAniDown.node)?owner.ndAniDown.node:game&&(game.ndDown||game.ndMain)||owner.node.parent;}
 function layout(owner) { var main=owner.ndAniMain,json=main&&main.skeletonData&&main.skeletonData.skeletonJson;return json&&json.wallKit&&json.wallKit.layout; }
 function ready(owner) {
   var artwork=owner._buildingAppearance;
@@ -38,7 +39,7 @@ function apply(owner, game) {
   var signature=JSON.stringify([value,plan]);
   if(prior&&prior.signature===signature){prior.value=value;prior.plan=plan;prior.hidden=false;prior.sync();return;}
   dispose(owner);
-  var parent=game&&(game.ndDown||game.ndMain)||owner.node.parent;
+  var parent=parentFor(owner,game,cfg);
   if(!valid(parent))return;
   var prepared=game&&game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.getManual&&game._stageAssets.shadows.getManual(owner,cfg,plan),entry=prepared||prepareEntry(value,plan);if(!entry)return;if(prepared)entry.refs++;
   var image=entry.image,texture=entry.texture,frame=entry.frame;
@@ -53,8 +54,10 @@ function apply(owner, game) {
     if(!valid(owner.node)||!valid(node)){dispose(owner);return;}
     var current=owner.buildInfo&&owner.buildInfo.cfg;
     if(!current||current.Shadow!==state.value||layout(owner)!==state.plan){apply(owner,game);return;}
+    var nextParent=parentFor(owner,game,current);if(!valid(nextParent)){node.active=false;return;}if(node.parent!==nextParent)node.parent=nextParent;
     node.active=!state.hidden&&owner.enabled!==false&&owner.node.activeInHierarchy!==false&&owner.index>0&&!owner.isDestroyed&&ready(owner);
     if(!node.active)return;
+    node.opacity=owner._buildingNight?13:255;
     var source=state.value.body?owner.node:owner.ndAniMain.node;
     function point(x,y){return node.parent.convertToNodeSpaceAR(source.convertToWorldSpaceAR(cc.v2(x,y)));}
     var o=point(0,0),x=point(1,0),y=point(0,1),a=x.x-o.x,b=x.y-o.y,c=y.x-o.x,d=y.y-o.y,sx=Math.hypot(a,b);

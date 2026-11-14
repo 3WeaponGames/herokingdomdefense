@@ -2,7 +2,7 @@
 const fs = require('fs'), path = require('path');
 Editor.Panel.extend({
   template: '<div id="sound-editor"></div>',
-  style: fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8'),
+  style: require('../game-data-editor/panel/control-theme')(fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8')),
   $: { root: '#sound-editor' },
   ready() {
     const project = Editor.Project && Editor.Project.path || Editor.projectPath;

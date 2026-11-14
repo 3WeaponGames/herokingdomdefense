@@ -12,15 +12,17 @@ function mount(host,api){
  const mode=make('select');mode.setAttribute('aria-label','Edit layer');for(const [id,label]of [['blocker','Blocker'],['shadow','Shadow'],['scale','Scale'],['nightlight','Nightlight']]){const o=make('option',label);o.value=id;mode.appendChild(o);}mode.value=layer;tools.appendChild(mode);
  if(!canvas.getContext)return {destroy(){}};
  let closed=false,data,images={},value,values,layerParts=[],points=state.points||[],pointer=null,busy=false,frame=null,opacityDraft=null,scaleClient=null,drag=null,pan=null,dropPreview=null;
- let scale=1,zoom=state.zoom||1,cx=0,cy=0,tool=state.tool||'paint',partKey=state.part||'body',instance=state.instance||0;
+ let scale=1,zoom=state.zoom||1,cx=0,cy=0,tool=layer==='shadow'?'select':state.tool==='erase'?'erase':'paint',partKey=state.part||'body',instance=state.instance||0,shadowSelected=false;
  const resizer=require('./preview-resize').mount(canvas,state);
  const g=canvas.getContext('2d'),renderer=Renderer.create({onLoad:draw,onError:error=>message(error.message,true)}),building={x:0,y:0,scale:1,angle:0};
  function message(text,error){status.textContent=text;status.className='bld-blocker-help'+(error?' error':'');}
  function action(label,run){const b=make('button',label);b.type='button';b.onclick=run;tools.appendChild(b);return b;}
+ const select=action('Hand / select shadow',()=>choose('select'));select.setAttribute('aria-label','Select shadow');
  const add=action('Polygon blocker',()=>choose('paint')),erase=action('Polygon erase',()=>choose('erase'));
  const clear=action('Clear blocker',()=>{if(!value||busy)return;releaseDrag();const next=clone(value);for(const p of layerParts)next[p.key]=Object.assign({},next[p.key],layer==='shadow'?{mask:[]}:{mask:[],polygons:[]});points=[];pointer=null;commit(next);});
- action('Cancel polygon',()=>{releaseDrag();points=[];pointer=null;draw();});
+ action('Cancel polygon',()=>{releaseDrag();points=[];pointer=null;if(layer==='shadow')choose('select');else draw();});
  action('Fit preview',()=>{zoom=1;fit();});
+ const gatePreview=action('Gate: closed',()=>{state.gateOpen=!state.gateOpen;syncMode();draw();});gatePreview.setAttribute('aria-label','Gate preview pose');
  action('Duplicate to all tiers',async()=>{if(busy||!value)return;endPan(false);releaseDrag();busy=true;try{await api.onDuplicate(layer);if(!closed)message('Copied to the other tiers in this family. Save changes to apply.');}catch(error){if(!closed)message(error.message,true);}finally{busy=false;}});
  const opacityLabel=make('label','Shadow opacity'),opacity=make('input'),opacityText=make('output');opacityLabel.className='bld-shadow-opacity';opacity.type='range';opacity.min='0';opacity.max='100';opacity.step='.1';opacity.setAttribute('aria-label','Shadow opacity');opacityLabel.appendChild(opacity);opacityLabel.appendChild(opacityText);tools.appendChild(opacityLabel);
  opacity.oninput=()=>{if(!value||busy)return;opacityDraft=Math.max(0,Math.min(1,Number(opacity.value)/100));opacityText.textContent=(opacityDraft*100).toFixed(1)+'%';draw();};
@@ -31,13 +33,14 @@ function mount(host,api){
  const nightHost=make('div');host.appendChild(nightHost);let nightClient=null;
  const shadowTool=make('select');shadowTool.setAttribute('aria-label','Shadow source');for(const [id,label]of [['texture','Texture shadow'],['polygon','Manual polygon mask']]){const option=make('option',label);option.value=id;shadowTool.appendChild(option);}shadowTool.value=state.shadowTool||'texture';tools.appendChild(shadowTool);
  const styleHost=make('div');host.insertBefore(styleHost,canvas);const dropClient=require('./drop-shadow-client').mount(styleHost,{onChange:action=>api.onShadowStyle(action),onPreview:(params,mode)=>{dropPreview=mode==='none'?null:Object.assign({},params);draw();}});
- shadowTool.onchange=async()=>{releaseDrag();points=[];state.shadowTool=shadowTool.value;syncMode();draw();try{const next=await api.onShadowStyle({kind:'source',source:shadowTool.value});if(!closed)dropClient.setData(next);}catch(error){if(!closed)message(error.message,true);}};
+ shadowTool.onchange=async()=>{releaseDrag();points=[];shadowSelected=false;tool='select';state.shadowTool=shadowTool.value;syncMode();draw();try{const next=await api.onShadowStyle({kind:'source',source:shadowTool.value});if(!closed)dropClient.setData(next);}catch(error){if(!closed)message(error.message,true);}};
  function textureMode(){return layer==='shadow'&&shadowTool.value==='texture';}
  function part(){return layerParts.find(p=>p.key===partKey);}
  function matrix(){const p=part();return p&&p.instances[instance];}
  function refreshCopies(){copies.textContent='';const p=part();instance=Math.min(instance,Math.max(0,(p&&p.instances.length||0)-1));const labels=Guides.entries(p,layerParts);(labels.length?labels:(p&&p.instances||[]).map((_m,index)=>({index,label:'Copy '+(index+1)}))).forEach(item=>{const o=make('option',item.label);o.value=String(item.index);copies.appendChild(o);});copies.value=String(instance);copies.hidden=!p||p.instances.length<2;}
  function guideView(){return{width:canvas.width,height:canvas.height,scale:scale*zoom,cx,cy};}
- function pickConnection(event){if(event.button!==0||textureMode()||busy||points.length||layer==='scale'||layerParts.length<2)return false;const b=canvas.getBoundingClientRect(),point={x:(event.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth,y:(event.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight},index=Guides.hit(part(),layerParts,guideView(),point);if(index===null)return false;event.preventDefault();copies.value=String(index);copies.onchange();canvas.focus();return true;}
+ function pickConnection(event){if(event.button!==0||textureMode()||busy||points.length||layer==='scale'||layerParts.length<2||layer==='shadow'&&(!shadowSelected||tool!=='select'))return false;const b=canvas.getBoundingClientRect(),point={x:(event.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth,y:(event.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight},index=Guides.hit(part(),layerParts,guideView(),point);if(index===null)return false;event.preventDefault();copies.value=String(index);copies.onchange();canvas.focus();return true;}
+ function selectionUI(){select.className=tool==='select'?'active':'';add.className=tool==='paint'?'active':'';erase.className=tool==='erase'?'active':'';guideNote.hidden=layer==='scale'||layer==='nightlight'||textureMode()||layerParts.length<2||layer==='shadow'&&!shadowSelected;}
  function syncMode(){
   const scaling=layer==='scale',night=layer==='nightlight',separate=scaling||night;guideNote.hidden=separate||layerParts.length<2;canvas.hidden=help.hidden=status.hidden=separate;for(const child of tools.children)if(child!==mode)child.hidden=separate;
   scaleHost.hidden=!scaling;
@@ -47,18 +50,23 @@ function mount(host,api){
   if(!night&&nightClient){nightClient.destroy();nightClient=null;}
   styleHost.hidden=!textureMode();shadowTool.hidden=layer!=='shadow';
   for(const button of tools.querySelectorAll('button'))if(button.textContent!=='Fit preview')button.hidden=separate||textureMode();
+  select.hidden=layer!=='shadow'||separate||textureMode();selectionUI();
+  gatePreview.hidden=!data?.openRecord||separate;gatePreview.textContent=state.gateOpen?'Gate: open':'Gate: closed';gatePreview.setAttribute('aria-pressed',String(!!state.gateOpen));
   if(scaling&&!scaleClient){state.scaleView=state.scaleView||{};scaleClient=require('./scale-client').mount(scaleHost,{ipc:api.ipc,request:api.request,state:state.scaleView,onChange:next=>api.onChange(next,'scale')});}
   if(!scaling&&scaleClient){scaleClient.destroy();scaleClient=null;}
   canvas.setAttribute('aria-label',layer==='shadow'?'Building shadow preview':'Building blocker preview');
   add.textContent=layer==='shadow'?'Polygon shadow':'Polygon blocker';clear.textContent=layer==='shadow'?'Clear shadow':'Clear blocker';
   opacityLabel.hidden=layer!=='shadow'||textureMode();if(value&&layer==='shadow'){opacity.value=String(value.opacity*100);opacityText.textContent=(value.opacity*100).toFixed(1)+'%';}
   help.textContent='Click polygon points, then double-click or click the first point to finish. Drag round corner handles or square edge handles to reshape a completed polygon. Enter completes; Escape cancels. '+(layer==='shadow'?'Shadows use a translucent black texture mask; blockers are hidden.':'Yellow is blocked; shadows are hidden.')+' Cyan marks the selected copy. Matching numbered markers identify each piece. Wheel to zoom; hold middle mouse to pan.';
+  if(layer==='shadow')help.textContent='Hand / select: click a shadow to show its outline and handles. Click empty space or press Escape to hide them. Polygon shadow and Polygon erase draw with points; Enter completes. Wheel to zoom; hold middle mouse to pan. Changes stay in the shared draft until Save.';
   parts.textContent='';for(const p of layerParts){const o=make('option',Guides.title(p));o.value=p.key;parts.appendChild(o);}if(layerParts.length&&!part())partKey=layerParts[0].key;parts.value=partKey;parts.hidden=separate||layerParts.length<2;refreshCopies();if(separate)copies.hidden=true;
   if(textureMode()){parts.hidden=copies.hidden=guideNote.hidden=true;help.textContent='The shadow follows the visible building artwork. Wheel to zoom; hold middle mouse to pan. Changes stay in the draft until Save.';}
  }
- mode.onchange=()=>{if(busy||!values){mode.value=layer;return;}endPan(false);releaseDrag();layer=mode.value;state.layer=layer;value=values[(layer==='scale'||layer==='nightlight')?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;points=[];pointer=null;opacityDraft=null;instance=0;syncMode();draw();message('Editing '+layer+'. Changes stay in the shared draft until Save.');};
- function choose(next,reset=true){releaseDrag();tool=next;if(reset){points=[];pointer=null;}add.className=next==='paint'?'active':'';erase.className=next==='erase'?'active':'';draw();}
- function local(event){const b=canvas.getBoundingClientRect(),world={x:((event.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth-canvas.width/2)/(scale*zoom)+cx,y:-((event.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight-canvas.height/2)/(scale*zoom)+cy};return Maps.point(Maps.inverse(matrix()),world);}
+ mode.onchange=()=>{if(busy||!values){mode.value=layer;return;}endPan(false);releaseDrag();layer=mode.value;tool=layer==='shadow'?'select':'paint';shadowSelected=false;state.layer=layer;value=values[(layer==='scale'||layer==='nightlight')?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;points=[];pointer=null;opacityDraft=null;instance=0;syncMode();draw();message('Editing '+layer+'. Changes stay in the shared draft until Save.');};
+ function choose(next,reset=true){releaseDrag();tool=next;shadowSelected=false;if(reset){points=[];pointer=null;}selectionUI();canvas.style.cursor=next==='select'?'default':'crosshair';draw();}
+ function world(event){const b=canvas.getBoundingClientRect();return{x:((event.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth-canvas.width/2)/(scale*zoom)+cx,y:-((event.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight-canvas.height/2)/(scale*zoom)+cy};}
+ function local(event){return Maps.point(Maps.inverse(matrix()),world(event));}
+ function hitShadow(point){for(const p of [part()].concat(layerParts.filter(p=>p!==part())).filter(Boolean))for(let i=0;i<p.instances.length;i++){const m=p.instances[i],q=Maps.point(Maps.inverse(m),point),tolerance=5/(scale*zoom*Math.max(.001,Math.min(Math.hypot(m[0],m[1]),Math.hypot(m[2],m[3]))));if(Handles.hit(value[p.key].mask,q,tolerance))return{part:p.key,instance:i};}return null;}
  function screenDistance(a,b){const m=matrix(),p=Maps.point(m,a),q=Maps.point(m,b);return Math.hypot(p.x-q.x,p.y-q.y)*scale*zoom;}
  async function commit(next){
   if(JSON.stringify(next)===JSON.stringify(value)){draw();return;}
@@ -67,15 +75,17 @@ function mount(host,api){
   catch(error){if(!closed){value=values[layer]=before;syncMode();message(error.message,true);draw();}}
   finally{busy=false;}
  }
- function finish(){if(busy||!value)return;try{const shape=Clip.polygonBrush(points),next=clone(value),mask=Clip.combineMask(value[partKey].mask,shape,tool);next[partKey]=Object.assign({},next[partKey],layer==='shadow'?{mask}:{mask,polygons:Clip.collisionPolygons(mask)});points=[];pointer=null;commit(next);}catch(error){message(error.message,true);draw();}}
+ function finish(){if(busy||!value||!points.length)return;try{const shape=Clip.polygonBrush(points),next=clone(value),mask=Clip.combineMask(value[partKey].mask,shape,tool);next[partKey]=Object.assign({},next[partKey],layer==='shadow'?{mask}:{mask,polygons:Clip.collisionPolygons(mask)});points=[];pointer=null;if(layer==='shadow')choose('select');commit(next);}catch(error){message(error.message,true);draw();}}
  function releaseDrag(){const old=drag;drag=null;if(old&&canvas.hasPointerCapture&&canvas.hasPointerCapture(old.id))canvas.releasePointerCapture(old.id);return old;}
  function endPan(cancel){const old=pan;pan=null;if(!old)return;if(cancel){cx=old.cx;cy=old.cy;}if(canvas.hasPointerCapture&&canvas.hasPointerCapture(old.id))canvas.releasePointerCapture(old.id);canvas.style.cursor='crosshair';draw();}
- function editHandles(){return !textureMode()&&!points.length&&value&&value[partKey]?Handles.handles(value[partKey].mask):[];}
+ function editHandles(){return !textureMode()&&!points.length&&(layer!=='shadow'||tool==='select'&&shadowSelected)&&value&&value[partKey]?Handles.handles(value[partKey].mask):[];}
  function hitHandle(p){return editHandles().map(h=>({h,d:screenDistance(h,p)})).filter(h=>h.d<=9).sort((a,b)=>a.d-b.d||Number(a.h.edge)-Number(b.h.edge))[0];}
  canvas.onpointerdown=event=>{
   if(pickConnection(event))return;
   if(event.button===1&&data&&!drag&&!pan){event.preventDefault();canvas.focus();pan={id:event.pointerId,x:event.clientX,y:event.clientY,cx,cy};canvas.style.cursor='grabbing';if(canvas.setPointerCapture)canvas.setPointerCapture(event.pointerId);return;}
-  if(event.button!==0||textureMode()||busy||drag||pan||!matrix())return;canvas.focus();event.preventDefault();
+  if(event.button!==0||textureMode()||busy||drag||pan)return;canvas.focus();event.preventDefault();
+  if(layer==='shadow'&&tool==='select'&&(!shadowSelected||!matrix()||!hitHandle(local(event)))){const hit=hitShadow(world(event));shadowSelected=!!hit;if(hit){partKey=hit.part;instance=hit.instance;parts.value=partKey;refreshCopies();}pointer=null;selectionUI();draw();return;}
+  if(!matrix())return;
   const p=local(event);
   const hit=hitHandle(p);if(hit){drag={id:event.pointerId,handle:hit.h,start:p,mask:clone(value[partKey].mask),next:null};if(canvas.setPointerCapture)canvas.setPointerCapture(event.pointerId);pointer=null;draw();return;}
   if(points.length>=3&&screenDistance(points[0],p)<10){finish();return;}
@@ -84,12 +94,13 @@ function mount(host,api){
   if(!points.length||screenDistance(points[points.length-1],p)>2)points.push(p);
   pointer=p;draw();
  };
- canvas.onpointermove=event=>{if(pan){if(pan.id!==event.pointerId)return;event.preventDefault();cx=pan.cx-(event.clientX-pan.x)*canvas.width/canvas.clientWidth/(scale*zoom);cy=pan.cy+(event.clientY-pan.y)*canvas.height/canvas.clientHeight/(scale*zoom);pointer=null;draw();return;}if(!matrix()||busy)return;const p=local(event);if(drag){if(drag.id!==event.pointerId)return;drag.next=Handles.move(drag.mask,drag.handle,p.x-drag.start.x,p.y-drag.start.y);draw();return;}pointer=p;canvas.style.cursor=hitHandle(p)?'grab':'crosshair';draw();};
+ canvas.onpointermove=event=>{if(pan){if(pan.id!==event.pointerId)return;event.preventDefault();cx=pan.cx-(event.clientX-pan.x)*canvas.width/canvas.clientWidth/(scale*zoom);cy=pan.cy+(event.clientY-pan.y)*canvas.height/canvas.clientHeight/(scale*zoom);pointer=null;draw();return;}if(busy)return;if(layer==='shadow'&&tool==='select'&&!drag){canvas.style.cursor=matrix()&&hitHandle(local(event))?'grab':value&&hitShadow(world(event))?'pointer':'default';return;}if(!matrix())return;const p=local(event);if(drag){if(drag.id!==event.pointerId)return;drag.next=Handles.move(drag.mask,drag.handle,p.x-drag.start.x,p.y-drag.start.y);draw();return;}pointer=p;canvas.style.cursor=hitHandle(p)?'grab':'crosshair';draw();};
  canvas.onpointerup=event=>{if(pan&&pan.id===event.pointerId){endPan(false);return;}if(!drag||drag.id!==event.pointerId)return;const old=releaseDrag();if(!old.next){draw();return;}try{const mask=Handles.finish(old.next),next=clone(value);next[partKey]=Object.assign({},next[partKey],layer==='shadow'?{mask}:{mask,polygons:Clip.collisionPolygons(mask)});commit(next);}catch(error){message(error.message,true);draw();}};
  canvas.onpointercancel=canvas.onlostpointercapture=()=>{endPan(true);if(drag){releaseDrag();draw();}};
  canvas.onauxclick=event=>{if(event.button===1)event.preventDefault();};
  canvas.onpointerleave=()=>{pointer=null;draw();};canvas.ondblclick=event=>{if(pickConnection(event))return;event.preventDefault();if(points.length)finish();};
- canvas.onkeydown=event=>{if(event.key==='Escape'){endPan(true);releaseDrag();points=[];pointer=null;draw();event.preventDefault();}else if(event.key==='Enter'){finish();event.preventDefault();}else if(event.key==='Backspace'&&points.length){points.pop();draw();event.preventDefault();}};
+ canvas.onkeydown=event=>{if(event.key==='Escape'){endPan(true);releaseDrag();points=[];pointer=null;shadowSelected=false;selectionUI();draw();event.preventDefault();}else if(event.key==='Enter'){finish();event.preventDefault();}else if(event.key==='Backspace'&&points.length){points.pop();draw();event.preventDefault();}};
+ const clickAway=event=>{if(layer==='shadow'&&shadowSelected&&event.target!==canvas){releaseDrag();shadowSelected=false;selectionUI();draw();}};if(document.addEventListener)document.addEventListener('pointerdown',clickAway,true);
  canvas.onwheel=event=>{event.preventDefault();zoom=Math.max(.3,Math.min(8,zoom*Math.exp(-event.deltaY*.001)));draw();};
  function fit(){
   if(!data)return;const p=[],o=data.record.origin;
@@ -99,7 +110,7 @@ function mount(host,api){
   const finite=p.filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));if(!finite.length)return;
   const minX=Math.min(...finite.map(p=>p.x)),maxX=Math.max(...finite.map(p=>p.x)),minY=Math.min(...finite.map(p=>p.y)),maxY=Math.max(...finite.map(p=>p.y));cx=(minX+maxX)/2;cy=(minY+maxY)/2;scale=Math.min((canvas.width-70)/Math.max(1,maxX-minX),(canvas.height-60)/Math.max(1,maxY-minY));draw();
  }
- function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;state.previewHeight=h;draw();}}
+ function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;state.previewHeight=canvas.offsetHeight||h;draw();}}
  function maskPath(mask){g.beginPath();for(const region of mask)for(const ring of region){ring.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();}}
  function draw(){if(closed||frame!==null)return;frame=requestAnimationFrame(()=>{
   frame=null;if(closed||layer==='scale'||layer==='nightlight')return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!data)return;
@@ -107,7 +118,7 @@ function mount(host,api){
   g.setTransform(scale*zoom,0,0,-scale*zoom,canvas.width/2-cx*scale*zoom,canvas.height/2+cy*scale*zoom);
   let preview=drag&&drag.next||value[partKey]&&value[partKey].mask;
   if(points.length>=2&&pointer)try{preview=Clip.combineMask(preview,Clip.polygonBrush(points.concat([pointer])),tool);}catch(_){}
-  const record=Object.assign({},data.record,{shadow:undefined,dropShadow:undefined});
+  const record=Object.assign({},state.gateOpen&&data.openRecord||data.record,{shadow:undefined,dropShadow:undefined});
   if(textureMode())record.dropShadow=dropPreview;
   if(layer==='shadow'&&!textureMode()){
    const regions=[];for(const p of layerParts)for(const m of p.instances)regions.push(...Shadow.transform(p.key===partKey?preview:value[p.key].mask,m));
@@ -115,11 +126,12 @@ function mount(host,api){
   }
   const all=renderer.parts(building,record);for(const p of all.filter(p=>p.ground).concat(all.filter(p=>!p.ground)))renderer.draw(g,p,images,data.runtimePath);
   if(!textureMode())for(const p of layerParts)for(let i=0;i<p.instances.length;i++){
+   if(layer==='shadow'&&(!shadowSelected||tool!=='select'||p.key!==partKey||i!==instance))continue;
    const m=p.instances[i];g.save();Paint.apply(g,m);maskPath(p.key===partKey?preview:value[p.key].mask);if(layer==='blocker'){g.fillStyle='#ffe25a60';g.fill('evenodd');}g.strokeStyle=p.key===partKey&&i===instance?'#74edff':layer==='shadow'?'#b3c0cf88':'#ffe25a';g.lineWidth=1.5/(scale*zoom*Math.max(.01,Math.hypot(m[0],m[1])));g.stroke();g.restore();
   }
   if(matrix()&&points.length){g.save();Paint.apply(g,matrix());g.strokeStyle=tool==='erase'?'#ff8b80':'#fff6ab';g.lineWidth=2/(scale*zoom);g.beginPath();points.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));if(pointer)g.lineTo(pointer.x,pointer.y);g.stroke();for(const p of points){g.beginPath();g.arc(p.x,p.y,4/(scale*zoom),0,Math.PI*2);g.fillStyle='#fff6ab';g.fill();}g.restore();}
-  if(!textureMode()&&matrix()&&!points.length){const m=matrix();g.save();g.setTransform(1,0,0,1,0,0);for(const h of Handles.handles(preview||[])){const p=Maps.point(m,h),x=canvas.width/2+(p.x-cx)*scale*zoom,y=canvas.height/2-(p.y-cy)*scale*zoom;g.beginPath();if(h.edge)g.rect(x-4,y-4,8,8);else g.arc(x,y,5,0,Math.PI*2);g.fillStyle=h.edge?'#effcff':'#74edff';g.fill();g.strokeStyle='#203746';g.lineWidth=1.5;g.stroke();}g.restore();}
-  if(!textureMode()&&layerParts.length>1)Guides.draw(g,part(),layerParts,instance,guideView());
+  if(!textureMode()&&matrix()&&!points.length&&(layer!=='shadow'||shadowSelected&&tool==='select')){const m=matrix();g.save();g.setTransform(1,0,0,1,0,0);for(const h of Handles.handles(preview||[])){const p=Maps.point(m,h),x=canvas.width/2+(p.x-cx)*scale*zoom,y=canvas.height/2-(p.y-cy)*scale*zoom;g.beginPath();if(h.edge)g.rect(x-4,y-4,8,8);else g.arc(x,y,5,0,Math.PI*2);g.fillStyle=h.edge?'#effcff':'#74edff';g.fill();g.strokeStyle='#203746';g.lineWidth=1.5;g.stroke();}g.restore();}
+  if(!textureMode()&&layerParts.length>1&&(layer!=='shadow'||shadowSelected&&tool==='select'))Guides.draw(g,part(),layerParts,instance,guideView());
  });}
  syncMode();
  // CSS fixes the height while the panel width changes. Match the drawing
@@ -128,8 +140,8 @@ function mount(host,api){
  const ready=api.ipc('building-blocker-preview',api.request).then(async result=>{
   if(closed)return;data=result;if(result.dropStyle){shadowTool.value=result.dropStyle.source;dropClient.setData(result.dropStyle);}values={blocker:clone(result.value),shadow:clone(result.shadow)};value=values[(layer==='scale'||layer==='nightlight')?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;syncMode();choose(tool,false);
   const frames=new Set(result.record.sprites.map(s=>s.frame)),spec={images:Object.fromEntries(Object.entries(result.images).filter(([key])=>frames.has(key)))};
-  renderer.prepare([result.record],result.runtimePath);resize();if(state.view&&state.view.width===canvas.width&&state.view.height===canvas.height){({scale,cx,cy}=state.view);draw();}else fit();images=await Paint.loadImages(spec);if(closed)return;draw();message(data.parts.length>1?'Gate, pillars and connecting walls. Edits repeat at every matching connection point.':'Draw or erase a '+layer+'. Changes stay in the shared draft until Save.');
+  renderer.prepare([result.record].concat(result.openRecord?[result.openRecord]:[]),result.runtimePath);resize();if(state.view&&[state.view.scale,state.view.cx,state.view.cy].every(Number.isFinite)&&state.view.scale>0){({scale,cx,cy}=state.view);draw();}else fit();images=await Paint.loadImages(spec);if(closed)return;draw();message(data.parts.length>1?'Gate, pillars and connecting walls. Edits repeat at every matching connection point.':'Draw or erase a '+layer+'. Changes stay in the shared draft until Save.');
  }).catch(error=>{if(!closed)message(error.message,true);});
- return {get ready(){return nightClient?nightClient.ready:scaleClient?scaleClient.ready:ready;},stats:()=>nightClient?nightClient.stats():scaleClient?scaleClient.stats():Object.assign(renderer.stats(),{view:{scale:scale*zoom,cx,cy,width:canvas.width,height:canvas.height},handles:matrix()?editHandles().map(h=>Object.assign({},h,Maps.point(matrix(),h))):[]}),destroy(){if(closed)return;endPan(false);releaseDrag();closed=true;resizer.destroy();Object.assign(state,{layer,tool,part:partKey,instance,zoom,points:clone(points)});if(data)state.view={scale,cx,cy,width:canvas.width,height:canvas.height};if(observer)observer.disconnect();if(scaleClient)scaleClient.destroy();if(nightClient)nightClient.destroy();dropClient.destroy();renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=canvas.onauxclick=canvas.onpointerleave=canvas.ondblclick=canvas.onkeydown=canvas.onwheel=null;shadowTool.onchange=mode.onchange=opacity.oninput=opacity.onchange=null;canvas.width=canvas.height=1;}};
+ return {get ready(){return Promise.resolve(ready).then(()=>nightClient?nightClient.ready:scaleClient?scaleClient.ready:undefined);},stats:()=>nightClient?nightClient.stats():scaleClient?scaleClient.stats():Object.assign(renderer.stats(),{tool,shadowSelected,view:{scale:scale*zoom,cx,cy,width:canvas.width,height:canvas.height},handles:matrix()?editHandles().map(h=>Object.assign({},h,Maps.point(matrix(),h))):[]}),destroy(){if(closed)return;endPan(false);releaseDrag();closed=true;resizer.destroy();if(document.removeEventListener)document.removeEventListener('pointerdown',clickAway,true);Object.assign(state,{layer,tool,part:partKey,instance,zoom,points:clone(points)});if(data)state.view={scale,cx,cy,width:canvas.width,height:canvas.height};if(observer)observer.disconnect();if(scaleClient)scaleClient.destroy();if(nightClient)nightClient.destroy();dropClient.destroy();renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=canvas.onauxclick=canvas.onpointerleave=canvas.ondblclick=canvas.onkeydown=canvas.onwheel=null;shadowTool.onchange=mode.onchange=opacity.oninput=opacity.onchange=null;canvas.width=canvas.height=1;}};
 }
 module.exports={mount};

@@ -560,7 +560,9 @@
             }
           ]
         }
-      ]
+      ],
+      "EnvironmentMapId": "Map01",
+      "EnvironmentBiome": "forest"
     },
     {
       "Level": 2,
@@ -3380,7 +3382,9 @@
             }
           ]
         }
-      ]
+      ],
+      "EnvironmentMapId": "Map01",
+      "EnvironmentBiome": "forest"
     },
     {
       "Level": 6,
@@ -6664,7 +6668,9 @@
             }
           ]
         }
-      ]
+      ],
+      "EnvironmentMapId": "Map01",
+      "EnvironmentBiome": "forest"
     },
     {
       "Level": 10,
@@ -10087,7 +10093,9 @@
             }
           ]
         }
-      ]
+      ],
+      "EnvironmentMapId": "Map01",
+      "EnvironmentBiome": "forest"
     },
     {
       "Level": 14,
@@ -13653,7 +13661,9 @@
             }
           ]
         }
-      ]
+      ],
+      "EnvironmentMapId": "Map01",
+      "EnvironmentBiome": "forest"
     },
     {
       "Level": 18,

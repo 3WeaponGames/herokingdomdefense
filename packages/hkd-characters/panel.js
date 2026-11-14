@@ -2,7 +2,7 @@
 const fs=require('fs'),path=require('path');
 Editor.Panel.extend({
   template:'<div id="characters"></div>',
-  style:fs.readFileSync(path.join(__dirname,'style.css'),'utf8'),
+  style:require('../game-data-editor/panel/control-theme')(fs.readFileSync(path.join(__dirname,'style.css'),'utf8')),
   $:{root:'#characters'},
   ready(){const root=Editor.Project&&Editor.Project.path||Editor.projectPath;const api={
     ipc:(message,payload)=>new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-characters:'+message,payload,(error,result)=>error?reject(Error(error)):resolve(result))),

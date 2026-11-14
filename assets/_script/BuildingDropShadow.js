@@ -1,13 +1,15 @@
 "use strict";
 // Portable alpha-only drop shadows shared by the editor and Cocos runtime.
-var DEFAULTS={angle:135,distance:20,spread:10,size:12,opacity:.28};
-var RANGES={angle:[-180,180],distance:[0,500],spread:[0,100],size:[0,128],opacity:[0,1]};
-// Optional fields keep existing saved presets and their offset rendering intact.
-var GROUND={length:.7,flatten:.6,groundDepth:.18,base:0,taper:.15,fade:.45};
+// Ground projection is the only generated shadow shape. These are the user's
+// recovered global values; missing settings must never select another shape.
+var GROUND=Object.freeze({length:.89,flatten:.82,groundDepth:0,base:0,taper:.17,fade:0});
+var EDGE=Object.freeze({straighten:.57}),DEFAULTS=Object.freeze(Object.assign({projection:"ground",angle:-74,spread:100,size:0,opacity:.203},GROUND,EDGE));
+var RANGES={angle:[-180,180],spread:[0,100],size:[0,128],opacity:[0,1]};
 var GROUND_RANGES={length:[.05,3],flatten:[.05,1.5],groundDepth:[0,.5],base:[0,.5],taper:[-.5,.8],fade:[0,1]};
+var EDGE_RANGES={straighten:[0,1]},ALL_RANGES=Object.assign({},RANGES,GROUND_RANGES,EDGE_RANGES);
 function inRange(n,r){return typeof n==="number"&&isFinite(n)&&n>=r[0]&&n<=r[1];}
-function valid(value){return !!value&&Object.keys(RANGES).every(function(k){return inRange(value[k],RANGES[k]);})&&(value.projection===undefined||value.projection==="offset"||value.projection==="ground")&&Object.keys(GROUND_RANGES).every(function(k){return value[k]===undefined||inRange(value[k],GROUND_RANGES[k]);});}
-function settings(value){var result={};Object.keys(DEFAULTS).forEach(function(k){result[k]=value&&typeof value[k]==="number"&&isFinite(value[k])?Math.max(RANGES[k][0],Math.min(RANGES[k][1],value[k])):DEFAULTS[k];});if(value&&(value.projection==="ground"||value.projection==="offset"))result.projection=value.projection;Object.keys(GROUND).forEach(function(k){if(value&&(value.projection==="ground"||value[k]!==undefined))result[k]=typeof value[k]==="number"&&isFinite(value[k])?Math.max(GROUND_RANGES[k][0],Math.min(GROUND_RANGES[k][1],value[k])):GROUND[k];});return result;}
+function valid(value){return !!value&&Object.keys(RANGES).every(function(k){return inRange(value[k],RANGES[k]);})&&(value.projection===undefined||value.projection==="ground")&&Object.keys(Object.assign({},GROUND_RANGES,EDGE_RANGES)).every(function(k){return value[k]===undefined||inRange(value[k],ALL_RANGES[k]);});}
+function settings(value){var result={projection:"ground"};Object.keys(ALL_RANGES).forEach(function(k){var r=ALL_RANGES[k];result[k]=value&&typeof value[k]==="number"&&isFinite(value[k])?Math.max(r[0],Math.min(r[1],value[k])):DEFAULTS[k];});return result;}
 function mode(row){var m=row&&row.DropShadow&&row.DropShadow.mode;return ["global","tier","individual","none"].indexOf(m)>=0?m:"global";}
 function group(category,row){
  var rows=category&&category.levelList||[],choices=category&&category.InitialChoices||[rows[0]&&rows[0].index];
@@ -16,7 +18,10 @@ function group(category,row){
 }
 function resolve(category,row,overrides){
  var m=mode(row),table=overrides&&overrides.buildingShadows||{},key=group(category,row),saved=m==="global"?table.global:m==="tier"?table.tiers&&table.tiers[key]:row&&row.DropShadow&&row.DropShadow.settings;
- return{mode:m,source:row&&row.DropShadow&&row.DropShadow.source||"texture",group:key,settings:settings(saved||table.global),active:m!=="none"&&!(row&&row.DropShadow&&row.DropShadow.source==="polygon")&&valid(saved),saved:valid(saved)};
+ // A previously authored polygon remains a polygon when its old save has no
+ // source tag. Generated/default shadows still always use ground projection.
+ var source=row&&row.DropShadow&&row.DropShadow.source||(row&&row.Shadow?"polygon":"texture");
+ return{mode:m,source:source,group:key,settings:settings(saved||table.global),active:m!=="none"&&source!=="polygon",saved:valid(saved)};
 }
 function transition(category,row,overrides,next){
  var current=resolve(category,row,overrides),table=overrides&&overrides.buildingShadows||{},preset=next==="global"?table.global:next==="tier"?table.tiers&&table.tiers[current.group]:null;
@@ -43,16 +48,20 @@ function project(source,p){
  var w=source.pixelWidth,h=source.pixelHeight,ux=source.width/w,uy=source.height/h,top=new Int32Array(w),bottom=new Int32Array(w),lo=h,hi=-1,left=w,right=-1;
  for(var x=0;x<w;x++){top[x]=-1;bottom[x]=-1;for(var y=0;y<h;y++)if(source.alpha[y*w+x]>8){if(top[x]<0)top[x]=y;bottom[x]=y;}if(top[x]>=0){lo=Math.min(lo,top[x]);hi=Math.max(hi,bottom[x]);left=Math.min(left,x);right=Math.max(right,x);}}
  if(hi<0)return{alpha:new Uint8Array(1),pixelWidth:1,pixelHeight:1,x:source.x,y:source.y,width:ux,height:uy};
- var height=(hi-lo+1)*uy,base=source.y+(h-hi-1)*uy+height*p.base,center=source.x+(left+right+1)*ux/2,feet=new Float64Array(w),angle=p.angle*Math.PI/180,dx=-Math.cos(angle)*p.length,dy=-Math.sin(angle)*p.length*p.flatten;
- function foot(i){return bottom[i]<0?base:Math.max(base,Math.min(base+height*p.groundDepth,source.y+(h-bottom[i]-1)*uy));}
+ var height=(hi-lo+1)*uy;if(source.groundedColumns){height=uy;for(var x=left;x<=right;x++)if(top[x]>=0)height=Math.max(height,(bottom[x]-top[x]+1)*uy);}
+ var base=source.y+(h-hi-1)*uy+height*p.base,center=source.x+(left+right+1)*ux/2,feet=new Float64Array(w),contacts=source.contacts||[],columns=new Array(w),angle=p.angle*Math.PI/180,dx=-Math.cos(angle)*p.length,dy=-Math.sin(angle)*p.length*p.flatten;
+ if(contacts.length)for(var x=left;x<=right;x++){var px=source.x+(x+.5)*ux,py=source.y+(h-bottom[x]-1)*uy,best=Infinity;contacts.forEach(function(contact){var distance=Math.abs(px-contact.x)+.1*Math.abs(py-contact.y);if(distance<best){best=distance;columns[x]=contact;}});}
+ // Modular walls have many ground contacts at different isometric heights.
+ // Their upper posts must never be clamped onto the lowest post's floor.
+ function foot(i){var y=source.y+(h-bottom[i]-1)*uy,c=columns[i];return bottom[i]<0?base:c?c.y+c.height*p.base:source.groundedColumns?y+height*p.base:Math.max(base,Math.min(base+height*p.groundDepth,y));}
  for(var x=left;x<=right;x++){var sum=0,count=0;for(var j=Math.max(left,x-2);j<=Math.min(right,x+2);j++)if(bottom[j]>=0){sum+=foot(j);count++;}feet[x]=count?Math.min(foot(x),sum/count):base;}
- function point(x,y,f){var z=Math.max(0,y-f),t=z/height;return{x:center+(x-center)*(1-p.taper*t)+dx*z,y:f+dy*z,t:t};}
+ function point(x,y,f,index){var c=columns[index],z=Math.max(0,y-f),t=z/(c?c.height:height),pivot=c?c.x:source.groundedColumns?x:center;return{x:pivot+(x-pivot)*(1-p.taper*t)+dx*z,y:f+dy*z,t:t};}
  var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
- for(var x=left;x<=right;x++)if(top[x]>=0){var f=feet[x],low=Math.max(f,source.y+(h-bottom[x]-1)*uy),high=Math.max(low,source.y+(h-top[x])*uy);for(var sx=0;sx<2;sx++)for(var sy=0;sy<2;sy++){var v=point(source.x+(x+sx)*ux,sy?high:low,f);minX=Math.min(minX,v.x);maxX=Math.max(maxX,v.x);minY=Math.min(minY,v.y);maxY=Math.max(maxY,v.y);}}
+ for(var x=left;x<=right;x++)if(top[x]>=0){var f=feet[x],low=Math.max(f,source.y+(h-bottom[x]-1)*uy),high=Math.max(low,source.y+(h-top[x])*uy);for(var sx=0;sx<2;sx++)for(var sy=0;sy<2;sy++){var v=point(source.x+(x+sx)*ux,sy?high:low,f,x);minX=Math.min(minX,v.x);maxX=Math.max(maxX,v.x);minY=Math.min(minY,v.y);maxY=Math.max(maxY,v.y);}}
  // Downsample extreme projections before allocating; softness gets its own pad.
  var unit=Math.max(ux,uy,(maxX-minX)/1020,(maxY-minY)/1020),pw=Math.max(1,Math.ceil((maxX-minX)/unit)+2),ph=Math.max(1,Math.ceil((maxY-minY)/unit)+2),alpha=new Uint8Array(pw*ph);minX-=unit;minY-=unit;
  function span(x,y0,y1,amount){
-  var f=feet[x],a=point(source.x+x*ux,y0,f),b=point(source.x+(x+1)*ux,y0,f),c=point(source.x+x*ux,y1,f),d=point(source.x+(x+1)*ux,y1,f),low=Math.min(a.y,c.y),high=Math.max(a.y,c.y),ystart=Math.max(0,Math.floor((low-minY)/unit)),yend=Math.min(ph-1,Math.floor((high-minY)/unit));
+  var f=feet[x],a=point(source.x+x*ux,y0,f,x),b=point(source.x+(x+1)*ux,y0,f,x),c=point(source.x+x*ux,y1,f,x),d=point(source.x+(x+1)*ux,y1,f,x),low=Math.min(a.y,c.y),high=Math.max(a.y,c.y),ystart=Math.max(0,Math.floor((low-minY)/unit)),yend=Math.min(ph-1,Math.floor((high-minY)/unit));
   for(var row=ystart;row<=yend;row++){
    var q=Math.abs(c.y-a.y)>1e-9?Math.max(0,Math.min(1,(minY+(row+.5)*unit-a.y)/(c.y-a.y))):.5,l=a.x+(c.x-a.x)*q,r=b.x+(d.x-b.x)*q;
    if(Math.abs(c.y-a.y)<=1e-9){l=Math.min(a.x,b.x,c.x,d.x);r=Math.max(a.x,b.x,c.x,d.x);}
@@ -65,17 +74,32 @@ function project(source,p){
  }
  // Equal-alpha runs make solid pillars cheap, while retaining transparent gaps.
  for(var x=left;x<=right;x++)if(top[x]>=0){var start=top[x],amount=source.alpha[start*w+x];for(var y=start+1;y<=bottom[x]+1;y++){var next=y<=bottom[x]?source.alpha[y*w+x]:-1;if(next===amount)continue;if(amount>0){var low=Math.max(feet[x],source.y+(h-y)*uy),high=source.y+(h-start)*uy;if(high>low)span(x,low,high,amount);}start=y;amount=next;}}
- return{alpha:alpha,pixelWidth:pw,pixelHeight:ph,x:minX,y:minY,width:pw*unit,height:ph*unit};
+ return{alpha:alpha,pixelWidth:pw,pixelHeight:ph,x:minX,y:minY,width:pw*unit,height:ph*unit,detailScale:contacts.length?Math.max.apply(null,contacts.map(function(c){return c.height;}))/unit:source.groundedColumns?height/unit:undefined};
+}
+// Project independently grounded pieces, then take their alpha union. Applying
+// opacity/softness once keeps overlapping leaf/post shadows equally dark.
+function projectLayers(layers,p){
+ var parts=layers.map(function(layer){validateSource(layer);return project(layer,p);}),minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity,unit=0,detail=0;
+ parts.forEach(function(part){minX=Math.min(minX,part.x);minY=Math.min(minY,part.y);maxX=Math.max(maxX,part.x+part.width);maxY=Math.max(maxY,part.y+part.height);unit=Math.max(unit,part.width/part.pixelWidth,part.height/part.pixelHeight);detail=Math.max(detail,(part.detailScale||0)*part.width/part.pixelWidth);});
+ unit=Math.max(unit,(maxX-minX)/1024,(maxY-minY)/1024);
+ var w=Math.max(1,Math.ceil((maxX-minX)/unit)),h=Math.max(1,Math.ceil((maxY-minY)/unit)),alpha=new Uint8Array(w*h);
+ parts.forEach(function(part){
+  var ux=part.width/part.pixelWidth,uy=part.height/part.pixelHeight,x0=Math.max(0,Math.floor((part.x-minX)/unit)),x1=Math.min(w,Math.ceil((part.x+part.width-minX)/unit)),y0=Math.max(0,Math.floor((part.y-minY)/unit)),y1=Math.min(h,Math.ceil((part.y+part.height-minY)/unit));
+  for(var y=y0;y<y1;y++)for(var x=x0;x<x1;x++){var sx=Math.floor((minX+(x+.5)*unit-part.x)/ux),sy=Math.floor((minY+(y+.5)*unit-part.y)/uy);if(sx<0||sx>=part.pixelWidth||sy<0||sy>=part.pixelHeight)continue;var at=(h-1-y)*w+x,n=part.alpha[(part.pixelHeight-1-sy)*part.pixelWidth+sx];if(n>alpha[at])alpha[at]=n;}
+ });
+ return{alpha:alpha,pixelWidth:w,pixelHeight:h,x:minX,y:minY,width:w*unit,height:h*unit,detailScale:detail?detail/unit:undefined};
 }
 function raster(source,value){
- validateSource(source);var p=settings(value);if(p.projection==="ground")source=project(source,p);
+ validateSource(source);var p=settings(value);source=source.layers&&source.layers.length?projectLayers(source.layers,p):project(source,p);
  var w=source.pixelWidth,h=source.pixelHeight,ux=source.width/w,uy=source.height/h;
+ if(p.straighten>0){var outline=require("./ShadowOutline").raster(source,p.straighten);if(outline){var shaded=filter(source.alpha,w,h,outline.radius,true,true);shaded=filter(shaded,w,h,outline.radius,false,true);var clean=new Uint8Array(w*h);for(var i=0;i<clean.length;i++)clean[i]=Math.round(shaded[i]*outline.alpha[i]/255);source=Object.assign({},source,{alpha:clean});}}
  var unit=Math.max(ux,uy),dilate=Math.ceil(p.size*p.spread/100/unit),blur=Math.ceil(p.size*(1-p.spread/100)/unit/2),pad=dilate+blur*3+2,ow=w+pad*2,oh=h+pad*2;
  if(ow>2048||oh>2048)throw Error("The shadow exceeds the texture budget. Increase the silhouette scale.");
  var a=new Uint8Array(ow*oh);for(var y=0;y<h;y++)a.set(source.alpha.subarray(y*w,(y+1)*w),(y+pad)*ow+pad);
  if(dilate){a=filter(a,ow,oh,dilate,true,true);a=filter(a,ow,oh,dilate,false,true);}
  if(blur)for(var pass=0;pass<3;pass++){a=filter(a,ow,oh,blur,true,false);a=filter(a,ow,oh,blur,false,false);}
  var pixels=new Uint8Array(ow*oh*4);for(var i=0;i<a.length;i++)pixels[i*4+3]=Math.round(a[i]*p.opacity);
- var angle=p.angle*Math.PI/180,distance=p.projection==="ground"?0:p.distance;return{pixels:pixels,pixelWidth:ow,pixelHeight:oh,x:source.x-pad*ux-Math.cos(angle)*distance,y:source.y-pad*uy-Math.sin(angle)*distance,width:ow*ux,height:oh*uy};
+ return{pixels:pixels,pixelWidth:ow,pixelHeight:oh,x:source.x-pad*ux,y:source.y-pad*uy,width:ow*ux,height:oh*uy};
 }
 exports.defaults=DEFAULTS;exports.ranges=RANGES;exports.groundDefaults=GROUND;exports.groundRanges=GROUND_RANGES;exports.valid=valid;exports.settings=settings;exports.mode=mode;exports.group=group;exports.resolve=resolve;exports.transition=transition;exports.raster=raster;
+exports.edgeDefaults=EDGE;exports.edgeRanges=EDGE_RANGES;
