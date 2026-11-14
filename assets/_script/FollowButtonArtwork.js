@@ -1,7 +1,7 @@
 "use strict";
 
-// Rally and Follow share the same gold rim and dark face behind their white
-// pictograms. Only the outer rim changes to blue while a command is enabled.
+// Rally and Follow use plain dark circles behind their white pictograms.
+// A cyan rim identifies an enabled command without the old baked gold artwork.
 function activeRim() {
   var size = 256, pixels = new Uint8Array(size * size * 4), scale = size / 128;
   for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) {
@@ -23,29 +23,27 @@ function activeRim() {
 exports.install = function (button) {
   if (!button || button._armyButtonArtwork) return;
   var idle = button.getChildByName("ndTag1"), active = button.getChildByName("ndTag2");
-  var gold = idle && idle.getComponent(cc.Sprite);
-  if (!idle || !active || !gold || !gold.spriteFrame) return;
-  var frame = gold.spriteFrame;
+  if (!idle || !active || !idle.getComponent(cc.Sprite) || !active.getComponent(cc.Sprite)) return;
+  var backgrounds = [];
   [idle, active].forEach(function (node) {
     var sprite = node.getComponent(cc.Sprite);
     sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
-    sprite.spriteFrame = frame; sprite.enabled = true;
+    sprite.spriteFrame = null; sprite.enabled = false;
     node.setContentSize(104, 104);
     var background = new cc.Node("CommandFace");
     background.parent = node;
-    background.setContentSize(82, 82);
+    background.setContentSize(104, 104);
     var g = background.addComponent(cc.Graphics);
     g.clear();
-    // Cover the old baked-in flag with a contrasting face. The existing
-    // textured rim still defines the button's smooth outer edge.
-    g.fillColor = cc.color(36, 45, 57); g.circle(0, 0, 38); g.fill();
+    g.fillColor = cc.color(36, 45, 57); g.circle(0, 0, 52); g.fill();
+    backgrounds.push(background);
   });
   var rim = activeRim(), highlight = new cc.Node("CommandActiveRim");
   highlight.parent = active;
   var sprite = highlight.addComponent(cc.Sprite);
   sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.spriteFrame = rim.frame;
   highlight.setContentSize(128, 128);
-  rim.sprite = sprite; button._armyButtonArtwork = rim;
+  rim.sprite = sprite; rim.highlight = highlight; rim.backgrounds = backgrounds; button._armyButtonArtwork = rim;
   // Gameplay initializes both commands inactive; the first frame agrees.
   idle.active = true; active.active = false;
 };
@@ -54,6 +52,7 @@ exports.dispose = function (button) {
   var rim = button && button._armyButtonArtwork;
   if (!rim) return;
   rim.sprite.spriteFrame = null;
+  rim.backgrounds.concat(rim.highlight).forEach(function (node) { node.active = false; node.destroy(); });
   rim.frame.destroy(); rim.texture.destroy();
   button._armyButtonArtwork = null;
 };

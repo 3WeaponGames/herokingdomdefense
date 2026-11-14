@@ -835,6 +835,8 @@ var def_KinghtFallUIGame = function (t) {
     this._fitBuildingsButton();
     if (this._battleHud) require("BattleHud").layout(this);
     this._layoutBattleFooter();
+    var hero = this.ctrGame && this.ctrGame.ctrPlay;
+    if (hero && hero._styleRuntime) require("HeroSkillHUD").layout(hero, hero._styleRuntime);
   };
   _ctor.prototype._layoutBattleFooter = function () {
     var control = this.ctrUI, root = control && control.node, rod = control && control.ndRod;
@@ -863,16 +865,25 @@ var def_KinghtFallUIGame = function (t) {
     var rallyBox = rally && box(rally, rally.getChildByName("labNum"));
     var followBox = follow && box(follow, follow.getChildByName("labNum"));
     var coin = this.btnAddCoin, coinBox = coin && box(coin);
-    var signature = [left, right, bottom, shown(button), shown(coin), JSON.stringify(startBox), JSON.stringify(rallyBox), JSON.stringify(followBox),
+    var signature = [left, right, bottom, shown(button), shown(coin), shown(rally), shown(follow), JSON.stringify(startBox), JSON.stringify(rallyBox), JSON.stringify(followBox),
       JSON.stringify(coinBox), rod.width, rod.height, rod.scaleX, rod.scaleY].join(":");
     if (signature === this._battleFooterSignature) return;
     this._battleFooterSignature = signature;
     if (coin && !this._footerCoinOffset) this._footerCoinOffset = { x: coin.x - button.x, y: coin.y - button.y };
-    button.setPosition(center, bottom + margin - startBox.minY);
+    var commandY = bottom + margin - Math.min(rallyBox ? rallyBox.minY : 0, followBox ? followBox.minY : 0);
+    if (rally) rally.setPosition(right - margin - rallyBox.maxX, commandY);
+    if (follow) follow.setPosition(rally ? rally.x + rallyBox.minX - gap - followBox.maxX : right - margin - followBox.maxX, commandY);
+    var startX = center, groupMinX = startBox.minX, groupMaxX = startBox.maxX;
+    if (shown(coin) && this._footerCoinOffset) {
+      groupMinX = Math.min(groupMinX, this._footerCoinOffset.x + coinBox.minX);
+      groupMaxX = Math.max(groupMaxX, this._footerCoinOffset.x + coinBox.maxX);
+    }
+    var commandLeft = Infinity;
+    if (shown(rally)) commandLeft = Math.min(commandLeft, rally.x + rallyBox.minX);
+    if (shown(follow)) commandLeft = Math.min(commandLeft, follow.x + followBox.minX);
+    if (isFinite(commandLeft)) startX = Math.max(left + margin - groupMinX, Math.min(startX, commandLeft - gap - groupMaxX));
+    button.setPosition(startX, bottom + margin - startBox.minY);
     if (coin && this._footerCoinOffset) coin.setPosition(button.x + this._footerCoinOffset.x, button.y + this._footerCoinOffset.y);
-    if (rally) rally.setPosition(right - margin - rallyBox.maxX, bottom + margin - rallyBox.minY);
-    if (follow) follow.setPosition(right - margin - followBox.maxX,
-      rally ? rally.y + rallyBox.maxY + gap - followBox.minY : bottom + margin - followBox.minY);
     var restX = left + (right - left) / 4;
     restX = Math.max(left + margin + rod.width * Math.abs(rod.scaleX) / 2, restX);
     var restY = bottom + 180 + rod.height * Math.abs(rod.scaleY) / 2;
@@ -918,9 +929,9 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype._enemyIndicatorObstacles = function () {
     var ui = this.ctrUI.node;
-    var drawer = this._battleHud;
+    var drawer = this._battleHud, hero = this.ctrGame && this.ctrGame.ctrPlay, skill = hero && hero._skillHUD;
     return [this.btnBuildInfo, drawer ? drawer.handle : this.ndTask, drawer && drawer.open ? drawer.view : null, this.btnSuspend, this.ndCoin, this.ndLevelInfo,
-      this.btnStartFight, this.btnAddCoin, this.btnAgg, this.btnFollow].filter(function (node) {
+      this.btnStartFight, this.btnAddCoin, this.btnAgg, this.btnFollow, skill && skill.button].filter(function (node) {
       return node && cc.isValid(node) && node.active && node.activeInHierarchy !== false;
     }).map(function (node) { return enemyIndicatorBounds(node, ui); });
   };
@@ -1131,6 +1142,12 @@ var def_KinghtFallUIGame = function (t) {
       t = Math.min(t, .1);
       this.ctrUI.upGuide();
       this.ctrGame.onUpdate(t * this.speed);
+    }
+    // Position controls and paint current combat state before enemy indicators
+    // reserve their HUD space. The paused path still hides skill input.
+    this._layoutBattleFooter();
+    if(this.ctrGame&&this.ctrGame.ctrPlay&&this.ctrGame.ctrPlay._styleRuntime)require("HeroSkillHUD").update(this.ctrGame.ctrPlay,this.ctrGame.ctrPlay._styleRuntime);
+    if (!this.isPauset) {
       for (var e in this.enemyIconInfo) {
         Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).tag = false);
       }
@@ -1187,9 +1204,6 @@ var def_KinghtFallUIGame = function (t) {
         Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).ndItem.active = o.tag);
       }
     }
-    // Paint once after combat advances so hit effects use this frame's state.
-    // The paused path still runs this to hide input and freeze presentation.
-    if(this.ctrGame&&this.ctrGame.ctrPlay&&this.ctrGame.ctrPlay._styleRuntime)require("HeroSkillHUD").update(this.ctrGame.ctrPlay,this.ctrGame.ctrPlay._styleRuntime);
   };
   _ctor.prototype.onCloseUI = function (t) {
     var e = this;

@@ -22,7 +22,7 @@ function fixture(style='skirmisher',maker={}){
  const entries=require('../../assets/resources/localization/catalog.json').entries,bindings=new Map();let language='en';
  const manager={bindLabel(label,key,params){bindings.set(label,{key,params});label.string=(entries[key]&&entries[key][language]||key).replace(/\{(\d+)\}/g,(_,i)=>params&&params[i]);}};
  const setLanguage=value=>{language=value;for(const [label,{key,params}]of bindings)manager.bindLabel(label,key,params);};
- const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date,Math,require:name=>name==='HeroMakerRider'?maker:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
+ const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date,Math,require:name=>name==='HeroMakerRider'?maker:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
  const root=new Node('UI');root.setContentSize(750,1334);const main=new Node('Map'),visual=new Node('Effects');visual.setParent(main);
  const actor=new Node('Hero');actor.setParent(main);const hp=new Node('HP');hp.setParent(actor);hp.setContentSize(64,12);hp.y=80;hp.active=false;
  const hero={node:actor,hp:100,hpMax:100,attackRange:200,ctrHp:{node:hp},getAttWpos:()=>actor.convertToWorldSpaceAR({x:0,y:40})};
@@ -209,6 +209,20 @@ test('the icon-only skill hit box avoids both commands and their captions in a n
  const hud=f.hero._skillHUD,b=rect(hud.button);assert(b.left>=-170-1e-9&&b.right<=170+1e-9);assert(b.bottom>=-220-1e-9&&b.top<=220+1e-9);
  for(const other of [f.ui.btnAgg,f.ui.btnFollow])for(const n of [other,other.getChildByName('labNum')]){const o=rect(n);assert(b.right<=o.left-12+1e-9||b.left>=o.right+12-1e-9||b.top<=o.bottom-12+1e-9||b.bottom>=o.top+12-1e-9,'Skill and command rectangles must not overlap');}
  const p=rect(hud.cooldownCount.node);assert(p.left>=b.left-1e-9&&p.right<=b.right+1e-9);assert(p.bottom>=b.bottom-1e-9&&p.top<=b.top+1e-9);
+});
+
+test('the skill stays above Rally while Follow shares the bottom row and returns to the corner when commands hide',()=>{
+ const f=fixture();f.ui.btnAgg=command(f,'Rally',293,-566.516);f.ui.btnFollow=command(f,'Follow',147,-566.516);f.hud.update(f.hero,f.rt);
+ const hud=f.hero._skillHUD,b=rect(hud.button),r=rect(f.ui.btnAgg);assert.equal(hud.button.active,true);assert(Math.abs(b.bottom-r.top-12)<1e-9);assert(Math.abs(hud.button.convertToWorldSpaceAR({x:0,y:0}).x-293)<8);assert(b.left>rect(f.ui.btnFollow).right,'The skill remains in the Rally column');
+ f.ui.btnAgg.activeInHierarchy=f.ui.btnFollow.activeInHierarchy=false;f.hud.layout(f.hero,f.rt);const hidden=rect(hud.button);assert(hidden.bottom<b.bottom);assert(Math.abs(hidden.bottom+647)<1e-9);
+ f.ui.btnAgg.activeInHierarchy=f.ui.btnFollow.activeInHierarchy=true;f.hud.layout(f.hero,f.rt);assert(Math.abs(rect(hud.button).bottom-r.top-12)<1e-9);
+});
+
+test('planning and wave transitions keep the icon visible without enabling casts or world effects',()=>{
+ const f=fixture('guardian'),hud=f.hero._skillHUD;f.rt.available=()=>f.game.gameStatus===2;f.rt.heroGeneration=1;f.hero.node._combatGeneration=1;
+ for(const stage of [0,1,2,0,1]){f.game.gameStatus=stage;f.rt.aiming=true;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,true);assert.equal(hud.visual.node.active,stage===2);const before=f.rt.casts.length;hud.button.handlers.start(f.event(stage+3));hud.button.handlers.end(f.event(stage+3));assert.equal(f.rt.casts.length,before+(stage===2?1:0));if(stage!==2)assert.equal(f.rt.aiming,false);}
+ for(const stage of [3,4]){f.game.gameStatus=stage;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false);}
+ f.game.gameStatus=0;f.ui.isPauset=true;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false);f.ui.isPauset=false;f.hero.hp=0;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false);f.hero.hp=100;f.hero.node._combatGeneration=2;f.hud.update(f.hero,f.rt);assert.equal(hud.button.active,false,'A stale hero generation must not become a planning icon');
 });
 
 test('cooldown uses centered white Lilita One digits for every style and locale, with balanced asset ownership',()=>{

@@ -23,6 +23,7 @@ function artworkFixture(){
   set parent(value){value.children.push(this);}setContentSize(width,height){this.width=width;this.height=height;}
   addComponent(Type){const c=new Type();this.components.push(c);return c;}getComponent(Type){return this.components.find(c=>c instanceof Type);}
   getChildByName(name){return this.children.find(n=>n.name===name);}
+  destroy(){this.destroyed=true;}
  }
  class Texture2D{
   initWithData(pixels,format,width,height){Object.assign(this,{pixels,format,width,height});}
@@ -36,24 +37,27 @@ function artworkFixture(){
  return{cc,button,nodes,artwork:exports};
 }
 
-test('white command pictograms retain a dark face and a blue enabled rim without resetting live state',()=>{
+test('command faces remove the baked yellow frames while retaining full dark circles and the cyan enabled state',()=>{
  const f=artworkFixture();f.artwork.install(f.button);
  const {ndTag1:idle,ndTag2:active}=f.nodes,rim=f.button._armyButtonArtwork;
  assert(idle.active);assert(!active.active,'Follow must not start highlighted');
  for(const node of [idle,active]){
-  assert.equal(node.getComponent(f.cc.Sprite).spriteFrame,'gold');assert.equal(node.width,104);assert.equal(node.height,104);
-  const face=node.getChildByName('CommandFace').getComponent(f.cc.Graphics);
-  assert.equal(face.disks.length,1);assert.equal(face.disks[0].radius,38);assert.deepEqual({...face.disks[0].color},{r:36,g:45,b:57,a:255});
+  assert.equal(node.getComponent(f.cc.Sprite).spriteFrame,null);assert.equal(node.getComponent(f.cc.Sprite).enabled,false);assert.equal(node.width,104);assert.equal(node.height,104);
+  const background=node.getChildByName('CommandFace'),face=background.getComponent(f.cc.Graphics);
+  assert.equal(background.width,104);assert.equal(background.height,104);assert.equal(face.disks.length,1);assert.equal(face.disks[0].radius,52);assert.deepEqual({...face.disks[0].color},{r:36,g:45,b:57,a:255});
  }
  assert(!idle.getChildByName('CommandActiveRim'));assert(active.getChildByName('CommandActiveRim'));
  const texture=rim.texture;assert(texture.genMipmaps);assert.deepEqual(texture.filters,[1,1]);assert.equal(texture.mipFilter,1);
  const alphaAt=r=>texture.pixels[(128*256+Math.floor(128+r*256/128))*4+3];
- assert.equal(alphaAt(40),0,'gold ring must remain uncovered');assert.equal(alphaAt(48),255);assert.equal(alphaAt(53),0);
+ assert.equal(alphaAt(40),0,'the plain dark center remains visible');assert.equal(alphaAt(48),255);assert.equal(alphaAt(53),0);
  assert(texture.pixels.some((value,index)=>index%4===3&&value>0&&value<255),'rim requires antialiased edge coverage');
  idle.active=false;active.active=true;f.artwork.install(f.button);
  assert.equal(f.button._armyButtonArtwork,rim);assert(active.active,'reinstall must not reset a live Follow state');
  assert.equal(active.children.length,2);
  f.artwork.dispose(f.button);f.artwork.dispose(f.button);assert(rim.texture.destroyed&&rim.frame.destroyed);
+ for(const node of rim.backgrounds.concat(rim.highlight)){assert(node.destroyed);assert.equal(node.active,false);}
+ assert.equal(rim.sprite.spriteFrame,null);assert.equal(f.button._armyButtonArtwork,null);
+ f.artwork.install(f.button);const replacement=f.button._armyButtonArtwork;assert(replacement);assert.notEqual(replacement,rim);assert.equal(idle.children.filter(n=>!n.destroyed).length,1);assert.equal(active.children.filter(n=>!n.destroyed).length,2);f.artwork.dispose(f.button);assert(replacement.texture.destroyed&&replacement.frame.destroyed);
 });
 
 function method(file,name,context){

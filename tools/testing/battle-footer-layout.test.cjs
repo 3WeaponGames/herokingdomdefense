@@ -13,12 +13,39 @@ function fixture(height=1688){
  const cc={v2:(x,y)=>new Vec2(x,y),view:{getVisibleSize:()=>({width:750,height}),getVisibleOrigin:()=>({x:0,y:0})},sys:{getSafeAreaRect:()=>safe}};
  const layout=vm.runInNewContext('('+method('_layoutBattleFooter')+')',{cc});return{ui,control,root,button,coin,reward,rod,rally,follow,layout:()=>layout.call(ui),safe:()=>safe,setSafe:value=>{safe=value;}};
 }
-test('portrait and tall-screen controls anchor to the safe footer, with the joystick lower-left and Follow stacked above Rally',()=>{
+test('portrait and tall-screen commands share the safe bottom row with Follow left of Rally and the joystick lower-left',()=>{
  for(const height of [1334,1688,1900]){const f=fixture(height);f.layout();const world=n=>n.convertToWorldSpaceAR(new Vec2(0,0));
   const start=world(f.button),rally=world(f.rally),follow=world(f.follow),rod=world(f.rod);assert(Math.abs(start.y-98.5-f.safe().y-18)<1e-6);assert(Math.abs(rally.x+64-732)<1e-6);assert(Math.abs(rally.y-82.484-f.safe().y-18)<1e-6);
-  assert(follow.y>rally.y+150);assert(Math.abs(rod.x-187.5)<1e-6);assert(rod.y<height*.45);assert(rod.y-121>=start.y+55.5+18-1e-6);
+  assert.equal(follow.y,rally.y);assert(Math.abs(follow.x+64+18-(rally.x-64))<1e-6);assert(Math.abs(rod.x-187.5)<1e-6);assert(rod.y<height*.45);assert(rod.y-121>=start.y+55.5+18-1e-6);
+  assert(start.x+180+18<=follow.x-64+1e-6,'The start/reward group stays clear of both commands');
   assert(Math.abs(f.coin.y-f.button.y-59.774)<1e-3);f.button.active=false;f.layout();assert(Math.abs(world(f.rod).y-f.safe().y-301)<1e-6);
  }
+});
+
+test('command visibility recenters the Start group without drifting coin offsets or changing the command row',()=>{
+ const f=fixture();f.rally.active=f.follow.active=false;f.layout();assert.equal(f.button.x,0);const offset={x:f.coin.x-f.button.x,y:f.coin.y-f.button.y};
+ f.rally.active=f.follow.active=true;f.layout();assert(f.button.x<0);assert.equal(f.follow.y,f.rally.y);assert(f.follow.x<f.rally.x);assert.equal(f.coin.x-f.button.x,offset.x);assert.equal(f.coin.y-f.button.y,offset.y);
+ const shifted=f.button.x;f.layout();assert.equal(f.button.x,shifted);f.rally.active=f.follow.active=false;f.layout();assert.equal(f.button.x,0);assert.equal(f.coin.x-f.button.x,offset.x);assert.equal(f.coin.y-f.button.y,offset.y);
+});
+
+test('different command caption sizes share one center line while keeping both bottoms inside the safe footer',()=>{
+ const f=fixture();f.follow.getChildByName('labNum').height=170;f.follow.getChildByName('labNum').y=-80;f.layout();assert.equal(f.follow.y,f.rally.y);
+ for(const control of [f.follow,f.rally]){const label=control.getChildByName('labNum'),bottom=label.convertToWorldSpaceAR(new Vec2(0,-label.height/2));assert(bottom.y>=f.safe().y+18-1e-6);}
+});
+
+test('enemy indicators reserve the live skill button but not hidden, destroyed or missing skill controls',()=>{
+ const f=fixture(),skill=new Node('skill',f.root),context={cc:{isValid:n=>!n.destroyed},enemyIndicatorBounds:n=>n.name};f.ui.ctrGame={ctrPlay:{_skillHUD:{button:skill}}};
+ const obstacles=vm.runInNewContext('('+method('_enemyIndicatorObstacles')+')',context);assert(obstacles.call(f.ui).includes('skill'));skill.active=false;assert(!obstacles.call(f.ui).includes('skill'));skill.active=true;skill.destroyed=true;assert(!obstacles.call(f.ui).includes('skill'));delete f.ui.ctrGame.ctrPlay._skillHUD;assert.doesNotThrow(()=>obstacles.call(f.ui));
+});
+
+test('a gameplay frame lays out and paints the skill once before reserving enemy indicator space',()=>{
+ const events=[],hero={_styleRuntime:{}},ui={isPauset:false,speed:1,_updateTestControls(){},ctrUI:{upGuide(){}},ctrGame:{ctrPlay:hero,onUpdate(){events.push('combat');},gameData:{enemyQueue:{},baseBuild:{getLevel:()=>0}}},enemyIconInfo:{},_layoutBattleFooter(){events.push('footer');},_enemyIndicatorObstacles(){events.push('obstacles');return[];},_placeUpcomingEnemyIndicators(){},_updateOffscreenEnemies(){}};
+ const update=vm.runInNewContext('('+method('update')+')',{require:name=>{assert.equal(name,'HeroSkillHUD');return{update(actual){assert.equal(actual,hero);events.push('skill-paint');}};}});update.call(ui,.016);assert.deepEqual(events,['combat','footer','skill-paint','obstacles']);events.length=0;ui.isPauset=true;update.call(ui,.016);assert.deepEqual(events,['footer','skill-paint'],'Pause hides the skill without running combat or indicators');
+});
+
+test('late footer adjustment repositions the skill after command controls without painting combat effects twice',()=>{
+ const events=[],hero={_styleRuntime:{}},ui={isPauset:false,ctrGame:{ctrPlay:hero,onLateUpdate(){events.push('camera');}},_fitBuildingsButton(){events.push('build-caption');},_layoutBattleFooter(){events.push('footer');}};
+ const late=vm.runInNewContext('('+method('lateUpdate')+')',{require:name=>{assert.equal(name,'HeroSkillHUD');return{layout(actual){assert.equal(actual,hero);events.push('skill-layout');}};}});late.call(ui,.016);assert.deepEqual(events,['camera','build-caption','footer','skill-layout']);
 });
 test('safe-area changes and caption height changes relayout the footer without accumulating offsets',()=>{
  const f=fixture();f.layout();const y=f.button.y;f.layout();assert.equal(f.button.y,y);f.reward.height=120;f.layout();assert(f.button.y>y);const offset=f.coin.y-f.button.y;

@@ -16,6 +16,13 @@ function location(event) { var touch=event&&event.touch;return touch&&touch.getL
 function touchId(event) { var touch=event&&event.touch;return touch&&touch.getID?touch.getID():0; }
 function stop(event) { if(event&&event.stopPropagation)event.stopPropagation(); }
 function available(rt) { return !!rt && (!rt.available || rt.available()) && !(rt.ui&&rt.ui.isPauset); }
+function waiting(rt) {
+  var hero=rt&&rt.hero,game=rt&&rt.game,ui=rt&&rt.ui;
+  if(!hero||hero._styleRuntime!==rt||!game||game.ctrPlay!==hero||!ui||ui.isPauset||ui.isclose||ui.node&&ui.node.activeInHierarchy===false||!live(hero.node)||hero.node.activeInHierarchy===false||hero._isPooled||!(hero.hp>0)||hero.isDead&&hero.isDead())return false;
+  if(rt.heroGeneration!==undefined&&hero.node._combatGeneration!==rt.heroGeneration||rt.scope&&rt.scopeCurrent&&!rt.scopeCurrent(rt.scope))return false;
+  var stages=require("KinghtFallModle").KinghtFallGameStage;
+  return game.gameStatus===stages.Prepare||game.gameStatus===stages.Transition;
+}
 function usable(rt) { if(!available(rt))return false;if(rt.canCast)return rt.canCast();var s=rt.state;return s&&!(s.cooldown>COOLDOWN_EPSILON)&&!s.active&&(s.style!=="mystic"||s.marked&&s.target&&s.target.hp>0&&(!s.target.isDead||!s.target.isDead())); }
 function directional(style) { return style==="skirmisher"||style==="fighter"||style==="vanguard"; }
 function normalize(p) { var length=p&&Math.hypot(p.x,p.y);return length>0?{x:p.x/length,y:p.y/length}:{x:1,y:0}; }
@@ -131,9 +138,14 @@ function layout(hud,rt) {
   var parent=hud.button.parent,b=safeBounds(parent),origin=hud.button.convertToWorldSpaceAR(vec(0,0)),r=worldRect(hud.button),obstacles=[];
   r={left:r.left-origin.x,right:r.right-origin.x,bottom:r.bottom-origin.y,top:r.top-origin.y};
   [rt.ui.btnAgg,rt.ui.btnFollow].forEach(function(other){if(live(other)&&other.activeInHierarchy)obstacles.push(commandBounds(other));});
-  var minX=b.left+20-r.left,maxX=b.right-20-r.right,minY=b.bottom+20-r.bottom,maxY=b.top-20-r.top,xs=[maxX,minX],ys=[minY,maxY],best=null;
+  var minX=b.left+20-r.left,maxX=b.right-20-r.right,minY=b.bottom+20-r.bottom,maxY=b.top-20-r.top,targetX=maxX,targetY=minY;
+  // Ally commands share the bottom row. Keep the skill in the right column
+  // directly above Rally instead of searching for an unrelated footer gap.
+  var rally=rt.ui.btnAgg;
+  if(live(rally)&&rally.activeInHierarchy){var command=commandBounds(rally),center=rally.convertToWorldSpaceAR(vec(0,0));targetX=Math.max(minX,Math.min(maxX,center.x));targetY=Math.max(minY,Math.min(maxY,command.top+12-r.bottom));}
+  var xs=[targetX,maxX,minX],ys=[targetY,minY,maxY],best=null;
   obstacles.forEach(function(o){xs.push(o.left-12-r.right,o.right+12-r.left);ys.push(o.top+12-r.bottom,o.bottom-12-r.top);});
-  xs.forEach(function(x){x=Math.max(minX,Math.min(maxX,x));ys.forEach(function(y){y=Math.max(minY,Math.min(maxY,y));if(obstacles.some(function(o){return x+r.left<o.right+12&&x+r.right>o.left-12&&y+r.bottom<o.top+12&&y+r.top>o.bottom-12;}))return;var cost=Math.abs(x-maxX)*2+Math.abs(y-minY);if(!best||cost<best.cost)best={x:x,y:y,cost:cost};});});
+  xs.forEach(function(x){x=Math.max(minX,Math.min(maxX,x));ys.forEach(function(y){y=Math.max(minY,Math.min(maxY,y));if(obstacles.some(function(o){return x+r.left<o.right+12&&x+r.right>o.left-12&&y+r.bottom<o.top+12&&y+r.top>o.bottom-12;}))return;var cost=Math.abs(x-targetX)*2+Math.abs(y-targetY);if(!best||cost<best.cost)best={x:x,y:y,cost:cost};});});
   if(!best)best={x:Math.max(minX,maxX),y:Math.max(minY,Math.min(maxY,minY))};
   hud.button.setPosition(parent.convertToNodeSpaceAR(vec(best.x,best.y)));
 }
@@ -177,8 +189,8 @@ function update(hero,rt) {
   if(!ready())return;
   var hud=hero._skillHUD;if(hud&&(!live(hud.button)||hud.runtime!==rt)){clear(hero);hud=null;}
   if(!hud)hud=install(hero,rt);if(!hud)return;hud.runtime=rt;
-  var active=available(rt);hud.button.active=hud.visual.node.active=active;
-  if(!active){rt.aiming=false;hud.press=null;hud.worldTouch=null;if(hud.charge)hud.charge.node.active=false;hud.visual.g.clear();return;}
+  var active=available(rt);hud.button.active=active||waiting(rt);hud.visual.node.active=active;
+  if(!active){rt.aiming=false;hud.press=null;hud.worldTouch=null;if(hud.charge)hud.charge.node.active=false;hud.visual.g.clear();hud.visualEmpty=true;if(hud.button.active){layout(hud,rt);paintButton(hud,rt);}return;}
   layout(hud,rt);paintButton(hud,rt);drawCharge(hud,hero,rt);draw(hud,hero,rt);
 }
 function clear(hero) {
@@ -201,3 +213,4 @@ function handleTouch(controller,phase,event) {
 }
 exports.update=update;exports.clear=clear;exports.handleTouch=handleTouch;
 exports.rayEnd=rayEnd;
+exports.layout=function(hero,rt){var hud=hero&&hero._skillHUD;if(hud&&hud.runtime===rt&&live(hud.button)&&hud.button.active)layout(hud,rt);};
