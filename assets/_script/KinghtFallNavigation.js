@@ -26,6 +26,11 @@ exports.polygonDistance = function (unit, polygon, game) {
   return distance(point(unit.node, game.ndMain), game.ndMain.convertToNodeSpaceAR(cc.v2(closest)));
 };
 var ARRIVAL_EPSILON = 0.0001;
+function requestPointChanged(a, b) {
+  // JSB matrices and physics positions round through Float32. A hundredth
+  // of a world unit is query identity noise, never extra terrain clearance.
+  return distance(a, b) > (cc.sys && cc.sys.isNative ? .01 : ARRIVAL_EPSILON);
+}
 function setMainPosition(node, main, position) {
   var world = main.convertToWorldSpaceAR(cc.v2(position));
   var local = node.parent ? node.parent.convertToNodeSpaceAR(world) : world;
@@ -287,10 +292,10 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly) {
     // Let a bounded in-flight query finish when its moving target advances.
     // Restarting it on every target update can starve pursuit indefinitely.
     var changed = !state || state.owner !== this || state.grid !== grid || state.revision !== this.revision || state.radius !== radius || state.escapeOnly !== !!escapeOnly || (state.job ? distance(state.start, start) > 20 : distance(state.target, target) > 20);
-    if (!changed && !state.points && !state.job) changed = distance(state.start, start) > ARRIVAL_EPSILON || distance(state.target, target) > ARRIVAL_EPSILON;
+    if (!changed && !state.points && !state.job) changed = requestPointChanged(state.start, start) || requestPointChanged(state.target, target);
     if (!changed && state.points) {
       if (state.index >= state.points.length) {
-        changed = distance(state.target, target) > ARRIVAL_EPSILON || distance(start, state.goal) > ARRIVAL_EPSILON;
+        changed = requestPointChanged(state.target, target) || requestPointChanged(start, state.goal);
       } else if (grid.isWalkable(start, radius)) {
         // Crowd contacts can push a body past its cached escape/corner anchor.
         // Keep moving forward when the next segment has full body clearance;
@@ -347,7 +352,7 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly) {
       job.cancel(); state.job = null;
       state.points = completed && completed.points; state.goal = completed && completed.goal;
       state.exact = !!(completed && completed.reached); state.partial = !!(completed && completed.partial); state.escape = completed && completed.escape;
-      if (!completed && (distance(state.start, start) > ARRIVAL_EPSILON || distance(state.target, target) > ARRIVAL_EPSILON)) {
+      if (!completed && (requestPointChanged(state.start, start) || requestPointChanged(state.target, target))) {
         // A stale failed query is not evidence that the current pursuit is
         // unreachable. Let the next bounded query use the new inputs.
         exports.reset(unit); this.stats.deferred++;
@@ -368,7 +373,7 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly) {
     if (!state.points) return { arrived: false, reached: false, blocked: true, directionX: 0 };
     while (state.index < state.points.length && distance(start, state.points[state.index]) <= ARRIVAL_EPSILON) state.index++;
     if (state.index >= state.points.length) {
-      var currentGoal = distance(state.target, target) <= ARRIVAL_EPSILON;
+      var currentGoal = !requestPointChanged(state.target, target);
       return { arrived: currentGoal, reached: currentGoal && state.exact, partial: state.partial, blocked: false, directionX: 0, distance: 0 };
     }
     destination = state.points[state.index];
@@ -404,7 +409,7 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly) {
   var finished = !detouring && (state ? state.index >= state.points.length : arrived);
   // Small target movement is coalesced while travelling, but the old endpoint
   // must never be reported as arrival at a target that has since moved.
-  if (state && distance(state.target, target) > ARRIVAL_EPSILON) finished = false;
+  if (state && requestPointChanged(state.target, target)) finished = false;
   return { arrived: finished, reached: finished && (!state || state.exact), partial: !!(state && state.partial), blocked: false, directionX: destination.x - start.x, distance: travel };
 };
 function get(game) {
@@ -412,6 +417,20 @@ function get(game) {
   return game._navigation;
 }
 exports.moveTo = function (unit, game, target, dt) { return get(game).move(unit, target, dt); };
+function recoveryBuildings(navigation, grid) {
+  if (navigation._recoveryBuildingSource === grid) return navigation._recoveryBuildingGrid;
+  var shapes = new Set(), polygons = [];
+  navigation.game.gameData.getBulidList().forEach(function (owner) {
+    (owner.getNavigationGateShapes ? owner.getNavigationGateShapes() : []).forEach(function (shape) { shapes.add(shape.collider); });
+    [owner.node].concat((owner.ndAniOther || []).map(function (part) { return part && (part.node || part); })).forEach(function (node) {
+      if (node) colliders(node).forEach(function (collider) { shapes.add(collider); });
+    });
+  });
+  (grid.terrainColliders || []).forEach(function (collider, index) { if (shapes.has(collider)) polygons.push(grid.polygons[index].vertices); });
+  navigation._recoveryBuildingSource = grid;
+  navigation._recoveryBuildingGrid = polygons.length ? new NavigationGrid(polygons, grid.bounds, grid.cellSize) : null;
+  return navigation._recoveryBuildingGrid;
+}
 // Ordinary path retries and crowd yielding run first. If a moving enemy has
 // made no physical progress for five gameplay seconds, recover to nearby free
 // ground with a clear continuation to its route. Never alter HP or wave counts.
@@ -431,14 +450,19 @@ exports.recoverStranded = function (unit, game, dt) {
     var p={x:Math.max(bounds.minX+margin,Math.min(bounds.maxX-margin,value.x)),y:Math.max(bounds.minY+margin,Math.min(bounds.maxY-margin,value.y))};
     if(grid.isWalkable(p,radius))anchors.push(p);
   }
-  if(state&&state.points)state.points.slice(state.index,state.index+8).forEach(anchor);
-  if(state)anchor(state.goal);
+  // A partial route ends at an unreachable frontier. Reconnecting to that
+  // endpoint only repeats the same stall; recovery needs a forward continuation.
+  if(state&&!state.partial){if(state.points)state.points.slice(state.index,state.index+8).forEach(anchor);anchor(state.goal);}
   var route=unit.bornInfo;
-  if(route&&route.pathList)route.pathList.slice(route.nodeIndex,route.nodeIndex+8).forEach(function(node){if(node&&cc.isValid(node,true))anchor(point(node,game.ndMain));});
+  // An active pursuit retains its own prepared path, rather than jumping away
+  // from a live combat target to a different authored route segment.
+  if(!(target&&target.tag)&&route&&route.pathList)route.pathList.slice(route.nodeIndex,route.nodeIndex+8).forEach(function(node){if(node&&cc.isValid(node,true))anchor(point(node,game.ndMain));});
+  var buildings=recoveryBuildings(navigation,grid);
   var actors=game.gameData.getEnemyList().concat(game.gameData.getSoldierList(),[game.ctrPlay]),occupied=[];
   actors.forEach(function(other){if(other!==unit&&other&&other.node&&other.node.activeInHierarchy!==false&&!other._isPooled&&(!other.isDead||!other.isDead()))occupied.push({point:point(other.node,game.ndMain),radius:navigation.radius(other)});});
   function safe(p) {
     return distance(start,p)>=Math.max(16,radius*2)&&grid.isWalkable(p,radius)&&
+      (!buildings||buildings.canExitBlocked(start,p,radius,true))&&
       anchors.some(function(a){return distance(p,a)>1&&grid.segmentClear(p,a,radius);})&&
       occupied.every(function(other){return distance(p,other.point)>radius+other.radius+2;});
   }
@@ -503,9 +527,9 @@ exports.projectedStandingPoint = function (unit, game, target) {
   var navigation = get(game), grid = navigation.gridFor(unit), state = unit._navigationState;
   if (!state || state.owner !== navigation || state.grid !== grid || state.revision !== navigation.revision || state.job || state.escapeOnly ||
       !state.points || !state.points.length || state.index < state.points.length || state.exact || state.partial ||
-      !state.target || distance(state.target, target) > ARRIVAL_EPSILON || !state.goal) return null;
+      !state.target || requestPointChanged(state.target, target) || !state.goal) return null;
   var start = point(unit.node, game.ndMain), radius = navigation.radius(unit);
-  if (distance(start, state.goal) > ARRIVAL_EPSILON || grid.isWalkable(target, radius) || !grid.isWalkable(start, radius)) return null;
+  if (requestPointChanged(start, state.goal) || grid.isWalkable(target, radius) || !grid.isWalkable(start, radius)) return null;
   return start;
 };
 exports.positionOf = function (node, game) { return point(node, game.ndMain); };

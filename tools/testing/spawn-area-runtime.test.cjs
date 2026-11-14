@@ -21,6 +21,28 @@ test('custom zero-width routes still randomize an area spawn, and flying units r
  const flying=fixture();flying.grid.isWalkable=()=>{throw Error('Flying unit should retain terrain crossing');};flying.grid.segmentClear=()=>{throw Error('Flying lane should retain terrain crossing');};flying.unit.rigidBody.active=false;const point=flying.area.prepare(flying.unit,flying.game,1,false);assert(point);assert(flying.area.apply(flying.unit,flying.game,1,point));
  assert.equal(flying.counts().navCalls,0,'Flying-only waves must not build or refresh an unused ground planner');
 });
+
+test('direct area application stays in body bounds and wholly off-map circles retain their wave actor',()=>{
+ const f=fixture(55),marker=f.game.ndPath.getChildByName('ndEnemy1');marker.position={x:-900,y:-900};f.unit.bornInfo.pathList.routeSpread=0;
+ assert(f.area.apply(f.unit,f.game,1));
+ assert.deepEqual(f.unit.node.position,{x:-488,y:-488});
+ assert(f.grid._inBounds(f.unit.node.position,12));
+ assert.equal(f.counts().resets,1);
+});
+
+test('noncolliding off-map circles keep their authored placement and missing radii retain the point-spawn RNG sequence',()=>{
+ const flying=fixture(55),marker=flying.game.ndPath.getChildByName('ndEnemy1');marker.position={x:-900,y:-900};flying.unit.rigidBody.active=false;flying.unit.bornInfo.pathList.routeSpread=0;
+ const prepared=flying.area.prepare(flying.unit,flying.game,1,false);
+ assert(prepared&&prepared.start.x<-500&&prepared.start.y<-500);
+ assert(flying.area.apply(flying.unit,flying.game,1,prepared));
+ assert.equal(flying.unit.node.position.x,prepared.start.x);assert.equal(flying.unit.node.position.y,prepared.start.y);
+ assert.deepEqual(flying.counts(),{randoms:2,resets:1,navCalls:0});
+ const point=fixture();delete point.spec.radius;
+ assert.equal(point.area.prepare(point.unit,point.game,1,true),undefined);
+ assert(point.area.apply(point.unit,point.game,1));
+ assert.equal(point.unit.bornInfo.pathList,point.points);
+ assert.deepEqual(point.counts(),{randoms:0,resets:0,navCalls:0});
+});
 test('native spawn marker radii work without authored paths and explicit authored zero still overrides them',()=>{
  const f=fixture(0),lookup=f.game.ndPath.getChildByName.bind(f.game.ndPath),marker=lookup('ndEnemy1'),native={radius:150};marker.getComponent=name=>{assert.equal(name,'SpawnPointArea');return native;};
  assert.equal(f.area.radius(f.game,1),0,'an explicit point spawn overrides the native radius');

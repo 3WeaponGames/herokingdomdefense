@@ -102,6 +102,41 @@ test('physically pinned melee, ranged and support enemies recover to unoccupied 
  }
 });
 
+test('an isolated terrain spawn recovers onto its forward route rather than returning to the same partial frontier',()=>{
+ const e=environment();e.game.mapSize={width:600,height:600};e.game.ctrPlay.isDead=()=>true;e.box(0,0,20,600);
+ const u=enemy(e,-150,0),goal={x:150,y:0};u.getFind=()=>null;u.bornInfo.pathList[0].setPosition(goal);e.game.gameData.enemies.push(u);
+ let recovered=false;
+ for(let frame=0;frame<400&&u.bornInfo.nodeIndex===0;frame++){
+  e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);
+  if(!recovered&&u._navigationRecoveries){
+   recovered=true;const nav=e.nav.get(e.game),plan=nav.grid.findPath(u.node.position,goal,nav.radius(u));
+   assert(plan&&plan.reached,'relocation only reconnected to the old unreachable frontier');
+  }
+ }
+ assert(recovered);assert.equal(u.bornInfo.nodeIndex,1,'recovered enemy did not continue along its route');assert.equal(u._navigationRecoveries,1);
+});
+
+test('an intact building cannot be bypassed by stranded recovery when target acquisition is delayed',()=>{
+ const e=environment();e.game.mapSize={width:600,height:600};e.game.ctrPlay.isDead=()=>true;e.box(0,0,20,600,true);
+ const u=enemy(e,-150,0);u.getFind=()=>null;u.bornInfo.pathList[0].setPosition(150,0);e.game.gameData.enemies.push(u);
+ for(let frame=0;frame<400;frame++){e.setTime(frame*50);e.nav.beginFrame(e.game);u.onUpdate(.05);assert(u.node.x<0,'recovery teleported through an intact defensive wall');}
+ assert.equal(u.bornInfo.nodeIndex,0);assert(!u._navigationRecoveries,'partial wall frontier was mistaken for a usable continuation');
+});
+
+test('stranded pursuit retains its valid combat continuation instead of jumping back onto the authored route',()=>{
+ const e=environment();e.game.mapSize={width:1000,height:1000};e.game.ctrPlay.isDead=()=>true;
+ const u=e.unit(-300,0),pursuit={x:-300,y:200};u.navigationTeam='enemy';u.bornInfo={nodeIndex:0,pathList:[new Node('route',e.game.ndMain,300,0)]};
+ u._targetSearchCache={target:{tag:new Node('pursuit',e.game.ndMain,pursuit.x,pursuit.y),canAtt:false}};e.game.gameData.enemies.push(u);
+ const original=u.node.position;let recovered=false;
+ for(let frame=0;frame<140;frame++){
+  e.setTime(frame*50);e.nav.beginFrame(e.game);e.nav.moveTo(u,e.game,pursuit,.05);
+  if(e.nav.recoverStranded(u,e.game,.05)){recovered=true;break;}
+  u.node.setPosition(original);
+ }
+ assert(recovered);assert(Math.abs(u.node.x-original.x)<.001,'pursuit recovery was redirected toward the authored route');assert(u.node.y>original.y);
+ const nav=e.nav.get(e.game);assert(nav.grid.segmentClear(u.node.position,pursuit,nav.radius(u)));assert.equal(u.bornInfo.nodeIndex,0);
+});
+
 test('stationary attacks, support waits, zero speed and deferred navigation never trigger stranded relocation',()=>{
  for(const mode of ['attack','wait','zero','pending','cooldown']){
   const e=environment(),u=enemy(e,-150,0);u.state=mode==='attack'?2:mode==='wait'?3:1;if(mode==='zero')u.getSpeed=()=>0;
