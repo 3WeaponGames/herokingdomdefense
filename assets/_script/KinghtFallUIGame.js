@@ -845,7 +845,7 @@ var def_KinghtFallUIGame = function (t) {
     var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: visible.width, height: visible.height };
     var a = root.convertToNodeSpaceAR(cc.v2(safe.x, safe.y));
     var b = root.convertToNodeSpaceAR(cc.v2(safe.x + safe.width, safe.y + safe.height));
-    var left = Math.min(a.x, b.x), right = Math.max(a.x, b.x), bottom = Math.min(a.y, b.y), center = (left + right) / 2;
+    var left = Math.min(a.x, b.x), right = Math.max(a.x, b.x), bottom = Math.min(a.y, b.y);
     var margin = 18, gap = 18, button = this.btnStartFight, reward = this._completionReward && this._completionReward.node;
     function shown(node) { return node && node.active !== false && node.activeInHierarchy !== false; }
     function box(node, caption) {
@@ -873,15 +873,11 @@ var def_KinghtFallUIGame = function (t) {
     var commandY = bottom + margin - Math.min(rallyBox ? rallyBox.minY : 0, followBox ? followBox.minY : 0);
     if (rally) rally.setPosition(right - margin - rallyBox.maxX, commandY);
     if (follow) follow.setPosition(rally ? rally.x + rallyBox.minX - gap - followBox.maxX : right - margin - followBox.maxX, commandY);
-    var startX = center, groupMinX = startBox.minX, groupMaxX = startBox.maxX;
+    var groupMinX = startBox.minX;
     if (shown(coin) && this._footerCoinOffset) {
       groupMinX = Math.min(groupMinX, this._footerCoinOffset.x + coinBox.minX);
-      groupMaxX = Math.max(groupMaxX, this._footerCoinOffset.x + coinBox.maxX);
     }
-    var commandLeft = Infinity;
-    if (shown(rally)) commandLeft = Math.min(commandLeft, rally.x + rallyBox.minX);
-    if (shown(follow)) commandLeft = Math.min(commandLeft, follow.x + followBox.minX);
-    if (isFinite(commandLeft)) startX = Math.max(left + margin - groupMinX, Math.min(startX, commandLeft - gap - groupMaxX));
+    var startX = left + margin - groupMinX;
     button.setPosition(startX, bottom + margin - startBox.minY);
     if (coin && this._footerCoinOffset) coin.setPosition(button.x + this._footerCoinOffset.x, button.y + this._footerCoinOffset.y);
     var restX = left + (right - left) / 4;

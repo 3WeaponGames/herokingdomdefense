@@ -22,10 +22,10 @@ test('portrait and tall-screen commands share the safe bottom row with Follow le
  }
 });
 
-test('command visibility recenters the Start group without drifting coin offsets or changing the command row',()=>{
- const f=fixture();f.rally.active=f.follow.active=false;f.layout();assert.equal(f.button.x,0);const offset={x:f.coin.x-f.button.x,y:f.coin.y-f.button.y};
- f.rally.active=f.follow.active=true;f.layout();assert(f.button.x<0);assert.equal(f.follow.y,f.rally.y);assert(f.follow.x<f.rally.x);assert.equal(f.coin.x-f.button.x,offset.x);assert.equal(f.coin.y-f.button.y,offset.y);
- const shifted=f.button.x;f.layout();assert.equal(f.button.x,shifted);f.rally.active=f.follow.active=false;f.layout();assert.equal(f.button.x,0);assert.equal(f.coin.x-f.button.x,offset.x);assert.equal(f.coin.y-f.button.y,offset.y);
+test('the Start group stays at the safe left corner as commands appear without drifting its coin offsets',()=>{
+ const f=fixture();f.rally.active=f.follow.active=false;f.layout();const left=()=>f.reward.convertToWorldSpaceAR(new Vec2(-f.reward.width/2,0)).x;assert.equal(left(),f.safe().x+18);const anchored=f.button.x,offset={x:f.coin.x-f.button.x,y:f.coin.y-f.button.y};
+ f.rally.active=f.follow.active=true;f.layout();assert.equal(f.button.x,anchored);assert.equal(f.follow.y,f.rally.y);assert(f.follow.x<f.rally.x);assert.equal(left(),f.safe().x+18);assert.equal(f.coin.x-f.button.x,offset.x);assert.equal(f.coin.y-f.button.y,offset.y);
+ f.layout();assert.equal(f.button.x,anchored);f.rally.active=f.follow.active=false;f.layout();assert.equal(f.button.x,anchored);assert.equal(f.coin.x-f.button.x,offset.x);assert.equal(f.coin.y-f.button.y,offset.y);
 });
 
 test('different command caption sizes share one center line while keeping both bottoms inside the safe footer',()=>{
