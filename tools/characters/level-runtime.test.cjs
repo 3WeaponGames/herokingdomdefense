@@ -8,16 +8,26 @@ const Core = require('../../assets/_script/CharacterPartsCore');
 const source = fs.readFileSync(path.resolve(__dirname, '../../assets/_script/CharacterAppearance.js'), 'utf8');
 
 function fixture(options = {}) {
-  let now = 0;
+  let now = 0, timerId = 0;
+  const frames=[],timers=new Map();
+  function setTimer(callback, delay) { const id=++timerId;timers.set(id,{callback,at:now+(delay||0)});return id; }
+  function afterDraw() { const current=frames.splice(0);current.forEach(callback=>callback());for(const [id,timer] of [...timers])if(timer.at<=now){timers.delete(id);timer.callback();} }
+  class FakeSpineData {
+    constructor(uuid, look) { this.uuid=uuid; this.skeletonJson={_unitLook:look}; this.refCount=0; this.parses=0; this._skeletonCache=null; }
+    getRuntimeData() { if(!this._skeletonCache) { this.parses++; this._skeletonCache={uuid:this.uuid}; } return this._skeletonCache; }
+    addRef() { this.refCount++; return this; }
+    decRef() { this.refCount--; return this; }
+  }
+
   const pending = [], requests = [], originals = {}, assets = {}, units = [];
   const config = {version: 1, profiles: {}, assignments: {}};
   for (const id of [90001, 90002, 90003, 90004]) {
-    const original = originals[id] = {uuid: 'default-' + id, skeletonJson: {_unitLook: 'default-' + id}};
+    const original = originals[id] = new FakeSpineData('default-' + id, 'default-' + id);
     config.profiles['default-' + id] = {name: 'Default', base: {type: 'ally', id: String(id)}, parts: [], scale: 1, baked: {uuid: original.uuid}};
     config.assignments['ally:' + id + ':default'] = 'default-' + id;
     for (const level of [1, 2, 3]) {
       const key = id + '-' + level, resource = 'unit-library/runtime/level-' + key;
-      assets[resource] = {uuid: 'level-' + key, skeletonJson: {_unitLook: 'level-' + key}};
+      assets[resource] = new FakeSpineData('level-' + key, 'level-' + key);
       config.profiles['level-' + key] = {name: 'Level ' + level, base: {type: 'ally', id: String(id), level}, parts: [], scale: 1.7,
         models: {unused: {x: 123}}, baked: {uuid: assets[resource].uuid, resource}};
       config.assignments['ally:' + id + ':level:' + level] = 'level-' + key;
@@ -36,7 +46,9 @@ function fixture(options = {}) {
       }
     }}
   };
-  const context = {exports: {}, cc, sp: {SkeletonData: class {}}, Date: {now: () => now},
+  cc.Director={EVENT_AFTER_DRAW:'after-draw'};
+  cc.director={once(event,callback){assert.equal(event,cc.Director.EVENT_AFTER_DRAW);frames.push(callback);},off(event,callback){const index=frames.indexOf(callback);if(index>=0)frames.splice(index,1);}};
+  const context = {exports: {}, cc, sp: {SkeletonData: FakeSpineData}, Date: {now: () => now},setTimeout:setTimer,clearTimeout:id=>timers.delete(id),
     require(name) { if(name==='UnitLevelStats')return require('../../assets/_script/UnitLevelStats');assert.equal(name, 'CharacterPartsCore'); return Core; }};
   vm.runInNewContext(source, context, {filename: 'CharacterAppearance.js'});
   function add(id = 90001, level = 1) {
@@ -46,6 +58,7 @@ function fixture(options = {}) {
       addComponent(Type) { const component = new Type(); components.push(component); return component; }};
     const callbacks = {complete: () => {}, event: () => {}}, plays = [], swaps = [];
     let data = originals[id], track, reaction = null, activeSkin = 'default';
+    data.getRuntimeData(); // The active prefab already owns its parsed runtime.
     function makeTrack(name, loop, time = .37, speed = .8) {
       if (!options.native) return {animation: {name}, loop, trackTime: time, timeScale: speed};
       return {getAnimation: () => ({getName: () => name}), getLoop: () => loop,
@@ -56,6 +69,7 @@ function fixture(options = {}) {
       _listener: callbacks, _skeleton: {skin: {name: activeSkin}},
       get skeletonData() { return data; },
       set skeletonData(value) {
+        assert(value._skeletonCache, 'The separate runtime-preparation frame must precede a rig assignment');
         swaps.push(value.uuid); data = value; track = null; reaction = null;
         // Match Creator's skeletonData setter, which clears authored defaults.
         this.defaultSkin = ''; this.defaultAnimation = ''; this._skeleton = {skin: {name: 'default'}};
@@ -78,7 +92,7 @@ function fixture(options = {}) {
     while ((at = pending.findIndex(job => !resource || job.resource === resource)) >= 0) pending.splice(at, 1)[0].run(error);
   }
   return {api: context.exports, config, assets, originals, add, requests, pending, flush,
-    step(count = 1) { for (let i = 0; i < count; i++) for (const unit of units) unit.component.lateUpdate(); },
+    step(count = 1) { for (let i = 0; i < count; i++) { for (const unit of units) unit.component.lateUpdate(); afterDraw(); } },
     setNow(value) { now = value; }};
 }
 
@@ -112,9 +126,9 @@ test('unknown, missing and unassigned levels retain the legacy default assignmen
 for (const native of [false, true]) test(`${native ? 'native' : 'web'} allies switch baked rigs with locomotion time and gameplay intact`, () => {
   const f = fixture({native}), unit = f.add(90003, 2), nodeBefore = {...unit.renderer.node};
   const catalogBefore = JSON.stringify(f.config);
-  f.flush(); f.step();
+  f.flush(); f.step(2);
   assert.equal(unit.renderer.skeletonData, unit.original, 'loads do not replace the active rig');
-  f.flush(); f.step();
+  f.flush(); f.step(2);
   assert.equal(unit.renderer.skeletonData.uuid, 'level-90003-2');
   assert.equal(unit.plays.length, 1);
   const track = unit.track();
@@ -125,13 +139,13 @@ for (const native of [false, true]) test(`${native ? 'native' : 'web'} allies sw
   assert.deepEqual(unit.renderer.node, nodeBefore, 'baked transforms are not overlaid again');
   assert.equal(unit.actor.hp, 70); assert.equal(unit.actor.attack, 18); assert.equal(unit.actor.time.Attack, .4);
   f.step(25); assert.equal(unit.plays.length, 1); assert.equal(unit.swaps.length, 1);
-  unit.actor.outBuild.buildInfo.cfg.level = 3; f.step(); f.flush(); f.step();
+  unit.actor.outBuild.buildInfo.cfg.level = 3; f.step(); f.flush(); f.step(2);
   assert.equal(unit.renderer.skeletonData.uuid, 'level-90003-3');
   assert.equal(JSON.stringify(f.config), catalogBefore);
 });
 
 test('rig switches wait for attacks, death, hit reactions and pending gameplay hits', () => {
-  const f = fixture(), unit = f.add(); f.flush(); f.step(); f.flush();
+  const f = fixture(), unit = f.add(); f.flush(); f.step(2); f.flush();
   const attack = unit.setTrack('attack'); f.step();
   assert.equal(unit.track(), attack); assert.equal(unit.swaps.length, 0);
   unit.setTrack('idle', true); unit.actor.time.Attack = -1; f.step(); assert.equal(unit.swaps.length, 0);
@@ -144,7 +158,7 @@ test('rig switches wait for attacks, death, hit reactions and pending gameplay h
 });
 
 test('renderers without a current track wait for a known locomotion animation', () => {
-  const f = fixture(), unit = f.add(); f.flush(); f.step(); f.flush();
+  const f = fixture(), unit = f.add(); f.flush(); f.step(2); f.flush();
   unit.renderer.getCurrent = () => null;
   f.step(); assert.equal(unit.swaps.length, 0, 'an unknown or uninitialized pose must not replace a gameplay track');
   unit.renderer.animation = 'attack'; f.step(); assert.equal(unit.swaps.length, 0);
@@ -153,9 +167,9 @@ test('renderers without a current track wait for a known locomotion animation', 
 });
 
 test('late async results cannot apply a previous level or a pooled actor', () => {
-  const f = fixture(), unit = f.add(); f.flush(); f.step();
+  const f = fixture(), unit = f.add(); f.flush(); f.step(2);
   unit.actor.outBuild.buildInfo.cfg.level = 2; f.step();
-  f.flush('unit-library/runtime/level-90001-2'); f.step();
+  f.flush('unit-library/runtime/level-90001-2'); f.step(2);
   assert.equal(unit.renderer.skeletonData.uuid, 'level-90001-2');
   f.flush('unit-library/runtime/level-90001-1'); f.step();
   assert.equal(unit.renderer.skeletonData.uuid, 'level-90001-2');
@@ -164,17 +178,19 @@ test('late async results cannot apply a previous level or a pooled actor', () =>
   assert.equal(unit.renderer.defaultSkin, 'default'); assert.equal(unit.renderer.defaultAnimation, 'idle');
   unit.actor.outBuild.buildInfo.cfg.level = 3;
   unit.actor.node.activeInHierarchy = true; unit.setTrack('idle', true); f.step();
-  unit.actor.node.activeInHierarchy = false; unit.component.onDisable(); f.flush(); f.step();
+  unit.actor.node.activeInHierarchy = false; unit.component.onDisable(); f.flush(); f.step(2);
   assert.equal(unit.renderer.skeletonData, unit.original);
   unit.actor.node.activeInHierarchy = true; unit.setTrack('idle', true); f.step();
+  assert.equal(unit.renderer.skeletonData, unit.original, 'Reactivation waits for the scheduled data-preparation frame');
+  f.step();
   assert.equal(unit.renderer.skeletonData.uuid, 'level-90001-3');
 });
 
 test('unassigned level returns to the original default rig and pooling can select another level', () => {
-  const f = fixture(), unit = f.add(); f.flush(); f.step(); f.flush(); f.step();
+  const f = fixture(), unit = f.add(); f.flush(); f.step(2); f.flush(); f.step(2);
   unit.actor.outBuild.buildInfo.cfg.level = 99; f.step();
   assert.equal(unit.renderer.skeletonData, unit.original);
-  unit.actor.outBuild.buildInfo.cfg.level = 2; f.step(); f.flush(); f.step();
+  unit.actor.outBuild.buildInfo.cfg.level = 2; f.step(); f.flush(); f.step(2);
   assert.equal(unit.renderer.skeletonData.uuid, 'level-90001-2');
   unit.component.onDisable(); assert.equal(unit.renderer.skeletonData, unit.original);
   unit.actor.outBuild.buildInfo.cfg.level = 1; unit.setTrack('idle', true); f.step();
@@ -190,7 +206,7 @@ test('rig requests are shared and failed loads retry without changing the active
   assert.equal(one.renderer.skeletonData, one.original); assert.equal(two.renderer.skeletonData, two.original);
   assert.equal(f.requests.filter(id => id === resource).length, 1);
   f.setNow(1000); f.step(); assert.equal(f.requests.filter(id => id === resource).length, 2);
-  f.flush(); f.step(); assert.equal(one.renderer.skeletonData.uuid, 'level-90001-1'); assert.equal(two.renderer.skeletonData.uuid, 'level-90001-1');
+  f.flush(); f.step(2); assert.equal(one.renderer.skeletonData.uuid, 'level-90001-1'); assert.equal(two.renderer.skeletonData.uuid, 'level-90001-1');
 });
 
 test('legacy catalogs without level assignments make no new rig requests or animation changes', () => {
