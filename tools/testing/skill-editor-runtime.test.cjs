@@ -38,6 +38,23 @@ function scene(style,config,audio){
  function enemy(x=100){const target={node:new Node('target',h.g.ndMain,x,0),hp:100000,hpMax:100000,debuffInfo:[],hits:[],isDead(){return this.hp<=0;},addBuff(type,data){this.debuffInfo.push({type,data,time:0,timeMax:data.time});},onAttacked(damage,owner,secondary,context){const combat=h.load('RelicCombat');damage=combat.enemyDamage(this,damage,owner,secondary,context);this.hits.push({damage,ownerHp:owner.hp});this.hp-=damage;if(!secondary)combat.primaryImpact(this,owner,context,damage);return damage;}};target.node._combatGeneration=1;h.d.enemyList.push(target);return target;}
  return {...h,hero,rt,enemy,poses,animations};
 }
+test('authored on-hit feedback delays the ordinary enemy reaction once while basic and active HP damage stays immediate',()=>{
+ for(const skill of [false,true]){
+  const h=scene('vanguard',{HeroSkills:{vanguard:{visual:{impactDelay:.4,impactResource:uuid,impactDuration:.8,impactOffsetY:30}}}}),target=h.enemy(),reactions=[];
+  h.e.cc.resources={};h.e.stubs.UnitHitFeedback={play:actor=>reactions.push(actor)};target.onAttacked=h.e.load('KinghtFallEnemyBase').default.prototype.onAttacked;
+  const before=target.hp,damage=h.rt.hit(target,1,skill,7);assert(damage>0);close(target.hp,before-damage);assert.equal(reactions.length,0);assert.equal(h.rt._presentation.feedback.length,1);assert.equal(h.rt._presentation.impacts.length,1);
+  h.rt.update(.399);assert.equal(reactions.length,0);h.rt.update(.001);assert.deepEqual(reactions,[target]);h.rt.update(.1);assert.equal(reactions.length,1);close(target.hp,before-damage,'Presentation callbacks cannot apply damage again');
+ }
+});
+test('no saved on-hit delay retains one immediate get-hit reaction and secondary procs do not enter the delayed primary path',()=>{
+ for(const style of Settings.styles){const h=scene(style.id,{}),target=h.enemy(),reactions=[];h.e.cc.resources={};h.e.stubs.UnitHitFeedback={play:actor=>reactions.push(actor)};target.onAttacked=h.e.load('KinghtFallEnemyBase').default.prototype.onAttacked;
+  h.rt.hit(target,0,true,0);assert.equal(reactions.length,0);assert.equal(h.rt._presentation,undefined);h.rt.hit(target,1,true,1);assert.deepEqual(reactions,[target]);assert.equal(h.rt._presentation.feedback.length,0);assert.equal(h.rt._presentation.impacts.length,1);h.rt.settings.visual.impactDelay=.5;target.onAttacked(5,h.hero,true);assert.equal(reactions.length,2);assert.equal(h.rt._presentation.feedback.length,0);assert.equal(h.rt._presentation.impacts.length,1);
+ }
+});
+test('a pooled target cancels authored delayed reactions while preserving the damage already dealt',()=>{
+ const h=scene('fighter',{HeroSkills:{fighter:{visual:{impactDelay:.5}}}}),target=h.enemy(),reactions=[];h.e.cc.resources={};h.e.stubs.UnitHitFeedback={play:actor=>reactions.push(actor)};target.onAttacked=h.e.load('KinghtFallEnemyBase').default.prototype.onAttacked;
+ h.rt.hit(target,1,true,1);const hp=target.hp;target.node._combatGeneration++;h.rt.update(1);assert.equal(reactions.length,0);assert.equal(target.hp,hp);assert.equal(h.rt._presentation.feedback.length,0);
+});
 test('saving tuned Vanguard count and duration changes actual independently timed attacks, not shared timing tables',t=>{
  const saved=save(t,[['vanguard','strikes',3],['vanguard','duration',1.2],['vanguard','cooldown',20]]),h=scene('vanguard',saved.config),enemy=h.enemy();
  assert.equal(h.rt.cast({x:1,y:0}),true);h.rt.update(.399);assert.equal(enemy.hits.length,0);h.rt.update(.001);assert.equal(enemy.hits.length,1);h.rt.update(.4);h.rt.update(.4);assert.equal(enemy.hits.length,3);assert.equal(h.rt.state.active,null);close(h.rt.state.cooldown,18.8);assert.equal(h.poses.at(-1).rapid.duration,1.2);assert.equal(h.poses.at(-1).rapid.strikes,3);

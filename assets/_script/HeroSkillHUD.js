@@ -176,7 +176,7 @@ function aimOrigin(rt,v) {
 function draw(hud,hero,rt) {
   var view=hud.visual,g=view.g,layer=view.node,v=Presentation.visual(rt),builtin=v.showBuiltin!==false;
   var targetAlive=rt.beamTarget&&live(rt.beamTarget.node)&&rt.beamTarget.hp>0,marked=rt.state.style==="mystic"&&rt.state.marked&&rt.state.target&&live(rt.state.target.node)&&rt.state.target.hp>0;
-  var empty=!rt.aiming&&!targetAlive&&!marked&&(!builtin||!(rt.projectiles||[]).length&&!(rt.effects||[]).length);
+  var empty=!rt.aiming&&!targetAlive&&!marked&&(!builtin||!(rt.projectiles||[]).length&&!(rt.effects||[]).length)&&!Presentation.hasImpactVisual(rt);
   hud.beamVfxPosition=null;
   if(empty&&hud.visualEmpty){Presentation.attachments(hud,rt);return;}
   g.clear();hud.visualEmpty=empty;
@@ -185,7 +185,7 @@ function draw(hud,hero,rt) {
   if(rt.state.style==="mystic"&&rt.state.marked&&rt.state.target&&live(rt.state.target.node)&&rt.state.target.hp>0){var m=actorPoint(layer,rt.state.target,true);g.fillColor=color("#d790ff");g.strokeColor=color("#231330");g.lineWidth=2;g.moveTo(m.x,m.y+10);g.lineTo(m.x+7,m.y);g.lineTo(m.x,m.y-10);g.lineTo(m.x-7,m.y);g.close();g.fill();g.stroke();}
   if(builtin)(rt.projectiles||[]).forEach(function(p){var center=Presentation.projectilePoint(p,v),direction=Presentation.rotated(p.direction,v.rotation),a=pointIn(rt,layer,{x:center.x-direction.x*46*v.scale,y:center.y-direction.y*46*v.scale}),b=pointIn(rt,layer,center);line(g,a,b,Presentation.width(rt,8),Presentation.color(rt,"#fdf1a4"),v.opacity);var d=normalize({x:b.x-a.x,y:b.y-a.y});g.fillColor=tint(Presentation.color(rt,"#ffffff"),v.opacity);g.moveTo(b.x+d.x*13*v.scale,b.y+d.y*13*v.scale);g.lineTo(b.x-d.y*10*v.scale,b.y+d.x*10*v.scale);g.lineTo(b.x+d.y*10*v.scale,b.y-d.x*10*v.scale);g.close();g.fill();});
   if(builtin)(rt.effects||[]).forEach(function(e){var center=Presentation.offset(e,v.offsetX,v.offsetY),p=pointIn(rt,layer,center),edge=pointIn(rt,layer,{x:center.x+e.radius*v.scale,y:center.y}),r=Math.hypot(edge.x-p.x,edge.y-p.y),progress=1-Math.max(0,e.remaining/e.duration);g.strokeColor=tint(Presentation.color(rt,e.kind==="burst"?"#d69fff":e.kind==="arc"?"#fff5b0":rt.state.style==="guardian"?"#70c8ff":"#ff5b65"),v.opacity);g.lineWidth=Presentation.width(rt,Math.max(2,7*(1-progress)));if(e.kind==="arc"&&e.direction){var direction=Presentation.rotated(e.direction,v.rotation),tip=pointIn(rt,layer,{x:center.x+direction.x,y:center.y+direction.y}),angle=Math.atan2(tip.y-p.y,tip.x-p.x);g.arc(p.x,p.y,r*(.65+progress*.35),angle-(e.halfAngle===undefined?Math.PI/3:e.halfAngle),angle+(e.halfAngle===undefined?Math.PI/3:e.halfAngle),true);}else g.circle(p.x,p.y,r*(.65+progress*.35));g.stroke();});
-  Presentation.attachments(hud,rt);
+  Presentation.draw(hud,rt);Presentation.attachments(hud,rt);
 }
 function update(hero,rt) {
   if(!ready())return;

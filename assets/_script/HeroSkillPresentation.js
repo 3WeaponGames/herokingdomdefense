@@ -2,6 +2,7 @@
 // Authored skill presentation only. Gameplay geometry and player progress are
 // unaffected; absent overrides retain the original procedural art and sounds.
 var Settings = require("./HeroSkillSettings"), Pose = require("./HeroSkillPose"), nextOwner = 0;
+var MAX_FEEDBACK=256,MAX_IMPACTS=128;
 function visual(runtime) { return (runtime.settings || Settings.effective(runtime.state.style, runtime.config)).visual; }
 function color(runtime, fallback) { return visual(runtime).color || fallback; }
 function width(runtime, fallback) { var v=visual(runtime);return (v.lineWidth || fallback)*v.scale; }
@@ -22,7 +23,52 @@ function release(runtime,strike) {
   }else if(sounds.attack)sounds.attack(runtime.hero,"hero");
 }
 function state(runtime) {
-  return runtime._presentation || (runtime._presentation={id:++nextOwner,pending:[],sources:[],channel:null,impactKeys:new Map(),nodes:new Map(),frames:new Map()});
+  return runtime._presentation || (runtime._presentation={id:++nextOwner,pending:[],sources:[],channel:null,impactKeys:new Map(),nodes:new Map(),frames:new Map(),feedback:[],impacts:[]});
+}
+function hitRecord(runtime,target) {
+  return {scope:runtime.state,heroGeneration:runtime.heroGeneration,ownerGeneration:runtime.hero&&runtime.hero.node&&runtime.hero.node._combatGeneration,game:runtime.game,data:runtime.game&&runtime.game.gameData,epoch:runtime.game&&runtime.game._combatEpoch,target:target,targetGeneration:target&&target.node&&target.node._combatGeneration};
+}
+function hitCurrent(runtime,item,reaction) {
+  var target=item.target,node=target&&target.node;
+  return runtime.available()&&runtime.state===item.scope&&runtime.heroGeneration===item.heroGeneration&&runtime.hero&&runtime.hero.node&&runtime.hero.node._combatGeneration===item.ownerGeneration&&runtime.game===item.game&&runtime.game.gameData===item.data&&runtime.game._combatEpoch===item.epoch&&target&&alive(node)&&!target._isPooled&&node._combatGeneration===item.targetGeneration&&(!reaction||target.hp>0&&(!target.isDead||!target.isDead()));
+}
+function deferHitReaction(runtime,target) {
+  var delay=visual(runtime).impactDelay;
+  if(!(delay>0)||!runtime.available())return false;
+  var s=state(runtime);if(s.feedback.length>=MAX_FEEDBACK)return false;
+  var item=hitRecord(runtime,target);item.at=runtime.state.time+delay;s.feedback.push(item);return true;
+}
+function impact(runtime,target,context) {
+  var v=Settings.impactVisual(visual(runtime));if(!runtime.available()||!target||!target.node)return;
+  var s=state(runtime),item=hitRecord(runtime,target),p=context&&context.point||target.node.getPosition();
+  item.x=p.x;item.y=p.y;item.at=runtime.state.time+v.delay;item.duration=v.effectDuration;item.until=item.at+v.effectDuration;
+  if(s.impacts.length>=MAX_IMPACTS)s.impacts.shift();s.impacts.push(item);
+}
+function visibleImpacts(runtime) {
+  var s=runtime._presentation;return s?s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}):[];
+}
+function hasImpactVisual(runtime) {
+  var v=Settings.impactVisual(visual(runtime));return !v.resource&&v.opacity>0&&visibleImpacts(runtime).length>0;
+}
+function draw(hud,runtime) {
+  var v=Settings.impactVisual(visual(runtime));if(v.resource||!(v.opacity>0))return;
+  var g=hud.visual.g,layer=hud.visual.node,main=runtime.game.ndMain;
+  function at(x,y){return layer.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(x,y)));}
+  visibleImpacts(runtime).forEach(function(item){
+    var progress=Math.max(0,Math.min(1,(runtime.state.time-item.at)/item.duration)),x=item.x+v.offsetX,y=item.y+v.offsetY,origin=at(x,y),unit=at(x+1,y),stroke=cc.color(v.color||"#fff3a2");
+    if(stroke&&typeof stroke==="object")stroke.a=Math.round(255*v.opacity*(1-progress));
+    g.strokeColor=stroke;g.lineWidth=3*Math.hypot(unit.x-origin.x,unit.y-origin.y)*v.scale;
+    for(var i=0;i<6;i++){
+      var angle=i*Math.PI/3+v.rotation*Math.PI/180,inner=(6+progress*9)*v.scale,outer=(15+progress*15)*v.scale,a=at(x+Math.cos(angle)*inner,y+Math.sin(angle)*inner),b=at(x+Math.cos(angle)*outer,y+Math.sin(angle)*outer);
+      g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();
+    }
+  });
+}
+function updateHits(runtime,s) {
+  var ready=[],pending=[];
+  s.feedback.forEach(function(item){if(!hitCurrent(runtime,item,true))return;(runtime.state.time+1e-9>=item.at?ready:pending).push(item);});s.feedback=pending;
+  ready.forEach(function(item){if(hitCurrent(runtime,item,true))require("UnitHitFeedback").play(item.target);});
+  s.impacts=s.impacts.filter(function(item){return runtime.state.time<item.until&&hitCurrent(runtime,item,false);});
 }
 function beamOnset(runtime){var time=runtime.beamVisibleSince;return typeof time==="number"&&isFinite(time)?time:undefined;}
 function queue(runtime,phase,strike) {
@@ -62,6 +108,7 @@ function stopChannel(s) { if(s.channel){s.channel.manager.stopSource(s.channel.s
 function update(runtime) {
   var s=runtime._presentation,hasAudio=runtime.settings&&runtime.settings.audio&&Object.keys(runtime.settings.audio).some(function(key){return !!runtime.settings.audio[key].clip;});
   if(!s&&!hasAudio&&!runtime.beamTarget||!runtime.available())return;s=state(runtime);
+  updateHits(runtime,s);if(runtime._presentation!==s)return;
   var channel=runtime.beamTarget,generation=channel&&channel.node&&channel.node._combatGeneration,onset=beamOnset(runtime);
   var cue=runtime.settings&&runtime.settings.audio&&runtime.settings.audio.channel,cueKey=cue&&cue.clip?JSON.stringify([cue.clip,cue.bundle,cue.path,cue.delay,cue.volume]):"";
   if(s.channelTarget!==channel||s.channelCue!==cueKey||channel&&(s.channelGeneration!==generation||onset!==undefined&&s.channelOnset!==onset)){
@@ -145,20 +192,23 @@ function initialize(record,asset,v,s) {
     }else sprite.spriteFrame=asset;
   }
 }
-function prepare(runtime,s,v) {
+function prepare(runtime,s,v,owner) {
+  owner=owner||s;
   var key=[v.resource,v.resourceKind,v.resourceBundle,v.resourcePath,v.resourceAnimation,v.resourceFrames,v.resourceColumns,v.resourceCell,v.resourceFps,v.resourceLoop].join("|");
   if(s.resourceKey!==key){clearNodes(s);s.resourceKey=key;s.asset=null;s.loading=false;s.loadError=null;}
   if(s.asset||s.loading||s.loadError)return;s.loading=true;
   try{loadResource(v,function(error,asset){
-    if(runtime._presentation!==s||s.resourceKey!==key)return;
+    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s||s.resourceKey!==key)return;
     s.loading=false;if(error||!asset){s.loadError=error||Error("Empty VFX asset");return;}s.asset=asset;
     s.nodes.forEach(function(record){initialize(record,asset,v,s);});
   });}catch(error){s.loading=false;s.loadError=error;}
 }
 function attachments(hud,runtime) {
-  var v=visual(runtime),s=runtime._presentation;
-  if(!v.resource||typeof cc==="undefined"||!cc.Sprite){if(s)clearNodes(s);return;}
-  s=state(runtime);prepare(runtime,s,v);var entities=[];
+  var v=visual(runtime),iv=Settings.impactVisual(v),s=runtime._presentation;
+  if(typeof cc==="undefined"||!cc.Sprite)return;
+  if(!v.resource&&!iv.resource){if(s){clearNodes(s);if(s.impactArt)clearNodes(s.impactArt);}return;}
+  s=state(runtime);var entities=[];
+  if(v.resource)prepare(runtime,s,v);else clearNodes(s);
   if(runtime.beamTarget&&runtime.beamTarget.node&&runtime.beamTarget.hp>0){
     var beamGeneration=runtime.beamTarget.node._combatGeneration;
     var onset=beamOnset(runtime);
@@ -169,6 +219,14 @@ function attachments(hud,runtime) {
   }
   (runtime.projectiles||[]).forEach(function(p){var at=projectilePoint(p,v);entities.push({key:p,x:at.x,y:at.y,angle:Math.atan2(p.direction.y,p.direction.x)*180/Math.PI+v.rotation,loop:true,age:p.speed>0?p.travelled/p.speed:0});});
   (runtime.effects||[]).forEach(function(e){entities.push({key:e,x:e.x+v.offsetX,y:e.y+v.offsetY,angle:(e.direction?Math.atan2(e.direction.y,e.direction.x)*180/Math.PI:0)+v.rotation,loop:false,age:Math.max(0,(e.duration||0)-(e.remaining||0))});});
+  if(v.resource)paintEntities(hud,runtime,s,v,entities);
+  if(iv.resource){
+    var art=s.impactArt||(s.impactArt={nodes:new Map(),frames:new Map()});prepare(runtime,art,iv,s);
+    var hits=s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}).map(function(item){return{key:item,x:item.x+iv.offsetX,y:item.y+iv.offsetY,angle:iv.rotation,loop:false,age:Math.max(0,runtime.state.time-item.at)};});
+    paintEntities(hud,runtime,art,iv,hits);
+  }else if(s.impactArt)clearNodes(s.impactArt);
+}
+function paintEntities(hud,runtime,s,v,entities) {
   var keep=new Set();
   entities.forEach(function(entity){
     keep.add(entity.key);var record=s.nodes.get(entity.key);
@@ -187,8 +245,11 @@ function attachments(hud,runtime) {
 }
 function clearNodes(s) {s.nodes.forEach(function(record){if(typeof cc!=="undefined")dispose(record);});s.nodes.clear();s.frames.forEach(function(frame){frame.destroy();});s.frames.clear();}
 function clear(runtime) {
-  var s=runtime._presentation;if(!s)return;s.pending=[];stopChannel(s);clearNodes(s);
+  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearNodes(s);if(s.impactArt)clearNodes(s.impactArt);
   s.sources.forEach(function(entry){if(entry.manager.releaseAudioSource)entry.manager.releaseAudioSource(entry.key,entry.source);else entry.manager.stopSource(entry.source);});s.sources=[];delete runtime._presentation;
 }
 exports.visual=visual;exports.color=color;exports.width=width;exports.offset=offset;exports.rotated=rotated;exports.projectilePoint=projectilePoint;exports.release=release;
 exports.queue=queue;exports.update=update;exports.attachments=attachments;exports.clear=clear;
+exports.impact=impact;exports.deferHitReaction=deferHitReaction;
+exports.hasImpactVisual=hasImpactVisual;exports.draw=draw;
+exports.limits={feedback:MAX_FEEDBACK,impacts:MAX_IMPACTS};

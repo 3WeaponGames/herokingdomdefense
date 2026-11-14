@@ -7,7 +7,8 @@ function fixture(settings={}){
   const data={GameTools:settings},modules={
     KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data})}},
     HeroWeapons:require('../../assets/_script/HeroWeapons'),
-    HeroSkillPose:require('../../assets/_script/HeroSkillPose')
+    HeroSkillPose:require('../../assets/_script/HeroSkillPose'),
+    HeroSkillAnimation:require('../../assets/_script/HeroSkillAnimation')
   },context={exports:{},cc:{isValid:actor=>!!actor&&!actor.destroyed},require(name){
     if(modules[name])return modules[name];
     assert.equal(name,'HeroMakerRider');

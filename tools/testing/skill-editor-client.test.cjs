@@ -2,12 +2,12 @@
 const test = require('node:test'), assert = require('node:assert/strict');
 const Client = require('../../packages/hkd-skills/client'), Settings = require('../../assets/_script/HeroSkillSettings');
 const copy = value => JSON.parse(JSON.stringify(value)), flush = () => new Promise(resolve => setImmediate(resolve));
-function store() {
+function store(catalogs) {
   let version = 1, data = {}, saved = {}, undo = [], redo = []; const calls = [];
   function snapshot() { return { version, revision: 'disk-revision', data: copy(data), dirty: JSON.stringify(data) !== JSON.stringify(saved), canUndo: !!undo.length, canRedo: !!redo.length,
     styles: Settings.styles, fields: Object.fromEntries(Settings.styles.map(style => [style.id, Settings.fields(style.id)])),
     effective: Object.fromEntries(Settings.styles.map(style => [style.id, Settings.effective(style.id, { HeroSkills: data })])),
-    catalogs: { audio: [{ id: 'aaaa0000-0000-0000-0000-000000000001', name: 'Test cue', file: 'assets/KinghtFallAudio/test.wav' }], vfx: [] } }; }
+    catalogs: { audio: [{ id: 'aaaa0000-0000-0000-0000-000000000001', name: 'Test cue', file: 'assets/KinghtFallAudio/test.wav' }], vfx: [],...catalogs } }; }
   const api = { settings: Settings, async ipc(name, request) {
     calls.push({ name, request: copy(request) });
     if (name === 'describe') return { runtimePath: '', layers: [{ json: { animations: { idle: {}, attack: {}, move: {} } } }] };
@@ -71,9 +71,9 @@ class Element {
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
 async function fixture(custom = {}) {
-  const backend = store(), document = { defaultView: {}, activeElement: null }; document.createElement = tag => new Element(tag, document);
-  const host = new Element('div', document), calls = { preview: [], scenarios: [], audio: [], destroyed: false }; let options;
-  const api = { ...backend.api, ipc: (name, request) => name === 'describe' && custom.describe ? custom.describe(request) : backend.api.ipc(name, request), audioURL: item => item.file, createAudio: () => { const media = { pause() {}, removeAttribute() {}, load() {}, play() { calls.audio.push(this.src); return Promise.resolve(); } }; return media; }, createPreview(_host, value) { options = value; return { set: async request => calls.preview.push(copy(request)), setScenario: value => calls.scenarios.push(copy(value)), play() {}, seek() {}, step() {}, fit() {}, cast() {}, setAudioEnabled() {}, selectHandle() {}, destroy() { calls.destroyed = true; } }; } };
+  const backend = store(custom.catalogs), document = { defaultView: {}, activeElement: null }; document.createElement = tag => new Element(tag, document);
+  const host = new Element('div', document), calls = { preview: [], scenarios: [], audio: [], seeks:[],plays:[],destroyed: false }; let options;
+  const api = { ...backend.api, ipc: (name, request) => name === 'describe' && custom.describe ? custom.describe(request) : backend.api.ipc(name, request), audioURL: item => item.file, createAudio: () => { const media = { pause() {}, removeAttribute() {}, load() {}, play() { calls.audio.push(this.src); return Promise.resolve(); } }; return media; }, createPreview(_host, value) { options = value; return { set: async request => calls.preview.push(copy(request)), setScenario: value => calls.scenarios.push(copy(value)), play(value) {calls.plays.push(value);if(custom.statusOnPlay!==undefined)options.onStatus({time:custom.statusOnPlay,duration:4,playing:false});}, seek(value) {calls.seeks.push(value);options.onStatus({time:value,duration:4,playing:false});}, step() {}, fit() {}, cast() {}, setAudioEnabled() {}, selectHandle() {}, destroy() { calls.destroyed = true; } }; } };
   const client = Client.mount(host, api); await flush(); await flush();
   const button = title => host.querySelectorAll('button').find(node => node.textContent === title), field = label => host.querySelector('[aria-label="' + label + '"]');
   return { host, client, backend, calls, button, field, options: () => options, async settle() { await client.flush(); await flush(); await flush(); }, close() { client.destroy(); } };
@@ -179,4 +179,55 @@ test('delayed skill auditions share the runtime pending budget and cleanup retur
 
 test('Guardian inherited effect color uses the same blue swatch as its in-game shield',async()=>{
  const f=await fixture();await f.client.selectStyle('guardian');f.button('Position & VFX').click();await f.settle();assert.equal(f.field('Effect color')._colorPicker.value,'#70c8ff');assert.equal(f.backend.calls.some(call=>call.name==='change'||call.name==='save'),false);f.close();
+});
+
+function pointer(node,phase,x=0,extra={}){const event={pointerId:1,button:0,isPrimary:true,clientX:x,shiftKey:false,altKey:false,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;},...extra};const handler=node.listeners[phase];if(handler)handler(event);return event;}
+function caption(f,input){return f.host.querySelectorAll('label').find(label=>label.htmlFor===input.id)||input.parentElement.children[0];}
+
+test('timeline snapshots the requested position before synchronous pause status can restore the old thumb value',async()=>{
+ const f=await fixture({statusOnPlay:.25}),timeline=f.field('Skill preview position');f.options().onStatus({time:.25,duration:4,playing:true});timeline.value='2.125';timeline.oninput();assert.equal(f.calls.seeks.at(-1),2.125);assert.equal(timeline.value,'2.125');assert.equal(f.calls.plays.at(-1),false);
+ timeline.getBoundingClientRect=()=>({left:100,width:216});const down=pointer(timeline,'pointerdown',208);assert.equal(down.prevented,true,'The timeline owns only its left pointer gesture');assert.equal(f.calls.seeks.at(-1),2);f.options().onStatus({time:.9,duration:4,playing:true});assert.equal(timeline.value,'2','Status callbacks cannot move the thumb under a held pointer');pointer(timeline,'pointermove',258);assert.equal(f.calls.seeks.at(-1),3);pointer(timeline,'pointerup',258);assert.equal(timeline.value,'3');assert.equal(f.backend.calls.some(c=>c.name==='change'||c.name==='save'),false);f.close();
+});
+
+test('numeric labels scrub a live preview but a long drag produces just one shared-draft edit and undo step',async()=>{
+ const f=await fixture(),input=f.field('Cooldown'),label=caption(f,input);assert.match(label.title,/Shift/);assert.equal(input.listeners.pointerdown,undefined,'Typing and spinner controls retain native input behavior');pointer(label,'pointerdown',0);pointer(label,'pointermove',20);assert.equal(input.value,'12.2');assert.equal(f.calls.preview.at(-1).settings.cooldown,12.2);await new Promise(r=>setTimeout(r,210));assert.equal(f.backend.calls.filter(c=>c.name==='change').length,0,'A pause during dragging does not publish a partial edit');pointer(label,'pointermove',40);pointer(label,'pointerup',40);await f.settle();assert.equal(f.backend.calls.filter(c=>c.name==='change').length,1);assert.equal(f.backend.snapshot().effective.skirmisher.cooldown,12.4);assert.equal(f.backend.snapshot().canUndo,true);f.button('Undo').click();await f.settle();assert.equal(f.field('Cooldown').value,'12');assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
+});
+
+test('numeric scenario labels respect fine/coarse modifiers, bounds and steps without creating game-data edits',async()=>{
+ const f=await fixture(),input=f.field('Hero HP %'),label=input.parentElement.children[0];pointer(label,'pointerdown');pointer(label,'pointermove',-10);assert.equal(input.value,'90');pointer(label,'pointermove',-20,{shiftKey:true});assert.equal(input.value,'89');pointer(label,'pointermove',-21,{altKey:true});assert.equal(input.value,'79');pointer(label,'pointermove',1000,{altKey:true});assert.equal(input.value,'100');pointer(label,'pointermove',990);assert.equal(input.value,'90','Reversing from a bound responds immediately');pointer(label,'pointerup',990);assert.equal(f.calls.scenarios.at(-1).hp,90);await f.settle();assert.equal(f.backend.calls.some(c=>c.name==='change'||c.name==='save'),false);
+ await f.client.selectStyle('vanguard');await f.settle();const strikes=f.field('Strikes'),count=caption(f,strikes);pointer(count,'pointerdown');pointer(count,'pointermove',8,{shiftKey:true});assert.equal(Number.isInteger(Number(strikes.value)),true);pointer(count,'pointermove',1000,{altKey:true});assert.equal(strikes.value,'100');pointer(count,'pointerup');await f.settle();assert.equal(f.backend.calls.filter(c=>c.name==='change').length,1);f.close();
+});
+
+test('Escape, pointer cancellation, return-to-start and closing cancel a scrub without publishing or leaving gesture listeners',async()=>{
+ for(const mode of ['escape','cancel','return','close']){const f=await fixture(),input=f.field('Cooldown'),label=caption(f,input);pointer(label,'pointerdown');pointer(label,'pointermove',50);assert.equal(input.value,'12.5');if(mode==='escape')pointer(label,'keydown',50,{key:'Escape'});if(mode==='cancel')pointer(label,'pointercancel',50);if(mode==='return'){pointer(label,'pointermove',0);pointer(label,'pointerup',0);}if(mode==='close')f.close();else{await f.settle();assert.equal(f.field('Cooldown').value,'12');f.close();}await new Promise(r=>setTimeout(r,180));assert.equal(f.backend.calls.some(c=>c.name==='change'||c.name==='save'),false,mode);assert.equal(label.listeners.pointermove,undefined);}
+});
+
+test('all skill and scenario field labels expose tooltips and invalid text never starts scrubbing',async()=>{
+ const f=await fixture();for(const style of Settings.styles){await f.client.selectStyle(style.id);await f.settle();for(const tab of ['Skill settings','Position & VFX','SFX']){f.button(tab).click();await f.settle();for(const label of f.host.querySelectorAll('label'))assert(label.title&&label.title.length>8,style.id+'/'+tab+'/'+label.textContent);}}
+ await f.client.selectStyle('skirmisher');f.button('Skill settings').click();await f.settle();const input=f.field('Cooldown'),label=caption(f,input);input.value='';input.oninput();pointer(label,'pointerdown');pointer(label,'pointermove',100);pointer(label,'pointerup');assert.equal(input.value,'');assert.equal(f.backend.calls.some(c=>c.name==='change'||c.name==='save'),false);f.close();
+});
+
+
+test('numeric scrubber owns one pointer, cancels on window blur and releases every captured listener on cleanup',()=>{
+ const view={listeners:{},addEventListener(name,fn){this.listeners[name]=fn;},removeEventListener(name){delete this.listeners[name];}},doc={defaultView:view},label=new Element('label',doc),input=new Element('input',doc);input.value='2';let held=null,previews=[],commits=[],cancelled=0;label.setPointerCapture=id=>{held=id;};label.hasPointerCapture=id=>held===id;label.releasePointerCapture=()=>{held=null;};
+ const scrub=require('../../packages/hkd-skills/numeric-scrub').attach(label,input,{min:0,max:5,step:.25,preview:n=>previews.push(n),commit:n=>commits.push(n),cancel(){cancelled++;}});
+ pointer(label,'pointerdown',0,{button:1});pointer(view,'pointermove',20);assert.deepEqual(previews,[]);pointer(label,'pointerdown');pointer(view,'pointermove',20,{pointerId:2});assert.equal(input.value,'2');pointer(view,'pointermove',4);assert.equal(input.value,'3');pointer(view,'pointerup',4,{pointerId:2});assert.equal(held,1);pointer(view,'blur',4,{type:'blur'});assert.equal(input.value,'2');assert.equal(held,null);assert.equal(cancelled,1);assert.deepEqual(commits,[]);
+ pointer(label,'pointerdown');pointer(view,'pointermove',8);pointer(view,'pointerup',8);assert.deepEqual(commits,[4]);assert.equal(held,null);scrub.destroy();scrub.destroy();assert.deepEqual(Object.keys(view.listeners),[]);assert.deepEqual(Object.keys(label.listeners),[]);
+});
+
+
+test('on-hit VFX uses its own asset animations and participates in preview description cache identity',async()=>{
+ const main='bbbb0000-0000-0000-0000-000000000010',hit='bbbb0000-0000-0000-0000-000000000011',next='bbbb0000-0000-0000-0000-000000000012',requests=[];
+ const f=await fixture({catalogs:{vfx:[{id:main,name:'Main effect',animations:['main-loop']},{id:hit,name:'Impact effect',animations:['hit-burst']},{id:next,name:'Other impact',animations:['hit-other']}]},describe(request){requests.push(copy(request));return Promise.resolve({layers:[{json:{animations:{attack:{}}}}],effects:[{id:request.resource||'default-main'},{id:request.impactResource||'no-impact'}]});}});
+ f.button('Position & VFX').click();await f.settle();f.field('VFX asset').value=main;f.field('VFX asset').onchange();await f.settle();f.field('On-hit VFX asset').value=hit;f.field('On-hit VFX asset').onchange();await f.settle();assert.deepEqual(f.field('VFX animation').options.map(n=>n.value),['','main-loop']);assert.deepEqual(f.field('On-hit VFX animation').options.map(n=>n.value),['','hit-burst']);assert(requests.some(r=>r.resource===main&&r.impactResource===hit));assert.equal(f.calls.preview.at(-1).description.effects[1].id,hit);
+ f.field('On-hit VFX asset').value=next;f.field('On-hit VFX asset').onchange();await f.settle();assert.deepEqual(f.field('On-hit VFX animation').options.map(n=>n.value),['','hit-other']);assert.equal(requests.at(-1).impactResource,next);assert.equal(f.calls.preview.at(-1).description.effects[1].id,next);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
+});
+
+
+test('timeline pointer capture clamps seeking, excludes other pointers and cleans up without draft edits',async()=>{
+ const f=await fixture(),timeline=f.field('Skill preview position');let held=null;timeline.getBoundingClientRect=()=>({left:100,width:216});timeline.setPointerCapture=id=>{held=id;};timeline.hasPointerCapture=id=>held===id;timeline.releasePointerCapture=()=>{held=null;};
+ const before=f.calls.seeks.length;pointer(timeline,'pointerdown',208,{button:1});assert.equal(f.calls.seeks.length,before);assert.equal(held,null);
+ pointer(timeline,'pointerdown',208);assert.equal(held,1);assert.equal(f.calls.seeks.at(-1),2);pointer(timeline,'pointermove',308,{pointerId:2});assert.equal(f.calls.seeks.at(-1),2);pointer(timeline,'pointerup',308,{pointerId:2});assert.equal(held,1);
+ pointer(timeline,'pointermove',1000);assert.equal(f.calls.seeks.at(-1),4);pointer(timeline,'pointermove',-1000);assert.equal(f.calls.seeks.at(-1),0);const stable=f.calls.seeks.length;pointer(timeline,'pointermove',-1000);assert.equal(f.calls.seeks.length,stable,'Unchanged pointer values do not rerun the simulation');pointer(timeline,'pointercancel',-1000);assert.equal(held,null);
+ pointer(timeline,'pointerdown',208);assert.equal(held,1);f.close();assert.equal(held,null);assert.equal(timeline.listeners.pointerdown,undefined);assert.equal(timeline.listeners.pointermove,undefined);assert.equal(timeline.listeners.pointerup,undefined);assert.equal(timeline.listeners.pointercancel,undefined);assert.equal(timeline.listeners.lostpointercapture,undefined);assert.equal(f.backend.calls.some(c=>c.name==='change'||c.name==='save'),false);
 });

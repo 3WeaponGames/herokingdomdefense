@@ -1,5 +1,5 @@
 "use strict";
-var Weapons = require("HeroWeapons"), Pose = require("HeroSkillPose"), states = new WeakMap(), layerOrders = new WeakMap(), combatStates = new WeakMap(), combatMotion = new WeakSet(), clipCache = new WeakMap(), leftSlotCache = new WeakMap(), retimedAttacks = new WeakMap(), attackTokens = new WeakMap();
+var Weapons = require("HeroWeapons"), Pose = require("HeroSkillPose"), SkillAnimation = require("HeroSkillAnimation"), states = new WeakMap(), layerOrders = new WeakMap(), combatStates = new WeakMap(), combatMotion = new WeakSet(), clipCache = new WeakMap(), leftSlotCache = new WeakMap(), retimedAttacks = new WeakMap(), attackTokens = new WeakMap();
 var keys = ["spAniBody", "spAniDrap", "spAniHead", "spAniBow", "spAniArrow", "spAniHand"];
 var frontOrder=['spAniMa','spAniBody','spAniDrap','spAniHand','spAniHead','spAniBow','spAniArrow'],backOrder=['spAniArrow','spAniMa','spAniBody','spAniDrap','spAniHand','spAniHead','spAniBow'];
 function metadata(controller) { var data = controller.spAniBody && controller.spAniBody.skeletonData; return data && data.skeletonJson && data.skeletonJson._heroMaker; }
@@ -229,11 +229,10 @@ function updateCombatPose(controller,state){
   }
   var rapid=typeof state.rapid==='object'?state.rapid:null,duration=rapid&&rapid.duration>0?rapid.duration:2.5,strikes=rapid&&rapid.strikes>0?rapid.strikes:7,interval=duration/strikes;
   if(rapid&&typeof rapid.elapsed==='number'){
-    var elapsed=Math.max(0,Math.min(duration,rapid.elapsed)),phase=elapsed%interval;
     // The first gameplay impact occurs at duration/strikes, not at cast start.
     // Prepare until that hit, then sample one closed cycle per subsequent hit
     // interval. The timeline owns damage; this only aligns its visible pose.
-    var sample=elapsed<=interval?state.clip.hit*elapsed/interval:(state.clip.hit+phase*state.clip.end/interval)%state.clip.end;
+    var sample=SkillAnimation.rapidPose(rapid.elapsed,duration,strikes,state.clip).time;
     seekRider(controller,state,sample,0);
     if(controller.isMove)ensureLocomotion(horse,'move');else stationaryMountPose(controller,state,sample,0);
   }else{

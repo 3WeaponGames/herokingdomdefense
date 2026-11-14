@@ -10,7 +10,7 @@ var styles = [
   {id:"bruiser",name:"Bruiser",weapon:"Axe",skill:"Blood Cleave"},
   {id:"guardian",name:"Guardian",weapon:"Hammer and shield",skill:"Iron Bulwark"}
 ];
-var VISUAL = {originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",showBuiltin:true,animation:"",holdTime:-1};
+var VISUAL = {originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",showBuiltin:true,animation:"",holdTime:-1,impactResource:"",impactResourceAnimation:"",impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
 var AUDIO = {clip:"",volume:1,delay:0};
 var HELP = {
   cooldown:"Seconds between active-skill uses.",
@@ -51,6 +51,35 @@ var HELP = {
   shieldDuration:"Shield lifetime in seconds, unless damage consumes it first.",
   tauntDuration:"Seconds nearby hostile attackers prioritize the hero."
 };
+var VISUAL_HELP = {
+  originX:"Horizontal visual offset from the equipped weapon's release point. Moves the beam or arrow artwork, not its damage path.",
+  originY:"Vertical visual offset from the equipped weapon's release point. Positive values move artwork upward; damage stays unchanged.",
+  targetX:"Horizontal visual offset from the beam target. Moves its endpoint and attached VFX, not the target or hit range.",
+  targetY:"Vertical visual offset from the beam target. Positive values move the endpoint and attached VFX upward; damage stays unchanged.",
+  offsetX:"Additional horizontal offset for the entire displayed skill effect, after its origin or target offsets. Does not move damage geometry.",
+  offsetY:"Additional vertical offset for the entire displayed skill effect, after its origin or target offsets. Positive values move artwork upward.",
+  rotation:"Visual rotation in degrees. Rotates the displayed effect without changing the skill's aim or damage arc.",
+  scale:"Visual size multiplier for the skill effect. 1 is its imported size; damage range and projectile width stay unchanged.",
+  opacity:"Opacity of the skill effect. 1 is fully visible and 0 hides it without disabling damage.",
+  lineWidth:"Visual thickness of built-in lines and arcs. 0 uses the style default; this is separate from projectile hit width.",
+  color:"Optional visual tint. Empty keeps the original effect colors; this does not change gameplay.",
+  effectDuration:"Lifetime of the skill's area or arc artwork in gameplay seconds. Does not change damage timing or buff duration.",
+  resource:"Optional imported effect used on the projectile, beam target, or skill area. This is separate from the effect played on each enemy hit.",
+  resourceAnimation:"Animation from the selected Spine VFX asset. Empty uses its first available animation; sprite flipbooks use imported timing.",
+  showBuiltin:"Show the procedural skill artwork alongside the selected VFX. Turning it off does not disable damage or custom effects.",
+  animation:"Authored rider attack clip used for this skill. Empty uses the equipped fighting style; the selected clip supplies its attack marker.",
+  holdTime:"Mystic source-animation time to hold the scepter pose before beam damage begins. -1 uses the clip's authored attack marker.",
+  impactResource:"Optional effect played at every enemy actually hit by the hero's basic attacks or active skill. Empty adds no custom on-hit effect.",
+  impactResourceAnimation:"Animation from the selected on-hit Spine VFX. Empty uses its first available animation; sprites use their imported flipbook timing.",
+  impactScale:"Size multiplier for the on-hit VFX only. 1 uses the imported size; damage and enemy size stay unchanged.",
+  impactDuration:"How long each on-hit VFX stays visible, in gameplay seconds after its delay. Does not delay damage.",
+  impactDelay:"Seconds after actual damage before the on-hit VFX and the enemy's existing get-hit animation start. 0 preserves immediate feedback. Damage is always applied at the real hit.",
+  impactOffsetX:"Horizontal offset from the enemy's position when the hit landed. Applies only to on-hit VFX; positive values move it right.",
+  impactOffsetY:"Vertical offset from the enemy's position when the hit landed. Applies only to on-hit VFX; positive values move it upward.",
+  impactRotation:"Rotation of each on-hit effect in degrees. Does not rotate the enemy or alter the attack direction.",
+  impactOpacity:"Opacity of on-hit VFX only. 1 is fully visible and 0 hides its artwork without affecting damage or hit reactions.",
+  impactColor:"Optional tint for on-hit VFX. Empty preserves its imported colors."
+};
 function clone(value){return JSON.parse(JSON.stringify(value));}
 function known(style){return styles.some(function(row){return row.id===style;});}
 function label(key){return key.replace(/([A-Z])/g," $1").replace(/^./,function(c){return c.toUpperCase();});}
@@ -72,25 +101,27 @@ function tuningFields(style){
   });
 }
 var visualFields = Object.keys(VISUAL).map(function(key){
-  if(key==="resource")return {path:"visual.resource",key:key,label:"VFX asset",type:"vfx",emptyLabel:"Built-in effect"};
-  if(key==="resourceAnimation")return {path:"visual.resourceAnimation",key:key,label:"VFX animation",type:"effect-animation",emptyLabel:"Asset default"};
+  if(key==="resource"||key==="impactResource")return {path:"visual."+key,key:key,label:key==="resource"?"VFX asset":"On-hit VFX asset",type:"vfx",emptyLabel:key==="resource"?"Built-in effect":"No custom on-hit effect"};
+  if(key==="resourceAnimation"||key==="impactResourceAnimation")return {path:"visual."+key,key:key,label:key==="resourceAnimation"?"VFX animation":"On-hit VFX animation",type:"effect-animation",emptyLabel:"Asset default",resourcePath:key==="resourceAnimation"?"visual.resource":"visual.impactResource"};
   if(key==="showBuiltin")return {path:"visual.showBuiltin",key:key,label:"Show built-in effect",type:"boolean"};
   if(key==="animation")return {path:"visual.animation",key:key,label:"Rider animation",type:"animation",emptyLabel:"Style default"};
-  if(key==="color")return {path:"visual.color",key:key,label:"Effect color",type:"color",allowEmpty:true};
+  if(key==="color"||key==="impactColor")return {path:"visual."+key,key:key,label:key==="color"?"Effect color":"On-hit effect color",type:"color",allowEmpty:true};
   var min=-4096,max=4096,step=.1,unit="units";
-  if(key==="rotation"){min=-360;max=360;unit="degrees";}
-  if(key==="scale"){min=.01;max=10;step=.01;unit="";}
-  if(key==="opacity"){min=0;max=1;step=.01;unit="fraction";}
+  if(key==="rotation"||key==="impactRotation"){min=-360;max=360;unit="degrees";}
+  if(key==="scale"||key==="impactScale"){min=.01;max=10;step=.01;unit="";}
+  if(key==="opacity"||key==="impactOpacity"){min=0;max=1;step=.01;unit="fraction";}
   if(key==="lineWidth"){min=0;max=200;step=.5;unit="0 = style default";}
-  if(key==="effectDuration"){min=.01;max=30;step=.01;unit="seconds";}
+  if(key==="effectDuration"||key==="impactDuration"){min=.01;max=30;step=.01;unit="seconds";}
+  if(key==="impactDelay"){min=0;max=30;step=.01;unit="seconds";}
   if(key==="holdTime"){min=-1;max=30;step=.001;unit="seconds; -1 = authored hit";}
-  return number("visual."+key,label(key),min,max,step,unit);
-});
+  return number("visual."+key,key.indexOf("impact")===0?"On-hit "+label(key.slice(6)).toLowerCase():label(key),min,max,step,unit);
+}).map(function(field){field.help=VISUAL_HELP[field.key];return field;});
 var audioFields=[];
 ["cast","impact","channel"].forEach(function(phase){
-  audioFields.push({path:"audio."+phase+".clip",key:"clip",label:label(phase)+" sound",type:"audio",phase:phase,emptyLabel:"No custom sound"});
-  audioFields.push(Object.assign(number("audio."+phase+".volume",label(phase)+" volume",0,1,.01),{phase:phase}));
-  audioFields.push(Object.assign(number("audio."+phase+".delay",label(phase)+" delay",0,30,.01,"seconds"),{phase:phase}));
+  var anchor=phase==="cast"?"skill confirmation":phase==="impact"?"the actual enemy hit":"the visible Mystic beam start";
+  audioFields.push({path:"audio."+phase+".clip",key:"clip",label:label(phase)+" sound",type:"audio",phase:phase,emptyLabel:"No custom sound",help:"Custom "+phase+" sound anchored to "+anchor+". Empty preserves the built-in sound behavior; audio preview remains optional."});
+  audioFields.push(Object.assign(number("audio."+phase+".volume",label(phase)+" volume",0,1,.01),{phase:phase,help:"Volume multiplier for this custom "+phase+" cue, before the player's effects-volume setting. 1 is full volume and 0 is silent."}));
+  audioFields.push(Object.assign(number("audio."+phase+".delay",label(phase)+" delay",0,30,.01,"seconds"),{phase:phase,help:"Gameplay seconds after "+anchor+" before this sound starts. Independent of visual on-hit delay; use matching values to align them."}));
 });
 function fields(style){
   var visual=clone(visualFields).filter(function(field){
@@ -124,12 +155,18 @@ function flipbook(value){
   if(!integer(frames,4096)||!integer(columns,256)||!integer(cell,4096)||typeof fps!=="number"||!isFinite(fps)||fps<=0||fps>240||value.resourceLoop!==undefined&&typeof value.resourceLoop!=="boolean")return null;
   return {frames:frames,columns:columns,cell:cell,fps:fps,loop:value.resourceLoop===true};
 }
+function impactVisual(value) {
+  value=Object.assign({},VISUAL,value||{});var result={};
+  ["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","scale","rotation","opacity","color","offsetX","offsetY"].forEach(function(key){result[key]=value['impact'+key.charAt(0).toUpperCase()+key.slice(1)];});
+  result.effectDuration=value.impactDuration;result.delay=value.impactDelay;return result;
+}
 function effective(style,config){
   var result=defaults(style),saved=config&&config.HeroSkills&&config.HeroSkills[style];
   if(!saved||typeof saved!=="object"||Array.isArray(saved))return result;
   descriptors(style).forEach(function(field){var value=get(saved,field.path);if(value!==undefined&&valid(field,value))set(result,field.path,value);});
-  ["visual.resourceBundle","visual.resourcePath","visual.resourceKind"].concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
+  ["visual.resourceBundle","visual.resourcePath","visual.resourceKind","visual.impactResourceBundle","visual.impactResourcePath","visual.impactResourceKind"].concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
   var frames=flipbook(saved.visual);if(frames)Object.keys(frames).forEach(function(key){result.visual['resource'+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});
+  var impacts=flipbook(impactVisual(saved.visual));if(impacts)Object.keys(impacts).forEach(function(key){result.visual['impactResource'+key.charAt(0).toUpperCase()+key.slice(1)]=impacts[key];});
   return result;
 }
 function validateStyle(style,value){
@@ -151,3 +188,4 @@ function riderAnimations(description){
 exports.styles=styles;exports.tuningFields=tuningFields;exports.visualFields=visualFields;exports.audioFields=audioFields;exports.fields=fields;exports.descriptors=descriptors;exports.defaults=defaults;exports.effective=effective;exports.validateStyle=validateStyle;exports.valid=valid;exports.get=get;exports.set=set;
 exports.riderAnimations=riderAnimations;
 exports.flipbook=flipbook;
+exports.impactVisual=impactVisual;

@@ -3,7 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.resolve(__dirname,'../..'),Units=require('../../packages/game-data-editor/lib/unit-assets'),Weapons=require('../../assets/_script/HeroWeapons'),spine=require(Units.enginePath());
 const keys=['spAniMa','spAniBody','spAniDrap','spAniHead','spAniBow','spAniArrow','spAniHand'];
 function setup(style='fighter'){
- const exports={},modules={HeroWeapons:Weapons,HeroSkillPose:require('../../assets/_script/HeroSkillPose'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find(style)})})}}};
+ const exports={},modules={HeroWeapons:Weapons,HeroSkillPose:require('../../assets/_script/HeroSkillPose'),HeroSkillAnimation:require('../../assets/_script/HeroSkillAnimation'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find(style)})})}}};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,cc:{v2:(x,y)=>({x,y})},require:name=>modules[name]});
  const rider=exports,controlExports={};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallPlayGameAniCtrl.js'),'utf8'),{exports:controlExports,require:name=>name==='HeroMakerRider'?rider:name==='KinghtFallModle'?{KinghtFallPlayAniEnum:{Idle:'idle',Move:'move',Die:'wqyl_lead_die'}}:{},cc:{Component:function(){},_decorator:{ccclass:T=>T,property:()=>()=>{}}},sp:{Skeleton:function(){}},__extends(C,P){C.prototype=Object.create(P.prototype);},__decorate:(_decorators,T,key)=>key===undefined?T:undefined});
@@ -105,7 +105,7 @@ test('death and restart clear a held combat pose without overriding death or fre
 });
 
 test('native TrackEntry setter-only APIs receive the held pose without freezing the mount track',()=>{
- const exports={},events=[];vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,require:name=>name==='HeroSkillPose'?require('../../assets/_script/HeroSkillPose'):name==='HeroWeapons'?Weapons:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find('mystic')})})}}});
+ const exports={},events=[];vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,require:name=>name==='HeroSkillAnimation'?require('../../assets/_script/HeroSkillAnimation'):name==='HeroSkillPose'?require('../../assets/_script/HeroSkillPose'):name==='HeroWeapons'?Weapons:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find('mystic')})})}}});
  function renderer(mount){let entry;return {node:{scaleX:1,scaleY:1},skeletonData:{skeletonJson:mount?{_heroMakerMount:{}}:{_heroMaker:{},animations:{attack_mystic:{events:[{time:.2,name:'attack'}],bones:{body:{rotate:[{time:.8}]}}}}}},getCurrent:()=>entry,setMix(){},setAnimation(_i,animation,loop){entry={animation:{name:animation},loop,getTrackTime:()=>.4,getTimeScale:()=>1,setTrackTime:v=>events.push([mount?'mount':'rider','time',v]),setTimeScale:v=>events.push([mount?'mount':'rider','speed',v])};return entry;},addAnimation(){}};}
  const actor={spAniBody:renderer(false),spAniMa:renderer(true),isMove:false};exports.setCombatState(actor,{beam:true,moving:false});
  assert(events.some(e=>e[0]==='rider'&&e[1]==='time'&&e[2]===.2));assert(events.some(e=>e[0]==='rider'&&e[1]==='speed'&&e[2]===0));assert(!events.some(e=>e[0]==='mount'&&e[1]==='speed'&&e[2]===0));
@@ -384,5 +384,27 @@ test('real Spine boss-control events and queued damage share saved playback and 
   for(let frame=0;frame<240&&(eventAt===null||damageAt===null);frame++){const dt=wallStep*globalSpeed;time+=dt;tools.tick(dt,true);combat.updateEnemy(enemy,dt);tools.applyAnimationPlayback(enemy,'enemy');r.update(wallStep*r.timeScale);}
   assert.notEqual(eventAt,null);assert.notEqual(damageAt,null);assert(Math.abs(eventAt-damageAt)<=wallStep*globalSpeed+1e-7,'rendered source event and hit must cross in the same simulation frame');assert.equal(JSON.stringify(settings),before);
   combat.releaseControl(enemy);close(r.timeScale,globalSpeed);
+ }
+});
+
+test('sampled Vanguard geometry matches direct preview poses independently of saved playback and attack-rate buffs',()=>{
+ const Animation=require('../../assets/_script/HeroSkillAnimation'),duration=2.5,count=7;
+ for(const moving of [false,true]){
+  const playback=1,h=setup('vanguard'),{actor,rider}=h,renderer=actor.spAniBow;
+  const reference=new spine.Skeleton(renderer.skeleton.data);
+  reference.setSkinByName(renderer.skeleton.skin.name);
+  const clip={hit:rider.attackPoseTime(actor),end:.8333},animation=reference.data.findAnimation('attack_vanguard');
+  rider.setCombatState(actor,{moving,playback,rapid:{elapsed:0,duration,strikes:count}});
+  h.step(.1);
+  for(let index=1;index<=35;index++){
+   const playback=[.25,1,4][index%3],elapsed=duration*index/35,sample=Animation.rapidPose(elapsed,duration,count,clip);
+   rider.setCombatState(actor,{moving,playback,attackRate:index%2?.2:5,rapid:{elapsed,duration,strikes:count},deferUpdate:true});h.step(1/60);
+   reference.setToSetupPose();animation.apply(reference,0,sample.time,false,null,1,spine.MixBlend.replace,spine.MixDirection.mixIn);reference.updateWorldTransform();
+   const slot=reference.findSlot('Rider/HandRight/Spear'),expected=new Float32Array(8);slot.getAttachment().computeWorldVertices(slot.bone,expected,0,2);
+   const actual=slotVertices(renderer,'Rider/HandRight/Spear');
+   assert(actual.every((value,i)=>Math.abs(value-expected[i])<1e-4),'runtime and preview must draw the same spear geometry');
+   close(track(actor).trackTime,sample.time);assert.equal(track(actor).timeScale,0);
+   if(moving)assert.equal(name(actor,'spAniMa'),'move');else close(track(actor,'spAniMa').trackTime,sample.time);
+  }
  }
 });

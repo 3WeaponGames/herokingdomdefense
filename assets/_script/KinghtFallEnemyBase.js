@@ -535,7 +535,7 @@ var def_KinghtFallEnemyBase = function (t) {
       t = RelicCombat.enemyDamage(this, t, source, secondary, context);
       this.hp -= t;
       if (BattleSounds.hit) BattleSounds.hit(this, source, t, { magic: !!secondary });
-      if (t > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
+      if (t > 0 && this.hp > 0 && cc.resources && !(source && source._styleRuntime && source._styleRuntime.deferHitReaction && source._styleRuntime.deferHitReaction(this, context))) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
         Navigation.reset(this);
         this.state = r.Dead;

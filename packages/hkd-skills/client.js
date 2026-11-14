@@ -1,5 +1,8 @@
 'use strict';
 const SkillSettings = require('../../assets/_script/HeroSkillSettings');
+const NumericScrub = require('./numeric-scrub');
+const SCRUB_HELP='Drag the label left or right to adjust. Shift: fine; Alt: coarse. Escape cancels the drag.';
+const PREVIEW_HELP={Preview:'Choose an active skill example or ordinary attacks with their passive effects.',Speed:'Playback speed for this isolated preview. Does not change saved animation or combat speed.',Handle:'Choose the effect handle to position in the preview.','Hero HP %':'Hero health percentage used to test missing-health passives and skills. Preview only.','Target distance':'Starting enemy distance in world units. Changing this control resets moved enemy positions. Preview only.','Attacks / second':'Ordinary attack cadence used by the preview. Does not change game stats.','Aim angle':'Skill direction in degrees. Zero points right; positive angles turn counterclockwise. Preview only.','Horse moving':'Preview mounted movement while the rider attacks. Does not move the real game hero.',Repeat:'Repeat the preview timeline after it reaches the end.','Sound in preview':'Explicitly enable this preview’s sound effects. Opening or editing the panel remains silent.'};
 
 const clone = value => value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 const parts = path => Array.isArray(path) ? path : String(path).split('.');
@@ -100,6 +103,7 @@ function mount(host, api) {
   let preview = null, loading = false, actionBusy = false, controlRefs = new Map(), descriptionStyle = '', sessionError = '', handleStyle = '';
   let localChanges = new Map(), debounce = null, lastSignature = '', soundEnabled = false, playback = { playing: true, time: 0, duration: 4 };
   const invalidInputs = new Map();
+  const scrubbers = new Set();let activeScrub=null,scrubInput=null,timelinePointer=null;
   const descriptionLoads = new Map();
   const scenario = { hp: 100, targetDistance: 100, attackRate: 1.5, moving: false, direction: 0, speed: 1, repeat: true, mode: 'active' };
   function el(tag, text, parent, cls) { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (cls) node.className = cls; if (parent) parent.appendChild(node); return node; }
@@ -122,7 +126,7 @@ function mount(host, api) {
   const stylesHost = el('div', undefined, list), listNote = el('p', 'Every style includes its passive and active skill. Upgrades remain in Equipment.', list, 'help');
   const main = el('main', undefined, workspace), titleRow = el('div', undefined, main, 'preview-heading'), previewTitle = el('strong', 'Skill preview', titleRow);
   const muteBadge = el('span', 'SILENT · PREVIEW ONLY', titleRow, 'badge');
-  const previewHost = el('div', undefined, main, 'preview-host'); previewHost.tabIndex = 0; previewHost.setAttribute('aria-label', 'Real-time skill preview');
+  const previewHost = el('div', undefined, main, 'preview-host'); previewHost.tabIndex = 0; previewHost.setAttribute('aria-label', 'Real-time skill preview');previewHost.title='Click an enemy to target it; drag an enemy to move it. Drag an effect handle to adjust its position. Middle drag pans; Ctrl+wheel zooms.';
   const transport = el('div', undefined, main, 'preview-controls'), row = el('div', undefined, transport, 'row wrap');
   const play = button(row, 'Pause', () => { playback.playing = !playback.playing; if (preview) preview.play(playback.playing); if (!playback.playing) audio.stop(); updatePlayback(); });
   button(row, '◀ Frame', () => { stopAudio(); if (preview) preview.step(-1 / 60); });
@@ -134,7 +138,16 @@ function mount(host, api) {
   const handle = makeSelect(row, 'Handle', [['origin', 'Skill origin'], ['effect', 'Effect position']], 'origin', value => { if (preview && preview.selectHandle) preview.selectHandle(value); });
   const clock = el('span', '0.000 s', row, 'clock');
   const timeline = el('input', undefined, transport, 'timeline'); timeline.type = 'range'; timeline.min = 0; timeline.max = 4; timeline.step = .001; timeline.value = 0; timeline.setAttribute('aria-label', 'Skill preview position');
-  timeline.oninput = () => { stopAudio(); playback.playing = false; if (preview) { preview.play(false); preview.seek(Number(timeline.value)); } updatePlayback(); };
+  timeline.title='Drag to seek through the preview in seconds. Seeking pauses playback and does not edit skill settings.';
+  timeline.oninput = () => { const requested=Number(timeline.value);if(!Number.isFinite(requested))return;stopAudio(); playback.playing = false;playback.time=requested; if (preview) { preview.play(false); preview.seek(requested); } updatePlayback(); };
+  const rangeTarget=window&&window.addEventListener?window:timeline;
+  // Creator's embedded native range can drop a drag while canvas redraws.
+  // Own pointer seeking; keyboard seeking still uses oninput above.
+  const rangeSeek=event=>{const rect=timeline.getBoundingClientRect(),padding=Math.min(8,rect.width/2),width=rect.width-padding*2;if(!(width>0)||!Number.isFinite(event.clientX))return;const min=Number(timeline.min)||0,max=Number(timeline.max)||4,step=Number(timeline.step)||.001,fraction=Math.max(0,Math.min(1,(event.clientX-rect.left-padding)/width)),value=Math.max(min,Math.min(max,min+Math.round((max-min)*fraction/step)*step));if(Number(timeline.value)===value&&playback.time===value&&!playback.playing)return;timeline.value=String(value);timeline.oninput();};
+  const rangeStart=event=>{if(event.button!==0||event.isPrimary===false||timelinePointer!==null)return;timelinePointer=event.pointerId;if(event.preventDefault)event.preventDefault();if(event.stopPropagation)event.stopPropagation();if(timeline.focus)timeline.focus({preventScroll:true});if(timeline.setPointerCapture)timeline.setPointerCapture(event.pointerId);rangeSeek(event);};
+  const rangeMove=event=>{if(timelinePointer!==event.pointerId)return;if(event.preventDefault)event.preventDefault();rangeSeek(event);};
+  const rangeEnd=event=>{if(timelinePointer===null||event&&event.type!=='blur'&&timelinePointer!==event.pointerId)return;const id=timelinePointer;timelinePointer=null;if(timeline.hasPointerCapture&&timeline.hasPointerCapture(id))timeline.releasePointerCapture(id);updatePlayback();};
+  timeline.addEventListener('pointerdown',rangeStart);rangeTarget.addEventListener('pointermove',rangeMove);rangeTarget.addEventListener('pointerup',rangeEnd);rangeTarget.addEventListener('pointercancel',rangeEnd);timeline.addEventListener('lostpointercapture',rangeEnd);if(rangeTarget!==timeline)rangeTarget.addEventListener('blur',rangeEnd);
   const scenarios = el('div', undefined, transport, 'scenario-grid');
   numberScenario(scenarios, 'Hero HP %', 'hp', 0, 100, 1);
   numberScenario(scenarios, 'Target distance', 'targetDistance', 0, 2000, 5);
@@ -145,10 +158,10 @@ function mount(host, api) {
   check(scenarios, 'Sound in preview', false, value => { soundEnabled = value; muteBadge.textContent = value ? 'AUDIO ENABLED · PREVIEW ONLY' : 'SILENT · PREVIEW ONLY'; if (preview && preview.setAudioEnabled) preview.setAudioEnabled(value); if (!value) audio.stop(); });
   const facts = el('div', 'Loading preview…', main, 'preview-facts'); facts.setAttribute('aria-live', 'polite');
   el('p', 'Active examples start with 75% Steady Aim or Momentum, and three Mystic charges. Basic attack + passive starts uncharged.', main, 'help');
-  el('p', 'Drag an effect handle to fit its position. Middle drag pans; Ctrl+wheel zooms. Changes remain in a draft until Save.', main, 'help');
+  el('p', 'Click an enemy to target it; drag an enemy to move it. Drag effect handles to fit their position. Middle drag pans; Ctrl+wheel zooms. Drag numeric labels to adjust (Shift: fine, Alt: coarse; Esc: cancel). Changes remain in a draft until Save.', main, 'help');
   const inspector = el('aside', undefined, workspace, 'inspector'), tabList = el('div', undefined, inspector, 'tabs'); tabList.setAttribute('role', 'tablist');
   const tabs = {};
-  [['tuning', 'Skill settings'], ['visual', 'Position & VFX'], ['audio', 'SFX']].forEach(([id, label]) => { tabs[id] = button(tabList, label, () => { flushFields(); tab = id; renderInspector(); }); tabs[id].setAttribute('role', 'tab'); });
+  [['tuning', 'Skill settings'], ['visual', 'Position & VFX'], ['audio', 'SFX']].forEach(([id, label]) => { tabs[id] = button(tabList, label, () => { if(activeScrub)activeScrub.finish(true);flushFields(); tab = id; renderInspector(); }); tabs[id].setAttribute('role', 'tab'); });
   const fieldsHost = el('div', undefined, inspector, 'fields');
   const footer = el('footer', undefined, root), status = el('span', 'Loading skills…', footer), dirtyState = el('span', '', footer);
   const audio = createAudioPlayer(Object.assign({}, api, { audioURL: clip => {
@@ -162,29 +175,30 @@ function mount(host, api) {
     if (state.error) { sessionError = state.error; message(state.error + ' Your local fields are still open.', true); }
     else if (sessionError) { sessionError = ''; message('Draft updated. Changes remain unsaved until Save.'); }
     updateButtons(state); renderStyles();
-    const signature = snapshot && [selected, tab, JSON.stringify(snapshot.fields && snapshot.fields[selected]), JSON.stringify(snapshot.catalogs), tab === 'visual' && get(snapshot.effective[selected], 'visual.resource')].join('|');
+    const signature = snapshot && [selected, tab, JSON.stringify(snapshot.fields && snapshot.fields[selected]), JSON.stringify(snapshot.catalogs), tab === 'visual' && JSON.stringify([get(snapshot.effective[selected], 'visual.resource'),get(snapshot.effective[selected], 'visual.impactResource')])].join('|');
     if (signature !== lastSignature) { lastSignature = signature; renderInspector(); }
     else updateFields();
     updatePreview();
   });
   function message(value, error) { if (disposed) return; status.textContent = value || ''; status.classList.toggle('error', !!error); }
-  function updatePlayback() { play.textContent = playback.playing ? 'Pause' : 'Play'; clock.textContent = Number(playback.time || 0).toFixed(3) + ' s'; timeline.max = Math.max(.001, playback.duration || 4); timeline.value = playback.time || 0; }
+  function updatePlayback() { play.textContent = playback.playing ? 'Pause' : 'Play'; clock.textContent = Number(playback.time || 0).toFixed(3) + ' s';if(timelinePointer===null){timeline.max = Math.max(.001, playback.duration || 4); timeline.value = playback.time || 0;} }
   function stopAudio() { audio.stop(); }
   function setScenario(key, value) { scenario[key] = value; if (preview) preview.setScenario({ [key]: value }); }
   function makeSelect(parent, label, choices, value, change) {
-    const wrap = el('label', undefined, parent, 'compact-field'); el('span', label, wrap); const node = el('select', undefined, wrap); node.setAttribute('aria-label', label);
+    const wrap = el('label', undefined, parent, 'compact-field'),caption=el('span', label, wrap);wrap.title=caption.title=PREVIEW_HELP[label]||label; const node = el('select', undefined, wrap); node.setAttribute('aria-label', label);node.title=caption.title;
     choices.forEach(([id, text]) => { const option = el('option', text, node); option.value = id; }); node.value = value; node.onchange = () => change(node.value); return node;
   }
-  function check(parent, label, value, change) { const wrap = el('label', undefined, parent, 'check-field'), input = el('input', undefined, wrap); input.type = 'checkbox'; input.checked = value; el('span', label, wrap); input.onchange = () => change(input.checked); return input; }
-  function numberScenario(parent, label, key, min, max, step) { const wrap = el('label', undefined, parent, 'compact-field'); el('span', label, wrap); const input = el('input', undefined, wrap); input.type = 'number'; input.min = min; input.max = max; input.step = step; input.value = scenario[key]; input.setAttribute('aria-label', label); input.oninput = () => { const n = Number(input.value); if (String(input.value).trim() !== '' && Number.isFinite(n)) setScenario(key, Math.max(min, Math.min(max, n))); }; return input; }
+  function check(parent, label, value, change) { const wrap = el('label', undefined, parent, 'check-field'), input = el('input', undefined, wrap); input.type = 'checkbox'; input.checked = value; const caption=el('span', label, wrap);wrap.title=caption.title=input.title=PREVIEW_HELP[label]||label;input.onchange = () => change(input.checked); return input; }
+  function numberScenario(parent, label, key, min, max, step) { const wrap = el('label', undefined, parent, 'compact-field'),caption=el('span', label, wrap);wrap.title=caption.title=(PREVIEW_HELP[label]||label)+' '+SCRUB_HELP; const input = el('input', undefined, wrap); input.type = 'number'; input.min = min; input.max = max; input.step = step; input.value = scenario[key]; input.title=PREVIEW_HELP[label]||label;input.setAttribute('aria-label', label); input.oninput = () => { const n = Number(input.value); if (String(input.value).trim() !== '' && Number.isFinite(n)) setScenario(key, Math.max(min, Math.min(max, n))); };const scrub=NumericScrub.attach(caption,input,{min,max,step,preview:value=>setScenario(key,value),cancel:value=>setScenario(key,value)});scrubbers.add(scrub); return input; }
   function effective() { const result = session.effective(selected); localChanges.forEach(change => { if (change.style === selected) put(result, change.path, clone(change.value)); }); return result; }
-  function queueField(path, value) {
+  function queueField(path, value, defer) {
     const change = { style: selected, path: parts(path).join('.'), value }; localChanges.set(change.style + ':' + change.path, change);
-    updateButtons(session.state()); updatePreview(); clearTimeout(debounce); debounce = setTimeout(flushFields, 160);
+    updateButtons(session.state()); updatePreview(); clearTimeout(debounce);if(!defer)debounce = setTimeout(flushFields, 160);
   }
   function flushFields() { clearTimeout(debounce); debounce = null; const changes = [...localChanges.values()]; localChanges.clear(); changes.forEach(change => session.change(change.style, change.path, change.value)); return session.flush(); }
   async function perform(action) {
     if (actionBusy || disposed) return;
+    if(activeScrub)activeScrub.finish(true);
     if (action === 'save' && invalidInputs.size) { message('Correct the highlighted fields before saving.', true); return; }
     actionBusy = true; stopAudio();
     if (action !== 'save') invalidInputs.clear();
@@ -219,7 +233,7 @@ function mount(host, api) {
     stylesHost.textContent = '';
     snapshot.styles.forEach(style => {
       const b = button(stylesHost, '', async () => {
-        if (style.id === selected) return; flushFields(); stopAudio(); selected = style.id; descriptionStyle = ''; previewRequest++; lastSignature = ''; renderStyles(); renderInspector(); await updatePreview();
+        if (style.id === selected) return;if(activeScrub)activeScrub.finish(true); flushFields(); stopAudio(); selected = style.id; descriptionStyle = ''; previewRequest++; lastSignature = ''; renderStyles(); renderInspector(); await updatePreview();
       }, selected === style.id ? 'style-card selected' : 'style-card');
       b.setAttribute('aria-pressed', String(style.id === selected)); el('strong', style.name, b); el('span', style.weapon || '', b); el('small', 'Passive + active', b);
     });
@@ -229,6 +243,8 @@ function mount(host, api) {
   function fieldValue(path) { return get(effective(), path); }
   function catalogValue(item) { return item.id || item.uuid || item.resource || item.file || item.value; }
   function renderInspector() {
+    if(activeScrub)activeScrub.finish(false);
+    for(const scrub of [...scrubbers])if(scrub.inspector){scrub.destroy();scrubbers.delete(scrub);}
     fieldsHost.textContent = ''; controlRefs.clear();
     Object.keys(tabs).forEach(id => { tabs[id].classList.toggle('active', id === tab); tabs[id].setAttribute('aria-selected', String(id === tab)); });
     if (!snapshot) return;
@@ -239,33 +255,38 @@ function mount(host, api) {
       const path = fieldPath(field), value = fieldValue(path), type = field.type || (typeof value === 'boolean' ? 'boolean' : typeof value === 'number' ? 'number' : 'text');
       const wrap = el('div', undefined, fieldsHost, 'setting-field'), heading = el('div', undefined, wrap, 'field-title');
       const label = el('label', field.label || path, heading), reset = button(heading, 'Reset', async () => { const key=selected+':'+path;invalidInputs.delete(key);localChanges.delete(key);flushFields();await session.reset(selected,path); }, 'reset'); reset.title = 'Remove this override and use the built-in default';
+      const help=field.help||field.description||(field.unit?'Unit: '+field.unit+'. ':'')+'Adjust '+(field.label||path)+'. Changes remain in a draft until Save.';label.title=help+(type==='number'?' '+SCRUB_HELP:'');
       let input;
-      const isAudio = /\.clip$/.test(path), isResource = /resource$/.test(path) || type === 'resource' || type === 'vfx';
+      const isAudio = /\.clip$/.test(path), isResource = /resource$/i.test(path) || type === 'resource' || type === 'vfx';
       if (isAudio || isResource) {
-        const search = el('input', undefined, wrap, 'asset-search'); search.type = 'search'; search.placeholder = isAudio ? 'Filter sounds…' : 'Filter effects…'; search.setAttribute('aria-label', (field.label || path) + ' filter');
+        const search = el('input', undefined, wrap, 'asset-search'); search.type = 'search'; search.placeholder = isAudio ? 'Filter sounds…' : 'Filter effects…';search.title='Filter the imported '+(isAudio?'sounds':'effects')+' listed below. This does not change the selected asset.'; search.setAttribute('aria-label', (field.label || path) + ' filter');
         input = el('select', undefined, wrap); const catalog = snapshot.catalogs && snapshot.catalogs[isAudio ? 'audio' : 'vfx'] || [];
-        const fill = () => { const current = input.value || String(fieldValue(path) || ''), query = search.value.toLowerCase(); input.textContent = ''; const none = el('option', isAudio ? 'No sound' : 'Built-in effect', input); none.value = ''; catalog.filter(item => !query || (item.name + ' ' + catalogValue(item)).toLowerCase().includes(query) || catalogValue(item) === current).slice(0, 500).forEach(item => { const option = el('option', item.name || catalogValue(item), input); option.value = catalogValue(item); }); if (current && !Array.from(input.options).some(option => option.value === current)) { const option = el('option', current + ' · current', input); option.value = current; } input.value = current; };
+        const fill = () => { const current = input.value || String(fieldValue(path) || ''), query = search.value.toLowerCase(); input.textContent = ''; const none = el('option', field.emptyLabel||(isAudio ? 'No sound' : 'Built-in effect'), input); none.value = ''; catalog.filter(item => !query || (item.name + ' ' + catalogValue(item)).toLowerCase().includes(query) || catalogValue(item) === current).slice(0, 500).forEach(item => { const option = el('option', item.name || catalogValue(item), input); option.value = catalogValue(item); }); if (current && !Array.from(input.options).some(option => option.value === current)) { const option = el('option', current + ' · current', input); option.value = current; } input.value = current; };
         fill(); search.oninput = fill;
         if (isAudio) button(wrap, 'Test sound', () => { audio.stop(); audio.cue('test', get(effective(), path.split('.').slice(0, -1))); });
       } else if (type === 'select' || type === 'animation' || type === 'effect-animation' || field.options) {
         input = el('select', undefined, wrap); let choices = field.options || [];
         if (type === 'animation' || /animation$/.test(path)) choices = [['', 'Automatic'], ...animations().map(name => [name, name])];
-        if (type === 'effect-animation') { const resource = fieldValue('visual.resource'), item = (snapshot.catalogs && snapshot.catalogs.vfx || []).find(item => catalogValue(item) === resource); choices = [['', 'Default animation'], ...(item && item.animations || []).map(name => [name, name])]; }
+        if (type === 'effect-animation') { const resource = fieldValue(field.resourcePath||'visual.resource'), item = (snapshot.catalogs && snapshot.catalogs.vfx || []).find(item => catalogValue(item) === resource); choices = [['', 'Default animation'], ...(item && item.animations || []).map(name => [name, name])]; }
         choices.forEach(choice => { const id = Array.isArray(choice) ? choice[0] : typeof choice === 'object' ? choice.value : choice, title = Array.isArray(choice) ? choice[1] : typeof choice === 'object' ? choice.label : choice; const option = el('option', title, input); option.value = id; });
         if(value&&!Array.from(input.options).some(option=>option.value===String(value))){const option=el('option',value+' · unavailable; choose another or Reset',input);option.value=value;}
       } else { input = el('input', undefined, wrap); input.type = type === 'boolean' ? 'checkbox' : type === 'number' ? 'number' : 'text'; }
       input.id = 'skill-' + path.replace(/[^a-z0-9]+/gi, '-'); label.htmlFor = input.id; input.setAttribute('aria-label', field.label || path);
+      input.title=help;
       if (field.min !== undefined) input.min = field.min; if (field.max !== undefined) input.max = field.max; if (field.step !== undefined) input.step = field.step; else if (input.type === 'number') input.step = 'any';
       const commit = () => { const n = input.type === 'checkbox' ? input.checked : input.type === 'number' ? Number(input.value) : input.value, key = selected + ':' + path; if (input.type === 'number' && (input.value.trim() === '' || !Number.isFinite(n) || field.min !== undefined && n < field.min || field.max !== undefined && n > field.max) || type === 'color' && n !== '' && !/^#[0-9a-f]{6}$/i.test(n)) { invalidInputs.set(key, input.value); input.classList.add('invalid'); updateButtons(session.state()); return; } invalidInputs.delete(key); input.classList.remove('invalid'); queueField(path, n); };
       input.oninput = commit; input.onchange = () => { commit(); flushFields(); };
-      if (type === 'color') { input.placeholder = 'Style default or #RRGGBB'; const swatch = el('input', undefined, wrap); swatch.type = 'color'; swatch.setAttribute('aria-label', (field.label || path) + ' picker'); input._colorPicker = swatch; input._defaultColor = {mystic:'#d69fff',skirmisher:'#fdf1a4',fighter:'#fff5b0',vanguard:'#fff5b0',bruiser:'#ff5b65',guardian:'#70c8ff'}[selected]; swatch.value = value || input._defaultColor; swatch.oninput = () => { input.value = swatch.value; commit(); }; swatch.onchange = flushFields; }
+      if(input.type==='number'){
+        const style=selected,key=style+':'+path,scrub=NumericScrub.attach(label,input,{min:field.min,max:field.max,step:field.step||.01,start(){activeScrub=scrub;scrubInput=input;flushFields();},preview(value){invalidInputs.delete(key);input.classList.remove('invalid');queueField(path,value,true);},commit(value,before){activeScrub=null;scrubInput=null;if(value===before)localChanges.delete(key);flushFields();updateFields();updatePreview();},cancel(){activeScrub=null;scrubInput=null;localChanges.delete(key);updateFields();updateButtons(session.state());updatePreview();}});scrub.inspector=true;scrubbers.add(scrub);
+      }
+      if (type === 'color') { input.placeholder = 'Style default or #RRGGBB'; const swatch = el('input', undefined, wrap); swatch.type = 'color';swatch.title=help; swatch.setAttribute('aria-label', (field.label || path) + ' picker'); input._colorPicker = swatch; input._defaultColor = {mystic:'#d69fff',skirmisher:'#fdf1a4',fighter:'#fff5b0',vanguard:'#fff5b0',bruiser:'#ff5b65',guardian:'#70c8ff'}[selected]; swatch.value = value || input._defaultColor; swatch.oninput = () => { input.value = swatch.value; commit(); }; swatch.onchange = flushFields; }
       if (field.help || field.description || field.unit) el('p', field.help || field.description || 'Unit: ' + field.unit, wrap, 'help');
       controlRefs.set(path, input);
     });
     updateFields();
   }
   function animations() { return compatibleAnimations(description); }
-  function updateFields() { if (!snapshot) return; controlRefs.forEach((input, path) => { if (document.activeElement === input) return; const key = selected + ':' + path, value = invalidInputs.has(key) ? invalidInputs.get(key) : fieldValue(path); input.classList.toggle('invalid', invalidInputs.has(key)); if (input.type === 'checkbox') input.checked = !!value; else input.value = value === undefined || value === null ? '' : value; if (input._colorPicker && !invalidInputs.has(key)) input._colorPicker.value = value || input._defaultColor; }); }
+  function updateFields() { if (!snapshot) return; controlRefs.forEach((input, path) => { if (document.activeElement === input||scrubInput===input) return; const key = selected + ':' + path, value = invalidInputs.has(key) ? invalidInputs.get(key) : fieldValue(path); input.classList.toggle('invalid', invalidInputs.has(key)); if (input.type === 'checkbox') input.checked = !!value; else input.value = value === undefined || value === null ? '' : value; if (input._colorPicker && !invalidInputs.has(key)) input._colorPicker.value = value || input._defaultColor; }); }
   async function updatePreview() {
     if (!snapshot || disposed) return;
     const style = snapshot.styles.find(style => style.id === selected); previewTitle.textContent = (style && style.name || selected) + ' · ' + (scenario.mode === 'basic' ? 'Basic attack + passive' : 'Active skill');
@@ -276,10 +297,10 @@ function mount(host, api) {
         onSound(kind, value) { if (kind === 'stop' || kind === 'stopChannel' || soundEnabled) audio.cue(kind, Object.assign({}, value, {delay:(Number(value.delay)||0)/Math.max(.01,scenario.speed)})); }
       }); preview.setScenario(scenario); if (preview.setAudioEnabled) preview.setAudioEnabled(soundEnabled); if (preview.selectHandle) preview.selectHandle(handle.value);
     }
-    const resource = get(effective(), 'visual.resource') || '', key = selected + ':' + resource;
+    const resource = get(effective(), 'visual.resource') || '',impactResource=get(effective(),'visual.impactResource')||'', key = JSON.stringify([selected,resource,impactResource]);
     if (descriptionStyle !== key) {
       const request = ++previewRequest, id = selected; loading = true; updateButtons(session.state());
-      if (!descriptionLoads.has(key)) { const task = Promise.resolve(api.ipc('describe', { style: id, resource })); descriptionLoads.set(key, task); task.finally(() => { if (descriptionLoads.get(key) === task) descriptionLoads.delete(key); }).catch(() => {}); }
+      if (!descriptionLoads.has(key)) { const task = Promise.resolve(api.ipc('describe', { style: id, resource,impactResource })); descriptionLoads.set(key, task); task.finally(() => { if (descriptionLoads.get(key) === task) descriptionLoads.delete(key); }).catch(() => {}); }
       try { const value = await descriptionLoads.get(key); if (disposed || request !== previewRequest || selected !== id) return; description = value; descriptionStyle = key; renderInspector(); }
       catch (error) { if (!disposed && request === previewRequest) message(error.message, true); return; }
       finally { if (!disposed && request === previewRequest) { loading = false; updateButtons(session.state()); } }
@@ -298,9 +319,9 @@ function mount(host, api) {
   }
   root.addEventListener('keydown', keydown);
   session.load().then(value => { if (value && !disposed) message('Ready. Preview changes do not modify gameplay until Save.'); });
-  return { session, selectStyle(id) { if (snapshot && snapshot.styles.some(style => style.id === id)) { flushFields(); selected = id; descriptionStyle = ''; renderStyles(); renderInspector(); return updatePreview(); } return Promise.resolve(false); },
+  return { session, selectStyle(id) { if (snapshot && snapshot.styles.some(style => style.id === id)) { if(activeScrub)activeScrub.finish(true);flushFields(); selected = id; descriptionStyle = ''; renderStyles(); renderInspector(); return updatePreview(); } return Promise.resolve(false); },
     flush: flushFields, save: () => perform('save'),
-    destroy() { if (disposed) return; disposed = true; clearTimeout(debounce); localChanges.clear(); previewRequest++; session.destroy(); audio.destroy(); if (preview) preview.destroy(); root.removeEventListener('keydown', keydown); root.remove(); } };
+    destroy() { if (disposed) return; disposed = true;for(const scrub of scrubbers)scrub.destroy();scrubbers.clear();rangeEnd();timeline.removeEventListener('pointerdown',rangeStart);rangeTarget.removeEventListener('pointermove',rangeMove);rangeTarget.removeEventListener('pointerup',rangeEnd);rangeTarget.removeEventListener('pointercancel',rangeEnd);timeline.removeEventListener('lostpointercapture',rangeEnd);if(rangeTarget!==timeline)rangeTarget.removeEventListener('blur',rangeEnd);clearTimeout(debounce); localChanges.clear(); previewRequest++; session.destroy(); audio.destroy(); if (preview) preview.destroy(); root.removeEventListener('keydown', keydown); root.remove(); } };
 }
 
 module.exports = { mount, createSession, createAudioPlayer, compatibleAnimations, get, put };

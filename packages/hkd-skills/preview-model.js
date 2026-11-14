@@ -23,25 +23,28 @@ class Model{
  reset(){
   this.time=0;this.hero={x:0,y:0,hp:Math.max(.01,finite(this.scenario.hp,100)/100*1000),maxHp:1000};
   const d=finite(this.scenario.targetDistance,120),count=clamp(Math.floor(this.scenario.targets||3),1,5);
-  this.targets=Array.from({length:count},(_,i)=>({id:i,x:d+i*85,y:i?i%2?22:-22:0,hp:100000,maxHp:100000}));
+  this.targets=Array.from({length:count},(_,i)=>{const at=this.scenario.targetPositions&&this.scenario.targetPositions[i];return {id:i,x:finite(at&&at.x,d+i*85),y:finite(at&&at.y,i?i%2?22:-22:0),hp:100000,maxHp:100000};});
   this.state=this.core.createState(this.style,this.settings);this.effects=[];this.projectiles=[];this.events=[];this.hits=0;this.damage=0;this.attackClock=0;this.basicPending=null;this.lastAttack=-100;this.lastCast=-100;this.lastAttackKind=null;this.serial=0;this.beam=false;this.beamTarget=null;this.channelTarget=null;this.channelWarmup=0;this.channelSourceTime=0;this.channelStarted=0;this.beamVisibleStarted=0;this.castResult=null;this.pendingDamage=null;
   if(this.scenario.mode==='active')this.cast();return this;
  }
- direction(){return unit(finite(this.scenario.direction,0));}
+ selected(){return Number.isInteger(this.scenario.selectedTarget)?this.targets[this.scenario.selectedTarget]||null:null;}
+ selectTarget(id){if(!this.targets[id])return;this.scenario.selectedTarget=id;this.channelTarget=null;this.visibleBeam(null);this.core.clearTarget(this.state);this.basicPending=null;return this.targets[id];}
+ moveTarget(id,at){const target=this.targets[id];if(!target)return;target.x=finite(at.x,target.x);target.y=finite(at.y,target.y);if(!this.scenario.targetPositions)this.scenario.targetPositions=[];this.scenario.targetPositions[id]={x:target.x,y:target.y};}
+ direction(){const target=this.selected();return target?unit(Math.atan2(target.y-this.hero.y,target.x-this.hero.x)*180/Math.PI):unit(finite(this.scenario.direction,0));}
  stats(){const bonus=this.core.bonuses(this.state,{hp:this.hero.hp,maxHp:this.hero.maxHp});return{damage:100*(1+bonus.damage),attackRate:finite(this.scenario.attackRate,1.5)*(1+bonus.attackRate),moveSpeed:300*(1+bonus.move),bonus};}
  positionAt(time){return{x:this.scenario.moving?Math.sin(time*1.8)*35:0,y:this.scenario.moving?Math.sin(time*1.1)*8:0};}
- nearest(){return this.targets.filter(t=>t.hp>0&&distance(this.hero,t)<=reach[this.style]).sort((a,b)=>distance(this.hero,a)-distance(this.hero,b))[0]||null;}
+ nearest(){const selected=this.selected();if(selected)return selected.hp>0&&distance(this.hero,selected)<=reach[this.style]?selected:null;return this.targets.filter(t=>t.hp>0&&distance(this.hero,t)<=reach[this.style]).sort((a,b)=>distance(this.hero,a)-distance(this.hero,b))[0]||null;}
  event(kind,extra){this.events.push(Object.assign({kind,time:this.time},extra||{}));if(this.events.length>1000)this.events.shift();}
  effect(kind,at,radius,direction,time,halfAngle){const duration=Math.max(.01,finite((this.settings.visual||{}).effectDuration,.35));this.effects.push({kind,x:at.x,y:at.y,radius,direction,halfAngle,started:time===undefined?this.time:time,duration});}
  hit(target,multiplier,skill,strike,snapshot,time){
   if(!target||target.hp<=0)return;const damage=snapshot===undefined?this.stats().damage*multiplier:snapshot,removed=Math.min(target.hp,damage);if(!(removed>0))return;target.hp=Math.max(0,target.hp-damage);this.hits++;this.damage+=damage;
   this.core.onHit(this.state,target,{kind:skill?'skill':'basic',strikeId:strike,damage:removed});
   if(this.style==='bruiser')this.hero.hp=Math.min(this.hero.maxHp,this.hero.hp+removed*.1);
-  this.event('impact',{target:target.id,damage,skill,strike,time:time===undefined?this.time:time});
+  this.event('impact',{target:target.id,x:target.x,y:target.y,damage,skill,strike,time:time===undefined?this.time:time});
  }
  cast(){
-  const target=this.state.target&&this.state.target.hp>0?this.state.target:this.targets[0],d=this.direction();if(this.scenario.attackPlayback===0)return false;
-  if(this.style==='mystic'&&(!target||distance(this.hero,target)>reach.mystic))return false;
+  const target=this.selected()||(this.state.target&&this.state.target.hp>0?this.state.target:this.targets[0]),d=this.direction();if(this.scenario.attackPlayback===0)return false;
+  if(this.style==='mystic'&&(!target||target.hp<=0||distance(this.hero,target)>reach.mystic))return false;
   if(this.style==='mystic'&&!this.state.marked)for(let n=0;n<3;n++)this.core.onHit(this.state,target,{kind:'basic',strikeId:++this.serial});
   if(this.style==='skirmisher'||this.style==='vanguard')this.state.charge=Math.max(this.state.charge,.75);
   this.state.cooldown=0;this.state.active=null;this.basicPending=null;
@@ -115,6 +118,6 @@ class Model{
  }
  seek(time){const value=Math.max(0,finite(time,0));this.reset();for(let t=0;t<value;){const step=Math.min(1/60,value-t);this.advance(step);t+=step;}return this;}
  duration(){return Math.max(4,(this.settings.duration||this.settings.windup||0)+2,(this.settings.visual||{}).effectDuration+1||0);}
- status(){return{time:this.time,duration:this.duration(),charge:this.state.charge,cooldown:this.state.cooldown,hits:this.hits,damage:this.damage,hp:this.hero.hp/this.hero.maxHp*100,mode:this.scenario.mode,marked:this.state.marked,stacks:this.state.stacks,charges:this.state.mysticCharges};}
+ status(){return{time:this.time,duration:this.duration(),charge:this.state.charge,cooldown:this.state.cooldown,hits:this.hits,damage:this.damage,hp:this.hero.hp/this.hero.maxHp*100,mode:this.scenario.mode,marked:this.state.marked,stacks:this.state.stacks,charges:this.state.mysticCharges,selectedTarget:this.scenario.selectedTarget,targets:this.targets.map(t=>({id:t.id,x:t.x,y:t.y,hp:t.hp}))};}
 }
 module.exports={Model,inArc,segment,segmentEntry,reach};

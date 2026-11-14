@@ -93,6 +93,7 @@ Runtime.prototype.onImpact=function(target,damage,context){
   if(!living(this.hero)||!(damage>0))return;
   var info=Skills.onHit(this.state,target,{kind:context.styleSkill?"skill":"basic",strikeId:context.styleStrike,damage:damage});
   Presentation.queue(this,"impact",context.styleStrike);
+  if(Presentation.impact)Presentation.impact(this,target,context);
   if(!context.styleSkill&&this.state.style==="mystic"&&living(target)){
     var type=require("KinghtFallInterface").KinghtFallEnemyBuffType.MoveSpeed;
     var existing=(target.debuffInfo||[]).filter(function(b){return b._mysticSlow;})[0];
@@ -101,6 +102,9 @@ Runtime.prototype.onImpact=function(target,damage,context){
     if(existing){existing.time=0;existing.timeMax=duration;existing.data.subNum=slow;}
     else {target.addBuff(type,{subNum:slow,time:duration});var list=target.debuffInfo||[];if(list.length)list[list.length-1]._mysticSlow=true;}
   }
+};
+Runtime.prototype.deferHitReaction=function(target,context){
+  return this.hero._styleRuntime===this&&this.scopeCurrent(this.scope)&&require("RelicCombat").primaryValid(context,target,this.hero)&&Presentation.deferHitReaction&&Presentation.deferHitReaction(this,target);
 };
 Runtime.prototype.cast=function(aim){
   if(!this.canCast())return false;

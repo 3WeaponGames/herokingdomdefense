@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const Settings=require('../../assets/_script/HeroSkillSettings');
 function fixture(audioManager){
- const calls=[],loads=[],released=[],defaults=[];let effectVolume=.5;
+ const calls=[],loads=[],released=[],defaults=[],hitReactions=[];let effectVolume=.5;
  const manager=audioManager||{getAudioSource:key=>({key}),getEffectVolume:()=>effectVolume,playSource(source,config,key,loop,music,volume,_done,_cache,options){calls.push({source,config,key,loop,music,volume,options});},stopSource(source){source.stopped=true;},releaseAudioSource(key,source){released.push(key);source.stopped=true;},channelState:source=>({active:!source.stopped})};
  class Node{constructor(name){this.name=name;this.children=[];this.x=this.y=0;this.scale=1;}setParent(parent){this.parent=parent;parent.children.push(this);}setPosition(p){this.x=p.x;this.y=p.y;}getPosition(){return{x:this.x,y:this.y};}destroy(){this.destroyed=true;}convertToNodeSpaceAR(p){return{x:p.x/2,y:p.y/2};}addComponent(Type){const component=new Type();component.node=this;this.component=component;return component;}}
  const cc={Node,Sprite:class{},SpriteFrame:class{},isValid:n=>!!n&&!n.destroyed,v2:(x,y)=>({x,y}),rect:(x,y,width,height)=>({x,y,width,height}),size:(width,height)=>({width,height}),color:value=>value,assetManager:{
@@ -11,12 +11,40 @@ function fixture(audioManager){
   loadAny(request,callback){loads.push({request,callback});}
  }};
  const sp={Skeleton:class{setAnimation(track,name,loop){return this.animation={track,name,loop,trackTime:0,timeScale:1};}update(){this.appliedTime=this.animation.trackTime;}},SkeletonData:class{}};
- const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports,cc,sp,require:name=>name==='./HeroSkillPose'?require('../../assets/_script/HeroSkillPose'):name==='AudioMgr'?{AudioMgr:{getInstance:()=>manager}}:name==='BattleSounds'?{attack:(hero,side)=>defaults.push({hero,side}),effect:(id,hero)=>defaults.push({id,hero})}:Settings});
+ const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports,cc,sp,require:name=>name==='UnitHitFeedback'?{play:actor=>hitReactions.push(actor)}:name==='./HeroSkillPose'?require('../../assets/_script/HeroSkillPose'):name==='AudioMgr'?{AudioMgr:{getInstance:()=>manager}}:name==='BattleSounds'?{attack:(hero,side)=>defaults.push({hero,side}),effect:(id,hero)=>defaults.push({id,hero})}:Settings});
  const target={hp:10,node:{getPosition:()=>({x:100,y:20})}},root=new Node('VFX');
  const rt={heroGeneration:3,hero:{node:{}},state:{style:'mystic',time:0},settings:Settings.defaults('mystic'),game:{_combatEpoch:7,ndMain:{convertToWorldSpaceAR:p=>({x:p.x*2,y:p.y*2})}},ui:{speed:1},projectiles:[],effects:[],available:()=>true};
- return {P:exports,rt,target,root,cc,sp,calls,loads,released,defaults,manager,setVolume:v=>effectVolume=v};
+ return {P:exports,rt,target,root,cc,sp,calls,loads,released,defaults,hitReactions,manager,setVolume:v=>effectVolume=v};
 }
 const uuid='a9ed4a1a-a37a-44ab-af0c-7be941a3de18';
+test('the default on-hit burst reuses HUD Graphics for six expanding fading rays without custom assets',()=>{
+ const f=fixture(),ops=[],g={moveTo(x,y){ops.push(['from',x,y]);},lineTo(x,y){ops.push(['to',x,y]);},stroke(){ops.push(['stroke',this.strokeColor,this.lineWidth]);}},hud={visual:{node:f.root,g}};f.cc.color=hex=>({hex,a:255});
+ f.P.impact(f.rt,f.target,{point:{x:100,y:20}});assert.equal(f.P.hasImpactVisual(f.rt),true);f.P.draw(hud,f.rt);assert.equal(f.loads.length,0);assert.equal(f.root.children.length,0);assert.equal(ops.filter(row=>row[0]==='stroke').length,6);assert.equal(ops[0][1],106);assert.equal(ops[1][1],115);assert.deepEqual(ops[2][1],{hex:'#fff3a2',a:255});
+ ops.length=0;f.rt.state.time=.175;f.P.draw(hud,f.rt);assert.equal(ops[0][1],110.5);assert.equal(ops[1][1],122.5);assert.equal(ops[2][1].a,128);f.rt.settings.visual.impactOpacity=0;assert.equal(f.P.hasImpactVisual(f.rt),false);ops.length=0;f.P.draw(hud,f.rt);assert.equal(ops.length,0);
+ f.rt.settings.visual.impactOpacity=1;f.rt.state.time=.35;f.P.update(f.rt);assert.equal(f.P.hasImpactVisual(f.rt),false);
+});
+test('on-hit delay schedules exactly one existing reaction and independent target-position VFX on gameplay time',()=>{
+ const f=fixture();Object.assign(f.rt.settings.visual,{impactResource:uuid,impactResourceKind:'spine',impactResourceAnimation:'hit',impactDelay:.5,impactDuration:1,impactScale:2,impactOffsetX:5,impactOffsetY:9});
+ assert.equal(f.P.deferHitReaction(f.rt,f.target),true);f.P.impact(f.rt,f.target,{point:{x:100,y:20}});f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.loads.length,1);assert.equal(f.root.children.length,0);
+ f.loads[0].callback(null,{skeletonJson:{animations:{hit:{}}}});f.rt.state.time=.499;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.hitReactions.length,0);assert.equal(f.root.children.length,0);
+ f.rt.state.time=.5;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.deepEqual(f.hitReactions,[f.target]);const node=f.root.children[0];assert.equal(node.x,105);assert.equal(node.y,29);assert.equal(node.scale,2);assert.equal(node.component.animation.name,'hit');
+ f.target.node.getPosition=()=>({x:999,y:999});f.rt.state.time=.8;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.hitReactions.length,1);assert.equal(node.x,105);assert(Math.abs(node.component.appliedTime-.3)<1e-9);
+ f.rt.state.time=1.5;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(node.destroyed,true);f.P.clear(f.rt);assert.equal(f.rt._presentation,undefined);
+});
+test('delayed hit feedback rejects dead, pooled, recycled, retired and replaced identities without affecting unrelated reactions',()=>{
+ for(const change of [f=>f.target.hp=0,f=>f.target._isPooled=true,f=>f.target.node._combatGeneration=1,f=>f.rt.hero.node._combatGeneration=1,f=>f.rt.game._combatEpoch++,f=>f.rt.game.gameData={},f=>f.rt.state={style:'mystic',time:1}]){
+  const f=fixture();f.rt.settings.visual.impactDelay=.5;assert(f.P.deferHitReaction(f.rt,f.target));change(f);f.rt.state.time=1;f.P.update(f.rt);assert.equal(f.hitReactions.length,0);assert.equal(f.rt._presentation.feedback.length,0);
+ }
+ const f=fixture();assert.equal(f.P.deferHitReaction(f.rt,f.target),false,'Default immediate feedback remains on the ordinary enemy path');assert.equal(f.rt._presentation,undefined);
+});
+test('main and on-hit VFX keep independent resources, flipbook caches and cleanup',()=>{
+ const f=fixture();Object.assign(f.rt.settings.visual,{resource:uuid,resourceKind:'sprite',impactResource:'a9ed4a1a-a37a-44ab-af0c-7be941a3de19',impactResourceKind:'sprite',impactResourceFrames:1,impactResourceColumns:1,impactResourceCell:16,impactResourceFps:24,impactResourceLoop:false});f.rt.effects=[{x:0,y:0,duration:1,remaining:1}];f.P.impact(f.rt,f.target,{});f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.loads.length,2);
+ let cloned=0,destroyed=0;const main={name:'main'},hit={getRect:()=>({x:0,y:0,width:16,height:16}),clone:()=>{cloned++;return{setRect(){},setOriginalSize(){},setOffset(){},destroy(){destroyed++;}};}};f.loads[0].callback(null,main);f.loads[1].callback(null,hit);assert.equal(f.root.children.length,2);assert.equal(f.root.children[0].component.spriteFrame,main);assert.equal(cloned,1);f.P.clear(f.rt);assert(f.root.children.every(n=>n.destroyed));assert.equal(destroyed,1);
+});
+test('late impact assets do not create expired visuals and both per-hit queues remain bounded',()=>{
+ const f=fixture();Object.assign(f.rt.settings.visual,{impactResource:uuid,impactDelay:30,impactDuration:.1});let accepted=0;for(let i=0;i<10000;i++){if(f.P.deferHitReaction(f.rt,f.target))accepted++;f.P.impact(f.rt,f.target,{});}assert.equal(accepted,f.P.limits.feedback);assert.equal(f.rt._presentation.feedback.length,256);assert.equal(f.rt._presentation.impacts.length,128);
+ f.P.attachments({visual:{node:f.root}},f.rt);f.rt.state.time=31;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);f.loads[0].callback(null,{name:'late'});assert.equal(f.root.children.length,0);assert.equal(f.rt._presentation.feedback.length,0);assert.equal(f.rt._presentation.impacts.length,0);
+});
 
 test('absent authored overrides retain procedural defaults and do not request any audio or custom assets',()=>{
  const f=fixture();f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);

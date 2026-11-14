@@ -12,7 +12,7 @@ test('aim cleanup never dereferences a bone wrapper after its native skeleton as
 test('native-style fresh TrackEntry wrappers retain skill-owned retiming and aim until a new attack begins',()=>{
  const exports={},json={_heroMaker:{},animations:{attack:{events:[{time:.1667,name:'attack'}],bones:{body:{rotate:[{time:.8333,angle:0}]}}}}};
  const player={KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find('skirmisher')})})}};
- vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroMakerRider.js'),'utf8'),{exports,cc:{v2:(x,y)=>({x,y})},require:name=>name==='HeroSkillPose'?Pose:name==='HeroWeapons'?Weapons:player});
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroMakerRider.js'),'utf8'),{exports,cc:{v2:(x,y)=>({x,y})},require:name=>name==='HeroSkillAnimation'?require('../../assets/_script/HeroSkillAnimation'):name==='HeroSkillPose'?Pose:name==='HeroWeapons'?Weapons:player});
  let wrappers=0;function renderer(mount){const hand={rotation:0};let entry={animation:{name:'attack'},time:.05,speed:1,loop:false};
   function wrap(){wrappers++;return{getAnimation:()=>entry.animation,getTrackTime:()=>entry.time,setTrackTime:v=>entry.time=v,getTimeScale:()=>entry.speed,setTimeScale:v=>entry.speed=v,getAnimationEnd:()=>.8333,get loop(){return entry.loop;}};}
   return{node:{x:0,y:0,scaleX:1,scaleY:1},skeletonData:{skeletonJson:mount?{_heroMakerMount:{}}:json},getCurrent:()=>wrap(),setAnimation(_track,name,loop){entry={animation:{name},time:0,speed:1,loop};return wrap();},addAnimation(){},setMix(){},findBone:name=>name==='Rider/HandRight'?hand:null,update(){},updateWorldTransform(){},entry:()=>entry,hand};
