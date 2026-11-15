@@ -19,7 +19,18 @@ function mount(host,state){
  // requested scroll until their final layout exists, rather than saving a clamp.
  function restoreScroll(loaded=true){if(closed||!layer)return;restoring=true;const wanted=state.inspectorScroll[layer]||0;if(restoreFrame!==null)cancelAnimationFrame(restoreFrame);restoreFrame=requestAnimationFrame(()=>{if(closed)return;size();inspector.scrollTop=wanted;restoreFrame=requestAnimationFrame(()=>{restoreFrame=null;if(closed)return;size();inspector.scrollTop=wanted;if(loaded)restoring=false;});});}
  inspector.onscroll=saveScroll;
+ // Keep wheel scrolling available over every control and chain to the detail
+ // page at either edge, including fractional one-pixel overflow boundaries.
+ inspector.onwheel=e=>{
+  if(e.defaultPrevented||e.ctrlKey||e.metaKey||!e.deltaY||Math.abs(e.deltaX||0)>Math.abs(e.deltaY))return;
+  const amount=e.deltaY*(e.deltaMode===1?20:e.deltaMode===2?inspector.clientHeight:1);
+  for(let target=inspector;target;target=target.parentElement){
+   const max=target.scrollHeight-target.clientHeight;if(max<=1||!['auto','scroll','overlay'].includes(getComputedStyle(target).overflowY))continue;
+   const before=target.scrollTop;if(amount>0?before>=max-1:before<=1)continue;
+   target.scrollTop=Math.max(0,Math.min(max,before+amount));if(target.scrollTop!==before){e.preventDefault();return;}
+  }
+ };
  const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(size):null;if(observer){observer.observe(row);observer.observe(preview);}size();
- return{preview,controls,restoreScroll,setLayer(next){if(next===layer)return;saveScroll();layer=next;restoreScroll(false);},destroy(){saveScroll();closed=true;release(false);if(observer)observer.disconnect();if(restoreFrame!==null)cancelAnimationFrame(restoreFrame);inspector.onscroll=null;for(const name of ['onpointerdown','onpointermove','onpointerup','onpointercancel','onlostpointercapture','onkeydown','ondblclick'])divider[name]=null;row.remove();}};
+ return{preview,controls,restoreScroll,setLayer(next){if(next===layer)return;saveScroll();layer=next;restoreScroll(false);},destroy(){saveScroll();closed=true;release(false);if(observer)observer.disconnect();if(restoreFrame!==null)cancelAnimationFrame(restoreFrame);inspector.onscroll=inspector.onwheel=null;for(const name of ['onpointerdown','onpointermove','onpointerup','onpointercancel','onlostpointercapture','onkeydown','ondblclick'])divider[name]=null;row.remove();}};
 }
 module.exports={mount};

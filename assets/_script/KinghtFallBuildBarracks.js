@@ -85,8 +85,25 @@ var def_KinghtFallBuildBarracks = function (t) {
     var a = cc.v2(Math.cos(i), Math.sin(i)).multiplyScalar(20);
     var game = $z1KinghtFallUIGame.default.instance.ctrGame, unit = this.enemyList[t];
     var anchor = Navigation.positionOf(this.ndBotnNodeList, game);
+    var positions = this.buildInfo.cfg.SpawnPosition || this.buildInfo.cfg.SpawnPositions ? require("BuildingSpawnPositions") : null;
+    var squad = positions && positions.anchor(this.buildInfo.cfg);
+    if (squad) {
+      var squadWorld = this.node.convertToWorldSpaceAR(cc.v2(squad.x, squad.y));
+      anchor = game.ndMain.convertToNodeSpaceAR(squadWorld);
+      // Use one authored area and distinct, body-sized preferred posts. The
+      // same standing search as rallying handles terrain and nearby actors.
+      var bodyRadius = unit ? Navigation.get(game).radius(unit, true) : 12;
+      for (var memberIndex = 0; memberIndex < this.enemyList.length; memberIndex++) {
+        var member = this.enemyList[memberIndex];
+        if (member) bodyRadius = Math.max(bodyRadius, Navigation.get(game).radius(member, true));
+      }
+      var spread = e > 1 ? (bodyRadius * 2 + 6) / (2 * Math.sin(Math.PI / e)) : 0;
+      a = cc.v2(Math.cos(-Math.PI / 2 + 2 * Math.PI * t / e) * spread, Math.sin(-Math.PI / 2 + 2 * Math.PI * t / e) * spread);
+      var anchorKey = anchor.x + ":" + anchor.y + ":" + e;
+      if (this._spawnAnchorKey !== anchorKey) { this._spawnAnchorKey = anchorKey; this._spawnPosts = []; }
+    }
     var preferred = cc.v2(anchor.x + a.x, anchor.y + a.y);
-    var custom = this.buildInfo.cfg.SpawnPositions && require("BuildingSpawnPositions").get(this.buildInfo.cfg,t);
+    var custom = !squad && positions && positions.get(this.buildInfo.cfg,t);
     if(custom){var world=this.node.convertToWorldSpaceAR(cc.v2(custom.x,custom.y));preferred=game.ndMain.convertToNodeSpaceAR(world);anchor=preferred;}
     if (!unit) return preferred;
     unit._spawnBodyRadius = Math.max(unit._spawnBodyRadius || 0, Navigation.get(game).radius(unit, true));

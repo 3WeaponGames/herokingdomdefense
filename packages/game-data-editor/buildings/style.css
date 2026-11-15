@@ -27,7 +27,7 @@
 /* One preview and adjustable inspector for all four building authoring tools. */
 .bld-authoring-layout{display:grid;grid-template-columns:minmax(0,1fr) 10px var(--bld-inspector-width,340px);align-items:start;min-width:0;width:100%}
 .bld-authoring-preview{min-width:0;align-self:start}.bld-authoring-preview .bld-blocker-canvas{box-sizing:border-box;max-width:100%}
-.bld-authoring-inspector{box-sizing:border-box;min-width:0;height:var(--bld-inspector-height,444px);overflow:auto;overscroll-behavior:contain;padding:12px;background:#252d39;border:1px solid #45546a;border-radius:5px}
+.bld-authoring-inspector{box-sizing:border-box;min-width:0;height:var(--bld-inspector-height,444px);overflow:auto;overscroll-behavior:auto;padding:12px;background:#252d39;border:1px solid #45546a;border-radius:5px}
 .bld-authoring-inspector [hidden],.bld-authoring-preview>[hidden]{display:none!important}
 .bld-authoring-divider{display:flex;align-items:center;justify-content:center;align-self:stretch;min-height:200px;cursor:col-resize;touch-action:none;user-select:none;color:#a9c6d9;background:#293547;border-radius:3px}
 .bld-authoring-divider:hover,.bld-authoring-divider:focus{background:#405b77;outline:1px solid #78c4eb;outline-offset:-1px}

@@ -77,6 +77,7 @@ function fixture() {
                 const callback = args.pop(), request = args[0]; messages.push({ message, request });
                 try {
                     if (message === 'game-data-editor:change') callback(null, store.change(request));
+                    else if (message === 'game-data-editor:save' && options.onSave) { options.onSave(store,request); callback(null,store.snapshot()); }
                     else if (message === 'game-data-editor:load') callback(null, store.snapshot());
                     else if (message === 'game-data-editor:asset-index') callback(null, { images: [], animations: [], prefabs: [] });
                     else throw Error('Unexpected panel action: ' + message);
@@ -188,6 +189,16 @@ test('changing building level selection does not change game data', () => {
     assert.equal(f.panel._level,branchPosition(f,'3',12));
     assert.deepEqual(f.store.draftState(), before);
     assert.equal(f.messages.length, 0);
+});
+
+test('Save waits for an asynchronous position edit and uses its latest draft revision', async () => {
+    let release,observed;
+    const gate=new Promise(resolve=>{release=resolve;}),f=fixture({onSave(store,request){observed={value:store.documents.A.data.BuildEnum[3].levelList[0].SpawnPosition,version:request.version};}});
+    f.render('3:11',branchPosition(f,'3',11));
+    const before=f.store.version,value={x:80,y:-120};
+    const edit=f.panel._change(async()=>{await gate;return[{doc:'A',path:['BuildEnum','3','levelList',0,'SpawnPosition'],value}];},{keepDetail:f.panel._selected+':'+f.panel._level,skipPreview:true});
+    const save=f.panel._action('save');await Promise.resolve();assert.equal(observed,undefined,'Save cannot overtake a pending position calculation');release();await edit;await save;
+    assert.deepEqual(observed,{value,version:before+1});assert.deepEqual(f.messages.filter(m=>['game-data-editor:change','game-data-editor:save'].includes(m.message)).map(m=>m.message),['game-data-editor:change','game-data-editor:save']);
 });
 
 test('assigned unit preview forwards only ally timing edits and preserves saved defaults', async () => {
