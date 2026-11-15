@@ -2,17 +2,17 @@
 const test = require('node:test'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto'), vm = require('node:vm');
 const root = path.resolve(__dirname, '../..'), audio = path.join(root, 'assets/KinghtFallAudio');
 const firstTier = {
-  'cavalry/cavalry-level-1-variant-1.mp3': '935ba9fe3826a0eb4019e7ea7fcc051a74fa1e8baf163aa3098fe92dbbda3e91',
-  'cavalry/cavalry-level-1-variant-2.mp3': 'c9708936538fd4366fced04ac5e5d0f20e8871a6d60b913a579e07cde65ea37a',
-  'crossbowman/crossbowman-level-1-variant-1.mp3': '7b36bc7b979560fac768e8015b95959285df13adf4e4f6be9afe6a4fbda3cfeb',
-  'crossbowman/crossbowman-level-1-variant-2.mp3': '3ae4fd0eda6e95c14d0906f9080363377c3f27f184459eaa5fa63713b654b096',
+  'cavalry/cavalry-level-1-variant-1.mp3': 'e133c4a87fc341911002f2a96d937b43f5d6c32ad41fe01814f4b26b3f2fb925',
+  'cavalry/cavalry-level-1-variant-2.mp3': '3ec776162c4942ae8e97b27ff96ce281b0349b8a528a48731b6a5842ad71eb8b',
+  'crossbowman/crossbowman-level-1-variant-1.mp3': '652aebc96fd8da49f11b038814bcaa99205e37719970a68074aad8e10a7fa60d',
+  'crossbowman/crossbowman-level-1-variant-2.mp3': '986214cdc70be228e9dd83be9223b271bd7633d045859ef5ec6e9dbc1ff7fb68',
   'heavy-infantry/heavy-infantry-level-1-variant-1.mp3': '271fa0d23a055a03900e6110439bec7f40ca34ab34198a1fdc0b95119da6a8ec',
   'heavy-infantry/heavy-infantry-level-1-variant-2.mp3': '99ab10b747a87fa8aeec592e19f50104267fea2f8ee7b0125195fb3bf2ed1642',
   'royal-knight/royal-knight-level-1-variant-1.mp3': 'e0d1bcd24c3ee0ad317288a8ba1a82f41866987b8c4540561ef2ce693e65883a',
   'royal-knight/royal-knight-level-1-variant-2.mp3': '4cbfe81e7c3df64f99b95b511a09133aca4f5e061f6c1bdbf9a27142d2441f24'
 };
 
-test('all eight approved Tier 1 announcements retain their original audio bytes', () => {
+test('all eight Tier 1 announcements use their approved voice takes', () => {
   for (const [file, expected] of Object.entries(firstTier)) {
     const bytes = fs.readFileSync(path.join(audio, 'voices/units', file));
     assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'), expected, file);
