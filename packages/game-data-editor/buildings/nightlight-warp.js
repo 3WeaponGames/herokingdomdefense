@@ -1,6 +1,6 @@
 'use strict';
 const Warp=require('../../../assets/_script/WindowLightWarp'),Mask=require('../../../assets/_script/WindowLightMask'),Paint=require('../worlds/paint');
-const images=new WeakMap();
+const images=new WeakMap(),last=list=>list[list.length-1];
 // Keep the geometry's UV lookup while painting; only alpha and sampled pixels
 // change. This avoids rebuilding hundreds of triangles for every brush dab.
 function geometry(cache,warp,nodes,type){
@@ -16,8 +16,8 @@ function geometry(cache,warp,nodes,type){
 function image(source,warp,nodes,erase,type){
  let cache=images.get(source);if(!cache){const width=source.naturalWidth||source.width,height=source.naturalHeight||source.height,c=Paint.canvas(width,height),g=c.getContext('2d');g.drawImage(source,0,0);cache={width,height,pixels:g.getImageData(0,0,width,height).data,frames:new Map(),geometry:new Map(),masks:new WeakMap()};c.width=c.height=1;images.set(source,cache);}
  let maskState;if(erase){maskState=cache.masks.get(erase);if(!maskState){maskState={rasterizer:Mask.createRasterizer(cache.width,cache.height)};cache.masks.set(erase,maskState);}}
- const shape=geometry(cache,warp,nodes,type),stroke=erase?.strokes.at(-1),flow=!!stroke?.flow,previous=maskState?.live;
- if(flow&&previous?.mask===erase&&previous.shape===shape&&previous.stroke===stroke&&previous.count===stroke.points.length&&previous.point===stroke.points.at(-1))return previous.result;
+ const shape=geometry(cache,warp,nodes,type),stroke=erase&&last(erase.strokes),flow=!!stroke?.flow,previous=maskState?.live;
+ if(flow&&previous?.mask===erase&&previous.shape===shape&&previous.stroke===stroke&&previous.count===stroke.points.length&&previous.point===last(stroke.points))return previous.result;
  const key=flow?null:shape.key+JSON.stringify(erase||null);if(key&&cache.frames.has(key))return cache.frames.get(key);
  const pixels=erase?Mask.pixels(cache.pixels,erase,cache.width,cache.height,maskState.rasterizer):cache.pixels,c=flow&&previous?.shape===shape?previous.result.canvas:Paint.canvas(shape.w,shape.h),g=c.getContext('2d'),out=g.createImageData(shape.w,shape.h);
  for(let i=0;i<shape.w*shape.h;i++){
@@ -26,7 +26,7 @@ function image(source,warp,nodes,erase,type){
   if(a>0){const at=i*4;out.data[at]=r/a;out.data[at+1]=green/a;out.data[at+2]=blue/a;out.data[at+3]=a;}
  }
  g.putImageData(out,0,0);const result={canvas:c,x:shape.x,y:shape.y,width:shape.width,height:shape.height};
- if(flow){if(previous&&previous.result.canvas!==c)previous.result.canvas.width=previous.result.canvas.height=1;maskState.live={mask:erase,shape,stroke,count:stroke.points.length,point:stroke.points.at(-1),result};}
+ if(flow){if(previous&&previous.result.canvas!==c)previous.result.canvas.width=previous.result.canvas.height=1;maskState.live={mask:erase,shape,stroke,count:stroke.points.length,point:last(stroke.points),result};}
  else{cache.frames.set(key,result);while(cache.frames.size>8){const first=cache.frames.keys().next().value,old=cache.frames.get(first);old.canvas.width=old.canvas.height=1;cache.frames.delete(first);}}return result;
 }
 function draw(ctx,sprite,assets){const source=assets[sprite.frame];if(!source||!source.image)return;const frame=image(source.image,sprite.warp,sprite.warpNodes,sprite.erase,sprite.lightType);ctx.save();Paint.apply(ctx,sprite.matrix);ctx.globalAlpha=(sprite.color?.a??255)/255;ctx.translate(frame.x,frame.y+frame.height);ctx.scale(frame.width/frame.canvas.width,-frame.height/frame.canvas.height);ctx.drawImage(frame.canvas,0,0);ctx.restore();}
