@@ -9,7 +9,7 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.resolve(__dirname, '../../assets/_script/KinghtFallDepthView.js'), 'utf8');
 function fixture() {
-  const frames = [], textures = [], components = [], deferred = [], releaseRefs = [];
+  const frames = [], textures = [], components = [], deferred = [], releaseRefs = [], lifecycle = [];
   class Frame {
     constructor(texture) { this.texture = texture; this._eventTarget = {}; frames.push(this); }
     hasEventListener(type) { return !!this._eventTarget[type]; }
@@ -38,8 +38,8 @@ function fixture() {
       this._frame = value;
       if (value && this.node.activeInHierarchy) value.once('load', this.onLoad, this);
     }
-    onEnable() { if (this._frame) this._frame.once('load', this.onLoad, this); }
-    onDisable() { if (this._frame) this._frame.off('load', this.onLoad, this); }
+    onEnable() { lifecycle.push(['enable', this]); if (this._frame) this._frame.once('load', this.onLoad, this); }
+    onDisable() { lifecycle.push(['disable', this]); if (this._frame) this._frame.off('load', this.onLoad, this); }
     onDestroy() { this.spriteFrame = null; }
     setMaterial() {}
   }
@@ -104,7 +104,7 @@ function fixture() {
     director: { off() {} }, Director: { EVENT_BEFORE_DRAW: 'draw' } };
   const context = { cc, sp: { Skeleton: class {} }, exports: {} };
   vm.runInNewContext(source, context, { filename: 'KinghtFallDepthView.js' });
-  return { ...context.exports, cc, Node, Sprite, Mask, Frame, frames, textures, components, releaseRefs,
+  return { ...context.exports, cc, Node, Sprite, Mask, Frame, frames, textures, components, releaseRefs, lifecycle,
     flush() { deferred.splice(0).forEach(node => node.finishDestroy()); },
     assertSafeReleases() { assert.ok(releaseRefs.every(references => references.length === 0), 'Every owned frame detaches all consumers before destruction'); } };
 }
@@ -130,6 +130,25 @@ function gateFixture() {
   return { ...f, main, actor, renderer, pass, entry, grow(nextWidth = 100) { width = nextWidth; entry.bounds.minX = -nextWidth * .6; entry.bounds.maxX = nextWidth * .6; },
     update(active = [entry]) { pass.update(active, frameCache(), null); } };
 }
+
+test('retained wall intersections keep Masks and Sprites active until their visibility actually changes', () => {
+  const f = gateFixture(); f.update();
+  const records = [...f.pass.leaves.get(f.renderer).values()];
+  const overlays = records.map(record => record.overlays.get(f.actor));
+  const before = f.lifecycle.length;
+  for (let frame = 0; frame < 120; frame++) f.update();
+  assert.equal(f.lifecycle.length, before, 'Stable intersections do not re-run renderer enable/disable or frame subscriptions');
+  overlays.forEach(overlay => { assert.equal(overlay.node.active, true); assert.equal(overlay.tint.node.active, true); });
+  // Crossing the real floor changes only the tint's visibility; body pixels
+  // remain active while the painter order still needs the intersection.
+  f.actor.node.y = -10; f.actor.node.zIndex = 0; f.update();
+  overlays.forEach(overlay => { assert.equal(overlay.node.active, true); assert.equal(overlay.tint.node.active, false); });
+  assert.equal(f.lifecycle.length - before, overlays.length * 2, 'Only the no-longer-visible tint Mask and Sprite disable');
+  f.update([]);
+  overlays.forEach(overlay => { assert.equal(overlay.node.active, false); assert.equal(overlay.tint.node.active, false); });
+  assert.equal(f.pass.leaves.size, 0);
+  f.flush(); f.assertSafeReleases();
+});
 
 test('gate tier/pose resizing detaches shared body, leaf and tint frames before reactivating masks', () => {
   const f = gateFixture(); f.update();

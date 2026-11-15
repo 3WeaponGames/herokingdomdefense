@@ -31,8 +31,6 @@ var def_KinghtFallEnemyLong = function (t) {
     this.ndBulletPat.active = false;
   };
   _ctor.prototype.doAttackStart = function () {
-    // Ranged cooldown starts at windup; the base owns clip completion and its
-    // actor/renderer lifetime record for both ranged and melee attacks.
     t.prototype.doAttackStart.call(this, 0);
   };
   _ctor.prototype.doAttack = function () {

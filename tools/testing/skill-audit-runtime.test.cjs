@@ -195,7 +195,13 @@ test('wave completion also rejects closed, reused or replaced battle views witho
 });
 
 test('obsolete basic-shot cleanup preserves replacement lifetime shot fields initialized by base or cue callbacks',()=>{
- let h;h=scene('skirmisher',{attack(){h.load('HeroStyleRuntime').install(this,{});this._styleShot=7;this._styleShotCharge=.8;this._styleProjectileSpeed=1.8;}});h.enemy();h.hero.doAttack();assert.equal(h.hero._styleShot,7);assert.equal(h.hero._styleShotCharge,.8);assert.equal(h.hero._styleProjectileSpeed,1.8);
- const cue=scene('skirmisher');cue.enemy();let retired=false;cue.e.stubs.BattleSounds={charge(){if(retired)return;retired=true;cue.hero.onRestart();cue.hero._styleShot=6;cue.hero._styleShotCharge=.4;cue.hero._styleProjectileSpeed=1.4;}};cue.hero.doAttack();assert.equal(cue.hero.basicCalls||0,0);assert.equal(cue.hero._styleShot,6);assert.equal(cue.hero._styleShotCharge,.4);assert.equal(cue.hero._styleProjectileSpeed,1.4);
- let reset;reset=scene('skirmisher',{attack(){this.onRestart();}});reset.enemy();reset.hero.doAttack();assert.equal(reset.hero._styleShot,1);assert.equal(reset.hero._styleShotCharge,undefined);assert.equal(reset.hero._styleProjectileSpeed,undefined);
+ let h;h=scene('skirmisher',{attack(){h.load('HeroStyleRuntime').install(this,{});this._styleShot=7;this._styleShotCharge=.8;this._styleProjectileSpeed=1.8;this._styleShotRange=360;}});h.enemy();let refreshes=0;h.hero.refreshAttackRange=()=>{refreshes++;};h.hero.doAttack();assert.equal(h.hero._styleShot,7);assert.equal(h.hero._styleShotCharge,.8);assert.equal(h.hero._styleProjectileSpeed,1.8);assert.equal(h.hero._styleShotRange,360);assert.equal(refreshes,1,'the obsolete wrapper must not refresh its replacement range');
+ const cue=scene('skirmisher');cue.enemy();let retired=false;cue.e.stubs.BattleSounds={charge(){if(retired)return;retired=true;cue.hero.onRestart();cue.hero._styleShot=6;cue.hero._styleShotCharge=.4;cue.hero._styleProjectileSpeed=1.4;cue.hero._styleShotRange=280;}};cue.hero.doAttack();assert.equal(cue.hero.basicCalls||0,0);assert.equal(cue.hero._styleShot,6);assert.equal(cue.hero._styleShotCharge,.4);assert.equal(cue.hero._styleProjectileSpeed,1.4);assert.equal(cue.hero._styleShotRange,280);
+ let reset;reset=scene('skirmisher',{attack(){this.onRestart();}});reset.enemy();reset.hero.doAttack();assert.equal(reset.hero._styleShot,1);assert.equal(reset.hero._styleShotCharge,undefined);assert.equal(reset.hero._styleProjectileSpeed,undefined);assert.equal(reset.hero._styleShotRange,undefined);
+});
+
+test('ordinary and failed basic releases clear the original shot range before refreshing the range ring',()=>{
+ for(const fail of [false,true]){const h=scene('skirmisher'),ranges=[];h.enemy();h.rt.state.charge=1;h.hero.refreshAttackRange=()=>ranges.push(h.hero._styleShotRange);if(fail)h.e.stubs.HeroMakerRider.releaseChargedAttack=()=>{throw Error('failed release');};
+  if(fail)assert.throws(()=>h.hero.doAttack(),/failed release/);else h.hero.doAttack();assert.equal(h.hero._styleShotRange,undefined);assert.deepEqual(ranges,[undefined]);
+ }
 });

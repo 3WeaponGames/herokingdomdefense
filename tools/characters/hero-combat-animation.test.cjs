@@ -41,14 +41,27 @@ test('Skirmisher slowly samples its authored bow draw with Momentum and holds fu
  const body=track(actor),held=body.trackTime;h.step(20);rider.setCombatState(actor,{moving:false,charge:1});assert.equal(track(actor),body);close(body.trackTime,held);assert.equal(name(actor,'spAniMa'),'idle');assert.equal(hits,0);assert.equal(completed,0);
 });
 
+test('Skirmisher full Momentum keeps maximum string tension through the pending shot windup',()=>{
+ for(const playback of[0,.5,2]){
+  const h=setup('skirmisher'),{actor,rider}=h;let hits=0;actor.setAttackEvent(()=>hits++);
+  rider.setCombatState(actor,{moving:false,charge:1,playback});
+  close(track(actor).trackTime,.1316053);
+  const drawn=()=>{for(const key of keys.slice(1)){const arrow=actor[key].findBone('Rider/HandRight/Bow/Arrow');close(arrow.y-arrow.data.y,26.5);}};
+  drawn();const held=track(actor).trackTime;actor.setAttack();const shot=track(actor);
+  for(let frame=0;frame<120;frame++){h.step(1/60);close(shot.trackTime,held);drawn();}
+  assert.equal(hits,0);assert.equal(shot.timeScale,0);close(rider.skillTiming(actor,'attack',1).sourceHit,.1667);
+  assert(rider.releaseChargedAttack(actor,playback));close(shot.trackTime,.1667);close(shot.timeScale,playback);
+ }
+});
+
 test('movement immediately cancels the passive draw, while a shot interrupts a partial or full draw normally',()=>{
  for(const charge of[.35,1]){
   const h=setup('skirmisher'),{actor,rider}=h;let hits=0;actor.setAttackEvent(()=>hits++);
   rider.setCombatState(actor,{moving:false,charge});actor.setMove();for(const key of keys)assert.equal(name(actor,key),'move');assert.equal(rider.isCharging(actor),false);
-  actor.setIdle();rider.setCombatState(actor,{moving:false,charge});actor.setAttack();const shot=track(actor);
+  actor.setIdle();rider.setCombatState(actor,{moving:false,charge});const drawn=track(actor).trackTime;actor.setAttack();const shot=track(actor);
   assert.equal(rider.isCharging(actor),false);assert.equal(shot.timeScale,charge===1?0:1);
   rider.setCombatState(actor,{moving:false,charge});assert.equal(track(actor),shot,'passive Momentum must not replace a real firing animation');
-  if(charge===1){h.step(.5);assert.equal(hits,0);close(shot.trackTime,rider.attackPoseTime(actor)-.00001);assert(rider.releaseChargedAttack(actor,1));}
+  if(charge===1){h.step(.5);assert.equal(hits,0);close(shot.trackTime,drawn);assert(rider.releaseChargedAttack(actor,1));}
   for(let i=0;i<20;i++){h.step(.02);rider.setCombatState(actor,{moving:false,charge:0});}
   assert.equal(hits,1);
  }

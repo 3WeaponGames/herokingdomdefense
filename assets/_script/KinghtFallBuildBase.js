@@ -125,6 +125,7 @@ var def_KinghtFallBuildBase = function (t) {
     }
   };
   _ctor.prototype.hide = function () {
+    if (this._buildingShadowTransition) require("BuildingShadowTransition").cancel(this);
     require("BuildingDebris").clear(this);
     this._stopColliderTweens();
     this.ndLockList.forEach(function (t) {
@@ -192,6 +193,8 @@ var def_KinghtFallBuildBase = function (t) {
     return this._freeInitialBuild || !!data.treasureAddTime && data.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] == this.ID;
   };
   _ctor.prototype.setLevel = function (t) {
+    var nextShadowRow = this.getBranchCfg(t);
+    if (nextShadowRow && nextShadowRow.index > 0 && nextShadowRow.index !== this.index && (this._buildingDropShadowRuntime || this._buildingShadowRuntime)) require("BuildingShadowTransition").begin(this);
     require("BuildingDebris").clear(this);
     require("BuildingDebris").prepare(this);
     if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
@@ -327,6 +330,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (artwork && artwork.destruction && artwork.destruction.paused) require("BuildingAppearance").apply(this);
   };
   _ctor.prototype.onDisable = function () {
+    if (this._buildingShadowTransition) require("BuildingShadowTransition").cancel(this);
     this.cancelUpgrade();
     var artwork = require("BuildingAppearance");
     if (artwork.cancelPlacement) artwork.cancelPlacement(this);
@@ -344,6 +348,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (t.prototype.onDisable) t.prototype.onDisable.call(this);
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._buildingShadowTransition) require("BuildingShadowTransition").cancel(this);
     require("BuildingLighting").disposeOwner(this);
     if (this._buildingNightlightRuntime || this._buildingNightlightPrepared) require("BuildingNightlightRuntime").dispose(this, true);
     require("BuildingDebris").destroy(this);
@@ -359,6 +364,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.doUpgreadAni = function () {
+    if (!this._buildingShadowTransition && (this._buildingDropShadowRuntime || this._buildingShadowRuntime)) require("BuildingShadowTransition").begin(this, this.getLevel() > 1);
     if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     var t = this;
     if (this.buildCfg.levelList.some(function (row) {return !!row.PurchaseField;}) || this._purchaseFieldRuntime) require("BuildingPurchaseFieldRuntime").apply(this);

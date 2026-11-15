@@ -1,5 +1,5 @@
 "use strict";
-var Shadow = require("BuildingShadow"),entries=[];
+var Shadow = require("BuildingShadow"),Transition=require("BuildingShadowTransition"),entries=[];
 function valid(node) { return !!node && (!cc.isValid || cc.isValid(node,true)); }
 function parentFor(owner,game,row){return Shadow.aboveGround(row,owner.buildCfg&&owner.buildCfg.enumValue)&&owner.ndAniDown&&valid(owner.ndAniDown.node)?owner.ndAniDown.node:game&&(game.ndDown||game.ndMain)||owner.node.parent;}
 function layout(owner) { var main=owner.ndAniMain,json=main&&main.skeletonData&&main.skeletonData.skeletonJson;return json&&json.wallKit&&json.wallKit.layout; }
@@ -17,7 +17,7 @@ function ready(owner) {
     return typeof time==="number"&&typeof duration==="number"&&time>=duration;
   });
 }
-function hide(owner) { var state=owner._buildingShadowRuntime;if(state){state.hidden=true;state.node.active=false;} }
+function hide(owner) { Transition.cancel(owner);var state=owner._buildingShadowRuntime;if(state){state.hidden=true;state.node.active=false;state._shadowAlpha=0;} }
 function prepareEntry(value,plan){
   var signature=JSON.stringify([value,plan]),entry=entries.find(function(e){return e.signature===signature;});if(entry){entry.refs++;return entry;}
   var image=Shadow.raster(Shadow.regions(value,plan),value.opacity);if(!image)return null;
@@ -25,7 +25,8 @@ function prepareEntry(value,plan){
   delete image.pixels;entry={signature:signature,image:image,texture:texture,frame:new cc.SpriteFrame(texture),refs:1};entries.push(entry);return entry;
 }
 function releaseEntry(entry){if(!entry||--entry.refs>0)return;var at=entries.indexOf(entry);if(at>=0)entries.splice(at,1);entry.frame.destroy();entry.texture.destroy();}
-function dispose(owner) {
+function dispose(owner,handoff) {
+  if(!handoff)Transition.cancel(owner);
   var state=owner._buildingShadowRuntime;if(!state)return;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.sync);
   if(valid(state.sprite))state.sprite.spriteFrame=null;
@@ -36,34 +37,42 @@ function dispose(owner) {
 function apply(owner, game) {
   var cfg=owner.buildInfo&&owner.buildInfo.cfg,value=cfg&&cfg.Shadow,plan=layout(owner),prior=owner._buildingShadowRuntime;
   if(!value){dispose(owner);return;}
-  var signature=JSON.stringify([value,plan]);
-  if(prior&&prior.signature===signature){prior.value=value;prior.plan=plan;prior.hidden=false;prior.sync();return;}
-  dispose(owner);
+  if(prior){prior.hidden=false;if(prior.value===value&&prior.plan===plan)prior.sync();return;}
   var parent=parentFor(owner,game,cfg);
   if(!valid(parent))return;
-  var prepared=game&&game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.getManual&&game._stageAssets.shadows.getManual(owner,cfg,plan),entry=prepared||prepareEntry(value,plan);if(!entry)return;if(prepared)entry.refs++;
-  var image=entry.image,texture=entry.texture,frame=entry.frame;
-  var node=new cc.Node("BuildingShadowMask");node.parent=parent;node.group=owner.node.group;node._depthGroundVisual=true;
-  var child=new cc.Node("ShadowTexture");child.parent=node;child.group=node.group;child.setAnchorPoint(0,0);child.setPosition(image.x,image.y);child.setContentSize(image.width,image.height);
-  var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;sprite.spriteFrame=frame;
+  var node=new cc.Node("BuildingShadowMask");node.parent=parent;node.group=owner.node.group;node._depthGroundVisual=true;node.active=false;
+  var child=new cc.Node("ShadowTexture");child.parent=node;child.group=node.group;child.setAnchorPoint(0,0);
+  var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
   // Black mask RGB is already premultiplied. Preserve its alpha when the
   // ground is drawn into a transparent target as well as the game framebuffer.
   sprite.srcBlendFactor=cc.macro.BlendFactor.ONE;
-  var state=owner._buildingShadowRuntime={node:node,texture:texture,frame:frame,sprite:sprite,entry:entry,signature:signature,value:value,plan:plan,hidden:false};
+  var state=owner._buildingShadowRuntime={node:node,child:child,sprite:sprite,hidden:false,releaseEntry:releaseEntry};
   state.sync=function () {
     if(!valid(owner.node)||!valid(node)){dispose(owner);return;}
     var current=owner.buildInfo&&owner.buildInfo.cfg;
-    if(!current||current.Shadow!==state.value||layout(owner)!==state.plan){apply(owner,game);return;}
+    if(!current||!current.Shadow){dispose(owner);return;}
     var nextParent=parentFor(owner,game,current);if(!valid(nextParent)){node.active=false;return;}if(node.parent!==nextParent)node.parent=nextParent;
-    node.active=!state.hidden&&owner.enabled!==false&&owner.node.activeInHierarchy!==false&&owner.index>0&&!owner.isDestroyed&&ready(owner);
-    if(!node.active)return;
-    node.opacity=owner._buildingNight?13:255;
+    if(state.hidden||owner.enabled===false||owner.node.activeInHierarchy===false||!owner.index||owner.isDestroyed){Transition.cancel(owner);node.active=false;state._shadowAlpha=0;return;}
+    var phase=Transition.phase(owner);if(!phase.ready){Transition.hold(owner,state);return;}
+    var plan=layout(owner);
+    if(!state.entry||current.Shadow!==state.value||plan!==state.plan){
+      var signature=JSON.stringify([current.Shadow,plan]);
+      if(signature!==state.signature){
+        var prepared=game&&game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.getManual&&game._stageAssets.shadows.getManual(owner,current,plan),entry=prepared||prepareEntry(current.Shadow,plan);if(prepared)entry.refs++;
+        var previous=state.entry;sprite.spriteFrame=entry?entry.frame:null;state.entry=entry;state.texture=entry&&entry.texture;state.frame=entry&&entry.frame;state.signature=signature;
+        if(entry){child.setPosition(entry.image.x,entry.image.y);child.setContentSize(entry.image.width,entry.image.height);}releaseEntry(previous);
+      }
+      state.value=current.Shadow;state.plan=plan;
+    }
+    if(!state.entry&&!owner._buildingShadowTransition){dispose(owner);return;}
     var source=state.value.body?owner.node:owner.ndAniMain.node;
     function point(x,y){return node.parent.convertToNodeSpaceAR(source.convertToWorldSpaceAR(cc.v2(x,y)));}
     var o=point(0,0),x=point(1,0),y=point(0,1),a=x.x-o.x,b=x.y-o.y,c=y.x-o.x,d=y.y-o.y,sx=Math.hypot(a,b);
     node.setPosition(o);node.angle=Math.atan2(b,a)*180/Math.PI;node.scaleX=sx;node.scaleY=sx?(a*d-b*c)/sx:0;
+    Transition.render(owner,state,phase,true);
+    if(!state.entry&&!owner._buildingShadowTransition)dispose(owner);
   };
-  state.sync();cc.director.on(cc.Director.EVENT_BEFORE_DRAW,state.sync);
+  state.sync();if(owner._buildingShadowRuntime===state)cc.director.on(cc.Director.EVENT_BEFORE_DRAW,state.sync);
 }
 exports.apply=apply;exports.hide=hide;exports.dispose=dispose;
 exports.ready=ready;

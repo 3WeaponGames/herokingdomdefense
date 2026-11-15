@@ -2,48 +2,82 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const source=fs.readFileSync(path.resolve(__dirname,'../../assets/_script/BuildingDropShadowRuntime.js'),'utf8');
 function fixture(){
- const cleanup=[],listeners=new Set();class Node{constructor(){this.components=[];this.children=[];this.x=this.y=0;this.group='world';this.active=true;this.activeInHierarchy=true;}set parent(p){this._parent=p;if(p)p.children.push(this);}get parent(){return this._parent;}addComponent(T){const c=new T();c.node=this;this.components.push(c);return c;}setAnchorPoint(){}setPosition(p,y){this.x=typeof p==='object'?p.x:p;this.y=typeof p==='object'?p.y:y;}setContentSize(){}convertToWorldSpaceAR(p){return{x:this.x+p.x,y:this.y+p.y};}convertToNodeSpaceAR(p){return{x:p.x-this.x,y:p.y-this.y};}destroy(){this.dead=true;cleanup.push(()=>{for(const c of this.components)if(c instanceof Sprite)c.spriteFrame=null;for(const n of this.children)n.destroy();});}}
+ const cleanup=[],listeners=new Set();let frame=0,delta=1/60;class Node{constructor(){this.components=[];this.children=[];this.x=this.y=this.angle=0;this.scaleX=this.scaleY=1;this.opacity=255;this.group='world';this.active=true;this.activeInHierarchy=true;}set parent(p){this._parent=p;if(p)p.children.push(this);}get parent(){return this._parent;}addComponent(T){const c=new T();c.node=this;this.components.push(c);return c;}setAnchorPoint(){}setPosition(p,y){this.x=typeof p==='object'?p.x:p;this.y=typeof p==='object'?p.y:y;}setContentSize(){}convertToWorldSpaceAR(p){return{x:this.x+p.x,y:this.y+p.y};}convertToNodeSpaceAR(p){return{x:p.x-this.x,y:p.y-this.y};}destroy(){this.dead=true;cleanup.push(()=>{for(const c of this.components)if(c instanceof Sprite)c.spriteFrame=null;for(const n of this.children)n.destroy();});}}
  class Sprite{set spriteFrame(f){if(this.frame&&this.frame.dead)throw Error('Creator cannot detach a listener from a released SpriteFrame');this.frame=f;}get spriteFrame(){return this.frame;}}Sprite.SizeMode={CUSTOM:1};
  class Texture{constructor(){this.width=this.height=1;}initWithData(){}setFilters(){}readPixels(){return new Uint8Array([0,0,0,255]);}destroy(){this.dead=true;}}Texture.PixelFormat={RGBA8888:1};Texture.Filter={LINEAR:1};
  class Frame{constructor(t){this.texture=t;}destroy(){this.dead=true;this.texture=null;}}
  class Camera{}Camera.ClearFlags={COLOR:1,DEPTH:2,STENCIL:4};
- const scene=new Node(),main=new Node(),cc={Node,Sprite,SpriteFrame:Frame,Texture2D:Texture,Camera,RenderTexture:Texture,isValid:v=>!!v&&!v.dead,v2:(x=0,y=0)=>({x,y}),color:()=>({}),macro:{BlendFactor:{ONE:1}},Director:{EVENT_BEFORE_DRAW:1},director:{on(_e,fn){listeners.add(fn);},off(_e,fn){listeners.delete(fn);},getScene:()=>scene},sys:{isNative:true}};
+ const scene=new Node(),main=new Node(),cc={Node,Sprite,SpriteFrame:Frame,Texture2D:Texture,Camera,RenderTexture:Texture,isValid:v=>!!v&&!v.dead,v2:(x=0,y=0)=>({x,y}),color:()=>({}),macro:{BlendFactor:{ONE:1}},Director:{EVENT_BEFORE_DRAW:1},director:{on(_e,fn){listeners.add(fn);},off(_e,fn){listeners.delete(fn);},getScene:()=>scene,getTotalFrames:()=>frame,getDeltaTime:()=>delta},sys:{isNative:true}};
  const captures=[];let inspect=null;const Depth={DepthView:function(){},union:(_a,b)=>b,bounds:()=>({})};Depth.DepthView.prototype.snapshot=function(o){captures.push(o.sources);if(inspect)inspect();o.texture=new Texture();o.frame=new Frame(o.texture);o.center={x:0,y:0};o.size={width:1,height:1};};
  const FX={resolve:(_c,row)=>({active:true,mode:'individual',settings:row.DropShadow}),raster:()=>({pixels:new Uint8Array(13*1024*1024),pixelWidth:1,pixelHeight:1,width:1,height:1,x:0,y:0})},api={},manual={};
- vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/BuildingShadowRuntime.js'),'utf8'),{exports:manual,cc,require:name=>{assert.equal(name,'BuildingShadow');return{aboveGround:require('../../assets/_script/BuildingShadow').aboveGround,regions:()=>[],raster:()=>({pixels:new Uint8Array(4),pixelWidth:1,pixelHeight:1,width:1,height:1,x:0,y:0})};}});
- vm.runInNewContext(source,{exports:api,cc,require:name=>name==='BuildingDropShadow'?FX:name==='BuildingShadow'?require('../../assets/_script/BuildingShadow'):name==='WallShadowGround'?require('../../assets/_script/WallShadowGround'):name==='KinghtFallDepthView'?Depth:name==='BuildingShadowRuntime'?manual:{dispose(){},apply(){}}});
+ const transition={};vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/BuildingShadowTransition.js'),'utf8'),{exports:transition,cc});
+ vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/BuildingShadowRuntime.js'),'utf8'),{exports:manual,cc,require:name=>{if(name==='BuildingShadowTransition')return transition;assert.equal(name,'BuildingShadow');return{aboveGround:require('../../assets/_script/BuildingShadow').aboveGround,regions:()=>[],raster:()=>({pixels:new Uint8Array(4),pixelWidth:1,pixelHeight:1,width:1,height:1,x:0,y:0})};}});
+ vm.runInNewContext(source,{exports:api,cc,require:name=>name==='BuildingShadowTransition'?transition:name==='BuildingDropShadow'?FX:name==='BuildingShadow'?require('../../assets/_script/BuildingShadow'):name==='WallShadowGround'?require('../../assets/_script/WallShadowGround'):name==='KinghtFallDepthView'?Depth:name==='BuildingShadowRuntime'?manual:{dispose(){},apply(){}}});
  function owner(id){return{ID:id,index:1,enabled:true,node:new Node(),ndAniMain:{node:new Node(),spriteFrame:new Frame(new Texture()),enabled:true},buildCfg:{enumValue:1},buildInfo:{cfg:{ID:1,index:1,DropShadow:{angle:1}}}};}
- const data={BuildEnum:{1:{}}},game={ndMain:main,ndDown:main};function draw(){for(const fn of [...listeners])fn();}function activate(o){api.apply(o,game,data);draw();draw();draw();assert(o._buildingDropShadowRuntime.node.active);}return{api,manual,owner,activate,draw,cleanup,game,data,Node,Depth,captures,setInspect(fn){inspect=fn;}};
+ const data={BuildEnum:{1:{}}},game={ndMain:main,ndDown:main};function draw(dt=1/60){delta=dt;frame++;for(const fn of [...listeners])fn();}function activate(o){api.apply(o,game,data);draw();draw();draw();assert(o._buildingDropShadowRuntime.node.active);}return{api,manual,transition,owner,activate,draw,cleanup,game,data,Node,Depth,captures,setInspect(fn){inspect=fn;}};
 }
 test('moving Cannon and Sniper mounts never enter the captured base shadow',()=>{
  const h=fixture(),o=h.owner(2);o.ndAniMain.enabled=false;const base={node:new h.Node(),spriteFrame:{}},mount={node:new h.Node(),spriteFrame:{}};o._buildingAppearance={sprite:base,weaponSprite:mount};o.ndAniOther=[mount];assert.deepEqual(Array.from(h.api.sources(o)),[base]);h.activate(o);assert(h.captures.every(list=>list.length===1&&list[0]===base));const frame=o._buildingDropShadowRuntime.sprite.spriteFrame;mount.node.angle=135;mount.node.x+=12;mount.spriteFrame={};h.draw();assert.equal(o._buildingDropShadowRuntime.sprite.spriteFrame,frame);assert.deepEqual(Array.from(h.api.sources(o)),[base]);
 });
 test('shadow cache pressure replaces the bound frame before evicting its native texture',()=>{const h=fixture(),o=h.owner(1);h.activate(o);const old=o._buildingDropShadowRuntime.sprite.spriteFrame;o.buildInfo.cfg.DropShadow={angle:2};assert.doesNotThrow(()=>h.draw());assert(old.dead,'the unreferenced old cache entry is actually evicted');assert(!o._buildingDropShadowRuntime.sprite.spriteFrame.dead);assert.equal(h.api.stats().active,1);});
 test('shadow disposal detaches live sprites before deferred node cleanup and cache eviction',()=>{const h=fixture(),a=h.owner(1),b=h.owner(2);h.activate(a);h.activate(b);assert.equal(h.api.stats().active,2);const frame=a._buildingDropShadowRuntime.sprite.spriteFrame;h.api.dispose(a);assert(frame.dead,'disposal under memory pressure evicts the retired entry');assert.doesNotThrow(()=>{while(h.cleanup.length)h.cleanup.shift()();});assert.equal(h.api.stats().active,1);});
-test('stage-prepared shadows wait for asynchronous artwork and completed placement without recapture',()=>{
+
+test('an upgrade retains its previous texture through loading, blends at landing, freezes with its pose and releases the old pin safely',()=>{
+ const h=fixture(),o=h.owner(1);h.activate(o);const state=o._buildingDropShadowRuntime,oldEntry=state.entry,oldFrame=oldEntry.frame;
+ h.transition.begin(o);const ghost=o._buildingShadowTransition.old[0];o.index=2;o.buildInfo.cfg={...o.buildInfo.cfg,index:2};const next=h.api.prepareEntry('next-tier',{},{});h.game._stageAssets={shadows:{get:()=>next}};
+ o._buildingAppearance={loading:'next image',placementRequest:{kind:'upgrade'}};h.api.apply(o,h.game,h.data);h.draw();assert(ghost.node.active);assert.equal(ghost.node.opacity,255);assert.equal(state.node.active,false);assert.equal(oldEntry.refs,2);
+ o._buildingAppearance.loading=null;o._buildingAppearance.placementRequest=null;const motion=o._buildingAppearance.placement={kind:'upgrade',duration:.6667,elapsed:.1};h.draw();assert.equal(ghost.node.opacity,255);
+ motion.elapsed=.1667;h.draw();assert.equal(state.entry,next);assert(state.node.opacity>0&&state.node.opacity<255);assert(ghost.node.opacity>0&&ghost.node.opacity<255);assert(!oldFrame.dead,'the bound previous frame is pinned under cache pressure');
+ motion.elapsed=.25;h.draw();assert(Math.abs(state.node.opacity+ghost.node.opacity-255)<=1);o._buildingNight=true;h.draw();assert(Math.abs(state.node.opacity+ghost.node.opacity-13)<=1,'both halves share the five percent night strength');const opacity=state.node.opacity;h.draw(.5);assert.equal(state.node.opacity,opacity,'unchanged source time freezes the crossfade');
+ motion.elapsed=.45;h.draw();assert.equal(state.node.opacity,13);assert.equal(o._buildingShadowTransition,undefined);assert(ghost.node.dead);assert(oldFrame.dead,'the released previous texture can now be evicted');assert.equal(oldEntry.refs,0);
+ h.api.dispose(o);h.api.releaseEntry(next);assert.doesNotThrow(()=>{while(h.cleanup.length)h.cleanup.shift()();});
+});
+
+for(const action of ['hide','dispose','disable','unbuilt'])test('an interrupted shadow crossfade retires its retained frame on '+action,()=>{
+ const h=fixture(),o=h.owner(1);h.activate(o);const entry=o._buildingDropShadowRuntime.entry;h.transition.begin(o);const ghost=o._buildingShadowTransition.old[0];assert.equal(entry.refs,2);
+ if(action==='hide')h.api.hide(o);if(action==='dispose')h.api.dispose(o);if(action==='disable')o.enabled=false;if(action==='unbuilt')o.index=0;h.draw();assert.equal(o._buildingShadowTransition,undefined);assert(ghost.node.dead);assert.equal(entry.refs,action==='dispose'?0:1);
+});
+
+test('a projected-to-manual upgrade hands its retained shadow across renderer lifetimes without a blank interval',()=>{
+ const h=fixture(),o=h.owner(1);h.activate(o);const old=o._buildingDropShadowRuntime.entry;h.transition.begin(o);const ghost=o._buildingShadowTransition.old[0];o._buildingAppearance={placement:{kind:'upgrade',duration:.6667,elapsed:0}};
+ h.api.dispose(o,true);o.buildInfo.cfg.Shadow={opacity:.5};h.manual.apply(o,h.game);h.draw();assert(ghost.node.active);assert.equal(old.refs,1);
+ o._buildingAppearance.placement.elapsed=.2;h.draw();assert(o._buildingShadowRuntime.node.active);assert(ghost.node.active);o._buildingAppearance.placement.elapsed=.5;h.draw();assert.equal(old.refs,0);assert(ghost.node.dead);assert.equal(o._buildingShadowTransition,undefined);h.manual.dispose(o);
+});
+
+test('landing timing reads the real first dust frame from every shipped structure animation',()=>{
+ const h=fixture();for(const name of ['jt','cb','mz','by','mf']){const json=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../assets/KinghtFallIconMap/com/Ani',name,name+'.json'),'utf8'));assert.equal(h.transition.landing(json,'create',1.2),.6667,name+' uses its dust attachment marker');}
+});
+test('stage-prepared shadows appear at the custom artwork landing without waiting for its dust animation to finish',()=>{
  const h=fixture(),o=h.owner(1),entry=h.api.prepareEntry('prepared',{},{});h.game._stageAssets={shadows:{get:()=>entry}};o._buildingAppearance={loading:'art',placement:{elapsed:0}};h.api.apply(o,h.game,h.data);
  const state=o._buildingDropShadowRuntime;assert.equal(state.node.active,false);assert.equal(entry.refs,1,'hidden prepared assets stay owned by their stage');
  o._buildingAppearance.loading=null;o._buildingAppearance.placement=null;o._buildingAppearance.placementRequest={kind:'create'};h.draw();assert.equal(state.node.active,false);
- o._buildingAppearance.placementRequest=null;o._buildingAppearance.placement={elapsed:1.2};h.draw();assert.equal(state.node.active,false,'the placement completion callback owns the final pose');
- o._buildingAppearance.placement=null;h.draw();assert(state.node.active);assert.equal(state.sprite.spriteFrame,entry.frame);assert.equal(h.captures.length,0);assert.equal(entry.refs,2);h.api.dispose(o);assert.equal(entry.refs,1,'stage pins survive building removal');h.api.releaseEntry(entry);assert.equal(entry.refs,0);
+ h.transition.begin(o,false);o._buildingAppearance.placementRequest=null;o._buildingAppearance.placement={kind:'create',duration:1.2,elapsed:.6666};h.draw();assert.equal(state.node.active,false);
+ o._buildingAppearance.placement.elapsed=.6667;h.draw();assert(state.node.active,'the cached shadow appears on the first dust frame');assert(state.node.opacity>0&&state.node.opacity<255);
+ o._buildingAppearance.placement.elapsed=.8;h.draw();assert.equal(state.node.opacity,255);assert.equal(state.sprite.spriteFrame,entry.frame);assert.equal(h.captures.length,0);assert.equal(entry.refs,2);h.api.dispose(o);assert.equal(entry.refs,1,'stage pins survive building removal');h.api.releaseEntry(entry);assert.equal(entry.refs,0);
 });
 
-for(const kind of ['manual','texture'])test(kind+' shadows stay hidden for every create/upgrade part, including native track accessors, rebuild and pool reuse',()=>{
+for(const kind of ['manual','texture'])test(kind+' shadows follow native landing markers, retain the old upgrade shadow and release the completed crossfade',()=>{
  const h=fixture(),o=h.owner(1),api=kind==='manual'?h.manual:h.api;
  o.buildInfo.cfg.Shadow={opacity:1};
  const main={animation:{name:'create',duration:2},trackTime:0},other={getAnimation:()=>({getName:()=>'create',getDuration:()=>3}),getTrackTime:()=>time};let time=0;
  o.ndAniMain.getCurrent=()=>main;o.ndAniOther=[{node:new h.Node(),enabled:true,getCurrent:()=>other}];
+ o.ndAniMain.skeletonData={skeletonJson:{animations:{create:{slots:{sankai:{attachment:[{time:.6667,name:'dust'}]}}}}}};
  if(kind==='texture'){const entry=h.api.prepareEntry('construction',{},{});h.game._stageAssets={shadows:{get:()=>entry}};}
  api.apply(o,h.game,h.data);const state=kind==='manual'?o._buildingShadowRuntime:o._buildingDropShadowRuntime;
- assert.equal(state.node.active,false);main.trackTime=2;time=2.99;h.draw();assert.equal(state.node.active,false,'all construction parts must finish');
- time=3;h.draw();assert(state.node.active);
- main.animation={name:'upgrade',duration:1};main.trackTime=0;api.apply(o,h.game,h.data);assert.equal(state.node.active,false,'a cached shadow cannot survive the start of upgrade');
- main.trackTime=.999;h.draw();assert.equal(state.node.active,false);main.trackTime=1;h.draw();assert(state.node.active);
+ h.transition.begin(o,false);assert.equal(state.node.active,false);main.trackTime=.6666;h.draw();assert.equal(state.node.active,false);
+ main.trackTime=.6667;h.draw();assert(state.node.active,'landing shows the shadow while other native dust tracks are still running');assert(state.node.opacity>0&&state.node.opacity<255);
+ main.trackTime=1;h.draw();assert.equal(state.node.opacity,255);
+ h.transition.begin(o);const old=o._buildingShadowTransition.old[0],oldEntry=state.entry,refs=oldEntry.refs;
+ main.animation={name:'upgrade',duration:1};main.trackTime=0;api.apply(o,h.game,h.data);h.draw();assert.equal(state.node.active,false);assert(old.node.active);assert.equal(old.node.opacity,255,'the previous ground shadow fills the preparation interval');
+ main.trackTime=.2499;h.draw();assert(old.node.active);assert.equal(state.node.active,false);
+ main.trackTime=.25;h.draw();assert(state.node.active);assert(state.node.opacity>0&&state.node.opacity<255);assert(old.node.opacity>0&&old.node.opacity<255);
+ main.trackTime=.5;h.draw();assert.equal(state.node.opacity,255);assert.equal(o._buildingShadowTransition,undefined);assert(old.node.dead);assert.equal(oldEntry.refs,refs-1,'the retained frame pin is released after blending');
+ main.trackTime=1;h.draw();assert(state.node.active);
  // Ordinary gate/night transitions retain the completed ground shadow.
  for(const name of ['open','shut','Fade_in']){main.animation={name,duration:4};main.trackTime=0;h.draw();assert(state.node.active,name+' is not construction');}
  o.isDestroyed=true;h.draw();assert.equal(state.node.active,false);o.isDestroyed=false;main.animation={name:'create',duration:2};main.trackTime=0;api.apply(o,h.game,h.data);assert.equal(state.node.active,false,'rebuilding a destroyed owner must wait again');
  o.node.activeInHierarchy=false;main.trackTime=2;h.draw();assert.equal(state.node.active,false);o.node.activeInHierarchy=true;h.draw();assert(state.node.active);
- api.hide(o);h.draw();assert.equal(state.node.active,false);api.apply(o,h.game,h.data);assert(state.node.active);
+ api.hide(o);h.draw();assert.equal(state.node.active,false);api.apply(o,h.game,h.data);h.draw();assert(state.node.active);
  api.dispose(o);h.draw();assert.equal(kind==='manual'?o._buildingShadowRuntime:o._buildingDropShadowRuntime,undefined);assert(state.node.dead);
 });
 

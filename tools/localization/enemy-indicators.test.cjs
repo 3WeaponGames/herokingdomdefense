@@ -169,9 +169,17 @@ test('Upcoming portraits from one side pack closer together and retain their tru
  updateUpcoming.call(f.state,markers,rectangles);
  const positions=markers.map(m=>m.record.ndItem.getPosition());
  for(const marker of markers){const node=marker.record.ndItem;assert.equal(node.width,88);assert.equal(node.getChildByName('labName').active,true,'upcoming-wave captions remain available');arrowPoints(node,marker.target);const r=bounds(node,f.ui);assert(r.minX>=-359&&r.maxX<=359&&r.minY>=-651&&r.maxY<=651);near(node.x,positions[0].x);near(r.maxX,359);}
- for(let i=1;i<positions.length;i++){const spacing=positions[i-1].y-positions[i].y;assert(spacing>0&&spacing<120,'upcoming markers must form a tight downward list');}
+ for(let i=1;i<positions.length;i++){
+  assert(positions[i-1].y>positions[i].y,'upcoming markers must form a downward list');
+  const previous=rectangles[i-1],current=rectangles[i];
+  near(previous.minY-current.maxY,6); // Include the readable caption and every reserved arrow rotation.
+ }
  for(let i=0;i<rectangles.length;i++)for(let j=0;j<i;j++)assert(clear(rectangles[i],rectangles[j],6));
- for(const style of Object.values(catalog.labelStyles['ui.layout.kinghtfalluigame.133'])){assert.equal(style.fontSize,38);assert.equal(style.wrap,false);assert.equal(style.height,44);}
+ for(const [locale,style] of Object.entries(catalog.labelStyles['ui.layout.kinghtfalluigame.133'])){
+  assert.equal(style.fontSize,52);assert.equal(style.wrap,false);assert.equal(style.lineHeight,58);assert.equal(style.height,128);
+  assert.equal(catalog.entries['ui.layout.kinghtfalluigame.133'][locale].split('\n').length,2,'upcoming captions keep two readable lines');
+  assert(style.lineHeight*2<=style.height,'both caption lines fit without clipping');
+ }
 });
 
 test('Upcoming waves stay in vertical side lists even for centered, top and bottom spawn points and crowded HUD edges',()=>{

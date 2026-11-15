@@ -69,7 +69,7 @@ function create(host,options){
   function sound(cue,event){
     let value=(settings.audio||{})[cue]||{},kind=cue;const defaults=description&&description.defaultSounds||{};
     if(cue==='release'){if(event&&event.skill&&settings.audio&&settings.audio.cast&&settings.audio.cast.clip)return;value=defaults[event&&event.skill?'release':'basicRelease']||{};}
-    else if(cue==='impact'&&!value.clip)value=defaults.impact||{};
+    else if(cue==='impact'&&!value.clip)value=event&&!event.skill&&defaults.basicImpact||defaults.impact||{};
     else if(cue==='channel'&&!value.clip){value=defaults.channel||{};kind='release';}
     if(event&&value.delay)value={...value,delay:Math.max(0,value.delay-Math.max(0,model.time-event.time))};
     if(options.onSound)options.onSound(kind,value);

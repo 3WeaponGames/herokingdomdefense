@@ -479,7 +479,7 @@ var def_KinghtFallEnemyBase = function (t) {
       }
     }() && (this.doAttackStart(), true);
   };
-  _ctor.prototype.doAttackStart = function (cooldown) {
+  _ctor.prototype.doAttackStart = function (startCooldown) {
     if (GameToolsOverrides.isPending(this)) return;
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, node = this.node;
     var renderer = this.getSpAni ? this.getSpAni() : this.spAni;
@@ -491,7 +491,9 @@ var def_KinghtFallEnemyBase = function (t) {
     this.state = r.Attack;
     record.entry = renderer.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
     if (this._attackAnimation !== record || !attackCurrent(this, record)) return;
-    this.time[s.Attack] = cooldown === 0 ? 0 : -1;
+    // Ranged attacks count their cooldown from animation start; melee waits
+    // for its damage release. Both must register the same owned TrackEntry.
+    this.time[s.Attack] = startCooldown === 0 ? 0 : -1;
     GameToolsOverrides.attack(this, "enemy", this.doAttack);
   };
   _ctor.prototype._completeAttackAnimation = function (renderer, entry) {
@@ -568,7 +570,7 @@ var def_KinghtFallEnemyBase = function (t) {
     if (!this.isDead()) {
       t = RelicCombat.enemyDamage(this, t, source, secondary, context);
       this.hp -= t;
-      if (BattleSounds.hit) BattleSounds.hit(this, source, t, { magic: !!secondary });
+      if (BattleSounds.hit) BattleSounds.hit(this, source, t, { magic: !!secondary, context: context });
       if (t > 0 && this.hp > 0 && cc.resources && !(source && source._styleRuntime && source._styleRuntime.deferHitReaction && source._styleRuntime.deferHitReaction(this, context))) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
         Navigation.reset(this);

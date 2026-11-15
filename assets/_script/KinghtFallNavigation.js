@@ -437,14 +437,17 @@ function recoveryBuildings(navigation, grid) {
 exports.recoverStranded = function (unit, game, dt) {
   var speed=unit.getSpeed(),state=unit._navigationState,target=unit._targetSearchCache&&unit._targetSearchCache.target;
   if (!(dt>0) || !(speed>0) || unit._hitReactionPlaying || target&&target.canAtt || state&&state.job || unit._navigationRequestOwner) { unit._enemyStall=null; return false; }
-  var navigation=get(game),grid=navigation.gridFor(unit),start=point(unit.node,game.ndMain),radius=navigation.radius(unit),record=unit._enemyStall;
+  var navigation=get(game),grid=navigation.gridFor(unit),start=point(unit.node,game.ndMain),record=unit._enemyStall;
   if (!record || record.owner!==navigation || record.revision!==navigation.revision || record.generation!==unit.node._combatGeneration || distance(record.point,start)>=Math.max(.001,Math.min(8,speed*.25))) {
     unit._enemyStall={owner:navigation,revision:navigation.revision,generation:unit.node._combatGeneration,point:start,elapsed:0};return false;
   }
   record.elapsed+=Math.min(dt,.1);
   if (record.elapsed<5 || navigation._strandedRecoveryFrame===navigation._frameId) return false;
   navigation._strandedRecoveryFrame=navigation._frameId;
-  var anchors=[],bounds=grid.bounds,margin=radius+.01;
+  // Body measurement scans the collider subtree and transforms its vertices.
+  // Ordinary movement already measures it; only repeat that work when this
+  // five-second watchdog is actually going to search for a recovery position.
+  var radius=navigation.radius(unit),anchors=[],bounds=grid.bounds,margin=radius+.01;
   function anchor(value) {
     if(!value||!isFinite(value.x)||!isFinite(value.y))return;
     var p={x:Math.max(bounds.minX+margin,Math.min(bounds.maxX-margin,value.x)),y:Math.max(bounds.minY+margin,Math.min(bounds.maxY-margin,value.y))};

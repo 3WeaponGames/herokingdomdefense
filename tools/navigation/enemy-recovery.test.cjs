@@ -149,3 +149,27 @@ test('stationary attacks, support waits, zero speed and deferred navigation neve
   assert(!u._navigationRecoveries,mode+' was treated as a movement failure');
  }
 });
+
+test('stranded watchdog defers collider measurements until an actual recovery attempt',()=>{
+ const e=environment(),u=e.unit(-100,0),nav=e.nav.get(e.game),measure=nav.radius;
+ e.game.mapSize={width:4000,height:4000};
+ let measurements=0;nav.radius=function(...args){if(args[0]===u)measurements++;return measure.apply(this,args);};
+ // Continued physical progress keeps the watchdog cold for an entire wave.
+ for(let frame=0;frame<600;frame++){
+  e.setTime(frame*1000/60);e.nav.beginFrame(e.game);u.node.x+=1;
+  assert.equal(e.nav.recoverStranded(u,e.game,1/60),false);
+ }
+ assert.equal(measurements,0,'ordinary walking repeated the movement collider scan');
+ // A stationary actor must still retain the existing five-second threshold.
+ u.node.x+=8;e.nav.beginFrame(e.game);e.nav.recoverStranded(u,e.game,.1);
+ const still=u.node.position;
+ for(let frame=0;frame<49;frame++){
+  e.nav.beginFrame(e.game);assert.equal(e.nav.recoverStranded(u,e.game,.1),false);
+ }
+ assert.equal(measurements,0,'a cold watchdog scanned colliders before its deadline');
+ for(let frame=0;frame<3&&measurements===0;frame++){
+  e.nav.beginFrame(e.game);e.nav.recoverStranded(u,e.game,.1);
+ }
+ assert.equal(measurements,1,'the bounded recovery attempt must measure current body clearance');
+ assert.deepEqual(u.node.position,still,'no authored continuation may relocate the actor');
+});

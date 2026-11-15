@@ -134,7 +134,7 @@ function holdChargedAttack(controller){
   if(!hold)return false;
   if(controller.isDie||hold.token!==attackTokens.get(controller)||!master||name(master)!==hold.animation||loop(master)){heldShots.delete(controller);return false;}
   if(controller.isMove){releaseChargedAttack(controller);return false;}
-  keys.forEach(function(key){var renderer=controller[key],track=current(renderer);if(renderer&&track&&name(track)===hold.animation){setTrackValue(track,'trackTime',Math.max(0,hold.clip.hit-.00001));setTrackValue(track,'timeScale',0);applyPose(renderer);}});
+  keys.forEach(function(key){var renderer=controller[key],track=current(renderer);if(renderer&&track&&name(track)===hold.animation){setTrackValue(track,'trackTime',hold.clip.draw);setTrackValue(track,'timeScale',0);applyPose(renderer);}});
   ensureLocomotion(controller.spAniMa,'idle');return true;
 }
 function releaseChargedAttack(controller,playback){
@@ -194,6 +194,12 @@ function clipInfo(controller,animation){
   function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')end=Math.max(end,value.time);Object.keys(value).forEach(function(key){visit(value[key]);});}
   visit(clip);var hit=clip&&clip.events&&clip.events.filter(function(event){return event.name==='attack';})[0];
   var result={end:end>0?end:.8333,hit:hit&&typeof hit.time==='number'?hit.time:.1667};
+  // The release event can occur after the string has already sprung forward.
+  // Hold the earliest maximum pre-release arrow displacement, keeping the
+  // authored release marker separate from the passive fully drawn pose.
+  var arrow=clip&&clip.bones&&clip.bones['Rider/HandRight/Bow/Arrow'],frames=arrow&&arrow.translate,furthest=0;
+  result.draw=Math.max(0,result.hit-.00001);
+  (frames||[]).forEach(function(frame){var time=frame.time||0,x=frame.x||0,y=frame.y||0,length=x*x+y*y;if(time<result.hit&&length>furthest){furthest=length;result.draw=time;}});
   if(json){if(!cached){cached=Object.create(null);clipCache.set(json,cached);}cached[animation]=result;}
   return result;
 }
@@ -245,9 +251,9 @@ function stationaryMountPose(controller,state,time,speed){
 function updateCombatPose(controller,state){
   var horse=controller.spAniMa,desired=controller.isMove?'move':'idle',master=current(controller.spAniBody);
   if(state.charge){
-    // Stop just before the authored release event. Sampling the full draw must
-    // never emit a shot or complete an attack while the player is waiting.
-    var sample=Math.max(0,state.clip.hit-.00001)*state.charge;
+    // Sample only the draw portion, then hold its maximum. The release marker
+    // remains reserved for the actual shot and cannot fire during this wait.
+    var sample=state.clip.draw*state.charge;
     seekRider(controller,state,sample,0);ensureLocomotion(horse,'idle');return;
   }
   if(state.beam){

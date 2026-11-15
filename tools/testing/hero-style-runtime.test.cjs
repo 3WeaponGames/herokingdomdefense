@@ -347,10 +347,10 @@ test('basic arrows snapshot Momentum speed at release and movement input cancels
  h.rt.state.charge=1;h.rt.update(.01);assert.equal(h.rt.state.charge,0);assert.equal(h.poses.at(-1).charge,0);
 });
 
-test('stationary Momentum drives the rider draw and a fully charged skill emits the epic release exactly once',()=>{
- const h=scene('skirmisher'),sounds=[];h.e.stubs.BattleSounds={effect:id=>sounds.push(id),charge(){}};
+test('stationary Momentum drives the rider draw and a fully charged skill emits its ready and active release cues once',()=>{
+ const h=scene('skirmisher'),sounds=[];h.e.stubs.BattleSounds={chargeReady:()=>sounds.push('skirmisher-passive-charged'),skirmisherRelease:(_hero,active)=>sounds.push(active?'skirmisher-active-release':'skirmisher-passive-release'),charge(){}};
  h.rt.update(2);close(h.poses.at(-1).charge,.5);h.rt.update(4);close(h.poses.at(-1).charge,1);
- assert(h.rt.cast({x:1,y:0}));h.rt.update(.35);close(h.rt.projectiles[0].speed,2000);assert.deepEqual(sounds,['archer-momentum-release']);h.rt.update(.01);assert.equal(sounds.length,1);
+ assert(h.rt.cast({x:1,y:0}));h.rt.update(.35);close(h.rt.projectiles[0].speed,2000);assert.deepEqual(sounds,['skirmisher-passive-charged','skirmisher-active-release']);h.rt.update(.01);assert.equal(sounds.length,2);
 });
 
 test('Mystic custom hold times beyond the animation duration clamp to the same final frame as the rider',()=>{

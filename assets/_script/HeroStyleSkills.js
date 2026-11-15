@@ -4,7 +4,7 @@
 // All percentages below are fractions, and charge meters use the range 0..1.
 var DEFAULTS = {
   common: { cooldown: 12 },
-  skirmisher: { cooldown: 12, chargeRate: .25, chargedDamage: .5, windup: .35, projectileSpeed: 1000, distanceDamagePer100: .1, projectileWidth: 28 },
+  skirmisher: { cooldown: 12, chargeRate: .25, chargedDamage: .5, chargedRange: .5, windup: .35, projectileSpeed: 1000, distanceDamagePer100: .1, projectileWidth: 28 },
   fighter: { cooldown: 12, maxStacks: 5, stackDuration: 5, stackDamage: .03, stackReduction: .025, stackTenacity: .08, buffDuration: 10, buffDamage: .25, buffAttackRate: .35, knockback: 140 },
   vanguard: { cooldown: 14, chargeRate: .2, chargeDecay: .15, buffDuration: 10, momentumMove: .5, momentumAttackRate: .35, duration: 2.5, strikes: 7, strikeDamage: .5, moveScaling: .25, attackScaling: .25, referenceMove: 300 },
   mystic: { cooldown: 12, maxCharges: 10, chargeDamage: .15, activeDamage: 1.5, slow: .2, slowDuration: 1.5 },
@@ -52,7 +52,9 @@ function clearTarget(state) { setTarget(state, null); }
 function cancelActive(state) { state.active = null; }
 function bonuses(state, context) {
   var t = state.tuning, result = { damage: 0, attackRate: 0, move: 0, damageReduction: 0, tenacity: 0, allyDamageReduction: 0 };
-  if (state.style === "bruiser") {
+  if (state.style === "skirmisher") {
+    result.range = clamp(state.charge, 0, 1) * positive(t.chargedRange);
+  } else if (state.style === "bruiser") {
     var amount = missing(context); result.damage = amount * t.missingDamage; result.attackRate = amount * t.missingAttackRate;
   } else if (state.style === "fighter") {
     var stacks = state.stackRemaining > 0 ? state.stacks : 0;

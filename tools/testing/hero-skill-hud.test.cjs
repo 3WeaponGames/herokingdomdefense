@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 function fixture(style='skirmisher',maker={},buttonArt,cold=false){
- const setupEvents=[];
+ const setupEvents=[];let now=1000;
  class Node{
   constructor(name){this.name=name;this.children=[];this.handlers={};this.x=this.y=0;this.width=this.height=0;this.anchorX=this.anchorY=.5;this.scaleX=this.scaleY=1;this.active=this.activeInHierarchy=true;this.zIndex=0;}
   setParent(parent){if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);this.parent=parent;parent.children.push(this);}
@@ -24,16 +24,18 @@ function fixture(style='skirmisher',maker={},buttonArt,cold=false){
  const entries=require('../../assets/resources/localization/catalog.json').entries,bindings=new Map();let language='en';
  const manager={bindLabel(label,key,params){bindings.set(label,{key,params});label.string=(entries[key]&&entries[key][language]||key).replace(/\{(\d+)\}/g,(_,i)=>params&&params[i]);}};
  const setLanguage=value=>{language=value;for(const [label,{key,params}]of bindings)manager.bindLabel(label,key,params);};
- const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date,Math,require:name=>cold&&name==='./ForestRain'?{ensure(rt){setupEvents.push({kind:'weather',game:rt.game,ui:rt.ui});}}:name==='HeroMakerRider'?maker:name==='./HeroSkillButton'&&buttonArt?buttonArt:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
+ const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date:{now:()=>now},Math,require:name=>cold&&name==='./ForestRain'?{ensure(rt){setupEvents.push({kind:'weather',game:rt.game,ui:rt.ui});}}:name==='HeroMakerRider'?maker:name==='./HeroSkillButton'&&buttonArt?buttonArt:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
  const root=new Node('UI');root.setContentSize(750,1334);const main=new Node('Map'),visual=new Node('Effects');visual.setParent(main);
  const actor=new Node('Hero');actor.setParent(main);const hp=new Node('HP');hp.setParent(actor);hp.setContentSize(64,12);hp.y=80;hp.active=false;
  const hero={node:actor,hp:100,hpMax:100,attackRange:200,ctrHp:{node:hp},getAttWpos:()=>actor.convertToWorldSpaceAR({x:0,y:40})};
  const game={ndMain:main,ndUI:visual,mapSize:{width:1000,height:1000},ctrPlay:hero},ui={ctrUI:{node:root},isPauset:false};
- const rt={state:{style,cooldown:0,charge:.5,marked:false},game,ui,hero,aiming:false,aimDirection:{x:1,y:0},projectiles:[],effects:[],casts:[],available(){return !ui.isPauset&&hero.hp>0;},cast(d){this.casts.push(d);this.aiming=false;return true;},screenAim(p){const a=actor.getPosition(),n=Math.hypot(p.x-a.x,p.y-a.y);this.aimDirection={x:(p.x-a.x)/n,y:(p.y-a.y)/n};return this.aimDirection;}};
+ const targets=[],unit=p=>{const n=Math.hypot(p.x,p.y)||1;return{x:p.x/n,y:p.y/n};};
+ const rt={state:{style,cooldown:0,charge:.5,marked:false},game,ui,hero,aiming:false,aimDirection:{x:1,y:0},projectiles:[],effects:[],casts:[],available(){return hero._styleRuntime===this&&!ui.isPauset&&hero.hp>0&&!hero._isPooled&&hero.node.activeInHierarchy!==false&&(this.heroGeneration===undefined||this.heroGeneration===hero.node._combatGeneration);},cast(d){this.casts.push(d);this.aiming=false;return true;},screenAim(p){const a=actor.getPosition();this.aimTarget=null;this.aimDirection=unit({x:p.x-a.x,y:p.y-a.y});return this.aimDirection;},setFreeAim(p){this.aimTarget=null;this.aimDirection=unit(p);},setAimTarget(target){this.aimTarget=target;this.aimDirection=unit({x:target.node.x-actor.x,y:target.node.y-actor.y});},nearest(){return targets.filter(t=>t.hp>0&&!t._isPooled&&!t.node.destroyed&&t.node.activeInHierarchy!==false&&Math.hypot(t.node.x-actor.x,t.node.y-actor.y)<=hero.attackRange).sort((a,b)=>Math.hypot(a.node.x-actor.x,a.node.y-actor.y)-Math.hypot(b.node.x-actor.x,b.node.y-actor.y))[0]||null;}};
  if(cold){delete rt.game;delete rt.ui;game.gameStatus=0;rt.refresh=function(){setupEvents.push({kind:'refresh'});this.game=game;this.ui=ui;};rt.available=function(){return this.game.gameStatus===2;};}
  hero._styleRuntime=rt;const controller={touchID:false,_followGame:()=>ui.isPauset?null:game};
  function event(id,x=0,y=0){return{touch:{getID:()=>id,getLocation:()=>({x,y})},stopPropagation(){this.stopped=true;}};}
- exports.update(hero,rt);return{hud:exports,hero,rt,ui,game,controller,event,root,Node,setLanguage,cc,fontLoads,setupEvents};
+ function target(x=100,y=0){const node=new Node('target');node.setParent(main);node.setPosition(x,y);node._combatGeneration=1;const value={node,hp:100,isDead(){return this.hp<=0;}};targets.push(value);return value;}
+ exports.update(hero,rt);return{hud:exports,hero,rt,ui,game,controller,event,root,Node,setLanguage,cc,fontLoads,setupEvents,target,targets,advance(ms){now+=ms;}};
 }
 test('tap arms the piercing skill, world aiming consumes its own touch and fires once on confirmation',()=>{
  const f=fixture(),b=f.hero._skillHUD.button,e=f.event(1,200,-400);b.handlers.start(e);b.handlers.end(e);assert.equal(f.rt.aiming,true);assert.equal(f.rt.casts.length,0);assert(e.stopped);
@@ -329,4 +331,99 @@ test('late HUD font loads and procedural target art reject same-generation repla
  const f=fixture('mystic'),first=f.hero._skillHUD,request=f.fontLoads[0];let refs=0;const font={addRef(){refs++;return this;},decRef(){refs--;}};f.hero.node=new f.Node('replacement hero');request.callback(null,font);assert.equal(refs,0);assert.notEqual(first.cooldownCount.font,font);
  const active=fixture('mystic'),old=new active.Node('original target');old.setParent(active.game.ndMain);old._combatGeneration=1;const target={node:old,hp:100};active.rt.beamTarget=active.rt.state.target=target;active.rt.state.marked=true;active.rt.beamVisibleGeneration=active.rt.markGeneration=1;active.rt.beamVisibleNode=active.rt.markNode=old;active.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults('mystic');active.rt.settings.visual.beamResource=active.rt.settings.visual.markResource='';active.hud.update(active.hero,active.rt);assert(active.hero._skillHUD.visual.g.ops.length>0);
  target.node=new active.Node('replacement target');target.node.setParent(active.game.ndMain);target.node._combatGeneration=1;active.hud.update(active.hero,active.rt);assert.equal(active.hero._skillHUD.visual.g.ops.length,0);active.hud.clear(active.hero);f.hud.clear(f.hero);
+});
+
+test('directional skills quick-tap their current live target once on release without a confirmation click',()=>{
+ for(const style of ['skirmisher','fighter','vanguard']){
+  const f=fixture(style),button=f.hero._skillHUD.button,target=f.target(-80,60);f.hero.tagEnemy=target;f.target(20,0);
+  button.handlers.start(f.event(1,300,-400));assert.equal(f.rt.casts.length,0,style+' fired on press');assert.equal(f.rt.aiming,true,style+' must expose hold aim immediately');
+  button.handlers.end(f.event(1,300,-400));assert.equal(f.rt.casts.length,1,style+' required a second click');assert.equal(f.rt.aiming,false);assert(Math.abs(f.rt.casts[0].x+.8)<1e-10);assert(Math.abs(f.rt.casts[0].y-.6)<1e-10);
+  button.handlers.end(f.event(1,300,-400));assert.equal(f.rt.casts.length,1,style+' duplicated the release');
+ }
+});
+
+test('a directional quick tap rechecks acquisition on release and never fires at a dead or out-of-range default',()=>{
+ for(const style of ['skirmisher','fighter','vanguard']){
+  const f=fixture(style),button=f.hero._skillHUD.button,old=f.target(100,0);f.hero.tagEnemy=old;
+  button.handlers.start(f.event(1));old.hp=0;const replacement=f.target(0,100);button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,1);assert(Math.abs(f.rt.casts[0].x)<1e-10);assert.equal(f.rt.casts[0].y,1);
+  replacement.hp=0;old.hp=100;old.node.x=1000;button.handlers.start(f.event(2));button.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1,style+' auto-fired at an unavailable target');assert.equal(f.rt.aiming,true,'No target should retain the manual confirmation path');
+ }
+ const f=fixture('skirmisher'),button=f.hero._skillHUD.button;button.handlers.start(f.event(1));const late=f.target(-100,0);button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,1);assert.equal(f.rt.casts[0].x,-1);assert.equal(f.rt.aimTarget,late);
+});
+
+test('holding directional icons shows aim immediately and releases manual direction even when a target exists',()=>{
+ for(const style of ['skirmisher','fighter','vanguard']){
+  const f=fixture(style),button=f.hero._skillHUD.button,target=f.target(-100,0);f.hero.tagEnemy=target;
+  button.handlers.start(f.event(1,300,-400));assert.equal(f.rt.aiming,true);assert.equal(f.rt.casts.length,0);
+  f.advance(500);button.handlers.move(f.event(1,300,-300));assert.equal(f.rt.casts.length,0);target.node.setPosition(0,-100);
+  button.handlers.end(f.event(1,300,-300));assert.equal(f.rt.casts.length,1);assert(Math.abs(f.rt.casts[0].x)<1e-10);assert.equal(f.rt.casts[0].y,1,'Manual direction must override automatic targeting');
+ }
+});
+
+test('a held directional icon may release its shown facing aim without a target while a short tap only arms',()=>{
+ for(const style of ['skirmisher','fighter','vanguard']){
+  const f=fixture(style),button=f.hero._skillHUD.button;f.hero.ctrPlayAni={spAniBody:{node:{scaleX:-1}}};
+  button.handlers.start(f.event(1));button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);assert.equal(f.rt.aiming,true);
+  button.handlers.start(f.event(2));button.handlers.end(f.event(2));assert.equal(f.rt.aiming,false);assert.equal(f.rt.casts.length,0);
+  button.handlers.start(f.event(3));assert.equal(f.rt.aiming,true);f.advance(300);assert.equal(f.rt.casts.length,0);button.handlers.end(f.event(3));assert.equal(f.rt.casts.length,1);assert.equal(f.rt.casts[0].x,-1);assert.equal(f.rt.casts[0].y,0);
+ }
+});
+
+test('Guardian and Bruiser cast on release without a target and never enter an aim indicator while held',()=>{
+ for(const style of ['guardian','bruiser']){
+  const f=fixture(style),button=f.hero._skillHUD.button;
+  button.handlers.start(f.event(1,300,-400));assert.equal(f.rt.casts.length,0);assert.equal(f.rt.aiming,false);
+  f.advance(1000);button.handlers.move(f.event(1,100,-200));f.hud.update(f.hero,f.rt);assert.equal(f.rt.casts.length,0,style+' fired while held');assert.equal(f.rt.aiming,false);
+  button.handlers.end(f.event(1,100,-200));assert.equal(f.rt.casts.length,1);assert.equal(f.rt.casts[0],undefined);assert.equal(f.rt.aiming,false);
+  button.handlers.end(f.event(1,100,-200));assert.equal(f.rt.casts.length,1);
+ }
+});
+
+test('Mystic never arms manual aim and releases only while its live marked target remains castable',()=>{
+ const f=fixture('mystic'),button=f.hero._skillHUD.button,target=f.target(100,0),s=f.rt.state;
+ f.rt.canCast=()=>!!s.marked&&s.target===target&&target.hp>0&&target.node.activeInHierarchy!==false&&Math.hypot(target.node.x,target.node.y)<=f.hero.attackRange;
+ button.handlers.start(f.event(1));f.advance(600);button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);assert.equal(f.rt.aiming,false);
+ s.marked=true;s.target=target;button.handlers.start(f.event(2));f.advance(600);button.handlers.move(f.event(2,200,100));assert.equal(f.rt.casts.length,0);assert.equal(f.rt.aiming,false);button.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);assert.equal(f.rt.aiming,false);
+ for(const invalidate of [()=>{target.hp=0;},()=>{target.node.x=1000;},()=>{s.marked=false;}]){
+  target.hp=100;target.node.setPosition(100,0);s.marked=true;button.handlers.start(f.event(3));invalidate();button.handlers.end(f.event(3));assert.equal(f.rt.casts.length,1,'A no-longer-castable mark fired');assert.equal(f.rt.aiming,false);
+ }
+});
+
+test('all six release-only controls reject OS cancellation and retire held input on pause, death and generation change',()=>{
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian'])for(const mode of ['cancel','pause','death','generation','replacement']){
+  const f=fixture(style),button=f.hero._skillHUD.button,target=f.target(100,0);f.hero.tagEnemy=target;f.rt.state.marked=true;f.rt.state.target=target;f.rt.heroGeneration=f.hero.node._combatGeneration=1;
+  button.handlers.start(f.event(1,300,-400));assert.equal(f.rt.casts.length,0);
+  if(mode==='cancel'){const event=f.event(1,300,-300);event.getEventCode=()=>3;button.handlers.cancel(event);}
+  else{
+   if(mode==='pause')f.ui.isPauset=true;if(mode==='death')f.hero.hp=0;if(mode==='generation')f.hero.node._combatGeneration++;if(mode==='replacement')f.hero._styleRuntime={};
+   f.hud.update(f.hero,f.rt);f.ui.isPauset=false;f.hero.hp=100;button.handlers.end(f.event(1,300,-400));
+  }
+  assert.equal(f.rt.casts.length,0,style+' released a retired '+mode+' gesture');assert.equal(f.rt.aiming,false);
+ }
+});
+
+test('release-time target acquisition cannot cast or re-arm after its callback retires the gesture',()=>{
+ for(const style of ['skirmisher','fighter','vanguard'])for(const retirement of ['generation','state','epoch','replacement'])for(const hasTarget of [false,true]){
+  const f=fixture(style),button=f.hero._skillHUD.button,target=f.target(100,0);let acquisitions=0;f.hero.node._combatGeneration=1;f.game._combatEpoch=1;
+  f.rt.defaultAimTarget=()=>{
+   if(++acquisitions===2){
+    if(retirement==='generation')f.hero.node._combatGeneration++;
+    if(retirement==='state')f.rt.state={...f.rt.state};
+    if(retirement==='epoch')f.game._combatEpoch++;
+    if(retirement==='replacement')f.hero._styleRuntime={aiming:false};
+    return hasTarget?target:null;
+   }
+   return target;
+  };
+  button.handlers.start(f.event(1));assert.equal(f.rt.aiming,true);button.handlers.end(f.event(1));
+  assert.equal(acquisitions,2);assert.equal(f.rt.casts.length,0,style+' fired after '+retirement);assert.equal(f.rt.aiming,false,style+' re-armed retired '+retirement+' state');assert.equal(f.hero._skillHUD.press,null);
+ }
+});
+
+test('press-time target acquisition cannot retain an aim indicator or release a gesture it retires',()=>{
+ for(const style of ['skirmisher','fighter','vanguard']){
+  const f=fixture(style),button=f.hero._skillHUD.button,target=f.target(100,0);f.hero.node._combatGeneration=1;
+  f.rt.defaultAimTarget=()=>{f.hero.node._combatGeneration++;return target;};
+  button.handlers.start(f.event(1));assert.equal(f.rt.aiming,false);assert.equal(f.hero._skillHUD.press,null);button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);
+ }
 });

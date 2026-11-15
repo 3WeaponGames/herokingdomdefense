@@ -1,0 +1,65 @@
+// Native overlay parameters are carried by vertices so texture pairs can batch.
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        maskTexture: { value: white }
+}%
+CCProgram vs %{
+  precision highp float;
+  #include <cc-global>
+  in vec3 a_position;
+  in vec2 a_wallUv;
+  in vec2 a_actorUv;
+  in vec4 a_color;
+  in vec4 a_clip;
+  in float a_paintActor;
+  out vec2 v_wallUv;
+  out vec2 v_actorUv;
+  out vec4 v_color;
+  out vec4 v_clip;
+  out float v_paintActor;
+  void main () {
+    gl_Position = cc_matViewProj * vec4(a_position, 1);
+    v_wallUv = a_wallUv;
+    v_actorUv = a_actorUv;
+    v_color = a_color;
+    v_clip = a_clip;
+    v_paintActor = a_paintActor;
+  }
+}%
+CCProgram fs %{
+  precision highp float;
+  #include <texture>
+  in vec2 v_wallUv;
+  in vec2 v_actorUv;
+  in vec4 v_color;
+  in vec4 v_clip;
+  in float v_paintActor;
+  uniform sampler2D texture;
+  uniform sampler2D maskTexture;
+  void main () {
+    if (v_clip.x < 0.0 || v_clip.y < 0.0 || v_clip.x > 1.0 || v_clip.y > 1.0) discard;
+    vec4 wall = vec4(1), actor = vec4(1);
+    #if USE_TEXTURE
+      CCTexture(texture, v_wallUv, wall);
+      CCTexture(maskTexture, v_actorUv, actor);
+    #endif
+    vec4 stencil = mix(actor, wall, v_paintActor);
+    if (stencil.a * v_clip.z < v_clip.w) discard;
+    vec4 o = mix(wall, actor, v_paintActor) * v_color;
+    #if USE_BGRA
+      gl_FragColor = o.bgra;
+    #else
+      gl_FragColor = o.rgba;
+    #endif
+  }
+}%

@@ -1,6 +1,12 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),W=require('../../../assets/_script/WindowLightWarp'),T=require('../../../assets/_script/BuildingNightlight'),H=require('../buildings/nightlight-handles'),M=require('../lib/map-assets');
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`),point=(a,b)=>{near(a.x,b.x);near(a.y,b.y);};
+test('dim light source handles fit its own aperture and preserve shaped, rotated, mirrored edge and brush coordinates',()=>{
+ const D=W.forType('dim'),core=D.controls(),warp=D.controls();assert.notDeepEqual(core,W.controls());warp[1].x+=1;assert(D.valid(warp));core.forEach((p,i)=>point(D.map(p,warp),warp[i]));const nodes=D.addNode(warp,[],0,.45);nodes[0].y+=.3;assert(D.valid(warp,nodes));point(D.map(D.source(0,.45),warp,nodes),nodes[0]);
+ const entry={matrix:[-1.2,.2,.1,.9,18,-7],glow:T.glow({type:'dim'})},value={...T.value({},'light:1'),warp,warpNodes:nodes,angle:31,flipX:true},frame=H.frame(entry,value);assert.equal(frame.warpHandles.length,5);assert.equal(H.rotationHandles(frame,2).length,4);
+ for(const [i,p]of warp.entries())point(frame.warpHandles[i],M.point(frame.matrix,p));const h=frame.warpHandles[4],target=M.point(frame.matrix,{x:nodes[0].x+.1,y:nodes[0].y+.1}),change=H.distort(entry,value,h,target);assert(D.valid(warp,change.warpNodes));point(H.frame(entry,{...value,...change}).warpHandles[4],target);
+ const source={x:-5,y:-8},mapped=D.map(source,warp,nodes);assert(Math.hypot(D.inverse(mapped,warp,nodes).x-source.x,D.inverse(mapped,warp,nodes).y-source.y)<.002);assert.equal(D.inverse({x:1e6,y:1e6},warp,nodes),null);assert.deepEqual(W.forType().controls(),W.controls());
+});
 test('clicking an edge adds exact controls without changing the light, and an arch node carries its neighbouring glow',()=>{
  const warp=W.controls(),nodes=W.addNode(warp,[],0,.5),before=JSON.stringify(nodes);assert(W.valid(warp,nodes));const mid=W.source(0,.5);point(W.map(mid,warp,nodes),mid);for(const p of [{x:0,y:0},...W.controls()])point(W.map(p,warp,nodes),p);
  nodes[0].y+=2;assert(W.valid(warp,nodes));point(W.map(mid,warp,nodes),nodes[0]);W.controls().forEach((p,i)=>point(W.map(p,warp,nodes),warp[i]));assert.notDeepEqual(W.map({x:mid.x,y:mid.y-3},warp,nodes),{x:mid.x,y:mid.y-3});

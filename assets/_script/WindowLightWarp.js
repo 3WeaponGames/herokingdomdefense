@@ -1,11 +1,13 @@
 "use strict";
-// Four corners of the bright aperture in the unchanged 70px native image.
+// Four corners of the source aperture in each original native image.
 // Coordinates are sprite-local, with Y up. The cage carries the entire fade
 // with the aperture. Its non-affine bend eases outside the small bright source
 // so moving one corner cannot send the distant glow towards a horizon.
-var SIZE=70,CORE=[{x:-29,y:23},{x:-9,y:34},{x:-9,y:22},{x:-29,y:11}],STEPS=16,MAX_NODES=24,compiled=new Map();
+var Types=require("./BuildingLightTypes");
+function create(CORE){
+var SIZE=70,STEPS=16,MAX_NODES=24,compiled=new Map();
 function controls(warp){return (warp||CORE).map(function(p){return{x:p.x,y:p.y};});}
-function basis(p){var x=p.x-CORE[0].x,y=p.y-CORE[0].y;return{a:x/20,b:(.55*x-y)/12};}
+function basis(p){var x=p.x-CORE[0].x,y=p.y-CORE[0].y,ux=CORE[1].x-CORE[0].x,uy=CORE[1].y-CORE[0].y,vx=CORE[3].x-CORE[0].x,vy=CORE[3].y-CORE[0].y,det=ux*vy-uy*vx;return{a:(x*vy-y*vx)/det,b:(ux*y-uy*x)/det};}
 function baseMap(p,warp){
  if(!warp)return{x:p.x,y:p.y};var q=basis(p),a=q.a-.5,b=q.b-.5;
  function ease(t){var n=Math.abs(t);return n<=.5?t:(t<0?-1:1)*(1-.5*Math.exp(-2*(n-.5)));}
@@ -23,6 +25,7 @@ function compile(warp,nodes){
 }
 function apply(p,warp,data){var v=baseMap(p,warp);if(data)for(var i=0;i<data.sources.length;i++){var weight=kernel(p,data.sources[i]);v.x+=weight*data.x[i];v.y+=weight*data.y[i];}return v;}
 function map(p,warp,nodes){return apply(p,warp,compile(warp,nodes));}
+function mapper(warp,nodes){var data=compile(warp,nodes);return function(p){return apply(p,warp,data);};}
 function nodesValid(nodes){
  if(nodes===undefined)return true;if(!Array.isArray(nodes)||nodes.length>MAX_NODES)return false;var sources=controls();
  for(var i=0;i<nodes.length;i++){var n=nodes[i];if(!n||!Number.isInteger(n.edge)||n.edge<0||n.edge>3||typeof n.t!=="number"||!isFinite(n.t)||n.t<=0||n.t>=1||![n.x,n.y].every(function(v){return typeof v==="number"&&isFinite(v)&&Math.abs(v)<=SIZE*4;}))return false;var p=source(n.edge,n.t);if(sources.some(function(q){return Math.hypot(q.x-p.x,q.y-p.y)<.75;}))return false;sources.push(p);}return true;
@@ -61,4 +64,8 @@ function inverse(p,warp,nodes){
  var data=mesh(warp,nodes);for(var i=0;i<data.triangles.length;i+=3){var ids=data.triangles.slice(i,i+3),a=data.points[ids[0]],b=data.points[ids[1]],c=data.points[ids[2]],det=(b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);if(Math.abs(det)<1e-10)continue;var u=((b.y-c.y)*(p.x-c.x)+(c.x-b.x)*(p.y-c.y))/det,v=((c.y-a.y)*(p.x-c.x)+(a.x-c.x)*(p.y-c.y))/det,w=1-u-v;if(u>=-1e-7&&v>=-1e-7&&w>=-1e-7){var s=ids.map(function(id){return data.sourcePoints[id];});return{x:s[0].x*u+s[1].x*v+s[2].x*w,y:s[0].y*u+s[1].y*v+s[2].y*w};}}
  return null;
 }
-exports.size=SIZE;exports.controls=controls;exports.map=map;exports.valid=valid;exports.mesh=mesh;exports.vertices=vertices;exports.source=source;exports.addNode=addNode;exports.boundary=boundary;exports.maxNodes=MAX_NODES;exports.inverse=inverse;
+return{size:SIZE,controls:controls,map:map,mapper:mapper,valid:valid,mesh:mesh,vertices:vertices,source:source,addNode:addNode,boundary:boundary,maxNodes:MAX_NODES,inverse:inverse};
+}
+var profiles={};Types.list.forEach(function(type){profiles[type.id]=create(type.core);});
+Object.keys(profiles.full).forEach(function(key){exports[key]=profiles.full[key];});
+exports.forType=function(type){return profiles[Types.get(type).id];};

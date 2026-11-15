@@ -1057,7 +1057,8 @@ var def_KinghtFallGameCtrl = function (t) {
         this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, i.prefab, function (t) {
           if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch) return;
           try {
-            r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, t, 10);
+            // Grow on demand; warming unused rigs stalls the first live spawn.
+            r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, t, 0);
             o(r);
           } finally { pendingData.pendingEnemySpawns--; }
         });
@@ -1143,6 +1144,10 @@ var def_KinghtFallGameCtrl = function (t) {
     var r = this.ctrPlay.getAttack(t);
     var s = this.ctrPlay.crit > Math.random();
     var hero = this.ctrPlay, context = require("RelicCombat").primaryContext(hero, t, r, s, release);
+    // The hero starts drawing again while this arrow flies. Its impact sound
+    // belongs to the released shot, never to the hero's later live charge.
+    context.heroStyle = hero.heroStyle;
+    context.styleShotCharge = hero._styleShotCharge || 0;
     s && (r *= this.ctrPlay.getCriticalDamage ? this.ctrPlay.getCriticalDamage() : this.ctrPlay.critDam);
     o.combatContext = this;
     ProjectileLooks.prepare(o, this, "hero");

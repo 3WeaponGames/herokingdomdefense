@@ -24,6 +24,7 @@ var HELP = {
   chargeRate:"Fraction of a full charge bar gained each second. 0.25 fills the bar in four seconds.",
   chargeDecay:"Fraction of momentum lost each second while standing still.",
   chargedDamage:"Extra shot damage at full Steady Aim charge. 0.5 means 50% additional damage.",
+  chargedRange:"Extra basic-attack range at full Steady Aim charge. 0.5 means 50% additional range; the range ring grows with the charge.",
   windup:"Seconds between confirming the aimed skill and releasing its arrow.",
   projectileSpeed:"Base arrow speed in world units per second. Momentum scales this from 100% at zero charge to 200% at full charge.",
   distanceDamagePer100:"Added damage multiplier for every 100 units travelled. 0.1 adds 10% per 100 units.",

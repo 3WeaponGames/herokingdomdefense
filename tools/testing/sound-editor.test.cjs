@@ -24,6 +24,20 @@ test('the sound catalog finds every current audio asset, including all eight hor
   assert(indexed.items.some(item => item.kind === 'music')); assert(indexed.items.some(item => item.kind === 'voice' && item.tier === 3));
   assert(indexed.items.filter(item => item.generated).every(item => item.origin === 'new' && item.category !== 'other'));
 });
+
+test('Skirmisher charge and release clips stay in weapons while both on-hit clips stay in impacts', () => {
+  const names = ['skirmisher-passive-hit', 'skirmisher-passive-release', 'skirmisher-passive-charged', 'skirmisher-passive-draw-loop', 'skirmisher-active-release', 'skirmisher-active-hit'];
+  const indexed = Catalog.index(root), items = names.map(name => {
+    const file = 'assets/KinghtFallAudio/sfx/' + name + '.ogg', item = indexed.items.find(row => row.file === file);
+    assert(item, 'Missing optimized Skirmisher sound: ' + file);
+    assert.equal(item.format, 'OGG'); assert.equal(item.kind, 'effect'); assert.equal(item.origin, 'new'); assert(item.uuid);
+    assert.equal(item.category, name.endsWith('-hit') ? 'impacts' : 'weapons');
+    assert.equal(item.loop, name.endsWith('-loop'));
+    return item;
+  });
+  assert.equal(Model.view({ categories: Catalog.CATEGORIES, items }, { category: 'weapons', search: 'Skirmisher' }).items.length, 4);
+  assert.equal(Model.view({ categories: Catalog.CATEGORIES, items }, { category: 'impacts', search: 'Skirmisher' }).items.length, 2);
+});
 test('command voices and biome easter eggs retain action labels and composable biome filters', () => {
   for (const unit of ['royal-knight', 'heavy-infantry', 'crossbowman', 'cavalry']) {
     for (const action of ['rally', 'follow']) {

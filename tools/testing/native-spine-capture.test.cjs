@@ -143,7 +143,7 @@ function compound(order=['horse','body','cape','hand','head','bow','arrow']) {
  for(const name of order)byName[name]=f.add(name,{parent,alpha:name==='cape'?.625:1});
  const smoke=f.add('walking dust',{parent,alpha:.75}),sources=['horse','body','cape','head','bow','arrow','hand'].map(name=>byName[name]);
  const draws=[];Object.assign(f.owner,{cameraNode:new (f.scene.constructor)('camera'),camera:{render(root){draws.push({root,clear:this.clearFlags,parts:f.pass(root)});}}});
- return Object.assign(f,{parent,smoke,sources,draws,render(batch){f.DepthView.prototype.renderNative.call(f.owner,sources,{x:0,y:0},100,{},batch);}});
+ return Object.assign(f,{parent,smoke,sources,draws,render(batch){f.DepthView.prototype.renderNative.call(f.owner,sources,{x:0,y:0},100,{},batch?true:undefined);},renderColor(){f.DepthView.prototype.renderNative.call(f.owner,sources,{x:0,y:0},100,{},false);}});
 }
 function painted(draws) {
  // Independent non-PMA blend model. A reordering of fractional edge pixels
@@ -190,7 +190,15 @@ for(const unsupported of ['sprite','nested','cached dust','pending order','disab
  f.render(true);assert.equal(f.draws.length,7);assert(f.draws.every(draw=>draw.root!==f.parent));painted(f.draws);
 });
 
-test('Gate and other full-color captures retain their original seven-source camera order',()=>{
+for(const settled of [false,true])test('full-color actor captures preserve RGBA, source order and cadence with fewer cameras, settled='+settled,()=>{
+ const old=compound(),f=compound(),before=f.snapshot();
+ if(settled)for(const value of [old,f]){const scope=new value.Scope(value.owner);value.owner._nativeCaptureScope=scope;scope.capture(value.renderers[0].node,()=>value.pass(value.renderers[0].node));}
+ old.render(false);f.renderColor();assert.equal(old.draws.length,7);assert(f.draws.length<7);
+ assert.deepEqual(f.draws.flatMap(draw=>draw.parts.map(part=>part.id)),old.draws.flatMap(draw=>draw.parts.map(part=>part.id)));assert.deepEqual(painted(f.draws),painted(old.draws));assert.deepEqual(f.renderers.map(r=>r.state.apply),old.renderers.map(r=>r.state.apply));
+ if(settled){old.owner._nativeCaptureScope.finish();f.owner._nativeCaptureScope.finish();}assert.deepEqual(f.snapshot(),before);assert.equal(f.owner.camera.targetTexture,null);
+});
+
+test('building and leaf captures with no actor argument retain individual camera order',()=>{
  const f=compound();f.render(false);assert.equal(f.draws.length,7);assert(f.draws.every(draw=>draw.root!==f.parent));painted(f.draws);
 });
 

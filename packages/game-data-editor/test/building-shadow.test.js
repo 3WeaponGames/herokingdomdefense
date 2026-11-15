@@ -52,8 +52,9 @@ function runtime(){
  class Sprite{constructor(){sprites.push(this);}}Sprite.SizeMode={CUSTOM:1};
  class RenderNode extends Node{setContentSize(w,h){this.width=w;this.height=h;}setAnchorPoint(x,y){this.anchorX=x;this.anchorY=y;}addComponent(Type){const c=new Type();c.node=this;return c;}destroy(){this.destroyed=true;this.parent=null;}}
  const cc={Node:RenderNode,Sprite,Texture2D:Texture,SpriteFrame:Frame,macro:{BlendFactor:{ONE:1}},Director:{EVENT_BEFORE_DRAW:'draw'},director:{on(_e,fn){listeners.add(fn);},off(_e,fn){listeners.delete(fn);}},v2:(x,y)=>({x,y}),isValid:n=>!n.destroyed};
- const context={exports:{},cc,require:name=>{assert.equal(name,'BuildingShadow');return Shadow;}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BuildingShadowRuntime.js'),'utf8'),context);
- return {api:context.exports,listeners,resources,sprites,Node:RenderNode};
+ const transition={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BuildingShadowTransition.js'),'utf8'),{exports:transition,cc});
+ const context={exports:{},cc,require:name=>{if(name==='BuildingShadowTransition')return transition;assert.equal(name,'BuildingShadow');return Shadow;}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BuildingShadowRuntime.js'),'utf8'),context);
+ return {api:context.exports,transition,listeners,resources,sprites,Node:RenderNode};
 }
 test('runtime alpha textures stay grounded, reuse unchanged masks and release on clear, upgrade, disable and destruction',()=>{
  const f=runtime(),parent=new f.Node('map'),ground=new f.Node('ground');ground.parent=parent;const node=new f.Node('building');node.parent=parent;node.x=30;node.y=70;node.angle=45;
@@ -69,4 +70,10 @@ test('runtime alpha textures stay grounded, reuse unchanged masks and release on
 test('stage-prepared polygon shadows share their pinned texture and detach sprites before releasing it',()=>{
  const f=runtime(),owner={node:new Node(),index:1,enabled:true,buildInfo:{cfg:{Shadow:{version:1,opacity:.3,body:{mask:rect(-10,-5,20,10)}}}}},entry=f.api.prepareEntry(owner.buildInfo.cfg.Shadow),game={ndDown:new Node(),_stageAssets:{shadows:{getManual:()=>entry}}};
  f.api.apply(owner,game);assert.equal(f.resources.length,2);assert.equal(owner._buildingShadowRuntime.frame,entry.frame);assert.equal(entry.refs,2);const sprite=f.sprites[0];f.api.dispose(owner);assert.equal(sprite.spriteFrame,null);assert(!entry.frame.destroyed);assert.equal(entry.refs,1);f.api.releaseEntry(entry);assert(entry.frame.destroyed&&entry.texture.destroyed);
+});
+
+test('clearing a manual mask during an upgrade fades its retained shadow and retires the empty renderer',()=>{
+ const f=runtime(),owner={node:new f.Node(),index:1,enabled:true,buildInfo:{cfg:{Shadow:{version:1,opacity:.3,body:{mask:rect(-10,-5,20,10)}}}}},game={ndDown:new f.Node()};
+ f.api.apply(owner,game);const state=owner._buildingShadowRuntime;f.transition.begin(owner);const ghost=owner._buildingShadowTransition.old[0];owner.buildInfo.cfg.Shadow={version:1,opacity:.3,body:{mask:[]}};const motion={kind:'upgrade',duration:.6667,elapsed:0};owner._buildingAppearance={placement:motion};state.sync();assert(ghost.node.active);
+ motion.elapsed=.3;state.sync();assert(ghost.node.active);assert.equal(state.node.active,false);motion.elapsed=.6;state.sync();assert.equal(owner._buildingShadowRuntime,undefined);assert.equal(owner._buildingShadowTransition,undefined);assert.equal(f.listeners.size,0);assert(f.resources.every(r=>r.destroyed));
 });

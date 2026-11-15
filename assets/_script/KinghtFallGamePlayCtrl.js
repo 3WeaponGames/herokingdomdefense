@@ -87,6 +87,20 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     graphics.circle(0, 0, (range.width - settings.HeroRangeLineWidth) / 2);
     graphics.stroke();
   };
+  _ctor.prototype.getAttackRange = function () {
+    if (this._styleShotRange !== undefined) return this._styleShotRange;
+    var runtime = this._styleRuntime;
+    var bonus = runtime && !this._relicMoving ? runtime.bonus().range || 0 : 0;
+    return this.attackRange * (1 + bonus);
+  };
+  _ctor.prototype.refreshAttackRange = function () {
+    if (this.ndRange && this.ndRange.width > 0) {
+      var scale = 2 * this.getAttackRange() / this.ndRange.width;
+      // Native node transforms round through Float32; a held charge must not
+      // dirty the transform every frame solely because of that rounding.
+      if (Math.abs(this.ndRange.scale - scale) > 1e-7 * Math.max(1, scale) || this.ndRange.scale === undefined) this.ndRange.scale = scale;
+    }
+  };
   _ctor.prototype.initData = function () {
     GameToolsOverrides.cancel(this);
     this._relicHero = true;
@@ -348,6 +362,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.onFindEnemy = function () {
     this.node.getPosition(this.vec2_1);
+    var attackRange = this.getAttackRange();
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
     var e = [];
     for (var n = 0; n < t.length; n++) {
@@ -356,7 +371,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         i.node.getPosition(this.vec2_2);
         cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
         var a = this.vec2_2.mag();
-        a <= this.attackRange && e.push({
+        a <= attackRange && e.push({
           tag: i,
           len: a
         });
@@ -386,6 +401,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     else $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.palyer_attack, this);
     this.node.getPosition(this.vec2_1);
     if (!RelicCombat.primaryValid(lifetime, null, this)) return;
+    var attackRange = this.getAttackRange();
     var t = game.gameData.getEnemyList();
     var e = [];
     for (var n = 0; n < t.length; n++) {
@@ -394,7 +410,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         i.node.getPosition(this.vec2_2);
         cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
         var a = this.vec2_2.mag();
-        a <= this.attackRange && e.push({
+        a <= attackRange && e.push({
           tag: i,
           len: a,
           generation: i.node._combatGeneration
@@ -409,7 +425,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       for (var o = 0; o < this.attNum; o++) {
         if (!RelicCombat.primaryValid(lifetime, null, this)) break;
         var r = e[o];
-        if (r && !r.tag._isPooled && cc.isValid(r.tag.node, true) && !r.tag.isDead() && r.tag.node._combatGeneration === r.generation && cc.Vec2.distance(this.node.getPosition(), r.tag.node.getPosition()) <= this.attackRange) game.onPlayAttack(r.tag, o === 0 ? release : undefined);
+        if (r && !r.tag._isPooled && cc.isValid(r.tag.node, true) && !r.tag.isDead() && r.tag.node._combatGeneration === r.generation && cc.Vec2.distance(this.node.getPosition(), r.tag.node.getPosition()) <= attackRange) game.onPlayAttack(r.tag, o === 0 ? release : undefined);
       }
     }
   };
@@ -498,7 +514,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       this.time[C.AttackBuff1] = l.Pamer[0];
       this.attackRange *= 1 - l.Pamer[1];
     }
-    this.ndRange.scale = 2 * this.attackRange / this.ndRange.width;
+    this.refreshAttackRange();
     this.time[C.AttackSpeed2] = 0;
     this.time[C.AttackBuff2] = 0;
     var c = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff42);

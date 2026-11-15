@@ -4104,8 +4104,8 @@
       "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIExchangeCode.prefab:KinghtFallUIExchangeCode/root/btnGet/New Label (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.133": {
-      "en": "Next Wave",
-      "zh": "下波敌人",
+      "en": "Next\nWave",
+      "zh": "下波\n敌人",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndEnemyIcon/labName (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.146": {
@@ -14985,22 +14985,22 @@
     "ui.layout.kinghtfalluigame.133": {
       "en": {
         "width": 208,
-        "height": 44,
-        "fontSize": 38,
-        "lineHeight": 44,
+        "height": 128,
+        "fontSize": 52,
+        "lineHeight": 58,
         "wrap": false,
-        "overflow": "SHRINK",
+        "overflow": "CLAMP",
         "horizontalAlign": 1,
         "x": 0,
         "y": -42
       },
       "zh": {
         "width": 208,
-        "height": 44,
-        "fontSize": 38,
-        "lineHeight": 44,
+        "height": 128,
+        "fontSize": 52,
+        "lineHeight": 58,
         "wrap": false,
-        "overflow": "SHRINK",
+        "overflow": "CLAMP",
         "horizontalAlign": 1,
         "x": 0,
         "y": -42

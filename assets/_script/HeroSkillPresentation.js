@@ -19,7 +19,7 @@ function release(runtime,strike,charge) {
   if(cue&&cue.clip)return;
   var s=state(runtime);if(s.lastRelease===strike)return;s.lastRelease=strike;
   var sounds=require("BattleSounds");
-  if(runtime.state.style==="skirmisher"&&charge>=1-1e-9){if(sounds.effect)sounds.effect("archer-momentum-release",runtime.hero);return;}
+  if(runtime.state.style==="skirmisher"){if(sounds.skirmisherRelease)sounds.skirmisherRelease(runtime.hero,true);return;}
   if(runtime.state.style==="guardian"){
     if(sounds.effect)sounds.effect("shield-activate",runtime.hero);
   }else if(sounds.attack)sounds.attack(runtime.hero,"hero");
