@@ -47,21 +47,22 @@ function smaller(source){
 }
 async function prepare(prefab,config,level,session,progress){
   var main=prefab.data.getChildByName("ndMain");if(!main)throw Error("Stage map has no structure layer");
-  var kinds={1:1},slots={},pins=[],manualPins=[],cache={},jobs=[];
+  var kinds={1:1},slots={},pins=[],manualPins=[],cache={},jobs=[],mapPreparation=null,casters=prefab.data.getComponentsInChildren?prefab.data.getComponentsInChildren('MapObjectShadow'):[];
   [1,2,3,4].forEach(function(tier){(level["HomeLevel"+tier+"Unlock"]||[]).forEach(function(pair){if(kinds[pair[1]]===undefined)kinds[pair[1]]=pair[0];});});
   main.children.forEach(function(node){var template=node.getComponent("KinghtFallBuildBase"),kind=template&&kinds[template.ID],category=kind&&config.BuildEnum[kind];if(!category)return;slots[template.ID]={};(category.levelList||[]).forEach(function(row){var style=FX.resolve(category,row,config.GameTools);if(style.mode==='none'||!style.active&&!row.Shadow)return;[false].concat(style.active&&Number(kind)===6?[true]:[]).forEach(function(open){jobs.push({template:template,row:row,style:style,open:open,manual:!style.active});});});});
   var root=new cc.Node("StageShadowPreparation");root.parent=cc.director.getScene();root.setPosition(100000,100000);
-  function dispose(){pins.forEach(Runtime.releaseEntry);manualPins.forEach(Manual.releaseEntry);pins=[];manualPins=[];slots={};}
+  function dispose(){pins.forEach(Runtime.releaseEntry);manualPins.forEach(Manual.releaseEntry);if(mapPreparation)mapPreparation.dispose();mapPreparation=null;pins=[];manualPins=[];slots={};}
   try{
     for(var i=0;i<jobs.length;i++){
       if(!session.current())throw Error("Stage shadow preparation cancelled");
       var job=jobs[i],s=stamp(job.row,job.style.settings,job.template),key="stage-shadow:"+JSON.stringify([s,geometry(job.template),job.open,job.manual&&job.row.Shadow]),entry=cache[key],plan;
       if(!entry){var owner=probe(job.template,job.row,root,session.assets,job.open);try{if(job.manual){var renderer=owner.ndAniOther.find(function(r){return r.skeletonData&&r.skeletonData.skeletonJson.wallKit;}),json=renderer&&renderer.skeletonData.skeletonJson;plan=json&&json.wallKit.layout;entry=Manual.prepareEntry(job.row.Shadow,plan);if(entry)manualPins.push(entry);}else{var source=Runtime.capture(owner,{ndMain:root},Runtime.sources(owner));if(!source)throw Error("Could not prepare structure shadow "+job.template.ID+":"+job.row.index);entry=Runtime.prepareEntry(key,smaller(source),job.style.settings);pins.push(entry);}cache[key]=entry;}finally{owner.node.active=false;owner.ndAniOther.forEach(function(r){r.skeletonData=null;});owner.node.destroy();owner.clones.forEach(function(asset){asset.destroy();});}}
       var rows=slots[job.template.ID],value=rows[job.row.index]||(rows[job.row.index]={stamp:s});if(job.manual){value.manual=entry;value.manualStamp=entry&&entry.signature;}else value[job.open?"open":"closed"]=entry;
-      if(progress)progress((i+1)/Math.max(1,jobs.length));await new Promise(function(resolve){setTimeout(resolve,0);});
+      if(progress)progress((i+1)/Math.max(1,jobs.length+casters.length));await new Promise(function(resolve){setTimeout(resolve,0);});
     }
+    if(casters.length)mapPreparation=await require("MapObjectShadowRuntime").prepareStage(casters,config,session,function(value){if(progress)progress((jobs.length+value*casters.length)/Math.max(1,jobs.length+casters.length));});
     if(!session.current())throw Error("Stage shadow preparation cancelled");
-    return{get:function(owner,row,settings){var value=slots[owner.ID]&&slots[owner.ID][row.index];return value&&value.stamp===stamp(row,settings,owner)?value[owner.isOpen?"open":"closed"]:null;},getManual:function(owner,row,plan){var value=slots[owner.ID]&&slots[owner.ID][row.index];return value&&value.manualStamp===JSON.stringify([row.Shadow,plan])?value.manual:null;},dispose:dispose,count:pins.length+manualPins.length};
+    return{get:function(owner,row,settings){var value=slots[owner.ID]&&slots[owner.ID][row.index];return value&&value.stamp===stamp(row,settings,owner)?value[owner.isOpen?"open":"closed"]:null;},getManual:function(owner,row,plan){var value=slots[owner.ID]&&slots[owner.ID][row.index];return value&&value.manualStamp===JSON.stringify([row.Shadow,plan])?value.manual:null;},dispose:dispose,count:pins.length+manualPins.length+(mapPreparation?mapPreparation.count:0)};
   }catch(error){dispose();throw error;}finally{root.active=false;root.destroy();}
 }
 exports.prepare=prepare;exports.stamp=stamp;exports.smaller=smaller;

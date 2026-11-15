@@ -1,5 +1,6 @@
-(function(root,factory){if(typeof module==='object')module.exports=factory(require('./roads'),require('./model').isGroundObject,require('./model').assetSize);else root.WorldPaint=factory(root.WorldRoads);}(this,function(Roads,isGroundObject,assetSize){
+(function(root,factory){if(typeof module==='object')module.exports=factory(require('./roads'),require('./model').isGroundObject,require('./model').assetSize,require('../../../assets/_script/MapObjectShadowPolicy'),()=>require('./object-shadows'));else root.WorldPaint=factory(root.WorldRoads,null,null,root.MapObjectShadowPolicy,()=>root.WorldObjectShadows);}(this,function(Roads,isGroundObject,assetSize,ShadowPolicy,getShadows){
 'use strict';
+ShadowPolicy=ShadowPolicy||{enabled:(layer,o)=>layer.globalShadow===true||o.globalShadow===true};
 // The raw browser baker has no CommonJS model. Match its pure depth predicate.
 isGroundObject=isGroundObject||function(layer,object){return object.buildingOverlap!=='front'&&(layer.depth==='ground'||object.depth==='ground');};
 assetSize=assetSize||function(asset,placement){var scale=placement.nativeSize===true&&Number.isFinite(asset.nativeScale)&&asset.nativeScale>0?asset.nativeScale:1;return {width:asset.width*scale,height:asset.height*scale};};
@@ -77,7 +78,7 @@ function ground(ctx,map,images,viewport,cache,options){
   ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=layer.opacity===undefined?1:layer.opacity;ctx.globalCompositeOperation=layer.blend||'source-over';ctx.drawImage(c,0,0);ctx.restore();
  }
  for(var key of map.ground.order||['foundation','roads','grass']){var layer=map.ground[key]||(map.ground.custom||[]).find(function(l){return l.id===key;});if(layer&&layer.purpose==='shadow-paint')shadows.push({layer,key});else composite(layer,key);}
- for(var l of map.layers){if(l.hidden)continue;for(var o of l.objects)if(!o.legacy&&isGroundObject(l,o))object(ctx,o,l,images);}
+ for(var l of map.layers){if(l.hidden)continue;for(var o of l.objects)if(!o.legacy&&isGroundObject(l,o)&&!ShadowPolicy.enabled(l,o))object(ctx,o,l,images);}
  // Ground artwork includes connected river/bridge images. Painted shadows sit
  // over those surfaces while upright scenery and gameplay objects stay above.
  for(var shadow of shadows)composite(shadow.layer,shadow.key);
@@ -96,10 +97,10 @@ function bakeImage(source,placement){
 }
 async function bake(spec){var images=await loadImages(spec),map=spec.map,files=[],groundTiles=[],assetFrames={},W=map.size.width,H=map.size.height;
  for(var y=0;y<H;y+=2048)for(var x=0;x<W;x+=2048){var w=Math.min(2048,W-x),h=Math.min(2048,H-y),c=canvas(w,h),ctx=c.getContext('2d'),view=[1,0,0,-1,W/2-x,H/2-y];ctx.setTransform.apply(ctx,view);ground(ctx,map,images,view,null,{canonicalCoverage:true});var name='ground-'+x+'-'+y;files.push({name,width:w,height:h,png:c.toDataURL('image/png')});groundTiles.push({name,width:w,height:h,x:x+w/2-W/2,y:H/2-y-h/2});}
- var used={},rendered={};for(var layer of map.layers)if(!layer.hidden)for(var o of layer.objects)if(!o.legacy&&!isGroundObject(layer,o))used[assetKey(o)]={source:o.assetId,object:o};
+ var used={},rendered={};for(var layer of map.layers)if(!layer.hidden)for(var o of layer.objects)if(!o.legacy&&(!isGroundObject(layer,o)||ShadowPolicy.enabled(layer,o)))used[assetKey(o)]={source:o.assetId,object:o};
  var items=Object.keys(used).map(function(id){var source=objectImage(used[id].object,images);if(!source)throw Error('Missing image '+id);source=bakeImage(source,used[id].object);rendered[id]=source;return {id,width:source.image.naturalWidth||source.image.width,height:source.image.naturalHeight||source.image.height,worldWidth:source.width,worldHeight:source.height,anchor:source.anchor};}),packing=atlasPlan(items);assetFrames=packing.assets;
  for(var page of packing.pages){var c=canvas(page.width,page.height),pctx=c.getContext('2d');for(var id of Object.keys(assetFrames))for(var f of assetFrames[id].frames)if(f.atlas===page.name)pctx.drawImage(rendered[id].image,f.sx,f.sy,f.width,f.height,f.trimX,f.trimY,f.width,f.height);files.push({name:page.name,width:page.width,height:page.height,png:c.toDataURL('image/png')});}
- var thumb=canvas(192,312),ctx=thumb.getContext('2d'),scale=Math.min(192/W,312/H),view=[scale,0,0,-scale,96,156];ctx.setTransform.apply(ctx,view);ground(ctx,map,images,view,null,{canonicalCoverage:true});var world=[];
+ var thumb=canvas(192,312),ctx=thumb.getContext('2d'),scale=Math.min(192/W,312/H),view=[scale,0,0,-scale,96,156];ctx.setTransform.apply(ctx,view);ground(ctx,map,images,view,null,{canonicalCoverage:true});var shadowAPI=getShadows&&getShadows();if(shadowAPI){var shadowView=shadowAPI.create();try{shadowView.draw(ctx,map,images,spec.shadowSettings);}finally{shadowView.destroy();}}var world=[];
  // Match the editor's layer bands before ground-point sorting. Foreground
  // overrides belong to their own layer, and equal feet retain child order.
  map.layers.forEach(function(layer,index){if(!layer.hidden)for(var o of layer.objects)if(o.legacy||!isGroundObject(layer,o))world.push({o,layer,index,order:world.length,y:(function(){var m=matrix(layer.transform),t=matrix(o),p=o.ground||{x:0,y:0},x=o.flipX?-p.x:p.x,y=p.y;return m[1]*(t[0]*x+t[2]*y+t[4])+m[3]*(t[1]*x+t[3]*y+t[5])+m[5];}())});});

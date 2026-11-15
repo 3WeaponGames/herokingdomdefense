@@ -25,7 +25,7 @@ function create(root,actions){
   if(!inside(event))return;
   event.stopPropagation();
   if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)){
-   event.preventDefault();const items=Array.from(current.menu.querySelectorAll('button'));
+   event.preventDefault();const items=Array.from(current.menu.querySelectorAll('button')).filter(b=>!b.disabled);if(!items.length)return;
    const path=typeof event.composedPath==='function'?event.composedPath():[event.target];
    let at=items.findIndex(item=>path.includes(item));
    at=event.key==='Home'?0:event.key==='End'?items.length-1:(at+(event.key==='ArrowUp'?-1:1)+items.length)%items.length;
@@ -35,15 +35,17 @@ function create(root,actions){
  function open(event,asset,anchor){
   event.preventDefault();event.stopPropagation();close(false);
   if(actions.busy&&actions.busy())return;
-  const menu=document.createElement('div');menu.className='world-asset-menu';menu.setAttribute('role','menu');menu.setAttribute('aria-label','Asset actions for '+asset.name);
+  if(actions.beforeOpen)actions.beforeOpen();
+  const menu=document.createElement('div');menu.className='world-asset-menu';menu.setAttribute('role','menu');menu.setAttribute('aria-label',actions.label?actions.label(asset):'Asset actions for '+asset.name);
   current={menu,anchor};
-  for(const [label,action] of [['Rename',actions.rename],['Delete',actions.remove]]){
-   const item=document.createElement('button');item.textContent=label;item.setAttribute('role','menuitem');
-   item.onclick=()=>{close(false);Promise.resolve().then(()=>action(asset)).catch(actions.error);};menu.appendChild(item);
+  const entries=actions.items?actions.items(asset):[{label:'Rename',action:actions.rename},{label:'Delete',action:actions.remove}];
+  for(const entry of entries){
+   const item=document.createElement('button');item.textContent=(entry.checked===true?'✓ ':'')+entry.label;item.setAttribute('role',entry.checked===undefined?'menuitem':'menuitemcheckbox');if(entry.checked!==undefined)item.setAttribute('aria-checked',String(entry.checked));item.disabled=!!entry.disabled;if(entry.title)item.title=entry.title;
+   item.onclick=()=>{if(item.disabled)return;close(false);Promise.resolve().then(()=>entry.action(asset)).catch(actions.error);};menu.appendChild(item);
   }
   root.appendChild(menu);const bounds=anchor.getBoundingClientRect(),x=Number.isFinite(event.clientX)?event.clientX:bounds.left,y=Number.isFinite(event.clientY)?event.clientY:bounds.bottom;
   menu.style.left=Math.max(0,Math.min(x,window.innerWidth-menu.offsetWidth-4))+'px';menu.style.top=Math.max(0,Math.min(y,window.innerHeight-menu.offsetHeight-4))+'px';
-  document.addEventListener('pointerdown',outside,true);document.addEventListener('keydown',key,true);document.addEventListener('scroll',scroll,true);window.addEventListener('blur',blur);menu.querySelector('button').focus({preventScroll:true});
+  document.addEventListener('pointerdown',outside,true);document.addEventListener('keydown',key,true);document.addEventListener('scroll',scroll,true);window.addEventListener('blur',blur);menu.tabIndex=-1;(Array.from(menu.querySelectorAll('button')).find(b=>!b.disabled)||menu).focus({preventScroll:true});
   // Scroll events do not cross Shadow DOM boundaries.
   if(eventRoot!==document)eventRoot.addEventListener('scroll',scroll,true);
  }

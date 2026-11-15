@@ -199,3 +199,4 @@
 .world-stages .world-wall-layout-dialog>.world-note{flex:0 0 auto}
 
 .world-stages .world-unit-entry>.world-unit-manage-profiles{font-size:10px;padding:4px}.world-wave-unit-select{flex-wrap:wrap}
+.world-shadow-badge{flex:none;width:14px;text-align:center;color:#e5c16d;font-size:12px}.world-shadow-badge.inherited{color:#9bc7e0}
