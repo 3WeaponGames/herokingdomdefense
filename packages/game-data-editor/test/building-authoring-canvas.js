@@ -123,6 +123,7 @@ async function verify(options={}){
    assert(host.querySelector('[aria-label="Edit layer"]').value===activeLayer&&next.scale===camera.scale&&next.cx===camera.cx&&next.cy===camera.cy&&canvas().clientHeight===previewHeight,'Building navigation preserves '+activeLayer+' and its complete preview view');assert(Math.abs(panel.$detail.scrollTop-scroll)<2,'Building navigation preserves '+activeLayer+' scroll');assert(store.version===revision,'Tier and building navigation make no draft changes');const buildingInspector=host.querySelector('.bld-authoring-inspector');assert(Math.abs(buildingInspector.getBoundingClientRect().width-panelWidth)<2,'Building navigation retains the shared '+activeLayer+' panel width');if(options.capture)await options.capture('layout-'+activeLayer);
   }
   {const revision=store.version,view=client().stats().view;host.style.width='430px';await pause(80);const row=canvas().closest('.bld-authoring-layout'),inspector=row.querySelector('.bld-authoring-inspector');assert(row.hasAttribute('data-stacked')&&inspector.scrollWidth<=inspector.clientWidth+1,'Narrow panels keep every control reachable without clipping');host.style.width='';await pause(80);assert(!row.hasAttribute('data-stacked')&&client().stats().view.scale===view.scale&&store.version===revision,'Returning to a wide split retains zoom and game data');}
+  await require('./building-nightlight-clipboard-canvas').verify({panel,host,store,ready,pause,assert,options});
   return{checks,shots,projectWrites:0,draftEdits:store.version};
  }finally{close();}
 }

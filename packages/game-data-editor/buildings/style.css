@@ -40,6 +40,7 @@
 .bld-authoring-inspector .bld-scale-controls input[type=number],.bld-authoring-inspector .bld-scale-controls select{box-sizing:border-box;min-width:0;max-width:100%;width:100%;flex-basis:100%}
 .bld-authoring-inspector .bld-scale-controls input[type=range]{min-width:0;width:100%;flex-basis:100%}
 .bld-authoring-inspector .bld-controls-wide,.bld-authoring-inspector .bld-brush-controls>label,.bld-authoring-inspector .bld-scale-controls>input[type=range]{grid-column:1/-1}
+.bld-nightlight-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;flex-basis:100%}.bld-nightlight-actions>.bld-controls-wide{grid-column:1/-1}
 .bld-brush-field{flex-direction:column;align-items:stretch!important}.bld-brush-values{display:grid;grid-template-columns:minmax(70px,1fr) 70px 18px;align-items:center;gap:6px;width:100%;min-width:0}.bld-brush-hotkey{display:block;width:100%;font-size:10px;line-height:1.4;color:#a9bdd2}
 .bld-nightlight-tools{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;grid-column:1/-1;width:100%;padding:4px 0 8px;margin-bottom:12px;background:#252d39;border-bottom:1px solid #45546a}
 .bld-authoring-inspector .bld-nightlight-tools{top:-12px;padding-top:12px}
