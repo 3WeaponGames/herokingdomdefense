@@ -17,6 +17,13 @@ test('building and tier navigation retain all four editor layers, cameras, previ
  }
  assert.equal(f.store.version,initial);assert.equal(f.messages.filter(m=>m.message==='game-data-editor:change').length,0);
 });
+test('building navigation preserves inspector sizing, each tool scroll and nightlight brush preferences without data edits',()=>{
+ const f=fixture();f.render('2:4',3);const revision=f.store.version,state=f.current().api.state;
+ Object.assign(state,{layer:'nightlight',inspectorWidth:468,inspectorScroll:{blocker:32,shadow:120,scale:48,nightlight:210},nightView:{tool:'erase',size:8.25,opacity:37.5,softness:66.2,newLightType:'circle',selected:'light:old'}});
+ f.render('4',0);const next=f.current().api.state;assert.equal(next.inspectorWidth,468);assert.deepEqual(JSON.parse(JSON.stringify(next.inspectorScroll)),{blocker:32,shadow:120,scale:48,nightlight:210});
+ for(const [key,value]of Object.entries({tool:'erase',size:8.25,opacity:37.5,softness:66.2,newLightType:'circle'}))assert.equal(next.nightView[key],value);assert.equal(next.nightView.selected,undefined);assert.equal(f.store.version,revision);assert.equal(f.messages.filter(m=>m.message==='game-data-editor:change').length,0);
+});
+
 test('shadow, blocker, scale and nightlight commits update the draft without destroying either preview',async()=>{
  const f=fixture();f.render('4',0);const client=f.current(),api=client.api,mounts=f.mounts.length,previewCalls=f.previews.length;
  const value={version:1,opacity:.2,body:{mask:[[[[-40,-10],[40,-10],[40,-70],[-40,-70],[-40,-10]]]]}};

@@ -1,6 +1,18 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),W=require('../../../assets/_script/WindowLightWarp'),T=require('../../../assets/_script/BuildingNightlight'),H=require('../buildings/nightlight-handles'),M=require('../lib/map-assets');
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`),point=(a,b)=>{near(a.x,b.x);near(a.y,b.y);};
+test('live light image caching works without Array.at and follows the actual last stroke and point',()=>{
+ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),Mask=require('../../../assets/_script/WindowLightMask');let renders=0;
+ const Paint={canvas(w,h){return{width:w,height:h,getContext(){return{drawImage(){},getImageData(){return{data:new Uint8ClampedArray(w*h*4).fill(255)};},createImageData(width,height){return{data:new Uint8ClampedArray(width*height*4)};},putImageData(){renders++;}};}};}};
+ const module={exports:{}},context=vm.createContext({module,exports:module.exports,require:id=>id.includes('WindowLightWarp')?W:id.includes('WindowLightMask')?Mask:Paint});
+ vm.runInContext('Array.prototype.at=undefined;\n'+fs.readFileSync(path.join(__dirname,'../buildings/nightlight-warp.js'),'utf8'),context);assert.equal(vm.runInContext('typeof [].at',context),'undefined');
+ vm.runInContext('var source={width:2,height:2},erase={version:1,strokes:[{op:"erase",radius:2,opacity:.5,softness:.5,flow:true,projection:{matrix:[1,0,0,1],type:"full"},points:[{x:0,y:0,strength:.25}]}]};',context);assert(Mask.valid(context.erase));
+ const image=module.exports.image,plain=image(context.source);assert.equal(image(context.source),plain);assert.equal(image(context.source,undefined,undefined,null),plain);assert.doesNotThrow(()=>image(context.source,undefined,undefined,vm.runInContext('({version:1,strokes:[]})',context)));
+ const first=image(context.source,undefined,undefined,context.erase),afterFirst=renders;assert.equal(image(context.source,undefined,undefined,context.erase),first);assert.equal(renders,afterFirst);
+ vm.runInContext('erase.strokes[0].points[0]={x:1,y:0,strength:.25};',context);const replaced=image(context.source,undefined,undefined,context.erase);assert.notEqual(replaced,first);assert.equal(replaced.canvas,first.canvas);assert.equal(renders,afterFirst+1);
+ vm.runInContext('erase.strokes[0].points.push({x:1,y:1,strength:.25});',context);const appended=image(context.source,undefined,undefined,context.erase);assert.notEqual(appended,replaced);assert.equal(appended.canvas,first.canvas);assert.equal(renders,afterFirst+2);
+ vm.runInContext('erase.strokes.push({op:"restore",radius:2,opacity:.5,softness:.5,flow:true,projection:{matrix:[1,0,0,1],type:"full"},points:[{x:0,y:1,strength:.25}]});',context);assert(Mask.valid(context.erase));const nextStroke=image(context.source,undefined,undefined,context.erase);assert.notEqual(nextStroke,appended);assert.equal(nextStroke.canvas,first.canvas);assert.equal(image(context.source,undefined,undefined,context.erase),nextStroke);assert.equal(renders,afterFirst+3);
+});
 test('dim light source handles fit its own aperture and preserve shaped, rotated, mirrored edge and brush coordinates',()=>{
  const D=W.forType('dim'),core=D.controls(),warp=D.controls();assert.notDeepEqual(core,W.controls());warp[1].x+=1;assert(D.valid(warp));core.forEach((p,i)=>point(D.map(p,warp),warp[i]));const nodes=D.addNode(warp,[],0,.45);nodes[0].y+=.3;assert(D.valid(warp,nodes));point(D.map(D.source(0,.45),warp,nodes),nodes[0]);
  const entry={matrix:[-1.2,.2,.1,.9,18,-7],glow:T.glow({type:'dim'})},value={...T.value({},'light:1'),warp,warpNodes:nodes,angle:31,flipX:true},frame=H.frame(entry,value);assert.equal(frame.warpHandles.length,5);assert.equal(H.rotationHandles(frame,2).length,4);

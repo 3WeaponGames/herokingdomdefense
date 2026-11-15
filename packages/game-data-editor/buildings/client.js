@@ -149,9 +149,10 @@ function towerSettings(panel, row, level, at) {
 }
 function carryPreviewState(previous){
     previous=previous||{};const result={};
-    for(const key of ['layer','tool','zoom','previewHeight'])if(previous[key]!==undefined)result[key]=previous[key];
+    for(const key of ['layer','tool','zoom','previewHeight','inspectorWidth'])if(previous[key]!==undefined)result[key]=previous[key];
     if(previous.view)result.view=Object.assign({},previous.view);
-    for(const key of ['scaleView','nightView'])if(previous[key]){const view={};for(const field of ['unit','zoom','cx','cy','fitted','previewHeight','handles'])if(previous[key][field]!==undefined)view[field]=previous[key][field];result[key]=view;}
+    if(previous.inspectorScroll)result.inspectorScroll=Object.assign({},previous.inspectorScroll);
+    for(const key of ['scaleView','nightView'])if(previous[key]){const view={};for(const field of ['unit','zoom','cx','cy','fitted','previewHeight','handles','tool','size','opacity','softness','newLightType'])if(previous[key][field]!==undefined)view[field]=previous[key][field];result[key]=view;}
     return result;
 }
 function render(panel, row, api) {

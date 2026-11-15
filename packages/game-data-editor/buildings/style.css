@@ -23,3 +23,30 @@
 .bld-blocker-canvas,.bld-pad-canvas { resize:vertical; overflow:auto; min-height:200px; max-height:1800px; }
 
 .bld-preview-resize {height:14px;cursor:ns-resize;text-align:center;line-height:10px;color:#a9c6d9;background:#293547;border-radius:0 0 4px 4px;touch-action:none;user-select:none}.bld-preview-resize:focus,.bld-preview-resize:hover{background:#405b77;outline:1px solid #78c4eb}
+
+/* One preview and adjustable inspector for all four building authoring tools. */
+.bld-authoring-layout{display:grid;grid-template-columns:minmax(0,1fr) 10px var(--bld-inspector-width,340px);align-items:start;min-width:0;width:100%}
+.bld-authoring-preview{min-width:0;align-self:start}.bld-authoring-preview .bld-blocker-canvas{box-sizing:border-box;max-width:100%}
+.bld-authoring-inspector{box-sizing:border-box;min-width:0;height:var(--bld-inspector-height,444px);overflow:auto;overscroll-behavior:contain;padding:12px;background:#252d39;border:1px solid #45546a;border-radius:5px}
+.bld-authoring-inspector [hidden],.bld-authoring-preview>[hidden]{display:none!important}
+.bld-authoring-divider{display:flex;align-items:center;justify-content:center;align-self:stretch;min-height:200px;cursor:col-resize;touch-action:none;user-select:none;color:#a9c6d9;background:#293547;border-radius:3px}
+.bld-authoring-divider:hover,.bld-authoring-divider:focus{background:#405b77;outline:1px solid #78c4eb;outline-offset:-1px}
+.bld-authoring-inspector button{min-width:0;white-space:normal;overflow-wrap:anywhere}
+.bld-authoring-inspector .bld-blocker-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;margin:0 0 12px}
+.bld-authoring-inspector .bld-blocker-tools>select,.bld-authoring-inspector .bld-shadow-opacity{grid-column:1/-1;min-width:0;width:100%;box-sizing:border-box}
+.bld-authoring-inspector .bld-shadow-opacity{flex-wrap:wrap}.bld-authoring-inspector .bld-shadow-opacity input{min-width:0;flex:1}
+.bld-authoring-inspector .bld-scale-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:end;margin:0 0 12px}
+.bld-authoring-inspector .bld-scale-controls label{min-width:0;flex-wrap:wrap;gap:5px}
+.bld-authoring-inspector .bld-scale-controls input[type=number],.bld-authoring-inspector .bld-scale-controls select{box-sizing:border-box;min-width:0;max-width:100%;width:100%;flex-basis:100%}
+.bld-authoring-inspector .bld-scale-controls input[type=range]{min-width:0;width:100%;flex-basis:100%}
+.bld-authoring-inspector .bld-controls-wide,.bld-authoring-inspector .bld-brush-controls>label,.bld-authoring-inspector .bld-scale-controls>input[type=range]{grid-column:1/-1}
+.bld-brush-field{flex-direction:column;align-items:stretch!important}.bld-brush-values{display:grid;grid-template-columns:minmax(70px,1fr) 70px 18px;align-items:center;gap:6px;width:100%;min-width:0}.bld-brush-hotkey{display:block;width:100%;font-size:10px;line-height:1.4;color:#a9bdd2}
+.bld-nightlight-tools{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;grid-column:1/-1;width:100%;padding:4px 0 8px;margin-bottom:12px;background:#252d39;border-bottom:1px solid #45546a}
+.bld-authoring-inspector .bld-nightlight-tools{top:-12px;padding-top:12px}
+.bld-nightlight-tool{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 5px;min-width:0;font-size:11px}.bld-nightlight-tool svg{display:block;width:20px;height:20px}.bld-nightlight-tool kbd{position:absolute;right:5px;top:5px;font:10px Segoe UI;color:#b8cbe0}.bld-nightlight-tool.active{background:#355e89;border-color:#84b9ed;color:#fff}
+.bld-authoring-inspector .bld-scale-tiers{flex-direction:column;align-items:flex-start}
+.bld-authoring-inspector .bld-drop-shadow{margin:0 0 12px;padding:10px}.bld-authoring-inspector .bld-drop-shadow fieldset{flex-direction:column;gap:8px;min-width:0}
+.bld-authoring-inspector .bld-drop-controls{grid-template-columns:minmax(0,1fr);gap:12px}
+.bld-authoring-inspector .bld-drop-controls label{grid-template-columns:minmax(0,1fr) 68px 14px;min-width:0}
+.bld-authoring-inspector .bld-drop-controls label>span:first-child{grid-column:1/-1}.bld-authoring-inspector .bld-drop-controls input[type=range]{min-width:0}
+.bld-authoring-layout[data-stacked]{grid-template-columns:minmax(0,1fr)}.bld-authoring-layout[data-stacked]>.bld-authoring-divider{display:none}.bld-authoring-layout[data-stacked]>.bld-authoring-inspector{height:auto;max-height:540px;margin-top:10px}
