@@ -30,6 +30,7 @@ var def_KinghtFallBulletEnemy8 = function (t) {
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
+    if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.onUpdate = function (dt) {
     if (!(dt > 0) || !isFinite(dt)) return;
@@ -61,8 +62,11 @@ var def_KinghtFallBulletEnemy8 = function (t) {
   };
   _ctor.prototype.onDie = function () {
     if (this.state !== 0) return;
+    var shot = this._shotIdentity, renderer = this.spAni;
     t.prototype.onDie.call(this);
-    this.spAni.setAnimation(0, "blast", false);
+    // Damage may return/rebind this slot or tear its native rig down. Never
+    // replace the next shot's flight animation with the previous shot's blast.
+    if (this.state === 1 && this._shotIdentity === shot && this.spAni === renderer && cc.isValid(this.node, true) && cc.isValid(renderer, true)) renderer.setAnimation(0, "blast", false);
   };
   _ctor.prototype.freeNode = function (t) {
     if (this.state === 2) return;

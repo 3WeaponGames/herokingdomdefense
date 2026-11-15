@@ -2,6 +2,7 @@
 // The same authoring client as the Creator panel, served locally for review.
 // Only the pure Spine renderer is loaded; no game, director, saves or audio.
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),url=require('node:url');
+const {Buffer}=require('node:buffer');
 const {Service}=require('../../packages/hkd-characters/lib/service');
 const Units=require('../../packages/game-data-editor/lib/unit-assets');
 function createServer(root,options){
@@ -18,6 +19,7 @@ function createServer(root,options){
     modules['./unit-packs']=modules['./lib/unit-packs'];
     modules['../../game-data-editor/lib/enemy-classes']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/enemy-classes.js'),'utf8');
     modules['./unit-records']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/unit-records.js'),'utf8');
+    if(projectileMode)for(const name of ['combat-preview','projectile-visuals'])modules['./'+name]=fs.readFileSync(path.join(panel,name+'.js'),'utf8');
     return '(function(){var modules={'+Object.entries(modules).map(([key,value])=>JSON.stringify(key)+':function(module,exports,require){\n'+value+'\n}').join(',')+'};var cache={};function require(id){if(!cache[id]){var m=cache[id]={exports:{}};modules[id](m,m.exports,require);}return cache[id].exports;}var app=require("client").mount(document.getElementById("characters"),{kind:'+JSON.stringify(options.kind||'characters')+',renderer:require("renderer"),core:require("core"),runtime:function(){return window.spine;},image:function(file){return "/asset/"+file.split("/").map(encodeURIComponent).join("/");},ipc:async function(name,request){var r=await fetch("/api/"+name,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(request||{})});var result=await r.json();if(!r.ok)throw Error(result.error);return result;}});window.addEventListener("pagehide",function(){app.destroy();});})();';
   }
   const server=http.createServer(async(req,res)=>{
@@ -31,10 +33,15 @@ function createServer(root,options){
       if(req.method==='POST'&&route.startsWith('/api/')){
         const origin=req.headers.origin,expected=new URL('http://'+req.headers.host).origin;
         if(origin!==expected||!/^application\/json(?:;|$)/i.test(req.headers['content-type']||''))throw Error('Use the editor window for character changes.');
-        let body='';for await(const chunk of req){body+=chunk;if(body.length>2*1024*1024)throw Error('Character draft is too large.');}
-        const request=JSON.parse(body||'{}'),method=route.slice(5);if(!['load','describe','change','undo','redo','discard','save'].includes(method))throw Error('Unknown editor operation.');
-        const result=service[method](request);
-        if(method==='describe')for(const layer of result.layers)for(const [name,source]of Object.entries(layer.pages))layer.pages[name]='/asset/'+path.relative(root,url.fileURLToPath(source)).split(path.sep).map(encodeURIComponent).join('/');
+        const chunks=[];let bytes=0;for await(const chunk of req){bytes+=chunk.length;if(bytes>2*1024*1024)throw Error('Character draft is too large.');chunks.push(chunk);}
+        const body=Buffer.concat(chunks).toString('utf8'),request=JSON.parse(body||'{}'),method=route.slice(5);if(!['load','describe','change','undo','redo','discard','save',...(projectileMode?['describe-unit']:[])].includes(method))throw Error('Unknown editor operation.');
+        const result=service[method==='describe-unit'?'describeUnit':method](request);
+        if(method==='describe'||method==='describe-unit'){
+          const assetUrl=source=>source&&source.startsWith('file:')?'/asset/'+path.relative(root,url.fileURLToPath(source)).split(path.sep).map(encodeURIComponent).join('/'):source;
+          for(const layer of result.layers||[])for(const [name,source]of Object.entries(layer.pages))layer.pages[name]=assetUrl(source);
+          for(const key of ['image','weaponImage'])if(result[key])result[key]=assetUrl(result[key]);
+          for(const [key,source]of Object.entries(result.weaponImages||{}))result.weaponImages[key]=assetUrl(source);
+        }
         respond(200,'application/json',JSON.stringify(result));return;
       }
       if(req.method!=='GET')throw Error('Unsupported method.');

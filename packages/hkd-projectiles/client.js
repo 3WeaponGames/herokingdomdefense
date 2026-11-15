@@ -1,95 +1,160 @@
 'use strict';
+const CombatPreview=require('./combat-preview');
+const ProjectileVisuals=require('./projectile-visuals');
+let unitPickerSerial=0;
+
 function mount(root,api){
   const el=(tag,text,parent)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(parent)parent.appendChild(n);return n;};
+  const button=(text,parent,fn)=>{const n=el('button',text,parent);n.type='button';n.onclick=fn;return n;},clone=value=>JSON.parse(JSON.stringify(value));
   root.innerHTML='';root.className='projectile-tool';
-  const toolbar=el('header',undefined,root);el('strong','Projectiles',toolbar);const status=el('span','Loading library…',toolbar);
-  const actions=el('div',undefined,toolbar),button=(text,fn,parent)=>{const n=el('button',text,parent||actions);n.type='button';n.onclick=fn;return n;};
+  const header=el('header',undefined,root);el('strong','Projectiles',header);const status=el('span','Loading library…',header),actions=el('div',undefined,header);
   const body=el('main',undefined,root),left=el('aside',undefined,body),center=el('section',undefined,body),right=el('aside',undefined,body);
-  el('h2','Ranged units',left);const unitSelect=el('select',undefined,left),assignmentFields=el('div',undefined,left);
-  el('h2','Projectile library',center);const search=el('input',undefined,center);search.placeholder='Search arrows, Toon effects, originals…';const count=el('small','',center),grid=el('div',undefined,center);grid.className='projectile-grid';
-  const title=el('h2','Preview',right),canvas=el('canvas',undefined,right);canvas.width=512;canvas.height=320;
-  const ctx=canvas.getContext('2d'),previewControls=el('div',undefined,right),description=el('p','',right),use=el('div',undefined,right);
-  const notes=el('p','Silent preview. Artwork, effects and tower flight speeds stay in drafts until Save. Player progress, damage and attack timing are unchanged.',right);notes.className='projectile-note';
-  let snapshot=null,unit='hero',heroLevel=1,selected=null,closed=false,queue=Promise.resolve(),raf=0,paused=false,age=0,last=0,mode='library',generation=0;
-  const images=new Map(),spines=new Map();
-  const report=(message,error)=>{status.textContent=message;status.className=error?'error':'';};
-  const apply=value=>{if(closed)return;snapshot=value;render();if(value.result)report(value.result.warning||(value.result.saved?'Saved. Reload the game preview to apply these changes.':'No changes; no files written.'),!!value.result.warning);};
-  function run(name,payload){queue=queue.then(()=>api.ipc(name,typeof payload==='function'?payload():payload)).then(apply).catch(error=>report(error.message,true));return queue;}
-  function change(mutator,speedMutator){run('change',()=>{const data=JSON.parse(JSON.stringify(snapshot.data)),speeds=JSON.parse(JSON.stringify(snapshot.speeds||{}));if(mutator)mutator(data);if(speedMutator)speedMutator(speeds);return{version:snapshot.version,data,speeds};});}
-  const save=button('Save',()=>run('save',()=>({version:snapshot.version}))),discard=button('Discard drafts',()=>{if(window.confirm('Discard unsaved projectile changes?'))run('discard',()=>({version:snapshot.version}));});
-  button('Reload',()=>run('load',{}));
-  const control=(parent,label,node)=>{const wrap=el('label',undefined,parent);el('span',label,wrap);wrap.appendChild(node);return node;};
-  button('Preview selected asset',()=>{mode='library';age=0;renderSelected();},previewControls);button('Preview unit mix',()=>{mode='unit';age=0;renderSelected();},previewControls);
-  const pause=button('Pause',()=>{paused=!paused;pause.textContent=paused?'Play':'Pause';},previewControls);button('Restart',()=>age=0,previewControls);
-  unitSelect.onchange=()=>{unit=unitSelect.value;age=0;mode='unit';renderAssignments();renderSelected();};
-  search.oninput=renderLibrary;
-  function set(field,value){const key=unit;change(data=>{const row=Object.assign({},data.assignments[key]||{});if(value===''||value===undefined)delete row[field];else row[field]=value;if(Object.keys(row).length)data.assignments[key]=row;else delete data.assignments[key];});}
-  function assetSelect(field,label){
-    const select=el('select');el('option',field==='flight'?(unit==='hero'?'Follow equipped Arrow item':'Unit default projectile'):'Unit default',select).value='';
-    for(const asset of snapshot.data.assets){if(field!=='flight'&&asset.kind!=='flipbook')continue;const option=el('option',asset.name+' · '+asset.category,select);option.value=asset.id;}
-    select.value=(snapshot.data.assignments[unit]||{})[field]||'';select.onchange=()=>set(field,select.value);control(assignmentFields,label,select);
+  left.className='projectile-assignment';center.className='projectile-library';right.className='projectile-preview';
+  el('h2','Ranged units',left);
+  // Keep the select as a nonvisual integration adapter; the portrait picker
+  // dispatches its existing change path and never edits gameplay while browsing.
+  const unitSelect=el('select',undefined,left);unitSelect.setAttribute('aria-label','Ranged unit');unitSelect.setAttribute('aria-hidden','true');unitSelect.tabIndex=-1;unitSelect.className='projectile-unit-native';
+  const unitPicker=el('div',undefined,left);unitPicker.className='projectile-unit-picker';const unitPickerId='projectile-unit-picker-'+(++unitPickerSerial);
+  const unitTrigger=button('',unitPicker,()=>unitPopup.hidden?openUnitPicker():closeUnitPicker(true));unitTrigger.className='projectile-unit-trigger';unitTrigger.setAttribute('role','combobox');unitTrigger.setAttribute('aria-label','Choose unit');unitTrigger.setAttribute('aria-haspopup','listbox');unitTrigger.setAttribute('aria-expanded','false');unitTrigger.setAttribute('aria-controls',unitPickerId);
+  const unitPopup=el('div',undefined,unitPicker);unitPopup.className='projectile-unit-popup';unitPopup.hidden=true;
+  const unitSearch=el('input',undefined,unitPopup);unitSearch.type='search';unitSearch.placeholder='Search unit names…';unitSearch.setAttribute('aria-label','Search unit names');unitSearch.setAttribute('aria-controls',unitPickerId);unitSearch.autocomplete='off';
+  const unitCount=el('small','',unitPopup),unitList=el('div',undefined,unitPopup);unitList.id=unitPickerId;unitList.className='projectile-unit-options';unitList.setAttribute('role','listbox');unitList.setAttribute('aria-label','Unit portraits');
+  const fields=el('div',undefined,left);
+  el('h2','Projectile library',center);const search=el('input',undefined,center);search.placeholder='Search projectiles…';search.setAttribute('aria-label','Search projectiles');
+  const count=el('small','',center),grid=el('div',undefined,center);grid.className='projectile-grid';
+  const title=el('h2','Preview',right),canvas=el('canvas',undefined,right);canvas.width=720;canvas.height=420;canvas.setAttribute('aria-label','Projectile combat preview');
+  const ctx=canvas.getContext('2d'),controls=el('div',undefined,right);controls.className='projectile-play-controls';
+  const description=el('p','',right),phase=el('p','',right);phase.className='projectile-phase';phase.setAttribute('aria-live','off');
+  el('p','Choose a projectile, match its launch to the attack animation, then Save. Damage and range are edited in Units. Flight speed is in Units for characters and Buildings for towers.',left).className='projectile-note';
+  el('p','Silent, looping preview. Save applies your projectile, launch delay and trail changes.',right).className='projectile-note';
+  let snapshot=null,unit='hero',selected=null,selectionTouched=false,trailTouched=false,trailValue;
+  let closed=false,queue=Promise.resolve(),raf=0,libraryRaf=0,age=0,last=0,mode='all',actor=null,target=null,actorRequest=0,locked=false,generation=0,deferredAssignments=false;
+  let visibleUnits=[],activeUnitIndex=0;
+  const images=new Map(),spines=new Map(),playButtons={},pending=new Map(),delayDrafts=new Map();
+  const report=(message,error)=>{if(!closed){status.textContent=message;status.className=error?'error':'';}};
+  const warn=error=>{const message=error.message||String(error);report(message,true);};
+  const combat=CombatPreview.create(api,{onError:warn});
+  const visuals=ProjectileVisuals.create(api,{onError:warn});
+  const byId=id=>snapshot&&snapshot.data.assets.find(a=>a.id===id),sets=()=>snapshot.data.sets||snapshot.data.assets.filter(a=>a.role==='flight').map(a=>({id:a.id,name:a.name,category:a.category,flight:a.id}));
+  const currentSet=()=>snapshot&&sets().find(s=>s.id===selected),who=()=>snapshot&&snapshot.units.find(u=>u.key===unit),row=()=>snapshot&&snapshot.data.assignments[unit]||{},trails=()=>snapshot&&snapshot.data.trails||[];
+  const effectiveRow=()=>who()&&who().effectiveAssignment||row();
+  const validDelay=value=>Number.isFinite(value)&&value>=0&&value<=10;
+  const effectiveDelay=key=>snapshot.timings&&snapshot.timings[key]!==undefined?snapshot.timings[key]:(snapshot.units.find(person=>person.key===key)||{}).launchDelay||0;
+  const invalidDelay=()=>Array.from(delayDrafts).find(([,draft])=>!validDelay(draft.value));
+  const pendingTiming=()=>Array.from(delayDrafts).some(([key,draft])=>!validDelay(draft.value)||draft.value!==effectiveDelay(key));
+  function previewSet(){const base=currentSet();if(!base)return null;const set=Object.assign({},base);if(!selectionTouched)for(const role of ['flight','launch','impact'])if(effectiveRow()[role]!==undefined&&(role!=='flight'||effectiveRow()[role]))set[role]=effectiveRow()[role];if(!byId(set.flight))set.flight=byId(who().defaultFlight)?who().defaultFlight:base.flight;for(const role of ['launch','impact'])if(!byId(set[role]))set[role]='';return set;}
+  function storeSelection(){if(selectionTouched||trailTouched)pending.set(unit,{selected,selectionTouched,trailTouched,trailValue});else pending.delete(unit);}
+  function assignmentForSelection(key,draft){
+    key=key||unit;draft=draft||{selected,selectionTouched,trailTouched,trailValue};
+    const result=Object.assign({},snapshot.data.assignments[key]||{}),set=sets().find(s=>s.id===draft.selected);
+    if(set&&draft.selectionTouched){result.set=set.id;for(const field of ['flight','launch','impact'])result[field]=set[field]||'';
+      for(const field of ['size','rotation','tint']){if(set[field]!==undefined)result[field]=set[field];else if(/^tower:/.test(key)&&snapshot.data.assignments.tower&&snapshot.data.assignments.tower[field]!==undefined)result[field]=field==='size'?(byId(set.flight).size||48):field==='rotation'?0:'#ffffff';else delete result[field];}}
+    if(draft.trailTouched){if(draft.trailValue===undefined)delete result.trail;else result.trail=draft.trailValue;}return result;
   }
-  function renderAssignments(){
-    assignmentFields.innerHTML='';const row=snapshot.data.assignments[unit]||{},who=snapshot.units.find(u=>u.key===unit);
-    if(who.speedEditable){const input=el('input'),key=unit;input.type='number';input.min=1;input.max=20000;input.step='any';input.value=who.speed;input.onchange=()=>{const speed=input.valueAsNumber;if(Number.isFinite(speed)&&speed>=1&&speed<=20000){change(null,speeds=>speeds[key]=speed);age=0;}else report('Projectile speed must be between 1 and 20000.',true);};control(assignmentFields,'Flight speed · units / second',input);}
-    else el('p','Flight speed: '+who.speed+' (read only)',assignmentFields);
-    if(who.previewTiers){const tier=el('select');for(const value of who.previewTiers){const option=el('option','Arrow level '+value.level,tier);option.value=value.level;}tier.value=heroLevel;tier.onchange=()=>{heroLevel=Number(tier.value);mode='unit';age=0;renderSelected();};control(assignmentFields,'Preview equipment tier · no progress changes',tier);}
-    assetSelect('flight','Flight artwork');assetSelect('launch','Launch effect');assetSelect('impact','Impact effect');
-    for(const [field,label,min,max,defaultValue]of [['size','Visual size',4,512,48],['rotation','Art rotation',-360,360,0]]){const input=el('input');input.type='number';input.min=min;input.max=max;input.value=row[field]===undefined?'':row[field];input.placeholder=String(defaultValue)+' / asset default';input.onchange=()=>{if(input.value==='')set(field,undefined);else if(Number.isFinite(input.valueAsNumber)&&input.valueAsNumber>=min&&input.valueAsNumber<=max)set(field,input.valueAsNumber);else report(label+' must be between '+min+' and '+max,true);};control(assignmentFields,label,input);}
-    const tint=el('input');tint.type='color';tint.value=row.tint||'#ffffff';tint.onchange=()=>set('tint',tint.value);control(assignmentFields,'Tint',tint);
-    button('Reset artwork & effects',()=>{const key=unit;change(data=>delete data.assignments[key]);},assignmentFields);
-    el('p',unit==='hero'?'Default follows the selected Arrow tier in Items. An explicit flight choice here overrides that item’s projectile art.':'No override preserves the unit’s original projectile.',assignmentFields);
+  const pendingAssignment=()=>snapshot&&(JSON.stringify(assignmentForSelection())!==JSON.stringify(row())||Array.from(pending).some(([key,draft])=>key!==unit&&JSON.stringify(assignmentForSelection(key,draft))!==JSON.stringify(snapshot.data.assignments[key]||{})));
+  function refreshStatus(){if(!snapshot)return;const invalid=invalidDelay(),dirty=snapshot.dirty||pendingAssignment()||pendingTiming();save.disabled=!!invalid||!dirty;discard.disabled=!dirty;report(invalid?'Correct launch delay for '+(snapshot.units.find(person=>person.key===invalid[0])||{}).name+' (0–10 seconds).':dirty?'Unsaved projectile drafts':'Current data · browsing makes no changes',!!invalid);lockControls();}
+  function apply(value){if(closed)return;snapshot=value;render();if(value.result)report(value.result.warning||(value.result.saved?'Saved projectile, launch delay and trail. Reload the game preview to apply.':'No changes; no files written.'),!!value.result.warning);}
+  function run(action){queue=queue.then(()=>{if(!closed)return action();}).catch(warn);return queue;}
+  function lockControls(){if(locked)for(const input of root.querySelectorAll('button,input,select'))input.disabled=true;}
+  function exclusive(action){if(locked)return;locked=true;lockControls();return run(async()=>{try{await action();}finally{locked=false;if(!closed){for(const input of root.querySelectorAll('button,input,select'))input.disabled=false;if(snapshot)apply(snapshot);}}});}
+  const save=button('Save',actions,()=>exclusive(async()=>{if(!snapshot)return;if(invalidDelay())throw Error('Correct invalid launch delays before saving.');storeSelection();if(pendingAssignment()||pendingTiming()){const data=clone(snapshot.data),timings=clone(snapshot.timings||{});for(const [key,draft]of delayDrafts)if(draft.value!==effectiveDelay(key))timings[key]=draft.value;for(const [key,draft]of pending){const next=assignmentForSelection(key,draft);if(Object.keys(next).length)data.assignments[key]=next;else delete data.assignments[key];}snapshot=await api.ipc('change',{version:snapshot.version,data,timings});}const value=await api.ipc('save',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();apply(value);}));
+  const discard=button('Discard drafts',actions,()=>exclusive(async()=>{if(!window.confirm('Discard unsaved projectile, delay and trail changes?'))return;const value=await api.ipc('discard',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();selected=null;apply(value);}));
+  button('Reload',actions,()=>exclusive(async()=>{storeSelection();const value=await api.ipc('load',{});generation++;unitTrigger.dataset.signature='';images.clear();spines.clear();visuals.invalidate();combat.invalidate();target=null;if(!selectionTouched)selected=null;apply(value);loadActors();renderSelected();}));save.disabled=discard.disabled=true;
+  for(const [key,label]of [['launch','Play launch'],['flight','Play flight'],['impact','Play on hit'],['all','Play all']])playButtons[key]=button(label,controls,()=>{mode=key;age=0;renderSelected();});
+  const control=(label,input)=>{const wrap=el('label',undefined,fields);el('span',label,wrap);wrap.appendChild(input);return input;};
+  function defaultSelection(){const a=effectiveRow(),u=who(),flight=byId(a.flight)?a.flight:u.defaultFlight;return sets().find(s=>s.id===a.set)||sets().find(s=>s.flight===flight)||sets().find(s=>s.category==='Imported arrows')||sets()[0];}
+  function loadActors(){const request=++actorRequest,targetGeneration=generation;actor=null;age=0;combat.load(unit).then(value=>{if(!closed&&request===actorRequest){actor=value;age=0;renderAssignments();}}).catch(warn);if(!target)combat.load('preview-target').then(value=>{if(!closed&&targetGeneration===generation)target=value;}).catch(warn);}
+  unitSelect.onchange=()=>{closeUnitPicker(false);storeSelection();unit=unitSelect.value;const draft=pending.get(unit);selectionTouched=!!(draft&&draft.selectionTouched);trailTouched=!!(draft&&draft.trailTouched);const initial=defaultSelection();selected=draft&&draft.selected||initial&&initial.id;trailValue=draft?draft.trailValue:row().trail;mode='all';loadActors();render();};search.oninput=renderLibrary;
+  function portraitContent(parent,person){
+    const thumb=el('span',undefined,parent);thumb.className='projectile-unit-thumb';const words=person.name.replace(/[^a-z0-9 ]/gi,' ').trim().split(/\s+/),fallback=el('span',words.slice(0,2).map(word=>word[0]||'').join('').toUpperCase()||'?',thumb);fallback.className='projectile-unit-initials';fallback.setAttribute('aria-hidden','true');
+    if(person.portrait){const portrait=el('img',undefined,thumb);portrait.alt='';portrait.src=api.image(person.portrait);portrait.onload=()=>{fallback.hidden=true;};portrait.onerror=()=>{portrait.remove();fallback.hidden=false;};}
+    const text=el('span',undefined,parent);text.className='projectile-unit-text';el('strong',person.name,text);return text;
   }
-  function image(asset){
-    if(!images.has(asset.image)){const n=new Image();n.onload=()=>{if(!closed)renderLibrary();};n.onerror=()=>report('Cannot load '+asset.image,true);n.src=api.image(asset.image);images.set(asset.image,n);}return images.get(asset.image);
+  function updateActiveUnit(scroll){
+    const options=Array.from(unitList.querySelectorAll('[role=option]'));options.forEach((option,index)=>option.classList.toggle('active',index===activeUnitIndex));const active=options[activeUnitIndex];
+    for(const input of [unitTrigger,unitSearch])if(active)input.setAttribute('aria-activedescendant',active.id);else input.removeAttribute('aria-activedescendant');
+    if(scroll&&active){if(active.offsetTop<unitList.scrollTop)unitList.scrollTop=active.offsetTop;else if(active.offsetTop+active.offsetHeight>unitList.scrollTop+unitList.clientHeight)unitList.scrollTop=active.offsetTop+active.offsetHeight-unitList.clientHeight;}
   }
-  async function spine(asset){
-    if(spines.has(asset.id))return;
-    spines.set(asset.id,null);const request=generation;
-    try{const description=await api.ipc('describe',{id:asset.id});if(closed||request!==generation)return;const runtime=api.runtime(description),layers=await api.renderer.createLayers(runtime,description.layers);if(closed)return;api.renderer.seek(runtime,layers,asset.animation,0,true);spines.set(asset.id,{runtime,layers,bounds:api.renderer.bounds(runtime,layers)});}catch(error){if(!closed)report(error.message,true);}
+  function chooseUnit(key){if(locked)return;unitSelect.value=key;unitSelect.onchange();unitTrigger.focus();}
+  function renderUnitOptions(){
+    if(!snapshot)return;const previous=visibleUnits[activeUnitIndex]&&visibleUnits[activeUnitIndex].key,query=unitSearch.value.trim().toLowerCase();visibleUnits=snapshot.units.filter(person=>(person.name+' '+person.key).toLowerCase().includes(query));unitList.innerHTML='';unitCount.textContent=visibleUnits.length+' / '+snapshot.units.length+' ranged units';
+    for(const [index,person]of visibleUnits.entries()){const option=button('',unitList,()=>chooseUnit(person.key));option.className='projectile-unit-option';option.id=unitPickerId+'-'+person.key.replace(/[^a-z0-9_-]/gi,'-');option.dataset.unit=person.key;option.setAttribute('role','option');option.setAttribute('aria-selected',String(person.key===unit));option.tabIndex=-1;portraitContent(option,person);option.onpointermove=()=>{activeUnitIndex=index;updateActiveUnit(false);};}
+    if(!visibleUnits.length)el('p','No ranged units match.',unitList);const retained=visibleUnits.findIndex(person=>person.key===previous),selected=visibleUnits.findIndex(person=>person.key===unit);activeUnitIndex=retained>=0?retained:selected>=0?selected:0;updateActiveUnit(false);lockControls();
   }
-  function pick(id){selected=id;age=0;mode='library';renderLibrary();renderSelected();}
+  function renderUnitPicker(){
+    if(!snapshot)return;const person=who(),signature=person.key+'|'+person.name+'|'+person.portrait;if(unitTrigger.dataset.signature!==signature){unitTrigger.innerHTML='';portraitContent(unitTrigger,person);el('span','▾',unitTrigger).className='projectile-unit-chevron';unitTrigger.dataset.signature=signature;unitTrigger.title=person.name;}
+    if(!unitPopup.hidden)renderUnitOptions();
+  }
+  function openUnitPicker(){if(!snapshot||locked)return;unitPopup.hidden=false;unitTrigger.setAttribute('aria-expanded','true');unitSearch.value='';visibleUnits=[];renderUnitOptions();unitSearch.focus();updateActiveUnit(true);}
+  function closeUnitPicker(focus){unitPopup.hidden=true;unitTrigger.setAttribute('aria-expanded','false');unitTrigger.removeAttribute('aria-activedescendant');if(focus)unitTrigger.focus();}
+  unitSearch.oninput=()=>{activeUnitIndex=0;visibleUnits=[];renderUnitOptions();};
+  unitSearch.onkeydown=event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();closeUnitPicker(true);}else if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();activeUnitIndex=Math.max(0,Math.min(visibleUnits.length-1,activeUnitIndex+(event.key==='ArrowDown'?1:-1)));updateActiveUnit(true);}else if(event.key==='Enter'){event.preventDefault();if(visibleUnits[activeUnitIndex])chooseUnit(visibleUnits[activeUnitIndex].key);}};
+  unitTrigger.onkeydown=event=>{if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)){event.preventDefault();openUnitPicker();if(event.key==='Home')activeUnitIndex=0;else if(event.key==='End')activeUnitIndex=visibleUnits.length-1;updateActiveUnit(true);}else if(event.key==='Escape'){event.preventDefault();closeUnitPicker(false);}};
+  unitPicker.onfocusout=event=>{if(!unitPicker.contains(event.relatedTarget))closeUnitPicker(false);};
+  const outsideUnitPicker=event=>{if(!unitPicker.contains(event.target))closeUnitPicker(false);};document.addEventListener('pointerdown',outsideUnitPicker,true);
+  function setDelay(value,key){key=key||unit;const existing=delayDrafts.get(key),draft=existing&&Object.is(existing.value,value)?existing:{value,text:String(value)};delayDrafts.set(key,draft);refreshStatus();run(async()=>{if(!validDelay(value))throw Error('Launch delay must be between 0 and 10 seconds.');if(value===effectiveDelay(key)){if(delayDrafts.get(key)===draft){delayDrafts.delete(key);refreshStatus();}return;}const timings=clone(snapshot.timings||{});timings[key]=value;const valueSnapshot=await api.ipc('change',{version:snapshot.version,data:snapshot.data,timings});if(delayDrafts.get(key)===draft)delayDrafts.delete(key);apply(valueSnapshot);age=0;});}
+  fields.onfocusout=event=>{if(deferredAssignments&&event.relatedTarget&&!fields.contains(event.relatedTarget))setTimeout(()=>{if(!closed&&deferredAssignments&&!fields.contains(document.activeElement))renderAssignments(true);},0);};
+  function renderAssignments(force){
+    const focused=document.activeElement;if(!force&&!locked&&fields.dataset.unit===unit&&fields.contains(focused)&&['INPUT','SELECT','BUTTON'].includes(focused.tagName)){deferredAssignments=true;return;}deferredAssignments=false;fields.dataset.unit=unit;
+    fields.innerHTML='';const person=who(),assignment=effectiveRow(),set=currentSet();el('h3','Projectile assignment',fields);el('strong',set?set.name:'Choose a projectile',fields).className='projectile-chosen';el('small',selectionTouched?'Selected · Save to assign':assignment.flight?'Current projectile':'Original unit projectile',fields);
+    const fieldUnit=unit,value=effectiveDelay(fieldUnit),draft=delayDrafts.get(fieldUnit);
+    const delay=el('input');delay.type='number';delay.min='0';delay.max='10';delay.step='0.01';delay.value=draft?draft.text:value;delay.setAttribute('aria-invalid',String(!!draft&&!validDelay(draft.value)));delay.oninput=()=>{delayDrafts.set(fieldUnit,{value:delay.valueAsNumber,text:delay.value});delay.setAttribute('aria-invalid',String(!validDelay(delay.valueAsNumber)));if(validDelay(delay.valueAsNumber))slider.value=delay.value;age=0;refreshStatus();};delay.onchange=()=>setDelay(delay.valueAsNumber,fieldUnit);control('Launch delay · seconds',delay);
+    const slider=el('input');slider.type='range';slider.min='0';slider.max='10';slider.step='0.01';slider.value=draft&&validDelay(draft.value)?draft.value:value;slider.setAttribute('aria-label','Launch delay slider');slider.className='projectile-delay-slider';slider.oninput=()=>{delay.value=slider.value;delay.setAttribute('aria-invalid','false');delayDrafts.set(fieldUnit,{value:slider.valueAsNumber,text:slider.value});age=0;refreshStatus();};slider.onchange=()=>setDelay(slider.valueAsNumber,fieldUnit);fields.appendChild(slider);
+    const reference=actor&&actor.description.referenceDelay;if(Number.isFinite(reference))el('small','Animation reference: '+reference.toFixed(2)+' s',fields).className='projectile-reference';
+    button('Reset launch delay',fields,()=>{const key=unit;exclusive(async()=>{const timings=clone(snapshot.timings||{});delete timings[key];const value=await api.ipc('change',{version:snapshot.version,data:snapshot.data,timings});delayDrafts.delete(key);apply(value);age=0;});});
+    const nativeTrail=person.defaultTrail||(byId(set&&set.flight)||{}).visualLayers&&byId(set.flight).visualLayers.some(layer=>layer.kind==='trail');
+    el('h3','Projectile trail',fields);const choice=trailTouched?trailValue:assignment.trail,enabled=choice===undefined?!!nativeTrail:choice!==false;
+    const check=el('input');check.type='checkbox';check.checked=enabled;const toggle=el('label',undefined,fields);toggle.className='projectile-trail-toggle';toggle.appendChild(check);el('span','Enable trail',toggle);
+    const trail=el('select');trail.setAttribute('aria-label','Projectile trail');el('option','Original unit trail',trail).value='';for(const preset of trails()){const option=el('option',preset.name,trail);option.value=preset.id;}
+    trail.value=trailTouched?trailValue||'':assignment.trail||'';trail.disabled=!enabled;
+    const updateTrail=()=>{trailTouched=true;if(check.checked&&!trail.value&&!nativeTrail)trail.value=trails()[0]?trails()[0].id:'';trailValue=check.checked?trail.value||undefined:false;trail.disabled=!check.checked;trailHint.textContent=trailValue===undefined?'Uses the unit’s authored trail.':check.checked?'Trail shown during Play all.':'Trail disabled for this unit.';age=0;refreshStatus();};check.onchange=updateTrail;trail.onchange=updateTrail;fields.appendChild(trail);
+    const trailHint=el('small',choice===undefined?'Uses the unit’s authored trail.':enabled?'Trail shown during Play all.':'Trail disabled for this unit.',fields);
+    button('Reset projectile & trail',fields,()=>{const key=unit;exclusive(async()=>{const data=clone(snapshot.data),next=Object.assign({},data.assignments[key]);for(const field of ['set','flight','launch','impact','size','rotation','tint','trail'])delete next[field];if(Object.keys(next).length)data.assignments[key]=next;else delete data.assignments[key];const value=await api.ipc('change',{version:snapshot.version,data,timings:snapshot.timings});pending.delete(key);if(unit===key){selectionTouched=trailTouched=false;selected=null;}apply(value);age=0;});});lockControls();
+  }
+  // Batch artwork completions so a warm library rebuilds its tiles once per frame.
+  function scheduleLibraryRender(){if(!closed&&!libraryRaf)libraryRaf=requestAnimationFrame(()=>{libraryRaf=0;renderLibrary();});}
+  function image(asset){if(!asset||!asset.image)return null;if(!images.has(asset.image)){const n=new Image(),request=generation;images.set(asset.image,n);n.onload=()=>{if(!closed&&request===generation)scheduleLibraryRender();};n.onerror=()=>{if(!closed&&request===generation)warn(Error('Cannot load projectile artwork: '+asset.name));};n.src=api.image(asset.image);}return images.get(asset.image);}
+  async function spine(asset){if(spines.has(asset.id))return;spines.set(asset.id,null);const request=generation;try{const data=await api.ipc('describe',{id:asset.id});if(closed||request!==generation)return;const runtime=api.runtime(data),layers=await api.renderer.createLayers(runtime,data.layers);if(closed||request!==generation)return;api.renderer.seek(runtime,layers,asset.animation,0,true);spines.set(asset.id,{runtime,layers,bounds:api.renderer.bounds(runtime,layers)});scheduleLibraryRender();}catch(error){if(!closed&&request===generation)warn(error);}}
+  function pick(id){selected=id;selectionTouched=true;age=0;if(mode!=='all'&&mode!=='flight'&&!currentSet()[mode])mode='flight';renderAssignments();renderLibrary();renderSelected();refreshStatus();lockControls();}
   function renderLibrary(){
-    if(!snapshot)return;grid.innerHTML='';const query=search.value.trim().toLowerCase(),assets=snapshot.data.assets.filter(a=>(a.name+' '+a.category).toLowerCase().includes(query));count.textContent=assets.length+' / '+snapshot.data.assets.length+' assets';
-    assets.forEach(asset=>{const b=button('',()=>pick(asset.id),grid);b.className=asset.id===selected?'selected':'';b.title=asset.category;b.dataset.asset=asset.id;
-      if(asset.kind!=='spine'){const preview=el('canvas',undefined,b);preview.width=96;preview.height=64;const source=image(asset);if(source.complete&&source.naturalWidth){const context=preview.getContext('2d');if(asset.kind==='flipbook'){const frame=Math.min(5,asset.frames-1);context.drawImage(source,frame%asset.columns*asset.cell,Math.floor(frame/asset.columns)*asset.cell,asset.cell,asset.cell,16,0,64,64);}else{const scale=Math.min(88/source.width,56/source.height),w=source.width*scale,h=source.height*scale;context.drawImage(source,(96-w)/2,(64-h)/2,w,h);}}}
-      else el('span','✦ Animated',b);
-      el('strong',asset.name,b);el('small',asset.category,b);
-    });
+    if(libraryRaf){cancelAnimationFrame(libraryRaf);libraryRaf=0;}if(!snapshot||closed)return;grid.innerHTML='';const query=search.value.trim().toLowerCase(),library=sets().filter(s=>(s.name+' '+s.category).toLowerCase().includes(query));count.textContent=library.length+' / '+sets().length+' projectiles';
+    for(const set of library){const card=button('',grid,()=>pick(set.id));card.dataset.asset=card.dataset.projectile=set.id;card.className=set.id===selected?'selected':'';card.setAttribute('aria-pressed',String(set.id===selected));
+      const asset=byId(set.flight),thumbnail=el('canvas',undefined,card);thumbnail.width=120;thumbnail.height=72;const source=asset&&asset.kind!=='spine'?image(asset):null,context=thumbnail.getContext('2d');
+      if(asset&&asset.kind==='spine'){const entry=spines.get(asset.id);if(entry){api.renderer.seek(entry.runtime,entry.layers,asset.animation,.1,true);api.renderer.draw(entry.runtime,context,entry.layers,{width:120,height:72,bounds:entry.bounds});}else{spine(asset);context.fillStyle='#a7dcf6';context.font='26px sans-serif';context.textAlign='center';context.fillText('✦',60,44);}}
+      else if(source&&source.complete&&source.naturalWidth){if(asset.kind==='flipbook'){const frame=asset.loopFrames&&asset.loopFrames.length?asset.loopFrames[Math.min(5,asset.loopFrames.length-1)]:Math.min(5,asset.frames-1);const side=72*(asset.visualScale||1),pivot=asset.visualPivot||{x:.5,y:.5};context.drawImage(source,frame%asset.columns*asset.cell,Math.floor(frame/asset.columns)*asset.cell,asset.cell,asset.cell,60-side*pivot.x,36-side*pivot.y,side,side);}else{const scale=Math.min(110/source.width,64/source.height),w=source.width*scale,h=source.height*scale;context.drawImage(source,(120-w)/2,(72-h)/2,w,h);}}
+      el('strong',set.name,card);el('small',set.category,card);el('small',[set.launch&&'Launch','Flight',set.impact&&'Hit'].filter(Boolean).join(' · '),card).className='projectile-roles';}
+    if(!library.length)el('p','No projectiles match your search.',grid);lockControls();
   }
-  function renderSelected(){
-    const asset=snapshot.data.assets.find(a=>a.id===selected);use.innerHTML='';if(!asset)return;
-    const who=snapshot.units.find(w=>w.key===unit);title.textContent=mode==='unit'?who.name+' · projectile':asset.name;
-    if(mode==='unit'){const row=snapshot.data.assignments[unit]||{},tier=who.previewTiers&&who.previewTiers.find(t=>t.level===heroLevel),flight=snapshot.data.assets.find(a=>a.id===(row.flight||tier&&tier.flight||who.defaultFlight));description.textContent='Current flight: '+(flight?flight.name:who.builtinFlight==='cannon'?'Cannon shell':who.builtinFlight==='sniper'?'Sniper bolt':'Original unit projectile')+'. Selected library asset: '+asset.name+'.';}
-    else description.textContent=asset.kind==='flipbook'?'Animated 2D effect · '+asset.frames+' frames at '+asset.fps+' fps':asset.kind==='spine'?'Original animated game projectile':'Imported sprite · also available in Items';
-    button('Use as flight',()=>set('flight',asset.id),use);if(asset.kind==='flipbook'){button('Use at launch',()=>set('launch',asset.id),use);button('Use at impact',()=>set('impact',asset.id),use);}if(asset.kind==='spine')spine(asset);
-  }
-  function render(){
-    save.disabled=!snapshot.dirty;discard.disabled=!snapshot.dirty;report(snapshot.dirty?'Unsaved projectile drafts':'Current data · browsing makes no changes');
-    if(!snapshot.units.some(who=>who.key===unit))unit=snapshot.units[0].key;
-    unitSelect.innerHTML='';for(const who of snapshot.units){const option=el('option',who.name,unitSelect);option.value=who.key;}unitSelect.value=unit;
-    if(!selected)selected=(snapshot.data.assets.find(a=>a.category==='Imported arrows')||snapshot.data.assets[0]).id;
-    renderAssignments();renderLibrary();renderSelected();
-  }
-  const off=document.createElement('canvas');off.width=256;off.height=256;const offContext=off.getContext('2d'),mask=document.createElement('canvas');mask.width=mask.height=256;const maskContext=mask.getContext('2d');
+  function renderSelected(){const set=previewSet();if(!set)return;if(mode!=='all'&&!set[mode])mode='flight';title.textContent=set.name;for(const [key,btn]of Object.entries(playButtons)){btn.disabled=key!=='all'&&!set[key];btn.classList.toggle('active',key===mode);btn.setAttribute('aria-pressed',String(key===mode));btn.title=btn.disabled?'This projectile has no '+(key==='impact'?'special on-hit':key)+' effect.':'Loop '+btn.textContent.toLowerCase().replace('play ','');}
+    description.textContent=mode==='all'?who().name+' → target · attack, launch, flight and hit':mode==='flight'?'Stationary flight artwork and animation.':mode==='launch'?'Launch effect · looping':'Projectile on-hit effect · looping';for(const role of ['flight','launch','impact']){const asset=byId(set[role]);if(asset&&asset.kind==='spine')spine(asset);}}
+  function render(){if(!snapshot.units.some(u=>u.key===unit))unit=snapshot.units[0].key;unitSelect.innerHTML='';for(const person of snapshot.units){const option=el('option',person.name,unitSelect);option.value=person.key;}unitSelect.value=unit;renderUnitPicker();if(!selected||!sets().some(s=>s.id===selected)){const set=defaultSelection();selected=set&&set.id;}renderAssignments();renderLibrary();renderSelected();refreshStatus();lockControls();}
+  const off=document.createElement('canvas'),mask=document.createElement('canvas');off.width=off.height=mask.width=mask.height=256;const offContext=off.getContext('2d'),maskContext=mask.getContext('2d');
+  function clipDuration(asset){if(!asset)return 0;if(asset.kind==='flipbook')return asset.frames/asset.fps;if(asset.kind==='spine'){const entry=spines.get(asset.id);if(entry)return Math.max(...entry.layers.map(layer=>{const clip=layer.data.findAnimation(asset.animation);return clip?clip.duration:0;}),.1);}return asset.duration||.5;}
   function draw(asset,x,y,time,options,loop){
-    if(!asset)return;const size=(options.size||asset.size||48)*2,rotation=((options.rotation||0)+(asset.rotation||0))*Math.PI/180;
+    if(!asset||time<0||(!loop&&time>=clipDuration(asset)))return;const size=options.size||asset.size||48;
+    if(visuals.draw(ctx,asset,{x,y,time,size,rotation:options.rotation||0,tint:options.tint,trail:options.trail,trailDescriptor:trails().find(t=>t.id===options.trail),speed:options.previewSpeed||0,heading:options.previewHeading}))return;
     offContext.clearRect(0,0,256,256);
-    if(asset.kind==='spine'){const entry=spines.get(asset.id);if(!entry){spine(asset);return;}api.renderer.seek(entry.runtime,entry.layers,asset.animation,time,true);api.renderer.draw(entry.runtime,offContext,entry.layers,{width:256,height:256,bounds:entry.bounds});}
-    else {const source=image(asset);if(!source.complete||!source.naturalWidth)return;if(asset.kind==='flipbook'){const frame=loop?Math.floor(time*asset.fps)%asset.frames:Math.min(asset.frames-1,Math.floor(time*asset.fps));offContext.drawImage(source,frame%asset.columns*asset.cell,Math.floor(frame/asset.columns)*asset.cell,asset.cell,asset.cell,0,0,256,256);}else {const scale=256/Math.max(source.width,source.height),w=source.width*scale,h=source.height*scale;offContext.drawImage(source,(256-w)/2,(256-h)/2,w,h);}}
+    if(asset.kind==='spine'){const entry=spines.get(asset.id);if(!entry){spine(asset);return;}api.renderer.seek(entry.runtime,entry.layers,asset.animation,time,!!loop);const tint=options.tint||'#ffffff';for(const layer of entry.layers){const color=layer.skeleton.color;if(color&&color.set)color.set(parseInt(tint.slice(1,3),16)/255,parseInt(tint.slice(3,5),16)/255,parseInt(tint.slice(5,7),16)/255,1);}ctx.save();ctx.translate(x,y);ctx.rotate(-(options.rotation||0)*Math.PI/180);const scale=size/(asset.width||64);ctx.scale(scale,-scale);api.renderer.drawWorld(entry.runtime,ctx,entry.layers);ctx.restore();return;}
+    else{const source=image(asset);if(!source||!source.complete||!source.naturalWidth)return;if(asset.kind==='flipbook'){const map=loop&&asset.loopFrames,frame=map&&map.length?map[Math.floor(time*asset.fps)%map.length]:loop?Math.floor(time*asset.fps)%asset.frames:Math.min(asset.frames-1,Math.floor(time*asset.fps));offContext.drawImage(source,frame%asset.columns*asset.cell,Math.floor(frame/asset.columns)*asset.cell,asset.cell,asset.cell,0,0,256,256);}else{const scale=256/Math.max(source.width,source.height),w=source.width*scale,h=source.height*scale;offContext.drawImage(source,(256-w)/2,(256-h)/2,w,h);}}
     if(options.tint&&options.tint!=='#ffffff'){maskContext.clearRect(0,0,256,256);maskContext.drawImage(off,0,0);offContext.globalCompositeOperation='multiply';offContext.fillStyle=options.tint;offContext.fillRect(0,0,256,256);offContext.globalCompositeOperation='destination-in';offContext.drawImage(mask,0,0);offContext.globalCompositeOperation='source-over';}
-    ctx.save();ctx.translate(x,y);ctx.rotate(asset.kind==='spine'?(options.rotation||0)*Math.PI/180:rotation);ctx.drawImage(off,-size/2,-size/2,size,size);ctx.restore();
+    ctx.save();ctx.translate(x,y);ctx.rotate(-((options.rotation||0)+(asset.rotation||0))*Math.PI/180);const side=size*(asset.visualScale||1),pivot=asset.visualPivot||{x:.5,y:.5};ctx.drawImage(off,-side*pivot.x,-side*pivot.y,side,side);ctx.restore();
   }
+  function drawTrail(x,y,time,speed,options){if(options.trail===false||options.trail==='none'||time<=0)return;const preset=trails().find(t=>t.id===(options.trail===undefined?who().defaultTrail:options.trail));if(preset){visuals.drawTrail(ctx,preset,{x,y,time,size:48,speed,rotation:options.previewHeading||0});return;}if(!who().defaultTrail&&!who().builtinFlight)return;const length=Math.min(x-180,speed*.16);if(length<=0)return;ctx.save();const gradient=ctx.createLinearGradient(x-length,y,x,y);gradient.addColorStop(0,'transparent');gradient.addColorStop(1,'#fff1c9');ctx.strokeStyle=gradient;ctx.lineWidth=4;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x-length,y);ctx.lineTo(x,y);ctx.stroke();ctx.restore();}
   function tick(now){
-    if(closed)return;const dt=last?Math.min((now-last)/1000,.1):0;last=now;if(!paused)age+=dt;
-    ctx.fillStyle='#17212d';ctx.fillRect(0,0,512,320);ctx.strokeStyle='#344150';ctx.beginPath();ctx.moveTo(36,160);ctx.lineTo(476,160);ctx.stroke();
-    if(snapshot){const byId=id=>snapshot.data.assets.find(a=>a.id===id),asset=byId(selected),row=snapshot.data.assignments[unit]||{};
-      if(mode==='library')draw(asset,256,160,age,{},asset&&asset.role==='flight');
-      else {const who=snapshot.units.find(w=>w.key===unit),tier=who.previewTiers&&who.previewTiers.find(t=>t.level===heroLevel),duration=384/(typeof who.speed==='number'&&who.speed>0?who.speed:500),time=age%(duration+.65),options=Object.assign({},who.defaultSize?{size:who.defaultSize}:{},tier&&tier.tint?{tint:tier.tint}:{},row),flight=byId(row.flight||tier&&tier.flight||who.defaultFlight);if(time<.5)draw(byId(row.launch||who.defaultLaunch),64,160,time,options,false);if(time<duration){const x=64+time/duration*384;if(who.builtinFlight){ctx.strokeStyle='#ffffff80';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(Math.max(64,x-70),160);ctx.lineTo(x,160);ctx.stroke();}if(flight)draw(flight,x,160,time,options,true);else if(who.builtinFlight){ctx.save();ctx.translate(x,160);ctx.strokeStyle=who.builtinFlight==='cannon'?'#171c24':'#ffe58b';ctx.fillStyle='#414754';ctx.lineWidth=3;ctx.beginPath();if(who.builtinFlight==='cannon'){ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();}else{ctx.moveTo(-18,0);ctx.lineTo(17,0);ctx.lineTo(8,-5);ctx.moveTo(17,0);ctx.lineTo(8,5);}ctx.stroke();ctx.restore();}}else draw(byId(row.impact||who.defaultImpact),448,160,time-duration,options,false);}
-    }
-    raf=requestAnimationFrame(tick);
+    if(closed)return;const dt=last?Math.min((now-last)/1000,.1):0;last=now;age+=dt;ctx.fillStyle='#14202b';ctx.fillRect(0,0,720,420);ctx.fillStyle='#1d2d38';ctx.fillRect(0,310,720,110);ctx.strokeStyle='#3a505d';ctx.beginPath();ctx.moveTo(20,310);ctx.lineTo(700,310);ctx.stroke();
+    if(snapshot&&previewSet()){const set=previewSet(),flight=byId(set.flight),launch=byId(set.launch),impact=byId(set.impact),options=Object.assign({},set);if(!selectionTouched)for(const field of ['size','rotation','tint'])if(effectiveRow()[field]!==undefined)options[field]=effectiveRow()[field];options.trail=trailTouched?trailValue:effectiveRow().trail;
+      if(mode!=='all'){const asset=byId(set[mode]),duration=clipDuration(asset);draw(asset,360,210,mode==='flight'?age:age%(duration+.45),Object.assign({},options,{size:(set.size||asset&&asset.size||48)*2}),mode==='flight');phase.textContent=mode==='flight'?'Flight · stationary':mode==='launch'?'Launch':'On hit';}
+      else{options.size=options.size||flight&&flight.size||48;const person=who(),speed=typeof person.speed==='number'&&person.speed>0?person.speed:500,playback=actor?actor.animationSpeed:person.animationSpeed||1,marker=delayDrafts.has(unit)&&validDelay(delayDrafts.get(unit).value)?delayDrafts.get(unit).value:effectiveDelay(unit);
+        const shooterPose={x:105,groundY:310,width:190,height:210,facing:1},origin=actor&&combat.muzzle(actor,shooterPose)||{x:180,y:230},delta={x:560-origin.x,y:230-origin.y},heading=Math.atan2(delta.y,delta.x)*180/Math.PI;
+        const delay=playback===0?Infinity:marker/playback,travel=Math.hypot(delta.x,delta.y)/speed,arrival=delay+travel,attackDuration=actor?combat.duration(actor,actor.attackAnimation)/(playback>0?playback:1):1,period=Math.max((Number.isFinite(arrival)?arrival:0)+Math.max(clipDuration(impact),.55)+.55,attackDuration+.4),time=age%period,hitAge=time-arrival;
+        if(actor)combat.draw(ctx,actor,{x:105,groundY:310,width:190,height:210,animation:time<attackDuration?actor.attackAnimation:actor.idleAnimation,time:time<attackDuration?time*playback:(time-attackDuration)*playback,loop:time>=attackDuration,facing:1});
+        const reacting=target&&hitAge>=0&&hitAge<combat.duration(target,target.hitAnimation)/1.5;
+        if(target)combat.draw(ctx,target,{x:600,groundY:310,width:150,height:165,animation:reacting?target.hitAnimation:target.idleAnimation,time:reacting?hitAge*1.5:time,loop:!reacting,facing:-1});
+        if(!actor||!target){ctx.fillStyle='#aebdcd';ctx.font='14px system-ui';ctx.textAlign='center';ctx.fillText('Loading preview units…',360,385);}const flightAge=time-delay;draw(launch,origin.x,origin.y,flightAge,Object.assign({},options,{rotation:(options.rotation||0)-heading}),false);
+        if(flightAge>=0&&time<arrival){const ratio=flightAge/travel,x=origin.x+delta.x*ratio,y=origin.y+delta.y*ratio;if(!flight||!flight.visualLayers)drawTrail(x,y,flightAge,speed,Object.assign({},options,{previewHeading:heading}));draw(flight,x,y,flightAge,Object.assign({},options,{previewSpeed:speed,previewHeading:heading,rotation:(options.rotation||0)-heading}),true);}if(hitAge>=0){combat.defaultHit(ctx,560,230,hitAge,70,actor);draw(impact,560,230,hitAge,options,false);}phase.textContent=playback===0?'Animation frozen in Characters':time<delay?'Attack windup':time<arrival?'Launch → flight':hitAge<.55?'Hit · default effect + projectile effect':'Ready · repeating';}
+    }raf=requestAnimationFrame(tick);
   }
-  run('load',{});raf=requestAnimationFrame(tick);
-  return {destroy(){closed=true;generation++;cancelAnimationFrame(raf);root.innerHTML='';images.clear();spines.clear();}};
+  run(async()=>{apply(await api.ipc('load',{}));loadActors();});raf=requestAnimationFrame(tick);
+  return{destroy(){closed=true;document.removeEventListener('pointerdown',outsideUnitPicker,true);actorRequest++;cancelAnimationFrame(raf);cancelAnimationFrame(libraryRaf);combat.destroy();visuals.destroy();root.innerHTML='';images.clear();spines.clear();}};
 }
 module.exports={mount};

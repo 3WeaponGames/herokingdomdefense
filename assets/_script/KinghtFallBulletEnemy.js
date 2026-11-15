@@ -28,6 +28,7 @@ var def_KinghtFallBulletEnemy = function (t) {
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
+    if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.setLeft = function (t, e, n) {
     if (t.x > e.x) {
@@ -42,6 +43,7 @@ var def_KinghtFallBulletEnemy = function (t) {
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
+    if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.freeNode = function (t) {
     if (this.state === 2) return;

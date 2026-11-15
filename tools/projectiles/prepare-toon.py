@@ -15,9 +15,20 @@ def prepare(source, output):
     output=output.resolve()
     if output.is_relative_to(Path(__file__).resolve().parents[2]):
         raise ValueError('Bake project must be outside the repository')
-    if (output/'Assets').exists():
+    if output.exists() and any(output.iterdir()):
         raise ValueError('Use a fresh bake folder; existing work is never replaced')
-    for name,item in unpack(source).items():
+    entries=unpack(source)
+    seen=set()
+    for name in entries:
+        # Unity pathnames use '/' even on Windows. A backslash or colon can
+        # otherwise escape the bake directory or create an alternate stream.
+        if any(character in name for character in '\\:<>"|?*') or any(ord(character)<32 for character in name) or any(part.endswith(('.', ' ')) for part in name.split('/')):
+            raise ValueError('Unsafe Unity asset path: '+name)
+        if name.casefold() in seen:raise ValueError('Duplicate Unity asset path on Windows: '+name)
+        seen.add(name.casefold())
+        if not (output/name).resolve().is_relative_to(output):
+            raise ValueError('Unity asset leaves bake directory: '+name)
+    for name,item in entries.items():
         if Path(name).suffix.lower() not in ('.prefab','.png','.mat','.fbx'):
             continue
         target=output/name;target.parent.mkdir(parents=True,exist_ok=True)

@@ -1,22 +1,48 @@
 # Projectiles, Relics and icons
 
-Open **Tools → Hero Kingdom Defense → Projectiles** in Creator. The library
-contains the 25 imported arrows, original game projectiles (including the 18
-wall-defense variants), and 45 Toon clips. Select a ranged unit and choose its
-flight artwork, launch effect and impact effect. Size, rotation and tint affect
-artwork only. Cannon and Sniper levels also expose **Flight speed · units / second**.
-That saved speed is shared with Buildings and applies in Simulation Mode. Other
-units show their existing speed as read only. Damage, targeting, collision and
-attack timing stay in their existing systems. **Reset artwork & effects** removes
-visual overrides and keeps the saved gameplay speed.
+Open **Tools → Hero Kingdom Defense → Projectiles** in Creator. Choose a ranged
+unit on the left and a complete projectile from the library. Its 77 entries
+include 25 imported arrows, 28 original game projectiles (including all 18
+wall-defense variants), 15 Toon sets, two Tiny Kingdom sprites and seven
+Fantasy sets. Numbered Toon flashes and hits are paired with their flight
+animation; individual effect clips do not appear as separate projectiles.
+
+The preview has four looping modes: **Play launch**, **Play flight**,
+**Play on hit** and **Play all**. Missing launch and special hit effects disable
+their buttons. Flight stays stationary while its artwork, particles and
+animation play. Play all uses the skirmisher hero by default; choosing another
+ranged unit replaces the shooter. It shows the attack animation, release,
+flight, target reaction, the existing default hit and any additional projectile
+hit effect. Original wall projectiles retain their complete visual prefabs in
+game, including authored particle emitters and animated trails.
+
+Match **Launch delay** with the attack using its slider or numeric field, then
+Save the projectile and timing together. Animated units share the existing
+Units timing setting: the marker is measured in animation seconds and its
+effective elapsed release time follows the unit's saved animation speed.
+Static buildings and wall cards use elapsed seconds. Reset removes the custom
+delay and returns to the saved default without changing the animation reference.
+The Units tab exposes **Projectile flight speed** for the hero and every ranged
+character, with **Reset projectile flight speed** restoring the authored value.
+This optional setting is shared across that character’s levels; existing hero
+speed bonuses still apply. Damage, range and attack speed remain in Units.
+Tower projectile speeds remain in Buildings.
+
+The left panel also offers **Enable trail** and ten authored trail textures.
+The original trail remains the default; an explicit preset replaces it, and
+turning the checkbox off suppresses it. Trail, projectile and launch-delay
+changes remain drafts until Save. Opening panels, browsing and preview playback
+never write game data or player progress.
 
 Tiny Kingdom's original cannonball and ballista bolt are available under
 **Tiny Kingdom** in the library and assigned to the three Cannon and Sniper
 tiers. Their sprites use the existing flight, targeting and hit logic.
 
 The hero follows the Arrow design saved for its equipped tier in **Items**.
-An explicit flight selection in Projectiles overrides that design. The equipment
-tier selector is a silent preview setting; it never changes player progress.
+An explicit projectile selection overrides that design. Resetting the projectile
+assignment restores the original unit/item behavior. Existing artwork size,
+rotation, tint and unrelated content are retained until that projectile is
+explicitly replaced.
 
 **Relics** edits the 50 relics, their level effects and costs, conversion
 rewards, names, icons and icon backgrounds. Implemented effect IDs and goods
@@ -57,6 +83,11 @@ No Unity package scripts or audio are imported or executed.
 3. Run `python tools/projectiles/import-toon.py <folder>/Baked` and
    `node tools/projectiles/build-library.cjs`.
 
+The catalog stores complete sets separately from its stable raw asset IDs.
+Flight loops skip fully transparent capture cells, retaining the source atlas
+and finite launch/hit timing. Every shipped image, animation and preset has an
+automated resource check.
+
 Imports stage and validate outputs first, retain stable UUIDs, protect recorded
 manual edits and concurrent changes, and keep raw packages, intermediate captures
 and backups outside the game. Runtime atlases carry straight alpha and fixed
@@ -89,5 +120,16 @@ runs only the Simulator checks.
 `node tools/projectiles/verify-editors.cjs` checks the actual authoring clients
 in a muted headless browser. The Creator panel shell is supplied by the test;
 only draft operations are allowed. Screenshots and reports use the artifact
-directory. `node tools/projectiles/serve-editor.cjs` opens a standalone local
-Projectiles editor on port 8792, without a gameplay scene or audio.
+directory. Add `--projectiles-only` to check projectile assignment, timing,
+trail and reset drafts without the other editor panels.
+
+`node tools/projectiles/verify-projectile-library.cjs` walks all 77 complete
+sets through every available playback mode, every ranged shooter, all ten
+trails and trails off. It blocks saves and checks catalog/config bytes before
+and after, along with browser, console and asset errors. Set
+`PLAYWRIGHT_MODULE`, optional `BROWSER_EXECUTABLE`, and an external
+`HKD_ARTIFACT_DIR` for its screenshots and JSON report. The browser is muted
+before startup and temporary sessions close automatically.
+
+`node tools/projectiles/serve-editor.cjs` opens a standalone local Projectiles
+editor on port 8792, without a gameplay scene or audio.

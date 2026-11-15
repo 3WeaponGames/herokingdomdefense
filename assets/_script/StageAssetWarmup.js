@@ -44,7 +44,7 @@ function plan(config, level, names) {
   add(names.IconMap, "ItemHp", "prefab"); add(names.Enemy, "ItemHp", "prefab");
   return {items:out.items,enemies:unitIds(level),allies:Object.keys(allies),kinds:buildingKinds(level)};
 }
-function presentationPlan(config, level, base, catalogs, options) {
+function presentationPlan(config, level, base, catalogs, options, loadedAssets) {
   var out = collector(), add = out.add, profiles = catalogs.characters, parts = {}, selected = [], projectiles = catalogs.projectiles;
   (catalogs.parts.parts || []).forEach(function (part) { parts[part.id] = part; });
   Object.keys(profiles.assignments || {}).forEach(function (key) {
@@ -56,10 +56,29 @@ function presentationPlan(config, level, base, catalogs, options) {
     (profile.parts || []).forEach(function (part) { var asset = parts[part.sprite]; if (asset) add("resources", asset.resource, "texture"); });
   });
   var needed = {};
-  Object.keys(projectiles.assignments || {}).forEach(function (key) { var bits = key.split(":"), used = key === "hero" || /^tower/.test(key) || bits[0] === "enemy" && base.enemies.indexOf(bits[1]) >= 0 || bits[0] === "ally" && base.allies.indexOf(bits[1]) >= 0; if (used) Object.keys(projectiles.assignments[key]).forEach(function (field) { var value = projectiles.assignments[key][field]; if (typeof value === "string") needed[value] = true; }); });
-  (projectiles.assets || []).forEach(function (asset) {
-    if (needed[asset.id] || /^hero-skin:/.test(asset.id) || asset.sourcePart && selected.some(function (profile) { return (profile.parts || []).some(function (part) { return part.sprite === asset.sourcePart; }); })) add(asset.bundle || "resources", asset.resource, asset.kind === "spine" ? "spine" : asset.kind === "flipbook" ? "texture" : "frame");
+  var selectProjectile = require("./ProjectileLooks").select;
+  Object.keys(projectiles.assignments || {}).forEach(function (key) {
+    var bits = key.split(":"), used = key === "hero" || /^tower/.test(key) || bits[0] === "enemy" && base.enemies.indexOf(bits[1]) >= 0 || bits[0] === "ally" && base.allies.indexOf(bits[1]) >= 0;
+    if (used) {
+      var choice = selectProjectile(projectiles, key);
+      ["flight", "launch", "impact", "trail"].forEach(function (field) { if (typeof choice[field] === "string") needed[choice[field]] = true; });
+    }
   });
+  if (options.style === "mystic") needed["original:fireball"] = true;
+  // Ranged Fantasy rigs can supply their original projectile without a saved
+  // assignment. Read already loaded metadata; never instantiate or play actors.
+  function defaults(skeletonData) {
+    var json = skeletonData && skeletonData.skeletonJson, effects = json && json._fantasy && json._fantasy.effects, projectile = effects && effects.projectile;
+    if (projectile) ["flight", "launch", "impact", "trail"].forEach(function (role) { if (typeof projectile[role] === "string") needed[projectile[role]] = true; });
+  }
+  Object.keys(loadedAssets || {}).forEach(function (key) {
+    var asset = loadedAssets[key]; defaults(asset);
+    if (asset && asset.data && asset.data.getComponentsInChildren && typeof sp !== "undefined" && sp.Skeleton) asset.data.getComponentsInChildren(sp.Skeleton).forEach(function (renderer) { defaults(renderer.skeletonData); });
+  });
+  (projectiles.assets || []).forEach(function (asset) {
+    if (needed[asset.id] || /^hero-skin:/.test(asset.id) || asset.sourcePart && selected.some(function (profile) { return (profile.parts || []).some(function (part) { return part.sprite === asset.sourcePart; }); })) {if(asset.visualPrefab)add(asset.visualPrefab.bundle||asset.bundle||'resources',asset.visualPrefab.resource,'prefab');else add(asset.bundle || "resources", asset.resource, asset.kind === "spine" ? "spine" : asset.kind === "flipbook" ? "texture" : "frame");}
+  });
+  (projectiles.trails||[]).forEach(function(trail){if(needed[trail.id])add(trail.bundle||'resources',trail.resource,'texture');});
   (options.skillClips || []).forEach(function (clip) { if (clip.style === options.style) add(clip.bundle || "resources", clip.resource, clip.kind === "spine" ? "spine" : "frame"); });
   var visual=options.skills&&options.skills.visual||{};
   ['resource','impactResource','passiveResource','beamResource','markResource','buffResource'].forEach(function(prefix){
@@ -119,7 +138,10 @@ Session.prototype.run = async function () {
   async function batch(items,offset,weight) { items=items.filter(function(item){return !self.pending[item.key];});var position=0,completed=0;self.total+=items.length;async function worker() { while (position < items.length) { if (!self.current()) throw Error("Stage preparation cancelled"); await self.load(items[position++]);completed++;self.progress(offset+weight*completed/items.length);if(o.yieldProgress)await o.yieldProgress(); } } await Promise.all([worker(),worker(),worker(),worker()]);self.progress(offset+weight); }
   await batch(base.items,0,.35);
   var catalogs = {characters:this.assets["resources/characters/catalog:json"].json,parts:this.assets["resources/character-parts/catalog:json"].json,projectiles:this.assets["resources/projectiles/catalog:json"].json};
-  await batch(presentationPlan(o.config,o.level,base,catalogs,o),.35,.4);
+  await batch(presentationPlan(o.config,o.level,base,catalogs,o,this.assets),.35,.4);
+  // Baked replacement rigs arrive with presentation resources. Resolve any
+  // model-authored projectile dependencies before admission rather than firing.
+  await batch(presentationPlan(o.config,o.level,base,catalogs,o,this.assets),.75,.05);
   if (o.prime) await o.prime(catalogs,this.assets);
   var prefab = this.assets[o.names.IconMap + "/" + o.level.prefab + ":prefab"];
   if (o.shadows) this.shadows = await o.shadows(prefab, this, function (value) { self.progress(.8 + value * .2); });

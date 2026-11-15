@@ -112,3 +112,16 @@ test('Enemy08 projectile diagnostic follows actual dt movement and target cappin
         assert(preview.points.every(p=>p.x<=600+1e-9),'direct movement cannot overshoot target');
     }
 });
+
+test('projectile diagnostics follow unsaved override drafts before saved config and restore authored speed after Reset',()=>{
+    for(const request of [{type:'hero',id:'hero'},{type:'enemy',id:90003},{type:'ally',id:90003}]){
+        const baseline=describe({...request,noShared:true,noAppearance:true}),key=baseline.key,base=JSON.parse(JSON.stringify(cfg));
+        base.GameTools=base.GameTools||{};base.GameTools.projectileSpeeds={[key]:650};
+        const overrides={...base.GameTools,projectileSpeeds:{[key]:925}},documents={A:{data:base},overrides:{data:overrides}},before=JSON.stringify(documents);
+        assert.equal(describe({...request,noShared:true,noAppearance:true,documents}).projectile.speed,925,'the current unsaved Units draft controls its diagnostic');
+        assert.equal(JSON.stringify(documents),before,'reading the diagnostic does not write the draft or saved base');
+        assert.equal(describe({...request,noShared:true,noAppearance:true,documents:{A:{data:base}}}).projectile.speed,650,'a description without virtual overrides uses the saved config');
+        delete overrides.projectileSpeeds[key];
+        assert.equal(describe({...request,noShared:true,noAppearance:true,documents}).projectile.speed,baseline.projectile.speed,'an unsaved Reset restores the authored speed instead of reviving saved config');
+    }
+});

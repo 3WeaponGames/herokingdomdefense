@@ -24,6 +24,7 @@ var def_KinghtFallBulletPlay = function (t) {
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
+    if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.setLeft = function (t, e, n) {
     this._dir = t ? cc.v2(-Math.cos(this.angle * Math.PI / 180), Math.sin(this.angle * Math.PI / 180)) : cc.v2(Math.cos(this.angle * Math.PI / 180), Math.sin(this.angle * Math.PI / 180));
@@ -34,6 +35,7 @@ var def_KinghtFallBulletPlay = function (t) {
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
+    if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.setSkin = function (t) {
     var renderer = this.bullet && this.bullet.getComponent(sp.Skeleton), data = renderer && renderer.skeletonData, runtime, name;

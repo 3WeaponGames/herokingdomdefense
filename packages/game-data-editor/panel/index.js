@@ -370,12 +370,14 @@ function create(kind){
       UnitProfiles.bar(this,row,node);
       if(row.unitType==='hero'){
         this._note('The hero combines equipment stats and layered animated equipment. Choose levels in the silent preview; those choices never change player progression.');
+        this._unitProjectileSpeedField(row);
         const fields=this._section('Base stats from equipment');
         (this._data('A').EquipCfg||[]).forEach((equipment,i)=>{if(equipment.id===3&&HeroEquipmentStats.enabled(this._data('A')))return;const r=equipment.levelInfo[0];this._field(fields,Schema.EQUIPMENT[i]+' · level 1',r.Parameters,value=>this._set('A',['EquipCfg',i,'levelInfo',0,'Parameters'],value),{min:0,help:'Shared source: Equipment. Open Equipment for every upgrade level and style-specific secondary bonus.'});});
         fields.appendChild(button('Open Equipment panel',()=>openPanel('equipment').catch(e=>this._status(e.message,true))));return;
       }
       const id=Number(row.unitID);this._note(row.unitType==='ally'?'Allied unit: Barracks uses the selected level’s stats and the matching appearance from Characters. Changes apply after Save.':'Enemy unit: its name, model, stats and timing are independent of allies.');
       if(row.unitType==='ally')this._unitLevelStats(row);
+      if(row.record.AttackType===2)this._unitProjectileSpeedField(row);
       if(row.record.MonsterSource)this._note('Imported source: '+row.record.MonsterSource+' · Behavior controller: '+row.record.BehaviorTemplate+'. Names, stats, roles, model transforms and attack timing are editable independently for this unit.');
       if(row.record.CampaignBaseUnit)this._note('Campaign profile: controller '+row.record.CampaignBaseUnit+' · Appearance source unit '+row.record.AppearanceSourceUnit+'. Its initial combat settings preserve the original campaign profile; editing this record changes this profile independently of the source-roster monster.');
       this._unitGuide(row);
@@ -405,6 +407,24 @@ function create(kind){
       this._note('Attacks per second includes the cooldown, hit windup and full attack animation. Changing the selected level’s animation speed or hit timing recalculates its rate. Perks, movement and interruptions can change the rate during battle.');
     },
     _attackRateField(container,row,level,write,options){return AttackRate.field(this,container,row,level,write,options,ipc);},
+    _unitProjectileSpeedField(row){
+      const table=this._data('overrides').projectileSpeeds,key=row.unitType==='hero'?'hero:hero:default':row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,row.unitID),malformed=table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)),custom=!malformed&&own(table,key),value=custom?table[key]:500,fields=this._section('Projectile flight');
+      this._field(fields,'Projectile flight speed',value,next=>this._unitProjectileSpeedEdit(row,Number(next)).catch(()=>{}),{numeric:true,min:1,max:20000,commitUnchanged:true,readOnly:malformed,help:'World units per second. Shared across this character’s levels. The hero’s existing projectile-speed bonuses still apply. Reset uses the authored flight speed.'});
+      if(malformed)this._note('The projectile speed table has an invalid format. Refresh or correct that configuration before editing.',true,fields);
+      else if(custom)fields.appendChild(button('Reset projectile flight speed',()=>this._unitProjectileSpeedEdit(row,undefined).catch(()=>{}),'gt-mini'));
+    },
+    _unitProjectileSpeedEdit(row,value){
+      return this._change(()=>{
+        const type=row.unitType,id=type==='hero'?'hero':String(row.unitID),form=UnitRecords.form(type,id),config=this._data('A'),record=type==='hero'?null:UnitRecords.record(config,type,id);
+        if(!UnitRecords.reachable(config,type,id,form)||type!=='hero'&&(!record||record.AttackType!==2))throw Error('Choose an existing ranged unit.');
+        const key=type+':'+id+':'+form,table=this._data('overrides').projectileSpeeds,at=['projectileSpeeds'];
+        if(table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)))throw Error('The projectile speed table has an invalid format. Refresh before editing.');
+        if(value===undefined)return own(table,key)?[{doc:'overrides',path:Object.keys(table).length===1?at:at.concat(key),remove:true}]:[];
+        if(typeof value!=='number'||!Number.isFinite(value)||value<1||value>20000)throw Error('Projectile flight speed must be between 1 and 20000.');
+        const current=own(table,key)?table[key]:500;if(current===value)return [];
+        return [{doc:'overrides',path:table===undefined?at:at.concat(key),value:table===undefined?{[key]:value}:value}];
+      },{skipEmpty:true});
+    },
     _attackRateCell(element,row,level){return AttackRate.cell(this,element,row,level,ipc);},
     _attackRateMetrics(value){AttackRate.metrics(this,value);},
     _unitSightRangeField(container,row){

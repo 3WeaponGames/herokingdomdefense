@@ -55,7 +55,7 @@ function attack(owner, type, callback) {
   var settings = config();
   var key = keyFor(owner, type);
   var item = settings && settings.timings && settings.timings[key];
-  if (item === undefined) item = settings && settings.timingDefaults && settings.timingDefaults[key];
+  if (item === undefined || item && item.inherit === true && !Object.prototype.hasOwnProperty.call(item, "attack")) item = settings && settings.timingDefaults && settings.timingDefaults[key];
   var delay = item && item.attack;
   var speed = attackPlayback(owner, type);
   // A missing timing must retain call order, RNG order, and the original stack.
@@ -232,6 +232,10 @@ function applyModel(owner, type, node, left) {
   node.angle = base.angle + (item.rotation || 0);
   if (cc.color) node.color = item.tint ? cc.color(item.tint) : base.color;
 }
+exports.projectileSpeed=function(owner,type,authoredSpeed){
+  var settings=config(),table=settings&&settings.projectileSpeeds,value=table&&table[keyFor(owner,type)];
+  return typeof value==='number'&&isFinite(value)&&value>=1&&value<=20000?value:authoredSpeed;
+};
 exports.attack = attack;
 exports.tick = tick;
 exports.cancel = cancel;

@@ -208,6 +208,8 @@ var def_KinghtFallGameCtrl = function (t) {
     require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
+    if (this._projectileLooks) this._projectileLooks.dispose();
+    this._projectileLooks = null;
     GameToolsOverrides.clear();
     if (this._depthView) this._depthView.destroy();
     this._depthView = null;
@@ -1138,7 +1140,7 @@ var def_KinghtFallGameCtrl = function (t) {
     n.setPosition(a);
     var o = n.getComponent($z1KinghtFallBulletPlay.default);
     if (o._heroBaseSpeed === undefined) o._heroBaseSpeed = o.speed;
-    o.speed = o._heroBaseSpeed * (this.ctrPlay._styleProjectileSpeed || 1);
+    o.speed = GameToolsOverrides.projectileSpeed(this.ctrPlay, 'hero', o._heroBaseSpeed) * (this.ctrPlay._styleProjectileSpeed || 1);
     o.setSkin(this.ctrPlay.ctrPlayAni.arrName);
     this.ndPlayArr2.push(o);
     var r = this.ctrPlay.getAttack(t);
@@ -1188,6 +1190,8 @@ var def_KinghtFallGameCtrl = function (t) {
     e.setPosition(i);
     var a = e.getComponent($z1KinghtFallBulletEnemy.default);
     a.combatContext = this;
+    if(a._enemyBaseSpeed===undefined)a._enemyBaseSpeed=a.speed;
+    a.speed=GameToolsOverrides.projectileSpeed(t,'enemy',a._enemyBaseSpeed);
     ProjectileLooks.prepare(a, this, "enemy:" + t.cfg.ID, t);
     this.ndEnemyArr.push(a);
     return {
@@ -1203,9 +1207,11 @@ var def_KinghtFallGameCtrl = function (t) {
       }
     }
   };
-  _ctor.prototype.onShotBuild = function (t, e) {
+  _ctor.prototype.onShotBuild = function (t, e, released) {
     var game = this;
     var shotData = this.gameData, shotEpoch = this._combatEpoch;
+    var towerKey=t.buildInfo&&t.buildInfo.cfg&&t.buildInfo.cfg.ID&&t.buildInfo.cfg.index?'tower:'+t.buildInfo.cfg.ID+':'+t.buildInfo.cfg.index:'tower';
+    if(!released&&ProjectileLooks.launchDelay(towerKey)>0){var targetNode=e&&e.node,targetGeneration=targetNode&&targetNode._combatGeneration;return ProjectileLooks.queueLaunch(this,towerKey,t,function(){_ctor.prototype.onShotBuild.call(game,t,e,true);},function(){return game.gameData===shotData&&game._combatEpoch===shotEpoch&&game.gameStatus===$z1KinghtFallModle.KinghtFallGameStage.Fight&&!t.isDestroyed&&e&&e.node===targetNode&&cc.isValid(targetNode,true)&&targetNode._combatGeneration===targetGeneration&&(!e.isDead||!e.isDead());});}
     var appearance = t.buildInfo && t.buildInfo.cfg && t.buildInfo.cfg.Appearance;
     var layered = appearance && appearance.weapon && appearance.weapon.sprite;
     if (layered) {
@@ -1230,8 +1236,7 @@ var def_KinghtFallGameCtrl = function (t) {
     a.combatContext = this;
     if (modern) {
       var game = this, effects = $z1KinghtFallUIGame.default.instance.ctrEffect;
-      var towerKey = t.buildInfo.cfg.ID && t.buildInfo.cfg.index ? "tower:" + t.buildInfo.cfg.ID + ":" + t.buildInfo.cfg.index : "tower";
-      ProjectileLooks.prepare(a, this, behavior.projectileLook || (behavior.attackType === "arrow" ? "tower" : towerKey));
+      ProjectileLooks.prepare(a, this, behavior.projectileLook || towerKey);
       a.setTowerTag(i, e.node, function () {
         if (game.gameData !== shotData || game._combatEpoch !== shotEpoch) return;
         var center = behavior.attackType === "cannon" ? a._towerImpactPoint : require("TowerCombat").point(e.node, game.ndUI);
@@ -1246,7 +1251,7 @@ var def_KinghtFallGameCtrl = function (t) {
       }, behavior);
       return;
     }
-    ProjectileLooks.prepare(a, this, behavior && behavior.projectileLook || "tower");
+    ProjectileLooks.prepare(a, this, behavior && behavior.projectileLook || towerKey);
     a.setTag(i, e.node, function () {
       if (game.gameData !== shotData || game._combatEpoch !== shotEpoch) return;
       if (cc.isValid(e) && cc.isValid(e.node)) {
@@ -1278,6 +1283,8 @@ var def_KinghtFallGameCtrl = function (t) {
     e.setPosition(i);
     var a = e.getComponent($z1KinghtFallBulletSoldier.default);
     a.combatContext = this;
+    if(a._allyBaseSpeed===undefined)a._allyBaseSpeed=a.speed;
+    a.speed=GameToolsOverrides.projectileSpeed(t,'ally',a._allyBaseSpeed);
     ProjectileLooks.prepare(a, this, "ally:" + t.cfg.ID);
     this.ndSoldArr.push(a);
     return {

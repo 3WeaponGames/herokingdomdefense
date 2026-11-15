@@ -1,0 +1,67 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict');
+const Combat=require('../../packages/hkd-projectiles/combat-preview');
+function fixture(describe){
+  const calls=[];
+  const api={
+    ipc:async(name,request)=>{calls.push(['ipc',name,request]);return describe(request.key);},
+    runtime:()=>({}),renderer:{
+      createLayers:async(runtime,layers)=>layers.map(description=>({description,data:{animations:Object.entries(description.json.animations).map(([name,duration])=>({name,duration})),findAnimation(name){return this.animations.find(animation=>animation.name===name);}},skeleton:{color:{set(){}}}})),
+      seek(runtime,layers,name,time,loop){calls.push(['seek',name,time,loop]);},
+      bounds(){return{minX:-25,minY:0,maxX:25,maxY:100,width:50,height:100};},
+      drawWorld(){calls.push(['draw']);}
+    }
+  };
+  const ctx={save(){},restore(){},translate(){},scale(){},rotate(){},drawImage(){}};
+  return{api,calls,ctx};
+}
+const layer={name:'body',json:{animations:{attack:1,idle:1.5,hit:.3}},x:0,y:0,scaleX:1,scaleY:1};
+test('combat actors retain raw animation time and frozen saved playback without running gameplay',async()=>{
+  const {api,calls,ctx}=fixture(()=>({type:'hero',layers:[layer],profile:{animationSpeed:0},visuals:{mirrorX:true}})),preview=Combat.create(api),actor=await preview.load('hero');
+  assert.equal(await preview.load('hero'),actor);assert.equal(calls.filter(call=>call[0]==='ipc').length,1);
+  assert.equal(actor.animationSpeed,0);assert.equal(actor.attackAnimation,'attack');assert.equal(actor.hitAnimation,'hit');
+  const pose=preview.draw(ctx,actor,{x:100,groundY:200,width:100,height:100,time:.7,animation:'attack',loop:false});
+  assert.equal(pose.facing,-1);assert.deepEqual(calls.filter(call=>call[0]==='seek').at(-1),['seek','attack',.7,false]);
+  assert.equal(Combat.duration(actor,'hit'),.3);assert.deepEqual(Combat.animations(actor),['attack','idle','hit']);
+  preview.destroy();const count=calls.length;preview.draw(ctx,actor,{time:1});assert.equal(calls.length,count);
+});
+test('closing preview ignores pending unit descriptions before loading any textures',async()=>{
+  let resolve;const pending=new Promise(ready=>resolve=ready),{api,calls}=fixture(()=>pending),preview=Combat.create(api),actor=preview.load('hero');
+  preview.destroy();resolve({type:'hero',layers:[layer]});assert.equal(await actor,null);assert.equal(calls.some(call=>call[0]==='seek'),false);
+});
+test('baseline impact uses real finite authored clips alongside the target reaction',async()=>{
+  const hitLayer={...layer,json:{animations:{jian_lv1:.4,xb_gj:.3}}},{api,calls,ctx}=fixture(()=>({type:'effect',animation:'jian_lv1',layers:[hitLayer]})),preview=Combat.create(api);
+  await preview.load('preview-hit');assert.equal(preview.defaultHit(ctx,250,160,0,50),false);await Promise.resolve();
+  assert.equal(preview.defaultHit(ctx,250,160,.1,50),true);assert.deepEqual(calls.filter(call=>call[0]==='seek').at(-1),['seek','jian_lv1',.1,false]);
+  for(const type of ['enemy','ally']){assert.equal(preview.defaultHit(ctx,250,160,.1,50,{description:{type}}),true);assert.deepEqual(calls.filter(call=>call[0]==='seek').at(-1),['seek','jian_lv1',.1,false],type+' ranged impact matches the live ranged controller');}
+  assert.equal(preview.defaultHit(ctx,250,160,.1,50,{description:{type:'enemy',defaultHitAnimation:'xb_gj'}}),true);assert.deepEqual(calls.filter(call=>call[0]==='seek').at(-1),['seek','xb_gj',.1,false]);
+  assert.equal(preview.defaultHit(ctx,250,160,.3,50,{description:{type:'enemy',defaultHitAnimation:'xb_gj'}}),false);
+  assert.equal(preview.defaultHit(ctx,250,160,-.1,50),false);preview.destroy();
+});
+test('fixed actor viewport contains the complete attack and hit pose ranges',()=>{
+  assert.deepEqual(Combat.union([{minX:-2,minY:0,maxX:3,maxY:5},{minX:-4,minY:-1,maxX:2,maxY:7}]),{minX:-4,minY:-1,maxX:3,maxY:7,width:7,height:8});
+});
+test('reload invalidates actors, retries unavailable models and rejects pending old descriptions',async()=>{
+  let resolve,attempt=0;const oldDescription=new Promise(ready=>resolve=ready),{api,calls}=fixture(()=>{attempt++;if(attempt===1)return oldDescription;if(attempt===2)throw Error('Temporary missing asset');return{type:'hero',layers:[layer],profile:{animationSpeed:1.4}};}),errors=[],preview=Combat.create(api,{onError:error=>errors.push(error.message)});
+  const stale=preview.load('hero');preview.invalidate('hero');assert.equal(await preview.load('hero'),null);assert.deepEqual(errors,['Temporary missing asset']);
+  preview.invalidate();const fresh=await preview.load('hero');assert.equal(fresh.animationSpeed,1.4);resolve({type:'hero',layers:[layer],profile:{animationSpeed:.4}});assert.equal(await stale,null);
+  assert.equal(await preview.load('hero'),fresh);assert.equal(calls.filter(call=>call[0]==='ipc').length,3);preview.destroy();
+});
+test('building muzzle matches the drawn barrel after fitting, facing and saved mirror transforms',async()=>{
+  const savedImage=global.Image;global.Image=class{set src(value){this.source=value;queueMicrotask(()=>this.onload());}};
+  try{
+    const bounds={minX:-50,minY:-10,maxX:150,maxY:190,width:200,height:200},artwork={base:{x:0,y:0,width:100,height:100},weapon:{x:40,y:80,width:40,height:20,pivotX:.5,pivotY:.5,flipX:1,angle:0,view:'side',muzzle:{x:60,y:80}},frameBounds:bounds},
+      {api}=fixture(()=>({type:'building',layers:[],image:'base.png',weaponImage:'weapon.png',artwork})),preview=Combat.create(api),actor=await preview.load('tower:2:4');
+    function recordingContext(){
+      let matrix=[1,0,0,1,0,0],stack=[],barrel=null;
+      function multiply(value){const [a,b,c,d,e,f]=matrix,[u,v,w,x,y,z]=value;matrix=[a*u+c*v,b*u+d*v,a*w+c*x,b*w+d*x,a*y+c*z+e,b*y+d*z+f];}
+      return{save(){stack.push(matrix.slice());},restore(){matrix=stack.pop();},translate(x,y){multiply([1,0,0,1,x,y]);},scale(x,y){multiply([x,0,0,y,0,0]);},rotate(angle){const c=Math.cos(angle),s=Math.sin(angle);multiply([c,s,-s,c,0,0]);},drawImage(image,x,y,width,height){if(image.source==='weapon.png'){const px=x+width,py=y+height/2;barrel={x:matrix[0]*px+matrix[2]*py+matrix[4],y:matrix[1]*px+matrix[3]*py+matrix[5]};}},barrel(){return barrel;}};
+    }
+    for(const [facing,mirrorX]of [[1,false],[-1,false],[1,true]]){
+      actor.mirrorX=mirrorX;const settings={x:300,groundY:400,width:100,height:200,facing},ctx=recordingContext();preview.draw(ctx,actor,settings);
+      assert.deepEqual(preview.muzzle(actor,settings),ctx.barrel(),'release originates at the rendered weapon image’s right-edge muzzle');
+      assert.equal(preview.muzzle(actor,settings).y,355);
+    }
+    assert.equal(preview.muzzle({bounds,layers:[]},{}),null);assert.equal(preview.muzzle(null,{}),null);preview.destroy();
+  }finally{global.Image=savedImage;}
+});

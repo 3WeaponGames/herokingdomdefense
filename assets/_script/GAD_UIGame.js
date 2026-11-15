@@ -87,12 +87,18 @@ var def_GAD_UIGame = function (t) {
     this._waveDistance = $z1GAD_DataMgr.default.getInstance().getParam($z1GADGameEnumData.enumGADBasicCfg.roundDistance, 300);
     this._doorScaleWidth = $z1GAD_DataMgr.default.getInstance().getParam($z1GADGameEnumData.enumGADBasicCfg.width, 20);
     this._roadWidth = Math.min(2 * $z1GAD_Configs.GADConfig.WallWidth, cc.winSize.width);
-    this.scheduleOnce(function () {
-      t._fenceLine = .5 * -cc.winSize.height + $z1GAD_Configs.GADConfig.BottomHeight;
-      t.ndFence.y = t._fenceLine;
-      t._rewardRun = $z1GAD_PlayerMgr.default.getInstance().beginRun(t._wallAdmission);
-      $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Game);
-      t.buildWave();
+    // The first volley must see its saved delay even on a cold catalog load.
+    // BaseUI owns retry/cancellation and ignores callbacks after this UI closes.
+    this.loadFromRes("projectiles/catalog", cc.JsonAsset, function (asset) {
+      ProjectileLooks.prime(asset.json);
+      t.scheduleOnce(function () {
+        if (t.isclose) return;
+        t._fenceLine = .5 * -cc.winSize.height + $z1GAD_Configs.GADConfig.BottomHeight;
+        t.ndFence.y = t._fenceLine;
+        t._rewardRun = $z1GAD_PlayerMgr.default.getInstance().beginRun(t._wallAdmission);
+        $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Game);
+        t.buildWave();
+      });
     });
   };
   _ctor.prototype.initEvents = function () {
@@ -421,8 +427,9 @@ var def_GAD_UIGame = function (t) {
       }
     }
   };
-  _ctor.prototype.onShootBullet = function (t, e, n) {
+  _ctor.prototype.onShootBullet = function (t, e, n, released) {
     if (!this._bulletPool || this.isclose || $z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Game) return;
+    if(!released&&ProjectileLooks.launchDelay('wall-defense')>0){var game=this;return ProjectileLooks.queueLaunch(this,'wall-defense',n,function(){_ctor.prototype.onShootBullet.call(game,t,e,n,true);},function(){return !game.isclose&&!!game._bulletPool&&$z1GAD_PlayerMgr.default.getInstance().getState()==$z1GAD_Configs.emGADGameState.Game;});}
     var i = this._bulletPool.pop() || cc.instantiate(this.prefabBullet);
     i.active = false;
     i.parent = this.ndBulletRoot;

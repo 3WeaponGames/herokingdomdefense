@@ -7,14 +7,47 @@ the repository. Only runtime atlases and their provenance enter the game.
 import argparse
 import hashlib
 import io
+import math
 import json
+import re
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'characters'))
 from import_units import Transaction, asset_uuid, texture_meta, encoded
 from PIL import Image
 
+def validate_clips(source,clips):
+    if not isinstance(clips,list) or len(clips)!=45:
+        raise ValueError('Expected all 15 flight, 15 launch and 15 impact effects')
+    files=set();roles=set()
+    for clip in clips:
+        if not isinstance(clip,dict):raise ValueError('Invalid baked clip record')
+        name=clip.get('name');file=clip.get('file')
+        match=re.fullmatch(r'(Projectile|Flash|Hit) ([1-9]|1[0-5])(?: .+)?',name) if isinstance(name,str) else None
+        if not match or (match[1]!='Projectile' and name!=match[1]+' '+match[2]):
+            raise ValueError('Unknown baked clip: '+str(name))
+        expected=(name.replace(' ','-').lower()+'.png')
+        if not isinstance(file,str) or file!=expected or any(character in file for character in '/\\:<>"|?*') or any(ord(character)<32 for character in file):
+            raise ValueError('Unsafe or inconsistent baked filename: '+str(file))
+        if file.casefold() in files:raise ValueError('Duplicate baked filename: '+file)
+        files.add(file.casefold())
+        role=(match[1],int(match[2]))
+        if role in roles:raise ValueError('Duplicate baked clip: '+name)
+        roles.add(role)
+        if type(clip.get('loop')) is not bool or clip['loop']!=(match[1]=='Projectile'):
+            raise ValueError('Invalid baked playback role: '+name)
+        if not all(type(clip.get(key)) is int and clip[key]>0 for key in ('frames','columns','cell','fps')):
+            raise ValueError('Invalid baked atlas geometry or frame rate: '+name)
+        if not (source/file).resolve().is_relative_to(source):
+            raise ValueError('Baked image leaves source directory: '+file)
+    if roles!={(role,number) for role in ('Projectile','Flash','Hit') for number in range(1,16)}:
+        raise ValueError('Missing numbered baked projectile clips')
+
 def normalize(sheet,clip):
+    if not all(type(clip.get(key)) is int and clip[key]>0 for key in ('frames','columns','cell','fps')):
+        raise ValueError('Invalid baked atlas geometry or frame rate')
+    expected=(clip['columns']*clip['cell'],math.ceil(clip['frames']/clip['columns'])*clip['cell'])
+    if sheet.size!=expected:raise ValueError('Baked image size does not match its atlas grid: '+clip['name'])
     # Camera blending stores premultiplied RGB. The game imports straight-alpha
     # PNGs; undo that blend before resampling to avoid dark edges and dim glows.
     sheet=sheet.convert('RGBA');pixels=bytearray(sheet.tobytes())
@@ -39,20 +72,22 @@ def normalize(sheet,clip):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('baked',type=Path);parser.add_argument('--project',type=Path,default=Path(__file__).resolve().parents[2]);args=parser.parse_args()
-    source=args.baked.resolve();clips=json.loads((source/'clips.json').read_text())['clips']
-    if len(clips)!=45:raise ValueError('Expected all 15 flight, 15 launch and 15 impact effects')
+    source=args.baked.resolve();clips=json.loads((source/'clips.json').read_text(encoding='utf-8-sig'))['clips']
+    validate_clips(source,clips)
     artifacts=source.parent/'import-transaction';tx=Transaction(args.project,artifacts);assets=[]
     manifest='assets/resources/projectiles/toon/library.json';before=tx.read(manifest)
     previous=json.loads(before.decode('utf-8-sig')) if before else {};tx.managed=previous.get('importedFiles',{})
     tx.folder("assets/resources/projectiles");tx.folder("assets/resources/projectiles/toon")
     for clip in clips:
-        target='assets/resources/projectiles/toon/'+clip['file'];sheet=Image.open(source/clip['file']);raw=normalize(sheet,clip)
+        target='assets/resources/projectiles/toon/'+clip['file']
+        with Image.open(source/clip['file']) as sheet:
+            raw=normalize(sheet,clip);width,height=sheet.size
         # Stage every output before committing; the source project stays intact
         # if a conversion fails or another editor changes an output mid-import.
-        tx.stage(target,raw);tx.stage(target+'.meta',encoded(texture_meta(target,sheet.width,sheet.height)))
+        tx.stage(target,raw);tx.stage(target+'.meta',encoded(texture_meta(target,width,height)))
         role='flight' if clip['loop'] else 'launch' if clip['name'].startswith('Flash ') else 'impact'
         assets.append(dict(id='toon:'+Path(clip['file']).stem,name=clip['name'],category='Toon / '+role,kind='flipbook',role=role,image=target,resource=target[len('assets/resources/'): -4],size=80 if role!='flight' else 56,**{key:clip[key] for key in ('frames','columns','cell','fps','loop')}))
-    provenance=json.loads((source.parent/'source.json').read_text());provenance['alpha']='straight'
+    provenance=json.loads((source.parent/'source.json').read_text(encoding='utf-8-sig'));provenance['alpha']='straight'
     imported=dict(previous.get('importedFiles',{}))
     for asset in assets:
         for key in (asset['image'],asset['image']+'.meta'):

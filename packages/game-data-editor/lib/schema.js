@@ -516,8 +516,14 @@ function validate(documents, changes) {
     Object.keys(overrides.parameters||{}).forEach(key=>{if(key==='buildStandTime')number('overrides',['parameters',key],overrides.parameters[key],0.001,false);else issue('overrides',['parameters',key],'Unknown runtime parameter override.');});
     ['timings','timingDefaults'].forEach(group=>{
       if(overrides[group]!==undefined&&(!overrides[group]||typeof overrides[group]!=='object'||Array.isArray(overrides[group]))){issue('overrides',[group],'Attack timings must be a unit timing table.');return;}
-      Object.keys(overrides[group]||{}).forEach(key=>{const item=overrides[group][key],parts=key.split(':');if(parts.length!==3||['hero','enemy','ally'].indexOf(parts[0])<0)issue('overrides',[group,key],'Timing must identify a unit, attack side and form.');if(!UnitRecords.reachable(base,parts[0],parts[1],parts[2]))issue('overrides',[group,key],'Timing unit or form does not exist.');if(!item||typeof item.attack!=='number'||!Number.isFinite(item.attack)||item.attack<0||item.attack>10)issue('overrides',[group,key],'Attack time must be between 0 and 10 seconds.');});
+      Object.keys(overrides[group]||{}).forEach(key=>{const item=overrides[group][key],parts=key.split(':');if(parts.length!==3||['hero','enemy','ally'].indexOf(parts[0])<0)issue('overrides',[group,key],'Timing must identify a unit, attack side and form.');if(!UnitRecords.reachable(base,parts[0],parts[1],parts[2]))issue('overrides',[group,key],'Timing unit or form does not exist.');if(!item||typeof item!=='object'||Array.isArray(item)||!(group==='timings'&&item.inherit===true&&!Object.prototype.hasOwnProperty.call(item,'attack'))&&(typeof item.attack!=='number'||!Number.isFinite(item.attack)||item.attack<0||item.attack>10))issue('overrides',[group,key],'Attack time must be between 0 and 10 seconds.');});
     });
+    if(overrides.projectileSpeeds!==undefined&&(!overrides.projectileSpeeds||typeof overrides.projectileSpeeds!=='object'||Array.isArray(overrides.projectileSpeeds)))issue('overrides',['projectileSpeeds'],'Projectile flight speeds must be a unit table.');
+    else for(const [key,speed]of Object.entries(overrides.projectileSpeeds||{})){
+      const [type,id,form,...extra]=key.split(':'),record=UnitRecords.record(base,type,id),reachable=!extra.length&&UnitRecords.reachable(base,type,id,form)&&(type==='hero'||record&&record.AttackType===2);
+      if(!reachable)issue('overrides',['projectileSpeeds',key],'Choose a reachable ranged unit or the hero.');
+      if(typeof speed!=='number'||!Number.isFinite(speed)||speed<1||speed>20000)issue('overrides',['projectileSpeeds',key],'Projectile flight speed must be between 1 and 20000.');
+    }
     if(overrides.animationSpeeds!==undefined&&(!overrides.animationSpeeds||typeof overrides.animationSpeeds!=='object'||Array.isArray(overrides.animationSpeeds)))issue('overrides',['animationSpeeds'],'Attack animation speeds must be a unit table.');
     for(const [key,speed]of Object.entries(overrides.animationSpeeds||{})){
       const [side,id,form,...extra]=key.split(':');

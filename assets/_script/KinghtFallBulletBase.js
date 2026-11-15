@@ -45,9 +45,9 @@ var def_KinghtFallBulletBase = function (t) {
     };
     var isLive = this.targetIsLive;
     // Keep an immutable shot identity even if the projectile itself is reused.
+    // The binding token survives damage's one-use permit for post-hit visuals.
     var shot = {};
-    this._shot = shot;
-    if (this._launchProjectileLook) this._launchProjectileLook();
+    this._shot = this._shotIdentity = shot;
     this.callAttack = function () {
       if (bullet._shot !== shot) return;
       bullet._shot = null;
@@ -79,6 +79,7 @@ var def_KinghtFallBulletBase = function (t) {
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
+    if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.onUpdate = function (t) {
     if (this._projectileVisual) this._projectileVisual.step(t);

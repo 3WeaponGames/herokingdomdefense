@@ -108,7 +108,7 @@ function operation(root,state,request,drafts){
   if(action==='rename')entry.name=validName(request.name);
   else if(action==='archive'||action==='remove'){
    const used=usages(root,state,id,drafts);if(action==='remove'&&used.length)throw Error('This profile is used by '+used.length+' wave(s). Replace those selections or archive the profile.');
-   if(action==='remove'&&entry.created){delete units[id];delete next.overrides.unitProfiles.entries[id];for(const table of ['visuals','unitTypeAssignments','enemyClasses','timings','timingDefaults','animationSpeeds'])if(next.overrides[table])delete next.overrides[table][key(id)];}
+   if(action==='remove'&&entry.created){delete units[id];delete next.overrides.unitProfiles.entries[id];for(const table of ['visuals','unitTypeAssignments','enemyClasses','timings','timingDefaults','animationSpeeds','projectileSpeeds'])if(next.overrides[table])delete next.overrides[table][key(id)];}
    else entry.archived=true;selectedId=baseId;
   }else if(action==='restore')delete entry.archived;
   else if(action==='set'||action==='reset'){

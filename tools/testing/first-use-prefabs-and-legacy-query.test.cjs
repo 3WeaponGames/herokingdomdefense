@@ -214,6 +214,7 @@ test('legacy battle config and onLoad ignore malformed query entries and preserv
   let loaded = 0, released = 0;
   const modules = {
     PlatformManager: { PlatformManager: { currentPlatform: 'editor' } }, BasePlatform: { Platform: { EDITOR: 'editor' } },
+    ProjectileLooks: {warmup(){}},
     GAD_Configs: { emGADBundles: { configs: 'configs' } }, BaseUI: { default: noopBase },
     GAD_PlayerMgr: { default: single({ getLevel: () => 1 }) },
     ResourceMgr: { ResourceMgr: single({ loadRes(bundle, file, type, done) {

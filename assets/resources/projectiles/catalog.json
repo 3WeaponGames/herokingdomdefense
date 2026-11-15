@@ -332,7 +332,8 @@
       "animation": "jian",
       "rotation": 0,
       "size": 56,
-      "width": 64
+      "width": 64,
+      "duration": 0.5333
     },
     {
       "id": "hero-skin:lv2",
@@ -347,7 +348,8 @@
       "animation": "jian",
       "rotation": 0,
       "size": 56,
-      "width": 64
+      "width": 64,
+      "duration": 0.5333
     },
     {
       "id": "hero-skin:lv3",
@@ -362,7 +364,8 @@
       "animation": "jian",
       "rotation": 0,
       "size": 56,
-      "width": 64
+      "width": 64,
+      "duration": 0.5333
     },
     {
       "id": "hero-skin:lv4",
@@ -377,7 +380,8 @@
       "animation": "jian",
       "rotation": 0,
       "size": 56,
-      "width": 64
+      "width": 64,
+      "duration": 0.5333
     },
     {
       "id": "hero-skin:vip1",
@@ -392,7 +396,8 @@
       "animation": "jian",
       "rotation": 0,
       "size": 56,
-      "width": 64
+      "width": 64,
+      "duration": 0.5333
     },
     {
       "id": "hero-skin:vip2",
@@ -407,7 +412,8 @@
       "animation": "jian",
       "rotation": 0,
       "size": 56,
-      "width": 64
+      "width": 64,
+      "duration": 0.5333
     },
     {
       "id": "original:fireball",
@@ -419,6 +425,22 @@
       "resource": "wqyl_wl_huoqiu/wqyl_wl_huoqiu",
       "image": "assets/KinghtFallEnemyAni/wqyl_wl_huoqiu/wqyl_wl_huoqiu.png",
       "animation": "hit",
+      "rotation": 0,
+      "size": 56,
+      "width": 309.2,
+      "duration": 0.3333
+    },
+    {
+      "id": "original:fireball-impact",
+      "name": "Original mage fireball impact",
+      "category": "Original game",
+      "role": "impact",
+      "kind": "spine",
+      "bundle": "KinghtFallEnemyAni",
+      "resource": "wqyl_wl_huoqiu/wqyl_wl_huoqiu",
+      "image": "assets/KinghtFallEnemyAni/wqyl_wl_huoqiu/wqyl_wl_huoqiu.png",
+      "animation": "blast",
+      "duration": 0.5,
       "rotation": 0,
       "size": 56,
       "width": 309.2
@@ -433,7 +455,227 @@
       "resource": "_res/textures/PBT_Bullet_1/hero1_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_1/hero1_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_12/hero12_bullet3.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "life": 0.5,
+          "lifeVar": 0.5,
+          "angle": -90,
+          "angleVar": 5,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "endSize": 5,
+          "endSizeVar": 5,
+          "startSpinVar": 90,
+          "endSpin": 90,
+          "endSpinVar": 90,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 51,
+            "g": 153,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion2_1",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 10,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_1/_texture.png",
+          "opacity": 116,
+          "color": "#ffe68e",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion2_2",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 10,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_1/_texture.png",
+          "opacity": 114,
+          "color": "#ffe68e",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 136,
+          "color": "#ffe68e",
+          "lifetime": 0.2,
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 52,
+          "height": 82,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_1/hero1_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [
+        {
+          "duration": 0.5,
+          "wrapMode": 2,
+          "paths": {
+            "motion2_2": {
+              "props": {
+                "x": [
+                  {
+                    "frame": 0,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.08333333333333333,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.16666666666666666,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.25,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.3333333333333333,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.4166666666666667,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.5,
+                    "value": 6
+                  }
+                ]
+              }
+            },
+            "motion2_1": {
+              "props": {
+                "x": [
+                  {
+                    "frame": 0,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.08333333333333333,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.16666666666666666,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.25,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.3333333333333333,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.4166666666666667,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.5,
+                    "value": -6
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_1",
+        "rotation": -90,
+        "width": 82
+      }
     },
     {
       "id": "wall:2",
@@ -445,7 +687,103 @@
       "resource": "_res/textures/PBT_Bullet_2/hero2_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_2/hero2_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 29,
+          "height": 67,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_2/hero2_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": -2.184,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 16,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_2/_texture.png",
+          "opacity": 255,
+          "color": "#ffffff",
+          "lifetime": 0.5,
+          "additive": false
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": 0,
+          "y": -5.141,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/particle_texture2.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "life": 0.5,
+          "lifeVar": 0.5,
+          "angle": -90,
+          "angleVar": 5,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "endSize": 5,
+          "endSizeVar": 5,
+          "startSpinVar": 90,
+          "endSpin": 90,
+          "endSpinVar": 90,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": false
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_2",
+        "rotation": -90,
+        "width": 67
+      }
     },
     {
       "id": "wall:3",
@@ -457,7 +795,103 @@
       "resource": "_res/textures/PBT_Bullet_3/hero3_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_3/hero3_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 255,
+          "color": "#f563ff",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 55,
+          "height": 60,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_3/hero3_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "life": 0.5,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 255,
+            "g": 119,
+            "r": 247
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 240,
+            "b": 0,
+            "g": 255,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_3",
+        "rotation": -90,
+        "width": 60
+      }
     },
     {
       "id": "wall:4",
@@ -469,7 +903,98 @@
       "resource": "_res/textures/PBT_Bullet_4/hero4_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_4/hero4_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": -10.795,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 102,
+          "color": "#5bdeff",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 29,
+          "height": 73,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_4/hero4_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": 0,
+          "y": -10.042,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "life": 0.5,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 252,
+            "g": 255,
+            "r": 125
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 253,
+            "b": 255,
+            "g": 144,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_4",
+        "rotation": -90,
+        "width": 73
+      }
     },
     {
       "id": "wall:5",
@@ -481,7 +1006,103 @@
       "resource": "_res/textures/PBT_Bullet_5/hero5_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_5/hero5_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": -10.795,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 102,
+          "color": "#00ccff",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": 0,
+          "y": -10.042,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "life": 0.5,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 249,
+            "g": 255,
+            "r": 0
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 253,
+            "b": 255,
+            "g": 144,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 73,
+          "height": 99,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_5/hero5_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_5",
+        "rotation": -90,
+        "width": 99
+      }
     },
     {
       "id": "wall:6",
@@ -493,7 +1114,135 @@
       "resource": "_res/textures/PBT_Bullet_6/hero6_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_6/hero6_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": -2.211,
+          "y": -10.795,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 35,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 152,
+          "color": "#ffffff",
+          "lifetime": 0.2,
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion2_1",
+          "x": -6.634,
+          "y": -10.795,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 10,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 152,
+          "color": "#ffffff",
+          "lifetime": 0.6,
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion2_2",
+          "x": 3.408,
+          "y": -10.795,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 10,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 152,
+          "color": "#ffffff",
+          "lifetime": 0.4,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -8.301,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "life": 0.5,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 0,
+            "g": 148,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 46,
+            "b": 255,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 58,
+          "height": 111,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_6/hero6_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_6",
+        "rotation": -90,
+        "width": 111
+      }
     },
     {
       "id": "wall:7",
@@ -505,7 +1254,168 @@
       "resource": "_res/textures/PBT_Bullet_7/hero7_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_7/hero7_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion2_1",
+          "x": -0.155,
+          "y": -8.855,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 40,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 198,
+          "color": "#e157ff",
+          "lifetime": 0.4,
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": -0.155,
+          "y": -8.855,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 10,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 198,
+          "color": "#e157ff",
+          "lifetime": 0.6,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -8.301,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "endSize": 10,
+          "endSizeVar": 5,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": 100,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 252,
+            "g": 96,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 209,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 61,
+          "height": 96,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_7/hero7_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [
+        {
+          "duration": 0.5,
+          "wrapMode": 2,
+          "paths": {
+            "motion2_1": {
+              "props": {
+                "x": [
+                  {
+                    "frame": 0,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.08333333333333333,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.16666666666666666,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.25,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.3333333333333333,
+                    "value": -6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.4166666666666667,
+                    "value": 6,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.5,
+                    "value": -6
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_7",
+        "rotation": -90,
+        "width": 96
+      }
     },
     {
       "id": "wall:8",
@@ -517,7 +1427,181 @@
       "resource": "_res/textures/PBT_Bullet_8/hero8_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_8/hero8_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 67,
+          "height": 144,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_8/hero8_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": -2.211,
+          "y": 16.11,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 35,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 152,
+          "color": "#ffffff",
+          "lifetime": 0.3,
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion2_3",
+          "x": -6.634,
+          "y": 16.11,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 6,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 152,
+          "color": "#ff2400",
+          "lifetime": 0.6,
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion2_4",
+          "x": 3.408,
+          "y": 16.11,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 6,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 152,
+          "color": "#ff7500",
+          "lifetime": 0.6,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -1.618,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": 100,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 0,
+            "g": 148,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 46,
+            "b": 255,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        }
+      ],
+      "visualAnimations": [
+        {
+          "duration": 0.5,
+          "wrapMode": 2,
+          "paths": {
+            "motion2_3": {
+              "props": {
+                "x": [
+                  {
+                    "frame": 0,
+                    "value": 10
+                  },
+                  {
+                    "frame": 0.25,
+                    "value": -10,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.5,
+                    "value": 10
+                  }
+                ]
+              }
+            },
+            "motion2_4": {
+              "props": {
+                "x": [
+                  {
+                    "frame": 0,
+                    "value": -10,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.25,
+                    "value": 10,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.5,
+                    "value": -10
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_8",
+        "rotation": -90,
+        "width": 144
+      }
     },
     {
       "id": "wall:9",
@@ -529,7 +1613,103 @@
       "resource": "_res/textures/PBT_Bullet_9/hero9_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_9/hero9_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 45,
+          "height": 131,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_9/hero9_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": -2.211,
+          "y": 16.11,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 94,
+          "color": "#ffffff",
+          "lifetime": 0.3,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -1.618,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": -50,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 0,
+            "g": 148,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 46,
+            "b": 255,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_9",
+        "rotation": -90,
+        "width": 131
+      }
     },
     {
       "id": "wall:10",
@@ -541,7 +1721,103 @@
       "resource": "_res/textures/PBT_Bullet_10/hero10_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_10/hero10_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 48,
+          "height": 90,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_10/hero10_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": -5.12,
+          "y": -11.188,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 94,
+          "color": "#ff5d18",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -1.618,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": -50,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 0,
+            "g": 158,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 46,
+            "b": 255,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_10",
+        "rotation": -90,
+        "width": 90
+      }
     },
     {
       "id": "wall:11",
@@ -553,7 +1829,103 @@
       "resource": "_res/textures/PBT_Bullet_11/hero11_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_11/hero11_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": 16.586,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 40,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_11/_texture.png",
+          "opacity": 109,
+          "color": "#ffffff",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -1.618,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": -50,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 0,
+            "g": 158,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 46,
+            "b": 255,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 52,
+          "height": 72,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_11/hero11_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_11",
+        "rotation": -90,
+        "width": 72
+      }
     },
     {
       "id": "wall:12",
@@ -565,7 +1937,108 @@
       "resource": "_res/textures/PBT_Bullet_12/hero12_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_12/hero12_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 136,
+          "color": "#ffffff",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -1.618,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_12/hero12_bullet3.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 30,
+          "startSizeVar": 10,
+          "endSize": 10,
+          "startSpin": 50,
+          "startSpinVar": 50,
+          "endSpin": 180,
+          "endSpinVar": 180,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": -50,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 0,
+            "g": 158,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 46,
+            "b": 255,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 1.123,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 55,
+          "height": 98,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_12/hero12_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_12",
+        "rotation": -90,
+        "width": 98
+      }
     },
     {
       "id": "wall:13",
@@ -577,7 +2050,181 @@
       "resource": "_res/textures/PBT_Bullet_13/hero13_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/hero13_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": -8.381,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 10,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 84,
+          "color": "#ff0c42",
+          "lifetime": 0.5,
+          "additive": false
+        },
+        {
+          "kind": "trail",
+          "path": "motion2_3",
+          "x": 0,
+          "y": 16.586,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 6,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 112,
+          "color": "#ff3acc",
+          "lifetime": 0.4,
+          "additive": true
+        },
+        {
+          "kind": "trail",
+          "path": "motion2_4",
+          "x": 0,
+          "y": 16.586,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 6,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 112,
+          "color": "#ff3acc",
+          "lifetime": 0.4,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -1.618,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": 50,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 160,
+            "g": 65,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 250,
+            "b": 0,
+            "g": 255,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 65,
+          "height": 121,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/hero13_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [
+        {
+          "duration": 0.5,
+          "wrapMode": 2,
+          "paths": {
+            "motion2_3": {
+              "props": {
+                "x": [
+                  {
+                    "frame": 0,
+                    "value": 10
+                  },
+                  {
+                    "frame": 0.25,
+                    "value": -10,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.5,
+                    "value": 10
+                  }
+                ]
+              }
+            },
+            "motion2_4": {
+              "props": {
+                "x": [
+                  {
+                    "frame": 0,
+                    "value": -10,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.25,
+                    "value": 10,
+                    "curve": "cubicInOut"
+                  },
+                  {
+                    "frame": 0.5,
+                    "value": -10
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_13",
+        "rotation": -90,
+        "width": 121
+      }
     },
     {
       "id": "wall:14",
@@ -589,7 +2236,97 @@
       "resource": "_res/textures/PBT_Bullet_14/hero14_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_14/hero14_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": -15.422,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 107,
+          "color": "#00d1ff",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -14.518,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 20,
+          "emissionRate": 20,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 251,
+            "g": 255,
+            "r": 87
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 249,
+            "b": 77,
+            "g": 17,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 65,
+          "height": 89,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_14/hero14_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_14",
+        "rotation": -90,
+        "width": 89
+      }
     },
     {
       "id": "wall:15",
@@ -601,7 +2338,107 @@
       "resource": "_res/textures/PBT_Bullet_15/hero15_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/hero15_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": -15.422,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 107,
+          "color": "#ff561b",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": -2.211,
+          "y": -14.518,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/particle_texture2.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "life": 0.8,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "endSize": 10,
+          "endSizeVar": 5,
+          "startSpin": 100,
+          "startSpinVar": 360,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 140,
+            "b": 42,
+            "g": 89,
+            "r": 144
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": false
+        },
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 24,
+          "height": 52,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/hero15_bullet1.png",
+          "opacity": 255
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_15",
+        "rotation": -90,
+        "width": 52
+      }
     },
     {
       "id": "wall:16",
@@ -613,7 +2450,119 @@
       "resource": "_res/textures/PBT_Bullet_16/hero16_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/hero16_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 79,
+          "height": 126,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/hero16_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 128,
+          "color": "#ff6147",
+          "lifetime": 0.5,
+          "additive": false
+        },
+        {
+          "kind": "trail",
+          "path": "motion2",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 20,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 179,
+          "color": "#fff0cc",
+          "lifetime": 0.5,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": -50,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 0,
+            "g": 158,
+            "r": 255
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 46,
+            "b": 255,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_16",
+        "rotation": -90,
+        "width": 126
+      }
     },
     {
       "id": "wall:17",
@@ -625,7 +2574,119 @@
       "resource": "_res/textures/PBT_Bullet_17/hero17_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_17/hero17_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 48,
+          "height": 75,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_17/hero17_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 165,
+          "color": "#24ff00",
+          "lifetime": 0.4,
+          "additive": false
+        },
+        {
+          "kind": "trail",
+          "path": "motion2",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 10,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+          "opacity": 255,
+          "color": "#94ff52",
+          "lifetime": 0.6,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": -50,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 163,
+            "b": 28,
+            "g": 255,
+            "r": 123
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 148,
+            "b": 255,
+            "g": 0,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_17",
+        "rotation": -90,
+        "width": 75
+      }
     },
     {
       "id": "wall:18",
@@ -637,7 +2698,103 @@
       "resource": "_res/textures/PBT_Bullet_18/hero18_bullet1",
       "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_18/hero18_bullet1.png",
       "rotation": -90,
-      "size": 48
+      "size": 48,
+      "visualLayers": [
+        {
+          "kind": "sprite",
+          "path": "bullet",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 40,
+          "height": 70,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_18/hero18_bullet1.png",
+          "opacity": 255
+        },
+        {
+          "kind": "trail",
+          "path": "motion",
+          "x": 0,
+          "y": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 30,
+          "height": 36,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+          "opacity": 181,
+          "color": "#004cff",
+          "lifetime": 0.4,
+          "additive": true
+        },
+        {
+          "kind": "particles",
+          "path": "bullet_particle",
+          "x": 0,
+          "y": -20.458,
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "width": 0,
+          "height": 0,
+          "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_13/particle_texture.png",
+          "opacity": 255,
+          "totalParticles": 30,
+          "emissionRate": 30,
+          "lifeVar": 0.5,
+          "angle": 270,
+          "angleVar": 10,
+          "startSize": 20,
+          "startSizeVar": 10,
+          "speed": 100,
+          "speedVar": 0,
+          "tangentialAccel": 0,
+          "radialAccel": -50,
+          "posVar": {
+            "__type__": "cc.Vec2",
+            "x": 10,
+            "y": 0
+          },
+          "startColor": {
+            "__type__": "cc.Color",
+            "a": 136,
+            "b": 255,
+            "g": 189,
+            "r": 0
+          },
+          "endColor": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 191,
+            "g": 7,
+            "r": 0
+          },
+          "startColorVar": {
+            "__type__": "cc.Color",
+            "a": 255,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "endColorVar": {
+            "__type__": "cc.Color",
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "additive": true
+        }
+      ],
+      "visualAnimations": [],
+      "visualPrefab": {
+        "bundle": "gad_prefabs",
+        "resource": "bullets/PBT_Bullet_18",
+        "rotation": -90,
+        "width": 70
+      }
     },
     {
       "id": "toon:flash-1",
@@ -1102,7 +3259,37 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "visualScale": 1.882353,
+      "visualPivot": {
+        "x": 0.600437,
+        "y": 0.515537
+      }
     },
     {
       "id": "toon:projectile-2-energy-orb",
@@ -1117,7 +3304,46 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 3.240506,
+      "visualPivot": {
+        "x": 0.438248,
+        "y": 0.471365
+      }
     },
     {
       "id": "toon:projectile-3-cube",
@@ -1132,7 +3358,45 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 4,
+      "visualPivot": {
+        "x": 0.763043,
+        "y": 0.468644
+      }
     },
     {
       "id": "toon:projectile-4-red-star",
@@ -1147,7 +3411,46 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 1.828571,
+      "visualPivot": {
+        "x": 0.62523,
+        "y": 0.498954
+      }
     },
     {
       "id": "toon:projectile-5-arrow",
@@ -1162,7 +3465,46 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 2.169492,
+      "visualPivot": {
+        "x": 0.591651,
+        "y": 0.498173
+      }
     },
     {
       "id": "toon:projectile-6-magic-stone",
@@ -1177,7 +3519,43 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 4,
+      "visualPivot": {
+        "x": 0.827021,
+        "y": 0.421195
+      }
     },
     {
       "id": "toon:projectile-7-wind",
@@ -1192,7 +3570,46 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 1.560976,
+      "visualPivot": {
+        "x": 0.492251,
+        "y": 0.511055
+      }
     },
     {
       "id": "toon:projectile-8-twist",
@@ -1207,7 +3624,45 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 4,
+      "visualPivot": {
+        "x": 0.552535,
+        "y": 0.495926
+      }
     },
     {
       "id": "toon:projectile-9-cosmic",
@@ -1222,7 +3677,46 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 2.285714,
+      "visualPivot": {
+        "x": 0.526949,
+        "y": 0.496295
+      }
     },
     {
       "id": "toon:projectile-10-explode",
@@ -1237,7 +3731,46 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 4,
+      "visualPivot": {
+        "x": 0.788084,
+        "y": 0.434348
+      }
     },
     {
       "id": "toon:projectile-11-triangle",
@@ -1252,7 +3785,46 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 3.605634,
+      "visualPivot": {
+        "x": 0.771652,
+        "y": 0.49395
+      }
     },
     {
       "id": "toon:projectile-12-forest",
@@ -1267,7 +3839,46 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 3.555556,
+      "visualPivot": {
+        "x": 0.710299,
+        "y": 0.505457
+      }
     },
     {
       "id": "toon:projectile-13-magic-arrow",
@@ -1282,7 +3893,43 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        27,
+        28,
+        29
+      ],
+      "visualScale": 1.454545,
+      "visualPivot": {
+        "x": 0.654243,
+        "y": 0.499216
+      }
     },
     {
       "id": "toon:projectile-14-ice",
@@ -1297,7 +3944,45 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 4,
+      "visualPivot": {
+        "x": 0.879016,
+        "y": 0.49968
+      }
     },
     {
       "id": "toon:projectile-15-red",
@@ -1312,7 +3997,45 @@
       "columns": 8,
       "cell": 128,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "loopFrames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "visualScale": 2.723404,
+      "visualPivot": {
+        "x": 0.531549,
+        "y": 0.486752
+      }
     },
     {
       "id": "tiny-kingdom:cannonball",
@@ -1355,7 +4078,31 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / flight",
-      "role": "flight"
+      "role": "flight",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/fire-flight.png",
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "visualScale": 2.823529,
+      "visualPivot": {
+        "x": 0.551743,
+        "y": 0.5
+      }
     },
     {
       "id": "fantasy:fire-impact",
@@ -1370,7 +4117,8 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / impact",
-      "role": "impact"
+      "role": "impact",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/fire-impact.png"
     },
     {
       "id": "fantasy:frost-flight",
@@ -1385,7 +4133,31 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / flight",
-      "role": "flight"
+      "role": "flight",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/frost-flight.png",
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "visualScale": 2.823529,
+      "visualPivot": {
+        "x": 0.551743,
+        "y": 0.5
+      }
     },
     {
       "id": "fantasy:frost-impact",
@@ -1400,7 +4172,8 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / impact",
-      "role": "impact"
+      "role": "impact",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/frost-impact.png"
     },
     {
       "id": "fantasy:venom-flight",
@@ -1415,7 +4188,31 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / flight",
-      "role": "flight"
+      "role": "flight",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/venom-flight.png",
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "visualScale": 2.823529,
+      "visualPivot": {
+        "x": 0.551743,
+        "y": 0.5
+      }
     },
     {
       "id": "fantasy:venom-impact",
@@ -1430,7 +4227,8 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / impact",
-      "role": "impact"
+      "role": "impact",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/venom-impact.png"
     },
     {
       "id": "fantasy:arcane-flight",
@@ -1445,7 +4243,31 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / flight",
-      "role": "flight"
+      "role": "flight",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/arcane-flight.png",
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "visualScale": 2.823529,
+      "visualPivot": {
+        "x": 0.551743,
+        "y": 0.5
+      }
     },
     {
       "id": "fantasy:arcane-impact",
@@ -1460,7 +4282,8 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / impact",
-      "role": "impact"
+      "role": "impact",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/arcane-impact.png"
     },
     {
       "id": "fantasy:holy-flight",
@@ -1475,7 +4298,31 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / flight",
-      "role": "flight"
+      "role": "flight",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/holy-flight.png",
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "visualScale": 2.823529,
+      "visualPivot": {
+        "x": 0.551743,
+        "y": 0.5
+      }
     },
     {
       "id": "fantasy:holy-impact",
@@ -1490,7 +4337,8 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / impact",
-      "role": "impact"
+      "role": "impact",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/holy-impact.png"
     },
     {
       "id": "fantasy:metal-flight",
@@ -1505,7 +4353,31 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / flight",
-      "role": "flight"
+      "role": "flight",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/metal-flight.png",
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "visualScale": 2.823529,
+      "visualPivot": {
+        "x": 0.551743,
+        "y": 0.5
+      }
     },
     {
       "id": "fantasy:metal-impact",
@@ -1520,7 +4392,8 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / impact",
-      "role": "impact"
+      "role": "impact",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/metal-impact.png"
     },
     {
       "id": "fantasy:earth-flight",
@@ -1535,7 +4408,31 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / flight",
-      "role": "flight"
+      "role": "flight",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/earth-flight.png",
+      "loopFrames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "visualScale": 2.823529,
+      "visualPivot": {
+        "x": 0.551743,
+        "y": 0.5
+      }
     },
     {
       "id": "fantasy:earth-impact",
@@ -1550,7 +4447,649 @@
       "fps": 32,
       "size": 64,
       "category": "Fantasy effects / impact",
-      "role": "impact"
+      "role": "impact",
+      "image": "assets/resources/unit-library/fantasy-bosses/Effects/earth-impact.png"
+    }
+  ],
+  "sets": [
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_009",
+      "name": "Consumable Arrow 009",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_009"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_010",
+      "name": "Consumable Arrow 010",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_010"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_011",
+      "name": "Consumable Arrow 011",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_011"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_012",
+      "name": "Consumable Arrow 012",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_012"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_013",
+      "name": "Consumable Arrow 013",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_013"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_014",
+      "name": "Consumable Arrow 014",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_014"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_015",
+      "name": "Consumable Arrow 015",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_015"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_016",
+      "name": "Consumable Arrow 016",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_016"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_017",
+      "name": "Consumable Arrow 017",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_017"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_018",
+      "name": "Consumable Arrow 018",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_018"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_019",
+      "name": "Consumable Arrow 019",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_019"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_020",
+      "name": "Consumable Arrow 020",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_020"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_021",
+      "name": "Consumable Arrow 021",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_021"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_022",
+      "name": "Consumable Arrow 022",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_022"
+    },
+    {
+      "id": "part:HandRight/Arrow/FA_Consumable_Arrow_023",
+      "name": "Consumable Arrow 023",
+      "category": "Imported arrows",
+      "flight": "part:HandRight/Arrow/FA_Consumable_Arrow_023"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_001_YellowWood",
+      "name": "FA_Consumable_Arrow_001_YellowWood",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_001_YellowWood"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_002_SilverBlue",
+      "name": "FA_Consumable_Arrow_002_SilverBlue",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_002_SilverBlue"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_002_SilverGreen",
+      "name": "FA_Consumable_Arrow_002_SilverGreen",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_002_SilverGreen"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_003_GoldRed",
+      "name": "FA_Consumable_Arrow_003_GoldRed",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_003_GoldRed"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_003_Gray",
+      "name": "FA_Consumable_Arrow_003_Gray",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_003_Gray"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_004_Brown",
+      "name": "FA_Consumable_Arrow_004_Brown",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_004_Brown"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_005_SilverGreen",
+      "name": "FA_Consumable_Arrow_005_SilverGreen",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_005_SilverGreen"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_006_Red",
+      "name": "FA_Consumable_Arrow_006_Red",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_006_Red"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_007_GrayBlue",
+      "name": "FA_Consumable_Arrow_007_GrayBlue",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_007_GrayBlue"
+    },
+    {
+      "id": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_008_Blue",
+      "name": "FA_Consumable_Arrow_008_Blue",
+      "category": "Imported arrows",
+      "flight": "part:character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Arrow/FA_Consumable_Arrow_008_Blue"
+    },
+    {
+      "id": "original:arrow",
+      "name": "Original red arrow",
+      "category": "Original game",
+      "flight": "original:arrow"
+    },
+    {
+      "id": "original:stone",
+      "name": "Original catapult stone",
+      "category": "Original game",
+      "flight": "original:stone"
+    },
+    {
+      "id": "original:wall-arrow",
+      "name": "Wall-defense arrow",
+      "category": "Original game",
+      "flight": "original:wall-arrow"
+    },
+    {
+      "id": "hero-skin:lv1",
+      "name": "Hero arrow · lv1",
+      "category": "Original game",
+      "flight": "hero-skin:lv1"
+    },
+    {
+      "id": "hero-skin:lv2",
+      "name": "Hero arrow · lv2",
+      "category": "Original game",
+      "flight": "hero-skin:lv2"
+    },
+    {
+      "id": "hero-skin:lv3",
+      "name": "Hero arrow · lv3",
+      "category": "Original game",
+      "flight": "hero-skin:lv3"
+    },
+    {
+      "id": "hero-skin:lv4",
+      "name": "Hero arrow · lv4",
+      "category": "Original game",
+      "flight": "hero-skin:lv4"
+    },
+    {
+      "id": "hero-skin:vip1",
+      "name": "Hero arrow · vip1",
+      "category": "Original game",
+      "flight": "hero-skin:vip1"
+    },
+    {
+      "id": "hero-skin:vip2",
+      "name": "Hero arrow · vip2",
+      "category": "Original game",
+      "flight": "hero-skin:vip2"
+    },
+    {
+      "id": "original:fireball",
+      "name": "Original mage fireball",
+      "category": "Original game",
+      "flight": "original:fireball",
+      "impact": "original:fireball-impact"
+    },
+    {
+      "id": "wall:1",
+      "name": "Wall projectile 1",
+      "category": "Original game",
+      "flight": "wall:1"
+    },
+    {
+      "id": "wall:2",
+      "name": "Wall projectile 2",
+      "category": "Original game",
+      "flight": "wall:2"
+    },
+    {
+      "id": "wall:3",
+      "name": "Wall projectile 3",
+      "category": "Original game",
+      "flight": "wall:3"
+    },
+    {
+      "id": "wall:4",
+      "name": "Wall projectile 4",
+      "category": "Original game",
+      "flight": "wall:4"
+    },
+    {
+      "id": "wall:5",
+      "name": "Wall projectile 5",
+      "category": "Original game",
+      "flight": "wall:5"
+    },
+    {
+      "id": "wall:6",
+      "name": "Wall projectile 6",
+      "category": "Original game",
+      "flight": "wall:6"
+    },
+    {
+      "id": "wall:7",
+      "name": "Wall projectile 7",
+      "category": "Original game",
+      "flight": "wall:7"
+    },
+    {
+      "id": "wall:8",
+      "name": "Wall projectile 8",
+      "category": "Original game",
+      "flight": "wall:8"
+    },
+    {
+      "id": "wall:9",
+      "name": "Wall projectile 9",
+      "category": "Original game",
+      "flight": "wall:9"
+    },
+    {
+      "id": "wall:10",
+      "name": "Wall projectile 10",
+      "category": "Original game",
+      "flight": "wall:10"
+    },
+    {
+      "id": "wall:11",
+      "name": "Wall projectile 11",
+      "category": "Original game",
+      "flight": "wall:11"
+    },
+    {
+      "id": "wall:12",
+      "name": "Wall projectile 12",
+      "category": "Original game",
+      "flight": "wall:12"
+    },
+    {
+      "id": "wall:13",
+      "name": "Wall projectile 13",
+      "category": "Original game",
+      "flight": "wall:13"
+    },
+    {
+      "id": "wall:14",
+      "name": "Wall projectile 14",
+      "category": "Original game",
+      "flight": "wall:14"
+    },
+    {
+      "id": "wall:15",
+      "name": "Wall projectile 15",
+      "category": "Original game",
+      "flight": "wall:15"
+    },
+    {
+      "id": "wall:16",
+      "name": "Wall projectile 16",
+      "category": "Original game",
+      "flight": "wall:16"
+    },
+    {
+      "id": "wall:17",
+      "name": "Wall projectile 17",
+      "category": "Original game",
+      "flight": "wall:17"
+    },
+    {
+      "id": "wall:18",
+      "name": "Wall projectile 18",
+      "category": "Original game",
+      "flight": "wall:18"
+    },
+    {
+      "id": "toon:projectile-1-bullet",
+      "name": "Toon 1 · bullet",
+      "category": "Toon",
+      "flight": "toon:projectile-1-bullet",
+      "launch": "toon:flash-1",
+      "impact": "toon:hit-1"
+    },
+    {
+      "id": "toon:projectile-2-energy-orb",
+      "name": "Toon 2 · energy orb",
+      "category": "Toon",
+      "flight": "toon:projectile-2-energy-orb",
+      "launch": "toon:flash-2",
+      "impact": "toon:hit-2"
+    },
+    {
+      "id": "toon:projectile-3-cube",
+      "name": "Toon 3 · cube",
+      "category": "Toon",
+      "flight": "toon:projectile-3-cube",
+      "launch": "toon:flash-3",
+      "impact": "toon:hit-3"
+    },
+    {
+      "id": "toon:projectile-4-red-star",
+      "name": "Toon 4 · red star",
+      "category": "Toon",
+      "flight": "toon:projectile-4-red-star",
+      "launch": "toon:flash-4",
+      "impact": "toon:hit-4"
+    },
+    {
+      "id": "toon:projectile-5-arrow",
+      "name": "Toon 5 · arrow",
+      "category": "Toon",
+      "flight": "toon:projectile-5-arrow",
+      "launch": "toon:flash-5",
+      "impact": "toon:hit-5"
+    },
+    {
+      "id": "toon:projectile-6-magic-stone",
+      "name": "Toon 6 · magic stone",
+      "category": "Toon",
+      "flight": "toon:projectile-6-magic-stone",
+      "launch": "toon:flash-6",
+      "impact": "toon:hit-6"
+    },
+    {
+      "id": "toon:projectile-7-wind",
+      "name": "Toon 7 · wind",
+      "category": "Toon",
+      "flight": "toon:projectile-7-wind",
+      "launch": "toon:flash-7",
+      "impact": "toon:hit-7"
+    },
+    {
+      "id": "toon:projectile-8-twist",
+      "name": "Toon 8 · twist",
+      "category": "Toon",
+      "flight": "toon:projectile-8-twist",
+      "launch": "toon:flash-8",
+      "impact": "toon:hit-8"
+    },
+    {
+      "id": "toon:projectile-9-cosmic",
+      "name": "Toon 9 · cosmic",
+      "category": "Toon",
+      "flight": "toon:projectile-9-cosmic",
+      "launch": "toon:flash-9",
+      "impact": "toon:hit-9"
+    },
+    {
+      "id": "toon:projectile-10-explode",
+      "name": "Toon 10 · explode",
+      "category": "Toon",
+      "flight": "toon:projectile-10-explode",
+      "launch": "toon:flash-10",
+      "impact": "toon:hit-10"
+    },
+    {
+      "id": "toon:projectile-11-triangle",
+      "name": "Toon 11 · triangle",
+      "category": "Toon",
+      "flight": "toon:projectile-11-triangle",
+      "launch": "toon:flash-11",
+      "impact": "toon:hit-11"
+    },
+    {
+      "id": "toon:projectile-12-forest",
+      "name": "Toon 12 · forest",
+      "category": "Toon",
+      "flight": "toon:projectile-12-forest",
+      "launch": "toon:flash-12",
+      "impact": "toon:hit-12"
+    },
+    {
+      "id": "toon:projectile-13-magic-arrow",
+      "name": "Toon 13 · magic arrow",
+      "category": "Toon",
+      "flight": "toon:projectile-13-magic-arrow",
+      "launch": "toon:flash-13",
+      "impact": "toon:hit-13"
+    },
+    {
+      "id": "toon:projectile-14-ice",
+      "name": "Toon 14 · ice",
+      "category": "Toon",
+      "flight": "toon:projectile-14-ice",
+      "launch": "toon:flash-14",
+      "impact": "toon:hit-14"
+    },
+    {
+      "id": "toon:projectile-15-red",
+      "name": "Toon 15 · red",
+      "category": "Toon",
+      "flight": "toon:projectile-15-red",
+      "launch": "toon:flash-15",
+      "impact": "toon:hit-15"
+    },
+    {
+      "id": "tiny-kingdom:cannonball",
+      "name": "Tiny Kingdom cannonball",
+      "category": "Tiny Kingdom",
+      "flight": "tiny-kingdom:cannonball"
+    },
+    {
+      "id": "tiny-kingdom:ballista-bolt",
+      "name": "Tiny Kingdom ballista bolt",
+      "category": "Tiny Kingdom",
+      "flight": "tiny-kingdom:ballista-bolt"
+    },
+    {
+      "id": "fantasy:fire-flight",
+      "name": "Fantasy fire",
+      "category": "Fantasy effects",
+      "flight": "fantasy:fire-flight",
+      "impact": "fantasy:fire-impact",
+      "launch": "fantasy:fire-impact"
+    },
+    {
+      "id": "fantasy:frost-flight",
+      "name": "Fantasy frost",
+      "category": "Fantasy effects",
+      "flight": "fantasy:frost-flight",
+      "impact": "fantasy:frost-impact",
+      "launch": "fantasy:frost-impact"
+    },
+    {
+      "id": "fantasy:venom-flight",
+      "name": "Fantasy venom",
+      "category": "Fantasy effects",
+      "flight": "fantasy:venom-flight",
+      "impact": "fantasy:venom-impact",
+      "launch": "fantasy:venom-impact"
+    },
+    {
+      "id": "fantasy:arcane-flight",
+      "name": "Fantasy arcane",
+      "category": "Fantasy effects",
+      "flight": "fantasy:arcane-flight",
+      "impact": "fantasy:arcane-impact",
+      "launch": "fantasy:arcane-impact"
+    },
+    {
+      "id": "fantasy:holy-flight",
+      "name": "Fantasy holy",
+      "category": "Fantasy effects",
+      "flight": "fantasy:holy-flight",
+      "impact": "fantasy:holy-impact",
+      "launch": "fantasy:holy-impact"
+    },
+    {
+      "id": "fantasy:metal-flight",
+      "name": "Fantasy metal",
+      "category": "Fantasy effects",
+      "flight": "fantasy:metal-flight",
+      "impact": "fantasy:metal-impact",
+      "launch": "fantasy:metal-impact"
+    },
+    {
+      "id": "fantasy:earth-flight",
+      "name": "Fantasy earth",
+      "category": "Fantasy effects",
+      "flight": "fantasy:earth-flight",
+      "impact": "fantasy:earth-impact",
+      "launch": "fantasy:earth-impact"
+    }
+  ],
+  "trails": [
+    {
+      "id": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
+      "name": "Golden wisps",
+      "textureUuid": "90947910-ade2-4c43-9fcb-a3c1d415642b",
+      "bundle": "gad_prefabs",
+      "resource": "_res/textures/PBT_Bullet_1/_texture",
+      "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_1/_texture.png",
+      "color": "#ffe68e",
+      "opacity": 116,
+      "width": 10,
+      "lifetime": 0.5,
+      "additive": true
+    },
+    {
+      "id": "trail:70cf084a-cc27-4f94-ab47-93b98d904781",
+      "name": "Golden flame",
+      "textureUuid": "70cf084a-cc27-4f94-ab47-93b98d904781",
+      "bundle": "gad_prefabs",
+      "resource": "_res/textures/PBT_Bullet_15/_texture",
+      "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_15/_texture.png",
+      "color": "#ffe68e",
+      "opacity": 136,
+      "width": 30,
+      "lifetime": 0.2,
+      "additive": true
+    },
+    {
+      "id": "trail:a7a6d6a0-fc87-4751-b52e-088c4048bb1d",
+      "name": "Soft ribbon",
+      "textureUuid": "a7a6d6a0-fc87-4751-b52e-088c4048bb1d",
+      "bundle": "gad_prefabs",
+      "resource": "_res/textures/PBT_Bullet_2/_texture",
+      "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_2/_texture.png",
+      "color": "#ffffff",
+      "opacity": 255,
+      "width": 16,
+      "lifetime": 0.5,
+      "additive": false
+    },
+    {
+      "id": "trail:1cf6d616-c376-406f-b946-a2a3a7e18bfe",
+      "name": "Magic streak",
+      "textureUuid": "1cf6d616-c376-406f-b946-a2a3a7e18bfe",
+      "bundle": "gad_prefabs",
+      "resource": "_res/textures/PBT_Bullet_16/_texture",
+      "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_16/_texture.png",
+      "color": "#ffffff",
+      "opacity": 152,
+      "width": 35,
+      "lifetime": 0.2,
+      "additive": true
+    },
+    {
+      "id": "trail:99451475-a8d2-4c57-821c-fc3bbc5b02e1",
+      "name": "Broad glow",
+      "textureUuid": "99451475-a8d2-4c57-821c-fc3bbc5b02e1",
+      "bundle": "gad_prefabs",
+      "resource": "_res/textures/PBT_Bullet_11/_texture",
+      "image": "assets/gad_prefabs/_res/textures/PBT_Bullet_11/_texture.png",
+      "color": "#ffffff",
+      "opacity": 109,
+      "width": 40,
+      "lifetime": 0.5,
+      "additive": true
+    },
+    {
+      "id": "trail:bb4d9c1e-b926-4023-9f10-a49134339dcd",
+      "name": "Tower arrow trail",
+      "textureUuid": "bb4d9c1e-b926-4023-9f10-a49134339dcd",
+      "bundle": "KinghtFallPrefabs",
+      "resource": "_res/textures/KinghtFallUITreasureReward/img_white",
+      "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUITreasureReward/img_white.png",
+      "color": "#ffffff",
+      "opacity": 255,
+      "width": 7,
+      "lifetime": 1,
+      "additive": false
+    },
+    {
+      "id": "trail:e5f0861a-9df0-484d-9af0-24db69222b6e",
+      "name": "Hero soul ribbon",
+      "textureUuid": "e5f0861a-9df0-484d-9af0-24db69222b6e",
+      "bundle": "KinghtFallEnemyAni",
+      "resource": "wqyl_lead/王权陨落主角灵魂拖尾 ",
+      "image": "assets/KinghtFallEnemyAni/wqyl_lead/王权陨落主角灵魂拖尾 .png",
+      "color": "#ffffff",
+      "opacity": 255,
+      "width": 30,
+      "lifetime": 1,
+      "additive": false
+    },
+    {
+      "id": "trail:07d9ec9b-8144-49ac-bab8-0480e3a9dff0",
+      "name": "Hero arrow trail",
+      "textureUuid": "07d9ec9b-8144-49ac-bab8-0480e3a9dff0",
+      "bundle": "KinghtFallPrefabs",
+      "resource": "_res/textures/KinghtFallUIGame/_texture",
+      "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
+      "color": "#ffffff",
+      "opacity": 255,
+      "width": 5,
+      "lifetime": 1,
+      "additive": false
+    },
+    {
+      "id": "trail:29a7c47c-9877-4140-b5cf-4a4d34fa6d62",
+      "name": "Enemy arrow trail",
+      "textureUuid": "29a7c47c-9877-4140-b5cf-4a4d34fa6d62",
+      "bundle": "KinghtFallEnemy",
+      "resource": "icon/img_white",
+      "image": "assets/KinghtFallEnemy/icon/img_white.png",
+      "color": "#ffffff",
+      "opacity": 255,
+      "width": 5,
+      "lifetime": 1,
+      "additive": false
+    },
+    {
+      "id": "trail:08d16b37-823a-4fef-ba8d-95eefb2d3b04",
+      "name": "Catapult stone trail",
+      "textureUuid": "08d16b37-823a-4fef-ba8d-95eefb2d3b04",
+      "bundle": "KinghtFallEnemyAni",
+      "resource": "wqyl_tsc/投石车拖尾",
+      "image": "assets/KinghtFallEnemyAni/wqyl_tsc/投石车拖尾.png",
+      "color": "#ffffff",
+      "opacity": 255,
+      "width": 15,
+      "lifetime": 1,
+      "additive": false
     }
   ],
   "assignments": {"tower:2:4":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:5":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:6":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:7":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:8":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:9":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:11":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:12":{"flight":"tiny-kingdom:ballista-bolt","size":44}}

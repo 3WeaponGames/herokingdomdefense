@@ -50,7 +50,7 @@ function describe(description,settings,request){
   const relative=description.unitAnimationSpeed,wholeUnit=finite(relative)&&relative>=0&&relative<=2;
   const animationSpeed=wholeUnit?modelSpeed*relative:validSpeed(scoped)?scoped:validSpeed(shared)?shared:modelSpeed;
   let timing=settings.timings&&settings.timings[key];
-  if(timing===undefined)timing=settings.timingDefaults&&settings.timingDefaults[key];
+  if(timing===undefined||timing&&timing.inherit===true&&!Object.prototype.hasOwnProperty.call(timing,'attack'))timing=settings.timingDefaults&&settings.timingDefaults[key];
   const marker=timing&&timing.attack;
   const hitTime=finite(marker)&&marker>=0&&marker<=10?marker:0;
   let attackDuration=finite(description.attackDuration)&&description.attackDuration>=0?description.attackDuration:null;

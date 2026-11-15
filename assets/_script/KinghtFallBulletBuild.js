@@ -14,7 +14,7 @@ var def_KinghtFallBulletBuild = function (t) {
     return null !== t && t.apply(this, arguments) || this;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.setTag = function (t, e, n) {
+  _ctor.prototype.setTag = function (t, e, n, deferVisual) {
     this._dir = cc.v2(e.x - t.x, e.y - t.y).normalizeSelf();
     this.bindTarget(e, n);
     this.tagNode.getPosition(this.tagPos);
@@ -23,17 +23,18 @@ var def_KinghtFallBulletBuild = function (t) {
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
+    if (!deferVisual && this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.setTowerTag = function (origin, target, attack, behavior) {
     this._towerBehavior = behavior;
-    // Draw the built-in fallback before bindTarget starts an asynchronous art
+    // Draw the built-in fallback before starting an asynchronous art
     // override. A cached override can then hide it in the same frame as a cold one.
     if (behavior.attackType !== "arrow") this._showTowerFlight(behavior.attackType);
-    this.setTag(origin, target, attack);
     if (cc.MotionStreak) this.node.getComponentsInChildren(cc.MotionStreak).forEach(function (trail) {
       trail.enabled = true;
       trail.reset();
     });
+    this.setTag(origin, target, attack, true);
     if (behavior.attackType === "cannon") {
       // Artillery commits to a ground location. A killed/pool-reused primary
       // target must not cancel a blast that can still hit nearby enemies.
@@ -65,6 +66,9 @@ var def_KinghtFallBulletBuild = function (t) {
       this._dir = cc.v2(this.tagPos.x - origin.x, this.tagPos.y - origin.y).normalizeSelf();
       this.node.angle = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     }
+    // Begin after the converted heading and authored trails are ready. Cached
+    // artwork must have the same final say over trails as asynchronous artwork.
+    if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype._showTowerFlight = function (type) {
     if (!cc.Graphics) return;

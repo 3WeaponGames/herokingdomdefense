@@ -15,7 +15,7 @@ function resolve(settings, descriptor) {
   var relative = descriptor.unitAnimationSpeed, wholeUnit = validRelative(relative), speeds = settings.animationSpeeds || {};
   var speed = wholeUnit ? baseline * relative : validSpeed(speeds[speedKey]) ? speeds[speedKey] : validSpeed(speeds[key]) ? speeds[key] : baseline;
   var timing = settings.timings && settings.timings[key];
-  if (timing === undefined) timing = settings.timingDefaults && settings.timingDefaults[key];
+  if (timing === undefined || timing && timing.inherit === true && !Object.prototype.hasOwnProperty.call(timing, "attack")) timing = settings.timingDefaults && settings.timingDefaults[key];
   var marker = timing && timing.attack, hit = finite(marker) && marker > 0 && marker <= 10 ? marker : 0;
   var duration = finite(descriptor.duration) && descriptor.duration >= 0 ? descriptor.duration : 0;
   var rate = descriptor.cooldownRate === undefined ? record.AttackInterval : descriptor.cooldownRate;

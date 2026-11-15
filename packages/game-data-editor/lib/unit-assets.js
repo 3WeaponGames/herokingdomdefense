@@ -151,6 +151,9 @@ function describe(root, request) {
     let shotPrefab = prefab;
     if (type === 'hero') shotPrefab = json(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'));
     const timing = AttackTimings.fromLayers(layers);
+    const settings=documents.overrides?documents.overrides.data:cfg.GameTools;
+    const shotSettings=/Projectile/.test(effect)?projectile(shotPrefab,type,behavior):null,speedKey=type+':'+id+':'+form,savedSpeed=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[speedKey];
+    if(shotSettings&&typeof savedSpeed==='number'&&Number.isFinite(savedSpeed)&&savedSpeed>=1&&savedSpeed<=20000)shotSettings.speed=savedSpeed;
     // Saved whole-unit playback is independent of the model/appearance and of
     // the Units panel's legacy attack-only override. Reading a preview never
     // changes or retimes the authored Spine data.
@@ -163,7 +166,7 @@ function describe(root, request) {
     return { type, id, form, key: type + ':' + id + ':' + form, source: relative(root, file), layers, shared, equipment,
         ...(unitAnimationSpeed===undefined?{}:{unitAnimationSpeed}),
         defaultTiming: timing.defaultTiming, timingDefaultSource: timing.timingDefaultSource, timingEvents: timing.timingEvents,
-        effect, projectile: /Projectile/.test(effect) ? projectile(shotPrefab, type, behavior) : null,
+        effect, projectile: shotSettings,
         forms: boss ? [{id:90010,label:'Form 1'},{id:90011,label:'Form 2'},{id:90012,label:'Form 3'}] : [],
         ...(type==='ally'?{levels:levels.length?levels:[1],level:request.level||0}:{}),runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
 }
