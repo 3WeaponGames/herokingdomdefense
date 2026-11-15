@@ -2,8 +2,13 @@
   "source": {
     "package": "Toon Projectiles 2 2.0.1.unitypackage",
     "sha256": "8c11fa024b21609bacdd3cdb50152fa3f784f013bf689784843c896b3aa682f7",
-    "conversion": "Unlit 2D particle flipbooks; Unity shader graph distortion/lighting are not reproduced.",
-    "alpha": "straight"
+    "conversion": "Alpha-framed, 2x supersampled unlit 2D particle flipbooks using authored Built-in noise, masks, emission, UV animation and Fresnel. Pure additive clips retain additive blending; mixed clips use a normal-alpha approximation. HDR bloom and screen-space refraction are not reproduced.",
+    "alpha": "straight",
+    "capture": {
+      "framing": "rendered-alpha",
+      "materials": "authored-built-in",
+      "supersampling": 2
+    }
   },
   "assets": [
     {
@@ -17,9 +22,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-2",
@@ -32,9 +38,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": true
     },
     {
       "id": "toon:flash-3",
@@ -47,9 +54,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-4",
@@ -62,9 +70,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-5",
@@ -77,9 +86,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-6",
@@ -92,9 +102,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-7",
@@ -107,9 +118,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-8",
@@ -122,9 +134,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-9",
@@ -137,9 +150,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": true
     },
     {
       "id": "toon:flash-10",
@@ -152,9 +166,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-11",
@@ -167,9 +182,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-12",
@@ -182,9 +198,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-13",
@@ -197,9 +214,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-14",
@@ -212,9 +230,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-15",
@@ -227,9 +246,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-1",
@@ -242,9 +262,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-2",
@@ -257,9 +278,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-3",
@@ -272,9 +294,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-4",
@@ -287,9 +310,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-5",
@@ -302,9 +326,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-6",
@@ -317,9 +342,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-7",
@@ -332,9 +358,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-8",
@@ -347,9 +374,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-9",
@@ -362,9 +390,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-10",
@@ -377,9 +406,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-11",
@@ -392,9 +422,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-12",
@@ -407,9 +438,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-13",
@@ -422,9 +454,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-14",
@@ -437,9 +470,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-15",
@@ -452,9 +486,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:projectile-1-bullet",
@@ -467,9 +502,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-2-energy-orb",
@@ -482,9 +518,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-3-cube",
@@ -497,9 +534,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-4-red-star",
@@ -512,9 +550,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-5-arrow",
@@ -527,9 +566,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-6-magic-stone",
@@ -542,9 +582,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-7-wind",
@@ -557,9 +598,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-8-twist",
@@ -572,9 +614,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-9-cosmic",
@@ -587,9 +630,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-10-explode",
@@ -602,9 +646,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-11-triangle",
@@ -617,9 +662,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-12-forest",
@@ -632,9 +678,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-13-magic-arrow",
@@ -647,9 +694,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-14-ice",
@@ -662,9 +710,10 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     },
     {
       "id": "toon:projectile-15-red",
@@ -677,101 +726,102 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": true
+      "loop": true,
+      "additive": false
     }
   ],
   "importedFiles": {
-    "assets/resources/projectiles/toon/flash-1.png": "2e631a3edb13dd89aaa9020c102ccb915b64997bb6919671fd6ff770d618331a",
-    "assets/resources/projectiles/toon/flash-1.png.meta": "9f92db3abd43bd45c9d097014df4bce02c03fbb7c00ccd02176942d04966f1e4",
-    "assets/resources/projectiles/toon/flash-2.png": "5a8ddaf78d7c7ff7ca4a65ba18304261974ff552efd531bad85fc0adc1a8a2ca",
-    "assets/resources/projectiles/toon/flash-2.png.meta": "15994f3425368f1ee6c0ce235f81d4480db2a99e81051c384ab732de58ce6377",
-    "assets/resources/projectiles/toon/flash-3.png": "6714d2ad58d3994fb2b85a8326fb617db14935ae223dd668e1a7d3e627e636f0",
-    "assets/resources/projectiles/toon/flash-3.png.meta": "c4ad26581fc8fa30afe7e37b7033919a676283ee99189b1257b4293c517516f8",
-    "assets/resources/projectiles/toon/flash-4.png": "6627d774437e2b83084e54240adefeebb69b37028d1940dd4b348b9a77b70b75",
-    "assets/resources/projectiles/toon/flash-4.png.meta": "85f28bc2c686baa1f8d4205be7cbcab0a3e2bb48f7efbcc4aaf4641224395fa1",
-    "assets/resources/projectiles/toon/flash-5.png": "5728898ee0573b30af9d95f94a0d637e5302d0a1ebdce52db223374fc950b1e9",
-    "assets/resources/projectiles/toon/flash-5.png.meta": "ffc08d96746c3d305ac71943fb166062de29b173c53b2869e00b63de588cb843",
-    "assets/resources/projectiles/toon/flash-6.png": "a2f0ef2d5cd8e0d706ca3c5418a252532fe4692dcd2f27e60b377cb3d5156376",
-    "assets/resources/projectiles/toon/flash-6.png.meta": "63e0521bdb714dadb04e66e5265cb4b613bdc7a1342242283991d49c72126e22",
-    "assets/resources/projectiles/toon/flash-7.png": "5ff82b344933554f8d2452ceaf7c080eac907b919d1ef82c2336864c69e3a453",
-    "assets/resources/projectiles/toon/flash-7.png.meta": "441594d2247881495927f32d9a57ff63e15fce780a61a5ca286aa7017b48f2c1",
-    "assets/resources/projectiles/toon/flash-8.png": "468302038d84b4629be2452eb9acd2b019688d67f5d33f4c197f34701f7dc93d",
-    "assets/resources/projectiles/toon/flash-8.png.meta": "8a77cc4dfe611bdc796bbc015d5787d23663114bac6a2a766e6d2408b77e4265",
-    "assets/resources/projectiles/toon/flash-9.png": "7184253d9beb9da6491e1b31cdd2b37ddbe92fefea5c23aeb0dbcc804a50569b",
-    "assets/resources/projectiles/toon/flash-9.png.meta": "d704a48c51069d6df2deb2ade1de27149cc7c6404ecd05a45362abcd4b3407f6",
-    "assets/resources/projectiles/toon/flash-10.png": "6681a8ad22f78544f6eef885530acff8a81ffcd62bbea3428883483eb66c267e",
-    "assets/resources/projectiles/toon/flash-10.png.meta": "f9f7571d88a3bafaff499fad9aabd068551bb1a0b05b0004ba2118729551e28e",
-    "assets/resources/projectiles/toon/flash-11.png": "8b27721c472cffbdf67aa7a1337bf671672fc0f1290a8a6be4b344e654850782",
-    "assets/resources/projectiles/toon/flash-11.png.meta": "1d91e606b27ab4cffc5f78a9e567913caaabd05b325368afa87491a9be96b482",
-    "assets/resources/projectiles/toon/flash-12.png": "cfe1e7fde9a3332698fbeed53823c3a47e3325cf0a9f994c9bc13b5b6814c54e",
-    "assets/resources/projectiles/toon/flash-12.png.meta": "f97587d21d561adbcc5d5b4e006013965bbdfd697f33d2955f6ccfa8df2c74fa",
-    "assets/resources/projectiles/toon/flash-13.png": "0baf54449e82ce0867ce4e7e99850cfc9111f9ebdbc97f35ed51ff358fcdde21",
-    "assets/resources/projectiles/toon/flash-13.png.meta": "fb1ada61ab575e7f1a769bfca2da0355841ed9ad7e779cefdd819d2ba4ea7dba",
-    "assets/resources/projectiles/toon/flash-14.png": "23749d72d9c862ade606db47b838ef5ef2cd8d04df5e25f4cf4e181a73e9c073",
-    "assets/resources/projectiles/toon/flash-14.png.meta": "73d1466c9490dc25b519f42d44894072f3c3eb7ce57403c357a8e789447fb781",
-    "assets/resources/projectiles/toon/flash-15.png": "ef56b0a4e092fece9e38aa09ac8715d7113dbed5b1e821eded29a7c2f80eb262",
-    "assets/resources/projectiles/toon/flash-15.png.meta": "b03ace30280fc23c325d13ce100e4a07a84f0cf8d4bfcba33b43e9e7e49cef3a",
-    "assets/resources/projectiles/toon/hit-1.png": "2a08a1bccb64f18fb25943e13881ceb89d50c3eaf6fe97c041788481356f8d91",
-    "assets/resources/projectiles/toon/hit-1.png.meta": "36b3d9c6573b5ac04b728bff9d1a06a2208d370106be486a5db30ba20bd9aa31",
-    "assets/resources/projectiles/toon/hit-2.png": "5d2ac07b0df66bbe38fbbb41552f16cf61f1287aae847e231aae1b30154540a2",
-    "assets/resources/projectiles/toon/hit-2.png.meta": "4159e92b87204161a16c6b1b1b5cbf6fa342ebc5911c0b77dd3adf37f942a7f7",
-    "assets/resources/projectiles/toon/hit-3.png": "9e4ee8167afb9401e9da296594646f14dda3bfc14415b2362c551da2fd867eb1",
-    "assets/resources/projectiles/toon/hit-3.png.meta": "334ca331b7210afc34a7ef414a00d29fc18f4cf278b88358c5ed962d478b5dbf",
-    "assets/resources/projectiles/toon/hit-4.png": "f0c8fd4443acfd57e486f4f03a1214a4f3019782d15ff09cd8d5bcbbf4a65605",
-    "assets/resources/projectiles/toon/hit-4.png.meta": "a79c8c6d5b55d3bb4d742943193d3a2f8ad646909ceb023f4fd821c3fe1db70e",
-    "assets/resources/projectiles/toon/hit-5.png": "5e17c747289962c07608fd277dc8ef06a7a4d82ed9d853a45ad514044f13570a",
-    "assets/resources/projectiles/toon/hit-5.png.meta": "f0826cb878241b10fb1412e949e6ef2df988083c99a39160c4dcb58fa1a5aad7",
-    "assets/resources/projectiles/toon/hit-6.png": "8c59fea10486bc126938171704acda94d0ee0c8f7ae65a885ca4a2deed1f6ba4",
-    "assets/resources/projectiles/toon/hit-6.png.meta": "3a6a6127b9bd61060310d86a00066267cd62c40615b252b54d0e92e2f85b691d",
-    "assets/resources/projectiles/toon/hit-7.png": "b358bac829d82c21fa73319d5e30c7831ebdb88b66432112219c1f0f536decc1",
-    "assets/resources/projectiles/toon/hit-7.png.meta": "a097d78294a95dd6be8eeb927ac980d5069b61997019a95d0d5f8f761e93b99f",
-    "assets/resources/projectiles/toon/hit-8.png": "16d4c2109e78781fa940ce7289098ae49fe757887681d340c70eafa851e125d7",
-    "assets/resources/projectiles/toon/hit-8.png.meta": "1f448d9cd456b1308572df363bd3e6a63af2207a8d3550f1306988c0f8cd978f",
-    "assets/resources/projectiles/toon/hit-9.png": "bf448e595e294342630c57618b8fc5496e50fd87f45da6f7eb7a7451db47d1f1",
-    "assets/resources/projectiles/toon/hit-9.png.meta": "3ac6e900d70071349f8a304645b05e764f7781631f865954cd3df90247d85083",
-    "assets/resources/projectiles/toon/hit-10.png": "0e71b4bed501230a64c40d18b52fe0bcaa726f3be508b3f80fd3c445794bfb74",
-    "assets/resources/projectiles/toon/hit-10.png.meta": "03cab63f3b3109471847623ebe9d96a1466ac354ac9f25051d7ee072248da7f5",
-    "assets/resources/projectiles/toon/hit-11.png": "b04ea027d9e8f6e22cdab5228d35e425f3a8a46bf3adeb40d056bfae03266bc4",
-    "assets/resources/projectiles/toon/hit-11.png.meta": "9eb1d454298d57a01df039b2fe54c07e53dbaf537ba120e4cfd1a7bf27d48da4",
-    "assets/resources/projectiles/toon/hit-12.png": "c2be7aaee692757d27ee5195057784e5273e4cbc6192550fbfd370c954667512",
-    "assets/resources/projectiles/toon/hit-12.png.meta": "1441239b76968cc6ac45836fd6035cf4ea5a52beaf394d6f6285cd853f7fc3a9",
-    "assets/resources/projectiles/toon/hit-13.png": "eb6e48794d41240f02bcbe36b11b610179a3e188fd22d56f0deb560896a2b9f8",
-    "assets/resources/projectiles/toon/hit-13.png.meta": "e50cfe601d696bbbc9ef15c4ad3c04fa5415769cd0ae790d5f1e41d3a8ef1a4b",
-    "assets/resources/projectiles/toon/hit-14.png": "fd703b40f31d16ea9d4091681853978cd7fa5512d9bd09420a533c0bd00a6414",
-    "assets/resources/projectiles/toon/hit-14.png.meta": "25119a8a85cd5f7a25a540fd2e82fec31d8102a53e8281ed9666308efa73f6ee",
-    "assets/resources/projectiles/toon/hit-15.png": "ed35c973aadb9f4804c3513461660abc932ee8d302e3c620c609760b02ee3622",
-    "assets/resources/projectiles/toon/hit-15.png.meta": "673801b848812882da6462bdede395a210ff36e1e4583a337047ae8addf54fbb",
-    "assets/resources/projectiles/toon/projectile-1-bullet.png": "d770530407f6743074ee9cdf6644109dd44c41e8227cd50a9b3bf0c587fb0655",
-    "assets/resources/projectiles/toon/projectile-1-bullet.png.meta": "ff099fd2adb403a0fe540b2639fdb5eaf709e03691b32530fc1b0678d0d96e39",
-    "assets/resources/projectiles/toon/projectile-2-energy-orb.png": "8f0904d4115377888acbf2055e3067788f8a1e01fa82040ba82279e6fd601049",
-    "assets/resources/projectiles/toon/projectile-2-energy-orb.png.meta": "60f072650502ebd876a8f1b65f1e1d69cd486d95a728209f706d6a5046a9d1d0",
-    "assets/resources/projectiles/toon/projectile-3-cube.png": "859b3584615ccd7a4cce2fbd523610ffc31b7cea934efd937317e16c297c421b",
-    "assets/resources/projectiles/toon/projectile-3-cube.png.meta": "b29745e776d2ca3b7360510234be2861cb5269f17743b352cb540e7172795e66",
-    "assets/resources/projectiles/toon/projectile-4-red-star.png": "96bcdb749fbf3ac837cbf7566f54c0cad7b06ea60d364355ca4be59d0d72e62c",
-    "assets/resources/projectiles/toon/projectile-4-red-star.png.meta": "a43fb20ac2446f246281ade6c86900e8ead14a93121f75ab1a4f1007736f5e7f",
-    "assets/resources/projectiles/toon/projectile-5-arrow.png": "22cd7310b3b292d4a527fcaac3074d5ba6bf268bac17ffa33b36b7be512f5071",
-    "assets/resources/projectiles/toon/projectile-5-arrow.png.meta": "09a38af22409fe7b87a41a7efbf57227aab50be00521a1357fd72e01a5d20c5f",
-    "assets/resources/projectiles/toon/projectile-6-magic-stone.png": "fdab4a5dc55cda9187ab4abf255677c565903c8fed11567631de149067bdc12e",
-    "assets/resources/projectiles/toon/projectile-6-magic-stone.png.meta": "f22ac354de740561e9d0ae3830c7af5ee97cadd6892b4534af340f603ed06bf7",
-    "assets/resources/projectiles/toon/projectile-7-wind.png": "bdcd5f8625d50709cdc61bc834f492b3ce597b83f760340faf7fb1aa7abef7bf",
-    "assets/resources/projectiles/toon/projectile-7-wind.png.meta": "3d9bc94da18bfefbe5b69a36106f636026dfc6eda4fb2b72553013ae3eb6b1e8",
-    "assets/resources/projectiles/toon/projectile-8-twist.png": "da050a8247df949ae04d537879d27804660510595f235b199ca672b4dd4108b4",
-    "assets/resources/projectiles/toon/projectile-8-twist.png.meta": "36e72673c69c3ec99e04a92ba1dbc4d14f449ed000b2ae70cca6992b1a4e118f",
-    "assets/resources/projectiles/toon/projectile-9-cosmic.png": "b76f4f1374f5ba9d49980926ace145d039b556877a4144eaa62510b23509eeee",
-    "assets/resources/projectiles/toon/projectile-9-cosmic.png.meta": "921ad361f709987b9ee908497cfce7822b5a96280b3b6c89ce0fdbf0eda16cf1",
-    "assets/resources/projectiles/toon/projectile-10-explode.png": "94b32702fcc8c6529a034e230298d4eac836f30068edd7daf06c2782ec03def5",
-    "assets/resources/projectiles/toon/projectile-10-explode.png.meta": "dbf315d48293e65f574ac9fb92022173870fc42e76dcb375af21315ac883c2ec",
-    "assets/resources/projectiles/toon/projectile-11-triangle.png": "fe51e9cc3ca0583b56aaaa66bc22c31757d33faba3b28749e2b37900db172f10",
-    "assets/resources/projectiles/toon/projectile-11-triangle.png.meta": "a1d97738a9d742ae7fd2119e59c91b60ffbbebc0218e1c80a7bd9da3a8cd7bf3",
-    "assets/resources/projectiles/toon/projectile-12-forest.png": "32c03cda93702558f1ce6f02e2dad82f4f095247a7626c9cc23f378cae614491",
-    "assets/resources/projectiles/toon/projectile-12-forest.png.meta": "37b25c22a4de770eb0a186b1fea4f552a889fac1707b92f7beeca9f3951d6fe8",
-    "assets/resources/projectiles/toon/projectile-13-magic-arrow.png": "18e9df323a57210d85a5ccd984fd7fc610c7bfee1122847f91ee4fa7ca452c55",
-    "assets/resources/projectiles/toon/projectile-13-magic-arrow.png.meta": "ec55d742ecf99ae9582130974c0b23f8b67c884004afb57183fcaf8a825cc63b",
-    "assets/resources/projectiles/toon/projectile-14-ice.png": "b0d53669970f2c95f2aa4b7236736a3c993c13ab61237736a0c25f31e5763720",
-    "assets/resources/projectiles/toon/projectile-14-ice.png.meta": "d6ca6410bd0d48a044af504a1f368d475c43155b75c26af00e9d7b45c215d73d",
-    "assets/resources/projectiles/toon/projectile-15-red.png": "fa7a2741319fd1dece10b2dbf435e7edd9599c470d2c5edf11ecd78e9bde30d5",
-    "assets/resources/projectiles/toon/projectile-15-red.png.meta": "484456c14fdd880c4d95d1ee0972bdc508bc956d8c88cd04c0bd8ef5a8ee4739"
+    "assets/resources/projectiles/toon/flash-1.png": "c206333cae6d0f536d2fbee3b9b26c8b0631fc8c07e98899ada5095f7b673433",
+    "assets/resources/projectiles/toon/flash-1.png.meta": "cee4dc444b0ba49986a6800725974ad06ca86b01d4640033eb0ce2590b7723d3",
+    "assets/resources/projectiles/toon/flash-2.png": "4f89441fbd1d50258b4d2734c395bd1601dc8422d03377175106c07731ff5ff6",
+    "assets/resources/projectiles/toon/flash-2.png.meta": "64d17594ea78f759ee422963b3285df3fafa7fbae8aa3d3e832a1e72302a8482",
+    "assets/resources/projectiles/toon/flash-3.png": "c7152d87acef4b9c50cdbe276e6d5960e2bb33ad3766d7e91420e073819f29ff",
+    "assets/resources/projectiles/toon/flash-3.png.meta": "f813589a5a8dda1c801dd5169451103b938ca829c68d2b03dc6ef0f1b1120428",
+    "assets/resources/projectiles/toon/flash-4.png": "b684f63a9b8be6139c3506f5d483969920ec6c0e3b6454feafd1e7a01d6f6663",
+    "assets/resources/projectiles/toon/flash-4.png.meta": "899ebf39d8b68530c813b8c97d32ba8396db9f33a87479792e1981ad945e70c7",
+    "assets/resources/projectiles/toon/flash-5.png": "16fe224459182a5e7afa73eea86b149de0b3a6c79ac565b5904a0de8647e4bb8",
+    "assets/resources/projectiles/toon/flash-5.png.meta": "165efb5256bea69c9b05b09a1e075b39f2b671828b1745a4cd90a786d01355f0",
+    "assets/resources/projectiles/toon/flash-6.png": "307fcb5861810f23853503e3ef72e862e0ae8582f35b886e071a43284a72d42c",
+    "assets/resources/projectiles/toon/flash-6.png.meta": "ae1c4c3ed849db5c61fc1be46063b1df2ca87f99460ce3454f8f44bc12053e9e",
+    "assets/resources/projectiles/toon/flash-7.png": "b09bfb4e533dafdcd0bf03b47f23ca8e24b6dd7dc93e92ff4235b76ee720499d",
+    "assets/resources/projectiles/toon/flash-7.png.meta": "e4f1f492df84534cbe1696a3252eaf4a77b36f6fee5e0ed5de7616f6e18de43b",
+    "assets/resources/projectiles/toon/flash-8.png": "002e5774da41646027207673d56bf6f61166c5becfcdc21751e7152a50ff95a1",
+    "assets/resources/projectiles/toon/flash-8.png.meta": "b211e340f11745882192f530e0578baa658526f6f7c42c9c709765d48b8125d2",
+    "assets/resources/projectiles/toon/flash-9.png": "be2c1cc2fdf3634f0150eb98ba678762f41dea1347389540513da5210b1032d5",
+    "assets/resources/projectiles/toon/flash-9.png.meta": "a0a49b190efe338f79a786e635d4b710bb1b55519b252306afac6c12f5a11457",
+    "assets/resources/projectiles/toon/flash-10.png": "d1e0a79d80bd97cb489f6bca6608f7624d000416d5b01ebef1696431a111fa61",
+    "assets/resources/projectiles/toon/flash-10.png.meta": "86df24752db4dfb3454370b7c7596a7a7fe21b3450d3c7b9d5312c36a67cc99b",
+    "assets/resources/projectiles/toon/flash-11.png": "f2b5000e99ed4f6c7b40e66853c4c9f110b3690a647df157bba88df351a2627f",
+    "assets/resources/projectiles/toon/flash-11.png.meta": "a8b01fae5cffd59a1891fe3c5b73bd1e2314fafb116be012a1b77d34cebc12af",
+    "assets/resources/projectiles/toon/flash-12.png": "a2d86fb0282c02471deb12ec921b48c1c2b7abc9cf01972b4b0a29d8174b35b3",
+    "assets/resources/projectiles/toon/flash-12.png.meta": "6fdcd0ebd1ca3b913c7ce5d9694f67faa0e32dcf639385b8222209b45aba4d98",
+    "assets/resources/projectiles/toon/flash-13.png": "42ee911ac3e271145d3fe3f6241ba65adb6e00f19d9bb6054026ed3feb10c264",
+    "assets/resources/projectiles/toon/flash-13.png.meta": "85ada619ddd751a2241dcd13d943cdf39ab390d08a4f5d39d1a49d9da52324b4",
+    "assets/resources/projectiles/toon/flash-14.png": "0b099ed1418a5ff5854d0907951a3a277154126c9fab051dab8a671d68f8b798",
+    "assets/resources/projectiles/toon/flash-14.png.meta": "46143a8fb0d1876d36c902227eea395a509475ec4727402ca67317f088882342",
+    "assets/resources/projectiles/toon/flash-15.png": "13a02853784e295308240b5db6f43b7eb338fb5be6fc91ad56f463b610014646",
+    "assets/resources/projectiles/toon/flash-15.png.meta": "b2c863d7d82ae03fb3e1eccb0e7d3804754272d6df1aeedc753aab3a14360d94",
+    "assets/resources/projectiles/toon/hit-1.png": "524128a0bc2a050b4e58ab4c8a69fd021eac86e0394eed99798f37ad5f262f09",
+    "assets/resources/projectiles/toon/hit-1.png.meta": "c33d25ff339f634caf07a0ad38dc3028a02db8908864a4f22d5d5f22ccabd3ab",
+    "assets/resources/projectiles/toon/hit-2.png": "8c6d2153b5a701b24a46647912d2c9cfebd7ec80decfbd454ad8a126340196c0",
+    "assets/resources/projectiles/toon/hit-2.png.meta": "8ad187c4a972cb17a3086d9be6fb65857b5ad3327c8667acbf4080ed098500da",
+    "assets/resources/projectiles/toon/hit-3.png": "8b4542da4181c5015972d16f575e7a058cfe013ba00ecf42d7b8676311e0eb31",
+    "assets/resources/projectiles/toon/hit-3.png.meta": "1100a053e8f33cedd85b4660510d13830b89b7fffe3307f7dc69d7567f00a4a4",
+    "assets/resources/projectiles/toon/hit-4.png": "633b1014581fb71a306aebb5456c17e6815fe6d2ccc2e0f240d1b419e779a0a5",
+    "assets/resources/projectiles/toon/hit-4.png.meta": "6999d8e15de46e91cbbe8a9d00fcc908b342872c5e66b2528b2b25e20ba9cc1f",
+    "assets/resources/projectiles/toon/hit-5.png": "16733fe457d7532b0b7de93d971c19b8771d077b1ab36a1512dc38a33b8945dc",
+    "assets/resources/projectiles/toon/hit-5.png.meta": "a466a8f35ae17a20555b0a614161d48ea0486deaa4e2f0effad6010696e2be6f",
+    "assets/resources/projectiles/toon/hit-6.png": "f95ce29faa6132d6a1d42fa6b5c36945f04359315da4b911d2e14447e44993d3",
+    "assets/resources/projectiles/toon/hit-6.png.meta": "7c12dcbad875098d3d7c8c5c3b44ff168251f4385fd745e8019c671e2a23d21e",
+    "assets/resources/projectiles/toon/hit-7.png": "ecd7c966251d9528a98642b52ed2a409f0a9ceba6c8d1275ca5db6c971990ab4",
+    "assets/resources/projectiles/toon/hit-7.png.meta": "746e065a1041d86722c2855f7b53e09ffc1cbdbc8c5722e22846afdba7cf08a8",
+    "assets/resources/projectiles/toon/hit-8.png": "9630717d6fcbaae53f19b28ad280b49d1489748da4c6f129ef44bdfd7d06239c",
+    "assets/resources/projectiles/toon/hit-8.png.meta": "cd32fcb6e6c0db41e023f605d51cfd115eb474c7cdbc31afb207183149398f64",
+    "assets/resources/projectiles/toon/hit-9.png": "dfefddab10a2d792dafee3a7555bee3777ea4c9e15785ee04823a2a2f7b41049",
+    "assets/resources/projectiles/toon/hit-9.png.meta": "542577334bb3eb3cf0a2307d400f487a8a9fe59d7af3122b5bac9e983fb70424",
+    "assets/resources/projectiles/toon/hit-10.png": "2c1ad6d2b36240cda2f5391767b6a2ef361c41f45d1f08ff8398bca47b40c34e",
+    "assets/resources/projectiles/toon/hit-10.png.meta": "5eb491a7745792d7c233d47f9344c5578c27811aab20051d7c6a13dbd0eb56d7",
+    "assets/resources/projectiles/toon/hit-11.png": "5d9c98b3d4f7ae171c6209215156c9edc27eaef3667b0b8c272d1053e6ea1524",
+    "assets/resources/projectiles/toon/hit-11.png.meta": "b57a212269eef02ce18157b362f95fb319301c0f291e7fea9671477af47ca813",
+    "assets/resources/projectiles/toon/hit-12.png": "1448dd0a995cc329f34d8c7627ac8f15ea09b351fb472a9b9101d037a7be47b2",
+    "assets/resources/projectiles/toon/hit-12.png.meta": "9b47669d26bde8d2f794fbf04fd4a7eba45d7013d921cb48e9bdd505cf23980f",
+    "assets/resources/projectiles/toon/hit-13.png": "9e956913528a01dfba028956551e51dee72eb204a92f04c072c60310c59337ae",
+    "assets/resources/projectiles/toon/hit-13.png.meta": "4a50749a95ce69c8275056d354e9f5654cb77d53e12ee5b66c9bfad52af68105",
+    "assets/resources/projectiles/toon/hit-14.png": "621bbcc5277bc07622418e5affca3d39af8b128e773dffb98f1e53c9490c1d89",
+    "assets/resources/projectiles/toon/hit-14.png.meta": "d252d81a61c49e1ad87ba3af975bede88ed1fa77b00c6747f29b72042da7e0ea",
+    "assets/resources/projectiles/toon/hit-15.png": "69c4fe30fec580078bd971d5cb8b253401f1d94beaf943c1145553f00485ef9b",
+    "assets/resources/projectiles/toon/hit-15.png.meta": "b201b5a5e238644e828432c153526dba553c67092fb261096a9cdfca035010ce",
+    "assets/resources/projectiles/toon/projectile-1-bullet.png": "8cc788ffa6dea2794b0003d938a666fcb8c2f8c2cbb0b1985bc182fa7c0b222b",
+    "assets/resources/projectiles/toon/projectile-1-bullet.png.meta": "c94f3c6f5b4085ca24c666872fcfd23fc728a3c2fda0cdf22dd050b71df684cd",
+    "assets/resources/projectiles/toon/projectile-2-energy-orb.png": "6531c36d8ec29df4e74120c867aa6de9cbb716f82691be8c4d723634069c5526",
+    "assets/resources/projectiles/toon/projectile-2-energy-orb.png.meta": "f4a461891acb82f92a62c512e0cce4d506e9019029ac6a2b170f896956890d00",
+    "assets/resources/projectiles/toon/projectile-3-cube.png": "fb0ebfbbe94e615a7223d8e46c5f1d29212327454e97f339229de550030990fc",
+    "assets/resources/projectiles/toon/projectile-3-cube.png.meta": "4dafaeb757f0e9f4ba10958eefb073c68019b976e5acb405785537e53ce59f28",
+    "assets/resources/projectiles/toon/projectile-4-red-star.png": "8e459a59d85d4f01aef5e1793818560a3773babdbf2fc3251c7f6b0c040dc5d6",
+    "assets/resources/projectiles/toon/projectile-4-red-star.png.meta": "dffbd4a714cd0bbd774a693c40eb0e388b9a884c7899588b6bad328e929e432d",
+    "assets/resources/projectiles/toon/projectile-5-arrow.png": "9dc8301ef5921e2192c936661d7bf1302c1f0ca206c15f2bcbd3e7cd1b895787",
+    "assets/resources/projectiles/toon/projectile-5-arrow.png.meta": "a9561570d2c05dd3b1fb67b9d3a155c257b9dd43c21dbc80f4d0b151edf13c3e",
+    "assets/resources/projectiles/toon/projectile-6-magic-stone.png": "bda66f6a34e8a902a5a3f2a66767a6226327735aba7fb9914f6aacaeeb16609a",
+    "assets/resources/projectiles/toon/projectile-6-magic-stone.png.meta": "e92ad66b0b7c5da6677951c422281f194949c758812b944cce9f8fd79f79684c",
+    "assets/resources/projectiles/toon/projectile-7-wind.png": "15db2ab10529676e31f6761fec54a979a449f48deb0bd4fe1789e4de8ad40f9e",
+    "assets/resources/projectiles/toon/projectile-7-wind.png.meta": "cfedcc5851c0218b05a4d95c27d376fff622f5bce0b23257bd2a66444ff5dc7f",
+    "assets/resources/projectiles/toon/projectile-8-twist.png": "804aafcbeb5020bee52035072afcb1db552a0432ccfcdeff4b22eba0b22127d7",
+    "assets/resources/projectiles/toon/projectile-8-twist.png.meta": "e9e93aa7d02fb5c2dca40b943d5228b4b162866de4d42722a0d22a5fe64562e6",
+    "assets/resources/projectiles/toon/projectile-9-cosmic.png": "73e3617257cb79d1597cdbff88971c31d92ad2abfb9a9f958871fc486bc23a36",
+    "assets/resources/projectiles/toon/projectile-9-cosmic.png.meta": "948c365dc19de006c9d5cb40e4a7c389005a99f420eef547daeda69c9d0be003",
+    "assets/resources/projectiles/toon/projectile-10-explode.png": "eb548d2f36d7bd63276a3507f94ec42a3288354f1447a19b8555c05a60b8ddd4",
+    "assets/resources/projectiles/toon/projectile-10-explode.png.meta": "123a5549556c2300cf03909283c282c0cead98d557e5b8e262867dc10ce9545b",
+    "assets/resources/projectiles/toon/projectile-11-triangle.png": "ffce40948c46dc11d74a2ce88ce4728325808e300349fde4c46901fb6fe51e25",
+    "assets/resources/projectiles/toon/projectile-11-triangle.png.meta": "265a80e816cbbfb0a6e1be9592d8c69da54a252c17e43b41a08889781255915e",
+    "assets/resources/projectiles/toon/projectile-12-forest.png": "c68e99b9b3aa7f15feedfca2543201e453cb947921f40993f42b809b9fa1a465",
+    "assets/resources/projectiles/toon/projectile-12-forest.png.meta": "343cd00376b6901a05bf7dfcd064d72c591eb0b219ab42927e224a01ce6151a8",
+    "assets/resources/projectiles/toon/projectile-13-magic-arrow.png": "f181891c14b7a4b5a751bb490d0db5242bf669f7edbc838482c0bae54e2c316e",
+    "assets/resources/projectiles/toon/projectile-13-magic-arrow.png.meta": "1c2d7f0e4a1cd52fc3f4356e6954c2fc6ff4ebbad969efb4ab48792dde8a86f1",
+    "assets/resources/projectiles/toon/projectile-14-ice.png": "fcc5e83677b01fdc0acdc43beec98f195e0508aa79cb384aa65095bd39af5194",
+    "assets/resources/projectiles/toon/projectile-14-ice.png.meta": "bd515c2315d4309b3a78911257170ce9698b5124f6ddef4cb53ca225d01029ec",
+    "assets/resources/projectiles/toon/projectile-15-red.png": "2b4ea33d5752fda65cc80a356df2953839d0ee5eb5acd13686d7dd0d6c093271",
+    "assets/resources/projectiles/toon/projectile-15-red.png.meta": "83b0c4038ade29dde4c2d7a1844a536686fd119172dd64df295945ff09dd6fc2"
   }
 }

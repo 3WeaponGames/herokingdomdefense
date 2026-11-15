@@ -4,8 +4,13 @@
   "source": {
     "package": "Toon Projectiles 2 2.0.1.unitypackage",
     "sha256": "8c11fa024b21609bacdd3cdb50152fa3f784f013bf689784843c896b3aa682f7",
-    "conversion": "Unlit 2D particle flipbooks; Unity shader graph distortion/lighting are not reproduced.",
-    "alpha": "straight"
+    "conversion": "Alpha-framed, 2x supersampled unlit 2D particle flipbooks using authored Built-in noise, masks, emission, UV animation and Fresnel. Pure additive clips retain additive blending; mixed clips use a normal-alpha approximation. HDR bloom and screen-space refraction are not reproduced.",
+    "alpha": "straight",
+    "capture": {
+      "framing": "rendered-alpha",
+      "materials": "authored-built-in",
+      "supersampling": 2
+    }
   },
   "assets": [
     {
@@ -2807,9 +2812,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-2",
@@ -2822,9 +2828,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": true
     },
     {
       "id": "toon:flash-3",
@@ -2837,9 +2844,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-4",
@@ -2852,9 +2860,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-5",
@@ -2867,9 +2876,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-6",
@@ -2882,9 +2892,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-7",
@@ -2897,9 +2908,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-8",
@@ -2912,9 +2924,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-9",
@@ -2927,9 +2940,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": true
     },
     {
       "id": "toon:flash-10",
@@ -2942,9 +2956,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-11",
@@ -2957,9 +2972,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-12",
@@ -2972,9 +2988,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-13",
@@ -2987,9 +3004,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-14",
@@ -3002,9 +3020,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:flash-15",
@@ -3017,9 +3036,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-1",
@@ -3032,9 +3052,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-2",
@@ -3047,9 +3068,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-3",
@@ -3062,9 +3084,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-4",
@@ -3077,9 +3100,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-5",
@@ -3092,9 +3116,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-6",
@@ -3107,9 +3132,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-7",
@@ -3122,9 +3148,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-8",
@@ -3137,9 +3164,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-9",
@@ -3152,9 +3180,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-10",
@@ -3167,9 +3196,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-11",
@@ -3182,9 +3212,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-12",
@@ -3197,9 +3228,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-13",
@@ -3212,9 +3244,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-14",
@@ -3227,9 +3260,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:hit-15",
@@ -3242,9 +3276,10 @@
       "size": 80,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
-      "loop": false
+      "loop": false,
+      "additive": false
     },
     {
       "id": "toon:projectile-1-bullet",
@@ -3257,7 +3292,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3285,11 +3320,12 @@
         21,
         22
       ],
-      "visualScale": 1.882353,
+      "visualScale": 1.718121,
       "visualPivot": {
-        "x": 0.600437,
-        "y": 0.515537
-      }
+        "x": 0.608759,
+        "y": 0.498816
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-2-energy-orb",
@@ -3302,7 +3338,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3339,11 +3375,12 @@
         30,
         31
       ],
-      "visualScale": 3.240506,
+      "visualScale": 3.084337,
       "visualPivot": {
-        "x": 0.438248,
-        "y": 0.471365
-      }
+        "x": 0.43702,
+        "y": 0.475633
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-3-cube",
@@ -3356,7 +3393,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3386,6 +3423,7 @@
         23,
         24,
         25,
+        26,
         27,
         28,
         29,
@@ -3394,9 +3432,10 @@
       ],
       "visualScale": 4,
       "visualPivot": {
-        "x": 0.763043,
-        "y": 0.468644
-      }
+        "x": 0.825507,
+        "y": 0.464004
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-4-red-star",
@@ -3409,7 +3448,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3446,11 +3485,12 @@
         30,
         31
       ],
-      "visualScale": 1.828571,
+      "visualScale": 1.961686,
       "visualPivot": {
-        "x": 0.62523,
-        "y": 0.498954
-      }
+        "x": 0.65747,
+        "y": 0.518097
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-5-arrow",
@@ -3463,7 +3503,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3500,11 +3540,12 @@
         30,
         31
       ],
-      "visualScale": 2.169492,
+      "visualScale": 2.275556,
       "visualPivot": {
-        "x": 0.591651,
-        "y": 0.498173
-      }
+        "x": 0.5931,
+        "y": 0.508633
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-6-magic-stone",
@@ -3517,7 +3558,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3545,6 +3586,7 @@
         21,
         22,
         23,
+        24,
         27,
         28,
         29,
@@ -3553,9 +3595,10 @@
       ],
       "visualScale": 4,
       "visualPivot": {
-        "x": 0.827021,
-        "y": 0.421195
-      }
+        "x": 0.884944,
+        "y": 0.361266
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-7-wind",
@@ -3568,7 +3611,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3605,11 +3648,12 @@
         30,
         31
       ],
-      "visualScale": 1.560976,
+      "visualScale": 1.700997,
       "visualPivot": {
-        "x": 0.492251,
-        "y": 0.511055
-      }
+        "x": 0.500421,
+        "y": 0.49513
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-8-twist",
@@ -3622,7 +3666,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3660,9 +3704,10 @@
       ],
       "visualScale": 4,
       "visualPivot": {
-        "x": 0.552535,
-        "y": 0.495926
-      }
+        "x": 0.617206,
+        "y": 0.49239
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-9-cosmic",
@@ -3675,7 +3720,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3712,11 +3757,12 @@
         30,
         31
       ],
-      "visualScale": 2.285714,
+      "visualScale": 2.056225,
       "visualPivot": {
-        "x": 0.526949,
-        "y": 0.496295
-      }
+        "x": 0.521146,
+        "y": 0.499595
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-10-explode",
@@ -3729,7 +3775,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3766,11 +3812,12 @@
         30,
         31
       ],
-      "visualScale": 4,
+      "visualScale": 3.710145,
       "visualPivot": {
-        "x": 0.788084,
-        "y": 0.434348
-      }
+        "x": 0.819158,
+        "y": 0.434497
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-11-triangle",
@@ -3783,7 +3830,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3820,11 +3867,12 @@
         30,
         31
       ],
-      "visualScale": 3.605634,
+      "visualScale": 3.368421,
       "visualPivot": {
-        "x": 0.771652,
-        "y": 0.49395
-      }
+        "x": 0.798512,
+        "y": 0.484969
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-12-forest",
@@ -3837,7 +3885,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3874,11 +3922,12 @@
         30,
         31
       ],
-      "visualScale": 3.555556,
+      "visualScale": 3.657143,
       "visualPivot": {
-        "x": 0.710299,
-        "y": 0.505457
-      }
+        "x": 0.760979,
+        "y": 0.505556
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-13-magic-arrow",
@@ -3891,7 +3940,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3921,15 +3970,18 @@
         23,
         24,
         25,
+        26,
         27,
         28,
-        29
+        29,
+        30
       ],
-      "visualScale": 1.454545,
+      "visualScale": 1.354497,
       "visualPivot": {
-        "x": 0.654243,
-        "y": 0.499216
-      }
+        "x": 0.662285,
+        "y": 0.499219
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-14-ice",
@@ -3942,7 +3994,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -3980,9 +4032,10 @@
       ],
       "visualScale": 4,
       "visualPivot": {
-        "x": 0.879016,
-        "y": 0.49968
-      }
+        "x": 0.905919,
+        "y": 0.479276
+      },
+      "additive": false
     },
     {
       "id": "toon:projectile-15-red",
@@ -3995,7 +4048,7 @@
       "size": 56,
       "frames": 32,
       "columns": 8,
-      "cell": 128,
+      "cell": 256,
       "fps": 24,
       "loop": true,
       "loopFrames": [
@@ -4031,11 +4084,12 @@
         30,
         31
       ],
-      "visualScale": 2.723404,
+      "visualScale": 2.37037,
       "visualPivot": {
-        "x": 0.531549,
-        "y": 0.486752
-      }
+        "x": 0.591452,
+        "y": 0.524732
+      },
+      "additive": false
     },
     {
       "id": "tiny-kingdom:cannonball",

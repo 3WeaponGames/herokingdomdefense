@@ -122,6 +122,20 @@ async function projectileEngineSmoke(input) {
       var asset = await new Promise(function (resolve) { owner._projectileLooks.get(clip, resolve); });
       check(asset && asset.frames.length === clip.frames && asset.frames.every(function (frame) { return frame instanceof cc.SpriteFrame; }), clip.name + " creates native-compatible SpriteFrames");
     }
+    // Launch/impact nodes share a pool. Additive flashes must not leave the
+    // following normal-alpha effect with additive renderer state.
+    var blendClips=clips.filter(function(clip){return clip.additive;});
+    if(blendClips.length){
+      var blendBank=owner._projectileLooks,pooledBlendNode=null;
+      blendBank.update(2);
+      for(var blendClip of [blendClips[0],clips.find(function(clip){return !clip.additive;})]){
+        blendBank.effect(blendClip,scene,cc.v2(0,0),0,{size:64},function(){return true;});
+        var blendEffect=blendBank.effects[blendBank.effects.length-1];
+        check(blendEffect.renderer.srcBlendFactor===cc.macro.SRC_ALPHA&&blendEffect.renderer.dstBlendFactor===(blendClip.additive?cc.macro.ONE:cc.macro.ONE_MINUS_SRC_ALPHA),blendClip.name+' uses its authored sprite blend');
+        if(pooledBlendNode)check(blendEffect.node===pooledBlendNode,'Real effect pool resets additive blending for normal-alpha artwork');
+        pooledBlendNode=blendEffect.node;blendBank.update(2);
+      }
+    }
     // Exercise the actual engine MotionStreak with every authored texture and
     // one retained shot; blend state must also reset when the preset changes.
     var trailShot=shot('Play',0),trailTarget=target(0),authoredTrailNode=new cc.Node('authored-trail');authoredTrailNode.parent=trailShot.node;

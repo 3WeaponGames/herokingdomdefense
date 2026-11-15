@@ -74,12 +74,23 @@ test('draft verification host decodes Unicode JSON across Buffer chunk boundarie
 const python=process.env.PYTHON||(process.platform==='win32'?'python':'python3'),pythonAvailable=spawnSync(python,['-B','-c','import PIL,yaml'],{encoding:'utf8'}).status===0;
 test('Toon import rejects unsafe and duplicate manifests, malformed grids and non-fresh bake destinations',{skip:!pythonAvailable},()=>{
   const code=String.raw`
-import copy,io,json,runpy,tempfile
+import copy,io,json,runpy,tempfile,hashlib
 from pathlib import Path
 from PIL import Image
 root=Path.cwd()
 importer=runpy.run_path(str(root/'tools/projectiles/import-toon.py'))
 preparer=runpy.run_path(str(root/'tools/projectiles/prepare-toon.py'))
+shader=b'''Shader "Vendor/Particles" {\nSubShader {\nBlend SrcAlpha OneMinusSrcAlpha\nColorMask RGB\nCGPROGRAM\nfloat4 frag() : SV_Target { return tex2D(_Noise, uv + _Time.y * speed) * _Emission; }\nENDCG\n}}\n/*ASEBEGIN\neditor graph metadata'''
+adapted=preparer['capture_shader'](shader,'Fixture')
+assert 'Shader "Hidden/HKD/Fixture"' in adapted
+assert 'Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha' in adapted
+assert 'ColorMask RGBA' in adapted and 'float4 _HKDCaptureTime;' in adapted
+assert 'uv + _HKDCaptureTime.y * speed' in adapted and ' * _Emission;' in adapted
+assert '_Time' not in adapted and 'editor graph metadata' not in adapted
+center=preparer['capture_shader'](b'''Shader "Vendor/Center" { Properties { } SubShader {\nBlend SrcAlpha OneMinusSrcAlpha\nCGPROGRAM\nuniform float _Emission;\nfixed4 frag() : SV_Target { fixed4 col = appendResult87; return col; }\nENDCG\n}}''','Blend_CenterGlow')
+assert 'Blend One [_DstBlend], One OneMinusSrcAlpha' in center
+assert '_DstBlend("Destination blend", Float) = 10' in center
+assert 'col.rgb *= col.a;' in center and 'if (_DstBlend < 1.5) col.a = saturate(max(col.r, max(col.g, col.b)));' in center
 clips=[]
 for role in ('Projectile','Flash','Hit'):
     for number in range(1,16):
@@ -96,9 +107,29 @@ with tempfile.TemporaryDirectory(prefix='hkd-toon-audit-') as directory:
     for file in ('../outside.png',r'..\outside.png','C:outside.png'):
         bad=copy.deepcopy(clips);bad[0]['file']=file;reject(lambda:importer['validate_clips'](source,bad))
     bad=copy.deepcopy(clips);bad[0]['fps']=0;reject(lambda:importer['validate_clips'](source,bad))
+    bad=copy.deepcopy(clips);bad[0]['blending']='unknown';reject(lambda:importer['validate_clips'](source,bad))
     reject(lambda:importer['normalize'](Image.new('RGBA',(8,8)),clips[0]))
     image=Image.new('RGBA',(16,8));image.putpixel((4,4),(100,50,25,128))
     result=Image.open(io.BytesIO(importer['normalize'](image,clips[0])));assert result.size==image.size
+    meta=dict(uuid='existing-texture',width=1024,height=512,filterMode='nearest',future=dict(retain=1),subMetas={'fixture':dict(uuid='existing-frame',futureFrame=True),'other-frame':dict(uuid='keep-other')})
+    resized=importer['resized_texture_meta']('assets/resources/projectiles/toon/fixture.png',json.dumps(meta).encode(),2048,1024)
+    assert resized['uuid']=='existing-texture' and resized['filterMode']=='nearest' and resized['future']==dict(retain=1)
+    assert resized['width']==2048 and resized['height']==1024
+    frame=resized['subMetas']['fixture'];assert frame['uuid']=='existing-frame' and frame['rawTextureUuid']=='existing-texture' and frame['futureFrame']
+    assert frame['width']==2048 and frame['rawHeight']==1024 and resized['subMetas']['other-frame']==meta['subMetas']['other-frame']
+    metadata_project=source/'metadata-project';metadata_project.mkdir();metadata_file=metadata_project/'fixture.meta'
+    recorded=hashlib.sha256(importer['encoded'](meta)).hexdigest()
+    for value in (meta,dict(meta,filterMode='bilinear'),dict(meta,future=dict(retain=2))):
+        raw=json.dumps(value,indent=2).encode();metadata_file.write_bytes(raw)
+        transaction=importer['Transaction'](metadata_project,source/'metadata-artifacts');transaction.managed={'fixture.meta':recorded}
+        assert importer['read_metadata'](transaction,'fixture.meta')==raw
+        if value==meta:
+            assert transaction.managed['fixture.meta']==hashlib.sha256(raw).hexdigest()
+            transaction.stage('fixture.meta',importer['encoded'](resized))
+            concurrent=raw+b' ';metadata_file.write_bytes(concurrent);reject(transaction.commit);assert metadata_file.read_bytes()==concurrent
+        else:
+            assert transaction.managed['fixture.meta']==recorded
+            reject(lambda:transaction.stage('fixture.meta',importer['encoded'](resized)))
     bake=source/'existing';bake.mkdir();(bake/'important.txt').write_text('keep')
     reject(lambda:preparer['prepare'](source/'unused.unitypackage',bake));assert (bake/'important.txt').read_text()=='keep'
     for name in (r'Assets/..\outside.png','Assets/file:stream.png'):

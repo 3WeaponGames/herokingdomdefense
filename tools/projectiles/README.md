@@ -16,6 +16,11 @@ flight, target reaction, the existing default hit and any additional projectile
 hit effect. Original wall projectiles retain their complete visual prefabs in
 game, including authored particle emitters and animated trails.
 
+The active playback button reads **Pause**. Click it or press **Space** to
+freeze the current frame; click **Play** or press Space again to resume from
+that frame. Space leaves text inputs, selectors and other editor panels alone.
+The preview canvas can receive keyboard focus by clicking it.
+
 Match **Launch delay** with the attack using its slider or numeric field, then
 Save the projectile and timing together. Animated units share the existing
 Units timing setting: the marker is measured in animation seconds and its
@@ -77,13 +82,25 @@ check revisions and retain unknown fields. Backups go under
 The source is Hovl Studio's **Toon Projectiles 2 2.0.1.unitypackage**. Unity
 particle prefabs cannot run directly in Creator. The importer renders their
 authored particle geometry into transparent 32-frame 2D atlases at 24 fps:
-15 flight clips, 15 launch clips and 15 impact clips. Materials use a transparent
-unlit adaptation; Unity shader-graph distortion and lighting are not reproduced.
-No Unity package scripts or audio are imported or executed.
+15 flight clips, 15 launch clips and 15 impact clips. Each frame is captured at
+512px and supersampled to 256px, with one fixed camera fitted to the clip's
+rendered coverage. This retains detail that the old bounds-based 128px capture
+lost before the game ever loaded it.
+
+The shipped conversion uses the package's corresponding Built-in material
+shaders, preserving their masks, noise, emission, Fresnel and UV animation.
+Capture time is deterministic. Purely additive clips retain additive blending
+in both preview and game; mixed alpha/additive layers share one RGBA capture.
+HDR bloom and background-dependent screen refraction cannot be reproduced by
+these standard 2D flipbooks. No Unity package scripts or audio are imported or
+executed. Each atlas is 2048 × 1024 (8 MiB as uncompressed RGBA, versus 2 MiB
+for the previous capture); runtime textures load when referenced and are
+released with their battle's projectile bank.
 
 1. Run `python tools/projectiles/prepare-toon.py <package> <fresh external folder>`.
 2. Run the installed Unity editor with `-batchmode -quit -projectPath <folder>
-   -executeMethod ToonBaker.Run -hkdOutput <folder>/Baked -logFile <external log>`.
+   -noaudio -executeMethod ToonBaker.Run
+   -hkdOutput <folder>/Baked -logFile <external log>`.
    The prepared project's audio is disabled before startup.
 3. Run `python tools/projectiles/import-toon.py <folder>/Baked` and
    `node tools/projectiles/build-library.cjs`.
@@ -135,6 +152,11 @@ and after, along with browser, console and asset errors. Set
 `PLAYWRIGHT_MODULE`, optional `BROWSER_EXECUTABLE`, and an external
 `HKD_ARTIFACT_DIR` for its screenshots and JSON report. The browser is muted
 before startup and temporary sessions close automatically.
+
+`node tools/projectiles/verify-playback-controls.cjs` mounts the actual client
+inside open and closed shadow roots like Creator's panel host. It checks real
+unit clicks, draft retention, frozen/resumed preview pixels, Space shortcuts,
+input focus and listener cleanup without permitting saves.
 
 `node tools/projectiles/serve-editor.cjs` opens a standalone local Projectiles
 editor on port 8792, without a gameplay scene or audio.

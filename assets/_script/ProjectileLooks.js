@@ -107,6 +107,7 @@ function draw(node, clip, options) {
   } else {
     var first=descriptor.loopFrames&&descriptor.loopFrames.length?descriptor.loopFrames[0]:0;
     renderer = node.getComponent(cc.Sprite) || node.addComponent(cc.Sprite); renderer.spriteFrame = clip.frames[first]; renderer.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+    if (cc.macro) { renderer.srcBlendFactor = cc.macro.SRC_ALPHA; renderer.dstBlendFactor = descriptor.additive ? cc.macro.ONE : cc.macro.ONE_MINUS_SRC_ALPHA; }
     node.anchorX=descriptor.visualPivot?descriptor.visualPivot.x:.5;node.anchorY=descriptor.visualPivot?1-descriptor.visualPivot.y:.5;
     var source = clip.frames[first].getOriginalSize();
     var scale = options.size / Math.max(source.width, source.height);

@@ -91,6 +91,16 @@ test('mixed projectile effects reuse exactly one enabled renderer and replace di
  bank.update(1);node.destroy();const replacement=effect(sprite);assert.notEqual(replacement,node);assert(!replacement.destroyed);bank.dispose();
 });
 
+test('additive clip blending resets when flight nodes and effect pools return to normal artwork',()=>{
+ const data=visualData(),f=visualFixture(data),factors=f.cc.macro={SRC_ALPHA:770,ONE:1,ONE_MINUS_SRC_ALPHA:771};data.assets[1].additive=true;
+ data.assignments['ally:90003']={flight:'fx'};f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();f.flush();
+ const view=f.shot._projectileVisual,node=view.node;assert.equal(view.renderer.srcBlendFactor,factors.SRC_ALPHA);assert.equal(view.renderer.dstBlendFactor,factors.ONE);
+ data.assignments['ally:90003']={flight:'arrow'};f.shot._launchProjectileLook();f.flush();assert.equal(view.node,node);assert.equal(view.renderer.dstBlendFactor,factors.ONE_MINUS_SRC_ALPHA);
+ const bank=f.owner._projectileLooks,effect=descriptor=>{bank.effect(descriptor,f.shot.node.parent,{x:0,y:0},0,{size:64},()=>true);f.flush();return bank.effects.at(-1);};
+ const additive=effect(data.assets[1]);assert.equal(additive.renderer.dstBlendFactor,factors.ONE);bank.update(1);
+ const normal=effect(data.assets[0]);assert.equal(normal.node,additive.node);assert.equal(normal.renderer.srcBlendFactor,factors.SRC_ALPHA);assert.equal(normal.renderer.dstBlendFactor,factors.ONE_MINUS_SRC_ALPHA);bank.dispose();
+});
+
 test('retired projectile views cancel global catalog waiters while one shared catalog request remains in flight',()=>{
  const f=visualFixture(visualData());f.api.prepare(f.shot,f.owner,'ally:90003');
  for(let i=0;i<200;i++){f.shot._shot={};f.shot._launchProjectileLook();f.shot._projectileVisual.reset();}

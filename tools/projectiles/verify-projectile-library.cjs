@@ -27,13 +27,14 @@ async function main(){
     assert.equal(await page.locator('.projectile-grid button').count(),catalog.sets.length);
     const select=page.getByLabel('Ranged unit',{exact:true}),pick=id=>page.locator('[data-projectile="'+id.replace(/"/g,'\\"')+'"]').click();
     async function play(label,actors){
-      const before=await page.evaluate(()=>({...window.__projectileAudit}));await page.getByRole('button',{name:label,exact:true}).click();
+      const key={'Play launch':'launch','Play flight':'flight','Play on hit':'impact','Play all':'all'}[label],control=page.locator('[data-playback-mode="'+key+'"]');
+      const before=await page.evaluate(()=>({...window.__projectileAudit}));if(!(await control.innerText()).startsWith('Pause '))await control.click();
       await page.waitForFunction(({before,actors})=>{const state=window.__projectileAudit;return state.draws>before.draws&&state.frames>before.frames+(actors?2:0)&&(!actors||!state.loading);},{before,actors},{timeout:15000});
     }
     for(const [index,set]of catalog.sets.entries()){
       await pick(set.id);const result={id:set.id,modes:[]};
       for(const [key,label]of [['launch','Play launch'],['flight','Play flight'],['impact','Play on hit'],['all','Play all']]){
-        const available=key==='all'||!!set[key];assert.equal(await page.getByRole('button',{name:label,exact:true}).isDisabled(),!available,set.id+' '+label+' availability');
+        const available=key==='all'||!!set[key];assert.equal(await page.locator('[data-playback-mode="'+key+'"]').isDisabled(),!available,set.id+' '+label+' availability');
         if(available)await play(label,key==='all');result.modes.push({key,available});
       }
       report.sets.push(result);if((index+1)%20===0)console.log('Projectile sets: '+(index+1)+' / '+catalog.sets.length);

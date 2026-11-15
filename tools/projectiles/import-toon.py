@@ -16,6 +16,26 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'characters'))
 from import_units import Transaction, asset_uuid, texture_meta, encoded
 from PIL import Image
 
+def read_metadata(tx,relative):
+    before=tx.read(relative)
+    # Creator may rewrite JSON whitespace (including its final newline).
+    # Accept that only when the actual parsed metadata canonically hashes to
+    # the recorded import. The transaction still guards the exact read bytes.
+    if before is not None and tx.managed.get(relative)==hashlib.sha256(encoded(json.loads(before.decode('utf-8-sig')))).hexdigest():
+        tx.managed[relative]=hashlib.sha256(before).hexdigest()
+    return before
+
+def resized_texture_meta(relative,before,width,height):
+    """Resize the managed frame without replacing existing IDs or settings."""
+    fresh=texture_meta(relative,width,height)
+    previous=json.loads(before.decode('utf-8-sig')) if before else {}
+    result=dict(fresh,**previous);result.update(width=width,height=height)
+    frames=dict(previous.get('subMetas',{}));name=Path(relative).stem
+    frame=dict(fresh['subMetas'][name],**frames.get(name,{}))
+    frame.update(width=width,height=height,rawWidth=width,rawHeight=height,rawTextureUuid=result['uuid'])
+    frames[name]=frame;result['subMetas']=frames
+    return result
+
 def validate_clips(source,clips):
     if not isinstance(clips,list) or len(clips)!=45:
         raise ValueError('Expected all 15 flight, 15 launch and 15 impact effects')
@@ -36,6 +56,8 @@ def validate_clips(source,clips):
         roles.add(role)
         if type(clip.get('loop')) is not bool or clip['loop']!=(match[1]=='Projectile'):
             raise ValueError('Invalid baked playback role: '+name)
+        if 'blending' in clip and clip['blending'] not in ('alpha','additive','mixed'):
+            raise ValueError('Invalid baked blend classification: '+name)
         if not all(type(clip.get(key)) is int and clip[key]>0 for key in ('frames','columns','cell','fps')):
             raise ValueError('Invalid baked atlas geometry or frame rate: '+name)
         if not (source/file).resolve().is_relative_to(source):
@@ -72,11 +94,11 @@ def normalize(sheet,clip):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('baked',type=Path);parser.add_argument('--project',type=Path,default=Path(__file__).resolve().parents[2]);args=parser.parse_args()
-    source=args.baked.resolve();clips=json.loads((source/'clips.json').read_text(encoding='utf-8-sig'))['clips']
+    source=args.baked.resolve();bake=json.loads((source/'clips.json').read_text(encoding='utf-8-sig'));clips=bake['clips']
     validate_clips(source,clips)
     artifacts=source.parent/'import-transaction';tx=Transaction(args.project,artifacts);assets=[]
     manifest='assets/resources/projectiles/toon/library.json';before=tx.read(manifest)
-    previous=json.loads(before.decode('utf-8-sig')) if before else {};tx.managed=previous.get('importedFiles',{})
+    previous=json.loads(before.decode('utf-8-sig')) if before else {};tx.managed=dict(previous.get('importedFiles',{}))
     tx.folder("assets/resources/projectiles");tx.folder("assets/resources/projectiles/toon")
     for clip in clips:
         target='assets/resources/projectiles/toon/'+clip['file']
@@ -84,10 +106,13 @@ def main():
             raw=normalize(sheet,clip);width,height=sheet.size
         # Stage every output before committing; the source project stays intact
         # if a conversion fails or another editor changes an output mid-import.
-        tx.stage(target,raw);tx.stage(target+'.meta',encoded(texture_meta(target,width,height)))
+        tx.stage(target,raw);tx.stage(target+'.meta',encoded(resized_texture_meta(target,read_metadata(tx,target+'.meta'),width,height)))
         role='flight' if clip['loop'] else 'launch' if clip['name'].startswith('Flash ') else 'impact'
         assets.append(dict(id='toon:'+Path(clip['file']).stem,name=clip['name'],category='Toon / '+role,kind='flipbook',role=role,image=target,resource=target[len('assets/resources/'): -4],size=80 if role!='flight' else 56,**{key:clip[key] for key in ('frames','columns','cell','fps','loop')}))
+        if 'blending' in clip:assets[-1]['additive']=clip['blending']=='additive'
     provenance=json.loads((source.parent/'source.json').read_text(encoding='utf-8-sig'));provenance['alpha']='straight'
+    capture={key:bake[key] for key in ('framing','materials','supersampling') if key in bake}
+    if capture:provenance['capture']={**previous.get('source',{}).get('capture',{}),**provenance.get('capture',{}),**capture}
     imported=dict(previous.get('importedFiles',{}))
     for asset in assets:
         for key in (asset['image'],asset['image']+'.meta'):
@@ -95,7 +120,8 @@ def main():
     old_assets={asset['id']:asset for asset in previous.get('assets',[])};known={asset['id'] for asset in assets}
     assets=[dict(old_assets.get(asset['id'],{}),**asset) for asset in assets]+[asset for asset in previous.get('assets',[]) if asset['id'] not in known]
     data=dict(previous,source=dict(previous.get('source',{}),**provenance),assets=assets,importedFiles=imported);tx.stage(manifest,encoded(data))
-    tx.stage('assets/resources/projectiles/toon/library.json.meta',encoded(dict(ver='1.2.7',uuid=asset_uuid('projectiles/toon/library'),importer='json',subMetas={})))
+    meta=manifest+'.meta';old_meta=tx.read(meta)
+    tx.stage(meta,encoded(dict(dict(ver='1.2.7',uuid=asset_uuid('projectiles/toon/library'),importer='json',subMetas={}),**(json.loads(old_meta.decode('utf-8-sig')) if old_meta else {}))))
     tx.plan=dict(sorted(tx.plan.items(),key=lambda pair:not pair[0].endswith('.meta')))
     print(tx.commit())
 
