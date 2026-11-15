@@ -75,7 +75,15 @@ Runtime.prototype.canCast=function(){
   return this.state.style!=="mystic" || living(target)&&generation(target)===this.markGeneration&&distance(point(this.hero),point(target))<=this.hero.attackRange;
 };
 Runtime.prototype.enemies=function(){return this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList().filter(living):[];};
-Runtime.prototype.nearest=function(){var h=this.hero,o=point(h),list=this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList():[],best=null,limit=h.attackRange*h.attackRange;for(var i=0;i<list.length;i++){var enemy=list[i];if(!living(enemy))continue;var d=distanceSquared(o,point(enemy));if(d<=limit&&(best===null||d<limit)){best=enemy;limit=d;}}return best;};
+Runtime.prototype.attackRange=function(){var h=this.hero;return h.getAttackRange?h.getAttackRange():h.attackRange*(1+(h._relicMoving?0:this.bonus().range||0));};
+Runtime.prototype.nearest=function(){var h=this.hero,o=point(h),list=this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList():[],best=null,range=this.attackRange(),limit=range*range;for(var i=0;i<list.length;i++){var enemy=list[i];if(!living(enemy))continue;var d=distanceSquared(o,point(enemy));if(d<=limit&&(best===null||d<limit)){best=enemy;limit=d;}}return best;};
+Runtime.prototype.defaultAimTarget=function(){
+  var h=this.hero,target=h.tagEnemy,list=this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList():[],range=this.attackRange();
+  // A tap follows the hero's current target, but only its current battle and
+  // reach. Otherwise acquire afresh instead of retaining stale attack intent.
+  if(list.indexOf(target)>=0&&living(target)&&distanceSquared(point(h),point(target))<=range*range)return target;
+  return this.nearest();
+};
 Runtime.prototype.projectileAim=function(aim,plan){
   plan=plan||{target:this.aimTarget,generation:this.aimTargetGeneration,point:this.aimPoint};var self=this,o=point(this.hero),target=plan.target,goal=living(target)&&generation(target)===plan.generation?Projectile.actorPoint(target,this.game.ndMain):plan.point;
   return Projectile.shot(o,goal,aim||plan.direction||this.aimDirection,function(d){var maker=require('HeroMakerRider'),world=maker.skillOrigin&&maker.skillOrigin(self.hero.ctrPlayAni,d,self.settings.visual.animation);return world?self.game.ndMain.convertToNodeSpaceAR(world):o;});
@@ -96,7 +104,7 @@ Runtime.prototype.hit=function(target,multiplier,skill,strike,options){
     if(!this.scopeCurrent(scope) || !living(target) || options.generation!==undefined&&generation(target)!==options.generation)return 0;
   }
   var context=Combat.primaryContext(hero,target,damage,critical,release);
-  context.styleSkill=!!skill;context.styleStrike=strike;
+  context.styleSkill=!!skill;context.styleStrike=strike;context.heroStyle=this.state.style;
   if(critical)damage*=hero.getCriticalDamage?hero.getCriticalDamage():hero.critDam;
   var impact=point(target),targetGeneration=generation(target),state=this.state;
   var dealt=target.onAttacked(damage,hero,false,context);
@@ -300,7 +308,14 @@ Runtime.prototype.update=function(dt){
   do{
     var scheduled=this.state.active,until=scheduled?Math.max(0,(scheduled.kind==="vanguard-thrust"?scheduled.duration*(scheduled.emitted+1)/scheduled.count:scheduled.duration)-scheduled.elapsed):Infinity;
     var nextBeam=frame?this.prepareBeam(frame):Infinity,beforeTicks=frame&&frame.ticks;
+    var chargeBefore=this.state.charge;
     var slice=Math.min(remaining,until,nextBeam),events=Skills.step(this.state,slice,{moving:moving,hp:h.hp,maxHp:h.hpMax,moveSpeed:h.getSpeed(),attackRate:h.getAttSpeed()});
+    // Active release can consume a just-completed charge in this same slice.
+    // Its event retains that amount; the full-bar click still precedes release.
+    if(this.state.style==="skirmisher"&&chargeBefore<1-1e-9&&(this.state.charge>=1-1e-9||events.some(function(event){return event.type==="skirmisher-arrow"&&event.charge>=1-1e-9;}))){
+      var sounds=require("BattleSounds");if(sounds.chargeReady)sounds.chargeReady(h);
+      if(this.resolvingState!==this.state||!this.scopeCurrent(this.scope))return;
+    }
     this.effects.forEach(function(effect){effect.remaining-=slice;});this.effects=this.effects.filter(function(effect){return effect.remaining>0;});
     this.updateArrows(slice);if(this.resolvingState!==this.state)return;
     if(frame)this.beam(slice,frame);if(this.resolvingState!==this.state||frame&&frame.aborted)return;
@@ -331,6 +346,7 @@ Runtime.prototype.update=function(dt){
   rider.setCombatState(h.ctrPlayAni,{moving:walking,charge:this.state.style==="skirmisher"&&!active?this.state.charge:0,beam:!!this.channelTarget,beamElapsed:this.beamElapsed,beamSourceTime:this.beamSourceTime,aimDirection:aim,playback:this.beamPlayback,deferUpdate:true,attackRate:h.getAttSpeed(),animation:this.state.style==="mystic"?this.beamAnimation:this.settings.visual.animation||undefined,holdTime:this.settings.visual.holdTime>=0?this.settings.visual.holdTime:undefined,rapid:(this.state.style==="vanguard"&&active)?{elapsed:active.elapsed||0,duration:active.duration,strikes:active.count}:false});
   this.bowCharging=this.state.style==="skirmisher"&&this.state.charge<1&&!!(rider.isCharging&&rider.isCharging(h.ctrPlayAni));
   var sounds=require("BattleSounds");if(sounds.charge)sounds.charge(h,this.bowCharging);
+  if(h.refreshAttackRange)h.refreshAttackRange();
 };
 Runtime.prototype.clear=function(reset){
   this.bowCharging=false;var sounds=require("BattleSounds");if(this.hero._styleRuntime===this&&sounds.charge)sounds.charge(this.hero,false);
@@ -341,6 +357,7 @@ Runtime.prototype.clear=function(reset){
   // A retained callback belonging to an obsolete runtime must not clear the
   // replacement runtime's rider pose or HUD after a loadout/scene change.
   if(this.hero._styleRuntime===this){
+    if(this.hero.refreshAttackRange)this.hero.refreshAttackRange();
     require("HeroMakerRider").clearCombatState(this.hero.ctrPlayAni);
     if(!this.hero._skillHUD || this.hero._skillHUD.runtime===this)require("HeroSkillHUD").clear(this.hero);
   }
@@ -356,11 +373,19 @@ function install(hero,config){
     var rt=this._styleRuntime;if(rt.state.style==="mystic"||rt.state.active)return;rt.refresh();
     // Movement input can precede this frame's skill update and shot release.
     if(rt.state.style==="skirmisher"&&this._relicMoving)rt.state.charge=0;
+    var owner=this,shotState=rt.state,shotNode=this.node,shotGeneration=generation(this),shotTimers=this.time,shotUI=rt.ui,shotGame=rt.game,shotData=shotGame&&shotGame.gameData,shotEpoch=shotGame&&shotGame._combatEpoch;
+    function currentShot(){return owner._styleRuntime===rt&&rt.state===shotState&&owner.node===shotNode&&generation(owner)===shotGeneration&&owner.time===shotTimers&&require("KinghtFallUIGame").default.instance===shotUI&&shotUI&&shotUI.ctrGame===shotGame&&shotGame&&shotGame.gameData===shotData&&shotGame._combatEpoch===shotEpoch&&living(owner);}
+    var shotRange=rt.attackRange();
     var fire=rt.state.style!=="skirmisher"||rt.nearest()?Skills.onBasicFire(rt.state):{damageMultiplier:1};
     this._styleShot=fire.damageMultiplier||1;this._styleShotCharge=fire.charge||0;this._styleProjectileSpeed=fire.speedMultiplier||1;
-    var rider=require("HeroMakerRider");if(rider.releaseChargedAttack)rider.releaseChargedAttack(this.ctrPlayAni,require("GameToolsOverrides").attackPlayback(this,"hero"));
-    rt.bowCharging=false;var sounds=require("BattleSounds");if(sounds.charge)sounds.charge(this,false);
-    try{return base.apply(this,args);}finally{this._styleShot=1;delete this._styleShotCharge;delete this._styleProjectileSpeed;}
+    this._styleShotRange=shotRange;
+    try{
+      var rider=require("HeroMakerRider");if(rider.releaseChargedAttack)rider.releaseChargedAttack(this.ctrPlayAni,require("GameToolsOverrides").attackPlayback(this,"hero"));
+      if(!currentShot())return;
+      rt.bowCharging=false;var sounds=require("BattleSounds");if(sounds.charge)sounds.charge(this,false);
+      if(!currentShot())return;
+      return base.apply(this,args);
+    }finally{this._styleShot=1;delete this._styleShotCharge;delete this._styleProjectileSpeed;delete this._styleShotRange;if(this.refreshAttackRange)this.refreshAttackRange();}
   });
   wrap(hero,"doAttackFinish",function(base,args){if(this._styleRuntime.beamTarget||this._styleRuntime.state.active)return;return base.apply(this,args);});
   wrap(hero,"setLeft",function(base,args){var result=base.apply(this,args),active=this._styleRuntime.state.active;if(active&&this.ctrPlayAni.setBodyLeft)this.ctrPlayAni.setBodyLeft(active.direction.x);return result;});

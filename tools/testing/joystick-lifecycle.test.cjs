@@ -141,7 +141,12 @@ test('footer relayout updates the release position without moving a held joystic
 
 test('armed skill direction selection consumes its touch before follow selection or joystick movement',()=>{
  const calls=[],rt={aiming:true,state:{style:'skirmisher',cooldown:0},available:()=>true,screenAim(p){this.aimDirection={x:p.x,y:p.y};},cast(direction){calls.push(direction);this.aiming=false;}};
- const hero={_styleRuntime:rt,_skillHUD:{runtime:rt}},game={ctrPlay:hero,findFollowUnitAtScreen(){throw Error('skill aim must run before follow selection');}};
- game.gameStatus=2;rt.game=game;const f=fixture(true,game);f.area.emit('start',touch(7,170,-210));f.area.emit('move',touch(7,230,-130,170,-210));f.area.emit('end',touch(7,230,-130));
+ const node=new Node('hero');node._combatGeneration=1;
+ const hero={node,_styleRuntime:rt,_skillHUD:{runtime:rt,button:new Node('skill button')}},game={ctrPlay:hero,gameStatus:2,gameData:{},_combatEpoch:1,findFollowUnitAtScreen(){throw Error('skill aim must run before follow selection');}};
+ rt.hero=hero;rt.heroGeneration=node._combatGeneration;rt.game=game;const f=fixture(true,game);rt.ui=f.ui;
+ f.area.emit('start',touch(7,170,-210));
+ const gesture=hero._skillHUD.worldTouch;assert.equal(gesture.node,node);assert.equal(gesture.generation,1);assert.equal(gesture.game,game);assert.equal(gesture.data,game.gameData);assert.equal(gesture.epoch,game._combatEpoch);assert.equal(gesture.ui,f.ui);
+ f.area.emit('move',touch(7,230,-130,170,-210));f.area.emit('end',touch(7,230,-130));
  assert.equal(calls.length,1);assert.equal(calls[0].x,230);assert.equal(calls[0].y,-130);assert.equal(f.control.touchID,false);assert.deepEqual(f.moves,[]);resting(f);
+ assert.equal(hero._skillHUD.worldTouch,null,'the confirmed skill gesture must release its owned finger');
 });

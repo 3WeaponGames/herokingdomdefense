@@ -65,21 +65,59 @@ exports.effects = {
     "loop": false,
     "duration": 0.6731065759637188
   },
-  "archer-momentum-draw-loop": {
-    "path": "sfx/archer-momentum-draw-loop",
+  "skirmisher-passive-release": {
+    "path": "sfx/skirmisher-passive-release",
+    "format": "ogg",
+    "group": "heroRelease",
+    "gain": 0.55,
+    "cooldown": 0,
+    "loop": false,
+    "duration": 2.15
+  },
+  "skirmisher-passive-hit": {
+    "path": "sfx/skirmisher-passive-hit",
+    "format": "ogg",
+    "group": "heroHit",
+    "gain": 0.45,
+    "cooldown": 0,
+    "loop": false,
+    "duration": 0.67
+  },
+  "skirmisher-active-release": {
+    "path": "sfx/skirmisher-active-release",
+    "format": "ogg",
+    "group": "heroRelease",
+    "gain": 0.55,
+    "cooldown": 0,
+    "loop": false,
+    "duration": 1.8750113378684807
+  },
+  "skirmisher-active-hit": {
+    "path": "sfx/skirmisher-active-hit",
+    "format": "ogg",
+    "group": "heroHit",
+    "gain": 0.45,
+    "cooldown": 0,
+    "loop": false,
+    "duration": 0.65
+  },
+  "skirmisher-passive-charged": {
+    "path": "sfx/skirmisher-passive-charged",
+    "format": "ogg",
+    "group": "heroReady",
+    "gain": 0.55,
+    "cooldown": 0,
+    "loop": false,
+    "duration": 0.40598639455782315
+  },
+  "skirmisher-passive-draw-loop": {
+    "path": "sfx/skirmisher-passive-draw-loop",
+    "format": "ogg",
     "group": "combat",
     "gain": 0.25,
     "cooldown": 0,
     "loop": true,
-    "duration": 3.9750113378684806
-  },
-  "archer-momentum-release": {
-    "path": "sfx/archer-momentum-release",
-    "group": "combat",
-    "gain": 0.55,
-    "cooldown": 65,
-    "loop": false,
-    "duration": 1.457891156462585
+    "duration": 0.7
   },
   "enemy-spit-launch": {
     "path": "sfx/enemy-spit-launch",

@@ -16,6 +16,21 @@ function fixture(t,primary={},secondary={}){
  return {root,service,bytes,req,change,commits:()=>commits};
 }
 
+test('Skirmisher descriptions use the active skill sounds while preserving ordinary basic cues without staging defaults',t=>{
+ const f=fixture(t,{HeroSkills:{skirmisher:{extension:{keep:true}}}}),before=f.bytes(),sounds=require('../../assets/_script/BattleSoundCatalog').effects;
+ const phases={release:'skirmisher-active-release',impact:'skirmisher-active-hit',basicRelease:'bow-arrow-release',basicImpact:'arrow-impact-flesh'};
+ const assets=Object.values(phases).map((id,i)=>({id:'33333333-3333-4333-8333-33333333333'+i,bundle:'KinghtFallAudio',path:sounds[id].path}));
+ f.service.catalogs={...catalogs,audio:assets};
+ const description=f.service.describe({style:'skirmisher'});
+ for(const [phase,id]of Object.entries(phases)){
+  const sound=sounds[id],asset=assets.find(row=>row.path===sound.path);
+  assert.deepEqual(description.defaultSounds[phase],{clip:asset.id,volume:sound.gain,delay:0});
+ }
+ assert.notEqual(description.defaultSounds.release.clip,description.defaultSounds.basicRelease.clip);
+ assert.notEqual(description.defaultSounds.impact.clip,description.defaultSounds.basicImpact.clip);
+ const snapshot=f.service.snapshot();assert.equal(snapshot.dirty,false);assert.equal(snapshot.canUndo,false);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+});
+
 test('preview descriptions read the saved starting charm and never borrow maximum lifesteal or mutate gear',t=>{
  const primary={HeroEquipment:{version:1},EquipCfg:[{id:3,levelInfo:[{SecondaryStats:{bruiser:{lifeSteal:.002}}},{SecondaryStats:{bruiser:{lifeSteal:.5}}}]}]},f=fixture(t,primary),before=f.bytes();
  assert.equal(f.service.describe({style:'bruiser'}).skillSecondaryStats.lifeSteal,.002);

@@ -36,8 +36,8 @@ function details(file) {
   else if (/^ambience-/.test(key)) { category = 'ambience'; kind = 'ambience'; }
   else if (/(?:bgm|theme)/i.test(key) || ['Sands_of_the_Keep', 'Skybound_Horns', 'Levels'].includes(key)) { category = 'music'; kind = 'music'; }
   else if (/^death-/.test(key) || key === 'death') category = 'deaths';
-  else if (/^(impact-|arrow-impact-|magic-impact|hurt-)|cannon-impact|critical-hit/.test(key) || ['player_hurt', 'enemyHit', 'strike'].includes(key)) category = 'impacts';
-  else if (/^(sword-|cavalry-lance|monster-|golem-ground|bow-|crossbow-|enemy-(?:spit|magic)|sniper-|cannon-tower)/.test(key) || ['palyer_attack', 'attack2', 'bullet'].includes(key)) category = 'weapons';
+  else if (/^(impact-|arrow-impact-|magic-impact|hurt-)|cannon-impact|critical-hit/.test(key) || /^skirmisher-(?:passive|active)-hit$/.test(key) || ['player_hurt', 'enemyHit', 'strike'].includes(key)) category = 'impacts';
+  else if (/^(sword-|cavalry-lance|monster-|golem-ground|bow-|archer-momentum-|skirmisher-|crossbow-|enemy-(?:spit|magic)|sniper-|cannon-tower)/.test(key) || ['palyer_attack', 'attack2', 'bullet'].includes(key)) category = 'weapons';
   else if (/^(healing-|freeze-|slow-|chain-|shield-|mirror-|gravity-|life-steal|phoenix-|hourglass-|debuff-|boss-(?:transformation|special))/.test(key) || ['buff', 'rebirth'].includes(key)) category = 'abilities';
   else if (/^(gate-|barracks-)/.test(key) || ['buliding', 'destory'].includes(key)) category = 'buildings';
   else if (/^(wave-|boss-arrival|castle-low)/.test(key) || ['game_success', 'victory', 'set_of', 'mission', 'fail', 'game_fail'].includes(key)) category = 'signals';

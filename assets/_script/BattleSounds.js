@@ -4,7 +4,8 @@
 var Catalog = require("BattleSoundCatalog"), entries = Catalog.effects, serial = 0, menuState = null;
 var BIOMES = ["forest", "deep-forest", "autumn", "desert", "snow", "ice", "fire", "lava"];
 var LEGACY = { Map01: "forest", Map02: "deep-forest", Map03: "desert", Map04: "snow", Map07: "fire" };
-var SLOTS = { combat: 4, hit: 1, death: 2, magic: 2, signal: 1, ui: 1 };
+var SLOTS = { combat: 4, hit: 1, heroHit: 8, heroRelease: 2, heroReady: 1, death: 2, magic: 2, signal: 1, ui: 1 };
+var SKIRMISHER_CUES = ["skirmisher-passive-release", "skirmisher-passive-hit", "skirmisher-passive-charged", "skirmisher-passive-draw-loop", "skirmisher-active-release", "skirmisher-active-hit"];
 function view() { return require("KinghtFallUIGame").default.instance; }
 function manager() { return require("AudioMgr").AudioMgr.getInstance(); }
 function supported() { return typeof cc !== "undefined" && cc.resources && !(typeof CC_EDITOR !== "undefined" && CC_EDITOR); }
@@ -73,8 +74,8 @@ function busy(state, source) {
   if (states && (status === states.STOPPED || status === states.ERROR)) return false;
   return state.manager.sourceBusy ? state.manager.sourceBusy(source) : !!source.isPlaying;
 }
-function warm(state, id) {
-  var entry = entries[id]; if (!entry || !audible(state)) return;
+function warm(state, id, allowMuted) {
+  var entry = entries[id]; if (!entry || !allowMuted && !audible(state)) return;
   try { state.manager.loadClip("KinghtFallAudio", entry.path, entry.path, function () {}); } catch (error) {}
 }
 function effect(id, owner, options) {
@@ -107,8 +108,10 @@ function effect(id, owner, options) {
       var slot = getSource(state, group + "-" + i);
       if (!busy(state, slot.source)) { selected = slot; break; }
       if (hit) return;
+      if (entry.group === "heroHit") continue;
       if ((slot.source._sfxStartedAt || 0) < oldest) { oldest = slot.source._sfxStartedAt || 0; selected = slot; }
     }
+    if (!selected) return;
     selected.source._sfxStartedAt = startedAt;
     if (hit) state.lastHitStartedAt = startedAt;
     var level = entry.gain * distanceGain * (options.gain === undefined ? 1 : options.gain);
@@ -136,7 +139,7 @@ function family(actor, side) {
 function attack(actor, side, tower) {
   var cfg = actor && actor.cfg || {}, kind = family(actor, side), id;
   if (side === "tower") id = tower && tower.attackType === "cannon" ? "cannon-tower-fire" : tower && tower.attackType === "sniper" ? "sniper-tower-fire" : "bow-arrow-release";
-  else if (side === "hero") id = actor && actor.heroStyle === "skirmisher" && actor._styleShotCharge >= 1-1e-9 ? "archer-momentum-release" : {fighter:"sword-light-swing",vanguard:"cavalry-lance-thrust",mystic:"enemy-magic-projectile",bruiser:"sword-heavy-swing",guardian:"sword-heavy-swing"}[actor&&actor.heroStyle] || "bow-arrow-release";
+  else if (side === "hero") id = actor && actor.heroStyle === "skirmisher" && actor._styleShotCharge >= 1-1e-9 ? "skirmisher-passive-release" : {fighter:"sword-light-swing",vanguard:"cavalry-lance-thrust",mystic:"enemy-magic-projectile",bruiser:"sword-heavy-swing",guardian:"sword-heavy-swing"}[actor&&actor.heroStyle] || "bow-arrow-release";
   else if (side === "ally") id = Number(cfg.ID) === 90003 ? "crossbow-fire" : Number(cfg.ID) === 90004 ? "cavalry-lance-thrust" : Number(cfg.ID) === 90002 ? "sword-heavy-swing" : "sword-light-swing";
   else if (Number(cfg.AttackType) === 3) id = Number(cfg.ID) === 90009 || Number(cfg.CampaignBaseUnit) === 90009 ? "healing-cast" : "enemy-magic-projectile";
   else if (Number(cfg.AttackType) === 2) id = kind === "ghost" ? "enemy-magic-projectile" : "enemy-spit-launch";
@@ -159,7 +162,10 @@ function hit(target, source, damage, options) {
   var tower = source && source.getTowerSettings && source.getTowerSettings(), sourceType = Number(source && source.cfg && source.cfg.AttackType);
   var heroStyle = source && source._relicHero && source.heroStyle;
   var arrow = source && source._relicHero ? !heroStyle || heroStyle === "skirmisher" : source && (source.navigationTeam === "friendly" && sourceType === 2 || source.buildInfo) || !!tower;
-  if (tower && tower.attackType === "cannon") id = null; // One explosion is emitted per shell, outside the splash-victim loop.
+  var shot = !options.magic && options.context, skirmisher = source && source._relicHero && shot && shot.heroStyle === "skirmisher";
+  if (skirmisher && shot.styleSkill) id = "skirmisher-active-hit";
+  else if (skirmisher && shot.styleShotCharge >= 1-1e-9) id = "skirmisher-passive-hit";
+  else if (tower && tower.attackType === "cannon") id = null; // One explosion is emitted per shell, outside the splash-victim loop.
   else if (options.magic || heroStyle === "mystic" || sourceType === 3 || sourceType === 2 && family(source) === "ghost") id = "magic-impact";
   else if (arrow) id = armored ? "arrow-impact-armour" : "arrow-impact-flesh";
   else id = armored ? "impact-armour" : damage >= (target.hpMax || Infinity) * .2 ? "impact-flesh-heavy" : "impact-flesh-light";
@@ -230,7 +236,17 @@ function stopAll(state) {
 function charge(hero, active) {
   var state=context(hero);if(!current(state)||state.game&&state.game.ctrPlay!==hero)return;
   var allowed=active&&audible(state)&&!paused(state)&&validNode(hero)&&!hero._isPooled&&(!hero.isDead||!hero.isDead());
-  loop(state,"archer-draw",allowed?"archer-momentum-draw-loop":null,.25);
+  if(allowed&&!state.loops["archer-draw"])SKIRMISHER_CUES.forEach(function(id){warm(state,id,true);});
+  loop(state,"archer-draw",allowed?"skirmisher-passive-draw-loop":null,.25);
+}
+function chargeReady(hero) {
+  var state=context(hero);if(!current(state)||state.game.ctrPlay!==hero)return false;
+  charge(hero,false);
+  return effect("skirmisher-passive-charged",hero);
+}
+function skirmisherRelease(hero, skill) {
+  charge(hero,false);
+  return effect(skill?"skirmisher-active-release":"skirmisher-passive-release",hero);
 }
 function start(game) {
   if (!supported() || !game || !available(manager())) return false;
@@ -238,6 +254,9 @@ function start(game) {
   var state = game._battleSounds = makeState(game);
   if (!current(state)) { dispose(game); return false; }
   ["bow-arrow-release", "impact-flesh-light", "arrow-impact-flesh", "wave-start-horn", "wave-clear", "boss-arrival"].forEach(function (id) { warm(state, id); });
+  // Loading does not play audio. Decode even while muted so the first shot
+  // after enabling effects can start on its gameplay event without cold I/O.
+  SKIRMISHER_CUES.forEach(function(id){warm(state,id,true);});
   return true;
 }
 function tick(game) {
@@ -301,6 +320,8 @@ function uiEffect(id, owner, closing) {
 exports.effect = effect;
 exports.attack = attack;
 exports.charge = charge;
+exports.chargeReady = chargeReady;
+exports.skirmisherRelease = skirmisherRelease;
 exports.hit = hit;
 exports.death = death;
 exports.spawnEnemy = spawnEnemy;

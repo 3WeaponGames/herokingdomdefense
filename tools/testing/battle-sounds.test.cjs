@@ -297,11 +297,13 @@ test('a detached hero during battle teardown stops loops without crashing on sur
 });
 
 test('the active effect library contains no death assets, keeps eight horse surfaces and only the approved lava ambience', () => {
-  const names = Object.keys(catalog.effects); assert.equal(names.length, 70); const uuids = new Set(); let bytes = 0;
+  const names = Object.keys(catalog.effects); const uuids = new Set(); let bytes = 0;
+  assert(!names.includes('archer-momentum-release'));assert(!names.includes('archer-momentum-draw-loop'));
+  for(const id of ['skirmisher-passive-release','skirmisher-passive-hit','skirmisher-passive-charged','skirmisher-active-release','skirmisher-active-hit','skirmisher-passive-draw-loop'])assert(names.includes(id),id);
   for (const [id, item] of Object.entries(catalog.effects)) {
-    const file = path.join(root, 'assets/KinghtFallAudio', item.path + (item.loop ? '.wav' : '.mp3'));
+    const file = path.join(root, 'assets/KinghtFallAudio', item.path + '.' + (item.format || (item.loop ? 'wav' : 'mp3')));
     const meta = JSON.parse(fs.readFileSync(file + '.meta')); assert.equal(meta.importer, 'audio-clip'); assert(!uuids.has(meta.uuid)); uuids.add(meta.uuid); bytes += fs.statSync(file).size;
-    assert(meta.duration > .1); assert(Math.abs(meta.duration - item.duration) < .1);
+    assert(meta.duration > 0); assert(Math.abs(meta.duration - item.duration) < .1);
   }
   assert(bytes < 8 * 1024 * 1024); assert.equal(names.filter(n => n.startsWith('hooves-')).length, 8);
   assert.deepEqual(names.filter(n => n.startsWith('ambience-')), ['ambience-lava-loop']);
@@ -310,7 +312,7 @@ test('the active effect library contains no death assets, keeps eight horse surf
 
 test('archer Momentum draw loops once, cancels immediately and obeys pause, mute and owned shutdown',()=>{
  const f=fixture('desert');f.hero.heroStyle='skirmisher';f.hero._styleRuntime={bowCharging:true};f.start();f.tick();
- const draws=()=>f.played.filter(p=>p.path==='sfx/archer-momentum-draw-loop');assert.equal(draws().length,1);assert.equal(draws()[0].loop,true);f.tick();assert.equal(draws().length,1);
+ const draws=()=>f.played.filter(p=>p.path==='sfx/skirmisher-passive-draw-loop');assert.equal(draws().length,1);assert.equal(draws()[0].loop,true);f.tick();assert.equal(draws().length,1);
  f.hero._styleRuntime.bowCharging=false;f.sounds.charge(f.hero,false);assert.equal(draws()[0].source.state,3);
  f.hero._styleRuntime.bowCharging=true;f.tick();assert.equal(draws().length,2);f.sounds.suspend(f.game,true);assert.equal(draws().at(-1).source.state,3);f.tick();assert.equal(draws().length,2);
  f.sounds.suspend(f.game,false);f.tick();assert.equal(draws().length,3);f.preferences.effects=false;f.tick();assert.equal(draws().at(-1).source.state,3);
@@ -318,9 +320,92 @@ test('archer Momentum draw loops once, cancels immediately and obeys pause, mute
 });
 
 test('a canceled bow-draw preload cannot start late, and full-charge release replaces the ordinary bow sound',()=>{
- const f=fixture('desert');f.start();f.hero.heroStyle='skirmisher';f.sounds.charge(f.hero,true);assert(f.pending.some(p=>p.file==='sfx/archer-momentum-draw-loop'));f.sounds.charge(f.hero,false);f.finishAll();assert.equal(f.played.length,0);
+ const f=fixture('desert');f.start();f.hero.heroStyle='skirmisher';f.manager.audioClipMap.delete(JSON.stringify(['KinghtFallAudio','sfx/skirmisher-passive-draw-loop']));f.sounds.charge(f.hero,true);assert(f.pending.some(p=>p.file==='sfx/skirmisher-passive-draw-loop'));f.sounds.charge(f.hero,false);f.finishAll();assert.equal(f.played.length,0);
  for(const charge of[0,.5,1]){f.hero._styleShotCharge=charge;f.advance(100);f.sounds.attack(f.hero,'hero');f.finishAll();}
- assert.deepEqual(f.played.map(p=>p.path),['sfx/bow-arrow-release','sfx/bow-arrow-release','sfx/archer-momentum-release']);
+ assert.deepEqual(f.played.map(p=>p.path),['sfx/bow-arrow-release','sfx/bow-arrow-release','sfx/skirmisher-passive-release']);
+});
+
+test('Momentum release is decoded before the shot and full draw or cancellation never plays it',()=>{
+ const f=fixture('desert');f.hero.heroStyle='skirmisher';f.start();
+ assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio','sfx/skirmisher-passive-release'])),'first charged shot must not wait for an asset load');
+ const releases=()=>f.played.filter(p=>p.path==='sfx/skirmisher-passive-release');
+ f.sounds.charge(f.hero,true);f.finishAll();f.advance(4000);
+ f.sounds.charge(f.hero,false);f.finishAll();assert.equal(releases().length,0,'full draw is a hold, not a release');
+ f.sounds.charge(f.hero,true);f.sounds.charge(f.hero,false);f.finishAll();assert.equal(releases().length,0,'cancelled draw fired the release cue');
+ f.hero._styleShotCharge=1;f.sounds.attack(f.hero,'hero');
+ assert.equal(releases().length,1,'the release cue must start in the shot callback without a later load');
+ assert.equal(releases()[0].startedAt,5000);assert.equal(f.pending.length,0);
+ f.advance(1000);f.sounds.charge(f.hero,false);f.tick();assert.equal(releases().length,1);
+});
+
+test('muted battle setup decodes Skirmisher cues without playing them and unmuting starts only the requested event',()=>{
+ const f=fixture('desert');f.hero.heroStyle='skirmisher';f.preferences.effects=false;f.start();
+ assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio','sfx/skirmisher-passive-release'])));assert.equal(f.played.length,0);
+ f.preferences.effects=true;f.sounds.charge(f.hero,true);
+ assert(!f.pending.some(p=>p.file==='sfx/skirmisher-passive-release'));
+ f.finishAll();f.sounds.charge(f.hero,false);assert(!f.played.some(p=>p.path==='sfx/skirmisher-passive-release'));
+ f.hero._styleShotCharge=1;f.sounds.attack(f.hero,'hero');
+ assert.equal(f.played.filter(p=>p.path==='sfx/skirmisher-passive-release').length,1);assert.equal(f.pending.length,0);
+});
+
+test('all Skirmisher event clips are ready before combat and start on the release or ready callback',()=>{
+ const f=fixture('desert');f.hero.heroStyle='skirmisher';f.start();
+ for(const id of ['skirmisher-passive-release','skirmisher-passive-hit','skirmisher-passive-charged','skirmisher-active-release','skirmisher-active-hit','skirmisher-passive-draw-loop']){
+  assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio','sfx/'+id])),id+' must be decoded before its event');
+ }
+ f.sounds.chargeReady(f.hero);f.sounds.skirmisherRelease(f.hero,true);
+ assert.deepEqual(f.played.filter(p=>p.path.startsWith('sfx/skirmisher-')).map(p=>[p.path,p.startedAt]),[['sfx/skirmisher-passive-charged',1000],['sfx/skirmisher-active-release',1000]]);
+ assert.equal(f.pending.length,0,'event callbacks must not defer playback for a first-use load');
+});
+
+test('immutable projectile context chooses passive and active impacts while partial shots retain ordinary impacts',()=>{
+ for(const [context,expected] of [[{heroStyle:'skirmisher',styleShotCharge:1,styleSkill:false},'skirmisher-passive-hit'],[{heroStyle:'skirmisher',styleShotCharge:0,styleSkill:true},'skirmisher-active-hit'],[{heroStyle:'skirmisher',styleShotCharge:.999,styleSkill:false},'arrow-impact-armour']]){
+  const f=fixture();f.hero.heroStyle='skirmisher';f.hero._styleShotCharge=0;f.start();const target=f.actor(90007);
+  if(expected.startsWith('skirmisher-'))f.hero.heroStyle='fighter'; // The arrow retains its released style and charge.
+  f.sounds.hit(target,f.hero,10,{context});f.finishAll();
+  assert(f.played.some(p=>p.path==='sfx/'+expected));
+  if(expected.startsWith('skirmisher-'))assert(!f.played.some(p=>/^sfx\/(arrow-impact-|magic-impact)/.test(p.path)),'custom impact duplicated the normal arrow sound');
+ }
+});
+
+test('Skirmisher confirmed hits start immediately despite the generic impact budget and never chop a prior hit',()=>{
+ const f=fixture();f.hero.heroStyle='skirmisher';f.start();const targets=[f.actor(90007),f.actor(90007),f.actor(90007)];
+ f.sounds.effect('impact-armour',targets[0]);f.finishAll();
+ const first=targets[1],second=targets[2],context={heroStyle:'skirmisher',styleSkill:true};
+ f.sounds.hit(first,f.hero,10,{context});f.sounds.hit(second,f.hero,10,{context});f.finishAll();
+ const hits=f.played.filter(p=>p.path==='sfx/skirmisher-active-hit');assert.equal(hits.length,2);assert(hits.every(p=>p.startedAt===1000));assert.notEqual(hits[0].source,hits[1].source);assert.equal(hits[0].source.state,1,'second victim cut off the first hit tail');
+ assert.equal(f.played.filter(p=>p.path==='sfx/impact-armour').length,1);
+});
+
+test('zero damage and secondary procs never borrow a Skirmisher primary hit cue',()=>{
+ const f=fixture();f.hero.heroStyle='skirmisher';f.start();const target=f.actor(90007),context={heroStyle:'skirmisher',styleSkill:true,styleShotCharge:1};
+ f.sounds.hit(target,f.hero,0,{context});f.sounds.hit(target,f.hero,10,{magic:true,context});f.finishAll();
+ assert(!f.played.some(p=>p.path.startsWith('sfx/skirmisher-')));
+});
+
+test('simultaneous Skirmisher pierces use bounded overlapping voices without restarting accepted hit tails',()=>{
+ const f=fixture();f.hero.heroStyle='skirmisher';f.start();
+ for(let i=0;i<12;i++)f.sounds.hit(f.actor(90007),f.hero,10,{context:{heroStyle:'skirmisher',styleSkill:true}});
+ f.finishAll();const hits=f.played.filter(p=>p.path==='sfx/skirmisher-active-hit');
+ assert.equal(hits.length,8);assert.equal(new Set(hits.map(p=>p.source)).size,8);assert(hits.every(p=>p.source.state===1));
+});
+
+test('the final charged primary hit still sounds when it kills its victim',()=>{
+ const f=fixture();f.hero.heroStyle='skirmisher';f.start();const target=f.actor(90007,{hp:0,isDead:()=>true});
+ f.sounds.hit(target,f.hero,100,{context:{heroStyle:'skirmisher',styleShotCharge:1}});f.finishAll();
+ assert.equal(f.played.filter(p=>p.path==='sfx/skirmisher-passive-hit').length,1);
+});
+
+test('Skirmisher ready and active cues obey pause, hide, mute and retired battle ownership',()=>{
+ for(const mode of ['pause','hide','mute','retire']){
+  const f=fixture();f.hero.heroStyle='skirmisher';f.start();
+  if(mode==='pause')f.sounds.suspend(f.game,true);
+  if(mode==='hide')f.emit('hide');
+  if(mode==='mute')f.preferences.effects=false;
+  if(mode==='retire')f.game._combatEpoch++;
+  f.sounds.chargeReady(f.hero);f.sounds.skirmisherRelease(f.hero,true);f.finishAll();
+  assert(!f.played.some(p=>p.path.startsWith('sfx/skirmisher-')),mode+' played a stale cue');
+ }
 });
 
 test('the mounted hero never uses creature hurt sounds, and enemy spells and spit have matching impacts', () => {

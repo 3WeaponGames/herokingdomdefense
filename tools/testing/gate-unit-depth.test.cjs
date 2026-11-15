@@ -120,3 +120,30 @@ test('JSB region accessors produce the same gate and pillar geometry as browser 
  }
  assert.equal(poses,24);
 });
+
+test('native wall modules share one settled bone read per draw without copying rigid deform vectors',()=>{
+ const {wallSurfaces}=load({v2:(x,y)=>({x,y})}),main={convertToNodeSpaceAR:p=>p};
+ let reads=0,deforms=0,poses=0;const state={a:1,b:0,c:0,d:1,worldX:3,worldY:7},bone={active:true};
+ for(const key of Object.keys(state))Object.defineProperty(bone,key,{get(){reads++;return state[key];}});
+ const points=[-10,0,-10,40,10,40,10,0],slots=Array.from({length:24},(_,index)=>({data:{name:'rts_wall_part_'+index},bone,color:{a:1},get deform(){deforms++;return[];},getAttachment(){return{path:'rts_wall_post_1',getOffset:()=>points};}}));
+ const renderer={enabled:true,node:{activeInHierarchy:true,convertToWorldSpaceAR:p=>p},skeletonData:{skeletonJson:{wallKit:{sizes:{rts_wall_post_1:[20,40]}}}},_skeleton:{skin:{name:'cq-rts-1'},drawOrder:slots,updateWorldTransform(){poses++;}}};
+ function draw(){return wallSurfaces(renderer,main,{poses:new Set(),transforms:new Map(),bounds:new Map()});}
+ const first=draw();assert.equal(first.length,24);assert.equal(reads,6,'All 24 native quads read their shared bone only once');assert.equal(deforms,0,'Rigid RegionAttachment never copies the native deform vector');assert.equal(poses,1);
+ state.worldX+=15;state.worldY-=9;const second=draw();assert.equal(reads,12,'The next draw reads the new live transform');assert.equal(poses,2);
+ for(let i=0;i<first.length;i++)for(let j=0;j<8;j+=2){close(second[i].vertices[j],first[i].vertices[j]+15);close(second[i].vertices[j+1],first[i].vertices[j+1]-9);}
+ const deform=[1,2,3,4,5,6,7,8];slots[0].getAttachment=()=>({path:'rts_wall_post_1',getVertices:()=>points,getBones:()=>[]});Object.defineProperty(slots[0],'deform',{configurable:true,get(){deforms++;return deform;}});
+ const third=draw();assert.equal(deforms,1,'An unweighted mesh still consumes its current native local vertices');for(let at=0;at<8;at+=2){close(third[0].vertices[at],deform[at]+state.worldX);close(third[0].vertices[at+1],deform[at+1]+state.worldY);}
+});
+
+test('native unweighted wall meshes match real Spine 3.8 deform vertices through active and cleared timelines',{skip:!fs.existsSync(engine)},()=>{
+ const spine=require(engine),{wallSurfaces}=load({v2:(x,y)=>({x,y})}),main={convertToNodeSpaceAR:p=>p};
+ const data=new spine.SkeletonData(),boneData=new spine.BoneData(0,'root',null);data.bones.push(boneData);const skeleton=new spine.Skeleton(data),bone=skeleton.bones[0];bone.x=13;bone.y=-9;bone.rotation=27;bone.scaleX=-1.2;bone.scaleY=.7;skeleton.updateWorldTransform();
+ const mesh=new spine.MeshAttachment('wall');mesh.path='rts_wall_post_1';mesh.worldVerticesLength=8;mesh.vertices=new Float32Array([-10,0,-10,40,10,40,10,0]);
+ const slot={data:{name:'rts_wall_part_0'},bone,color:{a:1},deform:[],getAttachment:()=>mesh},json={wallKit:{sizes:{rts_wall_post_1:[20,40]}}},node={activeInHierarchy:true,convertToWorldSpaceAR:p=>({x:31+p.x*1.6,y:-27+p.y*.8})};
+ const source={enabled:true,node,skeletonData:{skeletonJson:json},_skeleton:{skin:{name:'cq-rts-1'},drawOrder:[slot],updateWorldTransform(){skeleton.updateWorldTransform();}}};
+ const nativeMesh={path:mesh.path,getVertices:()=>mesh.vertices,getBones:()=>mesh.bones},nativeSlot={data:slot.data,bone,color:slot.color,getAttachment:()=>nativeMesh,get deform(){return slot.deform;}};
+ for(const deform of [[],[-8,1,-11,42,13,38,9,-1],[0,0,0,15,12,20,8,0],[]]){
+  slot.deform=deform;source._skeleton.drawOrder=[slot];const expected=wallSurfaces(source,main,{poses:new Set(),transforms:new Map()});
+  source._skeleton.drawOrder=[nativeSlot];const actual=wallSurfaces(source,main,{poses:new Set(),transforms:new Map()});assert.equal(actual.length,1);assert.equal(expected.length,1);actual[0].vertices.forEach((value,index)=>close(value,expected[0].vertices[index]));for(const key of Object.keys(expected[0].box))close(actual[0].box[key],expected[0].box[key]);
+ }
+});

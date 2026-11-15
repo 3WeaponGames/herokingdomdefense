@@ -7,10 +7,8 @@ var cc__decorate = __decorate;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var r;
 var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
-var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallBulletEnemy = require("KinghtFallBulletEnemy");
 var $z1KinghtFallEnemyBase = require("KinghtFallEnemyBase");
@@ -33,11 +31,7 @@ var def_KinghtFallEnemyLong = function (t) {
     this.ndBulletPat.active = false;
   };
   _ctor.prototype.doAttackStart = function () {
-    if (GameToolsOverrides.isPending(this)) return;
-    this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Attack;
-    this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
-    this.time[r.Attack] = 0;
-    GameToolsOverrides.attack(this, "enemy", this.doAttack);
+    t.prototype.doAttackStart.call(this, 0);
   };
   _ctor.prototype.doAttack = function () {
     if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
@@ -136,6 +130,3 @@ var def_KinghtFallEnemyLong = function (t) {
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallEnemyBase.default);
 exports.default = def_KinghtFallEnemyLong;
-(function (t) {
-  t.Attack = "Attack";
-})(r || (r = {}));

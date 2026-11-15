@@ -692,10 +692,19 @@ function surfaceGeometry(source, main, slot, cache) {
     // not bind computeWorldVertices. All wall modules/door leaves are quads.
     var region=attachment.getOffset?attachment.getOffset():attachment.offset,
       local=region||(attachment.getVertices?attachment.getVertices():attachment.vertices),
-      bones=attachment.getBones?attachment.getBones():attachment.bones, deform=slot.deform||[],bone=slot.bone;
-    if(local&&local.length===8&&(!bones||!bones.length))for(var at=0;at<8;at+=2){
-      var x=local[at]+(region?0:deform[at]||0),y=local[at+1]+(region?0:deform[at+1]||0);
-      vertices.push(x*bone.a+y*bone.b+bone.worldX,x*bone.c+y*bone.d+bone.worldY);
+      bones=attachment.getBones?attachment.getBones():attachment.bones, deform=region?null:slot.deform||[],bone=slot.bone;
+    if(local&&local.length===8&&(!bones||!bones.length)){
+      // Every rigid module of one wall shares its frame bone. Native getters
+      // cross JSB, and slot.deform copies a vector. Keep one settled transform
+      // per draw. Spine 3.8 unweighted slot.deform contains complete local
+      // vertices (the timeline has already added the setup vertices).
+      var transforms=cache&&(cache.surfaceBones||(cache.surfaceBones=new Map())),matrix=transforms&&transforms.get(bone);
+      if(!matrix){matrix={a:bone.a,b:bone.b,c:bone.c,d:bone.d,x:bone.worldX,y:bone.worldY};if(transforms)transforms.set(bone,matrix);}
+      if(deform&&deform.length)local=deform;
+      for(var at=0;at<8;at+=2){
+        var x=local[at],y=local[at+1];
+        vertices.push(x*matrix.a+y*matrix.b+matrix.x,x*matrix.c+y*matrix.d+matrix.y);
+      }
     }
   }
   if (vertices.length!==8) return null;
@@ -755,12 +764,21 @@ function behindGate(leaf, feet) {
   return feet.y>(front===Infinity?fallback:front)+.01;
 }
 var captureOwners = new WeakMap();
+var nativeMaskState;
+var gateClipState;
+function syncNativeMaskState(renderer,dispose){
+  if(!cc.sys||!cc.sys.isNative||cc.ENGINE_VERSION!=="2.4.13"||!cc.Mask||!(renderer instanceof cc.Mask))return;
+  var cache=nativeMaskState||(nativeMaskState=require("NativeOcclusionMaskCache"));
+  if(dispose)cache.dispose(renderer);else cache.sync(renderer);
+}
 function bindCapture(renderer, record) {
   if (!renderer) return;
+  syncNativeMaskState(renderer);
   var previous = captureOwners.get(renderer);
   if (previous === record && record && renderer.spriteFrame === record.frame) return;
   // Sprite/Mask setters unsubscribe from the old frame. It must remain alive
   // until every live, inactive and deferred-destroy consumer has detached.
+  if(gateClipState)gateClipState.unbind(renderer);
   renderer.spriteFrame = record ? record.frame : null;
   if (previous && previous.consumers) previous.consumers.delete(renderer);
   if (record) {
@@ -771,9 +789,13 @@ function bindCapture(renderer, record) {
 function releaseOverlay(overlay) {
   bindCapture(overlay.mask, null);
   bindCapture(overlay.sprite, null);
+  if(gateClipState)gateClipState.retire(overlay.mask);
+  syncNativeMaskState(overlay.mask,true);
   if (overlay.tint) {
     bindCapture(overlay.tint.mask, null);
     bindCapture(overlay.tint.sprite, null);
+    if(gateClipState)gateClipState.retire(overlay.tint.mask);
+    syncNativeMaskState(overlay.tint.mask,true);
     overlay.tint.node.destroy();
   }
   overlay.node.destroy();
@@ -781,7 +803,7 @@ function releaseOverlay(overlay) {
 function releaseCapture(record) {
   if (record.consumers) {
     record.consumers.forEach(function (renderer) {
-      if (renderer.spriteFrame === record.frame) renderer.spriteFrame = null;
+      if (renderer.spriteFrame === record.frame) {if(gateClipState)gateClipState.unbind(renderer);renderer.spriteFrame = null;}
       if (captureOwners.get(renderer) === record) captureOwners.delete(renderer);
     });
     record.consumers.clear();
@@ -794,7 +816,37 @@ function releaseCapture(record) {
 // Resolve the intersecting parts together: restore the unit over rear parts,
 // then paint foreground parts over its body, in the source's painter order.
 // Only render components are captured; gameplay, poses and fixtures stay live.
-function GateOcclusion(view) { this.view=view;this.leaves=new Map();this.actors=new Map();this.draw=0; }
+function GateOcclusion(view) {
+  this.view=view;this.leaves=new Map();this.actors=new Map();this.draw=0;this.overlayPool=[];this.surfaceAliases=new Map();
+  if(view.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13")try{this.surfaceAtlas=require("NativeSurfaceAtlas").create({scene:cc.director.getScene(),maxBytesPerGeneration:33554432,maxPages:8});}catch(ignored){}
+  if(view.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13")this.actorAtlas=require("NativeActorAtlas").create(view,releaseCapture);
+  if(view.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&cc.Material&&cc.EffectAsset&&cc.resources&&cc.resources.load){gateClipState=gateClipState||require("GateOverlayClip");this.clip=gateClipState.create(view);}
+}
+function orderOverlays(main,overlays){
+  var groups=new Map(),wanted=new Set(),stable=true;
+  overlays.forEach(function(entry){var node=entry.overlay.node,key=node.zIndex,group=groups.get(key);if(!group){group={nodes:[],seen:0};groups.set(key,group);}group.nodes.push(node);wanted.add(node);});
+  // Creator's final child sort is stable within each zIndex. Keeping the
+  // already-correct arrival order avoids shifting every mask through the
+  // whole scene and rebuilding native child order on every animation frame.
+  main.children.forEach(function(node){if(node._gateOverlayPooled&&node.activeInHierarchy===false)return;var group=groups.get(node.zIndex);if(!group)return;if(wanted.has(node)){if(group.nodes[group.seen++]!==node)stable=false;}else if(group.seen)stable=false;});
+  groups.forEach(function(group){if(group.seen!==group.nodes.length)stable=false;});
+  if(!stable)overlays.forEach(function(entry){entry.overlay.node.setSiblingIndex(main.childrenCount-1);});
+}
+GateOcclusion.prototype.recycleOverlay = function (overlay) {
+  overlay.node.active=false;if(overlay.tint)overlay.tint.node.active=false;
+  // Only retain native pairs when every owned sampler can be detached. Other
+  // hosts keep the original release path rather than retaining Mask textures.
+  if(!this.view.nativeCapture||!gateClipState||typeof gateClipState.park!=="function"){releaseOverlay(overlay);return;}
+  bindCapture(overlay.mask,null);bindCapture(overlay.sprite,null);
+  if(overlay.tint){bindCapture(overlay.tint.mask,null);bindCapture(overlay.tint.sprite,null);}
+  gateClipState.park(overlay);if(overlay.tint)gateClipState.park(overlay.tint);
+  // Boundary crossings reuse component/material identities without retaining
+  // an actor, capture frame or live pixel. Bound idle capacity per stage.
+  var pool=this.overlayPool||(this.overlayPool=[]);
+  if(pool.length>=64){releaseOverlay(overlay);return;}
+  overlay.node._gateOverlayPooled=true;if(overlay.tint)overlay.tint.node._gateOverlayPooled=true;
+  pool.push(overlay);
+};
 GateOcclusion.prototype.captureLeaf = function (record, surface) {
   var source=surface.source,slot=surface.slot,color=source._skeleton.color,node=source.node;
   var scope=this.view._nativeCaptureScope,alpha=scope?scope.originalAlpha(source,color):color.a;
@@ -820,6 +872,11 @@ GateOcclusion.prototype.captureLeaf = function (record, surface) {
 };
 GateOcclusion.prototype.overlay = function (record, actor) {
   var result=record.overlays.get(actor);if (result) return result;
+  var pool=this.overlayPool;
+  if(pool&&pool.length){
+    result=pool.pop();delete result.node._gateOverlayPooled;if(result.tint)delete result.tint.node._gateOverlayPooled;
+    result.draw=0;result.behind=false;record.overlays.set(actor,result);return result;
+  }
   var node=new cc.Node("GateUnitOcclusion");node._occlusionMask=true;node.parent=this.view.main;
   var mask=node.addComponent(cc.Mask);mask.type=cc.Mask.Type.IMAGE_STENCIL;mask.alphaThreshold=.1;
   var child=new cc.Node("OccludedPixels");child.parent=node;
@@ -829,13 +886,45 @@ GateOcclusion.prototype.overlay = function (record, actor) {
   var tintChild=new cc.Node("HiddenUnitPixels");tintChild.parent=tintNode;var tintSprite=tintChild.addComponent(cc.Sprite);tintSprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
   result={node:node,mask:mask,child:child,sprite:sprite,tint:{node:tintNode,mask:tintMask,child:tintChild,sprite:tintSprite}};record.overlays.set(actor,result);return result;
 };
+function detachSurfaceAlias(alias){
+  if(alias.consumers)Array.from(alias.consumers).forEach(function(renderer){if(captureOwners.get(renderer)===alias)bindCapture(renderer,null);});
+  if(alias.consumers)alias.consumers.clear();alias.frame=alias.texture=alias.center=alias.size=null;
+}
+// Retain a small idle source set so boundary jitter does not recreate every
+// atlas crop. Idle captures own no actor overlays or renderer bindings.
+GateOcclusion.prototype.retainLeaves = function (draw, liveSources, surfaceRecords) {
+  var self=this,idle=[],bytes=0;
+  this.leaves.forEach(function(records,source){
+    records.forEach(function(record,key){
+      if(record.draw===draw)return;
+      record.overlays.forEach(function(overlay,actor){self.recycleOverlay(overlay);record.overlays.delete(actor);});
+      var texture=record.texture,frame=record.frame;
+      var keep=self.surfaceAtlas&&liveSources.has(source)&&draw-record.draw<=120&&texture&&frame&&
+        (!cc.isValid||cc.isValid(texture,true)&&cc.isValid(frame,true));
+      if(!keep){releaseCapture(record);records.delete(key);return;}
+      var size=texture.width*texture.height*4;
+      if(!Number.isFinite(size)||size<=0){releaseCapture(record);records.delete(key);return;}
+      idle.push({source:source,records:records,key:key,record:record,bytes:size});bytes+=size;
+    });
+    if(!records.size)self.leaves.delete(source);
+  });
+  idle.sort(function(a,b){return a.record.draw-b.record.draw;});
+  while(idle.length>64||bytes>16777216){
+    var evicted=idle.shift();bytes-=evicted.bytes;releaseCapture(evicted.record);evicted.records.delete(evicted.key);
+    if(!evicted.records.size)this.leaves.delete(evicted.source);
+  }
+  idle.forEach(function(entry){surfaceRecords.push(entry.record);});
+};
 GateOcclusion.prototype.update = function (active, cache, visible) {
-  var self=this,view=this.view,draw=++this.draw,surfaces=[],usedActors=new Set(),overlays=[];
-  this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.active=false;if(overlay.tint)overlay.tint.node.active=false;});});});
+  var self=this,view=this.view,draw=++this.draw,surfaces=[],usedActors=new Set(),overlays=[],intersections=[],liveSources=new Set();
+  // A retained intersection stays active between draws. Toggling every Mask
+  // off/on re-registers node/frame listeners and native render state for the
+  // same visible wall pixels each frame. Only retiring intersections hide.
   Object.keys(view.game.gameData.bulidPointMap||{}).forEach(function (id) {
     var owner=view.game.gameData.bulidPointMap[id],source=owner.ndAniMain;
-    if (!source) return;
+    if (!source||cc.isValid&&(!cc.isValid(source,true)||!cc.isValid(source.node,true))) return;
     var root=objectRoot(source.node,view.main);if (!root) return;
+    if(source.enabled!==false&&source.node.activeInHierarchy!==false)liveSources.add(source);
     gateLeaves(source,view.main,cache).concat(wallSurfaces(source,view.main,cache)).forEach(function (surface) {
       if (!visible || overlaps(surface.box,visible)) { surface.root=root;surfaces.push(surface); }
     });
@@ -859,15 +948,46 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
     if (!mismatch&&!hits.some(function(hit){return hit.behind;})) return;
     var body=self.actors.get(actor);
     if (!body) { body={};self.actors.set(actor,body); }
-    if (body.draw!==draw) { view.snapshotActor(body,entry.sources,entry.bounds,4);body.draw=draw; }
     usedActors.add(actor);
+    intersections.push({actor:actor,entry:entry,record:body,sources:entry.sources,bounds:entry.bounds,hits:hits,base:base});
+  });
+  // The first ordinary camera settles pending native poses once. All remaining
+  // simple NPC bodies can share packed captures without changing wall masks,
+  // actor order, animation rate or any gameplay nodes.
+  function captureBody(item){if(self.actorAtlas)self.actorAtlas.forget(item.record);view.snapshotActor(item.record,item.sources,item.bounds,4);item.record.draw=draw;}
+  if(self.actorAtlas){
+    var scope=view._nativeCaptureScope;
+    if(intersections.length&&scope&&!scope.first)captureBody(intersections[0]);
+    self.actorAtlas.capture(intersections,draw);
+    if(view._destroyed)return;
+  }
+  var usedSurfaces=new Set(),surfaceRecords=[];
+  intersections.forEach(function(item){item.hits.forEach(function(hit){
+    var surface=hit.surface,records=self.leaves.get(surface.source);
+    if(!records){records=new Map();self.leaves.set(surface.source,records);}
+    var record=records.get(surface.slot.data.name);
+    if(!record){record={overlays:new Map()};records.set(surface.slot.data.name,record);}
+    hit.captureRecord=record;record.draw=draw;
+    if(!usedSurfaces.has(record)){self.captureLeaf(record,surface);usedSurfaces.add(record);surfaceRecords.push(record);}
+  });});
+  this.retainLeaves(draw,liveSources,surfaceRecords);
+  var surfaceResult=null,usedAliases=new Set();
+  if(this.surfaceAtlas)try{surfaceResult=this.surfaceAtlas.prepare(surfaceRecords);}catch(ignored){}
+  intersections.forEach(function(item){item.hits.forEach(function(hit){
+    var record=hit.captureRecord,frame=surfaceResult&&surfaceResult.frames.get(record),alias;
+    if(frame){
+      alias=self.surfaceAliases.get(record);
+      if(!alias){alias={consumers:new Set()};self.surfaceAliases.set(record,alias);}
+      alias.frame=frame;alias.texture=frame.getTexture();alias.center=record.center;alias.size=record.size;usedAliases.add(record);
+    }
+    hit.wallRecord=alias||record;
+  });});
+  intersections.forEach(function(item){
+    var actor=item.actor,entry=item.entry,body=item.record,hits=item.hits,base=item.base;
+    if(body.draw!==draw)captureBody(item);
     hits.forEach(function (hit) {
-      var surface=hit.surface,records=self.leaves.get(surface.source);
-      if (!records) { records=new Map();self.leaves.set(surface.source,records); }
-      var record=records.get(surface.slot.data.name);
-      if (!record) { record={overlays:new Map()};records.set(surface.slot.data.name,record); }
-      record.draw=draw;self.captureLeaf(record,surface);
-      var overlay=self.overlay(record,actor),stencil=hit.behind?body:record,paint=hit.behind?record:body;
+      var surface=hit.surface,record=hit.captureRecord,wall=hit.wallRecord;
+      var overlay=self.overlay(record,actor),stencil=hit.behind?body:wall,paint=hit.behind?wall:body;
       overlay.draw=draw;overlay.behind=hit.behind;
       overlay.node.setPosition(stencil.center.x,stencil.center.y);overlay.node.setContentSize(stencil.size);bindCapture(overlay.mask,stencil);
       overlay.child.setPosition(paint.center.x-stencil.center.x,paint.center.y-stencil.center.y);overlay.child.setContentSize(paint.size);bindCapture(overlay.sprite,paint);
@@ -877,25 +997,38 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
       // The aggregate wall root cannot decide whether a unit is behind each
       // open leaf. Clip the tint to only the surfaces in front of its feet.
       var tint=overlay.tint;
-      if(hit.behind){tint.node.setPosition(record.center.x,record.center.y);tint.node.setContentSize(record.size);bindCapture(tint.mask,record);tint.child.setPosition(body.center.x-record.center.x,body.center.y-record.center.y);tint.child.setContentSize(body.size);bindCapture(tint.sprite,body);tint.child.color=cc.color(entry.tint.r,entry.tint.g,entry.tint.b);tint.child.opacity=204;tint.node.zIndex=base+2;overlays.push({overlay:tint,base:base,actor:actor.node.zIndex,behind:2,root:surface.root.zIndex,order:surface.order});}
+      if(hit.behind){tint.node.setPosition(wall.center.x,wall.center.y);tint.node.setContentSize(wall.size);bindCapture(tint.mask,wall);tint.child.setPosition(body.center.x-wall.center.x,body.center.y-wall.center.y);tint.child.setContentSize(body.size);bindCapture(tint.sprite,body);tint.child.color=cc.color(entry.tint.r,entry.tint.g,entry.tint.b);tint.child.opacity=204;tint.node.zIndex=base+2;overlays.push({overlay:tint,base:base,actor:actor.node.zIndex,behind:2,root:surface.root.zIndex,order:surface.order});}
       tint.node.active=hit.behind;
+      if(!hit.behind){bindCapture(tint.mask,null);bindCapture(tint.sprite,null);if(gateClipState&&gateClipState.park)gateClipState.park(tint);}
+      if(self.clip){self.clip.sync(overlay,{wall:wall,body:body,paintIsActor:!hit.behind});if(hit.behind)self.clip.sync(tint,{wall:wall,body:body,paintIsActor:true});}
     });
   });
+  if(this.clip)this.clip.prune();
   // Each actor's foreground pieces follow all of its restored body pixels.
   // Units in front retain their normal order over units farther back.
-  overlays.sort(function(a,b){return a.base-b.base||a.actor-b.actor||a.behind-b.behind||a.root-b.root||a.order-b.order;}).forEach(function(entry){entry.overlay.node.setSiblingIndex(view.main.childrenCount-1);});
+  overlays.sort(function(a,b){return a.base-b.base||a.actor-b.actor||a.behind-b.behind||a.root-b.root||a.order-b.order;});
+  orderOverlays(view.main,overlays);
   this.leaves.forEach(function (records,source) {
     records.forEach(function (record,key) {
-      record.overlays.forEach(function(overlay,actor){if(overlay.draw!==draw){releaseOverlay(overlay);record.overlays.delete(actor);}});
-      if (record.draw!==draw) { releaseCapture(record);records.delete(key); }
+      record.overlays.forEach(function(overlay,actor){if(overlay.draw!==draw){overlay.node.active=false;if(overlay.tint)overlay.tint.node.active=false;self.recycleOverlay(overlay);record.overlays.delete(actor);}});
+
     });
     if (!records.size) self.leaves.delete(source);
   });
-  this.actors.forEach(function(record,actor){if(!usedActors.has(actor)){releaseCapture(record);self.actors.delete(actor);}});
+  this.actors.forEach(function(record,actor){if(!usedActors.has(actor)){if(self.actorAtlas)self.actorAtlas.forget(record);releaseCapture(record);self.actors.delete(actor);}});
+  this.surfaceAliases.forEach(function(alias,record){if(!usedAliases.has(record)){detachSurfaceAlias(alias);self.surfaceAliases.delete(record);}});
+  // Every live/retired consumer has rebound before an old atlas generation can
+  // destroy its frames/targets. Prepare failure keeps the owned current pages.
+  if(surfaceResult)surfaceResult.releasePrevious();else if(this.surfaceAtlas&&this.surfaceAtlas.retire)this.surfaceAtlas.retire();
 };
 GateOcclusion.prototype.destroy = function () {
+  if(this.clip)this.clip.dispose();
+  if(this.overlayPool){this.overlayPool.forEach(releaseOverlay);this.overlayPool.length=0;}
+  if(this.actorAtlas)this.actorAtlas.dispose();
   this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(releaseOverlay);releaseCapture(record);});});
   this.actors.forEach(releaseCapture);this.leaves.clear();this.actors.clear();
+  this.surfaceAliases.forEach(detachSurfaceAlias);this.surfaceAliases.clear();
+  if(this.surfaceAtlas)this.surfaceAtlas.dispose();
 };
 
 function DepthView(game) {
@@ -1161,7 +1294,10 @@ DepthView.prototype.renderNative = function (sources, center, height, texture, a
   // skins, clipping and deform data. No actor/script/physics copies are created.
   try {
     // Unknown native/component APIs retain the original per-source cameras.
-    if(actorMask)try{batch=nativeActorGroups(active,scope);}catch(error){batch=null;}
+    // Both actor capture styles use original RGBA before their overlay shader.
+    // Explicit false selects full-color wall reconstruction; omitted arguments
+    // belong to building/leaf captures and retain their individual cameras.
+    if(actorMask!==undefined)try{batch=nativeActorGroups(active,scope);}catch(error){batch=null;}
     (batch?batch.groups:active.map(function(source){return [source];})).forEach(function(group){
       var combined=group.length>1,root=combined?batch.root:group[0].node;
       var draw=function(){if(combined)drawGroup(group);else drawOne(group[0]);};

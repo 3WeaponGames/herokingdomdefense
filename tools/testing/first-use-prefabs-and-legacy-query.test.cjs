@@ -107,9 +107,52 @@ for (const kind of ['ally', 'enemy', 'effect']) {
       assert.equal(f.allocated.filter(node => node.destroyed).length, 0);
       totals.push(f.allocated.length);
     }
-    assert.deepEqual(totals, kind === 'ally' ? [5, 5] : [12, 12]);
+    assert.deepEqual(totals, kind === 'effect' ? [12, 12] : [5, 5]);
   });
 }
+
+test('enemy first use stays demand-driven through burst growth and repeated recycling', () => {
+  const f = fixture(), id = 92039, key = 'enemy_' + id;
+  f.ctrl.addEnemy(id, 1);
+  assert.equal(f.pending.length, 1);
+  assert.equal(f.actors.length, 0);
+  assert.equal(f.allocated.length, 0);
+  f.pending.shift().deliver();
+  const pool = f.pool.poolMap.get(key), first = f.actors[0], template = pool._node;
+  assert.equal(f.allocated.length, 2, 'First use creates one owned template and only the requested live enemy');
+  assert.equal(pool._nodes.size(), 0, 'No unused enemy rigs are synchronously warmed');
+  assert.notEqual(template, first.node);
+  assert.equal(template.parent, null);
+  assert.equal(template.component.initArgs, undefined);
+  assert.equal(first.node.parent, f.ctrl.ndMain);
+  assert.deepEqual(first.initArgs, [id, 1]);
+
+  f.ctrl.addEnemy(id, 2);
+  const second = f.actors[1];
+  assert.notEqual(first.node, second.node);
+  assert.equal(f.pending.length, 0, 'An existing empty pool grows without another prefab request');
+  assert.equal(f.allocated.length, 3);
+  assert.deepEqual(second.initArgs, [id, 2]);
+  assert.equal(f.ctrl.gameData.pendingEnemySpawns, 0);
+  for (let lane = 3; lane < 43; lane++) {
+    const recycled = lane % 2 ? first : second;
+    f.pool.freeNode(key, recycled.node);
+    assert.equal(recycled.node.parent, null);
+    assert.equal(pool._nodes.size(), 1);
+    f.ctrl.addEnemy(id, lane);
+    assert.equal(f.actors.at(-1), recycled);
+    assert.equal(recycled.node.parent, f.ctrl.ndMain);
+    assert.deepEqual(recycled.initArgs, [id, lane]);
+    assert.equal(pool._nodes.size(), 0);
+    assert.equal(f.allocated.length, 3, 'Recycled enemies keep reusing the existing pool');
+  }
+  assert.equal(f.pending.length, 0);
+  assert.equal(f.ctrl.gameData.pendingEnemySpawns, 0);
+  f.pool.clearPool(key);
+  assert(template.destroyed, 'The detached pool template keeps its existing ownership');
+  assert.equal(first.node.destroyed, undefined, 'Clearing a pool does not destroy checked-out enemies');
+  assert.equal(second.node.destroyed, undefined);
+});
 
 test('a retired combat load cannot prime a pool or consume a current pending spawn', () => {
   const f = fixture();
