@@ -41,6 +41,13 @@ test('baseline impact uses real finite authored clips alongside the target react
 test('fixed actor viewport contains the complete attack and hit pose ranges',()=>{
   assert.deepEqual(Combat.union([{minX:-2,minY:0,maxX:3,maxY:5},{minX:-4,minY:-1,maxX:2,maxY:7}]),{minX:-4,minY:-1,maxX:3,maxY:7,width:7,height:8});
 });
+test('native-only fireball impacts omit generic hits and cannon blasts retain their finite authored graphics',()=>{
+  const {api,calls,ctx}=fixture(()=>{throw Error('No generic hit should load');}),preview=Combat.create(api);
+  assert.equal(preview.defaultHit(ctx,100,80,.1,70,{description:{defaultHitAnimation:false}}),false);assert.equal(calls.length,0);
+  const commands=[],graphics={...ctx,globalAlpha:1,scale(x,y){commands.push(['scale',x,y]);},beginPath(){},arc(x,y,radius){commands.push(['radius',radius]);},fill(){commands.push(['fill',this.fillStyle,this.globalAlpha]);},stroke(){},moveTo(){},lineTo(){commands.push(['ray']);}},source={description:{defaultHitAnimation:false,defaultHit:{kind:'cannon',splashRadius:90}}};
+  assert.equal(preview.defaultHit(graphics,100,80,.12,70,source),true);assert.equal(commands[0][0],'scale');assert(Math.abs(commands[0][1]-.65)<1e-12&&Math.abs(commands[0][2]-.65)<1e-12);assert.deepEqual(commands[1],['radius',90]);assert.equal(commands.filter(command=>command[0]==='ray').length,8);assert.equal(commands.find(command=>command[0]==='fill')[2],110/255);
+  const length=commands.length;assert.equal(preview.defaultHit(graphics,100,80,.24,70,source),false);assert.equal(commands.length,length);assert.equal(calls.length,0);preview.destroy();
+});
 test('reload invalidates actors, retries unavailable models and rejects pending old descriptions',async()=>{
   let resolve,attempt=0;const oldDescription=new Promise(ready=>resolve=ready),{api,calls}=fixture(()=>{attempt++;if(attempt===1)return oldDescription;if(attempt===2)throw Error('Temporary missing asset');return{type:'hero',layers:[layer],profile:{animationSpeed:1.4}};}),errors=[],preview=Combat.create(api,{onError:error=>errors.push(error.message)});
   const stale=preview.load('hero');preview.invalidate('hero');assert.equal(await preview.load('hero'),null);assert.deepEqual(errors,['Temporary missing asset']);
@@ -64,4 +71,12 @@ test('building muzzle matches the drawn barrel after fitting, facing and saved m
     }
     assert.equal(preview.muzzle({bounds,layers:[]},{}),null);assert.equal(preview.muzzle(null,{}),null);preview.destroy();
   }finally{global.Image=savedImage;}
+});
+
+test('wall and campaign baseline impacts use independent authored actors and finite animation clocks',async()=>{
+  const {api,calls,ctx}=fixture(key=>({type:'effect',animation:key==='preview-wall-hit'?'jian_1':'jian_lv1',layers:[{...layer,json:{animations:key==='preview-wall-hit'?{jian_1:.2}:{jian_lv1:.4}}}]})),preview=Combat.create(api),wall={description:{defaultHitKey:'preview-wall-hit',defaultHitAnimation:'jian_1'}};
+  await preview.load('preview-hit');await preview.load('preview-wall-hit');assert.equal(preview.defaultHit(ctx,100,80,.1,70),false);assert.equal(preview.defaultHit(ctx,100,80,.1,70,wall),false);await Promise.resolve();
+  assert.equal(preview.defaultHit(ctx,100,80,.1,70,wall),true);assert.equal(calls.filter(call=>call[0]==='seek').at(-1)[1],'jian_1');
+  assert.equal(preview.defaultHit(ctx,100,80,.3,70,wall),false);assert.equal(preview.defaultHit(ctx,100,80,.3,70),true);assert.equal(calls.filter(call=>call[0]==='seek').at(-1)[1],'jian_lv1');
+  assert.deepEqual(calls.filter(call=>call[0]==='ipc').map(call=>call[2].key),['preview-hit','preview-wall-hit']);preview.destroy();
 });

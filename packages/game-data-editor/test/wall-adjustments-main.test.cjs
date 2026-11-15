@@ -16,7 +16,7 @@ function fixture(service){
 }
 test('Wall adjustments is a standalone Tools panel and opening it does not instantiate gameplay authoring services',()=>{
     const f=fixture({});
-    assert.equal(manifest['main-menu']['Tools/Hero Kingdom Defense/Wall adjustments'].message,'game-data-editor:open-wall-adjustments');
+    assert.equal(manifest['main-menu']['Tools/Stages/Wall adjustments'].message,'game-data-editor:open-wall-adjustments');
     f.api.messages['open-wall-adjustments']();
     assert.deepEqual(f.panels,['hkd-wall-adjustments']);
     assert.deepEqual(f.calls,[]);assert.deepEqual(f.imports,[]);assert.deepEqual(f.broadcasts,[]);

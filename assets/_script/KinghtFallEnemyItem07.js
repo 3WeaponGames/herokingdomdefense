@@ -131,7 +131,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
       for (var l = 0; l < s.length; l++) {
         var c;
         if ((c = s[l]).getIsWork()) {
-          var g = c.getWposPhyCol2();
+          var g = Navigation.attackPartsOf(c);
           for (var u = 0; u < g.length; u++) {
             var d = g[u];
             if (cc.Intersection.polygonCircle(d.points, r)) {
@@ -149,7 +149,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
     if (n) {
       var victim = skillTarget(n);
       if (!skillCurrent(this, scope, false) || !targetCurrent(victim, true)) return;
-      var impact = n.node.getPosition(), release = splashSnapshot(this, n, scope), origin = this.vec2_1.clone();
+      var impact = cc.v2(Navigation.attackPointOf(n,scope.game)), release = splashSnapshot(this, n, scope), origin = this.vec2_1.clone();
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       var dealt = n.onAttacked(e, t);
       if (!skillCurrent(this, scope, true)) return;

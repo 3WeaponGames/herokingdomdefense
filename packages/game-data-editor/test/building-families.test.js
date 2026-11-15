@@ -47,7 +47,10 @@ test('current construction exposes eleven families, four separate barracks and t
 
 test('both configuration copies and translation sources contain only the current building system',()=>{
   const fallback=JSON.parse(fs.readFileSync(path.join(project,'assets/configs/GameJsonCfg.json'),'utf8'));
-  assert.deepEqual(fallback.BuildEnum,base.BuildEnum,'Packaged configuration must offer the same current buildings');
+  // Layout adjustments are authored independently; the fallback must retain
+  // the same construction families, tiers and reachable branch identifiers.
+  const structure=config=>Model.families(config,translations,'en').map(family=>[family.key,family.levels.map(level=>[level.level,level.branches.map(branch=>branch.index)])]);
+  assert.deepEqual(structure(fallback),structure(base),'Packaged configuration must offer the same current construction branches');
   assert.deepEqual(base.BuildEnum[3].levelList.map(row=>row.index),Array.from({length:16},(_,i)=>i+11));
   const seed=JSON.parse(fs.readFileSync(path.join(project,'tools/localization/text-entries.json'),'utf8'));
   for(const source of [translations,seed])assert(!Object.keys(source.entries).some(key=>/^data\.buildenum\.3\.levellist\.(?:[1-9]|10)\./.test(key)),'Removed branch translations cannot return when rebuilding the catalog');

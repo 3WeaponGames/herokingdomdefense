@@ -27,7 +27,7 @@
 /* One preview and adjustable inspector for all four building authoring tools. */
 .bld-authoring-layout{display:grid;grid-template-columns:minmax(0,1fr) 10px var(--bld-inspector-width,340px);align-items:start;min-width:0;width:100%}
 .bld-authoring-preview{min-width:0;align-self:start}.bld-authoring-preview .bld-blocker-canvas{box-sizing:border-box;max-width:100%}
-.bld-authoring-inspector{box-sizing:border-box;min-width:0;height:var(--bld-inspector-height,444px);overflow:auto;overscroll-behavior:contain;padding:12px;background:#252d39;border:1px solid #45546a;border-radius:5px}
+.bld-authoring-inspector{box-sizing:border-box;min-width:0;height:var(--bld-inspector-height,444px);overflow:auto;overscroll-behavior:auto;padding:12px;background:#252d39;border:1px solid #45546a;border-radius:5px}
 .bld-authoring-inspector [hidden],.bld-authoring-preview>[hidden]{display:none!important}
 .bld-authoring-divider{display:flex;align-items:center;justify-content:center;align-self:stretch;min-height:200px;cursor:col-resize;touch-action:none;user-select:none;color:#a9c6d9;background:#293547;border-radius:3px}
 .bld-authoring-divider:hover,.bld-authoring-divider:focus{background:#405b77;outline:1px solid #78c4eb;outline-offset:-1px}
@@ -40,6 +40,7 @@
 .bld-authoring-inspector .bld-scale-controls input[type=number],.bld-authoring-inspector .bld-scale-controls select{box-sizing:border-box;min-width:0;max-width:100%;width:100%;flex-basis:100%}
 .bld-authoring-inspector .bld-scale-controls input[type=range]{min-width:0;width:100%;flex-basis:100%}
 .bld-authoring-inspector .bld-controls-wide,.bld-authoring-inspector .bld-brush-controls>label,.bld-authoring-inspector .bld-scale-controls>input[type=range]{grid-column:1/-1}
+.bld-nightlight-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;flex-basis:100%}.bld-nightlight-actions>.bld-controls-wide{grid-column:1/-1}
 .bld-brush-field{flex-direction:column;align-items:stretch!important}.bld-brush-values{display:grid;grid-template-columns:minmax(70px,1fr) 70px 18px;align-items:center;gap:6px;width:100%;min-width:0}.bld-brush-hotkey{display:block;width:100%;font-size:10px;line-height:1.4;color:#a9bdd2}
 .bld-nightlight-tools{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;grid-column:1/-1;width:100%;padding:4px 0 8px;margin-bottom:12px;background:#252d39;border-bottom:1px solid #45546a}
 .bld-authoring-inspector .bld-nightlight-tools{top:-12px;padding-top:12px}

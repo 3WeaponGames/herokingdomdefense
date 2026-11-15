@@ -4,9 +4,9 @@ const root=path.resolve(__dirname,'../..'),cfg=require('../../assets/KinghtFallC
 test('the six selected roles cover every independent ally and enemy with individual names and portraits',()=>{
  assert.deepEqual(Object.values(cfg.GameTools.unitTypes).map(t=>t.name).sort(),['Fighter','Skirmisher','Vanguard','Mystic','Bruiser','Guardian'].sort());
  const aliases=Object.values(cfg.SoldierCfg).filter(unit=>unit.CampaignBaseUnit),packs=['monster1','monster2','monster3','fantasy-monsters','fantasy-bosses'],sources=packs.flatMap(pack=>require('../../assets/resources/unit-library/'+pack+'/catalog.json').units.map(unit=>unit.id));
- assert.equal(Object.keys(cfg.AllyCfg).length,4);assert.equal(aliases.length,127);assert.equal(Object.keys(cfg.SoldierCfg).length,12+sources.length+aliases.length);
+ const profiles=cfg.GameTools.unitProfiles;assert.equal(Object.keys(cfg.AllyCfg).length,4);assert.equal(aliases.length,127);assert.equal(Object.keys(cfg.SoldierCfg).length,12+sources.length+aliases.length+Object.values(profiles.entries).filter(p=>p.fightingProfile).length+Object.keys(profiles.bossForms).length);
  for(const [id,ally]of Object.entries(cfg.AllyCfg)){assert.notEqual(ally,cfg.SoldierCfg[id]);assert.notEqual(ally.Name,cfg.SoldierCfg[id].Name);assert(!ally.loadIcon.startsWith('@icon/icons/enemy-heads/'));}
- const legacy=Object.values(cfg.SoldierCfg).filter(unit=>!unit.MonsterSource&&!unit.CampaignBaseUnit), imported=Object.values(cfg.SoldierCfg).filter(unit=>unit.MonsterSource);
+ const legacy=Object.values(cfg.SoldierCfg).filter(unit=>unit.ID>=90001&&unit.ID<=90012), imported=Object.values(cfg.SoldierCfg).filter(unit=>unit.MonsterSource);
  assert.deepEqual(legacy.map(unit=>unit.ID).sort((a,b)=>a-b),Array.from({length:12},(_,i)=>90001+i));
  assert.equal(new Set(imported.map(unit=>unit.ID)).size,sources.length);assert(imported.every(unit=>Number.isSafeInteger(unit.ID)&&unit.ID>=91001));
  assert.deepEqual(imported.filter(unit=>['monster1','monster2'].includes(unit.MonsterPack)).map(unit=>unit.ID).sort((a,b)=>a-b),Array.from({length:100},(_,i)=>91001+i),'Original pack identifiers stay stable as later packs are added');
@@ -17,7 +17,7 @@ test('the six selected roles cover every independent ally and enemy with individ
  assert.deepEqual(imported.map(unit=>unit.MonsterSource).sort(),sources.sort(),'All complete packs are independently selectable');
  for(const [id,enemy]of Object.entries(cfg.SoldierCfg)){
   assert(name(enemy));
-  assert.match(enemy.loadIcon,enemy.MonsterSource||enemy.CampaignBaseUnit?/^@icon\/icons\/monster-roster\/(monster1|monster2|monster3|fantasy-monsters|fantasy-bosses)\//:/^@icon\/icons\/enemy-heads\//);
+  assert.match(enemy.loadIcon,enemy.MonsterSource||enemy.MonsterPack||enemy.CampaignBaseUnit?/^@icon\/icons\/monster-roster\/(monster1|monster2|monster3|fantasy-monsters|fantasy-bosses)\//:/^@icon\/icons\/enemy-heads\//);
   assert(fs.existsSync(path.join(root,'assets/resources',enemy.loadIcon.slice(6)+'.png')));
   if(enemy.MonsterSource){assert.equal(cfg.AllyCfg[id],undefined);assert.equal(enemy.MonsterPack,enemy.MonsterSource.split('/')[0]);}
   const form=Number(id)>=90010&&Number(id)<=90012?Number(id)-90009:'default';
@@ -26,8 +26,8 @@ test('the six selected roles cover every independent ally and enemy with individ
  for(const unit of Object.values(cfg.SoldierCfg).concat(Object.values(cfg.AllyCfg))){assert.equal(typeof unit.CounterType,'string');assert(!unit.CounterType||cfg.GameTools.unitTypes[unit.CounterType]);}
 });
 
-test('campaign appearances map every spawning monster back to an authored legacy combat profile',()=>{
- const legacy=new Set(Array.from({length:12},(_,i)=>90001+i));let waves=0,groups=0;
+test('campaign waves use canonical fighting profiles and retain valid spawn counts',()=>{
+ const canonical=new Set(Object.values(cfg.GameTools.unitProfiles.families).flatMap(f=>Object.values(f.profiles)));let waves=0,groups=0;
  for(const stage of Object.values(cfg.LevelCfg))for(const wave of stage.WaveCfg){
   waves++;
   for(const group of wave.RefreshSoldierKind){
@@ -36,8 +36,7 @@ test('campaign appearances map every spawning monster back to an authored legacy
    for(const entry of units.split(';')){
     const [id,count]=entry.split(',').map(Number);groups++;
     // -1 is the authored pause entry consumed by the wave queue.
-    const base=cfg.SoldierCfg[id]&&cfg.SoldierCfg[id].CampaignBaseUnit||id;
-    assert(id===-1||legacy.has(base),'Stage '+stage.Level+' wave '+wave.Wave+' lost its combat profile '+id);
+    assert(id===-1||canonical.has(id),'Stage '+stage.Level+' wave '+wave.Wave+' lost its fighting profile '+id);
     if(id!==-1)assert(cfg.SoldierCfg[id]);assert(Number.isFinite(count)&&count>0);
    }
   }

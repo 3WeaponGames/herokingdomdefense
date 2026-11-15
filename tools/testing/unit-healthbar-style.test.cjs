@@ -145,7 +145,11 @@ function kitFrame(name) {
   assert(frame.borderLeft + frame.borderRight < frame.width);
   assert(frame.borderTop + frame.borderBottom < frame.height);
   assert(frame.borderTop >= 0 && frame.borderBottom >= 0);
-  return frame.uuid;
+  const atlas = read('assets/resources/gui-pro/health/health-atlas.plist.meta'), packed = atlas.subMetas[name];
+  assert(packed, name + ' has a shared native atlas frame');
+  for (const key of ['width', 'height', 'rawWidth', 'rawHeight', 'offsetX', 'offsetY', 'borderTop', 'borderBottom', 'borderLeft', 'borderRight']) assert.equal(packed[key], frame[key]);
+  assert.equal(packed.rawTextureUuid, atlas.rawTextureUuid);
+  return packed.uuid;
 }
 
 test('hero, ally and enemy prefabs reference blue, green and red GUI Pro fills at their original sizes', () => {

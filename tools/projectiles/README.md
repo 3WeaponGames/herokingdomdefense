@@ -1,6 +1,6 @@
 # Projectiles, Relics and icons
 
-Open **Tools → Hero Kingdom Defense → Projectiles** in Creator. Choose a ranged
+Open **Tools → Skills → Projectiles** in Creator. Choose a ranged
 unit on the left and a complete projectile from the library. Its 77 entries
 include 25 imported arrows, 28 original game projectiles (including all 18
 wall-defense variants), 15 Toon sets, two Tiny Kingdom sprites and seven
@@ -23,7 +23,7 @@ effective elapsed release time follows the unit's saved animation speed.
 Static buildings and wall cards use elapsed seconds. Reset removes the custom
 delay and returns to the saved default without changing the animation reference.
 The Units tab exposes **Projectile flight speed** for the hero and every ranged
-character, with **Reset projectile flight speed** restoring the authored value.
+character, with **Reset projectile flight speed** restoring the inherited or authored default.
 This optional setting is shared across that character’s levels; existing hero
 speed bonuses still apply. Damage, range and attack speed remain in Units.
 Tower projectile speeds remain in Buildings.
@@ -33,6 +33,11 @@ The original trail remains the default; an explicit preset replaces it, and
 turning the checkbox off suppresses it. Trail, projectile and launch-delay
 changes remain drafts until Save. Opening panels, browsing and preview playback
 never write game data or player progress.
+
+Projectile selection changes artwork only; damage, targeting and collision keep
+their existing gameplay behavior. Saved character and tower flight speeds apply
+in Simulation Mode. **Reset projectile & trail** preserves those gameplay speeds.
+
 
 Tiny Kingdom's original cannonball and ballista bolt are available under
 **Tiny Kingdom** in the library and assigned to the three Cannon and Sniper

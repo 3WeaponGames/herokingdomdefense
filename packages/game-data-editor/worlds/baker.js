@@ -1,6 +1,18 @@
 'use strict';
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const Legacy=require('./legacy'),Terrain=require('./terrain');
+const ShadowPolicy=require('../../../assets/_script/MapObjectShadowPolicy');
+function hasObjectShadows(map){return (map.layers||[]).some(l=>!l.hidden&&(l.objects||[]).some(o=>ShadowPolicy.enabled(l,o)));}
+function rendererSource(spec){
+ if(spec.mode==='stage07-source')return fs.readFileSync(path.join(__dirname,'../../../tools/maps/bake-renderer.js'),'utf8').replace("picture('/input/' + key)",'picture(spec.images[key])');
+ let source=['alpha-contours.js','roads.js','paint.js'].map(name=>fs.readFileSync(path.join(__dirname,name),'utf8')).join('\n;\n');
+ if(!hasObjectShadows(spec.map))return source;
+ // Only the portable polygon rasterizer is needed by edge straightening.
+ // Loading its wall-layout dependency into this isolated browser is unnecessary.
+ let prefix='var WorldShadowModules={BuildingShadow:{raster:(function(){var OPACITY=26/255;return '+require('../../../assets/_script/BuildingShadow').raster.toString()+';})()}};\n';
+ for(const name of ['ShadowOutline','BuildingDropShadow','MapShadowQuality'])prefix+='(function(){var exports={};function require(name){var value=WorldShadowModules[name.replace(/^\\.\\//,\'\')];if(!value)throw Error(\'Unknown shadow dependency \'+name);return value;}\n'+fs.readFileSync(path.join(__dirname,'../../../assets/_script/'+name+'.js'),'utf8')+'\nWorldShadowModules['+JSON.stringify(name)+']=exports;})();\n';
+ return prefix+'window.WorldDropShadow=WorldShadowModules.BuildingDropShadow;window.WorldMapShadowQuality=WorldShadowModules.MapShadowQuality;\n'+fs.readFileSync(path.join(__dirname,'../../../assets/_script/MapObjectShadowPolicy.js'),'utf8')+'\n'+source+'\n'+fs.readFileSync(path.join(__dirname,'object-shadows.js'),'utf8');
+}
 function plist(image,frames){const escape=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const keys=frames.map(f=>'<key>'+escape(f.name)+'</key><dict><key>frame</key><string>{{'+f.trimX+','+f.trimY+'},{'+f.width+','+f.height+'}}</string><key>offset</key><string>{0,0}</string><key>rotated</key><false/><key>trimmed</key><true/><key>sourceSize</key><string>{'+f.width+','+f.height+'}</string></dict>').join('');return '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict><key>frames</key><dict>'+keys+'</dict><key>metadata</key><dict><key>format</key><integer>2</integer><key>realTextureFileName</key><string>'+escape(image.name)+'.png</string><key>textureFileName</key><string>'+escape(image.name)+'.png</string><key>size</key><string>{'+image.width+','+image.height+'}</string></dict></dict></plist>\n';}
 function uuid(key){const h=crypto.createHash('sha256').update('hkd-world-builder-v1:'+key).digest('hex');return h.slice(0,8)+'-'+h.slice(8,12)+'-4'+h.slice(13,16)+'-a'+h.slice(17,20)+'-'+h.slice(20,32);}
 function meta(name,w,h,frames,key){const textureUuid=uuid(key+':texture'),subMetas={};for(const frame of frames||[{name,width:w,height:h,trimX:0,trimY:0}])subMetas[frame.name]={ver:'1.0.6',uuid:uuid(key+':'+frame.name),importer:'sprite-frame',rawTextureUuid:textureUuid,trimType:'custom',trimThreshold:1,rotated:false,offsetX:0,offsetY:0,trimX:frame.trimX||0,trimY:frame.trimY||0,width:frame.width,height:frame.height,rawWidth:frame.width,rawHeight:frame.height,borderTop:0,borderBottom:0,borderLeft:0,borderRight:0,subMetas:{}};return {ver:'2.3.7',uuid:textureUuid,importer:'texture',type:'sprite',wrapMode:'clamp',filterMode:'bilinear',premultiplyAlpha:false,genMipmaps:false,packable:false,width:w,height:h,platformSettings:{},subMetas};}
@@ -14,7 +26,7 @@ async function renderElectron(spec,artifacts){
  win.webContents.once('render-process-gone',crashed);win.once('closed',closed);
  try{
   win.webContents.setAudioMuted(true);
-  const renderer=spec.mode==='stage07-source'?fs.readFileSync(path.join(__dirname,'../../../tools/maps/bake-renderer.js'),'utf8').replace("picture('/input/' + key)",'picture(spec.images[key])'):['alpha-contours.js','roads.js','paint.js'].map(name=>fs.readFileSync(path.join(__dirname,name),'utf8')).join('\n;\n');
+  const renderer=rendererSource(spec);
   const html='<!doctype html><meta charset="utf-8"><script>'+renderer+'</script>',file=path.join(artifacts,'baker-'+crypto.randomBytes(8).toString('hex')+'.html');
   fs.mkdirSync(artifacts,{recursive:true});fs.writeFileSync(file,html);
   timer=setTimeout(()=>fail(Error('Bake renderer startup timed out')),15000);
@@ -33,6 +45,7 @@ function packageResult(map,result){const writes=[],directory='assets/KinghtFallI
  return {writes,ground:result.ground,assets:result.assets,thumbnail:directory+'/thumbnail.png',thumbnailUuid:uuid(map.id+'/thumbnail:thumbnail')};}
 async function bake(root,map,library,options){
  const prepared=spec(root,map,library),sources=new Map(),fileURLToPath=require('url').fileURLToPath;
+ if(hasObjectShadows(map))prepared.shadowSettings=options.shadowSettings;
  const revision=file=>fs.existsSync(file)?Legacy.hash(fs.readFileSync(file)):null;
  for(const image of Object.values(prepared.images)){
   if(typeof image.url!=='string'||!/^file:/i.test(image.url))continue;
@@ -43,4 +56,4 @@ async function bake(root,map,library,options){
  for(const [file,before]of sources)if(revision(file)!==before)throw Error('Source artwork changed during baking: '+file+'. Your draft is retained; review the source and retry.');
  return packageResult(map,result);
 }
-module.exports={plist,uuid,meta,spec,renderElectron,packageResult,bake};
+module.exports={plist,uuid,meta,spec,renderElectron,rendererSource,hasObjectShadows,packageResult,bake};

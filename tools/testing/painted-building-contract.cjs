@@ -52,7 +52,7 @@ function legacyRead(file,value){
   return match?(match[2]?withoutPaintedMetadata(match[1],value):withoutPainted(match[1],value)):value;
 }
 function withoutAuthoring(value){
- const result=clone(value);for(const family of Object.values(result.BuildEnum||{}))for(const row of family.levelList||[])for(const key of ['WorldScale','ModelOffset','PartScale','Blocker','Shadow','PurchaseField','SpawnPositions','AdUnitPosition','DropShadow','Nightlight'])delete row[key];return result;
+ const result=clone(value);for(const family of Object.values(result.BuildEnum||{})){delete family.UnbuiltPad;for(const row of family.levelList||[])for(const key of ['WorldScale','ModelOffset','PartScale','Blocker','Shadow','PurchaseField','SpawnPosition','SpawnPositions','AdUnitPosition','DropShadow','Nightlight'])delete row[key];}return result;
 }
 function assertConfig(file,config){
   config=require('./building-night-light-contract.cjs').config(config);

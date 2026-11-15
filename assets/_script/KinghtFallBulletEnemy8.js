@@ -22,9 +22,9 @@ var def_KinghtFallBulletEnemy8 = function (t) {
     this.spAni.setAnimation(0, "hit", true);
   };
   _ctor.prototype.setTag = function (t, e, n) {
-    this._dir = cc.v2(e.x - t.x, e.y - t.y).normalizeSelf();
     this.bindTarget(e, n);
-    this.tagNode.getPosition(this.tagPos);
+    this.readTargetPosition();
+    this._dir = cc.v2(this.tagPos.x - t.x, this.tagPos.y - t.y).normalizeSelf();
     this.bullet.active = true;
     var i = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     this.node.angle = i;
@@ -38,7 +38,7 @@ var def_KinghtFallBulletEnemy8 = function (t) {
     switch (this.state) {
       case 0:
         if (!this.targetIsLive || !this.targetIsLive()) return void this.freeNode();
-        this.tagNode.getPosition(this.tagPos);
+        this.readTargetPosition();
         if (!this.node || !cc.isValid(this.node)) {
           $z1KinghtFallUIGame.default.instance.ctrGame.freeEnemyBullet(this);
           return void this.destroy();

@@ -37,7 +37,8 @@ function plan(config, level, names) {
       if (id === "3" && row.Data) allies[row.Data[1]] = true;
     });
   });
-  unitIds(level).forEach(function (id) { var unit = config.SoldierCfg[id]; if (!unit) throw Error("Missing stage enemy " + id); add(names.Enemy, unit.prefab, "prefab"); if (unit.loadIcon) add(unit.loadIcon.indexOf("@icon/") === 0 ? "resources" : names.Enemy, unit.loadIcon.indexOf("@icon/") === 0 ? unit.loadIcon.slice(6) : "icon/" + unit.loadIcon, "frame"); });
+  var stageUnits=require("./EnemyStageProfiles").records(level,config.SoldierCfg,config.GameTools);
+  unitIds(level).forEach(function (id) { var unit = stageUnits[id]; if (!unit) throw Error("Missing stage enemy " + id); add(names.Enemy, unit.prefab, "prefab"); if (unit.loadIcon) add(unit.loadIcon.indexOf("@icon/") === 0 ? "resources" : names.Enemy, unit.loadIcon.indexOf("@icon/") === 0 ? unit.loadIcon.slice(6) : "icon/" + unit.loadIcon, "frame"); });
   Object.keys(allies).forEach(function (id) { var unit = config.AllyCfg && config.AllyCfg[id] || config.SoldierCfg[id]; if (!unit) throw Error("Missing stage ally " + id); add(names.Enemy, "Play" + unit.prefab, "prefab"); });
   Object.keys(config.GoodsCfg||{}).forEach(function(id){var icon=config.GoodsCfg[id].icon;if(typeof icon==='string')add(icon.indexOf('@icon/')===0?'resources':names.IconGood,icon.indexOf('@icon/')===0?icon.slice(6):icon,'frame');});
   var unitTypes=config.GameTools&&config.GameTools.unitTypes||{};Object.keys(unitTypes).forEach(function(id){var icon=unitTypes[id].icon;if(typeof icon==='string')add(icon.indexOf('@icon/')===0?'resources':names.Enemy,icon.indexOf('@icon/')===0?icon.slice(6):'icon/'+icon,'frame');});
@@ -46,9 +47,12 @@ function plan(config, level, names) {
 }
 function presentationPlan(config, level, base, catalogs, options, loadedAssets) {
   var out = collector(), add = out.add, profiles = catalogs.characters, parts = {}, selected = [], projectiles = catalogs.projectiles;
+  var stageProfiles=require("./EnemyStageProfiles"),stageUnits=stageProfiles.records(level,config.SoldierCfg||{},config.GameTools),enemyIds={};
+  function includeEnemy(id){if(enemyIds[id])return;enemyIds[id]=true;var unit=stageUnits[id];if(!unit)return;stageProfiles.referenceIds(unit,config.GameTools).forEach(function(id){enemyIds[id]=true;});if((unit.BehaviorTemplate||unit.ID)===90010||(unit.BehaviorTemplate||unit.ID)===90011)includeEnemy(unit.Data[2]);}
+  base.enemies.forEach(includeEnemy);
   (catalogs.parts.parts || []).forEach(function (part) { parts[part.id] = part; });
   Object.keys(profiles.assignments || {}).forEach(function (key) {
-    var bits = key.split(":"), used = bits[0] === "hero" || bits[0] === "enemy" && base.enemies.indexOf(bits[1]) >= 0 || bits[0] === "ally" && base.allies.indexOf(bits[1]) >= 0;
+    var bits = key.split(":"), used = bits[0] === "hero" || bits[0] === "enemy" && enemyIds[bits[1]] || bits[0] === "ally" && base.allies.indexOf(bits[1]) >= 0;
     var profile = used && profiles.profiles[profiles.assignments[key]];
     if (!profile || selected.indexOf(profile) >= 0) return; selected.push(profile);
     function baked(value) { if (!value || typeof value !== "object") return; if (value.resource) add("resources", value.resource, "spine"); Object.keys(value).forEach(function (key) { if (typeof value[key] === "object") baked(value[key]); }); }
@@ -58,7 +62,7 @@ function presentationPlan(config, level, base, catalogs, options, loadedAssets) 
   var needed = {};
   var selectProjectile = require("./ProjectileLooks").select;
   Object.keys(projectiles.assignments || {}).forEach(function (key) {
-    var bits = key.split(":"), used = key === "hero" || /^tower/.test(key) || bits[0] === "enemy" && base.enemies.indexOf(bits[1]) >= 0 || bits[0] === "ally" && base.allies.indexOf(bits[1]) >= 0;
+    var bits = key.split(":"), used = key === "hero" || /^tower/.test(key) || bits[0] === "enemy" && enemyIds[bits[1]] || bits[0] === "ally" && base.allies.indexOf(bits[1]) >= 0;
     if (used) {
       var choice = selectProjectile(projectiles, key);
       ["flight", "launch", "impact", "trail"].forEach(function (field) { if (typeof choice[field] === "string") needed[choice[field]] = true; });

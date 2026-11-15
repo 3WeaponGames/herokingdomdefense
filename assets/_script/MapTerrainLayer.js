@@ -4,11 +4,12 @@
 // transparent image bounds. Both the image and anchor move with its collider.
 cc.Class({
   extends: cc.Component,
-  properties: { ground: cc.Node, artwork: cc.Node, frontOfBuildings: false, objectLayerOrder: -1 },
+  properties: { ground: cc.Node, artwork: cc.Node, frontOfBuildings: false, objectLayerOrder: -1, groundOnly: false },
   onLoad: function () {
-    this.node._depthMapObject = true;
+    if (this.groundOnly) this.node._depthGroundVisual = true;
+    else this.node._depthMapObject = true;
     this.node._depthMapForeground = !!this.frontOfBuildings;
-    if (this.objectLayerOrder >= 0) this.node._depthLayerOrder = this.objectLayerOrder * 2 + 1;
+    if (!this.groundOnly && this.objectLayerOrder >= 0) this.node._depthLayerOrder = this.objectLayerOrder * 2 + 1;
     if (this.ground) this.node._depthGround = this.ground;
     if (this.artwork) {
       this._baseTint = this.artwork.color.clone();
@@ -33,6 +34,7 @@ cc.Class({
     if (this._tintBound) this.node.off(cc.Node.EventType.COLOR_CHANGED, this.syncTint, this);
     if (this.node._depthGround === this.ground) delete this.node._depthGround;
     delete this.node._depthMapObject;
+    if (this.groundOnly) delete this.node._depthGroundVisual;
     delete this.node._depthMapForeground;
     delete this.node._depthLayerOrder;
   }

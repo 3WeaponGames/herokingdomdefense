@@ -1,6 +1,6 @@
 # Hero item editor
 
-Open **Tools → Hero Kingdom Defense → Items**. The local review window is `node tools/characters/serve-items.cjs`, at `http://127.0.0.1:8791/`.
+Open **Tools → Items → Item Appearance**. The local review window is `node tools/characters/serve-items.cjs`, at `http://127.0.0.1:8791/`.
 
 The item list includes all **210 current equipment tiers** in the original six slots: Cape, Helmet, Arrow, Bow, Gloves, and Mount. Selecting an original tier previews its existing artwork on the hero, with no writes. **Edit this item** creates an appearance draft for that tier. **New item** and **Duplicate** create additional named item definitions.
 

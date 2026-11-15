@@ -5,13 +5,13 @@ const {setup, Node, Vec2} = require('./backend-gameplay-harness.cjs');
 const Warm = require('../../assets/_script/StageAssetWarmup');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 
-function artworkApi() {
+function artworkApi(modules = {}) {
   const api = {}, requests = [], cc = {
     isValid: value => !!value && !value.destroyed,
     SpriteFrame: function () {},
     resources: {load(resource, type, done) {requests.push({resource, done});}}
   };
-  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../assets/_script/ProjectileLooks.js'), 'utf8'), {exports: api, cc});
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../assets/_script/ProjectileLooks.js'), 'utf8'), {exports: api, cc, require: name => {if (modules[name.replace(/^\.\//, '')]) return modules[name.replace(/^\.\//, '')]; throw Error('Unexpected runtime dependency ' + name);}});
   return {api, cc, requests};
 }
 
@@ -150,6 +150,15 @@ test('one failed launch retains unrelated queued attacks and reentrant additions
   bank.update(.25); assert.deepEqual(calls, ['failed', 'second', 'new']); assert.equal(bank.launches.length, 0); bank.dispose();
 });
 
+test('a cold stage-profile shot keeps its launch-time source artwork after its shooter is pooled', () => {
+  const settings = {}, {api, requests} = artworkApi({FantasyEffects: {projectile: () => ({})}, EnemyStageProfiles: require('../../assets/_script/EnemyStageProfiles'), KinghtFallDataMgr: {KinghtFallDataMgr: {getInstance: () => ({data: {GameTools: settings}})}}});
+  const data = {assets: [{id: 'first', kind: 'sprite', resource: 'first'}, {id: 'next', kind: 'sprite', resource: 'next'}], assignments: {'enemy:90003': {flight: 'first'}, 'enemy:90008': {flight: 'next'}}};
+  const actor = {cfg: {ID: 1000000000, ProfileBaseID: 90003}}, node = {parent: {}, angle: 0, getPosition: () => ({x: 0, y: 0})}, bullet = {node, _shot: {}}, owner = {_combatEpoch: 1};
+  api.prepare(bullet, owner, 'enemy:1000000000', actor); bullet._launchProjectileLook(); assert.equal(requests.length, 1);
+  actor.cfg = {ID: 1000000003, ProfileBaseID: 90008}; requests.shift().done(null, {json: data});
+  assert.equal(bullet._projectileVisual.options.flight, 'first'); assert.equal(requests[0].resource, 'first'); owner._projectileLooks.dispose();
+});
+
 test('cold visual effect work is bounded and cancellations release slots without dropping gameplay', () => {
   const {api, requests} = artworkApi(), bank = new api.Bank({_combatEpoch: 1}), descriptor = {id: 'effect', resource: 'effect', kind: 'sprite'}, cancellations = [];
   for (let i = 0; i < 1000; i++) {const cancel = bank.effect(descriptor, {}, {x: 0, y: 0}, 0, {size: 40}, () => true); if (cancel) cancellations.push(cancel);}
@@ -204,4 +213,32 @@ test('wall battle startup waits for the catalog before starting waves or its rew
   scheduled.shift()(); assert.deepEqual(calls.map(value => Array.isArray(value) ? value[0] : value), ['prime', 'begin', 'state', 'wave']);
   game.start(); resource.done({json: data}); game.isclose = true; scheduled.shift()();
   assert.equal(calls.filter(value => value === 'wave').length, 1, 'closing during scheduled admission cannot start a late battle');
+});
+
+
+test('shared and stage fighting profiles inherit projectile speed without seeding overrides', () => {
+  const h = setup(), api = h.load('GameToolsOverrides'), config = h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
+  config.GameTools = {unitProfiles: {entries: {100001: {baseId: 90003}, 100002: {baseId: 90011}}}, projectileSpeeds: {'enemy:90003:default': 730, 'enemy:90011:2': 820}};
+  const original = JSON.stringify(config.GameTools);
+  for (const cfg of [{ID: 100001}, {ID: 1000000000, ProfileBaseID: 100001}]) assert.equal(api.projectileSpeed({cfg}, 'enemy', 500), 730);
+  assert.equal(api.projectileSpeed({cfg: {ID: 100002}}, 'enemy', 500), 820);
+  assert.equal(JSON.stringify(config.GameTools), original);
+  config.GameTools.projectileSpeeds['enemy:100001:default'] = 940;
+  assert.equal(api.projectileSpeed({cfg: {ID: 1000000000, ProfileBaseID: 100001}}, 'enemy', 500), 940);
+  config.GameTools.projectileSpeeds['enemy:100001:default'] = 0;
+  assert.equal(api.projectileSpeed({cfg: {ID: 100001}}, 'enemy', 500), 500, 'malformed explicit override retains its authored fallback');
+});
+
+test('Enemy8 fireballs acquire and follow a moving mirrored doorway center', () => {
+  const h = setup(), bullet = shot(h, 'Enemy8'), parent = new Node('map'), gate = new Node('gate', parent, 300, 20), origin = new Vec2(0, 0);
+  gate._buildingAttackPoint = new Vec2(80, 40); gate.scaleX = -1;
+  const first = parent.convertToNodeSpaceAR(gate.convertToWorldSpaceAR(gate._buildingAttackPoint));
+  let hits = 0; bullet.spAni = {setAnimation() {}}; bullet.node.setPosition(origin);
+  bullet.setTag(origin, gate, () => hits++);
+  assert.equal(bullet.tagPos.x, first.x); assert.equal(bullet.tagPos.y, first.y);
+  assert(Math.abs(bullet.node.angle - Math.atan2(first.y, first.x) * 180 / Math.PI) < 1e-9);
+  gate.x = 450; gate.scaleX = 1;
+  const moved = parent.convertToNodeSpaceAR(gate.convertToWorldSpaceAR(gate._buildingAttackPoint));
+  bullet.node.setPosition(moved.x - 20, moved.y); bullet.onUpdate(.01);
+  assert.equal(hits, 1); assert.equal(bullet.state, 1);
 });

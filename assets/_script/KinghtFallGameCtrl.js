@@ -205,6 +205,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.onDestroy = function () {
+    if(this.gameData&&this.gameData.levelCfg)require("EnemyStageProfiles").clear(this.gameData.levelCfg);
     require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);

@@ -73,7 +73,7 @@ var def_KinghtFallBulletBase = function (t) {
       this._dir = cc.v2(-Math.cos(this.angle * Math.PI / 180), Math.sin(this.angle * Math.PI / 180));
     }
     this.bindTarget(e, n);
-    this.tagNode.getPosition(this.tagPos);
+    this.readTargetPosition();
     this.bullet.active = true;
     var i = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     this.node.angle = i;
@@ -81,12 +81,18 @@ var def_KinghtFallBulletBase = function (t) {
     this.state = 0;
     if (this._launchProjectileLook) this._launchProjectileLook();
   };
+  _ctor.prototype.readTargetPosition = function () {
+    var target=this.tagNode,offset=target._buildingAttackPoint;
+    if(!offset)return target.getPosition(this.tagPos);
+    var point=target.parent.convertToNodeSpaceAR(target.convertToWorldSpaceAR(offset));
+    this.tagPos.x=point.x;this.tagPos.y=point.y;return this.tagPos;
+  };
   _ctor.prototype.onUpdate = function (t) {
     if (this._projectileVisual) this._projectileVisual.step(t);
     switch (this.state) {
       case 0:
         if (!this.targetIsLive || !this.targetIsLive()) return void this.freeNode();
-        this.tagNode.getPosition(this.tagPos);
+        this.readTargetPosition();
         this.node.getPosition(this.vec2_1);
         cc.Vec2.subtract(this.vec2_2, this.tagPos, this.vec2_1);
         if (this.vec2_2.len() < impactRadius) {

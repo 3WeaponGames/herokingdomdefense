@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "2e164ec6-6e16-5c60-a6b8-f343cd7241ef",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "item-4-tier-lv_blue-vanguard_wqyl_lead_gong": {
+      "ver": "1.0.6",
+      "uuid": "54afc015-6a8c-59bd-a7e3-531edabd7b5a",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "2e164ec6-6e16-5c60-a6b8-f343cd7241ef",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

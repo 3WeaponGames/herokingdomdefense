@@ -20,10 +20,10 @@ function fixture(options={}){
 }
 function frozen(value){if(value&&typeof value==='object'){Object.freeze(value);Object.keys(value).forEach(key=>frozen(value[key]));}return value;}
 
-test('current catalog plans exactly12 reachable level bakes without loading unused profiles or modifying authoring',()=>{
+test('current catalog plans all sixteen reachable level bakes without loading unused profiles or modifying authoring',()=>{
  const config=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../assets/KinghtFallConfig/GameJsonCfg.json'))),catalog=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../assets/resources/characters/catalog.json'))),h=fixture({config,catalog}),before=JSON.stringify([config,catalog]);frozen(config);frozen(catalog);
  const assets=['08d8f261-3836-560b-aed5-c1a08d428ad4','b1551bb4-582b-5c6f-a797-5f59ffff2c3f','3e5ae353-47b9-511f-a3a4-107525db2a2d','94029306-c33e-5d2e-a3bb-4e52f660adc7'].map(id=>new h.Asset(id));
- const plan=Array.from(h.api.constructionPlan(config,catalog,assets));assert.equal(plan.length,12);assert.equal(new Set(plan).size,12);assert(plan.includes('unit-library/runtime/ally-90001-level-1-3'));assert(plan.includes('unit-library/runtime/ally-90004-level-1'));assert.equal(JSON.stringify([config,catalog]),before);assert.equal(h.loads.length,0);assert.equal(h.instances(),0);
+ const plan=Array.from(h.api.constructionPlan(config,catalog,assets));assert.equal(plan.length,16);assert.equal(new Set(plan).size,16);for(const id of [90001,90002,90003,90004])assert(plan.includes('unit-library/runtime/ally-'+id+'-level-4'));assert(plan.includes('unit-library/runtime/ally-90001-level-1-3'));assert(plan.includes('unit-library/runtime/ally-90004-level-1'));assert.equal(JSON.stringify([config,catalog]),before);assert.equal(h.loads.length,0);assert.equal(h.instances(),0);
 });
 
 test('planning respects actual AllyCfg IDs, authored levels, exact overrides and fallback defaults',()=>{

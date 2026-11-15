@@ -67,30 +67,65 @@ function bodyBounds(owner) {
     });
     return box;
 }
+function wallGroups(owner) {
+    var source=owner.ndAniMain,json=source&&source.skeletonData&&source.skeletonData.skeletonJson,plan=json&&json.wallKit&&json.wallKit.layout;
+    if(!plan||!Array.isArray(plan.leftPoints)||!Array.isArray(plan.rightPoints))return null;
+    var Assembly=require("WallAssembly"),Ground=require("WallShadowGround"),parts=Assembly.pieces(plan),positions={},skin=owner.buildInfo&&owner.buildInfo.cfg&&owner.buildInfo.cfg.Skin||source.defaultSkin;
+    function local(x,y){var p=owner.node.convertToNodeSpaceAR(source.node.convertToWorldSpaceAR(cc.v2(x,y)));return{x:p.x,y:p.y};}
+    var origin=local(0,0),axisX=local(1,0),axisY=local(0,1),matrix=[axisX.x-origin.x,axisX.y-origin.y,axisY.x-origin.x,axisY.y-origin.y,origin.x,origin.y];
+    function key(p){return p.x.toFixed(6)+","+p.y.toFixed(6);}
+    // Read the painted post's floor, including authored offsets, from the same
+    // instance rig used for its ground shadow. This also works on native Spine.
+    var track=source.getCurrent&&source.getCurrent(0),animation=track&&(track.animation||track.getAnimation&&track.getAnimation()),pose=animation&&(animation.name||animation.getName&&animation.getName())||"idle";
+    Ground.contacts(json,skin,matrix,pose).forEach(function(p){var index=Number(p.slot.slice("rts_wall_part_".length));if(parts[index])positions[key(parts[index])]={x:p.x,y:p.y};});
+    function fitted(p){return positions[key(p)]||local(p.x,p.y);}
+    var left=plan.leftPoints.map(fitted).reverse(),right=plan.rightPoints.map(fitted),steps=[],groups=[];
+    function length(a,b){return Math.hypot(b.x-a.x,b.y-a.y);}
+    [left,right].forEach(function(points){for(var i=1;i<points.length;i++){var value=length(points[i-1],points[i]);if(value>0)steps.push(value);}});
+    steps.sort(function(a,b){return a-b;});var pitch=steps.length?steps[Math.floor(steps.length/2)]:length(local(0,0),local(Assembly.step.x,Assembly.step.y));
+    function group(points,kind,side,center){
+        var span=0,x=0,y=0;
+        for(var i=1;i<points.length;i++){var size=length(points[i-1],points[i]);span+=size;x+=(points[i-1].x+points[i].x)*size/2;y+=(points[i-1].y+points[i].y)*size/2;}
+        center=center||span>0&&{x:x/span,y:y/span}||points[0];if(!center)return;
+        // A pile covers its small connection group, never the whole wall's
+        // upright bounding box. Exceptionally wide gate openings stay compact.
+        var footprint=Math.max(pitch,kind==="gate"?Math.min(span,pitch*5):span);
+        groups.push({kind:kind,side:side,connections:kind==="gate"?(left.length>1?1:0)+(right.length>1?1:0):points.length-1,
+            box:{minX:center.x-footprint/2,maxX:center.x+footprint/2,minY:center.y,maxY:center.y,scale:.5}});
+    }
+    function connections(points,start,side){for(var i=start;i<points.length-1;i+=3)group(points.slice(i,Math.min(points.length,i+4)),"wall",side);}
+    if(plan.gate&&left[0]&&right[0]){
+        group([left[1]||left[0],left[0],right[0],right[1]||right[0]],"gate","center",{x:(left[0].x+right[0].x)/2,y:(left[0].y+right[0].y)/2});
+        connections(left,1,"left");connections(right,1,"right");
+    }else connections(left.slice().reverse().concat(right.slice(1)),0,"run");
+    return groups.length?groups:null;
+}
 function layout(owner, record, box, visible) {
     if (!(box.maxX > box.minX) || !isFinite(box.minY)) {record.visible=false;record.node.active=false;return;}
-    var width = (box.maxX-box.minX)*.7;
+    var width = (box.maxX-box.minX)*(box.scale===undefined?.7:box.scale);
     if(record.node.width!==width||record.node.height!==width*ASPECT)record.node.setContentSize(width,width*ASPECT);
     var x=(box.minX+box.maxX)/2;if(record.node.x!==x||record.node.y!==box.minY)record.node.setPosition(x,box.minY);
     record.visible = !!visible;record.node.active = record.visible && !!prepare(owner).frame;
 }
+function layoutBuildings(owner,state,visible){(state.buildings||[state.building]).forEach(function(record){if(record)layout(owner,record,record.box||state.box,visible);});}
 function hideNative(owner) {
     var state = owner._sharedBuildingDebris;
-    if (!state || !state.building || !state.building.node.active) return;
+    if (!state || !(state.buildings||[state.building]).some(function(record){return record&&record.node.active;})) return;
     [owner.ndAniMain,owner.ndAniDown].concat(owner.ndAniOther || []).forEach(function (source) {
-        var slot=source&&source._skeleton&&source._skeleton.findSlot("fx");if(slot)slot.color.a=0;
+        if(!valid(source)||source.node&&!valid(source.node))return;
+        var slot=source&&(source._skeleton&&source._skeleton.findSlot("fx")||source.findSlot&&source.findSlot("fx"));if(slot)slot.color.a=0;
     });
     var art=owner._buildingAppearance;if(art&&valid(art.deathRubbleFx))art.deathRubbleFx.active=false;
 }
 function capture(owner) {
-    var state=prepare(owner);if(state.building)discard(owner,state.building);
+    var state=prepare(owner);(state.buildings||[state.building]).slice().forEach(function(record){if(record)discard(owner,record);});
     if(!state.beforeDraw&&cc.director&&cc.director.on&&cc.Director){
         state.beforeDraw=function(){
             // Castle defeat may stop combat updates while its Spine death clip
             // still runs. Use the clip's actual clock whenever it is available.
             var art=owner._buildingAppearance,source=art&&art.deathRubbleSpine||owner.ndAniMain;
             var track=source&&source.getCurrent&&source.getCurrent(0);
-            if(owner.isDestroyed&&state.building&&track&&track.animation&&track.animation.name==="destroy")layout(owner,state.building,state.box,state.building.visible||track.trackTime>=state.reveal);
+            if(owner.isDestroyed&&state.building&&track&&track.animation&&track.animation.name==="destroy")layoutBuildings(owner,state,state.building.visible||track.trackTime>=state.reveal);
             hideNative(owner);
         };
         cc.director.on(cc.Director.EVENT_BEFORE_DRAW,state.beforeDraw);
@@ -99,15 +134,16 @@ function capture(owner) {
     var keys=json&&json.animations&&json.animations.destroy&&json.animations.destroy.slots&&json.animations.destroy.slots.fx;
     var reveal=keys&&keys.attachment&&keys.attachment.find(function(key){return key.name;});
     state.reveal=reveal&&typeof reveal.time==='number'?reveal.time:.2667;
-    state.box=bodyBounds(owner);state.elapsed=0;state.building=create(owner);
+    state.groups=wallGroups(owner);state.box=state.groups?state.groups[0].box:bodyBounds(owner);state.elapsed=0;
+    state.buildings=(state.groups||[{box:state.box}]).map(function(group){var record=create(owner);record.box=group.box;record.group=group;return record;});state.building=state.buildings[0];
 }
 function update(owner, dt) {
     var state=owner._sharedBuildingDebris;
     if(!state||!state.building)return;
-    if(!owner.isDestroyed){state.building.visible=false;state.building.node.active=false;return;}
+    if(!owner.isDestroyed){layoutBuildings(owner,state,false);return;}
     var speed=owner.ndAniMain&&owner.ndAniMain.timeScale;
     state.elapsed+=Math.max(0,Number(dt)||0)*(typeof speed==="number"&&isFinite(speed)?Math.max(0,speed):1);
-    layout(owner,state.building,state.box,state.elapsed>=state.reveal);hideNative(owner);
+    layoutBuildings(owner,state,state.elapsed>=state.reveal);hideNative(owner);
 }
 function field(owner, source, value, visible) {
     if(!visible){if(value.debris){value.debris.visible=false;value.debris.node.active=false;}return;}
@@ -116,7 +152,7 @@ function field(owner, source, value, visible) {
 }
 function clear(owner) {
     var state=owner._sharedBuildingDebris;if(!state)return;
-    state.records.slice().forEach(function(record){discard(owner,record);});state.building=null;
+    state.records.slice().forEach(function(record){discard(owner,record);});state.building=null;state.buildings=[];state.groups=null;
     if(state.beforeDraw&&cc.director&&cc.director.off){cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.beforeDraw);state.beforeDraw=null;}
 }
 function destroy(owner) { var state=owner._sharedBuildingDebris;if(!state)return;clear(owner);state.generation++;if(state.beforeDraw&&cc.director&&cc.director.off)cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.beforeDraw);owner._sharedBuildingDebris=null; }

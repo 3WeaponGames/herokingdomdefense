@@ -155,6 +155,13 @@ function carryPreviewState(previous){
     for(const key of ['scaleView','nightView'])if(previous[key]){const view={};for(const field of ['unit','zoom','cx','cy','fitted','previewHeight','handles','tool','size','opacity','softness','newLightType'])if(previous[key][field]!==undefined)view[field]=previous[key][field];result[key]=view;}
     return result;
 }
+function carryPadPreviewState(previous){
+    previous=previous||{};const result={};
+    for(const key of ['previewHeight','zoom','variant','showUnbuiltPad','showSpawns','showAds'])if(previous[key]!==undefined)result[key]=previous[key];
+    if(previous.view)result.view=Object.assign({},previous.view);
+    if(previous.selection)result.selection=previous.selection.slice();
+    return result;
+}
 function render(panel, row, api) {
     if (row.overview) { overview(panel); return; }
     const building = row.record, at = row.path, id = typeID(row);
@@ -217,8 +224,14 @@ function render(panel, row, api) {
     const visualKeys = ['Name','Describe','LevelUpDescribe','Icon','Skin'];
     visualKeys.filter(key => own(level, key)).forEach(key => panel._value(appearance, 'A', keys.concat(key), level[key], key, context, level));
     const pad=node('div',undefined,'gt-field wide');pad.appendChild(node('span','Build / upgrade ground pad'));appearance.appendChild(pad);
-    const padKey=id+':'+row.rootIndex;if(panel._padStateKey!==padKey){panel._padStateKey=padKey;panel._padState={};}
-    panel._purchaseClient=require('./purchase-client').mount(pad,{ipc:api.ipc,request:scaleRequest,category:building,row:level,state:panel._padState,onModelCommit:(value,all)=>panel._change(()=>require('./purchase-data').modelEdits(panel._data('A'),scaleRequest,value,all)),onUnbuiltCommit:(value,variant)=>panel._change(()=>{const category=panel._data('A').BuildEnum[id],previous=JSON.parse(JSON.stringify(category.UnbuiltPad||{})),variants=require('../../../assets/_script/BuildingPurchaseField').variants(category),next=variants.length?Object.assign({},previous,{variants:Object.assign({},previous.variants,{[variant]:Object.assign({},previous.variants&&previous.variants[variant],value)})}):Object.assign({},previous,value);return[{doc:'A',path:['BuildEnum',id,'UnbuiltPad'],value:next}];}),onAdCommit:value=>panel._change(()=>{const current=panel._data('A').BuildEnum[id].levelList[branch.position];if(!current||current.index!==level.index)throw Error('This building tier changed. Reload before editing the ad unit.');return [{doc:'A',path:keys.concat('AdUnitPosition'),value:Object.assign({},current.AdUnitPosition,value)}];}),onSpawnsCommit:value=>panel._change(()=>{const current=panel._data('A').BuildEnum[id].levelList[branch.position];if(!current||current.index!==level.index)throw Error('This building tier changed. Reload before editing spawns.');return [{doc:'A',path:keys.concat('SpawnPositions'),value:Object.assign({},current.SpawnPositions,value)}];}),onAlign:result=>panel._change(()=>require('./purchase-data').alignmentEdits(panel._data('A'),scaleRequest,result),{skipEmpty:true}),onCommit:async(value,variant,allTiers)=>{const result=await api.ipc('building-purchase-place',Object.assign({},scaleRequest,{value,variant,allTiers}));return panel._change(()=>require('./purchase-data').alignmentEdits(panel._data('A'),scaleRequest,result),{skipEmpty:true});}});
+    const padKey=id+':'+row.rootIndex;if(panel._padStateKey!==padKey){panel._padStateKey=padKey;panel._padState=carryPadPreviewState(panel._padState);}
+    const padState=panel._padState;
+    panel._purchaseClient=require('./purchase-client').mount(pad,{ipc:api.ipc,request:scaleRequest,category:building,row:level,state:padState,
+        onModelCommit:(value,all)=>panel._change(()=>require('./purchase-data').modelEdits(panel._data('A'),scaleRequest,value,all),livePreview),
+        onPositionsCommit:(positions,allTiers)=>panel._change(async()=>{const result=await api.ipc('building-purchase-place',Object.assign({},scaleRequest,{positions,variant:padState.variant,allTiers}));return require('./purchase-data').alignmentEdits(panel._data('A'),scaleRequest,result);},livePreview),
+        onAlign:options=>panel._change(async()=>{const result=await api.ipc('building-purchase-align-tier-one',Object.assign({},scaleRequest,options,{variant:padState.variant}));return require('./purchase-data').alignmentEdits(panel._data('A'),scaleRequest,result);},livePreview),
+        onCommit:(value,variant,allTiers)=>panel._change(async()=>{const result=await api.ipc('building-purchase-place',Object.assign({},scaleRequest,{value,variant,allTiers}));return require('./purchase-data').alignmentEdits(panel._data('A'),scaleRequest,result);},livePreview)
+    });
     const popup=panel._section('Upgrade popup icon · advanced',appearance,true);
     ['Zoom','Excursion'].filter(key=>own(level,key)).forEach(key=>panel._value(popup,'A',keys.concat(key),level[key],key,context,level));
     const connections = panel._section('Next upgrade branches · advanced',undefined,true);

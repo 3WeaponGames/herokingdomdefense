@@ -6,13 +6,14 @@ async function projectileEngineSmoke(input) {
   function check(condition, message) { if (!condition) throw Error(message); report.checks.push(message); }
   function delay(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
   var originalWarn=cc.warn;cc.warn=function(){report.warnings=report.warnings||[];report.warnings.push(Array.prototype.map.call(arguments,function(value){return value&&value.stack||String(value);}).join(' '));if(originalWarn)originalWarn.apply(cc,arguments);};
-  var moduleCache = {}, fixtures = input.catalog, level = 1;
+  var moduleCache = {}, fixtures = input.catalog, level = 1,presentationSettings={unitProfiles:{entries:{100001:{baseId:90003}}}};
   var freeGame = { freeBullet: function () {}, freeEnemyBullet: function () {}, freeSoldierBullet: function () {}, freeBuildBullet: function () {} };
   function scriptId(uuid){var hex=uuid.replace(/-/g,''),result=hex.slice(0,5),alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';for(var i=5;i<32;i+=3){var value=parseInt(hex.slice(i,i+3),16);result+=alphabet[value>>6]+alphabet[value&63];}return result;}
   function load(name) {
+    name=name.replace(/^\.\//,'');
     if (name === "KinghtFallUIGame") return { default: { instance: { ctrGame: freeGame } } };
     if (name === "KinghtFallPlayerMgr") return { KinghtFallPlayerMgr: { getInstance: function () { return { getUserData: function () { return { getPersonLevel: function () { return level; } }; } }; } } };
-    if (name === "KinghtFallDataMgr") return {KinghtFallDataMgr:{getInstance:function(){return{getEquipCfgList:function(){return[{id:3,levelInfo:arrows.map(function(asset,i){return{Level:i+1,EquipSkin:'fixture-'+i};})}];}};}}};
+    if (name === "KinghtFallDataMgr") return {KinghtFallDataMgr:{getInstance:function(){return{data:{GameTools:presentationSettings},getEquipCfgList:function(){return[{id:3,levelInfo:arrows.map(function(asset,i){return{Level:i+1,EquipSkin:'fixture-'+i};})}];}};}}};
     if (moduleCache[name]) return moduleCache[name].exports;
     var record = input.modules[name]; if (!record) throw Error("Unexpected fixture module: " + name);
     var module = moduleCache[name] = { exports: {} };
@@ -153,6 +154,16 @@ async function projectileEngineSmoke(input) {
       modern.bullet.cancel();
     }
     modern.node.destroy();modernTarget.destroy();
+    // Stage-local variants inherit presentation through their shared fighting
+    // profile while keeping their own runtime ID and combat statistics.
+    var profileShot=shot('Enemy',0),profileTarget=target(0),profileTrailNode=new cc.Node('profile-authored-trail');profileTrailNode.parent=profileShot.node;
+    var profileTrail=profileTrailNode.addComponent(cc.MotionStreak),profileActor={cfg:{ID:1000000000,ProfileBaseID:100001}};
+    fixtures.assignments['enemy:90003']={flight:visual,trail:false};looks.prepare(profileShot.bullet,owner,'enemy:1000000000',profileActor);
+    profileShot.bullet.setTag(profileShot.node.getPosition(),profileTarget,function(){});
+    await waitFor(function(){return profileShot.bullet._projectileVisual.node;},'Stage profile inherited flight failed');
+    check(profileShot.bullet._projectileVisual.clip.descriptor.id===visual,'Stage profile inherits its shared fighting parent projectile in the real engine');
+    check(!profileTrail.enabled,'Stage profile inherits its shared parent trail-off setting in the real engine');
+    profileShot.bullet.cancel();profileShot.node.destroy();profileTarget.destroy();
     // Real renderer gallery kept alive for the final screenshot / pixel check.
     roots.forEach(function (node) { if (cc.isValid(node)) node.destroy(); }); roots = [];
     var gallery = arrows.slice(0, 3).concat(realWalls.slice(0, 3),clips.filter(function (a) { return a.role === "flight"; }).slice(0, 6));

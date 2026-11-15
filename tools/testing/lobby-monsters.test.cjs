@@ -40,6 +40,9 @@ test('stage previews read current monster prefab assets, and stale stage loads c
  jobs[1].done(source('bear'));assert.equal(renderer.skeletonData.id,'bear');assert.equal(renderer.skin,'default');assert.equal(renderer.defaultSkin,'default');assert.equal(renderer.animation,'idle');assert.equal(node.active,true);assert.equal(node.scaleY,.5);
  for(const stage of config.LevelCfg)assert(['wqyl_bb','wqyl_zbb','wqyl_gb','wqyl_qb'].includes(stage.EnemyAni));
 });
+test('an explicit stage face loads the selected battle unit while the legacy face remains the default',()=>{
+ const f=previewFixture();f.load({EnemyAni:'wqyl_bb',StageFaceUnit:92039});assert.equal(f.jobs[0].name,config.SoldierCfg[92039].prefab);f.jobs[0].done(f.source('chosen-lizard'));assert.equal(f.home._stageMonsterId,92039);assert.equal(f.renderer.skeletonData.id,'chosen-lizard');f.load({EnemyAni:'wqyl_bb'});assert.equal(f.jobs[1].name,config.SoldierCfg[90001].prefab);
+});
 
 test('switching every authored A/B/D stage forward and backward never submits empty or missing native skins',()=>{
  const Units=require('../../packages/game-data-editor/lib/unit-assets'),prefabs=new Map();

@@ -3,12 +3,12 @@
   "id": "A-1",
   "variant": "A",
   "level": 1,
-  "mapId": "Map01",
+  "mapId": "map-original-01-rebuilt",
   "name": "Stage 1",
   "config": {
     "Level": 1,
     "Name": "[[loc:data.levelcfg.1.name]]",
-    "Map": "wg_zy_gq1",
+    "Map": "Generated/Maps/map-original-01-rebuilt/thumbnail",
     "EnemyAni": "wqyl_bb",
     "prefab": "Generated/Stages/A-1",
     "InGameCoefficient": 1,
@@ -22,10 +22,6 @@
     ],
     "HomeLevel1Unlock": [
       [
-        2,
-        4
-      ],
-      [
         4,
         9
       ],
@@ -36,6 +32,10 @@
       [
         3,
         7
+      ],
+      [
+        4,
+        20
       ]
     ],
     "HomeLevel2Unlock": [
@@ -50,6 +50,14 @@
       [
         6,
         17
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        4,
+        21
       ]
     ],
     "HomeLevel3Unlock": [
@@ -119,7 +127,7 @@
         "StartSliver": 6,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "1#92047,5"
+          "1#91037,5"
         ],
         "WaveReward": [
           [
@@ -135,7 +143,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92047,
+            "unitId": 91037,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -150,8 +158,8 @@
         "StartSliver": 1,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "1#92063,5",
-          "2#92058,3"
+          "1#91050,5",
+          "2#91046,3"
         ],
         "WaveReward": [
           [
@@ -167,7 +175,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92047,
+            "unitId": 91037,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -175,7 +183,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 92048,
+            "unitId": 100245,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -190,8 +198,8 @@
         "StartSliver": 2,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "1#92070,7",
-          "2#92001,4"
+          "1#91055,7",
+          "2#91001,4"
         ],
         "WaveReward": [
           [
@@ -205,20 +213,20 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
-            "spawnId": 1,
-            "unitId": 92069,
-            "count": 7,
+            "id": "legacy-2-0",
+            "spawnId": 2,
+            "unitId": 100245,
+            "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
           {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 92001,
-            "count": 4,
+            "count": 7,
             "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "unitId": 91037,
+            "id": "entry-1"
           }
         ]
       },
@@ -230,9 +238,9 @@
         "StartSliver": 3,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "1#92002,5",
-          "2#92058,3",
-          "3#92003,3"
+          "1#100065,5",
+          "2#91046,3",
+          "3#91003,3"
         ],
         "WaveReward": [
           [
@@ -248,7 +256,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92002,
+            "unitId": 91037,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -256,15 +264,15 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 92058,
+            "unitId": 100245,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
           {
             "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 92003,
+            "spawnId": 4,
+            "unitId": 91055,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -279,9 +287,9 @@
         "StartSliver": 3,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "1#92033,1",
-          "2#92047,5",
-          "3#92064,5"
+          "1#91026,1",
+          "2#91037,5",
+          "3#100305,5"
         ],
         "WaveReward": [
           [
@@ -297,7 +305,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92033,
+            "unitId": 91026,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -305,7 +313,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 92047,
+            "unitId": 91037,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -313,10 +321,18 @@
           {
             "id": "legacy-3-0",
             "spawnId": 3,
-            "unitId": 92064,
+            "unitId": 100245,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
+          },
+          {
+            "count": 4,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 4,
+            "unitId": 91055,
+            "id": "entry-1"
           }
         ]
       },
@@ -328,9 +344,9 @@
         "StartSliver": 4,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "1#92064,10",
-          "2#92058,4",
-          "3#92003,3"
+          "1#100305,10",
+          "2#91046,4",
+          "3#91003,3"
         ],
         "WaveReward": [
           [
@@ -346,7 +362,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92064,
+            "unitId": 91037,
             "count": 10,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -354,18 +370,26 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 92058,
+            "unitId": 100245,
             "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
           {
             "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 92003,
+            "spawnId": 4,
+            "unitId": 91055,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
+          },
+          {
+            "count": 3,
+            "startSeconds": 2.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 5,
+            "unitId": 91054,
+            "id": "entry-1"
           }
         ]
       },
@@ -377,9 +401,9 @@
         "StartSliver": 4,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "1#92058,5",
-          "2#92001,8",
-          "3#92059,3"
+          "1#91046,5",
+          "2#91001,8",
+          "3#91046,3"
         ],
         "WaveReward": [
           [
@@ -395,7 +419,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92058,
+            "unitId": 91037,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -403,18 +427,34 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 92001,
+            "unitId": 100245,
             "count": 8,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
           {
             "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 92059,
+            "spawnId": 4,
+            "unitId": 91055,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
+          },
+          {
+            "count": 3,
+            "startSeconds": 4.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 5,
+            "unitId": 91056,
+            "id": "entry-1"
+          },
+          {
+            "count": 3,
+            "startSeconds": 2.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 6,
+            "unitId": 91054,
+            "id": "entry-2"
           }
         ]
       },
@@ -426,9 +466,9 @@
         "StartSliver": 5,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
-          "1#92064,10",
-          "2#92058,5",
-          "3#92003,5"
+          "1#100305,10",
+          "2#91046,5",
+          "3#91003,5"
         ],
         "WaveReward": [
           [
@@ -444,7 +484,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92064,
+            "unitId": 91037,
             "count": 10,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -452,18 +492,42 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 92058,
+            "unitId": 100245,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
           {
             "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 92003,
+            "spawnId": 4,
+            "unitId": 91055,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
+          },
+          {
+            "count": 5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 5,
+            "unitId": 91056,
+            "id": "entry-1"
+          },
+          {
+            "count": 5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 6,
+            "unitId": 91054,
+            "id": "entry-2"
+          },
+          {
+            "count": 5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 4,
+            "unitId": 91053,
+            "id": "entry-3"
           }
         ]
       },
@@ -475,9 +539,9 @@
         "StartSliver": 5,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
-          "1#92064,8",
-          "2#92003,7",
-          "3#92059,2"
+          "1#100305,8",
+          "2#91003,7",
+          "3#91046,2"
         ],
         "WaveReward": [
           [
@@ -493,7 +557,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92064,
+            "unitId": 91037,
             "count": 8,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -501,18 +565,42 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 92003,
+            "unitId": 100245,
             "count": 7,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
           {
             "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 92059,
-            "count": 2,
+            "spawnId": 4,
+            "unitId": 91056,
+            "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
+          },
+          {
+            "count": 7,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 5,
+            "unitId": 91055,
+            "id": "entry-1"
+          },
+          {
+            "count": 3,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 6,
+            "unitId": 91054,
+            "id": "entry-2"
+          },
+          {
+            "count": 3,
+            "startSeconds": 3.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 6,
+            "unitId": 91053,
+            "id": "entry-3"
           }
         ]
       },
@@ -524,9 +612,9 @@
         "StartSliver": 6,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
-          "1#92087,1",
-          "2#92064,15",
-          "3#92059,4"
+          "1#91069,1",
+          "2#100305,15",
+          "3#91046,4"
         ],
         "WaveReward": [
           [
@@ -542,7 +630,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 92087,
+            "unitId": 91069,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -550,7 +638,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 92064,
+            "unitId": 91037,
             "count": 15,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -558,15 +646,47 @@
           {
             "id": "legacy-3-0",
             "spawnId": 3,
-            "unitId": 92059,
+            "unitId": 100245,
             "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
+          },
+          {
+            "count": 5,
+            "startSeconds": 3.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 6,
+            "unitId": 91053,
+            "id": "entry-1"
+          },
+          {
+            "count": 5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 5,
+            "unitId": 91054,
+            "id": "entry-2"
+          },
+          {
+            "count": 5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 4,
+            "unitId": 91055,
+            "id": "entry-3"
+          },
+          {
+            "count": 5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 6,
+            "unitId": 91056,
+            "id": "entry-4"
           }
         ]
       }
     ],
-    "EnvironmentMapId": "Map01",
+    "EnvironmentMapId": "map-original-01-rebuilt",
     "EnvironmentBiome": "forest",
     "StageLayoutId": "A-1"
   },
@@ -580,8 +700,8 @@
         "x": -134.682,
         "y": 170.84
       },
-      "x": -125.41817450424566,
-      "y": 143.048523512737,
+      "x": 80.64262834158001,
+      "y": 326.96513307630795,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -1022,8 +1142,8 @@
         "x": -65.079,
         "y": 773.701
       },
-      "x": -141.50556033997327,
-      "y": 787.5967382436315,
+      "x": -393.3243267298441,
+      "y": 875.3867668933113,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -1221,11 +1341,11 @@
         "x": -447.249,
         "y": 554.687
       },
-      "x": -466.93462917847796,
-      "y": 570.8986946175701,
+      "x": 335.0687614217363,
+      "y": 789.655033103365,
       "scale": 1,
       "angle": 0,
-      "unlock": 1,
+      "unlock": 2,
       "enabled": true,
       "template": {
         "prefab": "Map01",
@@ -1407,7 +1527,7 @@
         }
       ],
       "purchaseSide": "default",
-      "renderAfter": "legacy-layer-943"
+      "renderAfter": "ground"
     },
     {
       "id": 5,
@@ -1807,8 +1927,8 @@
         "x": 294.098,
         "y": 331.29
       },
-      "x": 294.098,
-      "y": 331.29,
+      "x": -84.06883357688133,
+      "y": 865.5904887152736,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -2170,8 +2290,8 @@
         "x": -278.24,
         "y": -247.923
       },
-      "x": -431.09312067994654,
-      "y": -325.50753852694254,
+      "x": -409.50889358317716,
+      "y": -157.91236342261544,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -2527,7 +2647,8 @@
       "purchaseOffset": {
         "x": -2.3159563739386044,
         "y": 70.63666940512678
-      }
+      },
+      "renderAfter": "layer-7"
     },
     {
       "id": 9,
@@ -2537,8 +2658,8 @@
         "x": -79.896,
         "y": 525.515
       },
-      "x": -79.896,
-      "y": 525.515,
+      "x": 146.30832284521782,
+      "y": 655.4942312520063,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -2736,8 +2857,8 @@
         "x": -126.164,
         "y": -377.297
       },
-      "x": -26.577875920640928,
-      "y": -436.35388753543384,
+      "x": -55.51455612294124,
+      "y": -346.1395316106152,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -2931,8 +3052,8 @@
         "x": 103.854,
         "y": -354.671
       },
-      "x": 149.0151492918024,
-      "y": -334.98537082152205,
+      "x": 114.12091728314617,
+      "y": -244.77101489670346,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -3126,8 +3247,8 @@
         "x": 368.849,
         "y": -424.355
       },
-      "x": 368.849,
-      "y": -424.355,
+      "x": 198.63323410411587,
+      "y": -437.9722612716708,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -3711,8 +3832,8 @@
         "x": -60.323,
         "y": -61.635
       },
-      "x": 4.523778470280327,
-      "y": -58.16106543909213,
+      "x": 74.35510143041662,
+      "y": 33.254484617813546,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -4107,8 +4228,8 @@
         "x": -453.39,
         "y": 703.474
       },
-      "x": -442.2379325792352,
-      "y": 710.3368107204707,
+      "x": -591.6349988778129,
+      "y": 830.4705341358218,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -4311,7 +4432,7 @@
         },
         "nativeGateSpan": 113.5
       },
-      "renderAfter": "legacy-layer-927",
+      "renderAfter": "layer-2",
       "purchaseOffset": {
         "x": -6.947869121815756,
         "y": 37.05530198301733
@@ -4714,6 +4835,404 @@
       ],
       "wallFacing": "NE",
       "purchaseSide": "flip"
+    },
+    {
+      "id": 20,
+      "name": "House",
+      "kind": 4,
+      "origin": {
+        "x": -79.896,
+        "y": 525.515
+      },
+      "x": -430.3028963419351,
+      "y": 524.8622536431095,
+      "scale": 1,
+      "angle": 0,
+      "unlock": 1,
+      "enabled": true,
+      "template": {
+        "prefab": "Map01",
+        "node": 1143,
+        "roots": [
+          1143,
+          328
+        ],
+        "revision": "0eb0047c26ff772dab1722c60e55ef2cb4da012b33abeccb227989b8e86029b2"
+      },
+      "sprites": [
+        {
+          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 171,
+          "height": 100,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": true
+        },
+        {
+          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 165,
+          "height": 94,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": true
+        },
+        {
+          "frame": "de5efb11-6931-4bdf-8bf8-428b171ce96b",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            -87.6763253607076,
+            490.2153253607076
+          ],
+          "width": 171,
+          "height": 100,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": true
+        },
+        {
+          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 171,
+          "height": 100,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": false
+        },
+        {
+          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 165,
+          "height": 94,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": false
+        },
+        {
+          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 171,
+          "height": 100,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": false
+        },
+        {
+          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 165,
+          "height": 94,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": false
+        }
+      ],
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -5.11,
+        "y": 35.74
+      }
+    },
+    {
+      "id": 21,
+      "name": "House",
+      "kind": 4,
+      "origin": {
+        "x": -79.896,
+        "y": 525.515
+      },
+      "x": 325.16107062931013,
+      "y": 533.9443259759141,
+      "scale": 1,
+      "angle": 0,
+      "unlock": 2,
+      "enabled": true,
+      "template": {
+        "prefab": "Map01",
+        "node": 1143,
+        "roots": [
+          1143,
+          328
+        ],
+        "revision": "0eb0047c26ff772dab1722c60e55ef2cb4da012b33abeccb227989b8e86029b2"
+      },
+      "sprites": [
+        {
+          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 171,
+          "height": 100,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": true
+        },
+        {
+          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 165,
+          "height": 94,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": true
+        },
+        {
+          "frame": "de5efb11-6931-4bdf-8bf8-428b171ce96b",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            -87.6763253607076,
+            490.2153253607076
+          ],
+          "width": 171,
+          "height": 100,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": true
+        },
+        {
+          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 171,
+          "height": 100,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": false
+        },
+        {
+          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 165,
+          "height": 94,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": false
+        },
+        {
+          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 171,
+          "height": 100,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": false
+        },
+        {
+          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            5.9846746392924075,
+            439.6343253607076
+          ],
+          "width": 165,
+          "height": 94,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+          },
+          "active": false
+        }
+      ],
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -5.11,
+        "y": 35.74
+      }
     }
   ],
   "specials": [
@@ -4725,8 +5244,8 @@
         "x": -473.076,
         "y": 439.999
       },
-      "x": -473.076,
-      "y": 439.999,
+      "x": -294.8688643367639,
+      "y": 384.10699502494896,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -4821,8 +5340,8 @@
         "x": -298.147,
         "y": 83.1
       },
-      "x": -310.8847600566622,
-      "y": 79.62606543909212,
+      "x": -311.39899397496225,
+      "y": 122.60153561298144,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -4917,8 +5436,8 @@
         "x": -411.886,
         "y": 246.42
       },
-      "x": -453.5732147308945,
-      "y": 215.1545889518291,
+      "x": -469.92446938286065,
+      "y": 130.18679442712707,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5013,8 +5532,8 @@
         "x": -250.684,
         "y": 416.796
       },
-      "x": -469.54187733719607,
-      "y": 316.05189773367164,
+      "x": -436.1349422131957,
+      "y": 350.3590255808639,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5109,8 +5628,8 @@
         "x": 154.887,
         "y": 90.679
       },
-      "x": 208.15399660058742,
-      "y": 59.41358895182913,
+      "x": -458.2067428609969,
+      "y": 242.17458138766045,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5205,8 +5724,8 @@
         "x": -407.277,
         "y": 1.273
       },
-      "x": -407.277,
-      "y": 1.273,
+      "x": -303.57357402634,
+      "y": 271.23735383185635,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5365,40 +5884,52 @@
       "name": "Path1_2_3",
       "spawnIds": [
         1,
-        2,
-        3
+        3,
+        2
       ],
       "entry": "legacy-route-741-0",
       "nodes": [
         {
           "id": "legacy-route-741-0",
           "goal": false,
-          "x": -532.576,
-          "y": 759.256
+          "x": -738.2394756561986,
+          "y": 911.7897444450139
         },
         {
-          "id": "legacy-route-741-1",
-          "goal": false,
-          "x": -137.676,
-          "y": 545.876
+          "id": "node-1",
+          "x": -461.91605008964615,
+          "y": 757.5268725665871,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": -66.85644028481403,
+          "y": 871.7710575833751,
+          "goal": false
         },
         {
           "id": "legacy-route-741-2",
           "goal": true,
-          "x": -148.801,
-          "y": 277.569
+          "x": 53.43475106192861,
+          "y": 399.25322309658424
         }
       ],
       "edges": [
         {
           "id": "legacy-route-741-edge-0",
           "from": "legacy-route-741-0",
-          "to": "legacy-route-741-1",
+          "to": "node-1",
           "weight": 1
         },
         {
-          "id": "legacy-route-741-edge-1",
-          "from": "legacy-route-741-1",
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
           "to": "legacy-route-741-2",
           "weight": 1
         }
@@ -5419,26 +5950,32 @@
         {
           "id": "legacy-route-753-0",
           "goal": false,
-          "x": -548.672,
-          "y": 761.408
+          "x": -721.7720920106339,
+          "y": 913.9417444450139
         },
         {
           "id": "legacy-route-753-1",
           "goal": false,
-          "x": -44.82146674997989,
-          "y": 650.8263662718041
+          "x": -438.5150727942086,
+          "y": 745.580797104627
         },
         {
           "id": "legacy-route-753-3",
           "goal": false,
-          "x": 289.55959455523697,
-          "y": 391.581
+          "x": -39.330717514094374,
+          "y": 849.2678578253351
+        },
+        {
+          "id": "node-1",
+          "x": 277.14225363377625,
+          "y": 618.4999017840375,
+          "goal": false
         },
         {
           "id": "legacy-route-753-4",
           "goal": true,
-          "x": -21.135349231103127,
-          "y": 224.34555195348463
+          "x": 50.84686724856636,
+          "y": 409.44268004406337
         }
       ],
       "edges": [
@@ -5457,6 +5994,12 @@
         {
           "id": "legacy-route-753-edge-3",
           "from": "legacy-route-753-3",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "legacy-route-753-4",
           "weight": 1
         }
@@ -5479,20 +6022,26 @@
         {
           "id": "legacy-route-771-0",
           "goal": false,
-          "x": 567.7826763299482,
-          "y": 878.2585639026286
+          "x": 554.8070668820461,
+          "y": 1077.4756881768128
         },
         {
           "id": "legacy-route-771-1",
           "goal": false,
-          "x": 276.48665928924737,
-          "y": 418.379160120629
+          "x": 238.20677757800584,
+          "y": 867.2697288600301
+        },
+        {
+          "id": "node-1",
+          "x": 255.1122199022345,
+          "y": 610.7488186904004,
+          "goal": false
         },
         {
           "id": "legacy-route-771-2",
           "goal": true,
-          "x": -130.513,
-          "y": 209.694
+          "x": 58.01185268484866,
+          "y": 375.9386428220938
         }
       ],
       "edges": [
@@ -5505,6 +6054,12 @@
         {
           "id": "legacy-route-771-edge-1",
           "from": "legacy-route-771-1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "legacy-route-771-2",
           "weight": 1
         }
@@ -5525,50 +6080,50 @@
         {
           "id": "legacy-route-783-0",
           "goal": false,
-          "x": 428.83694035754655,
-          "y": -1192.674349231103
+          "x": 378.36538959752613,
+          "y": -1151.5416540998633
         },
         {
           "id": "legacy-route-783-1",
           "goal": false,
-          "x": 482.675,
-          "y": -867.728
+          "x": 370.41459969393696,
+          "y": -872.9545540531453
         },
         {
           "id": "legacy-route-783-2",
           "goal": false,
-          "x": -461.402,
-          "y": -862.525
+          "x": -505.96241972550973,
+          "y": -831.6754786515701
         },
         {
           "id": "legacy-route-783-3",
           "goal": false,
-          "x": -530.6744616584228,
-          "y": -634.302
+          "x": -492.96949112145313,
+          "y": -661.7237967541598
         },
         {
           "id": "legacy-route-783-4",
           "goal": false,
-          "x": -20.85484154213441,
-          "y": -437.40368485029876
+          "x": -274.50646151811264,
+          "y": -391.129402827654
         },
         {
           "id": "legacy-route-783-5",
           "goal": false,
-          "x": 373.55577348259703,
-          "y": -434.52924023257685
+          "x": -162.88312552065423,
+          "y": -208.29941701075845
         },
         {
           "id": "legacy-route-783-6",
           "goal": false,
-          "x": 6.757119284906651,
-          "y": -79.04122828343293
+          "x": -171.4845596171321,
+          "y": -32.76694626078825
         },
         {
           "id": "legacy-route-783-7",
           "goal": true,
-          "x": -208.021,
-          "y": 201.303
+          "x": 57.6276560559232,
+          "y": 326.41494769085415
         }
       ],
       "edges": [
@@ -5631,44 +6186,44 @@
         {
           "id": "legacy-route-810-0",
           "goal": false,
-          "x": 499.55482793022696,
-          "y": -1170.0446252078455
+          "x": 407.00626388493765,
+          "y": -1154.6198645336306
         },
         {
           "id": "legacy-route-810-1",
           "goal": false,
-          "x": 482.675,
-          "y": -867.728
+          "x": 360.9907769034159,
+          "y": -871.1557245942699
         },
         {
           "id": "legacy-route-810-2",
           "goal": false,
-          "x": -537.761,
-          "y": -832.444
+          "x": -515.4807901372452,
+          "y": -823.8746885143252
         },
         {
           "id": "legacy-route-810-3",
           "goal": false,
-          "x": -619.779,
-          "y": -634.302
+          "x": -441.5373210979613,
+          "y": -586.3138556802204
         },
         {
           "id": "legacy-route-810-4",
           "goal": false,
-          "x": -432.27220105961794,
-          "y": -304.08356899418555
+          "x": -230.0364499976894,
+          "y": -350.35785101683024
         },
         {
           "id": "legacy-route-810-5",
           "goal": false,
-          "x": 12.099422485463943,
-          "y": -117.4101294680207
+          "x": 113.21729801642817,
+          "y": -367.6340248497289
         },
         {
           "id": "legacy-route-810-6",
           "goal": true,
-          "x": -115.357,
-          "y": 197.918
+          "x": 56.02922971349881,
+          "y": 347.0240198507439
         }
       ],
       "edges": [
@@ -5725,56 +6280,56 @@
         {
           "id": "legacy-route-834-0",
           "goal": false,
-          "x": 567.444,
-          "y": -1211.061
+          "x": 366.92211123520633,
+          "y": -1149.3619573031403
         },
         {
           "id": "legacy-route-834-1",
           "goal": false,
-          "x": 482.675,
-          "y": -867.728
+          "x": 352.42146541774093,
+          "y": -855.730963920055
         },
         {
           "id": "legacy-route-834-2",
           "goal": false,
-          "x": -520.016,
-          "y": -831.014
+          "x": -475.4555802744902,
+          "y": -836.1555868914049
         },
         {
           "id": "legacy-route-834-3",
           "goal": false,
-          "x": -619.779,
-          "y": -634.302
+          "x": -477.5284293377959,
+          "y": -610.3079278401101
         },
         {
           "id": "legacy-route-834-4",
           "goal": false,
-          "x": -391.2051414171646,
-          "y": -301.013405444763
+          "x": -312.3674757489552,
+          "y": -436.40852691842707
         },
         {
           "id": "legacy-route-834-5",
           "goal": false,
-          "x": -10.250245324133878,
-          "y": -459.97203917295894
+          "x": -371.87519001961635,
+          "y": -146.33523879725615
         },
         {
-          "id": "legacy-route-834-7",
-          "goal": false,
-          "x": 380.63814307992817,
-          "y": -435.86476319621664
+          "id": "node-1",
+          "x": -184.37753422659785,
+          "y": -4.350944232038273,
+          "goal": false
         },
         {
           "id": "legacy-route-834-8",
           "goal": false,
-          "x": 152.2261414171646,
-          "y": -326.8233321904022
+          "x": 69.96075115468518,
+          "y": 34.80161250508029
         },
         {
           "id": "legacy-route-834-9",
           "goal": true,
-          "x": -53.256,
-          "y": 178.315
+          "x": 68.42822309658415,
+          "y": 377.12302646765863
         }
       ],
       "edges": [
@@ -5811,12 +6366,12 @@
         {
           "id": "legacy-route-834-edge-5",
           "from": "legacy-route-834-5",
-          "to": "legacy-route-834-7",
+          "to": "node-1",
           "weight": 1
         },
         {
-          "id": "legacy-route-834-edge-7",
-          "from": "legacy-route-834-7",
+          "id": "edge-1",
+          "from": "node-1",
           "to": "legacy-route-834-8",
           "weight": 1
         },
@@ -5839,10 +6394,10 @@
     "x": -153.781,
     "y": 36.69
   },
-  "nextBuilding": 20,
+  "nextBuilding": 22,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "ca3d564f4a6e238e51d2cddd0a1c88e1a4df8bb95abfa12732855248e1c21e00",
+  "sourceRevision": "7cda68ae8dcef458c9d9777c68f8ab6578364649020700c4d59a5b63a8d97729",
   "templates": {
     "Map01": [
       {

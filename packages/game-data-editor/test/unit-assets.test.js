@@ -82,7 +82,7 @@ test('actual Creator model/skin/attack/backward-seek integration for every reach
         const description=describe({type,id}),layers=layersFor(description);assert(layers.length>0);
         Renderer.seek(spine,layers,'attack',0,false);const zero=coordinates(layers);assert(zero.some(layer=>layer.length>0));
         const attackDuration=Math.max(...layers.map(layer=>layer.data.findAnimation('attack').duration));
-        if(type==='enemy'&&stationaryAttacks.has(cfg.SoldierCfg[id].MonsterSource))assert.equal(cfg.SoldierCfg[id].AttackDamage,0,'Stationary chest presets have no authored attack and deal no damage');
+        if(type==='enemy'&&stationaryAttacks.has(cfg.SoldierCfg[id].MonsterSource||cfg.SoldierCfg[(cfg.GameTools.unitProfiles.entries[id]||{}).baseId]?.MonsterSource))assert.equal(cfg.SoldierCfg[id].AttackDamage,0,'Stationary chest presets have no authored attack and deal no damage');
         else assert([.25,.5,.75].some(fraction=>{Renderer.seek(spine,layers,'attack',attackDuration*fraction,false);return JSON.stringify(coordinates(layers))!==JSON.stringify(zero);}), 'attack pose changes '+type+id);
         Renderer.seek(spine,layers,'attack',0,false);assert.deepEqual(coordinates(layers),zero,'backward seek is deterministic '+type+id);
         const box=Renderer.bounds(spine,layers);assert(box.width>0&&box.height>0&&isFinite(box.width));
@@ -102,10 +102,12 @@ test('Enemy08 projectile diagnostic follows actual dt movement and target cappin
     assert(start>=0&&end>start);const body=source.slice(source.indexOf('function',start),end+4).trim().replace(/;$/,'');
     function vec(){return{x:0,y:0,len(){return Math.hypot(this.x,this.y);}};}
     const cc={isValid:()=>true,Vec2:{RIGHT:{signAngle:()=>0},subtract(o,a,b){o.x=a.x-b.x;o.y=a.y-b.y;},normalize(o,a){const d=Math.hypot(a.x,a.y);o.x=a.x/d;o.y=a.y/d;},multiplyScalar(o,a,k){o.x=a.x*k;o.y=a.y*k;},add(o,a,b){o.x=a.x+b.x;o.y=a.y+b.y;}}};
-    const update=vm.runInNewContext('('+body+')',{cc,isFinite}),settings=describe({type:'enemy',id:90008}).projectile;
+    const base=fs.readFileSync(path.join(root,'assets/_script/KinghtFallBulletBase.js'),'utf8'),targetStart=base.indexOf('_ctor.prototype.readTargetPosition = function'),targetEnd=base.indexOf('\n  };',targetStart);
+    assert(targetStart>=0&&targetEnd>targetStart);const targetBody=base.slice(base.indexOf('function',targetStart),targetEnd+4).trim().replace(/;$/,'');
+    const update=vm.runInNewContext('('+body+')',{cc,isFinite}),readTargetPosition=vm.runInNewContext('('+targetBody+')',{cc}),settings=describe({type:'enemy',id:90008}).projectile;
     assert.equal(settings.directHoming,true);
     for(const fps of [5,30,60,120]){
-        const actor={state:0,speed:settings.speed,tagNode:{getPosition(o){o.x=600;o.y=0;}},tagPos:vec(),vec2_1:vec(),vec2_2:vec(),_dir:vec(),targetIsLive:()=>true,onDie(){this.state=1;},node:{x:0,y:0,getPosition(o){o.x=this.x;o.y=this.y;},setPosition(p){this.x=p.x;this.y=p.y;}}};
+        const actor={state:0,speed:settings.speed,tagNode:{getPosition(o){o.x=600;o.y=0;}},readTargetPosition,tagPos:vec(),vec2_1:vec(),vec2_2:vec(),_dir:vec(),targetIsLive:()=>true,onDie(){this.state=1;},node:{x:0,y:0,getPosition(o){o.x=this.x;o.y=this.y;},setPosition(p){this.x=p.x;this.y=p.y;}}};
         let frames=0;while(actor.state===0&&frames<3600){update.call(actor,1/fps);frames++;}
         const preview=Projectile.simulate(settings,600,fps);assert.notEqual(preview.time,null);assert.equal(actor.state,1);
         assert(Math.abs(preview.time-frames/fps)<=1/fps+1e-9,'actual impact agrees within one update at '+fps+'fps');

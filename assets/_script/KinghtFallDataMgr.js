@@ -199,7 +199,7 @@ var exp_KinghtFallDataMgr = function () {
   };
   _ctor.prototype.getSoldierCfgById = function (t, side) {
     if (side === "ally" && this.data.AllyCfg && this.data.AllyCfg[t]) return this.data.AllyCfg[t];
-    return this.data.SoldierCfg[t];
+    return (side!=="ally"&&Number(t)>=1000000000&&require("EnemyStageProfiles").current(this.data,t)) || this.data.SoldierCfg[t];
   };
   _ctor.prototype.getCode = function (t) {
     var e = t.toLocaleLowerCase();

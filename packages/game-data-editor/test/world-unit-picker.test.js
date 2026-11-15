@@ -33,13 +33,9 @@ test('enemy classes distinguish profiles of one model without changing combat ro
  assert.deepEqual(config,before);assert(!Object.hasOwn(config.GameTools.enemyClasses,'enemy:1:default'));
 });
 
-test('model groups collapse campaign appearances without removing IDs, merging equal names, or changing combat data',()=>{
- const root=path.resolve(__dirname,'../../..'),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'))),before=clone(config),localization=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'))),characters=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/characters/catalog.json'))),charactersBefore=clone(characters),rows=Catalog.rows(config,localization,null,characters),models=Catalog.groups(rows);
- assert(models.length<rows.length);assert.deepEqual(models.flatMap(group=>group.units.map(unit=>unit.id)).sort((a,b)=>a-b),rows.map(unit=>unit.id).sort((a,b)=>a-b));
- for(const [name,ids]of [['Green Slime',[91037,92047]],['Purple Slime',[91038,92048,92049]]]){const matches=models.filter(group=>group.units.some(unit=>unit.name===name));assert.equal(matches.length,1);assert.deepEqual(matches[0].units.map(unit=>unit.id),ids);}
- const wolf=models.find(group=>group.units.some(unit=>unit.id===90001));assert(wolf.units.some(unit=>unit.id===91050));assert.equal(rows.find(unit=>unit.id===90001).assetPack,'monster1');assert.equal(rows.find(unit=>unit.id===90001).profileKind,'Original');assert.equal(rows.find(unit=>unit.id===91050).profileKind,'Standard');
- assert.equal(Catalog.groups([{id:1,name:'Same',modelKey:'source:a'},{id:2,name:'Same',modelKey:'source:b'}]).length,2);assert.deepEqual(config,before);assert.deepEqual(characters,charactersBefore);
- const purple=rows.filter(unit=>unit.name==='Purple Slime'),labels=Catalog.optionLabels(purple);assert.equal(new Set(labels.values()).size,3);assert(Catalog.profileLabel(purple[0]).includes('100 HP'));assert(Catalog.profileLabel(purple[2]).includes('Guardian'));assert(Catalog.matches(purple[2],'purple guardian'));assert.equal(purple[2].id,92049);
+test('saved units expose exactly six fighting profiles per parent without Campaign or Normal profile labels',()=>{
+ const root=path.resolve(__dirname,'../../..'),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'))),before=clone(config),localization=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'))),characters=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/characters/catalog.json'))),rows=Catalog.rows(config,localization,null,characters),groups=Catalog.groups(rows);
+ assert.equal(groups.length,Object.keys(config.GameTools.unitProfiles.families).length);for(const group of groups){assert.equal(group.units.length,6);assert.equal(Catalog.firstProfile(group.units).unitType,'fighter');assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}assert.deepEqual(config,before);
 });
 
 test('appearance grouping resolves references and safely stops at cyclic or missing source records',()=>{
@@ -53,6 +49,6 @@ test('saved character appearances take precedence over legacy models and do not 
 });
 test('the complete saved catalog exposes every spawnable unit and read-only model descriptions without creating drafts',()=>{
  const root=path.resolve(__dirname,'../../..'),file=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),before=fs.readFileSync(file),service=new Service(root,{artifacts:path.join(os.tmpdir(),'hkd-picker-readonly-'+process.pid)}),catalog=service.catalog(),config=JSON.parse(before);
- assert.equal(catalog.units.length,Object.values(config.SoldierCfg).filter(unit=>unit.prefab&&![90011,90012].includes(Number(unit.ID))).length);assert(catalog.units.every(unit=>typeof unit.description==='string'&&unit.unitType&&unit.assetPack));assert.equal(catalog.units.find(unit=>unit.id===92001).assetPack,'monster1');
+ assert.equal(catalog.units.length,Object.values(config.SoldierCfg).filter(unit=>unit.prefab&&![90011,90012].includes(Number(unit.ID))&&!config.GameTools.unitProfiles.aliases[unit.ID]).length);assert(catalog.units.every(unit=>typeof unit.description==='string'&&unit.unitType&&unit.assetPack));assert.equal(catalog.units.find(unit=>unit.id===91001).assetPack,'monster1');
  const documents=clone(service.docs),model=service.unitPreview({id:91001});assert(model.layers.length&&model.layers[0].json&&model.layers[0].atlas&&model.runtimePath);assert.deepEqual(model.shared,[]);assert.equal(service.version,1);assert.deepEqual(service.docs,documents);assert(fs.readFileSync(file).equals(before));assert.throws(()=>service.unitPreview({id:90011}),/spawnable/);
 });

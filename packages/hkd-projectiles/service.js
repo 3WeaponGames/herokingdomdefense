@@ -64,23 +64,26 @@ class ProjectilesService {
     this.trailDefaults.set(cacheKey,result);return result;
   }
   units(){
-    const data=this.configData,entries=this.readCatalog('assets/resources/localization/catalog.json').entries;
+    const data=this.configData,settings=data.GameTools||{},entries=this.readCatalog('assets/resources/localization/catalog.json').entries;
     const label=text=>String(text||'').replace(/\[\[loc:([^\]]+)\]\]/g,(_,key)=>entries[key]&&entries[key].en||key);
     const items=this.readCatalog('assets/resources/hero-items/catalog.json',{assignments:{},profiles:{}});
-    const select=require('../../assets/_script/ProjectileLooks').select;
+    const {select,selectSource}=require('../../assets/_script/ProjectileLooks'),Records=require('../game-data-editor/lib/unit-records'),Fighting=require('../game-data-editor/lib/fighting-profiles');
     const previewTiers=data.EquipCfg.find(row=>row.id===3).levelInfo.map(level=>{const profile=items.profiles[items.assignments['3:'+level.Level]],choice=select({assets:this.data.assets,assignments:{},heroArrowLayer:this.data.heroArrowLayer},'hero',level.Level,profile);return {level:level.Level,flight:choice.flight||'hero-skin:'+level.EquipSkin,tint:choice.tint};});
     const enemyProjectiles=Object.values(data.SoldierCfg).filter(row=>row.AttackType===2).map(row=>{
       let defaults=this.modelDefaults.get(row.ID);if(!defaults){defaults={};if(row.MonsterPack==='fantasy-bosses')try{const json=require('../game-data-editor/lib/unit-assets').describe(this.root,{type:'enemy',id:row.ID,noRuntime:true,noShared:true,documents:{A:{data}}}).layers[0].json;defaults=json._fantasy&&json._fantasy.effects&&json._fantasy.effects.projectile||{};}catch(_){/* Missing draft model keeps the original preview. */}this.modelDefaults.set(row.ID,defaults);}
-      return {key:'enemy:'+row.ID,type:'enemy',id:row.ID,name:label(row.Name)+' · Enemy',speed:500,defaultFlight:defaults.flight||(row.ID===90008?'original:fireball':row.ID===90005?'original:stone':'original:arrow'),defaultLaunch:defaults.launch,defaultImpact:defaults.impact,defaultSize:defaults.size};
+      const family=Fighting.familyFor(settings,row.ID),role=(settings.unitTypeAssignments||{})['enemy:'+row.ID+':'+Records.form('enemy',row.ID)],roleName=role&&((settings.unitTypes||{})[role]||{}).name,legacy=settings.unitProfiles&&settings.unitProfiles.aliases&&settings.unitProfiles.aliases[row.ID],behavior=Records.behavior(row,row.ID);
+      return {key:'enemy:'+row.ID,type:'enemy',id:row.ID,name:(family?family.name:label(row.Name))+' · Enemy'+(family&&role?' · '+label(roleName||role):'')+(legacy?' · Legacy '+row.ID:''),speed:500,defaultFlight:defaults.flight||(behavior===90008?'original:fireball':behavior===90005?'original:stone':'original:arrow'),defaultLaunch:defaults.launch,defaultImpact:defaults.impact,defaultSize:defaults.size};
     });
     const buildings=[1,2].flatMap(id=>(data.BuildEnum[id].levelList||[]).map((row,index)=>({key:'tower:'+id+':'+(index+1),type:'building',id,levelIndex:index,name:label(row.Name)+' · '+(id===1?'Castle':'Tower'),speed:this.speeds['tower:'+id+':'+(index+1)]||row.Tower&&row.Tower.projectileSpeed||550,...(row.Tower&&['cannon','sniper'].includes(row.Tower.attackType)?{speedEditable:true,builtinFlight:row.Tower.attackType}:{}),defaultFlight:'original:arrow'})));
     for(const [index,row]of ((data.BuildEnum[5]||{}).levelList||[]).entries())if(row.MillDefense&&row.MillDefense.kind==='scarecrow')buildings.push({key:'tower:5:'+(index+1),type:'building',id:5,levelIndex:index,name:label(row.Name)+' · Scarecrow defense',speed:450,defaultFlight:'original:arrow'});
     const units=[{key:'hero',type:'hero',id:'hero',name:'Skirmisher hero',speed:500,defaultFlight:previewTiers[0].flight,previewTiers},{key:'tower',type:'building',id:2,levelIndex:0,name:'Castle & arrow towers · shared default',speed:550,defaultFlight:'original:arrow'}].concat(buildings,[{key:'wall-defense',type:'wall',name:'Wall-defense mode · all cards',speed:500,defaultFlight:'original:wall-arrow'}],enemyProjectiles,Object.values(data.AllyCfg||{}).filter(row=>row.AttackType===2).map(row=>({key:'ally:'+row.ID,type:'ally',id:row.ID,name:label(row.Name)+' · Ally',speed:500,defaultFlight:'original:arrow'})));
-    const settings=data.GameTools||{};return units.map(who=>{
-      const key=timingKey(who),saved=settings.timingDefaults&&settings.timingDefaults[key],custom=this.timings&&this.timings[who.key],effectiveAssignment=select(this.data,who.key),shared=/^tower:/.test(who.key)&&this.timings&&this.timings.tower;
+    return units.map(who=>{
+      const key=timingKey(who),saved=settings.timingDefaults&&settings.timingDefaults[key],custom=this.timings&&this.timings[who.key],effectiveAssignment=selectSource(this.data,who.key,who.type==='enemy'?{cfg:data.SoldierCfg[who.id]}:null,settings),shared=/^tower:/.test(who.key)&&this.timings&&this.timings.tower;
       const defaultDelay=who.type==='building'?(finite(shared)?shared:0):saved&&finite(saved.attack)?saved.attack:0;
       const delay=custom===undefined?defaultDelay:custom;
-      const defaultTrail=this.defaultTrail(who),authoredSpeed=['hero','enemy','ally'].includes(who.type)&&this.shotSpeeds&&this.shotSpeeds.get(who.type+':'+(who.id||''))||who.speed,override=settings.projectileSpeeds&&settings.projectileSpeeds[key],speed=['hero','enemy','ally'].includes(who.type)&&typeof override==='number'&&Number.isFinite(override)&&override>=1&&override<=20000?override:authoredSpeed;
+      const defaultTrail=this.defaultTrail(who),authoredSpeed=['hero','enemy','ally'].includes(who.type)&&this.shotSpeeds&&this.shotSpeeds.get(who.type+':'+(who.id||''))||who.speed;let override=settings.projectileSpeeds&&settings.projectileSpeeds[key];
+      if(override===undefined&&who.type==='enemy'&&(who.id>=100000||data.SoldierCfg[who.id].ProfileBaseID))for(const id of require('../../assets/_script/EnemyStageProfiles').referenceIds(data.SoldierCfg[who.id],settings)){const inherited=settings.projectileSpeeds&&settings.projectileSpeeds['enemy:'+id+':'+Records.form('enemy',id)];if(inherited!==undefined){override=inherited;break;}}
+      const speed=['hero','enemy','ally'].includes(who.type)&&typeof override==='number'&&Number.isFinite(override)&&override>=1&&override<=20000?override:authoredSpeed;
       return {...who,portrait:this.portrait(who),speed,timingKey:key,launchDelay:finite(delay)?delay:0,defaultDelay,defaultTrail,effectiveAssignment,...(effectiveAssignment.set?{set:effectiveAssignment.set}:{})};
     });
   }
@@ -168,15 +171,17 @@ class ProjectilesService {
     return this.describeAsset(asset);
   }
   describeUnit(request){
-    if(request.key==='preview-hit'){const effect=this.describeAsset({id:'preview-hit',name:'Default hit',kind:'spine',bundle:'KinghtFallEffect',resource:'wqyl_being_hurt/wqyl_being_hurt',animation:'jian_lv1'});return {...effect,type:'effect',key:'preview-hit',animation:'jian_lv1'};}
+    if(request.key==='preview-hit'||request.key==='preview-wall-hit'){const wall=request.key==='preview-wall-hit',animation=wall?'jian_1':'jian_lv1',effect=this.describeAsset({id:request.key,name:wall?'Default wall hit':'Default hit',kind:'spine',bundle:wall?'gad_prefabs':'KinghtFallEffect',resource:wall?'_res/Skeleton/GAD_UIGame/wq_swcq_sjdx':'wqyl_being_hurt/wqyl_being_hurt',animation});return {...effect,type:'effect',key:request.key,animation};}
     const units=this.units(),who=request.key==='preview-target'?{type:'enemy',id:90001,key:'preview-target'}:units.find(unit=>unit.key===request.key);if(!who)throw Error('Choose an existing ranged unit.');
     const type=who.type==='wall'?'hero':who.type==='building'?'building':who.type,Assets=require('../game-data-editor/lib/unit-assets');
-    const description=Assets.describe(this.root,{type,id:who.id||'hero',levelIndex:who.levelIndex||0,heroStyle:'skirmisher',noShared:true,documents:{A:{data:this.configData}}});
+    const level=type==='ally'?(request.level===undefined?require('../game-data-editor/lib/unit-records').levels(this.configData,type,who.id)[0]:request.level):undefined;
+    const description=Assets.describe(this.root,{type,id:who.id||'hero',levelIndex:who.levelIndex||0,level,heroStyle:'skirmisher',noShared:true,documents:{A:{data:this.configData}}});
     if(description.projectile&&typeof who.speed==='number')description.projectile={...description.projectile,speed:who.speed};
     const record=type==='enemy'?this.configData.SoldierCfg[who.id]:type==='ally'?this.configData.AllyCfg[who.id]:{};
+    const tower=type==='building'?require('../../assets/_script/TowerCombat').settings(this.configData.BuildEnum[who.id].levelList[who.levelIndex||0]):null;
     const profile=require('../game-data-editor/lib/attack-profile').describe(description,this.configData.GameTools||{},{type,id:who.id,record});profile.hitTime=who.launchDelay===undefined?profile.hitTime:who.launchDelay;
     const settings=this.configData.GameTools||{},visuals=clone(settings.visuals&&settings.visuals[description.key]||{});
-    return {...description,key:request.key,profile,visuals,referenceDelay:description.defaultTiming,launchDelay:profile.hitTime,...(type==='building'?{artwork:require('../game-data-editor/preview/building-artwork').geometry(description.appearance,0)}:{})};
+    return {...description,key:request.key,profile,visuals,referenceDelay:description.defaultTiming,launchDelay:profile.hitTime,...(who.type==='wall'?{defaultHitKey:'preview-wall-hit',defaultHitAnimation:'jian_1'}:{}),...(type==='enemy'&&require('../game-data-editor/lib/unit-records').behavior(record,who.id)===90008?{defaultHitAnimation:false}:{}),...(tower&&tower.attackType==='cannon'?{defaultHitAnimation:false,defaultHit:{kind:'cannon',splashRadius:tower.splashRadius}}:{}),...(type==='building'?{artwork:require('../game-data-editor/preview/building-artwork').geometry(description.appearance,0)}:{})};
   }
   describeAsset(asset){
     if(asset.kind!=='spine')return {asset,layers:[]};

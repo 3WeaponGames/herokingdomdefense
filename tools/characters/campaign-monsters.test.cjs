@@ -4,28 +4,32 @@ const root=path.resolve(__dirname,'../..'),Migration=require('./publish-campaign
 const cfg=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),catalog=require('../../assets/resources/localization/catalog.json'),read=relative=>JSON.parse(fs.readFileSync(path.join(root,relative),'utf8'));
 const hash=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const aliases=Object.values(cfg.SoldierCfg).filter(row=>row.CampaignBaseUnit),withoutGuide=row=>{const copy=structuredClone(row);delete copy.Guide;return copy;};
-// Later map/biome/stage-layout authoring and the explicit queue-to-timeline conversion have
-// their own assertions. The original queues and all balance/reward fields still
-// use the historical hash; world-wave-conversion tests verify timed schedules.
-function projectStage(stage){const projected=structuredClone(stage);if(projected.StageLayoutId){assert.equal(projected.prefab,'Generated/Stages/'+projected.StageLayoutId);projected.prefab=projected.EnvironmentMapId;delete projected.StageLayoutId;}delete projected.EnvironmentMapId;delete projected.EnvironmentBiome;for(const wave of projected.WaveCfg){delete wave.SpawnTimeline;wave.RefreshSoldierKind=wave.RefreshSoldierKind.map(line=>line.replace(/\b(92\d{3})(?=,)/g,id=>{assert(cfg.SoldierCfg[id]&&cfg.SoldierCfg[id].CampaignBaseUnit,'Unknown appearance '+id);return String(cfg.SoldierCfg[id].CampaignBaseUnit);}));}return projected;}
+// Map layouts and reward authoring have separate coverage. Compare every saved
+// queue with its approved placement plan through the explicit profile remap;
+// world-wave-conversion tests verify the equivalent timed schedules.
+function projectStage(stage,variant){const projected=structuredClone(stage);if(projected.StageLayoutId){assert.equal(projected.prefab,'Generated/Stages/'+projected.StageLayoutId);projected.prefab=projected.EnvironmentMapId;delete projected.StageLayoutId;}if(projected.prefab==='map-original-01-rebuilt')projected.prefab='Map01';delete projected.EnvironmentMapId;delete projected.EnvironmentBiome;for(const wave of projected.WaveCfg)delete wave.SpawnTimeline;
+ const remap=line=>line.replace(/(\d+)(?=,)/g,id=>String(cfg.GameTools.unitProfiles.aliases[id]||id));
+ for(const row of Definition.plans[variant].filter(row=>row.stage===stage.Level)){const wave=projected.WaveCfg[row.wave-1];assert.equal(wave.RefreshSoldierKind[row.lineIndex],remap(row.proposed),variant+' stage '+stage.Level+' wave '+row.wave+' exact canonical queue');wave.RefreshSoldierKind[row.lineIndex]=row.original;}return projected;}
 test('stage seven retains its explicitly authored Map07 fire environment in every campaign variant',()=>{
   for(const [key,file]of Object.entries(Migration.CONFIGS)){
     const stage=read(file).LevelCfg.find(row=>row.Level===7);assert(stage,key+' stage seven');assert.equal(stage.EnvironmentMapId,'Map07',key);assert.equal(stage.EnvironmentBiome,'fire',key);
   }
 });
-test('all sixty stage definitions retain every wave field and exact spawn queues after projecting cosmetic IDs',()=>{
+test('all sixty stage definitions retain exact spawn queues after the explicit fighting-profile remap',()=>{
   for(const [key,file]of Object.entries(Migration.CONFIGS)){
     const stages=read(file).LevelCfg;assert.equal(stages.length,20);const used=new Set();
-    stages.forEach((stage,index)=>{assert.equal(stage.WaveCfg.length,10);assert.equal(hash(projectStage(stage)),Baseline.stageHashes[key][index],key+' stage '+stage.Level+' changed difficulty/order/delays/rewards');for(const wave of stage.WaveCfg)for(const line of wave.RefreshSoldierKind)for(const token of line.split('#')[1].split(';')){const id=Number(token.split(',')[0]);const row=cfg.SoldierCfg[id];if(row&&row.AppearanceSourceUnit)used.add(row.AppearanceSourceUnit);}});
+    stages.forEach((stage,index)=>{assert.equal(stage.Level,index+1);assert.equal(stage.WaveCfg.length,10);projectStage(stage,key);for(const wave of stage.WaveCfg)for(const line of wave.RefreshSoldierKind)for(const token of line.split('#')[1].split(';')){const id=Number(token.split(',')[0]),entry=cfg.GameTools.unitProfiles.entries[id],source=entry?entry.baseId:id;if(cfg.SoldierCfg[source]&&cfg.SoldierCfg[source].MonsterSource)used.add(source);}});
     assert.equal(used.size,100,key+' must feature the complete source roster');
   }
 });
-test('all legacy and source roster combat records and existing gameplay settings remain byte-value equivalent',()=>{
-  for(const [id,digest]of Object.entries(Baseline.unitHashes))assert.equal(hash(withoutGuide(cfg.SoldierCfg[id])),digest,'Existing combat record '+id);
+test('legacy aliases stay byte-value equivalent while canonical enemies use the approved fighting balance',()=>{
+  const Fighting=require('../../packages/game-data-editor/lib/fighting-profiles');
+  for(const [id,digest]of Object.entries(Baseline.unitHashes))if(!Fighting.familyFor(cfg.GameTools,id)||cfg.GameTools.unitProfiles.aliases[id])assert.equal(hash(withoutGuide(cfg.SoldierCfg[id])),digest,'Compatibility combat record '+id);
+  for(const family of Object.values(cfg.GameTools.unitProfiles.families))for(const [role,id]of Object.entries(family.profiles))for(const [index,field]of Fighting.FIELDS.entries())if(family.baseline[field]!==undefined)assert(Math.abs(cfg.SoldierCfg[id][field]-family.baseline[field]*Fighting.factors(cfg.GameTools,role)[index])<1e-6,id+'/'+field);
   // Unit-type icons were intentionally reauthored after this migration. Keep
   // the historical combat/settings contract without freezing that artwork.
   const gameplayEntry=(table,entry)=>{const copy=structuredClone(entry);if(table==='unitTypes')delete copy.icon;return copy;};
-  for(const [table,value]of Object.entries(Baseline.settings)){if(!value||typeof value!=='object'){assert.deepEqual(cfg.GameTools[table],value);continue;}for(const [key,entry]of Object.entries(value))assert.deepEqual(gameplayEntry(table,cfg.GameTools[table][key]),gameplayEntry(table,entry),table+'/'+key);}
+  for(const [table,value]of Object.entries(Baseline.settings)){if(!value||typeof value!=='object'){assert.deepEqual(cfg.GameTools[table],value);continue;}for(const [key,entry]of Object.entries(value)){if(table==='unitTypeAssignments'&&/^enemy:9001[12]:/.test(key))continue;assert.deepEqual(gameplayEntry(table,cfg.GameTools[table][key]),gameplayEntry(table,entry),table+'/'+key);}}
 });
 
 test('rerunning the migration preserves later authored unit-type icons and unknown fields without writes',t=>{

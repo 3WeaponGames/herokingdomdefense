@@ -34,7 +34,7 @@ function fixture(saved) {
     PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) }, GameTrackDataEvent: { TrackId: {} },
     LogMgr: { LogMgr: singleton({ error() {} }) }, TimeUtils: { TimeUtils: { GetTimeBySecond: () => 0 } },
     ResCacheMgr: { ResCacheMgr: singleton({ getAssets: () => null, addAssets() {} }) } });
-  const real = new Set(['ArgsParseUtils','ResourceMgr','UIMgr','BaseUI','KinghtFallHomeBattleCtrl','KinghtFallUIGame','KinghtFallGameCtrlData','KinghtFallGameCtrl']);
+  const real = new Set(['EnemyStageProfiles','ArgsParseUtils','ResourceMgr','UIMgr','BaseUI','KinghtFallHomeBattleCtrl','KinghtFallUIGame','KinghtFallGameCtrlData','KinghtFallGameCtrl']);
   // Resource/renderer readiness is tested by stage-asset-warmup.test.cjs.
   // This boundary retains real ResourceMgr delivery/retry and journal admission.
   modules.StageAssetWarmup={create(view,_config,level){return{dispose(){},reveal(){},run(){return{then(done){view.loadPrefab('maps',level.prefab,done);return{catch(){}};}};}};}};

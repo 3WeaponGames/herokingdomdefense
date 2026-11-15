@@ -34,6 +34,13 @@ test('projectile speed schema permits ranged unit keys and rejects malformed val
   const issues=value=>Schema.validate({A:config,overrides:{...settings,projectileSpeeds:value}},[{doc:'overrides',path:['projectileSpeeds']}]).filter(issue=>issue.doc==='overrides'&&issue.path[0]==='projectileSpeeds');assert.equal(issues(settings.projectileSpeeds).length,0);
   for(const value of [null,[],42,'bad',{'hero:hero:default':0},{'hero:hero:default':20001},{'hero:hero:default':'500'},{'enemy:123456:default':500},{'enemy:90001:default':500},{'hero:bad:default':500}])assert(issues(value).some(issue=>issue.severity==='error'),JSON.stringify(value));
 });
+
+test('Units profile speed fields show inherited parent speeds without seeding a same-value override',async()=>{
+  const f=fixture(),data=f.store.documents.A.data,family=data.GameTools.unitProfiles.families[90003],id=Object.values(family.profiles).find(id=>Number(id)!==90003),parent='enemy:90003:default',key='enemy:'+id+':default';
+  seed(f,{[parent]:876});const record=data.SoldierCfg[id],row={key:'enemy:'+id,unitType:'enemy',unitID:id,record};
+  assert.equal(f.panel._unitProjectileSpeedValue(row),876);const before=f.store.draftState(),version=f.store.version;await f.panel._unitProjectileSpeedEdit(row,876);assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);
+  await f.panel._unitProjectileSpeedEdit(row,932);assert.equal(f.store.documents.overrides.data.projectileSpeeds[key],932);await f.panel._unitProjectileSpeedEdit(row,undefined);assert.equal(f.panel._unitProjectileSpeedValue(row),876);assert.deepEqual(f.store.documents.overrides.data.projectileSpeeds,{[parent]:876});
+});
 test('isolated unit speed saves retain game timing and unrelated fields, detect conflicts and perform no writes for no-op saves',async()=>{
   const dir=temporary('hkd-unit-projectile-speed-');for(const file of Object.values(files)){const target=path.join(dir,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(path.join(root,file),target);}
   const store=new Store(dir,{validators:[Schema.validate],backupRoot:path.join(dir,'backups')}),f=fixture(store),target=path.join(dir,files.A),before=JSON.parse(fs.readFileSync(target,'utf8'));f.render('hero');await f.panel._unitProjectileSpeedEdit(f.row('hero'),720);assert.deepEqual(JSON.parse(fs.readFileSync(target,'utf8')),before);
@@ -43,6 +50,9 @@ test('isolated unit speed saves retain game timing and unrelated fields, detect 
 });
 test('deleting a created unit profile removes only its projectile speed and preserves other unit overrides',()=>{
   const Profiles=require('../lib/unit-profiles'),state={};for(const [key,file]of Object.entries(files))state[key]=JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));state.overrides=clone(state.A.GameTools);
-  const source=Object.values(state.A.SoldierCfg).find(unit=>unit.MonsterSource&&unit.AttackType===2),created=Profiles.operation(root,state,{id:source.ID,action:'add',name:'Projectile removal verification'}),id=created.selectedId,key='enemy:'+id+':default';created.state.overrides.projectileSpeeds={[key]:840,'hero:hero:default':650,future:{keep:true}};
+  // Ordinary custom profiles remain supported for legacy authoring data. The
+  // shipped roster now has six fixed fighting profiles and intentionally blocks Add.
+  const source=Object.values(state.A.SoldierCfg).find(unit=>unit.MonsterSource&&unit.AttackType===2);state.A.SoldierCfg={[source.ID]:clone(source)};state.overrides.unitProfiles={version:1,nextId:100000,entries:{}};
+  const created=Profiles.operation(root,state,{id:source.ID,action:'add',name:'Projectile removal verification'}),id=created.selectedId,key='enemy:'+id+':default';created.state.overrides.projectileSpeeds={[key]:840,'hero:hero:default':650,future:{keep:true}};
   const before=clone(created.state),removed=Profiles.operation(root,created.state,{id,action:'remove'}).state;assert.equal(removed.A.SoldierCfg[id],undefined);assert.equal(removed.overrides.projectileSpeeds[key],undefined);assert.deepEqual(removed.overrides.projectileSpeeds,{'hero:hero:default':650,future:{keep:true}});assert.deepEqual(created.state,before,'read-only operation input is preserved');
 });

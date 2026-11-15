@@ -11,7 +11,7 @@ function style(context){
   if(context.style)return context.style;
   const base=context.base||context,fields=String(base.id||'').split(':');return base.type==='item'?fields[fields.length-1]:null;
 }
-function target(context){const value=style(context);return value==='fighter'||value==='bruiser'?sockets.body:value==='vanguard'?sockets.head:null;}
+function target(context){const value=style(context);return ['fighter','bruiser','vanguard'].includes(value)?sockets.body:null;}
 function ensure(rig){
   const root=rig.bones.find(bone=>!bone.parent),scaleX=.78/Math.abs(root.scaleX||1),scaleY=.78/Math.abs(root.scaleY||1);
   for(const socket of Object.values(sockets)){

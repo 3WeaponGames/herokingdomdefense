@@ -297,7 +297,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     this.ndLevelInfo.getChildByName("labName").getComponent(cc.Label).string = this.T(e.Name);
     this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle01), e.Level < n ? e.WaveCfg.length : $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxOrder(), e.WaveCfg.length);
     if (cc.view) require("StageStarPresentation").showLobby(this, e, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageInfo(e.Level), n);
-    this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconMap, e.Map, function (e) {
+    this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconMap, e.StageThumbnail || e.Map, function (e) {
       if (!cc.isValid(t, true) || t.selectStage !== selected) return;
       (t._lobby && t._lobby.stagePreview || t.ndLevelInfo).getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = e;
     });
@@ -335,7 +335,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   };
   _ctor.prototype.loadStageMonster = function (stage) {
     var self = this, request = this._stageMonsterRequest = (this._stageMonsterRequest || 0) + 1;
-    var unitId = { wqyl_bb: 90001, wqyl_zbb: 90002, wqyl_gb: 90003, wqyl_qb: 90004 }[stage.EnemyAni] || 90001;
+    var unitId = stage.StageFaceUnit || ({ wqyl_bb: 90001, wqyl_zbb: 90002, wqyl_gb: 90003, wqyl_qb: 90004 }[stage.EnemyAni] || 90001);
     var cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(unitId);
     var node = (this._lobby && this._lobby.stagePreview || this.ndLevelInfo).getChildByName("spAni"), renderer = node.getComponent(sp.Skeleton);
     if (!this._stageModelOrigin) this._stageModelOrigin = { x: node.x, y: node.y };

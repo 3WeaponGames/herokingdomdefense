@@ -17,7 +17,7 @@ function index(root, spineOnly) {
             else {
                 result.files.push(file);
                 if ((spineOnly ? /\.json\.meta$/i : /\.meta$/).test(file)) {
-                    try { const meta = JSON.parse(fs.readFileSync(file, 'utf8')); if (meta.uuid) result.uuids[meta.uuid] = file.slice(0, -5); } catch (_) {}
+                    try { const meta = JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '')); if (meta.uuid) result.uuids[meta.uuid] = file.slice(0, -5); } catch (_) {}
                 }
             }
         });
@@ -74,7 +74,7 @@ function projectile(prefab, type, id) {
 }
 function describe(root, request) {
     const type = request.type || 'enemy', id = String(request.id || 'hero');
-    const documents = request.documents || {}, cfg = documents.A ? documents.A.data : json(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json'));
+    const documents = request.documents || {}, cfg = documents.A ? documents.A.data : json(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json')), settings=documents.overrides?documents.overrides.data:cfg.GameTools;
     if (type === 'building') {
         const record = request.record || cfg.BuildEnum[id], level = record && record.levelList && record.levelList[request.levelIndex || 0];
         let file = null,weaponFile=null;const weaponImages={};
@@ -91,24 +91,27 @@ function describe(root, request) {
     // A layered preview resolves only JSON Spine UUIDs. Avoid reading every
     // texture/sprite metadata file; the full public index remains available.
     const files = index(root, true);
-    const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], boss = type === 'enemy' && UnitRecords.boss(id);
+    const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], bossSource=UnitRecords.boss(id)?Number(id):record&&UnitRecords.boss(record.BehaviorTemplate)?record.BehaviorTemplate:null, boss = type === 'enemy' && bossSource!==null;
     if (type !== 'hero' && !record) throw new Error('Unit does not exist.');
     const prefabName = type === 'hero' ? null : boss ? 'ItemEnemy10' : (type === 'ally' ? 'Play' : '') + record.prefab;
     if (prefabName && !/^[A-Za-z0-9_-]+$/.test(prefabName)) throw new Error('Invalid unit prefab name.');
     const file = type === 'hero' ? path.join(root, 'assets/KinghtFallEnemyAni/ndPlay.prefab') : path.join(root, 'assets/KinghtFallEnemy', prefabName + '.prefab');
     const prefab = json(file), skeletons = prefab.filter(c => c.__type__ === 'sp.Skeleton');
-    let chosen = type === 'hero' ? skeletons : [skeletons[boss ? Number(id) - 90010 : 0]];
+    let chosen = type === 'hero' ? skeletons : [skeletons[boss ? bossSource - 90010 : 0]];
     if (!chosen[0]) throw new Error('Unit has no display skeleton.');
     const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(id)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
+    const characterFile=path.join(root,'assets/resources/characters/catalog.json'),characters=fs.existsSync(characterFile)?json(characterFile):null;
+    const parentIds=type==='enemy'?(record&&(record.ID>=100000||record.ProfileBaseID)?require('../../../assets/_script/EnemyStageProfiles').referenceIds(record,settings):[Number(id)]):[],parentKeys=parentIds.map(parent=>'enemy:'+parent+':'+UnitRecords.form('enemy',parent));
     let levelProfile=null;
     if(type==='ally'&&request.level){
         if(!Number.isInteger(request.level)||!(levels.length?levels:[1]).includes(request.level))throw Error('Choose an existing ally level.');
-        const file=path.join(root,'assets/resources/characters/catalog.json');if(fs.existsSync(file)){const looks=json(file),selected=looks.assignments['ally:'+id+':level:'+request.level]||looks.assignments['ally:'+id+':default'];levelProfile=looks.profiles[selected];}
+        if(characters){const selected=characters.assignments['ally:'+id+':level:'+request.level]||characters.assignments['ally:'+id+':default'];levelProfile=characters.profiles[selected];}
     }
+    if(type==='enemy'&&characters)for(const key of parentKeys){const profile=characters.profiles[characters.assignments[key]];if(profile&&typeof profile==='object'&&!Array.isArray(profile)){levelProfile=profile;break;}}
     let layers = chosen.map(c => layer(root,levelProfile&&levelProfile.baked?Object.assign({},c,{_N$skeletonData:{__uuid__:levelProfile.baked.uuid},defaultSkin:'default'}):c,prefab,files));
     if(type==='hero'&&!request.noAppearance){
-        const characters=path.join(root,'assets/resources/characters/catalog.json'),items=path.join(root,'assets/resources/hero-items/catalog.json'),profiles=[];
-        if(fs.existsSync(characters)){const catalog=json(characters);profiles.push(catalog.profiles[catalog.assignments['hero:hero:default']]);}
+        const items=path.join(root,'assets/resources/hero-items/catalog.json'),profiles=[];
+        if(characters)profiles.push(characters.profiles[characters.assignments['hero:hero:default']]);
         if(fs.existsSync(items)){
             const catalog=json(items),Weapons=require('../../../assets/_script/HeroWeapons'),style=(Weapons.find(request.heroStyle)||Weapons.styles[0]).id;
             for(const gear of cfg.EquipCfg){const level=Math.max(1,Math.min(gear.levelInfo.length,Number((request.heroLevels||{})[gear.id])||1));profiles.push(catalog.profiles[require('../../../assets/_script/EquipmentTiers').profileId(catalog,cfg.EquipCfg,gear.id,level,style)]);}
@@ -151,23 +154,22 @@ function describe(root, request) {
     let shotPrefab = prefab;
     if (type === 'hero') shotPrefab = json(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'));
     const timing = AttackTimings.fromLayers(layers);
-    const settings=documents.overrides?documents.overrides.data:cfg.GameTools;
-    const shotSettings=/Projectile/.test(effect)?projectile(shotPrefab,type,behavior):null,speedKey=type+':'+id+':'+form,savedSpeed=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[speedKey];
+    const shotSettings=/Projectile/.test(effect)?projectile(shotPrefab,type,behavior):null,speedKey=type+':'+id+':'+form;let savedSpeed=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[speedKey];
+    if(savedSpeed===undefined&&type==='enemy')for(const key of parentKeys){const value=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[key];if(value!==undefined){savedSpeed=value;break;}}
     if(shotSettings&&typeof savedSpeed==='number'&&Number.isFinite(savedSpeed)&&savedSpeed>=1&&savedSpeed<=20000)shotSettings.speed=savedSpeed;
     // Saved whole-unit playback is independent of the model/appearance and of
     // the Units panel's legacy attack-only override. Reading a preview never
     // changes or retimes the authored Spine data.
     let unitAnimationSpeed;
-    const characterFile=path.join(root,'assets/resources/characters/catalog.json');
-    if(fs.existsSync(characterFile)){
-        const speeds=json(characterFile).unitAnimationSpeeds||{},keys=type==='ally'&&request.level?['ally:'+id+':level:'+request.level,type+':'+id+':'+form]:[type+':'+id+':'+form];
+    if(characters){
+        const speeds=characters.unitAnimationSpeeds||{},keys=type==='ally'&&request.level?['ally:'+id+':level:'+request.level,type+':'+id+':'+form]:type==='enemy'?parentKeys:[type+':'+id+':'+form];
         for(const key of keys){const value=speeds[key];if(Object.prototype.hasOwnProperty.call(speeds,key)&&typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=2){unitAnimationSpeed=value;break;}}
     }
     return { type, id, form, key: type + ':' + id + ':' + form, source: relative(root, file), layers, shared, equipment,
         ...(unitAnimationSpeed===undefined?{}:{unitAnimationSpeed}),
         defaultTiming: timing.defaultTiming, timingDefaultSource: timing.timingDefaultSource, timingEvents: timing.timingEvents,
         effect, projectile: shotSettings,
-        forms: boss ? [{id:90010,label:'Form 1'},{id:90011,label:'Form 2'},{id:90012,label:'Form 3'}] : [],
+        forms: boss ? (()=>{const profiles=cfg.GameTools&&cfg.GameTools.unitProfiles,linked=profiles&&profiles.bossForms&&profiles.bossForms[id],first=UnitRecords.boss(id)?90010:linked?linked.profileId:Number(id),second=cfg.SoldierCfg[first].Data[2],third=cfg.SoldierCfg[second].Data[2];return[first,second,third].map((id,index)=>({id,label:'Form '+(index+1)}));})() : [],
         ...(type==='ally'?{levels:levels.length?levels:[1],level:request.level||0}:{}),runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
 }
 module.exports = { describe, index, enginePath, invalidate: function () { cachedIndex = null; cachedSpineIndex = null; } };

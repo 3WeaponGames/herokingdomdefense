@@ -25,7 +25,7 @@ function fixture(options = {}) {
     const original = originals[id] = new FakeSpineData('default-' + id, 'default-' + id);
     config.profiles['default-' + id] = {name: 'Default', base: {type: 'ally', id: String(id)}, parts: [], scale: 1, baked: {uuid: original.uuid}};
     config.assignments['ally:' + id + ':default'] = 'default-' + id;
-    for (const level of [1, 2, 3]) {
+    for (const level of [1, 2, 3, 4]) {
       const key = id + '-' + level, resource = 'unit-library/runtime/level-' + key;
       assets[resource] = new FakeSpineData('level-' + key, 'level-' + key);
       config.profiles['level-' + key] = {name: 'Level ' + level, base: {type: 'ally', id: String(id), level}, parts: [], scale: 1.7,
@@ -100,7 +100,7 @@ test('all four allies resolve exact logical barracks levels rather than branch i
   const f = fixture();
   for (const id of [90001, 90002, 90003, 90004]) {
     const unit = f.add(id, 1);
-    for (const level of [1, 2, 3]) {
+    for (const level of [1, 2, 3, 4]) {
       unit.actor.outBuild.buildInfo.cfg.level = level;
       const selected = f.api.assignedLook(f.config, unit.actor, 'ally');
       assert.equal(f.api.allyLevel(unit.actor), level);
@@ -141,6 +141,9 @@ for (const native of [false, true]) test(`${native ? 'native' : 'web'} allies sw
   f.step(25); assert.equal(unit.plays.length, 1); assert.equal(unit.swaps.length, 1);
   unit.actor.outBuild.buildInfo.cfg.level = 3; f.step(); f.flush(); f.step(2);
   assert.equal(unit.renderer.skeletonData.uuid, 'level-90003-3');
+  unit.actor.outBuild.buildInfo.cfg.level = 4; f.step(); f.flush(); f.step(2);
+  assert.equal(unit.renderer.skeletonData.uuid, 'level-90003-4');
+  assert.deepEqual(unit.renderer.node, nodeBefore, 'tier four keeps the authored ally model scale without compounding it');
   assert.equal(JSON.stringify(f.config), catalogBefore);
 });
 

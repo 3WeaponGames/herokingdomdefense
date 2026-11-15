@@ -126,6 +126,23 @@
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1
+        },
+        {
+          "id": "helmet_hair",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Character/Helmet_Hair/Body_Helmet_Hair_007",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Hair_Helmet",
+          "bone": "Rider/Body/Head/Hair_Helmet",
+          "x": 3.8,
+          "y": 4.2,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "tint": "#ff8d0a"
         }
       ],
       "baked": {
@@ -767,7 +784,7 @@
           "forceVisible": true
         }
       ],
-      "scale": 0.9,
+      "scale": 0.91,
       "faceless": true,
       "skinTint": "#ffbdab",
       "baked": {
@@ -851,7 +868,7 @@
           "forceVisible": true
         }
       ],
-      "scale": 0.95,
+      "scale": 0.94,
       "faceless": true,
       "skinTint": "#ffbdab",
       "baked": {
@@ -871,7 +888,7 @@
       "parts": [
         {
           "id": "shield",
-          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_016_Gold",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_016_Gray",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandLeft/Shield",
           "bone": "Rider/HandLeft/Shield",
@@ -881,14 +898,14 @@
           "forceVisible": true,
           "lockAspect": true,
           "x": 0,
-          "y": 0,
+          "y": -0.1,
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1
         },
         {
           "id": "helmet",
-          "sprite": "Helmet/FA_Helmet_058_Gold",
+          "sprite": "Helmet/FA_Helmet_058_Silver",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Head/Helmet",
           "bone": "Rider/Body/Head/Helmet",
@@ -904,15 +921,15 @@
         },
         {
           "id": "sword",
-          "sprite": "HandRight/Sword/FA_WP_Main_Sword_022_BrownYellow",
+          "sprite": "HandRight/Sword/FA_WP_Main_Sword_022_DarkGary",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandRight/Sword",
           "bone": "Rider/HandRight/Sword",
           "x": 0,
           "y": 0,
           "rotation": 0,
-          "scaleX": 1,
-          "scaleY": 1,
+          "scaleX": 0.9,
+          "scaleY": 0.9,
           "opacity": 1,
           "order": 0,
           "hideSlots": [],
@@ -920,7 +937,7 @@
         },
         {
           "id": "chest",
-          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Chest/FA_Chest_023_WhiteGold",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Chest/FA_Chest_022_Gray",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Chest",
           "bone": "Rider/Body/Chest",
@@ -935,7 +952,7 @@
           "forceVisible": true
         }
       ],
-      "scale": 1,
+      "scale": 0.97,
       "faceless": true,
       "skinTint": "#ffbdab",
       "baked": {
@@ -1018,7 +1035,7 @@
           "forceVisible": true
         }
       ],
-      "scale": 0.9,
+      "scale": 0.91,
       "faceless": true,
       "skinTint": "#ffbdab",
       "skins": {},
@@ -1103,7 +1120,7 @@
           "forceVisible": true
         }
       ],
-      "scale": 0.95,
+      "scale": 0.94,
       "faceless": true,
       "skinTint": "#ffbdab",
       "skins": {},
@@ -1125,15 +1142,15 @@
       "parts": [
         {
           "id": "blunt",
-          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_014_Gold",
+          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_014_DarkGray",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandRight/Blunt",
           "bone": "Rider/HandRight/Blunt",
           "x": 0,
           "y": 0,
           "rotation": 0,
-          "scaleX": 1,
-          "scaleY": 1,
+          "scaleX": 0.95,
+          "scaleY": 0.9500000000000001,
           "opacity": 1,
           "order": 0,
           "hideSlots": [],
@@ -1141,7 +1158,7 @@
         },
         {
           "id": "helmet",
-          "sprite": "Helmet/FA_Helmet_079_Yellow",
+          "sprite": "Helmet/FA_Helmet_079_Gray",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Head/Helmet",
           "bone": "Rider/Body/Head/Helmet",
@@ -1157,7 +1174,7 @@
         },
         {
           "id": "shield",
-          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_017_Gold",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_017_Gray",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandLeft/Shield",
           "bone": "Rider/HandLeft/Shield",
@@ -1173,7 +1190,7 @@
         },
         {
           "id": "chest",
-          "sprite": "Chest/FA_Chest_046_GreenGold",
+          "sprite": "Chest/FA_Chest_046_Gray",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Chest",
           "bone": "Rider/Body/Chest",
@@ -1188,7 +1205,7 @@
           "forceVisible": true
         }
       ],
-      "scale": 1,
+      "scale": 0.97,
       "faceless": true,
       "skinTint": "#ffbdab",
       "skins": {},
@@ -1207,7 +1224,7 @@
         "source": "character-maker/Character",
         "level": 1
       },
-      "scale": 0.9,
+      "scale": 0.91,
       "faceless": true,
       "parts": [
         {
@@ -1277,6 +1294,23 @@
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1
+        },
+        {
+          "id": "helmet_hair",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Character/Helmet_Hair/Body_Helmet_Hair_007",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Hair_Helmet",
+          "bone": "Rider/Body/Head/Hair_Helmet",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "tint": "#ff770f"
         }
       ],
       "baked": {
@@ -1294,7 +1328,7 @@
         "source": "character-maker/Character",
         "level": 2
       },
-      "scale": 0.95,
+      "scale": 0.94,
       "faceless": true,
       "parts": [
         {
@@ -1364,6 +1398,23 @@
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1
+        },
+        {
+          "id": "helmet_hair",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Character/Helmet_Hair/Body_Helmet_Hair_007",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Hair_Helmet",
+          "bone": "Rider/Body/Head/Hair_Helmet",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "tint": "#ff770f"
         }
       ],
       "baked": {
@@ -1381,12 +1432,12 @@
         "source": "character-maker/Character",
         "level": 3
       },
-      "scale": 1,
+      "scale": 0.97,
       "faceless": true,
       "parts": [
         {
           "id": "chest",
-          "sprite": "Chest/FA_Chest_059_Yellow",
+          "sprite": "Chest/FA_Chest_059_WhiteGold",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Chest",
           "bone": "Rider/Body/Chest",
@@ -1395,15 +1446,15 @@
           "hideSlots": [],
           "forceVisible": true,
           "lockAspect": true,
-          "x": -0.1,
-          "y": -0.1,
+          "x": 0,
+          "y": 0,
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1
         },
         {
           "id": "helmet",
-          "sprite": "Helmet/FA_Helmet_044_Dark",
+          "sprite": "Helmet/FA_Helmet_044_Brown",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Head/Helmet",
           "bone": "Rider/Body/Head/Helmet",
@@ -1420,7 +1471,7 @@
         },
         {
           "id": "weapon",
-          "sprite": "HandRight/Crossbow/FA_WP_Main_Crossbow_011_Gold",
+          "sprite": "HandRight/Crossbow/FA_WP_Main_Crossbow_011_Bone",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandRight/Crossbow/Crossbow",
           "bone": "Rider/HandRight/Crossbow/Crossbow",
@@ -1437,7 +1488,7 @@
         },
         {
           "id": "stock",
-          "sprite": "HandRight/Crossbow/FA_WP_Main_Crossbow_011_Gold_Down",
+          "sprite": "HandRight/Crossbow/FA_WP_Main_Crossbow_011_Bone_Down",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandRight/Crossbow/Crossbow_Down",
           "bone": "Rider/HandRight/Crossbow/Crossbow_Down",
@@ -1451,6 +1502,23 @@
           "rotation": 0,
           "scaleX": 1,
           "scaleY": 1
+        },
+        {
+          "id": "helmet_hair",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Character/Helmet_Hair/Body_Helmet_Hair_007",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Hair_Helmet",
+          "bone": "Rider/Body/Head/Hair_Helmet",
+          "x": 3.8,
+          "y": 4.2,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "tint": "#ff770f"
         }
       ],
       "baked": {
@@ -1469,7 +1537,7 @@
         "mount": "legacy-cavalry",
         "level": 2
       },
-      "scale": 0.95,
+      "scale": 0.94,
       "faceless": true,
       "parts": [
         {
@@ -1571,12 +1639,12 @@
         "mount": "legacy-cavalry",
         "level": 3
       },
-      "scale": 1,
+      "scale": 0.97,
       "faceless": true,
       "parts": [
         {
           "id": "chest",
-          "sprite": "Chest/FA_Chest_050_Gold",
+          "sprite": "Chest/FA_Chest_050_Light",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Chest",
           "bone": "Rider/Body/Chest",
@@ -1593,7 +1661,7 @@
         },
         {
           "id": "helmet",
-          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_036_WhiteGold",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_036_SilverBlue",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Head/Helmet",
           "bone": "Rider/Body/Head/Helmet",
@@ -1610,7 +1678,7 @@
         },
         {
           "id": "weapon",
-          "sprite": "HandRight/Spear/FA_WP_Main_Spear_021_WhiteGold",
+          "sprite": "HandRight/Spear/FA_WP_Main_Spear_021_WhiteBlue",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandRight/Spear",
           "bone": "Rider/HandRight/Spear",
@@ -1627,7 +1695,7 @@
         },
         {
           "id": "shield",
-          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_020_Yellow",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_020_Blue",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandLeft/Shield",
           "bone": "Rider/HandLeft/Shield",
@@ -1673,7 +1741,7 @@
         "mount": "legacy-cavalry",
         "level": 1
       },
-      "scale": 0.9,
+      "scale": 0.91,
       "faceless": true,
       "parts": [
         {
@@ -1765,7 +1833,382 @@
         "resource": "unit-library/runtime/ally-90004-level-1",
         "source": "character-maker/Character"
       }
+    },
+    "ally-90003-level-4": {
+      "name": "Crossbowman · Level 4",
+      "base": {
+        "type": "ally",
+        "id": "90003",
+        "source": "character-maker/Character",
+        "level": 4
+      },
+      "scale": 1,
+      "faceless": true,
+      "parts": [
+        {
+          "id": "chest",
+          "sprite": "Chest/FA_Chest_059_Yellow",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": -0.1,
+          "y": -0.1,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "helmet",
+          "sprite": "Helmet/FA_Helmet_044_Dark",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Helmet",
+          "bone": "Rider/Body/Head/Helmet",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "weapon",
+          "sprite": "HandRight/Crossbow/FA_WP_Main_Crossbow_011_Gold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Crossbow/Crossbow",
+          "bone": "Rider/HandRight/Crossbow/Crossbow",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "stock",
+          "sprite": "HandRight/Crossbow/FA_WP_Main_Crossbow_011_Gold_Down",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Crossbow/Crossbow_Down",
+          "bone": "Rider/HandRight/Crossbow/Crossbow_Down",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "helmet_hair",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Character/Helmet_Hair/Body_Helmet_Hair_007",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Hair_Helmet",
+          "bone": "Rider/Body/Head/Hair_Helmet",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "tint": "#ff770f"
+        }
+      ],
+      "skinTint": "#ffbdab",
+      "baked": {
+        "uuid": "aa63d7d3-9439-5996-ac7c-48fa009794c7",
+        "resource": "unit-library/runtime/ally-90003-level-4",
+        "source": "character-maker/Character"
+      }
+    },
+    "ally-90001-level-4": {
+      "name": "Royal Guard · Level 4",
+      "base": {
+        "type": "ally",
+        "id": "90001",
+        "source": "character-maker/Character",
+        "level": 4
+      },
+      "parts": [
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_016_Gold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "helmet",
+          "sprite": "Helmet/FA_Helmet_058_Gold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Helmet",
+          "bone": "Rider/Body/Head/Helmet",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "sword",
+          "sprite": "HandRight/Sword/FA_WP_Main_Sword_022_BrownYellow",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Sword",
+          "bone": "Rider/HandRight/Sword",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "chest",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Chest/FA_Chest_023_WhiteGold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "scale": 1,
+      "faceless": true,
+      "skinTint": "#ffbdab",
+      "baked": {
+        "uuid": "e128b327-fa62-5181-aa7e-48f9dadcda10",
+        "resource": "unit-library/runtime/ally-90001-level-4",
+        "source": "character-maker/Character"
+      }
+    },
+    "ally-90002-level-4": {
+      "name": "Heavy Infantry · Level 4",
+      "base": {
+        "type": "ally",
+        "id": "90002",
+        "source": "character-maker/Character",
+        "level": 4
+      },
+      "parts": [
+        {
+          "id": "blunt",
+          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_014_Gold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Blunt",
+          "bone": "Rider/HandRight/Blunt",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "helmet",
+          "sprite": "Helmet/FA_Helmet_079_Yellow",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Helmet",
+          "bone": "Rider/Body/Head/Helmet",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_017_Gold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "chest",
+          "sprite": "Chest/FA_Chest_046_GreenGold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "scale": 1,
+      "faceless": true,
+      "skinTint": "#ffbdab",
+      "skins": {},
+      "models": {},
+      "baked": {
+        "uuid": "9b9ffa3a-589f-5596-aafb-d3d7c495b6da",
+        "resource": "unit-library/runtime/ally-90002-level-4",
+        "source": "character-maker/Character"
+      }
+    },
+    "ally-90004-level-4": {
+      "name": "Cavalry · Level 4",
+      "base": {
+        "type": "ally",
+        "id": "90004",
+        "source": "character-maker/Character",
+        "mount": "legacy-cavalry",
+        "level": 4
+      },
+      "scale": 1,
+      "faceless": true,
+      "parts": [
+        {
+          "id": "chest",
+          "sprite": "Chest/FA_Chest_050_Gold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "helmet",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_036_WhiteGold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Helmet",
+          "bone": "Rider/Body/Head/Helmet",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "weapon",
+          "sprite": "HandRight/Spear/FA_WP_Main_Spear_021_WhiteGold",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Spear",
+          "bone": "Rider/HandRight/Spear",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_020_Yellow",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      ],
+      "mount": "original-mount/legacy-cavalry/lan",
+      "skinTint": "#ffbdab",
+      "models": {
+        "1595ea11-c62a-52ec-afd4-d387a05ae10c": {
+          "x": 10.8,
+          "y": -11
+        },
+        "d65efc08-b43e-54a9-a753-214538694c40": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "skins": {
+        "d65efc08-b43e-54a9-a753-214538694c40": "lan"
+      },
+      "baked": {
+        "uuid": "673fe3e4-5cc3-574d-ae7c-876edb13128e",
+        "resource": "unit-library/runtime/ally-90004-level-4",
+        "source": "character-maker/Character"
+      }
     }
   },
-  "assignments": { "ally:90001:default": "royal-guard", "ally:90002:default": "ally-90001-level-3-3", "ally:90003:default": "crossbowman", "ally:90004:default": "cavalry", "enemy:90001:default": "monster-1", "enemy:90002:default": "monster-2", "enemy:90003:default": "monster-3", "enemy:90004:default": "monster-4", "enemy:90005:default": "monster-5", "enemy:90006:default": "monster-6", "enemy:90007:default": "monster-7", "enemy:90008:default": "monster-8", "enemy:90009:default": "monster-9", "enemy:90010:1": "monster-10", "enemy:90011:2": "monster-11", "enemy:90012:3": "monster-12", "ally:90001:level:1": "ally-90001-level-1-3", "ally:90001:level:2": "ally-90001-level-2-3", "ally:90001:level:3": "ally-90001-level-3-4", "ally:90002:level:1": "ally-90002-level-1-2", "ally:90002:level:2": "ally-90002-level-2-2", "ally:90002:level:3": "ally-90002-level-3-2", "ally:90003:level:1": "ally-90003-level-1-2", "ally:90003:level:2": "ally-90003-level-2", "ally:90003:level:3": "ally-90003-level-3", "ally:90004:level:2": "ally-90004-level-2", "ally:90004:level:3": "ally-90004-level-3", "ally:90004:level:1": "ally-90004-level-1" }
+  "assignments": { "ally:90001:default": "royal-guard", "ally:90002:default": "ally-90001-level-3-3", "ally:90003:default": "crossbowman", "ally:90004:default": "cavalry", "enemy:90001:default": "monster-1", "enemy:90002:default": "monster-2", "enemy:90003:default": "monster-3", "enemy:90004:default": "monster-4", "enemy:90005:default": "monster-5", "enemy:90006:default": "monster-6", "enemy:90007:default": "monster-7", "enemy:90008:default": "monster-8", "enemy:90009:default": "monster-9", "enemy:90010:1": "monster-10", "enemy:90011:2": "monster-11", "enemy:90012:3": "monster-12", "ally:90001:level:1": "ally-90001-level-1-3", "ally:90001:level:2": "ally-90001-level-2-3", "ally:90001:level:3": "ally-90001-level-3-4", "ally:90002:level:1": "ally-90002-level-1-2", "ally:90002:level:2": "ally-90002-level-2-2", "ally:90002:level:3": "ally-90002-level-3-2", "ally:90003:level:1": "ally-90003-level-1-2", "ally:90003:level:2": "ally-90003-level-2", "ally:90003:level:3": "ally-90003-level-3", "ally:90004:level:2": "ally-90004-level-2", "ally:90004:level:3": "ally-90004-level-3", "ally:90004:level:1": "ally-90004-level-1", "ally:90003:level:4": "ally-90003-level-4", "ally:90001:level:4": "ally-90001-level-4", "ally:90002:level:4": "ally-90002-level-4", "ally:90004:level:4": "ally-90004-level-4" }
 }

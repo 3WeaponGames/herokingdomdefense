@@ -16,7 +16,7 @@ function isolated(){
 function ratesIssues(data){return Schema.validate(data,[{doc:'A',path:['HeroEquipment','baseAttackRates']}]).filter(i=>i.path[0]==='HeroEquipment'&&i.path[1]==='baseAttackRates');}
 function buttons(f,label){return f.all(f.panel.$detail,e=>e.tagName==='button'&&e.textContent===label);}
 
-test('Unit Types exposes hero defaults for six fighting styles only and browsing or unchanged input creates no draft',()=>{
+test('Fighting Types exposes hero defaults for six fighting styles only and browsing or unchanged input creates no draft',()=>{
  const f=panelFixture('unit-types');baseline(f.store,data=>{delete data.HeroEquipment.baseAttackRates;});f.panel._apply(f.store.snapshot());const before=f.store.draftState(),version=f.store.version,bytes=fs.readFileSync(path.join(root,primary));
  for(const style of Weapons.styles){f.render(style.id);const input=f.fields(f.panel.$detail,rateLabel)[0];assert(input,style.id);assert.equal(Number(input.value),Stats.baseAttackRate(before.A,style.id));assert.equal(input.disabled,false);assert.match(input.title,/Hero only/);assert.match(input.title,/Cloak/);assert.match(input.title,/not Spine/);input.onchange();assert.equal(buttons(f,'Reset base attack speed').length,0);}
  f.panel.$detail.textContent='';f.panel._unitType({key:'future-role',record:{name:'Future role',icon:''}});assert.equal(f.fields(f.panel.$detail,rateLabel).length,0,'Custom roles have no hero fighting-style defaults');
@@ -38,7 +38,7 @@ test('a rapid edit back to the displayed attack speed wins over an earlier queue
  const changes=f.messages.filter(m=>m.message==='game-data-editor:change').length,version=f.store.version;const current=f.fields(f.panel.$detail,rateLabel)[0];current.onchange();await f.panel._queue;assert.equal(f.store.version,version);assert.equal(f.messages.filter(m=>m.message==='game-data-editor:change').length,changes,'Fresh-value deduplication avoids redundant IPC');
 });
 
-test('Unit Types and both weapon tracks share one style value; reset removes only that style and preserves unknown fields',async()=>{
+test('Fighting Types and both weapon tracks share one style value; reset removes only that style and preserves unknown fields',async()=>{
  const unit=panelFixture('unit-types');baseline(unit.store,data=>{data.HeroEquipment.baseAttackRates={fighter:1.25,guardian:.8,futureStyle:{formula:'keep',extension:[1,2]}};data.HeroEquipment.futureSetting={keep:true};});unit.panel._apply(unit.store.snapshot());
  const gear=panelFixture('equipment',unit.store);unit.render('fighter');let input=unit.fields(unit.panel.$detail,rateLabel)[0];input.value='2';input.onchange();await unit.panel._queue;
  for(const key of ['4:fighter','3:fighter']){gear.panel._apply(unit.store.snapshot());gear.render(key);assert.equal(gear.fields(gear.panel.$detail,rateLabel)[0].value,'2');}

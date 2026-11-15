@@ -1,6 +1,6 @@
 # Character editor
 
-Open **Tools → Hero Kingdom Defense → Characters** in Cocos Creator 2.4.13. If the new menu has not appeared, reload the project's packages or restart Creator. A matching local review window is available with `node tools/characters/serve-editor.cjs` at `http://127.0.0.1:8790/`.
+Open **Tools → Characters → Character Appearance** in Cocos Creator 2.4.13. If the new menu has not appeared, reload the project's packages or restart Creator. A matching local review window is available with `node tools/characters/serve-editor.cjs` at `http://127.0.0.1:8790/`.
 
 The project includes all 678 part images and 635 thumbnails from Layer Lab's **2D Minimal — Character Parts Pack Vol1 Expansion**. Unity metadata was replaced by Cocos metadata. The import catalog records the source package hash and each part's original PNG hash. The original package is not needed on another PC after pulling these assets.
 

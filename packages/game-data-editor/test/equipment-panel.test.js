@@ -14,7 +14,11 @@ test('Equipment lists shared items first, includes both upgrade tracks for all s
 });
 test('selected tier and upgrade level drive the preview and stat edits retain existing progression IDs',async()=>{
  const f=fixture(),before=f.store.draftState();f.render('2',24);let edit=f.fields(f.panel.$detail,'Edit level')[0];assert(edit.children[24].textContent.startsWith('Tier 3 · Level 5 · Upgrade 25'));assert.equal(f.preview().heroLevels[2],25);
- edit.value=44;edit.onchange();assert.equal(f.preview().heroLevels[2],45);assert.equal(f.panel._equipmentIcon(f.panel._rows().find(row=>row.key==='2')).url.includes('FA_Helmet_043_Red'),true);assert.equal(f.store.changes().length,0);
+ edit.value=44;edit.onchange();assert.equal(f.preview().heroLevels[2],45);
+ // Selecting a tier honors its current published artwork, including authored
+ // replacements; the panel must not force an older default helmet design.
+ const expectedIcon=require('../../hkd-items/appearance').icon(f.store.root,before.A.EquipCfg,2,45,undefined,f.panel._itemAssets);
+ assert.equal(f.panel._equipmentIcon(f.panel._rows().find(row=>row.key==='2')).url,require('node:url').pathToFileURL(path.join(f.store.root,expectedIcon.image)).href);assert.equal(f.store.changes().length,0);
  const input=f.fields(f.panel.$detail,'HP regeneration')[0];input.value=123;input.onchange();await f.panel._queue;const after=f.store.draftState();assert.equal(after.A.EquipCfg[1].levelInfo[44].Parameters,123);assert.equal(after.A.EquipCfg[1].levelInfo[44].Level,45);assert.equal(after.A.EquipCfg[1].levelInfo[44].Image,before.A.EquipCfg[1].levelInfo[44].Image);assert.deepEqual(after.overrides,before.overrides);assert.equal(f.preview().heroLevels[2],45);
 });
 

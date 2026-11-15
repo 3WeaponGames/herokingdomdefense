@@ -43,6 +43,10 @@ function select(data, key, level, item) {
   }
   return result;
 }
+function selectSource(data,key,actor,settings,level,item){
+  var result={};if(/^enemy:/.test(key)&&actor&&actor.cfg&&(actor.cfg.ID>=100000||actor.cfg.ProfileBaseID))require("./EnemyStageProfiles").referenceIds(actor.cfg,settings).reverse().forEach(function(id){Object.assign(result,select(data,"enemy:"+id,level,item));});
+  return Object.assign(result,select(data,key,level,item));
+}
 function Bank(owner) { this.owner = owner; this.cache = Object.create(null); this.effects = []; this.pendingEffects = 0; this.pool = []; this.views = new Set(); this.launches = []; this.dead = false; }
 Bank.prototype.get = function (descriptor, callback) {
   var bank = this, cached = this.cache[descriptor.id];
@@ -200,6 +204,13 @@ View.prototype.release = function () {
 View.prototype.begin = function (key, sourceActor) {
   this.reset(); var view = this, serial = this.serial, shot = this.shot, bank = this.bank;
   var defaults = sourceActor ? require("FantasyEffects").projectile(sourceActor) : {};
+  // The shooter can return to its pool while the catalog is loading. Retain
+  // this release's presentation parent rather than reading its next life.
+  var sourceProfile, settings, sourceCfg = sourceActor && sourceActor.cfg;
+  if (/^enemy:/.test(key) && sourceCfg && (sourceCfg.ID >= 100000 || sourceCfg.ProfileBaseID)) {
+    sourceProfile = {cfg: {ID: sourceCfg.ID, ProfileBaseID: sourceCfg.ProfileBaseID}};
+    var config = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data; settings = config && config.GameTools;
+  }
   var parent = shot.node.parent, position = shot.node.getPosition(), angle = shot.node.angle, applied = false;
   function current() { return !bank.dead && serial === view.serial && valid(shot.node) && !!shot._shot; }
   function restoreTrails() {
@@ -216,7 +227,7 @@ View.prototype.begin = function (key, sourceActor) {
         if (view.cancelItem) return;
       }
     }
-    var options = Object.assign({}, defaults, select(data, key, level, item)), descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
+    var options=Object.assign({},defaults,selectSource(data,key,sourceProfile,settings,level,item)),descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     if (key === "hero" && !options.flight && bank.owner.ctrPlay && bank.owner.ctrPlay.heroStyle === "mystic") {
       options.flight = "original:fireball"; descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     }
@@ -290,6 +301,7 @@ function prepare(shot, owner, key, sourceActor) {
 }
 exports.prepare = prepare;
 exports.select = select;
+exports.selectSource = selectSource;
 exports.Bank = Bank;
 // Static buildings and wall cards have no Spine attack clock. Their explicit
 // launch delay is advanced with this battle's own simulation delta and epoch.

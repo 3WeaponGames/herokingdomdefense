@@ -84,14 +84,22 @@ function create(api,options){
     }
     ctx.restore();return pose;
   }
-  let hitActor=null,hitRequested=false,hitVersion=0;
+  const hits=new Map();
   function defaultHit(ctx,x,y,time,size,sourceActor){
     if(closed||!Number.isFinite(time)||time<0)return false;
-    if(!hitRequested){hitRequested=true;const version=++hitVersion;load('preview-hit').then(actor=>{if(!closed&&version===hitVersion)hitActor=actor;});}
-    if(!hitActor||!hitActor.layers.length)return false;
+    const source=sourceActor&&sourceActor.description,native=source&&source.defaultHit;
+    if(native&&native.kind==='cannon'){
+      if(time>=.24)return false;const progress=time/.24,radius=Math.max(12,finite(native.splashRadius,90)),scale=.3+.7*progress;
+      ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);ctx.globalAlpha*=220/255*(1-progress);ctx.fillStyle='rgba(255,183,53,'+(80/255)+')';ctx.strokeStyle='#ffd777';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.strokeStyle='#fff0b0';ctx.lineWidth=3;ctx.beginPath();
+      for(let index=0;index<8;index++){const angle=index*Math.PI/4;ctx.moveTo(Math.cos(angle)*radius*.35,Math.sin(angle)*radius*.35);ctx.lineTo(Math.cos(angle)*radius*.75,Math.sin(angle)*radius*.75);}ctx.stroke();ctx.restore();return true;
+    }
+    if(source&&source.defaultHitAnimation===false)return false;
+    const hitKey=source&&source.defaultHitKey||'preview-hit';
+    if(!hits.has(hitKey)){const entry={actor:null};hits.set(hitKey,entry);load(hitKey).then(actor=>{if(!closed&&hits.get(hitKey)===entry)entry.actor=actor;});}
+    const hitActor=hits.get(hitKey).actor;if(!hitActor||!hitActor.layers.length)return false;
     // Hero arrows, towers, KinghtFallEnemyLong and ranged SoldierItem03 all
     // dispatch jian_lv1. Melee/boss clips require an explicit actor override.
-    const source=sourceActor&&sourceActor.description,preferred=source&&source.defaultHitAnimation||'jian_lv1',names=animations(hitActor),name=names.includes(preferred)?preferred:hitActor.attackAnimation,length=duration(hitActor,name);
+    const preferred=source&&source.defaultHitAnimation||'jian_lv1',names=animations(hitActor),name=names.includes(preferred)?preferred:hitActor.attackAnimation,length=duration(hitActor,name);
     if(time>=length)return false;
     api.renderer.seek(hitActor.runtime,hitActor.layers,name,time,false);
     const box=hitActor.animationBounds[name]||hitActor.bounds,scale=positive(size,65)/Math.max(box.width,box.height);
@@ -100,7 +108,7 @@ function create(api,options){
   function invalidate(key){
     if(key===undefined){cache.clear();tokens.clear();}else{cache.delete(key);tokens.delete(key);}
     images.clear();
-    if(key===undefined||key==='preview-hit'){hitVersion++;hitActor=null;hitRequested=false;}
+    if(key===undefined)hits.clear();else hits.delete(key);
   }
   return{load,draw,muzzle,duration,animations,defaultHit,invalidate,destroy(){closed=true;invalidate();}};
 }

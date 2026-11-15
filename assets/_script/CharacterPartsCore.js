@@ -92,8 +92,10 @@ function apply(state) {
 }
 function actorKey(actor, type) {
   if (type === "hero") return "hero:hero:default";
-  var form = type === "enemy" && actor.spIdx !== undefined ? String(actor.spIdx + 1) : "default";
-  return type + ":" + actor.cfg.ID + ":" + form;
+  var id=type === "enemy" && actor.cfg.ProfileBaseID || actor.cfg.ID;
+  var form = type === "enemy" && id<100000 && actor.spIdx !== undefined ? String(actor.spIdx + 1) : "default";
+  if(type === "enemy" && actor.cfg.ProfileBaseID && id>=90010&&id<=90012)form=String(id-90009);
+  return type + ":" + id + ":" + form;
 }
 exports.prepare = prepare; exports.apply = apply; exports.restore = restore;
 exports.createAttachment = createAttachment; exports.actorKey = actorKey;

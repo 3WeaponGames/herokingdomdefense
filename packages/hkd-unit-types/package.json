@@ -1,12 +1,12 @@
 {
   "name": "hkd-unit-types",
   "version": "1.0.0",
-  "description": "Hero Kingdom Defense unit type and pictogram authoring",
+  "description": "Hero Kingdom Defense fighting type and pictogram authoring",
   "main": "main.js",
   "panel": {
     "main": "panel.js",
     "type": "dockable",
-    "title": "Unit Types",
+    "title": "Fighting Types",
     "width": 1100,
     "height": 800,
     "min-width": 800,

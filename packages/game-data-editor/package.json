@@ -4,40 +4,40 @@
   "description": "Visual game data authoring with explicit saves and silent previews",
   "main": "main.js",
   "main-menu": {
-    "Tools/Hero Kingdom Defense/Stages & Waves": {
+    "Tools/Stages/Stages & Waves": {
       "message": "game-data-editor:open-stages"
     },
-    "Tools/Hero Kingdom Defense/Battle Perks": {
+    "Tools/Skills/Battle Perks": {
       "message": "game-data-editor:open-perks"
     },
-    "Tools/Hero Kingdom Defense/Buildings": {
+    "Tools/Stages/Buildings": {
       "message": "game-data-editor:open-buildings"
     },
-    "Tools/Hero Kingdom Defense/Wall adjustments": {
+    "Tools/Stages/Wall adjustments": {
       "message": "game-data-editor:open-wall-adjustments"
     },
-    "Tools/Hero Kingdom Defense/Equipment": {
+    "Tools/Items/Equipment": {
       "message": "game-data-editor:open-equipment"
     },
-    "Tools/Hero Kingdom Defense/Talents": {
+    "Tools/Characters/Talents": {
       "message": "game-data-editor:open-talents"
     },
-    "Tools/Hero Kingdom Defense/Units": {
+    "Tools/Characters/Units": {
       "message": "game-data-editor:open-units"
     },
-    "Tools/Hero Kingdom Defense/Unit Types": {
+    "Tools/Characters/Fighting Types": {
       "message": "game-data-editor:open-unit-types"
     },
-    "Tools/Hero Kingdom Defense/Maps": {
+    "Tools/Stages/Maps": {
       "message": "game-data-editor:open-maps"
     },
-    "Tools/Hero Kingdom Defense/Battle Settings": {
+    "Tools/Battle/Battle Settings": {
       "message": "game-data-editor:open-settings"
     },
-    "Tools/Hero Kingdom Defense/Testing": {
+    "Tools/Battle/Testing": {
       "message": "game-data-editor:open-testing"
     },
-    "Tools/Hero Kingdom Defense/Relics": {
+    "Tools/Items/Relics": {
       "message": "game-data-editor:open-relics"
     }
   }

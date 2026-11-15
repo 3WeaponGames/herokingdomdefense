@@ -18,5 +18,20 @@ function render(data,value){
 }
 function add(value,position,type){if(type!==undefined&&!T.types.some(t=>t.id===type))throw Error('Choose Full, Dim or Circle light.');const next=T.layout({Nightlight:value});if(next.emitters.length>=T.maxLights)throw Error('A tier can contain up to 64 lights.');const ids=Object.keys(next.lights).concat(next.emitters.map(e=>e.id)).filter(id=>/^light:\d+$/.test(id)).map(id=>Number(id.slice(6))),number=Math.max(next.nextLightId||1,...ids.map(n=>n+1)),id='light:'+number;next.emitters.push(type&&type!=='full'?{id,type}:{id});next.nextLightId=number+1;next.lights[id]={x:Math.max(-10000,Math.min(10000,position.x)),y:Math.max(-10000,Math.min(10000,position.y))};return{value:next,id};}
 function remove(value,id){const next=T.layout({Nightlight:value});next.emitters=next.emitters.filter(e=>e.id!==id);delete next.lights[id];return next;}
+function copyLights(value){
+ const layout=T.layout({Nightlight:value}),emitters=T.emitters({Nightlight:layout}).map(clone);if(!emitters.length)return null;
+ const lights={};for(const e of emitters)lights[e.id]=clone(layout.lights&&Object.prototype.hasOwnProperty.call(layout.lights,e.id)?layout.lights[e.id]:{});
+ const copied={version:1,lights,emitters},errors=T.issues(copied);if(errors.length)throw Error(errors.join('\n'));return copied;
+}
+function pasteLights(value,clipboard){
+ const copied=clipboard&&copyLights(clipboard);if(!copied)throw Error('Copy a building\'s lights first.');const next=T.layout({Nightlight:value});
+ const signature=layout=>JSON.stringify(T.emitters({Nightlight:layout}).map(e=>{const metadata=clone(e);delete metadata.id;return[metadata,layout.lights[e.id]||{}];}));
+ if(signature(next)===signature(copied))return next;
+ const old=T.emitters({Nightlight:next}),ids=Object.keys(next.lights).concat(old.map(e=>e.id)).filter(id=>/^light:\d+$/.test(id)).map(id=>Number(id.slice(6)));let number=Math.max(next.nextLightId||1,...ids.map(n=>n+1));
+ if(number+copied.emitters.length>999999999)throw Error('This tier has no unused light IDs remaining.');
+ for(const e of old)delete next.lights[e.id];next.emitters=[];
+ for(const e of copied.emitters){const id='light:'+number++;next.emitters.push(Object.assign({},clone(e),{id}));next.lights[id]=clone(copied.lights[e.id]);}
+ next.nextLightId=number;const errors=T.issues(next);if(errors.length)throw Error(errors.join('\n'));return next;
+}
 function edits(config,request,value,expected){const row=rowFor(config,request);if(expected&&JSON.stringify(T.layout(row))!==JSON.stringify(T.layout({Nightlight:expected})))throw Error('These night lights changed in another draft. Reload before applying this adjustment.');const errors=T.issues(value);if(errors.length)throw Error(errors.join('\n'));return[{doc:'A',path:['BuildEnum',String(request.id),'levelList',request.levelIndex,'Nightlight'],value:clone(value)}];}
-module.exports={describe,render,edits,entries,add,remove};
+module.exports={describe,render,edits,entries,add,remove,copyLights,pasteLights};

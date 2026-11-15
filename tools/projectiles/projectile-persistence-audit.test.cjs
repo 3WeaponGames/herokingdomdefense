@@ -99,6 +99,7 @@ test('projectile launch edits and reset survive a later unrelated managed-profil
   const saved=JSON.parse(fs.readFileSync(f.config)),after={A:saved,overrides:structuredClone(saved.GameTools)};Profiles.materialize(after);
   assert.deepEqual(after.overrides.timings[key],{future:{keep:true},inherit:true});
   assert.deepEqual(after.overrides.timingDefaults[key],{attack:.4});
+  assert.deepEqual(Profiles.validate(after).filter(issue=>issue.path.includes('timing')),[],'the inherited custom marker remains valid for subsequent Units saves');
 });
 
 test('explicit managed-profile delay edits do not repair malformed legacy profile timing',t=>{
@@ -135,8 +136,8 @@ test('roster snapshots cache model defaults and translations while adopting exte
   try{
     const before=structuredClone(f.service.configData);f.service.units();f.service.snapshot();f.service.validate(s.data);
     assert.equal(descriptions,0,'unchanged roster does not rescan model/prefab defaults');assert.equal(translationReads,0,'unchanged translations are not parsed repeatedly');assert.deepEqual(f.service.configData,before,'roster construction never mutates the config');
-    const config=JSON.parse(read(f.config,'utf8')),name=config.SoldierCfg[90003].Name,key=/\[\[loc:([^\]]+)\]\]/.exec(name)[1],translations=JSON.parse(read(file,'utf8'));translations.entries[key].en='Revised roster label';fs.writeFileSync(file,JSON.stringify(translations)+'\n');
-    assert.match(f.service.units().find(unit=>unit.key==='enemy:90003').name,/Revised roster label/);assert.equal(translationReads,1);
+    const config=JSON.parse(read(f.config,'utf8')),name=config.AllyCfg[90003].Name,key=/\[\[loc:([^\]]+)\]\]/.exec(name)[1],translations=JSON.parse(read(file,'utf8'));translations.entries[key].en='Revised roster label';fs.writeFileSync(file,JSON.stringify(translations)+'\n');
+    assert.match(f.service.units().find(unit=>unit.key==='ally:90003').name,/Revised roster label/);assert.equal(translationReads,1);
   }finally{Units.describe=original;fs.readFileSync=read;}
 });
 

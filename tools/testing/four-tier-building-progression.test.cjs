@@ -12,7 +12,8 @@ test('ten building families retain stable IDs and follow one straight four-tier 
   }
   assert.equal(category.levelList.filter(value=>family.indices.includes(value.index)).length,4);
  }
- assert.deepEqual(config.BuildEnum,mirror.BuildEnum,'runtime resource mirror uses the same building rows');
+ const contractValues=require('./painted-building-contract.cjs').withoutAuthoring;
+ assert.deepEqual(contractValues(config).BuildEnum,contractValues(mirror).BuildEnum,'runtime resource mirror retains the same gameplay rows while layout remains authorable');
  for(const [category,choices]of Object.entries(contract.originalInitialChoices))assert.deepEqual(config.BuildEnum[category].InitialChoices,choices);
 });
 test('every existing tier1-3 HP, special value, numeric cost and ad field retains its approved value and presence',()=>{

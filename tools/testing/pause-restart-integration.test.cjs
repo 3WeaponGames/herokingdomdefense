@@ -113,10 +113,24 @@ test('Campaign refuses stale restart actions and storage failures before changin
 
 function wall() {
   const h = env(), cfg = h.load('GAD_Configs');
-  const requests = [], closes = [], states = [];
+  const requests = [], closes = [], states = [], resources = [];
   const permanent = { power: 23, equipment: [10, 20, 5], stageCheckpoints: { 5: { roundNum: 6 } },
     wallDefenseAdmission: { id: 'already-paid', cost: 10, used: false } };
-  const audit = { resets: 0, settles: 0, exits: 0, admissions: 0, ready: true };
+  const audit = { resets: 0, settles: 0, exits: 0, admissions: 0, begins: 0, primes: 0, ready: true };
+  const catalog = {assets: [], assignments: {'wall-defense': {launchDelay: .8}}};
+  function OwnedUI() { this._resourceGeneration = 0; }
+  OwnedUI.prototype.loadFromRes = function (name, type, callback) {
+    assert.equal(name, 'projectiles/catalog'); assert.equal(type, h.cc.JsonAsset);
+    const owner = this, generation = this._resourceGeneration;
+    resources.push({deliver() {
+      if (owner.isclose || generation !== owner._resourceGeneration) return false;
+      callback({json: catalog}); return true;
+    }});
+  };
+  h.cc.JsonAsset = function () {};
+  h.stubs.BaseUI = {default: OwnedUI};
+  const looks = h.load('ProjectileLooks'), prime = looks.prime;
+  looks.prime = data => { audit.primes++; prime(data); };
   let state = cfg.emGADGameState.Game;
   const player = h.stubs.GAD_PlayerMgr.default.getInstance();
   Object.assign(player, {
@@ -125,7 +139,7 @@ function wall() {
     readyForRun: () => audit.ready,
     getLevel: () => 2,
     reset() { audit.resets++; state = 0; this._run = this._result = null; this._cards = []; },
-    beginRun(admissionId) { return this._run = { admissionId, activeMilliseconds: 0, clearedWaves: 0 }; },
+    beginRun(admissionId) { audit.begins++; return this._run = { admissionId, activeMilliseconds: 0, clearedWaves: 0 }; },
     finishRun() { audit.settles++; }
   });
   h.stubs.KinghtFallPlayerMgr = { KinghtFallPlayerMgr: { getInstance: () => ({
@@ -156,7 +170,7 @@ function wall() {
   h.cc.winSize = { width: 750, height: 1334 };
   view.webPause();
   requests[0].owner.onOpened(pause);
-  return { ...h, cfg, Game, game, view, pause, player, permanent, app, audit, requests, closes, states, state: () => state };
+  return { ...h, cfg, Game, game, view, pause, player, permanent, app, audit, requests, closes, states, resources, looks, state: () => state };
 }
 
 test('Wall Defense pause reloads a fresh run with the existing paid admission and cannot resume through stale pause callbacks', () => {
@@ -187,6 +201,11 @@ test('Wall Defense pause reloads a fresh run with the existing paid admission an
   next.scheduleOnce = callback => callback();
   next.buildWave = () => {};
   next.start();
+  assert.equal(f.audit.begins, 0, 'a cold catalog must not start the new reward clock');
+  assert.notEqual(f.state(), f.cfg.emGADGameState.Game);
+  assert.equal(f.resources.length, 1); f.resources[0].deliver();
+  assert.equal(f.audit.primes, 1); assert.equal(f.looks.launchDelay('wall-defense'), .8);
+  assert.equal(f.audit.begins, 1);
   assert.equal(next._rewardRun.admissionId, 'already-paid');
   assert.equal(next._rewardRun.clearedWaves, 0);
   assert.equal(next._rewardRun.activeMilliseconds, 0);
@@ -198,6 +217,22 @@ test('Wall Defense pause reloads a fresh run with the existing paid admission an
   f.game.onClose();
   assert.equal(f.audit.settles, 0, 'old teardown must not settle the replacement run');
   assert.equal(JSON.stringify(f.permanent), before);
+});
+
+test('closing a restarted wall run during catalog readiness cannot start a stale battle', () => {
+  for (const phase of ['before asset', 'after asset']) {
+    const f = wall(), scheduled = []; assert.equal(f.requests[0].args[0](), true);
+    const next = new f.Game(); next.init(f.requests[1].args[0]); next.onLoad();
+    next.ndCardGroup = {getComponent: () => ({})}; next.ndFence = {}; next.initEvents = () => {};
+    next.scheduleOnce = callback => scheduled.push(callback); next.buildWave = () => assert.fail('closed run started a wave');
+    next.start(); assert.equal(f.audit.begins, 0);
+    if (phase === 'after asset') { f.resources[0].deliver(); assert.equal(scheduled.length, 1); }
+    next.isclose = true; next._resourceGeneration++; next.onClose();
+    if (phase === 'before asset') assert.equal(f.resources[0].deliver(), false);
+    scheduled.forEach(callback => callback());
+    assert.equal(f.audit.begins, 0); assert.notEqual(f.state(), f.cfg.emGADGameState.Game);
+    assert.equal(f.audit.primes, phase === 'after asset' ? 1 : 0);
+  }
 });
 
 test('Wall Defense restart preflight failures preserve the current paused run and admission', () => {

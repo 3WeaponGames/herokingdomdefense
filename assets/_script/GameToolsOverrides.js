@@ -14,8 +14,10 @@ function config() {
 }
 function keyFor(owner, type) {
   if (type === "hero") return "hero:hero:default";
-  var form = type === "enemy" && owner.spIdx !== undefined ? String(owner.spIdx + 1) : "default";
-  return type + ":" + owner.cfg.ID + ":" + form;
+  var id=type==="enemy"&&owner.cfg.ProfileBaseID||owner.cfg.ID;
+  var form = type === "enemy" && id<100000 && owner.spIdx !== undefined ? String(owner.spIdx+1) : "default";
+  if(type === "enemy" && owner.cfg.ProfileBaseID && id>=90010&&id<=90012)form=String(id-90009);
+  return type + ":" + id + ":" + form;
 }
 function counters(owner, target) {
   if (!owner || !owner.cfg || !target || !target.cfg && !target.heroStyle) return false;
@@ -25,7 +27,7 @@ function counters(owner, target) {
   var settings = config(), side = target.navigationTeam === "friendly" ? "ally" : target.navigationTeam === "enemy" ? "enemy" : null;
   if (!settings || !side) return false;
   var assignments = settings.unitTypeAssignments || {};
-  return assignments[keyFor(target, side)] === owner.cfg.CounterType;
+  return (side==="enemy"&&target.cfg.FightingType||assignments[keyFor(target, side)]) === owner.cfg.CounterType;
 }
 function cancel(owner) {
   var entry = pending.get(owner);
@@ -234,6 +236,13 @@ function applyModel(owner, type, node, left) {
 }
 exports.projectileSpeed=function(owner,type,authoredSpeed){
   var settings=config(),table=settings&&settings.projectileSpeeds,value=table&&table[keyFor(owner,type)];
+  if(table&&value===undefined&&type==='enemy'&&owner.cfg&&(owner.cfg.ID>=100000||owner.cfg.ProfileBaseID)){
+    var ids=require("./EnemyStageProfiles").referenceIds(owner.cfg,settings);
+    for(var i=0;i<ids.length;i++){
+      var id=ids[i],key='enemy:'+id+':'+(id>=90010&&id<=90012?String(id-90009):'default');
+      if(table[key]!==undefined){value=table[key];break;}
+    }
+  }
   return typeof value==='number'&&isFinite(value)&&value>=1&&value<=20000?value:authoredSpeed;
 };
 exports.attack = attack;

@@ -12,9 +12,10 @@ const Buildings=require('../buildings/client');
 const IconPicker=require('./icon-picker');
 const UnitProfiles=require('../units/panel-profiles');
 const EnemyClasses=require('../lib/enemy-classes');
+const EnemyBalance=require('./enemy-balance');
 const EquipmentTiers=require('../../../assets/_script/EquipmentTiers'),HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const ItemAppearance=require('../../hkd-items/appearance');
-const TITLES={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units & Attack Timing','unit-types':'Unit Types & Pictograms',maps:'Maps',settings:'Battle Settings',testing:'Testing · Managed Test Player'};
+const TITLES={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units & Attack Timing','unit-types':'Fighting Types & Pictograms',maps:'Maps',settings:'Battle Settings',testing:'Testing · Managed Test Player'};
 const clone=Schema.clone;
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o||{},k);
 function ipc(message,payload){return new Promise((resolve,reject)=>{
@@ -71,7 +72,7 @@ function create(kind){
     _action(action){this._queue=this._queue.catch(()=>{}).then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);throw error;}});return this._queue.catch(()=>null);},
     _change(edits,options){
       this._queue=this._queue.catch(()=>{}).then(async()=>{
-        try{const changes=typeof edits==='function'?edits():edits;if(options&&options.skipEmpty&&!changes.length)return this._snapshot;const snapshot=await ipc('change',{version:this._snapshot.version,edits:changes});if(options&&options.keepDetail===this._selected+':'+this._level){this._snapshot=snapshot;this._lastResult=null;this._toolbar();if(!options.skipPreview){const row=this._rows().find(r=>r.key===this._selected);if(row)this._renderPreview(row);}}else this._apply(snapshot);return snapshot;}
+        try{const changes=typeof edits==='function'?await edits():edits;if(options&&options.skipEmpty&&!changes.length)return this._snapshot;const snapshot=await ipc('change',{version:this._snapshot.version,edits:changes});if(options&&options.keepDetail===this._selected+':'+this._level){this._snapshot=snapshot;this._lastResult=null;this._toolbar();if(!options.skipPreview){const row=this._rows().find(r=>r.key===this._selected);if(row)this._renderPreview(row);}}else this._apply(snapshot);return snapshot;}
         catch(error){this._status(error.message,true);throw error;}
       });return this._queue;
     },
@@ -148,7 +149,7 @@ function create(kind){
       if(kind==='talents')Object.keys(data.TalentCfg||{}).forEach(id=>{const r=data.TalentCfg[id],count=(data.TalentLevelCfg||[]).filter(l=>l.kindID===Number(id)).length;add(id,this._text(r.Name),id+' · '+count+' progression records',r,['TalentCfg',id],{icon:r.Image});});
       if(kind==='units'){
         add('hero','Hero','Base stats are linked to Equipment',{},[],{unitType:'hero'});
-        Object.keys(data.SoldierCfg||{}).forEach(id=>{const r=data.SoldierCfg[id],info=UnitPacks.info(r.MonsterPack),pack=info?info.label:r.CampaignBaseUnit?'Campaign profile':r.prefab?'Enemy':'Boss form',role=this._unitRole('enemy',id);add('enemy:'+id,this._text(r.Name),pack+(role?' · '+role:'')+(((this._data('overrides').unitProfiles||{}).entries||{})[id]?' · '+this._data('overrides').unitProfiles.entries[id].name:'')+' · '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id});});
+        Object.keys(data.SoldierCfg||{}).forEach(id=>{const profileTable=this._data('overrides').unitProfiles;if(profileTable&&profileTable.families&&(profileTable.aliases&&profileTable.aliases[id]||profileTable.bossForms&&profileTable.bossForms[id]||[90011,90012].includes(Number(id))))return;const r=data.SoldierCfg[id],info=UnitPacks.info(r.MonsterPack),pack=info?info.label:r.CampaignBaseUnit?'Campaign profile':r.prefab?'Enemy':'Boss form',role=this._unitRole('enemy',id);add('enemy:'+id,this._text(r.Name),pack+(role?' · '+role:'')+(((this._data('overrides').unitProfiles||{}).entries||{})[id]?' · '+this._data('overrides').unitProfiles.entries[id].name:'')+' · '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id});});
         Object.keys(data.SoldierCfg||{}).filter(id=>Number(id)>=90001&&Number(id)<=90004).forEach(id=>{const r=(data.AllyCfg||data.SoldierCfg)[id];add('ally:'+id,this._text(r.Name)+' · Ally','Allied unit - independent stats',r,[data.AllyCfg?'AllyCfg':'SoldierCfg',id],{icon:r.loadIcon,unitType:'ally',unitID:id});});
       }
       if(kind==='unit-types')Object.keys(this._data('overrides').unitTypes||{}).forEach(id=>{const type=this._data('overrides').unitTypes[id],assigned=Object.values(this._data('overrides').unitTypeAssignments||{}).filter(value=>value===id).length;add(id,type.name,id+' - '+assigned+' unit assignment(s)',type,['unitTypes',id],{doc:'overrides',icon:type.icon});});
@@ -382,10 +383,10 @@ function create(kind){
       if(row.record.CampaignBaseUnit)this._note('Campaign profile: controller '+row.record.CampaignBaseUnit+' · Appearance source unit '+row.record.AppearanceSourceUnit+'. Its initial combat settings preserve the original campaign profile; editing this record changes this profile independently of the source-roster monster.');
       this._unitGuide(row);
       if(!row.record.prefab)this._note('This is a boss transformation form. It is reached through the boss’s behavior and is not a directly spawnable unit.');
-      const typeKey=row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,id),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Unit type & map pictogram');
+      const typeKey=row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,id),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Fighting type & map pictogram');
       if(row.unitType==='enemy')this._field(typeFields,'Enemy class',EnemyClasses.resolve(this._data('overrides'),id),value=>this._change(()=>{if(!EnemyClasses.CHOICES.some(choice=>choice.value===value))throw Error('Choose Normal, Elite or Boss.');const settings=this._data('overrides');if(EnemyClasses.resolve(settings,id)===value)return [];return [{doc:'overrides',path:['enemyClasses'],value:Object.assign({},settings.enemyClasses||{},{[typeKey]:value})}];}),{options:EnemyClasses.CHOICES,help:'Normal, Elite or Boss classification for this enemy profile. Stats, abilities and combat-role counters are edited separately.'});
-      this._field(typeFields,'Unit type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Combat role used for counter bonuses. The Battle icon below overrides the type pictogram for this unit.'});
-      this._field(typeFields,'Countered unit type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
+      this._field(typeFields,'Fighting type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],readOnly:row.unitType==='enemy'&&!!require('../lib/fighting-profiles').familyFor(this._data('overrides'),id),help:'Combat role used for counter bonuses. The Battle icon below overrides the type pictogram for this unit.'});
+      this._field(typeFields,'Countered fighting type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
       typeFields.appendChild(button('Manage types & pictograms',()=>openPanel('unit-types').catch(error=>this._status(error.message,true))));
       const visualFields=this._section('Model transform'),visuals=this._data('overrides').visuals||{},visual=visuals[typeKey]||{};
       const setVisual=(field,value)=>{const next=Object.assign({},this._data('overrides').visuals||{});next[typeKey]=Object.assign({},next[typeKey],{[field]:value});return this._set('overrides',['visuals'],next);};
@@ -408,10 +409,18 @@ function create(kind){
     },
     _attackRateField(container,row,level,write,options){return AttackRate.field(this,container,row,level,write,options,ipc);},
     _unitProjectileSpeedField(row){
-      const table=this._data('overrides').projectileSpeeds,key=row.unitType==='hero'?'hero:hero:default':row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,row.unitID),malformed=table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)),custom=!malformed&&own(table,key),value=custom?table[key]:500,fields=this._section('Projectile flight');
-      this._field(fields,'Projectile flight speed',value,next=>this._unitProjectileSpeedEdit(row,Number(next)).catch(()=>{}),{numeric:true,min:1,max:20000,commitUnchanged:true,readOnly:malformed,help:'World units per second. Shared across this character’s levels. The hero’s existing projectile-speed bonuses still apply. Reset uses the authored flight speed.'});
+      const table=this._data('overrides').projectileSpeeds,key=row.unitType==='hero'?'hero:hero:default':row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,row.unitID),malformed=table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)),custom=!malformed&&own(table,key),value=custom?table[key]:this._unitProjectileSpeedValue(row),fields=this._section('Projectile flight');
+      this._field(fields,'Projectile flight speed',value,next=>this._unitProjectileSpeedEdit(row,Number(next)).catch(()=>{}),{numeric:true,min:1,max:20000,commitUnchanged:true,readOnly:malformed,help:'World units per second. Shared across this character’s levels. The hero’s existing projectile-speed bonuses still apply. Reset uses the inherited or authored flight speed.'});
       if(malformed)this._note('The projectile speed table has an invalid format. Refresh or correct that configuration before editing.',true,fields);
       else if(custom)fields.appendChild(button('Reset projectile flight speed',()=>this._unitProjectileSpeedEdit(row,undefined).catch(()=>{}),'gt-mini'));
+    },
+    _unitProjectileSpeedValue(row){
+      const type=row.unitType,settings=this._data('overrides'),table=settings.projectileSpeeds;if(type==='enemy'){
+        const record=UnitRecords.record(this._data('A'),type,row.unitID);
+        const ids=record&&(record.ID>=100000||record.ProfileBaseID)?require('../../../assets/_script/EnemyStageProfiles').referenceIds(record,settings):[Number(row.unitID)];
+        for(const id of ids){const value=table&&table['enemy:'+id+':'+UnitRecords.form('enemy',id)];if(value!==undefined)return typeof value==='number'&&Number.isFinite(value)&&value>=1&&value<=20000?value:500;}
+      }
+      return 500;
     },
     _unitProjectileSpeedEdit(row,value){
       return this._change(()=>{
@@ -421,7 +430,7 @@ function create(kind){
         if(table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)))throw Error('The projectile speed table has an invalid format. Refresh before editing.');
         if(value===undefined)return own(table,key)?[{doc:'overrides',path:Object.keys(table).length===1?at:at.concat(key),remove:true}]:[];
         if(typeof value!=='number'||!Number.isFinite(value)||value<1||value>20000)throw Error('Projectile flight speed must be between 1 and 20000.');
-        const current=own(table,key)?table[key]:500;if(current===value)return [];
+        const current=own(table,key)?table[key]:this._unitProjectileSpeedValue(row);if(current===value)return [];
         return [{doc:'overrides',path:table===undefined?at:at.concat(key),value:table===undefined?{[key]:value}:value}];
       },{skipEmpty:true});
     },
@@ -540,11 +549,12 @@ function create(kind){
       },{skipEmpty:true}).catch(()=>{});
     },
     _unitType(row){
+      EnemyBalance.render(this,node);
       const fields=this._section('Type & pictogram'),p=['unitTypes',row.key];
       this._field(fields,'Name',row.record.name,value=>this._set('overrides',p.concat('name'),value));
       this._field(fields,'Pictogram',row.record.icon,value=>this._set('overrides',p.concat('icon'),value),{asset:'images',bundle:'KinghtFallEnemy',wide:true,help:'Choose an imported monster part, an existing battle icon, or another Resources image.'});
       this._field(fields,'Pictogram tint',row.record.tint||'#ffffff',value=>this._set('overrides',p.concat('tint'),value),{color:true});
-      this._note('Select this type in Units. Types group units for counter bonuses and supply a fallback pictogram. Changing a role does not change attack behavior, stats, wave IDs, or player progress.');
+      this._note('Fighting types supply counter bonuses and pictograms. The balance table above changes enemy profiles only. Hero defaults and ally stats are edited separately.');
       if(HeroWeapons.find(row.key))this._heroAttackRateField(this._section('Hero fighting-style defaults'),row.key);
       const assigned=Object.entries(this._data('overrides').unitTypeAssignments||{}).filter(([key,value])=>value===row.key);this._note(assigned.length?'Assigned to: '+assigned.map(([key])=>key).join(', '):'No units use this type yet.');
       const remove=button('Delete type',()=>{if(assigned.length||['SoldierCfg','AllyCfg'].some(table=>Object.values(this._data('A')[table]||{}).some(unit=>unit.CounterType===row.key)))return this._status('Remove unit assignments and counter references before deleting this type.',true);const types=clone(this._data('overrides').unitTypes);delete types[row.key];return this._set('overrides',['unitTypes'],types);},'gt-danger');remove.disabled=assigned.length>0;fields.appendChild(remove);

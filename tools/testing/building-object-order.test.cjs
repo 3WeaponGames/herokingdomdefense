@@ -83,7 +83,7 @@ test('new terrain objects keep scenery priority through movement and leave no co
 
 test('occlusion captures follow actual render order after building priority, without disabling rear silhouettes', () => {
   const { DepthView, Sprite } = load();
-  const main = new Node('ndMain'), tower = new Node('Tower', main, 0, 10), rock = new Node('Rock', main, 0, -10), hero = new Node('Hero', main, 0, 0);
+  const main = new Node('ndMain'), tower = new Node('Tower', main, 0, 10), rock = new Node('Rock', main, 0, -10), hero = new Node('Hero', main, 0, -20);
   tower._depthBuilding = true; rock._depthScenery = true;
   rock.width = hero.width = 20; rock.height = 100; hero.height = 30; rock.anchorY = hero.anchorY = 0;
   const rockArt = rock.addComponent(Sprite), heroArt = hero.addComponent(Sprite); rockArt.enabled = heroArt.enabled = true;
@@ -99,7 +99,7 @@ test('occlusion captures follow actual render order after building priority, wit
   DepthView.prototype.update.call(view); assert.equal(captures, 0, 'a visible foreground unit must not trigger a pointless capture through the rock');
   hero.y = 20; DepthView.prototype.update.call(view); assert.equal(captures, 1, 'units genuinely behind scenery still receive the normal silhouette');
   assert.equal(object.overlay.node.active, true);
-  hero.y = 0; DepthView.prototype.update.call(view); assert.equal(captures, 1); assert.equal(object.overlay.node.active, false, 'the old silhouette clears when the actor returns in front');
+  hero.y = -20; DepthView.prototype.update.call(view); assert.equal(captures, 1); assert.equal(object.overlay.node.active, false, 'the old silhouette clears when the actor returns in front');
   rock._depthMapForeground = true; hero.y = -20; DepthView.prototype.update.call(view);
   assert.equal(captures, 1); assert.equal(object.overlay.node.active, false, 'a unit in front of the whole building stack needs no stale scenery silhouette');
 });

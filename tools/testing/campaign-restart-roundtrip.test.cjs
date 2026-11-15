@@ -411,8 +411,8 @@ function realBuilding(h, family, save) {
       exports: h.info, require: name => ({...h.e.stubs, RelicRuntime: h.load('RelicRuntime'), RelicBattle: h.load('RelicBattle')})[name]
     });
   }
-  const presentation = {apply: noop, restore: noop, hide: noop, dispose: noop};
-  Object.assign(h.e.stubs, {BuildingPurchaseFieldRuntime: presentation, BuildingBlockerRuntime: presentation,
+  const presentation = {apply: noop, applyAd: noop, applyUnbuilt: noop, restore: noop, hide: noop, dispose: noop};
+  Object.assign(h.e.stubs, {BuildingSpawnPositions: presentation, BuildingPurchaseFieldRuntime: presentation, BuildingBlockerRuntime: presentation,
     BuildingShadowRuntime: presentation, BuildingWorldScale: presentation});
   h.e.cc.Label = class Label {};
   h.e.cc.Sprite = class Sprite {};
