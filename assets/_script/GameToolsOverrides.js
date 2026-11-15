@@ -9,8 +9,10 @@ function config() {
 }
 function keyFor(owner, type) {
   if (type === "hero") return "hero:hero:default";
-  var form = type === "enemy" && owner.spIdx !== undefined ? String(owner.spIdx + 1) : "default";
-  return type + ":" + owner.cfg.ID + ":" + form;
+  var id=type==="enemy"&&owner.cfg.ProfileBaseID||owner.cfg.ID;
+  var form = type === "enemy" && id<100000 && owner.spIdx !== undefined ? String(owner.spIdx+1) : "default";
+  if(type === "enemy" && owner.cfg.ProfileBaseID && id>=90010&&id<=90012)form=String(id-90009);
+  return type + ":" + id + ":" + form;
 }
 function counters(owner, target) {
   if (!owner || !owner.cfg || !target || !target.cfg && !target.heroStyle) return false;
@@ -20,7 +22,7 @@ function counters(owner, target) {
   var settings = config(), side = target.navigationTeam === "friendly" ? "ally" : target.navigationTeam === "enemy" ? "enemy" : null;
   if (!settings || !side) return false;
   var assignments = settings.unitTypeAssignments || {};
-  return assignments[keyFor(target, side)] === owner.cfg.CounterType;
+  return (side==="enemy"&&target.cfg.FightingType||assignments[keyFor(target, side)]) === owner.cfg.CounterType;
 }
 function cancel(owner) {
   var removed = false;

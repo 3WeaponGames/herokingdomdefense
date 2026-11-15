@@ -92,7 +92,7 @@ function descriptor(key, context) {
   if (key==='Quality') result.options=RARITIES.map((label,i)=>({value:i+1,label}));
   if (key==='BuildingCross') result.options=[{value:0,label:'Ignore building obstruction'},{value:1,label:'Respect building obstruction'}];
   if (key==='Suppressed') {result.label='Damage bonus against';result.help='Deals the configured counter-damage multiplier to this opposing unit. Does not change target priority.';}
-  if (key==='CounterType') {result.label='Countered unit type';result.help='Applies the configured damage multiplier to every opposing unit assigned to this type. Does not change target priority.';}
+  if (key==='CounterType') {result.label='Countered fighting type';result.help='Applies the configured damage multiplier to every opposing unit assigned to this type. Does not change target priority.';}
   if(key==='SightRange'){result.min=0;result.help='Absolute allied awareness radius in world units, independent of hero weapon range. Missing values use 240. A longer attack range is preserved for direct attacks.';}
   if(key==='SearchRange'&&context.side==='ally'){result.label='Additional search range (legacy)';result.help='Preserved legacy metadata. Allies now use Sight range for awareness; enemy search settings keep their existing behavior.';}
   if (key==='AttackInterval') {result.min=0.000001;result.help='Runtime attack rate: higher values attack more frequently. Animation playback speed is separate.';}
@@ -173,6 +173,8 @@ function validate(documents, changes) {
     (data.LevelCfg || []).forEach((stage,index)=>{
       const p=['LevelCfg',index];
       if(!stage||typeof stage!=='object'||Array.isArray(stage))return issue(doc,p,'Each stage must be an object.');
+      const StageProfiles=require('../../../assets/_script/EnemyStageProfiles'),stageUnits=StageProfiles.records(stage,units,docs.overrides||base.GameTools);
+      for(const message of StageProfiles.validate(stage,units))issue(doc,p.concat('EnemyProfiles'),message);
       if(stage.Level!==index+1)issue(doc,p.concat('Level'),'Stage IDs must remain contiguous and match their array position.');
       if(!MapCatalog.has(stage.prefab))issue(doc,p.concat('prefab'),'Choose an authored playable map ('+MapCatalog.IDS.join(', ')+').');
       ['InGameCoefficient','GoldSupplyCoefficient','ConversionCoefficient','EquipLevelCap'].forEach(k=>number(doc,p.concat(k),stage[k],0,k==='EquipLevelCap'));
@@ -191,7 +193,7 @@ function validate(documents, changes) {
           for(const key of ['spawnId','unitId','count'])if(!Number.isSafeInteger(entry[key])||entry[key]<1)issue(doc,s.concat(key),'Spawn IDs and quantities must be positive safe whole numbers.');
           number(doc,s.concat('startSeconds'),entry.startSeconds,0,false);number(doc,s.concat('intervalSeconds'),entry.intervalSeconds,entry.count>1?0.000001:0,false);
           if(!Number.isFinite(entry.startSeconds+(entry.count-1)*entry.intervalSeconds))issue(doc,s.concat('intervalSeconds'),'The final spawn time must be finite.');
-          if(!units[entry.unitId]||!units[entry.unitId].prefab)issue(doc,s.concat('unitId'),'Choose a spawnable unit.');
+          if(!stageUnits[entry.unitId]||!stageUnits[entry.unitId].prefab)issue(doc,s.concat('unitId'),'Choose a spawnable unit.');
           total+=entry.count;
         });else if(!Array.isArray(wave.RefreshSoldierKind))issue(doc,w.concat('RefreshSoldierKind'),'Legacy spawns must be an array.');else wave.RefreshSoldierKind.forEach((encoded,si)=>{
           const s=w.concat('RefreshSoldierKind',si);let parsed;
@@ -199,7 +201,7 @@ function validate(documents, changes) {
           const maxLane=MapCatalog.lanes(stage.prefab);
           if(parsed.lane<1||parsed.lane>maxLane)issue(doc,s,'Spawn lane must identify an authored lane (1–'+maxLane+').');
           if(lanes.has(parsed.lane))issue(doc,s,'Duplicate spawn lane '+parsed.lane+' would overwrite an earlier group.');lanes.add(parsed.lane);
-          parsed.groups.forEach(g=>{if(g.unit!==-1&&(!units[g.unit]||!units[g.unit].prefab))issue(doc,s,'Unit '+g.unit+' cannot spawn directly (missing unit or prefab).');if(!Number.isInteger(g.count)||g.count<=0)issue(doc,s,'Unit quantity must be a positive whole number.');if(g.unit!==-1)total+=g.count;});
+          parsed.groups.forEach(g=>{if(g.unit!==-1&&(!stageUnits[g.unit]||!stageUnits[g.unit].prefab))issue(doc,s,'Unit '+g.unit+' cannot spawn directly (missing unit or prefab).');if(!Number.isInteger(g.count)||g.count<=0)issue(doc,s,'Unit quantity must be a positive whole number.');if(g.unit!==-1)total+=g.count;});
         });
         if(total<=0)issue(doc,w.concat(Array.isArray(wave.SpawnTimeline)?'SpawnTimeline':'RefreshSoldierKind'),'A wave requires at least one spawning unit.');
         if(!Array.isArray(wave.WaveReward))issue(doc,w.concat('WaveReward'),'Wave rewards must be an array.');else rewards(wave.WaveReward,doc,w.concat('WaveReward'));
@@ -229,7 +231,7 @@ function validate(documents, changes) {
     if(unit.ID!==Number(id))issue('A',p.concat('ID'),'Unit ID must match its table key.');
     if(own(unit,'MonsterSource')&&!UnitPacks.isMonsterSource(unit.MonsterSource))issue('A',p.concat('MonsterSource'),'Choose a source from an imported monster pack.');
     if(own(unit,'MonsterPack')&&!UnitPacks.packs.some(pack=>pack.id===unit.MonsterPack&&pack.id!=='character-maker'))issue('A',p.concat('MonsterPack'),'Choose an imported monster pack.');
-    if(own(unit,'BehaviorTemplate')){const template=units[unit.BehaviorTemplate];if(!UnitRecords.BEHAVIOR_TEMPLATES.includes(unit.BehaviorTemplate)||!template||unit.AttackType!==template.AttackType)issue('A',p.concat('BehaviorTemplate'),'Imported monster behavior must match an existing implemented controller template.');}
+    if(own(unit,'BehaviorTemplate')){const template=units[unit.BehaviorTemplate],profiles=(docs.overrides||base.GameTools||{}).unitProfiles||{},bossProfile=unit.BehaviorTemplate===90010&&profiles.entries&&profiles.entries[id]&&profiles.entries[id].baseId===90010,bossForm=profiles.bossForms&&profiles.bossForms[id]&&profiles.bossForms[id].source===unit.BehaviorTemplate;if((!UnitRecords.BEHAVIOR_TEMPLATES.includes(unit.BehaviorTemplate)&&!bossProfile&&!bossForm)||!template||unit.AttackType!==template.AttackType)issue('A',p.concat('BehaviorTemplate'),'Imported monster behavior must match an existing implemented controller template.');}
     if(own(unit,'CampaignBaseUnit')&&(!Number.isInteger(unit.CampaignBaseUnit)||unit.CampaignBaseUnit<90001||unit.CampaignBaseUnit>90009||!units[unit.CampaignBaseUnit]||unit.BehaviorTemplate!==unit.CampaignBaseUnit))issue('A',p.concat('CampaignBaseUnit'),'Campaign profile must reference its implemented legacy enemy controller.');
     if(own(unit,'AppearanceSourceUnit')&&(!Number.isInteger(unit.AppearanceSourceUnit)||!units[unit.AppearanceSourceUnit]||!units[unit.AppearanceSourceUnit].MonsterSource))issue('A',p.concat('AppearanceSourceUnit'),'Campaign appearance must reference an imported source-roster monster.');
     if(own(unit,'CampaignBaseUnit')!==own(unit,'AppearanceSourceUnit'))issue('A',p.concat('CampaignBaseUnit'),'Campaign profiles require both controller and appearance source references.');
@@ -241,7 +243,7 @@ function validate(documents, changes) {
     ['AttackDamage','AttackRange','SearchRange','Speed','DeathAni'].forEach(k=>{if(own(unit,k))number('A',p.concat(k),unit[k],0,false);});
     if(table==='AllyCfg'&&own(unit,'SightRange'))number('A',p.concat('SightRange'),unit.SightRange,0,false);
     if(unit.CounterType===undefined&&unit.Suppressed&&!opponents[unit.Suppressed])issue('A',p.concat('Suppressed'),'Opposing unit does not exist.');
-    if(unit.CounterType!==undefined&&(typeof unit.CounterType!=='string'||unit.CounterType&&!((docs.overrides||base.GameTools||{}).unitTypes||{})[unit.CounterType]))issue('A',p.concat('CounterType'),'Choose an existing unit type, or None.');
+    if(unit.CounterType!==undefined&&(typeof unit.CounterType!=='string'||unit.CounterType&&!((docs.overrides||base.GameTools||{}).unitTypes||{})[unit.CounterType]))issue('A',p.concat('CounterType'),'Choose an existing fighting type, or None.');
     (unit.AttackPriority||[]).forEach((v,i)=>{if([1,2,3,4].indexOf(v)<0)issue('A',p.concat('AttackPriority',i),'Unknown target priority.');});
     (unit.Data||[]).forEach((v,i)=>number('A',p.concat('Data',i),v,0,false));
     if(table==='SoldierCfg'&&(id==='90010'||id==='90011')&&(!unit.Data||!units[unit.Data[2]]))issue('A',p.concat('Data',2),'Next boss form must exist.');
@@ -510,10 +512,10 @@ function validate(documents, changes) {
       if(item.tint!==undefined&&!/^#[0-9a-f]{6}$/i.test(item.tint))issue('overrides',['visuals',key,'tint'],'Choose a valid model tint.');
     }
     const unitTypes=overrides.unitTypes||{};
-    if(overrides.unitTypes!==undefined&&(!overrides.unitTypes||typeof overrides.unitTypes!=='object'||Array.isArray(overrides.unitTypes)))issue('overrides',['unitTypes'],'Unit types must be a type table.');
+    if(overrides.unitTypes!==undefined&&(!overrides.unitTypes||typeof overrides.unitTypes!=='object'||Array.isArray(overrides.unitTypes)))issue('overrides',['unitTypes'],'Fighting types must be a type table.');
     Object.keys(unitTypes).forEach(id=>{const type=unitTypes[id],p=['unitTypes',id];if(!/^[a-z][a-z0-9_-]{0,63}$/.test(id)||!type||typeof type!=='object'){issue('overrides',p,'Use a stable lowercase type identifier.');return;}if(typeof type.name!=='string'||!type.name.trim()||type.name.length>100)issue('overrides',p.concat('name'),'Give this type a name.');if(typeof type.icon!=='string'||!type.icon.trim())issue('overrides',p.concat('icon'),'Choose a pictogram for this type.');if(type.tint!==undefined&&!/^#[0-9a-f]{6}$/i.test(type.tint))issue('overrides',p.concat('tint'),'Choose a valid pictogram tint.');});
-    if(overrides.unitTypeAssignments!==undefined&&(!overrides.unitTypeAssignments||typeof overrides.unitTypeAssignments!=='object'||Array.isArray(overrides.unitTypeAssignments)))issue('overrides',['unitTypeAssignments'],'Unit type assignments must be a unit table.');
-    Object.keys(overrides.unitTypeAssignments||{}).forEach(key=>{const parts=key.split(':'),side=parts[0];if(parts.length!==3||!['enemy','ally'].includes(side)||!UnitRecords.reachable(base,side,parts[1],parts[2]))issue('overrides',['unitTypeAssignments',key],'Choose a reachable troop or enemy form.');if(!own(unitTypes,overrides.unitTypeAssignments[key]))issue('overrides',['unitTypeAssignments',key],'Choose an existing unit type.');});
+    if(overrides.unitTypeAssignments!==undefined&&(!overrides.unitTypeAssignments||typeof overrides.unitTypeAssignments!=='object'||Array.isArray(overrides.unitTypeAssignments)))issue('overrides',['unitTypeAssignments'],'Fighting type assignments must be a unit table.');
+    Object.keys(overrides.unitTypeAssignments||{}).forEach(key=>{const parts=key.split(':'),side=parts[0];if(parts.length!==3||!['enemy','ally'].includes(side)||!UnitRecords.reachable(base,side,parts[1],parts[2]))issue('overrides',['unitTypeAssignments',key],'Choose a reachable troop or enemy form.');if(!own(unitTypes,overrides.unitTypeAssignments[key]))issue('overrides',['unitTypeAssignments',key],'Choose an existing fighting type.');});
     Object.keys(overrides.parameters||{}).forEach(key=>{if(key==='buildStandTime')number('overrides',['parameters',key],overrides.parameters[key],0.001,false);else issue('overrides',['parameters',key],'Unknown runtime parameter override.');});
     ['timings','timingDefaults'].forEach(group=>{
       if(overrides[group]!==undefined&&(!overrides[group]||typeof overrides[group]!=='object'||Array.isArray(overrides[group]))){issue('overrides',[group],'Attack timings must be a unit timing table.');return;}

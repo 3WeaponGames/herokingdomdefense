@@ -1,0 +1,237 @@
+
+item-4-tier-lv_blue_wqyl_lead_gong.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+part_Rider_HandRight_Staff_mystic_lv1
+  rotate: false
+  xy: 2, 2
+  size: 68, 135
+  orig: 68, 135
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Staff_mystic_lv2
+  rotate: false
+  xy: 74, 2
+  size: 68, 135
+  orig: 68, 135
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Staff_mystic_lv3
+  rotate: false
+  xy: 146, 2
+  size: 68, 135
+  orig: 68, 135
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Staff_mystic_lv4
+  rotate: false
+  xy: 218, 2
+  size: 68, 135
+  orig: 68, 135
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Staff_mystic_vip1
+  rotate: false
+  xy: 290, 2
+  size: 68, 135
+  orig: 68, 135
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Staff_mystic_vip2
+  rotate: false
+  xy: 362, 2
+  size: 68, 135
+  orig: 68, 135
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Axe_bruiser_lv1
+  rotate: false
+  xy: 434, 2
+  size: 108, 85
+  orig: 108, 85
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Axe_bruiser_lv2
+  rotate: false
+  xy: 546, 2
+  size: 108, 85
+  orig: 108, 85
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Axe_bruiser_lv3
+  rotate: false
+  xy: 658, 2
+  size: 108, 85
+  orig: 108, 85
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Axe_bruiser_lv4
+  rotate: false
+  xy: 770, 2
+  size: 108, 85
+  orig: 108, 85
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Axe_bruiser_vip1
+  rotate: false
+  xy: 882, 2
+  size: 108, 85
+  orig: 108, 85
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Axe_bruiser_vip2
+  rotate: false
+  xy: 994, 2
+  size: 108, 85
+  orig: 108, 85
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Blunt_guardian_lv1
+  rotate: false
+  xy: 1106, 2
+  size: 113, 75
+  orig: 113, 75
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Blunt_guardian_lv2
+  rotate: false
+  xy: 1223, 2
+  size: 113, 75
+  orig: 113, 75
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Blunt_guardian_lv3
+  rotate: false
+  xy: 1340, 2
+  size: 113, 75
+  orig: 113, 75
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Blunt_guardian_lv4
+  rotate: false
+  xy: 1457, 2
+  size: 113, 75
+  orig: 113, 75
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Blunt_guardian_vip1
+  rotate: false
+  xy: 1574, 2
+  size: 113, 75
+  orig: 113, 75
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Blunt_guardian_vip2
+  rotate: false
+  xy: 1691, 2
+  size: 113, 75
+  orig: 113, 75
+  offset: 0, 0
+  index: -1
+item_bow
+  rotate: false
+  xy: 1808, 2
+  size: 132, 73
+  orig: 132, 73
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Sword_fighter_lv1
+  rotate: false
+  xy: 2, 141
+  size: 118, 59
+  orig: 118, 59
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Sword_fighter_lv2
+  rotate: false
+  xy: 124, 141
+  size: 118, 59
+  orig: 118, 59
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Sword_fighter_lv3
+  rotate: false
+  xy: 246, 141
+  size: 118, 59
+  orig: 118, 59
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Sword_fighter_lv4
+  rotate: false
+  xy: 368, 141
+  size: 118, 59
+  orig: 118, 59
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Sword_fighter_vip1
+  rotate: false
+  xy: 490, 141
+  size: 118, 59
+  orig: 118, 59
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Sword_fighter_vip2
+  rotate: false
+  xy: 612, 141
+  size: 118, 59
+  orig: 118, 59
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Spear_vanguard_lv1
+  rotate: false
+  xy: 734, 141
+  size: 155, 57
+  orig: 155, 57
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Spear_vanguard_lv2
+  rotate: false
+  xy: 893, 141
+  size: 155, 57
+  orig: 155, 57
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Spear_vanguard_lv3
+  rotate: false
+  xy: 1052, 141
+  size: 155, 57
+  orig: 155, 57
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Spear_vanguard_lv4
+  rotate: false
+  xy: 1211, 141
+  size: 155, 57
+  orig: 155, 57
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Spear_vanguard_vip1
+  rotate: false
+  xy: 1370, 141
+  size: 155, 57
+  orig: 155, 57
+  offset: 0, 0
+  index: -1
+part_Rider_HandRight_Spear_vanguard_vip2
+  rotate: false
+  xy: 1529, 141
+  size: 155, 57
+  orig: 155, 57
+  offset: 0, 0
+  index: -1
+u_7ad202bb0eb0ce744817aff865490aba
+  rotate: false
+  xy: 1688, 141
+  size: 36, 6
+  orig: 36, 6
+  offset: 0, 0
+  index: -1
+u_9f90fbde522357542aa2b7022f2b6fbb
+  rotate: false
+  xy: 1728, 141
+  size: 37, 6
+  orig: 37, 6
+  offset: 0, 0
+  index: -1

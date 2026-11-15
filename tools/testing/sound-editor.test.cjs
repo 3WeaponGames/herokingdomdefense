@@ -177,7 +177,7 @@ test('a queued end or decode error after Stop/Pause cannot autoplay the next cli
 
 test('Creator menu and IPC expose only checklist operations and explicit asset selection', async () => {
   const vm = require('node:vm'), menu = require(path.join(folder, 'package.json')), calls = [], broadcasts = [];
-  assert.equal(menu['main-menu']['Tools/Hero Kingdom Defense/Sound Editor'].message, 'hkd-sounds:open');
+  assert.equal(menu['main-menu']['Tools/Audio/Sound Editor'].message, 'hkd-sounds:open');
   class Service {
     constructor(project) { this.root = project; calls.push(['constructor', project]); }
     dirty() { return false; }

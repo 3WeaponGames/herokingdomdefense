@@ -23,6 +23,14 @@ test('a blocked fresh barracks spawn retains one owned dormant slot and retries 
  const before=attempts;for(let i=0;i<20;i++)tick(.01);assert(attempts-before<=2,'failed standing searches must not run every update');assert(unit._spawnPending);assert.equal(created(),1);
  obstacle.enabled=false;tick(.3);assert(!unit._spawnPending);assert(!unit.isDead());assert(unit.node.active&&unit.rigidBody.active);assert(unit.hp>0);const nav=e.nav.get(game);assert(nav.gridFor(unit).isWalkable(unit.node.position,nav.radius(unit)));assert.equal(created(),1);
 });
+test('a legacy formation marker inside terrain uses the barracks doorway and keeps safe separate roster posts',()=>{
+ const f=setup(),{e,b,game}=f;b.ndVideoSoldier=new Node('Doorway',b.node,0,-180);b.ndVideoSoldier.SolID=90002;b.buildInfo.cfg.Data[0]=4;e.box(0,-80,100,80);b.initSoldier();
+ assert.equal(b.enemyList.length,4);const nav=e.nav.get(game);for(const unit of b.enemyList){assert(!unit._spawnPending);assert(unit.node.active&&!unit.isDead());assert(nav.gridFor(unit).isWalkable(unit.node.position,nav.radius(unit)));assert(unit.node.y<-120,'Units emerge at the doorway, not inside the blocked marker');}
+ for(let a=0;a<4;a++)for(let c=a+1;c<4;c++)assert(Math.hypot(b.enemyList[a].node.x-b.enemyList[c].node.x,b.enemyList[a].node.y-b.enemyList[c].node.y)>=nav.radius(b.enemyList[a])+nav.radius(b.enemyList[c])+4);
+});
+test('an explicit blocked spawn position remains queued instead of being silently moved to the default doorway',()=>{
+ const {e,b}=setup();e.stubs.BuildingSpawnPositions=require('../../assets/_script/BuildingSpawnPositions');b.ndVideoSoldier=new Node('Doorway',b.node,0,-180);b.ndVideoSoldier.SolID=90002;b.buildInfo.cfg.SpawnPositions={'1':{x:0,y:-80}};e.box(0,-80,100,80);b.initSoldier();assert(b.enemyList[0]._spawnPending);assert.equal(b.enemyList[0].node.active,false);
+});
 test('blocked casualties keep their ready queue through rebirth and round end, then return without reviving living neighbors',()=>{
  const f=setup(),{e,game,b,tick}=f;const casualty=f.soldier();b.enemyList=[casualty];casualty.setParent(b);assert(b._placeSoldier(casualty,0));const living=f.soldier();living.node.setPosition(500,300);living.hp=37;b.enemyList.push(living);
  casualty.state=4;casualty.hp=0;casualty.node.active=false;casualty.rigidBody.active=false;b.addDie(casualty);b.addDie(casualty);assert.equal(b.waitEnemy.length,1);const obstacle=e.box(0,-80,1800,1800);tick(.2);

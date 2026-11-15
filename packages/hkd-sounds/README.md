@@ -1,6 +1,6 @@
 # Sound Editor
 
-Open **Tools → Hero Kingdom Defense → Sound Editor** in Cocos Creator.
+Open **Tools → Audio → Sound Editor** in Cocos Creator.
 The dockable panel indexes all audio under `assets/`, including effects, music and unit voices.
 Opening or selecting a clip starts no playback. Click its play button, double-click its row, or press Space to listen.
 

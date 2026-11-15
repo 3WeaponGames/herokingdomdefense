@@ -109,6 +109,13 @@ var def_KinghtFallBuildBarracks = function (t) {
     unit._spawnBodyRadius = Math.max(unit._spawnBodyRadius || 0, Navigation.get(game).radius(unit, true));
     if (!this._spawnPosts) this._spawnPosts = [];
     var position = Navigation.findStandingPoint(unit, game, anchor, custom ? preferred : this._spawnPosts[t] || preferred);
+    if(!position&&!custom&&!squad&&this.ndVideoSoldier&&this.ndVideoSoldier.convertToWorldSpaceAR){
+      // Older map templates can leave their formation marker inside a cliff
+      // after the barracks is moved. Its visible doorway/ad-unit marker is a
+      // second authored exit; retain all normal terrain and crowd checks.
+      var doorway=Navigation.positionOf(this.ndVideoSoldier,game);
+      position=Navigation.findStandingPoint(unit,game,doorway,cc.v2(doorway.x+a.x,doorway.y+a.y));
+    }
     if (!position) return null;
     this._spawnPosts[t] = { x: position.x, y: position.y };
     return cc.v2(position.x, position.y);

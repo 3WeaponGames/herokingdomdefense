@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "847205bf-3191-5f98-a8e0-d357960677c3",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "item-4-tier-lv_blue-mystic_wqyl_lead_gong": {
+      "ver": "1.0.6",
+      "uuid": "db92bb3d-5925-507e-a617-eded874722ba",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "847205bf-3191-5f98-a8e0-d357960677c3",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

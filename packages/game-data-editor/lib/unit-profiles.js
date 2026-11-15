@@ -1,7 +1,7 @@
 'use strict';
 // Profile metadata is authoring data. Resolved records use the existing unit
 // format and stable IDs, so spawning, pooling and legacy waves need no rewrite.
-const fs=require('fs'),path=require('path'),Catalog=require('../worlds/unit-catalog'),Records=require('./unit-records'),EnemyClasses=require('./enemy-classes');
+const fs=require('fs'),path=require('path'),Catalog=require('../worlds/unit-catalog'),Records=require('./unit-records'),EnemyClasses=require('./enemy-classes'),Fighting=require('./fighting-profiles');
 const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -13,6 +13,7 @@ function config(state){return Object.assign({},state.A,{GameTools:state.override
 function metadata(state){return state.overrides.unitProfiles||{version:1,nextId:100000,entries:{}};}
 function groups(state,looks){return Catalog.groups(Catalog.rows(config(state),state.catalog||{},null,looks));}
 function family(state,id,looks){
+ id=Fighting.canonicalId(state.overrides,id);
  const group=groups(state,looks).find(group=>group.units.some(unit=>unit.id===Number(id)));
  if(!group)throw Error('Choose a spawnable enemy model.');
  const entries=metadata(state).entries||{},base=group.units.find(unit=>state.A.SoldierCfg[unit.id].MonsterSource&&!entries[unit.id])||group.units.find(unit=>!entries[unit.id]&&unit.profileKind!=='Campaign')||group.units[0];
@@ -41,7 +42,14 @@ function materialize(state){
   const row=units[id],base=units[profile.baseId];if(!row||!base)throw Error('A profile references a missing default unit.');
   if(entries[profile.baseId]||Number(id)===Number(profile.baseId))throw Error('Profiles must inherit directly from a model default.');
   if(profile.created){row.prefab=profile.modelPrefab||base.prefab;row.loadIcon=base.loadIcon;}
-  for(const field of Object.keys(STATS)){if((profile.omitted||[]).includes(field))delete row[field];else if(own(profile.stats,field))row[field]=clone(profile.stats[field]);else if(own(base,field))row[field]=clone(base[field]);else delete row[field];}
+  const fightingFamily=profile.fightingProfile&&Fighting.familyFor(tools,id);
+  for(const field of Object.keys(STATS)){
+   const factorIndex=Fighting.FIELDS.indexOf(field);
+   if((profile.omitted||[]).includes(field))delete row[field];
+   else if(own(profile.stats,field))row[field]=clone(profile.stats[field]);
+   else if(fightingFamily&&factorIndex>=0&&own(fightingFamily.baseline,field))row[field]=Number((fightingFamily.baseline[field]*Fighting.factors(tools,profile.role)[factorIndex]).toFixed(8));
+   else if(own(base,field))row[field]=clone(base[field]);else delete row[field];
+  }
   const current=clone((tools.visuals||{})[key(id)]||{}),source=(tools.visuals||{})[key(profile.baseId)]||{};
   for(const field of Object.keys(VISUAL)){if((profile.omittedVisual||[]).includes(field))delete current[field];else if(own(profile.visual,field))current[field]=profile.visual[field];else if(own(source,field))current[field]=source[field];else delete current[field];}
   assign(tools,'visuals',id,Object.keys(current).length?current:null);
@@ -50,9 +58,14 @@ function materialize(state){
   if(own(profile,'enemyClass'))assign(tools,'enemyClasses',id,profile.enemyClass);
   else if(own(tools.enemyClasses,key(profile.baseId)))assign(tools,'enemyClasses',id,tools.enemyClasses[key(profile.baseId)]);
   else assign(tools,'enemyClasses',id,null);
-  assign(tools,'animationSpeeds',id,own(profile,'speed')?profile.speed:(tools.animationSpeeds||{})[key(profile.baseId)]);
-  const hit=own(profile,'timing')?profile.timing:timing(tools,profile.baseId);
-  assign(tools,'timingDefaults',id,hit.saved);assign(tools,'timings',id,hit.custom);
+  // Fighting profiles receive their own saved animation clocks in the explicit
+  // migration. Keep those approved values independent of later model edits.
+  // In particular, an unrelated draft must not reseed missing timing tables.
+  if(!profile.fightingProfile||own(profile,'speed'))assign(tools,'animationSpeeds',id,own(profile,'speed')?profile.speed:(tools.animationSpeeds||{})[key(profile.baseId)]);
+  if(!profile.fightingProfile||own(profile,'timing')){
+   const hit=own(profile,'timing')?profile.timing:timing(tools,profile.baseId);
+   assign(tools,'timingDefaults',id,hit.saved);assign(tools,'timings',id,hit.custom);
+  }
  }
  return state;
 }
@@ -69,7 +82,7 @@ function reconcile(before,next){
   for(const [field,table]of [['role','unitTypeAssignments'],['speed','animationSpeeds'],['enemyClass','enemyClasses']])if(!equal((before.overrides[table]||{})[key(id)],(next.overrides[table]||{})[key(id)])){if(own(next.overrides[table],key(id)))entry[field]=next.overrides[table][key(id)];else delete entry[field];}
   if(!equal(timing(before.overrides,id),timing(next.overrides,id)))entry.timing=timing(next.overrides,id);
  }
- return materialize(next);
+ Fighting.applyBalance(before,next);return materialize(next);
 }
 function usages(root,state,id,drafts){
  const result=[],seen=new Set();
@@ -86,10 +99,12 @@ function usages(root,state,id,drafts){
 }
 function describe(root,state,id,drafts){
  const looks=characters(root),{group,baseId}=family(state,id,looks),entries=metadata(state).entries||{},tools=state.overrides;
- return {model:group.units.find(unit=>unit.id===baseId).name,baseId,profiles:group.units.map(unit=>({id:unit.id,name:unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit),archived:!!(entries[unit.id]&&entries[unit.id].archived),managed:!!entries[unit.id],default:unit.id===baseId,record:clone(state.A.SoldierCfg[unit.id]),visual:clone((tools.visuals||{})[key(unit.id)]||{}),role:(tools.unitTypeAssignments||{})[key(unit.id)]||'',enemyClass:EnemyClasses.resolve(tools,unit.id),timing:timing(tools,unit.id),speed:(tools.animationSpeeds||{})[key(unit.id)],overrides:clone(entries[unit.id]||null),uses:usages(root,state,unit.id,drafts)})),types:clone(tools.unitTypes||{})};
+ const fixed=Fighting.familyFor(tools,baseId),members=fixed?Fighting.ROLES.map(role=>group.units.find(unit=>unit.id===fixed.profiles[role])):group.units;
+ return {model:group.units.find(unit=>unit.id===baseId).name,baseId,fightingProfiles:!!fixed,selectedId:Fighting.canonicalId(tools,id),profiles:members.map(unit=>({id:unit.id,name:fixed?Catalog.profileLabel(unit):unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit),archived:!!(entries[unit.id]&&entries[unit.id].archived),managed:!!entries[unit.id],default:unit.id===baseId,record:clone(state.A.SoldierCfg[unit.id]),visual:clone((tools.visuals||{})[key(unit.id)]||{}),role:(tools.unitTypeAssignments||{})[key(unit.id)]||'',enemyClass:EnemyClasses.resolve(tools,unit.id),timing:timing(tools,unit.id),speed:(tools.animationSpeeds||{})[key(unit.id)],overrides:clone(entries[unit.id]||null),uses:usages(root,state,unit.id,drafts)})),types:clone(tools.unitTypes||{})};
 }
 function operation(root,state,request,drafts){
- const next=clone(state),id=Number(request.id),{baseId}=family(next,id,characters(root)),units=next.A.SoldierCfg,action=request.action;
+ const next=clone(state),id=Fighting.canonicalId(next.overrides,request.id),{baseId}=family(next,id,characters(root)),units=next.A.SoldierCfg,action=request.action;
+ if(Fighting.familyFor(next.overrides,id)&&(['add','duplicate','rename','remove','archive','restore'].includes(action)||request.field==='role'))throw Error('Each unit keeps its six fighting profiles. Choose a profile to edit its values.');
  let selectedId=id,entry;
  if(['add','duplicate'].includes(action)){
   if(action==='duplicate'&&Records.boss(id))throw Error('This legacy boss uses linked transformation forms. Add a profile from this model’s Default instead.');
@@ -115,23 +130,23 @@ function operation(root,state,request,drafts){
    const field=request.field,value=request.value,reset=action==='reset';
    if(own(STATS,field)){
     if(field==='Data'&&reset&&Records.behavior(units[id],id)!==Records.behavior(units[baseId],baseId))throw Error('This profile uses a different controller and keeps its own behavior parameters.');
-    if(entry){entry.stats=entry.stats||{};entry.omitted=(entry.omitted||[]).filter(item=>item!==field);if(reset)delete entry.stats[field];else entry.stats[field]=validValue(field,value);}
+    if(entry){entry.stats=entry.stats||{};entry.omitted=(entry.omitted||[]).filter(item=>item!==field);if(reset){if(entry.fightingProfile&&field==='Data'&&Records.behavior(units[id],id)===90010){entry.stats.Data=clone(units[baseId].Data);entry.stats.Data[2]=units[id].Data[2];}else delete entry.stats[field];}else entry.stats[field]=validValue(field,value);}
     else units[id][field]=validValue(field,value);
    }else if(own(VISUAL,field)){
     if(entry){entry.visual=entry.visual||{};entry.omittedVisual=(entry.omittedVisual||[]).filter(item=>item!==field);if(reset)delete entry.visual[field];else entry.visual[field]=validValue(field,value);}
     else{next.overrides.visuals=next.overrides.visuals||{};next.overrides.visuals[key(id)]=Object.assign({},next.overrides.visuals[key(id)],{[field]:validValue(field,value)});}
    }else if(field==='role'){
-    if(!reset&&value&&!own(next.overrides.unitTypes,value))throw Error('Choose an existing unit type.');
+    if(!reset&&value&&!own(next.overrides.unitTypes,value))throw Error('Choose an existing fighting type.');
     if(entry){if(reset)delete entry.role;else entry.role=value;}else assign(next.overrides,'unitTypeAssignments',id,value||null);
    }else if(field==='enemyClass'){
     if(!reset&&!EnemyClasses.valid(value))throw Error('Choose Normal, Elite or Boss.');
     if(entry){if(reset){delete entry.enemyClass;assign(next.overrides,'enemyClasses',id,null);}else entry.enemyClass=value;}
     else assign(next.overrides,'enemyClasses',id,value);
    }else if(field==='hitTime'){
-    if(entry){if(reset)delete entry.timing;else entry.timing=Object.assign(timing(next.overrides,id),{custom:{attack:validValue(field,value)}});}
+    if(entry){if(reset){delete entry.timing;if(entry.fightingProfile)assign(next.overrides,'timings',id,null);}else entry.timing=Object.assign(timing(next.overrides,id),{custom:{attack:validValue(field,value)}});}
     else assign(next.overrides,'timings',id,{attack:validValue(field,value)});
    }else if(field==='speed'){
-    if(entry){if(reset)delete entry.speed;else entry.speed=validValue(field,value);}else assign(next.overrides,'animationSpeeds',id,validValue(field,value));
+    if(entry){if(reset){delete entry.speed;if(entry.fightingProfile)assign(next.overrides,'animationSpeeds',id,null);}else entry.speed=validValue(field,value);}else assign(next.overrides,'animationSpeeds',id,validValue(field,value));
    }else throw Error('Unsupported profile field.');
   }else throw Error('Unknown profile action.');
  }
@@ -165,11 +180,12 @@ function validate(state){
   if(entry.archived!==undefined&&typeof entry.archived!=='boolean')issue(at.concat('archived'),'Invalid archived setting.');
   if(entry.created!==undefined&&typeof entry.created!=='boolean')issue(at.concat('created'),'Invalid created setting.');
   if(entry.modelPrefab!==undefined&&(typeof entry.modelPrefab!=='string'||!/^[A-Za-z0-9_-]+$/.test(entry.modelPrefab)))issue(at.concat('modelPrefab'),'Invalid shared model reference.');
-  if(own(entry,'role')&&(typeof entry.role!=='string'||entry.role&&!own(state.overrides.unitTypes,entry.role)))issue(at.concat('role'),'Choose an existing unit type.');
+  if(own(entry,'role')&&(typeof entry.role!=='string'||entry.role&&!own(state.overrides.unitTypes,entry.role)))issue(at.concat('role'),'Choose an existing fighting type.');
   if(own(entry,'enemyClass')&&!EnemyClasses.valid(entry.enemyClass))issue(at.concat('enemyClass'),'Choose Normal, Elite or Boss.');
   if(own(entry,'speed')&&entry.speed!==null)try{validValue('speed',entry.speed);}catch(error){issue(at.concat('speed'),error.message);}
   if(own(entry,'timing')){if(!entry.timing||typeof entry.timing!=='object')issue(at.concat('timing'),'Invalid profile timing.');else for(const field of ['saved','custom'])if(entry.timing[field]!==null)try{validValue('hitTime',entry.timing[field].attack);}catch(error){issue(at.concat('timing',field),'Choose a valid profile hit time.');}}
  }
+ for(const message of Fighting.validate(state.overrides,state.A.SoldierCfg))issue(['families'],message);
  return issues;
 }
 function checkRemovals(root,before,state,drafts){

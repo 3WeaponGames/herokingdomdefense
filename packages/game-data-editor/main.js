@@ -1,7 +1,7 @@
 'use strict';
 const path=require('path');
 const Store=require('./lib/store').Store;
-const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Unit Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
+const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Fighting Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
 let store=null,assets=null,restoreMetadataSave=null,restoreSpineLibrarySave=null,restoreSpineAtlasRefresh=null,worlds=null;
 function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:variant=>{const docs=getStore().snapshot().documents,selected=docs[variant]&&docs[variant].data;const config=selected&&selected.BuildEnum?selected:docs.A.data;return Object.assign({},config,{GameTools:variant==='A'&&docs.overrides?docs.overrides.data:config.GameTools});}});return worlds;}
 function worldBroadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});return snapshot;}
@@ -46,6 +46,10 @@ const messages={
     'unit-profiles'(event,request){reply(event,()=>require('./lib/unit-profile-service').read(getStore(),request,worlds&&worlds.docs));},
     'unit-profile-change'(event,request){reply(event,()=>{const result=require('./lib/unit-profile-service').change(getStore(),request,worlds&&worlds.docs);broadcast(getStore().snapshot());return result;});},
     'world-catalog'(event){reply(event,()=>getWorlds().catalog());},
+    'world-stage-thumbnails'(event){reply(event,()=>require('./worlds/stage-thumbnails').list(getWorlds()));},
+    'world-stage-thumbnail-import'(event,request){reply(event,()=>require('./worlds/stage-thumbnails').stage(getWorlds(),request));},
+    'world-stage-thumbnail-folder'(event){reply(event,async()=>{const folder=require('./worlds/stage-thumbnails').list(getWorlds()).folder,shell=require('electron').shell;if(shell.openPath){const error=await shell.openPath(folder);if(error)throw Error(error);}else shell.openItem(folder);return true;});},
+    'world-stage-thumbnail-pick'(event){reply(event,()=>new Promise((resolve,reject)=>{const dialog=require('electron').dialog,options={title:'Choose a stage thumbnail',defaultPath:require('./worlds/stage-thumbnails').list(getWorlds()).folder,properties:['openFile'],filters:[{name:'PNG images',extensions:['png']}]};try{const modern=Number((process.versions.electron||'0').split('.')[0])>=6,result=modern?dialog.showOpenDialog(options):dialog.showOpenDialog(options,files=>resolve(files&&files[0]||null));if(result&&result.then)result.then(value=>resolve(value.canceled?null:value.filePaths[0]),reject);else if(Array.isArray(result))resolve(result[0]||null);}catch(error){reject(error);}}));},
     'world-unit-preview'(event,request){reply(event,()=>getWorlds().unitPreview(request));},
     'world-load'(event,request){reply(event,()=>getWorlds().snapshot(request.key));},
     'world-copy-stage'(event,request){reply(event,()=>getWorlds().copyStage(request));},

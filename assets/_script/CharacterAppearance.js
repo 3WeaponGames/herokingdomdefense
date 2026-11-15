@@ -8,12 +8,14 @@ var looksLoading = false, looksCallbacks = [], looksFinish = null;
 function skeletonDataId(asset) { return asset && (asset._uuid || asset.uuid); }
 function allyLevel(actor) { return UnitLevelStats.level(actor); }
 function validAnimationSpeed(value) { return typeof value === "number" && isFinite(value) && value >= 0 && value <= 2; }
+function enemyParentKeys(actor){if(!actor.cfg.ProfileBaseID&&actor.cfg.ID<100000)return [];try{var data=require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;return require("EnemyStageProfiles").referenceIds(actor.cfg,data&&data.GameTools).map(function(id){return "enemy:"+id+":"+(id>=90010&&id<=90012?id-90009:"default");});}catch(_){return [];}}
 function animationSpeed(actor, team) {
   var speeds = looks && looks.unitAnimationSpeeds;
   if (!speeds || !actor || team !== "hero" && !actor.cfg) return undefined;
   var level = team === "ally" && allyLevel(actor), scoped = level && speeds["ally:" + actor.cfg.ID + ":level:" + level];
   if (validAnimationSpeed(scoped)) return scoped;
   var shared = speeds[Core.actorKey(actor, team)];
+  if(team==="enemy"&&!validAnimationSpeed(shared)){var keys=enemyParentKeys(actor);for(var i=0;i<keys.length&&!validAnimationSpeed(shared);i++)shared=speeds[keys[i]];}
   return validAnimationSpeed(shared) ? shared : undefined;
 }
 function preload(done) {
@@ -40,6 +42,7 @@ function assignedLook(data, actor, team) {
   var key = Core.actorKey(actor, team), level = team === "ally" && allyLevel(actor), own = Object.prototype.hasOwnProperty;
   var exact = level && data.assignments["ally:" + actor.cfg.ID + ":level:" + level];
   var id = exact && own.call(data.profiles, exact) && plainAppearanceMap(data.profiles[exact]) ? exact : data.assignments[key];
+  if(team==="enemy"&&(!id||!own.call(data.profiles,id)||!plainAppearanceMap(data.profiles[id]))){var keys=enemyParentKeys(actor);for(var i=0;i<keys.length;i++){var inherited=data.assignments[keys[i]];if(inherited&&own.call(data.profiles,inherited)&&plainAppearanceMap(data.profiles[inherited])){id=inherited;break;}}}
   return { id: id, profile: id && own.call(data.profiles, id) && plainAppearanceMap(data.profiles[id]) ? data.profiles[id] : undefined };
 }
 function plainAppearanceMap(value) {

@@ -45,9 +45,9 @@ function resolveEnemyPictogram(settings, id) {
 function placeEnemyIndicator(target, footprint, bounds, obstacles, gap) {
   var clamp = function (value, min, max) { return Math.max(min, Math.min(max, value)); };
   var x = clamp(target.x, bounds.minX, bounds.maxX), y = clamp(target.y, bounds.minY, bounds.maxY);
-  var forbidden = obstacles.map(function (rect) { return {
-    minX: rect.minX - gap - footprint.maxX, maxX: rect.maxX + gap - footprint.minX,
-    minY: rect.minY - gap - footprint.maxY, maxY: rect.maxY + gap - footprint.minY
+  var forbidden = obstacles.map(function (rect) { var spacing=rect.indicator?gap:Math.max(12,gap);return {
+    minX: rect.minX - spacing - footprint.maxX, maxX: rect.maxX + spacing - footprint.minX,
+    minY: rect.minY - spacing - footprint.maxY, maxY: rect.maxY + spacing - footprint.minY
   }; });
   var xs = [x, bounds.minX, bounds.maxX], ys = [y, bounds.minY, bounds.maxY];
   forbidden.forEach(function (rect) {
@@ -905,7 +905,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype._loadEnemyPictogram = function (record, id) {
     var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
-    var cfg = manager.getSoldierCfgById(id), type = resolveEnemyPictogram(manager.data && manager.data.GameTools, id);
+    var cfg = manager.getSoldierCfgById(id), type = resolveEnemyPictogram(manager.data && manager.data.GameTools, cfg.ProfileBaseID || id);
     if (cfg.loadIcon && cfg.loadIcon.indexOf("@icon/") === 0) type = { icon: cfg.loadIcon, tint: type && type.tint || "#ffffff" };
     var icon = record.ndItem.getChildByName("sprIcon");
     if (!icon) return;
@@ -971,7 +971,15 @@ var def_KinghtFallUIGame = function (t) {
       var ax = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(1, 0)));
       var ay = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 1)));
       var sx = Math.hypot(ax.x - center.x, ax.y - center.y), sy = Math.hypot(ay.x - center.x, ay.y - center.y);
-      var radius = Math.hypot(arrow.width * Math.max(arrow.anchorX, 1 - arrow.anchorX) * sx, arrow.height * Math.max(arrow.anchorY, 1 - arrow.anchorY) * sy);
+      var left=-arrow.width*arrow.anchorX,bottom=-arrow.height*arrow.anchorY,width=arrow.width,height=arrow.height;
+      var sprite=arrow.getComponent(cc.Sprite),frame=sprite&&sprite.spriteFrame;
+      if(sprite&&sprite.trim===false&&frame&&frame.getRect&&frame.getOriginalSize&&frame.getOffset){
+        var rect=frame.getRect(),original=frame.getOriginalSize(),offset=frame.getOffset();
+        if(original.width&&original.height){var px=width/original.width,py=height/original.height;left+=(original.width/2+offset.x-rect.width/2)*px;bottom+=(original.height/2+offset.y-rect.height/2)*py;width=rect.width*px;height=rect.height*py;}
+      }
+      // The arrow texture has large transparent corners. Reserve its painted
+      // extent through rotation, so padding cannot spread the rings apart.
+      var radius=Math.hypot(Math.max(Math.abs(left),Math.abs(left+width))*sx,Math.max(Math.abs(bottom),Math.abs(bottom+height))*sy);
       footprint.minX = Math.min(footprint.minX, center.x - radius); footprint.maxX = Math.max(footprint.maxX, center.x + radius);
       footprint.minY = Math.min(footprint.minY, center.y - radius); footprint.maxY = Math.max(footprint.maxY, center.y + radius);
     }
@@ -985,7 +993,7 @@ var def_KinghtFallUIGame = function (t) {
     if (edge === "right") bounds.minX = bounds.maxX;
     var position = placeEnemyIndicator(placementTarget || target, footprint, bounds, obstacles, gap === undefined ? 12 : gap);
     node.setPosition(position.x, position.y);
-    obstacles.push({ minX: position.x + footprint.minX, maxX: position.x + footprint.maxX,
+    obstacles.push({ indicator:true,minX: position.x + footprint.minX, maxX: position.x + footprint.maxX,
       minY: position.y + footprint.minY, maxY: position.y + footprint.maxY });
     if (arrow) {
       var dx = target.x - position.x, dy = target.y - position.y;
@@ -1007,13 +1015,6 @@ var def_KinghtFallUIGame = function (t) {
     var centerX = (viewport.minX + viewport.maxX) / 2;
     markers.forEach(function (marker) {
       var node = marker.record.ndItem, target = marker.target;
-      if (!node._compactUpcoming) {
-        node._compactUpcoming = true;
-        var sprite = node.getComponent(cc.Sprite);
-        if (sprite && cc.Sprite.SizeMode) sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
-        node.setContentSize(88, 88);
-        node.getChildByName("ndArr").setContentSize(72, 72);
-      }
       var side = target.x < centerX ? "left" : "right";
       (groups[side] || (groups[side] = [])).push(marker);
     });
@@ -1021,7 +1022,7 @@ var def_KinghtFallUIGame = function (t) {
       var anchor = { x: side === "left" ? viewport.minX : viewport.maxX, y: viewport.maxY };
       // Fill from the top below existing controls; never spill toward the
       // battlefield center. Portraits/counts, spawn arrows and clicks stay intact.
-      groups[side].forEach(function (marker) { self._placeEnemyIndicator(marker.record.ndItem, marker.target, obstacles, viewport, anchor, 6, side); });
+      groups[side].forEach(function (marker) { self._placeEnemyIndicator(marker.record.ndItem, marker.target, obstacles, viewport, anchor, 2, side); });
     });
   };
   _ctor.prototype._updateOffscreenEnemies = function (obstacles) {

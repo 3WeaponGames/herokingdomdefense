@@ -120,10 +120,12 @@ function effect(id, owner, options) {
   }); } catch (error) { return false; }
   return true;
 }
+function sourceConfig(cfg) { try {var data=require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data,id=cfg.ProfileBaseID||cfg.ID,entry=data.GameTools&&data.GameTools.unitProfiles&&data.GameTools.unitProfiles.entries[id];return data.SoldierCfg[entry?entry.baseId:id]||cfg;}catch(_){return cfg;} }
 function family(actor, side) {
   var cfg = actor && actor.cfg || {};
   if (actor && actor._relicHero) return "mounted";
   if (side === "ally" || actor && (actor._relicSoldier || actor.navigationTeam === "friendly")) return Number(cfg.ID) === 90004 ? "mounted" : "human";
+  cfg=sourceConfig(cfg);
   var name = cfg.MonsterSource || "";
   if (/tree|plant|pitcher|stump|mushroom/i.test(name)) return "plant";
   if (/skeleton|bone/i.test(name)) return "skeleton";
@@ -141,7 +143,7 @@ function attack(actor, side, tower) {
   if (side === "tower") id = tower && tower.attackType === "cannon" ? "cannon-tower-fire" : tower && tower.attackType === "sniper" ? "sniper-tower-fire" : "bow-arrow-release";
   else if (side === "hero") id = actor && actor.heroStyle === "skirmisher" && actor._styleShotCharge >= 1-1e-9 ? "skirmisher-passive-release" : {fighter:"sword-light-swing",vanguard:"cavalry-lance-thrust",mystic:"enemy-magic-projectile",bruiser:"sword-heavy-swing",guardian:"sword-heavy-swing"}[actor&&actor.heroStyle] || "bow-arrow-release";
   else if (side === "ally") id = Number(cfg.ID) === 90003 ? "crossbow-fire" : Number(cfg.ID) === 90004 ? "cavalry-lance-thrust" : Number(cfg.ID) === 90002 ? "sword-heavy-swing" : "sword-light-swing";
-  else if (Number(cfg.AttackType) === 3) id = Number(cfg.ID) === 90009 || Number(cfg.CampaignBaseUnit) === 90009 ? "healing-cast" : "enemy-magic-projectile";
+  else if (Number(cfg.AttackType) === 3) id = Number(cfg.BehaviorTemplate||cfg.CampaignBaseUnit||sourceConfig(cfg).ID) === 90009 ? "healing-cast" : "enemy-magic-projectile";
   else if (Number(cfg.AttackType) === 2) id = kind === "ghost" ? "enemy-magic-projectile" : "enemy-spit-launch";
   else id = kind === "stone" || kind === "metal" ? "golem-ground-slam" : kind === "skeleton" ? "sword-light-swing" : kind === "beast" || kind === "shell" ? "monster-bite" : "monster-claw-swipe";
   return effect(id, actor);
@@ -182,7 +184,7 @@ function death() {
 }
 function spawnEnemy(actor, announce) {
   var state = context(actor); if (!current(state)) return;
-  var cfg = actor.cfg || {}, boss = cfg.IsBoss || cfg.Boss || [90010, 90011, 90012].indexOf(Number(cfg.ID)) >= 0 || [90010, 90011, 90012].indexOf(Number(cfg.CampaignBaseUnit)) >= 0;
+  var cfg = actor.cfg || {}, boss = cfg.IsBoss || cfg.Boss || [90010, 90011, 90012].indexOf(Number(cfg.BehaviorTemplate||cfg.CampaignBaseUnit||sourceConfig(cfg).ID)) >= 0;
   var key = "boss:" + (state.data.round || 0);
   if (announce && boss && !state.once[key]) { state.once[key] = true; effect("boss-arrival", actor, { game: state.game }); }
 }

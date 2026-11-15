@@ -14,8 +14,8 @@
       "x": 0,
       "y": 0,
       "rotation": 0,
-      "scaleX": 0.8083758517975979,
-      "scaleY": 0.8083758517975979
+      "scaleX": 0.7998666323049916,
+      "scaleY": 0.7998666323049916
     },
     {
       "name": "__size",
@@ -628,6 +628,7 @@
       "name": "Rider/Body/Head/Hair_Helmet",
       "bone": "Rider/Body/Head/Hair_Helmet",
       "color": "ffffffff",
+      "attachment": "part_helmet_hair",
       "dark": "000000"
     },
     {
@@ -879,7 +880,19 @@
         "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
         "Rider/Body/Head/Ani_Eye/Eye_Stun2": {},
         "Rider/Body/Head/Hair": {},
-        "Rider/Body/Head/Hair_Helmet": {},
+        "Rider/Body/Head/Hair_Helmet": {
+          "part_helmet_hair": {
+            "path": "part_helmet_hair",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 98,
+            "height": 100,
+            "color": "ff770fff"
+          }
+        },
         "Rider/Body/Head/Beard": {},
         "Rider/Body/Head/Helmet": {
           "part_helmet": {

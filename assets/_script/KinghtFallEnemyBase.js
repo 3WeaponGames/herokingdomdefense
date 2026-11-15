@@ -257,7 +257,7 @@ var def_KinghtFallEnemyBase = function (t) {
         for (var i = 0; i < n.length; i++) {
           var a = n[i];
           if (a.getIsWork()) {
-            var o = a.getWposPhyCol();
+            var o = Navigation.attackPartsOf(a).map(function(part){return part.points;});
             for (var r = 0; r < o.length; r++) {
               var s = o[r];
               if (cc.Intersection.polygonCircle(s, t)) {
@@ -320,7 +320,7 @@ var def_KinghtFallEnemyBase = function (t) {
       for (var h = 0; h < c.length; h++) {
         var g;
         if ((g = c[h]).getIsWork()) {
-          var u = g.getWposPhyCol2();
+          var u = Navigation.attackPartsOf(g);
           for (var d = 0; d < u.length; d++) {
             var p = u[d];
             if (t.canPursueTarget(p.tagNode, game) && cc.Intersection.polygonCircle(p.points, s)) {
@@ -395,7 +395,7 @@ var def_KinghtFallEnemyBase = function (t) {
       } else if (valid && target.building) {
         valid = target.building.getIsWork();
         if (valid) {
-          var parts = target.building.getWposPhyCol2(), polygon = null;
+          var parts = Navigation.attackPartsOf(target.building), polygon = null;
           for (var i = 0; i < parts.length; i++) if (parts[i].tagNode === node) { polygon = parts[i].points; break; }
           var circle = { position: this.node.convertToWorldSpaceAR(cc.Vec2.ZERO), radius: this.cfg.AttackRange + this.cfg.SearchRange };
           valid = !!polygon && cc.Intersection.polygonCircle(polygon, circle);
@@ -455,7 +455,7 @@ var def_KinghtFallEnemyBase = function (t) {
       for (var c = 0; c < l.length; c++) {
         var h;
         if ((h = l[c]).getIsWork()) {
-          var g = h.getWposPhyCol2();
+          var g = Navigation.attackPartsOf(h);
           for (var u = 0; u < g.length; u++) {
             var d = g[u];
             if (cc.Intersection.polygonCircle(d.points, s)) {
@@ -539,7 +539,7 @@ var def_KinghtFallEnemyBase = function (t) {
       for (var l = 0; l < s.length; l++) {
         var c;
         if ((c = s[l]).getIsWork()) {
-          var h = c.getWposPhyCol();
+          var h = Navigation.attackPartsOf(c).map(function(part){return part.points;});
           for (var g = 0; g < h.length; g++) {
             var u = h[g];
             if (cc.Intersection.polygonCircle(u, r)) {
@@ -554,7 +554,7 @@ var def_KinghtFallEnemyBase = function (t) {
       return e;
     }();
     if (n) {
-      n.node.getPosition(this.vec2_2);
+      var impactPoint=Navigation.attackPointOf(n,$z1KinghtFallUIGame.default.instance.ctrGame);this.vec2_2.x=impactPoint.x;this.vec2_2.y=impactPoint.y;
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e, t));
       $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(this.vec2_2.clone(), "xb_gj");
@@ -586,8 +586,8 @@ var def_KinghtFallEnemyBase = function (t) {
         var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
         if (missions.recordQuestEvent) {
           var data = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
-          var form = this.spIdx === undefined ? "default" : String(this.spIdx + 1);
-          var role = data && data.GameTools && data.GameTools.unitTypeAssignments && data.GameTools.unitTypeAssignments["enemy:" + this.cfg.ID + ":" + form];
+          var profileId=this.cfg.ProfileBaseID||this.cfg.ID,form=profileId>=90010&&profileId<=90012?String(profileId-90009):"default";
+          var role = this.cfg.FightingType || data && data.GameTools && data.GameTools.unitTypeAssignments && data.GameTools.unitTypeAssignments["enemy:" + profileId + ":" + form];
           missions.recordQuestEvent($z1KinghtFallEnum.KinghtFallEnumTaskEnum.SoldierDefeated, 1, false, role);
         }
         else {

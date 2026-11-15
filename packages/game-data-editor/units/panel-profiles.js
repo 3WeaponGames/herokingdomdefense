@@ -13,10 +13,11 @@ function open(panel,id,action){
 }
 function bar(panel,row,create){
  if(row.unitType!=='enemy'||!row.record.prefab||[90011,90012].includes(Number(row.unitID)))return;
- const data=state(panel),{group,baseId}=Profiles.family(data,row.unitID,looks(panel)),entries=Profiles.metadata(data).entries||{},wrap=create('div');wrap.className='gt-unit-profiles';panel.$detail.appendChild(wrap);
+ const data=state(panel),{group,baseId}=Profiles.family(data,row.unitID,looks(panel)),entries=Profiles.metadata(data).entries||{},fixed=require('../lib/fighting-profiles').familyFor(data.overrides,baseId),wrap=create('div');wrap.className='gt-unit-profiles';panel.$detail.appendChild(wrap);
  const label=create('label'),caption=create('span'),select=create('select');caption.textContent='Profile';label.appendChild(caption);label.appendChild(select);select.setAttribute('aria-label','Unit profile');wrap.appendChild(label);
- for(const unit of group.units){if(unit.archived&&unit.id!==Number(row.unitID))continue;const option=create('option');option.value=String(unit.id);option.textContent=unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit);select.appendChild(option);}select.value=String(row.unitID);
+ const members=fixed?require('../lib/fighting-profiles').ROLES.map(role=>group.units.find(unit=>unit.id===fixed.profiles[role])):group.units;
+ for(const unit of members){if(unit.archived&&unit.id!==Number(row.unitID))continue;const option=create('option');option.value=String(unit.id);option.textContent=fixed?Catalog.profileLabel(unit):unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit);select.appendChild(option);}select.value=String(row.unitID);
  select.onchange=()=>{panel._selected='enemy:'+select.value;panel._render();};
- for(const [title,action]of [['Manage profiles',null],['Add','add'],['Duplicate','duplicate'],['Rename','rename'],['Remove','remove']]){const button=create('button');button.textContent=title;button.disabled=['rename','remove'].includes(action)&&Number(row.unitID)===baseId;button.onclick=()=>open(panel,Number(row.unitID),action);wrap.appendChild(button);}
+ for(const [title,action]of [['Manage profiles',null],['Add','add'],['Duplicate','duplicate'],['Rename','rename'],['Remove','remove']]){if(fixed&&action)continue;const button=create('button');button.textContent=title;button.disabled=['rename','remove'].includes(action)&&Number(row.unitID)===baseId;button.onclick=()=>open(panel,Number(row.unitID),action);wrap.appendChild(button);}
 }
 module.exports={list,bar,open};

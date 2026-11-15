@@ -4,6 +4,7 @@
 function finite(value,fallback) { return typeof value==="number"&&isFinite(value)?value:(fallback||0); }
 function add(point,offset) { return {x:point.x+finite(offset&&offset.x),y:point.y+finite(offset&&offset.y)}; }
 function point(value) { return {x:value.x,y:value.y}; }
+function scenePoint(x,y) { return typeof cc!=="undefined"&&cc.v2?cc.v2(x,y):{x:x,y:y}; }
 function unit(value,fallback) { var x=finite(value&&value.x),y=finite(value&&value.y),length=Math.hypot(x,y);return length>1e-9?{x:x/length,y:y/length}:fallback?unit(fallback):{x:1,y:0}; }
 function shot(hero,target,direction,sample) {
   var aim=unit(target?{x:target.x-hero.x,y:target.y-hero.y}:direction),origin=point(hero);
@@ -20,7 +21,9 @@ function shot(hero,target,direction,sample) {
 function actorPoint(actor,main) {
   var ground=actor.node.getPosition(),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node;
   if(!bar||!bar.convertToWorldSpaceAR||!actor.node.convertToWorldSpaceAR||!main||!main.convertToNodeSpaceAR)return point(ground);
-  var a=actor.node.convertToWorldSpaceAR({x:0,y:0}),b=bar.convertToWorldSpaceAR({x:0,y:0});return main.convertToNodeSpaceAR({x:a.x+(b.x-a.x)*.55,y:a.y+(b.y-a.y)*.55});
+  // Creator chooses Vec2 versus Vec3 by instance type. Plain {x,y} points
+  // take the Vec3 overload with a missing z and turn real HP anchors into NaN.
+  var a=actor.node.convertToWorldSpaceAR(scenePoint(0,0)),b=bar.convertToWorldSpaceAR(scenePoint(0,0));return main.convertToNodeSpaceAR(scenePoint(a.x+(b.x-a.x)*.55,a.y+(b.y-a.y)*.55));
 }
 function area(style,origin,visual,direction,radius) {
   visual=visual||{};var angle=finite(visual.rotation)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),d=unit(direction),degrees=finite(visual.arcDegrees,style==='vanguard'?72:120);

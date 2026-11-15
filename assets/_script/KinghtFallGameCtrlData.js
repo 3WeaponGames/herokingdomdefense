@@ -44,6 +44,7 @@ var def_KinghtFallGameCtrlData = function () {
     this._restoringCheckpoint = !!restoring;
     this.ctrPar = t;
     this.levelCfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(e);
+    require("EnemyStageProfiles").activate(this.levelCfg);
     this.initData(restoring, restartSetup);
   }
   _ctor.prototype.initData = function (restoring, restartSetup) {

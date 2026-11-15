@@ -1,6 +1,6 @@
 # Projectiles, Relics and icons
 
-Open **Tools → Hero Kingdom Defense → Projectiles** in Creator. The library
+Open **Tools → Skills → Projectiles** in Creator. The library
 contains the 25 imported arrows, original game projectiles (including the 18
 wall-defense variants), and 45 Toon clips. Select a ranged unit and choose its
 flight artwork, launch effect and impact effect. Size, rotation and tint affect

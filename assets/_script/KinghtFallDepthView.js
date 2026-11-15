@@ -1246,6 +1246,89 @@ DepthView.prototype.prepareObjects = function () {
       masks: new Map(), capture: null, texture: null, frame: null, signature: "" });
   });
 };
+// The lowest hip in the published horse setup pose is 44.49 units above its
+// ground origin. Use that fixed lower-body height, not an animated knee/hoof,
+// so walking and attacking cannot make a nearby plant change depth bands.
+function sceneryLegHeight(hero, main) {
+  var horse=hero.ctrPlayAni&&hero.ctrPlayAni.spAniMa, node=horse&&horse.node||hero.node;
+  if(!node||!node.convertToWorldSpaceAR||!main.convertToNodeSpaceAR)return 44.5;
+  return Math.abs(point(node,main,0,44.5).y-point(node,main,0,0).y);
+}
+function sceneryLocalShape(view,node,sources) {
+  var shapes=view._sceneryShapes||(view._sceneryShapes=new WeakMap()),saved=shapes.get(node);
+  if(saved&&saved.stamps.every(function(stamp){var source=stamp[0],child=source.node;return child&&stamp[1]===source.spriteFrame&&stamp[2]===source.skeletonData&&stamp[3]===child.width&&stamp[4]===child.height&&stamp[5]===child.x&&stamp[6]===child.y&&stamp[7]===child.scaleX&&stamp[8]===child.scaleY&&stamp[9]===child.angle&&stamp[10]===source.enabled&&stamp[11]===child.parent&&stamp[12]===child.activeInHierarchy&&stamp[13]===child.anchorX&&stamp[14]===child.anchorY&&stamp[15]===source.trim;}))return saved.box;
+  if(!node.getComponentsInChildren&&!sources)return null;
+  sources=sources||(saved?saved.stamps.map(function(stamp){return stamp[0];}):(cc.Sprite?node.getComponentsInChildren(cc.Sprite):[]).concat(sp.Skeleton?node.getComponentsInChildren(sp.Skeleton):[]));
+  var box=null;
+  sources.forEach(function(source){
+    var child=source.node;if(!child||child._depthGroundVisual||child.activeInHierarchy===false||source.enabled===false)return;
+    var data=source.skeletonData&&source.skeletonData.skeletonJson,rect=data&&data.skeleton;
+    if(rect&&(!Number.isFinite(rect.width)||!Number.isFinite(rect.height)))rect=null;
+    var w=rect?rect.width:child.width,h=rect?rect.height:child.height,x=rect?(rect.x||0):-w*child.anchorX,y=rect?(rect.y||0):-h*child.anchorY;
+    // Match Creator's simple Sprite assembler: trim=true fills the node;
+    // trim=false retains the original transparent padding around its quad.
+    var frame=!rect&&source.spriteFrame;
+    if(frame&&source.trim===false&&frame.getRect&&frame.getOriginalSize&&frame.getOffset){
+      var trim=frame.getRect(),original=frame.getOriginalSize(),offset=frame.getOffset();
+      if(original.width>0&&original.height>0){var sx=w/original.width,sy=h/original.height;x+=(original.width*.5+offset.x-trim.width*.5)*sx;y+=(original.height*.5+offset.y-trim.height*.5)*sy;w=trim.width*sx;h=trim.height*sy;}
+    }
+    if(![x,y,w,h].every(Number.isFinite)||w<=0||h<=0)return;
+    [[x,y],[x+w,y],[x,y+h],[x+w,y+h]].forEach(function(p){var local=point(child,node,p[0],p[1]);box=union(box,{minX:local.x,minY:local.y,maxX:local.x,maxY:local.y});});
+  });
+  if(box)shapes.set(node,{box:box,stamps:sources.map(function(source){var child=source.node;return[source,source.spriteFrame,source.skeletonData,child.width,child.height,child.x,child.y,child.scaleX,child.scaleY,child.angle,source.enabled,child.parent,child.activeInHierarchy,child.anchorX,child.anchorY,source.trim];})});return box;
+}
+function sceneryWorldShape(view,node,main,sources) {
+  var local=sceneryLocalShape(view,node,sources);if(!local)return null;
+  var saved=view._sceneryShapes.get(node),stamp=node.parent===main?[node.x,node.y,node.scaleX,node.scaleY,node.angle]:null;
+  if(stamp&&sameStamp(saved.worldStamp,stamp))return saved.world;
+  var m=nodeTransform(node,main),x=m.x+local.minX*m.a+local.minY*m.c,y=m.y+local.minX*m.b+local.minY*m.d,w=local.maxX-local.minX,h=local.maxY-local.minY;
+  var box={minX:x+Math.min(0,w*m.a)+Math.min(0,h*m.c),minY:y+Math.min(0,w*m.b)+Math.min(0,h*m.d),maxX:x+Math.max(0,w*m.a)+Math.max(0,h*m.c),maxY:y+Math.max(0,w*m.b)+Math.max(0,h*m.d)};
+  saved.worldStamp=stamp;saved.world=box;
+  return box;
+}
+function sceneryProps(view,ordered,main) {
+  var hero=view.game.ctrPlay,limit=sceneryLegHeight(hero,main),props=[];
+  ordered.forEach(function(group){
+    if(group.actor||group.building||group.owner._depthGroundVisual||group.owner.activeInHierarchy===false||!(group.owner._depthScenery||group.owner._depthMapObject))return;
+    var box=sceneryWorldShape(view,group.owner,main);
+    if(box)props.push({group:group,box:box,low:box.maxY-box.minY<=limit});
+  });
+  return props;
+}
+function sceneryActorOrder(view,ordered,main,props) {
+  if(!props.length)return;
+  var hero=view.game.ctrPlay;
+  // Low decorations keep their authored order, but live below every actor.
+  // They must not contribute to the frontier that can lift a unit over rocks.
+  var low=new Set(props.filter(function(prop){return prop.low;}).map(function(prop){return prop.group;}));
+  var actors=ordered.filter(function(group){return group.actor;}),floors=ordered.filter(function(group){return !group.actor&&(low.has(group)||group.owner._depthGroundVisual);}),floorSet=new Set(floors),entries=new Map();
+  ordered.forEach(function(group,index){if(!floorSet.has(group))entries.set(group,{group:group,index:index,incoming:0,after:[]});});
+  function before(a,b){var first=entries.get(a),last=entries.get(b);first.after.push(last);last.incoming++;}
+  // Actor/prop ground crossings take precedence over conflicting map layers.
+  // A stable topological order changes only the authored order that blocks a
+  // crossing; choosing one insertion slot cannot satisfy both nearby props.
+  props=props.filter(function(prop){return !prop.low;});
+  actors.forEach(function(actor){
+    var owner=actor.owner,component=owner===hero.node?hero:owner._combatActor;
+    var shape=component&&sceneryWorldShape(view,owner,main,bodyVisuals(component));
+    if(shape)props.forEach(function(prop){
+      if(!overlaps(shape,prop.box))return;
+      if(actor.ground>prop.group.ground)before(actor,prop.group);
+      else before(prop.group,actor);
+    });
+  });
+  actors.sort(function(a,b){return b.ground-a.ground||a.index-b.index;});
+  for(var a=1;a<actors.length;a++)before(actors[a-1],actors[a]);
+  var ready=[],result=floors.slice();
+  function push(entry){var index=ready.length;ready.push(entry);while(index){var parent=(index-1)>>1;if(ready[parent].index<=entry.index)break;ready[index]=ready[parent];index=parent;}ready[index]=entry;}
+  entries.forEach(function(entry){if(!entry.incoming)push(entry);});
+  while(ready.length){
+    var entry=ready[0],last=ready.pop();
+    if(ready.length){var index=0;while(index*2+1<ready.length){var child=index*2+1;if(child+1<ready.length&&ready[child+1].index<ready[child].index)child++;if(last.index<=ready[child].index)break;ready[index]=ready[child];index=child;}ready[index]=last;}
+    result.push(entry.group);entry.after.forEach(function(next){if(!--next.incoming)push(next);});
+  }
+  ordered.splice.apply(ordered,[0,ordered.length].concat(result));
+}
 DepthView.prototype.sort = function () {
   var hero = this.game.ctrPlay.node, main = this.main, groups = new Map(), maximum = 1;
   main.children.forEach(function (node, index) {
@@ -1261,17 +1344,19 @@ DepthView.prototype.sort = function () {
     }
     group.nodes.push(node);
   });
-  var ordered = Array.from(groups.values());
+  var ordered = Array.from(groups.values()),scenery=sceneryProps(this,ordered,main);
+  scenery.forEach(function(prop){if(prop.low){prop.group.lowScenery=true;prop.group.band=-1;}});
   ordered.forEach(function (group) { if (group.building && !Number.isFinite(group.band)) group.band = maximum + 2; });
   // Actors retain their ground relationship with scenery and complete buildings.
   // One frontier lets actor lookup stay logarithmic in the number of props.
-  var frontier = ordered.filter(function (g) { return !g.actor && Number.isFinite(g.band) && g.owner.activeInHierarchy !== false; }).sort(function (a,b) { return b.ground-a.ground; }), running = 0;
+  var frontier = ordered.filter(function (g) { return !g.actor && !g.lowScenery && Number.isFinite(g.band) && g.owner.activeInHierarchy !== false; }).sort(function (a,b) { return b.ground-a.ground; }), running = 0;
   frontier.forEach(function (g) { running = Math.max(running,g.band);g.frontBand = running; });
   ordered.forEach(function (g) {
     if (g.actor) { var lo=0,hi=frontier.length;while(lo<hi){var mid=(lo+hi)>>1;if(frontier[mid].ground>=g.ground)lo=mid+1;else hi=mid;}g.band=lo?frontier[lo-1].frontBand:0; }
     else if (!Number.isFinite(g.band)) g.band=0;
   });
   ordered.sort(function(a,b){return a.band-b.band||a.priority-b.priority||b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
+  sceneryActorOrder(this,ordered,main,scenery);
   // Reserve one step for silhouettes and another for local gate intersections.
   ordered.forEach(function (group,index) { group.nodes.forEach(function(node){node.zIndex=index*4;}); });
   if (main.sortAllChildren) main.sortAllChildren();
@@ -1591,6 +1676,7 @@ DepthView.prototype.destroy = function () {
     var pose=nodeTransform(record.node,record.parent);record.node.setParent(record.parent);record.node.setPosition(pose.x,pose.y);record.node.angle=pose.angle;record.node.scaleX=pose.scaleX;record.node.scaleY=pose.scaleY;record.node.zIndex=record.zIndex;
   });
   this._groundParents=null;
+  this._sceneryShapes=null;
   if (cc.isValid(this.capture, true)) this.capture.destroy();
   if (cc.isValid(this.cameraNode, true)) this.cameraNode.destroy();
   if (this.nativeMaterial) this.nativeMaterial.destroy();

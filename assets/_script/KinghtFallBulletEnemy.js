@@ -20,9 +20,9 @@ var def_KinghtFallBulletEnemy = function (t) {
     this.ctrPar = t;
   };
   _ctor.prototype.setTag = function (t, e, n) {
-    this._dir = cc.v2(e.x - t.x, e.y - t.y).normalizeSelf();
     this.bindTarget(e, n);
-    this.tagNode.getPosition(this.tagPos);
+    this.readTargetPosition();
+    this._dir = cc.v2(this.tagPos.x - t.x, this.tagPos.y - t.y).normalizeSelf();
     this.bullet.active = true;
     var i = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     this.node.angle = i;
@@ -36,7 +36,7 @@ var def_KinghtFallBulletEnemy = function (t) {
       this._dir = cc.v2(Math.cos(this.angle * Math.PI / 180), Math.sin(this.angle * Math.PI / 180));
     }
     this.bindTarget(e, n);
-    this.tagNode.getPosition(this.tagPos);
+    this.readTargetPosition();
     this.bullet.active = true;
     var i = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     this.node.angle = i;

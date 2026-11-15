@@ -58,7 +58,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
       for (var c = 0; c < l.length; c++) {
         var h;
         if ((h = l[c]).getIsWork()) {
-          var g = h.getWposPhyCol2();
+          var g = Navigation.attackPartsOf(h);
           for (var u = 0; u < g.length; u++) {
             var d = g[u];
             if (cc.Intersection.polygonCircle(d.points, s)) {
@@ -74,7 +74,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
       return e;
     }();
     if (n) {
-      n.node.getPosition(this.vec2_2);
+      var impactPoint=Navigation.attackPointOf(n,$z1KinghtFallUIGame.default.instance.ctrGame);this.vec2_2.x=impactPoint.x;this.vec2_2.y=impactPoint.y;
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.onShotEnemy(this);

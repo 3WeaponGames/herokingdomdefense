@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "3b007807-f84f-5b26-a040-5e075a9108dc",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "item-4-tier-lv1-mystic_wqyl_lead_gong": {
+      "ver": "1.0.6",
+      "uuid": "4e6067be-5990-5caf-ad70-aef7250c20be",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "3b007807-f84f-5b26-a040-5e075a9108dc",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

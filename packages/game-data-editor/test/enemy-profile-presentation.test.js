@@ -1,0 +1,16 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),Runtime=require('../../../assets/_script/EnemyStageProfiles'),Core=require('../../../assets/_script/CharacterPartsCore'),Warm=require('../../../assets/_script/StageAssetWarmup');
+const root=path.resolve(__dirname,'../../..'),settings={unitProfiles:{entries:{100001:{baseId:91001}},bossForms:{100003:{source:90011}}}};
+function load(name){const context={exports:{},cc:{Class:()=>function(){}},require:name=>{if(name==='EnemyStageProfiles')return Runtime;if(name==='CharacterPartsCore')return Core;if(name==='UnitLevelStats')return{level:()=>0};if(name==='KinghtFallDataMgr')return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};throw Error(name);}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script',name+'.js'),'utf8'),context);return context.exports;}
+test('fighting and stage profiles inherit parent appearance and animation speed, while exact shared-profile assignments win',()=>{
+ const api=load('CharacterAppearance'),data={profiles:{parent:{base:{id:'parent'}},specific:{base:{id:'specific'}},phase:{base:{id:'phase'}}},assignments:{'enemy:91001:default':'parent','enemy:90011:2':'phase'},unitAnimationSpeeds:{'enemy:91001:default':.6}},actor={cfg:{ID:100001}},custom={cfg:{ID:1000000000,ProfileBaseID:100001}};api.prime(data,{parts:[]},{});
+ assert.equal(api.assignedLook(data,actor,'enemy').id,'parent');assert.equal(api.assignedLook(data,custom,'enemy').id,'parent');assert.equal(api.animationSpeed(custom,'enemy'),.6);
+ data.assignments['enemy:100001:default']='specific';data.unitAnimationSpeeds['enemy:100001:default']=.8;assert.equal(api.assignedLook(data,custom,'enemy').id,'specific');assert.equal(api.animationSpeed(custom,'enemy'),.8);
+ assert.equal(api.assignedLook(data,{cfg:{ID:100003},spIdx:1},'enemy').id,'phase');assert.equal(Core.actorKey(custom,'enemy'),'enemy:100001:default');assert.equal(Core.actorKey({cfg:{ID:100003},spIdx:1},'enemy'),'enemy:100003:default');
+});
+test('projectile choices inherit the parent, retain scoped overrides and never mutate the saved catalog',()=>{
+ const api=load('ProjectileLooks'),data={assets:[],assignments:{'enemy:91001':{flight:'arrow',impact:'hit'},'enemy:100001':{tint:'#aabbcc'}}},before=structuredClone(data),value=api.selectSource(data,'enemy:1000000000',{cfg:{ID:1000000000,ProfileBaseID:100001}},settings);assert.deepEqual({...value},{flight:'arrow',impact:'hit',tint:'#aabbcc'});assert.deepEqual(data,before);
+});
+test('stage admission preloads inherited character and projectile art for a Custom fighting profile',()=>{
+ const config={SoldierCfg:{91001:{ID:91001,prefab:'Slime'},100001:{ID:100001,prefab:'Slime'}},GameTools:settings},level={EnemyProfiles:{1000000000:{baseId:100001,name:'Custom',stats:{}}}},base={enemies:['1000000000'],allies:[]},catalogs={characters:{profiles:{parent:{baked:{resource:'parent-rig'}}},assignments:{'enemy:91001:default':'parent'}},parts:{parts:[]},projectiles:{assets:[{id:'arrow',resource:'parent-arrow'}],assignments:{'enemy:91001':{flight:'arrow'}}}},items=Warm.presentationPlan(config,level,base,catalogs,{names:{}});assert(items.some(item=>item.path==='parent-rig'));assert(items.some(item=>item.path==='parent-arrow'));
+});

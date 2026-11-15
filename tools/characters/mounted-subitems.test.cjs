@@ -4,11 +4,11 @@ const root=path.resolve(__dirname,'../..'),{ItemsService}=require('../../package
 const spine=require(Units.enginePath()),Core=require('../../assets/_script/CharacterPartsCore');
 const blue='HandLeft/Sub_Item/FA_WP_Sub_Water_Blue';
 function rigData(layer){const atlas=new spine.TextureAtlas(layer.atlas,name=>{const png=fs.readFileSync(require('node:url').fileURLToPath(layer.pages[name]));return new spine.FakeTexture({width:png.readUInt32BE(16),height:png.readUInt32BE(20)});});return new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(layer.json);}
-test('every Fighter/Bruiser tier defaults to the horse torso, every Vanguard tier to its head, and browsing performs no writes',()=>{
+test('every Fighter/Bruiser/Vanguard tier defaults to the horse torso and browsing performs no writes',()=>{
  const service=new ItemsService(root),assets=service.assets().parts,item=assets.find(asset=>asset.id===blue),before=service.snapshot(),files=['assets/resources/hero-items/catalog.json','assets/KinghtFallConfig/GameJsonCfg.json','assets/resources/characters/catalog.json'].map(file=>[file,fs.readFileSync(path.join(root,file))]);
  for(const style of ['fighter','vanguard','bruiser'])for(const tier of ['lv1','lv2','lv_blue','lv3','lv4']){
   const description=service.describe({type:'item',id:'3:tier:'+tier+':'+style},true),layer=Placement.layerFor(description,item),slot=Placement.socket(layer,item),expected=Sockets.target(style);
-  assert.equal(layer.name,'wqyl_lead_ma');assert.equal(layer.uuid,description.defaultLayer);assert.equal(slot.name,expected.name);assert.equal(slot.bone,expected.name);assert(Placement.compatible(slot));assert.equal(layer.json.bones.find(bone=>bone.name===slot.bone).parent,style==='vanguard'?'horse_s_7':'horse_s_3');
+  assert.equal(layer.name,'wqyl_lead_ma');assert.equal(layer.uuid,description.defaultLayer);assert.equal(slot.name,expected.name);assert.equal(slot.bone,expected.name);assert(Placement.compatible(slot));assert.equal(layer.json.bones.find(bone=>bone.name===slot.bone).parent,'horse_s_3');
   assert.equal(Placement.layerFor(description,{id:'Helmet/New',category:'Helmet'}).name,'wqyl_lead_tou','Normal rider equipment still uses the rider');
  }
  for(const style of ['skirmisher','mystic','guardian'])assert.equal(Placement.layerFor(service.describe({type:'item',id:'3:tier:lv1'+(style==='skirmisher'?'':':'+style)},true),item).name,'wqyl_lead_jian');
@@ -18,7 +18,7 @@ test('adding the empty sockets is idempotent and leaves existing bones, skins an
  const rig=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/hero-maker/wqyl_lead_ma.json'))),names=new Set(Object.values(Sockets.sockets).map(socket=>socket.name));rig.bones=rig.bones.filter(bone=>!names.has(bone.name));rig.slots=rig.slots.filter(slot=>!names.has(slot.name));const before=structuredClone(rig);
  Sockets.ensure(rig);assert.deepEqual(rig.bones.slice(0,before.bones.length),before.bones);assert.deepEqual(rig.slots.slice(0,before.slots.length),before.slots);assert.deepEqual(rig.animations,before.animations);assert.deepEqual(rig.skins,before.skins);const once=structuredClone(rig);Sockets.ensure(rig);assert.deepEqual(rig,once);
 });
-test('saved sub-items bake onto the horse and follow the real torso/head through idle, movement and every weapon attack',()=>{
+test('saved sub-items bake onto the horse and follow the real torso through idle, movement and every weapon attack',()=>{
  const service=new ItemsService(root),assets=service.assets().parts,asset=assets.find(asset=>asset.id===blue),lookup=new Map(assets.map(asset=>[asset.id,asset]));
  for(const style of ['fighter','vanguard','bruiser']){
   const description=service.describe({type:'item',id:'3:tier:lv1:'+style},true),layer=Placement.layerFor(description,asset),slot=Placement.socket(layer,asset),part={id:'charm',sprite:asset.id,layer:layer.uuid,slot:slot.name,bone:slot.bone,...Placement.intended(asset),opacity:1,order:0,hideSlots:[],forceVisible:true},profile={name:'Mounted '+style,base:{type:'item',id:description.item.key},scale:1,parts:[part]},before=JSON.stringify(layer.json);

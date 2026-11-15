@@ -124,8 +124,9 @@ function validateMap(map,assets){
  for(const tile of map.ground.foundation.tiles||[])object(tile,map.ground.foundation.transform&&map.ground.foundation.transform.scale||1);for(const layer of map.layers||[]){shadow(layer);claim(layer.id);transform(layer.transform);strokes(layer.blockers);if(layer.blockerMask!==undefined)issues.push(...Blockers.issues(layer.blockerMask));polygons(layer.polygons);for(const o of layer.objects||[])object(o,layer.transform&&layer.transform.scale||1);}return Array.from(new Set(issues));
 }
 function validateStage(stage,map,units){
+ const StageProfiles=require('../../../assets/_script/EnemyStageProfiles'),profileIssues=units?StageProfiles.validate(stage.config,units):[];if(units)units=StageProfiles.records(stage.config,units);
  const issues=[],allBuildings=stage.buildings||[],allSpawns=Array.isArray(stage.spawns)?stage.spawns.filter(s=>s&&typeof s==='object'&&!Array.isArray(s)):[],buildings=allBuildings.filter(b=>b.enabled!==false),ids=new Set(allBuildings.map(b=>b.id)),spawns=allSpawns.filter(s=>s.enabled!==false),spawnIds=new Set(spawns.map(s=>s.id)),allSpawnIds=new Set(allSpawns.map(s=>s.id)),graphs=Array.isArray(stage.graphs)?stage.graphs.filter(g=>g&&typeof g==='object'&&!Array.isArray(g)):[],graphIds=new Set(),buildingIds=new Set(allBuildings.map(b=>b.id));
- if(!Array.isArray(stage.spawns)||allSpawns.length!==stage.spawns.length)issues.push('Spawn points must be an array of objects.');
+ issues.push(...profileIssues);if(!Array.isArray(stage.spawns)||allSpawns.length!==stage.spawns.length)issues.push('Spawn points must be an array of objects.');
  if(!Array.isArray(stage.graphs)||graphs.length!==stage.graphs.length)issues.push('Paths must be an array of objects.');
  if(buildings.filter(b=>b.kind===1).length!==1||!buildings.some(b=>b.kind===1&&b.id===1))issues.push('Place exactly one main hall.');
  if(ids.size!==allBuildings.length)issues.push('Duplicate building ID.');

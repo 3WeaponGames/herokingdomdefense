@@ -38,6 +38,10 @@ function select(data, key, level, item) {
   }
   return result;
 }
+function selectSource(data,key,actor,settings,level,item){
+  var result={};if(/^enemy:/.test(key)&&actor&&actor.cfg&&(actor.cfg.ID>=100000||actor.cfg.ProfileBaseID))require("EnemyStageProfiles").referenceIds(actor.cfg,settings).reverse().forEach(function(id){Object.assign(result,select(data,"enemy:"+id,level,item));});
+  return Object.assign(result,select(data,key,level,item));
+}
 function Bank(owner) { this.owner = owner; this.cache = Object.create(null); this.effects = []; this.pool = []; this.views = new Set(); this.dead = false; }
 Bank.prototype.get = function (descriptor, callback) {
   var bank = this, cached = this.cache[descriptor.id];
@@ -146,7 +150,8 @@ View.prototype.begin = function (key, sourceActor) {
         if (view.cancelItem) return;
       }
     }
-    var options = Object.assign({}, defaults, select(data, key, level, item)), descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
+    var settings;if(/^enemy:/.test(key)&&sourceActor&&sourceActor.cfg&&(sourceActor.cfg.ID>=100000||sourceActor.cfg.ProfileBaseID)){var config=require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;settings=config&&config.GameTools;}
+    var options=Object.assign({},defaults,selectSource(data,key,sourceActor,settings,level,item)),descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     if (key === "hero" && !options.flight && bank.owner.ctrPlay && bank.owner.ctrPlay.heroStyle === "mystic") {
       options.flight = "original:fireball"; descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     }
@@ -205,6 +210,7 @@ function prepare(shot, owner, key, sourceActor) {
 }
 exports.prepare = prepare;
 exports.select = select;
+exports.selectSource = selectSource;
 exports.Bank = Bank;
 exports.prime = function (data) { catalog=data;loading=false;retryAfter=0;var callbacks=waiting;waiting=[];callbacks.forEach(function(callback){callback(catalog);}); };
 exports.release = function (shot) {

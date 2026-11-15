@@ -82,7 +82,7 @@ test('actual Creator model/skin/attack/backward-seek integration for every reach
         const description=describe({type,id}),layers=layersFor(description);assert(layers.length>0);
         Renderer.seek(spine,layers,'attack',0,false);const zero=coordinates(layers);assert(zero.some(layer=>layer.length>0));
         const attackDuration=Math.max(...layers.map(layer=>layer.data.findAnimation('attack').duration));
-        if(type==='enemy'&&stationaryAttacks.has(cfg.SoldierCfg[id].MonsterSource))assert.equal(cfg.SoldierCfg[id].AttackDamage,0,'Stationary chest presets have no authored attack and deal no damage');
+        if(type==='enemy'&&stationaryAttacks.has(cfg.SoldierCfg[id].MonsterSource||cfg.SoldierCfg[(cfg.GameTools.unitProfiles.entries[id]||{}).baseId]?.MonsterSource))assert.equal(cfg.SoldierCfg[id].AttackDamage,0,'Stationary chest presets have no authored attack and deal no damage');
         else assert([.25,.5,.75].some(fraction=>{Renderer.seek(spine,layers,'attack',attackDuration*fraction,false);return JSON.stringify(coordinates(layers))!==JSON.stringify(zero);}), 'attack pose changes '+type+id);
         Renderer.seek(spine,layers,'attack',0,false);assert.deepEqual(coordinates(layers),zero,'backward seek is deterministic '+type+id);
         const box=Renderer.bounds(spine,layers);assert(box.width>0&&box.height>0&&isFinite(box.width));

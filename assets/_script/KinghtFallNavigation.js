@@ -536,6 +536,11 @@ exports.projectedStandingPoint = function (unit, game, target) {
   return start;
 };
 exports.positionOf = function (node, game) { return point(node, game.ndMain); };
+exports.attackPartsOf = function (building) {
+  if(building.getAttackTargetParts)return building.getAttackTargetParts();
+  return building.getWposPhyCol2?building.getWposPhyCol2():building.getWposPhyCol().map(function(points){return{tagNode:building.node,points:points};});
+};
+exports.attackPointOf = function (target, game) { return point(target.node, game.ndMain, target.node._buildingAttackPoint); };
 exports.findStandingPoint = function (unit, game, anchor, preferred) {
   var navigation = get(game); navigation.refresh();
   // Every candidate below requires a clear segment from this exact anchor.

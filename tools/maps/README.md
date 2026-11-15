@@ -1,6 +1,6 @@
 # Map baking
 
-In **Tools → Hero Kingdom Defense → Maps**, select an object layer and use
+In **Tools → Stages → Maps**, select an object layer and use
 **Paint blocker** or **Erase blocker**. The resizable round/square brush is
 freehand and ignores the placement Snap value. Connected strokes share one
 outline; erasing cuts the whole collision area, including imported colliders.

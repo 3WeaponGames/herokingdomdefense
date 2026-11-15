@@ -207,12 +207,12 @@ function validate(root, documents, changes) {
     });
     (base.BuffCfg || []).forEach((perk, index) => sprite('A', ['BuffCfg', index, 'Image'], perk.Image, 'KinghtFallIconBuff'));
     for(const table of ['SoldierCfg','AllyCfg'])Object.keys(base[table] || {}).forEach(id => {
-        const unit = base[table][id], at = [table, id], allied=table==='AllyCfg';
+        const unit = base[table][id], at = [table, id], allied=table==='AllyCfg',internalForm=!allied&&[90011,90012].includes(UnitRecords.behavior(unit,id));
         check('A', at.concat('prefab'), unit.prefab, name => {
             if (!allied && [90011,90012].includes(Number(id))) throw new Error('Boss transformation forms have no directly spawnable prefab.');
             const candidate = imported(root, 'KinghtFallEnemy', (allied?'Play':'')+name, 'prefab').data;
             const templateID=UnitRecords.behavior(unit,id);
-            if(unit.BehaviorTemplate!==undefined&&!UnitRecords.BEHAVIOR_TEMPLATES.includes(templateID))throw new Error('Choose an implemented monster behavior template.');
+            if(unit.BehaviorTemplate!==undefined&&!UnitRecords.BEHAVIOR_TEMPLATES.includes(templateID)&&!(templateID===90010&&!allied))throw new Error('Choose an implemented monster behavior template.');
             const canonical = (allied?'Play':'')+'ItemEnemy' + String(templateID - 90000).padStart(2, '0');
             const template = imported(root, 'KinghtFallEnemy', canonical, 'prefab').data;
             const types = template.filter(c => c.__type__ && c.__type__.indexOf('.') < 0).map(c => c.__type__);
@@ -226,8 +226,8 @@ function validate(root, documents, changes) {
                 context.unitModel(ally, allyTemplate);
             }
             if (!candidate.some(c => c.__type__ === 'sp.Skeleton')) throw new Error('Selected unit prefab has no animated model.');
-        }, !allied && [90011,90012].includes(Number(id)));
-        check('A', at.concat('loadIcon'), unit.loadIcon, name => imported(root, 'KinghtFallEnemy', 'icon/' + name, 'sprite'), !allied && [90011,90012].includes(Number(id)));
+        }, internalForm);
+        check('A', at.concat('loadIcon'), unit.loadIcon, name => imported(root, 'KinghtFallEnemy', 'icon/' + name, 'sprite'), internalForm);
         if(unit.MonsterSource!==undefined)check('A',at.concat('MonsterSource'),unit.MonsterSource,source=>{
             if(!UnitPacks.isMonsterSource(source))throw new Error('Choose a known imported monster source.');
             const [pack,name]=source.split('/'),catalog=read(path.join(root,'assets/resources/unit-library',pack,'catalog.json'));
@@ -284,9 +284,9 @@ function validate(root, documents, changes) {
             } else {
                 const unit = (side==='ally'&&base.AllyCfg||base.SoldierCfg||{})[id];
                 if (!unit) throw new Error('Timing unit no longer exists.');
-                const boss = side === 'enemy' && UnitRecords.boss(id);
+                const source=UnitRecords.boss(id)?Number(id):UnitRecords.boss(unit.BehaviorTemplate)?unit.BehaviorTemplate:null,boss=side==='enemy'&&source!==null;
                 const prefab = imported(root, 'KinghtFallEnemy', boss ? 'ItemEnemy10' : (side === 'ally' ? 'Play' : '') + unit.prefab, 'prefab').data;
-                component = prefab.filter(c => c.__type__ === 'sp.Skeleton')[boss ? id - 90010 : 0];
+                component = prefab.filter(c => c.__type__ === 'sp.Skeleton')[boss ? source - 90010 : 0];
             }
             const asset = context.skeleton(component), animation = asset.data.animations && asset.data.animations.attack;
             if (!animation) throw new Error('This unit model has no attack animation.');

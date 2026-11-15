@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "6c3f56cd-7ff6-5778-a4c0-55226cbdb9fc",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "item-4-tier-lv3-vanguard_wqyl_lead_gong": {
+      "ver": "1.0.6",
+      "uuid": "ca266a5b-9931-5e72-ad60-43c30a0c82b8",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "6c3f56cd-7ff6-5778-a4c0-55226cbdb9fc",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

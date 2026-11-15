@@ -2429,7 +2429,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "globalShadow": true
         }
       ],
       "blockers": []
@@ -3521,8 +3522,8 @@
           "id": "object-70",
           "assetId": "env-d691023725bfcc948b013d515f8c1f14",
           "name": "Bush Yellow Green 4",
-          "x": -607.4375523014678,
-          "y": -502.08820368517485,
+          "x": 328.28809994619314,
+          "y": 228.9895361284652,
           "scale": 0.7515127593012315,
           "angle": 0,
           "flipX": false,
@@ -3537,8 +3538,8 @@
           "id": "object-71",
           "assetId": "env-d691023725bfcc948b013d515f8c1f14",
           "name": "Bush Yellow Green 4",
-          "x": -307.46824524868964,
-          "y": -216.7515457569225,
+          "x": 330.7101132626648,
+          "y": -95.57843971046282,
           "scale": 0.9793761135602013,
           "angle": 0,
           "flipX": false,
@@ -3553,8 +3554,8 @@
           "id": "object-74",
           "assetId": "env-b746d522c58db074d9651c963b527e00",
           "name": "Bush Yellow Green 5",
-          "x": -395.26413999584423,
-          "y": 390.5033929108966,
+          "x": 613.3964640394429,
+          "y": 469.560575389338,
           "scale": 0.763246489205611,
           "angle": 0,
           "flipX": false,
@@ -3569,8 +3570,8 @@
           "id": "object-75",
           "assetId": "env-b746d522c58db074d9651c963b527e00",
           "name": "Bush Yellow Green 5",
-          "x": -501.350846148656,
-          "y": 269.7840376335591,
+          "x": 474.5964409990001,
+          "y": 337.02807790257816,
           "scale": 0.7691294834329131,
           "angle": 0,
           "flipX": false,
@@ -3585,8 +3586,8 @@
           "id": "object-76",
           "assetId": "env-b746d522c58db074d9651c963b527e00",
           "name": "Bush Yellow Green 5",
-          "x": -487.9375844511741,
-          "y": -424.0474083543708,
+          "x": 328.3284441528483,
+          "y": -109.96898204309102,
           "scale": 0.6949521170001985,
           "angle": 0,
           "flipX": false,
@@ -3601,8 +3602,8 @@
           "id": "object-77",
           "assetId": "env-b746d522c58db074d9651c963b527e00",
           "name": "Bush Yellow Green 5",
-          "x": -373.3151663090556,
-          "y": 33.222876787059256,
+          "x": 290.44418125655136,
+          "y": -23.324572701288595,
           "scale": 0.8000663192827604,
           "angle": 0,
           "flipX": false,
@@ -4492,6 +4493,966 @@
             "y": 0
           },
           "nativeSize": true
+        },
+        {
+          "id": "object-328",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -558.9583795601898,
+          "y": 74.22572272525036,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-334",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -585.3107737196702,
+          "y": -456.45697345187364,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-335",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -804.9422041160948,
+          "y": 785.005282001582,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-336",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -247.571021221887,
+          "y": 996.9067587415421,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-337",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -705.5192363565874,
+          "y": 1119.4279917381068,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-338",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": 301.76598245943126,
+          "y": -758.5613992748094,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-339",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -141.11814665110137,
+          "y": -1087.9627470032783,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-340",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 428.30430506244056,
+          "y": -763.5827612828654,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-341",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -563.9168277294103,
+          "y": -305.634546148165,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-343",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -105.9686125947099,
+          "y": 1132.4835329590521,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-344",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -644.6115511137202,
+          "y": 1027.778918373528,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-350",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": 468.35735097949834,
+          "y": -1271.3626869250083,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-351",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -651.3896808463219,
+          "y": -634.2184920604376,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-352",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -502.27082672908193,
+          "y": -36.38744964495727,
+          "scale": 1.0198313112423787,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-353",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -272.59623938072724,
+          "y": 323.92317798480616,
+          "scale": 1.0746996746531128,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-354",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 297.26346729423574,
+          "y": 585.2610144910243,
+          "scale": 1.1055095085942082,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-355",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -49.77677501497724,
+          "y": 921.4562492280743,
+          "scale": 0.9009359203056679,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-356",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 548.0542674005029,
+          "y": 1199.3595682647488,
+          "scale": 1.1321127323687472,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-357",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 11.226392578439178,
+          "y": -54.594432266587106,
+          "scale": 0.9462038713074724,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-358",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 310.81972675943945,
+          "y": -299.9627285867728,
+          "scale": 0.9029214222465805,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-359",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -79.60054583842515,
+          "y": -465.3490940622571,
+          "scale": 1.1553220506011899,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-360",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 369.111642459815,
+          "y": -801.5443287993072,
+          "scale": 1.093624788326451,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-361",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -758.7691450451271,
+          "y": -689.0273752381171,
+          "scale": 1.0631090987176635,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-362",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 466.71671060928117,
+          "y": -957.4413126491489,
+          "scale": 0.9184179472219337,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-363",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -577.1152682113984,
+          "y": -1113.3382964989908,
+          "scale": 0.9315340382659433,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-364",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -384.61638380550687,
+          "y": -1278.7246619744749,
+          "scale": 0.9018902807630553,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-365",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 137.29960560483295,
+          "y": -1259.7458987231898,
+          "scale": 0.9685729670293076,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-366",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -756.0578931520863,
+          "y": -1251.6121430440678,
+          "scale": 1.13830765265959,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-367",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -562.2033827996744,
+          "y": -1109.2714186594296,
+          "scale": 0.9344884487864931,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-368",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 146.7889872304755,
+          "y": -787.9880693341036,
+          "scale": 0.992771193914409,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-369",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -661.164076895661,
+          "y": -699.87238281028,
+          "scale": 1.0215988114751064,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-370",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -524.2458562971043,
+          "y": -497.88411677874586,
+          "scale": 0.9827355419898351,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-371",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -362.926368661181,
+          "y": -163.04450798821617,
+          "scale": 1.1374563904453308,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-372",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 66.80705638577406,
+          "y": -279.6283393889674,
+          "scale": 1.0567261232328218,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-373",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -170.42748425528947,
+          "y": -454.5040864900942,
+          "scale": 1.1921129004585955,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-374",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -282.9444378164796,
+          "y": -318.9414918380579,
+          "scale": 1.1529508233719448,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-375",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 142.7221093909144,
+          "y": 280.2451765239426,
+          "scale": 0.9150236839038973,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-376",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 26.13827799016317,
+          "y": 471.38843498331374,
+          "scale": 1.1230699964384496,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-377",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -93.15680530362879,
+          "y": 308.7133214008702,
+          "scale": 1.1911316261016143,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-378",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -372.4157502868236,
+          "y": 127.05944456714154,
+          "scale": 1.1556499818446246,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-379",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 146.7889872304755,
+          "y": 982.4594168214907,
+          "scale": 1.1781561544745467,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-380",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -59.266156640619705,
+          "y": 784.5380286295176,
+          "scale": 1.025553430106219,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-381",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -270.7438042977963,
+          "y": 924.167501121115,
+          "scale": 1.093963413497122,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-382",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -753.3466412590456,
+          "y": 1074.6419811848752,
+          "scale": 1.0158206346154077,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-383",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 648.3705874430099,
+          "y": 1272.5633693768484,
+          "scale": 0.9586250767083511,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-384",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 515.5192446840142,
+          "y": 830.62931081121,
+          "scale": 1.0234094461815444,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-385",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 428.759184106711,
+          "y": 479.52219066243595,
+          "scale": 0.9321781128975871,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-387",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 388.0904057111001,
+          "y": 299.2239397752278,
+          "scale": 0.9193271824642567,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-388",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -701.8328552912718,
+          "y": 1055.6632179335904,
+          "scale": 1.1573078493456581,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-389",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -506.6227189923395,
+          "y": 255.8439094865762,
+          "scale": 1.084438502958361,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-390",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -799.4379234407379,
+          "y": -637.5135892703431,
+          "scale": 1.042195281337191,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-391",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 442.00750666395544,
+          "y": -811.1173196503557,
+          "scale": 1.066342213625265,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-392",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -668.2501435362219,
+          "y": -1103.9325240987541,
+          "scale": 0.940301901300734,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-393",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 235.95236279286027,
+          "y": -779.9379228803874,
+          "scale": 1.0967377436050454,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-394",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -47.373460029895625,
+          "y": -1278.8082711998811,
+          "scale": 1.0392661553786398,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-395",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -108.37662762331196,
+          "y": 450.97043656010226,
+          "scale": 0.9592678745717607,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-396",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -195.1366882006152,
+          "y": 613.6455501425459,
+          "scale": 1.0700961411070287,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-399",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -158.5347876445654,
+          "y": 648.8918247520752,
+          "scale": 0.9984408978118429,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-400",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 568.0807196903493,
+          "y": 492.9948409022335,
+          "scale": 1.102039727489271,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-401",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -504.80928996208695,
+          "y": 362.58269018048895,
+          "scale": 0.9417494008016302,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
         }
       ],
       "blockers": []
@@ -4520,7 +5481,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "globalShadow": true
         },
         {
           "id": "object-8",
@@ -4853,7 +5815,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "globalShadow": true
         }
       ],
       "blockers": []
@@ -4882,7 +5845,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "globalShadow": true
         }
       ],
       "blockers": []
@@ -7799,7 +8763,8 @@
               "opacity": 1,
               "op": "erase"
             }
-          ]
+          ],
+          "globalShadow": true
         },
         {
           "id": "object-261",
@@ -7853,7 +8818,7 @@
           "id": "object-270",
           "assetId": "env-536cf72b942d0cb4d9a004687f536002",
           "name": "Tree Yellow Green 8",
-          "x": 560.8656366196758,
+          "x": 561.7743398665544,
           "y": -1159.1824742126444,
           "scale": 0.982687521634063,
           "angle": 0,
@@ -7888,22 +8853,6 @@
           "x": 508.148037050695,
           "y": -828.6836769148033,
           "scale": 0.887215359881297,
-          "angle": 0,
-          "flipX": false,
-          "depth": "world",
-          "ground": {
-            "x": 0,
-            "y": 0
-          },
-          "nativeSize": true
-        },
-        {
-          "id": "object-277",
-          "assetId": "env-536cf72b942d0cb4d9a004687f536002",
-          "name": "Tree Yellow Green 8",
-          "x": 629.8040360560352,
-          "y": -1015.2228753896584,
-          "scale": 1.1535661123035974,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -7994,22 +8943,6 @@
           "nativeSize": true
         },
         {
-          "id": "object-303",
-          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
-          "name": "Tree Yellow Green 13",
-          "x": 525.3826369097849,
-          "y": -1001.029675505702,
-          "scale": 0.9489632094948456,
-          "angle": 0,
-          "flipX": false,
-          "depth": "world",
-          "ground": {
-            "x": 0,
-            "y": 0
-          },
-          "nativeSize": true
-        },
-        {
           "id": "object-304",
           "assetId": "env-48a68e0cd85228b4ead7216331d45616",
           "name": "Tree Yellow Green 13",
@@ -8074,22 +9007,6 @@
           "nativeSize": true
         },
         {
-          "id": "object-309",
-          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
-          "name": "Tree Yellow Green 4",
-          "x": 798.0948346800893,
-          "y": -1059.8300750249498,
-          "scale": 0.8777797155241089,
-          "angle": 0,
-          "flipX": false,
-          "depth": "world",
-          "ground": {
-            "x": 0,
-            "y": 0
-          },
-          "nativeSize": true
-        },
-        {
           "id": "object-310",
           "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
           "name": "Tree Yellow Green 4",
@@ -8112,22 +9029,6 @@
           "x": 842.7020343153807,
           "y": -1225.0794736738703,
           "scale": 0.8282118976676156,
-          "angle": 0,
-          "flipX": false,
-          "depth": "world",
-          "ground": {
-            "x": 0,
-            "y": 0
-          },
-          "nativeSize": true
-        },
-        {
-          "id": "object-312",
-          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
-          "name": "Tree Yellow Green 13",
-          "x": 736.253035185708,
-          "y": -1108.492474627086,
-          "scale": 1.060214470142102,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -8218,12 +9119,12 @@
           "nativeSize": true
         },
         {
-          "id": "object-318",
-          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
-          "name": "Tree Yellow Green 4",
-          "x": 580.127836462188,
-          "y": -1082.1336748425956,
-          "scale": 1.101976154764591,
+          "id": "object-327",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": 593.6434415801468,
+          "y": -1040.4344966613814,
+          "scale": 1,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -8491,190 +9392,358 @@
       "blockers": []
     }
   ],
-  "nextObject": 319,
+  "nextObject": 402,
   "nextLayer": 9,
   "blockerMask": [
     [
       [
         [
-          -932.1049900236846,
-          -271.9803495738536
+          -976.3971903166942,
+          1542.0682348690923
         ],
         [
-          -834.3530480571974,
-          -306.7511745686444
+          -942.5112701450986,
+          1298.815736494425
         ],
         [
-          -724.1360933567286,
-          -317.90408069904896
+          -867.4781611937086,
+          1193.527341675539
         ],
         [
-          -651.970230159993,
-          -306.7511745686444
+          -731.9344805073267,
+          1033.7794322951602
         ],
         [
-          -547.0017018738322,
-          -267.38797646133406
+          -572.1124466448613,
+          937.886211977681
         ],
         [
-          -524.695889613023,
-          -226.71267175044676
+          -449.78261988849675,
+          938.156853187319
         ],
         [
-          -551.5940749863518,
-          -45.64196045681939
+          -447.5347933528647,
+          939.3829403885728
         ],
         [
-          -597.5178061115471,
-          52.766034811456336
+          -423.3088188209872,
+          938.2154235436631
         ],
         [
-          -572.5877806435839,
-          143.30139045827002
+          -338.92180502320593,
+          938.402120476844
         ],
         [
-          -581.772526868623,
-          182.00853526379183
+          -213.9639864557959,
+          997.4730892541651
         ],
         [
-          -571.9317273417954,
-          189.2251215834654
+          52.28252917816859,
+          1022.8875293828617
         ],
         [
-          -556.8425014006598,
-          287.6331168517411
+          314.8984105080335,
+          1122.1248670282484
         ],
         [
-          -562.7469811167564,
-          346.0218607109181
+          490.3790685395101,
+          1180.2150158938407
         ],
         [
-          -550.9380216845632,
-          363.73529985920766
+          697.3252238731825,
+          1348.4344053171183
         ],
         [
-          -562.7469811167564,
-          426.06036352911565
+          859.4935561229609,
+          1525.1252747832946
         ],
         [
-          -529.9443160273311,
-          447.71012248813634
-        ],
-        [
-          -506.9824504647334,
-          492.32174700975463
-        ],
-        [
-          -557.4985547024482,
-          700.9466969784993
-        ],
-        [
-          -643.4415372367424,
-          771.8004535716578
-        ],
-        [
-          -794.3337966480985,
-          773.7686134770232
-        ],
-        [
-          -886.8373122002778,
-          698.9785370731338
-        ],
-        [
-          -889.4615254074317,
-          666.831925285497
-        ],
-        [
-          -932.1049900236846,
-          670.768245096228
-        ],
-        [
-          -932.1049900236846,
-          -271.9803495738536
+          -976.3971903166942,
+          1542.0682348690923
         ]
       ]
     ],
     [
       [
         [
-          -931,
-          -1426.9541215469612
+          -971.2809072076615,
+          -1299.8922756715322
         ],
         [
-          -839.2716390423573,
-          -1444.0996095764272
+          -947.1899262309308,
+          -1536.4219070794334
         ],
         [
-          -620.6666666666666,
-          -1423.525023941068
+          709.6125382142301,
+          -1545.1822637982445
         ],
         [
-          -360.0552486187845,
-          -1438.9559631675872
+          1028.270513860986,
+          -1544.0872192083932
         ],
         [
-          -175.74125230202577,
-          -1426.0968471454878
+          1005.2745774741068,
+          787.2627125852273
         ],
         [
-          -6.858195211786372,
-          -1451.8150791896867
+          948.6531972897673,
+          737.6029775055197
         ],
         [
-          183.45672191528544,
-          -1427.8113959484344
+          939.3675108131501,
+          1206.839667457237
         ],
         [
-          320.62062615101286,
-          -1457.8159999999998
+          709.4273382201809,
+          1073.7164096402548
         ],
         [
-          626.6675874769797,
-          -1425.2395727440146
+          531.5262573193046,
+          802.629048267491
         ],
         [
-          802.4088397790055,
-          -1432.9550423572741
+          533.9466801887042,
+          612.6258530196164
         ],
         [
-          931,
-          -1408.0940847145487
+          498.850548582409,
+          438.35540642283974
         ],
         [
-          921.5699815837937,
-          -1265.7865340699814
+          459.76188542778954,
+          304.80247397789
         ],
         [
-          713.2523020257827,
-          -1294.9338637200735
+          404.28217037130054,
+          236.11330295557016
         ],
         [
-          624.9530386740331,
-          -1287.2183941068138
+          402,
+          233.83113258426965
         ],
         [
-          416.6353591160221,
-          -1312.9366261510127
+          399.29569406869,
+          229.93957039043335
         ],
         [
-          389.2025782688766,
-          -1300.9347845303864
+          332.91719930535015,
+          147.75667211201247
         ],
         [
-          -238.32228360957643,
-          -1308.6502541436462
+          315.65997029198036,
+          114.47487330051351
         ],
         [
-          -803.2661141804788,
-          -1330.0821141804786
+          288,
+          105.83113258426965
         ],
         [
-          -931,
-          -1301.7920589318599
+          279,
+          73.83113258426965
         ],
         [
-          -931,
-          -1426.9541215469612
+          290.2215154094948,
+          65.41499602714856
+        ],
+        [
+          286.92532653159157,
+          59.05806033404945
+        ],
+        [
+          293.4955940706999,
+          -18.690105545399607
+        ],
+        [
+          384.3842950283657,
+          -131.4796983000933
+        ],
+        [
+          390.95456256747406,
+          -292.4512530082484
+        ],
+        [
+          469.7977730367745,
+          -564.0223112913944
+        ],
+        [
+          453.3721041890036,
+          -583.7331139087195
+        ],
+        [
+          375.62393830955455,
+          -551.9768208030291
+        ],
+        [
+          218.04279978075894,
+          -576.127186861082
+        ],
+        [
+          202.2769665567593,
+          -577.6843061918474
+        ],
+        [
+          197.59207960048036,
+          -579.2613968503967
+        ],
+        [
+          89.8173003583404,
+          -595.7786043970849
+        ],
+        [
+          -283.5667672118799,
+          -636.4336031583124
+        ],
+        [
+          -283.79934055581725,
+          -636.26273294644
+        ],
+        [
+          -284.2688114461425,
+          -636.5100435047364
+        ],
+        [
+          -292.35326149979653,
+          -637.3902988114379
+        ],
+        [
+          -360.246026070583,
+          -673.526770276534
+        ],
+        [
+          -385.4320516371651,
+          -717.3285538705898
+        ],
+        [
+          -392.0023191762735,
+          -764.4154712341997
+        ],
+        [
+          -348.20053558221764,
+          -778.6510509022679
+        ],
+        [
+          -209.12987267109048,
+          -792.886630570336
+        ],
+        [
+          201.51184852318272,
+          -763.3204266443483
+        ],
+        [
+          423.80590026301593,
+          -754.5600699255372
+        ],
+        [
+          499.3639769627622,
+          -799.4568981094444
+        ],
+        [
+          526.7400917090471,
+          -857.4942613715683
+        ],
+        [
+          590.252677920428,
+          -877.2050639888935
+        ],
+        [
+          688.8066910070536,
+          -903.4861341453269
+        ],
+        [
+          841.0178889963975,
+          -907.8663125047325
+        ],
+        [
+          850.8732903050601,
+          -1006.420325591358
+        ],
+        [
+          566.1616969436973,
+          -970.283854126262
+        ],
+        [
+          523.4549579394929,
+          -1044.7468862361568
+        ],
+        [
+          514.6946012206818,
+          -1204.6233963544607
+        ],
+        [
+          443.51670288034103,
+          -1253.9004028977736
+        ],
+        [
+          420.52076649346174,
+          -1295.5120973121266
+        ],
+        [
+          175.23077836674923,
+          -1296.607141901978
+        ],
+        [
+          -971.2809072076615,
+          -1299.8922756715322
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -966.978694795697,
+          721.859171499262
+        ],
+        [
+          -947.1140361301937,
+          -524.386782673367
+        ],
+        [
+          -847.4649784537166,
+          -595.5646810137076
+        ],
+        [
+          -762.0515004453079,
+          -609.8002606817757
+        ],
+        [
+          -650.3569522804655,
+          -521.1016489038127
+        ],
+        [
+          -546.3277162445829,
+          -386.4111643520911
+        ],
+        [
+          -485.00521921290476,
+          -306.4729092929392
+        ],
+        [
+          -533.1871811663661,
+          -80.89372378355179
+        ],
+        [
+          -570.4186972213137,
+          57.08189453772401
+        ],
+        [
+          -540.852493295326,
+          369.1696026453717
+        ],
+        [
+          -497.05070970127025,
+          502.7650426072419
+        ],
+        [
+          -548.3946440394482,
+          689.8658202802628
+        ],
+        [
+          -585.8241469929428,
+          723.0465688444419
+        ],
+        [
+          -966.978694795697,
+          721.859171499262
         ]
       ]
     ],
@@ -8835,546 +9904,6 @@
         [
           -931,
           -1064.631255026455
-        ]
-      ]
-    ],
-    [
-      [
-        [
-          -931,
-          1348.5140700068637
-        ],
-        [
-          -916.1818805765271,
-          1318.8778311599178
-        ],
-        [
-          -886.5456417295813,
-          1303.1880576527112
-        ],
-        [
-          -900.4921070693205,
-          1238.6856554564174
-        ],
-        [
-          -890.9039121482498,
-          1198.5895676046673
-        ],
-        [
-          -744.4660260809883,
-          1059.996568291009
-        ],
-        [
-          -637.2525737817433,
-          1032.9752916952643
-        ],
-        [
-          -640.7391901166782,
-          995.4941660947153
-        ],
-        [
-          -592.7982155113245,
-          942.3232669869597
-        ],
-        [
-          -549.2155113246397,
-          925.7618393960194
-        ],
-        [
-          -557.060398078243,
-          879.5641729581333
-        ],
-        [
-          -508.2477693891558,
-          828.1365820178451
-        ],
-        [
-          -454.20521619766646,
-          818.5483870967744
-        ],
-        [
-          -398.4193548387097,
-          857.7728208647908
-        ],
-        [
-          -367.03980782429653,
-          830.7515442690461
-        ],
-        [
-          -319.098833218943,
-          828.1365820178451
-        ],
-        [
-          -287.71928620452985,
-          841.2113932738505
-        ],
-        [
-          -249.36650652024707,
-          871.71928620453
-        ],
-        [
-          -248.49485243651338,
-          907.4571036376117
-        ],
-        [
-          -202.2971859986273,
-          934.4783802333563
-        ],
-        [
-          -186.60741249142075,
-          1015.5422100205905
-        ],
-        [
-          -95.95538778311601,
-          1046.9217570350036
-        ],
-        [
-          -61.960878517501726,
-          1088.7611530542213
-        ],
-        [
-          -40.169526424159244,
-          1070.4564172958135
-        ],
-        [
-          60.07069320521617,
-          1062.6115305422102
-        ],
-        [
-          111.49828414550444,
-          1105.3225806451615
-        ],
-        [
-          176.0006863417982,
-          1065.2264927934114
-        ],
-        [
-          268.39601921757037,
-          1092.247769389156
-        ],
-        [
-          312.850377487989,
-          1156.7501715854496
-        ],
-        [
-          300.64722031571716,
-          1245.658888126287
-        ],
-        [
-          337.2566918325326,
-          1263.0919698009611
-        ],
-        [
-          337.2566918325326,
-          1297.958133150309
-        ],
-        [
-          320.6952642415923,
-          1352.872340425532
-        ],
-        [
-          277.11256005490736,
-          1399.0700068634183
-        ],
-        [
-          256.1928620452985,
-          1396.455044612217
-        ],
-        [
-          244.86135895676045,
-          1379.893617021277
-        ],
-        [
-          205.636925188744,
-          1419.1180507892932
-        ],
-        [
-          128.05971173644474,
-          1427.8345916266303
-        ],
-        [
-          71.40219629375429,
-          1373.792038435141
-        ],
-        [
-          56.584076870281365,
-          1290.9849004804394
-        ],
-        [
-          -0.9450926561427764,
-          1371.1770761839398
-        ],
-        [
-          -48.01441317776255,
-          1382.5085792724778
-        ],
-        [
-          -76.77899794097462,
-          1444.3960192175705
-        ],
-        [
-          -151.74124914207275,
-          1463.5724090597118
-        ],
-        [
-          -241.5216197666438,
-          1463.5724090597118
-        ],
-        [
-          -294.69251887439947,
-          1439.1660947151684
-        ],
-        [
-          -308.63898421413865,
-          1488.8503774879891
-        ],
-        [
-          -342.63349347975293,
-          1515
-        ],
-        [
-          -881.3157172271791,
-          1515
-        ],
-        [
-          -931,
-          1348.5140700068637
-        ]
-      ]
-    ],
-    [
-      [
-        [
-          -386,
-          -726.6230720891626
-        ],
-        [
-          -383.5073009891663,
-          -752.1732369502083
-        ],
-        [
-          -356.7107866227037,
-          -772.1148290368781
-        ],
-        [
-          -328.0447479981159,
-          -767.1294310152107
-        ],
-        [
-          -300.0018841262365,
-          -778.9697513166708
-        ],
-        [
-          -265.1040979745643,
-          -765.2599067570853
-        ],
-        [
-          -188.45360339142724,
-          -787.6941978545889
-        ],
-        [
-          -135.48374941121057,
-          -769.6221300260444
-        ],
-        [
-          -91.23834196891193,
-          -782.7087998329214
-        ],
-        [
-          -66.31135186057469,
-          -763.3903824989601
-        ],
-        [
-          -15.211022138483258,
-          -755.2891107137505
-        ],
-        [
-          41.49788035798397,
-          -772.7380037895865
-        ],
-        [
-          89.4823363165332,
-          -747.8110136812493
-        ],
-        [
-          138.71314178049929,
-          -752.7964117029167
-        ],
-        [
-          165.50965614696185,
-          -733.4779943689554
-        ],
-        [
-          222.2185586434291,
-          -745.9414894231239
-        ],
-        [
-          307.59349976448425,
-          -725.3767225837457
-        ],
-        [
-          376.1427225624117,
-          -744.6951399177071
-        ],
-        [
-          438.4601978332548,
-          -728.4925963472879
-        ],
-        [
-          464.63353744700896,
-          -748.4341884339577
-        ],
-        [
-          569.3268959020254,
-          -732.2316448635385
-        ],
-        [
-          608.5869053226565,
-          -746.5646641758324
-        ],
-        [
-          737.5840791333019,
-          -735.3475186270806
-        ],
-        [
-          774.9745642958078,
-          -748.4341884339577
-        ],
-        [
-          873.43617522374,
-          -744.0719651649987
-        ],
-        [
-          933.8841262364579,
-          -717.2754507985361
-        ],
-        [
-          937,
-          -495.4252388343345
-        ],
-        [
-          923.913330193123,
-          -488.57031655454176
-        ],
-        [
-          741.9463024022609,
-          -507.2655591357947
-        ],
-        [
-          695.2081959491286,
-          -502.2801611141273
-        ],
-        [
-          570.5732454074423,
-          -549.0182675672596
-        ],
-        [
-          532.559585492228,
-          -540.2938210293416
-        ],
-        [
-          534.4291097503533,
-          -573.9452576755968
-        ],
-        [
-          486.44465379180406,
-          -567.7135101485126
-        ],
-        [
-          457.1554404145078,
-          -588.9014517405992
-        ],
-        [
-          374.89637305699483,
-          -554.0036655889271
-        ],
-        [
-          283.9128591615638,
-          -585.1624032243486
-        ],
-        [
-          252.75412152614226,
-          -572.69890817018
-        ],
-        [
-          202.2769665567593,
-          -577.6843061918474
-        ],
-        [
-          139.33631653320774,
-          -598.8722477839342
-        ],
-        [
-          107.55440414507771,
-          -593.8868497622667
-        ],
-        [
-          28.411210551106905,
-          -621.9297136341461
-        ],
-        [
-          -156.04851625058882,
-          -648.7262280006087
-        ],
-        [
-          -218.98916627414036,
-          -634.3932086883148
-        ],
-        [
-          -253.26377767310407,
-          -658.6970240439435
-        ],
-        [
-          -283.79934055581725,
-          -636.26273294644
-        ],
-        [
-          -353.5949128591616,
-          -673.0300433562375
-        ],
-        [
-          -357.9571361281206,
-          -697.9570334645748
-        ],
-        [
-          -386,
-          -726.6230720891626
-        ]
-      ]
-    ],
-    [
-      [
-        [
-          279,
-          73.83113258426965
-        ],
-        [
-          299,
-          58.83113258426965
-        ],
-        [
-          295,
-          -4.168867415730347
-        ],
-        [
-          344,
-          -81.16886741573035
-        ],
-        [
-          413,
-          -118.16886741573035
-        ],
-        [
-          452,
-          -155.16886741573035
-        ],
-        [
-          595,
-          -239.16886741573035
-        ],
-        [
-          603,
-          -237.16886741573035
-        ],
-        [
-          659,
-          -282.16886741573035
-        ],
-        [
-          831,
-          -370.16886741573035
-        ],
-        [
-          931,
-          -396.16886741573035
-        ],
-        [
-          931,
-          -25.168867415730347
-        ],
-        [
-          855,
-          -11.168867415730347
-        ],
-        [
-          794,
-          14.831132584269653
-        ],
-        [
-          785,
-          58.83113258426965
-        ],
-        [
-          817,
-          48.83113258426965
-        ],
-        [
-          884,
-          86.83113258426965
-        ],
-        [
-          865,
-          186.83113258426965
-        ],
-        [
-          815,
-          216.83113258426965
-        ],
-        [
-          931,
-          268.83113258426965
-        ],
-        [
-          927,
-          597.8311325842697
-        ],
-        [
-          763,
-          542.8311325842697
-        ],
-        [
-          750,
-          526.8311325842697
-        ],
-        [
-          681,
-          489.83113258426965
-        ],
-        [
-          619,
-          437.83113258426965
-        ],
-        [
-          570,
-          467.83113258426965
-        ],
-        [
-          516,
-          442.83113258426965
-        ],
-        [
-          499,
-          383.83113258426965
-        ],
-        [
-          523,
-          354.83113258426965
-        ],
-        [
-          402,
-          233.83113258426965
-        ],
-        [
-          320,
-          115.83113258426965
-        ],
-        [
-          288,
-          105.83113258426965
-        ],
-        [
-          279,
-          73.83113258426965
         ]
       ]
     ]

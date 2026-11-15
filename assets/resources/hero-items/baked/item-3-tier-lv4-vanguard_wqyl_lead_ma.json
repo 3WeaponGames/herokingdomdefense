@@ -749,13 +749,13 @@
     {
       "name": "Mount/Equipment/Sub_Item/Body",
       "bone": "Mount/Equipment/Sub_Item/Body",
-      "color": "ffffffff"
+      "color": "ffffffff",
+      "attachment": "item_sub_item"
     },
     {
       "name": "Mount/Equipment/Sub_Item/Head",
       "bone": "Mount/Equipment/Sub_Item/Head",
-      "color": "ffffffff",
-      "attachment": "item_sub_item"
+      "color": "ffffffff"
     }
   ],
   "ik": [
@@ -869,11 +869,11 @@
             "height": 84
           }
         },
-        "Mount/Equipment/Sub_Item/Head": {
+        "Mount/Equipment/Sub_Item/Body": {
           "item_sub_item": {
             "path": "item_sub_item",
-            "x": 0,
-            "y": 0,
+            "x": 5,
+            "y": 11,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -3398,11 +3398,11 @@
             ]
           }
         },
-        "Mount/Equipment/Sub_Item/Head": {
+        "Mount/Equipment/Sub_Item/Body": {
           "item_sub_item": {
             "path": "item_sub_item",
-            "x": 0,
-            "y": 0,
+            "x": 5,
+            "y": 11,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -5788,11 +5788,11 @@
             ]
           }
         },
-        "Mount/Equipment/Sub_Item/Head": {
+        "Mount/Equipment/Sub_Item/Body": {
           "item_sub_item": {
             "path": "item_sub_item",
-            "x": 0,
-            "y": 0,
+            "x": 5,
+            "y": 11,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -8178,11 +8178,11 @@
             ]
           }
         },
-        "Mount/Equipment/Sub_Item/Head": {
+        "Mount/Equipment/Sub_Item/Body": {
           "item_sub_item": {
             "path": "item_sub_item",
-            "x": 0,
-            "y": 0,
+            "x": 5,
+            "y": 11,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -9860,11 +9860,11 @@
             ]
           }
         },
-        "Mount/Equipment/Sub_Item/Head": {
+        "Mount/Equipment/Sub_Item/Body": {
           "item_sub_item": {
             "path": "item_sub_item",
-            "x": 0,
-            "y": 0,
+            "x": 5,
+            "y": 11,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -11554,11 +11554,11 @@
             ]
           }
         },
-        "Mount/Equipment/Sub_Item/Head": {
+        "Mount/Equipment/Sub_Item/Body": {
           "item_sub_item": {
             "path": "item_sub_item",
-            "x": 0,
-            "y": 0,
+            "x": 5,
+            "y": 11,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -13264,11 +13264,11 @@
             ]
           }
         },
-        "Mount/Equipment/Sub_Item/Head": {
+        "Mount/Equipment/Sub_Item/Body": {
           "item_sub_item": {
             "path": "item_sub_item",
-            "x": 0,
-            "y": 0,
+            "x": 5,
+            "y": 11,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -15293,11 +15293,11 @@
             ]
           }
         },
-        "Mount/Equipment/Sub_Item/Head": {
+        "Mount/Equipment/Sub_Item/Body": {
           "item_sub_item": {
             "path": "item_sub_item",
-            "x": 0,
-            "y": 0,
+            "x": 5,
+            "y": 11,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,

@@ -91,13 +91,13 @@ function describe(root, request) {
     // A layered preview resolves only JSON Spine UUIDs. Avoid reading every
     // texture/sprite metadata file; the full public index remains available.
     const files = index(root, true);
-    const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], boss = type === 'enemy' && UnitRecords.boss(id);
+    const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], bossSource=UnitRecords.boss(id)?Number(id):record&&UnitRecords.boss(record.BehaviorTemplate)?record.BehaviorTemplate:null, boss = type === 'enemy' && bossSource!==null;
     if (type !== 'hero' && !record) throw new Error('Unit does not exist.');
     const prefabName = type === 'hero' ? null : boss ? 'ItemEnemy10' : (type === 'ally' ? 'Play' : '') + record.prefab;
     if (prefabName && !/^[A-Za-z0-9_-]+$/.test(prefabName)) throw new Error('Invalid unit prefab name.');
     const file = type === 'hero' ? path.join(root, 'assets/KinghtFallEnemyAni/ndPlay.prefab') : path.join(root, 'assets/KinghtFallEnemy', prefabName + '.prefab');
     const prefab = json(file), skeletons = prefab.filter(c => c.__type__ === 'sp.Skeleton');
-    let chosen = type === 'hero' ? skeletons : [skeletons[boss ? Number(id) - 90010 : 0]];
+    let chosen = type === 'hero' ? skeletons : [skeletons[boss ? bossSource - 90010 : 0]];
     if (!chosen[0]) throw new Error('Unit has no display skeleton.');
     const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(id)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
     let levelProfile=null;
@@ -164,7 +164,7 @@ function describe(root, request) {
         ...(unitAnimationSpeed===undefined?{}:{unitAnimationSpeed}),
         defaultTiming: timing.defaultTiming, timingDefaultSource: timing.timingDefaultSource, timingEvents: timing.timingEvents,
         effect, projectile: /Projectile/.test(effect) ? projectile(shotPrefab, type, behavior) : null,
-        forms: boss ? [{id:90010,label:'Form 1'},{id:90011,label:'Form 2'},{id:90012,label:'Form 3'}] : [],
+        forms: boss ? (()=>{const profiles=cfg.GameTools&&cfg.GameTools.unitProfiles,linked=profiles&&profiles.bossForms&&profiles.bossForms[id],first=UnitRecords.boss(id)?90010:linked?linked.profileId:Number(id),second=cfg.SoldierCfg[first].Data[2],third=cfg.SoldierCfg[second].Data[2];return[first,second,third].map((id,index)=>({id,label:'Form '+(index+1)}));})() : [],
         ...(type==='ally'?{levels:levels.length?levels:[1],level:request.level||0}:{}),runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
 }
 module.exports = { describe, index, enginePath, invalidate: function () { cachedIndex = null; cachedSpineIndex = null; } };

@@ -20,6 +20,10 @@ function descendants(element){return element.children.flatMap(child=>[child,...d
 test('rendering every contextual stage tab makes no draft changes or edit requests',()=>{
  const f=fixture(),before=JSON.stringify(f.state.snap.value);for(const tab of ['Stage','Buildings','Spawns','Paths','Waves']){f.state.tab=tab;f.panels.top();f.panels.tabs();f.panels.left();f.panels.right();assert.equal(JSON.stringify(f.state.snap.value),before,tab);}assert.equal(f.edits(),0);
 });
+
+test('the stage face uses its model chooser without exposing a second numeric ID control',()=>{
+ const f=fixture();f.state.tab='Stage';f.state.snap.value.config.StageFaceUnit=3;f.panels.right();assert(descendants(f.context.right).some(e=>e.tagName==='button'&&e.textContent==='Choose face unit…'));assert(!descendants(f.context.right).some(e=>e.fieldName==='StageFaceUnit'));assert.equal(f.edits(),0);
+});
 test('explicit Delete path clears only matching timed route overrides and preserves all other wave data',()=>{
  const f=fixture(),before=clone(f.state.snap.value);f.state.tab='Paths';f.panels.right();const remove=descendants(f.context.right).find(element=>element.tagName==='button'&&element.textContent==='Delete path');assert(remove);remove.onclick();
  const expected=clone(before);expected.graphs=expected.graphs.filter(graph=>graph.id!=='one');expected.config.WaveCfg[0].SpawnTimeline[0].routeGraphId=null;assert.deepEqual(f.state.snap.value,expected);assert.deepEqual(before.config.WaveCfg[0].SpawnTimeline[0].future,{keep:1});assert(!Object.prototype.hasOwnProperty.call(f.state.snap.value.config.WaveCfg[0].SpawnTimeline[2],'routeGraphId'));assert(!Object.prototype.hasOwnProperty.call(f.state.snap.value.config.WaveCfg[1],'SpawnTimeline'));assert.equal(f.edits(),1);assert.equal(f.state.graph,null);assert.deepEqual(f.state.selection,[]);

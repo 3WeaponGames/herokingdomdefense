@@ -91,7 +91,7 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
         assert.deepEqual(shown.map(modelKey).sort(), expectedModels, pack + ' model coverage');
         assert.equal(f.panel.$count.textContent, expectedModels.length + ' models · ' + expected.length + ' profiles', pack + ' count');
         if (pack === 'campaign') {
-            assert.equal(expected.length, Object.values(before.A.SoldierCfg).filter(unit => !unit.MonsterPack).length);
+            const managed=before.overrides.unitProfiles;assert.equal(expected.length,Object.values(managed.families).filter(f=>!before.A.SoldierCfg[Object.values(f.profiles)[0]].MonsterPack).length*6);
             const sibling = expected.find(row => expected.some(other => other.key !== row.key && modelKey(other) === modelKey(row)));
             assert(sibling, 'campaign fixtures include profiles sharing a model');
             for (const row of expected.filter(row => modelKey(row) === modelKey(sibling)).slice(0, 2)) {
