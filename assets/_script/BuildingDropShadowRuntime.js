@@ -52,10 +52,10 @@ function captureLayers(view,object,list,source,read){
   if(!view.nativeCapture)pairs.forEach(function(pair,i){pair.node.active=active[i];});
  }
 }
-function capture(owner,game,list){
+function capture(owner,game,list,quality){
  if(!cc.Camera||!cc.RenderTexture||!game||!valid(game.ndMain))return null;
  var Depth=require("KinghtFallDepthView"),view=Object.create(Depth.DepthView.prototype),box=list.reduce(function(b,r){return Depth.union(b,Depth.bounds(r,game.ndMain));},null);if(!box)return null;
- view.main=game.ndMain;view.nativeCapture=!!(cc.sys&&cc.sys.isNative);view.capture=new cc.Node("ShadowCapture");view.capture.parent=cc.director.getScene();view.capture.active=false;view.cameraNode=new cc.Node("ShadowCamera");view.cameraNode.parent=cc.director.getScene();view.camera=view.cameraNode.addComponent(cc.Camera);
+ view.main=game.ndMain;view.captureMaxEdge=quality&&quality.edge;view.captureDensity=quality&&quality.density;view.nativeCapture=!!(cc.sys&&cc.sys.isNative);view.capture=new cc.Node("ShadowCapture");view.capture.parent=cc.director.getScene();view.capture.active=false;view.cameraNode=new cc.Node("ShadowCamera");view.cameraNode.parent=cc.director.getScene();view.camera=view.cameraNode.addComponent(cc.Camera);
  var camera=view.camera;camera.enabled=false;camera.alignWithScreen=false;camera.ortho=true;camera.nearClip=-1000;camera.farClip=1000;camera.backgroundColor=cc.color(0,0,0,0);camera.clearFlags=cc.Camera.ClearFlags.COLOR|cc.Camera.ClearFlags.DEPTH|cc.Camera.ClearFlags.STENCIL;
  var object={sources:list},hidden=[];
  // Native camera.render(node) includes its descendants. Offer units and pads
@@ -73,9 +73,9 @@ function capture(owner,game,list){
  }finally{hidden.forEach(function(node){if(valid(node))node.active=true;});camera.targetTexture=null;(object.visuals||[]).forEach(function(pair){if(valid(pair.visual)){if(pair.visual.skeletonData)pair.visual.skeletonData=null;if(pair.visual.spriteFrame)pair.visual.spriteFrame=null;}});if(object.frame)object.frame.destroy();if(object.texture)object.texture.destroy();if(valid(view.capture))view.capture.destroy();if(valid(view.cameraNode))view.cameraNode.destroy();}
 }
 function geometry(owner){var r=owner.buildInfo.cfg,main=owner.ndAniMain,json=main&&main.skeletonData&&main.skeletonData.skeletonJson;return JSON.stringify([owner.ID,r.index,r.Skin,r.Appearance,r.PartScale,owner.node.scaleX,owner.node.scaleY,owner.wallFacing,owner.wallRotation,owner.wallOpening,!!owner.isOpen,json&&json.wallKit&&json.wallKit.layout]);}
-function obtain(key,source,settings){
+function obtain(key,source,settings,quality){
  var entry=entries.find(function(e){return e.key===key;});if(entry){entry.refs++;entries.splice(entries.indexOf(entry),1);entries.push(entry);return entry;}
- var image=FX.raster(source,settings),texture=new cc.Texture2D();texture.initWithData(image.pixels,cc.Texture2D.PixelFormat.RGBA8888,image.pixelWidth,image.pixelHeight);texture.packable=false;texture.setFilters(cc.Texture2D.Filter.LINEAR,cc.Texture2D.Filter.LINEAR);
+ var image=FX.raster(source,settings,quality),texture=new cc.Texture2D();texture.initWithData(image.pixels,cc.Texture2D.PixelFormat.RGBA8888,image.pixelWidth,image.pixelHeight);texture.packable=false;texture.setFilters(cc.Texture2D.Filter.LINEAR,cc.Texture2D.Filter.LINEAR);
  entry={key:key,texture:texture,frame:new cc.SpriteFrame(texture),image:image,bytes:image.pixels.length,refs:1};delete image.pixels;entries.push(entry);bytes+=entry.bytes;trim();return entry;
 }
 function apply(owner,game,data){

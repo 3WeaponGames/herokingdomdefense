@@ -1,7 +1,7 @@
 "use strict";
 // Passive map-scenery lighting. Stage preparation renders detached visual
 // probes only; live owners share those results without starting game actors.
-var FX=require("BuildingDropShadow"),Runtime=require("BuildingDropShadowRuntime"),pool=new Map(),groups=new WeakMap(),activeGroups=new Set(),serial=0;
+var FX=require("BuildingDropShadow"),Runtime=require("BuildingDropShadowRuntime"),Quality=require("MapShadowQuality"),pool=new Map(),groups=new WeakMap(),activeGroups=new Set(),serial=0;
 function valid(node){return !!node&&(!cc.isValid||cc.isValid(node,true));}
 function config(){return require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;}
 function settings(data){return FX.settings(data&&data.GameTools&&data.GameTools.buildingShadows&&data.GameTools.buildingShadows.global);}
@@ -15,18 +15,18 @@ function describe(owner){
  }
  (owner.sources&&owner.sources.length?owner.sources:[owner.node]).forEach(visit);
  var scale=list.length?Math.hypot(list[0].matrix[0],list[0].matrix[1]):1;if(!(scale>0))scale=1;list.forEach(function(p){p.matrix=p.matrix.map(function(v){return v/scale;});});
- return{origin:origin,list:list,scale:scale,signature:JSON.stringify(list.map(function(p){var r=p.source,n=r.node,a=r.spriteFrame||r.skeletonData;return[a._uuid||a.uuid,p.matrix.map(function(v){return Math.round(v*1000)/1000;}),n.width,n.height,n.anchorX,n.anchorY,p.opacity,r.type,r.trim,r.fillType,r.fillStart,r.fillRange,r.fillCenter,r.defaultSkin,r.defaultAnimation];}))};
+ var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;list.forEach(function(p){var n=p.source.node,json=p.source.skeletonData&&p.source.skeletonData.skeletonJson,meta=json&&json.skeleton,w=n.width||meta&&meta.width||1024,h=n.height||meta&&meta.height||1024,m=p.matrix;[-n.anchorX*w,(1-n.anchorX)*w].forEach(function(x){[-n.anchorY*h,(1-n.anchorY)*h].forEach(function(y){var px=m[0]*x+m[2]*y+m[4],py=m[1]*x+m[3]*y+m[5];minX=Math.min(minX,px);maxX=Math.max(maxX,px);minY=Math.min(minY,py);maxY=Math.max(maxY,py);});});});
+ return{origin:origin,list:list,scale:scale,quality:Quality.forBounds(list.length?maxX-minX:1,list.length?maxY-minY:1,scale),signature:JSON.stringify(list.map(function(p){var r=p.source,n=r.node,a=r.spriteFrame||r.skeletonData;return[a._uuid||a.uuid,p.matrix.map(function(v){return Math.round(v*1000)/1000;}),n.width,n.height,n.anchorX,n.anchorY,p.opacity,r.type,r.trim,r.fillType,r.fillStart,r.fillRange,r.fillCenter,r.defaultSkin,r.defaultAnimation];}))};
 }
-function smaller(source){var factor=Math.min(1,256/Math.max(source.pixelWidth,source.pixelHeight));if(factor===1)return source;var w=Math.max(1,Math.ceil(source.pixelWidth*factor)),h=Math.max(1,Math.ceil(source.pixelHeight*factor)),alpha=new Uint8Array(w*h);for(var y=0;y<h;y++)for(var x=0;x<w;x++)alpha[y*w+x]=source.alpha[Math.min(source.pixelHeight-1,Math.floor((y+.5)/factor))*source.pixelWidth+Math.min(source.pixelWidth-1,Math.floor((x+.5)/factor))];return Object.assign({},source,{alpha:alpha,pixelWidth:w,pixelHeight:h});}
 function acquire(owner,data,root){
- var description=describe(owner);if(!description.list.length)return null;var preset=settings(data),key="map-shadow:"+JSON.stringify([description.signature,preset]),record=pool.get(key);if(record){record.refs++;return record;}
+ var description=describe(owner);if(!description.list.length)return null;var preset=settings(data),quality=description.quality,key="map-shadow:"+JSON.stringify([description.signature,preset,quality]),record=pool.get(key);if(record){record.refs++;return record;}
  var temporary=!root;if(temporary){root=new cc.Node("MapShadowPreparation");root.parent=cc.director.getScene();root.setPosition(100000,100000);}var node=new cc.Node("MapSceneryProbe");node.parent=root;var renders=[];
  try{description.list.forEach(function(p){var source=p.source,n=new cc.Node("MapShadowSource");n.parent=node;place(n,p.matrix);n.setAnchorPoint(source.node.anchorX,source.node.anchorY);n.setContentSize(source.node.width,source.node.height);n.opacity=Math.round(p.opacity*255);n.group=source.node.group;var r;
    if(source.spriteFrame){r=n.addComponent(cc.Sprite);r.type=source.type;r.sizeMode=cc.Sprite.SizeMode.CUSTOM;r.trim=source.trim;if(source.fillType!==undefined){r.fillType=source.fillType;r.fillStart=source.fillStart;r.fillRange=source.fillRange;r.fillCenter=source.fillCenter;}r.spriteFrame=source.spriteFrame;}
    else{r=n.addComponent(sp.Skeleton);r.skeletonData=source.skeletonData;r.premultipliedAlpha=source.premultipliedAlpha;if(r.setAnimationCacheMode)r.setAnimationCacheMode(sp.Skeleton.AnimationCacheMode.REALTIME);if(source.defaultSkin)r.setSkin(source.defaultSkin);var animation=source.defaultAnimation||"idle";if(r.findAnimation(animation))r.setAnimation(0,animation,false);if(r.update)r.update(0);r.paused=true;}
    renders.push(r);
   });
-  var source=Runtime.capture({node:node,ndAniOther:renders},{ndMain:root},renders);if(!source)throw Error("Could not prepare map-object shadow "+owner.shadowKey);record={key:key,entry:Runtime.prepareEntry(key,smaller(source),preset),refs:1,order:++serial};pool.set(key,record);return record;
+  var source=Runtime.capture({node:node,ndAniOther:renders},{ndMain:root},renders,quality);if(!source)throw Error("Could not prepare map-object shadow "+owner.shadowKey);record={key:key,entry:Runtime.prepareEntry(key,source,preset,Quality.rasterOptions(quality)),refs:1,order:++serial};pool.set(key,record);return record;
  }finally{renders.forEach(function(r){if(r.spriteFrame)r.spriteFrame=null;if(r.skeletonData)r.skeletonData=null;});node.active=false;node.destroy();if(temporary){root.active=false;root.destroy();}}
 }
 function release(record){if(!record||record.refs<=0)return;if(--record.refs)return;pool.delete(record.key);Runtime.releaseEntry(record.entry);}

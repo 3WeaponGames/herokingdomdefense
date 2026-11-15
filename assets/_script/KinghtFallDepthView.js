@@ -1236,7 +1236,7 @@ DepthView.prototype.snapshot = function (object, box, cache) {
   var center = { x: (box.minX + box.maxX) / 2, y: (box.minY + box.maxY) / 2 };
   var width = Math.ceil(box.maxX - box.minX) + 4, height = Math.ceil(box.maxY - box.minY) + 4;
   // One small texture per currently overlapping object, never per unit/frame.
-  var resolution = Math.min(1, 512 / Math.max(width, height));
+  var resolution = Math.min(this.captureDensity || 1, (this.captureMaxEdge || 512) / Math.max(width, height));
   var tw = Math.max(2, Math.ceil(width * resolution)), th = Math.max(2, Math.ceil(height * resolution));
   if (!object.texture || object.texture.width !== tw || object.texture.height !== th) {
     releaseCapture(object);
