@@ -3,15 +3,15 @@ const Renderer=require('../worlds/building-renderer'),Paint=require('../worlds/p
 function mount(host,api){
  const state=api.state||{},make=(tag,text,parent)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e;};
  const root=make('div',undefined,host);root.className='bld-scale';
- const controls=make('div',undefined,root);controls.className='bld-scale-controls';
+ const controlsRoot=make('div',undefined,api.controlsHost||root),controls=make('div',undefined,controlsRoot);controls.className='bld-scale-controls';
  const modeLabel=make('label',undefined,controls),allInput=make('input',undefined,modeLabel);allInput.type='checkbox';allInput.setAttribute('aria-label','All tiers');make('span','All tiers',modeLabel);
  const label=make('label',undefined,controls),title=make('span','World size',label),number=make('input',undefined,label);number.type='number';number.step='.1';make('span','%',label);
  const slider=make('input',undefined,controls);slider.type='range';slider.step='any';
  const fitButton=make('button','Fit preview',controls);fitButton.type='button';
- const tierControls=make('div',undefined,root);tierControls.className='bld-scale-tiers';
- const partControls=make('div',undefined,root);partControls.className='bld-part-scales';
+ const tierControls=make('div',undefined,controlsRoot);tierControls.className='bld-scale-tiers';
+ const partControls=make('div',undefined,controlsRoot);partControls.className='bld-part-scales';
  const canvas=make('canvas',undefined,root);canvas.className='bld-blocker-canvas bld-scale-canvas';canvas.width=900;canvas.height=430;canvas.tabIndex=0;if(state.previewHeight)canvas.style.height=state.previewHeight+'px';canvas.setAttribute('aria-label','Building scale preview with hero');
- const help=make('p','Drag the corner handle or adjust World size. The hero stays at gameplay size. Hold middle mouse to pan; wheel zooms the view; Fit preview fits all visible models.',root),status=make('p','Loading building and hero…',root);help.className=status.className='bld-blocker-help';
+ const help=make('p','Drag the corner handle or adjust World size. The hero stays at gameplay size. Hold middle mouse to pan; wheel zooms the view; Fit preview fits all visible models.',controlsRoot),status=make('p','Loading building and hero…',controlsRoot);help.className=status.className='bld-blocker-help';
  if(!canvas.getContext)return{ready:Promise.resolve(),destroy(){},stats:()=>({poses:0,ready:0})};
  const resizer=require('./preview-resize').mount(canvas,state);
  const g=canvas.getContext('2d');let closed=false,frame=null,data,entries=[],images={},heroImage,heroBounds,value=1,original=1,drag=null,pan=null,busy=false,loading=false,serial=0,pending,fitted=!!state.fitted,unit=state.unit||1,zoom=state.zoom||1,cx=state.cx||0,cy=state.cy||0;
@@ -102,6 +102,6 @@ function mount(host,api){
  // distort both the building and its hero reference in wide or narrow panels.
  const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;if(observer)observer.observe(canvas);resize();
  sync();pending=load();
- return{get ready(){return pending;},stats,destroy(){if(closed)return;endPan(false);cancel();closed=true;resizer.destroy();serial++;Object.assign(state,{unit,zoom,cx,cy,fitted,allTiers,selection:Array.from(selected),width:canvas.width,height:canvas.height});if(observer)observer.disconnect();renderer.destroy();if(heroImage)heroImage.width=heroImage.height=1;if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=canvas.onauxclick=canvas.onkeydown=canvas.onwheel=null;canvas.width=canvas.height=1;root.remove();}};
+ return{get ready(){return pending;},stats,destroy(){if(closed)return;endPan(false);cancel();closed=true;resizer.destroy();serial++;Object.assign(state,{unit,zoom,cx,cy,fitted,allTiers,selection:Array.from(selected),width:canvas.width,height:canvas.height});if(observer)observer.disconnect();renderer.destroy();if(heroImage)heroImage.width=heroImage.height=1;if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=canvas.onauxclick=canvas.onkeydown=canvas.onwheel=null;canvas.width=canvas.height=1;controlsRoot.remove();root.remove();}};
 }
 module.exports={mount};

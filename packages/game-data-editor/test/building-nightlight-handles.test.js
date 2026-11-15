@@ -3,6 +3,10 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),H=require
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`),point=(a,b)=>{near(a.x,b.x);near(a.y,b.y);},identity=[1,0,0,1,0,0];
 const sprite={id:'sprite:0:0',matrix:identity,glow:{x:25,y:35,width:40,height:70,shearX:0,shearY:0,angle:0}},base=T.value({},sprite.id);
 function target(f,h,x,y){const anchor=Maps.point(f.matrix,h.anchor);return{x:anchor.x+(h.x-anchor.x)*x,y:anchor.y+(h.y-anchor.y)*y};}
+test('brush picking respects the actual rotated and mirrored transform box instead of its surrounding rectangle',()=>{
+ const entry={matrix:[.8,.2,-.1,.9,21,-13],glow:T.glow({type:'circle'})},v={...T.value({},'light:1'),angle:37,scaleX:1.8,scaleY:.4,flipX:true},f=H.frame(entry,v);
+ assert(H.contains(f,f.center));for(const p of [{x:-34,y:-34},{x:34,y:34},{x:0,y:0}])assert(H.contains(f,Maps.point(f.matrix,p)));for(const p of [{x:36,y:0},{x:0,y:-36},{x:50,y:50}])assert(!H.contains(f,Maps.point(f.matrix,p)));assert(!H.contains(f,{x:NaN,y:0}));
+});
 test('corners resize both dimensions while edges resize only their own axis and keep the opposite handle fixed',()=>{
  for(const h of H.frame(sprite,base).handles){const f=H.frame(sprite,base),before=JSON.stringify({sprite,base}),p=target(f,h,h.axisX?1.6:1,h.axisY?1.3:1),next=H.resize(sprite,base,h,p),after=H.frame(sprite,{...base,...next});near(next.scaleX,h.axisX?1.6:1);near(next.scaleY,h.axisY?1.3:1);point(Maps.point(f.matrix,h.anchor),Maps.point(after.matrix,h.anchor));point(after.handles[h.index],p);assert.equal(JSON.stringify({sprite,base}),before);}
 });

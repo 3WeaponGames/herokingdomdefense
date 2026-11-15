@@ -25,6 +25,7 @@ function resize(entry,value,handle,target){
  return {scaleX,scaleY,x:clamp(fixed.x-f.c*ax+f.s*ay-f.pivot.x,-10000,10000),y:clamp(fixed.y-f.s*ax-f.c*ay-f.pivot.y,-10000,10000)};
 }
 function cursor(handle,center){const angle=Math.atan2(center.y-handle.y,handle.x-center.x),direction=((Math.round(angle/(Math.PI/4))%4)+4)%4;return ['ew-resize','nwse-resize','ns-resize','nesw-resize'][direction];}
+function contains(f,p){const q=Maps.point(Maps.inverse(f.matrix),p),b=f.bounds;return Number.isFinite(q.x+q.y)&&q.x>=b.minX&&q.x<=b.maxX&&q.y>=b.minY&&q.y<=b.maxY;}
 function distort(entry,value,handle,target){
  const W=Warp.forType(entry.glow?.lightType),key=handle.kind==='warp-node'?'warpNodes':'warp',read=()=>key==='warpNodes'?(value.warpNodes||[]).map(n=>({...n})):W.controls(value.warp),p=Maps.point(Maps.inverse(frame(entry,value).matrix),target),before=read(),next=read();if(!before[handle.index]||!Number.isFinite(p.x+p.y))return null;
  const valid=list=>W.valid(key==='warp'?list:value.warp,key==='warpNodes'?list:value.warpNodes);next[handle.index]={...next[handle.index],...p};if(valid(next))return{[key]:next};
@@ -35,4 +36,4 @@ function edgeHit(points,target,scale){let best=null;for(let i=1;i<points.length;
 function rotationHandles(f,scale){return f.handles.filter(h=>h.axisX&&h.axisY).map(h=>{const dx=h.x-f.center.x,dy=h.y-f.center.y,length=Math.max(.000001,Math.hypot(dx,dy)),pad=22/scale;return{x:h.x+dx/length*pad,y:h.y+dy/length*pad,index:h.index,kind:'rotate'};});}
 function rotate(entry,value,start,target,snap){const inverse=Maps.inverse(entry.matrix),a=Maps.point(inverse,start),b=Maps.point(inverse,target),pivot=entry.glow||entry.center,x=pivot.x+value.x,y=pivot.y+value.y;let angle=value.angle+(Math.atan2(b.y-y,b.x-x)-Math.atan2(a.y-y,a.x-x))*180/Math.PI;if(snap)angle=Math.round(angle/15)*15;return{angle:((angle+180)%360+360)%360-180};}
 const rotationCursor='url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\'%3E%3Cpath d=\'M18 8a7 7 0 1 0 1 8M18 3v6h-6\' fill=\'none\' stroke=\'white\' stroke-width=\'4\'/%3E%3Cpath d=\'M18 8a7 7 0 1 0 1 8M18 3v6h-6\' fill=\'none\' stroke=\'%231b3441\' stroke-width=\'2\'/%3E%3C/svg%3E") 12 12, crosshair';
-module.exports={frame,resize,cursor,distort,edgeHit,rotationHandles,rotate,rotationCursor};
+module.exports={frame,resize,cursor,contains,distort,edgeHit,rotationHandles,rotate,rotationCursor};
