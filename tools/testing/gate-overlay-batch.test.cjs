@@ -1,17 +1,17 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),Module=require('node:module');
 const test=require('node:test'),assert=require('node:assert/strict');
-const project=process.env.HKD_TEST_PROJECT_ROOT||path.resolve(__dirname,'../..'),fixtureFile=path.join(project,'tools/testing/gate-overlay-clip.test.cjs');
+const project=process.env.HKD_TEST_PROJECT_ROOT||path.resolve(__dirname,'../..'),fixtureFile=process.env.HKD_GATE_CLIP_FIXTURE||path.join(project,'tools/testing/gate-overlay-clip.test.cjs');
 const localRequire=Module.createRequire(fixtureFile),clipPath=path.join(project,'assets/_script/GateOverlayClip.js');
 const candidate=fs.readFileSync(process.env.HKD_GATE_CLIP_SOURCE||clipPath,'utf8');
 function fixture(quadAvailable=true){
-  const leases=[];
+  const leases=[],seenInputs=new WeakSet(),seenArrays=new WeakSet(),allocations={inputs:0,arrays:0};
   const quadApi={create(sprite){
     if(sprite.quadBlocked)return null;
     const original=sprite._assembler||{},assembler={};sprite._assembler=assembler;
     const lease={sprite,original,assembler,released:false,inputs:null,
       owns(){return !this.released&&sprite._assembler===assembler;},
-      update(input){if(!this.owns()||sprite.quadFail)return false;this.inputs=input;return true;},
+      update(input){if(!this.owns()||sprite.quadFail)return false;if(!seenInputs.has(input)){seenInputs.add(input);allocations.inputs++;}for(const array of [input.wallUV,input.actorUV,input.clipXY])if(!seenArrays.has(array)){seenArrays.add(array);allocations.arrays++;}this.inputs=input;return true;},
       dispose(){if(this.released)return;this.released=true;if(sprite._assembler===assembler)sprite._assembler=original;}
     };leases.push(lease);return lease;
   }};
@@ -20,7 +20,7 @@ function fixture(quadAvailable=true){
   const factory=new Function('require','__dirname','quadApi',source+'\nreturn fixture;')(
     name=>name==='node:test'?()=>{}:name==='node:fs'?fsHost:localRequire(name),path.dirname(fixtureFile),quadAvailable?quadApi:null);
   const f=factory(),wall={frame:f.maskFrame},body={frame:f.paintFrame};
-  return Object.assign(f,{leases,wall,body,info:{wall,body,paintIsActor:true}});
+  return Object.assign(f,{allocations,leases,wall,body,info:{wall,body,paintIsActor:true}});
 }
 function batchStates(f){return [...f.controller.states].filter(state=>state.batch);}
 function uniformStates(f){return [...f.controller.states].filter(state=>!state.batch);}
@@ -138,4 +138,22 @@ for(const rejected of ['create','update'])test(rejected+' rejection retains one 
   assert.equal(f.materials.length,count);assert.equal(f.leases.length,leases);
   f.sprite.quadBlocked=f.sprite.quadFail=false;f.api.unbind(f.sprite);assert(f.controller.sync(f.overlay,f.info));
   assert.equal(batchStates(f).length,1);assert(material.dead);f.controller.dispose();
+});
+
+
+test('100 moving overlays retain independent attribute scratch without frame metadata clones or steady input allocations',()=>{
+  const f=fixture();ready(f);const overlays=[];
+  for(let i=0;i<100;i++){const node=new f.Node(f.root),child=new f.Node(node),mask=new f.Mask(node,f.wall.frame),sprite=new f.Sprite(child,f.body.frame),overlay={node,child,mask,sprite};overlays.push(overlay);assert(f.controller.sync(overlay,f.info));}
+  f.allocations.inputs=f.allocations.arrays=0;
+  for(let frame=0;frame<3;frame++)for(let i=0;i<overlays.length;i++){const overlay=overlays[i];overlay.child.x+=.13;overlay.node.opacity=127+i;assert(f.controller.sync(overlay,f.info));const input=f.leases[i].inputs;assert.equal(input.maskOpacity,(127+i)/255);assert(Math.abs(input.clipXY[0]-(overlay.child.x-.5*overlay.child.width)/overlay.node.width-.5)<1e-7);}
+  assert.deepEqual(f.allocations,{inputs:0,arrays:0});assert.deepEqual(f.metadataCalls,{rect:0,size:0,offset:0});assert.equal(f.leases.length,100);f.controller.dispose();
+});
+
+test('scratch never retains frames, textures or ancestor nodes and nested same-overlay sync keeps outer input intact',()=>{
+  const f=fixture();ready(f);assert(f.controller.sync(f.overlay,f.info));const s=f.controller.scratch.get(f.overlay),input=s.data,lease=f.leases[0],original=lease.update;let nested=false,order=[];
+  Object.defineProperty(f.root,'opacity',{get(){order.push('root');return 147;}});Object.defineProperty(f.node,'opacity',{get(){order.push('mask');return 128;}});
+  lease.update=function(value){if(!nested){nested=true;const before=[...value.wallUV,...value.actorUV,...value.clipXY],saved=f.paint.x;f.paint.x+=3;assert(f.controller.sync(f.overlay,f.info));f.paint.x=saved;assert.deepEqual([...value.wallUV,...value.actorUV,...value.clipXY],before);}return original.call(this,value);};
+  assert(f.controller.sync(f.overlay,f.info));assert.equal(s.data,input);assert.deepEqual(order,['root','mask','root','mask']);assert.equal(input.maskOpacity,73/255);
+  for(const key of ['mask','sprite','mn','pn','mf','pf'])assert.equal(s.d[key],null);assert.equal(s.pair.wall,null);assert.equal(s.pair.body,null);assert(s.chain.every(node=>node===null));assert.equal(s.busy,false);
+  f.api.unbind(f.mask);f.api.unbind(f.sprite);f.mask.spriteFrame=null;f.sprite.spriteFrame=null;f.api.park(f.overlay);f.controller.dispose();assert.equal(f.controller.scratch,null);assert.equal(s.d.mf,null);assert.equal(s.pair.wall,null);
 });

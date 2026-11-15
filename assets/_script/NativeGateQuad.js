@@ -2,6 +2,10 @@
 // Native gate/wall overlay quads; keep per-overlay data in vertex attributes.
 // No material, SpriteFrame, mask, class registry or engine prototype writes.
 var leases=new WeakMap(),format=null,Quad=null;
+var FrameType=cc.SpriteFrame,frameProto=FrameType&&FrameType.prototype;
+var rectGetter=frameProto&&frameProto.getRect,sizeGetter=frameProto&&frameProto.getOriginalSize,offsetGetter=frameProto&&frameProto.getOffset;
+function standardFrame(frame){try{return !!(cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&FrameType&&cc.SpriteFrame===FrameType&&frame instanceof FrameType&&frame.constructor===FrameType&&frame.getRect===rectGetter&&frame.getOriginalSize===sizeGetter&&frame.getOffset===offsetGetter&&frame._rect&&frame._originalSize&&frame._offset);}catch(ignored){return false;}}
+
 var STRIDE=13,COLOR=7,SCALARS=31;
 function valid(value,strict){return !!value&&cc.isValid(value,!!strict);}
 function finite(value){return typeof value==="number"&&isFinite(value);}
@@ -13,7 +17,7 @@ function supported(){
 function full(frame){
   if(!valid(frame,true))return false;
   try{
-    var r=frame.getRect&&frame.getRect(),s=frame.getOriginalSize&&frame.getOriginalSize(),o=frame.getOffset&&frame.getOffset();
+    var direct=standardFrame(frame),r=direct?frame._rect:frame.getRect&&frame.getRect(),s=direct?frame._originalSize:frame.getOriginalSize&&frame.getOriginalSize(),o=direct?frame._offset:frame.getOffset&&frame.getOffset();
     return !!r&&!!s&&!!o&&r.width>0&&r.height>0&&r.width===s.width&&r.height===s.height&&o.x===0&&o.y===0;
   }catch(ignored){return false;}
 }
@@ -105,6 +109,26 @@ function fillArray(scratch,offset,input){
   for(var i=0;i<8;i++){if(!finite(input[i]))return false;scratch[offset+i]=input[i];if(!isFinite(scratch[offset+i]))return false;}
   return true;
 }
+function rectangular(d,o){return d[o]===d[o+4]&&d[o+2]===d[o+6]&&d[o+1]===d[o+3]&&d[o+5]===d[o+7];}
+function intersect(d){
+  // Generated Gate coordinates and both texture maps are affine rectangles.
+  // Unknown warped input retains its original full-quad interpolation.
+  if(!rectangular(d,0)||!rectangular(d,8)||!rectangular(d,16))return;
+  var cx=d[16],cy=d[17],dx=d[18]-cx,dy=d[21]-cy,l=0,r=1,b=0,t=1,empty=false;
+  if(dx===0){if(cx<0||cx>1)empty=true;}
+  else{var xa=-cx/dx,xb=(1-cx)/dx;l=Math.max(0,Math.min(xa,xb));r=Math.min(1,Math.max(xa,xb));}
+  if(dy===0){if(cy<0||cy>1)empty=true;}
+  else{var ya=-cy/dy,yb=(1-cy)/dy;b=Math.max(0,Math.min(ya,yb));t=Math.min(1,Math.max(ya,yb));}
+  if(empty||l>=r||b>=t){d[29]=d[27];d[30]=d[28];return;}
+  if(l===0&&r===1&&b===0&&t===1)return;
+  var left=d[27],bottom=d[28],right=d[29],top=d[30];
+  for(var o=0;o<24;o+=8){
+    var x0=d[o],x1=d[o+2],y0=d[o+1],y1=d[o+5];
+    d[o]=d[o+4]=x0+(x1-x0)*l;d[o+2]=d[o+6]=x0+(x1-x0)*r;
+    d[o+1]=d[o+3]=y0+(y1-y0)*b;d[o+5]=d[o+7]=y0+(y1-y0)*t;
+  }
+  d[27]=left+(right-left)*l;d[29]=left+(right-left)*r;d[28]=bottom+(top-bottom)*b;d[30]=bottom+(top-bottom)*t;
+}
 function update(state,values){
   if(!owns(state,true)||!plain(state.sprite)||!values){retire(state);return false;}
   var d=state.scratch,n=state.node;
@@ -116,6 +140,7 @@ function update(state,values){
   d[24]=values.maskOpacity;d[25]=values.alphaThreshold;d[26]=values.paintIsActor;
   d[27]=-n.width*n.anchorX;d[28]=-n.height*n.anchorY;d[29]=n.width*(1-n.anchorX);d[30]=n.height*(1-n.anchorY);
   for(var i=24;i<SCALARS;i++)if(!isFinite(d[i])){retire(state);return false;}
+  intersect(d);
   var a=state.custom,changed=!a._gateQuadReady;
   if(!changed)for(i=0;i<SCALARS;i++)if(a._gateQuadData[i]!==d[i]){changed=true;break;}
   if(changed){a._gateQuadData.set(d);a._gateQuadReady=true;state.sprite.setVertsDirty();}

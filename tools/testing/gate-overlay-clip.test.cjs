@@ -1,23 +1,24 @@
 'use strict';
 // Native material ownership and shader inputs; no editor, game, GPU or audio.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const source=fs.readFileSync(path.resolve(__dirname,'../../assets/_script/GateOverlayClip.js'),'utf8');
+const project=process.env.HKD_TEST_PROJECT_ROOT||path.resolve(__dirname,'../..');
+const source=fs.readFileSync(process.env.HKD_GATE_CLIP_SOURCE||path.join(project,'assets/_script/GateOverlayClip.js'),'utf8');
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function fixture(){
-  const requests=[],materials=[],pooled=[],textures=[],writes=[];
+  const requests=[],materials=[],pooled=[],textures=[],writes=[],metadataCalls={rect:0,size:0,offset:0};
   class Node{constructor(parent=null){Object.assign(this,{parent,opacity:255,width:96,height:96,x:0,y:0,anchorX:.5,anchorY:.5,angle:0,scaleX:1,scaleY:1,skewX:0,skewY:0,active:true,color:{r:255,g:255,b:255},_renderComponent:null});}destroy(){this.dead=true;}}
   class Texture{constructor(w=512,h=512){this.width=w;this.height=h;textures.push(this);}destroy(){assert(materials.filter(m=>m.clip&&!m.dead&&m._owner).every(m=>m.values.texture!==this&&m.values.maskTexture!==this),'Both custom samplers detach before a source GPU texture is destroyed');this.dead=true;}}
-  class Frame{constructor(texture,rect={x:0,y:0,width:texture.width,height:texture.height},flipY=true){this.texture=texture;this.rect=rect;this.original={width:rect.width,height:rect.height};this.offset={x:0,y:0};this.uv=[rect.x/texture.width,rect.y/texture.height,(rect.x+rect.width)/texture.width,rect.y/texture.height,rect.x/texture.width,(rect.y+rect.height)/texture.height,(rect.x+rect.width)/texture.width,(rect.y+rect.height)/texture.height];if(!flipY){[this.uv[1],this.uv[5]]=[this.uv[5],this.uv[1]];[this.uv[3],this.uv[7]]=[this.uv[7],this.uv[3]];}}getRect(){return{...this.rect};}getOriginalSize(){return{...this.original};}getOffset(){return{...this.offset};}getTexture(){return this.texture;}destroy(){this.dead=true;}}
+  class Frame{constructor(texture,rect={x:0,y:0,width:texture.width,height:texture.height},flipY=true){this.texture=texture;this.rect=rect;this.original={width:rect.width,height:rect.height};this.offset={x:0,y:0};this._rect=this.rect;this._originalSize=this.original;this._offset=this.offset;this.uv=[rect.x/texture.width,rect.y/texture.height,(rect.x+rect.width)/texture.width,rect.y/texture.height,rect.x/texture.width,(rect.y+rect.height)/texture.height,(rect.x+rect.width)/texture.width,(rect.y+rect.height)/texture.height];if(!flipY){[this.uv[1],this.uv[5]]=[this.uv[5],this.uv[1]];[this.uv[3],this.uv[7]]=[this.uv[7],this.uv[3]];}}getRect(){metadataCalls.rect++;return{...this.rect};}getOriginalSize(){metadataCalls.size++;return{...this.original};}getOffset(){metadataCalls.offset++;return{...this.offset};}getTexture(){return this.texture;}destroy(){this.dead=true;}}
   class Effect{constructor(){this.refs=1;this.adds=0;this.releases=0;}addRef(){this.refs++;this.adds++;return this;}decRef(){this.refs--;this.releases++;}}
   class Material{constructor(effect,owner=null,base=null){this.effect=effect;this.clip=effect instanceof Effect;this._owner=owner;this.base=base;this.values={};this.defines={};materials.push(this);}define(name,value){this.defines[name]=value;}setProperty(name,value){assert(!this.dead,'Never update a released material');this.values[name]=value;writes.push([this,name,value]);}destroy(){assert(!this.dead,'An owned material is released once');this.dead=true;}}
   class Sprite{constructor(node,frame){this.node=node;node._renderComponent=this;this._frame=frame;this._materials=[new Material('builtin',this)];}get spriteFrame(){return this._frame;}set spriteFrame(value){this._frame=value;this._materials[0].values.texture=value?value.getTexture():null;}getMaterial(){return this._materials[0];}setMaterial(_index,material){this._materials[0]=material._owner===this?material:new Material(material.effect,this,material);this._materials[0].values.texture=this._frame?this._frame.getTexture():null;return this._materials[0];}}
   class Mask{constructor(node,frame){this.node=node;this.spriteFrame=frame;this._enabled=true;this.inverted=false;this.alphaThreshold=.1;node._renderComponent=this;}get enabled(){return this._enabled;}set enabled(value){this._enabled=!!value;if(value)this.node._renderComponent=this;else if(this.node._renderComponent===this)this.node._renderComponent=null;}}
   class Vec4{constructor(x,y,z,w){Object.assign(this,{x,y,z,w});}}
-  const pool={enabled:false,put(material){assert(material._owner,'Only a live owned variant enters the pool');pooled.push(material);material._owner=null;}},cc={Node,Sprite,Mask,Vec4,EffectAsset:Effect,ENGINE_VERSION:'2.4.13',sys:{isNative:true},isValid:v=>!!v&&!v.dead,pool:{material:pool},Material:{create:effect=>new Material(effect)},resources:{load(resource,type,callback){requests.push({resource,type,callback});}}};
+  const pool={enabled:false,put(material){assert(material._owner,'Only a live owned variant enters the pool');pooled.push(material);material._owner=null;}},cc={Node,Sprite,Mask,SpriteFrame:Frame,Vec4,EffectAsset:Effect,ENGINE_VERSION:'2.4.13',sys:{isNative:true},isValid:v=>!!v&&!v.dead,pool:{material:pool},Material:{create:effect=>new Material(effect)},resources:{load(resource,type,callback){requests.push({resource,type,callback});}}};
   const api={};vm.runInNewContext(source,{cc,exports:api});const view={nativeCapture:true},controller=api.create(view),root=new Node(),node=new Node(root),paint=new Node(node);paint.width=60;paint.height=81;paint.x=17;paint.y=-13;
   const maskTexture=new Texture(1940,1940),paintTexture=new Texture(240,324),maskFrame=new Frame(maskTexture,{x:1166,y:2,width:384,height:384}),paintFrame=new Frame(paintTexture),mask=new Mask(node,maskFrame),sprite=new Sprite(paint,paintFrame),overlay={node,child:paint,mask,sprite},original=sprite.getMaterial(0);
   function resolve(index=0,effect=new Effect(),error=null){requests[index].callback(error,effect);return effect;}
-  return{api,controller,view,cc,Node,Texture,Frame,Effect,Material,Sprite,Mask,root,node,paint,mask,sprite,overlay,original,maskTexture,paintTexture,maskFrame,paintFrame,requests,materials,pooled,pool,writes,resolve};
+  return{metadataCalls,api,controller,view,cc,Node,Texture,Frame,Effect,Material,Sprite,Mask,root,node,paint,mask,sprite,overlay,original,maskTexture,paintTexture,maskFrame,paintFrame,requests,materials,pooled,pool,writes,resolve};
 }
 
 test('effect loading preserves original stencils until ready and owns exactly one accepted effect reference',()=>{
@@ -62,7 +63,7 @@ for(const kind of ['inverted','rotated mask','scaled paint','skewed mask','chang
 test('an initially disabled Mask remains disabled and does not acquire fragment clipping',()=>{const f=fixture();f.mask.enabled=false;f.resolve();assert.equal(f.controller.sync(f.overlay),false);assert.equal(f.sprite.getMaterial(0),f.original);assert.equal(f.mask.enabled,false);f.controller.dispose();});
 
 test('capture cleanup clears both native shader samplers before source frames and textures are released',()=>{
-  const f=fixture();f.resolve();f.controller.sync(f.overlay);const custom=f.sprite.getMaterial(0),context=vm.createContext({cc:f.cc,sp:{},exports:{},require(){return{sync(){},dispose(){}};}});vm.runInContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/KinghtFallDepthView.js'),'utf8'),context);context.gateClipState=f.api;const release=vm.runInContext('releaseCapture',context);
+  const f=fixture();f.resolve();f.controller.sync(f.overlay);const custom=f.sprite.getMaterial(0),context=vm.createContext({cc:f.cc,sp:{},exports:{},require(){return{sync(){},dispose(){}};}});vm.runInContext(fs.readFileSync(path.join(project,'assets/_script/KinghtFallDepthView.js'),'utf8'),context);context.gateClipState=f.api;const release=vm.runInContext('releaseCapture',context);
   release({frame:f.maskFrame,texture:f.maskTexture,consumers:new Set([f.mask])});assert.equal(custom.values.maskTexture,null);assert.equal(custom.values.texture,f.paintTexture);assert(f.maskTexture.dead);
   release({frame:f.paintFrame,texture:f.paintTexture,consumers:new Set([f.sprite])});assert.equal(custom.values.texture,null);assert(f.paintTexture.dead);f.controller.dispose();assert.equal(f.sprite.getMaterial(0),f.original);
 });
@@ -119,7 +120,30 @@ test('browser, unknown engine and missing effect services keep the original rend
 
 test('production Gate lifetime starts the effect load and disposes samplers/materials before all capture consumers retire',()=>{
   const f=fixture();f.controller.dispose();const context=vm.createContext({cc:f.cc,sp:{},exports:{},require(name){if(name==='GateOverlayClip')return f.api;if(name==='NativeActorAtlas')return{create:()=>null};if(name==='NativeOcclusionMaskCache')return{sync(){},dispose(){}};throw Error(name);}});
-  vm.runInContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/KinghtFallDepthView.js'),'utf8'),context);const pass=new context.exports.GateOcclusion(f.view);assert(pass.clip);assert.equal(f.requests.length,2);const effect=f.resolve(1);assert(pass.clip.sync(f.overlay));
+  vm.runInContext(fs.readFileSync(path.join(project,'assets/_script/KinghtFallDepthView.js'),'utf8'),context);const pass=new context.exports.GateOcclusion(f.view);assert(pass.clip);assert.equal(f.requests.length,2);const effect=f.resolve(1);assert(pass.clip.sync(f.overlay));
   const actor={},source={},wall={frame:f.paintFrame,texture:f.paintTexture,consumers:new Set(),overlays:new Map([[actor,f.overlay]])},body={frame:f.maskFrame,texture:f.maskTexture,consumers:new Set()},bind=vm.runInContext('bindCapture',context);bind(f.mask,body);bind(f.sprite,wall);pass.clip.sync(f.overlay);pass.leaves.set(source,new Map([['wall',wall]]));pass.actors.set(actor,body);
   const custom=f.sprite.getMaterial(0);assert.doesNotThrow(()=>pass.destroy());assert.equal(effect.refs,1);assert.equal(effect.releases,1);assert(f.maskTexture.dead&&f.paintTexture.dead);assert.equal(f.sprite.spriteFrame,null);assert.equal(f.mask.spriteFrame,null);assert(custom.dead);assert.equal(f.sprite.getMaterial(0),f.original);assert.equal(pass.clip.states.size,0);assert.equal(pass.clip.view,null);
+});
+
+
+test('stock native frame metadata stays allocation-free but live trim/offset changes and custom getters still reject',()=>{
+  for(const mutation of ['original size','offset','instance API','prototype API']){
+    const f=fixture();f.resolve();assert(f.controller.sync(f.overlay));assert.deepEqual(f.metadataCalls,{rect:0,size:0,offset:0});
+    if(mutation==='original size')f.maskFrame._originalSize.width++;
+    if(mutation==='offset')f.maskFrame._offset.x=2;
+    if(mutation==='instance API')f.maskFrame.getRect=()=>({width:2,height:2});
+    if(mutation==='prototype API'){const original=f.Frame.prototype.getRect;f.Frame.prototype.getRect=function(){const rect=original.call(this);rect.width=2;return rect;};}
+    assert.equal(f.controller.sync(f.overlay),false);assert.equal(f.mask.enabled,true);assert.equal(f.sprite.getMaterial(0),f.original);
+    if(mutation==='prototype API')assert(f.metadataCalls.rect>0);
+    if(mutation==='instance API')assert(f.metadataCalls.size>0&&f.metadataCalls.offset>0);
+    f.controller.dispose();
+  }
+});
+
+test('reused uniform scratch vectors retain independent saved values as positions, UVs and textures change',()=>{
+  const f=fixture();f.resolve();assert(f.controller.sync(f.overlay));const material=f.sprite.getMaterial(0),first=material.values.maskMap.z;
+  f.paint.x+=7;assert(f.controller.sync(f.overlay));assert.notEqual(material.values.maskMap.z,first);
+  const prior=material.values.maskRect.x;f.maskFrame.uv[0]=f.maskFrame.uv[4]=prior+.01;assert(f.controller.sync(f.overlay));assert.equal(material.values.maskRect.x,prior+.01);
+  const texture=new f.Texture();f.paintFrame.texture=texture;assert(f.controller.sync(f.overlay));assert.equal(material.values.texture,texture);
+  assert.deepEqual(f.metadataCalls,{rect:0,size:0,offset:0});f.controller.dispose();
 });

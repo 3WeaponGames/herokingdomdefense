@@ -7,8 +7,8 @@ var BONE_FIELDS = ["a", "b", "c", "d", "worldX", "worldY", "x", "y", "rotation",
 var vertexFrame = 0;
 
 // Native camera.render() updates and skins EVERY scheduled Spine before it
-// visits the selected subtree. Keep the first pass unchanged to settle poses,
-// then avoid repeating unrelated rigs during this synchronous capture batch.
+// visits the selected subtree. Battle draws can settle poses through middleware
+// once; standalone/unsupported captures retain the original first camera.
 function NativeCaptureScope(view) {
   this.view=view;this.first=false;this.quiet=false;this.finished=false;this.drawing=false;
   this.entries=[];this.byRenderer=new Map();this.selected=new Set();
@@ -40,7 +40,7 @@ NativeCaptureScope.prototype.unmute=function(entry) {
   if(!this.same(entry))return;
   entry.color.a=entry.alpha;entry.native.paused(!!entry.renderer.paused);entry.muted=false;
 };
-function activeNativeRenderers(scene) {
+function activeNativeRenderers(scene,prepare) {
   // Creator 2.4.13 getComponents filters this own JS array into a fresh result.
   // Append to our one result instead; unknown/custom APIs keep the public path.
   var Type=sp.Skeleton;
@@ -59,11 +59,18 @@ function activeNativeRenderers(scene) {
       seen.add(node);
       var children=node.children,components,i;
       var usePrivate=componentArray&&node instanceof cc.Node&&node.getComponents===cc.Node.prototype.getComponents&&Object.prototype.hasOwnProperty.call(node,"_components")&&Array.isArray(node._components);
+      if(prepare&&!usePrivate)return null;
       components=usePrivate?node._components:node.getComponents(Type);
       if(!Array.isArray(children)||!Array.isArray(components))return null;
       var sealed=usePrivate&&!!Type._sealed;
       for(i=0;i<components.length;i++) {
         var component=components[i];
+        if(prepare&&component&&component.enabled!==false){
+          var particle=typeof cc.ParticleSystem==="function"&&component instanceof cc.ParticleSystem;
+          var armature=typeof dragonBones!=="undefined"&&typeof dragonBones.ArmatureDisplay==="function"&&component instanceof dragonBones.ArmatureDisplay;
+          if(particle||armature)return null;
+          if(component instanceof Type&&(typeof component.isAnimationCached!=="function"||component.isAnimationCached()))return null;
+        }
         if(!usePrivate||(sealed?component.constructor===Type:component instanceof Type))renderers.push(component);
       }
       for(i=children.length-1;i>=0;i--)pending.push(children[i]);
@@ -71,6 +78,27 @@ function activeNativeRenderers(scene) {
   } catch(error) { return null; }
   return renderers;
 }
+// Settle current zero-delta animation poses without generating every rig's
+// vertex/index buffers in the first manual camera. Unsupported middleware keeps
+// the ordinary unchanged first camera and its original callback behavior.
+NativeCaptureScope.prototype.prepare=function() {
+  // Transient standalone shadow views create/destroy native rigs. Keep their
+  // original first-camera path; only the outer battle draw owns all-rig reads.
+  if(this._sceneRepairOwner!==this.view||this.view._nativeCaptureScope!==this)return false;
+  if(!this.enabled||this.finished||this.drawing)return false;
+  if(this.first)return true;
+  if(cc.ENGINE_VERSION!=="2.4.13"||typeof middleware==="undefined"||!middleware.MiddlewareManager||typeof middleware.MiddlewareManager.getInstance!=="function")return false;
+  var scene=cc.director.getScene(),renderers=activeNativeRenderers(scene,true),manager;
+  if(!renderers)return false;
+  for(var i=0;i<renderers.length;i++)if(renderers[i].enabled!==false&&!this.resolve(renderers[i]))return false;
+  try{manager=middleware.MiddlewareManager.getInstance();}catch(error){return false;}
+  if(!manager||typeof manager.update!=="function")return false;
+  this.drawing=true;
+  try{manager.update(0);}catch(error){this.disable();return false;}finally{this.drawing=false;}
+  if(this.view._destroyed||cc.director.getScene()!==scene){this.disable();return null;}
+  if(!this.enabled||this.finished)return false;
+  try{this.first=true;this.start();return true;}catch(error){this.disable();return false;}
+};
 NativeCaptureScope.prototype.start=function() {
   this.quiet=true;
   var scene=cc.director.getScene(),renderers=activeNativeRenderers(scene);
@@ -105,7 +133,7 @@ NativeCaptureScope.prototype.originalAlpha=function(renderer,color) {
   return entry&&entry.muted&&this.same(entry)?entry.alpha:color.a;
 };
 NativeCaptureScope.prototype.finish=function() {
-  if(this.finished)return;this.finished=true;
+  if(this.finished)return;this.finished=true;this._sceneRepairOwner=null;
   for(var i=this.entries.length-1;i>=0;i--) {
     var entry=this.entries[i];if(!this.same(entry))continue;
     // Selected callbacks may legitimately change alpha. Only muted entries use
@@ -152,7 +180,7 @@ function nativeActorGroups(sources,scope) {
   }
   var groups=[],group=[];
   sources.forEach(function(source,index){
-    // The first manual camera must settle every live rig once, unchanged.
+    // Without prepared battle poses, retain an unchanged first camera.
     if(group.length&&(indices[index]<indices[index-1]||!scope.first&&index===1)){groups.push(group);group=[];}
     group.push(source);
   });
@@ -183,18 +211,64 @@ function capturePhysicalGroup(sources,index,draw) {
 }
 
 
-function point(node, main, x, y) {
+function publicMatrixNode(node) {
+  var p=cc.Node&&cc.Node.prototype;
+  return !!(p&&node instanceof cc.Node&&Object.getPrototypeOf(node)===p&&!node.is3DNode&&
+    !(cc.PrivateNode&&node instanceof cc.PrivateNode)&&node.getWorldMatrix===p.getWorldMatrix&&
+    node.convertToWorldSpaceAR===p.convertToWorldSpaceAR&&node.convertToNodeSpaceAR===p.convertToNodeSpaceAR&&
+    typeof p.getWorldMatrix==="function"&&typeof p.convertToWorldSpaceAR==="function"&&typeof p.convertToNodeSpaceAR==="function");
+}
+function affineMatrix(matrix) {
+  var m=matrix&&matrix.m;
+  if(!m||m.length!==16||Object.prototype.toString.call(m)!=="[object Float32Array]")return false;
+  for(var i=0;i<16;i++)if(!Number.isFinite(m[i]))return false;
+  return !(m[2]||m[3]||m[6]||m[7]||m[8]||m[9]||m[11]||m[14])&&m[10]===1&&m[15]===1;
+}
+function relativeMatrixState(node,main,cache) {
+  if(!cache||!cc.sys||!cc.sys.isNative||cc.ENGINE_VERSION!=="2.4.13"||typeof cc.Mat4!=="function"||typeof cc.Mat4.invert!=="function"||!publicMatrixNode(node)||!publicMatrixNode(main))return null;
+  var saved=cache.relativeMatrices;
+  if(!saved||saved.main!==main)saved=cache.relativeMatrices={main:main,world:new cc.Mat4(),source:new cc.Mat4(),inverse:new cc.Mat4(),ready:false};
+  try {
+    // Re-read through the public API so synchronous capture/event mutations of
+    // Main are observed, while its unchanged inverse is reused within a draw.
+    main.getWorldMatrix(saved.world);if(!affineMatrix(saved.world))return null;
+    var m=saved.world.m;
+    if(!saved.ready||saved.a!==m[0]||saved.b!==m[1]||saved.c!==m[4]||saved.d!==m[5]||saved.x!==m[12]||saved.y!==m[13]){
+      saved.ready=false;
+      if(!cc.Mat4.invert(saved.inverse,saved.world)||!affineMatrix(saved.inverse))return null;
+      saved.a=m[0];saved.b=m[1];saved.c=m[4];saved.d=m[5];saved.x=m[12];saved.y=m[13];saved.ready=true;
+    }
+    return saved;
+  }catch(ignored){return null;}
+}
+function point(node, main, x, y, cache) {
+  if(!x&&!y&&node.parent===main){
+    var state=relativeMatrixState(node,main,cache);
+    // PrivateNode uses anchor-corrected matrix positions; only a plain Node's
+    // own local origin is its public x/y position in its direct parent's space.
+    if(state&&Number.isFinite(node.x)&&Number.isFinite(node.y))return{x:node.x,y:node.y};
+  }
   return main.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(x || 0, y || 0)));
 }
 function nodeTransform(source, main, cache) {
   if (cache && cache.transforms.has(source)) return cache.transforms.get(source);
-  var o = point(source, main), x = point(source, main, 1, 0), y = point(source, main, 0, 1);
-  var a = x.x - o.x, b = x.y - o.y, c = y.x - o.x, d = y.y - o.y;
-  var scale = Math.sqrt(a * a + b * b);
-  var value = { x:o.x, y:o.y, a:a, b:b, c:c, d:d, angle:Math.atan2(b,a)*180/Math.PI, scaleX:scale, scaleY:scale?(a*d-b*c)/scale:0 };
-  if (cache) cache.transforms.set(source,value);
-  return value;
+  var state=relativeMatrixState(source,main,cache),ox,oy,xx,xy,yx,yy,ready=false;
+  if(state)try{
+    source.getWorldMatrix(state.source);
+    if(affineMatrix(state.source)){
+      var s=state.source.m,m=state.inverse.m;ox=m[0]*s[12]+m[4]*s[13]+m[12];oy=m[1]*s[12]+m[5]*s[13]+m[13];
+      // Keep the public three-point operation order and Float32 inverse values.
+      // This avoids extra rounding from a multiplied Float32 relative matrix.
+      xx=m[0]*(s[0]+s[12])+m[4]*(s[1]+s[13])+m[12];xy=m[1]*(s[0]+s[12])+m[5]*(s[1]+s[13])+m[13];
+      yx=m[0]*(s[4]+s[12])+m[4]*(s[5]+s[13])+m[12];yy=m[1]*(s[4]+s[12])+m[5]*(s[5]+s[13])+m[13];ready=true;
+    }
+  }catch(ignored){}
+  if(!ready){var o=point(source,main),x=point(source,main,1,0),y=point(source,main,0,1);ox=o.x;oy=o.y;xx=x.x;xy=x.y;yx=y.x;yy=y.y;}
+  var a=xx-ox,b=xy-oy,c=yx-ox,d=yy-oy,scale=Math.sqrt(a*a+b*b);
+  var value={x:ox,y:oy,a:a,b:b,c:c,d:d,angle:Math.atan2(b,a)*180/Math.PI,scaleX:scale,scaleY:scale?(a*d-b*c)/scale:0};
+  if(cache)cache.transforms.set(source,value);return value;
 }
+
 function transform(source, target, main, offset, cache) {
   var value=nodeTransform(source,main,cache);
   target.setPosition(value.x - (offset ? offset.x : 0), value.y - (offset ? offset.y : 0));
@@ -682,8 +756,13 @@ function refreshBuildingSources(object) {
   if (object.capture) { object.capture.active = false; object.capture.destroy(); object.capture = null; object.visuals = null; }
 }
 
-function surfaceGeometry(source, main, slot, cache) {
-  var attachment=slot.getAttachment(),vertices=[];
+function surfaceOrder(source,cache) {
+  var skeleton=source._skeleton,orders=cache&&(cache.surfaceOrders||(cache.surfaceOrders=new Map())),saved=orders&&orders.get(source);
+  if(saved&&saved.skeleton===skeleton)return saved.order;
+  var order=skeleton.drawOrder;if(orders)orders.set(source,{skeleton:skeleton,order:order});return order;
+}
+function surfaceGeometry(source, main, slot, cache, attachment) {
+  var vertices=[];attachment=attachment||slot.getAttachment();
   if (!attachment || slot.color.a<=0 || slot.bone.active===false) return null;
   if (attachment.worldVerticesLength===8 && attachment.computeWorldVertices) attachment.computeWorldVertices(slot,0,8,vertices,0,2);
   else if (!attachment.worldVerticesLength && attachment.computeWorldVertices) attachment.computeWorldVertices(slot.bone,vertices,0,2);
@@ -718,9 +797,11 @@ function gateLeaves(source, main, cache) {
   var level = /^cq-rts-([123])$/.exec(skeleton.skin && skeleton.skin.name), spec = level && json.wallDoor.tiers[Number(level[1]) - 1];
   if (!spec || !spec.hinges) return [];
   updatePose(source, cache);
-  return skeleton.drawOrder.reduce(function (all, slot) {
-    var attachment = slot.getAttachment(), name = attachment && attachment.name, state, image, start, end, crop = 0;
-    if (!attachment || slot.color.a <= 0 || !/^rts_wall_leaf_/.test(slot.data.name)) return all;
+  return surfaceOrder(source,cache).reduce(function (all, slot, index) {
+    var attachment=slot.getAttachment(),state,image,start,end,crop=0;
+    if(!attachment)return all;
+    var key=slot.data.name;if(!/^rts_wall_leaf_/.test(key)||slot.color.a<=0)return all;
+    var name=attachment.name;
     var open = /^rts_door_(inward|outward)_(near|far)$/.exec(name), closed = /^rts_door_closed(?:_(near|far))?$/.exec(name);
     if (open) {
       state = spec.states[open[1]];image = state && state.parts && state.parts.find(function (part) { return part.id === open[2]; });
@@ -734,8 +815,8 @@ function gateLeaves(source, main, cache) {
       start.y = left.y + (start.x-left.x)*(right.y-left.y)/(right.x-left.x);end.y = left.y + (end.x-left.x)*(right.y-left.y)/(right.x-left.x);
       if (closed[1]) { crop = closed[1] === "far" ? 260 : 0;image = { width:closed[1] === "far" ? 252 : 260, height:image.height }; }
     } else return all;
-    var geometry=surfaceGeometry(source,main,slot,cache);if(!geometry)return all;
-    all.push({source:source,slot:slot,attachment:attachment,kind:"door",vertices:geometry.vertices,box:geometry.box,start:geometry.pixel(start,image.width,image.height,crop),end:geometry.pixel(end,image.width,image.height,crop),order:skeleton.drawOrder.indexOf(slot)});return all;
+    var geometry=surfaceGeometry(source,main,slot,cache,attachment);if(!geometry)return all;
+    all.push({source:source,slot:slot,key:key,attachment:attachment,kind:"door",vertices:geometry.vertices,box:geometry.box,start:geometry.pixel(start,image.width,image.height,crop),end:geometry.pixel(end,image.width,image.height,crop),order:index});return all;
   }, []);
 }
 var nativeWallAssembly;
@@ -746,12 +827,12 @@ function wallSurfaces(source, main, cache) {
   var definitions={},regions=kit.layers&&kit.layers.regions;
   Object.keys(kit.sizes).forEach(function(path){var m=/^rts_wall_(post|top|right|corner)_([123])$/.exec(path);if(m){var alias=regions&&regions[path]?regions[path].body:path;definitions[alias]={kind:m[1],level:Number(m[2]),size:kit.sizes[path]};}});
   updatePose(source,cache);
-  return skeleton.drawOrder.reduce(function(all,slot,index){
-    if(!/^rts_wall_part_\d+$/.test(slot.data.name))return all;
-    var attachment=slot.getAttachment(),definition=attachment&&definitions[attachment.path],geometry=definition&&surfaceGeometry(source,main,slot,cache);
+  return surfaceOrder(source,cache).reduce(function(all,slot,index){
+    var key=slot.data.name;if(!/^rts_wall_part_\d+$/.test(key))return all;
+    var attachment=slot.getAttachment(),definition=attachment&&definitions[attachment.path],geometry=definition&&surfaceGeometry(source,main,slot,cache,attachment);
     if(!geometry)return all;
     var floor=nativeWallAssembly.groundProfile(definition.kind,definition.level,definition.size).map(function(p){return geometry.pixel(p,definition.size[0],definition.size[1]);});
-    all.push({source:source,slot:slot,attachment:attachment,kind:"wall",vertices:geometry.vertices,box:geometry.box,floor:floor,start:floor[0],end:floor[floor.length-1],order:index});return all;
+    all.push({source:source,slot:slot,key:key,attachment:attachment,kind:"wall",vertices:geometry.vertices,box:geometry.box,floor:floor,start:floor[0],end:floor[floor.length-1],order:index});return all;
   },[]);
 }
 function behindGate(leaf, feet) {
@@ -930,7 +1011,7 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
     });
   });
   active.forEach(function (entry) {
-    var actor=entry.actor,feet=point(actor.node,view.main),hits=[],mismatch=false,base=actor.node.zIndex;
+    var actor=entry.actor,feet=point(actor.node,view.main,0,0,cache),hits=[],mismatch=false,base=actor.node.zIndex;
     // Avoid skinning units unless their feet/body could be near a wall module.
     if (!surfaces.some(function(surface){return behindGate(surface,feet)||actor.node.zIndex<surface.root.zIndex;})) return;
     if (!entry.sources) {
@@ -951,12 +1032,15 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
     usedActors.add(actor);
     intersections.push({actor:actor,entry:entry,record:body,sources:entry.sources,bounds:entry.bounds,hits:hits,base:base});
   });
-  // The first ordinary camera settles pending native poses once. All remaining
-  // simple NPC bodies can share packed captures without changing wall masks,
+  // Settle pending poses once through middleware when the battle scope owns
+  // the draw, or through its original first camera. Bodies can share captures
+  // without changing wall masks,
   // actor order, animation rate or any gameplay nodes.
   function captureBody(item){if(self.actorAtlas)self.actorAtlas.forget(item.record);view.snapshotActor(item.record,item.sources,item.bounds,4);item.record.draw=draw;}
   if(self.actorAtlas){
     var scope=view._nativeCaptureScope;
+    if(intersections.length&&scope&&scope.prepare&&scope.prepare()===null)return;
+    if(view._destroyed)return;
     if(intersections.length&&scope&&!scope.first)captureBody(intersections[0]);
     self.actorAtlas.capture(intersections,draw);
     if(view._destroyed)return;
@@ -965,8 +1049,8 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
   intersections.forEach(function(item){item.hits.forEach(function(hit){
     var surface=hit.surface,records=self.leaves.get(surface.source);
     if(!records){records=new Map();self.leaves.set(surface.source,records);}
-    var record=records.get(surface.slot.data.name);
-    if(!record){record={overlays:new Map()};records.set(surface.slot.data.name,record);}
+    var record=records.get(surface.key);
+    if(!record){record={overlays:new Map()};records.set(surface.key,record);}
     hit.captureRecord=record;record.draw=draw;
     if(!usedSurfaces.has(record)){self.captureLeaf(record,surface);usedSurfaces.add(record);surfaceRecords.push(record);}
   });});
@@ -1040,6 +1124,7 @@ function DepthView(game) {
   this.nativeCapture = !!(cc.sys && cc.sys.isNative);
   this.captureSupported = !this.nativeCapture;
   this.nativeActors = new Map();
+  this._nativeActorAtlas = null;
   this.gateOcclusion = new GateOcclusion(this);
   this.capture = new cc.Node("OcclusionCapture");
   this.capture.active = false;
@@ -1297,6 +1382,7 @@ DepthView.prototype.renderNative = function (sources, center, height, texture, a
     // Both actor capture styles use original RGBA before their overlay shader.
     // Explicit false selects full-color wall reconstruction; omitted arguments
     // belong to building/leaf captures and retain their individual cameras.
+    if(scope&&scope.prepare&&scope.prepare()===null)return;
     if(actorMask!==undefined)try{batch=nativeActorGroups(active,scope);}catch(error){batch=null;}
     (batch?batch.groups:active.map(function(source){return [source];})).forEach(function(group){
       var combined=group.length>1,root=combined?batch.root:group[0].node;
@@ -1313,6 +1399,7 @@ DepthView.prototype.syncNativeMask = function (mask, entry, object, drawId) {
   if (!record) { record = {}; this.nativeActors.set(actor, record); }
   if (record.draw !== drawId) {
     // Reuse one capture per hidden actor across every overlapping wall/tree.
+    if(this._nativeActorAtlas)this._nativeActorAtlas.forget(record);
     this.snapshotActor(record, entry.sources, box);
     record.draw = drawId;
   }
@@ -1345,7 +1432,7 @@ DepthView.prototype.update = function () {
   this.sort();
   if (this.captureSupported === false) return;
   var captureScope=this.nativeCapture?new NativeCaptureScope(this):null;
-  if(captureScope)this._nativeCaptureScope=captureScope;
+  if(captureScope){captureScope._sceneRepairOwner=this;this._nativeCaptureScope=captureScope;}
   try {
   var self = this, game = this.game, visible = viewBounds(game, this.main), draw = [];
   var cache = { transforms: new Map(), bounds: new Map(), poses: new Set() };
@@ -1361,11 +1448,21 @@ DepthView.prototype.update = function () {
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));
   this.objects.forEach(function (object) {
     refreshBuildingSources(object);
-    var box = object.node.activeInHierarchy ? object.sources.reduce(function (value, source) { return union(value, bounds(source, self.main,cache)); }, null) : null;
-    var ground = point(object.node._depthGround || object.node, self.main).y;
-    var hidden=[];
-    // Modular doors and wall posts use per-surface depth and tint below.
+    // Modular doors/posts already resolve exact per-surface geometry below.
     var modular=self.gateOcclusion&&object.sources.some(function(source){return source.skeletonData&&source.skeletonData.skeletonJson&&source.skeletonData.skeletonJson.wallKit;});
+    var perSurfaceOnly=modular&&self.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&typeof sp.Skeleton==="function"&&object.sources.length>0&&object.sources.every(function(source){
+      return source instanceof sp.Skeleton&&source._skeleton&&typeof source._skeleton.updateWorldTransform==="function"&&source._nativeSkeleton&&typeof source._nativeSkeleton.getBoundingBox==="function"&&source.skeletonData&&source.skeletonData.skeletonJson&&source.skeletonData.skeletonJson.wallKit;
+    });
+    var box=null;
+    if(object.node.activeInHierarchy){
+      if(perSurfaceOnly){
+        // Retain the original early world-pose settlement, but not the unused
+        // whole-skeleton native bounds query. Mixed/unknown groups stay exact.
+        object.sources.forEach(function(source){if(source.node.activeInHierarchy&&source.enabled)updatePose(source,cache);});
+      }else box=object.sources.reduce(function(value,source){return union(value,bounds(source,self.main,cache));},null);
+    }
+    var ground=point(object.node._depthGround||object.node,self.main).y;
+    var hidden=[];
     if(!modular&&box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
       // Priority layers can put the full actor above an object even when its
       // ground point is behind it. Such actors need no hidden-unit capture.
@@ -1391,9 +1488,39 @@ DepthView.prototype.update = function () {
   });
   this._vertexConsumers = cache.vertexConsumers;
   try {
-    draw.forEach(function (item) {
+    var firstSnapshot=false;
+    if(this.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"){
+      if(draw.length===1){
+        // Preserve the first building's signature/capture before zero-time
+        // actor callbacks, exactly as in the individual silhouette path.
+        this.snapshot(draw[0].object,draw[0].box,cache);firstSnapshot=true;
+        if(this._destroyed)return;
+        if(!this._nativeActorAtlas)this._nativeActorAtlas=require("NativeActorAtlas").create(this,releaseCapture);
+      if(this._nativeActorAtlas){
+        var ordinaryAtlas=this._nativeActorAtlas,requests=[],requested=new Set();
+        draw.forEach(function(item){item.hidden.forEach(function(entry){
+          if(requested.has(entry.actor))return;requested.add(entry.actor);
+          var record=self.nativeActors.get(entry.actor);if(!record){record={};self.nativeActors.set(entry.actor,record);}
+          requests.push({actor:entry.actor,sources:entry.sources,bounds:entry.bounds,record:record});
+        });});
+        if(requests.length&&captureScope&&captureScope.prepare&&captureScope.prepare()===null)return;
+        if(this._destroyed||this._nativeActorAtlas!==ordinaryAtlas)return;
+        // Unsupported middleware keeps the original unchanged first camera.
+        if(requests.length&&captureScope&&!captureScope.first){
+          var first=requests[0];this._nativeActorAtlas.forget(first.record);
+          this.snapshotActor(first.record,first.sources,first.bounds);first.record.draw=nativeDraw;
+        }
+        // A fallback camera may exit the view or replace its atlas.
+        if(this._destroyed||this._nativeActorAtlas!==ordinaryAtlas)return;
+        // Ordinary silhouettes retain unsnapped one-world-texel sampling.
+        this._nativeActorAtlas.capture(requests,nativeDraw,1);
+        if(this._destroyed)return;
+      }
+      }else if(this._nativeActorAtlas)this._nativeActorAtlas.capture([],nativeDraw,1);
+    }
+    draw.forEach(function (item,index) {
       var object = item.object, box = item.box, hidden = item.hidden;
-      self.snapshot(object, box,cache);
+      if(index||!firstSnapshot)self.snapshot(object, box,cache);
       hidden.forEach(function (entry) {
         var mask = object.masks.get(entry.actor) || self.makeMask(object, entry.actor, entry.sources);
         mask.node.active = true;
@@ -1423,6 +1550,7 @@ DepthView.prototype.update = function () {
   }
   if (this.nativeCapture) this.nativeActors.forEach(function (record, actor) {
     if (cc.isValid(actor.node) && activeActors.has(actor)) return;
+    if(self._nativeActorAtlas)self._nativeActorAtlas.forget(record);
     releaseCapture(record);
     self.nativeActors.delete(actor);
   });
@@ -1439,6 +1567,8 @@ DepthView.prototype.destroy = function () {
   this._destroyed = true;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
   if(this.gateOcclusion)this.gateOcclusion.destroy();
+  if(this._nativeActorAtlas)this._nativeActorAtlas.dispose();
+  this._nativeActorAtlas=null;
   this.objects.forEach(function (object) {
     if (object.masks) object.masks.forEach(releaseOverlay);
     if (object.overlay && cc.isValid(object.overlay.node, true)) releaseOverlay(object.overlay);

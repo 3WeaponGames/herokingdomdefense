@@ -2,7 +2,8 @@
 // Native orchestration, projection, ownership and fallback contracts. No game,
 // preview, renderer/audio process, scene data or player save is opened.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const filename=path.resolve(__dirname,'../../assets/_script/NativeActorAtlas.js'),source=fs.readFileSync(filename,'utf8');
+const projectRoot=process.env.HKD_TEST_PROJECT_ROOT||path.resolve(__dirname,'../..');
+const filename=process.env.HKD_NATIVE_ACTOR_ATLAS_SOURCE||path.join(projectRoot,'assets/_script/NativeActorAtlas.js'),source=fs.readFileSync(filename,'utf8');
 const creatorEngine=process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function fixture(count=8){
@@ -156,7 +157,7 @@ test('unsupported hosts keep the original capture API without allocating an atla
 });
 
 test('production gate integration settles once, shares NPC captures, keeps per-surface tints and releases them on retirement',()=>{
-  const f=fixture(8),api={},depthSource=fs.readFileSync(path.resolve(__dirname,'../../assets/_script/KinghtFallDepthView.js'),'utf8'),maskEvents=[];
+  const f=fixture(8),api={},depthSource=fs.readFileSync(path.join(projectRoot,'assets/_script/KinghtFallDepthView.js'),'utf8'),maskEvents=[];
   const destroy=f.Node.prototype.destroy;f.Node.prototype.destroy=function(){maskEvents.push(['destroy',this]);return destroy.call(this);};
   vm.runInNewContext(depthSource,{cc:f.cc,sp:{Skeleton:f.Skeleton},exports:api,require(name){if(name==='NativeOcclusionMaskCache')return{sync(mask){maskEvents.push(['sync',mask]);},dispose(mask){maskEvents.push(['dispose',mask]);}};assert.equal(name,'NativeActorAtlas');return f.api;}});
   const wallNode=new f.Node('wall',f.view.main);wallNode.zIndex=10;
@@ -175,7 +176,7 @@ test('production gate integration settles once, shares NPC captures, keeps per-s
 });
 
 test('stable overlay arrival order performs no sibling writes after final z sort, while crossings and same-z arrivals preserve painter order',()=>{
-  const context=vm.createContext({cc:{},sp:{},exports:{}});vm.runInContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/KinghtFallDepthView.js'),'utf8'),context);const order=vm.runInContext('orderOverlays',context);
+  const context=vm.createContext({cc:{},sp:{},exports:{}});vm.runInContext(fs.readFileSync(path.join(projectRoot,'assets/_script/KinghtFallDepthView.js'),'utf8'),context);const order=vm.runInContext('orderOverlays',context);
   let writes=0;const main={children:[],get childrenCount(){return this.children.length;}};
   function node(name,z){const n={name,zIndex:z,setSiblingIndex(index){writes++;const list=main.children;list.splice(list.indexOf(this),1);list.splice(index,0,this);}};main.children.push(n);return n;}
   const lower=node('ordinary lower actor',0),rear=node('rear restoration',2),front=node('foreground wall',2),tint=node('hidden tint',2),upper=node('ordinary upper actor',4),next=node('next actor',6),nextTint=node('next tint',6);
@@ -205,4 +206,104 @@ test('installed Creator SpriteFrame and SimpleSpriteAssembler give atlas masks t
   assert.equal(f.atlas.capture(f.items,1),33);
   for(const item of f.items){const record=item.record,rect=record.frame.getRect(),texture=new f.Texture();texture.initWithSize(rect.width,rect.height);const original=new EngineFrame(texture);assert.deepEqual({...record.frame.getOriginalSize()},{width:rect.width,height:rect.height});assert.deepEqual({...record.frame.getOffset()},{x:0,y:0});assert.deepEqual(quad(record.frame,record.size.width,record.size.height),quad(original,record.size.width,record.size.height));original.destroy();texture.destroy();}
   const record=f.items[0].record,bad=new EngineFrame(record.frame.getTexture(),record.frame.getRect());assert.notDeepEqual(quad(bad,record.size.width,record.size.height),quad(record.frame,record.size.width,record.size.height),'The actual engine reproduces the full-atlas originalSize shrink if the explicit crop size is removed');bad.destroy();f.atlas.dispose();
+});
+
+// Compound render-only leaves share the same page while preserving source order.
+function compoundFixture(count=8){
+  const f=fixture(count),hero=f.items[0],root=hero.actor.node,first=hero.sources[0];
+  hero.actor.spAni=null;hero.actor.ctrPlayAni={};
+  const sources=[first];for(let i=1;i<7;i++){const node=new f.Node('hero-part'+i,root);node._trs[0]=i*1.7;node._trs[1]=i*.6;sources.push(new f.Skeleton(node));}
+  hero.sources=sources;root.children.splice(0,root.children.length,...[sources[0],sources[1],sources[2],sources[6],sources[3],sources[4],sources[5]].map(s=>s.node));
+  const render=f.view.camera.render;f.view.camera.render=function(root){const result=render.call(this,root);f.draws.at(-1).clearFlags=this.clearFlags;return result;};
+  function allSnapshot(){return f.items.map(item=>({root:Array.from(item.actor.node._trs),sources:item.sources.map(s=>({trs:Array.from(s.node._trs),mask:s.node._cullingMask,native:s.node.nativeMask,alpha:s.alpha,time:s.time,paused:s.paused}))}));}
+  return Object.assign(f,{hero,allSnapshot});
+}
+
+
+test('compound source-order runs share NPC pages while preserving paint order and clearing COLOR only once',()=>{
+  const f=compoundFixture(),before=f.allSnapshot(),camera=f.cameraSnapshot();assert.equal(f.atlas.capture(f.items,1),8);assert.equal(f.atlas.stats().pages,1);assert.equal(f.draws.length,2);
+  const heroDraws=f.draws.map(draw=>draw.selected.filter(s=>f.hero.sources.includes(s)));assert.deepEqual(heroDraws.flat(),f.hero.sources);assert.equal(heroDraws[0].length,6);assert.equal(heroDraws[1].length,1);
+  assert.equal(f.draws[0].clearFlags,7);assert.equal(f.draws[1].clearFlags,6,'Later source-order runs preserve every existing tile color');
+  for(const draw of f.draws){const indices=draw.selected.filter(s=>f.hero.sources.includes(s)).map(s=>f.hero.actor.node.children.indexOf(s.node));assert(indices.every((v,i)=>!i||v>indices[i-1]));}
+  assert(f.items.slice(1).every(item=>f.draws[0].selected.includes(item.sources[0])&&!f.draws[1].selected.includes(item.sources[0])));
+  assert.deepEqual(f.allSnapshot(),before);assert.deepEqual(f.cameraSnapshot(),camera);assert(f.events.every(node=>node===f.view.cameraNode));f.atlas.dispose();
+});
+
+test('every compound leaf keeps the exact shared tile projection under transformed/flipped parents and restores its source TRS/mask',()=>{
+  const f=compoundFixture(5),parent=f.hero.actor.node;parent.angle=-31;parent._trs[7]=-1.4;parent._trs[8]=.7;
+  f.hero.sources.forEach((source,i)=>{source.node.angle=i*17;source.node._trs[7]=.6+i*.1;source.node._trs[8]=1.2-i*.05;});
+  const before=f.allSnapshot(),origins=f.hero.sources.map(s=>f.view.main.convertToNodeSpaceAR(s.node.convertToWorldSpaceAR({x:0,y:0})));
+  assert.equal(f.atlas.capture(f.items,1),5);const record=f.hero.record,rect=record.frame.rect,scale=rect.height/record.size.height;
+  for(const draw of f.draws)for(const captured of draw.sources){const i=f.hero.sources.indexOf(captured.source);if(i<0)continue;const expected={x:rect.x+rect.width/2+(origins[i].x-record.center.x)*scale,y:rect.y+rect.height/2+(origins[i].y-record.center.y)*scale};assert(Math.abs(captured.origin.x-expected.x)<1e-7);assert(Math.abs(captured.origin.y-expected.y)<1e-7);}
+  assert.deepEqual(f.allSnapshot(),before);f.atlas.dispose();
+});
+
+for(const reason of ['dirty child order','foreign parent','extra component','nested child','cached part','unsupported native part','mask ancestor','3D actor','duplicate source'])test(reason+' retains the existing individual compound path without moving its leaves',()=>{
+  const f=compoundFixture(),hero=f.hero,node=hero.sources[3].node;
+  if(reason==='dirty child order')hero.actor.node._reorderChildDirty=true;
+  if(reason==='foreign parent')node.parent=f.items[1].actor.node;
+  if(reason==='extra component')node._components.push({physics:true});
+  if(reason==='nested child')new f.Node('child',node);
+  if(reason==='cached part')hero.sources[3].cached=true;
+  if(reason==='unsupported native part')hero.sources[3].unsupported=true;
+  if(reason==='mask ancestor')hero.actor.node._renderComponent=new f.Mask();
+  if(reason==='3D actor')hero.actor.node.is3DNode=true;
+  if(reason==='duplicate source')hero.sources.push(hero.sources[3]);
+  const before=f.allSnapshot();assert.equal(f.atlas.capture(f.items,1),7);assert(!hero.record.frame);assert.deepEqual(f.allSnapshot(),before);f.atlas.dispose();
+});
+
+test('second compound pass failure restores every part and rejects the unfinished shared page before individual fallback',()=>{
+  const f=compoundFixture(),before=f.allSnapshot(),camera=f.cameraSnapshot();f.failAt(2);assert.equal(f.atlas.capture(f.items,1),0);assert(f.atlas.disabled);assert.deepEqual(f.allSnapshot(),before);assert.deepEqual(f.cameraSnapshot(),camera);assert(f.items.every(item=>!item.record.frame));assert(f.textures.every(texture=>texture.dead));f.atlas.dispose();
+});
+
+test('all animated compound parts recapture each frame without allocating new pages/crop frames or emitting source events',()=>{
+  const f=compoundFixture();let first;
+  for(let draw=1;draw<=120;draw++){f.hero.sources.forEach((s,i)=>{s.time+=1/60;s.node._trs[1]=3+Math.sin(draw+i);});const before=f.allSnapshot();assert.equal(f.atlas.capture(f.items,draw),8);assert.deepEqual(f.allSnapshot(),before);if(!first)first=f.hero.record.frame;else assert.equal(f.hero.record.frame,first);}
+  assert.equal(f.textures.length,1);assert.equal(f.frames.length,8);assert.equal(f.draws.length,240);assert(f.events.every(node=>node===f.view.cameraNode));f.atlas.dispose();
+});
+
+// Native child order is temporary; JS arrival order and callbacks remain owned by the game.
+function nativeOrderFixture(){
+ const f=compoundFixture(),root=f.hero.actor.node;
+ f.cc.RenderFlow.FLAG_REORDER_CHILDREN=1<<29;root._proxy._dirtyPtr=root._dirtyPtr;
+ root.children.forEach((node,index)=>{node._localZOrder=index+600;node._proxy._zOrderPtr=new Int32Array([node._localZOrder]);});
+ const nativeChildren=root.children.slice(),jsChildren=root.children.slice(),render=f.view.camera.render,orders=[];
+ function sortNative(){if(root._dirtyPtr[0]&f.cc.RenderFlow.FLAG_REORDER_CHILDREN){nativeChildren.sort((a,b)=>a._proxy._zOrderPtr[0]-b._proxy._zOrderPtr[0]);root._dirtyPtr[0]&=~f.cc.RenderFlow.FLAG_REORDER_CHILDREN;}}
+ f.view.camera.render=function(node){sortNative();orders.push(nativeChildren.filter(n=>n._cullingMask===(1<<30)).map(n=>n._renderComponent));return render.call(this,node);};
+ function orderSnapshot(){return root.children.map(node=>({node,js:node._localZOrder,native:node._proxy._zOrderPtr[0]}));}
+ return Object.assign(f,{root,nativeChildren,jsChildren,orders,sortNative,orderSnapshot});
+}
+
+
+test('strict native words capture all hero parts and NPCs in one page/pass without changing JS child order or arrival words',()=>{
+ const f=nativeOrderFixture(),before=f.allSnapshot(),order=f.orderSnapshot();assert.equal(f.atlas.capture(f.items,1),8);assert.equal(f.draws.length,1);assert.deepEqual(f.orders[0],f.hero.sources);
+ assert.deepEqual(f.root.children,f.jsChildren);assert.deepEqual(f.orderSnapshot(),order);assert.deepEqual(f.allSnapshot(),before);
+ assert(f.root._dirtyPtr[0]&f.cc.RenderFlow.FLAG_REORDER_CHILDREN,'Restoration schedules the exact original native child order before main render');
+ f.sortNative();assert.deepEqual(f.nativeChildren,f.jsChildren);assert(f.events.every(node=>node===f.view.cameraNode));f.atlas.dispose();
+});
+
+for(const kind of ['missing word','float word','foreign JS arrival','duplicate native words','unknown parent dirty ABI'])test(kind+' retains the two-run source-order fallback',()=>{
+ const f=nativeOrderFixture(),node=f.hero.sources[3].node;
+ if(kind==='missing word')node._proxy._zOrderPtr=null;
+ if(kind==='float word')node._proxy._zOrderPtr=new Float32Array([node._localZOrder]);
+ if(kind==='foreign JS arrival')node._localZOrder++;
+ if(kind==='duplicate native words'){node._localZOrder=f.hero.sources[2].node._localZOrder;node._proxy._zOrderPtr[0]=node._localZOrder;}
+ if(kind==='unknown parent dirty ABI')f.root._proxy._dirtyPtr=new Uint32Array(1);
+ assert.equal(f.atlas.capture(f.items,1),8);assert.equal(f.draws.length,2);assert.deepEqual(f.orders.flat(),f.hero.sources);f.atlas.dispose();
+});
+
+test('native camera failure restores each exact order word and marks parent reorder before any fallback can draw',()=>{
+ const f=nativeOrderFixture(),before=f.orderSnapshot(),trs=f.allSnapshot();f.failAt(1);assert.equal(f.atlas.capture(f.items,1),0);assert.deepEqual(f.orderSnapshot(),before);assert.deepEqual(f.allSnapshot(),trs);assert(f.root._dirtyPtr[0]&f.cc.RenderFlow.FLAG_REORDER_CHILDREN);f.sortNative();assert.deepEqual(f.nativeChildren,f.jsChildren);f.atlas.dispose();
+});
+
+test('legitimate order mutation during a callback is preserved and rejects the temporary capture instead of publishing wrong pixels',()=>{
+ const f=nativeOrderFixture(),render=f.view.camera.render,node=f.hero.sources[3].node,word=node._proxy._zOrderPtr;
+ f.view.camera.render=function(root){const result=render.call(this,root);node._localZOrder=word[0]=800;return result;};
+ assert.equal(f.atlas.capture(f.items,1),0);assert.equal(node._localZOrder,800);assert.equal(word[0],800);assert(f.atlas.disabled);assert(f.items.every(item=>!item.record.frame));f.atlas.dispose();
+});
+
+test('a callback arrival word equal to the temporary native word is still preserved rather than overwritten by restoration',()=>{
+ const f=nativeOrderFixture(),render=f.view.camera.render,node=f.hero.sources[3].node,word=node._proxy._zOrderPtr;let callbackWord;
+ f.view.camera.render=function(root){const result=render.call(this,root);callbackWord=word[0];node._localZOrder=callbackWord;return result;};
+ assert.equal(f.atlas.capture(f.items,1),0);assert.equal(node._localZOrder,callbackWord);assert.equal(word[0],callbackWord);assert(f.atlas.disabled);assert(f.items.every(item=>!item.record.frame));f.atlas.dispose();
 });

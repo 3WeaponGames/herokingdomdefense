@@ -3,35 +3,39 @@
 // Keep each gate paint layer and blend. Native quads can share texture pairs;
 // unsupported quads use the uniform shader or the original image stencil.
 var owners=new WeakMap();
+var FrameType=cc.SpriteFrame,frameProto=FrameType&&FrameType.prototype;
+var rectGetter=frameProto&&frameProto.getRect,sizeGetter=frameProto&&frameProto.getOriginalSize,offsetGetter=frameProto&&frameProto.getOffset;
+function standardFrame(frame){try{return !!(cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&FrameType&&cc.SpriteFrame===FrameType&&frame instanceof FrameType&&frame.constructor===FrameType&&frame.getRect===rectGetter&&frame.getOriginalSize===sizeGetter&&frame.getOffset===offsetGetter&&frame._rect&&frame._originalSize&&frame._offset);}catch(ignored){return false;}}
+
 function valid(value){return !!value&&cc.isValid(value);}
 function supported(view){return !!(view&&view.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&cc.Material&&cc.EffectAsset&&cc.resources&&cc.resources.load);}
-function uv(frame){
-  var p=frame&&frame.uv;
-  if(!p||p.length!==8||!Array.prototype.every.call(p,Number.isFinite)||p[0]!==p[4]||p[2]!==p[6]||p[1]!==p[3]||p[5]!==p[7]||p[0]===p[2]||p[1]===p[5])return null;
-  return{l:p[0],b:p[1],r:p[2],t:p[5]};
+function uv(frame,out){
+  var p=frame&&frame.uv;if(!p||p.length!==8)return null;
+  for(var i=0;i<8;i++)if(!Number.isFinite(p[i]))return null;
+  if(p[0]!==p[4]||p[2]!==p[6]||p[1]!==p[3]||p[5]!==p[7]||p[0]===p[2]||p[1]===p[5])return null;
+  out=out||{};out.l=p[0];out.b=p[1];out.r=p[2];out.t=p[5];return out;
 }
-function opacity(node){
-  var chain=[],value=255;for(var n=node;n;n=n.parent)chain.push(n);
-  // Match native float32 inheritance and byte vertex alpha independently of
-  // the paint child's color/opacity, which remain in the vertex color.
-  for(var i=chain.length-1;i>=0;i--)value=Math.fround(Math.fround(value*chain[i].opacity)/255);
+function opacity(node,chain){
+  chain=chain||[];var count=0,value=255;for(var n=node;n;n=n.parent)chain[count++]=n;
+  for(var i=count-1;i>=0;i--)value=Math.fround(Math.fround(value*chain[i].opacity)/255);
   return Math.max(0,Math.min(255,Math.floor(value)))/255;
 }
-function mapping(mask,paint,mu,pu){
+function mapping(mask,paint,mu,pu,out){
   var x=(mu.r-mu.l)*paint.width/mask.width/(pu.r-pu.l),y=(mu.t-mu.b)*paint.height/mask.height/(pu.t-pu.b);
-  return[x,y,mu.l+(paint.x-paint.width/2+mask.width/2)/mask.width*(mu.r-mu.l)-pu.l*x,mu.b+(paint.y-paint.height/2+mask.height/2)/mask.height*(mu.t-mu.b)-pu.b*y];
+  out=out||[0,0,0,0];out[0]=x;out[1]=y;out[2]=mu.l+(paint.x-paint.width/2+mask.width/2)/mask.width*(mu.r-mu.l)-pu.l*x;out[3]=mu.b+(paint.y-paint.height/2+mask.height/2)/mask.height*(mu.t-mu.b)-pu.b*y;return out;
 }
 function plain(node){return node.anchorX===.5&&node.anchorY===.5&&!node.angle&&node.scaleX===1&&node.scaleY===1&&!node.skewX&&!node.skewY;}
 function fullFrame(frame){
-  // Mask.trim is undefined, so its real quad includes originalSize/offset.
-  var r=frame&&frame.getRect&&frame.getRect(),s=frame&&frame.getOriginalSize&&frame.getOriginalSize(),o=frame&&frame.getOffset&&frame.getOffset();
+  var direct=frame&&standardFrame(frame),r=direct?frame._rect:frame&&frame.getRect&&frame.getRect(),s=direct?frame._originalSize:frame&&frame.getOriginalSize&&frame.getOriginalSize(),o=direct?frame._offset:frame&&frame.getOffset&&frame.getOffset();
   return !!r&&!!s&&!!o&&r.width===s.width&&r.height===s.height&&!o.x&&!o.y;
 }
 function set(state,name,value,vector){
   var old=state.values[name],same=old===value;
-  if(vector)same=old&&old.length===value.length&&old.every(function(v,i){return v===value[i];});
+  if(vector){same=!!old&&old.length===value.length;for(var i=0;same&&i<value.length;i++)if(old[i]!==value[i])same=false;}
   if(same)return;
-  state.material.setProperty(name,vector?new cc.Vec4(value[0],value[1],value[2],value[3]):value);state.values[name]=value;
+  state.material.setProperty(name,vector?new cc.Vec4(value[0],value[1],value[2],value[3]):value);
+  if(vector){var saved=old;if(!saved||saved===value||saved.length!==value.length)saved=[0,0,0,0];for(i=0;i<value.length;i++)saved[i]=value[i];state.values[name]=saved;}
+  else state.values[name]=value;
 }
 function clear(state,name){state.values[name]=null;if(valid(state.material)&&state.material._owner===state.sprite)state.material.setProperty(name,null);}
 function releaseOwned(material,sprite){
@@ -70,32 +74,37 @@ function load(controller,batch){
   try{cc.resources.load(batch?"GateOverlayBatch":"GateOverlayClip",cc.EffectAsset,loaded);}catch(error){loaded(error);}
 }
 function Controller(view){
-  this.view=view;this.states=new Set();this.overlays=new WeakMap();this.effect=this.base=this.batchEffect=this.batchBase=null;
+  this.view=view;this.states=new Set();this.overlays=new WeakMap();this.scratch=new WeakMap();this.effect=this.base=this.batchEffect=this.batchBase=null;
   this.effectRetained=this.batchRetained=this.disposed=this.failed=this.batchFailed=false;this.token=this.batchToken=null;this.quadApi=null;this.batchRejected=new WeakSet();
   try{var api=require("NativeGateQuad");if(api&&typeof api.create==="function")this.quadApi=api;}catch(ignored){}
   load(this,false);if(this.quadApi&&!this.disposed)load(this,true);
 }
-function describe(overlay,old){
+function scratch(){
+  var s={mu:{l:0,b:0,r:0,t:0},pu:{l:0,b:0,r:0,t:0},map:[0,0,0,0],rect:[0,0,0,0],paint:[0,0,0,0,0,0,0,0],mask:[0,0,0,0,0,0,0,0],clip:[0,0,0,0,0,0,0,0],chain:[],pair:{wall:null,body:null,role:false},data:{},d:{},busy:false};s.d.scratch=s;return s;
+}
+function describe(overlay,old,s){
   var mask=overlay&&overlay.mask,sprite=overlay&&overlay.sprite;
   if(!valid(mask)||!valid(sprite)||!valid(mask.node)||!valid(sprite.node))return null;
-  var mn=mask.node,pn=sprite.node,mf=mask.spriteFrame,pf=sprite.spriteFrame,mu=uv(mf),pu=uv(pf),alpha=opacity(mn);
+  var mn=mask.node,pn=sprite.node,mf=mask.spriteFrame,pf=sprite.spriteFrame,mu=uv(mf,s.mu),pu=uv(pf,s.pu),alpha=opacity(mn,s.chain);
   if(!mu||!pu||!fullFrame(mf)||!fullFrame(pf)||!old&&!mask.enabled||mask.inverted||mn.width<=0||mn.height<=0||pn.parent!==mn||!plain(mn)||!plain(pn)||!isFinite(alpha))return null;
-  return{mask:mask,sprite:sprite,mn:mn,pn:pn,mf:mf,pf:pf,mu:mu,pu:pu,alpha:alpha};
+  var d=s.d;d.mask=mask;d.sprite=sprite;d.mn=mn;d.pn=pn;d.mf=mf;d.pf=pf;d.mu=mu;d.pu=pu;d.alpha=alpha;return d;
 }
 function canonical(d,info){
   if(!info||!info.wall||!info.body)return null;
   var wall=info.wall.frame,body=info.body.frame,role=!!info.paintIsActor;
   if(!wall||!body||d.mf!==(role?wall:body)||d.pf!==(role?body:wall))return null;
-  var wt=wall.getTexture(),bt=body.getTexture();return valid(wt)&&valid(bt)?{wall:wt,body:bt,role:role}:null;
+  var wt=wall.getTexture(),bt=body.getTexture();if(!valid(wt)||!valid(bt))return null;
+  var pair=d.scratch.pair;pair.wall=wt;pair.body=bt;pair.role=role;return pair;
 }
 function vertices(d,pair){
-  var map=mapping(d.mn,d.pn,d.mu,d.pu),paint=[d.pu.l,d.pu.b,d.pu.r,d.pu.b,d.pu.l,d.pu.t,d.pu.r,d.pu.t],mask=[],clip=[];
+  var s=d.scratch,map=mapping(d.mn,d.pn,d.mu,d.pu,s.map),paint=s.paint,mask=s.mask,clip=s.clip;
+  paint[0]=paint[4]=d.pu.l;paint[2]=paint[6]=d.pu.r;paint[1]=paint[3]=d.pu.b;paint[5]=paint[7]=d.pu.t;
   for(var i=0;i<4;i++){
-    var u=paint[i*2],v=paint[i*2+1],x=i%2,y=i>1?1:0;
-    mask.push(u*map[0]+map[2],v*map[1]+map[3]);
-    clip.push((d.pn.x+(x-.5)*d.pn.width)/d.mn.width+.5,(d.pn.y+(y-.5)*d.pn.height)/d.mn.height+.5);
+    var j=i*2,u=paint[j],v=paint[j+1],x=i%2,y=i>1?1:0;
+    mask[j]=u*map[0]+map[2];mask[j+1]=v*map[1]+map[3];
+    clip[j]=(d.pn.x+(x-.5)*d.pn.width)/d.mn.width+.5;clip[j+1]=(d.pn.y+(y-.5)*d.pn.height)/d.mn.height+.5;
   }
-  return{wallUV:pair.role?mask:paint,actorUV:pair.role?paint:mask,clipXY:clip,maskOpacity:d.alpha,alphaThreshold:d.mask.alphaThreshold,paintIsActor:pair.role?1:0};
+  var data=s.data;data.wallUV=pair.role?mask:paint;data.actorUV=pair.role?paint:mask;data.clipXY=clip;data.maskOpacity=d.alpha;data.alphaThreshold=d.mask.alphaThreshold;data.paintIsActor=pair.role?1:0;return data;
 }
 function apply(controller,overlay,d,state,pair){
   var batch=!!pair,sprite=d.sprite,quad=null,original=null;
@@ -114,8 +123,8 @@ function apply(controller,overlay,d,state,pair){
       set(state,"texture",pair.wall);set(state,"maskTexture",pair.body);
       if(!state.quad.update(vertices(d,pair))){controller.batchRejected.add(sprite);retire(state);return false;}
     }else{
-      set(state,"texture",d.pf.getTexture());set(state,"maskTexture",d.mf.getTexture());set(state,"maskMap",mapping(d.mn,d.pn,d.mu,d.pu),true);
-      set(state,"maskRect",[Math.min(d.mu.l,d.mu.r),Math.min(d.mu.b,d.mu.t),Math.max(d.mu.l,d.mu.r),Math.max(d.mu.b,d.mu.t)],true);
+      set(state,"texture",d.pf.getTexture());set(state,"maskTexture",d.mf.getTexture());set(state,"maskMap",mapping(d.mn,d.pn,d.mu,d.pu,d.scratch.map),true);
+      var rectangle=d.scratch.rect;rectangle[0]=Math.min(d.mu.l,d.mu.r);rectangle[1]=Math.min(d.mu.b,d.mu.t);rectangle[2]=Math.max(d.mu.l,d.mu.r);rectangle[3]=Math.max(d.mu.b,d.mu.t);set(state,"maskRect",rectangle,true);
       set(state,"maskOpacity",d.alpha);set(state,"alphaThreshold",d.mask.alphaThreshold);
     }
     return true;
@@ -128,22 +137,25 @@ Controller.prototype.sync=function(overlay,info){
   var old=this.overlays.get(overlay),mask=overlay&&overlay.mask,sprite=overlay&&overlay.sprite;
   if(old&&(old.mask!==mask||old.sprite!==sprite||old.maskNode!==mask.node||old.spriteNode!==sprite.node||sprite.getMaterial(0)!==old.material||old.quad&&!old.quad.owns())){retire(old);old=null;}
   if(this.disposed){if(old)retire(old);return false;}
-  var d=describe(overlay,old);if(!d){if(old)retire(old);return false;}
-  var pair=this.batchBase&&!this.batchFailed&&this.quadApi&&!this.batchRejected.has(sprite)?canonical(d,info):null;
-  if(pair){
-    if(old&&!old.batch){retire(old);old=null;}
-    if(apply(this,overlay,d,old,pair))return true;
-    old=null;
-  }else if(old&&old.batch){retire(old);old=null;}
-  if(this.failed||!this.base){if(old)retire(old);return false;}
-  return apply(this,overlay,d,old,null);
+  if(!overlay||(typeof overlay!=="object"&&typeof overlay!=="function"))return false;
+  var s=this.scratch.get(overlay);if(!s){s=scratch();this.scratch.set(overlay,s);}if(s.busy)s=scratch();s.busy=true;
+  try{
+    var d=describe(overlay,old,s);if(!d){if(old)retire(old);return false;}
+    var pair=this.batchBase&&!this.batchFailed&&this.quadApi&&!this.batchRejected.has(sprite)?canonical(d,info):null;
+    if(pair){if(old&&!old.batch){retire(old);old=null;}if(apply(this,overlay,d,old,pair))return true;old=null;}
+    else if(old&&old.batch){retire(old);old=null;}
+    if(this.failed||!this.base){if(old)retire(old);return false;}
+    return apply(this,overlay,d,old,null);
+  }finally{
+    s.d.mask=s.d.sprite=s.d.mn=s.d.pn=s.d.mf=s.d.pf=null;s.pair.wall=s.pair.body=null;for(var i=0;i<s.chain.length;i++)s.chain[i]=null;s.busy=false;
+  }
 };
 Controller.prototype.prune=function(){this.states.forEach(function(state){if(!valid(state.mask)||!valid(state.maskNode)||!valid(state.sprite)||!valid(state.spriteNode)||state.overlay.mask!==state.mask||state.overlay.sprite!==state.sprite||state.mask.node!==state.maskNode||state.sprite.node!==state.spriteNode||state.quad&&!state.quad.owns())retire(state);});};
 Controller.prototype.dispose=function(){
   if(this.disposed)return;this.disposed=true;this.token=this.batchToken=null;this.states.forEach(retire);
   if(this.base)this.base.destroy();if(this.batchBase)this.batchBase.destroy();
   if(this.effectRetained&&this.effect&&this.effect.decRef)this.effect.decRef();if(this.batchRetained&&this.batchEffect&&this.batchEffect.decRef)this.batchEffect.decRef();
-  this.effectRetained=this.batchRetained=false;this.base=this.effect=this.batchBase=this.batchEffect=this.quadApi=this.view=null;
+  this.effectRetained=this.batchRetained=false;this.base=this.effect=this.batchBase=this.batchEffect=this.quadApi=this.view=this.scratch=null;
 };
 exports.create=function(view){return supported(view)?new Controller(view):null;};
 exports.unbind=function(renderer){
