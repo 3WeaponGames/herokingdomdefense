@@ -8923,7 +8923,7 @@
       },
       "depth": "world",
       "defaultScale": 0.8611988028663334,
-      "sha256": "31e89d78180e8b36c4f180d26b11c6339f065e38a540f571087b3380c8afab90",
+      "sha256": "e622d5cc0cd641fb327b67d0eeff1934a4f61a07e9e6c0610de2b56c75f7d8a9",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -8941,10 +8941,33 @@
         },
         "outlineRefinement": {
           "kind": "openai-imagegen",
-          "date": "2026-11-12",
-          "reference": "Tree Yellow Green 15",
+          "date": "2026-11-16",
+          "reference": "Map01 east and west hillpaths",
           "worldStroke": 1.8
         }
+      },
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
       }
     },
     {

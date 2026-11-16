@@ -29,6 +29,180 @@
   },
   "layers": [
     {
+      "id": "layer-9",
+      "name": "Pines behind terrain",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-9",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": -901.31,
+          "y": -410.041,
+          "scale": 1.0350822721002624,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -220.853,
+          "y": -916.369,
+          "scale": 0.8623633229639381,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -87.261,
+          "y": -1268.516,
+          "scale": 1.0490821438492277,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": -177.016,
+          "y": -1186.099,
+          "scale": 0.871610297684092,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -791.149,
+          "y": -488.524,
+          "scale": 0.9578110988903791,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -127.856,
+          "y": -863.532,
+          "scale": 0.9712050623260439,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -99.322,
+          "y": -1152.596,
+          "scale": 0.9342901583970524,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -844.65,
+          "y": -441.258,
+          "scale": 0.8817500234791078,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -129.697,
+          "y": -963.971,
+          "scale": 1.0293139115558005,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": -49.565,
+          "y": -1205.405,
+          "scale": 0.8549688076251186,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        }
+      ],
+      "blockers": []
+    },
+    {
       "id": "layer-5",
       "name": "Northwest Snowbank",
       "depth": "ground",
@@ -259,10 +433,6246 @@
         }
       ],
       "blockers": []
+    },
+    {
+      "id": "layer-10",
+      "name": "Snow woodland",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-19",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": -575.202,
+          "y": 1316.546,
+          "scale": 1.0616795066185296,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": -380.288,
+          "y": 1179.608,
+          "scale": 1.090267465324141,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": -318.29,
+          "y": 1088.875,
+          "scale": 1.1598896298930048,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": 380.765,
+          "y": 1332.111,
+          "scale": 1.0937799181928858,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 681.642,
+          "y": 1355.208,
+          "scale": 0.8714140072604641,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": 444.147,
+          "y": 1004.09,
+          "scale": 1.064112308123149,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -855.926,
+          "y": 353.1,
+          "scale": 1.0602694177208467,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": -868.803,
+          "y": 196.867,
+          "scale": 0.9335105430707336,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -800.949,
+          "y": -303.586,
+          "scale": 1.0306449127756059,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": -748.93,
+          "y": -891.866,
+          "scale": 1.088534917347133,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": -843.113,
+          "y": -1280.146,
+          "scale": 0.9065970465214923,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": -88.758,
+          "y": -759.718,
+          "scale": 1.0355131430923938,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -275.597,
+          "y": -1138.349,
+          "scale": 1.0190422980953007,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": -72.264,
+          "y": -1447.616,
+          "scale": 0.8623831592639908,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": 811.25,
+          "y": 639.013,
+          "scale": 0.8931283347913995,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": 624.909,
+          "y": -1414.968,
+          "scale": 1.1545094264345241,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-8711e413efb7123498a150757ac50b0b",
+          "name": "Tree Snow Green 5",
+          "x": -473.001,
+          "y": 1094.505,
+          "scale": 0.9985096199810505,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 610.341,
+          "y": 1401.573,
+          "scale": 1.0156957772932946,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": -759.989,
+          "y": 63.715,
+          "scale": 1.1072259824397042,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -805.976,
+          "y": -202.893,
+          "scale": 0.9365005116816609,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": -774.457,
+          "y": -1215.159,
+          "scale": 0.9392116954689845,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": -225.265,
+          "y": -789.215,
+          "scale": 0.9498236882872879,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -183.285,
+          "y": -1075.141,
+          "scale": 1.1187621388258413,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -219.49,
+          "y": -1329.353,
+          "scale": 1.0298156987782567,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": -724.581,
+          "y": 1438.535,
+          "scale": 0.8830409856885671,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": 480.489,
+          "y": 1266.583,
+          "scale": 1.0716236779373138,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 663.592,
+          "y": 1208.271,
+          "scale": 1.090732176755555,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": 572.626,
+          "y": 1039.767,
+          "scale": 0.9879850392369554,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": -825.144,
+          "y": 469.783,
+          "scale": 1.1450813486613334,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -737.264,
+          "y": -166.603,
+          "scale": 1.1375235918583346,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 424.634,
+          "y": 1236.016,
+          "scale": 1.0253248883783816,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": 532.259,
+          "y": 1088.811,
+          "scale": 1.040794264213182,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -792.147,
+          "y": -988.29,
+          "scale": 0.8812707850849256,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -116.988,
+          "y": -690.365,
+          "scale": 0.8994906776258722,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 182.355,
+          "y": -1482.132,
+          "scale": 0.9545305149303749,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": -486.82,
+          "y": 1291.863,
+          "scale": 0.9853013876266777,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": 645.003,
+          "y": 1466.09,
+          "scale": 0.9265721003664658,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-8711e413efb7123498a150757ac50b0b",
+          "name": "Tree Snow Green 5",
+          "x": 601.796,
+          "y": 1161.431,
+          "scale": 1.071507008690387,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": -810.295,
+          "y": 408.642,
+          "scale": 1.0576924314862117,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -878.755,
+          "y": 66.964,
+          "scale": 0.9308634754642844,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -890.974,
+          "y": -919.348,
+          "scale": 1.037599804266356,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -305.596,
+          "y": -889.627,
+          "scale": 1.1244122089026496,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": -177.426,
+          "y": -1456.508,
+          "scale": 0.9753148425742983,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": 39.341,
+          "y": -1393.102,
+          "scale": 0.9861792864417657,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 797.179,
+          "y": -239.703,
+          "scale": 1.018773988694884,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": -784.616,
+          "y": 1464.265,
+          "scale": 0.9664442562870681,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -561.48,
+          "y": 1237.993,
+          "scale": 1.110741610233672,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-8711e413efb7123498a150757ac50b0b",
+          "name": "Tree Snow Green 5",
+          "x": 530.37,
+          "y": 1358.862,
+          "scale": 0.9150526804057881,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -114.601,
+          "y": -1338.358,
+          "scale": 1.0275778613891453,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": 889.669,
+          "y": -260.613,
+          "scale": 0.9623417136631905,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -799.823,
+          "y": 145.257,
+          "scale": 0.8612790814973413,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -893.107,
+          "y": -169.55,
+          "scale": 0.9454763734852895,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -760.185,
+          "y": -555.845,
+          "scale": 1.0638121255580335,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": 878.115,
+          "y": 633.554,
+          "scale": 0.8894163025915622,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": 890.806,
+          "y": -169.349,
+          "scale": 0.9008031790982931,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -398.706,
+          "y": 1118.149,
+          "scale": 0.9562350143352523,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -875.805,
+          "y": -240.311,
+          "scale": 0.8825327113410458,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -10.886,
+          "y": -1462.705,
+          "scale": 1.0545967130828648,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": 584.499,
+          "y": -1489.626,
+          "scale": 1.0455685899034142,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": -199.211,
+          "y": 1090.93,
+          "scale": 1.0476593518536537,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": -228.322,
+          "y": -854.023,
+          "scale": 1.1497741817170755,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": 154.047,
+          "y": -1420.153,
+          "scale": 1.0848565439367666,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": -647.261,
+          "y": 1335.86,
+          "scale": 1.1041849800525232,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -83.161,
+          "y": -635.227,
+          "scale": 0.8645973028987646,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": 11.228,
+          "y": -753.742,
+          "scale": 1.0610941015789286,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -257.361,
+          "y": -1064.203,
+          "scale": 0.879184109591879,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": 406.27,
+          "y": 1083.57,
+          "scale": 1.021200842889957,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -733.16,
+          "y": 132.873,
+          "scale": 1.136019988162443,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -828.317,
+          "y": -141.26,
+          "scale": 1.1282573786238208,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": 854.25,
+          "y": 701.538,
+          "scale": 0.9754536758083849,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": 451.511,
+          "y": 1325.411,
+          "scale": 0.8654826970910653,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 711.014,
+          "y": 1420.22,
+          "scale": 1.1567259644297883,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": 340.135,
+          "y": 1235.6,
+          "scale": 1.0336343048606067,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -895.487,
+          "y": 443.381,
+          "scale": 1.1410344804520718,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -861.01,
+          "y": -331.098,
+          "scale": 1.0582616926170885,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -880.015,
+          "y": -1364.184,
+          "scale": 0.9367175167775713,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": 700.137,
+          "y": -1150.453,
+          "scale": 0.9224387708003633,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -858.422,
+          "y": 1446.821,
+          "scale": 0.947799380205106,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -373.606,
+          "y": 1045.107,
+          "scale": 0.9139466120745056,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": -901.01,
+          "y": -1232.58,
+          "scale": 1.0606480122427455,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -162.831,
+          "y": -755.671,
+          "scale": 1.0052700299187562,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": -231.575,
+          "y": -1425.9,
+          "scale": 1.0015049379202536,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": 622.293,
+          "y": 1299.746,
+          "scale": 1.0993586173630319,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": -737.839,
+          "y": 428.542,
+          "scale": 1.1272112392820417,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": 506.425,
+          "y": 1416.738,
+          "scale": 1.062226200045552,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -842.153,
+          "y": -853.306,
+          "scale": 1.0094042022014036,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -332.629,
+          "y": -1100.985,
+          "scale": 0.9366690733353608,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -161.924,
+          "y": -1297.112,
+          "scale": 1.0599840999697334,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-107",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": 550.01,
+          "y": 1291.435,
+          "scale": 0.9275534552056343,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": 634.05,
+          "y": 1068.578,
+          "scale": 1.1484381101676262,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": 555.702,
+          "y": 950.529,
+          "scale": 0.9619047654909082,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -729.731,
+          "y": -653.576,
+          "scale": 1.0435323210898786,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": -330.612,
+          "y": -827.699,
+          "scale": 1.0851022913469932,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": 87.408,
+          "y": -1441.112,
+          "scale": 1.1068567014648578,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -856.536,
+          "y": -1168.702,
+          "scale": 0.9625279786181636,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": -898.393,
+          "y": 132.253,
+          "scale": 0.9832985960296355,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": -537.879,
+          "y": 1104.76,
+          "scale": 1.1144480806891806,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": -687.439,
+          "y": -939.661,
+          "scale": 1.0101271733059547,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": 290.509,
+          "y": 1302.238,
+          "scale": 1.0798960562446154,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -708.333,
+          "y": -250.919,
+          "scale": 1.0407137198839336,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-3bfffa93008c46345966a42a702e20c0",
+          "name": "Tree Snow Bare LightBrown 7",
+          "x": 404.275,
+          "y": 955.602,
+          "scale": 1.005727899495978,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-3bfffa93008c46345966a42a702e20c0",
+          "name": "Tree Snow Bare LightBrown 7",
+          "x": 607.477,
+          "y": -1338.15,
+          "scale": 0.7843404258764349,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": -25.414,
+          "y": -813.485,
+          "scale": 0.8845782912033611,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": -473.514,
+          "y": 1226.819,
+          "scale": 1.024237500994932,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-123",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": -39.801,
+          "y": -706.629,
+          "scale": 0.8328864405979403,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": -339.634,
+          "y": 991.85,
+          "scale": 0.8583941601938568,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": 458.8,
+          "y": 1125.569,
+          "scale": 0.9262252369034104,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": -4.757,
+          "y": -633.143,
+          "scale": 0.9570200007827953,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-127",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": 354.522,
+          "y": 1392.648,
+          "scale": 0.8787427330599167,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": -858.126,
+          "y": -1005.792,
+          "scale": 1.0357085839170033,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-3bfffa93008c46345966a42a702e20c0",
+          "name": "Tree Snow Bare LightBrown 7",
+          "x": -550.599,
+          "y": 1388.076,
+          "scale": 0.8475793490465731,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": -806.21,
+          "y": -1334.603,
+          "scale": 0.9607371116685681,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-3bfffa93008c46345966a42a702e20c0",
+          "name": "Tree Snow Bare LightBrown 7",
+          "x": -305.753,
+          "y": 1167.819,
+          "scale": 0.9290291110659019,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": 358.862,
+          "y": 1030.256,
+          "scale": 1.0089370356174185,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": -110.073,
+          "y": -1061.572,
+          "scale": 1.0498703949898482,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-3bfffa93008c46345966a42a702e20c0",
+          "name": "Tree Snow Bare LightBrown 7",
+          "x": -624.417,
+          "y": 1268.841,
+          "scale": 0.9577256080624648,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": -493.09,
+          "y": 1163.025,
+          "scale": 0.9749170711543411,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "layer-11",
+      "name": "Snow bushes and ground detail",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-136",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -769.107,
+          "y": 1384.989,
+          "scale": 1.1474140090635045,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -517.68,
+          "y": 1325.974,
+          "scale": 0.9595126423286274,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -566.483,
+          "y": 1099.229,
+          "scale": 1.0673875563545152,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-139",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -232.394,
+          "y": 995.417,
+          "scale": 1.0934258897323161,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 461.934,
+          "y": 1193.923,
+          "scale": 0.9116430168505758,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-141",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 734.963,
+          "y": 1411.994,
+          "scale": 1.1099196213064715,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-142",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": 566.938,
+          "y": 1151.794,
+          "scale": 1.0878380316775291,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-143",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 536.53,
+          "y": 1009.866,
+          "scale": 1.1137240598676725,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-144",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -868.607,
+          "y": -4.92,
+          "scale": 0.9629579629283398,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-145",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -774.905,
+          "y": -160.636,
+          "scale": 1.1612769471947104,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-146",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -735.541,
+          "y": -670.056,
+          "scale": 1.0849377539707348,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-147",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -796.972,
+          "y": -815.787,
+          "scale": 1.0665207722922787,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-148",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -52.073,
+          "y": -770.582,
+          "scale": 1.1984942910494283,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-149",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -342.771,
+          "y": -871.437,
+          "scale": 0.9369390511186794,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-150",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -304.428,
+          "y": -1168.351,
+          "scale": 0.9676567156333477,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-151",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -119.415,
+          "y": -1359.312,
+          "scale": 1.0162814338691533,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-152",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": 213.759,
+          "y": -1443.959,
+          "scale": 0.9893869822612033,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-153",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 897.384,
+          "y": 543.537,
+          "scale": 0.95050245069433,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-154",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -542.423,
+          "y": 1425.942,
+          "scale": 0.9207397002959624,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-155",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -366.148,
+          "y": 1046.501,
+          "scale": 1.1725656960625201,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-156",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -326.603,
+          "y": 929.964,
+          "scale": 1.121371695608832,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-157",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 416.56,
+          "y": 1338.695,
+          "scale": 1.114255879330449,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-158",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 383.538,
+          "y": 949.254,
+          "scale": 1.0075729343807325,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-159",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -734.074,
+          "y": 434.242,
+          "scale": 1.178612118260935,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-160",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -875.908,
+          "y": 184,
+          "scale": 0.9910521488869563,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-161",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -802.923,
+          "y": -173.532,
+          "scale": 1.1512976139318198,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-162",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -747.034,
+          "y": -1322.252,
+          "scale": 1.171239276160486,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-163",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 12.761,
+          "y": -830.124,
+          "scale": 1.1772192949661986,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-164",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -188.855,
+          "y": -1209.822,
+          "scale": 1.1716785553609952,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-165",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -18.454,
+          "y": -1450.315,
+          "scale": 1.0082738595781848,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-166",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -57.197,
+          "y": -1393.842,
+          "scale": 0.931704205297865,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-167",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 861.668,
+          "y": 1184.634,
+          "scale": 1.133859939384274,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-168",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 891.218,
+          "y": 697.595,
+          "scale": 0.907992947800085,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-169",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 895.582,
+          "y": -262.418,
+          "scale": 1.0455663569737226,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-170",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 551.281,
+          "y": -1393.08,
+          "scale": 1.1443784887203947,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-171",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -795.549,
+          "y": 1365.891,
+          "scale": 1.130725216283463,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-172",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -542.151,
+          "y": 1190.334,
+          "scale": 0.901591963833198,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-173",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -435.715,
+          "y": 1219.211,
+          "scale": 1.1638990325387568,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-174",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -405.973,
+          "y": 988.904,
+          "scale": 1.0650948232971131,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-175",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 483.293,
+          "y": 1437.363,
+          "scale": 0.918734795297496,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-176",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 665.863,
+          "y": 1296.088,
+          "scale": 1.1380165286595,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-177",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 346.007,
+          "y": 1067.962,
+          "scale": 1.0106880438281223,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-178",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -712.206,
+          "y": 123.86,
+          "scale": 1.0728058779146523,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-179",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -789.08,
+          "y": -957.248,
+          "scale": 0.9242684651166201,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-180",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -827.393,
+          "y": -1249.543,
+          "scale": 0.9718861498637125,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-181",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -179.47,
+          "y": -711.836,
+          "scale": 0.9105008802143857,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-182",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -301.951,
+          "y": -827.186,
+          "scale": 1.09471657758113,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-183",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -276.515,
+          "y": -1178.063,
+          "scale": 0.9038857947802171,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-184",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -14.217,
+          "y": -1370.623,
+          "scale": 1.1280761158559471,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-185",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 642.859,
+          "y": -1361.803,
+          "scale": 0.9113515027798712,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-186",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -708.795,
+          "y": 1298.614,
+          "scale": 1.0540685664396734,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-187",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -557.085,
+          "y": 1280.369,
+          "scale": 1.0128634034190327,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-188",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -301.797,
+          "y": 1176.085,
+          "scale": 1.0333804341964423,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-189",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -174.72,
+          "y": 1014.469,
+          "scale": 1.0808697887230665,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-190",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": 392.306,
+          "y": 1390.97,
+          "scale": 1.078245284431614,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-191",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 640.686,
+          "y": 1269.229,
+          "scale": 0.9144341811770573,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-192",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 599.95,
+          "y": 1171.432,
+          "scale": 0.9297810771502555,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-193",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": 593.666,
+          "y": 1095.476,
+          "scale": 1.1610870009753853,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-194",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -844.714,
+          "y": 93.652,
+          "scale": 1.0546426341170445,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-195",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -698.295,
+          "y": -267.239,
+          "scale": 0.982844051043503,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-196",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -819.804,
+          "y": -935.525,
+          "scale": 1.0533442842308431,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-197",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -821.634,
+          "y": -1359.482,
+          "scale": 1.0435050004860387,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-198",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -4.23,
+          "y": -713.85,
+          "scale": 1.1048595461295918,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-199",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -378.856,
+          "y": -858.855,
+          "scale": 1.0224450656678528,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-200",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -752.382,
+          "y": 1327.447,
+          "scale": 0.7326547475019469,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-201",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -356.249,
+          "y": 1203.116,
+          "scale": 0.7729108863486909,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-202",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -294.434,
+          "y": 1065.585,
+          "scale": 0.7301593832904473,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-203",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 277.357,
+          "y": 1243.068,
+          "scale": 0.9395266003953293,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-204",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 681.61,
+          "y": 1355.918,
+          "scale": 0.7999744336819277,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-205",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": 602.026,
+          "y": 1148.635,
+          "scale": 0.7913932832982391,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-206",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": 319.921,
+          "y": 1016.215,
+          "scale": 0.7872277653054334,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-207",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -863.636,
+          "y": 192.449,
+          "scale": 0.8134463724377565,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-208",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -884.66,
+          "y": -924.399,
+          "scale": 0.7753738003643229,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-209",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -113.02,
+          "y": -853.268,
+          "scale": 0.9408039629040286,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-210",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -178.673,
+          "y": -934.602,
+          "scale": 0.8039417075249367,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-211",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -152.722,
+          "y": -1145.104,
+          "scale": 0.8828535739146173,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-212",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -105.404,
+          "y": -1393.918,
+          "scale": 0.7462186312582344,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-213",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": 104.122,
+          "y": -1375.958,
+          "scale": 0.8565173147781753,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-214",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": 660.614,
+          "y": -1345.403,
+          "scale": 0.782736744666472,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-215",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -665.633,
+          "y": 1427.157,
+          "scale": 0.7925857846043073,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-216",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -477.186,
+          "y": 1009.069,
+          "scale": 0.869496155634988,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-217",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -235.449,
+          "y": 1109.397,
+          "scale": 0.924646218828857,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-218",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 371.099,
+          "y": 1292.481,
+          "scale": 0.7592794741666875,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-219",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": 523.919,
+          "y": 1426.036,
+          "scale": 0.9775225538760424,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-220",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 571.816,
+          "y": 1225.844,
+          "scale": 0.9206390043091961,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-221",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": 355.1,
+          "y": 950.538,
+          "scale": 0.9711162399128079,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-222",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -778.978,
+          "y": 427.44,
+          "scale": 0.8033005585125648,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-223",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -677.441,
+          "y": -255.069,
+          "scale": 0.7886004220903851,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-224",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -708.923,
+          "y": -667.223,
+          "scale": 0.9772133316099644,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-225",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -768.836,
+          "y": -895.123,
+          "scale": 0.9274750610673801,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-226",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -709.365,
+          "y": -1281.516,
+          "scale": 0.8305476047610864,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-227",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": 98.936,
+          "y": -742.015,
+          "scale": 0.9615076208277605,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-228",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -211.224,
+          "y": -851.869,
+          "scale": 0.8596284058992751,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-229",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -260.845,
+          "y": -1191.899,
+          "scale": 0.7743602148955687,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-230",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -176.835,
+          "y": -1370.488,
+          "scale": 0.7700663601164706,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-231",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": 768.334,
+          "y": 1144.652,
+          "scale": 0.8572581084142439,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-232",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": 689.147,
+          "y": -1089.577,
+          "scale": 0.8032872650586068,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-233",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -852.394,
+          "y": 1478.005,
+          "scale": 0.7979916953737848,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-234",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -500.971,
+          "y": 1326.699,
+          "scale": 0.8560068572871387,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-235",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -577.807,
+          "y": 1079.499,
+          "scale": 0.8055353035661392,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-236",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -296.523,
+          "y": 1022.392,
+          "scale": 0.93781200860627,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-237",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": 434.73,
+          "y": 1337.795,
+          "scale": 0.8683395507652313,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-238",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 669.19,
+          "y": 1484.627,
+          "scale": 1.0072883070004173,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-239",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 356.247,
+          "y": 1130.132,
+          "scale": 1.010410347597208,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-240",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -857.483,
+          "y": -97.586,
+          "scale": 0.80191820288077,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-241",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -856.172,
+          "y": -979.472,
+          "scale": 0.7853712052828632,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-242",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -794.225,
+          "y": -1321.084,
+          "scale": 0.7622385406983084,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-243",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": 38.76,
+          "y": -737.25,
+          "scale": 0.7275672254618257,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-244",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -248.171,
+          "y": -854.343,
+          "scale": 0.8774151855963283,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-245",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -205.426,
+          "y": -994.14,
+          "scale": 0.984166483632289,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-246",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -279.836,
+          "y": -1466.256,
+          "scale": 0.8632296061492525,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-247",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": 904.478,
+          "y": 1055.957,
+          "scale": 0.7456288062804378,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-248",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 879.69,
+          "y": 530.567,
+          "scale": 0.8064423036016524,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-249",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -635.039,
+          "y": 1345.581,
+          "scale": 0.8743140732287429,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-250",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -556.822,
+          "y": 1193.533,
+          "scale": 0.7338263404788449,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-251",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -197.473,
+          "y": 1115.781,
+          "scale": 0.999257742566988,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-252",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": 586.808,
+          "y": 1337.098,
+          "scale": 0.9692054162593559,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-253",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": 719.348,
+          "y": 1397.215,
+          "scale": 0.9033673377893865,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-254",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -455.229,
+          "y": 1371.842,
+          "scale": 1.3487905090791175,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-255",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -547.678,
+          "y": 1123.072,
+          "scale": 1.1507281570695342,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-256",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -279.775,
+          "y": 936.515,
+          "scale": 1.2484498147736305,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-257",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 538.196,
+          "y": 1272.671,
+          "scale": 0.9501465928391554,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-258",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 774.641,
+          "y": 1304.203,
+          "scale": 1.16349741385784,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-259",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 583.511,
+          "y": 999.604,
+          "scale": 1.1151055137743242,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-260",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 584.034,
+          "y": 903.627,
+          "scale": 1.2631336273276248,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-261",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -742.228,
+          "y": 11.615,
+          "scale": 1.3003431197488682,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-262",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -921.306,
+          "y": -93.297,
+          "scale": 0.9235980780562386,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-263",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -744.089,
+          "y": -685.944,
+          "scale": 1.056518055999186,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-264",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -858.621,
+          "y": -781.951,
+          "scale": 1.3081569195259364,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-265",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -651.295,
+          "y": -1242.324,
+          "scale": 1.0281124050496147,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-266",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -232.038,
+          "y": -724.904,
+          "scale": 1.2716458327369766,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-267",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -259.038,
+          "y": -710.981,
+          "scale": 0.9506393392570317,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-268",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -118.209,
+          "y": -1243.943,
+          "scale": 1.242772022006102,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-269",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -158.944,
+          "y": -1304.308,
+          "scale": 1.0122814659727737,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-270",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -125.254,
+          "y": -1413.918,
+          "scale": 1.0225962970987894,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-271",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 869.191,
+          "y": 1040.286,
+          "scale": 1.0658741879859008,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-272",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 843.232,
+          "y": 644.088,
+          "scale": 1.2002663029474208,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-273",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 765.845,
+          "y": -1000.712,
+          "scale": 1.2191529791336508,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-274",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 38.344,
+          "y": 668.064,
+          "scale": 0.9134604055783712,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-275",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 358.791,
+          "y": 134.331,
+          "scale": 1.1785022677620873,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-276",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 336.531,
+          "y": -307.747,
+          "scale": 1.2959410669980571,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-277",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 392.381,
+          "y": -858.766,
+          "scale": 1.2096822697785683,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-278",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -696.198,
+          "y": 1288.466,
+          "scale": 1.012115024321247,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-279",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -774.253,
+          "y": 1273.166,
+          "scale": 1.1864978045923635,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-280",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -545.253,
+          "y": 1224.596,
+          "scale": 1.0294291716534645,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-281",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -340.81,
+          "y": 933.698,
+          "scale": 1.0374638389796018,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-282",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 280.004,
+          "y": 1301.792,
+          "scale": 0.9550066430470907,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-283",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 746.794,
+          "y": 1479.422,
+          "scale": 0.9681279874406755,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-284",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 662.121,
+          "y": 1082.942,
+          "scale": 1.129498215497006,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-285",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -869.262,
+          "y": 275.425,
+          "scale": 1.2576072666328402,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-286",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -661.296,
+          "y": -245.183,
+          "scale": 1.2398508475511336,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-287",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -762.958,
+          "y": -983.602,
+          "scale": 1.0758188152802177,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-288",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -262.081,
+          "y": -750.328,
+          "scale": 0.9607281422009692,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-289",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -235.015,
+          "y": -796.514,
+          "scale": 0.9958604231011123,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-290",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -252.266,
+          "y": -974.997,
+          "scale": 1.1823417129227893,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-291",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -162.726,
+          "y": -1390.668,
+          "scale": 1.277593649982009,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-292",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 875.797,
+          "y": 683.565,
+          "scale": 0.9122179244295694,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-293",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 906.032,
+          "y": -294.114,
+          "scale": 1.0920693725463935,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-294",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 0.608,
+          "y": 666.277,
+          "scale": 1.2705043388530612,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-295",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 434.775,
+          "y": 411.039,
+          "scale": 1.090054838906508,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-296",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 231.121,
+          "y": -365.564,
+          "scale": 0.982961936853826,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-297",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 332.939,
+          "y": -827.25,
+          "scale": 1.0680785503587686,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-298",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -843.229,
+          "y": 1296.972,
+          "scale": 1.2808006798150018,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-299",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -384.761,
+          "y": 1259.704,
+          "scale": 1.3153219391475433,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-300",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -422.782,
+          "y": 1260.081,
+          "scale": 1.226210805110168,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-301",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -390.62,
+          "y": 1094.726,
+          "scale": 1.07968749149004,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-302",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 487.792,
+          "y": 1477.269,
+          "scale": 1.2057128335582092,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-303",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 670.999,
+          "y": 1354.493,
+          "scale": 1.3184573710779661,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-304",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 793.242,
+          "y": 1086.857,
+          "scale": 1.3174792135600002,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-305",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 530.515,
+          "y": 1025.501,
+          "scale": 1.1361149320844561,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-306",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -759.196,
+          "y": 405.136,
+          "scale": 1.2870180329773575,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-307",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -697.34,
+          "y": -331.148,
+          "scale": 1.248012823832687,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-308",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -744.175,
+          "y": -441.172,
+          "scale": 1.0313740514684469,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-309",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -905.634,
+          "y": -865.793,
+          "scale": 1.2080978670157494,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-310",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -204.495,
+          "y": -718.327,
+          "scale": 1.081536032538861,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-311",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -209.185,
+          "y": -837.231,
+          "scale": 0.9340224049170501,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-312",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -311.733,
+          "y": -1021.004,
+          "scale": 0.9867094606161118,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-313",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -341.735,
+          "y": -1415.347,
+          "scale": 1.310828668344766,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-314",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 521.686,
+          "y": -1475.945,
+          "scale": 0.98131057881983,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-315",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 64.223,
+          "y": 845.09,
+          "scale": 1.3420686846831815,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-316",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 384.646,
+          "y": 294.155,
+          "scale": 1.1434654914191924,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-317",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 309.912,
+          "y": -260.145,
+          "scale": 1.0128946737502702,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-318",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 252.913,
+          "y": -906.969,
+          "scale": 1.3169129622518085,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-319",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -637.522,
+          "y": 1460.412,
+          "scale": 0.9115801195381209,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-320",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -247.036,
+          "y": 1093.564,
+          "scale": 1.3437891093897634,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-321",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -352.432,
+          "y": 1031.47,
+          "scale": 1.201736949873157,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-322",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 321.783,
+          "y": 1194.088,
+          "scale": 1.1167120514670388,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-323",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 687.315,
+          "y": 1068.858,
+          "scale": 1.1274475865531715,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-324",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 607.71,
+          "y": 987.897,
+          "scale": 1.0210730628459714,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-325",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -773.509,
+          "y": 367.123,
+          "scale": 1.010583168233279,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-326",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -819.712,
+          "y": -360.596,
+          "scale": 1.169194174243603,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-327",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -56.002,
+          "y": -692.579,
+          "scale": 1.2007105890777894,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-328",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -99.086,
+          "y": -821.192,
+          "scale": 0.9493596541928128,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-329",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -116.763,
+          "y": -1064.633,
+          "scale": 0.9600424599833787,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-330",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -99.676,
+          "y": -1323.92,
+          "scale": 1.3393608301877977,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-331",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 769.551,
+          "y": 556.506,
+          "scale": 1.1170340837677941,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-332",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 871.158,
+          "y": -176.41,
+          "scale": 1.0942941482062452,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-333",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 384.486,
+          "y": 382.315,
+          "scale": 1.1699141556280666,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-334",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 85.949,
+          "y": -257.952,
+          "scale": 1.1638013668125495,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-335",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 275.864,
+          "y": -794.582,
+          "scale": 1.0186841613496653,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-336",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -753.766,
+          "y": 1482.609,
+          "scale": 1.0076494065695443,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-337",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -683.849,
+          "y": 1310.792,
+          "scale": 1.015922793012578,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-338",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -305.726,
+          "y": 1015.706,
+          "scale": 1.2221925309975632,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-339",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -263.502,
+          "y": 994.873,
+          "scale": 0.9125031421543099,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-340",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 495.74,
+          "y": 1266.838,
+          "scale": 1.1029834232060238,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-341",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 595.458,
+          "y": 1061.145,
+          "scale": 1.251348023756873,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-342",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -849.613,
+          "y": 256.588,
+          "scale": 1.2454886786523276,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-343",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -700.796,
+          "y": -797.374,
+          "scale": 1.3108857539249585,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-344",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -921.35,
+          "y": -1222.11,
+          "scale": 1.1099112831638196,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-345",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 10.161,
+          "y": -768.427,
+          "scale": 0.9671245997655206,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-346",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -176.882,
+          "y": -873.02,
+          "scale": 1.0875839348416776,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-347",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -391.284,
+          "y": -1052.327,
+          "scale": 0.9214219657354988,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-348",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -155.03,
+          "y": -1224.281,
+          "scale": 0.9247835533577018,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-349",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -35.238,
+          "y": -1495.85,
+          "scale": 1.2444640725036153,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-350",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 783.467,
+          "y": 998.771,
+          "scale": 0.9057097961311229,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-351",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 770.804,
+          "y": 512.424,
+          "scale": 1.2801958186319098,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-352",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -215.403,
+          "y": 825.743,
+          "scale": 1.2085386673221366,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-353",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 303.102,
+          "y": 436.964,
+          "scale": 0.9339795962325298,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-354",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 139.403,
+          "y": -250.976,
+          "scale": 1.2329858841374517,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-355",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 244.399,
+          "y": -971.888,
+          "scale": 1.3403344782418571,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-356",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -736.696,
+          "y": 1345.253,
+          "scale": 1.0615078776609153,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-357",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -410.579,
+          "y": 1151.362,
+          "scale": 0.9353164082625881,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-358",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -224.348,
+          "y": 1114.473,
+          "scale": 1.0438139436766505,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-359",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 520.173,
+          "y": 1189.722,
+          "scale": 1.267059493996203,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-360",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 453.248,
+          "y": 1442.405,
+          "scale": 1.131362211937085,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-361",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 604.372,
+          "y": 1180.967,
+          "scale": 1.176432988769375,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-362",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 390.843,
+          "y": 982.286,
+          "scale": 1.199607324844692,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-363",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -686.822,
+          "y": -5.962,
+          "scale": 1.3300313998013735,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-364",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -899.544,
+          "y": -183.793,
+          "scale": 1.205523598473519,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-365",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -712.858,
+          "y": -840.655,
+          "scale": 1.1744357613497414,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-366",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -134.459,
+          "y": -629.164,
+          "scale": 1.3264281951240264,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-367",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -169.486,
+          "y": -756.206,
+          "scale": 1.0618050329969264,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-368",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -160.63,
+          "y": -1249.856,
+          "scale": 1.1141361234127545,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-369",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 248.391,
+          "y": 289.927,
+          "scale": 1.3218107076594607,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-370",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 156.096,
+          "y": -139.1,
+          "scale": 0.95936542149866,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-371",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 242.269,
+          "y": -854.863,
+          "scale": 0.9881334609934129,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-372",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -644.63,
+          "y": 1219.245,
+          "scale": 1.3416296174400486,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-373",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -367.387,
+          "y": 1105.981,
+          "scale": 1.1659697922994383,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-374",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -129.017,
+          "y": 1049.354,
+          "scale": 1.307236762577668,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-375",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 540.237,
+          "y": 1354.116,
+          "scale": 1.2362331982352772,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-376",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 742.373,
+          "y": 1110.414,
+          "scale": 1.1314368458697572,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-377",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 323.577,
+          "y": 1115.837,
+          "scale": 1.3330808576080018,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-378",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -615.421,
+          "y": -926.232,
+          "scale": 1.2969711443292908,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-379",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -137.578,
+          "y": -653.961,
+          "scale": 1.0205329743912444,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-380",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -367.239,
+          "y": -759.231,
+          "scale": 1.315080517914612,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-381",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -151.182,
+          "y": -1278.896,
+          "scale": 1.06153153704945,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-382",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -140.286,
+          "y": -1329.117,
+          "scale": 0.9271806059405208,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-383",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 218.452,
+          "y": -1477.249,
+          "scale": 1.2035407984047197,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-384",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 807.062,
+          "y": 1021.814,
+          "scale": 1.2087789252516814,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-385",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 874.173,
+          "y": 519.332,
+          "scale": 1.015234249213245,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-386",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 672.802,
+          "y": -1315.124,
+          "scale": 1.3404666865244508,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-387",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -161.864,
+          "y": 688.734,
+          "scale": 1.1619270717375914,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-388",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 241.143,
+          "y": 188.05,
+          "scale": 1.2445185165270232,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-389",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 377.798,
+          "y": -373.213,
+          "scale": 1.0595667315647006,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-390",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 248.741,
+          "y": -935.614,
+          "scale": 1.2425667429110037,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-391",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -676.857,
+          "y": 1356.851,
+          "scale": 1.0145857836934737,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-392",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -513.405,
+          "y": 1101.958,
+          "scale": 0.97097993188072,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-393",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -224.551,
+          "y": 899.138,
+          "scale": 0.9203573829378001,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-394",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 371.651,
+          "y": 996.753,
+          "scale": 0.909332966816146,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-395",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -899.477,
+          "y": 14.702,
+          "scale": 1.1983525110874327,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-396",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -709.77,
+          "y": -110.381,
+          "scale": 1.2281869880855085,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-397",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -851.931,
+          "y": -871.643,
+          "scale": 1.0683114312705584,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-398",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -770.717,
+          "y": -1211.848,
+          "scale": 1.0670525785884821,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-399",
+          "assetId": "env-96b52b4b5573ebe4f9227a02dfa7b49a",
+          "name": "Snow Hole 1",
+          "x": -765.443,
+          "y": -311.475,
+          "scale": 0.7368734143208712,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-400",
+          "assetId": "env-af9d1d450d3cf54418fd566411d65152",
+          "name": "Snow Hole 2",
+          "x": -254.049,
+          "y": -1305.773,
+          "scale": 0.8141345932148396,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-401",
+          "assetId": "env-96b52b4b5573ebe4f9227a02dfa7b49a",
+          "name": "Snow Hole 1",
+          "x": -631.621,
+          "y": 1135.306,
+          "scale": 0.7729083847720175,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-402",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": -232.168,
+          "y": -1406.921,
+          "scale": 0.9096464324509725,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-403",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": -654.628,
+          "y": 1179.958,
+          "scale": 0.9104106592480093,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-404",
+          "assetId": "env-af9d1d450d3cf54418fd566411d65152",
+          "name": "Snow Hole 2",
+          "x": -693.701,
+          "y": -355.929,
+          "scale": 0.9226027450989932,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-405",
+          "assetId": "env-f6c22842b3b797240af93daa4c6c6d14",
+          "name": "Big Bone",
+          "x": -799.892,
+          "y": -780.863,
+          "scale": 0.8739412586903199,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-406",
+          "assetId": "env-6219c685c18b95442b6fd823406f05a4",
+          "name": "Ork",
+          "x": 377.835,
+          "y": 1265.184,
+          "scale": 1.029396389052272,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        }
+      ],
+      "blockers": []
     }
   ],
-  "nextObject": 9,
-  "nextLayer": 9,
+  "nextObject": 407,
+  "nextLayer": 12,
   "blockerMask": [
     [
       [
