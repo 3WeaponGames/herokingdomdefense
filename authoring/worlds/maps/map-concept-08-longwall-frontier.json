@@ -1,0 +1,5212 @@
+{
+  "version": 1,
+  "id": "map-concept-08-longwall-frontier",
+  "name": "Desert - Longwall Frontier",
+  "biome": "desert",
+  "size": {
+    "width": 1860,
+    "height": 3101
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2741
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-b48c8acfefa82784d89230d88f0642c9",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "id": "northwest-front",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -713.5425,
+              "y": 1309.92442
+            },
+            {
+              "x": -715.4582999999999,
+              "y": 1177.4962150000001
+            },
+            {
+              "x": -671.40048,
+              "y": 1047.2759219999998
+            },
+            {
+              "x": -596.69358,
+              "y": 932.5079119999999
+            },
+            {
+              "x": -573.7076999999999,
+              "y": 828.7732599999999
+            },
+            {
+              "x": -590.94804,
+              "y": 661.030867
+            },
+            {
+              "x": -596.69358,
+              "y": 473.426569
+            },
+            {
+              "x": -596.69358,
+              "y": 279.201636
+            },
+            {
+              "x": -596.69358,
+              "y": 82.76568999999998
+            },
+            {
+              "x": -589.0322399999999,
+              "y": -78.35296700000012
+            },
+            {
+              "x": -546.8902200000001,
+              "y": -206.36534800000015
+            },
+            {
+              "x": -460.69037999999995,
+              "y": -332.1698170000001
+            },
+            {
+              "x": -349.58885999999995,
+              "y": -464.598022
+            },
+            {
+              "x": -228.90833999999998,
+              "y": -610.267497
+            },
+            {
+              "x": -113.97522000000005,
+              "y": -769.1813430000001
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -910.4349940000001
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "west-inner-front",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -443.45004,
+              "y": 1100.247204
+            },
+            {
+              "x": -479.84466000000003,
+              "y": 994.3077410000001
+            },
+            {
+              "x": -539.22702,
+              "y": 921.471453
+            },
+            {
+              "x": -573.7076999999999,
+              "y": 828.7732599999999
+            },
+            {
+              "x": -590.94804,
+              "y": 661.030867
+            },
+            {
+              "x": -596.69358,
+              "y": 473.426569
+            },
+            {
+              "x": -596.69358,
+              "y": 279.201636
+            },
+            {
+              "x": -596.69358,
+              "y": 82.76568999999998
+            },
+            {
+              "x": -589.0322399999999,
+              "y": -78.35296700000012
+            },
+            {
+              "x": -546.8902200000001,
+              "y": -206.36534800000015
+            },
+            {
+              "x": -460.69037999999995,
+              "y": -332.1698170000001
+            },
+            {
+              "x": -349.58885999999995,
+              "y": -464.598022
+            },
+            {
+              "x": -228.90833999999998,
+              "y": -610.267497
+            },
+            {
+              "x": -113.97522000000005,
+              "y": -769.1813430000001
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -910.4349940000001
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "north-center-front",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -129.29976000000005,
+              "y": 1316.545055
+            },
+            {
+              "x": -135.04716000000002,
+              "y": 1179.704127
+            },
+            {
+              "x": -127.38395999999999,
+              "y": 1058.312381
+            },
+            {
+              "x": -85.24194000000001,
+              "y": 972.234823
+            },
+            {
+              "x": -22.027979999999985,
+              "y": 888.3651769999999
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 819.944713
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 619.096044
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 389.5569229999999
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 160.01470100000003
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -80.56087899999991
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -318.9285470000001
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -563.919951
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -753.7290600000001
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -910.4349940000001
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "inner-center-front",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 131.21555999999998,
+              "y": 1098.042393
+            },
+            {
+              "x": 92.90514000000005,
+              "y": 989.8919169999999
+            },
+            {
+              "x": 39.26832000000004,
+              "y": 917.05873
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 819.944713
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 619.096044
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 389.5569229999999
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 160.01470100000003
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -80.56087899999991
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -318.9285470000001
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -563.919951
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -753.7290600000001
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -910.4349940000001
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "north-east-front",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 451.11138,
+              "y": 1314.337143
+            },
+            {
+              "x": 441.53424000000007,
+              "y": 1179.704127
+            },
+            {
+              "x": 451.11138,
+              "y": 1060.520293
+            },
+            {
+              "x": 497.085,
+              "y": 958.993553
+            },
+            {
+              "x": 560.2989599999999,
+              "y": 864.087448
+            },
+            {
+              "x": 573.7076999999999,
+              "y": 813.324078
+            },
+            {
+              "x": 577.5393,
+              "y": 616.888132
+            },
+            {
+              "x": 577.5393,
+              "y": 405.0061050000001
+            },
+            {
+              "x": 577.5393,
+              "y": 193.124078
+            },
+            {
+              "x": 581.3690399999999,
+              "y": -16.55313799999986
+            },
+            {
+              "x": 566.0445,
+              "y": -148.98134299999984
+            },
+            {
+              "x": 518.1569400000001,
+              "y": -268.1651770000001
+            },
+            {
+              "x": 431.95709999999997,
+              "y": -391.76483499999995
+            },
+            {
+              "x": 332.34852,
+              "y": -530.8105740000002
+            },
+            {
+              "x": 223.1609399999999,
+              "y": -676.4800490000001
+            },
+            {
+              "x": 115.89102,
+              "y": -819.944713
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -910.4349940000001
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "inner-east-front",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 726.95124,
+              "y": 1098.042393
+            },
+            {
+              "x": 675.23208,
+              "y": 996.5125519999999
+            },
+            {
+              "x": 615.84972,
+              "y": 917.05873
+            },
+            {
+              "x": 573.7076999999999,
+              "y": 813.324078
+            },
+            {
+              "x": 577.5393,
+              "y": 616.888132
+            },
+            {
+              "x": 577.5393,
+              "y": 405.0061050000001
+            },
+            {
+              "x": 577.5393,
+              "y": 193.124078
+            },
+            {
+              "x": 581.3690399999999,
+              "y": -16.55313799999986
+            },
+            {
+              "x": 566.0445,
+              "y": -148.98134299999984
+            },
+            {
+              "x": 518.1569400000001,
+              "y": -268.1651770000001
+            },
+            {
+              "x": 431.95709999999997,
+              "y": -391.76483499999995
+            },
+            {
+              "x": 332.34852,
+              "y": -530.8105740000002
+            },
+            {
+              "x": 223.1609399999999,
+              "y": -676.4800490000001
+            },
+            {
+              "x": 115.89102,
+              "y": -819.944713
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -910.4349940000001
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    },
+    "custom": [
+      {
+        "id": "ground-1",
+        "name": "Concept terrain - Desert",
+        "transform": {
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "angle": 0
+        },
+        "opacity": 1,
+        "blend": "source-over",
+        "images": [
+          {
+            "id": "ground-image-1",
+            "assetId": "concept-terrain-08-longwall-frontier",
+            "name": "Desert - Longwall Frontier terrain",
+            "x": 0,
+            "y": 0,
+            "scale": 1.9155509783728115,
+            "angle": 0,
+            "flipX": false,
+            "opacity": 1,
+            "mask": [],
+            "depth": "ground",
+            "globalShadow": false
+          }
+        ],
+        "strokes": []
+      }
+    ],
+    "order": [
+      "foundation",
+      "ground-1",
+      "roads",
+      "grass"
+    ]
+  },
+  "layers": [
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-87",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": 785.2,
+          "y": -1165.82,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": 158.717,
+          "y": -1395.933,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": -420.924,
+          "y": 288.613,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 689.206,
+          "y": 17.466,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": -812.685,
+          "y": 957.955,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": 800.963,
+          "y": -1346.475,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": -684.705,
+          "y": 644.805,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": 805.99,
+          "y": -2.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": -755.055,
+          "y": 936.53,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 793.447,
+          "y": 634.499,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": 702.284,
+          "y": -1425.662,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": 886.818,
+          "y": -88.204,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -246.981,
+          "y": 429.684,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": 697.978,
+          "y": 361.692,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": -841.401,
+          "y": -572.641,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": -898.24,
+          "y": -1234.319,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": -704.72,
+          "y": -353.095,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -154.613,
+          "y": -185.405,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 857.057,
+          "y": -4.331,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -80.871,
+          "y": -180.325,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-107",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 865.474,
+          "y": -1365.454,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": 779.354,
+          "y": -617.848,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": -904.776,
+          "y": 406.278,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 649.755,
+          "y": -1500.503,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": -760.101,
+          "y": -98.082,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": -646.757,
+          "y": -1412.951,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": 756.374,
+          "y": 1352.859,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": 223.364,
+          "y": 1021.266,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": -792.075,
+          "y": -1116.567,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": -110.255,
+          "y": 268.113,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": -340.176,
+          "y": 338.228,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 660.546,
+          "y": 268.043,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": 838.204,
+          "y": 843.936,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": 376.879,
+          "y": 539.216,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": 96.676,
+          "y": 429.876,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": 797.848,
+          "y": -219.49,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-123",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -654.01,
+          "y": -112.864,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": 743.681,
+          "y": -1235.107,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": 663.259,
+          "y": 597.123,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": -867.376,
+          "y": -461.695,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-127",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": 315.498,
+          "y": 854.099,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": -150.717,
+          "y": -121.55,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": 906.264,
+          "y": 684.134,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": -845.188,
+          "y": 678.573,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 848.562,
+          "y": 668.349,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": 797.501,
+          "y": -1519.213,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -698.545,
+          "y": -1452.664,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": -801.676,
+          "y": 1177.142,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": -804.923,
+          "y": 1132.615,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-136",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 767.263,
+          "y": 448.773,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 859.338,
+          "y": -1440.88,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 218.512,
+          "y": 771.258,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-139",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": -819.086,
+          "y": -1289.158,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": -708.571,
+          "y": -1365.097,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-141",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": -391.416,
+          "y": 388.169,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-142",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -62.113,
+          "y": -1443.342,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-143",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": 839.15,
+          "y": 979.531,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-144",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 832.21,
+          "y": 253.523,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-145",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 794.453,
+          "y": -1392.783,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-146",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 788.602,
+          "y": 1329.502,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-147",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": 242.916,
+          "y": 558.388,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-148",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": -644.328,
+          "y": -382.984,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-149",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": 364.426,
+          "y": 629.163,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-150",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": -863.588,
+          "y": 491.729,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-151",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 699.9,
+          "y": -1274.542,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-152",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": -814.873,
+          "y": 1462.43,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-153",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": -240.055,
+          "y": -1523.472,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-154",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 359.041,
+          "y": 489.687,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-155",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 746.961,
+          "y": -1334.064,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-156",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": -479.633,
+          "y": -1478.53,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "layer-1",
+      "name": "Native Desert trees and bushes",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-2",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": -838.532,
+          "y": 1031.512,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-3",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": 847.935,
+          "y": 928.222,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": -808.143,
+          "y": -1421.53,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-5",
+          "assetId": "env-eddd2be0cd39e324195474c3f8636ea9",
+          "name": "Plam Yellow Green 3",
+          "x": -781.995,
+          "y": -421.756,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": -832.55,
+          "y": -112.053,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": 775.45,
+          "y": 534.268,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": 242.203,
+          "y": 663.146,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-12da2f9450ae93b4d83938db92b0c75e",
+          "name": "Plam Yellow Green 1",
+          "x": 844.612,
+          "y": -1491.083,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-12da2f9450ae93b4d83938db92b0c75e",
+          "name": "Plam Yellow Green 1",
+          "x": -763.597,
+          "y": 714.669,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": 718.926,
+          "y": -1492.309,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -818.707,
+          "y": -1501.992,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": 777.133,
+          "y": -1408.932,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-12da2f9450ae93b4d83938db92b0c75e",
+          "name": "Plam Yellow Green 1",
+          "x": 787.162,
+          "y": 594.057,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": 443.06,
+          "y": 464.805,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-12da2f9450ae93b4d83938db92b0c75e",
+          "name": "Plam Yellow Green 1",
+          "x": -805.537,
+          "y": 940.776,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-eddd2be0cd39e324195474c3f8636ea9",
+          "name": "Plam Yellow Green 3",
+          "x": 795.493,
+          "y": 731.993,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -806.298,
+          "y": 523.249,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": -156.288,
+          "y": 299.799,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": 829.036,
+          "y": 970.34,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-12da2f9450ae93b4d83938db92b0c75e",
+          "name": "Plam Yellow Green 1",
+          "x": 795.534,
+          "y": 448.24,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-eddd2be0cd39e324195474c3f8636ea9",
+          "name": "Plam Yellow Green 3",
+          "x": 800.222,
+          "y": -386.342,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-12da2f9450ae93b4d83938db92b0c75e",
+          "name": "Plam Yellow Green 1",
+          "x": -690.401,
+          "y": -1533.463,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": -744.254,
+          "y": -1449.323,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": -840.525,
+          "y": -476.937,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": -834.771,
+          "y": -181.005,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": -795.367,
+          "y": -254.646,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": -850.361,
+          "y": 740.907,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": 778.445,
+          "y": -20.698,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": 842.534,
+          "y": 531.78,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": 301.757,
+          "y": -144.626,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": 348.92,
+          "y": 345.946,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": 830.113,
+          "y": 649.249,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": 719.764,
+          "y": -477.848,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-eddd2be0cd39e324195474c3f8636ea9",
+          "name": "Plam Yellow Green 3",
+          "x": -404.089,
+          "y": 697.688,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "layer-2",
+      "name": "Native stones and biome details",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-37",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 749.505,
+          "y": 375.834,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -884.531,
+          "y": 923.768,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 384.776,
+          "y": 1392.784,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 753.048,
+          "y": -64.639,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 818.953,
+          "y": 628.601,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -489.5,
+          "y": 640.145,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 565.932,
+          "y": 1076.409,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 279.663,
+          "y": 989.281,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -899.449,
+          "y": 848.203,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 774.465,
+          "y": -1458.813,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -809.339,
+          "y": 1464.387,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 285.892,
+          "y": 311.539,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 398.088,
+          "y": 538.558,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -748.74,
+          "y": 1481.728,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 775.7,
+          "y": 311.028,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 834.845,
+          "y": -475.814,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 115.642,
+          "y": -322.189,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 805.467,
+          "y": -1109.561,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -830.203,
+          "y": 498.731,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 882.56,
+          "y": 895.307,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -827.687,
+          "y": 1166.014,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 870.339,
+          "y": -47.919,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 244.76,
+          "y": 335.118,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 291.062,
+          "y": 891.629,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -615.008,
+          "y": 1433.036,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -825.37,
+          "y": 639.454,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -696.061,
+          "y": -250.898,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -305.86,
+          "y": 970.772,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -782.257,
+          "y": -198.982,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -760.604,
+          "y": -422.756,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 746.546,
+          "y": -636.614,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -872.386,
+          "y": 275.143,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 805.614,
+          "y": -55.287,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -799.899,
+          "y": 1105.152,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -110.181,
+          "y": 357.192,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 700.482,
+          "y": -1366.682,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -488.098,
+          "y": -110.363,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -630.682,
+          "y": 1506.887,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -803.151,
+          "y": -1048.331,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -102.02,
+          "y": 316.029,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -841.53,
+          "y": 754.289,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 750.026,
+          "y": 673.477,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -757.965,
+          "y": -1383.401,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -139.543,
+          "y": 585.724,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -188.252,
+          "y": -1488.665,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 245.752,
+          "y": -154.267,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -868.925,
+          "y": -881.962,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 739.106,
+          "y": -204.272,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -821.929,
+          "y": 1357.942,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -141.579,
+          "y": 499.128,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "layer-3",
+      "name": "Dressing - Desert palm cactus and dune pockets",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-157",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": -848.088,
+          "y": -224.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-158",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -748.088,
+          "y": -282.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-159",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": -774.5,
+          "y": -302.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-160",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -807.5,
+          "y": -306.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-161",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": -729.5,
+          "y": -319.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-162",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -835.5,
+          "y": -323.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-163",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -830.273,
+          "y": -345.397,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-164",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": -724.5,
+          "y": -300.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-165",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": -712.5,
+          "y": -312.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-166",
+          "assetId": "env-f9ebcfb357ce8da4eb03c637eea02513",
+          "name": "Desert Dune",
+          "x": -772.5,
+          "y": -374.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-167",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": 706.359,
+          "y": 16.128,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-168",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 674.7,
+          "y": -1.485,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-169",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 736.7,
+          "y": -6.485,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-170",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 798.288,
+          "y": -30.485,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-171",
+          "assetId": "env-74ca0b363cd39de49a50aabda543413b",
+          "name": "Coconut 2",
+          "x": 735.7,
+          "y": -26.485,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-172",
+          "assetId": "env-f9ebcfb357ce8da4eb03c637eea02513",
+          "name": "Desert Dune",
+          "x": 744.156,
+          "y": -97.941,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-173",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": 676.8,
+          "y": 1317.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-174",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": 729.459,
+          "y": 1305.312,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-175",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": 763.8,
+          "y": 1307.102,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-176",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 832.44,
+          "y": 1326.565,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-177",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 809.435,
+          "y": 1320.472,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-178",
+          "assetId": "env-f9ebcfb357ce8da4eb03c637eea02513",
+          "name": "Desert Dune",
+          "x": 673.8,
+          "y": 1295.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-179",
+          "assetId": "env-eddd2be0cd39e324195474c3f8636ea9",
+          "name": "Plam Yellow Green 3",
+          "x": -832.8,
+          "y": -1317.43,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-180",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -768.8,
+          "y": -1357.43,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-181",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -819.8,
+          "y": -1384.43,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-182",
+          "assetId": "env-7d7f286d601d6344fa3eefa29765b4a8",
+          "name": "Coconut 1",
+          "x": -780.8,
+          "y": -1368.842,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-183",
+          "assetId": "env-f9ebcfb357ce8da4eb03c637eea02513",
+          "name": "Desert Dune",
+          "x": -773.8,
+          "y": -1418.43,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-184",
+          "assetId": "env-f9ebcfb357ce8da4eb03c637eea02513",
+          "name": "Desert Dune",
+          "x": -731.8,
+          "y": -1482.43,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 185,
+  "nextLayer": 4,
+  "nextGround": 2,
+  "blockerMask": [
+    [
+      [
+        [
+          -930,
+          -1387.6927115503397
+        ],
+        [
+          -477.9299691040165,
+          -1387.6927115503397
+        ],
+        [
+          -477.9299691040165,
+          -1381.9465719579987
+        ],
+        [
+          -483.67662203913494,
+          -1376.200432365658
+        ],
+        [
+          -483.67662203913494,
+          -1370.4542927733169
+        ],
+        [
+          -500.91658084449017,
+          -1335.977455219271
+        ],
+        [
+          -506.6632337796086,
+          -1330.2313156269304
+        ],
+        [
+          -533.4809474768281,
+          -1326.400555898703
+        ],
+        [
+          -560.2986611740474,
+          -1301.5006176652255
+        ],
+        [
+          -579.4541709577754,
+          -1291.9237183446571
+        ],
+        [
+          -631.1740473738414,
+          -1291.9237183446571
+        ],
+        [
+          -654.1606591143151,
+          -1282.346819024089
+        ],
+        [
+          -656.0762100926879,
+          -1278.5160592958616
+        ],
+        [
+          -667.5695159629248,
+          -1276.600679431748
+        ],
+        [
+          -696.302780638517,
+          -1249.785361334157
+        ],
+        [
+          -732.6982492276004,
+          -1244.0392217418157
+        ],
+        [
+          -738.4449021627188,
+          -1209.5623841877702
+        ],
+        [
+          -753.7693099897014,
+          -1182.747066090179
+        ],
+        [
+          -755.6848609680741,
+          -1173.1701667696107
+        ],
+        [
+          -809.3202883625129,
+          -1138.6933292155652
+        ],
+        [
+          -859.124613800206,
+          -1136.7779493514515
+        ],
+        [
+          -891.6889804325438,
+          -1106.131871525633
+        ],
+        [
+          -930,
+          -1094.6395923409514
+        ],
+        [
+          -930,
+          -1387.6927115503397
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -930,
+          -43.096046942557265
+        ],
+        [
+          -928.0844490216272,
+          -489.3795552810376
+        ],
+        [
+          -895.5200823892894,
+          -479.80265596046956
+        ],
+        [
+          -880.195674562307,
+          -464.4796170475601
+        ],
+        [
+          -876.3645726055613,
+          -452.9873378628784
+        ],
+        [
+          -864.8712667353244,
+          -437.66429894996895
+        ],
+        [
+          -820.8135942327498,
+          -422.3412600370599
+        ],
+        [
+          -809.3202883625129,
+          -399.3567016676961
+        ],
+        [
+          -801.6580844490217,
+          -355.30296479308214
+        ],
+        [
+          -753.7693099897014,
+          -332.31840642371833
+        ],
+        [
+          -742.2760041194645,
+          -316.9953675108092
+        ],
+        [
+          -734.6138002059732,
+          -276.77239036442234
+        ],
+        [
+          -719.2893923789907,
+          -246.12631253860414
+        ],
+        [
+          -719.2893923789907,
+          -217.3956145768993
+        ],
+        [
+          -721.2049433573635,
+          -209.73409512044458
+        ],
+        [
+          -755.6848609680741,
+          -179.0880172946264
+        ],
+        [
+          -767.178166838311,
+          -175.25725756639906
+        ],
+        [
+          -801.6580844490217,
+          -175.25725756639906
+        ],
+        [
+          -820.8135942327498,
+          -150.35731933292158
+        ],
+        [
+          -859.124613800206,
+          -123.5420012353304
+        ],
+        [
+          -859.124613800206,
+          -112.04972205064868
+        ],
+        [
+          -870.6179196704428,
+          -71.82674490426176
+        ],
+        [
+          -901.2667353244079,
+          -46.92680667078428
+        ],
+        [
+          -930,
+          -43.096046942557265
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -930,
+          35.434527486102546
+        ],
+        [
+          -872.5334706488156,
+          35.434527486102546
+        ],
+        [
+          -872.5334706488156,
+          25.857628165534322
+        ],
+        [
+          -866.7868177136971,
+          20.111488573193288
+        ],
+        [
+          -849.5468589083418,
+          14.36534898085242
+        ],
+        [
+          -838.0535530381051,
+          14.36534898085242
+        ],
+        [
+          -818.898043254377,
+          20.111488573193288
+        ],
+        [
+          -793.9958805355303,
+          2.8730697961705185
+        ],
+        [
+          -778.6714727085479,
+          2.8730697961705185
+        ],
+        [
+          -772.9248197734295,
+          6.703829524397705
+        ],
+        [
+          -726.951596292482,
+          16.2807288449661
+        ],
+        [
+          -721.2049433573635,
+          22.026868437306966
+        ],
+        [
+          -721.2049433573635,
+          35.434527486102546
+        ],
+        [
+          -704.4429397863454,
+          35.434527486102546
+        ],
+        [
+          -706.69358,
+          82.76568999999998
+        ],
+        [
+          -706.69358,
+          240.38017294626312
+        ],
+        [
+          -732.6982492276004,
+          240.38017294626312
+        ],
+        [
+          -736.5293511843461,
+          225.05713403335386
+        ],
+        [
+          -751.8537590113286,
+          225.05713403335386
+        ],
+        [
+          -759.5159629248197,
+          215.48023471278563
+        ],
+        [
+          -769.0937178166838,
+          215.48023471278563
+        ],
+        [
+          -778.6714727085479,
+          253.7878319950587
+        ],
+        [
+          -816.9824922760041,
+          253.7878319950587
+        ],
+        [
+          -826.5602471678683,
+          238.46479308214944
+        ],
+        [
+          -834.2224510813594,
+          238.46479308214944
+        ],
+        [
+          -847.6313079299691,
+          225.05713403335386
+        ],
+        [
+          -887.8578784757981,
+          225.05713403335386
+        ],
+        [
+          -897.4356333676623,
+          251.87245213094502
+        ],
+        [
+          -930,
+          251.87245213094502
+        ],
+        [
+          -930,
+          35.434527486102546
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -930,
+          295.92618900555897
+        ],
+        [
+          -893.6045314109166,
+          301.6723285979
+        ],
+        [
+          -868.70236869207,
+          322.7415071031501
+        ],
+        [
+          -857.2090628218332,
+          341.89530574428653
+        ],
+        [
+          -855.2935118434604,
+          357.2183446571958
+        ],
+        [
+          -849.5468589083418,
+          368.71062384187775
+        ],
+        [
+          -830.3913491246137,
+          382.1182828906733
+        ],
+        [
+          -807.40473738414,
+          389.7798023471278
+        ],
+        [
+          -803.5736354273945,
+          399.3567016676961
+        ],
+        [
+          -797.826982492276,
+          403.18746139592344
+        ],
+        [
+          -788.249227600412,
+          424.25663990117357
+        ],
+        [
+          -790.1647785787848,
+          460.64885731933293
+        ],
+        [
+          -759.5159629248197,
+          481.71803582458307
+        ],
+        [
+          -748.022657054583,
+          485.5487955528104
+        ],
+        [
+          -744.1915550978373,
+          491.29493514515127
+        ],
+        [
+          -732.6982492276004,
+          495.1256948733786
+        ],
+        [
+          -725.0360453141092,
+          508.53335392217423
+        ],
+        [
+          -717.373841400618,
+          556.4178505250155
+        ],
+        [
+          -717.373841400618,
+          573.6562693020383
+        ],
+        [
+          -723.1204943357363,
+          592.8100679431748
+        ],
+        [
+          -776.755921730175,
+          629.2022853613341
+        ],
+        [
+          -799.7425334706488,
+          631.1176652254478
+        ],
+        [
+          -818.898043254377,
+          629.2022853613341
+        ],
+        [
+          -853.3779608650875,
+          598.5562075355158
+        ],
+        [
+          -885.9423274974253,
+          600.4715873996295
+        ],
+        [
+          -908.928939237899,
+          581.3177887584928
+        ],
+        [
+          -930,
+          581.3177887584928
+        ],
+        [
+          -930,
+          295.92618900555897
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -930,
+          652.1868437306979
+        ],
+        [
+          -910.8444902162719,
+          652.1868437306979
+        ],
+        [
+          -885.9423274974253,
+          663.6791229153798
+        ],
+        [
+          -876.3645726055613,
+          673.2560222359481
+        ],
+        [
+          -866.7868177136971,
+          694.3252007411984
+        ],
+        [
+          -859.124613800206,
+          701.9867201976529
+        ],
+        [
+          -822.7291452111226,
+          717.3097591105621
+        ],
+        [
+          -813.1513903192584,
+          726.8866584311304
+        ],
+        [
+          -799.7425334706488,
+          759.4481161210624
+        ],
+        [
+          -799.7425334706488,
+          776.6865348980854
+        ],
+        [
+          -774.8403707518022,
+          797.7557134033354
+        ],
+        [
+          -765.2626158599383,
+          814.9941321803583
+        ],
+        [
+          -765.2626158599383,
+          853.3017294626311
+        ],
+        [
+          -776.755921730175,
+          897.3554663372453
+        ],
+        [
+          -780.5870236869207,
+          899.2708462013587
+        ],
+        [
+          -780.5870236869207,
+          905.0169857936997
+        ],
+        [
+          -793.9958805355303,
+          926.0861642989499
+        ],
+        [
+          -834.2224510813594,
+          945.2399629400863
+        ],
+        [
+          -861.0401647785789,
+          991.209079678814
+        ],
+        [
+          -882.1112255406797,
+          1000.7859789993823
+        ],
+        [
+          -893.6045314109166,
+          1010.3628783199506
+        ],
+        [
+          -930,
+          1023.7705373687462
+        ],
+        [
+          -930,
+          652.1868437306979
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -930,
+          1094.6395923409514
+        ],
+        [
+          -910.8444902162719,
+          1096.554972205065
+        ],
+        [
+          -889.7734294541709,
+          1121.4549104385424
+        ],
+        [
+          -876.3645726055613,
+          1127.2010500308834
+        ],
+        [
+          -847.6313079299691,
+          1148.2702285361333
+        ],
+        [
+          -847.6313079299691,
+          1175.0855466337246
+        ],
+        [
+          -825.2912001088457,
+          1189.046866759702
+        ],
+        [
+          -822.4522774319577,
+          1324.4851760345894
+        ],
+        [
+          -930,
+          1324.4851760345894
+        ],
+        [
+          -930,
+          1094.6395923409514
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -486.69358,
+          82.76568999999998
+        ],
+        [
+          -484.35186171605005,
+          33.51914762198887
+        ],
+        [
+          -453.0278063851699,
+          33.51914762198887
+        ],
+        [
+          -451.1122554067971,
+          39.2652872143299
+        ],
+        [
+          -294.0370751802266,
+          39.2652872143299
+        ],
+        [
+          -295.95262615859934,
+          23.942248301420644
+        ],
+        [
+          -286.37487126673534,
+          16.2807288449661
+        ],
+        [
+          -267.2193614830072,
+          10.534589252625063
+        ],
+        [
+          -244.23274974253346,
+          18.196108709079606
+        ],
+        [
+          -211.6683831101957,
+          -6.703829524397705
+        ],
+        [
+          -184.8506694129763,
+          -0.9576899320566674
+        ],
+        [
+          -171.44181256436664,
+          -14.36534898085242
+        ],
+        [
+          -158.032955715757,
+          -18.19610870907978
+        ],
+        [
+          -121.63748712667358,
+          -6.703829524397705
+        ],
+        [
+          -119.72193614830076,
+          22.026868437306966
+        ],
+        [
+          -129.29969104016476,
+          35.434527486102546
+        ],
+        [
+          -109.04209999999992,
+          35.434527486102546
+        ],
+        [
+          -109.04209999999992,
+          244.21093267449046
+        ],
+        [
+          -140.79299691040168,
+          244.21093267449046
+        ],
+        [
+          -146.53964984552005,
+          226.97251389746754
+        ],
+        [
+          -175.27291452111228,
+          226.97251389746754
+        ],
+        [
+          -181.01956745623065,
+          257.61859172328604
+        ],
+        [
+          -223.16168898043253,
+          257.61859172328604
+        ],
+        [
+          -232.73944387229662,
+          240.38017294626312
+        ],
+        [
+          -246.1483007209063,
+          238.46479308214944
+        ],
+        [
+          -253.81050463439757,
+          228.8878937615812
+        ],
+        [
+          -269.13491246138005,
+          226.97251389746754
+        ],
+        [
+          -272.96601441812567,
+          215.48023471278563
+        ],
+        [
+          -303.6148300720906,
+          215.48023471278563
+        ],
+        [
+          -315.10813594232746,
+          238.46479308214944
+        ],
+        [
+          -372.5746652935118,
+          238.46479308214944
+        ],
+        [
+          -397.4768280123584,
+          225.05713403335386
+        ],
+        [
+          -416.6323377960865,
+          225.05713403335386
+        ],
+        [
+          -418.54788877445935,
+          242.2955528103768
+        ],
+        [
+          -424.2945417095778,
+          246.12631253860414
+        ],
+        [
+          -426.21009268795063,
+          255.70321185917237
+        ],
+        [
+          -466.43666323377954,
+          257.61859172328604
+        ],
+        [
+          -468.3522142121524,
+          251.87245213094502
+        ],
+        [
+          -477.9299691040165,
+          244.21093267449046
+        ],
+        [
+          -486.69358,
+          243.6632559212805
+        ],
+        [
+          -486.69358,
+          82.76568999999998
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          110.95790000000008,
+          35.434527486102546
+        ],
+        [
+          136.96189495365604,
+          35.434527486102546
+        ],
+        [
+          135.04634397528324,
+          22.026868437306966
+        ],
+        [
+          138.87744593202888,
+          18.196108709079606
+        ],
+        [
+          148.45520082389297,
+          14.36534898085242
+        ],
+        [
+          169.5262615859938,
+          14.36534898085242
+        ],
+        [
+          196.34397528321313,
+          -0.9576899320566674
+        ],
+        [
+          246.1483007209063,
+          14.36534898085242
+        ],
+        [
+          246.1483007209063,
+          6.703829524397705
+        ],
+        [
+          255.72605561277038,
+          2.8730697961705185
+        ],
+        [
+          259.55715756951605,
+          -2.8730697961703466
+        ],
+        [
+          265.3038105046345,
+          -2.8730697961703466
+        ],
+        [
+          286.37487126673534,
+          4.788449660284198
+        ],
+        [
+          286.37487126673534,
+          25.857628165534322
+        ],
+        [
+          282.54376930998967,
+          31.60376775787519
+        ],
+        [
+          286.37487126673534,
+          33.51914762198887
+        ],
+        [
+          286.37487126673534,
+          39.2652872143299
+        ],
+        [
+          368.7435633367663,
+          41.18066707844341
+        ],
+        [
+          431.95674562306897,
+          39.2652872143299
+        ],
+        [
+          433.8722966014418,
+          33.51914762198887
+        ],
+        [
+          470.4277681883165,
+          34.98123586691059
+        ],
+        [
+          467.5393,
+          247.03571969175403
+        ],
+        [
+          456.8589083419155,
+          257.61859172328604
+        ],
+        [
+          416.63233779608663,
+          257.61859172328604
+        ],
+        [
+          403.22348094747684,
+          240.38017294626312
+        ],
+        [
+          336.1791967044285,
+          238.46479308214944
+        ],
+        [
+          328.5169927909372,
+          225.05713403335386
+        ],
+        [
+          311.2770339855818,
+          225.05713403335386
+        ],
+        [
+          295.95262615859946,
+          209.73409512044478
+        ],
+        [
+          276.7971163748712,
+          209.73409512044478
+        ],
+        [
+          269.13491246137994,
+          215.48023471278563
+        ],
+        [
+          267.2193614830071,
+          223.14175416924036
+        ],
+        [
+          221.2461380020598,
+          223.14175416924036
+        ],
+        [
+          213.58393408856853,
+          211.64947498455845
+        ],
+        [
+          184.8506694129764,
+          213.56485484867196
+        ],
+        [
+          184.8506694129764,
+          234.63403335392223
+        ],
+        [
+          175.27291452111228,
+          253.7878319950587
+        ],
+        [
+          140.79299691040168,
+          257.61859172328604
+        ],
+        [
+          133.1307929969104,
+          255.70321185917237
+        ],
+        [
+          125.46858908341912,
+          244.21093267449046
+        ],
+        [
+          110.95790000000008,
+          243.3040956208636
+        ],
+        [
+          110.95790000000008,
+          35.434527486102546
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          441.5345005149331,
+          -1385.777331686226
+        ],
+        [
+          930,
+          -1387.6927115503397
+        ],
+        [
+          928.0844490216272,
+          -1065.9088943792465
+        ],
+        [
+          882.1112255406797,
+          -1090.8088326127238
+        ],
+        [
+          861.0401647785789,
+          -1157.8471278567017
+        ],
+        [
+          828.475798146241,
+          -1175.0855466337243
+        ],
+        [
+          811.2358393408856,
+          -1205.731624459543
+        ],
+        [
+          792.0803295571576,
+          -1221.054663372452
+        ],
+        [
+          749.9382080329558,
+          -1230.6315626930204
+        ],
+        [
+          671.4006179196705,
+          -1232.5469425571341
+        ],
+        [
+          612.0185375901132,
+          -1265.108400247066
+        ],
+        [
+          602.4407826982493,
+          -1276.600679431748
+        ],
+        [
+          596.6941297631308,
+          -1278.5160592958616
+        ],
+        [
+          587.1163748712668,
+          -1305.3313773934528
+        ],
+        [
+          571.7919670442842,
+          -1316.8236565781347
+        ],
+        [
+          554.5520082389289,
+          -1318.7390364422483
+        ],
+        [
+          525.8187435633369,
+          -1314.908276714021
+        ],
+        [
+          476.01441812564366,
+          -1332.146695491044
+        ],
+        [
+          464.52111225540676,
+          -1345.5543545398393
+        ],
+        [
+          441.5345005149331,
+          -1385.777331686226
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          669.4850669412976,
+          1234.4623224212478
+        ],
+        [
+          677.147270854789,
+          1219.1392835083384
+        ],
+        [
+          682.8939237899074,
+          1215.308523780111
+        ],
+        [
+          691.8513737982504,
+          1202.1721040026573
+        ],
+        [
+          726.95124,
+          1208.042393
+        ],
+        [
+          758.8825544979909,
+          1203.305829930543
+        ],
+        [
+          788.0639656321563,
+          1189.50405035328
+        ],
+        [
+          804.7329859305203,
+          1175.8241389305201
+        ],
+        [
+          818.41289735328,
+          1159.1551186321562
+        ],
+        [
+          832.214676930543,
+          1129.9737074979907
+        ],
+        [
+          836.95124,
+          1098.042393
+        ],
+        [
+          832.214676930543,
+          1066.1110785020091
+        ],
+        [
+          813.5963782034074,
+          1025.8388714289647
+        ],
+        [
+          838.053553038105,
+          1014.1936380481777
+        ],
+        [
+          839.9691040164778,
+          1010.3628783199506
+        ],
+        [
+          853.3779608650875,
+          1010.3628783199506
+        ],
+        [
+          874.4490216271884,
+          1025.6859172328598
+        ],
+        [
+          887.8578784757981,
+          1029.5166769610871
+        ],
+        [
+          912.7600411946446,
+          1046.75509573811
+        ],
+        [
+          910.844490216272,
+          1086.9780728844964
+        ],
+        [
+          930,
+          1088.8934527486101
+        ],
+        [
+          930,
+          1324.4851760345894
+        ],
+        [
+          891.6889804325438,
+          1324.4851760345894
+        ],
+        [
+          882.1112255406797,
+          1314.908276714021
+        ],
+        [
+          822.7291452111226,
+          1314.908276714021
+        ],
+        [
+          705.880535530381,
+          1303.4159975293392
+        ],
+        [
+          677.147270854789,
+          1267.0237801111798
+        ],
+        [
+          669.4850669412976,
+          1234.4623224212478
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          687.5393,
+          193.124078
+        ],
+        [
+          690.390728037822,
+          37.0091739608587
+        ],
+        [
+          725.0360453141091,
+          35.434527486102546
+        ],
+        [
+          719.2893923789908,
+          22.026868437306966
+        ],
+        [
+          719.2893923789908,
+          8.619209388511385
+        ],
+        [
+          723.1204943357362,
+          2.8730697961705185
+        ],
+        [
+          772.9248197734295,
+          -0.9576899320566674
+        ],
+        [
+          793.9958805355304,
+          23.942248301420644
+        ],
+        [
+          813.1513903192584,
+          12.449969116738743
+        ],
+        [
+          822.7291452111226,
+          12.449969116738743
+        ],
+        [
+          885.9423274974253,
+          27.773008029648004
+        ],
+        [
+          887.8578784757981,
+          35.434527486102546
+        ],
+        [
+          930,
+          35.434527486102546
+        ],
+        [
+          930,
+          253.7878319950587
+        ],
+        [
+          899.3511843460351,
+          253.7878319950587
+        ],
+        [
+          891.6889804325438,
+          238.46479308214944
+        ],
+        [
+          843.8002059732235,
+          238.46479308214944
+        ],
+        [
+          830.3913491246138,
+          221.22637430512665
+        ],
+        [
+          786.3336766220392,
+          221.22637430512665
+        ],
+        [
+          780.5870236869207,
+          205.9033353922174
+        ],
+        [
+          759.5159629248196,
+          205.9033353922174
+        ],
+        [
+          749.9382080329558,
+          242.2955528103768
+        ],
+        [
+          687.5393,
+          240.60924648603324
+        ],
+        [
+          687.5393,
+          193.124078
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          687.5393,
+          435.461341987125
+        ],
+        [
+          694.3872296601442,
+          424.25663990117357
+        ],
+        [
+          705.880535530381,
+          416.595120444719
+        ],
+        [
+          755.6848609680742,
+          407.0182211241508
+        ],
+        [
+          759.5159629248196,
+          401.27208153180976
+        ],
+        [
+          776.755921730175,
+          391.6951822112415
+        ],
+        [
+          788.249227600412,
+          376.3721432983323
+        ],
+        [
+          786.3336766220392,
+          359.1337245213095
+        ],
+        [
+          792.0803295571576,
+          330.40302655960465
+        ],
+        [
+          832.3069001029867,
+          305.50308832612717
+        ],
+        [
+          849.5468589083418,
+          290.18004941321806
+        ],
+        [
+          868.7023686920701,
+          280.60315009264986
+        ],
+        [
+          930,
+          278.6877702285362
+        ],
+        [
+          930,
+          895.4400864731316
+        ],
+        [
+          912.7600411946446,
+          889.6939468807907
+        ],
+        [
+          903.1822863027807,
+          889.6939468807907
+        ],
+        [
+          895.5200823892894,
+          882.032427424336
+        ],
+        [
+          868.7023686920701,
+          870.5401482396541
+        ],
+        [
+          857.2090628218332,
+          859.0478690549721
+        ],
+        [
+          845.7157569515963,
+          824.5710315009264
+        ],
+        [
+          826.5602471678683,
+          813.0787523162445
+        ],
+        [
+          815.0669412976313,
+          801.5864731315627
+        ],
+        [
+          815.0669412976313,
+          795.8403335392218
+        ],
+        [
+          809.3202883625129,
+          788.1788140827671
+        ],
+        [
+          809.3202883625129,
+          753.7019765287214
+        ],
+        [
+          836.1380020597321,
+          719.2251389746757
+        ],
+        [
+          874.4490216271884,
+          715.3943792464485
+        ],
+        [
+          872.5334706488158,
+          677.0867819641754
+        ],
+        [
+          887.8578784757981,
+          656.0176034589252
+        ],
+        [
+          889.7734294541709,
+          648.3560840024708
+        ],
+        [
+          905.0978372811535,
+          631.1176652254478
+        ],
+        [
+          884.0267765190525,
+          621.5407659048795
+        ],
+        [
+          876.3645726055612,
+          621.5407659048795
+        ],
+        [
+          853.3779608650875,
+          636.8638048177888
+        ],
+        [
+          834.2224510813595,
+          636.8638048177888
+        ],
+        [
+          815.0669412976313,
+          623.4561457689932
+        ],
+        [
+          774.8403707518022,
+          623.4561457689932
+        ],
+        [
+          774.8403707518022,
+          619.6253860407659
+        ],
+        [
+          749.9382080329558,
+          596.6408276714021
+        ],
+        [
+          744.1915550978373,
+          587.0639283508339
+        ],
+        [
+          711.6271884654996,
+          567.9101297096975
+        ],
+        [
+          702.0494335736354,
+          548.7563310685608
+        ],
+        [
+          698.2183316168898,
+          527.6871525633106
+        ],
+        [
+          687.5393,
+          518.3738655832456
+        ],
+        [
+          687.5393,
+          435.461341987125
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          717.373841400618,
+          -347.64144533662744
+        ],
+        [
+          759.5159629248196,
+          -395.52594193946874
+        ],
+        [
+          759.5159629248196,
+          -399.3567016676961
+        ],
+        [
+          824.6446961894954,
+          -410.84898085237813
+        ],
+        [
+          841.8846549948506,
+          -420.4258801729462
+        ],
+        [
+          845.7157569515963,
+          -424.25663990117357
+        ],
+        [
+          853.3779608650875,
+          -460.64885731933276
+        ],
+        [
+          882.1112255406797,
+          -487.4641754169239
+        ],
+        [
+          930,
+          -495.1256948733786
+        ],
+        [
+          928.0844490216272,
+          -35.434527486102546
+        ],
+        [
+          901.2667353244079,
+          -43.096046942557265
+        ],
+        [
+          870.6179196704429,
+          -81.40364422483016
+        ],
+        [
+          866.7868177136972,
+          -90.98054354539855
+        ],
+        [
+          859.124613800206,
+          -96.72668313773924
+        ],
+        [
+          847.6313079299691,
+          -142.69579987646685
+        ],
+        [
+          830.3913491246138,
+          -169.511117974058
+        ],
+        [
+          759.5159629248196,
+          -202.07257566399022
+        ],
+        [
+          751.8537590113286,
+          -211.64947498455828
+        ],
+        [
+          734.6138002059732,
+          -240.38017294626312
+        ],
+        [
+          732.6982492276004,
+          -269.110870907968
+        ],
+        [
+          736.5293511843461,
+          -276.77239036442234
+        ],
+        [
+          732.6982492276004,
+          -278.687770228536
+        ],
+        [
+          721.2049433573636,
+          -301.6723285978998
+        ],
+        [
+          721.2049433573636,
+          -311.2492279184682
+        ],
+        [
+          717.373841400618,
+          -316.9953675108092
+        ],
+        [
+          717.373841400618,
+          -347.64144533662744
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "concept-biome-map",
+    "concept": "longwall-frontier",
+    "reference": "08-longwall-frontier.png",
+    "normalizedLayout": true,
+    "terrainWorldUnitsPerPixel": 1.9155509783728115,
+    "blockerSource": "actual-alpha-with-authored-walkable-openings",
+    "blockerAlphaThreshold": 32,
+    "blockerSourceSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f"
+  }
+}

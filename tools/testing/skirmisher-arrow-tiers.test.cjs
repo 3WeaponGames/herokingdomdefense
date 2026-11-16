@@ -17,8 +17,20 @@ test('all 25 Skirmisher arrow upgrades select the correct one of five tier proje
 test('active skills follow the live arrow tier automatically and still accept an explicit Skills projectile override',()=>{
  const P={},visual=Settings.defaults('skirmisher').visual;let level=1;
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroSkillPresentation.js'),'utf8'),{exports:P,require:name=>name==='./ProjectileLooks'?{...Looks,currentCatalog:()=>data}:name==='KinghtFallPlayerMgr'?{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeaponLevel:()=>level})})}}:name.startsWith('./')?require(path.join(root,'assets/_script',name)):{} });
- const runtime={state:{style:'skirmisher'},settings:{visual},config};for(level=1;level<=25;level++){const result=P.visual(runtime);assert.equal(result.projectile,ids[Math.floor((level-1)/5)]);assert.equal(result.showBuiltin,false);}
+ const runtime={state:{style:'skirmisher'},settings:{visual},config};for(level=1;level<=25;level++){const result=P.visual(runtime),tier=Math.floor((level-1)/5);assert.equal(result.projectile,ids[tier]);assert.equal(result.resourceTrail.id,'trail:hero-arrow-lv'+(tier+1));assert.equal(result.showBuiltin,false);}
  runtime.settings.visual={...visual,projectile:ids[0],projectileAsset:Looks.skillAsset(data,config,1)};level=25;assert.equal(P.visual(runtime).projectile,ids[0]);assert.equal(visual.projectile,'','Resolving equipped tiers wrote default selections');
+ delete runtime.settings.visual.projectileAsset.trail;assert.equal(P.visual(runtime).resourceTrail.id,'trail:hero-arrow-lv1');assert.equal(runtime.settings.visual.projectileAsset.trail,undefined,'Upgrading old selection metadata wrote to saved settings');
+});
+
+test('each arrow tier supplies its matching short trail while explicit trail choices retain precedence',()=>{
+ const colors=['#e7d7b6','#eafcff','#49eaff','#b64dff','#ffdf69'],before=JSON.stringify(data);
+ for(const row of config.EquipCfg.find(row=>row.id===3).levelInfo){
+   const tier=Math.floor((row.Level-1)/5),id='trail:hero-arrow-lv'+(tier+1),choice=Looks.select(data,'hero',row.Level,null,row.EquipSkin),trail=data.trails.find(trail=>trail.id===choice.trail),skill=Looks.skillAsset(data,config,row.Level);
+   assert.equal(choice.trail,id);assert.equal(trail.color,colors[tier]);assert(trail.width>=3&&trail.width<=7);assert(trail.lifetime<=.2);assert.deepEqual(skill.trail,trail);assert.equal(data.sets.find(set=>set.flight===choice.flight).trail,id);
+   for(const override of [false,'trail:07d9ec9b-8144-49ac-bab8-0480e3a9dff0'])assert.equal(Looks.select({...data,assignments:{hero:{trail:override}}},'hero',row.Level,null,row.EquipSkin).trail,override);
+ }
+ for(const id of ids){const selected=Looks.select({...data,assignments:{hero:{set:id}}},'hero',1);assert.equal(selected.flight,id);assert.equal(selected.trail,data.assets.find(asset=>asset.id===id).trail);}
+ assert.equal(JSON.stringify(data),before);
 });
 
 test('purple VIP1 keeps the exact atlas size, alpha, UV layout, animation and attachment geometry',()=>{

@@ -1,0 +1,4233 @@
+{
+  "version": 1,
+  "id": "map-concept-13-crossed-heights",
+  "name": "Fire - Crossed Heights",
+  "biome": "fire",
+  "size": {
+    "width": 1860,
+    "height": 3101
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2741
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "id": "central-bridge-deck-gap-1",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -8.619240000000051,
+              "y": -1239.714679
+            },
+            {
+              "x": -8.619240000000051,
+              "y": -1040.9033670000001
+            },
+            {
+              "x": -8.619240000000051,
+              "y": -823.8116600000001
+            },
+            {
+              "x": -8.619240000000051,
+              "y": -611.287726
+            },
+            {
+              "x": -8.619240000000051,
+              "y": -533.3720000000002
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "central-bridge-deck-gap-2",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -8.619240000000051,
+              "y": 347.31199999999995
+            },
+            {
+              "x": -8.619240000000051,
+              "y": 519.879549
+            },
+            {
+              "x": -2.873700000000035,
+              "y": 896.9363409999999
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "west-ramp-deck-gap-1",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -815.06688,
+              "y": -179.38664800000004
+            },
+            {
+              "x": -702.04956,
+              "y": -188.52839599999987
+            },
+            {
+              "x": -598.6093800000001,
+              "y": -188.52839599999987
+            },
+            {
+              "x": -546.8902200000001,
+              "y": -163.39169000000004
+            },
+            {
+              "x": -521.98854,
+              "y": -81.12526099999997
+            },
+            {
+              "x": -514.3253399999999,
+              "y": 44.56136999999998
+            },
+            {
+              "x": -499.0007999999999,
+              "y": 167.96256399999996
+            },
+            {
+              "x": -462.60618000000005,
+              "y": 323.35367399999996
+            },
+            {
+              "x": -408.96936000000005,
+              "y": 449.04030500000005
+            },
+            {
+              "x": -334.26431999999994,
+              "y": 572.438398
+            },
+            {
+              "x": -240.40127999999996,
+              "y": 677.559197
+            },
+            {
+              "x": -125.46816000000003,
+              "y": 787.2477690000001
+            },
+            {
+              "x": -2.873700000000028,
+              "y": 896.9363409999999
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "east-ramp-deck-gap-1",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 813.1510799999999,
+              "y": -181.67208499999998
+            },
+            {
+              "x": 709.7109,
+              "y": -186.24295899999993
+            },
+            {
+              "x": 608.18652,
+              "y": -186.24295899999993
+            },
+            {
+              "x": 543.0586199999999,
+              "y": -158.82081600000012
+            },
+            {
+              "x": 510.49374,
+              "y": -74.26895000000009
+            },
+            {
+              "x": 485.5920600000001,
+              "y": 42.27593300000002
+            },
+            {
+              "x": 468.35171999999994,
+              "y": 170.24800099999993
+            },
+            {
+              "x": 426.20970000000005,
+              "y": 316.49736300000006
+            },
+            {
+              "x": 374.49054000000007,
+              "y": 444.46943099999993
+            },
+            {
+              "x": 313.1923799999999,
+              "y": 551.872566
+            },
+            {
+              "x": 242.31708,
+              "y": 652.422491
+            },
+            {
+              "x": 146.5401,
+              "y": 773.5351469999999
+            },
+            {
+              "x": -2.873700000000042,
+              "y": 896.9363409999999
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "northeast-field-deck-gap-1",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 713.5425,
+              "y": 1351.688688
+            },
+            {
+              "x": 623.5110599999999,
+              "y": 1246.57099
+            },
+            {
+              "x": 508.57794000000007,
+              "y": 1180.299519
+            },
+            {
+              "x": 391.73088,
+              "y": 1136.882418
+            },
+            {
+              "x": 271.05036000000007,
+              "y": 1082.035031
+            },
+            {
+              "x": 161.86463999999998,
+              "y": 1018.0520979999999
+            },
+            {
+              "x": 79.49453999999994,
+              "y": 965.493249
+            },
+            {
+              "x": -2.873700000000028,
+              "y": 896.9363409999999
+            }
+          ],
+          "size": 100,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    },
+    "custom": [
+      {
+        "id": "ground-1",
+        "name": "Concept terrain - Fire",
+        "transform": {
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "angle": 0
+        },
+        "opacity": 1,
+        "blend": "source-over",
+        "images": [
+          {
+            "id": "ground-image-1",
+            "assetId": "concept-terrain-13-crossed-heights",
+            "name": "Fire - Crossed Heights terrain",
+            "x": 0,
+            "y": 0,
+            "scale": 1.9155509783728115,
+            "angle": 0,
+            "flipX": false,
+            "opacity": 1,
+            "mask": [],
+            "depth": "ground",
+            "globalShadow": false
+          }
+        ],
+        "strokes": []
+      }
+    ],
+    "order": [
+      "foundation",
+      "ground-1",
+      "roads",
+      "grass"
+    ]
+  },
+  "layers": [
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-87",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": 334.394,
+          "y": -208.943,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -400.465,
+          "y": -923.076,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": -780.907,
+          "y": 370.45,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-117c27d2186fa914ab689691b5ec7665",
+          "name": "Fire Texture 10",
+          "x": -635.535,
+          "y": 758.456,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": -393.119,
+          "y": -553.905,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": -473.722,
+          "y": -589.723,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -266.278,
+          "y": -124.914,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": 535.556,
+          "y": -875.806,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-38bf39936fa253f45adf0129b7b7e640",
+          "name": "Fire Texture 5",
+          "x": -305.27,
+          "y": -209.33,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -625.486,
+          "y": 711.386,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-117c27d2186fa914ab689691b5ec7665",
+          "name": "Fire Texture 10",
+          "x": 636.329,
+          "y": -631.814,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-06b9c91b8aa852147aeff0d9e840e700",
+          "name": "Fire Texture 9",
+          "x": -645.555,
+          "y": -1338.84,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-06b9c91b8aa852147aeff0d9e840e700",
+          "name": "Fire Texture 9",
+          "x": -420.572,
+          "y": -345.128,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": -614.949,
+          "y": -687.583,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-4dffb94adf0b56c449af327aa75797a3",
+          "name": "Fire Texture 2",
+          "x": 593.014,
+          "y": 765.452,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-964ccb1ff9aa090419d4db40bf1700af",
+          "name": "Fire Texture 6",
+          "x": -521.732,
+          "y": -722.074,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": -741.669,
+          "y": 420.919,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-38bf39936fa253f45adf0129b7b7e640",
+          "name": "Fire Texture 5",
+          "x": -677.289,
+          "y": -1418.522,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -745.935,
+          "y": -894.507,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -349.559,
+          "y": -888.359,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-107",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -598.017,
+          "y": 1413.969,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-38bf39936fa253f45adf0129b7b7e640",
+          "name": "Fire Texture 5",
+          "x": 340.422,
+          "y": -331.099,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -746.411,
+          "y": -888.061,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-06b9c91b8aa852147aeff0d9e840e700",
+          "name": "Fire Texture 9",
+          "x": 740.117,
+          "y": 362.446,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": 532.515,
+          "y": -592.777,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -743.441,
+          "y": 629.217,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-dadd83dc41247fd4cb46558d354211cf",
+          "name": "Fire Texture 1",
+          "x": -744.704,
+          "y": 536.856,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-f009c5533752b464f95b85cc3da3398b",
+          "name": "Fire Texture 3",
+          "x": -757.84,
+          "y": 481.897,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-117c27d2186fa914ab689691b5ec7665",
+          "name": "Fire Texture 10",
+          "x": 217.354,
+          "y": -1357.664,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": 80.72,
+          "y": 1348.657,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-4dffb94adf0b56c449af327aa75797a3",
+          "name": "Fire Texture 2",
+          "x": 819.011,
+          "y": 1420.115,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": -290.237,
+          "y": -571.275,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-117c27d2186fa914ab689691b5ec7665",
+          "name": "Fire Texture 10",
+          "x": -268.088,
+          "y": -257.676,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": -735.06,
+          "y": 336.46,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-4dffb94adf0b56c449af327aa75797a3",
+          "name": "Fire Texture 2",
+          "x": -664.332,
+          "y": -980.414,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": 717.318,
+          "y": -1010.619,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-123",
+          "assetId": "env-117c27d2186fa914ab689691b5ec7665",
+          "name": "Fire Texture 10",
+          "x": -331.736,
+          "y": -337.99,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-117c27d2186fa914ab689691b5ec7665",
+          "name": "Fire Texture 10",
+          "x": -751.866,
+          "y": 826.291,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-38bf39936fa253f45adf0129b7b7e640",
+          "name": "Fire Texture 5",
+          "x": 599.774,
+          "y": 613.331,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-06b9c91b8aa852147aeff0d9e840e700",
+          "name": "Fire Texture 9",
+          "x": 695.352,
+          "y": 1041.348,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-127",
+          "assetId": "env-4dffb94adf0b56c449af327aa75797a3",
+          "name": "Fire Texture 2",
+          "x": -636.138,
+          "y": 494.198,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-f009c5533752b464f95b85cc3da3398b",
+          "name": "Fire Texture 3",
+          "x": 573.757,
+          "y": -1513.191,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": -238.22,
+          "y": 394.885,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -745.268,
+          "y": -657.483,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": 134.984,
+          "y": -1463.277,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": -371.985,
+          "y": -1041.893,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-4dffb94adf0b56c449af327aa75797a3",
+          "name": "Fire Texture 2",
+          "x": 727.127,
+          "y": 525.36,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-964ccb1ff9aa090419d4db40bf1700af",
+          "name": "Fire Texture 6",
+          "x": -723.089,
+          "y": -1505.592,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-dadd83dc41247fd4cb46558d354211cf",
+          "name": "Fire Texture 1",
+          "x": 761.621,
+          "y": 307.515,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-136",
+          "assetId": "env-dadd83dc41247fd4cb46558d354211cf",
+          "name": "Fire Texture 1",
+          "x": 486.815,
+          "y": 1359.439,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-4dffb94adf0b56c449af327aa75797a3",
+          "name": "Fire Texture 2",
+          "x": 640.392,
+          "y": 995.383,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-38bf39936fa253f45adf0129b7b7e640",
+          "name": "Fire Texture 5",
+          "x": 768.345,
+          "y": 1002.354,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-139",
+          "assetId": "env-24626c4d86a877542b28d6d2362934c4",
+          "name": "Fire Texture 11",
+          "x": -374.082,
+          "y": -654.791,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-dadd83dc41247fd4cb46558d354211cf",
+          "name": "Fire Texture 1",
+          "x": 724.204,
+          "y": 314.813,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-141",
+          "assetId": "env-06b9c91b8aa852147aeff0d9e840e700",
+          "name": "Fire Texture 9",
+          "x": 797.887,
+          "y": -673.856,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-142",
+          "assetId": "env-dadd83dc41247fd4cb46558d354211cf",
+          "name": "Fire Texture 1",
+          "x": 781.616,
+          "y": 417.292,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-143",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": -681.839,
+          "y": -923.729,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-144",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": 268.727,
+          "y": -1451.193,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-145",
+          "assetId": "env-117c27d2186fa914ab689691b5ec7665",
+          "name": "Fire Texture 10",
+          "x": -672.474,
+          "y": 1398.975,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-146",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": -746.572,
+          "y": 1367.254,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-147",
+          "assetId": "env-117c27d2186fa914ab689691b5ec7665",
+          "name": "Fire Texture 10",
+          "x": -742.107,
+          "y": -971.447,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-148",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": -520.549,
+          "y": -343.793,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-149",
+          "assetId": "env-964ccb1ff9aa090419d4db40bf1700af",
+          "name": "Fire Texture 6",
+          "x": -206.709,
+          "y": -1332.105,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-150",
+          "assetId": "env-dadd83dc41247fd4cb46558d354211cf",
+          "name": "Fire Texture 1",
+          "x": 561.462,
+          "y": -666.765,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-151",
+          "assetId": "env-665117c778eae544e8a689aeca792c7a",
+          "name": "Fire Texture 8",
+          "x": 690.016,
+          "y": 459.166,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-161",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": 632.747,
+          "y": -1410.237,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-166",
+          "assetId": "env-a064e9ae7d594b04db972146f2a6b4e5",
+          "name": "Fire Texture 4",
+          "x": -752.5,
+          "y": 914.28,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "layer-1",
+      "name": "Native Fire trees and bushes",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-2",
+          "assetId": "env-1af552e62d517564bb2e5dbf01328fe3",
+          "name": "Tree Fire Bare 1",
+          "x": -692.709,
+          "y": -1314.332,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-3",
+          "assetId": "env-ce2e6e9b4fc7f744a9916ae1c61d93f1",
+          "name": "Tree Fire Dead 7",
+          "x": 241.857,
+          "y": -37.145,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "env-ce2e6e9b4fc7f744a9916ae1c61d93f1",
+          "name": "Tree Fire Dead 7",
+          "x": 313.597,
+          "y": -102.728,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-5",
+          "assetId": "env-ce2e6e9b4fc7f744a9916ae1c61d93f1",
+          "name": "Tree Fire Dead 7",
+          "x": -713.491,
+          "y": -95.41,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-af9984dd4b065f4419a1dbda4537cdb3",
+          "name": "Tree Fire Dead 3",
+          "x": 216.96,
+          "y": -666.446,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-25b431636d638bf4d9582c51053d32dd",
+          "name": "Tree Fire Dead 6",
+          "x": 381.298,
+          "y": -564.848,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-641b2f2aab9d37746958b0504b280266",
+          "name": "Tree Fire Dead 2",
+          "x": -180.871,
+          "y": 436.228,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-af9984dd4b065f4419a1dbda4537cdb3",
+          "name": "Tree Fire Dead 3",
+          "x": 616.911,
+          "y": 1140.953,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-9821fd9e2bcfa1945b2fca8327e0d6d6",
+          "name": "Tree Fire Dead 1",
+          "x": -788.344,
+          "y": 1311.271,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-f7032f38019671243a8c65530cf9e6a0",
+          "name": "Tree Fire Bare 5",
+          "x": 711.701,
+          "y": -83.586,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-9821fd9e2bcfa1945b2fca8327e0d6d6",
+          "name": "Tree Fire Dead 1",
+          "x": -250.081,
+          "y": -337.26,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-fa15fe4635317ff42b8069ecc919a545",
+          "name": "Tree Fire Bare 4",
+          "x": -558.487,
+          "y": -1015.621,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-1af552e62d517564bb2e5dbf01328fe3",
+          "name": "Tree Fire Bare 1",
+          "x": 784.344,
+          "y": 400.476,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-641b2f2aab9d37746958b0504b280266",
+          "name": "Tree Fire Dead 2",
+          "x": -757.85,
+          "y": 738.187,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-4efb9284e84eb674f9007f57f85d8123",
+          "name": "Tree Fire Dead 4",
+          "x": -732.83,
+          "y": 331.618,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-fa15fe4635317ff42b8069ecc919a545",
+          "name": "Tree Fire Bare 4",
+          "x": 485.634,
+          "y": -513.754,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-1af552e62d517564bb2e5dbf01328fe3",
+          "name": "Tree Fire Bare 1",
+          "x": -640.039,
+          "y": 606.693,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-40c6788869b911f46a7b2b4e401577dc",
+          "name": "Tree Fire Bare 3",
+          "x": 281.745,
+          "y": -1224.9,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-2a2095d4f3a1067419eefb35410375ed",
+          "name": "Tree Fire Bare 6",
+          "x": 216.753,
+          "y": -283.014,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-40c6788869b911f46a7b2b4e401577dc",
+          "name": "Tree Fire Bare 3",
+          "x": -596.327,
+          "y": -1324.541,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-2a2095d4f3a1067419eefb35410375ed",
+          "name": "Tree Fire Bare 6",
+          "x": 631.701,
+          "y": -719.19,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-641b2f2aab9d37746958b0504b280266",
+          "name": "Tree Fire Dead 2",
+          "x": -895.597,
+          "y": -288.798,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-641b2f2aab9d37746958b0504b280266",
+          "name": "Tree Fire Dead 2",
+          "x": -188.847,
+          "y": 501.889,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-25b431636d638bf4d9582c51053d32dd",
+          "name": "Tree Fire Dead 6",
+          "x": 520.664,
+          "y": -923.315,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-641b2f2aab9d37746958b0504b280266",
+          "name": "Tree Fire Dead 2",
+          "x": -748.113,
+          "y": 1389.999,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-af9984dd4b065f4419a1dbda4537cdb3",
+          "name": "Tree Fire Dead 3",
+          "x": -509.644,
+          "y": -280.304,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-25542138e69ecd242a55a2780f1bbffb",
+          "name": "Tree Fire Dead 5",
+          "x": -834.285,
+          "y": 1343.612,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-4efb9284e84eb674f9007f57f85d8123",
+          "name": "Tree Fire Dead 4",
+          "x": 203.583,
+          "y": -861.132,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-641b2f2aab9d37746958b0504b280266",
+          "name": "Tree Fire Dead 2",
+          "x": 836.032,
+          "y": 1092.725,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-25542138e69ecd242a55a2780f1bbffb",
+          "name": "Tree Fire Dead 5",
+          "x": -301.462,
+          "y": 304.09,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-ce2e6e9b4fc7f744a9916ae1c61d93f1",
+          "name": "Tree Fire Dead 7",
+          "x": 267.085,
+          "y": -1016.601,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-641b2f2aab9d37746958b0504b280266",
+          "name": "Tree Fire Dead 2",
+          "x": 173.647,
+          "y": -607.245,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-ce2e6e9b4fc7f744a9916ae1c61d93f1",
+          "name": "Tree Fire Dead 7",
+          "x": 600.187,
+          "y": -1331.232,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-f7032f38019671243a8c65530cf9e6a0",
+          "name": "Tree Fire Bare 5",
+          "x": -670.018,
+          "y": -1253.939,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-9821fd9e2bcfa1945b2fca8327e0d6d6",
+          "name": "Tree Fire Dead 1",
+          "x": 758.418,
+          "y": -31.355,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-152",
+          "assetId": "env-1af552e62d517564bb2e5dbf01328fe3",
+          "name": "Tree Fire Bare 1",
+          "x": -732.757,
+          "y": -1059.63,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-153",
+          "assetId": "env-40c6788869b911f46a7b2b4e401577dc",
+          "name": "Tree Fire Bare 3",
+          "x": -652.634,
+          "y": -1070.928,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-154",
+          "assetId": "env-641b2f2aab9d37746958b0504b280266",
+          "name": "Tree Fire Dead 2",
+          "x": -780.277,
+          "y": -1018.406,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-160",
+          "assetId": "env-af9984dd4b065f4419a1dbda4537cdb3",
+          "name": "Tree Fire Dead 3",
+          "x": 678.123,
+          "y": -1344.177,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-162",
+          "assetId": "env-5fcf67fce5027894986c08f45f48b3a9",
+          "name": "Tree Fire Bare 2",
+          "x": 641.187,
+          "y": 738.182,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-163",
+          "assetId": "env-9821fd9e2bcfa1945b2fca8327e0d6d6",
+          "name": "Tree Fire Dead 1",
+          "x": 731.654,
+          "y": 680.272,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-167",
+          "assetId": "env-2a2095d4f3a1067419eefb35410375ed",
+          "name": "Tree Fire Bare 6",
+          "x": -701.667,
+          "y": 852.975,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-168",
+          "assetId": "env-25542138e69ecd242a55a2780f1bbffb",
+          "name": "Tree Fire Dead 5",
+          "x": -832.5,
+          "y": 826.28,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-173",
+          "assetId": "env-25b431636d638bf4d9582c51053d32dd",
+          "name": "Tree Fire Dead 6",
+          "x": -794.247,
+          "y": -298.565,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-174",
+          "assetId": "env-fa15fe4635317ff42b8069ecc919a545",
+          "name": "Tree Fire Bare 4",
+          "x": 845.606,
+          "y": -93.29,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-175",
+          "assetId": "env-ce2e6e9b4fc7f744a9916ae1c61d93f1",
+          "name": "Tree Fire Dead 7",
+          "x": 890.036,
+          "y": -149.09,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "layer-2",
+      "name": "Native stones and biome details",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-37",
+          "assetId": "env-c2a927a63b4471e4a97b1e6cdea73039",
+          "name": "Stone Fire Dark 2",
+          "x": -732.464,
+          "y": -868.302,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-7bfedffde8997c74bbeb7110e170ea94",
+          "name": "Stone Fire Dark 4",
+          "x": 242.626,
+          "y": -1470.99,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-7bfedffde8997c74bbeb7110e170ea94",
+          "name": "Stone Fire Dark 4",
+          "x": -623.395,
+          "y": -1141.24,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-9944e2de78ba9f44c9ec294e752690d7",
+          "name": "Stone Fire Dark 7",
+          "x": 606.168,
+          "y": -559.693,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-0a7c4e47995d7044ab9f87b459a98fe4",
+          "name": "Stone Fire Dark 9",
+          "x": 498.437,
+          "y": -553.378,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-3d30b0fb6df04e340b912af3a17b751e",
+          "name": "Stone Fire Dark 3",
+          "x": -344.818,
+          "y": -821.653,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-1f6e62f8cea27504c9329b99501fe935",
+          "name": "Stone Fire Dark 10",
+          "x": 724.468,
+          "y": -879.78,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-7834edb37214bad4ba8b5308fd0a348e",
+          "name": "Stone Fire Dark 8",
+          "x": 209.536,
+          "y": -518.182,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-9f48d86892c1aac4eac35ee6216a3f69",
+          "name": "Stone Fire Red 7",
+          "x": 595.927,
+          "y": -1364.882,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-fc349432bebfc674294a6f2190e4a81f",
+          "name": "Stone Fire Red 10",
+          "x": -834.938,
+          "y": 884.598,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-1f6e62f8cea27504c9329b99501fe935",
+          "name": "Stone Fire Dark 10",
+          "x": 748.018,
+          "y": 1090.274,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-c2a927a63b4471e4a97b1e6cdea73039",
+          "name": "Stone Fire Dark 2",
+          "x": 848.428,
+          "y": -746.283,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-0a7c4e47995d7044ab9f87b459a98fe4",
+          "name": "Stone Fire Dark 9",
+          "x": 721.327,
+          "y": -556.826,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-666eb33ab2b31a34aac8fc727f279189",
+          "name": "Stone Fire Red 5",
+          "x": -738.242,
+          "y": -560.705,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-7834edb37214bad4ba8b5308fd0a348e",
+          "name": "Stone Fire Dark 8",
+          "x": -194.809,
+          "y": -11.067,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-666eb33ab2b31a34aac8fc727f279189",
+          "name": "Stone Fire Red 5",
+          "x": -647.869,
+          "y": 1249.88,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-9f48d86892c1aac4eac35ee6216a3f69",
+          "name": "Stone Fire Red 7",
+          "x": -635.953,
+          "y": -320.029,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-27c21b847b2c3d84093bb026d3cb120a",
+          "name": "Stone Fire Dark 6",
+          "x": 755.527,
+          "y": 1005.683,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-fc349432bebfc674294a6f2190e4a81f",
+          "name": "Stone Fire Red 10",
+          "x": 736.171,
+          "y": -53.007,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-7bfedffde8997c74bbeb7110e170ea94",
+          "name": "Stone Fire Dark 4",
+          "x": 279.245,
+          "y": 365.096,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-666eb33ab2b31a34aac8fc727f279189",
+          "name": "Stone Fire Red 5",
+          "x": -871.118,
+          "y": 1380.55,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-0a7c4e47995d7044ab9f87b459a98fe4",
+          "name": "Stone Fire Dark 9",
+          "x": 848.11,
+          "y": 1493.78,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-7bfedffde8997c74bbeb7110e170ea94",
+          "name": "Stone Fire Dark 4",
+          "x": -884.56,
+          "y": -74.511,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-c2a927a63b4471e4a97b1e6cdea73039",
+          "name": "Stone Fire Dark 2",
+          "x": 787.263,
+          "y": 1051.569,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-c2a927a63b4471e4a97b1e6cdea73039",
+          "name": "Stone Fire Dark 2",
+          "x": -69.019,
+          "y": -1397.347,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-7bfedffde8997c74bbeb7110e170ea94",
+          "name": "Stone Fire Dark 4",
+          "x": 665.003,
+          "y": -494.856,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-27c21b847b2c3d84093bb026d3cb120a",
+          "name": "Stone Fire Dark 6",
+          "x": -687.892,
+          "y": 420.095,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-3d30b0fb6df04e340b912af3a17b751e",
+          "name": "Stone Fire Dark 3",
+          "x": 568.586,
+          "y": -1285.057,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-54e033cb831746b4aa3a30831ca24fd7",
+          "name": "Stone Fire Dark 1",
+          "x": 349.537,
+          "y": -554.594,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-c2a927a63b4471e4a97b1e6cdea73039",
+          "name": "Stone Fire Dark 2",
+          "x": -455.948,
+          "y": -1522.251,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-fc349432bebfc674294a6f2190e4a81f",
+          "name": "Stone Fire Red 10",
+          "x": 533.955,
+          "y": -876.004,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-2a087536ecefdb84c98e53f2515653a6",
+          "name": "Stone Fire Red 6",
+          "x": -623.661,
+          "y": 463.798,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-9944e2de78ba9f44c9ec294e752690d7",
+          "name": "Stone Fire Dark 7",
+          "x": -195.946,
+          "y": 1377.364,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-1f6e62f8cea27504c9329b99501fe935",
+          "name": "Stone Fire Dark 10",
+          "x": 518.585,
+          "y": -1492.885,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-2a087536ecefdb84c98e53f2515653a6",
+          "name": "Stone Fire Red 6",
+          "x": -697.002,
+          "y": 1421.731,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-7bfedffde8997c74bbeb7110e170ea94",
+          "name": "Stone Fire Dark 4",
+          "x": 129.572,
+          "y": -669.85,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-27c21b847b2c3d84093bb026d3cb120a",
+          "name": "Stone Fire Dark 6",
+          "x": -656.42,
+          "y": 1491.29,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-9944e2de78ba9f44c9ec294e752690d7",
+          "name": "Stone Fire Dark 7",
+          "x": -577.165,
+          "y": 543.092,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-27c21b847b2c3d84093bb026d3cb120a",
+          "name": "Stone Fire Dark 6",
+          "x": 784.95,
+          "y": 607.764,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-3d30b0fb6df04e340b912af3a17b751e",
+          "name": "Stone Fire Dark 3",
+          "x": -291.436,
+          "y": -362.973,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-9f48d86892c1aac4eac35ee6216a3f69",
+          "name": "Stone Fire Red 7",
+          "x": -185.254,
+          "y": -1220.738,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-3d30b0fb6df04e340b912af3a17b751e",
+          "name": "Stone Fire Dark 3",
+          "x": -576.124,
+          "y": -963.536,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-0a7c4e47995d7044ab9f87b459a98fe4",
+          "name": "Stone Fire Dark 9",
+          "x": -712.241,
+          "y": 513.022,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-9944e2de78ba9f44c9ec294e752690d7",
+          "name": "Stone Fire Dark 7",
+          "x": -737.04,
+          "y": 1373.589,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-0a7c4e47995d7044ab9f87b459a98fe4",
+          "name": "Stone Fire Dark 9",
+          "x": -152.423,
+          "y": -725.171,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-9944e2de78ba9f44c9ec294e752690d7",
+          "name": "Stone Fire Dark 7",
+          "x": -280.217,
+          "y": -759.041,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-27c21b847b2c3d84093bb026d3cb120a",
+          "name": "Stone Fire Dark 6",
+          "x": -749.268,
+          "y": -326.272,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-9944e2de78ba9f44c9ec294e752690d7",
+          "name": "Stone Fire Dark 7",
+          "x": -215.508,
+          "y": 364.03,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-3d30b0fb6df04e340b912af3a17b751e",
+          "name": "Stone Fire Dark 3",
+          "x": 290.672,
+          "y": -927.393,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-666eb33ab2b31a34aac8fc727f279189",
+          "name": "Stone Fire Red 5",
+          "x": -798.734,
+          "y": -1365.74,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-155",
+          "assetId": "env-c2a927a63b4471e4a97b1e6cdea73039",
+          "name": "Stone Fire Dark 2",
+          "x": -634.879,
+          "y": -1194.597,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-156",
+          "assetId": "env-2a087536ecefdb84c98e53f2515653a6",
+          "name": "Stone Fire Red 6",
+          "x": -721.228,
+          "y": -1267.685,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-157",
+          "assetId": "env-3d30b0fb6df04e340b912af3a17b751e",
+          "name": "Stone Fire Dark 3",
+          "x": 596.552,
+          "y": -1174.597,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-158",
+          "assetId": "env-1f6e62f8cea27504c9329b99501fe935",
+          "name": "Stone Fire Dark 10",
+          "x": 571.608,
+          "y": -1204.831,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-159",
+          "assetId": "env-666eb33ab2b31a34aac8fc727f279189",
+          "name": "Stone Fire Red 5",
+          "x": 595.885,
+          "y": -1268.475,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-164",
+          "assetId": "env-54e033cb831746b4aa3a30831ca24fd7",
+          "name": "Stone Fire Dark 1",
+          "x": 702,
+          "y": 671.23,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-165",
+          "assetId": "env-2a087536ecefdb84c98e53f2515653a6",
+          "name": "Stone Fire Red 6",
+          "x": 748.019,
+          "y": 650.259,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-169",
+          "assetId": "env-27c21b847b2c3d84093bb026d3cb120a",
+          "name": "Stone Fire Dark 6",
+          "x": -762.267,
+          "y": 870.757,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-170",
+          "assetId": "env-0a7c4e47995d7044ab9f87b459a98fe4",
+          "name": "Stone Fire Dark 9",
+          "x": -843.542,
+          "y": -82.799,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-171",
+          "assetId": "env-7bfedffde8997c74bbeb7110e170ea94",
+          "name": "Stone Fire Dark 4",
+          "x": -837.936,
+          "y": -265.05,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-172",
+          "assetId": "env-2a087536ecefdb84c98e53f2515653a6",
+          "name": "Stone Fire Red 6",
+          "x": -870.842,
+          "y": -310.405,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-176",
+          "assetId": "env-9944e2de78ba9f44c9ec294e752690d7",
+          "name": "Stone Fire Dark 7",
+          "x": 719.458,
+          "y": -310.405,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-177",
+          "assetId": "env-2a087536ecefdb84c98e53f2515653a6",
+          "name": "Stone Fire Red 6",
+          "x": 785.219,
+          "y": -280.041,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 178,
+  "nextLayer": 3,
+  "nextGround": 2,
+  "blockerMask": [
+    [
+      [
+        [
+          -924.2533470648815,
+          -1351.3004941321806
+        ],
+        [
+          -853.3779608650875,
+          -1351.3004941321806
+        ],
+        [
+          -811.2358393408856,
+          -1326.400555898703
+        ],
+        [
+          -753.7693099897014,
+          -1309.1621371216802
+        ],
+        [
+          -740.3604531410916,
+          -1255.531500926498
+        ],
+        [
+          -736.5293511843461,
+          -1255.531500926498
+        ],
+        [
+          -728.8671472708547,
+          -1245.9546016059296
+        ],
+        [
+          -717.373841400618,
+          -1240.2084620135888
+        ],
+        [
+          -675.2317198764162,
+          -1203.8162445954292
+        ],
+        [
+          -669.4850669412976,
+          -1173.1701667696107
+        ],
+        [
+          -698.2183316168898,
+          -1081.2319332921554
+        ],
+        [
+          -703.9649845520082,
+          -1075.4857936998148
+        ],
+        [
+          -776.755921730175,
+          -1050.5858554663373
+        ],
+        [
+          -836.1380020597322,
+          -1037.1781964175416
+        ],
+        [
+          -832.3069001029866,
+          -1014.1936380481777
+        ],
+        [
+          -809.3202883625129,
+          -947.1553428042
+        ],
+        [
+          -809.3202883625129,
+          -922.2554045707226
+        ],
+        [
+          -816.9824922760041,
+          -878.2016676961086
+        ],
+        [
+          -820.8135942327498,
+          -820.7402717726993
+        ],
+        [
+          -861.0401647785789,
+          -786.2634342186534
+        ],
+        [
+          -924.2533470648815,
+          -782.432674490426
+        ],
+        [
+          -924.2533470648815,
+          -1351.3004941321806
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -924.2533470648815,
+          -565.9947498455838
+        ],
+        [
+          -901.2667353244079,
+          -558.333230389129
+        ],
+        [
+          -880.195674562307,
+          -544.9255713403336
+        ],
+        [
+          -855.2935118434604,
+          -493.21031500926495
+        ],
+        [
+          -828.475798146241,
+          -491.29493514515127
+        ],
+        [
+          -803.5736354273945,
+          -506.6179740580604
+        ],
+        [
+          -705.880535530381,
+          -506.6179740580604
+        ],
+        [
+          -669.4850669412976,
+          -474.05651636812854
+        ],
+        [
+          -583.2852729145211,
+          -475.9718962322422
+        ],
+        [
+          -543.058702368692,
+          -506.6179740580604
+        ],
+        [
+          -418.54788877445935,
+          -506.6179740580604
+        ],
+        [
+          -384.0679711637487,
+          -479.80265596046956
+        ],
+        [
+          -169.5262615859938,
+          -479.80265596046956
+        ],
+        [
+          -154.20185375901133,
+          -489.3795552810376
+        ],
+        [
+          -136.96110000000002,
+          -495.53641730234716
+        ],
+        [
+          -136.96110000000002,
+          -403.334666
+        ],
+        [
+          -918.50706,
+          -403.334666
+        ],
+        [
+          -918.50706,
+          -340.36322135552825
+        ],
+        [
+          -924.2533470648815,
+          -343.81068560840043
+        ],
+        [
+          -924.2533470648815,
+          -565.9947498455838
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -924.2533470648815,
+          25.857628165534322
+        ],
+        [
+          -872.1878753000655,
+          21.710100999999938
+        ],
+        [
+          -663.0752694129768,
+          21.710100999999938
+        ],
+        [
+          -640.7518022657055,
+          29.688387893761508
+        ],
+        [
+          -618.2794692379249,
+          99.76250183582731
+        ],
+        [
+          -606.8871808443553,
+          189.42249942177406
+        ],
+        [
+          -567.869616930543,
+          355.2849884979908
+        ],
+        [
+          -560.3887985846854,
+          374.4567634342186
+        ],
+        [
+          -575.6230690010298,
+          374.4567634342186
+        ],
+        [
+          -594.778578784758,
+          368.71062384187775
+        ],
+        [
+          -638.8362512873327,
+          320.82612723903645
+        ],
+        [
+          -661.8228630278064,
+          311.2492279184682
+        ],
+        [
+          -694.3872296601442,
+          276.7723903644225
+        ],
+        [
+          -799.7425334706488,
+          276.7723903644225
+        ],
+        [
+          -838.0535530381051,
+          316.99536751080905
+        ],
+        [
+          -924.2533470648815,
+          318.9107473749228
+        ],
+        [
+          -924.2533470648815,
+          25.857628165534322
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -924.2533470648815,
+          868.6247683755406
+        ],
+        [
+          -920.4222451081359,
+          868.6247683755406
+        ],
+        [
+          -918.5066941297632,
+          872.4555281037677
+        ],
+        [
+          -895.5200823892894,
+          882.032427424336
+        ],
+        [
+          -851.4624098867147,
+          910.7631253860408
+        ],
+        [
+          -836.1380020597322,
+          949.0707226683137
+        ],
+        [
+          -836.1380020597322,
+          1016.1090179122914
+        ],
+        [
+          -832.3069001029866,
+          1039.0935762816553
+        ],
+        [
+          -757.6004119464469,
+          1069.7396541074738
+        ],
+        [
+          -748.022657054583,
+          1085.0626930203828
+        ],
+        [
+          -738.4449021627188,
+          1117.624150710315
+        ],
+        [
+          -721.2049433573635,
+          1127.2010500308834
+        ],
+        [
+          -715.4582904222451,
+          1134.8625694873379
+        ],
+        [
+          -711.6271884654996,
+          1134.8625694873379
+        ],
+        [
+          -663.7384140061791,
+          1173.170166769611
+        ],
+        [
+          -657.9917610710608,
+          1188.49320568252
+        ],
+        [
+          -657.9917610710608,
+          1211.477764051884
+        ],
+        [
+          -675.2317198764162,
+          1276.600679431748
+        ],
+        [
+          -677.147270854789,
+          1295.7544780728845
+        ],
+        [
+          -688.6405767250257,
+          1307.2467572575663
+        ],
+        [
+          -702.0494335736354,
+          1311.0775169857936
+        ],
+        [
+          -922.3377960865087,
+          1311.0775169857936
+        ],
+        [
+          -924.2533470648815,
+          868.6247683755406
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -405.5908986506765,
+          21.710100999999938
+        ],
+        [
+          -238.19957507724004,
+          21.710100999999938
+        ],
+        [
+          -225.07723995880534,
+          33.51914762198887
+        ],
+        [
+          -136.96110000000002,
+          36.84398794771992
+        ],
+        [
+          -136.96110000000002,
+          331.4245801511907
+        ],
+        [
+          -182.93511843460345,
+          330.40302655960465
+        ],
+        [
+          -215.49948506694133,
+          301.6723285979
+        ],
+        [
+          -320.8547888774459,
+          301.6723285979
+        ],
+        [
+          -341.92584963954687,
+          318.9107473749228
+        ],
+        [
+          -339.5186784878801,
+          331.54726701262797
+        ],
+        [
+          -357.81745919685085,
+          288.66791475575803
+        ],
+        [
+          -390.5654615140133,
+          148.8464677851214
+        ],
+        [
+          -405.5908986506765,
+          21.710100999999938
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          131.21555999999998,
+          -481.7178768480544
+        ],
+        [
+          142.70854788877452,
+          -475.9718962322422
+        ],
+        [
+          261.47270854788883,
+          -475.9718962322422
+        ],
+        [
+          274.8815653964984,
+          -477.8872760963559
+        ],
+        [
+          280.6282183316169,
+          -485.54879555281025
+        ],
+        [
+          311.2770339855818,
+          -506.6179740580604
+        ],
+        [
+          426.2100926879505,
+          -506.6179740580604
+        ],
+        [
+          431.95674562306897,
+          -504.70259419394705
+        ],
+        [
+          462.6055612770339,
+          -474.05651636812854
+        ],
+        [
+          552.6364572605561,
+          -474.05651636812854
+        ],
+        [
+          579.4541709577754,
+          -489.3795552810376
+        ],
+        [
+          723.1204943357362,
+          -487.4641754169239
+        ],
+        [
+          769.0937178166838,
+          -535.3486720197652
+        ],
+        [
+          776.755921730175,
+          -539.1794317479926
+        ],
+        [
+          805.4891864057672,
+          -544.9255713403336
+        ],
+        [
+          874.4490216271884,
+          -548.7563310685609
+        ],
+        [
+          916.5911431513903,
+          -575.5716491661518
+        ],
+        [
+          926.1688980432543,
+          -577.4870290302655
+        ],
+        [
+          926.1688980432543,
+          -316.9953675108092
+        ],
+        [
+          922.33866,
+          -317.43306989845587
+        ],
+        [
+          922.33866,
+          -403.334666
+        ],
+        [
+          131.21555999999998,
+          -403.334666
+        ],
+        [
+          131.21555999999998,
+          -481.7178768480544
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          131.21555999999998,
+          45.01142680667077
+        ],
+        [
+          184.8506694129764,
+          45.01142680667077
+        ],
+        [
+          208.15407688980446,
+          21.710100999999938
+        ],
+        [
+          377.5730514416145,
+          21.710100999999938
+        ],
+        [
+          360.53857932388166,
+          147.1651599752645
+        ],
+        [
+          322.1162798548474,
+          280.5056306959186
+        ],
+        [
+          308.8822770206797,
+          313.2513812186707
+        ],
+        [
+          294.0370751802266,
+          299.7569487337863
+        ],
+        [
+          280.6282183316169,
+          297.84156886967264
+        ],
+        [
+          217.41503604531417,
+          297.84156886967264
+        ],
+        [
+          175.27291452111228,
+          328.487646695491
+        ],
+        [
+          154.20185375901124,
+          332.31840642371833
+        ],
+        [
+          131.21555999999998,
+          332.31840642371833
+        ],
+        [
+          131.21555999999998,
+          45.01142680667077
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          522.9762247848073,
+          372.5413835701051
+        ],
+        [
+          620.5024058486987,
+          40.12664856026325
+        ],
+        [
+          657.9917610710608,
+          37.34990735021623
+        ],
+        [
+          672.8509044562309,
+          21.710100999999938
+        ],
+        [
+          904.248123130793,
+          21.710100999999938
+        ],
+        [
+          910.844490216272,
+          31.60376775787519
+        ],
+        [
+          926.1688980432543,
+          35.434527486102546
+        ],
+        [
+          926.1688980432543,
+          286.3492896849907
+        ],
+        [
+          887.8578784757981,
+          284.43390982087703
+        ],
+        [
+          853.3779608650875,
+          253.7878319950587
+        ],
+        [
+          763.3470648815653,
+          253.7878319950587
+        ],
+        [
+          711.6271884654996,
+          305.50308832612717
+        ],
+        [
+          617.7651905252317,
+          307.41846819024084
+        ],
+        [
+          583.2852729145211,
+          332.31840642371833
+        ],
+        [
+          567.9608650875388,
+          336.1491661519457
+        ],
+        [
+          535.3964984552008,
+          368.71062384187775
+        ],
+        [
+          522.9762247848073,
+          372.5413835701051
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          615.8496395468588,
+          -1245.9546016059296
+        ],
+        [
+          625.427394438723,
+          -1299.5852378011118
+        ],
+        [
+          635.0051493305871,
+          -1311.0775169857936
+        ],
+        [
+          702.0494335736354,
+          -1349.385114268067
+        ],
+        [
+          719.2893923789908,
+          -1353.2158739962942
+        ],
+        [
+          926.1688980432543,
+          -1351.3004941321806
+        ],
+        [
+          926.1688980432543,
+          -813.0787523162445
+        ],
+        [
+          874.4490216271884,
+          -818.8248919085856
+        ],
+        [
+          866.7868177136972,
+          -822.655651636813
+        ],
+        [
+          826.5602471678683,
+          -855.2171093267448
+        ],
+        [
+          822.7291452111226,
+          -855.2171093267448
+        ],
+        [
+          813.1513903192584,
+          -866.7093885114269
+        ],
+        [
+          809.3202883625129,
+          -899.2708462013587
+        ],
+        [
+          793.9958805355304,
+          -949.0707226683137
+        ],
+        [
+          793.9958805355304,
+          -964.3937615812231
+        ],
+        [
+          811.2358393408856,
+          -985.4629400864733
+        ],
+        [
+          811.2358393408856,
+          -993.1244595429276
+        ],
+        [
+          826.5602471678683,
+          -1018.0243977764052
+        ],
+        [
+          753.7693099897015,
+          -1042.9243360098826
+        ],
+        [
+          736.5293511843461,
+          -1056.3319950586783
+        ],
+        [
+          673.3161688980433,
+          -1092.7242124768375
+        ],
+        [
+          665.653964984552,
+          -1102.301111797406
+        ],
+        [
+          652.2451081359422,
+          -1146.35484867202
+        ],
+        [
+          617.7651905252317,
+          -1226.800802964793
+        ],
+        [
+          615.8496395468588,
+          -1245.9546016059296
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          663.7384140061791,
+          769.0250154416307
+        ],
+        [
+          688.6405767250257,
+          724.9712785670167
+        ],
+        [
+          703.9649845520082,
+          705.8174799258802
+        ],
+        [
+          782.5025746652935,
+          682.8329215565165
+        ],
+        [
+          826.5602471678683,
+          631.1176652254478
+        ],
+        [
+          880.1956745623069,
+          617.7100061766522
+        ],
+        [
+          903.1822863027807,
+          596.6408276714021
+        ],
+        [
+          924.2533470648815,
+          583.2331686226065
+        ],
+        [
+          928.0844490216272,
+          715.3943792464485
+        ],
+        [
+          928.0844490216272,
+          1297.6698579369981
+        ],
+        [
+          926.1688980432543,
+          1309.16213712168
+        ],
+        [
+          922.3377960865087,
+          1311.0775169857936
+        ],
+        [
+          815.4080280317187,
+          1310.2608543118158
+        ],
+        [
+          798.573649869901,
+          1281.905426741999
+        ],
+        [
+          749.1828128130604,
+          1224.2383374040057
+        ],
+        [
+          748.022657054583,
+          1211.477764051884
+        ],
+        [
+          769.0937178166838,
+          1175.0855466337246
+        ],
+        [
+          793.9958805355304,
+          1165.5086473131564
+        ],
+        [
+          807.40473738414,
+          1155.931747992588
+        ],
+        [
+          818.898043254377,
+          1121.4549104385424
+        ],
+        [
+          861.0401647785789,
+          1104.2164916615195
+        ],
+        [
+          862.9557157569517,
+          1012.2782581840643
+        ],
+        [
+          824.6446961894954,
+          996.955219271155
+        ],
+        [
+          815.0669412976313,
+          989.2936998147004
+        ],
+        [
+          790.1647785787849,
+          931.832303891291
+        ],
+        [
+          713.5427394438724,
+          897.3554663372453
+        ],
+        [
+          698.2183316168898,
+          885.8631871525633
+        ],
+        [
+          679.0628218331618,
+          820.7402717726993
+        ],
+        [
+          663.7384140061791,
+          782.4326744904262
+        ],
+        [
+          663.7384140061791,
+          769.0250154416307
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "concept-biome-map",
+    "concept": "crossed-heights",
+    "reference": "13-crossed-heights.png",
+    "normalizedLayout": true,
+    "terrainWorldUnitsPerPixel": 1.9155509783728115,
+    "blockerSource": "actual-alpha-with-authored-walkable-openings",
+    "blockerAlphaThreshold": 32,
+    "blockerSourceSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6"
+  }
+}

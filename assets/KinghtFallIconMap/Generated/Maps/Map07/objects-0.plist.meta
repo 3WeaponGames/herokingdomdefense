@@ -4,7 +4,7 @@
   "importer": "sprite-atlas",
   "rawTextureUuid": "fa7a788a-0b5f-4d3a-ae97-a05df26fc6d7",
   "size": {
-    "width": 1456,
+    "width": 1508,
     "height": 2048
   },
   "type": "Texture Packer",
@@ -29,12 +29,11 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
-    "custom-c8c6b45e7b1257308a266174-0-2044": {
+    "custom-393e27ae0f008002371c9524-0-0": {
       "ver": "1.0.6",
-      "uuid": "c1beecd4-078d-45fb-ab3a-123bf94945c8",
+      "uuid": "414fc995-2224-48df-aed3-158c4c39e737",
       "importer": "sprite-frame",
       "rawTextureUuid": "fa7a788a-0b5f-4d3a-ae97-a05df26fc6d7",
       "trimType": "custom",
@@ -44,15 +43,14 @@
       "offsetY": 0,
       "trimX": 730,
       "trimY": 2,
-      "width": 724,
-      "height": 128,
-      "rawWidth": 724,
-      "rawHeight": 128,
+      "width": 776,
+      "height": 2027,
+      "rawWidth": 776,
+      "rawHeight": 2027,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     }
   }

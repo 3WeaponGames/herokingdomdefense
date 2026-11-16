@@ -8,12 +8,18 @@ var MAX_FEEDBACK=256,MAX_IMPACTS=128;
 function visual(runtime) {
   var value=(runtime.settings || Settings.effective(runtime.state.style, runtime.config)).visual;
   if(runtime.state.style!=='skirmisher')return value;
+  var Looks=require('./ProjectileLooks'),data=Looks.currentCatalog();
   if(!value.projectile&&!value.resource&&runtime.config){
-    var Looks=require('./ProjectileLooks'),data=Looks.currentCatalog();
     if(data){
       var user=require('KinghtFallPlayerMgr').KinghtFallPlayerMgr.getInstance().getUserData(),level=user.getHeroWeaponLevel?user.getHeroWeaponLevel('skirmisher',3):user.getPersonLevel(3),asset=Looks.skillAsset(data,runtime.config,level);
       if(asset)value=Object.assign({},value,{projectile:asset.id,projectileAsset:asset});
     }
+  }
+  // Saved selections from before tier trails were added retain their artwork
+  // and pick up its trail without rewriting the saved skill settings.
+  if(data&&value.projectile&&value.projectileAsset&&value.projectileAsset.trail===undefined){
+    var flight=(data.assets||[]).find(function(asset){return asset.id===value.projectile;}),trail=flight&&(data.trails||[]).find(function(trail){return trail.id===flight.trail;});
+    if(trail)value=Object.assign({},value,{projectileAsset:Object.assign({},value.projectileAsset,{trail:trail})});
   }
   return Settings.projectileVisual(value);
 }
@@ -156,7 +162,7 @@ function update(runtime) {
 }
 function alive(node) { return !!node&&(!cc.isValid||cc.isValid(node,true)); }
 function loadResource(v,callback) {
-  var manager=cc.assetManager,type=v.resourceKind==="spine"&&typeof sp!=="undefined"?sp.SkeletonData:cc.SpriteFrame;
+  var manager=cc.assetManager,type=v.resourceKind==='texture'?cc.Texture2D:v.resourceKind==="spine"&&typeof sp!=="undefined"?sp.SkeletonData:cc.SpriteFrame;
   if(!manager)return callback(Error("Asset manager unavailable"));
   if(v.resourceBundle&&v.resourcePath){
     var use=function(bundle){bundle.load(v.resourcePath,type,callback);},bundle=v.resourceBundle==="resources"?cc.resources:manager.getBundle&&manager.getBundle(v.resourceBundle);
@@ -197,6 +203,7 @@ function seekSprite(record) {
 }
 function dispose(record) {
   if(alive(record.node)&&alive(record.sprite))record.sprite.spriteFrame=null;
+  if(alive(record.trailNode))record.trailNode.destroy();
   if(alive(record.node))record.node.destroy();
 }
 function initialize(record,asset,v,s) {
@@ -225,7 +232,7 @@ function prepare(runtime,s,v,owner) {
   var request=s.loadVersion=(s.loadVersion||0)+1;
   var scope=runtime.state,game=runtime.game,data=game&&game.gameData,epoch=game&&game._combatEpoch,hero=runtime.hero,heroNode=hero&&hero.node,generation=heroNode&&heroNode._combatGeneration;
   try{loadResource(v,function(error,asset){
-    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key||s.loadVersion!==request)return;
+    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&owner.trailArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key||s.loadVersion!==request)return;
     if(runtime.state!==scope||runtime.game!==game||game&&game.gameData!==data||game&&game._combatEpoch!==epoch||runtime.hero!==hero||hero&&hero.node!==heroNode||!alive(heroNode)||heroNode._combatGeneration!==generation){s.loading=false;return;}
     s.loading=false;if(error||!asset){s.loadError=error||Error("Empty VFX asset");return;}s.asset=asset.addRef?asset.addRef():asset;
     s.nodes.forEach(function(record){initialize(record,asset,v,s);});
@@ -235,9 +242,13 @@ function resourceKey(v){return [v.resource,v.resourceKind,v.resourceBundle,v.res
 function attachments(hud,runtime) {
   var v=visual(runtime),iv=Settings.impactVisual(v),s=runtime._presentation;
   if(typeof cc==="undefined"||!cc.Sprite)return;
-  if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
+  if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
   s=state(runtime);var entities=[];
   if(v.resource)prepare(runtime,s,v);else clearArt(s);
+  if(v.resource&&v.resourceTrail&&cc.MotionStreak){
+    var trail=v.resourceTrail,trailArt=s.trailArt||(s.trailArt={nodes:new Map(),frames:new Map()});
+    prepare(runtime,trailArt,{resource:trail.textureUuid,resourceKind:'texture',resourceBundle:trail.bundle,resourcePath:trail.resource},s);
+  }else if(s.trailArt)clearArt(s.trailArt);
   if(runtime.beamTarget&&alive(runtime.beamTarget.node)&&runtime.beamTarget.hp>0&&(!runtime.beamVisibleNode||runtime.beamTarget.node===runtime.beamVisibleNode)&&(runtime.beamVisibleGeneration===undefined||runtime.beamTarget.node._combatGeneration===runtime.beamVisibleGeneration)){
     var beamGeneration=runtime.beamTarget.node._combatGeneration;
     var onset=beamOnset(runtime);
@@ -273,6 +284,11 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     record.entity=entity;if(s.asset)initialize(record,s.asset,view,s);
     if(!alive(record.node))return;
     var world=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x,entity.y));record.node.setPosition(destination.convertToNodeSpaceAR(world));
+    if(entity.radius&&record.initialized&&view.resourceTrail&&s.trailArt&&s.trailArt.asset){
+      var looks=require('./ProjectileLooks'),tail=looks.trailPoint(view.resourceTrail,entity,entity.angle),trailWorld=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(tail.x,tail.y));
+      looks.drawTrail(record,destination,view.resourceTrail,s.trailArt.asset,destination.convertToNodeSpaceAR(trailWorld),view.opacity);
+    }
+    else if(alive(record.trailNode))record.trailNode.active=false;
     var unit=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x+1,entity.y)),local=destination.convertToNodeSpaceAR(unit),origin=record.node.getPosition();
     var scale=Math.hypot(local.x-origin.x,local.y-origin.y)*(entity.radius?1:view.scale)*(entity.scale===undefined?1:entity.scale);
     if(entity.radius){
@@ -340,7 +356,7 @@ function clearNodes(s) {s.nodes.forEach(function(record){if(typeof cc!=="undefin
 function releaseAsset(s){if(s.asset&&s.asset.decRef)s.asset.decRef();s.asset=null;}
 function clearArt(s){clearNodes(s);releaseAsset(s);s.loadVersion=(s.loadVersion||0)+1;s.resourceKey=null;s.loading=false;s.loadError=null;}
 function clear(runtime) {
-  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.styleArts)s.styleArts.forEach(clearArt);
+  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.styleArts)s.styleArts.forEach(clearArt);
   s.sources.forEach(function(entry){if(entry.manager.releaseAudioSource)entry.manager.releaseAudioSource(entry.key,entry.source);else entry.manager.stopSource(entry.source);});s.sources=[];delete runtime._presentation;
 }
 exports.visual=visual;exports.color=color;exports.width=width;exports.offset=offset;exports.rotated=rotated;exports.projectilePoint=projectilePoint;exports.release=release;

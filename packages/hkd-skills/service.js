@@ -6,7 +6,7 @@ const FRAME_KEYS=['Frames','Columns','Cell','Fps','Loop'];
 const RESOURCE_PREFIXES=Settings.resourcePrefixes;
 const resourceKeys=prefix=>[prefix,prefix+'Bundle',prefix+'Path',prefix+'Kind',prefix+'Animation'].concat(FRAME_KEYS.map(key=>prefix+key));
 const clone=value=>JSON.parse(JSON.stringify(value)),object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
-function projectileData(asset){const result={};for(const key of ['id','uuid','kind','bundle','path','skin','animation','rotation','flipbook','premultipliedAlpha'])if(asset[key]!==undefined)result[key]=clone(asset[key]);return result;}
+function projectileData(asset){const result={};for(const key of ['id','uuid','kind','bundle','path','skin','animation','rotation','flipbook','premultipliedAlpha','trail'])if(asset[key]!==undefined)result[key]=clone(asset[key]);return result;}
 function leaves(before,after,prefix=[],result=[]){
   if(Document.equal(before,after))return result;
   if((object(before)||before===undefined)&&(object(after)||after===undefined))for(const key of new Set(Object.keys(before||{}).concat(Object.keys(after||{}))))leaves(before&&before[key],after&&after[key],prefix.concat(key),result);

@@ -197,7 +197,15 @@ function create(host,options){
     ctx.save();ctx.globalAlpha=alpha;ctx.lineCap='round';
     if(model.beam){if(builtin&&!v.beamResource){const from=screen(a.origin,vp),to=screen(a.target,vp);line(from,to,Math.max(1,finite(v.lineWidth,0)||10)*scale*vp.scale,v.color||'#7134a4');line(from,to,Math.max(1,(finite(v.lineWidth,0)||4))*scale*vp.scale,v.color||'#d9a4ff');}customEffect({x:a.target.x+finite(v.offsetX,0),y:a.target.y+finite(v.offsetY,0)},finite(v.rotation,0),model.time-model.beamVisibleStarted,vp,true);}
     for(const p of model.projectiles){ctx.globalAlpha=p.skill?alpha:1;const pv=p.skill?v:{},center=Projectile.point(p),angle=Math.atan2(p.direction.y,p.direction.x)*180/Math.PI,d=p.direction,arrow=Projectile.arrow(p.width),at=screen(center,vp),place=(along,across)=>screen({x:center.x+d.x*along-d.y*across,y:center.y+d.y*along+d.x*across},vp);
-      if(p.skill){ctx.lineWidth=1;circle(at,p.width*vp.scale,'#65d9ff88',false);}
+      if(p.skill){
+        const trail=pv.resourceTrail,age=Math.max(0,model.time-(p.started||0));
+        if(trail&&age>0&&p.speed>0){
+          const tail={x:center.x+d.x*finite(trail.offsetX,0)-d.y*finite(trail.offsetY,0),y:center.y+d.y*finite(trail.offsetX,0)+d.x*finite(trail.offsetY,0)},start=screen(tail,vp),end=screen({x:tail.x-d.x*p.speed*Math.min(age,trail.lifetime),y:tail.y-d.y*p.speed*Math.min(age,trail.lifetime)},vp),gradient=ctx.createLinearGradient(end.x,end.y,start.x,start.y);
+          gradient.addColorStop(0,trail.color+'00');gradient.addColorStop(1,trail.color);
+          ctx.save();ctx.globalAlpha*=finite(trail.opacity,255)/255;if(trail.additive)ctx.globalCompositeOperation='lighter';line(end,start,trail.width*vp.scale,gradient);ctx.restore();
+        }
+        ctx.lineWidth=1;circle(at,p.width*vp.scale,'#65d9ff88',false);
+      }
       if(!p.skill||builtin){line(place(arrow.tail,0),place(arrow.base,0),arrow.stroke*vp.scale,pv.color||'#fdf1a4');ctx.fillStyle=pv.color||'#ffffff';const a=place(arrow.tip,0),b=place(arrow.base,arrow.halfHeight),c=place(arrow.base,-arrow.halfHeight);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.closePath();ctx.fill();}if(p.skill)customEffect(center,angle,model.time-(p.started||0),vp,true,undefined,undefined,{radius:p.width});
     }
     ctx.globalAlpha=alpha;

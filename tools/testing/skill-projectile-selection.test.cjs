@@ -41,6 +41,14 @@ test('animated projectile metadata, undo and reset keep fallback artwork and unk
  f.service.reset(f.request({style:'skirmisher',path:'visual.projectile'}));assert.deepEqual(f.service.data,{skirmisher:{visual:{color:'#ff0000',extension:{keep:true}}}});assert.equal(f.service.dirty(),false);
 });
 
+test('choosing a tier arrow carries its trail into the skill draft, preview and explicit Save',t=>{
+ const f=fixture(t),before=f.bytes(),trail=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'))).trails.find(trail=>trail.id==='trail:hero-arrow-lv4');
+ f.service.catalogs.projectiles[0].trail=trail;f.change(arrow.id);
+ assert.deepEqual(Settings.projectileVisual(f.service.snapshot().effective.skirmisher.visual).resourceTrail,trail);
+ assert.deepEqual(f.service.describe({style:'skirmisher',projectile:arrow.id}).projectileAsset.trail,trail);assert.deepEqual(f.bytes(),before);
+ assert.equal(f.service.save(f.request()).result.saved,true);for(const text of f.bytes())assert.deepEqual(JSON.parse(text).HeroSkills.skirmisher.visual.projectileAsset.trail,trail);
+});
+
 test('missing or moved projectiles reject selection and Save while retaining drafts and external revisions',t=>{
  const f=fixture(t),before=f.bytes(),version=f.service.version;assert.throws(()=>f.change('impact:not-a-flight'),/flight asset/);assert.equal(f.service.version,version);assert.deepEqual(f.bytes(),before);
  f.change(arrow.id);f.service.catalogs.projectiles[0].path='projectiles/moved';assert.throws(()=>f.service.save(f.request()),/changed after selection/);assert.deepEqual(f.bytes(),before);
@@ -71,4 +79,25 @@ test('gameplay draws the selected sprite or Spine skin at the active arrow colli
  const rig={skeletonJson:{skeleton:{x:0,y:0,width:40,height:12},skins:[{name:'lv1'},{name:'lv3'}],animations:{jian:{}}},addRef(){retained++;return this;},decRef(){retained--;}};
  loads.shift().done(null,rig);P.attachments(hud,rt);record=rt._presentation.nodes.get(projectile);assert(record.skeleton);assert.equal(record.skeleton.premultipliedAlpha,false);assert.deepEqual(skins,['lv3']);assert.equal(record.node.x,70);assert.equal(record.node.y,40);
  P.clear(rt);assert.equal(retained,0);assert(record.node.destroyed);
+});
+
+test('tier trails render on active arrows at world positions, release on retirement and ignore late loads',()=>{
+ const vm=require('node:vm'),loads=[],catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'))),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')));let retained=0;
+ class Node{constructor(){this.children=[];this.components=[];this.x=this.y=0;this.active=true;}setParent(parent){this.parent=parent;parent.children.push(this);}getPosition(){return{x:this.x,y:this.y};}setPosition(p){this.x=p.x;this.y=p.y;}convertToWorldSpaceAR(p){return{x:p.x+this.x,y:p.y+this.y};}convertToNodeSpaceAR(p){return{x:p.x-this.x,y:p.y-this.y};}getComponent(Type){return this.components.find(component=>component instanceof Type);}addComponent(Type){const component=new Type();component.node=this;this.components.push(component);return component;}destroy(){this.destroyed=true;}}
+ class Skeleton{setSkin(){}setAnimation(){return{};}}class MotionStreak{reset(){this.resets=(this.resets||0)+1;}}
+ const load=(resource,type,done)=>loads.push({resource,type,done}),cc={Node,MotionStreak,Sprite:class{},SpriteFrame:class{},Texture2D:class{},v2:(x,y)=>({x,y}),color:value=>value,isValid:value=>!!value&&!value.destroyed,resources:{load},assetManager:{getBundle:()=>({load})}},sp={Skeleton,SkeletonData:class{}},Looks={},P={};
+ vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8'),{exports:Looks,cc,sp,require});Looks.prime(catalog);
+ vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroSkillPresentation.js'),'utf8'),{exports:P,cc,sp,require:name=>name==='./ProjectileLooks'?Looks:name.startsWith('./')?require(path.join(root,'assets/_script',name)):{} });
+ const main=new Node(),hero={node:new Node()};hero.node._combatGeneration=1;hero.node.setParent(main);
+ const settings=Settings.defaults('skirmisher'),projectile={x:70,y:40,width:28,direction:{x:.8,y:.6},speed:100,travelled:10},before=structuredClone(projectile),rt={settings,hero,heroGeneration:1,state:{style:'skirmisher',time:.1},projectiles:[projectile],effects:[],game:{ndMain:main,gameData:{},_combatEpoch:1},available:()=>true},hud={visual:{node:new Node()}};
+ const texture={addRef(){retained++;return this;},decRef(){retained--;}};let previous;
+ for(const level of [1,6,11,16,21]){
+   const asset=Looks.skillAsset(catalog,config,level);Object.assign(settings.visual,{projectile:asset.id,projectileAsset:asset});P.attachments(hud,rt);
+   for(const request of loads.splice(0))request.done(null,request.type===cc.Texture2D?texture:{...texture,skeletonJson:{skeleton:{x:0,y:0,width:40,height:12},skins:[{name:asset.skin}],animations:{jian:{}}}});
+   P.attachments(hud,rt);const record=rt._presentation.nodes.get(projectile),trail=record.trailNode,streak=trail.getComponent(MotionStreak);
+   if(previous)assert(previous.destroyed);assert.equal(trail.parent,hud.visual.node);assert(Math.abs(trail.x-(70-64*.8))<1e-8);assert(Math.abs(trail.y-(40-64*.6))<1e-8);assert.equal(streak.color,asset.trail.color);assert.equal(streak.stroke,asset.trail.width);assert.equal(streak.fadeTime,asset.trail.lifetime);assert.equal(streak.resets,1);assert.equal(retained,2);
+   projectile.x+=5;P.attachments(hud,rt);assert(Math.abs(trail.x-(75-64*.8))<1e-8);assert.equal(streak.resets,1,'Updating flight reset the existing streak');projectile.x-=5;previous=trail;
+ }
+ assert.deepEqual(projectile,before);rt.projectiles=[];P.attachments(hud,rt);assert(previous.destroyed);assert.equal(rt._presentation.nodes.size,0);P.clear(rt);assert.equal(retained,0);
+ P.attachments(hud,rt);const late=loads.splice(0);assert(late.length>0);P.clear(rt);for(const request of late)request.done(null,texture);assert.equal(retained,0);assert.equal(rt._presentation,undefined);
 });

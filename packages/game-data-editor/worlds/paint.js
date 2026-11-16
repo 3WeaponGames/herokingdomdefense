@@ -89,9 +89,43 @@ function ground(ctx,map,images,viewport,cache,options){
 }
 async function loadImages(spec){var images={};for(var id of Object.keys(spec.images)){var record=spec.images[id],img=new Image();await new Promise(function(resolve,reject){img.onload=resolve;img.onerror=function(){reject(Error('Unable to load '+id));};img.src=record.url;});images[id]=Object.assign({},record,{image:prepareImage(img,record)});}return images;}
 function atlasPlan(items){
- var pages=[],assets={},page=null;function next(){page={name:'objects-'+pages.length,x:2,y:2,row:0,width:1,height:1};pages.push(page);}
- for(var item of items){var frames=[],anchor=item.anchor||{x:.5,y:0},scaleX=(item.worldWidth===undefined?item.width:item.worldWidth)/item.width,scaleY=(item.worldHeight===undefined?item.height:item.worldHeight)/item.height;for(var sy=0;sy<item.height;sy+=2044)for(var sx=0;sx<item.width;sx+=2044){var w=Math.min(2044,item.width-sx),h=Math.min(2044,item.height-sy);if(!page)next();if(page.x+w+2>2048){page.x=2;page.y+=page.row;page.row=0;}if(page.y+h+2>2048)next();page.width=Math.max(page.width,page.x+w+2);page.height=Math.max(page.height,page.y+h+2);frames.push({name:item.id+'-'+sx+'-'+sy,atlas:page.name,trimX:page.x,trimY:page.y,width:w,height:h,sx,sy,x:(sx-anchor.x*item.width)*scaleX,y:((1-anchor.y)*item.height-sy-h)*scaleY,...(scaleX!==1||scaleY!==1?{worldWidth:w*scaleX,worldHeight:h*scaleY}:{})});page.x+=w+4;page.row=Math.max(page.row,h+4);}assets[item.id]={frames};}
- return {pages:pages.map(function(p){return {name:p.name,width:Math.min(2048,p.width),height:Math.min(2048,p.height)};}),assets};
+ var tiles=[];items.forEach(function(item,itemIndex){for(var sy=0;sy<item.height;sy+=2044)for(var sx=0;sx<item.width;sx+=2044)tiles.push({item,itemIndex,index:tiles.length,sx,sy,width:Math.min(2044,item.width-sx),height:Math.min(2044,item.height-sy)});});
+ function finish(pages,positions){
+  var assets={},frames=items.map(function(){return [];});
+  for(var tile of tiles){var item=tile.item,p=positions[tile.index],anchor=item.anchor||{x:.5,y:0},scaleX=(item.worldWidth===undefined?item.width:item.worldWidth)/item.width,scaleY=(item.worldHeight===undefined?item.height:item.worldHeight)/item.height;
+   frames[tile.itemIndex].push({name:item.id+'-'+tile.sx+'-'+tile.sy,atlas:'objects-'+p.page,trimX:p.x,trimY:p.y,width:tile.width,height:tile.height,sx:tile.sx,sy:tile.sy,x:(tile.sx-anchor.x*item.width)*scaleX,y:((1-anchor.y)*item.height-tile.sy-tile.height)*scaleY,...(scaleX!==1||scaleY!==1?{worldWidth:tile.width*scaleX,worldHeight:tile.height*scaleY}:{})});
+  }
+  items.forEach(function(item,i){assets[item.id]={frames:frames[i]};});
+  return {pages:pages.map(function(p,i){return {name:'objects-'+i,width:Math.min(2048,p.width),height:Math.min(2048,p.height)};}),assets};
+ }
+ // Keep the original shelf result unless another layout reduces page count or
+ // texture pixels. Packing never rotates, trims or resamples the source art.
+ function shelf(order){var pages=[],positions=[],page;
+  for(var tile of order){var w=tile.width,h=tile.height;if(!page){page={x:2,y:2,row:0,width:1,height:1};pages.push(page);}if(page.x+w+2>2048){page.x=2;page.y+=page.row;page.row=0;}if(page.y+h+2>2048){page={x:2,y:2,row:0,width:1,height:1};pages.push(page);}positions[tile.index]={page:pages.length-1,x:page.x,y:page.y};page.width=Math.max(page.width,page.x+w+2);page.height=Math.max(page.height,page.y+h+2);page.x+=w+4;page.row=Math.max(page.row,h+4);}
+  return finish(pages,positions);
+ }
+ function rectangles(order){var pages=[],positions=[];
+  function contains(a,b){return b.x>=a.x&&b.y>=a.y&&b.x+b.width<=a.x+a.width&&b.y+b.height<=a.y+a.height;}
+  for(var tile of order){var w=tile.width+4,h=tile.height+4,best=null;
+   pages.forEach(function(page,pi){page.free.forEach(function(f){if(w>f.width||h>f.height)return;var short=Math.min(f.width-w,f.height-h),long=Math.max(f.width-w,f.height-h);if(!best||short<best.short||short===best.short&&(long<best.long||long===best.long&&(pi<best.page||pi===best.page&&(f.y<best.y||f.y===best.y&&f.x<best.x))))best={page:pi,x:f.x,y:f.y,short,long};});});
+   if(!best){pages.push({width:1,height:1,free:[{x:0,y:0,width:2048,height:2048}]});best={page:pages.length-1,x:0,y:0};}
+   var page=pages[best.page],used={x:best.x,y:best.y,width:w,height:h},free=[];
+   for(var f of page.free){if(used.x>=f.x+f.width||used.x+w<=f.x||used.y>=f.y+f.height||used.y+h<=f.y){free.push(f);continue;}
+    if(used.x>f.x)free.push({x:f.x,y:f.y,width:used.x-f.x,height:f.height});
+    if(used.x+w<f.x+f.width)free.push({x:used.x+w,y:f.y,width:f.x+f.width-used.x-w,height:f.height});
+    if(used.y>f.y)free.push({x:f.x,y:f.y,width:f.width,height:used.y-f.y});
+    if(used.y+h<f.y+f.height)free.push({x:f.x,y:used.y+h,width:f.width,height:f.y+f.height-used.y-h});
+   }
+   page.free=free.filter(function(f,i){return !free.some(function(other,j){return i!==j&&contains(other,f)&&(!contains(f,other)||j<i);});});
+   positions[tile.index]={page:best.page,x:used.x+2,y:used.y+2};page.width=Math.max(page.width,used.x+w);page.height=Math.max(page.height,used.y+h);
+  }
+  return finish(pages,positions);
+ }
+ function pixels(plan){return plan.pages.reduce(function(n,p){return n+p.width*p.height;},0);}
+ var best=shelf(tiles);if(tiles.length<2)return best;
+ function consider(candidate){if(candidate.pages.length<best.pages.length||candidate.pages.length===best.pages.length&&pixels(candidate)<pixels(best))best=candidate;}
+ var byHeight=tiles.slice().sort(function(a,b){return b.height-a.height||b.width-a.width||a.index-b.index;}),byArea=tiles.slice().sort(function(a,b){return b.width*b.height-a.width*a.height||Math.max(b.width,b.height)-Math.max(a.width,a.height)||a.index-b.index;});
+ consider(shelf(byHeight));consider(rectangles(byArea));consider(rectangles(byHeight));return best;
 }
 // Prefilter native-size artwork once for the runtime atlas. The editor keeps
 // the original pixels for zooming; old placements retain their existing bake.

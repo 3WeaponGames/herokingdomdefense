@@ -220,11 +220,17 @@ function projectileVisual(value){
     !/^(sprite|spine)$/.test(asset.kind)||typeof asset.bundle!=='string'||!/^[a-z0-9_-]+$/i.test(asset.bundle)||
     typeof asset.path!=='string'||!asset.path||/\\|:|(^|\/)\.\.?($|\/)|[\u0000-\u001f]/.test(asset.path)||asset.path[0]==='/')return value;
   var result=Object.assign({},value);
-  ['Frames','Columns','Cell','Fps','Loop','Skin','Rotation','PremultipliedAlpha'].forEach(function(key){delete result['resource'+key];});
+  ['Frames','Columns','Cell','Fps','Loop','Skin','Rotation','PremultipliedAlpha','Trail'].forEach(function(key){delete result['resource'+key];});
   Object.assign(result,{resource:asset.uuid,resourceBundle:asset.bundle,resourcePath:asset.path,resourceKind:asset.kind,resourceAnimation:asset.animation||'',showBuiltin:false});
   if(typeof asset.skin==='string'&&asset.skin.length<=150&&!/[\u0000-\u001f]/.test(asset.skin))result.resourceSkin=asset.skin;
   if(typeof asset.rotation==='number'&&isFinite(asset.rotation))result.resourceRotation=asset.rotation;
   if(typeof asset.premultipliedAlpha==='boolean')result.resourcePremultipliedAlpha=asset.premultipliedAlpha;
+  var trail=asset.trail;
+  if(trail&&typeof trail.id==='string'&&valid({type:'vfx'},trail.textureUuid)&&/^[a-z0-9_-]+$/i.test(trail.bundle)&&
+    typeof trail.resource==='string'&&trail.resource&&trail.resource[0]!=='/'&&!/\\|:|(^|\/)\.\.?($|\/)|[\u0000-\u001f]/.test(trail.resource)&&
+    /^#[a-f\d]{6}$/i.test(trail.color)&&isFinite(trail.width)&&trail.width>0&&trail.width<=64&&isFinite(trail.lifetime)&&trail.lifetime>0&&trail.lifetime<=2&&
+    (trail.opacity===undefined||isFinite(trail.opacity)&&trail.opacity>=0&&trail.opacity<=255)&&
+    ['offsetX','offsetY'].every(function(key){return trail[key]===undefined||typeof trail[key]==='number'&&isFinite(trail[key])&&Math.abs(trail[key])<=256;}))result.resourceTrail=trail;
   var book=asset.flipbook,frames=book&&flipbook({resourceFrames:book.frames,resourceColumns:book.columns,resourceCell:book.cell,resourceFps:book.fps,resourceLoop:book.loop});
   if(frames)Object.keys(frames).forEach(function(key){result['resource'+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});
   return result;

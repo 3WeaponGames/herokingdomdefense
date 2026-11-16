@@ -1,0 +1,6740 @@
+{
+  "version": 1,
+  "id": "map-concept-15-twinwater-saddle",
+  "name": "Ice - Twinwater Saddle",
+  "biome": "ice",
+  "size": {
+    "width": 1860,
+    "height": 2942
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2582
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-b9f4becbad1afba4f9eb2fc2a0932664",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "id": "northeast-saddle",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 541.14282,
+              "y": 1279.458148
+            },
+            {
+              "x": 504.7482,
+              "y": 1124.5030080000001
+            },
+            {
+              "x": 449.1974400000001,
+              "y": 991.068598
+            },
+            {
+              "x": 370.65894,
+              "y": 885.612608
+            },
+            {
+              "x": 274.88195999999994,
+              "y": 803.830892
+            },
+            {
+              "x": 194.4276600000001,
+              "y": 724.199778
+            },
+            {
+              "x": 121.63656000000002,
+              "y": 629.505624
+            },
+            {
+              "x": 69.91740000000003,
+              "y": 530.5073239999999
+            },
+            {
+              "x": 29.691179999999907,
+              "y": 405.681206
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": 283.00863200000003
+            },
+            {
+              "x": -14.366640000000016,
+              "y": 160.33605800000007
+            },
+            {
+              "x": -18.198240000000027,
+              "y": 65.641904
+            },
+            {
+              "x": -20.11403999999998,
+              "y": -67.7925060000001
+            }
+          ],
+          "size": 105,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-a04fa94a929bbcd478cfdddbbd845a6a",
+          "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "east-saddle",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 830.39142,
+              "y": 377.70278600000006
+            },
+            {
+              "x": 763.3477200000001,
+              "y": 242.11777400000003
+            },
+            {
+              "x": 682.89342,
+              "y": 140.96592999999996
+            },
+            {
+              "x": 589.0322399999999,
+              "y": 46.27177600000006
+            },
+            {
+              "x": 487.50786000000005,
+              "y": -7.53152000000002
+            },
+            {
+              "x": 372.5747399999999,
+              "y": -44.11823200000003
+            },
+            {
+              "x": 255.72582000000006,
+              "y": -61.33775800000002
+            },
+            {
+              "x": 127.38396000000009,
+              "y": -69.94604999999997
+            },
+            {
+              "x": -20.11403999999998,
+              "y": -67.7925060000001
+            }
+          ],
+          "size": 105,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-a04fa94a929bbcd478cfdddbbd845a6a",
+          "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "west-saddle",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -813.15108,
+              "y": -310.9870519999999
+            },
+            {
+              "x": -705.88116,
+              "y": -244.27131800000006
+            },
+            {
+              "x": -612.01812,
+              "y": -171.09789400000005
+            },
+            {
+              "x": -529.64988,
+              "y": -125.899948
+            },
+            {
+              "x": -441.53423999999995,
+              "y": -95.77092600000016
+            },
+            {
+              "x": -334.26431999999994,
+              "y": -78.55434199999992
+            },
+            {
+              "x": -207.8364,
+              "y": -74.25019599999995
+            },
+            {
+              "x": -119.72262000000002,
+              "y": -67.7925060000001
+            },
+            {
+              "x": -20.11403999999998,
+              "y": -67.7925060000001
+            }
+          ],
+          "size": 105,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-a04fa94a929bbcd478cfdddbbd845a6a",
+          "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "southwest-saddle",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -571.7918999999999,
+              "y": -1296.674732
+            },
+            {
+              "x": -529.64988,
+              "y": -1139.5689900000002
+            },
+            {
+              "x": -449.19744,
+              "y": -980.306762
+            },
+            {
+              "x": -353.4186,
+              "y": -861.9383340000002
+            },
+            {
+              "x": -284.4591,
+              "y": -756.4823440000001
+            },
+            {
+              "x": -234.65574000000004,
+              "y": -614.439642
+            },
+            {
+              "x": -190.59792000000002,
+              "y": -481.008174
+            },
+            {
+              "x": -148.45590000000004,
+              "y": -347.5737639999999
+            },
+            {
+              "x": -90.98933999999998,
+              "y": -222.7476460000001
+            },
+            {
+              "x": -20.11403999999998,
+              "y": -67.7925060000001
+            }
+          ],
+          "size": 105,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-a04fa94a929bbcd478cfdddbbd845a6a",
+          "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    },
+    "custom": [
+      {
+        "id": "ground-1",
+        "name": "Concept terrain - Ice",
+        "transform": {
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "angle": 0
+        },
+        "opacity": 1,
+        "blend": "source-over",
+        "images": [
+          {
+            "id": "ground-image-1",
+            "assetId": "concept-terrain-15-twinwater-saddle",
+            "name": "Ice - Twinwater Saddle terrain",
+            "x": 0,
+            "y": 0,
+            "scale": 1.8655967903711133,
+            "angle": 0,
+            "flipX": false,
+            "opacity": 1,
+            "mask": [],
+            "depth": "ground",
+            "globalShadow": false
+          }
+        ],
+        "strokes": []
+      }
+    ],
+    "order": [
+      "foundation",
+      "ground-1",
+      "roads",
+      "grass"
+    ]
+  },
+  "layers": [
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-107",
+          "assetId": "env-e4f6fc4be795f3a4eb4a607e02286cfb",
+          "name": "Ice Snow 4",
+          "x": -769.704,
+          "y": 319.626,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-52064f1b24daad04da48cea4cdbac081",
+          "name": "Ice Snow 9",
+          "x": -719.693,
+          "y": -1364.86,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": 681.96,
+          "y": 1265.319,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-8e5295b4dcb714c439f9280b516adf5b",
+          "name": "Ice Snow 5",
+          "x": 766.597,
+          "y": 1253.655,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-1b57ca2094acef9408db64c8c0603bb3",
+          "name": "Ice Snow 13",
+          "x": 513.018,
+          "y": 811.739,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-8e5295b4dcb714c439f9280b516adf5b",
+          "name": "Ice Snow 5",
+          "x": 878.613,
+          "y": 1261.67,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-e4f6fc4be795f3a4eb4a607e02286cfb",
+          "name": "Ice Snow 4",
+          "x": -775.484,
+          "y": -1147.53,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-1b57ca2094acef9408db64c8c0603bb3",
+          "name": "Ice Snow 13",
+          "x": 674.162,
+          "y": 908.885,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-1b9bde30e71ab484f8908ec7e0e4bca7",
+          "name": "Ice Snow 7",
+          "x": 704.185,
+          "y": 708.329,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-52064f1b24daad04da48cea4cdbac081",
+          "name": "Ice Snow 9",
+          "x": -166.435,
+          "y": 596.199,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-87b8b027b87874f469f9f112af2bfa5a",
+          "name": "Ice Snow 11",
+          "x": 677.58,
+          "y": 1310.734,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-1b57ca2094acef9408db64c8c0603bb3",
+          "name": "Ice Snow 13",
+          "x": -770.78,
+          "y": -1327.728,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": 668.63,
+          "y": 335.406,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-8e5295b4dcb714c439f9280b516adf5b",
+          "name": "Ice Snow 5",
+          "x": 355.318,
+          "y": 656.432,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-52064f1b24daad04da48cea4cdbac081",
+          "name": "Ice Snow 9",
+          "x": 871.138,
+          "y": 1200.565,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-d25e583bb9c4dd94d9799135a0505a0e",
+          "name": "Ice Snow 14",
+          "x": 95.924,
+          "y": -658.744,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-123",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": -759.43,
+          "y": -124.363,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-d25e583bb9c4dd94d9799135a0505a0e",
+          "name": "Ice Snow 14",
+          "x": -822.309,
+          "y": -588.609,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-87b8b027b87874f469f9f112af2bfa5a",
+          "name": "Ice Snow 11",
+          "x": -711.724,
+          "y": -428.234,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-8e5295b4dcb714c439f9280b516adf5b",
+          "name": "Ice Snow 5",
+          "x": -137.197,
+          "y": 581.246,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-127",
+          "assetId": "env-d25e583bb9c4dd94d9799135a0505a0e",
+          "name": "Ice Snow 14",
+          "x": 554.928,
+          "y": -267.129,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": -460.926,
+          "y": 349.175,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-d25e583bb9c4dd94d9799135a0505a0e",
+          "name": "Ice Snow 14",
+          "x": 778.308,
+          "y": 1157.127,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-d25e583bb9c4dd94d9799135a0505a0e",
+          "name": "Ice Snow 14",
+          "x": -828.857,
+          "y": -1315.93,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-d622aa51f77b0ee428fe839f184a4a48",
+          "name": "Ice Snow 3",
+          "x": -810.46,
+          "y": -1271.123,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-8e5295b4dcb714c439f9280b516adf5b",
+          "name": "Ice Snow 5",
+          "x": -811.558,
+          "y": -595.28,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-1b57ca2094acef9408db64c8c0603bb3",
+          "name": "Ice Snow 13",
+          "x": -654.519,
+          "y": -26.067,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": -590.54,
+          "y": -487.294,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-8e5295b4dcb714c439f9280b516adf5b",
+          "name": "Ice Snow 5",
+          "x": -817.497,
+          "y": -693.645,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-136",
+          "assetId": "env-bfde01d4b9f2b3846b447444ef9d2690",
+          "name": "Ice Snow 15",
+          "x": 574.017,
+          "y": 221.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-1b57ca2094acef9408db64c8c0603bb3",
+          "name": "Ice Snow 13",
+          "x": 500.652,
+          "y": -191.02,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-52064f1b24daad04da48cea4cdbac081",
+          "name": "Ice Snow 9",
+          "x": 475.2,
+          "y": 705.367,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-139",
+          "assetId": "env-e4f6fc4be795f3a4eb4a607e02286cfb",
+          "name": "Ice Snow 4",
+          "x": -864.302,
+          "y": -914.152,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-bfde01d4b9f2b3846b447444ef9d2690",
+          "name": "Ice Snow 15",
+          "x": 717.466,
+          "y": 474.067,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-141",
+          "assetId": "env-8e5295b4dcb714c439f9280b516adf5b",
+          "name": "Ice Snow 5",
+          "x": 629.274,
+          "y": 1318.33,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-142",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": 412.126,
+          "y": 296.26,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-143",
+          "assetId": "env-d622aa51f77b0ee428fe839f184a4a48",
+          "name": "Ice Snow 3",
+          "x": 881.862,
+          "y": 670.025,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-144",
+          "assetId": "env-0198510308748754f8616ac840c631c9",
+          "name": "Ice Snow 6",
+          "x": -750.441,
+          "y": -33.864,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-145",
+          "assetId": "env-86f35830f9ce0e4458eedc260b2a86d2",
+          "name": "Ice Snow 2",
+          "x": -826.732,
+          "y": -508.986,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-146",
+          "assetId": "env-1b57ca2094acef9408db64c8c0603bb3",
+          "name": "Ice Snow 13",
+          "x": -633.252,
+          "y": -886.711,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-147",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": -808.195,
+          "y": -1365.226,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-148",
+          "assetId": "env-87b8b027b87874f469f9f112af2bfa5a",
+          "name": "Ice Snow 11",
+          "x": -399.139,
+          "y": -722.625,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-149",
+          "assetId": "env-bfde01d4b9f2b3846b447444ef9d2690",
+          "name": "Ice Snow 15",
+          "x": -713.884,
+          "y": -1315.46,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-150",
+          "assetId": "env-1b57ca2094acef9408db64c8c0603bb3",
+          "name": "Ice Snow 13",
+          "x": -754.327,
+          "y": -1362.861,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-151",
+          "assetId": "env-0198510308748754f8616ac840c631c9",
+          "name": "Ice Snow 6",
+          "x": 234.402,
+          "y": 986.859,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-152",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": 458.761,
+          "y": -320.123,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-153",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 842.437,
+          "y": 1297.05,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-154",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": 452.286,
+          "y": -189.952,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-155",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -735.959,
+          "y": -1278.702,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-156",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -897.167,
+          "y": -1294.404,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-157",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -116.08,
+          "y": -848.971,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-158",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -762.027,
+          "y": -1345.145,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-159",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -664.09,
+          "y": -1418.654,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-160",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -862.412,
+          "y": -1314.499,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-161",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 643.175,
+          "y": 1238.947,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-162",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -340.41,
+          "y": 380.121,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-163",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -647.646,
+          "y": -1373.816,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-164",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 790.087,
+          "y": 618.084,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-165",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 896.729,
+          "y": 1291.825,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-166",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -336.364,
+          "y": -520.969,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-167",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 554.202,
+          "y": -199.805,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-168",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -753.683,
+          "y": -1049.484,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-169",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -534.969,
+          "y": 312.448,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-170",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 576.412,
+          "y": 443.949,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-171",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -839.488,
+          "y": -1330.044,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-172",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 291.702,
+          "y": 538.759,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-173",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -697.672,
+          "y": -1251.409,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-174",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": 626.718,
+          "y": 1319.09,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-175",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -835.463,
+          "y": -967.869,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-176",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": 821.021,
+          "y": 1293.105,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-177",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 746.42,
+          "y": 1315.713,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-178",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -644.438,
+          "y": -1393.498,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-179",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -868.94,
+          "y": -458.962,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-180",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -345.227,
+          "y": -484.468,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-181",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -576.008,
+          "y": -1398.213,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-182",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -886.688,
+          "y": -1340.793,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-183",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -864.124,
+          "y": -542.603,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-184",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 886.917,
+          "y": 1246.072,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-185",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -620.731,
+          "y": -1450.96,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-186",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 860.807,
+          "y": 1434.482,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-187",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -109.795,
+          "y": 577.738,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-188",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -711.681,
+          "y": -765.531,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-189",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 847.602,
+          "y": 1164.331,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-190",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 418.93,
+          "y": 347.98,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-191",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -66.284,
+          "y": 623.075,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-192",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -615.6,
+          "y": -791.75,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-193",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -721.791,
+          "y": -1374.051,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-194",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 817.005,
+          "y": 1264.124,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-195",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -502.587,
+          "y": 27.494,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-196",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 760.639,
+          "y": 1431.81,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-197",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 853.526,
+          "y": 1264.507,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-198",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": 779.029,
+          "y": -286.559,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-199",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -595.073,
+          "y": -1053.921,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-200",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -872.446,
+          "y": -1288.29,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-201",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 692.761,
+          "y": 1383.994,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-202",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 361.669,
+          "y": 457.236,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-203",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -673.374,
+          "y": -645.73,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-204",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -759.527,
+          "y": -781.994,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-205",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -529.209,
+          "y": -357.783,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-206",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": 325.016,
+          "y": 632.878,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-207",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -780.228,
+          "y": -1300.952,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-208",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -862.42,
+          "y": -1128.736,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-209",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": 698.668,
+          "y": -198.856,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-210",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 665.646,
+          "y": -26.018,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-211",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -767.088,
+          "y": -1364.139,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-212",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -900.98,
+          "y": -1363.648,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-213",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 711.926,
+          "y": -46.112,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-214",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -313.103,
+          "y": -968.461,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-215",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -735.096,
+          "y": -165.865,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-216",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -715.987,
+          "y": -1434.595,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-217",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -680.289,
+          "y": -1344.72,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-218",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": 882.298,
+          "y": 1068.501,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-219",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 705.585,
+          "y": 1283.563,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-220",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 638.998,
+          "y": 1397.558,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-221",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -684.774,
+          "y": 265.257,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-222",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 726.131,
+          "y": 1389.73,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-223",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -728.408,
+          "y": -601.489,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-224",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -826.57,
+          "y": -1327.11,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-225",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -790.753,
+          "y": -1232.128,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-226",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 758.833,
+          "y": 1259.579,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-227",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 277.289,
+          "y": 393.612,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-228",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -513.614,
+          "y": 261.614,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-229",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": 555.774,
+          "y": 1371.217,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-230",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 579.066,
+          "y": -237.716,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-231",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -456.095,
+          "y": -552.112,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-232",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": 742.548,
+          "y": 536.267,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-233",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 719.303,
+          "y": 352.253,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-234",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -90.285,
+          "y": -822.833,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-235",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": 605.642,
+          "y": -189.911,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-236",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -263.987,
+          "y": -972.079,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-237",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -147.622,
+          "y": -637.406,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-238",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -513.192,
+          "y": -465.791,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-239",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 606.284,
+          "y": 849.968,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-240",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 830.213,
+          "y": 1311.777,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-241",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -632.908,
+          "y": -865.759,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-242",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -728.621,
+          "y": -488.337,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-243",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -657.779,
+          "y": -699.395,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-244",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -553.704,
+          "y": -515.105,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-245",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -659.957,
+          "y": 224.91,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-246",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 578.875,
+          "y": -73.907,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-247",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -87.205,
+          "y": 320.971,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-248",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 164.462,
+          "y": 880.11,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-249",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 534.669,
+          "y": 919.446,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-250",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -860.4,
+          "y": -1353.577,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-251",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -879.791,
+          "y": -1236.298,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-252",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -196.96,
+          "y": 390.768,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-253",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -717.385,
+          "y": -1453.242,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-254",
+          "assetId": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+          "name": "Ice Flower 4",
+          "x": -443.887,
+          "y": -702.492,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-255",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -890.533,
+          "y": -1039.903,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-256",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -559.621,
+          "y": -31.218,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-257",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 425.486,
+          "y": 1228.485,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-258",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -596.114,
+          "y": -765.39,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-259",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -540.649,
+          "y": -305.075,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-260",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 114.308,
+          "y": -544.289,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-261",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -806.061,
+          "y": -584.641,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-262",
+          "assetId": "env-d25e583bb9c4dd94d9799135a0505a0e",
+          "name": "Ice Snow 14",
+          "x": -78.888,
+          "y": 644.352,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-263",
+          "assetId": "env-33862241f71e4c44aa6221d6bb2a6af9",
+          "name": "Snow Up 1",
+          "x": -152.842,
+          "y": -885.03,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-264",
+          "assetId": "env-a5617a5e558ad3f42a43f7fcc552f57b",
+          "name": "Snow White 3",
+          "x": -845.73,
+          "y": -1231.249,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-265",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": 867.616,
+          "y": 1121.579,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-266",
+          "assetId": "env-33862241f71e4c44aa6221d6bb2a6af9",
+          "name": "Snow Up 1",
+          "x": 851.163,
+          "y": 1249.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-267",
+          "assetId": "env-a5617a5e558ad3f42a43f7fcc552f57b",
+          "name": "Snow White 3",
+          "x": -775.002,
+          "y": -1339.051,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-268",
+          "assetId": "env-6470465bc2c133c43b1fa158c5b943df",
+          "name": "Ice Snow 12",
+          "x": -436.319,
+          "y": -497.102,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-269",
+          "assetId": "env-6470465bc2c133c43b1fa158c5b943df",
+          "name": "Ice Snow 12",
+          "x": -511.257,
+          "y": -306.314,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-270",
+          "assetId": "env-86f35830f9ce0e4458eedc260b2a86d2",
+          "name": "Ice Snow 2",
+          "x": -735.367,
+          "y": -1370.625,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-271",
+          "assetId": "env-c0659dd473e071140ad1e1e919d0be43",
+          "name": "Ice Light",
+          "x": -707.339,
+          "y": -1319.122,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-272",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": -612.451,
+          "y": -490.436,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-273",
+          "assetId": "env-d1075b5fdd878424b818845c8cca464d",
+          "name": "Snow Up 3",
+          "x": -344.633,
+          "y": -1040.007,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-274",
+          "assetId": "env-d25e583bb9c4dd94d9799135a0505a0e",
+          "name": "Ice Snow 14",
+          "x": -840.409,
+          "y": -1026.418,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-275",
+          "assetId": "env-0198510308748754f8616ac840c631c9",
+          "name": "Ice Snow 6",
+          "x": -422.642,
+          "y": -590.106,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-276",
+          "assetId": "env-bfde01d4b9f2b3846b447444ef9d2690",
+          "name": "Ice Snow 15",
+          "x": -710.588,
+          "y": -1249.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-277",
+          "assetId": "env-bfde01d4b9f2b3846b447444ef9d2690",
+          "name": "Ice Snow 15",
+          "x": -780.449,
+          "y": -1322.127,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-278",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": 793.794,
+          "y": 1291.485,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-279",
+          "assetId": "env-15aa4583a1b888644935274234cbef04",
+          "name": "Snow Up 5",
+          "x": 702.49,
+          "y": 1348.208,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-282",
+          "assetId": "env-6470465bc2c133c43b1fa158c5b943df",
+          "name": "Ice Snow 12",
+          "x": 640.2,
+          "y": 1089.12,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-284",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": 635.2,
+          "y": 1025.12,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-286",
+          "assetId": "env-e4f6fc4be795f3a4eb4a607e02286cfb",
+          "name": "Ice Snow 4",
+          "x": 672.2,
+          "y": 1064.12,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-287",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": 551.634,
+          "y": 989.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-288",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": 382.8,
+          "y": 706.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-289",
+          "assetId": "env-d622aa51f77b0ee428fe839f184a4a48",
+          "name": "Ice Snow 3",
+          "x": 290.448,
+          "y": 634.081,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-291",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 298.8,
+          "y": 672.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-292",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": 374.8,
+          "y": 672.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-294",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": 411.8,
+          "y": 711.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-296",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": 762.6,
+          "y": 441.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-297",
+          "assetId": "env-d622aa51f77b0ee428fe839f184a4a48",
+          "name": "Ice Snow 3",
+          "x": 738.979,
+          "y": 495.446,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-299",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 726.6,
+          "y": 407.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-300",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": 759.623,
+          "y": 428.678,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-302",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": 863.237,
+          "y": 457.129,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-304",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": 723.011,
+          "y": -20.328,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-305",
+          "assetId": "env-d622aa51f77b0ee428fe839f184a4a48",
+          "name": "Ice Snow 3",
+          "x": 731.168,
+          "y": 4.806,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-307",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": 644.801,
+          "y": -33.751,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-308",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": 746.8,
+          "y": -34,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-310",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": 783.8,
+          "y": 5,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-314",
+          "assetId": "env-6470465bc2c133c43b1fa158c5b943df",
+          "name": "Ice Snow 12",
+          "x": -698.693,
+          "y": -127.941,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-316",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -802.488,
+          "y": -190.949,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-318",
+          "assetId": "env-e4f6fc4be795f3a4eb4a607e02286cfb",
+          "name": "Ice Snow 4",
+          "x": -725.499,
+          "y": -152.423,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-319",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -819,
+          "y": -205.94,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-320",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": -688.2,
+          "y": -676.66,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-321",
+          "assetId": "env-d622aa51f77b0ee428fe839f184a4a48",
+          "name": "Ice Snow 3",
+          "x": -732.2,
+          "y": -638.66,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-323",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -724.2,
+          "y": -710.66,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-324",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -673.472,
+          "y": -704.551,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-326",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": -611.2,
+          "y": -671.66,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-328",
+          "assetId": "env-809ea76507076bf4692a6c4b3f586285",
+          "name": "Ice Snow 10",
+          "x": -185.672,
+          "y": -853.688,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-329",
+          "assetId": "env-d622aa51f77b0ee428fe839f184a4a48",
+          "name": "Ice Snow 3",
+          "x": -198.892,
+          "y": -871.98,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-331",
+          "assetId": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+          "name": "Ice Flower 1",
+          "x": -253.658,
+          "y": -883.162,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-332",
+          "assetId": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+          "name": "Ice Flower 2",
+          "x": -183.2,
+          "y": -857.76,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-334",
+          "assetId": "env-d13d59b8358fa6942a52c15ed35cb861",
+          "name": "Ice Snow 8",
+          "x": -146.2,
+          "y": -818.76,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-338",
+          "assetId": "env-6470465bc2c133c43b1fa158c5b943df",
+          "name": "Ice Snow 12",
+          "x": -637.252,
+          "y": -1121.489,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-340",
+          "assetId": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+          "name": "Ice Flower 3",
+          "x": -648.2,
+          "y": -1210.8,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-342",
+          "assetId": "env-e4f6fc4be795f3a4eb4a607e02286cfb",
+          "name": "Ice Snow 4",
+          "x": -648.147,
+          "y": -1141.158,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-343",
+          "assetId": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+          "name": "Ice Flower 5",
+          "x": -763.2,
+          "y": -1176.8,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "layer-1",
+      "name": "Native Ice trees and bushes",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-2",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": -703.42,
+          "y": 19.325,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-3",
+          "assetId": "env-fd332a52614a84141afaeabab5a37564",
+          "name": "Tree Snow Bare LightBrown 5",
+          "x": -839.284,
+          "y": -608.491,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "env-2ada25ca07af4cc4aa66f40852b22377",
+          "name": "Tree Snow Bare LightBrown 6",
+          "x": 839.828,
+          "y": 1250.089,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-5",
+          "assetId": "env-6930a84ff76c0174ea4924a5d6cd4ec6",
+          "name": "Tree Snow Bare LightBrown 1",
+          "x": -748.791,
+          "y": -1460.315,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-fd332a52614a84141afaeabab5a37564",
+          "name": "Tree Snow Bare LightBrown 5",
+          "x": -802.061,
+          "y": -1075.414,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": 739.277,
+          "y": 1257.739,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": -61.574,
+          "y": 656.898,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-6930a84ff76c0174ea4924a5d6cd4ec6",
+          "name": "Tree Snow Bare LightBrown 1",
+          "x": 846.23,
+          "y": 1139.391,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": 30.049,
+          "y": -707.434,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": -769.452,
+          "y": -1303.111,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": 776.242,
+          "y": 1324.228,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-890075409d3f661449263dbcc59c1f68",
+          "name": "Tree Snow Bare Brown 6",
+          "x": -515.514,
+          "y": -746.346,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": 33.067,
+          "y": 817.076,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-2db258c3cf2f7c247852da416ed29ac2",
+          "name": "Tree Snow Bare LightBrown 2",
+          "x": 662.461,
+          "y": 529.368,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": 789.341,
+          "y": 860.464,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-890075409d3f661449263dbcc59c1f68",
+          "name": "Tree Snow Bare Brown 6",
+          "x": 833.738,
+          "y": 675.76,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": 897.833,
+          "y": 42.662,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-3afac796f34b6a640a47928bd74a3f65",
+          "name": "Tree Snow Bare Brown 4",
+          "x": 374.926,
+          "y": 395.398,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-3fd158c0033f53443bbc9a6d994d6f5e",
+          "name": "Tree Snow Bare LightBrown 4",
+          "x": -862.328,
+          "y": -518.023,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-3afac796f34b6a640a47928bd74a3f65",
+          "name": "Tree Snow Bare Brown 4",
+          "x": 633.396,
+          "y": 788.458,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-fd332a52614a84141afaeabab5a37564",
+          "name": "Tree Snow Bare LightBrown 5",
+          "x": 629.256,
+          "y": 632.561,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": 508.105,
+          "y": 132.568,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-fd332a52614a84141afaeabab5a37564",
+          "name": "Tree Snow Bare LightBrown 5",
+          "x": -569.133,
+          "y": 311.067,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-3afac796f34b6a640a47928bd74a3f65",
+          "name": "Tree Snow Bare Brown 4",
+          "x": 587.502,
+          "y": -252.076,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": 253.185,
+          "y": 401.717,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-fd332a52614a84141afaeabab5a37564",
+          "name": "Tree Snow Bare LightBrown 5",
+          "x": -656.623,
+          "y": 107.633,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": -861.029,
+          "y": -197.788,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-3fd158c0033f53443bbc9a6d994d6f5e",
+          "name": "Tree Snow Bare LightBrown 4",
+          "x": -868.361,
+          "y": -1458.438,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-3afac796f34b6a640a47928bd74a3f65",
+          "name": "Tree Snow Bare Brown 4",
+          "x": -212.515,
+          "y": 542.887,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": -696.485,
+          "y": -599.767,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": 899.585,
+          "y": 1300.792,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": -527.289,
+          "y": -232.616,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-3fd158c0033f53443bbc9a6d994d6f5e",
+          "name": "Tree Snow Bare LightBrown 4",
+          "x": 781.325,
+          "y": 608.268,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-890075409d3f661449263dbcc59c1f68",
+          "name": "Tree Snow Bare Brown 6",
+          "x": -532.539,
+          "y": -522.957,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": 566.545,
+          "y": 752.059,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-890075409d3f661449263dbcc59c1f68",
+          "name": "Tree Snow Bare Brown 6",
+          "x": 661.195,
+          "y": 1141.877,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-3fd158c0033f53443bbc9a6d994d6f5e",
+          "name": "Tree Snow Bare LightBrown 4",
+          "x": 278.133,
+          "y": 1187.398,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-2db258c3cf2f7c247852da416ed29ac2",
+          "name": "Tree Snow Bare LightBrown 2",
+          "x": -836.167,
+          "y": -730.026,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-fd332a52614a84141afaeabab5a37564",
+          "name": "Tree Snow Bare LightBrown 5",
+          "x": -717.667,
+          "y": -1001.694,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-3afac796f34b6a640a47928bd74a3f65",
+          "name": "Tree Snow Bare Brown 4",
+          "x": 267.988,
+          "y": 1112.703,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-2ada25ca07af4cc4aa66f40852b22377",
+          "name": "Tree Snow Bare LightBrown 6",
+          "x": -746.19,
+          "y": -1234.427,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-2db258c3cf2f7c247852da416ed29ac2",
+          "name": "Tree Snow Bare LightBrown 2",
+          "x": 469.612,
+          "y": 239.127,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-6930a84ff76c0174ea4924a5d6cd4ec6",
+          "name": "Tree Snow Bare LightBrown 1",
+          "x": 793.399,
+          "y": 542.493,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": 656.86,
+          "y": 878.131,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-3fd158c0033f53443bbc9a6d994d6f5e",
+          "name": "Tree Snow Bare LightBrown 4",
+          "x": 673.366,
+          "y": 1273.426,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-fd332a52614a84141afaeabab5a37564",
+          "name": "Tree Snow Bare LightBrown 5",
+          "x": -539.142,
+          "y": -456.218,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-3afac796f34b6a640a47928bd74a3f65",
+          "name": "Tree Snow Bare Brown 4",
+          "x": 624.762,
+          "y": 440.786,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-2ada25ca07af4cc4aa66f40852b22377",
+          "name": "Tree Snow Bare LightBrown 6",
+          "x": -859.787,
+          "y": -1226.31,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": -718.622,
+          "y": -1339.085,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-890075409d3f661449263dbcc59c1f68",
+          "name": "Tree Snow Bare Brown 6",
+          "x": -534.536,
+          "y": 197.051,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-3afac796f34b6a640a47928bd74a3f65",
+          "name": "Tree Snow Bare Brown 4",
+          "x": -560.448,
+          "y": -586.969,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": -73.898,
+          "y": -670.286,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-fd332a52614a84141afaeabab5a37564",
+          "name": "Tree Snow Bare LightBrown 5",
+          "x": 191.601,
+          "y": 1002.676,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": 276.645,
+          "y": 623.829,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-2ada25ca07af4cc4aa66f40852b22377",
+          "name": "Tree Snow Bare LightBrown 6",
+          "x": 647.201,
+          "y": -56.165,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": -636.5,
+          "y": -1419.233,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-3fd158c0033f53443bbc9a6d994d6f5e",
+          "name": "Tree Snow Bare LightBrown 4",
+          "x": -832.501,
+          "y": -1294.253,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": 885.44,
+          "y": 483.439,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-2ada25ca07af4cc4aa66f40852b22377",
+          "name": "Tree Snow Bare LightBrown 6",
+          "x": 528.68,
+          "y": -176.34,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": 628.324,
+          "y": 1379.537,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": -465.24,
+          "y": -1422.24,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": -607.408,
+          "y": -827.662,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-2db258c3cf2f7c247852da416ed29ac2",
+          "name": "Tree Snow Bare LightBrown 2",
+          "x": -250.051,
+          "y": -1051.19,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": -816.58,
+          "y": -433.645,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-3fd158c0033f53443bbc9a6d994d6f5e",
+          "name": "Tree Snow Bare LightBrown 4",
+          "x": -671.395,
+          "y": 328.296,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -662.411,
+          "y": -378.618,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 539.267,
+          "y": 212.188,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 390.444,
+          "y": 1229.854,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 237.656,
+          "y": 597.798,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": -165.029,
+          "y": -728.428,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 828.02,
+          "y": 1276.559,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 773.579,
+          "y": 1043.749,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -88.672,
+          "y": 525.635,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 877.62,
+          "y": 1301.46,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 767.648,
+          "y": 527.51,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 484.153,
+          "y": 380.945,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": 749.358,
+          "y": 1274.129,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -711.39,
+          "y": -451.307,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": 863.954,
+          "y": 1269.337,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 264.41,
+          "y": 1263.602,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -863.633,
+          "y": -1296.224,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -727.566,
+          "y": -360.967,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -370.051,
+          "y": -1163.791,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -695.133,
+          "y": -1383.48,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 763.5,
+          "y": 1323.79,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -730.971,
+          "y": -1378.15,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 430.941,
+          "y": 1273.751,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": 150.042,
+          "y": -603.436,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 466.593,
+          "y": 562.967,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": 773.779,
+          "y": 1074.932,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -895.351,
+          "y": -1306.227,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 692.633,
+          "y": 1370.35,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 792.916,
+          "y": 901.811,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -626.141,
+          "y": -716.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -199.63,
+          "y": 367.013,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": -588.425,
+          "y": -325.677,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": -299.042,
+          "y": 501.068,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -723.56,
+          "y": 202.109,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 490.085,
+          "y": 96.895,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -880.009,
+          "y": -1268.122,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -639.724,
+          "y": -54.446,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -629.35,
+          "y": -1409.506,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -756.762,
+          "y": -1352.545,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -714.308,
+          "y": -1448.576,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -556.765,
+          "y": -259.781,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-280",
+          "assetId": "env-2ada25ca07af4cc4aa66f40852b22377",
+          "name": "Tree Snow Bare LightBrown 6",
+          "x": 595.2,
+          "y": 1059.12,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-281",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": 575.334,
+          "y": 989.8,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-283",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": 559.2,
+          "y": 1025.12,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-285",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": 583.772,
+          "y": 935.5,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-290",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 379.8,
+          "y": 736.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-293",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": 334.8,
+          "y": 629.08,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-295",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 258.725,
+          "y": 658.092,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-298",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 807.6,
+          "y": 471.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-301",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": 739.358,
+          "y": 375.954,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-303",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 687.6,
+          "y": 441.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-306",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": 751.8,
+          "y": 30,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-309",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": 706.8,
+          "y": -77,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-311",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": 637.017,
+          "y": -25.471,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-312",
+          "assetId": "env-2ada25ca07af4cc4aa66f40852b22377",
+          "name": "Tree Snow Bare LightBrown 6",
+          "x": -744,
+          "y": -157.94,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-313",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": -793.704,
+          "y": -142.573,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-315",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": -800.411,
+          "y": -196.496,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-317",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": -728.275,
+          "y": -357.295,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-322",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -643.2,
+          "y": -646.66,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-325",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": -688.2,
+          "y": -753.66,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-327",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -763.2,
+          "y": -676.66,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-330",
+          "assetId": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+          "name": "Bush Ice 1",
+          "x": -178.2,
+          "y": -793.76,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-333",
+          "assetId": "env-8438892e8f2ed3a45899a920adbbdc94",
+          "name": "Tree Snow Dead LightBrown 1",
+          "x": -223.2,
+          "y": -900.76,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-335",
+          "assetId": "env-ea7be898b8391ad42ac3788fb93b23a9",
+          "name": "Bush Ice 3",
+          "x": -266.766,
+          "y": -892.955,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-336",
+          "assetId": "env-2ada25ca07af4cc4aa66f40852b22377",
+          "name": "Tree Snow Bare LightBrown 6",
+          "x": -688.2,
+          "y": -1176.8,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-337",
+          "assetId": "env-0803a605ba81f1147bbc236f18763e2b",
+          "name": "Tree Snow Bare Brown 3",
+          "x": -732.2,
+          "y": -1138.8,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-339",
+          "assetId": "env-20e260197e88ab642b75418c56393952",
+          "name": "Bush Ice 2",
+          "x": -724.2,
+          "y": -1210.8,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-341",
+          "assetId": "env-98029dcad6e868d43bf01314db375b7f",
+          "name": "Tree Snow Dead LightBrown 2",
+          "x": -688.2,
+          "y": -1253.8,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "layer-2",
+      "name": "Native stones and biome details",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 344,
+  "nextLayer": 3,
+  "nextGround": 2,
+  "blockerMask": [
+    [
+      [
+        [
+          -930,
+          338.6005072923271
+        ],
+        [
+          -909.4784353059177,
+          342.3316423589094
+        ],
+        [
+          -847.913741223671,
+          364.718452758402
+        ],
+        [
+          -734.1123370110331,
+          416.95434369055175
+        ],
+        [
+          -661.3540621865596,
+          433.7444514901713
+        ],
+        [
+          -622.1765295887662,
+          448.66899175649974
+        ],
+        [
+          -513.9719157472417,
+          480.3836398224477
+        ],
+        [
+          -485.987963891675,
+          493.4426125554852
+        ],
+        [
+          -461.7352056168506,
+          515.8294229549778
+        ],
+        [
+          -461.7352056168506,
+          519.5605580215599
+        ],
+        [
+          -418.82647943831495,
+          566.1997463538363
+        ],
+        [
+          -418.82647943831495,
+          569.9308814204186
+        ],
+        [
+          -377.7833500501505,
+          610.9733671528218
+        ],
+        [
+          -362.8585757271815,
+          618.4356372859861
+        ],
+        [
+          -355.3961885656971,
+          627.7634749524414
+        ],
+        [
+          -310.62186559679037,
+          657.6125554850983
+        ],
+        [
+          -303.15947843530586,
+          659.4781230183893
+        ],
+        [
+          -299.4282848545637,
+          665.0748256182626
+        ],
+        [
+          -277.04112337011037,
+          676.2682308180088
+        ],
+        [
+          -226.67001003009028,
+          717.3107165504122
+        ],
+        [
+          -178.1644934804413,
+          747.1597970830691
+        ],
+        [
+          -150.1805416248746,
+          760.2187698161066
+        ],
+        [
+          -109.13741223671013,
+          790.0678503487635
+        ],
+        [
+          -60.63189568706115,
+          849.7660114140773
+        ],
+        [
+          4.6639919759278525,
+          961.7000634115409
+        ],
+        [
+          51.30391173520555,
+          1008.3392517438174
+        ],
+        [
+          88.61584754262796,
+          1075.4996829422955
+        ],
+        [
+          120.33099297893682,
+          1114.6766011414077
+        ],
+        [
+          137.12136409227685,
+          1151.987951807229
+        ],
+        [
+          150.1805416248747,
+          1230.3417882054534
+        ],
+        [
+          172.56770310932808,
+          1303.0989220038048
+        ],
+        [
+          193.08926780341025,
+          1346.006975269499
+        ],
+        [
+          208.01404212637908,
+          1364.6626506024097
+        ],
+        [
+          209.87963891675025,
+          1372.124920735574
+        ],
+        [
+          234.1323971915748,
+          1398.2428662016487
+        ],
+        [
+          241.59478435305914,
+          1413.1674064679771
+        ],
+        [
+          250.92276830491483,
+          1422.4952441344326
+        ],
+        [
+          260.25075225677034,
+          1443.016487000634
+        ],
+        [
+          265.8475426278837,
+          1471
+        ],
+        [
+          -930,
+          1471
+        ],
+        [
+          -930,
+          338.6005072923271
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -915.0752256770311,
+          -1418.7641090678503
+        ],
+        [
+          -905.7472417251755,
+          -1435.5542168674697
+        ],
+        [
+          -864.704112337011,
+          -1443.0164870006342
+        ],
+        [
+          -832.9889669007022,
+          -1443.0164870006342
+        ],
+        [
+          -806.8706118355066,
+          -1439.2853519340517
+        ],
+        [
+          -801.2738214643932,
+          -1435.5542168674697
+        ],
+        [
+          -786.3490471414243,
+          -1439.2853519340517
+        ],
+        [
+          -750.9027081243731,
+          -1439.2853519340517
+        ],
+        [
+          -730.3811434302909,
+          -1433.688649334179
+        ],
+        [
+          -721.0531594784353,
+          -1424.3608116677235
+        ],
+        [
+          -730.3811434302909,
+          -1415.0329740012683
+        ],
+        [
+          -734.1123370110331,
+          -1392.6461636017755
+        ],
+        [
+          -752.7683049147442,
+          -1381.452758402029
+        ],
+        [
+          -771.4242728184554,
+          -1381.452758402029
+        ],
+        [
+          -780.752256770311,
+          -1362.7970830691183
+        ],
+        [
+          -790.0802407221665,
+          -1353.4692454026633
+        ],
+        [
+          -823.6609829488465,
+          -1340.410272669626
+        ],
+        [
+          -866.5697091273822,
+          -1336.679137603044
+        ],
+        [
+          -883.3600802407221,
+          -1347.8725428027901
+        ],
+        [
+          -888.9568706118355,
+          -1372.1249207355738
+        ],
+        [
+          -898.284854563691,
+          -1383.3183259353204
+        ],
+        [
+          -902.0160481444333,
+          -1407.570703868104
+        ],
+        [
+          -915.0752256770311,
+          -1418.7641090678503
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -400.17051153460386,
+          -1471
+        ],
+        [
+          930,
+          -1471
+        ],
+        [
+          930,
+          -267.7089410272668
+        ],
+        [
+          879.6288866599799,
+          -273.3056436271401
+        ],
+        [
+          825.5265797392177,
+          -288.23018389346873
+        ],
+        [
+          799.408224674022,
+          -288.23018389346873
+        ],
+        [
+          739.7091273821464,
+          -295.6924540266329
+        ],
+        [
+          620.3109327983951,
+          -334.8693722257452
+        ],
+        [
+          588.5957873620862,
+          -349.7939124920735
+        ],
+        [
+          553.149448345035,
+          -374.0462904248572
+        ],
+        [
+          491.58475426278824,
+          -433.7444514901711
+        ],
+        [
+          471.0631895687061,
+          -448.66899175649974
+        ],
+        [
+          416.9608826479439,
+          -467.3246670894101
+        ],
+        [
+          355.3961885656971,
+          -482.2492073557388
+        ],
+        [
+          305.025075225677,
+          -502.7704502219404
+        ],
+        [
+          260.25075225677034,
+          -538.2162333544707
+        ],
+        [
+          187.4924774322969,
+          -581.124286620165
+        ],
+        [
+          174.43329989969905,
+          -627.7634749524415
+        ],
+        [
+          133.39017051153468,
+          -657.6125554850984
+        ],
+        [
+          101.67502507522562,
+          -691.1927710843374
+        ],
+        [
+          36.379137412236716,
+          -730.3696892834495
+        ],
+        [
+          23.31995987963885,
+          -743.4286620164869
+        ],
+        [
+          4.6639919759278525,
+          -752.7564996829423
+        ],
+        [
+          0.9327983951854879,
+          -758.3532022828155
+        ],
+        [
+          -30.782347041123373,
+          -778.8744451490171
+        ],
+        [
+          -40.11033099297897,
+          -790.0678503487634
+        ],
+        [
+          -43.84152457372113,
+          -790.0678503487634
+        ],
+        [
+          -88.61584754262786,
+          -842.3037412809131
+        ],
+        [
+          -122.19658976930789,
+          -929.9854153455927
+        ],
+        [
+          -142.7181544633902,
+          -957.9689283449588
+        ],
+        [
+          -153.91173520561685,
+          -967.2967660114142
+        ],
+        [
+          -153.91173520561685,
+          -971.0279010779963
+        ],
+        [
+          -178.1644934804413,
+          -995.28027901078
+        ],
+        [
+          -194.95486459378134,
+          -1036.3227647431831
+        ],
+        [
+          -208.0140421263792,
+          -1054.9784400760939
+        ],
+        [
+          -213.61083249749254,
+          -1069.902980342422
+        ],
+        [
+          -271.444332998997,
+          -1151.987951807229
+        ],
+        [
+          -293.8314944834504,
+          -1202.3582752060875
+        ],
+        [
+          -305.025075225677,
+          -1247.131896005073
+        ],
+        [
+          -308.7562688064192,
+          -1250.863031071655
+        ],
+        [
+          -318.08425275827483,
+          -1284.443246670894
+        ],
+        [
+          -327.4122367101304,
+          -1299.3677869372225
+        ],
+        [
+          -329.2778335005015,
+          -1310.5611921369689
+        ],
+        [
+          -357.2617853560682,
+          -1338.5447051363346
+        ],
+        [
+          -379.64894684052155,
+          -1368.3937856689918
+        ],
+        [
+          -381.51454363089266,
+          -1411.3018389346862
+        ],
+        [
+          -400.17051153460386,
+          -1471
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          728.5155466399198,
+          1359.0659480025365
+        ],
+        [
+          732.2467402206619,
+          1347.8725428027901
+        ],
+        [
+          739.7091273821464,
+          1342.275840202917
+        ],
+        [
+          767.6930792377132,
+          1334.8135700697526
+        ],
+        [
+          818.0641925777331,
+          1334.8135700697526
+        ],
+        [
+          836.7201604814444,
+          1340.410272669626
+        ],
+        [
+          849.7793380140421,
+          1336.6791376030437
+        ],
+        [
+          885.2256770310933,
+          1336.6791376030437
+        ],
+        [
+          907.6128385155466,
+          1346.006975269499
+        ],
+        [
+          911.3440320962887,
+          1351.6036778693722
+        ],
+        [
+          911.3440320962887,
+          1357.2003804692454
+        ],
+        [
+          903.8816449348045,
+          1359.0659480025365
+        ],
+        [
+          902.0160481444333,
+          1364.6626506024097
+        ],
+        [
+          902.0160481444333,
+          1379.5871908687382
+        ],
+        [
+          894.5536609829488,
+          1387.0494610019025
+        ],
+        [
+          877.7632898696088,
+          1392.6461636017755
+        ],
+        [
+          864.7041123370111,
+          1392.6461636017755
+        ],
+        [
+          859.1073219658978,
+          1405.705136334813
+        ],
+        [
+          836.7201604814444,
+          1422.4952441344326
+        ],
+        [
+          801.2738214643932,
+          1431.8230818008876
+        ],
+        [
+          767.6930792377132,
+          1431.8230818008876
+        ],
+        [
+          752.7683049147442,
+          1418.7641090678503
+        ],
+        [
+          750.9027081243731,
+          1401.9740012682307
+        ],
+        [
+          739.7091273821464,
+          1383.3183259353202
+        ],
+        [
+          737.8435305917752,
+          1366.5282181357006
+        ],
+        [
+          728.5155466399198,
+          1359.0659480025365
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "concept-biome-map",
+    "concept": "twinwater-saddle",
+    "reference": "15-twinwater-saddle.png",
+    "normalizedLayout": true,
+    "terrainWorldUnitsPerPixel": 1.8655967903711133,
+    "blockerSource": "actual-alpha-with-authored-walkable-openings",
+    "blockerAlphaThreshold": 32,
+    "blockerSourceSha256": "cf9d30741bb6f33e93c39d98d2a6547ff165328206dd27db50345993546c7c87"
+  }
+}

@@ -14,6 +14,7 @@ function setsFromAssets(assets){
   const ids=new Set(assets.map(asset=>asset.id));
   return assets.filter(asset=>asset.role==='flight').map(asset=>{
     const set={id:asset.id,name:asset.name,category:asset.category,flight:asset.id};
+    if(asset.trail)set.trail=asset.trail;
     const toon=/^toon:projectile-(\d+)-/.exec(asset.id),fantasy=/^fantasy:(.+)-flight$/.exec(asset.id);
     if(toon){set.name=asset.name.replace(/^Projectile (\d+) /,'Toon $1 · ');set.category='Toon';if(ids.has('toon:flash-'+toon[1]))set.launch='toon:flash-'+toon[1];if(ids.has('toon:hit-'+toon[1]))set.impact='toon:hit-'+toon[1];}
     else if(fantasy){set.name=asset.name.replace(/ flight$/,'');set.category='Fantasy effects';if(ids.has('fantasy:'+fantasy[1]+'-impact'))set.launch=set.impact='fantasy:'+fantasy[1]+'-impact';}
@@ -109,6 +110,15 @@ function library(root){
     asset.visualPivot={x:round(metrics.medianCenter.x/asset.cell),y:round(metrics.medianCenter.y/asset.cell)};
   }
   const gear=read(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')).EquipCfg.find(row=>row.id===3),flights=['hero-skin:lv1','hero-skin:lv2','hero-skin:lv3','hero-skin:lv4-purple','hero-skin:lv4'];
+  const arrowTrail=trails.find(trail=>trail.id==='trail:07d9ec9b-8144-49ac-bab8-0480e3a9dff0');
+  const arrowColors=['#e7d7b6','#eafcff','#49eaff','#b64dff','#ffdf69'];
+  // These rigs place their origin at the tip. Emit behind the shaft so the
+  // arrow artwork cannot cover its own short streak.
+  flights.forEach((flight,index)=>{
+    const id='trail:hero-arrow-lv'+(index+1);
+    trails.push(Object.assign({},arrowTrail,{id,name:'Hero arrow · lv'+(index+1)+' trail',color:arrowColors[index],opacity:160+index*15,width:3+index,lifetime:(12+index*2)/100,additive:index>0,offsetX:-64}));
+    assets.find(asset=>asset.id===flight).trail=id;
+  });
   const heroArrowTiers=require('../../assets/_script/EquipmentTiers').tiers(gear).slice(0,5).map((tier,i)=>({skin:tier.skin,levels:tier.levels,flight:flights[i]}));
   return JSON.parse(JSON.stringify({version:1,heroArrowLayer:'972aecf8-ffbc-4df5-a9a6-a264b323c9dd',heroArrowTiers,source:toon.source,assets,sets:setsFromAssets(assets),trails,assignments:{}}));
 }

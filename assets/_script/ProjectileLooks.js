@@ -33,7 +33,7 @@ function tierFlight(data, level, skin) {
 function skillAsset(data, config, level) {
   var gear=(config&&config.EquipCfg||[]).find(function(row){return row.id===3;}),row=gear&&(gear.levelInfo||[]).find(function(row){return row.Level===level;});
   var asset=tierFlight(data,level,row&&row.EquipSkin);if(!asset||!asset.uuid)return null;
-  return {id:asset.id,uuid:asset.uuid,kind:asset.kind==='spine'?'spine':'sprite',bundle:asset.bundle||'resources',path:asset.resource,skin:asset.skin,animation:asset.animation,rotation:asset.rotation||0,premultipliedAlpha:asset.premultipliedAlpha};
+  return {id:asset.id,uuid:asset.uuid,kind:asset.kind==='spine'?'spine':'sprite',bundle:asset.bundle||'resources',path:asset.resource,skin:asset.skin,animation:asset.animation,rotation:asset.rotation||0,premultipliedAlpha:asset.premultipliedAlpha,trail:(data.trails||[]).find(function(trail){return trail.id===asset.trail;})};
 }
 function select(data, key, level, item, tierSkin) {
   var own=data.assignments[key]||{},assignment = Object.assign({}, /^tower:/.test(key) ? data.assignments.tower || {} : {}, own), result = Object.assign({}, assignment);
@@ -51,6 +51,8 @@ function select(data, key, level, item, tierSkin) {
       if (data.assets.some(function (asset) { return asset.id === skin; })) result.flight = skin;
     }
   }
+  var flight=(data.assets||[]).find(function(asset){return asset.id===result.flight;});
+  if(result.trail===undefined&&flight&&flight.trail)result.trail=flight.trail;
   return result;
 }
 function selectSource(data,key,actor,settings,level,item,tierSkin){
@@ -90,6 +92,28 @@ Bank.prototype.get = function (descriptor, callback) {
   }
   return cancel;
 };
+// MotionStreak keeps points in world space, independent of artwork fitting or
+// rotation. Share the same trail setup between ordinary and active arrows.
+function trailPoint(trail,position,angle) {
+  var radians=(angle||0)*Math.PI/180,x=trail.offsetX||0,y=trail.offsetY||0;
+  return {x:position.x+x*Math.cos(radians)-y*Math.sin(radians),y:position.y+x*Math.sin(radians)+y*Math.cos(radians)};
+}
+function drawTrail(record,parent,trail,texture,position,opacity) {
+  if(!cc.MotionStreak||!valid(parent))return;
+  var node=record.trailNode,reset=!valid(node)||!node.active;
+  if(!valid(node)){node=record.trailNode=new cc.Node('Projectile trail');node.setParent(parent);}
+  if(node.parent!==parent){node.setParent(parent);reset=true;}
+  node.setPosition(position);node.group=parent.group;node.zIndex=-1;node.active=true;
+  var renderer=node.getComponent(cc.MotionStreak)||node.addComponent(cc.MotionStreak),key=JSON.stringify(trail);
+  if(record.trailKey!==key||record.trailTexture!==texture){
+    renderer.fadeTime=trail.lifetime;renderer.stroke=trail.width;renderer.minSeg=1;
+    renderer.texture=texture;renderer.color=cc.color(trail.color||'#ffffff');
+    if(cc.macro){renderer.srcBlendFactor=cc.macro.SRC_ALPHA;renderer.dstBlendFactor=trail.additive?cc.macro.ONE:cc.macro.ONE_MINUS_SRC_ALPHA;}
+    record.trailKey=key;record.trailTexture=texture;reset=true;
+  }
+  renderer.enabled=true;node.color=cc.color(trail.color||'#ffffff');node.opacity=Math.round((trail.opacity===undefined?255:trail.opacity)*(opacity===undefined?1:opacity));
+  if(reset&&renderer.reset)renderer.reset();
+}
 function draw(node, clip, options) {
   var descriptor = clip.descriptor, renderer;
   if (node._projectilePrefab) { node._projectilePrefab.destroy(); node._projectilePrefab = null; }
@@ -210,6 +234,7 @@ View.prototype.release = function () {
   if (valid(this.spriteNode)) this.spriteNode.destroy();
   if (valid(this.spineNode)) this.spineNode.destroy();
   if (valid(this.trailNode)) this.trailNode.destroy();
+  this.trailTexture=null;this.trailKey=null;
   this.spriteNode = this.spineNode = null; this.bank.views.delete(this);
 };
 View.prototype.begin = function (key, sourceActor) {
@@ -264,9 +289,7 @@ View.prototype.begin = function (key, sourceActor) {
       var trail = (data.trails || []).find(function (entry) { return entry.id === options.trail; });
       if (trail) view.cancelTrail = bank.get(Object.assign({},trail,{kind:'texture'}),function (clip) {
         view.cancelTrail=null;if (!current()) return;if (!clip) { restoreTrails(); return; }
-        var node=view.trailNode;if (!valid(node)) {node=view.trailNode=new cc.Node('Projectile trail');node.setParent(shot.node);}
-        node.active=true;node.setPosition(0,0);node.group=shot.node.group;
-        var renderer=node.getComponent(cc.MotionStreak)||node.addComponent(cc.MotionStreak);renderer.enabled=true;renderer.fadeTime=trail.lifetime;renderer.stroke=trail.width;renderer.minSeg=1;renderer.texture=clip.asset;renderer.color=cc.color(trail.color||'#ffffff');node.color=cc.color(trail.color||'#ffffff');node.opacity=trail.opacity===undefined?255:trail.opacity;if(cc.macro){renderer.srcBlendFactor=cc.macro.SRC_ALPHA;renderer.dstBlendFactor=trail.additive?cc.macro.ONE:cc.macro.ONE_MINUS_SRC_ALPHA;}if(renderer.reset)renderer.reset();
+        drawTrail(view,shot.node,trail,clip.asset,trailPoint(trail,{x:0,y:0}));
       });
     }
     if (!descriptor) return;
@@ -331,6 +354,8 @@ exports.queueLaunch=function(owner,key,source,callback,guard){
   bank.launches.push({source:source,node:source.node,generation:source.node._combatGeneration,time:source.time,cfg:source.buildInfo&&source.buildInfo.cfg,remaining:delay,epoch:owner._combatEpoch,callback:callback,guard:guard});
 };
 exports.prime = function (data) { catalog=data;loading=false;retryAfter=0;var callbacks=waiting;waiting=[];callbacks.forEach(function(callback){callback(catalog);}); };
+exports.drawTrail=drawTrail;
+exports.trailPoint=trailPoint;
 exports.release = function (shot) {
   var view = shot._projectileVisual;
   if (view) view.release();

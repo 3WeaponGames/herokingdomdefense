@@ -1,0 +1,6464 @@
+{
+  "version": 1,
+  "id": "map-concept-01-switchback-pass",
+  "name": "Forest - Switchback Pass",
+  "biome": "forest",
+  "size": {
+    "width": 1860,
+    "height": 3101
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2741
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-53ec88f52bc969f4f9e77b078e5aabdd",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "id": "north-switchback",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -491.33946,
+              "y": 1374.356998
+            },
+            {
+              "x": -518.1569400000001,
+              "y": 1254.751428
+            },
+            {
+              "x": -600.52518,
+              "y": 1163.417675
+            },
+            {
+              "x": -644.5830000000001,
+              "y": 1074.260824
+            },
+            {
+              "x": -646.4988,
+              "y": 980.750169
+            },
+            {
+              "x": -594.77778,
+              "y": 887.242615
+            },
+            {
+              "x": -491.33946,
+              "y": 815.479273
+            },
+            {
+              "x": -385.98348,
+              "y": 767.640146
+            },
+            {
+              "x": -152.28564,
+              "y": 730.670024
+            },
+            {
+              "x": 121.63656000000002,
+              "y": 658.906682
+            },
+            {
+              "x": 353.4186,
+              "y": 569.749831
+            },
+            {
+              "x": 441.53424000000007,
+              "y": 491.46198499999997
+            },
+            {
+              "x": 483.67625999999996,
+              "y": 402.30513400000007
+            },
+            {
+              "x": 476.01491999999996,
+              "y": 302.26997499999993
+            },
+            {
+              "x": 414.71676,
+              "y": 200.06411600000004
+            },
+            {
+              "x": 315.10818000000006,
+              "y": 73.937143
+            },
+            {
+              "x": 144.62430000000003,
+              "y": -41.317724000000005
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -147.874286
+            }
+          ],
+          "size": 105,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-1244086878ea0e945bd879b5c5134bab",
+          "edgeAssetId": "env-40df0aef196c6474ba5dbb94cdc63cd1",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        },
+        {
+          "id": "south-switchback",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 483.67625999999996,
+              "y": -1393.9274090000001
+            },
+            {
+              "x": 428.12550000000005,
+              "y": -1250.403826
+            },
+            {
+              "x": 318.93978,
+              "y": -1143.847264
+            },
+            {
+              "x": 184.85051999999993,
+              "y": -1078.608426
+            },
+            {
+              "x": -33.52278000000002,
+              "y": -1022.067893
+            },
+            {
+              "x": -276.79776,
+              "y": -954.6552539999999
+            },
+            {
+              "x": -405.13962,
+              "y": -900.291623
+            },
+            {
+              "x": -487.50786000000005,
+              "y": -824.1775779999999
+            },
+            {
+              "x": -510.49374,
+              "y": -737.1945280000001
+            },
+            {
+              "x": -499.0007999999999,
+              "y": -621.939661
+            },
+            {
+              "x": -445.36584,
+              "y": -502.3371920000001
+            },
+            {
+              "x": -359.166,
+              "y": -376.2071180000001
+            },
+            {
+              "x": -217.41539999999998,
+              "y": -263.12915299999986
+            },
+            {
+              "x": 0.9579000000000804,
+              "y": -147.874286
+            }
+          ],
+          "size": 105,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-1244086878ea0e945bd879b5c5134bab",
+          "edgeAssetId": "env-40df0aef196c6474ba5dbb94cdc63cd1",
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    },
+    "custom": [
+      {
+        "id": "ground-1",
+        "name": "Concept terrain - Forest",
+        "transform": {
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "angle": 0
+        },
+        "opacity": 1,
+        "blend": "source-over",
+        "images": [
+          {
+            "id": "ground-image-1",
+            "assetId": "concept-terrain-01-switchback-pass",
+            "name": "Forest - Switchback Pass terrain",
+            "x": 0,
+            "y": 0,
+            "scale": 1.9155509783728115,
+            "angle": 0,
+            "flipX": false,
+            "opacity": 1,
+            "mask": [],
+            "depth": "ground",
+            "globalShadow": false
+          }
+        ],
+        "strokes": []
+      }
+    ],
+    "order": [
+      "foundation",
+      "ground-1",
+      "roads",
+      "grass"
+    ]
+  },
+  "layers": [
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-152",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -692.15,
+          "y": 199.108,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-153",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -163.64,
+          "y": 1398.597,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-154",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -171.8,
+          "y": 1202.39,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-155",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -584.475,
+          "y": 757.739,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-156",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -866.328,
+          "y": -971.386,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-157",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 697.278,
+          "y": 233.977,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-158",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 898.577,
+          "y": 55.288,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-159",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": 274.606,
+          "y": -1012.852,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-160",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -758.168,
+          "y": 173.463,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-161",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -781.247,
+          "y": -775.874,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-162",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 191.168,
+          "y": 1282.992,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-163",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": 314.5,
+          "y": -1463.41,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-164",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 76.022,
+          "y": -1384.159,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-165",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 745.948,
+          "y": -307.151,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-166",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -345.651,
+          "y": -613.518,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-167",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 54.249,
+          "y": 502.364,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-168",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -677.939,
+          "y": -552.244,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-169",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 188.268,
+          "y": -1363.605,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-170",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": 175.783,
+          "y": 526.441,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-171",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -2.955,
+          "y": 1268.67,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-172",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 698.554,
+          "y": -1294.257,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-173",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 698.408,
+          "y": -1180.124,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-174",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 1.066,
+          "y": -1407.844,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-175",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -716.744,
+          "y": -892.557,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-176",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -812.051,
+          "y": 79.663,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-177",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -747.352,
+          "y": 795.838,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-178",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -222.659,
+          "y": 651.002,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-179",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -723.132,
+          "y": 1245.077,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-180",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 330.169,
+          "y": -981.384,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-181",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 829.421,
+          "y": 52.705,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-182",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -634.285,
+          "y": 1299.472,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-183",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 577.453,
+          "y": 517.252,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-184",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -833.747,
+          "y": 887.643,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-185",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -553.121,
+          "y": 1043.238,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-186",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -102.615,
+          "y": 1405.346,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-187",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -502.142,
+          "y": 1457.948,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-188",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 794.114,
+          "y": -444.463,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-189",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -439.826,
+          "y": -971.7,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-190",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 133.847,
+          "y": -1181.646,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-191",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -198.959,
+          "y": -1398.102,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-192",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -757.7,
+          "y": -627.2,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-193",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -140.8,
+          "y": 1221.39,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-194",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": 736.601,
+          "y": -215.326,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-195",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -385.061,
+          "y": -1016.323,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-196",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": 679.017,
+          "y": -1255.011,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-197",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 698.102,
+          "y": -388.971,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-198",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -790.291,
+          "y": 1009.535,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-199",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -711.512,
+          "y": -617.861,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-200",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -121.8,
+          "y": 1192.39,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-201",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 491.249,
+          "y": 576.205,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-202",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 725.657,
+          "y": -248.576,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-203",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": 574.103,
+          "y": -1332.633,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-204",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -707.7,
+          "y": -637.2,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-205",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -807.432,
+          "y": -299.973,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-206",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -152.8,
+          "y": 1179.39,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-207",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -421.117,
+          "y": -1454.704,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-208",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 86.236,
+          "y": 1287.364,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-209",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -662.337,
+          "y": 709.667,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-210",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": 194.09,
+          "y": -1457.151,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-211",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -809.826,
+          "y": 1103.729,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-212",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -759.399,
+          "y": 770.944,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-213",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -606.162,
+          "y": 1433.359,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-214",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -656.428,
+          "y": 1227.033,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-215",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -796.358,
+          "y": 973.107,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-216",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -411.923,
+          "y": 1206.069,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-217",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -138.845,
+          "y": 1510.067,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-218",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -794.026,
+          "y": 1040.524,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-219",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -627.019,
+          "y": 708.931,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-220",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -285.327,
+          "y": 613.759,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-221",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -494.666,
+          "y": -1519.006,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-222",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -655.209,
+          "y": -520.679,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-223",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -735.716,
+          "y": 1214.918,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-224",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 534.603,
+          "y": 670.161,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-225",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -712.719,
+          "y": -765.34,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-226",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -843.577,
+          "y": -915.662,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-227",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 779.276,
+          "y": -1373.816,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-228",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 27.088,
+          "y": -1488.092,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-229",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 91.6,
+          "y": -578.663,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-230",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -258.101,
+          "y": -878.48,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-231",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -198.464,
+          "y": -847.593,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-232",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -92.417,
+          "y": -1511.728,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-233",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -50.245,
+          "y": -649.644,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-234",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 643.833,
+          "y": -1119.179,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-235",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 737.814,
+          "y": -1176.368,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-236",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -680.036,
+          "y": 188.47,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-237",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 91.379,
+          "y": 1445.982,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-238",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": 621.146,
+          "y": 541.012,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-239",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -121.177,
+          "y": -618.022,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-240",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": 196.573,
+          "y": 545.016,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-241",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 657.275,
+          "y": 1482.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-242",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 90.316,
+          "y": -972.842,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-243",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -347.899,
+          "y": -1516.228,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-244",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -813.689,
+          "y": 922.982,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-245",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": 619.705,
+          "y": 314.112,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-246",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -227.574,
+          "y": 1500.008,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-247",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -771.399,
+          "y": -4.625,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-248",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -416.127,
+          "y": 1174.253,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-249",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -277.199,
+          "y": -1495.319,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-250",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -714.873,
+          "y": -396.532,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-251",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -70.949,
+          "y": 575.802,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-252",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -105.671,
+          "y": -1456.686,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-253",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -205.859,
+          "y": 601.58,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-254",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 98.588,
+          "y": 1369.59,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-255",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -834.944,
+          "y": 959.858,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-256",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": 777.501,
+          "y": 189.674,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-257",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -856.259,
+          "y": -258.976,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-258",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -57.11,
+          "y": -1403.519,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-259",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -22.329,
+          "y": 362.6,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-260",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -455.257,
+          "y": 713.405,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-261",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -0.459,
+          "y": -1117.689,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "layer-1",
+      "name": "Native Forest trees and bushes",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-2",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": -354.791,
+          "y": 613.038,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-3",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": -31.224,
+          "y": -1337.512,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": -487.302,
+          "y": 1086.589,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-5",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -277.441,
+          "y": -795.982,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": -177.414,
+          "y": -1377.685,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-22d2cd90888d52b41b4ba0f99c981b52",
+          "name": "Tree Yellow Green 15",
+          "x": -750.69,
+          "y": -962.086,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": -812.773,
+          "y": 989.221,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-536cf72b942d0cb4d9a004687f536002",
+          "name": "Tree Yellow Green 8",
+          "x": 72.876,
+          "y": -1472.782,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": -822.851,
+          "y": -1011.366,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": 645.195,
+          "y": -1093.438,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": 292.422,
+          "y": -1382.454,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -391.133,
+          "y": 1173.153,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-22d2cd90888d52b41b4ba0f99c981b52",
+          "name": "Tree Yellow Green 15",
+          "x": 635.324,
+          "y": -1315.895,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": 25.361,
+          "y": -1360.302,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": -277.926,
+          "y": -1433.994,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-22d2cd90888d52b41b4ba0f99c981b52",
+          "name": "Tree Yellow Green 15",
+          "x": -49.77,
+          "y": 1271.007,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": -689.496,
+          "y": -885.286,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": 607.331,
+          "y": -1182.948,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": -846.792,
+          "y": -307.98,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-536cf72b942d0cb4d9a004687f536002",
+          "name": "Tree Yellow Green 8",
+          "x": -793.78,
+          "y": -873.2,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 664.48,
+          "y": -1446.322,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": 449.078,
+          "y": -989.503,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -181.067,
+          "y": -1494.295,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-536cf72b942d0cb4d9a004687f536002",
+          "name": "Tree Yellow Green 8",
+          "x": -789.58,
+          "y": -1518.702,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -193.249,
+          "y": 1258.149,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": 634.652,
+          "y": 572.238,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": -322.467,
+          "y": -797.28,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": -797.498,
+          "y": -716.649,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": -587.284,
+          "y": -1008.164,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": 59.845,
+          "y": 457.253,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": 146.016,
+          "y": -1263.41,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 94.263,
+          "y": -1261.198,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 675.383,
+          "y": 478.639,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -731.077,
+          "y": 787.898,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": -703.755,
+          "y": 1299.638,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": 517.698,
+          "y": -1029.619,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": -191.582,
+          "y": 1328.04,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -755.772,
+          "y": 142.443,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -822.639,
+          "y": -781.173,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": -674.197,
+          "y": -566.526,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": 676.609,
+          "y": -1185.882,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": -86.651,
+          "y": -1527.463,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": -249.773,
+          "y": 621.5,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -658.46,
+          "y": 1386.405,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": -789.758,
+          "y": 64.115,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -680.271,
+          "y": 712.978,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-536cf72b942d0cb4d9a004687f536002",
+          "name": "Tree Yellow Green 8",
+          "x": -620.666,
+          "y": -1502.309,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": 706.77,
+          "y": -1400.346,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 326.822,
+          "y": -980.528,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": -400.152,
+          "y": -766.393,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": -860.223,
+          "y": -1521.252,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": -555.063,
+          "y": 725.437,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": -430.897,
+          "y": 650.362,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": -225.264,
+          "y": -765.923,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 151.944,
+          "y": 418.88,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": 792.688,
+          "y": -213.872,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": -18.748,
+          "y": -1516.522,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": -731.101,
+          "y": -593.376,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": 709.683,
+          "y": -1260.596,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 577.145,
+          "y": 601.205,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -772.265,
+          "y": 1150.013,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": -307.418,
+          "y": -1078.227,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-22d2cd90888d52b41b4ba0f99c981b52",
+          "name": "Tree Yellow Green 15",
+          "x": 727.897,
+          "y": 438.177,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": 203.336,
+          "y": -1312.981,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": -836.364,
+          "y": -969.894,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": -753.406,
+          "y": -431.351,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": 311.245,
+          "y": -1315.471,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": 511.642,
+          "y": -1087.362,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": -697.228,
+          "y": -927.8,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": -376.854,
+          "y": 1480.336,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": 518.388,
+          "y": -501.903,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 4.149,
+          "y": 1312.299,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": -380.923,
+          "y": 1297.411,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": 170.599,
+          "y": 1267.083,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": -448.012,
+          "y": 1122.722,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": 619.384,
+          "y": -1300.896,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": 715.547,
+          "y": -397.083,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": -233.098,
+          "y": -719.382,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": 686.725,
+          "y": -1332.655,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -554.221,
+          "y": -997.595,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": -130.16,
+          "y": -1490.052,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": -649.254,
+          "y": -853.039,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": 138.969,
+          "y": -607.92,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": 84.719,
+          "y": 413.298,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": -85.307,
+          "y": -879.928,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": -787.278,
+          "y": -985.438,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -688.976,
+          "y": 1251.302,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 316.716,
+          "y": -1532.401,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": -230.205,
+          "y": -1453.436,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 55.136,
+          "y": -638.133,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": -268.403,
+          "y": -1427.776,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": -773.207,
+          "y": 1027.338,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 18.557,
+          "y": -1367.581,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": 27.412,
+          "y": -1288.403,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": -808.51,
+          "y": -850.438,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": -519.32,
+          "y": 998.536,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": -742.449,
+          "y": 98.468,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": 272.923,
+          "y": -1326.156,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": -871.619,
+          "y": -957.679,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": 778.924,
+          "y": -1377.843,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -749.276,
+          "y": 820.081,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": -777.036,
+          "y": 153.389,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": 82.025,
+          "y": 1312.906,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 58.297,
+          "y": -1522.555,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "layer-2",
+      "name": "Native stones and biome details",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-107",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": -152.523,
+          "y": -659.395,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": -677.854,
+          "y": -1018.46,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -100.977,
+          "y": 1314.349,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-037a77b18a79f8f4692ed6b22be4eef5",
+          "name": "Stone Gray1 8",
+          "x": -353.068,
+          "y": -1050.91,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 113.219,
+          "y": -1314.588,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 119.341,
+          "y": 438.638,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -781.489,
+          "y": -702.058,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-037a77b18a79f8f4692ed6b22be4eef5",
+          "name": "Stone Gray1 8",
+          "x": 45.602,
+          "y": 543.879,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 118.299,
+          "y": -600.057,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 138.449,
+          "y": 1330.286,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+          "name": "Stone Gray1 4",
+          "x": -674.75,
+          "y": -793.641,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+          "name": "Stone Gray1 4",
+          "x": 46.053,
+          "y": -1410.092,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 1.8,
+          "y": 1330.775,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": -871.264,
+          "y": 914.968,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": -97.218,
+          "y": -908.907,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": -706.388,
+          "y": -626.994,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-123",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": -45.353,
+          "y": 1270.585,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+          "name": "Stone Gray1 4",
+          "x": 149.409,
+          "y": -1255.739,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-037a77b18a79f8f4692ed6b22be4eef5",
+          "name": "Stone Gray1 8",
+          "x": -852.331,
+          "y": 969.985,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -623.903,
+          "y": 1271.889,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-127",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 717.497,
+          "y": 1420.591,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 734.518,
+          "y": -385.643,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -754.473,
+          "y": -909.589,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": 146.787,
+          "y": -1470.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -312.875,
+          "y": 1193.44,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+          "name": "Stone Gray1 4",
+          "x": 761.163,
+          "y": -1212.862,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": -394.969,
+          "y": -1070.393,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 120.409,
+          "y": 1424.281,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -508.42,
+          "y": 1022.484,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-136",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -749.794,
+          "y": -1004.124,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": -827.142,
+          "y": -1516.748,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -345.513,
+          "y": -1404.522,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-139",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": -423.339,
+          "y": -1490.545,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": 885.411,
+          "y": -22.417,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-141",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": 686.268,
+          "y": 215.703,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-142",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -859.073,
+          "y": -218.746,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-143",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": 659.11,
+          "y": -1282.601,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-144",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 731.595,
+          "y": -1236.485,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-145",
+          "assetId": "env-037a77b18a79f8f4692ed6b22be4eef5",
+          "name": "Stone Gray1 8",
+          "x": -635.311,
+          "y": -1452.097,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-146",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -191.939,
+          "y": 1440.106,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-147",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 863.748,
+          "y": 54.26,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-148",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": 861.785,
+          "y": -404.78,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-149",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -225.184,
+          "y": 1164.743,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-150",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 729.399,
+          "y": 416.673,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-151",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": -35.296,
+          "y": 1464.253,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "layer-3",
+      "name": "Dressing - Forest edge groves",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-262",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": -236.8,
+          "y": 1317.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-263",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": -96.8,
+          "y": 1291.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-264",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": -167.8,
+          "y": 1276.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-265",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -109.8,
+          "y": 1269.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-266",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -224.8,
+          "y": 1256.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-267",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -209.528,
+          "y": 1235.197,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-268",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -133.8,
+          "y": 1252.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-269",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -160.8,
+          "y": 1259.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-270",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -146.8,
+          "y": 1250.925,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-271",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 772.4,
+          "y": -1.01,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-272",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": 828.584,
+          "y": -27.826,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-273",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": 740.741,
+          "y": -62.623,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-274",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 744.4,
+          "y": 7.521,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-275",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 734.4,
+          "y": -98.01,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-276",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 739.223,
+          "y": -78.01,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-277",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": 734.4,
+          "y": -49.833,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-278",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": 729.223,
+          "y": -73.01,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-279",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": -709.7,
+          "y": -576.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-280",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": -754.7,
+          "y": -589.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-281",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -679.7,
+          "y": -605.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-282",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -651.7,
+          "y": -614.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-283",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -721.7,
+          "y": -609.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-284",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -731.7,
+          "y": -580.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-285",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -741.7,
+          "y": -592.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-286",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -353.4,
+          "y": 666.715,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-287",
+          "assetId": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+          "name": "Stone Gray1 4",
+          "x": -398.4,
+          "y": 631.715,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-288",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -420.4,
+          "y": 615.715,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-289",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -325.4,
+          "y": 646.715,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-290",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -343.4,
+          "y": 634.715,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-291",
+          "assetId": "env-414b54c7dff446d449a0877031dfae3d",
+          "name": "Mushroom Wihte 1",
+          "x": -330.4,
+          "y": 626.715,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-292",
+          "assetId": "env-80b469f250f41e74eab58f33de28166e",
+          "name": "Mushroom Wihte 3",
+          "x": -363.4,
+          "y": 621.715,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 293,
+  "nextLayer": 4,
+  "nextGround": 2,
+  "blockerMask": [
+    [
+      [
+        [
+          -930,
+          -1504.5308832612725
+        ],
+        [
+          -774.8403707518022,
+          -1485.377084620136
+        ],
+        [
+          -751.8537590113286,
+          -1475.8001852995676
+        ],
+        [
+          -698.2183316168898,
+          -1426.0003088326125
+        ],
+        [
+          -598.6096807415037,
+          -1416.4234095120446
+        ],
+        [
+          -537.3120494335735,
+          -1380.031192093885
+        ],
+        [
+          -399.39237899073123,
+          -1368.5389129092032
+        ],
+        [
+          -384.0679711637487,
+          -1360.8773934527485
+        ],
+        [
+          -362.9969104016478,
+          -1339.8082149474983
+        ],
+        [
+          -334.2636457260556,
+          -1320.654416306362
+        ],
+        [
+          -165.69515962924817,
+          -1318.7390364422483
+        ],
+        [
+          -98.65087538619981,
+          -1295.7544780728845
+        ],
+        [
+          -66.08650875386205,
+          -1280.4314391599753
+        ],
+        [
+          -0.957775489186411,
+          -1276.600679431748
+        ],
+        [
+          16.282183316168883,
+          -1270.854539839407
+        ],
+        [
+          18.197734294541704,
+          -1267.0237801111796
+        ],
+        [
+          29.691040164778638,
+          -1263.1930203829527
+        ],
+        [
+          37.353244078269924,
+          -1255.531500926498
+        ],
+        [
+          79.4953656024716,
+          -1232.5469425571341
+        ],
+        [
+          90.98867147270853,
+          -1219.1392835083384
+        ],
+        [
+          96.735324407827,
+          -1203.8162445954292
+        ],
+        [
+          96.735324407827,
+          -1169.3249078628965
+        ],
+        [
+          -65.4540944979909,
+          -1127.331329930543
+        ],
+        [
+          -308.72907449799084,
+          -1059.9186909305429
+        ],
+        [
+          -447.2347975601599,
+          -1001.9183715762415
+        ],
+        [
+          -476.8815265853346,
+          -983.5475602223596
+        ],
+        [
+          -497.0854788877446,
+          -983.5475602223596
+        ],
+        [
+          -579.4541709577754,
+          -995.0398394070413
+        ],
+        [
+          -602.4407826982493,
+          -987.378319950587
+        ],
+        [
+          -623.5118434603502,
+          -972.0552810376776
+        ],
+        [
+          -654.1606591143151,
+          -956.7322421247684
+        ],
+        [
+          -669.4850669412976,
+          -952.901482396541
+        ],
+        [
+          -792.0803295571576,
+          -960.5630018529957
+        ],
+        [
+          -816.9824922760041,
+          -945.2399629400863
+        ],
+        [
+          -820.8135942327498,
+          -939.4938233477457
+        ],
+        [
+          -853.3779608650875,
+          -926.0861642989499
+        ],
+        [
+          -861.0401647785789,
+          -926.0861642989499
+        ],
+        [
+          -864.8712667353244,
+          -920.3400247066089
+        ],
+        [
+          -870.6179196704428,
+          -887.778567016677
+        ],
+        [
+          -870.6179196704428,
+          -859.0478690549721
+        ],
+        [
+          -855.2935118434604,
+          -795.8403335392218
+        ],
+        [
+          -853.3779608650875,
+          -770.9403953057443
+        ],
+        [
+          -801.6580844490217,
+          -675.1714021000618
+        ],
+        [
+          -795.9114315139032,
+          -640.6945645460162
+        ],
+        [
+          -767.178166838311,
+          -544.9255713403336
+        ],
+        [
+          -767.178166838311,
+          -521.9410129709698
+        ],
+        [
+          -780.5870236869207,
+          -449.15657813465106
+        ],
+        [
+          -784.4181256436664,
+          -445.3258184064237
+        ],
+        [
+          -784.4181256436664,
+          -431.91815935762827
+        ],
+        [
+          -793.9958805355303,
+          -420.4258801729462
+        ],
+        [
+          -815.0669412976313,
+          -410.84898085237813
+        ],
+        [
+          -824.6446961894954,
+          -393.610562075355
+        ],
+        [
+          -838.0535530381051,
+          -380.2029030265596
+        ],
+        [
+          -870.6179196704428,
+          -362.96448424953684
+        ],
+        [
+          -876.3645726055613,
+          -253.78783199505853
+        ],
+        [
+          -882.1112255406797,
+          -244.21093267449046
+        ],
+        [
+          -882.1112255406797,
+          -230.80327362569471
+        ],
+        [
+          -857.2090628218332,
+          -159.93421865348998
+        ],
+        [
+          -864.8712667353244,
+          -90.98054354539855
+        ],
+        [
+          -841.8846549948507,
+          -56.503705991352675
+        ],
+        [
+          -824.6446961894954,
+          -20.11148857319346
+        ],
+        [
+          -834.2224510813594,
+          48.842186534898126
+        ],
+        [
+          -834.2224510813594,
+          71.82674490426193
+        ],
+        [
+          -818.898043254377,
+          96.72668313773941
+        ],
+        [
+          -792.0803295571576,
+          169.511117974058
+        ],
+        [
+          -774.8403707518022,
+          179.08801729462624
+        ],
+        [
+          -732.6982492276004,
+          186.74953675108097
+        ],
+        [
+          -675.2317198764162,
+          225.05713403335386
+        ],
+        [
+          -600.5252317198765,
+          234.63403335392223
+        ],
+        [
+          -567.9608650875387,
+          242.2955528103768
+        ],
+        [
+          -544.9742533470649,
+          263.3647313156269
+        ],
+        [
+          -523.903192584964,
+          271.0262507720815
+        ],
+        [
+          -502.83213182286295,
+          271.0262507720815
+        ],
+        [
+          -454.94335736354276,
+          255.70321185917237
+        ],
+        [
+          -353.4191555097837,
+          255.70321185917237
+        ],
+        [
+          -278.71266735324406,
+          295.92618900555897
+        ],
+        [
+          -249.97940267765193,
+          303.58770846201367
+        ],
+        [
+          -190.59732234809476,
+          307.41846819024084
+        ],
+        [
+          -156.11740473738416,
+          332.31840642371833
+        ],
+        [
+          -150.3707518022657,
+          339.97992588017286
+        ],
+        [
+          -136.96189495365604,
+          345.72606547251394
+        ],
+        [
+          -73.74871266735323,
+          343.81068560840026
+        ],
+        [
+          -60.33985581874358,
+          347.6414453366276
+        ],
+        [
+          -27.775489186405814,
+          372.5413835701051
+        ],
+        [
+          -12.45108135942324,
+          380.2029030265596
+        ],
+        [
+          -8.619979402677698,
+          385.9490426189005
+        ],
+        [
+          6.704428424304774,
+          393.6105620753552
+        ],
+        [
+          22.02883625128735,
+          408.9336009882643
+        ],
+        [
+          33.52214212152428,
+          435.74891908585545
+        ],
+        [
+          33.52214212152428,
+          460.64885731933293
+        ],
+        [
+          23.944387229660173,
+          504.7025941939469
+        ],
+        [
+          27.775489186405814,
+          516.1948733786288
+        ],
+        [
+          23.944387229660173,
+          525.771772699197
+        ],
+        [
+          16.282183316168883,
+          533.4332921556517
+        ],
+        [
+          -6.704428424304877,
+          541.0948116121062
+        ],
+        [
+          -12.45108135942324,
+          550.6717109326745
+        ],
+        [
+          -35.437693099897,
+          565.9947498455838
+        ],
+        [
+          -50.76210092687947,
+          567.9101297096975
+        ],
+        [
+          -100.56642636457264,
+          585.1485484867202
+        ],
+        [
+          -219.3305870236869,
+          581.3177887584928
+        ],
+        [
+          -274.8815653964985,
+          610.0484867201977
+        ],
+        [
+          -362.9969104016478,
+          610.0484867201977
+        ],
+        [
+          -391.73017507723995,
+          631.1176652254478
+        ],
+        [
+          -426.21009268795063,
+          644.5253242742434
+        ],
+        [
+          -514.3254376931,
+          638.7791846819024
+        ],
+        [
+          -566.0453141091658,
+          667.5098826436072
+        ],
+        [
+          -652.2451081359422,
+          667.5098826436072
+        ],
+        [
+          -667.5695159629248,
+          673.2560222359481
+        ],
+        [
+          -686.7250257466529,
+          690.494441012971
+        ],
+        [
+          -711.6271884654996,
+          705.8174799258802
+        ],
+        [
+          -755.6848609680741,
+          711.5636195182211
+        ],
+        [
+          -795.9114315139032,
+          740.294317479926
+        ],
+        [
+          -824.6446961894954,
+          746.0404570722668
+        ],
+        [
+          -847.6313079299691,
+          830.3171710932673
+        ],
+        [
+          -861.0401647785789,
+          847.5555898702903
+        ],
+        [
+          -864.8712667353244,
+          847.5555898702903
+        ],
+        [
+          -882.1112255406797,
+          866.7093885114269
+        ],
+        [
+          -889.7734294541709,
+          870.5401482396541
+        ],
+        [
+          -903.1822863027805,
+          910.7631253860408
+        ],
+        [
+          -880.195674562307,
+          966.3091414453366
+        ],
+        [
+          -868.70236869207,
+          1035.2628165534281
+        ],
+        [
+          -818.898043254377,
+          1108.0472513897466
+        ],
+        [
+          -811.2358393408856,
+          1205.731624459543
+        ],
+        [
+          -738.4449021627188,
+          1278.5160592958616
+        ],
+        [
+          -713.5427394438724,
+          1366.6235330450895
+        ],
+        [
+          -705.880535530381,
+          1370.4542927733169
+        ],
+        [
+          -638.8362512873327,
+          1433.6618282890672
+        ],
+        [
+          -579.4541709577754,
+          1450.9002470660903
+        ],
+        [
+          -566.0453141091658,
+          1458.5617665225448
+        ],
+        [
+          -544.9742533470649,
+          1483.4617047560223
+        ],
+        [
+          -544.9742533470649,
+          1487.2924644842496
+        ],
+        [
+          -533.4809474768281,
+          1496.8693638048178
+        ],
+        [
+          -520.0720906282183,
+          1519.8539221741817
+        ],
+        [
+          -510.4943357363543,
+          1527.5154416306361
+        ],
+        [
+          -497.0854788877446,
+          1550.5
+        ],
+        [
+          -930,
+          1550.5
+        ],
+        [
+          -930,
+          -1504.5308832612725
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -535.9383063138115,
+          1008.1079995245068
+        ],
+        [
+          -510.9625158571493,
+          962.9537261784084
+        ],
+        [
+          -436.6085399699883,
+          911.3684935426688
+        ],
+        [
+          -354.01154304882346,
+          873.8635676188605
+        ],
+        [
+          -130.8257045782259,
+          838.5564048443554
+        ],
+        [
+          153.56787449799089,
+          764.170118930543
+        ],
+        [
+          375.6894680343852,
+          679.0021618282891
+        ],
+        [
+          407.0545829042225,
+          679.0021618282891
+        ],
+        [
+          514.3254376931,
+          690.494441012971
+        ],
+        [
+          527.7342945417097,
+          686.6636812847437
+        ],
+        [
+          598.6096807415037,
+          650.2714638665842
+        ],
+        [
+          650.3295571575694,
+          585.1485484867202
+        ],
+        [
+          738.4449021627188,
+          562.1639901173564
+        ],
+        [
+          742.2760041194645,
+          558.333230389129
+        ],
+        [
+          742.2760041194645,
+          508.53335392217423
+        ],
+        [
+          757.600411946447,
+          466.3949969116738
+        ],
+        [
+          761.4315139031925,
+          445.3258184064237
+        ],
+        [
+          765.2626158599381,
+          441.4950586781965
+        ],
+        [
+          771.0092687950566,
+          412.76436071649164
+        ],
+        [
+          784.4181256436664,
+          387.86442248301415
+        ],
+        [
+          795.9114315139033,
+          374.4567634342186
+        ],
+        [
+          805.4891864057672,
+          353.38758492896847
+        ],
+        [
+          811.2358393408856,
+          255.70321185917237
+        ],
+        [
+          841.8846549948506,
+          194.4110562075355
+        ],
+        [
+          839.9691040164778,
+          177.17263743051274
+        ],
+        [
+          811.2358393408856,
+          117.79586164298955
+        ],
+        [
+          809.3202883625129,
+          85.23440395305751
+        ],
+        [
+          803.5736354273944,
+          81.40364422483016
+        ],
+        [
+          786.3336766220392,
+          54.58832612723899
+        ],
+        [
+          765.2626158599381,
+          43.096046942557095
+        ],
+        [
+          755.6848609680742,
+          33.51914762198887
+        ],
+        [
+          753.7693099897015,
+          23.942248301420644
+        ],
+        [
+          746.1071060762101,
+          14.36534898085242
+        ],
+        [
+          746.1071060762101,
+          -106.30358245830764
+        ],
+        [
+          795.9114315139033,
+          -181.00339715874009
+        ],
+        [
+          824.6446961894954,
+          -215.48023471278563
+        ],
+        [
+          830.3913491246138,
+          -336.1491661519457
+        ],
+        [
+          801.6580844490215,
+          -351.4722050648548
+        ],
+        [
+          795.9114315139033,
+          -351.4722050648548
+        ],
+        [
+          786.3336766220392,
+          -359.1337245213095
+        ],
+        [
+          749.9382080329558,
+          -451.07195799876473
+        ],
+        [
+          734.6138002059732,
+          -464.4796170475601
+        ],
+        [
+          644.5829042224511,
+          -466.3949969116738
+        ],
+        [
+          629.2584963954686,
+          -470.22575663990114
+        ],
+        [
+          581.3697219361483,
+          -495.1256948733786
+        ],
+        [
+          481.76107106076216,
+          -493.21031500926495
+        ],
+        [
+          445.36560247167876,
+          -508.53335392217406
+        ],
+        [
+          412.80123583934096,
+          -529.6025324274242
+        ],
+        [
+          357.2502574665293,
+          -531.5179122915379
+        ],
+        [
+          345.7569515962924,
+          -535.3486720197652
+        ],
+        [
+          294.0370751802266,
+          -565.9947498455838
+        ],
+        [
+          167.610710607621,
+          -564.0793699814701
+        ],
+        [
+          150.3707518022658,
+          -567.9101297096975
+        ],
+        [
+          94.81977342945417,
+          -596.6408276714022
+        ],
+        [
+          -0.957775489186411,
+          -598.5562075355156
+        ],
+        [
+          -14.366632337796062,
+          -602.3869672637429
+        ],
+        [
+          -54.59320288362512,
+          -629.2022853613341
+        ],
+        [
+          -69.91761071060759,
+          -644.5253242742432
+        ],
+        [
+          -135.04634397528324,
+          -659.8483631871526
+        ],
+        [
+          -148.45520082389288,
+          -667.509882643607
+        ],
+        [
+          -163.77960865087536,
+          -684.7483014206301
+        ],
+        [
+          -184.8506694129763,
+          -692.4098208770845
+        ],
+        [
+          -202.09062821833157,
+          -707.7328597899939
+        ],
+        [
+          -207.83728115345005,
+          -732.6327980234714
+        ],
+        [
+          -205.92173017507722,
+          -740.2943174799258
+        ],
+        [
+          -202.09062821833157,
+          -740.2943174799258
+        ],
+        [
+          -202.09062821833157,
+          -805.4172328597898
+        ],
+        [
+          -173.35736354273945,
+          -837.978690549722
+        ],
+        [
+          -152.28630278063852,
+          -849.4709697344041
+        ],
+        [
+          -148.45520082389288,
+          -855.2171093267448
+        ],
+        [
+          -133.1307929969104,
+          -860.9632489190858
+        ],
+        [
+          -52.6776519052523,
+          -866.7093885114269
+        ],
+        [
+          20.113285272914528,
+          -855.2171093267448
+        ],
+        [
+          41.18434603501536,
+          -855.2171093267448
+        ],
+        [
+          81.41091658084441,
+          -874.3709079678813
+        ],
+        [
+          150.3707518022658,
+          -889.6939468807907
+        ],
+        [
+          163.77960865087536,
+          -899.2708462013587
+        ],
+        [
+          202.09062821833157,
+          -916.5092649783819
+        ],
+        [
+          284.4593202883625,
+          -916.5092649783819
+        ],
+        [
+          326.60144181256436,
+          -910.7631253860408
+        ],
+        [
+          372.5746652935119,
+          -922.2554045707226
+        ],
+        [
+          418.54788877445924,
+          -952.901482396541
+        ],
+        [
+          437.7033985581874,
+          -960.5630018529957
+        ],
+        [
+          579.4541709577754,
+          -975.8860407659049
+        ],
+        [
+          602.4407826982493,
+          -1000.7859789993823
+        ],
+        [
+          617.7651905252317,
+          -1023.7705373687462
+        ],
+        [
+          696.302780638517,
+          -1060.1627547869055
+        ],
+        [
+          721.2049433573636,
+          -1083.147313156269
+        ],
+        [
+          723.1204943357362,
+          -1132.9471896232242
+        ],
+        [
+          728.8671472708547,
+          -1146.35484867202
+        ],
+        [
+          740.3604531410916,
+          -1155.931747992588
+        ],
+        [
+          753.7693099897015,
+          -1177.000926497838
+        ],
+        [
+          767.178166838311,
+          -1188.49320568252
+        ],
+        [
+          778.6714727085479,
+          -1207.6470043236566
+        ],
+        [
+          803.5736354273944,
+          -1234.4623224212478
+        ],
+        [
+          795.9114315139033,
+          -1332.146695491044
+        ],
+        [
+          832.3069001029867,
+          -1456.646386658431
+        ],
+        [
+          828.475798146241,
+          -1550.5
+        ],
+        [
+          930,
+          -1550.5
+        ],
+        [
+          930,
+          1502.6155033971588
+        ],
+        [
+          893.6045314109166,
+          1489.207844348363
+        ],
+        [
+          868.7023686920701,
+          1487.2924644842496
+        ],
+        [
+          861.0401647785789,
+          1475.8001852995676
+        ],
+        [
+          853.3779608650875,
+          1473.884805435454
+        ],
+        [
+          838.053553038105,
+          1475.8001852995676
+        ],
+        [
+          834.2224510813595,
+          1479.630945027795
+        ],
+        [
+          813.1513903192584,
+          1479.630945027795
+        ],
+        [
+          807.40473738414,
+          1462.392526250772
+        ],
+        [
+          803.5736354273944,
+          1460.4771463866584
+        ],
+        [
+          801.6580844490215,
+          1445.1541074737493
+        ],
+        [
+          797.8269824922759,
+          1445.1541074737493
+        ],
+        [
+          799.7425334706487,
+          1435.577208153181
+        ],
+        [
+          795.9114315139033,
+          1431.7464484249535
+        ],
+        [
+          795.9114315139033,
+          1410.6772699197036
+        ],
+        [
+          788.249227600412,
+          1406.8465101914762
+        ],
+        [
+          788.249227600412,
+          1403.0157504632489
+        ],
+        [
+          748.022657054583,
+          1401.1003705991352
+        ],
+        [
+          740.3604531410916,
+          1403.0157504632489
+        ],
+        [
+          740.3604531410916,
+          1406.8465101914762
+        ],
+        [
+          726.9515962924819,
+          1406.8465101914762
+        ],
+        [
+          725.0360453141091,
+          1403.0157504632489
+        ],
+        [
+          725.0360453141091,
+          1406.8465101914762
+        ],
+        [
+          719.2893923789908,
+          1406.8465101914762
+        ],
+        [
+          717.373841400618,
+          1418.3387893761583
+        ],
+        [
+          713.5427394438724,
+          1418.3387893761583
+        ],
+        [
+          709.7116374871267,
+          1426.0003088326127
+        ],
+        [
+          686.7250257466528,
+          1429.8310685608399
+        ],
+        [
+          679.0628218331618,
+          1437.4925880172946
+        ],
+        [
+          677.147270854789,
+          1445.1541074737493
+        ],
+        [
+          656.0762100926879,
+          1450.9002470660903
+        ],
+        [
+          648.4140061791966,
+          1458.5617665225448
+        ],
+        [
+          646.4984552008237,
+          1475.8001852995676
+        ],
+        [
+          640.7518022657056,
+          1481.5463248919086
+        ],
+        [
+          623.5118434603502,
+          1485.377084620136
+        ],
+        [
+          619.6807415036045,
+          1483.4617047560223
+        ],
+        [
+          602.4407826982493,
+          1491.1232242124768
+        ],
+        [
+          564.1297631307931,
+          1498.7847436689312
+        ],
+        [
+          554.5520082389289,
+          1527.5154416306361
+        ],
+        [
+          554.5520082389289,
+          1550.5
+        ],
+        [
+          -0.957775489186411,
+          1550.5
+        ],
+        [
+          0.9577754891863077,
+          1529.4308214947498
+        ],
+        [
+          4.788877445931952,
+          1523.6846819024088
+        ],
+        [
+          54.59320288362512,
+          1468.138665843113
+        ],
+        [
+          68.00205973223487,
+          1460.4771463866584
+        ],
+        [
+          133.1307929969104,
+          1441.323347745522
+        ],
+        [
+          169.5262615859938,
+          1397.2696108709079
+        ],
+        [
+          188.68177136972204,
+          1387.6927115503397
+        ],
+        [
+          228.9083419155509,
+          1376.200432365658
+        ],
+        [
+          228.9083419155509,
+          1358.962013588635
+        ],
+        [
+          238.48609680741498,
+          1326.400555898703
+        ],
+        [
+          242.31719876416062,
+          1322.5697961704757
+        ],
+        [
+          248.0638516992791,
+          1295.7544780728845
+        ],
+        [
+          215.49948506694133,
+          1247.8699814700433
+        ],
+        [
+          181.01956745623073,
+          1236.3777022853612
+        ],
+        [
+          96.735324407827,
+          1224.8854231006794
+        ],
+        [
+          39.26879505664254,
+          1190.4085855466337
+        ],
+        [
+          -52.6776519052523,
+          1192.3239654107474
+        ],
+        [
+          -115.89083419155511,
+          1161.677887584929
+        ],
+        [
+          -234.65499485066945,
+          1163.5932674490427
+        ],
+        [
+          -255.72605561277038,
+          1157.8471278567017
+        ],
+        [
+          -313.19258496395463,
+          1125.2856701667697
+        ],
+        [
+          -380.2368692070031,
+          1121.4549104385424
+        ],
+        [
+          -405.1390319258497,
+          1115.7087708462013
+        ],
+        [
+          -428.12564366632336,
+          1098.4703520691787
+        ],
+        [
+          -460.6900102986612,
+          1060.1627547869055
+        ],
+        [
+          -518.1565396498455,
+          1033.3474366893145
+        ],
+        [
+          -535.7488406364696,
+          1017.3558644312088
+        ],
+        [
+          -535.9383063138115,
+          1008.1079995245068
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "concept-biome-map",
+    "concept": "switchback-pass",
+    "reference": "01-switchback-pass.png",
+    "normalizedLayout": true,
+    "terrainWorldUnitsPerPixel": 1.9155509783728115,
+    "blockerSource": "actual-alpha-with-authored-walkable-openings",
+    "blockerAlphaThreshold": 32,
+    "blockerSourceSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865"
+  }
+}

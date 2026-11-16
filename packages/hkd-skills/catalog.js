@@ -19,7 +19,7 @@ function spine(root,asset){
 }
 function projectileAssets(root){
   const file=path.join(root,'assets/resources/projectiles/catalog.json');if(!fs.existsSync(file))return [];
-  const assets=read(file).assets||[],result=[];
+  const data=read(file),assets=data.assets||[],result=[];
   for(const asset of assets.filter(row=>row.role==='flight'))try{
     const kind=asset.kind==='spine'?'spine':'sprite',bundleName=asset.bundle||'resources',source=require('../game-data-editor/lib/asset-validation').imported(root,bundleName,asset.resource,kind);
     const uuid=kind==='spine'?source.meta.uuid:Object.values(source.meta.subMetas||{}).find(row=>row.importer==='sprite-frame').uuid;
@@ -27,6 +27,7 @@ function projectileAssets(root){
     if(kind==='spine')Object.assign(item,{skin:asset.skin,animation:asset.animation,animations:Object.keys(source.data.animations)});
     if(asset.kind==='flipbook')item.flipbook={frames:asset.frames,columns:asset.columns,cell:asset.cell,fps:asset.fps,loop:!!asset.loop};
     if(typeof asset.premultipliedAlpha==='boolean')item.premultipliedAlpha=asset.premultipliedAlpha;
+    const trail=(data.trails||[]).find(trail=>trail.id===asset.trail);if(trail)item.trail=trail;
     result.push(item);
   }catch(_){/* Unavailable imported assets stay out of new selections. */}
   return result;

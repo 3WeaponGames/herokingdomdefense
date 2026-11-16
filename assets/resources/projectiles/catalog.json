@@ -340,7 +340,8 @@
       "width": 64,
       "duration": 0.5333,
       "uuid": "f7a8b65f-0fae-427b-b0cc-287070d248f6",
-      "premultipliedAlpha": false
+      "premultipliedAlpha": false,
+      "trail": "trail:hero-arrow-lv1"
     },
     {
       "id": "hero-skin:lv2",
@@ -358,7 +359,8 @@
       "width": 64,
       "duration": 0.5333,
       "uuid": "f7a8b65f-0fae-427b-b0cc-287070d248f6",
-      "premultipliedAlpha": false
+      "premultipliedAlpha": false,
+      "trail": "trail:hero-arrow-lv2"
     },
     {
       "id": "hero-skin:lv3",
@@ -376,7 +378,8 @@
       "width": 64,
       "duration": 0.5333,
       "uuid": "f7a8b65f-0fae-427b-b0cc-287070d248f6",
-      "premultipliedAlpha": false
+      "premultipliedAlpha": false,
+      "trail": "trail:hero-arrow-lv3"
     },
     {
       "id": "hero-skin:lv4-purple",
@@ -394,7 +397,8 @@
       "width": 64,
       "duration": 0.5333,
       "uuid": "d4f25c42-4d96-4a28-b89e-d3b96dad312a",
-      "premultipliedAlpha": false
+      "premultipliedAlpha": false,
+      "trail": "trail:hero-arrow-lv4"
     },
     {
       "id": "hero-skin:lv4",
@@ -412,7 +416,8 @@
       "width": 64,
       "duration": 0.5333,
       "uuid": "f7a8b65f-0fae-427b-b0cc-287070d248f6",
-      "premultipliedAlpha": false
+      "premultipliedAlpha": false,
+      "trail": "trail:hero-arrow-lv5"
     },
     {
       "id": "hero-skin:vip1",
@@ -4702,31 +4707,36 @@
       "id": "hero-skin:lv1",
       "name": "Hero arrow · lv1",
       "category": "Original game",
-      "flight": "hero-skin:lv1"
+      "flight": "hero-skin:lv1",
+      "trail": "trail:hero-arrow-lv1"
     },
     {
       "id": "hero-skin:lv2",
       "name": "Hero arrow · lv2",
       "category": "Original game",
-      "flight": "hero-skin:lv2"
+      "flight": "hero-skin:lv2",
+      "trail": "trail:hero-arrow-lv2"
     },
     {
       "id": "hero-skin:lv3",
       "name": "Hero arrow · lv3",
       "category": "Original game",
-      "flight": "hero-skin:lv3"
+      "flight": "hero-skin:lv3",
+      "trail": "trail:hero-arrow-lv3"
     },
     {
       "id": "hero-skin:lv4-purple",
       "name": "Hero arrow · lv4",
       "category": "Original game",
-      "flight": "hero-skin:lv4-purple"
+      "flight": "hero-skin:lv4-purple",
+      "trail": "trail:hero-arrow-lv4"
     },
     {
       "id": "hero-skin:lv4",
       "name": "Hero arrow · lv5",
       "category": "Original game",
-      "flight": "hero-skin:lv4"
+      "flight": "hero-skin:lv4",
+      "trail": "trail:hero-arrow-lv5"
     },
     {
       "id": "hero-skin:vip1",
@@ -5174,6 +5184,76 @@
       "width": 15,
       "lifetime": 1,
       "additive": false
+    },
+    {
+      "id": "trail:hero-arrow-lv1",
+      "name": "Hero arrow · lv1 trail",
+      "textureUuid": "07d9ec9b-8144-49ac-bab8-0480e3a9dff0",
+      "bundle": "KinghtFallPrefabs",
+      "resource": "_res/textures/KinghtFallUIGame/_texture",
+      "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
+      "color": "#e7d7b6",
+      "opacity": 160,
+      "width": 3,
+      "lifetime": 0.12,
+      "additive": false,
+      "offsetX": -64
+    },
+    {
+      "id": "trail:hero-arrow-lv2",
+      "name": "Hero arrow · lv2 trail",
+      "textureUuid": "07d9ec9b-8144-49ac-bab8-0480e3a9dff0",
+      "bundle": "KinghtFallPrefabs",
+      "resource": "_res/textures/KinghtFallUIGame/_texture",
+      "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
+      "color": "#eafcff",
+      "opacity": 175,
+      "width": 4,
+      "lifetime": 0.14,
+      "additive": true,
+      "offsetX": -64
+    },
+    {
+      "id": "trail:hero-arrow-lv3",
+      "name": "Hero arrow · lv3 trail",
+      "textureUuid": "07d9ec9b-8144-49ac-bab8-0480e3a9dff0",
+      "bundle": "KinghtFallPrefabs",
+      "resource": "_res/textures/KinghtFallUIGame/_texture",
+      "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
+      "color": "#49eaff",
+      "opacity": 190,
+      "width": 5,
+      "lifetime": 0.16,
+      "additive": true,
+      "offsetX": -64
+    },
+    {
+      "id": "trail:hero-arrow-lv4",
+      "name": "Hero arrow · lv4 trail",
+      "textureUuid": "07d9ec9b-8144-49ac-bab8-0480e3a9dff0",
+      "bundle": "KinghtFallPrefabs",
+      "resource": "_res/textures/KinghtFallUIGame/_texture",
+      "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
+      "color": "#b64dff",
+      "opacity": 205,
+      "width": 6,
+      "lifetime": 0.18,
+      "additive": true,
+      "offsetX": -64
+    },
+    {
+      "id": "trail:hero-arrow-lv5",
+      "name": "Hero arrow · lv5 trail",
+      "textureUuid": "07d9ec9b-8144-49ac-bab8-0480e3a9dff0",
+      "bundle": "KinghtFallPrefabs",
+      "resource": "_res/textures/KinghtFallUIGame/_texture",
+      "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
+      "color": "#ffdf69",
+      "opacity": 220,
+      "width": 7,
+      "lifetime": 0.2,
+      "additive": true,
+      "offsetX": -64
     }
   ],
   "assignments": {"tower:2:4":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:5":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:6":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:7":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:8":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:9":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:11":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:12":{"flight":"tiny-kingdom:ballista-bolt","size":44}},

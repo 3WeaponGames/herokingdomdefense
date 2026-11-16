@@ -312,3 +312,18 @@ test('a legacy projectile artwork scale cannot resize its sprite independently o
  try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});const d={...description,effects:[{id:'fx',kind:'sprite',url:'silent-fixture.png'}]},set=scale=>view.set({style:'skirmisher',settings:{windup:.1,projectileWidth:28,visual:{resource:'fx',scale}},description:d});await set(1);scales.length=0;view.seek(.15);const expected=scales.map(s=>s.slice());assert(expected.length);await set(4);scales.length=0;view.seek(.15);assert.deepEqual(scales,expected);assert.equal(view.getState().projectilePaths.length,1);
  }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;global.Image=oldImage;}
 });
+
+test('tier arrow trails preview in their own color and stay silent during playback and seeking',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame,gradients=[],changes=[],sounds=[];global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+ const ctx=h.root.ownerDocument.createElement('canvas').getContext('2d');ctx.createLinearGradient=(...position)=>{const result={position,stops:[],addColorStop(...stop){this.stops.push(stop);}};gradients.push(result);return result;};let view;
+ const fs=require('node:fs'),path=require('node:path'),Looks=require('../../assets/_script/ProjectileLooks'),root=path.resolve(__dirname,'../..'),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'))),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')));
+ try{
+   view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onChange:(...args)=>changes.push(args),onSound:cue=>sounds.push(cue)});
+   for(const level of [1,6,11,16,21]){
+     const asset=Looks.skillAsset(catalog,config,level);await view.set({style:'skirmisher',settings:{windup:.1,projectileWidth:28,visual:{}},description:{...description,projectileAsset:asset}});view.setScenario({attackRate:0,targetDistance:1000});gradients.length=0;view.seek(.15);
+     assert(gradients.length>0);assert.deepEqual(gradients.at(-1).stops,[[0,asset.trail.color+'00'],[1,asset.trail.color]]);assert.equal(view.getState().silent,true);
+     const expected=gradients.at(-1).position;view.seek(0);view.seek(.15);assert.deepEqual(gradients.at(-1).position,expected,'Seeking replayed a different trail');
+   }
+   assert.deepEqual(changes,[]);assert(!sounds.some(cue=>['cast','impact','channel'].includes(cue)));
+ }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});

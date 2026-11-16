@@ -59,6 +59,18 @@ function visualFixture(data,item,defaultIcon){
 }
 const visualData=()=>({assets:[{id:'arrow',kind:'sprite',resource:'arrow',sourcePart:'item-arrow',size:44},{id:'fx',kind:'flipbook',resource:'fx',frames:4,columns:2,cell:16,fps:24}],assignments:{'ally:90003':{flight:'arrow',launch:'fx',impact:'fx',size:64}}});
 
+test('default arrow trails follow their artwork and reset on pool reuse without changing a shot',()=>{
+ const data=visualData();data.assets[0].trail='trail:arrow';data.trails=[{id:'trail:arrow',resource:'trail',color:'#b64dff',width:6,lifetime:.18,opacity:205,additive:true,offsetX:-64}];
+ const f=visualFixture(data);class Trail extends f.cc.RenderComponent{reset(){this.resets=(this.resets||0)+1;}}f.cc.MotionStreak=Trail;
+ const fallback=f.shot.node.addComponent(Trail),launch=()=>{f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();f.flush();};
+ launch();let view=f.shot._projectileVisual,streak=view.trailNode.getComponent(Trail);
+ assert.equal(fallback.enabled,false);assert.equal(streak.color,'#b64dff');assert.equal(streak.stroke,6);assert.equal(streak.fadeTime,.18);assert.equal(streak.resets,1);assert.equal(view.trailNode.opacity,205);assert.equal(view.trailNode.x,-64);assert.equal(view.trailNode.y,0);assert.equal(f.shot.speed,500);assert.equal(f.shot.node.x,13);assert.equal(f.shot.node.y,17);
+ view.reset();assert.equal(fallback.enabled,true);assert.equal(view.trailNode.active,false);
+ launch();assert.equal(streak.resets,2);assert.equal(view.trailNode.active,true);
+ data.assignments['ally:90003'].trail=false;launch();assert.equal(view.trailNode.active,false);assert.equal(fallback.enabled,false);
+ f.owner._projectileLooks.dispose();assert(view.trailNode.destroyed);assert.equal(view.trailTexture,null);assert.equal(fallback.enabled,true);
+});
+
 test('an uncustomized starting bow fires the arrow shown by its default gear icon while explicit projectile choices retain precedence',()=>{
  const data=visualData(),f=visualFixture(data,null,{id:'item-arrow'});f.owner.ctrPlay={heroStyle:'skirmisher'};f.api.prepare(f.shot,f.owner,'hero');f.shot._launchProjectileLook();f.flush();assert.equal(f.shot._projectileVisual.clip.descriptor.id,'arrow');assert.equal(f.shot.speed,500);f.owner._projectileLooks.dispose();
  data.assignments.hero={flight:'fx'};const g=visualFixture(data,null,{id:'item-arrow'});g.owner.ctrPlay={heroStyle:'skirmisher'};g.api.prepare(g.shot,g.owner,'hero');g.shot._launchProjectileLook();g.flush();assert.equal(g.shot._projectileVisual.clip.descriptor.id,'fx');g.owner._projectileLooks.dispose();

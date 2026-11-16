@@ -72,7 +72,8 @@ function create(api,options){
   // Generic sprite/flipbook sets can use any imported MotionStreak texture too.
   function drawTrail(ctx,trail,settings){
     if(closed||!trail)return;const value=settings||{},time=Math.max(0,number(value.time,0)),size=Math.max(1,number(value.size,48)),scale=size/48;
-    ctx.save();ctx.translate(number(value.x,0),number(value.y,0));ctx.rotate((number(value.rotation,0)+90)*Math.PI/180);ctx.scale(scale,-scale);streak(ctx,{},Object.assign({x:0,y:0,path:''},trail),time,number(value.speed,160)/scale,0);ctx.restore();
+    const angle=number(value.rotation,0)*Math.PI/180,x=number(trail.offsetX,0)*scale,y=number(trail.offsetY,0)*scale;
+    ctx.save();ctx.translate(number(value.x,0)+x*Math.cos(angle)-y*Math.sin(angle),number(value.y,0)+x*Math.sin(angle)+y*Math.cos(angle));ctx.rotate(angle+Math.PI/2);ctx.scale(scale,-scale);streak(ctx,{},Object.assign({x:0,y:0,path:''},trail),time,number(value.speed,160)/scale,0);ctx.restore();
   }
   function invalidate(){generation++;images.clear();}
   return{draw,drawTrail,invalidate,destroy(){closed=true;invalidate();}};

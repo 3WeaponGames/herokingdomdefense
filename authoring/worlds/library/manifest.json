@@ -10045,6 +10045,354 @@
           "flipX": false
         }
       }
+    },
+    {
+      "id": "concept-terrain-01-switchback-pass",
+      "name": "Forest - Switchback Pass terrain",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/01-switchback-pass.png",
+      "width": 971,
+      "height": 1619,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.9155509783728115,
+      "sha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "switchback-pass",
+        "biome": "forest",
+        "outlineWorldScale": 1.9155509783728115
+      }
+    },
+    {
+      "id": "concept-terrain-02-lakeward-basin",
+      "name": "Ice - Lakeward Basin terrain",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/02-lakeward-basin.png",
+      "width": 997,
+      "height": 1577,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.8655967903711133,
+      "sha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "lakeward-basin",
+        "biome": "ice",
+        "outlineWorldScale": 1.8655967903711133
+      }
+    },
+    {
+      "id": "concept-terrain-04-broken-crown",
+      "name": "Lava - Broken Crown terrain",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/04-broken-crown.png",
+      "width": 971,
+      "height": 1620,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.9155509783728115,
+      "sha256": "17a4be7951111f8f0b2d84a58a84b40fb3c2387065f2c9bc846a0c853a10d206",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "broken-crown",
+        "biome": "lava",
+        "outlineWorldScale": 1.9155509783728115
+      }
+    },
+    {
+      "id": "concept-terrain-05-six-gate-woodland",
+      "name": "Deep Forest - Six-gate Woodland terrain",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/05-six-gate-woodland.png",
+      "width": 971,
+      "height": 1620,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.9155509783728115,
+      "sha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "six-gate-woodland",
+        "biome": "deep-forest",
+        "outlineWorldScale": 1.9155509783728115
+      }
+    },
+    {
+      "id": "concept-terrain-07-crescent-ridge",
+      "name": "Autumn - Crescent Ridge terrain",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/07-crescent-ridge.png",
+      "width": 971,
+      "height": 1619,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.9155509783728115,
+      "sha256": "951e73799bcb50808d130c58f843924215d7e80888e1eeb1d50c569fef17846c",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "crescent-ridge",
+        "biome": "autumn",
+        "outlineWorldScale": 1.9155509783728115
+      }
+    },
+    {
+      "id": "concept-terrain-08-longwall-frontier",
+      "name": "Desert - Longwall Frontier terrain",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/08-longwall-frontier.png",
+      "width": 971,
+      "height": 1619,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.9155509783728115,
+      "sha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "longwall-frontier",
+        "biome": "desert",
+        "outlineWorldScale": 1.9155509783728115
+      }
+    },
+    {
+      "id": "concept-terrain-09-terrace-citadel",
+      "name": "Snow - Terrace Citadel terrain",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/09-terrace-citadel.png",
+      "width": 983,
+      "height": 1600,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.8921668362156663,
+      "sha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "terrace-citadel",
+        "biome": "snow",
+        "outlineWorldScale": 1.8921668362156663
+      }
+    },
+    {
+      "id": "concept-terrain-11-twin-courtyards",
+      "name": "Fire - Twin Courtyards terrain",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/11-twin-courtyards.png",
+      "width": 971,
+      "height": 1619,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.9155509783728115,
+      "sha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "twin-courtyards",
+        "biome": "fire",
+        "outlineWorldScale": 1.9155509783728115
+      }
+    },
+    {
+      "id": "concept-terrain-12-forked-harbor",
+      "name": "Autumn - Forked Harbor terrain",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/12-forked-harbor.png",
+      "width": 971,
+      "height": 1619,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.9155509783728115,
+      "sha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "forked-harbor",
+        "biome": "autumn",
+        "outlineWorldScale": 1.9155509783728115
+      }
+    },
+    {
+      "id": "concept-terrain-13-crossed-heights",
+      "name": "Fire - Crossed Heights terrain",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/13-crossed-heights.png",
+      "width": 971,
+      "height": 1619,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.9155509783728115,
+      "sha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "crossed-heights",
+        "biome": "fire",
+        "outlineWorldScale": 1.9155509783728115
+      }
+    },
+    {
+      "id": "concept-terrain-15-twinwater-saddle",
+      "name": "Ice - Twinwater Saddle terrain",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-biome-terrain/15-twinwater-saddle.png",
+      "width": 997,
+      "height": 1577,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.8655967903711133,
+      "sha256": "cf9d30741bb6f33e93c39d98d2a6547ff165328206dd27db50345993546c7c87",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "concept-biome-terrain",
+        "mode": "built-in imagegen",
+        "concept": "twinwater-saddle",
+        "biome": "ice",
+        "outlineWorldScale": 1.8655967903711133
+      }
     }
   ],
   "biomes": [

@@ -80,7 +80,7 @@ function presentationPlan(config, level, base, catalogs, options, loadedAssets) 
     if (asset && asset.data && asset.data.getComponentsInChildren && typeof sp !== "undefined" && sp.Skeleton) asset.data.getComponentsInChildren(sp.Skeleton).forEach(function (renderer) { defaults(renderer.skeletonData); });
   });
   (projectiles.assets || []).forEach(function (asset) {
-    if (needed[asset.id] || /^hero-skin:/.test(asset.id) || asset.sourcePart && selected.some(function (profile) { return (profile.parts || []).some(function (part) { return part.sprite === asset.sourcePart; }); })) {if(asset.visualPrefab)add(asset.visualPrefab.bundle||asset.bundle||'resources',asset.visualPrefab.resource,'prefab');else add(asset.bundle || "resources", asset.resource, asset.kind === "spine" ? "spine" : asset.kind === "flipbook" ? "texture" : "frame");}
+    if (needed[asset.id] || /^hero-skin:/.test(asset.id) || asset.sourcePart && selected.some(function (profile) { return (profile.parts || []).some(function (part) { return part.sprite === asset.sourcePart; }); })) {if(asset.trail)needed[asset.trail]=true;if(asset.visualPrefab)add(asset.visualPrefab.bundle||asset.bundle||'resources',asset.visualPrefab.resource,'prefab');else add(asset.bundle || "resources", asset.resource, asset.kind === "spine" ? "spine" : asset.kind === "flipbook" ? "texture" : "frame");}
   });
   (projectiles.trails||[]).forEach(function(trail){if(needed[trail.id])add(trail.bundle||'resources',trail.resource,'texture');});
   (options.skillClips || []).forEach(function (clip) { if (clip.style === options.style) add(clip.bundle || "resources", clip.resource, clip.kind === "spine" ? "spine" : "frame"); });

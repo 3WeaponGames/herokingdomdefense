@@ -1490,6 +1490,33 @@ function sceneryProps(view,ordered,main) {
   });
   return props;
 }
+// Tall scenery is usually fixed for the whole stage. Reuse a small broadphase
+// while its exact cached boxes and authored order remain unchanged. Oversized
+// props stay in a short always-tested list rather than filling thousands of cells.
+function scenerySpatialIndex(view,props,actorCount) {
+  if(props.length<32||actorCount<8||props.length*actorCount<2048)return null;
+  var caches=scenerySpatialIndex.caches||(scenerySpatialIndex.caches=new WeakMap()),saved=caches.get(view),same=saved&&saved.owners.length===props.length;
+  if(same)for(var i=0;i<props.length;i++)if(saved.owners[i]!==props[i].group.owner||saved.boxes[i]!==props[i].box){same=false;break;}
+  if(same)return saved.disabled?null:saved;
+  saved={owners:[],boxes:[],cells:new Map(),large:[],marks:[],stamp:0,query:[]};
+  for(var i=0;i<props.length;i++){
+    var prop=props[i],box=prop.box; saved.owners.push(prop.group.owner);saved.boxes.push(box);
+    var left=Math.floor(box.minX/256),right=Math.floor(box.maxX/256),bottom=Math.floor(box.minY/256),top=Math.floor(box.maxY/256),count=(right-left+1)*(top-bottom+1);
+    if(!Number.isFinite(count)||count>16||Math.max(Math.abs(left),Math.abs(right),Math.abs(bottom),Math.abs(top))>1048576||right<left||top<bottom){saved.large.push(i);continue;}
+    for(var y=bottom;y<=top;y++)for(var x=left;x<=right;x++){var key=x+','+y,cell=saved.cells.get(key);if(!cell)saved.cells.set(key,cell=[]);cell.push(i);}
+  }
+  saved.disabled=saved.large.length>props.length/2;caches.set(view,saved);return saved.disabled?null:saved;
+}
+function scenerySpatialCandidates(index,box) {
+  var left=Math.floor(box.minX/256),right=Math.floor(box.maxX/256),bottom=Math.floor(box.minY/256),top=Math.floor(box.maxY/256),count=(right-left+1)*(top-bottom+1);
+  // A custom/huge actor retains the original scan and its exact edge semantics.
+  if(!Number.isFinite(count)||count>16||Math.max(Math.abs(left),Math.abs(right),Math.abs(bottom),Math.abs(top))>1048576||right<left||top<bottom)return null;
+  var result=index.query;result.length=0;var stamp=++index.stamp,marks=index.marks;
+  for(var i=0;i<index.large.length;i++){var id=index.large[i];marks[id]=stamp;result.push(id);}
+  for(var y=bottom;y<=top;y++)for(var x=left;x<=right;x++){var cell=index.cells.get(x+','+y);if(!cell)continue;for(var i=0;i<cell.length;i++){var id=cell[i];if(marks[id]!==stamp){marks[id]=stamp;result.push(id);}}}
+  // Keep the original prop traversal order and its stable topological tie breaks.
+  return result.sort(function(a,b){return a-b;});
+}
 function sceneryActorOrder(view,ordered,main,props) {
   if(!props.length)return;
   var hero=view.game.ctrPlay;
@@ -1503,14 +1530,18 @@ function sceneryActorOrder(view,ordered,main,props) {
   // A stable topological order changes only the authored order that blocks a
   // crossing; choosing one insertion slot cannot satisfy both nearby props.
   props=props.filter(function(prop){return !prop.low;});
+  var spatial=scenerySpatialIndex(view,props,actors.length);
   actors.forEach(function(actor){
     var owner=actor.owner,component=owner===hero.node?hero:owner._combatActor;
     var shape=component&&sceneryWorldShape(view,owner,main,bodyVisuals(component));
-    if(shape)props.forEach(function(prop){
+    if(shape){var visit=function(prop){
       if(!overlaps(shape,prop.box))return;
       if(actor.ground>prop.group.ground)before(actor,prop.group);
       else before(prop.group,actor);
-    });
+    },candidates=spatial&&scenerySpatialCandidates(spatial,shape);
+    if(candidates)for(var i=0;i<candidates.length;i++)visit(props[candidates[i]]);
+    else props.forEach(visit);
+    }
   });
   actors.sort(function(a,b){return b.ground-a.ground||a.index-b.index;});
   for(var a=1;a<actors.length;a++)before(actors[a-1],actors[a]);

@@ -39,7 +39,7 @@ test('wall flights retain every authored sprite, particle emitter, trail and pat
   }
 });
 test('selectable trails reference every distinct authored wall, hero, tower and enemy texture',()=>{
-  assert.equal(catalog.trails.length,10);assert.equal(new Set(catalog.trails.map(trail=>trail.textureUuid)).size,10);
+  assert.equal(catalog.trails.length,15);assert.equal(new Set(catalog.trails.map(trail=>trail.textureUuid)).size,10);
   for(const trail of catalog.trails){assert(/^#[a-f\d]{6}$/i.test(trail.color));assert(trail.width>0&&trail.lifetime>0);assert(trail.opacity>=0&&trail.opacity<=255);assert(fs.existsSync(path.join(root,trail.image)));assert.equal(trail.image,'assets/'+trail.bundle+'/'+trail.resource+'.png');}
   for(const file of ['assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab','assets/KinghtFallEnemy/ItemEnemy03.prefab','assets/KinghtFallEnemy/ItemEnemy05.prefab'])for(const component of JSON.parse(fs.readFileSync(path.join(root,file))))if(component.__type__==='cc.MotionStreak')assert(catalog.trails.some(trail=>trail.textureUuid===component._texture.__uuid__),file);
 });
