@@ -268,7 +268,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  function updateStageMapNotice(){if(!stageMapNotice)return;const blocked=!stageCanvasReady();stageMapNotice.hidden=!blocked;if(!blocked)return;stageMapNotice.textContent='';const error=state.mapLoadError&&state.mapLoadError.id===values().mapId;stageMapNotice.appendChild(el('p',state.loading?'Loading stage…':error?'The map could not be loaded. '+state.mapLoadError.message:'Loading map…'));if(error&&!state.loading)button(stageMapNotice,'Retry map load',()=>{state.mapLoadError=null;ensureStageMap();});}
  function ensureStageMap(){if(!stageMode||!state.snap||state.loading)return;const id=values().mapId;if(state.map&&state.map.id===id){if(stageMapRequest){mapRequestSerial++;stageMapRequest=null;}state.mapLoadError=null;return;}if(state.mapLoadError&&state.mapLoadError.id===id)return;if(stageMapRequest&&stageMapRequest.id===id&&isCurrent(stageMapRequest.context))return;const context=currentContext(),serial=++mapRequestSerial;stageMapRequest={id,context,serial};updateStageMapNotice();options.ipc('world-load',{key:'map:'+id}).then(snapshot=>{if(!isCurrent(context)||serial!==mapRequestSerial||values().mapId!==id)return;if(!snapshot.value||snapshot.value.id!==id)throw Error('The returned map does not match this stage.');stageMapRequest=null;state.mapLoadError=null;setMap(snapshot.value);renderer.clear();pictures.clear();render();fit();}).catch(error=>{if(!isCurrent(context)||serial!==mapRequestSerial)return;stageMapRequest=null;state.mapLoadError={id,message:error.message};updateStageMapNotice();message(error.message,true);});}
 
- function setMap(map){state.map=map;frozenBlockers=map?(M.hasGlobalBlockers(map)?map.blockerMask:M.mapBlockerRegions(map)):null;}
+ function setMap(map){state.map=map;const entry=map&&state.catalog&&state.catalog.maps.find(item=>item.id===map.id);if(entry){entry.name=map.name;entry.biome=map.biome;}frozenBlockers=map?(M.hasGlobalBlockers(map)?map.blockerMask:M.mapBlockerRegions(map)):null;}
  function mapView(map){return !M.hasGlobalBlockers(map)&&frozenBlockers?Object.assign({},map,{blockerMask:frozenBlockers}):map;}
  function syncCatalog(catalog,force){
   if(state.closed||!catalog)return;
@@ -444,7 +444,9 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   if(state.closed||currentKey()!==key)throw Error('The document changed before this edit. Select the object again.');
   const before=values(),value=clone(before);fn(value);
   if(JSON.stringify(value)===JSON.stringify(before)){render();return state.snap;}
-  if(!stageMode&&!M.hasGlobalBlockers(before)&&!M.hasGlobalBlockers(value))value.blockerMask=clone(M.mapBlockerRegions(before));
+  // Renaming preserves the map's existing collision representation.
+  const nameOnly=value.name!==before.name&&JSON.stringify(Object.assign({},before,{name:value.name}))===JSON.stringify(value);
+  if(!stageMode&&!nameOnly&&!M.hasGlobalBlockers(before)&&!M.hasGlobalBlockers(value))value.blockerMask=clone(M.mapBlockerRegions(before));
   const snap=await options.ipc('world-change',{key,version:state.snap.version,value});apply(snap);return snap;
  },strict);
 }
@@ -514,7 +516,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   },'Save');
  }catch(error){message(error.message,true);}finally{state.saveReviewBusy=false;refreshSaveButtonState();}
 }
- function renderTop(){if(stageMode){stagePanels.top();return;}top.textContent='';select(top,values().id,state.catalog.maps.map(m=>({value:m.id,label:m.name})),id=>load('map:'+id));button(top,'New',()=>newMap());button(top,'Duplicate',()=>newMap(values().id));button(top,'Fit',fit);button(top,state.previewBusy?'Preparing preview…':'Preview draft',startPreview).disabled=!!state.previewBusy;if(state.previewOpen)button(top,'Close preview',closePreview);field(top,'Snap',state.snapGrid,v=>state.snapGrid=Math.max(0,v));top.appendChild(placementBar);renderPlacementStages();top.appendChild(el('span',undefined,'world-spacer'));button(top,'Undo',()=>action('undo')).disabled=!state.snap.canUndo;button(top,'Redo',()=>action('redo')).disabled=!state.snap.canRedo;button(top,'Refresh',refreshWorld);button(top,'Discard',discard).disabled=!state.snap.dirty;if(state.catalog.recovery)button(top,'Recovery…',()=>modal('Recover authoring data',d=>note(d,'Recover interrupted saves before restoring unsaved drafts. Conflicting external changes are preserved.'),()=>action('recover'),'Recover'));button(top,'Save',save,state.snap.dirty).disabled=!state.snap.dirty;}
+ function renderTop(){if(stageMode){stagePanels.top();return;}top.textContent='';select(top,values().id,state.catalog.maps.map(m=>({value:m.id,label:m.name})),id=>load('map:'+id));button(top,'Rename',renameMap);button(top,'New',()=>newMap());button(top,'Duplicate',()=>newMap(values().id));button(top,'Fit',fit);button(top,state.previewBusy?'Preparing preview…':'Preview draft',startPreview).disabled=!!state.previewBusy;if(state.previewOpen)button(top,'Close preview',closePreview);field(top,'Snap',state.snapGrid,v=>state.snapGrid=Math.max(0,v));top.appendChild(placementBar);renderPlacementStages();top.appendChild(el('span',undefined,'world-spacer'));button(top,'Undo',()=>action('undo')).disabled=!state.snap.canUndo;button(top,'Redo',()=>action('redo')).disabled=!state.snap.canRedo;button(top,'Refresh',refreshWorld);button(top,'Discard',discard).disabled=!state.snap.dirty;if(state.catalog.recovery)button(top,'Recovery…',()=>modal('Recover authoring data',d=>note(d,'Recover interrupted saves before restoring unsaved drafts. Conflicting external changes are preserved.'),()=>action('recover'),'Recover'));button(top,'Save',save,state.snap.dirty).disabled=!state.snap.dirty;}
  function discard(){modal('Discard this draft?',d=>note(d,'This discards only '+currentKey()+'. Other panel drafts are retained.'),()=>action('discard'),'Discard');}
  function showReplacementNotice(){
   const notice=state.replacementNotice;if(!notice||notice.key!==currentKey()||notice.version!==state.snap.version)return;
@@ -569,6 +571,13 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  function newPath(){const spawnId=state.spawn;return edit(stage=>{const spawn=stage.spawns.find(p=>p.id===spawnId)||stage.spawns.find(p=>p.enabled!==false);if(!spawn)throw Error('Add a spawn in the Spawns tab first.');const base=M.newSpawn(Object.assign({},stage,{nextSpawn:stage.nextSpawn}),spawn),graph=base.graphs[base.graphs.length-1];graph.id=uniqueId(stage.graphs,'path-');graph.spawnIds=[spawn.id];graph.name='New approach';stage.graphs.push(graph);state.graph=graph.id;state.spawn=spawn.id;state.selection=[];});}
  function insertPathNode(id){const graph=state.graph;return edit(stage=>{const selected=PathEditor.insertNode(stage,graph,id);if(state.graph===graph&&state.tab==='Paths')state.selection=['node:'+selected];});}
  function removePathNode(id){const graph=state.graph;return edit(stage=>{const next=PathEditor.removeNode(stage,graph,id);if(state.graph===graph&&state.tab==='Paths')state.selection=next?['node:'+next]:[];});}
+ function renameMap(){
+  const previous=values().name;let input;
+  modal('Rename map',dialog=>{input=field(dialog,'Name',previous,()=>{});note(dialog,'Save the map to keep its new name.');input.select();},()=>{
+   const name=input.value.trim();if(!name)throw Error('Enter a map name.');
+   return edit(map=>{if(map.name!==previous)throw Error('The map name changed. Reopen Rename to use its current name.');map.name=name;},true);
+  },'Apply to draft');
+ }
  function newMap(copy){
  let name,biome;modal(copy?'Duplicate map':'New map',d=>{name=field(d,'Name',copy?values().name+' copy':'New map',()=>{});biome=select(d,state.biome==='all'?'forest':state.biome,M.BIOMES,()=>{});},()=>enqueue(async()=>{
   const snap=await options.ipc('world-create',{version:state.snap.version,name:name.value,biome:biome.value,copy});

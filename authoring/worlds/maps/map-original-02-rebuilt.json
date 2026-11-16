@@ -29,6 +29,164 @@
   },
   "layers": [
     {
+      "id": "layer-8",
+      "name": "Trees Behind",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-170",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -452.5167963465428,
+          "y": -833.3796605678501,
+          "scale": 0.9529035683676659,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-171",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -777.8670235114299,
+          "y": -898.4497060008276,
+          "scale": 0.8334084277095599,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-172",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -700.5963445597692,
+          "y": -819.8234011026466,
+          "scale": 0.8384909115909778,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-173",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -882.2502213934979,
+          "y": -808.9783935304836,
+          "scale": 0.8719168014396175,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-174",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 600.8045640997796,
+          "y": -1006.8997817224566,
+          "scale": 0.9231036410534875,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-175",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 729.589029019214,
+          "y": -1009.6110336154974,
+          "scale": 0.8212382997095435,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-176",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 385.2600386030417,
+          "y": -985.2097665781308,
+          "scale": 0.9532833978826931,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-177",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 730.9446549657343,
+          "y": 575.1156978668073,
+          "scale": 0.8141893356653317,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-178",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -257.3066600476105,
+          "y": -771.0208670279135,
+          "scale": 0.9728148928947933,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        }
+      ],
+      "blockers": []
+    },
+    {
       "id": "layer-1",
       "name": "West River",
       "depth": "ground",
@@ -159,8 +317,8 @@
           "id": "object-5",
           "assetId": "original-map02-southwest-rocks",
           "name": "Map02 · Southwest Rocks",
-          "x": -566.5372191250001,
-          "y": -1480.02492971,
+          "x": -582.4832931815366,
+          "y": -1462.8522345721913,
           "scale": 0.67807029,
           "angle": 0,
           "flipX": false,
@@ -188,8 +346,8 @@
           "id": "object-6",
           "assetId": "original-map02-southeast-rocks",
           "name": "Map02 · Southeast Rocks",
-          "x": 532.3957958799999,
-          "y": -1514.37326383,
+          "x": 542.2087645301762,
+          "y": -1556.0783805932494,
           "scale": 0.62673617,
           "angle": 0,
           "flipX": false,
@@ -201,10 +359,5400 @@
         }
       ],
       "blockers": []
+    },
+    {
+      "id": "layer-7",
+      "name": "Trees",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-8",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": -347.0049906138078,
+          "y": 1255.0721548389981,
+          "scale": 0.8467537292926886,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": -101.71871450265407,
+          "y": 1157.4016014553713,
+          "scale": 0.8388967512287069,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 79.19378778747298,
+          "y": 1242.8633356660448,
+          "scale": 0.8396500640379168,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 283.41403577142006,
+          "y": 1251.7424768827382,
+          "scale": 0.8901389226701651,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": -172.7518442362009,
+          "y": 1015.3353419882776,
+          "scale": 0.9834333341028455,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": -275.9718608802611,
+          "y": 1196.2478442784047,
+          "scale": 0.8188514830118413,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 165.76541465023317,
+          "y": 1063.0607260280044,
+          "scale": 0.8040720455217593,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 896.8158815207779,
+          "y": 861.9069853962227,
+          "scale": 0.9640942930366864,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 772.8766953416412,
+          "y": 792.2469189188571,
+          "scale": 0.8630779139037974,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 706.283136216441,
+          "y": 674.5982977976702,
+          "scale": 0.8211543534733394,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 681.8654978705342,
+          "y": 357.1689993008829,
+          "scale": 0.9044307327158828,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 904.865266140412,
+          "y": 212.47269227856998,
+          "scale": 0.9563410124412639,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 888.3076134392775,
+          "y": -39.203628778676375,
+          "scale": 0.9053950499110003,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 886.4086022281551,
+          "y": -388.9349696841305,
+          "scale": 0.9824032462681447,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 649.8774145429387,
+          "y": -383.60280496227665,
+          "scale": 0.8327889031171476,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 802.2078193933772,
+          "y": -476.32566008863057,
+          "scale": 0.9025696881899046,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 915.7901604855076,
+          "y": -522.6797057570636,
+          "scale": 0.9072575129937153,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 750.1963145137823,
+          "y": -16.085199191711453,
+          "scale": 0.9596901124719492,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 659.4263544996514,
+          "y": -70.05652676768118,
+          "scale": 0.844463455469144,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": 712.1710609943491,
+          "y": 248.86495436304904,
+          "scale": 0.814349029103711,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 825.0202004713767,
+          "y": 274.62399706976186,
+          "scale": 0.9110138808075947,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 833.606548040281,
+          "y": 115.16325650439674,
+          "scale": 0.980087315550066,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 704.8113345067169,
+          "y": -507.96025278179917,
+          "scale": 0.80545104577905,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 890.0311177787949,
+          "y": -187.81215056979696,
+          "scale": 0.9997105628107991,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 725.6638928883416,
+          "y": -230.74388841431832,
+          "scale": 0.9944555761046365,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 633.6673117929386,
+          "y": -147.33365488781965,
+          "scale": 0.9035970095416653,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 579.6959842169689,
+          "y": 106.57690893549247,
+          "scale": 0.8604815051975343,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 763.6891464077747,
+          "y": 701.4881333524315,
+          "scale": 0.8960996079206566,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 786.9949469519436,
+          "y": 651.1966690202779,
+          "scale": 0.8533157233180185,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 683.9587761250922,
+          "y": 852.3625263488924,
+          "scale": 0.9471608147833334,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 368.7171582381781,
+          "y": 1187.230081536159,
+          "scale": 0.8454783859044248,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 97.63389927705744,
+          "y": 1204.4027766739675,
+          "scale": 0.8061201693252917,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -60.600220207035626,
+          "y": 1308.665568582091,
+          "scale": 0.9169450674616495,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -196.75516022823197,
+          "y": 1304.9857053382748,
+          "scale": 0.8946182454679403,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -245.82000347911355,
+          "y": 1170.0573863983504,
+          "scale": 0.9547385255561507,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -83.90602075120437,
+          "y": 1064.5679734089551,
+          "scale": 0.8193002380169376,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 250.96153443606235,
+          "y": 1227.7085772181363,
+          "scale": 0.8222348633052914,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": 44.88919278235976,
+          "y": 1174.9638707234387,
+          "scale": 0.8251156841303966,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -854.2240597900451,
+          "y": -423.3233981740285,
+          "scale": 0.8662464954525536,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -724.2022251752089,
+          "y": -321.51384842844925,
+          "scale": 0.9677186163376941,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -536.5291997405868,
+          "y": -262.63603652739135,
+          "scale": 0.8581406324533588,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -316.9640261928918,
+          "y": -131.38758083128315,
+          "scale": 0.9213567191945353,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -628.5257808359898,
+          "y": -177.99918191962064,
+          "scale": 0.8944160792510302,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -666.551034355423,
+          "y": -427.0032614178446,
+          "scale": 0.8187719550471655,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-274d100f185f48f4cb5993200e9a7dfc",
+          "name": "Tree Green 7",
+          "x": -343.9496899808767,
+          "y": -192.7186348948851,
+          "scale": 0.9559434838091097,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": -488.69097757097734,
+          "y": -90.90908514930585,
+          "scale": 0.9283989783162144,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+          "name": "Tree Green 8",
+          "x": -763.4540997759142,
+          "y": -348.4995122164341,
+          "scale": 0.8981642036131384,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -629.7524019172619,
+          "y": -278.5821105839279,
+          "scale": 0.8610069416380057,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -753.6411311257378,
+          "y": -386.52476573586733,
+          "scale": 0.913083926128453,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -439.6261343200958,
+          "y": -273.6756262588397,
+          "scale": 0.8569982668722449,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -292.4316045674511,
+          "y": -238.10361490195058,
+          "scale": 0.9017289961209897,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -445.759239726456,
+          "y": -127.70771758746703,
+          "scale": 0.8058309746634837,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -618.7128121858135,
+          "y": -32.03127324824796,
+          "scale": 0.8502407972754015,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 726.8905139696136,
+          "y": -274.9022473401117,
+          "scale": 0.9952880798662745,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 816.4338529024725,
+          "y": -203.75822462633346,
+          "scale": 0.9227628503561083,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 789.4481891144876,
+          "y": -40.61762081715224,
+          "scale": 0.8597763099091525,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 703.5847134254449,
+          "y": 174.04106840545464,
+          "scale": 0.853416552207841,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 744.0632091074222,
+          "y": -371.8053127606028,
+          "scale": 0.9971925963371588,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -282.61863591727473,
+          "y": -978.9827479902623,
+          "scale": 0.917416910686337,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -399.14763863811845,
+          "y": -1180.1486053188767,
+          "scale": 0.9907157091651949,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -314.51078403034774,
+          "y": -1063.619602598033,
+          "scale": 0.915191935109288,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -871.3967549278536,
+          "y": -1519.922644831232,
+          "scale": 0.8122484066298336,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 385.88985337598666,
+          "y": -1291.7711237146323,
+          "scale": 0.8277757822835243,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 369.94377931945013,
+          "y": -1537.09533996904,
+          "scale": 0.9068234306850266,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 358.9041895880018,
+          "y": -1365.3683885909547,
+          "scale": 0.9450482837144272,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 374.8502636445383,
+          "y": -1448.7786221174533,
+          "scale": 0.9307020565840144,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 346.6379787752814,
+          "y": -1213.267374513222,
+          "scale": 0.8568800052785821,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 306.1594830933041,
+          "y": -1301.5840923648086,
+          "scale": 0.892136182862071,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -618.7128121858135,
+          "y": -1478.2175280679824,
+          "scale": 0.9557430023766257,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -481.3312510833451,
+          "y": -1485.5772545556144,
+          "scale": 0.8366431858687386,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -423.68006026355926,
+          "y": -1268.4653231704635,
+          "scale": 0.821509550717991,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -326.77699484306817,
+          "y": -1070.9793290856653,
+          "scale": 0.9988845061501279,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -377.06845917522173,
+          "y": -1321.2100296651613,
+          "scale": 0.8457740991890965,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -299.7913310550833,
+          "y": -1172.7888788312446,
+          "scale": 0.81457957836545,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 920.6966448105958,
+          "y": -260.18279436484727,
+          "scale": 0.9151705439512391,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 742.8365880261501,
+          "y": -120.3479910998348,
+          "scale": 0.8784973835311574,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 661.8795966621955,
+          "y": 86.95097163513985,
+          "scale": 0.9802404420116929,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 912.1102972416916,
+          "y": 129.88270947966123,
+          "scale": 0.8899714933616214,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 627.5342063865784,
+          "y": 291.7966922075704,
+          "scale": 0.9594746911651038,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -613.8063278607253,
+          "y": -359.53910194788244,
+          "scale": 0.9942730731921193,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -715.6158776063046,
+          "y": -160.8264867818121,
+          "scale": 0.8786450460675935,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -525.4896100091385,
+          "y": -126.48109650619499,
+          "scale": 0.921112704931679,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -380.7483224190379,
+          "y": -17.311820272983493,
+          "scale": 0.9094061959207831,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -362.3490061999573,
+          "y": -293.30156355919235,
+          "scale": 0.8935027927753191,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 648.3867647682031,
+          "y": 802.0710620167388,
+          "scale": 0.9616859008854697,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 436.1813177081403,
+          "y": 1165.1509020732624,
+          "scale": 0.9629990676389169,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 290.2134090367676,
+          "y": 1128.3522696351013,
+          "scale": 0.842202595651284,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -5.402271549793856,
+          "y": 1086.6471528718519,
+          "scale": 0.8119979837896467,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": 275.4939560615031,
+          "y": 1091.55363719694,
+          "scale": 0.8559152005989231,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-5d82e41b415f78b4bb2048fce135792e",
+          "name": "Tree Green 10",
+          "x": -21.348345606330366,
+          "y": 1255.9208620873933,
+          "scale": 0.954112662146034,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-107",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -152.59680130243856,
+          "y": 1225.2553350555922,
+          "scale": 0.9537371939139834,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -248.27324564165764,
+          "y": 1084.1939107093078,
+          "scale": 0.8626440362670277,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 626.3075853053064,
+          "y": 733.3802814655046,
+          "scale": 0.8902242637804385,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 694.9983658565405,
+          "y": 787.3516090414743,
+          "scale": 0.9704564829365372,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 639.8004171992987,
+          "y": 626.6642473948372,
+          "scale": 0.8897857208337089,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 95.18065711451337,
+          "y": 1094.0068793594842,
+          "scale": 0.8416488794188002,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 179.81751172228408,
+          "y": 1206.8560188365118,
+          "scale": 0.8653658170283235,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -36.067798581594836,
+          "y": 1162.6976599107184,
+          "scale": 0.8197077393406127,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -551.2486527158513,
+          "y": 28.07315973408196,
+          "scale": 0.985908595415965,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 643.4802804431149,
+          "y": -651.4749192906278,
+          "scale": 0.9841127663287748,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 865.498696153354,
+          "y": -628.169118746459,
+          "scale": 0.8008013016871763,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 896.164223185155,
+          "y": -1280.7315339831837,
+          "scale": 0.8854828007315354,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 832.3799269590089,
+          "y": -1059.9397393542167,
+          "scale": 0.8222340830608555,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -388.1080489066701,
+          "y": -1381.3144626474912,
+          "scale": 0.8123686991267557,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-123",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -554.9285159596675,
+          "y": -1521.1492659125036,
+          "scale": 0.8416701792477563,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -737.6950570692012,
+          "y": -1535.8687188877682,
+          "scale": 0.9557550428316303,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -366.02886944377343,
+          "y": -1472.084422661622,
+          "scale": 0.8868816760596673,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -438.3995132388237,
+          "y": -358.31248086661043,
+          "scale": 0.8657121893441984,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-127",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -526.7162310904106,
+          "y": -213.57119327650977,
+          "scale": 0.9788470467817143,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -642.0186127299822,
+          "y": 45.24585487189051,
+          "scale": 0.9270976812561177,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -434.7196499950076,
+          "y": 42.79261270934643,
+          "scale": 0.9306743831375643,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": -321.87051051798,
+          "y": -40.61762081715224,
+          "scale": 0.9010015372783788,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": 604.2284058424096,
+          "y": 167.90796299909445,
+          "scale": 0.9442167442844247,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": 615.267995573858,
+          "y": -32.03127324824796,
+          "scale": 0.9620138448834767,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": 778.4085993830392,
+          "y": 186.30727921817504,
+          "scale": 0.8868999504262675,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": 663.1062177434676,
+          "y": -277.3554895026558,
+          "scale": 0.9701937073385362,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-a737ec99f4336de40a2357fe2bb5521c",
+          "name": "Tree Green 15",
+          "x": 403.0625485137952,
+          "y": 1069.4744577340432,
+          "scale": 0.9616726271876522,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-136",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -411.4138494508389,
+          "y": 1253.4676199248493,
+          "scale": 0.9091669705296889,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -325.5503737617961,
+          "y": 1161.4710388294463,
+          "scale": 0.9071047973189889,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -169.7694964402471,
+          "y": 1201.9495345114235,
+          "scale": 0.8153773323680382,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 658.1997334183794,
+          "y": 605.8116890132125,
+          "scale": 0.8712799090714894,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-141",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 838.5130323653692,
+          "y": -57.79031595496079,
+          "scale": 0.9619400932603414,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-142",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 839.7396534466412,
+          "y": -233.1971305768624,
+          "scale": 0.9626771275244312,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-143",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 649.6133858494751,
+          "y": -444.17595655565316,
+          "scale": 0.8189806229642508,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-144",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 703.5847134254449,
+          "y": -636.7554663153634,
+          "scale": 0.87695149574958,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-145",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 800.487778845936,
+          "y": -625.715876583915,
+          "scale": 0.9096366396528136,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-146",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 468.0734658212133,
+          "y": -619.5827711775548,
+          "scale": 0.8823334581486911,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-147",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 860.5922118282659,
+          "y": -1086.9254031422017,
+          "scale": 0.8652714899489738,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-148",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 836.0597902028251,
+          "y": -1105.3247193612822,
+          "scale": 0.9945256890791349,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-149",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -335.36334241197244,
+          "y": -1186.281710725237,
+          "scale": 0.9573096128331253,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-150",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 331.91852580001694,
+          "y": -1425.4728215732846,
+          "scale": 0.811011368011975,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-151",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": 816.4338529024724,
+          "y": -504.2803895379832,
+          "scale": 0.8164800839830842,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-152",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -764.6807208571862,
+          "y": -371.8053127606029,
+          "scale": 0.8616554101853452,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-153",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -806.3858376204355,
+          "y": -386.52476573586733,
+          "scale": 0.8617121954502989,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-154",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -595.4070116416448,
+          "y": -369.3520705980588,
+          "scale": 0.9655508954024572,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-155",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -708.2561511186724,
+          "y": -182.90566624470878,
+          "scale": 0.8057218933742889,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-156",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -402.8275018819346,
+          "y": -141.20054948145946,
+          "scale": 0.8209434701580667,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-157",
+          "assetId": "env-1df52abf3baf68c479ae4f648574fa6e",
+          "name": "Bush Green 2",
+          "x": -518.1298835215063,
+          "y": 174.04106840545464,
+          "scale": 0.9057907487228467,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-160",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 212.93628091662913,
+          "y": 1127.1256485538293,
+          "scale": 0.8577234941996497,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-161",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -664.097792192879,
+          "y": -88.45584298676177,
+          "scale": 0.8260935568888469,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-162",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 829.9266847964649,
+          "y": -469.934999262366,
+          "scale": 0.9856711273241683,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-163",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 838.5130323653692,
+          "y": 17.033570002633606,
+          "scale": 0.8357369156033239,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-164",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 898.6174653476991,
+          "y": -1175.2421209937886,
+          "scale": 0.9644620197433951,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-166",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -303.4711942988994,
+          "y": -1297.9042291209926,
+          "scale": 0.9634154794061541,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-167",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -413.8670916133829,
+          "y": -1557.947898350665,
+          "scale": 0.9333958988528638,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-168",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -643.2452338112543,
+          "y": -1510.1096761810554,
+          "scale": 0.8370164473502453,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-169",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 274.2673349802311,
+          "y": -1192.414816131597,
+          "scale": 0.8658150629957659,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-179",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": -864.6270840887332,
+          "y": -470.0719069003928,
+          "scale": 0.9271172307484207,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-180",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": -594.8575207311809,
+          "y": 306.70176045577534,
+          "scale": 0.9276836601003702,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-181",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": -619.2587877685474,
+          "y": 937.0678255877443,
+          "scale": 0.8896242726021962,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-182",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": -734.4869932227783,
+          "y": 1468.4731966237266,
+          "scale": 0.8735439911448235,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-183",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": -821.2470538000816,
+          "y": 1151.2567251379617,
+          "scale": 0.9677704527986792,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-184",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": 435.4181986242952,
+          "y": 1060.4297867210973,
+          "scale": 0.9684992402889058,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-185",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": 58.55418549163419,
+          "y": 1078.052924025862,
+          "scale": 0.9080806550520549,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-186",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": -387.4467509135653,
+          "y": -45.76098563951909,
+          "scale": 0.997707715716014,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-187",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": 800.0815782382729,
+          "y": -234.19299220584958,
+          "scale": 0.9997033008236026,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-188",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": 695.6983803562049,
+          "y": -384.6674722696099,
+          "scale": 0.9493974623927277,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-189",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": 545.8440463945986,
+          "y": -620.9163336981367,
+          "scale": 0.9391025460228061,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-190",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": -367.0395666699685,
+          "y": -1483.5863266821445,
+          "scale": 0.9924767002001424,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-191",
+          "assetId": "env-22f42b5b6b9980f40a06c480990a6b9a",
+          "name": "Stone Gray2 6",
+          "x": 240.54523630479844,
+          "y": -1156.1935237568982,
+          "scale": 0.9891259840017311,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-192",
+          "assetId": "env-293c9013848d92940b02c27eb09fdf25",
+          "name": "Stone Gray2 3",
+          "x": -238.4926992637368,
+          "y": -964.3774950491619,
+          "scale": 0.9881402481914041,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-193",
+          "assetId": "env-293c9013848d92940b02c27eb09fdf25",
+          "name": "Stone Gray2 3",
+          "x": 238.5366915015761,
+          "y": -1179.2917889939556,
+          "scale": 0.8785796737596614,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-194",
+          "assetId": "env-293c9013848d92940b02c27eb09fdf25",
+          "name": "Stone Gray2 3",
+          "x": -898.2996671222853,
+          "y": -486.34383188223785,
+          "scale": 0.8470553555054328,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-195",
+          "assetId": "env-293c9013848d92940b02c27eb09fdf25",
+          "name": "Stone Gray2 3",
+          "x": -534.7530577390364,
+          "y": 666.5608851674026,
+          "scale": 0.8171585631881688,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-196",
+          "assetId": "env-293c9013848d92940b02c27eb09fdf25",
+          "name": "Stone Gray2 3",
+          "x": -803.898061370834,
+          "y": 1056.2185769925422,
+          "scale": 0.8515982966659805,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-197",
+          "assetId": "env-293c9013848d92940b02c27eb09fdf25",
+          "name": "Stone Gray2 3",
+          "x": -799.8809717643892,
+          "y": 1390.641286729067,
+          "scale": 0.823415238598547,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-198",
+          "assetId": "env-6a9375ee45ff7c44c99f94f10b0176a2",
+          "name": "Stone Gray2 1",
+          "x": -777.7869789289432,
+          "y": 1433.824999998348,
+          "scale": 0.8012658445564441,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-199",
+          "assetId": "env-6a9375ee45ff7c44c99f94f10b0176a2",
+          "name": "Stone Gray2 1",
+          "x": -842.060412632059,
+          "y": 1237.9918816841669,
+          "scale": 0.9631313991414878,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-200",
+          "assetId": "env-6a9375ee45ff7c44c99f94f10b0176a2",
+          "name": "Stone Gray2 1",
+          "x": -567.8940469922055,
+          "y": 416.4970571662175,
+          "scale": 0.830410908883386,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-201",
+          "assetId": "env-6a9375ee45ff7c44c99f94f10b0176a2",
+          "name": "Stone Gray2 1",
+          "x": 616.1431145073816,
+          "y": 594.2532722513972,
+          "scale": 0.9975619558836508,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-202",
+          "assetId": "env-6a9375ee45ff7c44c99f94f10b0176a2",
+          "name": "Stone Gray2 1",
+          "x": -818.9621473950017,
+          "y": -441.15157380973454,
+          "scale": 0.8989828911600114,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-203",
+          "assetId": "env-6a9375ee45ff7c44c99f94f10b0176a2",
+          "name": "Stone Gray2 1",
+          "x": 742.6814371103909,
+          "y": 166.43322916503243,
+          "scale": 0.9177166985398885,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-204",
+          "assetId": "env-754fe0205d141b84da3ff492417a3ea0",
+          "name": "Dead Tree Brown 1",
+          "x": -728.173973066792,
+          "y": -435.60113442647304,
+          "scale": 0.9823856746577461,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-205",
+          "assetId": "env-754fe0205d141b84da3ff492417a3ea0",
+          "name": "Dead Tree Brown 1",
+          "x": -568.2101113773891,
+          "y": 194.76493070549589,
+          "scale": 0.9857770817420201,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-206",
+          "assetId": "env-754fe0205d141b84da3ff492417a3ea0",
+          "name": "Dead Tree Brown 1",
+          "x": 673.5432556352637,
+          "y": -396.2879819773825,
+          "scale": 0.9027789718652727,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-207",
+          "assetId": "env-754fe0205d141b84da3ff492417a3ea0",
+          "name": "Dead Tree Brown 1",
+          "x": 578.6494393788382,
+          "y": -34.335854256445515,
+          "scale": 0.861286404749105,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-208",
+          "assetId": "env-754fe0205d141b84da3ff492417a3ea0",
+          "name": "Dead Tree Brown 1",
+          "x": -257.7717696242259,
+          "y": -1014.4534135906682,
+          "scale": 0.9679295911416785,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-209",
+          "assetId": "env-754fe0205d141b84da3ff492417a3ea0",
+          "name": "Dead Tree Brown 1",
+          "x": 311.5911279143267,
+          "y": -1319.4692515577499,
+          "scale": 0.9937093071135432,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-210",
+          "assetId": "env-754fe0205d141b84da3ff492417a3ea0",
+          "name": "Dead Tree Brown 1",
+          "x": 796.9052167686167,
+          "y": -991.407772499822,
+          "scale": 0.9072701134078054,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-212",
+          "assetId": "env-754fe0205d141b84da3ff492417a3ea0",
+          "name": "Dead Tree Brown 1",
+          "x": -833.9127968953803,
+          "y": 1332.1350998360806,
+          "scale": 0.817599243944532,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-215",
+          "assetId": "env-78dfe8bec2b1e3640b65325e0b42b703",
+          "name": "Small Tree Green 1",
+          "x": -176.4342128330041,
+          "y": 991.8729872594695,
+          "scale": 0.974382995872801,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-216",
+          "assetId": "env-78dfe8bec2b1e3640b65325e0b42b703",
+          "name": "Small Tree Green 1",
+          "x": -126.27605281175066,
+          "y": 936.2923234521346,
+          "scale": 0.8629371889750184,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-217",
+          "assetId": "env-78dfe8bec2b1e3640b65325e0b42b703",
+          "name": "Small Tree Green 1",
+          "x": -59.85038143225287,
+          "y": 859.0216445004739,
+          "scale": 0.9230399149264201,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-218",
+          "assetId": "env-78dfe8bec2b1e3640b65325e0b42b703",
+          "name": "Small Tree Green 1",
+          "x": -43.582870074008504,
+          "y": 796.6628509605372,
+          "scale": 0.9422045584735459,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-219",
+          "assetId": "env-a4c4265cd9fe3df4d924d50c4634e071",
+          "name": "Small Tree Green 3",
+          "x": -93.74103009526195,
+          "y": 932.2254456125735,
+          "scale": 0.9144653255104518,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-220",
+          "assetId": "env-a4c4265cd9fe3df4d924d50c4634e071",
+          "name": "Small Tree Green 3",
+          "x": -134.40980849087285,
+          "y": 1013.5630024037953,
+          "scale": 0.8531614631929317,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-221",
+          "assetId": "env-a4c4265cd9fe3df4d924d50c4634e071",
+          "name": "Small Tree Green 3",
+          "x": -177.78983877952447,
+          "y": 959.3379645429808,
+          "scale": 0.996581797030937,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-222",
+          "assetId": "env-a4c4265cd9fe3df4d924d50c4634e071",
+          "name": "Small Tree Green 3",
+          "x": -126.27605281175066,
+          "y": 883.4229115378404,
+          "scale": 0.9969257894455579,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-223",
+          "assetId": "env-a4c4265cd9fe3df4d924d50c4634e071",
+          "name": "Small Tree Green 3",
+          "x": -92.38540414874159,
+          "y": 810.2191104257408,
+          "scale": 0.9557273090685877,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-224",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -82.89602252309903,
+          "y": 920.0248120938902,
+          "scale": 0.9772663795980934,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-225",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -86.96290036266014,
+          "y": 1004.0736207781528,
+          "scale": 0.9497161055045465,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-226",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -76.11789279049722,
+          "y": 795.3072250140168,
+          "scale": 0.9979461342192952,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-227",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -227.94799880077792,
+          "y": 1039.3198953876822,
+          "scale": 0.9879754947876482,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-228",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -143.8991901165154,
+          "y": 854.9547666609128,
+          "scale": 0.8530680490804605,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-229",
+          "assetId": "env-e8da70ae473404d4e9244418364e5e48",
+          "name": "Bush Green 3",
+          "x": -70.69538900441577,
+          "y": 773.617209869691,
+          "scale": 0.9066168601679098,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-230",
+          "assetId": "env-f9d3a7413f16d1547ae507170d548b50",
+          "name": "Bush Green 4",
+          "x": -743.085858478516,
+          "y": 1001.362368885112,
+          "scale": 0.8673312095670813,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-231",
+          "assetId": "env-f9d3a7413f16d1547ae507170d548b50",
+          "name": "Bush Green 4",
+          "x": -587.1888746286742,
+          "y": 373.70755564618383,
+          "scale": 0.9896303695558717,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-232",
+          "assetId": "env-f9d3a7413f16d1547ae507170d548b50",
+          "name": "Bush Green 4",
+          "x": -680.7270649385792,
+          "y": 1485.3208317928818,
+          "scale": 0.9936107474637761,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-233",
+          "assetId": "env-f9d3a7413f16d1547ae507170d548b50",
+          "name": "Bush Green 4",
+          "x": -829.8459190558192,
+          "y": 1204.7062608631666,
+          "scale": 0.9567346049438185,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-234",
+          "assetId": "env-f9d3a7413f16d1547ae507170d548b50",
+          "name": "Bush Green 4",
+          "x": -848.8246823071044,
+          "y": 1296.8888252265513,
+          "scale": 0.9733725282037077,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-235",
+          "assetId": "env-ea666b9083945fd41a480b494da793d2",
+          "name": "Mushroom Pink 1",
+          "x": -706.4839579224662,
+          "y": 970.1829721151437,
+          "scale": 0.8906223972846707,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-237",
+          "assetId": "env-ea666b9083945fd41a480b494da793d2",
+          "name": "Mushroom Pink 1",
+          "x": 216.69731165790125,
+          "y": 1097.6118110880577,
+          "scale": 0.932132527569569,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-238",
+          "assetId": "env-ea666b9083945fd41a480b494da793d2",
+          "name": "Mushroom Pink 1",
+          "x": 622.0294696674898,
+          "y": 572.9845697846772,
+          "scale": 0.886511897934566,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-239",
+          "assetId": "env-ea666b9083945fd41a480b494da793d2",
+          "name": "Mushroom Pink 1",
+          "x": -869.1590715049098,
+          "y": -441.0236382125545,
+          "scale": 0.8404639471636103,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-240",
+          "assetId": "env-ea666b9083945fd41a480b494da793d2",
+          "name": "Mushroom Pink 1",
+          "x": 719.634537816956,
+          "y": -377.3092187260974,
+          "scale": 0.9759124454452346,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-241",
+          "assetId": "env-ea666b9083945fd41a480b494da793d2",
+          "name": "Mushroom Pink 1",
+          "x": -222.52549501469645,
+          "y": -929.0489789598853,
+          "scale": 0.8177508775469368,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-242",
+          "assetId": "env-c97d17e65114c0e439189c734b3aa155",
+          "name": "Mushroom Yellow 3",
+          "x": -816.2896595906155,
+          "y": -739.2613464470344,
+          "scale": 0.9008611074213033,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-243",
+          "assetId": "env-c97d17e65114c0e439189c734b3aa155",
+          "name": "Mushroom Yellow 3",
+          "x": -751.2196141576381,
+          "y": -416.62237117518794,
+          "scale": 0.8256083897684704,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-244",
+          "assetId": "env-c97d17e65114c0e439189c734b3aa155",
+          "name": "Mushroom Yellow 3",
+          "x": -596.6782562543167,
+          "y": 331.68315130405256,
+          "scale": 0.8243660627796603,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-245",
+          "assetId": "env-c97d17e65114c0e439189c734b3aa155",
+          "name": "Mushroom Yellow 3",
+          "x": -724.1070952272308,
+          "y": 985.0948575268677,
+          "scale": 0.9041525776176834,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-246",
+          "assetId": "env-c97d17e65114c0e439189c734b3aa155",
+          "name": "Mushroom Yellow 3",
+          "x": 49.955320235896565,
+          "y": 1123.3687040719446,
+          "scale": 0.8151450761601183,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-247",
+          "assetId": "env-c97d17e65114c0e439189c734b3aa155",
+          "name": "Mushroom Yellow 3",
+          "x": 836.2183692177073,
+          "y": 3.6216722461246578,
+          "scale": 0.978811608517841,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-248",
+          "assetId": "env-bfcf3d481e9dd744ca1e034c193ad694",
+          "name": "Mushroom Yellow 1",
+          "x": 775.2152016242909,
+          "y": -500.6711798594505,
+          "scale": 0.8037738073001093,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-249",
+          "assetId": "env-bfcf3d481e9dd744ca1e034c193ad694",
+          "name": "Mushroom Yellow 1",
+          "x": 655.920118330499,
+          "y": 589.2520811429216,
+          "scale": 0.8112092293455313,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-250",
+          "assetId": "env-bfcf3d481e9dd744ca1e034c193ad694",
+          "name": "Mushroom Yellow 1",
+          "x": -38.160366287927054,
+          "y": 1117.9462002858634,
+          "scale": 0.8996313713078156,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-251",
+          "assetId": "env-bfcf3d481e9dd744ca1e034c193ad694",
+          "name": "Mushroom Yellow 1",
+          "x": 334.6367690051729,
+          "y": 1142.34746732323,
+          "scale": 0.8294351417990715,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-252",
+          "assetId": "env-bfcf3d481e9dd744ca1e034c193ad694",
+          "name": "Mushroom Yellow 1",
+          "x": -819.0009114836563,
+          "y": 1104.3899408206596,
+          "scale": 0.9066409068801494,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-253",
+          "assetId": "env-bfcf3d481e9dd744ca1e034c193ad694",
+          "name": "Mushroom Yellow 1",
+          "x": -637.3470346499277,
+          "y": 273.39123560367693,
+          "scale": 0.8328656560961075,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-254",
+          "assetId": "env-bfcf3d481e9dd744ca1e034c193ad694",
+          "name": "Mushroom Yellow 1",
+          "x": -608.878889773,
+          "y": 223.2330755824235,
+          "scale": 0.8046520150635653,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-255",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -611.5901416660407,
+          "y": 263.9018539780344,
+          "scale": 0.8759462668397435,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-256",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -819.0009114836563,
+          "y": 1325.356970103479,
+          "scale": 0.9643273990758474,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-257",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 234.32044896266598,
+          "y": 1126.0799559649854,
+          "scale": 0.9161597812265478,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-258",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 647.7863626513767,
+          "y": -403.06611170998434,
+          "scale": 0.8721555496224888,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-259",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 753.5251864799651,
+          "y": -508.8049355385727,
+          "scale": 0.9276597838453089,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-260",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 784.7045832499334,
+          "y": -1015.8090395371885,
+          "scale": 0.8901489150127877,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-261",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 314.3023798073674,
+          "y": -1345.2261445416368,
+          "scale": 0.9693284281273289,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-262",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -458.40440970923964,
+          "y": -1494.3449986588769,
+          "scale": 0.9459711805953573,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-263",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": -604.812011933439,
+          "y": -388.1542262982603,
+          "scale": 0.8133811104383623,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-265",
+          "assetId": "env-6b8d11e530739664eb4129b9044326ee",
+          "name": "Mushroom Yellow 2",
+          "x": 504.09001232021825,
+          "y": 1071.854918104171,
+          "scale": 0.8872583674799072,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-266",
+          "assetId": "env-5219dc974e4ae1149a97694f017e9236",
+          "name": "Mushroom Pink 2",
+          "x": 466.1324858176481,
+          "y": 1093.5449332484968,
+          "scale": 0.9288406021284563,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-267",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -569.5657373239095,
+          "y": 1150.481223002352,
+          "scale": 0.9510925779340353,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-268",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": 371.23866956122265,
+          "y": 789.8847212279354,
+          "scale": 0.9083114846783391,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-269",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -85.60727441613976,
+          "y": 129.69488527251843,
+          "scale": 0.897262077753644,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-270",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -265.9055253033481,
+          "y": 606.8752184476863,
+          "scale": 0.9621527963620206,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-271",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": 338.70364684473395,
+          "y": -262.08101327186654,
+          "scale": 0.8697689990270447,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-272",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -630.5689049173258,
+          "y": -508.8049355385727,
+          "scale": 0.96537964990568,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-273",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -46.29412196704923,
+          "y": -473.55866092904324,
+          "scale": 0.8570558968852021,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-274",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": 752.1695605334447,
+          "y": -773.1519951100435,
+          "scale": 0.9895017959323789,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-275",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": 277.7004792513176,
+          "y": -722.9938350887901,
+          "scale": 0.8730063176674,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-276",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -149.32169390259685,
+          "y": -228.19036460885746,
+          "scale": 0.993914850781977,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-277",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": 371.23866956122265,
+          "y": 128.33925932599809,
+          "scale": 0.8623062352200154,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-278",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": 224.83106733702343,
+          "y": 444.20010486524274,
+          "scale": 0.9218204062522131,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-279",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -352.66558588065135,
+          "y": 353.3731664483784,
+          "scale": 0.8314887520277982,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-280",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -457.0487837627193,
+          "y": 806.1522325861797,
+          "scale": 0.8358998446098997,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-281",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": -671.2376833129367,
+          "y": 1269.776306296144,
+          "scale": 0.8295104295453404,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-282",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": 140.7822586527609,
+          "y": 987.8061094199084,
+          "scale": 0.8633951031672409,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-283",
+          "assetId": "env-345bbbf21399bf74a9245fe65543a4ae",
+          "name": "DeepForest Flower 1",
+          "x": 121.80349540147581,
+          "y": 586.5408292498809,
+          "scale": 0.957195108927135,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-284",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": -343.17620425500877,
+          "y": 1218.26252032837,
+          "scale": 0.8232967262859987,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-285",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": -530.2525848748189,
+          "y": 219.1661977428624,
+          "scale": 0.8059491831319656,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-286",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": 582.7163172183994,
+          "y": -121.09591483374876,
+          "scale": 0.9887160043940786,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-287",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": 791.4827129825353,
+          "y": -62.803999133373146,
+          "scale": 0.8772647757976251,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-288",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": 856.5527584155127,
+          "y": -962.9396276228944,
+          "scale": 0.9066284443325022,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-289",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": 299.39049439564343,
+          "y": -1388.6061748302884,
+          "scale": 0.881580078877689,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-290",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": -415.02437942058805,
+          "y": -14.001465058640065,
+          "scale": 0.9672179034073185,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-291",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": -680.7270649385792,
+          "y": 940.3592012916957,
+          "scale": 0.8251710085538567,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-292",
+          "assetId": "env-3a6638cebc1d1634bb21605b4c726f16",
+          "name": "Dead Tree Brown 2",
+          "x": 539.3362869297478,
+          "y": 1042.031147280723,
+          "scale": 0.8520712066991865,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-293",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": -333.68682262936625,
+          "y": 731.5928055275598,
+          "scale": 0.9028202266442019,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-294",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": -448.9150280835971,
+          "y": 994.5842391525102,
+          "scale": 0.9877324627213461,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-295",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 151.6272662249238,
+          "y": 827.8422477305055,
+          "scale": 0.860666948414081,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-296",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 108.24723593627219,
+          "y": 258.47935019195296,
+          "scale": 0.9230414794619102,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-297",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": -119.49792307914885,
+          "y": 368.2850518601024,
+          "scale": 0.8293659419539539,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-298",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": -115.43104523958776,
+          "y": -118.38466294070804,
+          "scale": 0.9753344856687767,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-299",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": -717.3289654946291,
+          "y": -590.1424923297944,
+          "scale": 0.9371168235757656,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-300",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": -283.5286626081128,
+          "y": -455.9355236242785,
+          "scale": 0.8300372222079508,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-301",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 537.9806609832274,
+          "y": -737.905720500514,
+          "scale": 0.945332317423462,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-302",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": -82.89602252309903,
+          "y": -820.5989032382562,
+          "scale": 0.968575389282478,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-303",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 112.31411377583328,
+          "y": -1158.1497639218267,
+          "scale": 0.8019253119558514,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-304",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": -119.49792307914885,
+          "y": -1112.0584817401343,
+          "scale": 0.9501830359497869,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-305",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 197.71854840661615,
+          "y": -385.4429744052196,
+          "scale": 0.9815075675116982,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-306",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 449.86497445940375,
+          "y": -153.6309375502375,
+          "scale": 0.9347396496774159,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-307",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 181.4510370483718,
+          "y": -79.0715104916175,
+          "scale": 0.9137982090507148,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-308",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 525.7800274645441,
+          "y": 548.5833027473107,
+          "scale": 0.9010966476727377,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-309",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 369.8830436147023,
+          "y": 552.6501805868718,
+          "scale": 0.9056059978796124,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-310",
+          "assetId": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+          "name": "DeepForest Flower 2",
+          "x": 514.9350198923812,
+          "y": 964.7604683290622,
+          "scale": 0.8482184704348031,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-311",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -463.82691349532115,
+          "y": 1155.9037267884335,
+          "scale": 0.9974953955388011,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-312",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -635.9914087034073,
+          "y": 1127.4355819115058,
+          "scale": 0.8386609539445937,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-313",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -512.6294475700543,
+          "y": 1249.4419170983385,
+          "scale": 0.8527680767919444,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-314",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -615.6570195056019,
+          "y": 1385.0045117503748,
+          "scale": 0.8881009342336988,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-315",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 311.5911279143267,
+          "y": 963.4048423825419,
+          "scale": 0.8269758479467932,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-316",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -471.9606691744433,
+          "y": 606.8752184476863,
+          "scale": 0.9370068309005843,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-317",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -196.76860203080955,
+          "y": 373.70755564618383,
+          "scale": 0.9483360812095576,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-318",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -116.78667118610812,
+          "y": 498.42514272605723,
+          "scale": 0.8576837147896701,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-319",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 37.754686717213296,
+          "y": 712.6140422762746,
+          "scale": 0.9846452020414189,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-320",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 291.2567387165212,
+          "y": 684.1458973993471,
+          "scale": 0.8127526214229236,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-321",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 428.1749593150779,
+          "y": 357.4400442879395,
+          "scale": 0.9170969823289475,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-322",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 254.65483816047143,
+          "y": 185.27554907985333,
+          "scale": 0.9320686143578955,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-323",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 24.19842725200966,
+          "y": -237.67974623450002,
+          "scale": 0.8018518029423756,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-324",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -214.39173933557427,
+          "y": -420.68924901474907,
+          "scale": 0.9583321901012557,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-325",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -500.4288140513709,
+          "y": -464.06927930340066,
+          "scale": 0.8287353735638635,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-326",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -805.4446520184526,
+          "y": -582.0087366506723,
+          "scale": 0.9302550622130279,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-327",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -88.3185263091805,
+          "y": -582.0087366506723,
+          "scale": 0.9738524285109816,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-328",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 216.69731165790125,
+          "y": -525.072446896817,
+          "scale": 0.8298264114257858,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-329",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 830.7958654316258,
+          "y": -733.838842660953,
+          "scale": 0.9202821822240801,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-330",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 673.5432556352637,
+          "y": -751.4619799657177,
+          "scale": 0.970359978622681,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-331",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 391.57305875902813,
+          "y": -754.1732318587584,
+          "scale": 0.9670773169150761,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-332",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 89.2684726849871,
+          "y": -683.6806826396995,
+          "scale": 0.9219200271977301,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-333",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -101.87478577438412,
+          "y": -739.2613464470344,
+          "scale": 0.8115970439325314,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-334",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 68.93408348718165,
+          "y": -537.2730804155003,
+          "scale": 0.9214075812779823,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-335",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 2.5084121076838475,
+          "y": 7.688550085685748,
+          "scale": 0.8184192540288185,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-336",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 170.6060294762089,
+          "y": 71.40296957214282,
+          "scale": 0.8210090061712269,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-337",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -196.76860203080955,
+          "y": 213.74369395678096,
+          "scale": 0.9541951365918223,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-338",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 368.52741766818195,
+          "y": -83.13838833117859,
+          "scale": 0.854003944490612,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-339",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -104.58603766742485,
+          "y": -972.4290092485369,
+          "scale": 0.8357497853913057,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-340",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 44.53281644981511,
+          "y": -915.4927194946816,
+          "scale": 0.9865910655078141,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-341",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -157.45544958171902,
+          "y": -1208.3079239430801,
+          "scale": 0.8152068809034181,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-342",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 140.7822586527609,
+          "y": -1305.9129920925463,
+          "scale": 0.9375053478060791,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-343",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -181.85671661908555,
+          "y": -1414.3630678141753,
+          "scale": 0.83162113531105,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-344",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 157.04977001100525,
+          "y": -1413.007441867655,
+          "scale": 0.8634074160193538,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-345",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -297.0849220733164,
+          "y": 517.4039059773423,
+          "scale": 0.9532070813038718,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-346",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 68.93408348718165,
+          "y": 452.3338605443649,
+          "scale": 0.8613353933853801,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-347",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -215.74736528209465,
+          "y": 854.9547666609128,
+          "scale": 0.8537334872757613,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-348",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -256.4161436777055,
+          "y": 986.4504834733881,
+          "scale": 0.8616640870150399,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-349",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -431.2918907788324,
+          "y": 913.2466823612884,
+          "scale": 0.9947632539455156,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-350",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 39.11031266373366,
+          "y": 944.4260791312568,
+          "scale": 0.9049012707445468,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-351",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 396.9955625451096,
+          "y": 1014.9186283503157,
+          "scale": 0.815177331529948,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-352",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": 544.7587907158292,
+          "y": 723.4590498484375,
+          "scale": 0.8340762077558329,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-353",
+          "assetId": "env-c059b5ac1ffb50041844f3300e4fc31d",
+          "name": "DeepForest Grass",
+          "x": -757.9977438902399,
+          "y": 1294.1775733335105,
+          "scale": 0.9369982383828087,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-354",
+          "assetId": "env-6a9375ee45ff7c44c99f94f10b0176a2",
+          "name": "Stone Gray2 1",
+          "x": 655.920118330499,
+          "y": -478.9811647151247,
+          "scale": 0.8854285696161182,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-358",
+          "assetId": "env-c2c01a600c6746e46833c332bbd5f06e",
+          "name": "Stone Gray2 2",
+          "x": -526.1857070352578,
+          "y": -319.0173030257218,
+          "scale": 0.9516302846463054,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-359",
+          "assetId": "env-c2c01a600c6746e46833c332bbd5f06e",
+          "name": "Stone Gray2 2",
+          "x": -652.2589200616516,
+          "y": 884.7785374843608,
+          "scale": 0.8784418697843328,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-360",
+          "assetId": "env-c4234843afb206f41a56e3a11818c5e9",
+          "name": "Stone Gray2 4",
+          "x": -615.6570195056019,
+          "y": 852.243514767872,
+          "scale": 0.8481692771285587,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-361",
+          "assetId": "env-e831296a4803e27448b9824ee20efed7",
+          "name": "Stone Gray2 5",
+          "x": -556.0094778587058,
+          "y": 732.94843147408,
+          "scale": 0.8161521964969616,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-362",
+          "assetId": "env-e831296a4803e27448b9824ee20efed7",
+          "name": "Stone Gray2 5",
+          "x": -24.60410682272342,
+          "y": 1074.5661699972115,
+          "scale": 0.8382477069221936,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-363",
+          "assetId": "env-e831296a4803e27448b9824ee20efed7",
+          "name": "Stone Gray2 5",
+          "x": 410.5518220103132,
+          "y": -600.9874999019573,
+          "scale": 0.9755821797757427,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-364",
+          "assetId": "env-f9d3a7413f16d1547ae507170d548b50",
+          "name": "Bush Green 4",
+          "x": -894.9159644887967,
+          "y": -447.8017679451563,
+          "scale": 0.89046327567602,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-369",
+          "assetId": "env-0e9db89abb5f91847a1f059f7c917878",
+          "name": "Ork",
+          "x": -601.9824637542182,
+          "y": 813.0973758384815,
+          "scale": 0.8812333655526635,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-371",
+          "assetId": "env-77ed84a8dc206fe459e41f8e5214d717",
+          "name": "Bush Green 1",
+          "x": 107.35226852138699,
+          "y": 1083.9830966269044,
+          "scale": 0.9318849639342212,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-372",
+          "assetId": "env-77ed84a8dc206fe459e41f8e5214d717",
+          "name": "Bush Green 1",
+          "x": 635.6611709146413,
+          "y": 539.02580445235,
+          "scale": 0.8992079086902395,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-373",
+          "assetId": "env-77ed84a8dc206fe459e41f8e5214d717",
+          "name": "Bush Green 1",
+          "x": 589.0456795270012,
+          "y": -634.1307288032588,
+          "scale": 0.9725877771872904,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-374",
+          "assetId": "env-f5feb86034b16734f98d17ec9c3977b9",
+          "name": "Dead Tree Brown 3",
+          "x": -528.7714642696403,
+          "y": -390.62335969599,
+          "scale": 0.8080130018715437,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-376",
+          "assetId": "env-f5feb86034b16734f98d17ec9c3977b9",
+          "name": "Dead Tree Brown 3",
+          "x": 477.9338199593449,
+          "y": 1068.1058432739705,
+          "scale": 0.9254498147860631,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-377",
+          "assetId": "env-f5feb86034b16734f98d17ec9c3977b9",
+          "name": "Dead Tree Brown 3",
+          "x": -404.5890690111307,
+          "y": 1298.2572158197418,
+          "scale": 0.9021937148595472,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-378",
+          "assetId": "env-f5feb86034b16734f98d17ec9c3977b9",
+          "name": "Dead Tree Brown 3",
+          "x": 898.1146477644952,
+          "y": -47.79829362972851,
+          "scale": 0.949219694488393,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-380",
+          "assetId": "env-f5feb86034b16734f98d17ec9c3977b9",
+          "name": "Dead Tree Brown 3",
+          "x": -52.51669022133511,
+          "y": 1040.2146054585703,
+          "scale": 0.878608232823781,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-381",
+          "assetId": "env-42227bf2bc0b1b14badfaf4252bf8eac",
+          "name": "Stone Gray2 8",
+          "x": 566.4914436992073,
+          "y": 1009.9788902185337,
+          "scale": 0.8161546687835681,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-382",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -241.85184885906654,
+          "y": 1311.7276762114554,
+          "scale": 0.9672588503121204,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        }
+      ],
+      "blockers": []
     }
   ],
-  "nextObject": 7,
-  "nextLayer": 7,
+  "nextObject": 383,
+  "nextLayer": 9,
   "blockerMask": [
     [
       [

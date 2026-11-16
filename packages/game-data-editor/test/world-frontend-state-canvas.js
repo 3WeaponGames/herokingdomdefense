@@ -169,6 +169,26 @@ async function verify(){
    assert(f.state.snap.value.ground.roads.name===name&&!f.env.calls.some(c=>c.name==='world-change'),'invalid rename does not mutate the draft');
   }finally{f.close();}
  }
+ {
+  const f=await fixture();
+  try{
+   const before=JSON.stringify(f.state.snap.value);await f.click('Rename');
+   let dialog=f.root.querySelector('.world-modal');assert(dialog.querySelector('h3').textContent==='Rename map','map rename opens a named dialog');
+   await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Cancel').onclick();
+   assert(JSON.stringify(f.state.snap.value)===before&&!f.env.calls.some(c=>c.name==='world-change'),'cancelling map rename leaves the draft untouched');
+   await f.click('Rename');dialog=f.root.querySelector('.world-modal');dialog.querySelector('input').value='   ';
+   await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Apply to draft').onclick();await f.state.pending;
+   assert(!!f.root.querySelector('.world-modal')&&f.root.textContent.includes('Enter a map name.'),'an empty map name keeps validation open for correction');
+   assert(!f.env.calls.some(c=>c.name==='world-change'),'an empty map name does not change the draft');
+   dialog.querySelector('input').value='  Moonlit Forest  ';await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Apply to draft').onclick();await f.state.pending;await raf();
+   assert(f.state.snap.value.id==='Map01'&&f.state.snap.value.name==='Moonlit Forest','map rename trims the name and preserves the map identifier');
+   assert(f.root.querySelector('.world-top select').selectedOptions[0].textContent==='Moonlit Forest','the map selector shows its renamed draft immediately');
+   const expected=JSON.parse(before);expected.name='Moonlit Forest';assert(JSON.stringify(f.state.snap.value)===JSON.stringify(expected),'map rename leaves terrain and all other fields untouched');
+   assert(!f.env.calls.some(c=>c.name==='world-save'),'map rename does not save automatically');
+   const writes=f.env.calls.filter(c=>c.name==='world-change').length;await f.click('Rename');dialog=f.root.querySelector('.world-modal');await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Apply to draft').onclick();await f.state.pending;
+   assert(f.env.calls.filter(c=>c.name==='world-change').length===writes,'confirming an unchanged map name performs no draft writes');
+  }finally{f.close();}
+ }
  return {checks};
 }
 module.exports={verify};

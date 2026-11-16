@@ -250,6 +250,25 @@ function fixture(){
  return {root,artifacts,write,service};
 }
 function rename(s,key,name){const value=clone(s.snapshot(key).value);value.name=name;return s.change({key,version:s.version,value});}
+
+test('world persistence: map renames change only the name and the catalog follows undo, redo and discard',()=>{
+ const f=fixture(),s=f.service,key='map:map-test',file='authoring/worlds/maps/map-test.json',original=L.read(f.root,file);
+ original.futureField={keep:['unchanged']};f.write(file,original);const before=fingerprint(path.join(f.root,file));
+ assert.equal(s.mapCatalog().find(map=>map.id==='map-test').name,'map-test');
+ const changed=rename(s,key,'Moonlit Forest');
+ assert.deepEqual(changed.value,Object.assign({},original,{name:'Moonlit Forest',images:{}}));
+ assert.equal(s.mapCatalog().find(map=>map.id==='map-test').name,'Moonlit Forest');
+ assert.equal(fingerprint(path.join(f.root,file)),before,'renaming stays in the draft');
+ s.history({key,version:s.version},false);assert.equal(s.mapCatalog().find(map=>map.id==='map-test').name,'map-test');assert(!s.snapshot(key).dirty);
+ s.history({key,version:s.version},true);assert.equal(s.mapCatalog().find(map=>map.id==='map-test').name,'Moonlit Forest');
+ s.discard({key,version:s.version});assert.equal(s.mapCatalog().find(map=>map.id==='map-test').name,'map-test');assert.equal(fingerprint(path.join(f.root,file)),before);
+});
+
+test('world persistence: renaming to the same map name performs no writes or history changes',async()=>{
+ const f=fixture(),s=f.service,key='map:map-test',snap=s.snapshot(key),before=fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json')),version=s.version;
+ const changed=rename(s,key,snap.value.name);assert(!changed.dirty);assert(!changed.canUndo);assert.equal(s.version,version);assert(!fs.existsSync(s.recovery));
+ const result=await s.save({key,version:s.version});assert.equal(result.result.saved,false);assert.equal(fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json')),before);assert(!fs.existsSync(s.recovery));
+});
 test('world persistence: refresh invalidates reloaded history while retaining another dirty document history',()=>{
  const f=fixture(),s=f.service,key='map:map-test';rename(s,key,'Old edit');s.history({key,version:s.version},false);rename(s,'map:map-other','Independent draft');
  const external=M.createMap('map-test','External current','forest');f.write('authoring/worlds/maps/map-test.json',external);
