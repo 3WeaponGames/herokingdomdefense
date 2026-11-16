@@ -50,7 +50,7 @@ function vertices(spine, slot) {
   assert(v.length && v.every(Number.isFinite)); assert([...a.uvs].every(Number.isFinite)); assert(a.region && a.region.page); return v;
 }
 
-test('stable original troop values stay fixed and its approved fourth tier is reachable', () => {
+test('stable uses the shared three-soldiers-per-tier progression and its fourth tier is reachable', () => {
   assert(fit, 'reviewed stable art fixture is required');
   assert.deepEqual(fit.aliases.map(a => a.alias), [1, 2, 3, 4].map(n => 'qby-stable-' + n));
   for (const file of Object.keys(painted.fixture.config)) {
@@ -59,10 +59,10 @@ test('stable original troop values stay fixed and its approved fourth tier is re
     assert.deepEqual(config.BuildEnum['3'].InitialChoices, [11, 14, 17, 20]);
     for (const [index, level] of [[20, 1], [21, 2], [22, 3]]) {
       const row = rows.find(r => r.index === index);
-      assert.equal(row.level, level); assert.deepEqual(row.Data, [level * 2 + 2, 90004, 8]); assert.equal(row.ColliderIndex, level + 7);
+      assert.equal(row.level, level); assert.deepEqual(row.Data, [level * 3, 90004, 8]); assert.equal(row.ColliderIndex, level + 7);
     }
     const last = rows.find(r => r.index === 22), fourth = rows.find(r => r.index === last.BranchBuild[0]);
-    assert.equal(fourth.level, 4); assert.deepEqual(fourth.Data, [10, 90004, 8]);
+    assert.equal(fourth.level, 4); assert.deepEqual(fourth.Data, [12, 90004, 8]);
   }
 });
 

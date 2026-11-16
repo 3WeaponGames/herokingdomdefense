@@ -121,11 +121,11 @@ var def_KinghtFallUIBuildSel = function (t) {
         "ndNormal" == p.name && (p.active = !require("BuildingCost").video(o, i.initialChoice));
         "ndVideo" == p.name && (p.active = require("BuildingCost").video(o, i.initialChoice));
       }
-      var info = r.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
+      var info = r.getChildByName("labInfo"), rich = info.getComponent(cc.RichText), description = i.choiceDescription(o);
       // These cards contain plain body copy. RichText measures/rasterizes every
       // word synchronously on Win32; keep it disabled before setting any text.
       if (grid || upgradeCards) rich.enabled = false;
-      else rich.string = require("LanguageMgr").LanguageMgr.getInstance().format("<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
+      else rich.string = require("LanguageMgr").LanguageMgr.getInstance().format("<b><outline color=#000000 width=4>{0}</outline></b>", [description]);
       if (i.initialChoice || upgradeCards) {
         rich.font = null;
         rich.fontFamily = "Arial";
@@ -137,7 +137,7 @@ var def_KinghtFallUIBuildSel = function (t) {
       }
       if (grid) i.layoutChoiceCard(r, n, e.length);
       if (upgradeCards) i.layoutUpgradeCard(r, n, e.length);
-      if (grid || upgradeCards) i.initChoiceDescription(r, i.T(o.LevelUpDescribe));
+      if (grid || upgradeCards) i.initChoiceDescription(r, description);
       r.active = true;
       if (!require("BuildingCost").video(o, i.initialChoice)) {
         r.on(cc.Node.EventType.TOUCH_END, function () {
@@ -184,6 +184,18 @@ var def_KinghtFallUIBuildSel = function (t) {
     for (var a = 0; a < e.length; a++) {
       n(a);
     }
+  };
+  _ctor.prototype.choiceDescription = function (row) {
+    var build = this.build, current = build && build.buildInfo && build.buildInfo.cfg;
+    if (!this.initialChoice && build && build.buildCfg.enumValue === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks) {
+      var before = current && current.Data && current.Data[0], total = row.Data && row.Data[0];
+      if (Number.isInteger(before) && before >= 0 && Number.isInteger(total) && total >= 0) {
+        var gain = total - before;
+        return require("LanguageMgr").LanguageMgr.getInstance().format(this.T("[[loc:ui.building.soldiers_upgrade]]"),
+          [gain >= 0 ? "+" + gain : String(gain), total]);
+      }
+    }
+    return this.T(row.LevelUpDescribe);
   };
   _ctor.prototype.canAffordSelection = function (index) {
     if (!this.build.canAffordChoice || this.build.canAffordChoice(index)) return true;

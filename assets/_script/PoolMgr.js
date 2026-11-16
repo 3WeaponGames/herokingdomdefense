@@ -24,20 +24,21 @@ var exp_PoolNode = function () {
     }
   };
   _ctor.prototype.getNode = function () {
-    if (this._nodes.size() > 0) {
+    // A deferred destroy is already an invalid lifetime even before Cocos
+    // releases native fields at the frame boundary. Do not revive that entry.
+    while (this._nodes.size() > 0) {
       var node = this._nodes.get();
       if (node) this._returned.delete(node);
-      return node;
-    } else {
-      if (this._node && cc.isValid(this._node)) {
-        return this._createCount++, cc.instantiate(this._node);
-      } else {
-        return null;
-      }
+      if (node && cc.isValid(node, true)) return node;
+      if (node) this._createCount--;
     }
+    if (this._node && cc.isValid(this._node, true)) {
+      return this._createCount++, cc.instantiate(this._node);
+    }
+    return null;
   };
   _ctor.prototype.freeNode = function (t) {
-    if (t && cc.isValid(t)) {
+    if (t && cc.isValid(t, true)) {
       if (this._returned.has(t)) return;
       if (this._nodes.size() >= this._warterMark || !this._isReady) {
         this._createCount--;
@@ -89,7 +90,7 @@ var exp_PoolMgr = function () {
       return null;
     }
     var e = this.poolMap.get(t).getNode();
-    if (cc.isValid(e)) {
+    if (cc.isValid(e, true)) {
       return e;
     } else {
       return null;

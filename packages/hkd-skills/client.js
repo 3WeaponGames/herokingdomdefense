@@ -258,7 +258,7 @@ function mount(host, api) {
     if(tab==='visual'&&selected==='skirmisher')el('p','The arrow launches automatically from the bow. Its sprite and blue collider share one position and one straight flight path. Click an enemy to aim; the direction locks when the arrow is released.',fieldsHost,'help');
     else if(tab==='visual'&&selected!=='mystic')el('p','The active skill starts at the equipped weapon tip automatically. Weapon offset, size and arc angle move or resize its artwork and hit area together.',fieldsHost,'help');
     if (tab === 'audio') el('p', 'Audio stays silent until you enable Sound in preview or press a Test button.', fieldsHost, 'help');
-    const all = descriptors();
+    const all = descriptors().filter(field=>!(selected==='skirmisher'&&get(effective(),'visual.projectile')&&['visual.resource','visual.resourceAnimation','visual.showBuiltin'].includes(fieldPath(field))));
     let previousGroup='';all.forEach(field => {
       if(field.group&&field.group!==previousGroup){el('h3',field.group,fieldsHost,'field-group');previousGroup=field.group;}
       const path = fieldPath(field), value = fieldValue(path), type = field.type || (typeof value === 'boolean' ? 'boolean' : typeof value === 'number' ? 'number' : 'text');
@@ -266,13 +266,14 @@ function mount(host, api) {
       const label = el('label', field.label || path, heading), reset = button(heading, 'Reset', async () => { const key=selected+':'+path;invalidInputs.delete(key);localChanges.delete(key);flushFields();await session.reset(selected,path); }, 'reset'); reset.title = 'Remove this override and use the built-in default';
       const help=field.help||field.description||(field.unit?'Unit: '+field.unit+'. ':'')+'Adjust '+(field.label||path)+'. Changes remain in a draft until Save.';label.title=help+(type==='number'?' '+SCRUB_HELP:'');
       let input;
-      const isAudio = /\.clip$/.test(path), isResource = /resource$/i.test(path) || type === 'resource' || type === 'vfx';
-      if (isAudio || isResource) {
-        const search = el('input', undefined, wrap, 'asset-search'); search.type = 'search'; search.placeholder = isAudio ? 'Filter sounds…' : 'Filter effects…';search.title='Filter the imported '+(isAudio?'sounds':'effects')+' listed below. This does not change the selected asset.'; search.setAttribute('aria-label', (field.label || path) + ' filter');
-        input = el('select', undefined, wrap); const catalog = snapshot.catalogs && snapshot.catalogs[isAudio ? 'audio' : 'vfx'] || [];
-        const fill = () => { const current = input.value || String(fieldValue(path) || ''), query = search.value.toLowerCase(); input.textContent = ''; const none = el('option', field.emptyLabel||(isAudio ? 'No sound' : 'Built-in effect'), input); none.value = ''; catalog.filter(item => !query || (item.name + ' ' + catalogValue(item)).toLowerCase().includes(query) || catalogValue(item) === current).slice(0, 500).forEach(item => { const option = el('option', item.name || catalogValue(item), input); option.value = catalogValue(item); }); if (current && !Array.from(input.options).some(option => option.value === current)) { const option = el('option', current + ' · current', input); option.value = current; } input.value = current; };
+      const isAudio = /\.clip$/.test(path), isResource = /resource$/i.test(path) || type === 'resource' || type === 'vfx',isProjectile=type==='projectile';
+      if (isAudio || isResource || isProjectile) {
+        const search = el('input', undefined, wrap, 'asset-search'); search.type = 'search'; search.placeholder = isAudio ? 'Filter sounds…' : isProjectile?'Filter projectiles…':'Filter effects…';search.title='Filter the imported '+(isAudio?'sounds':isProjectile?'projectiles':'effects')+' listed below. This does not change the selected asset.'; search.setAttribute('aria-label', (field.label || path) + ' filter');
+        input = el('select', undefined, wrap); const catalog = snapshot.catalogs && snapshot.catalogs[isAudio ? 'audio' : isProjectile?'projectiles':'vfx'] || [];
+        const fill = () => { const current = input.value || String(fieldValue(path) || ''), query = search.value.toLowerCase(); input.textContent = ''; const none = el('option', field.emptyLabel||(isAudio ? 'No sound' : 'Built-in effect'), input); none.value = ''; catalog.filter(item => !query || (item.name + ' '+(item.category||'')+' ' + catalogValue(item)).toLowerCase().includes(query) || catalogValue(item) === current).slice(0, 500).forEach(item => { const option = el('option', (isProjectile&&item.category?item.category+' · ':'')+(item.name || catalogValue(item)), input); option.value = catalogValue(item); }); if (current && !Array.from(input.options).some(option => option.value === current)) { const option = el('option', current + ' · current', input); option.value = current; } input.value = current; };
         fill(); search.oninput = fill;
         if (isAudio) button(wrap, 'Test sound', () => { audio.stop(); audio.cue('test', get(effective(), path.split('.').slice(0, -1))); });
+        if (isProjectile)button(wrap,'Open Projectile editor',()=>api.ipc('open-projectiles',{}));
       } else if (type === 'select' || type === 'animation' || type === 'effect-animation' || field.options) {
         input = el('select', undefined, wrap); let choices = field.options || [];
         if (type === 'animation' || /animation$/.test(path)) choices = [['', 'Automatic'], ...animations().map(name => [name, name])];
@@ -306,10 +307,10 @@ function mount(host, api) {
         onSound(kind, value) { if (kind === 'stop' || kind === 'stopChannel' || soundEnabled) audio.cue(kind, Object.assign({}, value, {delay:(Number(value.delay)||0)/Math.max(.01,scenario.speed)})); }
       }); preview.setScenario(scenario); if (preview.setAudioEnabled) preview.setAudioEnabled(soundEnabled); if (preview.selectHandle) preview.selectHandle(handle.value);
     }
-    const resource = get(effective(), 'visual.resource') || '',impactResource=get(effective(),'visual.impactResource')||'', art=Object.fromEntries(['passiveResource','beamResource','markResource','buffResource','tauntResource','shieldResource'].map(prefix=>[prefix,get(effective(),'visual.'+prefix)||''])), key = JSON.stringify([selected,resource,impactResource,art]);
+    const resource = get(effective(), 'visual.resource') || '',impactResource=get(effective(),'visual.impactResource')||'',projectile=get(effective(),'visual.projectile')||'',projectileEntry=(snapshot.catalogs.projectiles||[]).find(item=>item.id===projectile), art=Object.fromEntries(['passiveResource','beamResource','markResource','buffResource','tauntResource','shieldResource'].map(prefix=>[prefix,get(effective(),'visual.'+prefix)||''])), key = JSON.stringify([selected,resource,impactResource,art,projectile,projectileEntry]);
     if (descriptionStyle !== key) {
       const request = ++previewRequest, id = selected; loading = true; updateButtons(session.state());
-      if (!descriptionLoads.has(key)) { const task = Promise.resolve(api.ipc('describe', { style: id, resource,impactResource,...art })); descriptionLoads.set(key, task); task.finally(() => { if (descriptionLoads.get(key) === task) descriptionLoads.delete(key); }).catch(() => {}); }
+      if (!descriptionLoads.has(key)) { const task = Promise.resolve(api.ipc('describe', { style: id, resource,impactResource,projectile,...art })); descriptionLoads.set(key, task); task.finally(() => { if (descriptionLoads.get(key) === task) descriptionLoads.delete(key); }).catch(() => {}); }
       try { const value = await descriptionLoads.get(key); if (disposed || request !== previewRequest || selected !== id) return; description = value; descriptionStyle = key; renderInspector(); }
       catch (error) { if (!disposed && request === previewRequest) message(error.message, true); return; }
       finally { if (!disposed && request === previewRequest) { loading = false; updateButtons(session.state()); } }

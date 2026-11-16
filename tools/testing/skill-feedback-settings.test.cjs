@@ -11,3 +11,18 @@ test('on-hit authored values and imported layout survive normalization without m
 test('invalid or unsafe on-hit fields fall back without accepting poisoned timers or asset paths',()=>{
  const v=S.effective('fighter',{HeroSkills:{fighter:{visual:{impactDelay:-1,impactDuration:Infinity,impactScale:0,impactResource:'bad',impactOpacity:2,impactResourcePath:'../secret',impactResourceKind:'script'}}}}).visual;assert.equal(v.impactDelay,0);assert.equal(v.impactDuration,.35);assert.equal(v.impactScale,1);assert.equal(v.impactResource,'');assert.equal(v.impactOpacity,1);assert.equal(v.impactResourcePath,undefined);assert.equal(v.impactResourceKind,undefined);for(const impactDelay of [-1,NaN,Infinity,31])assert.throws(()=>S.validateStyle('fighter',{visual:{impactDelay}}));assert(S.validateStyle('fighter',{visual:{impactDelay:0,impactOpacity:0}}));
 });
+
+
+test('impact presentation reads only its authored fields while preserving merge defaults and ownership',()=>{
+ const defaults=S.impactVisual();assert.deepEqual(S.impactVisual(null),defaults);assert.deepEqual(S.impactVisual({}),defaults);
+ const source=Object.create({impactScale:9,impactColor:'#ffffff'});let reads=0;
+ Object.defineProperty(source,'impactResource',{enumerable:true,get(){reads++;return uuid;}});
+ Object.defineProperty(source,'impactDuration',{enumerable:false,value:99});
+ Object.assign(source,{impactScale:0,impactOpacity:undefined,impactResourceLoop:false,impactOffsetX:0,extension:{keep:true}});
+ Object.defineProperty(source,'unrelatedVisual',{enumerable:true,get(){throw Error('impact projection traversed unrelated visual data');}});
+ const extension=source.extension,result=S.impactVisual(source);
+ assert.equal(result.resource,uuid);assert.equal(reads,1);assert.equal(result.scale,0);assert.equal(result.opacity,undefined);assert.equal(result.resourceLoop,false);assert.equal(result.offsetX,0);
+ assert.equal(result.effectDuration,defaults.effectDuration);assert.equal(result.color,defaults.color);assert.equal(source.extension,extension);assert.equal(source.impactScale,0);assert(!Object.hasOwn(result,'extension'));
+ const frozen=Object.freeze({impactDelay:.4,impactScale:.8,impactColor:'#123456'}),before={...frozen};
+ assert.equal(S.impactVisual(frozen).delay,.4);assert.deepEqual(frozen,before);
+});

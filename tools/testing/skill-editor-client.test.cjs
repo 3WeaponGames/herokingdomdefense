@@ -108,6 +108,14 @@ test('projectile controls expose a single automatic launch and collider size wit
  const f=await fixture();f.button('Position & VFX').click();await f.settle();assert(f.field('Projectile radius'));for(const label of ['Launch offset X','Launch offset Y','Artwork offset X','Artwork offset Y','Damage follows projectile','Damage offset X','Damage offset Y','VFX thickness'])assert.equal(f.field(label),null,label);assert.equal(f.button('Align projectile to bow'),undefined);assert.equal(f.backend.snapshot().dirty,false);f.field('Projectile radius').value='41';f.field('Projectile radius').onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.projectileWidth,41);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
 });
 
+test('the Skirmisher projectile picker uses Projectile editor assets and refreshes its isolated preview without saving',async()=>{
+ const id='tiny-kingdom:ballista-bolt',f=await fixture({catalogs:{projectiles:[{id,name:'Ballista bolt',category:'Tiny Kingdom'}]}});
+ f.button('Position & VFX').click();await f.settle();const picker=f.field('Projectile');assert(picker);assert(picker.options.some(option=>option.value===id&&option.textContent.includes('Ballista bolt')));assert(f.button('Open Projectile editor'));
+ assert.equal(f.backend.snapshot().dirty,false);picker.value=id;picker.onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.visual.projectile,id);
+ assert(f.backend.calls.some(call=>call.name==='describe'&&call.request.projectile===id));assert.equal(f.calls.preview.at(-1).settings.visual.projectile,id);assert.equal(f.field('VFX asset'),null,'Fallback VFX should not compete with the chosen projectile');
+ assert(!f.backend.calls.some(call=>call.name==='save'));assert.equal(f.calls.audio.length,0);f.close();
+});
+
 test('R restarts the current preview without editing drafts and stays available for typing in fields',async()=>{
  const f=await fixture(),root=f.host.children[0],key=root.listeners.keydown;let stopped=0;
  key({key:'r',target:root,preventDefault(){stopped++;},stopPropagation(){}});assert.equal(f.calls.seeks.at(-1),0);assert.equal(f.calls.plays.at(-1),true);assert.equal(stopped,1);

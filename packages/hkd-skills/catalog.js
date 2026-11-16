@@ -15,7 +15,21 @@ function spine(root,asset){
   for(let i=0;i<lines.length;i++)if(lines[i].trim()&&(i===0||!lines[i-1].trim())&&/^(size|format):/.test((lines[i+1]||'').trim())){
     const name=lines[i].trim(),texture=path.resolve(path.dirname(file),name);if(path.dirname(texture)!==path.dirname(file)||!fs.existsSync(texture))throw Error('Missing VFX atlas page '+name);pages[name]=url.pathToFileURL(texture).href;
   }
-  return {layers:[{uuid:asset.uuid,source:asset.file,name:asset.name,json,atlas,pages,skin:(json.skins||[])[0]?.name||'default',animation:asset.animations[0]||'',x:0,y:0,scaleX:1,scaleY:1,skins:(json.skins||[]).map(s=>s.name),animations:asset.animations}]};
+  return {layers:[{uuid:asset.uuid,source:asset.file,name:asset.name,json,atlas,pages,skin:asset.skin||(json.skins||[])[0]?.name||'default',animation:asset.animation||asset.animations[0]||'',x:0,y:0,scaleX:1,scaleY:1,skins:(json.skins||[]).map(s=>s.name),animations:asset.animations}]};
+}
+function projectileAssets(root){
+  const file=path.join(root,'assets/resources/projectiles/catalog.json');if(!fs.existsSync(file))return [];
+  const assets=read(file).assets||[],result=[];
+  for(const asset of assets.filter(row=>row.role==='flight'))try{
+    const kind=asset.kind==='spine'?'spine':'sprite',bundleName=asset.bundle||'resources',source=require('../game-data-editor/lib/asset-validation').imported(root,bundleName,asset.resource,kind);
+    const uuid=kind==='spine'?source.meta.uuid:Object.values(source.meta.subMetas||{}).find(row=>row.importer==='sprite-frame').uuid;
+    const item={id:asset.id,uuid,name:asset.name,category:asset.category,kind,bundle:bundleName,path:asset.resource,file:path.relative(root,source.file).replace(/\\/g,'/'),url:url.pathToFileURL(source.file).href,rotation:asset.rotation||0};
+    if(kind==='spine')Object.assign(item,{skin:asset.skin,animation:asset.animation,animations:Object.keys(source.data.animations)});
+    if(asset.kind==='flipbook')item.flipbook={frames:asset.frames,columns:asset.columns,cell:asset.cell,fps:asset.fps,loop:!!asset.loop};
+    if(typeof asset.premultipliedAlpha==='boolean')item.premultipliedAlpha=asset.premultipliedAlpha;
+    result.push(item);
+  }catch(_){/* Unavailable imported assets stay out of new selections. */}
+  return result;
 }
 function index(root){
   root=path.resolve(root);const audio=[],vfx=[],seen=new Set();
@@ -43,6 +57,7 @@ function index(root){
       record(file,'sprite');
     }
   }));
-  const sorted=rows=>rows.sort((a,b)=>a.file.localeCompare(b.file));return {audio:sorted(audio),vfx:sorted(vfx)};
+  let heroArrowTiers=[];try{heroArrowTiers=read(path.join(root,'assets/resources/projectiles/catalog.json')).heroArrowTiers||[];}catch(_){}
+  const sorted=rows=>rows.sort((a,b)=>a.file.localeCompare(b.file));return {audio:sorted(audio),vfx:sorted(vfx),projectiles:projectileAssets(root),heroArrowTiers};
 }
-module.exports={index,bundle,spine};
+module.exports={index,bundle,spine,projectiles:projectileAssets};

@@ -181,6 +181,26 @@ test('plain choice copy never enables RichText and retains one stable localized 
  for(const upgrade of [false,true]){const p=panel(3,750,1334,false,upgrade?'mill':'tower',upgrade);for(const row of p.ui._choiceRows){const node=row.getChildByName('labInfo'),rich=node.getComponent(p.h.cc.RichText),label=node.getComponent(p.h.cc.Label);assert.equal(rich.enabled,false);assert.equal(rich.string,undefined,'do not trigger RichText word rasterization');assert.equal(label.string,p.rows[p.ui._choiceRows.indexOf(row)].LevelUpDescribe);assert.equal(label.enableWrapText,true);assert.equal(label.overflow,p.h.cc.Label.Overflow.RESIZE_HEIGHT);assert.equal(label._uiTypography.fontFamily,'Arial');}const labels=p.ui._initialChoiceDescriptions.map(e=>e.label);for(let i=0;i<10;i++)p.ui.lateUpdate();assert.deepEqual(p.ui._initialChoiceDescriptions.map(e=>e.label),labels);assert.equal(JSON.stringify(p.rows),p.before);}
 });
 
+test('every barracks upgrade shows its actual soldier gain and new total in both languages',()=>{
+  const fs=require('node:fs'),path=require('node:path'),root=path.resolve(__dirname,'../..');
+  const config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8')),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'),'utf8'));
+  const Language=require('../../assets/_script/LanguageMgr').LanguageMgr,language=Object.create(Language.prototype);
+  Object.assign(language,{catalog,currentLan:'en',_rendered:new Map(),_missing:{}});
+  const p=panel(1,540,820,false,'barracks',true),family=config.BuildEnum[3],before=JSON.stringify(family);
+  p.h.modules.LanguageMgr.LanguageMgr.getInstance=()=>language;p.ui.T=value=>language.token(value);
+  for(const locale of ['en','zh'])for(const current of family.levelList.filter(row=>row.level<4)){
+    language.currentLan=locale;
+    const next=family.levelList.find(row=>row.index===current.BranchBuild[0]);
+    p.ui.init({buildCfg:family,buildInfo:{cfg:current}},()=>{},()=>{},[next.index]);
+    const row=p.ui._choiceRows[0],label=row.getChildByName('labInfo').getComponent(p.h.cc.Label);
+    assert.equal(label.string,locale==='en'?'+3 soldiers\nTotal after upgrade: '+next.Data[0]:'士兵数量+3\n升级后共'+next.Data[0]+'名士兵');
+    assert(label.enableWrapText);assert.equal(label.fontSize,24);assert(row.getChildByName('labInfo').width<row.width);
+  }
+  assert.equal(JSON.stringify(family),before,'Showing upgrade totals changed game data');
+  language.currentLan='en';const current={Data:[3,90001,8]},next={Data:[8,90001,8]};
+  p.ui.build={buildCfg:family,buildInfo:{cfg:current}};assert.equal(p.ui.choiceDescription(next),'+5 soldiers\nTotal after upgrade: 8','Popup hard-coded the approved gain instead of reading edited stats');
+});
+
 
 test('the template stays hidden and repeated start never duplicates aligned choice rows',()=>{const p=panel(3);assert.equal(p.ui.ndItem.active,false);assert.equal(p.ui._choicePrepared,true);assert.equal(p.ui._choiceRows.length,3);const rows=p.ui._choiceRows.slice();p.ui.start();assert.deepEqual(p.ui._choiceRows,rows);assert.equal(p.ui.ndParent.children.length,3);});
 

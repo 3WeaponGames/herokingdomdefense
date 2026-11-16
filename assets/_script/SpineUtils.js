@@ -3,6 +3,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SpineUtils = exports.SpineInfo = undefined;
 var $z1ResourceMgr = require("ResourceMgr");
+function changeGeometry(callback) {
+  if (!cc.sys || !cc.sys.isNative) return callback();
+  var geometry = require("KinghtFallDepthView");
+  geometry.invalidateUnitGeometry();
+  try { return callback(); }
+  finally { geometry.invalidateUnitGeometry(); }
+}
 var exp_SpineInfo = function () {};
 exports.SpineInfo = exp_SpineInfo;
 var exp_SpineUtils = function () {
@@ -14,11 +21,13 @@ var exp_SpineUtils = function () {
       i.handleLoadedTexture(true);
       var a = r.getAtt(t, e, n);
       var s = r.CreateRegion(i, o);
-      a.region = s;
-      if (a) {
-        a.setRegion(s);
-        a.updateOffset();
-      }
+      changeGeometry(function () {
+        a.region = s;
+        if (a) {
+          a.setRegion(s);
+          a.updateOffset();
+        }
+      });
     });
   };
   _ctor.changePartImgTexture = function (t, e, n, i, o) {
@@ -33,7 +42,7 @@ var exp_SpineUtils = function () {
       var l = o.diffHeight ? i.height + o.diffHeight : i.height;
       var c = o.offsetX ? o.offsetX : 0;
       var h = o.offsetY ? o.offsetY : 0;
-      t.updateRegion(e, r, l, s, c, h);
+      changeGeometry(function () { t.updateRegion(e, r, l, s, c, h); });
     } else {
       var g = this.getAtt(t, e, n);
       var u = this.CreateRegion(i, o);

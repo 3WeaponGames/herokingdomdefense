@@ -26,7 +26,7 @@ function host(text){
   const environment={Mat4,Vec2,Vec3:{},cc,_mat4_temp:new Mat4()};
   for(const name of ['getWorldMatrix','convertToNodeSpaceAR','convertToWorldSpaceAR'])Node.prototype[name]=new Function('env','with(env){return function('+ (name==='getWorldMatrix'?'out':name==='convertToNodeSpaceAR'?'worldPoint,out':'nodePoint,out') +'){'+body(nodeSource,name+' (')+'};}')(environment);
   class PrivateNode extends Node{}cc.PrivateNode=PrivateNode;
-  const context=vm.createContext({cc,sp:{},exports:{},require:name=>require(path.resolve(project,'assets/_script',name))});vm.runInContext(text,context);const api=vm.runInContext('({point,nodeTransform,gateLeaves,wallSurfaces,bounds})',context);
+  const context=vm.createContext({cc,sp:{},exports:{},require:name=>require(path.resolve(project,'assets/_script',name))});vm.runInContext(text,context);const api=vm.runInContext('({point,nodeTransform,gateLeaves,wallSurfaces,bounds,unitBounds,unitReferenceSize})',context);
   function reset(){for(const key of Object.keys(counts))counts[key]=0;}
   return{cc,api,Node,PrivateNode,Mat4,Vec2,counts,reset};
 }
@@ -43,6 +43,54 @@ test('33 source reads reuse one unchanged Main inverse and remove all coordinate
   const results=[];for(const text of [before,candidate]){const h=host(text),main=new h.Node('main').set(1.3,.1,-.2,.9,27,-41),sources=Array.from({length:33},(_,i)=>new h.Node('source',main).set(1,.2,.3,1,i*5,i*7)),shared=cache();h.reset();sources.forEach(node=>h.api.nodeTransform(node,main,shared));const once={...h.counts};sources.forEach(node=>h.api.nodeTransform(node,main,shared));assert.deepEqual(h.counts,once,'Existing per-source draw cache remains effective');results.push(once);}
   assert.equal(results[0].inverse,99);assert.equal(results[1].inverse,1);assert.equal(results[0].vec2,297);assert.equal(results[1].vec2,0);assert.equal(results[1].mat4,3);t.diagnostic(JSON.stringify({before:results[0],after:results[1],scope:'Getter/allocation model counts, no FPS claim'}));
 });
+
+test('health bounds use exact native matrix scratch while every pose and same-frame hierarchy change stays current',t=>{
+  const scenes=[before,candidate].map(text=>{const h=host(text),values=Array.from({length:4},affine),nodes=setup(h,values),bone={a:1,b:0,c:0,d:1,worldX:0,worldY:0,active:true},slot={data:{name:'Body'},bone,color:{a:1},getAttachment:()=>({getOffset:()=>[0,0,0,40,20,40,20,0],getColor:()=>({a:1})})};return{h,...nodes,bone,renderer:{node:nodes.node,_skeleton:{drawOrder:[slot],updateWorldTransform(){}},skeletonData:{}}};});
+  for(let frame=0;frame<60;frame++){
+    const transforms=Array.from({length:4},affine);
+    scenes.forEach(s=>{[s.root,s.main,s.group,s.node].forEach((n,i)=>n.set(...transforms[i]));s.bone.worldY=frame;});
+    const actual=scenes.map(s=>numeric(s.h.api.unitBounds(s.renderer,s.main)));assert.deepEqual(actual[1],actual[0]);
+    // This deliberately runs again without a frame advance. Pose and transform
+    // scratch must never become a cached health-bar position.
+    scenes.forEach(s=>{s.main.set(1.1,.2,-.1,.9,frame,-frame);s.node.set(.8,.2,.4,1.2,frame*2,frame*3);s.bone.worldY+=7;});
+    const changed=scenes.map(s=>numeric(s.h.api.unitBounds(s.renderer,s.main)));assert.deepEqual(changed[1],changed[0]);
+  }
+  const result=scenes.map(s=>{s.h.reset();for(let i=0;i<24;i++)s.h.api.unitBounds(s.renderer,s.main);return{...s.h.counts};});
+  assert.equal(result[0].vec2,24*9);assert.equal(result[1].vec2,0);assert.equal(result[0].inverse,24*3);assert.equal(result[1].inverse,0,'unchanged parent inverse should be reused from scratch');assert.equal(result[1].mat4,0,'matrix buffers should persist without keeping a stale pose');
+  t.diagnostic(JSON.stringify({before:result[0],after:result[1],scope:'24 exact health bounds getter/allocation counts, not FPS'}));
+});
+
+function publicReferenceSize(h,source,main,width,height){
+  let origin=source?source.convertToWorldSpaceAR(new h.Vec2(0,0)):new h.Vec2(0,0);
+  let horizontal=source?source.convertToWorldSpaceAR(new h.Vec2(width,0)):new h.Vec2(width,0);
+  let vertical=source?source.convertToWorldSpaceAR(new h.Vec2(0,height)):new h.Vec2(0,height);
+  origin=main.convertToNodeSpaceAR(origin);horizontal=main.convertToNodeSpaceAR(horizontal);vertical=main.convertToNodeSpaceAR(vertical);
+  return{width:Math.hypot(horizontal.x-origin.x,horizontal.y-origin.y),height:Math.hypot(vertical.x-origin.x,vertical.y-origin.y)};
+}
+test('health bar reference dimensions preserve actual Float32 three-point sizes and same-frame changes',t=>{
+  const h=host(candidate),scratch={};let scene;
+  for(let i=0;i<1000;i++){
+    scene=setup(h,Array.from({length:4},affine));const w=i%5?random()*150:64,height=i%7?random()*25:10;
+    assert.deepEqual(numeric(h.api.unitReferenceSize(scene.node,scene.main,w,height,scratch)),publicReferenceSize(h,scene.node,scene.main,w,height));
+    scene.main.set(...affine());scene.node.set(...affine());
+    assert.deepEqual(numeric(h.api.unitReferenceSize(scene.node,scene.main,w+7,height+3,scratch)),publicReferenceSize(h,scene.node,scene.main,w+7,height+3));
+  }
+  h.reset();for(let i=0;i<18;i++)publicReferenceSize(h,scene.node,scene.main,64,10);const before={...h.counts};
+  h.reset();for(let i=0;i<18;i++)h.api.unitReferenceSize(scene.node,scene.main,64,10,scratch);const after={...h.counts};
+  assert.equal(before.vec2,18*9);assert.equal(after.vec2,0);assert.equal(before.inverse,18*3);assert.equal(after.inverse,0);assert.equal(after.mat4,0);
+  t.diagnostic(JSON.stringify({before,after,scope:'18 exact health-bar reference measurements, not FPS'}));
+});
+for(const kind of ['custom source','custom parent','private source','private parent','3D source','singular parent','browser','other engine','missing hero'])test('health reference '+kind+' retains public conversion semantics',()=>{
+  const h=host(candidate),Private=h.PrivateNode,main=kind==='private parent'?new Private('main'):new h.Node('main'),node=kind==='private source'?new Private('source',main):new h.Node('source',main);
+  main.set(1.1,.2,.3,1.4,7,-8);node.set(.8,.4,-.1,1.2,4,9);
+  if(kind==='custom source'){const fn=node.convertToWorldSpaceAR;node.convertToWorldSpaceAR=function(p){const result=fn.call(this,p);result.x+=3;return result;};}
+  if(kind==='custom parent'){const fn=main.convertToNodeSpaceAR;main.convertToNodeSpaceAR=function(p){const result=fn.call(this,p);result.y-=5;return result;};}
+  if(kind==='3D source')node.is3DNode=true;if(kind==='singular parent')main.set(0,0,0,0,0,0);
+  if(kind==='browser')h.cc.sys.isNative=false;if(kind==='other engine')h.cc.ENGINE_VERSION='2.4.12';
+  const source=kind==='missing hero'?null:node,expected=publicReferenceSize(h,source,main,64,10);h.reset();
+  assert.deepEqual(numeric(h.api.unitReferenceSize(source,main,64,10,{})),expected);assert(h.counts.vec2>=6,'unsupported path bypassed public conversion');
+});
+
 test('Main edits during a draw refresh the inverse for new sources while preserving the original per-source cache lifetime',()=>{
   const scenes=[before,candidate].map(text=>{const h=host(text),main=new h.Node('main').set(1.1,.2,.1,.9,31,-19),one=new h.Node('source',main).set(.8,.2,-.3,.7,14,29),two=new h.Node('source',main).set(1,-.2,.3,1,-7,13),shared=cache();return{h,main,one,two,shared};});
   const first=scenes.map(s=>s.h.api.nodeTransform(s.one,s.main,s.shared));scenes.forEach(s=>s.main.set(-.7,.4,.5,1.3,-101,46));const second=scenes.map(s=>s.h.api.nodeTransform(s.two,s.main,s.shared));assert.deepEqual(numeric(second[1]),numeric(second[0]));scenes.forEach((s,i)=>assert.equal(s.h.api.nodeTransform(s.one,s.main,s.shared),first[i]));assert.equal(scenes[1].h.counts.inverse,2);

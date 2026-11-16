@@ -549,8 +549,9 @@ var def_KinghtFallSoldierBase = function (t) {
     this._isPooled = true;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = $z1KinghtFallConfig.KinghtFallPoolName.Soldier + "_" + this.cfg.ID;
+    // Retire the roster reference before transferring ownership to the pool.
+    $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(this, true);
     $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);
-    $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(this);
   };
   _ctor.prototype.isDead = function () {
     return this.state == s.Dead;

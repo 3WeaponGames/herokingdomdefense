@@ -59,6 +59,16 @@ test('saving tuned Vanguard count and duration changes actual independently time
  const saved=save(t,[['vanguard','strikes',3],['vanguard','duration',1.2],['vanguard','cooldown',20]]),h=scene('vanguard',saved.config),enemy=h.enemy();
  assert.equal(h.rt.cast({x:1,y:0}),true);h.rt.update(.399);assert.equal(enemy.hits.length,0);h.rt.update(.001);assert.equal(enemy.hits.length,1);h.rt.update(.4);h.rt.update(.4);assert.equal(enemy.hits.length,3);assert.equal(h.rt.state.active,null);close(h.rt.state.cooldown,18.8);assert.equal(h.poses.at(-1).rapid.duration,1.2);assert.equal(h.poses.at(-1).rapid.strikes,3);
 });
+test('choosing active projectile artwork preserves Skirmisher flight, damage and ordinary attack configuration',()=>{
+ const asset={id:'part:test-arrow',uuid,bundle:'resources',path:'projectiles/test-arrow',kind:'sprite',rotation:90},results=[];
+ for(const chosen of [false,true]){
+  const visual=chosen?{projectile:asset.id,projectileAsset:asset}:{},h=scene('skirmisher',{HeroSkills:{skirmisher:{windup:0,chargeRate:0,visual}}}),target=h.enemy(100);
+  const art=h.load('HeroSkillPresentation').visual(h.rt);if(chosen){assert.equal(art.resource,uuid);assert.equal(art.showBuiltin,false);}else assert.equal(art.resource,'');
+  h.rt.cast({x:1,y:0});h.rt.update(0);const p=h.rt.projectiles[0];results.push({origin:{x:p.x,y:p.y},speed:p.speed,width:p.width,range:h.hero.attackRange});h.rt.update(.5);results.at(-1).damage=target.hits.map(hit=>hit.damage);
+ }
+ assert.deepEqual(results[0],results[1]);assert(results[0].damage.length>0);
+});
+
 test('saved wind-up and projectile tuning reaches actual Skirmisher flight state without changing target geometry',t=>{
  const saved=save(t,[['skirmisher','windup',.6],['skirmisher','projectileSpeed',777],['skirmisher','projectileWidth',16]]),h=scene('skirmisher',saved.config);
  h.rt.cast({x:1,y:0});h.rt.update(.59);assert.equal(h.rt.projectiles.length,0);h.rt.update(.01);assert.equal(h.rt.projectiles.length,1);const arrow=h.rt.projectiles[0];close(arrow.speed,777*1.15);assert.equal(arrow.width,16);close(arrow.direction.x,1);close(arrow.direction.y,0);close(arrow.x,0,'the release at the frame boundary has not flown yet');h.rt.update(.01);close(arrow.x,7.77*1.15);assert.equal(h.hero.node.x,0,'presentation offsets must not move the gameplay actor');

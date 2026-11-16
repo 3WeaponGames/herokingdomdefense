@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'../..'),source=fs.readFileSync(path.join(root
 function fixture(slots,options={}){
     const e=environment(),exports={},main=new Node('main'),node=new Node('art',main);
     if(options.native){e.cc.sys={isNative:true};e.cc.ENGINE_VERSION=options.version||'2.4.13';}
-    vm.runInNewContext(source,{exports,cc:e.cc,sp:{}});
+    vm.runInNewContext(source,{exports,cc:e.cc,sp:{},spine:options.nativeSpine});
     const skeleton={drawOrder:slots,bones:slots.map(s=>s.bone),updateWorldTransform(){}},renderer={node,_skeleton:skeleton,skeletonData:{skeletonJson:{}}};
     return {...exports,main,node,renderer,skeleton,cc:e.cc};
 }
@@ -129,6 +129,39 @@ test('unknown native health APIs and browser arrays keep dynamic public slot tra
         f.body.bone=bone(0,30);assert.equal(f.unitBounds(f.renderer,f.main).maxY,70,change+' cached a mutable browser/unsupported bone');
         assert(f.reads.drawOrder>=2,change+' omitted its public fallback');
     }
+});
+
+test('verified native attachment colors retain handles while alpha, attachments and rig lifetimes stay current',()=>{
+    let colorReads=0;
+    class Color{constructor(a=1){this.a=a;}}
+    class RegionAttachment{
+        constructor(){this.value=new Color();}
+        getColor(){colorReads++;return this.value;}
+        getOffset(){return[0,0,0,50,20,50,20,0];}
+    }
+    class MeshAttachment{
+        constructor(){this.value=new Color();}
+        getColor(){colorReads++;return this.value;}
+        getVertices(){return[0,0,20,0,0,70];}
+        getTriangles(){return[0,1,2];}
+        getWorldVerticesLength(){return 6;}
+    }
+    const nativeSpine={Color,RegionAttachment,MeshAttachment},body=slot('Body',null),f=fixture([body],{native:true,nativeSpine});
+    body.attachment=new RegionAttachment();body.getAttachment=()=>body.attachment;
+    body.getData=()=>body.data;body.getBone=()=>body.bone;body.getColor=()=>body.color;
+    f.skeleton.getSlots=()=>[body];f.renderer._nativeSkeleton={getSkeleton:()=>f.renderer._skeleton};
+    for(let i=0;i<60;i++)assert.equal(f.unitBounds(f.renderer,f.main).maxY,50);assert.equal(colorReads,1);
+    body.attachment.value.a=0;assert.equal(f.unitBounds(f.renderer,f.main),null);assert.equal(colorReads,1,'alpha reads should use the live native Color handle');
+    body.attachment.value.a=1;body.attachment=new MeshAttachment();assert.equal(f.unitBounds(f.renderer,f.main).maxY,70);assert.equal(colorReads,2);
+    body.attachment.value.a=0;assert.equal(f.unitBounds(f.renderer,f.main),null);assert.equal(colorReads,2);
+    body.attachment.value.a=1;f.renderer.skeletonData={skeletonJson:{}};assert.equal(f.unitBounds(f.renderer,f.main).maxY,70);assert.equal(colorReads,3,'replaced data retained the previous plan Color handle');
+    f.renderer._nativeSkeleton={getSkeleton:()=>f.renderer._skeleton};assert.equal(f.unitBounds(f.renderer,f.main).maxY,70);assert.equal(colorReads,4,'replaced native handle retained the previous plan Color handle');
+    let alpha=0;body.attachment.getColor=()=>{colorReads++;return new Color(alpha);};
+    assert.equal(f.unitBounds(f.renderer,f.main),null);alpha=1;assert.equal(f.unitBounds(f.renderer,f.main).maxY,70);assert.equal(colorReads,6,'custom native getter was cached');
+    body.attachment={getColor:()=>new Color(alpha),getOffset:()=>[0,0,0,80,20,80,20,0]};
+    alpha=0;assert.equal(f.unitBounds(f.renderer,f.main),null);alpha=1;assert.equal(f.unitBounds(f.renderer,f.main).maxY,80,'unknown attachment getter did not stay dynamic');
+    body.attachment=new RegionAttachment();f.renderer._nativeSkeleton.getSkeleton=()=>({});
+    const beforeFallback=colorReads;f.unitBounds(f.renderer,f.main);f.unitBounds(f.renderer,f.main);assert.equal(colorReads,beforeFallback+2,'unknown native identity used cached attachment Color');
 });
 
 test('native weighted bounds reuse only matrix snapshots and still read current deform, attachment and rig data',()=>{

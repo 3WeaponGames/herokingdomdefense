@@ -152,7 +152,8 @@ function fields(style){
     var width=tuning.filter(function(field){return field.key==='projectileWidth';})[0];width.label='Projectile radius';width.group='Projectile';width.help='Radius of the blue collider centered on the arrow sprite. The sprite and collider always share the bow launch and flight path.';
     tuning=tuning.filter(function(field){return field.key!=='projectileWidth';});
     visual=visual.filter(function(field){return ['resource','resourceAnimation','showBuiltin','animation','color','opacity'].indexOf(field.key)>=0||field.key.indexOf('impact')===0;});
-    visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':'Projectile artwork';});visual.unshift(width);
+    visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':'Projectile artwork';});
+    visual.unshift({path:'visual.projectile',key:'projectile',label:'Projectile',type:'projectile',group:'Projectile',emptyLabel:'Equipped arrow tier',help:'Use the current arrow sub-item tier, or choose a flight asset from the Projectile editor library. The skill keeps its own speed, damage and collider. Reset restores tier-based artwork or the existing custom VFX.'},width);
   }else if(style!=='mystic')visual.forEach(function(field){
     if(field.key==='offsetX'||field.key==='offsetY'){field.label='Weapon offset '+field.key.slice(-1);field.help='Moves both the active skill hit area and its artwork relative to the equipped weapon tip. Positive Y moves upward. Zero uses the weapon tip automatically.';}
     if(field.key==='scale'){field.label=style==='fighter'||style==='vanguard'?'Arc size':'Area size';field.help='Scales the active skill hit area and artwork together around the weapon point. 0.5 is half the reach; 1 uses the normal reach.';}
@@ -167,6 +168,7 @@ function valid(descriptor,value){
   if(descriptor.type==="boolean")return typeof value==="boolean";
   if(descriptor.type==="number")return typeof value==="number"&&isFinite(value)&&value>=descriptor.min&&value<=descriptor.max&&(!descriptor.integer||Math.floor(value)===value);
   if(typeof value!=="string")return false;
+  if(descriptor.type==="projectile")return value.length<=512&&!/[\u0000-\u001f]/.test(value);
   if(descriptor.type==="audio"||descriptor.type==="vfx")return value===""||/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:@[a-z0-9]+)?$/i.test(value);
   if(descriptor.type==="color")return value===""||/^#[0-9a-f]{6}$/i.test(value);
   return value.length<=150&&!/[\u0000-\u001f]/.test(value);
@@ -181,6 +183,7 @@ function defaults(style){
   if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45});
   if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.25,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85});
   if(style==="vanguard")v.arcDegrees=72;
+  if(style==="skirmisher")v.projectile="";
   return result;
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}
@@ -192,10 +195,16 @@ function flipbook(value){
   if(!integer(frames,4096)||!integer(columns,256)||!integer(cell,4096)||typeof fps!=="number"||!isFinite(fps)||fps<=0||fps>240||value.resourceLoop!==undefined&&typeof value.resourceLoop!=="boolean")return null;
   return {frames:frames,columns:columns,cell:cell,fps:fps,loop:value.resourceLoop===true};
 }
+var IMPACT_VISUAL_FIELDS=["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","scale","rotation","opacity","color","offsetX","offsetY"].map(function(key){return {key:key,source:"impact"+key.charAt(0).toUpperCase()+key.slice(1)};});
+function impactValue(value,key) {
+  // Match the previous merge's own enumerable fields, including an explicit
+  // undefined override. Unrelated visual fields never need to be copied here.
+  return value&&Object.prototype.propertyIsEnumerable.call(value,key)?value[key]:VISUAL[key];
+}
 function impactVisual(value) {
-  value=Object.assign({},VISUAL,value||{});var result={};
-  ["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","scale","rotation","opacity","color","offsetX","offsetY"].forEach(function(key){result[key]=value['impact'+key.charAt(0).toUpperCase()+key.slice(1)];});
-  result.effectDuration=value.impactDuration;result.delay=value.impactDelay;return result;
+  var result={};
+  IMPACT_VISUAL_FIELDS.forEach(function(field){result[field.key]=impactValue(value,field.source);});
+  result.effectDuration=impactValue(value,"impactDuration");result.delay=impactValue(value,"impactDelay");return result;
 }
 function resourceVisual(value,prefix){
   var result={};["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop"].forEach(function(key){result[key]=value[prefix+key.slice(8)];});
@@ -204,6 +213,21 @@ function resourceVisual(value,prefix){
 function applyClip(value,prefix,clip){
   value[prefix]=clip.uuid;value[prefix+"Kind"]="sprite";value[prefix+"Bundle"]=clip.bundle;value[prefix+"Path"]=clip.resource;
   ["frames","columns","cell","fps","loop"].forEach(function(key){value[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=clip[key];});
+}
+function projectileVisual(value){
+  var asset=value&&value.projectileAsset;
+  if(!value||!value.projectile||!asset||asset.id!==value.projectile||!valid({type:'vfx'},asset.uuid)||!asset.uuid||
+    !/^(sprite|spine)$/.test(asset.kind)||typeof asset.bundle!=='string'||!/^[a-z0-9_-]+$/i.test(asset.bundle)||
+    typeof asset.path!=='string'||!asset.path||/\\|:|(^|\/)\.\.?($|\/)|[\u0000-\u001f]/.test(asset.path)||asset.path[0]==='/')return value;
+  var result=Object.assign({},value);
+  ['Frames','Columns','Cell','Fps','Loop','Skin','Rotation','PremultipliedAlpha'].forEach(function(key){delete result['resource'+key];});
+  Object.assign(result,{resource:asset.uuid,resourceBundle:asset.bundle,resourcePath:asset.path,resourceKind:asset.kind,resourceAnimation:asset.animation||'',showBuiltin:false});
+  if(typeof asset.skin==='string'&&asset.skin.length<=150&&!/[\u0000-\u001f]/.test(asset.skin))result.resourceSkin=asset.skin;
+  if(typeof asset.rotation==='number'&&isFinite(asset.rotation))result.resourceRotation=asset.rotation;
+  if(typeof asset.premultipliedAlpha==='boolean')result.resourcePremultipliedAlpha=asset.premultipliedAlpha;
+  var book=asset.flipbook,frames=book&&flipbook({resourceFrames:book.frames,resourceColumns:book.columns,resourceCell:book.cell,resourceFps:book.fps,resourceLoop:book.loop});
+  if(frames)Object.keys(frames).forEach(function(key){result['resource'+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});
+  return result;
 }
 function effective(style,config){
   var result=defaults(style),saved=config&&config.HeroSkills&&config.HeroSkills[style];
@@ -215,6 +239,10 @@ function effective(style,config){
   editable.forEach(function(field){var value=get(saved,field.path);if(value!==undefined&&valid(field,value))set(result,field.path,value);});
   RESOURCE_PREFIXES.reduce(function(paths,prefix){return paths.concat("visual."+prefix+"Bundle","visual."+prefix+"Path","visual."+prefix+"Kind");},[]).concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var match=/^visual\.(passiveResource|beamResource|markResource|buffResource|tauntResource|shieldResource)/.exec(path);if(match&&get(saved,"visual."+match[1])!==result.visual[match[1]])return;var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
   RESOURCE_PREFIXES.forEach(function(prefix){if(RESOURCE_PREFIXES.indexOf(prefix)>=2&&get(saved,"visual."+prefix)!==result.visual[prefix])return;var raw={};["Frames","Columns","Cell","Fps","Loop"].forEach(function(key){raw["resource"+key]=saved.visual&&saved.visual[prefix+key];});var frames=flipbook(raw);if(frames)Object.keys(frames).forEach(function(key){result.visual[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});});
+  if(style==='skirmisher'&&saved.visual&&saved.visual.projectileAsset){
+    var candidate=Object.assign({},result.visual,{projectileAsset:saved.visual.projectileAsset});
+    if(projectileVisual(candidate)!==candidate)result.visual.projectileAsset=clone(saved.visual.projectileAsset);
+  }
   return result;
 }
 function validateStyle(style,value){
@@ -239,3 +267,4 @@ exports.flipbook=flipbook;
 exports.impactVisual=impactVisual;
 
 exports.resourcePrefixes=RESOURCE_PREFIXES;exports.resourceVisual=resourceVisual;exports.applyClip=applyClip;
+exports.projectileVisual=projectileVisual;

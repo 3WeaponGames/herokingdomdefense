@@ -61,6 +61,8 @@ const messages={
     'world-redo'(event,request){reply(event,()=>worldBroadcast(getWorlds().history(request,true)));},
     'world-discard'(event,request){reply(event,()=>worldBroadcast(getWorlds().discard(request)));},
     'world-refresh'(event,request){reply(event,()=>worldBroadcast(getWorlds().refresh(request)));},
+    'world-map-inspect'(event,request){reply(event,()=>require('./worlds/map-management').inspect(getWorlds(),request));},
+    'world-map-delete'(event,request){reply(event,async()=>{const snapshot=require('./worlds/map-management').remove(getWorlds(),request),files=snapshot.result&&snapshot.result.files||[],warnings=await refreshImports(files.some(f=>f.startsWith('assets/KinghtFallIconMap/Generated/'))?['assets/KinghtFallIconMap/Generated']:[]);if(warnings.length)snapshot.result.warning=[snapshot.result.warning,warnings.join('; ')].filter(Boolean).join('; ');return worldBroadcast(snapshot);});},
     'world-recover'(event,request){reply(event,async()=>{const snapshot=getWorlds().recover(request);if(snapshot.result&&snapshot.result.recovered){const files=snapshot.result.files.filter(f=>f.startsWith('assets/')&&!f.endsWith('.meta'));const warnings=await refreshImports(files);if(warnings.length)snapshot.result.warning=warnings.join('; ');}return worldBroadcast(snapshot);});},
     'world-asset-inspect'(event,request){reply(event,()=>require('./worlds/asset-management').inspect(getWorlds(),request));},
     'world-asset-rename'(event,request){reply(event,()=>worldBroadcast(require('./worlds/asset-management').rename(getWorlds(),request)));},

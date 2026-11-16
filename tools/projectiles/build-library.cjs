@@ -44,10 +44,13 @@ function library(root){
   function spine(id,name,file,skin,animation,rotation){
     const relative=path.relative(root,file).replace(/\\/g,'/'),bundle=relative.split('/')[1],data=read(file);
     animation=animation||Object.keys(data.animations)[0];
-    assets.push({id,name,category:'Original game',role:'flight',kind:'spine',bundle,resource:relative.split('/').slice(2).join('/').replace(/\.json$/,''),image:relative.replace(/\.json$/,'.png'),skin,animation,duration:duration(data.animations[animation]),rotation:rotation||0,size:56,width:Math.max(data.skeleton.width||64,data.skeleton.height||64)});
+    assets.push({id,name,...(id.startsWith('hero-skin:')?{uuid:read(file+'.meta').uuid,premultipliedAlpha:false}:{}),category:'Original game',role:'flight',kind:'spine',bundle,resource:relative.split('/').slice(2).join('/').replace(/\.json$/,''),image:relative.replace(/\.json$/,'.png'),skin,animation,duration:duration(data.animations[animation]),rotation:rotation||0,size:56,width:Math.max(data.skeleton.width||64,data.skeleton.height||64)});
   }
   const hero='assets/KinghtFallEnemyAni/wqyl_lead/wqyl_lead_bullet_jian/wqyl_lead_bullet_jian.json';
-  for(const skin of read(path.join(root,hero)).skins)if(skin.name!=='default')spine('hero-skin:'+skin.name,'Hero arrow · '+skin.name,path.join(root,hero),skin.name,'jian');
+  for(const skin of read(path.join(root,hero)).skins)if(skin.name!=='default'){
+    if(skin.name==='lv4')spine('hero-skin:lv4-purple','Hero arrow · lv4',path.join(root,'assets/resources/projectiles/hero-arrow-tier4/hero-arrow-tier4.json'),'vip1','jian');
+    spine('hero-skin:'+skin.name,'Hero arrow · '+(skin.name==='lv4'?'lv5':skin.name),path.join(root,hero),skin.name,'jian');
+  }
   const fire='assets/KinghtFallEnemyAni/wqyl_wl_huoqiu/wqyl_wl_huoqiu.json';spine('original:fireball','Original mage fireball',path.join(root,fire),undefined,'hit');
   spine('original:fireball-impact','Original mage fireball impact',path.join(root,fire),undefined,'blast');assets[assets.length-1].role='impact';
   for(let i=1;i<=18;i++){
@@ -105,7 +108,9 @@ function library(root){
     asset.visualScale=round(Math.min(4,asset.cell/metrics.medianEnergyExtent));
     asset.visualPivot={x:round(metrics.medianCenter.x/asset.cell),y:round(metrics.medianCenter.y/asset.cell)};
   }
-  return JSON.parse(JSON.stringify({version:1,heroArrowLayer:'972aecf8-ffbc-4df5-a9a6-a264b323c9dd',source:toon.source,assets,sets:setsFromAssets(assets),trails,assignments:{}}));
+  const gear=read(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')).EquipCfg.find(row=>row.id===3),flights=['hero-skin:lv1','hero-skin:lv2','hero-skin:lv3','hero-skin:lv4-purple','hero-skin:lv4'];
+  const heroArrowTiers=require('../../assets/_script/EquipmentTiers').tiers(gear).slice(0,5).map((tier,i)=>({skin:tier.skin,levels:tier.levels,flight:flights[i]}));
+  return JSON.parse(JSON.stringify({version:1,heroArrowLayer:'972aecf8-ffbc-4df5-a9a6-a264b323c9dd',heroArrowTiers,source:toon.source,assets,sets:setsFromAssets(assets),trails,assignments:{}}));
 }
 function build(root){
   const relative='assets/resources/projectiles/catalog.json',file=path.join(root,relative),before=fs.existsSync(file)?fs.readFileSync(file):null;

@@ -54,6 +54,12 @@ function legacyRead(file,value){
 function withoutAuthoring(value){
  const result=clone(value);for(const family of Object.values(result.BuildEnum||{})){delete family.UnbuiltPad;for(const row of family.levelList||[])for(const key of ['WorldScale','ModelOffset','PartScale','Blocker','Shadow','PurchaseField','SpawnPosition','SpawnPositions','AdUnitPosition','DropShadow','Nightlight'])delete row[key];}return result;
 }
+// The approved troop-count rule is separate from the historical artwork baseline.
+function currentRow(id,value){
+ const row=withoutAuthoring({BuildEnum:{current:{levelList:[value]}}}).BuildEnum.current.levelList[0];
+ if(id==='3')row.Data[0]=fixture.barracksCapacities[row.level-1];
+ return row;
+}
 function assertConfig(file,config){
   config=require('./building-night-light-contract.cjs').config(config);
  config=withoutAuthoring(config);
@@ -67,12 +73,12 @@ function assertConfig(file,config){
     for(const row of familyContract.originalRows){
       const actual=levelList.find(v=>v.index===row.index);assert(actual,'original row '+id+'/'+row.index);
       const values=clone(actual);for(const key of ['Skin','Icon','Appearance','BranchBuild'])delete values[key];
-      assert.deepEqual(values,withoutAuthoring({BuildEnum:{current:{levelList:[row.values]}}}).BuildEnum.current.levelList[0],'original stats, costs, colliders, routes, timing and unknown row fields '+id+'/'+row.index);
+      assert.deepEqual(values,currentRow(id,row.values),'original stats, costs, colliders, routes, timing and unknown row fields '+id+'/'+row.index);
       assert.deepEqual(actual.BranchBuild||null,row.branch,'explicit authorized tier route');
       assert.equal(actual.Skin,row.visual.Skin);assert.equal(actual.Icon,row.visual.Icon);
       if(row.visual.Appearance)assert.equal(hash(actual.Appearance),row.visual.Appearance,'approved tower appearance/immutable weapon mapping');else assert.equal(actual.Appearance,undefined,'native animated families cannot acquire a static replacement');
     }
-    for(const row of familyContract.addedRows)assert.deepEqual(levelList.find(v=>v.index===row.index),withoutAuthoring({BuildEnum:{current:{levelList:[row]}}}).BuildEnum.current.levelList[0],'authorized fourth-tier progression and visual bindings');
+    for(const row of familyContract.addedRows)assert.deepEqual(levelList.find(v=>v.index===row.index),currentRow(id,row),'authorized fourth-tier progression and visual bindings');
   }
 }
 module.exports={withoutAuthoring,fixture,canonical,hash,sha,clone,withoutPainted,withoutPaintedMetadata,withoutPaintedAtlas,legacyRead,assertConfig};

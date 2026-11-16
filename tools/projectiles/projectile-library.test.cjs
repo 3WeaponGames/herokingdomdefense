@@ -5,7 +5,7 @@ const Builder=require('./build-library.cjs');
 test('every shipped flight is offered once as a complete projectile, with effects kept inside its set',()=>{
   const descriptors=new Map(catalog.assets.map(asset=>[asset.id,asset])),sets=catalog.sets;
   assert.equal(new Set(sets.map(set=>set.id)).size,sets.length);
-  assert.equal(sets.length,77);
+  assert.equal(sets.length,78);
   assert.deepEqual(sets.map(set=>set.flight).sort(),catalog.assets.filter(asset=>asset.role==='flight').map(asset=>asset.id).sort());
   for(const set of sets){assert(descriptors.has(set.flight),set.id);assert.equal(descriptors.get(set.flight).role,'flight');for(const role of ['launch','impact'])if(set[role])assert.equal(descriptors.get(set[role])?.role,role==='launch'&&set[role].startsWith('fantasy:')?'impact':role,set.id+' '+role);}
   assert.equal(sets.filter(set=>set.category==='Imported arrows').length,25);

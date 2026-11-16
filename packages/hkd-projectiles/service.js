@@ -68,7 +68,7 @@ class ProjectilesService {
     const label=text=>String(text||'').replace(/\[\[loc:([^\]]+)\]\]/g,(_,key)=>entries[key]&&entries[key].en||key);
     const items=this.readCatalog('assets/resources/hero-items/catalog.json',{assignments:{},profiles:{}});
     const {select,selectSource}=require('../../assets/_script/ProjectileLooks'),Records=require('../game-data-editor/lib/unit-records'),Fighting=require('../game-data-editor/lib/fighting-profiles');
-    const previewTiers=data.EquipCfg.find(row=>row.id===3).levelInfo.map(level=>{const profile=items.profiles[items.assignments['3:'+level.Level]],choice=select({assets:this.data.assets,assignments:{},heroArrowLayer:this.data.heroArrowLayer},'hero',level.Level,profile);return {level:level.Level,flight:choice.flight||'hero-skin:'+level.EquipSkin,tint:choice.tint};});
+    const previewTiers=data.EquipCfg.find(row=>row.id===3).levelInfo.map(level=>{const profile=items.profiles[items.assignments['3:'+level.Level]],choice=select({assets:this.data.assets,assignments:{},heroArrowLayer:this.data.heroArrowLayer,heroArrowTiers:this.data.heroArrowTiers},'hero',level.Level,profile,level.EquipSkin);return {level:level.Level,flight:choice.flight||'hero-skin:'+level.EquipSkin,tint:choice.tint};});
     const enemyProjectiles=Object.values(data.SoldierCfg).filter(row=>row.AttackType===2).map(row=>{
       let defaults=this.modelDefaults.get(row.ID);if(!defaults){defaults={};if(row.MonsterPack==='fantasy-bosses')try{const json=require('../game-data-editor/lib/unit-assets').describe(this.root,{type:'enemy',id:row.ID,noRuntime:true,noShared:true,documents:{A:{data}}}).layers[0].json;defaults=json._fantasy&&json._fantasy.effects&&json._fantasy.effects.projectile||{};}catch(_){/* Missing draft model keeps the original preview. */}this.modelDefaults.set(row.ID,defaults);}
       const family=Fighting.familyFor(settings,row.ID),role=(settings.unitTypeAssignments||{})['enemy:'+row.ID+':'+Records.form('enemy',row.ID)],roleName=role&&((settings.unitTypes||{})[role]||{}).name,legacy=settings.unitProfiles&&settings.unitProfiles.aliases&&settings.unitProfiles.aliases[row.ID],behavior=Records.behavior(row,row.ID);
@@ -93,7 +93,7 @@ class ProjectilesService {
   load(){if(!this.dirty()&&(hash(fs.readFileSync(this.file))!==this.revision||hash(fs.readFileSync(this.configFile))!==this.configRevision))return this.reload();this.invalidateAssets();return this.snapshot();}
   validate(data){
     if(!object(data)||data.version!==1||!object(data.assignments))throw Error('Invalid projectile catalog');
-    if(!Document.equal(data.assets,this.original.assets)||!Document.equal(data.sets,this.original.sets)||!Document.equal(data.trails,this.original.trails)||!Document.equal(data.source,this.original.source)||data.heroArrowLayer!==this.original.heroArrowLayer)throw Error('Projectile library entries are read-only; reimport assets using the importer.');
+    if(!Document.equal(data.assets,this.original.assets)||!Document.equal(data.sets,this.original.sets)||!Document.equal(data.trails,this.original.trails)||!Document.equal(data.source,this.original.source)||!Document.equal(data.heroArrowTiers,this.original.heroArrowTiers)||data.heroArrowLayer!==this.original.heroArrowLayer)throw Error('Projectile library entries are read-only; reimport assets using the importer.');
     const units=new Set(this.units().map(u=>u.key)),assets=new Map(data.assets.map(a=>[a.id,a]));
     for(const [key,value]of Object.entries(data.assignments)){
       // Preserve future/legacy assignments unchanged; validate every real edit.

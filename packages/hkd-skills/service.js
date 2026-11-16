@@ -6,6 +6,7 @@ const FRAME_KEYS=['Frames','Columns','Cell','Fps','Loop'];
 const RESOURCE_PREFIXES=Settings.resourcePrefixes;
 const resourceKeys=prefix=>[prefix,prefix+'Bundle',prefix+'Path',prefix+'Kind',prefix+'Animation'].concat(FRAME_KEYS.map(key=>prefix+key));
 const clone=value=>JSON.parse(JSON.stringify(value)),object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
+function projectileData(asset){const result={};for(const key of ['id','uuid','kind','bundle','path','skin','animation','rotation','flipbook','premultipliedAlpha'])if(asset[key]!==undefined)result[key]=clone(asset[key]);return result;}
 function leaves(before,after,prefix=[],result=[]){
   if(Document.equal(before,after))return result;
   if((object(before)||before===undefined)&&(object(after)||after===undefined))for(const key of new Set(Object.keys(before||{}).concat(Object.keys(after||{}))))leaves(before&&before[key],after&&after[key],prefix.concat(key),result);
@@ -29,7 +30,7 @@ class SkillService{
   check(request){if(!request||request.version!==this.version||request.revision!==this.revision)throw Error('The skills draft changed in another panel. Reload the latest draft before editing.');}
   field(request){if(!Settings.styles.some(row=>row.id===request.style))throw Error('Choose one of the six hero skills.');const field=Settings.descriptors(request.style).find(row=>row.path===request.path);if(!field)throw Error('Choose an editable skill field.');return field;}
   remember(stack){stack.push(clone(this.data));if(stack.length>100)stack.shift();}
-  asset(kind,id){return this.catalogs[kind].find(row=>row.id===id)||null;}
+  asset(kind,id){return (this.catalogs[kind]||[]).find(row=>row.id===id)||null;}
   animations(style,value,phase,previous){
     for(const prefix of RESOURCE_PREFIXES){const clip=Settings.get(value,'visual.'+prefix+'Animation'),edited=!previous||resourceKeys(prefix).some(key=>!Document.equal(Settings.get(value,'visual.'+key),Settings.get(previous,'visual.'+key)));if(clip&&phase!=='rider'&&edited){const asset=this.asset('vfx',Settings.get(value,'visual.'+prefix));if(!asset||asset.kind!=='spine'||!asset.animations.includes(clip))throw Error('The selected VFX animation is no longer available. Choose another animation or Reset before saving.');}}
     const animation=Settings.get(value,'visual.animation');
@@ -37,9 +38,13 @@ class SkillService{
   }
   change(request){
     this.check(request);const field=this.field(request);if(!Settings.valid(field,request.value))throw Error(field.label+': choose a valid value.');
-    if(field.type!=='audio'&&field.type!=='vfx'&&Document.equal(Settings.get(Settings.effective(request.style,{HeroSkills:this.data}),request.path),request.value))return this.snapshot();
+    if(!['audio','vfx','projectile'].includes(field.type)&&Document.equal(Settings.get(Settings.effective(request.style,{HeroSkills:this.data}),request.path),request.value))return this.snapshot();
     const data=clone(this.data);containers(data,[request.style].concat(request.path.split('.')),'the draft');if(!object(data[request.style]))data[request.style]={};
     Settings.set(data[request.style],request.path,request.value);
+    if(field.type==='projectile'){
+      const asset=request.value&&this.asset('projectiles',request.value);if(request.value&&!asset)throw Error('Choose a flight asset from the Projectile editor.');
+      if(asset)Settings.set(data[request.style],'visual.projectileAsset',projectileData(asset));else remove(data[request.style],['visual','projectileAsset']);
+    }
     if(field.type==='audio'||field.type==='vfx'){
       const audio=field.type==='audio',asset=request.value&&this.asset(audio?'audio':'vfx',request.value);if(request.value&&!asset)throw Error('Choose an existing imported '+(audio?'sound':'VFX')+' asset.');
       if(audio){const prefix=request.path.slice(0,-5);for(const key of ['bundle','path'])if(asset)Settings.set(data[request.style],prefix+'.'+key,asset[key]);else remove(data[request.style],(prefix+'.'+key).split('.'));}
@@ -51,7 +56,7 @@ class SkillService{
     if(request.path==='visual.animation'&&request.value)this.animations(request.style,data[request.style],'rider');
     if(Document.equal(data,this.data))return this.snapshot();this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();
   }
-  reset(request){this.check(request);this.field(request);const data=clone(this.data);containers(data,[request.style].concat(request.path.split('.')),'the draft');if(!data[request.style])return this.snapshot();remove(data[request.style],request.path.split('.'));const resource=RESOURCE_PREFIXES.find(prefix=>request.path==='visual.'+prefix);if(resource)for(const key of resourceKeys(resource))remove(data[request.style],['visual',key]);if(/^audio\.(cast|impact|channel)\.clip$/.test(request.path)){const prefix=request.path.split('.').slice(0,-1);for(const key of ['bundle','path'])remove(data[request.style],prefix.concat(key));}if(!Object.keys(data[request.style]).length)delete data[request.style];if(Document.equal(data,this.data))return this.snapshot();this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();}
+  reset(request){this.check(request);this.field(request);const data=clone(this.data);containers(data,[request.style].concat(request.path.split('.')),'the draft');if(!data[request.style])return this.snapshot();remove(data[request.style],request.path.split('.'));if(request.path==='visual.projectile')remove(data[request.style],['visual','projectileAsset']);const resource=RESOURCE_PREFIXES.find(prefix=>request.path==='visual.'+prefix);if(resource)for(const key of resourceKeys(resource))remove(data[request.style],['visual',key]);if(/^audio\.(cast|impact|channel)\.clip$/.test(request.path)){const prefix=request.path.split('.').slice(0,-1);for(const key of ['bundle','path'])remove(data[request.style],prefix.concat(key));}if(!Object.keys(data[request.style]).length)delete data[request.style];if(Document.equal(data,this.data))return this.snapshot();this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();}
 
   undo(request){this.check(request);if(!this.undoStack.length)return this.snapshot();this.remember(this.redoStack);this.data=this.undoStack.pop();this.version++;return this.snapshot();}
   redo(request){this.check(request);if(!this.redoStack.length)return this.snapshot();this.remember(this.undoStack);this.data=this.redoStack.pop();this.version++;return this.snapshot();}
@@ -61,6 +66,8 @@ class SkillService{
     const disk=this.disk();if(disk.some((row,i)=>!row.bytes.equals(this.saved[i].bytes)))throw Error('Game data changed outside this draft. Your changes are intact; reload or discard before saving.');
     if(!this.options.catalogs)this.catalogs=Catalog.index(this.root);
     const changes=leaves(this.original,this.data),files=new Map(),expected=new Map();
+    const projectileStyles=new Set(changes.filter(change=>change.path[1]==='visual'&&['projectile','projectileAsset'].includes(change.path[2])).map(change=>change.path[0]));
+    for(const style of projectileStyles){const id=Settings.get(this.data[style],'visual.projectile');if(!id)continue;const asset=this.asset('projectiles',id);if(!asset)throw Error('The selected projectile is no longer available.');if(!Document.equal(Settings.get(this.data[style],'visual.projectileAsset'),projectileData(asset)))throw Error('The selected projectile changed after selection. Choose it again before saving.');}
     const resourceGroups=new Map();for(const change of changes)for(const prefix of RESOURCE_PREFIXES)if(change.path[1]==='visual'&&change.path[2]!==prefix+'Animation'&&resourceKeys(prefix).includes(change.path[2]))resourceGroups.set(change.path[0]+':'+prefix,[change.path[0],prefix]);
     const audioGroups=new Map(changes.filter(change=>change.path[1]==='audio'&&['cast','impact','channel'].includes(change.path[2])&&['clip','bundle','path'].includes(change.path[3])).map(change=>[change.path[0]+':'+change.path[2],[change.path[0],change.path[2]]]));
     for(const row of disk){if(row.config.HeroSkills!==undefined&&!object(row.config.HeroSkills))throw Error('Invalid HeroSkills section in '+row.relative+'. Nothing was saved.');for(const change of changes)containers(row.config.HeroSkills,change.path,row.relative);}
@@ -75,6 +82,7 @@ class SkillService{
       // A sound selection owns its whole identity in every copy. Independent
       // volume, delay and extension fields still belong to their own drafts.
       for(const [style,phase]of audioGroups.values()){for(const key of ['clip','bundle','path'])remove(next.HeroSkills,[style,'audio',phase,key]);for(const key of ['clip','bundle','path']){const value=Settings.get(this.data[style],'audio.'+phase+'.'+key);if(value!==undefined)Settings.set(next.HeroSkills,style+'.audio.'+phase+'.'+key,clone(value));}}
+      for(const style of projectileStyles)for(const key of ['projectile','projectileAsset']){remove(next.HeroSkills,[style,'visual',key]);const value=Settings.get(this.data[style],'visual.'+key);if(value!==undefined)Settings.set(next.HeroSkills,style+'.visual.'+key,clone(value));}
       if(!Object.keys(next.HeroSkills).length)delete next.HeroSkills;const text=Document.patch(row.text,row.config,next);files.set(row.relative,text);expected.set(row.file,row.bytes);}
     const result=this.commit(this.root,files,expected,FILES[0]);this.read();return this.snapshot(Object.assign({saved:true},result));
   }
@@ -82,7 +90,13 @@ class SkillService{
     if(!request||!Settings.styles.some(row=>row.id===request.style))throw Error('Choose one of the six hero skills.');
     const Units=require('../game-data-editor/lib/unit-assets'),describe=this.options.describe||Units.describe;
     const result=describe(this.root,{type:'hero',id:'hero',heroStyle:request.style,noRuntime:!!request.noRuntime});
-    const config=this.saved[0].config,enemy=Object.values(config.SoldierCfg||{}).find(row=>row.ID&&row.prefab),visual=Settings.effective(request.style,{HeroSkills:this.data}).visual;
+    const config=this.saved[0].config,enemy=Object.values(config.SoldierCfg||{}).find(row=>row.ID&&row.prefab),rawVisual=Settings.effective(request.style,{HeroSkills:this.data}).visual;
+    const projectileId=request.style==='skirmisher'&&(Object.prototype.hasOwnProperty.call(request,'projectile')?request.projectile:rawVisual.projectile);
+    let projectile=projectileId&&this.asset('projectiles',projectileId);
+    if(request.style==='skirmisher'&&!projectileId&&!rawVisual.resource)projectile=require('../../assets/_script/ProjectileLooks').tierFlight({assets:this.catalogs.projectiles||[],heroArrowTiers:this.catalogs.heroArrowTiers||[]},1);
+    if(projectileId&&!projectile)throw Error('Choose an existing flight asset from the Projectile editor.');
+    const visual=projectile?Settings.projectileVisual({...rawVisual,projectile:projectile.id,projectileAsset:projectileData(projectile)}):rawVisual;
+    if(projectile)result.projectileAsset=projectileData(projectile);
     // An isolated preview has no player save. Use the saved starting offhand
     // instead of silently granting the maximum-level Bruiser charm's lifesteal.
     result.skillSecondaryStats=require('../../assets/_script/HeroEquipmentStats').secondary(config,request.style,1);
@@ -98,7 +112,7 @@ class SkillService{
     if(enemy)try{result.target=describe(this.root,{type:'enemy',id:enemy.ID,noRuntime:!!request.noRuntime});
       if(result.target.source){const prefab=JSON.parse(fs.readFileSync(path.join(this.root,result.target.source),'utf8')),actor=prefab.find(row=>row.ndHp&&row.node),bar=actor&&prefab[actor.ndHp.__id__];if(bar){let x=0,y=0,node=bar,guard=0;while(node&&node!==prefab[actor.node.__id__]&&guard++<32){const t=node._trs&&node._trs.array||[0,0,0,0,0,0,1,1,1],r=2*Math.atan2(t[5]||0,t[6]===undefined?1:t[6]),c=Math.cos(r),sn=Math.sin(r),px=x*(t[7]===undefined?1:t[7]),py=y*(t[8]===undefined?1:t[8]);x=(t[0]||0)+px*c-py*sn;y=(t[1]||0)+px*sn+py*c;node=node._parent&&prefab[node._parent.__id__];}result.target.projectileTargetOffset={x:x*.55,y:y*.55};}}
     }catch(_){}
-    for(const prefix of RESOURCE_PREFIXES){const id=Object.prototype.hasOwnProperty.call(request,prefix)?request[prefix]:visual[prefix],resourceField=Settings.visualFields.find(field=>field.path==='visual.'+prefix);if(!Settings.valid(resourceField,id))throw Error('Choose a valid VFX asset.');const asset=id&&this.asset('vfx',id);if(id&&!asset)throw Error('Choose an existing imported VFX asset.');result[prefix==='resource'?'effects':prefix==='impactResource'?'impactEffects':prefix+'Effects']=asset?[Object.assign({},asset,asset.kind==='spine'?{description:Catalog.spine(this.root,asset)}:{})]:[];}
+    for(const prefix of RESOURCE_PREFIXES){if(prefix==='resource'&&projectile){result.effects=[{...projectile,id:projectile.uuid,...(projectile.kind==='spine'?{description:Catalog.spine(this.root,projectile)}:{})}];continue;}const id=Object.prototype.hasOwnProperty.call(request,prefix)?request[prefix]:visual[prefix],resourceField=Settings.visualFields.find(field=>field.path==='visual.'+prefix);if(!Settings.valid(resourceField,id))throw Error('Choose a valid VFX asset.');const asset=id&&this.asset('vfx',id);if(id&&!asset)throw Error('Choose an existing imported VFX asset.');result[prefix==='resource'?'effects':prefix==='impactResource'?'impactEffects':prefix+'Effects']=asset?[Object.assign({},asset,asset.kind==='spine'?{description:Catalog.spine(this.root,asset)}:{})]:[];}
     // Include the phase-linked atlas parts for the preview, without changing
     // saved resource identities or asking the panel to write defaults.
     const VFX=require('../../assets/_script/HeroSkillVFXCatalog');result.styleEffects=[];

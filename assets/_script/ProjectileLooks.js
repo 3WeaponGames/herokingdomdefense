@@ -26,10 +26,20 @@ function visualError(view, error, descriptor) {
   view.reset();
   if (!view.bank.warned) { view.bank.warned = true; if (cc.warn) cc.warn("Projectile artwork unavailable; retaining authored visuals.", error); }
 }
-function select(data, key, level, item) {
+function tierFlight(data, level, skin) {
+  var tiers=data&&data.heroArrowTiers||[],tier=skin?tiers.find(function(row){return row.skin===skin;}):tiers.find(function(row){return row.levels&&row.levels.indexOf(Number(level))>=0;});
+  return tier&&(data.assets||[]).find(function(asset){return asset.id===tier.flight;})||null;
+}
+function skillAsset(data, config, level) {
+  var gear=(config&&config.EquipCfg||[]).find(function(row){return row.id===3;}),row=gear&&(gear.levelInfo||[]).find(function(row){return row.Level===level;});
+  var asset=tierFlight(data,level,row&&row.EquipSkin);if(!asset||!asset.uuid)return null;
+  return {id:asset.id,uuid:asset.uuid,kind:asset.kind==='spine'?'spine':'sprite',bundle:asset.bundle||'resources',path:asset.resource,skin:asset.skin,animation:asset.animation,rotation:asset.rotation||0,premultipliedAlpha:asset.premultipliedAlpha};
+}
+function select(data, key, level, item, tierSkin) {
   var own=data.assignments[key]||{},assignment = Object.assign({}, /^tower:/.test(key) ? data.assignments.tower || {} : {}, own), result = Object.assign({}, assignment);
   var set = assignment.set && (data.sets || []).find(function (entry) { return entry.id === assignment.set; });
   if (set) ['flight', 'launch', 'impact'].forEach(function (role) { if (assignment[role] === undefined || own.set !== undefined && own[role] === undefined) result[role] = set[role] || ''; });
+  if(key==='hero'&&!result.flight&&tierSkin!==false){var tier=tierFlight(data,level,tierSkin);if(tier)result.flight=tier.id;}
   if (key === "hero" && !result.flight && item) {
     var parts = item.parts || [];
     for (var i = parts.length - 1; i >= 0; i--) {
@@ -43,9 +53,9 @@ function select(data, key, level, item) {
   }
   return result;
 }
-function selectSource(data,key,actor,settings,level,item){
+function selectSource(data,key,actor,settings,level,item,tierSkin){
   var result={};if(/^enemy:/.test(key)&&actor&&actor.cfg&&(actor.cfg.ID>=100000||actor.cfg.ProfileBaseID))require("./EnemyStageProfiles").referenceIds(actor.cfg,settings).reverse().forEach(function(id){Object.assign(result,select(data,"enemy:"+id,level,item));});
-  return Object.assign(result,select(data,key,level,item));
+  return Object.assign(result,select(data,key,level,item,tierSkin));
 }
 function Bank(owner) { this.owner = owner; this.cache = Object.create(null); this.effects = []; this.pendingEffects = 0; this.pool = []; this.views = new Set(); this.launches = []; this.dead = false; }
 Bank.prototype.get = function (descriptor, callback) {
@@ -100,7 +110,7 @@ function draw(node, clip, options) {
     if (cc.MotionStreak) artwork.getComponentsInChildren(cc.MotionStreak).forEach(function (trail) { if (trail.reset) trail.reset(); });
     renderer = artwork;
   } else if (descriptor.kind === "spine") {
-    renderer = node.getComponent(sp.Skeleton) || node.addComponent(sp.Skeleton); renderer.skeletonData = clip.asset;
+    renderer = node.getComponent(sp.Skeleton) || node.addComponent(sp.Skeleton);renderer.premultipliedAlpha=descriptor.premultipliedAlpha!==false; renderer.skeletonData = clip.asset;
     if (descriptor.skin) renderer.setSkin(descriptor.skin);
     renderer.setAnimation(0, descriptor.animation, true);
     node.setScale(options.size / (descriptor.width || 64));
@@ -219,16 +229,20 @@ View.prototype.begin = function (key, sourceActor) {
   }
   function apply(data) {
     if (!current() || applied) return;
-    var level, item;
+    var level, item, tierSkin;
     if (key === "hero") {
       level = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(3);
+      if(data.heroArrowTiers){
+        if(bank.owner.ctrPlay&&bank.owner.ctrPlay.heroStyle&&bank.owner.ctrPlay.heroStyle!=='skirmisher')tierSkin=false;
+        else {var heroConfig=require('KinghtFallDataMgr').KinghtFallDataMgr.getInstance().data,arrowGear=(heroConfig.EquipCfg||[]).find(function(row){return row.id===3;}),arrowLevel=arrowGear&&(arrowGear.levelInfo||[]).find(function(row){return row.Level===level;});tierSkin=arrowLevel&&arrowLevel.EquipSkin;}
+      }
       item = require("HeroItemLooks").item(3, level);
       if (!item) {
         view.cancelItem = require("HeroItemLooks").whenReady(function () { view.cancelItem = null; try { apply(data); } catch (error) { visualError(view, error); } });
         if (view.cancelItem) return;
       }
     }
-    var options=Object.assign({},defaults,selectSource(data,key,sourceProfile,settings,level,item)),descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
+    var options=Object.assign({},defaults,selectSource(data,key,sourceProfile,settings,level,item,tierSkin)),descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     if (key === "hero" && !options.flight && bank.owner.ctrPlay && bank.owner.ctrPlay.heroStyle === "mystic") {
       options.flight = "original:fireball"; descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     }
@@ -303,6 +317,8 @@ function prepare(shot, owner, key, sourceActor) {
 exports.prepare = prepare;
 exports.select = select;
 exports.selectSource = selectSource;
+exports.tierFlight=tierFlight;exports.skillAsset=skillAsset;
+exports.currentCatalog=function(){if(!catalog&&!loading&&typeof cc!=='undefined'&&cc.resources&&typeof cc.resources.load==='function')load(function(){});return catalog;};
 exports.Bank = Bank;
 // Static buildings and wall cards have no Spine attack clock. Their explicit
 // launch delay is advanced with this battle's own simulation delta and epoch.

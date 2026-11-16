@@ -36,11 +36,12 @@ function signature(build, values) {
   if (!build || !build.buildCfg) return null;
   var config = build.buildCfg, initial = !(build.buildInfo && build.buildInfo.cfg);
   var indexes = choices(config, values || build.getUpgradeChoices && build.getUpgradeChoices(), initial);
-  return JSON.stringify([config.enumValue, initial, indexes, indexes.map(function (index) {
+  var barracks = config.enumValue === 3, current = build.buildInfo && build.buildInfo.cfg;
+  return JSON.stringify([config.enumValue, initial, indexes, barracks && current && current.Data && current.Data[0], indexes.map(function (index) {
     var row = config.levelList.find(function (item) { return item.index === index; });
     return [row.Name, row.LevelUpDescribe, row.Icon, row.Appearance && row.Appearance.sprite,
       !!(row.Appearance && row.Appearance.weapon), row.Zoom, row.Excursion, row.level,
-      row.MillDefense && row.MillDefense.kind, row.BuildCost, row.VedioCount, row.BuildSliverCost];
+      row.MillDefense && row.MillDefense.kind, row.BuildCost, row.VedioCount, row.BuildSliverCost, barracks && row.Data && row.Data[0]];
   })]);
 }
 function size(manager) {

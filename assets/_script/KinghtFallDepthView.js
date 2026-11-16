@@ -268,6 +268,28 @@ function nodeTransform(source, main, cache) {
   var value={x:ox,y:oy,a:a,b:b,c:c,d:d,angle:Math.atan2(b,a)*180/Math.PI,scaleX:scale,scaleY:scale?(a*d-b*c)/scale:0};
   if(cache)cache.transforms.set(source,value);return value;
 }
+function unitReferenceSize(source, main, width, height, cache) {
+  var state = source && relativeMatrixState(source, main, cache);
+  if (state) try {
+    source.getWorldMatrix(state.source);
+    if (affineMatrix(state.source)) {
+      var s = state.source.m, m = state.inverse.m;
+      // Match the public operations at the actual authored dimensions. Scaling
+      // a unit-length relative axis would change Float32 rounding order.
+      var ox = s[0] * 0 + s[4] * 0 + s[12], oy = s[1] * 0 + s[5] * 0 + s[13];
+      var xx = s[0] * width + s[4] * 0 + s[12], xy = s[1] * width + s[5] * 0 + s[13];
+      var yx = s[0] * 0 + s[4] * height + s[12], yy = s[1] * 0 + s[5] * height + s[13];
+      var localX = m[0] * ox + m[4] * oy + m[12], localY = m[1] * ox + m[5] * oy + m[13];
+      return { width: Math.hypot(m[0] * xx + m[4] * xy + m[12] - localX, m[1] * xx + m[5] * xy + m[13] - localY),
+        height: Math.hypot(m[0] * yx + m[4] * yy + m[12] - localX, m[1] * yx + m[5] * yy + m[13] - localY) };
+    }
+  } catch (ignored) {}
+  var origin = source ? source.convertToWorldSpaceAR(cc.v2(0, 0)) : cc.v2(0, 0);
+  var horizontal = source ? source.convertToWorldSpaceAR(cc.v2(width, 0)) : cc.v2(width, 0);
+  var vertical = source ? source.convertToWorldSpaceAR(cc.v2(0, height)) : cc.v2(0, height);
+  origin = main.convertToNodeSpaceAR(origin); horizontal = main.convertToNodeSpaceAR(horizontal); vertical = main.convertToNodeSpaceAR(vertical);
+  return { width: Math.hypot(horizontal.x - origin.x, horizontal.y - origin.y), height: Math.hypot(vertical.x - origin.x, vertical.y - origin.y) };
+}
 
 function transform(source, target, main, offset, cache) {
   var value=nodeTransform(source,main,cache);
@@ -480,11 +502,20 @@ function silhouetteAttachment(record) {
   return record.facade;
 }
 var unitBoundsPlans = new WeakMap();
+var unitGeometryModule = null;
+var unitNativeColorTypes = [];
+if (typeof spine !== "undefined" && typeof spine.Color === "function") {
+  ["RegionAttachment", "MeshAttachment"].forEach(function (name) {
+    var Type = spine[name], prototype = Type && Type.prototype;
+    if (typeof Type === "function" && prototype && typeof prototype.getColor === "function")
+      unitNativeColorTypes.push({ name: name, Type: Type, prototype: prototype, getter: prototype.getColor, Color: spine.Color });
+  });
+}
 function unitBoundsPlan(renderer, skeleton) {
   var data = renderer.skeletonData, json = data && data.skeletonJson, native = renderer._nativeSkeleton, plan = unitBoundsPlans.get(renderer);
   if (!plan || plan.skeleton !== skeleton || plan.native !== native || plan.data !== data || plan.json !== json) {
     plan = { skeleton: skeleton, native: native, data: data, json: json, meshes: new WeakMap(), bones: null,
-      matrices: new WeakMap(), pass: 0, points: [] };
+      matrices: new WeakMap(), colors: new WeakMap(), transforms: new Map(), pass: 0, points: [] };
     unitBoundsPlans.set(renderer, plan);
   }
   plan.pass++;
@@ -522,6 +553,33 @@ function unitSlotInfo(slot, record) {
   if (record) record.info = info;
   return info;
 }
+function unitAttachmentColor(attachment, plan, nativeSlots) {
+  var getter = attachment.getColor;
+  if (!getter) return attachment.color;
+  if (nativeSlots) {
+    var prototype = Object.getPrototypeOf(attachment), type;
+    for (var i = 0; i < unitNativeColorTypes.length; i++) {
+      var known = unitNativeColorTypes[i];
+      if (prototype === known.prototype && getter === known.getter && prototype.getColor === known.getter &&
+          spine[known.name] === known.Type && spine.Color === known.Color) { type = known; break; }
+    }
+    if (type) {
+      var saved = plan.colors.get(attachment);
+      if (saved) return saved;
+      var color = getter.call(attachment);
+      // Native Region/Mesh Color is a member of the attachment, not a copied
+      // value. Retain only that verified handle; its alpha stays live below.
+      if (color && Object.getPrototypeOf(color) === type.Color.prototype) plan.colors.set(attachment, color);
+      return color;
+    }
+  }
+  return getter.call(attachment);
+}
+function unitGeometryScope(renderer, plan, nativeSlots) {
+  if (!nativeSlots || !unitNativeColorTypes.length || typeof require !== "function") return null;
+  unitGeometryModule = unitGeometryModule || require("NativeUnitGeometry");
+  return unitGeometryModule.scope(renderer, plan);
+}
 function unitBoneMatrix(plan, bone) {
   var matrix = plan.matrices.get(bone);
   if (!matrix) { matrix = {}; plan.matrices.set(bone, matrix); }
@@ -535,21 +593,22 @@ function unitBoneMatrix(plan, bone) {
   }
   return matrix;
 }
-function unitAttachmentVertices(renderer, slot, attachment, output, plan, slotBone, slotName) {
+function unitAttachmentVertices(renderer, slot, attachment, output, plan, slotBone, slotName, geometryScope) {
   // Bounding/clipping/path attachments do not paint any part of the unit.
-  var region = attachment.getOffset ? attachment.getOffset() : attachment.offset;
+  var intrinsic = geometryScope && unitGeometryModule.read(geometryScope, attachment);
+  var region = intrinsic ? intrinsic.region : attachment.getOffset ? attachment.getOffset() : attachment.offset;
   if (!region && !(attachment.triangles || attachment.getTriangles)) return output;
-  var count = attachment.worldVerticesLength;
+  var count = intrinsic ? intrinsic.count : attachment.worldVerticesLength;
   if (attachment.computeWorldVertices) {
     if (count) attachment.computeWorldVertices(slot, 0, count, output, 0, 2);
     else if (attachment.offset) attachment.computeWorldVertices(slot.bone, output, 0, 2);
     return output;
   }
   // Native Spine exposes offsets and mesh data, but not computeWorldVertices.
-  var vertices = region || attachment.getVertices && attachment.getVertices();
+  var vertices = region || (intrinsic ? intrinsic.vertices : attachment.getVertices && attachment.getVertices());
   if (!vertices || !vertices.length) return output;
   var deform = region ? [] : slot.getDeform ? slot.getDeform() : slot.deform || [];
-  count = region ? 8 : attachment.getWorldVerticesLength && attachment.getWorldVerticesLength();
+  count = region ? 8 : intrinsic ? intrinsic.count : attachment.getWorldVerticesLength && attachment.getWorldVerticesLength();
   if (vertices.length === count) {
     var local = deform.length ? deform : vertices, bone = unitBoneMatrix(plan, slotBone);
     for (var i = 0; i < count; i += 2) {
@@ -558,8 +617,13 @@ function unitAttachmentVertices(renderer, slot, attachment, output, plan, slotBo
     }
     return output;
   }
-  var weights = attachment.getBones ? attachment.getBones() : authoredMeshBones(plan,
-    { name: slotName }, attachment, vertices, attachment.getUVs(), attachment.getTriangles());
+  var weights;
+  if (intrinsic && Object.prototype.hasOwnProperty.call(intrinsic.weights, slotName)) weights = intrinsic.weights[slotName];
+  else {
+    weights = attachment.getBones ? intrinsic && intrinsic.bones || attachment.getBones() : authoredMeshBones(plan,
+      { name: slotName }, attachment, vertices, intrinsic ? intrinsic.uvs : attachment.getUVs(), intrinsic ? intrinsic.triangles : attachment.getTriangles());
+    if (intrinsic) intrinsic.weights[slotName] = weights;
+  }
   if (!weights) return output;
   var bones = plan.bones || (plan.bones = plan.skeleton.bones), at = 0, vertex = 0, delta = 0;
   while (at < weights.length) {
@@ -581,7 +645,11 @@ function unitBounds(renderer, main) {
   var plan = unitBoundsPlan(renderer, skeleton), records = unitNativeSlots(plan), order = records || skeleton.drawOrder;
   if (!order) return bounds(renderer, main);
   updatePose(renderer);
-  var pose = nodeTransform(renderer.node, main), box = null, points = plan.points;
+  // Reuse only matrix scratch. Each evaluation rereads the source and parent
+  // transforms, including edits made twice within the same rendered frame.
+  plan.transforms.clear();
+  var pose = nodeTransform(renderer.node, main, plan), box = null, points = plan.points;
+  var geometryScope = unitGeometryScope(renderer, plan, records);
   order.forEach(function (entry) {
     var slot = records ? entry.slot : entry;
     var attachment = slot.getAttachment();
@@ -592,10 +660,10 @@ function unitBounds(renderer, main) {
     if (info.excluded) return;
     var bone = info.bone;
     if (bone.active === false || info.color.a <= .01) return;
-    var color = attachment.getColor ? attachment.getColor() : attachment.color;
+    var color = unitAttachmentColor(attachment, plan, records);
     if (color && color.a <= .01) return;
     points.length = 0;
-    unitAttachmentVertices(renderer, slot, attachment, points, plan, bone, info.name);
+    unitAttachmentVertices(renderer, slot, attachment, points, plan, bone, info.name, geometryScope);
     for (var i = 0; i < points.length; i += 2) {
       var x = pose.x + pose.a * points[i] + pose.c * points[i + 1];
       var y = pose.y + pose.b * points[i] + pose.d * points[i + 1];
@@ -1816,6 +1884,13 @@ exports.bodyVisuals = bodyVisuals;
 exports.overlaps = overlaps;
 exports.bounds = bounds;
 exports.unitBounds = unitBounds;
+exports.unitReferenceSize = unitReferenceSize;
+// Native skin attachments may be shared by actors. Direct intrinsic edits must
+// invalidate all actor geometry, while poses and deforms never need this call.
+exports.invalidateUnitGeometry = function () {
+  unitGeometryModule = unitGeometryModule || require("NativeUnitGeometry");
+  unitGeometryModule.invalidate();
+};
 exports.union = union;
 exports.viewBounds = viewBounds;
 exports.sameStamp = sameStamp;

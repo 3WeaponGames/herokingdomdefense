@@ -18,6 +18,8 @@ async function verify(){
    if(name==='world-load'){const snap=snapshot(q.key);if(env.waitLoad&&env.waitLoad.key===q.key){if(env.waitLoad.captured)env.waitLoad.captured();await env.waitLoad.promise;}return snap;}
    if(name==='world-change'){if(env.waitChange)await env.waitChange;if(q.version!==version)throw Error('Revision conflict');maps[q.key.slice(4)]=clone(q.value);version++;dirty=true;return snapshot(q.key);}
    if(name==='world-refresh'){if(q.version!==version)throw Error('Revision conflict');version++;return snapshot(q.key);}
+   if(name==='world-map-inspect'){if(env.waitMapInspect)await env.waitMapInspect;return {map:{id:q.key.slice(4),name:maps[q.key.slice(4)].name,saved:true,dirty},blocked:env.mapDeleteBlocked||[],files:[],token:'map-delete-review'};}
+   if(name==='world-map-delete'){if(q.version!==version)throw Error('Revision conflict');if(env.mapDeleteError)throw Error(env.mapDeleteError);if(q.token!=='map-delete-review')throw Error('Stale map review');const id=q.key.slice(4);delete maps[id];version++;dirty=false;return Object.assign(snapshot('map:Map01'),{result:{mapDeleted:true,mapId:id,mapName:id,saved:true,files:[],backup:'external-test-backup'}});}
    if(name==='world-save')throw Error('Save denied deliberately');
    if(name==='world-create'){maps.Map02=M.createMap('Map02',q.name,q.biome);version++;dirty=true;if(env.notify)env.notify();return snapshot('map:Map02');}
    if(name==='world-import'){if(env.waitImport)await env.waitImport;const fresh=asset('uploaded','#00f');library.push(fresh);version++;return {version,asset:clone(fresh)};}
@@ -187,6 +189,44 @@ async function verify(){
    assert(!f.env.calls.some(c=>c.name==='world-save'),'map rename does not save automatically');
    const writes=f.env.calls.filter(c=>c.name==='world-change').length;await f.click('Rename');dialog=f.root.querySelector('.world-modal');await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Apply to draft').onclick();await f.state.pending;
    assert(f.env.calls.filter(c=>c.name==='world-change').length===writes,'confirming an unchanged map name performs no draft writes');
+  }finally{f.close();}
+ }
+ {
+  const f=await fixture(e=>{e.maps.extra=M.createMap('extra','Extra map','forest');});
+  try{
+   await f.client.focusMap('extra');await f.click('Delete map');let dialog=f.root.querySelector('.world-modal');
+   assert(dialog.textContent.includes('Extra map')&&dialog.textContent.includes('backup'),'Delete map reviews the exact map and its backup before any removal');
+   await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Cancel').onclick();
+   assert(!!f.env.maps.extra&&!f.env.calls.some(c=>c.name==='world-map-delete'),'cancelling Delete map leaves the map intact without a deletion call');
+   await f.click('Delete map');dialog=f.root.querySelector('.world-modal');await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Delete map').onclick();await f.state.pending;await raf();
+   assert(!f.env.maps.extra&&f.state.snap.key==='map:Map01','confirmed map deletion switches to a remaining map');
+   assert(!Array.from(f.root.querySelector('.world-top select').options).some(o=>o.value==='extra'),'confirmed deletion removes the map from the selector immediately');
+   assert(f.root.querySelector('.world-status').textContent.includes('Deleted')&&!f.env.calls.some(c=>c.name==='world-save'),'map deletion reports success without saving any gameplay or unrelated draft');
+  }finally{f.close();}
+ }
+ {
+  const f=await fixture(e=>{e.maps.extra=M.createMap('extra','Linked map','forest');e.mapDeleteBlocked=['Used by stages A-2. Choose another map first.'];});
+  try{
+   await f.client.focusMap('extra');await f.click('Delete map');const dialog=f.root.querySelector('.world-modal');
+   assert(dialog.textContent.includes('A-2')&&!Array.from(dialog.querySelectorAll('button')).some(b=>b.textContent==='Delete map'),'linked-stage protection explains the reference and offers no destructive confirmation');
+   assert(!f.env.calls.some(c=>c.name==='world-map-delete'),'a blocked deletion does not reach the delete endpoint');
+  }finally{f.close();}
+ }
+ {
+  const f=await fixture(e=>{e.maps.extra=M.createMap('extra','Dirty map','forest');e.setDirty();e.mapDeleteError='Concurrent change in map';});
+  try{
+   await f.client.focusMap('extra');await f.click('Delete map');let dialog=f.root.querySelector('.world-modal');
+   assert(dialog.textContent.includes('Unsaved changes'),'map deletion clearly reviews discarding its own unsaved changes');
+   await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Delete map').onclick();await f.state.pending;await raf();
+   assert(!!f.root.querySelector('.world-modal')&&!!f.env.maps.extra&&f.state.snap.dirty,'a failed deletion keeps the review, saved map and dirty draft');
+   assert(f.root.textContent.includes('Concurrent change in map'),'deletion conflicts display the actual error');
+  }finally{f.close();}
+ }
+ {
+  const f=await fixture(e=>{e.maps.extra=M.createMap('extra','Another map','forest');});
+  try{
+   await f.client.focusMap('extra');delete f.env.maps.extra;f.env.increment();const before=f.env.calls.length;f.client.changed();await f.state.pending;await raf();
+   assert(f.state.snap.key==='map:Map01'&&!f.env.calls.slice(before).some(c=>c.name==='world-load'&&c.q.key==='map:extra'),'another panel deleting the selected map safely loads a remaining map without requesting the missing document');
   }finally{f.close();}
  }
  return {checks};

@@ -63,13 +63,10 @@ var def_KinghtFallItemHp = function (t) {
     // All combat units share the hero's GUI Pro bar size, including when the
     // hero bar is hidden at full health. Measuring through the unit's parent
     // cancels inherited model scales for enemies and mounted allies alike.
-    var origin = heroBar ? heroBar.convertToWorldSpaceAR(cc.v2(0, 0)) : cc.v2(0, 0);
-    var horizontal = heroBar ? heroBar.convertToWorldSpaceAR(cc.v2(heroBar.width, 0)) : cc.v2(64, 0);
-    var vertical = heroBar ? heroBar.convertToWorldSpaceAR(cc.v2(0, heroBar.height)) : cc.v2(0, 10);
-    origin = parent.convertToNodeSpaceAR(origin); horizontal = parent.convertToNodeSpaceAR(horizontal); vertical = parent.convertToNodeSpaceAR(vertical);
-    var referenceWidth = Math.hypot(horizontal.x - origin.x, horizontal.y - origin.y);
-    var referenceHeight = Math.hypot(vertical.x - origin.x, vertical.y - origin.y);
-    var Depth = require("KinghtFallDepthView"), sources = actor.ctrPlayAni ? Depth.bodyVisuals(actor) : [actor.getSpAni ? actor.getSpAni() : actor.spAni];
+    var Depth = require("KinghtFallDepthView"), scratch = this._hpSizeScratch || (this._hpSizeScratch = {});
+    var reference = Depth.unitReferenceSize(heroBar, parent, heroBar ? heroBar.width : 64, heroBar ? heroBar.height : 10, scratch);
+    var referenceWidth = reference.width, referenceHeight = reference.height;
+    var sources = actor.ctrPlayAni ? Depth.bodyVisuals(actor) : [actor.getSpAni ? actor.getSpAni() : actor.spAni];
     var box = null;
     sources.forEach(function (renderer) {
       if (renderer && renderer.skeletonData) box = Depth.union(box, Depth.unitBounds(renderer, parent));

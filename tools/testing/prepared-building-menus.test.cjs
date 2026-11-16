@@ -111,6 +111,13 @@ test('plan ignores malformed, duplicate, missing and noninitial starting choices
   assert.equal(recipes.length, 1); assert.deepEqual(Array.from(recipes[0].choices), [1, 3]); assert.equal(JSON.stringify(data), before);
 });
 
+test('prepared barracks copy invalidates when either the current or next soldier capacity changes',()=>{
+  const h=fixture(),data=structuredClone(authored),config=data.BuildEnum[3],current=config.levelList.find(row=>row.level===1),next=config.levelList.find(row=>row.index===current.BranchBuild[0]);
+  const owner={buildCfg:config,buildInfo:{cfg:current}},before=h.api.signature(owner,[next.index]);
+  const capacity=current.Data[0];current.Data[0]++;assert.notEqual(h.api.signature(owner,[next.index]),before);current.Data[0]=capacity;
+  next.Data[0]++;assert.notEqual(h.api.signature(owner,[next.index]),before);
+});
+
 test('loading completion waits for stable layout and actual paint of every variant before exposing the provider', () => {
   const h = fixture(), before = JSON.stringify(authored), callbacks = [];
   h.api.prepare(authored, h.manager, (error, pool) => callbacks.push({error, pool}));

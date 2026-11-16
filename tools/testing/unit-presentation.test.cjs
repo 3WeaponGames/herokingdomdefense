@@ -101,10 +101,11 @@ test('all unit health bars follow visible head bounds at the same size, independ
     const e = environment(), actor = e.unit(30, 40), visual = new Node('body', actor.node), hpParent = new Node('hp', actor.node, 0, 58);
     const renderer = { node: visual, skeletonData: {} }; actor.spAni = renderer; actor.isDead = () => false; actor.navigationTeam = 'enemy';
     let measured = 0;
-    const exports = {}, cc = { ...e.cc, Component: function () {}, Label: function () {}, Sprite: function () {} };
+    const exports = {}, cc = { ...e.cc, Component: function () {}, Label: function () {}, Sprite: function () {} }, depth = {};
+    vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../assets/_script/KinghtFallDepthView.js'), 'utf8'), {exports:depth,cc,sp:{}});
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../assets/_script/KinghtFallItemHp.js'), 'utf8'), {
         exports, cc, sp: { Skeleton: function () {} },
-        require: name => name === 'KinghtFallDepthView' ? { union: (a,b) => b || a, unitBounds: (_renderer, parent) => {
+        require: name => name === 'KinghtFallDepthView' ? { unitReferenceSize:depth.unitReferenceSize, union: (a,b) => b || a, unitBounds: (_renderer, parent) => {
             measured++;
             const left=parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(e.cc.v2(-30*Math.abs(visual.scaleX),0)));
             const right=parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(e.cc.v2(30*Math.abs(visual.scaleX),100*visual.scaleY)));

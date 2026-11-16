@@ -80,3 +80,25 @@ test('same-generation replacement target nodes retire old beams and marks rather
  target.node=f.target(300).node;f.rt.state.time=.1;f.paint();assert.equal(f.rt._presentation.vfxFrame.active.mark,false);assert.equal(f.rt._presentation.vfxFrame.active.beam,false);
  f.rt.markNode=target.node;f.paint();assert.equal(f.rt._presentation.vfxFrame.entities.find(e=>e.slot==='mark').age,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
 });
+
+
+test('ground-only passive auras follow live hero positions without sampling unused weapon or body anchors',()=>{
+ for(const style of ['fighter','vanguard','bruiser']){
+  const f=fixture(style);f.rt.state.stacks=3;f.rt.state.stackRemaining=10;f.rt.state.charge=.6;
+  f.hero.getAttWpos=()=>{throw Error(style+' sampled an unused weapon origin');};
+  f.hero.ctrHp={node:{convertToWorldSpaceAR(){throw Error(style+' sampled an unused body anchor');}}};
+  f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()][0],node=[...art.nodes.values()][0].node,previous={x:node.x,y:node.y};
+  f.hero.node.x+=37;f.hero.node.y-=21;f.rt.state.time=.1;f.paint();assert.equal(node.x,previous.x+37);assert.equal(node.y,previous.y-21);assert.equal(f.rt._presentation.vfxContext.heroBody,null);f.P.clear(f.rt);
+ }
+});
+
+test('Mystic keeps fresh weapon and body anchors during the beam end phase after both targets clear',()=>{
+ const f=fixture('mystic'),target=f.target(),bar=new f.hero.node.constructor('HP');bar.y=150;f.hero.ctrHp={node:bar};let weaponReads=0,tip={x:5,y:70};
+ f.hero.getAttWpos=()=>{weaponReads++;return{...tip};};f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=1;
+ f.P.advanceVFX(f.rt);assert.equal(weaponReads,1);f.rt.channelTarget=f.rt.beamTarget=null;tip={x:41,y:96};bar.y=180;f.rt.state.time=.1;
+ const frame=f.P.advanceVFX(f.rt),context=f.rt._presentation.vfxContext;assert.equal(weaponReads,2);assert(frame.entities.some(e=>e.slot==='beam'&&e.phase==='end'));assert.equal(context.origin.x,41);assert.equal(context.origin.y,96);assert(Math.abs(context.heroBody.y-99)<1e-9);f.P.clear(f.rt);
+});
+
+test('custom cross-style beam resources retain the full live anchor path',()=>{
+ const f=fixture('fighter'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop');Settings.applyClip(f.rt.settings.visual,'beamResource',clip);let reads=0;f.hero.getAttWpos=()=>{reads++;return{x:10,y:80};};f.P.advanceVFX(f.rt);assert.equal(reads,1);assert.equal(f.rt._presentation.vfxContext.origin.y,80);assert(f.rt._presentation.vfxContext.heroBody);f.P.clear(f.rt);
+});

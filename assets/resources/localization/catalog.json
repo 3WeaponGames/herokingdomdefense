@@ -35,13 +35,13 @@
     "data.building.sniper-4.name": {"en":"Royal Sniper Tower","zh":"皇家狙击塔","context":"Approved four-tier building progression"},
     "data.building.sniper-4.description": {"en":"Final upgrade: a reinforced crossbow tower with stronger attacks and longer range.","zh":"最终升级：加固弩塔，拥有更强的攻击与更远的射程。","context":"Approved four-tier building progression"},
     "data.building.royal-infantry-4.name": {"en":"Crown Garrison","zh":"王冠驻军营","context":"Approved four-tier building progression"},
-    "data.building.royal-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Royal Infantry.","zh":"最终升级：加固兵营，可驻扎十名皇家步兵。","context":"Approved four-tier building progression"},
+    "data.building.royal-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Royal Infantry.","zh":"最终升级：加固兵营，可驻扎十二名皇家步兵。","context":"Approved four-tier building progression"},
     "data.building.heavy-infantry-4.name": {"en":"Ironwall Bastion","zh":"铁壁堡垒","context":"Approved four-tier building progression"},
-    "data.building.heavy-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Heavy Infantry.","zh":"最终升级：加固兵营，可驻扎十名重装步兵。","context":"Approved four-tier building progression"},
+    "data.building.heavy-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Heavy Infantry.","zh":"最终升级：加固兵营，可驻扎十二名重装步兵。","context":"Approved four-tier building progression"},
     "data.building.crossbow-4.name": {"en":"Crossbow Stronghold","zh":"弩兵要塞","context":"Approved four-tier building progression"},
-    "data.building.crossbow-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Crossbowmen.","zh":"最终升级：加固兵营，可驻扎十名弩手。","context":"Approved four-tier building progression"},
+    "data.building.crossbow-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Crossbowmen.","zh":"最终升级：加固兵营，可驻扎十二名弩手。","context":"Approved four-tier building progression"},
     "data.building.stables-4.name": {"en":"Crown Stables","zh":"王冠马厩","context":"Approved four-tier building progression"},
-    "data.building.stables-4.description": {"en":"Final upgrade: reinforced stables with room for ten cavalry units.","zh":"最终升级：加固马厩，可驻扎十名骑兵。","context":"Approved four-tier building progression"},
+    "data.building.stables-4.description": {"en":"Final upgrade: reinforced stables with room for twelve cavalry units.","zh":"最终升级：加固马厩，可驻扎十二名骑兵。","context":"Approved four-tier building progression"},
     "data.building.farmhouse-4.name": {"en":"Stone Farmhouse","zh":"石砌农舍","context":"Approved four-tier building progression"},
     "data.building.farmhouse-4.description": {"en":"Final upgrade: improved housing that supplies six silver each wave.","zh":"最终升级：改良农舍，每波提供六枚银币。","context":"Approved four-tier building progression"},
     "data.building.mill-4.name": {"en":"Mill · Lv 4","zh":"磨坊 · 4级","context":"Approved four-tier building progression"},
@@ -6245,8 +6245,8 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.royal-guard.description": {
-      "en": "4 balanced frontline fighters. Upgrade to recruit 6.",
-      "zh": "提供4名均衡的前线战士。升级可招募6名。",
+      "en": "3 balanced frontline fighters. Upgrade to recruit 6.",
+      "zh": "提供3名均衡的前线战士。升级可招募6名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.royal-guard.2.name": {
@@ -6265,8 +6265,8 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.heavy-infantry.description": {
-      "en": "4 tough defenders that hold the line. Upgrade to recruit 6.",
-      "zh": "提供4名坚守战线的重装步兵。升级可招募6名。",
+      "en": "3 tough defenders that hold the line. Upgrade to recruit 6.",
+      "zh": "提供3名坚守战线的重装步兵。升级可招募6名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.heavy-infantry.2.name": {
@@ -6285,8 +6285,8 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.crossbowmen.description": {
-      "en": "4 ranged troops that fight behind the frontline. Upgrade to recruit 6.",
-      "zh": "提供4名在前线后方作战的弩手。升级可招募6名。",
+      "en": "3 ranged troops that fight behind the frontline. Upgrade to recruit 6.",
+      "zh": "提供3名在前线后方作战的弩手。升级可招募6名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.crossbowmen.2.name": {
@@ -6305,8 +6305,8 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.vanguard.description": {
-      "en": "4 mounted troops for rapid repositioning. Upgrade to recruit 6.",
-      "zh": "提供4名可快速转移的骑兵。升级可招募6名。",
+      "en": "3 mounted troops for rapid repositioning. Upgrade to recruit 6.",
+      "zh": "提供3名可快速转移的骑兵。升级可招募6名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.vanguard.2.name": {
@@ -10191,29 +10191,29 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.guide.3.12.description": {
-      "en": "6 balanced frontline fighters. Upgrade to recruit 8.",
-      "zh": "提供6名均衡的前线战士。升级可招募8名。",
+      "en": "6 balanced frontline fighters. Upgrade to recruit 9.",
+      "zh": "提供6名均衡的前线战士。升级可招募9名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.13.description": {"en":"Upgrade: 8 balanced frontline fighters.","zh":"升级：8名攻守兼备的前线战士。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.3.13.description": {"en":"Upgrade: 9 balanced frontline fighters.","zh":"升级：9名攻守兼备的前线战士。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.15.description": {
-      "en": "6 tough defenders that hold the line. Upgrade to recruit 8.",
-      "zh": "提供6名坚守战线的重装步兵。升级可招募8名。",
+      "en": "6 tough defenders that hold the line. Upgrade to recruit 9.",
+      "zh": "提供6名坚守战线的重装步兵。升级可招募9名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.16.description": {"en":"Upgrade: 8 tough defenders that hold the line.","zh":"升级：8名坚韧的守卫，稳固前线。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.3.16.description": {"en":"Upgrade: 9 tough defenders that hold the line.","zh":"升级：9名坚韧的守卫，稳固前线。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.18.description": {
-      "en": "6 ranged troops that fight behind the frontline. Upgrade to recruit 8.",
-      "zh": "提供6名在前线后方作战的弩手。升级可招募8名。",
+      "en": "6 ranged troops that fight behind the frontline. Upgrade to recruit 9.",
+      "zh": "提供6名在前线后方作战的弩手。升级可招募9名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.19.description": {"en":"Upgrade: 8 ranged troops that fight behind the frontline.","zh":"升级：8名在前线后方作战的远程士兵。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.3.19.description": {"en":"Upgrade: 9 ranged troops that fight behind the frontline.","zh":"升级：9名在前线后方作战的远程士兵。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.21.description": {
-      "en": "6 mounted troops for rapid repositioning. Upgrade to recruit 8.",
-      "zh": "提供6名可快速转移的骑兵。升级可招募8名。",
+      "en": "6 mounted troops for rapid repositioning. Upgrade to recruit 9.",
+      "zh": "提供6名可快速转移的骑兵。升级可招募9名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.22.description": {"en":"Upgrade: 8 mounted troops for rapid repositioning.","zh":"升级：8名能够快速转移位置的骑兵。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.3.22.description": {"en":"Upgrade: 9 mounted troops for rapid repositioning.","zh":"升级：9名能够快速转移位置的骑兵。","context":"Buildings · level capabilities and upgrade notes"},
     "data.goodscfg.2034.name": {
       "en": "Phoenix Feather",
       "zh": "凤凰之羽",
@@ -11803,6 +11803,11 @@
       "en": "Unavailable",
       "zh": "无法使用",
       "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "ui.building.soldiers_upgrade": {
+      "en": "{0} soldiers\nTotal after upgrade: {1}",
+      "zh": "士兵数量{0}\n升级后共{1}名士兵",
+      "context": "Barracks upgrade popup: actual capacity gained and total soldiers at the next level"
     }
   },
   "images": {

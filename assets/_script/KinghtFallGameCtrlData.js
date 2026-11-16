@@ -557,11 +557,11 @@ var def_KinghtFallGameCtrlData = function () {
   _ctor.prototype.addSoldier = function (t) {
     this.soldierList.push(t);
   };
-  _ctor.prototype.delSoldier = function (t) {
+  _ctor.prototype.delSoldier = function (t, preserveNode) {
     for (var e = 0; e < this.soldierList.length; e++) {
       var n = this.soldierList[e];
       if (n.uuid == t.uuid) {
-        n.node.destroy();
+        if (preserveNode !== true) n.node.destroy();
         this.soldierList.splice(e, 1);
         break;
       }

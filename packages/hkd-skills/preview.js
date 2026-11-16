@@ -157,7 +157,7 @@ function create(host,options){
     const ctx=targetContext||overlay.getContext('2d');placement=placement||{};
     const asset=resource||effectAsset(),visual=asset.visual,effectImage=asset.image,effectLayers=asset.layers,effectDescriptor=asset.descriptor,tintImages=asset.tints,scale=placement.radius?1:finite(visual.scale,1),alpha=clamp(finite(visual.opacity,1),0,1),p=screen(at,vp);
     if(!effectImage&&!effectLayers.length)return;
-    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(-rotation*Math.PI/180);ctx.scale(vp.scale*scale,vp.scale*scale);ctx.scale(placement.scaleX===undefined?1:placement.scaleX,placement.scaleY===undefined?1:placement.scaleY);ctx.globalAlpha=alpha*(placement.opacity===undefined?1:placement.opacity);
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(-(rotation+finite(visual.resourceRotation,0))*Math.PI/180);ctx.scale(vp.scale*scale,vp.scale*scale);ctx.scale(placement.scaleX===undefined?1:placement.scaleX,placement.scaleY===undefined?1:placement.scaleY);ctx.globalAlpha=alpha*(placement.opacity===undefined?1:placement.opacity);
     if(effectImage){let image=effectImage;
       if(visual.color){const key=visual.color;if(!tintImages.has(key)){const tinted=document.createElement('canvas');tinted.width=image.width;tinted.height=image.height;const context=tinted.getContext('2d');context.drawImage(image,0,0);const source=context.getImageData(0,0,image.width,image.height).data,pixels=context.createImageData(image.width,image.height);pixels.data.set(multiplyPixels(source,key));context.putImageData(pixels,0,0);if(tintImages.size>=16)tintImages.delete(tintImages.keys().next().value);tintImages.set(key,tinted);}image=tintImages.get(key);tintImages.delete(key);tintImages.set(key,image);}
       const frame=flipbookFrame(SkillSettings.flipbook(visual)||effectDescriptor&&effectDescriptor.flipbook,age,image.width,image.height);if(placement.radius){const fit=placement.radius*2/Math.hypot(frame?frame.width:image.width,frame?frame.height:image.height);ctx.scale(fit,fit);}
@@ -250,6 +250,7 @@ function create(host,options){
   async function set(value){
     value=value||{};const nextStyle=value.style||style,nextDescription=value.description||description,nextSettings=clone(value.settings||settings);
     if(!nextDescription)return;
+    if(nextStyle==='skirmisher')nextSettings.visual=SkillSettings.projectileVisual({...nextSettings.visual,...(nextDescription.projectileAsset?{projectile:nextSettings.visual.projectile||nextDescription.projectileAsset.id,projectileAsset:nextDescription.projectileAsset}:{})});
     const requestId=++serial,key=nextDescription===rigDescription&&nextStyle===style?rigKey:nextStyle+':'+JSON.stringify({layers:nextDescription.layers,target:nextDescription.target&&nextDescription.target.layers});
     const reset=nextStyle!==model.style;
     const audioChanged=JSON.stringify(settings.audio)!==JSON.stringify(nextSettings.audio);let stopped=reset||audioChanged;
