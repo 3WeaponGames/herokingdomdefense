@@ -101,7 +101,11 @@ function library(root){
   const toon=read(path.join(root,'assets/resources/projectiles/toon/library.json'));assets.push(...toon.assets);
   const tiny=path.join(root,'assets/resources/projectiles/tiny-kingdom/library.json');
   if(fs.existsSync(tiny))assets.push(...read(tiny).assets);
+  const spineLibrary=path.join(root,'assets/resources/projectiles/spine/library.json'),nativeSpine=fs.existsSync(spineLibrary)?read(spineLibrary):null;
   const fantasy=path.join(root,'assets/resources/unit-library/fantasy-bosses/catalog.json');if(fs.existsSync(fantasy))assets.push(...(read(fantasy).effectAssets||[]).map(asset=>Object.assign({},asset,{image:asset.image||imagePath(asset)})));
+  // New collections append after the established assets. Reindexing a current
+  // library must not reorder existing entries or rewrite an unchanged catalog.
+  if(nativeSpine)assets.push(...nativeSpine.assets);
   for(const asset of assets)if(asset.kind==='flipbook'&&asset.role==='flight'){
     const metrics=require('./png-frames.cjs').inspectFrames(path.join(root,asset.image),asset),round=value=>Math.round(value*1e6)/1e6;
     asset.loopFrames=metrics.visibleFrames;
@@ -120,7 +124,8 @@ function library(root){
     assets.find(asset=>asset.id===flight).trail=id;
   });
   const heroArrowTiers=require('../../assets/_script/EquipmentTiers').tiers(gear).slice(0,5).map((tier,i)=>({skin:tier.skin,levels:tier.levels,flight:flights[i]}));
-  return JSON.parse(JSON.stringify({version:1,heroArrowLayer:'972aecf8-ffbc-4df5-a9a6-a264b323c9dd',heroArrowTiers,source:toon.source,assets,sets:setsFromAssets(assets),trails,assignments:{}}));
+  const source=Object.assign({},toon.source);if(nativeSpine)source.spineProjectiles=nativeSpine.source;
+  return JSON.parse(JSON.stringify({version:1,heroArrowLayer:'972aecf8-ffbc-4df5-a9a6-a264b323c9dd',heroArrowTiers,source,assets,sets:setsFromAssets(assets),trails,assignments:{}}));
 }
 function build(root){
   const relative='assets/resources/projectiles/catalog.json',file=path.join(root,relative),before=fs.existsSync(file)?fs.readFileSync(file):null;

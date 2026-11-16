@@ -1,11 +1,11 @@
 # Projectiles, Relics and icons
 
-Open **Tools → Skills → Projectiles** in Creator. Choose a ranged
-unit on the left and a complete projectile from the library. Its 77 entries
-include 25 imported arrows, 28 original game projectiles (including all 18
-wall-defense variants), 15 Toon sets, two Tiny Kingdom sprites and seven
-Fantasy sets. Numbered Toon flashes and hits are paired with their flight
-animation; individual effect clips do not appear as separate projectiles.
+Open **Tools Ã¢â€ â€™ Skills Ã¢â€ â€™ Projectiles** in Creator. Choose a ranged
+unit on the left and a complete projectile from the library. It includes
+imported arrows, original game projectiles (including all 18 wall-defense
+variants), Toon sets, Tiny Kingdom sprites, Fantasy sets and 67 native Spine
+variants. Numbered Toon flashes and hits are paired with their flight animation;
+individual effect clips do not appear as separate projectiles.
 
 The preview has four looping modes: **Play launch**, **Play flight**,
 **Play on hit** and **Play all**. Missing launch and special hit effects disable
@@ -29,7 +29,7 @@ Static buildings and wall cards use elapsed seconds. Reset removes the custom
 delay and returns to the saved default without changing the animation reference.
 The Units tab exposes **Projectile flight speed** for the hero and every ranged
 character, with **Reset projectile flight speed** restoring the inherited or authored default.
-This optional setting is shared across that character’s levels; existing hero
+This optional setting is shared across that characterÃ¢â‚¬â„¢s levels; existing hero
 speed bonuses still apply. Damage, range and attack speed remain in Units.
 Tower projectile speeds remain in Buildings.
 
@@ -56,7 +56,7 @@ explicitly replaced.
 
 **Relics** edits the 50 relics, their level effects and costs, conversion
 rewards, names, icons and icon backgrounds. Implemented effect IDs and goods
-bindings are fixed. **Choose icon…** is also available on image fields in
+bindings are fixed. **Choose iconÃ¢â‚¬Â¦** is also available on image fields in
 Equipment, Talents, Battle Perks, Buildings and Units. It offers imported
 SpriteFrames from runtime bundles. The picker opens with pack folders: 2D Minimal,
 Minimal Hero Equipment, GUI Pro, monster portraits and original game assets.
@@ -64,8 +64,8 @@ Open a category to browse its icons; breadcrumbs and Back return to parent
 folders. Search finds matching names and folders across every pack.
 The **Relic Icons** collection contains all 50 transparent 128px icons and appears
 after the other collections. The catalog has 18 Common, 14 Rare, 10 Epic and
-8 Legendary relics. Every relic requires 3 fragments for level 1 → 2 and
-5 fragments for level 2 → 3. New combat effects live in `RelicCombat`,
+8 Legendary relics. Every relic requires 3 fragments for level 1 Ã¢â€ â€™ 2 and
+5 fragments for level 2 Ã¢â€ â€™ 3. New combat effects live in `RelicCombat`,
 `RelicBattle` and `RelicRuntime`; their battle charges and wave reward ledgers
 are included in stage checkpoints. Rarity values run from 1 (Legendary) to
 4 (Common). Changing an effect parameter in Relics updates its owned runtime
@@ -93,7 +93,7 @@ Capture time is deterministic. Purely additive clips retain additive blending
 in both preview and game; mixed alpha/additive layers share one RGBA capture.
 HDR bloom and background-dependent screen refraction cannot be reproduced by
 these standard 2D flipbooks. No Unity package scripts or audio are imported or
-executed. Each atlas is 2048 × 1024 (8 MiB as uncompressed RGBA, versus 2 MiB
+executed. Each atlas is 2048 Ãƒâ€” 1024 (8 MiB as uncompressed RGBA, versus 2 MiB
 for the previous capture); runtime textures load when referenced and are
 released with their battle's projectile bank.
 
@@ -160,3 +160,52 @@ input focus and listener cleanup without permitting saves.
 
 `node tools/projectiles/serve-editor.cjs` opens a standalone local Projectiles
 editor on port 8792, without a gameplay scene or audio.
+
+
+## Native Spine projectiles
+
+The **Spine Projectiles** category contains all 67 visible variants from Spine
+Projectiles 1. Six shared Spine 3.8 skeleton/atlas sets retain their original
+artwork and 68 original animations. The empty `fly_901` export is excluded;
+`fly_20` and `fly_26` are intentional static poses held for one second.
+Only data and PNGs are imported; Unity scripts and prefabs are never executed.
+
+Each entry selects an additional `flight_loop_fly_N` animation. The maintained
+loop converter removes embedded travel/launch-exit motion, keeps the local
+pulses and animated trails, and closes independent tracks over a bounded common
+cycle. It explicitly keys each bone, slot and draw order so recycling a pooled
+renderer between variants cannot leave parts from its previous projectile.
+All original animations, attachments and atlas pixels remain unchanged.
+
+Import in two passes using fresh external directories. The first real-Spine
+render measures the entire loop; the second centers that envelope at the
+projectile's collision position and verifies the final loop and thumbnail.
+
+```text
+python tools/projectiles/import-spine.py prepare "<prepared SpineProjectiles1 folder>" "<external measure staging>"
+node tools/projectiles/bake-spine-previews.cjs --stage "<external measure staging>" --artifacts "<external measure captures>"
+python tools/projectiles/import-spine.py prepare "<prepared SpineProjectiles1 folder>" "<external centered staging>" --bounds "<external measure captures>/spine-preview-bake.json"
+node tools/projectiles/bake-spine-previews.cjs --stage "<external centered staging>" --artifacts "<external final captures>"
+python tools/projectiles/import-spine.py publish "<external centered staging>" --backups "<external import backups>" --dry-run
+python tools/projectiles/import-spine.py publish "<external centered staging>" --backups "<external import backups>"
+```
+
+The prepared Unity source on this PC is under
+`Idle Hero Defense/Assets/SpineVfx/SpineProjectiles1` beside the original
+`Unity-Assets` library. Python requires Pillow; the renderer uses Creator's
+installed Spine runtime and Playwright. No game or audio is loaded by the
+thumbnail baker. All capture, staging and backup paths must stay outside this
+repository. Thumbnails are visible transparent PNGs no larger than 128 pixels;
+runtime atlas pages retain their original resolution and straight alpha.
+
+The centering pass verifies the measured library and all six measured runtime
+JSON hashes before using its bounds. Publication checks every protected staged
+file, all 67 thumbnail hashes and bounds, stable metadata/UUIDs, and the current
+catalog revision. One transaction publishes the resources, their native library
+and only the new catalog assets/sets. Existing assignments, tiers, trails,
+unknown fields and original entries are preserved. Repeating an identical
+import performs no project writes; edited imported assets require review.
+
+Run the importer regressions with `python -m unittest discover -s
+tools/projectiles -p test_import_spine.py`, and the real-Spine loop regressions
+with `node --test tools/projectiles/spine-flight-loops.test.cjs`.

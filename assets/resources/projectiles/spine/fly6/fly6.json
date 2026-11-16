@@ -1,0 +1,862 @@
+{
+  "skeleton": {
+    "hash": "n3lC36szyZ0",
+    "spine": "3.8.99",
+    "images": "./images/",
+    "audio": "C:\\Users\\pro9\\Desktop\\决胜之心01\\ui-spine\\fly6"
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "fs",
+      "parent": "root",
+      "x": 225.27,
+      "y": -41.99
+    },
+    {
+      "name": "dd",
+      "parent": "root",
+      "x": 144.4,
+      "y": -123.02
+    },
+    {
+      "name": "cjb",
+      "parent": "root",
+      "x": 219.84,
+      "y": -89.87
+    },
+    {
+      "name": "fs2",
+      "parent": "root",
+      "x": 225.27,
+      "y": -41.99
+    }
+  ],
+  "slots": [
+    {
+      "name": "fs0001",
+      "bone": "fs"
+    },
+    {
+      "name": "s_bhuojian",
+      "bone": "dd"
+    },
+    {
+      "name": "fs1",
+      "bone": "fs2",
+      "blend": "additive"
+    },
+    {
+      "name": "f2_10001",
+      "bone": "cjb",
+      "blend": "additive"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "f2_10001": {
+          "f2_10001": {
+            "x": -36.65,
+            "y": 1.46,
+            "width": 90,
+            "height": 115
+          },
+          "f2_10002": {
+            "x": -36.65,
+            "y": 1.46,
+            "width": 90,
+            "height": 115
+          },
+          "f2_10003": {
+            "x": -36.65,
+            "y": 1.46,
+            "width": 90,
+            "height": 115
+          },
+          "f2_10004": {
+            "x": -36.65,
+            "y": 1.46,
+            "width": 90,
+            "height": 115
+          }
+        },
+        "fs1": {
+          "fs0001": {
+            "x": -90.2,
+            "y": 2.48,
+            "width": 150,
+            "height": 47
+          },
+          "fs0002": {
+            "x": -90.2,
+            "y": 2.48,
+            "width": 150,
+            "height": 47
+          },
+          "fs0003": {
+            "x": -90.2,
+            "y": 2.48,
+            "width": 150,
+            "height": 47
+          },
+          "fs0004": {
+            "x": -90.2,
+            "y": 2.48,
+            "width": 150,
+            "height": 47
+          }
+        },
+        "fs0001": {
+          "fs0001": {
+            "x": -90.2,
+            "y": 2.48,
+            "width": 150,
+            "height": 47
+          },
+          "fs0002": {
+            "x": -90.2,
+            "y": 2.48,
+            "width": 150,
+            "height": 47
+          },
+          "fs0003": {
+            "x": -90.2,
+            "y": 2.48,
+            "width": 150,
+            "height": 47
+          },
+          "fs0004": {
+            "x": -90.2,
+            "y": 2.48,
+            "width": 150,
+            "height": 47
+          }
+        },
+        "s_bhuojian": {
+          "s_bhuojian": {
+            "x": 0.5,
+            "width": 135,
+            "height": 61
+          },
+          "s_bxhuojian": {
+            "x": 0.5,
+            "width": 68,
+            "height": 44
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "fly_42": {
+      "slots": {
+        "f2_10001": {
+          "color": [
+            {
+              "color": "ffffff7f"
+            }
+          ],
+          "attachment": [
+            {
+              "name": "f2_10001"
+            },
+            {
+              "time": 0.0333,
+              "name": "f2_10002"
+            },
+            {
+              "time": 0.0667,
+              "name": "f2_10003"
+            },
+            {
+              "time": 0.1,
+              "name": "f2_10004"
+            },
+            {
+              "time": 0.1333,
+              "name": null
+            }
+          ]
+        },
+        "fs0001": {
+          "attachment": [
+            {
+              "name": "fs0001"
+            },
+            {
+              "time": 0.0333,
+              "name": "fs0002"
+            },
+            {
+              "time": 0.0667,
+              "name": "fs0003"
+            },
+            {
+              "time": 0.1,
+              "name": "fs0004"
+            },
+            {
+              "time": 0.1333,
+              "name": null
+            }
+          ]
+        },
+        "s_bhuojian": {
+          "attachment": [
+            {
+              "name": "s_bxhuojian"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "cjb": {
+          "rotate": [
+            {
+              "angle": 4.75
+            }
+          ],
+          "translate": [
+            {
+              "x": -145.45,
+              "y": 95.84
+            }
+          ],
+          "scale": [
+            {
+              "x": 1.135,
+              "y": 0.867
+            }
+          ]
+        },
+        "fs": {
+          "translate": [
+            {
+              "x": -212.7,
+              "y": 39.41
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.658,
+              "y": 0.624
+            }
+          ]
+        },
+        "dd": {
+          "rotate": [
+            {
+              "angle": -7.86
+            }
+          ],
+          "translate": [
+            {
+              "x": -106.72,
+              "y": 123.81
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.839,
+              "y": 0.839
+            }
+          ]
+        }
+      }
+    },
+    "fly_43": {
+      "slots": {
+        "f2_10001": {
+          "color": [
+            {
+              "color": "ffffff7f"
+            }
+          ],
+          "attachment": [
+            {
+              "name": "f2_10001"
+            },
+            {
+              "time": 0.0333,
+              "name": "f2_10002"
+            },
+            {
+              "time": 0.0667,
+              "name": "f2_10003"
+            },
+            {
+              "time": 0.1,
+              "name": "f2_10004"
+            },
+            {
+              "time": 0.1333,
+              "name": null
+            }
+          ]
+        },
+        "fs1": {
+          "attachment": [
+            {
+              "name": "fs0003"
+            },
+            {
+              "time": 0.0333,
+              "name": "fs0004"
+            },
+            {
+              "time": 0.0667,
+              "name": null
+            },
+            {
+              "time": 0.1,
+              "name": "fs0001"
+            },
+            {
+              "time": 0.1333,
+              "name": "fs0002"
+            }
+          ]
+        },
+        "fs0001": {
+          "attachment": [
+            {
+              "name": "fs0001"
+            },
+            {
+              "time": 0.0333,
+              "name": "fs0002"
+            },
+            {
+              "time": 0.0667,
+              "name": "fs0003"
+            },
+            {
+              "time": 0.1,
+              "name": "fs0004"
+            },
+            {
+              "time": 0.1333,
+              "name": null
+            }
+          ]
+        },
+        "s_bhuojian": {
+          "attachment": [
+            {
+              "name": "s_bhuojian"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "cjb": {
+          "rotate": [
+            {
+              "angle": 0.42
+            }
+          ],
+          "translate": [
+            {
+              "x": -69.76,
+              "y": 99.44
+            }
+          ],
+          "scale": [
+            {
+              "x": 2.395,
+              "y": 1.185
+            }
+          ]
+        },
+        "fs": {
+          "translate": [
+            {
+              "x": -181.05,
+              "y": 42.11
+            }
+          ],
+          "scale": [
+            {
+              "x": 1.741,
+              "y": 1.338
+            }
+          ]
+        },
+        "fs2": {
+          "translate": [
+            {
+              "x": -210.78,
+              "y": 44.13
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.917,
+              "y": 1.739
+            }
+          ]
+        },
+        "dd": {
+          "rotate": [
+            {
+              "angle": -5.67
+            }
+          ],
+          "translate": [
+            {
+              "x": -71.47,
+              "y": 124.76
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.839,
+              "y": 0.839
+            }
+          ]
+        }
+      },
+      "drawOrder": [
+        {
+          "offsets": [
+            {
+              "slot": "s_bhuojian",
+              "offset": 1
+            }
+          ]
+        }
+      ]
+    },
+    "flight_loop_fly_42": {
+      "slots": {
+        "f2_10001": {
+          "color": [
+            {
+              "color": "ffffff7f"
+            }
+          ],
+          "attachment": [
+            {
+              "name": "f2_10001"
+            },
+            {
+              "name": "f2_10002",
+              "time": 0.03333333333333333
+            },
+            {
+              "name": "f2_10003",
+              "time": 0.06666666666666667
+            },
+            {
+              "name": "f2_10004",
+              "time": 0.1
+            },
+            {
+              "name": null,
+              "time": 0.13333333333333333
+            },
+            {
+              "name": "f2_10001",
+              "time": 0.1666666716337204
+            }
+          ]
+        },
+        "fs0001": {
+          "attachment": [
+            {
+              "name": "fs0001"
+            },
+            {
+              "name": "fs0002",
+              "time": 0.03333333333333333
+            },
+            {
+              "name": "fs0003",
+              "time": 0.06666666666666667
+            },
+            {
+              "name": "fs0004",
+              "time": 0.1
+            },
+            {
+              "name": null,
+              "time": 0.13333333333333333
+            },
+            {
+              "name": "fs0001",
+              "time": 0.1666666716337204
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "s_bhuojian": {
+          "attachment": [
+            {
+              "name": "s_bxhuojian"
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "fs1": {
+          "attachment": [
+            {
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffffff"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "cjb": {
+          "rotate": [
+            {
+              "angle": 4.75
+            }
+          ],
+          "translate": [
+            {
+              "x": -145.45,
+              "y": 95.84
+            }
+          ],
+          "scale": [
+            {
+              "x": 1.135,
+              "y": 0.867
+            }
+          ],
+          "shear": [
+            {}
+          ]
+        },
+        "fs": {
+          "translate": [
+            {
+              "x": -212.7,
+              "y": 39.41
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.658,
+              "y": 0.624
+            }
+          ],
+          "rotate": [
+            {}
+          ],
+          "shear": [
+            {}
+          ]
+        },
+        "dd": {
+          "rotate": [
+            {
+              "angle": -7.86
+            }
+          ],
+          "translate": [
+            {
+              "x": -106.72,
+              "y": 123.81
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.839,
+              "y": 0.839
+            }
+          ],
+          "shear": [
+            {}
+          ]
+        },
+        "root": {
+          "translate": [
+            {
+              "x": 5.339653015136719,
+              "y": -4.603860855102539
+            },
+            {
+              "time": 0.1666666716337204,
+              "x": 5.339653015136719,
+              "y": -4.603860855102539
+            }
+          ],
+          "rotate": [
+            {}
+          ],
+          "scale": [
+            {}
+          ],
+          "shear": [
+            {}
+          ]
+        },
+        "fs2": {
+          "translate": [
+            {}
+          ],
+          "rotate": [
+            {}
+          ],
+          "scale": [
+            {}
+          ],
+          "shear": [
+            {}
+          ]
+        }
+      },
+      "drawOrder": [
+        {}
+      ]
+    },
+    "flight_loop_fly_43": {
+      "slots": {
+        "f2_10001": {
+          "color": [
+            {
+              "color": "ffffff7f"
+            }
+          ],
+          "attachment": [
+            {
+              "name": "f2_10001"
+            },
+            {
+              "name": "f2_10002",
+              "time": 0.03333333333333333
+            },
+            {
+              "name": "f2_10003",
+              "time": 0.06666666666666667
+            },
+            {
+              "name": "f2_10004",
+              "time": 0.1
+            },
+            {
+              "name": null,
+              "time": 0.13333333333333333
+            },
+            {
+              "name": "f2_10001",
+              "time": 0.1666666716337204
+            }
+          ]
+        },
+        "fs1": {
+          "attachment": [
+            {
+              "name": "fs0003"
+            },
+            {
+              "name": "fs0004",
+              "time": 0.03333333333333333
+            },
+            {
+              "name": null,
+              "time": 0.06666666666666667
+            },
+            {
+              "name": "fs0001",
+              "time": 0.1
+            },
+            {
+              "name": "fs0002",
+              "time": 0.13333333333333333
+            },
+            {
+              "name": "fs0003",
+              "time": 0.1666666716337204
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "fs0001": {
+          "attachment": [
+            {
+              "name": "fs0001"
+            },
+            {
+              "name": "fs0002",
+              "time": 0.03333333333333333
+            },
+            {
+              "name": "fs0003",
+              "time": 0.06666666666666667
+            },
+            {
+              "name": "fs0004",
+              "time": 0.1
+            },
+            {
+              "name": null,
+              "time": 0.13333333333333333
+            },
+            {
+              "name": "fs0001",
+              "time": 0.1666666716337204
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "s_bhuojian": {
+          "attachment": [
+            {
+              "name": "s_bhuojian"
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffffff"
+            }
+          ]
+        }
+      },
+      "bones": {
+        "cjb": {
+          "rotate": [
+            {
+              "angle": 0.42
+            }
+          ],
+          "translate": [
+            {
+              "x": -69.76,
+              "y": 99.44
+            }
+          ],
+          "scale": [
+            {
+              "x": 2.395,
+              "y": 1.185
+            }
+          ],
+          "shear": [
+            {}
+          ]
+        },
+        "fs": {
+          "translate": [
+            {
+              "x": -181.05,
+              "y": 42.11
+            }
+          ],
+          "scale": [
+            {
+              "x": 1.741,
+              "y": 1.338
+            }
+          ],
+          "rotate": [
+            {}
+          ],
+          "shear": [
+            {}
+          ]
+        },
+        "fs2": {
+          "translate": [
+            {
+              "x": -210.78,
+              "y": 44.13
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.917,
+              "y": 1.739
+            }
+          ],
+          "rotate": [
+            {}
+          ],
+          "shear": [
+            {}
+          ]
+        },
+        "dd": {
+          "rotate": [
+            {
+              "angle": -5.67
+            }
+          ],
+          "translate": [
+            {
+              "x": -71.47,
+              "y": 124.76
+            }
+          ],
+          "scale": [
+            {
+              "x": 0.839,
+              "y": 0.839
+            }
+          ],
+          "shear": [
+            {}
+          ]
+        },
+        "root": {
+          "translate": [
+            {
+              "x": 38.817970275878906,
+              "y": -11.832815170288086
+            },
+            {
+              "time": 0.1666666716337204,
+              "x": 38.817970275878906,
+              "y": -11.832815170288086
+            }
+          ],
+          "rotate": [
+            {}
+          ],
+          "scale": [
+            {}
+          ],
+          "shear": [
+            {}
+          ]
+        }
+      },
+      "drawOrder": [
+        {
+          "offsets": [
+            {
+              "slot": "s_bhuojian",
+              "offset": 1
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

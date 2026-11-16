@@ -5,7 +5,8 @@ const Builder=require('./build-library.cjs');
 test('every shipped flight is offered once as a complete projectile, with effects kept inside its set',()=>{
   const descriptors=new Map(catalog.assets.map(asset=>[asset.id,asset])),sets=catalog.sets;
   assert.equal(new Set(sets.map(set=>set.id)).size,sets.length);
-  assert.equal(sets.length,78);
+  assert.equal(sets.filter(set=>set.category!=='Spine Projectiles').length,78);
+  assert.equal(sets.length,78+catalog.assets.filter(asset=>asset.category==='Spine Projectiles'&&asset.role==='flight').length);
   assert.deepEqual(sets.map(set=>set.flight).sort(),catalog.assets.filter(asset=>asset.role==='flight').map(asset=>asset.id).sort());
   for(const set of sets){assert(descriptors.has(set.flight),set.id);assert.equal(descriptors.get(set.flight).role,'flight');for(const role of ['launch','impact'])if(set[role])assert.equal(descriptors.get(set[role])?.role,role==='launch'&&set[role].startsWith('fantasy:')?'impact':role,set.id+' '+role);}
   assert.equal(sets.filter(set=>set.category==='Imported arrows').length,25);
@@ -68,4 +69,12 @@ test('library rebuilds keep assignment drafts, future fields, custom entries and
   const merged=Builder.mergeCatalog(Builder.library(root),old);
   assert.deepEqual(merged.assignments,old.assignments);assert.deepEqual(merged.future,old.future);assert.equal(merged.assets[0].futureAsset,9);assert.equal(merged.sets[0].futureSet,8);assert.equal(merged.trails[0].futureTrail,7);assert(merged.sets.some(set=>set.id==='future-flight'));assert(merged.sets.some(set=>set.id==='future-combination'&&set.future));assert(merged.trails.some(trail=>trail.id==='future-trail'&&trail.future));
   assert.deepEqual(Builder.mergeCatalog(Builder.library(root),catalog),catalog,'reimporting current source has no catalog changes');
+});
+test('the native Spine library joins complete flights without replacing existing assignments, tiers or source provenance',t=>{
+  const file=path.join(root,'assets/resources/projectiles/spine/library.json'),read=fs.readFileSync,exists=fs.existsSync,manifest={version:1,source:{package:'Spine Projectiles',sha256:'fixture-source'},assets:[{id:'spine-projectile:fixture-loop',name:'Native fixture',category:'Spine Projectiles',role:'flight',kind:'spine',resource:'projectiles/spine/fixture',animation:'projectile_loop',duration:.5,width:90,thumbnail:'assets/resources/projectiles/spine/fixture.png'}]};
+  t.mock.method(fs,'existsSync',function(source){return path.resolve(String(source))===file||exists.call(this,source);});
+  t.mock.method(fs,'readFileSync',function(source,...args){if(path.resolve(String(source))===file)return JSON.stringify(manifest);return read.call(this,source,...args);});
+  const generated=Builder.library(root),native=generated.assets.find(asset=>asset.id===manifest.assets[0].id),old=structuredClone(catalog);old.assignments.hero={set:old.sets[0].id,flight:old.sets[0].flight,size:91,future:4};old.source.futurePackage={retained:true};
+  assert.deepEqual(native,manifest.assets[0]);assert.deepEqual(generated.source.spineProjectiles,manifest.source);assert.deepEqual(generated.sets.find(set=>set.flight===native.id),{id:native.id,name:native.name,category:'Spine Projectiles',flight:native.id});
+  const next=Builder.mergeCatalog(generated,old);assert.deepEqual(next.assignments,old.assignments);assert.deepEqual(next.heroArrowTiers,old.heroArrowTiers);assert.deepEqual(next.source.futurePackage,old.source.futurePackage);assert.deepEqual(next.source.spineProjectiles,manifest.source);for(const asset of old.assets.filter(asset=>asset.category!=='Spine Projectiles'))assert.equal(next.assets.filter(row=>row.id===asset.id).length,1,asset.id+' retains a unique stable identity');
 });

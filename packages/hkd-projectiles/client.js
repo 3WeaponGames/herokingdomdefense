@@ -3,6 +3,42 @@ const CombatPreview=require('./combat-preview');
 const ProjectileVisuals=require('./projectile-visuals');
 let unitPickerSerial=0;
 
+// Imported projectile variants share a small number of atlases. Their static
+// library thumbnails never construct a rig; only selected previews enter this
+// bounded cache. Legacy cards retain their existing animated previews.
+function createSpineCache(api,options){
+  options=options||{};const legacy=new Map(),resources=new Map(),bindings=new Map(),limit=options.limit||8;let generation=0,closed=false;
+  const key=asset=>[asset.bundle||'resources',asset.resource||asset.uuid||asset.id,asset.skin||''].join('|');
+  function current(record,map,id){return !closed&&record.generation===generation&&map.get(id)===record;}
+  function bind(asset,record){
+    if(!record||!record.entry)return null;
+    let entry=bindings.get(asset.id);if(!entry||entry.base!==record.entry){const bounds=asset.previewBounds;entry={...record.entry,base:record.entry,bounds:bounds&&['minX','minY','maxX','maxY','width','height'].every(field=>Number.isFinite(bounds[field]))?bounds:record.entry.bounds};bindings.set(asset.id,entry);}
+    // Different variants may have different authored forward directions even
+    // though the immutable JSON, atlas and runtime are shared.
+    for(const layer of entry.layers)layer.description.rotation=asset.rotation||0;
+    return entry;
+  }
+  function trim(){while(resources.size>limit){const id=resources.keys().next().value,record=resources.get(id);resources.delete(id);for(const [assetId,entry]of bindings)if(entry.base===record.entry)bindings.delete(assetId);}}
+  function get(asset){
+    if(!asset||closed)return null;const map=asset.thumbnail?resources:legacy,id=asset.thumbnail?key(asset):asset.id,record=map.get(id);
+    if(record&&asset.thumbnail){map.delete(id);map.set(id,record);}return bind(asset,record);
+  }
+  function load(asset){
+    if(!asset||closed)return Promise.resolve(null);const map=asset.thumbnail?resources:legacy,id=asset.thumbnail?key(asset):asset.id,existing=map.get(id);
+    if(existing){if(asset.thumbnail){map.delete(id);map.set(id,existing);}return existing.promise.then(()=>get(asset));}
+    const record={generation,entry:null,promise:null};map.set(id,record);if(asset.thumbnail)trim();
+    record.promise=(async()=>{try{
+      const data=await api.ipc('describe',{id:asset.id});if(!current(record,map,id))return null;
+      const runtime=api.runtime(data),layers=await api.renderer.createLayers(runtime,data.layers);if(!current(record,map,id))return null;
+      for(const layer of layers)layer.description.rotation=asset.rotation||0;
+      api.renderer.seek(runtime,layers,asset.animation,0,true);record.entry={runtime,layers,bounds:api.renderer.bounds(runtime,layers)};
+      if(options.onChange)options.onChange();return bind(asset,record);
+    }catch(error){if(current(record,map,id)&&options.onError)options.onError(error);return null;}})();return record.promise;
+  }
+  function invalidate(){generation++;legacy.clear();resources.clear();bindings.clear();}
+  return{get,load,invalidate,status(){return{resources:resources.size,legacy:legacy.size,bindings:bindings.size};},destroy(){closed=true;invalidate();}};
+}
+
 function mount(root,api){
   const el=(tag,text,parent)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(parent)parent.appendChild(n);return n;};
   const button=(text,parent,fn)=>{const n=el('button',text,parent);n.type='button';n.onclick=fn;return n;},clone=value=>JSON.parse(JSON.stringify(value));
@@ -32,9 +68,10 @@ function mount(root,api){
   const eventScope=root.getRootNode(),eventPath=event=>typeof event.composedPath==='function'?event.composedPath():[event.target];
   const focusedElement=()=>{let focused=eventScope.activeElement||document.activeElement;while(focused&&focused.shadowRoot&&focused.shadowRoot.activeElement)focused=focused.shadowRoot.activeElement;return focused;};
   let visibleUnits=[],activeUnitIndex=0;
-  const images=new Map(),spines=new Map(),playButtons={},pending=new Map(),delayDrafts=new Map();
+  const images=new Map(),playButtons={},pending=new Map(),delayDrafts=new Map();
   const report=(message,error)=>{if(!closed){status.textContent=message;status.className=error?'error':'';}};
   const warn=error=>{const message=error.message||String(error);report(message,true);};
+  const spines=createSpineCache(api,{onError:warn,onChange:scheduleLibraryRender});
   const combat=CombatPreview.create(api,{onError:warn});
   const visuals=ProjectileVisuals.create(api,{onError:warn});
   const byId=id=>snapshot&&snapshot.data.assets.find(a=>a.id===id),sets=()=>snapshot.data.sets||snapshot.data.assets.filter(a=>a.role==='flight').map(a=>({id:a.id,name:a.name,category:a.category,flight:a.id}));
@@ -61,7 +98,7 @@ function mount(root,api){
   function exclusive(action){if(locked)return;locked=true;lockControls();return run(async()=>{try{await action();}finally{locked=false;if(!closed){for(const input of root.querySelectorAll('button,input,select'))input.disabled=false;if(snapshot)apply(snapshot);}}});}
   const save=button('Save',actions,()=>exclusive(async()=>{if(!snapshot)return;if(invalidDelay())throw Error('Correct invalid launch delays before saving.');storeSelection();if(pendingAssignment()||pendingTiming()){const data=clone(snapshot.data),timings=clone(snapshot.timings||{});for(const [key,draft]of delayDrafts)if(draft.value!==effectiveDelay(key))timings[key]=draft.value;for(const [key,draft]of pending){const next=assignmentForSelection(key,draft);if(Object.keys(next).length)data.assignments[key]=next;else delete data.assignments[key];}snapshot=await api.ipc('change',{version:snapshot.version,data,timings});}const value=await api.ipc('save',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();apply(value);}));
   const discard=button('Discard drafts',actions,()=>exclusive(async()=>{if(!window.confirm('Discard unsaved projectile, delay and trail changes?'))return;const value=await api.ipc('discard',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();selected=null;apply(value);}));
-  button('Reload',actions,()=>exclusive(async()=>{storeSelection();const value=await api.ipc('load',{});generation++;unitTrigger.dataset.signature='';images.clear();spines.clear();visuals.invalidate();combat.invalidate();target=null;if(!selectionTouched)selected=null;apply(value);loadActors();renderSelected();}));save.disabled=discard.disabled=true;
+  button('Reload',actions,()=>exclusive(async()=>{storeSelection();const value=await api.ipc('load',{});generation++;unitTrigger.dataset.signature='';images.clear();spines.invalidate();visuals.invalidate();combat.invalidate();target=null;if(!selectionTouched)selected=null;apply(value);loadActors();renderSelected();}));save.disabled=discard.disabled=true;
   function togglePlayback(){if(!snapshot||locked)return;paused=!paused;last=0;renderSelected();}
   const playbackLabels={launch:'launch',flight:'flight',impact:'on hit',all:'all'};
   for(const [key,label]of Object.entries(playbackLabels)){const control=playButtons[key]=button('Play '+label,controls,()=>{if(mode===key)togglePlayback();else{mode=key;paused=false;age=0;last=0;renderSelected();}});control.dataset.playbackMode=key;}
@@ -130,14 +167,14 @@ function mount(root,api){
   }
   // Batch artwork completions so a warm library rebuilds its tiles once per frame.
   function scheduleLibraryRender(){if(!closed&&!libraryRaf)libraryRaf=requestAnimationFrame(()=>{libraryRaf=0;renderLibrary();});}
-  function image(asset){if(!asset||!asset.image)return null;if(!images.has(asset.image)){const n=new Image(),request=generation;images.set(asset.image,n);n.onload=()=>{if(!closed&&request===generation)scheduleLibraryRender();};n.onerror=()=>{if(!closed&&request===generation)warn(Error('Cannot load projectile artwork: '+asset.name));};n.src=api.image(asset.image);}return images.get(asset.image);}
-  async function spine(asset){if(spines.has(asset.id))return;spines.set(asset.id,null);const request=generation;try{const data=await api.ipc('describe',{id:asset.id});if(closed||request!==generation)return;const runtime=api.runtime(data),layers=await api.renderer.createLayers(runtime,data.layers);if(closed||request!==generation)return;api.renderer.seek(runtime,layers,asset.animation,0,true);spines.set(asset.id,{runtime,layers,bounds:api.renderer.bounds(runtime,layers)});scheduleLibraryRender();}catch(error){if(!closed&&request===generation)warn(error);}}
+  function image(asset,thumbnail){const source=asset&&(thumbnail&&asset.thumbnail||asset.image);if(!source)return null;if(!images.has(source)){const n=new Image(),request=generation;images.set(source,n);n.onload=()=>{if(!closed&&request===generation)scheduleLibraryRender();};n.onerror=()=>{if(!closed&&request===generation)warn(Error('Cannot load projectile artwork: '+asset.name));};n.src=api.image(source);}return images.get(source);}
+  function spine(asset){return spines.load(asset);}
   function pick(id){selected=id;selectionTouched=true;age=0;if(mode!=='all'&&mode!=='flight'&&!currentSet()[mode])mode='flight';renderAssignments();renderLibrary();renderSelected();refreshStatus();lockControls();}
   function renderLibrary(){
     if(libraryRaf){cancelAnimationFrame(libraryRaf);libraryRaf=0;}if(!snapshot||closed)return;grid.innerHTML='';const query=search.value.trim().toLowerCase(),library=sets().filter(s=>(s.name+' '+s.category).toLowerCase().includes(query));count.textContent=library.length+' / '+sets().length+' projectiles';
     for(const set of library){const card=button('',grid,()=>pick(set.id));card.dataset.asset=card.dataset.projectile=set.id;card.className=set.id===selected?'selected':'';card.setAttribute('aria-pressed',String(set.id===selected));
-      const asset=byId(set.flight),thumbnail=el('canvas',undefined,card);thumbnail.width=120;thumbnail.height=72;const source=asset&&asset.kind!=='spine'?image(asset):null,context=thumbnail.getContext('2d');
-      if(asset&&asset.kind==='spine'){const entry=spines.get(asset.id);if(entry){api.renderer.seek(entry.runtime,entry.layers,asset.animation,.1,true);api.renderer.draw(entry.runtime,context,entry.layers,{width:120,height:72,bounds:entry.bounds});}else{spine(asset);context.fillStyle='#a7dcf6';context.font='26px sans-serif';context.textAlign='center';context.fillText('✦',60,44);}}
+      const asset=byId(set.flight),thumbnail=el('canvas',undefined,card);thumbnail.width=120;thumbnail.height=72;const source=asset&&(asset.kind!=='spine'||asset.thumbnail)?image(asset,!!asset.thumbnail):null,context=thumbnail.getContext('2d');
+      if(asset&&asset.kind==='spine'&&!asset.thumbnail){const entry=spines.get(asset);if(entry){api.renderer.seek(entry.runtime,entry.layers,asset.animation,.1,true);api.renderer.draw(entry.runtime,context,entry.layers,{width:120,height:72,bounds:entry.bounds});}else{spine(asset);context.fillStyle='#a7dcf6';context.font='26px sans-serif';context.textAlign='center';context.fillText('✦',60,44);}}
       else if(source&&source.complete&&source.naturalWidth){if(asset.kind==='flipbook'){const frame=asset.loopFrames&&asset.loopFrames.length?asset.loopFrames[Math.min(5,asset.loopFrames.length-1)]:Math.min(5,asset.frames-1);const side=72*(asset.visualScale||1),pivot=asset.visualPivot||{x:.5,y:.5};context.save();if(asset.additive){context.fillStyle='#17212d';context.fillRect(0,0,120,72);context.globalCompositeOperation='lighter';}context.drawImage(source,frame%asset.columns*asset.cell,Math.floor(frame/asset.columns)*asset.cell,asset.cell,asset.cell,60-side*pivot.x,36-side*pivot.y,side,side);context.restore();}else{const scale=Math.min(110/source.width,64/source.height),w=source.width*scale,h=source.height*scale;context.drawImage(source,(120-w)/2,(72-h)/2,w,h);}}
       el('strong',set.name,card);el('small',set.category,card);el('small',[set.launch&&'Launch','Flight',set.impact&&'Hit'].filter(Boolean).join(' · '),card).className='projectile-roles';}
     if(!library.length)el('p','No projectiles match your search.',grid);lockControls();
@@ -146,12 +183,12 @@ function mount(root,api){
     description.textContent=mode==='all'?who().name+' → target · attack, launch, flight and hit':mode==='flight'?'Stationary flight artwork and animation.':mode==='launch'?'Launch effect · looping':'Projectile on-hit effect · looping';for(const role of ['flight','launch','impact']){const asset=byId(set[role]);if(asset&&asset.kind==='spine')spine(asset);}}
   function render(){if(!snapshot.units.some(u=>u.key===unit))unit=snapshot.units[0].key;unitSelect.innerHTML='';for(const person of snapshot.units){const option=el('option',person.name,unitSelect);option.value=person.key;}unitSelect.value=unit;renderUnitPicker();if(!selected||!sets().some(s=>s.id===selected)){const set=defaultSelection();selected=set&&set.id;}renderAssignments();renderLibrary();renderSelected();refreshStatus();lockControls();}
   const off=document.createElement('canvas'),mask=document.createElement('canvas');off.width=off.height=mask.width=mask.height=256;const offContext=off.getContext('2d'),maskContext=mask.getContext('2d');
-  function clipDuration(asset){if(!asset)return 0;if(asset.kind==='flipbook')return asset.frames/asset.fps;if(asset.kind==='spine'){const entry=spines.get(asset.id);if(entry)return Math.max(...entry.layers.map(layer=>{const clip=layer.data.findAnimation(asset.animation);return clip?clip.duration:0;}),.1);}return asset.duration||.5;}
+  function clipDuration(asset){if(!asset)return 0;if(asset.kind==='flipbook')return asset.frames/asset.fps;if(asset.kind==='spine'){const entry=spines.get(asset);if(entry)return Math.max(...entry.layers.map(layer=>{const clip=layer.data.findAnimation(asset.animation);return clip?clip.duration:0;}),.1);}return asset.duration||.5;}
   function draw(asset,x,y,time,options,loop){
     if(!asset||time<0||(!loop&&time>=clipDuration(asset)))return;const size=options.size||asset.size||48;
     if(visuals.draw(ctx,asset,{x,y,time,size,rotation:options.rotation||0,tint:options.tint,trail:options.trail,trailDescriptor:trails().find(t=>t.id===options.trail),speed:options.previewSpeed||0,heading:options.previewHeading}))return;
     offContext.clearRect(0,0,256,256);
-    if(asset.kind==='spine'){const entry=spines.get(asset.id);if(!entry){spine(asset);return;}api.renderer.seek(entry.runtime,entry.layers,asset.animation,time,!!loop);const tint=options.tint||'#ffffff';for(const layer of entry.layers){const color=layer.skeleton.color;if(color&&color.set)color.set(parseInt(tint.slice(1,3),16)/255,parseInt(tint.slice(3,5),16)/255,parseInt(tint.slice(5,7),16)/255,1);}ctx.save();ctx.translate(x,y);ctx.rotate(-(options.rotation||0)*Math.PI/180);const scale=size/(asset.width||64);ctx.scale(scale,-scale);api.renderer.drawWorld(entry.runtime,ctx,entry.layers);ctx.restore();return;}
+    if(asset.kind==='spine'){const entry=spines.get(asset);if(!entry){spine(asset);return;}api.renderer.seek(entry.runtime,entry.layers,asset.animation,time,!!loop);const tint=options.tint||'#ffffff';for(const layer of entry.layers){const color=layer.skeleton.color;if(color&&color.set)color.set(parseInt(tint.slice(1,3),16)/255,parseInt(tint.slice(3,5),16)/255,parseInt(tint.slice(5,7),16)/255,1);}ctx.save();ctx.translate(x,y);ctx.rotate(-(options.rotation||0)*Math.PI/180);const scale=size/(asset.width||64);ctx.scale(scale,-scale);api.renderer.drawWorld(entry.runtime,ctx,entry.layers);ctx.restore();return;}
     else{const source=image(asset);if(!source||!source.complete||!source.naturalWidth)return;if(asset.kind==='flipbook'){const map=loop&&asset.loopFrames,frame=map&&map.length?map[Math.floor(time*asset.fps)%map.length]:loop?Math.floor(time*asset.fps)%asset.frames:Math.min(asset.frames-1,Math.floor(time*asset.fps));offContext.drawImage(source,frame%asset.columns*asset.cell,Math.floor(frame/asset.columns)*asset.cell,asset.cell,asset.cell,0,0,256,256);}else{const scale=256/Math.max(source.width,source.height),w=source.width*scale,h=source.height*scale;offContext.drawImage(source,(256-w)/2,(256-h)/2,w,h);}}
     if(options.tint&&options.tint!=='#ffffff'){maskContext.clearRect(0,0,256,256);maskContext.drawImage(off,0,0);offContext.globalCompositeOperation='multiply';offContext.fillStyle=options.tint;offContext.fillRect(0,0,256,256);offContext.globalCompositeOperation='destination-in';offContext.drawImage(mask,0,0);offContext.globalCompositeOperation='source-over';}
     ctx.save();if(asset.additive)ctx.globalCompositeOperation='lighter';ctx.translate(x,y);ctx.rotate(-((options.rotation||0)+(asset.rotation||0))*Math.PI/180);const side=size*(asset.visualScale||1),pivot=asset.visualPivot||{x:.5,y:.5};ctx.drawImage(off,-side*pivot.x,-side*pivot.y,side,side);ctx.restore();
@@ -172,6 +209,6 @@ function mount(root,api){
     }if(paused&&snapshot)phase.textContent='Paused · '+phase.textContent;raf=requestAnimationFrame(tick);
   }
   run(async()=>{apply(await api.ipc('load',{}));loadActors();});raf=requestAnimationFrame(tick);
-  return{destroy(){closed=true;for(const {scope,listener}of pickerPointerListeners)scope.removeEventListener('pointerdown',listener,true);root.removeEventListener('keydown',playbackKeyDown);actorRequest++;cancelAnimationFrame(raf);cancelAnimationFrame(libraryRaf);combat.destroy();visuals.destroy();root.innerHTML='';images.clear();spines.clear();}};
+  return{destroy(){closed=true;for(const {scope,listener}of pickerPointerListeners)scope.removeEventListener('pointerdown',listener,true);root.removeEventListener('keydown',playbackKeyDown);actorRequest++;cancelAnimationFrame(raf);cancelAnimationFrame(libraryRaf);combat.destroy();visuals.destroy();root.innerHTML='';images.clear();spines.destroy();}};
 }
-module.exports={mount};
+module.exports={mount,createSpineCache};

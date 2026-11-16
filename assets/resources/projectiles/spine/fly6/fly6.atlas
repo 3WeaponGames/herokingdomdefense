@@ -1,0 +1,76 @@
+
+fly6.png
+size: 306,250
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+f2_10001
+  rotate: true
+  xy: 215, 14
+  size: 58, 79
+  orig: 90, 115
+  offset: 28, 11
+  index: -1
+f2_10002
+  rotate: true
+  xy: 114, 5
+  size: 67, 99
+  orig: 90, 115
+  offset: 19, 5
+  index: -1
+f2_10003
+  rotate: true
+  xy: 2, 2
+  size: 85, 110
+  orig: 90, 115
+  offset: 3, 2
+  index: -1
+f2_10004
+  rotate: true
+  xy: 138, 74
+  size: 76, 113
+  orig: 90, 115
+  offset: 10, 2
+  index: -1
+fs0001
+  rotate: false
+  xy: 2, 201
+  size: 150, 47
+  orig: 150, 47
+  offset: 0, 0
+  index: -1
+fs0002
+  rotate: false
+  xy: 2, 152
+  size: 147, 47
+  orig: 150, 47
+  offset: 3, 0
+  index: -1
+fs0003
+  rotate: false
+  xy: 154, 201
+  size: 150, 47
+  orig: 150, 47
+  offset: 0, 0
+  index: -1
+fs0004
+  rotate: false
+  xy: 151, 152
+  size: 141, 47
+  orig: 150, 47
+  offset: 9, 0
+  index: -1
+s_bhuojian
+  rotate: false
+  xy: 2, 89
+  size: 134, 61
+  orig: 135, 61
+  offset: 1, 0
+  index: -1
+s_bxhuojian
+  rotate: true
+  xy: 253, 82
+  size: 68, 44
+  orig: 68, 44
+  offset: 0, 0
+  index: -1
