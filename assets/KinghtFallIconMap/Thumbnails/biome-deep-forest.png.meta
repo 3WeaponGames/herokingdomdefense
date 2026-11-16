@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "ccf39b31-3581-5673-ab94-bd192e01eac9",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 1353,
+  "height": 1162,
+  "platformSettings": {},
+  "subMetas": {
+    "biome-deep-forest": {
+      "ver": "1.0.6",
+      "uuid": "a781ec1a-a4bd-596a-a2da-bf59f43b3340",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ccf39b31-3581-5673-ab94-bd192e01eac9",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1353,
+      "height": 1162,
+      "rawWidth": 1353,
+      "rawHeight": 1162,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

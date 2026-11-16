@@ -61,7 +61,7 @@ test('every configured stage selects its map background through the real lobby r
   const user = { getMaxStage: () => 1, getMaxOrder: () => 1, getStageInfo: () => 0, getStageReward: () => false };
   const label = {}, spine = { setAnimation() {} }, red = {};
   const init = vm.runInNewContext('(' + source.slice(source.indexOf('function ', start), source.indexOf('\n  };', start) + 4) + ')', {
-    require(name) { assert.equal(name, 'LobbyBackground'); return f.api; },
+    require(name) { if (name === 'LobbyStageArt') return require('../../assets/_script/LobbyStageArt'); assert.equal(name, 'LobbyBackground'); return f.api; },
     cc: { Label: function () {}, Sprite: function () {} }, sp: { Skeleton: function () {} },
     $z1KinghtFallPlayerMgr: { KinghtFallPlayerMgr: { getInstance: () => ({ getUserData: () => user }) } },
     $z1KinghtFallTextConfig: { KinghtFallTextConfig: {} },

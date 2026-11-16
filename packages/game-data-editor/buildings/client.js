@@ -103,16 +103,16 @@ function mechanics(panel, row, level, at, context) {
         if (unit) {
             const stats = panel._section('Assigned unit · '+panel._text(unit.Name)+' · '+id);
             const unitRow={record:unit,path:[table,String(id)],unitType:'ally',unitID:String(id)}, value=Number(level.level), settings=panel._data('overrides');
-            const effective=UnitLevelStats.resolve(unit,settings,value), custom=(settings.unitLevels||{})[UnitLevelStats.key(id,value)]||{};
-            panel._note('Level '+value+' stats are shared with Units → '+panel._text(unit.Name)+' → Level '+value+' and its Characters appearance. Unchanged fields use the shared base stats. To change the roster, use Soldier type above.', false, stats);
+            const effective=UnitLevelStats.resolve(unit,settings,value), custom=(settings.unitLevels||{})[UnitLevelStats.key(id,value)]||{},previous=panel._previousUnitLevel(unitRow,value),restoreLabel=previous?'Use Lvl '+previous:'Use base',previousStats=previous?UnitLevelStats.resolve(unit,settings,previous):unit;
+            panel._note('Level '+value+' stats are shared with Units → '+panel._text(unit.Name)+' → Level '+value+' and its Characters appearance. '+(previous?restoreLabel+' copies that level’s current stat values. ':'')+'To change the roster, use Soldier type above.', false, stats);
             UnitLevelStats.FIELDS.filter(key=>own(unit,key)).forEach(key=>{
                 const meta=Schema.descriptor(key,{table:'SoldierCfg',side:'ally'}), overridden=own(custom,key);
                 const input=key==='AttackInterval'?panel._attackRateField(stats,unitRow,value,next=>panel._unitLevelEdit(unitRow,value,key,next),{help:overridden?'Custom cooldown for this level.':'Uses the shared base cooldown.'}):panel._field(stats,meta.label,effective[key],next=>panel._unitLevelEdit(unitRow,value,key,next).catch(()=>{}),Object.assign({},meta,{help:overridden?'Custom for Level '+value+'.':'Shared base: '+unit[key]}));
                 input.setAttribute('aria-label','Level '+value+' '+meta.label);
-                if(overridden)input.parentNode.appendChild(button('Use base',()=>panel._unitLevelEdit(unitRow,value,key).catch(()=>{}),'gt-mini'));
+                if(overridden||previous&&effective[key]!==previousStats[key]){const reset=button(restoreLabel,()=>panel._unitLevelEdit(unitRow,value,key,undefined,true).catch(()=>{}),'gt-mini');reset.title='Copy '+meta.label+' from '+(previous?'Level '+previous:'the shared base');input.parentNode.appendChild(reset);}
             });
             const actions=node('div',undefined,'bld-actions'); stats.appendChild(actions);
-            const reset=button('Reset Level '+value+' unit stats',()=>panel._unitLevelEdit(unitRow,value,null).catch(()=>{}),'gt-mini');reset.disabled=!UnitLevelStats.FIELDS.some(key=>own(custom,key));actions.appendChild(reset);
+            const reset=button(previous?restoreLabel+' unit stats':'Reset Level '+value+' unit stats',()=>panel._unitLevelEdit(unitRow,value,null,undefined,true).catch(()=>{}),'gt-mini');reset.disabled=previous?UnitLevelStats.FIELDS.every(key=>effective[key]===previousStats[key]):!UnitLevelStats.FIELDS.some(key=>own(custom,key));actions.appendChild(reset);
             actions.appendChild(button('Edit Level '+value+' appearance in Characters',()=>Editor.Ipc.sendToMain('game-data-editor:open-characters',{type:'ally',id:String(id),level:value},error=>{if(error)panel._status(String(error),true);}),'gt-mini'));
             const advanced = panel._section('Shared unit properties · all levels', undefined, true);
             panel._properties(advanced, 'A', [table, String(id)], unit, {table:'SoldierCfg', id,side:'ally'}, UnitLevelStats.FIELDS.concat('Suppressed'));

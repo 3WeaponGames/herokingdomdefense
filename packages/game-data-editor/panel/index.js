@@ -457,6 +457,7 @@ function create(kind){
       },{skipEmpty:true});
     },
     _selectedUnitLevel(row){const levels=UnitRecords.levels(this._data('A'),row.unitType,row.unitID);if(!levels.includes(this._unitLevel))this._unitLevel=levels[0]||0;return this._unitLevel;},
+    _previousUnitLevel(row,level){return UnitRecords.levels(this._data('A'),row.unitType,row.unitID).filter(value=>value<level).pop()||0;},
     _selectUnitLevel(row,level){if(!UnitRecords.levels(this._data('A'),row.unitType,row.unitID).includes(level))return;this._unitLevel=level;this._render();if(this.$root.focus)this.$root.focus({preventScroll:true});},
     _unitLevelTabs(row){
       const level=this._selectedUnitLevel(row),tabs=node('div',undefined,'gt-unit-level-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','Unit levels');this.$detail.appendChild(tabs);
@@ -464,7 +465,7 @@ function create(kind){
       for(const value of levels){const tab=button('Lvl '+value,()=>this._selectUnitLevel(row,value),value===level?'active':'');tab.setAttribute('role','tab');tab.setAttribute('data-unit-level',value);tab.setAttribute('aria-selected',String(value===level));tab.setAttribute('aria-keyshortcuts','Shift+'+value);tab.title='Level '+value+' · Shift+'+value;tab.onkeydown=event=>{if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;event.preventDefault();event.stopPropagation();const next=(levels.indexOf(value)+(event.key==='ArrowRight'?1:levels.length-1))%levels.length;this._selectUnitLevel(row,levels[next]);};tabs.appendChild(tab);}
     },
     _unitLevelStats(row){
-      const level=this._selectedUnitLevel(row),key=UnitLevelStats.key(row.unitID,level),settings=this._data('overrides'),effective=UnitLevelStats.resolve(row.record,settings,level),custom=(settings.unitLevels||{})[key]||{},fields=this._section('Level '+level+' stats');
+      const level=this._selectedUnitLevel(row),key=UnitLevelStats.key(row.unitID,level),settings=this._data('overrides'),effective=UnitLevelStats.resolve(row.record,settings,level),custom=(settings.unitLevels||{})[key]||{},fields=this._section('Level '+level+' stats'),previous=this._previousUnitLevel(row,level),restoreLabel=previous?'Use Lvl '+previous:'Use base',previousStats=previous?UnitLevelStats.resolve(row.record,settings,previous):row.record;
       fields.classList.add('gt-unit-level-fields');
       this._note('Uses Barracks level '+level+' and Characters → '+this._text(row.record.Name)+' → Level '+level+'. Adjusting a value customizes only this level.',false,fields).style.gridColumn='1 / -1';
       for(const field of ['Health','AttackDamage','AttackRange','AttackInterval','SightRange','SearchRange','Speed']){
@@ -472,15 +473,16 @@ function create(kind){
         const inherited=field==='SightRange'&&row.record[field]===undefined?AllyAwareness.defaultSightRange:row.record[field],value=field==='SightRange'&&effective[field]===undefined?AllyAwareness.defaultSightRange:effective[field];
         const input=field==='AttackInterval'?this._attackRateField(fields,row,level,value=>this._unitLevelEdit(row,level,field,value),{help:overridden?'Custom cooldown for this level.':'Uses the shared base cooldown.'}):this._field(fields,meta.label,value,value=>this._unitLevelEdit(row,level,field,field==='SightRange'?Number(value):value).catch(()=>{}),Object.assign({},meta,{numeric:field==='SightRange'||meta.numeric,commitUnchanged:field==='SightRange',help:(overridden?'Custom for this level.':'Uses shared base '+inherited+'.')+(meta.help?' '+meta.help:'')}));
         input.setAttribute('aria-label','Level '+level+' '+meta.label);
-        if(overridden){const reset=button('Use base',()=>this._unitLevelEdit(row,level,field).catch(()=>{}),'gt-mini');reset.title=field==='AttackInterval'?'Use the shared base attack cooldown':'Reset '+meta.label+' to shared base '+inherited;reset.setAttribute('aria-label','Reset level '+meta.label+' to base');input.parentNode.appendChild(reset);}
+        const previousValue=field==='SightRange'&&previousStats[field]===undefined?AllyAwareness.defaultSightRange:previousStats[field];
+        if(overridden||previous&&value!==previousValue){const reset=button(restoreLabel,()=>this._unitLevelEdit(row,level,field,undefined,true).catch(()=>{}),'gt-mini');reset.title='Copy '+meta.label+' from '+(previous?'Level '+previous:'the shared base');reset.setAttribute('aria-label',restoreLabel+' '+meta.label);input.parentNode.appendChild(reset);}
       }
       const actions=node('div',undefined,'gt-unit-level-actions');fields.appendChild(actions);
-      const reset=button('Reset Level '+level+' stats',()=>this._unitLevelEdit(row,level,null).catch(()=>{}),'gt-mini');reset.disabled=!UnitLevelStats.FIELDS.some(field=>own(custom,field));actions.appendChild(reset);
+      const reset=button(previous?restoreLabel+' stats':'Reset Level '+level+' stats',()=>this._unitLevelEdit(row,level,null,undefined,true).catch(()=>{}),'gt-mini');reset.disabled=previous?UnitLevelStats.FIELDS.every(field=>effective[field]===previousStats[field]):!UnitLevelStats.FIELDS.some(field=>own(custom,field));actions.appendChild(reset);
       actions.appendChild(button('Edit level appearance in Characters',()=>ipc('open-characters',{type:'ally',id:String(row.unitID),level}).catch(error=>this._status(error.message,true)),'gt-mini'));
       const overview=this._section('All level stats',undefined,true),table=node('table',undefined,'gt-grid-table'),head=node('tr');['Level','HP','Damage','Attacks/sec','Range','Sight','Speed'].forEach(label=>head.appendChild(node('th',label)));table.appendChild(head);
       for(const value of UnitRecords.levels(this._data('A'),'ally',row.unitID)){const stats=UnitLevelStats.resolve(row.record,settings,value),tr=node('tr',undefined,value===level?'selected':'');tr.setAttribute('data-click','true');tr.onclick=()=>this._selectUnitLevel(row,value);[value,stats.Health,stats.AttackDamage,stats.AttackInterval,stats.AttackRange,stats.SightRange===undefined?AllyAwareness.defaultSightRange:stats.SightRange,stats.Speed].forEach((item,index)=>{const cell=node('td',index===3?'…':item);tr.appendChild(cell);if(index===3)this._attackRateCell(cell,row,value);});table.appendChild(tr);}overview.appendChild(table);
     },
-    _unitLevelEdit(row,level,field,value){
+    _unitLevelEdit(row,level,field,value,usePrevious){
       return this._change(()=>{
         const resolved=typeof value==='function'?value():value;
         if(!UnitRecords.levels(this._data('A'),row.unitType,row.unitID).includes(level))throw Error('This unit level changed. Refresh before editing.');
@@ -489,12 +491,15 @@ function create(kind){
         if(original!==undefined&&(!original||typeof original!=='object'||Array.isArray(original)))throw Error('The unit level table has an invalid format.');
         const table=clone(original||{}),key=UnitLevelStats.key(row.unitID,level),existing=table[key];
         if(existing!==undefined&&(!existing||typeof existing!=='object'||Array.isArray(existing)))throw Error('The unit level stats have an invalid format.');
-        const next=Object.assign({},existing),base=get(this._data('A'),row.path);
-        for(const name of field===null?UnitLevelStats.FIELDS:[field]){const inherited=name==='SightRange'&&base[name]===undefined?AllyAwareness.defaultSightRange:base[name];if(resolved===undefined||field===null||resolved===inherited)delete next[name];else next[name]=resolved;}
+        const next=Object.assign({},existing),base=get(this._data('A'),row.path),previous=usePrevious?this._previousUnitLevel(row,level):0,source=previous?UnitLevelStats.resolve(base,settings,previous):base;
+        for(const name of field===null?UnitLevelStats.FIELDS:[field]){
+          const inherited=name==='SightRange'&&base[name]===undefined?AllyAwareness.defaultSightRange:base[name],nextValue=usePrevious?source[name]:resolved;
+          if(nextValue===undefined||!usePrevious&&field===null||nextValue===inherited)delete next[name];else next[name]=nextValue;
+        }
         if(Object.keys(next).length)table[key]=next;else delete table[key];
         if(JSON.stringify(original||{})===JSON.stringify(table))return [];
         return [Object.keys(table).length?{doc:'overrides',path:['unitLevels'],value:table}:{doc:'overrides',path:['unitLevels'],remove:true}];
-      },{skipEmpty:field==='SightRange'});
+      },{skipEmpty:usePrevious||field==='SightRange'});
     },
     _installUnitKeys(){
       this.$root.tabIndex=-1;this.$undo.title='Undo (Ctrl+Z)';this.$redo.title='Redo (Ctrl+Shift+Z)';this.$save.title='Save changes (Ctrl+S)';

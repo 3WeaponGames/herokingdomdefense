@@ -297,9 +297,20 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     this.ndLevelInfo.getChildByName("labName").getComponent(cc.Label).string = this.T(e.Name);
     this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle01), e.Level < n ? e.WaveCfg.length : $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxOrder(), e.WaveCfg.length);
     if (cc.view) require("StageStarPresentation").showLobby(this, e, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageInfo(e.Level), n);
-    this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconMap, e.StageThumbnail || e.Map, function (e) {
-      if (!cc.isValid(t, true) || t.selectStage !== selected) return;
-      (t._lobby && t._lobby.stagePreview || t.ndLevelInfo).getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = e;
+    var artworkRequest = this._stageArtworkRequest = (this._stageArtworkRequest || 0) + 1;
+    this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconMap, require("LobbyStageArt").resource(e), function (frame) {
+      if (!cc.isValid(t, true) || t.selectStage !== selected || t._stageArtworkRequest !== artworkRequest || !frame) return;
+      var icon = (t._lobby && t._lobby.stagePreview || t.ndLevelInfo).getChildByName("sprIcon");
+      if (!cc.isValid(icon, true)) return;
+      var sprite = icon.getComponent(cc.Sprite);
+      if (!t._stageIconSize) t._stageIconSize = { width: icon.width, height: icon.height };
+      sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+      sprite.spriteFrame = frame;
+      var size = frame.getOriginalSize(), bounds = t._stageIconSize;
+      if (size.width > 0 && size.height > 0) {
+        var scale = Math.min(bounds.width / size.width, bounds.height / size.height);
+        icon.setContentSize(size.width * scale, size.height * scale);
+      }
     });
     this.loadStageMonster(e);
     this.hideBoxReward();

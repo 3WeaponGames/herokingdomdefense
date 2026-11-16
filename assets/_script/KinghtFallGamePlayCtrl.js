@@ -154,7 +154,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.time[C.RebornTime] = Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.ReviveTime));
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.RevivalCoin] && (this.time[C.RebornTime] -= $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.RevivalCoin][0]);
     this.time[C.NoDieTime] = Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.InvincibleTime));
-    this.ctrHp.setType($z1KinghtFallModle.KinghtFallGameArmy.Friend);
+    this.ctrHp.setType($z1KinghtFallModle.KinghtFallGameArmy.Friend, this);
     this.ctrHp.setHp(this.hp, this.hpMax);
   };
   _ctor.prototype.onRestart = function (t) {

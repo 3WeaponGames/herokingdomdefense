@@ -479,6 +479,75 @@ function silhouetteAttachment(record) {
   }
   return record.facade;
 }
+var unitBoundsPlans = new WeakMap();
+function unitAttachmentVertices(renderer, slot, attachment, output) {
+  // Bounding/clipping/path attachments do not paint any part of the unit.
+  var region = attachment.getOffset ? attachment.getOffset() : attachment.offset;
+  if (!region && !(attachment.triangles || attachment.getTriangles)) return output;
+  var count = attachment.worldVerticesLength;
+  if (attachment.computeWorldVertices) {
+    if (count) attachment.computeWorldVertices(slot, 0, count, output, 0, 2);
+    else if (attachment.offset) attachment.computeWorldVertices(slot.bone, output, 0, 2);
+    return output;
+  }
+  // Native Spine exposes offsets and mesh data, but not computeWorldVertices.
+  var vertices = region || attachment.getVertices && attachment.getVertices();
+  if (!vertices || !vertices.length) return output;
+  var deform = region ? [] : slot.getDeform ? slot.getDeform() : slot.deform || [];
+  count = region ? 8 : attachment.getWorldVerticesLength && attachment.getWorldVerticesLength();
+  if (vertices.length === count) {
+    var local = deform.length ? deform : vertices, bone = slot.bone;
+    for (var i = 0; i < count; i += 2) {
+      output.push(local[i] * bone.a + local[i + 1] * bone.b + bone.worldX,
+        local[i] * bone.c + local[i + 1] * bone.d + bone.worldY);
+    }
+    return output;
+  }
+  var skeleton = renderer._skeleton, json = renderer.skeletonData.skeletonJson, plan = unitBoundsPlans.get(renderer);
+  if (!plan || plan.skeleton !== skeleton || plan.json !== json) {
+    plan = { skeleton: skeleton, json: json, meshes: new WeakMap(), bones: null };
+    unitBoundsPlans.set(renderer, plan);
+  }
+  var weights = attachment.getBones ? attachment.getBones() : authoredMeshBones(plan,
+    { name: slot.data.name }, attachment, vertices, attachment.getUVs(), attachment.getTriangles());
+  if (!weights) return output;
+  var bones = plan.bones || (plan.bones = skeleton.bones), at = 0, vertex = 0, delta = 0;
+  while (at < weights.length) {
+    var influences = weights[at++], x = 0, y = 0;
+    for (var n = 0; n < influences; n++, vertex += 3, delta += 2) {
+      var matrix = bones[weights[at++]], vx = vertices[vertex] + (deform[delta] || 0);
+      var vy = vertices[vertex + 1] + (deform[delta + 1] || 0), weight = vertices[vertex + 2];
+      x += (vx * matrix.a + vy * matrix.b + matrix.worldX) * weight;
+      y += (vx * matrix.c + vy * matrix.d + matrix.worldY) * weight;
+    }
+    output.push(x, y);
+  }
+  return output;
+}
+function unitBounds(renderer, main) {
+  if (!renderer || !renderer.node.activeInHierarchy || renderer.enabled === false) return null;
+  var skeleton = renderer._skeleton;
+  if (!skeleton || !skeleton.drawOrder) return bounds(renderer, main);
+  updatePose(renderer);
+  var pose = nodeTransform(renderer.node, main), box = null, points = [];
+  skeleton.drawOrder.forEach(function (slot) {
+    var attachment = slot.getAttachment(), name = slot.data && slot.data.name || "";
+    if (!attachment || slot.bone.active === false || slot.color.a <= .01 ||
+      /^(?:__fx\/)|(?:^|\/)(?:Shadow|Dead|Ghost)(?:$|\/)/i.test(name)) return;
+    var color = attachment.getColor ? attachment.getColor() : attachment.color;
+    if (color && color.a <= .01) return;
+    points.length = 0;
+    unitAttachmentVertices(renderer, slot, attachment, points);
+    for (var i = 0; i < points.length; i += 2) {
+      var x = pose.x + pose.a * points[i] + pose.c * points[i + 1];
+      var y = pose.y + pose.b * points[i] + pose.d * points[i + 1];
+      if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+      if (!box) box = { minX: x, minY: y, maxX: x, maxY: y };
+      else { box.minX = Math.min(box.minX, x); box.maxX = Math.max(box.maxX, x); box.minY = Math.min(box.minY, y); box.maxY = Math.max(box.maxY, y); }
+    }
+  });
+  return box;
+}
 function bounds(renderer, main, cache) {
   if(cache&&cache.bounds.has(renderer))return cache.bounds.get(renderer);
   var node = renderer.node, x, y, w, h;
@@ -1688,6 +1757,7 @@ exports.copyPose = copyPose;
 exports.bodyVisuals = bodyVisuals;
 exports.overlaps = overlaps;
 exports.bounds = bounds;
+exports.unitBounds = unitBounds;
 exports.union = union;
 exports.viewBounds = viewBounds;
 exports.sameStamp = sameStamp;

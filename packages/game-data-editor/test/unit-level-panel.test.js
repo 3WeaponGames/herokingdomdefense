@@ -74,7 +74,7 @@ test('shared sight edits compose rapidly and reset only the optional sight leaf,
 test('selected-level sight supports zero, inherits shared or virtual defaults and preserves future fields on reset',async()=>{
     const f=fixture(),key=Stats.key(90001,2),other=Stats.key(90002,1);seedLevels(f,{[key]:{SightRange:350,future:{keep:true}},[other]:{SightRange:600}});f.render('ally:90001');f.panel._selectUnitLevel(f.row('ally:90001'),2);const before=f.store.draftState();
     assert.equal(f.levelField(2,'SightRange').value,'350');const input=f.levelField(2,'SightRange');input.value='0';input.onchange();await f.panel._queue;assert.equal(f.preview().record.SightRange,0);
-    const reset=f.all(f.panel.$detail,n=>n.getAttribute&&n.getAttribute('aria-label')==='Reset level Sight range to base')[0];assert(reset);await reset.onclick();await f.panel._queue;assert.deepEqual(f.store.draftState().overrides.unitLevels[key],{future:{keep:true}});assert.deepEqual(f.store.draftState().overrides.unitLevels[other],before.overrides.unitLevels[other]);assert.equal(f.levelField(2,'SightRange').value,'240');assert.equal(f.preview().record.SightRange,undefined);
+    const reset=f.all(f.panel.$detail,n=>n.getAttribute&&n.getAttribute('aria-label')==='Use Lvl 1 Sight range')[0];assert(reset);await reset.onclick();await f.panel._queue;assert.deepEqual(f.store.draftState().overrides.unitLevels[key],{future:{keep:true}});assert.deepEqual(f.store.draftState().overrides.unitLevels[other],before.overrides.unitLevels[other]);assert.equal(f.levelField(2,'SightRange').value,'240');assert.equal(f.preview().record.SightRange,undefined);
     const version=f.store.version;await f.panel._unitLevelEdit(f.row('ally:90001'),2,'SightRange',240);assert.equal(f.store.version,version,'Writing the inherited virtual default creates no override');assert.deepEqual(f.store.draftState().A,before.A);
 });
 
@@ -104,11 +104,11 @@ test('single-stat and whole-level resets preserve unknown fields, other levels, 
     const f=fixture(),one=Stats.key(90001,1),two=Stats.key(90001,2),other=Stats.key(90002,3);
     seedLevels(f,{[one]:{Health:44},[two]:{Health:99,AttackDamage:25,AttackRange:120,future:{keep:true}},[other]:{Speed:160}});
     f.render('ally:90001');f.panel._selectUnitLevel(f.row('ally:90001'),2);const before=f.store.draftState();
-    const reset=f.all(f.panel.$detail,n=>n.getAttribute&&n.getAttribute('aria-label')==='Reset level HP to base')[0];assert(reset);await reset.onclick();await f.panel._queue;
-    assert.deepEqual(f.store.documents.overrides.data.unitLevels[two],{AttackDamage:25,AttackRange:120,future:{keep:true}});
-    assert.equal(Number(f.levelField(2,'Health').value),before.A.AllyCfg[90001].Health);
-    const resetAll=f.all(f.section('Level 2 stats'),n=>n.tagName==='button'&&n.textContent==='Reset Level 2 stats')[0];assert(resetAll);await resetAll.onclick();await f.panel._queue;
-    const after=f.store.draftState();assert.deepEqual(after.overrides.unitLevels,{[one]:{Health:44},[two]:{future:{keep:true}},[other]:{Speed:160}});
+    const reset=f.all(f.panel.$detail,n=>n.getAttribute&&n.getAttribute('aria-label')==='Use Lvl 1 HP')[0];assert(reset);await reset.onclick();await f.panel._queue;
+    assert.deepEqual(f.store.documents.overrides.data.unitLevels[two],{Health:44,AttackDamage:25,AttackRange:120,future:{keep:true}});
+    assert.equal(Number(f.levelField(2,'Health').value),44);
+    const resetAll=f.all(f.section('Level 2 stats'),n=>n.tagName==='button'&&n.textContent==='Use Lvl 1 stats')[0];assert(resetAll);await resetAll.onclick();await f.panel._queue;
+    const after=f.store.draftState();assert.deepEqual(after.overrides.unitLevels,{[one]:{Health:44},[two]:{Health:44,future:{keep:true}},[other]:{Speed:160}});
     for(const field of ['timings','timingDefaults','visuals','animationSpeeds'])assert.deepEqual(after.overrides[field],before.overrides[field]);
     assert.deepEqual(after.A,before.A);f.panel._apply(f.store.undo({version:f.store.version}));assert.equal(Number(f.levelField(2,'AttackDamage').value),25);
     f.panel._apply(f.store.undo({version:f.store.version}));assert.deepEqual(f.store.draftState(),before);assert.equal(Number(f.levelField(2,'Health').value),99);

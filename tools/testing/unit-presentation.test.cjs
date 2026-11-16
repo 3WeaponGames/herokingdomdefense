@@ -97,34 +97,50 @@ test('hit reactions stop actual navigation without consuming its route and movem
     assert(actor.node.x > x);
 });
 
-test('health bars follow visible head bounds, double their length at 2x scale and cache unchanged geometry', () => {
+test('all unit health bars follow visible head bounds at the same size, independent of model or inherited scale', () => {
     const e = environment(), actor = e.unit(30, 40), visual = new Node('body', actor.node), hpParent = new Node('hp', actor.node, 0, 58);
-    const renderer = { node: visual, skeletonData: {} }; actor.spAni = renderer; actor.isDead = () => false;
+    const renderer = { node: visual, skeletonData: {} }; actor.spAni = renderer; actor.isDead = () => false; actor.navigationTeam = 'enemy';
     let measured = 0;
     const exports = {}, cc = { ...e.cc, Component: function () {}, Label: function () {}, Sprite: function () {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../assets/_script/KinghtFallItemHp.js'), 'utf8'), {
         exports, cc, sp: { Skeleton: function () {} },
-        require: name => name === 'KinghtFallDepthView' ? { bounds: () => { measured++; return { minX: -30 * Math.abs(visual.scaleX), maxX: 30 * Math.abs(visual.scaleX), minY: 0, maxY: 100 * visual.scaleY }; } } : name === 'KinghtFallUIGame' ? { default: { instance: { ctrGame: e.game } } } : {},
+        require: name => name === 'KinghtFallDepthView' ? { union: (a,b) => b || a, unitBounds: (_renderer, parent) => {
+            measured++;
+            const left=parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(e.cc.v2(-30*Math.abs(visual.scaleX),0)));
+            const right=parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(e.cc.v2(30*Math.abs(visual.scaleX),100*visual.scaleY)));
+            return {minX:Math.min(left.x,right.x),maxX:Math.max(left.x,right.x),minY:Math.min(left.y,right.y),maxY:Math.max(left.y,right.y)};
+        } } : name === 'KinghtFallUIGame' ? { default: { instance: { ctrGame: e.game } } } : {},
         __extends(C, B) { C.prototype = Object.create(B.prototype); }, __decorate: (_d, value, key) => key === undefined ? value : undefined
     });
-    const hp = new exports.default(); hp.actor = actor; hp.node = new Node('bar', hpParent); hp.node.width = 48;
+    const hp = new exports.default(); hp.actor = actor; hp.node = new Node('bar', hpParent); hp.node.width = 48; hp.node.height = 10;
     hp.lateUpdate(); const first = hp.node.width * hp.node.scaleX;
-    assert.equal(first, 60); assert.equal(hp.node.y + hpParent.y, 110);
-    hp.lateUpdate(); hp.lateUpdate(); assert.equal(measured, 1);
+    assert.equal(first, 64); assert.equal(hp.node.height * hp.node.scaleY, 10); assert.equal(hp.node.y + hpParent.y, 109);
+    hp.lateUpdate(); hp.lateUpdate(); assert.equal(measured, 3, 'animated head bounds must be refreshed');
     visual.scaleX = visual.scaleY = 2; hp.lateUpdate();
-    assert.equal(hp.node.width * hp.node.scaleX, first * 2); assert.equal(hp.node.y + hpParent.y, 220);
-    actor.getSpAni = () => ({ node: visual, skeletonData: {} }); hp.lateUpdate(); assert.equal(measured, 3);
+    assert.equal(hp.node.width * hp.node.scaleX, first, 'enemy model size stretched its health bar'); assert.equal(hp.node.y + hpParent.y, 209);
+    actor.getSpAni = () => ({ node: visual, skeletonData: {} }); hp.lateUpdate(); assert.equal(measured, 5);
     actor.navigationTeam = 'friendly'; visual.scaleX = visual.scaleY = 1; hp.lateUpdate();
     const infantryWidth = hp.node.width * hp.node.scaleX; assert.equal(infantryWidth,64);
     visual.scaleX = 3; visual.scaleY = 1.5; hp.lateUpdate();
     assert.equal(hp.node.width * hp.node.scaleX,infantryWidth,'horse and lance stretched the allied health bar');
-    assert.equal(hp.node.y + hpParent.y,165,'mounted bar did not stay above the rider');
+    assert.equal(hp.node.y + hpParent.y,159,'mounted bar did not stay above the rider');
     actor.node.scaleX=2;actor.node.scaleY=1.5;hp.node.height=10;hp.lateUpdate();
     const origin=hp.node.convertToWorldSpaceAR(e.cc.v2(0,0)),right=hp.node.convertToWorldSpaceAR(e.cc.v2(48,0)),top=hp.node.convertToWorldSpaceAR(e.cc.v2(0,10));
     assert.equal(Math.hypot(right.x-origin.x,right.y-origin.y),64,'unit scale changed bar width');
     assert.equal(Math.hypot(top.x-origin.x,top.y-origin.y),10,'unit scale changed bar thickness');
-    const heroBar=new Node('hero bar',e.game.ctrPlay.node);heroBar.width=64;heroBar.height=10;heroBar.scaleX=1.2;heroBar.scaleY=.75;
+    const heroBar=new Node('hero bar',e.game.ctrPlay.node);heroBar.width=64;heroBar.height=10;heroBar.scaleX=1.2;heroBar.scaleY=.75;heroBar.active=false;
     e.game.ctrPlay.ctrHp={node:heroBar};e.game.ctrPlay.node.scaleX=.75;e.game.ctrPlay.node.scaleY=.8;hp.lateUpdate();
     function axes(n){const o=n.convertToWorldSpaceAR(e.cc.v2(0,0)),x=n.convertToWorldSpaceAR(e.cc.v2(n.width,0)),y=n.convertToWorldSpaceAR(e.cc.v2(0,n.height));return[Math.hypot(x.x-o.x,x.y-o.y),Math.hypot(y.x-o.x,y.y-o.y)];}
     const expected=axes(heroBar),actual=axes(hp.node);for(let i=0;i<2;i++)assert(Math.abs(actual[i]-expected[i])<1e-8,'ally bar does not match live hero bar');
+    actor.navigationTeam='enemy';
+    for(const [modelScale,unitScale,parentScale] of [[1,1,1],[4,2,.5],[.35,-1.5,2]]){
+        visual.scaleX=modelScale;visual.scaleY=modelScale;actor.node.scaleX=unitScale;actor.node.scaleY=Math.abs(unitScale)*.8;hpParent.scaleX=parentScale;hpParent.scaleY=parentScale*.7;
+        hp.lateUpdate();const dimensions=axes(hp.node);
+        for(let i=0;i<2;i++)assert(Math.abs(dimensions[i]-expected[i])<1e-8,'enemy bar does not match the allied and hero bars');
+        const bottom=hp.node.convertToWorldSpaceAR(e.cc.v2(0,-hp.node.height/2));
+        const head=actor.node.convertToWorldSpaceAR(e.cc.v2(0,100*visual.scaleY));
+        assert(Math.abs(bottom.y-head.y-expected[1]*.4)<1e-8,'unit scaling changed the gap above its head');
+    }
+    heroBar.destroyed=true;hp.lateUpdate();const fallback=axes(hp.node);
+    assert(Math.abs(fallback[0]-64)<1e-8);assert(Math.abs(fallback[1]-10)<1e-8);
 });

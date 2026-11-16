@@ -127,6 +127,28 @@ test('barracks level stats share Units overrides and matching Characters preview
     assert(!f.messages.some(message=>message.message==='game-data-editor:save'));
 });
 
+test('barracks reset actions name and copy the previous authored unit level as drafts',async()=>{
+    const f=fixture(),one=Stats.key(90001,1),two=Stats.key(90001,2),three=Stats.key(90001,3),other=Stats.key(90002,2);
+    seedStats(f,{[one]:{Health:55},[two]:{Health:88,AttackDamage:23,AttackInterval:1.7,Speed:0},[three]:{Health:150,AttackDamage:30,future:{keep:true}},[other]:{Health:250}});
+    f.render('3:11',f.position('3',13));const before=f.store.draftState(),version=f.store.version;
+    const hp=f.assignedField('HP'),reset=f.all(hp.parentNode,n=>n.tagName==='button'&&n.textContent==='Use Lvl 2')[0];assert(reset);
+    assert(!f.all(f.assigned(),n=>n.tagName==='button'&&n.textContent==='Use base').length);
+    assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version,'Opening the previous-level action changed game data');
+    await reset.onclick();await f.panel._queue;
+    assert.equal(Number(f.assignedField('HP').value),88);assert.equal(f.store.documents.overrides.data.unitLevels[three].AttackDamage,30);
+    const all=f.all(f.assigned(),n=>n.tagName==='button'&&n.textContent==='Use Lvl 2 unit stats')[0];assert(all);await all.onclick();await f.panel._queue;
+    const after=f.store.draftState();assert.deepEqual(after.overrides.unitLevels[three],{Health:88,AttackDamage:23,AttackInterval:1.7,Speed:0,future:{keep:true}});
+    assert.deepEqual(after.A,before.A);assert.deepEqual(after.overrides.unitLevels[two],before.overrides.unitLevels[two]);assert.deepEqual(after.overrides.unitLevels[other],before.overrides.unitLevels[other]);
+    const unchanged=f.store.version;const same=f.all(f.assigned(),n=>n.tagName==='button'&&n.textContent==='Use Lvl 2 unit stats')[0];await same.onclick();await f.panel._queue;assert.equal(f.store.version,unchanged,'Copying equal previous-level stats created another draft');
+    f.panel._apply(f.store.undo({version:f.store.version}));assert.equal(f.store.documents.overrides.data.unitLevels[three].AttackDamage,30);
+    f.tab(1).onclick();const first=f.all(f.assignedField('HP').parentNode,n=>n.tagName==='button'&&n.textContent==='Use base')[0];assert(first,'Level 1 has no preceding level');
+    await first.onclick();await f.panel._queue;assert.equal(Number(f.assignedField('HP').value),before.A.AllyCfg[90001].Health);
+    assert(!f.messages.some(message=>message.message==='game-data-editor:save'));
+    seedStats(f,{[two]:{Health:95}});f.render('3:11',f.position('3',13));
+    const fromEmpty=f.all(f.assigned(),n=>n.tagName==='button'&&n.textContent==='Use Lvl 2 unit stats')[0];assert(fromEmpty&&!fromEmpty.disabled,'An uncustomized level must still be able to copy previous stats');
+    await fromEmpty.onclick();await f.panel._queue;assert.equal(f.store.documents.overrides.data.unitLevels[three].Health,95);
+});
+
 test('the building editor contains only the current construction families and no obsolete branch view',()=>{
     const f=fixture(),before=f.store.draftState(),rows=f.panel._rows();
     assert(!rows.some(row=>String(row.key).includes('legacy')));
