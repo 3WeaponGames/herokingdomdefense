@@ -2,7 +2,8 @@
 // One field contract for runtime, authoring and preview. Reading defaults never
 // creates saved overrides or changes an existing skill document.
 var Core = require("./HeroStyleSkills"), VFXCatalog = require("./HeroSkillVFXCatalog");
-var RESOURCE_PREFIXES=["resource","impactResource","passiveResource","beamResource","markResource","buffResource","tauntResource","shieldResource"];
+var EFFECT_SLOTS=["passive","beam","mark","buff","taunt","shield","cast","channelHit","presence","defense","physicalShield"];
+var RESOURCE_PREFIXES=["resource","impactResource"].concat(EFFECT_SLOTS.map(function(slot){return slot+"Resource";}));
 var styles = [
   {id:"skirmisher",name:"Skirmisher",weapon:"Bow",skill:"Piercing Arrow"},
   {id:"fighter",name:"Fighter",weapon:"Sword",skill:"Battle Cry"},
@@ -12,15 +13,17 @@ var styles = [
   {id:"guardian",name:"Guardian",weapon:"Hammer and shield",skill:"Iron Bulwark"}
 ];
 var VISUAL = {arcDegrees:120,originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",showBuiltin:true,animation:"",holdTime:-1,impactResource:"",impactResourceAnimation:"",impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
-["passive","beam","mark","buff","taunt","shield"].forEach(function(slot){
+EFFECT_SLOTS.forEach(function(slot){
+  if(slot!=="cast")VISUAL[slot+"Delay"]=0;
   VISUAL[slot+"Resource"]="";VISUAL[slot+"ResourceAnimation"]="";
   VISUAL[slot+"Scale"]=1;VISUAL[slot+"ScaleX"]=1;VISUAL[slot+"ScaleY"]=1;VISUAL[slot+"OffsetX"]=0;VISUAL[slot+"OffsetY"]=0;
   VISUAL[slot+"Rotation"]=0;VISUAL[slot+"Opacity"]=1;VISUAL[slot+"Color"]="";
 });
-Object.assign(VISUAL,{passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1,beamWidth:48,beamEndDuration:.25,markSpawnDuration:.5,shieldSpawnDuration:.5,shieldEndDuration:.625});
+Object.assign(VISUAL,{castDelay:0,passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1,beamWidth:48,beamEndDuration:.25,markSpawnDuration:.5,shieldSpawnDuration:.5,shieldEndDuration:.625});
 var AUDIO = {clip:"",volume:1,delay:0};
 var HELP = {
   cooldown:"Seconds between active-skill uses.",
+  contactDelay:"Additional seconds before the active skill's authored contact. The same delay controls preview, VFX and actual damage.",
   chargeRate:"Fraction of a full charge bar gained each second. 0.25 fills the bar in four seconds.",
   chargeDecay:"Fraction of momentum lost each second while standing still.",
   chargedDamage:"Extra shot damage at full Steady Aim charge. 0.5 means 50% additional damage.",
@@ -29,6 +32,12 @@ var HELP = {
   projectileSpeed:"Base arrow speed in world units per second. Momentum scales this from 100% at zero charge to 200% at full charge.",
   distanceDamagePer100:"Added damage multiplier for every 100 units travelled. 0.1 adds 10% per 100 units.",
   projectileWidth:"Damage corridor half-width in world units. 28 means 28 on each side (56 total). The blue strip shows actual hits; VFX thickness is separate.",
+  volleys:"Number of arrow volleys in the skill. The native authored barrage has three fixed volleys.",
+  arrowsPerVolley:"Arrows emitted in each generic projectile volley. The authored barrage uses its exact three source trajectories.",
+  spreadDegrees:"Total fan angle between the outer generic arrows, in degrees. The native barrage preserves the source artwork paths.",
+  volleyPlayback:"Playback multiplier for the complete triple-volley VFX and all matching contact times.",
+  splashRadius:"Base active-skill splash radius in world units before stored target charges.",
+  splashRadiusPerCharge:"Additional splash radius in world units per same-target channel hit.",
   maxStacks:"Maximum number of temporary melee-hit stacks.",
   stackDuration:"Time after the latest qualifying hit before the melee stacks expire.",
   stackDamage:"Additional attack damage per stack. 0.03 means 3% per stack.",
@@ -72,6 +81,13 @@ var VISUAL_HELP = {
   lineWidth:"Visual thickness of built-in lines and arcs. 0 uses the style default; this is separate from projectile hit width.",
   color:"Optional visual tint. Empty keeps the original effect colors; this does not change gameplay.",
   effectDuration:"Lifetime of the skill's area or arc artwork in gameplay seconds. Does not change damage timing or buff duration.",
+  castDelay:"Additional seconds before the active effect and its matching damage contacts. The authored barrage and spear sequence use the same delay in gameplay and preview.",
+  castScale:"Size of the complete skill VFX. For the native Skirmisher barrage this also scales its exact arrow collision paths; other styles keep their separately authored damage area.",
+  castScaleX:"Horizontal size multiplier for the complete effect. Native Skirmisher collision paths use this same axis scale; other skills change artwork only.",
+  castScaleY:"Vertical size multiplier for the complete effect. Native Skirmisher collision paths use this same axis scale; other skills change artwork only.",
+  castOffsetX:"World-space horizontal offset from the captured cast origin. Native Skirmisher arrow colliders move with the artwork; other styles keep their damage origin.",
+  castOffsetY:"World-space vertical offset from the captured cast origin. Native Skirmisher arrow colliders move with the artwork; other styles keep their damage origin.",
+  castRotation:"Rotation relative to the captured aim direction. Native Skirmisher collision paths rotate with this effect; other styles change only the artwork.",
   resource:"Optional imported effect used on the projectile, beam target, or skill area. This is separate from the effect played on each enemy hit.",
   resourceAnimation:"Animation from the selected Spine VFX asset. Empty uses its first available animation; sprite flipbooks use imported timing.",
   showBuiltin:"Show the procedural skill artwork alongside the selected VFX. Turning it off does not disable damage or custom effects.",
@@ -99,13 +115,17 @@ function tuningFields(style){
     var min=0,max=20,step=.01,unit="";
     if(/^(cooldown|windup|.*Duration|duration)$/.test(key)){max=300;unit="seconds";}
     if(key==="duration"){min=.1;max=30;}
-    if(/^(maxStacks|maxCharges|strikes)$/.test(key)){min=1;max=100;step=1;}
+    if(/^(maxStacks|maxCharges|strikes|volleys|arrowsPerVolley)$/.test(key)){min=1;max=100;step=1;}
     if(key==="projectileSpeed"||key==="referenceMove"){min=1;max=5000;step=1;unit="units / second";}
+    if(key==="splashRadius"||key==="splashRadiusPerCharge"){min=key==="splashRadius"?1:0;max=2000;step=1;unit="units";}
+    if(key==="spreadDegrees"){max=360;step=1;unit="degrees";}
+    if(key==="volleyPlayback"){min=.05;max=4;unit="playback multiplier";}
+    if(key==="contactDelay"){max=30;unit="seconds";}
     if(key==="projectileWidth"){min=1;max=500;step=1;unit="units";}
     if(key==="knockback"){max=2000;step=1;unit="units";}
     if(key==="slow"||key==="stackTenacity"||key==="stackReduction"||key==="allyReduction"){max=.95;unit="fraction";}
     if(key==="sacrifice"){max=.99;unit="current HP fraction";}
-    var field=number(key,label(key),min,max,step,unit);if(/^(maxStacks|maxCharges|strikes)$/.test(key))field.integer=true;if(HELP[key])field.help=HELP[key];return field;
+    var field=number(key,label(key),min,max,step,unit);if(/^(maxStacks|maxCharges|strikes|volleys|arrowsPerVolley)$/.test(key))field.integer=true;if(HELP[key])field.help=HELP[key];return field;
   });
 }
 var visualFields = Object.keys(VISUAL).map(function(key){
@@ -123,12 +143,12 @@ var visualFields = Object.keys(VISUAL).map(function(key){
   if(key==="beamEndDuration"||key==="markSpawnDuration"||key==="shieldSpawnDuration"||key==="shieldEndDuration"){min=.01;max=5;step=.01;unit="seconds";}
   if(key==="lineWidth"){min=0;max=200;step=.5;unit="0 = style default";}
   if(key==="effectDuration"||key==="impactDuration"){min=.01;max=30;step=.01;unit="seconds";}
-  if(key==="impactDelay"){min=0;max=30;step=.01;unit="seconds";}
+  if(/Delay$/.test(key)){min=0;max=30;step=.01;unit="seconds";}
   if(key==="holdTime"){min=-1;max=30;step=.001;unit="seconds; -1 = authored hit";}
   return number("visual."+key,key.indexOf("impact")===0?"On-hit "+label(key.slice(6)).toLowerCase():label(key),min,max,step,unit);
-}).map(function(field){var key=field.key,slot=/^(passive|beam|mark|buff|taunt|shield)/.exec(key),purpose=slot?{passive:"the state-driven passive aura",beam:"Mystic's continuous beam",mark:"the overhead target mark",buff:"Guardian's shield aura",taunt:"the one-shot effect above each taunted enemy",shield:"Guardian's body shield"}[slot[1]]:"";
+}).map(function(field){var key=field.key,slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|cast)/.exec(key),purpose=slot?{passive:"the state-driven passive aura",beam:"Mystic's continuous beam",mark:"the overhead target mark",buff:"the fighting style's active buff aura",taunt:"the one-shot effect above each taunted enemy",shield:"Guardian's body shield",cast:"the complete active-skill effect at its captured cast position",channelHit:"the electrified effect on Mystic's current beam target",presence:"Guardian's protection aura on each nearby ally",defense:"Guardian's one-shot defense appearance",physicalShield:"Guardian's physical shield appearance and sustain"}[slot[1]]:"";
   if(slot)field.label=label(key).replace(/Resource Animation$/,"VFX animation").replace(/Resource$/,"VFX asset");
-  field.help=VISUAL_HELP[key]||(slot?(field.type==="vfx"?"Imported VFX for "+purpose+". Empty disables this artwork without affecting gameplay.":field.type==="effect-animation"?"Animation from the selected VFX; flipbooks use their imported timing.":/Offset/.test(key)?"Visual offset for "+purpose+" in world units; positive Y moves upward. Damage geometry is unchanged.":/Scale/.test(key)?"Size multiplier for "+purpose+". Minimum scale is the size at the lowest passive intensity.":/Playback/.test(key)?"Animation speed at minimum or maximum passive intensity. Speed blends with stacks, momentum or missing HP without seeking the animation.":/Opacity/.test(key)?"Opacity of "+purpose+" from 0 (hidden) to 1 (fully visible).":/Color/.test(key)?"Optional tint for "+purpose+". Empty preserves the imported colors.":/Rotation/.test(key)?"Visual rotation in degrees; gameplay direction is unchanged.":key==="beamWidth"?"Displayed beam thickness in world units. Origin and target flares keep their proportions.":key==="beamEndDuration"?"Seconds for the release frames after a beam stops or switches targets.":key==="markSpawnDuration"?"Seconds for the non-looping mark to appear before its persistent loop.":"Presentation setting for "+purpose+"; does not change gameplay."):undefined);return field;});
+  field.help=VISUAL_HELP[key]||(slot?(field.type==="vfx"?"Imported VFX for "+purpose+". Empty disables this artwork without affecting gameplay.":field.type==="effect-animation"?"Animation from the selected VFX; flipbooks use their imported timing.":/Delay$/.test(key)?"Seconds before "+purpose+" appears. Independent of the other effect layers and damage timing. The effect still stops as soon as its owning buff or target ends.":/Offset/.test(key)?"Visual offset for "+purpose+" in world units; positive Y moves upward. Damage geometry is unchanged.":/Scale/.test(key)?"Size multiplier for "+purpose+". Minimum scale is the size at the lowest passive intensity.":/Playback/.test(key)?"Animation speed at minimum or maximum passive intensity. Speed blends with stacks, momentum or missing HP without seeking the animation.":/Opacity/.test(key)?"Opacity of "+purpose+" from 0 (hidden) to 1 (fully visible).":/Color/.test(key)?"Optional tint for "+purpose+". Empty preserves the imported colors.":/Rotation/.test(key)?"Visual rotation in degrees; gameplay direction is unchanged.":key==="beamWidth"?"Displayed beam thickness in world units. Origin and target flares keep their proportions.":key==="beamEndDuration"?"Seconds for the release frames after a beam stops or switches targets.":key==="markSpawnDuration"?"Seconds for the non-looping mark to appear before its persistent loop.":"Presentation setting for "+purpose+"; does not change gameplay."):undefined);return field;});
 var audioFields=[];
 ["cast","impact","channel"].forEach(function(phase){
   var anchor=phase==="cast"?"skill confirmation":phase==="impact"?"the actual enemy hit":"the visible Mystic beam start";
@@ -138,9 +158,8 @@ var audioFields=[];
 });
 function fields(style){
   var visual=clone(visualFields).filter(function(field){
-    if(/^(beam|mark|buff|taunt|shield)Scale[XY]$/.test(field.key))return false;
-    var slot=/^(passive|beam|mark|buff|taunt|shield)/.exec(field.key);
-    if(slot){if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark")return style==="mystic";return style==="guardian";}
+    var slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|cast)/.exec(field.key);
+    if(slot){if(slot[1]==="cast")return style!=="guardian";if(slot[1]==="buff")return ["fighter","vanguard","guardian"].indexOf(style)>=0;if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark"||slot[1]==="channelHit")return style==="mystic";return style==="guardian";}
     if(["holdTime","targetX","targetY"].indexOf(field.key)>=0)return style==="mystic";
     if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic"||style==="skirmisher";
     if(field.key==="arcDegrees")return style==="fighter"||style==="vanguard";
@@ -151,7 +170,7 @@ function fields(style){
   if(style==='skirmisher'){
     var width=tuning.filter(function(field){return field.key==='projectileWidth';})[0];width.label='Projectile radius';width.group='Projectile';width.help='Radius of the blue collider centered on the arrow sprite. The sprite and collider always share the bow launch and flight path.';
     tuning=tuning.filter(function(field){return field.key!=='projectileWidth';});
-    visual=visual.filter(function(field){return ['resource','resourceAnimation','showBuiltin','animation','color','opacity'].indexOf(field.key)>=0||field.key.indexOf('impact')===0;});
+    visual=visual.filter(function(field){return ['resource','resourceAnimation','showBuiltin','animation','color','opacity'].indexOf(field.key)>=0||field.key.indexOf('impact')===0||field.key.indexOf('cast')===0;});
     visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':'Projectile artwork';});
     visual.unshift({path:'visual.projectile',key:'projectile',label:'Projectile',type:'projectile',group:'Projectile',emptyLabel:'Equipped arrow tier',help:'Use the current arrow sub-item tier, or choose a flight asset from the Projectile editor library. The skill keeps its own speed, damage and collider. Reset restores tier-based artwork or the existing custom VFX.'},width);
   }else if(style!=='mystic')visual.forEach(function(field){
@@ -177,13 +196,13 @@ function defaults(style){
   style=known(style)?style:"skirmisher";
   var result=Object.assign({},Core.DEFAULTS.common,Core.DEFAULTS[style],{visual:clone(VISUAL),audio:{cast:clone(AUDIO),impact:clone(AUDIO),channel:clone(AUDIO)}}),v=result.visual;
   var preset=VFXCatalog.presets[style]||{};Object.keys(preset).forEach(function(slot){var clip=VFXCatalog.clips.filter(function(row){return row.id===preset[slot];})[0];if(clip)applyClip(v,slot+"Resource",clip);});
-  if(style==="fighter")Object.assign(v,{passiveScale:1.8,passiveOffsetY:80,passiveMinScale:.5,passiveMinPlayback:.55,passivePlayback:1.35});
-  if(style==="vanguard")Object.assign(v,{passiveScale:1.8,passiveScaleY:.45,passiveOffsetY:12,passiveMinScale:.3,passiveMinPlayback:.2,passivePlayback:.45});
-  if(style==="bruiser")Object.assign(v,{passiveScale:1.8,passiveColor:"#ff5367",passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1});
-  if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45});
-  if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.25,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85});
+  if(style==="fighter")Object.assign(v,{passiveScale:1.6,passiveOffsetY:65,passiveMinScale:.25,passiveMinPlayback:1,passivePlayback:1,passiveColor:"#fff0d0",buffScale:1.65,buffColor:"#fff0d0",castScale:1,castColor:"#fff0d0"});
+  if(style==="vanguard")Object.assign(v,{passiveScale:1.65,passiveOffsetY:25,passiveMinScale:1,passiveMinPlayback:.5,passivePlayback:1,buffScale:1.65,buffOffsetY:25,castScale:1,castRotation:0});
+  if(style==="bruiser")Object.assign(v,{passiveScale:1.8,passiveScaleY:1.5,passiveOffsetY:60,passiveColor:"#ff5367",passiveMinScale:.6,passiveMinPlayback:.3,passivePlayback:1,castScale:1});
+  if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45,channelHitScale:1,castScale:1});
+  if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.1,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85,presenceScale:1.3,presenceOffsetY:0,defenseScale:.48,physicalShieldScale:.48});
   if(style==="vanguard")v.arcDegrees=72;
-  if(style==="skirmisher")v.projectile="";
+  if(style==="skirmisher"){var authored=VFXCatalog.clips.filter(function(clip){return clip.id==="skirmisher-triple-volley";})[0];Object.assign(v,{projectile:"",castScale:.16,castRotation:authored&&typeof authored.defaultRotation==="number"?authored.defaultRotation:-62.345520429791684});}
   return result;
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}
@@ -207,12 +226,15 @@ function impactVisual(value) {
   result.effectDuration=impactValue(value,"impactDuration");result.delay=impactValue(value,"impactDelay");return result;
 }
 function resourceVisual(value,prefix){
-  var result={};["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop"].forEach(function(key){result[key]=value[prefix+key.slice(8)];});
+  var result={};["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","resourcePremultipliedAlpha"].forEach(function(key){result[key]=value[prefix+key.slice(8)];});
   var slot=prefix.replace(/Resource$/,"");["scale","scaleX","scaleY","rotation","opacity","color","offsetX","offsetY"].forEach(function(key){result[key]=value[slot+key.charAt(0).toUpperCase()+key.slice(1)];});return result;
 }
 function applyClip(value,prefix,clip){
-  value[prefix]=clip.uuid;value[prefix+"Kind"]="sprite";value[prefix+"Bundle"]=clip.bundle;value[prefix+"Path"]=clip.resource;
-  ["frames","columns","cell","fps","loop"].forEach(function(key){value[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=clip[key];});
+  ["Frames","Columns","Cell","Fps","Loop","PremultipliedAlpha"].forEach(function(key){delete value[prefix+key];});
+  value[prefix]=clip.uuid;value[prefix+"Kind"]=clip.kind==="spine"?"spine":"sprite";value[prefix+"Bundle"]=clip.bundle;value[prefix+"Path"]=clip.resource;
+  if(clip.kind==="spine"){value[prefix+"Animation"]=clip.animation;value[prefix+"PremultipliedAlpha"]=clip.premultipliedAlpha!==false;}
+  ["frames","columns","cell","fps","loop"].forEach(function(key){if(clip[key]!==undefined)value[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=clip[key];});
+  if(prefix==="castResource"){delete value.castTrajectory;if(clip.trajectory)value.castTrajectory=clip.trajectory;}
 }
 function projectileVisual(value){
   var asset=value&&value.projectileAsset;
@@ -243,12 +265,14 @@ function effective(style,config){
   var editable=descriptors(style);
   RESOURCE_PREFIXES.forEach(function(prefix){var value=saved.visual&&saved.visual[prefix],field=editable.filter(function(row){return row.path==="visual."+prefix;})[0];if(field&&valid(field,value)&&value!==result.visual[prefix])Object.keys(result.visual).forEach(function(key){if(key!==prefix&&key!==prefix+"Animation"&&key.indexOf(prefix)===0)delete result.visual[key];});});
   editable.forEach(function(field){var value=get(saved,field.path);if(value!==undefined&&valid(field,value))set(result,field.path,value);});
-  RESOURCE_PREFIXES.reduce(function(paths,prefix){return paths.concat("visual."+prefix+"Bundle","visual."+prefix+"Path","visual."+prefix+"Kind");},[]).concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var match=/^visual\.(passiveResource|beamResource|markResource|buffResource|tauntResource|shieldResource)/.exec(path);if(match&&get(saved,"visual."+match[1])!==result.visual[match[1]])return;var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
+  RESOURCE_PREFIXES.reduce(function(paths,prefix){return paths.concat("visual."+prefix+"Bundle","visual."+prefix+"Path","visual."+prefix+"Kind");},[]).concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var match=RESOURCE_PREFIXES.filter(function(prefix){return path.indexOf("visual."+prefix)===0;}).sort(function(a,b){return b.length-a.length;})[0];if(match&&RESOURCE_PREFIXES.indexOf(match)>=2&&get(saved,"visual."+match)!==result.visual[match])return;var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
   RESOURCE_PREFIXES.forEach(function(prefix){if(RESOURCE_PREFIXES.indexOf(prefix)>=2&&get(saved,"visual."+prefix)!==result.visual[prefix])return;var raw={};["Frames","Columns","Cell","Fps","Loop"].forEach(function(key){raw["resource"+key]=saved.visual&&saved.visual[prefix+key];});var frames=flipbook(raw);if(frames)Object.keys(frames).forEach(function(key){result.visual[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});});
   if(style==='skirmisher'&&saved.visual&&saved.visual.projectileAsset){
     var candidate=Object.assign({},result.visual,{projectileAsset:saved.visual.projectileAsset});
     if(projectileVisual(candidate)!==candidate)result.visual.projectileAsset=clone(saved.visual.projectileAsset);
   }
+  delete result.visual.castTrajectory;
+  if(result.visual.castResource){var castClip=VFXCatalog.clips.filter(function(clip){return clip.uuid===result.visual.castResource||clip.id===result.visual.castResource;})[0];delete result.visual.castTrajectory;if(castClip&&castClip.trajectory)result.visual.castTrajectory=castClip.trajectory;}
   return result;
 }
 function validateStyle(style,value){

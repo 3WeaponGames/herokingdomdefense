@@ -62,11 +62,19 @@ function arrowTip(target,direction,mirrorX){
 }
 // RegionAttachment's upper edge follows the fitted artwork's own +Y, including
 // its authored rotation. It is independent of the current beam target.
-function attachmentTip(target,name,resolvedBone){
+function attachmentTip(target,name,resolvedBone,json){
   if(!live(target))return null;
   var bone=resolvedBone||target&&target.findBone&&target.findBone(name),slot=target&&target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==='function'?slot.getAttachment():slot.attachment),vertices=localVertices(attachment);
   if(!bone||!vertices)return null;
-  var x=(vertices[2]+vertices[4])/2,y=(vertices[3]+vertices[5])/2,a=value(bone,'a',NaN),b=value(bone,'b',NaN),c=value(bone,'c',NaN),d=value(bone,'d',NaN);
+  json=json||target.skeletonData&&target.skeletonData.skeletonJson;
+  var key=attachment&&(typeof attachment.getName==='function'?attachment.getName():attachment.name||attachment.path),head=null,skins=json&&Array.isArray(json.skins)?json.skins:[];
+  var skeleton=target._skeleton||(target._nativeSkeleton&&typeof target._nativeSkeleton.getSkeleton==='function'?target._nativeSkeleton.getSkeleton():null),skin=skeleton&&(typeof skeleton.getSkin==='function'?skeleton.getSkin():skeleton.skin),skinName=skin&&(typeof skin.getName==='function'?skin.getName():skin.name);
+  function lookup(skin){var variants=skin&&skin.attachments&&skin.attachments[name],entry=variants&&variants[key];if(!entry&&variants)Object.keys(variants).some(function(n){if(variants[n].path===key){entry=variants[n];return true;}return false;});if(entry&&entry._skillTip){head=entry._skillTip;return true;}return false;}
+  if(skinName)lookup(skins.filter(function(s){return s.name===skinName;})[0]);
+  if(!head)lookup(skins.filter(function(s){return s.name==='default';})[0]);
+  if(!head&&!skinName)skins.some(lookup);
+  var u=head&&value(head,'u',-1),v=head&&value(head,'v',-1),custom=!!head&&u>=0&&u<=1&&v>=0&&v<=1;
+  var x=custom?vertices[2]+(vertices[4]-vertices[2])*u+(vertices[0]-vertices[2])*v:(vertices[2]+vertices[4])/2,y=custom?vertices[3]+(vertices[5]-vertices[3])*u+(vertices[1]-vertices[3])*v:(vertices[3]+vertices[5])/2,a=value(bone,'a',NaN),b=value(bone,'b',NaN),c=value(bone,'c',NaN),d=value(bone,'d',NaN);
   if(!isFinite(a+b+c+d))return null;
   return{x:value(bone,'worldX',0)+x*a+y*b,y:value(bone,'worldY',0)+x*c+y*d};
 }

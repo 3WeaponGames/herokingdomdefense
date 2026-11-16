@@ -2,14 +2,14 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'../..'),config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),Stats=require('../../assets/_script/HeroEquipmentStats'),Weapons=require('../../assets/_script/HeroWeapons'),Loadout=require('../../assets/_script/HeroLoadout'),Tiers=require('../../assets/_script/EquipmentTiers');
 const near=(a,b)=>assert(Math.abs(a-b)<1e-8,a+' != '+b);
-const authoredDamage=(style,level)=>style==='skirmisher'?18+2*(level-1):Math.ceil(2*level*Stats.multiplier(config,style)-1e-9);
+const authoredDamage=(style,level)=>{const progression=config.HeroEquipment.damageProgressions?.[style];return progression?progression.baseDamage+progression.gains.slice(0,level-1).reduce((a,b)=>a+b,0):Math.ceil(2*level*Stats.multiplier(config,style)-1e-9);};
 test('all fifty main-weapon levels grant two damage each, retain five tiers and preserve explicit publication idempotence',()=>{
  const main=config.EquipCfg.find(gear=>gear.id===4);assert.equal(main.levelInfo.length,50);assert.deepEqual(Tiers.tiers(main).map(tier=>tier.levels.length),[10,10,10,10,10]);main.levelInfo.forEach((row,index)=>{assert.equal(row.Parameters,(index+1)*2);assert.equal(row.ID,4);});
  assert.equal(main.levelInfo[0].GoldCost,650,'Early damage upgrades retain their affordable damage-track price');assert.equal(main.levelInfo.at(-1).GoldCost,0);assert.equal(config.HeroEquipment.upgradePricingVersion,1);
  const plan=require('./hero-equipment-stats.cjs').plan(root);assert.equal(plan.files.size,0);assert.equal(config.GameTools.timingDefaults===undefined,false);
 });
 test('secondary levels affect only the equipped style and never supply flat weapon damage or change progress during a read',()=>{
- const caps={fighter:{healthRegen:5},skirmisher:{range:200,criticalChance:.1},vanguard:{move:.2,attackRate:.1},bruiser:{lifeSteal:.1},guardian:{damageReduction:.2},mystic:{splashDamage:.5}};
+ const caps={fighter:{healthRegenPercent:.05},skirmisher:{range:200,criticalChance:.1},vanguard:{move:.2,attackRate:.1},bruiser:{lifeSteal:.1},guardian:{damageReduction:.2},mystic:{splashDamage:.5}};
  for(const style of Weapons.styles){const data={personLevel:[1,1,1,1,1,1],heroEquipmentVersion:1,heroWeapon:{selected:style.id,levels:{[style.id]:{3:50,4:1}}}},before=JSON.stringify(data),snap=Loadout.snapshot(config,data);near(snap.damage,authoredDamage(style.id,1));for(const [key,value]of Object.entries(caps[style.id]))near(snap.secondary[key],value);assert.equal(JSON.stringify(data),before);
   data.heroWeapon.levels[style.id][4]=50;near(Loadout.snapshot(config,data).damage,authoredDamage(style.id,50));data.heroWeapon.levels[style.id][3]=1;near(Loadout.snapshot(config,data).damage,authoredDamage(style.id,50));
  }
@@ -28,7 +28,7 @@ test('legacy per-level appearances move together while named tier looks and othe
 });
 test('the Archer follows its authored starting damage while the other styles retain their weapon and support roles',()=>{
  const get=style=>Loadout.calculate(config,{personLevel:[50,50,50,50,25,25],heroWeapon:{selected:style,levels:{[style]:{3:50,4:50}}}},{splashTargets:2}),bow=get('skirmisher'),fighter=get('fighter'),spear=get('vanguard'),axe=get('bruiser'),shield=get('guardian'),staff=get('mystic');
- assert.deepEqual([bow.damage,fighter.damage,spear.damage,axe.damage,shield.damage,staff.damage],[116,130,120,150,115,85]);
+ for(const [style,loadout]of Object.entries({skirmisher:bow,fighter,vanguard:spear,bruiser:axe,guardian:shield,mystic:staff}))assert.equal(loadout.raw.damage,authoredDamage(style,50));
  for(const melee of [fighter,spear,axe])assert(melee.primaryDps>bow.primaryDps);assert(staff.primaryDps<bow.primaryDps);assert.equal(staff.equipmentSplashDps,0,'Crystal Orb affects active damage only');assert.equal(spear.range>fighter.range,true);assert(shield.preventedDps>0);assert(fighter.regen>bow.regen);assert.equal(fighter.lifeStealHps,0);assert(axe.lifeStealHps>0);
  for(let level=1;level<=50;level++)for(const style of Weapons.styles)assert.equal(Stats.fields(config,4,level,style.id)[0].value,authoredDamage(style.id,level));
 });
@@ -65,7 +65,7 @@ test('secondary replacement publication preserves authored new values, unrelated
  assert.equal(tool.updateSecondary(cfg),true);assert.deepEqual(row.SecondaryStats.fighter,{healthRegen:.8,future:17});assert.deepEqual(row.SecondaryStats.bruiser,{lifeSteal:.09,future:18});assert.equal(JSON.stringify(cfg.GameTools),timing);assert.deepEqual(cfg.EquipCfg.find(gear=>gear.id===4),before);assert.equal(tool.updateSecondary(cfg),false);
 });
 
-test('Fighter potion adds flat health regeneration without changing damage or gaining lifesteal',()=>{
+test('Fighter Food adds percent maximum-health regeneration without changing damage or gaining lifesteal',()=>{
  const data={personLevel:[1,1,1,1,1,1],heroWeapon:{selected:'fighter',levels:{fighter:{3:1,4:50}}}},first=Loadout.snapshot(config,data);data.heroWeapon.levels.fighter[3]=50;const last=Loadout.snapshot(config,data);
- near(last.regen-first.regen,5-Stats.secondary(config,'fighter',1).healthRegen);near(last.raw.regen,last.regen);near(last.secondary.healthRegen,5);assert.equal(last.secondary.lifeSteal,undefined);near(last.damage,first.damage);
+ near(last.regen-first.regen,last.health*(.05-Stats.secondary(config,'fighter',1).healthRegenPercent));near(last.raw.regen+last.health*.05,last.regen);near(last.secondary.healthRegenPercent,.05);assert.equal(last.secondary.lifeSteal,undefined);near(last.damage,first.damage);
 });

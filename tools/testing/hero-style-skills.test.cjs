@@ -23,14 +23,14 @@ test('aim confirmation does not consume charge before Skirmisher actually fires'
  const s=Skills.createState('skirmisher');s.charge=.5;
  assert.equal(Skills.beginActive(s,{direction:{x:0,y:5}}).ok,true);close(s.charge,.5);
  assert.equal(Skills.step(s,.1,{moving:false}).length,0);
- const events=Skills.step(s,.25,{moving:false});assert.equal(events.length,1);
- assert.equal(events[0].type,'skirmisher-arrow');close(events[0].charge,.5875);close(s.charge,0);
+ const events=Skills.step(s,s.tuning.windup-.1,{moving:false});assert.equal(events.length,1);
+ assert.equal(events[0].type,'skirmisher-arrow');close(events[0].charge,.5+s.tuning.windup*.25);close(s.charge,0);
  assert.deepEqual(events[0].direction,{x:0,y:1});
- assert.equal(Skills.step(s,1,{moving:false}).length,0);
+ const later=Skills.step(s,1,{moving:false});assert.equal(later.length,2);later.forEach(event=>{close(event.charge,events[0].charge);assert.equal(event.directions.length,3);});
 });
 test('Skirmisher movement during wind-up clears charge and distance always increases shot damage',()=>{
  const s=Skills.createState('skirmisher');s.charge=1;Skills.beginActive(s,{});
- const [arrow]=Skills.step(s,.35,{moving:true});assert.equal(arrow.charge,0);
+ const [arrow]=Skills.step(s,s.tuning.windup,{moving:true});assert.equal(arrow.charge,0);
  assert(Skills.projectileMultiplier(s,600,arrow.damageMultiplier)>Skills.projectileMultiplier(s,100,arrow.damageMultiplier));
 });
 test('Skirmisher wind-up and passive result do not depend on frame partition',()=>{
@@ -62,24 +62,24 @@ test('Vanguard buff expiry resumes charging only for residual movement time and 
  const a=run([12]),b=run(Array(1200).fill(.01));close(a.charge,.4);close(a.charge,b.charge);close(a.buffRemaining,0);close(b.buffRemaining,0);close(b.buffStrength,0);close(a.buffStrength,0);close(Skills.bonuses(a).move,.2);assert.equal(Skills.bonuses(a).attackRate,0);
  const exact=run([10]);assert.equal(exact.charge,0);assert.equal(exact.buffRemaining,0);Skills.step(exact,1,{moving:true});close(exact.charge,.2);
 });
-test('Vanguard emits exactly seven independently resolvable thrusts by 2.5 seconds with fixed aim',()=>{
+test('Vanguard emits five authored VFX contacts with one fixed cast direction',()=>{
  const s=Skills.createState('vanguard'),cast=Skills.beginActive(s,{direction:{x:3,y:4},moveSpeed:300,attackRate:1});
- assert.equal(cast.strikes,7);assert.equal(Skills.step(s,.35,{moving:true}).length,0);
+ assert.equal(cast.strikes,5);assert.equal(Skills.step(s,.35,{moving:true}).length,0);
  const events=Skills.step(s,2.15,{moving:true,moveSpeed:600,attackRate:2});
- assert.equal(events.length,7);assert.deepEqual(events.map(e=>e.index),[1,2,3,4,5,6,7]);
- close(events[6].elapsed,2.5);assert.equal(s.active,null);assert.equal(Skills.step(s,100,{}).length,0);
+ assert.equal(events.length,5);assert.deepEqual(events.map(e=>e.index),[1,2,3,4,5]);
+ close(events[4].elapsed,.8666666667);assert.equal(s.active,null);assert.equal(Skills.step(s,100,{}).length,0);
  for(const event of events){assert.deepEqual(event.direction,{x:.6,y:.8});assert(event.damageMultiplier>cast.damageMultiplier);}
 });
 test('Vanguard timing is frame independent and no first target list is stored',()=>{
  function run(frames){const s=Skills.createState('vanguard');Skills.beginActive(s,{});return frames.flatMap(dt=>Skills.step(s,dt,{}));}
- const slow=run([2.5]),fast=run(Array(250).fill(.01));assert.equal(fast.length,7);
+ const slow=run([2.5]),fast=run(Array(250).fill(.01));assert.equal(fast.length,5);
  fast.forEach((e,i)=>{close(e.time,slow[i].time);assert(!('targets' in e));});
 });
 test('Fighter landed melee hits stack damage, reduction and tenacity and all expire',()=>{
  const s=Skills.createState('fighter');Skills.onHit(s,{}, {hit:false});assert.equal(s.stacks,0);
  Skills.onHit(s,{}, {melee:false});assert.equal(s.stacks,0);
- for(let i=0;i<10;i++)Skills.onHit(s,{}, {strikeId:i});assert.equal(s.stacks,5);
- const bonus=Skills.bonuses(s);close(bonus.damage,.15);close(bonus.damageReduction,.125);close(bonus.tenacity,.4);
+ for(let i=0;i<15;i++)Skills.onHit(s,{}, {strikeId:i});assert.equal(s.stacks,10);
+ const bonus=Skills.bonuses(s);close(bonus.damage,.3);close(bonus.damageReduction,.25);close(bonus.tenacity,.8);
  Skills.step(s,5,{});assert.equal(s.stacks,0);assert.equal(Skills.bonuses(s).damage,0);
 });
 test('Fighter active grants ten-second attack speed and damage, then expires',()=>{
@@ -110,7 +110,7 @@ test('Mystic charge is capped, increases active damage and scales with Crystal O
  const s=Skills.createState('mystic'),target={};for(let i=0;i<20;i++)Skills.onHit(s,target,{});
  assert.equal(s.mysticCharges,10);
  const cast=Skills.beginActive(s,{target,splashDamage:.5});assert.equal(cast.ok,true);assert.equal(cast.target,target);
- assert.equal(cast.damageMultiplier,4.5);assert.equal(s.mysticCharges,0);assert.equal(s.marked,true);
+ close(cast.damageMultiplier,1.8);assert.equal(cast.radius,200);assert.equal(s.mysticCharges,0);assert.equal(s.marked,true);
  assert.deepEqual(Skills.step(s,1,{}),[],'continuous basic tick cadence belongs to gameplay and has no projectile events');
 });
 test('Mystic target change/death clears mark and charge, while time/range pause alone does not',()=>{
@@ -122,7 +122,7 @@ test('Guardian shield absorbs damage once, has an expiry and exposes ally protec
  const s=Skills.createState('guardian'),cast=Skills.beginActive(s,{maxHp:1000});assert.equal(cast.shieldAmount,250);assert(cast.tauntDuration>0);
  assert.deepEqual(Skills.absorbDamage(s,100),{damage:0,absorbed:100});
  assert.deepEqual(Skills.absorbDamage(s,200),{damage:50,absorbed:150});assert(Skills.bonuses(s).allyDamageReduction>0);
- const another=Skills.createState('guardian');Skills.beginActive(another,{maxHp:1000});Skills.step(another,5,{});assert.equal(another.shield,0);
+ const another=Skills.createState('guardian');Skills.beginActive(another,{maxHp:1000});Skills.step(another,9,{});assert.equal(another.shield,250);Skills.step(another,1,{});assert.equal(another.shield,0);
 });
 test('dead heroes cannot cast or emit scheduled skill impacts and cooldown blocks double activation',()=>{
  const s=Skills.createState('vanguard');assert.equal(Skills.beginActive(s,{hp:0}).ok,false);

@@ -101,7 +101,7 @@ test('trajectory indicator ends at the map edge for every direction and excludes
 });
 
 test('Vanguard draws its actual damage arc rather than Fighter’s wider arc',()=>{
- const f=fixture('vanguard');f.rt.effects=[{kind:'arc',x:0,y:0,radius:200,direction:{x:1,y:0},halfAngle:Math.PI/5,remaining:.35,duration:.35}];
+ const f=fixture('vanguard');f.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults('vanguard');f.rt.settings.visual.castResource='';f.rt.effects=[{kind:'arc',x:0,y:0,radius:200,direction:{x:1,y:0},halfAngle:Math.PI/5,remaining:.35,duration:.35}];
  f.hud.update(f.hero,f.rt);const arc=f.hero._skillHUD.visual.g.ops.find(op=>op[0]==='arc');
  assert(arc);assert(Math.abs(arc[5]-arc[4]-2*Math.PI/5)<1e-12);assert.equal(arc[6],true);
 });
@@ -115,7 +115,7 @@ test('unchanged charge and empty world overlays do not rebuild Graphics every fr
 
 test('Skirmisher guide uses its exact bow release and ignores obsolete independent offsets',()=>{
  const f=fixture('skirmisher',{skillOrigin:()=>({x:30,y:120})});f.hero.ctrPlayAni={};
- f.rt.settings={visual:Object.assign(require('../../assets/_script/HeroSkillSettings').defaults('skirmisher').visual,{originX:4,originY:5,offsetX:6,offsetY:7})};
+ f.rt.settings={visual:Object.assign(require('../../assets/_script/HeroSkillSettings').defaults('skirmisher').visual,{originX:4,originY:5,offsetX:6,offsetY:7,castTrajectory:''})};
  f.rt.aiming=true;f.hud.update(f.hero,f.rt);
  const lines=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='moveTo');
  assert.deepEqual(lines.slice(0,2),[['moveTo',30,120],['moveTo',30,120]]);
@@ -125,12 +125,17 @@ test('Skirmisher guide uses its exact bow release and ignores obsolete independe
 test('Skirmisher aim prediction uses the selected authored skill clip before the cast begins',()=>{
  const requests=[],f=fixture('skirmisher',{skillOrigin:(_controller,_direction,clip)=>{requests.push(clip);return{x:50,y:110};}});f.hero.ctrPlayAni={};f.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults('skirmisher');f.rt.settings.visual.animation='attack_fighter';f.rt.aiming=true;f.hud.update(f.hero,f.rt);assert.deepEqual(requests,['attack_fighter']);
 });
+test('native barrage aiming shows three finite paths from the bow and suppresses duplicate procedural cast artwork',()=>{
+ const f=fixture('skirmisher',{skillOrigin:()=>({x:30,y:80})});f.hero.ctrPlayAni={};f.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults('skirmisher');f.rt.state.tuning=require('../../assets/_script/HeroStyleSkills').createState('skirmisher').tuning;f.rt.aiming=true;f.hud.update(f.hero,f.rt);
+ const ops=f.hero._skillHUD.visual.g.ops,moves=ops.filter(row=>row[0]==='moveTo'),lines=ops.filter(row=>row[0]==='lineTo');assert.equal(moves.length,6);assert(lines.length>6);assert(lines.every(row=>row[1]<500),'finite barrage must not advertise the old map-wide ray');assert(moves.every(row=>Math.hypot(row[1]-30,row[2]-80)<25));
+ const spear=fixture('vanguard');spear.rt.effects=[{kind:'arc',x:0,y:0,radius:200,direction:{x:1,y:0},halfAngle:Math.PI/5,remaining:.35,duration:.35}];spear.hud.update(spear.hero,spear.rt);assert.equal(spear.hero._skillHUD.visual.g.ops.some(row=>row[0]==='arc'),false);
+});
 
 const graphicsHelper=path.join(process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine','cocos2d/core/graphics/helper.js');
 test('installed Cocos renders each forward skill arc inside its attack hemisphere',{skip:!fs.existsSync(graphicsHelper)},()=>{
  const actual={exports:{}};vm.runInNewContext(fs.readFileSync(graphicsHelper,'utf8'),{module:actual,require:()=>({PointFlags:{}}),Math});const helper=actual.exports;
  for(const style of ['fighter','vanguard'])for(const direction of [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}]){
-  const f=fixture(style);f.rt.effects=[{kind:'arc',x:0,y:0,radius:200,direction,halfAngle:style==='vanguard'?Math.PI/5:Math.PI/3,remaining:.35,duration:.35}];
+  const f=fixture(style);f.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults(style);f.rt.settings.visual.castResource='';f.rt.effects=[{kind:'arc',x:0,y:0,radius:200,direction,halfAngle:style==='vanguard'?Math.PI/5:Math.PI/3,remaining:.35,duration:.35}];
   f.hud.update(f.hero,f.rt);const arc=f.hero._skillHUD.visual.g.ops.find(op=>op[0]==='arc'),points=[];
   const ctx={moveTo(x,y){points.push({x,y});},lineTo(x,y){points.push({x,y});},bezierCurveTo(...p){for(let i=0;i<p.length;i+=2)points.push({x:p[i],y:p[i+1]});}};
   helper.arc(ctx,...arc.slice(1));assert(points.length>2);

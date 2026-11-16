@@ -18,6 +18,8 @@ def capture_rows(bake):
     spec=json.loads(Path(__file__).with_name('effects.json').read_text())
     expected={row['id'] for row in spec['clips']}
     expected.update('mystic-beam-'+part['id']+'-'+phase['phase'] for part in spec['beam']['parts'] for phase in spec['beam']['phases'])
+    weather=Path(__file__).with_name('weather-effects.json')
+    if weather.exists() and any(row.get('id','').startswith('weather-') for row in jobs):expected.update(row['id'] for row in json.loads(weather.read_text())['clips'])
     def index(values):
         result={}
         if not isinstance(values,list):raise ValueError('Invalid capture manifest')
@@ -31,6 +33,7 @@ def capture_rows(bake):
     if not isinstance(source.get('workbookSha256'),str) or not re.fullmatch(r'[a-f0-9]{64}',source['workbookSha256']):raise ValueError('Invalid workbook provenance')
     defaults={'frames':64,'fps':48,'columns':16,'cell':128,'loop':False,'style':'','slot':'','phase':'','package':'','prefab':''}
     for row in rows:
+        if row['id'].startswith('weather-'):continue
         ident=row['id'];job=planned[ident]
         if row.get('file')!=ident+'.png':raise ValueError('Invalid capture filename: '+ident)
         for key,default in defaults.items():
@@ -55,25 +58,37 @@ def run(bake,artifacts):
     base='assets/resources/vfx/hero-skills'
     for folder in ('assets/resources/vfx',base):tx.folder(folder)
     for row in rows:
+        if row['id'].startswith('weather-'):continue
         image=bake/'Baked'/row['file'];relative=base+'/'+row['file'];raw=image.read_bytes()
         with Image.open(image) as im:
             width,height=im.size
             if im.mode!='RGBA' or width!=row['columns']*row['cell'] or height!=((row['frames']+row['columns']-1)//row['columns'])*row['cell']:raise ValueError('Invalid atlas '+row['id'])
             im.verify()
         meta=texture_meta(relative,width,height);existing=tx.read(relative+'.meta')
-        if existing is not None and json.loads(existing)!=meta:raise ValueError('Preserve authored metadata before reimport: '+relative)
+        if existing is not None:
+            previous=json.loads(existing)
+            # Changed capture dimensions may update unchanged generated metadata.
+            if previous!=meta and previous!=texture_meta(relative,previous.get('width'),previous.get('height')):raise ValueError('Preserve authored metadata before reimport: '+relative)
         tx.stage(relative,raw);tx.json(relative+'.meta',meta)
         fields=('id','name','style','slot','phase','group','part','loop','frames','columns','cell','fps','anchorX','anchorY','startX','startY','endX','endY','aspect','alphaBounds','visibleFrames')
         clip={k:row[k] for k in fields if k in row}
         clip.update(kind='flipbook',bundle='resources',resource='vfx/hero-skills/'+row['id'],uuid=asset_uuid(relative+'#sprite'),sha256=hashlib.sha256(raw).hexdigest(),source={'package':row['package'],'prefab':row['prefab']})
+        if row['id']=='mystic-electric-barrier':clip.update(startX=0,startY=.5,endX=1,endY=.5)
         clips.append(clip)
-    catalog={'version':1,'workbookSha256':source['workbookSha256'],'clips':clips,'presets':{'fighter':{'passive':'fighter-windup'},'vanguard':{'passive':'vanguard-momentum'},'bruiser':{'passive':'bruiser-blood-aura'},'mystic':{'beam':'mystic-beam-body-loop','mark':'mystic-mark-loop'},'guardian':{'buff':'guardian-runic-shield'}}}
+    catalog={'version':1,'workbookSha256':source['workbookSha256'],'clips':clips,'presets':{
+      'skirmisher':{'cast':'skirmisher-triple-volley'},
+      'fighter':{'passive':'fighter-windup','buff':'fighter-meshy-center','cast':'fighter-arc-slash'},
+      'vanguard':{'passive':'vanguard-momentum','buff':'vanguard-momentum-buff','cast':'vanguard-spear-barrage'},
+      'bruiser':{'passive':'bruiser-blood-aura','cast':'bruiser-energy-cleave'},
+      'mystic':{'beam':'mystic-electric-barrier','channelHit':'mystic-electrified-target','mark':'mystic-mark-loop','cast':'mystic-charged-burst'},
+      'guardian':{'buff':'guardian-runic-shield','presence':'guardian-gold-presence','taunt':'guardian-taunt-exclamation','defense':'guardian-defense','physicalShield':'guardian-physical-shield-start'}}}
     custom=ROOT/'tools/skills-vfx/sheet-clips.json'
     if custom.exists():
-        catalog['clips'].extend(json.loads(custom.read_text()))
-        catalog['presets']['guardian'].update(taunt='guardian-taunt-test',shield='guardian-body-shield-loop')
+        catalog['clips'].extend(json.loads(custom.read_text(encoding="utf-8")))
+    native=ROOT/'tools/skills-vfx/native-clips.json'
+    if native.exists():catalog['clips'].extend(json.loads(native.read_text()))
     tx.json(base+'/catalog.json',catalog)
-    tx.json(base+'/catalog.json.meta',{'ver':'1.2.7','uuid':asset_uuid(base+'/catalog.json'),'importer':'json','subMetas':{}})
+    tx.json(base+'/catalog.json.meta',{'ver':'1.0.2','uuid':asset_uuid(base+'/catalog.json'),'importer':'json','subMetas':{}})
     script='assets/_script/HeroSkillVFXCatalog.js'
     tx.stage(script,b'"use strict";\n// Generated by tools/skills-vfx/import-bake.py; stable source and atlas metadata.\nmodule.exports = '+json.dumps(catalog,ensure_ascii=False,indent=2).encode()+b';\n')
     tx.json(script+'.meta',{'ver':'1.1.0','uuid':asset_uuid(script),'importer':'javascript','isPlugin':False,'loadPluginInWeb':True,'loadPluginInNative':True,'loadPluginInEditor':False,'subMetas':{}})

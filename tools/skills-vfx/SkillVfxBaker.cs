@@ -9,7 +9,7 @@ using System.Linq;
 public static class SkillVfxBaker {
  [Serializable] public class Job {
   public string id,name,prefab,package,style,slot,phase,group,part,file;
-  public bool loop,rain,preserveTimeline;
+  public bool loop,rain,preserveTimeline,grayscale;
   public int frames=64,fps=48,cell=128,columns=16;
   public float warmup,sourceStart,sourceDuration,pitch,hueShift;
   public string[] excludeRoots,includeRoots,includeParticles;
@@ -56,17 +56,29 @@ public static class SkillVfxBaker {
  }
  static bool HasParticleAncestor(Transform child,Transform root){for(var at=child.parent;at;at=at.parent){if(at.GetComponent<ParticleSystem>())return true;if(at==root)break;}return false;}
  static SerializedProperty Saved(Material mat,string type,string key){if(!mat)return null;var props=new SerializedObject(mat).FindProperty("m_SavedProperties."+type);for(int i=0;props!=null&&i<props.arraySize;i++){var row=props.GetArrayElementAtIndex(i);if(row.FindPropertyRelative("first").stringValue==key)return row.FindPropertyRelative("second");}return null;}
+ static float Scalar(Material mat,string key,float fallback=0){var value=Saved(mat,"m_Floats",key);return value==null?fallback:value.floatValue;}
+ static void TextureProperty(Material destination,Material source,string key){var value=Saved(source,"m_TexEnvs",key);if(value==null)return;destination.SetTexture(key,value.FindPropertyRelative("m_Texture").objectReferenceValue as Texture);destination.SetTextureScale(key,value.FindPropertyRelative("m_Scale").vector2Value);destination.SetTextureOffset(key,value.FindPropertyRelative("m_Offset").vector2Value);}
  static Material MapMaterial(Material source,Job job){
   var material=new Material(Shader.Find("Hidden/HKD/SkillVfxBake"));Texture texture=null;SerializedProperty textureProp=null;
   foreach(string key in new[]{"_MainTex","_BaseMap","_Texture","_MainTexture"}){var row=Saved(source,"m_TexEnvs",key);if(row!=null&&row.FindPropertyRelative("m_Texture").objectReferenceValue){textureProp=row;texture=row.FindPropertyRelative("m_Texture").objectReferenceValue as Texture;break;}}
   if(!texture&&source){var envs=new SerializedObject(source).FindProperty("m_SavedProperties.m_TexEnvs");for(int i=0;envs!=null&&i<envs.arraySize;i++){var row=envs.GetArrayElementAtIndex(i).FindPropertyRelative("second");var candidate=row.FindPropertyRelative("m_Texture").objectReferenceValue as Texture;if(candidate){texture=candidate;textureProp=row;break;}}}
   material.mainTexture=texture;if(textureProp!=null){material.mainTextureScale=textureProp.FindPropertyRelative("m_Scale").vector2Value;material.mainTextureOffset=textureProp.FindPropertyRelative("m_Offset").vector2Value;}
+  material.SetFloat("_Klaus",Saved(source,"m_TexEnvs","Texture2D_F593E37E")!=null?1:0);
+  material.SetFloat("_Grayscale",job.grayscale?1:0);
+  if(source&&source.name.IndexOf("proc glow",StringComparison.OrdinalIgnoreCase)>=0){material.SetFloat("_ProceduralGlow",1);var lo=Saved(source,"m_Floats","_GlowMin");var hi=Saved(source,"m_Floats","_GlowMax");var power=Saved(source,"m_Floats","_Glow_Pow");var maximum=Saved(source,"m_Floats","_MaxValue");material.SetVector("_Glow",new Vector4(lo==null?0:lo.floatValue,hi==null?1:hi.floatValue,power==null?2:power.floatValue,maximum==null?1:maximum.floatValue));}
+  if(source&&source.name.StartsWith("cfxr",StringComparison.OrdinalIgnoreCase)){
+   TextureProperty(material,source,"_DissolveTex");TextureProperty(material,source,"_OverlayTex");
+   material.SetVector("_DissolveSettings",new Vector4(Scalar(source,"_UseDissolve"),Scalar(source,"_UseDissolveOffsetUV"),Scalar(source,"_InvertDissolveTex"),Scalar(source,"_DissolveSmooth",.1f)));
+   material.SetFloat("_DoubleDissolve",Scalar(source,"_DoubleDissolve"));material.SetFloat("_OverlayMode",Scalar(source,"_CFXR_OVERLAYTEX"));material.SetFloat("_OverlayBlend",Scalar(source,"_CFXR_OVERLAYBLEND"));
+   var dissolveScroll=Saved(source,"m_Colors","_DissolveScroll");if(dissolveScroll!=null)material.SetVector("_DissolveScroll",dissolveScroll.colorValue);
+   var overlayScroll=Saved(source,"m_Colors","_OverlayTex_Scroll");if(overlayScroll!=null)material.SetVector("_OverlayScroll",overlayScroll.colorValue);
+  }
   Color color=Color.white;foreach(string key in new[]{"_TintColor","_BaseColor","_Color"}){var p=Saved(source,"m_Colors",key);if(p!=null){color=p.colorValue;break;}}material.color=color;
   string shader=source&&source.shader?source.shader.name.ToLowerInvariant():"";var blend=Saved(source,"m_Floats","_DstBlend");bool additive=shader.Contains("additive")||shader.Contains("/add")||blend!=null&&Mathf.Abs(blend.floatValue-1)<.001f;
   // Beam graphs combine opaque color ramps with additive light. Convert the
   // dark background of those ramps to coverage before normal sprite blending.
   material.SetFloat("_Additive",additive||job.slot=="beam"?1:0);material.SetFloat("_HueShift",job.hueShift);
-  if(source&&source.name.StartsWith("cfxr",StringComparison.OrdinalIgnoreCase)){material.color=Color.white;var single=Saved(source,"m_Floats","_SingleChannel");material.SetFloat("_SingleChannel",single==null?0:single.floatValue);}
+  if(source&&source.name.StartsWith("cfxr",StringComparison.OrdinalIgnoreCase)){material.color=Color.white;var single=Saved(source,"m_Floats","_SingleChannel");material.SetFloat("_SingleChannel",single==null?0:single.floatValue);var hdr=Saved(source,"m_Floats","_HdrMultiply");material.SetFloat("_Hdr",hdr==null?1:Mathf.Max(1,hdr.floatValue));}
   var alpha=Saved(source,"m_Colors","_MainAlphaChannel");if(alpha!=null){material.SetFloat("_UseChannels",1);material.SetVector("_AlphaChannel",alpha.colorValue);foreach(string name in new[]{"_MainTextureChannel","_WhiteColor","_MidColor","_LastColor"}){var value=Saved(source,"m_Colors",name);if(value!=null)material.SetVector(name=="_MainTextureChannel"?"_RgbChannel":name,value.colorValue);}}
   var scroll=Saved(source,"m_Colors","_MainTexturePanning");if(scroll!=null)material.SetVector("_Scroll",scroll.colorValue);
   return material;

@@ -5268,5 +5268,62 @@
       "launch": "toon:flash-10",
       "impact": "toon:hit-10",
       "trail": false
-    } }
+    } },
+  "heroArrowTiers": [
+    {
+      "skin": "lv1",
+      "levels": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "flight": "hero-skin:lv1"
+    },
+    {
+      "skin": "lv2",
+      "levels": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "flight": "hero-skin:lv2"
+    },
+    {
+      "skin": "lv_blue",
+      "levels": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "flight": "hero-skin:lv3"
+    },
+    {
+      "skin": "lv3",
+      "levels": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "flight": "hero-skin:lv4-purple"
+    },
+    {
+      "skin": "lv4",
+      "levels": [
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "flight": "hero-skin:lv4"
+    }
+  ]
 }

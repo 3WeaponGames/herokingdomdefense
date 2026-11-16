@@ -5,6 +5,7 @@ var Settings = require("./HeroSkillSettings"), Pose = require("./HeroSkillPose")
 var Projectile = require("./HeroSkillProjectile");
 var VFXState=require("./HeroSkillVFXState"),VFXLayout=require("./HeroSkillVFXLayout");
 var MAX_FEEDBACK=256,MAX_IMPACTS=128;
+var STYLE_SELECTION_KEYS=[];Settings.resourcePrefixes.slice(2).forEach(function(prefix){["","Kind","Bundle","Path","Animation","Skin","PremultipliedAlpha","Frames","Columns","Cell","Fps","Loop"].forEach(function(suffix){STYLE_SELECTION_KEYS.push(prefix+suffix);});});
 function visual(runtime) {
   var value=(runtime.settings || Settings.effective(runtime.state.style, runtime.config)).visual;
   if(runtime.state.style!=='skirmisher')return value;
@@ -51,16 +52,16 @@ function hitCurrent(runtime,item,reaction) {
   var target=item.target,node=target&&target.node;
   return runtime.available()&&runtime.state===item.scope&&runtime.heroGeneration===item.heroGeneration&&runtime.hero&&runtime.hero.node===item.ownerNode&&alive(item.ownerNode)&&item.ownerNode._combatGeneration===item.ownerGeneration&&runtime.game===item.game&&runtime.game.gameData===item.data&&runtime.game._combatEpoch===item.epoch&&target&&node===item.targetNode&&alive(node)&&!target._isPooled&&node._combatGeneration===item.targetGeneration&&(!reaction||target.hp>0&&(!target.isDead||!target.isDead()));
 }
-function deferHitReaction(runtime,target) {
+function deferHitReaction(runtime,target,context) {
   var delay=visual(runtime).impactDelay;
   if(!(delay>0)||!runtime.available())return false;
   var s=state(runtime);if(s.feedback.length>=MAX_FEEDBACK)return false;
-  var item=hitRecord(runtime,target);item.at=runtime.state.time+delay;s.feedback.push(item);return true;
+  var item=hitRecord(runtime,target);item.at=(context&&typeof context.styleImpactAt==="number"&&isFinite(context.styleImpactAt)?Math.min(runtime.state.time,Math.max(0,context.styleImpactAt)):runtime.state.time)+delay;s.feedback.push(item);return true;
 }
 function impact(runtime,target,context) {
   var v=Settings.impactVisual(visual(runtime));if(!runtime.available()||!target||!target.node)return;
   var s=state(runtime),item=hitRecord(runtime,target),p=context&&context.point||target.node.getPosition();
-  item.x=p.x;item.y=p.y;item.at=runtime.state.time+v.delay;item.duration=v.effectDuration;item.until=item.at+v.effectDuration;
+  item.x=p.x;item.y=p.y;item.at=(context&&typeof context.styleImpactAt==="number"&&isFinite(context.styleImpactAt)?Math.min(runtime.state.time,Math.max(0,context.styleImpactAt)):runtime.state.time)+v.delay;item.duration=v.effectDuration;item.until=item.at+v.effectDuration;
   if(s.impacts.length>=MAX_IMPACTS)s.impacts.shift();s.impacts.push(item);
 }
 function visibleImpacts(runtime) {
@@ -90,7 +91,7 @@ function updateHits(runtime,s) {
   s.impacts=s.impacts.filter(function(item){return runtime.state.time<item.until&&hitCurrent(runtime,item,false);});
 }
 function beamOnset(runtime){var time=runtime.beamVisibleSince;return typeof time==="number"&&isFinite(time)?time:undefined;}
-function queue(runtime,phase,strike) {
+function queue(runtime,phase,strike,onsetTime) {
   if(!runtime.available())return;
   var cue=runtime.settings&&runtime.settings.audio&&runtime.settings.audio[phase];
   if(!cue||!cue.clip){
@@ -110,7 +111,7 @@ function queue(runtime,phase,strike) {
     if(s.impactKeys.size>512)s.impactKeys.delete(s.impactKeys.keys().next().value);
   }
   if(s.pending.length>=512)return;
-  var onset=phase==="channel"?beamOnset(runtime):undefined;
+  var onset=phase==="channel"?beamOnset(runtime):typeof onsetTime==="number"&&isFinite(onsetTime)?Math.min(runtime.state.time,Math.max(0,onsetTime)):undefined;
   s.pending.push({phase:phase,cue:cue,at:(onset===undefined?runtime.state.time:onset)+cue.delay,scope:runtime.state,generation:runtime.heroGeneration,epoch:runtime.game&&runtime.game._combatEpoch});
 }
 function audioManager() { return require("AudioMgr").AudioMgr.getInstance(); }
@@ -304,7 +305,7 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
   });
   s.nodes.forEach(function(record,key){if(!keep.has(key)){dispose(record);s.nodes.delete(key);}});
 }
-function hasStyleArt(v){return !!(v.passiveResource||v.beamResource||v.markResource||v.buffResource||v.tauntResource||v.shieldResource);}
+function hasStyleArt(v){return Settings.resourcePrefixes.some(function(prefix,index){return index>=2&&!!v[prefix];});}
 function vfxContext(runtime){
   var hero=runtime.hero,main=runtime.game.ndMain,v=visual(runtime);
   // These passive auras use only ground position, health, stacks or charge.
@@ -319,11 +320,22 @@ function vfxContext(runtime){
   var origin=groundOnly?null:hero.getAttWpos?main.convertToNodeSpaceAR(hero.getAttWpos()):offset(hero.node.getPosition(),0,70);
   var tauntClip=VFXLayout.clipFor(v.tauntResource),tauntDuration=tauntClip?tauntClip.frames/tauntClip.fps:1.875,taunts=[];
   (v.tauntResource?runtime.taunted||[]:[]).forEach(function(record){var t=record.taunt,enemy=record.enemy;
-    if(!t||typeof t.started!=="number"||!isFinite(t.started)||runtime.state.time-t.started>=tauntDuration||enemy._heroTaunt!==t||t.data!==runtime.game.gameData||t.epoch!==runtime.game._combatEpoch||!(t.remaining>0))return;
+    if(!t||typeof t.started!=="number"||!isFinite(t.started)||runtime.state.time-t.started>=tauntDuration+Math.max(0,v.tauntDelay||0)||enemy._heroTaunt!==t||t.data!==runtime.game.gameData||t.epoch!==runtime.game._combatEpoch||!(t.remaining>0))return;
     var at=target(enemy,true,t.enemyGeneration,t.enemyNode);if(at)taunts.push({key:t.visualKey,at:t.started,target:at});
   });
-  var body=groundOnly?null:target(hero,false);if(body){body.x-=v.targetX;body.y-=v.targetY;}
-  return{heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:origin&&offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration,runtime.beamNode),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration,runtime.beamVisibleNode),beamOnset:beamOnset(runtime),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration,runtime.markNode):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
+  // Fighter's active Ki uses the rider body even when its passive wind keeps
+  // the ground-only weapon-origin fast path. Vanguard's buff stays on ground.
+  var body=groundOnly&&!(runtime.state.style==="fighter"&&v.buffResource&&runtime.state.buffRemaining>0)?null:target(hero,false);if(body){body.x-=v.targetX;body.y-=v.targetY;}
+  var presence=[];
+  if(runtime.state.style==="guardian"&&v.presenceResource&&runtime.state.tuning.allyReduction>0){
+    var soldiers=runtime.game.gameData.getSoldierList?runtime.game.gameData.getSoldierList():[],heroGround=hero.node.getPosition();
+    for(var i=0;i<soldiers.length&&presence.length<256;i++){
+      var soldier=soldiers[i];if(!soldier||!alive(soldier.node))continue;var ground=soldier.node.getPosition(),dx=ground.x-heroGround.x,dy=ground.y-heroGround.y;
+      if(dx*dx+dy*dy>250*250)continue;var protectedBody=target(soldier,false);if(protectedBody)presence.push(protectedBody);
+    }
+  }
+  var castClip=VFXLayout.clipFor(v.castResource),defenseClip=VFXLayout.clipFor(v.defenseResource),physicalClip=VFXLayout.clipFor(v.physicalShieldResource);
+  return{style:runtime.state.style,skillCast:runtime.skillCast,castDuration:castClip&&(castClip.duration||castClip.frames/castClip.fps),presenceTargets:presence,defenseDuration:defenseClip&&(defenseClip.duration||defenseClip.frames/defenseClip.fps),physicalShieldSpawnDuration:physicalClip&&(physicalClip.duration||physicalClip.frames/physicalClip.fps),heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:origin&&offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration,runtime.beamNode),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration,runtime.beamVisibleNode),beamOnset:beamOnset(runtime),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration,runtime.markNode):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
 }
 function advanceVFX(runtime){
   var v=visual(runtime);if(!hasStyleArt(v)||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;
@@ -332,7 +344,7 @@ function advanceVFX(runtime){
 function preload(runtime){
   if(typeof cc==="undefined"||!cc.SpriteFrame||!cc.assetManager)return;
   var v=visual(runtime);if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
-  ["passive","beam","mark","buff","taunt","shield"].forEach(function(slot){
+  Settings.resourcePrefixes.slice(2).map(function(prefix){return prefix.replace(/Resource$/,"");}).forEach(function(slot){
     var selected=v[slot+"Resource"];if(!selected)return;var clip=VFXLayout.clipFor(selected),seen=new Set();
     ["start","loop","end"].forEach(function(phase){VFXLayout.phaseClips(slot,clip,phase).forEach(function(part){
       var value=Settings.resourceVisual(v,slot+"Resource");if(part)Settings.applyClip(value,"resource",part);
@@ -346,7 +358,11 @@ function styleAttachments(hud,runtime){
   var arts=s.styleArts||(s.styleArts=new Map()),groups=new Map(),entities=VFXLayout.entities(frame,v,s.vfxContext);
   entities.forEach(function(entity){var key=resourceKey(entity.visual),group=groups.get(key);if(!group){group={visual:entity.visual,entities:[]};groups.set(key,group);}group.entities.push(entity);});
   groups.forEach(function(group,key){var art=arts.get(key);if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:key};arts.set(key,art);}prepare(runtime,art,group.visual,s);paintEntities(hud,runtime,art,group.visual,group.entities);});
-  arts.forEach(function(art,key){if(!groups.has(key)){art.nodes.forEach(dispose);art.nodes.clear();}});
+  var selected=s.selectedStyleKeys,changed=!selected;
+  if(!s.selectionValues)s.selectionValues=[];
+  for(var i=0;i<STYLE_SELECTION_KEYS.length;i++){var value=v[STYLE_SELECTION_KEYS[i]];if(value!==s.selectionValues[i]){changed=true;s.selectionValues[i]=value;}}
+  if(changed){selected=s.selectedStyleKeys=new Set();Settings.resourcePrefixes.slice(2).forEach(function(prefix){if(!v[prefix])return;var slot=prefix.replace(/Resource$/,""),clip=VFXLayout.clipFor(v[prefix]);["start","loop","end"].forEach(function(phase){VFXLayout.phaseClips(slot,clip,phase).forEach(function(part){var current=Settings.resourceVisual(v,prefix);if(part)Settings.applyClip(current,"resource",part);selected.add(resourceKey(current));});});});}
+  arts.forEach(function(art,key){if(!groups.has(key)){art.nodes.forEach(dispose);art.nodes.clear();if(!selected.has(key)){clearArt(art);arts.delete(key);}}});
   // A style owns a small fixed phase set. Drop obsolete authored selections
   // rather than retaining every atlas visited during a long play session.
   if(arts.size>16)arts.forEach(function(art,key){if(!groups.has(key)){clearArt(art);arts.delete(key);}});

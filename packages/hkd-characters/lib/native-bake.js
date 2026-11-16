@@ -94,6 +94,7 @@ function bake(root,profile,id,contract,assets,read,options){
     const region=attachment.path||attachment.name||name;if(!pictures[region])pictures[region]=cut(region);
   }
   const skinTint=Core.skinTint(profile);
+  require('./opaque-tip').annotate(rig,pictures);
   if(skinTint){
     const tint=color=>[0,2,4].map(at=>Math.round(parseInt(color.slice(at,at+2),16)*parseInt(skinTint.slice(at+1,at+3),16)/255).toString(16).padStart(2,'0')).join('')+color.slice(6,8);
     for(const slot of rig.slots)if(Core.isSkinSlot(slot.name))slot.color=tint(slot.color||'ffffffff');

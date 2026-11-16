@@ -1,15 +1,16 @@
 "use strict";
+var Timeline = require("./HeroSkillTimeline");
 
 // Transient battle state only. This module never reads or writes player saves.
 // All percentages below are fractions, and charge meters use the range 0..1.
 var DEFAULTS = {
-  common: { cooldown: 12 },
-  skirmisher: { cooldown: 12, chargeRate: .25, chargedDamage: .5, chargedRange: .5, windup: .35, projectileSpeed: 1000, distanceDamagePer100: .1, projectileWidth: 28 },
-  fighter: { cooldown: 12, maxStacks: 5, stackDuration: 5, stackDamage: .03, stackReduction: .025, stackTenacity: .08, buffDuration: 10, buffDamage: .25, buffAttackRate: .35, knockback: 140 },
-  vanguard: { cooldown: 14, chargeRate: .2, chargeDecay: .15, buffDuration: 10, momentumMove: .5, momentumAttackRate: .35, duration: 2.5, strikes: 7, strikeDamage: .5, moveScaling: .25, attackScaling: .25, referenceMove: 300 },
-  mystic: { cooldown: 12, maxCharges: 10, chargeDamage: .15, activeDamage: 1.5, slow: .2, slowDuration: 1.5 },
+  common: { cooldown: 12, contactDelay: 0 },
+  skirmisher: { cooldown: 12, chargeRate: .25, chargedDamage: .5, chargedRange: .5, windup: 2/3, volleys: 3, arrowsPerVolley: 3, spreadDegrees: 12, volleyPlayback: 1, projectileSpeed: 1000, distanceDamagePer100: .1, projectileWidth: 28 },
+  fighter: { cooldown: 12, maxStacks: 10, stackDuration: 5, stackDamage: .03, stackReduction: .025, stackTenacity: .08, buffDuration: 10, buffDamage: .25, buffAttackRate: .35, knockback: 140 },
+  vanguard: { cooldown: 14, chargeRate: .2, chargeDecay: .15, buffDuration: 10, momentumMove: .5, momentumAttackRate: .35, duration: 4/3, strikes: 5, strikeDamage: .5, moveScaling: .25, attackScaling: .25, referenceMove: 300 },
+  mystic: { cooldown: 12, maxCharges: 10, chargeDamage: .02, activeDamage: 1, splashRadius: 100, splashRadiusPerCharge: 10, slow: .2, slowDuration: 1.5 },
   bruiser: { cooldown: 12, missingDamage: .5, missingAttackRate: .75, sacrifice: .5 },
-  guardian: { cooldown: 16, allyReduction: .1, shieldHealth: .25, shieldDuration: 5, tauntDuration: 3 }
+  guardian: { cooldown: 16, allyReduction: .1, shieldHealth: .25, shieldDuration: 10, tauntDuration: 3 }
 };
 function finite(value, fallback) { return typeof value === "number" && isFinite(value) ? value : fallback; }
 function positive(value, fallback) { return Math.max(0, finite(value, fallback || 0)); }
@@ -117,11 +118,13 @@ function beginActive(state, context) {
   var t = state.tuning, result = { ok: true, style: state.style, hpCost: 0, damageMultiplier: 1, direction: direction(context.direction) };
   state.cooldown = t.cooldown;
   if (state.style === "skirmisher") {
-    state.active = { kind: "skirmisher-arrow", elapsed: 0, duration: t.windup, emitted: 0, direction: result.direction, context: Object.assign({}, context) };
+    var effectDelay=positive(context.effectDelay),volleys=Timeline.skirmisherSchedule(t).map(function(at){return at+effectDelay;});
+    state.active = { kind: "skirmisher-arrow", elapsed: 0, duration: Math.max(volleys[volleys.length-1],effectDelay+t.contactDelay+t.windup+(4/3)/Math.max(.01,t.volleyPlayback)), schedule: volleys, emitted: 0, direction: result.direction, context: Object.assign({}, context), fire: null };
     result.windup = t.windup;
   } else if (state.style === "vanguard") {
     var count = Math.max(1, Math.floor(t.strikes));
-    state.active = { kind: "vanguard-thrust", elapsed: 0, duration: Math.max(.001, t.duration), count: count, emitted: 0, direction: result.direction, context: Object.assign({}, context) };
+    var effectDelay=positive(context.effectDelay);
+    state.active = { kind: "vanguard-thrust", elapsed: 0, duration: Math.max(.001, t.duration+t.contactDelay+effectDelay), schedule: Timeline.vanguardSchedule(t).map(function(at){return at+effectDelay;}), count: count, emitted: 0, direction: result.direction, context: Object.assign({}, context) };
     result.duration = state.active.duration; result.strikes = count; result.interval = state.active.duration / count;
     result.damageMultiplier = vanguardMultiplier(state, context);
   } else if (state.style === "fighter") {
@@ -133,6 +136,7 @@ function beginActive(state, context) {
   } else if (state.style === "mystic") {
     result.target = state.target; result.charges = state.mysticCharges;
     result.damageMultiplier = (t.activeDamage + state.mysticCharges * t.chargeDamage) * (1 + positive(context.splashDamage));
+    result.radius = Timeline.mysticRadius(state.mysticCharges,t,context.heroWidth);
     state.mysticCharges = 0;
   } else if (state.style === "guardian") {
     state.shield = positive(context.maxHp) * t.shieldHealth; state.shieldRemaining = t.shieldDuration;
@@ -141,7 +145,7 @@ function beginActive(state, context) {
   // Rendering supplies the chosen clip's authored hit marker in gameplay
   // seconds. The pure rules engine does not invent or rewrite asset timings.
   var impactDelay = positive(context.impactDelay);
-  if (impactDelay > 0 && /^(fighter|bruiser|mystic)$/.test(state.style)) {
+  if (impactDelay > 0 && /^(fighter|bruiser|mystic|guardian)$/.test(state.style)) {
     result.impactDelay = impactDelay;
     state.active = { kind: state.style + "-impact", elapsed: 0, duration: impactDelay,
       emitted: 0, direction: result.direction, context: Object.assign({}, context), cast: result };
@@ -182,20 +186,23 @@ function step(state, dt, context) {
   do {
     var active = state.active;
     if (!active) { advance(state, remaining, context); break; }
-    var at = active.kind === "vanguard-thrust" ? active.duration * (active.emitted + 1) / active.count : active.duration;
+    var at = Timeline.nextTime(active);
     var wait = Math.max(0, at - active.elapsed);
     if (wait > remaining + 1e-9) { advance(state, remaining, context); active.elapsed += remaining; break; }
     advance(state, wait, context); active.elapsed = at; remaining = Math.max(0, remaining - wait);
+    if(active.schedule&&active.emitted>=active.schedule.length){state.active=null;continue;}
     var event = { type: active.kind, index: active.emitted + 1, time: state.time, elapsed: at,
       direction: { x: active.direction.x, y: active.direction.y }, context: active.context };
     active.emitted++;
     if (active.kind === "skirmisher-arrow") {
-      var fire = onBasicFire(state); event.charge = fire.charge; event.damageMultiplier = fire.damageMultiplier;
+      var fire = active.fire || (active.fire=onBasicFire(state)); event.charge = fire.charge; event.damageMultiplier = fire.damageMultiplier;
       event.speed = state.tuning.projectileSpeed * fire.speedMultiplier; event.width = state.tuning.projectileWidth;
-      event.distanceDamagePer100 = state.tuning.distanceDamagePer100; state.active = null;
+      event.distanceDamagePer100 = state.tuning.distanceDamagePer100;
+      event.directions=Timeline.fan(active.direction,state.tuning.arrowsPerVolley,state.tuning.spreadDegrees);
+      if(active.emitted>=active.schedule.length&&at>=active.duration-1e-9)state.active = null;
     } else if (active.kind === "vanguard-thrust") {
       event.count = active.count; event.damageMultiplier = vanguardMultiplier(state, Object.assign({}, active.context, context));
-      if (active.emitted >= active.count) state.active = null;
+      if (active.emitted >= active.count&&at>=active.duration-1e-9) state.active = null;
     } else {
       event.cast = active.cast; state.active = null;
     }

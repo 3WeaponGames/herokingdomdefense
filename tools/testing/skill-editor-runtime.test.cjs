@@ -27,7 +27,7 @@ function audioFixture(){
  const manager=exports.AudioMgr.getInstance();manager.init({});manager.effectVolume=.5;
  return {module:exports,manager,pending,uuidLoads,writes};
 }
-function scene(style,config,audio){
+function scene(style,config,audio,legacyArrow=true){
  const poses=[],animations=[];
  const h=setup({...(audio?{AudioMgr:audio.module}:{}),HeroMakerRider:{setCombatState(_ani,state){poses.push({...state});},clearCombatState(){}},HeroSkillHUD:{update(){},clear(){}},KinghtFallNavigation:{moveManual(actor,_game,p){actor.node.setPosition(p);return true;}}});
  h.g.gameStatus=1;h.g.mapSize={width:2000,height:1000};h.g._combatEpoch=7;h.ui.isPauset=false;h.d.heroStyle=style;
@@ -35,6 +35,7 @@ function scene(style,config,audio){
   ctrPlayAni:{setAttack(){animations.push(this._skillAnimationOverride||'default');},setBodyLeft(){}},isDead(){return this.hp<=0;},getAttack:()=>100,getSpeed:()=>300,getAttSpeed:()=>1,getCriticalDamage:()=>1.5,
   onUpdata(){},doAttack(){this.lastBasicDamage=this.getAttack();},doAttackFinish(){},addBuff(){},onRestart(){},endRoundGame(){},onDead(){},onDestroy(){}};
  hero.node._combatGeneration=1;h.g.ctrPlay=hero;h.load('HeroStyleRuntime').install(hero,config);const rt=hero._styleRuntime;rt.refresh();
+ if(style==='skirmisher'&&legacyArrow){rt.settings.visual.castTrajectory='';rt.state.tuning.volleys=1;rt.state.tuning.arrowsPerVolley=1;}
  function enemy(x=100){const target={node:new Node('target',h.g.ndMain,x,0),hp:100000,hpMax:100000,debuffInfo:[],hits:[],isDead(){return this.hp<=0;},addBuff(type,data){this.debuffInfo.push({type,data,time:0,timeMax:data.time});},onAttacked(damage,owner,secondary,context){const combat=h.load('RelicCombat');damage=combat.enemyDamage(this,damage,owner,secondary,context);this.hits.push({damage,ownerHp:owner.hp});this.hp-=damage;if(!secondary)combat.primaryImpact(this,owner,context,damage);return damage;}};target.node._combatGeneration=1;h.d.enemyList.push(target);return target;}
  return {...h,hero,rt,enemy,poses,animations};
 }
@@ -57,12 +58,12 @@ test('a pooled target cancels authored delayed reactions while preserving the da
 });
 test('saving tuned Vanguard count and duration changes actual independently timed attacks, not shared timing tables',t=>{
  const saved=save(t,[['vanguard','strikes',3],['vanguard','duration',1.2],['vanguard','cooldown',20]]),h=scene('vanguard',saved.config),enemy=h.enemy();
- assert.equal(h.rt.cast({x:1,y:0}),true);h.rt.update(.399);assert.equal(enemy.hits.length,0);h.rt.update(.001);assert.equal(enemy.hits.length,1);h.rt.update(.4);h.rt.update(.4);assert.equal(enemy.hits.length,3);assert.equal(h.rt.state.active,null);close(h.rt.state.cooldown,18.8);assert.equal(h.poses.at(-1).rapid.duration,1.2);assert.equal(h.poses.at(-1).rapid.strikes,3);
+ assert.equal(h.rt.cast({x:1,y:0}),true);h.rt.update(.399);assert.equal(enemy.hits.length,0);h.rt.update(.001);assert.equal(enemy.hits.length,1);h.rt.update(.4);h.rt.update(.4);assert.equal(enemy.hits.length,3);assert.equal(h.rt.state.active,null);close(h.rt.state.cooldown,18.8);assert.equal(h.poses.at(-1).rapid,false);assert.equal(h.animations.length,1,"VFX multihits use one rider cast");
 });
 test('choosing active projectile artwork preserves Skirmisher flight, damage and ordinary attack configuration',()=>{
  const asset={id:'part:test-arrow',uuid,bundle:'resources',path:'projectiles/test-arrow',kind:'sprite',rotation:90},results=[];
  for(const chosen of [false,true]){
-  const visual=chosen?{projectile:asset.id,projectileAsset:asset}:{},h=scene('skirmisher',{HeroSkills:{skirmisher:{windup:0,chargeRate:0,visual}}}),target=h.enemy(100);
+  const visual=chosen?{projectile:asset.id,projectileAsset:asset}:{},h=scene('skirmisher',{HeroSkills:{skirmisher:{volleys:1,arrowsPerVolley:1,windup:0,chargeRate:0,visual}}}),target=h.enemy(100);
   const art=h.load('HeroSkillPresentation').visual(h.rt);if(chosen){assert.equal(art.resource,uuid);assert.equal(art.showBuiltin,false);}else assert.equal(art.resource,'');
   h.rt.cast({x:1,y:0});h.rt.update(0);const p=h.rt.projectiles[0];results.push({origin:{x:p.x,y:p.y},speed:p.speed,width:p.width,range:h.hero.attackRange});h.rt.update(.5);results.at(-1).damage=target.hits.map(hit=>hit.damage);
  }
@@ -76,12 +77,12 @@ test('saved wind-up and projectile tuning reaches actual Skirmisher flight state
 
 test('the released sprite and collider start together at the bow and sweep the identical fixed path',t=>{
  const {Model}=require('../../packages/hkd-skills/preview-model'),Geometry=require('../../assets/_script/HeroSkillProjectile');
- for(const angle of [0,Math.PI/4])for(const step of [1.2,.01]){const tune={windup:0,chargedDamage:0,chargeRate:0,projectileSpeed:1000,projectileWidth:12,distanceDamagePer100:.1},saved=save(t,Object.entries(tune).map(([key,value])=>['skirmisher',key,value])),h=scene('skirmisher',saved.config),bow={x:30,y:100},d={x:Math.cos(angle),y:Math.sin(angle)};h.e.stubs.HeroMakerRider.skillOrigin=()=>bow;const hit=h.enemy(bow.x+d.x*100),miss=h.enemy(bow.x+d.x*100-d.y*30);hit.node.y=bow.y+d.y*100;miss.node.y=bow.y+d.y*100+d.x*30;const m=new Model('skirmisher',tune,{mode:'active',targets:2,attackRate:0,direction:angle*180/Math.PI,manualAim:true},undefined,()=>bow);Object.assign(m.targets[0],{x:hit.node.x,y:hit.node.y});Object.assign(m.targets[1],{x:miss.node.x,y:miss.node.y});assert(h.rt.cast(d));h.rt.update(0);m.advance(1e-12);const p=h.rt.projectiles[0];close(p.x,bow.x);close(p.y,bow.y);close(Geometry.visualPoint(p).x,Geometry.damagePoint(p).x);close(Geometry.visualPoint(p).y,Geometry.damagePoint(p).y);let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);h.rt.update(dt);m.advance(dt);remaining-=dt;}assert.equal(hit.hits.length,1);assert.equal(miss.hits.length,0);close(m.damage,hit.hits[0].damage);close(m.events.find(e=>e.kind==='impact').time,.088/1.75);}
+ for(const angle of [0,Math.PI/4])for(const step of [1.2,.01]){const tune={volleys:1,arrowsPerVolley:1,windup:0,chargedDamage:0,chargeRate:0,projectileSpeed:1000,projectileWidth:12,distanceDamagePer100:.1},saved=save(t,Object.entries(tune).map(([key,value])=>['skirmisher',key,value])),h=scene('skirmisher',saved.config),bow={x:30,y:100},d={x:Math.cos(angle),y:Math.sin(angle)};h.e.stubs.HeroMakerRider.skillOrigin=()=>bow;const hit=h.enemy(bow.x+d.x*100),miss=h.enemy(bow.x+d.x*100-d.y*30);hit.node.y=bow.y+d.y*100;miss.node.y=bow.y+d.y*100+d.x*30;const m=new Model('skirmisher',tune,{mode:'active',targets:2,attackRate:0,direction:angle*180/Math.PI,manualAim:true},undefined,()=>bow);Object.assign(m.targets[0],{x:hit.node.x,y:hit.node.y});Object.assign(m.targets[1],{x:miss.node.x,y:miss.node.y});assert(h.rt.cast(d));h.rt.update(0);m.advance(1e-12);const p=h.rt.projectiles[0];close(p.x,bow.x);close(p.y,bow.y);close(Geometry.visualPoint(p).x,Geometry.damagePoint(p).x);close(Geometry.visualPoint(p).y,Geometry.damagePoint(p).y);let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);h.rt.update(dt);m.advance(dt);remaining-=dt;}assert.equal(hit.hits.length,1);assert.equal(miss.hits.length,0);close(m.damage,hit.hits[0].damage);close(m.events.find(e=>e.kind==='impact').time,.088/1.75);}
 });
 
 test('runtime arrow aims from the bow at release and never homes after a target dodges',()=>{
- const h=scene('skirmisher',{HeroSkills:{skirmisher:{windup:.2,projectileSpeed:500}}}),target=h.enemy(300);h.e.stubs.HeroMakerRider.skillOrigin=()=>({x:30,y:100});h.rt.setAimTarget(target);assert(h.rt.cast(h.rt.aimDirection));target.node.x=320;target.node.y=40;h.rt.update(.2);const p=h.rt.projectiles[0],aim={...p.direction};close(p.x,30);close(p.y,100);close((target.node.x-p.x)*p.direction.y-(target.node.y-p.y)*p.direction.x,0);target.node.y=300;h.rt.update(.8);close(p.direction.x,aim.x);close(p.direction.y,aim.y);assert.equal(target.hits.length,0);
- const hit=scene('skirmisher',{HeroSkills:{skirmisher:{windup:0,projectileSpeed:500}}}),still=hit.enemy(200);hit.e.stubs.HeroMakerRider.skillOrigin=()=>({x:30,y:100});hit.rt.setAimTarget(still);assert(hit.rt.cast(hit.rt.aimDirection));hit.rt.update(1);assert.equal(still.hits.length,1);
+ const h=scene('skirmisher',{HeroSkills:{skirmisher:{volleys:1,arrowsPerVolley:1,windup:.2,projectileSpeed:500}}}),target=h.enemy(300);h.e.stubs.HeroMakerRider.skillOrigin=()=>({x:30,y:100});h.rt.setAimTarget(target);assert(h.rt.cast(h.rt.aimDirection));target.node.x=320;target.node.y=40;h.rt.update(.2);const p=h.rt.projectiles[0],aim={...p.direction};close(p.x,30);close(p.y,100);close((target.node.x-p.x)*p.direction.y-(target.node.y-p.y)*p.direction.x,0);target.node.y=300;h.rt.update(.8);close(p.direction.x,aim.x);close(p.direction.y,aim.y);assert.equal(target.hits.length,0);
+ const hit=scene('skirmisher',{HeroSkills:{skirmisher:{volleys:1,arrowsPerVolley:1,windup:0,projectileSpeed:500}}}),still=hit.enemy(200);hit.e.stubs.HeroMakerRider.skillOrigin=()=>({x:30,y:100});hit.rt.setAimTarget(still);assert(hit.rt.cast(hit.rt.aimDirection));hit.rt.update(1);assert.equal(still.hits.length,1);
 });
 
 test('equipped melee weapon origins and authored shape changes drive the actual runtime hit area',()=>{
@@ -106,7 +107,7 @@ test('saved Fighter animation/buff and Guardian shield values survive the editor
 });
 test('no saved HeroSkills retains every original tuning default and starts no authored sound',()=>{
  const audio=audioFixture(),before=JSON.stringify(Core.DEFAULTS);
- for(const style of Settings.styles){const h=scene(style.id,{},audio);for(const [key,value]of Object.entries({...Core.DEFAULTS.common,...Core.DEFAULTS[style.id]}))assert.equal(h.rt.state.tuning[key],value);h.enemy();h.rt.update(1);if(h.rt.canCast())h.rt.cast({x:1,y:0});h.rt.update(.5);}
+ for(const style of Settings.styles){const h=scene(style.id,{},audio,false);for(const [key,value]of Object.entries({...Core.DEFAULTS.common,...Core.DEFAULTS[style.id]}))assert.equal(h.rt.state.tuning[key],value);h.enemy();h.rt.update(1);if(h.rt.canCast())h.rt.cast({x:1,y:0});h.rt.update(.5);}
  assert.equal(audio.pending.length,0);assert.equal(audio.uuidLoads.length,0);assert.equal(audio.manager.audioSourceMap.size,0);assert.equal(JSON.stringify(Core.DEFAULTS),before);assert.deepEqual(audio.writes,[]);
 });
 test('saved SFX resolves the actual bundle path through AudioMgr after gameplay delay and applies volume once',t=>{
@@ -136,7 +137,7 @@ test('Mystic preview and gameplay agree on retarget residue and integrated live 
 });
 
 test('actual Skirmisher and preview use identical swept contact damage across frame sizes and map clipping',()=>{
- const {Model,segmentEntry}=require('../../packages/hkd-skills/preview-model'),tune={windup:0,chargeRate:0,chargedDamage:0,projectileSpeed:1000,projectileWidth:28,distanceDamagePer100:.1};
+ const {Model,segmentEntry}=require('../../packages/hkd-skills/preview-model'),tune={volleys:1,arrowsPerVolley:1,windup:0,chargeRate:0,chargedDamage:0,projectileSpeed:1000,projectileWidth:28,distanceDamagePer100:.1};
  for(const point of [{x:100,y:0,entry:72},{x:100,y:20,entry:100-Math.sqrt(384)},{x:100,y:28,entry:100},{x:10,y:0,entry:0},{x:1010,y:0,entry:982},{x:1030,y:0,entry:null},{x:100,y:29,entry:null}])for(const step of [1.2,.01]){
   const h=scene('skirmisher',{HeroSkills:{skirmisher:tune}}),enemy=h.enemy(point.x),m=new Model('skirmisher',tune,{mode:'active',targets:1,targetDistance:point.x,attackRate:0,manualAim:true});enemy.node.y=point.y;Object.assign(m.targets[0],{x:point.x,y:point.y});h.rt.state.charge=.75;assert(h.rt.cast({x:1,y:0}));
   let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);h.rt.update(dt);m.advance(dt);remaining-=dt;}

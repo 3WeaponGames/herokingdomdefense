@@ -36,7 +36,7 @@ test('staff and spear mirror with the rider, keep authored arm poses and retain 
  const f=fixture(),view=f.create(),pose=require('../../assets/_script/HeroSkillPose'),apply=pose.applyAim,scales=[];let aims=0;
  pose.applyAim=()=>{aims++;};f.renderer.drawCanvas=(_s,_canvas,layers)=>scales.push(layers.find(layer=>layer.description.uuid==='hero').description.scaleX);
  try{
-  await view.set({style:'vanguard',settings:{visual:{}},description:f.description});view.setScenario({direction:180});view.seek(.1);assert.equal(scales.at(-1),-1);view.seek(3);assert.equal(scales.at(-1),-1);
+  await view.set({style:'vanguard',settings:{visual:{}},description:f.description});view.setScenario({direction:180,manualAim:true,attackRate:0});view.seek(.1);assert.equal(scales.at(-1),-1);view.seek(3);assert.equal(scales.at(-1),-1);
   await view.set({style:'mystic',settings:{visual:{}},description:f.description});view.setScenario({mode:'basic',targetDistance:-100,targets:1});view.seek(.2);assert.equal(scales.at(-1),-1);view.setScenario({targetDistance:100});view.seek(.2);assert.equal(scales.at(-1),1);
   const model=new Model('mystic',{}, {mode:'basic',targetDistance:-100,targets:1});model.advance(.1);model.targets[0].hp=0;model.advance(.1);assert.equal(model.bodyFace,-1);assert.equal(aims,0);
  }finally{pose.applyAim=apply;view.destroy();}

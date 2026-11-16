@@ -3,7 +3,7 @@
 // Configurations without HeroEquipment retain the original stat mapping.
 var Weapons = require("./HeroWeapons");
 var definitions = {
-  fighter: [{ key: "healthRegen", label: "Health regeneration" }],
+  fighter: [{ key: "healthRegenPercent", label: "Health regeneration", percent: true }],
   skirmisher: [{ key: "range", label: "Attack range bonus" }, { key: "criticalChance", label: "Critical chance", percent: true }],
   vanguard: [{ key: "move", label: "Movement speed", percent: true }, { key: "attackRate", label: "Attack speed", percent: true }],
   bruiser: [{ key: "lifeSteal", label: "Life steal", percent: true }],
@@ -54,6 +54,10 @@ function secondary(config, style, level) {
     var value = values[field.key];
     result[field.key] = typeof value === "number" && isFinite(value) ? Math.max(0, field.percent && field.key !== "criticalDamage" ? Math.min(1, value) : value) : 0;
   });
+  // Old authored documents keep their flat HP/second behavior. The Character
+  // Plan uses a separate fractional field, so loading an old save never turns
+  // five HP/second into five hundred percent regeneration.
+  if(style==='fighter'&&values.healthRegenPercent===undefined&&typeof values.healthRegen==='number'&&isFinite(values.healthRegen))result.healthRegen=Math.max(0,values.healthRegen);
   result.splashRadius = Math.max(0, Number(config.HeroEquipment.splashRadius) || 0);
   return result;
 }
@@ -63,6 +67,7 @@ function raw(config, style, equipment, secondaryLevel, mainLevel) {
   var bonus = secondary(config, style, secondaryLevel);
   result.damage = mainLevel === undefined ? damage(config,style,equipment[4]) : damageAtLevel(config,style,mainLevel);
   result.regen += bonus.healthRegen || 0;
+  result.regenPercent=bonus.healthRegenPercent||0;
   result.range = config.HeroEquipment.baseRange + (bonus.range || 0);
   // A style default changes its starting rate while keeping the shared Cloak
   // curve proportional. Missing overrides leave legacy arithmetic untouched.
@@ -80,6 +85,7 @@ function raw(config, style, equipment, secondaryLevel, mainLevel) {
 function fields(config, slot, level, style) {
   if (!enabled(config) || Number(slot) !== 3) return [{ key: "Parameters", label: Number(slot) === 4 && enabled(config) ? "Attack damage" : {1:"Max HP",2:"HP regeneration",3:"Attack damage",4:"Attack range",5:"Attack speed",6:"Movement speed"}[slot], value: Number(slot)===4&&enabled(config)?damageAtLevel(config,style,level):(row(config, slot, level) || {}).Parameters }];
   var values = secondary(config, style, level);
+  if(style==='fighter'&&values.healthRegen!==undefined)return [{key:'healthRegen',label:'Health regeneration',value:values.healthRegen}];
   return (definitions[style] || []).map(function (field) { return Object.assign({}, field, { value: values[field.key] }); });
 }
 function formatted(field) { return String(Number((field.value * (field.percent ? 100 : 1)).toFixed(3))) + (field.percent ? "%" : ""); }

@@ -25,7 +25,7 @@ test('PC weapon geometry preserves native lifetime guards for disposed rigs and 
  near(geometry.actorPoint(actor,{convertToNodeSpaceAR:p=>p}).y,75);
 });
 test('a target is aimed at on release and can dodge without steering the arrow afterward',()=>{
- const make=()=>new Model('skirmisher',{windup:.2,projectileSpeed:200,chargeRate:0,chargedDamage:0},{mode:'active',targets:1,targetDistance:250,attackRate:0},undefined,()=>({x:30,y:80}));
+ const make=()=>new Model('skirmisher',{volleys:1,arrowsPerVolley:1,windup:.2,projectileSpeed:200,chargeRate:0,chargedDamage:0},{mode:'active',targets:1,targetDistance:250,attackRate:0},undefined,()=>({x:30,y:80}));
  const hit=make();hit.moveTarget(0,{x:220,y:30});hit.advance(.2);const p=hit.projectiles[0];near(p.x,30);near(p.y,80);near((220-p.x)*p.direction.y-(30-p.y)*p.direction.x,0);hit.advance(2);assert.equal(hit.hits,1);
  const dodge=make();dodge.advance(.2);const arrow=dodge.projectiles[0],direction={...arrow.direction};dodge.moveTarget(0,{x:250,y:300});dodge.advance(1);assert.deepEqual(arrow.direction,direction);assert.equal(dodge.hits,0);assert(arrow.x>30);
 });

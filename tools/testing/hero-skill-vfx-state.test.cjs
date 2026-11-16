@@ -3,10 +3,10 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const Core=require('../../assets/_script/HeroStyleSkills'),VFX=require('../../assets/_script/HeroSkillVFXState');
 const close=(a,b)=>assert(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 const passive=frame=>frame.entities.filter(e=>e.slot==='passive');
-test('Fighter stacks add bounded layers and grow their size and playback without seeking the clock',()=>{
+test('Fighter stacks keep one wind layer and grow its size and playback without seeking the clock',()=>{
  const state=Core.createState('fighter'),cache=VFX.create();assert.equal(passive(VFX.update(cache,state,{})).length,0);
  Core.onHit(state,{}, {kind:'basic',strikeId:1});let frame=VFX.update(cache,state,{});assert.equal(passive(frame).length,1);const scale=passive(frame)[0].scale,speed=cache.passive.speed;
- state.time=1;for(let n=2;n<=5;n++)Core.onHit(state,{}, {kind:'basic',strikeId:n});frame=VFX.update(cache,state,{});assert.equal(passive(frame).length,5);assert(passive(frame)[0].scale>scale);assert(cache.passive.speed>speed);close(passive(frame)[0].age,speed);
+ state.time=1;for(let n=2;n<=5;n++)Core.onHit(state,{}, {kind:'basic',strikeId:n});frame=VFX.update(cache,state,{});assert.equal(passive(frame).length,1);assert(passive(frame)[0].scale>scale);assert(cache.passive.speed>speed);close(passive(frame)[0].age,speed);
  state.time=2;frame=VFX.update(cache,state,{});close(passive(frame)[0].age,speed+cache.passive.speed);
  state.stackRemaining=0;assert.equal(passive(VFX.update(cache,state,{})).length,0);
 });
@@ -18,8 +18,8 @@ test('Bruiser starts below95percent at30percent playback and reaches default siz
  assert.equal(passive(show(960)).length,0);assert.equal(VFX.update(cache,state,{hp:0,maxHp:1000,alive:false}).entities.length,0);
 });
 test('Vanguard aura follows the frozen buff amount and starts a fresh cycle after expiry',()=>{
- const state=Core.createState('vanguard'),cache=VFX.create();state.charge=.75;VFX.update(cache,state,{});state.time=1;Core.onHit(state,{}, {kind:'basic',strikeId:1});let frame=VFX.update(cache,state,{});close(passive(frame)[0].intensity,.75);const age=passive(frame)[0].age;
- state.time=2;frame=VFX.update(cache,state,{});close(passive(frame)[0].intensity,.75);assert(passive(frame)[0].age>age);
+ const state=Core.createState('vanguard'),cache=VFX.create();state.charge=.75;VFX.update(cache,state,{});state.time=1;Core.onHit(state,{}, {kind:'basic',strikeId:1});let frame=VFX.update(cache,state,{});assert.equal(passive(frame).length,0);const buff=frame.entities.find(e=>e.slot==='buff');close(cache.buff.speed,.85);const age=buff.age;
+ state.time=2;frame=VFX.update(cache,state,{});close(cache.buff.speed,.85);assert(frame.entities.find(e=>e.slot==='buff').age>age);
  state.time=11;state.buffRemaining=0;state.buffStrength=0;state.charge=.05;frame=VFX.update(cache,state,{});close(passive(frame)[0].age,0);close(passive(frame)[0].intensity,.05);
  state.charge=0;assert.equal(passive(VFX.update(cache,state,{})).length,0);
 });
@@ -50,7 +50,7 @@ test('pause, scope replacement and death cannot advance or retain stale visual s
 test('presentation sampling leaves all skill rules and caller context untouched and bounds rapid-retarget tails',()=>{
  const state=Core.createState('mystic'),cache=VFX.create(),context={origin:{x:0,y:70},channelTarget:{id:1,generation:1,x:100,y:0},beamTarget:{id:1,generation:1,x:100,y:0}};
  const before=JSON.stringify({state,context});VFX.update(cache,state,context);assert.equal(JSON.stringify({state,context}),before);
- for(let i=2;i<40;i++){state.time+=.01;const enemy={id:i,generation:1,x:i*10,y:0};VFX.update(cache,state,{origin:context.origin,channelTarget:enemy,beamTarget:enemy});assert(cache.tails.length<=2);assert(cache.frame.entities.length<=3);}
+ for(let i=2;i<40;i++){state.time+=.01;const enemy={id:i,generation:1,x:i*10,y:0};VFX.update(cache,state,{origin:context.origin,channelTarget:enemy,beamTarget:enemy});assert(cache.tails.length<=2);assert(cache.frame.entities.length<=4);}
 });
 
 test('Guardian taunts play once per applied record, follow targets and cannot repeat while the taunt remains active',()=>{
@@ -58,4 +58,22 @@ test('Guardian taunts play once per applied record, follow targets and cannot re
 });
 test('Guardian body shield has one intro, a sustained loop and one release, with death clearing every phase',()=>{
  const state=Core.createState('guardian'),cache=VFX.create(),visual={shieldResource:'test'},context={shieldSpawnDuration:.5,shieldEndDuration:.625};state.shield=100;state.shieldRemaining=5;let frame=VFX.update(cache,state,context,visual);assert.equal(frame.entities.find(e=>e.slot==='shield').phase,'start');state.time=1;frame=VFX.update(cache,state,context,visual);const loop=frame.entities.find(e=>e.slot==='shield');assert.equal(loop.phase,'loop');close(loop.age,.5);state.shield=0;frame=VFX.update(cache,state,context,visual);assert.equal(frame.entities.find(e=>e.slot==='shield').phase,'end');assert(!frame.entities.some(e=>e.slot==='buff'));state.time=1.7;assert.equal(VFX.update(cache,state,context,visual).entities.length,0);state.shield=50;state.shieldRemaining=3;assert.equal(VFX.update(cache,state,context,visual).entities.find(e=>e.slot==='shield').phase,'start');assert.equal(VFX.update(cache,state,{...context,alive:false},visual).entities.length,0);
+});
+
+test('Fighter center appears only for the active buff and Vanguard switches fixed-size step effects',()=>{
+ const Settings=require('../../assets/_script/HeroSkillSettings'),f=Core.createState('fighter'),fc=VFX.create(),fv=Settings.defaults('fighter').visual;f.stacks=10;f.stackRemaining=4;let frame=VFX.update(fc,f,{},fv);assert.equal(frame.entities.filter(e=>e.slot==='passive').length,1);assert(!frame.entities.some(e=>e.slot==='buff'));f.buffRemaining=10;frame=VFX.update(fc,f,{},fv);assert(frame.entities.some(e=>e.slot==='buff'));f.buffRemaining=0;assert(!VFX.update(fc,f,{},fv).entities.some(e=>e.slot==='buff'));
+ const v=Core.createState('vanguard'),vc=VFX.create(),vv=Settings.defaults('vanguard').visual;v.charge=.79;frame=VFX.update(vc,v,{},vv);close(vc.passive.speed,.85);close(frame.entities[0].scale,1);v.buffRemaining=10;v.buffStrength=.79;frame=VFX.update(vc,v,{},vv);assert(!frame.entities.some(e=>e.slot==='passive'));close(vc.buff.speed,.85);v.charge=.1;v.time=1;VFX.update(vc,v,{},vv);close(vc.buff.speed,.85);
+});
+
+test('protected allies have independent aura clocks and are retired when leaving the protected set',()=>{
+ const s=Core.createState('guardian'),c=VFX.create(),a={id:{},node:{},generation:1,x:0,y:0},b={id:{},node:{},generation:1,x:20,y:0};let f=VFX.update(c,s,{presenceTargets:[a,b]});assert.equal(f.entities.length,2);assert.notEqual(f.entities[0].key,f.entities[1].key);s.time=1;f=VFX.update(c,s,{presenceTargets:[b]});assert.equal(f.entities.length,1);assert.equal(f.entities[0].target,b);close(f.entities[0].age,1);assert.equal(c.presence.size,1);b.generation++;f=VFX.update(c,s,{presenceTargets:[{...b}]});close(f.entities[0].age,0);
+});
+
+test('Guardian layers delay independently before phase selection and stop with their owning shield',()=>{
+ const state=Core.createState('guardian'),cache=VFX.create(),v={buffDelay:.2,defenseDelay:.4,physicalShieldDelay:1},ctx={defenseDuration:1,physicalShieldSpawnDuration:1};state.shield=100;state.shieldRemaining=10;let f=VFX.update(cache,state,ctx,v);assert.equal(f.entities.length,0);state.time=.3;f=VFX.update(cache,state,ctx,v);assert.deepEqual(f.entities.map(e=>e.slot),['buff']);close(f.entities[0].age,.1);state.time=.5;f=VFX.update(cache,state,ctx,v);close(f.entities.find(e=>e.slot==='defense').age,.1);assert(!f.entities.some(e=>e.slot==='physicalShield'));state.time=1.5;f=VFX.update(cache,state,ctx,v);assert(!f.entities.some(e=>e.slot==='defense'));const physical=f.entities.find(e=>e.slot==='physicalShield');assert.equal(physical.phase,'start');close(physical.age,.5);state.time=2.25;f=VFX.update(cache,state,ctx,v);assert.equal(f.entities.find(e=>e.slot==='physicalShield').phase,'loop');close(f.entities.find(e=>e.slot==='physicalShield').age,.25);state.shield=0;assert.equal(VFX.update(cache,state,ctx,v).entities.length,0);
+});
+
+test('mark and taunt delays precede their intros; presence and channel loops never outlive their targets',()=>{
+ const g=Core.createState('guardian'),gc=VFX.create(),target={id:1,generation:1,x:100,y:40},ctx={presenceTargets:[target],taunts:[{key:'once',at:0,target}],tauntDuration:1};let f=VFX.update(gc,g,ctx,{presenceDelay:.5,tauntDelay:.5});assert.equal(f.entities.length,0);g.time=.75;f=VFX.update(gc,g,ctx,{presenceDelay:.5,tauntDelay:.5});assert.equal(f.entities.length,2);f.entities.forEach(e=>close(e.age,.25));g.time=1.6;assert.equal(VFX.update(gc,g,{presenceTargets:[],taunts:ctx.taunts,tauntDuration:1},{presenceDelay:.5,tauntDelay:.5}).entities.length,0);
+ const m=Core.createState('mystic'),mc=VFX.create();m.marked=true;const context={markedTarget:target,beamTarget:target,origin:{x:0,y:0},markSpawnDuration:.5};f=VFX.update(mc,m,context,{markDelay:.5,channelHitDelay:.4});assert(!f.entities.some(e=>e.slot==='mark'||e.slot==='channelHit'));m.time=.6;f=VFX.update(mc,m,context,{markDelay:.5,channelHitDelay:.4});assert.equal(f.entities.find(e=>e.slot==='mark').phase,'start');close(f.entities.find(e=>e.slot==='mark').age,.1);close(f.entities.find(e=>e.slot==='channelHit').age,.2);m.marked=false;f=VFX.update(mc,m,{},{});assert(!f.entities.some(e=>e.slot==='mark'||e.slot==='channelHit'));
 });

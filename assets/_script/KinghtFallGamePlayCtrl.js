@@ -474,7 +474,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.getHpRecoverSpeed = function () {
     var t = 1;
-    return this.hpRecoverSpeed * (t + (this.time[C.hpRecoverSpeed] || 0));
+    return (this.hpRecoverSpeed + (this._heroRegenPercent || 0) * this.hpMax) * (t + (this.time[C.hpRecoverSpeed] || 0));
   };
   _ctor.prototype.initBuffData = function () {
     if (this._baseAttackRange === undefined) this._baseAttackRange = this.attackRange;

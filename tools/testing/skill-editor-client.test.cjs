@@ -53,8 +53,8 @@ test('closing a skills window ignores late responses and never sends queued edit
 });
 test('undo, redo and default reset stay in drafts until an explicit save', async () => {
   const backend = store(), session = Client.createSession(backend.api); await session.load(); await session.change('skirmisher', 'windup', .7);
-  await session.action('undo'); assert.equal(session.effective('skirmisher').windup, .35); await session.action('redo'); assert.equal(session.effective('skirmisher').windup, .7);
-  await session.reset('skirmisher', 'windup'); assert.equal(session.effective('skirmisher').windup, .35); assert.equal(backend.calls.some(call => call.name === 'save'), false); session.destroy();
+  await session.action('undo'); assert.equal(session.effective('skirmisher').windup, Settings.defaults('skirmisher').windup); await session.action('redo'); assert.equal(session.effective('skirmisher').windup, .7);
+  await session.reset('skirmisher', 'windup'); assert.equal(session.effective('skirmisher').windup, Settings.defaults('skirmisher').windup); assert.equal(backend.calls.some(call => call.name === 'save'), false); session.destroy();
 });
 
 class Element {
@@ -96,11 +96,12 @@ test('preview attack rate changes tick cadence inputs without staging or saving 
 });
 test('position handles expose only useful anchors for the selected style and reset an unavailable selection', async () => {
   const f = await fixture(), options = () => f.field('Handle').options.map(option => option.value);
-  assert.deepEqual(options(), []);assert.equal(f.field('Handle').parentElement.hidden,true);
-  await f.client.selectStyle('mystic'); await f.settle(); assert.deepEqual(options(), ['origin', 'target', 'effect', 'mark']);
-  f.field('Handle').value = 'target'; f.field('Handle').onchange();
-  await f.client.selectStyle('fighter'); await f.settle(); assert.deepEqual(options(), ['effect', 'passive']); assert.equal(f.field('Handle').value, 'effect');
-  await f.client.selectStyle('guardian'); await f.settle(); assert.deepEqual(options(), ['effect', 'buff', 'taunt', 'shield']);
+  assert(!options().includes('passive'));
+  await f.client.selectStyle('mystic'); await f.settle(); assert(options().includes('cast'));assert(!options().includes('effect'));for(const name of ['origin','target','mark','beam'])assert(!options().includes(name),name+' belongs to the passive');
+  await f.client.selectEntry('mystic','passive');await f.settle();assert(options().includes('origin'));assert(options().includes('target'));assert(!options().includes('effect'));f.field('Handle').value='target';f.field('Handle').onchange();
+  await f.client.selectStyle('fighter'); await f.settle(); assert(options().includes('effect'));assert(!options().includes('passive'));assert.equal(f.field('Handle').value,'effect');
+  await f.client.selectEntry('fighter','passive');await f.settle();assert(options().includes('passive'));assert(!options().includes('effect'));
+  await f.client.selectStyle('guardian'); await f.settle();assert(options().includes('effect'));assert(!options().includes('presence'));
   assert.equal(f.backend.calls.some(call => call.name === 'change' || call.name === 'save'), false); f.close();
 });
 
@@ -108,12 +109,10 @@ test('projectile controls expose a single automatic launch and collider size wit
  const f=await fixture();f.button('Position & VFX').click();await f.settle();assert(f.field('Projectile radius'));for(const label of ['Launch offset X','Launch offset Y','Artwork offset X','Artwork offset Y','Damage follows projectile','Damage offset X','Damage offset Y','VFX thickness'])assert.equal(f.field(label),null,label);assert.equal(f.button('Align projectile to bow'),undefined);assert.equal(f.backend.snapshot().dirty,false);f.field('Projectile radius').value='41';f.field('Projectile radius').onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.projectileWidth,41);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
 });
 
-test('the Skirmisher projectile picker uses Projectile editor assets and refreshes its isolated preview without saving',async()=>{
- const id='tiny-kingdom:ballista-bolt',f=await fixture({catalogs:{projectiles:[{id,name:'Ballista bolt',category:'Tiny Kingdom'}]}});
- f.button('Position & VFX').click();await f.settle();const picker=f.field('Projectile');assert(picker);assert(picker.options.some(option=>option.value===id&&option.textContent.includes('Ballista bolt')));assert(f.button('Open Projectile editor'));
- assert.equal(f.backend.snapshot().dirty,false);picker.value=id;picker.onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.visual.projectile,id);
- assert(f.backend.calls.some(call=>call.name==='describe'&&call.request.projectile===id));assert.equal(f.calls.preview.at(-1).settings.visual.projectile,id);assert.equal(f.field('VFX asset'),null,'Fallback VFX should not compete with the chosen projectile');
- assert(!f.backend.calls.some(call=>call.name==='save'));assert.equal(f.calls.audio.length,0);f.close();
+test('native Skirmisher exposes the complete volley effect and its contact controls without unrelated projectile artwork',async()=>{
+ const id='bbbb0000-0000-0000-0000-000000000021',f=await fixture({catalogs:{vfx:[{id,name:'Three volley effect'}]}});
+ f.button('Position & VFX').click();await f.settle();assert.equal(f.field('Projectile'),null);assert.equal(f.field('VFX asset'),null);const picker=f.field('Cast effect VFX asset');assert(picker);assert(picker.options.some(option=>option.value===id));
+ picker.value=id;picker.onchange();await f.settle();assert(f.backend.calls.some(call=>call.name==='describe'&&call.request.castResource===id));assert.equal(f.calls.preview.at(-1).settings.visual.castResource,id);assert(f.field('Projectile radius'));assert.equal(f.backend.calls.some(call=>call.name==='save'),false);assert.equal(f.calls.audio.length,0);f.close();
 });
 
 test('R restarts the current preview without editing drafts and stays available for typing in fields',async()=>{
@@ -136,10 +135,10 @@ test('SFX selection and ordinary preview stay silent, while explicit Test sound 
 });
 test('changing VFX reloads the selected asset immediately and a late old description cannot overwrite it', async () => {
   const descriptions = [], pending = new Map();
-  const f = await fixture({ describe(request) { descriptions.push(copy(request)); if (!request.resource) return Promise.resolve({ layers: [{ json: { animations: { attack: {} } } }], effects: [] }); return new Promise(resolve => pending.set(request.resource, () => resolve({ layers: [{ json: { animations: { attack: {} } } }], effects: [{ id: request.resource }] }))); } });
-  f.button('Position & VFX').click(); await flush(); const field = f.field('VFX asset'), first = 'bbbb0000-0000-0000-0000-000000000001', second = 'bbbb0000-0000-0000-0000-000000000002';
+  const f = await fixture({ describe(request) { descriptions.push(copy(request)); if (!request.castResource||!request.castResource.startsWith('bbbb0000')) return Promise.resolve({ layers: [{ json: { animations: { attack: {} } } }], effects: [] }); return new Promise(resolve => pending.set(request.castResource, () => resolve({ layers: [{ json: { animations: { attack: {} } } }], effects: [{ id: request.castResource }] }))); } });
+  await f.client.selectStyle('fighter');await f.settle();f.button('Position & VFX').click(); await flush(); const field = f.field('Cast effect VFX asset'), first = 'bbbb0000-0000-0000-0000-000000000001', second = 'bbbb0000-0000-0000-0000-000000000002';
   field.value = first; field.oninput(); await flush(); field.value = second; field.oninput(); await flush();
-  assert.equal(descriptions.some(value => value.resource === first), true); assert.equal(descriptions.some(value => value.resource === second), true);
+  assert.equal(descriptions.some(value => value.castResource === first), true); assert.equal(descriptions.some(value => value.castResource === second), true);
   pending.get(second)(); await flush(); await flush(); assert.equal(f.calls.preview.at(-1).description.effects[0].id, second);
   pending.get(first)(); await flush(); await flush(); assert.equal(f.calls.preview.at(-1).description.effects[0].id, second); f.close();
 });
@@ -151,7 +150,7 @@ test('rider animation dropdown excludes horse-only clips and requires every ride
   ] }); } });
   f.button('Position & VFX').click(); await flush();
   assert.deepEqual(f.field('Rider animation').options.map(option => option.value), ['', 'attack_skirmisher']);
-  await f.client.selectStyle('mystic'); await f.settle(); assert.deepEqual(f.field('Rider animation').options.map(option => option.value), ['', 'attack_mystic']);
+  await f.client.selectEntry('mystic','passive'); await f.settle(); assert.deepEqual(f.field('Rider animation').options.map(option => option.value), ['', 'attack_mystic']);
   assert.equal(f.backend.calls.some(call => call.name === 'change'), false); f.close();
 });
 test('ending a beam cancels delayed channel audio before it can start', async () => {
@@ -215,7 +214,7 @@ test('numeric labels scrub a live preview but a long drag produces just one shar
 
 test('numeric scenario labels respect fine/coarse modifiers, bounds and steps without creating game-data edits',async()=>{
  const f=await fixture(),input=f.field('Hero HP %'),label=input.parentElement.children[0];pointer(label,'pointerdown');pointer(label,'pointermove',-10);assert.equal(input.value,'90');pointer(label,'pointermove',-20,{shiftKey:true});assert.equal(input.value,'89');pointer(label,'pointermove',-21,{altKey:true});assert.equal(input.value,'79');pointer(label,'pointermove',1000,{altKey:true});assert.equal(input.value,'100');pointer(label,'pointermove',990);assert.equal(input.value,'90','Reversing from a bound responds immediately');pointer(label,'pointerup',990);assert.equal(f.calls.scenarios.at(-1).hp,90);await f.settle();assert.equal(f.backend.calls.some(c=>c.name==='change'||c.name==='save'),false);
- await f.client.selectStyle('vanguard');await f.settle();const strikes=f.field('Strikes'),count=caption(f,strikes);pointer(count,'pointerdown');pointer(count,'pointermove',8,{shiftKey:true});assert.equal(Number.isInteger(Number(strikes.value)),true);pointer(count,'pointermove',1000,{altKey:true});assert.equal(strikes.value,'100');pointer(count,'pointerup');await f.settle();assert.equal(f.backend.calls.filter(c=>c.name==='change').length,1);f.close();
+ await f.client.selectEntry('fighter','passive');await f.settle();const strikes=f.field('Max Stacks'),count=caption(f,strikes);pointer(count,'pointerdown');pointer(count,'pointermove',8,{shiftKey:true});assert.equal(Number.isInteger(Number(strikes.value)),true);pointer(count,'pointermove',1000,{altKey:true});assert.equal(strikes.value,'100');pointer(count,'pointerup');await f.settle();assert.equal(f.backend.calls.filter(c=>c.name==='change').length,1);f.close();
 });
 
 test('Escape, pointer cancellation, return-to-start and closing cancel a scrub without publishing or leaving gesture listeners',async()=>{
@@ -238,8 +237,8 @@ test('numeric scrubber owns one pointer, cancels on window blur and releases eve
 
 test('on-hit VFX uses its own asset animations and participates in preview description cache identity',async()=>{
  const main='bbbb0000-0000-0000-0000-000000000010',hit='bbbb0000-0000-0000-0000-000000000011',next='bbbb0000-0000-0000-0000-000000000012',requests=[];
- const f=await fixture({catalogs:{vfx:[{id:main,name:'Main effect',animations:['main-loop']},{id:hit,name:'Impact effect',animations:['hit-burst']},{id:next,name:'Other impact',animations:['hit-other']}]},describe(request){requests.push(copy(request));return Promise.resolve({layers:[{json:{animations:{attack:{}}}}],effects:[{id:request.resource||'default-main'},{id:request.impactResource||'no-impact'}]});}});
- f.button('Position & VFX').click();await f.settle();f.field('VFX asset').value=main;f.field('VFX asset').onchange();await f.settle();f.field('On-hit VFX asset').value=hit;f.field('On-hit VFX asset').onchange();await f.settle();assert.deepEqual(f.field('VFX animation').options.map(n=>n.value),['','main-loop']);assert.deepEqual(f.field('On-hit VFX animation').options.map(n=>n.value),['','hit-burst']);assert(requests.some(r=>r.resource===main&&r.impactResource===hit));assert.equal(f.calls.preview.at(-1).description.effects[1].id,hit);
+ const f=await fixture({catalogs:{vfx:[{id:main,name:'Main effect',animations:['main-loop']},{id:hit,name:'Impact effect',animations:['hit-burst']},{id:next,name:'Other impact',animations:['hit-other']}]},describe(request){requests.push(copy(request));return Promise.resolve({layers:[{json:{animations:{attack:{}}}}],effects:[{id:request.castResource||'default-main'},{id:request.impactResource||'no-impact'}]});}});
+ await f.client.selectStyle('fighter');await f.settle();f.button('Position & VFX').click();await f.settle();f.field('Cast effect VFX asset').value=main;f.field('Cast effect VFX asset').onchange();await f.settle();f.field('On-hit VFX asset').value=hit;f.field('On-hit VFX asset').onchange();await f.settle();assert.deepEqual(f.field('Cast effect VFX animation').options.map(n=>n.value),['','main-loop']);assert.deepEqual(f.field('On-hit VFX animation').options.map(n=>n.value),['','hit-burst']);assert(requests.some(r=>r.castResource===main&&r.impactResource===hit));assert.equal(f.calls.preview.at(-1).description.effects[1].id,hit);
  f.field('On-hit VFX asset').value=next;f.field('On-hit VFX asset').onchange();await f.settle();assert.deepEqual(f.field('On-hit VFX animation').options.map(n=>n.value),['','hit-other']);assert.equal(requests.at(-1).impactResource,next);assert.equal(f.calls.preview.at(-1).description.effects[1].id,next);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
 });
 
@@ -250,4 +249,49 @@ test('timeline pointer capture clamps seeking, excludes other pointers and clean
  pointer(timeline,'pointerdown',208);assert.equal(held,1);assert.equal(f.calls.seeks.at(-1),2);pointer(timeline,'pointermove',308,{pointerId:2});assert.equal(f.calls.seeks.at(-1),2);pointer(timeline,'pointerup',308,{pointerId:2});assert.equal(held,1);
  pointer(timeline,'pointermove',1000);assert.equal(f.calls.seeks.at(-1),4);pointer(timeline,'pointermove',-1000);assert.equal(f.calls.seeks.at(-1),0);const stable=f.calls.seeks.length;pointer(timeline,'pointermove',-1000);assert.equal(f.calls.seeks.length,stable,'Unchanged pointer values do not rerun the simulation');pointer(timeline,'pointercancel',-1000);assert.equal(held,null);
  pointer(timeline,'pointerdown',208);assert.equal(held,1);f.close();assert.equal(held,null);assert.equal(timeline.listeners.pointerdown,undefined);assert.equal(timeline.listeners.pointermove,undefined);assert.equal(timeline.listeners.pointerup,undefined);assert.equal(timeline.listeners.pointercancel,undefined);assert.equal(timeline.listeners.lostpointercapture,undefined);assert.equal(f.backend.calls.some(c=>c.name==='change'||c.name==='save'),false);
+});
+
+
+test('the editor has one active entry per hero and only the five VFX-bearing passives',async()=>{
+ const f=await fixture();assert.equal(f.host.querySelectorAll('.style-card').length,6);assert.equal(f.host.querySelectorAll('.passive-card').length,5);assert(!f.host.querySelectorAll('.passive-card').some(node=>node.getAttribute('data-style')==='skirmisher'));
+ await f.client.selectEntry('fighter','passive');await f.settle();assert.equal(f.calls.preview.at(-1).entry,'passive');assert(f.field('Max Stacks'));assert.equal(f.field('Cooldown'),null);assert.equal(f.field('Knockback'),null);assert.equal(f.button('Cast skill').hidden,true);
+ await f.client.selectStyle('fighter');await f.settle();assert(f.field('Cooldown'));assert(f.field('Knockback'));assert.equal(f.field('Max Stacks'),null);assert.equal(f.button('Cast skill').hidden,false);assert(!f.backend.calls.some(call=>call.name==='change'||call.name==='save'));f.close();
+});
+
+test('each independent Guardian effect owns its controls while the protected-ally aura stays in its passive entry',async()=>{
+ const f=await fixture();await f.client.selectStyle('guardian');await f.settle();f.button('Position & VFX').click();await f.settle();
+ const fields=()=>f.host.querySelectorAll('input,select').map(node=>node.id);for(const prefix of ['defense','physicalShield','buff','taunt'])assert(fields().includes('skill-visual-'+prefix+'Scale'),prefix);assert(!fields().includes('skill-visual-presenceScale'));assert(!fields().includes('skill-visual-beamWidth'));
+ await f.client.selectEntry('guardian','passive');await f.settle();assert(fields().includes('skill-visual-presenceScale'));assert(!fields().includes('skill-visual-defenseScale'));assert(!fields().includes('skill-visual-tauntScale'));assert(!f.backend.calls.some(call=>call.name==='change'||call.name==='save'));f.close();
+});
+
+
+test('compact numeric defaults expose full precision while editing and an unchanged focus or change does not round saved tuning',async()=>{
+ const f=await fixture(),input=f.field('Windup'),exact=Settings.defaults('skirmisher').windup;assert.equal(input.value,'0.667');input.onfocus();assert.equal(input.value,String(exact));input.onblur();assert.equal(input.value,'0.667');input.onchange();await f.settle();assert.equal(f.backend.snapshot().dirty,false);assert.equal(f.client.session.effective('skirmisher').windup,exact);assert.equal(Client.formatNumber(1.333333333333,{}),'1.333');assert.equal(Client.formatNumber(.123456789,{step:.000001}),'0.123457');f.close();
+});
+
+
+test('native skill inspectors omit controls their fixed presentation cannot apply while custom Spine animation remains editable',async()=>{
+ const custom='bbbb0000-0000-0000-0000-000000000051',f=await fixture({catalogs:{vfx:[{id:custom,name:'Custom burst',kind:'spine',animations:['cast-custom','loop-custom']}]}});
+ await f.client.selectStyle('mystic');await f.settle();f.button('Position & VFX').click();await f.settle();
+ const ids=()=>f.host.querySelectorAll('input,select').map(node=>node.id);
+ for(const key of ['offsetX','offsetY','rotation','scale','animation','castResourceAnimation'])assert(!ids().includes('skill-visual-'+key),key+' must not pretend to change the native burst');assert(ids().includes('skill-visual-castScale'));assert(ids().includes('skill-visual-castDelay'));assert(!f.field('Handle').options.some(option=>option.value==='effect'));
+ const asset=f.field('Cast effect VFX asset');asset.value=custom;asset.onchange();await f.settle();const animation=f.field('Cast effect VFX animation');assert(animation);assert(animation.options.some(option=>option.value==='cast-custom'));assert(animation.options.some(option=>option.value==='loop-custom'));animation.value='cast-custom';animation.onchange();await f.settle();assert.equal(f.client.session.effective('mystic').visual.castResourceAnimation,'cast-custom');
+ await f.client.selectEntry('vanguard','passive');await f.settle();assert(!ids().includes('skill-visual-passiveMinScale'));assert(ids().includes('skill-visual-passiveMinPlayback'));assert(ids().includes('skill-visual-passiveScale'));
+ await f.client.selectStyle('guardian');await f.settle();assert(!ids().includes('skill-visual-physicalShieldResourceAnimation'));assert(!ids().includes('skill-visual-defenseResourceAnimation'));assert(ids().includes('skill-visual-physicalShieldDelay'));assert(!f.backend.calls.some(call=>call.name==='save'));f.close();
+});
+
+test('Guardian active exposes taunt and shield feedback without ordinary hammer-hit controls or a circular-area rotation',async()=>{
+ const custom='bbbb0000-0000-0000-0000-000000000052',f=await fixture({catalogs:{vfx:[{id:custom,name:'Custom shield burst',kind:'spine',animations:['shield-burst']}]}});
+ await f.client.selectStyle('guardian');await f.settle();f.button('Position & VFX').click();await f.settle();
+ const ids=()=>f.host.querySelectorAll('input,select').map(node=>node.id).filter(Boolean);
+ assert(!ids().some(id=>id.startsWith('skill-visual-impact')));assert(!ids().includes('skill-visual-rotation'));assert(ids().includes('skill-visual-tauntScale'));assert(ids().includes('skill-visual-defenseDelay'));assert(ids().includes('skill-visual-physicalShieldScale'));
+ f.button('SFX').click();await f.settle();assert(f.field('Cast sound'));assert.equal(f.field('Impact sound'),null);assert.equal(f.field('Impact volume'),null);assert.equal(f.field('Impact delay'),null);assert(!f.backend.calls.some(call=>call.name==='change'||call.name==='save'));
+ f.button('Position & VFX').click();await f.settle();const asset=f.field('VFX asset');asset.value=custom;asset.onchange();await f.settle();assert(ids().includes('skill-visual-rotation'),'Custom area artwork still consumes its rotation');assert(!ids().some(id=>id.startsWith('skill-visual-impact')));assert.equal(f.client.session.effective('guardian').visual.resource,custom);assert(!f.backend.calls.some(call=>call.name==='save'));f.close();
+});
+
+test('Bruiser circular-area rotation is exposed only when custom artwork consumes it',async()=>{
+ const custom='bbbb0000-0000-0000-0000-000000000053',f=await fixture({catalogs:{vfx:[{id:custom,name:'Custom cleave artwork',kind:'spine',animations:['cleave']}]}});
+ await f.client.selectStyle('bruiser');await f.settle();f.button('Position & VFX').click();await f.settle();
+ const ids=()=>f.host.querySelectorAll('input,select').map(node=>node.id);assert(!ids().includes('skill-visual-rotation'));assert(ids().includes('skill-visual-castRotation'));assert(ids().includes('skill-visual-impactScale'));assert(!f.backend.calls.some(call=>call.name==='change'||call.name==='save'));
+ await f.client.session.change('bruiser','visual.resource',custom);await f.settle();assert(ids().includes('skill-visual-rotation'));assert(ids().includes('skill-visual-castRotation'));assert(!f.backend.calls.some(call=>call.name==='save'));f.close();
 });

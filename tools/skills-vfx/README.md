@@ -1,38 +1,48 @@
-# Workbook VFX
+# Character Plan VFX
 
-`Characters Plan.xlsx` is the current source plan. The VFX selections in
-`effects.json` are the reproducible bake contract. Ten source prefabs export as
-18 transparent flipbooks: three passive auras, Mystic's spawn/loop mark and
-three-part start/loop/release beam, Guardian's shield aura, and three rain types.
-Skirmisher and the other blank workbook cells keep their existing effects.
-Four additional flipbooks come from the two supplied Guardian test sheets.
+`Characters Plan.xlsx` is the source plan. `effects.json` describes 26 particle
+captures from the selected Unity prefabs, and `native-clips.json` records six
+animation entries from five original Spine effects. Four older supplied-sheet
+clips remain selectable so existing saved overrides continue to work. The
+36-entry hero catalog resolves to 35 unique resource assets.
+
+The current defaults use the authored triple volley, Fighter wind plus an
+active-only Meshy Ki center, fixed-size Vanguard charging/buff effects, Mystic's
+electric channel and target effect, Blood Cleave's energy effect, and Guardian's
+separate protection, taunt, runic, defense and physical-shield layers.
 
 ## Runtime and authoring
 
-- `HeroSkillVFXState` owns presentation clocks only. Fighter stacks, missing HP,
-  momentum and the actual shield control aura intensity and lifetime.
-- Vanguard retains the latest approved gameplay: momentum freezes during the
-  buff and resets after expiry. The older workbook recharge/refresh note does
-  not change that rule.
-- `HeroSkillVFXLayout` supplies the same pivots, beam endpoints and phase clips
-  to gameplay and the Skills preview. Beam flares stay proportional; only its
-  connecting body changes length. Releasing or changing targets plays the
-  release tail at the last valid endpoints.
-- The Skills editor's Position & VFX tab exposes the appropriate passive,
-  beam, mark or shield asset, offsets, size, axis projection, tint and playback
-  controls for each style. Aura, shield and target-mark handles can be dragged
-  directly in the preview. Browsing never materializes or saves defaults.
-- `ForestRain` adds screen-space weather only in Deep Forest. A private RNG
-  alternates soft rain with intense/light/clear periods, with two-second fades.
-  It freezes on pause/hide and retires with its battle scope. Tiles and frames
-  are bounded and shared; it owns no input, audio or gameplay state.
+- Presentation is shared by battle and the Skills preview through
+  `HeroSkillVFXState` and `HeroSkillVFXLayout`. Opening editors does not create
+  overrides or write gameplay data.
+- Every individual layer has its own offset, scale, rotation, tint, opacity and
+  delay. Presentation delays do not modify gameplay, except the explicitly
+  linked complete-cast delay and Skirmisher's native trajectory transforms.
+- Fighter has one wind effect scaled by its 1–10 stacks. The center effect is
+  active only during its ten-second active buff. Vanguard switches Step1 to
+  Step3 during the frozen momentum buff, retaining quantized playback speed
+  from 0.5 to 1.0 in ten-percent charge steps.
+- Native Skirmisher artwork and swept collisions share the original animated
+  mesh/deformation paths, source clock, release centroid, aim, axis scales and
+  offsets. A custom or disabled cast asset removes the native-trajectory binding.
+  Vanguard's five contacts use the authored flash times and one rider cast.
+- Guardian protection loops follow only living protected allies. Its defense
+  one-shot and physical-shield intro/loop start independently, and all body
+  layers stop when the owning shield expires or is consumed. Mystic target
+  effects stop with their channel and pooled target generations are fenced.
+- `ForestRain` uses `BiomeWeatherState` and a separate weather catalog for Deep
+  Forest rain/ground impacts, light Snow, dense Ice, and Fire/Lava embers. Weather
+  owns no input, sound, combat RNG or gameplay state. See `weather-effects.json`.
 
 ## Reproducible import
 
 Use Python with Pillow and PyYAML and Unity 6000.6.0f1. All disposable files,
 Unity projects, captures and import backups must remain outside this repo.
 
-1. Run `prepare-bake.py <Unity-Assets/VFX> <fresh external Unity project>`.
+1. Run `prepare-bake.py <Unity-Assets/VFX> <fresh external Unity project>
+   --extra-manifest tools/skills-vfx/weather-effects.json`. The importer also
+   resolves the selected Hyper Casual Vol.1 package in `Unity-Assets/New VFX`.
 2. Launch that project using Unity batch mode, `-quit -force-d3d11`, and
    `-executeMethod SkillVfxBaker.Run`; put the log outside this repo. Keep audio
    disabled before launch. Do not use `-nographics` for particle capture.
@@ -44,10 +54,11 @@ Unity projects, captures and import backups must remain outside this repo.
 Only prefab dependencies are extracted. Package C#, DLLs and audio are never
 imported or executed. The isolated baker replaces render-pipeline shaders with
 a sprite-compatible channel-mask/color-ramp conversion, preserving authored
-particle paths and timing. It strips Fighter's central ball emitters while
-retaining their nested wind streaks. Mystic's source is named **Toon Laser
-Blast**; it contains the beam requested in the workbook. The package spellings
-are **Spiky** and **Skull**, corresponding to the workbook's Spikey and Skill.
+particle paths and timing. Fighter wind and center are captured independently and neutralized for the
+authored beige tint. Klaus packed texture channels and custom vertex streams,
+and CFXR procedural glows, are converted explicitly. The older Toon Laser Blast
+beam remains in the catalog for saved overrides; new Mystic defaults use the
+Electric Barrier. Package spellings are **Spiky** and **Skull**.
 
 The baker uses deterministic seeds, a fixed group-wide pixel envelope, fixed
 pivots, straight-alpha output and a short overlap at loop seams. Captures are
@@ -75,21 +86,32 @@ body shield has separate appearance, ping-pong sustain, and release phases.
 The maintained `sheet-clips.json` preserves these additions when Unity captures
 are reimported. Neither original sheet nor backups are stored in the project.
 
+## Native effects
+
+Run `import-native.py <Unity project/Assets/SpineVfx/Collections20261030>
+<external backups>` before particle publication. It copies only the exact
+3.8 JSON, atlas and original PNG pages with stable identities; no Unity
+behaviours or executable package code enter the game. The catalog retains
+separate physical-shield intro and loop animations over one shared asset.
+`authored_paths.py` samples all nine arrow meshes plus their sparse linear
+deformation at 120 Hz. Native import atomically regenerates the matching
+`HeroSkillArrowPaths.js`, release centroid and production-skeleton SHA-256.
+Its standalone CLI writes an external JSON sample for inspection; new weighted
+meshes, animated bones or Bezier deforms fail explicitly until verified.
+
 ## Loading barrier and memory
 
 `HeroSkillAssetWarmup` joins the existing `KinghtFallModle` startup Loading
-chain. It loads the fixed 22 atlas assets sequentially, waits for each texture
+chain. It loads the fixed 35 unique sprite/Spine assets sequentially, waits for each texture
 to decode and initialize its GPU object, then fences GPU work before Main can
 open. On JSB the read-only GL query drains the buffered finish command. It does
 not render a camera, instantiate actors, or change gameplay or player records.
 
-The pool retains exactly one session reference per atlas (89.5 MiB of RGBA base
+The pool retains exactly one session reference per atlas (159.70 MiB of RGBA base
 levels, no mipmaps). Active hero/weather consumers own and release independent
 references. This avoids later cold style/stage switches, which do not all enter
-the Loading scene. The measured native control had 678 MiB working set and
-966 MiB virtual memory in a 2 GiB PE32 process before these atlases; the bounded
-89.5 MiB set, including a possible second decoded copy, fits that measured
-headroom. Final native integration also checks actual peak residency.
+the Loading scene. The decoded budget is verified from every actual PNG page. Native integration
+must also check process peak residency, including possible decoded copies.
 
 An abandoned Loading scene cancels incomplete jobs and their texture listeners.
 Expired callbacks cannot advance a replacement scene. Resource failures use the

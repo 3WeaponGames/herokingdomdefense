@@ -1,18 +1,23 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const Settings=require('../../assets/_script/HeroSkillSettings'),Core=require('../../assets/_script/HeroStyleSkills'),Catalog=require('../../assets/_script/HeroSkillVFXCatalog');
-function fixture(style){
+function fixture(style,modern=false){
  class Node{constructor(name){this.name=name;this.children=[];this.x=this.y=0;this.zIndex=0;this.active=true;}setParent(parent){this.parent=parent;parent.children.push(this);}getPosition(){return{x:this.x,y:this.y};}setPosition(p){this.x=p.x;this.y=p.y;}convertToWorldSpaceAR(p){return{x:p.x+this.x,y:p.y+this.y};}convertToNodeSpaceAR(p){return{x:p.x-this.x,y:p.y-this.y};}addComponent(Type){const value=new Type();value.node=this;this.component=value;return value;}destroy(){this.destroyed=true;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}}
  const loads=[],assets=[],cc={Node,Sprite:class{},SpriteFrame:class{},isValid:n=>!!n&&!n.destroyed,v2:(x,y)=>({x,y}),size:(width,height)=>({width,height}),rect:(x,y,width,height)=>({x,y,width,height}),color:value=>value,resources:{load(resource,_type,done){loads.push({resource,done});}},assetManager:{}};
- const exported={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports:exported,cc,require:name=>name.startsWith('./')?require(path.join(__dirname,'../../assets/_script',name)):name==='BattleSounds'?{}:{}});
+ const sp={SkeletonData:class{},Skeleton:class{setAnimation(_track,name,loop){return this.track={name,loop,trackTime:0};}update(){}}};
+ const exported={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports:exported,cc,sp,require:name=>name.startsWith('./')?require(path.join(__dirname,'../../assets/_script',name)):name==='BattleSounds'?{}:{}});
  const main=new Node('world'),hero={node:new Node('hero'),hp:500,hpMax:1000,getAttWpos:()=>({x:0,y:70})};hero.node.setParent(main);hero.node.zIndex=10;hero.node._combatGeneration=1;
  const rt={hero,heroGeneration:1,state:Core.createState(style),settings:Settings.defaults(style),projectiles:[],effects:[],game:{ndMain:main,_combatEpoch:1,gameData:{}},available:()=>true},hud={visual:{node:new Node('HUD')}};
- function finish(){for(const load of loads.splice(0)){const clip=Catalog.clips.find(c=>c.resource===load.resource);assert(clip);const asset={refs:0,clones:[],getRect:()=>({x:0,y:0,width:clip.columns*clip.cell,height:Math.ceil(clip.frames/clip.columns)*clip.cell}),addRef(){this.refs++;return this;},decRef(){this.refs--;},clone(){const frame={setRect(rect){this.rect=rect;},setOriginalSize(){},setOffset(){},destroy(){this.destroyed=true;}};this.clones.push(frame);return frame;}};assets.push(asset);load.done(null,asset);}}
+ if(!modern){const v=rt.settings.visual;v.castResource='';v.channelHitResource='';v.presenceResource='';v.defenseResource='';v.physicalShieldResource='';
+  if(style==='mystic')Settings.applyClip(v,'beamResource',Catalog.clips.find(c=>c.id==='mystic-beam-body-loop'));
+  if(style==='guardian'){Settings.applyClip(v,'tauntResource',Catalog.clips.find(c=>c.id==='guardian-taunt-test'));Settings.applyClip(v,'shieldResource',Catalog.clips.find(c=>c.id==='guardian-body-shield-loop'));}
+ }
+ function finish(){for(const load of loads.splice(0)){const clip=Catalog.clips.find(c=>c.resource===load.resource);assert(clip);const asset={skeletonJson:clip.kind==='spine'?JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/resources',clip.resource+'.json'))):undefined,refs:0,clones:[],getRect:()=>({x:0,y:0,width:clip.columns*clip.cell,height:Math.ceil(clip.frames/clip.columns)*clip.cell}),addRef(){this.refs++;return this;},decRef(){this.refs--;},clone(){const frame={setRect(rect){this.rect=rect;},setOriginalSize(){},setOffset(){},destroy(){this.destroyed=true;}};this.clones.push(frame);return frame;}};assets.push(asset);load.done(null,asset);}}
  function target(x=150){const node=new Node('enemy');node.x=x;node._combatGeneration=1;return{node,hp:1000};}
  return{P:exported,rt,hud,hero,main,loads,assets,finish,target,paint(){exported.attachments(hud,rt);}};
 }
 test('stack-driven aura shares one resource and immutable frames, renders behind the horse, and releases owned assets',()=>{
- const f=fixture('fighter');f.rt.state.stacks=5;f.rt.state.stackRemaining=10;f.paint();assert.equal(f.loads.length,1);f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()][0];assert.equal(art.nodes.size,5);for(const r of art.nodes.values()){assert.equal(r.node.parent,f.main);assert.equal(r.node.zIndex,9);assert.equal(r.node.anchorX,Catalog.clips.find(c=>c.id==='fighter-windup').anchorX);}
+ const f=fixture('fighter');f.rt.state.stacks=5;f.rt.state.stackRemaining=10;f.paint();assert.equal(f.loads.length,1);f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()][0];assert.equal(art.nodes.size,1);for(const r of art.nodes.values()){assert.equal(r.node.parent,f.main);assert.equal(r.node.zIndex,9);assert.equal(r.node.anchorX,Catalog.clips.find(c=>c.id==='fighter-windup').anchorX);}
  for(let i=0;i<200;i++){f.rt.state.time=i/60;f.paint();}assert.equal(f.loads.length,0);assert(art.frames.size<=128);const asset=f.assets[0];assert.equal(asset.refs,1);f.P.suspend(f.rt);for(const r of art.nodes.values())assert.equal(r.node.active,false);f.paint();for(const r of art.nodes.values())assert.equal(r.node.active,true);f.P.clear(f.rt);assert.equal(asset.refs,0);assert(asset.clones.every(c=>c.destroyed));assert.equal(f.main.children.length,1);
 });
 test('late resources cannot attach to retired state and disabled slots remove the world aura',()=>{
@@ -92,6 +97,27 @@ test('ground-only passive auras follow live hero positions without sampling unus
  }
 });
 
+test('Fighter active Ki follows the authored HP body anchor and matches preview placement without sampling its weapon',()=>{
+ const f=fixture('fighter',true),prefab=JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'))),actor=prefab.find(row=>row.ctrHp&&row.node);
+ assert(actor,'the real hero controller supplies its HP anchor');let hp=prefab[prefab[actor.ctrHp.__id__].node.__id__],x=0,y=0;
+ while(hp!==prefab[actor.node.__id__]){assert(hp&&hp._parent,'HP anchor belongs to the hero');const t=hp._trs&&hp._trs.array||[0,0,0,0,0,0,1,1,1],r=2*Math.atan2(t[5]||0,t[6]===undefined?1:t[6]),px=x*(t[7]===undefined?1:t[7]),py=y*(t[8]===undefined?1:t[8]);x=(t[0]||0)+px*Math.cos(r)-py*Math.sin(r);y=(t[1]||0)+px*Math.sin(r)+py*Math.cos(r);hp=prefab[hp._parent.__id__];}
+ const actorScale=.8,bodyOffset={x:x*actorScale*.55,y:y*actorScale*.55};assert(bodyOffset.y>0&&bodyOffset.y<80,'the authored rider body is below the old fixed +80 fallback');
+ f.main.x=11;f.main.y=13;f.hero.node.x=37;f.hero.node.y=-19;f.hero.node.convertToWorldSpaceAR=p=>({x:f.main.x+f.hero.node.x+p.x*actorScale,y:f.main.y+f.hero.node.y+p.y*actorScale});let bodyReads=0;
+ f.hero.ctrHp={node:{convertToWorldSpaceAR(){bodyReads++;return{x:f.main.x+f.hero.node.x+x*actorScale,y:f.main.y+f.hero.node.y+y*actorScale};}}};
+ f.hero.getAttWpos=()=>{throw Error('ground-only Fighter sampled its unused weapon');};Object.assign(f.rt.settings.visual,{targetX:150,targetY:300,buffOffsetX:7,buffOffsetY:-3});f.rt.state.buffRemaining=10;
+ const frame=f.P.advanceVFX(f.rt),context=f.rt._presentation.vfxContext,Layout=require('../../assets/_script/HeroSkillVFXLayout'),{Model}=require('../../packages/hkd-skills/preview-model'),preview=new Model('fighter',f.rt.settings,{mode:'basic',heroBodyOffset:bodyOffset});
+ preview.hero.x=f.hero.node.x;preview.hero.y=f.hero.node.y;preview.state.buffRemaining=10;preview.updateVFX();
+ const at=Layout.entities(frame,f.rt.settings.visual,context).find(e=>e.slot==='buff'),expected=Layout.entities(preview.vfxFrame,preview.settings.visual,preview.vfxContext).find(e=>e.slot==='buff');
+ assert.equal(bodyReads,1);assert.equal(context.origin,null);assert(Math.abs(at.x-expected.x)<1e-9);assert(Math.abs(at.y-expected.y)<1e-9);assert(Math.abs(at.y-(f.hero.node.y+bodyOffset.y-3))<1e-9);
+ f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes('fighter-meshy-center')),node=[...art.nodes.values()][0].node;assert.equal(node.parent,f.main);assert.equal(node.x,at.x);assert.equal(node.y,at.y);
+ f.hero.node.y+=21;f.rt.state.time=.1;f.paint();assert(Math.abs(node.y-at.y-21)<1e-9,'Ki follows the live body transform');
+ f.rt.state.buffRemaining=0;const reads=bodyReads;f.P.advanceVFX(f.rt);assert.equal(bodyReads,reads,'expired Ki restores the no-body-anchor fast path');assert.equal(f.rt._presentation.vfxContext.heroBody,null);f.P.clear(f.rt);
+});
+
+test('grounded Vanguard buff and disabled Fighter Ki do not read body or weapon anchors',()=>{
+ for(const style of ['fighter','vanguard']){const f=fixture(style,true);f.rt.state.buffRemaining=10;f.rt.state.buffStrength=.6;if(style==='fighter')f.rt.settings.visual.buffResource='';f.hero.getAttWpos=()=>{throw Error('unused weapon');};f.hero.ctrHp={node:{convertToWorldSpaceAR(){throw Error('unused body');}}};f.P.advanceVFX(f.rt);assert.equal(f.rt._presentation.vfxContext.heroBody,null);assert.equal(f.rt._presentation.vfxContext.origin,null);f.P.clear(f.rt);}
+});
+
 test('Mystic keeps fresh weapon and body anchors during the beam end phase after both targets clear',()=>{
  const f=fixture('mystic'),target=f.target(),bar=new f.hero.node.constructor('HP');bar.y=150;f.hero.ctrHp={node:bar};let weaponReads=0,tip={x:5,y:70};
  f.hero.getAttWpos=()=>{weaponReads++;return{...tip};};f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=1;
@@ -101,4 +127,12 @@ test('Mystic keeps fresh weapon and body anchors during the beam end phase after
 
 test('custom cross-style beam resources retain the full live anchor path',()=>{
  const f=fixture('fighter'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop');Settings.applyClip(f.rt.settings.visual,'beamResource',clip);let reads=0;f.hero.getAttWpos=()=>{reads++;return{x:10,y:80};};f.P.advanceVFX(f.rt);assert.equal(reads,1);assert.equal(f.rt._presentation.vfxContext.origin.y,80);assert(f.rt._presentation.vfxContext.heroBody);f.P.clear(f.rt);
+});
+
+test('native barrage is drawn once and seeks the shared source clock with its exact collision transform',()=>{
+ const f=fixture('skirmisher',true),Timeline=require('../../assets/_script/HeroSkillTimeline');f.rt.skillCast={key:1,at:0,origin:{x:12,y:25},direction:{x:0,y:1},radius:250,duration:2};f.rt.state.time=.75;f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes('skirmisher-triple-volley')),records=[...art.nodes.values()];assert.equal(records.length,1);const r=records[0];const clip=Catalog.clips.find(c=>c.id==='skirmisher-triple-volley'),a=(90-62.345520429791684)*Math.PI/180;assert(Math.abs(r.node.x-(12-.16*(clip.originX*Math.cos(a)-clip.originY*Math.sin(a))))<1e-8);assert(Math.abs(r.node.y-(25-.16*(clip.originX*Math.sin(a)+clip.originY*Math.cos(a))))<1e-8);assert.equal(r.node.scaleX,.16);assert(Math.abs(r.node.angle-(90-62.345520429791684))<1e-8);assert.equal(r.track.trackTime,Timeline.arrowSourceTime(.75,f.rt.state.tuning,f.rt.settings.visual));assert.equal(r.skeleton.timeScale,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+});
+
+test('disabling one modern aura releases its atlas while other cast assets stay selected',()=>{
+ const f=fixture('fighter',true);f.rt.state.stacks=5;f.rt.state.stackRemaining=10;f.paint();f.finish();f.paint();const asset=f.assets[0];assert.equal(asset.refs,1);assert(f.rt.settings.visual.castResource);f.rt.settings.visual.passiveResource='';f.paint();assert.equal(asset.refs,0);assert.equal(f.main.children.length,1);f.P.clear(f.rt);
 });

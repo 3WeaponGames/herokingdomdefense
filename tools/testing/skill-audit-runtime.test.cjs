@@ -11,6 +11,9 @@ function scene(style,options={}){
  h.g.gameStatus=1;h.g.mapSize={width:2000,height:1000};h.ui.isPauset=false;h.d.heroStyle=style;h.ui.ctrEffect={showDamageNum(p,n){feedback.push({x:p.x,y:p.y,damage:n});}};
  const hero={heroStyle:style,node:new Node('hero',h.g.ndMain),hp:500,hpMax:1000,attackRange:200,crit:-1,critDam:1.5,time:{Attack:0},_relicHero:true,_heroSecondary:{},ctrHp:{setHp(){}},ctrPlayAni:{setAttack(){animations.push('attack');},setBodyLeft(){}},isDead(){return this.hp<=0;},getAttack:()=>100,getSpeed:()=>300,getAttSpeed:()=>1,getCriticalDamage:()=>1.5,onUpdata(){if(options.update)return options.update.call(this);},doAttack(){this.basicCalls=(this.basicCalls||0)+1;if(options.attack)return options.attack.call(this);},doAttackFinish(){},addBuff(){},onRestart(){},endRoundGame(){},onDead(){},onDestroy(){}};
  hero.node._combatGeneration=1;h.g.ctrPlay=hero;const adapter=h.load('HeroStyleRuntime');adapter.install(hero,{});const rt=hero._styleRuntime;rt.refresh();
+ // These regressions exercise legacy selectable projectile assets. The new
+ // native barrage has its own finite-path integration tests.
+ if(!options.authored)rt.settings.visual.castTrajectory='';
  function enemy(x=100,y=0){const e={node:new Node('enemy',h.g.ndMain,x,y),hp:10000,hpMax:10000,debuffInfo:[],isDead(){return this.hp<=0;},addBuff(type,data){this.debuffInfo.push({type,data,time:0,timeMax:data.time});},onAttacked(n,source,secondary,context){const combat=h.load('RelicCombat'),damage=combat.enemyDamage(this,n,source,secondary,context);this.hp-=damage;if(!secondary)combat.primaryImpact(this,source,context,damage);return damage;}};e.node._combatGeneration=1;h.d.enemyList.push(e);return e;}
  return {...h,hero,rt,enemy,feedback,animations,poses};
 }
@@ -72,7 +75,7 @@ test('large finite aim vectors normalize without overflow and invalid runtime in
 test('a last-victim epoch change cannot restore a retired spear pose after presentation cleanup',()=>{
  const h=scene('vanguard'),target=h.enemy(),hit=target.onAttacked;
  target.onAttacked=function(...args){const damage=hit.apply(this,args);h.g._combatEpoch=(h.g._combatEpoch||0)+1;return damage;};
- h.rt.cast({x:1,y:0});h.rt.update(.36);
+ h.rt.cast({x:1,y:0});h.rt.update(.45);
  assert.equal(h.rt.state.active,null);assert.equal(h.rt.effects.length,0);assert.equal(h.poses.length,0,'Retired rapid pose was reapplied');
 });
 

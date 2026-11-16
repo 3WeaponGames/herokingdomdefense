@@ -45,10 +45,10 @@ test('moving horses approach out-of-range targets before casting, including diag
   const expected={x:model.hero.x,y:model.hero.y,time:model.time,events:model.events.map(e=>[e.kind,e.time])};model.seek(expected.time);assert(Math.abs(model.hero.x-expected.x)<1e-8);assert(Math.abs(model.hero.y-expected.y)<1e-8);assert.equal(model.events.filter(e=>e.kind==='cast').length,1);assert(Math.abs(model.events.find(e=>e.kind==='cast').time-arrival)<1e-8);
  }
  const basic=new Model('fighter',{}, {mode:'basic',moving:true,targets:1,targetDistance:900});basic.advance(basic.approach.duration+2);assert(basic.hits>0);assert.equal(basic.events.some(e=>e.kind==='cast'),false);
- const distant=new Model('skirmisher',{windup:.35},{mode:'active',moving:true,targets:1,targetDistance:1500,attackRate:0});distant.advance(distant.approach.duration+.4);assert.equal(distant.projectiles.length,1,'An approaching preview must not clip the arrow inside the old fixed box');distant.advance(.5);assert(distant.hits>0);
+ const distant=new Model('skirmisher',{volleys:1,arrowsPerVolley:1,windup:.35},{mode:'active',moving:true,targets:1,targetDistance:1500,attackRate:0});distant.advance(distant.approach.duration+.4);assert.equal(distant.projectiles.length,1,'An approaching preview must not clip the arrow inside the old fixed box');distant.advance(.5);assert(distant.hits>0);
 });
-test('Vanguard releases the final pose instead of replaying an ordinary recovery after the seventh hit',()=>withPreview(async f=>{
- await f.view.set({style:'vanguard',settings:{duration:2.5,strikes:7,visual:{}},description:f.description});f.view.seek(2.5);assert.equal(f.view.getState().hits,7);assert.equal(f.seeks.filter(s=>s.id==='hero').at(-1).name,'attack_vanguard');f.view.seek(2.51);assert.equal(f.seeks.filter(s=>s.id==='hero').at(-1).name,'idle');
+test('Vanguard plays one cast while the independent VFX hit sequence continues',()=>withPreview(async f=>{
+ await f.view.set({style:'vanguard',settings:{duration:2.5,strikes:7,visual:{}},description:f.description});f.view.seek(.1);assert.equal(f.seeks.filter(s=>s.id==='hero').at(-1).name,'attack_vanguard');f.view.seek(2.5);assert.equal(f.view.getState().hits,7);assert.equal(f.seeks.filter(s=>s.id==='hero').at(-1).name,'idle');f.view.seek(2.51);assert.equal(f.seeks.filter(s=>s.id==='hero').at(-1).name,'idle');
 }));
 test('selecting or moving an enemy during a spear cast preserves the authored weapon pose and committed hit arc',()=>withPreview(async f=>{
  const pose=require('../../assets/_script/HeroSkillPose'),original=pose.applyAim,aims=[];pose.applyAim=(_s,direction)=>aims.push({...direction});
@@ -63,13 +63,13 @@ test('an obsolete rejected rig cannot report failure after another style has loa
  const old=f.view.set({style:'fighter',settings:{visual:{}},description:{...f.description,layers:[{...f.description.layers[0],uuid:'obsolete'}]}});await Promise.resolve();assert(reject);await f.view.set({style:'guardian',settings:{visual:{}},description:f.description});reject(Error('Obsolete rig unavailable'));await assert.doesNotReject(old);assert.equal(f.view.getState().loaded,true);
 }));
 test('moving a preview target after release never steers an existing arrow',()=>withPreview(async f=>{
- await f.view.set({style:'skirmisher',settings:{windup:.2,visual:{}},description:f.description});f.view.seek(.21);const direction=f.view.getState().projectilePaths[0].direction,region=f.view.getState().enemyRegions[1],event={button:0,pointerId:8,clientX:(region.left+region.right)/2,clientY:(region.top+region.bottom)/2,preventDefault(){}};f.events().get('pointerdown')(event);f.events().get('pointermove')({...event,clientY:event.clientY-80});f.events().get('pointerup')(event);assert.deepEqual(f.view.getState().projectilePaths[0].direction,direction);assert.equal(f.changes.length,0);
+ await f.view.set({style:'skirmisher',settings:{volleys:1,arrowsPerVolley:1,windup:.2,visual:{}},description:f.description});f.view.seek(.21);const direction=f.view.getState().projectilePaths[0].direction,region=f.view.getState().enemyRegions[1],event={button:0,pointerId:8,clientX:(region.left+region.right)/2,clientY:(region.top+region.bottom)/2,preventDefault(){}};f.events().get('pointerdown')(event);f.events().get('pointermove')({...event,clientY:event.clientY-80});f.events().get('pointerup')(event);assert.deepEqual(f.view.getState().projectilePaths[0].direction,direction);assert.equal(f.changes.length,0);
 }));
 
 test('imported aura, shield and overhead mark handles edit only their own presentation offsets',()=>withPreview(async f=>{
  const Settings=require('../../assets/_script/HeroSkillSettings');
  for(const [style,slot]of [['fighter','passive'],['guardian','buff'],['mystic','mark']]){
-  await f.view.set({style,settings:Settings.defaults(style),description:f.description});f.view.selectHandle(slot);f.view.seek(0);f.changes.length=0;
+  await f.view.set({style,entry:slot==='buff'?'active':'passive',settings:Settings.defaults(style),description:f.description});f.view.selectHandle(slot);f.view.seek(0);f.changes.length=0;
   const point=f.view.getState().handles.find(h=>h.name===slot),before=f.view.getState(),event={button:0,pointerId:22,clientX:point.x,clientY:point.y,preventDefault(){}};
   f.events().get('pointerdown')(event);f.events().get('pointermove')({...event,clientX:point.x+25,clientY:point.y-15});f.events().get('pointerup')(event);
   assert.deepEqual(f.changes.map(c=>c[0]),[['visual',slot+'OffsetX'],['visual',slot+'OffsetY']]);assert.equal(f.view.getState().hits,before.hits);assert.equal(f.view.getState().time,before.time);

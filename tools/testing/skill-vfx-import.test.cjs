@@ -8,7 +8,7 @@ spec=importlib.util.spec_from_file_location('skill_vfx_import','tools/skills-vfx
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 catalog=json.loads(Path('assets/resources/vfx/hero-skills/catalog.json').read_text())
 # User-sheet entries join publication after the complete workbook capture set.
-rows=copy.deepcopy([row for row in catalog['clips'] if row.get('source',{}).get('kind')!='user-sheet'])
+rows=copy.deepcopy([row for row in catalog['clips'] if row.get('kind')=='flipbook' and row.get('source',{}).get('kind')!='user-sheet'])
 for row in rows:
     row.update(row.pop('source'));row['file']=row['id']+'.png'
 jobs=copy.deepcopy(rows)
@@ -26,7 +26,7 @@ function run(code){
 }
 test('VFX importer accepts the complete capture contract without comparing a later workbook hash',()=>run(String.raw`
     accepted,source=module.capture_rows(bake)
-    assert len(accepted)==18
+    assert len(accepted)==26
     assert source['workbookSha256']==catalog['workbookSha256']
     write(source={'workbookSha256':'f'*64})
     assert module.capture_rows(bake)[1]['workbookSha256']=='f'*64

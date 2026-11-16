@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "workbookSha256": "23cb7a4692636fdd4eaf449b8e7948115b19439727ef2f587de186d8eb8db6a3",
+  "clips": [
+    {
+      "id": "weather-snow-light",
+      "name": "CFXR4 Snow Falling (Light)",
+      "loop": true,
+      "frames": 64,
+      "columns": 16,
+      "cell": 128,
+      "fps": 32,
+      "anchorX": 0.5098495483398438,
+      "anchorY": 0.8553905487060547,
+      "aspect": 1.0,
+      "alphaBounds": [
+        7,
+        19,
+        120,
+        110
+      ],
+      "visibleFrames": 64,
+      "kind": "flipbook",
+      "resource": "vfx/weather/weather-snow-light",
+      "uuid": "e6f815ef-44c7-55b1-b9a9-6566a1a0e474",
+      "sha256": "13817fb6a4115401a19f5bfc7a09211084d0723d7310e38abcdfe9960cd40d1b",
+      "source": {
+        "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
+        "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/Variants/CFXR4 Snow Falling (Light).prefab"
+      }
+    },
+    {
+      "id": "weather-snow-dense",
+      "name": "CFXR4 Snow Falling (Dense)",
+      "loop": true,
+      "frames": 64,
+      "columns": 16,
+      "cell": 128,
+      "fps": 32,
+      "anchorX": 0.330948144197464,
+      "anchorY": 0.7523000836372375,
+      "aspect": 1.0,
+      "alphaBounds": [
+        7,
+        32,
+        115,
+        96
+      ],
+      "visibleFrames": 64,
+      "kind": "flipbook",
+      "resource": "vfx/weather/weather-snow-dense",
+      "uuid": "44e12bba-6a4a-563a-a3f0-234b9b9ca720",
+      "sha256": "54dd639474ca58de63ac649c7f38fcc053ff85792f055f92de20c2f786906554",
+      "source": {
+        "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
+        "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/Variants/CFXR4 Snow Falling (Dense).prefab"
+      }
+    },
+    {
+      "id": "weather-rain-splash",
+      "name": "CFXR4 Rain Splashes",
+      "loop": true,
+      "frames": 64,
+      "columns": 16,
+      "cell": 128,
+      "fps": 32,
+      "anchorX": 0.5019944310188293,
+      "anchorY": 0.4922482967376709,
+      "aspect": 1.0,
+      "alphaBounds": [
+        7,
+        13,
+        120,
+        114
+      ],
+      "visibleFrames": 58,
+      "kind": "flipbook",
+      "resource": "vfx/weather/weather-rain-splash",
+      "uuid": "5890b91e-f095-5bf1-8e0e-5e47826a22b1",
+      "sha256": "1d8603c00844f1974c7c8201a6d2fd3ecf954887c2ffcebc510926645ee75ca8",
+      "source": {
+        "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
+        "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/CFXR4 Rain Splashes.prefab"
+      }
+    },
+    {
+      "id": "weather-rain-splash-intense",
+      "name": "CFXR4 Rain Splashes (Intense)",
+      "loop": true,
+      "frames": 64,
+      "columns": 16,
+      "cell": 128,
+      "fps": 32,
+      "anchorX": 0.49864375591278076,
+      "anchorY": 0.4877767562866211,
+      "aspect": 1.0,
+      "alphaBounds": [
+        7,
+        12,
+        119,
+        115
+      ],
+      "visibleFrames": 64,
+      "kind": "flipbook",
+      "resource": "vfx/weather/weather-rain-splash-intense",
+      "uuid": "5146d254-2122-5da5-b285-9ad3bf46e962",
+      "sha256": "bfb3e0d71fe7629a8480295a20df6a59c601c0c6f84cea0838049d4ece5375bc",
+      "source": {
+        "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
+        "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/Variants/CFXR4 Rain Splashes (Intense).prefab"
+      }
+    },
+    {
+      "id": "weather-snow-splash",
+      "name": "CFXR4 Snow 'Splashes'",
+      "loop": true,
+      "frames": 64,
+      "columns": 16,
+      "cell": 128,
+      "fps": 32,
+      "anchorX": 0.49901968240737915,
+      "anchorY": 0.500577986240387,
+      "aspect": 1.0,
+      "alphaBounds": [
+        7,
+        13,
+        120,
+        115
+      ],
+      "visibleFrames": 64,
+      "kind": "flipbook",
+      "resource": "vfx/weather/weather-snow-splash",
+      "uuid": "a6bce581-605e-5625-ac29-89dd32cd8d7f",
+      "sha256": "645f45c0b9196e4fa35c8c7690c65afb00974685f8c0e68606caf84c7869c347",
+      "source": {
+        "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
+        "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/CFXR4 Snow 'Splashes'.prefab"
+      }
+    },
+    {
+      "id": "weather-snow-splash-dense",
+      "name": "CFXR4 Snow 'Splashes' (Dense)",
+      "loop": true,
+      "frames": 64,
+      "columns": 16,
+      "cell": 128,
+      "fps": 32,
+      "anchorX": 0.4999160170555115,
+      "anchorY": 0.49991071224212646,
+      "aspect": 1.0,
+      "alphaBounds": [
+        7,
+        12,
+        119,
+        115
+      ],
+      "visibleFrames": 64,
+      "kind": "flipbook",
+      "resource": "vfx/weather/weather-snow-splash-dense",
+      "uuid": "0f451494-3476-5679-b710-9869482cb2fd",
+      "sha256": "ff4fabf7ba8c2bf621d1c0db6604357b6fdbf756eb6c6b35b07e912cac6acab8",
+      "source": {
+        "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
+        "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/Variants/CFXR4 Snow 'Splashes' (Dense).prefab"
+      }
+    },
+    {
+      "id": "weather-ember-upward",
+      "name": "CFXR3 Flying Ember (Upward)",
+      "loop": true,
+      "frames": 64,
+      "columns": 16,
+      "cell": 128,
+      "fps": 32,
+      "anchorX": 0.49718767404556274,
+      "anchorY": 0.46235719323158264,
+      "aspect": 1.0,
+      "alphaBounds": [
+        7,
+        32,
+        120,
+        95
+      ],
+      "visibleFrames": 64,
+      "kind": "flipbook",
+      "resource": "vfx/weather/weather-ember-upward",
+      "uuid": "22fd9b4e-4842-59e7-ad03-3cb244334449",
+      "sha256": "1f024b1740c39effa5f8c1620e7ab0440f39e28f33bbe49c71d96d6d2c457087",
+      "source": {
+        "package": "Cartoon FX 3 Remaster R 1.5.1.unitypackage",
+        "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Fire/Variants/CFXR3 Flying Ember (Upward).prefab"
+      }
+    },
+    {
+      "id": "weather-ember-erratic",
+      "name": "CFXR3 Flying Ember (Upward Erratic)",
+      "loop": true,
+      "frames": 64,
+      "columns": 16,
+      "cell": 128,
+      "fps": 32,
+      "anchorX": 0.496218204498291,
+      "anchorY": 0.44905245304107666,
+      "aspect": 1.0,
+      "alphaBounds": [
+        7,
+        31,
+        119,
+        92
+      ],
+      "visibleFrames": 64,
+      "kind": "flipbook",
+      "resource": "vfx/weather/weather-ember-erratic",
+      "uuid": "7232d51d-bc60-5538-8920-2da35ba2b15f",
+      "sha256": "32637570cc02696126005055d998f5904a1aae400a119022233662b3df3971f7",
+      "source": {
+        "package": "Cartoon FX 3 Remaster R 1.5.1.unitypackage",
+        "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Fire/Variants/CFXR3 Flying Ember (Upward Erratic).prefab"
+      }
+    }
+  ]
+}

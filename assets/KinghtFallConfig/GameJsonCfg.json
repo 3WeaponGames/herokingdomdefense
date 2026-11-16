@@ -14746,7 +14746,8 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 0.2
+              "healthRegen": 0.2,
+              "healthRegenPercent": 0.002
             },
             "skirmisher": {
               "range": 8,
@@ -14778,7 +14779,8 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 0.4
+              "healthRegen": 0.4,
+              "healthRegenPercent": 0.004
             },
             "skirmisher": {
               "range": 16,
@@ -14810,7 +14812,8 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 0.6
+              "healthRegen": 0.6,
+              "healthRegenPercent": 0.006
             },
             "skirmisher": {
               "range": 24,
@@ -14842,7 +14845,8 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 0.8
+              "healthRegen": 0.8,
+              "healthRegenPercent": 0.008
             },
             "skirmisher": {
               "range": 32,
@@ -14874,7 +14878,8 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 1
+              "healthRegen": 1,
+              "healthRegenPercent": 0.01
             },
             "skirmisher": {
               "range": 40,
@@ -14906,7 +14911,8 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 1.2
+              "healthRegen": 1.2,
+              "healthRegenPercent": 0.012
             },
             "skirmisher": {
               "range": 48,
@@ -14938,7 +14944,8 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 1.4
+              "healthRegen": 1.4,
+              "healthRegenPercent": 0.014
             },
             "skirmisher": {
               "range": 56,
@@ -14970,7 +14977,8 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 1.6
+              "healthRegen": 1.6,
+              "healthRegenPercent": 0.016
             },
             "skirmisher": {
               "range": 64,
@@ -15002,7 +15010,8 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 1.8
+              "healthRegen": 1.8,
+              "healthRegenPercent": 0.018
             },
             "skirmisher": {
               "range": 72,
@@ -15034,7 +15043,8 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 2
+              "healthRegen": 2,
+              "healthRegenPercent": 0.02
             },
             "skirmisher": {
               "range": 80,
@@ -15066,7 +15076,8 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 2.2
+              "healthRegen": 2.2,
+              "healthRegenPercent": 0.022
             },
             "skirmisher": {
               "range": 88,
@@ -15098,7 +15109,8 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 2.4
+              "healthRegen": 2.4,
+              "healthRegenPercent": 0.024
             },
             "skirmisher": {
               "range": 96,
@@ -15130,7 +15142,8 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 2.6
+              "healthRegen": 2.6,
+              "healthRegenPercent": 0.026
             },
             "skirmisher": {
               "range": 104,
@@ -15162,7 +15175,8 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 2.8
+              "healthRegen": 2.8,
+              "healthRegenPercent": 0.028
             },
             "skirmisher": {
               "range": 112,
@@ -15194,7 +15208,8 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 3
+              "healthRegen": 3,
+              "healthRegenPercent": 0.03
             },
             "skirmisher": {
               "range": 120,
@@ -15226,7 +15241,8 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 3.2
+              "healthRegen": 3.2,
+              "healthRegenPercent": 0.032
             },
             "skirmisher": {
               "range": 128,
@@ -15258,7 +15274,8 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 3.4
+              "healthRegen": 3.4,
+              "healthRegenPercent": 0.034
             },
             "skirmisher": {
               "range": 136,
@@ -15290,7 +15307,8 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 3.6
+              "healthRegen": 3.6,
+              "healthRegenPercent": 0.036
             },
             "skirmisher": {
               "range": 144,
@@ -15322,7 +15340,8 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 3.8
+              "healthRegen": 3.8,
+              "healthRegenPercent": 0.038
             },
             "skirmisher": {
               "range": 152,
@@ -15354,7 +15373,8 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 4
+              "healthRegen": 4,
+              "healthRegenPercent": 0.04
             },
             "skirmisher": {
               "range": 160,
@@ -15386,7 +15406,8 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 4.2
+              "healthRegen": 4.2,
+              "healthRegenPercent": 0.042
             },
             "skirmisher": {
               "range": 168,
@@ -15418,7 +15439,8 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 4.4
+              "healthRegen": 4.4,
+              "healthRegenPercent": 0.044
             },
             "skirmisher": {
               "range": 176,
@@ -15450,7 +15472,8 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 4.6
+              "healthRegen": 4.6,
+              "healthRegenPercent": 0.046
             },
             "skirmisher": {
               "range": 184,
@@ -15482,7 +15505,8 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 4.8
+              "healthRegen": 4.8,
+              "healthRegenPercent": 0.048
             },
             "skirmisher": {
               "range": 192,
@@ -15514,7 +15538,8 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "healthRegen": 5
+              "healthRegen": 5,
+              "healthRegenPercent": 0.05
             },
             "skirmisher": {
               "range": 200,
@@ -143790,6 +143815,7 @@
           "precision": 0
         }
       }
-    }
+    },
+    "foodRegenerationVersion": 1
   }
 }

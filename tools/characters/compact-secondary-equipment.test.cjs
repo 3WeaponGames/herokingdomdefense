@@ -11,7 +11,7 @@ test('compaction keeps each even authored step, five tiers, unknown fields and e
 test('published offhands expose 25 upgrades and the old final bonuses with half the original gold budget in both configs',()=>{
  const mirror=require('../../assets/configs/GameJsonCfg.json');assert.deepEqual(Config.EquipCfg,mirror.EquipCfg);
  const gear=Config.EquipCfg.find(row=>row.id===3),rule=Config.HeroEquipment.secondaryProgression;assert.equal(gear.levelInfo.length,25);assert.deepEqual(Tiers.tiers(gear).map(tier=>tier.levels.length),[5,5,5,5,5]);assert.equal(gear.levelInfo.reduce((sum,row)=>sum+row.GoldCost,0),rule.originalTotalGold/2);assert.equal(rule.totalGold,4138875);
- for(const [style,expected]of Object.entries({fighter:{healthRegen:5},skirmisher:{range:200,criticalChance:.1},vanguard:{move:.2,attackRate:.1},bruiser:{lifeSteal:.1},guardian:{damageReduction:.2},mystic:{splashDamage:.5}})){const actual=Stats.secondary(Config,style,25);for(const [key,value]of Object.entries(expected))assert.equal(actual[key],value);}
+ for(const [style,expected]of Object.entries({fighter:{healthRegenPercent:.05},skirmisher:{range:200,criticalChance:.1},vanguard:{move:.2,attackRate:.1},bruiser:{lifeSteal:.1},guardian:{damageReduction:.2},mystic:{splashDamage:.5}})){const actual=Stats.secondary(Config,style,25);for(const [key,value]of Object.entries(expected))assert.equal(actual[key],value);}
  assert.equal(Config.EquipCfg.find(row=>row.id===4).levelInfo.length,50);assert.equal(Config.EquipCfg.find(row=>row.id===1).levelInfo.length,50);assert.equal(Compact.plan(path.resolve(__dirname,'../..')).files.size,0);
 });
 test('all old offhand levels migrate once without weaker bonuses, currency changes or unknown-field loss',()=>{

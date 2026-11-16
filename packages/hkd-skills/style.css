@@ -4,3 +4,5 @@
 .skills-editor .field-group{font-size:12px;color:#bbd5f6;margin:20px 0 12px;padding-top:14px;border-top:1px solid #38475b}
 
 .skills-editor [hidden]{display:none!important}
+
+.skills-editor .hero-skill-group{margin-bottom:17px}.skills-editor .hero-skill-heading{font-size:13px;margin:0 0 7px;color:#bbd5f6}.skills-editor .style-card,.skills-editor .passive-card{width:100%;text-align:left;display:flex;flex-direction:column;gap:5px;padding:11px;margin-bottom:6px}.skills-editor .style-card strong,.skills-editor .passive-card strong{font-size:13px}.skills-editor .style-card small,.skills-editor .passive-card small{font-size:9px;letter-spacing:.5px;color:#9cb5d5}.skills-editor .passive-card{background:#1b2634;margin-left:10px;width:calc(100% - 10px)}.skills-editor .passive-card.selected{background:#2d486a;border-color:#73aaff}.skills-editor .entry-help{margin:0 0 16px;line-height:1.6}.skills-editor .field-group:first-of-type{margin-top:16px}

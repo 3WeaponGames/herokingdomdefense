@@ -119,7 +119,8 @@ test('Mystic beam origin stays on the visible staff tip through the held pose an
   h.step(.025);if(frame<10)continue;
   const slot=renderer.skeleton.findSlot('Rider/HandRight/Staff'),attachment=slot.getAttachment(),vertices=new Float32Array(8);
   attachment.computeWorldVertices(slot.bone,vertices,0,2);
-  const tip=renderer.node.convertToWorldSpaceAR({x:(vertices[2]+vertices[4])/2,y:(vertices[3]+vertices[5])/2}),origin=rider.projectileOrigin(actor);
+  const declared=renderer.skeletonData.skeletonJson.skins.map(skin=>skin.attachments['Rider/HandRight/Staff']?.[attachment.name]).find(Boolean),head=declared?._skillTip||{u:.5,v:0};
+  const tip=renderer.node.convertToWorldSpaceAR({x:vertices[2]+(vertices[4]-vertices[2])*head.u+(vertices[0]-vertices[2])*head.v,y:vertices[3]+(vertices[5]-vertices[3])*head.u+(vertices[1]-vertices[3])*head.v}),origin=rider.projectileOrigin(actor);
   assert(Math.hypot(tip.x-origin.x,tip.y-origin.y)<1e-4,'beam follows the equipped staff tip');
  }
 });

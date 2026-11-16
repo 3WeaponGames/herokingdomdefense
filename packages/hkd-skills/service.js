@@ -1,11 +1,29 @@
 'use strict';
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
-const Settings=require('../../assets/_script/HeroSkillSettings'),Document=require('../game-data-editor/lib/json-document'),Catalog=require('./catalog');
+const Settings=require('../../assets/_script/HeroSkillSettings'),Authoring=require('../../assets/_script/HeroSkillAuthoring'),Document=require('../game-data-editor/lib/json-document'),Catalog=require('./catalog');
 const FILES=['assets/KinghtFallConfig/GameJsonCfg.json','assets/configs/GameJsonCfg.json'];
 const FRAME_KEYS=['Frames','Columns','Cell','Fps','Loop'];
 const RESOURCE_PREFIXES=Settings.resourcePrefixes;
 const resourceKeys=prefix=>[prefix,prefix+'Bundle',prefix+'Path',prefix+'Kind',prefix+'Animation'].concat(FRAME_KEYS.map(key=>prefix+key));
 const clone=value=>JSON.parse(JSON.stringify(value)),object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
+function prefabBodyOffset(prefab,hero){
+  if(!Array.isArray(prefab))return undefined;
+  const actor=prefab.find(row=>row&&row.node&&(hero?row.ctrPlayAni&&row.ctrHp:row.ndHp)),owner=actor&&prefab[actor.node.__id__],hp=hero&&actor&&prefab[actor.ctrHp.__id__];
+  const bar=hero?hp&&hp.node:actor&&actor.ndHp;let node=bar&&prefab[bar.__id__],x=0,y=0,z=0,guard=0;if(!owner||!node)return undefined;
+  while(node&&node!==owner&&guard++<32){
+    const t=node._trs&&node._trs.array||[0,0,0,0,0,0,1,1,1,1],px=x*(t[7]===undefined?1:t[7]),py=y*(t[8]===undefined?1:t[8]),pz=z*(t[9]===undefined?1:t[9]),qx=t[3]||0,qy=t[4]||0,qz=t[5]||0,qw=t[6]===undefined?1:t[6];
+    x=(t[0]||0)+(1-2*(qy*qy+qz*qz))*px+2*(qx*qy-qw*qz)*py+2*(qx*qz+qw*qy)*pz;
+    y=(t[1]||0)+2*(qx*qy+qw*qz)*px+(1-2*(qx*qx+qz*qz))*py+2*(qy*qz-qw*qx)*pz;
+    z=(t[2]||0)+2*(qx*qz-qw*qy)*px+2*(qy*qz+qw*qx)*py+(1-2*(qx*qx+qy*qy))*pz;
+    node=node._parent&&prefab[node._parent.__id__];
+  }
+  return node===owner?{x:x*.55,y:y*.55}:undefined;
+}
+function bodyOffset(root,description,hero){
+  const sources=hero?['assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab']:[];if(description&&description.source)sources.push(description.source);
+  for(const source of sources)try{const value=prefabBodyOffset(JSON.parse(fs.readFileSync(path.join(root,source),'utf8')),hero&&source==='assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab');if(value)return value;}catch(_){}
+  return undefined;
+}
 function projectileData(asset){const result={};for(const key of ['id','uuid','kind','bundle','path','skin','animation','rotation','flipbook','premultipliedAlpha','trail'])if(asset[key]!==undefined)result[key]=clone(asset[key]);return result;}
 function leaves(before,after,prefix=[],result=[]){
   if(Document.equal(before,after))return result;
@@ -25,7 +43,7 @@ class SkillService{
   disk(){return FILES.map(relative=>{const file=path.join(this.root,relative),bytes=fs.readFileSync(file),text=bytes.toString('utf8'),config=JSON.parse(text.replace(/^\uFEFF/,''));return {relative,file,bytes,text,config};});}
   read(){this.saved=this.disk();const original=this.saved[0].config.HeroSkills;if(original!==undefined&&!object(original))throw Error('The saved HeroSkills section must be an object.');this.original=clone(original||{});this.data=clone(this.original);this.revision=crypto.createHash('sha256').update(Buffer.concat(this.saved.map(row=>row.bytes))).digest('hex');this.undoStack=[];this.redoStack=[];this.version++;}
   dirty(){return !Document.equal(this.original,this.data);}
-  snapshot(result){const fields={},effective={};for(const style of Settings.styles){fields[style.id]=Settings.fields(style.id);effective[style.id]=Settings.effective(style.id,{HeroSkills:this.data});}return {version:this.version,revision:this.revision,data:clone(this.data),effective,dirty:this.dirty(),canUndo:!!this.undoStack.length,canRedo:!!this.redoStack.length,styles:clone(Settings.styles),fields,catalogs:this.catalogs,result:result||null};}
+  snapshot(result){const fields={},effective={},entries={};for(const style of Settings.styles){fields[style.id]=Settings.fields(style.id);entries[style.id]=Authoring.entries(style.id);effective[style.id]=Settings.effective(style.id,{HeroSkills:this.data});}return {version:this.version,revision:this.revision,data:clone(this.data),effective,dirty:this.dirty(),canUndo:!!this.undoStack.length,canRedo:!!this.redoStack.length,styles:clone(Settings.styles),fields,entries,catalogs:this.catalogs,result:result||null};}
   load(){if(!this.dirty()){const latest=this.disk();if(latest.some((row,i)=>!row.bytes.equals(this.saved[i].bytes)))this.read();}if(!this.options.catalogs&&Date.now()-this.catalogTime>1000){this.catalogs=Catalog.index(this.root);this.catalogTime=Date.now();}return this.snapshot();}
   check(request){if(!request||request.version!==this.version||request.revision!==this.revision)throw Error('The skills draft changed in another panel. Reload the latest draft before editing.');}
   field(request){if(!Settings.styles.some(row=>row.id===request.style))throw Error('Choose one of the six hero skills.');const field=Settings.descriptors(request.style).find(row=>row.path===request.path);if(!field)throw Error('Choose an editable skill field.');return field;}
@@ -50,7 +68,7 @@ class SkillService{
       if(audio){const prefix=request.path.slice(0,-5);for(const key of ['bundle','path'])if(asset)Settings.set(data[request.style],prefix+'.'+key,asset[key]);else remove(data[request.style],(prefix+'.'+key).split('.'));}
       else {const prefix=request.path.split('.').pop();for(const [key,source]of [['Bundle','bundle'],['Path','path'],['Kind','kind']])if(asset)Settings.set(data[request.style],'visual.'+prefix+key,asset[source]);else remove(data[request.style],['visual',prefix+key]);
         for(const key of FRAME_KEYS){const source=key[0].toLowerCase()+key.slice(1);if(asset&&asset.flipbook)Settings.set(data[request.style],'visual.'+prefix+key,asset.flipbook[source]);else remove(data[request.style],['visual',prefix+key]);}
-        const clip=Settings.get(data[request.style],'visual.'+prefix+'Animation');if(clip&&(!asset||asset.kind!=='spine'||!asset.animations.includes(clip)))remove(data[request.style],['visual',prefix+'Animation']);}
+        const animationPath='visual.'+prefix+'Animation',clip=Settings.get(Settings.effective(request.style,{HeroSkills:this.data}),animationPath);if(clip&&(!asset||asset.kind!=='spine'||!asset.animations.includes(clip)))Settings.set(data[request.style],animationPath,'');}
     }
     if(field.type==='effect-animation'&&request.value){const id=Settings.get(data[request.style],field.resourcePath||'visual.resource'),asset=this.asset('vfx',id);if(!asset||asset.kind!=='spine'||!asset.animations.includes(request.value))throw Error('Choose an animation from the selected VFX asset.');}
     if(request.path==='visual.animation'&&request.value)this.animations(request.style,data[request.style],'rider');
@@ -90,6 +108,7 @@ class SkillService{
     if(!request||!Settings.styles.some(row=>row.id===request.style))throw Error('Choose one of the six hero skills.');
     const Units=require('../game-data-editor/lib/unit-assets'),describe=this.options.describe||Units.describe;
     const result=describe(this.root,{type:'hero',id:'hero',heroStyle:request.style,noRuntime:!!request.noRuntime});
+    result.skillHeroBodyOffset=bodyOffset(this.root,result,true);
     const config=this.saved[0].config,enemy=Object.values(config.SoldierCfg||{}).find(row=>row.ID&&row.prefab),rawVisual=Settings.effective(request.style,{HeroSkills:this.data}).visual;
     const projectileId=request.style==='skirmisher'&&(Object.prototype.hasOwnProperty.call(request,'projectile')?request.projectile:rawVisual.projectile);
     let projectile=projectileId&&this.asset('projectiles',projectileId);
@@ -100,6 +119,8 @@ class SkillService{
     // An isolated preview has no player save. Use the saved starting offhand
     // instead of silently granting the maximum-level Bruiser charm's lifesteal.
     result.skillSecondaryStats=require('../../assets/_script/HeroEquipmentStats').secondary(config,request.style,1);
+    const styleInfo=require('../../assets/_script/HeroWeapons').find(request.style),baseRange=config.HeroEquipment&&config.HeroEquipment.version===1?config.HeroEquipment.baseRange+(result.skillSecondaryStats.range||0):undefined;
+    if(typeof baseRange==='number'&&Number.isFinite(baseRange)&&styleInfo)result.skillAttackRange=baseRange*styleInfo.reach;
     const authored=config.GameTools&&config.GameTools.animationSpeeds&&config.GameTools.animationSpeeds[result.key];
     result.skillAttackPlayback=typeof result.unitAnimationSpeed==='number'?result.unitAnimationSpeed:typeof authored==='number'&&Number.isFinite(authored)&&authored>=.1&&authored<=4?authored:1;
     let gold=config.GameTools&&config.GameTools.timings&&config.GameTools.timings[result.key];if(gold===undefined)gold=config.GameTools&&config.GameTools.timingDefaults&&config.GameTools.timingDefaults[result.key];
@@ -109,6 +130,7 @@ class SkillService{
     const defaultSounds={release:request.style==='skirmisher'?'skirmisher-active-release':request.style==='guardian'?'shield-activate':release,basicRelease:release,channel:release,impact:request.style==='skirmisher'?'skirmisher-active-hit':impact};
     if(request.style==='skirmisher')defaultSounds.basicImpact=impact;
     result.defaultSounds={};for(const [phase,id]of Object.entries(defaultSounds)){const sound=sounds[id],asset=sound&&this.catalogs.audio.find(row=>row.bundle==='KinghtFallAudio'&&row.path===sound.path);if(asset)result.defaultSounds[phase]={clip:asset.id,volume:sound.gain===undefined?1:sound.gain,delay:0};}
+    if(request.style==='guardian'){const ally=Object.values(config.AllyCfg||{}).find(row=>row.ID&&row.prefab);if(ally)try{result.ally=describe(this.root,{type:'ally',id:ally.ID,noRuntime:!!request.noRuntime});result.ally.projectileTargetOffset=bodyOffset(this.root,result.ally);}catch(_){}}
     if(enemy)try{result.target=describe(this.root,{type:'enemy',id:enemy.ID,noRuntime:!!request.noRuntime});
       if(result.target.source){const prefab=JSON.parse(fs.readFileSync(path.join(this.root,result.target.source),'utf8')),actor=prefab.find(row=>row.ndHp&&row.node),bar=actor&&prefab[actor.ndHp.__id__];if(bar){let x=0,y=0,node=bar,guard=0;while(node&&node!==prefab[actor.node.__id__]&&guard++<32){const t=node._trs&&node._trs.array||[0,0,0,0,0,0,1,1,1],r=2*Math.atan2(t[5]||0,t[6]===undefined?1:t[6]),c=Math.cos(r),sn=Math.sin(r),px=x*(t[7]===undefined?1:t[7]),py=y*(t[8]===undefined?1:t[8]);x=(t[0]||0)+px*c-py*sn;y=(t[1]||0)+px*sn+py*c;node=node._parent&&prefab[node._parent.__id__];}result.target.projectileTargetOffset={x:x*.55,y:y*.55};}}
     }catch(_){}

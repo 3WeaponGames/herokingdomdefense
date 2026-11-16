@@ -41,7 +41,7 @@ function readLoadout(config, user, timingContext, accountPower) {
   }));
   var result = { mode: accountPower ? "account-wide" : "equipped", style: style.id, ranged: style.ranged, levels: levels, raw: raw, bonuses: modified.bonuses,
     baseHealth: baseHealth, health: baseHealth * (1 + Upgrades.effect(upgrades, "health")), damage: modified.damage, attackRate: modified.attackRate, secondary: secondary,
-    regen: raw.regen, range: modified.range * (1 + (upgrades.stats.range || 0)) * (1 + Upgrades.effect(upgrades, "range")), move: raw.move * (1 + Upgrades.effect(upgrades, "move")), upgrades: upgrades,
+    regen: raw.regen+(raw.regenPercent||0)*baseHealth*(1+Upgrades.effect(upgrades,"health")), range: modified.range * (1 + (upgrades.stats.range || 0)) * (1 + Upgrades.effect(upgrades, "range")), move: raw.move * (1 + Upgrades.effect(upgrades, "move")), upgrades: upgrades,
     criticalChance: criticalChance, criticalMultiplier: criticalMultiplier,
     expectedDamage: modified.damage * (1 + criticalChance * (criticalMultiplier - 1)),
     attackTiming: attackTiming, effectiveAttackRate: attackTiming.rate, creditedStats: accountPower ? Object.assign({}, upgrades.stats) : null, reason: reason || attackTiming.reason };

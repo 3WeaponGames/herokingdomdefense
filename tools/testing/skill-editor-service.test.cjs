@@ -173,7 +173,7 @@ test('static VFX selection clears asymmetric owned layouts from both config copi
  for(const primaryHadSheet of [false,true]){
   const f=fixture(t,{HeroSkills:{mystic:{visual:{...(primaryHadSheet?stale:{}),extension:{primary:true}}}}},{HeroSkills:{mystic:{visual:{...stale,extension:{mirror:true}},mirrorOnly:'keep'}}});
   f.change('mystic','visual.resource',VFX);assert.equal(f.service.save(f.req()).result.saved,true);
-  for(const [index,file]of f.bytes().entries()){const config=JSON.parse(file),v=config.HeroSkills.mystic.visual;assert.equal(v.resource,VFX);assert.equal(v.resourcePath,'vfx/burst');assert.equal(v.resourceKind,'sprite');assert.equal(v.resourceAnimation,undefined);assert.equal(Settings.flipbook(v),null);for(const key of ['Frames','Columns','Cell','Fps','Loop'])assert.equal(v['resource'+key],undefined);assert.deepEqual(v.extension,index?{mirror:true}:{primary:true});if(index)assert.equal(config.HeroSkills.mystic.mirrorOnly,'keep');}
+  for(const [index,file]of f.bytes().entries()){const config=JSON.parse(file),v=config.HeroSkills.mystic.visual;assert.equal(v.resource,VFX);assert.equal(v.resourcePath,'vfx/burst');assert.equal(v.resourceKind,'sprite');assert.equal(v.resourceAnimation,primaryHadSheet?'':undefined);assert.equal(Settings.flipbook(v),null);for(const key of ['Frames','Columns','Cell','Fps','Loop'])assert.equal(v['resource'+key],undefined);assert.deepEqual(v.extension,index?{mirror:true}:{primary:true});if(index)assert.equal(config.HeroSkills.mystic.mirrorOnly,'keep');}
   const before=f.bytes();assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);
  }
 });
@@ -200,6 +200,21 @@ test('preview ordinary windups use the saved gold timing and never rewrite eithe
  f.service.saved[0].config.GameTools.timings['hero:hero:default']={attack:0};assert.equal(f.service.describe({style:'fighter'}).skillBasicImpactDelay,0);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
 });
 
+test('every hero preview uses the real gameplay HP-controller body anchor without publishing drafts',t=>{
+ const f=fixture(t),before=f.bytes(),relative='assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab',real=fs.readFileSync(path.resolve(__dirname,'../..',relative)),prefab=JSON.parse(real),actor=prefab.find(row=>row&&row.ctrPlayAni&&row.ctrHp&&row.node),hp=prefab[actor.ctrHp.__id__];
+ assert(hp.node);let node=prefab[hp.node.__id__],x=0,y=0;
+ // Independently walk the actual planar node chain used by convertToWorldSpaceAR.
+ while(node!==prefab[actor.node.__id__]){assert(node);const t=node._trs&&node._trs.array||[0,0,0,0,0,0,1,1,1,1],r=2*Math.atan2(t[5],t[6]),px=x*t[7],py=y*t[8];x=t[0]+px*Math.cos(r)-py*Math.sin(r);y=t[1]+px*Math.sin(r)+py*Math.cos(r);node=prefab[node._parent.__id__];}
+ const expected={x:x*.55,y:y*.55};assert(Math.abs(expected.y-53.5161)<1e-7);const file=path.join(f.root,relative);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,real);
+ f.service.options.describe=()=>({source:'assets/KinghtFallEnemyAni/ndPlay.prefab',layers:[]});for(const style of Settings.styles)assert.deepEqual(f.service.describe({style:style.id}).skillHeroBodyOffset,expected,style.id);
+ assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);assert.equal(f.service.snapshot().dirty,false);assert(fs.readFileSync(file).equals(real));
+});
+
+test('hero body anchors retain description-prefab fallback when no gameplay controller prefab is available',t=>{
+ const f=fixture(t),before=f.bytes(),source='assets/fixture/body.prefab',file=path.join(f.root,source),prefab=[{__type__:'cc.Node'},{__type__:'cc.Node',_parent:{__id__:0},_trs:{array:[10,20,0,0,0,Math.SQRT1_2,Math.SQRT1_2,2,3,1]}},{__type__:'cc.Node',_parent:{__id__:1},_trs:{array:[4,5,0,0,0,0,1,1,1,1]}},{node:{__id__:0},ndHp:{__id__:2}}];
+ fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(prefab));f.service.options.describe=()=>({source,layers:[]});const result=f.service.describe({style:'fighter'}).skillHeroBodyOffset;assert(Math.abs(result.x+2.75)<1e-10);assert(Math.abs(result.y-15.4)<1e-10);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+});
+
 test('an event on an otherwise common non-attack clip is not offered as an owned rider attack',()=>{
  const json={_heroMaker:{role:0},animations:{attack:{events:[{name:'attack',time:.2}]},cast_pose:{events:[{name:'attack',time:.2}]}}};assert.deepEqual(Settings.riderAnimations({layers:[{json}]}),['attack']);
 });
@@ -219,4 +234,14 @@ test('sound reset removes its complete identity from mirrors but unrelated edits
   f.service.reset(f.req({style:'mystic',path:'audio.'+phase+'.clip'}));f.service.save(f.req());assert.deepEqual(JSON.parse(f.bytes()[1]).HeroSkills.mystic.audio[phase],{volume:.4,delay:1,extension:'mirror'});
  }
  const mirror={clip:AUDIO,bundle:'resources',path:'different',volume:.4,delay:1,extension:'retain'},f=fixture(t,{}, {HeroSkills:{mystic:{audio:{cast:mirror}}}});f.change('mystic','cooldown',13);f.service.save(f.req());assert.deepEqual(JSON.parse(f.bytes()[1]).HeroSkills.mystic.audio.cast,mirror);
+});
+
+
+test('explicit custom VFX selection clears an incompatible inherited native animation without publishing or breaking a valid explicit choice',t=>{
+ const f=fixture(t),before=f.bytes(),id='aaaa0000-0000-4000-8000-000000000081',asset={id,uuid:id,kind:'spine',file:'assets/resources/vfx/custom-burst.json',bundle:'resources',path:'vfx/custom-burst',animations:['CustomBurst','CustomLoop']};
+ fs.mkdirSync(path.dirname(path.join(f.root,asset.file)),{recursive:true});fs.writeFileSync(path.join(f.root,asset.file),JSON.stringify({skins:[],animations:{CustomBurst:{},CustomLoop:{}}}));fs.writeFileSync(path.join(f.root,asset.file.replace('.json','.atlas')),'');f.service.catalogs={...f.service.catalogs,vfx:[...f.service.catalogs.vfx,asset]};
+ assert.equal(f.service.snapshot().effective.mystic.visual.castResourceAnimation,'animation');f.change('mystic','visual.castResource',id);assert.equal(f.service.data.mystic.visual.castResourceAnimation,'');assert.equal(f.service.snapshot().effective.mystic.visual.castResourceAnimation,'');assert.equal(f.service.describe({style:'mystic'}).settings.visual.castResourceAnimation,'');assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+ f.service.undo(f.req());assert.equal(f.service.snapshot().effective.mystic.visual.castResourceAnimation,'animation');f.service.redo(f.req());assert.equal(f.service.snapshot().effective.mystic.visual.castResourceAnimation,'');
+ f.change('mystic','visual.castResourceAnimation','CustomBurst');const version=f.service.version;f.change('mystic','visual.castResource',id);assert.equal(f.service.snapshot().effective.mystic.visual.castResourceAnimation,'CustomBurst');assert.equal(f.service.version,version);assert.deepEqual(f.bytes(),before);
+ f.service.save(f.req());for(const text of f.bytes())assert.equal(JSON.parse(text).HeroSkills.mystic.visual.castResourceAnimation,'CustomBurst');
 });

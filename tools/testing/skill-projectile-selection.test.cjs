@@ -28,7 +28,7 @@ test('projectile selection previews immediately and saves only its owned identit
  const legacy={resource:'22222222-2222-4222-8222-222222222222',resourcePath:'vfx/old',extension:{keep:true}},f=fixture(t,{skirmisher:{visual:legacy}},{skirmisher:{visual:{...legacy,extension:{mirror:true}}}}),before=f.bytes();
  f.change(arrow.id);const selected=f.service.snapshot().effective.skirmisher.visual,visual=Settings.projectileVisual(selected);
  assert.equal(visual.resource,uuid);assert.equal(visual.resourcePath,arrow.path);assert.equal(visual.resourceRotation,90);assert.equal(visual.showBuiltin,false);assert.equal(selected.resource,legacy.resource,'Choosing flight art overwrote the fallback VFX');assert.deepEqual(f.bytes(),before);
- const description=f.service.describe({style:'skirmisher',projectile:arrow.id});assert.equal(description.effects[0].id,uuid);assert.equal(description.projectileAsset.id,arrow.id);
+ const description=f.service.describe({style:'skirmisher',castResource:'',projectile:arrow.id});assert.equal(description.effects[0].id,uuid);assert.equal(description.projectileAsset.id,arrow.id);
  const saved=f.service.save(f.request());assert.equal(saved.result.saved,true);
  for(const [i,text]of f.bytes().entries()){const actual=JSON.parse(text),old=JSON.parse(before[i]);assert.equal(actual.HeroSkills.skirmisher.visual.projectile,arrow.id);assert.equal(actual.HeroSkills.skirmisher.visual.projectileAsset.uuid,uuid);delete actual.HeroSkills.skirmisher.visual.projectile;delete actual.HeroSkills.skirmisher.visual.projectileAsset;assert.deepEqual(actual,old);}
  const unchanged=f.bytes();assert.equal(f.service.save(f.request()).result.saved,false);assert.deepEqual(f.bytes(),unchanged);
@@ -45,7 +45,7 @@ test('choosing a tier arrow carries its trail into the skill draft, preview and 
  const f=fixture(t),before=f.bytes(),trail=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'))).trails.find(trail=>trail.id==='trail:hero-arrow-lv4');
  f.service.catalogs.projectiles[0].trail=trail;f.change(arrow.id);
  assert.deepEqual(Settings.projectileVisual(f.service.snapshot().effective.skirmisher.visual).resourceTrail,trail);
- assert.deepEqual(f.service.describe({style:'skirmisher',projectile:arrow.id}).projectileAsset.trail,trail);assert.deepEqual(f.bytes(),before);
+ assert.deepEqual(f.service.describe({style:'skirmisher',castResource:'',projectile:arrow.id}).projectileAsset.trail,trail);assert.deepEqual(f.bytes(),before);
  assert.equal(f.service.save(f.request()).result.saved,true);for(const text of f.bytes())assert.deepEqual(JSON.parse(text).HeroSkills.skirmisher.visual.projectileAsset.trail,trail);
 });
 

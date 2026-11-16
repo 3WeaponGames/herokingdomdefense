@@ -2,7 +2,7 @@
 // Fixed workbook atlases only. Load/decode/upload under the existing Loading
 // barrier; keep one session reference so later style/stage switches stay warm.
 var Catalog=require("./HeroSkillVFXCatalog");
-function plan(){return Catalog.clips.map(function(clip){return{resource:clip.resource,bytes:clip.columns*clip.cell*Math.ceil(clip.frames/clip.columns)*clip.cell*4};});}
+function plan(){var seen=new Set();return Catalog.clips.filter(function(clip){if(seen.has(clip.resource))return false;seen.add(clip.resource);return true;}).map(function(clip){return{resource:clip.resource,kind:clip.kind,bytes:clip.kind==="spine"?clip.decodedBytes:clip.columns*clip.cell*Math.ceil(clip.frames/clip.columns)*clip.cell*4};});}
 function create(ops){
   var held=new Map(),waiting=[],running=false,complete=false,epoch=0,request=null,queue=plan();
   function current(entry){try{return !entry.current||entry.current();}catch(_){return false;}}
@@ -38,7 +38,7 @@ function textureReady(frame,done){
 function operations(){
   var manager=require("ResourceMgr").ResourceMgr.getInstance();
   return{
-    load:function(row,done){var cancelled=false,cancelTexture=null,handle=manager.loadWithRecovery("Hero VFX: "+row.resource,function(resolve){if(cancelTexture)cancelTexture();cc.resources.load(row.resource,cc.SpriteFrame,function(error,frame){if(cancelled)return;if(error)return resolve(error);cancelTexture=textureReady(frame,resolve);});},function(asset){done(null,asset);});return{cancel:function(){cancelled=true;if(cancelTexture)cancelTexture();handle.cancel();}};},
+    load:function(row,done){var cancelled=false,cancelTextures=[],handle=manager.loadWithRecovery("Hero VFX: "+row.resource,function(resolve){cancelTextures.forEach(function(cancel){cancel();});cancelTextures=[];var spine=row.kind==="spine",type=spine&&typeof sp!=="undefined"?sp.SkeletonData:cc.SpriteFrame;cc.resources.load(row.resource,type,function(error,asset){if(cancelled)return;if(error)return resolve(error);if(!spine){cancelTextures.push(textureReady(asset,resolve));return;}var textures=asset.textures||asset._textures||[],remaining=textures.length;if(!remaining)return resolve(Error("Spine VFX has no texture pages"));var failed=false;textures.forEach(function(texture){cancelTextures.push(textureReady({getTexture:function(){return texture;}},function(issue){if(cancelled||failed)return;if(issue){failed=true;resolve(issue);return;}if(--remaining===0)resolve(null,asset);}));});});},function(asset){done(null,asset);});return{cancel:function(){cancelled=true;cancelTextures.forEach(function(cancel){cancel();});handle.cancel();}};},
     retain:function(asset){asset.addRef();},release:function(asset){asset.decRef();},schedule:function(next){setTimeout(next,0);},
     flush:function(done){return manager.loadWithRecovery("Hero VFX GPU readiness",function(resolve){var gl=cc.game&&cc.game._renderContext;if(gl&&typeof gl.finish==="function"){
       gl.finish();

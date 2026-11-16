@@ -14,21 +14,26 @@ from unity_monsters import unpack
 ALLOWED={'.prefab','.mat','.png','.tga','.jpg','.jpeg','.psd','.tif','.tiff','.fbx','.obj','.mesh','.asset','.anim','.controller'}
 GUID=re.compile(rb'guid:\s*([0-9a-fA-F]{32})')
 def expanded(spec):
-    clips=copy.deepcopy(spec['clips']);beam=spec['beam']
-    for part in beam['parts']:
+    clips=copy.deepcopy(spec['clips']);beam=spec.get('beam')
+    for part in (beam or {}).get('parts',[]):
         for phase in beam['phases']:
             clips.append({**{k:v for k,v in beam.items() if k not in ('parts','phases')},**part,**phase,
                           'id':'mystic-beam-'+part['id']+'-'+phase['phase'],'name':'Toon Laser Beam '+part['id'].title()+' '+phase['phase'].title()+' (Mystic)',
                           'part':part['id'],'group':'mystic-beam-'+part['id'],'preserveTimeline':True})
     for clip in clips:clip.setdefault('cell',128);clip.setdefault('columns',16);clip.setdefault('pitch',0)
     return clips
-def prepare(source,output):
+def prepare(source,output,extras=()):
     output=output.resolve()
     if output.is_relative_to(ROOT.resolve()):raise ValueError('The Unity bake project must stay outside the repository')
     if (output/'Assets').exists():raise ValueError('Choose a fresh bake directory; existing work is preserved')
     spec=json.loads((Path(__file__).with_name('effects.json')).read_text());clips=expanded(spec);provenance=[];written={}
+    for extra in extras:clips.extend(expanded(json.loads(extra.read_text())))
     for package in dict.fromkeys(c['package'] for c in clips):
-        package_file=source/package;data=unpack(package_file);by_guid={a['guid']:a for a in data.values()};wanted=[c['prefab'] for c in clips if c['package']==package]
+        package_file=source/package
+        if not package_file.exists():
+            candidates=[source.parent/'New VFX'/package,source/'VFX'/package,source/'New VFX'/package]
+            package_file=next((p for p in candidates if p.exists()),package_file)
+        data=unpack(package_file);by_guid={a['guid']:a for a in data.values()};wanted=[c['prefab'] for c in clips if c['package']==package]
         for name in wanted:
             if name not in data:raise ValueError('Missing requested prefab: '+name)
         queue=list(dict.fromkeys(wanted));seen=set();skipped=set()
@@ -69,4 +74,4 @@ def prepare(source,output):
     (output/'source.json').write_text(json.dumps({'workbookSha256':hashlib.sha256((ROOT/spec['workbook']).read_bytes()).hexdigest(),'packages':provenance,'files':written,'scriptsExecuted':False,'audioImported':False},indent=2))
     return output
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('packages',type=Path);parser.add_argument('output',type=Path);args=parser.parse_args();print(prepare(args.packages,args.output))
+    parser=argparse.ArgumentParser();parser.add_argument('packages',type=Path);parser.add_argument('output',type=Path);parser.add_argument('--extra-manifest',action='append',type=Path,default=[]);args=parser.parse_args();print(prepare(args.packages,args.output,args.extra_manifest))

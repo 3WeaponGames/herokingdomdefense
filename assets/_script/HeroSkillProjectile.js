@@ -8,15 +8,44 @@ function scenePoint(x,y) { return typeof cc!=="undefined"&&cc.v2?cc.v2(x,y):{x:x
 function unit(value,fallback) { var x=finite(value&&value.x),y=finite(value&&value.y),length=Math.hypot(x,y);return length>1e-9?{x:x/length,y:y/length}:fallback?unit(fallback):{x:1,y:0}; }
 function shot(hero,target,direction,sample) {
   var aim=unit(target?{x:target.x-hero.x,y:target.y-hero.y}:direction),origin=point(hero);
-  // The aimed weapon tip moves around the hand. Resolve the aim from that
-  // release point, rather than drawing a parallel ray from the hero's feet.
-  for(var i=0;i<16;i++){
-    origin=sample?sample(aim):point(hero);if(!origin)origin=point(hero);
-    if(!target)break;
-    var next=unit({x:target.x-origin.x,y:target.y-origin.y},aim),delta=Math.hypot(next.x-aim.x,next.y-aim.y);aim=next;if(delta<1e-7)break;
+  function sampled(d){var p=sample&&sample(d);return p&&typeof p.x==='number'&&typeof p.y==='number'&&isFinite(p.x)&&isFinite(p.y)?point(p):point(hero);}
+  function result(p,d){return{origin:point(p),direction:unit(d,aim),target:target?point(target):null};}
+  if(!target)return result(sampled(aim),aim);
+  if(!sample)return result(origin,aim);
+  // The release tip rotates about the hand. Solve that circle directly; a
+  // fixed-point iteration oscillates when the target is close to the bow.
+  // Both probes stay in the same facing hemisphere as the initial aim.
+  var side=aim.x<0?-1:1,root=side<0?Math.PI:0,si=Math.sqrt(3)/2;
+  function vector(a){return{x:Math.cos(a),y:Math.sin(a)};}
+  var p0=sampled(vector(root)),plus=sampled(vector(root+Math.PI/3)),minus=sampled(vector(root-Math.PI/3));
+  var center={x:plus.x+minus.x-p0.x,y:plus.y+minus.y-p0.y};
+  var a={x:p0.x-center.x,y:p0.y-center.y},b={x:(plus.x-minus.x)/(2*si),y:(plus.y-minus.y)/(2*si)};
+  var radius=Math.hypot(a.x,a.y),circleError=Math.hypot(b.x+a.y,b.y-a.x),dx=target.x-center.x,dy=target.y-center.y,r=Math.hypot(dx,dy);
+  function contact(d){var p=sampled(d),x=target.x-p.x,y=target.y-p.y;return{origin:p,direction:d,cross:x*d.y-y*d.x,forward:x*d.x+y*d.y,length:Math.hypot(x,y)};}
+  function valid(c){return c.forward>=-1e-7&&Math.abs(c.cross)<=Math.max(1e-6,c.length*1e-8);}
+  if(isFinite(center.x+center.y+radius+r)&&circleError<=Math.max(1e-5,radius*1e-5)){
+    // In the root-facing basis, a.y is the tip's lateral displacement.
+    var lateral=side*a.y;
+    if(r>=Math.abs(lateral)&&r>1e-9){var theta=Math.atan2(dy,dx)-Math.asin(Math.max(-1,Math.min(1,lateral/r))),candidate=contact(vector(theta));if(valid(candidate))return result(candidate.origin,candidate.direction);}
+    // A target inside the weapon's reach cannot lie ahead of its outward tip.
+    // Release at the grip instead of inventing an aim opposite to that pose.
+    if(r<=radius+1e-6)return result(center,unit({x:dx,y:dy},aim));
   }
-  if(target)aim=unit({x:target.x-origin.x,y:target.y-origin.y},aim);
-  return {origin:point(origin),direction:aim,target:target?point(target):null};
+  // Unusual fitted nonuniform scales produce an ellipse. Bound the fallback:
+  // eight angle brackets, then at most eighteen bisections of a forward root.
+  var previous=contact(vector(-Math.PI)),best=previous;
+  for(var i=1;i<=8;i++){
+    var angle=-Math.PI+i*Math.PI/4,current=contact(vector(angle));
+    if(current.forward>=0&&Math.abs(current.cross)<Math.abs(best.cross))best=current;
+    if(valid(current))return result(current.origin,current.direction);
+    if(previous.cross*current.cross<0&&(previous.forward>=0||current.forward>=0)){
+      var lo=angle-Math.PI/4,hi=angle,left=previous,right=current;
+      for(var n=0;n<18;n++){var mid=(lo+hi)/2,c=contact(vector(mid));if(valid(c))return result(c.origin,c.direction);if(left.cross*c.cross<=0){hi=mid;right=c;}else{lo=mid;left=c;}}
+      if(Math.abs(left.cross)<Math.abs(right.cross))right=left;if(right.forward>=0&&Math.abs(right.cross)<=Math.max(1e-3,right.length*1e-5))return result(right.origin,right.direction);
+    }
+    previous=current;
+  }
+  return result(center,unit({x:dx,y:dy},aim));
 }
 function actorPoint(actor,main) {
   var ground=actor.node.getPosition(),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node;
