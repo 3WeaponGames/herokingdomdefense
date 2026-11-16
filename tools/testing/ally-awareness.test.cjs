@@ -90,3 +90,73 @@ test('animation completion cannot erase a delayed authored hit before the queued
  const h=fixture(),u=h.soldier(),attacker=h.enemy(10);u.getAttack=()=>5;h.ui.ctrEffect.showDamageNum=()=>{};h.ui.ctrEffect.onMonsterAttack=()=>{};
  let release;h.e.load('GameToolsOverrides').attack=(_a,_s,callback)=>{release=()=>callback.call(u);};u.assistAttacker(attacker,h.g);u.onFindList();u.doAttackFinish();release();assert.equal(attacker.hp,995);
 });
+
+function trackOrders(h,u){
+ h.g.mapSize={width:2000,height:2000};
+ const goals=[],move=h.e.nav.moveTo;
+ h.e.nav.moveTo=function(actor,game,goal,dt){goals.push({...goal});return move(actor,game,goal,dt);};
+ h.g.getArmyOrderGoal=(_unit,goal)=>{goals.push({formation:true,...goal});return null;};
+ u.time.Attack=-1;
+ return goals;
+}
+function updateAlly(h,u,frames=1){
+ for(let i=0;i<frames;i++){h.nextFrame();h.e.setTime(h.e.cc.director.getTotalFrames()*16);h.e.nav.beginFrame(h.g);u.onUpdate(.016);}
+}
+
+test('all four allies immediately chain assisted combat from their current sight before returning to their saved post',()=>{
+ for(const type of [1,2,3,4]){
+  const h=fixture(),u=h.soldier(0,0,type),attacker=h.enemy(340),next=h.enemy(460),last=h.enemy(520),outside=h.enemy(900),post=u.rallyPoint;h.enemy(-10);
+  u._separateArmyCommands=true;h.p.node.setPosition(180,0);h.p.onAttacked(1,attacker);assert.equal(u._orderTarget,attacker);
+  u.node.setPosition(300,0);const goals=trackOrders(h,u);u._targetRefresh=.19;attacker.hp=0;
+  updateAlly(h,u);assert.equal(u._orderTarget,next,'visible next target was rejected by the original post');assert(goals.length>0);assert(goals.every(g=>!g.formation&&g.x===next.node.x),'ally started returning before retargeting');
+  updateAlly(h,u,20);assert.equal(u._orderTarget,next,'continuing combat was discarded on the next refresh');
+  goals.length=0;next.hp=0;u._targetRefresh=.19;updateAlly(h,u);assert.equal(u._orderTarget,last);assert(goals.every(g=>!g.formation&&g.x===last.node.x));
+  goals.length=0;last.hp=0;updateAlly(h,u);assert.equal(u._orderTarget,null);assert(goals.some(g=>g.formation&&g.x===post.pos.x));assert.equal(u.rallyPoint,post);assert.equal(u._personalRallyPoint,post);assert.notEqual(u._orderTarget,outside);
+ }
+});
+
+test('combat handoff chooses the nearest live enemy inside sight and keeps a longer ranged attack reach',()=>{
+ for(const ranged of [false,true]){
+  const h=fixture(),u=h.soldier(),old=h.enemy(310);u._separateArmyCommands=true;u.cfg.SightRange=100;u.attackRange=ranged?180:20;
+  u.assistAttacker(old,h.g);u.node.setPosition(300,0);trackOrders(h,u);
+  const dead=h.enemy(301),pooled=h.enemy(302),inactive=h.enemy(303);dead.hp=0;pooled._isPooled=true;inactive.node.active=false;
+  const next=h.enemy(ranged?450:390),farther=h.enemy(ranged?470:399);h.enemy(ranged?481:401);old.hp=0;
+  updateAlly(h,u);assert.equal(u._orderTarget,next);assert.notEqual(u._orderTarget,farther);
+ }
+});
+
+test('target death during an attack retargets on the first decision after its authored animation completes',()=>{
+ const h=fixture(),u=h.soldier(),old=h.enemy(305),next=h.enemy(380);u._separateArmyCommands=true;u.assistAttacker(old,h.g);u.node.setPosition(300,0);
+ const goals=trackOrders(h,u);u.state=2;u._targetRefresh=.19;old.hp=0;updateAlly(h,u);assert.equal(goals.length,0);
+ u.doAttackFinish();updateAlly(h,u);assert.equal(u._orderTarget,next);assert(goals.every(g=>!g.formation&&g.x===next.node.x));
+});
+
+test('a completed target lifetime triggers one immediate search then returns to throttled scans',()=>{
+ for(const loss of ['death','pool','inactive','recycled']){
+  const h=fixture(),u=h.soldier(),old=h.enemy(310),next=h.enemy(380);u._separateArmyCommands=true;u.assistAttacker(old,h.g);u.node.setPosition(300,0);trackOrders(h,u);
+  let scans=0;const find=u.getFind;u.getFind=function(...args){scans++;return find.apply(this,args);};u._targetRefresh=.19;
+  if(loss==='death')old.hp=0;if(loss==='pool')old._isPooled=true;if(loss==='inactive')old.node.active=false;if(loss==='recycled'){old.node._combatGeneration++;h.d.enemyList.splice(h.d.enemyList.indexOf(old),1);}
+  updateAlly(h,u);assert.equal(u._orderTarget,next,loss);assert.equal(scans,1);updateAlly(h,u,5);assert.equal(scans,1,'handoff introduced a scan each frame');
+ }
+});
+
+test('normal pursuit still respects the post leash and a follow order resumes only when combat sight is empty',()=>{
+ const h=fixture(),u=h.soldier(),old=h.enemy(200);u._separateArmyCommands=true;trackOrders(h,u);updateAlly(h,u);assert.equal(u._orderTarget,old);
+ old.node.setPosition(250,0);updateAlly(h,u);assert.equal(u._orderTarget,null,'a live target escaping the post leash was pursued');
+ u.isAgg=true;u._followSelected=true;u.assistAttacker(old,h.g);u.node.setPosition(300,0);const next=h.enemy(400);old.hp=0;updateAlly(h,u);assert.equal(u._orderTarget,next);
+ const beforeReturn=u.node.x;next.hp=0;updateAlly(h,u);assert.equal(u._orderTarget,null);assert(u.isAgg&&u._followSelected);assert(u.node.x<beforeReturn,'follow did not resume toward the hero after combat');
+});
+
+test('continued combat is cleared by new orders, revival, pooling and replacement battles',()=>{
+ for(const reset of ['order','revive','pool','epoch','data','owner']){
+  const h=fixture(),u=h.soldier(),old=h.enemy(310),next=h.enemy(315);u._separateArmyCommands=true;u.assistAttacker(old,h.g);u.node.setPosition(300,0);trackOrders(h,u);old.hp=0;updateAlly(h,u);assert.equal(u._orderTarget,next);assert.equal(u._continuationTarget,next);
+  if(reset==='order')u.applyArmyOrder(h.g);
+  if(reset==='revive')u.setNew();
+  if(reset==='pool'){u.node.destroy=()=>{};u.freeNode();}
+  if(reset==='epoch')h.g._combatEpoch++;
+  if(reset==='data')h.g.gameData=Object.assign(Object.create(Object.getPrototypeOf(h.d)),h.d,{enemyList:[]});
+  if(reset==='owner')u.node._combatGeneration++;
+  if(['epoch','data','owner'].includes(reset)){u.node.getPosition(u.vec2_1);assert.equal(u.getAttackTarget(),null,reset);assert.equal(u._orderTarget,null,reset);}
+  assert.equal(u._continuationTarget,null,reset);
+ }
+});

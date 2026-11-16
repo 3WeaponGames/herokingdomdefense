@@ -45,6 +45,7 @@ var def_KinghtFallSoldierBase = function (t) {
     e._followSelected = false;
     e._targetRefresh = 0;
     e._orderTarget = null;
+    e._continuationTarget = null;
     return e;
   }
   cc__extends(_ctor, t);
@@ -91,6 +92,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this.pathList = null;
     this.isAgg = false;
     this._orderTarget = null;
+    this._continuationTarget = null;
     this._attackIntent = null;
     this._targetRefresh = 0;
     this._settledPoint = null;
@@ -178,6 +180,7 @@ var def_KinghtFallSoldierBase = function (t) {
       var position = Navigation.positionOf(this.node, game);
       this._validateRetaliation(game);
       var target = this._orderTarget;
+      var continueCombat = !!target && this._continuationTarget === target;
       this._retaliationTime = Math.max(0, (this._retaliationTime || 0) - t);
       // Allow a slow unit or a gate detour to finish the response. The timeout
       // abandons stalled pursuit, rather than expiring while it makes progress.
@@ -187,21 +190,27 @@ var def_KinghtFallSoldierBase = function (t) {
       }
       var searchRange = this.getAcquireRange();
       if (target && target === this._retaliationTarget && this._retaliationTime > 0) searchRange += target.attackRange || target.cfg && target.cfg.AttackRange || 0;
-      if (target && (target.isDead() || !target.node.activeInHierarchy || target.node._combatGeneration !== this._orderTargetGeneration || cc.Vec2.distance(position, Navigation.positionOf(target.node, game)) > searchRange)) {
+      var targetEnded = !!target && (!AllyAwareness.alive(target) || target.node._combatGeneration !== this._orderTargetGeneration);
+      if (target && (targetEnded || cc.Vec2.distance(position, Navigation.positionOf(target.node, game)) > searchRange)) {
+        // A defeated target ends the old engagement, not the response to nearby
+        // enemies. Search from here before choosing any return-to-post movement.
+        continueCombat = continueCombat || targetEnded;
         AllyAwareness.invalidate(game);
         target = this._orderTarget = null;
+        this._continuationTarget = null;
         this._targetRefresh = 0;
       }
       // Combat can interrupt either order, but never consumes its destination.
       // Bound acquisition work instead of scanning every enemy every frame.
       this._targetRefresh -= t;
       if (this._targetRefresh <= 0) {
-        var found = this.getFind();
+        var found = this.getFind(continueCombat);
         target = this._orderTarget = found && found.tag;
         this._orderTargetGeneration = target && target.node._combatGeneration;
+        this._continuationTarget = continueCombat && target || null;
         this._targetRefresh = .2;
       }
-      if (target && this.isHoldingPosition() && this.rallyPoint && !(target === this._retaliationTarget && this._retaliationTime > 0 && target.node._combatGeneration === this._retaliationGeneration) &&
+      if (target && this._continuationTarget !== target && this.isHoldingPosition() && this.rallyPoint && !(target === this._retaliationTarget && this._retaliationTime > 0 && target.node._combatGeneration === this._retaliationGeneration) &&
           cc.Vec2.distance(this.rallyPoint.pos, Navigation.positionOf(target.node, game)) > this.getAcquireRange()) { AllyAwareness.invalidate(game); target = this._orderTarget = null; }
       var goal = null, formation = null;
       if (target) {
@@ -346,6 +355,7 @@ var def_KinghtFallSoldierBase = function (t) {
     return true;
   };
   _ctor.prototype.assistAttacker = function (attacker, game) {
+    this._continuationTarget = null;
     this._retaliationTarget = this._orderTarget = attacker;
     this._retaliationGeneration = this._orderTargetGeneration = attacker.node._combatGeneration;
     this._retaliationTime = 3;
@@ -377,11 +387,12 @@ var def_KinghtFallSoldierBase = function (t) {
     var scope = this._retaliationScope;
     if (scope && (scope.game !== game || scope.data !== game.gameData || scope.epoch !== game._combatEpoch || scope.owner !== this.node._combatGeneration)) {
       AllyAwareness.invalidate(game);
-      if (this._orderTarget === this._retaliationTarget) this._orderTarget = null;
+      if (this._orderTarget === this._retaliationTarget || this._orderTarget === this._continuationTarget) this._orderTarget = null;
+      this._continuationTarget = null;
       this._retaliationTarget = null; this._retaliationTime = 0; this._retaliationScope = null;
     }
   };
-  _ctor.prototype.getFind = function () {
+  _ctor.prototype.getFind = function (continueCombat) {
     var game = $z1KinghtFallUIGame.default.instance.ctrGame;
     this._validateRetaliation(game);
     var attacker = this._retaliationTarget;
@@ -400,7 +411,7 @@ var def_KinghtFallSoldierBase = function (t) {
       var retainedDistance = cc.Vec2.distance(Navigation.positionOf(this.node, game), Navigation.positionOf(retained.node, game));
       if (retainedDistance <= scanRange) return { tag: retained, canAtt: retainedDistance <= this.attackRange };
     }
-    var post = this.isHoldingPosition() && this.rallyPoint && this.rallyPoint.pos;
+    var post = !continueCombat && this.isHoldingPosition() && this.rallyPoint && this.rallyPoint.pos;
     for (var i = 0; i < t.length; i++) {
       var a = t[i];
       if (AllyAwareness.alive(a)) {
@@ -522,6 +533,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this._standingGoal = null;
     this._settledPoint = null;
     this._orderTarget = null;
+    this._continuationTarget = null;
     this._retaliationTarget = null;
     this._retaliationPosition = null;
     this._retaliationScope = null;
@@ -636,6 +648,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this.time[l.Attack] = 0;
     this.doIdel();
     this._orderTarget = null;
+    this._continuationTarget = null;
     this._targetRefresh = 0;
     this._retaliationTarget = null;
     this._retaliationTime = 0;
@@ -647,6 +660,7 @@ var def_KinghtFallSoldierBase = function (t) {
     return this.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
   };
   _ctor.prototype.applyArmyOrder = function (game) {
+    this._continuationTarget = null;
     Navigation.reset(this);
     this._separateArmyCommands = !!game._separateArmyCommands;
     if (this._separateArmyCommands || $z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2) {
