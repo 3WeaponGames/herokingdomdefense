@@ -35,6 +35,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     e.ndPro = null;
     e.ndBotnNodeList = null;
     e.ndVideoSoldier = null;
+    e.squadSpawnPosition = null;
     e.stratAge = 0;
     e.VideoTimes = 0;
     e.isIn = false;
@@ -85,8 +86,8 @@ var def_KinghtFallBuildBarracks = function (t) {
     var a = cc.v2(Math.cos(i), Math.sin(i)).multiplyScalar(20);
     var game = $z1KinghtFallUIGame.default.instance.ctrGame, unit = this.enemyList[t];
     var anchor = Navigation.positionOf(this.ndBotnNodeList, game);
-    var positions = this.buildInfo.cfg.SpawnPosition || this.buildInfo.cfg.SpawnPositions ? require("BuildingSpawnPositions") : null;
-    var squad = positions && positions.anchor(this.buildInfo.cfg);
+    var positions = this.squadSpawnPosition || this.buildInfo.cfg.SpawnPosition || this.buildInfo.cfg.SpawnPositions ? require("BuildingSpawnPositions") : null;
+    var squad = positions && positions.anchor(this.buildInfo.cfg, this);
     if (squad) {
       var squadWorld = this.node.convertToWorldSpaceAR(cc.v2(squad.x, squad.y));
       anchor = game.ndMain.convertToNodeSpaceAR(squadWorld);
@@ -116,7 +117,18 @@ var def_KinghtFallBuildBarracks = function (t) {
       var doorway=Navigation.positionOf(this.ndVideoSoldier,game);
       position=Navigation.findStandingPoint(unit,game,doorway,cc.v2(doorway.x+a.x,doorway.y+a.y));
     }
-    if (!position) return null;
+    if (!position) {
+      // A blocked authored exit still produces a living soldier. Keep the
+      // spawn on the map and let shared navigation walk out of its existing
+      // overlap, rather than hiding the roster slot until terrain disappears.
+      var navigation = Navigation.get(game), bounds = navigation.grid.bounds;
+      var paddingX = Math.min(unit._spawnBodyRadius, (bounds.maxX - bounds.minX) / 2);
+      var paddingY = Math.min(unit._spawnBodyRadius, (bounds.maxY - bounds.minY) / 2);
+      position = {
+        x: Math.max(bounds.minX + paddingX, Math.min(bounds.maxX - paddingX, preferred.x)),
+        y: Math.max(bounds.minY + paddingY, Math.min(bounds.maxY - paddingY, preferred.y))
+      };
+    }
     this._spawnPosts[t] = { x: position.x, y: position.y };
     return cc.v2(position.x, position.y);
   };
@@ -135,6 +147,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
     unit.node.setPosition(position);
     unit.setNew();
+    Navigation.prepareTerrainExit(unit, $z1KinghtFallUIGame.default.instance.ctrGame, true);
     unit._spawnPending = false;
     this.waitEnemy = this.waitEnemy.filter(function (waiting) { return waiting !== unit; });
     return true;
@@ -310,7 +323,10 @@ var def_KinghtFallBuildBarracks = function (t) {
       if (n < e) {
         if (o.enemyList[n]) {
           if (i.isDead() || i._spawnPending) o._placeSoldier(i, n);
-          else i.setNew();
+          else {
+            i.setNew();
+            Navigation.prepareTerrainExit(i, $z1KinghtFallUIGame.default.instance.ctrGame, true);
+          }
         } else {
           if (o._rosterRequests[n]) return;
           var request = { id: o.buildInfo.cfg.Data[1] };
@@ -392,6 +408,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     type: cc.Node,
     tooltip: "视频小兵"
   })], _ctor.prototype, "ndVideoSoldier", undefined);
+  cc__decorate([ccp_property({ type: cc.Vec2, tooltip: "Stage squad spawn in the original building frame; unset inherits the building default." })], _ctor.prototype, "squadSpawnPosition", undefined);
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallBuildBase.default);
 exports.default = def_KinghtFallBuildBarracks;

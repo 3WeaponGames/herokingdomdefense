@@ -8,6 +8,7 @@ var $z1BaseUI = require("BaseUI");
 var $z1AudioMgr = require("AudioMgr");
 var $z1LogMgr = require("LogMgr");
 var $z1PoolMgr = require("PoolMgr");
+var $z1UIMgr = require("UIMgr");
 var $z1SdkMgr = require("SdkMgr");
 var $z1Utils = require("Utils");
 var $z1GameTrackDataEvent = require("GameTrackDataEvent");
@@ -192,8 +193,11 @@ var def_KinghtFallUITreasureReward = function (t) {
       n.setPosition(i);
       n.active = true;
       n.setScale(1);
-      n.getComponent($z1KinghtFallItemTreasure.default).initView(e.getSkillList[t].item);
+      var item = e.getSkillList[t].item, data = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+      n.getComponent($z1KinghtFallItemTreasure.default).initView(item);
       n.getComponent($z1KinghtFallItemTreasure.default).setNew(e.getSkillList[t].isNew);
+      var relic = data.getTreasureCfgById(data.getGoodsCfgById(item.id).itemID);
+      if (relic) n.on(cc.Node.EventType.TOUCH_END, e.openRelicDetails.bind(e, relic));
       cc.tween(n).set({
         opacity: 0
       }).to(.3, {
@@ -206,10 +210,43 @@ var def_KinghtFallUITreasureReward = function (t) {
     });
     return .1;
   };
+  _ctor.prototype.openRelicDetails = function (relic, event) {
+    if (event) event.stopPropagation();
+    var current = this._relicDetailNode && cc.isValid(this._relicDetailNode, true) && this._relicDetailNode.getComponent($z1BaseUI.default);
+    if (!relic || this.isclose || this._relicDetailOpening || current && !current.isclose) return;
+    var result = this, generation = this._rewardGeneration, resource = this.resourceOptions(this._resourceGeneration);
+    this._relicDetailOpening = true;
+    this._relicDetailRequest = $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1KinghtFallConfig.KinghtFallUIID.UITreasureInfo, this.uid, {
+      parent: this,
+      isCurrent: function () { return resource.isCurrent() && generation === result._rewardGeneration; },
+      onCancel: function () { result._relicDetailOpening = false; result._relicDetailRequest = null; },
+      onOpened: function (node) {
+        result._relicDetailOpening = false;
+        result._relicDetailRequest = null;
+        result._relicDetailNode = node;
+        node.zIndex = Math.min(cc.macro.MAX_ZINDEX, result.node.zIndex + 1);
+      }
+    }, relic, true);
+  };
+  _ctor.prototype.closeRelicDetails = function () {
+    var request = this._relicDetailRequest, node = this._relicDetailNode;
+    this._relicDetailRequest = this._relicDetailNode = null;
+    this._relicDetailOpening = false;
+    if (request && !request.finished) request.cancel();
+    if (node && cc.isValid(node, true)) $z1UIMgr.UIMgr.getInstance().closeUI(node);
+  };
+  _ctor.prototype.onClose = function () {
+    this.closeRelicDetails();
+  };
+  _ctor.prototype.onDestroy = function () {
+    try { this.onClose(); }
+    finally { t.prototype.onDestroy.call(this); }
+  };
   _ctor.prototype.getReward = function (count, type, costs, video) {
     var result = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().drawTreasures(this.cfgBox, count, costs || [], video);
     if (!result) return;
     if (result.pending) { this.upView(); return; }
+    this.closeRelicDetails();
     var a = result.rewards;
     var self = this;
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 8);

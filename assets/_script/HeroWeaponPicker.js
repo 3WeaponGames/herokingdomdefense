@@ -169,7 +169,10 @@ function open(owner) {
     label(action, "Equip action label", equipped ? "Equipped" : "Equip " + weapon.name, 0, 2, 450, 65, 40, null, 3);
     action.on(cc.Node.EventType.TOUCH_END, function (event) {
       event.stopPropagation();
-      if (!equipped && !cancelled && live(action)) { user.setHeroWeapon(chosen); owner.initView(); render(true); }
+      if (!equipped && !cancelled && live(action) && user.setHeroWeapon(chosen)) {
+        closePicker(); owner.initView();
+        require("BattleSounds").effect("ui-selection-confirm", owner, { menu: true });
+      }
     });
     preview.setStyle(chosen);
   }

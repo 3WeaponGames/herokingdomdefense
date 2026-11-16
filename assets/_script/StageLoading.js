@@ -34,12 +34,9 @@ function create(view, level, parent, cc) {
   var track = node("Progress track", panel), trackGraphics = track.addComponent(cc.Graphics);
   trackGraphics.fillColor = cc.color(52, 69, 84, 255); trackGraphics.roundRect(-width / 2, -22, width, 12, 6); trackGraphics.fill();
   var bar = node("Progress fill", panel), fill = bar.addComponent(cc.Graphics);
-  var spinner = node("Activity", panel); spinner.y = -53;
-  var activity = spinner.addComponent(cc.Graphics); activity.strokeColor = cc.color(237, 197, 100, 255); activity.lineWidth = 3;
-  activity.arc(0, 0, 9, 0, Math.PI * 1.45, false); activity.stroke();
   var beforeDraw = cc.Director.EVENT_BEFORE_DRAW, afterDraw = cc.Director.EVENT_AFTER_DRAW;
-  function animate(dt) { if (!live()) return; spinner.angle -= Math.min(.1, dt || 1 / 60) * 180; lastDraw = Date.now(); }
-  cc.director.on(beforeDraw, animate);
+  function recordDraw() { if (live()) lastDraw = Date.now(); }
+  cc.director.on(beforeDraw, recordDraw);
   function waitForDraw() {
     if (drawWait) return drawWait;
     drawWait = new Promise(function (resolve, reject) {
@@ -71,7 +68,7 @@ function create(view, level, parent, cc) {
     reveal: function () { if (live()) backdrop.active = false; },
     destroy: function () {
       if (disposed) return; disposed = true;
-      cc.director.off(beforeDraw, animate); if (cancelDraw) cancelDraw();
+      cc.director.off(beforeDraw, recordDraw); if (cancelDraw) cancelDraw();
       if (cc.isValid(root, true)) root.destroy();
     }
   };

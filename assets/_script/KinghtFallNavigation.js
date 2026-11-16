@@ -154,7 +154,7 @@ Navigation.prototype.refresh = function () {
 };
 Navigation.prototype.gridFor = function (unit) {
   this.refresh();
-  if (unit.navigationTeam !== "friendly") return this.grid;
+  if (unit.navigationTeam !== "friendly" || unit._automaticEgress && unit._automaticEgress.owner === this && unit._automaticEgress.fullGrid) return this.grid;
   // The upgraded first-map gate has a valid body-width passage between its
   // wings that a 20-unit lattice misses. Keep body clearance; sample more finely.
   // Gate-sized fine searches add safe bridges between ordinary lattice cells.
@@ -182,9 +182,15 @@ exports.allowBlockedExit=function(unit,contact,other){
   var exit=unit._terrainExit,vertices=exit&&exit.colliders.get(other);
   if(vertices&&exit.revision===exit.owner.revision){var start=point(unit.node,exit.owner.game.ndMain);if(exit.grid._hitsPolygon(start,start,exit.radius,vertices))contact.disabledOnce=true;else exit.colliders.delete(other);}
 };
-exports.prepareTerrainExit=function(unit,game){
+exports.prepareTerrainExit=function(unit,game,spawn){
   if(unit.rigidBody&&unit.rigidBody.active===false){unit._terrainExit=null;return;}
-  var navigation=get(game),grid=navigation.gridFor(unit);recordTerrainExit(unit,navigation,grid,point(unit.node,game.ndMain),navigation.radius(unit));
+  var navigation=get(game),grid=navigation.gridFor(unit),start=point(unit.node,game.ndMain),radius=navigation.radius(unit);
+  // Friendly gates are traversable, but a fresh roster member must not park
+  // inside their leaf. Use ordinary full-body egress only until it is clear.
+  if(spawn&&grid!==navigation.grid&&grid.isWalkable(start,radius)&&!navigation.grid.isWalkable(start,radius)){
+    unit._automaticEgress={owner:navigation,goal:{x:start.x,y:start.y},fullGrid:true};grid=navigation.grid;
+  }
+  recordTerrainExit(unit,navigation,grid,start,radius);
 };
 exports.moveManual=function(unit,game,localPosition){
   if(unit.rigidBody&&unit.rigidBody.active===false){unit._terrainExit=null;unit.node.setPosition(localPosition);return;}

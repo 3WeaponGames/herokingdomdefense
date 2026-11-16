@@ -6,10 +6,11 @@ const root=path.resolve(__dirname,'../..');
 function fixture(){
  const h={requests:[],time:0,modules:{},allocations:[],prompts:[],pools:0};
  class Node{
-  constructor(){this.children=[];this.parent=null;this.active=true;this.destroyed=false;}
+  constructor(){this.children=[];this.parent=null;this.active=true;this.destroyed=false;this.handlers={};}
   setParent(parent){this.removeFromParent();this.parent=parent;if(parent)parent.children.push(this);}
   removeFromParent(){if(this.parent){const i=this.parent.children.indexOf(this);if(i>=0)this.parent.children.splice(i,1);}this.parent=null;}
   setPosition(){} setScale(){} getComponent(){return this.component;}
+  on(type,fn){this.handlers[type]=fn;}
   destroyAllChildren(){this.children.slice().forEach(child=>child.destroy());}
   removeAllChildren(){this.children.slice().forEach(child=>child.removeFromParent());}
   destroy(){if(this.destroyed)return;this.destroyed=true;this.destroyAllChildren();if(this.component)this.component.onDestroy();}

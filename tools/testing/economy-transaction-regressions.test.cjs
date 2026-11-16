@@ -105,6 +105,7 @@ for (const kind of Object.keys(operations)) {
 function draw(h, file, count, free = false) {
   const ctx = context(h), screen = ui({ cfgBox: config.ShopCfg[80001], btnClose: node(), btnOne: node(), btnTen: node(), btnVideo: node(), scheduleOnce() {}, ndCtr: { init() {}, node: { destroyAllChildren() {}, removeAllChildren() {} } } });
   screen.getReward = method(file, 'getReward', ctx);
+  if (file === 'KinghtFallUITreasureReward') screen.closeRelicDetails = method(file, 'closeRelicDetails', ctx);
   method(file, 'initBtnListener', ctx).call(screen);
   if (free) screen.getReward(1, 1); else (count === 10 ? screen.btnTen : screen.btnOne).click();
 }

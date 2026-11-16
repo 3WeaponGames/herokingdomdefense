@@ -40,14 +40,14 @@ for(const width of [360,750])test('stage loading stays above the closed transiti
 
 test('the initial draw barrier coalesces workers and releases all listeners on cancellation',async()=>{
   const f=fixture(),ready=f.screen.waitForDraw();assert.equal(f.screen.waitForDraw(),ready);let settled=false;ready.then(()=>{settled=true;});
-  await Promise.resolve();assert.equal(settled,false);f.draw();await ready;assert.equal(settled,true);assert.equal(f.count(),1,'Only the live activity animation remains after a draw');
+  await Promise.resolve();assert.equal(settled,false);f.draw();await ready;assert.equal(settled,true);assert.equal(f.count(),1,'Only the live draw tracking remains after a draw');
   const cancelled=f.screen.waitForDraw(),rejected=assert.rejects(cancelled,/cancelled/);f.screen.destroy();await rejected;assert.equal(f.count(),0);
   const retry=Loading.create(f.view,{Name:'stage.desert'},f.uiRoot,f.cc);retry.progress(0);assert.equal(retry.node.destroyed,undefined);retry.destroy();assert.equal(f.count(),0);
 });
 
-test('activity keeps drawing without changing real progress or requiring an asset',()=>{
-  const f=fixture(),panel=f.screen.node.getChildByName('Loading panel'),spinner=panel.getChildByName('Activity'),label=panel.getChildByName('Progress').getComponent(f.cc.Label);
-  f.screen.progress(.75);f.draw();f.draw();assert(spinner.angle<0);assert.equal(label.string,'75%');assert.equal(f.screen.yieldProgress(),null);f.screen.destroy();
+test('loading tracks rendered frames without an activity icon or changing real progress',()=>{
+  const f=fixture(),panel=f.screen.node.getChildByName('Loading panel'),label=panel.getChildByName('Progress').getComponent(f.cc.Label);
+  assert.equal(panel.getChildByName('Activity'),undefined);f.screen.progress(.75);f.draw();f.draw();assert.equal(label.string,'75%');assert.equal(f.screen.yieldProgress(),null);f.screen.destroy();
 });
 
 test('real localized progress templates format numeric percentages despite the one-argument BaseUI translation helper',()=>{

@@ -33,8 +33,8 @@ function setup(overrides={}){
    __decorate:(ds,t,k)=>k===undefined?t:undefined,__spreadArrays:(...xs)=>[].concat(...xs)}, {filename:name+'.js'});return module.exports;
  }
  const DM=load('KinghtFallGameCtrlData');e.stubs.KinghtFallGameCtrlData=DM;const D=DM.default,d=Object.create(D.prototype);
- Object.assign(d,{buffList:[],addTime:{},talentAdd:{},treasureAdd:{},treasureAddTime:{},businessAdd:{},businessPoints:[],weaponBusinessPoints:{node:{}},horseBusinessPoints:{node:{}},coin:20,time:{MonsterGenerate:0},enemyQueue:{},enemyList:[],soldierList:[],bulidPointMap:{},levelCfg:{Level:1,WaveCfg:[{},{}]},round:1});
- const G=load('KinghtFallGameCtrl').default,g=new G();Object.assign(g,{node:new Node(),ndMain:e.game.ndMain,ndAggFlag:new Node(),gameData:d,ctrPlay:e.game.ctrPlay,ndPath:new Node('ndPath')});
+ Object.assign(d,{buffList:[],addTime:{},talentAdd:{},treasureAdd:{},treasureAddTime:{},businessAdd:{},businessPoints:[],weaponBusinessPoints:{node:{}},horseBusinessPoints:{node:{}},coin:20,time:{MonsterGenerate:0},enemyQueue:{},enemyList:[],soldierList:[],bulidPointMap:{},obstacles:[],levelCfg:{Level:1,WaveCfg:[{},{}]},round:1});
+ const G=load('KinghtFallGameCtrl').default,g=new G();Object.assign(g,{node:new Node(),ndMain:e.game.ndMain,ndAggFlag:new Node(),mapSize:e.game.mapSize,gameData:d,ctrPlay:e.game.ctrPlay,ndPath:new Node('ndPath')});
  // Queue/prefab tests accept arbitrary valid lane IDs. Give their inert marker
  // nodes real transforms, while dedicated scene tests cover missing markers.
  g.ndPath.getChildByName=function(name){return Node.prototype.getChildByName.call(this,name)||(/^ndEnemy[1-9]\d*$/.test(name)?new Node(name,this):undefined);};

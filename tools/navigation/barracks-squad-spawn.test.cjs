@@ -19,8 +19,15 @@ test('a whole squad and AD bonus units automatically receive stable separate pos
 test('squad standing searches work around obstacles while retaining unit clearance',()=>{
  const f=fixture(6);f.e.box(135,-185,22,50);f.b.initSoldier();safe(f);assert.equal(f.created(),6);
 });
-test('blocked squad areas queue owned units and retry without unsafe doorway fallback or duplicate actors',()=>{
- const f=fixture(3),obstacle=f.e.box(100,-180,1800,1800);f.b.ndVideoSoldier=new Node('Doorway',f.b.node,0,-1200);f.b.ndVideoSoldier.SolID=90002;f.b.initSoldier();assert.equal(f.created(),3);assert(f.b.enemyList.every(u=>u._spawnPending&&!u.node.active));for(let i=0;i<3;i++)f.b.initSoldier();assert.equal(f.created(),3);obstacle.enabled=false;f.tick(.3);safe(f);assert.equal(f.created(),3);
+test('blocked squad areas produce living units that walk out without doorway teleportation or duplicate actors',()=>{
+ const f=fixture(3);f.e.box(100,-180,1800,1800);f.b.ndVideoSoldier=new Node('Doorway',f.b.node,0,-1200);f.b.ndVideoSoldier.SolID=90002;f.b.initSoldier();assert.equal(f.created(),3);assert(f.b.enemyList.every(u=>!u._spawnPending&&u.node.active&&!u.isDead()));
+ const roster=f.b.enemyList.slice(),positions=roster.map(u=>u.node.position),nav=f.e.nav.get(f.game);for(let i=0;i<3;i++)f.b.initSoldier();assert.equal(f.created(),3);roster.forEach((u,i)=>assert.deepEqual(u.node.position,positions[i]));
+ let clear=false;for(let frame=0;frame<1600&&!clear;frame++){
+  f.e.setTime(frame*50);f.e.nav.beginFrame(f.game);
+  for(const unit of roster){const before=unit.node.position;unit.onUpdate(.05);assert(unit.node.active&&!unit.isDead());assert(Math.hypot(unit.node.x-before.x,unit.node.y-before.y)<=unit.getSpeed()*.05+1e-6);assert(nav.gridFor(unit).canExitBlocked(before,unit.node.position,nav.radius(unit)));}
+  clear=roster.every(u=>nav.gridFor(u).isWalkable(u.node.position,nav.radius(u)));
+ }
+ assert(clear,'The whole squad must reach available ground');assert.equal(f.created(),3);assert.equal(f.b.waitEnemy.length,0);
 });
 test('a casualty respawns safely around the squad point without moving or reviving living members',()=>{
  const f=fixture(4);f.b.initSoldier();safe(f);const casualty=f.b.enemyList[0],living=f.b.enemyList[1],position={x:living.node.x,y:living.node.y};living.hp=37;casualty.state=4;casualty.hp=0;casualty.node.active=false;casualty.rigidBody.active=false;f.b.addDie(casualty);f.b.doTime(.2);safe(f);assert.equal(living.hp,37);assert.equal(living.node.x,position.x);assert.equal(living.node.y,position.y);assert.equal(f.created(),4);

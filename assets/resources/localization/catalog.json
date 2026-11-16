@@ -2464,8 +2464,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.16.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.16.Describe"
     },
     "data.treasurecfg.18.describe": {
-      "en": "Melee styles: deal {0} more damage to enemies within 100 units.",
-      "zh": "近战流派：对100距离内的敌人伤害提高{0}。",
+      "en": "Melee styles: deal {0} more damage to enemies at close range.",
+      "zh": "近战流派：对近距离敌人的伤害提高{0}。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.17.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.17.Describe"
     },
     "data.treasurecfg.19.describe": {
@@ -10430,8 +10430,8 @@
       "context": "Relic 120049 name; GoodsCfg.2055.name"
     },
     "data.treasurecfg.49.describe": {
-      "en": "Guardian: every 8 continuous combat seconds standing still, heal living soldiers within 220 units for {0} of their maximum HP. Moving resets the timer.",
-      "zh": "守护者：战斗中每连续静止8秒，为220距离内存活士兵恢复其最大生命值的{0}，移动重置计时。",
+      "en": "Guardian: while standing still in combat, heal nearby soldiers for {0} of their maximum HP every 8 seconds. Moving resets the timer.",
+      "zh": "守护者：战斗中每连续静止8秒，为附近存活士兵恢复其最大生命值的{0}，移动重置计时。",
       "context": "Relic 120049 effect; TreasureCfg.48.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2056.name": {

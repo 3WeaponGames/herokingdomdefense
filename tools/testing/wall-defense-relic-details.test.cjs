@@ -6,14 +6,15 @@ const catalog=require('../../assets/resources/localization/catalog.json');
 const {harness}=require('./persistence-harness.cjs');
 const single=value=>({getInstance:()=>value}),noop=()=>{};
 
-function setup(){
+function setup(screen='GAD_UIResult'){
   const h=fixture(),relic=config.TreasureCfg.find(item=>item.Quality===4),owned={id:relic.ID,level:1,frame:2},userData={getTreasureLevel:()=>owned};let purchases=0;
   Object.assign(h.modules,{
-    KinghtFallConfig:{KinghtFallUIID:{UITreasureInfo:'details'},KinghtFallBundelName:{IconGood:'goods'},KinghtFallAudioId:{}},
-    KinghtFallDataMgr:{KinghtFallDataMgr:single({getGoodsCfgById:id=>config.GoodsCfg[id],getTreasureCfg:()=>config.TreasureCfg})},
+    KinghtFallConfig:{KinghtFallUIID:{UITreasureInfo:'details'},KinghtFallBundelName:{IconGood:'goods'},KinghtFallAudioId:{},KinghtFallEventName:{},KinghtFallPrefabName:{ItemTreasure:'relic-card'},KinghtFallPoolName:{ItemGood:'currency-card'}},
+    KinghtFallDataMgr:{KinghtFallDataMgr:single({getGoodsCfgById:id=>config.GoodsCfg[id],getTreasureCfg:()=>config.TreasureCfg,getTreasureCfgById:id=>config.TreasureCfg.find(relic=>relic.ID===id)})},
     KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single({getUserData:()=>userData,purchase(){purchases++;throw Error('Description cannot purchase');}})},
     KinghtFallTextConfig:{KinghtFallTextConfig:{HomeTrea02:'Lv.{0}'}},KinghtFallMissionData:{},KinghtFallEnum:{},
     KinghtFallModle:{default:single({numberFomat:String})},AudioMgr:{AudioMgr:single({stopOwnedEffects:noop})},GAD_Configs:{},GAD_App:{},GAD_PlayerMgr:{default:single({})},KinghtFallItemGood:{},
+    SdkMgr:{},PlayerMgr:{},GameTrackDataEvent:{},KinghtFallUtilLayout:{},KinghtFallItemTreasure:{},
     Utils:{Utils:{StringFormat:(text,...values)=>text.replace(/\{(\d+)\}/g,(_match,index)=>values[index])}}
   });
   const language={t:(key,values=[])=>((catalog.entries[key]||{}).en||key).replace(/\{(\d+)\}/g,(_match,index)=>values[index]),token:key=>key,format:(text,values)=>text.replace('{0}',values[0]),bindLabel:(label,_key,values)=>{label.string=values.join(' ');}};
@@ -28,13 +29,14 @@ function setup(){
     const layout=part('Layout',panel.btnGold);part('labNum',layout);
     panel.loadSpriteFrame=(_bundle,_path,done)=>done({});return panel;
   }
-  const Result=h.load('GAD_UIResult').default,result=new Result();result.uid='results';result.node=part('results');result.node.ui=result;result.node.zIndex=1001;
+  const Result=h.load(screen).default,result=new Result();result.uid='results';result.node=part('results');result.node.ui=result;result.node.zIndex=1001;
   h.ui.uistatck.set('results',result);h.cc.instantiate=()=>detail().node;
   return{...h,relic,owned,userData,result,detail,purchases:()=>purchases,asset:{addRef:noop}};
 }
 
-test('reward Relics open the existing description above results with no upgrade action',()=>{
-  const h=setup();let stopped=0;
+for(const screen of ['GAD_UIResult','KinghtFallUITreasureReward']){
+test(screen+' Relics open the existing description above results with no upgrade action',()=>{
+  const h=setup(screen);let stopped=0;
   h.result.openRelicDetails(h.relic,{stopPropagation(){stopped++;}});h.result.openRelicDetails(h.relic);
   assert.equal(stopped,1);assert.equal(h.requests.length,1);
   h.requests[0].done(null,h.asset);const panel=h.ui.uistatck.get('details');panel.start();
@@ -47,16 +49,48 @@ test('reward Relics open the existing description above results with no upgrade 
   h.ui.closeUI(h.result.node);assert.equal(h.ui.uistatck.has('details'),false);
 });
 
-test('closing the result during a description load cancels its late panel and releases input',()=>{
-  const h=setup();h.result.openRelicDetails(h.relic);h.result.node.destroy();h.requests[0].done(null,h.asset);
+test(screen+' closing during a description load cancels its late panel and releases input',()=>{
+  const h=setup(screen);h.result.openRelicDetails(h.relic);h.result.node.destroy();h.requests[0].done(null,h.asset);
   assert.equal(h.ui.uistatck.has('details'),false);assert.equal(h.ui._openingInputCount,0);assert.equal(h.blocked(),false);
 });
 
-test('cancelled description recovery remains retryable by tapping and cannot revive a closed result',()=>{
-  const h=setup();h.result.openRelicDetails(h.relic);h.requests[0].done(Error('controlled missing prefab'));
+test(screen+' cancelled description recovery remains retryable and cannot revive a closed result',()=>{
+  const h=setup(screen);h.result.openRelicDetails(h.relic);h.requests[0].done(Error('controlled missing prefab'));
   assert.equal(h.paused(),true);h.resources.resolveRuntimeRecovery(false);assert.equal(h.paused(),false);
   h.result.openRelicDetails(h.relic);assert.equal(h.requests.length,2);h.result.node.destroy();h.requests[1].done(null,h.asset);
   assert.equal(h.ui.uistatck.has('details'),false);assert.equal(h.ui._openingInputCount,0);
+});
+}
+
+test('new and duplicate draw-result relic cards inspect their own relic while currency remains inert',()=>{
+  const h=setup('KinghtFallUITreasureReward'),second=config.TreasureCfg.find(relic=>relic.Quality===3),prefab={addRef:noop},instantiate=h.cc.instantiate;
+  h.cc.instantiate=asset=>{
+    if(asset!==prefab)return instantiate(asset);
+    const node=new h.cc.Node('draw-card');node.setParent=parent=>{node.parent=parent;};node.setScale=noop;
+    node.ui={initView(item){this.item=item;},setNew(value){this.isNew=value;},onDestroy:noop};return node;
+  };
+  h.result.getSkillList=[{item:{id:h.relic.goodID,num:1},isNew:true},{item:{id:h.relic.goodID,num:1},isNew:false},{item:{id:second.goodID,num:1},isNew:true},{item:{id:2001,num:500}}];
+  h.result.ndCtr={node:new h.cc.Node('draw-grid'),getPos:()=>({x:0,y:0})};
+  h.result.loadPrefab=(_bundle,_path,done)=>done(prefab);
+  for(let index=0;index<3;index++)h.result.aniNormal2(index);
+  const currency=h.cc.instantiate(prefab);h.modules.PoolMgr.PoolMgr=single({getNode:()=>currency});h.result.aniNormal1(3);
+  const icons=h.result.ndCtr.node.children;assert.equal(icons.length,4);assert.equal(currency.handlers.end,undefined);
+  assert.equal(icons[0].ui.isNew,true);assert.equal(icons[1].ui.isNew,false);
+  for(const [index,relic]of [[0,h.relic],[1,h.relic],[2,second]]){
+    const pending=h.requests.length;icons[index].handlers.end({stopPropagation:noop});if(h.requests.length>pending)h.requests[pending].done(null,h.asset);
+    const panel=h.ui.uistatck.get('details');assert.equal(panel.cfg.ID,relic.ID);assert.equal(panel.readOnly,true);assert(panel.node.zIndex>h.result.node.zIndex);
+    h.ui.closeUI(panel.node);assert.equal(h.ui.uistatck.has('results'),true);
+  }
+  assert.equal(h.purchases(),0);assert.equal(h.owned.level,1);assert.equal(h.owned.frame,2);
+});
+
+for(const loaded of [false,true])test('another draw closes '+(loaded?'open':'loading')+' relic details without a stale popup',()=>{
+  const h=setup('KinghtFallUITreasureReward');h.result.openRelicDetails(h.relic);const pending=h.requests[0];
+  if(loaded)pending.done(null,h.asset);
+  h.modules.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().drawTreasures=()=>({rewards:[]});
+  h.result.cfgBox={};h.result.upView=noop;h.result.ndCtr={init:noop,node:{destroyAllChildren:noop,removeAllChildren:noop}};
+  h.result.getReward(10,2,[]);if(!loaded)pending.done(null,h.asset);
+  assert.equal(h.result._rewardGeneration,1);assert.equal(h.result._relicDetailOpening,false);assert.equal(h.ui.uistatck.has('details'),false);assert.equal(h.ui._openingInputCount,0);
 });
 
 test('normal collection descriptions retain their Upgrade button and reset inspection mode',()=>{
