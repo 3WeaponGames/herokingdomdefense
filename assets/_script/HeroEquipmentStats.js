@@ -17,6 +17,27 @@ function row(config, slot, level) {
   var gear = (config.EquipCfg || []).filter(function (value) { return value.id === Number(slot); })[0];
   return gear && gear.levelInfo[Math.max(0, Math.min(gear.levelInfo.length - 1, Math.floor(Number(level) || 1) - 1))];
 }
+function mainLevels(config) { var gear = (config.EquipCfg || []).filter(function (value) { return value.id === 4; })[0]; return gear && gear.levelInfo || []; }
+function wholeDamage(value) { return typeof value === "number" && isFinite(value) && Math.floor(value) === value && value >= 0 && value <= 9007199254740991; }
+function hasDamageProgression(config, style) {
+  var table = enabled(config) && config.HeroEquipment.damageProgressions;
+  if (!Weapons.find(style) || !table || typeof table !== "object" || Array.isArray(table) || !Object.prototype.hasOwnProperty.call(table, style)) return false;
+  var value = table[style], levels = mainLevels(config), total = value && value.baseDamage;
+  if (!value || typeof value !== "object" || Array.isArray(value) || !wholeDamage(total) || !Array.isArray(value.gains) || !levels.length || value.gains.length !== levels.length - 1) return false;
+  for (var i = 0; i < value.gains.length; i++) { if (!wholeDamage(value.gains[i])) return false; total += value.gains[i]; if (!wholeDamage(total)) return false; }
+  return true;
+}
+function damageProgression(config, style) {
+  if (hasDamageProgression(config, style)) { var saved = config.HeroEquipment.damageProgressions[style]; return { baseDamage: saved.baseDamage, gains: saved.gains.slice() }; }
+  var values = mainLevels(config).map(function (level) { return damage(config, style, level.Parameters); });
+  return { baseDamage: values[0], gains: values.slice(1).map(function (value, index) { return value - values[index]; }) };
+}
+function damageAtLevel(config, style, level) {
+  if (!hasDamageProgression(config, style)) return damage(config, style, (row(config, 4, level) || {}).Parameters);
+  var saved = config.HeroEquipment.damageProgressions[style], last = Math.max(0, Math.min(saved.gains.length, Math.floor(Number(level) || 1) - 1)), result = saved.baseDamage;
+  for (var i = 0; i < last; i++) result += saved.gains[i];
+  return result;
+}
 function positiveRate(value) { return typeof value === "number" && isFinite(value) && value > 0; }
 function hasBaseAttackRate(config, style) {
   var rates = enabled(config) && config.HeroEquipment.baseAttackRates;
@@ -36,11 +57,11 @@ function secondary(config, style, level) {
   result.splashRadius = Math.max(0, Number(config.HeroEquipment.splashRadius) || 0);
   return result;
 }
-function raw(config, style, equipment, secondaryLevel) {
+function raw(config, style, equipment, secondaryLevel, mainLevel) {
   var result = { health: equipment[1], regen: equipment[2], damage: equipment[3], range: equipment[4], attackRate: equipment[5], move: equipment[6] };
   if (!enabled(config)) return result;
   var bonus = secondary(config, style, secondaryLevel);
-  result.damage = damage(config,style,equipment[4]);
+  result.damage = mainLevel === undefined ? damage(config,style,equipment[4]) : damageAtLevel(config,style,mainLevel);
   result.regen += bonus.healthRegen || 0;
   result.range = config.HeroEquipment.baseRange + (bonus.range || 0);
   // A style default changes its starting rate while keeping the shared Cloak
@@ -57,7 +78,7 @@ function raw(config, style, equipment, secondaryLevel) {
   return result;
 }
 function fields(config, slot, level, style) {
-  if (!enabled(config) || Number(slot) !== 3) return [{ key: "Parameters", label: Number(slot) === 4 && enabled(config) ? "Attack damage" : {1:"Max HP",2:"HP regeneration",3:"Attack damage",4:"Attack range",5:"Attack speed",6:"Movement speed"}[slot], value: Number(slot)===4&&enabled(config)?damage(config,style,(row(config,slot,level)||{}).Parameters):(row(config, slot, level) || {}).Parameters }];
+  if (!enabled(config) || Number(slot) !== 3) return [{ key: "Parameters", label: Number(slot) === 4 && enabled(config) ? "Attack damage" : {1:"Max HP",2:"HP regeneration",3:"Attack damage",4:"Attack range",5:"Attack speed",6:"Movement speed"}[slot], value: Number(slot)===4&&enabled(config)?damageAtLevel(config,style,level):(row(config, slot, level) || {}).Parameters }];
   var values = secondary(config, style, level);
   return (definitions[style] || []).map(function (field) { return Object.assign({}, field, { value: values[field.key] }); });
 }
@@ -83,7 +104,22 @@ function migrate(data, config) {
   if (state && selected !== "skirmisher" && !styles[selected]) { state.levels = Object.assign({}, styles); state.levels[selected] = {3:1,4:converted(1,1)}; }
   data.heroEquipmentVersion = 1;
 }
+function secondaryProgressionVersion(config) {
+  var rule = enabled(config) && config.HeroEquipment.secondaryProgression, gear = (config && config.EquipCfg || []).filter(function (value) { return value.id === 3; })[0];
+  return rule && rule.from === 50 && rule.to === 25 && rule.version > 0 && Math.floor(rule.version) === rule.version && gear && gear.levelInfo.length === rule.to ? rule.version : 0;
+}
+function migrateSecondary(data, config) {
+  var version = secondaryProgressionVersion(config);
+  if (!data || !version || version <= (data.secondaryEquipmentVersion || 0)) return;
+  function converted(value) { return typeof value === "number" && isFinite(value) && value >= 1 ? Math.max(1, Math.min(25, Math.ceil(Math.floor(value) / 2))) : value; }
+  if (Array.isArray(data.personLevel) && data.personLevel[2] !== undefined) data.personLevel[2] = converted(data.personLevel[2]);
+  var levels = data.heroWeapon && data.heroWeapon.levels;
+  Object.keys(levels || {}).forEach(function (style) { var progress = levels[style]; if (Weapons.find(style) && progress && typeof progress === "object" && !Array.isArray(progress) && progress[3] !== undefined) progress[3] = converted(progress[3]); });
+  data.secondaryEquipmentVersion = version;
+}
 exports.enabled=enabled;exports.definitions=definitions;exports.secondary=secondary;
 exports.raw=raw;exports.fields=fields;exports.formatted=formatted;exports.summary=summary;exports.migrate=migrate;
 exports.multiplier=multiplier;
+exports.hasDamageProgression=hasDamageProgression;exports.damageProgression=damageProgression;exports.damageAtLevel=damageAtLevel;
 exports.baseAttackRate=baseAttackRate;exports.hasBaseAttackRate=hasBaseAttackRate;
+exports.secondaryProgressionVersion=secondaryProgressionVersion;exports.migrateSecondary=migrateSecondary;

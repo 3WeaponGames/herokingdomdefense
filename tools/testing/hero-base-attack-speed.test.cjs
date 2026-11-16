@@ -3,7 +3,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const Config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),Stats=require('../../assets/_script/HeroEquipmentStats'),Weapons=require('../../assets/_script/HeroWeapons'),Loadout=require('../../assets/_script/HeroLoadout');
 const clone=value=>structuredClone(value),near=(a,b)=>assert(Math.abs(a-b)<=Math.max(1,Math.abs(b))*1e-10,`${a} != ${b}`);
 function values(cfg,level=1){return Object.fromEntries(cfg.EquipCfg.map(gear=>[gear.id,gear.levelInfo[Math.min(level,gear.levelInfo.length)-1].Parameters]));}
-function user(style,cloak=1){return{personLevel:[1,1,50,50,cloak,1],heroEquipmentVersion:1,heroWeapon:{selected:style,levels:{[style]:{3:50,4:50}}}};}
+function user(style,cloak=1){const secondary=Config.EquipCfg.find(gear=>gear.id===3).levelInfo.length;return{personLevel:[1,1,secondary,50,cloak,1],heroEquipmentVersion:1,heroWeapon:{selected:style,levels:{[style]:{3:secondary,4:50}}}};}
 
 test('missing style rates preserve the exact existing Cloak arithmetic at every level and never seed defaults',()=>{
  const cfg=clone(Config),before=clone(cfg);delete cfg.HeroEquipment.baseAttackRates;

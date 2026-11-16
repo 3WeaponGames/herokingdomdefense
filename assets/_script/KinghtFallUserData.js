@@ -71,6 +71,8 @@ var exp_KinghtFallUserData = function (t) {
     var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
     if (config && config.EquipmentProgression) this.data.equipmentProgressionVersion = config.EquipmentProgression.version;
     if (require("HeroEquipmentStats").enabled(config)) this.data.heroEquipmentVersion = 1;
+    var secondaryVersion = require("HeroEquipmentStats").secondaryProgressionVersion(config);
+    if (secondaryVersion) this.data.secondaryEquipmentVersion = secondaryVersion;
     return this.data;
   };
   _ctor.prototype.initData = function () {
@@ -100,6 +102,7 @@ var exp_KinghtFallUserData = function (t) {
     });
     require("HeroEquipmentStats").migrate(data, config.data);
     if (config.data && config.data.EquipmentProgression) require("EquipmentTiers").migrateProgress(data, equipment, config.data.EquipmentProgression);
+    require("HeroEquipmentStats").migrateSecondary(data, config.data);
     data.personLevel = data.personLevel.slice(0, equipment.length).map(function (value, index) { return Math.max(1, Math.min(equipment[index].levelInfo.length, value)); });
     require("HeroWeapons").validate(data, equipment);
     ["talentInfo", "treasureInfo", "shopInfo"].forEach(function (key) {

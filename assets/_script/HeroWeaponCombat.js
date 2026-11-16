@@ -5,7 +5,7 @@ function configure(hero, user, config) {
   if(Equipment.enabled(config)){
     var Weapons=require("HeroWeapons"), style=user.getHeroWeapon?user.getHeroWeapon():Weapons.selected(user.data||user), values={}, levels={};
     (config.EquipCfg||[]).forEach(function(gear){var value=user.getPersonLevel?user.getPersonLevel(gear.id):Weapons.level(user.data||user,gear.id);levels[gear.id]=value;values[gear.id]=gear.levelInfo[Math.max(0,Math.min(gear.levelInfo.length-1,value-1))].Parameters;});
-    raw=Equipment.raw(config,style.id,values,levels[3]);hero.moveSpeed=raw.move;
+    raw=Equipment.raw(config,style.id,values,levels[3],levels[4]);hero.moveSpeed=raw.move;
     hero._heroSecondary=Equipment.secondary(config,style.id,levels[3]);
   }
   var stats=require("HeroLoadout").applyStyle(raw,user,config);

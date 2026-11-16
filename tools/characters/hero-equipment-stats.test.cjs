@@ -2,6 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'../..'),config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),Stats=require('../../assets/_script/HeroEquipmentStats'),Weapons=require('../../assets/_script/HeroWeapons'),Loadout=require('../../assets/_script/HeroLoadout'),Tiers=require('../../assets/_script/EquipmentTiers');
 const near=(a,b)=>assert(Math.abs(a-b)<1e-8,a+' != '+b);
+const authoredDamage=(style,level)=>style==='skirmisher'?18+2*(level-1):Math.ceil(2*level*Stats.multiplier(config,style)-1e-9);
 test('all fifty main-weapon levels grant two damage each, retain five tiers and preserve explicit publication idempotence',()=>{
  const main=config.EquipCfg.find(gear=>gear.id===4);assert.equal(main.levelInfo.length,50);assert.deepEqual(Tiers.tiers(main).map(tier=>tier.levels.length),[10,10,10,10,10]);main.levelInfo.forEach((row,index)=>{assert.equal(row.Parameters,(index+1)*2);assert.equal(row.ID,4);});
  assert.equal(main.levelInfo[0].GoldCost,650,'Early damage upgrades retain their affordable damage-track price');assert.equal(main.levelInfo.at(-1).GoldCost,0);assert.equal(config.HeroEquipment.upgradePricingVersion,1);
@@ -9,8 +10,8 @@ test('all fifty main-weapon levels grant two damage each, retain five tiers and 
 });
 test('secondary levels affect only the equipped style and never supply flat weapon damage or change progress during a read',()=>{
  const caps={fighter:{healthRegen:5},skirmisher:{range:200,criticalChance:.1},vanguard:{move:.2,attackRate:.1},bruiser:{lifeSteal:.1},guardian:{damageReduction:.2},mystic:{splashDamage:.5}};
- for(const style of Weapons.styles){const data={personLevel:[1,1,1,1,1,1],heroEquipmentVersion:1,heroWeapon:{selected:style.id,levels:{[style.id]:{3:50,4:1}}}},before=JSON.stringify(data),snap=Loadout.snapshot(config,data);near(snap.damage,Math.ceil(2*Stats.multiplier(config,style.id)-1e-9));for(const [key,value]of Object.entries(caps[style.id]))near(snap.secondary[key],value);assert.equal(JSON.stringify(data),before);
-  data.heroWeapon.levels[style.id][4]=50;near(Loadout.snapshot(config,data).damage,Math.ceil(100*Stats.multiplier(config,style.id)-1e-9));data.heroWeapon.levels[style.id][3]=1;near(Loadout.snapshot(config,data).damage,Math.ceil(100*Stats.multiplier(config,style.id)-1e-9));
+ for(const style of Weapons.styles){const data={personLevel:[1,1,1,1,1,1],heroEquipmentVersion:1,heroWeapon:{selected:style.id,levels:{[style.id]:{3:50,4:1}}}},before=JSON.stringify(data),snap=Loadout.snapshot(config,data);near(snap.damage,authoredDamage(style.id,1));for(const [key,value]of Object.entries(caps[style.id]))near(snap.secondary[key],value);assert.equal(JSON.stringify(data),before);
+  data.heroWeapon.levels[style.id][4]=50;near(Loadout.snapshot(config,data).damage,authoredDamage(style.id,50));data.heroWeapon.levels[style.id][3]=1;near(Loadout.snapshot(config,data).damage,authoredDamage(style.id,50));
  }
  const old={EquipCfg:config.EquipCfg};assert.equal(Stats.enabled(old),false);assert.deepEqual(Stats.raw(old,'fighter',{1:100,2:10,3:20,4:300,5:1,6:221},50),{health:100,regen:10,damage:20,range:300,attackRate:1,move:221});
 });
@@ -25,14 +26,14 @@ test('migration retains earned main progression and previous damage for each exi
 test('legacy per-level appearances move together while named tier looks and other gear remain assigned',()=>{
  const data={assignments:{'4:2:fighter':'a','4:4:fighter':'b','4:tier:lv2:fighter':'c','3:2:fighter':'d'},profiles:{a:{base:{id:'4:2:fighter'}},b:{base:{id:'4:4:fighter'}},c:{},d:{}}};require('./hero-equipment-stats.cjs').migrateLooks(data);assert.equal(data.assignments['4:4:fighter'],'a');assert.equal(data.assignments['4:8:fighter'],'b');assert.equal(data.profiles.b.base.id,'4:8:fighter');assert.equal(data.assignments['4:tier:lv2:fighter'],'c');assert.equal(data.assignments['3:2:fighter'],'d');
 });
-test('the Archer remains the damage baseline while melee styles compensate for reach and Mystic earns its group-damage role',()=>{
+test('the Archer follows its authored starting damage while the other styles retain their weapon and support roles',()=>{
  const get=style=>Loadout.calculate(config,{personLevel:[50,50,50,50,25,25],heroWeapon:{selected:style,levels:{[style]:{3:50,4:50}}}},{splashTargets:2}),bow=get('skirmisher'),fighter=get('fighter'),spear=get('vanguard'),axe=get('bruiser'),shield=get('guardian'),staff=get('mystic');
- assert.deepEqual([bow.damage,fighter.damage,spear.damage,axe.damage,shield.damage,staff.damage],[100,130,120,150,115,85]);
- for(const melee of [fighter,spear,axe,shield])assert(melee.primaryDps>bow.primaryDps);assert(staff.primaryDps<bow.primaryDps);assert.equal(staff.equipmentSplashDps,0,'Crystal Orb affects active damage only');assert.equal(spear.range>fighter.range,true);assert(shield.preventedDps>0);assert(fighter.regen>bow.regen);assert.equal(fighter.lifeStealHps,0);assert(axe.lifeStealHps>0);
- for(let level=1;level<=50;level++)for(const style of ['fighter','vanguard','bruiser','guardian'])assert(Stats.fields(config,4,level,style)[0].value>level*2,style+' beats the Bow hit damage at level '+level);
+ assert.deepEqual([bow.damage,fighter.damage,spear.damage,axe.damage,shield.damage,staff.damage],[116,130,120,150,115,85]);
+ for(const melee of [fighter,spear,axe])assert(melee.primaryDps>bow.primaryDps);assert(staff.primaryDps<bow.primaryDps);assert.equal(staff.equipmentSplashDps,0,'Crystal Orb affects active damage only');assert.equal(spear.range>fighter.range,true);assert(shield.preventedDps>0);assert(fighter.regen>bow.regen);assert.equal(fighter.lifeStealHps,0);assert(axe.lifeStealHps>0);
+ for(let level=1;level<=50;level++)for(const style of Weapons.styles)assert.equal(Stats.fields(config,4,level,style.id)[0].value,authoredDamage(style.id,level));
 });
 function battle(style){
- const {setup,hero,Node,Vec2}=require('../testing/backend-gameplay-harness.cjs'),data={heroEquipmentVersion:1,personLevel:[1,1,1,1,1,1],heroWeapon:{selected:style,levels:{[style]:{3:50,4:50}}}},user={data,getHeroWeapon:()=>Weapons.selected(data),getPersonLevel:slot=>Weapons.level(data,slot)};
+ const {setup,hero,Node,Vec2}=require('../testing/backend-gameplay-harness.cjs'),data={heroEquipmentVersion:1,personLevel:[1,1,1,1,1,1],heroWeapon:{selected:style,levels:{[style]:{3:config.EquipCfg.find(gear=>gear.id===3).levelInfo.length,4:50}}}},user={data,getHeroWeapon:()=>Weapons.selected(data),getPersonLevel:slot=>Weapons.level(data,slot)};
  const h=setup({KinghtFallMissionData:{KinghtFallTaskCountName:{Kill:'Kill'}},KinghtFallEnum:require('../../assets/_script/KinghtFallEnum'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user,getMissionData:()=>({getTaskInfo:()=>({type:'none'}),addTaskNum(){}})})}}}),p=hero(h),manager=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();manager.data=config;manager.getEquipCfgList=()=>config.EquipCfg;manager.getParamsCfgById=()=>3;
  h.e.stubs.HeroMakerRider={setCombatState(){},clearCombatState(){}};Object.assign(p.ctrPlayAni,{initView(){},setAttackEvent(){},setAttackEnd(){}});p.ctrHp.setType=()=>{};p.initData();p.critDam=1.5;p.node._combatGeneration=1;p.node.setPosition(0,0);h.d.heroStyle=style;h.ui.ctrEffect={showDamageNum(){},onMonsterAttack(){}};
  const Combat=h.load('RelicCombat');
@@ -41,7 +42,7 @@ function battle(style){
  return {...h,p,data,user,Combat,enemy,hit,Node,Vec2};
 }
 test('actual combat initialization and repeated style changes agree with the shared equipment calculation, including speed and crit',()=>{
- const h=battle('fighter');for(const style of Weapons.styles){h.data.heroWeapon.selected=style.id;h.data.heroWeapon.levels[style.id]={3:50,4:50};for(let i=0;i<2;i++){h.p.initData();h.p.initBuffData();h.p.critDam=1.5;const snap=Loadout.snapshot(config,h.user);near(h.p.attack,snap.damage);near(h.p.attackRange,snap.range);near(h.p.attackSpeed,snap.attackRate);near(h.p.moveSpeed,snap.move);near(h.p.crit,snap.criticalChance);near(h.p.getCriticalDamage(),snap.criticalMultiplier);}}
+ const h=battle('fighter');for(const style of Weapons.styles){h.data.heroWeapon.selected=style.id;h.data.heroWeapon.levels[style.id]={3:config.EquipCfg.find(gear=>gear.id===3).levelInfo.length,4:50};for(let i=0;i<2;i++){h.p.initData();h.p.initBuffData();h.p.critDam=1.5;const snap=Loadout.snapshot(config,h.user);near(h.p.attack,snap.damage);near(h.p.attackRange,snap.range);near(h.p.attackSpeed,snap.attackRate);near(h.p.moveSpeed,snap.move);near(h.p.crit,snap.criticalChance);near(h.p.getCriticalDamage(),snap.criticalMultiplier);}}
 });
 test('bruiser life steal heals actual primary damage once, excludes overkill and secondary hits, caps at maximum HP and cannot revive',()=>{
  const h=battle('bruiser');h.p.hp=50;const target=h.enemy(20,10);h.hit(target);near(h.p.hp,51);
@@ -66,5 +67,5 @@ test('secondary replacement publication preserves authored new values, unrelated
 
 test('Fighter potion adds flat health regeneration without changing damage or gaining lifesteal',()=>{
  const data={personLevel:[1,1,1,1,1,1],heroWeapon:{selected:'fighter',levels:{fighter:{3:1,4:50}}}},first=Loadout.snapshot(config,data);data.heroWeapon.levels.fighter[3]=50;const last=Loadout.snapshot(config,data);
- near(last.regen-first.regen,4.9);near(last.raw.regen,last.regen);near(last.secondary.healthRegen,5);assert.equal(last.secondary.lifeSteal,undefined);near(last.damage,first.damage);
+ near(last.regen-first.regen,5-Stats.secondary(config,'fighter',1).healthRegen);near(last.raw.regen,last.regen);near(last.secondary.healthRegen,5);assert.equal(last.secondary.lifeSteal,undefined);near(last.damage,first.damage);
 });

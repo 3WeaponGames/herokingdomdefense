@@ -14595,40 +14595,8 @@
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 1,
-          "Parameters": 20,
-          "GoldCost": 7850,
-          "Image": "wg_rw_j1",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 0.1
-            },
-            "skirmisher": {
-              "range": 4,
-              "criticalChance": 0.002
-            },
-            "vanguard": {
-              "move": 0.004,
-              "attackRate": 0.002
-            },
-            "bruiser": {
-              "lifeSteal": 0.002
-            },
-            "guardian": {
-              "damageReduction": 0.004
-            },
-            "mystic": {
-              "splashDamage": 0.01
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 2,
           "Parameters": 21,
-          "GoldCost": 7850,
+          "GoldCost": 8005,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1",
@@ -14658,41 +14626,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 3,
-          "Parameters": 23,
-          "GoldCost": 9750,
-          "Image": "wg_rw_j1",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 0.3
-            },
-            "skirmisher": {
-              "range": 12,
-              "criticalChance": 0.006
-            },
-            "vanguard": {
-              "move": 0.012,
-              "attackRate": 0.006
-            },
-            "bruiser": {
-              "lifeSteal": 0.006
-            },
-            "guardian": {
-              "damageReduction": 0.012
-            },
-            "mystic": {
-              "splashDamage": 0.03
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 4,
+          "Level": 2,
           "Parameters": 24,
-          "GoldCost": 9800,
+          "GoldCost": 9994,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1",
@@ -14722,41 +14658,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 5,
-          "Parameters": 26,
-          "GoldCost": 13000,
-          "Image": "wg_rw_j1",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 0.5
-            },
-            "skirmisher": {
-              "range": 20,
-              "criticalChance": 0.01
-            },
-            "vanguard": {
-              "move": 0.02,
-              "attackRate": 0.01
-            },
-            "bruiser": {
-              "lifeSteal": 0.01
-            },
-            "guardian": {
-              "damageReduction": 0.02
-            },
-            "mystic": {
-              "splashDamage": 0.05
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 6,
+          "Level": 3,
           "Parameters": 28,
-          "GoldCost": 13000,
+          "GoldCost": 13257,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1",
@@ -14786,41 +14690,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 7,
-          "Parameters": 29,
-          "GoldCost": 17000,
-          "Image": "wg_rw_j1",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 0.7
-            },
-            "skirmisher": {
-              "range": 28,
-              "criticalChance": 0.014
-            },
-            "vanguard": {
-              "move": 0.028,
-              "attackRate": 0.014
-            },
-            "bruiser": {
-              "lifeSteal": 0.014
-            },
-            "guardian": {
-              "damageReduction": 0.028
-            },
-            "mystic": {
-              "splashDamage": 0.07
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 8,
+          "Level": 4,
           "Parameters": 31,
-          "GoldCost": 17500,
+          "GoldCost": 17846,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1",
@@ -14850,41 +14722,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 9,
-          "Parameters": 33,
-          "GoldCost": 23000,
-          "Image": "wg_rw_j1",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 0.9
-            },
-            "skirmisher": {
-              "range": 36,
-              "criticalChance": 0.018
-            },
-            "vanguard": {
-              "move": 0.036,
-              "attackRate": 0.018
-            },
-            "bruiser": {
-              "lifeSteal": 0.018
-            },
-            "guardian": {
-              "damageReduction": 0.036
-            },
-            "mystic": {
-              "splashDamage": 0.09
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
-          "Level": 10,
+          "Level": 5,
           "Parameters": 34,
-          "GoldCost": 24000,
+          "GoldCost": 24474,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1",
@@ -14914,41 +14754,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 11,
-          "Parameters": 36,
-          "GoldCost": 32000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 1.1
-            },
-            "skirmisher": {
-              "range": 44,
-              "criticalChance": 0.022
-            },
-            "vanguard": {
-              "move": 0.044,
-              "attackRate": 0.022
-            },
-            "bruiser": {
-              "lifeSteal": 0.022
-            },
-            "guardian": {
-              "damageReduction": 0.044
-            },
-            "mystic": {
-              "splashDamage": 0.11
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 12,
+          "Level": 6,
           "Parameters": 37,
-          "GoldCost": 34000,
+          "GoldCost": 34672,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2",
@@ -14978,41 +14786,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 13,
-          "Parameters": 39,
-          "GoldCost": 41000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 1.3
-            },
-            "skirmisher": {
-              "range": 52,
-              "criticalChance": 0.026
-            },
-            "vanguard": {
-              "move": 0.052,
-              "attackRate": 0.026
-            },
-            "bruiser": {
-              "lifeSteal": 0.026
-            },
-            "guardian": {
-              "damageReduction": 0.052
-            },
-            "mystic": {
-              "splashDamage": 0.13
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 14,
+          "Level": 7,
           "Parameters": 41,
-          "GoldCost": 43500,
+          "GoldCost": 44360,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2",
@@ -15042,41 +14818,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 15,
-          "Parameters": 42,
-          "GoldCost": 53000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 1.5
-            },
-            "skirmisher": {
-              "range": 60,
-              "criticalChance": 0.03
-            },
-            "vanguard": {
-              "move": 0.06,
-              "attackRate": 0.03
-            },
-            "bruiser": {
-              "lifeSteal": 0.03
-            },
-            "guardian": {
-              "damageReduction": 0.06
-            },
-            "mystic": {
-              "splashDamage": 0.15
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 16,
+          "Level": 8,
           "Parameters": 44,
-          "GoldCost": 56500,
+          "GoldCost": 57617,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2",
@@ -15106,41 +14850,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 17,
-          "Parameters": 46,
-          "GoldCost": 64500,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 1.7
-            },
-            "skirmisher": {
-              "range": 68,
-              "criticalChance": 0.034
-            },
-            "vanguard": {
-              "move": 0.068,
-              "attackRate": 0.034
-            },
-            "bruiser": {
-              "lifeSteal": 0.034
-            },
-            "guardian": {
-              "damageReduction": 0.068
-            },
-            "mystic": {
-              "splashDamage": 0.17
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 18,
+          "Level": 9,
           "Parameters": 47,
-          "GoldCost": 69000,
+          "GoldCost": 70364,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2",
@@ -15170,41 +14882,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 19,
-          "Parameters": 49,
-          "GoldCost": 78000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 1.9
-            },
-            "skirmisher": {
-              "range": 76,
-              "criticalChance": 0.038
-            },
-            "vanguard": {
-              "move": 0.076,
-              "attackRate": 0.038
-            },
-            "bruiser": {
-              "lifeSteal": 0.038
-            },
-            "guardian": {
-              "damageReduction": 0.076
-            },
-            "mystic": {
-              "splashDamage": 0.19
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
-          "Level": 20,
+          "Level": 10,
           "Parameters": 51,
-          "GoldCost": 83500,
+          "GoldCost": 85150,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2",
@@ -15234,41 +14914,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 21,
-          "Parameters": 52,
-          "GoldCost": 95000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 2.1
-            },
-            "skirmisher": {
-              "range": 84,
-              "criticalChance": 0.042
-            },
-            "vanguard": {
-              "move": 0.084,
-              "attackRate": 0.042
-            },
-            "bruiser": {
-              "lifeSteal": 0.042
-            },
-            "guardian": {
-              "damageReduction": 0.084
-            },
-            "mystic": {
-              "splashDamage": 0.21
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 22,
+          "Level": 11,
           "Parameters": 54,
-          "GoldCost": 105000,
+          "GoldCost": 107076,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv_blue",
@@ -15298,41 +14946,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 23,
-          "Parameters": 55,
-          "GoldCost": 115000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 2.3
-            },
-            "skirmisher": {
-              "range": 92,
-              "criticalChance": 0.046
-            },
-            "vanguard": {
-              "move": 0.092,
-              "attackRate": 0.046
-            },
-            "bruiser": {
-              "lifeSteal": 0.046
-            },
-            "guardian": {
-              "damageReduction": 0.092
-            },
-            "mystic": {
-              "splashDamage": 0.23
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 24,
+          "Level": 12,
           "Parameters": 57,
-          "GoldCost": 120000,
+          "GoldCost": 122372,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv_blue",
@@ -15362,41 +14978,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 25,
-          "Parameters": 59,
-          "GoldCost": 130000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 2.5
-            },
-            "skirmisher": {
-              "range": 100,
-              "criticalChance": 0.05
-            },
-            "vanguard": {
-              "move": 0.1,
-              "attackRate": 0.05
-            },
-            "bruiser": {
-              "lifeSteal": 0.05
-            },
-            "guardian": {
-              "damageReduction": 0.1
-            },
-            "mystic": {
-              "splashDamage": 0.25
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 26,
+          "Level": 13,
           "Parameters": 60,
-          "GoldCost": 140000,
+          "GoldCost": 142767,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv_blue",
@@ -15426,41 +15010,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 27,
-          "Parameters": 62,
-          "GoldCost": 150000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 2.7
-            },
-            "skirmisher": {
-              "range": 108,
-              "criticalChance": 0.054
-            },
-            "vanguard": {
-              "move": 0.108,
-              "attackRate": 0.054
-            },
-            "bruiser": {
-              "lifeSteal": 0.054
-            },
-            "guardian": {
-              "damageReduction": 0.108
-            },
-            "mystic": {
-              "splashDamage": 0.27
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 28,
+          "Level": 14,
           "Parameters": 64,
-          "GoldCost": 160000,
+          "GoldCost": 163163,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv_blue",
@@ -15490,41 +15042,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 29,
-          "Parameters": 65,
-          "GoldCost": 170000,
-          "Image": "wg_rw_j2",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 2.9
-            },
-            "skirmisher": {
-              "range": 116,
-              "criticalChance": 0.058
-            },
-            "vanguard": {
-              "move": 0.116,
-              "attackRate": 0.058
-            },
-            "bruiser": {
-              "lifeSteal": 0.058
-            },
-            "guardian": {
-              "damageReduction": 0.116
-            },
-            "mystic": {
-              "splashDamage": 0.29
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipment.blue.3]]",
-          "Level": 30,
+          "Level": 15,
           "Parameters": 67,
-          "GoldCost": 185000,
+          "GoldCost": 188656,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv_blue",
@@ -15554,41 +15074,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 31,
-          "Parameters": 68,
-          "GoldCost": 195000,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 3.1
-            },
-            "skirmisher": {
-              "range": 124,
-              "criticalChance": 0.062
-            },
-            "vanguard": {
-              "move": 0.124,
-              "attackRate": 0.062
-            },
-            "bruiser": {
-              "lifeSteal": 0.062
-            },
-            "guardian": {
-              "damageReduction": 0.124
-            },
-            "mystic": {
-              "splashDamage": 0.31
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 32,
+          "Level": 16,
           "Parameters": 70,
-          "GoldCost": 215000,
+          "GoldCost": 219250,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3",
@@ -15618,41 +15106,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 33,
-          "Parameters": 72,
-          "GoldCost": 220000,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 3.3
-            },
-            "skirmisher": {
-              "range": 132,
-              "criticalChance": 0.066
-            },
-            "vanguard": {
-              "move": 0.132,
-              "attackRate": 0.066
-            },
-            "bruiser": {
-              "lifeSteal": 0.066
-            },
-            "guardian": {
-              "damageReduction": 0.132
-            },
-            "mystic": {
-              "splashDamage": 0.33
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 34,
+          "Level": 17,
           "Parameters": 73,
-          "GoldCost": 240000,
+          "GoldCost": 244744,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3",
@@ -15682,41 +15138,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 35,
-          "Parameters": 75,
-          "GoldCost": 245000,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 3.5
-            },
-            "skirmisher": {
-              "range": 140,
-              "criticalChance": 0.07
-            },
-            "vanguard": {
-              "move": 0.14,
-              "attackRate": 0.07
-            },
-            "bruiser": {
-              "lifeSteal": 0.07
-            },
-            "guardian": {
-              "damageReduction": 0.14
-            },
-            "mystic": {
-              "splashDamage": 0.35
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 36,
+          "Level": 18,
           "Parameters": 77,
-          "GoldCost": 265000,
+          "GoldCost": 270238,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3",
@@ -15746,41 +15170,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 37,
-          "Parameters": 78,
-          "GoldCost": 270000,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 3.7
-            },
-            "skirmisher": {
-              "range": 148,
-              "criticalChance": 0.074
-            },
-            "vanguard": {
-              "move": 0.148,
-              "attackRate": 0.074
-            },
-            "bruiser": {
-              "lifeSteal": 0.074
-            },
-            "guardian": {
-              "damageReduction": 0.148
-            },
-            "mystic": {
-              "splashDamage": 0.37
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 38,
+          "Level": 19,
           "Parameters": 80,
-          "GoldCost": 290000,
+          "GoldCost": 295732,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3",
@@ -15810,41 +15202,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 39,
-          "Parameters": 82,
-          "GoldCost": 300000,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 3.9
-            },
-            "skirmisher": {
-              "range": 156,
-              "criticalChance": 0.078
-            },
-            "vanguard": {
-              "move": 0.156,
-              "attackRate": 0.078
-            },
-            "bruiser": {
-              "lifeSteal": 0.078
-            },
-            "guardian": {
-              "damageReduction": 0.156
-            },
-            "mystic": {
-              "splashDamage": 0.39
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 40,
+          "Level": 20,
           "Parameters": 83,
-          "GoldCost": 330000,
+          "GoldCost": 336523,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3",
@@ -15874,41 +15234,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 41,
-          "Parameters": 85,
-          "GoldCost": 335000,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 4.1
-            },
-            "skirmisher": {
-              "range": 164,
-              "criticalChance": 0.082
-            },
-            "vanguard": {
-              "move": 0.164,
-              "attackRate": 0.082
-            },
-            "bruiser": {
-              "lifeSteal": 0.082
-            },
-            "guardian": {
-              "damageReduction": 0.164
-            },
-            "mystic": {
-              "splashDamage": 0.41
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 42,
+          "Level": 21,
           "Parameters": 86,
-          "GoldCost": 360000,
+          "GoldCost": 367116,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4",
@@ -15938,41 +15266,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 43,
-          "Parameters": 88,
-          "GoldCost": 365000,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 4.3
-            },
-            "skirmisher": {
-              "range": 172,
-              "criticalChance": 0.086
-            },
-            "vanguard": {
-              "move": 0.172,
-              "attackRate": 0.086
-            },
-            "bruiser": {
-              "lifeSteal": 0.086
-            },
-            "guardian": {
-              "damageReduction": 0.172
-            },
-            "mystic": {
-              "splashDamage": 0.43
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 44,
+          "Level": 22,
           "Parameters": 90,
-          "GoldCost": 395000,
+          "GoldCost": 402808,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4",
@@ -16002,41 +15298,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 45,
-          "Parameters": 91,
-          "GoldCost": 395000,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 4.5
-            },
-            "skirmisher": {
-              "range": 180,
-              "criticalChance": 0.09
-            },
-            "vanguard": {
-              "move": 0.18,
-              "attackRate": 0.09
-            },
-            "bruiser": {
-              "lifeSteal": 0.09
-            },
-            "guardian": {
-              "damageReduction": 0.18
-            },
-            "mystic": {
-              "splashDamage": 0.45
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 46,
+          "Level": 23,
           "Parameters": 93,
-          "GoldCost": 430000,
+          "GoldCost": 438500,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4",
@@ -16066,41 +15330,9 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 47,
-          "Parameters": 95,
-          "GoldCost": 430000,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 4.7
-            },
-            "skirmisher": {
-              "range": 188,
-              "criticalChance": 0.094
-            },
-            "vanguard": {
-              "move": 0.188,
-              "attackRate": 0.094
-            },
-            "bruiser": {
-              "lifeSteal": 0.094
-            },
-            "guardian": {
-              "damageReduction": 0.188
-            },
-            "mystic": {
-              "splashDamage": 0.47
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 48,
+          "Level": 24,
           "Parameters": 96,
-          "GoldCost": 465000,
+          "GoldCost": 474191,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4",
@@ -16130,39 +15362,7 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 49,
-          "Parameters": 98,
-          "GoldCost": 465000,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4",
-          "SecondaryStats": {
-            "fighter": {
-              "healthRegen": 4.9
-            },
-            "skirmisher": {
-              "range": 196,
-              "criticalChance": 0.098
-            },
-            "vanguard": {
-              "move": 0.196,
-              "attackRate": 0.098
-            },
-            "bruiser": {
-              "lifeSteal": 0.098
-            },
-            "guardian": {
-              "damageReduction": 0.196
-            },
-            "mystic": {
-              "splashDamage": 0.49
-            }
-          }
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 50,
+          "Level": 25,
           "Parameters": 100,
           "GoldCost": 0,
           "Image": "wg_rw_j4",
@@ -144094,6 +143294,82 @@
       "mystic": 0.85
     },
     "upgradePricingVersion": 1,
-    "secondaryStatsVersion": 2
+    "secondaryStatsVersion": 2,
+    "secondaryProgression": {
+      "version": 1,
+      "from": 50,
+      "to": 25,
+      "originalTotalGold": 8277750,
+      "totalGold": 4138875
+    },
+    "damageProgressions": {
+      "skirmisher": {
+        "baseDamage": 18,
+        "gains": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    "upgradeCurveRules": {
+      "4:skirmisher": {
+        "damage": {
+          "from": 2,
+          "to": 50,
+          "gain": 2,
+          "multiplier": 1,
+          "power": 0,
+          "rounding": "nearest",
+          "precision": 0
+        }
+      }
+    }
   }
 }

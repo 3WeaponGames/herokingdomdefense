@@ -417,6 +417,40 @@ function validate(documents, changes) {
     if(settings.version!==1)issue('A',['HeroEquipment','version'],'Unknown hero equipment stat version.');
     for(const key of ['baseRange','splashRadius'])number('A',['HeroEquipment',key],settings[key],Number.MIN_VALUE,false);
     if(settings.damageMultipliers)for(const style of require('../../../assets/_script/HeroWeapons').styles)number('A',['HeroEquipment','damageMultipliers',style.id],settings.damageMultipliers[style.id],Number.MIN_VALUE,false);
+    if(own(settings,'damageProgressions')){
+      const table=settings.damageProgressions,p=['HeroEquipment','damageProgressions'],main=(base.EquipCfg||[]).find(gear=>gear.id===4),count=main&&main.levelInfo&&main.levelInfo.length;
+      if(!table||typeof table!=='object'||Array.isArray(table))issue('A',p,'Hero damage progressions must retain their object format.');
+      else for(const style of HeroWeapons.styles){
+        if(!own(table,style.id))continue;
+        const profile=table[style.id],at=p.concat(style.id);
+        if(!profile||typeof profile!=='object'||Array.isArray(profile)){issue('A',at,'A damage progression needs starting damage and upgrade increases.');continue;}
+        if(!Number.isSafeInteger(profile.baseDamage)||profile.baseDamage<0)issue('A',at.concat('baseDamage'),'Starting damage must be a safe whole number of zero or greater.');
+        if(!Array.isArray(profile.gains)||!count||profile.gains.length!==count-1){issue('A',at.concat('gains'),'Provide one damage increase for every upgrade after level 1.');continue;}
+        let total=profile.baseDamage;
+        profile.gains.forEach((gain,index)=>{if(!Number.isSafeInteger(gain)||gain<0)issue('A',at.concat('gains',index),'Damage increases must be safe whole numbers of zero or greater.');total+=gain;});
+        if(!Number.isSafeInteger(total)||total<0)issue('A',at,'Total damage must remain a safe whole number across every upgrade.');
+      }
+    }
+    if(own(settings,'upgradeCurveRules')){
+      const table=settings.upgradeCurveRules,p=['HeroEquipment','upgradeCurveRules'];
+      if(!table||typeof table!=='object'||Array.isArray(table))issue('A',p,'Upgrade curve rules must retain their object format.');
+      else for(const [key,entry]of Object.entries(table)){
+        const [slot,style]=key.split(':'),gear=(base.EquipCfg||[]).find(item=>item.id===Number(slot));
+        if(!gear||Number(slot)===3&&!HeroWeapons.find(style)||Number(slot)===4&&!HeroWeapons.find(style))continue;
+        const fields=Number(slot)===4?['damage']:Number(slot)===3?(Stats.definitions[style]||[]).map(field=>field.key):['Parameters'],at=p.concat(key);
+        if(!entry||typeof entry!=='object'||Array.isArray(entry)){issue('A',at,'Curve rules for an equipment item must be an object.');continue;}
+        for(const field of fields){
+          if(!own(entry,field))continue;
+          const rule=entry[field],q=at.concat(field),first=Number(slot)===3?1:2;
+          if(!rule||typeof rule!=='object'||Array.isArray(rule)){issue('A',q,'An upgrade curve rule must be an object.');continue;}
+          if(!Number.isInteger(rule.from)||!Number.isInteger(rule.to)||rule.from<first||rule.to<rule.from||rule.to>gear.levelInfo.length)issue('A',q,'Curve range must use existing upgrade levels in order.');
+          number('A',q.concat('gain'),rule.gain,0,false);number('A',q.concat('multiplier'),rule.multiplier,Number.MIN_VALUE,false);
+          if(typeof rule.power!=='number'||!Number.isFinite(rule.power))issue('A',q.concat('power'),'Curve exponent must be finite.');
+          if(!['nearest','up','down'].includes(rule.rounding))issue('A',q.concat('rounding'),'Choose nearest, up or down rounding.');
+          if(!Number.isInteger(rule.precision)||rule.precision<0||rule.precision>9||Number(slot)===4&&rule.precision!==0)issue('A',q.concat('precision'),'Use 0–9 decimal places, or whole numbers for weapon damage.');
+        }
+      }
+    }
     if(own(settings,'baseAttackRates')){
       const rates=settings.baseAttackRates,p=['HeroEquipment','baseAttackRates'];
       if(!rates||typeof rates!=='object'||Array.isArray(rates))issue('A',p,'Hero base attack speeds must retain their object format.');

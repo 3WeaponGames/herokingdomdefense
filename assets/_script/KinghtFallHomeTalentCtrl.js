@@ -13,6 +13,24 @@ var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+// Use the original split/merge curves for the extra talent branches too.
+// Keep straight stems as two-point paths; repeated points distort WebGL joins.
+function talentBranch(graphics, from, to, radius, split) {
+  graphics.moveTo(from.x, from.y);
+  if (from.x === to.x) {
+    graphics.lineTo(to.x, to.y);
+    return;
+  }
+  var side = Math.sign(to.x - from.x);
+  if (split) {
+    graphics.lineTo(to.x - radius * side, from.y);
+    graphics.arc(to.x - radius * side, from.y + radius, radius, -Math.PI / 2, side > 0 ? 0 : Math.PI, side > 0);
+  } else {
+    graphics.lineTo(from.x, to.y - radius);
+    graphics.arc(from.x + radius * side, to.y - radius, radius, side > 0 ? Math.PI : 0, Math.PI / 2, side < 0);
+  }
+  graphics.lineTo(to.x, to.y);
+}
 var def_KinghtFallHomeTalentCtrl = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -135,6 +153,8 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     this.ndParent.content.height = this.cellSize.height * this.nodeInfo.length + this.stratPos.y;
   };
   _ctor.prototype.initView = function () {
+    this.graphics1.clear();
+    this.graphics2.clear();
     for (var t = 0; t < this.nodeInfo.length; t++) {
       this.lineToLevel(t, this.graphics1);
       this.lineToLevel(t, this.graphics2);
@@ -147,9 +167,9 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     var i = this.nodeInfo[t + 1];
     if (n && i) {
       if (n.cfgList.length > 1 && i.cfgList.length > 1) {
-        var middle = (n.pos[0].y + i.pos[0].y) / 2, center = this.stratPos.x;
-        n.pos.forEach(function (point) { e.moveTo(point.x, point.y); e.lineTo(point.x, middle); e.lineTo(center, middle); });
-        i.pos.forEach(function (point) { e.moveTo(center, middle); e.lineTo(point.x, middle); e.lineTo(point.x, point.y); });
+        var junction = { x: this.stratPos.x, y: (n.pos[0].y + i.pos[0].y) / 2 }, radius = this.range;
+        n.pos.forEach(function (point) { talentBranch(e, point, junction, radius, false); });
+        i.pos.forEach(function (point) { talentBranch(e, junction, point, radius, true); });
       } else if (1 == n.cfgList.length && 1 == i.cfgList.length) {
         var a = n.pos[0];
         var o = i.pos[0];
@@ -269,8 +289,11 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     var a = this.nodeInfo[e.Level - 1];
     if (i && a) {
       if (i.cfgList.length > 1 && a.cfgList.length > 1) {
-        var from = i.pos[i.cfgList.findIndex(function (row) { return row.ID === t.ID; })], to = a.pos[a.cfgList.findIndex(function (row) { return row.ID === e.ID; })], middle = (from.y + to.y) / 2;
-        n.moveTo(from.x,from.y);n.lineTo(from.x,middle);n.lineTo(to.x,middle);n.lineTo(to.x,to.y);
+        var from = i.pos[i.cfgList.findIndex(function (row) { return row.ID === t.ID; })], to = a.pos[a.cfgList.findIndex(function (row) { return row.ID === e.ID; })];
+        if (!from || !to) return;
+        var junction = { x: this.stratPos.x, y: (from.y + to.y) / 2 };
+        talentBranch(n, from, junction, this.range, false);
+        talentBranch(n, junction, to, this.range, true);
       } else if (1 == i.cfgList.length && 1 == a.cfgList.length) {
         var o = i.pos[0];
         var r = a.pos[0];

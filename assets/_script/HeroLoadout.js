@@ -29,7 +29,7 @@ function readLoadout(config, user, timingContext, accountPower) {
     levels[slot] = current || 1; equipment[slot] = value;
     if (!finite(value) || value < 0 || slot === 1 && value === 0) reason = reason || "Missing or invalid hero equipment stat in slot " + slot + ".";
   }
-  var secondary = Equipment.secondary(config, style.id, levels[3]), raw = Equipment.raw(config, style.id, equipment, levels[3]);
+  var secondary = Equipment.secondary(config, style.id, levels[3]), raw = Equipment.raw(config, style.id, equipment, levels[3], levels[4]);
   var upgrades = accountPower ? Upgrades.resolvePower(config, user, style.id) : Upgrades.resolve(config, user, style.id), modified = applyStyle(raw, user, config, upgrades), baseHealth = modified.health;
   var criticalChance = Math.max(0, Math.min(1, Upgrades.effect(upgrades, "criticalChance") + (secondary.criticalChance || 0)));
   var parameter = config.ParameterCfg && config.ParameterCfg[60015], criticalMultiplier = parameter ? Number(parameter.Value) : criticalChance > 0 ? NaN : 1;

@@ -23,7 +23,7 @@ test('battle data initializes owned sparse talents and skips unknown ownership I
  init.call(owner);assert(owner.loaded);for(const kind of [101003,101009,101015])assert.equal(owner.talentAdd[kind][0][0],.05);assert.equal(owner.talentAdd.undefined,undefined);assert.equal(JSON.stringify(f.data),before);
  // The legacy stat mapping remains supported when a configuration has no
  // HeroEquipment override. Its original damage assertions are still meaningful.
- const legacy={...Config};delete legacy.HeroEquipment;
+ const legacy=require('./fixtures/legacy-hero-config.cjs')();
  const account=Hero.calculate(legacy,f.data);assert.equal(account.damage,20.2);assert.equal(account.health,101);assert.equal(account.attackRate,1.01);assert.equal(Hero.snapshot(legacy,f.data).damage,20);f.data.heroWeapon.selected='vanguard';assert.equal(Hero.calculate(legacy,f.data).cp,account.cp);const selected=Hero.snapshot(legacy,f.data);assert.equal(selected.damage,21);assert.equal(selected.health,105);assert.equal(selected.attackRate,1.05);
  // The current authored main-weapon stat replaces legacy slot-3 damage. Sparse
  // Vanguard talents still apply only after selecting Vanguard, without writes.
