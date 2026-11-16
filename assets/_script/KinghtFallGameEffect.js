@@ -56,22 +56,45 @@ function spatialEffect(owner, position, prefab, pool, parent, options) {
     var rate = skeleton.timeScale;
     var record = { scope: scope, node: node, skeleton: skeleton, pool: pool, remaining: options.duration, wasPaused: !!skeleton.paused, timeScale: typeof rate === "number" && isFinite(rate) ? rate : 1 };
     owner._spatialEffects = owner._spatialEffects || new Set(); owner._spatialEffects.add(record); node._gameEffectLease = record;
-    skeleton.setCompleteListener(null);
-    var clip = Object.prototype.hasOwnProperty.call(options, "clip") ? options.clip : skeleton.defaultAnimation;
-    if (options.impact && typeof clip === "string" && skeleton.findAnimation && !skeleton.findAnimation(clip) && clip.indexOf("jian_") === 0) {
-      var skin = EquipmentTiers.legacySkin(clip.slice(5), function (name) { return !!skeleton.findAnimation("jian_" + name); }); clip = skin && "jian_" + skin;
+    function current(attached) {
+      if (!owner._spatialEffects.has(record) || node._gameEffectLease !== record) return false;
+      if (!scopeCurrent(scope) || !live(node) || !live(skeleton) || attached && node.parent !== scope.parent) { releaseEffect(record); return false; }
+      return true;
     }
-    if (!clip || skeleton.findAnimation && !skeleton.findAnimation(clip)) {
+    if (!current(false)) return;
+    skeleton.setCompleteListener(null);
+    if (!current(false)) return;
+    // Native Spine initializes during activation. Place and lease the cold
+    // prefab first; findAnimation otherwise reports valid authored clips absent.
+    node.active = false;
+    if (!current(false)) return;
+    node.setParent(scope.parent);
+    if (!current(true)) return;
+    node.setPosition(point);
+    if (!current(true)) return;
+    if (options.scale !== undefined) { node.scale = options.scale; if (!current(true)) return; }
+    node.active = true;
+    if (!current(true)) return;
+    function supports(name) { return current(true) && (!skeleton.findAnimation || !!skeleton.findAnimation(name)); }
+    var clip = Object.prototype.hasOwnProperty.call(options, "clip") ? options.clip : skeleton.defaultAnimation;
+    if (options.impact && typeof clip === "string" && clip.indexOf("jian_") === 0 && !supports(clip)) {
+      var skin = EquipmentTiers.legacySkin(clip.slice(5), function (name) { return supports("jian_" + name); }); clip = skin && "jian_" + skin;
+    }
+    var supported = !!clip && supports(clip);
+    if (!current(true)) return;
+    if (!supported) {
       releaseEffect(record);
       if (!warnedAttackClip && cc.warn) cc.warn("Attack impact animation unavailable; skipping the missing visual.", clip);
       warnedAttackClip = true; return;
     }
-    node.setParent(scope.parent); node.setPosition(point); node.active = true;
-    if (options.scale !== undefined) node.scale = options.scale;
     skeleton.paused = paused(scope) || record.wasPaused;
+    if (!current(true)) return;
     skeleton.timeScale = record.timeScale * playback(scope);
+    if (!current(true)) return;
     skeleton.setAnimation(0, clip, !!options.loop);
+    if (!current(true)) return;
     if (options.impact) skeleton.node.name = clip;
+    if (!current(true)) return;
     if (options.duration === undefined) skeleton.setCompleteListener(function () { releaseEffect(record); });
   }
   var node = manager.getNode(pool);
@@ -104,6 +127,7 @@ var def_KinghtFallGameEffect = function (t) {
     undefined === n && (n = false);
   };
   _ctor.prototype.onMonsterAttack = function (t, e) {
+    if (!e) return;
     spatialEffect(this, t, $z1KinghtFallConfig.KinghtFallPrefabName.EffectEnemyAttack, $z1KinghtFallConfig.KinghtFallPoolName.EnemyAttack, this.node, {clip:e,impact:true});
   };
   _ctor.prototype.onSoldierDead = function (t, e) {

@@ -116,7 +116,8 @@ function toolchain(options,discover=command,programFiles=process.env['ProgramFil
   const msvc = versions(tools).find(v=>/^14\.(3\d|4[0-4])\.\d+$/.test(v)&&fs.existsSync(path.join(tools,v,'bin/Hostx64/x86/cl.exe')));
   requireThat(msvc,'The x64-hosted x86 compiler is required');
   const compiler = path.join(tools,msvc,'bin/Hostx64/x86/cl.exe');
-  const kits = path.join(programFiles,'Windows Kits/10');
+  const kits = fs.realpathSync.native(options.windowsSdkRoot || path.join(programFiles,'Windows Kits/10'));
+  requireThat(!/[;$%\r\n]/.test(kits),'Unsupported special characters in Windows SDK path');
   const complete = v=>['Include/'+v+'/um/Windows.h','Include/'+v+'/ucrt/stdio.h','Lib/'+v+'/um/x86/kernel32.lib','Lib/'+v+'/ucrt/x86/ucrt.lib'].every(f=>fs.existsSync(path.join(kits,f)));
   requireThat(fs.existsSync(path.join(kits,'Include')),'Windows10 SDK is required');
   const windowsSdkVersion = options.windowsSdkVersion || versions(path.join(kits,'Include')).find(complete);
@@ -124,7 +125,16 @@ function toolchain(options,discover=command,programFiles=process.env['ProgramFil
   const redistRoot = path.join(vs,'VC/Redist/MSVC');
   const redist = versions(redistRoot).flatMap(v=>{const x86=path.join(redistRoot,v,'x86');return fs.existsSync(x86)?fs.readdirSync(x86).filter(f=>/^Microsoft\.VC\d+\.CRT$/.test(f)).map(f=>path.join(x86,f)):[];})[0];
   requireThat(redist,'VS x86 Release CRT deployment files are required');
-  return {vsRoot:vs,msbuild,msbuildSha256:sha(fs.readFileSync(msbuild)),compiler,compilerSha256:sha(fs.readFileSync(compiler)),msvc,windowsSdkVersion,redist};
+  return {vsRoot:vs,msbuild,msbuildSha256:sha(fs.readFileSync(msbuild)),compiler,compilerSha256:sha(fs.readFileSync(compiler)),msvc,windowsSdkRoot:kits,windowsSdkVersion,redist};
+}
+function msbuildProperties(tools) {
+  const trail=directory=>directory+path.sep,sdk=trail(tools.windowsSdkRoot),version=tools.windowsSdkVersion;
+  return {Configuration:'Release',Platform:'Win32',PlatformToolset:'v143',VisualStudioVersion:'17.0',PreferredToolArchitecture:'x64',
+    VSInstallDir:trail(tools.vsRoot),VCInstallDir:trail(path.join(tools.vsRoot,'VC')),
+    VCTargetsPath:trail(path.join(tools.vsRoot,'MSBuild/Microsoft/VC/v170')),VCToolsInstallDir:trail(path.join(tools.vsRoot,'VC/Tools/MSVC',tools.msvc)),VCToolsVersion:tools.msvc,
+    WindowsSdkDir:sdk,UniversalCRTSdkDir:sdk,UCRTContentRoot:sdk,TargetUniversalCRTVersion:version,UCRTVersion:version,
+    WindowsTargetPlatformVersion:version,WindowsSDKVersion:version+path.sep,WindowsSDKLibVersion:version+path.sep,
+    WindowsSdkBinPath:trail(path.join(tools.windowsSdkRoot,'bin')),WindowsSdkVerBinPath:trail(path.join(tools.windowsSdkRoot,'bin',version)),BuildProjectReferences:'true'};
 }
 function verifyProjects(sdk) {
   let count=0;
@@ -169,7 +179,7 @@ function inspectRuntime(bin) {
   }return {files:runtime,transitiveLocalModules:seen.size};
 }
 function parseArgs(args) {
-  const result={};const keys={'--sdk-root':'sdkRoot','--output-root':'outputRoot','--project-root':'projectRoot','--vs-root':'vsRoot','--windows-sdk-version':'windowsSdkVersion'};
+  const result={};const keys={'--sdk-root':'sdkRoot','--output-root':'outputRoot','--project-root':'projectRoot','--vs-root':'vsRoot','--windows-sdk-version':'windowsSdkVersion','--windows-sdk-root':'windowsSdkRoot'};
   for(let i=0;i<args.length;i++){
     const arg=args[i];if(arg==='--help'){result.help=true;continue;}
     requireThat(keys[arg] && args[i+1] && !args[i+1].startsWith('--'),'Unknown/missing argument: '+arg);result[keys[arg]]=args[++i];
@@ -177,7 +187,7 @@ function parseArgs(args) {
 }
 function main(args) {
   const options=parseArgs(args);
-  if(options.help){console.log('node tools/native/build-native-preview.cjs --sdk-root <Creator2.4.13/resources/cocos2d-x> --output-root <fresh external directory> [--project-root <project>] [--vs-root <VS2022>] [--windows-sdk-version <10.0.x.0>]');return;}
+  if(options.help){console.log('node tools/native/build-native-preview.cjs --sdk-root <Creator2.4.13/resources/cocos2d-x> --output-root <fresh external directory> [--project-root <project>] [--vs-root <VS2022>] [--windows-sdk-root <Windows Kits/10>] [--windows-sdk-version <10.0.x.0>]');return;}
   requireThat(process.platform==='win32','This build tool supports Windows only');requireThat(options.sdkRoot&&options.outputRoot,'--sdk-root and --output-root are required');
   const sdk=fs.realpathSync.native(options.sdkRoot),project=fs.realpathSync.native(options.projectRoot||path.resolve(__dirname,'../..')),output=validateOutput(options.outputRoot,project,sdk);
   requireThat(JSON.parse(fs.readFileSync(path.join(project,'project.json'),'utf8')).version==='2.4.13','Project must use Creator2.4.13; supply --project-root if this tool is outside tools/native');
@@ -191,7 +201,7 @@ function main(args) {
   for(const item of PROJECTS){const file=path.join(clone,item.file),before=fs.readFileSync(file,'utf8'),after=patchProject(before,item,output);fs.writeFileSync(file,after);patches.push({file:item.file,beforeSha256:item.sha256,afterSha256:sha(Buffer.from(after))});fs.mkdirSync(path.join(output,'obj',path.basename(file,'.vcxproj'),'objects'),{recursive:true});}
   verifyProjects(clone);
   for(const entry of fs.readdirSync(path.join(clone,'external/win32/libs'),{withFileTypes:true}))if(entry.isFile())fs.copyFileSync(path.join(clone,'external/win32/libs',entry.name),path.join(bin,entry.name));
-  const arguments_=[path.join(clone,PROJECTS[2].file),'/t:Build','/p:Configuration=Release','/p:Platform=Win32','/p:PlatformToolset=v143','/p:VCToolsVersion='+tools.msvc,'/p:WindowsTargetPlatformVersion='+tools.windowsSdkVersion,'/p:PreferredToolArchitecture=x64','/p:BuildProjectReferences=true','/m:3','/nr:false','/verbosity:minimal','/bl:'+path.join(logs,'build.binlog'),'/flp:logfile='+path.join(logs,'build.log')+';verbosity=normal'];
+  const arguments_=[path.join(clone,PROJECTS[2].file),'/t:Build',...Object.entries(msbuildProperties(tools)).map(([name,value])=>'/p:'+name+'='+value),'/m:3','/nr:false','/verbosity:minimal','/bl:'+path.join(logs,'build.binlog'),'/flp:logfile='+path.join(logs,'build.log')+';verbosity=normal'];
   fs.writeFileSync(path.join(output,'preparation.json'),JSON.stringify({sdk,clone,output,toolchain:tools,patches,msbuildArguments:arguments_,state:'prepared',launched:false},null,2)+'\n');
   command(tools.msbuild,arguments_,{stdio:'inherit'});
   const flags=checkCompileFlags(output);
@@ -205,4 +215,4 @@ function main(args) {
   const manifestFile=path.join(output,'build-manifest.json');fs.writeFileSync(manifestFile,JSON.stringify(manifest,null,2)+'\n');console.log('Release simulator built without launching. Manifest: '+manifestFile);
 }
 if(require.main===module){try{main(process.argv.slice(2));}catch(error){console.error('Native preview build refused/failed: '+error.message);process.exitCode=1;}}
-module.exports={parseArgs,patchProject,implementationDigest,validateSourceInventory,validateOutput,toolchain,inside,canonical,inspectRuntime,PROJECTS};
+module.exports={parseArgs,patchProject,implementationDigest,validateSourceInventory,validateOutput,toolchain,inside,canonical,inspectRuntime,msbuildProperties,PROJECTS};

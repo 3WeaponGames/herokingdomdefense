@@ -72,3 +72,43 @@ test('a disposed pooled renderer is returned before reading native playback prop
 });
 
 module.exports={fixture};
+
+
+test('cold native impact prefabs initialize after placement before clip validation and reuse the same lease safely',()=>{
+ const f=fixture(),create=f.pool.getNodeFromPrefab;let coldQueries=0;
+ f.pool.getNodeFromPrefab=function(){const node=create();node.active=false;const find=node.skeleton.findAnimation;node.skeleton.findAnimation=function(name){if(!node.active||!node.parent){coldQueries++;return null;}return find.call(this,name);};return node;};
+ f.owner.onMonsterAttack({x:12,y:34},'xb_gj');f.finish();const node=f.nodes[0];assert.equal(coldQueries,0);assert.equal(node.skeleton.plays.length,1);assert.equal(node.skeleton.plays[0].name,'xb_gj');assert.equal(node.x,12);assert.equal(node.y,34);node.skeleton.complete();
+ f.owner.onMonsterAttack({x:50,y:60},'xb_gj');assert.equal(f.allocated(),1);assert.equal(node.skeleton.plays.length,2);assert.equal(node.x,50);assert.equal(node.y,60);node.skeleton.complete();assert.equal(f.returned.length,2);
+});
+
+test('falsy impact clips skip placement, prefab checkout and loads entirely',()=>{
+ const f=fixture();f.pool.getNode=()=>{throw Error('empty impact checked out a node');};f.pool.getNodeFromPrefab=()=>{throw Error('empty impact allocated a node');};const position={get x(){throw Error('empty impact read placement');}};
+ for(const clip of [undefined,null,false,0,NaN,''])f.owner.onMonsterAttack(position,clip);
+ assert.equal(f.pending.length,0);assert.equal(f.allocated(),0);assert.equal(f.returned.length,0);assert.equal(f.owner._spatialEffects.size,0);
+});
+
+test('activation and clip lookup reject retired scopes without playing or double-returning their nodes',()=>{
+ for(const phase of ['activate','lookup','play']){
+  const f=fixture(),create=f.pool.getNodeFromPrefab;f.pool.getNodeFromPrefab=function(){const node=create();let changed=false,active=false;const retire=()=>{if(!changed){changed=true;f.owner.onDisable();}};
+   if(phase==='activate')Object.defineProperty(node,'active',{get(){return active;},set(value){active=value;if(value)retire();}});
+   if(phase==='lookup')node.skeleton.findAnimation=function(){retire();return true;};
+   if(phase==='play'){const play=node.skeleton.setAnimation;node.skeleton.setAnimation=function(...args){play.apply(this,args);retire();};}
+   return node;
+  };f.owner.onMonsterAttack({x:1,y:2},'xb_gj');f.finish();assert.equal(f.nodes[0].skeleton.plays.length,phase==='play'?1:0,phase);assert.equal(f.returned.length,1,phase);assert.equal(f.owner._spatialEffects.size,0,phase);assert.equal(f.nodes[0].skeleton.complete,null,phase);f.owner.update(1);assert.equal(f.returned.length,1,phase);
+ }
+});
+
+test('a cold prefab activation cannot overwrite a reentrant replacement lease on the same pooled effect',()=>{
+ const f=fixture(),create=f.pool.getNodeFromPrefab;f.pool.getNodeFromPrefab=function(){const node=create();let changed=false,active=false;Object.defineProperty(node,'active',{get(){return active;},set(value){active=value;if(value&&!changed){changed=true;f.owner.onDisable();f.owner.onMonsterAttack({x:70,y:80},'xb_gj');}}});return node;};
+ f.owner.onMonsterAttack({x:12,y:34},'attack');f.finish();const node=f.nodes[0];assert.equal(f.allocated(),1);assert.equal(node.x,70);assert.equal(node.y,80);assert.equal(node.skeleton.plays.length,1);assert.equal(node.skeleton.plays[0].name,'xb_gj');assert.equal(f.owner._spatialEffects.size,1);assert.equal(f.returned.length,1);node.skeleton.complete();assert.equal(f.returned.length,2);
+});
+
+test('a scale-changed callback cannot reactivate an effect returned while fitting its cold prefab',()=>{
+ const f=fixture(),create=f.pool.getNodeFromPrefab;let changed=0;
+ f.pool.getNodeFromPrefab=function(){const node=create();Object.defineProperty(node,'scale',{set(){changed++;f.owner.onDisable();}});return node;};
+ f.owner.onSoldierDead({x:12,y:34},.7);f.finish();const node=f.nodes[0];
+ assert.equal(changed,1);assert.equal(f.returned.length,1);assert.equal(f.owner._spatialEffects.size,0);
+ assert.equal(node.active,false,'Retired scale callback must return before reactivating the pooled node');
+ assert.equal(node.parent,null);assert.equal(node.skeleton.plays.length,0);assert.equal(node.skeleton.complete,null);
+ f.owner.update(1);assert.equal(f.returned.length,1);
+});

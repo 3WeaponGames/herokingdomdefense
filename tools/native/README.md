@@ -10,7 +10,7 @@ From the project root:
 node tools/native/build-native-preview.cjs --sdk-root 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/cocos2d-x' --output-root "$env:USERPROFILE/Documents/Codex Artifacts/HeroKingdomDefense/native-preview-stock"
 ```
 
-Use a fresh output directory each time. Optional arguments: `--project-root`, `--vs-root`, and `--windows-sdk-version`. If this tool is outside `tools/native`, pass `--project-root <your project folder>` explicitly.
+Use a fresh output directory each time. Optional arguments: `--project-root`, `--vs-root`, `--windows-sdk-root`, and `--windows-sdk-version`. An explicit SDK root supports a separately unpacked toolchain without changing Program Files, the registry, or the user's environment. If this tool is outside `tools/native`, pass `--project-root <your project folder>` explicitly.
 
 The tool checks the three original SDK project hashes and a deterministic digest of all 3,909 implementation/header files, rejects modified/unsupported SDKs, refuses output inside the project, tool directory or installed SDK, and preserves previous/partial builds. It copies the SDK, verifies the copy, then edits only copied project metadata. Both installed and copied implementations must remain pristine throughout the build. The SDK must remain stable during copying/building.
 

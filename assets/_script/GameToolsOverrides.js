@@ -52,6 +52,14 @@ function animationInfo(track) {
   var delay = trackValue(next, "delay"), time = trackValue(track, "trackTime");
   return {name:name,end:typeof delay==="number"&&delay>=0?delay:duration,time:typeof time==="number"?time:0};
 }
+// This view is used only while polling an already captured delayed hit.
+// Capture still uses animationInfo() for its full authored queue boundary.
+function animationPosition(track) {
+  var animation = trackValue(track, "animation");
+  var name = animation && (animation.name || animation.getName && animation.getName());
+  var time = trackValue(track, "trackTime");
+  return {name:name,time:typeof time==="number"?time:0};
+}
 function attack(owner, type, callback) {
   applyAttackPlayback(owner, type);
   var settings = config();
@@ -111,7 +119,7 @@ function tick(dt, fighting) {
     if (!(playback > 0)) continue;
     entry.animationTime += effectDelta * playback;
     if (entry.animation && skeleton && skeleton.getCurrent) {
-      var current = skeleton.getCurrent(0), info = animationInfo(current);
+      var current = skeleton.getCurrent(0), info = animationPosition(current);
       if (info.name === entry.animation) entry.animationTime = Math.max(entry.animationTime, info.time);
       else {
         var observed = entry.browserTrack && trackValue(entry.browserTrack, "trackTime");

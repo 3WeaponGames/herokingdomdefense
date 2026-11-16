@@ -38,10 +38,21 @@ function verify(state) {
     if (type.namespace[type.name] !== type.Type || type.Type.prototype !== type.prototype) return false;
   }
   for (i = 0; i < state.checks.length; i++) {
-    var check = state.checks[i], current = descriptor(check.target, check.key);
-    if (!current || current.owner !== check.owner || !same(current.descriptor, check.expected)) return false;
+    var check = state.checks[i], owner = check.target, current = null;
+    while (owner) {
+      current = Object.getOwnPropertyDescriptor(owner, check.key);
+      if (current) break;
+      owner = Object.getPrototypeOf(owner);
+    }
+    if (!current || owner !== check.owner || !same(current, check.expected)) return false;
   }
-  for (i = 0; i < state.absent.length; i++) if (descriptor(state.absent[i].target, state.absent[i].key)) return false;
+  for (i = 0; i < state.absent.length; i++) {
+    var missing = state.absent[i], target = missing.target;
+    while (target) {
+      if (Object.getOwnPropertyDescriptor(target, missing.key)) return false;
+      target = Object.getPrototypeOf(target);
+    }
+  }
   return true;
 }
 function trusted(state) {
@@ -108,6 +119,7 @@ function prepare() {
       info.methods.getBones = entry[0].prototype.getBones;
       if (info.methods.getBones !== undefined && !nativeFunction(info.methods.getBones)) throw Error("Unsupported native getBones");
       info.mutators = entry[0] === region ? ["updateOffset"] : ["setParentMesh", "updateUVs", "copyTo", "setWorldVerticesLength"];
+      info.names = Object.keys(info.methods);
       state.getters.push(info);
     });
     // All required descriptors are checked before making the first write.
@@ -129,7 +141,8 @@ function scope(renderer, plan) {
   if (renderer._nativeSkeleton !== plan.native || renderer._skeleton !== plan.skeleton || renderer.skeletonData !== plan.data ||
       (plan.data && plan.data.skeletonJson) !== plan.json) return null;
   if (Object.getPrototypeOf(renderer) !== state.component.prototype) return plan.geometryUsed ? retire() : null;
-  var native = state.nativeTypes.find(function (type) { return Object.getPrototypeOf(plan.native) === type.prototype; });
+  var native = null, nativePrototype = Object.getPrototypeOf(plan.native);
+  for (var i = 0; i < state.nativeTypes.length; i++) if (nativePrototype === state.nativeTypes[i].prototype) { native = state.nativeTypes[i]; break; }
   if (!native || renderer.updateRegion !== state.component.prototype.updateRegion || plan.native.updateRegion !== native.prototype.updateRegion) return plan.geometryUsed ? retire() : null;
   if (typeof plan.native.getSkeleton !== "function" || plan.native.getSkeleton() !== plan.skeleton) return null;
   return { renderer: renderer, plan: plan, state: state, native: native };
@@ -145,11 +158,16 @@ function read(current, attachment) {
   if (renderer._nativeSkeleton !== plan.native || renderer._skeleton !== plan.skeleton || renderer.skeletonData !== plan.data ||
       (plan.data && plan.data.skeletonJson) !== plan.json || typeof attachment.computeWorldVertices === "function") return null;
   if (renderer.updateRegion !== current.state.component.prototype.updateRegion || plan.native.updateRegion !== current.native.prototype.updateRegion) return retire();
-  var prototype = Object.getPrototypeOf(attachment), info = current.state.getters.find(function (entry) { return entry.type.prototype === prototype; });
+  var prototype = Object.getPrototypeOf(attachment), info = null;
+  for (var i = 0; i < current.state.getters.length; i++) if (current.state.getters[i].type.prototype === prototype) { info = current.state.getters[i]; break; }
   if (!info) return null;
-  if (!Object.keys(info.methods).every(function (name) { return attachment[name] === info.methods[name]; })) return retire();
-  if (!info.mutators.every(function (name) { return attachment[name] === info.type.prototype[name]; }) ||
-      Object.getOwnPropertyDescriptor(attachment, "worldVerticesLength") || Object.getOwnPropertyDescriptor(attachment, "parentMesh")) return retire();
+  for (i = 0; i < info.names.length; i++) {
+    var name = info.names[i]; if (attachment[name] !== info.methods[name]) return retire();
+  }
+  for (i = 0; i < info.mutators.length; i++) {
+    name = info.mutators[i]; if (attachment[name] !== info.type.prototype[name]) return retire();
+  }
+  if (Object.getOwnPropertyDescriptor(attachment, "worldVerticesLength") || Object.getOwnPropertyDescriptor(attachment, "parentMesh")) return retire();
   if (plan.geometryEpoch !== epoch) {
     plan.geometryEpoch = epoch; plan.intrinsicGeometry = new WeakMap(); plan.meshes = new WeakMap();
   }
