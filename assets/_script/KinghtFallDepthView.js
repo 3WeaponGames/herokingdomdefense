@@ -480,7 +480,62 @@ function silhouetteAttachment(record) {
   return record.facade;
 }
 var unitBoundsPlans = new WeakMap();
-function unitAttachmentVertices(renderer, slot, attachment, output) {
+function unitBoundsPlan(renderer, skeleton) {
+  var data = renderer.skeletonData, json = data && data.skeletonJson, native = renderer._nativeSkeleton, plan = unitBoundsPlans.get(renderer);
+  if (!plan || plan.skeleton !== skeleton || plan.native !== native || plan.data !== data || plan.json !== json) {
+    plan = { skeleton: skeleton, native: native, data: data, json: json, meshes: new WeakMap(), bones: null,
+      matrices: new WeakMap(), pass: 0, points: [] };
+    unitBoundsPlans.set(renderer, plan);
+  }
+  plan.pass++;
+  return plan;
+}
+function unitNativeSlots(plan) {
+  var native = plan.native, skeleton = plan.skeleton;
+  if (!cc.sys || !cc.sys.isNative || cc.ENGINE_VERSION !== "2.4.13" || !native ||
+      typeof native.getSkeleton !== "function" || typeof skeleton.getSlots !== "function") {
+    plan.nativeSlots = null; return null;
+  }
+  try {
+    if (native.getSkeleton() !== skeleton) { plan.nativeSlots = null; return null; }
+    if (plan.nativeSlots) return plan.nativeSlots;
+    var slots = skeleton.getSlots();
+    if (!Array.isArray(slots) || !slots.every(function (slot) {
+      return slot && typeof slot.getAttachment === "function" && typeof slot.getData === "function" &&
+        typeof slot.getBone === "function" && typeof slot.getColor === "function";
+    })) return null;
+    // Slot membership and its setup data/bone/colour handles are immutable
+    // for this exact native rig. Bounds union does not depend on draw order.
+    // Keep attachments, alpha, active bones and every matrix live each call.
+    plan.nativeSlots = slots.map(function (slot) { return { slot: slot, info: null }; });
+    return plan.nativeSlots;
+  } catch (ignored) { plan.nativeSlots = null; return null; }
+}
+function unitSlotInfo(slot, record) {
+  if (record && record.info) return record.info;
+  var data = record ? slot.getData() : slot.data, name = data && data.name || "";
+  var info = { name: name, excluded: /^(?:__fx\/)|(?:^|\/)(?:Shadow|Dead|Ghost)(?:$|\/)/i.test(name) };
+  if (!info.excluded) {
+    info.bone = record ? slot.getBone() : slot.bone;
+    info.color = record ? slot.getColor() : slot.color;
+  }
+  if (record) record.info = info;
+  return info;
+}
+function unitBoneMatrix(plan, bone) {
+  var matrix = plan.matrices.get(bone);
+  if (!matrix) { matrix = {}; plan.matrices.set(bone, matrix); }
+  if (matrix.pass !== plan.pass) {
+    // Native bone properties cross JSB. Read each used bone once for this
+    // evaluation, even when many mesh vertices or regions share that bone.
+    // A new pass always rereads the pose, including a second call this frame.
+    matrix.a = bone.a; matrix.b = bone.b; matrix.c = bone.c; matrix.d = bone.d;
+    matrix.worldX = bone.worldX; matrix.worldY = bone.worldY;
+    matrix.pass = plan.pass;
+  }
+  return matrix;
+}
+function unitAttachmentVertices(renderer, slot, attachment, output, plan, slotBone, slotName) {
   // Bounding/clipping/path attachments do not paint any part of the unit.
   var region = attachment.getOffset ? attachment.getOffset() : attachment.offset;
   if (!region && !(attachment.triangles || attachment.getTriangles)) return output;
@@ -496,26 +551,21 @@ function unitAttachmentVertices(renderer, slot, attachment, output) {
   var deform = region ? [] : slot.getDeform ? slot.getDeform() : slot.deform || [];
   count = region ? 8 : attachment.getWorldVerticesLength && attachment.getWorldVerticesLength();
   if (vertices.length === count) {
-    var local = deform.length ? deform : vertices, bone = slot.bone;
+    var local = deform.length ? deform : vertices, bone = unitBoneMatrix(plan, slotBone);
     for (var i = 0; i < count; i += 2) {
       output.push(local[i] * bone.a + local[i + 1] * bone.b + bone.worldX,
         local[i] * bone.c + local[i + 1] * bone.d + bone.worldY);
     }
     return output;
   }
-  var skeleton = renderer._skeleton, json = renderer.skeletonData.skeletonJson, plan = unitBoundsPlans.get(renderer);
-  if (!plan || plan.skeleton !== skeleton || plan.json !== json) {
-    plan = { skeleton: skeleton, json: json, meshes: new WeakMap(), bones: null };
-    unitBoundsPlans.set(renderer, plan);
-  }
   var weights = attachment.getBones ? attachment.getBones() : authoredMeshBones(plan,
-    { name: slot.data.name }, attachment, vertices, attachment.getUVs(), attachment.getTriangles());
+    { name: slotName }, attachment, vertices, attachment.getUVs(), attachment.getTriangles());
   if (!weights) return output;
-  var bones = plan.bones || (plan.bones = skeleton.bones), at = 0, vertex = 0, delta = 0;
+  var bones = plan.bones || (plan.bones = plan.skeleton.bones), at = 0, vertex = 0, delta = 0;
   while (at < weights.length) {
     var influences = weights[at++], x = 0, y = 0;
     for (var n = 0; n < influences; n++, vertex += 3, delta += 2) {
-      var matrix = bones[weights[at++]], vx = vertices[vertex] + (deform[delta] || 0);
+      var matrix = unitBoneMatrix(plan, bones[weights[at++]]), vx = vertices[vertex] + (deform[delta] || 0);
       var vy = vertices[vertex + 1] + (deform[delta + 1] || 0), weight = vertices[vertex + 2];
       x += (vx * matrix.a + vy * matrix.b + matrix.worldX) * weight;
       y += (vx * matrix.c + vy * matrix.d + matrix.worldY) * weight;
@@ -527,17 +577,25 @@ function unitAttachmentVertices(renderer, slot, attachment, output) {
 function unitBounds(renderer, main) {
   if (!renderer || !renderer.node.activeInHierarchy || renderer.enabled === false) return null;
   var skeleton = renderer._skeleton;
-  if (!skeleton || !skeleton.drawOrder) return bounds(renderer, main);
+  if (!skeleton) return bounds(renderer, main);
+  var plan = unitBoundsPlan(renderer, skeleton), records = unitNativeSlots(plan), order = records || skeleton.drawOrder;
+  if (!order) return bounds(renderer, main);
   updatePose(renderer);
-  var pose = nodeTransform(renderer.node, main), box = null, points = [];
-  skeleton.drawOrder.forEach(function (slot) {
-    var attachment = slot.getAttachment(), name = slot.data && slot.data.name || "";
-    if (!attachment || slot.bone.active === false || slot.color.a <= .01 ||
-      /^(?:__fx\/)|(?:^|\/)(?:Shadow|Dead|Ghost)(?:$|\/)/i.test(name)) return;
+  var pose = nodeTransform(renderer.node, main), box = null, points = plan.points;
+  order.forEach(function (entry) {
+    var slot = records ? entry.slot : entry;
+    var attachment = slot.getAttachment();
+    // Most baked equipment slots are empty. Check current visibility before
+    // fetching their native SlotData, bone and colour wrappers through JSB.
+    if (!attachment) return;
+    var info = unitSlotInfo(slot, records && entry);
+    if (info.excluded) return;
+    var bone = info.bone;
+    if (bone.active === false || info.color.a <= .01) return;
     var color = attachment.getColor ? attachment.getColor() : attachment.color;
     if (color && color.a <= .01) return;
     points.length = 0;
-    unitAttachmentVertices(renderer, slot, attachment, points);
+    unitAttachmentVertices(renderer, slot, attachment, points, plan, bone, info.name);
     for (var i = 0; i < points.length; i += 2) {
       var x = pose.x + pose.a * points[i] + pose.c * points[i + 1];
       var y = pose.y + pose.b * points[i] + pose.d * points[i + 1];
