@@ -24,14 +24,14 @@ test('Mystic basic preview is one tethered target and ticks according to preview
 });
 test('Blood Cleave shows the post-sacrifice HP cost before damage and the lifesteal recovery',()=>{
   const model=new Model('bruiser',{}, {mode:'active',hp:50,targetDistance:100,targets:1,lifeSteal:.1});
-  close(model.castResult.hpAfterCost,250);close(model.castResult.damageMultiplier,1.75);close(model.damage,0);close(model.hero.hp,250);
-  simulate(model,.1667);close(model.damage,240.625);close(model.hero.hp,274.0625);
+  close(model.castResult.hpAfterCost,250);close(model.castResult.damageMultiplier,.875);close(model.damage,0);close(model.hero.hp,250);
+  simulate(model,.1667);close(model.damage,120.3125);close(model.hero.hp,262.03125);
   const missed=new Model('bruiser',{}, {mode:'active',hp:50,targetDistance:700});close(missed.hero.hp,250);assert.equal(missed.hits,0);
 });
-test('active arrows pierce the three preview targets and are removed beyond the preview map',()=>{
-  const model=new Model('skirmisher',{volleys:1,arrowsPerVolley:1,windup:.1},{mode:'active',targetDistance:120,targets:3,attackRate:0});
-  simulate(model,.8);assert.equal(model.hits,3);assert(model.damage>300);simulate(model,2);assert.equal(model.projectiles.length,0);assert.equal(model.hits,3);
+test('the single fan hits every living eligible preview target exactly once without creating moving projectiles',()=>{
+ const model=new Model('skirmisher',{windup:.1,volleyHitTime:.2,visual:{}},{mode:'active',targetDistance:120,targets:3,attackRate:0,manualAim:true});model.targets.forEach((t,i)=>Object.assign(t,{x:100+i*20,y:0}));simulate(model,.199);assert.equal(model.hits,0);simulate(model,.001);assert.equal(model.hits,3);assert(model.damage>0);assert.equal(new Set(model.events.filter(e=>e.kind==='impact').map(e=>e.strike)).size,1);simulate(model,2);assert.equal(model.projectiles.length,0);assert.equal(model.hits,3);
 });
+
 test('weapon-relative area offsets change actual collisions and seeking is deterministic',()=>{
   const settings={visual:{originX:1000,targetX:-900,offsetY:400,scale:5}},a=new Model('vanguard',settings,{targetDistance:100,mode:'active',moving:true}),b=new Model('vanguard',{}, {targetDistance:100,mode:'active',moving:true});
   a.seek(2.5);b.seek(2.5);assert.notEqual(a.hits,b.hits);assert.notEqual(a.damage,b.damage);const result=JSON.stringify(a.status());a.seek(2.5);assert.equal(JSON.stringify(a.status()),result);
@@ -60,7 +60,7 @@ test('piercing impact preview audio remains deduplicated across rendered frames 
  const h=host(),sounds=[],old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>{frame=fn;return 1;};global.cancelAnimationFrame=()=>{};
  try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(kind==='impact'&&value.clip)sounds.push(value.clip);}});
   await view.set({style:'skirmisher',settings:{volleys:1,arrowsPerVolley:1,windup:.35,visual:{},audio:{impact:{clip:'piercing-hit',delay:0,volume:1}}},description});
-  view.setScenario({attackRate:0,targetPositions:[{x:100,y:0},{x:400,y:0},{x:700,y:0}]});view.setAudioEnabled(true);view.cast();
+  view.setScenario({attackRate:0,targetPositions:[{x:100,y:0},{x:120,y:0},{x:140,y:0}]});view.setAudioEnabled(true);view.cast();
   for(let i=0;i<12;i++)frame(1000+i*100);
   assert.equal(view.getState().hits,3);assert.deepEqual(sounds,['piercing-hit']);
   view.cast();for(let i=0;i<12;i++)frame(3000+i*100);assert.deepEqual(sounds,['piercing-hit','piercing-hit']);view.destroy();
@@ -126,16 +126,15 @@ test('positioning handles expose only controls supported by that style',()=>{
 });
 test('queued active impacts and their effects use the selected authored delay and current eligible targets',()=>{
   for(const style of ['fighter','bruiser','mystic']){
-    const model=new Model(style,{}, {mode:'active',targetDistance:100,targets:1,attackRate:0,impactDelay:.4});
+    const model=new Model(style,style==='mystic'?{explosionTime:.4}:{}, {mode:'active',targetDistance:100,targets:1,attackRate:0,impactDelay:.4});
     assert.equal(model.hits,0);assert.equal(model.effects.length,0);model.advance(.399);assert.equal(model.hits,0);model.advance(.001);assert.equal(model.hits,1);close(model.effects[0].started,.4);
   }
-  const model=new Model('mystic',{}, {mode:'active',targetDistance:100,targets:1,attackRate:0,impactDelay:.4});model.targets[0].hp=0;model.advance(.4);assert.equal(model.hits,0);assert.equal(model.effects.length,0);
+  const model=new Model('mystic',{explosionTime:.4}, {mode:'active',targetDistance:100,targets:1,attackRate:0,impactDelay:.4});model.targets[0].hp=0;model.advance(.4);assert.equal(model.hits,0);assert.equal(model.effects.length,0);
 });
-test('an arrow emitted part way through a frame advances only the remaining time',()=>{
-  const model=new Model('skirmisher',{volleys:1,arrowsPerVolley:1,windup:.35,projectileSpeed:1000},{mode:'active',targetDistance:600,targets:1,attackRate:0});
-  model.advance(.4);assert.equal(model.projectiles.length,1);close(model.projectiles[0].x,91.875);close(model.projectiles[0].speed,1837.5);close(model.projectiles[0].started,.35);assert.equal(model.hits,0);
-  model.advance(.1);close(model.projectiles[0].x,275.625);
+test('one fan hit inside a long frame occurs at its exact saved deadline and is not repeated',()=>{
+ const model=new Model('skirmisher',{windup:.35,volleyHitTime:.25,visual:{}},{mode:'active',targetDistance:100,targets:1,attackRate:0});model.advance(.4);assert.equal(model.projectiles.length,0);assert.equal(model.hits,1);close(model.events.find(e=>e.kind==='impact').time,.25);close(model.events.find(e=>e.kind==='release'&&e.skill).time,.35);const damage=model.damage;model.advance(.1);close(model.damage,damage);
 });
+
 test('beam preview changes a dead target, clears old charges, and never keeps hitting a corpse',()=>{
   const model=new Model('mystic',{}, {mode:'basic',targetDistance:100,targets:2,attackRate:2});simulate(model,1);assert.equal(model.state.mysticCharges,2);
   model.targets[0].hp=0;simulate(model,.5);assert.equal(model.beamTarget,model.targets[1]);assert.equal(model.state.target,model.targets[1]);assert.equal(model.state.mysticCharges,1);assert.equal(model.hits,3);
@@ -248,8 +247,8 @@ test('custom sprite previews crop sheets and evict old tint canvases instead of 
 
 test('opt-in default sounds play at actual release markers while authored cast cues replace that fallback',async()=>{
  const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>(frame=fn,1);global.cancelAnimationFrame=()=>{};const sounds=[];
- try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}}),d={...description,defaultSounds:{release:{clip:'bow-default',volume:.4},basicRelease:{clip:'bow-default',volume:.4},impact:{clip:'arrow-impact',volume:.4}}};await view.set({style:'skirmisher',settings:{volleys:1,arrowsPerVolley:1,windup:.35,visual:{}},description:d});view.cast();for(let i=0;i<5;i++)frame(1000+i*100);assert.equal(sounds.length,0,'default remains silent');view.setAudioEnabled(true);view.cast();frame(2000);frame(2100);frame(2200);assert.equal(sounds.length,0);frame(2300);assert.equal(sounds.length,0);frame(2400);assert.deepEqual(sounds,[{kind:'release',clip:'bow-default'}]);
- await view.set({style:'skirmisher',settings:{volleys:1,arrowsPerVolley:1,windup:.35,visual:{},audio:{cast:{clip:'authored',volume:1,delay:0}}},description:d});sounds.length=0;view.cast();for(let i=0;i<5;i++)frame(3000+i*100);assert.deepEqual(sounds,[{kind:'cast',clip:'authored'}]);view.destroy();}finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}}),d={...description,defaultSounds:{release:{clip:'bow-default',volume:.4},basicRelease:{clip:'bow-default',volume:.4},impact:{clip:'arrow-impact',volume:.4}}};await view.set({style:'skirmisher',settings:{volleys:1,arrowsPerVolley:1,windup:.35,volleyHitTime:.6,visual:{}},description:d});view.setScenario({attackRate:0,targetDistance:1000});view.cast();for(let i=0;i<5;i++)frame(1000+i*100);assert.equal(sounds.length,0,'default remains silent');view.setAudioEnabled(true);view.cast();frame(2000);frame(2100);frame(2200);assert.equal(sounds.length,0);frame(2300);assert.equal(sounds.length,0);frame(2400);assert.deepEqual(sounds,[{kind:'release',clip:'bow-default'}]);
+ await view.set({style:'skirmisher',settings:{volleys:1,arrowsPerVolley:1,windup:.35,volleyHitTime:.6,visual:{},audio:{cast:{clip:'authored',volume:1,delay:0}}},description:d});sounds.length=0;view.cast();for(let i=0;i<5;i++)frame(3000+i*100);assert.deepEqual(sounds,[{kind:'cast',clip:'authored'}]);view.destroy();}finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
 
 test('optional VFX failure cannot retain a previous style or tuning model and reports until recovery',async()=>{
@@ -299,50 +298,32 @@ test('swept arrow contact uses the first circle entry while the closest-point he
  assert.equal(segmentEntry({x:228,y:0},a,b,28),1);assert.equal(segmentEntry({x:229,y:0},a,b,28),null);close(segment({x:100,y:0},a,b).t,.5);
 });
 
-test('arrow preview damage and first-contact ordering are independent of rendered frame size',()=>{
- const run=step=>{const m=new Model('skirmisher',{volleys:1,arrowsPerVolley:1,windup:0,chargeRate:0,chargedDamage:0,projectileWidth:28},{mode:'active',targets:2,targetDistance:100,attackRate:0,manualAim:true});Object.assign(m.targets[0],{x:100,y:27});Object.assign(m.targets[1],{x:110,y:0});let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.2),b=run(.01),hits=a.events.filter(e=>e.kind==='impact');
- assert.deepEqual(hits.map(e=>e.target),[1,0]);assert.deepEqual(b.events.filter(e=>e.kind==='impact').map(e=>e.target),[1,0]);close(a.damage,b.damage);close(hits[0].time,.082/1.75);close(hits[0].damage,108.2);
- const inside=new Model('skirmisher',{volleys:1,arrowsPerVolley:1,windup:0,chargeRate:0,chargedDamage:0},{mode:'active',targets:3,targetDistance:1,attackRate:0});inside.targets.forEach(t=>Object.assign(t,{x:10,y:0}));inside.advance(.1);assert.deepEqual(inside.events.filter(e=>e.kind==='impact').map(e=>e.target),[0,1,2]);
+test('single-fan eligibility, target order, damage and exact impact time are independent of preview frame size',()=>{
+ const run=step=>{const m=new Model('skirmisher',{windup:0,volleyHitTime:.2,chargeRate:0,chargedDamage:0,visual:{}},{mode:'active',targets:3,targetDistance:100,attackRate:0,manualAim:true});Object.assign(m.targets[0],{x:100,y:0});Object.assign(m.targets[1],{x:120,y:0});Object.assign(m.targets[2],{x:100,y:40});let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.2),b=run(.01),hits=a.events.filter(e=>e.kind==='impact');assert.deepEqual(hits.map(e=>e.target),[0,1]);assert.deepEqual(b.events.filter(e=>e.kind==='impact').map(e=>e.target),[0,1]);close(a.damage,b.damage);hits.forEach(e=>close(e.time,.2));assert.equal(new Set(hits.map(e=>e.strike)).size,1);assert.equal(a.projectiles.length,0);
 });
 
-
-test('a legacy projectile artwork scale cannot resize its sprite independently of the collider',async()=>{
- const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame,oldImage=global.Image,scales=[];global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};global.Image=class{constructor(){this.width=80;this.height=20;}set src(value){this.onload();}};
- const ctx=h.root.ownerDocument.createElement('canvas').getContext('2d');ctx.scale=(...args)=>scales.push(args);let view;
- try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});const d={...description,effects:[{id:'fx',kind:'sprite',url:'silent-fixture.png'}]},set=scale=>view.set({style:'skirmisher',settings:{volleys:1,arrowsPerVolley:1,windup:.1,projectileWidth:28,visual:{resource:'fx',scale}},description:d});await set(1);scales.length=0;view.seek(.15);const expected=scales.map(s=>s.slice());assert(expected.length);await set(4);scales.length=0;view.seek(.15);assert.deepEqual(scales,expected);assert.equal(view.getState().projectilePaths.length,1);
- }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;global.Image=oldImage;}
-});
-
-test('tier arrow trails preview in their own color and stay silent during playback and seeking',async()=>{
- const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame,gradients=[],changes=[],sounds=[];global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
- const ctx=h.root.ownerDocument.createElement('canvas').getContext('2d');ctx.createLinearGradient=(...position)=>{const result={position,stops:[],addColorStop(...stop){this.stops.push(stop);}};gradients.push(result);return result;};let view;
- const fs=require('node:fs'),path=require('node:path'),Looks=require('../../assets/_script/ProjectileLooks'),root=path.resolve(__dirname,'../..'),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'))),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')));
- try{
-   view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onChange:(...args)=>changes.push(args),onSound:cue=>sounds.push(cue)});
-   for(const level of [1,6,11,16,21]){
-     const asset=Looks.skillAsset(catalog,config,level);await view.set({style:'skirmisher',settings:{volleys:1,arrowsPerVolley:1,windup:.1,projectileWidth:28,visual:{}},description:{...description,projectileAsset:asset}});view.setScenario({attackRate:0,targetDistance:1000});gradients.length=0;view.seek(.15);
-     assert(gradients.length>0);assert.deepEqual(gradients.at(-1).stops,[[0,asset.trail.color+'00'],[1,asset.trail.color]]);assert.equal(view.getState().silent,true);
-     const expected=gradients.at(-1).position;view.seek(0);view.seek(.15);assert.deepEqual(gradients.at(-1).position,expected,'Seeking replayed a different trail');
-   }
-   assert.deepEqual(changes,[]);assert(!sounds.some(cue=>['cast','impact','channel'].includes(cue)));
+test('legacy generic artwork scale cannot change the single fan range, angle or eligibility',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let view;
+ try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});const set=scale=>view.set({style:'skirmisher',settings:{windup:.1,visual:{scale}},description});await set(1);view.setScenario({attackRate:0,targetDistance:100,targets:1});view.seek(.3);const first=view.getState(),shape=first.gizmos.find(g=>g.kind==='behavior').geometry;await set(4);view.seek(.3);const second=view.getState();assert.deepEqual(second.gizmos.find(g=>g.kind==='behavior').geometry,shape);assert.equal(second.hits,first.hits);assert.equal(second.projectilePaths.length,0);
  }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
 
-
-test('native nine-arrow preview follows shared finite trajectories without drawing additional projectiles and seeks deterministically',()=>{
- const Settings=require('../../assets/_script/HeroSkillSettings'),Timeline=require('../../assets/_script/HeroSkillTimeline'),settings=Settings.defaults('skirmisher'),cast={origin:{x:0,y:0},direction:{x:1,y:0}},segments=Timeline.arrowSegments(0,3,settings,settings.visual,cast);
- assert.equal(new Set(segments.map(row=>row.index)).size,9);const first=segments.filter(row=>row.index===0),middle=first[Math.floor(first.length/2)],position={x:(middle.from.x+middle.to.x)/2,y:(middle.from.y+middle.to.y)/2};
- const run=dt=>{const model=new Model('skirmisher',settings,{mode:'active',manualAim:true,direction:0,targets:1,targetPositions:[position],attackRate:0});let remaining=3;while(remaining>1e-9){const slice=Math.min(dt,remaining);model.advance(slice);remaining-=slice;}return model;},a=run(3),b=run(1/120);
- assert(a.hits>0);assert(a.hits<=9);assert.equal(a.projectiles.length,0);assert.equal(a.hits,b.hits);close(a.damage,b.damage);const impacts=m=>m.events.filter(e=>e.kind==='impact');assert.deepEqual(impacts(a).map(e=>e.strike),impacts(b).map(e=>e.strike));impacts(a).forEach((event,i)=>close(event.time,impacts(b)[i].time));const before=b.status();b.seek(3);assert.equal(b.hits,before.hits);close(b.damage,before.damage);close(b.state.charge,before.charge);const replay=JSON.stringify(b.status());b.seek(3);assert.equal(JSON.stringify(b.status()),replay);
+test('ordinary tier projectile metadata cannot create duplicate active arrows or trails and seeking stays silent',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame,changes=[],sounds=[];global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let view;
+ try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onChange:(...a)=>changes.push(a),onSound:cue=>sounds.push(cue)});for(const color of ['#ffffff','#22aa44','#4488ff','#aa44ff','#ffaa00']){const projectileAsset={id:'legacy-tier',uuid:'legacy',trail:{color,width:12,lifetime:.2}};await view.set({style:'skirmisher',settings:require('../../assets/_script/HeroSkillSettings').defaults('skirmisher'),description:{...description,projectileAsset}});view.setScenario({attackRate:0,targetDistance:100});view.seek(.3);const expected=view.getState();assert.equal(expected.projectilePaths.length,0);assert.equal(expected.silent,true);view.seek(0);view.seek(.3);assert.equal(view.getState().hits,expected.hits);close(view.getState().damage,expected.damage);}assert.deepEqual(changes,[]);assert(!sounds.some(cue=>['cast','impact','channel'].includes(cue)));
+ }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
 
-test('the Vanguard preview keeps its cast origin fixed as the horse moves and checks every authored contact',()=>{
- const Timeline=require('../../assets/_script/HeroSkillTimeline'),model=new Model('vanguard',{}, {mode:'active',moving:true,manualAim:true,direction:0,targetDistance:100,targets:1,attackRate:0}),origin={...model.skillCast.origin};
- model.advance(1);assert.notEqual(model.hero.x,0);assert.deepEqual(model.skillCast.origin,origin);assert.equal(model.events.filter(e=>e.kind==='release'&&e.skill).length,Timeline.vanguardSchedule(model.state.tuning).filter(t=>t<=1).length);for(const effect of model.effects)assert.deepEqual({x:effect.x,y:effect.y},origin);
+test('the final native three-arrow set is visual only while one fan hit seeks deterministically',()=>{
+ const Settings=require('../../assets/_script/HeroSkillSettings'),settings=Settings.defaults('skirmisher'),run=dt=>{const model=new Model('skirmisher',settings,{mode:'active',manualAim:true,direction:0,targets:1,targetPositions:[{x:100,y:0}],attackRate:0});let remaining=3;while(remaining>1e-9){const slice=Math.min(dt,remaining);model.advance(slice);remaining-=slice;}return model;},a=run(3),b=run(1/120);assert.equal(a.hits,1);assert.equal(a.projectiles.length,0);assert.equal(a.hits,b.hits);close(a.damage,b.damage);const impacts=m=>m.events.filter(e=>e.kind==='impact');close(impacts(a)[0].time,.2);close(impacts(b)[0].time,.2);const before=b.status();b.seek(3);assert.equal(b.hits,before.hits);close(b.damage,before.damage);const replay=JSON.stringify(b.status());b.seek(3);assert.equal(JSON.stringify(b.status()),replay);
+});
+
+test('the Vanguard preview follows moving ground while keeping its captured aim and checking every authored contact',()=>{
+ const Timeline=require('../../assets/_script/HeroSkillTimeline'),model=new Model('vanguard',{}, {mode:'active',moving:true,manualAim:true,direction:0,targetDistance:100,targets:1,attackRate:0}),initial={...model.skillCast.origin},direction={...model.skillCast.direction},offset={...model.skillCast.groundOffset};model.advance(1);assert.notEqual(model.hero.x,0);close(model.skillCast.origin.x,model.hero.x+offset.x);close(model.skillCast.origin.y,model.hero.y+offset.y);assert.notDeepEqual(model.skillCast.origin,initial);assert.deepEqual(model.skillCast.direction,direction);assert.equal(model.events.filter(e=>e.kind==='release'&&e.skill).length,Timeline.vanguardSchedule(model.state.tuning).filter(t=>t<=1).length);
 });
 
 test('Mystic preview charge expands the actual splash radius and applies the saved starting Crystal Orb bonus only to its active',()=>{
- const model=new Model('mystic',{chargeDamage:.02,activeDamage:1,splashRadius:100,splashRadiusPerCharge:10},{mode:'active',targetDistance:100,targets:3,attackRate:0,impactDelay:.2,splashDamage:.5});close(model.castResult.damageMultiplier,1.06);close(model.castResult.radius,130);model.advance(.2);close(model.effects[0].radius,130);close(model.events.find(e=>e.kind==='impact').damage,159);
+ const model=new Model('mystic',{chargeDamage:.02,activeDamage:1,splashRadius:100,splashRadiusPerCharge:10,explosionTime:.2},{mode:'active',targetDistance:100,targets:3,attackRate:0,impactDelay:.2,splashDamage:.5});close(model.castResult.damageMultiplier,1.06);close(model.castResult.radius,130);model.advance(.2);close(model.effects[0].radius,130);close(model.events.find(e=>e.kind==='impact').damage,159);
  const basic=new Model('mystic',{}, {mode:'basic',targetDistance:100,targets:3,attackRate:2,splashDamage:.5});basic.advance(1);assert.equal(basic.targets[1].hp,100000);close(basic.damage,200);
 });
 
@@ -352,18 +333,11 @@ test('a marked target lost during Mystic windup produces no burst artwork or rel
 });
 
 
-test('slow delayed native volleys keep their full preview timeline and complete nonuniform guide bounds',async()=>{
- const Settings=require('../../assets/_script/HeroSkillSettings'),Timeline=require('../../assets/_script/HeroSkillTimeline'),settings=Settings.defaults('skirmisher');settings.volleyPlayback=.05;settings.contactDelay=.4;Object.assign(settings.visual,{castDelay:.6,castScaleX:1.4,castScaleY:.7,castOffsetX:12,castOffsetY:-9});
- const model=new Model('skirmisher',settings,{mode:'active',manualAim:true,direction:0,targets:1,targetDistance:100,attackRate:0}),end=Timeline.arrowEndTime(model.state.tuning,settings.visual);assert(end>27);assert(model.duration()>end);model.seek(end-.1);assert(model.time>27);assert.equal(model.projectiles.length,0);
- const h=host(),raf=global.requestAnimationFrame,cancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let view;
- try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});await view.set({style:'skirmisher',settings,description});view.setScenario({manualAim:true,direction:0,attackRate:0});view.seek(end-.1);assert(view.getState().time>27);view.fit();const bounds=h.draws.at(-1)[3].bounds,segments=Timeline.arrowSegments(0,end,model.state.tuning,settings.visual,model.skillCast);for(const segment of segments){assert(bounds.maxX>=segment.to.x);assert(bounds.minX<=segment.to.x);assert(bounds.maxY>=segment.to.y);assert(bounds.minY<=segment.to.y);}}
- finally{if(view)view.destroy();global.requestAnimationFrame=raf;global.cancelAnimationFrame=cancel;}
+test('slow delayed single-volley artwork retains its complete preview horizon without moving the independent hit deadline',async()=>{
+ const Settings=require('../../assets/_script/HeroSkillSettings'),Timeline=require('../../assets/_script/HeroSkillTimeline'),settings=Settings.defaults('skirmisher');settings.volleyPlayback=.05;settings.contactDelay=.4;Object.assign(settings.visual,{castDelay:.6,castScaleX:1.4,castScaleY:.7,castOffsetX:12,castOffsetY:-9});const model=new Model('skirmisher',settings,{mode:'active',manualAim:true,direction:0,targets:1,targetDistance:100,attackRate:0}),end=Timeline.skirmisherVFXEnd(model.state.tuning,settings.visual);assert(end>10);assert(model.duration()>=end);model.seek(end-.1);assert(model.time>10);assert.equal(model.projectiles.length,0);close(model.events.find(e=>e.kind==='impact').time,Timeline.skirmisherHitTime(model.state.tuning,settings.visual));
+ const h=host(),raf=global.requestAnimationFrame,cancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let view;try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});await view.set({style:'skirmisher',settings,description});view.setScenario({manualAim:true,direction:0,attackRate:0});view.seek(end-.1);assert(view.getState().time>10);view.fit();assert.equal(view.getState().settings.visual.castScaleX,1.4);assert.equal(view.getState().settings.visual.castScaleY,.7);assert.equal(view.getState().projectilePaths.length,0);}finally{if(view)view.destroy();global.requestAnimationFrame=raf;global.cancelAnimationFrame=cancel;}
 });
 
-
-test('native arrow contacts remain chronological across a source-frame split and cannot hit rewound geometry after a callback',()=>{
- const Settings=require('../../assets/_script/HeroSkillSettings'),Timeline=require('../../assets/_script/HeroSkillTimeline'),settings=Settings.defaults('skirmisher');settings.projectileWidth=1;
- const positions=[{x:88.1340574788426,y:24.380408879795382},{x:83.68184963379524,y:-21.906041248125092}];
- const run=(split,dodge)=>{const model=new Model('skirmisher',settings,{mode:'active',manualAim:true,direction:0,targets:2,targetPositions:positions,attackRate:0}),base=model.hit.bind(model);model.hit=(target,...args)=>{base(target,...args);if(dodge&&target.id===1)model.targets[0].x=-1000;};model.advance(.74);if(split)model.advance(.005);model.advance(split?.005:.01);return model;};
- for(const dodge of [false,true]){const whole=run(false,dodge),split=run(true,dodge),hits=model=>model.events.filter(e=>e.kind==='impact');assert.deepEqual(hits(whole).map(e=>e.target),dodge?[1]:[1,0]);assert.deepEqual(hits(split).map(e=>e.target),hits(whole).map(e=>e.target));close(whole.damage,split.damage);hits(whole).forEach((event,i)=>close(event.time,hits(split)[i].time));}
+test('a single fan snapshots all eligible targets once and callback movement cannot turn it into a later second hit',()=>{
+ const Settings=require('../../assets/_script/HeroSkillSettings'),settings=Settings.defaults('skirmisher'),positions=[{x:100,y:0},{x:120,y:0}];const run=split=>{const model=new Model('skirmisher',settings,{mode:'active',manualAim:true,direction:0,targets:2,targetPositions:positions,attackRate:0}),base=model.hit.bind(model);model.hit=(target,...args)=>{base(target,...args);if(target.id===0)model.targets[1].x=-1000;};if(split)model.advance(.199);model.advance(split?.001:.2);model.advance(1);return model;};const whole=run(false),split=run(true),hits=model=>model.events.filter(e=>e.kind==='impact');assert.deepEqual(hits(whole).map(e=>e.target),[0,1]);assert.deepEqual(hits(split).map(e=>e.target),[0,1]);close(whole.damage,split.damage);hits(whole).forEach(e=>close(e.time,.2));assert.equal(new Set(hits(whole).map(e=>e.strike)).size,1);
 });

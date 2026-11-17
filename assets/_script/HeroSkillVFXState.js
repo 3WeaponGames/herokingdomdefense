@@ -1,4 +1,5 @@
 "use strict";
+var Layout=require("./HeroSkillVFXLayout");
 // Presentation clocks shared by gameplay and the authoring preview. No damage,
 // targeting, random combat state or saved settings are changed here.
 function finite(value,fallback){return typeof value==="number"&&isFinite(value)?value:fallback;}
@@ -55,7 +56,7 @@ function update(cache,state,context,visual){
   active.beam=!!beam;
   if(cache.beam&&(!same(cache.beam.target,beam)||cache.beam.onset!==context.beamOnset)){
     if(cache.beam.visible){
-      cache.tails.push({age:0,duration:Math.max(.01,finite(context.beamEndDuration,.25)),from:point(cache.beam.from),to:point(cache.beam.to),target:cache.beam.target});
+      cache.tails.push({age:0,duration:Math.max(.01,finite(context.beamEndDuration,.25))/Layout.playbackRate(visual,"beam",style),from:point(cache.beam.from),to:point(cache.beam.to),target:cache.beam.target});
       if(cache.tails.length>2)cache.tails.shift();
     }
     cache.beam=null;
@@ -76,7 +77,7 @@ function update(cache,state,context,visual){
   if(!marked)cache.mark=null;
   else{
     if(!cache.mark||!same(cache.mark.target,marked)){cache.mark=clock(1);cache.mark.target=marked;}
-    var markAge=delayed(cache.mark.age,visual,"mark"),spawn=Math.max(0,finite(context.markSpawnDuration,.5)),spawning=markAge<spawn;
+    var markAge=delayed(cache.mark.age,visual,"mark"),spawn=Math.max(0,finite(context.markSpawnDuration,.5))/Layout.playbackRate(visual,"mark",style),spawning=markAge<spawn;
     if(markAge>=0)entities.push(payload("mark",spawning?"start":"loop",spawning?markAge:markAge-spawn,{target:marked,progress:spawning?markAge/Math.max(.01,spawn):undefined}));
   }
   var shield=style==="guardian"&&state.shieldRemaining>0&&state.shield>0;if(style==="guardian")active.buff=shield;
@@ -84,21 +85,22 @@ function update(cache,state,context,visual){
     if(!cache.buff||state.shieldRemaining>cache.buff.remaining+1e-8)cache.buff=clock(1);
     cache.buff.remaining=state.shieldRemaining;var guardianBuffAge=delayed(cache.buff.age,visual,"buff");if(guardianBuffAge>=0)entities.push(payload("buff","loop",guardianBuffAge));
     cache.shieldTail=null;
-    var defenseAge=delayed(cache.buff.age,visual,"defense");if(defenseAge>=0&&defenseAge<finite(context.defenseDuration,1))entities.push(payload("defense","once",defenseAge));
-    var physicalAge=delayed(cache.buff.age,visual,"physicalShield"),physicalIntro=Math.max(.01,finite(context.physicalShieldSpawnDuration,1)),physicalStarting=physicalAge<physicalIntro;
+    var defenseAge=delayed(cache.buff.age,visual,"defense");if(defenseAge>=0&&defenseAge<finite(context.defenseDuration,1)/Layout.playbackRate(visual,"defense",style))entities.push(payload("defense","once",defenseAge));
+    var physicalClip=Layout.clipFor(visual.physicalShieldResource),loopOnly=physicalClip&&physicalClip.loop&&physicalClip.phase==='loop'&&Layout.phaseClips('physicalShield',physicalClip,'start')[0]===physicalClip;
+    var physicalAge=delayed(cache.buff.age,visual,"physicalShield"),physicalIntro=loopOnly?0:Math.max(.01,finite(context.physicalShieldSpawnDuration,1))/Layout.playbackRate(visual,"physicalShield",style),physicalStarting=physicalAge<physicalIntro;
     if(physicalAge>=0)entities.push(payload("physicalShield",physicalStarting?"start":"loop",physicalStarting?physicalAge:physicalAge-physicalIntro));
-    if(visual.shieldResource){var shieldAge=delayed(cache.buff.age,visual,"shield"),intro=Math.max(.01,finite(context.shieldSpawnDuration,.5)),starting=shieldAge<intro;if(shieldAge>=0)entities.push(payload("shield",starting?"start":"loop",starting?shieldAge:shieldAge-intro,{progress:starting?shieldAge/intro:undefined}));}
+    if(visual.shieldResource){var shieldAge=delayed(cache.buff.age,visual,"shield"),intro=Math.max(.01,finite(context.shieldSpawnDuration,.5))/Layout.playbackRate(visual,"shield",style),starting=shieldAge<intro;if(shieldAge>=0)entities.push(payload("shield",starting?"start":"loop",starting?shieldAge:shieldAge-intro,{progress:starting?shieldAge/intro:undefined}));}
   }else if(style==="guardian"){
     if(cache.buff&&visual.shieldResource)cache.shieldTail=clock(1);
     cache.buff=null;
-    var end=Math.max(.01,finite(context.shieldEndDuration,.625));
+    var end=Math.max(.01,finite(context.shieldEndDuration,.625))/Layout.playbackRate(visual,"shield",style);
     if(cache.shieldTail){if(cache.shieldTail.age<end)entities.push(payload("shield","end",cache.shieldTail.age,{progress:cache.shieldTail.age/end}));else cache.shieldTail=null;}
   }
   // Records are created only when the gameplay taunt is applied. Their fixed
   // start time prevents a still-taunted enemy from restarting the flipbook.
   if(style==="guardian")(context.taunts||[]).forEach(function(record){
-    var age=delayed(time-finite(record.at,time),visual,"taunt"),duration=Math.max(.01,finite(context.tauntDuration,1.875));
-    if(record.target&&age>=0&&age<duration)entities.push(payload("taunt","once",age,{key:record.key,target:record.target,opacity:Math.min(1,(duration-age)/.12)}));
+    var rate=Layout.playbackRate(visual,"taunt",style),age=delayed(time-finite(record.at,time),visual,"taunt"),duration=Math.max(.01,finite(context.tauntDuration,1.875))/rate;
+    if(record.target&&age>=0&&age<duration)entities.push(payload("taunt","once",age,{key:record.key,target:record.target,opacity:Math.min(1,(duration-age)*rate/.12)}));
   });
   var keepPresence=new Set();
   if(style==="guardian")(context.presenceTargets||[]).slice(0,256).forEach(function(target){
@@ -108,15 +110,16 @@ function update(cache,state,context,visual){
   });
   cache.presence.forEach(function(entry,key){if(!keepPresence.has(key))cache.presence.delete(key);});
   var cast=context.skillCast;
-  if(cast&&visual.castResource){
-    var simple=style==="mystic"||style==="fighter"||style==="bruiser",onset=simple?cast.impactAt:cast.at;
+  if(cast&&context.skillCastValid!==false)["cast","castSecondary"].forEach(function(slot){
+    if(!visual[slot+"Resource"]||slot==="castSecondary"&&style!=="bruiser")return;
+    var onset=cast.at;
     if(typeof onset==="number"){
-      var castAge=time-onset-(simple?0:finite(visual.castDelay,0)),castDuration=finite(context.castDuration,finite(cast.duration,1));
-      if(style==="vanguard")castAge=(time-cast.at-finite(tuning.contactDelay,0)-finite(visual.castDelay,0))*(4/3)/Math.max(.001,finite(tuning.duration,4/3));
-      if(style==="skirmisher"&&visual.castTrajectory==="skirmisher-atx117")castAge=require("./HeroSkillTimeline").arrowSourceTime(time-cast.at,tuning,visual);
-      if(castAge>=0&&castAge<castDuration)entities.push(payload("cast","once",castAge,{key:"cast:"+cast.key,origin:cast.origin,direction:cast.direction,target:cast.target,radius:cast.radius,style:style}));
+      var castAge=time-onset-Math.max(0,finite(visual.castDelay,0))-(slot==="castSecondary"?Math.max(0,finite(visual.castSecondaryDelay,0)):0),castDuration=finite(context[slot+"Duration"],finite(cast.duration,1))/Layout.playbackRate(visual,slot,style);
+      if(slot==="cast"&&style==="vanguard")castAge=require('./HeroSkillTimeline').vanguardSourceTime(time-cast.at,tuning,visual);
+      if(slot==="cast"&&style==="skirmisher")castAge=require("./HeroSkillTimeline").skirmisherSourceTime(time-cast.at,tuning,visual);
+      if(castAge>=0&&castAge<castDuration)entities.push(payload(slot,"once",castAge,{key:slot+":"+cast.key,origin:cast.origin,direction:cast.direction,target:cast.target,radius:cast.radius,style:style}));
     }
-  }
+  });
   cache.frame={entities:entities,active:active};return cache.frame;
 }
 exports.create=create;exports.update=update;

@@ -13,20 +13,20 @@ test('Steady Aim charges only standing and first basic shot snapshots then clear
  Skills.step(s,.001,{moving:true});assert.equal(s.charge,0);
 });
 
-test('Momentum scales basic and active arrow speed linearly from 100 to 200 percent at the actual release',()=>{
+test('Momentum preserves basic arrow speed while the active snapshots one charged arc multiplier',()=>{
  for(const charge of[0,.25,.5,.75,1]){
   const s=Skills.createState('skirmisher',{chargeRate:0});s.charge=charge;const fire=Skills.onBasicFire(s);close(fire.speedMultiplier,1+charge);assert.equal(s.charge,0);
-  s.charge=charge;Skills.beginActive(s,{});const [arrow]=Skills.step(s,s.tuning.windup,{moving:false});close(arrow.speed,s.tuning.projectileSpeed*(1+charge));close(arrow.charge,charge);
+  s.charge=charge;Skills.beginActive(s,{});const events=Skills.step(s,s.tuning.windup,{moving:false});assert.deepEqual(events.map(e=>e.type),['skirmisher-release','skirmisher-volley']);for(const event of events){close(event.charge,charge);close(event.damageMultiplier,(1+charge*s.tuning.chargedDamage)*s.tuning.activeDamage);assert.equal(event.speed,undefined);}
  }
 });
 test('aim confirmation does not consume charge before Skirmisher actually fires',()=>{
  const s=Skills.createState('skirmisher');s.charge=.5;
  assert.equal(Skills.beginActive(s,{direction:{x:0,y:5}}).ok,true);close(s.charge,.5);
  assert.equal(Skills.step(s,.1,{moving:false}).length,0);
- const events=Skills.step(s,s.tuning.windup-.1,{moving:false});assert.equal(events.length,1);
- assert.equal(events[0].type,'skirmisher-arrow');close(events[0].charge,.5+s.tuning.windup*.25);close(s.charge,0);
+ const events=Skills.step(s,s.tuning.windup-.1,{moving:false});assert.equal(events.length,2);
+ assert.deepEqual(events.map(e=>e.type),['skirmisher-release','skirmisher-volley']);close(events[0].charge,.5+s.tuning.windup*.25);close(s.charge,0);
  assert.deepEqual(events[0].direction,{x:0,y:1});
- const later=Skills.step(s,1,{moving:false});assert.equal(later.length,2);later.forEach(event=>{close(event.charge,events[0].charge);assert.equal(event.directions.length,3);});
+ close(events[1].charge,events[0].charge);const later=Skills.step(s,1,{moving:false});assert.equal(later.length,0,'The completed single arc cannot emit hidden later arrows');
 });
 test('Skirmisher movement during wind-up clears charge and distance always increases shot damage',()=>{
  const s=Skills.createState('skirmisher');s.charge=1;Skills.beginActive(s,{});
@@ -95,7 +95,7 @@ test('Bruiser passive increases both damage and attack speed only as HP is lost'
 });
 test('Blood Cleave sacrifices half current HP then derives multiplier from post-cost missing HP',()=>{
  const s=Skills.createState('bruiser'),context={hp:500,maxHp:1000,damage:100},cast=Skills.beginActive(s,context);
- assert.equal(cast.hpCost,250);assert.equal(cast.hpAfterCost,250);assert.equal(cast.damageMultiplier,1.75);
+ assert.equal(cast.hpCost,250);assert.equal(cast.hpAfterCost,250);assert.equal(cast.damageMultiplier,.875);
  assert.equal(context.hp,500,'the engine returns the cost; the gameplay adapter applies it before damage/lifesteal');
  const tiny=Skills.beginActive(Skills.createState('bruiser'),{hp:1,maxHp:1000});assert.equal(tiny.hpAfterCost,.5);
 });

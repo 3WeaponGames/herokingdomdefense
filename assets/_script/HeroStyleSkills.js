@@ -5,11 +5,11 @@ var Timeline = require("./HeroSkillTimeline");
 // All percentages below are fractions, and charge meters use the range 0..1.
 var DEFAULTS = {
   common: { cooldown: 12, contactDelay: 0 },
-  skirmisher: { cooldown: 12, chargeRate: .25, chargedDamage: .5, chargedRange: .5, windup: 2/3, volleys: 3, arrowsPerVolley: 3, spreadDegrees: 12, volleyPlayback: 1, projectileSpeed: 1000, distanceDamagePer100: .1, projectileWidth: 28 },
+  skirmisher: { cooldown: 12, chargeRate: .25, chargedDamage: .5, chargedRange: .5, activeDamage: .8, windup: .2, volleyHitTime: .2, volleyRange: 250, volleyPlayback: 1, distanceDamagePer100: .1 },
   fighter: { cooldown: 12, maxStacks: 10, stackDuration: 5, stackDamage: .03, stackReduction: .025, stackTenacity: .08, buffDuration: 10, buffDamage: .25, buffAttackRate: .35, knockback: 140 },
   vanguard: { cooldown: 14, chargeRate: .2, chargeDecay: .15, buffDuration: 10, momentumMove: .5, momentumAttackRate: .35, duration: 4/3, strikes: 5, strikeDamage: .5, moveScaling: .25, attackScaling: .25, referenceMove: 300 },
-  mystic: { cooldown: 12, maxCharges: 10, chargeDamage: .02, activeDamage: 1, splashRadius: 100, splashRadiusPerCharge: 10, slow: .2, slowDuration: 1.5 },
-  bruiser: { cooldown: 12, missingDamage: .5, missingAttackRate: .75, sacrifice: .5 },
+  mystic: { cooldown: 12, maxCharges: 10, chargeDamage: .02, activeDamage: 1, splashRadius: 100, splashRadiusPerCharge: 10, slow: .2, slowDuration: 1.5, explosionTime: .76666665 },
+  bruiser: { cooldown: 12, missingDamage: .5, missingAttackRate: .75, sacrifice: .5, activeDamage: .5 },
   guardian: { cooldown: 16, allyReduction: .1, shieldHealth: .25, shieldDuration: 10, tauntDuration: 3, tauntRadius: 250, allyRadius: 250 }
 };
 function finite(value, fallback) { return typeof value === "number" && isFinite(value) ? value : fallback; }
@@ -121,8 +121,8 @@ function beginActive(state, context) {
   var t = state.tuning, result = { ok: true, style: state.style, hpCost: 0, damageMultiplier: 1, direction: direction(context.direction) };
   state.cooldown = t.cooldown;
   if (state.style === "skirmisher") {
-    var effectDelay=positive(context.effectDelay),volleys=Timeline.skirmisherSchedule(t).map(function(at){return at+effectDelay;});
-    state.active = { kind: "skirmisher-arrow", elapsed: 0, duration: Math.max(volleys[volleys.length-1],effectDelay+t.contactDelay+t.windup+(4/3)/Math.max(.01,t.volleyPlayback)), schedule: volleys, emitted: 0, direction: result.direction, context: Object.assign({}, context), fire: null };
+    var effectDelay=positive(context.effectDelay),events=Timeline.skirmisherEvents(t),schedule=events.map(function(event){return event.at+effectDelay;});
+    state.active = { kind: "skirmisher-cast", elapsed: 0, duration: Math.max(schedule[schedule.length-1],positive(context.presentationDuration)), schedule: schedule, eventKinds:events.map(function(event){return event.type;}), emitted: 0, direction: result.direction, context: Object.assign({}, context), fire: null };
     result.windup = t.windup;
   } else if (state.style === "vanguard") {
     var count = Math.max(1, Math.floor(t.strikes));
@@ -135,7 +135,7 @@ function beginActive(state, context) {
   } else if (state.style === "bruiser") {
     var hp = positive(context.hp), after = hp * (1 - clamp(t.sacrifice, 0, 1));
     result.hpCost = hp - after; result.hpAfterCost = after;
-    result.damageMultiplier = 1 + missing({ hp: after, maxHp: context.maxHp });
+    result.damageMultiplier = (1 + missing({ hp: after, maxHp: context.maxHp })) * t.activeDamage;
   } else if (state.style === "mystic") {
     result.target = state.target; result.charges = state.mysticCharges;
     result.damageMultiplier = (t.activeDamage + state.mysticCharges * t.chargeDamage) * (1 + positive(context.splashDamage));
@@ -194,14 +194,11 @@ function step(state, dt, context) {
     if (wait > remaining + 1e-9) { advance(state, remaining, context); active.elapsed += remaining; break; }
     advance(state, wait, context); active.elapsed = at; remaining = Math.max(0, remaining - wait);
     if(active.schedule&&active.emitted>=active.schedule.length){state.active=null;continue;}
-    var event = { type: active.kind, index: active.emitted + 1, time: state.time, elapsed: at,
+    var event = { type: active.eventKinds?active.eventKinds[active.emitted]:active.kind, index: active.emitted + 1, time: state.time, elapsed: at,
       direction: { x: active.direction.x, y: active.direction.y }, context: active.context };
     active.emitted++;
-    if (active.kind === "skirmisher-arrow") {
-      var fire = active.fire || (active.fire=onBasicFire(state)); event.charge = fire.charge; event.damageMultiplier = fire.damageMultiplier;
-      event.speed = state.tuning.projectileSpeed * fire.speedMultiplier; event.width = state.tuning.projectileWidth;
-      event.distanceDamagePer100 = state.tuning.distanceDamagePer100;
-      event.directions=Timeline.fan(active.direction,state.tuning.arrowsPerVolley,state.tuning.spreadDegrees);
+    if (active.kind === "skirmisher-cast") {
+      var fire = active.fire || (active.fire=onBasicFire(state)); event.charge = fire.charge; event.damageMultiplier = fire.damageMultiplier * state.tuning.activeDamage;
       if(active.emitted>=active.schedule.length&&at>=active.duration-1e-9)state.active = null;
     } else if (active.kind === "vanguard-thrust") {
       event.count = active.count; event.damageMultiplier = vanguardMultiplier(state, Object.assign({}, active.context, context));
@@ -210,7 +207,7 @@ function step(state, dt, context) {
       event.cast = active.cast; state.active = null;
     }
     events.push(event);
-  } while (remaining > 1e-9 && ++guard < 1000);
+  } while ((remaining > 1e-9 || state.active&&Timeline.nextTime(state.active)<=state.active.elapsed+1e-9) && ++guard < 1000);
   return events;
 }
 function absorbDamage(state, amount) {

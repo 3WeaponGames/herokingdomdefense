@@ -13,9 +13,9 @@ function fixture(t,skills={},mirror=skills){
  return{directory,service,request,change,bytes:()=>FILES.map(file=>fs.readFileSync(path.join(directory,file),'utf8'))};
 }
 
-test('Skirmisher exposes the shared flight library without staging defaults or affecting other skills',t=>{
+test('Skirmisher exposes only its fan controls while the ordinary shared flight catalog stays available read-only',t=>{
  const f=fixture(t),before=f.bytes(),snapshot=f.service.load();
- assert(snapshot.fields.skirmisher.visual.some(field=>field.path==='visual.projectile'&&field.type==='projectile'));
+ assert(!snapshot.fields.skirmisher.visual.some(field=>field.path==='visual.projectile'||field.type==='projectile'));assert(snapshot.fields.skirmisher.tuning.some(field=>field.path==='volleyRange'));assert(snapshot.fields.skirmisher.tuning.some(field=>field.path==='volleyHitTime'));
  for(const style of Settings.styles.filter(s=>s.id!=='skirmisher'))assert(!snapshot.fields[style.id].visual.some(field=>field.type==='projectile'));
  assert.equal(snapshot.effective.skirmisher.visual.projectile,'');assert.equal(snapshot.dirty,false);assert.equal(f.service.save(f.request()).result.saved,false);assert.deepEqual(f.bytes(),before);
  const assets=Catalog.projectiles(root),published=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'),'utf8'));
@@ -24,43 +24,24 @@ test('Skirmisher exposes the shared flight library without staging defaults or a
  assert(assets.some(a=>a.flipbook));assert(assets.some(a=>a.id==='tiny-kingdom:ballista-bolt'));
 });
 
-test('projectile selection previews immediately and saves only its owned identity in both copies',t=>{
- const legacy={resource:'22222222-2222-4222-8222-222222222222',resourcePath:'vfx/old',extension:{keep:true}},f=fixture(t,{skirmisher:{visual:legacy}},{skirmisher:{visual:{...legacy,extension:{mirror:true}}}}),before=f.bytes();
- f.change(arrow.id);const selected=f.service.snapshot().effective.skirmisher.visual,visual=Settings.projectileVisual(selected);
- assert.equal(visual.resource,uuid);assert.equal(visual.resourcePath,arrow.path);assert.equal(visual.resourceRotation,90);assert.equal(visual.showBuiltin,false);assert.equal(selected.resource,legacy.resource,'Choosing flight art overwrote the fallback VFX');assert.deepEqual(f.bytes(),before);
- const description=f.service.describe({style:'skirmisher',castResource:'',projectile:arrow.id});assert.equal(description.effects[0].id,uuid);assert.equal(description.projectileAsset.id,arrow.id);
- const saved=f.service.save(f.request());assert.equal(saved.result.saved,true);
- for(const [i,text]of f.bytes().entries()){const actual=JSON.parse(text),old=JSON.parse(before[i]);assert.equal(actual.HeroSkills.skirmisher.visual.projectile,arrow.id);assert.equal(actual.HeroSkills.skirmisher.visual.projectileAsset.uuid,uuid);delete actual.HeroSkills.skirmisher.visual.projectile;delete actual.HeroSkills.skirmisher.visual.projectileAsset;assert.deepEqual(actual,old);}
- const unchanged=f.bytes();assert.equal(f.service.save(f.request()).result.saved,false);assert.deepEqual(f.bytes(),unchanged);
+test('removed active projectile selection rejects atomically while unrelated hit edits preserve legacy identities in both mirrors',t=>{
+ const asset={...arrow},legacy={projectile:asset.id,projectileAsset:asset,resource:'22222222-2222-4222-8222-222222222222',resourcePath:'vfx/old',extension:{keep:true}},f=fixture(t,{skirmisher:{visual:legacy}},{skirmisher:{visual:{...legacy,extension:{mirror:true}}}}),before=f.bytes(),initial=f.service.snapshot();assert.throws(()=>f.change(book.id),/field|editable|supported/i);assert.equal(f.service.version,initial.version);assert.deepEqual(f.bytes(),before);f.service.change(f.request({style:'skirmisher',path:'volleyRange',value:350}));assert.deepEqual(f.bytes(),before);assert.equal(f.service.save(f.request()).result.saved,true);for(const [i,text]of f.bytes().entries()){const actual=JSON.parse(text);assert.equal(actual.HeroSkills.skirmisher.volleyRange,350);assert.deepEqual(actual.HeroSkills.skirmisher.visual,JSON.parse(before[i]).HeroSkills.skirmisher.visual);}const unchanged=f.bytes();assert.equal(f.service.save(f.request()).result.saved,false);assert.deepEqual(f.bytes(),unchanged);
 });
 
-test('animated projectile metadata, undo and reset keep fallback artwork and unknown fields intact',t=>{
- const f=fixture(t,{skirmisher:{visual:{color:'#ff0000',extension:{keep:true}}}});f.change(book.id);
- const visual=Settings.projectileVisual(f.service.snapshot().effective.skirmisher.visual);assert.equal(visual.resourceFrames,4);assert.equal(visual.resourceFps,12);assert.equal(visual.color,'#ff0000');
- f.service.undo(f.request());assert.equal(f.service.snapshot().effective.skirmisher.visual.projectile,'');f.service.redo(f.request());assert.equal(f.service.snapshot().effective.skirmisher.visual.projectile,book.id);
- f.service.reset(f.request({style:'skirmisher',path:'visual.projectile'}));assert.deepEqual(f.service.data,{skirmisher:{visual:{color:'#ff0000',extension:{keep:true}}}});assert.equal(f.service.dirty(),false);
+test('single-volley transform undo, redo and reset retain inert animated projectile metadata and unknown visual fields',t=>{
+ const visual={projectile:book.id,projectileAsset:{...book},color:'#ff0000',extension:{keep:true}},f=fixture(t,{skirmisher:{visual}}),before=structuredClone(f.service.data);f.service.change(f.request({style:'skirmisher',path:'volleyHitTime',value:.45}));assert.equal(f.service.snapshot().effective.skirmisher.volleyHitTime,.45);f.service.undo(f.request());assert.deepEqual(f.service.data,before);f.service.redo(f.request());assert.equal(f.service.snapshot().effective.skirmisher.volleyHitTime,.45);f.service.reset(f.request({style:'skirmisher',path:'volleyHitTime'}));assert.deepEqual(f.service.data,before);assert.equal(f.service.dirty(),false);
 });
 
-test('choosing a tier arrow carries its trail into the skill draft, preview and explicit Save',t=>{
- const f=fixture(t),before=f.bytes(),trail=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'))).trails.find(trail=>trail.id==='trail:hero-arrow-lv4');
- f.service.catalogs.projectiles[0].trail=trail;f.change(arrow.id);
- assert.deepEqual(Settings.projectileVisual(f.service.snapshot().effective.skirmisher.visual).resourceTrail,trail);
- assert.deepEqual(f.service.describe({style:'skirmisher',castResource:'',projectile:arrow.id}).projectileAsset.trail,trail);assert.deepEqual(f.bytes(),before);
- assert.equal(f.service.save(f.request()).result.saved,true);for(const text of f.bytes())assert.deepEqual(JSON.parse(text).HeroSkills.skirmisher.visual.projectileAsset.trail,trail);
+test('legacy tier trail identity survives an independent art transform save without becoming active projectile tuning',t=>{
+ const trail=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'))).trails.find(trail=>trail.id==='trail:hero-arrow-lv4'),visual={projectile:arrow.id,projectileAsset:{...arrow,trail}},f=fixture(t,{skirmisher:{visual}}),before=f.bytes();f.service.change(f.request({style:'skirmisher',path:'visual.castScale',value:.24}));assert.deepEqual(f.bytes(),before);assert.equal(f.service.save(f.request()).result.saved,true);for(const text of f.bytes()){const saved=JSON.parse(text).HeroSkills.skirmisher.visual;assert.deepEqual(saved.projectileAsset.trail,trail);assert.equal(saved.castScale,.24);}assert(!f.service.snapshot().fields.skirmisher.visual.some(field=>field.type==='projectile'));
 });
 
-test('missing or moved projectiles reject selection and Save while retaining drafts and external revisions',t=>{
- const f=fixture(t),before=f.bytes(),version=f.service.version;assert.throws(()=>f.change('impact:not-a-flight'),/flight asset/);assert.equal(f.service.version,version);assert.deepEqual(f.bytes(),before);
- f.change(arrow.id);f.service.catalogs.projectiles[0].path='projectiles/moved';assert.throws(()=>f.service.save(f.request()),/changed after selection/);assert.deepEqual(f.bytes(),before);
- f.change(arrow.id);assert.equal(Settings.projectileVisual(f.service.snapshot().effective.skirmisher.visual).resourcePath,'projectiles/moved');
- fs.appendFileSync(path.join(f.directory,FILES[1]),' ');const external=f.bytes();assert.throws(()=>f.service.save(f.request()),/outside this draft/);assert.deepEqual(f.bytes(),external);assert(f.service.dirty());
+test('removed projectile selectors reject all asset IDs and saved arc edits still honor external revision checks',t=>{
+ const f=fixture(t),before=f.bytes(),version=f.service.version;for(const id of ['impact:not-a-flight',arrow.id,book.id])assert.throws(()=>f.change(id),/field|editable|supported/i);assert.equal(f.service.version,version);assert.deepEqual(f.bytes(),before);f.service.change(f.request({style:'skirmisher',path:'volleyRange',value:320}));fs.appendFileSync(path.join(f.directory,FILES[1]),' ');const external=f.bytes();assert.throws(()=>f.service.save(f.request()),/outside this draft/);assert.deepEqual(f.bytes(),external);assert(f.service.dirty());
 });
 
-test('reset removes asymmetric projectile metadata from mirrors without replacing their other visual settings',t=>{
- const asset={id:arrow.id,uuid,kind:'sprite',bundle:'resources',path:arrow.path,rotation:90};
- const f=fixture(t,{skirmisher:{visual:{projectile:arrow.id,projectileAsset:asset,color:'#ff0000'}}},{skirmisher:{visual:{projectile:book.id,projectileAsset:{future:'old'},color:'#00ff00',extension:{keep:true}}}});
- f.service.reset(f.request({style:'skirmisher',path:'visual.projectile'}));assert.equal(f.service.save(f.request()).result.saved,true);
- const configs=f.bytes().map(text=>JSON.parse(text));assert.deepEqual(configs[0].HeroSkills.skirmisher.visual,{color:'#ff0000'});assert.deepEqual(configs[1].HeroSkills.skirmisher.visual,{color:'#00ff00',extension:{keep:true}});
+test('resetting one supported fan field preserves asymmetric obsolete projectile metadata in each mirror',t=>{
+ const a={projectile:arrow.id,projectileAsset:{...arrow},color:'#ff0000'},b={projectile:book.id,projectileAsset:{future:'old'},color:'#00ff00',extension:{keep:true}},f=fixture(t,{skirmisher:{volleyRange:450,visual:a}},{skirmisher:{volleyRange:500,visual:b}});f.service.reset(f.request({style:'skirmisher',path:'volleyRange'}));assert.equal(f.service.save(f.request()).result.saved,true);const configs=f.bytes().map(text=>JSON.parse(text));assert.deepEqual(configs[0].HeroSkills.skirmisher.visual,a);assert.deepEqual(configs[1].HeroSkills.skirmisher.visual,b);for(const config of configs)assert.equal(config.HeroSkills.skirmisher.volleyRange,undefined);
 });
 
 test('gameplay draws the selected sprite or Spine skin at the active arrow collider and retires old artwork',()=>{

@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..'),Catalog=require('../../assets/_script/HeroSkillVFXCatalog'),Settings=require('../../assets/_script/HeroSkillSettings'),Layout=require('../../assets/_script/HeroSkillVFXLayout'),{Model}=require('../../packages/hkd-skills/preview-model');
 test('workbook particle captures and native Spine effects preserve bounded assets and source identity',()=>{
- assert.equal(Catalog.clips.length,36);
+ assert.equal(Catalog.clips.length,41);
  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,'assets/resources/vfx/hero-skills/catalog.json'))),Catalog);
  const selection=require('../skills-vfx/effects.json');assert.equal(selection.workbook,'Characters Plan.xlsx');assert(fs.statSync(path.join(root,selection.workbook)).isFile());assert.match(Catalog.workbookSha256,/^[a-f0-9]{64}$/);
  const planned=selection.clips.concat(selection.beam.parts.flatMap(part=>selection.beam.phases.map(phase=>({...selection.beam,...part,...phase,id:'mystic-beam-'+part.id+'-'+phase.phase}))));
@@ -45,8 +45,8 @@ test('legacy Guardian sheets retain source provenance while the new plan selects
  for(const style of Settings.styles.map(s=>s.id)){const keys=Settings.fields(style).visual.map(f=>f.key);assert.equal(keys.includes('tauntResource'),style==='guardian');assert.equal(keys.includes('shieldResource'),style==='guardian');}
 });
 
-test('disabled or custom cast assets cannot retain authored projectile collision metadata',()=>{
- const uuid='12345678-1234-4234-8234-123456789012';assert.equal(Settings.defaults('skirmisher').visual.castTrajectory,'skirmisher-atx117');
+test('disabled or custom cast assets cannot retain another authored artwork source clock',()=>{
+ const uuid='12345678-1234-4234-8234-123456789012';assert.equal(Settings.defaults('skirmisher').visual.castTrajectory,'skirmisher-atx117-single');
  for(const value of ['',uuid]){const v=Settings.effective('skirmisher',{HeroSkills:{skirmisher:{visual:{castResource:value,castTrajectory:'skirmisher-atx117'}}}}).visual;assert.equal(v.castResource,value);assert.equal(v.castTrajectory,undefined);}
  const v=Settings.defaults('skirmisher').visual;Settings.applyClip(v,'castResource',Catalog.clips.find(c=>c.id==='fighter-arc-slash'));assert.equal(v.castTrajectory,undefined);
 });
@@ -55,11 +55,14 @@ test('the authored slash dissolves its opacity rather than ending as an opaque b
  const {spawnSync}=require('node:child_process'),python=process.env.PYTHON||(process.platform==='win32'?'python':'python3');
  const result=spawnSync(python,['-B','-c',String.raw`
 from PIL import Image
+import json
+clip=next(c for c in json.load(open('assets/resources/vfx/hero-skills/catalog.json'))['clips'] if c['id']=='fighter-arc-slash')
+cell=clip['cell'];columns=clip['columns']
 im=Image.open('assets/resources/vfx/hero-skills/fighter-arc-slash.png').convert('RGBA')
-for frame in range(48):
- x=(frame%16)*128;y=(frame//16)*128
- opaque=[p for p in im.crop((x,y,x+128,y+128)).getdata() if p[3]>100]
- if len(opaque)>512:
+for frame in range(clip['frames']):
+ x=(frame%columns)*cell;y=(frame//columns)*cell
+ opaque=[p for p in im.crop((x,y,x+cell,y+cell)).getdata() if p[3]>100]
+ if len(opaque)>cell*cell/32:
   mean=sum(p[0]+p[1]+p[2] for p in opaque)/len(opaque)
   assert mean>25,'Opaque black slash frame '+str(frame)
 `],{cwd:root,encoding:'utf8',env:{...process.env,PYTHONDONTWRITEBYTECODE:'1'}});assert.equal(result.status,0,result.error?.message||result.stderr);

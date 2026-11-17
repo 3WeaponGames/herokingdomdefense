@@ -36,12 +36,13 @@ function buildBehavior(spec,project){
   spec=Object.assign({},spec,{type:'behavior'});project=typeof project==='function'?project:p=>p;const origin=point(spec.origin),u=direction(spec),v={x:-u.y,y:u.x},angle=Math.atan2(u.y,u.x),radius=Math.max(0,finite(spec.radius,finite(spec.range,100))),width=Math.max(0,finite(spec.width,20)),half=Math.min(Math.PI,Math.max(0,finite(spec.halfAngle,finite(spec.arcDegrees,120)/2/DEG))),paths=spec.paths||{};
   const polar=(a,r=radius)=>add(origin,{x:Math.cos(a)*r,y:Math.sin(a)*r});let outline;
   if(spec.kind==='corridor'){const end=add(origin,mul(u,radius));outline=[add(origin,mul(v,width)),add(end,mul(v,width)),add(end,mul(v,-width)),add(origin,mul(v,-width))];}
-  else if(spec.kind==='arc'){outline=[origin];for(let i=0;i<=48;i++)outline.push(polar(angle-half+2*half*i/48));}
+  else if(spec.kind==='arc'){const back=Math.max(0,Math.min(radius,finite(spec.startWidth)/2));outline=back&&half<Math.PI/2?[add(origin,mul(v,back))]:[origin];for(let i=0;i<=48;i++)outline.push(polar(angle+half-2*half*i/48));if(back&&half<Math.PI/2)outline.push(add(origin,mul(v,-back)));}
   else {outline=[];for(let i=0;i<64;i++)outline.push(polar(i*Math.PI*2/64));}
   const result=model(spec,project,outline);result.hitInterior=spec.hitInterior===true;result.closed=true;
   const rangeAt=offsetPixels(project,origin,u,Math.max(Math.max(0,finite(spec.minHandleDistance,22)),length(sub(projectPoint(project,polar(angle)),projectPoint(project,origin)))));
   if(paths.radius||paths.range)result.handles.push(node(spec.kind==='circle'?'radius':'range','radius',rangeAt,project,{label:spec.radiusLabel||(spec.kind==='circle'?'Radius':'Range'),shape:'diamond',anchor:projectPoint(project,polar(angle))}));
   if(spec.kind==='arc'&&paths.arc){result.handles.push(node('arc-start','arc',polar(angle-half),project,{label:'Arc angle',shape:'diamond',side:-1}),node('arc-end','arc',polar(angle+half),project,{label:'Arc angle',shape:'diamond',side:1}));}
+  if(spec.kind==='arc'&&paths.width)result.handles.push(node('width','width',reachableHandle(project,add(origin,mul(v,Math.max(0,finite(spec.startWidth))/2)),origin,v,Math.max(0,finite(spec.minHandleDistance,22))),project,{label:'Start width',shape:'diamond',axis:v}));
   if(spec.kind==='corridor'&&paths.width)result.handles.push(node('width','width',add(add(origin,mul(u,radius*.5)),mul(v,width)),project,{label:spec.widthLabel||'Projectile radius',shape:'diamond',axis:v}));
   if(paths.rotation)result.handles.push(node('rotate','rotate',offsetPixels(project,rangeAt,u,finite(spec.rotationPadding,30)),project,{label:'Direction',shape:'circle',stem:projectPoint(project,rangeAt)}));
   return annotate(result);
@@ -82,7 +83,7 @@ function update(drag,pointer,modifiers){
   else if(drag.kind==='radius'){const gain=finite(drag.spec.radiusGain,1);if(Math.abs(gain)>EPS)change(paths.radius||paths.range,(length(sub(pointer,drag.origin))-length(sub(drag.pointer,drag.origin)))/gain*factor);}
   else if(drag.kind==='width'){const gain=finite(drag.spec.widthGain,1);if(Math.abs(gain)>EPS)change(paths.width,dot(delta,drag.widthAxis)/gain*factor);}
   else if(drag.kind==='rotate'||drag.kind==='arc'){
-    const vector=sub(pointer,drag.origin);if(length(vector)>EPS){const angle=Math.atan2(vector.y,vector.x);let amount=angle-drag.lastAngle;while(amount>Math.PI)amount-=Math.PI*2;while(amount< -Math.PI)amount+=Math.PI*2;next.lastAngle=angle;next.angleDelta=drag.angleDelta+amount*DEG*factor;if(drag.kind==='rotate')change(paths.rotation,amount*DEG*factor);else change(paths.arc,amount*DEG*factor*(drag.handleId==='arc-start'?-2:2));}
+    const vector=sub(pointer,drag.origin);if(length(vector)>EPS){const angle=Math.atan2(vector.y,vector.x);let amount=angle-drag.lastAngle;while(amount>Math.PI)amount-=Math.PI*2;while(amount< -Math.PI)amount+=Math.PI*2;next.lastAngle=angle;next.angleDelta=drag.angleDelta+amount*DEG*factor;if(drag.kind==='rotate')change(paths.rotation,amount*DEG*factor*finite(drag.spec.rotationFactor,1));else change(paths.arc,amount*DEG*factor*(drag.handleId==='arc-start'?-2:2));}
   }
   return next;
 }

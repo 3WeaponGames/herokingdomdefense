@@ -1,7 +1,7 @@
 "use strict";
 // Authored, baked biome ambience in battles only. No input, audio, collision,
 // actor state, saved data or combat RNG is owned by this component.
-var Clock = require("./BiomeWeatherState"), Catalog = require("./WeatherVFXCatalog"), RainCatalog = require("./HeroSkillVFXCatalog");
+var Clock = require("./BiomeWeatherState"), Catalog = require("./WeatherVFXCatalog"), RainCatalog = require("./HeroSkillVFXCatalog"), Snow = require("./SnowWeather");
 function valid(node) { return !!node && cc.isValid(node, true); }
 function activate(node, value) { if (node.active !== value) node.active = value; }
 function frameFor(art, index) {
@@ -21,8 +21,8 @@ var Weather = cc.Class({
     var cfg = this.data.levelCfg || {}, seed = String(cfg.ID || cfg.id || cfg.prefab || this.biome).split("").reduce(function (n, c) { return ((n * 33) ^ c.charCodeAt(0)) >>> 0; }, 5381);
     this.clock = Clock.create(seed, this.biome);
     this.ensureGround();
-    this.hide = function () { if (!this.current()) { this.node.destroy(); return; } this.hidden = true; activate(this.node, false); if (valid(this.ground)) activate(this.ground, false); };
-    this.show = function () { if (!this.current()) { this.node.destroy(); return; } this.hidden = false; activate(this.node, true); if (valid(this.ground)) activate(this.ground, true); };
+    this.hide = function () { if (!this.current()) { this.node.destroy(); return; } this.pauseSnow(true);this.hidden = true; activate(this.node, false); if (valid(this.ground)) activate(this.ground, false); };
+    this.show = function () { if (!this.current()) { this.node.destroy(); return; } this.hidden = false; activate(this.node, true);this.pauseSnow(!!this.ui.isPauset||!this.ui.node.activeInHierarchy); if (valid(this.ground)) activate(this.ground, true); };
     cc.game.on(cc.game.EVENT_HIDE, this.hide, this); cc.game.on(cc.game.EVENT_SHOW, this.show, this);
   },
   current: function () {
@@ -37,12 +37,14 @@ var Weather = cc.Class({
     this.ground = new cc.Node("Weather ground splashes"); this.ground.setParent(this.game.ndDown); this.groundParent = this.game.ndDown;
     this.ground.group = this.game.ndDown.group; this.ground.zIndex = 0; this.ground._depthGroundVisual = true;
   },
+  pauseSnow: function(value,allowCapture){if(this.arts)this.arts.forEach(function(art){if(art.snow)art.nodes.forEach(function(record){Snow.pause(record,!!value,allowCapture);});});},
   prepare: function (kind, ground) {
     var art = this.arts.get(kind), self = this; if (art) return art;
     var clip = (kind.indexOf("forest-rain-") === 0 ? RainCatalog : Catalog).clips.filter(function (c) { return c.id === kind; })[0];
     if (!clip || ground && !valid(this.ground)) return null;
     art = { clip: clip, frames: new Map(), nodes: [], asset: null, ground: ground }; this.arts.set(kind, art);
-    cc.resources.load(clip.resource, cc.SpriteFrame, function (error, asset) {
+    art.snow=Snow.supported(kind)&&!ground;
+    cc.resources.load(art.snow?Snow.resource:clip.resource, cc.SpriteFrame, function (error, asset) {
       if (self.disposed || !valid(self.node) || self.arts.get(kind) !== art || !self.current()) return;
       if (error || !asset) { art.failed = true; return; } art.asset = asset.addRef ? asset.addRef() : asset;
     });
@@ -64,6 +66,10 @@ var Weather = cc.Class({
     if (!art.asset) return;
     var clip = art.clip, area = entity.ground ? areas.ground : areas.air;
     if (!area || !area.width || !area.height) return;
+    if(art.snow){
+      var snow=art.nodes[0];if(!snow){snow=Snow.create(this.node,entity.kind,art.asset,this.clock.seed,area);art.nodes.push(snow);}
+      activate(snow.node,true);Snow.paint(snow,area,entity.opacity);return;
+    }
     var cell = Math.max(256, area.width / 4, area.height / 6), columns, rows, startX, startY;
     if (entity.ground) {
       // World-aligned cells keep marks on the floor during camera movement.
@@ -87,17 +93,21 @@ var Weather = cc.Class({
   update: function (dt) {
     if (!this.clock || this.disposed) return;
     if (!this.current() || this.game.gameStatus === require("KinghtFallModle").KinghtFallGameStage.End) { this.node.destroy(); return; }
-    if (this.hidden || this.ui.isPauset || !this.ui.node.activeInHierarchy) return;
+    var paused=this.hidden||this.ui.isPauset||!this.ui.node.activeInHierarchy;
+    this.pauseSnow(paused);
+    if(paused)return;
     this.ensureGround();
     var entities = Clock.step(this.clock, Math.max(0, Math.min(1, dt))), seen = new Set(), areas = { air: this.viewport(false), ground: valid(this.ground) ? this.viewport(true) : null };
     for (var i = 0; i < entities.length; i++) this.paint(entities[i], seen, areas);
     this.arts.forEach(function (art) { if (!seen.has(art)) art.nodes.forEach(function (record) { if (valid(record.node)) activate(record.node, false); }); });
   },
-  onDisable: function () { if (valid(this.ground)) activate(this.ground, false); if (this.clock && !this.disposed && !this.current()) this.node.destroy(); },
+  onDisable: function () { this.pauseSnow(true,false);if (valid(this.ground)) activate(this.ground, false); if (this.clock && !this.disposed && !this.current()) this.node.destroy(); },
+  // Reconcile snow from update, after parent activation has completed. Both a
+  // capture and releasing its sprite can otherwise mutate an activating tree.
   onEnable: function () { if (!this.hidden && valid(this.ground)) activate(this.ground, true); },
   onDestroy: function () {
     this.disposed = true; cc.game.off(cc.game.EVENT_HIDE, this.hide, this); cc.game.off(cc.game.EVENT_SHOW, this.show, this);
-    if (this.arts) this.arts.forEach(function (art) { art.nodes.forEach(function (record) { if (valid(record.node)) record.sprite.spriteFrame = null; }); art.frames.forEach(function (frame) { frame.destroy(); }); if (art.asset && art.asset.decRef) art.asset.decRef(); });
+    if (this.arts) this.arts.forEach(function (art) { art.nodes.forEach(function (record) { if(art.snow){Snow.releaseSnapshot(record);if(valid(record.node)){record.system.spriteFrame=null;record.node.destroy();}}else if (valid(record.node)) record.sprite.spriteFrame = null; }); art.frames.forEach(function (frame) { frame.destroy(); }); if (art.asset && art.asset.decRef) art.asset.decRef(); });
     if (valid(this.ground)) this.ground.destroy();
     if (this.game && this.game._forestRain === this) delete this.game._forestRain;
   }

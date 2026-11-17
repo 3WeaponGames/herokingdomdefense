@@ -2,7 +2,7 @@
 // Fixed workbook atlases only. Load/decode/upload under the existing Loading
 // barrier; keep one session reference so later style/stage switches stay warm.
 var Catalog=require("./HeroSkillVFXCatalog");
-function plan(){var seen=new Set();return Catalog.clips.filter(function(clip){if(seen.has(clip.resource))return false;seen.add(clip.resource);return true;}).map(function(clip){return{resource:clip.resource,kind:clip.kind,bytes:clip.kind==="spine"?clip.decodedBytes:clip.columns*clip.cell*Math.ceil(clip.frames/clip.columns)*clip.cell*4};});}
+function plan(){var seen=new Set(),textures=new Set();return Catalog.clips.filter(function(clip){if(seen.has(clip.resource))return false;seen.add(clip.resource);return true;}).map(function(clip){var bytes=clip.kind==="spine"?clip.decodedBytes:clip.columns*clip.cell*Math.ceil(clip.frames/clip.columns)*clip.cell*4;if(clip.textureSet){if(textures.has(clip.textureSet))bytes=0;else textures.add(clip.textureSet);}return{resource:clip.resource,kind:clip.kind,bytes:bytes};});}
 function create(ops){
   var held=new Map(),waiting=[],running=false,complete=false,epoch=0,request=null,queue=plan();
   function current(entry){try{return !entry.current||entry.current();}catch(_){return false;}}

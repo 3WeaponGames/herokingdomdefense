@@ -229,6 +229,12 @@ function retimeAttack(controller,windup){
   if(windup===0)keys.concat(['spAniMa']).forEach(function(key){var track=current(controller[key]);if(track&&name(track)===animation)setTrackValue(track,'trackTime',clip.hit);});
   maintainAttackTiming(controller);return true;
 }
+function setAttackPlayback(controller,playback){
+  if(!controller||!(typeof playback==="number"&&isFinite(playback)&&playback>=0))return false;
+  var master=current(controller.spAniBody);if(!master||loop(master))return false;
+  retimedAttacks.set(controller,{token:attackTokens.get(controller)||0,animation:name(master),speed:playback});
+  maintainAttackTiming(controller);return true;
+}
 function startRiderPose(controller,state){
   state.animation=state.animation||attackName(controller);prepareAttack(controller,state.animation);
   keys.forEach(function(key){var renderer=controller[key];if(renderer){var track=renderer.setAnimation(0,state.animation,false);if(typeof state.playback==='number')setTrackValue(track,'timeScale',state.playback);}});
@@ -410,6 +416,7 @@ exports.isCharging = function(controller){var state=combatStates.get(controller)
 exports.releaseChargedAttack = releaseChargedAttack;
 exports.attackPoseTime = function(controller){return clipInfo(controller,attackName(controller)).hit;};
 exports.skillTiming = skillTiming;
+exports.setAttackPlayback = setAttackPlayback;
 exports.retimeAttack = retimeAttack;
 exports.enableCombatMotion = enableCombatMotion;
 exports.setMoving = setMoving;

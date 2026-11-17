@@ -98,24 +98,21 @@ test('uniform, axis and rotation controls change only the selected VFX fields',(
 }));
 
 test('a click without movement and a middle-button pan produce no settings edits',()=>withFixture(async f=>{
-  await f.load('guardian');f.view.selectHandle('defense');const before=f.view.getState(),node=handle(effect(f,'defense'),'move');f.reset();f.emit('pointerdown',node);f.emit('pointerup',node);assert.deepEqual(f.traces.ends,[[{},true]]);assert.deepEqual(f.view.getState().settings,before.settings);
+  await f.load('guardian');f.view.selectHandle('physicalShield');const before=f.view.getState(),node=handle(effect(f,'physicalShield'),'move');f.reset();f.emit('pointerdown',node);f.emit('pointerup',node);assert.deepEqual(f.traces.ends,[[{},true]]);assert.deepEqual(f.view.getState().settings,before.settings);
   f.reset();f.emit('pointerdown',{x:300,y:240},{button:1});f.emit('pointermove',{x:330,y:260},{button:1});f.emit('pointerup',{x:330,y:260},{button:1});const after=f.view.getState();assert.equal(after.view.panX,before.view.panX+30);assert.equal(after.view.panY,before.view.panY+20);assert.deepEqual(after.settings,before.settings);assert.equal(f.traces.starts.length,0);assert.equal(f.traces.ends.length,0);assert.equal(f.traces.changes.length,0);
 }));
 
-test('native Arrow Volley VFX controls update its real nine-path guides without changing collision width',()=>withFixture(async f=>{
+test('single-volley VFX transforms move the selected artwork without changing its independent gameplay arc',()=>withFixture(async f=>{
   for(const control of ['scale-0','scale-x','scale-y','rotate','move']){
-    await f.load('skirmisher');f.view.selectHandle('cast');f.view.setTransformMode(control==='move'?'move':control==='rotate'?'rotate':'scale');const before=f.view.getState(),group=effect(f,'cast'),node=handle(group,control),p=group.screenOrigin;
-    assert.equal(new Set(before.nativeGuidePaths.map(row=>row.index)).size,9);
-    const next=control==='move'?{x:node.x+25,y:node.y-15}:control==='rotate'?{x:p.x-(node.y-p.y),y:p.y+(node.x-p.x)}:{x:p.x+(node.x-p.x)*1.2,y:p.y+(node.y-p.y)*1.2};f.reset();
-    drag(f,node,{x:next.x-node.x,y:next.y-node.y});const after=f.view.getState();assert(after.nativeGuidePaths.some((row,i)=>differentPoint(row.from,before.nativeGuidePaths[i].from)||differentPoint(row.to,before.nativeGuidePaths[i].to)),control+' must move the actual trajectory guide');assert.equal(after.settings.projectileWidth,before.settings.projectileWidth,'Art transforms cannot change projectile width');assert.equal(f.traces.ends.length,1);assert.equal(f.traces.ends[0][1],true);
+    await f.load('skirmisher');f.view.selectHandle('cast');f.view.setTransformMode(control==='move'?'move':control==='rotate'?'rotate':'scale');const before=f.view.getState(),group=effect(f,'cast'),node=handle(group,control),p=group.screenOrigin,area=clone(behavior(f).geometry);
+    const next=control==='move'?{x:node.x+25,y:node.y-15}:control==='rotate'?{x:p.x-(node.y-p.y),y:p.y+(node.x-p.x)}:{x:p.x+(node.x-p.x)*1.2,y:p.y+(node.y-p.y)*1.2};f.reset();drag(f,node,{x:next.x-node.x,y:next.y-node.y});const after=f.view.getState();assert.notDeepEqual(after.settings.visual,before.settings.visual);assert.deepEqual(clone(behavior(f).geometry),area);assert.equal(f.traces.ends.length,1);assert.equal(f.traces.ends[0][1],true);
     const expected=control==='move'?['visual.castOffsetX','visual.castOffsetY']:[control==='scale-0'?'visual.castScale':control==='scale-x'?'visual.castScaleX':control==='scale-y'?'visual.castScaleY':'visual.castRotation'];assert.deepEqual(Object.keys(f.traces.ends[0][0]).sort(),expected.sort());
   }
 }));
 
-test('the Arrow Volley width and reach nodes edit their distinct gameplay and native source controls',()=>withFixture(async f=>{
-  await f.load('skirmisher');f.view.setTransformMode('scale');let group=behavior(f),node=handle(group,'width'),p=group.screenOrigin,before=f.view.getState();f.reset();
-  drag(f,node,{x:0,y:-25});let after=f.view.getState();assert(after.settings.projectileWidth>before.settings.projectileWidth);assert.deepEqual(Object.keys(f.traces.ends[0][0]),['projectileWidth']);near(behavior(f).geometry.width,after.settings.projectileWidth);assert.equal(after.settings.visual.castScale,before.settings.visual.castScale);
-  group=behavior(f);node=handle(group,'range');p=group.screenOrigin;before=after;f.reset();drag(f,node,{x:(node.x-p.x)*.15,y:(node.y-p.y)*.15});after=f.view.getState();assert(after.settings.visual.castScale>before.settings.visual.castScale);assert.deepEqual(Object.keys(f.traces.ends[0][0]),['visual.castScale']);assert(behavior(f).geometry.radius>group.geometry.radius);assert.equal(after.settings.projectileWidth,before.settings.projectileWidth);
+test('single-volley arc and reach nodes edit the actual damage area independently of the native artwork',()=>withFixture(async f=>{
+  await f.load('skirmisher');f.view.setTransformMode('scale');let group=behavior(f),node=handle(group,'range'),p=group.screenOrigin,before=f.view.getState();f.reset();drag(f,node,{x:(node.x-p.x)*.2,y:(node.y-p.y)*.2});let after=f.view.getState();assert(after.settings.volleyRange>before.settings.volleyRange);assert.deepEqual(Object.keys(f.traces.ends[0][0]),['volleyRange']);assert(behavior(f).geometry.radius>group.geometry.radius);assert.equal(after.settings.visual.castScale,before.settings.visual.castScale);
+  group=behavior(f);node=handle(group,'arc-end');p=group.screenOrigin;before=after;const a=-.12,dx=node.x-p.x,dy=node.y-p.y,next={x:p.x+dx*Math.cos(a)-dy*Math.sin(a),y:p.y+dx*Math.sin(a)+dy*Math.cos(a)};f.reset();drag(f,node,{x:next.x-node.x,y:next.y-node.y});after=f.view.getState();assert(after.settings.visual.arcDegrees>before.settings.visual.arcDegrees);assert.deepEqual(Object.keys(f.traces.ends[0][0]),['visual.arcDegrees']);near(behavior(f).geometry.halfAngle,after.settings.visual.arcDegrees*Math.PI/360);assert.equal(after.settings.volleyRange,before.settings.volleyRange);assert.equal(after.settings.visual.castRotation,before.settings.visual.castRotation);
 }));
 
 test('Fighter and Vanguard arc and range nodes immediately reflect the actual damage area',()=>withFixture(async f=>{

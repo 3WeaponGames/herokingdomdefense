@@ -25,6 +25,11 @@ def times(value):
   for part in value.values():yield from times(part)
  elif isinstance(value,list):
   for part in value:yield from times(part)
+def preserve_supplemental(clips,previous):
+ managed={clip['id'] for clip in clips}
+ result=list(clips)+[clip for clip in previous if clip.get('id') not in managed]
+ if len({clip['id'] for clip in result})!=len(result):raise ValueError('Duplicate native VFX ID')
+ return result
 def run(source,artifacts):
  tx=Transaction(ROOT,artifacts);clips=[];written=set();base='assets/resources/vfx/hero-skills'
  for folder in ('assets/resources/vfx',base):tx.folder(folder)
@@ -63,8 +68,12 @@ def run(source,artifacts):
   if not duration>0:raise ValueError('Empty animation: '+ident)
   clips.append(dict(id=ident,name=label,style=style,slot=slot,phase='loop' if loop else 'start' if slot=='physicalShield' else 'once',group=group,loop=loop,frames=round(duration*120),fps=120,kind='spine',bundle='resources',resource='vfx/hero-skills/'+group+'/'+group,uuid=asset_uuid(jsonfile),animation=animation,duration=duration,width=width,height=height,anchorX=-left/width,anchorY=-bottom/height,decodedBytes=decoded,premultipliedAlpha=False,sha256=hashlib.sha256((source_dir/'effect.json').read_bytes()).hexdigest(),source={'directory':str(source_dir),'skeleton':data['skeleton']['name']}))
  for clip in clips:
-  if clip['id']=='skirmisher-triple-volley':clip.update(trajectory='skirmisher-atx117',originX=paths['sourceOrigin']['x'],originY=paths['sourceOrigin']['y'],defaultRotation=paths['defaultRotation'],sourceSha256=paths['sourceSha256'])
- tx.json('tools/skills-vfx/native-clips.json',clips)
+  if clip['id']=='skirmisher-triple-volley':clip.update(trajectory='skirmisher-atx117',originX=paths['sourceOrigin']['x'],originY=paths['sourceOrigin']['y'],defaultRotation=paths['defaultRotation'],sourceSha256=paths['sourceSha256'],textureSet='skirmisher-atx117')
+ # Supplemental exact-native effects (for example SP162) have independent
+ # importers. Refreshing this collection must retain their stable entries.
+ native_file='tools/skills-vfx/native-clips.json'
+ previous=json.loads(tx.read(native_file) or b'[]');clips=preserve_supplemental(clips,previous)
+ tx.json(native_file,clips)
  print(json.dumps({'clips':len(clips),'transaction':tx.commit()},indent=2))
 if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('artifacts',type=Path);args=parser.parse_args();run(args.source,args.artifacts)

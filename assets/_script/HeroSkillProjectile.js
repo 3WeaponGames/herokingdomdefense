@@ -6,6 +6,12 @@ function add(point,offset) { return {x:point.x+finite(offset&&offset.x),y:point.
 function point(value) { return {x:value.x,y:value.y}; }
 function scenePoint(x,y) { return typeof cc!=="undefined"&&cc.v2?cc.v2(x,y):{x:x,y:y}; }
 function unit(value,fallback) { var x=finite(value&&value.x),y=finite(value&&value.y),length=Math.hypot(x,y);return length>1e-9?{x:x/length,y:y/length}:fallback?unit(fallback):{x:1,y:0}; }
+// Reflect a left-facing effect horizontally instead of turning its artwork
+// upside down. The same signed basis is used by native arrow collisions.
+function facingTransform(direction,rotation,scaleX,scaleY){
+  var d=unit(direction),left=d.x<0,angle=Math.atan2(d.y,d.x)*180/Math.PI;
+  return{angle:angle+(left?-1:1)*finite(rotation),scaleX:finite(scaleX,1),scaleY:finite(scaleY,1)*(left?-1:1),mirrored:left};
+}
 function shot(hero,target,direction,sample) {
   var aim=unit(target?{x:target.x-hero.x,y:target.y-hero.y}:direction),origin=point(hero);
   function sampled(d){var p=sample&&sample(d);return p&&typeof p.x==='number'&&typeof p.y==='number'&&isFinite(p.x)&&isFinite(p.y)?point(p):point(hero);}
@@ -56,10 +62,23 @@ function actorPoint(actor,main) {
   var a=actor.node.convertToWorldSpaceAR(scenePoint(0,0)),b=bar.convertToWorldSpaceAR(scenePoint(0,0));return main.convertToNodeSpaceAR(scenePoint(a.x+(b.x-a.x)*.55,a.y+(b.y-a.y)*.55));
 }
 function area(style,origin,visual,direction,radius) {
-  visual=visual||{};var angle=finite(visual.rotation)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),d=unit(direction),degrees=finite(visual.arcDegrees,style==='vanguard'?72:120);
-  return {origin:add(origin,{x:visual.offsetX,y:visual.offsetY}),radius:radius*finite(visual.scale,1),direction:{x:d.x*c-d.y*s,y:d.x*s+d.y*c},halfAngle:degrees*Math.PI/360};
+  visual=visual||{};var d=unit(direction),angle=finite(visual.rotation)*(d.x<0?-1:1)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),degrees=finite(visual.arcDegrees,style==='vanguard'?72:120);
+  var reach=radius*finite(visual.scale,1);return {origin:add(origin,{x:visual.offsetX,y:visual.offsetY}),radius:reach,direction:{x:d.x*c-d.y*s,y:d.x*s+d.y*c},halfAngle:degrees*Math.PI/360,startWidth:style==='vanguard'?Math.min(reach*2,Math.max(0,finite(visual.arcStartWidth,120))):0};
+}
+function containsArea(shape,target){
+  var x=target.x-shape.origin.x,y=target.y-shape.origin.y,r=shape.radius,squared=x*x+y*y;if(squared>r*r+1e-7)return false;
+  var d=unit(shape.direction),along=x*d.x+y*d.y,across=Math.abs(x*-d.y+y*d.x),half=finite(shape.halfAngle,Math.PI),width=Math.max(0,finite(shape.startWidth));
+  if(width>0&&half<Math.PI/2){if(along< -1e-7)return false;var end=r*Math.cos(half);return along>=end||across<=Math.min(r,width/2)+(r*Math.sin(half)-Math.min(r,width/2))*along/end+1e-7;}
+  return squared<=1e-14||along/Math.sqrt(squared)>=Math.cos(half)-1e-9;
+}
+function volleyArea(origin,direction,tuning,visual){
+  tuning=tuning||{};visual=visual||{};
+  return area('skirmisher',origin,{offsetX:visual.offsetX,offsetY:visual.offsetY,rotation:visual.rotation,arcDegrees:finite(visual.arcDegrees,16),scale:1},direction,Math.max(0,finite(tuning.volleyRange,250)));
 }
 function arrow(radius) { radius=Math.max(1,finite(radius,28));return {tail:-radius*.85,base:radius*.4,tip:radius*.85,halfHeight:radius*.35,stroke:radius*.18}; }
 var bones={skirmisher:'Rider/HandRight/Bow/Arrow',fighter:'Rider/HandRight/Sword',vanguard:'Rider/HandRight/Spear',mystic:'Rider/HandRight/Staff',bruiser:'Rider/HandRight/Axe',guardian:'Rider/HandRight/Blunt'};
 exports.add=add;exports.point=point;exports.unit=unit;exports.shot=shot;exports.actorPoint=actorPoint;exports.area=area;exports.arrow=arrow;exports.bones=bones;
 exports.visualPoint=point;exports.damagePoint=point;
+exports.facingTransform=facingTransform;
+exports.containsArea=containsArea;
+exports.volleyArea=volleyArea;

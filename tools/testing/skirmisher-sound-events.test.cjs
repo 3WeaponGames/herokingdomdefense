@@ -6,7 +6,7 @@ const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function scene(config={}){
  const events=[];
  const h=setup({BattleSounds:{charge(){},chargeReady(){events.push({kind:'ready',time:rt.state.time});},skirmisherRelease(_hero,active){events.push({kind:'release',active,time:rt.state.time});},hit(target,source,damage,options){events.push({kind:'hit',target,source,damage,options,time:rt.state.time});}},
-  ProjectileLooks:{prepare(){}},HeroMakerRider:{setCombatState(){},clearCombatState(){},isCharging:()=>true,releaseChargedAttack(){},skillTiming:()=>({hit:.1667})},HeroSkillHUD:{clear(){}}});
+  ProjectileLooks:{prepare(){},currentCatalog:()=>null},HeroMakerRider:{setCombatState(){},clearCombatState(){},isCharging:()=>true,releaseChargedAttack(){},skillTiming:()=>({hit:.1667})},HeroSkillHUD:{clear(){}}});
  h.g.gameStatus=1;h.g.mapSize={width:2000,height:1000};h.g._combatEpoch=1;h.ui.isPauset=false;h.d.heroStyle='skirmisher';h.ui.ctrEffect={showDamageNum(){},onMonsterAttack(){}};
  h.e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance=()=>({getGuideData:()=>({getGuideTips:()=>true})});
  const hero={heroStyle:'skirmisher',heroRanged:true,node:new Node('hero',h.g.ndMain),hp:500,hpMax:1000,attackRange:500,crit:-1,critDam:1.5,time:{Attack:0},_relicHero:true,_heroSecondary:{},ctrHp:{setHp(){}},
@@ -42,8 +42,8 @@ test('cancel, pause and battle reset cannot play an early or retained charge com
  h.hero.onRestart();h.rt.update(.1);assert.equal(h.events.length,0);h.rt.update(3.9);assert.equal(h.events.filter(e=>e.kind==='ready').length,1);
 });
 
-test('active release starts at projectile release, then distinct pierced targets receive immediate primary hit contexts',()=>{
- const h=scene({HeroSkills:{skirmisher:{windup:.4,chargeRate:0,projectileSpeed:1000,projectileWidth:12}}}),a=h.enemy(100),b=h.enemy(200),miss=h.enemy(100,60);
+test('active release and its one whole arc send immediate primary hit contexts at the authored hit time',()=>{
+ const h=scene({HeroSkills:{skirmisher:{windup:.4,volleyHitTime:.4,chargeRate:0,projectileSpeed:1000,projectileWidth:12}}}),a=h.enemy(100),b=h.enemy(200),miss=h.enemy(100,60);
  assert(h.rt.cast({x:1,y:0}));assert.equal(h.events.length,0,'cast confirmation fired a release sound');h.rt.update(.399);assert.equal(h.events.length,0);
  h.rt.update(.001);const releases=h.events.filter(e=>e.kind==='release');assert.equal(releases.length,1);assert.equal(releases[0].active,true);close(releases[0].time,.4);
  h.rt.update(.3);const hits=h.events.filter(e=>e.kind==='hit');assert.equal(hits.length,2);assert.deepEqual(hits.map(e=>e.target),[a,b]);assert(!hits.some(e=>e.target===miss));
@@ -52,13 +52,13 @@ test('active release starts at projectile release, then distinct pierced targets
 });
 
 test('a charge crossing immediately before active release retains its ready click independently of charge consumption',()=>{
- const h=scene({HeroSkills:{skirmisher:{windup:.4}}});h.rt.state.charge=.9;assert(h.rt.cast({x:1,y:0}));h.rt.update(.4);
+ const h=scene({HeroSkills:{skirmisher:{windup:.4,volleyHitTime:.4}}});h.rt.state.charge=.9;assert(h.rt.cast({x:1,y:0}));h.rt.update(.4);
  assert.deepEqual(h.events.map(e=>e.kind),['ready','release']);close(h.events[0].time,.4);close(h.events[1].time,.4);close(h.rt.state.charge,0);
 });
 
 test('missed or canceled active arrows and retired projectile lifetimes do not emit hit sounds',()=>{
  for(const mode of ['miss','cancel','epoch']){
-  const h=scene({HeroSkills:{skirmisher:{windup:.4}}});h.enemy(100,mode==='miss'?80:0);assert(h.rt.cast({x:1,y:0}));
+  const h=scene({HeroSkills:{skirmisher:{windup:.4,volleyHitTime:.4}}});h.enemy(100,mode==='miss'?80:0);assert(h.rt.cast({x:1,y:0}));
   if(mode==='cancel')h.rt.clear(true);if(mode==='epoch')h.g._combatEpoch++;
   h.rt.update(2);assert.equal(h.events.filter(e=>e.kind==='hit').length,0,mode);
   if(mode!=='miss')assert.equal(h.events.filter(e=>e.kind==='release').length,0,mode);

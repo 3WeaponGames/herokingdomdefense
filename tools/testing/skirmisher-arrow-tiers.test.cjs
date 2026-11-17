@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'../..'),PNG=require('../../packages/hkd-characters/lib/png-atlas'),Looks=require('../../assets/_script/ProjectileLooks'),Settings=require('../../assets/_script/HeroSkillSettings');
-const read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8')),data=read('assets/resources/projectiles/catalog.json'),config=read('assets/KinghtFallConfig/GameJsonCfg.json');
+const read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8')),sourceData=read('assets/resources/projectiles/catalog.json'),data={...sourceData,assignments:{...sourceData.assignments,hero:{}}},config=read('assets/KinghtFallConfig/GameJsonCfg.json');
 const original='assets/KinghtFallEnemyAni/wqyl_lead/wqyl_lead_bullet_jian/wqyl_lead_bullet_jian',purple='assets/resources/projectiles/hero-arrow-tier4/hero-arrow-tier4';
 const ids=['hero-skin:lv1','hero-skin:lv2','hero-skin:lv3','hero-skin:lv4-purple','hero-skin:lv4'];
 

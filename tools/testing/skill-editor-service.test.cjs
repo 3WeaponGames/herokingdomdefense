@@ -18,7 +18,7 @@ function fixture(t,primary={},secondary={}){
 
 test('a complete preview transform is one atomic draft edit, one undo step and one explicit publication',t=>{
  const primary={HeroSkills:{skirmisher:{extension:{keep:'primary'},visual:{extension:'retain'}}}},secondary={HeroSkills:{skirmisher:{extension:{keep:'mirror'},visual:{mirrorOnly:9}}}},f=fixture(t,primary,secondary),before=f.bytes(),start=f.service.snapshot();
- const changes=[{path:'visual.castOffsetX',value:21},{path:'visual.castOffsetY',value:-8},{path:'visual.castScale',value:.24},{path:'visual.castScaleX',value:1.3},{path:'visual.castRotation',value:35},{path:'projectileWidth',value:45}];
+ const changes=[{path:'visual.castOffsetX',value:21},{path:'visual.castOffsetY',value:-8},{path:'visual.castScale',value:.24},{path:'visual.castScaleX',value:1.3},{path:'visual.castRotation',value:35},{path:'volleyRange',value:450}];
  const edited=f.service.change(f.req({style:'skirmisher',changes}));assert.equal(edited.version,start.version+1);assert.equal(f.service.undoStack.length,1);assert.equal(f.service.redoStack.length,0);
  for(const edit of changes)assert.equal(Settings.get(edited.effective.skirmisher,edit.path),edit.value);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
  const undone=f.service.undo(f.req());assert.deepEqual(undone.data,start.data);assert.equal(f.service.undoStack.length,0);const redone=f.service.redo(f.req());for(const edit of changes)assert.equal(Settings.get(redone.effective.skirmisher,edit.path),edit.value);
@@ -28,7 +28,7 @@ test('a complete preview transform is one atomic draft edit, one undo step and o
 
 test('an unchanged or empty preview gesture preserves inherited defaults without creating history or writes',t=>{
  const f=fixture(t),before=f.bytes(),start=f.service.snapshot(),defaults=Settings.defaults('skirmisher');
- for(const changes of [[],[{path:'visual.castScale',value:defaults.visual.castScale},{path:'visual.castOffsetX',value:defaults.visual.castOffsetX},{path:'projectileWidth',value:defaults.projectileWidth}]]){
+ for(const changes of [[],[{path:'visual.castScale',value:defaults.visual.castScale},{path:'visual.castOffsetX',value:defaults.visual.castOffsetX},{path:'volleyRange',value:defaults.volleyRange}]]){
   const result=f.service.change(f.req({style:'skirmisher',changes}));assert.equal(result.version,start.version);assert.deepEqual(result.data,{});assert.equal(result.dirty,false);assert.equal(result.canUndo,false);
  }
  assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
@@ -89,8 +89,8 @@ test('no-change Save and focusing an inherited default perform no writes and add
  assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
 });
 
-test('obsolete separate projectile offsets remain intact on disk but cannot detach the sprite from its collider',t=>{
- const original={HeroSkills:{skirmisher:{projectileOffsetY:60,projectileFromBow:false,visual:{originX:999,offsetY:800,scale:3,extension:{keep:true}}}}},f=fixture(t,original,original),before=f.bytes(),snapshot=f.service.load();assert.equal(snapshot.effective.skirmisher.visual.originX,0);assert.equal(snapshot.effective.skirmisher.visual.offsetY,0);assert.equal(snapshot.effective.skirmisher.visual.scale,1);assert.equal(snapshot.dirty,false);assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);f.change('skirmisher','projectileWidth',41);assert.deepEqual(f.bytes(),before);f.service.save(f.req());for(const text of f.bytes()){const skill=JSON.parse(text).HeroSkills.skirmisher;assert.equal(skill.projectileWidth,41);assert.equal(skill.projectileOffsetY,60);assert.deepEqual(skill.visual,original.HeroSkills.skirmisher.visual);}
+test('obsolete projectile tuning remains on disk while the single hit arc exposes its independent saved offset',t=>{
+ const original={HeroSkills:{skirmisher:{projectileOffsetY:60,projectileFromBow:false,visual:{originX:999,offsetY:800,scale:3,extension:{keep:true}}}}},f=fixture(t,original,original),before=f.bytes(),snapshot=f.service.load();assert.equal(snapshot.effective.skirmisher.visual.originX,0);assert.equal(snapshot.effective.skirmisher.visual.offsetY,800);assert.equal(snapshot.effective.skirmisher.visual.scale,1);assert.equal(snapshot.dirty,false);assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);f.change('skirmisher','volleyRange',410);assert.deepEqual(f.bytes(),before);f.service.save(f.req());for(const text of f.bytes()){const skill=JSON.parse(text).HeroSkills.skirmisher;assert.equal(skill.volleyRange,410);assert.equal(skill.projectileOffsetY,60);assert.deepEqual(skill.visual,original.HeroSkills.skirmisher.visual);}
 });
 
 test('editing, undo, redo and discard stay in drafts and preserve unknown fields',t=>{

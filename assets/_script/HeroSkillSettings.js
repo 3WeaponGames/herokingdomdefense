@@ -2,7 +2,7 @@
 // One field contract for runtime, authoring and preview. Reading defaults never
 // creates saved overrides or changes an existing skill document.
 var Core = require("./HeroStyleSkills"), VFXCatalog = require("./HeroSkillVFXCatalog");
-var EFFECT_SLOTS=["passive","beam","mark","buff","taunt","shield","cast","channelHit","presence","defense","physicalShield"];
+var EFFECT_SLOTS=["passive","beam","mark","buff","taunt","shield","cast","castSecondary","channelHit","presence","defense","physicalShield"];
 var RESOURCE_PREFIXES=["resource","impactResource"].concat(EFFECT_SLOTS.map(function(slot){return slot+"Resource";}));
 var styles = [
   {id:"skirmisher",name:"Skirmisher",weapon:"Bow",skill:"Piercing Arrow"},
@@ -12,14 +12,15 @@ var styles = [
   {id:"bruiser",name:"Bruiser",weapon:"Axe",skill:"Blood Cleave"},
   {id:"guardian",name:"Guardian",weapon:"Hammer and shield",skill:"Iron Bulwark"}
 ];
-var VISUAL = {arcDegrees:120,originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",showBuiltin:true,animation:"",holdTime:-1,impactResource:"",impactResourceAnimation:"",impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
+var VISUAL = {arcDegrees:120,originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",resourcePlaybackRate:1,showBuiltin:true,animation:"",animationPlayback:1,holdTime:-1,impactResource:"",impactResourceAnimation:"",impactPlaybackRate:1,impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
 EFFECT_SLOTS.forEach(function(slot){
   if(slot!=="cast")VISUAL[slot+"Delay"]=0;
   VISUAL[slot+"Resource"]="";VISUAL[slot+"ResourceAnimation"]="";
   VISUAL[slot+"Scale"]=1;VISUAL[slot+"ScaleX"]=1;VISUAL[slot+"ScaleY"]=1;VISUAL[slot+"OffsetX"]=0;VISUAL[slot+"OffsetY"]=0;
   VISUAL[slot+"Rotation"]=0;VISUAL[slot+"Opacity"]=1;VISUAL[slot+"Color"]="";
+  VISUAL[slot+"PlaybackRate"]=1;
 });
-Object.assign(VISUAL,{castDelay:0,passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1,beamWidth:48,beamEndDuration:.25,markSpawnDuration:.5,shieldSpawnDuration:.5,shieldEndDuration:.625});
+Object.assign(VISUAL,{castDelay:0,arcStartWidth:120,passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1,beamWidth:48,beamEndDuration:.25,markSpawnDuration:.5,shieldSpawnDuration:.5,shieldEndDuration:.625});
 var AUDIO = {clip:"",volume:1,delay:0};
 var HELP = {
   cooldown:"Seconds between active-skill uses.",
@@ -28,14 +29,11 @@ var HELP = {
   chargeDecay:"Fraction of momentum lost each second while standing still.",
   chargedDamage:"Extra shot damage at full Steady Aim charge. 0.5 means 50% additional damage.",
   chargedRange:"Extra basic-attack range at full Steady Aim charge. 0.5 means 50% additional range; the range ring grows with the charge.",
-  windup:"Seconds between confirming the aimed skill and releasing its arrow.",
-  projectileSpeed:"Base arrow speed in world units per second. Momentum scales this from 100% at zero charge to 200% at full charge.",
-  distanceDamagePer100:"Added damage multiplier for every 100 units travelled. 0.1 adds 10% per 100 units.",
-  projectileWidth:"Damage corridor half-width in world units. 28 means 28 on each side (56 total). The blue strip shows actual hits; VFX thickness is separate.",
-  volleys:"Number of arrow volleys in the skill. The native authored barrage has three fixed volleys.",
-  arrowsPerVolley:"Arrows emitted in each generic projectile volley. The authored barrage uses its exact three source trajectories.",
-  spreadDegrees:"Total fan angle between the outer generic arrows, in degrees. The native barrage preserves the source artwork paths.",
-  volleyPlayback:"Playback multiplier for the complete triple-volley VFX and all matching contact times.",
+  windup:"Seconds from the cast start to the single rider/bow release. Independent of the one damaging volley hit time.",
+  volleyHitTime:"Gameplay seconds after the cast start before the one volley arc hit. Every living enemy inside the fixed arc is hit once at this moment. Cast start delay and additional contact delay are added separately; VFX playback does not change damage timing.",
+  volleyRange:"Maximum radius of the single volley hit arc, measured from its captured bow origin. This changes the gold damage boundary; the three-arrow VFX has independent transform controls.",
+  distanceDamagePer100:"Added damage multiplier for every 100 units from the captured volley origin to an enemy at the one hit moment. 0.1 adds 10% per 100 units.",
+  volleyPlayback:"Playback multiplier for the one three-arrow VFX. Windup fits its release pose; the independent actual hit time remains unchanged.",
   splashRadius:"Base active-skill splash radius in world units before stored target charges.",
   splashRadiusPerCharge:"Additional splash radius in world units per same-target channel hit.",
   maxStacks:"Maximum number of temporary melee-hit stacks.",
@@ -58,6 +56,7 @@ var HELP = {
   maxCharges:"Maximum number of same-target beam hits stored for Arcane Burst.",
   chargeDamage:"Additional active damage multiplier per stored beam hit. 0.15 adds 15% of basic damage per charge.",
   activeDamage:"Arcane Burst's basic-attack damage multiplier before stored charge and Crystal Orb bonuses.",
+  explosionTime:"Explosion / actual hit time in the selected cast VFX's source seconds. The default 0.76666665 is the native burst's explosion frame. Cast VFX playback retimes this marker, blank lead-in trimming is subtracted, and Additional VFX start delay plus contact delay are added afterward. Zero applies the hit at the visible cast start. Damage, lifesteal, hit reactions and on-hit effects all wait for this actual hit.",
   slow:"Movement speed reduction on each beam hit. 0.2 means 20%.",
   slowDuration:"How many seconds the beam's slow lasts after a hit.",
   missingDamage:"Extra passive damage at 100% missing HP, scaled by the actual missing-HP fraction.",
@@ -84,16 +83,21 @@ var VISUAL_HELP = {
   color:"Optional visual tint. Empty keeps the original effect colors; this does not change gameplay.",
   effectDuration:"Lifetime of the skill's area or arc artwork in gameplay seconds. Does not change damage timing or buff duration.",
   castDelay:"Additional seconds before the active effect and its matching damage contacts. The authored barrage and spear sequence use the same delay in gameplay and preview.",
-  castScale:"Size of the complete skill VFX. For the native Skirmisher barrage this also scales its exact arrow collision paths; other styles keep their separately authored damage area.",
-  castScaleX:"Horizontal size multiplier for the complete effect. Native Skirmisher collision paths use this same axis scale; other skills change artwork only.",
-  castScaleY:"Vertical size multiplier for the complete effect. Native Skirmisher collision paths use this same axis scale; other skills change artwork only.",
-  castOffsetX:"World-space horizontal offset from the captured cast origin. Native Skirmisher arrow colliders move with the artwork; other styles keep their damage origin.",
-  castOffsetY:"World-space vertical offset from the captured cast origin. Native Skirmisher arrow colliders move with the artwork; other styles keep their damage origin.",
-  castRotation:"Rotation relative to the captured aim direction. Native Skirmisher collision paths rotate with this effect; other styles change only the artwork.",
+  castSecondaryDelay:"Additional seconds after the shared cast start delay before Blood Cleave's second effect appears. Zero starts both effects together. Does not change damage timing.",
+  arcStartWidth:"Width in world units of Vanguard's flat rear hit-area edge. The sides widen toward its rounded outer arc. 0 restores a pointed cone. This changes actual skill hits and the gold preview boundary; VFX artwork has its own scale controls.",
+  castScale:"Size of the complete skill VFX. The gold hit boundary has separate gameplay size controls.",
+  castScaleX:"Horizontal size multiplier for the complete effect. Changes artwork only.",
+  castScaleY:"Vertical size multiplier for the complete effect. Changes artwork only.",
+  castOffsetX:"World-space horizontal artwork offset from its cast attachment. Does not move the damage origin.",
+  castOffsetY:"World-space vertical artwork offset from its cast attachment. Does not move the damage origin.",
+  castRotation:"Artwork rotation relative to the captured aim direction. Does not rotate the damage arc.",
   resource:"Optional imported effect used on the projectile, beam target, or skill area. This is separate from the effect played on each enemy hit.",
   resourceAnimation:"Animation from the selected Spine VFX asset. Empty uses its first available animation; sprite flipbooks use imported timing.",
   showBuiltin:"Show the procedural skill artwork alongside the selected VFX. Turning it off does not disable damage or custom effects.",
   animation:"Authored rider attack clip used for this skill. Empty uses the equipped fighting style; the selected clip supplies its attack marker.",
+  animationPlayback:"Saved speed multiplier for this skill's rider attack and stationary horse, on top of the whole-unit animation speed. Other ordinary attacks and a moving horse keep their own speed. Mystic channel formation uses this speed; damage ticks still use attack speed.",
+  resourcePlaybackRate:"Saved playback multiplier for the custom skill artwork. 0.5 plays at half speed and 2 plays at double speed; damage timing is unchanged.",
+  impactPlaybackRate:"Saved playback multiplier for on-hit artwork. Visible duration scales with playback; damage and the get-hit reaction delay are unchanged.",
   holdTime:"Mystic source-animation time to hold the scepter pose before beam damage begins. -1 uses the clip's authored attack marker.",
   impactResource:"Optional effect played at every enemy actually hit by the hero's basic attacks or active skill. Empty adds no custom on-hit effect.",
   impactResourceAnimation:"Animation from the selected on-hit Spine VFX. Empty uses its first available animation; sprites use their imported flipbook timing.",
@@ -117,18 +121,18 @@ function tuningFields(style){
     var min=0,max=20,step=.01,unit="";
     if(/^(cooldown|windup|.*Duration|duration)$/.test(key)){max=300;unit="seconds";}
     if(key==="duration"){min=.1;max=30;}
-    if(/^(maxStacks|maxCharges|strikes|volleys|arrowsPerVolley)$/.test(key)){min=1;max=100;step=1;}
-    if(key==="projectileSpeed"||key==="referenceMove"){min=1;max=5000;step=1;unit="units / second";}
+    if(/^(maxStacks|maxCharges|strikes)$/.test(key)){min=1;max=100;step=1;}
+    if(key==="referenceMove"){min=1;max=5000;step=1;unit="units / second";}
     if(key==="splashRadius"||key==="splashRadiusPerCharge"){min=key==="splashRadius"?1:0;max=2000;step=1;unit="units";}
     if(key==="tauntRadius"||key==="allyRadius"){min=1;max=2000;step=1;unit="units";}
-    if(key==="spreadDegrees"){max=360;step=1;unit="degrees";}
     if(key==="volleyPlayback"){min=.05;max=4;unit="playback multiplier";}
-    if(key==="contactDelay"){max=30;unit="seconds";}
-    if(key==="projectileWidth"){min=1;max=500;step=1;unit="units";}
+    if(key==="contactDelay"||key==="volleyHitTime"){max=30;unit="seconds";}
+    if(key==="volleyRange"){min=1;max=2000;step=1;unit="units";}
+    if(key==="explosionTime"){max=30;step=.001;unit="VFX source seconds";}
     if(key==="knockback"){max=2000;step=1;unit="units";}
     if(key==="slow"||key==="stackTenacity"||key==="stackReduction"||key==="allyReduction"){max=.95;unit="fraction";}
     if(key==="sacrifice"){max=.99;unit="current HP fraction";}
-    var field=number(key,label(key),min,max,step,unit);if(/^(maxStacks|maxCharges|strikes|volleys|arrowsPerVolley)$/.test(key))field.integer=true;if(HELP[key])field.help=HELP[key];return field;
+    var field=number(key,key==='explosionTime'?'Explosion / actual hit time':key==='volleyHitTime'?'Volley actual hit time':key==='volleyRange'?'Volley range':label(key),min,max,step,unit);if(/^(maxStacks|maxCharges|strikes)$/.test(key))field.integer=true;if(HELP[key])field.help=HELP[key];if(key==='activeDamage'&&style!=='mystic'){field.label='Active damage multiplier';field.help=style==='skirmisher'?'Final multiplier for the single volley hit after Steady Aim and distance bonuses. 0.8 is 80% of that damage. Does not change ordinary bow attacks.':'Final Blood Cleave damage multiplier after its missing-HP bonus. 0.5 is half damage. The HP sacrifice and missing-HP passive are unchanged.';}return field;
   });
 }
 var visualFields = Object.keys(VISUAL).map(function(key){
@@ -142,16 +146,18 @@ var visualFields = Object.keys(VISUAL).map(function(key){
   if(/Scale(?:X|Y)?$/.test(key)||key==="scale"){min=.01;max=10;step=.01;unit="";}
   if(/Opacity$/.test(key)||key==="opacity"){min=0;max=1;step=.01;unit="fraction";}
   if(/Playback$/.test(key)){min=0;max=4;step=.01;unit="playback multiplier";}
+  if(/PlaybackRate$/.test(key)||key==="animationPlayback"){min=.05;max=4;step=.01;unit="playback multiplier";}
   if(key==="beamWidth"){min=1;max=200;step=1;unit="visual units";}
   if(key==="beamEndDuration"||key==="markSpawnDuration"||key==="shieldSpawnDuration"||key==="shieldEndDuration"){min=.01;max=5;step=.01;unit="seconds";}
   if(key==="lineWidth"){min=0;max=200;step=.5;unit="0 = style default";}
   if(key==="effectDuration"||key==="impactDuration"){min=.01;max=30;step=.01;unit="seconds";}
   if(/Delay$/.test(key)){min=0;max=30;step=.01;unit="seconds";}
+  if(key==="arcStartWidth"){min=0;max=2000;step=1;unit="units";}
   if(key==="holdTime"){min=-1;max=30;step=.001;unit="seconds; -1 = authored hit";}
-  return number("visual."+key,key.indexOf("impact")===0?"On-hit "+label(key.slice(6)).toLowerCase():label(key),min,max,step,unit);
-}).map(function(field){var key=field.key,slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|cast)/.exec(key),purpose=slot?{passive:"the state-driven passive aura",beam:"Mystic's continuous beam",mark:"the overhead target mark",buff:"the fighting style's active buff aura",taunt:"the one-shot effect above each taunted enemy",shield:"Guardian's body shield",cast:"the complete active-skill effect at its captured cast position",channelHit:"the electrified effect on Mystic's current beam target",presence:"Guardian's protection aura on each nearby ally",defense:"Guardian's one-shot defense appearance",physicalShield:"Guardian's physical shield appearance and sustain"}[slot[1]]:"";
+  return number("visual."+key,key==="animationPlayback"?"Rider animation playback":key.indexOf("impact")===0?"On-hit "+label(key.slice(6)).toLowerCase():label(key),min,max,step,unit);
+}).map(function(field){var key=field.key,slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|castSecondary|cast)/.exec(key),purpose=slot?{passive:"the state-driven passive aura",beam:"Mystic's continuous beam",mark:"the overhead target mark",buff:"the fighting style's active buff aura",taunt:"the one-shot effect above each taunted enemy",shield:"Guardian's body shield",cast:"the complete active-skill effect at its captured cast position",castSecondary:"Blood Cleave's second simultaneous body-centered cast effect",channelHit:"the electrified effect on Mystic's current beam target",presence:"Guardian's protection aura on each nearby ally",defense:"Guardian's one-shot defense appearance",physicalShield:"Guardian's physical shield appearance and sustain"}[slot[1]]:"";
   if(slot)field.label=label(key).replace(/Resource Animation$/,"VFX animation").replace(/Resource$/,"VFX asset");
-  field.help=VISUAL_HELP[key]||(slot?(field.type==="vfx"?"Imported VFX for "+purpose+". Empty disables this artwork without affecting gameplay.":field.type==="effect-animation"?"Animation from the selected VFX; flipbooks use their imported timing.":/Delay$/.test(key)?"Seconds before "+purpose+" appears. Independent of the other effect layers and damage timing. The effect still stops as soon as its owning buff or target ends.":/Offset/.test(key)?"Visual offset for "+purpose+" in world units; positive Y moves upward. Damage geometry is unchanged.":/Scale/.test(key)?"Size multiplier for "+purpose+". Minimum scale is the size at the lowest passive intensity.":/Playback/.test(key)?"Animation speed at minimum or maximum passive intensity. Speed blends with stacks, momentum or missing HP without seeking the animation.":/Opacity/.test(key)?"Opacity of "+purpose+" from 0 (hidden) to 1 (fully visible).":/Color/.test(key)?"Optional tint for "+purpose+". Empty preserves the imported colors.":/Rotation/.test(key)?"Visual rotation in degrees; gameplay direction is unchanged.":key==="beamWidth"?"Displayed beam thickness in world units. Origin and target flares keep their proportions.":key==="beamEndDuration"?"Seconds for the release frames after a beam stops or switches targets.":key==="markSpawnDuration"?"Seconds for the non-looping mark to appear before its persistent loop.":"Presentation setting for "+purpose+"; does not change gameplay."):undefined);return field;});
+  field.help=VISUAL_HELP[key]||(slot?(field.type==="vfx"?"Imported VFX for "+purpose+". Empty disables this artwork without affecting gameplay.":field.type==="effect-animation"?"Animation from the selected VFX; flipbooks use their imported timing.":/Delay$/.test(key)?"Seconds before "+purpose+" appears. Independent of the other effect layers and damage timing. The effect still stops as soon as its owning buff or target ends.":/Offset/.test(key)?"Visual offset for "+purpose+" in world units; positive Y moves upward. Damage geometry is unchanged.":/Scale/.test(key)?"Size multiplier for "+purpose+". Minimum scale is the size at the lowest passive intensity.":/PlaybackRate$/.test(key)?"Saved playback multiplier for "+purpose+". 0.5 is half speed; 2 is double speed. Buff duration and damage are unchanged. "+(slot[1]==="beam"?"Beam formation stays fitted to the rider's windup; this changes the connected loop and release.":""):/Playback/.test(key)?"Animation speed at minimum or maximum passive intensity. Speed blends with stacks, momentum or missing HP without seeking the animation.":/Opacity/.test(key)?"Opacity of "+purpose+" from 0 (hidden) to 1 (fully visible).":/Color/.test(key)?"Optional tint for "+purpose+". Empty preserves the imported colors.":/Rotation/.test(key)?"Visual rotation in degrees; gameplay direction is unchanged.":key==="beamWidth"?"Displayed beam thickness in world units. Origin and target flares keep their proportions.":key==="beamEndDuration"?"Seconds for the release frames after a beam stops or switches targets.":key==="markSpawnDuration"?"Seconds for the non-looping mark to appear before its persistent loop.":"Presentation setting for "+purpose+"; does not change gameplay."):undefined);return field;});
 var audioFields=[];
 ["cast","impact","channel"].forEach(function(phase){
   var anchor=phase==="cast"?"skill confirmation":phase==="impact"?"the actual enemy hit":"the visible Mystic beam start";
@@ -161,24 +167,23 @@ var audioFields=[];
 });
 function fields(style){
   var visual=clone(visualFields).filter(function(field){
-    var slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|cast)/.exec(field.key);
-    if(slot){if(slot[1]==="cast")return style!=="guardian";if(slot[1]==="buff")return ["fighter","vanguard","guardian"].indexOf(style)>=0;if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark"||slot[1]==="channelHit")return style==="mystic";return style==="guardian";}
+    if(field.key==="animationPlayback"&&style==="skirmisher"||field.key==="castPlaybackRate"&&(style==="skirmisher"||style==="vanguard"))return false;
+    var slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|castSecondary|cast)/.exec(field.key);
+    if(slot){if(slot[1]==="castSecondary")return style==="bruiser";if(slot[1]==="cast")return style!=="guardian";if(slot[1]==="buff")return ["fighter","vanguard","guardian"].indexOf(style)>=0;if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark"||slot[1]==="channelHit")return style==="mystic";return style==="guardian";}
     if(["holdTime","targetX","targetY"].indexOf(field.key)>=0)return style==="mystic";
     if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic"||style==="skirmisher";
-    if(field.key==="arcDegrees")return style==="fighter"||style==="vanguard";
+    if(field.key==="arcDegrees")return style==="fighter"||style==="vanguard"||style==="skirmisher";
+    if(field.key==="arcStartWidth")return style==="vanguard";
     if(field.key==="effectDuration")return style!=="skirmisher";
     return true;
   });
   var tuning=tuningFields(style);
   if(style==='skirmisher'){
-    var width=tuning.filter(function(field){return field.key==='projectileWidth';})[0];width.label='Projectile radius';width.group='Projectile';width.help='Radius of the blue collider centered on the arrow sprite. The sprite and collider always share the bow launch and flight path.';
-    tuning=tuning.filter(function(field){return field.key!=='projectileWidth';});
-    visual=visual.filter(function(field){return ['resource','resourceAnimation','showBuiltin','animation','color','opacity'].indexOf(field.key)>=0||field.key.indexOf('impact')===0||field.key.indexOf('cast')===0;});
-    visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':'Projectile artwork';});
-    visual.unshift({path:'visual.projectile',key:'projectile',label:'Projectile',type:'projectile',group:'Projectile',emptyLabel:'Equipped arrow tier',help:'Use the current arrow sub-item tier, or choose a flight asset from the Projectile editor library. The skill keeps its own speed, damage and collider. Reset restores tier-based artwork or the existing custom VFX.'},width);
+    visual=visual.filter(function(field){return ['offsetX','offsetY','rotation','arcDegrees','resource','resourceAnimation','resourcePlaybackRate','showBuiltin','animation','color','opacity','effectDuration'].indexOf(field.key)>=0||field.key.indexOf('impact')===0||field.key.indexOf('cast')===0;});
+    visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':/^offset|^rotation$|^arcDegrees$/.test(field.key)?'Volley hit arc':'Volley artwork';if(field.key==='offsetX'||field.key==='offsetY'){field.label='Hit arc offset '+field.key.slice(-1);field.help='Moves the single gold damage arc relative to its captured bow origin. Positive Y moves upward. The three-arrow artwork has separate Cast offset controls.';}if(field.key==='rotation'){field.label='Hit arc rotation';field.help='Rotates the one damage arc relative to the captured aim. The three-arrow artwork has a separate Cast rotation control.';}if(field.key==='arcDegrees'){field.label='Hit arc angle';field.min=1;field.max=360;field.step=1;field.unit='degrees';field.help='Total angle of the single damaging volley arc. Every eligible enemy inside its gold boundary is hit once. Does not change the three-arrow artwork.';}});
   }else if(style!=='mystic')visual.forEach(function(field){
-    if(field.key==='offsetX'||field.key==='offsetY'){field.label='Weapon offset '+field.key.slice(-1);field.help='Moves both the active skill hit area and its artwork relative to the equipped weapon tip. Positive Y moves upward. Zero uses the weapon tip automatically.';}
-    if(field.key==='scale'){field.label=style==='fighter'||style==='vanguard'?'Arc size':'Area size';field.help='Scales the active skill hit area and artwork together around the weapon point. 0.5 is half the reach; 1 uses the normal reach.';}
+    if(field.key==='offsetX'||field.key==='offsetY'){field.label=(style==='bruiser'?'Body':'Weapon')+' offset '+field.key.slice(-1);field.help=style==='bruiser'?'Moves Blood Cleave hit area and both cast layers relative to the animated torso. Positive Y moves upward. Zero centers the cleave on the body.':'Moves both the active skill hit area and its artwork relative to the equipped weapon tip. Positive Y moves upward. Zero uses the weapon tip automatically.';}
+    if(field.key==='scale'){field.label=style==='fighter'||style==='vanguard'?'Arc size':'Area size';field.help=style==='bruiser'?'Scales the circular hit area and both cast layers together around the animated torso. 0.5 is half the radius; 1 uses the normal radius.':'Scales the active skill hit area and artwork together around the weapon point. 0.5 is half the reach; 1 uses the normal reach.';}
     if(field.key==='rotation'){field.label='Skill rotation';field.help='Rotates the active skill hit area and its artwork together around the weapon point.';}
     if(field.key==='arcDegrees'){field.label='Arc angle';field.min=1;field.max=360;field.step=1;field.unit='degrees';field.help='Total angle of the visible arc and its damage area. A smaller angle makes a narrower swing; 360 makes a complete circle.';}
   });
@@ -195,17 +200,19 @@ function valid(descriptor,value){
   if(descriptor.type==="color")return value===""||/^#[0-9a-f]{6}$/i.test(value);
   return value.length<=150&&!/[\u0000-\u001f]/.test(value);
 }
+function playbackRate(value){return typeof value==="number"&&isFinite(value)&&value>=.05&&value<=4?value:1;}
+function animationPlaybackRate(style,visual){return style==="skirmisher"?1:playbackRate(visual&&visual.animationPlayback);}
 function defaults(style){
   style=known(style)?style:"skirmisher";
   var result=Object.assign({},Core.DEFAULTS.common,Core.DEFAULTS[style],{visual:clone(VISUAL),audio:{cast:clone(AUDIO),impact:clone(AUDIO),channel:clone(AUDIO)}}),v=result.visual;
   var preset=VFXCatalog.presets[style]||{};Object.keys(preset).forEach(function(slot){var clip=VFXCatalog.clips.filter(function(row){return row.id===preset[slot];})[0];if(clip)applyClip(v,slot+"Resource",clip);});
-  if(style==="fighter")Object.assign(v,{passiveScale:1.6,passiveOffsetY:65,passiveMinScale:.25,passiveMinPlayback:1,passivePlayback:1,passiveColor:"#fff0d0",buffScale:1.65,buffColor:"#fff0d0",castScale:1,castColor:"#fff0d0"});
-  if(style==="vanguard")Object.assign(v,{passiveScale:1.65,passiveOffsetY:25,passiveMinScale:1,passiveMinPlayback:.5,passivePlayback:1,buffScale:1.65,buffOffsetY:25,castScale:1,castRotation:0});
+  if(style==="fighter")Object.assign(v,{passiveScale:1.6,passiveOffsetY:0,passiveMinScale:.25,passiveMinPlayback:1,passivePlayback:1,passiveColor:"#fff0d0",buffScale:1.65,buffColor:"#fff0d0",castScale:1,castColor:""});
+  if(style==="vanguard")Object.assign(v,{passiveScale:1.65,passiveOffsetY:0,passiveMinScale:1,passiveMinPlayback:.5,passivePlayback:1,buffScale:1.65,buffOffsetY:0,castScale:1,castRotation:0});
   if(style==="bruiser")Object.assign(v,{passiveScale:1.8,passiveScaleY:1.5,passiveOffsetY:60,passiveColor:"#ff5367",passiveMinScale:.6,passiveMinPlayback:.3,passivePlayback:1,castScale:1});
   if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45,channelHitScale:1,castScale:1});
-  if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.1,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85,presenceScale:1.3,presenceOffsetY:0,defenseScale:.48,physicalShieldScale:.48});
-  if(style==="vanguard")v.arcDegrees=72;
-  if(style==="skirmisher"){var authored=VFXCatalog.clips.filter(function(clip){return clip.id==="skirmisher-triple-volley";})[0];Object.assign(v,{projectile:"",castScale:.16,castRotation:authored&&typeof authored.defaultRotation==="number"?authored.defaultRotation:-62.345520429791684});}
+  if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.1,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85,presenceScale:1.3,presenceOffsetY:0,defenseScale:.48,physicalShieldScale:.31});
+  if(style==="vanguard")v.arcDegrees=72;if(style==="skirmisher")v.arcDegrees=16;
+  if(style==="skirmisher"){var authored=VFXCatalog.clips.filter(function(clip){return clip.id==="skirmisher-single-volley";})[0];Object.assign(v,{projectile:"",castScale:.16,castRotation:authored&&typeof authored.defaultRotation==="number"?authored.defaultRotation:-62.345520429791684});}
   return result;
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}
@@ -217,7 +224,7 @@ function flipbook(value){
   if(!integer(frames,4096)||!integer(columns,256)||!integer(cell,4096)||typeof fps!=="number"||!isFinite(fps)||fps<=0||fps>240||value.resourceLoop!==undefined&&typeof value.resourceLoop!=="boolean")return null;
   return {frames:frames,columns:columns,cell:cell,fps:fps,loop:value.resourceLoop===true};
 }
-var IMPACT_VISUAL_FIELDS=["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","scale","rotation","opacity","color","offsetX","offsetY"].map(function(key){return {key:key,source:"impact"+key.charAt(0).toUpperCase()+key.slice(1)};});
+var IMPACT_VISUAL_FIELDS=["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","scale","rotation","opacity","color","offsetX","offsetY","playbackRate"].map(function(key){return {key:key,source:"impact"+key.charAt(0).toUpperCase()+key.slice(1)};});
 function impactValue(value,key) {
   // Match the previous merge's own enumerable fields, including an explicit
   // undefined override. Unrelated visual fields never need to be copied here.
@@ -230,7 +237,7 @@ function impactVisual(value) {
 }
 function resourceVisual(value,prefix){
   var result={};["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","resourcePremultipliedAlpha"].forEach(function(key){result[key]=value[prefix+key.slice(8)];});
-  var slot=prefix.replace(/Resource$/,"");["scale","scaleX","scaleY","rotation","opacity","color","offsetX","offsetY"].forEach(function(key){result[key]=value[slot+key.charAt(0).toUpperCase()+key.slice(1)];});return result;
+  var slot=prefix.replace(/Resource$/,"");["scale","scaleX","scaleY","rotation","opacity","color","offsetX","offsetY","playbackRate"].forEach(function(key){result[key]=value[slot+key.charAt(0).toUpperCase()+key.slice(1)];});return result;
 }
 function applyClip(value,prefix,clip){
   ["Frames","Columns","Cell","Fps","Loop","PremultipliedAlpha"].forEach(function(key){delete value[prefix+key];});
@@ -266,10 +273,18 @@ function effective(style,config){
   // Resolve this call's editable contract once. Building it for every resource
   // slot repeatedly clones the same large field list during draft snapshots.
   var editable=descriptors(style);
-  RESOURCE_PREFIXES.forEach(function(prefix){var value=saved.visual&&saved.visual[prefix],field=editable.filter(function(row){return row.path==="visual."+prefix;})[0];if(field&&valid(field,value)&&value!==result.visual[prefix])Object.keys(result.visual).forEach(function(key){if(key!==prefix&&key!==prefix+"Animation"&&key.indexOf(prefix)===0)delete result.visual[key];});});
+  if(style==='guardian'&&saved.visual&&Object.prototype.hasOwnProperty.call(saved.visual,'physicalShieldResource')&&valid({type:'vfx'},saved.visual.physicalShieldResource)&&saved.visual.physicalShieldResource!==result.visual.physicalShieldResource&&saved.visual.physicalShieldScale===undefined)result.visual.physicalShieldScale=.48;
+  // An existing custom/disabled cleave keeps its complete authored appearance.
+  // The newly introduced second default belongs to the new built-in pair only;
+  // an explicitly selected secondary still takes precedence below.
+  if(style==='bruiser'&&saved.visual&&Object.prototype.hasOwnProperty.call(saved.visual,'castResource')&&valid({type:'vfx'},saved.visual.castResource)&&saved.visual.castResource!==result.visual.castResource&&!Object.prototype.hasOwnProperty.call(saved.visual,'castSecondaryResource')){
+    Object.keys(result.visual).forEach(function(key){if(key.indexOf('castSecondaryResource')===0)delete result.visual[key];});result.visual.castSecondaryResource='';
+  }
+  RESOURCE_PREFIXES.forEach(function(prefix){var value=saved.visual&&saved.visual[prefix],field=editable.filter(function(row){return row.path==="visual."+prefix;})[0],ownAnimation=saved.visual&&Object.prototype.hasOwnProperty.call(saved.visual,prefix+'Animation');if(field&&valid(field,value)&&value!==result.visual[prefix])Object.keys(result.visual).forEach(function(key){if(key!==prefix&&(key!==prefix+"Animation"||!ownAnimation)&&key.indexOf(prefix)===0)delete result.visual[key];});});
   editable.forEach(function(field){var value=get(saved,field.path);if(value!==undefined&&valid(field,value))set(result,field.path,value);});
   RESOURCE_PREFIXES.reduce(function(paths,prefix){return paths.concat("visual."+prefix+"Bundle","visual."+prefix+"Path","visual."+prefix+"Kind");},[]).concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var match=RESOURCE_PREFIXES.filter(function(prefix){return path.indexOf("visual."+prefix)===0;}).sort(function(a,b){return b.length-a.length;})[0];if(match&&RESOURCE_PREFIXES.indexOf(match)>=2&&get(saved,"visual."+match)!==result.visual[match])return;var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
   RESOURCE_PREFIXES.forEach(function(prefix){if(RESOURCE_PREFIXES.indexOf(prefix)>=2&&get(saved,"visual."+prefix)!==result.visual[prefix])return;var raw={};["Frames","Columns","Cell","Fps","Loop"].forEach(function(key){raw["resource"+key]=saved.visual&&saved.visual[prefix+key];});var frames=flipbook(raw);if(frames)Object.keys(frames).forEach(function(key){result.visual[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});});
+  RESOURCE_PREFIXES.forEach(function(prefix){if(saved.visual&&Object.prototype.hasOwnProperty.call(saved.visual,prefix+'Animation'))return;var id=result.visual[prefix],clip=id&&VFXCatalog.clips.filter(function(clip){return clip.uuid===id||clip.id===id;})[0];if(clip&&clip.kind==='spine')result.visual[prefix+'Animation']=clip.animation;});
   if(style==='skirmisher'&&saved.visual&&saved.visual.projectileAsset){
     var candidate=Object.assign({},result.visual,{projectileAsset:saved.visual.projectileAsset});
     if(projectileVisual(candidate)!==candidate)result.visual.projectileAsset=clone(saved.visual.projectileAsset);
@@ -301,3 +316,4 @@ exports.impactVisual=impactVisual;
 
 exports.resourcePrefixes=RESOURCE_PREFIXES;exports.resourceVisual=resourceVisual;exports.applyClip=applyClip;
 exports.projectileVisual=projectileVisual;
+exports.playbackRate=playbackRate;exports.animationPlaybackRate=animationPlaybackRate;

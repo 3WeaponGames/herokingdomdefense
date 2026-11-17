@@ -113,21 +113,21 @@ test('unchanged charge and empty world overlays do not rebuild Graphics every fr
  f.rt.state.charge=.75;f.hud.update(f.hero,f.rt);assert.equal(charge.clearCalls,before.charge+1);
 });
 
-test('Skirmisher guide uses its exact bow release and ignores obsolete independent offsets',()=>{
+test('Skirmisher guide applies the authored hit-arc offsets to its captured bow release',()=>{
  const f=fixture('skirmisher',{skillOrigin:()=>({x:30,y:120})});f.hero.ctrPlayAni={};
  f.rt.settings={visual:Object.assign(require('../../assets/_script/HeroSkillSettings').defaults('skirmisher').visual,{originX:4,originY:5,offsetX:6,offsetY:7,castTrajectory:''})};
  f.rt.aiming=true;f.hud.update(f.hero,f.rt);
  const lines=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='moveTo');
- assert.deepEqual(lines.slice(0,2),[['moveTo',30,120],['moveTo',30,120]]);
- const ends=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='lineTo');assert.deepEqual(ends.slice(0,2),[['lineTo',500,120],['lineTo',500,120]]);
+ assert.deepEqual(lines.slice(0,2),[['moveTo',36,127],['moveTo',36,127]]);
+ const ends=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='lineTo');assert.equal(ends.length,68);for(const end of ends.filter(o=>o[1]!==36||o[2]!==127))assert(Math.abs(Math.hypot(end[1]-36,end[2]-127)-250)<1e-9);assert.equal(ends[33][1],36);assert.equal(ends[33][2],127);
 });
 
 test('Skirmisher aim prediction uses the selected authored skill clip before the cast begins',()=>{
  const requests=[],f=fixture('skirmisher',{skillOrigin:(_controller,_direction,clip)=>{requests.push(clip);return{x:50,y:110};}});f.hero.ctrPlayAni={};f.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults('skirmisher');f.rt.settings.visual.animation='attack_fighter';f.rt.aiming=true;f.hud.update(f.hero,f.rt);assert.deepEqual(requests,['attack_fighter']);
 });
-test('native barrage aiming shows three finite paths from the bow and suppresses duplicate procedural cast artwork',()=>{
+test('single-volley aiming draws one finite hit-arc boundary and suppresses duplicate procedural cast artwork',()=>{
  const f=fixture('skirmisher',{skillOrigin:()=>({x:30,y:80})});f.hero.ctrPlayAni={};f.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults('skirmisher');f.rt.state.tuning=require('../../assets/_script/HeroStyleSkills').createState('skirmisher').tuning;f.rt.aiming=true;f.hud.update(f.hero,f.rt);
- const ops=f.hero._skillHUD.visual.g.ops,moves=ops.filter(row=>row[0]==='moveTo'),lines=ops.filter(row=>row[0]==='lineTo');assert.equal(moves.length,6);assert(lines.length>6);assert(lines.every(row=>row[1]<500),'finite barrage must not advertise the old map-wide ray');assert(moves.every(row=>Math.hypot(row[1]-30,row[2]-80)<25));
+ const ops=f.hero._skillHUD.visual.g.ops,moves=ops.filter(row=>row[0]==='moveTo'),lines=ops.filter(row=>row[0]==='lineTo');assert.equal(moves.length,2,'One boundary is stroked with its dark outline and gold center');assert.equal(lines.length,68);assert(lines.every(row=>row[1]<=30+f.rt.state.tuning.volleyRange+1e-9),'The finite arc cannot advertise the old map-wide ray');assert(moves.every(row=>row[1]===30&&row[2]===80));
  const spear=fixture('vanguard');spear.rt.effects=[{kind:'arc',x:0,y:0,radius:200,direction:{x:1,y:0},halfAngle:Math.PI/5,remaining:.35,duration:.35}];spear.hud.update(spear.hero,spear.rt);assert.equal(spear.hero._skillHUD.visual.g.ops.some(row=>row[0]==='arc'),false);
 });
 

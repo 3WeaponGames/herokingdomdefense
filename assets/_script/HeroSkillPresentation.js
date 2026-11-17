@@ -62,7 +62,7 @@ function deferHitReaction(runtime,target,context) {
 function impact(runtime,target,context) {
   var v=Settings.impactVisual(visual(runtime));if(!runtime.available()||!target||!target.node)return;
   var s=state(runtime),item=hitRecord(runtime,target),p=context&&context.point||target.node.getPosition();
-  item.x=p.x;item.y=p.y;item.at=(context&&typeof context.styleImpactAt==="number"&&isFinite(context.styleImpactAt)?Math.min(runtime.state.time,Math.max(0,context.styleImpactAt)):runtime.state.time)+v.delay;item.duration=v.effectDuration;item.until=item.at+v.effectDuration;
+  item.x=p.x;item.y=p.y;item.at=(context&&typeof context.styleImpactAt==="number"&&isFinite(context.styleImpactAt)?Math.min(runtime.state.time,Math.max(0,context.styleImpactAt)):runtime.state.time)+v.delay;item.duration=v.effectDuration/Settings.playbackRate(v.playbackRate);item.until=item.at+item.duration;
   if(s.impacts.length>=MAX_IMPACTS)s.impacts.shift();s.impacts.push(item);
 }
 function visibleImpacts(runtime) {
@@ -261,10 +261,10 @@ function attachments(hud,runtime) {
   }
   (runtime.projectiles||[]).forEach(function(p){var at=projectilePoint(p,v);entities.push({key:p,x:at.x,y:at.y,angle:Math.atan2(p.direction.y,p.direction.x)*180/Math.PI,radius:p.width,loop:true,age:p.speed>0?p.travelled/p.speed:0});});
   (runtime.effects||[]).forEach(function(e){entities.push({key:e,x:e.x+(e.resolved?0:v.offsetX),y:e.y+(e.resolved?0:v.offsetY),angle:(e.direction?Math.atan2(e.direction.y,e.direction.x)*180/Math.PI:0)+(e.resolved?0:v.rotation),loop:false,age:Math.max(0,(e.duration||0)-(e.remaining||0))});});
-  if(v.resource)paintEntities(hud,runtime,s,v,entities);
+  if(v.resource){var rate=Settings.playbackRate(v.resourcePlaybackRate);entities.forEach(function(entity){entity.age*=rate;});paintEntities(hud,runtime,s,v,entities);}
   if(iv.resource){
     var art=s.impactArt||(s.impactArt={nodes:new Map(),frames:new Map()});prepare(runtime,art,iv,s);
-    var hits=s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}).map(function(item){return{key:item,x:item.x+iv.offsetX,y:item.y+iv.offsetY,angle:iv.rotation,loop:false,age:Math.max(0,runtime.state.time-item.at)};});
+    var hits=s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}).map(function(item){return{key:item,x:item.x+iv.offsetX,y:item.y+iv.offsetY,angle:iv.rotation,loop:false,age:Math.max(0,runtime.state.time-item.at)*Settings.playbackRate(iv.playbackRate)};});
     paintEntities(hud,runtime,art,iv,hits);
   }else if(s.impactArt)clearArt(s.impactArt);
   styleAttachments(hud,runtime);
@@ -276,6 +276,7 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     // Instances may share an atlas and immutable frames while keeping each
     // slot's authored tint, opacity and scale independent.
     var view=entity.visual||v;
+    if(!entity.slot)entity.age=VFXLayout.sourceTime(VFXLayout.clipFor(view.resource),entity.age,entity.loop,runtime.state.style,"custom");
     var destination=entity.behind?runtime.hero.node.parent:parent;
     keep.add(entity.key);var record=s.nodes.get(entity.key);
     if(record&&(!alive(record.node)||record.sprite&&!alive(record.sprite)||record.skeleton&&!alive(record.skeleton))){dispose(record);s.nodes.delete(entity.key);record=null;}
@@ -307,8 +308,20 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
   s.nodes.forEach(function(record,key){if(!keep.has(key)){dispose(record);s.nodes.delete(key);}});
 }
 function hasStyleArt(v){return Settings.resourcePrefixes.some(function(prefix,index){return index>=2&&!!v[prefix];});}
+function bodyTarget(runtime,actor){
+  if(!actor||!alive(actor.node)||actor.node.activeInHierarchy===false||actor._isPooled||!(actor.hp>0)||actor.isDead&&actor.isDead())return null;
+  var renderer=actor.ctrPlayAni&&actor.ctrPlayAni.spAniBody||(actor.getSpAni?actor.getSpAni():actor.spAni),node=renderer&&renderer.node;
+  if(!alive(renderer)||!alive(node)||node.activeInHierarchy===false)return null;var local=Pose.bodyPoint(renderer);if(!local||!node.convertToWorldSpaceAR)return null;
+  var main=runtime.game.ndMain,world=node.convertToWorldSpaceAR(cc.v2(local.x,local.y)),at=main.convertToNodeSpaceAR(world);if(!isFinite(at.x)||!isFinite(at.y))return null;
+  return{id:actor,node:actor.node,generation:actor.node._combatGeneration,x:at.x,y:at.y};
+}
 function vfxContext(runtime){
   var hero=runtime.hero,main=runtime.game.ndMain,v=visual(runtime);
+  var activeCast=runtime.skillCast;if(activeCast&&runtime.state.style==='vanguard'&&runtime.vanguardCastOrigin)activeCast.origin=Projectile.point(runtime.vanguardCastOrigin());
+  if(activeCast&&typeof activeCast.impactAt!=='number'&&/^(fighter|bruiser)$/.test(runtime.state.style)){
+    var radius=Math.max(runtime.state.style==='fighter'?130:150,hero.attackRange),shape=runtime.skillArea(activeCast.aimDirection||activeCast.direction,radius);
+    activeCast.origin=Projectile.point(shape.origin);activeCast.radius=shape.radius;activeCast.direction=Projectile.point(shape.direction);
+  }
   // These passive auras use only ground position, health, stacks or charge.
   // Keep the full live anchor path for beams, shield art and other styles.
   var groundOnly=/^(fighter|vanguard|bruiser)$/.test(runtime.state.style)&&!runtime.channelTarget&&!runtime.beamTarget&&!v.beamResource&&!v.markResource&&!v.shieldResource;
@@ -319,24 +332,29 @@ function vfxContext(runtime){
     var point=main.convertToNodeSpaceAR(at);return{id:actor,node:actor.node,generation:actor.node._combatGeneration,x:point.x+(overhead?0:v.targetX),y:point.y+(overhead?0:v.targetY)};
   }
   var origin=groundOnly?null:hero.getAttWpos?main.convertToNodeSpaceAR(hero.getAttWpos()):offset(hero.node.getPosition(),0,70);
-  var tauntClip=VFXLayout.clipFor(v.tauntResource),tauntDuration=tauntClip?tauntClip.frames/tauntClip.fps:1.875,taunts=[];
+  function clipDuration(clip,slot){return clip?(VFXLayout.visibleDuration?VFXLayout.visibleDuration(clip,runtime.state.style,slot):clip.duration||clip.frames/clip.fps):undefined;}
+  var tauntClip=VFXLayout.clipFor(v.tauntResource),tauntDuration=tauntClip?clipDuration(tauntClip,'taunt'):1.875,taunts=[];
   (v.tauntResource?runtime.taunted||[]:[]).forEach(function(record){var t=record.taunt,enemy=record.enemy;
-    if(!t||typeof t.started!=="number"||!isFinite(t.started)||runtime.state.time-t.started>=tauntDuration+Math.max(0,v.tauntDelay||0)||enemy._heroTaunt!==t||t.data!==runtime.game.gameData||t.epoch!==runtime.game._combatEpoch||!(t.remaining>0))return;
+    if(!t||typeof t.started!=="number"||!isFinite(t.started)||runtime.state.time-t.started>=tauntDuration/VFXLayout.playbackRate(v,"taunt",runtime.state.style)+Math.max(0,v.tauntDelay||0)||enemy._heroTaunt!==t||t.data!==runtime.game.gameData||t.epoch!==runtime.game._combatEpoch||!(t.remaining>0))return;
     var at=target(enemy,true,t.enemyGeneration,t.enemyNode);if(at)taunts.push({key:t.visualKey,at:t.started,target:at});
   });
-  // Fighter's active Ki uses the rider body even when its passive wind keeps
-  // the ground-only weapon-origin fast path. Vanguard's buff stays on ground.
-  var body=groundOnly&&!(runtime.state.style==="fighter"&&v.buffResource&&runtime.state.buffRemaining>0)?null:target(hero,false);if(body){body.x-=v.targetX;body.y-=v.targetY;}
+  // Fighter and Vanguard passive/buff effects follow their ground pivot.
+  var body=groundOnly?null:target(hero,false);if(body){body.x-=v.targetX;body.y-=v.targetY;}
   var presence=[];
   if(runtime.state.style==="guardian"&&v.presenceResource&&runtime.state.tuning.allyReduction>0){
     var soldiers=runtime.game.gameData.getSoldierList?runtime.game.gameData.getSoldierList():[],heroGround=hero.node.getPosition(),presenceRadius=Skills.guardianRadius(runtime.state.tuning,'allyRadius');
     for(var i=0;i<soldiers.length&&presence.length<256;i++){
       var soldier=soldiers[i];if(!soldier||!alive(soldier.node))continue;var ground=soldier.node.getPosition(),dx=ground.x-heroGround.x,dy=ground.y-heroGround.y;
-      if(dx*dx+dy*dy>presenceRadius*presenceRadius)continue;var protectedBody=target(soldier,false);if(protectedBody)presence.push(protectedBody);
+      if(dx*dx+dy*dy>presenceRadius*presenceRadius)continue;var protectedBody=bodyTarget(runtime,soldier)||target(soldier,false);if(protectedBody)presence.push(protectedBody);
     }
   }
-  var castClip=VFXLayout.clipFor(v.castResource),defenseClip=VFXLayout.clipFor(v.defenseResource),physicalClip=VFXLayout.clipFor(v.physicalShieldResource);
-  return{style:runtime.state.style,skillCast:runtime.skillCast,castDuration:castClip&&(castClip.duration||castClip.frames/castClip.fps),presenceTargets:presence,defenseDuration:defenseClip&&(defenseClip.duration||defenseClip.frames/defenseClip.fps),physicalShieldSpawnDuration:physicalClip&&(physicalClip.duration||physicalClip.frames/physicalClip.fps),heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:origin&&offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration,runtime.beamNode),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration,runtime.beamVisibleNode),beamOnset:beamOnset(runtime),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration,runtime.markNode):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
+  var castClip=VFXLayout.clipFor(v.castResource),castSecondaryClip=VFXLayout.clipFor(v.castSecondaryResource),defenseClip=VFXLayout.clipFor(v.defenseResource),physicalClip=VFXLayout.clipFor(v.physicalShieldResource);
+  var cast=runtime.skillCast,castValid=true;
+  if(runtime.state.style==='mystic'&&cast&&typeof cast.impactAt!=='number'){
+    var captured=cast.target,enemy=captured&&captured.id,liveTarget=enemy&&target(enemy,false,captured.generation,captured.node),heroGround=hero.node.getPosition(),enemyGround=enemy&&enemy.node&&enemy.node.getPosition();
+    castValid=!!liveTarget&&!!enemyGround&&Math.hypot(enemyGround.x-heroGround.x,enemyGround.y-heroGround.y)<=hero.attackRange;
+  }
+  return{style:runtime.state.style,facing:hero.ctrPlayAni&&hero.ctrPlayAni.spAniBody&&hero.ctrPlayAni.spAniBody.node&&hero.ctrPlayAni.spAniBody.node.scaleX<0?-1:1,skillCast:runtime.skillCast,skillCastValid:castValid,castDuration:clipDuration(castClip,'cast'),castSecondaryDuration:clipDuration(castSecondaryClip,'castSecondary'),presenceTargets:presence,defenseDuration:clipDuration(defenseClip,'defense'),physicalShieldSpawnDuration:clipDuration(physicalClip,'physicalShield'),heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:origin&&offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration,runtime.beamNode),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration,runtime.beamVisibleNode),beamOnset:beamOnset(runtime),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration,runtime.markNode):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
 }
 function advanceVFX(runtime){
   var v=visual(runtime);if(!hasStyleArt(v)||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;

@@ -4,7 +4,7 @@ const {setup,hero,Node}=require('./backend-gameplay-harness.cjs');
 const Skills=require('../../assets/_script/HeroStyleSkills'),Settings=require('../../assets/_script/HeroSkillSettings');
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function scene(style='skirmisher',tuning={}){
- const h=setup({GameToolsOverrides:{cancel(){},attack(){},attackPlayback:()=>1},BattleSounds:{attack(){}},HeroMakerRider:{setCombatState(){},clearCombatState(){},releaseChargedAttack(){}},HeroSkillHUD:{clear(){}}}),p=hero(h);
+ const h=setup({GameToolsOverrides:{cancel(){},attack(){},attackPlayback:()=>1},BattleSounds:{attack(){}},HeroMakerRider:{projectileOrigin:()=>({x:0,y:0}),setCombatState(){},clearCombatState(){},releaseChargedAttack(){}},HeroSkillHUD:{clear(){}}}),p=hero(h);
  p.heroStyle=style;p.node.setParent(h.g.ndMain);p.node._combatGeneration=1;p.hp=100;p.attack=20;p.critDam=1.5;p.attNum=1;
  p.getSpeed=()=>300;p.getAttack=()=>20;p.isDead=()=>false;
  h.g.gameStatus=1;h.g._combatEpoch=1;h.ui.isPauset=false;h.d.heroStyle=style;

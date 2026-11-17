@@ -27,8 +27,8 @@ test('preview lifesteal uses described charm values, preserves fractional healin
  const plain=new Model('bruiser',{}, {mode:'active',hp:50,targetDistance:100,targets:1});plain.advance(.1667);assert.equal(plain.hero.hp,250);
  const f=fixture(),view=f.create(),near=(a,b)=>assert(Math.abs(a-b)<1e-7,a+' != '+b);
  try{
-  await view.set({style:'bruiser',settings:{visual:{}},description:{...f.description,skillSecondaryStats:{lifeSteal:.002}}});view.setScenario({hp:50,targetDistance:100,targets:1});view.seek(.1667);near(view.getState().hp,(250+240.625*.002)/10);
-  await view.set({style:'bruiser',settings:{visual:{}},description:{...f.description,skillSecondaryStats:{lifeSteal:.004}}});view.seek(.1667);near(view.getState().hp,(250+240.625*.004)/10);
+  await view.set({style:'bruiser',settings:{visual:{}},description:{...f.description,skillSecondaryStats:{lifeSteal:.002}}});view.setScenario({hp:50,targetDistance:100,targets:1});view.seek(.1667);near(view.getState().hp,(250+120.3125*.002)/10);
+  await view.set({style:'bruiser',settings:{visual:{}},description:{...f.description,skillSecondaryStats:{lifeSteal:.004}}});view.seek(.1667);near(view.getState().hp,(250+120.3125*.004)/10);
  }finally{view.destroy();}
 }));
 

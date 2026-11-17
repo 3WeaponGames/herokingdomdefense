@@ -1,7 +1,7 @@
 "use strict";
 // Pure presentation geometry shared by gameplay and the Skills preview.
 // Aim rotates the weapon branch around its hand; rider and mount stay upright.
-var aimed = new WeakMap();
+var aimed = new WeakMap(),bodyBones=new WeakMap();
 function live(target){return !!target&&(typeof cc==='undefined'||!cc.isValid||cc.isValid(target,true)&&(!target.node||cc.isValid(target.node,true)));}
 function value(object,key,fallback){
   if(!object)return fallback;var getter="get"+key.charAt(0).toUpperCase()+key.slice(1),result=typeof object[getter]==="function"?object[getter]():object[key];
@@ -16,6 +16,20 @@ function commitWorld(target){
   if(native&&typeof native.updateWorldTransform==="function")native.updateWorldTransform();
   else if(skeleton&&typeof skeleton.updateWorldTransform==="function")skeleton.updateWorldTransform();
   else if(typeof target.updateWorldTransform==="function")target.updateWorldTransform();
+}
+// Select an actual torso joint, including namespaced baked mounted rigs.
+// HP widgets and helmet bounds are separate authoring anchors and do not move
+// this body attachment. Cache the semantic name, never a native Bone wrapper.
+function bodyBoneName(json){
+  if(!json||typeof json!=="object")return null;if(bodyBones.has(json))return bodyBones.get(json);
+  var bones=Array.isArray(json.bones)?json.bones:[],names=bones.map(function(bone){return bone&&bone.name;}).filter(function(name){return typeof name==='string';}),patterns=[/(?:^|\/)Rider\/Body\/Chest$/i,/(?:^|\/)Rider\/Body$/i,/(?:^|\/)(?:Torso|Body)$/i],selected=null;
+  for(var i=0;i<patterns.length&&!selected;i++)for(var n=0;n<names.length;n++)if(patterns[i].test(names[n])){selected=names[n];break;}
+  bodyBones.set(json,selected);return selected;
+}
+function bodyPoint(target,json){
+  if(!live(target)||typeof target.findBone!=="function")return null;
+  json=json||target.skeletonData&&target.skeletonData.skeletonJson||target.data;var name=bodyBoneName(json),bone=name&&target.findBone(name);if(!bone)return null;
+  var x=value(bone,"worldX",NaN),y=value(bone,"worldY",NaN);return isFinite(x)&&isFinite(y)?{x:x,y:y}:null;
 }
 function removeAim(target){
   var record=target&&aimed.get(target);if(!record)return;
@@ -124,6 +138,7 @@ exports.value=value;exports.commitWorld=commitWorld;exports.applyAim=applyAim;ex
 exports.attachmentTip=attachmentTip;
 
 exports.boneMatrixAt=boneMatrixAt;
+exports.bodyBoneName=bodyBoneName;exports.bodyPoint=bodyPoint;
 
 exports.weaponTipAt=function(target,json,animation,time,name,direction,mirrorX,aim){
   if(!live(target))return null;

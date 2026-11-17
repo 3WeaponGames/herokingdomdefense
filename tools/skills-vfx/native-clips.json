@@ -30,7 +30,9 @@
     "originX": 50.177666666666674,
     "originY": 630.7858,
     "defaultRotation": -62.345520429791684,
-    "sourceSha256": "6da22799446970462f306789784a48e0f75f7b0dc9eae556f1cc7df4f49b068a"
+    "sourceSha256": "6da22799446970462f306789784a48e0f75f7b0dc9eae556f1cc7df4f49b068a",
+    "trimStart": 0.4083333333333333,
+    "textureSet": "skirmisher-atx117"
   },
   {
     "id": "mystic-charged-burst",
@@ -49,7 +51,7 @@
     "animation": "animation",
     "duration": 1.3666667,
     "width": 2480.0009,
-    "height": 2472.0,
+    "height": 2472,
     "anchorX": 0.4968038519663441,
     "anchorY": 0.2724996359223301,
     "decodedBytes": 20971520,
@@ -58,7 +60,8 @@
     "source": {
       "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\ATX117\\Data\\00ed1b51cd1a",
       "skeleton": "ATX117_effect_boss014_xing_skill2_hit"
-    }
+    },
+    "trimStart": 0
   },
   {
     "id": "vanguard-spear-barrage",
@@ -86,7 +89,8 @@
     "source": {
       "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\1f6b6d966ec2",
       "skeleton": "SP88_231_MYNSZD_E54910"
-    }
+    },
+    "trimStart": 0
   },
   {
     "id": "guardian-defense",
@@ -114,7 +118,8 @@
     "source": {
       "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\c87500849c28",
       "skeleton": "SP88_l_eff_defense"
-    }
+    },
+    "trimStart": 0
   },
   {
     "id": "guardian-physical-shield-start",
@@ -142,7 +147,8 @@
     "source": {
       "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\93ec2df89fdc",
       "skeleton": "SP88_l_eff_physicalW"
-    }
+    },
+    "trimStart": 0.10833333333333334
   },
   {
     "id": "guardian-physical-shield-loop",
@@ -170,6 +176,201 @@
     "source": {
       "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\93ec2df89fdc",
       "skeleton": "SP88_l_eff_physicalW"
-    }
+    },
+    "trimStart": 0
+  },
+  {
+    "id": "fighter-sp162-attack2",
+    "name": "Fighter Arc Slash",
+    "style": "fighter",
+    "slot": "cast",
+    "phase": "once",
+    "group": "fighter-sp162-attack2",
+    "loop": false,
+    "frames": 56,
+    "fps": 120,
+    "kind": "spine",
+    "bundle": "resources",
+    "resource": "vfx/hero-skills/fighter-sp162-attack2/fighter-sp162-attack2",
+    "animation": "play",
+    "duration": 0.46666666865348816,
+    "width": 522.6000366210938,
+    "height": 304.18001556396484,
+    "anchorX": 0.27179486909968714,
+    "anchorY": 0.3876651974644367,
+    "decodedBytes": 4194304,
+    "premultipliedAlpha": false,
+    "sha256": "cf9b8bf8a369ef5a7bc4b2b20117ea7c80fdb3e94f1904c198d8c3afa9096eeb",
+    "trimStart": 0,
+    "source": {
+      "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\SP162\\Effects\\301020_attack2",
+      "skeleton": "301020_attack2",
+      "binarySha256": "cf9b8bf8a369ef5a7bc4b2b20117ea7c80fdb3e94f1904c198d8c3afa9096eeb",
+      "atlasSha256": "77c1bf3de190f7401972e1031d97655082f36cd746e77fbb14f4faf6698e8480",
+      "conversion": "Exact Spine3.8 region/timeline JSON; key-boundary and240Hz geometry verified"
+    },
+    "sourceCenterX": 119.260009765625,
+    "sourceCenterY": 34.17000198364258,
+    "uuid": "895a28c5-4ba2-519a-b260-872f57c0fbed"
+  },
+  {
+    "id": "bruiser-sp162-skill3",
+    "name": "Blood Cleave · circular slash",
+    "style": "bruiser",
+    "slot": "cast",
+    "phase": "once",
+    "group": "bruiser-sp162-skill3",
+    "loop": false,
+    "frames": 108,
+    "fps": 120,
+    "kind": "spine",
+    "bundle": "resources",
+    "resource": "vfx/hero-skills/bruiser-sp162-skill3/bruiser-sp162-skill3",
+    "animation": "play",
+    "duration": 0.8999999761581421,
+    "width": 943.2666320800781,
+    "height": 385.3999938964844,
+    "anchorX": 0.3577355770709989,
+    "anchorY": 0.5519925627061412,
+    "decodedBytes": 4194304,
+    "premultipliedAlpha": false,
+    "sha256": "326609371ea1098b8701f638a423b8234e2fc624cca03619c2ae1973d4ac96fa",
+    "trimStart": 0,
+    "source": {
+      "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\SP162\\Effects\\301010_skill3",
+      "skeleton": "301010_skill3",
+      "binarySha256": "326609371ea1098b8701f638a423b8234e2fc624cca03619c2ae1973d4ac96fa",
+      "atlasSha256": "81cb1d2445817cb18b2bb03b8bc18a4f4bab39b443e8aff0acbc09b4ab175e62",
+      "conversion": "Exact Spine3.8 region/timeline JSON; key-boundary and240Hz geometry verified"
+    },
+    "sourceCenterX": 134.1932830810547,
+    "sourceCenterY": -20.037933349609375,
+    "uuid": "87685f4b-809c-5c4d-bb14-13bc8ce4a80b"
+  },
+  {
+    "id": "bruiser-sp162-hit1",
+    "name": "Blood Cleave · impact",
+    "style": "bruiser",
+    "slot": "castSecondary",
+    "phase": "once",
+    "group": "bruiser-sp162-hit1",
+    "loop": false,
+    "frames": 136,
+    "fps": 120,
+    "kind": "spine",
+    "bundle": "resources",
+    "resource": "vfx/hero-skills/bruiser-sp162-hit1/bruiser-sp162-hit1",
+    "animation": "play",
+    "duration": 1.1333333253860474,
+    "width": 1596,
+    "height": 798,
+    "anchorX": 0.5,
+    "anchorY": 0.5,
+    "decodedBytes": 8388608,
+    "premultipliedAlpha": false,
+    "sha256": "97818763fe212de2fea9acbbe7fa8d101fa5474b474cebacbbde14be1f73a7a6",
+    "trimStart": 0,
+    "source": {
+      "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\SP162\\Effects\\300950_skill_hit1",
+      "skeleton": "300950_skill_hit1",
+      "binarySha256": "97818763fe212de2fea9acbbe7fa8d101fa5474b474cebacbbde14be1f73a7a6",
+      "atlasSha256": "4354421ecc2da9afccccb3960f3a5ef64ec656ad7d3164b0142ad7f0e29cbbaa",
+      "conversion": "Exact Spine3.8 region/timeline JSON; key-boundary and240Hz geometry verified"
+    },
+    "sourceCenterX": 0,
+    "sourceCenterY": 0,
+    "uuid": "e566afbb-6f89-58a5-b92f-98d7bd9e84ad"
+  },
+  {
+    "id": "guardian-sp162-gold-shield",
+    "name": "Guardian Golden Shield",
+    "style": "guardian",
+    "slot": "physicalShield",
+    "phase": "loop",
+    "group": "guardian-sp162-gold-shield",
+    "loop": true,
+    "frames": 320,
+    "fps": 120,
+    "kind": "spine",
+    "bundle": "resources",
+    "resource": "vfx/hero-skills/guardian-sp162-gold-shield/guardian-sp162-gold-shield",
+    "animation": "play",
+    "duration": 2.6666667461395264,
+    "width": 583.9217224121094,
+    "height": 394.0140380859375,
+    "anchorX": 0.4954406950118551,
+    "anchorY": 0.09145916227430577,
+    "decodedBytes": 4194304,
+    "premultipliedAlpha": false,
+    "sha256": "665e6247e637075d4ccd5eaaa9e30faafd12e882fb9b784729cbfd753c4617f7",
+    "trimStart": 0.008333333333333333,
+    "source": {
+      "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\SP162\\Effects\\301060_skill_hit",
+      "skeleton": "301060_skill_hit",
+      "binarySha256": "665e6247e637075d4ccd5eaaa9e30faafd12e882fb9b784729cbfd753c4617f7",
+      "atlasSha256": "ce18a562f0eb9fe27d1455a9403ad805d4e3cccf8af753545582c240e6f93773",
+      "conversion": "Exact Spine3.8 region/timeline JSON; key-boundary and240Hz geometry verified"
+    },
+    "sourceCenterX": 2.6622772216796875,
+    "sourceCenterY": 160.9708251953125,
+    "sourceFrameStart": 15,
+    "sourceFrameEnd": 140,
+    "authoringFrameRate": 60,
+    "sourceStart": 0.25,
+    "sourceEnd": 2.3333333333333335,
+    "uuid": "0dbf1188-76f5-5eb5-a40d-33f9e1194552"
+  },
+  {
+    "id": "skirmisher-single-volley",
+    "name": "Single three-arrow volley",
+    "style": "skirmisher",
+    "slot": "cast",
+    "phase": "once",
+    "group": "skirmisher-single-volley",
+    "loop": false,
+    "frames": 67,
+    "fps": 120,
+    "kind": "spine",
+    "bundle": "resources",
+    "resource": "vfx/hero-skills/skirmisher-triple-volley/skirmisher-single-volley",
+    "uuid": "a389ba56-995f-5c67-a7e6-c3fe26da3747",
+    "animation": "single_volley",
+    "duration": 0.56,
+    "width": 1923.7701,
+    "height": 2607.1427,
+    "anchorX": 0.3670475489768762,
+    "anchorY": 0.13484735607299134,
+    "decodedBytes": 4194304,
+    "premultipliedAlpha": false,
+    "sha256": "724c53438b989ed4e6bbf332b57e09e79d30224791111ad31ea915437d51b5ef",
+    "source": {
+      "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\ATX117\\Data\\18f5b4af93f6",
+      "skeleton": "ATX117_effect_boss011_yuwenyuan_skill_cast",
+      "cropStart": 1.44,
+      "cropEnd": 2.0,
+      "originalResource": "vfx/hero-skills/skirmisher-triple-volley/skirmisher-triple-volley",
+      "originalSha256": "6da22799446970462f306789784a48e0f75f7b0dc9eae556f1cc7df4f49b068a",
+      "arrowSlots": [
+        "skill/yws_skill_jujijian1/yws_skill_jujijian1_6",
+        "skill/yws_skill_jujijian1/yws_skill_jujijian1_7",
+        "skill/yws_skill_jujijian1/yws_skill_jujijian1_5"
+      ],
+      "selectedSlots": [
+        "skill/yws_skill_fashe2/yws_skill_fashe2_46",
+        "skill/yws_skill_fashe2/yws_skill_fashe2_47",
+        "skill/yws_skill_jujijian1/yws_skill_jujijian1_5",
+        "skill/yws_skill_jujijian1/yws_skill_jujijian1_6",
+        "skill/yws_skill_jujijian1/yws_skill_jujijian1_7"
+      ]
+    },
+    "trajectory": "skirmisher-atx117-single",
+    "originX": 50.177666666666674,
+    "originY": 630.7858,
+    "defaultRotation": -62.345520429791684,
+    "sourceSha256": "f2179045453fd50ef8483148d4b88978cd91733b1d5e77aaebb1bc1eb8825cb9",
+    "trimStart": 0,
+    "textureSet": "skirmisher-atx117",
+    "sourceRelease": 0.09333333333333349,
+    "sourceEnd": 0.56
   }
 ]

@@ -63,7 +63,9 @@ def run(bake,artifacts):
         with Image.open(image) as im:
             width,height=im.size
             if im.mode!='RGBA' or width!=row['columns']*row['cell'] or height!=((row['frames']+row['columns']-1)//row['columns'])*row['cell']:raise ValueError('Invalid atlas '+row['id'])
-            im.verify()
+            alpha=im.getchannel('A');first=next((i for i in range(row['frames']) if alpha.crop(((i%row['columns'])*row['cell'],(i//row['columns'])*row['cell'],(i%row['columns']+1)*row['cell'],(i//row['columns']+1)*row['cell'])).getbbox()),None)
+            if first is None:raise ValueError('Empty captured effect '+row['id'])
+            trim_start=first/row['fps']
         meta=texture_meta(relative,width,height);existing=tx.read(relative+'.meta')
         if existing is not None:
             previous=json.loads(existing)
@@ -72,16 +74,16 @@ def run(bake,artifacts):
         tx.stage(relative,raw);tx.json(relative+'.meta',meta)
         fields=('id','name','style','slot','phase','group','part','loop','frames','columns','cell','fps','anchorX','anchorY','startX','startY','endX','endY','aspect','alphaBounds','visibleFrames')
         clip={k:row[k] for k in fields if k in row}
-        clip.update(kind='flipbook',bundle='resources',resource='vfx/hero-skills/'+row['id'],uuid=asset_uuid(relative+'#sprite'),sha256=hashlib.sha256(raw).hexdigest(),source={'package':row['package'],'prefab':row['prefab']})
+        clip.update(trimStart=trim_start,kind='flipbook',bundle='resources',resource='vfx/hero-skills/'+row['id'],uuid=asset_uuid(relative+'#sprite'),sha256=hashlib.sha256(raw).hexdigest(),source={'package':row['package'],'prefab':row['prefab']})
         if row['id']=='mystic-electric-barrier':clip.update(startX=0,startY=.5,endX=1,endY=.5)
         clips.append(clip)
     catalog={'version':1,'workbookSha256':source['workbookSha256'],'clips':clips,'presets':{
-      'skirmisher':{'cast':'skirmisher-triple-volley'},
-      'fighter':{'passive':'fighter-windup','buff':'fighter-meshy-center','cast':'fighter-arc-slash'},
+      'skirmisher':{'cast':'skirmisher-single-volley'},
+      'fighter':{'passive':'fighter-windup','buff':'fighter-meshy-center','cast':'fighter-sp162-attack2'},
       'vanguard':{'passive':'vanguard-momentum','buff':'vanguard-momentum-buff','cast':'vanguard-spear-barrage'},
-      'bruiser':{'passive':'bruiser-blood-aura','cast':'bruiser-energy-cleave'},
+      'bruiser':{'passive':'bruiser-blood-aura','cast':'bruiser-sp162-skill3','castSecondary':'bruiser-sp162-hit1'},
       'mystic':{'beam':'mystic-electric-barrier','channelHit':'mystic-electrified-target','mark':'mystic-mark-loop','cast':'mystic-charged-burst'},
-      'guardian':{'buff':'guardian-runic-shield','presence':'guardian-gold-presence','taunt':'guardian-taunt-exclamation','defense':'guardian-defense','physicalShield':'guardian-physical-shield-start'}}}
+      'guardian':{'presence':'guardian-gold-presence','taunt':'guardian-taunt-exclamation','physicalShield':'guardian-sp162-gold-shield'}}}
     custom=ROOT/'tools/skills-vfx/sheet-clips.json'
     if custom.exists():
         catalog['clips'].extend(json.loads(custom.read_text(encoding="utf-8")))

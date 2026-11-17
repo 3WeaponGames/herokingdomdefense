@@ -21,7 +21,7 @@
       "startY": 0.44678181409835815,
       "endX": 0.9545270800590515,
       "endY": 0.44678181409835815,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         7,
         28,
@@ -37,7 +37,8 @@
       "source": {
         "package": "Anime Powers Pack 1.5.unitypackage",
         "prefab": "Assets/Piloto Studio/Anime_VFX_Pack_Vol1/Aura/Meshy_Ki_Charge_White.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "vanguard-momentum",
@@ -58,7 +59,7 @@
       "startY": 0.4016798436641693,
       "endX": 2.2472784519195557,
       "endY": 0.4016798436641693,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         6,
         15,
@@ -74,7 +75,8 @@
       "source": {
         "package": "Hyper Casual FX Pack Vol.1 v1.4.unitypackage",
         "prefab": "Assets/VFX_Klaus/Prefabs/Hyper Casual FX/HCFX_Charging_02_Step1.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "bruiser-blood-aura",
@@ -95,7 +97,7 @@
       "startY": 0.43872398138046265,
       "endX": 0.951059877872467,
       "endY": 0.43872398138046265,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         7,
         30,
@@ -111,7 +113,8 @@
       "source": {
         "package": "Anime Powers Pack 1.5.unitypackage",
         "prefab": "Assets/Piloto Studio/Anime_VFX_Pack_Vol1/Aura/Spiky_Ki_Charge_Red.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "mystic-mark-start",
@@ -132,7 +135,7 @@
       "startY": 0.35818442702293396,
       "endX": 2.327232599258423,
       "endY": 0.35818442702293396,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         7,
         9,
@@ -148,7 +151,8 @@
       "source": {
         "package": "Cartoon FX 2 Remaster R 1.5.1.unitypackage",
         "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Eerie/Variants/CFXR2 Skull Head + Eyes (Fire HDR, Blue).prefab"
-      }
+      },
+      "trimStart": 0.015625
     },
     {
       "id": "mystic-mark-loop",
@@ -169,7 +173,7 @@
       "startY": 0.35818442702293396,
       "endX": 2.327232599258423,
       "endY": 0.35818442702293396,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         28,
         17,
@@ -185,7 +189,8 @@
       "source": {
         "package": "Cartoon FX 2 Remaster R 1.5.1.unitypackage",
         "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Eerie/Variants/CFXR2 Skull Head + Eyes (Fire HDR, Loop, Blue).prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "guardian-runic-shield",
@@ -206,7 +211,7 @@
       "startY": 0.38619494438171387,
       "endX": 4.969468593597412,
       "endY": 0.38619494438171387,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         8,
         7,
@@ -222,7 +227,8 @@
       "source": {
         "package": "Cartoon FX 3 Remaster R 1.5.1.unitypackage",
         "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Magic Misc/CFXR3 Magic Aura A (Runic).prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "forest-rain-soft",
@@ -243,7 +249,7 @@
       "startY": 0.30216386914253235,
       "endX": 0.6385433077812195,
       "endY": 0.30216386914253235,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         7,
         29,
@@ -259,7 +265,8 @@
       "source": {
         "package": "Hyper Casual FX Pack Vol2 v1.2.unitypackage",
         "prefab": "Assets/VFX_Klaus/Prefabs/Hyper Casual FX Vol.2/HCFX_Rain_01.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "forest-rain-intense",
@@ -280,7 +287,7 @@
       "startY": 0.9303672909736633,
       "endX": 0.8669439554214478,
       "endY": 0.9303672909736633,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         16,
         5,
@@ -296,7 +303,8 @@
       "source": {
         "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
         "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/Variants/CFXR4 Rain Falling (Intense).prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "forest-rain-light",
@@ -317,7 +325,7 @@
       "startY": 0.9442273378372192,
       "endX": 1.3006641864776611,
       "endY": 0.9442273378372192,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         41,
         49,
@@ -333,7 +341,8 @@
       "source": {
         "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
         "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/Variants/CFXR4 Rain Falling (Light).prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "fighter-meshy-center",
@@ -354,7 +363,7 @@
       "startY": 0.3976060152053833,
       "endX": 1.2536647319793701,
       "endY": 0.3976060152053833,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         7,
         7,
@@ -370,7 +379,8 @@
       "source": {
         "package": "Anime Powers Pack 1.5.unitypackage",
         "prefab": "Assets/Piloto Studio/Anime_VFX_Pack_Vol1/Aura/Meshy_Ki_Charge_White.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "vanguard-momentum-buff",
@@ -391,7 +401,7 @@
       "startY": 0.44619545340538025,
       "endX": 1.1502125263214111,
       "endY": 0.44619545340538025,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         6,
         21,
@@ -407,7 +417,8 @@
       "source": {
         "package": "Hyper Casual FX Pack Vol.1 v1.4.unitypackage",
         "prefab": "Assets/VFX_Klaus/Prefabs/Hyper Casual FX/HCFX_Charging_02_Step3.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "fighter-arc-slash",
@@ -428,7 +439,7 @@
       "startY": 0.5076630115509033,
       "endX": 4.792747497558594,
       "endY": 0.5076630115509033,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         7,
         32,
@@ -444,7 +455,8 @@
       "source": {
         "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
         "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Sword Trails/Plain/CFXR4 Sword Trail SLASH (360 Thick).prefab"
-      }
+      },
+      "trimStart": 0.015625
     },
     {
       "id": "mystic-electric-barrier",
@@ -465,7 +477,7 @@
       "startY": 0.5,
       "endX": 1,
       "endY": 0.5,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         5,
         8,
@@ -481,7 +493,8 @@
       "source": {
         "package": "Cartoon FX Remaster R 1.5.1.unitypackage",
         "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Electric/Variants/CFXR Electric Barrier Simple (HDR, Purple).prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "mystic-electrified-target",
@@ -502,7 +515,7 @@
       "startY": 0.4955787658691406,
       "endX": 1.9066367149353027,
       "endY": 0.4955787658691406,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         10,
         9,
@@ -518,7 +531,8 @@
       "source": {
         "package": "Cartoon FX Remaster R 1.5.1.unitypackage",
         "prefab": "Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Electric/Variants/CFXR Electrified 1 (Purple).prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "bruiser-energy-cleave",
@@ -539,7 +553,7 @@
       "startY": 0.33720532059669495,
       "endX": 1.287684440612793,
       "endY": 0.33720532059669495,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         27,
         8,
@@ -555,7 +569,8 @@
       "source": {
         "package": "Hyper Casual FX Pack Vol2 v1.2.unitypackage",
         "prefab": "Assets/VFX_Klaus/Prefabs/Hyper Casual FX Vol.2/HCFX_Energy_01.prefab"
-      }
+      },
+      "trimStart": 0.020833333333333332
     },
     {
       "id": "guardian-gold-presence",
@@ -576,7 +591,7 @@
       "startY": 0.04960344359278679,
       "endX": 5.089954376220703,
       "endY": 0.04960344359278679,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         34,
         9,
@@ -592,7 +607,8 @@
       "source": {
         "package": "Character Auras 1.4.unitypackage",
         "prefab": "Assets/Hovl Studio/Auras pack/Prefabs/Gold aura.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "guardian-taunt-exclamation",
@@ -613,7 +629,7 @@
       "startY": 0.34494370222091675,
       "endX": 2.3596749305725098,
       "endY": 0.34494370222091675,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         29,
         9,
@@ -629,7 +645,8 @@
       "source": {
         "package": "Hyper Casual FX Pack Vol2 v1.2.unitypackage",
         "prefab": "Assets/VFX_Klaus/Prefabs/Hyper Casual FX Vol.2/HCFX_Sign_ExclamationMark.prefab"
-      }
+      },
+      "trimStart": 0.020833333333333332
     },
     {
       "id": "mystic-beam-body-start",
@@ -650,7 +667,7 @@
       "startY": 0.49999526143074036,
       "endX": 0.8607522249221802,
       "endY": 0.49999526143074036,
-      "aspect": 4.0,
+      "aspect": 4,
       "alphaBounds": [
         8,
         31,
@@ -666,7 +683,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0.8333333333333334
     },
     {
       "id": "mystic-beam-body-loop",
@@ -687,7 +705,7 @@
       "startY": 0.49999526143074036,
       "endX": 0.8607522249221802,
       "endY": 0.49999526143074036,
-      "aspect": 4.0,
+      "aspect": 4,
       "alphaBounds": [
         8,
         28,
@@ -703,7 +721,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "mystic-beam-body-end",
@@ -724,7 +743,7 @@
       "startY": 0.49999526143074036,
       "endX": 0.8607522249221802,
       "endY": 0.49999526143074036,
-      "aspect": 4.0,
+      "aspect": 4,
       "alphaBounds": [
         8,
         28,
@@ -740,7 +759,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "mystic-beam-origin-start",
@@ -761,7 +781,7 @@
       "startY": 0.499997079372406,
       "endX": 0.9806991815567017,
       "endY": 0.499997079372406,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         7,
         40,
@@ -777,7 +797,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0.020833333333333332
     },
     {
       "id": "mystic-beam-origin-loop",
@@ -798,7 +819,7 @@
       "startY": 0.499997079372406,
       "endX": 0.9806991815567017,
       "endY": 0.499997079372406,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         21,
         55,
@@ -814,7 +835,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "mystic-beam-origin-end",
@@ -835,7 +857,7 @@
       "startY": 0.499997079372406,
       "endX": 0.9806991815567017,
       "endY": 0.499997079372406,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         21,
         57,
@@ -851,7 +873,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "mystic-beam-target-start",
@@ -872,7 +895,7 @@
       "startY": 0.45939451456069946,
       "endX": 0.45939499139785767,
       "endY": 0.45939451456069946,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         37,
         43,
@@ -888,7 +911,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0.875
     },
     {
       "id": "mystic-beam-target-loop",
@@ -909,7 +933,7 @@
       "startY": 0.45939451456069946,
       "endX": 0.45939499139785767,
       "endY": 0.45939451456069946,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         0,
         0,
@@ -925,7 +949,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "mystic-beam-target-end",
@@ -946,7 +971,7 @@
       "startY": 0.45939451456069946,
       "endX": 0.45939499139785767,
       "endY": 0.45939451456069946,
-      "aspect": 1.0,
+      "aspect": 1,
       "alphaBounds": [
         0,
         0,
@@ -962,7 +987,8 @@
       "source": {
         "package": "Toon Magic and Spells VFX Pack.unitypackage",
         "prefab": "Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "guardian-taunt-test",
@@ -1059,7 +1085,8 @@
           58,
           59
         ]
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "guardian-body-shield-start",
@@ -1112,7 +1139,8 @@
           14,
           15
         ]
-      }
+      },
+      "trimStart": 0.0625
     },
     {
       "id": "guardian-body-shield-loop",
@@ -1159,7 +1187,8 @@
           18,
           17
         ]
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "guardian-body-shield-end",
@@ -1216,7 +1245,8 @@
           40,
           41
         ]
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "skirmisher-triple-volley",
@@ -1249,7 +1279,9 @@
       "originX": 50.177666666666674,
       "originY": 630.7858,
       "defaultRotation": -62.345520429791684,
-      "sourceSha256": "6da22799446970462f306789784a48e0f75f7b0dc9eae556f1cc7df4f49b068a"
+      "sourceSha256": "6da22799446970462f306789784a48e0f75f7b0dc9eae556f1cc7df4f49b068a",
+      "trimStart": 0.4083333333333333,
+      "textureSet": "skirmisher-atx117"
     },
     {
       "id": "mystic-charged-burst",
@@ -1268,7 +1300,7 @@
       "animation": "animation",
       "duration": 1.3666667,
       "width": 2480.0009,
-      "height": 2472.0,
+      "height": 2472,
       "anchorX": 0.4968038519663441,
       "anchorY": 0.2724996359223301,
       "decodedBytes": 20971520,
@@ -1277,7 +1309,8 @@
       "source": {
         "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\ATX117\\Data\\00ed1b51cd1a",
         "skeleton": "ATX117_effect_boss014_xing_skill2_hit"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "vanguard-spear-barrage",
@@ -1305,7 +1338,8 @@
       "source": {
         "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\1f6b6d966ec2",
         "skeleton": "SP88_231_MYNSZD_E54910"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "guardian-defense",
@@ -1333,7 +1367,8 @@
       "source": {
         "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\c87500849c28",
         "skeleton": "SP88_l_eff_defense"
-      }
+      },
+      "trimStart": 0
     },
     {
       "id": "guardian-physical-shield-start",
@@ -1361,7 +1396,8 @@
       "source": {
         "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\93ec2df89fdc",
         "skeleton": "SP88_l_eff_physicalW"
-      }
+      },
+      "trimStart": 0.10833333333333334
     },
     {
       "id": "guardian-physical-shield-loop",
@@ -1389,17 +1425,212 @@
       "source": {
         "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\93ec2df89fdc",
         "skeleton": "SP88_l_eff_physicalW"
-      }
+      },
+      "trimStart": 0
+    },
+    {
+      "id": "fighter-sp162-attack2",
+      "name": "Fighter Arc Slash",
+      "style": "fighter",
+      "slot": "cast",
+      "phase": "once",
+      "group": "fighter-sp162-attack2",
+      "loop": false,
+      "frames": 56,
+      "fps": 120,
+      "kind": "spine",
+      "bundle": "resources",
+      "resource": "vfx/hero-skills/fighter-sp162-attack2/fighter-sp162-attack2",
+      "animation": "play",
+      "duration": 0.46666666865348816,
+      "width": 522.6000366210938,
+      "height": 304.18001556396484,
+      "anchorX": 0.27179486909968714,
+      "anchorY": 0.3876651974644367,
+      "decodedBytes": 4194304,
+      "premultipliedAlpha": false,
+      "sha256": "cf9b8bf8a369ef5a7bc4b2b20117ea7c80fdb3e94f1904c198d8c3afa9096eeb",
+      "trimStart": 0,
+      "source": {
+        "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\SP162\\Effects\\301020_attack2",
+        "skeleton": "301020_attack2",
+        "binarySha256": "cf9b8bf8a369ef5a7bc4b2b20117ea7c80fdb3e94f1904c198d8c3afa9096eeb",
+        "atlasSha256": "77c1bf3de190f7401972e1031d97655082f36cd746e77fbb14f4faf6698e8480",
+        "conversion": "Exact Spine3.8 region/timeline JSON; key-boundary and240Hz geometry verified"
+      },
+      "sourceCenterX": 119.260009765625,
+      "sourceCenterY": 34.17000198364258,
+      "uuid": "895a28c5-4ba2-519a-b260-872f57c0fbed"
+    },
+    {
+      "id": "bruiser-sp162-skill3",
+      "name": "Blood Cleave · circular slash",
+      "style": "bruiser",
+      "slot": "cast",
+      "phase": "once",
+      "group": "bruiser-sp162-skill3",
+      "loop": false,
+      "frames": 108,
+      "fps": 120,
+      "kind": "spine",
+      "bundle": "resources",
+      "resource": "vfx/hero-skills/bruiser-sp162-skill3/bruiser-sp162-skill3",
+      "animation": "play",
+      "duration": 0.8999999761581421,
+      "width": 943.2666320800781,
+      "height": 385.3999938964844,
+      "anchorX": 0.3577355770709989,
+      "anchorY": 0.5519925627061412,
+      "decodedBytes": 4194304,
+      "premultipliedAlpha": false,
+      "sha256": "326609371ea1098b8701f638a423b8234e2fc624cca03619c2ae1973d4ac96fa",
+      "trimStart": 0,
+      "source": {
+        "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\SP162\\Effects\\301010_skill3",
+        "skeleton": "301010_skill3",
+        "binarySha256": "326609371ea1098b8701f638a423b8234e2fc624cca03619c2ae1973d4ac96fa",
+        "atlasSha256": "81cb1d2445817cb18b2bb03b8bc18a4f4bab39b443e8aff0acbc09b4ab175e62",
+        "conversion": "Exact Spine3.8 region/timeline JSON; key-boundary and240Hz geometry verified"
+      },
+      "sourceCenterX": 134.1932830810547,
+      "sourceCenterY": -20.037933349609375,
+      "uuid": "87685f4b-809c-5c4d-bb14-13bc8ce4a80b"
+    },
+    {
+      "id": "bruiser-sp162-hit1",
+      "name": "Blood Cleave · impact",
+      "style": "bruiser",
+      "slot": "castSecondary",
+      "phase": "once",
+      "group": "bruiser-sp162-hit1",
+      "loop": false,
+      "frames": 136,
+      "fps": 120,
+      "kind": "spine",
+      "bundle": "resources",
+      "resource": "vfx/hero-skills/bruiser-sp162-hit1/bruiser-sp162-hit1",
+      "animation": "play",
+      "duration": 1.1333333253860474,
+      "width": 1596,
+      "height": 798,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "decodedBytes": 8388608,
+      "premultipliedAlpha": false,
+      "sha256": "97818763fe212de2fea9acbbe7fa8d101fa5474b474cebacbbde14be1f73a7a6",
+      "trimStart": 0,
+      "source": {
+        "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\SP162\\Effects\\300950_skill_hit1",
+        "skeleton": "300950_skill_hit1",
+        "binarySha256": "97818763fe212de2fea9acbbe7fa8d101fa5474b474cebacbbde14be1f73a7a6",
+        "atlasSha256": "4354421ecc2da9afccccb3960f3a5ef64ec656ad7d3164b0142ad7f0e29cbbaa",
+        "conversion": "Exact Spine3.8 region/timeline JSON; key-boundary and240Hz geometry verified"
+      },
+      "sourceCenterX": 0,
+      "sourceCenterY": 0,
+      "uuid": "e566afbb-6f89-58a5-b92f-98d7bd9e84ad"
+    },
+    {
+      "id": "guardian-sp162-gold-shield",
+      "name": "Guardian Golden Shield",
+      "style": "guardian",
+      "slot": "physicalShield",
+      "phase": "loop",
+      "group": "guardian-sp162-gold-shield",
+      "loop": true,
+      "frames": 320,
+      "fps": 120,
+      "kind": "spine",
+      "bundle": "resources",
+      "resource": "vfx/hero-skills/guardian-sp162-gold-shield/guardian-sp162-gold-shield",
+      "animation": "play",
+      "duration": 2.6666667461395264,
+      "width": 583.9217224121094,
+      "height": 394.0140380859375,
+      "anchorX": 0.4954406950118551,
+      "anchorY": 0.09145916227430577,
+      "decodedBytes": 4194304,
+      "premultipliedAlpha": false,
+      "sha256": "665e6247e637075d4ccd5eaaa9e30faafd12e882fb9b784729cbfd753c4617f7",
+      "trimStart": 0.008333333333333333,
+      "source": {
+        "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\SP162\\Effects\\301060_skill_hit",
+        "skeleton": "301060_skill_hit",
+        "binarySha256": "665e6247e637075d4ccd5eaaa9e30faafd12e882fb9b784729cbfd753c4617f7",
+        "atlasSha256": "ce18a562f0eb9fe27d1455a9403ad805d4e3cccf8af753545582c240e6f93773",
+        "conversion": "Exact Spine3.8 region/timeline JSON; key-boundary and240Hz geometry verified"
+      },
+      "sourceCenterX": 2.6622772216796875,
+      "sourceCenterY": 160.9708251953125,
+      "sourceFrameStart": 15,
+      "sourceFrameEnd": 140,
+      "authoringFrameRate": 60,
+      "sourceStart": 0.25,
+      "sourceEnd": 2.3333333333333335,
+      "uuid": "0dbf1188-76f5-5eb5-a40d-33f9e1194552"
+    },
+    {
+      "id": "skirmisher-single-volley",
+      "name": "Single three-arrow volley",
+      "style": "skirmisher",
+      "slot": "cast",
+      "phase": "once",
+      "group": "skirmisher-single-volley",
+      "loop": false,
+      "frames": 67,
+      "fps": 120,
+      "kind": "spine",
+      "bundle": "resources",
+      "resource": "vfx/hero-skills/skirmisher-triple-volley/skirmisher-single-volley",
+      "uuid": "a389ba56-995f-5c67-a7e6-c3fe26da3747",
+      "animation": "single_volley",
+      "duration": 0.56,
+      "width": 1923.7701,
+      "height": 2607.1427,
+      "anchorX": 0.3670475489768762,
+      "anchorY": 0.13484735607299134,
+      "decodedBytes": 4194304,
+      "premultipliedAlpha": false,
+      "sha256": "724c53438b989ed4e6bbf332b57e09e79d30224791111ad31ea915437d51b5ef",
+      "source": {
+        "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\ATX117\\Data\\18f5b4af93f6",
+        "skeleton": "ATX117_effect_boss011_yuwenyuan_skill_cast",
+        "cropStart": 1.44,
+        "cropEnd": 2.0,
+        "originalResource": "vfx/hero-skills/skirmisher-triple-volley/skirmisher-triple-volley",
+        "originalSha256": "6da22799446970462f306789784a48e0f75f7b0dc9eae556f1cc7df4f49b068a",
+        "arrowSlots": [
+          "skill/yws_skill_jujijian1/yws_skill_jujijian1_6",
+          "skill/yws_skill_jujijian1/yws_skill_jujijian1_7",
+          "skill/yws_skill_jujijian1/yws_skill_jujijian1_5"
+        ],
+        "selectedSlots": [
+          "skill/yws_skill_fashe2/yws_skill_fashe2_46",
+          "skill/yws_skill_fashe2/yws_skill_fashe2_47",
+          "skill/yws_skill_jujijian1/yws_skill_jujijian1_5",
+          "skill/yws_skill_jujijian1/yws_skill_jujijian1_6",
+          "skill/yws_skill_jujijian1/yws_skill_jujijian1_7"
+        ]
+      },
+      "trajectory": "skirmisher-atx117-single",
+      "originX": 50.177666666666674,
+      "originY": 630.7858,
+      "defaultRotation": -62.345520429791684,
+      "sourceSha256": "f2179045453fd50ef8483148d4b88978cd91733b1d5e77aaebb1bc1eb8825cb9",
+      "trimStart": 0,
+      "textureSet": "skirmisher-atx117",
+      "sourceRelease": 0.09333333333333349,
+      "sourceEnd": 0.56
     }
   ],
   "presets": {
     "skirmisher": {
-      "cast": "skirmisher-triple-volley"
+      "cast": "skirmisher-single-volley"
     },
     "fighter": {
       "passive": "fighter-windup",
       "buff": "fighter-meshy-center",
-      "cast": "fighter-arc-slash"
+      "cast": "fighter-sp162-attack2"
     },
     "vanguard": {
       "passive": "vanguard-momentum",
@@ -1408,7 +1639,8 @@
     },
     "bruiser": {
       "passive": "bruiser-blood-aura",
-      "cast": "bruiser-energy-cleave"
+      "cast": "bruiser-sp162-skill3",
+      "castSecondary": "bruiser-sp162-hit1"
     },
     "mystic": {
       "beam": "mystic-electric-barrier",
@@ -1417,11 +1649,9 @@
       "cast": "mystic-charged-burst"
     },
     "guardian": {
-      "buff": "guardian-runic-shield",
       "presence": "guardian-gold-presence",
       "taunt": "guardian-taunt-exclamation",
-      "defense": "guardian-defense",
-      "physicalShield": "guardian-physical-shield-start"
+      "physicalShield": "guardian-sp162-gold-shield"
     }
   }
 }

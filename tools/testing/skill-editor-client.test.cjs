@@ -2,8 +2,8 @@
 const test = require('node:test'), assert = require('node:assert/strict');
 const Client = require('../../packages/hkd-skills/client'), Settings = require('../../assets/_script/HeroSkillSettings');
 const copy = value => JSON.parse(JSON.stringify(value)), flush = () => new Promise(resolve => setImmediate(resolve));
-function store(catalogs) {
-  let version = 1, data = {}, saved = {}, undo = [], redo = []; const calls = [];
+function store(catalogs, initialData = {}) {
+  let version = 1, data = copy(initialData), saved = copy(initialData), undo = [], redo = []; const calls = [];
   function snapshot() { return { version, revision: 'disk-revision', data: copy(data), dirty: JSON.stringify(data) !== JSON.stringify(saved), canUndo: !!undo.length, canRedo: !!redo.length,
     styles: Settings.styles, fields: Object.fromEntries(Settings.styles.map(style => [style.id, Settings.fields(style.id)])),
     effective: Object.fromEntries(Settings.styles.map(style => [style.id, Settings.effective(style.id, { HeroSkills: data })])),
@@ -72,7 +72,7 @@ class Element {
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
 async function fixture(custom = {}) {
-  const backend = store(custom.catalogs), document = { defaultView: {}, activeElement: null }; document.createElement = tag => new Element(tag, document);
+  const backend = store(custom.catalogs,custom.data), document = { defaultView: {}, activeElement: null }; document.createElement = tag => new Element(tag, document);
   const host = new Element('div', document), calls = { preview: [], scenarios: [], audio: [], seeks:[],plays:[],destroyed: false }; let options;
   const api = { ...backend.api, ipc: (name, request) => name === 'describe' && custom.describe ? custom.describe(request) : backend.api.ipc(name, request), audioURL: item => item.file, createAudio: () => { const media = { pause() {}, removeAttribute() {}, load() {}, play() { calls.audio.push(this.src); return Promise.resolve(); } }; return media; }, createPreview(_host, value) { options = value; return { set: async request => calls.preview.push(copy(request)), setScenario: value => calls.scenarios.push(copy(value)), play(value) {calls.plays.push(value);if(custom.statusOnPlay!==undefined)options.onStatus({time:custom.statusOnPlay,duration:4,playing:false});}, seek(value) {calls.seeks.push(value);options.onStatus({time:value,duration:4,playing:false});}, step() {}, fit() {}, cast() {}, setAudioEnabled() {}, selectHandle() {}, destroy() { calls.destroyed = true; } }; } };
   const client = Client.mount(host, api); await flush(); await flush();
@@ -105,14 +105,14 @@ test('position handles expose only useful anchors for the selected style and res
   assert.equal(f.backend.calls.some(call => call.name === 'change' || call.name === 'save'), false); f.close();
 });
 
-test('projectile controls expose a single automatic launch and collider size without independent offsets',async()=>{
- const f=await fixture();f.button('Position & VFX').click();await f.settle();assert(f.field('Projectile radius'));for(const label of ['Launch offset X','Launch offset Y','Artwork offset X','Artwork offset Y','Damage follows projectile','Damage offset X','Damage offset Y','VFX thickness'])assert.equal(f.field(label),null,label);assert.equal(f.button('Align projectile to bow'),undefined);assert.equal(f.backend.snapshot().dirty,false);f.field('Projectile radius').value='41';f.field('Projectile radius').onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.projectileWidth,41);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
+test('single-volley controls expose the actual hit arc without obsolete projectile-collider fields',async()=>{
+ const f=await fixture();f.button('Position & VFX').click();await f.settle();assert(f.field('Hit arc angle'));for(const id of ['skill-visual-offsetX','skill-visual-offsetY','skill-visual-rotation'])assert(f.host.querySelectorAll('input').some(node=>node.id===id),id);assert.equal(f.field('Projectile radius'),null);assert.equal(f.field('Projectile'),null);assert.equal(f.button('Align projectile to bow'),undefined);assert.equal(f.backend.snapshot().dirty,false);f.field('Hit arc angle').value='24';f.field('Hit arc angle').onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.visual.arcDegrees,24);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
 });
 
 test('native Skirmisher exposes the complete volley effect and its contact controls without unrelated projectile artwork',async()=>{
  const id='bbbb0000-0000-0000-0000-000000000021',f=await fixture({catalogs:{vfx:[{id,name:'Three volley effect'}]}});
  f.button('Position & VFX').click();await f.settle();assert.equal(f.field('Projectile'),null);assert.equal(f.field('VFX asset'),null);const picker=f.field('Cast effect VFX asset');assert(picker);assert(picker.options.some(option=>option.value===id));
- picker.value=id;picker.onchange();await f.settle();assert(f.backend.calls.some(call=>call.name==='describe'&&call.request.castResource===id));assert.equal(f.calls.preview.at(-1).settings.visual.castResource,id);assert(f.field('Projectile radius'));assert.equal(f.backend.calls.some(call=>call.name==='save'),false);assert.equal(f.calls.audio.length,0);f.close();
+ picker.value=id;picker.onchange();await f.settle();assert(f.backend.calls.some(call=>call.name==='describe'&&call.request.castResource===id));assert.equal(f.calls.preview.at(-1).settings.visual.castResource,id);assert(f.field('Hit arc angle'));assert.equal(f.field('Projectile radius'),null);assert.equal(f.backend.calls.some(call=>call.name==='save'),false);assert.equal(f.calls.audio.length,0);f.close();
 });
 
 test('R restarts the current preview without editing drafts and stays available for typing in fields',async()=>{
@@ -259,14 +259,15 @@ test('the editor has one active entry per hero and only the five VFX-bearing pas
 });
 
 test('each independent Guardian effect owns its controls while the protected-ally aura stays in its passive entry',async()=>{
- const f=await fixture();await f.client.selectStyle('guardian');await f.settle();f.button('Position & VFX').click();await f.settle();
+ const Catalog=require('../../assets/_script/HeroSkillVFXCatalog'),visual={};for(const [slot,id]of [['buff','guardian-runic-shield'],['defense','guardian-defense'],['physicalShield','guardian-physical-shield-start']])Settings.applyClip(visual,slot+'Resource',Catalog.clips.find(clip=>clip.id===id));
+ const f=await fixture({data:{guardian:{visual}}});await f.client.selectStyle('guardian');await f.settle();f.button('Position & VFX').click();await f.settle();
  const fields=()=>f.host.querySelectorAll('input,select').map(node=>node.id);for(const prefix of ['defense','physicalShield','buff','taunt'])assert(fields().includes('skill-visual-'+prefix+'Scale'),prefix);assert(!fields().includes('skill-visual-presenceScale'));assert(!fields().includes('skill-visual-beamWidth'));
  await f.client.selectEntry('guardian','passive');await f.settle();assert(fields().includes('skill-visual-presenceScale'));assert(!fields().includes('skill-visual-defenseScale'));assert(!fields().includes('skill-visual-tauntScale'));assert(!f.backend.calls.some(call=>call.name==='change'||call.name==='save'));f.close();
 });
 
 
 test('compact numeric defaults expose full precision while editing and an unchanged focus or change does not round saved tuning',async()=>{
- const f=await fixture(),input=f.field('Windup'),exact=Settings.defaults('skirmisher').windup;assert.equal(input.value,'0.667');input.onfocus();assert.equal(input.value,String(exact));input.onblur();assert.equal(input.value,'0.667');input.onchange();await f.settle();assert.equal(f.backend.snapshot().dirty,false);assert.equal(f.client.session.effective('skirmisher').windup,exact);assert.equal(Client.formatNumber(1.333333333333,{}),'1.333');assert.equal(Client.formatNumber(.123456789,{step:.000001}),'0.123457');f.close();
+ const f=await fixture(),input=f.field('Windup'),exact=Settings.defaults('skirmisher').windup;assert.equal(input.value,Client.formatNumber(exact,{}));input.onfocus();assert.equal(input.value,String(exact));input.onblur();assert.equal(input.value,Client.formatNumber(exact,{}));input.onchange();await f.settle();assert.equal(f.backend.snapshot().dirty,false);assert.equal(f.client.session.effective('skirmisher').windup,exact);assert.equal(Client.formatNumber(1.333333333333,{}),'1.333');assert.equal(Client.formatNumber(.123456789,{step:.000001}),'0.123457');f.close();
 });
 
 
@@ -284,7 +285,7 @@ test('Guardian active exposes taunt and shield feedback without ordinary hammer-
  const custom='bbbb0000-0000-0000-0000-000000000052',f=await fixture({catalogs:{vfx:[{id:custom,name:'Custom shield burst',kind:'spine',animations:['shield-burst']}]}});
  await f.client.selectStyle('guardian');await f.settle();f.button('Position & VFX').click();await f.settle();
  const ids=()=>f.host.querySelectorAll('input,select').map(node=>node.id).filter(Boolean);
- assert(!ids().some(id=>id.startsWith('skill-visual-impact')));assert(!ids().includes('skill-visual-rotation'));assert(ids().includes('skill-visual-tauntScale'));assert(ids().includes('skill-visual-defenseDelay'));assert(ids().includes('skill-visual-physicalShieldScale'));
+ assert(!ids().some(id=>id.startsWith('skill-visual-impact')));assert(!ids().includes('skill-visual-rotation'));assert(ids().includes('skill-visual-tauntScale'));assert(!ids().includes('skill-visual-defenseDelay'));assert(!ids().includes('skill-visual-buffScale'));assert(ids().includes('skill-visual-physicalShieldDelay'));assert(ids().includes('skill-visual-physicalShieldScale'));
  f.button('SFX').click();await f.settle();assert(f.field('Cast sound'));assert.equal(f.field('Impact sound'),null);assert.equal(f.field('Impact volume'),null);assert.equal(f.field('Impact delay'),null);assert(!f.backend.calls.some(call=>call.name==='change'||call.name==='save'));
  f.button('Position & VFX').click();await f.settle();const asset=f.field('VFX asset');asset.value=custom;asset.onchange();await f.settle();assert(ids().includes('skill-visual-rotation'),'Custom area artwork still consumes its rotation');assert(!ids().some(id=>id.startsWith('skill-visual-impact')));assert.equal(f.client.session.effective('guardian').visual.resource,custom);assert(!f.backend.calls.some(call=>call.name==='save'));f.close();
 });

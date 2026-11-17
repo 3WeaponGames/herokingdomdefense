@@ -1,0 +1,499 @@
+{
+  "skeleton": {
+    "hash": "nrXGh5A4YouGhMp3Xf6o0BQWHhI",
+    "spine": "3.8.99",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "fps": 0,
+    "name": "300950_skill_hit1"
+  },
+  "bones": [
+    {
+      "name": "root",
+      "length": 0,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "shearX": 0,
+      "shearY": 0,
+      "transform": "normal",
+      "skin": false
+    },
+    {
+      "name": "all",
+      "parent": "root",
+      "length": 0,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scaleX": 2,
+      "scaleY": 2,
+      "shearX": 0,
+      "shearY": 0,
+      "transform": "normal",
+      "skin": false
+    },
+    {
+      "name": "hit",
+      "parent": "all",
+      "length": 0,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "shearX": 0,
+      "shearY": 0,
+      "transform": "normal",
+      "skin": false
+    },
+    {
+      "name": "skill_hit2",
+      "parent": "hit",
+      "length": 0,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "shearX": 0,
+      "shearY": 0,
+      "transform": "normal",
+      "skin": false
+    },
+    {
+      "name": "hiG",
+      "parent": "hit",
+      "length": 0,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "shearX": 0,
+      "shearY": 0,
+      "transform": "normal",
+      "skin": false
+    }
+  ],
+  "slots": [
+    {
+      "name": "images/effects/Glow1",
+      "bone": "hiG",
+      "color": "ffffffff",
+      "blend": "additive"
+    },
+    {
+      "name": "images/effects/skill_hit2/skill_hit2_00",
+      "bone": "skill_hit2",
+      "color": "ffffffff",
+      "blend": "normal"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "images/effects/Glow1": {
+          "images/effects/Glow1": {
+            "type": "region",
+            "path": "images/effects/Glow1",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 0.5,
+            "rotation": 0,
+            "width": 256,
+            "height": 256
+          }
+        },
+        "images/effects/skill_hit2/skill_hit2_00": {
+          "images/effects/skill_hit2/skill_hit2_00": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_00",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_01": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_01",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_02": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_02",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_03": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_03",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_04": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_04",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_05": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_05",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_06": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_06",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_07": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_07",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_08": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_08",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_09": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_09",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_10": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_10",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_11": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_11",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_12": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_12",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_13": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_13",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_14": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_14",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_15": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_15",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_16": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_16",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_17": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_17",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_18": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_18",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          },
+          "images/effects/skill_hit2/skill_hit2_19": {
+            "type": "region",
+            "path": "images/effects/skill_hit2/skill_hit2_19",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 500,
+            "height": 500
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "play": {
+      "slots": {
+        "images/effects/Glow1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ff2e78ff",
+              "curve": "stepped"
+            },
+            {
+              "time": 0.4333333373069763,
+              "color": "ff2e78ff"
+            },
+            {
+              "time": 1.1333333253860474,
+              "color": "ff2d7700"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "images/effects/Glow1"
+            }
+          ]
+        },
+        "images/effects/skill_hit2/skill_hit2_00": {
+          "attachment": [
+            {
+              "time": 0,
+              "name": "images/effects/skill_hit2/skill_hit2_00"
+            },
+            {
+              "time": 0.03333333507180214,
+              "name": "images/effects/skill_hit2/skill_hit2_01"
+            },
+            {
+              "time": 0.06666667014360428,
+              "name": "images/effects/skill_hit2/skill_hit2_02"
+            },
+            {
+              "time": 0.13333334028720856,
+              "name": "images/effects/skill_hit2/skill_hit2_03"
+            },
+            {
+              "time": 0.1666666716337204,
+              "name": "images/effects/skill_hit2/skill_hit2_04"
+            },
+            {
+              "time": 0.23333333432674408,
+              "name": "images/effects/skill_hit2/skill_hit2_05"
+            },
+            {
+              "time": 0.2666666805744171,
+              "name": "images/effects/skill_hit2/skill_hit2_06"
+            },
+            {
+              "time": 0.3333333432674408,
+              "name": "images/effects/skill_hit2/skill_hit2_07"
+            },
+            {
+              "time": 0.36666667461395264,
+              "name": "images/effects/skill_hit2/skill_hit2_08"
+            },
+            {
+              "time": 0.4000000059604645,
+              "name": "images/effects/skill_hit2/skill_hit2_09"
+            },
+            {
+              "time": 0.46666666865348816,
+              "name": "images/effects/skill_hit2/skill_hit2_10"
+            },
+            {
+              "time": 0.5,
+              "name": "images/effects/skill_hit2/skill_hit2_11"
+            },
+            {
+              "time": 0.5333333611488342,
+              "name": "images/effects/skill_hit2/skill_hit2_12"
+            },
+            {
+              "time": 0.5666666626930237,
+              "name": "images/effects/skill_hit2/skill_hit2_13"
+            },
+            {
+              "time": 0.6333333253860474,
+              "name": "images/effects/skill_hit2/skill_hit2_14"
+            },
+            {
+              "time": 0.6666666865348816,
+              "name": "images/effects/skill_hit2/skill_hit2_15"
+            },
+            {
+              "time": 0.699999988079071,
+              "name": "images/effects/skill_hit2/skill_hit2_16"
+            },
+            {
+              "time": 0.7333333492279053,
+              "name": "images/effects/skill_hit2/skill_hit2_17"
+            },
+            {
+              "time": 0.7666666507720947,
+              "name": "images/effects/skill_hit2/skill_hit2_18"
+            },
+            {
+              "time": 0.8333333134651184,
+              "name": "images/effects/skill_hit2/skill_hit2_19"
+            },
+            {
+              "time": 0.8666666746139526,
+              "name": null
+            }
+          ]
+        }
+      },
+      "bones": {
+        "hiG": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 2,
+              "y": 2,
+              "curve": [
+                0,
+                0.17287233471870422,
+                0.75,
+                1
+              ]
+            },
+            {
+              "time": 1.1333333253860474,
+              "x": 3.5,
+              "y": 3.5
+            }
+          ]
+        }
+      }
+    }
+  }
+}

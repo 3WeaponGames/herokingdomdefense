@@ -94,7 +94,8 @@
         58,
         59
       ]
-    }
+    },
+    "trimStart": 0
   },
   {
     "id": "guardian-body-shield-start",
@@ -147,7 +148,8 @@
         14,
         15
       ]
-    }
+    },
+    "trimStart": 0.0625
   },
   {
     "id": "guardian-body-shield-loop",
@@ -194,7 +196,8 @@
         18,
         17
       ]
-    }
+    },
+    "trimStart": 0
   },
   {
     "id": "guardian-body-shield-end",
@@ -251,6 +254,7 @@
         40,
         41
       ]
-    }
+    },
+    "trimStart": 0
   }
 ]
