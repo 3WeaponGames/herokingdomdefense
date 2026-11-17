@@ -16,6 +16,41 @@ function fixture(t,primary={},secondary={}){
  return {root,service,bytes,req,change,commits:()=>commits};
 }
 
+test('a complete preview transform is one atomic draft edit, one undo step and one explicit publication',t=>{
+ const primary={HeroSkills:{skirmisher:{extension:{keep:'primary'},visual:{extension:'retain'}}}},secondary={HeroSkills:{skirmisher:{extension:{keep:'mirror'},visual:{mirrorOnly:9}}}},f=fixture(t,primary,secondary),before=f.bytes(),start=f.service.snapshot();
+ const changes=[{path:'visual.castOffsetX',value:21},{path:'visual.castOffsetY',value:-8},{path:'visual.castScale',value:.24},{path:'visual.castScaleX',value:1.3},{path:'visual.castRotation',value:35},{path:'projectileWidth',value:45}];
+ const edited=f.service.change(f.req({style:'skirmisher',changes}));assert.equal(edited.version,start.version+1);assert.equal(f.service.undoStack.length,1);assert.equal(f.service.redoStack.length,0);
+ for(const edit of changes)assert.equal(Settings.get(edited.effective.skirmisher,edit.path),edit.value);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+ const undone=f.service.undo(f.req());assert.deepEqual(undone.data,start.data);assert.equal(f.service.undoStack.length,0);const redone=f.service.redo(f.req());for(const edit of changes)assert.equal(Settings.get(redone.effective.skirmisher,edit.path),edit.value);
+ assert.equal(f.service.save(f.req()).result.saved,true);assert.equal(f.commits(),1);for(const [i,text]of f.bytes().entries()){const data=JSON.parse(text),skill=data.HeroSkills.skirmisher;for(const edit of changes)assert.equal(Settings.get(skill,edit.path),edit.value);assert.deepEqual(skill.extension,{keep:i?'mirror':'primary'});assert.equal(skill.visual[i?'mirrorOnly':'extension'],i?9:'retain');assert.deepEqual(data.GameTools,JSON.parse(before[i]).GameTools);}
+ assert.equal(f.service.save(f.req()).result.saved,false);assert.equal(f.commits(),1);
+});
+
+test('an unchanged or empty preview gesture preserves inherited defaults without creating history or writes',t=>{
+ const f=fixture(t),before=f.bytes(),start=f.service.snapshot(),defaults=Settings.defaults('skirmisher');
+ for(const changes of [[],[{path:'visual.castScale',value:defaults.visual.castScale},{path:'visual.castOffsetX',value:defaults.visual.castOffsetX},{path:'projectileWidth',value:defaults.projectileWidth}]]){
+  const result=f.service.change(f.req({style:'skirmisher',changes}));assert.equal(result.version,start.version);assert.deepEqual(result.data,{});assert.equal(result.dirty,false);assert.equal(result.canUndo,false);
+ }
+ assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+});
+
+test('invalid, duplicate or unsupported gesture fields cannot partially mutate the shared draft',t=>{
+ const f=fixture(t),before=f.service.snapshot(),bytes=f.bytes(),good={path:'visual.castOffsetX',value:29};
+ const invalid=[null,{},[good,{path:'visual.castScale',value:0}],[good,{path:'visual.castRotation',value:Infinity}],[good,{path:'visual.castOffsetX',value:4}],[good,{path:'visual.castResource',value:VFX}],[good,{path:'visual.__proto__.poison',value:1}],[good,{path:'visual.futureField',value:1}],Array.from({length:33},(_,index)=>({path:'unknown'+index,value:0}))];
+ for(const changes of invalid){assert.throws(()=>f.service.change(f.req({style:'skirmisher',changes})));assert.deepEqual(f.service.snapshot().data,before.data);assert.equal(f.service.version,before.version);assert.equal(f.service.undoStack.length,0);}
+ assert.throws(()=>f.service.change(f.req({style:'missing',changes:[]})));assert.deepEqual(f.bytes(),bytes);assert.equal(f.commits(),0);
+});
+
+test('a stale preview gesture rejects every field and leaves the current shared draft intact',t=>{
+ const f=fixture(t),stale=f.req({style:'fighter',changes:[{path:'visual.castScale',value:2},{path:'visual.castRotation',value:20}]}),bytes=f.bytes();f.change('fighter','visual.castOffsetX',9);const current=f.service.snapshot();
+ assert.throws(()=>f.service.change(stale),/another panel/);assert.deepEqual(f.service.snapshot().data,current.data);assert.equal(f.service.version,current.version);assert.equal(f.service.undoStack.length,1);assert.deepEqual(f.bytes(),bytes);assert.equal(f.commits(),0);
+});
+
+test('a malformed batch container rejects before any sibling transform is materialized',t=>{
+ const f=fixture(t,{HeroSkills:{fighter:{visual:'preserve-invalid-container'}}}),start=f.service.snapshot(),bytes=f.bytes();
+ assert.throws(()=>f.service.change(f.req({style:'fighter',changes:[{path:'cooldown',value:15},{path:'visual.castScale',value:2}]})),/Invalid skill section/);assert.deepEqual(f.service.snapshot().data,start.data);assert.equal(f.service.version,start.version);assert.equal(f.service.undoStack.length,0);assert.deepEqual(f.bytes(),bytes);
+});
+
 test('Skirmisher descriptions use the active skill sounds while preserving ordinary basic cues without staging defaults',t=>{
  const f=fixture(t,{HeroSkills:{skirmisher:{extension:{keep:true}}}}),before=f.bytes(),sounds=require('../../assets/_script/BattleSoundCatalog').effects;
  const phases={release:'skirmisher-active-release',impact:'skirmisher-active-hit',basicRelease:'bow-arrow-release',basicImpact:'arrow-impact-flesh'};

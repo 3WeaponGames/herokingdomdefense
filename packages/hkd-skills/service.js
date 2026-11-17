@@ -55,6 +55,7 @@ class SkillService{
     if(animation&&phase!=='vfx'&&(!previous||animation!==Settings.get(previous,'visual.animation'))){const describe=this.options.describe||require('../game-data-editor/lib/unit-assets').describe,description=describe(this.root,{type:'hero',id:'hero',heroStyle:style,noRuntime:true});if(!Settings.riderAnimations(description).includes(animation))throw Error('Choose an authored attack animation supplied by every rider layer.');}
   }
   change(request){
+    if(Object.prototype.hasOwnProperty.call(request||{},'changes'))return this.changeMany(request);
     this.check(request);const field=this.field(request);if(!Settings.valid(field,request.value))throw Error(field.label+': choose a valid value.');
     if(!['audio','vfx','projectile'].includes(field.type)&&Document.equal(Settings.get(Settings.effective(request.style,{HeroSkills:this.data}),request.path),request.value))return this.snapshot();
     const data=clone(this.data);containers(data,[request.style].concat(request.path.split('.')),'the draft');if(!object(data[request.style]))data[request.style]={};
@@ -73,6 +74,30 @@ class SkillService{
     if(field.type==='effect-animation'&&request.value){const id=Settings.get(data[request.style],field.resourcePath||'visual.resource'),asset=this.asset('vfx',id);if(!asset||asset.kind!=='spine'||!asset.animations.includes(request.value))throw Error('Choose an animation from the selected VFX asset.');}
     if(request.path==='visual.animation'&&request.value)this.animations(request.style,data[request.style],'rider');
     if(Document.equal(data,this.data))return this.snapshot();this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();
+  }
+  // A preview gesture can move both axes, or resize/rotate a selected effect.
+  // Validate its entire numeric patch before publishing one shared-draft edit.
+  // Intermediate pointer positions remain local to the preview, so Escape
+  // needs no compensating edits and one Undo restores the complete gesture.
+  changeMany(request){
+    this.check(request);
+    if(!Settings.styles.some(row=>row.id===request.style))throw Error('Choose one of the six hero skills.');
+    if(!Array.isArray(request.changes)||request.changes.length>32)throw Error('A skill gesture must contain up to 32 numeric fields.');
+    const seen=new Set(),edits=request.changes.map(edit=>{
+      if(!object(edit)||typeof edit.path!=='string'||seen.has(edit.path))throw Error('Choose distinct editable fields for the skill gesture.');
+      seen.add(edit.path);const field=this.field({style:request.style,path:edit.path});
+      if(field.type!=='number'||!Settings.valid(field,edit.value))throw Error(field.label+': choose a valid numeric value.');
+      return {path:edit.path,value:edit.value};
+    }),effective=Settings.effective(request.style,{HeroSkills:this.data}),changed=edits.filter(edit=>!Document.equal(Settings.get(effective,edit.path),edit.value));
+    if(!changed.length)return this.snapshot();
+    const data=clone(this.data);
+    for(const edit of changed){
+      containers(data,[request.style].concat(edit.path.split('.')),'the draft');
+      if(!object(data[request.style]))data[request.style]={};
+      Settings.set(data[request.style],edit.path,edit.value);
+    }
+    if(Document.equal(data,this.data))return this.snapshot();
+    this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();
   }
   reset(request){this.check(request);this.field(request);const data=clone(this.data);containers(data,[request.style].concat(request.path.split('.')),'the draft');if(!data[request.style])return this.snapshot();remove(data[request.style],request.path.split('.'));if(request.path==='visual.projectile')remove(data[request.style],['visual','projectileAsset']);const resource=RESOURCE_PREFIXES.find(prefix=>request.path==='visual.'+prefix);if(resource)for(const key of resourceKeys(resource))remove(data[request.style],['visual',key]);if(/^audio\.(cast|impact|channel)\.clip$/.test(request.path)){const prefix=request.path.split('.').slice(0,-1);for(const key of ['bundle','path'])remove(data[request.style],prefix.concat(key));}if(!Object.keys(data[request.style]).length)delete data[request.style];if(Document.equal(data,this.data))return this.snapshot();this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();}
 

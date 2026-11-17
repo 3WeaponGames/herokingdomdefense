@@ -10,10 +10,13 @@ var DEFAULTS = {
   vanguard: { cooldown: 14, chargeRate: .2, chargeDecay: .15, buffDuration: 10, momentumMove: .5, momentumAttackRate: .35, duration: 4/3, strikes: 5, strikeDamage: .5, moveScaling: .25, attackScaling: .25, referenceMove: 300 },
   mystic: { cooldown: 12, maxCharges: 10, chargeDamage: .02, activeDamage: 1, splashRadius: 100, splashRadiusPerCharge: 10, slow: .2, slowDuration: 1.5 },
   bruiser: { cooldown: 12, missingDamage: .5, missingAttackRate: .75, sacrifice: .5 },
-  guardian: { cooldown: 16, allyReduction: .1, shieldHealth: .25, shieldDuration: 10, tauntDuration: 3 }
+  guardian: { cooldown: 16, allyReduction: .1, shieldHealth: .25, shieldDuration: 10, tauntDuration: 3, tauntRadius: 250, allyRadius: 250 }
 };
 function finite(value, fallback) { return typeof value === "number" && isFinite(value) ? value : fallback; }
 function positive(value, fallback) { return Math.max(0, finite(value, fallback || 0)); }
+// Range settings are shared by actual protection/taunts and their VFX guides.
+// Older saved documents and scripted callers keep the original 250-unit range.
+function guardianRadius(tuning, key) { return Math.max(0, finite(tuning && tuning[key], 250)); }
 function clamp(value, low, high) { return Math.max(low, Math.min(high, value)); }
 function missing(context) {
   context = context || {};
@@ -222,3 +225,4 @@ exports.bonuses = bonuses; exports.onBasicFire = onBasicFire; exports.onHit = on
 exports.setTarget = setTarget; exports.clearTarget = clearTarget; exports.canActivate = canActivate;
 exports.beginActive = beginActive; exports.cancelActive = cancelActive; exports.absorbDamage = absorbDamage;
 exports.projectileMultiplier = projectileMultiplier; exports.vanguardMultiplier = vanguardMultiplier;
+exports.guardianRadius = guardianRadius;

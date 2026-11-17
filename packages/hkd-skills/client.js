@@ -55,6 +55,18 @@ function createSession(api, onChange) {
     }).finally(() => { pending = pending.filter(value => value !== item); emit(); });
     queue = work; return work;
   }
+  function changeMany(style, changes) {
+    const items=changes.map(change=>({id:++counter,style,path:parts(change.path).join('.'),value:clone(change.value),reset:false}));
+    if(!items.length)return Promise.resolve(snapshot);
+    for(const item of items){rejected.delete(key(item));pending.push(item);}failure='';emit();
+    const work=queue.then(async()=>{
+      if(closed||!snapshot)return null;
+      const response=await api.ipc('change',{version:snapshot.version,revision:snapshot.revision,style,changes:items.map(({path,value})=>({path,value}))});
+      if(!closed){snapshot=response;for(const item of items)rejected.delete(key(item));if(!rejected.size)failure='';}return response;
+    }).catch(error=>{if(!closed){failure=error.message||String(error);for(const item of items)rejected.set(key(item),item);}return null;
+    }).finally(()=>{const ids=new Set(items.map(item=>item.id));pending=pending.filter(item=>!ids.has(item.id));emit();});
+    queue=work;return work;
+  }
   function action(name,extra) {
     const work = queue.then(async () => {
       if (closed) return null;
@@ -66,7 +78,7 @@ function createSession(api, onChange) {
     }).catch(error => { if (!closed) { failure = error.message || String(error); emit(); } return null; });
     queue = work; return work;
   }
-  return { state, effective, change: (style, path, value) => edit(style, path, value, false), reset: (style, path) => edit(style, path, undefined, true),
+  return { state, effective, change: (style, path, value) => edit(style, path, value, false), changeMany, reset: (style, path) => edit(style, path, undefined, true),
     action, load: () => action('load'), flush: () => queue, destroy() { closed = true; pending = []; rejected.clear(); } };
 }
 
@@ -107,7 +119,7 @@ function mount(host, api) {
   const document = host.ownerDocument || global.document, window = document.defaultView || global.window;
   let disposed = false, selected = 'skirmisher', selectedEntry = 'active', tab = 'tuning', description = null, previewRequest = 0, snapshot = null;
   let preview = null, loading = false, actionBusy = false, controlRefs = new Map(), descriptionStyle = '', sessionError = '', handleStyle = '';
-  let localChanges = new Map(), debounce = null, lastSignature = '', soundEnabled = false, playback = { playing: true, time: 0, duration: 4 };
+  let localChanges = new Map(), previewGesture=null, debounce = null, lastSignature = '', soundEnabled = false, playback = { playing: true, time: 0, duration: 4 };
   const invalidInputs = new Map();
   const scrubbers = new Set();let activeScrub=null,scrubInput=null,timelinePointer=null;
   const descriptionLoads = new Map();
@@ -132,7 +144,7 @@ function mount(host, api) {
   const stylesHost = el('div', undefined, list), listNote = el('p', 'Choose a skill or a passive effect to author. Equipment upgrades stay in Items.', list, 'help');
   const main = el('main', undefined, workspace), titleRow = el('div', undefined, main, 'preview-heading'), previewTitle = el('strong', 'Skill preview', titleRow);
   const muteBadge = el('span', 'SILENT · PREVIEW ONLY', titleRow, 'badge');
-  const previewHost = el('div', undefined, main, 'preview-host'); previewHost.tabIndex = 0; previewHost.setAttribute('aria-label', 'Real-time skill preview');previewHost.title='Click an enemy to target it; drag an enemy to move it. Drag an effect handle to adjust its position. Middle drag pans; Ctrl+wheel zooms.';
+  const previewHost = el('div', undefined, main, 'preview-host'); previewHost.tabIndex = 0; previewHost.setAttribute('aria-label', 'Real-time skill preview');previewHost.title='Click an enemy to target it; drag an enemy to move it. Click an effect to select it. Drag its center to move, corner squares to scale, edge squares to resize, and round node to rotate. Gold handles adjust gameplay range and arc. Shift gives fine control; Ctrl snaps; Escape cancels. Middle drag pans; Ctrl+wheel zooms.';
   const transport = el('div', undefined, main, 'preview-controls'), row = el('div', undefined, transport, 'row wrap');
   const play = button(row, 'Pause', () => { playback.playing = !playback.playing; if (preview) preview.play(playback.playing); if (!playback.playing) audio.stop(); updatePlayback(); });
   const restart=button(row,'Restart (R)',restartPreview);restart.title='Restart the current preview from the beginning (R). Keeps the selected preview mode and draft settings.';restart.setAttribute('aria-keyshortcuts','R');
@@ -143,6 +155,8 @@ function mount(host, api) {
   const mode = makeSelect(row, 'Preview', [['active', 'Active skill']], 'active', value => selectEntry(selected,value==='basic'?'passive':'active'));
   const speed = makeSelect(row, 'Speed', [['.25', '0.25×'], ['.5', '0.5×'], ['1', '1×'], ['1.5', '1.5×'], ['2', '2×']], '1', value => setScenario('speed', Number(value)));
   const handle = makeSelect(row, 'Handle', [['origin', 'Skill origin'], ['effect', 'Effect position']], 'origin', value => { if (preview && preview.selectHandle) preview.selectHandle(value); });
+  const transformMode=makeSelect(row,'Transform',[['all','All handles'],['move','Move'],['scale','Scale'],['rotate','Rotate']],'all',value=>{if(preview&&preview.setTransformMode)preview.setTransformMode(value);});
+  transformMode.title='Select an effect in the preview. Drag its center to move, squares to scale, and round handle to rotate. Gold handles edit actual range, radius or arc.';
   const clock = el('span', '0.000 s', row, 'clock');
   const timeline = el('input', undefined, transport, 'timeline'); timeline.type = 'range'; timeline.min = 0; timeline.max = 4; timeline.step = .001; timeline.value = 0; timeline.setAttribute('aria-label', 'Skill preview position');
   timeline.title='Drag to seek through the preview in seconds. Seeking pauses playback and does not edit skill settings.';
@@ -198,7 +212,7 @@ function mount(host, api) {
   }
   function check(parent, label, value, change) { const wrap = el('label', undefined, parent, 'check-field'), input = el('input', undefined, wrap); input.type = 'checkbox'; input.checked = value;input.setAttribute('aria-label',label); const caption=el('span', label, wrap);wrap.title=caption.title=input.title=PREVIEW_HELP[label]||label;input.onchange = () => change(input.checked); return input; }
   function numberScenario(parent, label, key, min, max, step) { const wrap = el('label', undefined, parent, 'compact-field'),caption=el('span', label, wrap);wrap.title=caption.title=(PREVIEW_HELP[label]||label)+' '+SCRUB_HELP; const input = el('input', undefined, wrap); input.type = 'number'; input.min = min; input.max = max; input.step = step; input.value = scenario[key]; input.title=PREVIEW_HELP[label]||label;input.setAttribute('aria-label', label); input.oninput = () => { const n = Number(input.value); if (String(input.value).trim() !== '' && Number.isFinite(n)) setScenario(key, Math.max(min, Math.min(max, n))); };const scrub=NumericScrub.attach(caption,input,{min,max,step,preview:value=>setScenario(key,value),cancel:value=>setScenario(key,value)});scrubbers.add(scrub); return input; }
-  function effective() { const result = session.effective(selected); localChanges.forEach(change => { if (change.style === selected) put(result, change.path, clone(change.value)); }); return result; }
+  function effective() { const result = session.effective(selected); localChanges.forEach(change => { if (change.style === selected) put(result, change.path, clone(change.value)); });if(previewGesture&&previewGesture.style===selected)for(const [path,value]of Object.entries(previewGesture.patches))put(result,path,value);return result; }
   function queueField(path, value, defer) {
     const change = { style: selected, path: parts(path).join('.'), value }; localChanges.set(change.style + ':' + change.path, change);
     updateButtons(session.state()); updatePreview(); clearTimeout(debounce);if(!defer)debounce = setTimeout(flushFields, 160);
@@ -206,6 +220,8 @@ function mount(host, api) {
   function flushFields() { clearTimeout(debounce); debounce = null; const changes = [...localChanges.values()]; localChanges.clear(); changes.forEach(change => session.change(change.style, change.path, change.value)); return session.flush(); }
   async function perform(action) {
     if (actionBusy || disposed) return;
+    const transforming=!!previewGesture;if(preview&&preview.finishTransform)preview.finishTransform(action==='save');
+    if(transforming&&action==='undo')return;
     if(activeScrub)activeScrub.finish(true);
     if (action === 'save' && invalidInputs.size) { message('Correct the highlighted fields before saving.', true); return; }
     actionBusy = true; stopAudio();
@@ -221,10 +237,10 @@ function mount(host, api) {
     } finally { actionBusy = false; updateButtons(session.state()); }
   }
   function updateButtons(state) {
-    const dirty = !!(snapshot && snapshot.dirty || localChanges.size || state.pending || state.rejected || invalidInputs.size);
+    const gestureDirty=!!(previewGesture&&Object.keys(previewGesture.patches).length),dirty = !!(snapshot && snapshot.dirty || localChanges.size || state.pending || state.rejected || invalidInputs.size||gestureDirty);
     save.disabled = actionBusy || !dirty || !!state.rejected || !!invalidInputs.size; discard.disabled = actionBusy || !dirty;
-    undo.disabled = actionBusy || !snapshot || !snapshot.canUndo && !state.pending && !localChanges.size;
-    redo.disabled = actionBusy || !snapshot || !snapshot.canRedo || !!state.pending || !!localChanges.size;
+    undo.disabled = actionBusy || !snapshot || !snapshot.canUndo && !state.pending && !localChanges.size&&!gestureDirty;
+    redo.disabled = actionBusy || !snapshot || !snapshot.canRedo || !!state.pending || !!localChanges.size||!!previewGesture;
     reload.disabled = actionBusy; cast.disabled = !snapshot || loading;
     dirtyState.textContent = state.pending ? 'Updating draft…' : dirty ? '● Unsaved draft' : 'All changes saved';
   }
@@ -256,7 +272,7 @@ function mount(host, api) {
   function selectEntry(style,id){
     if(!snapshot||!snapshot.styles.some(row=>row.id===style))return Promise.resolve(false);
     const next=Authoring.entry(style,id);if(!next)return Promise.resolve(false);
-    if(activeScrub)activeScrub.finish(true);flushFields();stopAudio();selected=style;selectedEntry=next.id;scenario.mode=next.mode;mode.value=next.mode;
+    if(preview&&preview.finishTransform)preview.finishTransform(false);if(activeScrub)activeScrub.finish(true);flushFields();stopAudio();selected=style;selectedEntry=next.id;scenario.mode=next.mode;mode.value=next.mode;
     if(preview)preview.setScenario({mode:next.mode,entry:next.id});descriptionStyle='';previewRequest++;lastSignature='';handleStyle='';renderStyles();renderInspector();return updatePreview();
   }
   function descriptors() { return Authoring.fields(selected,selectedEntry,snapshot&&snapshot.fields&&snapshot.fields[selected],effective(),snapshot&&snapshot.catalogs)[tab]||[]; }
@@ -314,13 +330,18 @@ function mount(host, api) {
   function updateFields() { if (!snapshot) return; controlRefs.forEach((input, path) => { if (document.activeElement === input||scrubInput===input) return; const key = selected + ':' + path, value = invalidInputs.has(key) ? invalidInputs.get(key) : fieldValue(path); input.classList.toggle('invalid', invalidInputs.has(key)); if (input.type === 'checkbox') input.checked = !!value; else if(input.type==='number'&&!invalidInputs.has(key)){input._numericExact=value;input._numericDisplay=formatNumber(value,input._descriptor);input.value=input._numericDisplay;}else input.value = value === undefined || value === null ? '' : value; if (input._colorPicker && !invalidInputs.has(key)) input._colorPicker.value = value || input._defaultColor; }); }
   async function updatePreview() {
     if (!snapshot || disposed) return;
+    if(previewGesture)return;
     const style = snapshot.styles.find(style => style.id === selected); previewTitle.textContent = (style && style.name || selected) + ' · ' + Authoring.entry(selected,selectedEntry).name;
     if (!preview) {
       preview = api.createPreview(previewHost, { runtime: api.runtime, renderer: api.renderer, core: api.core,
         onChange(path, value) { queueField(path, value); updateFields(); },
+        onTransformStart(){previewGesture={style:selected,patches:{}};flushFields();},
+        onTransformPreview(patches){if(!previewGesture)return;previewGesture.patches={...patches};updateFields();updateButtons(session.state());},
+        onTransformEnd(patches,commit){const gesture=previewGesture;previewGesture=null;if(gesture&&commit)session.changeMany(gesture.style,Object.entries(patches).map(([path,value])=>({path,value})));else updatePreview();updateFields();updateButtons(session.state());},
+        onSelect(name){if(disposed)return;handle.value=name;},
         onStatus(value) { if (disposed) return; Object.assign(playback, value); updatePlayback(); facts.textContent = value.error || (value.approaching?'Moving into skill range · ':'')+['Charge ' + Math.round((value.charge || 0) * 100) + '%', 'Cooldown ' + Number(value.cooldown || 0).toFixed(1) + ' s', 'Hits ' + (value.hits || 0)].join(' · '); },
         onSound(kind, value) { if (kind === 'stop' || kind === 'stopChannel' || soundEnabled) audio.cue(kind, Object.assign({}, value, {delay:(Number(value.delay)||0)/Math.max(.01,scenario.speed)})); }
-      }); preview.setScenario(scenario); if (preview.setAudioEnabled) preview.setAudioEnabled(soundEnabled); if (preview.selectHandle) preview.selectHandle(handle.value);
+      }); preview.setScenario(scenario); if (preview.setAudioEnabled) preview.setAudioEnabled(soundEnabled); if (preview.selectHandle) preview.selectHandle(handle.value);if(preview.setTransformMode)preview.setTransformMode(transformMode.value);
     }
     const resource = get(effective(), 'visual.resource') || '',impactResource=get(effective(),'visual.impactResource')||'',projectile=get(effective(),'visual.projectile')||'',projectileEntry=(snapshot.catalogs.projectiles||[]).find(item=>item.id===projectile), art=Object.fromEntries(SkillSettings.resourcePrefixes.filter(prefix=>prefix!=='resource'&&prefix!=='impactResource').map(prefix=>[prefix,get(effective(),'visual.'+prefix)||''])), key = JSON.stringify([selected,resource,impactResource,art,projectile,projectileEntry]);
     if (descriptionStyle !== key) {
@@ -330,7 +351,7 @@ function mount(host, api) {
       catch (error) { if (!disposed && request === previewRequest) message(error.message, true); return; }
       finally { if (!disposed && request === previewRequest) { loading = false; updateButtons(session.state()); } }
     }
-    if (descriptionStyle === key) {
+    if (!previewGesture && descriptionStyle === key) {
       try { await preview.set({ style: selected, entry:selectedEntry, settings: effective(), description }); }
       catch (error) { if (!disposed) message(error.message, true); }
     }

@@ -6,17 +6,24 @@ const assert=require('node:assert/strict');
 const {setup,Node}=require('./backend-gameplay-harness.cjs');
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function scene(style,options={}){
- const poses=[],clears=[],hpUpdates=[],buffs=[],retimes=[];
+ const poses=[],clears=[],hpUpdates=[],buffs=[],retimes=[],attacks=[];
+ // These collision/lifecycle regressions exercise the original configurable
+ // single-arrow and seven-strike contracts, rather than whichever native VFX
+ // preset is currently shipped. Authored volley/thrust playback has separate
+ // integration coverage. Keep caller overrides last so individual cases still
+ // test the actual settings and runtime paths without changing game defaults.
+ const generic={skirmisher:{windup:.35,volleys:1,arrowsPerVolley:1,visual:{castResource:''}},vanguard:{duration:2.5,strikes:7,visual:{castResource:'',arcDegrees:120}},guardian:{shieldDuration:5}}[style]||{},source=options.config||{},saved=source.HeroSkills&&source.HeroSkills[style]||{};
+ const config={...source,HeroSkills:{...source.HeroSkills,[style]:{...generic,...saved,visual:{...generic.visual,...saved.visual}}}};
  const h=setup({HeroMakerRider:{setCombatState(owner,state){poses.push({...state});},clearCombatState(owner){clears.push(owner);},skillTiming(){return options.frozen?{frozen:true,hit:Infinity}:{hit:options.hitTime===undefined?.1667:options.hitTime};},retimeAttack(owner,windup){retimes.push(windup);}},HeroSkillHUD:{update(){},clear(){}},KinghtFallNavigation:{moveManual(actor,game,position){assert.equal(typeof position.clone,'function','native transforms require a Cocos vector');actor.node.setPosition(position);return true;}}});
  h.g.gameStatus=1;h.g.mapSize={width:2000,height:1000};h.ui.isPauset=false;h.d.heroStyle=style;
  const hero={heroStyle:style,node:new Node('hero',h.g.ndMain),hp:500,hpMax:1000,attackRange:200,crit:-1,critDam:1.5,time:{Attack:0},_relicHero:true,
-  _heroSecondary:{},ctrHp:{setHp(...args){hpUpdates.push(args);}},ctrPlayAni:{setAttack(){},setBodyLeft(){}},
+  _heroSecondary:{},ctrHp:{setHp(...args){hpUpdates.push(args);}},ctrPlayAni:{setAttack(...args){attacks.push(args);},setBodyLeft(){}},
   isDead(){return this.hp<=0;},getAttack(){return 100;},getSpeed(){return 300;},getAttSpeed(){return options.attackRate||1;},getCriticalDamage(){return 1.5;},
   onUpdata(){},doAttack(){this.lastBasicDamage=this.getAttack();this.lastBasicSpeed=this._styleProjectileSpeed;this.lastBasicCharge=this._styleShotCharge;},doAttackFinish(){},addBuff(type,data){buffs.push({type,data});},
   onRestart(){},endRoundGame(){},onDead(){},onDestroy(){}
  };
  hero.node._combatGeneration=1;h.g.ctrPlay=hero;
- const adapter=h.load('HeroStyleRuntime');adapter.install(hero,options.config||{});
+ const adapter=h.load('HeroStyleRuntime');adapter.install(hero,config);
  const rt=hero._styleRuntime;rt.refresh();
  function enemy(x,y=0,hp=10000){const e={node:new Node('enemy',h.g.ndMain,x,y),hp,hpMax:hp,debuffInfo:[],hits:[],isDead(){return this.hp<=0;},addBuff(type,data){this.debuffInfo.push({type,data,time:0,timeMax:data.time});},onAttacked(damage,source,secondary,context){
    const combat=h.load('RelicCombat'),adjusted=combat.enemyDamage(this,damage,source,secondary,context),before=this.hp;
@@ -24,7 +31,7 @@ function scene(style,options={}){
    if(!secondary)combat.primaryImpact(this,source,context,adjusted);
    return Math.min(before,adjusted);
   }};e.node._combatGeneration=1;h.d.enemyList.push(e);return e;}
- return {...h,hero,rt,enemy,poses,clears,hpUpdates,buffs,retimes};
+ return {...h,hero,rt,enemy,poses,clears,hpUpdates,buffs,retimes,attacks};
 }
 
 test('all hero classes keep locomotion while input is blocked or tiny without granting movement-based skill charge',()=>{
@@ -85,14 +92,15 @@ test('Vanguard resolves all seven thrusts using current origin and fresh enemy p
  h.rt.update(.36);assert.equal(late.hits.length,1,'an enemy entering for thrust five is hit');
  h.rt.update(.36);h.rt.update(.36);assert.equal(b.hits.length,7);assert.equal(late.hits.length,3);assert.equal(behind.hits.length,0);
  assert.equal(h.rt.state.active,null);h.rt.update(.5);assert.equal(b.hits.length,7);
- assert(h.poses.some(p=>p.rapid),'the rider receives the rapid animation timeline');
+ assert.equal(h.attacks.length,1,'one rider cast owns the full thrust sequence');assert(h.poses.every(p=>p.rapid===false),'VFX contacts do not restart or accelerate the rider animation');
 });
-test('Vanguard arc follows a moving hero without changing the cast aim',()=>{
+test('Vanguard released arc keeps its captured origin and aim while the hero moves',()=>{
  const h=scene('vanguard'),e=h.enemy(450);
  h.rt.cast({x:1,y:0});h.rt.update(.36);assert.equal(e.hits.length,0);
- h.hero.node.x=350;h.rt.update(.36);assert.equal(e.hits.length,1);
- e.node.x=300;h.rt.update(.36);assert.equal(e.hits.length,1,'target behind the moved hero is outside the locked forward arc');
- assert(h.poses.some(p=>p.moving&&p.rapid));assert(h.poses.at(-1).rapid);
+ h.hero.node.x=350;h.rt.update(.36);assert.equal(e.hits.length,0,'moving the rider cannot teleport a released damage area');
+ e.node.x=100;h.rt.update(.36);assert.equal(e.hits.length,1,'new contacts use the captured release origin even behind the moved rider');
+ e.node.x=-100;h.rt.update(.36);assert.equal(e.hits.length,1,'targets behind the captured origin stay outside its forward arc');
+ assert(h.poses.some(p=>p.moving&&p.aimDirection.x===1&&p.rapid===false));assert.equal(h.poses.at(-1).aimDirection.x,1);assert.equal(h.attacks.length,1);
 });
 
 test('Vanguard live movement charge changes the real speed wrapper and its first impact locks bonuses without refresh',()=>{
@@ -184,7 +192,8 @@ test('earliest swept contact still fences recycled later targets and retired bat
 test('Skirmisher cast uses the real core wind-up event to launch exactly one arrow',()=>{
  const h=scene('skirmisher'),a=h.enemy(150);h.rt.state.charge=.5;
  assert.equal(h.rt.cast({x:1,y:0}),true);h.rt.update(.1);assert.equal(a.hits.length,0);
- h.rt.update(.3);assert.equal(a.hits.length,0,'only .05 seconds of flight elapse after the .35 wind-up');close(h.rt.projectiles[0].x,79.375);close(h.rt.projectiles[0].speed,1587.5);h.rt.update(.1);assert.equal(a.hits.length,1);h.rt.update(1);assert.equal(a.hits.length,1);assert.equal(h.rt.state.active,null);assert.deepEqual(h.retimes,[.35]);
+ h.rt.update(.3);assert.equal(a.hits.length,0,'only .05 seconds of flight elapse after the .35 wind-up');close(h.rt.projectiles[0].x,79.375);close(h.rt.projectiles[0].speed,1587.5);h.rt.update(.1);assert.equal(a.hits.length,1);h.rt.update(1);assert.equal(a.hits.length,1);
+ assert(h.rt.state.active,'the source recovery continues after the single release');h.rt.update(h.rt.state.active.duration-h.rt.state.active.elapsed);assert.equal(a.hits.length,1);assert.equal(h.rt.state.active,null);assert.deepEqual(h.retimes,[.35]);
 });
 
 test('Skirmisher launch snapshots the same selected clip used by the aim guide',()=>{
@@ -418,7 +427,7 @@ test('a recycled Mystic target cannot receive the rest of a long frame and dead 
 
 test('valid zero-cooldown slow arrows have a bounded live budget and capacity returns after map exit',()=>{
  const h=scene('skirmisher',{config:{HeroSkills:{skirmisher:{cooldown:0,windup:0,projectileSpeed:1}}}}),limit=h.load('HeroStyleRuntime').limits.projectiles;
- for(let i=0;i<limit;i++){assert(h.rt.cast({x:1,y:0}));h.rt.update(.01);}
+ for(let i=0;i<limit;i++){assert(h.rt.cast({x:1,y:0}));h.rt.update(.01);if(h.rt.state.active)h.rt.update(h.rt.state.active.duration-h.rt.state.active.elapsed);}
  assert.equal(h.rt.projectiles.length,limit);assert.equal(h.rt.canCast(),false);assert.equal(h.rt.cast({x:1,y:0}),false);
  h.rt.update(2000);assert.equal(h.rt.projectiles.length,0);assert.equal(h.rt.canCast(),true);
 });

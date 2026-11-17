@@ -66,7 +66,9 @@ var HELP = {
   allyReduction:"Incoming damage reduction for nearby allies. 0.1 means 10%.",
   shieldHealth:"Shield size as a fraction of maximum HP. 0.25 means 25% of maximum HP.",
   shieldDuration:"Shield lifetime in seconds, unless damage consumes it first.",
-  tauntDuration:"Seconds nearby hostile attackers prioritize the hero."
+  tauntDuration:"Seconds nearby hostile attackers prioritize the hero.",
+  tauntRadius:"Base radius of Iron Bulwark's taunt in world units. Area size multiplies this range; VFX-only size settings do not change it.",
+  allyRadius:"Radius around the hero in which allies receive Protective Presence damage reduction and its aura. Independent of the active taunt and VFX size."
 };
 var VISUAL_HELP = {
   originX:"Horizontal visual offset from the equipped weapon's release point. Moves the beam or arrow artwork, not its damage path.",
@@ -118,6 +120,7 @@ function tuningFields(style){
     if(/^(maxStacks|maxCharges|strikes|volleys|arrowsPerVolley)$/.test(key)){min=1;max=100;step=1;}
     if(key==="projectileSpeed"||key==="referenceMove"){min=1;max=5000;step=1;unit="units / second";}
     if(key==="splashRadius"||key==="splashRadiusPerCharge"){min=key==="splashRadius"?1:0;max=2000;step=1;unit="units";}
+    if(key==="tauntRadius"||key==="allyRadius"){min=1;max=2000;step=1;unit="units";}
     if(key==="spreadDegrees"){max=360;step=1;unit="degrees";}
     if(key==="volleyPlayback"){min=.05;max=4;unit="playback multiplier";}
     if(key==="contactDelay"){max=30;unit="seconds";}

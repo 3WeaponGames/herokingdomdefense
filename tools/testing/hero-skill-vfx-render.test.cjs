@@ -31,6 +31,12 @@ test('Mystic paints a proportional three-part beam, one mark, bounded release ta
 test('Guardian aura follows the actual shield rather than the short cast ring',()=>{
  const f=fixture('guardian');f.rt.state.shield=200;f.rt.state.shieldRemaining=5;f.paint();f.finish();f.rt.state.time=2;f.paint();assert.equal(f.main.children.length,2);f.rt.state.shield=0;f.rt.state.shieldRemaining=3;f.paint();assert.equal(f.main.children.length,1);f.P.clear(f.rt);
 });
+test('Guardian protected-ally artwork uses the same authored inclusive radius as damage reduction',()=>{
+ const f=fixture('guardian',true),edge=f.target(75),outside=f.target(75.01);f.rt.game.gameData.getSoldierList=()=>[edge,outside];f.rt.state.tuning.allyRadius=75;f.rt.settings.visual.scale=10;
+ let frame=f.P.advanceVFX(f.rt),targets=f.rt._presentation.vfxContext.presenceTargets;assert.equal(targets.length,1);assert.equal(targets[0].id,edge);assert.equal(frame.entities.filter(e=>e.slot==='presence').length,1);
+ f.rt.state.tuning.allyRadius=100;frame=f.P.advanceVFX(f.rt);assert.equal(frame.entities.filter(e=>e.slot==='presence').length,2);
+ f.rt.state.tuning.allyReduction=0;frame=f.P.advanceVFX(f.rt);assert.equal(frame.entities.filter(e=>e.slot==='presence').length,0);f.P.clear(f.rt);
+});
 test('Mystic phase textures preload once before combat without creating visuals and late loading remains owned',()=>{
  const f=fixture('mystic');f.P.preload(f.rt);assert.equal(f.loads.length,11);assert.equal(f.main.children.length,1);assert.equal(f.hud.visual.node.children.length,0);f.P.preload(f.rt);assert.equal(f.loads.length,11);f.finish();assert.equal(f.assets.length,11);f.P.preload(f.rt);assert.equal(f.loads.length,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
 });

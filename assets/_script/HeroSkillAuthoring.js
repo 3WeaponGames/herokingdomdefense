@@ -29,6 +29,9 @@ var SLOT_MAP={
   bruiser:{active:["cast"],passive:["passive"]},
   guardian:{active:["buff","taunt","shield","defense","physicalShield"],passive:["presence"]}
 };
+// Only these slots have a saved/runtime transform contract. In particular an
+// old unknown castSecondary field must not produce an unusable preview handle.
+var TRANSFORM_SLOTS=["passive","beam","mark","buff","taunt","shield","cast","channelHit","presence","defense","physicalShield"];
 function entries(style){
   if(!ACTIVE[style])return [];
   var result=[{id:"active",kind:"active",name:ACTIVE[style],mode:"active",help:NOTES[style].active}];
@@ -102,7 +105,19 @@ function handles(style,id,visual){
   var result=[];
   if(id==="active"&&style!=="skirmisher"&&!(style==="mystic"&&visual.castResource&&!visual.resource))result.push(["effect",style==="mystic"?"Burst landing position":"Skill origin"]);
   if(id==="passive"&&style==="mystic")result.push(["origin","Scepter origin"],["target","Channel endpoint"]);
-  slots(style,id).forEach(function(slot){if(visual[slot+"Resource"])result.push([slot,slotName(style,slot)]);});
+  slots(style,id).forEach(function(slot){if(TRANSFORM_SLOTS.indexOf(slot)>=0&&visual[slot+"Resource"])result.push([slot,slotName(style,slot)]);});
+  if(id==="active"&&style!=="guardian"&&visual.impactResource)result.push(["impact","On-hit effect"]);
   return result;
 }
-exports.entries=entries;exports.entry=entry;exports.fields=fields;exports.handles=handles;exports.slots=slots;exports.slotName=slotName;
+function transform(style,id,handle,visual){
+  var available=handles(style,id,visual),row=available.filter(function(item){return item[0]===handle;})[0];
+  if(!row)return null;visual=visual||{};
+  var result={id:handle,label:row[1]},prefix=TRANSFORM_SLOTS.indexOf(handle)>=0?handle:handle==="impact"?"impact":handle==="effect"?"":null;
+  if(prefix===null){result.x="visual."+handle+"X";result.y="visual."+handle+"Y";return result;}
+  result.x="visual."+(prefix?prefix+"OffsetX":"offsetX");result.y="visual."+(prefix?prefix+"OffsetY":"offsetY");
+  result.scale="visual."+(prefix?prefix+"Scale":"scale");
+  if(prefix&&prefix!=="impact"){result.scaleX="visual."+prefix+"ScaleX";result.scaleY="visual."+prefix+"ScaleY";}
+  if(prefix||!(/^(guardian|bruiser)$/.test(style)&&!visual.resource))result.rotation="visual."+(prefix?prefix+"Rotation":"rotation");
+  return result;
+}
+exports.entries=entries;exports.entry=entry;exports.fields=fields;exports.handles=handles;exports.slots=slots;exports.slotName=slotName;exports.transform=transform;

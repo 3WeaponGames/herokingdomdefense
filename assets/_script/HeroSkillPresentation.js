@@ -3,6 +3,7 @@
 // unaffected; absent overrides retain the original procedural art and sounds.
 var Settings = require("./HeroSkillSettings"), Pose = require("./HeroSkillPose"), nextOwner = 0;
 var Projectile = require("./HeroSkillProjectile");
+var Skills = require("./HeroStyleSkills");
 var VFXState=require("./HeroSkillVFXState"),VFXLayout=require("./HeroSkillVFXLayout");
 var MAX_FEEDBACK=256,MAX_IMPACTS=128;
 var STYLE_SELECTION_KEYS=[];Settings.resourcePrefixes.slice(2).forEach(function(prefix){["","Kind","Bundle","Path","Animation","Skin","PremultipliedAlpha","Frames","Columns","Cell","Fps","Loop"].forEach(function(suffix){STYLE_SELECTION_KEYS.push(prefix+suffix);});});
@@ -328,10 +329,10 @@ function vfxContext(runtime){
   var body=groundOnly&&!(runtime.state.style==="fighter"&&v.buffResource&&runtime.state.buffRemaining>0)?null:target(hero,false);if(body){body.x-=v.targetX;body.y-=v.targetY;}
   var presence=[];
   if(runtime.state.style==="guardian"&&v.presenceResource&&runtime.state.tuning.allyReduction>0){
-    var soldiers=runtime.game.gameData.getSoldierList?runtime.game.gameData.getSoldierList():[],heroGround=hero.node.getPosition();
+    var soldiers=runtime.game.gameData.getSoldierList?runtime.game.gameData.getSoldierList():[],heroGround=hero.node.getPosition(),presenceRadius=Skills.guardianRadius(runtime.state.tuning,'allyRadius');
     for(var i=0;i<soldiers.length&&presence.length<256;i++){
       var soldier=soldiers[i];if(!soldier||!alive(soldier.node))continue;var ground=soldier.node.getPosition(),dx=ground.x-heroGround.x,dy=ground.y-heroGround.y;
-      if(dx*dx+dy*dy>250*250)continue;var protectedBody=target(soldier,false);if(protectedBody)presence.push(protectedBody);
+      if(dx*dx+dy*dy>presenceRadius*presenceRadius)continue;var protectedBody=target(soldier,false);if(protectedBody)presence.push(protectedBody);
     }
   }
   var castClip=VFXLayout.clipFor(v.castResource),defenseClip=VFXLayout.clipFor(v.defenseResource),physicalClip=VFXLayout.clipFor(v.physicalShieldResource);

@@ -2,6 +2,7 @@
 // Primary-hit records carry their own battle and pooled-node identities. Relic
 // secondary hits never become primary hits or change authored attack timing.
 var Runtime = require('RelicRuntime');
+var Skills = require('./HeroStyleSkills');
 function current() { return Runtime.current(); }
 function living(actor) {
   return !!actor && (typeof cc === 'undefined' || !cc.isValid || cc.isValid(actor, true) && (!actor.node || cc.isValid(actor.node, true))) && !actor._isPooled && (!actor.isDead || !actor.isDead()) &&
@@ -262,8 +263,8 @@ function heroHaste(hero) {
 function allyIncoming(actor,damage){
   var hero=heroOf(current());
   if(!living(hero)||!hero._styleRuntime||!living(actor))return damage;
-  var bonus=hero._styleRuntime.bonus().allyDamageReduction||0,a=position(actor),b=position(hero);
-  return bonus>0&&a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<=250?damage*(1-Math.min(.8,bonus)):damage;
+  var bonus=hero._styleRuntime.bonus().allyDamageReduction||0,a=position(actor),b=position(hero),radius=Skills.guardianRadius(hero._styleRuntime.state&&hero._styleRuntime.state.tuning,'allyRadius');
+  return bonus>0&&a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<=radius?damage*(1-Math.min(.8,bonus)):damage;
 }
 function tauntedTarget(enemy){
   var record=enemy&&enemy._heroTaunt,data=current();

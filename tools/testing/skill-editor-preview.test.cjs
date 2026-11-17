@@ -73,10 +73,10 @@ test('bounded area-handle drags update actual preview geometry once and repeated
  try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),core,onChange:(path,value)=>changes.push({path,value})});await view.set({style:'fighter',settings:{visual:{}},description});view.seek(.3);const before=view.getState(),initialSteps=steps;assert(before.hits>0);
   const handle=view.getState().handles.find(h=>h.name==='effect'),events=h.overlay().listeners,base={pointerId:8,clientX:handle.x,clientY:handle.y,preventDefault(){}};
   events.get('pointerdown')({...base,button:0});events.get('pointermove')({...base,clientX:handle.x+1000000,clientY:handle.y+1000000});
-  const fields=require('../../assets/_script/HeroSkillSettings').visualFields;
-  for(const change of changes){const field=fields.find(f=>f.path===change.path.join('.'));assert(field);assert(change.value>=field.min&&change.value<=field.max,field.path+' exceeded editable bounds');}
-  const after=view.getState();assert.equal(changes.length,2);assert(steps>initialSteps);close(after.time,before.time);assert.equal(after.hits,0);close(after.effects[0].x,changes.find(c=>c.path[1]==='offsetX').value);close(after.effects[0].y,changes.find(c=>c.path[1]==='offsetY').value);
-  const updatedSteps=steps;events.get('pointermove')({...base,clientX:handle.x+2000000,clientY:handle.y+2000000});assert.equal(changes.length,2);assert.equal(steps,updatedSteps);events.get('pointerup')(base);view.destroy();
+  const fields=require('../../assets/_script/HeroSkillSettings').visualFields,after=view.getState();
+  for(const key of ['offsetX','offsetY']){const field=fields.find(f=>f.path==='visual.'+key);assert(field);assert(after.settings.visual[key]>=field.min&&after.settings.visual[key]<=field.max,field.path+' exceeded editable bounds');}
+  assert.equal(changes.length,0,'A live drag remains a preview until release');assert(steps>initialSteps);close(after.time,before.time);assert.equal(after.hits,0);close(after.effects[0].x,after.settings.visual.offsetX);close(after.effects[0].y,after.settings.visual.offsetY);
+  const updatedSteps=steps;events.get('pointermove')({...base,clientX:handle.x+2000000,clientY:handle.y+2000000});assert.equal(changes.length,0);assert.equal(steps,updatedSteps);events.get('pointerup')(base);assert.equal(changes.length,2);close(changes.find(c=>c.path[1]==='offsetX').value,after.settings.visual.offsetX);close(changes.find(c=>c.path[1]==='offsetY').value,after.settings.visual.offsetY);view.destroy();
  }finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
 test('preview loading, playback, seek, pan and zoom emit no drafts or audio by default',async()=>{

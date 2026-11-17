@@ -165,7 +165,7 @@ Runtime.prototype.cast=function(aim){
   if(arrowPlan)this.pendingArrowAim=arrowPlan;
   this.resolvingState=this.state;
   this.aiming=false;this.aimDirection=dir;this.castId=++this.serial;
-  var castShape=s.style==='skirmisher'?{origin:this.projectileAim(dir,arrowPlan).origin,radius:0,direction:dir}:this.skillArea(dir,s.style==='guardian'?250:Math.max(s.style==='bruiser'?150:s.style==='vanguard'?155:130,h.attackRange));
+  var castShape=s.style==='skirmisher'?{origin:this.projectileAim(dir,arrowPlan).origin,radius:0,direction:dir}:this.skillArea(dir,s.style==='guardian'?Skills.guardianRadius(s.tuning,'tauntRadius'):Math.max(s.style==='bruiser'?150:s.style==='vanguard'?155:130,h.attackRange));
   this.castOrigin=Projectile.point(castShape.origin);this.castDirection=Projectile.point(castShape.direction);
   this.skillCast={key:this.castId,at:s.time,origin:Projectile.point(this.castOrigin),direction:Projectile.point(this.castDirection),radius:cast.radius||castShape.radius,duration:s.active?s.active.duration:this.settings.visual.effectDuration,target:target?{id:target,node:target.node,generation:generation(target),x:point(target).x,y:point(target).y}:null};
   Presentation.queue(this,"cast");
@@ -217,7 +217,7 @@ Runtime.prototype.resolveImpact=function(cast,pending){
     if(this.skillCast&&this.skillCast.key===strike){this.skillCast.origin=Projectile.point(center);this.skillCast.radius=radius;this.skillCast.impactAt=s.time;}
     this.enemies().filter(function(e){return e===target||distanceSquared(center,point(e))<=radius*radius;}).map(candidate).forEach(function(record){self.hit(record.enemy,multiplier,true,strike,record);});this.effect("burst",center,radius);
   }else if(s.style==="guardian"){
-    var self=this,shape=this.skillArea(dir,250);o=shape.origin;this.enemies().forEach(function(e,index){if(distanceSquared(o,Projectile.actorPoint(e,self.game.ndMain))>shape.radius*shape.radius)return;var taunt={hero:h,heroNode:h.node,generation:generation(h),enemyNode:e.node,enemyGeneration:generation(e),data:self.game.gameData,epoch:self.game._combatEpoch,started:s.time,visualKey:"taunt:"+strike+":"+index,remaining:cast.tauntDuration===undefined?4:cast.tauntDuration};e._heroTaunt=taunt;self.taunted.push({enemy:e,taunt:taunt});});this.effect("ring",o,shape.radius,shape.direction,undefined,true);
+    var self=this,shape=this.skillArea(dir,Skills.guardianRadius(s.tuning,'tauntRadius'));o=shape.origin;this.enemies().forEach(function(e,index){if(distanceSquared(o,Projectile.actorPoint(e,self.game.ndMain))>shape.radius*shape.radius)return;var taunt={hero:h,heroNode:h.node,generation:generation(h),enemyNode:e.node,enemyGeneration:generation(e),data:self.game.gameData,epoch:self.game._combatEpoch,started:s.time,visualKey:"taunt:"+strike+":"+index,remaining:cast.tauntDuration===undefined?4:cast.tauntDuration};e._heroTaunt=taunt;self.taunted.push({enemy:e,taunt:taunt});});this.effect("ring",o,shape.radius,shape.direction,undefined,true);
   }
 };
 function beamCandidate(frame,target){var snapshot=frame.targets&&frame.targets.get(target);return living(target)&&!frame.blocked.has(target)&&(!frame.targets||snapshot&&snapshot.node===target.node&&snapshot.generation===generation(target));}
