@@ -162,6 +162,7 @@ function advance(state, dt, context) {
   if (state.style === "vanguard" && state.buffRemaining < 1e-9) state.buffRemaining = 0;
   if (!state.buffRemaining) state.buffStrength = 0;
   state.stackRemaining = Math.max(0, state.stackRemaining - dt);
+  if(state.stackRemaining<1e-9)state.stackRemaining=0;
   if (!state.stackRemaining) state.stacks = 0;
   state.shieldRemaining = Math.max(0, state.shieldRemaining - dt);
   if (!state.shieldRemaining) state.shield = 0;
@@ -223,3 +224,5 @@ exports.setTarget = setTarget; exports.clearTarget = clearTarget; exports.canAct
 exports.beginActive = beginActive; exports.cancelActive = cancelActive; exports.absorbDamage = absorbDamage;
 exports.projectileMultiplier = projectileMultiplier; exports.vanguardMultiplier = vanguardMultiplier;
 exports.guardianRadius = guardianRadius;
+exports.knockbackDuration=.3;
+exports.knockbackProgress=function(elapsed){var p=clamp(positive(elapsed)/.3,0,1);return 1-(1-p)*(1-p);};

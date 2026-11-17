@@ -135,7 +135,7 @@ var def_KinghtFallEnemyBase = function (t) {
     if (!attackCurrent(this, frame)) return false;
     // Observe the next frame's physical position, after contacts have resolved.
     // Attack, stun and support waits are intentional and do not count as stalls.
-    if (this.state === r.Move && !this._hitReactionPlaying) Navigation.recoverStranded(this, $z1KinghtFallUIGame.default.instance.ctrGame, t);
+    if (this.state === r.Move && !this._hitReactionPlaying && !this._heroKnockback) Navigation.recoverStranded(this, $z1KinghtFallUIGame.default.instance.ctrGame, t);
     else this._enemyStall = null;
     if (!attackCurrent(this, frame)) return false;
     this._targetSearchElapsed += t;
@@ -154,6 +154,7 @@ var def_KinghtFallEnemyBase = function (t) {
       if (!attackCurrent(this, frame)) return false;
       frame.timers[s.Attack] += t * rate;
     }
+    if(this._heroKnockback){var push=this._heroKnockback;if(push.owner&&push.owner.knockbackCurrent(push)){this.rigidBody.linearVelocity=cc.Vec2.ZERO;return false;}delete this._heroKnockback;}
   };
   _ctor.prototype.onUpdate = function (t) {
     if (!this.isDead()) {

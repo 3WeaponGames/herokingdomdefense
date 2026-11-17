@@ -204,7 +204,7 @@ exports.moveManual=function(unit,game,localPosition){
   setMainPosition(unit.node,game.ndMain,target);
 };
 function unavailable(unit, frame) {
-  return unit._isPooled || unit.isDead && unit.isDead() || unit._hitReactionPlaying || !unit.node || !cc.isValid(unit.node, true) || unit.node.activeInHierarchy === false || frame - unit._navigationRequestFrame > 2;
+  return unit._isPooled || unit.isDead && unit.isDead() || unit._hitReactionPlaying || unit._heroKnockback || !unit.node || !cc.isValid(unit.node, true) || unit.node.activeInHierarchy === false || frame - unit._navigationRequestFrame > 2;
 }
 Navigation.prototype.takeSearchTurn = function (unit, grid) {
   if (unit._navigationRequestOwner && (unit._navigationRequestOwner !== this || unit._navigationRequestGrid !== grid)) cancelRequest(unit);

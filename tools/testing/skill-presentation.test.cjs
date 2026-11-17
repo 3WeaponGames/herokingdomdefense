@@ -24,12 +24,12 @@ test('the default on-hit burst reuses HUD Graphics for six expanding fading rays
  ops.length=0;f.rt.state.time=.175;f.P.draw(hud,f.rt);assert.equal(ops[0][1],110.5);assert.equal(ops[1][1],122.5);assert.equal(ops[2][1].a,128);f.rt.settings.visual.impactOpacity=0;assert.equal(f.P.hasImpactVisual(f.rt),false);ops.length=0;f.P.draw(hud,f.rt);assert.equal(ops.length,0);
  f.rt.settings.visual.impactOpacity=1;f.rt.state.time=.35;f.P.update(f.rt);assert.equal(f.P.hasImpactVisual(f.rt),false);
 });
-test('on-hit delay schedules exactly one existing reaction and independent target-position VFX on gameplay time',()=>{
+test('on-hit delay schedules one reaction and the effect follows its target on gameplay time',()=>{
  const f=fixture();Object.assign(f.rt.settings.visual,{impactResource:uuid,impactResourceKind:'spine',impactResourceAnimation:'hit',impactDelay:.5,impactDuration:1,impactScale:2,impactOffsetX:5,impactOffsetY:9});
  assert.equal(f.P.deferHitReaction(f.rt,f.target),true);f.P.impact(f.rt,f.target,{point:{x:100,y:20}});f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.loads.length,1);assert.equal(f.root.children.length,0);
  f.loads[0].callback(null,{skeletonJson:{animations:{hit:{}}}});f.rt.state.time=.499;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.hitReactions.length,0);assert.equal(f.root.children.length,0);
  f.rt.state.time=.5;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.deepEqual(f.hitReactions,[f.target]);const node=f.root.children[0];assert.equal(node.x,105);assert.equal(node.y,29);assert.equal(node.scale,2);assert.equal(node.component.animation.name,'hit');
- f.target.node.getPosition=()=>({x:999,y:999});f.rt.state.time=.8;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.hitReactions.length,1);assert.equal(node.x,105);assert(Math.abs(node.component.appliedTime-.3)<1e-9);
+ f.target.node.getPosition=()=>({x:999,y:999});f.rt.state.time=.8;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(f.hitReactions.length,1);assert.equal(node.x,1004);assert.equal(node.y,1008);assert(Math.abs(node.component.appliedTime-.3)<1e-9);
  f.rt.state.time=1.5;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(node.destroyed,true);f.P.clear(f.rt);assert.equal(f.rt._presentation,undefined);
 });
 test('delayed hit feedback rejects dead, pooled, recycled, retired and replaced identities without affecting unrelated reactions',()=>{

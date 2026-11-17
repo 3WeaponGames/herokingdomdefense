@@ -16,8 +16,8 @@ function fixture(style,modern=false){
  function target(x=150){const node=new Node('enemy');node.x=x;node._combatGeneration=1;return{node,hp:1000};}
  return{P:exported,rt,hud,hero,main,loads,assets,finish,target,paint(){exported.attachments(hud,rt);}};
 }
-test('stack-driven aura shares one resource and immutable frames, renders behind the horse, and releases owned assets',()=>{
- const f=fixture('fighter');f.rt.state.stacks=5;f.rt.state.stackRemaining=10;f.paint();assert.equal(f.loads.length,1);f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()][0];assert.equal(art.nodes.size,1);for(const r of art.nodes.values()){assert.equal(r.node.parent,f.main);assert.equal(r.node.zIndex,9);assert.equal(r.node.anchorX,Catalog.clips.find(c=>c.id==='fighter-windup').anchorX);}
+test('stack-driven aura shares one resource and immutable frames, renders in front of the horse, and releases owned assets',()=>{
+ const f=fixture('fighter');f.rt.state.stacks=5;f.rt.state.stackRemaining=10;f.paint();assert.equal(f.loads.length,1);f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()][0];assert.equal(art.nodes.size,1);for(const r of art.nodes.values()){assert.equal(r.node.parent,f.hud.visual.node);assert.equal(r.entity.behind,false);assert.equal(r.node.anchorX,Catalog.clips.find(c=>c.id==='fighter-windup').anchorX);}
  for(let i=0;i<200;i++){f.rt.state.time=i/60;f.paint();}assert.equal(f.loads.length,0);assert(art.frames.size<=128);const asset=f.assets[0];assert.equal(asset.refs,1);f.P.suspend(f.rt);for(const r of art.nodes.values())assert.equal(r.node.active,false);f.paint();for(const r of art.nodes.values())assert.equal(r.node.active,true);f.P.clear(f.rt);assert.equal(asset.refs,0);assert(asset.clones.every(c=>c.destroyed));assert.equal(f.main.children.length,1);
 });
 test('late resources cannot attach to retired state and disabled slots remove the world aura',()=>{
@@ -111,8 +111,8 @@ test('Fighter active Ki follows the live ground pivot and matches preview placem
  preview.hero.x=f.hero.node.x;preview.hero.y=f.hero.node.y;preview.state.buffRemaining=10;preview.updateVFX();
  const at=Layout.entities(frame,f.rt.settings.visual,context).find(e=>e.slot==='buff'),expected=Layout.entities(preview.vfxFrame,preview.settings.visual,preview.vfxContext).find(e=>e.slot==='buff');
  assert.equal(bodyReads,0);assert.equal(context.origin,null);assert.equal(context.heroBody,null);assert(Math.abs(at.x-expected.x)<1e-9);assert(Math.abs(at.y-expected.y)<1e-9);assert.equal(at.x,f.hero.node.x+7);assert.equal(at.y,f.hero.node.y-3);
- f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes('fighter-meshy-center')),node=[...art.nodes.values()][0].node;assert.equal(node.parent,f.main);assert.equal(node.x,at.x);assert.equal(node.y,at.y);
- f.hero.node.y+=21;f.rt.state.time=.1;f.paint();assert(Math.abs(node.y-at.y-21)<1e-9,'Ki follows the live ground transform');
+ f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes('fighter-meshy-center')),node=[...art.nodes.values()][0].node,displayed=f.main.convertToWorldSpaceAR(at);assert.equal(node.parent,f.hud.visual.node);assert.equal(node.x,displayed.x);assert.equal(node.y,displayed.y);
+ f.hero.node.y+=21;f.rt.state.time=.1;f.paint();assert(Math.abs(node.y-displayed.y-21)<1e-9,'Ki follows the live ground transform');
  f.rt.state.buffRemaining=0;const reads=bodyReads;f.P.advanceVFX(f.rt);assert.equal(bodyReads,reads,'expired Ki restores the no-body-anchor fast path');assert.equal(f.rt._presentation.vfxContext.heroBody,null);f.P.clear(f.rt);
 });
 

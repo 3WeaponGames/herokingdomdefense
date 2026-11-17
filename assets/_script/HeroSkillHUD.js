@@ -188,13 +188,30 @@ function paintButton(hud,rt) {
   hud.cooldownCount.node.active=!!cooldown;
   if(cooldown)hud.cooldownCount.string=String(cooldown);
 }
+function disposeCharge(hud){var charge=hud.charge;if(!charge)return;if(live(charge.frameSprite)&&live(charge.frameSprite.node))charge.frameSprite.spriteFrame=null;if(charge.atlas&&charge.atlas.decRef)charge.atlas.decRef();if(live(charge.node))charge.node.destroy();hud.charge=null;}
+function stackMeter(hud,hero,parent){
+  var root=node(parent,"Hero Fighter stacks"),paint=graphics(root,"Ten stack points"),meter={node:root,g:paint.g,fighter:true};hud.charge=meter;
+  // The GUI PRO Slider10 frame is already imported in the shared health atlas.
+  // Keep the ten silver points procedural so they remain crisp at HP-bar size.
+  if(cc.Sprite&&cc.SpriteAtlas&&cc.resources&&cc.resources.load){var frame=node(root,"GUI PRO Slider10 frame"),sprite=frame.addComponent(cc.Sprite);meter.frameSprite=sprite;frame.setSiblingIndex(0);sprite.type=cc.Sprite.Type.SLICED;sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
+    cc.resources.load("gui-pro/health/health-atlas",cc.SpriteAtlas,function(error,atlas){if(error||!atlas||hero._skillHUD!==hud||hud.charge!==meter||!live(root))return;var art=atlas.getSpriteFrame("frame");if(!art)return;if(atlas.addRef)atlas.addRef();meter.atlas=atlas;sprite.spriteFrame=art;meter.signature=null;});
+  }
+  return meter;
+}
+function drawStackPoints(meter,w,h,stacks){
+  var g=meter.g,inset=Math.max(.5,h*3/32),insideW=Math.max(0,w-2*inset),insideH=Math.max(0,h-2*inset),gap=Math.min(insideW/10*.12,Math.max(.35,h/32)),cellW=Math.max(0,(insideW-gap*9)/10),step=cellW+gap;g.clear();
+  if(meter.frameSprite){meter.frameSprite.node.setContentSize(w,h);}
+  if(!meter.frameSprite||!meter.frameSprite.spriteFrame){g.fillColor=color("#10243b");g.roundRect(-w/2,-h/2,w,h,Math.min(h/5,2));g.fill();}
+  for(var i=0;i<10;i++){var x=-insideW/2+i*step;g.fillColor=color(i<stacks?"#dce2e8":"#17324d");g.rect(x,-insideH/2,cellW,insideH);g.fill();if(i<stacks){g.fillColor=color("#fffdf2");g.rect(x,insideH/2-insideH*.3,cellW,insideH*.3);g.fill();}}
+}
 function drawCharge(hud,hero,rt) {
-  var s=rt.state,hp=hero.ctrHp&&hero.ctrHp.node,show=(s.style==="vanguard"||s.style==="skirmisher")&&live(hp)&&live(hp.parent);
+  var s=rt.state,hp=hero.ctrHp&&hero.ctrHp.node,fighter=s.style==="fighter",show=(fighter||s.style==="vanguard"||s.style==="skirmisher")&&live(hp)&&live(hp.parent);
   if(!show){if(hud.charge)hud.charge.node.active=false;return;}
-  if(!hud.charge||!live(hud.charge.node)||hud.charge.node.parent!==hp.parent){if(hud.charge&&live(hud.charge.node))hud.charge.node.destroy();hud.charge=graphics(hp.parent,"Hero charge meter");}
+  if(!hud.charge||!live(hud.charge.node)||hud.charge.node.parent!==hp.parent||!!hud.charge.fighter!==fighter){disposeCharge(hud);hud.charge=fighter?stackMeter(hud,hero,hp.parent):graphics(hp.parent,"Hero charge meter");}
   var meter=hud.charge.node,w=hp.width||64,h=(hp.height||10)*.5;
   meter.active=true;meter.setContentSize(w,h);meter.scaleX=hp.scaleX;meter.scaleY=hp.scaleY;meter.angle=hp.angle||0;meter.zIndex=(hp.zIndex||0)+1;
   var center=hp.convertToWorldSpaceAR(vec(hp.width*(.5-hp.anchorX),-hp.height*hp.anchorY-h/2));meter.setPosition(hp.parent.convertToNodeSpaceAR(center));
+  if(fighter){var stacks=s.stackRemaining>1e-9?Math.max(0,Math.min(10,Math.floor(s.stacks||0))):0,stackSignature=[w,h,stacks,!!(hud.charge.frameSprite&&hud.charge.frameSprite.spriteFrame)].join(":");if(hud.charge.signature!==stackSignature){hud.charge.signature=stackSignature;drawStackPoints(hud.charge,w,h,stacks);}return;}
   var locked=s.style==="vanguard"&&s.buffRemaining>0,amount=Math.max(0,Math.min(1,(locked?s.buffStrength:s.charge)||0));
   var opacity=locked&&s.buffRemaining<=3?Math.round(255*(.65+.35*(.5+.5*Math.cos((s.time||0)*Math.PI*2/1.5)))):255;
   var fill=s.style==="vanguard"?(locked?"#ffab38":"#64d7ff"):"#a4ee53",signature=[s.style,w,h,amount,fill,opacity].join(":");
@@ -208,7 +225,8 @@ function aimOrigin(rt,v) {
 }
 function drawVolleyAim(g,rt,layer,shot,v){
   var shape=Projectile.volleyArea(shot.origin,shot.direction,rt.state.tuning,v),angle=Math.atan2(shape.direction.y,shape.direction.x),start=pointIn(rt,layer,shape.origin);
-  [[7,'#26322a'],[3,'#f7ed8c']].forEach(function(stroke){g.strokeColor=color(stroke[1]);g.lineWidth=stroke[0];g.moveTo(start.x,start.y);for(var i=0;i<=32;i++){var a=angle-shape.halfAngle+shape.halfAngle*2*i/32,p=pointIn(rt,layer,{x:shape.origin.x+Math.cos(a)*shape.radius,y:shape.origin.y+Math.sin(a)*shape.radius});g.lineTo(p.x,p.y);}g.lineTo(start.x,start.y);g.stroke();});
+  var halfWidth=shape.halfAngle<Math.PI/2?Math.min(shape.radius,(shape.startWidth||0)/2):0,side={x:-shape.direction.y,y:shape.direction.x},lower=pointIn(rt,layer,{x:shape.origin.x-side.x*halfWidth,y:shape.origin.y-side.y*halfWidth}),upper=pointIn(rt,layer,{x:shape.origin.x+side.x*halfWidth,y:shape.origin.y+side.y*halfWidth});
+  [[7,'#26322a'],[3,'#f7ed8c']].forEach(function(stroke){g.strokeColor=color(stroke[1]);g.lineWidth=stroke[0];g.moveTo(lower.x,lower.y);for(var i=0;i<=32;i++){var a=angle-shape.halfAngle+shape.halfAngle*2*i/32,p=pointIn(rt,layer,{x:shape.origin.x+Math.cos(a)*shape.radius,y:shape.origin.y+Math.sin(a)*shape.radius});g.lineTo(p.x,p.y);}g.lineTo(upper.x,upper.y);if(halfWidth)g.close();g.stroke();});
 }
 function draw(hud,hero,rt) {
   var view=hud.visual,g=view.g,layer=view.node,v=Presentation.visual(rt),builtin=v.showBuiltin!==false&&!v.castResource&&!v.castSecondaryResource;
@@ -246,7 +264,7 @@ function clear(hero) {
   if(hud.controller&&hud.controller._skillAimHUD===hud)delete hud.controller._skillAimHUD;
   if(hud.art)hud.art.destroy();
   if(hud.countFont){if(live(hud.cooldownCount)&&live(hud.cooldownCount.node))hud.cooldownCount.font=null;if(hud.countFont.decRef)hud.countFont.decRef();hud.countFont=null;}
-  [hud.button,hud.visual&&hud.visual.node,hud.charge&&hud.charge.node].forEach(function(n){if(live(n))n.destroy();});delete hero._skillHUD;
+  disposeCharge(hud);[hud.button,hud.visual&&hud.visual.node].forEach(function(n){if(live(n))n.destroy();});delete hero._skillHUD;
 }
 function handleTouch(controller,phase,event) {
   var game=controller&&controller._followGame&&controller._followGame(),hero=game&&game.ctrPlay,hud=hero&&hero._skillHUD||controller&&controller._skillAimHUD,rt=hud&&hud.runtime,id=touchId(event);

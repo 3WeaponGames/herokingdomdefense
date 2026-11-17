@@ -63,7 +63,7 @@ function actorPoint(actor,main) {
 }
 function area(style,origin,visual,direction,radius) {
   visual=visual||{};var d=unit(direction),angle=finite(visual.rotation)*(d.x<0?-1:1)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),degrees=finite(visual.arcDegrees,style==='vanguard'?72:120);
-  var reach=radius*finite(visual.scale,1);return {origin:add(origin,{x:visual.offsetX,y:visual.offsetY}),radius:reach,direction:{x:d.x*c-d.y*s,y:d.x*s+d.y*c},halfAngle:degrees*Math.PI/360,startWidth:style==='vanguard'?Math.min(reach*2,Math.max(0,finite(visual.arcStartWidth,120))):0};
+  var reach=radius*finite(visual.scale,1);return {origin:add(origin,{x:visual.offsetX,y:visual.offsetY}),radius:reach,direction:{x:d.x*c-d.y*s,y:d.x*s+d.y*c},halfAngle:degrees*Math.PI/360,startWidth:style==='vanguard'||style==='skirmisher'?Math.min(reach*2,Math.max(0,finite(visual.arcStartWidth,120))):0};
 }
 function containsArea(shape,target){
   var x=target.x-shape.origin.x,y=target.y-shape.origin.y,r=shape.radius,squared=x*x+y*y;if(squared>r*r+1e-7)return false;
@@ -73,7 +73,7 @@ function containsArea(shape,target){
 }
 function volleyArea(origin,direction,tuning,visual){
   tuning=tuning||{};visual=visual||{};
-  return area('skirmisher',origin,{offsetX:visual.offsetX,offsetY:visual.offsetY,rotation:visual.rotation,arcDegrees:finite(visual.arcDegrees,16),scale:1},direction,Math.max(0,finite(tuning.volleyRange,250)));
+  return area('skirmisher',origin,{offsetX:visual.offsetX,offsetY:visual.offsetY,rotation:visual.rotation,arcDegrees:finite(visual.arcDegrees,16),arcStartWidth:visual.arcStartWidth,scale:1},direction,Math.max(0,finite(tuning.volleyRange,250)));
 }
 function arrow(radius) { radius=Math.max(1,finite(radius,28));return {tail:-radius*.85,base:radius*.4,tip:radius*.85,halfHeight:radius*.35,stroke:radius*.18}; }
 var bones={skirmisher:'Rider/HandRight/Bow/Arrow',fighter:'Rider/HandRight/Sword',vanguard:'Rider/HandRight/Spear',mystic:'Rider/HandRight/Staff',bruiser:'Rider/HandRight/Axe',guardian:'Rider/HandRight/Blunt'};

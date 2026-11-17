@@ -40,7 +40,7 @@ function segmentEntry(p,a,b,radius) {
 }
 function Runtime(hero,config) {
   this.hero=hero; this.config=config||{};this.settings=SkillSettings.effective(hero.heroStyle,this.config); this.state=Skills.createState(hero.heroStyle,this.settings);
-  this.projectiles=[]; this.effects=[]; this.aimDirection={x:1,y:0}; this.aiming=false; this.serial=0; this.beamClock=0;
+  this.projectiles=[]; this.effects=[];this.knockbacks=[]; this.aimDirection={x:1,y:0}; this.aiming=false; this.serial=0; this.beamClock=0;
   this.taunted=[];this.channelTarget=null;this.beamWarmup=0;this.beamElapsed=0;this.beamSourceTime=0;this.beamFrame=null;
   this.lastPosition=point(hero); this.heroGeneration=generation(hero); this.scope=null;
 }
@@ -197,6 +197,17 @@ Runtime.prototype.cast=function(aim){
   if(s.style==='skirmisher'&&s.active&&Timeline.nextTime(s.active)===0)this.update(0);
   return this.state===s&&this.scope===scope&&this.scopeCurrent(scope);
 };
+Runtime.prototype.knockbackCurrent=function(record){return this.scope===record.scope&&this.scopeCurrent(record.scope)&&this.available()&&living(record.enemy)&&record.enemy.node===record.node&&generation(record.enemy)===record.generation&&record.enemy._heroKnockback===record;};
+Runtime.prototype.startKnockback=function(enemy,away,amount){
+  if(!(amount>0)||!living(enemy))return;var record={owner:this,scope:this.scope,enemy:enemy,node:enemy.node,generation:generation(enemy),started:this.state.time,progress:0,x:away.x*amount,y:away.y*amount};
+  enemy._heroKnockback=record;this.knockbacks.push(record);if(enemy.rigidBody)enemy.rigidBody.linearVelocity=cc.Vec2.ZERO;require("GameToolsOverrides").cancel(enemy);
+};
+Runtime.prototype.advanceKnockbacks=function(){var self=this,owned=this.knockbacks,remaining=[];owned.forEach(function(record){
+  if(!self.knockbackCurrent(record)){if(record.enemy._heroKnockback===record)delete record.enemy._heroKnockback;return;}
+  var progress=Skills.knockbackProgress(self.state.time-record.started),delta=progress-record.progress,p=point(record.enemy);
+  require("KinghtFallNavigation").moveManual(record.enemy,self.game,cc.v2(p.x+record.x*delta,p.y+record.y*delta));record.progress=progress;
+  if(progress<1&&self.knockbackCurrent(record))remaining.push(record);else if(record.enemy._heroKnockback===record)delete record.enemy._heroKnockback;
+});if(this.knockbacks===owned)this.knockbacks=remaining;};
 Runtime.prototype.resolveImpact=function(cast,pending){
   if(!this.available()||this.resolvingState!==this.state)return;
   var h=this.hero,s=this.state,scope=this.scope,o=point(h),dir=pending.direction||this.aimDirection,target=pending.target,strike=pending.castId;
@@ -208,7 +219,7 @@ Runtime.prototype.resolveImpact=function(cast,pending){
     var shape=this.skillArea(dir,Math.max(130,h.attackRange)),radius=shape.radius,self=this;o=shape.origin;dir=shape.direction;
     if(this.skillCast){this.skillCast.origin=Projectile.point(o);this.skillCast.radius=radius;this.skillCast.direction=Projectile.point(dir);}
     var impacts=this.enemies().filter(function(e){return withinArc(o,Projectile.actorPoint(e,self.game.ndMain),dir,radius,Math.cos(shape.halfAngle));}).map(function(e){var record=candidate(e);record.damage=h.getAttack(e)*(cast.damageMultiplier||1);return record;});
-    impacts.forEach(function(impact){var e=impact.enemy;self.hit(e,1,true,strike,impact);if(self.resolvingState===self.state&&self.available()&&living(e)&&e.node===impact.node&&generation(e)===impact.generation){var p=point(e),body=Projectile.actorPoint(e,self.game.ndMain),away=direction({x:body.x-o.x,y:body.y-o.y});require("KinghtFallNavigation").moveManual(e,self.game,cc.v2(p.x+away.x*(cast.knockback===undefined?80:cast.knockback),p.y+away.y*(cast.knockback===undefined?80:cast.knockback)));require("GameToolsOverrides").cancel(e);}});
+    impacts.forEach(function(impact){var e=impact.enemy;self.hit(e,1,true,strike,impact);if(self.resolvingState===self.state&&self.available()&&living(e)&&e.node===impact.node&&generation(e)===impact.generation){var body=Projectile.actorPoint(e,self.game.ndMain),away=direction({x:body.x-o.x,y:body.y-o.y});self.startKnockback(e,away,cast.knockback===undefined?80:cast.knockback);}});
     this.effect("arc",o,radius,dir,shape.halfAngle,true);
   }else if(s.style==="bruiser"){
     var shape=this.skillArea(dir,Math.max(150,h.attackRange)),radius=shape.radius,self=this,multiplier=cast.damageMultiplier;o=shape.origin;
@@ -319,6 +330,7 @@ Runtime.prototype.update=function(dt){
     var nextBeam=frame?this.prepareBeam(frame):Infinity,beforeTicks=frame&&frame.ticks;
     var chargeBefore=this.state.charge;
     var slice=Math.min(remaining,until,nextBeam),events=Skills.step(this.state,slice,{moving:moving,hp:h.hp,maxHp:h.hpMax,moveSpeed:h.getSpeed(),attackRate:h.getAttSpeed()});
+    this.advanceKnockbacks();if(this.resolvingState!==this.state)return;
     // Active release can consume a just-completed charge in this same slice.
     // Its event retains that amount; the full-bar click still precedes release.
     if(this.state.style==="skirmisher"&&chargeBefore<1-1e-9&&(this.state.charge>=1-1e-9||events.some(function(event){return /^skirmisher-(release|volley)$/.test(event.type)&&event.charge>=1-1e-9;}))){
@@ -358,6 +370,7 @@ Runtime.prototype.update=function(dt){
   if(h.refreshAttackRange)h.refreshAttackRange();
 };
 Runtime.prototype.clear=function(reset){
+  this.knockbacks.forEach(function(record){if(record.enemy._heroKnockback===record)delete record.enemy._heroKnockback;});this.knockbacks=[];
   this.markNode=this.beamNode=this.beamVisibleNode=null;
   this.moving=false;if(valid(this.hero)&&valid(this.hero.node))this.lastPosition=point(this.hero);
   this.bowCharging=false;var sounds=require("BattleSounds");if(this.hero._styleRuntime===this){this.hero._styleShot=1;delete this.hero._styleShotCharge;delete this.hero._styleProjectileSpeed;delete this.hero._styleShotRange;if(sounds.charge)sounds.charge(this.hero,false);}

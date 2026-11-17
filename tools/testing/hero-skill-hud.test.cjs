@@ -79,6 +79,19 @@ test('momentum is independent of hidden HP and uses its exact width and half hei
  const f=fixture('vanguard'),hp=f.hero.ctrHp.node,charge=f.hero._skillHUD.charge.node;assert.equal(hp.active,false);assert.equal(charge.active,true);assert.equal(charge.parent,hp.parent);assert.equal(charge.width,hp.width);assert.equal(charge.height,hp.height/2);assert.equal(charge.y+charge.height/2,hp.y-hp.height/2);
  const nodes=[f.hero._skillHUD.button,f.hero._skillHUD.visual.node,charge];f.hud.clear(f.hero);assert.equal(f.hero._skillHUD,undefined);for(const n of nodes)assert(n.destroyed);
 });
+test('Fighter shows ten silver points at the Momentum position, refreshes on landed hits and empties after five idle seconds',()=>{
+ const f=fixture('fighter'),Skills=require('../../assets/_script/HeroStyleSkills'),hp=f.hero.ctrHp.node;f.rt.state=Skills.createState('fighter');f.hud.update(f.hero,f.rt);const meter=f.hero._skillHUD.charge;
+ assert.equal(meter.node.width,hp.width);assert.equal(meter.node.height,hp.height/2);assert.equal(meter.node.y+meter.node.height/2,hp.y-hp.height/2);
+ const points=()=>meter.g.ops.filter(op=>op[0]==='rect');assert.equal(points().length,10);
+ for(let i=0;i<10;i++)Skills.onHit(f.rt.state,{}, {strikeId:i});f.hud.update(f.hero,f.rt);assert.equal(points().length,20);const clears=meter.g.clearCalls;Skills.step(f.rt.state,4.5,{});f.hud.update(f.hero,f.rt);assert.equal(meter.g.clearCalls,clears);
+ Skills.onHit(f.rt.state,{}, {strikeId:'refresh'});Skills.step(f.rt.state,4.99,{});f.hud.update(f.hero,f.rt);assert.equal(points().length,20);Skills.step(f.rt.state,.01,{});f.hud.update(f.hero,f.rt);assert.equal(points().length,10);assert.equal(f.rt.state.stacks,0);
+ f.hud.clear(f.hero);assert(meter.node.destroyed);
+});
+test('Fighter reuses the kit atlas on a cached load and releases it when the HUD retires',()=>{
+ const f=fixture('fighter');let retained=0,released=0,callback;f.Node.prototype.setSiblingIndex=function(index){const list=this.parent.children;list.splice(list.indexOf(this),1);list.splice(index,0,this);};class Sprite{}Sprite.Type={SLICED:1};Sprite.SizeMode={CUSTOM:0};f.cc.Sprite=Sprite;f.cc.SpriteAtlas=class{};const frame={},atlas={getSpriteFrame(name){assert.equal(name,'frame');return frame;},addRef(){retained++;},decRef(){released++;}};
+ f.cc.resources.load=(name,type,done)=>{assert.equal(name,'gui-pro/health/health-atlas');done(null,atlas);};f.hero._skillHUD.charge.node.destroy();f.hud.update(f.hero,f.rt);const meter=f.hero._skillHUD.charge;assert.equal(meter.frameSprite.spriteFrame,frame);assert.equal(meter.frameSprite.node.width,f.hero.ctrHp.node.width);assert.equal(retained,1);f.hud.clear(f.hero);assert.equal(released,1);assert.equal(meter.frameSprite.spriteFrame,null);
+ f.cc.resources.load=(_name,_type,done)=>callback=done;f.hud.update(f.hero,f.rt);f.hud.clear(f.hero);callback(null,atlas);assert.equal(retained,1,'A stale load cannot retain an asset or restore an obsolete bar');
+});
 
 test('Vanguard locks an orange bar at its hit strength and pulses only that fill during the final three seconds',()=>{
  const f=fixture('vanguard'),hud=f.hero._skillHUD,g=hud.charge.g,paint=[];f.cc.color=value=>({hex:value,a:255});const fill=g.fill;g.fill=function(){paint.push({...this.fillColor});return fill.apply(this,arguments);};
@@ -118,8 +131,8 @@ test('Skirmisher guide applies the authored hit-arc offsets to its captured bow 
  f.rt.settings={visual:Object.assign(require('../../assets/_script/HeroSkillSettings').defaults('skirmisher').visual,{originX:4,originY:5,offsetX:6,offsetY:7,castTrajectory:''})};
  f.rt.aiming=true;f.hud.update(f.hero,f.rt);
  const lines=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='moveTo');
- assert.deepEqual(lines.slice(0,2),[['moveTo',36,127],['moveTo',36,127]]);
- const ends=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='lineTo');assert.equal(ends.length,68);for(const end of ends.filter(o=>o[1]!==36||o[2]!==127))assert(Math.abs(Math.hypot(end[1]-36,end[2]-127)-250)<1e-9);assert.equal(ends[33][1],36);assert.equal(ends[33][2],127);
+ assert.deepEqual(lines.slice(0,2),[['moveTo',36,67],['moveTo',36,67]]);
+ const ends=f.hero._skillHUD.visual.g.ops.filter(o=>o[0]==='lineTo');assert.equal(ends.length,68);for(const end of ends.filter(o=>o[1]!==36||o[2]!==187))assert(Math.abs(Math.hypot(end[1]-36,end[2]-127)-250)<1e-9);assert.equal(ends[33][1],36);assert.equal(ends[33][2],187);
 });
 
 test('Skirmisher aim prediction uses the selected authored skill clip before the cast begins',()=>{
@@ -127,7 +140,7 @@ test('Skirmisher aim prediction uses the selected authored skill clip before the
 });
 test('single-volley aiming draws one finite hit-arc boundary and suppresses duplicate procedural cast artwork',()=>{
  const f=fixture('skirmisher',{skillOrigin:()=>({x:30,y:80})});f.hero.ctrPlayAni={};f.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults('skirmisher');f.rt.state.tuning=require('../../assets/_script/HeroStyleSkills').createState('skirmisher').tuning;f.rt.aiming=true;f.hud.update(f.hero,f.rt);
- const ops=f.hero._skillHUD.visual.g.ops,moves=ops.filter(row=>row[0]==='moveTo'),lines=ops.filter(row=>row[0]==='lineTo');assert.equal(moves.length,2,'One boundary is stroked with its dark outline and gold center');assert.equal(lines.length,68);assert(lines.every(row=>row[1]<=30+f.rt.state.tuning.volleyRange+1e-9),'The finite arc cannot advertise the old map-wide ray');assert(moves.every(row=>row[1]===30&&row[2]===80));
+ const ops=f.hero._skillHUD.visual.g.ops,moves=ops.filter(row=>row[0]==='moveTo'),lines=ops.filter(row=>row[0]==='lineTo');assert.equal(moves.length,2,'One boundary is stroked with its dark outline and gold center');assert.equal(lines.length,68);assert(lines.every(row=>row[1]<=30+f.rt.state.tuning.volleyRange+1e-9),'The finite arc cannot advertise the old map-wide ray');assert(moves.every(row=>row[1]===30&&row[2]===20));
  const spear=fixture('vanguard');spear.rt.effects=[{kind:'arc',x:0,y:0,radius:200,direction:{x:1,y:0},halfAngle:Math.PI/5,remaining:.35,duration:.35}];spear.hud.update(spear.hero,spear.rt);assert.equal(spear.hero._skillHUD.visual.g.ops.some(row=>row[0]==='arc'),false);
 });
 

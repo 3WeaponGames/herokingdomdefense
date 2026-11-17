@@ -39,6 +39,6 @@ test('sword, spear, axe and hammer area effects all originate at their equipped 
  }
 });
 test('Skirmisher exposes one adjustable hit arc separately from its artwork while legacy projectile fields stay hidden',()=>{
- const fields=Settings.fields('skirmisher'),arrow=fields.visual.map(f=>f.path),all=Settings.descriptors('skirmisher');for(const field of ['visual.originX','visual.scale','projectileFromBow','projectileOffsetY','projectileWidth'])assert(!arrow.includes(field),field);for(const field of ['visual.offsetX','visual.offsetY','visual.rotation','visual.arcDegrees','volleyRange','volleyHitTime'])assert(all.some(f=>f.path===field)||arrow.includes(field),field);
+ const fields=Settings.fields('skirmisher'),arrow=fields.visual.map(f=>f.path),all=Settings.descriptors('skirmisher');for(const field of ['visual.originX','visual.scale','projectileFromBow','projectileOffsetY','projectileWidth'])assert(!arrow.includes(field),field);for(const field of ['visual.offsetX','visual.offsetY','visual.rotation','visual.arcDegrees','visual.arcStartWidth','volleyRange','volleyHitTime'])assert(all.some(f=>f.path===field)||arrow.includes(field),field);
  for(const style of ['fighter','vanguard']){const fields=Settings.fields(style).visual;for(const key of ['offsetY','scale','arcDegrees'])assert(fields.some(f=>f.key===key),style+' '+key);}
 });

@@ -29,7 +29,7 @@ class Model{
   this.time=0;this.bodyFace=1;this.hero={x:0,y:0,hp:Math.max(.01,finite(this.scenario.hp,100)/100*1000),maxHp:1000};
   const d=finite(this.scenario.targetDistance,120),count=clamp(Math.floor(this.scenario.targets||3),1,5);
   this.targets=Array.from({length:count},(_,i)=>{const at=this.scenario.targetPositions&&this.scenario.targetPositions[i];return {id:i,x:finite(at&&at.x,d+i*85),y:finite(at&&at.y,i?i%2?22:-22:0),hp:100000,maxHp:100000};});
-  this.state=this.core.createState(this.style,this.settings);this.effects=[];this.projectiles=[];this.events=[];this.hits=0;this.damage=0;this.attackClock=0;this.basicPending=null;this.lastAttack=-100;this.lastCast=-100;this.lastAttackKind=null;this.serial=0;this.beam=false;this.beamTarget=null;this.channelTarget=null;this.channelWarmup=0;this.channelSourceTime=0;this.channelStarted=0;this.beamVisibleStarted=0;this.castResult=null;this.pendingDamage=null;
+  this.state=this.core.createState(this.style,this.settings);this.effects=[];this.projectiles=[];this.events=[];this.knockbacks=[];this.hits=0;this.damage=0;this.attackClock=0;this.basicPending=null;this.lastAttack=-100;this.lastCast=-100;this.lastAttackKind=null;this.serial=0;this.beam=false;this.beamTarget=null;this.channelTarget=null;this.channelWarmup=0;this.channelSourceTime=0;this.channelStarted=0;this.beamVisibleStarted=0;this.castResult=null;this.pendingDamage=null;
   this.taunts=[];this.skillCast=null;this.allies=this.style==='guardian'?[{id:'ally:0',generation:0,x:-110,y:30,hp:1000},{id:'ally:1',generation:0,x:60,y:-75,hp:1000}]:[];this.vfxClock=VFXState.create();this.approach=null;this.pendingCast=false;this.planApproach();if(this.scenario.mode==='active'){if(this.approach)this.pendingCast=true;else this.cast();}this.updateVFX();return this;
  }
  updateVFX(extra){const v=this.settings.visual||{},duration=prefix=>{const clip=VFXLayout.clipFor(v[prefix+'Resource']);return clip&&(VFXLayout.visibleDuration?VFXLayout.visibleDuration(clip,this.style,prefix):clip.duration||clip.frames/clip.fps);},target=t=>t&&t.hp>0?{id:t.id,generation:0,x:t.x+finite(this.scenario.targetBodyOffset&&this.scenario.targetBodyOffset.x,0),y:t.y+finite(this.scenario.targetBodyOffset&&this.scenario.targetBodyOffset.y,50)}:null;
@@ -67,6 +67,8 @@ class Model{
   const lifeSteal=clamp(finite(this.scenario.lifeSteal,0),0,1);if(lifeSteal>0)this.hero.hp=Math.min(this.hero.maxHp,this.hero.hp+removed*lifeSteal);
   this.event('impact',{target:target.id,x:target.x,y:target.y,damage,skill,strike,time:time===undefined?this.time:time});
  }
+ impactPoint(hit){const target=hit&&this.targets.find(target=>target.id===hit.target);return target?{x:target.x,y:target.y}:hit?{x:hit.x,y:hit.y}:null;}
+ advanceKnockbacks(){this.knockbacks=this.knockbacks.filter(record=>{if(record.target.hp<=0||!this.targets.includes(record.target))return false;const progress=DefaultCore.knockbackProgress(this.time-record.started),delta=progress-record.progress;record.target.x+=record.x*delta;record.target.y+=record.y*delta;record.progress=progress;return progress<1;});}
  cast(){
   const target=this.selected()||(this.state.target&&this.state.target.hp>0?this.state.target:this.approach?this.targets[this.approach.target]:this.targets[0]),d=this.direction();if(this.scenario.attackPlayback===0)return false;
   if(this.style==='mystic'&&(!target||target.hp<=0||distance(this.hero,target)>this.attackRange()))return false;
@@ -90,7 +92,7 @@ class Model{
   if(['fighter','bruiser','mystic','guardian'].includes(this.style))this.event('release',{skill:true,time});
   if(this.style==='fighter'){
    const shape=this.area(d,origin,130);origin=shape.origin;d=shape.direction;const impacts=this.targets.filter(t=>t.hp>0&&inArc(origin,this.targetPoint(t),d,shape.radius,shape.halfAngle)).map(target=>({target,damage:this.stats().damage*result.damageMultiplier}));
-   if(this.skillCast)Object.assign(this.skillCast,{origin:{...origin},direction:{...d},radius:shape.radius});this.effect('arc',origin,shape.radius,d,time,shape.halfAngle,true);impacts.forEach(({target,damage})=>{this.hit(target,1,true,strike,damage,time);const body=this.targetPoint(target),length=distance(origin,body)||1;target.x+=(body.x-origin.x)/length*result.knockback;target.y+=(body.y-origin.y)/length*result.knockback;});
+   if(this.skillCast)Object.assign(this.skillCast,{origin:{...origin},direction:{...d},radius:shape.radius});this.effect('arc',origin,shape.radius,d,time,shape.halfAngle,true);impacts.forEach(({target,damage})=>{this.hit(target,1,true,strike,damage,time);if(target.hp<=0||!(result.knockback>0))return;const body=this.targetPoint(target),length=distance(origin,body)||1;this.knockbacks=this.knockbacks.filter(record=>record.target!==target);this.knockbacks.push({target,started:time,progress:0,x:(body.x-origin.x)/length*result.knockback,y:(body.y-origin.y)/length*result.knockback});});
   }else if(this.style==='bruiser'){
    const shape=this.area(d,origin,150);origin=shape.origin;const snapshot=this.pendingDamage===null?this.stats().damage*result.damageMultiplier:this.pendingDamage,targets=this.targets.filter(t=>distance(origin,this.targetPoint(t))<=shape.radius);if(this.skillCast)Object.assign(this.skillCast,{origin:{...origin},direction:{...shape.direction},radius:shape.radius});this.effect('ring',origin,shape.radius,shape.direction,time,undefined,true);targets.forEach(t=>this.hit(t,1,true,strike,snapshot,time));this.pendingDamage=null;
   }else if(this.style==='mystic'){
@@ -144,7 +146,7 @@ class Model{
    const expiry=Math.min(...['buffRemaining','stackRemaining'].map(key=>this.state[key]>1e-9?this.state[key]:Infinity));
    const arrival=this.approach&&!this.approach.arrived?Math.max(0,this.approach.started+this.approach.duration-this.time):Infinity;
    const slice=Math.max(0,Math.min(remaining,at,basic,channel,expiry,arrival)),events=this.core.step(this.state,slice,{moving:this.isMoving(),hp:this.hero.hp,maxHp:this.hero.maxHp,moveSpeed:stats.moveSpeed,attackRate:stats.attackRate});
-   this.time=this.state.time;Object.assign(this.hero,this.positionAt(this.time));
+   this.time=this.state.time;Object.assign(this.hero,this.positionAt(this.time));this.advanceKnockbacks();
    const arrived=arrival<=slice+1e-9;if(arrived){this.approach.arrived=true;if(this.pendingCast){this.pendingCast=false;this.cast();}}
    if(this.style!=='mystic'&&!active&&this.scenario.attackPlayback!==0){if(pending)pending.elapsed+=slice;else this.attackClock=Math.min(1,this.attackClock+slice*stats.attackRate);}
    this.arrows(slice);

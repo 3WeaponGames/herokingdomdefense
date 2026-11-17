@@ -62,9 +62,10 @@ function deferHitReaction(runtime,target,context) {
 function impact(runtime,target,context) {
   var v=Settings.impactVisual(visual(runtime));if(!runtime.available()||!target||!target.node)return;
   var s=state(runtime),item=hitRecord(runtime,target),p=context&&context.point||target.node.getPosition();
-  item.x=p.x;item.y=p.y;item.at=(context&&typeof context.styleImpactAt==="number"&&isFinite(context.styleImpactAt)?Math.min(runtime.state.time,Math.max(0,context.styleImpactAt)):runtime.state.time)+v.delay;item.duration=v.effectDuration/Settings.playbackRate(v.playbackRate);item.until=item.at+item.duration;
+  var origin=target.node.getPosition();item.x=p.x;item.y=p.y;item.offsetX=p.x-origin.x;item.offsetY=p.y-origin.y;item.at=(context&&typeof context.styleImpactAt==="number"&&isFinite(context.styleImpactAt)?Math.min(runtime.state.time,Math.max(0,context.styleImpactAt)):runtime.state.time)+v.delay;item.duration=v.effectDuration/Settings.playbackRate(v.playbackRate);item.until=item.at+item.duration;
   if(s.impacts.length>=MAX_IMPACTS)s.impacts.shift();s.impacts.push(item);
 }
+function impactPoint(item){var p=item.target.node.getPosition();return{x:p.x+(item.offsetX||0),y:p.y+(item.offsetY||0)};}
 function visibleImpacts(runtime) {
   var s=runtime._presentation;return s?s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}):[];
 }
@@ -76,7 +77,7 @@ function draw(hud,runtime) {
   var g=hud.visual.g,layer=hud.visual.node,main=runtime.game.ndMain;
   function at(x,y){return layer.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(x,y)));}
   visibleImpacts(runtime).forEach(function(item){
-    var progress=Math.max(0,Math.min(1,(runtime.state.time-item.at)/item.duration)),x=item.x+v.offsetX,y=item.y+v.offsetY,origin=at(x,y),unit=at(x+1,y),stroke=cc.color(v.color||"#fff3a2");
+    var p=impactPoint(item),progress=Math.max(0,Math.min(1,(runtime.state.time-item.at)/item.duration)),x=p.x+v.offsetX,y=p.y+v.offsetY,origin=at(x,y),unit=at(x+1,y),stroke=cc.color(v.color||"#fff3a2");
     if(stroke&&typeof stroke==="object")stroke.a=Math.round(255*v.opacity*(1-progress));
     g.strokeColor=stroke;g.lineWidth=3*Math.hypot(unit.x-origin.x,unit.y-origin.y)*v.scale;
     for(var i=0;i<6;i++){
@@ -264,7 +265,7 @@ function attachments(hud,runtime) {
   if(v.resource){var rate=Settings.playbackRate(v.resourcePlaybackRate);entities.forEach(function(entity){entity.age*=rate;});paintEntities(hud,runtime,s,v,entities);}
   if(iv.resource){
     var art=s.impactArt||(s.impactArt={nodes:new Map(),frames:new Map()});prepare(runtime,art,iv,s);
-    var hits=s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}).map(function(item){return{key:item,x:item.x+iv.offsetX,y:item.y+iv.offsetY,angle:iv.rotation,loop:false,age:Math.max(0,runtime.state.time-item.at)*Settings.playbackRate(iv.playbackRate)};});
+    var hits=s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}).map(function(item){var p=impactPoint(item);return{key:item,x:p.x+iv.offsetX,y:p.y+iv.offsetY,angle:iv.rotation,loop:false,age:Math.max(0,runtime.state.time-item.at)*Settings.playbackRate(iv.playbackRate)};});
     paintEntities(hud,runtime,art,iv,hits);
   }else if(s.impactArt)clearArt(s.impactArt);
   styleAttachments(hud,runtime);

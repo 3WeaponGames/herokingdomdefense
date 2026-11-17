@@ -6,7 +6,7 @@ var ACTIVE={skirmisher:"Arrow Volley",fighter:"Battle Cry",vanguard:"Spear Barra
 var PASSIVE={fighter:"Combat Stacks",vanguard:"Momentum",mystic:"Electric Channel",bruiser:"Blood Rage",guardian:"Protective Presence"};
 var NOTES={
   skirmisher:{active:"One three-arrow volley. Its narrow fixed arc checks living enemies once at the adjustable actual hit time; the arrows are visual only."},
-  fighter:{active:"An arc slash knocks enemies back and starts the ten-second damage and attack-speed buff.",passive:"Landed melee hits build stacks. The surrounding wind grows with stacks; the center aura belongs to the active buff."},
+  fighter:{active:"An arc slash pushes enemies back over 0.3 seconds and starts the ten-second damage and attack-speed buff.",passive:"Landed melee hits fill the ten-point silver stack bar. Each hit refreshes Stack duration (five seconds by default); all stacks disappear when it expires. The wind grows with stacks, and the center aura belongs to the active buff."},
   vanguard:{active:"One rider cast releases a directional effect with multiple timed hits. Each contact checks enemies in the committed arc.",passive:"Movement builds momentum. A landed hit locks the charge and its speed bonuses for the buff duration."},
   mystic:{active:"Burst around the marked target. Same-target hits increase damage and the splash area; Crystal Orb upgrades affect active damage.",passive:"A continuous single-target channel slows and marks its victim. The target effect lasts only while the channel is connected."},
   bruiser:{active:"Pay current HP first, then hit the circular area. Landed damage can restore HP through the Skull Charm.",passive:"Missing HP increases damage and attack speed. The aura surrounds the full rider."},

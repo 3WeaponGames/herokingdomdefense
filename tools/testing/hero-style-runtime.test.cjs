@@ -157,7 +157,7 @@ test('Skirmisher single arc hits each eligible enemy once and retains distance d
 });
 
 test('Skirmisher arc boundaries and target-distance damage are frame independent under rotated aim',()=>{
- const cases=[{x:100,y:0,inside:true},{x:180,y:21,inside:true},{x:220,y:35,inside:false},{x:-10,y:0,inside:false},{x:0,y:0,inside:true}];for(const aim of [{x:1,y:0},{x:.6,y:.8},{x:-.8,y:.6}]){const run=steps=>{const h=scene('skirmisher'),targets=cases.map(p=>h.enemy(p.x*aim.x-p.y*aim.y,p.x*aim.y+p.y*aim.x));h.rt.cast(aim);steps.forEach(dt=>h.rt.update(dt));return targets.map(t=>t.hits.map(hit=>hit.damage));};const long=run([1]),short=run(Array(100).fill(.01));cases.forEach((p,i)=>{assert.equal(long[i].length,p.inside?1:0);assert.deepEqual(short[i],long[i]);});}
+ const cases=[{x:100,y:0,inside:true},{x:180,y:21,inside:true},{x:220,y:35,inside:true},{x:10,y:55,inside:true},{x:10,y:65,inside:false},{x:-10,y:0,inside:false},{x:0,y:0,inside:true}];for(const aim of [{x:1,y:0},{x:.6,y:.8},{x:-.8,y:.6}]){const run=steps=>{const h=scene('skirmisher'),targets=cases.map(p=>h.enemy(p.x*aim.x-p.y*aim.y,p.x*aim.y+p.y*aim.x));h.rt.cast(aim);steps.forEach(dt=>h.rt.update(dt));return targets.map(t=>t.hits.map(hit=>hit.damage));};const long=run([1]),short=run(Array(100).fill(.01));cases.forEach((p,i)=>{assert.equal(long[i].length,p.inside?1:0);assert.deepEqual(short[i],long[i]);});}
 });
 
 test('Skirmisher snapshots one stable eligible-target pass at the same time across frame partitions',()=>{
@@ -253,6 +253,11 @@ test('ending a round inside Fighter arc damage also prevents subsequent stale kn
  a.onAttacked=function(...args){const result=base.apply(this,args);h.hero.endRoundGame();return result;};
  h.rt.cast({x:1,y:0});h.rt.update(.1667);assert.equal(b.hits.length,0);assert.equal(b.node.x,120);
 });
+test('Fighter knockback lasts .3 seconds, pauses with battle and releases recycled or retired targets',()=>{
+ const h=scene('fighter',{hitTime:0}),enemy=h.enemy(100);h.rt.cast({x:1,y:0});assert.equal(enemy.node.x,100);assert(enemy._heroKnockback);h.rt.update(.15);close(enemy.node.x,205);h.ui.isPauset=true;h.rt.update(3);close(enemy.node.x,205);h.ui.isPauset=false;h.rt.update(.15);close(enemy.node.x,240);assert.equal(enemy._heroKnockback,undefined);
+ for(const reason of ['round','recycle']){const f=scene('fighter',{hitTime:0}),target=f.enemy(100);f.rt.cast({x:1,y:0});f.rt.update(.1);const at=target.node.x;if(reason==='round')f.hero.endRoundGame();else target.node._combatGeneration++;f.rt.update(1);close(target.node.x,at);assert.equal(target._heroKnockback,undefined);assert.equal(f.rt.knockbacks.length,0);}
+ const run=parts=>{const f=scene('fighter',{hitTime:0}),target=f.enemy(100);f.rt.cast({x:1,y:0});parts.forEach(dt=>f.rt.update(dt));return target.node.x;};close(run([.3]),run(Array(30).fill(.01)));
+});
 test('pause and preparation phase cannot advance skill damage or cooldowns',()=>{
  const h=scene('mystic'),e=h.enemy(100);h.ui.isPauset=true;h.rt.update(2);assert.equal(e.hits.length,0);
  h.ui.isPauset=false;h.g.gameStatus=0;h.rt.update(2);assert.equal(e.hits.length,0);
@@ -274,8 +279,9 @@ test('authored impact delay gates Fighter damage, VFX and knockback and checks p
  const h=scene('fighter',{hitTime:.4}),leaving=h.enemy(100),entering=h.enemy(1000);
  assert(h.rt.cast({x:1,y:0}));assert.equal(h.rt.effects.length,0);h.rt.update(.39);
  assert.equal(leaving.hits.length,0);leaving.node.x=1000;entering.node.x=120;h.rt.update(.01);
- assert.equal(leaving.hits.length,0);assert.equal(entering.hits.length,1);assert(entering.node.x>120);
+ assert.equal(leaving.hits.length,0);assert.equal(entering.hits.length,1);assert.equal(entering.node.x,120,'Knockback starts at contact without teleporting');
  assert.equal(h.rt.effects.length,1);close(h.rt.effects[0].remaining,.35);
+ h.rt.update(.15);assert(entering.node.x>120&&entering.node.x<260);h.rt.update(.15);close(entering.node.x,260);assert.equal(entering._heroKnockback,undefined);
 });
 
 test('long and short frames preserve the single volley contact and fresh final thrust effect',()=>{

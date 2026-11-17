@@ -25,7 +25,7 @@ function entities(frame,visual,context){
   (frame.entities||[]).forEach(function(entity){
     var slot=entity.slot,resource=visual[slot+"Resource"];if(!resource)return;
     phaseClips(slot,clipFor(resource),entity.phase).forEach(function(clip){
-      var v=frameVisual(visual,slot,clip),rate=playbackRate(visual,slot,entity.style||context.style),base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:!clip||clip.loop,scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:hero.x+(v.offsetX||0),y:hero.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:slot==="passive"||slot==="buff"};
+      var v=frameVisual(visual,slot,clip),rate=playbackRate(visual,slot,entity.style||context.style),base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:!clip||clip.loop,scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:hero.x+(v.offsetX||0),y:hero.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:(slot==="passive"||slot==="buff")&&(entity.style||context.style)!=="fighter"};
       if(entity.phase==="start"&&typeof entity.progress==="number")base.age=Math.min(.999999,entity.progress)*visibleDuration(clip,entity.style||context.style,slot);
       if(entity.phase==="end")base.age=Math.min(.999999,entity.progress||0)*visibleDuration(clip,entity.style||context.style,slot);
       base.age=sourceTime(clip,base.age,base.loop,entity.style||context.style,slot);

@@ -84,7 +84,7 @@ var VISUAL_HELP = {
   effectDuration:"Lifetime of the skill's area or arc artwork in gameplay seconds. Does not change damage timing or buff duration.",
   castDelay:"Additional seconds before the active effect and its matching damage contacts. The authored barrage and spear sequence use the same delay in gameplay and preview.",
   castSecondaryDelay:"Additional seconds after the shared cast start delay before Blood Cleave's second effect appears. Zero starts both effects together. Does not change damage timing.",
-  arcStartWidth:"Width in world units of Vanguard's flat rear hit-area edge. The sides widen toward its rounded outer arc. 0 restores a pointed cone. This changes actual skill hits and the gold preview boundary; VFX artwork has its own scale controls.",
+  arcStartWidth:"Width in world units of the flat rear hit-area edge for Vanguard and Skirmisher. The sides join its rounded outer arc. 0 restores a pointed cone. This changes actual skill hits and the preview boundary; VFX artwork has its own scale controls.",
   castScale:"Size of the complete skill VFX. The gold hit boundary has separate gameplay size controls.",
   castScaleX:"Horizontal size multiplier for the complete effect. Changes artwork only.",
   castScaleY:"Vertical size multiplier for the complete effect. Changes artwork only.",
@@ -173,14 +173,15 @@ function fields(style){
     if(["holdTime","targetX","targetY"].indexOf(field.key)>=0)return style==="mystic";
     if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic"||style==="skirmisher";
     if(field.key==="arcDegrees")return style==="fighter"||style==="vanguard"||style==="skirmisher";
-    if(field.key==="arcStartWidth")return style==="vanguard";
+    if(field.key==="arcStartWidth")return style==="vanguard"||style==="skirmisher";
     if(field.key==="effectDuration")return style!=="skirmisher";
     return true;
   });
   var tuning=tuningFields(style);
   if(style==='skirmisher'){
-    visual=visual.filter(function(field){return ['offsetX','offsetY','rotation','arcDegrees','resource','resourceAnimation','resourcePlaybackRate','showBuiltin','animation','color','opacity','effectDuration'].indexOf(field.key)>=0||field.key.indexOf('impact')===0||field.key.indexOf('cast')===0;});
+    visual=visual.filter(function(field){return ['offsetX','offsetY','rotation','arcDegrees','arcStartWidth','resource','resourceAnimation','resourcePlaybackRate','showBuiltin','animation','color','opacity','effectDuration'].indexOf(field.key)>=0||field.key.indexOf('impact')===0||field.key.indexOf('cast')===0;});
     visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':/^offset|^rotation$|^arcDegrees$/.test(field.key)?'Volley hit arc':'Volley artwork';if(field.key==='offsetX'||field.key==='offsetY'){field.label='Hit arc offset '+field.key.slice(-1);field.help='Moves the single gold damage arc relative to its captured bow origin. Positive Y moves upward. The three-arrow artwork has separate Cast offset controls.';}if(field.key==='rotation'){field.label='Hit arc rotation';field.help='Rotates the one damage arc relative to the captured aim. The three-arrow artwork has a separate Cast rotation control.';}if(field.key==='arcDegrees'){field.label='Hit arc angle';field.min=1;field.max=360;field.step=1;field.unit='degrees';field.help='Total angle of the single damaging volley arc. Every eligible enemy inside its gold boundary is hit once. Does not change the three-arrow artwork.';}});
+    visual.forEach(function(field){if(field.key==='arcStartWidth'){field.group='Volley hit arc';field.label='Hit arc start width';}});
   }else if(style!=='mystic')visual.forEach(function(field){
     if(field.key==='offsetX'||field.key==='offsetY'){field.label=(style==='bruiser'?'Body':'Weapon')+' offset '+field.key.slice(-1);field.help=style==='bruiser'?'Moves Blood Cleave hit area and both cast layers relative to the animated torso. Positive Y moves upward. Zero centers the cleave on the body.':'Moves both the active skill hit area and its artwork relative to the equipped weapon tip. Positive Y moves upward. Zero uses the weapon tip automatically.';}
     if(field.key==='scale'){field.label=style==='fighter'||style==='vanguard'?'Arc size':'Area size';field.help=style==='bruiser'?'Scales the circular hit area and both cast layers together around the animated torso. 0.5 is half the radius; 1 uses the normal radius.':'Scales the active skill hit area and artwork together around the weapon point. 0.5 is half the reach; 1 uses the normal reach.';}
