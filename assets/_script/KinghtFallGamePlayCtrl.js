@@ -292,7 +292,6 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       t = RelicCombat.heroIncoming(this, t, attacker, ranged);
       var received = Math.max(0, Math.min(this.hp, t));
       if (BattleSounds.hit) BattleSounds.hit(this, attacker, received);
-      $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.player_hurt, this);
       this.time[C.NoDie] = this.time[C.NoDieTime];
       var shieldChance = RelicRuntime.value(RelicRuntime.current(), 120011);
       if (shieldChance > 0 && Math.random() < shieldChance) {

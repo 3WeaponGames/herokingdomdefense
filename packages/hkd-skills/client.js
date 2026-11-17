@@ -155,8 +155,8 @@ function mount(host, api) {
   const mode = makeSelect(row, 'Preview', [['active', 'Active skill']], 'active', value => selectEntry(selected,value==='basic'?'passive':'active'));
   const speed = makeSelect(row, 'Speed', [['.25', '0.25×'], ['.5', '0.5×'], ['1', '1×'], ['1.5', '1.5×'], ['2', '2×']], '1', value => setScenario('speed', Number(value)));
   const handle = makeSelect(row, 'Handle', [['origin', 'Skill origin'], ['effect', 'Effect position']], 'origin', value => { if (preview && preview.selectHandle) preview.selectHandle(value); });
-  const transformMode=makeSelect(row,'Transform',[['all','All handles'],['move','Move'],['scale','Scale'],['rotate','Rotate']],'all',value=>{if(preview&&preview.setTransformMode)preview.setTransformMode(value);});
-  transformMode.title='Select an effect in the preview. Drag its center to move, squares to scale, and round handle to rotate. Gold handles edit actual range, radius or arc.';
+  const transformMode=makeSelect(row,'Transform',[['all','All handles'],['move','Move'],['scale','Scale'],['rotate','Rotate'],['pivot','Pivot']],'all',value=>{if(preview&&preview.setTransformMode)preview.setTransformMode(value);});
+  transformMode.title='Select an effect in the preview. Drag its center to move, squares to scale, and round handle to rotate. For either Blood Cleave effect, choose Pivot and drag the pink crosshair to change its rotation center while keeping the artwork in place. Gold handles edit actual range, radius or arc.';
   const clock = el('span', '0.000 s', row, 'clock');
   const timeline = el('input', undefined, transport, 'timeline'); timeline.type = 'range'; timeline.min = 0; timeline.max = 4; timeline.step = .001; timeline.value = 0; timeline.setAttribute('aria-label', 'Skill preview position');
   timeline.title='Drag to seek through the preview in seconds. Seeking pauses playback and does not edit skill settings.';

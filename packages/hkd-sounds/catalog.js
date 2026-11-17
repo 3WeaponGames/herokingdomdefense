@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const baseline = require('./original-audio.json');
+const AudioMix = require('../../assets/_script/AudioMixCatalog');
 const originalHashes = new Set(Object.values(baseline.files));
 const AUDIO = /\.(mp3|wav|ogg|m4a|aac|flac|aif|aiff|opus|webm)$/i;
 const CATEGORIES = [
@@ -13,11 +14,15 @@ const CATEGORIES = [
 const BIOMES = ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice', 'fire', 'lava'];
 const TITLES = {
   buliding: 'Building construction', destory: 'Building destroyed', palyer_attack: 'Hero arrow release',
-  player_hurt: 'Hero hurt', death: 'Hero death', rebirth: 'Hero revival', run: 'Original horse steps',
+  death: 'Hero death', rebirth: 'Hero revival', run: 'Original horse steps',
   cuo: 'Unavailable action', set_of: 'Set off', get_idea: 'Perk gained', box_treasure: 'Treasure chest',
   btnclick: 'Button click · shared', button_click: 'Button click', Scroll_down: 'Scroll down',
   menu_bgm: 'Menu theme', fight_bgm: 'Original battle theme', ready_bgm: 'Original planning theme',
-  Cards: 'Card action', Levels: 'Wall Defense level theme', bgm: 'Wall Defense theme'
+  Cards: 'Card action', Levels: 'Wall Defense level theme', bgm: 'Wall Defense theme',
+  'impact-bruiser-basic': 'Bruiser · Basic attack hit', 'critical-hit': 'Critical strike hit',
+  'boss-arrival': 'Boss incoming', Snowfield_Skirmish: 'Snowfield Skirmish · Snow planning theme',
+  'battle-1': 'Battle theme · 1', 'battle-2': 'Battle theme · 2', 'battle-3': 'Battle theme · 3',
+  'battle-boss': 'Boss wave · Battle theme', 'battle-final-wave': 'Final wave · Battle theme', menu: 'Main menu theme'
 };
 const title = value => value.replace(/[-_]+/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
 function details(file) {
@@ -25,6 +30,8 @@ function details(file) {
   let category = 'other', kind = 'effect', biome = null, unit = null, tier = null, voiceAction = null;
   const match = /^(?:hooves|ambience)-(.+)-loop$/.exec(key);
   if (match && BIOMES.includes(match[1])) biome = match[1];
+  const planning = /^planning-(.+)$/.exec(key);
+  if (planning && BIOMES.includes(planning[1])) biome = planning[1];
   if (voice) {
     category = 'voices'; kind = 'voice'; unit = file.split('/').slice(-2, -1)[0];
     const level = /-level-(\d+)-/.exec(key); tier = level ? Number(level[1]) : null;
@@ -34,9 +41,9 @@ function details(file) {
   } else if (/^(hooves-)/.test(key)) category = 'horses';
   else if (/^(footsteps-|movement-)/.test(key) || key === 'run') category = 'movement';
   else if (/^ambience-/.test(key)) { category = 'ambience'; kind = 'ambience'; }
-  else if (/(?:bgm|theme)/i.test(key) || ['Sands_of_the_Keep', 'Skybound_Horns', 'Levels'].includes(key)) { category = 'music'; kind = 'music'; }
+  else if (file.includes('/music/') || /(?:bgm|theme)/i.test(key) || ['Sands_of_the_Keep', 'Skybound_Horns', 'Snowfield_Skirmish', 'Levels'].includes(key)) { category = 'music'; kind = 'music'; }
   else if (/^death-/.test(key) || key === 'death') category = 'deaths';
-  else if (/^(impact-|arrow-impact-|magic-impact|hurt-)|cannon-impact|critical-hit/.test(key) || /^skirmisher-(?:passive|active)-hit$/.test(key) || ['player_hurt', 'enemyHit', 'strike'].includes(key)) category = 'impacts';
+  else if (/^(impact-|arrow-impact-|magic-impact)|cannon-impact|critical-hit/.test(key) || /^skirmisher-(?:passive|active)-hit$/.test(key) || ['enemyHit', 'strike'].includes(key)) category = 'impacts';
   else if (/^(sword-|cavalry-lance|monster-|golem-ground|bow-|archer-momentum-|skirmisher-|crossbow-|enemy-(?:spit|magic)|sniper-|cannon-tower)/.test(key) || ['palyer_attack', 'attack2', 'bullet'].includes(key)) category = 'weapons';
   else if (/^(healing-|freeze-|slow-|chain-|shield-|mirror-|gravity-|life-steal|phoenix-|hourglass-|debuff-|boss-(?:transformation|special))/.test(key) || ['buff', 'rebirth'].includes(key)) category = 'abilities';
   else if (/^(gate-|barracks-)/.test(key) || ['buliding', 'destory'].includes(key)) category = 'buildings';
@@ -48,7 +55,7 @@ function details(file) {
   if (voice) {
     const variant = /-variant-(\d+)/.exec(key), action = voiceAction === 'follow' ? 'Follow hero' : voiceAction === 'build' ? 'Building' : title(voiceAction || key);
     name = title(unit) + (tier ? ' · Tier ' + tier : ' · ' + action) + (biome ? ' · ' + title(biome) + ' · Easter egg' : variant ? ' · Line ' + variant[1] : '');
-  } else if (biome) name = title(biome) + (category === 'horses' ? ' · Horse steps' : ' · Ambience');
+  } else if (biome) name = title(biome) + (kind === 'music' ? ' · Planning theme' : category === 'horses' ? ' · Horse steps' : ' · Ambience');
   return { key, name, category, kind, biome, unit, tier, voiceAction, loop: /-loop$/.test(key) || kind === 'music', generated: sfx || voice };
 }
 function index(root) {
@@ -72,7 +79,7 @@ function index(root) {
         duration: Number.isFinite(meta.duration) && meta.duration > 0 ? meta.duration : null,
         origin: originalHashes.has(hash) ? 'original' : 'new', replacesOriginal: !!original && !originalHashes.has(hash),
         collection: relative.split('/')[1] === 'gad_audios' ? 'Wall Defense' : relative.split('/')[1] === 'KinghtFallAudio' ? 'Kingdom Defense' : 'Shared',
-        uuid: meta.uuid || null }));
+        uuid: meta.uuid || null, previewGain: AudioMix.previewGain(meta.uuid) }));
     }
   }
   scan(assets);

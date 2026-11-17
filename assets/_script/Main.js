@@ -17,6 +17,7 @@ var $z1GameTrackDataEvent = require("GameTrackDataEvent");
 var $z1GameUserData = require("GameUserData");
 var $z1PlayerMgr = require("PlayerMgr");
 var RenderGuard = require("KinghtFallRenderGuard");
+var Startup = require("StartupPresentation"), StartupProgress = require("StartupProgress");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -40,6 +41,7 @@ var def_Main = function (t) {
     RenderGuard.install(sp.Skeleton, cc);
     n.instance = this;
     this.failedSaveKeys = {};
+    if (StartupProgress.phase) StartupProgress.phase("lobby");
     $z1EventMgr.EventMgr.getInstance().on("SaveFailed", this, this.onSaveFailed);
     $z1EventMgr.EventMgr.getInstance().on("SaveRecovered", this, this.onSaveRecovered);
     $z1UIMgr.UIMgr.getInstance().getChildByName("UILoading").zIndex = 9999;
@@ -49,16 +51,22 @@ var def_Main = function (t) {
   _ctor.prototype.hideLoading = function () {
     var loading = $z1UIMgr.UIMgr.getInstance().getChildByName("UILoading");
     if (!cc.isValid(loading, true)) return;
-    if (cc.sys && cc.sys.isNative) { loading.destroy(); return; }
     var owner = this, generation = this._startupGeneration, scene = cc.director.getScene(), retired = false;
     var current = function () { return !retired && cc.isValid(owner, true) && owner._startupGeneration === generation &&
       cc.director.getScene() === scene && cc.isValid(loading, true); };
+    function finish() {
+      if (!current()) return;
+      if (Startup.finish) Startup.finish(cc, function () { if (current()) loading.destroy(); }, current);
+      else loading.destroy();
+    }
+    if (StartupProgress.phase) StartupProgress.phase("finishing");
+    if (cc.sys && cc.sys.isNative) { finish(); return; }
     require("ResourceMgr").ResourceMgr.getInstance().loadWithRecovery("Construction menu scene readiness", function (resolve) {
       require("PreparedBuildingMenus").repaintScene(function (error, sceneRetired) {
         if (sceneRetired) retired = true;
         resolve(error, true);
       }, current);
-    }, function () { if (current()) loading.destroy(); }, null, current);
+    }, finish, null, current);
   };
   _ctor.prototype.start = function () {
     var t = this;

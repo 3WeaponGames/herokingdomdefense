@@ -59,3 +59,35 @@ test('the sound editor keeps defeat signals and revival effects distinct from re
   assert.equal(catalog.details('assets/KinghtFallAudio/rebirth.mp3').category, 'abilities');
   assert(!catalog.index(root).items.some(item => item.category === 'deaths'));
 });
+
+test('all Hurt audio and its playback references are removed while other review marks remain valid',()=>{
+ const indexed=require('../../packages/hkd-sounds/catalog').index(root);
+ assert(!indexed.items.some(item=>/hurt/i.test(item.key+' '+item.name)));
+ const config=fs.readFileSync(path.join(root,'assets/_script/KinghtFallConfig.js'),'utf8');
+ const hero=fs.readFileSync(path.join(root,'assets/_script/KinghtFallGamePlayCtrl.js'),'utf8');
+ assert(!config.includes('player_hurt'));assert(!hero.includes('KinghtFallAudioId.player_hurt'));
+ const review=JSON.parse(fs.readFileSync(path.join(root,'authoring/audio-review.json'),'utf8'));
+ const removed=['10e042ee-6495-429f-bf76-54f84ea2af6d','b273036e-d575-445d-a12d-56eeeede9c30','526c12fc-ebc4-42dd-bd1f-8a8a2c03216f','f80a55dd-a732-475e-ab04-382b3d051adf','53d0aada-76ab-479e-9c77-76fae83d1f8d'];
+ for(const uuid of removed)assert.equal(review.marks['uuid:'+uuid],undefined);
+});
+
+test('boss, shared critical and Bruiser basic effects retain the exact supplied WAV samples',()=>{
+ const expected={
+  'sfx/boss-arrival.wav':['47cdad8fad507a44eb34dc5dc12e820ad6e260957eea8ab07ca4539d7ae125c7','46a8e3f4-5f59-48b8-a094-2afd74916202',4],
+  'sfx/critical-hit.wav':['4943aee4db3b43301cd39ff23a9e4b6806595df69557bd8532b50d8e798e8a57','77dc0009-77c0-434a-9bdb-1f66d0259960',1.48],
+  'sfx/impact-bruiser-basic.wav':['735a517480b3cbfcd98e14c448fad65ee8012c08698caa7664a629fa6b80833a',null,1.48]
+ };
+ const indexed=require('../../packages/hkd-sounds/catalog').index(root);
+ for(const [file,[hash,uuid,duration]]of Object.entries(expected)){
+  const bytes=fs.readFileSync(path.join(audio,file)),meta=JSON.parse(fs.readFileSync(path.join(audio,file+'.meta'),'utf8'));
+  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),hash,file);
+  assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(meta.duration,duration);
+  if(uuid)assert.equal(meta.uuid,uuid,'Existing asset identity must survive replacement');
+  assert(!fs.existsSync(path.join(audio,file.replace('.wav','.mp3'))));
+  const item=indexed.items.find(row=>row.file==='assets/KinghtFallAudio/'+file);
+  assert.equal(item.category,file.includes('boss-arrival')?'signals':'impacts');
+ }
+ const critical=indexed.items.find(row=>row.key==='critical-hit');
+ assert.equal(critical.name,'Critical strike hit');
+ const snow=indexed.items.find(row=>row.key==='planning-snow');assert.equal(snow.kind,'music');
+});

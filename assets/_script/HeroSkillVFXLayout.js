@@ -25,7 +25,10 @@ function entities(frame,visual,context){
   (frame.entities||[]).forEach(function(entity){
     var slot=entity.slot,resource=visual[slot+"Resource"];if(!resource)return;
     phaseClips(slot,clipFor(resource),entity.phase).forEach(function(clip){
-      var v=frameVisual(visual,slot,clip),rate=playbackRate(visual,slot,entity.style||context.style),base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:!clip||clip.loop,scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:hero.x+(v.offsetX||0),y:hero.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:(slot==="passive"||slot==="buff")&&(entity.style||context.style)!=="fighter"};
+      var v=frameVisual(visual,slot,clip),rate=playbackRate(visual,slot,entity.style||context.style),style=entity.style||context.style,base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:!clip||clip.loop,scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:hero.x+(v.offsetX||0),y:hero.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:(slot==="passive"||slot==="buff")&&style!=="fighter"&&style!=="vanguard"};
+      if(v.flipX)base.scaleX*=-1;if(v.flipY)base.scaleY*=-1;
+      if(style==="bruiser"&&slot==="passive")base.behind=false;
+      if(clip&&clip.referenceCell&&clip.cell)base.scale=(base.scale===undefined?1:base.scale)*clip.referenceCell/clip.cell;
       if(entity.phase==="start"&&typeof entity.progress==="number")base.age=Math.min(.999999,entity.progress)*visibleDuration(clip,entity.style||context.style,slot);
       if(entity.phase==="end")base.age=Math.min(.999999,entity.progress||0)*visibleDuration(clip,entity.style||context.style,slot);
       base.age=sourceTime(clip,base.age,base.loop,entity.style||context.style,slot);
@@ -38,12 +41,19 @@ function entities(frame,visual,context){
         }
       }else if(slot==="cast"||slot==="castSecondary"){
         var center=entity.origin||entity.target;if(!center)return;
-        base.x=center.x+(v.offsetX||0);base.y=center.y+(v.offsetY||0);
-        var direction=entity.direction||{x:1,y:0};if(entity.style!=="mystic"){var castBasis=Projectile.facingTransform(direction,v.rotation,base.scaleX,base.scaleY);base.angle=castBasis.angle;base.scaleX=castBasis.scaleX;base.scaleY=castBasis.scaleY;base.mirrored=castBasis.mirrored;}
+        var direction=entity.direction||{x:1,y:0},offset=style==='vanguard'?Projectile.facingOffset(direction,{x:v.offsetX,y:v.offsetY}):{x:v.offsetX||0,y:v.offsetY||0};
+        base.x=center.x+offset.x;base.y=center.y+offset.y;
+        var correction=clip&&typeof clip.forwardX==='number'?Math.atan2(clip.forwardY*(v.scaleY===undefined?1:v.scaleY),clip.forwardX*(v.scaleX===undefined?1:v.scaleX))*180/Math.PI:0;
+        if(entity.style!=="mystic"){var castBasis=Projectile.facingTransform(direction,(v.rotation||0)-correction,base.scaleX,base.scaleY);base.angle=castBasis.angle;base.scaleX=castBasis.scaleX;base.scaleY=castBasis.scaleY;base.mirrored=castBasis.mirrored;}
+        if(style==='vanguard'){var offsetBasis=Projectile.facingTransform(direction,0,1,1),oa=offsetBasis.angle*Math.PI/180;base.offsetAxes={x:{x:Math.cos(oa),y:Math.sin(oa)},y:{x:-Math.sin(oa)*offsetBasis.scaleY,y:Math.cos(oa)*offsetBasis.scaleY}};}
         if(entity.style!=="skirmisher"&&entity.radius>0){var extent=clip&&clip.kind==="spine"?Math.max(clip.width,clip.height):clip?clip.cell:128;base.scale=entity.radius*2/Math.max(1,extent);}
         if(clip&&/^skirmisher-atx117(?:-single)?$/.test(clip.trajectory||'')){
           var radians=base.angle*Math.PI/180,px=(clip.originX||0)*(v.scale||1)*base.scaleX,py=(clip.originY||0)*(v.scale||1)*base.scaleY;
           base.x-=px*Math.cos(radians)-py*Math.sin(radians);base.y-=px*Math.sin(radians)+py*Math.cos(radians);
+        }
+        if(clip&&typeof clip.sourcePivotX==='number'&&typeof clip.sourcePivotY==='number'){
+          base.pivotX=base.x;base.pivotY=base.y;var pivotAngle=base.angle*Math.PI/180,pivotScale=(v.scale||1)*(base.scale===undefined?1:base.scale),pivotX=clip.sourcePivotX*pivotScale*base.scaleX,pivotY=clip.sourcePivotY*pivotScale*base.scaleY;
+          base.x-=pivotX*Math.cos(pivotAngle)-pivotY*Math.sin(pivotAngle);base.y-=pivotX*Math.sin(pivotAngle)+pivotY*Math.cos(pivotAngle);
         }
         if(clip&&clip.kind==="spine"){delete base.anchorX;delete base.anchorY;}
       }else if(slot==="shield"||slot==="physicalShield"||slot==="defense"||slot==="buff"&&context.style!=="vanguard"&&context.style!=="fighter"){
@@ -59,8 +69,12 @@ function entities(frame,visual,context){
       if(context.facing<0&&!((slot==="cast"||slot==="castSecondary")&&entity.style!=="mystic")&&!(slot==="beam"&&(!clip||!clip.part||clip.part==="body"))){base.scaleX*=-1;base.angle*=-1;base.mirrored=true;}
       // Native exports may use a remote origin. Center the painted envelope
       // at the authored attachment without modifying any source bones/meshes.
-      if(clip&&clip.kind==='spine'&&!clip.trajectory&&typeof clip.sourceCenterX==='number'&&typeof clip.sourceCenterY==='number'){
-        base.pivotX=base.x;base.pivotY=base.y;var radians=base.angle*Math.PI/180,scale=(v.scale||1)*(base.scale===undefined?1:base.scale),px=clip.sourceCenterX*scale*base.scaleX,py=clip.sourceCenterY*scale*base.scaleY;
+      var centered=clip&&clip.kind==='spine'&&!clip.trajectory&&typeof clip.sourceCenterX==='number'&&typeof clip.sourceCenterY==='number',editablePivot=style==="bruiser"&&(slot==="cast"||slot==="castSecondary");
+      if(centered||editablePivot){
+        // Transform the chosen source point with the exact signed artwork
+        // basis, then place it on the captured hit origin. A world-space
+        // translation here would orbit away from the indicator when aiming.
+        base.pivotX=base.x;base.pivotY=base.y;var radians=base.angle*Math.PI/180,scale=(v.scale||1)*(base.scale===undefined?1:base.scale),px=((centered?clip.sourceCenterX:0)+(editablePivot?v.pivotX||0:0))*scale*base.scaleX,py=((centered?clip.sourceCenterY:0)+(editablePivot?v.pivotY||0:0))*scale*base.scaleY;
         base.x-=px*Math.cos(radians)-py*Math.sin(radians);base.y-=px*Math.sin(radians)+py*Math.cos(radians);
       }
       result.push(base);

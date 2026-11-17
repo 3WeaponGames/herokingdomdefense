@@ -1,5 +1,6 @@
 "use strict";
 var LanguageMgr = require("LanguageMgr").LanguageMgr;
+var Startup = require("StartupPresentation");
 
 var StartScreen = cc.Class({
   extends: cc.Component,
@@ -11,6 +12,7 @@ var StartScreen = cc.Class({
 
   onLoad: function () {
     this._starting = false;
+    Startup.start(this, cc);
     this._requestGeneration = 0;
     cc.debug.setDisplayStats(false);
     // Only title-screen copy and typefaces are needed here. Player data,
@@ -53,9 +55,11 @@ var StartScreen = cc.Class({
     if (this._pulse) this._pulse.stop();
     this.prompt.node.opacity = 255;
     this.prompt.string = LanguageMgr.getInstance().t("start.opening");
+    Startup.carry(this, cc);
     var self = this, generation = ++this._requestGeneration;
     var failed = function (error) {
       if (!error || !cc.isValid(self, true) || self._requestGeneration !== generation) return;
+      if (Startup.restore) Startup.restore(self, cc);
       self._starting = false;
       self.prompt.string = LanguageMgr.getInstance().t("start.retry");
       cc.error("Could not open the loading scene", error);

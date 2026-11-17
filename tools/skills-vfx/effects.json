@@ -31,10 +31,14 @@
       "phase": "loop",
       "group": "vanguard-momentum",
       "loop": true,
-      "frames": 96,
-      "fps": 64,
+      "frames": 48,
+      "fps": 32,
       "warmup": 2,
-      "pitch": 15
+      "pitch": 15,
+      "cell": 256,
+      "columns": 8,
+      "referenceCell": 128,
+      "preserveMaterials": true
     },
     {
       "id": "bruiser-blood-aura",
@@ -172,10 +176,14 @@
       "phase": "loop",
       "group": "vanguard-momentum-buff",
       "loop": true,
-      "frames": 96,
-      "fps": 64,
+      "frames": 48,
+      "fps": 32,
       "warmup": 2,
-      "pitch": 15
+      "pitch": 15,
+      "cell": 256,
+      "columns": 8,
+      "referenceCell": 128,
+      "preserveMaterials": true
     },
     {
       "id": "fighter-arc-slash",

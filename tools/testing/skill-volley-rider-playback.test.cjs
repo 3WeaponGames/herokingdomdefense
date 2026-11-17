@@ -21,8 +21,8 @@ test('Skirmisher has one release and retains no presentation-only repeat entry p
  const settings=Settings.defaults('skirmisher');assert.deepEqual(Timeline.skirmisherSchedule(settings),[.2]);assert.equal(Timeline.riderVolleys,undefined);const f=controllerFixture(false);for(const key of ['playSkillPulse','isPresentationPulse','isPresentationPulseEntry'])assert.equal(f.rider[key],undefined);
 });
 
-test('the one retimed rider and stationary horse preserve the ordinary attack event and completion lifecycle on JS and native getters',()=>{
- for(const native of [false,true]){const f=controllerFixture(native),{actor,rider}=f;let attacks=0,completions=0;actor.setAttackEvent(()=>attacks++);actor.setAttackEnd(()=>completions++);actor.setAttack();assert(rider.retimeAttack(actor,.6));for(const renderer of f.renderers)close(renderer.track.timeScale,.1667/.6);f.step(.3);assert.equal(attacks,0);f.step(.3001);assert.equal(attacks,1);rider.releaseChargedAttack(actor,1);f.step(3);assert.equal(attacks,1);assert.equal(completions,1);actor.setAttack();f.step(1);assert.equal(attacks,2);assert.equal(completions,2);}
+test('the retimed rider preserves the ordinary attack event and completion lifecycle while the horse remains idle on JS and native getters',()=>{
+ for(const native of [false,true]){const f=controllerFixture(native),{actor,rider}=f;let attacks=0,completions=0;actor.setAttackEvent(()=>attacks++);actor.setAttackEnd(()=>completions++);actor.setAttack();assert(rider.retimeAttack(actor,.6));for(const renderer of f.renderers)close(renderer.track.timeScale,renderer===actor.spAniMa?1:.1667/.6);assert.equal(actor.spAniMa.track.animation.name,'idle');f.step(.3);assert.equal(attacks,0);f.step(.3001);assert.equal(attacks,1);rider.releaseChargedAttack(actor,1);f.step(3);assert.equal(attacks,1);assert.equal(completions,1);actor.setAttack();f.step(1);assert.equal(attacks,2);assert.equal(completions,2);}
 });
 
 test('a moving horse keeps its locomotion source clock during retimed rider attacks and cleanup permits the next ordinary attack',()=>{

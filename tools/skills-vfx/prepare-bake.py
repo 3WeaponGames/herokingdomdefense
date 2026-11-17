@@ -11,7 +11,7 @@ from unity_monsters import unpack
 
 # Source render-pipeline shaders are replaced by our capture shader. Importing
 # their incompatible HDRP/URP graphs would require unrelated render packages.
-ALLOWED={'.prefab','.mat','.png','.tga','.jpg','.jpeg','.psd','.tif','.tiff','.fbx','.obj','.mesh','.asset','.anim','.controller'}
+ALLOWED={'.prefab','.mat','.png','.tga','.jpg','.jpeg','.psd','.tif','.tiff','.fbx','.obj','.mesh','.asset','.anim','.controller','.shadergraph','.shadersubgraph','.shader','.hlsl','.cginc'}
 GUID=re.compile(rb'guid:\s*([0-9a-fA-F]{32})')
 def expanded(spec):
     clips=copy.deepcopy(spec['clips']);beam=spec.get('beam')
@@ -69,7 +69,9 @@ def prepare(source,output,extras=()):
     (settings/'ProjectVersion.txt').write_text('m_EditorVersion: 6000.6.0f1\n')
     (settings/'AudioManager.asset').write_text('%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!11 &1\nAudioManager:\n  m_ObjectHideFlags: 0\n  serializedVersion: 2\n  m_Volume: 0\n  m_DisableAudio: 1\n')
     packages=output/'Packages';packages.mkdir(exist_ok=True)
-    (packages/'manifest.json').write_text(json.dumps({'dependencies':{'com.unity.modules.particlesystem':'1.0.0','com.unity.modules.physics':'1.0.0','com.unity.modules.imageconversion':'1.0.0','com.unity.modules.audio':'1.0.0','com.unity.modules.animation':'1.0.0'}}))
+    dependencies={'com.unity.modules.particlesystem':'1.0.0','com.unity.modules.physics':'1.0.0','com.unity.modules.imageconversion':'1.0.0','com.unity.modules.audio':'1.0.0','com.unity.modules.animation':'1.0.0'}
+    if any(clip.get('preserveMaterials') for clip in clips):dependencies['com.unity.render-pipelines.universal']='17.6.0'
+    (packages/'manifest.json').write_text(json.dumps({'dependencies':dependencies}))
     (output/'jobs.json').write_text(json.dumps({'clips':clips},indent=2))
     (output/'source.json').write_text(json.dumps({'workbookSha256':hashlib.sha256((ROOT/spec['workbook']).read_bytes()).hexdigest(),'packages':provenance,'files':written,'scriptsExecuted':False,'audioImported':False},indent=2))
     return output

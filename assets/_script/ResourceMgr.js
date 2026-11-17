@@ -52,12 +52,14 @@ var exp_ResourceMgr = function () {
   // asset-free recovery path; do not leave a success-only continuation stranded.
   t.prototype.loadWithRecovery = function (name, operation, complete, onError, isCurrent) {
     var manager = this;
+    var progress = this.startupProgress && this.startupProgress.begin(name);
     var finished = false;
     var active = false;
     var timer = null;
     var cancel = function () {
       finished = true;
       active = false;
+      if (progress) progress.cancel();
       clearTimeout(timer);
     };
     var retry = function () {
@@ -80,10 +82,11 @@ var exp_ResourceMgr = function () {
           else manager.showRuntimeRecovery(error, retry, null, cancel);
         } else {
           finished = true;
+          if (progress) progress.complete();
           complete && complete(asset);
         }
       }
-      try { operation(done); }
+      try { operation(done, progress && progress.progress); }
       catch (error) { if (settled) throw error; done(error); }
     };
     retry();
@@ -346,7 +349,7 @@ var exp_ResourceMgr = function () {
       var f = new exp_ResCache(n, i, u, e.cacheTme, s);
       var manager = this;
       this.loadBundle(n, function (bundle) {
-        manager.loadWithRecovery(n + "/" + i, function (done) { bundle.load(i, s, done); }, function (a) {
+        manager.loadWithRecovery(n + "/" + i, function (done, report) { if (report) bundle.load(i, s, report, done); else bundle.load(i, s, done); }, function (a) {
             a.addRef();
             f.asset = a;
             $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(f, e.autoRelese);
@@ -361,7 +364,7 @@ var exp_ResourceMgr = function () {
   t.prototype.loadDir = function (t, e, n, onError) {
     var manager = this;
     this.loadBundle(t, function (bundle) {
-      manager.loadWithRecovery(t + "/" + e, function (done) { bundle.loadDir(e, cc.Asset, done); }, n, onError);
+      manager.loadWithRecovery(t + "/" + e, function (done, report) { if (report) bundle.loadDir(e, cc.Asset, report, done); else bundle.loadDir(e, cc.Asset, done); }, n, onError);
     }, onError);
   };
   t.prototype.releaseByBundle = function (t, e) {

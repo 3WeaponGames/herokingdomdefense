@@ -115,7 +115,7 @@ function library(root){
   }
   const gear=read(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')).EquipCfg.find(row=>row.id===3),flights=['hero-skin:lv1','hero-skin:lv2','hero-skin:lv3','hero-skin:lv4-purple','hero-skin:lv4'];
   const arrowTrail=trails.find(trail=>trail.id==='trail:07d9ec9b-8144-49ac-bab8-0480e3a9dff0');
-  const arrowColors=['#e7d7b6','#eafcff','#49eaff','#b64dff','#ffdf69'];
+  const arrowColors=['#ffffff','#ffffff','#9fe7ff','#b64dff','#ffdf69'];
   // These rigs place their origin at the tip. Emit behind the shaft so the
   // arrow artwork cannot cover its own short streak.
   flights.forEach((flight,index)=>{

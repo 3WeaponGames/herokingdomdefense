@@ -72,7 +72,7 @@ function fields(style,id,source,effective,catalogs){
         var phase=field.phase||String(field.path||"").split(".")[1];
         if(style==="guardian"&&id==="active"&&phase==="impact")return;
         if(id==="passive"?(style!=="mystic"||phase!=="channel"):phase==="channel")return;
-        field.group=id==="passive"?"Channel sound":phase==="impact"?"Enemy contact":"Skill cast";
+        field.group=id==="passive"?"Channel sound":phase==="impact"?"Enemy contact":phase==="explosion"?"Arcane Burst explosion":"Skill cast";
       }else if(/^channelTrail/.test(key)){if(style!=="mystic"||id!=="passive")return;field.group="Passive trail";
       }else if(slot){
         if(style==='guardian'&&['buff','defense','shield'].indexOf(slot)>=0&&!currentVisual[slot+'Resource'])return;
@@ -92,6 +92,16 @@ function fields(style,id,source,effective,catalogs){
         var suffix=key.slice(slot.length).replace(/([A-Z])/g," $1").trim();
         field.label=slotName(style,slot)+" "+(suffix==="Resource Animation"?"VFX animation":suffix==="Resource"?"VFX asset":suffix.replace(/^./,function(c){return c.toLowerCase();}));
         if(key==="castDelay")field.label="Additional VFX start delay";
+      }
+      if(style==='vanguard'&&id==='active'&&group==='visual'){
+        if(/^(?:cast)?[Oo]ffset[XY]$/.test(key)){field.label=(key.indexOf('cast')===0?'Cast effect ':'Arc ')+(key.slice(-1)==='X'?'along spear offset':'across spear offset');field.help='Offset from the spearhead in the spear’s own axes. This placement rotates and mirrors with the spear, so the same fit works in every direction.';}
+        if(key==='castRotation')field.help='Additional artwork rotation around the yellow flash at the spearhead. The imported spear fan is already aligned to the spear’s direction.';
+        if(key==='rotation')field.help='Rotate the spear aim, the center-bottom arc pivot and the attached cast effect together.';
+      }
+      if(style==='bruiser'&&id==='active'&&group==='visual'){
+        if(/Pivot[XY]$/.test(key))field.label=slotName(style,slot)+" pivot "+key.slice(-1)+" from center";
+        if(/Flip[XY]$/.test(key))field.label=slotName(style,slot)+(key.slice(-1)==="X"?" flip horizontally":" flip vertically");
+        if(/^(cast|castSecondary)Rotation$/.test(key))field.help="Artwork rotation around this effect's editable pivot, relative to the captured target direction. The pivot stays on the skill origin; damage is unchanged.";
       }
       result[group].push(field);
     });
@@ -118,6 +128,7 @@ function transform(style,id,handle,visual){
   result.x="visual."+(prefix?prefix+"OffsetX":"offsetX");result.y="visual."+(prefix?prefix+"OffsetY":"offsetY");
   if(style!=="skirmisher"||handle!=="effect")result.scale="visual."+(prefix?prefix+"Scale":"scale");
   if(prefix&&prefix!=="impact"){result.scaleX="visual."+prefix+"ScaleX";result.scaleY="visual."+prefix+"ScaleY";}
+  if(style==="bruiser"&&(prefix==="cast"||prefix==="castSecondary")){result.pivotX="visual."+prefix+"PivotX";result.pivotY="visual."+prefix+"PivotY";}
   if(prefix||!(/^(guardian|bruiser)$/.test(style)&&!visual.resource))result.rotation="visual."+(prefix?prefix+"Rotation":"rotation");
   return result;
 }

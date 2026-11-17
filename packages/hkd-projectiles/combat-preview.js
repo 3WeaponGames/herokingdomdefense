@@ -4,6 +4,7 @@
 // reader directly: gameplay prefabs, animation events and audio never run.
 const finite=(value,fallback)=>typeof value==='number'&&Number.isFinite(value)?value:fallback;
 const positive=(value,fallback)=>finite(value,0)>0?value:fallback;
+const Pose=require('../../assets/_script/HeroSkillPose');
 function animations(actor){return actor?Array.from(new Set((actor.layers||[]).flatMap(layer=>(layer.data.animations||[]).map(animation=>animation.name)))):[];}
 function duration(actor,name){return actor?Math.max(0,...(actor.layers||[]).map(layer=>{const clip=layer.data.findAnimation(name);return clip?finite(clip.duration,0):0;})):0;}
 function union(boxes){
@@ -17,7 +18,15 @@ function placement(actor,options){
   return{box,scale,facing,x:finite(options.x,0),groundY:finite(options.groundY,0),centerX:(box.minX+box.maxX)/2};
 }
 function muzzle(actor,options){
-  const point=actor&&actor.artwork&&actor.artwork.weapon&&actor.artwork.weapon.muzzle;
+  let point=actor&&actor.artwork&&actor.artwork.weapon&&actor.artwork.weapon.muzzle;
+  const arrow=actor&&(actor.layers||[]).find(layer=>layer.description.json._heroMaker&&layer.description.json._heroMaker.role===3);
+  if(arrow){
+    const tip=Pose.arrowTip(arrow.skeleton,{x:1,y:0},1);
+    if(tip){const d=arrow.description,x=tip.x*finite(d.scaleX,1),y=tip.y*finite(d.scaleY,1),a=finite(d.rotation,0)*Math.PI/180,m=d._mountMotion;
+      point={x:x*Math.cos(a)-y*Math.sin(a)+finite(d.x,0),y:x*Math.sin(a)+y*Math.cos(a)+finite(d.y,0)};
+      if(m)point={x:m.a*point.x+m.b*point.y+m.x,y:m.c*point.x+m.d*point.y+m.y};
+    }
+  }
   if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return null;
   const pose=placement(actor,options||{});
   return{x:pose.x+(point.x-pose.centerX)*pose.scale*pose.facing,y:pose.groundY+(pose.box.minY-point.y)*pose.scale};
@@ -110,6 +119,10 @@ function create(api,options){
     images.clear();
     if(key===undefined)hits.clear();else hits.delete(key);
   }
-  return{load,draw,muzzle,duration,animations,defaultHit,invalidate,destroy(){closed=true;invalidate();}};
+  function releaseMuzzle(actor,settings){
+    if(actor&&actor.layers.length&&settings&&settings.animation)api.renderer.seek(actor.runtime,actor.layers,settings.animation,Math.max(0,finite(settings.time,0)),false);
+    return muzzle(actor,settings);
+  }
+  return{load,draw,muzzle:releaseMuzzle,duration,animations,defaultHit,invalidate,destroy(){closed=true;invalidate();}};
 }
 module.exports={create,duration,animations,union,placement,muzzle};

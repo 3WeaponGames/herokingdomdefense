@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
-const root=path.resolve(__dirname,'../..'),Units=require('../../packages/game-data-editor/lib/unit-assets'),Renderer=require('../../packages/game-data-editor/preview/spine-renderer'),Attack=require('../../packages/hkd-characters/lib/mount-attack'),Weapons=require('../../assets/_script/HeroWeapons'),spine=require(Units.enginePath());
+const root=path.resolve(__dirname,'../..'),Units=require('../../packages/game-data-editor/lib/unit-assets'),Renderer=require('../../packages/game-data-editor/preview/spine-renderer'),Weapons=require('../../assets/_script/HeroWeapons'),spine=require(Units.enginePath());
 function layers(style='fighter',noAppearance=false){
  return Units.describe(root,{type:'hero',id:'hero',heroStyle:style,noRuntime:true,noAppearance}).layers.map(description=>{
   const atlas=new spine.TextureAtlas(description.atlas,name=>{const bytes=fs.readFileSync(require('node:url').fileURLToPath(description.pages[name]));return new spine.FakeTexture({width:bytes.readUInt32BE(16),height:bytes.readUInt32BE(20)});});
@@ -22,10 +22,15 @@ function controller(style,models){
  actor.setIdle();
  return {actor,rider,renderers,step(dt){renderers.forEach(r=>{r.state.update(dt);r.state.apply(r.layer.skeleton);r.layer.skeleton.updateWorldTransform();});rider.update(actor);}};
 }
-test('all original hero horse skins use the same Maker preparation, thrust and recovery phases as every equipped weapon',()=>{
+test('every hero horse skin stays in one grounded idle pose while every equipped weapon attacks',()=>{
  const models=layers('fighter',true),horse=models[0],body=models[1];assert(horse.description.json._heroMakerMount);assert.equal(horse.description.source,'assets/resources/hero-maker/wqyl_lead_ma.json');
  assert.deepEqual(horse.description.skins,['default','lv1','lv2','lv_blue','lv3','lv4','vip1','vip2']);
- for(const style of Weapons.styles){const name=style.id==='skirmisher'?'attack':'attack_'+style.id;const actual=Attack.landmarks(horse.description.json.animations[name],false),expected=Attack.landmarks(body.description.json.animations[name],true);assert(actual&&expected);for(const phase of ['windup','peak','end'])assert(Math.abs(actual[phase]-expected[phase])<1e-6,style.id+' '+phase);assert(Math.abs(body.data.findAnimation(name).duration-.8333)<1e-6);assert.deepEqual(body.description.json.animations[name].events,[{time:.1667,name:'attack'}]);}
+ for(const skin of horse.description.skins){horse.skeleton.setSkinByName(skin);Renderer.seek(spine,models,'idle',0,true);const vertices=()=>Renderer.geometry(spine,horse).flatMap(g=>[...g.vertices]),idle=vertices();
+  const pivot=()=>{const bone=body.skeleton.findBone('Rider/Body');return Renderer.transformPoint(body.description,bone.worldX,bone.worldY);},seated=pivot();
+  for(const style of Weapons.styles){const name=style.id==='skirmisher'?'attack':'attack_'+style.id;assert(Math.abs(body.data.findAnimation(name).duration-.8333)<1e-6);assert.deepEqual(body.description.json.animations[name].events,[{time:.1667,name:'attack'}]);
+   for(const time of [0,.08,.1667,.35,.66,.8333,3]){Renderer.seek(spine,models,name,time,true);assert.deepEqual(vertices(),idle,skin+' '+name+' horse remains planted');const at=pivot();assert(Math.hypot(at.x-seated.x,at.y-seated.y)<1e-6,style.id+' rider pivots at its seat');}
+  }
+ }
 });
 test('all seven horse skins have continuous idle, both walking strides and every attack loop, including weighted mesh deformation',()=>{
  const models=layers('fighter',true),horse=models[0];let poses=0;
@@ -46,26 +51,23 @@ test('armor stays centered on the animated torso and the rider sits forward over
   assert(Math.hypot(x-torso.worldX,y-torso.worldY)<.001,skin+' '+action+' armor covers torso');assert.equal(body.skeleton.findBone('__game_fit').x,0);
  }}
 });
-test('real animation states keep horse and all equipment synchronized through attacks, movement changes and blended recovery without early completion',()=>{
+test('real animation states preserve rider callbacks while the horse uses only idle or movement throughout attacks',()=>{
  for(const style of Weapons.styles){
   const models=layers(style.id),action=style.id==='skirmisher'?'attack':'attack_'+style.id;
-  const vertices=()=>Renderer.geometry(spine,models[0]).filter(g=>g.color.a>0).flatMap(g=>[...g.vertices]);
-  Renderer.seek(spine,models,action,.8333,false);const end=vertices();Renderer.seek(spine,models,'move',1/60,false);const unblendedGap=Math.max(...vertices().map((v,i)=>Math.abs(v-end[i])));
   const h=controller(style.id,models),{actor,rider}=h;let hits=0,completions=0,completeAt=null,time=0;
   actor.setAttackEvent(()=>hits++);actor.setAttackEnd(()=>{completions++;completeAt=time;});h.step(.25);actor.setAttack();
-  assert.equal(actor.spAniMa.getCurrent(0).animation.name,action);
-  let last=null,maxRecoveryStep=0,transitionStep=0,previousLoop=false;
+  assert.equal(actor.spAniMa.getCurrent(0).animation.name,'idle');
   for(let i=0;i<75;i++){time=(i+1)/60;if(i===6)actor.setMove();if(i===12)actor.setIdle();if(i===18)actor.setMove();h.step(1/60);
-   const master=actor.spAniBody.getCurrent(0),mount=actor.spAniMa.getCurrent(0);assert.equal(mount.animation.name,master.animation.name,style.id+' frame '+i);assert(Math.abs(mount.trackTime-master.trackTime)<1e-6);assert.equal(mount.timeScale,master.timeScale);
+   const master=actor.spAniBody.getCurrent(0),mount=actor.spAniMa.getCurrent(0);assert.equal(mount.animation.name,actor.isMove?'move':'idle',style.id+' frame '+i);assert.equal(mount.loop,true);assert.equal(mount.timeScale,1);
+   for(const renderer of h.renderers.slice(2)){const track=renderer.getCurrent(0);assert.equal(track.animation.name,master.animation.name);assert(Math.abs(track.trackTime-master.trackTime)<1e-6);}
    if(time<.82)assert.equal(completions,0,'blend cannot shorten the attack contract');
-   const current=vertices(),step=last?Math.max(...current.map((v,j)=>Math.abs(v-last[j]))):0;if(!previousLoop&&mount.loop)transitionStep=step;if(last&&time>.8&&time<1.05)maxRecoveryStep=Math.max(maxRecoveryStep,step);last=current;previousLoop=mount.loop;
   }
-  assert.equal(hits,1,style.id+' emits one hit');assert.equal(completions,1,style.id+' completes once');assert(Math.abs(completeAt-.8333)<1/60+.001);assert.equal(actor.spAniMa.getCurrent(0).animation.name,'move');assert(transitionStep<unblendedGap/2,style.id+' blend removes the abrupt attack-to-walk pose change');assert(maxRecoveryStep<unblendedGap/2,style.id+' recovery stays smoother than an unblended transition');assert.equal(rider.attacking(actor),false);
+  assert.equal(hits,1,style.id+' emits one hit');assert.equal(completions,1,style.id+' completes once');assert(Math.abs(completeAt-.8333)<1/60+.001);assert.equal(actor.spAniMa.getCurrent(0).animation.name,'move');assert.equal(rider.attacking(actor),false);
  }
 });
-test('native TrackEntry getters and setters keep horse attack speed and phase aligned with the master clock',()=>{
- const api=helper('fighter'),calls=[],master={animation:{name:'attack_fighter'},loop:false,getTrackTime:()=>.32,getTimeScale:()=>1.7},mount={animation:{name:'attack_fighter'},loop:false,setTrackTime:v=>calls.push(['time',v]),setTimeScale:v=>calls.push(['speed',v])};
- const actor={spAniBody:{skeletonData:{skeletonJson:{_heroMaker:{}}},getCurrent:()=>master},spAniMa:{skeletonData:{skeletonJson:{_heroMakerMount:{}}},getCurrent:()=>mount}};api.update(actor);assert.deepEqual(calls,[['time',.32],['speed',1.7]]);
+test('native TrackEntry getters and setters never copy the rider attack clock onto the idle horse',()=>{
+ const api=helper('fighter'),calls=[],master={animation:{name:'attack_fighter'},loop:false,getTrackTime:()=>.32,getTimeScale:()=>1.7},mount={animation:{name:'idle'},loop:true,setTrackTime:v=>calls.push(['time',v]),setTimeScale:v=>calls.push(['speed',v])};
+ const actor={spAniBody:{skeletonData:{skeletonJson:{_heroMaker:{}}},getCurrent:()=>master},spAniMa:{skeletonData:{skeletonJson:{_heroMakerMount:{}}},getCurrent:()=>mount}};api.update(actor);assert.deepEqual(calls,[]);
 });
 test('the first idle-to-walk transition and stopping blend horse geometry before any attack has initialized it',()=>{
  const models=layers(),h=controller('fighter',models);h.step(.25);

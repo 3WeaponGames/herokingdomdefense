@@ -48,12 +48,16 @@ var def_KinghtFallModle = function () {
         $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.ResCfg);
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().preload(function () {
           $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.AudioCfg);
+          require("StartupProgress").phase("characters");
           require("CharacterAppearance").preload(function () {
+            require("StartupProgress").phase("buildings");
             require("BuildingAssetWarmup").preload(function () {
+              require("StartupProgress").phase("skills");
               require("HeroSkillAssetWarmup").preload(function (error) {
                 if (error) { cc.error("Hero VFX warmup failed", error); return; }
                 e.isLoad = true;
                 t && t();
+                require("StartupProgress").phase("enemies");
                 $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.EnemyAni, function () {
                   $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.OtherCfg);
                   $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.IconMap, function () {

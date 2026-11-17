@@ -21,9 +21,10 @@ function seek(spine, layers, animation, time, loop) {
     layers.forEach(layer => {
         const skeleton = layer.skeleton;
         skeleton.setToSetupPose();
-        // Legacy horses keep idling during ranged attacks. Maker hero horses
-        // have synchronized, style-specific attacks, just like the rider.
-        const name = layer.description.name === 'wqyl_lead_ma' && !(layer.description.json && layer.description.json._heroMakerMount) && /^attack(?:_|$)/.test(animation) ? 'idle' : animation;
+        // A stationary attack changes the rider only. Mounted movement is
+        // sampled separately by the Skills preview and by gameplay.
+        const mount=layer.description.mount||layer.description.name==='wqyl_lead_ma'||layer.description.json._heroMakerMount;
+        const name = mount && /^attack(?:_|$)|^skill/.test(animation) ? 'idle' : animation;
         const clip = layer.data.findAnimation(name) || layer.data.findAnimation('idle');
         if (clip) clip.apply(skeleton, 0, Math.max(0, time), !!loop, null, 1, spine.MixBlend.replace, spine.MixDirection.mixIn);
         const effect = layer.description.json._fantasy && layer.description.json._fantasy.effects;

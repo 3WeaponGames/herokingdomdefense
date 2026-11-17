@@ -14,7 +14,9 @@ function fixture() {
     if (index >= 0) listeners.splice(index, 1);
   } };
   const context = { module: { exports: {} }, require(name) {
-    imports.push(name); assert.equal(name, 'LanguageMgr', 'title screen does not initialize gameplay services');
+    imports.push(name);
+    if(name==='StartupPresentation')return{start(){},carry(){}};
+    assert.equal(name, 'LanguageMgr', 'title screen initializes only language and its presentation');
     return { LanguageMgr: { getInstance: () => language } };
   }, cc: { Component: function () {}, Node: {}, Label: {}, JsonAsset: {},
     Class(definition) { function Type() {} Object.assign(Type.prototype, definition); return Type; },

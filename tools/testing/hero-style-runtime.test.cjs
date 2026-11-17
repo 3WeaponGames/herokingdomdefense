@@ -5,6 +5,35 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {setup,Node}=require('./backend-gameplay-harness.cjs');
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
+
+test('Mystic interrupts her passive for one second after casting while movement and the burst remain active',()=>{
+ const h=scene('mystic',{attackRate:20,config:{HeroSkills:{mystic:{explosionTime:.2,visual:{castResource:''}}}}}),target=h.enemy(100),neighbor=h.enemy(110,20);
+ h.rt.update(.2);const passive=()=>target.hits.filter(hit=>!hit.context.styleSkill).length,before=passive();assert(before>0);assert(h.rt.beamTarget);assert(h.rt.cast());
+ assert.equal(h.rt.beamTarget,null);assert.equal(h.rt.channelTarget,null);assert.equal(h.rt.beamClock,0);assert.equal(h.rt.state.mysticCharges,0);assert(h.clears.length);
+ h.g.moveDir={x:1,y:0};h.hero.node.x=10;h.rt.update(.999);assert.equal(passive(),before);assert(h.poses.at(-1).moving);assert.equal(h.poses.at(-1).beam,false);close(h.hero.getSpeed(),300);
+ assert.equal(target.hits.filter(hit=>hit.context.styleSkill).length,1);assert.equal(neighbor.hits.length,1,'the existing burst still lands during recovery');
+ h.rt.update(.001);assert.equal(passive(),before);close(h.load('HeroStyleSkills').attackLockRemaining(h.rt.state),0);h.rt.update(.001);assert.equal(h.rt.channelTarget,target);h.rt.update(.2);assert(passive()>before);
+});
+
+test('Mystic cast recovery pauses with battle and clears on death or a retired round; rejected casts cannot restart it',()=>{
+ const h=scene('mystic',{attackRate:10}),target=h.enemy(100);assert.equal(h.rt.cast(),false);assert.equal(h.load('HeroStyleSkills').attackLockRemaining(h.rt.state),0);
+ h.rt.update(.2);assert(h.rt.cast());const deadline=h.rt.state.attackBlockedUntil;assert.equal(h.rt.cast(),false);assert.equal(h.rt.state.attackBlockedUntil,deadline);
+ h.rt.update(.4);const time=h.rt.state.time;h.ui.isPauset=true;h.rt.update(3);close(h.rt.state.time,time);close(h.load('HeroStyleSkills').attackLockRemaining(h.rt.state),.6);
+ h.ui.isPauset=false;h.rt.update(.599);assert.equal(h.rt.channelTarget,null);h.rt.update(.001);close(h.load('HeroStyleSkills').attackLockRemaining(h.rt.state),0);
+ h.rt.state.cooldown=0;assert(h.rt.cast());h.hero.endRoundGame();assert.equal(h.load('HeroStyleSkills').attackLockRemaining(h.rt.state),0);assert.equal(h.rt.channelTarget,null);
+ h.rt.update(.2);assert(h.rt.cast());h.hero.hp=0;h.rt.update(.1);assert.equal(h.load('HeroStyleSkills').attackLockRemaining(h.rt.state),0);assert.equal(h.rt.state.target,null);
+});
+
+test('Mystic recovery splits long frames at the same deadline as fine updates without banking blocked passive ticks',()=>{
+ const run=steps=>{const h=scene('mystic',{attackRate:4,config:{HeroSkills:{mystic:{explosionTime:.2,visual:{castResource:''}}}}}),target=h.enemy(100);h.rt.update(.25);assert(h.rt.cast());for(const dt of steps)h.rt.update(dt);return{hits:target.hits.map(hit=>({skill:!!hit.context.styleSkill,damage:hit.damage})),clock:h.rt.beamClock,source:h.rt.beamSourceTime,charges:h.rt.state.mysticCharges};};
+ const coarse=run([2]),fine=run(Array.from({length:200},()=>.01));assert.deepEqual(coarse.hits,fine.hits);assert.equal(coarse.hits.filter(hit=>!hit.skill).length,5);close(coarse.clock,fine.clock);close(coarse.source,fine.source);assert.equal(coarse.charges,fine.charges);
+});
+
+test('casting from a passive-hit callback immediately stops old beam ticks for the recovery window',()=>{
+ const h=scene('mystic',{attackRate:10,config:{HeroSkills:{mystic:{explosionTime:.2,visual:{castResource:''}}}}}),target=h.enemy(100),base=target.onAttacked,times=[];let castAt;
+ target.onAttacked=function(damage,source,secondary,context){if(!context.styleSkill)times.push(h.rt.state.time);const result=base.apply(this,arguments);if(castAt===undefined&&!context.styleSkill){castAt=h.rt.state.time;assert(h.rt.cast());}return result;};
+ h.rt.update(2);assert(times.length>1);assert(times.slice(1).every(time=>time>=castAt+1-1e-9));assert.equal(target.hits.filter(hit=>hit.context.styleSkill).length,1);
+});
 function scene(style,options={}){
  const poses=[],clears=[],hpUpdates=[],buffs=[],retimes=[],attacks=[];
  // These collision/lifecycle regressions exercise the original configurable
@@ -492,4 +521,23 @@ test('the beam tick budget bounds work without stalling cooldown, source pose or
 
 test('Guardian records one presentation onset per actually taunted enemy with unique identities and no repeated application',()=>{
  const h=scene('guardian'),a=h.enemy(100),b=h.enemy(240),outside=h.enemy(260);assert(h.rt.cast());h.rt.update(.2);assert.equal(h.rt.taunted.length,2);assert(a._heroTaunt&&b._heroTaunt);assert.equal(outside._heroTaunt,undefined);assert.notEqual(a._heroTaunt.visualKey,b._heroTaunt.visualKey);const start=a._heroTaunt.started;assert(start>=0&&start<=.2);h.rt.update(1);assert.equal(a._heroTaunt.started,start);assert.equal(h.rt.taunted.length,2);h.hero.endRoundGame();assert.equal(a._heroTaunt,undefined);assert.equal(b._heroTaunt,undefined);
+});
+
+test('Fighter pushes each enemy away from the hero ground position regardless of an offset ring center or body anchors',()=>{
+ const {Model}=require('../../packages/hkd-skills/preview-model');
+ for(const degrees of [-180,-135,-90,-45,0,45,90,135]){
+  const a=degrees*Math.PI/180,d={x:Math.cos(a),y:Math.sin(a)},hero={x:37,y:-25},settings={knockback:140,visual:{offsetX:d.x*100,offsetY:d.y*100,arcDegrees:360,scale:2}},h=scene('fighter',{hitTime:0,config:{HeroSkills:{fighter:settings}}});
+  h.hero.node.setPosition(hero);h.e.stubs.HeroMakerRider.weaponOrigin=()=>({x:hero.x+25,y:hero.y+18});
+  const positions=[{x:hero.x+d.x*30,y:hero.y+d.y*30},{x:hero.x-d.y*55,y:hero.y+d.x*55},{x:hero.x+d.x*170,y:hero.y+d.y*170}],targets=positions.map(p=>{const e=h.enemy(p.x,p.y);e.ndHp=new Node('HP',e.node,0,300);return e;});
+  assert(h.rt.cast(d));assert.equal(h.rt.knockbacks.length,3);
+  const m=new Model('fighter',settings,{mode:'basic',attackRate:0,targets:3,targetPositions:positions,impactDelay:0,attackRange:200},undefined,undefined,()=>({x:25,y:18}),t=>({x:t.x,y:t.y+165}));m.hero.x=hero.x;m.hero.y=hero.y;m.positionAt=()=>({...hero});assert(m.cast());assert.equal(m.knockbacks.length,3);
+  targets.forEach((enemy,i)=>{const dx=positions[i].x-hero.x,dy=positions[i].y-hero.y,length=Math.hypot(dx,dy),actual=enemy._heroKnockback,preview=m.knockbacks.find(record=>record.target===m.targets[i]);close(actual.x,dx/length*140);close(actual.y,dy/length*140);close(actual.x,preview.x);close(actual.y,preview.y);});
+  h.rt.update(.3);m.advance(.3);targets.forEach((enemy,i)=>{close(enemy.node.x,m.targets[i].x);close(enemy.node.y,m.targets[i].y);assert(Math.hypot(enemy.node.x-hero.x,enemy.node.y-hero.y)>Math.hypot(positions[i].x-hero.x,positions[i].y-hero.y));});
+ }
+});
+
+test('Fighter samples its hero position at impact and uses its cast direction when the enemy occupies that same point',()=>{
+ const h=scene('fighter',{hitTime:.4,config:{HeroSkills:{fighter:{visual:{offsetX:120,arcDegrees:360}}}}}),target=h.enemy(60);
+ assert(h.rt.cast({x:1,y:0}));h.hero.node.setPosition({x:20,y:20});h.rt.update(.4);const length=Math.hypot(40,-20);close(target._heroKnockback.x,40/length*140);close(target._heroKnockback.y,-20/length*140);
+ const overlapping=scene('fighter',{hitTime:0,config:{HeroSkills:{fighter:{visual:{arcDegrees:360}}}}}),same=overlapping.enemy(0);assert(overlapping.rt.cast({x:0,y:1}));close(same._heroKnockback.x,0);close(same._heroKnockback.y,140);overlapping.rt.update(.3);close(same.node.x,0);close(same.node.y,140);
 });

@@ -9,26 +9,47 @@ function fixture(){
  const calls=[];
  const method=vm.runInNewContext('('+source.slice(source.indexOf('function',start),end+4)+')',{
   $z1KinghtFallConfig:exportsConfig,
+  BattleMusic:require('../../assets/_script/BattleMusic'),
   $z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getLevelCfgById:id=>levels[id-1]})}},
   $z1AudioMgr:{AudioMgr:{getInstance:()=>({playMusic:(id,channel,...options)=>calls.push({id,channel,options})})}}
  });return {calls,method};
 }
-test('all authored desert stages select Sands of the Keep on initial planning entry',()=>{
+test('all authored stages select their biome theme on initial planning entry',()=>{
  const h=fixture();
  for(const level of levels){
   h.method.call({levelId:level.Level});
   const call=h.calls.at(-1),asset=exportsConfig.KinghtFallAudioCF[call.id];
-  assert.equal(asset.path,[3,11,15,19].includes(level.Level)?'Sands_of_the_Keep':'Skybound_Horns','stage '+level.Level);
+  const biome=level.EnvironmentBiome||({Map01:'forest',Map02:'deep-forest',Map03:'desert',Map04:'snow',Map07:'fire'})[level.EnvironmentMapId||level.prefab]||'forest';
+  assert.equal(asset.path,'music/planning-'+biome,'stage '+level.Level);
   assert.equal(call.channel,exportsConfig.KinghtFallParameter.BGMusic);
   assert.equal(call.options.length,0,'retain AudioMgr looping and player Music volume defaults');
-  assert.ok(fs.existsSync(path.join(root,'assets',asset.bundle,asset.path+'.mp3')));
+  assert.ok(fs.existsSync(path.join(root,'assets',asset.bundle,asset.path+'.ogg')));
  }
 });
 test('returning to planning follows the loaded map configuration',()=>{
  const h=fixture(),ui={levelId:1,ctrGame:{gameData:{levelCfg:{prefab:'Map03'}}}};
- h.method.call(ui);assert.equal(exportsConfig.KinghtFallAudioCF[h.calls.at(-1).id].path,'Sands_of_the_Keep');
+ h.method.call(ui);assert.equal(exportsConfig.KinghtFallAudioCF[h.calls.at(-1).id].path,'music/planning-desert');
  ui.ctrGame.gameData.levelCfg={prefab:'Map02'};h.method.call(ui);
- assert.equal(exportsConfig.KinghtFallAudioCF[h.calls.at(-1).id].path,'Skybound_Horns');
- assert.equal(exportsConfig.KinghtFallAudioCF[exportsConfig.KinghtFallAudioId.fight_bgm].path,'fight_bgm');
- assert.equal(exportsConfig.KinghtFallAudioCF[exportsConfig.KinghtFallAudioId.menu_bgm].path,'menu_bgm');
+ assert.equal(exportsConfig.KinghtFallAudioCF[h.calls.at(-1).id].path,'music/planning-deep-forest');
+ assert.equal(exportsConfig.KinghtFallAudioCF[exportsConfig.KinghtFallAudioId.fight_bgm].path,'music/battle-1');
+ assert.equal(exportsConfig.KinghtFallAudioCF[exportsConfig.KinghtFallAudioId.menu_bgm].path,'music/menu');
+});
+
+test('snow planning music follows explicit biomes and legacy maps without replacing battle music',()=>{
+ const h=fixture();
+ for(const [config,expected]of [
+  [{prefab:'Map04'},'music/planning-snow'],
+  [{prefab:'Generated/Stages/custom',EnvironmentMapId:'Map04'},'music/planning-snow'],
+  [{prefab:'Generated/Stages/custom',EnvironmentBiome:'snow'},'music/planning-snow'],
+  [{prefab:'Map03',EnvironmentBiome:'snow'},'music/planning-snow'],
+  [{prefab:'Map04',EnvironmentBiome:'ice'},'music/planning-ice'],
+  [{prefab:'Map04',EnvironmentBiome:'forest'},'music/planning-forest'],
+  [{prefab:'Map04',EnvironmentBiome:'desert'},'music/planning-desert']
+ ]){
+  h.method.call({ctrGame:{gameData:{levelCfg:config}}});
+  assert.equal(exportsConfig.KinghtFallAudioCF[h.calls.at(-1).id].path,expected,JSON.stringify(config));
+ }
+ const meta=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallAudio/music/planning-snow.ogg.meta'),'utf8'));
+ assert.equal(meta.importer,'audio-clip');assert(meta.duration>100);
+ assert.equal(exportsConfig.KinghtFallAudioCF[exportsConfig.KinghtFallAudioId.fight_bgm].path,'music/battle-1');
 });

@@ -36,9 +36,13 @@ function projectilePoint(projectile,v) {
 }
 function release(runtime,strike,charge) {
   if(!runtime.available())return;
-  var cue=runtime.settings&&runtime.settings.audio&&runtime.settings.audio.cast;
-  if(cue&&cue.clip)return;
   var s=state(runtime);if(s.lastRelease===strike)return;s.lastRelease=strike;
+  var audio=runtime.settings&&runtime.settings.audio;
+  // One burst cue belongs to the active explosion marker, independent of
+  // charge-up audio and of how many enemies receive its damage.
+  if(runtime.state.style==="mystic"&&audio&&audio.explosion&&audio.explosion.clip){queue(runtime,"explosion",strike);return;}
+  var cue=audio&&audio.cast;
+  if(cue&&cue.clip)return;
   var sounds=require("BattleSounds");
   if(runtime.state.style==="skirmisher"){if(sounds.skirmisherRelease)sounds.skirmisherRelease(runtime.hero,true);return;}
   if(runtime.state.style==="guardian"){
@@ -334,7 +338,7 @@ function vfxContext(runtime){
     if(!actor||!alive(actor.node)||actor.node.activeInHierarchy===false||actor._isPooled||!(actor.hp>0)||actor.isDead&&actor.isDead()||expected!==undefined&&actor.node._combatGeneration!==expected||expectedNode&&actor.node!==expectedNode)return null;
     var ground=actor.node.convertToWorldSpaceAR(cc.v2(0,0)),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node,at;
     if(alive(bar)){var top=bar.convertToWorldSpaceAR(cc.v2(0,overhead?18:0));at=overhead?top:cc.v2(ground.x+(top.x-ground.x)*.55,ground.y+(top.y-ground.y)*.55);}else at=cc.v2(ground.x,ground.y+(overhead?100:50));
-    var point=main.convertToNodeSpaceAR(at);return{id:actor,node:actor.node,generation:actor.node._combatGeneration,x:point.x+(overhead?0:v.targetX),y:point.y+(overhead?0:v.targetY)};
+    var point=main.convertToNodeSpaceAR(at);return{id:actor,node:actor.node,generation:actor.node._combatGeneration,ground:main.convertToNodeSpaceAR(ground),x:point.x+(overhead?0:v.targetX),y:point.y+(overhead?0:v.targetY)};
   }
   var origin=groundOnly?null:hero.getAttWpos?main.convertToNodeSpaceAR(hero.getAttWpos()):offset(hero.node.getPosition(),0,70);
   function clipDuration(clip,slot){return clip?(VFXLayout.visibleDuration?VFXLayout.visibleDuration(clip,runtime.state.style,slot):clip.duration||clip.frames/clip.fps):undefined;}
@@ -366,11 +370,10 @@ function advanceVFX(runtime){
   var v=visual(runtime);if(!hasStyleArt(v)&&runtime.state.style!=="mystic"||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;
   var s=state(runtime);s.vfxClock=s.vfxClock||VFXState.create();s.vfxContext=vfxContext(runtime);if(runtime.state.style==="mystic"){s.mysticTrail=s.mysticTrail||MysticTrail.create();MysticTrail.update(s.mysticTrail,runtime.state,s.vfxContext,v);}s.vfxFrame=VFXState.update(s.vfxClock,runtime.state,s.vfxContext,v);return s.vfxFrame;
 }
-function prepareMysticTrail(runtime,s){var art=s.mysticTrailArt||(s.mysticTrailArt={nodes:new Map(),frames:new Map()}),descriptor=MysticTrail.descriptor();prepare(runtime,art,{resource:descriptor.textureUuid,resourceKind:"texture",resourceBundle:descriptor.bundle,resourcePath:descriptor.resource},s);return art;}
-function paintMysticTrail(hud,runtime,s,v){if(!cc.MotionStreak||!s.mysticTrail)return;if(!s.mysticTrail.legs.length){MysticTrail.clear(s.mysticTrailView,cc);return;}var art=prepareMysticTrail(runtime,s);if(!art.asset)return;var parent=hud.visual.node,main=runtime.game.ndMain;MysticTrail.paint(s.mysticTrail,s.mysticTrailView||(s.mysticTrailView={}),parent,art.asset,v,require("./ProjectileLooks").drawTrail,cc,function(p){return parent.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(p.x,p.y)));});}
+function paintMysticTrail(hud,runtime,s,v){if(!s.mysticTrail)return;var parent=hud.visual.node,main=runtime.game.ndMain;MysticTrail.paint(s.mysticTrail,s.mysticTrailView||(s.mysticTrailView={}),parent,v,cc,function(p){return parent.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(p.x,p.y)));});}
 function preload(runtime){
   if(typeof cc==="undefined"||!cc.SpriteFrame||!cc.assetManager)return;
-  var v=visual(runtime);if(runtime.state.style==="mystic")prepareMysticTrail(runtime,state(runtime));if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
+  var v=visual(runtime);if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
   Settings.resourcePrefixes.slice(2).map(function(prefix){return prefix.replace(/Resource$/,"");}).forEach(function(slot){
     var selected=v[slot+"Resource"];if(!selected)return;var clip=VFXLayout.clipFor(selected),seen=new Set();
     ["start","loop","end"].forEach(function(phase){VFXLayout.phaseClips(slot,clip,phase).forEach(function(part){

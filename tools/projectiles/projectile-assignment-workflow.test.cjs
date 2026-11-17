@@ -16,6 +16,21 @@ test('building delay saves on its own assignment without adding unsupported glob
 test('invalid delay, nonexistent trails and read-only library edits are rejected',t=>{
  const f=fixture(t),s=f.service.load();for(const delay of [-1,11,NaN,'0.7'])assert.throws(()=>f.service.change({version:s.version,data:s.data,timings:{hero:delay}}),/delay/);s.data.assignments.hero={trail:'missing'};assert.throws(()=>f.service.change({version:s.version,data:s.data}),/trail/);delete s.data.assignments.hero;s.data.sets[0].name='changed';assert.throws(()=>f.service.change({version:s.version,data:s.data}),/read-only/);
 });
+
+test('scale and mixed trail colors save per unit, preserve inherited defaults and never edit gameplay or shared trail presets',t=>{
+ const f=fixture(t),beforeConfig=fs.readFileSync(f.config),s=f.service.load(),key=s.units.find(u=>u.type==='enemy').key,trails=structuredClone(s.data.trails);
+ s.data.assignments.hero={...s.data.assignments.hero,scale:2.5,trailColor:'#9fe7ff',future:{keep:true}};s.data.assignments[key]={scale:.4,trailColor:'#b64dff'};
+ f.service.change({version:s.version,data:s.data});assert.deepEqual(fs.readFileSync(f.config),beforeConfig);assert.notEqual(JSON.parse(fs.readFileSync(f.catalog)).assignments.hero?.scale,2.5);
+ f.service.save({version:f.service.version});const fresh=new ProjectilesService(f.dir);assert.equal(fresh.data.assignments.hero.scale,2.5);assert.equal(fresh.data.assignments[key].scale,.4);assert.equal(fresh.data.assignments[key].trailColor,'#b64dff');assert.deepEqual(fresh.data.assignments.hero.future,{keep:true});assert.deepEqual(fresh.data.trails,trails);assert.deepEqual(fs.readFileSync(f.config),beforeConfig);
+ const unchanged=fs.readFileSync(f.catalog),stamp=fs.statSync(f.catalog).mtimeMs;assert.equal(fresh.save({version:fresh.version}).result.saved,false);assert.deepEqual(fs.readFileSync(f.catalog),unchanged);assert.equal(fs.statSync(f.catalog).mtimeMs,stamp);
+ const reset=fresh.load();delete reset.data.assignments.hero.scale;delete reset.data.assignments.hero.trailColor;fresh.change({version:reset.version,data:reset.data});fresh.save({version:fresh.version});assert.deepEqual(fresh.data.assignments.hero.future,{keep:true});assert.equal(fresh.data.assignments.hero.scale,undefined);
+});
+
+test('invalid scale and trail color edits are rejected while unchanged legacy metadata stays intact',t=>{
+ const f=fixture(t),s=f.service.load();for(const scale of [0,-1,.09,10.01,Infinity,NaN,'2',null]){const data=structuredClone(s.data);data.assignments.hero={scale};assert.throws(()=>f.service.change({version:s.version,data}),/scale/);}
+ for(const trailColor of ['red','#fff','#zzzzzz',123,['#123456'],null]){const data=structuredClone(s.data);data.assignments.hero={trailColor};assert.throws(()=>f.service.change({version:s.version,data}),/color/);}
+ const data=structuredClone(s.data);data.assignments.tower={...data.assignments.tower,scale:1.8,trailColor:'#aa77ff'};f.service.change({version:s.version,data});const tier=f.service.load().units.find(u=>/^tower:/.test(u.key));assert.equal(tier.effectiveAssignment.scale,1.8);assert.equal(tier.inheritedAssignment.trailColor,'#aa77ff');
+});
 test('set-only assignments select all effects, preserve legacy shared towers and explicitly clear absent effects',()=>{
  const api={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8'),{exports:api});const data={assets:[],sets:[{id:'plain',flight:'arrow'},{id:'magic',flight:'orb',launch:'flash',impact:'hit'}],assignments:{hero:{set:'plain'},tower:{set:'magic'}}};assert.deepEqual(JSON.parse(JSON.stringify(api.select(data,'hero'))),{set:'plain',flight:'arrow',launch:'',impact:''});assert.equal(api.select(data,'tower:2:1').impact,'hit');
 });

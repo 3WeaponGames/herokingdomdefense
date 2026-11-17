@@ -90,16 +90,13 @@ function writeRig(root,files,read,name,rig,pictures){
 }
 function horse(root,maker,files,read){
   const original=source(root,'ma',read),aligned=clone(original);
-  // Use the same stride and preparation/thrust/recovery synchronization as
-  // cavalry, then fit both horse and rider into the hero's gameplay contract.
-  // All six skins share these tracks; their original meshes and legs remain.
+  // Fit the original stride into the hero contract. Stationary actions share
+  // one grounded idle pose for every horse skin and equipped weapon.
   require('./mounts').alignAnimations(aligned,maker);
   animations(aligned.json,original.json);
-  const cavalry={json:JSON.parse(read(path.join(root,'assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json')))};
-  require('./mounts').alignAnimations(cavalry,maker);
-  require('./hero-mount-motion').synchronize(aligned.json,cavalry.json,.78/.6);
+  for(const [name,clip]of Object.entries(aligned.json.animations))if(name==='idle'||/^attack(?:_|$)/.test(name))aligned.json.animations[name]=require('./mounts').stillPose(original.json.animations.idle,Bake.duration(clip));
   for(const [name,clip]of Object.entries(original.json.animations))if(!['idle','move','attack'].includes(name))aligned.json.animations[name]=clone(clip);
-  aligned.json._heroMakerMount={version:2,source:original.uuid,thrustReference:'legacy-cavalry'};
+  aligned.json._heroMakerMount={version:3,source:original.uuid,locomotionOnly:true};
   require('./hero-sub-items').ensure(aligned.json);
   require('./tier-skins').ensure(aligned.json);
   const base=folder+'/wqyl_lead_ma',texture=read(url.fileURLToPath(original.pages['wqyl_lead_ma.png']));
@@ -163,6 +160,7 @@ function plan(root){
     rig._heroMaker={version:3,role,source:'character-maker/Character',riderScale:.78,saddle:{x:-23.13477412559174,y:63.84370483579855}};
     require('./tier-skins').ensure(rig);
     if(role===5&&blueCloak)require('./cloak').apply(rig,blueCloak);
+    require('./mounts').seatRider(rig);
     const written=writeRig(root,files,read,name,rig,pictures);replacements.set(originalUuid,written.uuid);
     if(role===5&&blueCloak)require('./cloak').page(files,written.base,blueCloak,JSON.parse(read(path.join(root,blueCloak.image+'.meta'))).uuid);
   }

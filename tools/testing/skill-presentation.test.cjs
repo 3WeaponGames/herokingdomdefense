@@ -139,6 +139,24 @@ test('built-in skill release cues occur once per marker and authored cast cues r
  f.rt.settings.audio.cast.clip='';f.rt.state.style='guardian';f.P.release(f.rt,3);assert.equal(f.defaults[1].id,'shield-activate');
  f.rt.available=()=>false;f.P.release(f.rt,4);assert.equal(f.defaults.length,2);
 });
+
+test('Mystic explosion sound plays once at its active release marker alongside independent charge-up audio',()=>{
+ const f=fixture();f.rt.settings.audio.cast={clip:uuid,path:'charge',bundle:'KinghtFallAudio',volume:.2,delay:0};
+ f.rt.settings.audio.explosion={clip:uuid,path:'explosion',bundle:'KinghtFallAudio',volume:.4,delay:0};
+ f.P.queue(f.rt,'cast');f.P.update(f.rt);assert.deepEqual(f.calls.map(call=>call.config.path),['charge']);
+ f.rt.state.time=.8;f.P.release(f.rt,10);f.P.release(f.rt,10);f.P.update(f.rt);
+ assert.deepEqual(f.calls.map(call=>call.config.path),['charge','explosion']);assert.equal(f.calls[1].loop,false);assert.equal(f.defaults.length,0);
+ for(let i=0;i<6;i++)f.P.queue(f.rt,'impact',10);f.P.update(f.rt);assert.equal(f.calls.length,2);
+ f.rt.state.time=1;f.P.release(f.rt,11);f.P.update(f.rt);assert.equal(f.calls.length,3);
+});
+
+test('Mystic passive contacts do not play the explosion cue and a retired delayed explosion is discarded',()=>{
+ const f=fixture();f.rt.settings.audio.explosion={clip:uuid,volume:.4,delay:.2};
+ f.P.queue(f.rt,'impact',1);f.P.queue(f.rt,'channel');f.P.update(f.rt);assert.equal(f.calls.length,0);
+ f.P.release(f.rt,2);f.rt.state.time=.199;f.P.update(f.rt);assert.equal(f.calls.length,0);
+ f.rt.state.time=.2;f.P.update(f.rt);assert.equal(f.calls.length,1);
+ f.P.release(f.rt,3);f.rt.game._combatEpoch++;f.rt.state.time=1;f.P.update(f.rt);assert.equal(f.calls.length,1);
+});
 test('an uncustomized beam has one release cue while a persistent target remains visible',()=>{
  const f=fixture();f.rt.beamTarget=f.target;f.P.update(f.rt);f.P.update(f.rt);assert.equal(f.defaults.length,1);
  f.rt.beamTarget=null;f.P.update(f.rt);f.rt.beamTarget=f.target;f.P.update(f.rt);assert.equal(f.defaults.length,2);

@@ -4,7 +4,7 @@ const scripts=path.resolve(__dirname,'../../assets/_script');
 const source=name=>fs.readFileSync(path.join(scripts,name+'.js'),'utf8').replace(/\r\n/g,'\n');
 function method(file,name,context={}){
  const text=source(file),start=text.indexOf('  _ctor.prototype.'+name+' = function '),end=text.indexOf('\n  };',start);assert(start>=0&&end>=0);
- return vm.runInNewContext('('+text.slice(text.indexOf('function ',start),end+4)+')',context,{filename:file+'.'+name});
+ return vm.runInNewContext('('+text.slice(text.indexOf('function ',start),end+4)+')',{Startup:{isActive:()=>false},...context},{filename:file+'.'+name});
 }
 
 test('campaign pause and resume immediately suspend speech along with actors, without relying on another game tick',()=>{
@@ -126,6 +126,13 @@ test('closing a battle while the hero is dead restores menu music to the selecte
  const ui={ctrGame:{},cancelBattleDialog(){},_stopTestMovement(){}};
  method('KinghtFallUIGame','onClose',{BattleSounds:{dispose(){}},$z1AudioMgr:f.modules.AudioMgr,$z1KinghtFallConfig:config,TestMode:{getInstance:()=>({removeGameplayTarget(){}})},$z1UIMgr:{UIMgr:{getInstance:()=>({getUIById:()=>({node})})}}}).call(ui);
  assert.equal(f.bg.clip.path,'menu');assert.equal(f.bg.volume,.6);assert.equal(f.audio.getMusicVolume(),.6);assert.equal(f.writes.length,writes);
+});
+
+test('opening the lobby underneath the startup overlay keeps the start theme until the loading owner finishes',()=>{
+ let music=0;
+ const home={initViewTogg(){},showRed(){}},config={KinghtFallAudioId:{menu_bgm:'menu'},KinghtFallParameter:{BGMusic:'bg'}};
+ const enable=method('KinghtFallUIHome','onEnable',{Startup:{isActive:()=>true},$z1Main:{default:{instance:{uiTop:{}}}},$z1AudioMgr:{AudioMgr:{getInstance:()=>({playMusic(){music++;}})}},$z1KinghtFallConfig:config,$z1PoolMgr:{PoolMgr:{getInstance:()=>({clearPool(){}})}}});
+ enable.call(home);assert.equal(music,0);
 });
 
 test('Wall Defense entry replaces menu music only after opening, and exit restores a single menu loop',()=>{

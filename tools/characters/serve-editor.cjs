@@ -20,6 +20,7 @@ function createServer(root,options){
     modules['../../game-data-editor/lib/enemy-classes']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/enemy-classes.js'),'utf8');
     modules['./unit-records']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/unit-records.js'),'utf8');
     if(projectileMode)for(const name of ['combat-preview','projectile-visuals'])modules['./'+name]=fs.readFileSync(path.join(panel,name+'.js'),'utf8');
+    if(projectileMode)modules['../../assets/_script/HeroSkillPose']=fs.readFileSync(path.join(root,'assets/_script/HeroSkillPose.js'),'utf8');
     return '(function(){var modules={'+Object.entries(modules).map(([key,value])=>JSON.stringify(key)+':function(module,exports,require){\n'+value+'\n}').join(',')+'};var cache={};function require(id){if(!cache[id]){var m=cache[id]={exports:{}};modules[id](m,m.exports,require);}return cache[id].exports;}var app=require("client").mount(document.getElementById("characters"),{kind:'+JSON.stringify(options.kind||'characters')+',renderer:require("renderer"),core:require("core"),runtime:function(){return window.spine;},image:function(file){return "/asset/"+file.split("/").map(encodeURIComponent).join("/");},ipc:async function(name,request){var r=await fetch("/api/"+name,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(request||{})});var result=await r.json();if(!r.ok)throw Error(result.error);return result;}});window.addEventListener("pagehide",function(){app.destroy();});})();';
   }
   const server=http.createServer(async(req,res)=>{

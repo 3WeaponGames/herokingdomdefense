@@ -51,10 +51,10 @@ module.exports = {
       "group": "vanguard-momentum",
       "part": "",
       "loop": true,
-      "frames": 96,
-      "columns": 16,
-      "cell": 128,
-      "fps": 64,
+      "frames": 48,
+      "columns": 8,
+      "cell": 256,
+      "fps": 32,
       "anchorX": 0.5461795926094055,
       "anchorY": 0.4016798436641693,
       "startX": 0.5461795926094055,
@@ -63,22 +63,24 @@ module.exports = {
       "endY": 0.4016798436641693,
       "aspect": 1,
       "alphaBounds": [
-        6,
-        15,
-        121,
-        119
+        12,
+        30,
+        243,
+        254
       ],
-      "visibleFrames": 96,
+      "visibleFrames": 48,
       "kind": "flipbook",
       "bundle": "resources",
       "resource": "vfx/hero-skills/vanguard-momentum",
       "uuid": "ec201b59-1c72-5f12-82cb-682f77361d05",
-      "sha256": "b631f044cf1e5f8333b42be9e49b939a0562639207d3c25acfbf516821798567",
+      "sha256": "f4235918f7ae0c078eebbd21c3ba92eb8a542a2eecdccd2c16d17855c936cac2",
       "source": {
         "package": "Hyper Casual FX Pack Vol.1 v1.4.unitypackage",
         "prefab": "Assets/VFX_Klaus/Prefabs/Hyper Casual FX/HCFX_Charging_02_Step1.prefab"
       },
-      "trimStart": 0
+      "trimStart": 0,
+      "referenceCell": 128,
+      "preserveMaterials": true
     },
     {
       "id": "bruiser-blood-aura",
@@ -393,34 +395,36 @@ module.exports = {
       "group": "vanguard-momentum-buff",
       "part": "",
       "loop": true,
-      "frames": 96,
-      "columns": 16,
-      "cell": 128,
-      "fps": 64,
-      "anchorX": 0.4716476798057556,
-      "anchorY": 0.44619545340538025,
-      "startX": 0.4716476798057556,
-      "startY": 0.44619545340538025,
-      "endX": 1.1502125263214111,
-      "endY": 0.44619545340538025,
+      "frames": 48,
+      "columns": 8,
+      "cell": 256,
+      "fps": 32,
+      "anchorX": 0.5061972141265869,
+      "anchorY": 0.452927827835083,
+      "startX": 0.5061972141265869,
+      "startY": 0.452927827835083,
+      "endX": 1.0953023433685303,
+      "endY": 0.452927827835083,
       "aspect": 1,
       "alphaBounds": [
-        6,
-        21,
-        117,
-        108
+        20,
+        53,
+        245,
+        205
       ],
-      "visibleFrames": 96,
+      "visibleFrames": 48,
       "kind": "flipbook",
       "bundle": "resources",
       "resource": "vfx/hero-skills/vanguard-momentum-buff",
       "uuid": "ded5e8ca-db40-594f-90fa-5ad8db92d320",
-      "sha256": "b8a0318480af55edd6ea13206de058bce40ce4548df2a2d3f66b821379d8fad3",
+      "sha256": "0226fde34d814f8785ee1450eb50b69ad990f7b493618ed18266cecdd4c8b302",
       "source": {
         "package": "Hyper Casual FX Pack Vol.1 v1.4.unitypackage",
         "prefab": "Assets/VFX_Klaus/Prefabs/Hyper Casual FX/HCFX_Charging_02_Step3.prefab"
       },
-      "trimStart": 0
+      "trimStart": 0,
+      "referenceCell": 128,
+      "preserveMaterials": true
     },
     {
       "id": "fighter-arc-slash",
@@ -1341,7 +1345,12 @@ module.exports = {
         "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\SP88\\Data\\1f6b6d966ec2",
         "skeleton": "SP88_231_MYNSZD_E54910"
       },
-      "trimStart": 0
+      "trimStart": 0,
+      "sourcePivotX": -42.184225000000005,
+      "sourcePivotY": 241.386775,
+      "forwardX": 0.8453242405709577,
+      "forwardY": -0.5342536179597978,
+      "pivotSource": "guangyunadf_0000"
     },
     {
       "id": "guardian-defense",
@@ -1598,7 +1607,7 @@ module.exports = {
         "directory": "C:\\Users\\danny\\Documents\\projects\\Hero Line Wars\\Idle Hero Defense\\Assets\\SpineVfx\\Collections20261030\\ATX117\\Data\\18f5b4af93f6",
         "skeleton": "ATX117_effect_boss011_yuwenyuan_skill_cast",
         "cropStart": 1.44,
-        "cropEnd": 2.0,
+        "cropEnd": 2,
         "originalResource": "vfx/hero-skills/skirmisher-triple-volley/skirmisher-triple-volley",
         "originalSha256": "6da22799446970462f306789784a48e0f75f7b0dc9eae556f1cc7df4f49b068a",
         "arrowSlots": [

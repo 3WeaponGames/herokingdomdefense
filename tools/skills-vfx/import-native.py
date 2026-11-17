@@ -30,6 +30,19 @@ def preserve_supplemental(clips,previous):
  result=list(clips)+[clip for clip in previous if clip.get('id') not in managed]
  if len({clip['id'] for clip in result})!=len(result):raise ValueError('Duplicate native VFX ID')
  return result
+def spear_pivot(data):
+ attachments=data['skins'][0]['attachments'];flash=next(iter(attachments['guangyunadf_0000'].values()))['vertices']
+ if len(flash)!=8:raise ValueError('Unsupported native spear flash mesh')
+ x=sum(flash[::2])/(len(flash)//2);y=sum(flash[1::2])/(len(flash)//2);dx=dy=0
+ for name,variants in attachments.items():
+  if not name.startswith('qiangaa'):continue
+  vertices=next(iter(variants.values()))['vertices']
+  if len(vertices)!=8:raise ValueError('Unsupported native spear direction mesh')
+  vx=(vertices[0]+vertices[6]-vertices[2]-vertices[4])/2;vy=(vertices[1]+vertices[7]-vertices[3]-vertices[5])/2;length=math.hypot(vx,vy)
+  if length:dx+=vx/length;dy+=vy/length
+ length=math.hypot(dx,dy)
+ if not length:raise ValueError('Missing native spear direction')
+ return dict(sourcePivotX=x,sourcePivotY=y,forwardX=dx/length,forwardY=dy/length,pivotSource='guangyunadf_0000')
 def run(source,artifacts):
  tx=Transaction(ROOT,artifacts);clips=[];written=set();base='assets/resources/vfx/hero-skills'
  for folder in ('assets/resources/vfx',base):tx.folder(folder)
@@ -66,7 +79,9 @@ def run(source,artifacts):
    tx.json(script+'.meta',dict(ver='1.1.0',uuid=asset_uuid(script),importer='javascript',isPlugin=False,loadPluginInWeb=True,loadPluginInNative=True,loadPluginInEditor=False,subMetas={}),True)
   duration=max(times(data['animations'][animation]),default=0)
   if not duration>0:raise ValueError('Empty animation: '+ident)
-  clips.append(dict(id=ident,name=label,style=style,slot=slot,phase='loop' if loop else 'start' if slot=='physicalShield' else 'once',group=group,loop=loop,frames=round(duration*120),fps=120,kind='spine',bundle='resources',resource='vfx/hero-skills/'+group+'/'+group,uuid=asset_uuid(jsonfile),animation=animation,duration=duration,width=width,height=height,anchorX=-left/width,anchorY=-bottom/height,decodedBytes=decoded,premultipliedAlpha=False,sha256=hashlib.sha256((source_dir/'effect.json').read_bytes()).hexdigest(),source={'directory':str(source_dir),'skeleton':data['skeleton']['name']}))
+  clip=dict(id=ident,name=label,style=style,slot=slot,phase='loop' if loop else 'start' if slot=='physicalShield' else 'once',group=group,loop=loop,frames=round(duration*120),fps=120,kind='spine',bundle='resources',resource='vfx/hero-skills/'+group+'/'+group,uuid=asset_uuid(jsonfile),animation=animation,duration=duration,width=width,height=height,anchorX=-left/width,anchorY=-bottom/height,decodedBytes=decoded,premultipliedAlpha=False,sha256=hashlib.sha256((source_dir/'effect.json').read_bytes()).hexdigest(),source={'directory':str(source_dir),'skeleton':data['skeleton']['name']})
+  if ident=='vanguard-spear-barrage':clip.update(spear_pivot(data))
+  clips.append(clip)
  for clip in clips:
   if clip['id']=='skirmisher-triple-volley':clip.update(trajectory='skirmisher-atx117',originX=paths['sourceOrigin']['x'],originY=paths['sourceOrigin']['y'],defaultRotation=paths['defaultRotation'],sourceSha256=paths['sourceSha256'],textureSet='skirmisher-atx117')
  # Supplemental exact-native effects (for example SP162) have independent

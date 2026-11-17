@@ -31,7 +31,7 @@ def capture_rows(bake):
         return result
     planned=index(jobs);index(rows)
     if not isinstance(source.get('workbookSha256'),str) or not re.fullmatch(r'[a-f0-9]{64}',source['workbookSha256']):raise ValueError('Invalid workbook provenance')
-    defaults={'frames':64,'fps':48,'columns':16,'cell':128,'loop':False,'style':'','slot':'','phase':'','package':'','prefab':''}
+    defaults={'frames':64,'fps':48,'columns':16,'cell':128,'loop':False,'preserveMaterials':False,'referenceCell':0,'style':'','slot':'','phase':'','package':'','prefab':''}
     for row in rows:
         if row['id'].startswith('weather-'):continue
         ident=row['id'];job=planned[ident]
@@ -42,6 +42,9 @@ def capture_rows(bake):
             value=row.get(key)
             if type(value) is not int or not 1<=value<=maximum:raise ValueError('Invalid capture layout: '+ident)
         if type(row.get('loop')) is not bool:raise ValueError('Invalid capture loop: '+ident)
+        if type(row.get('preserveMaterials',False)) is not bool:raise ValueError('Invalid capture material mode: '+ident)
+        reference=row.get('referenceCell',0)
+        if type(reference) is not int or not 0<=reference<=4096:raise ValueError('Invalid reference cell: '+ident)
         if row['columns']*row['cell']>2048 or ((row['frames']+row['columns']-1)//row['columns'])*row['cell']>2048:raise ValueError('Capture exceeds atlas size: '+ident)
         for key in ('anchorX','anchorY','startX','startY','endX','endY','aspect'):
             value=row.get(key)
@@ -72,7 +75,7 @@ def run(bake,artifacts):
             # Changed capture dimensions may update unchanged generated metadata.
             if previous!=meta and previous!=texture_meta(relative,previous.get('width'),previous.get('height')):raise ValueError('Preserve authored metadata before reimport: '+relative)
         tx.stage(relative,raw);tx.json(relative+'.meta',meta)
-        fields=('id','name','style','slot','phase','group','part','loop','frames','columns','cell','fps','anchorX','anchorY','startX','startY','endX','endY','aspect','alphaBounds','visibleFrames')
+        fields=('id','name','style','slot','phase','group','part','loop','frames','columns','cell','fps','anchorX','anchorY','startX','startY','endX','endY','aspect','alphaBounds','visibleFrames','referenceCell','preserveMaterials')
         clip={k:row[k] for k in fields if k in row}
         clip.update(trimStart=trim_start,kind='flipbook',bundle='resources',resource='vfx/hero-skills/'+row['id'],uuid=asset_uuid(relative+'#sprite'),sha256=hashlib.sha256(raw).hexdigest(),source={'package':row['package'],'prefab':row['prefab']})
         if row['id']=='mystic-electric-barrier':clip.update(startX=0,startY=.5,endX=1,endY=.5)

@@ -231,53 +231,23 @@ exports.effects = {
     "loop": false,
     "duration": 1.4462358276643992
   },
-  "critical-hit": {
-    "path": "sfx/critical-hit",
+  "impact-bruiser-basic": {
+    "path": "sfx/impact-bruiser-basic",
+    "format": "wav",
     "group": "combat",
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.72
+    "duration": 1.48
   },
-  "hurt-beast": {
-    "path": "sfx/hurt-beast",
+  "critical-hit": {
+    "path": "sfx/critical-hit",
+    "format": "wav",
     "group": "combat",
-    "gain": 0.25,
-    "cooldown": 160,
+    "gain": 0.5,
+    "cooldown": 65,
     "loop": false,
-    "duration": 0.6
-  },
-  "hurt-slime": {
-    "path": "sfx/hurt-slime",
-    "group": "combat",
-    "gain": 0.25,
-    "cooldown": 160,
-    "loop": false,
-    "duration": 0.6
-  },
-  "hurt-skeleton": {
-    "path": "sfx/hurt-skeleton",
-    "group": "combat",
-    "gain": 0.25,
-    "cooldown": 160,
-    "loop": false,
-    "duration": 0.6
-  },
-  "hurt-ghost": {
-    "path": "sfx/hurt-ghost",
-    "group": "combat",
-    "gain": 0.25,
-    "cooldown": 160,
-    "loop": false,
-    "duration": 0.72
-  },
-  "hurt-insect": {
-    "path": "sfx/hurt-insect",
-    "group": "combat",
-    "gain": 0.25,
-    "cooldown": 160,
-    "loop": false,
-    "duration": 0.4977324263038549
+    "duration": 1.48
   },
   "healing-cast": {
     "path": "sfx/healing-cast",
@@ -433,11 +403,12 @@ exports.effects = {
   },
   "boss-arrival": {
     "path": "sfx/boss-arrival",
+    "format": "wav",
     "group": "signal",
     "gain": 0.65,
     "cooldown": 5000,
     "loop": false,
-    "duration": 1.48
+    "duration": 4
   },
   "castle-low-health": {
     "path": "sfx/castle-low-health",

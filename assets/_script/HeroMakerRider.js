@@ -57,7 +57,7 @@ function prepareAttack(controller,animation) {
   if(charging&&charging.charge){keys.forEach(function(key){Pose.removeAim(controller[key]);});combatStates.delete(controller);}
   attackTokens.set(controller,(attackTokens.get(controller)||0)+1);
   if(charging&&charging.charge>=1-1e-9)heldShots.set(controller,{animation:animation,clip:clipInfo(controller,animation),token:attackTokens.get(controller)});
-  keys.concat(['spAniMa']).forEach(function(key){var renderer=controller[key];if(!renderer||!renderer.setMix)return;
+  keys.forEach(function(key){var renderer=controller[key];if(!renderer||!renderer.setMix)return;
     ['idle','move'].forEach(function(pose){renderer.setMix(pose,animation,.08);renderer.setMix(animation,pose,.12);});
     // Attack-speed buffs can begin the next swing before recovery completes.
     // Blend that same-clip restart without changing its authored hit marker.
@@ -84,13 +84,10 @@ function setLocomotion(controller,animation) {
 }
 function attack(controller,animation) {
   if(!metadata(controller)||!mountMetadata(controller))return;
-  if(holdChargedAttack(controller))return;
-  var state=combatStates.get(controller);
-  if(state&&state.beam){if(controller.isMove)ensureLocomotion(controller.spAniMa,'move');return;}
-  if((state||combatMotion.has(controller))&&controller.isMove){ensureLocomotion(controller.spAniMa,'move');return;}
-  var horse=controller.spAniMa,track=horse.setAnimation(0,animation,false),master=controller.spAniBody.getCurrent(0);
-  queue(controller,horse,animation);
-  if(track&&master&&clock(track,master))applyPose(horse);
+  // Attacks belong to the rider. The mount keeps its own locomotion clock,
+  // including while the rider is charging, channeling or frozen at impact.
+  ensureLocomotion(controller.spAniMa,controller.isMove?'move':'idle');
+  holdChargedAttack(controller);
 }
 function update(controller) {
   if (!metadata(controller)) return;
@@ -101,17 +98,12 @@ function update(controller) {
   if(combat&&(combat.beam||combat.rapid||combat.charge)){updateCombatPose(controller,combat);applyAim(controller,combat,true);follow(controller);return;}
   var horse = controller.spAniMa, mount = horse && horse.getCurrent && horse.getCurrent(0), body = controller.spAniBody, master = body.getCurrent && body.getCurrent(0);
   if (!master) return;
+  if(!controller.isDie&&mountMetadata(controller))mount=ensureLocomotion(horse,controller.isMove?'move':'idle');
   if (!controller.isDie && loop(master)) {
     var desired = controller.isMove ? "move" : "idle";
     if (name(master) !== desired) master = locomotion(body,desired);
     if(mountMetadata(controller)&&(!mount||name(mount)!==desired||!loop(mount)))mount=locomotion(horse,desired);
     if (mount && name(mount) === desired) clock(master,mount);
-  }else if(attacking(controller)){
-    if((combat||combatMotion.has(controller))&&controller.isMove)ensureLocomotion(horse,'move');
-    else {
-      if(!mount||name(mount)!==name(master)||loop(mount)){attack(controller,name(master));mount=horse.getCurrent(0);}
-      if(mount&&clock(mount,master))applyPose(horse);
-    }
   }
   // All equipment shares the body's animation clock, including a queued idle
   // after firing while moving. Never restart a live attack or its callbacks.
@@ -161,14 +153,15 @@ function aimReference(controller,animation){
 }
 function applyAim(controller,state,fresh){
   var master=current(controller.spAniBody),direction=state.aimDirection;
-  // Staff channels and spear thrusts retain their authored weapon pose. Only
-  // the hero's horizontal facing mirrors it; beam/damage aim stays in gameplay.
+  // Staff channels retain their authored pose. Vanguard's active skill aims
+  // only the weapon branch, keeping the rider and horse seated and upright.
   var currentStyle=style().id;
-  if(currentStyle==='mystic'||currentStyle==='vanguard'){state.aimDirection=null;keys.forEach(function(key){Pose.removeAim(controller[key]);});return;}
+  if(currentStyle==='mystic'||currentStyle==='vanguard'&&!state.skillAim){state.aimDirection=null;keys.forEach(function(key){Pose.removeAim(controller[key]);});return;}
   if(!direction){keys.forEach(function(key){Pose.removeAim(controller[key]);});return;}
-  if(state.mode==='ordinary'&&(!master||loop(master)||state.aimToken!==(attackTokens.get(controller)||0)||state.aimAnimation!==name(master))){state.aimDirection=null;keys.forEach(function(key){Pose.removeAim(controller[key]);});return;}
+  if(!state.skillAim&&state.mode==='ordinary'&&(!master||loop(master)||state.aimToken!==(attackTokens.get(controller)||0)||state.aimAnimation!==name(master))){state.aimDirection=null;keys.forEach(function(key){Pose.removeAim(controller[key]);});return;}
   var animation=name(master),token=attackTokens.get(controller)||0;
   if(state.referenceToken!==token||state.referenceAnimation!==animation){state.referenceAngle=aimReference(controller,animation);state.referenceToken=token;state.referenceAnimation=animation;}
+  if(currentStyle==='vanguard'&&state.skillAim){if(!fresh){keys.forEach(function(key){applyPose(controller[key]);});fresh=true;}var source=controller.spAniBow,liveAngle=Pose.weaponAimAngle(source,'Rider/HandRight/Spear');state.referenceAngle=typeof liveAngle==='number'?liveAngle:0;}
   keys.forEach(function(key){var renderer=controller[key];if(!renderer)return;if(!fresh)applyPose(renderer);Pose.applyAim(renderer,direction,renderer.node&&renderer.node.scaleX,{fresh:true,referenceAngle:state.referenceAngle});});
 }
 function enableCombatMotion(controller){if(controller)combatMotion.add(controller);}
@@ -176,16 +169,12 @@ function enableCombatMotion(controller){if(controller)combatMotion.add(controlle
 // delta. Switch only the horse immediately; the rider keeps its attack entry,
 // authored callbacks and the single lateUpdate synchronization pass.
 function setMoving(controller,moving){
-  if(!controller||!combatMotion.has(controller)||!metadata(controller)||!mountMetadata(controller)||controller.isDie)return false;
+  if(!controller||!metadata(controller)||!mountMetadata(controller)||controller.isDie)return false;
   controller.isMove=!!moving;
   if(moving)releaseChargedAttack(controller);
-  var state=combatStates.get(controller),horse=controller.spAniMa,master=current(controller.spAniBody);
+  var state=combatStates.get(controller),horse=controller.spAniMa;
   if(moving&&state&&state.charge){combatStates.delete(controller);releaseCombatPose(controller);return true;}
-  if(moving)ensureLocomotion(horse,'move');
-  else if(state&&state.beam){var mount=current(horse);if(!mount||name(mount)==='move')ensureLocomotion(horse,'idle');}
-  else if(state&&state.rapid&&master)stationaryMountPose(controller,state,trackValue(master,'trackTime')||0,trackValue(master,'timeScale'));
-  else if(master&&!loop(master)&&/^attack(?:_|$)/.test(name(master)))attack(controller,name(master));
-  else ensureLocomotion(horse,'idle');
+  ensureLocomotion(horse,moving?'move':'idle');
   return true;
 }
 function clipInfo(controller,animation){
@@ -218,7 +207,6 @@ function maintainAttackTiming(controller){
   var master=current(controller.spAniBody);
   if(!master||loop(master)||name(master)!==timing.animation||timing.token!==(attackTokens.get(controller)||0)){retimedAttacks.delete(controller);return;}
   keys.forEach(function(key){var track=current(controller[key]);if(track&&name(track)===timing.animation)setTrackValue(track,'timeScale',timing.speed);});
-  var horse=current(controller.spAniMa);if(!controller.isMove&&horse&&name(horse)===timing.animation)setTrackValue(horse,'timeScale',timing.speed);
 }
 function retimeAttack(controller,windup){
   if(!controller||!(typeof windup==='number'&&isFinite(windup)&&windup>=0))return false;
@@ -226,7 +214,7 @@ function retimeAttack(controller,windup){
   var animation=name(master),clip=clipInfo(controller,animation),speed=windup>0?clip.hit/windup:1;
   if(!(speed>0))speed=1;
   retimedAttacks.set(controller,{token:attackTokens.get(controller)||0,animation:animation,speed:speed});
-  if(windup===0)keys.concat(['spAniMa']).forEach(function(key){var track=current(controller[key]);if(track&&name(track)===animation)setTrackValue(track,'trackTime',clip.hit);});
+  if(windup===0)keys.forEach(function(key){var track=current(controller[key]);if(track&&name(track)===animation)setTrackValue(track,'trackTime',clip.hit);});
   maintainAttackTiming(controller);return true;
 }
 function setAttackPlayback(controller,playback){
@@ -248,14 +236,9 @@ function seekRider(controller,state,time,speed){
     applyPose(renderer);
   });
 }
-function stationaryMountPose(controller,state,time,speed){
-  var horse=controller.spAniMa,track=current(horse);if(!horse)return;
-  if(!track||name(track)!==state.animation||loop(track))track=horse.setAnimation(0,state.animation,false);
-  setTrackValue(track,'trackTime',time);setTrackValue(track,'timeScale',speed);
-  applyPose(horse);
-}
 function updateCombatPose(controller,state){
   var horse=controller.spAniMa,desired=controller.isMove?'move':'idle',master=current(controller.spAniBody);
+  ensureLocomotion(horse,desired);
   if(state.charge){
     // Sample only the draw portion, then hold its maximum. The release marker
     // remains reserved for the actual shot and cannot fire during this wait.
@@ -268,12 +251,6 @@ function updateCombatPose(controller,state){
     var sampled=typeof state.beamSourceTime==='number'||typeof state.beamElapsed==='number',time=typeof state.beamSourceTime==='number'?state.beamSourceTime:sampled?Math.max(0,state.beamElapsed)*(typeof state.playback==='number'?state.playback:1):trackValue(master,'trackTime')||0,speed=sampled?0:trackValue(master,'timeScale');
     if(time>=hold||state.beamHeld){time=hold;speed=0;state.beamHeld=true;}
     seekRider(controller,state,time,typeof speed==='number'?speed:1);
-    // The stationary mount finishes one ordinary attack, then idles. It must
-    // never copy the rider's zero timeScale while a channel pose is held.
-    var mount=current(horse);
-    if(controller.isMove)ensureLocomotion(horse,'move');
-    else if(!mount||name(mount)==='move')ensureLocomotion(horse,'idle');
-    else if(!loop(mount)&&name(mount)===state.animation&&typeof state.playback==='number')setTrackValue(mount,'timeScale',state.playback);
     return;
   }
   var rapid=typeof state.rapid==='object'?state.rapid:null,duration=rapid&&rapid.duration>0?rapid.duration:2.5,strikes=rapid&&rapid.strikes>0?rapid.strikes:7,interval=duration/strikes;
@@ -283,19 +260,16 @@ function updateCombatPose(controller,state){
     // interval. The timeline owns damage; this only aligns its visible pose.
     var sample=SkillAnimation.rapidPose(rapid.elapsed,duration,strikes,state.clip).time;
     seekRider(controller,state,sample,0);
-    if(controller.isMove)ensureLocomotion(horse,'move');else stationaryMountPose(controller,state,sample,0);
   }else{
     if(state.pulse!==undefined&&state.pulse!==null&&state.pulse!==state.lastPulse){
       startRiderPose(controller,state);state.lastPulse=state.pulse;
       seekRider(controller,state,state.clip.hit,state.clip.end/interval);
     }
     master=current(controller.spAniBody);
-    if(controller.isMove)ensureLocomotion(horse,'move');else if(master)stationaryMountPose(controller,state,trackValue(master,'trackTime')||0,trackValue(master,'timeScale'));
     keys.slice(1).forEach(function(key){var track=current(controller[key]);if(track&&master)clock(track,master);});
   }
 }
-// Opt-in for the gameplay hero. Read-only editor/gear previews and old actors
-// retain their existing shared clock until a runtime explicitly enables this.
+// Combat owns the rider pose; the horse always owns its idle/move clock.
 function setCombatState(controller,options){
   if(!controller||!metadata(controller)||!mountMetadata(controller))return false;
   if(!options||options.enabled===false){clearCombatState(controller);combatMotion.delete(controller);return false;}
@@ -307,6 +281,8 @@ function setCombatState(controller,options){
   var state=previous&&previous.mode===mode?previous:{mode:mode,lastPulse:null},animationChanged=false;
   if(typeof options.moving==='boolean')controller.isMove=options.moving;
   state.beam=!!options.beam;state.rapid=options.rapid||false;state.charge=mode==='charge'?charge:0;state.pulse=options.pulse;
+  var wasSkillAim=!!state.skillAim;state.skillAim=!!options.skillAim;
+  if(wasSkillAim&&!state.skillAim)state.aimDirection=null;
   if(typeof options.playback==='number'&&isFinite(options.playback)&&options.playback>=0)state.playback=options.playback;
   if(options.animation&&supportedPose(controller,options.animation)&&state.animation!==options.animation){animationChanged=!!state.animation;state.animation=options.animation;state.beamHeld=false;state.referenceToken=undefined;state.referenceAnimation=undefined;}
   if(typeof options.holdTime==='number')state.holdTime=options.holdTime;
@@ -320,10 +296,8 @@ function setCombatState(controller,options){
   }
   if((state.beam||state.rapid)&&(!previous||previous.mode!==mode||animationChanged)){
     startRiderPose(controller,state);
-    if(state.beam&&!controller.isMove){
-      var horse=controller.spAniMa,track=horse.setAnimation(0,state.animation,false);if(typeof state.playback==='number')setTrackValue(track,'timeScale',state.playback);horse.addAnimation(0,'idle',true,state.clip.end);
-    }
   }
+  if(!controller.isDie)ensureLocomotion(controller.spAniMa,controller.isMove?'move':'idle');
   // Commit gameplay-owned geometry before scene-depth copies. AniCtrl's late
   // pass restores the sampled clocks and aim after the engine advances Spine.
   // Direct preview/test users also synchronize immediately.
@@ -350,7 +324,7 @@ function ownsAttackClock(controller,renderer){
   if(!controller)return false;var state=combatStates.get(controller),retimed=retimedAttacks.get(controller),body=current(controller.spAniBody),owned=state&&(state.beam||state.rapid||state.charge)||retimed&&body&&!loop(body)&&name(body)===retimed.animation&&retimed.token===(attackTokens.get(controller)||0);
   owned=owned||heldShots.has(controller);
   if(!owned)return false;if(!renderer)return true;
-  if(renderer===controller.spAniMa){var track=current(renderer);return !controller.isMove&&!!track&&!loop(track)&&/^attack(?:_|$)/.test(name(track));}
+  if(renderer===controller.spAniMa)return false;
   return keys.some(function(key){return controller[key]===renderer;});
 }
 function follow(controller) {
@@ -370,9 +344,17 @@ function follow(controller) {
 }
 function projectileOrigin(controller) {
   if(!metadata(controller))return null;
-  var current=style().id,renderer=controller.spAniBow;
+  var current=style().id,renderer=current==='skirmisher'&&(controller.spAniArrow&&controller.spAniArrow.findBone)?controller.spAniArrow:controller.spAniBow;
   if((current!=='skirmisher'&&current!=='mystic')||!renderer||!renderer.findBone||!renderer.node.convertToWorldSpaceAR)return null;
   var bone=renderer.findBone(current==='mystic'?'Rider/HandRight/Staff':'Rider/HandRight/Bow/Arrow');if(!bone)return null;
+  if(current==='skirmisher'){
+    // The bow rig only carries a hidden proxy bone. Release from the visible
+    // equipped arrow's tip, including its aim, fitted skin and saddle motion.
+    follow(controller);Pose.commitWorld(renderer);
+    var combat=combatStates.get(controller),direction=combat&&combat.aimDirection||{x:renderer.node.scaleX<0?-1:1,y:0};
+    var arrow=Pose.arrowTip(renderer,direction,renderer.node.scaleX,bone);
+    if(arrow)return renderer.node.convertToWorldSpaceAR(cc.v2(arrow.x,arrow.y));
+  }
   if(current==='mystic'){
     Pose.commitWorld(renderer);
     var tip=Pose.attachmentTip(renderer,'Rider/HandRight/Staff',bone);
@@ -381,22 +363,25 @@ function projectileOrigin(controller) {
   var x=typeof bone.getWorldX==='function'?bone.getWorldX():bone.worldX,y=typeof bone.getWorldY==='function'?bone.getWorldY():bone.worldY;
   return typeof x==='number'&&typeof y==='number'?renderer.node.convertToWorldSpaceAR(cc.v2(x,y)):null;
 }
-function releaseWorld(controller,renderer,tip,animation,time){
-  var world=renderer.node.convertToWorldSpaceAR(cc.v2(tip.x,tip.y)),info=metadata(controller),horse=controller.spAniMa,parent=renderer.node.parent;
-  if(info.saddle&&horse&&horse.node&&parent&&parent.convertToNodeSpaceAR&&parent.convertToWorldSpaceAR){var mountJson=horse.skeletonData&&horse.skeletonData.skeletonJson,mountAnimation=mountMetadata(controller)?animation:'idle',bone=Pose.boneMatrixAt(mountJson,mountAnimation,time,'bone2',0);if(bone){var x=(bone.x-info.saddle.x)*horse.node.scaleX,y=(bone.y-info.saddle.y)*horse.node.scaleY,r=(horse.node.angle||0)*Math.PI/180,c=Math.cos(r),sn=Math.sin(r),previous=states.get(controller)||{x:0,y:0},at=parent.convertToNodeSpaceAR(world);world=parent.convertToWorldSpaceAR(cc.v2(at.x+x*c-y*sn-previous.x,at.y+x*sn+y*c-previous.y));}}return world;
+function releaseWorld(controller,renderer,tip){
+  follow(controller);
+  return renderer.node.convertToWorldSpaceAR(cc.v2(tip.x,tip.y));
 }
 function skillOrigin(controller,direction,preferredAnimation){
   if(!metadata(controller))return null;
   var renderer=controller.spAniArrow||controller.spAniBow;if(!renderer||!renderer.node||!renderer.node.convertToWorldSpaceAR)return null;
   var retimed=retimedAttacks.get(controller),currentName=name(current(controller.spAniBody)),animation=supportedPose(controller,preferredAnimation)?preferredAnimation:retimed&&retimed.animation||supportedPose(controller,currentName)&&currentName||attackName(controller),json=renderer.skeletonData&&renderer.skeletonData.skeletonJson,time=clipInfo(controller,animation).hit;
-  var tip=Pose.arrowTipAt(renderer,json,animation,time,direction,renderer.node.scaleX,{referenceAngle:aimReference(controller,animation)});return tip?releaseWorld(controller,renderer,tip,animation,time):null;
+  var tip=Pose.arrowTipAt(renderer,json,animation,time,direction,renderer.node.scaleX,{referenceAngle:aimReference(controller,animation)});return tip?releaseWorld(controller,renderer,tip):null;
 }
 function weaponOrigin(controller,weaponStyle,direction,preferredAnimation){
   if(!metadata(controller))return null;if(weaponStyle==='skirmisher')return skillOrigin(controller,direction,preferredAnimation);if(weaponStyle==='mystic')return projectileOrigin(controller);
   var renderer=controller.spAniBow;if(!renderer||!renderer.node||!renderer.node.convertToWorldSpaceAR)return null;
   var suffix={fighter:'Sword',vanguard:'Spear',bruiser:'Axe',guardian:'Blunt'}[weaponStyle];if(!suffix)return null;
+  if(weaponStyle==='vanguard'){Pose.commitWorld(renderer);var liveTip=Pose.aimedWeaponTip(renderer,'Rider/HandRight/Spear',direction,renderer.node.scaleX);if(liveTip)return releaseWorld(controller,renderer,liveTip);}
   var animation=supportedPose(controller,preferredAnimation)?preferredAnimation:'attack_'+weaponStyle,time=clipInfo(controller,animation).hit,json=renderer.skeletonData&&renderer.skeletonData.skeletonJson;
-  var tip=Pose.weaponTipAt(renderer,json,animation,time,'Rider/HandRight/'+suffix,direction,renderer.node.scaleX,weaponStyle==='fighter');return tip?releaseWorld(controller,renderer,tip,animation,time):null;
+  var aim=weaponStyle==='fighter',reference=0;
+  if(weaponStyle==='vanguard'){var track=current(controller.spAniBody),liveName=name(track);if(json&&json.animations&&json.animations[liveName]){animation=liveName;time=trackValue(track,'trackTime')||0;if(loop(track))time%=clipInfo(controller,animation).end;}aim=true;reference=Pose.weaponAimAngleAt(renderer,json,animation,time,'Rider/HandRight/Spear');}
+  var tip=Pose.weaponTipAt(renderer,json,animation,time,'Rider/HandRight/'+suffix,direction,renderer.node.scaleX,aim,{referenceAngle:reference});return tip?releaseWorld(controller,renderer,tip):null;
 }
 function removeFollow(controller) {
   var previous=states.get(controller);if(!previous)return;

@@ -38949,5 +38949,163 @@
         "straighten": 0.57
       }
     }
+  },
+  "HeroSkills": {
+    "skirmisher": {
+      "visual": {
+        "castOffsetX": 15,
+        "castOffsetY": -9.6,
+        "castScale": 0.49,
+        "castRotation": -58.74,
+        "castScaleY": 1,
+        "castScaleX": 1,
+        "impactScale": 1,
+        "castDelay": 0,
+        "castOpacity": 1,
+        "arcDegrees": 30.67,
+        "rotation": 3.1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "projectileWidth": 50,
+      "volleyRange": 814.39,
+      "volleyHitTime": 0.23,
+      "audio": {
+        "cast": {
+          "volume": 1,
+          "clip": "525f7dd3-21c6-4850-b0fa-0a326ed0b98e",
+          "bundle": "KinghtFallAudio",
+          "path": "sfx/skirmisher-active-skill"
+        }
+      }
+    },
+    "fighter": {
+      "visual": {
+        "castOffsetX": 0,
+        "castOffsetY": -20,
+        "arcDegrees": 272.73,
+        "castScale": 1.67,
+        "castScaleX": 0.77,
+        "castRotation": 96.2,
+        "castColor": "",
+        "castScaleY": 1.26,
+        "impactDelay": 0,
+        "castDelay": 0.14,
+        "scale": 1.22,
+        "rotation": -8.3
+      },
+      "audio": {
+        "cast": {
+          "volume": 1,
+          "clip": "a5e3659a-a979-49b7-a866-960c2bd0e2e7",
+          "bundle": "KinghtFallAudio",
+          "path": "sfx/fighter-active-skill"
+        }
+      }
+    },
+    "guardian": {
+      "visual": {
+        "presenceOffsetY": -19.91,
+        "presenceOffsetX": -3.46,
+        "physicalShieldOffsetY": 0.76,
+        "physicalShieldScale": 0.48
+      },
+      "allyRadius": 400,
+      "tauntRadius": 450,
+      "tauntDuration": 5,
+      "shieldHealth": 0.25,
+      "cooldown": 17,
+      "audio": {
+        "cast": {
+          "volume": 1,
+          "clip": "f94a4ca5-2a52-49b9-92f4-d5fc456db999",
+          "bundle": "KinghtFallAudio",
+          "path": "sfx/guardian-active-skill"
+        }
+      }
+    },
+    "bruiser": {
+      "visual": {
+        "castOffsetX": -2.79,
+        "castOffsetY": 2.05,
+        "castScale": 1.64,
+        "castSecondaryOffsetY": 0.88,
+        "castDelay": 0.14,
+        "castSecondaryDelay": 0.1,
+        "castScaleY": 2.91,
+        "castRotation": 90.21,
+        "scale": 1.29,
+        "castSecondaryScaleY": 2.38,
+        "castSecondaryScale": 1.74,
+        "castSecondaryOffsetX": -1.48,
+        "castPivotX": -18,
+        "castPivotY": 26.5,
+        "castSecondaryPivotX": 18.6,
+        "castSecondaryPivotY": 34
+      },
+      "audio": {
+        "cast": {
+          "volume": 1,
+          "clip": "731c582f-f163-431b-a8c6-0b2e1bd84dee",
+          "bundle": "KinghtFallAudio",
+          "path": "sfx/bruiser-active-skill"
+        }
+      }
+    },
+    "vanguard": {
+      "visual": {
+        "impactRotation": 0,
+        "castScale": 0.63,
+        "castScaleX": 1.05,
+        "castScaleY": 0.81,
+        "scale": 2.73,
+        "arcDegrees": 46.38,
+        "castOpacity": 1,
+        "arcStartWidth": 116.28
+      },
+      "audio": {
+        "cast": {
+          "volume": 1,
+          "clip": "b70dcfcb-4de9-40b8-9e7f-4946eea5da21",
+          "bundle": "KinghtFallAudio",
+          "path": "sfx/vanguard-spear-barrage"
+        }
+      }
+    },
+    "mystic": {
+      "maxCharges": 100,
+      "contactDelay": 0.1,
+      "visual": {
+        "markScale": 1,
+        "beamWidth": 52,
+        "markScaleX": 1,
+        "markOffsetX": 0,
+        "markOffsetY": 5,
+        "channelHitScale": 1,
+        "beamRotation": 0,
+        "beamOffsetY": 0,
+        "beamScaleY": 1,
+        "beamScaleX": 1,
+        "beamScale": 1
+      },
+      "audio": {
+        "explosion": {
+          "volume": 1,
+          "bundle": "KinghtFallAudio",
+          "path": "sfx/mystic-arcane-burst-explosion"
+        },
+        "channel": {
+          "volume": 1,
+          "clip": "129171eb-c30d-451f-9502-6c2886669cd2",
+          "bundle": "KinghtFallAudio",
+          "path": "sfx/mystic-passive-channel-loop"
+        },
+        "cast": {
+          "clip": "0f9432f9-9e2e-4666-a484-f1905f6026cd",
+          "bundle": "KinghtFallAudio",
+          "path": "sfx/mystic-arcane-burst-explosion"
+        }
+      }
+    }
   }
 }

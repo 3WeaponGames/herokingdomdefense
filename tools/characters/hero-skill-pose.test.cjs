@@ -33,6 +33,13 @@ test('native-style fresh TrackEntry wrappers retain skill-owned retiming and aim
  exports.prepareAttack(c,'attack');c.spAniBody.setAnimation(0,'attack',false);exports.update(c);assert.equal(exports.ownsAttackClock(c,c.spAniBody),false);near(c.spAniBow.hand.rotation,0);
 });
 
+test('live spear pivot and direction sampling support getter-only native bones and attachments without writes',()=>{
+ const r=35*Math.PI/180,bone={getA:()=>Math.cos(r),getB:()=>-Math.sin(r),getC:()=>Math.sin(r),getD:()=>Math.cos(r),getWorldX:()=>10,getWorldY:()=>20},hand={getWorldX:()=>10,getWorldY:()=>20},attachment={getWidth:()=>100,getHeight:()=>20,getX:()=>0,getY:()=>0,getScaleX:()=>1,getScaleY:()=>1,getRotation:()=>0},target={findBone:name=>name==='Rider/HandRight'?hand:bone,findSlot:()=>({getAttachment:()=>attachment})};
+ near(Pose.weaponAimAngle(target,'Rider/HandRight/Spear'),35);
+ for(const degrees of [0,45,90,135,180,225,270,315]){const angle=degrees*Math.PI/180,d={x:Math.cos(angle),y:Math.sin(angle)},face=d.x<0?-1:1,p=Pose.aimedWeaponTip(target,'Rider/HandRight/Spear',d,face);near((p.x-10)*face,d.x*50);near(p.y-20,d.y*50);}
+ near(Pose.weaponAimAngle(target,'Rider/HandRight/Spear'),35);
+});
+
 test('JSON marker sampling supports native attachment getters without modifying live bone pose or callbacks',()=>{
  const json={bones:[{name:'root',x:10,y:20},{name:'Rider/HandRight',parent:'root'},{name:'Rider/HandRight/Bow/Arrow',parent:'Rider/HandRight',x:5}],animations:{attack:{bones:{'Rider/HandRight/Bow/Arrow':{translate:[{time:0,x:0},{time:.2,x:10}]}}}}};
  let reads=0;const target={findSlot(){reads++;return{getAttachment:()=>({getWidth:()=>20,getHeight:()=>4,getX:()=>0,getY:()=>0,getRotation:()=>0,getScaleX:()=>1,getScaleY:()=>1})};},findBone(){throw Error('Marker sampler must not inspect live native bones');}};

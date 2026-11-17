@@ -4,6 +4,15 @@ const assert=require('node:assert/strict');
 const Skills=require('../../assets/_script/HeroStyleSkills');
 const close=(actual,expected)=>assert(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
 
+test('Mystic has one second of attack-only cast recovery, independent of its explosion and active cooldown',()=>{
+ const s=Skills.createState('mystic',{cooldown:0});Skills.onHit(s,'marked',{kind:'basic'});assert(Skills.beginActive(s,{impactDelay:.2}).ok);close(Skills.attackLockRemaining(s),1);
+ const events=Skills.step(s,.2,{moving:true});assert.equal(events.length,1);assert.equal(s.active,null);close(Skills.attackLockRemaining(s),.8);assert.equal(Skills.canActivate(s),false);
+ Skills.step(s,.799999,{moving:true});assert(Skills.attackLockRemaining(s)>0);const deadline=s.attackBlockedUntil;assert.equal(Skills.beginActive(s,{}).reason,'casting');assert.equal(s.attackBlockedUntil,deadline);
+ Skills.step(s,.000001,{moving:true});close(Skills.attackLockRemaining(s),0);assert(Skills.canActivate(s));
+ for(const style of ['skirmisher','fighter','vanguard','bruiser','guardian']){const other=Skills.createState(style);Skills.beginActive(other,{});assert.equal(Skills.attackLockRemaining(other),0);}
+ Skills.beginActive(s,{});Skills.step(s,0,{alive:false});assert.equal(Skills.attackLockRemaining(s),0);
+});
+
 test('Steady Aim charges only standing and first basic shot snapshots then clears charge',()=>{
  const s=Skills.createState('skirmisher');
  Skills.step(s,2,{moving:false});close(s.charge,.5);

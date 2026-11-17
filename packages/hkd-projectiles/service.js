@@ -84,7 +84,8 @@ class ProjectilesService {
       const defaultTrail=this.defaultTrail(who),authoredSpeed=['hero','enemy','ally'].includes(who.type)&&this.shotSpeeds&&this.shotSpeeds.get(who.type+':'+(who.id||''))||who.speed;let override=settings.projectileSpeeds&&settings.projectileSpeeds[key];
       if(override===undefined&&who.type==='enemy'&&(who.id>=100000||data.SoldierCfg[who.id].ProfileBaseID))for(const id of require('../../assets/_script/EnemyStageProfiles').referenceIds(data.SoldierCfg[who.id],settings)){const inherited=settings.projectileSpeeds&&settings.projectileSpeeds['enemy:'+id+':'+Records.form('enemy',id)];if(inherited!==undefined){override=inherited;break;}}
       const speed=['hero','enemy','ally'].includes(who.type)&&typeof override==='number'&&Number.isFinite(override)&&override>=1&&override<=20000?override:authoredSpeed;
-      return {...who,portrait:this.portrait(who),speed,timingKey:key,launchDelay:finite(delay)?delay:0,defaultDelay,defaultTrail,effectiveAssignment,...(effectiveAssignment.set?{set:effectiveAssignment.set}:{})};
+      const inheritedData={...this.data,assignments:{...this.data.assignments,[who.key]:{}}},inheritedAssignment=selectSource(inheritedData,who.key,who.type==='enemy'?{cfg:data.SoldierCfg[who.id]}:null,settings);
+      return {...who,portrait:this.portrait(who),speed,timingKey:key,launchDelay:finite(delay)?delay:0,defaultDelay,defaultTrail,effectiveAssignment,inheritedAssignment,...(effectiveAssignment.set?{set:effectiveAssignment.set}:{})};
     });
   }
   dirty(){return !Document.equal(this.original,this.data)||!Document.equal(this.originalSpeeds,this.speeds)||!Document.equal(this.originalTimings||{},this.timings||{});}
@@ -106,8 +107,10 @@ class ProjectilesService {
         if(field!=='flight'&&!['flipbook','spine','sprite'].includes(asset.kind))throw Error('Choose a playable launch or impact effect.');
       }
       if(edited('size')&&value.size!==undefined&&(!Number.isFinite(value.size)||value.size<4||value.size>512))throw Error('Visual size must be between 4 and 512.');
+      if(edited('scale')&&value.scale!==undefined&&(!Number.isFinite(value.scale)||value.scale<.1||value.scale>10))throw Error('Projectile scale must be between 0.1 and 10.');
       if(edited('rotation')&&value.rotation!==undefined&&(!Number.isFinite(value.rotation)||Math.abs(value.rotation)>360))throw Error('Visual rotation must be between -360 and 360.');
       if(edited('tint')&&value.tint!==undefined&&!/^#[a-f0-9]{6}$/i.test(value.tint))throw Error('Choose a valid projectile tint.');
+      if(edited('trailColor')&&value.trailColor!==undefined&&(typeof value.trailColor!=='string'||!/^#[a-f0-9]{6}$/i.test(value.trailColor)))throw Error('Choose a valid trail color (#RRGGBB).');
       if(edited('launchDelay')&&value.launchDelay!==undefined&&!finite(value.launchDelay))throw Error('Launch delay must be between 0 and 10 seconds.');
       if(edited('set')&&value.set!==undefined&&!(data.sets||[]).some(set=>set.id===value.set))throw Error('Choose an existing projectile set.');
       if(edited('trail')&&value.trail!==undefined&&value.trail!==false&&!(data.trails||[]).some(trail=>trail.id===value.trail))throw Error('Choose an existing projectile trail.');

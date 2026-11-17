@@ -102,15 +102,15 @@ test('saved rider speed multiplies whole-unit timing for active contacts while a
   }
 });
 
-test('the actual rider helper retimes every equipment layer and a stationary horse, leaving a moving horse on locomotion speed',()=>{
+test('the actual rider helper retimes every equipment layer while stationary and moving horses retain locomotion speed',()=>{
   const exported={},modules={HeroWeapons:require('../../assets/_script/HeroWeapons'),HeroSkillPose:require('../../assets/_script/HeroSkillPose'),HeroSkillAnimation:require('../../assets/_script/HeroSkillAnimation')};vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/HeroMakerRider.js'),'utf8'),{exports:exported,require:name=>modules[name]||{}});
   for(const moving of [false,true])for(const native of [false,true]){
     const tracks=[],controller={isMove:moving};
     for(const key of ['spAniBody','spAniDrap','spAniHead','spAniBow','spAniArrow','spAniHand','spAniMa']){
-      const value={animation:{name:key==='spAniMa'&&moving?'move':'attack_fighter'},loop:key==='spAniMa'&&moving,timeScale:1,trackTime:.2};if(native){value.getAnimation=()=>value.animation;value.getLoop=()=>value.loop;value.setTimeScale=rate=>{value.timeScale=rate;};}
+      const value={animation:{name:key==='spAniMa'?(moving?'move':'idle'):'attack_fighter'},loop:key==='spAniMa',timeScale:1,trackTime:.2};if(native){value.getAnimation=()=>value.animation;value.getLoop=()=>value.loop;value.setTimeScale=rate=>{value.timeScale=rate;};}
       tracks.push([key,value]);controller[key]={getCurrent:()=>value};
     }
-    assert.equal(exported.setAttackPlayback(controller,1.75),true);for(const [key,track]of tracks)close(track.timeScale,key==='spAniMa'&&moving?1:1.75);assert.equal(tracks.find(([key])=>key==='spAniMa')[1].animation.name,moving?'move':'attack_fighter');
+    assert.equal(exported.setAttackPlayback(controller,1.75),true);for(const [key,track]of tracks)close(track.timeScale,key==='spAniMa'?1:1.75);assert.equal(tracks.find(([key])=>key==='spAniMa')[1].animation.name,moving?'move':'idle');
     controller.spAniBody.getCurrent(0).loop=true;assert.equal(exported.setAttackPlayback(controller,2),false,'Looping idle/move tracks do not inherit an active cast rate');
   }
 });

@@ -12,6 +12,12 @@ function facingTransform(direction,rotation,scaleX,scaleY){
   var d=unit(direction),left=d.x<0,angle=Math.atan2(d.y,d.x)*180/Math.PI;
   return{angle:angle+(left?-1:1)*finite(rotation),scaleX:finite(scaleX,1),scaleY:finite(scaleY,1)*(left?-1:1),mirrored:left};
 }
+function facingOffset(direction,offset){
+  var basis=facingTransform(direction,0,1,1),angle=basis.angle*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),x=finite(offset&&offset.x),y=finite(offset&&offset.y)*basis.scaleY;
+  return{x:x*c-y*s,y:x*s+y*c};
+}
+function areaOrigin(style,origin,visual,direction){var offset={x:visual&&visual.offsetX,y:visual&&visual.offsetY};return add(origin,style==='vanguard'?facingOffset(direction,offset):offset);}
+function areaDirection(direction,rotation){var d=unit(direction),angle=finite(rotation)*(d.x<0?-1:1)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);return{x:d.x*c-d.y*s,y:d.x*s+d.y*c};}
 function shot(hero,target,direction,sample) {
   var aim=unit(target?{x:target.x-hero.x,y:target.y-hero.y}:direction),origin=point(hero);
   function sampled(d){var p=sample&&sample(d);return p&&typeof p.x==='number'&&typeof p.y==='number'&&isFinite(p.x)&&isFinite(p.y)?point(p):point(hero);}
@@ -62,8 +68,8 @@ function actorPoint(actor,main) {
   var a=actor.node.convertToWorldSpaceAR(scenePoint(0,0)),b=bar.convertToWorldSpaceAR(scenePoint(0,0));return main.convertToNodeSpaceAR(scenePoint(a.x+(b.x-a.x)*.55,a.y+(b.y-a.y)*.55));
 }
 function area(style,origin,visual,direction,radius) {
-  visual=visual||{};var d=unit(direction),angle=finite(visual.rotation)*(d.x<0?-1:1)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),degrees=finite(visual.arcDegrees,style==='vanguard'?72:120);
-  var reach=radius*finite(visual.scale,1);return {origin:add(origin,{x:visual.offsetX,y:visual.offsetY}),radius:reach,direction:{x:d.x*c-d.y*s,y:d.x*s+d.y*c},halfAngle:degrees*Math.PI/360,startWidth:style==='vanguard'||style==='skirmisher'?Math.min(reach*2,Math.max(0,finite(visual.arcStartWidth,120))):0};
+  visual=visual||{};var d=areaDirection(direction,visual.rotation),degrees=finite(visual.arcDegrees,style==='vanguard'?72:120);
+  var reach=radius*finite(visual.scale,1);return {origin:areaOrigin(style,origin,visual,d),radius:reach,direction:d,halfAngle:degrees*Math.PI/360,startWidth:style==='vanguard'||style==='skirmisher'?Math.min(reach*2,Math.max(0,finite(visual.arcStartWidth,120))):0};
 }
 function containsArea(shape,target){
   var x=target.x-shape.origin.x,y=target.y-shape.origin.y,r=shape.radius,squared=x*x+y*y;if(squared>r*r+1e-7)return false;
@@ -80,5 +86,6 @@ var bones={skirmisher:'Rider/HandRight/Bow/Arrow',fighter:'Rider/HandRight/Sword
 exports.add=add;exports.point=point;exports.unit=unit;exports.shot=shot;exports.actorPoint=actorPoint;exports.area=area;exports.arrow=arrow;exports.bones=bones;
 exports.visualPoint=point;exports.damagePoint=point;
 exports.facingTransform=facingTransform;
+exports.facingOffset=facingOffset;exports.areaOrigin=areaOrigin;exports.areaDirection=areaDirection;
 exports.containsArea=containsArea;
 exports.volleyArea=volleyArea;

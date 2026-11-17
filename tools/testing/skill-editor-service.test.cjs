@@ -255,7 +255,7 @@ test('an event on an otherwise common non-attack clip is not offered as an owned
 });
 
 test('sound selection synchronizes each whole identity across asymmetric mirrors while retaining independent fields',t=>{
- for(const phase of ['cast','impact','channel']){
+ for(const phase of ['cast','impact','channel','explosion']){
   const f=fixture(t,{HeroSkills:{mystic:{audio:{[phase]:{clip:'33333333-3333-4333-8333-333333333333',bundle:'KinghtFallAudio',path:'old',volume:.3,extension:'primary'}}}}},{HeroSkills:{mystic:{audio:{[phase]:{clip:'44444444-4444-4444-8444-444444444444',bundle:'resources',path:'sfx/old',volume:.7,delay:2,extension:'mirror'},other:{keep:true}}}}});
   f.change('mystic','audio.'+phase+'.clip',AUDIO);f.service.save(f.req());
   for(const [i,doc]of f.bytes().map(JSON.parse).entries()){const value=doc.HeroSkills.mystic.audio[phase];assert.equal(value.clip,AUDIO);assert.equal(value.bundle,'KinghtFallAudio');assert.equal(value.path,'cast');assert.equal(value.volume,i?.7:.3);assert.equal(value.extension,i?'mirror':'primary');if(i){assert.equal(value.delay,2);assert.deepEqual(doc.HeroSkills.mystic.audio.other,{keep:true});}}
@@ -264,7 +264,7 @@ test('sound selection synchronizes each whole identity across asymmetric mirrors
 });
 
 test('sound reset removes its complete identity from mirrors but unrelated edits preserve mirror sound settings',t=>{
- for(const phase of ['cast','impact','channel']){
+ for(const phase of ['cast','impact','channel','explosion']){
   const f=fixture(t,{HeroSkills:{mystic:{audio:{[phase]:{clip:AUDIO,extension:'primary'}}}}},{HeroSkills:{mystic:{audio:{[phase]:{clip:AUDIO,bundle:'resources',path:'old',volume:.4,delay:1,extension:'mirror'}}}}});
   f.service.reset(f.req({style:'mystic',path:'audio.'+phase+'.clip'}));f.service.save(f.req());assert.deepEqual(JSON.parse(f.bytes()[1]).HeroSkills.mystic.audio[phase],{volume:.4,delay:1,extension:'mirror'});
  }

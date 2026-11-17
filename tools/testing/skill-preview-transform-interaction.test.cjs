@@ -161,3 +161,27 @@ test('preview tool modes expose only matching nodes while retaining read-only ou
   }
   f.view.setTransformMode('all');assert(effect(f,'cast').handles.length>5);assert.equal(f.traces.starts.length,0);assert.equal(f.traces.changes.length,0);
 }));
+
+test('both Blood Cleave pivot crosshairs drag without moving artwork, the other effect or the gold hit area',()=>withFixture(async f=>{
+  for(const slot of ['cast','castSecondary']){
+    await f.load('bruiser','active',{visual:{castScale:.8,castScaleX:1.3,castScaleY:.6,castSecondaryScale:.7,castSecondaryScaleX:.8,castSecondaryScaleY:1.4}});
+    f.view.setScenario({direction:137});f.view.seek(.3);f.view.selectHandle(slot);f.view.setTransformMode('pivot');
+    const before=f.view.getState(),group=effect(f,slot),node=handle(group,'pivot'),other=before.gizmos.find(row=>row.selection!==slot&&row.kind==='vfx'),area=clone(behavior(f).geometry);assert.equal(group.handles.length,1);f.reset();
+    drag(f,node,{x:23,y:-17});const after=f.view.getState(),next=effect(f,slot);assert.equal(f.traces.ends.length,1);assert.equal(f.traces.ends[0][1],true);assert.deepEqual(Object.keys(f.traces.ends[0][0]).sort(),['OffsetX','OffsetY','PivotX','PivotY'].map(suffix=>'visual.'+slot+suffix).sort());
+    for(let i=0;i<group.outline.length;i++){near(next.outline[i].x,group.outline[i].x);near(next.outline[i].y,group.outline[i].y);}
+    assert(differentPoint(next.screenOrigin,group.screenOrigin));assert.deepEqual(clone(behavior(f).geometry),area);if(other)assert.deepEqual(after.gizmos.find(row=>row.id===other.id),other);
+    for(const name of ['cast','castSecondary'])for(const suffix of ['Scale','ScaleX','ScaleY'])assert.equal(after.settings.visual[name+suffix],before.settings.visual[name+suffix]);
+    assert.equal(f.traces.changes.length,0);near(after.time,before.time);
+    const pivot=clone(next.origin);f.view.setTransformMode('rotate');const rotation=handle(effect(f,slot),'rotate'),center=effect(f,slot).screenOrigin;f.reset();drag(f,rotation,{x:center.x-(rotation.y-center.y)-rotation.x,y:center.y+(rotation.x-center.x)-rotation.y});assert.deepEqual(effect(f,slot).origin,pivot,'Subsequent rotations use the dragged pivot');
+  }
+}));
+
+test('pivot clicks and cancelled drags preserve the whole draft and playback state',()=>withFixture(async f=>{
+  for(const cancel of ['pointercancel','Escape','lostpointercapture','blur']){
+    await f.load('bruiser');f.view.selectHandle('castSecondary');f.view.setTransformMode('pivot');f.view.play(true);const before=f.view.getState(),node=handle(effect(f,'castSecondary'),'pivot');f.reset();
+    drag(f,node,{x:25,y:-14},null);assert.notEqual(f.view.getState().settings.visual.castSecondaryPivotX,before.settings.visual.castSecondaryPivotX);
+    if(cancel==='Escape')f.emit('keydown',node,{key:'Escape'});else if(cancel==='blur')f.document.defaultView.emit('blur');else f.emit(cancel,node);
+    assert.deepEqual(f.view.getState().settings,before.settings);assert.equal(f.view.getState().playing,true);assert.deepEqual(f.traces.ends,[[{},false]]);
+  }
+  const node=handle(effect(f,'castSecondary'),'pivot');f.reset();f.emit('pointerdown',node);f.emit('pointerup',node);assert.deepEqual(f.traces.ends,[[{},true]]);
+}));

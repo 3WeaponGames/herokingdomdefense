@@ -23,7 +23,7 @@ test('active skills follow the live arrow tier automatically and still accept an
 });
 
 test('each arrow tier supplies its matching short trail while explicit trail choices retain precedence',()=>{
- const colors=['#e7d7b6','#eafcff','#49eaff','#b64dff','#ffdf69'],before=JSON.stringify(data);
+ const colors=['#ffffff','#ffffff','#9fe7ff','#b64dff','#ffdf69'],before=JSON.stringify(data);
  for(const row of config.EquipCfg.find(row=>row.id===3).levelInfo){
    const tier=Math.floor((row.Level-1)/5),id='trail:hero-arrow-lv'+(tier+1),choice=Looks.select(data,'hero',row.Level,null,row.EquipSkin),trail=data.trails.find(trail=>trail.id===choice.trail),skill=Looks.skillAsset(data,config,row.Level);
    assert.equal(choice.trail,id);assert.equal(trail.color,colors[tier]);assert(trail.width>=3&&trail.width<=7);assert(trail.lifetime<=.2);assert.deepEqual(skill.trail,trail);assert.equal(data.sets.find(set=>set.flight===choice.flight).trail,id);

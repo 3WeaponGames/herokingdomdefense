@@ -63,9 +63,9 @@ function localVertices(attachment){
   var x=value(attachment,"x",0),y=value(attachment,"y",0),sx=value(attachment,"scaleX",1),sy=value(attachment,"scaleY",1),r=value(attachment,"rotation",0)*Math.PI/180,c=Math.cos(r),s=Math.sin(r),out=[];
   [[-1,-1],[-1,1],[1,1],[1,-1]].forEach(function(corner){var px=corner[0]*width*sx/2,py=corner[1]*height*sy/2;out.push(x+px*c-py*s,y+px*s+py*c);});return out;
 }
-function arrowTip(target,direction,mirrorX){
+function arrowTip(target,direction,mirrorX,resolvedBone){
   if(!live(target)||!target.findBone)return null;
-  var name="Rider/HandRight/Bow/Arrow",bone=target.findBone(name);if(!bone)return null;
+  var name="Rider/HandRight/Bow/Arrow",bone=resolvedBone||target.findBone(name);if(!bone)return null;
   var slot=target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==="function"?slot.getAttachment():slot.attachment),vertices=localVertices(attachment),x=value(bone,"worldX",0),y=value(bone,"worldY",0);
   if(!vertices)return{x:x,y:y};
   var a=value(bone,"a",NaN),b=value(bone,"b",NaN),c=value(bone,"c",NaN),d=value(bone,"d",NaN);if(!isFinite(a+b+c+d))return{x:x,y:y};
@@ -140,9 +140,23 @@ exports.attachmentTip=attachmentTip;
 exports.boneMatrixAt=boneMatrixAt;
 exports.bodyBoneName=bodyBoneName;exports.bodyPoint=bodyPoint;
 
-exports.weaponTipAt=function(target,json,animation,time,name,direction,mirrorX,aim){
+function weaponAimAngleAt(target,json,animation,time,name){
+  var m=boneMatrixAt(json,animation,time,name,0),slot=live(target)&&target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==='function'?slot.getAttachment():slot.attachment),vertices=localVertices(attachment);
+  if(!m||!vertices)return 0;var x=(vertices[4]+vertices[6]-vertices[0]-vertices[2])/2,y=(vertices[5]+vertices[7]-vertices[1]-vertices[3])/2;
+  return Math.atan2(m.c*x+m.d*y,m.a*x+m.b*y)*180/Math.PI;
+}
+exports.weaponAimAngleAt=weaponAimAngleAt;
+function liveWeapon(target,name){
+  if(!live(target)||!target.findBone)return null;var bone=target.findBone(name),hand=target.findBone('Rider/HandRight'),slot=target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==='function'?slot.getAttachment():slot.attachment),vertices=localVertices(attachment);
+  if(!bone||!hand||!vertices)return null;var a=value(bone,'a',NaN),b=value(bone,'b',NaN),c=value(bone,'c',NaN),d=value(bone,'d',NaN);if(!isFinite(a+b+c+d))return null;
+  var x=(vertices[4]+vertices[6])/2,y=(vertices[5]+vertices[7])/2,dx=x-(vertices[0]+vertices[2])/2,dy=y-(vertices[1]+vertices[3])/2;
+  return{tip:{x:value(bone,'worldX',0)+a*x+b*y,y:value(bone,'worldY',0)+c*x+d*y},hand:{x:value(hand,'worldX',0),y:value(hand,'worldY',0)},angle:Math.atan2(c*dx+d*dy,a*dx+b*dy)*180/Math.PI};
+}
+exports.weaponAimAngle=function(target,name){var pose=liveWeapon(target,name);return pose&&pose.angle;};
+exports.aimedWeaponTip=function(target,name,direction,mirrorX){var pose=liveWeapon(target,name);if(!pose)return null;if(!direction)return pose.tip;var angle=(Math.atan2(direction.y,direction.x*(mirrorX<0?-1:1))*180/Math.PI-pose.angle)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),x=pose.tip.x-pose.hand.x,y=pose.tip.y-pose.hand.y;return{x:pose.hand.x+x*c-y*s,y:pose.hand.y+x*s+y*c};};
+exports.weaponTipAt=function(target,json,animation,time,name,direction,mirrorX,aim,options){
   if(!live(target))return null;
-  var rotation=aim&&direction?Math.atan2(direction.y,direction.x*(mirrorX<0?-1:1))*180/Math.PI:0,m=boneMatrixAt(json,animation,time,name,rotation);
+  var rotation=aim&&direction?Math.atan2(direction.y,direction.x*(mirrorX<0?-1:1))*180/Math.PI-(options&&value(options,'referenceAngle',0)||0):0,m=boneMatrixAt(json,animation,time,name,rotation);
   if(!m)return attachmentTip(target,name)||(target&&target.findBone&&target.findBone(name)?{x:value(target.findBone(name),'worldX',0),y:value(target.findBone(name),'worldY',0)}:null);
   var slot=target&&target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==='function'?slot.getAttachment():slot.attachment),vertices=localVertices(attachment);
   if(!vertices)return{x:m.x,y:m.y};var x=(vertices[4]+vertices[6])/2,y=(vertices[5]+vertices[7])/2;return{x:m.x+x*m.a+y*m.b,y:m.y+x*m.c+y*m.d};

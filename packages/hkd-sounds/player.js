@@ -16,9 +16,15 @@ class Player {
     ['loadedmetadata', 'durationchange', 'timeupdate', 'ended', 'error', 'playing', 'pause'].forEach(name => { media['on' + name] = null; });
     media.pause(); media.removeAttribute('src'); media.load();
   }
+  outputVolume() { const item = this.item(), gain = item && Number.isFinite(item.previewGain) ? Math.max(0, Math.min(1, item.previewGain)) : 1; return this.volume * gain; }
   setItems(items) {
-    this.items = items.slice();
-    if (!this.item()) this.select(items[0] && items[0].id, false); else this.emit();
+    const previous = this.item(); this.items = items.slice();
+    if (!this.item()) this.select(items[0] && items[0].id, false);
+    else {
+      if (previous && previous.file !== this.item().file) { this.release(); this.status = "ready"; this.time = 0; this.duration = this.item().duration || 0; this.error = ""; }
+      if (this.media) this.media.volume = this.outputVolume();
+      this.emit();
+    }
   }
   select(id, play) {
     if (this.closed) return;
@@ -33,7 +39,7 @@ class Player {
     if (this.media) return this.media;
     const item = this.item(); if (!item) return null;
     const media = this.options.createAudio(), generation = this.generation;
-    this.media = media; media.preload = 'none'; media.volume = this.volume; media.loop = this.mode === 'loop';
+    this.media = media; media.preload = 'none'; media.volume = this.outputVolume(); media.loop = this.mode === 'loop';
     const current = () => !this.closed && this.media === media && this.generation === generation;
     const update = () => { if (!current()) return; this.time = Number(media.currentTime) || 0; if (Number.isFinite(media.duration) && media.duration > 0) this.duration = media.duration; this.emit(); };
     media.onloadedmetadata = media.ondurationchange = media.ontimeupdate = update;
@@ -83,7 +89,7 @@ class Player {
     return this.select(this.items[next].id, true);
   }
   cycleMode() { this.mode = MODES[(MODES.indexOf(this.mode) + 1) % MODES.length]; if (this.media) this.media.loop = this.mode === 'loop'; this.emit(); }
-  setVolume(value) { if (!Number.isFinite(value)) return; this.volume = Math.max(0, Math.min(1, value)); if (this.media) this.media.volume = this.volume; this.emit(); }
+  setVolume(value) { if (!Number.isFinite(value)) return; this.volume = Math.max(0, Math.min(1, value)); if (this.media) this.media.volume = this.outputVolume(); this.emit(); }
   seek(value) { if (!this.media || !Number.isFinite(value) || !this.duration) return; try { this.media.currentTime = Math.max(0, Math.min(this.duration, value)); this.time = this.media.currentTime; this.emit(); } catch (_) {} }
   destroy() { this.closed = true; this.release(); this.items = []; }
 }

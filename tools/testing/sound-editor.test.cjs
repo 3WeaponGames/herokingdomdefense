@@ -143,6 +143,23 @@ test('opening/selecting starts no audio; Play/Pause resumes the same clip and pr
   media.currentTime = .8; media.ontimeupdate(); f.player.toggle(); assert.equal(f.player.status, 'paused'); f.player.toggle(); await f.finish();
   assert.equal(f.created.length, 1); assert.equal(media.currentTime, .8); f.player.setVolume(0); assert.equal(media.volume, 0); assert(media.muted);
 });
+
+test('audition loudness follows the clip profile while user volume and mute remain independent',async()=>{
+ const f=playerFixture(),items=f.player.items.map((item,index)=>({...item,previewGain:index?.5:.25}));
+ f.player.setItems(items);f.player.play();await f.finish();
+ assert.equal(f.created[0].volume,.65*.25);assert(f.created[0].muted);
+ f.player.setVolume(.8);assert.equal(f.created[0].volume,.8*.25);
+ f.player.step(1);await f.finish();assert.equal(f.created[1].volume,.8*.5);assert(f.created[1].muted);
+});
+
+test('refreshing a replaced asset with the same UUID retires the old file without autoplay',async()=>{
+ const f=playerFixture();f.player.setItems(f.player.items.map(item=>({...item,file:'old.mp3'})));
+ f.player.play();await f.finish();const old=f.created[0],id=f.player.id;
+ f.player.setItems(f.player.items.map(item=>({...item,file:'new.ogg',previewGain:.4})));
+ assert.equal(f.player.id,id);assert.equal(old.paused,true);assert.equal(old.src,'');
+ assert.equal(f.player.status,'ready');assert.equal(f.created.length,1);
+ f.player.play();await f.finish();assert.equal(f.created[1].volume,.65*.4);assert(f.created[1].muted);
+});
 test('previous/next audition the actual filtered list and old play promises, ends and errors cannot affect the replacement', async () => {
   const f = playerFixture(); f.player.play(); const old = f.created[0], end = old.onended, error = old.onerror;
   f.player.step(1); await f.finish(); assert.equal(f.player.id, 'b'); assert.equal(old.paused, true); assert.equal(old.src, '');

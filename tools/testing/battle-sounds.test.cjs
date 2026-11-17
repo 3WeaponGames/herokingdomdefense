@@ -206,15 +206,15 @@ test('mixed hit sounds share a half-second budget and swings cannot interrupt a 
 
 test('a completed hit permits the next material exactly after 500ms without queuing skipped hits', () => {
   const f = fixture(); f.start();
-  f.sounds.effect('hurt-slime', f.actor(90001)); f.finishAll();
-  const first = f.played.find(p => p.path === 'sfx/hurt-slime');
-  f.advance(422); first.source.stop(); // The shipped short clip has naturally ended.
-  f.advance(77);
+  f.sounds.effect('impact-flesh-light', f.actor(90001)); f.finishAll();
+  const first = f.played.find(p => p.path === 'sfx/impact-flesh-light');
+  f.advance(495); first.source.stop(); // The short impact has naturally ended.
+  f.advance(4);
   assert.equal(f.sounds.effect('impact-armour', f.actor(90002), { cooldown: 0 }), false);
   f.advance(1); f.sounds.effect('impact-armour', f.actor(90002)); f.finishAll();
   const next = f.played.find(p => p.path === 'sfx/impact-armour');
   assert(next); assert.equal(next.startedAt - first.startedAt, 500);
-  assert.equal(f.played.filter(p => /hurt-|impact/.test(p.path)).length, 2);
+  assert.equal(f.played.filter(p => /impact/.test(p.path)).length, 2);
 });
 
 test('delayed hit loads share the playback-time budget and expired loads do not consume it', () => {
@@ -368,6 +368,13 @@ test('immutable projectile context chooses passive and active impacts while part
  }
 });
 
+test('a custom Mystic channel loop stays independent of the default magic impact sound',()=>{
+ const f=fixture();f.hero.heroStyle='mystic';f.hero._styleRuntime={settings:{audio:{channel:{clip:'beam-loop'},explosion:{clip:'burst'},impact:{clip:''}}}};f.start();
+ const loop=f.manager.getAudioSource('mystic-test-channel');f.manager.playSource(loop,{bundle:'KinghtFallAudio',path:'sfx/test-beam-loop'},'mystic-test-channel',true,false,()=>.4,null,null,{owner:f.hero,game:f.game});f.finishAll();
+ for(let i=0;i<3;i++){if(i){f.advance(1200);f.played.filter(p=>p.path==='sfx/magic-impact').forEach(p=>{p.source.state=3;});}f.sounds.hit(f.actor(90007),f.hero,10,{context:{heroStyle:'mystic',styleSkill:false}});f.finishAll();}
+ assert.equal(f.played.filter(p=>p.path==='sfx/magic-impact').length,3);assert.equal(loop.loop,true);assert.equal(loop.isPlaying,true);
+});
+
 test('Skirmisher confirmed hits start immediately despite the generic impact budget and never chop a prior hit',()=>{
  const f=fixture();f.hero.heroStyle='skirmisher';f.start();const targets=[f.actor(90007),f.actor(90007),f.actor(90007)];
  f.sounds.effect('impact-armour',targets[0]);f.finishAll();
@@ -478,19 +485,37 @@ test('the six hero styles use their own weapon release and impact families',()=>
  for(const [style,clip]of Object.entries(expected)){
   const f=fixture();f.start();f.hero.heroStyle=style;f.sounds.attack(f.hero,'hero');f.finishAll();assert(f.played.some(p=>p.path==='sfx/'+clip),style);
   const target=f.actor(90002,{navigationTeam:'friendly'});f.sounds.hit(target,f.hero,10);f.finishAll();
-  assert(f.played.some(p=>p.path==='sfx/'+(style==='mystic'?'magic-impact':['skirmisher','bruiser'].includes(style)?'arrow-impact-armour':'impact-armour')),style);
+  assert(f.played.some(p=>p.path==='sfx/'+(style==='mystic'?'magic-impact':style==='bruiser'?'impact-bruiser-basic':style==='skirmisher'?'arrow-impact-armour':'impact-armour')),style);
  }
 });
 
-test('Bruiser basic hits use standard Skirmisher impacts while active and secondary hits keep their own cues',()=>{
+test('Bruiser basic hits use their dedicated clip while active and secondary hits keep their own cues',()=>{
  for(const armored of [false,true])for(const kind of ['basic','active','secondary']){
   const f=fixture();f.start();f.hero.heroStyle='bruiser';
   const target=f.actor(armored?90002:90001,armored?{navigationTeam:'friendly'}:{});
   const context={heroStyle:'bruiser',styleSkill:kind==='active'};
   f.sounds.hit(target,f.hero,50,{context,magic:kind==='secondary'});f.finishAll();
-  const expected=kind==='secondary'?'magic-impact':kind==='basic'?armored?'arrow-impact-armour':'arrow-impact-flesh':armored?'impact-armour':'impact-flesh-heavy';
-  const impacts=f.played.filter(p=>/^sfx\/(arrow-impact-|impact-(?:armour|flesh)|magic-impact)/.test(p.path));
+  const expected=kind==='secondary'?'magic-impact':kind==='basic'?'impact-bruiser-basic':armored?'impact-armour':'impact-flesh-heavy';
+  const impacts=f.played.filter(p=>/^sfx\/(arrow-impact-|impact-(?:armour|flesh|bruiser)|magic-impact)/.test(p.path));
   assert.deepEqual(impacts.map(p=>p.path),['sfx/'+expected],kind+(armored?' armoured':' unarmoured'));
   assert(f.played.every(p=>p.source.mute),'The sound-routing test must stay silent');
  }
+});
+
+test('all six hero styles select the shared critical cue before ordinary or charged impacts',()=>{
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian'])for(const active of [false,true]){
+  const f=fixture();f.hero.heroStyle=style;f.start();
+  const target=f.actor(90002,{navigationTeam:'friendly'}),context={heroStyle:style,critical:true,styleSkill:active,styleShotCharge:1};
+  f.sounds.hit(target,f.hero,50,{context});f.finishAll();
+  assert.deepEqual(f.played.map(p=>p.path),['sfx/critical-hit'],style+(active?' active':' basic'));
+  assert.equal(f.pending.length,0);assert(f.played.every(p=>p.source.mute));
+ }
+});
+
+test('removed creature hurt cues cannot load or play while material hit feedback remains available',()=>{
+ const f=fixture();f.start();
+ for(const id of ['hurt-beast','hurt-slime','hurt-skeleton','hurt-ghost','hurt-insect'])assert.equal(f.sounds.effect(id,f.actor(90001)),false);
+ assert.equal(f.pending.length,0);assert.equal(f.played.length,0);
+ f.sounds.hit(f.actor(90001),f.hero,10);f.finishAll();
+ assert.deepEqual(f.played.map(p=>p.path),['sfx/arrow-impact-flesh']);
 });

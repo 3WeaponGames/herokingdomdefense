@@ -11808,6 +11808,91 @@
       "en": "{0} soldiers\nTotal after upgrade: {1}",
       "zh": "士兵数量{0}\n升级后共{1}名士兵",
       "context": "Barracks upgrade popup: actual capacity gained and total soldiers at the next level"
+    },
+    "startup.title": {
+      "en": "Preparing your kingdom",
+      "zh": "正在准备王国",
+      "context": "Startup loading"
+    },
+    "startup.language": {
+      "en": "Loading language and artwork",
+      "zh": "正在加载语言和画面",
+      "context": "Startup loading"
+    },
+    "startup.services": {
+      "en": "Connecting game services",
+      "zh": "正在连接游戏服务",
+      "context": "Startup loading"
+    },
+    "startup.settings": {
+      "en": "Loading game settings",
+      "zh": "正在加载游戏设置",
+      "context": "Startup loading"
+    },
+    "startup.player": {
+      "en": "Loading player data",
+      "zh": "正在加载玩家数据",
+      "context": "Startup loading"
+    },
+    "startup.game": {
+      "en": "Loading kingdom data",
+      "zh": "正在加载王国数据",
+      "context": "Startup loading"
+    },
+    "startup.progress": {
+      "en": "Preparing player progress",
+      "zh": "正在准备玩家进度",
+      "context": "Startup loading"
+    },
+    "startup.characters": {
+      "en": "Loading characters",
+      "zh": "正在加载角色",
+      "context": "Startup loading"
+    },
+    "startup.buildings": {
+      "en": "Preparing buildings",
+      "zh": "正在准备建筑",
+      "context": "Startup loading"
+    },
+    "startup.skills": {
+      "en": "Loading hero skills",
+      "zh": "正在加载英雄技能",
+      "context": "Startup loading"
+    },
+    "startup.enemies": {
+      "en": "Loading enemies",
+      "zh": "正在加载敌人",
+      "context": "Startup loading"
+    },
+    "startup.maps": {
+      "en": "Loading maps",
+      "zh": "正在加载地图",
+      "context": "Startup loading"
+    },
+    "startup.scene": {
+      "en": "Opening the lobby scene",
+      "zh": "正在打开大厅场景",
+      "context": "Startup loading"
+    },
+    "startup.lobby": {
+      "en": "Loading the lobby",
+      "zh": "正在加载大厅",
+      "context": "Startup loading"
+    },
+    "startup.finishing": {
+      "en": "Preparing the lobby display",
+      "zh": "正在准备大厅画面",
+      "context": "Startup loading"
+    },
+    "startup.ready": {
+      "en": "Ready",
+      "zh": "准备就绪",
+      "context": "Startup loading"
+    },
+    "startup.count": {
+      "en": "{0} of {1} loaded",
+      "zh": "已加载 {0} / {1}",
+      "context": "Startup loading"
     }
   },
   "images": {

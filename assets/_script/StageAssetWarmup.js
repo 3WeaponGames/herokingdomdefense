@@ -69,7 +69,6 @@ function presentationPlan(config, level, base, catalogs, options, loadedAssets) 
     }
   });
   if (options.style === "mystic") needed["original:fireball"] = true;
-  if(options.style==="mystic"){var trail=require("./MysticTrail").descriptor();add(trail.bundle,trail.resource,"texture");}
   // Ranged Fantasy rigs can supply their original projectile without a saved
   // assignment. Read already loaded metadata; never instantiate or play actors.
   function defaults(skeletonData) {

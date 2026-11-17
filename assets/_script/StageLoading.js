@@ -1,6 +1,7 @@
 "use strict";
 // Presentation only: a stage owns this screen until its opening wipe finishes.
-function create(view, level, parent, cc) {
+function create(view, level, parent, cc, options) {
+  options = options || {};
   var disposed = false, lastPercent = -1, drawWait = null, cancelDraw = null, lastDraw = Date.now();
   var language = require("LanguageMgr").LanguageMgr.getInstance();
   function progressText(percent) { return language.t("loading.progress", [percent]); }
@@ -11,10 +12,11 @@ function create(view, level, parent, cc) {
   function live() { return !disposed && !view.isclose && cc.isValid(view.node, true) && cc.isValid(root, true); }
   var backdrop = node("Backdrop"), background = backdrop.addComponent(cc.Graphics);
   background.fillColor = cc.color(18, 27, 38, 255);
-  background.rect(-root.width / 2, -root.height / 2, root.width, root.height); background.fill();
+  if (!options.transparent) { background.rect(-root.width / 2, -root.height / 2, root.width, root.height); background.fill(); }
   var width = Math.max(120, Math.min(460, root.width - 64));
   var panel = node("Loading panel"), surface = panel.addComponent(cc.Graphics);
   surface.fillColor = cc.color(24, 37, 50, 240); surface.roundRect(-width / 2 - 24, -83, width + 48, 226, 18); surface.fill();
+  panel.y = options.panelY || 0;
   function label(name, y, height, size, value) {
     var child = node(name, panel); child.y = y;
     var text = child.addComponent(cc.Label);
@@ -29,8 +31,9 @@ function create(view, level, parent, cc) {
     child.setContentSize(width, height); child.color = cc.color(238, 244, 248, 255); text.string = value;
     return text;
   }
-  label("Stage name", 101, 48, 23, level && level.Name ? view.T(level.Name) : "");
+  label("Stage name", 101, 48, 23, options.title || (level && level.Name ? view.T(level.Name) : ""));
   var progress = label("Progress", 44, 56, 32, progressText(0));
+  var detail = options.detailed ? label("Loading details", -54, 42, 16, "") : null;
   var track = node("Progress track", panel), trackGraphics = track.addComponent(cc.Graphics);
   trackGraphics.fillColor = cc.color(52, 69, 84, 255); trackGraphics.roundRect(-width / 2, -22, width, 12, 6); trackGraphics.fill();
   var bar = node("Progress fill", panel), fill = bar.addComponent(cc.Graphics);
@@ -58,11 +61,12 @@ function create(view, level, parent, cc) {
     node: root,
     progress: function (value) {
       if (!live()) return;
-      var percent = Math.max(lastPercent, Math.max(0, Math.min(100, Math.round(value * 100))));
+      var percent = Math.max(lastPercent, Math.max(0, Math.min(100, options.detailed ? Math.floor(value * 1000) / 10 : Math.round(value * 100))));
       if (percent === lastPercent) return; lastPercent = percent;
-      progress.string = progressText(percent);
+      progress.string = progressText(options.detailed ? percent.toFixed(1) : percent);
       fill.clear(); if (percent > 0) { fill.fillColor = cc.color(237, 197, 100, 255); fill.roundRect(-width / 2, -22, width * percent / 100, 12, Math.min(6, width * percent / 200)); fill.fill(); }
     },
+    detail: function (value) { if (live() && detail) detail.string = value; },
     waitForDraw: waitForDraw,
     yieldProgress: function () { return drawWait || (Date.now() - lastDraw >= 32 ? waitForDraw() : null); },
     reveal: function () { if (live()) backdrop.active = false; },

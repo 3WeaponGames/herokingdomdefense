@@ -9,8 +9,8 @@ using System.Linq;
 public static class SkillVfxBaker {
  [Serializable] public class Job {
   public string id,name,prefab,package,style,slot,phase,group,part,file;
-  public bool loop,rain,preserveTimeline,grayscale;
-  public int frames=64,fps=48,cell=128,columns=16;
+  public bool loop,rain,preserveTimeline,grayscale,preserveMaterials;
+  public int frames=64,fps=48,cell=128,columns=16,referenceCell;
   public float warmup,sourceStart,sourceDuration,pitch,hueShift;
   public string[] excludeRoots,includeRoots,includeParticles;
   public float anchorX,anchorY,startX,startY,endX,endY,aspect=1;
@@ -40,12 +40,12 @@ public static class SkillVfxBaker {
    uint seed=147;foreach(var ps in systems){var main=ps.main;main.stopAction=ParticleSystemStopAction.None;if(j.loop&&!j.preserveTimeline&&!sub.Contains(ps)){main.loop=true;main.startDelay=0;}ps.useAutoRandomSeed=false;ps.randomSeed=seed++;}
    tops=systems.Where(ps=>!sub.Contains(ps)&&!HasParticleAncestor(ps.transform,root.transform)).ToArray();
    renderers=root.GetComponentsInChildren<Renderer>();
-   foreach(var renderer in renderers){var replacements=new List<Material>();foreach(var source in renderer.sharedMaterials){var mapped=MapMaterial(source,j);materials.Add(mapped);replacements.Add(mapped);}renderer.sharedMaterials=replacements.ToArray();}
+   foreach(var renderer in renderers){var replacements=new List<Material>();foreach(var source in renderer.sharedMaterials){var mapped=j.preserveMaterials?new Material(source):MapMaterial(source,j);materials.Add(mapped);replacements.Add(mapped);}renderer.sharedMaterials=replacements.ToArray();}
    if(j.rain){ground=GameObject.CreatePrimitive(PrimitiveType.Plane);ground.name="HKD rain collision ground";ground.transform.position=new Vector3(0,-4,0);ground.transform.localScale=Vector3.one*10;UnityEngine.Object.DestroyImmediate(ground.GetComponent<MeshRenderer>());Physics.SyncTransforms();}
    Reset();
   }
   public void Reset(){time=0;foreach(var ps in systems)ps.Stop(false,ParticleSystemStopBehavior.StopEmittingAndClear);foreach(var ps in tops)ps.Play(true);foreach(var animator in root.GetComponentsInChildren<Animator>()){animator.Rebind();animator.Update(0);}}
-  public void To(float target){if(target<time-.000001f)Reset();while(time<target-.000001f){float dt=Mathf.Min(1f/96,target-time);foreach(var ps in tops)ps.Simulate(dt,true,false,false);foreach(var animator in root.GetComponentsInChildren<Animator>())animator.Update(dt);time+=dt;}foreach(var mat in materials)mat.SetFloat("_HkdTime",target);}
+  public void To(float target){if(target<time-.000001f)Reset();while(time<target-.000001f){float dt=Mathf.Min(1f/96,target-time);foreach(var ps in tops)ps.Simulate(dt,true,false,false);foreach(var animator in root.GetComponentsInChildren<Animator>())animator.Update(dt);time+=dt;}foreach(var mat in materials)if(mat.HasProperty("_HkdTime"))mat.SetFloat("_HkdTime",target);}
   public IEnumerable<Bounds> Bounds(){
    foreach(var renderer in renderers)if(renderer&&renderer.enabled&&renderer.gameObject.activeInHierarchy&&Usable(renderer.bounds))yield return renderer.bounds;
    // Editor-only simulation can precede the renderer's first cull. Derive a
@@ -88,8 +88,26 @@ public static class SkillVfxBaker {
  public static void Run(){
   AudioListener.pause=true;AudioListener.volume=0;
   var jobs=JsonUtility.FromJson<Jobs>(File.ReadAllText("jobs.json"));string output=Path.Combine(Directory.GetCurrentDirectory(),"Baked");Directory.CreateDirectory(output);
-  var errors=new List<string>();foreach(var group in jobs.clips.GroupBy(j=>j.group))try{BakeGroup(group.ToList(),output);}catch(Exception e){errors.Add(group.Key+": "+e);Debug.LogError("HKD_VFX_FAILED "+group.Key+" "+e.Message);}
+  var originalPipeline=UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline;var originalQuality=QualitySettings.renderPipeline;
+  var faithful=jobs.clips.Any(job=>job.preserveMaterials)?OriginalPipeline():null;
+  var errors=new List<string>();try{foreach(var group in jobs.clips.GroupBy(j=>j.group))try{
+   bool preserve=group.Any(job=>job.preserveMaterials);UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline=preserve?faithful:originalPipeline;QualitySettings.renderPipeline=preserve?faithful:originalQuality;
+   BakeGroup(group.ToList(),output);
+  }catch(Exception e){errors.Add(group.Key+": "+e);Debug.LogError("HKD_VFX_FAILED "+group.Key+" "+e.Message);}}
+  finally{UnityEngine.Rendering.GraphicsSettings.defaultRenderPipeline=originalPipeline;QualitySettings.renderPipeline=originalQuality;}
   File.WriteAllText(Path.Combine(output,"clips.json"),JsonUtility.ToJson(jobs,true));if(errors.Count>0)throw new Exception(string.Join("\n",errors.ToArray()));Debug.Log("HKD_SKILL_VFX_BAKE_COMPLETE "+jobs.clips.Count);
+ }
+ // This optional path runs only in an isolated capture project with URP
+ // installed. Keep the original particle graph and its custom vertex streams
+ // rather than approximating its colors, dissolve and transparency.
+ static UnityEngine.Rendering.RenderPipelineAsset OriginalPipeline(){
+  var assembly=System.Reflection.Assembly.Load("Unity.RenderPipelines.Universal.Runtime");
+  var renderer=ScriptableObject.CreateInstance(assembly.GetType("UnityEngine.Rendering.Universal.UniversalRendererData",true));
+  var pipeline=ScriptableObject.CreateInstance(assembly.GetType("UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset",true));
+  AssetDatabase.CreateAsset(renderer,"Assets/HkdCaptureRenderer.asset");AssetDatabase.CreateAsset(pipeline,"Assets/HkdCapturePipeline.asset");
+  var settings=new SerializedObject(pipeline);settings.FindProperty("m_RendererDataList").arraySize=1;settings.FindProperty("m_RendererDataList").GetArrayElementAtIndex(0).objectReferenceValue=renderer;
+  var shadows=settings.FindProperty("m_MainLightShadowsSupported");if(shadows!=null)shadows.boolValue=false;settings.ApplyModifiedPropertiesWithoutUndo();
+  var asset=(UnityEngine.Rendering.RenderPipelineAsset)pipeline;AssetDatabase.SaveAssets();return asset;
  }
  static void BakeGroup(List<Job> jobs,string output){
   var rotation=Quaternion.Euler(jobs[0].pitch,0,0);var inverse=Quaternion.Inverse(rotation);Vector2 minimum=new Vector2(float.PositiveInfinity,float.PositiveInfinity),maximum=new Vector2(float.NegativeInfinity,float.NegativeInfinity);
@@ -112,7 +130,7 @@ public static class SkillVfxBaker {
  }
  static void Bake(Job job,string output,Quaternion rotation,Vector2 center,float size,float aspect){
   using(var rig=new Rig(job)){
-   var cameraNode=new GameObject("HKD silent particle camera");var camera=cameraNode.AddComponent<Camera>();var rt=new RenderTexture(job.cell,job.cell,24,RenderTextureFormat.ARGB32);rt.antiAliasing=1;rt.Create();var frame=new Texture2D(job.cell,job.cell,TextureFormat.RGBA32,false);
+   var cameraNode=new GameObject("HKD silent particle camera");var camera=cameraNode.AddComponent<Camera>();var rt=new RenderTexture(job.cell,job.cell,24,RenderTextureFormat.ARGB32);rt.antiAliasing=job.preserveMaterials?4:1;rt.Create();var frame=new Texture2D(job.cell,job.cell,TextureFormat.RGBA32,false);
    int rows=Mathf.CeilToInt((float)job.frames/job.columns);var sheet=new Texture2D(job.cell*job.columns,job.cell*rows,TextureFormat.RGBA32,false);var pixels=new List<Color32[]>();int seam=job.loop?Mathf.Max(4,job.frames/8):0;
    var previous=RenderTexture.active;
    try{

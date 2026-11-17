@@ -247,14 +247,23 @@ exports.KinghtFallUICF = ((i = {})[o.UIHome] = {
   t.menu_bgm = "KinghtFallmenu_bgm";
   t.ready_bgm = "KinghtFallready_bgm";
   t.desert_ready_bgm = "KinghtFalldesert_ready_bgm";
+  t.snow_ready_bgm = "KinghtFallsnow_ready_bgm";
   t.fight_bgm = "KinghtFallfight_bgm";
+  t.deep_forest_ready_bgm = "KinghtFalldeep_forest_ready_bgm";
+  t.autumn_ready_bgm = "KinghtFallautumn_ready_bgm";
+  t.ice_ready_bgm = "KinghtFallice_ready_bgm";
+  t.fire_ready_bgm = "KinghtFallfire_ready_bgm";
+  t.lava_ready_bgm = "KinghtFalllava_ready_bgm";
+  t.fight_bgm_2 = "KinghtFallfight_bgm_2";
+  t.fight_bgm_3 = "KinghtFallfight_bgm_3";
+  t.boss_fight_bgm = "KinghtFallboss_fight_bgm";
+  t.final_wave_bgm = "KinghtFallfinal_wave_bgm";
   t.button_click = "KinghtFallbutton_click";
   t.gold_reward = "KinghtFallgold_reward";
   t.item_reward = "KinghtFallitem_reward";
   t.box_treasure = "KinghtFallbox_treasure";
   t.level_up = "KinghtFalllevel_up";
   t.palyer_attack = "KinghtFallpalyer_attack";
-  t.player_hurt = "KinghtFallplayer_hurt";
   t.rebirth = "KinghtFallrebirth";
   t.game_success = "KinghtFallgame_success";
   t.game_fail = "KinghtFallgame_fail";
@@ -268,16 +277,60 @@ exports.KinghtFallUICF = ((i = {})[o.UIHome] = {
   t.run = "KinghtFallrun";
 })(r = exports.KinghtFallAudioId || (exports.KinghtFallAudioId = {}));
 exports.KinghtFallAudioCF = ((a = {})[r.menu_bgm] = {
-  path: "menu_bgm",
+  path: "music/menu",
+  continuous: true,
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.ready_bgm] = {
-  path: "Skybound_Horns",
+  path: "music/planning-forest",
+  continuous: true,
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.desert_ready_bgm] = {
-  path: "Sands_of_the_Keep",
+  path: "music/planning-desert",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.snow_ready_bgm] = {
+  path: "music/planning-snow",
+  continuous: true,
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.fight_bgm] = {
-  path: "fight_bgm",
+  path: "music/battle-1",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.deep_forest_ready_bgm] = {
+  path: "music/planning-deep-forest",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.autumn_ready_bgm] = {
+  path: "music/planning-autumn",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.ice_ready_bgm] = {
+  path: "music/planning-ice",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.fire_ready_bgm] = {
+  path: "music/planning-fire",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.lava_ready_bgm] = {
+  path: "music/planning-lava",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.fight_bgm_2] = {
+  path: "music/battle-2",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.fight_bgm_3] = {
+  path: "music/battle-3",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.boss_fight_bgm] = {
+  path: "music/battle-boss",
+  continuous: true,
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.final_wave_bgm] = {
+  path: "music/battle-final-wave",
+  continuous: true,
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.button_click] = {
   path: "button_click",
@@ -296,9 +349,6 @@ exports.KinghtFallAudioCF = ((a = {})[r.menu_bgm] = {
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.palyer_attack] = {
   path: "palyer_attack",
-  bundle: exp_KinghtFallBundelName.Audio
-}, a[r.player_hurt] = {
-  path: "player_hurt",
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.rebirth] = {
   path: "rebirth",

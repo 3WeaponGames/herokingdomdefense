@@ -59,6 +59,24 @@ function visualFixture(data,item,defaultIcon){
 }
 const visualData=()=>({assets:[{id:'arrow',kind:'sprite',resource:'arrow',sourcePart:'item-arrow',size:44},{id:'fx',kind:'flipbook',resource:'fx',frames:4,columns:2,cell:16,fps:24}],assignments:{'ally:90003':{flight:'arrow',launch:'fx',impact:'fx',size:64}}});
 
+test('per-unit scale sizes flight and its recolored trail while pooling restores native trail styles and geometry',()=>{
+ const data=visualData();Object.assign(data.assignments['ally:90003'],{scale:2,trail:'tail',trailColor:'#1234ef'});data.trails=[{id:'tail',resource:'tail',color:'#ffffff',width:3,lifetime:.2,offsetX:-20}];
+ const original=JSON.stringify(data.trails),f=visualFixture(data);class Trail extends f.cc.RenderComponent{reset(){}}f.cc.MotionStreak=Trail;
+ const native=f.shot.node.addComponent(Trail);native.color='#ff0000';native.stroke=5;f.shot.node.color='#fafafa';
+ const launch=()=>{f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();f.flush();};launch();
+ const view=f.shot._projectileVisual;assert.equal(view.node.width,128);assert.equal(view.node.height,48);assert.equal(view.trailNode.x,-40);assert.equal(view.trailNode.getComponent(Trail).stroke,6);assert.equal(view.trailNode.getComponent(Trail).color,'#1234ef');
+ assert.equal(f.shot.node.x,13);assert.equal(f.shot.node.y,17);assert.equal(f.shot.node.width,7);assert.equal(f.shot.node.height,9);assert.equal(f.shot.speed,500);assert.equal(JSON.stringify(data.trails),original);
+ view.reset();assert.equal(native.color,'#ff0000');assert.equal(native.stroke,5);assert.equal(f.shot.node.color,'#fafafa');
+ data.assignments['ally:90003'].scale=.5;delete data.assignments['ally:90003'].trailColor;launch();assert.equal(view.node.width,32);assert.equal(view.trailNode.getComponent(Trail).color,'#ffffff');assert.equal(view.trailNode.getComponent(Trail).stroke,1.5);f.owner._projectileLooks.dispose();
+});
+
+test('Spine flight scales on its artwork node and inherited native trails accept color without replacing the flight',()=>{
+ const data=visualData();data.assets.push({id:'rig',kind:'spine',resource:'rig',width:64,size:48,animation:'fly'});data.assignments['ally:90003']={flight:'rig',scale:3,trailColor:'#b64dff'};
+ const f=visualFixture(data);class Trail extends f.cc.RenderComponent{}f.cc.MotionStreak=Trail;const native=f.shot.node.addComponent(Trail);native.color='#ffffff';native.stroke=4;
+ f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();f.flush();assert.equal(f.shot._projectileVisual.node.scaleX,2.25);assert.equal(native.color,'#b64dff');assert.equal(native.stroke,12);assert.equal(f.shot.node.scaleX,undefined);f.shot._projectileVisual.reset();assert.equal(native.color,'#ffffff');assert.equal(native.stroke,4);
+ data.assignments['ally:90003']={trailColor:'#22aaff'};f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();f.flush();assert.equal(f.shot._projectileVisual.node,null);assert.equal(f.original.enabled,true);assert.equal(native.color,'#22aaff');f.owner._projectileLooks.dispose();assert.equal(native.color,'#ffffff');
+});
+
 test('default arrow trails follow their artwork and reset on pool reuse without changing a shot',()=>{
  const data=visualData();data.assets[0].trail='trail:arrow';data.trails=[{id:'trail:arrow',resource:'trail',color:'#b64dff',width:6,lifetime:.18,opacity:205,additive:true,offsetX:-64}];
  const f=visualFixture(data);class Trail extends f.cc.RenderComponent{reset(){this.resets=(this.resets||0)+1;}}f.cc.MotionStreak=Trail;

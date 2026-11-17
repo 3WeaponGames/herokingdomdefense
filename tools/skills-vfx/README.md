@@ -82,7 +82,11 @@ Electric Barrier. Package spellings are **Spiky** and **Skull**.
 
 The baker uses deterministic seeds, a fixed group-wide pixel envelope, fixed
 pivots, straight-alpha output and a short overlap at loop seams. Particle
-captures are 128 pixels per frame, with atlas dimensions capped at 2048.
+captures default to 128 pixels per frame, with atlas dimensions capped at 2048.
+Vanguard Momentum uses the original Unity Shader Graph materials in an isolated
+URP capture, 256-pixel antialiased frames and the same 1.5-second source loop.
+Its `referenceCell: 128` preserves the authored world size after increasing
+resolution. These ground effects render in front of the horse and rider.
 Native Spine effects retain their original atlas resolution. Runtime does not
 simulate Unity particles or instantiate their prefabs.
 
@@ -125,6 +129,12 @@ their visible source interval. Native Skirmisher and Vanguard use dedicated
 source clocks: preparation is fitted to the bow release or first spear contact,
 then the remaining source frames retain their selected playback. These native
 clocks bypass ordinary trim mapping to prevent applying a source trim twice.
+
+Vanguard's native flash center is measured from `guangyunadf_0000`. The mean
+source spear direction supplies its facing calibration, including nonuniform
+art scaling. The flash and the middle of the damage arc's rear edge follow the
+live spearhead; their offsets use spear axes and mirror with facing. VFX and
+damage transforms share the same math in battle, preview and drag handles.
 
 The selected SP162 effects use `prepare-sp162.cjs <SP162 source directory>
 <external staging directory>`, followed by `import-sp162.py <external staging>

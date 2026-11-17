@@ -23,6 +23,15 @@ function setup(style='fighter'){
 const track=(actor,key='spAniBody')=>actor[key].getCurrent(0),name=(actor,key)=>track(actor,key).animation.name;
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 
+test('Vanguard active spear, flash anchor and saddle agree through blends, idle recovery and all eight aiming directions',()=>{
+ for(const degrees of [0,45,90,135,180,225,270,315]){
+  const h=setup('vanguard'),{actor,rider}=h,d={x:Math.cos(degrees*Math.PI/180),y:Math.sin(degrees*Math.PI/180)},face=d.x<0?-1:1;actor.setBodyLeft(face);actor.setAttack();let previous=0,hits=0;actor.setAttackEvent(()=>hits++);
+  const renderer=actor.spAniBow;renderer.node.convertToWorldSpaceAR=p=>({x:renderer.node.x+p.x*renderer.node.scaleX,y:renderer.node.y+p.y*renderer.node.scaleY});
+  for(const time of [.01,.04,.1,.3,.8,.9,1.2]){h.step(time-previous);previous=time;rider.setCombatState(actor,{moving:false,skillAim:true,aimDirection:d});const v=slotVertices(renderer,'Rider/HandRight/Spear'),tip=renderer.node.convertToWorldSpaceAR({x:(v[4]+v[6])/2,y:(v[5]+v[7])/2}),tail=renderer.node.convertToWorldSpaceAR({x:(v[0]+v[2])/2,y:(v[1]+v[3])/2}),length=Math.hypot(tip.x-tail.x,tip.y-tail.y);assert(Math.abs((tip.x-tail.x)/length-d.x)<1e-5);assert(Math.abs((tip.y-tail.y)/length-d.y)<1e-5);const anchor=rider.weaponOrigin(actor,'vanguard',d);assert(Math.hypot(anchor.x-tip.x,anchor.y-tip.y)<1e-4);assert.equal(name(actor,'spAniMa'),'idle');}
+  assert.equal(hits,1);rider.setCombatState(actor,{moving:false,skillAim:false});h.step(.2);assert.equal(name(actor),'idle');
+ }
+});
+
 test('held-pose cleanup does not restart locomotion on disposed native renderers',()=>{
  const h=setup('skirmisher');h.rider.setCombatState(h.actor,{moving:false,charge:.5});
  for(const renderer of h.renderers){renderer.destroyed=true;renderer.node.destroyed=true;renderer.getCurrent=()=>{throw Error('disposed native track');};renderer.setAnimation=()=>{throw Error('disposed native animation');};}
@@ -86,19 +95,19 @@ test('moving mounted hero attacks without replacing the horse stride or restarti
  assert.equal(hits,1,'only the rider emits one authored basic impact');
 });
 
-test('stopping during a live attack synchronizes the stationary horse without replaying the rider',()=>{
+test('stopping during a live attack idles the horse without replaying the rider',()=>{
  const h=setup('vanguard'),{actor,rider}=h;rider.setCombatState(actor,{moving:true});actor.setAttack();h.step(.25);const body=track(actor),elapsed=body.trackTime;
- rider.setCombatState(actor,{moving:false});assert.equal(track(actor),body);assert.equal(name(actor,'spAniMa'),'attack_vanguard');close(track(actor,'spAniMa').trackTime,elapsed);
- h.step(.1);close(track(actor,'spAniMa').trackTime,track(actor).trackTime);
+ rider.setCombatState(actor,{moving:false});assert.equal(track(actor),body);assert.equal(name(actor,'spAniMa'),'idle');const idle=track(actor,'spAniMa');
+ h.step(.1);assert.equal(track(actor,'spAniMa'),idle);close(idle.timeScale,1);
  rider.setCombatState(actor,{moving:true});assert.equal(track(actor),body);assert.equal(name(actor,'spAniMa'),'move');assert(track(actor).trackTime>=elapsed);
 });
 
-test('Mystic holds the actual authored impact pose while the stationary mount finishes one attack and idles',()=>{
+test('Mystic holds the actual authored impact pose while the stationary mount stays idle',()=>{
  const h=setup('mystic'),{actor,rider}=h;rider.setCombatState(actor,{moving:false,beam:true});const body=track(actor),horse=track(actor,'spAniMa');
- assert.equal(name(actor),'attack_mystic');assert.equal(name(actor,'spAniMa'),'attack_mystic');
+ assert.equal(name(actor),'attack_mystic');assert.equal(name(actor,'spAniMa'),'idle');
  for(let i=0;i<70;i++){h.step(1/60);rider.setCombatState(actor,{moving:false,beam:true});}
  assert.equal(track(actor),body,'a held cast does not restart for every damage tick');close(body.trackTime,rider.attackPoseTime(actor));assert.equal(body.timeScale,0);
- assert(horse.trackTime>.8,'horse progresses through the attack independently of the held pose');assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor,'spAniMa').timeScale,1);
+ assert(horse.trackTime>.8,'horse keeps its independent idle clock');assert.equal(track(actor,'spAniMa'),horse);assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor,'spAniMa').timeScale,1);
  for(const key of keys.slice(2)){assert.equal(name(actor,key),'attack_mystic');close(track(actor,key).trackTime,body.trackTime);assert.equal(track(actor,key).timeScale,0);}
 });
 
@@ -148,7 +157,7 @@ test('rapid spear pose samples seven complete attack cycles over 2.5 seconds whi
   if(strike<strikes){rider.setCombatState(actor,{moving:true,rapid:{elapsed:strike*interval+interval*.4,duration,strikes}});assert(Math.abs(track(actor).trackTime-rider.attackPoseTime(actor))>.1);}
   h.step(.02);
  }
- rider.setCombatState(actor,{moving:false,rapid:{elapsed:duration-.01,duration,strikes}});assert.equal(name(actor,'spAniMa'),'attack_vanguard');close(track(actor,'spAniMa').trackTime,track(actor).trackTime);
+ rider.setCombatState(actor,{moving:false,rapid:{elapsed:duration-.01,duration,strikes}});assert.equal(name(actor,'spAniMa'),'idle');close(track(actor,'spAniMa').timeScale,1);
  rider.setCombatState(actor,{moving:false});assert.equal(name(actor),'idle');assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor).timeScale,1);
 });
 
@@ -184,22 +193,22 @@ test('skill timing reads the equipped rider attack event and converts saved play
  }
 });
 
-test('Skirmisher authored arrow pose and stationary mount land on the active windup, even after a playback override',()=>{
+test('Skirmisher authored arrow pose honors active windup while the stationary horse stays independent',()=>{
  const h=setup('skirmisher'),{actor,rider}=h;let hits=0,hitTime=0,time=0;
  actor.setAttackEvent(()=>{hits++;hitTime=time;});rider.setCombatState(actor,{moving:false});actor.setAttack();
  assert.equal(rider.retimeAttack(actor,.35),true);
  const body=track(actor);close(body.timeScale,.1667/.35);
  for(let i=0;i<30;i++){
   time=(i+1)/120;
-  for(const key of keys)track(actor,key).timeScale=2;
+  for(const key of keys.slice(1))track(actor,key).timeScale=2;
   rider.update(actor);h.step(1/120);
   assert.equal(hits,0,'active windup cannot release at the ordinary .1667s marker');
-  close(track(actor,'spAniMa').trackTime,body.trackTime);close(track(actor,'spAniBow').trackTime,body.trackTime);
+  assert.equal(name(actor,'spAniMa'),'idle');close(track(actor,'spAniMa').timeScale,1);close(track(actor,'spAniBow').trackTime,body.trackTime);
  }
  for(let i=30;i<44;i++){time=(i+1)/120;h.step(1/120);}
  assert.equal(hits,1);assert(Math.abs(hitTime-.35)<=1/120+.0001);
  rider.setCombatState(actor,{moving:true});assert.equal(name(actor,'spAniMa'),'move');
- rider.setCombatState(actor,{moving:false});close(track(actor,'spAniMa').trackTime,body.trackTime);close(track(actor,'spAniMa').timeScale,body.timeScale);
+ rider.setCombatState(actor,{moving:false});assert.equal(name(actor,'spAniMa'),'idle');close(track(actor,'spAniMa').timeScale,1);
  actor.setDie();rider.update(actor);assert.equal(track(actor).timeScale,1,'retimed cast cannot leak into death');
  actor.onRestart();actor.setAttack();assert.equal(track(actor).timeScale,1,'ordinary attacks retain original playback after restart');
 });
@@ -219,22 +228,22 @@ test('gameplay commits sampled geometry before depth capture and lateUpdate keep
  renderer.state.apply(renderer.skeleton);renderer.skeleton.updateWorldTransform();close(bone.worldX,before.x);close(bone.worldY,before.y);
  actor.lateUpdate();assert.equal(follows,2);close(track(actor).trackTime,rider.attackPoseTime(actor));assert.equal(name(actor,'spAniMa'),'move');
  rider.setCombatState(actor,{moving:false,rapid:{elapsed:interval*2,duration:2.5,strikes:7},deferUpdate:true});
- assert.equal(follows,3);actor.lateUpdate();assert.equal(follows,4);assert.equal(name(actor,'spAniMa'),'attack_vanguard');close(track(actor,'spAniMa').trackTime,track(actor).trackTime);
+ assert.equal(follows,3);actor.lateUpdate();assert.equal(follows,4);assert.equal(name(actor,'spAniMa'),'idle');close(track(actor,'spAniMa').timeScale,1);
  rider.setCombatState(actor,{moving:false,deferUpdate:true});actor.lateUpdate();assert.equal(name(actor),'idle');assert.equal(track(actor).timeScale,1);
 });
 
-test('Mystic source windup and its one stationary horse attack honor saved slow, fast and frozen playback',()=>{
+test('Mystic source windup honors saved slow, fast and frozen playback without changing horse idle',()=>{
  for(const playback of [.5,2,0]){
   const h=setup('mystic'),{actor,rider}=h;
   rider.setCombatState(actor,{moving:false,beam:true,playback,deferUpdate:true});
-  close(track(actor).timeScale,playback);close(track(actor,'spAniMa').timeScale,playback);
+  close(track(actor).timeScale,playback);close(track(actor,'spAniMa').timeScale,1);
   const elapsed=playback?.1667/playback*.8:.5;h.step(elapsed);
   close(track(actor).trackTime,playback?elapsed*playback:0);
   if(playback){
    h.step(.1667/playback*.3);close(track(actor).trackTime,.1667);assert.equal(track(actor).timeScale,0);
    for(let frame=0;frame<120;frame++){h.step(1/60);rider.setCombatState(actor,{moving:false,beam:true,playback,deferUpdate:true});}
    assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor,'spAniMa').timeScale,1);
-  }else {assert.equal(name(actor,'spAniMa'),'attack_mystic');close(track(actor,'spAniMa').trackTime,0);}
+  }else {assert.equal(name(actor,'spAniMa'),'idle');assert(track(actor,'spAniMa').trackTime>0);}
  }
 });
 
@@ -260,22 +269,22 @@ test('all six first-frame mounted attacks keep a walking horse before the first 
   assert.equal(name(actor,'spAniMa'),'move',style.id+' moving horse never enters attack at cast start');assert.equal(track(actor,'spAniMa'),stride);assert.equal(horseAttacks,0);
   for(let frame=0;frame<15;frame++)h.step(1/60);
   assert.equal(track(actor),body);assert.equal(track(actor,'spAniMa'),stride);assert.equal(horseAttacks,0);assert.equal(riderHits,1);
-  actor.setIdle();assert.equal(track(actor),body);assert.equal(name(actor,'spAniMa'),body.animation.name);close(track(actor,'spAniMa').trackTime,body.trackTime);assert.equal(horseAttacks,1,'stopping joins only the current attack phase');
-  const joined=track(actor,'spAniMa');for(let frame=0;frame<6;frame++)h.step(1/60);assert.equal(track(actor,'spAniMa'),joined);assert.equal(horseAttacks,1);
+  actor.setIdle();assert.equal(track(actor),body);assert.equal(name(actor,'spAniMa'),'idle');close(track(actor,'spAniMa').timeScale,1);assert.equal(horseAttacks,0,'stopping never starts a horse attack');
+  const joined=track(actor,'spAniMa');for(let frame=0;frame<6;frame++)h.step(1/60);assert.equal(track(actor,'spAniMa'),joined);assert.equal(horseAttacks,0);
   actor.setMove();assert.equal(track(actor),body);assert.equal(name(actor,'spAniMa'),'move');assert.equal(track(actor,'spAniMa').mixingFrom,joined);assert.equal(track(actor,'spAniMa').mixDuration,.1,'horse blends out while rider attack continues');
  }
 });
 
-test('rapid thrust movement input switches the horse immediately and stopping resumes its current sampled phase once',()=>{
+test('rapid thrust movement input switches only between horse idle and movement',()=>{
  const h=setup('vanguard'),{actor,rider}=h;const options={rapid:{elapsed:.2,duration:2.5,strikes:7},moving:false};
- rider.setCombatState(actor,options);h.step(1/60);const body=track(actor),firstHorse=track(actor,'spAniMa');assert.equal(firstHorse.animation.name,'attack_vanguard');
+ rider.setCombatState(actor,options);h.step(1/60);const body=track(actor),firstHorse=track(actor,'spAniMa');assert.equal(firstHorse.animation.name,'idle');
  actor.setMove();assert.equal(name(actor,'spAniMa'),'move');assert.equal(track(actor,'spAniMa').mixingFrom,firstHorse);assert.equal(track(actor),body);
  for(let frame=0;frame<8;frame++){h.step(1/60);rider.setCombatState(actor,{moving:true,rapid:{elapsed:.2+(frame+1)/60,duration:2.5,strikes:7}});assert.equal(name(actor,'spAniMa'),'move');assert.equal(track(actor),body);}
- actor.setIdle();const joined=track(actor,'spAniMa');assert.equal(name(actor,'spAniMa'),'attack_vanguard');close(joined.trackTime,body.trackTime);assert.equal(joined.timeScale,0);
- for(let frame=0;frame<8;frame++){rider.setCombatState(actor,{moving:false,rapid:{elapsed:.4+(frame+1)/60,duration:2.5,strikes:7}});assert.equal(track(actor,'spAniMa'),joined);assert.equal(track(actor),body);close(joined.trackTime,body.trackTime);}
+ actor.setIdle();const joined=track(actor,'spAniMa');assert.equal(name(actor,'spAniMa'),'idle');assert.equal(joined.timeScale,1);
+ for(let frame=0;frame<8;frame++){rider.setCombatState(actor,{moving:false,rapid:{elapsed:.4+(frame+1)/60,duration:2.5,strikes:7}});assert.equal(track(actor,'spAniMa'),joined);assert.equal(track(actor),body);assert.equal(joined.timeScale,1);}
 });
 
-test('Mystic movement blends out its one horse attack and stopping never replays it during the same beam',()=>{
+test('Mystic movement blends between idle and movement without any horse attack',()=>{
  for(const startsMoving of [false,true]){
   const h=setup('mystic'),{actor,rider}=h;let horseAttacks=0;const original=actor.spAniMa.setAnimation;
   actor.spAniMa.setAnimation=function(index,animation,loop){if(animation==='attack_mystic')horseAttacks++;return original(index,animation,loop);};
@@ -284,7 +293,7 @@ test('Mystic movement blends out its one horse attack and stopping never replays
   else assert.equal(name(actor,'spAniMa'),'move');
   h.step(.1);actor.setIdle();assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor),body);
   for(let frame=0;frame<90;frame++){h.step(1/60);rider.setCombatState(actor,{moving:false,beam:true});}
-  assert.equal(horseAttacks,startsMoving?0:1);assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor),body);close(body.trackTime,.1667);
+  assert.equal(horseAttacks,0);assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor),body);close(body.trackTime,.1667);
  }
 });
 
@@ -341,6 +350,17 @@ test('marker-sampled arrow tip matches actual equipped geometry without advancin
  assert.equal(events,0);close(body.trackTime,originalTime);
 });
 
+test('moving arrow release follows the live saddle phase without replacing or retiming its stride',()=>{
+ const Pose=require('../../assets/_script/HeroSkillPose');
+ for(const phase of [.13,.4,.9]){
+  const h=setup('skirmisher'),{actor,rider}=h;actor.setMove();h.step(.2);actor.setAttack();const horse=track(actor,'spAniMa'),renderer=actor.spAniArrow;
+  horse.trackTime=phase;actor.spAniMa.update(0);renderer.state.clearTracks();const shot=renderer.setAnimation(0,'attack',false);shot.trackTime=.1667;renderer.update(0);
+  renderer.node.convertToWorldSpaceAR=p=>({x:renderer.node.x+p.x*renderer.node.scaleX,y:renderer.node.y+p.y*renderer.node.scaleY});
+  const predicted=rider.skillOrigin(actor,{x:1,y:0});Pose.applyAim(renderer,{x:1,y:0},1,{fresh:true,referenceAngle:Pose.arrowAimAngle(renderer,renderer.skeletonData.skeletonJson,'attack',.1667)});
+  const actual=renderer.node.convertToWorldSpaceAR(Pose.arrowTip(renderer,{x:1,y:0},1));assert(Math.hypot(predicted.x-actual.x,predicted.y-actual.y)<1e-4);assert.equal(track(actor,'spAniMa'),horse);close(horse.trackTime,phase);close(horse.timeScale,1);
+ }
+});
+
 test('custom Skirmisher aim predictions match all five authored release clips before and after casting',()=>{
  const Pose=require('../../assets/_script/HeroSkillPose');
  for(const animation of ['attack_fighter','attack_vanguard','attack_mystic','attack_bruiser','attack_guardian']){
@@ -355,7 +375,7 @@ test('custom Skirmisher aim predictions match all five authored release clips be
 
 test('fast successive basic attacks blend recovery without early or duplicate rider attack events',()=>{
  const h=setup('bruiser'),{actor,rider}=h;let hits=0;actor.setAttackEvent(()=>hits++);rider.setCombatState(actor,{moving:false});actor.setAttack();h.step(.5);
- const renderer=actor.spAniBow,previous=slotVertices(renderer,'Rider/HandRight/Axe');actor.setAttack();assert.equal(track(actor).mixDuration,.06);assert.equal(track(actor,'spAniMa').mixDuration,.06);
+ const renderer=actor.spAniBow,previous=slotVertices(renderer,'Rider/HandRight/Axe'),horse=track(actor,'spAniMa');actor.setAttack();assert.equal(track(actor).mixDuration,.06);assert.equal(track(actor,'spAniMa'),horse);assert.equal(name(actor,'spAniMa'),'idle');
  h.step(1/120);const mixed=slotVertices(renderer,'Rider/HandRight/Axe');assert(Math.max(...mixed.map((v,i)=>Math.abs(v-previous[i])))<30);assert.equal(hits,1);
  for(let i=0;i<24;i++)h.step(1/120);assert.equal(hits,2);
 });
@@ -443,13 +463,13 @@ test('custom attack clips share the body marker without duplicating events on eq
  delete actor.spAniHead.skeletonData.skeletonJson.animations.attack_custom;assert.equal(rider.attackName(actor),'attack_fighter','every participating equipment layer still needs the chosen clip');
 });
 
-test('cumulative Mystic source samples resume frozen rider and one horse attack without jumping after speed changes',()=>{
+test('cumulative Mystic source samples resume the frozen rider while horse idle remains independent',()=>{
  const h=browserRealtime(setup('mystic')),{actor,rider}=h;
- rider.setCombatState(actor,{beam:true,beamElapsed:3,beamSourceTime:0,playback:0,moving:false,deferUpdate:true});const body=track(actor),horse=track(actor,'spAniMa');close(body.trackTime,0);close(horse.timeScale,0);
- rider.setCombatState(actor,{beam:true,beamElapsed:3.1,beamSourceTime:.05,playback:.5,moving:false,deferUpdate:true});assert.equal(track(actor),body);assert.equal(track(actor,'spAniMa'),horse);close(body.trackTime,.05);close(horse.timeScale,.5);
- rider.setCombatState(actor,{beam:true,beamElapsed:3.15,beamSourceTime:.15,playback:2,moving:false,deferUpdate:true});close(body.trackTime,.15);close(horse.timeScale,2);
- rider.setCombatState(actor,{beam:true,beamSourceTime:.25,playback:2,moving:false,deferUpdate:true});close(body.trackTime,.1667);close(body.timeScale,0);close(horse.timeScale,2);
- rider.setCombatState(actor,{beam:true,beamSourceTime:0,playback:1,animation:'attack_fighter',moving:false,deferUpdate:true});assert.equal(name(actor),'attack_fighter');close(track(actor).trackTime,0);assert.equal(name(actor,'spAniMa'),'attack_fighter');close(track(actor,'spAniMa').trackTime,0);
+ rider.setCombatState(actor,{beam:true,beamElapsed:3,beamSourceTime:0,playback:0,moving:false,deferUpdate:true});const body=track(actor),horse=track(actor,'spAniMa');close(body.trackTime,0);close(horse.timeScale,1);
+ rider.setCombatState(actor,{beam:true,beamElapsed:3.1,beamSourceTime:.05,playback:.5,moving:false,deferUpdate:true});assert.equal(track(actor),body);assert.equal(track(actor,'spAniMa'),horse);close(body.trackTime,.05);close(horse.timeScale,1);
+ rider.setCombatState(actor,{beam:true,beamElapsed:3.15,beamSourceTime:.15,playback:2,moving:false,deferUpdate:true});close(body.trackTime,.15);close(horse.timeScale,1);
+ rider.setCombatState(actor,{beam:true,beamSourceTime:.25,playback:2,moving:false,deferUpdate:true});close(body.trackTime,.1667);close(body.timeScale,0);close(horse.timeScale,1);
+ rider.setCombatState(actor,{beam:true,beamSourceTime:0,playback:1,animation:'attack_fighter',moving:false,deferUpdate:true});assert.equal(name(actor),'attack_fighter');close(track(actor).trackTime,0);assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor,'spAniMa'),horse);
 });
 
 test('real Spine boss-control events and queued damage share saved playback and game speed through partial expiry',()=>{
@@ -482,7 +502,7 @@ test('sampled Vanguard geometry matches direct preview poses independently of sa
    const actual=slotVertices(renderer,'Rider/HandRight/Spear');
    assert(actual.every((value,i)=>Math.abs(value-expected[i])<1e-4),'runtime and preview must draw the same spear geometry');
    close(track(actor).trackTime,sample.time);assert.equal(track(actor).timeScale,0);
-   if(moving)assert.equal(name(actor,'spAniMa'),'move');else close(track(actor,'spAniMa').trackTime,sample.time);
+   assert.equal(name(actor,'spAniMa'),moving?'move':'idle');close(track(actor,'spAniMa').timeScale,1);
   }
  }
 });

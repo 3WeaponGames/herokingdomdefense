@@ -15312,7 +15312,7 @@
       "bundle": "KinghtFallPrefabs",
       "resource": "_res/textures/KinghtFallUIGame/_texture",
       "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
-      "color": "#e7d7b6",
+      "color": "#ffffff",
       "opacity": 160,
       "width": 3,
       "lifetime": 0.12,
@@ -15326,7 +15326,7 @@
       "bundle": "KinghtFallPrefabs",
       "resource": "_res/textures/KinghtFallUIGame/_texture",
       "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
-      "color": "#eafcff",
+      "color": "#ffffff",
       "opacity": 175,
       "width": 4,
       "lifetime": 0.14,
@@ -15340,7 +15340,7 @@
       "bundle": "KinghtFallPrefabs",
       "resource": "_res/textures/KinghtFallUIGame/_texture",
       "image": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame/_texture.png",
-      "color": "#49eaff",
+      "color": "#9fe7ff",
       "opacity": 190,
       "width": 5,
       "lifetime": 0.16,
@@ -15376,19 +15376,23 @@
       "offsetX": -64
     }
   ],
-  "assignments": { "tower:2:4":{"flight":"tiny-kingdom:cannonball","size":20}, "tower:2:5":{"flight":"tiny-kingdom:cannonball","size":20}, "tower:2:6":{"flight":"tiny-kingdom:cannonball","size":20}, "tower:2:7":{"flight":"tiny-kingdom:ballista-bolt","size":44}, "tower:2:8":{"flight":"tiny-kingdom:ballista-bolt","size":44}, "tower:2:9":{"flight":"tiny-kingdom:ballista-bolt","size":44}, "tower:2:11":{"flight":"tiny-kingdom:cannonball","size":20}, "tower:2:12":{"flight":"tiny-kingdom:ballista-bolt","size":44}, "hero": {
-      "set": "toon:projectile-8-twist",
-      "flight": "toon:projectile-8-twist",
-      "launch": "toon:flash-8",
-      "impact": "toon:hit-8",
-      "trail": false
-    }, "enemy:91064": {
+  "assignments": {
+    "tower:2:4":{"flight":"tiny-kingdom:cannonball","size":20},
+    "tower:2:5":{"flight":"tiny-kingdom:cannonball","size":20},
+    "tower:2:6":{"flight":"tiny-kingdom:cannonball","size":20},
+    "tower:2:7":{"flight":"tiny-kingdom:ballista-bolt","size":44},
+    "tower:2:8":{"flight":"tiny-kingdom:ballista-bolt","size":44},
+    "tower:2:9":{"flight":"tiny-kingdom:ballista-bolt","size":44},
+    "tower:2:11":{"flight":"tiny-kingdom:cannonball","size":20},
+    "tower:2:12":{"flight":"tiny-kingdom:ballista-bolt","size":44},
+    "enemy:91064": {
       "set": "toon:projectile-10-explode",
       "flight": "toon:projectile-10-explode",
       "launch": "toon:flash-10",
       "impact": "toon:hit-10",
       "trail": false
-    } },
+    }
+  },
   "heroArrowTiers": [
     {
       "skin": "lv1",

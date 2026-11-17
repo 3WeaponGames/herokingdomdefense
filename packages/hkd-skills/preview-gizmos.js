@@ -17,11 +17,12 @@ function projectPoint(project,p){const value=project(p);return point(value);}
 function offsetPixels(project,at,direction,pixels){const a=projectPoint(project,at),b=projectPoint(project,add(at,unit(direction))),ppu=length(sub(b,a));return ppu>EPS?add(at,mul(unit(direction),pixels/ppu)):point(at);}
 function reachableHandle(project,at,origin,fallback,pixels){const distance=length(sub(projectPoint(project,at),projectPoint(project,origin)));return distance>=pixels?at:offsetPixels(project,origin,unit(sub(at,origin),fallback),pixels);}
 function node(id,kind,at,project,extra){return Object.assign({id,kind,world:point(at)},projectPoint(project,at),extra);}
-function annotate(result){const paths=result.spec.paths||{};for(const handle of result.handles){const kind=handle.kind;handle.paths=kind==='move'?[paths.x,paths.y].filter(Boolean):kind==='move-x'?pathsFor(paths.x):kind==='move-y'?pathsFor(paths.y):kind==='scale'?pathsFor(paths.scale):kind==='scale-x'?pathsFor(paths.scaleX):kind==='scale-y'?pathsFor(paths.scaleY):kind==='rotate'?pathsFor(paths.rotation):kind==='arc'?pathsFor(paths.arc):kind==='width'?pathsFor(paths.width):pathsFor(paths.radius||paths.range);if(handle.paths.length===1)handle.path=handle.paths[0];}return result;}
+function annotate(result){const paths=result.spec.paths||{};for(const handle of result.handles){const kind=handle.kind;handle.paths=kind==='pivot'?[paths.pivotX,paths.pivotY,paths.x,paths.y].filter(Boolean):kind==='move'?[paths.x,paths.y].filter(Boolean):kind==='move-x'?pathsFor(paths.x):kind==='move-y'?pathsFor(paths.y):kind==='scale'?pathsFor(paths.scale):kind==='scale-x'?pathsFor(paths.scaleX):kind==='scale-y'?pathsFor(paths.scaleY):kind==='rotate'?pathsFor(paths.rotation):kind==='arc'?pathsFor(paths.arc):kind==='width'?pathsFor(paths.width):pathsFor(paths.radius||paths.range);if(handle.paths.length===1)handle.path=handle.paths[0];}return result;}
 function model(spec,project,outline){const origin=point(spec.origin);return{id:spec.id,label:spec.label||spec.id,kind:spec.type==='behavior'?'behavior':'vfx',spec,origin,screenOrigin:projectPoint(project,origin),worldOutline:outline.map(point),outline:outline.map(p=>projectPoint(project,p)),handles:[],hitInterior:spec.hitInterior!==false};}
 function build(spec,project){
   spec=spec||{};project=typeof project==='function'?project:p=>p;const outline=outlineFor(spec),result=model(spec,project,outline),origin=point(spec.origin),paths=spec.paths||{},a=axes(spec),corners=outline.length===4?outline:outlineFor(Object.assign({},spec,{outline:null}));
   if(paths.x||paths.y)result.handles.push(node('move','move',origin,project,{label:'Move',shape:'circle'}));
+  if(paths.pivotX&&paths.pivotY&&spec.pivotBasis)result.handles.push(node('pivot','pivot',origin,project,{label:'Pivot (keeps artwork in place)',shape:'crosshair'}));
   if(spec.axisMove&&paths.x)result.handles.push(node('move-x','move-x',offsetPixels(project,origin,{x:1,y:0},36),project,{label:'Move X',shape:'arrow'}));
   if(spec.axisMove&&paths.y)result.handles.push(node('move-y','move-y',offsetPixels(project,origin,{x:0,y:1},36),project,{label:'Move Y',shape:'arrow'}));
   const minimum=Math.max(0,finite(spec.minHandleDistance,22));
@@ -76,7 +77,22 @@ function constrain(value,path,drag,modifiers){
 function update(drag,pointer,modifiers){
   modifiers=modifiers||{};pointer=point(pointer);const next=Object.assign({},drag,{pointer,raw:Object.assign({},drag.raw),applied:Object.assign({},drag.applied),patches:{}}),delta=sub(pointer,drag.pointer),paths=drag.spec.paths||{},factor=modifiers.fine?.1:modifiers.coarse?10:1;
   function change(path,amount){if(!path)return;const result=constrain(read(drag.raw,path)+amount,path,drag,modifiers);next.raw[path]=result.raw;if(!Object.is(result.value,drag.applied[path]))next.patches[path]=result.value;next.applied[path]=result.value;}
-  if(drag.kind==='move'||drag.kind==='move-x'||drag.kind==='move-y'){if(drag.kind!=='move-y')change(paths.x,delta.x*factor);if(drag.kind!=='move-x')change(paths.y,delta.y*factor);}
+  if(drag.kind==='move'||drag.kind==='move-x'||drag.kind==='move-y'){const offsetAxes=drag.spec.offsetAxes,dx=offsetAxes?dot(delta,offsetAxes.x):delta.x,dy=offsetAxes?dot(delta,offsetAxes.y):delta.y;if(drag.kind!=='move-y')change(paths.x,dx*factor);if(drag.kind!=='move-x')change(paths.y,dy*factor);}
+  else if(drag.kind==='pivot'){
+    const basis=drag.spec.pivotBasis,det=basis&&basis.x.x*basis.y.y-basis.x.y*basis.y.x;
+    if(Math.abs(det)>EPS){
+      change(paths.pivotX,(delta.x*basis.y.y-delta.y*basis.y.x)/det*factor);
+      change(paths.pivotY,(delta.y*basis.x.x-delta.x*basis.x.y)/det*factor);
+      // Moving the source pivot and its attachment together leaves every
+      // painted vertex stationary. Preserve that relationship at field limits
+      // too, and publish the four values as one undoable draft transaction.
+      const offsets=()=>{const x=next.applied[paths.pivotX]-read(drag.spec.values,paths.pivotX),y=next.applied[paths.pivotY]-read(drag.spec.values,paths.pivotY),world=add(mul(basis.x,x),mul(basis.y,y)),a=drag.spec.offsetAxes;return{[paths.x]:read(drag.spec.values,paths.x)+(a?dot(world,a.x):world.x),[paths.y]:read(drag.spec.values,paths.y)+(a?dot(world,a.y):world.y)};};
+      const desired=offsets();let fraction=1;
+      for(const path of [paths.x,paths.y]){const limits=drag.spec.limits[path]||{},before=drag.applied[path],after=desired[path],bound=after<finite(limits.min,-4096)?finite(limits.min,-4096):after>finite(limits.max,4096)?finite(limits.max,4096):after;if(after!==bound)fraction=Math.min(fraction,(bound-before)/(after-before));}
+      for(const path of [paths.pivotX,paths.pivotY]){if(fraction<1)next.raw[path]=next.applied[path]=drag.applied[path]+(next.applied[path]-drag.applied[path])*Math.max(0,fraction);delete next.patches[path];if(!Object.is(next.applied[path],drag.applied[path]))next.patches[path]=next.applied[path];}
+      for(const [path,value]of Object.entries(offsets())){next.raw[path]=next.applied[path]=value;if(!Object.is(value,drag.applied[path]))next.patches[path]=value;}
+    }
+  }
   else if(drag.kind==='scale')for(const path of pathsFor(paths.scale))change(path,read(drag.spec.values,path,1)*dot(delta,drag.radialAxis)/drag.radialDenominator*factor);
   else if(drag.kind==='scale-x')change(paths.scaleX,read(drag.spec.values,paths.scaleX,1)*dot(delta,drag.axisX)/drag.xDenominator*factor);
   else if(drag.kind==='scale-y')change(paths.scaleY,read(drag.spec.values,paths.scaleY,1)*dot(delta,drag.axisY)/drag.yDenominator*factor);

@@ -4,6 +4,14 @@ const {Model,inArc,segment}=require('../../packages/hkd-skills/preview-model');
 const Preview=require('../../packages/hkd-skills/preview');
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function simulate(model,seconds){for(let time=0;time<seconds;){const dt=Math.min(1/120,seconds-time);model.advance(dt);time+=dt;}return model;}
+
+test('Mystic preview shares the attack-only second of cast recovery and resumes without accumulated passive ticks',()=>{
+ const setup=()=>{const model=new Model('mystic',{explosionTime:.2,visual:{castResource:''}},{mode:'basic',moving:true,attackRate:4,targetDistance:100,targets:1,holdSource:.1});model.advance(.25);assert(model.hits>0);assert(model.cast());return model;};
+ const model=setup(),before=model.hits,position={...model.hero};assert.equal(model.beam,false);assert.equal(model.channelTarget,null);model.advance(.999);
+ assert.equal(model.hits,before+1,'only the active explosion deals damage during recovery');assert.equal(model.state.mysticCharges,0);assert.equal(model.beam,false);assert.notEqual(model.hero.x,position.x);assert.equal(model.cast(),false);
+ model.advance(.001);close(require('../../assets/_script/HeroStyleSkills').attackLockRemaining(model.state),0);model.advance(.26);assert(model.hits>before+1);
+ const coarse=setup(),fine=setup();coarse.advance(2);simulate(fine,2);assert.equal(coarse.hits,fine.hits);close(coarse.damage,fine.damage);close(coarse.attackClock,fine.attackClock);close(coarse.channelSourceTime,fine.channelSourceTime);
+});
 test('the preview shares six skill state machines without modifying settings or a player save',()=>{
   const input={cooldown:14,visual:{originX:12,color:'#ff0000'},unknown:{keep:true}},before=JSON.stringify(input);
   for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
@@ -55,6 +63,72 @@ function host(){
   return{root,renderer,arcs,draws,seeks,worldDraws,box:()=>root.children[0],overlay:()=>root.children[0].children[1]};
 }
 const description={runtimePath:'unused',layers:[{uuid:'hero',x:0,y:0,scaleX:1,scaleY:1,json:{animations:{idle:{},attack_fighter:{events:[{name:'attack',time:.2}],bones:{root:{rotate:[{time:1}]}}}}},atlas:'',pages:{}}]};
+
+test('checked previews dispatch every style cast sound on initial load and a style change without a manual restart',async()=>{
+ const old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+ const h=host(),sounds=[],view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}});
+ try{
+  view.setAudioEnabled(true);
+  for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
+   const request={style,entry:'active',settings:{visual:{},audio:{cast:{clip:style+'-cast',volume:1,delay:0}}},description};
+   await view.set(request);assert.equal(sounds.filter(s=>s.clip===style+'-cast').length,1,style+' cast at time zero was skipped');
+   await view.set(request);assert.equal(sounds.filter(s=>s.clip===style+'-cast').length,1,'An unchanged refresh must not repeat the cast');
+  }
+ }finally{view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('opting into sound auditions the current run from its cast while paused seeking stays silent',async()=>{
+ const old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>(frame=fn,1);global.cancelAnimationFrame=()=>{};
+ const h=host(),sounds=[],view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}});
+ try{
+  await view.set({style:'fighter',settings:{visual:{},audio:{cast:{clip:'cast',volume:1,delay:0}}},description});for(let i=0;i<6;i++)frame(1000+i*100);assert(view.getState().time>.3);assert.equal(sounds.length,0);
+  view.setAudioEnabled(true);assert.equal(view.getState().time,0);assert.deepEqual(sounds,[{kind:'cast',clip:'cast'}]);view.setAudioEnabled(true);assert.equal(sounds.length,1);
+  view.seek(2);view.setAudioEnabled(false);view.setAudioEnabled(true);assert.equal(view.getState().time,2);assert.equal(view.getState().playing,false);assert.equal(sounds.length,1);
+ }finally{view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('assigning a cast sound in a running checked preview auditions it without changing the draft',async()=>{
+ const old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>(frame=fn,1);global.cancelAnimationFrame=()=>{};
+ const h=host(),sounds=[],changes=[],view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onChange:(...args)=>changes.push(args),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}});
+ try{
+  await view.set({style:'bruiser',settings:{visual:{}},description});view.setAudioEnabled(true);for(let i=0;i<6;i++)frame(1000+i*100);
+  const settings={visual:{},audio:{cast:{clip:'new-cast',volume:1,delay:.15}}},before=JSON.stringify(settings);
+  await view.set({style:'bruiser',settings,description});assert.equal(view.getState().time,0);assert.deepEqual(sounds,[{kind:'cast',clip:'new-cast'}]);assert.equal(JSON.stringify(settings),before);assert.equal(changes.length,0);
+ }finally{view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('switching from a passive entry to its active skill starts its cast sound while checked',async()=>{
+ const old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>(frame=fn,1);global.cancelAnimationFrame=()=>{};
+ const h=host(),sounds=[],view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}}),settings={visual:{},audio:{cast:{clip:'active-cast',volume:1,delay:0},channel:{clip:'passive-loop',volume:1,delay:0}}};
+ try{
+  await view.set({style:'mystic',entry:'passive',settings,description});view.setScenario({mode:'basic'});view.setAudioEnabled(true);for(let i=0;i<6;i++)frame(1000+i*100);sounds.length=0;
+  view.setScenario({mode:'active',entry:'active'});await view.set({style:'mystic',entry:'active',settings,description});assert.equal(view.getState().time,0);assert.deepEqual(sounds,[{kind:'cast',clip:'active-cast'}]);
+ }finally{view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('sound enabled on a paused first frame dispatches the cast when Play resumes',async()=>{
+ const old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+ const h=host(),sounds=[],view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}});
+ try{await view.set({style:'fighter',settings:{visual:{},audio:{cast:{clip:'cast',volume:1,delay:0}}},description});view.play(false);view.setAudioEnabled(true);assert.equal(sounds.length,0);view.play(true);assert.deepEqual(sounds,[{kind:'cast',clip:'cast'}]);}
+ finally{view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('Mystic previews one explosion sound at the retimed burst marker and keeps passive attacks separate',async()=>{
+ const old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;
+ global.requestAnimationFrame=fn=>{frame=fn;return 1;};global.cancelAnimationFrame=()=>{};
+ try{for(const mode of ['active','basic']){
+  const h=host(),sounds=[],view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}});
+  try{
+   await view.set({style:'mystic',settings:{explosionTime:.6,contactDelay:.05,visual:{castResource:'',castDelay:.1,castPlaybackRate:2},audio:{cast:{clip:'charge',volume:1,delay:0},explosion:{clip:'burst',volume:.4,delay:0}}},description});
+   view.setScenario({mode,attackRate:0,repeat:false,targetPositions:[{x:100,y:0},{x:110,y:0},{x:120,y:0}]});view.setAudioEnabled(true);view.restart();
+   for(let i=0;i<=4;i++)frame(1000+i*100);
+   assert.equal(sounds.filter(s=>s.clip==='burst').length,0,'No explosion before its .45 second marker');
+   for(let i=5;i<13;i++)frame(1000+i*100);
+   assert.equal(sounds.filter(s=>s.clip==='burst').length,mode==='active'?1:0);
+   if(mode==='active'){assert.equal(view.getState().hits,3);assert(sounds.some(s=>s.clip==='charge'));assert.equal(sounds.find(s=>s.clip==='burst').kind,'explosion');}
+  }finally{view.destroy();}
+ }}finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
 
 test('piercing impact preview audio remains deduplicated across rendered frames and resets with a replay',async()=>{
  const h=host(),sounds=[],old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>{frame=fn;return 1;};global.cancelAnimationFrame=()=>{};

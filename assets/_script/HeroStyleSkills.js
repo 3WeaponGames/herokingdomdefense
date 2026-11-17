@@ -43,7 +43,7 @@ function createState(style, overrides) {
   return { style: style, tuning: settings(style, overrides), time: 0, charge: 0,
     buffRemaining: 0, buffStrength: 0, stacks: 0, stackRemaining: 0,
     target: null, marked: false, mysticCharges: 0, cooldown: 0,
-    active: null, lastStrikeId: null, shield: 0, shieldRemaining: 0 };
+    active: null, lastStrikeId: null, shield: 0, shieldRemaining: 0, attackBlockedUntil: 0 };
 }
 function setTarget(state, target) {
   target = target === undefined ? null : target;
@@ -101,9 +101,10 @@ function onHit(state, target, options) {
   }
   return result;
 }
+function attackLockRemaining(state) { return state.style === "mystic" ? Math.max(0, finite(state.attackBlockedUntil, 0) - state.time) : 0; }
 function canActivate(state, context) {
   context = context || {};
-  if (state.cooldown > 1e-9 || state.active || context.alive === false || context.hp !== undefined && !(context.hp > 0)) return false;
+  if (state.cooldown > 1e-9 || state.active || attackLockRemaining(state) > 1e-9 || context.alive === false || context.hp !== undefined && !(context.hp > 0)) return false;
   if (state.style === "mystic") {
     if (!state.marked || state.target === null || context.targetAlive === false) return false;
     if (Object.prototype.hasOwnProperty.call(context, "target") && context.target !== state.target) return false;
@@ -117,7 +118,7 @@ function vanguardMultiplier(state, context) {
 }
 function beginActive(state, context) {
   context = context || {};
-  if (!canActivate(state, context)) return { ok: false, reason: state.active ? "active" : state.cooldown > 1e-9 ? "cooldown" : "target" };
+  if (!canActivate(state, context)) return { ok: false, reason: state.active ? "active" : state.cooldown > 1e-9 ? "cooldown" : attackLockRemaining(state) > 1e-9 ? "casting" : "target" };
   var t = state.tuning, result = { ok: true, style: state.style, hpCost: 0, damageMultiplier: 1, direction: direction(context.direction) };
   state.cooldown = t.cooldown;
   if (state.style === "skirmisher") {
@@ -137,6 +138,9 @@ function beginActive(state, context) {
     result.hpCost = hp - after; result.hpAfterCost = after;
     result.damageMultiplier = (1 + missing({ hp: after, maxHp: context.maxHp })) * t.activeDamage;
   } else if (state.style === "mystic") {
+    // This is an attack-only recovery in gameplay time, independent of the
+    // burst's VFX/hit marker, attack speed and movement.
+    state.attackBlockedUntil = state.time + 1;
     result.target = state.target; result.charges = state.mysticCharges;
     result.damageMultiplier = (t.activeDamage + state.mysticCharges * t.chargeDamage) * (1 + positive(context.splashDamage));
     result.radius = Timeline.mysticRadius(state.mysticCharges,t,context.heroWidth);
@@ -183,7 +187,7 @@ function step(state, dt, context) {
   context = context || {}; dt = positive(dt);
   if (Object.prototype.hasOwnProperty.call(context, "target")) setTarget(state, context.target);
   if (context.targetAlive === false && state.style === "mystic") clearTarget(state);
-  if (context.alive === false) { cancelActive(state); clearTarget(state); state.charge = 0; return []; }
+  if (context.alive === false) { cancelActive(state); clearTarget(state); state.charge = 0; state.attackBlockedUntil = 0; return []; }
   var events = [], remaining = dt, guard = 0;
   // Segment at impact times so long frames produce exactly the same charge and
   // event schedule as short frames; no rendered-frame-dependent extra hits.
@@ -222,6 +226,7 @@ exports.DEFAULTS = DEFAULTS; exports.createState = createState; exports.step = s
 exports.bonuses = bonuses; exports.onBasicFire = onBasicFire; exports.onHit = onHit;
 exports.setTarget = setTarget; exports.clearTarget = clearTarget; exports.canActivate = canActivate;
 exports.beginActive = beginActive; exports.cancelActive = cancelActive; exports.absorbDamage = absorbDamage;
+exports.attackLockRemaining = attackLockRemaining;
 exports.projectileMultiplier = projectileMultiplier; exports.vanguardMultiplier = vanguardMultiplier;
 exports.guardianRadius = guardianRadius;
 exports.knockbackDuration=.3;

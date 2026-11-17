@@ -35,8 +35,8 @@ function fixture(){
 async function withFixture(run){const old={request:global.requestAnimationFrame,cancel:global.cancelAnimationFrame};global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let f;try{f=fixture();await run(f);}finally{f?.view.destroy();global.requestAnimationFrame=old.request;global.cancelAnimationFrame=old.cancel;}}
 const group=(f,name)=>{const row=f.view.getState().gizmos.find(row=>row.selection===name||row.kind===name);assert(row,'Missing '+name+' preview geometry');return row;};
 
-test('the real preview plays one continuous Skirmisher cast pose and the stationary mount follows the same windup',()=>withFixture(async f=>{
-  const {settings}=await f.load('skirmisher');for(const time of [.05,.1,.2,.35,.5]){f.view.seek(time);assert.equal(f.rig('hero')._pose.name,'attack');close(f.rig('hero')._pose.time,time*.1667/settings.windup);assert.equal(f.rig('horse')._pose.name,'attack');close(f.rig('horse')._pose.time,f.rig('hero')._pose.time);assert.equal(f.view.getState().riderVolley,undefined);}
+test('the real preview plays one continuous Skirmisher cast pose while the stationary horse remains idle',()=>withFixture(async f=>{
+  const {settings}=await f.load('skirmisher');for(const time of [.05,.1,.2,.35,.5]){f.view.seek(time);assert.equal(f.rig('hero')._pose.name,'attack');close(f.rig('hero')._pose.time,time*.1667/settings.windup);assert.equal(f.rig('horse')._pose.name,'idle');assert.equal(f.rig('horse')._pose.loop,true);close(f.rig('horse')._pose.time,time*.8);assert.equal(f.view.getState().riderVolley,undefined);}
   assert.equal(Timeline.riderVolleys,undefined);assert.equal(f.traces.blends.length,0,'There are no second or third presentation attacks');
   assert.deepEqual(f.traces.changes,[]);assert.deepEqual(f.traces.ends,[]);
 }));

@@ -18,6 +18,15 @@ function load(callback) {
   return function () { var index = waiting.indexOf(callback); if (index >= 0) waiting.splice(index, 1); };
 }
 function valid(node) { return node && cc.isValid(node, true); }
+function visualScale(options) { var value=options&&options.scale;return typeof value==='number'&&isFinite(value)&&value>=.1&&value<=10?value:1; }
+function copyColor(color) { return color&&typeof color.clone==='function'?color.clone():color; }
+function trailStyle(trail,options,scale) {
+  var result=Object.assign({},trail),color=options&&options.trailColor;
+  if(/^#[a-f0-9]{6}$/i.test(color||''))result.color=color;
+  scale=scale===undefined?1:scale;
+  ['width','offsetX','offsetY'].forEach(function(key){if(typeof result[key]==='number')result[key]*=scale;});
+  return result;
+}
 function visualError(view, error, descriptor) {
   if (descriptor) {
     var cached = view.bank.cache[descriptor.id] || { callbacks: [] };
@@ -222,6 +231,7 @@ View.prototype.reset = function () {
   if (this.cancelFlight) this.cancelFlight(); this.cancelFlight = null;
   if (this.cancelLaunch) this.cancelLaunch(); this.cancelLaunch = null;
   this.original.forEach(function (entry) { if (valid(entry.renderer)) entry.renderer.enabled = entry.enabled; }); this.original = [];
+  (this.trailStyles||[]).forEach(function(entry){if(valid(entry.renderer)){entry.renderer.color=entry.color;entry.renderer.stroke=entry.stroke;if(valid(entry.renderer.node))entry.renderer.node.color=entry.nodeColor;}});this.trailStyles=[];
   if (valid(this.spriteNode)) this.spriteNode.active = false;
   if (valid(this.spineNode)) this.spineNode.active = false;
   if (valid(this.trailNode)) this.trailNode.active = false;
@@ -276,10 +286,24 @@ View.prototype.begin = function (key, sourceActor) {
       descriptor = icon && data.assets.find(function (asset) { return asset.sourcePart === icon.id; });
       if (descriptor) options.flight = descriptor.id;
     }
-    if (!descriptor && !options.launch && !options.impact && options.trail === undefined) return;
+    if(!descriptor&&options.scale!==undefined){
+      var cfg=sourceActor&&sourceActor.cfg||{},behavior=Number(cfg.BehaviorTemplate||cfg.CampaignBaseUnit||cfg.ProfileBaseID||cfg.ID),fallback=key==='wall-defense'?'original:wall-arrow':behavior===90008?'original:fireball':behavior===90005?'original:stone':'original:arrow';
+      descriptor=data.assets.find(function(asset){return asset.id===fallback;});
+    }
+    if (!descriptor && !options.launch && !options.impact && options.trail === undefined && !options.trailColor) return;
     applied = true;
     if (key === "wall-defense") options.rotation = (options.rotation || 0) + 90;
     options.size = options.size || descriptor && descriptor.size || 48;
+    var scale=visualScale(options),trailScale=scale;
+    function styleTrails(root,remember){
+      if(!cc.MotionStreak||!root||!root.getComponentsInChildren)return;
+      root.getComponentsInChildren(cc.MotionStreak).forEach(function(renderer){
+        if(remember)view.trailStyles.push({renderer:renderer,color:copyColor(renderer.color),stroke:renderer.stroke,nodeColor:renderer.node&&copyColor(renderer.node.color)});
+        if(options.trailColor){renderer.color=cc.color(options.trailColor);if(renderer.node)renderer.node.color=cc.color(options.trailColor);}
+        if(scale!==1&&typeof renderer.stroke==='number')renderer.stroke*=scale;
+      });
+    }
+    if(options.trailColor||scale!==1)styleTrails(shot.node,true);
     view.options = options;
     view.impactDescriptor = data.assets.find(function (asset) { return asset.id === options.impact; });
     var launch = data.assets.find(function (asset) { return asset.id === options.launch; });
@@ -287,6 +311,7 @@ View.prototype.begin = function (key, sourceActor) {
     if ((options.trail !== undefined || descriptor && descriptor.visualPrefab) && cc.MotionStreak) {
       shot.node.getComponentsInChildren(cc.MotionStreak).forEach(function (renderer) { view.original.push({renderer:renderer,enabled:renderer.enabled});renderer.enabled=false; });
       var trail = (data.trails || []).find(function (entry) { return entry.id === options.trail; });
+      if(trail)trail=trailStyle(trail,options,trailScale);
       if (trail) view.cancelTrail = bank.get(Object.assign({},trail,{kind:'texture'}),function (clip) {
         view.cancelTrail=null;if (!current()) return;if (!clip) { restoreTrails(); return; }
         drawTrail(view,shot.node,trail,clip.asset,trailPoint(trail,{x:0,y:0}));
@@ -301,7 +326,8 @@ View.prototype.begin = function (key, sourceActor) {
         var field = descriptor.kind === "spine" ? "spineNode" : "spriteNode", node = view[field];
         if (!valid(node)) { node = view[field] = new cc.Node("Projectile artwork"); node.setParent(shot.node); }
         node.active = true; node.setPosition(0, 0); node.setScale(1); node.group = shot.node.group;
-        view.renderer = draw(node, clip, options); view.node = node; view.clip = clip;
+        view.renderer = draw(node, clip, Object.assign({},options,{size:options.size*scale})); view.node = node; view.clip = clip;
+        if(options.trailColor||scale!==1)styleTrails(node,false);
         if(options.trail!==undefined&&cc.MotionStreak)node.getComponentsInChildren(cc.MotionStreak).forEach(function(trail){trail.enabled=false;});
         // Hide only the authored renderers; leave every gameplay transform alone.
         var root = shot._towerBehavior ? shot.node : shot.bullet || shot.node;
@@ -356,6 +382,8 @@ exports.queueLaunch=function(owner,key,source,callback,guard){
 exports.prime = function (data) { catalog=data;loading=false;retryAfter=0;var callbacks=waiting;waiting=[];callbacks.forEach(function(callback){callback(catalog);}); };
 exports.drawTrail=drawTrail;
 exports.trailPoint=trailPoint;
+exports.visualScale=visualScale;
+exports.trailStyle=trailStyle;
 exports.release = function (shot) {
   var view = shot._projectileVisual;
   if (view) view.release();

@@ -86,7 +86,7 @@ function effect(id, owner, options) {
   if (owner && !options.allowDead && (owner._isPooled || owner.isDead && owner.isDead())) return false;
   var now = Date.now(), cooldown = options.cooldown === undefined ? entry.cooldown : options.cooldown;
   if (state.last[id] !== undefined && now - state.last[id] < cooldown) return false;
-  var hit = /^(?:impact-|arrow-impact-|hurt-)|^(?:magic-impact|cannon-impact-explosion|critical-hit)$/.test(id);
+  var hit = /^(?:impact-|arrow-impact-)|^(?:magic-impact|cannon-impact-explosion|critical-hit)$/.test(id);
   if (hit && state.lastHitStartedAt !== undefined && now - state.lastHitStartedAt < 500) return false;
   var location = options.point || point(owner), distanceGain = attenuation(state, location);
   if (!distanceGain) return false;
@@ -165,17 +165,18 @@ function hit(target, source, damage, options) {
   var heroStyle = source && source._relicHero && source.heroStyle;
   var arrow = source && source._relicHero ? !heroStyle || heroStyle === "skirmisher" : source && (source.navigationTeam === "friendly" && sourceType === 2 || source.buildInfo) || !!tower;
   var shot = !options.magic && options.context, skirmisher = source && source._relicHero && shot && shot.heroStyle === "skirmisher";
-  if (skirmisher && shot.styleSkill) id = "skirmisher-active-hit";
+  // A critical is the hit cue itself, so an ordinary impact cannot consume its channel first.
+  if (shot && shot.critical) id = "critical-hit";
+  else if (skirmisher && shot.styleSkill) id = "skirmisher-active-hit";
   else if (skirmisher && shot.styleShotCharge >= 1-1e-9) id = "skirmisher-passive-hit";
   else if (tower && tower.attackType === "cannon") id = null; // One explosion is emitted per shell, outside the splash-victim loop.
   else if (options.magic || heroStyle === "mystic" || sourceType === 3 || sourceType === 2 && family(source) === "ghost") id = "magic-impact";
-  else if (arrow || heroStyle === "bruiser" && !(shot && shot.styleSkill)) id = armored ? "arrow-impact-armour" : "arrow-impact-flesh";
+  else if (heroStyle === "bruiser" && !(shot && shot.styleSkill)) id = "impact-bruiser-basic";
+  else if (arrow) id = armored ? "arrow-impact-armour" : "arrow-impact-flesh";
   else id = armored ? "impact-armour" : damage >= (target.hpMax || Infinity) * .2 ? "impact-flesh-heavy" : "impact-flesh-light";
   var customImpact=source&&source._styleRuntime&&source._styleRuntime.settings&&source._styleRuntime.settings.audio&&source._styleRuntime.settings.audio.impact;
   if(customImpact&&customImpact.clip&&!options.magic)id=null;
   if (id) effect(id, target, { allowDead: true });
-  var hurt = { beast: "hurt-beast", slime: "hurt-slime", skeleton: "hurt-skeleton", ghost: "hurt-ghost", insect: "hurt-insect" }[type];
-  if (hurt && target.hp > 0) effect(hurt, target);
   return true;
 }
 function death() {
@@ -186,7 +187,11 @@ function spawnEnemy(actor, announce) {
   var state = context(actor); if (!current(state)) return;
   var cfg = actor.cfg || {}, boss = cfg.IsBoss || cfg.Boss || [90010, 90011, 90012].indexOf(Number(cfg.BehaviorTemplate||cfg.CampaignBaseUnit||sourceConfig(cfg).ID)) >= 0;
   var key = "boss:" + (state.data.round || 0);
-  if (announce && boss && !state.once[key]) { state.once[key] = true; effect("boss-arrival", actor, { game: state.game }); }
+  if (announce && boss && !state.once[key]) {
+    state.once[key] = true;
+    if (state.ui && state.ui.playBattleMusic) state.ui.playBattleMusic(true);
+    effect("boss-arrival", actor, { game: state.game });
+  }
 }
 function wave(game, stage) {
   var state = context(game), key = stage + ":" + (game.gameData.round || 0);
@@ -207,7 +212,8 @@ function loop(state, key, id, level) {
     if (active.source) {
       var volume = gain(state, level);
       // Creator's iOS WebAudio volume setter restarts playback on every write.
-      if (active.source.volume !== volume) active.source.volume = volume;
+      if (state.manager.refreshSourceVolume) state.manager.refreshSourceVolume(active.source);
+      else if (active.source.volume !== volume) active.source.volume = volume;
     }
     var nativeAudio = active.source && active.source.audio, status = nativeAudio && nativeAudio.getState && nativeAudio.getState(), states = cc._Audio && cc._Audio.State;
     var ended = states && (status === states.STOPPED || status === states.ERROR);
@@ -258,7 +264,7 @@ function start(game) {
   ["bow-arrow-release", "impact-flesh-light", "arrow-impact-flesh", "wave-start-horn", "wave-clear", "boss-arrival"].forEach(function (id) { warm(state, id); });
   // Loading does not play audio. Decode even while muted so the first shot
   // after enabling effects can start on its gameplay event without cold I/O.
-  SKIRMISHER_CUES.forEach(function(id){warm(state,id,true);});
+  SKIRMISHER_CUES.concat(["impact-bruiser-basic", "critical-hit"]).forEach(function(id){warm(state,id,true);});
   return true;
 }
 function tick(game) {

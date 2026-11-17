@@ -5,7 +5,6 @@ const CharacterOptions=require('./lib/character-options');
 const Levels=require('./lib/character-levels');
 const Catalog=require('./lib/character-catalog');
 const OriginalMounts=require('./lib/original-mounts');
-const MountAttack=require('./lib/mount-attack');
 const UnitPacks=require('./lib/unit-packs'),BossModel=require('./lib/boss-model');
 const AnimationDefaults=require('./lib/animation-defaults');
 const UnitAnimationSpeeds=require('./lib/unit-animation-speeds');
@@ -428,7 +427,7 @@ function mount(host,api){
     const previousPose=keepPose?{animation:animation.value,time}:null;
     const p=profile(),serial=++token;states.forEach(api.core.restore);states=[];layers=baseLayers=[];rig=null;selectedModel='';fittingRetryAfter=0;viewFitKey='';current.canvas.style.opacity=current.handles.style.opacity='0';current.box.setAttribute('aria-busy','true');inspector.querySelectorAll('[data-action="add-part"],[data-action="replace-part"]').forEach(control=>{control.disabled=true;});if(!p)return;message('Loading '+p.name+'…');previewName.textContent=p.name;
     renderInspector();renderAssets();const nextViewKey=JSON.stringify(p.base);if(viewKey!==nextViewKey){viewPan={x:0,y:0};viewKey=nextViewKey;}
-    try{const description=AnimationDefaults.prepare(await api.ipc('describe',p.base));if(serial!==token||disposed)return;if(p.base.mount){const rider=description.layers.find(layer=>layer.json.bones.some(bone=>bone.name==='Rider/Mount/Mount')),horse=description.layers.find(layer=>layer.mount)||rider&&description.layers.find(layer=>layer!==rider);if(horse&&rider){horse.mount=true;MountAttack.synchronize(horse.json.animations.attack,rider.json.animations.attack);}}rig=description;spine=api.runtime(description);for(const layer of description.layers)if(BossModel.metadata(layer.json))BossModel.apply(layer.json,p.boss);
+    try{const description=AnimationDefaults.prepare(await api.ipc('describe',p.base));if(serial!==token||disposed)return;rig=description;spine=api.runtime(description);for(const layer of description.layers)if(BossModel.metadata(layer.json))BossModel.apply(layer.json,p.boss);
       if(itemMode&&virtual&&!(unitFor(p).legacyKeys||[]).some(key=>data.assignments[key])){p.parts=clone(description.currentItem&&description.currentItem.parts||[]);if(description.currentItem&&description.currentItem.models)p.models=clone(description.currentItem.models);selectEquippedPart(p.parts[0]&&p.parts[0].id||'');}
       const result=await Promise.all([api.renderer.createLayers(spine,description.layers),api.renderer.createLayers(spine,description.layers),Promise.all([...new Set(p.parts.map(part=>part.sprite))].map(async id=>[id,await imageFor(assets[id])]))]);if(serial!==token||disposed)return;
       const target=speedTarget(),speedKey=target.key||target.unit&&target.unit.character||p.base.type+':'+p.base.id;if(target.key||previewSpeedKey!==speedKey){setPlaybackSpeed(target.key?UnitAnimationSpeeds.resolve(data,target.unit,target.level)*100:100);previewSpeedKey=speedKey;}updateSpeedControls();

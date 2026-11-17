@@ -21,6 +21,7 @@ var $z1GameTrackDataEvent = require("GameTrackDataEvent");
 var $z1PlayerMgr = require("PlayerMgr");
 var $z1UIGuide = require("UIGuide");
 var $z1Main = require("Main");
+var Startup = require("StartupPresentation");
 var $z1KinghtFallConfig = require("KinghtFallConfig");
 var $z1KinghtFallTextConfig = require("KinghtFallTextConfig");
 var $z1KinghtFallEnum = require("KinghtFallEnum");
@@ -50,7 +51,7 @@ var def_KinghtFallUIHome = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.onEnable = function () {
     $z1Main.default.instance.uiTop.active = true;
-    $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.menu_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+    if (!Startup.isActive || !Startup.isActive()) $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.menu_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
     $z1PoolMgr.PoolMgr.getInstance().clearPool();
     this.initViewTogg();
     if (this.tagNode && cc.isValid(this.tagNode, true)) this.setTabEvents(this.tagNode, true);

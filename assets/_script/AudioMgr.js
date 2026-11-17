@@ -8,6 +8,8 @@ var $z1BaseMgr = require("BaseMgr");
 var $z1CacheUtils = require("CacheUtils");
 var $z1LogMgr = require("LogMgr");
 var $z1ResourceMgr = require("ResourceMgr");
+var AudioMix = require("AudioMixCatalog");
+function sourceLevel(state) { return state.volume() * state.gain * (state.loudness === undefined ? 1 : state.loudness); }
 function audioVolume(value) {
   var number = Number(value);
   return isFinite(number) ? Math.max(0, Math.min(1, number)) : null;
@@ -201,7 +203,7 @@ var exp_AudioMgr = function (t) {
     this.effectVolume = volume;
     var manager = this;
     this.channelStates.forEach(function (state, source) {
-      if (!state.music && state.volume) updateVolume(source, state.volume() * state.gain);
+      if (!state.music && state.volume) updateVolume(source, sourceLevel(state));
       if (!state.music && volume === 0) retireEffect(manager, source, state);
     });
     $z1CacheUtils.CacheUtils.saveData("EFFECTVOLUME", this.effectVolume + "");
@@ -212,7 +214,7 @@ var exp_AudioMgr = function (t) {
     if (volume === null) return;
     this.musicVolume = volume;
     this.channelStates.forEach(function (state, source) {
-      if (state.music && state.volume) updateVolume(source, state.volume() * state.gain);
+      if (state.music && state.volume) updateVolume(source, sourceLevel(state));
     });
     $z1CacheUtils.CacheUtils.saveData("MUSICVOLUME", this.musicVolume + "");
   };
@@ -227,8 +229,12 @@ var exp_AudioMgr = function (t) {
     if (!source || gain === null) return false;
     var state = this.channelState(source);
     state.gain = gain;
-    if (state.volume) updateVolume(source, state.volume() * gain);
+    if (state.volume) updateVolume(source, sourceLevel(state));
     return true;
+  };
+  _ctor.prototype.refreshSourceVolume = function (source) {
+    var state = this.channelStates.get(source);
+    if (state && state.volume) updateVolume(source, sourceLevel(state));
   };
   _ctor.prototype.getAudioSource = function (t) {
     if (this.audioSourceMap.has(t)) {
@@ -347,6 +353,8 @@ var exp_AudioMgr = function (t) {
       }
       source.stop();
       source.clip = clip;
+      state.config = config.bundle + "/" + config.path;
+      state.loudness = AudioMix && typeof AudioMix.gain === "function" ? AudioMix.gain(config, clip) : 1;
       state.music = music;
       state.loop = loop;
       state.volume = volume;
@@ -360,7 +368,7 @@ var exp_AudioMgr = function (t) {
       // too, so duplicate or stale backend retries can never bypass retirement.
       guardBrowserElement(manager, source);
       source.loop = loop;
-      updateVolume(source, volume() * state.gain);
+      updateVolume(source, sourceLevel(state));
       if (!manager.appHidden && !state.paused) manager.resumeSource(source, state, false);
       complete && complete(source);
     });
@@ -433,7 +441,15 @@ var exp_AudioMgr = function (t) {
     var manager = this;
     if (loop === undefined) loop = true;
     if (volume === undefined) volume = 1;
-    this.playSource(this.getAudioSource(key), config, key, loop, true, function () {
+    var source = this.getAudioSource(key), state = this.channelStates.get(source);
+    if (config.continuous && loop && state && state.active && state.ready && state.music && state.loop && state.config === config.bundle + "/" + config.path) {
+      // Keep a looping cue in place when another boss spawns or the same phase reopens.
+      state.version++; state.loading = false; state.pending = null;
+      state.volume = function () { return volume * manager.musicVolume; };
+      this.refreshSourceVolume(source); this.resumeSource(source, state, false);
+      return;
+    }
+    this.playSource(source, config, key, loop, true, function () {
       return volume * manager.musicVolume;
     });
   };

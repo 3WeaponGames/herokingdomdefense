@@ -2,7 +2,29 @@
 const fs=require('fs'),path=require('path'),url=require('url'),Units=require('../../game-data-editor/lib/unit-assets'),Library=require('./unit-library');
 const clone=v=>JSON.parse(JSON.stringify(v));
 function duration(animation){let last=0;function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')last=Math.max(last,value.time);Object.values(value).forEach(visit);}visit(animation);return last;}
-const ANIMATION_VERSION=3;
+const ANIMATION_VERSION=4;
+// Keep the grounded first idle pose, with an explicit closing key so native
+// Spine retains the original duration without breathing or whole-body travel.
+function stillPose(source,end=duration(source)){
+  const result=clone(source);delete result.events;
+  function freeze(value){for(const [key,child]of Object.entries(value||{})){
+    if(Array.isArray(child)&&child.length&&child.every(frame=>frame&&typeof frame==='object'&&!Array.isArray(frame))){
+      const first=child[0];if((first.time||0)>0){delete value[key];continue;}
+      const frame=clone(first);for(const field of ['time','curve','c2','c3','c4'])delete frame[field];value[key]=[{...clone(frame),time:0},{...clone(frame),time:end}];
+    }else if(child&&typeof child==='object'&&!Array.isArray(child))freeze(child);
+  }}freeze(result);return result;
+}
+// The torso rotates around its seat while arms/weapons retain every authored
+// key and event. Horse saddle following supplies all rider translation.
+function seatRider(rig){
+  for(const [name,clip]of Object.entries(rig.animations||{})){
+    if(!/^(?:idle|move|walk|run|attack(?:_|$)|skill)/.test(name))continue;
+    if(name==='idle')rig.animations[name]=stillPose(clip);
+    const seated=rig.animations[name],body=seated.bones&&seated.bones['Rider/Body'];
+    if(body&&body.translate)body.translate=[{time:0,x:0,y:0},{time:duration(clip),x:0,y:0}];
+  }
+  return rig;
+}
 function strideDuration(animation){
   const full=duration(animation),frames=animation.bones&&animation.bones.bone&&animation.bones.bone.translate;if(!frames||frames.length<3)return full;
   const first=frames[0];let moved=false;for(const frame of frames.slice(1)){const same=Math.abs((frame.x||0)-(first.x||0))<1e-5&&Math.abs((frame.y||0)-(first.y||0))<1e-5;if(!same)moved=true;else if(moved&&frame.time>0)return frame.time;}return full;
@@ -42,15 +64,13 @@ function alignAnimations(horse,rider){
   const original=horse.json.animations,animations={};horse.animationSync={};
   for(const [name,target]of Object.entries(rider.json.animations)){
     const move=/^(move|walk|run)$/.test(name),attack=/attack|skill/.test(name),death=/^(die|dead)/.test(name);
-    // A library mount follows the shared Maker attack. The hero's default
-    // bow clip has its own draw/release phase; its melee clip restores the
-    // shared mount clock without stretching that bow phase into the lunge.
-    const canonical=name==='attack'&&horse.json._heroMakerMount&&horse.json._heroMakerMount.thrustReference==='legacy-cavalry'&&original.attack_fighter;
-    const source=canonical||original[name]||original[move?'move':attack?'attack':death?'wqyl_lead_die':'idle']||original.idle;
+    // Attack names remain aliases for the grounded idle pose in a merged
+    // cavalry rig. Only the rider attacks; the horse never lunges or rears.
+    if(attack||name==='idle'){animations[name]=stillPose(original.idle,duration(target));horse.animationSync[name]={sourceCycle:duration(original.idle),targetCycle:duration(target)};continue;}
+    const source=original[name]||original[move?'move':death?'wqyl_lead_die':'idle']||original.idle;
     if(!source)continue;const from=move?strideDuration(source):duration(source),clip=move?gaitCycle(source,from):clone(source),to=duration(target),factor=from>0&&to>0?to/from:1;
     function retime(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((value.time*factor).toFixed(7));Object.values(value).forEach(retime);}retime(clip);delete clip.events;animations[name]=clip;
     horse.animationSync[name]={sourceCycle:from,targetCycle:to};
-    if(name==='attack')horse.animationSync[name].thrust=require('./mount-attack').synchronize(clip,target);
   }
   horse.json.animations=animations;horse.animations=Object.keys(animations);
 }
@@ -115,6 +135,7 @@ function describe(root,base,noRuntime){
   horse=clone(horse);horse.mount=true;horse.name=base.mount==='hero-horse'?'Hero horse':horse.name;
   horse.foregroundSlots=splitHead(horse.json);
   const rider=result.layers[0];rider.x=-10;rider.y=46;rider.scaleX=rider.scaleY=.6;
+  seatRider(rider.json);
   alignAnimations(horse,rider);
   const shadow=rider.json.slots.find(s=>s.name==='Rider/Shadow');if(shadow)shadow.color='ffffff00';
   for(const clip of Object.values(rider.json.animations))if(clip.slots)delete clip.slots['Rider/Shadow'];
@@ -189,4 +210,4 @@ function orderMounted(rig,description){
   }
   rig.slots=next;
 }
-module.exports={describe,merge,bindRider,splitHead,orderMounted,alignAnimations,duration,strideDuration,ANIMATION_VERSION};
+module.exports={describe,merge,bindRider,splitHead,orderMounted,alignAnimations,duration,strideDuration,stillPose,seatRider,ANIMATION_VERSION};

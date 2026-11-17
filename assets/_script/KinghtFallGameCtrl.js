@@ -1167,7 +1167,6 @@ var def_KinghtFallGameCtrl = function (t) {
         var soundDamage = t.onAttacked(r, hero, false, context);
         if (!require("RelicCombat").primaryCurrent(context, t, hero) || t._isPooled) return;
         if (soundDamage > 0) $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(impactPosition, soundDamage, s);
-        if (s && soundDamage > 0 && BattleSounds.effect) BattleSounds.effect("critical-hit", t, { allowDead: true });
       }
     });
   };

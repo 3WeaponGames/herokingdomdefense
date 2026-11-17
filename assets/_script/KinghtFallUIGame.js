@@ -1,4 +1,5 @@
 var BattleSounds = require("BattleSounds");
+var BattleMusic = require("BattleMusic");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -225,7 +226,14 @@ var def_KinghtFallUIGame = function (t) {
     var config = this.ctrGame && this.ctrGame.gameData && this.ctrGame.gameData.levelCfg ||
       $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(this.levelId);
     var audio = $z1KinghtFallConfig.KinghtFallAudioId;
-    var id = config && (config.EnvironmentBiome === "desert" || (config.EnvironmentMapId || config.prefab) === "Map03") ? audio.desert_ready_bgm : audio.ready_bgm;
+    var id = audio[BattleMusic.planning(config)];
+    $z1AudioMgr.AudioMgr.getInstance().playMusic(id, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+  };
+  _ctor.prototype.playBattleMusic = function (boss) {
+    var data = this.ctrGame && this.ctrGame.gameData;
+    if (!data) return;
+    var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
+    var id = $z1KinghtFallConfig.KinghtFallAudioId[BattleMusic.battle(data, config, !!boss)];
     $z1AudioMgr.AudioMgr.getInstance().playMusic(id, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
   };
   _ctor.prototype.initBtnEvent = function () {
@@ -699,7 +707,7 @@ var def_KinghtFallUIGame = function (t) {
       var record = t.enemyIconInfo[key]; record.tag = false; record.ndItem.active = false;
     });
     if (this._enemyGuideMarkersBound) require("EnemyGuide").update(this);
-    $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.fight_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+    this.playBattleMusic();
     cc.tween(this.ctrUI.ndLight).set({
       opacity: 0
     }).to(.5, {

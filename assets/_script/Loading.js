@@ -21,6 +21,7 @@ var $z1DataMgr = require("DataMgr");
 var $z1PlayerMgr = require("PlayerMgr");
 var $z1LanguageMgr = require("LanguageMgr");
 var $z1TestMode = require("TestMode");
+var Startup = require("StartupPresentation"), StartupProgress = require("StartupProgress");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -38,14 +39,22 @@ var def_Loading = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.onLoad = function () {
+    this.process = 0; this.progressBar.fillRange = 0; this.labPro.string = "0.0%";
     this._layoutLoadingScreen();
+    if (Startup.loading) this._startupProgress = Startup.loading(this, this.uiRoot, cc);
     var self = this;
     this.loadingRetries = [];
     this.resourceErrorHandler = function (error, retry) { self.showLoadingError(error, retry); };
     $z1ResourceMgr.ResourceMgr.getInstance().loadErrorHandler = this.resourceErrorHandler;
     this.node.on(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
     this.labPro.node.on(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
-    cc.director.preloadScene(this.sceneName);
+    cc.director.preloadScene(this.sceneName, function (completed, total) {
+      if (self._startupProgress) self._startupProgress.scene(completed, total);
+    }, function (error) {
+      if (!cc.isValid(self, true)) return;
+      if (error) self.showLoadingError(error, function () { self.loadMainScene(); });
+      else if (self._startupProgress) self._startupProgress.scene(1, 1);
+    });
     $z1LanguageMgr.LanguageMgr.getInstance().init();
   };
   _ctor.prototype._layoutLoadingScreen = function () {
@@ -53,6 +62,7 @@ var def_Loading = function (t) {
     // the saved scene asset, whose percentage used to share a generic name.
     var root = this.uiRoot && this.uiRoot.getChildByName("UILoading");
     if (root) {
+      root.children.forEach(function (child) { child.active = false; });
       var age = root.getChildByName("8"), advisory = root.getChildByName("ndInfo");
       if (age) age.active = false;
       if (advisory) advisory.active = false;
@@ -74,7 +84,7 @@ var def_Loading = function (t) {
       if (!cc.isValid(self)) return;
       if (error) return self.showLoadingError(error, function () { self.start(); });
       language.preloadArtwork(function () {
-        if (cc.isValid(self) && !self.gameStarted) { self.gameStarted = true; self.loadLogo(); self.startGame(); }
+        if (cc.isValid(self) && !self.gameStarted) { self.gameStarted = true; self.startGame(); }
       });
     });
   };
@@ -87,6 +97,7 @@ var def_Loading = function (t) {
     // This fallback is needed when the translation catalog itself could not load.
     var bootstrapMessage = "Unable to load the game. Tap to retry.";
     this.labPro.string = language.ready ? language.t("loading.failed") : bootstrapMessage;
+    if (Startup.error) Startup.error(this.labPro.string);
     if (!this.progressLabelStyle) {
       this.progressLabelStyle = { width: this.labPro.node.width, height: this.labPro.node.height,
         overflow: this.labPro.overflow, horizontalAlign: this.labPro.horizontalAlign };
@@ -99,6 +110,7 @@ var def_Loading = function (t) {
   _ctor.prototype.retryLoading = function () {
     if (!this.loadingRetries || !this.loadingRetries.length) return;
     var retries = this.loadingRetries.splice(0);
+    if (this._startupProgress) this._startupProgress.publish();
     if (this.progressLabelStyle) {
       this.labPro.node.width = this.progressLabelStyle.width;
       this.labPro.node.height = this.progressLabelStyle.height;
@@ -117,13 +129,16 @@ var def_Loading = function (t) {
   _ctor.prototype.loadMainScene = function () {
     var self = this;
     var retry = function () { self.loadMainScene(); };
+    this._startupMainRequested = true;
+    if (StartupProgress.phase) StartupProgress.phase("scene");
     var accepted = cc.director.loadScene(this.sceneName, function (error) {
-      if (error) self.showLoadingError(error, retry);
+      if (error) { self._startupMainRequested = false; self.showLoadingError(error, retry); }
     });
-    if (accepted === false) this.showLoadingError(new Error("Main scene is unavailable"), retry);
+    if (accepted === false) { this._startupMainRequested = false; this.showLoadingError(new Error("Main scene is unavailable"), retry); }
   };
   _ctor.prototype.onDestroy = function () {
     this._startupGeneration = (this._startupGeneration || 0) + 1;
+    if (Startup.cancelLoading) Startup.cancelLoading(this, cc);
     var resources = $z1ResourceMgr.ResourceMgr.getInstance();
     if (resources.loadErrorHandler === this.resourceErrorHandler) resources.loadErrorHandler = null;
     this.node.off(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
@@ -135,6 +150,7 @@ var def_Loading = function (t) {
     var t = this;
     var generation = this._startupGeneration = (this._startupGeneration || 0) + 1;
     var isCurrent = function () { return cc.isValid(t, true) && t._startupGeneration === generation; };
+    if (StartupProgress.phase) StartupProgress.phase("services");
     cc.debug.setDisplayStats(false);
     cc.game.addPersistRootNode(this.uiRoot);
     this.progressBar.fillRange = 0;
@@ -163,7 +179,11 @@ var def_Loading = function (t) {
     console.log("当前渠道", $z1PlatformSetting.PlatformSetting.currentPlatform);
   };
   _ctor.prototype.setProcessLoad = function (t) {
-    this.process = t / 100;
+    var phases = {}; phases[$z1Appcfg.LoadingProcess.StartLoading] = "settings"; phases[$z1Appcfg.LoadingProcess.ExcelCfg] = "player";
+    phases[$z1Appcfg.LoadingProcess.PlayerCfg] = "game"; phases[$z1Appcfg.LoadingProcess.ResCfg] = "progress"; phases[$z1Appcfg.LoadingProcess.AudioCfg] = "characters";
+    phases[$z1Appcfg.LoadingProcess.OtherCfg] = "maps"; phases[$z1Appcfg.LoadingProcess.EndLoading] = "scene";
+    if (StartupProgress.phase && phases[t]) StartupProgress.phase(phases[t]);
+    this.process = this._startupProgress ? this._startupProgress.value : Math.min(.99, t / 100);
     if (!this.loadingRetries || !this.loadingRetries.length) this.labPro.string = $z1LanguageMgr.LanguageMgr.getInstance().t("loading.progress", [t]);
     this.progressBar.fillRange = this.process;
     switch (t) {

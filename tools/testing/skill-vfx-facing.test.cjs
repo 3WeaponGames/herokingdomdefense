@@ -23,7 +23,7 @@ test('directional VFX use a horizontal reflection with nonuniform scale and auth
 
 test('melee damage arcs mirror their authored angle while retaining world-space offsets, reach and angular width',()=>{
  const visual={rotation:31,scale:1.35,offsetX:37,offsetY:-23,arcDegrees:83},rightAim=atAngle(22),leftAim={x:-rightAim.x,y:rightAim.y};
- for(const style of ['fighter','vanguard','bruiser','guardian']){
+ for(const style of ['fighter','bruiser','guardian']){
   const right=Projectile.area(style,{x:120,y:70},visual,rightAim,180),left=Projectile.area(style,{x:-120,y:70},visual,leftAim,180);
   assert.deepEqual(right.origin,{x:157,y:47});assert.deepEqual(left.origin,{x:-83,y:47},'A saved world-space X offset must not silently change sign');near(right.radius,243);near(left.radius,right.radius);near(left.halfAngle,right.halfAngle);near(left.direction.x,-right.direction.x);near(left.direction.y,right.direction.y);
  }

@@ -32,7 +32,7 @@ function create(api,options){
   }
   function tinted(source,color){
     if(!color)return source;
-    const rgb=typeof color==='string'?[parseInt(color.slice(1,3),16),parseInt(color.slice(3,5),16),parseInt(color.slice(5,7),16)]:[color.r,color.g,color.b],channels=rgb.map(value=>clamp(Math.round(value/16)*16,0,255));if(channels.every(value=>value===255))return source;
+    const rgb=typeof color==='string'?[parseInt(color.slice(1,3),16),parseInt(color.slice(3,5),16),parseInt(color.slice(5,7),16)]:[color.r,color.g,color.b],channels=rgb.map(value=>clamp(typeof color==='string'?Math.round(value):Math.round(value/16)*16,0,255));if(channels.every(value=>value===255))return source;
     let cache=tints.get(source);if(!cache){cache=new Map();tints.set(source,cache);}const key=channels.join(',');if(cache.has(key))return cache.get(key);
     const canvas=document.createElement('canvas');canvas.width=source.width;canvas.height=source.height;const context=canvas.getContext('2d');context.drawImage(source,0,0);const pixels=context.getImageData(0,0,canvas.width,canvas.height);for(let i=0;i<pixels.data.length;i+=4){pixels.data[i]*=channels[0]/255;pixels.data[i+1]*=channels[1]/255;pixels.data[i+2]*=channels[2]/255;}context.putImageData(pixels,0,0);if(cache.size>=64)cache.delete(cache.keys().next().value);cache.set(key,canvas);return canvas;
   }
@@ -51,7 +51,7 @@ function create(api,options){
     ctx.save();ctx.translate(number(value.x,0),number(value.y,0));ctx.rotate(-angle*Math.PI/180);ctx.scale(scale,-scale);
     for(let index=0;index<asset.visualLayers.length;index++){
       const original=asset.visualLayers[index],layer=animated(asset,original,time),source=image(layer.image);if(!source)continue;
-      if(layer.kind==='trail'){if(value.trail!==false&&!value.trailDescriptor)streak(ctx,asset,original,time,speed,index,motion);continue;}
+      if(layer.kind==='trail'){if(value.trail!==false&&!value.trailDescriptor)streak(ctx,asset,value.trailColor?Object.assign({},original,{color:value.trailColor}):original,time,speed,index,motion);continue;}
       ctx.save();ctx.translate(number(layer.x,0),number(layer.y,0));ctx.rotate(number(layer.rotation,0)*Math.PI/180);ctx.scale(number(layer.scaleX,1),number(layer.scaleY,1));ctx.globalAlpha=clamp(number(layer.opacity,255)/255,0,1);ctx.globalCompositeOperation=layer.additive?'lighter':'source-over';
       if(layer.kind==='sprite'){
         const width=number(layer.width,source.width),height=number(layer.height,source.height);ctx.scale(1,-1);ctx.drawImage(tinted(source,value.tint),-width/2,-height/2,width,height);
@@ -66,14 +66,14 @@ function create(api,options){
       }
       ctx.restore();
     }
-    if(value.trail!==false&&value.trailDescriptor)streak(ctx,asset,Object.assign({kind:'trail',x:0,y:0,path:''},value.trailDescriptor),time,speed,0,motion);
+    if(value.trail!==false&&value.trailDescriptor)streak(ctx,asset,Object.assign({kind:'trail',x:0,y:0,path:''},value.trailDescriptor,value.trailColor?{color:value.trailColor}:{}),time,speed,0,motion);
     ctx.restore();return true;
   }
   // Generic sprite/flipbook sets can use any imported MotionStreak texture too.
   function drawTrail(ctx,trail,settings){
     if(closed||!trail)return;const value=settings||{},time=Math.max(0,number(value.time,0)),size=Math.max(1,number(value.size,48)),scale=size/48;
     const angle=number(value.rotation,0)*Math.PI/180,x=number(trail.offsetX,0)*scale,y=number(trail.offsetY,0)*scale;
-    ctx.save();ctx.translate(number(value.x,0)+x*Math.cos(angle)-y*Math.sin(angle),number(value.y,0)+x*Math.sin(angle)+y*Math.cos(angle));ctx.rotate(angle+Math.PI/2);ctx.scale(scale,-scale);streak(ctx,{},Object.assign({x:0,y:0,path:''},trail),time,number(value.speed,160)/scale,0);ctx.restore();
+    ctx.save();ctx.translate(number(value.x,0)+x*Math.cos(angle)-y*Math.sin(angle),number(value.y,0)+x*Math.sin(angle)+y*Math.cos(angle));ctx.rotate(angle+Math.PI/2);ctx.scale(scale,-scale);streak(ctx,{},Object.assign({x:0,y:0,path:''},trail,value.trailColor?{color:value.trailColor}:{}),time,number(value.speed,160)/scale,0);ctx.restore();
   }
   function invalidate(){generation++;images.clear();}
   return{draw,drawTrail,invalidate,destroy(){closed=true;invalidate();}};
