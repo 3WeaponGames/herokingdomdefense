@@ -23,9 +23,9 @@ test('stack-driven aura shares one resource and immutable frames, renders in fro
 test('late resources cannot attach to retired state and disabled slots remove the world aura',()=>{
  const f=fixture('bruiser');f.paint();assert.equal(f.loads.length,1);f.P.clear(f.rt);f.finish();assert.equal(f.assets[0].refs,0);assert.equal(f.main.children.length,1);f.paint();f.finish();f.paint();assert.equal(f.main.children.length,2);f.rt.settings.visual.passiveResource='';f.paint();assert.equal(f.main.children.length,1);assert.equal(f.assets.at(-1).refs,0);
 });
-test('Mystic paints a proportional three-part beam, one mark, bounded release tails and no stale target after recycling',()=>{
- const f=fixture('mystic'),target=f.target();f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamHoldSource=.2;f.rt.beamSourceTime=.2;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;f.paint();assert.equal(f.loads.length,4);f.finish();f.paint();const arts=f.rt._presentation.styleArts,body=[...arts.values()].find(a=>a.resourceKey.includes('mystic-beam-body-loop')),record=[...body.nodes.values()][0];assert(record.node.scaleX>record.node.scaleY);assert.equal(record.node.parent,f.hud.visual.node);
- f.rt.state.time=.6;f.paint();f.finish();f.paint();assert.equal(f.loads.length,0);target.hp=0;f.rt.state.time=.7;f.paint();assert.equal(f.rt._presentation.vfxFrame.active.mark,false);assert(f.rt._presentation.vfxFrame.entities.some(e=>e.phase==='end'));f.finish();f.rt.state.time=1;f.paint();assert.equal(f.rt._presentation.vfxFrame.entities.length,0);assert([...arts.values()].every(a=>!a.nodes.size));
+test('Mystic keeps its mark while the old beam is replaced by bounded trail state and rejects recycled targets',()=>{
+ const f=fixture('mystic'),target=f.target();f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamHoldSource=.2;f.rt.beamSourceTime=.2;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;f.paint();assert.equal(f.loads.length,1);f.finish();f.paint();const arts=f.rt._presentation.styleArts;assert(![...arts.values()].some(a=>a.resourceKey.includes('mystic-beam')));
+ f.rt.state.time=.6;f.paint();f.finish();f.paint();assert.equal(f.loads.length,0);assert(f.rt._presentation.mysticTrail.legs.length);target.hp=0;f.rt.state.time=.7;f.paint();assert.equal(f.rt._presentation.vfxFrame.active.mark,false);f.finish();f.rt.state.time=1;f.paint();assert.equal(f.rt._presentation.mysticTrail.legs.length,0);assert([...arts.values()].every(a=>!a.nodes.size));
  target.hp=10;target.node._combatGeneration=2;f.rt.state.time=1.1;f.paint();assert.equal(f.rt._presentation.vfxFrame.entities.length,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
 });
 test('Guardian aura follows the actual shield rather than the short cast ring',()=>{
@@ -37,26 +37,26 @@ test('Guardian protected-ally artwork uses the same authored inclusive radius as
  f.rt.state.tuning.allyRadius=100;frame=f.P.advanceVFX(f.rt);assert.equal(frame.entities.filter(e=>e.slot==='presence').length,2);
  f.rt.state.tuning.allyReduction=0;frame=f.P.advanceVFX(f.rt);assert.equal(frame.entities.filter(e=>e.slot==='presence').length,0);f.P.clear(f.rt);
 });
-test('Mystic phase textures preload once before combat without creating visuals and late loading remains owned',()=>{
- const f=fixture('mystic');f.P.preload(f.rt);assert.equal(f.loads.length,11);assert.equal(f.main.children.length,1);assert.equal(f.hud.visual.node.children.length,0);f.P.preload(f.rt);assert.equal(f.loads.length,11);f.finish();assert.equal(f.assets.length,11);f.P.preload(f.rt);assert.equal(f.loads.length,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+test('Mystic retains only its mark phase artwork and preloads it once without creating visuals',()=>{
+ const f=fixture('mystic');f.P.preload(f.rt);assert.equal(f.loads.length,2);assert.equal(f.main.children.length,1);assert.equal(f.hud.visual.node.children.length,0);f.P.preload(f.rt);assert.equal(f.loads.length,2);f.finish();assert.equal(f.assets.length,2);f.P.preload(f.rt);assert.equal(f.loads.length,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
 });
 
-test('beam and mark may share one atlas without inheriting the other slot tint, opacity or scale',()=>{
- const f=fixture('mystic'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop'),target=f.target();
- Settings.applyClip(f.rt.settings.visual,'beamResource',clip);Settings.applyClip(f.rt.settings.visual,'markResource',clip);
- Object.assign(f.rt.settings.visual,{beamOpacity:.2,beamColor:'#111111',markOpacity:.8,markColor:'#eeeeee',markScale:2});
- f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;
- f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes(clip.uuid)),mark=[...art.nodes.values()].find(r=>r.entity.slot==='mark'),body=[...art.nodes.values()].find(r=>r.entity.slot==='beam');
+test('passive and buff may share one atlas without inheriting the other slot tint, opacity or scale',()=>{
+ const f=fixture('fighter'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop');
+ Settings.applyClip(f.rt.settings.visual,'passiveResource',clip);Settings.applyClip(f.rt.settings.visual,'buffResource',clip);
+ Object.assign(f.rt.settings.visual,{passiveOpacity:.2,passiveColor:'#111111',buffOpacity:.8,buffColor:'#eeeeee',buffScale:2});
+ Object.assign(f.rt.state,{stacks:1,stackRemaining:5,buffRemaining:10});
+ f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes(clip.uuid)),mark=[...art.nodes.values()].find(r=>r.entity.slot==='buff'),body=[...art.nodes.values()].find(r=>r.entity.slot==='passive');
  assert(mark&&body);assert.equal(mark.node.opacity,204);assert.equal(mark.node.color,'#eeeeee');assert.equal(mark.node.scaleX,2);assert.equal(body.node.opacity,51);assert.equal(body.node.color,'#111111');
  assert.equal(f.assets.filter(a=>a===art.asset).length,1,'Shared atlas should retain a single owner');f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
 });
 
 test('a preloaded atlas with different authored playback metadata keeps independent frame caches',()=>{
- const f=fixture('mystic'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop'),target=f.target();
- Settings.applyClip(f.rt.settings.visual,'beamResource',clip);Settings.applyClip(f.rt.settings.visual,'markResource',clip);
+ const f=fixture('fighter'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop');
+ Settings.applyClip(f.rt.settings.visual,'passiveResource',clip);Settings.applyClip(f.rt.settings.visual,'buffResource',clip);
  // Non-catalog custom atlases can use the same UUID with different playback.
- f.rt.settings.visual.markResourceAnimation='alternate';
- f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;
+ f.rt.settings.visual.buffResourceAnimation='alternate';
+ Object.assign(f.rt.state,{stacks:1,stackRemaining:5,buffRemaining:10});
  f.P.preload(f.rt);f.finish();f.paint();f.finish();f.paint();
  const uses=[...f.rt._presentation.styleArts.values()].filter(a=>a.resourceKey.includes(clip.uuid));assert.equal(uses.length,2);assert.notEqual(uses[0].frames,uses[1].frames);assert(uses.every(a=>a.asset.refs===1));
  f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
@@ -137,4 +137,14 @@ test('single native volley is drawn once and seeks its cropped source clock inde
 
 test('disabling one modern aura releases its atlas while other cast assets stay selected',()=>{
  const f=fixture('fighter',true);f.rt.state.stacks=5;f.rt.state.stackRemaining=10;f.paint();f.finish();f.paint();const asset=f.assets[0];assert.equal(asset.refs,1);assert(f.rt.settings.visual.castResource);f.rt.settings.visual.passiveResource='';f.paint();assert.equal(asset.refs,0);assert.equal(f.main.children.length,1);f.P.clear(f.rt);
+});
+
+test('Blood Rage renders in front of the mounted hero and follows its live position',()=>{
+ const f=fixture('bruiser',true);f.paint();f.finish();f.paint();const record=[...f.rt._presentation.styleArts.values()].flatMap(art=>[...art.nodes.values()]).find(row=>row.entity.slot==='passive');assert(record);assert.equal(record.entity.behind,false);assert.equal(record.node.parent,f.hud.visual.node);const before={x:record.node.x,y:record.node.y};f.hero.node.x+=31;f.hero.node.y-=17;f.rt.state.time=.2;f.paint();assert.equal(record.node.x,before.x+31);assert.equal(record.node.y,before.y-17);f.P.clear(f.rt);assert(f.assets.every(asset=>asset.refs===0));
+});
+
+test('Cocos paints both cleaves using the saved source pivot, flips and separate scales',()=>{
+ const f=fixture('bruiser',true);Object.assign(f.rt.settings.visual,{castPivotX:31,castPivotY:-19,castScaleX:1.4,castScaleY:.7,castSecondaryPivotX:-27,castSecondaryPivotY:14,castSecondaryFlipY:true,castSecondaryScale:.8});
+ for(const degrees of [-135,-45,45,135]){const a=degrees*Math.PI/180;f.rt.skillCast={key:degrees,at:0,impactAt:.2,origin:{x:12,y:80},direction:{x:Math.cos(a),y:Math.sin(a)},radius:175};f.rt.state.time=.3;f.paint();f.finish();f.paint();const records=[...f.rt._presentation.styleArts.values()].flatMap(art=>[...art.nodes.values()]).filter(row=>row.entity.slot==='cast'||row.entity.slot==='castSecondary');assert.equal(records.length,2);for(const r of records){const slot=r.entity.slot,clip=r.entity.clip,p={x:clip.sourceCenterX+f.rt.settings.visual[slot+'PivotX'],y:clip.sourceCenterY+f.rt.settings.visual[slot+'PivotY']},angle=r.node.angle*Math.PI/180,x=p.x*r.node.scaleX,y=p.y*r.node.scaleY,displayed={x:r.node.x+x*Math.cos(angle)-y*Math.sin(angle),y:r.node.y+x*Math.sin(angle)+y*Math.cos(angle)};assert(Math.abs(displayed.x-12)<1e-7);assert(Math.abs(displayed.y-80)<1e-7);assert.equal(r.node.parent,f.hud.visual.node);}}
+ f.P.clear(f.rt);assert(f.assets.every(asset=>asset.refs===0));
 });

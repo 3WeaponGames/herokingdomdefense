@@ -3,12 +3,14 @@
 // unaffected; absent overrides retain the original procedural art and sounds.
 var Settings = require("./HeroSkillSettings"), Pose = require("./HeroSkillPose"), nextOwner = 0;
 var Projectile = require("./HeroSkillProjectile");
+var MysticTrail=require("./MysticTrail");
 var Skills = require("./HeroStyleSkills");
 var VFXState=require("./HeroSkillVFXState"),VFXLayout=require("./HeroSkillVFXLayout");
 var MAX_FEEDBACK=256,MAX_IMPACTS=128;
 var STYLE_SELECTION_KEYS=[];Settings.resourcePrefixes.slice(2).forEach(function(prefix){["","Kind","Bundle","Path","Animation","Skin","PremultipliedAlpha","Frames","Columns","Cell","Fps","Loop"].forEach(function(suffix){STYLE_SELECTION_KEYS.push(prefix+suffix);});});
 function visual(runtime) {
   var value=(runtime.settings || Settings.effective(runtime.state.style, runtime.config)).visual;
+  if(runtime.state.style==='mystic')return MysticTrail.visual(value);
   if(runtime.state.style!=='skirmisher')return value;
   var Looks=require('./ProjectileLooks'),data=Looks.currentCatalog();
   if(!value.projectile&&!value.resource&&runtime.config){
@@ -60,6 +62,7 @@ function deferHitReaction(runtime,target,context) {
   var item=hitRecord(runtime,target);item.at=(context&&typeof context.styleImpactAt==="number"&&isFinite(context.styleImpactAt)?Math.min(runtime.state.time,Math.max(0,context.styleImpactAt)):runtime.state.time)+delay;s.feedback.push(item);return true;
 }
 function impact(runtime,target,context) {
+  if(runtime.state.style==="mystic"&&!(context&&context.styleSkill))return;
   var v=Settings.impactVisual(visual(runtime));if(!runtime.available()||!target||!target.node)return;
   var s=state(runtime),item=hitRecord(runtime,target),p=context&&context.point||target.node.getPosition();
   var origin=target.node.getPosition();item.x=p.x;item.y=p.y;item.offsetX=p.x-origin.x;item.offsetY=p.y-origin.y;item.at=(context&&typeof context.styleImpactAt==="number"&&isFinite(context.styleImpactAt)?Math.min(runtime.state.time,Math.max(0,context.styleImpactAt)):runtime.state.time)+v.delay;item.duration=v.effectDuration/Settings.playbackRate(v.playbackRate);item.until=item.at+item.duration;
@@ -235,7 +238,7 @@ function prepare(runtime,s,v,owner) {
   var request=s.loadVersion=(s.loadVersion||0)+1;
   var scope=runtime.state,game=runtime.game,data=game&&game.gameData,epoch=game&&game._combatEpoch,hero=runtime.hero,heroNode=hero&&hero.node,generation=heroNode&&heroNode._combatGeneration;
   try{loadResource(v,function(error,asset){
-    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&owner.trailArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key||s.loadVersion!==request)return;
+    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&owner.trailArt!==s&&owner.mysticTrailArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key||s.loadVersion!==request)return;
     if(runtime.state!==scope||runtime.game!==game||game&&game.gameData!==data||game&&game._combatEpoch!==epoch||runtime.hero!==hero||hero&&hero.node!==heroNode||!alive(heroNode)||heroNode._combatGeneration!==generation){s.loading=false;return;}
     s.loading=false;if(error||!asset){s.loadError=error||Error("Empty VFX asset");return;}s.asset=asset.addRef?asset.addRef():asset;
     s.nodes.forEach(function(record){initialize(record,asset,v,s);});
@@ -245,6 +248,7 @@ function resourceKey(v){return [v.resource,v.resourceKind,v.resourceBundle,v.res
 function attachments(hud,runtime) {
   var v=visual(runtime),iv=Settings.impactVisual(v),s=runtime._presentation;
   if(typeof cc==="undefined"||!cc.Sprite)return;
+  if(runtime.state.style==="mystic"){s=state(runtime);advanceVFX(runtime);paintMysticTrail(hud,runtime,s,v);}
   if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
   s=state(runtime);var entities=[];
   if(v.resource)prepare(runtime,s,v);else clearArt(s);
@@ -252,7 +256,7 @@ function attachments(hud,runtime) {
     var trail=v.resourceTrail,trailArt=s.trailArt||(s.trailArt={nodes:new Map(),frames:new Map()});
     prepare(runtime,trailArt,{resource:trail.textureUuid,resourceKind:'texture',resourceBundle:trail.bundle,resourcePath:trail.resource},s);
   }else if(s.trailArt)clearArt(s.trailArt);
-  if(runtime.beamTarget&&alive(runtime.beamTarget.node)&&runtime.beamTarget.hp>0&&(!runtime.beamVisibleNode||runtime.beamTarget.node===runtime.beamVisibleNode)&&(runtime.beamVisibleGeneration===undefined||runtime.beamTarget.node._combatGeneration===runtime.beamVisibleGeneration)){
+  if(runtime.state.style!=="mystic"&&runtime.beamTarget&&alive(runtime.beamTarget.node)&&runtime.beamTarget.hp>0&&(!runtime.beamVisibleNode||runtime.beamTarget.node===runtime.beamVisibleNode)&&(runtime.beamVisibleGeneration===undefined||runtime.beamTarget.node._combatGeneration===runtime.beamVisibleGeneration)){
     var beamGeneration=runtime.beamTarget.node._combatGeneration;
     var onset=beamOnset(runtime);
     if(s.beamEntity!==runtime.beamTarget||s.beamGeneration!==beamGeneration||onset!==undefined&&s.beamOnset!==onset){s.beamEntity=runtime.beamTarget;s.beamGeneration=beamGeneration;s.beamOnset=onset;s.beamKey={};s.beamStarted=onset===undefined?runtime.state.time:onset;}
@@ -358,12 +362,15 @@ function vfxContext(runtime){
   return{style:runtime.state.style,facing:hero.ctrPlayAni&&hero.ctrPlayAni.spAniBody&&hero.ctrPlayAni.spAniBody.node&&hero.ctrPlayAni.spAniBody.node.scaleX<0?-1:1,skillCast:runtime.skillCast,skillCastValid:castValid,castDuration:clipDuration(castClip,'cast'),castSecondaryDuration:clipDuration(castSecondaryClip,'castSecondary'),presenceTargets:presence,defenseDuration:clipDuration(defenseClip,'defense'),physicalShieldSpawnDuration:clipDuration(physicalClip,'physicalShield'),heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:origin&&offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration,runtime.beamNode),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration,runtime.beamVisibleNode),beamOnset:beamOnset(runtime),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration,runtime.markNode):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
 }
 function advanceVFX(runtime){
-  var v=visual(runtime);if(!hasStyleArt(v)||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;
-  var s=state(runtime);s.vfxClock=s.vfxClock||VFXState.create();s.vfxContext=vfxContext(runtime);s.vfxFrame=VFXState.update(s.vfxClock,runtime.state,s.vfxContext,v);return s.vfxFrame;
+  if(runtime.state.style==="mystic"&&!hasStyleArt(visual(runtime))&&!runtime.channelTarget&&!runtime.beamTarget&&!(runtime._presentation&&runtime._presentation.mysticTrail))return null;
+  var v=visual(runtime);if(!hasStyleArt(v)&&runtime.state.style!=="mystic"||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;
+  var s=state(runtime);s.vfxClock=s.vfxClock||VFXState.create();s.vfxContext=vfxContext(runtime);if(runtime.state.style==="mystic"){s.mysticTrail=s.mysticTrail||MysticTrail.create();MysticTrail.update(s.mysticTrail,runtime.state,s.vfxContext,v);}s.vfxFrame=VFXState.update(s.vfxClock,runtime.state,s.vfxContext,v);return s.vfxFrame;
 }
+function prepareMysticTrail(runtime,s){var art=s.mysticTrailArt||(s.mysticTrailArt={nodes:new Map(),frames:new Map()}),descriptor=MysticTrail.descriptor();prepare(runtime,art,{resource:descriptor.textureUuid,resourceKind:"texture",resourceBundle:descriptor.bundle,resourcePath:descriptor.resource},s);return art;}
+function paintMysticTrail(hud,runtime,s,v){if(!cc.MotionStreak||!s.mysticTrail)return;if(!s.mysticTrail.legs.length){MysticTrail.clear(s.mysticTrailView,cc);return;}var art=prepareMysticTrail(runtime,s);if(!art.asset)return;var parent=hud.visual.node,main=runtime.game.ndMain;MysticTrail.paint(s.mysticTrail,s.mysticTrailView||(s.mysticTrailView={}),parent,art.asset,v,require("./ProjectileLooks").drawTrail,cc,function(p){return parent.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(p.x,p.y)));});}
 function preload(runtime){
   if(typeof cc==="undefined"||!cc.SpriteFrame||!cc.assetManager)return;
-  var v=visual(runtime);if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
+  var v=visual(runtime);if(runtime.state.style==="mystic")prepareMysticTrail(runtime,state(runtime));if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
   Settings.resourcePrefixes.slice(2).map(function(prefix){return prefix.replace(/Resource$/,"");}).forEach(function(slot){
     var selected=v[slot+"Resource"];if(!selected)return;var clip=VFXLayout.clipFor(selected),seen=new Set();
     ["start","loop","end"].forEach(function(phase){VFXLayout.phaseClips(slot,clip,phase).forEach(function(part){
@@ -387,12 +394,12 @@ function styleAttachments(hud,runtime){
   // rather than retaining every atlas visited during a long play session.
   if(arts.size>16)arts.forEach(function(art,key){if(!groups.has(key)){clearArt(art);arts.delete(key);}});
 }
-function suspend(runtime){var s=runtime._presentation;if(s&&s.styleArts)s.styleArts.forEach(function(art){art.nodes.forEach(function(record){if(alive(record.node))record.node.active=false;});});}
+function suspend(runtime){var s=runtime._presentation;if(s&&s.mysticTrailView)MysticTrail.suspend(s.mysticTrailView,cc);if(s&&s.styleArts)s.styleArts.forEach(function(art){art.nodes.forEach(function(record){if(alive(record.node))record.node.active=false;});});}
 function clearNodes(s) {s.nodes.forEach(function(record){if(typeof cc!=="undefined")dispose(record);});s.nodes.clear();s.frames.forEach(function(frame){frame.destroy();});s.frames.clear();}
 function releaseAsset(s){if(s.asset&&s.asset.decRef)s.asset.decRef();s.asset=null;}
 function clearArt(s){clearNodes(s);releaseAsset(s);s.loadVersion=(s.loadVersion||0)+1;s.resourceKey=null;s.loading=false;s.loadError=null;}
 function clear(runtime) {
-  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.styleArts)s.styleArts.forEach(clearArt);
+  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.mysticTrailArt)clearArt(s.mysticTrailArt);if(s.mysticTrailView)MysticTrail.clear(s.mysticTrailView,cc);if(s.styleArts)s.styleArts.forEach(clearArt);
   s.sources.forEach(function(entry){if(entry.manager.releaseAudioSource)entry.manager.releaseAudioSource(entry.key,entry.source);else entry.manager.stopSource(entry.source);});s.sources=[];delete runtime._presentation;
 }
 exports.visual=visual;exports.color=color;exports.width=width;exports.offset=offset;exports.rotated=rotated;exports.projectilePoint=projectilePoint;exports.release=release;

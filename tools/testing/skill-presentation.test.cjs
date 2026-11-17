@@ -11,13 +11,18 @@ function fixture(audioManager){
   loadAny(request,callback){loads.push({request,callback});}
  }};
  const sp={Skeleton:class{setAnimation(track,name,loop){return this.animation={track,name,loop,trackTime:0,timeScale:1};}update(){this.appliedTime=this.animation.trackTime;}},SkeletonData:class{}};
- const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports,cc,sp,require:name=>name==='UnitHitFeedback'?{play:actor=>hitReactions.push(actor)}:/^\.\/HeroSkill(VFXState|VFXLayout|Pose|Projectile)$/.test(name)?require('../../assets/_script/'+name.slice(2)):name==='AudioMgr'?{AudioMgr:{getInstance:()=>manager}}:name==='BattleSounds'?{attack:(hero,side)=>defaults.push({hero,side}),effect:(id,hero)=>defaults.push({id,hero})}:Settings});
- const target={hp:10,node:{getPosition:()=>({x:100,y:20})}},root=new Node('VFX');
- const rt={heroGeneration:3,hero:{node:{}},state:{style:'mystic',time:0},settings:Settings.defaults('mystic'),game:{_combatEpoch:7,ndMain:{convertToWorldSpaceAR:p=>({x:p.x*2,y:p.y*2})}},ui:{speed:1},projectiles:[],effects:[],available:()=>true};
+ const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports,cc,sp,require:name=>name==='./MysticTrail'?require('../../assets/_script/MysticTrail'):name==='UnitHitFeedback'?{play:actor=>hitReactions.push(actor)}:/^\.\/HeroSkill(VFXState|VFXLayout|Pose|Projectile)$/.test(name)?require('../../assets/_script/'+name.slice(2)):name==='AudioMgr'?{AudioMgr:{getInstance:()=>manager}}:name==='BattleSounds'?{attack:(hero,side)=>defaults.push({hero,side}),effect:(id,hero)=>defaults.push({id,hero})}:Settings});
+ Node.prototype.convertToWorldSpaceAR=function(p){return{x:p.x+this.x,y:p.y+this.y};};const target={hp:10,node:new Node('target')},root=new Node('VFX');target.node.setPosition({x:100,y:20});
+ const rt={heroGeneration:3,hero:{node:new Node('hero'),hp:100,hpMax:100},state:{style:'mystic',time:0},settings:Settings.defaults('mystic'),game:{_combatEpoch:7,ndMain:{convertToWorldSpaceAR:p=>({x:p.x*2,y:p.y*2}),convertToNodeSpaceAR:p=>({x:p.x/2,y:p.y/2})}},ui:{speed:1},projectiles:[],effects:[],available:()=>true};
  Settings.resourcePrefixes.slice(2).forEach(prefix=>{rt.settings.visual[prefix]='';});
+ // Generic feedback fixtures represent the active burst. Mystic's passive
+ // contact is intentionally trail-only, and is exercised separately.
+ const impact=exports.impact;exports.impact=(runtime,target,context)=>impact(runtime,target,{styleSkill:true,...context});
  return {P:exports,rt,target,root,cc,sp,calls,loads,released,defaults,hitReactions,manager,setVolume:v=>effectVolume=v};
 }
 const uuid='a9ed4a1a-a37a-44ab-af0c-7be941a3de18';
+
+test('Mystic passive contact leaves no old on-hit VFX while its active burst keeps feedback',()=>{const f=fixture();f.P.impact(f.rt,f.target,{styleSkill:false});assert.equal(f.rt._presentation,undefined);f.P.impact(f.rt,f.target,{styleSkill:true});assert.equal(f.rt._presentation.impacts.length,1);});
 test('the default on-hit burst reuses HUD Graphics for six expanding fading rays without custom assets',()=>{
  const f=fixture(),ops=[],g={moveTo(x,y){ops.push(['from',x,y]);},lineTo(x,y){ops.push(['to',x,y]);},stroke(){ops.push(['stroke',this.strokeColor,this.lineWidth]);}},hud={visual:{node:f.root,g}};f.cc.color=hex=>({hex,a:255});
  f.P.impact(f.rt,f.target,{point:{x:100,y:20}});assert.equal(f.P.hasImpactVisual(f.rt),true);f.P.draw(hud,f.rt);assert.equal(f.loads.length,0);assert.equal(f.root.children.length,0);assert.equal(ops.filter(row=>row[0]==='stroke').length,6);assert.equal(ops[0][1],106);assert.equal(ops[1][1],115);assert.deepEqual(ops[2][1],{hex:'#fff3a2',a:255});
@@ -198,11 +203,11 @@ test('channel delay starts at the logical visible onset even when first paint is
  const late=fixture();late.rt.settings.audio.channel={clip:uuid,volume:1,delay:.1};late.rt.beamTarget=late.target;late.rt.beamVisibleSince=.2;late.rt.state.time=.5;late.P.update(late.rt);assert.equal(late.calls.length,1,'an already due cue starts without another artificial delay');
 });
 
-test('same-object target recycling and a missed visible gap restart channel audio and VFX together',()=>{
+test('same-object target recycling and a missed visible gap restart channel audio and trail without old beam artwork',()=>{
  const f=fixture();f.rt.settings.audio.channel={clip:uuid,volume:1,delay:.1};Object.assign(f.rt.settings.visual,{resource:uuid,resourceKind:'spine'});f.target.node._combatGeneration=1;f.rt.beamTarget=f.target;f.rt.beamVisibleSince=.2;f.rt.state.time=.31;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);f.loads[0].callback(null,{skeletonJson:{animations:{beam:{}}}});
- const first=f.calls[0].source,oldNode=f.root.children[0];f.target.node._combatGeneration=2;f.rt.beamVisibleSince=.4;f.rt.state.time=.45;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(first.stopped,true);assert.equal(f.calls.length,1);assert.equal(oldNode.destroyed,true);assert(Math.abs(f.rt._presentation.pending[0].at-.5)<1e-8);assert(Math.abs([...f.rt._presentation.nodes.values()][0].entity.age-.05)<1e-8);
- f.rt.state.time=.51;f.P.update(f.rt);assert.equal(f.calls.length,2);const second=f.calls[1].source,node=[...f.rt._presentation.nodes.values()][0].node;
- f.rt.beamVisibleSince=.6;f.rt.state.time=.65;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(second.stopped,true);assert.equal(node.destroyed,true);assert.equal(f.rt._presentation.pending.length,1);assert(Math.abs([...f.rt._presentation.nodes.values()][0].entity.age-.05)<1e-8);f.P.clear(f.rt);assert.equal(f.rt._presentation,undefined);
+ const first=f.calls[0].source,oldKey=f.rt._presentation.mysticTrail.emitter.key;f.target.node._combatGeneration=2;f.rt.beamVisibleSince=.4;f.rt.state.time=.45;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(first.stopped,true);assert.equal(f.calls.length,1);assert.equal(f.root.children.length,0);assert(Math.abs(f.rt._presentation.pending[0].at-.5)<1e-8);assert.notEqual(f.rt._presentation.mysticTrail.emitter.key,oldKey);
+ f.rt.state.time=.51;f.P.update(f.rt);assert.equal(f.calls.length,2);const second=f.calls[1].source,key=f.rt._presentation.mysticTrail.emitter.key;
+ f.rt.beamVisibleSince=.6;f.rt.state.time=.65;f.P.update(f.rt);f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(second.stopped,true);assert.equal(f.rt._presentation.pending.length,1);assert.notEqual(f.rt._presentation.mysticTrail.emitter.key,key);f.P.clear(f.rt);assert.equal(f.rt._presentation,undefined);
 });
 
 test('a one-frame authored flipbook crops its single cell and releases only the owned clone',()=>{

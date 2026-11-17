@@ -18,12 +18,12 @@ test('workbook particle captures and native Spine effects preserve bounded asset
 
 test('style presets do not change gameplay tuning, write overrides, or expose incompatible slots',()=>{
  const config={GameTools:{timingDefaults:{keep:true}},HeroSkills:{fighter:{vendor:{keep:true}}}},before=JSON.stringify(config),Core=require('../../assets/_script/HeroStyleSkills');
- for(const row of Settings.styles){const s=Settings.effective(row.id,config);for(const [key,value]of Object.entries({...Core.DEFAULTS.common,...Core.DEFAULTS[row.id]}))assert.equal(s[key],value);for(const f of Settings.descriptors(row.id))assert(f.help&&f.help.length>20);const visible=Settings.fields(row.id).visual.map(f=>f.key);assert.equal(visible.includes('beamResource'),row.id==='mystic');assert.equal(visible.includes('buffResource'),['fighter','vanguard','guardian'].includes(row.id));assert.equal(visible.includes('passiveResource'),['fighter','vanguard','bruiser'].includes(row.id));}
+ for(const row of Settings.styles){const s=Settings.effective(row.id,config);for(const [key,value]of Object.entries({...Core.DEFAULTS.common,...Core.DEFAULTS[row.id]}))assert.equal(s[key],value);for(const f of Settings.descriptors(row.id))assert(f.help&&f.help.length>20);const visible=Settings.fields(row.id).visual.map(f=>f.key);assert.equal(visible.includes('beamResource'),false);assert.equal(visible.includes('channelTrailSpeed'),row.id==='mystic');assert.equal(visible.includes('buffResource'),['fighter','vanguard','guardian'].includes(row.id));assert.equal(visible.includes('passiveResource'),['fighter','vanguard','bruiser'].includes(row.id));}
  assert.equal(JSON.stringify(config),before);
  assert.equal(Settings.defaults('vanguard').visual.passiveScaleY,1);assert.equal(Settings.defaults('bruiser').visual.passiveScaleY,1.5);
 });
 test('a custom or disabled resource cannot inherit the preset path or atlas metadata',()=>{
- const uuid='12345678-1234-4234-8234-123456789012';for(const [style,slot]of [['fighter','passive'],['mystic','beam'],['mystic','mark'],['guardian','buff'],['guardian','taunt'],['guardian','shield']]){
+ const uuid='12345678-1234-4234-8234-123456789012';for(const [style,slot]of [['fighter','passive'],['mystic','mark'],['guardian','buff'],['guardian','taunt'],['guardian','shield']]){
   const prefix=slot+'Resource',v=Settings.effective(style,{HeroSkills:{[style]:{visual:{[prefix]:uuid,[prefix+'Kind']:'sprite',[prefix+'Bundle']:'resources',[prefix+'Path']:'custom/effect'}}}}).visual;assert.equal(v[prefix],uuid);assert.equal(v[prefix+'Path'],'custom/effect');assert.equal(v[prefix+'Frames'],undefined);
   const disabled=Settings.effective(style,{HeroSkills:{[style]:{visual:{[prefix]:''}}}}).visual;assert.equal(disabled[prefix],'');assert.equal(disabled[prefix+'Path'],undefined);
  }

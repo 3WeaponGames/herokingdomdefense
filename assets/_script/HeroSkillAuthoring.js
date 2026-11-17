@@ -25,7 +25,7 @@ var SLOT_MAP={
   fighter:{active:["buff","cast"],passive:["passive"]},
   vanguard:{active:["cast"],passive:["passive","buff"]},
   skirmisher:{active:["cast"],passive:[]},
-  mystic:{active:["cast"],passive:["beam","mark","channelHit"]},
+  mystic:{active:["cast"],passive:["mark"]},
   bruiser:{active:["cast","castSecondary"],passive:["passive"]},
   guardian:{active:["buff","taunt","shield","defense","physicalShield"],passive:["presence"]}
 };
@@ -73,6 +73,7 @@ function fields(style,id,source,effective,catalogs){
         if(style==="guardian"&&id==="active"&&phase==="impact")return;
         if(id==="passive"?(style!=="mystic"||phase!=="channel"):phase==="channel")return;
         field.group=id==="passive"?"Channel sound":phase==="impact"?"Enemy contact":"Skill cast";
+      }else if(/^channelTrail/.test(key)){if(style!=="mystic"||id!=="passive")return;field.group="Passive trail";
       }else if(slot){
         if(style==='guardian'&&['buff','defense','shield'].indexOf(slot)>=0&&!currentVisual[slot+'Resource'])return;
         if(allowedSlots.indexOf(slot)<0||slot==="shield"&&!currentVisual.shieldResource&&currentVisual.physicalShieldResource)return;field.group=slotName(style,slot);

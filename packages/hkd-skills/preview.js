@@ -10,6 +10,7 @@ const SkillPose=require('../../assets/_script/HeroSkillPose');
 const VFXLayout=require('../../assets/_script/HeroSkillVFXLayout');
 const Projectile=require('../../assets/_script/HeroSkillProjectile');
 const Timeline=require('../../assets/_script/HeroSkillTimeline');
+const MysticTrail=require('../../assets/_script/MysticTrail');
 const Gizmos=require('./preview-gizmos');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const finite=(value,fallback)=>typeof value==='number'&&Number.isFinite(value)?value:fallback;
@@ -19,7 +20,7 @@ function putAt(object,path,value){const keys=String(path).split('.');let at=obje
 function transformedCorners(rect,at,angle,sx,sy){const r=angle*Math.PI/180,c=Math.cos(r),s=Math.sin(r);return[[rect.minX,rect.minY],[rect.maxX,rect.minY],[rect.maxX,rect.maxY],[rect.minX,rect.maxY]].map(([x,y])=>({x:at.x+x*sx*c-y*sy*s,y:at.y+x*sx*s+y*sy*c}));}
 function multiplyPixels(source,color){const rgb=[1,3,5].map(start=>parseInt(color.slice(start,start+2),16)/255),result=new Uint8ClampedArray(source.length);for(let i=0;i<source.length;i+=4){result[i]=source[i]*rgb[0];result[i+1]=source[i+1]*rgb[1];result[i+2]=source[i+2]*rgb[2];result[i+3]=source[i+3];}return result;}
 function attackName(style){return style==='skirmisher'?'attack':'attack_'+style;}
-function availableHandles(style,visual,entry){if(entry)return Authoring.handles(style,entry,visual).map(row=>row[0]);const names=style==='mystic'?['origin','target','effect']:style==='skirmisher'?[]:['effect'];for(const prefix of SkillSettings.resourcePrefixes.slice(2))if(visual&&visual[prefix])names.push(prefix.replace(/Resource$/,''));return names;}
+function availableHandles(style,visual,entry){if(style==='mystic')visual=MysticTrail.visual(visual);if(entry)return Authoring.handles(style,entry,visual).map(row=>row[0]);const names=style==='mystic'?['origin','target','effect']:style==='skirmisher'?[]:['effect'];for(const prefix of SkillSettings.resourcePrefixes.slice(2))if(visual&&visual[prefix])names.push(prefix.replace(/Resource$/,''));return names;}
 function flipbookFrame(meta,age,width,height){
   if(!meta||!meta.cell||meta.frames<1||meta.columns<1||meta.cell*meta.columns>width||Math.ceil(meta.frames/meta.columns)*meta.cell>height)return null;
   const elapsed=Math.max(0,Math.floor(Math.max(0,finite(age,0))*meta.fps)),index=meta.loop?elapsed%meta.frames:Math.min(meta.frames-1,elapsed);
@@ -204,7 +205,7 @@ function create(host,options){
   }
   function drawHitFeedback(vp){
     const v=SkillSettings.impactVisual?SkillSettings.impactVisual(settings.visual||{}):{},duration=Math.max(.01,finite(v.effectDuration,.35))/SkillSettings.playbackRate(v.playbackRate);
-    for(const hit of feedback()){const age=model.time-hit.started;if(age>duration)continue;const target=model.targets[hit.target];if(!target)continue;const point=model.impactPoint(hit),at={x:point.x+finite(v.offsetX,0),y:point.y+finite(v.offsetY,0)},p=screen(at,vp);
+    for(const hit of feedback()){if(style==='mystic'&&!hit.skill)continue;const age=model.time-hit.started;if(age>duration)continue;const target=model.targets[hit.target];if(!target)continue;const point=model.impactPoint(hit),at={x:point.x+finite(v.offsetX,0),y:point.y+finite(v.offsetY,0)},p=screen(at,vp);
       if(impactResource){impactResource.visual=v;customEffect(at,finite(v.rotation,0),age,vp,false,impactResource,undefined,{handleName:'impact',key:'impact:'+hit.target});}
       else{const scale=finite(v.scale,1),progress=age/duration;ctx.save();ctx.globalAlpha=finite(v.opacity,1)*(1-progress);ctx.strokeStyle=v.color||'#fff3a2';ctx.lineWidth=3*vp.scale*scale;for(let i=0;i<6;i++){const angle=i*Math.PI/3+finite(v.rotation,0)*Math.PI/180,inner=(6+progress*9)*vp.scale*scale,outer=(15+progress*15)*vp.scale*scale;line({x:p.x+Math.cos(angle)*inner,y:p.y-Math.sin(angle)*inner},{x:p.x+Math.cos(angle)*outer,y:p.y-Math.sin(angle)*outer},ctx.lineWidth,ctx.strokeStyle);}ctx.restore();}
     }
@@ -219,7 +220,7 @@ function create(host,options){
   function drawEffects(vp){
     const v=settings.visual||{},a=anchors(),scale=finite(v.scale,1),alpha=clamp(finite(v.opacity,1),0,1),builtin=v.showBuiltin!==false&&!v.castResource&&!v.castSecondaryResource;
     ctx.save();ctx.globalAlpha=alpha;ctx.lineCap='round';
-    if(model.beam){if(builtin&&!v.beamResource){const from=screen(a.origin,vp),to=screen(a.target,vp);line(from,to,Math.max(1,finite(v.lineWidth,0)||10)*scale*vp.scale,v.color||'#7134a4');line(from,to,Math.max(1,(finite(v.lineWidth,0)||4))*scale*vp.scale,v.color||'#d9a4ff');}customEffect({x:a.target.x+finite(v.offsetX,0),y:a.target.y+finite(v.offsetY,0)},finite(v.rotation,0),model.time-model.beamVisibleStarted,vp,true);}
+    if(model.beam&&style!=='mystic'){if(builtin&&!v.beamResource){const from=screen(a.origin,vp),to=screen(a.target,vp);line(from,to,Math.max(1,finite(v.lineWidth,0)||10)*scale*vp.scale,v.color||'#7134a4');line(from,to,Math.max(1,(finite(v.lineWidth,0)||4))*scale*vp.scale,v.color||'#d9a4ff');}customEffect({x:a.target.x+finite(v.offsetX,0),y:a.target.y+finite(v.offsetY,0)},finite(v.rotation,0),model.time-model.beamVisibleStarted,vp,true);}
     for(const p of model.projectiles){if(p.skill&&v.castResource)continue;ctx.globalAlpha=p.skill?alpha:1;const pv=p.skill?v:{},center=Projectile.point(p),angle=Math.atan2(p.direction.y,p.direction.x)*180/Math.PI,d=p.direction,arrow=Projectile.arrow(p.width),at=screen(center,vp),place=(along,across)=>screen({x:center.x+d.x*along-d.y*across,y:center.y+d.y*along+d.x*across},vp);
       if(p.skill){
         const trail=pv.resourceTrail,age=Math.max(0,model.time-(p.started||0));
@@ -240,7 +241,7 @@ function create(host,options){
 
   }
   function drawStyleEffects(vp){
-    const a=anchors(),v=settings.visual||{},target=t=>t&&t.hp>0?{id:t.id,generation:0,...Projectile.add(bodyPoint(t),{x:v.targetX,y:v.targetY})}:null,marked=model.state.marked&&model.state.target;
+    const a=anchors(),v=style==='mystic'?MysticTrail.visual(settings.visual||{}):settings.visual||{},target=t=>t&&t.hp>0?{id:t.id,generation:0,...Projectile.add(bodyPoint(t),{x:v.targetX,y:v.targetY})}:null,marked=model.state.marked&&model.state.target;
     const frame=model.updateVFX({facing:model.bodyFace,presenceTargets:model.allies.filter(ally=>model.state.tuning.allyReduction>0&&Math.hypot(ally.x-model.hero.x,ally.y-model.hero.y)<=core.guardianRadius(model.state.tuning,'allyRadius')).map(ally=>({id:ally.id,generation:0,...allyTorso(model.allies.indexOf(ally))})),origin:a.origin,channelTarget:target(model.channelTarget),beamTarget:target(model.beamTarget),markedTarget:marked?{id:marked.id,generation:0,...overhead(marked)}:null,taunts:model.taunts.filter(r=>r.target.hp>0).map(r=>({key:r.key,at:r.at,target:{id:r.target.id,generation:0,...overhead(r.target)}}))});
     for(const entity of VFXLayout.entities(frame,v,model.vfxContext)){
       const asset=styleResources.get(entity.visual.resource);if(!asset)continue;
@@ -256,6 +257,8 @@ function create(host,options){
     if(token!==styleSerial||disposed)return;styleResources.clear();for(const [id,resource]of results)styleResources.set(id,resource);
   }
   function fieldLimits(){if(!schemaLimits.has(style))schemaLimits.set(style,Object.fromEntries(SkillSettings.descriptors(style).filter(f=>f.type==='number').map(f=>[f.path,f])));return schemaLimits.get(style);}
+  function drawMysticTrail(vp){if(style!=='mystic')return;ctx.save();ctx.lineCap='round';for(const segment of MysticTrail.segments(model.mysticTrail,settings.visual)){ctx.globalAlpha=segment.opacity;line(screen(segment.a,vp),screen(segment.b,vp),segment.width*vp.scale,segment.color);}ctx.restore();}
+
   function resourceRect(asset,age,placement,ghost){
     if(asset.image){const image=asset.image,frame=flipbookFrame(SkillSettings.flipbook(asset.visual)||asset.descriptor&&asset.descriptor.flipbook,age,image.width,image.height),w=frame?frame.width:image.width,h=frame?frame.height:image.height,ax=finite(placement.anchorX,.5),ay=finite(placement.anchorY,.5);return{minX:-w*ax,minY:-h*ay,maxX:w*(1-ax),maxY:h*(1-ay),frame};}
     const layers=asset.layers||[];if(!layers.length)return null;
@@ -319,7 +322,7 @@ function create(host,options){
     if(disposed)return;resize();ctx.clearRect(0,0,overlay.width,overlay.height);backCtx.clearRect(0,0,underlay.width,underlay.height);
     if(!heroLayers.length||!spine){ctx.fillStyle='#b9c8da';ctx.font='15px sans-serif';ctx.fillText('Loading character preview…',20,32);status();return;}
     try{effectInstances=[];pose();if(!fitted)fitted=calculateBounds();const vp=viewport(),all=heroLayers.concat(...targetLayers,...allyLayers);renderer.drawCanvas(spine,canvas,all,{width:vp.width,height:vp.height,bounds:vp.bounds,zoom:view.zoom,panX:view.panX,panY:view.panY});
-      ctx.strokeStyle='#8292a322';ctx.lineWidth=1;const ground=screen({x:0,y:0},vp);ctx.beginPath();ctx.moveTo(0,ground.y);ctx.lineTo(overlay.width,ground.y);ctx.stroke();drawGeometry(vp);drawEnemies(vp);drawEffects(vp);drawStyleEffects(vp);drawHitFeedback(vp);drawHandles(vp);status();
+      ctx.strokeStyle='#8292a322';ctx.lineWidth=1;const ground=screen({x:0,y:0},vp);ctx.beginPath();ctx.moveTo(0,ground.y);ctx.lineTo(overlay.width,ground.y);ctx.stroke();drawGeometry(vp);drawEnemies(vp);drawEffects(vp);drawStyleEffects(vp);drawMysticTrail(vp);drawHitFeedback(vp);drawHandles(vp);status();
     }catch(error){status(error);}
   }
   async function loadEffect(item,token){
@@ -457,7 +460,7 @@ function create(host,options){
   raf=request(frame);draw();
   function gizmoState(){return gizmoGroups.map(g=>({id:g.id,name:g.name,selection:g.spec.selection,kind:g.kind,label:g.label,ghost:!!g.spec.ghost,screenOrigin:{...g.screenOrigin},origin:{...g.origin},outline:g.outline.map(p=>({...p})),geometry:{radius:g.spec.radius,halfAngle:g.spec.halfAngle,width:g.spec.width,direction:g.spec.direction},handles:g.handles.map(h=>({...h,world:{...h.world},paths:[...h.paths]}))}));}
   return{set,play,seek,step,cast,restart,setScenario,fit,selectHandle,setAudioEnabled,setTransformMode,finishTransform,
-    getState:()=>Object.assign(model.status(),{gizmos:gizmoState(),settings:clone(settings),transformMode,transforming:!!(drag&&drag.kind==='transform'),selectedInstance,nativeGuidePaths:[],playing,loaded:!!heroLayers.length,hero:{x:model.hero.x,y:model.hero.y},weaponOrigin:anchors().origin,skillOrigin:anchors().effect,effects:model.effects.map(e=>({x:e.x,y:e.y,radius:e.radius,halfAngle:e.halfAngle,resolved:e.resolved})),selectedHandle,view:{...view},silent:!soundEnabled,handles:handles.map(handle=>({...handle,world:{...handle.world}})),enemyRegions:enemyRegions.map(region=>({...region})),projectilePaths:model.projectiles.map(p=>({skill:p.skill,visual:Projectile.visualPoint(p,p.skill?settings.visual:{}),damage:Projectile.damagePoint(p),direction:{...p.direction}})),renderedLayers:heroLayers.length+targetLayers.flat().length+allyLayers.flat().length,customResourceLoaded:!!effectImage||!!effectLayers.length,impactResourceLoaded:!!impactResource,styleResourcesLoaded:styleResources.size,vfxEntities:model.vfxFrame&&model.vfxFrame.entities.length||0}),
+    getState:()=>Object.assign(model.status(),{gizmos:gizmoState(),settings:clone(settings),transformMode,transforming:!!(drag&&drag.kind==='transform'),selectedInstance,nativeGuidePaths:[],playing,loaded:!!heroLayers.length,hero:{x:model.hero.x,y:model.hero.y},weaponOrigin:anchors().origin,skillOrigin:anchors().effect,effects:model.effects.map(e=>({x:e.x,y:e.y,radius:e.radius,halfAngle:e.halfAngle,resolved:e.resolved})),selectedHandle,view:{...view},silent:!soundEnabled,handles:handles.map(handle=>({...handle,world:{...handle.world}})),enemyRegions:enemyRegions.map(region=>({...region})),projectilePaths:model.projectiles.map(p=>({skill:p.skill,visual:Projectile.visualPoint(p,p.skill?settings.visual:{}),damage:Projectile.damagePoint(p),direction:{...p.direction}})),passiveTrail:style==='mystic'?{segments:MysticTrail.segments(model.mysticTrail,settings.visual),legs:model.mysticTrail.legs.map(leg=>({key:leg.key,head:{...leg.head},forward:leg.forward,lifetime:leg.lifetime}))}:null,renderedLayers:heroLayers.length+targetLayers.flat().length+allyLayers.flat().length,customResourceLoaded:!!effectImage||!!effectLayers.length,impactResourceLoaded:!!impactResource,styleResourcesLoaded:styleResources.size,vfxEntities:model.vfxFrame&&model.vfxFrame.entities.length||0}),
     destroy(){if(disposed)return;finishTransform(false);disposed=true;serial++;rigSerial++;effectSerial++;impactSerial++;styleSerial++;styleResources.clear();stopSounds();cancel(raf);endDrag();if(windowTarget)windowTarget.removeEventListener('blur',blur);overlay.removeEventListener('keydown',keydown);if(resizeObserver)resizeObserver.disconnect();box.removeEventListener('wheel',wheel);renderer.destroyCanvas(canvas);heroLayers=[];targetLayers=[];allyLayers=[];effectLayers=[];effectImage=null;impactResource=null;tintImages.clear();box.remove();}};
 }
 module.exports={create,clipInfo,followMount,attackName,multiplyPixels,availableHandles,flipbookFrame};

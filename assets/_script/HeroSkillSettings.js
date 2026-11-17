@@ -21,6 +21,7 @@ EFFECT_SLOTS.forEach(function(slot){
   VISUAL[slot+"PlaybackRate"]=1;
 });
 Object.assign(VISUAL,{castDelay:0,arcStartWidth:120,passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1,beamWidth:48,beamEndDuration:.25,markSpawnDuration:.5,shieldSpawnDuration:.5,shieldEndDuration:.625});
+Object.assign(VISUAL,{channelTrailSpeed:700,channelTrailWidth:10,channelTrailLength:.7,channelTrailColor:"#5d2b8b",channelTrailOpacity:.9});
 var AUDIO = {clip:"",volume:1,delay:0};
 var HELP = {
   cooldown:"Seconds between active-skill uses.",
@@ -148,6 +149,9 @@ var visualFields = Object.keys(VISUAL).map(function(key){
   if(/Playback$/.test(key)){min=0;max=4;step=.01;unit="playback multiplier";}
   if(/PlaybackRate$/.test(key)||key==="animationPlayback"){min=.05;max=4;step=.01;unit="playback multiplier";}
   if(key==="beamWidth"){min=1;max=200;step=1;unit="visual units";}
+  if(key==="channelTrailSpeed"){min=10;max=5000;step=10;unit="units / second";}
+  if(key==="channelTrailWidth"){min=1;max=100;step=.5;unit="visual units";}
+  if(key==="channelTrailLength"){min=.05;max=1.5;step=.05;unit="fraction of one-way travel time";}
   if(key==="beamEndDuration"||key==="markSpawnDuration"||key==="shieldSpawnDuration"||key==="shieldEndDuration"){min=.01;max=5;step=.01;unit="seconds";}
   if(key==="lineWidth"){min=0;max=200;step=.5;unit="0 = style default";}
   if(key==="effectDuration"||key==="impactDuration"){min=.01;max=30;step=.01;unit="seconds";}
@@ -158,6 +162,7 @@ var visualFields = Object.keys(VISUAL).map(function(key){
 }).map(function(field){var key=field.key,slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|castSecondary|cast)/.exec(key),purpose=slot?{passive:"the state-driven passive aura",beam:"Mystic's continuous beam",mark:"the overhead target mark",buff:"the fighting style's active buff aura",taunt:"the one-shot effect above each taunted enemy",shield:"Guardian's body shield",cast:"the complete active-skill effect at its captured cast position",castSecondary:"Blood Cleave's second simultaneous body-centered cast effect",channelHit:"the electrified effect on Mystic's current beam target",presence:"Guardian's protection aura on each nearby ally",defense:"Guardian's one-shot defense appearance",physicalShield:"Guardian's physical shield appearance and sustain"}[slot[1]]:"";
   if(slot)field.label=label(key).replace(/Resource Animation$/,"VFX animation").replace(/Resource$/,"VFX asset");
   field.help=VISUAL_HELP[key]||(slot?(field.type==="vfx"?"Imported VFX for "+purpose+". Empty disables this artwork without affecting gameplay.":field.type==="effect-animation"?"Animation from the selected VFX; flipbooks use their imported timing.":/Delay$/.test(key)?"Seconds before "+purpose+" appears. Independent of the other effect layers and damage timing. The effect still stops as soon as its owning buff or target ends.":/Offset/.test(key)?"Visual offset for "+purpose+" in world units; positive Y moves upward. Damage geometry is unchanged.":/Scale/.test(key)?"Size multiplier for "+purpose+". Minimum scale is the size at the lowest passive intensity.":/PlaybackRate$/.test(key)?"Saved playback multiplier for "+purpose+". 0.5 is half speed; 2 is double speed. Buff duration and damage are unchanged. "+(slot[1]==="beam"?"Beam formation stays fitted to the rider's windup; this changes the connected loop and release.":""):/Playback/.test(key)?"Animation speed at minimum or maximum passive intensity. Speed blends with stacks, momentum or missing HP without seeking the animation.":/Opacity/.test(key)?"Opacity of "+purpose+" from 0 (hidden) to 1 (fully visible).":/Color/.test(key)?"Optional tint for "+purpose+". Empty preserves the imported colors.":/Rotation/.test(key)?"Visual rotation in degrees; gameplay direction is unchanged.":key==="beamWidth"?"Displayed beam thickness in world units. Origin and target flares keep their proportions.":key==="beamEndDuration"?"Seconds for the release frames after a beam stops or switches targets.":key==="markSpawnDuration"?"Seconds for the non-looping mark to appear before its persistent loop.":"Presentation setting for "+purpose+"; does not change gameplay."):undefined);return field;});
+visualFields.forEach(function(field){if(/^channelTrail/.test(field.key)){field.group="Passive trail";field.label={channelTrailSpeed:"Trail travel speed",channelTrailWidth:"Trail width",channelTrailLength:"Trail tail length",channelTrailColor:"Trail color",channelTrailOpacity:"Trail opacity"}[field.key];field.help=field.key==="channelTrailLength"?"Old trail points fade over this fraction of the travel time to the target. Longer distances leave longer-lasting tails; close targets fade sooner.":field.key==="channelTrailSpeed"?"Visual speed of the invisible emitter travelling back and forth between the scepter and its target. Attack timing is unchanged.":"Appearance of the fading purple trail between Mystic and its target.";}});
 var audioFields=[];
 ["cast","impact","channel"].forEach(function(phase){
   var anchor=phase==="cast"?"skill confirmation":phase==="impact"?"the actual enemy hit":"the visible Mystic beam start";
@@ -167,6 +172,8 @@ var audioFields=[];
 });
 function fields(style){
   var visual=clone(visualFields).filter(function(field){
+    if(/^channelTrail/.test(field.key))return style==="mystic";
+    if(style==="mystic"&&/^(beam|channelHit)/.test(field.key))return false;
     if(field.key==="animationPlayback"&&style==="skirmisher"||field.key==="castPlaybackRate"&&(style==="skirmisher"||style==="vanguard"))return false;
     var slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|castSecondary|cast)/.exec(field.key);
     if(slot){if(slot[1]==="castSecondary")return style==="bruiser";if(slot[1]==="cast")return style!=="guardian";if(slot[1]==="buff")return ["fighter","vanguard","guardian"].indexOf(style)>=0;if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark"||slot[1]==="channelHit")return style==="mystic";return style==="guardian";}

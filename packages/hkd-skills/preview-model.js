@@ -2,6 +2,7 @@
 // Render-only skill simulation. No Cocos actors, player progress or scene are
 // touched. Skill events, ordinary windups and channel ticks share one clock.
 const DefaultCore=require('../../assets/_script/HeroStyleSkills');
+const MysticTrail=require('../../assets/_script/MysticTrail');
 const VFXState=require('../../assets/_script/HeroSkillVFXState');
 const VFXLayout=require('../../assets/_script/HeroSkillVFXLayout');
 const Projectile=require('../../assets/_script/HeroSkillProjectile');
@@ -26,6 +27,7 @@ class Model{
  constructor(style,settings,scenario,core,projectileOrigin,weaponOrigin,targetPoint){this.core=core||DefaultCore;this.projectileOrigin=projectileOrigin;this.weaponOrigin=weaponOrigin;this.projectileTargetPoint=targetPoint;this.configure(style,settings,scenario);}
  configure(style,settings,scenario){this.style=style||'skirmisher';this.settings=clone(settings||{});this.scenario=Object.assign({hp:100,targetDistance:120,moving:false,direction:0,speed:1,repeat:true,mode:'active',attackRate:1.5,targets:3},scenario||{});this.scenario.holdSource=Math.max(0,finite(this.scenario.holdSource,finite(this.scenario.holdDelay,finite(this.scenario.impactDelay,.1667))*(finite(this.scenario.attackPlayback,1)||1)));this.reset();}
  reset(){
+  this.mysticTrail=MysticTrail.create();
   this.time=0;this.bodyFace=1;this.hero={x:0,y:0,hp:Math.max(.01,finite(this.scenario.hp,100)/100*1000),maxHp:1000};
   const d=finite(this.scenario.targetDistance,120),count=clamp(Math.floor(this.scenario.targets||3),1,5);
   this.targets=Array.from({length:count},(_,i)=>{const at=this.scenario.targetPositions&&this.scenario.targetPositions[i];return {id:i,x:finite(at&&at.x,d+i*85),y:finite(at&&at.y,i?i%2?22:-22:0),hp:100000,maxHp:100000};});
@@ -37,7 +39,7 @@ class Model{
   if(this.skillCast&&this.style==='vanguard')this.skillCast.origin=this.vanguardCastOrigin();
   const context=Object.assign({castDuration:duration('cast'),castSecondaryDuration:duration('castSecondary'),defenseDuration:duration('defense'),physicalShieldSpawnDuration:duration('physicalShield'),style:this.style,facing:this.bodyFace,hero:this.hero,heroBody:{x:this.hero.x+finite(this.scenario.heroBodyOffset&&this.scenario.heroBodyOffset.x,0),y:this.hero.y+finite(this.scenario.heroBodyOffset&&this.scenario.heroBodyOffset.y,80)},skillCast:this.skillCast,skillCastValid:this.style!=='mystic'||!this.skillCast||typeof this.skillCast.impactAt==='number'||this.targets.some(target=>target.id===this.skillCast.target?.id&&target.hp>0&&distance(this.hero,target)<=this.attackRange()),presenceTargets:this.allies.filter(t=>this.state.tuning.allyReduction>0&&t.hp>0&&distance(this.hero,t)<=DefaultCore.guardianRadius(this.state.tuning,'allyRadius')).map(t=>({id:t.id,generation:0,x:t.x+finite(this.scenario.allyBodyOffset&&this.scenario.allyBodyOffset.x,0),y:t.y+finite(this.scenario.allyBodyOffset&&this.scenario.allyBodyOffset.y,50)})),taunts:this.taunts.filter(r=>r.target.hp>0).map(r=>({key:r.key,at:r.at,target:{id:r.target.id,generation:0,x:r.target.x,y:r.target.y+100}})),tauntDuration:v.tauntResourceFrames>0?v.tauntResourceFrames/v.tauntResourceFps:1.875,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,alive:this.hero.hp>0,hp:this.hero.hp,maxHp:this.hero.maxHp,origin:{x:this.hero.x+(v.originX||0),y:this.hero.y+70+(v.originY||0)},channelTarget:target(this.channelTarget),beamTarget:target(this.beamTarget),beamOnset:this.beamVisibleStarted,markedTarget:this.state.marked?target(this.state.target):null,warmupProgress:this.scenario.holdSource>0?Math.min(1,this.channelSourceTime/this.scenario.holdSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration},extra||{});
   if(context.markedTarget&&!extra?.markedTarget)context.markedTarget.y+=50;
-  this.vfxContext=context;this.vfxFrame=VFXState.update(this.vfxClock,this.state,context,v);return this.vfxFrame;
+  this.vfxContext=context;if(this.style==='mystic')MysticTrail.update(this.mysticTrail,this.state,context,v);this.vfxFrame=VFXState.update(this.vfxClock,this.state,context,v);return this.vfxFrame;
  }
  selected(){return Number.isInteger(this.scenario.selectedTarget)?this.targets[this.scenario.selectedTarget]||null:null;}
  selectTarget(id){if(!this.targets[id])return;this.scenario.selectedTarget=id;this.channelTarget=null;this.visibleBeam(null);this.core.clearTarget(this.state);this.basicPending=null;if(this.approach&&!this.approach.arrived)this.planApproach();return this.targets[id];}
