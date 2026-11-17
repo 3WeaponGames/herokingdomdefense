@@ -169,7 +169,7 @@ function hit(target, source, damage, options) {
   else if (skirmisher && shot.styleShotCharge >= 1-1e-9) id = "skirmisher-passive-hit";
   else if (tower && tower.attackType === "cannon") id = null; // One explosion is emitted per shell, outside the splash-victim loop.
   else if (options.magic || heroStyle === "mystic" || sourceType === 3 || sourceType === 2 && family(source) === "ghost") id = "magic-impact";
-  else if (arrow) id = armored ? "arrow-impact-armour" : "arrow-impact-flesh";
+  else if (arrow || heroStyle === "bruiser" && !(shot && shot.styleSkill)) id = armored ? "arrow-impact-armour" : "arrow-impact-flesh";
   else id = armored ? "impact-armour" : damage >= (target.hpMax || Infinity) * .2 ? "impact-flesh-heavy" : "impact-flesh-light";
   var customImpact=source&&source._styleRuntime&&source._styleRuntime.settings&&source._styleRuntime.settings.audio&&source._styleRuntime.settings.audio.impact;
   if(customImpact&&customImpact.clip&&!options.magic)id=null;

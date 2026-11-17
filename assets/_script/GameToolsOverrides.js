@@ -1,6 +1,6 @@
 "use strict";
 
-// Saved animation defaults and per-unit authoring overrides. No configuration
+// Saved combat settings, animation defaults and per-unit authoring overrides. No configuration
 // is created or loaded here. Without either, retain the synchronous legacy path.
 var pending = new Map();
 function valid(value) { return !!value && (!cc.isValid || cc.isValid(value, true)); }
@@ -28,6 +28,16 @@ function counters(owner, target) {
   if (!settings || !side) return false;
   var assignments = settings.unitTypeAssignments || {};
   return (side==="enemy"&&target.cfg.FightingType||assignments[keyFor(target, side)]) === owner.cfg.CounterType;
+}
+function damageTaken(owner, side, amount) {
+  if (!(amount > 0) || !owner || side !== "hero" && !owner.cfg) return amount;
+  var settings = config();
+  if (!settings) return amount;
+  var role = side === "hero" ? owner.heroStyle : side === "enemy" && owner.cfg.FightingType ||
+    (settings.unitTypeAssignments || {})[keyFor(owner, side)];
+  var type = (settings.unitTypes || {})[role];
+  if (!type || type.damageTaken === undefined) return amount;
+  return amount * require("./FightingTypeDamage").multiplier(type.damageTaken);
 }
 function cancel(owner) {
   var entry = pending.get(owner);
@@ -260,6 +270,7 @@ exports.clear = clear;
 exports.isPending = isPending;
 exports.keyFor = keyFor;
 exports.counters = counters;
+exports.damageTaken = damageTaken;
 exports.perkEnabled = perkEnabled;
 exports.parameter = parameter;
 exports.facing = facing;

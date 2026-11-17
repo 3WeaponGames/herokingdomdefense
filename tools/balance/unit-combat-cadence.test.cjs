@@ -80,7 +80,7 @@ test('maintained roster export covers every unit, respects first ally level meta
       assert.equal(row.stats.Health, stats.Health); assert.equal(row.stats.AttackDamage, stats.AttackDamage); assert.equal(row.stats.AttackInterval, stats.AttackInterval);
     }
   }
-  close(base.find(row => row.side === 'enemy' && row.id === 90001).power.cp, Math.sqrt(40 * 10 / 1.5));
+  close(base.find(row => row.side === 'enemy' && row.id === 90001).power.cp, Math.sqrt(48 * 5 / 1.5));
   assert.equal(base.find(row => row.side === 'enemy' && row.id === 94001).timing.modelAnimationSpeed, .25);
   files.forEach((file, index) => assert(before[index].equals(fs.readFileSync(path.join(root, file))), file));
 });

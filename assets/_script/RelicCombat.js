@@ -105,8 +105,8 @@ function afterHeroHit(hero, damage, source) {
     var reflected = damage * ratio;
     relicSound("mirror-reflect", hero);
     if (!primaryCurrent(reflectedContext, source, hero) || !sameHeroLife(reflectedContext) || !living(source)) return;
-    source.onAttacked(reflected, hero, true);
-    if (primaryCurrent(reflectedContext, source, hero)) feedback(source, reflected);
+    var received = source.onAttacked(reflected, hero, true);
+    if (primaryCurrent(reflectedContext, source, hero)) feedback(source, received);
   }
 }
 function enemyKilled(target, source, secondary, context) {
@@ -158,8 +158,8 @@ function heroAttack(hero, primary, damage) {
     if (!sameBattle(lifetime)) break;
     var record = nearby[i], target = record.enemy, amount = damage * ratio;
     if (!living(target) || target.node !== record.node || !target.node || target.node._combatGeneration !== record.generation) continue;
-    target.onAttacked(amount, hero, true);
-    if (sameBattle(lifetime) && target.node === record.node && generation(target) === record.generation && !target._isPooled) feedback(target, amount);
+    var received = target.onAttacked(amount, hero, true);
+    if (sameBattle(lifetime) && target.node === record.node && generation(target) === record.generation && !target._isPooled) feedback(target, received);
   }
   return release;
 }
@@ -243,8 +243,8 @@ function primaryHeroPerks(target, hero, context) {
 }
 function secondaryHit(target, damage, context, targetGeneration, targetNode) {
   if (!sameBattle(context) || !living(target) || target.node !== targetNode || generation(target) !== targetGeneration) return;
-  target.onAttacked(damage, context.hero, true);
-  if (sameBattle(context) && target.node === targetNode && generation(target) === targetGeneration) feedback(target, damage);
+  var received = target.onAttacked(damage, context.hero, true);
+  if (sameBattle(context) && target.node === targetNode && generation(target) === targetGeneration) feedback(target, received);
 }
 function updateHero(hero, dt) {
   var data = current();

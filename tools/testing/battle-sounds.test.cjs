@@ -478,6 +478,19 @@ test('the six hero styles use their own weapon release and impact families',()=>
  for(const [style,clip]of Object.entries(expected)){
   const f=fixture();f.start();f.hero.heroStyle=style;f.sounds.attack(f.hero,'hero');f.finishAll();assert(f.played.some(p=>p.path==='sfx/'+clip),style);
   const target=f.actor(90002,{navigationTeam:'friendly'});f.sounds.hit(target,f.hero,10);f.finishAll();
-  assert(f.played.some(p=>p.path==='sfx/'+(style==='mystic'?'magic-impact':style==='skirmisher'?'arrow-impact-armour':'impact-armour')),style);
+  assert(f.played.some(p=>p.path==='sfx/'+(style==='mystic'?'magic-impact':['skirmisher','bruiser'].includes(style)?'arrow-impact-armour':'impact-armour')),style);
+ }
+});
+
+test('Bruiser basic hits use standard Skirmisher impacts while active and secondary hits keep their own cues',()=>{
+ for(const armored of [false,true])for(const kind of ['basic','active','secondary']){
+  const f=fixture();f.start();f.hero.heroStyle='bruiser';
+  const target=f.actor(armored?90002:90001,armored?{navigationTeam:'friendly'}:{});
+  const context={heroStyle:'bruiser',styleSkill:kind==='active'};
+  f.sounds.hit(target,f.hero,50,{context,magic:kind==='secondary'});f.finishAll();
+  const expected=kind==='secondary'?'magic-impact':kind==='basic'?armored?'arrow-impact-armour':'arrow-impact-flesh':armored?'impact-armour':'impact-flesh-heavy';
+  const impacts=f.played.filter(p=>/^sfx\/(arrow-impact-|impact-(?:armour|flesh)|magic-impact)/.test(p.path));
+  assert.deepEqual(impacts.map(p=>p.path),['sfx/'+expected],kind+(armored?' armoured':' unarmoured'));
+  assert(f.played.every(p=>p.source.mute),'The sound-routing test must stay silent');
  }
 });

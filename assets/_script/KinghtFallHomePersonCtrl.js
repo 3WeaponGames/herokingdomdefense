@@ -275,7 +275,8 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     var timing = cc.resources ? { unitAnimationSpeed: require("CharacterAppearance").animationSpeed(this, "hero") } : undefined;
     var power = require("HeroLoadout").calculate(powerConfig, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(), undefined, timing);
     this._combatPower = power;
-    this.labPower.string = power.reason ? "—" : $z1KinghtFallModle.default.getInstance().numberFomat(Math.round(power.cp * 100) / 100);
+    // Display whole points at 10x the shared combat benchmark.
+    this.labPower.string = power.reason ? "—" : String(Math.round(power.cp * 10));
     if (require("HeroEquipmentStats").enabled(powerConfig)) {
       var stats = require("HeroLoadout").snapshot(powerConfig, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(), timing);
       [stats.health,stats.regen,stats.damage,stats.range,stats.attackRate,stats.move].forEach(function(value,index){if(this.labNum[index])this.labNum[index].string=String(Number(value.toFixed(2)));},this);

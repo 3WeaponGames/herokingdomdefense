@@ -3,6 +3,7 @@ const UnitRecords=require('./unit-records');
 const EnemyClasses=require('./enemy-classes');
 const MapCatalog=require('./map-catalog');
 const HeroWeapons=require('../../../assets/_script/HeroWeapons');
+const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 
 // Editing metadata. Storage keys and runtime identifiers intentionally stay unchanged.
@@ -548,6 +549,7 @@ function validate(documents, changes) {
     const unitTypes=overrides.unitTypes||{};
     if(overrides.unitTypes!==undefined&&(!overrides.unitTypes||typeof overrides.unitTypes!=='object'||Array.isArray(overrides.unitTypes)))issue('overrides',['unitTypes'],'Fighting types must be a type table.');
     Object.keys(unitTypes).forEach(id=>{const type=unitTypes[id],p=['unitTypes',id];if(!/^[a-z][a-z0-9_-]{0,63}$/.test(id)||!type||typeof type!=='object'){issue('overrides',p,'Use a stable lowercase type identifier.');return;}if(typeof type.name!=='string'||!type.name.trim()||type.name.length>100)issue('overrides',p.concat('name'),'Give this type a name.');if(typeof type.icon!=='string'||!type.icon.trim())issue('overrides',p.concat('icon'),'Choose a pictogram for this type.');if(type.tint!==undefined&&!/^#[0-9a-f]{6}$/i.test(type.tint))issue('overrides',p.concat('tint'),'Choose a valid pictogram tint.');});
+    for(const [id,type]of Object.entries(unitTypes))if(type&&type.damageTaken!==undefined&&!FightingTypeDamage.valid(type.damageTaken))issue('overrides',['unitTypes',id,'damageTaken'],'Choose More with a finite percentage of at least 0, or Less with a finite percentage of at least 100.');
     if(overrides.unitTypeAssignments!==undefined&&(!overrides.unitTypeAssignments||typeof overrides.unitTypeAssignments!=='object'||Array.isArray(overrides.unitTypeAssignments)))issue('overrides',['unitTypeAssignments'],'Fighting type assignments must be a unit table.');
     Object.keys(overrides.unitTypeAssignments||{}).forEach(key=>{const parts=key.split(':'),side=parts[0];if(parts.length!==3||!['enemy','ally'].includes(side)||!UnitRecords.reachable(base,side,parts[1],parts[2]))issue('overrides',['unitTypeAssignments',key],'Choose a reachable troop or enemy form.');if(!own(unitTypes,overrides.unitTypeAssignments[key]))issue('overrides',['unitTypeAssignments',key],'Choose an existing fighting type.');});
     Object.keys(overrides.parameters||{}).forEach(key=>{if(key==='buildStandTime')number('overrides',['parameters',key],overrides.parameters[key],0.001,false);else issue('overrides',['parameters',key],'Unknown runtime parameter override.');});

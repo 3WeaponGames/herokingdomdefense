@@ -1244,7 +1244,7 @@ var def_KinghtFallGameCtrl = function (t) {
         if (behavior.attackType === "cannon" && BattleSounds.effect) BattleSounds.effect("cannon-impact-explosion", null, { game: game, point: center });
         require("TowerCombat").damage(game, e, center, o, behavior, function (actor, position, damage) {
           if (effects && cc.isValid(effects, true)) {
-            effects.showDamageNum(position, damage);
+            effects.showDamageNum(position, GameToolsOverrides.damageTaken(actor, "enemy", damage));
             if (behavior.attackType !== "cannon") effects.onMonsterAttack(position, "jian_lv1");
           }
         }, t);
@@ -1256,7 +1256,7 @@ var def_KinghtFallGameCtrl = function (t) {
     a.setTag(i, e.node, function () {
       if (game.gameData !== shotData || game._combatEpoch !== shotEpoch) return;
       if (cc.isValid(e) && cc.isValid(e.node)) {
-        $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(e.node.getPosition(), o);
+        $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(e.node.getPosition(), GameToolsOverrides.damageTaken(e, "enemy", o));
         $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(e.node.getPosition(), "jian_lv1");
         n.active = false;
         e.onAttacked(o, t);

@@ -15,6 +15,7 @@ const IconPicker=require('./icon-picker');
 const UnitProfiles=require('../units/panel-profiles');
 const EnemyClasses=require('../lib/enemy-classes');
 const EnemyBalance=require('./enemy-balance');
+const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
 const EquipmentTiers=require('../../../assets/_script/EquipmentTiers'),HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const ItemAppearance=require('../../hkd-items/appearance');
 const TITLES={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units & Attack Timing','unit-types':'Fighting Types & Pictograms',maps:'Maps',settings:'Battle Settings',testing:'Testing · Managed Test Player'};
@@ -390,7 +391,7 @@ function create(kind){
       if(!row.record.prefab)this._note('This is a boss transformation form. It is reached through the boss’s behavior and is not a directly spawnable unit.');
       const typeKey=row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,id),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Fighting type & map pictogram');
       if(row.unitType==='enemy')this._field(typeFields,'Enemy class',EnemyClasses.resolve(this._data('overrides'),id),value=>this._change(()=>{if(!EnemyClasses.CHOICES.some(choice=>choice.value===value))throw Error('Choose Normal, Elite or Boss.');const settings=this._data('overrides');if(EnemyClasses.resolve(settings,id)===value)return [];return [{doc:'overrides',path:['enemyClasses'],value:Object.assign({},settings.enemyClasses||{},{[typeKey]:value})}];}),{options:EnemyClasses.CHOICES,help:'Normal, Elite or Boss classification for this enemy profile. Stats, abilities and combat-role counters are edited separately.'});
-      this._field(typeFields,'Fighting type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],readOnly:row.unitType==='enemy'&&!!require('../lib/fighting-profiles').familyFor(this._data('overrides'),id),help:'Combat role used for counter bonuses. The Battle icon below overrides the type pictogram for this unit.'});
+      this._field(typeFields,'Fighting type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],readOnly:row.unitType==='enemy'&&!!require('../lib/fighting-profiles').familyFor(this._data('overrides'),id),help:'Combat role used for counter bonuses and global damage taken. The Battle icon below overrides the type pictogram for this unit.'});
       this._field(typeFields,'Countered fighting type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
       typeFields.appendChild(button('Manage types & pictograms',()=>openPanel('unit-types').catch(error=>this._status(error.message,true))));
       const visualFields=this._section('Model transform'),visuals=this._data('overrides').visuals||{},visual=visuals[typeKey]||{};
@@ -558,13 +559,32 @@ function create(kind){
         return [{doc:'A',path:rates===undefined?path:path.concat(style),value:rates===undefined?{[style]:value}:value}];
       },{skipEmpty:true}).catch(()=>{});
     },
+    _setUnitTypeDamageTaken(id,field,value){
+      return this._change(()=>{
+        const type=(this._data('overrides').unitTypes||{})[id],p=['unitTypes',id,'damageTaken'];
+        if(!type)throw Error('Choose an existing fighting type.');
+        if(!['mode','percent'].includes(field))throw Error('Choose damage taken direction or percentage.');
+        const saved=type.damageTaken;
+        if(saved!==undefined&&!FightingTypeDamage.valid(saved))throw Error('The damage taken setting has an invalid format. Refresh or correct it before editing.');
+        const current=saved||{mode:'more',percent:0},next=Object.assign({},current,{[field]:value});
+        // Selecting Less from a small increase starts at its neutral divisor.
+        if(field==='mode'&&value==='less'&&next.percent<100)next.percent=100;
+        if(!FightingTypeDamage.valid(next))throw Error('Enter a finite percentage: at least 0 for More, or at least 100 for Less.');
+        if(current[field]===value)return [];
+        return [{doc:'overrides',path:p,value:next}];
+      },{skipEmpty:true}).catch(()=>{});
+    },
     _unitType(row){
       EnemyBalance.render(this,node);
       const fields=this._section('Type & pictogram'),p=['unitTypes',row.key];
       this._field(fields,'Name',row.record.name,value=>this._set('overrides',p.concat('name'),value));
       this._field(fields,'Pictogram',row.record.icon,value=>this._set('overrides',p.concat('icon'),value),{asset:'images',bundle:'KinghtFallEnemy',wide:true,help:'Choose an imported monster part, an existing battle icon, or another Resources image.'});
       this._field(fields,'Pictogram tint',row.record.tint||'#ffffff',value=>this._set('overrides',p.concat('tint'),value),{color:true});
-      this._note('Fighting types supply counter bonuses and pictograms. The balance table above changes enemy profiles only. Hero defaults and ally stats are edited separately.');
+      const defense=this._section('Global damage taken'),saved=row.record.damageTaken,invalid=saved!==undefined&&!FightingTypeDamage.valid(saved),damage=FightingTypeDamage.valid(saved)?saved:{mode:'more',percent:0};
+      this._field(defense,'Damage taken',damage.mode,value=>this._setUnitTypeDamageTaken(row.key,'mode',value),{options:[{value:'more',label:'More'},{value:'less',label:'Less'}],readOnly:invalid,commitUnchanged:true,help:'More adds the entered percentage. Less divides damage by the entered percentage of standard.'});
+      this._field(defense,'Amount (%)',damage.percent,value=>this._setUnitTypeDamageTaken(row.key,'percent',value),{numeric:true,min:0,readOnly:invalid,commitUnchanged:true,help:'More: 10 = 10% more, 100 = double, 400 = 5× damage. Less: 100 = standard, 200 = half, 300 = one-third, 400 = one-quarter damage (minimum 100).'});
+      this._note(invalid?'The saved damage taken setting is invalid. Correct it before editing.':'Result: '+Number(FightingTypeDamage.multiplier(damage).toPrecision(6))+'× incoming damage ('+Number((100*FightingTypeDamage.multiplier(damage)).toPrecision(6))+'% of standard).',invalid,defense);
+      this._note('Global damage taken applies to heroes, allies and enemies of this fighting type, from every attack. Counter bonuses, damage reduction and shields still apply. The balance table above changes enemy base stats only.');
       if(HeroWeapons.find(row.key)){const defaults=this._section('Hero fighting-style defaults');this._heroAttackRateField(defaults,row.key);HeroDamage.startingField(this,defaults,row.key);}
       const assigned=Object.entries(this._data('overrides').unitTypeAssignments||{}).filter(([key,value])=>value===row.key);this._note(assigned.length?'Assigned to: '+assigned.map(([key])=>key).join(', '):'No units use this type yet.');
       const remove=button('Delete type',()=>{if(assigned.length||['SoldierCfg','AllyCfg'].some(table=>Object.values(this._data('A')[table]||{}).some(unit=>unit.CounterType===row.key)))return this._status('Remove unit assignments and counter references before deleting this type.',true);const types=clone(this._data('overrides').unitTypes);delete types[row.key];return this._set('overrides',['unitTypes'],types);},'gt-danger');remove.disabled=assigned.length>0;fields.appendChild(remove);

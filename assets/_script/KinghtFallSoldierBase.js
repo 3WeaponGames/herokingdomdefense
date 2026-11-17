@@ -459,8 +459,8 @@ var def_KinghtFallSoldierBase = function (t) {
     if (n) {
       n.node.getPosition(this.vec2_2);
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
-      n.onAttacked(e, this);
-      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), e);
+      var dealt = n.onAttacked(e, this);
+      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), dealt);
       $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(n.node.getPosition(), "xb_gj");
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);
@@ -473,6 +473,7 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.onAttacked = function (t, attacker) {
     if (!this.isDead()) {
       var game = $z1KinghtFallUIGame.default.instance.ctrGame, notice = AllyAwareness.capture(this, attacker, game), hpBefore = this.hp;
+      t=GameToolsOverrides.damageTaken(this,"ally",t);
       t=require("RelicCombat").allyIncoming(this,t);
       if (attacker && attacker.node && attacker.isDead && !attacker.isDead()) {
         this._retaliationScope = null;

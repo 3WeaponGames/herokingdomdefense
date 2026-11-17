@@ -65,8 +65,8 @@ var def_KinghtFallSoldierItem03 = function (t) {
       return void i.ctr.setTag(i.pos, n.node, function () {
         if (!currentShot() || n.isDead && n.isDead()) return;
         var shooter = cc.isValid(t, true) && t.node === sourceNode && cc.isValid(sourceNode, true) && sourceNode._combatGeneration === sourceGeneration && !t._isPooled ? t : null;
-        n.onAttacked(e, shooter);
-        if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.showDamageNum) effects.showDamageNum(targetNode.getPosition(), e);
+        var received = n.onAttacked(e, shooter);
+        if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.showDamageNum) effects.showDamageNum(targetNode.getPosition(), received);
         if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.onMonsterAttack) effects.onMonsterAttack(targetNode.getPosition(), "jian_lv1");
       });
     }

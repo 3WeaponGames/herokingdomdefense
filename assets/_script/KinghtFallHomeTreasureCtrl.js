@@ -50,6 +50,7 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
   };
   _ctor.prototype.start = function () {
     var t = this;
+    this.prepareDrawFooter();
     this.ndItem.active = false;
     this.initEventListener();
     this.initData();
@@ -70,6 +71,70 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
     this.upView();
     this._homeTabReady = true;
     this.scheduleHomeGuide();
+  };
+  _ctor.prototype.prepareDrawFooter = function () {
+    if (this._drawFooter || !this.btnOne || !this.labTime) return;
+    var footer = this.btnOne.parent, sprite = footer.getComponent(cc.Sprite), source = sprite && sprite.spriteFrame;
+    this._drawFooter = footer;
+    this._drawGuaranteeNode = this.labTime.node;
+    // Reuse the undecorated right-hand section of the native orange panel.
+    // The imported frame stays intact for other screens and cached UI pages.
+    if (source) {
+      var rect = source.getRect(), frame = source.clone();
+      frame.name = (source.name || "RelicDraw") + "@clean-footer";
+      frame.setRect(cc.rect(rect.x + rect.width * 330 / 750, rect.y, rect.width * 420 / 750, rect.height));
+      frame.setOriginalSize(cc.size(rect.width * 420 / 750, rect.height));
+      frame.setOffset(cc.v2(0, 0));
+      frame.insetLeft = frame.insetRight = 0;
+      frame.insetTop = frame.insetBottom = rect.height * 6 / 358;
+      sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+      sprite.type = cc.Sprite.Type.SLICED;
+      sprite.spriteFrame = frame;
+      this._drawFooterFrame = frame;
+      this._drawFooterSource = source;
+      this._drawFooterSprite = sprite;
+    }
+    footer.on(cc.Node.EventType.SIZE_CHANGED, this.layoutDrawFooter, this);
+    this._drawGuaranteeNode.on(cc.Node.EventType.SIZE_CHANGED, this.fitDrawGuarantee, this);
+    this.layoutDrawFooter();
+  };
+  _ctor.prototype.layoutDrawFooter = function () {
+    var footer = this._drawFooter;
+    if (!footer || footer.width <= 0) return;
+    var width = Math.max(1, Math.floor((footer.width - 68) / 3)), scale = Math.min(1, footer.width / 750);
+    [this.btnOne, this.btnVideo, this.btnTen].forEach(function (button, index) {
+      button.setContentSize(width, 132);
+      button.x = (index - 1) * (width + 16);
+      button.y = -37;
+      var padding = button.getComponent("PaddedTextBackground");
+      if (padding) {
+        padding.minWidth = padding.maxWidth = width;
+        padding.minHeight = 132;
+        padding.invalidate();
+      }
+      var caption = button.getChildByName("labDay"), row = button.getChildByName("Layout");
+      caption.scaleX = caption.scaleY = .5 * scale;
+      row.getChildByName("labNum").scaleX = row.getChildByName("labNum").scaleY = .5 * scale;
+      row.getChildByName("sprIcon").scaleX = row.getChildByName("sprIcon").scaleY = (index === 1 ? .9 : .65) * scale;
+    });
+    this.fitDrawGuarantee();
+  };
+  _ctor.prototype.fitDrawGuarantee = function () {
+    var node = this._drawGuaranteeNode, footer = this._drawFooter;
+    if (!node || !footer || footer.width <= 0) return;
+    var scale = Math.min(.5, Math.max(1, footer.width - 36) / Math.max(1, node.width));
+    node.scaleX = node.scaleY = scale;
+    node.setPosition(0, footer.height / 2 - 50);
+  };
+  _ctor.prototype.onDestroy = function () {
+    var footer = this._drawFooter, label = this._drawGuaranteeNode;
+    if (footer && (!cc.isValid || cc.isValid(footer))) footer.off(cc.Node.EventType.SIZE_CHANGED, this.layoutDrawFooter, this);
+    if (label && (!cc.isValid || cc.isValid(label))) label.off(cc.Node.EventType.SIZE_CHANGED, this.fitDrawGuarantee, this);
+    var frame = this._drawFooterFrame, sprite = this._drawFooterSprite;
+    if (sprite && (!cc.isValid || cc.isValid(sprite)) && sprite.spriteFrame === frame) sprite.spriteFrame = this._drawFooterSource;
+    if (frame && (!cc.isValid || cc.isValid(frame, true))) frame.destroy();
+    this._drawFooter = this._drawGuaranteeNode = this._drawFooterFrame = this._drawFooterSource = this._drawFooterSprite = null;
+    if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.scheduleHomeGuide = function () {
     this.unschedule(this.showHomeGuide);

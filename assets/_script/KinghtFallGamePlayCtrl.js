@@ -288,6 +288,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     if (t > 0 && this.time[C.NoDie] > 0 && BattleSounds.effect) BattleSounds.effect("impact-shield", this);
     if (!(this.time[C.NoDie] > 0)) {
       var awareness = require("AllyAwareness"), notice = awareness.capture(this, attacker, $z1KinghtFallUIGame.default.instance.ctrGame);
+      t = GameToolsOverrides.damageTaken(this, "hero", t);
       t = RelicCombat.heroIncoming(this, t, attacker, ranged);
       var received = Math.max(0, Math.min(this.hp, t));
       if (BattleSounds.hit) BattleSounds.hit(this, attacker, received);

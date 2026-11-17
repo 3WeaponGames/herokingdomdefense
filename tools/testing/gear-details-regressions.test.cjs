@@ -64,14 +64,14 @@ test('both upper weapon slots open the picker, lower upgrade icons have no misle
 test('Gear account CP follows only the equipped weapon and retains owned style contributions through repeated refreshes',()=>{
   const f=fixture(),Weapons=f.deps.HeroWeapons,Loadout=f.deps.HeroLoadout;f.levels.fill(1);Weapons.upgrade(f.user.data,3,10,'skirmisher');Weapons.upgrade(f.user.data,4,10,'skirmisher');
   f.user.data.talentInfo=f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='skirmisher').map(row=>({id:row.ID,isLock:true}));
-  f.owner.initView();const bow=f.owner._combatPower;assert.equal(f.owner.labPower.string,String(Math.round(Loadout.calculate(f.data,f.user).cp*100)/100));assert.equal(bow.levels[3],10);assert.equal(bow.levels[4],10);
-  Weapons.select(f.user.data,'fighter');const before=JSON.stringify(f.user.data),config=JSON.stringify(f.data);f.owner.initView();const sword=f.owner._combatPower;assert.equal(sword.style,'fighter');assert.equal(sword.levels[3],1);assert.equal(sword.levels[4],1);assert.equal(sword.raw.damage,20);assert.equal(sword.damage,20.2);assert.equal(sword.attackRate,1.01);assert.equal(f.owner.labPower.string,String(Math.round(Loadout.calculate(f.data,f.user).cp*100)/100));assert(sword.cp<bow.cp);
+  f.owner.initView();const bow=f.owner._combatPower;assert.equal(f.owner.labPower.string,String(Math.round(Loadout.calculate(f.data,f.user).cp*10)));assert.equal(bow.levels[3],10);assert.equal(bow.levels[4],10);
+  Weapons.select(f.user.data,'fighter');const before=JSON.stringify(f.user.data),config=JSON.stringify(f.data);f.owner.initView();const sword=f.owner._combatPower;assert.equal(sword.style,'fighter');assert.equal(sword.levels[3],1);assert.equal(sword.levels[4],1);assert.equal(sword.raw.damage,20);assert.equal(sword.damage,20.2);assert.equal(sword.attackRate,1.01);assert.equal(f.owner.labPower.string,String(Math.round(Loadout.calculate(f.data,f.user).cp*10)));assert(sword.cp<bow.cp);
   for(let i=0;i<5;i++){f.owner.initView();assert.equal(f.owner._combatPower.cp,sword.cp);}assert.equal(JSON.stringify(f.user.data),before);assert.equal(JSON.stringify(f.data),config);
   Weapons.upgrade(f.user.data,3,50,'skirmisher');Weapons.upgrade(f.user.data,4,25,'skirmisher');f.owner.initView();assert.equal(f.owner._combatPower.cp,sword.cp,'unequipped bow upgrades do not affect sword power');
 });
 
 test('Gear CP uses the same six combat stats at locked and unlocked stages and handles invalid stats without showing NaN',()=>{
-  const f=fixture();f.levels.fill(1);f.user.getMaxStage=()=>1;f.user.getMaxOrder=()=>1;f.owner.initView();const cp=f.owner.labPower.string;assert.equal(cp,String(Math.round(f.deps.HeroLoadout.calculate(f.data,f.user).cp*100)/100));
+  const f=fixture();f.levels.fill(1);f.user.getMaxStage=()=>1;f.user.getMaxOrder=()=>1;f.owner.initView();const cp=f.owner.labPower.string;assert.equal(cp,String(Math.round(f.deps.HeroLoadout.calculate(f.data,f.user).cp*10)));
   f.user.getMaxStage=()=>100;f.owner.initView();assert.equal(f.owner.labPower.string,cp,'unlocking an existing stat slot cannot add a second copy to power');
   f.data.EquipCfg.find(row=>row.id===3).levelInfo[0].Parameters=NaN;f.owner.initView();assert.equal(f.owner.labPower.string,'—');assert.match(f.owner._combatPower.reason,/invalid/);
 });
