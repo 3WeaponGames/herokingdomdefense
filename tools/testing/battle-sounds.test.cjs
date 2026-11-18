@@ -3,7 +3,13 @@ const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const root = path.resolve(__dirname, '../..'), scripts = path.join(root, 'assets/_script');
 const catalog = require('../../assets/_script/BattleSoundCatalog');
-function fixture(surface = 'lava') {
+const movementExpectations = {
+  forest: ['run', .5], 'deep-forest': ['run', .5],
+  autumn: ['sfx/hooves-autumn-loop', .1625], desert: ['sfx/hooves-desert-loop', .1625],
+  snow: ['sfx/hooves-snow-loop', .1625], ice: ['sfx/hooves-ice-loop', .1625],
+  fire: ['sfx/hooves-fire-loop', .1625], lava: ['sfx/hooves-lava-loop', .1625]
+};
+function fixture(surface = 'lava', options = {}) {
   let now = 1000;
   const pending = [], played = [], writes = [], listeners = [];
   const preferences = { effects: true, music: true }, states = { ERROR: -1, INITIALIZING: 0, PLAYING: 1, PAUSED: 2, STOPPED: 3 };
@@ -24,7 +30,8 @@ function fixture(surface = 'lava') {
   const modules = { BaseMgr: { default: function () {} }, CacheUtils: { CacheUtils: { getData: () => null, saveData: (...v) => writes.push(v), canPlayEffect: () => preferences.effects, canPlayMusin: () => preferences.music } },
     ResourceMgr: { ResourceMgr: { getInstance: () => ({ loadRes(bundle, file, type, done, options) { pending.push({ file, done, options }); } }) } },
     LogMgr: { LogMgr: { getInstance: () => ({ error() {} }) } }, KinghtFallUIGame: { default: { instance: ui } },
-    KinghtFallModle: { KinghtFallGameStage: { End: 3 } }, BattleSoundCatalog: catalog };
+    KinghtFallModle: { KinghtFallGameStage: { End: 3 } }, BattleSoundCatalog: catalog,
+    AudioMixCatalog: options.realMix ? require('../../assets/_script/AudioMixCatalog') : undefined };
   const cc = { resources: {}, AudioSource: Source, AudioClip: function () {}, _Audio: { State: states }, isValid: v => !!v && !v.destroyed,
     game: { EVENT_HIDE: 'hide', EVENT_SHOW: 'show', on(event, fn, target) { listeners.push({ event, fn, target }); }, off(event, fn, target) { const i = listeners.findIndex(x => x.event === event && x.fn === fn && x.target === target); if (i >= 0) listeners.splice(i, 1); } } };
   function load(name) { const context = { exports: {}, require: n => modules[n], cc, Date: { now: () => now }, WeakMap, Math,
@@ -43,8 +50,8 @@ function fixture(surface = 'lava') {
 for (const biome of ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice', 'fire', 'lava']) {
   test('actual movement selects ' + biome + ' hooves and ambience using the effects volume channel', () => {
     const f = fixture(biome); f.start(); f.tick(); f.hero.node.x += 10; f.tick();
-    const horse = f.played.find(p => p.path === 'sfx/hooves-' + biome + '-loop');
-    assert(horse); assert.equal(horse.loop, true); assert.equal(horse.volume, .2275);
+    const [file, volume] = movementExpectations[biome], horse = f.played.find(p => p.path === file);
+    assert(horse); assert.equal(horse.loop, true); assert.equal(horse.volume, volume);
     assert.equal(f.played.some(p => p.path === 'sfx/ambience-' + biome + '-loop'), biome === 'lava');
     assert.equal(f.manager.musicKeys.length, 0); assert(f.played.every(p => p.source.mute));
     f.tick(); assert.equal(horse.source.state, 3, 'idle horse kept running');
@@ -56,14 +63,14 @@ test('each hero style has its active biome decoded before the first movement wit
   for (const style of ['fighter', 'vanguard', 'mystic', 'bruiser', 'guardian', 'skirmisher']) {
     for (const surface of ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice', 'fire', 'lava']) {
       const f = fixture(surface); f.hero.heroStyle = style; f.start();
-      const file = 'sfx/hooves-' + surface + '-loop';
+      const [file, volume] = movementExpectations[surface];
       assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio', file])));
       assert.equal(f.played.length, 0); assert.equal(f.manager.audioSourceMap.size, 0);
       f.hero.node.x += 4;
       f.sounds.tick(f.game);
       const horse = f.played.find(p => p.path === file);
       assert(horse, style + ' waited for another movement frame or asset callback in ' + surface);
-      assert.equal(horse.volume, .2275);
+      assert.equal(horse.volume, volume);
       assert.deepEqual(f.writes, []);
     }
   }
@@ -71,7 +78,7 @@ test('each hero style has its active biome decoded before the first movement wit
 
 test('muted setup and biome changes prepare movement clips without playback, including a later unmute', () => {
   const f = fixture('forest'); f.preferences.effects = false; f.start();
-  assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio', 'sfx/hooves-forest-loop'])));
+  assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio', 'run'])));
   f.data.levelCfg.EnvironmentBiome = 'ice'; f.tick();
   assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio', 'sfx/hooves-ice-loop'])));
   assert.equal(f.played.length, 0); assert.equal(f.manager.audioSourceMap.size, 0);
@@ -80,16 +87,55 @@ test('muted setup and biome changes prepare movement clips without playback, inc
   assert.deepEqual(f.writes, []);
 });
 
+test('Forest and Deep Forest restore the unchanged original horse clip at full authored volume through the effects mix', () => {
+  const crypto = require('node:crypto');
+  const file = 'assets/KinghtFallAudio/run.mp3', bytes = fs.readFileSync(path.join(root, file));
+  // Keep the production original, including its previously approved audio normalization.
+  assert.equal(crypto.createHash('sha1').update(Buffer.from('blob ' + bytes.length + '\0')).update(bytes).digest('hex'), 'beec62b879ac411298155c548ae9d6718bc5a997');
+  const mix = require('../../assets/_script/AudioMixCatalog'), originalGain = mix.gain({ bundle: 'KinghtFallAudio', path: 'run' });
+  for (const biome of ['forest', 'deep-forest']) {
+    const f = fixture(biome, { realMix: true }); f.start(); f.hero.node.x++; f.tick();
+    const horse = f.played.find(p => p.path === 'run'); assert(horse); assert.equal(horse.volume, .5 * originalGain);
+    assert.equal(f.played.filter(p => p.path === 'run').length, 1); assert(!f.played.some(p => p.path.startsWith('sfx/hooves-')));
+    f.manager.setEffectVolume(.25); assert.equal(horse.source.volume, .25 * originalGain);
+    f.game._unitVoices = { active: { playing: true } }; f.hero.node.x++; f.tick(); assert.equal(horse.source.volume, .25 * .65 * originalGain);
+    f.manager.setEffectVolume(0); f.tick(); assert.equal(horse.source.state, 3); assert.deepEqual(f.writes.filter(row => row[0] !== 'EFFECTVOLUME'), []);
+  }
+});
+
+test('switching between original forest steps and themed surfaces cancels stale loads and restores each surface volume', () => {
+  const f = fixture('snow'); f.start(); f.manager.audioClipMap.delete(JSON.stringify(['KinghtFallAudio', 'sfx/hooves-snow-loop']));
+  f.hero.node.x++; f.sounds.tick(f.game); assert(f.pending.some(p => p.file === 'sfx/hooves-snow-loop'));
+  f.data.levelCfg.EnvironmentBiome = 'forest'; f.hero.node.x++; f.sounds.tick(f.game); f.finishAll();
+  assert(!f.played.some(p => p.path === 'sfx/hooves-snow-loop'));
+  const horse = f.played.find(p => p.path === 'run'); assert(horse); assert.equal(horse.volume, .5);
+  f.data.levelCfg.EnvironmentBiome = 'deep-forest'; f.hero.node.x++; f.tick(); assert.equal(f.played.filter(p => p.path === 'run').length, 1);
+  f.data.levelCfg.EnvironmentBiome = 'autumn'; f.hero.node.x++; f.tick(); assert.equal(horse.source.clip.path, 'sfx/hooves-autumn-loop'); assert.equal(horse.source.volume, .1625);
+  assert.deepEqual(f.writes, []);
+});
+
+test('pending original forest steps stay silent after pause, hide, mute or a retired battle', () => {
+  for (const mode of ['pause', 'hide', 'mute', 'retire']) {
+    const f = fixture('forest'); f.start(); f.manager.audioClipMap.delete(JSON.stringify(['KinghtFallAudio', 'run']));
+    f.hero.node.x++; f.sounds.tick(f.game); assert(f.pending.some(p => p.file === 'run'));
+    if (mode === 'pause') f.sounds.suspend(f.game, true);
+    if (mode === 'hide') f.emit('hide');
+    if (mode === 'mute') f.manager.setEffectVolume(0);
+    if (mode === 'retire') f.game._combatEpoch++;
+    f.finishAll(); assert(!f.played.some(p => p.path === 'run'), mode);
+  }
+});
+
 test('only hero movement starts and sustains the horse loop while effects volume still controls it', () => {
   const f = fixture('snow'), cavalry = f.actor(90004, { navigationTeam: 'friendly' });
   f.soldiers.push(cavalry); f.start(); f.tick(); cavalry.node.x++; f.tick();
   assert.equal(f.played.length, 0, 'cavalry started a movement loop');
   f.hero.node.x++; cavalry.node.x++; f.tick();
   const horse = f.played.find(p => p.path === 'sfx/hooves-snow-loop');
-  assert.equal(horse.source.volume, .2275);
+  assert.equal(horse.source.volume, .1625);
   cavalry.node.x++; f.tick(); assert.equal(horse.source.state, 3, 'cavalry sustained the stopped hero loop');
   f.manager.setEffectVolume(.25);
-  f.hero.node.x++; cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .11375);
+  f.hero.node.x++; cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .08125);
   f.manager.setEffectVolume(0); f.tick(); assert.equal(horse.source.state, 3);
 });
 
@@ -127,10 +173,10 @@ test('all eight biomes keep moving allied infantry, cavalry and flying units sil
     f.enemies.push(f.actor(91010, { cfg: { ID: 91010, MonsterSource: 'monster1/Bird_Eagle' } }));
     function moveUnits() { f.soldiers.concat(f.enemies).forEach(a => a.node.x += 4); }
     f.tick(); moveUnits(); f.tick(); moveUnits(); f.tick();
-    const movement = () => f.played.filter(p => /^sfx\/(hooves-|footsteps-|movement-)/.test(p.path));
+    const movement = () => f.played.filter(p => p.path === 'run' || /^sfx\/(hooves-|footsteps-|movement-)/.test(p.path));
     assert.equal(movement().length, 0, surface + ' played non-hero movement');
     f.hero.node.x += 4; moveUnits(); f.tick();
-    assert.equal(movement().length, 1); assert.equal(movement()[0].path, 'sfx/hooves-' + surface + '-loop');
+    assert.equal(movement().length, 1); assert.equal(movement()[0].path, movementExpectations[surface][0]);
     moveUnits(); f.tick(); assert.equal(movement()[0].source.state, 3, 'units kept the hero movement audible');
     assert.equal(movement().length, 1); assert.deepEqual(f.writes, []);
   }

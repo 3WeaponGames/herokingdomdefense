@@ -4,7 +4,7 @@
   "variant": "A",
   "level": 17,
   "mapId": "map-original-01-rebuilt",
-  "name": "Stage 17",
+  "name": "Heartwood Crossroads",
   "config": {
     "Level": 17,
     "Name": "[[loc:data.levelcfg.17.name]]",
@@ -724,7 +724,8 @@
         2,
         30
       ]
-    ]
+    ],
+    "EnvironmentBiomeOverride": true
   },
   "basePrefab": "Map01",
   "buildings": [
@@ -8291,7 +8292,7 @@
   "nextBuilding": 31,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "ef2fbfe7836f7d3fa15dc051fef5dedbd9d809c5ef5d9adec34d907efe78ac8b",
+  "sourceRevision": "e24b6f4f2c67e66be7ef88034d2f84a807e9b87df5c958c1cc5312e8c55a8f3e",
   "templates": {
     "Map01": [
       {

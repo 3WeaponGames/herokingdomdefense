@@ -7,7 +7,7 @@ function resource(level) {
   var mapId = level && (level.EnvironmentMapId || level.prefab);
   // Map07 is authored as Lava; older stage records still call it Fire.
   // Use its Lava loading portrait without rewriting those gameplay records.
-  if (mapId === "Map07" && biome === "fire") biome = "lava";
+  if (mapId === "Map07" && biome === "fire" && level.EnvironmentBiomeOverride !== true) biome = "lava";
   return "stage-loading/" + (biome || "forest");
 }
 

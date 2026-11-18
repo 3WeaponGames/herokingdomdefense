@@ -1326,12 +1326,12 @@
     },
     "data.levelcfg.1.name": {
       "en": "1. Frontier Plains",
-      "zh": "1.初始平原",
+      "zh": "1.边境平原",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.0.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.0.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.0.Name"
     },
     "data.levelcfg.2.name": {
-      "en": "2. Silent Forest",
-      "zh": "2.静谧森林",
+      "en": "2. Peaceful Plains",
+      "zh": "2.宁静平原",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.1.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.1.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.1.Name"
     },
     "data.levelcfg.3.name": {
@@ -1340,88 +1340,88 @@
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.2.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.2.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.2.Name"
     },
     "data.levelcfg.4.name": {
-      "en": "4. Pristine Snowfield",
-      "zh": "4.洁净雪原",
+      "en": "4. Sunstone Pass",
+      "zh": "4.日石隘口",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.3.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.3.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.3.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.3.Name"
     },
     "data.levelcfg.5.name": {
-      "en": "5. Peaceful Plains",
-      "zh": "5.宁静平原",
+      "en": "5. Silent Forest",
+      "zh": "5.静谧森林",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.4.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.4.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.4.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.4.Name"
     },
     "data.levelcfg.6.name": {
-      "en": "6. Verdant Forest",
-      "zh": "6.翠绿森林",
+      "en": "6. Rootbound Ruins",
+      "zh": "6.盘根遗迹",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.5.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.5.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.5.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.5.Name"
     },
     "data.levelcfg.7.name": {
-      "en": "7. Ashen Pass",
-      "zh": "7.灰烬隘口",
+      "en": "7. Pristine Snowfield",
+      "zh": "7.洁净雪原",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.6.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.6.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.6.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.6.Name"
     },
     "data.levelcfg.8.name": {
-      "en": "8. Snowy Expanse",
-      "zh": "8.纯白雪原",
+      "en": "8. Frostpine Heights",
+      "zh": "8.霜松高地",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.7.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.7.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.7.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.7.Name"
     },
     "data.levelcfg.9.name": {
-      "en": "9. Rolling Plains",
-      "zh": "9.连绵平原",
+      "en": "9. Amberleaf Grove",
+      "zh": "9.琥珀叶林",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.8.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.8.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.8.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.8.Name"
     },
     "data.levelcfg.10.name": {
-      "en": "10. Vast Forest",
-      "zh": "10.广袤森林",
+      "en": "10. Copperleaf Gorge",
+      "zh": "10.铜叶峡谷",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.9.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.9.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.9.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.9.Name"
     },
     "data.levelcfg.11.name": {
-      "en": "11. Barren Desert",
-      "zh": "11.贫瘠荒漠",
+      "en": "11. Glacier Gate",
+      "zh": "11.冰川之门",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.10.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.10.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.10.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.10.Name"
     },
     "data.levelcfg.12.name": {
-      "en": "12. White Snowfield",
-      "zh": "12.皑皑雪原",
+      "en": "12. Mirrorfrost Basin",
+      "zh": "12.镜霜盆地",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.11.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.11.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.11.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.11.Name"
     },
     "data.levelcfg.13.name": {
-      "en": "13. Open Plains",
-      "zh": "13.广阔平原",
+      "en": "13. Ashen Pass",
+      "zh": "13.灰烬隘口",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.12.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.12.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.12.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.12.Name"
     },
     "data.levelcfg.14.name": {
-      "en": "14. Ancient Forest",
-      "zh": "14.古老森林",
+      "en": "14. Emberscar Ridge",
+      "zh": "14.烬痕山脊",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.13.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.13.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.13.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.13.Name"
     },
     "data.levelcfg.15.name": {
-      "en": "15. Lifeless Desert",
-      "zh": "15.死寂荒漠",
+      "en": "15. Molten Crossing",
+      "zh": "15.熔火渡口",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.14.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.14.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.14.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.14.Name"
     },
     "data.levelcfg.16.name": {
-      "en": "16. Frozen Snowfield",
-      "zh": "16.冰封雪原",
+      "en": "16. Obsidian Crown",
+      "zh": "16.黑曜王冠",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.15.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.15.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.15.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.15.Name"
     },
     "data.levelcfg.17.name": {
-      "en": "17. Boundless Plains",
-      "zh": "17.无垠平原",
+      "en": "17. Heartwood Crossroads",
+      "zh": "17.心木十字路",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.16.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.16.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.16.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.16.Name"
     },
     "data.levelcfg.18.name": {
-      "en": "18. Shadow Forest",
-      "zh": "18.阴暗森林",
+      "en": "18. Caravan Bend",
+      "zh": "18.商队河湾",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.17.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.17.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.17.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.17.Name"
     },
     "data.levelcfg.19.name": {
-      "en": "19. Endless Desert",
-      "zh": "19.无尽荒漠",
+      "en": "19. Rootbreak Hollow",
+      "zh": "19.断根幽谷",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.18.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.18.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.18.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.18.Name"
     },
     "data.levelcfg.20.name": {
-      "en": "20. High Snowfield",
-      "zh": "20.至高雪原",
+      "en": "20. Snowdrift Pass",
+      "zh": "20.积雪隘口",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.19.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.19.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.19.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.19.Name"
     },
     "data.shopcfg.80001.name": {
@@ -11904,6 +11904,26 @@
       "en": "Loading...0%",
       "zh": "加载中...0%",
       "context": "Initial caption in the shared GUI PRO loading-bar prefab; runtime supplies progress through loading.barProgress"
+    },
+    "data.levelcfg.21.name": {
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:LevelCfg.20.Name; assets/KinghtFallConfigB/GameJsonCfg.json:LevelCfg.20.Name; assets/KinghtFallConfigD/GameJsonCfg.json:LevelCfg.20.Name; assets/configs/GameJsonCfg.json:LevelCfg.20.Name",
+      "en": "21. Goldenwood Crossroads",
+      "zh": "21.金林十字路"
+    },
+    "data.levelcfg.22.name": {
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:LevelCfg.21.Name; assets/KinghtFallConfigB/GameJsonCfg.json:LevelCfg.21.Name; assets/KinghtFallConfigD/GameJsonCfg.json:LevelCfg.21.Name; assets/configs/GameJsonCfg.json:LevelCfg.21.Name",
+      "en": "22. Shardgate Junction",
+      "zh": "22.冰晶关口"
+    },
+    "data.levelcfg.23.name": {
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:LevelCfg.22.Name; assets/KinghtFallConfigB/GameJsonCfg.json:LevelCfg.22.Name; assets/KinghtFallConfigD/GameJsonCfg.json:LevelCfg.22.Name; assets/configs/GameJsonCfg.json:LevelCfg.22.Name",
+      "en": "23. Ashfall Divide",
+      "zh": "23.落灰岔路"
+    },
+    "data.levelcfg.24.name": {
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:LevelCfg.23.Name; assets/KinghtFallConfigB/GameJsonCfg.json:LevelCfg.23.Name; assets/KinghtFallConfigD/GameJsonCfg.json:LevelCfg.23.Name; assets/configs/GameJsonCfg.json:LevelCfg.23.Name",
+      "en": "24. Emberfall Heights",
+      "zh": "24.烬落高地"
     }
   },
   "images": {

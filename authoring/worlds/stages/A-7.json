@@ -4,7 +4,7 @@
   "variant": "A",
   "level": 7,
   "mapId": "Map07",
-  "name": "Stage 7",
+  "name": "Pristine Snowfield",
   "config": {
     "Level": 7,
     "Name": "[[loc:data.levelcfg.7.name]]",
@@ -888,8 +888,9 @@
       }
     ],
     "EnvironmentMapId": "Map07",
-    "EnvironmentBiome": "fire",
-    "StageLayoutId": "A-7"
+    "EnvironmentBiome": "snow",
+    "StageLayoutId": "A-7",
+    "EnvironmentBiomeOverride": true
   },
   "basePrefab": "Map07",
   "buildings": [
@@ -6931,7 +6932,7 @@
   "nextBuilding": 21,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "7b0d9d5a37a905a9c4ca7625784bf922f4b885367d64051f6e17a3d7e8f07339",
+  "sourceRevision": "6008e9d7bd9e10cbdd1d69a0bf9d9c6d4cf7e327476cd1e63932b65db3213189",
   "templates": {
     "Map07": [
       {

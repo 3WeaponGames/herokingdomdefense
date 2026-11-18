@@ -46,6 +46,7 @@ function unsupported(value,id,trail,result){
 }
 function build(service,request){
  service.expect(request.version);
+ if(service.assetTable()[request.assetId]?.builtin)throw Error('Built-in animation objects cannot be renamed or deleted.');
  const root=service.root,manifestText=fs.readFileSync(safe(root,MANIFEST),'utf8'),manifest=JSON.parse(manifestText.replace(/^\uFEFF/,'')),asset=manifest.assets.find(record=>record.id===request.assetId)||service.stagedAssets.get(request.assetId);
  if(!asset)throw Error('This asset is no longer in the project library. Refresh the panel.');
  const blocked=[],files=[],revisions={[MANIFEST]:hash(Buffer.from(manifestText))},mapPlans=[],groupPlans=[],maps=[],groups=[],draftKeys=new Set(),sharedAssets=[],mapFiles=listJSON(root,'authoring/worlds/maps');

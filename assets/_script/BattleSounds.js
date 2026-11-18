@@ -78,12 +78,15 @@ function warm(state, id, allowMuted) {
   var entry = entries[id]; if (!entry || !allowMuted && !audible(state)) return;
   try { state.manager.loadClip("KinghtFallAudio", entry.path, entry.path, function () {}); } catch (error) {}
 }
+function movementCue(surface) {
+  return surface === "forest" || surface === "deep-forest" ? "horse-original-loop" : "hooves-" + surface + "-loop";
+}
 function warmMovement(state, surface) {
   if (state.movementBiome === surface) return;
   state.movementBiome = surface;
   // Prepare the current surface before the first short movement, including
   // while effects are muted. Loading alone never starts a movement loop.
-  warm(state, "hooves-" + surface + "-loop", true);
+  warm(state, movementCue(surface), true);
 }
 function effect(id, owner, options) {
   options = options || {};
@@ -297,8 +300,10 @@ function tick(game) {
   }
   var ambient = "ambience-" + surface + "-loop";
   loop(state, "ambience", entries[ambient] ? ambient : null, .5);
-  // Hero movement is 70% of the previous .65 mix level.
-  loop(state, "horse", heroMoving ? "hooves-" + surface + "-loop" : null, .455);
+  // Forests restore the original clip at its original full level. Other
+  // surfaces keep the approved 50% of the original .65 biome mix level.
+  var movement = movementCue(surface);
+  loop(state, "horse", heroMoving ? movement : null, movement === "horse-original-loop" ? 1 : .325);
   // Retire any unit movement channels left by an already-running session.
   stopLoop(state, "foot");
   stopLoop(state, "flying");

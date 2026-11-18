@@ -4,7 +4,7 @@
   "variant": "A",
   "level": 1,
   "mapId": "map-c51330f0e65d",
-  "name": "Stage 1",
+  "name": "Frontier Plains",
   "config": {
     "Level": 1,
     "Name": "[[loc:data.levelcfg.1.name]]",
@@ -690,7 +690,8 @@
     "EnvironmentBiome": "forest",
     "StageLayoutId": "A-1",
     "StageThumbnail": "Thumbnails/biome-forest",
-    "StageFaceUnit": 91037
+    "StageFaceUnit": 91037,
+    "EnvironmentBiomeOverride": true
   },
   "basePrefab": "Map01",
   "buildings": [
@@ -4338,7 +4339,7 @@
   "nextBuilding": 23,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "c258a8f4e0e56ea7464b37f25c73b7411b6bc948e999d961887984c1416b0e5b",
+  "sourceRevision": "34fbf8b7fc3c244908e00d772a01e01ef6e14090df0b24c6f21905c9c65e12ad",
   "templates": {
     "Map01": [
       {

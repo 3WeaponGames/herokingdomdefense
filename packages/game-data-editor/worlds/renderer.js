@@ -43,11 +43,12 @@ function create(options){
   }
   composite(ctx,raster,map,target.screen);
  }
- function drawObjects(ctx,map,images,records){
+ function drawObjects(ctx,map,images,records,time){
+  time=time===undefined?Date.now()/1000:time;
   if(!records.length){release(objectsRaster);objectsRaster=null;objectsKey=null;return;}
   const ids=new Set();for(const item of records){if(item.o.legacy)for(const s of item.o.legacy.sprites)ids.add(s.frame);else ids.add(item.o.assetId);}
-  const target=surface(ctx,map),{w,h,view}=target,next=JSON.stringify([map.id,map.size,view,records.map(item=>[item.layer.id,item.layer.transform,item.o]),ready(images,ids)]);
-  if(next!==objectsKey){if(!objectsRaster||objectsRaster.width!==w||objectsRaster.height!==h){release(objectsRaster);objectsRaster=Paint.canvas(w,h);}const g=objectsRaster.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,w,h);g.setTransform.apply(g,view);for(const item of records)Paint.object(g,item.o,item.layer,images);objectsKey=next;objectsBuilds++;}
+  const target=surface(ctx,map),{w,h,view}=target,next=JSON.stringify([map.id,map.size,view,records.map(item=>[item.layer.id,item.layer.transform,item.o,Paint.animationFrame(item.o,time)]),ready(images,ids)]);
+  if(next!==objectsKey){if(!objectsRaster||objectsRaster.width!==w||objectsRaster.height!==h){release(objectsRaster);objectsRaster=Paint.canvas(w,h);}const g=objectsRaster.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,w,h);g.setTransform.apply(g,view);for(const item of records)Paint.object(g,item.o,item.layer,images,time);objectsKey=next;objectsBuilds++;}
   composite(ctx,objectsRaster,map,target.screen);
  }
  function drawShadows(ctx,map,images,settings){

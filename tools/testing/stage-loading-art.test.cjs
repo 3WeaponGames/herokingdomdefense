@@ -3,16 +3,19 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const Art=require('../../assets/_script/StageLoadingArt'),root=path.resolve(__dirname,'../..');
 const read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));
 
-test('the authored Lava map uses the new crimson loading art despite legacy Fire stage metadata',()=>{
+test('the authored Lava map keeps its legacy portrait while an explicit stage biome takes priority',()=>{
   assert.equal(read('authoring/worlds/maps/Map07.json').biome,'lava');
   let stages=0;
   for(const suffix of ['', 'B', 'D'])for(const level of read('assets/KinghtFallConfig'+suffix+'/GameJsonCfg.json').LevelCfg){
     if((level.EnvironmentMapId||level.prefab)!=='Map07')continue;
     const before=JSON.stringify(level);
-    assert.equal(Art.resource(level),'stage-loading/lava');assert.equal(JSON.stringify(level),before);stages++;
+    assert.equal(Art.resource(level),'stage-loading/'+(level.EnvironmentBiomeOverride===true?level.EnvironmentBiome:'lava'));assert.equal(JSON.stringify(level),before);stages++;
   }
   assert(stages>=3);
   assert.equal(Art.resource({prefab:'Map07'}),'stage-loading/lava');
+  assert.equal(Art.resource({prefab:'Map07',EnvironmentBiome:'fire'}),'stage-loading/lava');
+  assert.equal(Art.resource({prefab:'Map07',EnvironmentBiome:'fire',EnvironmentBiomeOverride:true}),'stage-loading/fire');
+  assert.equal(Art.resource({prefab:'Map07',EnvironmentBiome:'snow',EnvironmentBiomeOverride:true}),'stage-loading/snow');
   assert.equal(Art.resource({EnvironmentBiome:'lava',EnvironmentMapId:'map-concept-04-broken-crown'}),'stage-loading/lava');
   assert.equal(Art.resource({EnvironmentBiome:'lava',EnvironmentMapId:'map-expansion-lava-ember-stair'}),'stage-loading/lava');
   assert.equal(Art.resource({EnvironmentBiome:'fire',EnvironmentMapId:'map-fire-terrain'}),'stage-loading/fire');

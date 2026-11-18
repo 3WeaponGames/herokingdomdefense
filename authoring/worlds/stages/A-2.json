@@ -4,7 +4,7 @@
   "variant": "A",
   "level": 2,
   "mapId": "map-concept-01-switchback-pass",
-  "name": "Stage 2",
+  "name": "Peaceful Plains",
   "config": {
     "Level": 2,
     "Name": "[[loc:data.levelcfg.2.name]]",
@@ -588,7 +588,8 @@
     ],
     "EnvironmentMapId": "map-concept-01-switchback-pass",
     "EnvironmentBiome": "forest",
-    "StageLayoutId": "A-2"
+    "StageLayoutId": "A-2",
+    "EnvironmentBiomeOverride": true
   },
   "basePrefab": "Map02",
   "buildings": [
@@ -5512,7 +5513,7 @@
   "nextBuilding": 27,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "484996b75c298d086c5983281c6de02b85c0226c0c4072a824d0228517e27af4",
+  "sourceRevision": "2df4a1d036ad56d30c7bc1f49a331cf3ff207aa624361b56f2cd08b3c8db79a6",
   "templates": {
     "Map02": [
       {

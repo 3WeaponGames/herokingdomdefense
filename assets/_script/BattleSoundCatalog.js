@@ -474,6 +474,15 @@ exports.effects = {
     "loop": false,
     "duration": 0.5176643990929706
   },
+  "horse-original-loop": {
+    "path": "run",
+    "format": "mp3",
+    "group": "loop",
+    "gain": 1,
+    "cooldown": 0,
+    "loop": true,
+    "duration": 1.392
+  },
   "hooves-forest-loop": {
     "path": "sfx/hooves-forest-loop",
     "group": "loop",

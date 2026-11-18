@@ -79,7 +79,7 @@ async function start(Editor,service,request){
    if(ready)break;await sleep(250);
   }
   if(!ready)throw Error('Game preview did not finish loading.');
-  const config=Object.assign(M.clone(stage.config),P.unlocks(stage),{prefab:'__world_draft__',EnvironmentMapId:map.id,EnvironmentBiome:map.biome});
+  const config=Object.assign(M.clone(stage.config),P.unlocks(stage),{prefab:'__world_draft__',EnvironmentMapId:map.id,EnvironmentBiome:require('./stage-biome').value(stage.config,map)});
   await execute(Runtime.source({prefab,config,textures,neededPrefabs,sourcePrefabs:Object.keys(sources),sharedConfig:service.index().documents.A,variantConfig:stage.variant==='A'?null:service.index().documents[stage.variant]}));
   current();
   for(let i=0;i<80;i++){

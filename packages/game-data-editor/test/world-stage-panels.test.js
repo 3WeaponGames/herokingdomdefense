@@ -42,6 +42,14 @@ test('stage names reject blank values and stale controls without overwriting ano
  f.state.snap.value.config.Name='7. Changed elsewhere';const concurrent=clone(f.state.snap.value);assert.throws(()=>input.change('Meadow'),/stage name changed/);assert.deepEqual(f.state.snap.value,concurrent);
 });
 
+test('a stage biome choice edits only its draft metadata and can return to the shared map biome',()=>{
+ const f=fixture();f.state.tab='Stage';f.state.catalog.maps[0].biome='lava';const before=clone(f.state.snap.value);f.panels.right();
+ const input=descendants(f.context.right).find(row=>row.fieldName==='Biome');assert.equal(input.value,'map');assert.equal(f.edits(),0);
+ input.change('snow');const expected=clone(before);expected.config.EnvironmentBiome='snow';expected.config.EnvironmentBiomeOverride=true;assert.deepEqual(f.state.snap.value,expected);
+ input.change('map');delete expected.config.EnvironmentBiomeOverride;expected.config.EnvironmentBiome='lava';assert.deepEqual(f.state.snap.value,expected);
+ assert.throws(()=>input.change('unknown'),/valid stage biome/);f.state.snap.value.id='A-8';assert.throws(()=>input.change('ice'),/stage changed/);
+});
+
 test('path cards drag in the draft without changing routing order or the selected path',()=>{
  const f=fixture(),before=clone(f.state.snap.value);f.state.tab='Paths';f.panels.left();
  const rows=descendants(f.context.left).filter(element=>element.dataset.graphId);

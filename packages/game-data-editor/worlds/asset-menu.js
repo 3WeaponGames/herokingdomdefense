@@ -38,7 +38,7 @@ function create(root,actions){
   if(actions.beforeOpen)actions.beforeOpen();
   const menu=document.createElement('div');menu.className='world-asset-menu';menu.setAttribute('role','menu');menu.setAttribute('aria-label',actions.label?actions.label(asset):'Asset actions for '+asset.name);
   current={menu,anchor};
-  const entries=actions.items?actions.items(asset):[{label:'Rename',action:actions.rename},{label:'Delete',action:actions.remove}];
+  const entries=actions.items?actions.items(asset):[{label:'Rename',action:actions.rename,disabled:!!asset.builtin,title:asset.builtin?'Built-in animation object':undefined},{label:'Delete',action:actions.remove,disabled:!!asset.builtin,title:asset.builtin?'Built-in animation object':undefined}];
   for(const entry of entries){
    const item=document.createElement('button');item.textContent=(entry.checked===true?'✓ ':'')+entry.label;item.setAttribute('role',entry.checked===undefined?'menuitem':'menuitemcheckbox');if(entry.checked!==undefined)item.setAttribute('aria-checked',String(entry.checked));item.disabled=!!entry.disabled;if(entry.title)item.title=entry.title;
    item.onclick=()=>{if(item.disabled)return;close(false);Promise.resolve().then(()=>entry.action(asset)).catch(actions.error);};menu.appendChild(item);
