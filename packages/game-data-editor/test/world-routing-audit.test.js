@@ -47,10 +47,24 @@ test('malformed route/spawn arrays yield repairable validation diagnostics witho
 test('inactive connections do not prevent a linear node deletion or change active route probabilities',()=>{
  const s={graphs:[graph()]},g=s.graphs[0];g.edges.push({id:'inactive',from:'middle',to:'start',weight:0,FutureField:{keep:1}});assert.deepEqual(M.graphIssues(g),[]);assert.equal(Paths.removeNode(s,'route','middle'),'goal');assert.deepEqual(Plan.route(s.graphs,1,[],null,()=>0).map(p=>p.nodeId),['start','goal']);assert.deepEqual(M.graphIssues(s.graphs[0]),[]);
 });
-test('movement preview rejects invalid graphs and reports a fully blocked spawn circle',()=>{
+test('movement preview rejects invalid graphs while blocked spawn circles retain bounded escape traces',()=>{
  const s=stage();s.buildings=[];s.spawns[0].radius=20;const map=M.createMap('map','Map','forest');map.size=map.playable={width:400,height:400};map.blockerMask=[[[[-50,-50],[50,-50],[50,50],[-50,50],[-50,-50]]]];const root=path.resolve(__dirname,'../../..'),service={root,doc:()=>({data:s}),loadMap:()=>({data:map})},request={key:'stage:test',spawnId:1,radius:12,hall:3};
- const before=JSON.stringify({s,map}),result=Navigation.preview(service,request);assert(result.spawnBlocked);assert(result.frontier);assert.match(result.message,/spawn circle.*no walkable/);assert.equal(JSON.stringify({s,map}),before);
+ const before=JSON.stringify({s,map}),result=Navigation.preview(service,request),Grid=require('../../../assets/_script/NavigationGrid').NavigationGrid,grid=new Grid(M.blockerPolygons(map).map(p=>p.points),{minX:-200,minY:-200,maxX:200,maxY:200},20);
+ assert(!result.spawnBlocked);assert(!result.frontier);assert.equal(result.traces.length,8);
+ for(const trace of result.traces){assert(Math.hypot(trace[0].x,trace[0].y)<=20);assert(!grid.isWalkable(trace[0],12),'the authored blocked circle is retained');assert(grid.isWalkable(trace.at(-1),12),'navigation exits terrain instead of discarding the enemy');}
+ assert.equal(JSON.stringify({s,map}),before);
+ s.spawns[0].x=1000;const outside=JSON.stringify({s,map}),bounded=Navigation.preview(service,request);assert.equal(bounded.traces.length,8);assert(bounded.traces.every(trace=>Math.abs(trace[0].x)<=188&&Math.abs(trace[0].y)<=188),'wholly off-map circles use the runtime in-map fallback');assert.equal(JSON.stringify({s,map}),outside);
  s.graphs[0].nodes[1].x=NaN;assert.throws(()=>Navigation.preview(service,request),/Invalid path node position/);
+});
+
+test('movement preview reports an obstacle frontier when the entire map has no escape',()=>{
+ const s=stage();s.buildings=[];s.spawns[0].radius=20;const map=M.createMap('map','Map','forest');map.size=map.playable={width:400,height:400};map.blockerMask=[[[[-500,-500],[500,-500],[500,500],[-500,500],[-500,-500]]]];
+ const before=JSON.stringify({s,map}),service={root:path.resolve(__dirname,'../../..'),doc:()=>({data:s}),loadMap:()=>({data:map})},result=Navigation.preview(service,{key:'stage:test',spawnId:1,radius:12,hall:3});
+ const Grid=require('../../../assets/_script/NavigationGrid').NavigationGrid,grid=new Grid(M.blockerPolygons(map).map(p=>p.points),{minX:-200,minY:-200,maxX:200,maxY:200},20);
+ assert(result.frontier);assert.match(result.message,/obstacle frontier/);assert.equal(result.points.length,1);assert.equal(result.traces.length,8);
+ // Terrain-exit traces may retain interior waypoints, but there is no open
+ // exit and the preview must not claim that the final authored goal is reached.
+ assert(result.traces.every(trace=>trace.every(point=>!grid.isWalkable(point,12))));assert(result.traces.every(trace=>Math.hypot(trace.at(-1).x-200,trace.at(-1).y)>12));assert.equal(JSON.stringify({s,map}),before);
 });
 test('spread validation is shared by standalone graph and movement-preview readers',()=>{
  for(const spread of [NaN,Infinity,-1,1501,'100']){const g=graph();g.spread=spread;const before=JSON.stringify(g);assert(M.graphIssues(g).includes('Path spread must be between 0 and 1500.'));assert.equal(JSON.stringify(g),before);}

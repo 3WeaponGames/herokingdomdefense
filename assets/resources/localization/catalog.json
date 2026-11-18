@@ -5225,6 +5225,11 @@
       "zh": "{0}  ›",
       "context": "Selector when catalog has more than two languages"
     },
+    "loading.barProgress": {
+      "en": "Loading...{0}%",
+      "zh": "加载中...{0}%",
+      "context": "Centered caption inside the GUI PRO loading bar"
+    },
     "loading.progress": {
       "en": "{0}%",
       "zh": "{0}%",
@@ -11894,6 +11899,11 @@
       "en": "{0} of {1} loaded",
       "zh": "已加载 {0} / {1}",
       "context": "Startup loading"
+    },
+    "loading.barInitial": {
+      "en": "Loading...0%",
+      "zh": "加载中...0%",
+      "context": "Initial caption in the shared GUI PRO loading-bar prefab; runtime supplies progress through loading.barProgress"
     }
   },
   "images": {
@@ -21848,6 +21858,26 @@
         "width": 530,
         "height": 64,
         "fontRole": "body"
+      }
+    },
+    "loading.barInitial": {
+      "en": {
+        "fontSize": 40,
+        "lineHeight": 48,
+        "width": 568,
+        "height": 65,
+        "wrap": false,
+        "overflow": "CLAMP",
+        "horizontalAlign": 1
+      },
+      "zh": {
+        "fontSize": 40,
+        "lineHeight": 48,
+        "width": 568,
+        "height": 65,
+        "wrap": false,
+        "overflow": "CLAMP",
+        "horizontalAlign": 1
       }
     }
   },

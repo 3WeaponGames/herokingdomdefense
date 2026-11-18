@@ -99,11 +99,19 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return this.attackRange * (1 + bonus);
   };
   _ctor.prototype.refreshAttackRange = function () {
-    if (this.ndRange && this.ndRange.width > 0) {
-      var scale = 2 * this.getAttackRange() / this.ndRange.width;
+    var range = this.ndRange, owner = this.node;
+    if (!range || !owner || cc.isValid && (!cc.isValid(this, true) || !cc.isValid(owner, true) || !cc.isValid(range, true))) return;
+    // Strict validity excludes queued/destroyed objects, but Cocos 2.4 does
+    // not include its in-progress pre-destroy flag. Never read native bounds
+    // while the component, owner or detached range child is being destroyed.
+    var destroying = cc.Object && cc.Object.Flags && cc.Object.Flags.Destroying || 0;
+    if (destroying && ((this._objFlags | owner._objFlags | range._objFlags) & destroying)) return;
+    var width = range.width;
+    if (width > 0) {
+      var scale = 2 * this.getAttackRange() / width;
       // Native node transforms round through Float32; a held charge must not
       // dirty the transform every frame solely because of that rounding.
-      if (Math.abs(this.ndRange.scale - scale) > 1e-7 * Math.max(1, scale) || this.ndRange.scale === undefined) this.ndRange.scale = scale;
+      if (Math.abs(range.scale - scale) > 1e-7 * Math.max(1, scale) || range.scale === undefined) range.scale = scale;
     }
   };
   _ctor.prototype.initData = function () {

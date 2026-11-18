@@ -20,7 +20,7 @@ test('all four gate faces export their previewed model and collision transforms 
 test('building placement cards keep six simple names with four compass gate facings and no helper data in placements',()=>{
  const service=new Service(root,{artifacts:path.join(os.tmpdir(),'hkd-building-palette-read-only')}),catalog=service.buildingCatalog();
  const source=L.adaptStage(root,'A',1,Object.assign({},service.index().documents.A.LevelCfg[0],{prefab:'Map01'})),cards=service.buildingPlacements();
- assert.deepEqual(cards.map(c=>c.name),['Main Hall','Archer Tower','Barracks','House','Mill','Wall / Gate']);
+ assert.deepEqual(cards.map(c=>c.name),['Main Hall','Tower','Barracks','House','Mill','Wall / Gate']);
  assert.deepEqual(cards.map(c=>c.catalogId),catalog.map(c=>c.catalogId));
  assert.deepEqual(cards.map(c=>c.variants.length),[1,1,1,1,1,4]);
  assert.deepEqual(cards[5].variants.map(v=>v.label),['Northeast ↗','Northwest ↖','Southeast ↘','Southwest ↙']);

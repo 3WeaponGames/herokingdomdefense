@@ -2,11 +2,13 @@
 const test=require('node:test'),assert=require('node:assert/strict'),Panels=require('../worlds/stage-panels');
 const clone=value=>JSON.parse(JSON.stringify(value));
 class Element{
- constructor(tag,text,cls){this.tagName=tag;this.className=cls||'';this.children=[];this.dataset={};this.value='';this._text=text||'';}
+ constructor(tag,text,cls){this.tagName=tag;this.className=cls||'';this.children=[];this.dataset={};this.value='';this._text=text||'';this.classList={add:(...names)=>{this.className=Array.from(new Set(this.className.split(/\s+/).filter(Boolean).concat(names))).join(' ');},remove:(...names)=>{this.className=this.className.split(/\s+/).filter(name=>!names.includes(name)).join(' ');},contains:name=>this.className.split(/\s+/).includes(name)};}
  appendChild(child){this.children.push(child);child.parentNode=this;return child;}
  setAttribute(name,value){if(!this.attributes)this.attributes={};this.attributes[name]=String(value);}
  set textContent(value){this._text=value;this.children=[];}
  get textContent(){return this._text+this.children.map(child=>child.textContent).join('');}
+ getBoundingClientRect(){return {top:0,height:100};}
+ contains(node){return node===this||this.children.some(child=>child.contains(node));}
 }
 function fixture(){
  const stage={id:'A-7',level:7,variant:'A',mapId:'Map07',hero:{x:0,y:0},buildings:[],spawns:[{id:1,name:'Spawn 1',enabled:true,x:0,y:100}],graphs:[{id:'one',name:'First path',entry:'start',spawnIds:[1],nodes:[{id:'start',x:0,y:100},{id:'goal',x:0,y:0,goal:true}],edges:[{id:'link',from:'start',to:'goal',weight:1}]},{id:'two',name:'Other path',entry:'goal',spawnIds:[1],nodes:[{id:'goal',x:1,y:0,goal:true}],edges:[]}],config:{Level:7,WaveCfg:[{id:7,Wave:1,SpawnTimeline:[{id:'a',unitId:3,spawnId:1,count:1,startSeconds:1,intervalSeconds:1,routeGraphId:'one',future:{keep:1}},{id:'b',unitId:3,spawnId:1,count:1,startSeconds:2,intervalSeconds:1,routeGraphId:'two'},{id:'c',unitId:3,spawnId:1,count:1,startSeconds:3,intervalSeconds:1},{id:'d',unitId:3,spawnId:1,count:1,startSeconds:4,intervalSeconds:1,routeGraphId:null}]},{id:7,Wave:2,RefreshSoldierKind:['1#3,1'],future:{keep:true}}],future:{keep:[1,2]}}};
@@ -17,6 +19,68 @@ function fixture(){
  return{state,context,panels:Panels.create(context),edits:()=>edits};
 }
 function descendants(element){return element.children.flatMap(child=>[child,...descendants(child)]);}
+function dragEvent(clientY=10){return {clientY,preventDefault(){this.prevented=true;},stopPropagation(){},dataTransfer:{setData(){}}};}
+
+test('stage identity renders a static number and a separate name without rewriting a localized title',()=>{
+ const f=fixture();f.state.tab='Stage';f.state.snap.value.config.Name='[[loc:stage.desert]]';f.state.snap.stageName='7. Desert';const before=clone(f.state.snap.value);f.panels.right();
+ const rows=descendants(f.context.right),number=rows.find(row=>row.tagName==='output'&&row.attributes['aria-label']==='Stage number'),name=rows.find(row=>row.fieldName==='Stage name');
+ assert.equal(number.textContent,'Stage 7');assert.equal(number.children.length,0);assert.equal(number.onchange,undefined);assert(!rows.some(row=>['Level','Stage number'].includes(row.fieldName)));assert.equal(name.value,'Desert');assert.equal(f.edits(),0);assert.deepEqual(f.state.snap.value,before);
+ name.change('Desert');assert.deepEqual(f.state.snap.value,before,'an unchanged name preserves the original localization token');
+});
+
+test('renaming a stage keeps its fixed number and updates its title while preserving all other content',()=>{
+ const f=fixture();f.state.tab='Stage';f.state.snap.value.config.Name='[[loc:stage.desert]]';f.state.snap.stageName='7. Desert';const before=clone(f.state.snap.value);f.panels.right();
+ descendants(f.context.right).find(row=>row.fieldName==='Stage name').change(' 99. Lantern Crossing ');
+ const expected=clone(before);expected.config.Name='7. Lantern Crossing';assert.deepEqual(f.state.snap.value,expected);
+ f.context.right.textContent='';f.panels.right();assert(descendants(f.context.right).some(row=>row.tagName==='h3'&&row.textContent==='Stage 7 — Lantern Crossing'));assert.equal(descendants(f.context.right).find(row=>row.fieldName==='Stage name').value,'Lantern Crossing');
+ f.panels.left();assert(descendants(f.context.left).some(row=>row.tagName==='strong'&&row.textContent==='Stage 7 — Lantern Crossing'));
+});
+
+test('stage names reject blank values and stale controls without overwriting another title',()=>{
+ const f=fixture();f.state.tab='Stage';f.state.snap.value.config.Name='7. Desert';f.panels.right();const input=descendants(f.context.right).find(row=>row.fieldName==='Stage name'),before=clone(f.state.snap.value);
+ assert.throws(()=>input.change('   '),/Enter a stage name/);assert.deepEqual(f.state.snap.value,before);
+ f.state.snap.value.config.Name='7. Changed elsewhere';const concurrent=clone(f.state.snap.value);assert.throws(()=>input.change('Meadow'),/stage name changed/);assert.deepEqual(f.state.snap.value,concurrent);
+});
+
+test('path cards drag in the draft without changing routing order or the selected path',()=>{
+ const f=fixture(),before=clone(f.state.snap.value);f.state.tab='Paths';f.panels.left();
+ const rows=descendants(f.context.left).filter(element=>element.dataset.graphId);
+ assert(rows.every(row=>row.draggable));rows[1].ondragstart(dragEvent());rows[0].ondragover(dragEvent());rows[0].ondrop(dragEvent());
+ assert.equal(f.edits(),1);assert.equal(f.state.graph,'one');
+ assert.deepEqual(f.state.snap.value.graphs.map(graph=>graph.id),['one','two']);
+ assert.deepEqual(require('../worlds/stage-card-order').ordered(f.state.snap.value.graphs).map(graph=>graph.id),['two','one']);
+ assert.deepEqual(f.state.snap.value.graphs.map(({editorOrder,...graph})=>graph),before.graphs);
+ assert.deepEqual(f.state.snap.value.config,before.config);
+ f.panels.left();assert.deepEqual(descendants(f.context.left).filter(element=>element.dataset.graphId).map(row=>row.dataset.graphId),['two','one']);
+});
+
+test('building cards support the same drag order and keyboard moves without changing construction identifiers',()=>{
+ const f=fixture();f.state.tab='Buildings';f.state.snap.value.buildings=[{id:1,name:'Main Hall 1',kind:1},{id:4,name:'House 1',kind:4},{id:8,name:'Tower 1',kind:2}];f.state.selection=['building:4'];f.panels.left();
+ let rows=descendants(f.context.left).filter(element=>element.dataset.buildingId);
+ rows[2].ondragstart(dragEvent());rows[0].ondrop(dragEvent());
+ assert.deepEqual(f.state.snap.value.buildings.map(building=>building.id),[1,4,8]);assert.deepEqual(f.state.selection,['building:4']);
+ f.panels.left();rows=descendants(f.context.left).filter(element=>element.dataset.buildingId);assert.deepEqual(rows.map(row=>row.dataset.buildingId),[8,1,4]);
+ rows[1].onkeydown({...dragEvent(),key:'ArrowUp',altKey:true});
+ assert.deepEqual(require('../worlds/stage-card-order').ordered(f.state.snap.value.buildings).map(building=>building.id),[1,8,4]);assert.equal(f.edits(),2);
+});
+
+test('cancelled drags, busy documents and drops from another stage cannot create an edit',()=>{
+ const f=fixture();f.state.tab='Paths';f.panels.left();const rows=descendants(f.context.left).filter(element=>element.dataset.graphId);
+ rows[1].ondragstart(dragEvent());rows[1].ondragend();rows[0].ondrop(dragEvent());assert.equal(f.edits(),0);
+ rows[1].ondragstart(dragEvent());f.state.snap.value.id='A-8';rows[0].ondrop(dragEvent());assert.equal(f.edits(),0);
+ f.state.snap.busy=true;const event=dragEvent();rows[1].ondragstart(event);assert(event.prevented);assert.equal(f.edits(),0);
+ assert(rows.every(row=>!row.classList.contains('world-card-drag-source')));
+});
+
+test('Duplicate path sits directly above Delete path, retains spawn references and selects the independent copy',()=>{
+ const f=fixture(),before=clone(f.state.snap.value);f.state.tab='Paths';f.state.selection=['node:start'];f.panels.right();
+ const actions=f.context.right.children.filter(element=>element.tagName==='button'),copyAt=actions.findIndex(element=>element.textContent==='Duplicate path');
+ assert(copyAt>=0);assert.equal(actions[copyAt+1].textContent,'Delete path');actions[copyAt].onclick();
+ const added=f.state.snap.value.graphs.find(graph=>graph.id===f.state.graph);assert(added);assert.notEqual(added.id,'one');assert.equal(added.name,'Spawn 1 · Route 3');
+ assert.deepEqual(added.nodes,before.graphs[0].nodes);assert.deepEqual(added.edges,before.graphs[0].edges);assert.deepEqual(added.spawnIds,[1]);
+ assert.deepEqual(f.state.selection,[]);assert.equal(f.state.tool,'select');assert.deepEqual(f.state.snap.value.config,before.config);
+ added.nodes[0].x=999;assert.equal(f.state.snap.value.graphs[0].nodes[0].x,before.graphs[0].nodes[0].x);
+});
 test('rendering every contextual stage tab makes no draft changes or edit requests',()=>{
  const f=fixture(),before=JSON.stringify(f.state.snap.value);for(const tab of ['Stage','Buildings','Spawns','Paths','Waves']){f.state.tab=tab;f.panels.top();f.panels.tabs();f.panels.left();f.panels.right();assert.equal(JSON.stringify(f.state.snap.value),before,tab);}assert.equal(f.edits(),0);
 });
@@ -49,7 +113,7 @@ test('friendly legacy path labels compress spawn ranges without changing custom 
  const f=fixture(),stage=f.state.snap.value;stage.buildings=[{id:2,name:'East Gate'}];Object.assign(stage.graphs[0],{name:'Path1_2_3',legacy:true,spawnIds:[3,1,2]});Object.assign(stage.graphs[1],{name:'Path1_2_3',legacy:true,spawnIds:[1,2,3],requiresAnyBuilding:[2,99]});const before=JSON.stringify(stage);
  assert.equal(Panels.spawnRanges([9,2,1,3,5,7,8,8]),'1–3, 5, 7–9');assert.equal(Panels.pathTitle(stage,stage.graphs[0]),'Spawns 1–3 · Route 1');assert.equal(Panels.pathTitle(stage,stage.graphs[1]),'Spawns 1–3 · Route 2');assert.equal(Panels.pathSubtitle(stage,stage.graphs[0]),'2 points · Always available');assert.equal(Panels.pathSubtitle(stage,stage.graphs[1]),'1 point · Requires: East Gate or Building 99');
  assert.equal(Panels.pathTitle(stage,{name:'My custom route',legacy:true}),'My custom route');assert.equal(Panels.pathTitle(stage,{name:'Path7_8_9',legacy:false}),'Path7_8_9');assert.equal(JSON.stringify(stage),before);
- f.state.tab='Paths';f.panels.left();f.panels.right();assert.equal(JSON.stringify(stage),before);assert.equal(f.edits(),0);assert(descendants(f.context.left).some(element=>element.tagName==='strong'&&element.textContent==='Spawns 1–3 · Route 1'));const name=descendants(f.context.right).find(element=>element.fieldName==='Name');assert.equal(name.value,'Path1_2_3');
+ f.state.tab='Paths';f.panels.left();f.panels.right();assert.equal(JSON.stringify(stage),before);assert.equal(f.edits(),0);assert(descendants(f.context.left).some(element=>element.tagName==='strong'&&element.textContent==='Spawns 1–3 · Route 1'));const name=descendants(f.context.right).find(element=>element.fieldName==='Name');assert.equal(name.value,'Spawns 1–3 · Route 1');
 });
 
 

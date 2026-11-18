@@ -34,6 +34,13 @@ test('interior circles preserve their exact sample and RNG sequence',()=>{
   assert.equal(random(),reference());
 });
 
+test('legacy point spawns outside the map are clamped without consuming random numbers',()=>{
+ for(const center of [{x:900,y:0},{x:0,y:-900},{x:-900,y:900}]){
+  const p=Area.sampleInBounds(center,0,()=>{throw Error('Point spawns must retain RNG');},bounds,20);
+  assert(p.x>=-180&&p.x<=180&&p.y>=-180&&p.y<=180);
+ }
+});
+
 test('actual Map03 lane 11 no longer produces the off-map starts that cannot reach its first waypoint',()=>{
   const map=extract(require.resolve('../../assets/KinghtFallIconMap/Map03.prefab')),serialized=JSON.parse(fs.readFileSync(require.resolve('../../assets/KinghtFallIconMap/Map03.prefab'),'utf8'));
   const e=environment();e.game.mapSize={width:map.bounds.maxX-map.bounds.minX,height:map.bounds.maxY-map.bounds.minY};

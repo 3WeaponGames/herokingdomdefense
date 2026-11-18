@@ -198,7 +198,7 @@ var def_KinghtFallUIGame = function (t) {
           }, function () {
             return !t.isclose && t._freshEntry === entry && !checkpoint.hasSave(levelId) && levelId <= player.getUserData().getMaxStage();
           });
-        } catch (error) { console.error('Could not start battle', error); }
+        } catch (error) { console.error('Could not start battle', error && (error.stack || error.message) || String(error)); }
         t._freshEntry = null;
         if (!admitted) {
           $z1UIMgr.UIMgr.getInstance().cancelOpenTransition(entry.transition);

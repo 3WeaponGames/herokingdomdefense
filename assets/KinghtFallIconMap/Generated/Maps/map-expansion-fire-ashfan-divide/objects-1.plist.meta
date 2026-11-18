@@ -1,0 +1,36 @@
+{
+  "ver": "1.2.6",
+  "uuid": "e6dda75e-e23d-4238-a84f-6387db675a8b",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "ff4990e3-c267-4e7f-a937-40ebe7305237",
+  "size": {
+    "width": 654,
+    "height": 714
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "terrain-expansion-fire-ashfan-divide-east-lean-0-0": {
+      "ver": "1.0.6",
+      "uuid": "fcfb7636-f622-4bd8-ad67-4c7a1c47196b",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ff4990e3-c267-4e7f-a937-40ebe7305237",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 650,
+      "height": 710,
+      "rawWidth": 650,
+      "rawHeight": 710,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "spriteType": "normal",
+      "subMetas": {}
+    }
+  }
+}

@@ -7,6 +7,8 @@ const LayerOrder=require('./layer-order'),LayerDrag=require('./layer-drag');
 const ObjectShadowData=require('./object-shadow-data'),ObjectShadowMenu=require('./object-shadow-menu');
 const GateFacing=require('../../../assets/_script/GateFacing');
 const BarracksSpawn=require('./barracks-spawn');
+const StageNames=require('./stage-names');
+const SpawnBounds=require('./spawn-bounds');
 const clone=M.clone,el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const option=(value,text)=>{const o=el('option',text);o.value=String(value);return o;};
 function mount(container,options){
@@ -154,7 +156,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
    event.preventDefault();const focused=document.activeElement;if(focused&&root.contains(focused)&&typeof focused.blur==='function')focused.blur();canvas.focus({preventScroll:true});
    const d={spawnRadiusScrub:true,ids:state.selection.filter(id=>id.startsWith('spawn:')),context:currentContext(),pointerId:event.pointerId,lastX:event.clientX,delta:0,initializing:true};state.drag=d;
    const same=event=>event.pointerId===undefined||d.pointerId===undefined||event.pointerId===d.pointerId;
-   const update=()=>{if(state.drag!==d||d.initializing)return;for(const id of d.ids){const before=stageEntity(d.before,id),spawn=stageEntity(d.working,id),radius=Math.round(Math.max(0,Math.min(1500,(before.radius||0)+d.delta))*10)/10;if(radius===(before.radius||0)&&before.radius===undefined)delete spawn.radius;else spawn.radius=radius;}state.snap.value=d.working;refreshTransformFields();draw();};
+   const update=()=>{if(state.drag!==d||d.initializing)return;for(const id of d.ids){const before=stageEntity(d.before,id),spawn=stageEntity(d.working,id),radius=Math.round(Math.max(0,Math.min(1500,(before.radius||0)+d.delta))*10)/10;if(radius===(before.radius||0)&&before.radius===undefined)delete spawn.radius;else spawn.radius=radius;SpawnBounds.constrain(spawn,state.map,true);}state.snap.value=d.working;refreshTransformFields();draw();};
    const move=event=>{if(state.drag!==d||!same(event)||!Number.isFinite(event.clientX))return;d.delta+=(event.clientX-d.lastX)*(event.shiftKey?.1:1);d.lastX=event.clientX;update();};
    const cancel=event=>{if(!event||same(event))cancelDrag();};
    const escape=event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();cancelDrag();}};
@@ -406,6 +408,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  }
 
  function values(){return state.snap.value;}
+ function syncStageName(snap){if(!stageMode||!snap||typeof snap.stageName!=='string')return;const row=(state.catalog.stages||[]).find(row=>row.id===snap.value.id);if(row)row.name=snap.stageName;}
  async function load(key){
  if(state.closed)return;assetMenu.close(false);stageMapRequest=null;state.mapLoadError=null;mapRequestSerial++;
  const serial=++loadSerial;state.loading=true;updateDocumentBusy();updateStageMapNotice();rememberRoadSettings();state.roadFamily=null;state.groupRequest=(state.groupRequest||0)+1;cancelDrag();
@@ -416,7 +419,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   const snap=await options.ipc('world-load',{key}),map=key.startsWith('map:')?snap.value:(await options.ipc('world-load',{key:'map:'+snap.value.mapId})).value;
   if(state.closed||serial!==loadSerial)return;
   renderer.clear();Paint.clearMasks();pictures.clear();picking.clear();state.assetTable=null;state.solo=null;state.autoBlockerMode=null;state.autoBlockerLayers=null;state.autoBlockerPreview=null;state.autoBlockerPreviewSignature=null;state.lassoPoints=[];state.lassoHover=null;state.layerSearch='';
-  state.snap=snap;setMap(map);state.openGatePreviews.clear();state.selection=[];state.layerSelection=false;state.nav=null;state.groupId=null;state.groupData=null;state.groupPreview=null;
+  state.snap=snap;syncStageName(snap);setMap(map);state.openGatePreviews.clear();state.selection=[];state.layerSelection=false;state.nav=null;state.groupId=null;state.groupData=null;state.groupPreview=null;
   if(!stageMode){state.biome=state.map.biome;configureRoad();}
   else{state.variant=snap.value.variant;state.spawn=snap.value.spawns[0]&&snap.value.spawns[0].id;state.graph=null;}
   state.loading=false;render();fit();
@@ -442,7 +445,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  const key=currentKey();
  return enqueue(async()=>{
   if(state.closed||currentKey()!==key)throw Error('The document changed before this edit. Select the object again.');
-  const before=values(),value=clone(before);fn(value);
+  const before=values(),value=clone(before);fn(value);if(stageMode){SpawnBounds.edited(value,before,state.map);StageNames.refreshPaths(value);}
   if(JSON.stringify(value)===JSON.stringify(before)){render();return state.snap;}
   // Renaming preserves the map's existing collision representation.
   const nameOnly=value.name!==before.name&&JSON.stringify(Object.assign({},before,{name:value.name}))===JSON.stringify(value);
@@ -457,7 +460,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  if(!stageMode&&state.snap&&s.key!==currentKey()){clearPlacementPreview();state.selection=[];state.layerSelection=false;state.solo=null;state.groupId=null;state.groupData=null;state.groupPreview=null;}
  if(stageMode&&state.drag&&(state.drag.wallRotation||state.drag.spawnRadiusScrub||state.drag.barracksSpawn)&&state.drag.initializing){state.snap=s;state.nav=null;return;}
  if(stageMode&&state.drag&&state.drag.ids&&state.drag.before){state.drag.latestSnapshot=s;state.snap=Object.assign({},s,{value:state.snap.value});state.nav=null;draw();return;}
- state.snap=s;
+ state.snap=s;syncStageName(s);
  if(s.value&&s.value.images)Object.assign(state.catalog.images,s.value.images);
  if(s.result&&s.result.placedGroup){state.selection=s.result.selection;state.layer=s.result.layerId;state.expanded['o:'+state.layer]=true;state.solo=null;state.brushCursor=null;state.tool='group';}
  if(!stageMode)setMap(s.value);
@@ -571,7 +574,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   },'Replace stage');
   }finally{state.replaceReviewBusy=false;}
  }
- function newPath(){const spawnId=state.spawn;return edit(stage=>{const spawn=stage.spawns.find(p=>p.id===spawnId)||stage.spawns.find(p=>p.enabled!==false);if(!spawn)throw Error('Add a spawn in the Spawns tab first.');const base=M.newSpawn(Object.assign({},stage,{nextSpawn:stage.nextSpawn}),spawn),graph=base.graphs[base.graphs.length-1];graph.id=uniqueId(stage.graphs,'path-');graph.spawnIds=[spawn.id];graph.name='New approach';stage.graphs.push(graph);state.graph=graph.id;state.spawn=spawn.id;state.selection=[];});}
+ function newPath(){const spawnId=state.spawn;return edit(stage=>{const spawn=stage.spawns.find(p=>p.id===spawnId)||stage.spawns.find(p=>p.enabled!==false);if(!spawn)throw Error('Add a spawn in the Spawns tab first.');const base=M.newSpawn(Object.assign({},stage,{nextSpawn:stage.nextSpawn}),spawn),graph=base.graphs[base.graphs.length-1];graph.id=uniqueId(stage.graphs,'path-');graph.spawnIds=[spawn.id];graph.nameFromSpawns=true;stage.graphs.push(graph);state.graph=graph.id;state.spawn=spawn.id;state.selection=[];});}
  function insertPathNode(id){const graph=state.graph;return edit(stage=>{const selected=PathEditor.insertNode(stage,graph,id);if(state.graph===graph&&state.tab==='Paths')state.selection=['node:'+selected];});}
  function removePathNode(id){const graph=state.graph;return edit(stage=>{const next=PathEditor.removeNode(stage,graph,id);if(state.graph===graph&&state.tab==='Paths')state.selection=next?['node:'+next]:[];});}
  function renameMap(){
@@ -748,8 +751,8 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  const selected=selectedObject(),ids=state.selection.slice();if(!selected||!selected.object)return;
  return edit(value=>{
   if(!stageMode){const result=M.duplicateObjects(value,ids);Object.assign(value,result.map);state.selection=result.ids;}
-  else if(selected.kind==='spawn'){Object.assign(value,M.newSpawn(value,{x:selected.object.x+40,y:selected.object.y-40}));state.spawn=value.spawns[value.spawns.length-1].id;state.selection=['spawn:'+state.spawn];}
-  else{const copy=clone(selected.object);if(selected.kind==='building'){if(copy.kind===1)throw Error('A stage has one main hall.');copy.id=value.nextBuilding++;value.buildings.push(copy);}else{copy.id='offer-'+value.nextSpecial++;value.specials.push(copy);}copy.x+=30;copy.y-=30;state.selection=[selected.kind+':'+copy.id];}
+  else if(selected.kind==='spawn'){Object.assign(value,M.newSpawn(value,{x:selected.object.x+40,y:selected.object.y-40},state.map));state.spawn=value.spawns[value.spawns.length-1].id;state.selection=['spawn:'+state.spawn];}
+  else{const copy=StageNames.prepareBuilding(value,clone(selected.object));if(selected.kind==='building'){if(copy.kind===1)throw Error('A stage has one main hall.');copy.id=value.nextBuilding++;value.buildings.push(copy);}else{copy.id='offer-'+value.nextSpecial++;value.specials.push(copy);}copy.x+=30;copy.y-=30;state.selection=[selected.kind+':'+copy.id];}
  });
 }
  function deleteSelectedLayer(){if(stageMode||state.tab==='Blockers')return;const ground=state.tab==='Ground',id=ground?state.ground:state.layer,layer=(ground?groundLayers(values()):values().layers).find(l=>l.id===id);if(!layer)return;if(layer.locked){message('Unlock this layer before deleting it.',true);return;}return edit(m=>{const list=ground?groundLayers(m):m.layers,at=list.findIndex(l=>l.id===id);Object.assign(m,ground?M.removeGroundLayer(m,id):M.removeLayer(m,id));const next=ground?groundLayers(m):m.layers,selected=next[Math.max(0,Math.min(next.length-1,at-1))];if(ground)state.ground=selected&&selected.id||null;else state.layer=selected&&selected.id||null;if(state.solo&&state.solo.id===id&&!!state.solo.ground===ground)state.solo=null;state.selection=[];state.layerSelection=false;});}
@@ -956,8 +959,8 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   edit(map=>{const placed=M.place(map,layer,asset,point,min,max);Object.assign(map,placed.map);state.layerSelection=false;state.selection=[placed.object.id];});return;
  }
  const e=event,p=point;
-if(stageMode&&state.tool==='building'){const choice=buildingChoice(),asset=choice&&choice.placement;if(!asset){message('Choose a building.',true);return;}edit(s=>{if(asset.kind===1&&!asset.special&&s.buildings.some(b=>b.kind===1))throw Error('Select and move the existing main hall.');const copy=clone(asset);copy.origin={x:copy.x,y:copy.y};copy.x=p.x;copy.y=p.y;copy.enabled=true;copy.unlock=1;if(copy.special){copy.id='offer-'+s.nextSpecial++;s.specials.push(copy);state.selection=['special:'+copy.id];}else{copy.id=s.nextBuilding++;s.buildings.push(copy);state.selection=['building:'+copy.id];}});return;}
-if(stageMode&&state.tool==='spawn'){edit(s=>{Object.assign(s,M.newSpawn(s,p));state.spawn=s.spawns[s.spawns.length-1].id;state.graph=s.graphs[s.graphs.length-1].id;state.selection=['spawn:'+state.spawn];});return;}
+if(stageMode&&state.tool==='building'){const choice=buildingChoice(),asset=choice&&choice.placement;if(!asset){message('Choose a building.',true);return;}edit(s=>{if(asset.kind===1&&!asset.special&&s.buildings.some(b=>b.kind===1))throw Error('Select and move the existing main hall.');const copy=StageNames.prepareBuilding(s,clone(asset));copy.origin={x:copy.x,y:copy.y};copy.x=p.x;copy.y=p.y;copy.enabled=true;copy.unlock=1;if(copy.special){copy.id='offer-'+s.nextSpecial++;s.specials.push(copy);state.selection=['special:'+copy.id];}else{copy.id=s.nextBuilding++;s.buildings.push(copy);state.selection=['building:'+copy.id];}});return;}
+if(stageMode&&state.tool==='spawn'){edit(s=>{Object.assign(s,M.newSpawn(s,p,state.map));state.spawn=s.spawns[s.spawns.length-1].id;state.graph=s.graphs[s.graphs.length-1].id;state.selection=['spawn:'+state.spawn];});return;}
 if(stageMode&&state.tool==='node'){const graphId=state.graph;edit(s=>{const g=s.graphs.find(g=>g.id===graphId);if(!g)throw Error('Select a path first.');const id=uniqueId(g.nodes,'node-');g.nodes.push({id,x:p.x,y:p.y,goal:false});state.selection=['node:'+id];});return;}
  const target=hit(point);
  if(!stageMode&&state.tool==='delete'){if(target){state.layerSelection=false;state.selection=[target];remove();}return;}
@@ -987,7 +990,7 @@ if(stageMode&&state.tool==='node'){const graphId=state.graph;edit(s=>{const g=s.
   return;
  }
  if(d.barracksSpawn){updateBarracksSpawnDrag(d,point);return;}
- if(d.spawnRadius){if(raw.x===d.start.x&&raw.y===d.start.y)return;if(!d.working)d.working=clone(d.before);const spawn=d.working.spawns.find(s=>s.id===d.spawnRadius);spawn.radius=Math.round(Math.min(1500,Math.hypot(raw.x-spawn.x,raw.y-spawn.y))*10)/10;state.snap.value=d.working;refreshTransformFields();draw();return;}
+ if(d.spawnRadius){if(raw.x===d.start.x&&raw.y===d.start.y)return;if(!d.working)d.working=clone(d.before);const spawn=d.working.spawns.find(s=>s.id===d.spawnRadius);spawn.radius=Math.round(Math.min(1500,Math.hypot(raw.x-spawn.x,raw.y-spawn.y))*10)/10;SpawnBounds.constrain(spawn,state.map,true);state.snap.value=d.working;refreshTransformFields();draw();return;}
  if(d.deleteObjects){sweepDelete(d,raw);return;}
  if(d.gizmo){if(!d.working)d.working=clone(d.before);Gizmos.update(d.gizmo,raw,!!event.shiftKey);if(d.layer)transformLayer(d);else Selection.transformInto(d.working,d.before,d.ids,d.gizmo.pivot,d.gizmo.scale,d.gizmo.rotation);state.snap.value=d.working;if(!stageMode)state.map=d.working;refreshTransformFields();draw();return;}
  if(d.pan){const p=screen(event);state.pan={x:d.before.x+p.x-d.start.x,y:d.before.y+p.y-d.start.y};draw();return;}
@@ -1000,7 +1003,7 @@ if(stageMode&&state.tool==='node'){const graphId=state.graph;edit(s=>{const g=s.
  if(d.layer){const layer=d.groundLayer?M.groundLayer(values(),d.layer):M.layerOf(values(),d.layer),original=d.groundLayer?M.groundLayer(d.before,d.layer):M.layerOf(d.before,d.layer);if(!layer.transform)layer.transform={x:0,y:0,scale:1,angle:0};layer.transform.x=(original.transform&&original.transform.x||0)+dx;layer.transform.y=(original.transform&&original.transform.y||0)+dy;}
  else if(!stageMode)for(const id of d.ids){const found=editablePlacement(d.working,id),before=editablePlacement(d.before,id);if(!found||!before)continue;const old=M.toWorld(before.layer.transform,before.object),next=M.toLocal(found.layer.transform,{x:old.x+dx,y:old.y+dy});found.object.x=next.x;found.object.y=next.y;}
  else if(d.purchaseField){const b=d.working.buildings.find(b=>b.id===d.purchaseField),before=d.before.buildings.find(b=>b.id===d.purchaseField),offset=d.purchaseLayout&&d.purchaseLayout.offset||Purchase.offset(before),scale=before.scale||1;b.purchaseSide=d.purchaseLayout?d.purchaseLayout.side:Purchase.side(before.purchaseSide);b.purchaseOffset={x:offset.x+dx/scale,y:offset.y+dy/scale};b.purchaseOverride=true;}
- else for(const id of d.ids){const target=stageEntity(d.working,id,d.graphId),start=stageEntity(d.before,id,d.graphId);if(target&&start){target.x=start.x+dx;target.y=start.y+dy;}}
+ else for(const id of d.ids){const target=stageEntity(d.working,id,d.graphId),start=stageEntity(d.before,id,d.graphId);if(target&&start){target.x=start.x+dx;target.y=start.y+dy;if(id.startsWith('spawn:'))SpawnBounds.constrain(target,state.map,false);}}
  refreshTransformFields();draw();
 };
  canvas.onpointerup=event=>{

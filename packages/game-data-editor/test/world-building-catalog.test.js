@@ -9,7 +9,7 @@ test('stage building palette exposes six building names without level suffixes, 
  const before=Object.fromEntries(files.map(file=>[file,fingerprint(path.join(root,file))]));
  const catalog=service.buildingCatalog();
  assert.deepEqual(catalog.map(b=>b.kind),[1,2,3,4,5,6]);
- assert.deepEqual(catalog.map(b=>b.name),['Main Hall','Archer Tower','Barracks','House','Mill','Wall / Gate']);
+ assert.deepEqual(catalog.map(b=>b.name),['Main Hall','Tower','Barracks','House','Mill','Wall / Gate']);
  assert(catalog.every(b=>!b.special&&!/Map\d|offer|level/i.test(b.name)));
  assert.equal(new Set(catalog.map(b=>b.catalogId)).size,6);
  assert.equal(service.buildingCatalog(),catalog,'unchanged catalogs reuse the same read-only cache');

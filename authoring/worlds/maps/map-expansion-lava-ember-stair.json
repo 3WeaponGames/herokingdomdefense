@@ -1,0 +1,5736 @@
+{
+  "version": 1,
+  "id": "map-expansion-lava-ember-stair",
+  "name": "Lava - Ember Stair",
+  "biome": "lava",
+  "size": {
+    "width": 1860,
+    "height": 3028
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2668
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-a0f44bee72b22dc4cbb928ba7e8a257a",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "id": "north-stair-route",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 80,
+              "y": 1334
+            },
+            {
+              "x": 70,
+              "y": 1030
+            },
+            {
+              "x": 100,
+              "y": 730
+            },
+            {
+              "x": 80,
+              "y": 520
+            },
+            {
+              "x": 100,
+              "y": 150
+            },
+            {
+              "x": 50,
+              "y": -100
+            },
+            {
+              "x": 250,
+              "y": -500
+            }
+          ],
+          "size": 110,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true,
+          "assetId": "env-1bd5d3305589f094d81280b946821ac6",
+          "edgeAssetId": "env-a84be0c02f1ba3e44ab953d506e5b74d"
+        },
+        {
+          "id": "west-step-gap",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -750,
+              "y": 70
+            },
+            {
+              "x": -500,
+              "y": 100
+            },
+            {
+              "x": -160,
+              "y": 150
+            },
+            {
+              "x": 100,
+              "y": 150
+            },
+            {
+              "x": 50,
+              "y": -100
+            },
+            {
+              "x": 250,
+              "y": -500
+            }
+          ],
+          "size": 110,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true,
+          "assetId": "env-1bd5d3305589f094d81280b946821ac6",
+          "edgeAssetId": "env-a84be0c02f1ba3e44ab953d506e5b74d"
+        },
+        {
+          "id": "south-open-field",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 10,
+              "y": -1334
+            },
+            {
+              "x": 20,
+              "y": -1050
+            },
+            {
+              "x": 20,
+              "y": -800
+            },
+            {
+              "x": 250,
+              "y": -500
+            }
+          ],
+          "size": 110,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true,
+          "assetId": "env-1bd5d3305589f094d81280b946821ac6",
+          "edgeAssetId": "env-a84be0c02f1ba3e44ab953d506e5b74d"
+        },
+        {
+          "id": "east-ember-route",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 750,
+              "y": 70
+            },
+            {
+              "x": 500,
+              "y": -50
+            },
+            {
+              "x": 350,
+              "y": -180
+            },
+            {
+              "x": 250,
+              "y": -500
+            }
+          ],
+          "size": 110,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true,
+          "assetId": "env-1bd5d3305589f094d81280b946821ac6",
+          "edgeAssetId": "env-a84be0c02f1ba3e44ab953d506e5b74d"
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    }
+  },
+  "layers": [
+    {
+      "id": "layer-3",
+      "name": "Side terrain - lava",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-1",
+          "assetId": "terrain-expansion-lava-ember-stair-northwest-step",
+          "name": "Northwest Step",
+          "x": -670,
+          "y": 400,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-3",
+          "assetId": "terrain-expansion-lava-ember-stair-upper-east-step",
+          "name": "Upper East Step",
+          "x": 670,
+          "y": 400,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "terrain-expansion-lava-ember-stair-molten-basin",
+          "name": "Molten Basin",
+          "x": 800,
+          "y": -1510,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 1300
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-122",
+          "name": "Western Molten Channel",
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "globalShadow": false,
+          "assetId": "terrain-expansion-lava-ember-stair-western-molten-channel",
+          "x": -800,
+          "y": -1510,
+          "ground": {
+            "x": 0,
+            "y": 1300
+          }
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "terrain-objects",
+      "name": "Terrain objects - Lava",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-2",
+          "assetId": "terrain-expansion-lava-ember-stair-middle-step",
+          "name": "Middle Step",
+          "x": -600,
+          "y": -900,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-77",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": 585.064,
+          "y": -1060.549,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-348202185b50d8340b0051b1f960a85f",
+          "name": "Lava Solid 3",
+          "x": 743.941,
+          "y": 224.694,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": 279.671,
+          "y": 1277.957,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": -883.097,
+          "y": 593.431,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -101.251,
+          "y": -177.701,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -120.919,
+          "y": -1084.983,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-348202185b50d8340b0051b1f960a85f",
+          "name": "Lava Solid 3",
+          "x": 367.165,
+          "y": 1285.708,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-348202185b50d8340b0051b1f960a85f",
+          "name": "Lava Solid 3",
+          "x": -563.336,
+          "y": -1381.619,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -502.709,
+          "y": 382.714,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-348202185b50d8340b0051b1f960a85f",
+          "name": "Lava Solid 3",
+          "x": 779.233,
+          "y": 303.923,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -77.515,
+          "y": -273.035,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": 656.998,
+          "y": -606.23,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -265.466,
+          "y": -413.548,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -571.307,
+          "y": -1450.476,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": 296.4,
+          "y": -1210.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-348202185b50d8340b0051b1f960a85f",
+          "name": "Lava Solid 3",
+          "x": -635.992,
+          "y": -1460.424,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -224.368,
+          "y": -1107.444,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -635.545,
+          "y": -1249.903,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": 883.421,
+          "y": 424.054,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": 232.841,
+          "y": 473.989,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -237.201,
+          "y": -1162.975,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -364.866,
+          "y": -328.09,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -453.175,
+          "y": -1411.595,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-348202185b50d8340b0051b1f960a85f",
+          "name": "Lava Solid 3",
+          "x": -496.086,
+          "y": -281.04,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -442.368,
+          "y": -1303.209,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -97.322,
+          "y": -151.704,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -644.15,
+          "y": -281.319,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": 881.946,
+          "y": 329.916,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -197.85,
+          "y": -1279.838,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-348202185b50d8340b0051b1f960a85f",
+          "name": "Lava Solid 3",
+          "x": -626.78,
+          "y": -285.336,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-107",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": -227.464,
+          "y": -1182.18,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": -558.161,
+          "y": -280.024,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": 402.358,
+          "y": 259.206,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -173.444,
+          "y": -1188.75,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-348202185b50d8340b0051b1f960a85f",
+          "name": "Lava Solid 3",
+          "x": -817.093,
+          "y": -163.94,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": 514.541,
+          "y": 1480.961,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": 840.973,
+          "y": 217.562,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": 353.374,
+          "y": -1320.913,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+          "name": "Lava Solid 4",
+          "x": -533.393,
+          "y": -1438.275,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -209.64,
+          "y": -1201.213,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": -272.52,
+          "y": -543.347,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": 812.694,
+          "y": 315.079,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": 302.23,
+          "y": 1294.705,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-3b9e681ebf5e456408ce7f352ec94562",
+          "name": "Lava Solid 1",
+          "x": -439.121,
+          "y": -295.228,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-44b33cb79ca144c40b3f120b143cf286",
+          "name": "Lava Solid 2",
+          "x": 874.933,
+          "y": 388.492,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "native-props",
+      "name": "Native Environment props",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-5",
+          "assetId": "env-52a5dc67b8c28834c94f0d5fc8a83a93",
+          "name": "Stone Lava 4",
+          "x": -686.623,
+          "y": 769.587,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-f4b0b405aba838a4daac365c141d6449",
+          "name": "Stone Lava 11",
+          "x": -752.95,
+          "y": 975.818,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-3ecffd363d6aa6d44b23cc435069c07e",
+          "name": "Stone Lava 7",
+          "x": -499.985,
+          "y": -1368.682,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-d2f950400fa0f5948b34e1c93a72e949",
+          "name": "Stone Lava 1",
+          "x": -630.294,
+          "y": -272.983,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-92149bb820a6f354e8c98775cb9bc8b7",
+          "name": "Stone Lava 18",
+          "x": -600,
+          "y": -730,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-f5528f6a2d1083244871b04c87bb52c0",
+          "name": "Stone Lava 12",
+          "x": -148.132,
+          "y": 695.441,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-94bc877022c627b4894ced2251a3270c",
+          "name": "Stone Lava 6",
+          "x": -588.957,
+          "y": -1382.748,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-cd482d91ae516b144956666b23a8e2ff",
+          "name": "Stone Lava 15",
+          "x": -246.237,
+          "y": -1203.263,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-cd482d91ae516b144956666b23a8e2ff",
+          "name": "Stone Lava 15",
+          "x": -532.025,
+          "y": -1351.304,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-cd482d91ae516b144956666b23a8e2ff",
+          "name": "Stone Lava 15",
+          "x": -789.243,
+          "y": 985.237,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-3ecffd363d6aa6d44b23cc435069c07e",
+          "name": "Stone Lava 7",
+          "x": -580,
+          "y": -470,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-37682020c78b6824c9e9397a44c82bb0",
+          "name": "Stone Lava 14",
+          "x": -546.785,
+          "y": -1383.242,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-92149bb820a6f354e8c98775cb9bc8b7",
+          "name": "Stone Lava 18",
+          "x": -720.068,
+          "y": 1005.082,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-37682020c78b6824c9e9397a44c82bb0",
+          "name": "Stone Lava 14",
+          "x": -173.045,
+          "y": -1161.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": -858.54,
+          "y": -141.355,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-f5528f6a2d1083244871b04c87bb52c0",
+          "name": "Stone Lava 12",
+          "x": -750.495,
+          "y": 1005.445,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-76808eefd50abcb4090dbeaacdf89481",
+          "name": "Stone Lava 3",
+          "x": -582,
+          "y": -550,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-52a5dc67b8c28834c94f0d5fc8a83a93",
+          "name": "Stone Lava 4",
+          "x": -711.532,
+          "y": 1033.221,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-94bc877022c627b4894ced2251a3270c",
+          "name": "Stone Lava 6",
+          "x": -598.31,
+          "y": -1310.728,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-f4379c3766514b346a046d2e876b26ae",
+          "name": "Stone Lava 5",
+          "x": -810.201,
+          "y": -204.727,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-69724078869c7f349896ceebcb2a38b9",
+          "name": "Stone Lava 16",
+          "x": -772.237,
+          "y": 1004.576,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-f5528f6a2d1083244871b04c87bb52c0",
+          "name": "Stone Lava 12",
+          "x": -847.871,
+          "y": -129.746,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-69724078869c7f349896ceebcb2a38b9",
+          "name": "Stone Lava 16",
+          "x": 731.36,
+          "y": 375.974,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-f4379c3766514b346a046d2e876b26ae",
+          "name": "Stone Lava 5",
+          "x": -276.201,
+          "y": 1400.352,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": -743.197,
+          "y": 1034.264,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-3ecffd363d6aa6d44b23cc435069c07e",
+          "name": "Stone Lava 7",
+          "x": 613.005,
+          "y": -586.103,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": -480,
+          "y": -650,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-3ecffd363d6aa6d44b23cc435069c07e",
+          "name": "Stone Lava 7",
+          "x": -587.741,
+          "y": -1317.645,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-f5528f6a2d1083244871b04c87bb52c0",
+          "name": "Stone Lava 12",
+          "x": -720,
+          "y": 650,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-f4379c3766514b346a046d2e876b26ae",
+          "name": "Stone Lava 5",
+          "x": -711.636,
+          "y": 561.82,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": 373.628,
+          "y": -1376.626,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-52a5dc67b8c28834c94f0d5fc8a83a93",
+          "name": "Stone Lava 4",
+          "x": -606.404,
+          "y": -1365.47,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-69724078869c7f349896ceebcb2a38b9",
+          "name": "Stone Lava 16",
+          "x": -774.444,
+          "y": 1034.982,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-f4379c3766514b346a046d2e876b26ae",
+          "name": "Stone Lava 5",
+          "x": -763.973,
+          "y": 1063.055,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-3ecffd363d6aa6d44b23cc435069c07e",
+          "name": "Stone Lava 7",
+          "x": -572.143,
+          "y": -1348.658,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-f4379c3766514b346a046d2e876b26ae",
+          "name": "Stone Lava 5",
+          "x": -378.084,
+          "y": -306.937,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-3ecffd363d6aa6d44b23cc435069c07e",
+          "name": "Stone Lava 7",
+          "x": -546.81,
+          "y": -644.58,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-aadbf80c41a667446bcb0f9f1b29d3cf",
+          "name": "Stone Lava 2",
+          "x": -483.115,
+          "y": -269.441,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-52a5dc67b8c28834c94f0d5fc8a83a93",
+          "name": "Stone Lava 4",
+          "x": -850,
+          "y": 1000,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-28af8956a102ed34f80f067d721c3a25",
+          "name": "Stone Lava 17",
+          "x": -730,
+          "y": 835,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-76808eefd50abcb4090dbeaacdf89481",
+          "name": "Stone Lava 3",
+          "x": -260.753,
+          "y": -318.511,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": -130.706,
+          "y": 763.229,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-92149bb820a6f354e8c98775cb9bc8b7",
+          "name": "Stone Lava 18",
+          "x": -608,
+          "y": -450,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-94bc877022c627b4894ced2251a3270c",
+          "name": "Stone Lava 6",
+          "x": -131.963,
+          "y": -276.031,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": -576.81,
+          "y": -644.58,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-94bc877022c627b4894ced2251a3270c",
+          "name": "Stone Lava 6",
+          "x": -632.839,
+          "y": -1497.492,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-d2f950400fa0f5948b34e1c93a72e949",
+          "name": "Stone Lava 1",
+          "x": -782.344,
+          "y": -210.842,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-52a5dc67b8c28834c94f0d5fc8a83a93",
+          "name": "Stone Lava 4",
+          "x": -530,
+          "y": -520,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": -612,
+          "y": -550,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-d2f950400fa0f5948b34e1c93a72e949",
+          "name": "Stone Lava 1",
+          "x": -483.592,
+          "y": -784.885,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-92149bb820a6f354e8c98775cb9bc8b7",
+          "name": "Stone Lava 18",
+          "x": -634.907,
+          "y": -277.964,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-92149bb820a6f354e8c98775cb9bc8b7",
+          "name": "Stone Lava 18",
+          "x": -647.707,
+          "y": -276.658,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-92149bb820a6f354e8c98775cb9bc8b7",
+          "name": "Stone Lava 18",
+          "x": -891.82,
+          "y": 613.893,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": -43.231,
+          "y": -250.526,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-76808eefd50abcb4090dbeaacdf89481",
+          "name": "Stone Lava 3",
+          "x": -625.95,
+          "y": -1482.993,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-f4b0b405aba838a4daac365c141d6449",
+          "name": "Stone Lava 11",
+          "x": -455.73,
+          "y": -274.269,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-cd482d91ae516b144956666b23a8e2ff",
+          "name": "Stone Lava 15",
+          "x": 554.134,
+          "y": -516.25,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-94bc877022c627b4894ced2251a3270c",
+          "name": "Stone Lava 6",
+          "x": -825,
+          "y": 860,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-52a5dc67b8c28834c94f0d5fc8a83a93",
+          "name": "Stone Lava 4",
+          "x": 424.015,
+          "y": -1081.75,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-d2f950400fa0f5948b34e1c93a72e949",
+          "name": "Stone Lava 1",
+          "x": -760,
+          "y": 1200,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-f4379c3766514b346a046d2e876b26ae",
+          "name": "Stone Lava 5",
+          "x": 594.433,
+          "y": -573.024,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-94bc877022c627b4894ced2251a3270c",
+          "name": "Stone Lava 6",
+          "x": -500,
+          "y": -500,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-37682020c78b6824c9e9397a44c82bb0",
+          "name": "Stone Lava 14",
+          "x": -266.424,
+          "y": 615.43,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-52a5dc67b8c28834c94f0d5fc8a83a93",
+          "name": "Stone Lava 4",
+          "x": -824,
+          "y": 700,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-28af8956a102ed34f80f067d721c3a25",
+          "name": "Stone Lava 17",
+          "x": -638.281,
+          "y": -275.331,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-4df35e1db853a9a47a719ea690d4df84",
+          "name": "Stone Lava 10",
+          "x": -203.254,
+          "y": 647.067,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-f5528f6a2d1083244871b04c87bb52c0",
+          "name": "Stone Lava 12",
+          "x": -431.661,
+          "y": -722.866,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "middle-step",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-69724078869c7f349896ceebcb2a38b9",
+          "name": "Stone Lava 16",
+          "x": -554.815,
+          "y": -1360.115,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+          "name": "Stone Lava 13",
+          "x": -151.984,
+          "y": -1187.594,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 123,
+  "nextLayer": 4,
+  "blockerMask": [
+    [
+      [
+        [
+          -937.8554874009636,
+          1124.79526755897
+        ],
+        [
+          -936.3118029119602,
+          1102.04058025116
+        ],
+        [
+          -903.0089828140159,
+          819.95941974884
+        ],
+        [
+          -898.7999259035546,
+          797.1218208302189
+        ],
+        [
+          -892.9987650233514,
+          774.5684438231958
+        ],
+        [
+          -885.6055001734067,
+          752.2992887277705
+        ],
+        [
+          -876.6201313537201,
+          730.3143555439433
+        ],
+        [
+          -799.2058097783734,
+          531.6856444560567
+        ],
+        [
+          -796.0284885955118,
+          521.2143957439279
+        ],
+        [
+          -791.8847630376335,
+          511.64347183556947
+        ],
+        [
+          -786.7746331047385,
+          502.97287273098163
+        ],
+        [
+          -780.6980987968268,
+          495.2025984301643
+        ],
+        [
+          -773.6551601138982,
+          488.3326489331175
+        ],
+        [
+          -765.645817055953,
+          482.3630242398413
+        ],
+        [
+          -756.6700696229909,
+          477.2937243503356
+        ],
+        [
+          -746.7279178150122,
+          473.12474926460044
+        ],
+        [
+          -615.9308525740606,
+          425.8752507353996
+        ],
+        [
+          -595.1707858900539,
+          419.8331754224349
+        ],
+        [
+          -573.6571458778124,
+          416.58220021894044
+        ],
+        [
+          -551.3899325373358,
+          416.12232512491613
+        ],
+        [
+          -528.3691458686244,
+          418.45355014036204
+        ],
+        [
+          -424.6309143815996,
+          435
+        ],
+        [
+          -424.8316497827925,
+          429.3125
+        ],
+        [
+          -423.1178893550732,
+          425.25
+        ],
+        [
+          -419.48963309844163,
+          422.8125
+        ],
+        [
+          -413.9468810128978,
+          422
+        ],
+        [
+          -411.9468810128978,
+          422
+        ],
+        [
+          -406.11463309844163,
+          422.8125
+        ],
+        [
+          -401.61788935507326,
+          425.25
+        ],
+        [
+          -398.45664978279257,
+          429.3125
+        ],
+        [
+          -396.6309143815996,
+          435
+        ],
+        [
+          -394.69480275414276,
+          490.66026315123577
+        ],
+        [
+          -394.648048116547,
+          490.7367530751129
+        ],
+        [
+          -390.66562794243,
+          499.3618608588645
+        ],
+        [
+          -387.8265833417351,
+          508.29802281439925
+        ],
+        [
+          -386.2023785414891,
+          517.5
+        ],
+        [
+          -385.28232583883283,
+          544.53125
+        ],
+        [
+          -385.02745194805834,
+          571.5625
+        ],
+        [
+          -385.4189144878753,
+          598.59375
+        ],
+        [
+          -386.4378710769935,
+          625.625
+        ],
+        [
+          -391.5775906644535,
+          679.6875
+        ],
+        [
+          -397.6397685043814,
+          733.75
+        ],
+        [
+          -398.96073602543066,
+          745.3818007149821
+        ],
+        [
+          -404.356484194415,
+          835.0331249999999
+        ],
+        [
+          -413.3193637199041,
+          950
+        ],
+        [
+          -421.23529348284967,
+          1064.966875
+        ],
+        [
+          -424.2041369538851,
+          1125.658203125
+        ],
+        [
+          -425.88166534922226,
+          1188.615
+        ],
+        [
+          -425.79395306730623,
+          1253.9324218749998
+        ],
+        [
+          -423.467074506582,
+          1321.705625
+        ],
+        [
+          -418.42710406549463,
+          1392.029765625
+        ],
+        [
+          -410.2001161424891,
+          1465
+        ],
+        [
+          -409.85107766044547,
+          1470.6875
+        ],
+        [
+          -411.4589073161286,
+          1474.75
+        ],
+        [
+          -415.0236051095385,
+          1477.1875
+        ],
+        [
+          -420.54517104067514,
+          1478
+        ],
+        [
+          -422.54517104067514,
+          1478
+        ],
+        [
+          -428.3986051095385,
+          1477.1875
+        ],
+        [
+          -432.9589073161286,
+          1474.75
+        ],
+        [
+          -436.22607766044547,
+          1470.6875
+        ],
+        [
+          -438.2001161424891,
+          1465
+        ],
+        [
+          -540.7410537513113,
+          1481.7979854686282
+        ],
+        [
+          -562.9149286763701,
+          1484.3437284041102
+        ],
+        [
+          -585.4571581577663,
+          1484.7789426791837
+        ],
+        [
+          -608.3677421955,
+          1483.1036282938494
+        ],
+        [
+          -631.6466807895711,
+          1479.3177852481067
+        ],
+        [
+          -751.0992627169662,
+          1454.6822147518933
+        ],
+        [
+          -762.5074708899406,
+          1451.7510853774952
+        ],
+        [
+          -773.2644657706729,
+          1447.7988046302476
+        ],
+        [
+          -783.3702473591633,
+          1442.82537251015
+        ],
+        [
+          -792.8248156554116,
+          1436.8307890172034
+        ],
+        [
+          -801.628170659418,
+          1429.8150541514071
+        ],
+        [
+          -809.7803123711823,
+          1421.7781679127613
+        ],
+        [
+          -817.2812407907046,
+          1412.7201303012657
+        ],
+        [
+          -824.1309559179849,
+          1402.6409413169208
+        ],
+        [
+          -926.8851126318586,
+          1190.3590586830792
+        ],
+        [
+          -933.1421422609128,
+          1168.9545067749295
+        ],
+        [
+          -936.7989338506145,
+          1147.0999097335598
+        ],
+        [
+          -937.8554874009636,
+          1124.79526755897
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -931.5042135683259,
+          -1259.946349251585
+        ],
+        [
+          -930.1260533920815,
+          -1292.7865873128962
+        ],
+        [
+          -927,
+          -1325.6
+        ],
+        [
+          -916.1979840159253,
+          -1414.1765310694132
+        ],
+        [
+          -913.9453315121928,
+          -1426.0882816000194
+        ],
+        [
+          -910.2863660089579,
+          -1436.411798726545
+        ],
+        [
+          -905.2210875062208,
+          -1445.1470824489895
+        ],
+        [
+          -898.7494960039813,
+          -1452.2941327673532
+        ],
+        [
+          -890.8715915022394,
+          -1457.8529496816361
+        ],
+        [
+          -881.5873740009954,
+          -1461.8235331918384
+        ],
+        [
+          -870.8968435002488,
+          -1464.2058832979596
+        ],
+        [
+          -858.8,
+          -1465
+        ],
+        [
+          -782.3975307701065,
+          -1465
+        ],
+        [
+          -774.5293594958628,
+          -1464.575
+        ],
+        [
+          -767.1236110581849,
+          -1463.3
+        ],
+        [
+          -760.1802854570728,
+          -1461.175
+        ],
+        [
+          -753.6993826925267,
+          -1458.2
+        ],
+        [
+          -747.6809027645462,
+          -1454.375
+        ],
+        [
+          -742.1248456731316,
+          -1449.7
+        ],
+        [
+          -737.031211418283,
+          -1444.175
+        ],
+        [
+          -732.4,
+          -1437.8
+        ],
+        [
+          -712.6,
+          -1407.2
+        ],
+        [
+          -705.4217271031147,
+          -1393.3435233633197
+        ],
+        [
+          -701.4869084124589,
+          -1378.9740934532792
+        ],
+        [
+          -700.7955439280325,
+          -1364.0917102698781
+        ],
+        [
+          -703.3476336498355,
+          -1348.6963738131167
+        ],
+        [
+          -722.2,
+          -1278
+        ],
+        [
+          -724.9610672057086,
+          -1266.011480454008
+        ],
+        [
+          -726.844268822834,
+          -1254.0459218160324
+        ],
+        [
+          -727.8496048513766,
+          -1242.103324086073
+        ],
+        [
+          -727.9770752913362,
+          -1230.1836872641297
+        ],
+        [
+          -727.2266801427127,
+          -1218.2870113502029
+        ],
+        [
+          -725.5984194055063,
+          -1206.4132963442921
+        ],
+        [
+          -723.0922930797169,
+          -1194.5625422463977
+        ],
+        [
+          -719.7083011653446,
+          -1182.7347490565194
+        ],
+        [
+          -697.6,
+          -1114.4
+        ],
+        [
+          -690.4573343894124,
+          -1087.0702155337217
+        ],
+        [
+          -688.1290023761777,
+          -1073.307984950874
+        ],
+        [
+          -686.6293375576494,
+          -1059.4808621348875
+        ],
+        [
+          -685.9583399338271,
+          -1045.5888470857617
+        ],
+        [
+          -686.116009504711,
+          -1031.6319398034968
+        ],
+        [
+          -688.9173502305973,
+          -1003.5234485395499
+        ],
+        [
+          -700.848305429402,
+          -927.9607322804542
+        ],
+        [
+          -704.1521718040386,
+          -899.0029119077554
+        ],
+        [
+          -704.180151775696,
+          -897.9383343500998
+        ],
+        [
+          -700.75,
+          -898
+        ],
+        [
+          -600,
+          -900
+        ],
+        [
+          -499.25,
+          -898
+        ],
+        [
+          -388,
+          -896
+        ],
+        [
+          -382.3125,
+          -895.1875
+        ],
+        [
+          -378.25,
+          -892.75
+        ],
+        [
+          -375.8125,
+          -888.6875
+        ],
+        [
+          -375,
+          -883
+        ],
+        [
+          -375,
+          -881
+        ],
+        [
+          -375.8125,
+          -875.3125
+        ],
+        [
+          -378.25,
+          -871.25
+        ],
+        [
+          -382.3125,
+          -868.8125
+        ],
+        [
+          -388,
+          -868
+        ],
+        [
+          -364.48440405068277,
+          -733.6760655622332
+        ],
+        [
+          -360.61386762382153,
+          -706.5478689865927
+        ],
+        [
+          -358.4866623939205,
+          -679.3393448219047
+        ],
+        [
+          -358.10278836097973,
+          -652.0504930681689
+        ],
+        [
+          -359.46224552499916,
+          -624.6813137253853
+        ],
+        [
+          -370.53775447500084,
+          -488.6186862746147
+        ],
+        [
+          -374.7794160991872,
+          -462.07135031763175
+        ],
+        [
+          -383.04215544674696,
+          -437.2480287212974
+        ],
+        [
+          -395.32597251768016,
+          -414.1487214856117
+        ],
+        [
+          -411.6308673119869,
+          -392.7734286105747
+        ],
+        [
+          -473.54551687436214,
+          -323.4290211007144
+        ],
+        [
+          -482.9395363569335,
+          -313.9542192802345
+        ],
+        [
+          -492.8943532418287,
+          -305.9443243691519
+        ],
+        [
+          -503.4099675290477,
+          -299.3993363674665
+        ],
+        [
+          -514.4863792185905,
+          -294.31925527517865
+        ],
+        [
+          -526.1235883104572,
+          -290.704081092288
+        ],
+        [
+          -538.3215948046476,
+          -288.55381381879465
+        ],
+        [
+          -551.0803987011619,
+          -287.86845345469874
+        ],
+        [
+          -564.4,
+          -288.648
+        ],
+        [
+          -625.6,
+          -295.452
+        ],
+        [
+          -651.9779622263133,
+          -300.3467762804918
+        ],
+        [
+          -676.711848905253,
+          -308.9831051219669
+        ],
+        [
+          -699.8016600368192,
+          -321.36098652442536
+        ],
+        [
+          -718.9186983343861,
+          -335.73008266498204
+        ],
+        [
+          -736.1955532432854,
+          -308.0871148107433
+        ],
+        [
+          -742.4747204518904,
+          -299.11044727697526
+        ],
+        [
+          -749.4099986993481,
+          -291.2240020810432
+        ],
+        [
+          -757.0013879856583,
+          -284.42777922294636
+        ],
+        [
+          -765.2488883108214,
+          -278.7217787026859
+        ],
+        [
+          -774.152499674837,
+          -274.106000520261
+        ],
+        [
+          -783.7122220777053,
+          -270.58044467567174
+        ],
+        [
+          -793.9280555194264,
+          -268.145111168918
+        ],
+        [
+          -804.8,
+          -266.79999999999995
+        ],
+        [
+          -855.2,
+          -263.20000000000005
+        ],
+        [
+          -865.7250477251469,
+          -263.15133630411174
+        ],
+        [
+          -874.9001909005874,
+          -264.6053452164465
+        ],
+        [
+          -882.7254295263216,
+          -267.56202673700477
+        ],
+        [
+          -889.2007636023495,
+          -272.0213808657861
+        ],
+        [
+          -894.3261931286711,
+          -277.983407602791
+        ],
+        [
+          -898.1017181052864,
+          -285.4481069480189
+        ],
+        [
+          -900.5273385321954,
+          -294.4154789014701
+        ],
+        [
+          -901.603054409398,
+          -304.88552346314464
+        ],
+        [
+          -907.5729759251559,
+          -472.0433259043666
+        ],
+        [
+          -910.7489127600982,
+          -539.9566912112057
+        ],
+        [
+          -915.4226751152365,
+          -607.7834389404564
+        ],
+        [
+          -924.5773248847635,
+          -722.2165610595436
+        ],
+        [
+          -926.6952030120857,
+          -756.1141861892228
+        ],
+        [
+          -927.6261622788157,
+          -790.023622637804
+        ],
+        [
+          -927.3702026849537,
+          -823.9448704052875
+        ],
+        [
+          -925.9273242304996,
+          -857.877929491673
+        ],
+        [
+          -919.0726757695004,
+          -972.122070508327
+        ],
+        [
+          -917.6756570410247,
+          -1006.0512107884217
+        ],
+        [
+          -917.5572766250979,
+          -1039.9607021370327
+        ],
+        [
+          -918.7175345217202,
+          -1073.85054455416
+        ],
+        [
+          -921.1564307308913,
+          -1107.7207380398038
+        ],
+        [
+          -929.0168542733036,
+          -1194.1853970063398
+        ],
+        [
+          -931.1344805287333,
+          -1227.079285816066
+        ],
+        [
+          -931.5042135683259,
+          -1259.946349251585
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          390.47074264419246,
+          950
+        ],
+        [
+          390.8155043168868,
+          893.554140625
+        ],
+        [
+          392.8732949428139,
+          835.0331249999999
+        ],
+        [
+          393.1182993161207,
+          831.0421884447088
+        ],
+        [
+          393.59417571778863,
+          787.8125
+        ],
+        [
+          395.42646390511055,
+          733.75
+        ],
+        [
+          400.61497205927924,
+          679.6875
+        ],
+        [
+          407.6004786342061,
+          625.625
+        ],
+        [
+          423.7848096733141,
+          534.9879165917207
+        ],
+        [
+          438.6754884668952,
+          435
+        ],
+        [
+          439.9909519119733,
+          429.3125
+        ],
+        [
+          442.7877115156005,
+          425.25
+        ],
+        [
+          447.06576727777684,
+          422.8125
+        ],
+        [
+          452.8251191985023,
+          422
+        ],
+        [
+          454.8251191985023,
+          422
+        ],
+        [
+          460.44076727777684,
+          422.8125
+        ],
+        [
+          464.2877115156005,
+          425.25
+        ],
+        [
+          466.3659519119733,
+          429.3125
+        ],
+        [
+          466.6754884668952,
+          435
+        ],
+        [
+          568.8652695193896,
+          418.45355014036204
+        ],
+        [
+          591.600181680563,
+          416.12232512491613
+        ],
+        [
+          613.900196354811,
+          416.58220021894044
+        ],
+        [
+          635.7653135421335,
+          419.8331754224349
+        ],
+        [
+          657.1955332425307,
+          425.8752507353996
+        ],
+        [
+          790.0118460260571,
+          473.12474926460044
+        ],
+        [
+          799.800564048047,
+          477.2937243503356
+        ],
+        [
+          808.5154944975195,
+          482.3630242398413
+        ],
+        [
+          816.1566373744746,
+          488.3326489331175
+        ],
+        [
+          822.7239926789124,
+          495.2025984301643
+        ],
+        [
+          828.2175604108327,
+          502.97287273098163
+        ],
+        [
+          832.6373405702357,
+          511.64347183556947
+        ],
+        [
+          835.9833331571214,
+          521.2143957439279
+        ],
+        [
+          838.2555381714895,
+          531.6856444560567
+        ],
+        [
+          875.0380548251807,
+          730.3143555439433
+        ],
+        [
+          880.5334155905089,
+          752.2992887277705
+        ],
+        [
+          884.6394675031468,
+          774.5684438231958
+        ],
+        [
+          887.3562105630948,
+          797.1218208302189
+        ],
+        [
+          888.6836447703528,
+          819.95941974884
+        ],
+        [
+          906.3412549265473,
+          1102.04058025116
+        ],
+        [
+          907.8659451979277,
+          1124.79526755897
+        ],
+        [
+          907.0537405938883,
+          1147.0999097335598
+        ],
+        [
+          903.9046411144293,
+          1168.9545067749295
+        ],
+        [
+          898.4186467595503,
+          1190.3590586830792
+        ],
+        [
+          840.2341261973597,
+          1402.6409413169208
+        ],
+        [
+          836.0129752039351,
+          1412.7201303012657
+        ],
+        [
+          830.8656480270358,
+          1421.7781679127613
+        ],
+        [
+          824.7921446666621,
+          1429.8150541514071
+        ],
+        [
+          817.7924651228141,
+          1436.8307890172034
+        ],
+        [
+          809.8666093954913,
+          1442.82537251015
+        ],
+        [
+          801.0145774846941,
+          1447.7988046302476
+        ],
+        [
+          791.2363693904224,
+          1451.7510853774952
+        ],
+        [
+          780.5319851126761,
+          1454.6822147518933
+        ],
+        [
+          666.2214577876529,
+          1479.3177852481067
+        ],
+        [
+          643.6243727567836,
+          1483.1036282938494
+        ],
+        [
+          621.0180978416927,
+          1484.7789426791837
+        ],
+        [
+          598.4026330423802,
+          1484.3437284041102
+        ],
+        [
+          575.777978358846,
+          1481.7979854686282
+        ],
+        [
+          469.9025724299593,
+          1465
+        ],
+        [
+          469.0758221106941,
+          1470.6875
+        ],
+        [
+          466.628143311219,
+          1474.75
+        ],
+        [
+          462.55953603153387,
+          1477.1875
+        ],
+        [
+          456.87000027163884,
+          1478
+        ],
+        [
+          454.87000027163884,
+          1478
+        ],
+        [
+          449.18453603153387,
+          1477.1875
+        ],
+        [
+          445.128143311219,
+          1474.75
+        ],
+        [
+          442.70082211069416,
+          1470.6875
+        ],
+        [
+          441.9025724299593,
+          1465
+        ],
+        [
+          424.4615864767641,
+          1321.705625
+        ],
+        [
+          416.8911614343782,
+          1257.2198882020418
+        ],
+        [
+          411.207686117436,
+          1220.3125
+        ],
+        [
+          404.0282951843042,
+          1166.25
+        ],
+        [
+          399.7189456460938,
+          1112.1875
+        ],
+        [
+          397.4215467562612,
+          1070.4930424104787
+        ],
+        [
+          396.8874835244387,
+          1064.966875
+        ],
+        [
+          392.871359278464,
+          1006.445859375
+        ],
+        [
+          390.47074264419246,
+          950
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          640.6364125871395,
+          -836.0737779725059
+        ],
+        [
+          640.9495167053954,
+          -850.7883457655582
+        ],
+        [
+          642.7373791763489,
+          -865.6970864413895
+        ],
+        [
+          646,
+          -880.8
+        ],
+        [
+          664,
+          -949.2
+        ],
+        [
+          667.5573464648251,
+          -964.4132676758745
+        ],
+        [
+          670.2293858593005,
+          -979.6530707034979
+        ],
+        [
+          672.016118183426,
+          -994.9194090828703
+        ],
+        [
+          672.9175434372016,
+          -1010.2122828139916
+        ],
+        [
+          672.9336616206276,
+          -1025.531691896862
+        ],
+        [
+          672.0644727337037,
+          -1040.8776363314812
+        ],
+        [
+          670.3099767764302,
+          -1056.2501161178493
+        ],
+        [
+          667.6701737488067,
+          -1071.6491312559665
+        ],
+        [
+          650.1192885125388,
+          -1159.403557437306
+        ],
+        [
+          648.1475802674125,
+          -1171.9620986629375
+        ],
+        [
+          647.2920997883032,
+          -1184.3395010584845
+        ],
+        [
+          647.5528470752105,
+          -1196.5357646239477
+        ],
+        [
+          648.9298221281347,
+          -1208.5508893593264
+        ],
+        [
+          651.4230249470758,
+          -1220.384875264621
+        ],
+        [
+          655.0324555320337,
+          -1232.0377223398316
+        ],
+        [
+          659.7581138830084,
+          -1243.509430584958
+        ],
+        [
+          665.6,
+          -1254.8
+        ],
+        [
+          702.1610624669603,
+          -1318.7818593171805
+        ],
+        [
+          718.7402656167401,
+          -1350.595464829295
+        ],
+        [
+          732.8,
+          -1383.6
+        ],
+        [
+          747.2,
+          -1421.4
+        ],
+        [
+          750.7609133891722,
+          -1429.3066412681071
+        ],
+        [
+          755.0436535566886,
+          -1436.2265650724287
+        ],
+        [
+          760.0482205025493,
+          -1442.1597714129643
+        ],
+        [
+          765.7746142267541,
+          -1447.1062602897143
+        ],
+        [
+          772.2228347293034,
+          -1451.0660317026786
+        ],
+        [
+          779.3928820101969,
+          -1454.0390856518572
+        ],
+        [
+          787.2847560694346,
+          -1456.0254221372502
+        ],
+        [
+          795.8984569070167,
+          -1457.0250411588574
+        ],
+        [
+          892.6,
+          -1462.48
+        ],
+        [
+          907.3199147011891,
+          -1462.3330734598242
+        ],
+        [
+          920.2796588047562,
+          -1460.1322938392966
+        ],
+        [
+          931.4792323107014,
+          -1455.8776611384174
+        ],
+        [
+          940.9186352190247,
+          -1449.5691753571864
+        ],
+        [
+          948.5978675297262,
+          -1441.2068364956037
+        ],
+        [
+          954.5169292428056,
+          -1430.7906445536694
+        ],
+        [
+          958.6758203582633,
+          -1418.3205995313836
+        ],
+        [
+          961.074540876099,
+          -1403.7967014287458
+        ],
+        [
+          973.3908152670928,
+          -1277.6780516649696
+        ],
+        [
+          976.0700987157281,
+          -1243.8242066213147
+        ],
+        [
+          977.498764328727,
+          -1209.9407231553191
+        ],
+        [
+          977.6768121060894,
+          -1176.027601266983
+        ],
+        [
+          976.6042420478153,
+          -1142.0848409563066
+        ],
+        [
+          963.3957579521847,
+          -877.9151590436934
+        ],
+        [
+          962.1223487201155,
+          -843.9575795218468
+        ],
+        [
+          961.6978789760924,
+          -810
+        ],
+        [
+          962.1223487201155,
+          -776.0424204781532
+        ],
+        [
+          963.3957579521847,
+          -742.0848409563066
+        ],
+        [
+          977.4733342325806,
+          -460.5333153483891
+        ],
+        [
+          977.5787505058265,
+          -435.42498988346915
+        ],
+        [
+          975.3683335581452,
+          -410.63332883709745
+        ],
+        [
+          970.8420833895364,
+          -386.1583322092745
+        ],
+        [
+          964,
+          -362
+        ],
+        [
+          946,
+          -308
+        ],
+        [
+          941.4714602379622,
+          -296.8873893697712
+        ],
+        [
+          935.8858409518489,
+          -287.54955747908525
+        ],
+        [
+          929.2431421416601,
+          -279.98650432794193
+        ],
+        [
+          921.5433638073957,
+          -274.1982299163419
+        ],
+        [
+          912.7865059490558,
+          -270.18473424428385
+        ],
+        [
+          902.9725685666403,
+          -267.9460173117691
+        ],
+        [
+          892.1015516601493,
+          -267.4820791187967
+        ],
+        [
+          880.1734552295828,
+          -268.79291966536766
+        ],
+        [
+          814.4,
+          -280.4000000000001
+        ],
+        [
+          801.3627316987152,
+          -283.46392685364026
+        ],
+        [
+          789.4509267948606,
+          -287.8557074145615
+        ],
+        [
+          778.6645852884365,
+          -293.57534168276334
+        ],
+        [
+          769.0037071794426,
+          -300.622829658246
+        ],
+        [
+          760.468292467879,
+          -308.9981713410093
+        ],
+        [
+          753.0583411537458,
+          -318.70136673105367
+        ],
+        [
+          746.7738532370429,
+          -329.7324158283784
+        ],
+        [
+          741.6148287177704,
+          -342.091318632984
+        ],
+        [
+          716.839513970695,
+          -412.28804374969764
+        ],
+        [
+          713.1427528838133,
+          -424.2205334958621
+        ],
+        [
+          710.4722266085159,
+          -436.16202460920476
+        ],
+        [
+          708.8279351448027,
+          -448.1125170897253
+        ],
+        [
+          708.2098784926737,
+          -460.07201093742424
+        ],
+        [
+          708.618056652129,
+          -472.0405061523011
+        ],
+        [
+          710.0524696231685,
+          -484.01800273435606
+        ],
+        [
+          712.5131174057922,
+          -496.0045006835891
+        ],
+        [
+          716,
+          -508
+        ],
+        [
+          734,
+          -562
+        ],
+        [
+          737.3577677297236,
+          -573.9364064729837
+        ],
+        [
+          739.4310709188945,
+          -585.7456258919347
+        ],
+        [
+          740.2199095675127,
+          -597.4276582568527
+        ],
+        [
+          739.7242836755781,
+          -608.9825035677384
+        ],
+        [
+          737.9441932430908,
+          -620.4101618245911
+        ],
+        [
+          734.8796382700507,
+          -631.7106330274113
+        ],
+        [
+          730.5306187564579,
+          -642.8839171761987
+        ],
+        [
+          724.8971347023124,
+          -653.9300142709533
+        ],
+        [
+          661.192267286325,
+          -765.4135322489313
+        ],
+        [
+          654.1315796410926,
+          -779.157235628088
+        ],
+        [
+          648.5456503485577,
+          -793.0951118900239
+        ],
+        [
+          644.4344794087207,
+          -807.2271610347387
+        ],
+        [
+          641.7980668215812,
+          -821.5533830622328
+        ],
+        [
+          640.6364125871395,
+          -836.0737779725059
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "eight-biome-expansion",
+    "created": "2026-11-18",
+    "architectureId": "map-expansion-lava-ember-stair",
+    "summary": "Three disconnected rock steps form an offset diagonal middle lane toward a southeast hub, with one peripheral molten basin. No encircling broken crown, west ravine or reused Map07 cliff silhouette.",
+    "biomeOrdinal": 3,
+    "sourcePixelsPerWorldUnit": 1,
+    "resampling": "none",
+    "scaleContract": "All new terrain asset/default/object/layer scales are1; source crop pixels are world units.",
+    "approaches": [
+      {
+        "id": "north",
+        "side": "north",
+        "point": {
+          "x": 80,
+          "y": 1290
+        },
+        "clearWidth": 250
+      },
+      {
+        "id": "west",
+        "side": "west",
+        "point": {
+          "x": -750,
+          "y": 70
+        },
+        "clearWidth": 250
+      },
+      {
+        "id": "east",
+        "side": "east",
+        "point": {
+          "x": 750,
+          "y": 70
+        },
+        "clearWidth": 250
+      },
+      {
+        "id": "south",
+        "side": "south",
+        "point": {
+          "x": 10,
+          "y": -1290
+        },
+        "clearWidth": 250
+      }
+    ],
+    "buildPockets": [
+      {
+        "id": "central-stronghold",
+        "center": {
+          "x": 0,
+          "y": -500
+        },
+        "radius": 200
+      },
+      {
+        "id": "west-low-building",
+        "center": {
+          "x": -150,
+          "y": 80
+        },
+        "radius": 110
+      },
+      {
+        "id": "southeast-building",
+        "center": {
+          "x": 250,
+          "y": -1050
+        },
+        "radius": 110
+      },
+      {
+        "id": "east-upper-building",
+        "center": {
+          "x": 540,
+          "y": 160
+        },
+        "radius": 100
+      }
+    ],
+    "revision": {
+      "kind": "broad-rounded-side-hills",
+      "date": "2026-11-18",
+      "beforeMapSha256": "fe3a95af7804798dea84143804d0376d43a9ac04ac383c40f9a4c63fa4da4d7d",
+      "architectureSha256": "4107279c51d2f55cb984036682ad5dc3e0ec63cf071f2a411bb75c077a647a03",
+      "geometryHelperSha256": "2a4aa4bd286ab2f0f3caf5aa6aa5484f1dd78579a0f0ae89dbb8dbae532c1be2",
+      "terrainGeometry": [
+        {
+          "key": "northwest-step",
+          "objectId": "object-1",
+          "assetId": "terrain-expansion-lava-ember-stair-northwest-step",
+          "kind": "cliff",
+          "world": {
+            "x": -670,
+            "y": 400
+          },
+          "width": 600,
+          "height": 1100,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -267.8554874009636,
+                "y": 724.79526755897
+              },
+              {
+                "x": -266.31180291196017,
+                "y": 702.04058025116
+              },
+              {
+                "x": -233.00898281401592,
+                "y": 419.95941974884
+              },
+              {
+                "x": -228.79992590355454,
+                "y": 397.12182083021895
+              },
+              {
+                "x": -222.99876502335144,
+                "y": 374.5684438231958
+              },
+              {
+                "x": -215.6055001734066,
+                "y": 352.29928872777054
+              },
+              {
+                "x": -206.62013135372007,
+                "y": 330.31435554394324
+              },
+              {
+                "x": -129.20580977837332,
+                "y": 131.68564445605676
+              },
+              {
+                "x": -126.02848859551179,
+                "y": 121.21439574392784
+              },
+              {
+                "x": -121.88476303763352,
+                "y": 111.64347183556946
+              },
+              {
+                "x": -116.77463310473851,
+                "y": 102.97287273098162
+              },
+              {
+                "x": -110.69809879682674,
+                "y": 95.2025984301643
+              },
+              {
+                "x": -103.65516011389823,
+                "y": 88.33264893311753
+              },
+              {
+                "x": -95.64581705595297,
+                "y": 82.3630242398413
+              },
+              {
+                "x": -86.67006962299098,
+                "y": 77.2937243503356
+              },
+              {
+                "x": -76.72791781501223,
+                "y": 73.12474926460044
+              },
+              {
+                "x": 54.06914742593942,
+                "y": 25.875250735399618
+              },
+              {
+                "x": 74.82921410994607,
+                "y": 19.833175422434913
+              },
+              {
+                "x": 96.34285412218767,
+                "y": 16.582200218940415
+              },
+              {
+                "x": 118.6100674626642,
+                "y": 16.122325124916124
+              },
+              {
+                "x": 141.63085413137566,
+                "y": 18.45355014036204
+              },
+              {
+                "x": 245.36908561840042,
+                "y": 35
+              },
+              {
+                "x": 245.16835021720746,
+                "y": 29.3125
+              },
+              {
+                "x": 246.88211064492677,
+                "y": 25.25
+              },
+              {
+                "x": 250.51036690155837,
+                "y": 22.8125
+              },
+              {
+                "x": 256.0531189871022,
+                "y": 22
+              },
+              {
+                "x": 258.0531189871022,
+                "y": 22
+              },
+              {
+                "x": 263.88536690155837,
+                "y": 22.8125
+              },
+              {
+                "x": 268.38211064492674,
+                "y": 25.25
+              },
+              {
+                "x": 271.54335021720743,
+                "y": 29.3125
+              },
+              {
+                "x": 273.3690856184004,
+                "y": 35
+              },
+              {
+                "x": 275.30519724585724,
+                "y": 90.66026315123574
+              },
+              {
+                "x": 275.351951883453,
+                "y": 90.73675307511294
+              },
+              {
+                "x": 279.33437205757,
+                "y": 99.36186085886445
+              },
+              {
+                "x": 282.1734166582649,
+                "y": 108.29802281439925
+              },
+              {
+                "x": 283.7976214585109,
+                "y": 117.5
+              },
+              {
+                "x": 284.71767416116717,
+                "y": 144.53125
+              },
+              {
+                "x": 284.97254805194166,
+                "y": 171.5625
+              },
+              {
+                "x": 284.5810855121247,
+                "y": 198.59375
+              },
+              {
+                "x": 283.5621289230065,
+                "y": 225.625
+              },
+              {
+                "x": 278.4224093355465,
+                "y": 279.6875
+              },
+              {
+                "x": 272.3602314956186,
+                "y": 333.75
+              },
+              {
+                "x": 271.03926397456934,
+                "y": 345.3818007149821
+              },
+              {
+                "x": 265.643515805585,
+                "y": 435.033125
+              },
+              {
+                "x": 256.6806362800959,
+                "y": 550
+              },
+              {
+                "x": 248.7647065171503,
+                "y": 664.9668750000001
+              },
+              {
+                "x": 245.7958630461149,
+                "y": 725.658203125
+              },
+              {
+                "x": 244.11833465077774,
+                "y": 788.615
+              },
+              {
+                "x": 244.20604693269377,
+                "y": 853.9324218749999
+              },
+              {
+                "x": 246.53292549341802,
+                "y": 921.7056249999999
+              },
+              {
+                "x": 251.57289593450537,
+                "y": 992.029765625
+              },
+              {
+                "x": 259.7998838575109,
+                "y": 1065
+              },
+              {
+                "x": 260.14892233955453,
+                "y": 1070.6875
+              },
+              {
+                "x": 258.5410926838714,
+                "y": 1074.75
+              },
+              {
+                "x": 254.9763948904615,
+                "y": 1077.1875
+              },
+              {
+                "x": 249.45482895932486,
+                "y": 1078
+              },
+              {
+                "x": 247.45482895932486,
+                "y": 1078
+              },
+              {
+                "x": 241.6013948904615,
+                "y": 1077.1875
+              },
+              {
+                "x": 237.0410926838714,
+                "y": 1074.75
+              },
+              {
+                "x": 233.77392233955453,
+                "y": 1070.6875
+              },
+              {
+                "x": 231.7998838575109,
+                "y": 1065
+              },
+              {
+                "x": 129.25894624868872,
+                "y": 1081.7979854686282
+              },
+              {
+                "x": 107.0850713236299,
+                "y": 1084.3437284041102
+              },
+              {
+                "x": 84.54284184223368,
+                "y": 1084.7789426791837
+              },
+              {
+                "x": 61.63225780450001,
+                "y": 1083.1036282938494
+              },
+              {
+                "x": 38.3533192104289,
+                "y": 1079.3177852481067
+              },
+              {
+                "x": -81.09926271696621,
+                "y": 1054.6822147518933
+              },
+              {
+                "x": -92.50747088994058,
+                "y": 1051.7510853774952
+              },
+              {
+                "x": -103.26446577067293,
+                "y": 1047.7988046302476
+              },
+              {
+                "x": -113.37024735916327,
+                "y": 1042.82537251015
+              },
+              {
+                "x": -122.82481565541164,
+                "y": 1036.8307890172034
+              },
+              {
+                "x": -131.62817065941798,
+                "y": 1029.8150541514071
+              },
+              {
+                "x": -139.7803123711823,
+                "y": 1021.7781679127613
+              },
+              {
+                "x": -147.28124079070463,
+                "y": 1012.7201303012657
+              },
+              {
+                "x": -154.13095591798492,
+                "y": 1002.6409413169208
+              },
+              {
+                "x": -256.8851126318586,
+                "y": 790.3590586830792
+              },
+              {
+                "x": -263.14214226091286,
+                "y": 768.9545067749295
+              },
+              {
+                "x": -266.79893385061456,
+                "y": 747.0999097335598
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "left",
+            "bendAmplitude": 24,
+            "bendPhase": 0.3,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 27.5,
+            "faceEnd": 1072.5,
+            "stableBodyFraction": 0.8277511961722488,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "middle-step",
+          "objectId": "object-2",
+          "assetId": "terrain-expansion-lava-ember-stair-middle-step",
+          "kind": "cliff",
+          "world": {
+            "x": -600,
+            "y": -900
+          },
+          "width": 500,
+          "height": 630,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -212,
+                "y": 32
+              },
+              {
+                "x": -235.19789766416258,
+                "y": 160.08051377001286
+              },
+              {
+                "x": -239.04585694022722,
+                "y": 187.16695323362126
+              },
+              {
+                "x": -240.78763243258382,
+                "y": 214.3067853944592
+              },
+              {
+                "x": -240.42322414123228,
+                "y": 241.50001025252675
+              },
+              {
+                "x": -237.95263206617264,
+                "y": 268.74662780782387
+              },
+              {
+                "x": -217.04736793382736,
+                "y": 430.5533721921762
+              },
+              {
+                "x": -214.74803216487857,
+                "y": 443.9026523179621
+              },
+              {
+                "x": -211.37370882494596,
+                "y": 456.6771787914079
+              },
+              {
+                "x": -206.9243979140295,
+                "y": 468.8769516125136
+              },
+              {
+                "x": -201.4000994321292,
+                "y": 480.50197078127917
+              },
+              {
+                "x": -194.80081337924503,
+                "y": 491.5522362977046
+              },
+              {
+                "x": -187.126539755377,
+                "y": 502.02774816179
+              },
+              {
+                "x": -178.3772785605251,
+                "y": 511.92850637353513
+              },
+              {
+                "x": -168.55302979468937,
+                "y": 521.2545109329402
+              },
+              {
+                "x": -121.24739562101182,
+                "y": 562.5195795121327
+              },
+              {
+                "x": -99.80166003681914,
+                "y": 578.6390134755746
+              },
+              {
+                "x": -76.71184890525295,
+                "y": 591.0168948780331
+              },
+              {
+                "x": -51.97796222631324,
+                "y": 599.6532237195082
+              },
+              {
+                "x": -25.6,
+                "y": 604.548
+              },
+              {
+                "x": 35.6,
+                "y": 611.352
+              },
+              {
+                "x": 48.919601298838096,
+                "y": 612.1315465453013
+              },
+              {
+                "x": 61.67840519535236,
+                "y": 611.4461861812053
+              },
+              {
+                "x": 73.87641168954282,
+                "y": 609.295918907712
+              },
+              {
+                "x": 85.51362078140946,
+                "y": 605.6807447248214
+              },
+              {
+                "x": 96.59003247095228,
+                "y": 600.6006636325335
+              },
+              {
+                "x": 107.1056467581713,
+                "y": 594.0556756308481
+              },
+              {
+                "x": 117.0604636430665,
+                "y": 586.0457807197655
+              },
+              {
+                "x": 126.45448312563788,
+                "y": 576.5709788992856
+              },
+              {
+                "x": 188.3691326880131,
+                "y": 507.2265713894253
+              },
+              {
+                "x": 204.67402748231984,
+                "y": 485.8512785143883
+              },
+              {
+                "x": 216.95784455325307,
+                "y": 462.7519712787026
+              },
+              {
+                "x": 225.22058390081284,
+                "y": 437.92864968236825
+              },
+              {
+                "x": 229.46224552499916,
+                "y": 411.3813137253853
+              },
+              {
+                "x": 240.53775447500084,
+                "y": 275.31868627461466
+              },
+              {
+                "x": 241.8972116390203,
+                "y": 247.94950693183117
+              },
+              {
+                "x": 241.51333760607952,
+                "y": 220.6606551780954
+              },
+              {
+                "x": 239.3861323761785,
+                "y": 193.45213101340727
+              },
+              {
+                "x": 235.51559594931726,
+                "y": 166.32393443776678
+              },
+              {
+                "x": 212,
+                "y": 32
+              },
+              {
+                "x": 217.6875,
+                "y": 31.1875
+              },
+              {
+                "x": 221.75,
+                "y": 28.75
+              },
+              {
+                "x": 224.1875,
+                "y": 24.6875
+              },
+              {
+                "x": 225,
+                "y": 19
+              },
+              {
+                "x": 225,
+                "y": 17
+              },
+              {
+                "x": 224.1875,
+                "y": 11.3125
+              },
+              {
+                "x": 221.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": 217.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": 212,
+                "y": 4
+              },
+              {
+                "x": 100.75,
+                "y": 2
+              },
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": -100.75,
+                "y": 2
+              },
+              {
+                "x": -212,
+                "y": 4
+              },
+              {
+                "x": -217.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": -221.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": -224.1875,
+                "y": 11.3125
+              },
+              {
+                "x": -225,
+                "y": 17
+              },
+              {
+                "x": -225,
+                "y": 19
+              },
+              {
+                "x": -224.1875,
+                "y": 24.6875
+              },
+              {
+                "x": -221.75,
+                "y": 28.75
+              },
+              {
+                "x": -217.6875,
+                "y": 31.1875
+              },
+              {
+                "x": -212,
+                "y": 32
+              }
+            ]
+          ]
+        },
+        {
+          "key": "upper-east-step",
+          "objectId": "object-3",
+          "assetId": "terrain-expansion-lava-ember-stair-upper-east-step",
+          "kind": "cliff",
+          "world": {
+            "x": 670,
+            "y": 400
+          },
+          "width": 600,
+          "height": 1100,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -279.52925735580754,
+                "y": 550
+              },
+              {
+                "x": -279.1844956831132,
+                "y": 493.554140625
+              },
+              {
+                "x": -277.1267050571861,
+                "y": 435.033125
+              },
+              {
+                "x": -276.8817006838793,
+                "y": 431.0421884447088
+              },
+              {
+                "x": -276.40582428221137,
+                "y": 387.8125
+              },
+              {
+                "x": -274.57353609488945,
+                "y": 333.75
+              },
+              {
+                "x": -269.38502794072076,
+                "y": 279.6875
+              },
+              {
+                "x": -262.3995213657939,
+                "y": 225.625
+              },
+              {
+                "x": -246.2151903266859,
+                "y": 134.98791659172068
+              },
+              {
+                "x": -231.32451153310478,
+                "y": 35
+              },
+              {
+                "x": -230.0090480880267,
+                "y": 29.3125
+              },
+              {
+                "x": -227.2122884843995,
+                "y": 25.25
+              },
+              {
+                "x": -222.93423272222316,
+                "y": 22.8125
+              },
+              {
+                "x": -217.17488080149772,
+                "y": 22
+              },
+              {
+                "x": -215.17488080149772,
+                "y": 22
+              },
+              {
+                "x": -209.55923272222316,
+                "y": 22.8125
+              },
+              {
+                "x": -205.7122884843995,
+                "y": 25.25
+              },
+              {
+                "x": -203.63404808802667,
+                "y": 29.3125
+              },
+              {
+                "x": -203.32451153310478,
+                "y": 35
+              },
+              {
+                "x": -101.13473048061044,
+                "y": 18.45355014036204
+              },
+              {
+                "x": -78.399818319437,
+                "y": 16.122325124916124
+              },
+              {
+                "x": -56.09980364518899,
+                "y": 16.582200218940415
+              },
+              {
+                "x": -34.23468645786642,
+                "y": 19.833175422434913
+              },
+              {
+                "x": -12.804466757469271,
+                "y": 25.875250735399618
+              },
+              {
+                "x": 120.01184602605714,
+                "y": 73.12474926460044
+              },
+              {
+                "x": 129.80056404804702,
+                "y": 77.2937243503356
+              },
+              {
+                "x": 138.5154944975195,
+                "y": 82.3630242398413
+              },
+              {
+                "x": 146.1566373744746,
+                "y": 88.33264893311753
+              },
+              {
+                "x": 152.72399267891237,
+                "y": 95.2025984301643
+              },
+              {
+                "x": 158.21756041083273,
+                "y": 102.97287273098162
+              },
+              {
+                "x": 162.63734057023572,
+                "y": 111.64347183556946
+              },
+              {
+                "x": 165.98333315712134,
+                "y": 121.21439574392784
+              },
+              {
+                "x": 168.25553817148955,
+                "y": 131.68564445605676
+              },
+              {
+                "x": 205.03805482518067,
+                "y": 330.31435554394324
+              },
+              {
+                "x": 210.5334155905088,
+                "y": 352.29928872777054
+              },
+              {
+                "x": 214.63946750314682,
+                "y": 374.5684438231958
+              },
+              {
+                "x": 217.3562105630948,
+                "y": 397.12182083021895
+              },
+              {
+                "x": 218.68364477035274,
+                "y": 419.95941974884
+              },
+              {
+                "x": 236.3412549265473,
+                "y": 702.04058025116
+              },
+              {
+                "x": 237.86594519792772,
+                "y": 724.79526755897
+              },
+              {
+                "x": 237.05374059388834,
+                "y": 747.0999097335598
+              },
+              {
+                "x": 233.90464111442924,
+                "y": 768.9545067749295
+              },
+              {
+                "x": 228.4186467595503,
+                "y": 790.3590586830792
+              },
+              {
+                "x": 170.2341261973597,
+                "y": 1002.6409413169208
+              },
+              {
+                "x": 166.01297520393504,
+                "y": 1012.7201303012657
+              },
+              {
+                "x": 160.8656480270359,
+                "y": 1021.7781679127613
+              },
+              {
+                "x": 154.79214466666218,
+                "y": 1029.8150541514071
+              },
+              {
+                "x": 147.792465122814,
+                "y": 1036.8307890172034
+              },
+              {
+                "x": 139.8666093954913,
+                "y": 1042.82537251015
+              },
+              {
+                "x": 131.0145774846941,
+                "y": 1047.7988046302476
+              },
+              {
+                "x": 121.23636939042237,
+                "y": 1051.7510853774952
+              },
+              {
+                "x": 110.53198511267611,
+                "y": 1054.6822147518933
+              },
+              {
+                "x": -3.778542212347176,
+                "y": 1079.3177852481067
+              },
+              {
+                "x": -26.375627243216424,
+                "y": 1083.1036282938494
+              },
+              {
+                "x": -48.98190215830731,
+                "y": 1084.7789426791837
+              },
+              {
+                "x": -71.59736695761981,
+                "y": 1084.3437284041102
+              },
+              {
+                "x": -94.22202164115396,
+                "y": 1081.7979854686282
+              },
+              {
+                "x": -200.09742757004068,
+                "y": 1065
+              },
+              {
+                "x": -200.9241778893059,
+                "y": 1070.6875
+              },
+              {
+                "x": -203.37185668878104,
+                "y": 1074.75
+              },
+              {
+                "x": -207.44046396846613,
+                "y": 1077.1875
+              },
+              {
+                "x": -213.12999972836116,
+                "y": 1078
+              },
+              {
+                "x": -215.12999972836116,
+                "y": 1078
+              },
+              {
+                "x": -220.8154639684661,
+                "y": 1077.1875
+              },
+              {
+                "x": -224.871856688781,
+                "y": 1074.75
+              },
+              {
+                "x": -227.29917788930587,
+                "y": 1070.6875
+              },
+              {
+                "x": -228.09742757004068,
+                "y": 1065
+              },
+              {
+                "x": -245.53841352323587,
+                "y": 921.7056249999999
+              },
+              {
+                "x": -253.10883856562177,
+                "y": 857.2198882020418
+              },
+              {
+                "x": -258.792313882564,
+                "y": 820.3125
+              },
+              {
+                "x": -265.9717048156958,
+                "y": 766.25
+              },
+              {
+                "x": -270.2810543539062,
+                "y": 712.1875
+              },
+              {
+                "x": -272.5784532437388,
+                "y": 670.4930424104788
+              },
+              {
+                "x": -273.1125164755613,
+                "y": 664.9668750000001
+              },
+              {
+                "x": -277.128640721536,
+                "y": 606.445859375
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "right",
+            "bendAmplitude": 24,
+            "bendPhase": 1.8,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 27.5,
+            "faceEnd": 1072.5,
+            "stableBodyFraction": 0.8277511961722488,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "molten-basin",
+          "objectId": "object-4",
+          "assetId": "terrain-expansion-lava-ember-stair-molten-basin",
+          "kind": "molten-pool",
+          "world": {
+            "x": 800,
+            "y": -1510
+          },
+          "width": 450,
+          "height": 1300,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": 161.07454087609904,
+                "y": 106.20329857125425
+              },
+              {
+                "x": 173.3908152670928,
+                "y": 232.3219483350303
+              },
+              {
+                "x": 176.07009871572814,
+                "y": 266.1757933786854
+              },
+              {
+                "x": 177.49876432872702,
+                "y": 300.05927684468094
+              },
+              {
+                "x": 177.67681210608941,
+                "y": 333.972398733017
+              },
+              {
+                "x": 176.60424204781532,
+                "y": 367.91515904369345
+              },
+              {
+                "x": 163.39575795218468,
+                "y": 632.0848409563066
+              },
+              {
+                "x": 162.12234872011544,
+                "y": 666.0424204781532
+              },
+              {
+                "x": 161.69787897609234,
+                "y": 700
+              },
+              {
+                "x": 162.12234872011544,
+                "y": 733.9575795218468
+              },
+              {
+                "x": 163.39575795218468,
+                "y": 767.9151590436934
+              },
+              {
+                "x": 177.47333423258053,
+                "y": 1049.4666846516109
+              },
+              {
+                "x": 177.57875050582655,
+                "y": 1074.5750101165308
+              },
+              {
+                "x": 175.36833355814514,
+                "y": 1099.3666711629025
+              },
+              {
+                "x": 170.8420833895363,
+                "y": 1123.8416677907255
+              },
+              {
+                "x": 164,
+                "y": 1148
+              },
+              {
+                "x": 146,
+                "y": 1202
+              },
+              {
+                "x": 141.47146023796222,
+                "y": 1213.1126106302288
+              },
+              {
+                "x": 135.88584095184893,
+                "y": 1222.4504425209147
+              },
+              {
+                "x": 129.2431421416601,
+                "y": 1230.013495672058
+              },
+              {
+                "x": 121.5433638073957,
+                "y": 1235.801770083658
+              },
+              {
+                "x": 112.78650594905578,
+                "y": 1239.8152657557162
+              },
+              {
+                "x": 102.97256856664032,
+                "y": 1242.053982688231
+              },
+              {
+                "x": 92.10155166014933,
+                "y": 1242.5179208812033
+              },
+              {
+                "x": 80.1734552295828,
+                "y": 1241.2070803346323
+              },
+              {
+                "x": 14.399999999999999,
+                "y": 1229.6
+              },
+              {
+                "x": 1.3627316987151596,
+                "y": 1226.5360731463597
+              },
+              {
+                "x": -10.549073205139356,
+                "y": 1222.1442925854385
+              },
+              {
+                "x": -21.33541471156355,
+                "y": 1216.4246583172367
+              },
+              {
+                "x": -30.996292820557425,
+                "y": 1209.377170341754
+              },
+              {
+                "x": -39.531707532120976,
+                "y": 1201.0018286589907
+              },
+              {
+                "x": -46.9416588462542,
+                "y": 1191.2986332689463
+              },
+              {
+                "x": -53.22614676295709,
+                "y": 1180.2675841716216
+              },
+              {
+                "x": -58.38517128222968,
+                "y": 1167.908681367016
+              },
+              {
+                "x": -83.16048602930505,
+                "y": 1097.7119562503024
+              },
+              {
+                "x": -86.85724711618667,
+                "y": 1085.7794665041379
+              },
+              {
+                "x": -89.52777339148409,
+                "y": 1073.8379753907952
+              },
+              {
+                "x": -91.17206485519729,
+                "y": 1061.8874829102747
+              },
+              {
+                "x": -91.79012150732626,
+                "y": 1049.9279890625758
+              },
+              {
+                "x": -91.38194334787102,
+                "y": 1037.959493847699
+              },
+              {
+                "x": -89.94753037683157,
+                "y": 1025.981997265644
+              },
+              {
+                "x": -87.48688259420788,
+                "y": 1013.9954993164109
+              },
+              {
+                "x": -84,
+                "y": 1002
+              },
+              {
+                "x": -66,
+                "y": 948
+              },
+              {
+                "x": -62.64223227027637,
+                "y": 936.0635935270163
+              },
+              {
+                "x": -60.56892908110547,
+                "y": 924.2543741080653
+              },
+              {
+                "x": -59.78009043248731,
+                "y": 912.5723417431473
+              },
+              {
+                "x": -60.27571632442189,
+                "y": 901.0174964322616
+              },
+              {
+                "x": -62.055806756909206,
+                "y": 889.5898381754089
+              },
+              {
+                "x": -65.12036172994925,
+                "y": 878.2893669725887
+              },
+              {
+                "x": -69.46938124354205,
+                "y": 867.1160828238013
+              },
+              {
+                "x": -75.10286529768756,
+                "y": 856.0699857290467
+              },
+              {
+                "x": -138.80773271367502,
+                "y": 744.5864677510687
+              },
+              {
+                "x": -145.86842035890743,
+                "y": 730.842764371912
+              },
+              {
+                "x": -151.45434965144221,
+                "y": 716.9048881099761
+              },
+              {
+                "x": -155.5655205912793,
+                "y": 702.7728389652613
+              },
+              {
+                "x": -158.20193317841876,
+                "y": 688.4466169377672
+              },
+              {
+                "x": -159.36358741286054,
+                "y": 673.9262220274941
+              },
+              {
+                "x": -159.0504832946047,
+                "y": 659.2116542344418
+              },
+              {
+                "x": -157.26262082365116,
+                "y": 644.3029135586105
+              },
+              {
+                "x": -154,
+                "y": 629.2
+              },
+              {
+                "x": -136,
+                "y": 560.8
+              },
+              {
+                "x": -132.44265353517488,
+                "y": 545.5867323241255
+              },
+              {
+                "x": -129.77061414069956,
+                "y": 530.3469292965021
+              },
+              {
+                "x": -127.98388181657404,
+                "y": 515.0805909171297
+              },
+              {
+                "x": -127.08245656279831,
+                "y": 499.7877171860084
+              },
+              {
+                "x": -127.06633837937238,
+                "y": 484.46830810313816
+              },
+              {
+                "x": -127.93552726629622,
+                "y": 469.12236366851886
+              },
+              {
+                "x": -129.69002322356988,
+                "y": 453.7498838821507
+              },
+              {
+                "x": -132.3298262511933,
+                "y": 438.3508687440335
+              },
+              {
+                "x": -149.88071148746118,
+                "y": 350.59644256269405
+              },
+              {
+                "x": -151.85241973258746,
+                "y": 338.03790133706264
+              },
+              {
+                "x": -152.70790021169688,
+                "y": 325.6604989415154
+              },
+              {
+                "x": -152.44715292478952,
+                "y": 313.46423537605244
+              },
+              {
+                "x": -151.07017787186527,
+                "y": 301.44911064067355
+              },
+              {
+                "x": -148.57697505292424,
+                "y": 289.6151247353789
+              },
+              {
+                "x": -144.96754446796632,
+                "y": 277.9622776601684
+              },
+              {
+                "x": -140.24188611699162,
+                "y": 266.4905694150421
+              },
+              {
+                "x": -134.4,
+                "y": 255.2
+              },
+              {
+                "x": -97.83893753303968,
+                "y": 191.21814068281947
+              },
+              {
+                "x": -81.25973438325993,
+                "y": 159.4045351707049
+              },
+              {
+                "x": -67.2,
+                "y": 126.4
+              },
+              {
+                "x": -52.8,
+                "y": 88.6
+              },
+              {
+                "x": -49.239086610827854,
+                "y": 80.69335873189286
+              },
+              {
+                "x": -44.95634644331145,
+                "y": 73.77343492757142
+              },
+              {
+                "x": -39.95177949745077,
+                "y": 67.8402285870357
+              },
+              {
+                "x": -34.225385773245826,
+                "y": 62.89373971028567
+              },
+              {
+                "x": -27.777165270696603,
+                "y": 58.93396829732136
+              },
+              {
+                "x": -20.607117989803115,
+                "y": 55.96091434814275
+              },
+              {
+                "x": -12.715243930565352,
+                "y": 53.974577862749854
+              },
+              {
+                "x": -4.10154309298332,
+                "y": 52.97495884114265
+              },
+              {
+                "x": 92.6,
+                "y": 47.52
+              },
+              {
+                "x": 107.31991470118905,
+                "y": 47.66692654017585
+              },
+              {
+                "x": 120.2796588047562,
+                "y": 49.86770616070339
+              },
+              {
+                "x": 131.4792323107014,
+                "y": 54.122338861582634
+              },
+              {
+                "x": 140.91863521902474,
+                "y": 60.43082464281357
+              },
+              {
+                "x": 148.59786752972616,
+                "y": 68.79316350439619
+              },
+              {
+                "x": 154.5169292428057,
+                "y": 79.20935544633052
+              },
+              {
+                "x": 158.6758203582633,
+                "y": 91.67940046861654
+              }
+            ]
+          ]
+        },
+        {
+          "key": "western-molten-channel",
+          "objectId": "object-122",
+          "assetId": "terrain-expansion-lava-ember-stair-western-molten-channel",
+          "kind": "molten-pool",
+          "world": {
+            "x": -800,
+            "y": -1510
+          },
+          "width": 350,
+          "height": 1300,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -116.19798401592524,
+                "y": 95.82346893058693
+              },
+              {
+                "x": -127,
+                "y": 184.4
+              },
+              {
+                "x": -130.12605339208147,
+                "y": 217.21341268710378
+              },
+              {
+                "x": -131.5042135683259,
+                "y": 250.0536507484151
+              },
+              {
+                "x": -131.1344805287333,
+                "y": 282.92071418393397
+              },
+              {
+                "x": -129.0168542733036,
+                "y": 315.8146029936603
+              },
+              {
+                "x": -121.15643073089126,
+                "y": 402.27926196019615
+              },
+              {
+                "x": -118.71753452172011,
+                "y": 436.1494554458399
+              },
+              {
+                "x": -117.55727662509791,
+                "y": 470.0392978629673
+              },
+              {
+                "x": -117.67565704102466,
+                "y": 503.9487892115783
+              },
+              {
+                "x": -119.07267576950038,
+                "y": 537.877929491673
+              },
+              {
+                "x": -125.92732423049962,
+                "y": 652.122070508327
+              },
+              {
+                "x": -127.37020268495377,
+                "y": 686.0551295947125
+              },
+              {
+                "x": -127.62616227881577,
+                "y": 719.976377362196
+              },
+              {
+                "x": -126.6952030120857,
+                "y": 753.8858138107772
+              },
+              {
+                "x": -124.57732488476348,
+                "y": 787.7834389404564
+              },
+              {
+                "x": -115.42267511523652,
+                "y": 902.2165610595436
+              },
+              {
+                "x": -110.74891276009812,
+                "y": 970.0433087887943
+              },
+              {
+                "x": -107.57297592515594,
+                "y": 1037.9566740956334
+              },
+              {
+                "x": -101.60305440939803,
+                "y": 1205.1144765368554
+              },
+              {
+                "x": -100.52733853219536,
+                "y": 1215.5845210985299
+              },
+              {
+                "x": -98.10171810528638,
+                "y": 1224.551893051981
+              },
+              {
+                "x": -94.3261931286711,
+                "y": 1232.016592397209
+              },
+              {
+                "x": -89.2007636023495,
+                "y": 1237.978619134214
+              },
+              {
+                "x": -82.72542952632158,
+                "y": 1242.4379732629952
+              },
+              {
+                "x": -74.90019090058736,
+                "y": 1245.3946547835535
+              },
+              {
+                "x": -65.72504772514684,
+                "y": 1246.8486636958883
+              },
+              {
+                "x": -55.199999999999996,
+                "y": 1246.8
+              },
+              {
+                "x": -4.800000000000004,
+                "y": 1243.2
+              },
+              {
+                "x": 6.071944480573661,
+                "y": 1241.854888831082
+              },
+              {
+                "x": 16.28777792229466,
+                "y": 1239.4195553243283
+              },
+              {
+                "x": 25.847500325162983,
+                "y": 1235.893999479739
+              },
+              {
+                "x": 34.75111168917864,
+                "y": 1231.278221297314
+              },
+              {
+                "x": 42.99861201434163,
+                "y": 1225.5722207770536
+              },
+              {
+                "x": 50.59000130065195,
+                "y": 1218.7759979189568
+              },
+              {
+                "x": 57.52527954810959,
+                "y": 1210.8895527230247
+              },
+              {
+                "x": 63.80444675671457,
+                "y": 1201.9128851892567
+              },
+              {
+                "x": 91,
+                "y": 1158.4
+              },
+              {
+                "x": 96.47379907580276,
+                "y": 1148.7087957750985
+              },
+              {
+                "x": 100.89519630321104,
+                "y": 1138.8351831003934
+              },
+              {
+                "x": 104.26419168222486,
+                "y": 1128.7791619758852
+              },
+              {
+                "x": 106.5807852128442,
+                "y": 1118.5407324015737
+              },
+              {
+                "x": 107.84497689506907,
+                "y": 1108.1198943774586
+              },
+              {
+                "x": 108.05676672889945,
+                "y": 1097.5166479035404
+              },
+              {
+                "x": 107.21615471433536,
+                "y": 1086.730992979819
+              },
+              {
+                "x": 105.32314085137679,
+                "y": 1075.762929606294
+              },
+              {
+                "x": 90.0560220142542,
+                "y": 1005.9703863508763
+              },
+              {
+                "x": 86.55651238301799,
+                "y": 983.0583423223679
+              },
+              {
+                "x": 86.11400550356355,
+                "y": 960.2925965877191
+              },
+              {
+                "x": 88.72850137589089,
+                "y": 937.6731491469299
+              },
+              {
+                "x": 94.4,
+                "y": 915.2
+              },
+              {
+                "x": 110.6,
+                "y": 864.8
+              },
+              {
+                "x": 116.3386354913925,
+                "y": 842.3129825271612
+              },
+              {
+                "x": 119.15454196556993,
+                "y": 819.6519301086453
+              },
+              {
+                "x": 119.04771942253232,
+                "y": 796.8168427444518
+              },
+              {
+                "x": 116.01816786227967,
+                "y": 773.8077204345811
+              },
+              {
+                "x": 101.2,
+                "y": 697.6
+              },
+              {
+                "x": 96.87198091066239,
+                "y": 668.7774542324717
+              },
+              {
+                "x": 95.08792364264951,
+                "y": 639.9098169298865
+              },
+              {
+                "x": 95.8478281959614,
+                "y": 610.9970880922446
+              },
+              {
+                "x": 99.15169457059804,
+                "y": 582.0392677195458
+              },
+              {
+                "x": 111.08264976940262,
+                "y": 506.4765514604501
+              },
+              {
+                "x": 113.88399049528897,
+                "y": 478.3680601965032
+              },
+              {
+                "x": 114.0416600661729,
+                "y": 464.41115291423836
+              },
+              {
+                "x": 113.37066244235066,
+                "y": 450.51913786511255
+              },
+              {
+                "x": 111.87099762382225,
+                "y": 436.69201504912587
+              },
+              {
+                "x": 109.54266561058768,
+                "y": 422.9297844662782
+              },
+              {
+                "x": 102.4,
+                "y": 395.6
+              },
+              {
+                "x": 80.29169883465549,
+                "y": 327.2652509434806
+              },
+              {
+                "x": 76.9077069202831,
+                "y": 315.4374577536024
+              },
+              {
+                "x": 74.40158059449372,
+                "y": 303.5867036557079
+              },
+              {
+                "x": 72.7733198572873,
+                "y": 291.7129886497971
+              },
+              {
+                "x": 72.02292470866388,
+                "y": 279.81631273587016
+              },
+              {
+                "x": 72.15039514862343,
+                "y": 267.89667591392697
+              },
+              {
+                "x": 73.15573117716598,
+                "y": 255.95407818396754
+              },
+              {
+                "x": 75.03893279429148,
+                "y": 243.98851954599186
+              },
+              {
+                "x": 77.8,
+                "y": 232
+              },
+              {
+                "x": 96.65236635016443,
+                "y": 161.3036261868834
+              },
+              {
+                "x": 99.20445607196748,
+                "y": 145.9082897301219
+              },
+              {
+                "x": 98.51309158754111,
+                "y": 131.02590654672088
+              },
+              {
+                "x": 94.57827289688528,
+                "y": 116.65647663668022
+              },
+              {
+                "x": 87.4,
+                "y": 102.8
+              },
+              {
+                "x": 67.6,
+                "y": 72.2
+              },
+              {
+                "x": 62.96878858171708,
+                "y": 65.825
+              },
+              {
+                "x": 57.87515432686834,
+                "y": 60.3
+              },
+              {
+                "x": 52.31909723545377,
+                "y": 55.625
+              },
+              {
+                "x": 46.30061730747336,
+                "y": 51.8
+              },
+              {
+                "x": 39.81971454292713,
+                "y": 48.824999999999996
+              },
+              {
+                "x": 32.876388941815065,
+                "y": 46.699999999999996
+              },
+              {
+                "x": 25.470640504137183,
+                "y": 45.425
+              },
+              {
+                "x": 17.602469229893465,
+                "y": 45
+              },
+              {
+                "x": -58.8,
+                "y": 45
+              },
+              {
+                "x": -70.89684350024883,
+                "y": 45.79411670204043
+              },
+              {
+                "x": -81.58737400099534,
+                "y": 48.176466808161685
+              },
+              {
+                "x": -90.87159150223948,
+                "y": 52.147050318363796
+              },
+              {
+                "x": -98.7494960039813,
+                "y": 57.70586723264674
+              },
+              {
+                "x": -105.2210875062208,
+                "y": 64.85291755101052
+              },
+              {
+                "x": -110.28636600895794,
+                "y": 73.58820127345516
+              },
+              {
+                "x": -113.94533151219275,
+                "y": 83.91171839998061
+              }
+            ]
+          ]
+        }
+      ],
+      "spawnPockets": [
+        {
+          "id": "north",
+          "center": {
+            "x": 80,
+            "y": 1290
+          },
+          "radius": 125
+        },
+        {
+          "id": "west",
+          "center": {
+            "x": -750,
+            "y": 70
+          },
+          "radius": 125
+        },
+        {
+          "id": "east",
+          "center": {
+            "x": 750,
+            "y": 70
+          },
+          "radius": 125
+        },
+        {
+          "id": "south",
+          "center": {
+            "x": 10,
+            "y": -1290
+          },
+          "radius": 125
+        }
+      ],
+      "sourcePixelsPerWorldUnit": 1,
+      "resizeOperations": 0,
+      "positionsUnchanged": true,
+      "replacedTerrainImages": 2
+    }
+  }
+}

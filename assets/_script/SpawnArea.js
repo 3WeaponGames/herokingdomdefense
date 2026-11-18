@@ -13,9 +13,11 @@ function bodyBounds(bounds,body) {
   return {minX:Math.min(bounds.minX+body,x),maxX:Math.max(bounds.maxX-body,x),minY:Math.min(bounds.minY+body,y),maxY:Math.max(bounds.maxY-body,y)};
 }
 function clamp(point,bounds) { return {x:Math.max(bounds.minX,Math.min(bounds.maxX,point.x)),y:Math.max(bounds.minY,Math.min(bounds.maxY,point.y))}; }
+function mapBounds(size) { return size&&isFinite(size.width)&&size.width>0&&isFinite(size.height)&&size.height>0?{minX:-size.width/2,maxX:size.width/2,minY:-size.height/2,maxY:size.height/2}:null; }
+function inside(point,bounds) { return !bounds||point.x>=bounds.minX&&point.x<=bounds.maxX&&point.y>=bounds.minY&&point.y<=bounds.maxY; }
 function sampleInBounds(center,radius,random,bounds,body) {
-  var limits=bodyBounds(bounds,body),start=sample(center,radius,random,function(p){return p.x>=limits.minX&&p.x<=limits.maxX&&p.y>=limits.minY&&p.y<=limits.maxY;});
-  if(start)return start;
+  var limits=bodyBounds(bounds,body||0),start=sample(center,radius,random,function(p){return inside(p,limits);});
+  if(start&&inside(start,limits))return start;
   if(!center||typeof center.x!=="number"||typeof center.y!=="number"||!isFinite(center.x)||!isFinite(center.y)||typeof radius!=="number"||!isFinite(radius)||radius<0)return null;
   // A narrow circle/map intersection can miss every bounded sample. Its
   // nearest point is still in the disk; a wholly off-map circle uses the same
@@ -45,8 +47,9 @@ function spawnRadius(game,spawnId) {
   var node=game.ndPath.getChildByName('ndEnemy'+spawnId),area=node&&node.getComponent&&node.getComponent('SpawnPointArea');return area?area.radius:0;
 }
 function prepare(unit,game,spawnId,collides) {
-  var radius=spawnRadius(game,spawnId);if(!(radius>0))return;
+  var radius=spawnRadius(game,spawnId)||0,bounds=mapBounds(game.mapSize);if(!(radius>0)&&!bounds)return;
   var Navigation=require('KinghtFallNavigation'),center=Navigation.positionOf(game.ndPath.getChildByName('ndEnemy'+spawnId),game);
+  if(!(radius>0)&&inside(center,bounds))return;
   // Terrain forbids entry, not exit. A spawn inside a blocker is a valid actor;
   // shared navigation moves it out just like knockback or skill displacement.
   var navigation,start;
@@ -55,17 +58,18 @@ function prepare(unit,game,spawnId,collides) {
     // Pooled bodies can still be inactive until initData. Measure the body
     // that will collide, then keep it inside the map without excluding terrain.
     start=sampleInBounds(center,radius,Math.random,navigation.grid.bounds,navigation.radius(unit,true));
-  }else start=sample(center,radius,Math.random);
+  }else start=bounds?sampleInBounds(center,radius,Math.random,bounds,0):sample(center,radius,Math.random);
   return start?{center:center,start:start}:null;
 }
 function apply(unit,game,spawnId,prepared) {
-  var radius=spawnRadius(game,spawnId),route=unit.bornInfo&&unit.bornInfo.pathList,override=route&&route.routeSpread;
-  if(!(radius>0)&&!(override>0))return true;
+  var radius=spawnRadius(game,spawnId)||0,route=unit.bornInfo&&unit.bornInfo.pathList,override=route&&route.routeSpread,bounds=mapBounds(game.mapSize);
+  if(!(radius>0)&&!(override>0)&&!prepared&&!bounds)return true;
   var Navigation=require('KinghtFallNavigation'),node=game.ndPath.getChildByName('ndEnemy'+spawnId),center=prepared?prepared.center:Navigation.positionOf(node,game),collides=!unit.rigidBody||unit.rigidBody.active!==false,navigation,body=0;
-  if(collides){navigation=Navigation.get(game);navigation.refresh();body=navigation.radius(unit);}
-  var walkable=function(p){return !collides||navigation.grid.isWalkable(p,body);},start=prepared?prepared.start:collides&&radius>0?sampleInBounds(center,radius,Math.random,navigation.grid.bounds,body):sample(center,radius,Math.random);
+  if(!(radius>0)&&!(override>0)&&!prepared&&inside(center,bounds))return true;
+  if(collides){navigation=Navigation.get(game);navigation.refresh();body=navigation.radius(unit);bounds=navigation.grid.bounds;}
+  var walkable=function(p){return inside(p,bounds)&&(!collides||navigation.grid.isWalkable(p,body));},start=prepared?prepared.start:bounds?sampleInBounds(center,radius,Math.random,bounds,body):sample(center,radius,Math.random);
   if(!start)return false;
-  if(collides&&radius>0)start=clamp(start,bodyBounds(navigation.grid.bounds,body));
+  if(bounds)start=clamp(start,bodyBounds(bounds,body));
   unit.node.setPosition(start.x,start.y);
   var width=override===undefined?radius:override;
   if(route&&route.length&&width>0){
@@ -74,4 +78,4 @@ function apply(unit,game,spawnId,prepared) {
   }
   Navigation.reset(unit);if(collides)Navigation.prepareTerrainExit(unit,game);return true;
 }
-exports.prepare=prepare;exports.sample=sample;exports.sampleInBounds=sampleInBounds;exports.spread=spread;exports.apply=apply;exports.radius=spawnRadius;
+exports.prepare=prepare;exports.sample=sample;exports.sampleInBounds=sampleInBounds;exports.spread=spread;exports.apply=apply;exports.radius=spawnRadius;exports.mapBounds=mapBounds;

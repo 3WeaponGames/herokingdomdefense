@@ -1,0 +1,7287 @@
+{
+  "version": 1,
+  "id": "map-expansion-snow-staggered-spurs",
+  "name": "Snow - Staggered Spurs",
+  "biome": "snow",
+  "size": {
+    "width": 1860,
+    "height": 3028
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2668
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-b9f4becbad1afba4f9eb2fc2a0932664",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "id": "north-chute",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 20,
+              "y": 1334
+            },
+            {
+              "x": 20,
+              "y": 950
+            },
+            {
+              "x": 20,
+              "y": 600
+            },
+            {
+              "x": 0,
+              "y": 300
+            },
+            {
+              "x": -40,
+              "y": -110
+            }
+          ],
+          "size": 110,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true,
+          "assetId": "env-4c51c071c71b0c04b8c929ce7d70fbda",
+          "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a"
+        },
+        {
+          "id": "west-shelf",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -750,
+              "y": 390
+            },
+            {
+              "x": -580,
+              "y": 390
+            },
+            {
+              "x": -260,
+              "y": 350
+            },
+            {
+              "x": -120,
+              "y": 80
+            },
+            {
+              "x": -40,
+              "y": -110
+            }
+          ],
+          "size": 110,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true,
+          "assetId": "env-4c51c071c71b0c04b8c929ce7d70fbda",
+          "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a"
+        },
+        {
+          "id": "south-field",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": -400,
+              "y": -1334
+            },
+            {
+              "x": -380,
+              "y": -1000
+            },
+            {
+              "x": -200,
+              "y": -700
+            },
+            {
+              "x": -180,
+              "y": -360
+            },
+            {
+              "x": -40,
+              "y": -110
+            }
+          ],
+          "size": 110,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true,
+          "assetId": "env-4c51c071c71b0c04b8c929ce7d70fbda",
+          "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a"
+        },
+        {
+          "id": "east-field",
+          "mode": "road",
+          "op": "paint",
+          "points": [
+            {
+              "x": 750,
+              "y": 85
+            },
+            {
+              "x": 420,
+              "y": 85
+            },
+            {
+              "x": 190,
+              "y": 70
+            },
+            {
+              "x": -40,
+              "y": -110
+            }
+          ],
+          "size": 110,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "edgeStyle": "textured",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "textureScale": 1,
+          "nativeSize": true,
+          "assetId": "env-4c51c071c71b0c04b8c929ce7d70fbda",
+          "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a"
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    }
+  },
+  "layers": [
+    {
+      "id": "layer-3",
+      "name": "Side terrain - snow",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-2",
+          "assetId": "terrain-expansion-snow-staggered-spurs-ne-spur",
+          "name": "Upper-right snow peninsula",
+          "x": 750,
+          "y": 260,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "terrain-expansion-snow-staggered-spurs-meltpond",
+          "name": "Continuous eastern meltwater reach",
+          "x": 775,
+          "y": -1340,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 1250
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-162",
+          "name": "Long lower-west snowbank",
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "globalShadow": false,
+          "assetId": "terrain-expansion-snow-staggered-spurs-west-snowbank",
+          "x": -845,
+          "y": -1657,
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "terrain-objects",
+      "name": "Terrain objects - Snow",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-1",
+          "assetId": "terrain-expansion-snow-staggered-spurs-nw-spur",
+          "name": "Rounded northwest snow shoulder",
+          "x": -545,
+          "y": 540,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-3",
+          "assetId": "terrain-expansion-snow-staggered-spurs-west-spur",
+          "name": "Rounded western snow promontory",
+          "x": -640,
+          "y": -580,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-120",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 840.985,
+          "y": -34.084,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -718.819,
+          "y": -611.95,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-snowbank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": 450.828,
+          "y": 678.336,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-123",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 260.423,
+          "y": -1176.475,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 345.609,
+          "y": 752.195,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": -618.903,
+          "y": 987.651,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -473.854,
+          "y": 1321.149,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-127",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 259.273,
+          "y": 756.044,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -547.919,
+          "y": -604.231,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -694.72,
+          "y": -852.465,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -334.849,
+          "y": -423.356,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 490.673,
+          "y": 732.416,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 176.622,
+          "y": -1064.996,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -481.947,
+          "y": 514.837,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 374.72,
+          "y": -1301.467,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -354.947,
+          "y": 461.997,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-136",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -331.981,
+          "y": -376.262,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 136.446,
+          "y": 924.171,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -761.646,
+          "y": 220.497,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-139",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 144.286,
+          "y": -1073.963,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": 539.129,
+          "y": -1378.96,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-141",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": 400.525,
+          "y": -496.955,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-142",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": -235.206,
+          "y": 1349.77,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-143",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": -404.042,
+          "y": 469.266,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-144",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 381.067,
+          "y": 703.794,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-145",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": -461.573,
+          "y": 1039.35,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-146",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 780,
+          "y": 1190,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-147",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 188.203,
+          "y": 906.32,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-148",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -353.676,
+          "y": -461.985,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-149",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -329.524,
+          "y": 1263.69,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-150",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 479.677,
+          "y": 649.079,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-151",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 618.047,
+          "y": -27.711,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-152",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -679.413,
+          "y": -607.494,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-153",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": 847.331,
+          "y": 238.805,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-154",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -681.904,
+          "y": -646.738,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-155",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -911.018,
+          "y": -1361.851,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-snowbank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-156",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -89.999,
+          "y": -812.238,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-157",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -670.713,
+          "y": -639.344,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-158",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 548.708,
+          "y": 732.523,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-159",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 774.642,
+          "y": 275.887,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-160",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -379.912,
+          "y": 453.27,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-161",
+          "assetId": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+          "name": "Snow Hole 3",
+          "x": 484.134,
+          "y": -1396.856,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "artist-side-snow-04",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -700,
+          "y": 1090,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0,
+          "artistKey": "northwestern-snow-grove"
+        },
+        {
+          "id": "artist-side-snow-09",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": 850,
+          "y": 1040,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0,
+          "artistKey": "eastern-snow-peninsula"
+        },
+        {
+          "id": "artist-side-snow-16",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -700,
+          "y": -750,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "artistKey": "western-long-snowbank"
+        },
+        {
+          "id": "artist-side-snow-19",
+          "assetId": "env-c020e429982385a4ba493331ef6dd4a3",
+          "name": "Snow Grass",
+          "x": -760,
+          "y": 80,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0,
+          "artistKey": "western-middle-snow-grove"
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "native-props",
+      "name": "Native Environment props",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-5",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -96.985,
+          "y": 586.647,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": 403.968,
+          "y": -1342.727,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": 505.201,
+          "y": -458.105,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": 151.363,
+          "y": 803.97,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": 113.984,
+          "y": -1032.468,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": 239.116,
+          "y": -1291.196,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-3bfffa93008c46345966a42a702e20c0",
+          "name": "Tree Snow Bare LightBrown 7",
+          "x": -700,
+          "y": -200,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": -565,
+          "y": 940,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -800,
+          "y": 1060,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": -550,
+          "y": 1190,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": -302.345,
+          "y": 500.897,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": 534.808,
+          "y": 758.734,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": 135.87,
+          "y": 994.852,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -577.422,
+          "y": -638.911,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": 634.643,
+          "y": -1343.502,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-3bfffa93008c46345966a42a702e20c0",
+          "name": "Tree Snow Bare LightBrown 7",
+          "x": 432.572,
+          "y": -1257.064,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -600,
+          "y": -260,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": 150.875,
+          "y": -1222.863,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": 525.828,
+          "y": -146.54,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -395,
+          "y": 900,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": -314.912,
+          "y": -494.26,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-16374cea168f7f34faacaac9dfc9875f",
+          "name": "Tree Snow Green 2",
+          "x": -807.122,
+          "y": 1250.733,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": -136.879,
+          "y": 653.922,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": -562.078,
+          "y": 1315.857,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": 827.267,
+          "y": 1039.503,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -621.501,
+          "y": -662.172,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": 525.704,
+          "y": 598.055,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -540,
+          "y": -70,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": 117.346,
+          "y": 888.916,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": -308.789,
+          "y": -486.917,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": -665,
+          "y": 880,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": 64.933,
+          "y": -1021.111,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": -455.441,
+          "y": -613.772,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -648,
+          "y": -1050,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": 840.302,
+          "y": 980.656,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": 868,
+          "y": 800,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": 661.913,
+          "y": -1368.139,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": -866.361,
+          "y": 497.284,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": 119.67,
+          "y": -1100.022,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": 522.184,
+          "y": -514.546,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-8711e413efb7123498a150757ac50b0b",
+          "name": "Tree Snow Green 5",
+          "x": 882.464,
+          "y": 741.918,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+          "name": "Tree Snow Dead LightBrown 3",
+          "x": 384.319,
+          "y": 725.839,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -599.145,
+          "y": -646.07,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -445,
+          "y": 1020,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": 874.214,
+          "y": 637.65,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-3bfffa93008c46345966a42a702e20c0",
+          "name": "Tree Snow Bare LightBrown 7",
+          "x": 489.385,
+          "y": 605.099,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": -148.415,
+          "y": 511.771,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 44,
+          "y": -850.909,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": 344.513,
+          "y": 649.406,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": 651.426,
+          "y": -1416.452,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": -39.712,
+          "y": -663.484,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": -187.987,
+          "y": -1239.508,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-60fc033c18f73014dbd93a170a817a89",
+          "name": "Tree Snow Teal 1",
+          "x": -83.319,
+          "y": -759.005,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -481.547,
+          "y": 452.018,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": -294.035,
+          "y": -420.841,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-dddc257af55ea2345b330aa933b40102",
+          "name": "Tree Snow Teal 3",
+          "x": -648.635,
+          "y": -696.568,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": 611.587,
+          "y": -1393.675,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": 117.42,
+          "y": -425.911,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-71bfb2580b1146849810414cfb01276d",
+          "name": "Small Tree Snow LightBrown 3",
+          "x": -139.526,
+          "y": 586.821,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-89ef9fd0e49cdd44884be51ad96700f5",
+          "name": "Tree Snow Dead LightBrown 4",
+          "x": 880,
+          "y": 450,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+          "name": "Small Tree Snow LightBrown 2",
+          "x": 49.977,
+          "y": -1064.106,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": 538.112,
+          "y": -1338.732,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-0b70b270ad0d8594788bafd0e9cd097f",
+          "name": "Small Tree Snow LightBrown 1",
+          "x": -584.546,
+          "y": 1316.257,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": 475.533,
+          "y": -64.968,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": 884,
+          "y": 700,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -715,
+          "y": 830,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -396.051,
+          "y": 509.177,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": 614.152,
+          "y": 200.902,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": 142.271,
+          "y": 776.829,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -169.588,
+          "y": -1000.443,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -135.935,
+          "y": 716.106,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -430.542,
+          "y": 485.716,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 868,
+          "y": 600,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": 689.843,
+          "y": -1375.965,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": 726.505,
+          "y": -1364.227,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": 783.415,
+          "y": -1361.56,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -720,
+          "y": 1160,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -192.732,
+          "y": 511.92,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -750,
+          "y": -270,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": 798.875,
+          "y": -1359.141,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -495,
+          "y": 850,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -480,
+          "y": -170,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": 546.2,
+          "y": -1297.543,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": 876.818,
+          "y": 764.223,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": 556.725,
+          "y": 518.831,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 174.8,
+          "y": -1002.71,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-8a1e883890400a34ea49ad7740d86182",
+          "name": "Stone Snow 4",
+          "x": -538.903,
+          "y": 907.651,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 890,
+          "y": 550,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -615.902,
+          "y": 1326.266,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -125.808,
+          "y": 639.495,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 240.123,
+          "y": 715.275,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 850.143,
+          "y": -1356.247,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-5d630d827e5534249acf9e82e45f2d14",
+          "name": "Stone Snow 5",
+          "x": -300,
+          "y": 1040,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 880.825,
+          "y": 160.089,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -894.289,
+          "y": 513.416,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": 544.817,
+          "y": 622.162,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -430.025,
+          "y": -601.969,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 894.996,
+          "y": 624.613,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -628,
+          "y": -1250,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -301.493,
+          "y": -588.24,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -625,
+          "y": 820,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -690,
+          "y": -300,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-107",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -405,
+          "y": 850,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -658,
+          "y": -900,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -550,
+          "y": -220,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": 520.906,
+          "y": -1250.636,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 78.345,
+          "y": -867.566,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -400,
+          "y": 1170,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -3.099,
+          "y": -331.626,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 202.881,
+          "y": 757.419,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": 878,
+          "y": 580,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": 779.781,
+          "y": -1359.663,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": 528.775,
+          "y": 778.513,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-06dd7dbb3f573ba4684eb20159b8072a",
+          "name": "Bush Snow 3",
+          "x": -832.144,
+          "y": 514.951,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -620.85,
+          "y": -631.343,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "artist-side-snow-01",
+          "assetId": "env-41c1f33859300444ba9a4dbc7276bb03",
+          "name": "Tree Snow Green 4",
+          "x": -780,
+          "y": 900,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0,
+          "artistKey": "northwestern-snow-grove"
+        },
+        {
+          "id": "artist-side-snow-02",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": -400,
+          "y": 1110,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0,
+          "artistKey": "northwestern-snow-grove"
+        },
+        {
+          "id": "artist-side-snow-03",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -760,
+          "y": 1010,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0,
+          "artistKey": "northwestern-snow-grove"
+        },
+        {
+          "id": "artist-side-snow-05",
+          "assetId": "env-b96f62f957243f147b6d6578508d3356",
+          "name": "Stone Snow 3",
+          "x": -590,
+          "y": 1060,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "nw-spur",
+          "surfaceRegion": 0,
+          "artistKey": "northwestern-snow-grove"
+        },
+        {
+          "id": "artist-side-snow-06",
+          "assetId": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+          "name": "Tree Snow Teal 6",
+          "x": 801.981,
+          "y": 1141.322,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0,
+          "artistKey": "eastern-snow-peninsula"
+        },
+        {
+          "id": "artist-side-snow-07",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": 850,
+          "y": 900,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0,
+          "artistKey": "eastern-snow-peninsula"
+        },
+        {
+          "id": "artist-side-snow-08",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": 796.945,
+          "y": 1239.914,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0,
+          "artistKey": "eastern-snow-peninsula"
+        },
+        {
+          "id": "artist-side-snow-10",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": 896,
+          "y": 520,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "ne-spur",
+          "surfaceRegion": 0,
+          "artistKey": "eastern-snow-peninsula"
+        },
+        {
+          "id": "artist-side-snow-11",
+          "assetId": "env-46b9af7fab6387f4abc8bae86df4531e",
+          "name": "Tree Snow Green 6",
+          "x": -637.26,
+          "y": -182.595,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0,
+          "artistKey": "western-long-snowbank"
+        },
+        {
+          "id": "artist-side-snow-12",
+          "assetId": "env-af4cf667fc9908f44b63b417e6dd32f5",
+          "name": "Tree Snow Teal 5",
+          "x": -717.26,
+          "y": -102.595,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0,
+          "artistKey": "western-long-snowbank"
+        },
+        {
+          "id": "artist-side-snow-13",
+          "assetId": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+          "name": "Tree Snow Green 7",
+          "x": -568.072,
+          "y": -107.802,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0,
+          "artistKey": "western-long-snowbank"
+        },
+        {
+          "id": "artist-side-snow-14",
+          "assetId": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+          "name": "Stone Snow 1",
+          "x": -662,
+          "y": -980,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "artistKey": "western-long-snowbank"
+        },
+        {
+          "id": "artist-side-snow-15",
+          "assetId": "env-7338e787c3a7a0740ba44951b612ac05",
+          "name": "Bush Snow 2",
+          "x": -525.26,
+          "y": -222.595,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0,
+          "artistKey": "western-long-snowbank"
+        },
+        {
+          "id": "artist-side-snow-17",
+          "assetId": "env-76b1723ace2a01f4f80ec62af3bc160d",
+          "name": "Tree Snow Teal 4",
+          "x": -820,
+          "y": -20,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0,
+          "artistKey": "western-middle-snow-grove"
+        },
+        {
+          "id": "artist-side-snow-18",
+          "assetId": "env-0720eb12620388142bc3434178744ee5",
+          "name": "Bush Snow 1",
+          "x": -780,
+          "y": -180,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0,
+          "artistKey": "western-middle-snow-grove"
+        },
+        {
+          "id": "artist-side-snow-20",
+          "assetId": "env-2a48cf1b1ed9e294a90eedb043028845",
+          "name": "Stone Snow 2",
+          "x": -810,
+          "y": -300,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-spur",
+          "surfaceRegion": 0,
+          "artistKey": "western-middle-snow-grove"
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 163,
+  "nextLayer": 4,
+  "blockerMask": [
+    [
+      [
+        [
+          -1027.7885465718766,
+          -877.690831334505
+        ],
+        [
+          -1027.0032564950718,
+          -909.5243826343058
+        ],
+        [
+          -1023.7912223468171,
+          -941.6201252512597
+        ],
+        [
+          -1018.1524441271126,
+          -973.9780591853664
+        ],
+        [
+          -976.9194280285283,
+          -1218.0219408146336
+        ],
+        [
+          -969.5570895595125,
+          -1250.430424755287
+        ],
+        [
+          -960.7868333259562,
+          -1282.677817391881
+        ],
+        [
+          -950.6086593278591,
+          -1314.7641187244153
+        ],
+        [
+          -939.0225675652213,
+          -1346.6893287528903
+        ],
+        [
+          -900.4721305183947,
+          -1519.0887365284727
+        ],
+        [
+          -900.2515888548363,
+          -1531.171688904612
+        ],
+        [
+          -898.8284135438573,
+          -1542.464914297266
+        ],
+        [
+          -896.2026045854577,
+          -1552.9684127064347
+        ],
+        [
+          -892.3741619796374,
+          -1562.6821841321182
+        ],
+        [
+          -891.2872649508892,
+          -1564.6101050978152
+        ],
+        [
+          -891.205516758354,
+          -1566.263246924887
+        ],
+        [
+          -889.6440279166552,
+          -1574.532061595138
+        ],
+        [
+          -886.986958110989,
+          -1582.399344210171
+        ],
+        [
+          -883.2737019216817,
+          -1589.8198558282686
+        ],
+        [
+          -878.5436539290594,
+          -1596.748357507714
+        ],
+        [
+          -872.8362087134482,
+          -1603.1396103067893
+        ],
+        [
+          -866.1907608551745,
+          -1608.9483752837775
+        ],
+        [
+          -858.6467049345644,
+          -1614.1294134969612
+        ],
+        [
+          -850.243435531944,
+          -1618.637486004623
+        ],
+        [
+          -841.0203472276395,
+          -1622.427353865046
+        ],
+        [
+          -831.0168346019773,
+          -1625.4537781365125
+        ],
+        [
+          -820.2722922352834,
+          -1627.6715198773052
+        ],
+        [
+          -814.4428448296543,
+          -1628.3661027200355
+        ],
+        [
+          -807.5588662875854,
+          -1633.0913058685926
+        ],
+        [
+          -797.6721051275174,
+          -1638.2788595510833
+        ],
+        [
+          -786.5521363633961,
+          -1640.932826467148
+        ],
+        [
+          -774.1989599952215,
+          -1641.053206616787
+        ],
+        [
+          -760.6125760229935,
+          -1638.6399999999999
+        ],
+        [
+          -700.3425398235692,
+          -1623
+        ],
+        [
+          -701.5206938226639,
+          -1628.25
+        ],
+        [
+          -700.6479466791602,
+          -1632
+        ],
+        [
+          -697.724298393058,
+          -1634.25
+        ],
+        [
+          -692.7497489643572,
+          -1635
+        ],
+        [
+          -690.7497489643572,
+          -1635
+        ],
+        [
+          -685.224298393058,
+          -1634.25
+        ],
+        [
+          -680.6479466791602,
+          -1632
+        ],
+        [
+          -677.0206938226639,
+          -1628.25
+        ],
+        [
+          -674.3425398235692,
+          -1623
+        ],
+        [
+          -668.4058853741508,
+          -1586.0021484375
+        ],
+        [
+          -666.6163230729829,
+          -1572.133480913949
+        ],
+        [
+          -661.9954417276542,
+          -1566.263246924887
+        ],
+        [
+          -656.5079770496122,
+          -1557.6381391411355
+        ],
+        [
+          -652.1232661733268,
+          -1548.7019771856008
+        ],
+        [
+          -648.9225516963842,
+          -1539.5
+        ],
+        [
+          -644.6027216462678,
+          -1512.46875
+        ],
+        [
+          -641.4897976202658,
+          -1485.4375
+        ],
+        [
+          -639.576987150554,
+          -1458.40625
+        ],
+        [
+          -638.8574977693083,
+          -1431.375
+        ],
+        [
+          -641.1960804362539,
+          -1404.34375
+        ],
+        [
+          -644.2627712796382,
+          -1377.3125
+        ],
+        [
+          -647.9862412975133,
+          -1350.28125
+        ],
+        [
+          -652.2951614879303,
+          -1323.25
+        ],
+        [
+          -663.4321533710568,
+          -1261.847653289508
+        ],
+        [
+          -667.4350699965876,
+          -1221.9825
+        ],
+        [
+          -674.8780568456069,
+          -1163.4478125
+        ],
+        [
+          -683,
+          -1107
+        ],
+        [
+          -699.8149300034124,
+          -992.0174999999999
+        ],
+        [
+          -707.1940086094106,
+          -931.2890625
+        ],
+        [
+          -712.7492270347404,
+          -868.26
+        ],
+        [
+          -715.6268833417547,
+          -802.8234375000001
+        ],
+        [
+          -714.973275592806,
+          -734.8725000000001
+        ],
+        [
+          -713.0554658418308,
+          -699.9207421875001
+        ],
+        [
+          -709.9347018502472,
+          -664.3003125
+        ],
+        [
+          -705.5042708758492,
+          -627.9978515625
+        ],
+        [
+          -699.6574601764308,
+          -591
+        ],
+        [
+          -698.4793061773361,
+          -585.75
+        ],
+        [
+          -699.3520533208398,
+          -582
+        ],
+        [
+          -701.9508517973751,
+          -580
+        ],
+        [
+          -464,
+          -580
+        ],
+        [
+          -455.3092437691548,
+          -579.4320824003082
+        ],
+        [
+          -446.8695352555942,
+          -577.7651909611507
+        ],
+        [
+          -443.98185035600335,
+          -576.804309087343
+        ],
+        [
+          -391,
+          -576
+        ],
+        [
+          -385.75,
+          -575.25
+        ],
+        [
+          -382,
+          -573
+        ],
+        [
+          -379.75,
+          -569.25
+        ],
+        [
+          -379,
+          -564
+        ],
+        [
+          -379,
+          -560
+        ],
+        [
+          -379.75,
+          -554.75
+        ],
+        [
+          -382,
+          -551
+        ],
+        [
+          -385.75,
+          -548.75
+        ],
+        [
+          -391,
+          -548
+        ],
+        [
+          -386.41663073582663,
+          -514.7966147055624
+        ],
+        [
+          -385.6797213496788,
+          -512.8169641718353
+        ],
+        [
+          -382.82143175996055,
+          -502.7106351304175
+        ],
+        [
+          -380.7268978936563,
+          -492.16883672805454
+        ],
+        [
+          -379.43884541794364,
+          -481.24686100462316
+        ],
+        [
+          -379,
+          -470
+        ],
+        [
+          -379.27170999170147,
+          -463.0365354512462
+        ],
+        [
+          -365.3719792445315,
+          -362.3424632771454
+        ],
+        [
+          -361.50079229998346,
+          -327.6416027837373
+        ],
+        [
+          -359.4592107108707,
+          -292.88148458065837
+        ],
+        [
+          -359.2472344771934,
+          -258.06210866790855
+        ],
+        [
+          -360.8648635989515,
+          -223.18347504548785
+        ],
+        [
+          -373.9351364010485,
+          -43.01652495451219
+        ],
+        [
+          -375.8032442301548,
+          -25.797422593480633
+        ],
+        [
+          -378.8751359179979,
+          -9.04837798764163
+        ],
+        [
+          -383.1508114645778,
+          7.230608863004477
+        ],
+        [
+          -388.6302708698946,
+          23.039537958457913
+        ],
+        [
+          -395.3135141339483,
+          38.378409298718566
+        ],
+        [
+          -403.2005412567387,
+          53.24722288378666
+        ],
+        [
+          -412.291352238266,
+          67.64597871366186
+        ],
+        [
+          -422.58594707853,
+          81.57467678834428
+        ],
+        [
+          -496.0033460512185,
+          173.8386877578531
+        ],
+        [
+          -506.26981182046416,
+          185.3784953146063
+        ],
+        [
+          -517.2708821538104,
+          195.11726186379246
+        ],
+        [
+          -529.0065570512572,
+          203.05498740541134
+        ],
+        [
+          -541.4768365128047,
+          209.19167193946328
+        ],
+        [
+          -554.6817205384526,
+          213.52731546594816
+        ],
+        [
+          -568.6212091282011,
+          216.0619179848659
+        ],
+        [
+          -583.2953022820503,
+          216.79547949621656
+        ],
+        [
+          -598.704,
+          215.72800000000007
+        ],
+        [
+          -669.696,
+          206.87199999999996
+        ],
+        [
+          -685.1961050754443,
+          204.3319634672706
+        ],
+        [
+          -700.144420301777,
+          200.64785386908295
+        ],
+        [
+          -714.5409456789982,
+          195.81967120543663
+        ],
+        [
+          -728.3856812071081,
+          189.8474154763319
+        ],
+        [
+          -741.6786268861064,
+          182.7310866817685
+        ],
+        [
+          -754.4197827159932,
+          174.47068482174666
+        ],
+        [
+          -766.6091486967684,
+          165.0662098962663
+        ],
+        [
+          -778.2467248284323,
+          154.5176619053275
+        ],
+        [
+          -835.344,
+          98.63199999999995
+        ],
+        [
+          -846.7746875411701,
+          86.51386140353179
+        ],
+        [
+          -856.9387501646808,
+          73.7754456141272
+        ],
+        [
+          -865.8361878705316,
+          60.41675263178627
+        ],
+        [
+          -873.467000658723,
+          46.43778245650901
+        ],
+        [
+          -879.8311885292546,
+          31.83853508829543
+        ],
+        [
+          -884.9287514821267,
+          16.619010527145406
+        ],
+        [
+          -888.7596895173392,
+          0.7792087730590538
+        ],
+        [
+          -891.324002634892,
+          -15.68087017396374
+        ],
+        [
+          -916.1927814338821,
+          -231.65947619672096
+        ],
+        [
+          -919.0782039002205,
+          -266.41462467839045
+        ],
+        [
+          -919.7272527331177,
+          -301.1395463201199
+        ],
+        [
+          -918.1399279325738,
+          -335.8342411219094
+        ],
+        [
+          -914.3162294985887,
+          -370.49870908375874
+        ],
+        [
+          -900.8119967122907,
+          -465.18179577859826
+        ],
+        [
+          -901,
+          -470
+        ],
+        [
+          -900.5611545820564,
+          -481.24686100462316
+        ],
+        [
+          -899.2731021063437,
+          -492.16883672805454
+        ],
+        [
+          -897.1785682400395,
+          -502.7106351304175
+        ],
+        [
+          -894.3202786503211,
+          -512.8169641718353
+        ],
+        [
+          -893.8302435830751,
+          -514.1334057868482
+        ],
+        [
+          -889,
+          -548
+        ],
+        [
+          -894.25,
+          -548.75
+        ],
+        [
+          -898,
+          -551
+        ],
+        [
+          -900.25,
+          -554.75
+        ],
+        [
+          -901,
+          -560
+        ],
+        [
+          -901,
+          -564
+        ],
+        [
+          -900.25,
+          -569.25
+        ],
+        [
+          -898,
+          -573
+        ],
+        [
+          -894.25,
+          -575.25
+        ],
+        [
+          -889,
+          -576
+        ],
+        [
+          -836.0181496439966,
+          -576.804309087343
+        ],
+        [
+          -833.1304647444058,
+          -577.7651909611507
+        ],
+        [
+          -832.5818485943715,
+          -577.8735458364887
+        ],
+        [
+          -897.4726422758289,
+          -597.9200000000001
+        ],
+        [
+          -918.789368931263,
+          -606.6687726092912
+        ],
+        [
+          -937.3898056456793,
+          -618.8350904371646
+        ],
+        [
+          -953.2739524190778,
+          -634.4189534836207
+        ],
+        [
+          -966.4418092514585,
+          -653.4203617486589
+        ],
+        [
+          -1026.147092577232,
+          -846.1194713518569
+        ],
+        [
+          -1027.7885465718766,
+          -877.690831334505
+        ]
+      ],
+      [
+        [
+          -761.4923963533066,
+          -580
+        ],
+        [
+          -715.2841851307085,
+          -580
+        ],
+        [
+          -719.3520533208398,
+          -582
+        ],
+        [
+          -722.9793061773361,
+          -585.75
+        ],
+        [
+          -725.6574601764308,
+          -591
+        ],
+        [
+          -761.4923963533066,
+          -580
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -916.4731930735045,
+          810.0222956313678
+        ],
+        [
+          -914.6475425198264,
+          775.5283300310916
+        ],
+        [
+          -909.9084885029004,
+          741.0655122464993
+        ],
+        [
+          -890.213350177614,
+          631.5642244921733
+        ],
+        [
+          -889.7731021063437,
+          627.8311632719455
+        ],
+        [
+          -887.6785682400395,
+          617.2893648695825
+        ],
+        [
+          -887.5886748065175,
+          616.9715200224038
+        ],
+        [
+          -879.5,
+          572
+        ],
+        [
+          -884.75,
+          571.25
+        ],
+        [
+          -888.5,
+          569
+        ],
+        [
+          -890.75,
+          565.25
+        ],
+        [
+          -891.5,
+          560
+        ],
+        [
+          -891.5,
+          556
+        ],
+        [
+          -890.75,
+          550.75
+        ],
+        [
+          -888.5,
+          547
+        ],
+        [
+          -884.75,
+          544.75
+        ],
+        [
+          -879.5,
+          544
+        ],
+        [
+          -827.1717306720946,
+          543.4131710688378
+        ],
+        [
+          -823.6304647444058,
+          542.2348090388493
+        ],
+        [
+          -815.1907562308452,
+          540.5679175996918
+        ],
+        [
+          -806.5,
+          540
+        ],
+        [
+          -283.5,
+          540
+        ],
+        [
+          -274.8092437691548,
+          540.5679175996918
+        ],
+        [
+          -266.3695352555942,
+          542.2348090388493
+        ],
+        [
+          -262.82826932790545,
+          543.4131710688378
+        ],
+        [
+          -210.5,
+          544
+        ],
+        [
+          -205.25,
+          544.75
+        ],
+        [
+          -201.5,
+          547
+        ],
+        [
+          -199.25,
+          550.75
+        ],
+        [
+          -198.5,
+          556
+        ],
+        [
+          -198.5,
+          560
+        ],
+        [
+          -199.25,
+          565.25
+        ],
+        [
+          -201.5,
+          569
+        ],
+        [
+          -205.25,
+          571.25
+        ],
+        [
+          -210.5,
+          572
+        ],
+        [
+          -203.0904568886096,
+          614.5702488572641
+        ],
+        [
+          -202.32143175996055,
+          617.2893648695825
+        ],
+        [
+          -200.22689789365631,
+          627.8311632719455
+        ],
+        [
+          -199.05973402712988,
+          637.7280701572142
+        ],
+        [
+          -179.70335059467925,
+          748.9368245039338
+        ],
+        [
+          -174.88490272740586,
+          783.4617319465322
+        ],
+        [
+          -172.4329097202649,
+          818.0732787782609
+        ],
+        [
+          -172.34737157325645,
+          852.7714649991203
+        ],
+        [
+          -174.6282882863805,
+          887.5562906091101
+        ],
+        [
+          -191.5717117136195,
+          1057.9037093908898
+        ],
+        [
+          -194.00182059819087,
+          1074.9684447027532
+        ],
+        [
+          -197.82800310871494,
+          1091.334505333789
+        ],
+        [
+          -203.05025924519163,
+          1107.0018912839964
+        ],
+        [
+          -209.66858900762088,
+          1121.9706025533762
+        ],
+        [
+          -217.68299239600276,
+          1136.2406391419277
+        ],
+        [
+          -227.0934694103372,
+          1149.8120010496514
+        ],
+        [
+          -237.90002005062433,
+          1162.6846882765471
+        ],
+        [
+          -250.10264431686403,
+          1174.8587008226148
+        ],
+        [
+          -354.79735568313595,
+          1270.8212991773853
+        ],
+        [
+          -367.98097613358857,
+          1281.8078261803764
+        ],
+        [
+          -381.7305153265142,
+          1291.1180567780425
+        ],
+        [
+          -396.04597326191293,
+          1298.7519909703835
+        ],
+        [
+          -410.9273499397848,
+          1304.7096287573997
+        ],
+        [
+          -426.37464536012965,
+          1308.9909701390907
+        ],
+        [
+          -442.3878595229477,
+          1311.5960151154568
+        ],
+        [
+          -458.9669924282388,
+          1312.5247636864979
+        ],
+        [
+          -476.11204407600303,
+          1311.7772158522139
+        ],
+        [
+          -598.487955923997,
+          1300.6427841477862
+        ],
+        [
+          -632.5477320028114,
+          1295.3258412518517
+        ],
+        [
+          -648.9804355728282,
+          1291.0582066873533
+        ],
+        [
+          -665.0150161632515,
+          1285.7177967118341
+        ],
+        [
+          -680.6514737740813,
+          1279.3046113252942
+        ],
+        [
+          -695.8898084053176,
+          1271.8186505277336
+        ],
+        [
+          -725.1721087290093,
+          1253.6284026995504
+        ],
+        [
+          -811.4278912709906,
+          1192.0515973004497
+        ],
+        [
+          -824.951287320116,
+          1181.438821835048
+        ],
+        [
+          -837.0354211029874,
+          1169.9362940890674
+        ],
+        [
+          -847.6802926196048,
+          1157.5440140625078
+        ],
+        [
+          -856.8859018699682,
+          1144.2619817553696
+        ],
+        [
+          -864.6522488540777,
+          1130.0901971676526
+        ],
+        [
+          -870.9793335719331,
+          1115.0286602993567
+        ],
+        [
+          -875.8671560235347,
+          1099.077371150482
+        ],
+        [
+          -879.3157162088822,
+          1082.2363297210284
+        ],
+        [
+          -911.3842837911177,
+          879.1036702789717
+        ],
+        [
+          -915.3854401639351,
+          844.5474090473278
+        ],
+        [
+          -916.4731930735045,
+          810.0222956313678
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          518.8574977693083,
+          1134.375
+        ],
+        [
+          521.1960804362539,
+          1107.34375
+        ],
+        [
+          524.2627712796382,
+          1080.3125
+        ],
+        [
+          527.9862412975133,
+          1053.28125
+        ],
+        [
+          532.2951614879303,
+          1026.25
+        ],
+        [
+          543.4321533710568,
+          964.8476532895078
+        ],
+        [
+          547.4350699965876,
+          924.9825000000001
+        ],
+        [
+          554.8780568456069,
+          866.4478125
+        ],
+        [
+          563,
+          810
+        ],
+        [
+          579.8149300034124,
+          695.0174999999999
+        ],
+        [
+          587.1940086094106,
+          634.2890625
+        ],
+        [
+          592.7492270347404,
+          571.26
+        ],
+        [
+          595.6268833417547,
+          505.8234375
+        ],
+        [
+          594.9732755928061,
+          437.8725
+        ],
+        [
+          593.0554658418308,
+          402.92074218749997
+        ],
+        [
+          589.9347018502472,
+          367.3003125
+        ],
+        [
+          585.5042708758492,
+          330.9978515625
+        ],
+        [
+          579.6574601764308,
+          294
+        ],
+        [
+          578.4793061773361,
+          288.75
+        ],
+        [
+          579.3520533208398,
+          285
+        ],
+        [
+          582.275701606942,
+          282.75
+        ],
+        [
+          587.2502510356428,
+          282
+        ],
+        [
+          589.2502510356428,
+          282
+        ],
+        [
+          594.775701606942,
+          282.75
+        ],
+        [
+          599.3520533208398,
+          285
+        ],
+        [
+          602.9793061773361,
+          288.75
+        ],
+        [
+          605.6574601764308,
+          294
+        ],
+        [
+          665.9650239770065,
+          278.36
+        ],
+        [
+          680.4848569066965,
+          276.00235985009795
+        ],
+        [
+          695.7079312442755,
+          276.28943940039176
+        ],
+        [
+          711.6342469897438,
+          279.22123865088145
+        ],
+        [
+          728.2638041431013,
+          284.797757601567
+        ],
+        [
+          822.3811449178497,
+          323.36
+        ],
+        [
+          836.6308906910325,
+          330.00280003111106
+        ],
+        [
+          849.8383160490068,
+          337.6112001244441
+        ],
+        [
+          862.0034209917728,
+          346.18520027999926
+        ],
+        [
+          873.1262055193304,
+          355.7248004977765
+        ],
+        [
+          883.2066696316796,
+          366.2300007777758
+        ],
+        [
+          892.2448133288203,
+          377.70080111999715
+        ],
+        [
+          900.2406366107527,
+          390.13720152444057
+        ],
+        [
+          907.1941394774766,
+          403.53920199110604
+        ],
+        [
+          942.1276599875152,
+          570.7291608778498
+        ],
+        [
+          942.997034961594,
+          602.4708261018502
+        ],
+        [
+          942.2354887263828,
+          634.4249826517009
+        ],
+        [
+          939.8430212818818,
+          666.5916305274021
+        ],
+        [
+          935.8196326280909,
+          698.9707697289539
+        ],
+        [
+          908.2484168670436,
+          943.0292302710461
+        ],
+        [
+          902.0034991818984,
+          975.3427247739726
+        ],
+        [
+          893.3339076314778,
+          1007.3124385537983
+        ],
+        [
+          882.2396422157817,
+          1038.938371610523
+        ],
+        [
+          868.7207029348101,
+          1070.2205239441469
+        ],
+        [
+          819.633123239165,
+          1258.3320721946538
+        ],
+        [
+          818.9957281102382,
+          1269.4898677740318
+        ],
+        [
+          817.0512971068979,
+          1279.629290609493
+        ],
+        [
+          813.799830229144,
+          1288.7503407010367
+        ],
+        [
+          809.2413274769766,
+          1296.8530180486637
+        ],
+        [
+          803.3757888503956,
+          1303.9373226523735
+        ],
+        [
+          796.2032143494009,
+          1310.0032545121662
+        ],
+        [
+          787.7236039739928,
+          1315.0508136280419
+        ],
+        [
+          777.9369577241711,
+          1319.08
+        ],
+        [
+          717.8881667916154,
+          1339.4358736227005
+        ],
+        [
+          703.3912866610343,
+          1343.1601789127692
+        ],
+        [
+          688.0302614894036,
+          1344.7689684056752
+        ],
+        [
+          671.8050912767234,
+          1344.262242101419
+        ],
+        [
+          654.7157760229934,
+          1341.6399999999999
+        ],
+        [
+          580.3425398235692,
+          1326
+        ],
+        [
+          581.5206938226639,
+          1331.25
+        ],
+        [
+          580.6479466791602,
+          1335
+        ],
+        [
+          577.724298393058,
+          1337.25
+        ],
+        [
+          572.7497489643572,
+          1338
+        ],
+        [
+          570.7497489643572,
+          1338
+        ],
+        [
+          565.224298393058,
+          1337.25
+        ],
+        [
+          560.6479466791602,
+          1335
+        ],
+        [
+          557.0206938226639,
+          1331.25
+        ],
+        [
+          554.3425398235692,
+          1326
+        ],
+        [
+          548.4058853741508,
+          1289.0021484375
+        ],
+        [
+          546.6163230729829,
+          1275.133480913949
+        ],
+        [
+          541.9954417276542,
+          1269.263246924887
+        ],
+        [
+          536.5079770496122,
+          1260.6381391411355
+        ],
+        [
+          532.1232661733268,
+          1251.7019771856008
+        ],
+        [
+          528.9225516963842,
+          1242.5
+        ],
+        [
+          524.6027216462678,
+          1215.46875
+        ],
+        [
+          521.4897976202658,
+          1188.4375
+        ],
+        [
+          519.576987150554,
+          1161.40625
+        ],
+        [
+          518.8574977693083,
+          1134.375
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          551.334907151669,
+          -743.9219182133721
+        ],
+        [
+          552.5044031785195,
+          -759.6875192059431
+        ],
+        [
+          555.1261007946299,
+          -775.5468798014858
+        ],
+        [
+          559.2,
+          -791.5
+        ],
+        [
+          582.1566449034685,
+          -868.0221496782283
+        ],
+        [
+          586.088681254218,
+          -882.8997708473935
+        ],
+        [
+          588.9631127582011,
+          -897.7937091940034
+        ],
+        [
+          590.7799394154174,
+          -912.7039647180579
+        ],
+        [
+          591.5391612258671,
+          -927.6305374195571
+        ],
+        [
+          591.2407781895503,
+          -942.5734272985009
+        ],
+        [
+          589.8847903064668,
+          -957.5326343548893
+        ],
+        [
+          587.4711975766168,
+          -972.5081585887224
+        ],
+        [
+          584,
+          -987.5
+        ],
+        [
+          566,
+          -1055
+        ],
+        [
+          562.7088480063635,
+          -1069.9174062855404
+        ],
+        [
+          560.8353920254538,
+          -1084.669625142161
+        ],
+        [
+          560.3796320572709,
+          -1099.2566565698626
+        ],
+        [
+          561.341568101815,
+          -1113.6785005686447
+        ],
+        [
+          563.7212001590858,
+          -1127.9351571385073
+        ],
+        [
+          567.5185282290836,
+          -1142.0266262794505
+        ],
+        [
+          572.7335523118082,
+          -1155.9529079914744
+        ],
+        [
+          579.3662724072598,
+          -1169.714002274579
+        ],
+        [
+          614.6,
+          -1235.36
+        ],
+        [
+          622.7294152527716,
+          -1248.635
+        ],
+        [
+          631.9176610110859,
+          -1260.14
+        ],
+        [
+          642.1647372749434,
+          -1269.875
+        ],
+        [
+          653.4706440443438,
+          -1277.84
+        ],
+        [
+          665.8353813192871,
+          -1284.035
+        ],
+        [
+          679.2589490997733,
+          -1288.46
+        ],
+        [
+          693.7413473858026,
+          -1291.115
+        ],
+        [
+          709.2825761773748,
+          -1292
+        ],
+        [
+          880.0871800035302,
+          -1292
+        ],
+        [
+          891.9604971902028,
+          -1291.24
+        ],
+        [
+          902.6240387519857,
+          -1288.96
+        ],
+        [
+          912.0778046888789,
+          -1285.16
+        ],
+        [
+          920.3217950008825,
+          -1279.84
+        ],
+        [
+          927.3560096879964,
+          -1273
+        ],
+        [
+          933.1804487502206,
+          -1264.64
+        ],
+        [
+          937.7951121875551,
+          -1254.76
+        ],
+        [
+          941.2,
+          -1243.36
+        ],
+        [
+          953.8,
+          -1188.6399999999999
+        ],
+        [
+          974.7887093515556,
+          -1091.0564532422222
+        ],
+        [
+          995.6,
+          -987
+        ],
+        [
+          1001.5188945299391,
+          -950.9267343592691
+        ],
+        [
+          1004.8755781197564,
+          -914.7069374370765
+        ],
+        [
+          1005.6700507694518,
+          -878.340609233422
+        ],
+        [
+          1003.9023124790255,
+          -841.8277497483058
+        ],
+        [
+          991.2284109890305,
+          -689.740931868366
+        ],
+        [
+          988.8287819706104,
+          -652.3655753300454
+        ],
+        [
+          987.8583059043806,
+          -614.9804375834501
+        ],
+        [
+          988.316982790341,
+          -577.5855186285796
+        ],
+        [
+          990.2048126284915,
+          -540.1808184654343
+        ],
+        [
+          1000.4320997630957,
+          -393.163565905498
+        ],
+        [
+          1001.1027013811201,
+          -376.8261676463969
+        ],
+        [
+          1000.8305561167414,
+          -360.6457558218426
+        ],
+        [
+          999.6156639699593,
+          -344.62233043183505
+        ],
+        [
+          997.458024940774,
+          -328.7558914763745
+        ],
+        [
+          994.3576390291853,
+          -313.0464389554604
+        ],
+        [
+          990.3145062351934,
+          -297.49397286909357
+        ],
+        [
+          985.3286265587984,
+          -282.09849321727324
+        ],
+        [
+          979.4,
+          -266.8599999999999
+        ],
+        [
+          950.6,
+          -198.63999999999987
+        ],
+        [
+          943.5715272244731,
+          -184.4275
+        ],
+        [
+          935.2861088978924,
+          -172.11000000000013
+        ],
+        [
+          925.7437450202578,
+          -161.6875
+        ],
+        [
+          914.9444355915696,
+          -153.15999999999985
+        ],
+        [
+          902.8881806118276,
+          -146.52749999999992
+        ],
+        [
+          889.5749800810318,
+          -141.78999999999996
+        ],
+        [
+          875.0048339991821,
+          -138.9475
+        ],
+        [
+          859.1777423662786,
+          -138
+        ],
+        [
+          700.2166359144659,
+          -138
+        ],
+        [
+          684.5564868720129,
+          -138.9475
+        ],
+        [
+          670.184357701887,
+          -141.78999999999996
+        ],
+        [
+          657.1002484040882,
+          -146.52749999999992
+        ],
+        [
+          645.3041589786164,
+          -153.15999999999985
+        ],
+        [
+          634.7960894254718,
+          -161.6875
+        ],
+        [
+          625.576039744654,
+          -172.11000000000013
+        ],
+        [
+          617.6440099361636,
+          -184.4275
+        ],
+        [
+          611,
+          -198.63999999999987
+        ],
+        [
+          583.781163237074,
+          -267.4129275543262
+        ],
+        [
+          578.5824531033848,
+          -282.43333515878066
+        ],
+        [
+          574.8769043208542,
+          -297.45102174930844
+        ],
+        [
+          572.664516889482,
+          -312.4659873259084
+        ],
+        [
+          571.9452908092685,
+          -327.4782318885815
+        ],
+        [
+          572.7192260802135,
+          -342.487755437327
+        ],
+        [
+          574.9863227023171,
+          -357.49455797214523
+        ],
+        [
+          578.7465806755793,
+          -372.4986394930362
+        ],
+        [
+          584,
+          -387.4999999999999
+        ],
+        [
+          611,
+          -455
+        ],
+        [
+          616.2129030823519,
+          -469.9842957368446
+        ],
+        [
+          619.8516123294073,
+          -484.93718294737846
+        ],
+        [
+          621.9161277411665,
+          -499.8586616316013
+        ],
+        [
+          622.4064493176293,
+          -514.7487317895136
+        ],
+        [
+          621.3225770587957,
+          -529.6073934211149
+        ],
+        [
+          618.6645109646657,
+          -544.4346465264056
+        ],
+        [
+          614.4322510352395,
+          -559.2304911053853
+        ],
+        [
+          608.6257972705168,
+          -573.9949271580543
+        ],
+        [
+          567.2704508563127,
+          -666.5003072950901
+        ],
+        [
+          561.1789389368644,
+          -681.7971102728034
+        ],
+        [
+          556.5396286066759,
+          -697.1876728534882
+        ],
+        [
+          553.3525198657471,
+          -712.6719950371446
+        ],
+        [
+          551.6176127140782,
+          -728.2500768237726
+        ],
+        [
+          551.334907151669,
+          -743.9219182133721
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "eight-biome-expansion",
+    "created": "2026-11-18",
+    "architectureId": "map-expansion-snow-staggered-spurs",
+    "summary": "Three staggered disconnected snow spurs, with an open east arm and small southeast meltpond. Four ground-level routes converge in the open center; no raised central plateau, ramps or encircling lake.",
+    "biomeOrdinal": 3,
+    "sourcePixelsPerWorldUnit": 1,
+    "resampling": "none",
+    "scaleContract": "All new terrain asset/default/object/layer scales are1; source crop pixels are world units.",
+    "approaches": {
+      "minimumRoadCenterToBlocker": 110,
+      "designUnitRadius": 85,
+      "extraUnitClearance": 25,
+      "decorationRoadMargin": 150,
+      "buildDecorationMargin": 30
+    },
+    "buildPockets": [
+      {
+        "id": "northeast-tower-field",
+        "center": {
+          "x": 280,
+          "y": 490
+        },
+        "radius": 100,
+        "decorationExclusionRadius": 130
+      },
+      {
+        "id": "southeast-tower-field",
+        "center": {
+          "x": 300,
+          "y": -260
+        },
+        "radius": 120,
+        "decorationExclusionRadius": 150
+      },
+      {
+        "id": "southwest-tower-field",
+        "center": {
+          "x": -490,
+          "y": -790
+        },
+        "radius": 105,
+        "decorationExclusionRadius": 135
+      }
+    ],
+    "revision": {
+      "kind": "broad-rounded-side-hills",
+      "date": "2026-11-18",
+      "beforeMapSha256": "8524b4dc684eb53ec312027899aa82f3c671d6e25f52c3d4870134f265d524b8",
+      "architectureSha256": "a96d02c1a4bb33c3fb8fbad6fa188fb4214549a102764b67b1070365b24153a4",
+      "geometryHelperSha256": "2a4aa4bd286ab2f0f3caf5aa6aa5484f1dd78579a0f0ae89dbb8dbae532c1be2",
+      "terrainGeometry": [
+        {
+          "key": "nw-spur",
+          "objectId": "object-1",
+          "assetId": "terrain-expansion-snow-staggered-spurs-nw-spur",
+          "kind": "cliff",
+          "world": {
+            "x": -545,
+            "y": 540
+          },
+          "width": 770,
+          "height": 794,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -371.47319307350455,
+                "y": 270.0222956313678
+              },
+              {
+                "x": -369.64754251982635,
+                "y": 235.52833003109163
+              },
+              {
+                "x": -364.9084885029004,
+                "y": 201.0655122464994
+              },
+              {
+                "x": -345.21335017761396,
+                "y": 91.56422449217322
+              },
+              {
+                "x": -344.7731021063437,
+                "y": 87.83116327194544
+              },
+              {
+                "x": -342.67856824003945,
+                "y": 77.2893648695825
+              },
+              {
+                "x": -342.5886748065174,
+                "y": 76.97152002240378
+              },
+              {
+                "x": -334.5,
+                "y": 32
+              },
+              {
+                "x": -339.75,
+                "y": 31.25
+              },
+              {
+                "x": -343.5,
+                "y": 29
+              },
+              {
+                "x": -345.75,
+                "y": 25.25
+              },
+              {
+                "x": -346.5,
+                "y": 20
+              },
+              {
+                "x": -346.5,
+                "y": 16
+              },
+              {
+                "x": -345.75,
+                "y": 10.75
+              },
+              {
+                "x": -343.5,
+                "y": 7
+              },
+              {
+                "x": -339.75,
+                "y": 4.75
+              },
+              {
+                "x": -334.5,
+                "y": 4
+              },
+              {
+                "x": -282.1717306720945,
+                "y": 3.413171068837708
+              },
+              {
+                "x": -278.6304647444058,
+                "y": 2.23480903884935
+              },
+              {
+                "x": -270.1907562308452,
+                "y": 0.56791759969179
+              },
+              {
+                "x": -261.5,
+                "y": 0
+              },
+              {
+                "x": 261.5,
+                "y": 0
+              },
+              {
+                "x": 270.1907562308452,
+                "y": 0.56791759969179
+              },
+              {
+                "x": 278.6304647444058,
+                "y": 2.23480903884935
+              },
+              {
+                "x": 282.17173067209455,
+                "y": 3.413171068837708
+              },
+              {
+                "x": 334.5,
+                "y": 4
+              },
+              {
+                "x": 339.75,
+                "y": 4.75
+              },
+              {
+                "x": 343.5,
+                "y": 7
+              },
+              {
+                "x": 345.75,
+                "y": 10.75
+              },
+              {
+                "x": 346.5,
+                "y": 16
+              },
+              {
+                "x": 346.5,
+                "y": 20
+              },
+              {
+                "x": 345.75,
+                "y": 25.25
+              },
+              {
+                "x": 343.5,
+                "y": 29
+              },
+              {
+                "x": 339.75,
+                "y": 31.25
+              },
+              {
+                "x": 334.5,
+                "y": 32
+              },
+              {
+                "x": 341.9095431113904,
+                "y": 74.57024885726408
+              },
+              {
+                "x": 342.67856824003945,
+                "y": 77.2893648695825
+              },
+              {
+                "x": 344.7731021063437,
+                "y": 87.83116327194544
+              },
+              {
+                "x": 345.9402659728701,
+                "y": 97.7280701572142
+              },
+              {
+                "x": 365.29664940532075,
+                "y": 208.93682450393388
+              },
+              {
+                "x": 370.11509727259414,
+                "y": 243.46173194653218
+              },
+              {
+                "x": 372.5670902797351,
+                "y": 278.07327877826094
+              },
+              {
+                "x": 372.65262842674355,
+                "y": 312.77146499912027
+              },
+              {
+                "x": 370.3717117136195,
+                "y": 347.5562906091101
+              },
+              {
+                "x": 353.4282882863805,
+                "y": 517.9037093908898
+              },
+              {
+                "x": 350.9981794018091,
+                "y": 534.9684447027532
+              },
+              {
+                "x": 347.17199689128506,
+                "y": 551.3345053337889
+              },
+              {
+                "x": 341.9497407548084,
+                "y": 567.0018912839964
+              },
+              {
+                "x": 335.3314109923791,
+                "y": 581.9706025533762
+              },
+              {
+                "x": 327.31700760399724,
+                "y": 596.2406391419277
+              },
+              {
+                "x": 317.9065305896628,
+                "y": 609.8120010496514
+              },
+              {
+                "x": 307.09997994937567,
+                "y": 622.684688276547
+              },
+              {
+                "x": 294.89735568313597,
+                "y": 634.8587008226148
+              },
+              {
+                "x": 190.20264431686402,
+                "y": 730.8212991773852
+              },
+              {
+                "x": 177.01902386641146,
+                "y": 741.8078261803764
+              },
+              {
+                "x": 163.2694846734858,
+                "y": 751.1180567780425
+              },
+              {
+                "x": 148.95402673808707,
+                "y": 758.7519909703835
+              },
+              {
+                "x": 134.07265006021524,
+                "y": 764.7096287573997
+              },
+              {
+                "x": 118.62535463987032,
+                "y": 768.9909701390908
+              },
+              {
+                "x": 102.6121404770523,
+                "y": 771.5960151154569
+              },
+              {
+                "x": 86.03300757176116,
+                "y": 772.5247636864979
+              },
+              {
+                "x": 68.88795592399696,
+                "y": 771.7772158522139
+              },
+              {
+                "x": -53.487955923996964,
+                "y": 760.6427841477861
+              },
+              {
+                "x": -87.54773200281136,
+                "y": 755.3258412518516
+              },
+              {
+                "x": -103.98043557282824,
+                "y": 751.0582066873533
+              },
+              {
+                "x": -120.01501616325156,
+                "y": 745.7177967118341
+              },
+              {
+                "x": -135.6514737740813,
+                "y": 739.3046113252942
+              },
+              {
+                "x": -150.88980840531755,
+                "y": 731.8186505277337
+              },
+              {
+                "x": -180.17210872900932,
+                "y": 713.6284026995504
+              },
+              {
+                "x": -266.42789127099064,
+                "y": 652.0515973004497
+              },
+              {
+                "x": -279.95128732011597,
+                "y": 641.438821835048
+              },
+              {
+                "x": -292.03542110298736,
+                "y": 629.9362940890674
+              },
+              {
+                "x": -302.68029261960476,
+                "y": 617.5440140625078
+              },
+              {
+                "x": -311.88590186996817,
+                "y": 604.2619817553696
+              },
+              {
+                "x": -319.65224885407764,
+                "y": 590.0901971676526
+              },
+              {
+                "x": -325.9793335719331,
+                "y": 575.0286602993567
+              },
+              {
+                "x": -330.8671560235347,
+                "y": 559.0773711504819
+              },
+              {
+                "x": -334.31571620888224,
+                "y": 542.2363297210284
+              },
+              {
+                "x": -366.38428379111775,
+                "y": 339.10367027897166
+              },
+              {
+                "x": -370.385440163935,
+                "y": 304.5474090473278
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-front-band",
+            "faceHeight": 220,
+            "endRadius": 85,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "outwardBodyBulge": 24,
+            "faceHeightMin": 220,
+            "faceHeightMax": 244,
+            "terminalDiameter": 170,
+            "stableBodyFraction": 0.7546897546897547,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "ne-spur",
+          "objectId": "object-2",
+          "assetId": "terrain-expansion-snow-staggered-spurs-ne-spur",
+          "kind": "cliff",
+          "world": {
+            "x": 750,
+            "y": 260
+          },
+          "width": 500,
+          "height": 1100,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -231.1425022306916,
+                "y": 874.375
+              },
+              {
+                "x": -228.8039195637462,
+                "y": 847.34375
+              },
+              {
+                "x": -225.73722872036177,
+                "y": 820.3125
+              },
+              {
+                "x": -222.01375870248677,
+                "y": 793.28125
+              },
+              {
+                "x": -217.70483851206967,
+                "y": 766.25
+              },
+              {
+                "x": -206.56784662894327,
+                "y": 704.8476532895078
+              },
+              {
+                "x": -202.56493000341237,
+                "y": 664.9825000000001
+              },
+              {
+                "x": -195.12194315439308,
+                "y": 606.4478125
+              },
+              {
+                "x": -187,
+                "y": 550
+              },
+              {
+                "x": -170.18506999658763,
+                "y": 435.0175
+              },
+              {
+                "x": -162.8059913905894,
+                "y": 374.2890625
+              },
+              {
+                "x": -157.25077296525953,
+                "y": 311.26
+              },
+              {
+                "x": -154.3731166582453,
+                "y": 245.8234375
+              },
+              {
+                "x": -155.02672440719394,
+                "y": 177.8725
+              },
+              {
+                "x": -156.94453415816915,
+                "y": 142.9207421875
+              },
+              {
+                "x": -160.06529814975283,
+                "y": 107.3003125
+              },
+              {
+                "x": -164.49572912415084,
+                "y": 70.9978515625
+              },
+              {
+                "x": -170.34253982356918,
+                "y": 34
+              },
+              {
+                "x": -171.52069382266393,
+                "y": 28.75
+              },
+              {
+                "x": -170.64794667916019,
+                "y": 25
+              },
+              {
+                "x": -167.72429839305795,
+                "y": 22.75
+              },
+              {
+                "x": -162.7497489643572,
+                "y": 22
+              },
+              {
+                "x": -160.7497489643572,
+                "y": 22
+              },
+              {
+                "x": -155.22429839305795,
+                "y": 22.75
+              },
+              {
+                "x": -150.64794667916019,
+                "y": 25
+              },
+              {
+                "x": -147.02069382266393,
+                "y": 28.75
+              },
+              {
+                "x": -144.34253982356918,
+                "y": 34
+              },
+              {
+                "x": -84.0349760229935,
+                "y": 18.360000000000014
+              },
+              {
+                "x": -69.51514309330358,
+                "y": 16.002359850097946
+              },
+              {
+                "x": -54.29206875572447,
+                "y": 16.289439400391757
+              },
+              {
+                "x": -38.36575301025618,
+                "y": 19.221238650881446
+              },
+              {
+                "x": -21.73619585689869,
+                "y": 24.797757601567014
+              },
+              {
+                "x": 72.38114491784971,
+                "y": 63.360000000000014
+              },
+              {
+                "x": 86.63089069103249,
+                "y": 70.00280003111104
+              },
+              {
+                "x": 99.83831604900688,
+                "y": 77.61120012444411
+              },
+              {
+                "x": 112.00342099177284,
+                "y": 86.18520027999926
+              },
+              {
+                "x": 123.12620551933041,
+                "y": 95.7248004977765
+              },
+              {
+                "x": 133.20666963167957,
+                "y": 106.2300007777758
+              },
+              {
+                "x": 142.24481332882033,
+                "y": 117.70080111999715
+              },
+              {
+                "x": 150.2406366107527,
+                "y": 130.13720152444057
+              },
+              {
+                "x": 157.19413947747663,
+                "y": 143.53920199110604
+              },
+              {
+                "x": 192.1276599875152,
+                "y": 310.7291608778498
+              },
+              {
+                "x": 192.9970349615939,
+                "y": 342.47082610185015
+              },
+              {
+                "x": 192.23548872638275,
+                "y": 374.4249826517009
+              },
+              {
+                "x": 189.84302128188176,
+                "y": 406.5916305274021
+              },
+              {
+                "x": 185.8196326280909,
+                "y": 438.9707697289538
+              },
+              {
+                "x": 158.24841686704363,
+                "y": 683.0292302710461
+              },
+              {
+                "x": 152.00349918189846,
+                "y": 715.3427247739726
+              },
+              {
+                "x": 143.3339076314778,
+                "y": 747.3124385537983
+              },
+              {
+                "x": 132.2396422157817,
+                "y": 778.9383716105231
+              },
+              {
+                "x": 118.72070293481016,
+                "y": 810.2205239441469
+              },
+              {
+                "x": 69.63312323916496,
+                "y": 998.332072194654
+              },
+              {
+                "x": 68.9957281102382,
+                "y": 1009.4898677740318
+              },
+              {
+                "x": 67.05129710689789,
+                "y": 1019.629290609493
+              },
+              {
+                "x": 63.79983022914401,
+                "y": 1028.7503407010367
+              },
+              {
+                "x": 59.24132747697656,
+                "y": 1036.8530180486637
+              },
+              {
+                "x": 53.37578885039554,
+                "y": 1043.9373226523735
+              },
+              {
+                "x": 46.20321434940095,
+                "y": 1050.0032545121662
+              },
+              {
+                "x": 37.72360397399281,
+                "y": 1055.0508136280419
+              },
+              {
+                "x": 27.936957724171094,
+                "y": 1059.08
+              },
+              {
+                "x": -32.11183320838461,
+                "y": 1079.4358736227005
+              },
+              {
+                "x": -46.60871333896567,
+                "y": 1083.1601789127692
+              },
+              {
+                "x": -61.96973851059636,
+                "y": 1084.7689684056752
+              },
+              {
+                "x": -78.19490872327665,
+                "y": 1084.262242101419
+              },
+              {
+                "x": -95.28422397700656,
+                "y": 1081.6399999999999
+              },
+              {
+                "x": -169.65746017643085,
+                "y": 1066
+              },
+              {
+                "x": -168.47930617733607,
+                "y": 1071.25
+              },
+              {
+                "x": -169.35205332083981,
+                "y": 1075
+              },
+              {
+                "x": -172.27570160694205,
+                "y": 1077.25
+              },
+              {
+                "x": -177.2502510356428,
+                "y": 1078
+              },
+              {
+                "x": -179.2502510356428,
+                "y": 1078
+              },
+              {
+                "x": -184.77570160694205,
+                "y": 1077.25
+              },
+              {
+                "x": -189.35205332083981,
+                "y": 1075
+              },
+              {
+                "x": -192.97930617733607,
+                "y": 1071.25
+              },
+              {
+                "x": -195.65746017643085,
+                "y": 1066
+              },
+              {
+                "x": -201.59411462584916,
+                "y": 1029.0021484375
+              },
+              {
+                "x": -203.38367692701706,
+                "y": 1015.1334809139489
+              },
+              {
+                "x": -208.00455827234578,
+                "y": 1009.2632469248871
+              },
+              {
+                "x": -213.4920229503877,
+                "y": 1000.6381391411355
+              },
+              {
+                "x": -217.87673382667327,
+                "y": 991.7019771856008
+              },
+              {
+                "x": -221.07744830361585,
+                "y": 982.5
+              },
+              {
+                "x": -225.39727835373225,
+                "y": 955.46875
+              },
+              {
+                "x": -228.51020237973427,
+                "y": 928.4375
+              },
+              {
+                "x": -230.42301284944602,
+                "y": 901.40625
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "right",
+            "bendAmplitude": 44,
+            "bendPhase": 0,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 27.5,
+            "faceEnd": 1072.5,
+            "stableBodyFraction": 0.8277511961722488,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "west-spur",
+          "objectId": "object-3",
+          "assetId": "terrain-expansion-snow-staggered-spurs-west-spur",
+          "kind": "cliff",
+          "world": {
+            "x": -640,
+            "y": -580
+          },
+          "width": 580,
+          "height": 820,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -279.7272527331177,
+                "y": 278.8604536798801
+              },
+              {
+                "x": -278.13992793257376,
+                "y": 244.16575887809066
+              },
+              {
+                "x": -274.3162294985887,
+                "y": 209.50129091624123
+              },
+              {
+                "x": -260.8119967122907,
+                "y": 114.81820422140171
+              },
+              {
+                "x": -261,
+                "y": 110
+              },
+              {
+                "x": -260.56115458205636,
+                "y": 98.75313899537684
+              },
+              {
+                "x": -259.2731021063437,
+                "y": 87.83116327194544
+              },
+              {
+                "x": -257.17856824003945,
+                "y": 77.2893648695825
+              },
+              {
+                "x": -254.3202786503212,
+                "y": 67.18303582816475
+              },
+              {
+                "x": -253.83024358307514,
+                "y": 65.86659421315181
+              },
+              {
+                "x": -249,
+                "y": 32
+              },
+              {
+                "x": -254.25,
+                "y": 31.25
+              },
+              {
+                "x": -258,
+                "y": 29
+              },
+              {
+                "x": -260.25,
+                "y": 25.25
+              },
+              {
+                "x": -261,
+                "y": 20
+              },
+              {
+                "x": -261,
+                "y": 16
+              },
+              {
+                "x": -260.25,
+                "y": 10.75
+              },
+              {
+                "x": -258,
+                "y": 7
+              },
+              {
+                "x": -254.25,
+                "y": 4.75
+              },
+              {
+                "x": -249,
+                "y": 4
+              },
+              {
+                "x": -196.01814964399665,
+                "y": 3.1956909126569757
+              },
+              {
+                "x": -193.1304647444058,
+                "y": 2.23480903884935
+              },
+              {
+                "x": -184.69075623084518,
+                "y": 0.56791759969179
+              },
+              {
+                "x": -176,
+                "y": 0
+              },
+              {
+                "x": 176,
+                "y": 0
+              },
+              {
+                "x": 184.69075623084518,
+                "y": 0.56791759969179
+              },
+              {
+                "x": 193.1304647444058,
+                "y": 2.23480903884935
+              },
+              {
+                "x": 196.01814964399665,
+                "y": 3.1956909126569757
+              },
+              {
+                "x": 249,
+                "y": 4
+              },
+              {
+                "x": 254.25,
+                "y": 4.75
+              },
+              {
+                "x": 258,
+                "y": 7
+              },
+              {
+                "x": 260.25,
+                "y": 10.75
+              },
+              {
+                "x": 261,
+                "y": 16
+              },
+              {
+                "x": 261,
+                "y": 20
+              },
+              {
+                "x": 260.25,
+                "y": 25.25
+              },
+              {
+                "x": 258,
+                "y": 29
+              },
+              {
+                "x": 254.25,
+                "y": 31.25
+              },
+              {
+                "x": 249,
+                "y": 32
+              },
+              {
+                "x": 253.58336926417334,
+                "y": 65.2033852944376
+              },
+              {
+                "x": 254.3202786503212,
+                "y": 67.18303582816475
+              },
+              {
+                "x": 257.17856824003945,
+                "y": 77.2893648695825
+              },
+              {
+                "x": 259.2731021063437,
+                "y": 87.83116327194544
+              },
+              {
+                "x": 260.56115458205636,
+                "y": 98.75313899537684
+              },
+              {
+                "x": 261,
+                "y": 110
+              },
+              {
+                "x": 260.72829000829853,
+                "y": 116.96346454875376
+              },
+              {
+                "x": 274.6280207554685,
+                "y": 217.6575367228546
+              },
+              {
+                "x": 278.49920770001654,
+                "y": 252.3583972162627
+              },
+              {
+                "x": 280.5407892891293,
+                "y": 287.11851541934163
+              },
+              {
+                "x": 280.7527655228066,
+                "y": 321.93789133209145
+              },
+              {
+                "x": 279.1351364010485,
+                "y": 356.81652495451215
+              },
+              {
+                "x": 266.0648635989515,
+                "y": 536.9834750454878
+              },
+              {
+                "x": 264.1967557698452,
+                "y": 554.2025774065194
+              },
+              {
+                "x": 261.1248640820021,
+                "y": 570.9516220123584
+              },
+              {
+                "x": 256.8491885354222,
+                "y": 587.2306088630045
+              },
+              {
+                "x": 251.36972913010536,
+                "y": 603.0395379584579
+              },
+              {
+                "x": 244.68648586605175,
+                "y": 618.3784092987186
+              },
+              {
+                "x": 236.7994587432613,
+                "y": 633.2472228837867
+              },
+              {
+                "x": 227.70864776173406,
+                "y": 647.6459787136619
+              },
+              {
+                "x": 217.41405292146996,
+                "y": 661.5746767883443
+              },
+              {
+                "x": 143.99665394878153,
+                "y": 753.8386877578531
+              },
+              {
+                "x": 133.73018817953584,
+                "y": 765.3784953146063
+              },
+              {
+                "x": 122.72911784618961,
+                "y": 775.1172618637925
+              },
+              {
+                "x": 110.99344294874277,
+                "y": 783.0549874054113
+              },
+              {
+                "x": 98.52316348719538,
+                "y": 789.1916719394633
+              },
+              {
+                "x": 85.3182794615474,
+                "y": 793.5273154659482
+              },
+              {
+                "x": 71.37879087179886,
+                "y": 796.0619179848659
+              },
+              {
+                "x": 56.704697717949706,
+                "y": 796.7954794962166
+              },
+              {
+                "x": 41.29599999999999,
+                "y": 795.7280000000001
+              },
+              {
+                "x": -29.695999999999998,
+                "y": 786.872
+              },
+              {
+                "x": -45.19610507544425,
+                "y": 784.3319634672706
+              },
+              {
+                "x": -60.14442030177701,
+                "y": 780.647853869083
+              },
+              {
+                "x": -74.54094567899827,
+                "y": 775.8196712054366
+              },
+              {
+                "x": -88.38568120710806,
+                "y": 769.8474154763319
+              },
+              {
+                "x": -101.67862688610636,
+                "y": 762.7310866817685
+              },
+              {
+                "x": -114.41978271599318,
+                "y": 754.4706848217467
+              },
+              {
+                "x": -126.6091486967685,
+                "y": 745.0662098962663
+              },
+              {
+                "x": -138.24672482843232,
+                "y": 734.5176619053275
+              },
+              {
+                "x": -195.344,
+                "y": 678.632
+              },
+              {
+                "x": -206.77468754117018,
+                "y": 666.5138614035318
+              },
+              {
+                "x": -216.93875016468073,
+                "y": 653.7754456141272
+              },
+              {
+                "x": -225.83618787053166,
+                "y": 640.4167526317863
+              },
+              {
+                "x": -233.46700065872298,
+                "y": 626.437782456509
+              },
+              {
+                "x": -239.8311885292547,
+                "y": 611.8385350882954
+              },
+              {
+                "x": -244.92875148212676,
+                "y": 596.6190105271454
+              },
+              {
+                "x": -248.75968951733918,
+                "y": 580.779208773059
+              },
+              {
+                "x": -251.32400263489203,
+                "y": 564.3191298260363
+              },
+              {
+                "x": -276.1927814338822,
+                "y": 348.34052380327904
+              },
+              {
+                "x": -279.0782039002205,
+                "y": 313.58537532160955
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-front-band",
+            "faceHeight": 220,
+            "endRadius": 85,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "outwardBodyBulge": 24,
+            "faceHeightMin": 220,
+            "faceHeightMax": 244,
+            "terminalDiameter": 170,
+            "stableBodyFraction": 0.6743295019157088,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "meltpond",
+          "objectId": "object-4",
+          "assetId": "terrain-expansion-snow-staggered-spurs-meltpond",
+          "kind": "water",
+          "world": {
+            "x": 775,
+            "y": -1340
+          },
+          "width": 550,
+          "height": 1250,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -160.4,
+                "y": 104.64
+              },
+              {
+                "x": -195.6337275927402,
+                "y": 170.28599772542123
+              },
+              {
+                "x": -202.26644768819173,
+                "y": 184.04709200852562
+              },
+              {
+                "x": -207.4814717709164,
+                "y": 197.97337372054943
+              },
+              {
+                "x": -211.27879984091416,
+                "y": 212.06484286149268
+              },
+              {
+                "x": -213.65843189818503,
+                "y": 226.3214994313553
+              },
+              {
+                "x": -214.62036794272908,
+                "y": 240.74334343013737
+              },
+              {
+                "x": -214.16460797454624,
+                "y": 255.33037485783885
+              },
+              {
+                "x": -212.29115199363656,
+                "y": 270.0825937144597
+              },
+              {
+                "x": -209,
+                "y": 285
+              },
+              {
+                "x": -191,
+                "y": 352.5
+              },
+              {
+                "x": -187.5288024233833,
+                "y": 367.4918414112777
+              },
+              {
+                "x": -185.11520969353322,
+                "y": 382.4673656451107
+              },
+              {
+                "x": -183.75922181044973,
+                "y": 397.42657270149914
+              },
+              {
+                "x": -183.46083877413287,
+                "y": 412.3694625804429
+              },
+              {
+                "x": -184.2200605845826,
+                "y": 427.29603528194207
+              },
+              {
+                "x": -186.03688724179895,
+                "y": 442.2062908059966
+              },
+              {
+                "x": -188.91131874578193,
+                "y": 457.1002291526065
+              },
+              {
+                "x": -192.84335509653152,
+                "y": 471.9778503217717
+              },
+              {
+                "x": -215.8,
+                "y": 548.5
+              },
+              {
+                "x": -219.87389920537012,
+                "y": 564.4531201985142
+              },
+              {
+                "x": -222.49559682148046,
+                "y": 580.3124807940569
+              },
+              {
+                "x": -223.66509284833103,
+                "y": 596.0780817866279
+              },
+              {
+                "x": -223.38238728592182,
+                "y": 611.7499231762274
+              },
+              {
+                "x": -221.64748013425287,
+                "y": 627.3280049628554
+              },
+              {
+                "x": -218.46037139332412,
+                "y": 642.8123271465118
+              },
+              {
+                "x": -213.82106106313563,
+                "y": 658.2028897271966
+              },
+              {
+                "x": -207.72954914368734,
+                "y": 673.4996927049099
+              },
+              {
+                "x": -166.3742027294831,
+                "y": 766.0050728419457
+              },
+              {
+                "x": -160.56774896476048,
+                "y": 780.7695088946147
+              },
+              {
+                "x": -156.33548903533423,
+                "y": 795.5653534735944
+              },
+              {
+                "x": -153.67742294120433,
+                "y": 810.3926065788851
+              },
+              {
+                "x": -152.59355068237076,
+                "y": 825.2512682104864
+              },
+              {
+                "x": -153.08387225883354,
+                "y": 840.1413383683987
+              },
+              {
+                "x": -155.14838767059268,
+                "y": 855.0628170526215
+              },
+              {
+                "x": -158.78709691764817,
+                "y": 870.0157042631554
+              },
+              {
+                "x": -164,
+                "y": 885
+              },
+              {
+                "x": -191,
+                "y": 952.5000000000001
+              },
+              {
+                "x": -196.25341932442072,
+                "y": 967.5013605069638
+              },
+              {
+                "x": -200.01367729768285,
+                "y": 982.5054420278548
+              },
+              {
+                "x": -202.28077391978644,
+                "y": 997.512244562673
+              },
+              {
+                "x": -203.05470919073147,
+                "y": 1012.5217681114185
+              },
+              {
+                "x": -202.33548311051794,
+                "y": 1027.5340126740916
+              },
+              {
+                "x": -200.12309567914582,
+                "y": 1042.5489782506916
+              },
+              {
+                "x": -196.4175468966152,
+                "y": 1057.5666648412193
+              },
+              {
+                "x": -191.21883676292595,
+                "y": 1072.5870724456738
+              },
+              {
+                "x": -164,
+                "y": 1141.3600000000001
+              },
+              {
+                "x": -157.35599006383646,
+                "y": 1155.5725
+              },
+              {
+                "x": -149.4239602553459,
+                "y": 1167.8899999999999
+              },
+              {
+                "x": -140.20391057452824,
+                "y": 1178.3125
+              },
+              {
+                "x": -129.69584102138356,
+                "y": 1186.8400000000001
+              },
+              {
+                "x": -117.8997515959118,
+                "y": 1193.4725
+              },
+              {
+                "x": -104.81564229811296,
+                "y": 1198.21
+              },
+              {
+                "x": -90.44351312798709,
+                "y": 1201.0525
+              },
+              {
+                "x": -74.78336408553416,
+                "y": 1202
+              },
+              {
+                "x": 84.1777423662786,
+                "y": 1202
+              },
+              {
+                "x": 100.00483399918207,
+                "y": 1201.0525
+              },
+              {
+                "x": 114.57498008103171,
+                "y": 1198.21
+              },
+              {
+                "x": 127.88818061182758,
+                "y": 1193.4725
+              },
+              {
+                "x": 139.94443559156963,
+                "y": 1186.8400000000001
+              },
+              {
+                "x": 150.7437450202579,
+                "y": 1178.3125
+              },
+              {
+                "x": 160.2861088978924,
+                "y": 1167.8899999999999
+              },
+              {
+                "x": 168.57152722447307,
+                "y": 1155.5725
+              },
+              {
+                "x": 175.6,
+                "y": 1141.3600000000001
+              },
+              {
+                "x": 204.4,
+                "y": 1073.14
+              },
+              {
+                "x": 210.3286265587984,
+                "y": 1057.9015067827268
+              },
+              {
+                "x": 215.3145062351935,
+                "y": 1042.5060271309064
+              },
+              {
+                "x": 219.35763902918535,
+                "y": 1026.9535610445396
+              },
+              {
+                "x": 222.45802494077395,
+                "y": 1011.2441085236255
+              },
+              {
+                "x": 224.6156639699593,
+                "y": 995.377669568165
+              },
+              {
+                "x": 225.83055611674138,
+                "y": 979.3542441781574
+              },
+              {
+                "x": 226.1027013811202,
+                "y": 963.1738323536031
+              },
+              {
+                "x": 225.43209976309578,
+                "y": 946.836434094502
+              },
+              {
+                "x": 215.20481262849154,
+                "y": 799.8191815345657
+              },
+              {
+                "x": 213.31698279034092,
+                "y": 762.4144813714204
+              },
+              {
+                "x": 212.85830590438053,
+                "y": 725.0195624165499
+              },
+              {
+                "x": 213.8287819706104,
+                "y": 687.6344246699546
+              },
+              {
+                "x": 216.2284109890305,
+                "y": 650.259068131634
+              },
+              {
+                "x": 228.90231247902548,
+                "y": 498.1722502516942
+              },
+              {
+                "x": 230.67005076945185,
+                "y": 461.659390766578
+              },
+              {
+                "x": 229.87557811975637,
+                "y": 425.2930625629236
+              },
+              {
+                "x": 226.51889452993908,
+                "y": 389.07326564073094
+              },
+              {
+                "x": 220.6,
+                "y": 353.00000000000006
+              },
+              {
+                "x": 199.78870935155553,
+                "y": 248.94354675777765
+              },
+              {
+                "x": 178.8,
+                "y": 151.36
+              },
+              {
+                "x": 166.2,
+                "y": 96.64
+              },
+              {
+                "x": 162.79511218755513,
+                "y": 85.24
+              },
+              {
+                "x": 158.1804487502206,
+                "y": 75.36
+              },
+              {
+                "x": 152.3560096879964,
+                "y": 67
+              },
+              {
+                "x": 145.3217950008825,
+                "y": 60.16000000000001
+              },
+              {
+                "x": 137.07780468887893,
+                "y": 54.84
+              },
+              {
+                "x": 127.6240387519857,
+                "y": 51.040000000000006
+              },
+              {
+                "x": 116.96049719020277,
+                "y": 48.76
+              },
+              {
+                "x": 105.08718000353016,
+                "y": 48
+              },
+              {
+                "x": -65.71742382262515,
+                "y": 48
+              },
+              {
+                "x": -81.25865261419739,
+                "y": 48.885000000000005
+              },
+              {
+                "x": -95.74105090022665,
+                "y": 51.54
+              },
+              {
+                "x": -109.16461868071295,
+                "y": 55.965
+              },
+              {
+                "x": -121.52935595565629,
+                "y": 62.16
+              },
+              {
+                "x": -132.83526272505665,
+                "y": 70.125
+              },
+              {
+                "x": -143.08233898891407,
+                "y": 79.86
+              },
+              {
+                "x": -152.2705847472285,
+                "y": 91.365
+              }
+            ]
+          ]
+        },
+        {
+          "key": "west-snowbank",
+          "objectId": "object-162",
+          "assetId": "terrain-expansion-snow-staggered-spurs-west-snowbank",
+          "kind": "cliff",
+          "world": {
+            "x": -845,
+            "y": -1657
+          },
+          "width": 450,
+          "height": 1100,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -182.78854657187668,
+                "y": 779.309168665495
+              },
+              {
+                "x": -182.00325649507175,
+                "y": 747.4756173656942
+              },
+              {
+                "x": -178.7912223468171,
+                "y": 715.3798747487403
+              },
+              {
+                "x": -173.1524441271127,
+                "y": 683.0219408146336
+              },
+              {
+                "x": -131.91942802852824,
+                "y": 438.9780591853664
+              },
+              {
+                "x": -124.55708955951255,
+                "y": 406.569575244713
+              },
+              {
+                "x": -115.78683332595617,
+                "y": 374.3221826081191
+              },
+              {
+                "x": -105.60865932785904,
+                "y": 342.2358812755847
+              },
+              {
+                "x": -94.02256756522127,
+                "y": 310.3106712471097
+              },
+              {
+                "x": -55.47213051839472,
+                "y": 137.9112634715272
+              },
+              {
+                "x": -55.25158885483633,
+                "y": 125.828311095388
+              },
+              {
+                "x": -53.82841354385732,
+                "y": 114.53508570273405
+              },
+              {
+                "x": -51.20260458545769,
+                "y": 104.03158729356531
+              },
+              {
+                "x": -47.37416197963745,
+                "y": 94.31781586788179
+              },
+              {
+                "x": -46.287264950889146,
+                "y": 92.38989490218485
+              },
+              {
+                "x": -46.20551675835395,
+                "y": 90.73675307511294
+              },
+              {
+                "x": -44.644027916655176,
+                "y": 82.46793840486205
+              },
+              {
+                "x": -41.98695811098901,
+                "y": 74.60065578982908
+              },
+              {
+                "x": -38.27370192168168,
+                "y": 67.18014417173131
+              },
+              {
+                "x": -33.543653929059346,
+                "y": 60.251642492286095
+              },
+              {
+                "x": -27.836208713448208,
+                "y": 53.86038969321072
+              },
+              {
+                "x": -21.190760855174474,
+                "y": 48.05162471622251
+              },
+              {
+                "x": -13.64670493456432,
+                "y": 42.87058650303879
+              },
+              {
+                "x": -5.243435531943945,
+                "y": 38.36251399537685
+              },
+              {
+                "x": 3.979652772360465,
+                "y": 34.57264613495402
+              },
+              {
+                "x": 13.983165398022717,
+                "y": 31.54622186348761
+              },
+              {
+                "x": 24.727707764716612,
+                "y": 29.328480122694923
+              },
+              {
+                "x": 30.557155170345673,
+                "y": 28.633897279964494
+              },
+              {
+                "x": 37.441133712414654,
+                "y": 23.9086941314074
+              },
+              {
+                "x": 47.327894872482574,
+                "y": 18.721140448916664
+              },
+              {
+                "x": 58.44786363660384,
+                "y": 16.067173532851854
+              },
+              {
+                "x": 70.80104000477849,
+                "y": 15.94679338321297
+              },
+              {
+                "x": 84.38742397700648,
+                "y": 18.360000000000014
+              },
+              {
+                "x": 144.65746017643082,
+                "y": 34
+              },
+              {
+                "x": 143.47930617733607,
+                "y": 28.75
+              },
+              {
+                "x": 144.35205332083981,
+                "y": 25
+              },
+              {
+                "x": 147.27570160694205,
+                "y": 22.75
+              },
+              {
+                "x": 152.2502510356428,
+                "y": 22
+              },
+              {
+                "x": 154.2502510356428,
+                "y": 22
+              },
+              {
+                "x": 159.77570160694205,
+                "y": 22.75
+              },
+              {
+                "x": 164.35205332083981,
+                "y": 25
+              },
+              {
+                "x": 167.97930617733607,
+                "y": 28.75
+              },
+              {
+                "x": 170.65746017643082,
+                "y": 34
+              },
+              {
+                "x": 176.59411462584916,
+                "y": 70.9978515625
+              },
+              {
+                "x": 178.38367692701706,
+                "y": 84.86651908605108
+              },
+              {
+                "x": 183.00455827234578,
+                "y": 90.73675307511294
+              },
+              {
+                "x": 188.4920229503877,
+                "y": 99.36186085886445
+              },
+              {
+                "x": 192.87673382667325,
+                "y": 108.29802281439925
+              },
+              {
+                "x": 196.07744830361585,
+                "y": 117.5
+              },
+              {
+                "x": 200.39727835373225,
+                "y": 144.53125
+              },
+              {
+                "x": 203.51020237973427,
+                "y": 171.5625
+              },
+              {
+                "x": 205.42301284944602,
+                "y": 198.59375
+              },
+              {
+                "x": 206.1425022306916,
+                "y": 225.625
+              },
+              {
+                "x": 203.8039195637462,
+                "y": 252.65625
+              },
+              {
+                "x": 200.73722872036177,
+                "y": 279.6875
+              },
+              {
+                "x": 197.01375870248677,
+                "y": 306.71875
+              },
+              {
+                "x": 192.70483851206967,
+                "y": 333.75
+              },
+              {
+                "x": 181.56784662894327,
+                "y": 395.1523467104922
+              },
+              {
+                "x": 177.56493000341237,
+                "y": 435.0175
+              },
+              {
+                "x": 170.12194315439308,
+                "y": 493.5521875
+              },
+              {
+                "x": 162,
+                "y": 550
+              },
+              {
+                "x": 145.18506999658763,
+                "y": 664.9825000000001
+              },
+              {
+                "x": 137.8059913905894,
+                "y": 725.7109375
+              },
+              {
+                "x": 132.25077296525956,
+                "y": 788.74
+              },
+              {
+                "x": 129.3731166582453,
+                "y": 854.1765624999999
+              },
+              {
+                "x": 130.02672440719397,
+                "y": 922.1274999999999
+              },
+              {
+                "x": 131.94453415816915,
+                "y": 957.0792578124999
+              },
+              {
+                "x": 135.06529814975283,
+                "y": 992.6996875
+              },
+              {
+                "x": 139.49572912415084,
+                "y": 1029.0021484375
+              },
+              {
+                "x": 145.34253982356915,
+                "y": 1066
+              },
+              {
+                "x": 146.52069382266393,
+                "y": 1071.25
+              },
+              {
+                "x": 145.64794667916019,
+                "y": 1075
+              },
+              {
+                "x": 142.72429839305795,
+                "y": 1077.25
+              },
+              {
+                "x": 137.7497489643572,
+                "y": 1078
+              },
+              {
+                "x": 135.7497489643572,
+                "y": 1078
+              },
+              {
+                "x": 130.22429839305795,
+                "y": 1077.25
+              },
+              {
+                "x": 125.64794667916019,
+                "y": 1075
+              },
+              {
+                "x": 122.02069382266392,
+                "y": 1071.25
+              },
+              {
+                "x": 119.34253982356917,
+                "y": 1066
+              },
+              {
+                "x": 68.39177602299345,
+                "y": 1081.6399999999999
+              },
+              {
+                "x": 56.0741870403948,
+                "y": 1084.2910098769312
+              },
+              {
+                "x": 43.0546445440894,
+                "y": 1084.8840395077245
+              },
+              {
+                "x": 29.33314853407726,
+                "y": 1083.4190888923804
+              },
+              {
+                "x": 14.909699010358377,
+                "y": 1079.8961580308983
+              },
+              {
+                "x": -52.47264227582889,
+                "y": 1059.08
+              },
+              {
+                "x": -73.789368931263,
+                "y": 1050.3312273907088
+              },
+              {
+                "x": -92.3898056456793,
+                "y": 1038.1649095628354
+              },
+              {
+                "x": -108.2739524190778,
+                "y": 1022.5810465163793
+              },
+              {
+                "x": -121.44180925145847,
+                "y": 1003.5796382513411
+              },
+              {
+                "x": -181.1470925772319,
+                "y": 810.8805286481431
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "left",
+            "bendAmplitude": 44,
+            "bendPhase": 0,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 27.5,
+            "faceEnd": 1072.5,
+            "stableBodyFraction": 0.8277511961722488,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        }
+      ],
+      "spawnPockets": [
+        {
+          "key": "north",
+          "openingNominal": 360,
+          "center": {
+            "x": 20,
+            "y": 1334
+          },
+          "clearRadius": 110,
+          "routeId": "north-chute"
+        },
+        {
+          "key": "west",
+          "openingNominal": 316,
+          "center": {
+            "x": -750,
+            "y": 390
+          },
+          "clearRadius": 110,
+          "routeId": "west-shelf"
+        },
+        {
+          "key": "south",
+          "openingNominal": 350,
+          "center": {
+            "x": -400,
+            "y": -1334
+          },
+          "clearRadius": 110,
+          "routeId": "south-field"
+        },
+        {
+          "key": "east",
+          "openingNominal": 350,
+          "center": {
+            "x": 750,
+            "y": 85
+          },
+          "clearRadius": 110,
+          "routeId": "east-field"
+        }
+      ],
+      "sourcePixelsPerWorldUnit": 1,
+      "resizeOperations": 0,
+      "positionsUnchanged": true,
+      "replacedTerrainImages": 4
+    }
+  }
+}

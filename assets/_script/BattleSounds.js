@@ -172,10 +172,12 @@ function hit(target, source, damage, options) {
   var heroStyle = source && source._relicHero && source.heroStyle;
   var arrow = source && source._relicHero ? !heroStyle || heroStyle === "skirmisher" : source && (source.navigationTeam === "friendly" && sourceType === 2 || source.buildInfo) || !!tower;
   var shot = !options.magic && options.context, skirmisher = source && source._relicHero && shot && shot.heroStyle === "skirmisher";
+  // Vanguard shares Skirmisher's basic and active confirmed-hit sounds.
+  var vanguard = source && source._relicHero && !options.magic && (shot && shot.heroStyle || heroStyle) === "vanguard";
   // A critical is the hit cue itself, so an ordinary impact cannot consume its channel first.
   if (shot && shot.critical) id = "critical-hit";
-  else if (skirmisher && shot.styleSkill) id = "skirmisher-active-hit";
-  else if (skirmisher && shot.styleShotCharge >= 1-1e-9) id = "skirmisher-passive-hit";
+  else if ((skirmisher || vanguard) && shot && shot.styleSkill) id = "skirmisher-active-hit";
+  else if (vanguard || skirmisher && shot.styleShotCharge >= 1-1e-9) id = "skirmisher-passive-hit";
   else if (tower && tower.attackType === "cannon") id = null; // One explosion is emitted per shell, outside the splash-victim loop.
   else if (options.magic || heroStyle === "mystic" || sourceType === 3 || sourceType === 2 && family(source) === "ghost") id = "magic-impact";
   else if (heroStyle === "bruiser" && !(shot && shot.styleSkill)) id = "impact-bruiser-basic";
@@ -284,30 +286,22 @@ function tick(game) {
   var surface = biome(game);
   warmMovement(state, surface);
   if (!audible(state) || paused(state)) { stopAll(state); state.positions = new WeakMap(); return; }
-  var horse = false, heroMoving = false, foot = null, flying = false;
-  var hero = game.ctrPlay, center = point(hero), data = game.gameData;
-  if (!center) { stopAll(state); state.positions = new WeakMap(); return; }
-  var actors = [hero].concat(data.getSoldierList ? data.getSoldierList() : [], data.getEnemyList ? data.getEnemyList() : []);
-  actors.forEach(function (actor) {
-    if (!actor || !validNode(actor) || actor._isPooled || actor.isDead && actor.isDead()) return;
-    var position = point(actor), old = state.positions.get(actor), generation = actor.node._combatGeneration;
-    state.positions.set(actor, { x: position.x, y: position.y, generation: generation });
-    if (!old || old.generation !== generation || (old.x - position.x) * (old.x - position.x) + (old.y - position.y) * (old.y - position.y) < .01 || actor._hitReactionPlaying || actor._relicControl && actor._relicControl.freeze > 0) return;
-    var dx = position.x - center.x, dy = position.y - center.y;
-    if (dx * dx + dy * dy > 850 * 850) return;
-    var friendly = actor === hero || actor._relicSoldier || actor.navigationTeam === "friendly";
-    if (actor === hero) { horse = true; heroMoving = true; }
-    else if (friendly && Number(actor.cfg && actor.cfg.ID) === 90004) horse = true;
-    else if (friendly) { if (Number(actor.cfg && actor.cfg.ID) === 90002) foot = "footsteps-heavy-infantry-loop"; else if (!foot) foot = "footsteps-infantry-loop"; }
-    else if (family(actor) === "flying") flying = true;
-  });
+  var heroMoving = false, hero = game.ctrPlay, position = point(hero);
+  if (!position) { stopAll(state); state.positions = new WeakMap(); return; }
+  if (validNode(hero) && !hero._isPooled && (!hero.isDead || !hero.isDead())) {
+    var old = state.positions.get(hero), generation = hero.node._combatGeneration;
+    state.positions.set(hero, { x: position.x, y: position.y, generation: generation });
+    heroMoving = !!old && old.generation === generation &&
+      (old.x - position.x) * (old.x - position.x) + (old.y - position.y) * (old.y - position.y) >= .01 &&
+      !hero._hitReactionPlaying && !(hero._relicControl && hero._relicControl.freeze > 0);
+  }
   var ambient = "ambience-" + surface + "-loop";
   loop(state, "ambience", entries[ambient] ? ambient : null, .5);
-  // Keep the player's own mount in the foreground without making the shared
-  // nearby cavalry loop louder or allocating a second overlapping horse loop.
-  loop(state, "horse", horse ? "hooves-" + surface + "-loop" : null, heroMoving ? .65 : .45);
-  loop(state, "foot", foot, .16);
-  loop(state, "flying", flying ? "movement-flying-loop" : null, .12);
+  // Hero movement is 70% of the previous .65 mix level.
+  loop(state, "horse", heroMoving ? "hooves-" + surface + "-loop" : null, .455);
+  // Retire any unit movement channels left by an already-running session.
+  stopLoop(state, "foot");
+  stopLoop(state, "flying");
   charge(hero,!!(hero._styleRuntime&&hero._styleRuntime.bowCharging));
 }
 function suspend(game, paused) {

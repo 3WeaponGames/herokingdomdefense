@@ -44,7 +44,7 @@ for (const biome of ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice',
   test('actual movement selects ' + biome + ' hooves and ambience using the effects volume channel', () => {
     const f = fixture(biome); f.start(); f.tick(); f.hero.node.x += 10; f.tick();
     const horse = f.played.find(p => p.path === 'sfx/hooves-' + biome + '-loop');
-    assert(horse); assert.equal(horse.loop, true); assert.equal(horse.volume, .325);
+    assert(horse); assert.equal(horse.loop, true); assert.equal(horse.volume, .2275);
     assert.equal(f.played.some(p => p.path === 'sfx/ambience-' + biome + '-loop'), biome === 'lava');
     assert.equal(f.manager.musicKeys.length, 0); assert(f.played.every(p => p.source.mute));
     f.tick(); assert.equal(horse.source.state, 3, 'idle horse kept running');
@@ -63,7 +63,7 @@ test('each hero style has its active biome decoded before the first movement wit
       f.sounds.tick(f.game);
       const horse = f.played.find(p => p.path === file);
       assert(horse, style + ' waited for another movement frame or asset callback in ' + surface);
-      assert.equal(horse.volume, .325);
+      assert.equal(horse.volume, .2275);
       assert.deepEqual(f.writes, []);
     }
   }
@@ -80,17 +80,16 @@ test('muted setup and biome changes prepare movement clips without playback, inc
   assert.deepEqual(f.writes, []);
 });
 
-test('the hero is louder than nearby cavalry on their single shared loop and effects volume still scales both', () => {
+test('only hero movement starts and sustains the horse loop while effects volume still controls it', () => {
   const f = fixture('snow'), cavalry = f.actor(90004, { navigationTeam: 'friendly' });
   f.soldiers.push(cavalry); f.start(); f.tick(); cavalry.node.x++; f.tick();
-  const horse = f.played.find(p => p.path === 'sfx/hooves-snow-loop');
-  assert.equal(horse.source.volume, .225);
+  assert.equal(f.played.length, 0, 'cavalry started a movement loop');
   f.hero.node.x++; cavalry.node.x++; f.tick();
-  assert.equal(horse.source.volume, .325);
-  assert.equal(f.played.filter(p => p.path === horse.path).length, 1, 'hero movement restarted the cavalry loop');
-  cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .225);
-  f.manager.setEffectVolume(.25); cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .1125);
-  f.hero.node.x++; cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .1625);
+  const horse = f.played.find(p => p.path === 'sfx/hooves-snow-loop');
+  assert.equal(horse.source.volume, .2275);
+  cavalry.node.x++; f.tick(); assert.equal(horse.source.state, 3, 'cavalry sustained the stopped hero loop');
+  f.manager.setEffectVolume(.25);
+  f.hero.node.x++; cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .11375);
   f.manager.setEffectVolume(0); f.tick(); assert.equal(horse.source.state, 3);
 });
 
@@ -120,18 +119,21 @@ test('steady loops avoid iOS volume restarts while speech ducking and master vol
   assert.equal(loops[0].volume, .5 * .8);
 });
 
-test('nearby cavalry shares one biome horse loop; infantry and flying movement remain bounded', () => {
-  const f = fixture('desert'); f.start();
-  for (let i = 0; i < 20; i++) f.soldiers.push(f.actor(90004, { navigationTeam: 'friendly' }));
-  f.soldiers.push(f.actor(90001, { navigationTeam: 'friendly' }));
-  f.enemies.push(f.actor(91010, { cfg: { ID: 91010, MonsterSource: 'monster1/Bird_Eagle' } }));
-  f.tick(); f.soldiers.concat(f.enemies).forEach(a => a.node.x += 4); f.tick();
-  assert.equal(f.played.filter(p => p.path === 'sfx/hooves-desert-loop').length, 1);
-  assert(f.played.some(p => p.path === 'sfx/footsteps-infantry-loop'));
-  assert(f.played.some(p => p.path === 'sfx/movement-flying-loop'));
-  f.soldiers[20].cfg.ID = 90002; f.soldiers.concat(f.enemies).forEach(a => a.node.x += 4); f.tick();
-  assert(f.played.some(p => p.path === 'sfx/footsteps-heavy-infantry-loop'));
-  assert(f.manager.audioSourceMap.size <= 4);
+test('all eight biomes keep moving allied infantry, cavalry and flying units silent while only the hero makes movement sounds', () => {
+  for (const surface of ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice', 'fire', 'lava']) {
+    const f = fixture(surface); f.start();
+    for (const id of [90001, 90002, 90003, 90004]) f.soldiers.push(f.actor(id, { navigationTeam: 'friendly' }));
+    f.soldiers.push(f.actor(91010, { _relicSoldier: true, cfg: { ID: 91010, MonsterSource: 'monster1/Bird_Eagle' } }));
+    f.enemies.push(f.actor(91010, { cfg: { ID: 91010, MonsterSource: 'monster1/Bird_Eagle' } }));
+    function moveUnits() { f.soldiers.concat(f.enemies).forEach(a => a.node.x += 4); }
+    f.tick(); moveUnits(); f.tick(); moveUnits(); f.tick();
+    const movement = () => f.played.filter(p => /^sfx\/(hooves-|footsteps-|movement-)/.test(p.path));
+    assert.equal(movement().length, 0, surface + ' played non-hero movement');
+    f.hero.node.x += 4; moveUnits(); f.tick();
+    assert.equal(movement().length, 1); assert.equal(movement()[0].path, 'sfx/hooves-' + surface + '-loop');
+    moveUnits(); f.tick(); assert.equal(movement()[0].source.state, 3, 'units kept the hero movement audible');
+    assert.equal(movement().length, 1); assert.deepEqual(f.writes, []);
+  }
 });
 
 test('hero death, hit-stop, distance, pause, hide, mute and battle exit stop movement without stale restarts', () => {
@@ -413,6 +415,40 @@ test('immutable projectile context chooses passive and active impacts while part
  }
 });
 
+test('Vanguard basic and active hits share Skirmisher sounds across target materials without a second material impact',()=>{
+ for(const active of [false,true])for(const targetData of [{},{navigationTeam:'friendly',cfg:{ID:90002}},{cfg:{ID:91000,MonsterSource:'monster1/Iron_Golem'}},{cfg:{ID:91001,MonsterSource:'monster1/Turtle'}}]){
+  const f=fixture();f.hero.heroStyle='vanguard';f.start();const target=f.actor(90007,targetData);
+  f.sounds.hit(target,f.hero,10,{context:{heroStyle:'vanguard',styleSkill:active}});f.finishAll();
+  assert.deepEqual(f.played.map(p=>p.path),['sfx/skirmisher-'+(active?'active':'passive')+'-hit']);
+  assert.equal(f.pending.length,0,'Vanguard hit waited for an asset load');assert.equal(f.played[0].startedAt,1000);assert.deepEqual(f.writes,[]);
+ }
+});
+
+test('Vanguard uses the confirmed attack style and respects a custom authored impact sound',()=>{
+ for(const active of [false,true]){
+  const f=fixture();f.hero.heroStyle='vanguard';f.start();f.hero.heroStyle='fighter';
+  f.sounds.hit(f.actor(90007),f.hero,10,{context:{heroStyle:'vanguard',styleSkill:active}});f.finishAll();
+  assert.deepEqual(f.played.map(p=>p.path),['sfx/skirmisher-'+(active?'active':'passive')+'-hit']);
+  const custom=fixture();custom.hero.heroStyle='vanguard';custom.hero._styleRuntime={settings:{audio:{impact:{clip:'authored-vanguard-impact'}}}};custom.start();
+  custom.sounds.hit(custom.actor(90007),custom.hero,10,{context:{heroStyle:'vanguard',styleSkill:active}});custom.finishAll();
+  assert.equal(custom.played.length,0,'default sound duplicated the authored on-hit cue');
+ }
+ const f=fixture();f.hero.heroStyle='vanguard';f.start();
+ f.sounds.hit(f.actor(90002,{navigationTeam:'friendly'}),f.hero,10,{context:{heroStyle:'fighter',styleSkill:false}});f.finishAll();
+ assert.deepEqual(f.played.map(p=>p.path),['sfx/impact-armour']);
+});
+
+test('all seven Vanguard spear contacts sound on their hit events despite the generic impact cooldown',()=>{
+ const f=fixture();f.hero.heroStyle='vanguard';f.start();const target=f.actor(90007);
+ f.sounds.effect('impact-armour',target);f.finishAll();
+ for(let strike=0;strike<7;strike++){
+  if(strike)f.advance(360);
+  f.sounds.hit(target,f.hero,10,{context:{heroStyle:'vanguard',styleSkill:true,styleStrike:strike}});f.finishAll();
+ }
+ const hits=f.played.filter(p=>p.path==='sfx/skirmisher-active-hit');assert.equal(hits.length,7);
+ assert.deepEqual(hits.map(p=>p.startedAt),Array.from({length:7},(_,i)=>1000+i*360));assert.equal(hits[0].source.state,1,'a later strike cut off an accepted hit tail');
+});
+
 test('a custom Mystic channel loop stays independent of the default magic impact sound',()=>{
  const f=fixture();f.hero.heroStyle='mystic';f.hero._styleRuntime={settings:{audio:{channel:{clip:'beam-loop'},explosion:{clip:'burst'},impact:{clip:''}}}};f.start();
  const loop=f.manager.getAudioSource('mystic-test-channel');f.manager.playSource(loop,{bundle:'KinghtFallAudio',path:'sfx/test-beam-loop'},'mystic-test-channel',true,false,()=>.4,null,null,{owner:f.hero,game:f.game});f.finishAll();
@@ -429,10 +465,12 @@ test('Skirmisher confirmed hits start immediately despite the generic impact bud
  assert.equal(f.played.filter(p=>p.path==='sfx/impact-armour').length,1);
 });
 
-test('zero damage and secondary procs never borrow a Skirmisher primary hit cue',()=>{
- const f=fixture();f.hero.heroStyle='skirmisher';f.start();const target=f.actor(90007),context={heroStyle:'skirmisher',styleSkill:true,styleShotCharge:1};
- f.sounds.hit(target,f.hero,0,{context});f.sounds.hit(target,f.hero,10,{magic:true,context});f.finishAll();
- assert(!f.played.some(p=>p.path.startsWith('sfx/skirmisher-')));
+test('zero damage and secondary procs never borrow Skirmisher or Vanguard primary hit cues',()=>{
+ for(const style of ['skirmisher','vanguard']){
+  const f=fixture();f.hero.heroStyle=style;f.start();const target=f.actor(90007),context={heroStyle:style,styleSkill:true,styleShotCharge:1};
+  f.sounds.hit(target,f.hero,0,{context});f.sounds.hit(target,f.hero,10,{magic:true,context});f.finishAll();
+  assert(!f.played.some(p=>p.path.startsWith('sfx/skirmisher-')),style);
+ }
 });
 
 test('simultaneous Skirmisher pierces use bounded overlapping voices without restarting accepted hit tails',()=>{
@@ -530,7 +568,7 @@ test('the six hero styles use their own weapon release and impact families',()=>
  for(const [style,clip]of Object.entries(expected)){
   const f=fixture();f.start();f.hero.heroStyle=style;f.sounds.attack(f.hero,'hero');f.finishAll();assert(f.played.some(p=>p.path==='sfx/'+clip),style);
   const target=f.actor(90002,{navigationTeam:'friendly'});f.sounds.hit(target,f.hero,10);f.finishAll();
-  assert(f.played.some(p=>p.path==='sfx/'+(style==='mystic'?'magic-impact':style==='bruiser'?'impact-bruiser-basic':style==='skirmisher'?'arrow-impact-armour':'impact-armour')),style);
+  assert(f.played.some(p=>p.path==='sfx/'+(style==='mystic'?'magic-impact':style==='bruiser'?'impact-bruiser-basic':style==='skirmisher'?'arrow-impact-armour':style==='vanguard'?'skirmisher-passive-hit':'impact-armour')),style);
  }
 });
 

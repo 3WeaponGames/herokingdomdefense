@@ -1,7 +1,7 @@
 "use strict";
 // Browsing is visual-only. Only the explicit Equip action changes the loadout.
 var Weapons = require("HeroWeapons");
-var WIDTH = 684, HEIGHT = 990;
+var WIDTH = 684, HEIGHT = 1120;
 function node(parent, name, x, y, width, height) {
   var value = new cc.Node(name); value.setParent(parent); value.setPosition(x || 0, y || 0);
   if (width) value.setContentSize(width, height); return value;
@@ -49,12 +49,13 @@ function open(owner) {
   backdrop.rect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height); backdrop.fill();
   var content = node(root, "Weapon choices", 0, 0, WIDTH, HEIGHT); content.addComponent(cc.BlockInputEvents);
   content.scale = Math.min(1, (canvas.width - 28) / WIDTH, (canvas.height - 48) / HEIGHT);
-  box(content, "Panel shadow", 0, -18, 684, 850, 42, "#160e20");
-  box(content, "Panel outline", 0, -8, 684, 850, 42, "#170f20");
-  box(content, "Purple frame", 0, -5, 674, 838, 39, "#853bb5");
-  box(content, "Frame highlight", 0, 0, 660, 818, 33, "#cb7af4");
-  box(content, "Inner outline", 0, -3, 648, 803, 29, "#24152c");
-  box(content, "Cream panel", 0, -1, 638, 791, 26, "#f7ebd2");
+  content.y = 100 * content.scale;
+  box(content, "Panel shadow", 0, -118, 684, 1050, 42, "#160e20");
+  box(content, "Panel outline", 0, -108, 684, 1050, 42, "#170f20");
+  box(content, "Purple frame", 0, -105, 674, 1038, 39, "#853bb5");
+  box(content, "Frame highlight", 0, -100, 660, 1018, 33, "#cb7af4");
+  box(content, "Inner outline", 0, -103, 648, 1003, 29, "#24152c");
+  box(content, "Cream panel", 0, -101, 638, 991, 26, "#f7ebd2");
   scenery(content);
   var font = null, labels = [], cancelled = false, readyCancel, cardIcons = [], cardFrames = [];
   function clearIcons() {
@@ -63,17 +64,28 @@ function open(owner) {
   }
   function label(parent, name, text, x, y, width, height, size, color, outline) {
     var value = node(parent, name, x, y, width, height), textLabel = value.addComponent(cc.Label);
-    textLabel.string = text; textLabel.fontSize = size; textLabel.lineHeight = size + 4;
+    textLabel.fontSize = size; textLabel.lineHeight = size + 4;
     textLabel.horizontalAlign = cc.Label.HorizontalAlign.CENTER; textLabel.verticalAlign = cc.Label.VerticalAlign.CENTER;
     textLabel.overflow = cc.Label.Overflow.SHRINK; textLabel.enableWrapText = false;
     value.setContentSize(width, height);
     value.color = cc.color(color || "#ffffff"); if (font) textLabel.font = font;
     var stroke = value.addComponent(cc.LabelOutline); stroke.color = cc.color("#100c12"); stroke.width = outline === undefined ? 3 : outline;
+    // Native/TTF activation can initially size the empty label to zero. Apply
+    // its final bounds before the first nonempty string reaches SHRINK.
+    value.setContentSize(width, height); textLabel.string = text;
     labels.push(textLabel); return value;
+  }
+  function paragraph(parent, name, text, x, y, width, height, size) {
+    var value = label(parent, name, text, x, y, width, height, size, "#fff3d8", 0), body = value.getComponent(cc.Label);
+    body._pickerBody = true; body._settingsLayout = true; body._localizedFontRole = "body";
+    body._uiTypography = { fontRole: "body", fontFamily: "Arial", outlineWidth: 0, shadowDepth: 0 };
+    body.font = null; body.useSystemFont = true; body.fontFamily = "Arial";
+    body.enableWrapText = true; body.lineHeight = size + 3; body.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
+    value.setContentSize(width, height); return value;
   }
   cc.resources.load("localization/fonts/Lilita One", cc.Font, function (error, asset) {
     if (error || cancelled || !live(root)) return; font = asset;
-    labels.forEach(function (entry) { if (live(entry.node)) entry.font = font; });
+    labels.forEach(function (entry) { if (live(entry.node) && !entry._pickerBody) entry.font = font; });
   });
   box(content, "Title outline", 0, 402, 490, 91, 27, "#180e21");
   box(content, "Title highlight", 0, 405, 480, 79, 23, "#d282f6");
@@ -101,15 +113,11 @@ function open(owner) {
   });
   var chosen = user.getHeroWeapon().id, body = node(content, "Choices");
   var grid = node(body, "Style grid"), details = node(body, "Style details"), cardViews = [];
-  function icon(parent, name, image, x, y, width, height) {
-    if (image) return art(parent, name, image.resource, x, y, width, height, false, image.tint);
-  }
   function render(rebuildCards) {
     if (cancelled || !live(root)) return;
     var build = rebuildCards || !cardViews.length;
     if (build) { clearIcons(); grid.destroyAllChildren(); grid.removeAllChildren(); cardViews = []; }
     details.destroyAllChildren(); details.removeAllChildren(); labels = labels.filter(function (entry) { return live(entry.node); });
-    var Looks = require("HeroItemLooks");
     var mainGear = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList().filter(function (gear) { return gear.id === 4; })[0];
     Weapons.styles.forEach(function (style, index) {
       var selected = chosen === style.id, equipped = user.getHeroWeapon().id === style.id;
@@ -153,16 +161,19 @@ function open(owner) {
       tile.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); if (chosen !== style.id) { chosen = style.id; render(); } });
     });
     var weapon = Weapons.find(chosen), equipped = user.getHeroWeapon().id === chosen;
-    box(details, "Current levels outline", 0, -335, 612, 80, 24, "#28436c");
-    box(details, "Current levels rim", 0, -332, 602, 70, 20, "#638abd");
-    box(details, "Current levels", 0, -335, 588, 58, 16, "#294970");
-    box(details, "Level divider", 0, -335, 2, 42, 1, "#b3ccec");
-    [4,3].forEach(function (slot, index) {
-      var level = user.getHeroWeaponLevel(chosen, slot), view = Weapons.gear(chosen, slot, "upgrade");
-      icon(details, "Level icon " + slot, Looks.gearImage(slot, level, "upgrade", chosen), index ? 49 : -246, -335, index ? 64 : 80, 52);
-      label(details, "Level reference " + slot, view.name + " · Lv " + level, index ? 181 : -118, -335, index ? 191 : 168, 47, 26);
-    });
-    var action = box(details, equipped ? "Equipped action" : "Equip " + weapon.name, 0, -433, 492, 96, 31, "#1b120a");
+    var config = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
+    var tuning = require("HeroSkillSettings").effective(chosen, config), skill = require("HeroSkillAuthoring").entry(chosen, "active");
+    var description = require("HeroSkillDescriptions").render(chosen, "active", tuning);
+    box(details, "Skill panel outline", 0, -374, 612, 180, 24, "#28436c");
+    box(details, "Skill panel rim", 0, -371, 602, 170, 20, "#638abd");
+    box(details, "Skill panel", 0, -374, 588, 158, 16, "#294970");
+    box(details, "Skill icon outline", -232, -374, 122, 122, 20, "#170f20");
+    box(details, "Skill icon frame", -232, -372, 114, 114, 17, "#cb7af4");
+    art(details, "Skill icon", "skills/icons/" + chosen, -232, -372, 104, 104, false);
+    var category = paragraph(details, "Skill category", "ACTIVE SKILL", 59, -300, 434, 20, 16); category.getComponent(cc.Label).isBold = true;
+    var title = label(details, "Skill name", skill.name, 59, -329, 434, 34, 30, "#ffffff", 1); title.getComponent(cc.Label).horizontalAlign = cc.Label.HorizontalAlign.LEFT;
+    paragraph(details, "Skill description", description, 59, -400, 434, 104, 24).getComponent(cc.Label).lineHeight = 26;
+    var action = box(details, equipped ? "Equipped action" : "Equip " + weapon.name, 0, -533, 492, 96, 31, "#1b120a");
     box(action, "Action shadow", 0, -1, 480, 84, 26, equipped ? "#62717d" : "#ce8500");
     box(action, "Action highlight", 0, 6, 474, 72, 24, equipped ? "#c6d0d6" : "#fff9bb");
     box(action, "Action face", 0, 1, 464, 67, 21, equipped ? "#8c9ca7" : "#ffce20");
@@ -180,6 +191,7 @@ function open(owner) {
     root.setContentSize(canvas.width, canvas.height);
     backdrop.clear(); backdrop.rect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height); backdrop.fill();
     content.scale = Math.min(1, (canvas.width - 28) / WIDTH, (canvas.height - 48) / HEIGHT);
+    content.y = 100 * content.scale;
   }
   canvas.on(cc.Node.EventType.SIZE_CHANGED, resize);
   render(); readyCancel = require("HeroItemLooks").whenReady(function () { render(true); });

@@ -2,10 +2,10 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const Settings=require('../../assets/_script/HeroSkillSettings'),Layout=require('../../assets/_script/HeroSkillVFXLayout'),{Model}=require('../../packages/hkd-skills/preview-model');
 
-test('Fighter wind and active aura and Vanguard charging and locked momentum use the ground emitter rather than body or overhead anchors',()=>{
+test('Fighter auras and Vanguard charging and active momentum keep the ground emitter and their authored front or behind layers',()=>{
   for(const style of ['fighter','vanguard'])for(const facing of [-1,1])for(const slot of ['passive','buff']){
     const settings=Settings.defaults(style),visual=settings.visual;assert.equal(visual[slot+'OffsetY'],0);const hero={x:125,y:-34},frame={entities:[{key:slot,slot,style,phase:'loop',age:.2,scale:1,opacity:1}]},context={style,facing,hero,heroBody:{x:400,y:800}},placed=Layout.entities(frame,visual,context);assert.equal(placed.length,1);assert.equal(placed[0].x,hero.x);assert.equal(placed[0].y,hero.y);assert.equal(placed[0].anchorX,placed[0].clip.anchorX);assert.equal(placed[0].anchorY,placed[0].clip.anchorY);
-    hero.x+=77;hero.y-=15;context.heroBody.y=2000;const moved=Layout.entities(frame,visual,context)[0];assert.equal(moved.x,hero.x);assert.equal(moved.y,hero.y);assert.equal(moved.scaleX,facing);assert.equal(moved.behind,false,'Fighter and Vanguard auras render in front without changing their ground pivot');
+    hero.x+=77;hero.y-=15;context.heroBody.y=2000;const moved=Layout.entities(frame,visual,context)[0];assert.equal(moved.x,hero.x);assert.equal(moved.y,hero.y);assert.equal(moved.scaleX,facing);assert.equal(moved.behind,style==='vanguard','Vanguard charging and active momentum stay behind the hero; Fighter auras stay in front, with the same ground pivot');
   }
 });
 

@@ -1,6 +1,7 @@
 'use strict';
 const SkillSettings = require('../../assets/_script/HeroSkillSettings');
 const Authoring = require('../../assets/_script/HeroSkillAuthoring');
+const Descriptions = require('../../assets/_script/HeroSkillDescriptions');
 const NumericScrub = require('./numeric-scrub');
 const SCRUB_HELP='Drag the label left or right to adjust. Shift: fine; Alt: coarse. Escape cancels the drag.';
 const PREVIEW_HELP={Preview:'Choose an active skill example or ordinary attacks with their passive effects.',Speed:'Playback speed for this isolated preview. Does not change saved animation or combat speed.',Handle:'Choose the effect handle to position in the preview.','Hero HP %':'Hero health percentage used to test missing-health passives and skills. Preview only.','Target distance':'Starting enemy distance in world units. Changing this control resets moved enemy positions. Preview only.','Attacks / second':'Ordinary attack cadence used by the preview. Does not change game stats.','Aim angle':'Skill direction in degrees. Zero points right; positive angles turn counterclockwise. Preview only.','Horse moving':'Preview mounted movement. Out-of-range targets are approached before activating the skill. R restarts the example; game actors are unaffected.',Repeat:'Repeat the preview timeline after it reaches the end.','Sound in preview':'Explicitly enable this preview’s sound effects. Opening or editing the panel remains silent.'};
@@ -123,6 +124,7 @@ function mount(host, api) {
   const invalidInputs = new Map();
   const scrubbers = new Set();let activeScrub=null,scrubInput=null,timelinePointer=null;
   const descriptionLoads = new Map();
+  const descriptionPreviews = new Map();
   const scenario = { hp: 100, targetDistance: 100, attackRate: 1.5, moving: false, direction: 0, speed: 1, repeat: true, mode: 'active' };
   function el(tag, text, parent, cls) { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (cls) node.className = cls; if (parent) parent.appendChild(node); return node; }
   const root = el('section', undefined, host, 'skills-editor'); root.tabIndex = -1; root.setAttribute('aria-label', 'Hero Skills editor');
@@ -215,7 +217,7 @@ function mount(host, api) {
   function effective() { const result = session.effective(selected); localChanges.forEach(change => { if (change.style === selected) put(result, change.path, clone(change.value)); });if(previewGesture&&previewGesture.style===selected)for(const [path,value]of Object.entries(previewGesture.patches))put(result,path,value);return result; }
   function queueField(path, value, defer) {
     const change = { style: selected, path: parts(path).join('.'), value }; localChanges.set(change.style + ':' + change.path, change);
-    updateButtons(session.state()); updatePreview(); clearTimeout(debounce);if(!defer)debounce = setTimeout(flushFields, 160);
+    updateButtons(session.state()); updateDescriptionPreviews(); updatePreview(); clearTimeout(debounce);if(!defer)debounce = setTimeout(flushFields, 160);
   }
   function flushFields() { clearTimeout(debounce); debounce = null; const changes = [...localChanges.values()]; localChanges.clear(); changes.forEach(change => session.change(change.style, change.path, change.value)); return session.flush(); }
   async function perform(action) {
@@ -282,7 +284,7 @@ function mount(host, api) {
   function renderInspector() {
     if(activeScrub)activeScrub.finish(false);
     for(const scrub of [...scrubbers])if(scrub.inspector){scrub.destroy();scrubbers.delete(scrub);}
-    fieldsHost.textContent = ''; controlRefs.clear();
+    fieldsHost.textContent = ''; controlRefs.clear(); descriptionPreviews.clear();
     Object.keys(tabs).forEach(id => { tabs[id].classList.toggle('active', id === tab); tabs[id].setAttribute('aria-selected', String(id === tab)); });
     if (!snapshot) return;
     const current=Authoring.entry(selected,selectedEntry);el('h2',current.name.toUpperCase(),fieldsHost);el('p',current.help,fieldsHost,'help entry-help');
@@ -310,11 +312,24 @@ function mount(host, api) {
         if (type === 'effect-animation') { const resource = fieldValue(field.resourcePath||'visual.resource'), item = (snapshot.catalogs && snapshot.catalogs.vfx || []).find(item => catalogValue(item) === resource); choices = [['', 'Default animation'], ...(item && item.animations || []).map(name => [name, name])]; }
         choices.forEach(choice => { const id = Array.isArray(choice) ? choice[0] : typeof choice === 'object' ? choice.value : choice, title = Array.isArray(choice) ? choice[1] : typeof choice === 'object' ? choice.label : choice; const option = el('option', title, input); option.value = id; });
         if(value&&!Array.from(input.options).some(option=>option.value===String(value))){const option=el('option',value+' · unavailable; choose another or Reset',input);option.value=value;}
+      } else if (type === 'description') {
+        input = el('textarea', undefined, wrap); input.rows = 5; input.maxLength = field.maxLength;
+        const insert = el('select', undefined, wrap, 'description-tokens'); insert.setAttribute('aria-label', 'Insert description stat');
+        const empty = el('option', 'Insert a skill stat…', insert); empty.value = '';
+        Descriptions.tokens(selected).forEach(token => { const option = el('option', token.label + ' · ' + token.token, insert); option.value = token.token; });
+        insert.onchange = () => {
+          if (!insert.value) return;
+          const start = typeof input.selectionStart === 'number' ? input.selectionStart : input.value.length, end = typeof input.selectionEnd === 'number' ? input.selectionEnd : start, token = insert.value;
+          input.value = input.value.slice(0, start) + token + input.value.slice(end); insert.value = '';
+          if (input.focus) input.focus(); if (input.setSelectionRange) input.setSelectionRange(start + token.length, start + token.length);
+          commit(); flushFields();
+        };
+        const preview = el('p', '', wrap, 'description-preview'); preview.setAttribute('aria-label', 'Description preview'); preview.setAttribute('aria-live', 'polite'); descriptionPreviews.set(path, preview);
       } else { input = el('input', undefined, wrap); input.type = type === 'boolean' ? 'checkbox' : type === 'number' ? 'number' : 'text'; }
       input.id = 'skill-' + path.replace(/[^a-z0-9]+/gi, '-'); label.htmlFor = input.id; input.setAttribute('aria-label', field.label || path);
       input.title=help;
       if (field.min !== undefined) input.min = field.min; if (field.max !== undefined) input.max = field.max; if (field.step !== undefined) input.step = field.step; else if (input.type === 'number') input.step = 'any';
-      const commit = () => { const n = input.type === 'checkbox' ? input.checked : input.type === 'number' ? (!input._numericEditing&&input.value===input._numericDisplay?input._numericExact:Number(input.value)) : input.value, key = selected + ':' + path; if (input.type === 'number' && (input.value.trim() === '' || !Number.isFinite(n) || field.min !== undefined && n < field.min || field.max !== undefined && n > field.max) || type === 'color' && n !== '' && !/^#[0-9a-f]{6}$/i.test(n)) { invalidInputs.set(key, input.value); input.classList.add('invalid'); updateButtons(session.state()); return; } invalidInputs.delete(key); input.classList.remove('invalid'); if(input.type==='number'&&n===fieldValue(path)){updateButtons(session.state());return;}queueField(path, n); };
+      const commit = () => { const n = input.type === 'checkbox' ? input.checked : input.type === 'number' ? (!input._numericEditing&&input.value===input._numericDisplay?input._numericExact:Number(input.value)) : input.value, key = selected + ':' + path; if (input.type === 'number' && (input.value.trim() === '' || !Number.isFinite(n) || field.min !== undefined && n < field.min || field.max !== undefined && n > field.max) || type === 'color' && n !== '' && !/^#[0-9a-f]{6}$/i.test(n) || type === 'description' && !SkillSettings.valid(field, n)) { invalidInputs.set(key, input.value); input.classList.add('invalid'); updateDescriptionPreviews(); updateButtons(session.state()); return; } invalidInputs.delete(key); input.classList.remove('invalid'); if(input.type==='number'&&n===fieldValue(path)){updateButtons(session.state());return;}queueField(path, n); };
       input.oninput = commit; input.onchange = () => { commit(); flushFields(); };
       if(input.type==='number'){input._descriptor=field;input.onfocus=()=>{input._numericEditing=true;if(!invalidInputs.has(selected+':'+path))input.value=String(fieldValue(path));};input.onblur=()=>{input._numericEditing=false;updateFields();};}
       if(input.type==='number'){
@@ -327,7 +342,15 @@ function mount(host, api) {
     updateFields();
   }
   function animations() { return compatibleAnimations(description); }
-  function updateFields() { if (!snapshot) return; controlRefs.forEach((input, path) => { if (document.activeElement === input||scrubInput===input) return; const key = selected + ':' + path, value = invalidInputs.has(key) ? invalidInputs.get(key) : fieldValue(path); input.classList.toggle('invalid', invalidInputs.has(key)); if (input.type === 'checkbox') input.checked = !!value; else if(input.type==='number'&&!invalidInputs.has(key)){input._numericExact=value;input._numericDisplay=formatNumber(value,input._descriptor);input.value=input._numericDisplay;}else input.value = value === undefined || value === null ? '' : value; if (input._colorPicker && !invalidInputs.has(key)) input._colorPicker.value = value || input._defaultColor; }); }
+  function updateFields() { if (!snapshot) return; controlRefs.forEach((input, path) => { if (document.activeElement === input||scrubInput===input) return; const key = selected + ':' + path, value = invalidInputs.has(key) ? invalidInputs.get(key) : fieldValue(path); input.classList.toggle('invalid', invalidInputs.has(key)); if (input.type === 'checkbox') input.checked = !!value; else if(input.type==='number'&&!invalidInputs.has(key)){input._numericExact=value;input._numericDisplay=formatNumber(value,input._descriptor);input.value=input._numericDisplay;}else input.value = value === undefined || value === null ? '' : value; if (input._colorPicker && !invalidInputs.has(key)) input._colorPicker.value = value || input._defaultColor; }); updateDescriptionPreviews(); }
+  function updateDescriptionPreviews() {
+    if (!snapshot) return;
+    const tuning = effective();
+    descriptionPreviews.forEach((preview, path) => {
+      const key = selected + ':' + path, text = invalidInputs.has(key) ? invalidInputs.get(key) : get(tuning, path), error = Descriptions.error(selected, text);
+      preview.textContent = error || Descriptions.format(selected, text, tuning); preview.classList.toggle('error', !!error);
+    });
+  }
   async function updatePreview() {
     if (!snapshot || disposed) return;
     if(previewGesture)return;

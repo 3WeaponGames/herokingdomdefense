@@ -18,7 +18,7 @@ function fixture(user,options={}){
  }
  Node.EventType={TOUCH_END:'tap',SIZE_CHANGED:'resize'};
  class Graphics{clear(){}circle(){}ellipse(){}rect(){}roundRect(){}fill(){}stroke(){}}
- class Label{}Label.HorizontalAlign={CENTER:1};Label.VerticalAlign={CENTER:1};Label.Overflow={SHRINK:1};
+ class Label{}Label.HorizontalAlign={LEFT:0,CENTER:1};Label.VerticalAlign={CENTER:1};Label.Overflow={SHRINK:1};
  class Sprite{}Sprite.SizeMode={CUSTOM:0};Sprite.Type={SIMPLE:0,SLICED:1};
  class Mask{}Mask.Type={IMAGE_STENCIL:2};
  const canvas=Object.assign(new Node('Canvas'),{width:options.width||750,height:options.height||1334}),pending=[],icons=[],previews=[],poseIcons=[],tierFrames=[],sounds=[];
@@ -28,7 +28,8 @@ function fixture(user,options={}){
   resources:{load},assetManager:{getBundle:()=>({load:(resource,type,callback)=>load(resource,type,callback,'KinghtFallIconGood')})}};
  let ready,cancels=0;
  const modules={HeroWeapons:require('../../assets/_script/HeroWeapons'),EquipmentTiers:require('../../assets/_script/EquipmentTiers'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},
-  KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getEquipCfgList:()=>require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg})}},
+  KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:options.config||require('../../assets/KinghtFallConfig/GameJsonCfg.json'),getEquipCfgList:()=>require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg})}},
+  HeroSkillSettings:require('../../assets/_script/HeroSkillSettings'),HeroSkillAuthoring:require('../../assets/_script/HeroSkillAuthoring'),HeroSkillDescriptions:require('../../assets/_script/HeroSkillDescriptions'),
   EquipmentIconFit:{apply(sprite,frame){sprite.spriteFrame=frame;}},
   BattleSounds:{effect(id,owner,options){sounds.push({id,owner,options});}},
   HeroItemLooks:{gearImage(slot,level,area,style){icons.push({slot,level,area,style});return{resource:'items/'+style+'/'+slot+'/'+level};},whenReady(callback){ready=callback;return()=>{ready=null;cancels++;};}},

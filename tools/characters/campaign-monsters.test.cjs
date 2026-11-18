@@ -4,10 +4,16 @@ const root=path.resolve(__dirname,'../..'),Migration=require('./publish-campaign
 const cfg=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),catalog=require('../../assets/resources/localization/catalog.json'),read=relative=>JSON.parse(fs.readFileSync(path.join(root,relative),'utf8'));
 const hash=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const aliases=Object.values(cfg.SoldierCfg).filter(row=>row.CampaignBaseUnit),withoutGuide=row=>{const copy=structuredClone(row);delete copy.Guide;return copy;};
-// Map layouts and reward authoring have separate coverage. Compare every saved
-// queue with its approved placement plan through the explicit profile remap;
-// world-wave-conversion tests verify the equivalent timed schedules.
-function projectStage(stage,variant){const projected=structuredClone(stage);if(projected.StageLayoutId){assert.equal(projected.prefab,'Generated/Stages/'+projected.StageLayoutId);projected.prefab=projected.EnvironmentMapId;delete projected.StageLayoutId;}if(projected.prefab==='map-original-01-rebuilt')projected.prefab='Map01';delete projected.EnvironmentMapId;delete projected.EnvironmentBiome;for(const wave of projected.WaveCfg)delete wave.SpawnTimeline;
+// Saved stage overrides are authoritative. Only a real, matching authored
+// layout exempts its queues from the historical appearance-migration plan.
+// Every untouched stage still retains its exact approved packet assertions.
+function projectStage(stage,variant){
+ if(stage.StageLayoutId){
+  const id=variant+'-'+stage.Level,file='authoring/worlds/stages/'+id+'.json';assert.equal(stage.StageLayoutId,id);assert.equal(stage.prefab,'Generated/Stages/'+id);assert(fs.existsSync(path.join(root,file)),'Missing authored override '+id);
+  const saved=read(file),queues=waves=>waves.map(wave=>({Wave:wave.Wave,RefreshSoldierKind:wave.RefreshSoldierKind,SpawnTimeline:wave.SpawnTimeline}));
+  assert.equal(saved.id,id);assert.equal(saved.variant,variant);assert.equal(saved.level,stage.Level);assert.equal(saved.config.Level,stage.Level);assert.deepEqual(queues(stage.WaveCfg),queues(saved.config.WaveCfg),id+' saved override queues');return;
+ }
+ const projected=structuredClone(stage);for(const wave of projected.WaveCfg)delete wave.SpawnTimeline;
  const remap=line=>line.replace(/(\d+)(?=,)/g,id=>String(cfg.GameTools.unitProfiles.aliases[id]||id));
  for(const row of Definition.plans[variant].filter(row=>row.stage===stage.Level)){const wave=projected.WaveCfg[row.wave-1];assert.equal(wave.RefreshSoldierKind[row.lineIndex],remap(row.proposed),variant+' stage '+stage.Level+' wave '+row.wave+' exact canonical queue');wave.RefreshSoldierKind[row.lineIndex]=row.original;}return projected;}
 test('stage seven retains its explicitly authored Map07 fire environment in every campaign variant',()=>{
@@ -15,11 +21,19 @@ test('stage seven retains its explicitly authored Map07 fire environment in ever
     const stage=read(file).LevelCfg.find(row=>row.Level===7);assert(stage,key+' stage seven');assert.equal(stage.EnvironmentMapId,'Map07',key);assert.equal(stage.EnvironmentBiome,'fire',key);
   }
 });
-test('all sixty stage definitions retain exact spawn queues after the explicit fighting-profile remap',()=>{
+test('all sixty stage definitions retain approved queues or matching explicitly authored overrides',()=>{
+  const Profiles=require('../../assets/_script/EnemyStageProfiles'),sourceFor=id=>{const entry=cfg.GameTools.unitProfiles.entries[id];return entry?entry.baseId:Number(id);};
+  for(const appearance of Definition.variants){const source=cfg.SoldierCfg[appearance.AppearanceSourceUnit];assert(source&&source.MonsterSource,'Historical campaign source model '+appearance.AppearanceSourceUnit+' must remain available');assert(fs.existsSync(path.join(root,'assets/KinghtFallEnemy',source.prefab+'.prefab')),'Historical campaign source prefab '+appearance.AppearanceSourceUnit+' must remain available');}
   for(const [key,file]of Object.entries(Migration.CONFIGS)){
-    const stages=read(file).LevelCfg;assert.equal(stages.length,20);const used=new Set();
-    stages.forEach((stage,index)=>{assert.equal(stage.Level,index+1);assert.equal(stage.WaveCfg.length,10);projectStage(stage,key);for(const wave of stage.WaveCfg)for(const line of wave.RefreshSoldierKind)for(const token of line.split('#')[1].split(';')){const id=Number(token.split(',')[0]),entry=cfg.GameTools.unitProfiles.entries[id],source=entry?entry.baseId:id;if(cfg.SoldierCfg[source]&&cfg.SoldierCfg[source].MonsterSource)used.add(source);}});
-    assert.equal(used.size,100,key+' must feature the complete source roster');
+    const stages=read(file).LevelCfg;assert.equal(stages.length,20);const used=new Set(),authored=new Set(stages.filter(stage=>stage.StageLayoutId).map(stage=>stage.Level));
+    stages.forEach((stage,index)=>{assert.equal(stage.Level,index+1);if(authored.has(stage.Level))assert(Array.isArray(stage.WaveCfg)&&stage.WaveCfg.length);else assert.equal(stage.WaveCfg.length,10);projectStage(stage,key);const units=Profiles.records(stage,cfg.SoldierCfg,cfg.GameTools);for(const wave of stage.WaveCfg){
+      const ids=(wave.SpawnTimeline||[]).map(entry=>entry.unitId);for(const line of wave.RefreshSoldierKind)for(const token of line.split('#')[1].split(';')){const id=Number(token.split(',')[0]);if(id!==-1)ids.push(id);}
+      for(const id of ids){const unit=units[id];assert(unit,key+' stage '+stage.Level+' references a missing current enemy '+id);const source=sourceFor(unit.ProfileBaseID||id);if(cfg.SoldierCfg[source]&&cfg.SoldierCfg[source].MonsterSource)used.add(source);}
+    }});
+    if(!authored.size)assert.equal(used.size,100,key+' must feature the complete unchanged source roster');
+    // Custom waves may deliberately replace historical appearances. Every
+    // planned appearance in the remaining untouched stages must still occur.
+    for(const row of Definition.plans[key].filter(row=>!authored.has(row.stage)))for(const token of row.proposed.split('#')[1].split(';')){const id=Number(token.split(',')[0]);if(id!==-1){const canonical=cfg.GameTools.unitProfiles.aliases[id]||id,source=sourceFor(canonical);if(cfg.SoldierCfg[source]&&cfg.SoldierCfg[source].MonsterSource)assert(used.has(source),key+' missing an unchanged planned source '+source);}}
   }
 });
 test('legacy aliases stay byte-value equivalent while canonical enemies use the approved fighting balance',()=>{

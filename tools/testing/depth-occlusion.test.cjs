@@ -116,6 +116,7 @@ test('a native depth draw shares one GPU actor capture across masks without reta
   });
   const objects = [0, 1].map(y => {
     const wall = node(y);
+    wall._depthBuilding = true; // This fixture models building occluders, not small ground props.
     return { node: wall, sources: [{ enabled: true, node: wall }], overlay: { node: node(y), mask: {} },
       masks: new Map([[actor, { node: node(y), sprite: {} }]]), center: { x: 0, y }, size: {}, frame: {} };
   });

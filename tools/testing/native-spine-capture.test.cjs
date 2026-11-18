@@ -109,6 +109,7 @@ test('the production renderNative standalone batch settles once and quiets later
 
 test('production update shares its scope across object and actor captures then restores scene inheritance',()=>{
  const f=fixture(6),occluder=f.add('occluder'),actors=f.renderers.slice(0,6).map(r=>({node:r.node,spAni:r,hp:100}));occluder.node.zIndex=100;
+ occluder.node._depthBuilding=true;actors.forEach(actor=>{actor.node.y=1;}); // Actors stand behind this building capture stub.
  f.context.bounds=()=>({minX:0,minY:0,maxX:10,maxY:10});f.context.point=()=>({x:0,y:0});
  const object={node:occluder.node,sources:[occluder],masks:new Map(),center:{x:0,y:0},size:{width:10,height:10},frame:{}};
  const view=Object.assign(Object.create(f.DepthView.prototype),f.owner,{captureSupported:true,objects:[object],nativeActors:new Map(),game:{ctrPlay:actors[0],gameData:{getSoldierList:()=>actors.slice(1),getEnemyList:()=>[]}},cameraNode:new (f.scene.constructor)('camera'),camera:{render:root=>f.pass(root)},sort(){},snapshot(){this.renderNative([occluder],{x:0,y:0},50,{});},makeMask(object,actor){const mask={node:new (f.scene.constructor)('mask'),sprite:{}};object.overlay={node:new (f.scene.constructor)('overlay'),mask:{}};object.masks.set(actor,mask);return mask;},syncNativeMask(mask,entry){this.renderNative([entry.actor.spAni],{x:0,y:0},50,{});}});

@@ -15136,6 +15136,2421 @@
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 28
       }
+    },
+    {
+      "id": "terrain-biome-forest-heartwood-crossroads-northwest-fan",
+      "name": "forest heartwood crossroads - northwest fan",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-forest-heartwood-crossroads/northwest-fan.png",
+      "width": 620,
+      "height": 620,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "74f54c55e22a7d411ddef005b9392af5c228cc46ed7eea75fce71aebb28ede6b",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-forest-heartwood-crossroads",
+        "piece": "northwest-fan",
+        "sourceSha256": "4666d569e78e30696624d4d69d8749d07acdba31de75569cded9e1146d23ec99",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 458,
+          "y": 202,
+          "width": 620,
+          "height": 620
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "db2d8eb4f1accc11972f5025c5e47e0082a5c819f5e0aa44259ab77113e71cfe",
+        "footprintMaskSha256": "9d4527098dbdec83818df1a147494ab39385cb02b5042e211e475f3da6a60596",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "67d8e6e5807eea3a41abad110c98875dbf6abce6debb210ac3d521ffd3ef6573",
+          "rawGeneratedSha256": "452932db01eb767a5133363de91ffa6a1dff4adc0c70b32d4255274c29552e2e",
+          "guideSha256": "c99095bb7dfda8cded2c49a5f7c5c04b21ace99137a0d9f854a0ab840bfcba6a",
+          "opaqueMaskSha256": "236134ea24a73f91ed52ea3b5106cc51e4090307cc8999543ec9c2fc19d71575",
+          "styleBoardSha256": "b9eeab0087c1718972281a7218a561de8fadd012b83d7c8a4cfe47b20f50e607"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-forest-heartwood-crossroads-east-pond",
+      "name": "forest heartwood crossroads - east pond",
+      "category": "water",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-forest-heartwood-crossroads/east-pond.png",
+      "width": 530,
+      "height": 640,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "6aa71eac7d8fbc83ab2d30899c250a20743059f1e0d1ed8176ed1619d1622d8c",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-forest-heartwood-crossroads",
+        "piece": "east-pond",
+        "sourceSha256": "5622b8faec7de020647a45540845e838d49a1a2f8bf42b5be394bc008c3ac34b",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 503,
+          "y": 192,
+          "width": 530,
+          "height": 640
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; integer crop only",
+        "guideSha256": "7387b602b2c3b7b48eca18a2ded17ccf75837d9148e8ad324e1fff25e92ecd2c",
+        "footprintMaskSha256": "71019babfb5cd9deb073525c6b8851f0eddf1c65d54b4f977cd9caf4be69ecef",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": true,
+        "flatDeck": false
+      }
+    },
+    {
+      "id": "terrain-biome-forest-heartwood-crossroads-southwest-shelf",
+      "name": "forest heartwood crossroads - southwest shelf",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-forest-heartwood-crossroads/southwest-shelf.png",
+      "width": 630,
+      "height": 500,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "5f2b44f94e28d18514baeef7debc838c2d368e18dd9a5c787e0a91ee0c63ae06",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-forest-heartwood-crossroads",
+        "piece": "southwest-shelf",
+        "sourceSha256": "cb83f2f4c825223372560deabbcc044dfd1578af704b46554ab370a475e5ed30",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 453,
+          "y": 262,
+          "width": 630,
+          "height": 500
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "832ca814a5e49d1fdcc3eb6f5b356f7ec5d2226ccfa28fb12534a95fcbf68fa1",
+        "footprintMaskSha256": "24caad6649f0505857e3a4d9672b6e8ac756ae46a59ea2b4aefe12b39d97d79b",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "a85f0ed75c52a72ecb3c5f724a3c248a9e673db6adeda86952a8ec55d0dadf33",
+          "rawGeneratedSha256": "d9bba5bea171443e21f5d09722435459a2f3a98adca9f3662833c873fed57361",
+          "guideSha256": "2a27439f425936404f89e3f1461323c21ccdaf8fa6f8f2a4b66fa13f2316943e",
+          "opaqueMaskSha256": "9b5056571b4a2435b6f8ea42db83a91f3afa614526849bce0d8b3726536beca1",
+          "styleBoardSha256": "b9eeab0087c1718972281a7218a561de8fadd012b83d7c8a4cfe47b20f50e607"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-forest-heartwood-crossroads-southeast-twins",
+      "name": "forest heartwood crossroads - southeast twins",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-forest-heartwood-crossroads/southeast-twins.png",
+      "width": 520,
+      "height": 480,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "c185e60ad85976aec9be31c564c7fe739dbbf875f3f12f60ad545d3849af3038",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-forest-heartwood-crossroads",
+        "piece": "southeast-twins",
+        "sourceSha256": "2787064306a1433abbd35b30d8bbd51ad74780b3cc85fc7b21ea2cf9411eda3b",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 508,
+          "y": 272,
+          "width": 520,
+          "height": 480
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "e47f0ee800621ec6e0bf4b1c8883f7296ed72a626bc460617f7ca75c7c79af5a",
+        "footprintMaskSha256": "3f869d7d244f0ab3f2a7e0c0a6649b6ef3eea58035e51f8ff29cbb214b604b56",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "018318c2bc36bdf080d5eafb94cb3ac142f202248eeeed008e69f0880064e485",
+          "rawGeneratedSha256": "48c7c71ec44976a2f373136cf5fecc13bdd11a7e0f9997a451f953120d85e07d",
+          "guideSha256": "50174d560767894d00123c6bb1c987088ef0a367fc70f474118bae8ffb072a9b",
+          "opaqueMaskSha256": "6ec7ee7df9ed5f470f859660cdec1e4a534de7cfec9e58f91dc374b06d4a7f24",
+          "styleBoardSha256": "b9eeab0087c1718972281a7218a561de8fadd012b83d7c8a4cfe47b20f50e607"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-north-root-crown",
+      "name": "deep forest rootbreak hollow - north root crown",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-deep-forest-rootbreak-hollow/north-root-crown.png",
+      "width": 630,
+      "height": 700,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "1bdef7ebf0fb9f8af2feb043ddbf18991ffe5d5391cc2ed441857fc21eaaa3ea",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "north-root-crown",
+        "sourceSha256": "f9bea078bab16d8d38b53e02d48883c8157dd7d4a8049985c7545a028613006d",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 453,
+          "y": 162,
+          "width": 630,
+          "height": 700
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "ff5d7c31c8e35756bc0d11dad069f8d04124b18f45624fa52e2dee2be9fea1db",
+        "footprintMaskSha256": "89a200448f74e343492d311650cb30caf782316ced3e68ab1ea48f45fa0832e1",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "19e26e5505af3329df033bd0db444f8dcf6c97d17643a0e4322dbde1d2189009",
+          "rawGeneratedSha256": "57002e11b593940d143b5e0dbbd8f99c70f3ca5725fd4d712a529b6b569fb0ab",
+          "guideSha256": "9e1d47c1c2ecd3fd1f03c7879632b7113d5afb22b12755a99a9d6c08aa8e1dbc",
+          "opaqueMaskSha256": "40e06a939f7043b84d1f50732b1acc4d0c9fc52bc7b290d5c151ae2135136a3e",
+          "styleBoardSha256": "da5b1a8eab42a6bdc6522b979d238f5b66f89466d27068ab2b3892ce096c48b2"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-west-hook",
+      "name": "deep forest rootbreak hollow - west hook",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-deep-forest-rootbreak-hollow/west-hook.png",
+      "width": 480,
+      "height": 690,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "4d2a04ea7e8e6b8386946a69c86f511dbc123b9a037c7d0060e5187af819f375",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "west-hook",
+        "sourceSha256": "87254a7d888b6137a31ddfbf1ac1da0cc9b570bb04a3b966d035bb286c6a031e",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 528,
+          "y": 167,
+          "width": 480,
+          "height": 690
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "b79acd3808e97bd8c6fc0ebbc57adf64e329ff261be7f9004c3c2801a3e03e0a",
+        "footprintMaskSha256": "ba2a874ee0b5bb3df59f0274f4da05a1b35b69b8cd5a733ce0a38f15434fb88f",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "45f8b80487dc144f0520169574aa8ad0409ce456ce913442d3912120bf414c7c",
+          "rawGeneratedSha256": "59608dbcf92d0b1b2af796d6a9320863275606cbf8cc197a36ab2ed68e5421bd",
+          "guideSha256": "f65a0cfe8839d5d88a895c0edb0497a07d7924183b3486a7f08c70665bb151f0",
+          "opaqueMaskSha256": "584ec8a08b00b2674b75591d1c7dff9e7dda70e4b64ee9ed5f8020601ae83f9c",
+          "styleBoardSha256": "da5b1a8eab42a6bdc6522b979d238f5b66f89466d27068ab2b3892ce096c48b2"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-south-boulder",
+      "name": "deep forest rootbreak hollow - south boulder",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-deep-forest-rootbreak-hollow/south-boulder.png",
+      "width": 550,
+      "height": 580,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "d1a0e909868fdb2ab5d707a99070b74e0ed4d00a5a69811bbfd7ca2ad5811b3b",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "south-boulder",
+        "sourceSha256": "5906ad659fbc2d9106f7c6f8a85a5ec1e1186fb857b23ded65d8a9615abb336a",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 493,
+          "y": 222,
+          "width": 550,
+          "height": 580
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "d74082a564d270d7e8dbca948358f62579e3ee2c13413607ade4c8f3f5611d6e",
+        "footprintMaskSha256": "ed6d13142f5389af3478fe1304561ce7722554725a0a9df339534c247a9ab13f",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "1a0811688ad573afefeb28091c1376605d466763d9305445e35c97a22007baa4",
+          "rawGeneratedSha256": "c73debe5e0e9d64a7a4e1127ebaab57930d26d10cddee6a40bad8b2a04c191f2",
+          "guideSha256": "4975460452f7a2b1d68d0246738229e6438a1b4b725a65ef5f8dc150a5d27810",
+          "opaqueMaskSha256": "b913e8798b18d3c5b4d0cf21a8e1dcd70ae1e6212e1e3997a1f2ef9911aa3bf7",
+          "styleBoardSha256": "da5b1a8eab42a6bdc6522b979d238f5b66f89466d27068ab2b3892ce096c48b2"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-southeast-pool",
+      "name": "deep forest rootbreak hollow - southeast pool",
+      "category": "water",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-deep-forest-rootbreak-hollow/southeast-pool.png",
+      "width": 520,
+      "height": 600,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "47b6eb1765fdc4a43b04aa18c2f004fe0d1036819385cb70d9b9290ab37f8b09",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "southeast-pool",
+        "sourceSha256": "5048b1bcbee6e34cca738642b149ecd3c97ff73fd0a431f6ac3e9b208151b623",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 508,
+          "y": 212,
+          "width": 520,
+          "height": 600
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; integer crop only",
+        "guideSha256": "c4dc1e6907941f11bd0750f4208cea474948295f38152cda958aa0bbdd12f6b7",
+        "footprintMaskSha256": "07bece52720c610d87c9bfdb7b47460f9e5983d4833605b1b9ded991489a9cc9",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": true,
+        "flatDeck": false
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-northwest-table",
+      "name": "autumn copperleaf exchange - northwest table",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-autumn-copperleaf-exchange/northwest-table.png",
+      "width": 600,
+      "height": 560,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "b1faedd9245e231825e7fb9732e4eddd2957b04983b4bd2ecc188eea0397f9b0",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "northwest-table",
+        "sourceSha256": "54377bd4462fcc9ccce128a364489cc5c088903accce93db7db7cb3af06ac023",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 468,
+          "y": 232,
+          "width": 600,
+          "height": 560
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "9df9f6ff80969763909e33071785a316e3110f61688b0fc1c55d52c4e1f34837",
+        "footprintMaskSha256": "370adacd697d817bd2aef9045ad3466a47152c7ff456184f9354ebc06c44c381",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "07024331f9625abddf9f4accb182b2b251c07f9371755594dad684131d088749",
+          "rawGeneratedSha256": "cdca133c28a654520310d9c3d97da2227cb92eae5fd17d3312573478db674cc6",
+          "guideSha256": "6e1589eacbf50138e8d4040e85063c9c61373d3e49d2ddfb99533e1260a0d6cd",
+          "opaqueMaskSha256": "fcb9dd81f57647854c46c1f005d32197f7cdaadb445f2d13fb233594747bb58e",
+          "styleBoardSha256": "66f780a288650d1c4914486aa66206f8ca2c11ec87f6cdd700729c865be6c2ab"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-center-terrace",
+      "name": "autumn copperleaf exchange - center terrace",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-autumn-copperleaf-exchange/center-terrace.png",
+      "width": 590,
+      "height": 630,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "405bf744d4995ad5e6552b2136d3b517372b51e6185cde0a357b4e0aa9a009be",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "center-terrace",
+        "sourceSha256": "8f66b68ffadd8cf371507d33a5eb07af4f4836561fe56d5e9c0cee965b4ad98d",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 473,
+          "y": 197,
+          "width": 590,
+          "height": 630
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "a88bff5d9facf35050a03a2cc6842564f0511662621c796960654638d88b6b46",
+        "footprintMaskSha256": "cfb55bb35309070ddf12a5682ec92ce38eb7eb15e1aefb1523f6dd7d8a510e3e",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "2e5d4a90f349b296ae9e5197a6ff118b222ecd4d36c5a41e113fc2aa70842bbd",
+          "rawGeneratedSha256": "be785c88a81727da04dff898644fe5b4459776c4819c3cfbacaeb3fa3aaf7e1a",
+          "guideSha256": "fde495855a6097ad3e0c33d77d9f9f894689c979336764625c821a822d760ef5",
+          "opaqueMaskSha256": "7f28191b24fc94cbc8cf97c7929f2a83473eccd9e8788f2c4c5270d6c78f7566",
+          "styleBoardSha256": "66f780a288650d1c4914486aa66206f8ca2c11ec87f6cdd700729c865be6c2ab"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-southeast-outcrop",
+      "name": "autumn copperleaf exchange - southeast outcrop",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-autumn-copperleaf-exchange/southeast-outcrop.png",
+      "width": 540,
+      "height": 680,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "cd7e39800cb54c16e781ae7bde7bc0c22c399b5a37b93e9ef76bed0933fa3ca8",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "southeast-outcrop",
+        "sourceSha256": "27b29608aec96daf5b675f2099210507c9f1a2bad5a391f8afe0811d80084b5d",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 498,
+          "y": 172,
+          "width": 540,
+          "height": 680
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "0caac2975665d25a1131c5259e4b51e08c173f14e6c29bde58b8048e764ce421",
+        "footprintMaskSha256": "cf0208899de516ce12d96206a5d3716b8ade43fa67584d7aa7f703d85a4c9de9",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "44d4914acab1a9511c22cfbb483518e4aca5b7b24b88d932035a2b4fb969a4be",
+          "rawGeneratedSha256": "a2da78a0efd1049b4a45a1ef82575aadc0d0c37cd5e3391c93e42d20f7b3f0cf",
+          "guideSha256": "7f01d829558fc516c61c0f910c59d3e81c7f2c16889ddbd87fcb90f378f88390",
+          "opaqueMaskSha256": "8949a88c676af90e9ee8d76a122d92256f65dcfea7d828dce9669282d9c9535f",
+          "styleBoardSha256": "66f780a288650d1c4914486aa66206f8ca2c11ec87f6cdd700729c865be6c2ab"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-southwest-pond",
+      "name": "autumn copperleaf exchange - southwest pond",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-autumn-copperleaf-exchange/southwest-pond.png",
+      "width": 450,
+      "height": 580,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "8701f19293012fba74b6c18d529242114436c00c92fa012e3f6441c852a2587f",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "southwest-pond",
+        "sourceSha256": "72d5435b52aafe7543b123eb4f797805338ba8042e936b51a08e8c348eaf2f8a",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 543,
+          "y": 222,
+          "width": 450,
+          "height": 580
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; integer crop only",
+        "guideSha256": "d8a924be8f690b18ed209bb5c1dad2e321854bf6da3ae98dee7b5d29d18cd243",
+        "footprintMaskSha256": "d856d4503e950e4fad2b0908d3c4d9fcaf895f486d774c00bc16c7abb7488e82",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": true,
+        "flatDeck": false
+      }
+    },
+    {
+      "id": "terrain-biome-desert-caravan-bend-northwest-headland",
+      "name": "desert caravan bend - northwest headland",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/northwest-headland.png",
+      "width": 500,
+      "height": 1200,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "771808f79e7a4c52a12f10cd9103da63c8d84c517daf77beeb2aaa34843b1944",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-desert-caravan-bend",
+        "piece": "northwest-headland",
+        "sourceSha256": "0baf0c35b5cb4963918b083a30e2fdedaaa4e87f9c3e71724e772aa45d1f918c",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 168,
+          "width": 500,
+          "height": 1200
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "0222673df921418b67cd43bcb83920bbacf2a733974276627007bafed94644d5",
+        "footprintMaskSha256": "26a08b66ab9e435ebffc50ffe52f9a4b941805f2e5eb7b5ef2993cf1c54dddac",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "7ad1aa34585920d01102e16e787fa591d087efac24fdddf790574ec052bb2730",
+          "rawGeneratedSha256": "b06f9a9a3879746afc7d8e15404006e4b8f85b911bb436ebd507f87f7e81ae9c",
+          "guideSha256": "4941e9f3422fd5ea237fc1f0a96af9d6c6cf779d4a72451b5941598d356c5d24",
+          "opaqueMaskSha256": "f75e6b6b8a5a17eaee95f41ad01377037296f296cc5fc60a3e3287392e42d795",
+          "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-desert-caravan-bend-northeast-mesa",
+      "name": "desert caravan bend - northeast mesa",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/northeast-mesa.png",
+      "width": 500,
+      "height": 1400,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "f3e6f83a1a3737ddf2f92cac5e16092f634a0478848719b5c3c589ee4bc682d7",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-desert-caravan-bend",
+        "piece": "northeast-mesa",
+        "sourceSha256": "0a354b2dd678aa930ea53dfbed6212fb9582ca531aca10901151baeb38da85ef",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 68,
+          "width": 500,
+          "height": 1400
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "aa37b78ff02e751020c36a12b8779b27e7eec7d44b91ba8b30ebad5f3f0b1c3b",
+        "footprintMaskSha256": "c78b858385545cba43a58a671fdf2f7debeccaf2880f3229c5696cd8d228de78",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "e9da30789ccef1cbaad6bbb4c6c977755d692f591e15dbedb869276a42f72206",
+          "rawGeneratedSha256": "61f8e743b0671d678d85b1f80e8c5d1d78e3881ac636f88338204d38cfd495cb",
+          "guideSha256": "10100eb65a5ca65fde9820cb1c974de2da113ed773d6378539869542dd90a43e",
+          "opaqueMaskSha256": "eccedc2383e1f04d2a96d08179919c347340feff954e55dd566d5dd87a945c2f",
+          "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-desert-caravan-bend-southwest-stair",
+      "name": "desert caravan bend - southwest stair",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/southwest-stair.png",
+      "width": 550,
+      "height": 740,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "b7db76bf642920d99e08dc235b41aad102ebd655cf491fc6f0dc9e17f8f14ac5",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-desert-caravan-bend",
+        "piece": "southwest-stair",
+        "sourceSha256": "0e33291458c0e1dfee9fff0c7671b84fef107dbad4ae48589d832462ca091e93",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 493,
+          "y": 142,
+          "width": 550,
+          "height": 740
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "60eb15badb5534cf199cabb5f0a069799c3ff50c58043993c6b62c2338ec337c",
+        "footprintMaskSha256": "ce39ac9d5169fde90e85d46c51e97080af07c6ace217c4558aa3f8c46c89420f",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "1a94274b1aa39fd810a4c12efedbee7e0ae519b0a65e902c03f9f5f887367d2d",
+          "rawGeneratedSha256": "de076b214431347417b8c4d7be961382d6d7082bc789d5b1d52475e806aacb5d",
+          "guideSha256": "a35aff0a4efe6c734a2df6462c287633fca1e52439e8f87c080cf4847cd169a3",
+          "opaqueMaskSha256": "5b1da8fc3ad9923739b402fc6e0fde361880d1be45a103182cb0b8038b2b012b",
+          "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-desert-caravan-bend-southeast-oasis",
+      "name": "desert caravan bend - southeast oasis",
+      "category": "water",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/southeast-oasis.png",
+      "width": 450,
+      "height": 900,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "40ecbfc334a69b1fc45ff54ac09ebb064f64b637de9eca6a3ffda2d1c3114a3c",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-biome-desert-caravan-bend",
+        "piece": "southeast-oasis",
+        "sourceSha256": "135074f36f633c3f8605f1979683dd33e6033ba6206d676932c66581b22087d3",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 543,
+          "y": 62,
+          "width": 450,
+          "height": 900
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "e4bcf54835a359bbd32c89b809dfcedf6cbf0712d6a01411373f94eb3927a988",
+        "footprintMaskSha256": "fe024fc99072e528def5151933e29e1f35734ac1a829bf5273b20d028b379ede",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": true,
+        "flatDeck": false,
+        "nativeFieldShore": true,
+        "flatGround": true,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "c5585231b6829cbb5b036bb73b0dd9101ce584f7b3731f9ff8bfac07e4865870",
+          "rawGeneratedSha256": "8b7c25531b0fa286e8969a745913666e41cfca87a826ea9f4c765fd582f53e6a",
+          "guideSha256": "b481bf0af4e7cb5f3953a05dc6d006828d3f910340f2d8c336ac2acf4701f287",
+          "opaqueMaskSha256": "302d60ce49c66eb719a7e142a7cc8e3f8509da9fb217245a0a1ccb4ee284e85e",
+          "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-nw-spur",
+      "name": "map expansion snow staggered spurs - nw spur",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-snow-staggered-spurs/nw-spur.png",
+      "width": 770,
+      "height": 794,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "18208890abcf5698b0553fd754ca10497b78a9b1aa9d51b2666fd5839880f505",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "nw-spur",
+        "sourceSha256": "11e2072d2f33b8541b5d11e2a7892ec5145c1174dc387b10984d0d089e317b6f",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 383,
+          "y": 115,
+          "width": 770,
+          "height": 794
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "344b6bd835c2f73486e264167ad8adf9e8d66844612591e19b1476ce850ac480",
+        "footprintMaskSha256": "a0a905c5626ec1a22bcd1b10d14e968a24037dff0c0066c0341ed2dcdaaac491",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "ac8d1f7b0c046bd97af7c899842c534946475d41b0084ae03b8bb5bea1b5eab3",
+          "rawGeneratedSha256": "c139d5ea6c8c1e6c20d56a8175582c8b3a709ddb2b5476f52359ad82c6c0d10d",
+          "guideSha256": "930f5ba33201b790f90780941486625b680092df8e7a0850d2b0aeddfa2ba044",
+          "opaqueMaskSha256": "681f749c9c895ccc4371c00fe506193756e11ca5e2a467c3b6955816f5bbca57",
+          "styleBoardSha256": "d90781fd20fc339534461f3a7a9c54af1141a54f8ff3bfb4342f0107bf1fdad7"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-ne-spur",
+      "name": "map expansion snow staggered spurs - ne spur",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-snow-staggered-spurs/ne-spur.png",
+      "width": 500,
+      "height": 1100,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "639c730856e2fae638d133d5dfb056a826d230b513739b1c6184d9d41d856078",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "ne-spur",
+        "sourceSha256": "c0551fc603df21538a37b7976eefa0afe2a9b68c7f9bb7cc1145ce0fc87568ad",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 218,
+          "width": 500,
+          "height": 1100
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "00a017edb62f8603c7fbf2aedded439e2b9b2380a17cd4e78a880bd015c8e936",
+        "footprintMaskSha256": "720d30cb392b552729723885a295886d111f82ebfd817870fe2a0047dd650075",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "8e04cf0235d0421e565cc296a28efb9fd7a127fd4f87f21f835a197085ea9a48",
+          "rawGeneratedSha256": "10487e16e6c373dc1345d2c81516d8853d3909da70d1f04a55a727762bb8ce6b",
+          "guideSha256": "1f85cb989509be2cdfb6dc4f8ae365b48d589663dbabc0eec3e1d42edf3af6b7",
+          "opaqueMaskSha256": "04cd1c5d2606c170fe378d8d9dc90409274aace9a5eb97e800dee0355510b5f1",
+          "styleBoardSha256": "d90781fd20fc339534461f3a7a9c54af1141a54f8ff3bfb4342f0107bf1fdad7"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-west-spur",
+      "name": "map expansion snow staggered spurs - west spur",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-snow-staggered-spurs/west-spur.png",
+      "width": 580,
+      "height": 820,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "250442cbe0994acc3a8cba3fd87ac1c096d5d3863d1af22f3d7c9ef38be8f06b",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "west-spur",
+        "sourceSha256": "805845b1da813c1314299b9a53416eefd6d2fa6c4aadbeda5bbe26196b4ec108",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 478,
+          "y": 102,
+          "width": 580,
+          "height": 820
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "885c411f325613b5fdfa7d450cfb1cc16a0d5c228b4adbdddb01db874543a1b7",
+        "footprintMaskSha256": "5daab97debdf63574f920cb8903c0fd88d3b4c811e9b968552fbd4fe2b04af7a",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "b258fe40898d2f1db23a4c090476eb464acfebe612cbb435f98e83c9193a259d",
+          "rawGeneratedSha256": "87bd6fa3a9b6b6849db91cb80698430d3a9685056f169fa7232e3c34de4b859d",
+          "guideSha256": "7c28d677f13a62c3fd2b8374c457bb6eb4be35c924b00d872ef5e663c2f6b3b0",
+          "opaqueMaskSha256": "65686532e8a824f8af7444c2506b4351205d1aeb42a725945bdb5f390d0117d8",
+          "styleBoardSha256": "d90781fd20fc339534461f3a7a9c54af1141a54f8ff3bfb4342f0107bf1fdad7"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-meltpond",
+      "name": "map expansion snow staggered spurs - meltpond",
+      "category": "water",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-snow-staggered-spurs/meltpond.png",
+      "width": 550,
+      "height": 1250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "49bd0e0c466f593a03adf235868bede2b3bcc128b92c4118b59e4b2e669333ea",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "meltpond",
+        "sourceSha256": "ae6adbaa197ba021ca580ded9e521c98f43213ff7bacc8d02cc0dff1998fc4ca",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 237,
+          "y": 143,
+          "width": 550,
+          "height": 1250
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "4c687e812f043b542d97e78d07be261bc85b03c90ce3b27ffe83b891a2c8cca9",
+        "footprintMaskSha256": "14f5ad4f4ad0dfeba3c1a2fa774fe6693eedd8cb1178ec482c6475be4ca87a15",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": true,
+        "flatDeck": false,
+        "nativeFieldShore": true,
+        "flatGround": true,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "02abded035374e76a75c96663c89b75d1cfdbabe1f1c5067405eb3b194ea0fcc",
+          "rawGeneratedSha256": "6971923c602cbdc06a604d44dc42552c93e92bdf75aef4bb9897360a630d8a27",
+          "guideSha256": "dc50becddb91b16014316ecbb83fd65b202e88eb8a62123d64ec8335a4315525",
+          "opaqueMaskSha256": "48ce09a4b17ffe86b2730d52d0a4ca248b7cbedaa0ab0588ccbe11a4b84fe2e3",
+          "styleBoardSha256": "c9c1848fb974e2e3a6f5c87653a0410b70ab0cd9238d0bae1c64da683b1c57da"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-west-needle",
+      "name": "map expansion ice shardgate junction - west needle",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-ice-shardgate-junction/west-needle.png",
+      "width": 710,
+      "height": 1184,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "ec6aaf954831c08a95c5fde2f91651d6b39986cd18f4a952d87bc07389799ead",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "west-needle",
+        "sourceSha256": "03b65e58512a6dfa79523820b91f7f24628d44b653fef25fc14210de11d41a7b",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 157,
+          "y": 176,
+          "width": 710,
+          "height": 1184
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "b75756d87ed55ff6439329f3d1db3e8b98db57026b5256a95535dc470dcd8338",
+        "footprintMaskSha256": "b028cef7e8e4d212fee89010fc7d41ce6ea3029081dd0092bb030bf8e0bd99d7",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "864cae41b248d031b2a28b179d6001651314e933646acc029e29d189b1b738b0",
+          "rawGeneratedSha256": "89aabdedfdf6d69704072970c14d0f3839d7338fcd7b7dc1ad40c0a7f26fabb1",
+          "guideSha256": "2d53f85b5f34db59ac4cba45de84e226de208499fb1f51661494ea9008e54260",
+          "opaqueMaskSha256": "91f8fa9720d3448f06c20e4f0e8fdd0d220e4e6b49beca3b801452f6c28dba30",
+          "styleBoardSha256": "2609371fc4305df9418288541412149204babb5c55b11f7ac1db7132919c9ce9"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-south-shard",
+      "name": "map expansion ice shardgate junction - south shard",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-ice-shardgate-junction/south-shard.png",
+      "width": 670,
+      "height": 780,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "21214c9307d63d2c77603de183cee1c173f74d88b6cc9b35adcd1d5ced6f7e20",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "south-shard",
+        "sourceSha256": "ab19c9e0bb2879df82758bdeb4f29eda9c3541229d723860728bcd7587cda4fb",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 433,
+          "y": 122,
+          "width": 670,
+          "height": 780
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "32d908e9d8ef590fcd0d1277d11dd117ab38f1a1b316dfd9e4bbced337c67d5b",
+        "footprintMaskSha256": "0772f91843720bae25a974094bccc9fbbbe1f67cbecc4a942ccb8949805b0ff5",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "0138f5b9ca7678078d78fa872c40b0fae45173c412d90c425710ab8d7122d2cf",
+          "rawGeneratedSha256": "8cb35bee1b360b285c0844a16cf22093dc353f66ae1c796d4bf9d7b61eadfb51",
+          "guideSha256": "8bc0d7acf0f36e31e06371bedb130c1a84bb4667b192ac7e438f76b992e8e832",
+          "opaqueMaskSha256": "c6c59952b4e31f23b6a7c35037b69332922201c4b0672ab3205902b1e3f928fd",
+          "styleBoardSha256": "2609371fc4305df9418288541412149204babb5c55b11f7ac1db7132919c9ce9"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-east-splinter",
+      "name": "map expansion ice shardgate junction - east splinter",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-ice-shardgate-junction/east-splinter.png",
+      "width": 350,
+      "height": 800,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "38cb76fac9925fd54ae22b236e90a44652621838f053c37ab2394d932d05cccf",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "east-splinter",
+        "sourceSha256": "db5030e747ee43641641229a22963e730d90b447e1ea687e1c83b3feefa32e43",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 593,
+          "y": 112,
+          "width": 350,
+          "height": 800
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "e94fbb1bd53739974546274b79701a1ffab81c7a498ebfc4d61d05674a2e7d12",
+        "footprintMaskSha256": "fe0a485c978300d2b13048ebd42d5f15028d7564344c5ece418b52cad622e0bc",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "480730ad730965f5cb93e3bf0515e059cf77e81fa7d82a102fdacf5af866d920",
+          "rawGeneratedSha256": "500e7dadec727e567235b96bc4489bb742c4ffb992100b62b547adb34797dd56",
+          "guideSha256": "4a4a31f9e3df8b26e2a16794b920b99650948b56a9148d51c39ff0842e74d4f6",
+          "opaqueMaskSha256": "cb83ea8315510bdf47afbbdc0aeae8bfce2b23979a33856dc016f7b74b1132c9",
+          "styleBoardSha256": "2609371fc4305df9418288541412149204babb5c55b11f7ac1db7132919c9ce9"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-north-meltpool",
+      "name": "map expansion ice shardgate junction - north meltpool",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-ice-shardgate-junction/north-meltpool.png",
+      "width": 550,
+      "height": 1400,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "229231ac5c782817f797dedee6e384f7ff51af2b0eb6c86c396eeb502fb1778f",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "north-meltpool",
+        "sourceSha256": "55c3542f3e44890fef81e54d344bf8a1fc0ab2fe88ff4b83971ccdfd12bc88f7",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 237,
+          "y": 68,
+          "width": 550,
+          "height": 1400
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "0346464eaed29d5718edd5970fa909c68f637351bf0b3aa32a19067e0f6b9739",
+        "footprintMaskSha256": "b82b2c8137a931aa443ab696f7f6af8f4517e42ed080828d7eacc2705a9b5588",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": true,
+        "flatDeck": false,
+        "nativeFieldShore": true,
+        "flatGround": true,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "61a41271e80d46a1449bf0671e161d9077e7d8705e525dafe1884251734c5738",
+          "rawGeneratedSha256": "db1a4419e9ec90b7bb8443f554f5d13aad4bc887d44832bbc7ac5409684e336f",
+          "guideSha256": "eae95498aca5238ce56e051bf68753c50bb93187c287ffdfb3f71c26776de0ed",
+          "opaqueMaskSha256": "3377b3406205462cc60a487c30e9e776d21fd6ff9b494fa74f84a387d752abb6",
+          "styleBoardSha256": "c1c8e1493da1fd782ed3265cb4ef8048db9c9674ba0a6a89365cf28ca0e8ac8d"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-north-anvil",
+      "name": "map expansion fire ashfan divide - north anvil",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-fire-ashfan-divide/north-anvil.png",
+      "width": 860,
+      "height": 770,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "c5b34339f816df98bfe9ebc7e501d72c72c2bf15d28272751fe6699cc247a796",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "north-anvil",
+        "sourceSha256": "8f16516529f4bfbe1b8bef3799977002b09074d067d3dad7a5f1d0392e641129",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 338,
+          "y": 127,
+          "width": 860,
+          "height": 770
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "dd7d528223e4d9d5fcfa0681f31415a10e1893f83ca4fcf02258515599d17036",
+        "footprintMaskSha256": "5016e56730f47e014fb7768827acdd8e972e0af7ef40648396521e05d2f22914",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "2d3b2c446f2ca84aeebf932ed8a14eea92c37e3993ece1a89e2a21b6149790dd",
+          "rawGeneratedSha256": "69560673796100bbeb4582c71a6f9027caebac1f4a0e9782c28d777546ca5a08",
+          "guideSha256": "49d91648c5110329b3aa03eab2dca32507a82789054efc1b41a61c19262f0f57",
+          "opaqueMaskSha256": "fa00fee7371569b65887d7946f4843404a11835f030a8f6fbf890066fa482976",
+          "styleBoardSha256": "c14ec90c9cb06f293d31e482b7c3ec032616e01c56b67cc2576436cc996cd3e0"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-west-splint",
+      "name": "map expansion fire ashfan divide - west splint",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-fire-ashfan-divide/west-splint.png",
+      "width": 660,
+      "height": 1120,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "9a94b6d79516bbc0e47930a09dac031c6b4aef40eab33e7a0a481c03fc9bc8c7",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "west-splint",
+        "sourceSha256": "a5f10abb2b08868321eb2daaf99242c8870c32767ff158e96ba0b3796f76386d",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 182,
+          "y": 208,
+          "width": 660,
+          "height": 1120
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "5d4d9327f902158bbe8c4ae7690e766dd519b2b296c24ab99fb87a06a028824d",
+        "footprintMaskSha256": "d3a5c95cc8efb9dd629ea7712f09d2651c657c899aae5c0737a24b212d690564",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "73d6e115d4de06ca20451020946ed02373e42f234ff1283da6e74f94685c2163",
+          "rawGeneratedSha256": "d4a32b78aa6c8e996f98786be4113bc913fcf7e57f1b387ba218043624b018e7",
+          "guideSha256": "67b9cf74614e15100b7761d9e0f4a0b47d0d8c4025226726a4c445e2a4587462",
+          "opaqueMaskSha256": "ec3adee1ad6b05f1291c7286b7fe60f549f666fe61e164feae6c918d4d9937b5",
+          "styleBoardSha256": "c14ec90c9cb06f293d31e482b7c3ec032616e01c56b67cc2576436cc996cd3e0"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-east-lean",
+      "name": "map expansion fire ashfan divide - east lean",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-fire-ashfan-divide/east-lean.png",
+      "width": 650,
+      "height": 710,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "bf800729b27e8b805df1cae404e8950e43ca891420cc1c5e19f0f178c52fc347",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "east-lean",
+        "sourceSha256": "cbe5177ea02f6dd3e0453f406f272996b3a26896ed80446ea34ed91055a54b5b",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 443,
+          "y": 157,
+          "width": 650,
+          "height": 710
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "df30660cfffada8b7287e25fed1db33e047faa864fc890218012c95012f82c38",
+        "footprintMaskSha256": "4f5918469c78f7db80bbd1d832df6062b55b3235ac9138997d7310e2a40d91d5",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "1f8c110cca9388a5cc9cd160215f054954a4d2d99bd12b2c2c937946463065d0",
+          "rawGeneratedSha256": "d95e1ee13eb32450434b76299453d5548c9e2485b283bf8211bea330b7c76c42",
+          "guideSha256": "bd9d14c092bfdc0e57f73c40394a083634ca00603bea53815b901f6ebbfd2346",
+          "opaqueMaskSha256": "5b8f8f87c2739efb924ddf647ca93765d8857a4702ef1225c846664cda565fce",
+          "styleBoardSha256": "c14ec90c9cb06f293d31e482b7c3ec032616e01c56b67cc2576436cc996cd3e0"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-ember-hollow",
+      "name": "map expansion fire ashfan divide - ember hollow",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-fire-ashfan-divide/ember-hollow.png",
+      "width": 1030,
+      "height": 570,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "54bc7a8de3a7182ca6bdbdc031e605a2049fb257293a5d11e2a1b598753adc2b",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "ember-hollow",
+        "sourceSha256": "dff57015b264ab8ca283a0d80fadd0f3acbee6429c0295baeb7fdbe625931822",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 253,
+          "y": 227,
+          "width": 1030,
+          "height": 570
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "8016cfbc5a62a50b9f64df882c7cb0a8a3fe548dd719a4443dd3911031a0f09b",
+        "footprintMaskSha256": "1aa3a9912b6e88bf251ba2f4a51dafc6ab953cfa088e1ac886f7fe352007f879",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": true,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "8e7f9cd578dcc170e02e01116c65b4d24d1d1bc9ab0b414adbc8f15d35184f7f",
+          "rawGeneratedSha256": "93ce700760d776a7a4ffda760b0f834edae453179e06e86b764b1ae785577f7b",
+          "guideSha256": "65dfa322b2027783bb8faf25a978846a8ccc720d95929ed4e50387037678d32c",
+          "opaqueMaskSha256": "5637cf621f22c9ca5414394b55d3ef20f8064a2103b704d033b9ecfa5c3cf02c",
+          "styleBoardSha256": "c14ec90c9cb06f293d31e482b7c3ec032616e01c56b67cc2576436cc996cd3e0"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-northwest-step",
+      "name": "map expansion lava ember stair - northwest step",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-lava-ember-stair/northwest-step.png",
+      "width": 600,
+      "height": 1100,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "034afb32569ffd2b326035b096d326f3b5220c808a5906b3ffbad1c335d1af03",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "northwest-step",
+        "sourceSha256": "94f99172ca69b97a37cc16059d821a96d5e0c5cbf075e671f19b39096c465df8",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 212,
+          "y": 218,
+          "width": 600,
+          "height": 1100
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "d95ec2a6c1d4595094f07d3f91ca61bd2f461dba8999bdc8c1dd72407a10e60d",
+        "footprintMaskSha256": "6c9e10406aa0040950d0a08da6db46fe50b1d66bec2881edc89e1024643b2de2",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "ddfbfe768c8e611512e4493a76efc3dd7642d7c2f3a93d20b51be96b933c3a1e",
+          "rawGeneratedSha256": "892976126b00aadde4f0d4a2f562888d507b11252d527b21f11f1af73d1f302b",
+          "guideSha256": "7c9268d3c4850efa198baf4e76f2c4d9ca2394464dfa7045db3f035325ea8f6d",
+          "opaqueMaskSha256": "33285f04590df7c101d301883292ff2ead7133eaf67b3f4778cee12977452844",
+          "styleBoardSha256": "e1ab8e8d076ec5178138e14590126a7271e968e7feeba30b60093369442ebc2c"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-middle-step",
+      "name": "map expansion lava ember stair - middle step",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-lava-ember-stair/middle-step.png",
+      "width": 500,
+      "height": 630,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "8f320ebc9df5a4106b9115e59d0f7f7dc2f2441a9fd78ccd0ae7abed287e646f",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "middle-step",
+        "sourceSha256": "1480b2686175358fe26603bd203440c4a3890897588c0fe76b071da712bc1461",
+        "sourceCanvas": {
+          "width": 1536,
+          "height": 1024
+        },
+        "cropRect": {
+          "x": 518,
+          "y": 197,
+          "width": 500,
+          "height": 630
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "e5273e8c3f499bc7f0e4b84d9f5b47f6e7fda4b80a27593b0286678a41c4a3d2",
+        "footprintMaskSha256": "3b6d4eb584c99105b2b12ff0010cb202981851406944c125afb61cab7afd7ae7",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "4366940d454c42a527973e071177f796cdfb9740c7006ea37303653e960a6305",
+          "rawGeneratedSha256": "4fe86eead73585c6ac77352be1cfc7c4cfce87bf61506ba1cb466f8a65beab40",
+          "guideSha256": "957215ecad8e2b9cddf337a06fa7e9e3b2774204483664d84d5c1dcb5b2f0844",
+          "opaqueMaskSha256": "796bc254eec26bf0987ed3000ecea949813c7301bd01c1fadac092a112b89ee9",
+          "styleBoardSha256": "e1ab8e8d076ec5178138e14590126a7271e968e7feeba30b60093369442ebc2c"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-upper-east-step",
+      "name": "map expansion lava ember stair - upper east step",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-lava-ember-stair/upper-east-step.png",
+      "width": 600,
+      "height": 1100,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "6b88c7ac4d11316508d5225fabcc64d5fc872aa627484e3563f3c80f16f4fbbe",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "upper-east-step",
+        "sourceSha256": "1fd62ff30c959ff92bcba50fb095598543f974bcc090ed5baf9bf1435882f1c5",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 212,
+          "y": 218,
+          "width": 600,
+          "height": 1100
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "f1be2befe705d316938010e30ed1fb21be76041f360c326df984f9d425224987",
+        "footprintMaskSha256": "1d9fc1afd5059a4d11de9deda57d36d283e770d3c52ab38fa3f8099ab0542d6d",
+        "nativeFoundationCapTransparent": false,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "0095bca15eae8178e14dba5f2f4b9198784cfc32ebfee3f6e70aca8a48703dbb",
+          "rawGeneratedSha256": "35604f90e81146b65bc48788c1d033275e8f4522e3dbd717f6793a51725299b1",
+          "guideSha256": "47edb05e4a531f3fd7b1b2a951f3313975abb9a9b8fb3cee71ed69b18c03020b",
+          "opaqueMaskSha256": "d766c23714c3bdbb3e3967de2c856f537e037f7543e73014d2be73685bb9af4f",
+          "styleBoardSha256": "e1ab8e8d076ec5178138e14590126a7271e968e7feeba30b60093369442ebc2c"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-molten-basin",
+      "name": "map expansion lava ember stair - molten basin",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-lava-ember-stair/molten-basin.png",
+      "width": 450,
+      "height": 1300,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "d9ef864fb52738c94d87675696ee458b0bf84c9de366c4c46aeb3a6f3851001c",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "generation": "eight-biome-expansion-2026-11-18",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "molten-basin",
+        "sourceSha256": "d828f41d206fa39cd02ee37f34cd40f8529f4b1b978745bfde5be474b7534ff0",
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 287,
+          "y": 118,
+          "width": 450,
+          "height": 1300
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "pixelsPerWorldUnit": 1,
+        "resampling": "none; exact native-pixel crop only",
+        "guideSha256": "06b98f93c32bc8ccfba979508c003bd75b84ab2dad30edd1b1fafdda8c87a1d4",
+        "footprintMaskSha256": "734f5b60f94ee5f31222b209cb55447e15b3d561a39a3992c09f9df89497efa3",
+        "nativeFoundationCapTransparent": true,
+        "flatWater": false,
+        "flatDeck": false,
+        "nativeFieldShore": true,
+        "flatGround": true,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": "776f2b21f29b71be829709285440001fcb3fd493269c70247bc93051e56d228f",
+          "rawGeneratedSha256": "70be91a1ef6178915083f8ac92e78148f2b810329f7f4a4107ac75f741e016d7",
+          "guideSha256": "dcd65ead4faf90a36e9d5abf4616b7438c4688abfb1cfa0731c061c6cdb3a3ff",
+          "opaqueMaskSha256": "258e1de100c88c918e59d2e6962e7ed8bfe1807fa2c11d9f1e8bd8a11cb5eb38",
+          "styleBoardSha256": "e1ab8e8d076ec5178138e14590126a7271e968e7feeba30b60093369442ebc2c"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-forest-heartwood-crossroads-west-long-wall",
+      "name": "Forest - Heartwood Crossroads - Long western forest rock wall",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-forest-heartwood-crossroads/west-long-wall.png",
+      "width": 500,
+      "height": 1250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "016cfff2cb5fcaf8a1aa56478ba540ebc96e3d52437d5b8d5031fa3c0f32b5b0",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-biome-forest-heartwood-crossroads",
+        "piece": "west-long-wall",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 143,
+          "width": 500,
+          "height": 1250
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "7a3685cbf573a5980c88e6429702e24e1f23d26bb4a50a137a627f3dc7862b6f",
+          "rawGeneratedSha256": "2a8968da2211440fce11c768a7b5a6dbba50fe81cc713b2eb0097ef201990962",
+          "guideSha256": "8949c2a2a25c6e091ae66d8b661974cf012e17d7658f7405828cdefc73bb6262",
+          "opaqueMaskSha256": "9b6c654226a80eaf90bc7ac29bf9bbe4edeeaf96668e074d3e3480a76e2451e4",
+          "styleBoardSha256": "b9eeab0087c1718972281a7218a561de8fadd012b83d7c8a4cfe47b20f50e607"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-forest-heartwood-crossroads-east-long-river",
+      "name": "Forest - Heartwood Crossroads - Long lower eastern forest river",
+      "category": "water",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-forest-heartwood-crossroads/east-long-river.png",
+      "width": 500,
+      "height": 1250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "a0269bd2ca03c1d6b877b0663d65a92bcb249fa29a0efbaa568a78ef1a6d76a4",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-biome-forest-heartwood-crossroads",
+        "piece": "east-long-river",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 143,
+          "width": 500,
+          "height": 1250
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": true,
+        "flatWater": true,
+        "flatGround": true,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": null,
+          "rawGeneratedSha256": "64aca3fc6951915aa06d450e8a051bc380dac1a0602fec36a141173d92d4373e",
+          "guideSha256": "f0e69fb36e78912803eacbc27794a25c04cf4730d87d086d7e7480060e6b509c",
+          "opaqueMaskSha256": "926598a5d004e1b812a40835b937b8082595a63f945f54649122abcafada94b6",
+          "styleBoardSha256": "b9eeab0087c1718972281a7218a561de8fadd012b83d7c8a4cfe47b20f50e607"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-west-long-river",
+      "name": "Deep Forest - Rootbreak Hollow - Long lower western woodland river",
+      "category": "water",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-deep-forest-rootbreak-hollow/west-long-river.png",
+      "width": 500,
+      "height": 1200,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "262dbef6015bbd9199064a662f206c7556f34a33c43181618c9462a7a669c186",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "west-long-river",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 168,
+          "width": 500,
+          "height": 1200
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": true,
+        "flatWater": true,
+        "flatGround": true,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": null,
+          "rawGeneratedSha256": "8a5c6fe5ae869414fbda2b02bd8883b9f8f8aecb5127d26820d50e74b4cac793",
+          "guideSha256": "edf36203ba9f0a65fc97d126e5adfb010535920da1fa30d17c855aea7a068e45",
+          "opaqueMaskSha256": "6d335c36fc12e99ca701d95737ea42d5d035b623859a7db677c64fb8156d7ffa",
+          "styleBoardSha256": "da5b1a8eab42a6bdc6522b979d238f5b66f89466d27068ab2b3892ce096c48b2"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-east-long-wall",
+      "name": "Deep Forest - Rootbreak Hollow - Long eastern woodland rock boundary",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-deep-forest-rootbreak-hollow/east-long-wall.png",
+      "width": 500,
+      "height": 1300,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "2557d529ac2b4e0d55e606947419029b773136b437beb74702f2ccadc3d9beaf",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "east-long-wall",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 118,
+          "width": 500,
+          "height": 1300
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "2bdbb69b8d302ffe02cb69091072ac1d550d2b49aa766fb7a5a25844b564418f",
+          "rawGeneratedSha256": "5ed2923039af0a563df4840fd23c54cb53fa43108de010b9938e4a307c4d593f",
+          "guideSha256": "3e0f27d4a603db1acf239419085bb585f05f85263e2bcbd62d178220bbb38a8c",
+          "opaqueMaskSha256": "00fb073af91e82a31c8ccc83f1a8f6b1c62f17f2188d696cf510e3e2608ef947",
+          "styleBoardSha256": "da5b1a8eab42a6bdc6522b979d238f5b66f89466d27068ab2b3892ce096c48b2"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-west-long-bank",
+      "name": "Autumn - Copperleaf Exchange - Long western copperleaf bank",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-autumn-copperleaf-exchange/west-long-bank.png",
+      "width": 500,
+      "height": 1250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "3a3191f8e26ea453f60574c249af0c44dcec45f0311f66c5ec4ceac2fb03cb40",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "west-long-bank",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 143,
+          "width": 500,
+          "height": 1250
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "a72333c0d6f543c763475c6a6ddafddd7e574deeeb00e6113818810d9dda89fe",
+          "rawGeneratedSha256": "448b9cac8d08191cdc7c869a26b4b9cadd0904e6c1d7a79f9ef2b9f2aff32972",
+          "guideSha256": "4349c38c366a54560b5f70c260ddb4e2ca4ef362d529e331bd26f16795ae2060",
+          "opaqueMaskSha256": "3632e491dba2ddb3243f289718803a42fec017684c8d50018fa59df4580e0b28",
+          "styleBoardSha256": "66f780a288650d1c4914486aa66206f8ca2c11ec87f6cdd700729c865be6c2ab"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-east-long-bank",
+      "name": "Autumn - Copperleaf Exchange - Long lower eastern copperleaf bank",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-autumn-copperleaf-exchange/east-long-bank.png",
+      "width": 500,
+      "height": 1300,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "ce26edcad7fc4f722d449515273e5f9c555c427f0149f019cfad27e4f7844443",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "east-long-bank",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 118,
+          "width": 500,
+          "height": 1300
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "7e4b8b6271b7d596d7a30c43b4318442ad2be73a2cc82ac8db0bae52f2ef2309",
+          "rawGeneratedSha256": "3d78de73b6b34ecf4164e083bf2af022f022b39e3a3c9c26a7ebf4b62c6ca515",
+          "guideSha256": "a79cdfb308b2b368247b433a26363d20d115dcfb9d88866a42625c5eedb64132",
+          "opaqueMaskSha256": "e889dcf3a50fa1e03fa826712d8cae279f0c69d81e21e09f6e5bf7ad9e9b5d73",
+          "styleBoardSha256": "66f780a288650d1c4914486aa66206f8ca2c11ec87f6cdd700729c865be6c2ab"
+        }
+      }
+    },
+    {
+      "id": "terrain-biome-desert-caravan-bend-western-canyon-bank",
+      "name": "Desert - Caravan Bend - Western Canyon Bank",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/western-canyon-bank.png",
+      "width": 450,
+      "height": 1300,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "bbbd6ef33d8a3ab59727e19a458c453c19b5d3f6e859088f998c34a1d4cc223f",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-biome-desert-caravan-bend",
+        "piece": "western-canyon-bank",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 287,
+          "y": 118,
+          "width": 450,
+          "height": 1300
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "eea314b0a0488a181ea237c0a5140be254e1362d81e307e8b4f9e2429087ba59",
+          "rawGeneratedSha256": "045658706d2a4bc36885ca7a0975fb182f98d140fb33b969c330221249f4fbf5",
+          "guideSha256": "60e8851626befd0c87a09e819daca28e1d977630205142e527aac149b94ae148",
+          "opaqueMaskSha256": "9a7a5d0b1045e0098db915ad742814a495e17afe36758808fdc6d61f898d7631",
+          "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-western-molten-channel",
+      "name": "Lava - Ember Stair - Western Molten Channel",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-lava-ember-stair/western-molten-channel.png",
+      "width": 350,
+      "height": 1300,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "6ad241bf4c533fa53a37ea407219efab4b1bb8ee5b547b3e3c746046da816ba0",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "western-molten-channel",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 337,
+          "y": 118,
+          "width": 350,
+          "height": 1300
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": true,
+        "flatWater": false,
+        "flatGround": true,
+        "revision": {
+          "kind": "biome-side-terrain-revision",
+          "date": "2026-11-18",
+          "previousAssetSha256": null,
+          "rawGeneratedSha256": "f7993494e988669a5fb5907db6cdaa0701631ed124d87225a0d2fdc50a05f8cb",
+          "guideSha256": "6a8e6fb3f22954259bf20ee5bd5042cca90c49c8d97927942e9754f16adf4273",
+          "opaqueMaskSha256": "ecfc9e51f32ec3ea06fded05b01d4ded234d866fc2b130eb3808f76a4b4584b8",
+          "styleBoardSha256": "e1ab8e8d076ec5178138e14590126a7271e968e7feeba30b60093369442ebc2c"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-west-snowbank",
+      "name": "Snow - Staggered Spurs - Long lower-west snowbank",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-snow-staggered-spurs/west-snowbank.png",
+      "width": 450,
+      "height": 1100,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "78170452bfba3901cd94eed45e63b4c5aa86a2ebf59d4e671cf2f638600a6166",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "west-snowbank",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 287,
+          "y": 218,
+          "width": 450,
+          "height": 1100
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "c716bb79221ceabe41865bea74b758424c9bd03bc3ecdab5010648064b99403a",
+          "rawGeneratedSha256": "77c9882532595c6ceb81ac45b3983438ae85fcd1f58728d65eef82a8c3f02724",
+          "guideSha256": "54f06ff35a972f4a3a3594b0bcce4bdd9eacebdabcea51d9c6be1ac737358db2",
+          "opaqueMaskSha256": "951c6acac70e9fad7899a2577f498a5e62298fbbb5efa32eb8fafedfcaac69ee",
+          "styleBoardSha256": "d90781fd20fc339534461f3a7a9c54af1141a54f8ff3bfb4342f0107bf1fdad7"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-west-icebank",
+      "name": "Ice - Shardgate Junction - Long lower-west icebank",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-ice-shardgate-junction/west-icebank.png",
+      "width": 500,
+      "height": 1164,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "46a33335178c757f0c67f7f0835f5a00c5e01871bf43ac855afd38106429d95e",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "west-icebank",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 186,
+          "width": 500,
+          "height": 1164
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": true,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "9425f18f30e748fa336ec744a5cfe3dbee947fdf1abe6a9c6a8dbb895a2b5c40",
+          "rawGeneratedSha256": "ef6ec5144c62b02c074dbf0cc3ee679be7f94f2f4c8da490d8994e50cb283a8f",
+          "guideSha256": "b8aca620f9ae45f358d43a4d8e41409aa884134d787bb4f5ebd780b59fd62f0b",
+          "opaqueMaskSha256": "9ddf39abcf900015d1fe797e36845bd8a9a8bf029d84491b7c058fb13be15ec7",
+          "styleBoardSha256": "2609371fc4305df9418288541412149204babb5c55b11f7ac1db7132919c9ce9"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-west-ash-escarpment",
+      "name": "Fire - Ashfan Divide - Long western ash escarpment",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-fire-ashfan-divide/west-ash-escarpment.png",
+      "width": 500,
+      "height": 1300,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "b6f260d800546bb4791ed7f5f38271e142b4a96bede1d54d311baa643ab3283c",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "west-ash-escarpment",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 118,
+          "width": 500,
+          "height": 1300
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": false,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "81799696d40d915b2c849ffdef1828414f886b2e8e91334513309a99ff2d6cc2",
+          "rawGeneratedSha256": "7df265056e712ae34711d3f2580acb39bf033715eb7eb184d5fa0c358af4f99a",
+          "guideSha256": "fba3b291a7193a74345d52917507a597ac2a8beb4baecaf5e6dd4aba840c8041",
+          "opaqueMaskSha256": "8675b35aa0cd241d286ae0bdf0ec24aaf928e544a13f0c3ee53b6182a4dffeaa",
+          "styleBoardSha256": "6d023e3ae2b8eb4b6f00d4e1c89c08a7060aa9e571b5a9dfbde76944dcd741b9"
+        }
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-east-ash-escarpment",
+      "name": "Fire - Ashfan Divide - Long eastern ash escarpment",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/biome-expansion/map-expansion-fire-ashfan-divide/east-ash-escarpment.png",
+      "width": 500,
+      "height": 1300,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "dbdb495a8c38687f08c9bd6824bdce2535b0bbc65b3449b7e814359d16c53ad4",
+      "source": {
+        "kind": "generated-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "east-ash-escarpment",
+        "pixelsPerWorldUnit": 1,
+        "sourceCanvas": {
+          "width": 1024,
+          "height": 1536
+        },
+        "cropRect": {
+          "x": 262,
+          "y": 118,
+          "width": 500,
+          "height": 1300
+        },
+        "registrationOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "resampling": "none; exact native-pixel crop only",
+        "nativeFoundationCapTransparent": false,
+        "nativeFieldShore": false,
+        "flatWater": false,
+        "flatGround": false,
+        "revision": {
+          "kind": "broad-rounded-side-hills",
+          "date": "2026-11-18",
+          "previousAssetSha256": "4181a4b20b84dadcdaf5556e4bb19573731709d27ea88d39395db99b510e2bea",
+          "rawGeneratedSha256": "4c10f85a1eb1cd6b880c5c9c5ff5bf2fe8dd14c8ef4ae5df0cd7db61ca155697",
+          "guideSha256": "fd6d0469ed2f010cc9dd532de970158052f42204609c77fe80ad2789a81d24cd",
+          "opaqueMaskSha256": "7ec10e5e5092a9a9e226926d4cb0842e7a0daad8e9e7ceb84107941ce3a7cce9",
+          "styleBoardSha256": "6d023e3ae2b8eb4b6f00d4e1c89c08a7060aa9e571b5a9dfbde76944dcd741b9"
+        }
+      }
     }
   ],
   "biomes": [

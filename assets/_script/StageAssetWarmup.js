@@ -176,7 +176,7 @@ function create(view, config, level) {
   }
   var session = new Session({config:config,level:level,names:Config.KinghtFallBundelName,style:style,skills:require("HeroSkillSettings").effective(style,config),skillClips:require("HeroSkillVFXCatalog").clips,effects:require("BattleSoundCatalog").effects,prefabs:Config.KinghtFallPrefabName,audio:Config.KinghtFallAudioCF,
     current:function () { return !view.isclose && cc.isValid(view.node,true); },
-    beforePrepare:function () { return loading.waitForDraw(); },
+    beforePrepare:function () { return loading.waitForArtwork().then(function () { return loading.waitForDraw(); }); },
     yieldProgress:function () { return loading.yieldProgress(); },
     progress:function (value) { loading.progress(value); },
     load:function (item,done,owner) {

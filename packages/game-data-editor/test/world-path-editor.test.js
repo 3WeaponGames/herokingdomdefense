@@ -6,6 +6,18 @@ function stage(){return{future:{keep:true},graphs:[{id:'path',entry:'start',spaw
 const graph=s=>s.graphs[0];
 function route(s,built,value){return Spawn.route(s.graphs,1,built,null,()=>value).map(node=>node.nodeId);}
 
+test('duplicating a path copies its complete topology and conditions, selects a free graph ID and uses a spawn-based name',()=>{
+ const s=stage();s.spawns=[{id:1,name:'North entrance'}];s.config={WaveCfg:[{SpawnTimeline:[{id:'group',spawnId:1,routeGraphId:'path'}]}]};s.spawns[0].graphId='path';
+ graph(s).name='Original route';graph(s).legacy=true;graph(s).requiresAnyBuilding=[0];graph(s).spread=48;graph(s).editorOrder=3;
+ s.graphs.push({...clone(graph(s)),id:'path-1',spawnIds:[2],editorOrder:0});const before=clone(s),id=P.duplicatePath(s,'path'),copy=s.graphs.find(route=>route.id===id);
+ assert.equal(id,'path-2');assert.equal(copy.name,'North entrance · Route 2');assert.equal(copy.nameFromSpawns,true);
+ for(const key of ['entry','spawnIds','nodes','edges','requiresAnyBuilding','legacy','spread','future'])assert.deepEqual(copy[key],before.graphs[0][key],key);
+ assert.deepEqual(s.config,before.config);assert.deepEqual(s.spawns,before.spawns);assert.deepEqual(s.future,before.future);
+ assert.notEqual(Spawn.pointName(id,copy.entry),Spawn.pointName('path',copy.entry));
+ assert.deepEqual(require('../worlds/stage-card-order').ordered(s.graphs).map(route=>route.id),['path-1','path','path-2']);
+ copy.nodes[0].x+=25;assert.equal(graph(s).nodes[0].x,before.graphs[0].nodes[0].x);
+});
+
 test('inserting a midpoint keeps authored nodes, source edge metadata and deterministic IDs without mutating neighbors',()=>{
  const s=stage(),before=clone(s);graph(s).nodes.push({id:'node-1',x:0,y:0,goal:true});graph(s).edges.push({id:'edge-1',from:'start',to:'node-1',weight:0});
  const original=clone(s),selected=P.insertNode(s,'path','middle');assert.equal(selected,'node-2');assert.deepEqual(graph(s).nodes.find(node=>node.id===selected),{id:'node-2',x:150,y:25,goal:false});

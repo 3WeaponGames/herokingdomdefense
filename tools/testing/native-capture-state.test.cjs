@@ -27,6 +27,7 @@ function fixture() {
   const joystick = new Node('joystick', ui), knob = new Node('knob', joystick);
   const popup = new Node('building popup', ui), panel = new Node('panel', popup);
   const wall = new Node('wall', map), wallArt = new Node('wall artwork', wall);
+  wall._depthBuilding = true; // Bounds below are a tiny capture stub for a building wall.
   const cost = new Node('barracks cost', map), coin = new Node('silver coin', cost);
   const hp = new Node('health bar', hero), hpBackground = new Node('health background', hp), hpFill = new Node('health fill', hp);
   const overlay = new Node('occlusion', map);

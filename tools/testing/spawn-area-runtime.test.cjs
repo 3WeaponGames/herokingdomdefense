@@ -30,18 +30,28 @@ test('direct area application stays in body bounds and wholly off-map circles re
  assert.equal(f.counts().resets,1);
 });
 
-test('noncolliding off-map circles keep their authored placement and missing radii retain the point-spawn RNG sequence',()=>{
+test('noncolliding off-map circles spawn inside the map and missing radii retain the point-spawn RNG sequence',()=>{
  const flying=fixture(55),marker=flying.game.ndPath.getChildByName('ndEnemy1');marker.position={x:-900,y:-900};flying.unit.rigidBody.active=false;flying.unit.bornInfo.pathList.routeSpread=0;
+ flying.game.mapSize={width:1000,height:1000};
  const prepared=flying.area.prepare(flying.unit,flying.game,1,false);
- assert(prepared&&prepared.start.x<-500&&prepared.start.y<-500);
+ assert(prepared&&prepared.start.x===-500&&prepared.start.y===-500);
  assert(flying.area.apply(flying.unit,flying.game,1,prepared));
  assert.equal(flying.unit.node.position.x,prepared.start.x);assert.equal(flying.unit.node.position.y,prepared.start.y);
- assert.deepEqual(flying.counts(),{randoms:2,resets:1,navCalls:0});
+ assert.deepEqual(flying.counts(),{randoms:128,resets:1,navCalls:0});
  const point=fixture();delete point.spec.radius;
  assert.equal(point.area.prepare(point.unit,point.game,1,true),undefined);
  assert(point.area.apply(point.unit,point.game,1));
  assert.equal(point.unit.bornInfo.pathList,point.points);
  assert.deepEqual(point.counts(),{randoms:0,resets:0,navCalls:0});
+});
+
+test('ground and flying legacy point spawns outside each map edge stay inside without randomizing',()=>{
+ for(const collides of [true,false])for(const center of [{x:-900,y:0},{x:900,y:0},{x:0,y:-900},{x:0,y:900}])for(const prepared of [true,false]){
+  const f=fixture(0);f.game.mapSize={width:1000,height:1000};f.game.ndPath.getChildByName('ndEnemy1').position=center;f.unit.rigidBody.active=collides;
+  const sample=prepared?f.area.prepare(f.unit,f.game,1,collides):undefined;assert(f.area.apply(f.unit,f.game,1,sample));
+  const p=f.unit.node.position,edge=collides?488:500;assert(Math.abs(p.x)<=edge&&Math.abs(p.y)<=edge);assert.equal(f.counts().randoms,0);if(!collides)assert.equal(f.counts().navCalls,0);
+ }
+ const inside=fixture(0);inside.game.mapSize={width:1000,height:1000};assert.equal(inside.area.prepare(inside.unit,inside.game,1,true),undefined);assert(inside.area.apply(inside.unit,inside.game,1));assert.deepEqual(inside.counts(),{randoms:0,resets:0,navCalls:0});
 });
 test('native spawn marker radii work without authored paths and explicit authored zero still overrides them',()=>{
  const f=fixture(0),lookup=f.game.ndPath.getChildByName.bind(f.game.ndPath),marker=lookup('ndEnemy1'),native={radius:150};marker.getComponent=name=>{assert.equal(name,'SpawnPointArea');return native;};

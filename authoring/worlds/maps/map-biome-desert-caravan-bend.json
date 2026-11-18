@@ -1,0 +1,5200 @@
+{
+  "version": 1,
+  "id": "map-biome-desert-caravan-bend",
+  "name": "Desert - Caravan Bend",
+  "biome": "desert",
+  "size": {
+    "width": 1860,
+    "height": 3028
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2668
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-b48c8acfefa82784d89230d88f0642c9",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "key": "road-1",
+          "name": "Central caravan bend",
+          "mode": "road",
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": -160,
+              "y": 1334
+            },
+            {
+              "x": -120,
+              "y": 1140
+            },
+            {
+              "x": -60,
+              "y": 700
+            },
+            {
+              "x": -80,
+              "y": 350
+            },
+            {
+              "x": 100,
+              "y": -80
+            },
+            {
+              "x": 120,
+              "y": -520
+            },
+            {
+              "x": -20,
+              "y": -900
+            },
+            {
+              "x": -80,
+              "y": -1334
+            }
+          ]
+        },
+        {
+          "key": "road-2",
+          "name": "Western approach",
+          "mode": "road",
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": -750,
+              "y": 70
+            },
+            {
+              "x": -530,
+              "y": 70
+            },
+            {
+              "x": -80,
+              "y": 350
+            }
+          ]
+        },
+        {
+          "key": "road-3",
+          "name": "Eastern approach",
+          "mode": "road",
+          "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
+          "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": 750,
+              "y": -360
+            },
+            {
+              "x": 470,
+              "y": -380
+            },
+            {
+              "x": 120,
+              "y": -520
+            }
+          ]
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    }
+  },
+  "layers": [
+    {
+      "id": "layer-3",
+      "name": "Side terrain - desert",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-1",
+          "assetId": "terrain-biome-desert-caravan-bend-northwest-headland",
+          "name": "Northwest Headland",
+          "x": -680,
+          "y": 300,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-2",
+          "assetId": "terrain-biome-desert-caravan-bend-northeast-mesa",
+          "name": "Northeast Mesa",
+          "x": 680,
+          "y": -100,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "terrain-biome-desert-caravan-bend-southeast-oasis",
+          "name": "Southeast Oasis",
+          "x": 800,
+          "y": -1510,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 900
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-83",
+          "name": "Western Canyon Bank",
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "globalShadow": false,
+          "assetId": "terrain-biome-desert-caravan-bend-western-canyon-bank",
+          "x": -765,
+          "y": -1760,
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "terrain-objects",
+      "name": "Terrain objects - Desert",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-3",
+          "assetId": "terrain-biome-desert-caravan-bend-southwest-stair",
+          "name": "Southwest Stair",
+          "x": -500,
+          "y": -1010,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [],
+      "blockers": []
+    },
+    {
+      "id": "native-props",
+      "name": "Native Environment props",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-5",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -381.378,
+          "y": 620.613,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": 360.182,
+          "y": -1496.988,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-eddd2be0cd39e324195474c3f8636ea9",
+          "name": "Plam Yellow Green 3",
+          "x": -820.787,
+          "y": 994.572,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-12da2f9450ae93b4d83938db92b0c75e",
+          "name": "Plam Yellow Green 1",
+          "x": 138.966,
+          "y": -1444.384,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -510,
+          "y": -600,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -823.225,
+          "y": 1031.671,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": -140.664,
+          "y": -919.349,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-eddd2be0cd39e324195474c3f8636ea9",
+          "name": "Plam Yellow Green 3",
+          "x": -341.661,
+          "y": 817.134,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -507.043,
+          "y": -719.04,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -300,
+          "y": 470,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": 4.171,
+          "y": -233.578,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": 370.431,
+          "y": 230.86,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -480,
+          "y": -150,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": 811.81,
+          "y": -91.83,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": -278.419,
+          "y": 792.393,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": 300,
+          "y": 1000,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": -496.508,
+          "y": -242.189,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-eddd2be0cd39e324195474c3f8636ea9",
+          "name": "Plam Yellow Green 3",
+          "x": -73.98,
+          "y": -80.641,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": 81.853,
+          "y": 414.471,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-91dde90b392e3744185ee2c008bddd0e",
+          "name": "Plam Green 2",
+          "x": 646.131,
+          "y": 1278.657,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -391.604,
+          "y": 1312.671,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-12da2f9450ae93b4d83938db92b0c75e",
+          "name": "Plam Yellow Green 1",
+          "x": -360,
+          "y": -500,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+          "name": "Plam Green 3",
+          "x": 183.825,
+          "y": 348.301,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-490046566f680944e9002990ea86dc40",
+          "name": "Tree Bare 1",
+          "x": -315.722,
+          "y": 650.275,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": 382.47,
+          "y": 123.721,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-2c7060b621317b742af20af80fe0399a",
+          "name": "Plam Yellow Green 2",
+          "x": -430,
+          "y": -720,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-5e1143150c9cc504781caab0bad8300a",
+          "name": "Stone Gray1 12",
+          "x": 203.862,
+          "y": 295.863,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -769.294,
+          "y": 935.408,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-5e1143150c9cc504781caab0bad8300a",
+          "name": "Stone Gray1 12",
+          "x": -282.22,
+          "y": -1045.091,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 263.699,
+          "y": -14.195,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -475,
+          "y": -420,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 332.779,
+          "y": 244.778,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 399.065,
+          "y": -1422.767,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 851.593,
+          "y": 1420.79,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -877.749,
+          "y": 648.031,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 405.579,
+          "y": 210.409,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -500,
+          "y": -500,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 872.971,
+          "y": 277.109,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -796.839,
+          "y": 965.035,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -880.294,
+          "y": -1074.256,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "western-canyon-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -775.341,
+          "y": 1203.398,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -885.929,
+          "y": -1148.17,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "western-canyon-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -555,
+          "y": -450,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -422.939,
+          "y": -90.994,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 876.233,
+          "y": 168.582,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -29.513,
+          "y": -254.5,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -788.649,
+          "y": 921.988,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-5e1143150c9cc504781caab0bad8300a",
+          "name": "Stone Gray1 12",
+          "x": -300,
+          "y": -760,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 426.7,
+          "y": -1473.717,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -445,
+          "y": -470,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 301.51,
+          "y": -192.829,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -440,
+          "y": -790,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -549.46,
+          "y": -1104.208,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-5e1143150c9cc504781caab0bad8300a",
+          "name": "Stone Gray1 12",
+          "x": -786.018,
+          "y": 798.149,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 141.823,
+          "y": 223.007,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 399.227,
+          "y": 144.033,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-5e1143150c9cc504781caab0bad8300a",
+          "name": "Stone Gray1 12",
+          "x": 371.031,
+          "y": -1425.903,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-5e1143150c9cc504781caab0bad8300a",
+          "name": "Stone Gray1 12",
+          "x": -370,
+          "y": -400,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -767.694,
+          "y": 723.411,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -514.906,
+          "y": -1115.696,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -650,
+          "y": -450,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -470,
+          "y": -1190,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": 880,
+          "y": 620,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -814,
+          "y": 800,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 248.55,
+          "y": -1453.998,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 527.351,
+          "y": -293.704,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -796.195,
+          "y": 817.331,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 882,
+          "y": 180,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -304.641,
+          "y": -1034.432,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -470,
+          "y": -1380,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-5e1143150c9cc504781caab0bad8300a",
+          "name": "Stone Gray1 12",
+          "x": 618.972,
+          "y": -1486.981,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -789.541,
+          "y": 993.854,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 416.896,
+          "y": 171.601,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -778.982,
+          "y": 611.851,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 631.372,
+          "y": -1465.416,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -749,
+          "y": 740,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": -744.042,
+          "y": 539.762,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": -785.929,
+          "y": 1291.83,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0,
+          "artistKey": "native-cactus-0",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": -783.21,
+          "y": 822.974,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-headland",
+          "surfaceRegion": 0,
+          "artistKey": "native-cactus-1",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": 882,
+          "y": 1000,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "artistKey": "native-cactus-2",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+          "name": "Cactus Green1 2",
+          "x": 884,
+          "y": 420,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "artistKey": "native-cactus-3",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+          "name": "Cactus Green2 4",
+          "x": 723.411,
+          "y": -107.694,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "artistKey": "native-cactus-4",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-c65b854ff67975d49af28b5a7f41fea0",
+          "name": "Cactus Green2 3",
+          "x": -620,
+          "y": -480,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0,
+          "artistKey": "native-cactus-5",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-43f029703fd39d441b97efdb3b5aecf9",
+          "name": "Cactus Green2 1",
+          "x": -420,
+          "y": -850,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-stair",
+          "surfaceRegion": 0,
+          "artistKey": "native-cactus-6",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+          "name": "Cactus Green1 3",
+          "x": -878.764,
+          "y": -1302.972,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "western-canyon-bank",
+          "surfaceRegion": 0,
+          "artistKey": "native-cactus-7",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+          "name": "Cactus Green2 5",
+          "x": -846.605,
+          "y": -1388.513,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "western-canyon-bank",
+          "surfaceRegion": 0,
+          "artistKey": "native-cactus-8",
+          "notes": "Original Environment cactus at calibrated native size; world depth override on this instance only"
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 93,
+  "nextLayer": 4,
+  "blockerMask": [
+    [
+      [
+        [
+          -959.240152923842,
+          -876.3263994389422
+        ],
+        [
+          -959.1049887713596,
+          -899.0748129886031
+        ],
+        [
+          -957.3702698749732,
+          -921.9864262577353
+        ],
+        [
+          -920.4375354431338,
+          -1272.0135737422647
+        ],
+        [
+          -912.1080869985055,
+          -1317.799924050236
+        ],
+        [
+          -899.837380143801,
+          -1363.1861224586796
+        ],
+        [
+          -837.3048460381953,
+          -1610.8138775413204
+        ],
+        [
+          -833.0742986746544,
+          -1632.0458253544632
+        ],
+        [
+          -829.4579315172263,
+          -1641.6409641988869
+        ],
+        [
+          -824.8408353760262,
+          -1650.555546335212
+        ],
+        [
+          -819.2230102510545,
+          -1658.7895717634387
+        ],
+        [
+          -812.6044561423107,
+          -1666.3430404835672
+        ],
+        [
+          -804.9851730497953,
+          -1673.2159524955969
+        ],
+        [
+          -796.365160973508,
+          -1679.408307799528
+        ],
+        [
+          -787.2451207629601,
+          -1685.405460680768
+        ],
+        [
+          -785.6463855357999,
+          -1687.8198558282686
+        ],
+        [
+          -779.7840180428498,
+          -1694.748357507714
+        ],
+        [
+          -773.0220524821356,
+          -1701.1396103067893
+        ],
+        [
+          -765.4096328767695,
+          -1706.9483752837775
+        ],
+        [
+          -756.9959032498632,
+          -1712.1294134969612
+        ],
+        [
+          -747.8300076245289,
+          -1716.637486004623
+        ],
+        [
+          -737.9610900238783,
+          -1720.427353865046
+        ],
+        [
+          -730.8964767693967,
+          -1722.4591824712843
+        ],
+        [
+          -716.7085721556168,
+          -1731.7888598706095
+        ],
+        [
+          -704.8647894558409,
+          -1737.9237336772178
+        ],
+        [
+          -692.0666478442771,
+          -1741.1172149676524
+        ],
+        [
+          -678.3141473209255,
+          -1741.369303741913
+        ],
+        [
+          -663.6072878857859,
+          -1738.6799999999998
+        ],
+        [
+          -599.2226826664343,
+          -1721
+        ],
+        [
+          -599.4868345537977,
+          -1726.6875
+        ],
+        [
+          -597.8183716162002,
+          -1730.75
+        ],
+        [
+          -594.2172938536416,
+          -1733.1875
+        ],
+        [
+          -588.6836012661222,
+          -1734
+        ],
+        [
+          -586.6836012661222,
+          -1734
+        ],
+        [
+          -580.8422938536418,
+          -1733.1875
+        ],
+        [
+          -576.3183716162002,
+          -1730.75
+        ],
+        [
+          -573.1118345537977,
+          -1726.6875
+        ],
+        [
+          -571.2226826664343,
+          -1721
+        ],
+        [
+          -569.1492683390221,
+          -1665.8765268128805
+        ],
+        [
+          -568.1343843462478,
+          -1664.263246924887
+        ],
+        [
+          -563.9929413615757,
+          -1655.6381391411355
+        ],
+        [
+          -560.9833041199562,
+          -1646.7019771856008
+        ],
+        [
+          -559.1769657761901,
+          -1637.5
+        ],
+        [
+          -557.3486733424113,
+          -1604.53125
+        ],
+        [
+          -556.4260137107267,
+          -1571.5625
+        ],
+        [
+          -556.390837163596,
+          -1538.59375
+        ],
+        [
+          -557.2249939834796,
+          -1505.625
+        ],
+        [
+          -563.396591976814,
+          -1439.6875
+        ],
+        [
+          -571.0107512923646,
+          -1373.75
+        ],
+        [
+          -574.4421976109386,
+          -1345.4536846169808
+        ],
+        [
+          -576.0672217282271,
+          -1317.720703125
+        ],
+        [
+          -581.2961371131662,
+          -1245.9068750000001
+        ],
+        [
+          -592.6492046498802,
+          -1110
+        ],
+        [
+          -599.9379518485383,
+          -1008.199113380362
+        ],
+        [
+          -500,
+          -1010
+        ],
+        [
+          -389.0125,
+          -1008
+        ],
+        [
+          -265.5,
+          -1006
+        ],
+        [
+          -259.8125,
+          -1005.1875
+        ],
+        [
+          -255.75,
+          -1002.75
+        ],
+        [
+          -253.3125,
+          -998.6875
+        ],
+        [
+          -252.5,
+          -993
+        ],
+        [
+          -252.5,
+          -991
+        ],
+        [
+          -253.3125,
+          -985.3125
+        ],
+        [
+          -255.75,
+          -981.25
+        ],
+        [
+          -259.8125,
+          -978.8125
+        ],
+        [
+          -265.5,
+          -978
+        ],
+        [
+          -238.88113886326977,
+          -805.3576720560638
+        ],
+        [
+          -235.47567343685694,
+          -778.1486349105871
+        ],
+        [
+          -233.64041602088844,
+          -750.8791955302208
+        ],
+        [
+          -233.3753666153641,
+          -723.5493539149651
+        ],
+        [
+          -234.68052522028404,
+          -696.1591100648196
+        ],
+        [
+          -248.319474779716,
+          -517.2408899351803
+        ],
+        [
+          -252.35346695306873,
+          -490.61089486213234
+        ],
+        [
+          -260.27491825284295,
+          -465.5617995781687
+        ],
+        [
+          -272.08382867903856,
+          -442.0936040832894
+        ],
+        [
+          -287.7801982316557,
+          -420.20630837749457
+        ],
+        [
+          -365.7198017683443,
+          -326.9936916225055
+        ],
+        [
+          -374.84198064313125,
+          -317.2058557880325
+        ],
+        [
+          -384.5684181516643,
+          -308.93919409586647
+        ],
+        [
+          -394.8991142939433,
+          -302.19370654600743
+        ],
+        [
+          -405.8340690699684,
+          -296.9693931384552
+        ],
+        [
+          -417.37328247973954,
+          -293.26625387320996
+        ],
+        [
+          -429.51675452325674,
+          -291.0842887502715
+        ],
+        [
+          -442.26448520051997,
+          -290.4234977696399
+        ],
+        [
+          -455.61647451152925,
+          -291.28388093131525
+        ],
+        [
+          -533.3835254884707,
+          -300.5161190686848
+        ],
+        [
+          -559.7935740569503,
+          -305.69577793531084
+        ],
+        [
+          -584.40724525086,
+          -314.75087360387374
+        ],
+        [
+          -607.2245390701995,
+          -327.6814060743736
+        ],
+        [
+          -628.2454555149691,
+          -344.4873753468104
+        ],
+        [
+          -690.7545444850309,
+          -402.71262465318955
+        ],
+        [
+          -700.290298723288,
+          -412.35188114713947
+        ],
+        [
+          -708.7748336805746,
+          -422.5259629555842
+        ],
+        [
+          -716.2081493568908,
+          -433.2348700785236
+        ],
+        [
+          -722.5902457522365,
+          -444.47860251595773
+        ],
+        [
+          -727.9211228666118,
+          -456.25716026788655
+        ],
+        [
+          -732.2007807000166,
+          -468.5705433343102
+        ],
+        [
+          -735.4292192524508,
+          -481.4187517152284
+        ],
+        [
+          -735.90930697524,
+          -484.36977748238627
+        ],
+        [
+          -807.2027931655355,
+          -508.9451315223157
+        ],
+        [
+          -818.4295150310675,
+          -513.4061292671163
+        ],
+        [
+          -828.8295009645891,
+          -518.7616882626755
+        ],
+        [
+          -838.4027509661003,
+          -525.0118085089937
+        ],
+        [
+          -847.149265035601,
+          -532.1564900060705
+        ],
+        [
+          -855.0690431730912,
+          -540.1957327539064
+        ],
+        [
+          -862.1620853785711,
+          -549.1295367525008
+        ],
+        [
+          -868.4283916520404,
+          -558.9579020018543
+        ],
+        [
+          -873.8679619934993,
+          -569.6808285019665
+        ],
+        [
+          -954.7118169970951,
+          -831.3191714980335
+        ],
+        [
+          -957.7757623324205,
+          -853.7411856087522
+        ],
+        [
+          -959.240152923842,
+          -876.3263994389422
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -897.6289889270668,
+          1092.8886975323499
+        ],
+        [
+          -895.7673688809734,
+          1070.0206860379712
+        ],
+        [
+          -858.6048974165826,
+          753.9793139620289
+        ],
+        [
+          -854.4941954762309,
+          731.0648462193923
+        ],
+        [
+          -849.1882708682147,
+          708.3007569535114
+        ],
+        [
+          -842.6871235925341,
+          685.6870461643862
+        ],
+        [
+          -834.9907536491892,
+          663.2237138520168
+        ],
+        [
+          -767.5262511431849,
+          440.7762861479832
+        ],
+        [
+          -765.4740622504979,
+          429.971453051049
+        ],
+        [
+          -762.4072875209289,
+          419.9450968342379
+        ],
+        [
+          -758.3259269544778,
+          410.69721749754996
+        ],
+        [
+          -753.2299805511448,
+          402.2278150409852
+        ],
+        [
+          -747.1194483109296,
+          394.5368894645435
+        ],
+        [
+          -739.9943302338324,
+          387.624440768225
+        ],
+        [
+          -731.8546263198533,
+          381.4904689520297
+        ],
+        [
+          -722.7003365689922,
+          376.1349740159575
+        ],
+        [
+          -629.3823932143121,
+          327.14704657778225
+        ],
+        [
+          -614.712052359819,
+          321.0202137000025
+        ],
+        [
+          -599.1080573427995,
+          317.78676164444556
+        ],
+        [
+          -582.5704081632533,
+          317.4466904111114
+        ],
+        [
+          -565.0991048211806,
+          320
+        ],
+        [
+          -489.0232087071478,
+          337
+        ],
+        [
+          -489.3746304516991,
+          331.3125
+        ],
+        [
+          -487.7685031263786,
+          327.25
+        ],
+        [
+          -484.20482673118636,
+          324.8125
+        ],
+        [
+          -478.68360126612225,
+          324
+        ],
+        [
+          -476.68360126612225,
+          324
+        ],
+        [
+          -470.82982673118636,
+          324.8125
+        ],
+        [
+          -466.2685031263786,
+          327.25
+        ],
+        [
+          -462.9996304516991,
+          331.3125
+        ],
+        [
+          -461.0232087071478,
+          337
+        ],
+        [
+          -458.8490596730941,
+          391.22689813370124
+        ],
+        [
+          -457.5716556579212,
+          393.2367530751129
+        ],
+        [
+          -453.3805802272792,
+          401.8618608588645
+        ],
+        [
+          -450.3265679435267,
+          410.79802281439925
+        ],
+        [
+          -448.48234474576896,
+          420
+        ],
+        [
+          -446.97005964539983,
+          450
+        ],
+        [
+          -446.33024155011924,
+          480
+        ],
+        [
+          -446.5420434905538,
+          510
+        ],
+        [
+          -447.58461849733015,
+          540
+        ],
+        [
+          -453.88259131726284,
+          600
+        ],
+        [
+          -461.48685494897666,
+          660
+        ],
+        [
+          -464.3927510064203,
+          682.2112476264364
+        ],
+        [
+          -466.0567025936553,
+          708.310546875
+        ],
+        [
+          -471.29302033255226,
+          774.563125
+        ],
+        [
+          -482.6492046498802,
+          900
+        ],
+        [
+          -492.38353772019923,
+          1025.4368749999999
+        ],
+        [
+          -495.92415411725665,
+          1091.689453125
+        ],
+        [
+          -497.81744861962477,
+          1160.455
+        ],
+        [
+          -497.49120487533776,
+          1231.8511718749999
+        ],
+        [
+          -494.3732065324298,
+          1305.995625
+        ],
+        [
+          -487.89123723893476,
+          1383.006015625
+        ],
+        [
+          -477.473080642887,
+          1463
+        ],
+        [
+          -476.95487327449314,
+          1468.6875
+        ],
+        [
+          -478.4418680113547,
+          1472.75
+        ],
+        [
+          -481.9340648534716,
+          1475.1875
+        ],
+        [
+          -487.4314638008439,
+          1476
+        ],
+        [
+          -489.4314638008439,
+          1476
+        ],
+        [
+          -495.30906485347157,
+          1475.1875
+        ],
+        [
+          -499.9418680113547,
+          1472.75
+        ],
+        [
+          -503.32987327449314,
+          1468.6875
+        ],
+        [
+          -505.473080642887,
+          1463
+        ],
+        [
+          -576.8444804991997,
+          1480
+        ],
+        [
+          -593.873969329133,
+          1482.8439198471492
+        ],
+        [
+          -611.3563550117686,
+          1483.3756793885973
+        ],
+        [
+          -629.2916375471063,
+          1481.5952786243445
+        ],
+        [
+          -647.6798169351462,
+          1477.50271755439
+        ],
+        [
+          -733.6295091753432,
+          1453.2850219521652
+        ],
+        [
+          -745.0367325538958,
+          1449.4833295231288
+        ],
+        [
+          -755.691581031383,
+          1444.7207632121017
+        ],
+        [
+          -765.5940546078047,
+          1438.9973230190844
+        ],
+        [
+          -774.7441532831608,
+          1432.313008944077
+        ],
+        [
+          -783.1418770574516,
+          1424.6678209870788
+        ],
+        [
+          -790.7872259306768,
+          1416.0617591480902
+        ],
+        [
+          -797.6801999028365,
+          1406.4948234271114
+        ],
+        [
+          -803.8207989739308,
+          1395.9670138241422
+        ],
+        [
+          -891.5219284344086,
+          1160.0329861758578
+        ],
+        [
+          -895.5062687037843,
+          1137.8948476012933
+        ],
+        [
+          -897.5419555346704,
+          1115.5134180534571
+        ],
+        [
+          -897.6289889270668,
+          1092.8886975323499
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          454.0884283052406,
+          600
+        ],
+        [
+          454.47706104521956,
+          528.152890625
+        ],
+        [
+          456.39713893813064,
+          470.0636715588539
+        ],
+        [
+          456.2173361369547,
+          456.25
+        ],
+        [
+          457.2537921475164,
+          384.375
+        ],
+        [
+          460.08469729151346,
+          312.5
+        ],
+        [
+          463.5345104877142,
+          276.5625
+        ],
+        [
+          467.5948512049128,
+          240.625
+        ],
+        [
+          472.2462962924543,
+          204.6875
+        ],
+        [
+          477.46942259968375,
+          168.75
+        ],
+        [
+          493.6479091436075,
+          76.73725506015774
+        ],
+        [
+          499.3705044764482,
+          35.04148437500001
+        ],
+        [
+          513.676852928479,
+          -59
+        ],
+        [
+          514.9725918339504,
+          -64.6875
+        ],
+        [
+          517.7552624807156,
+          -68.75
+        ],
+        [
+          522.0248648687748,
+          -71.1875
+        ],
+        [
+          527.7813989981279,
+          -72
+        ],
+        [
+          529.7813989981279,
+          -72
+        ],
+        [
+          535.3998648687748,
+          -71.1875
+        ],
+        [
+          539.2552624807156,
+          -68.75
+        ],
+        [
+          541.3475918339503,
+          -64.6875
+        ],
+        [
+          541.676852928479,
+          -59
+        ],
+        [
+          615.7526271153588,
+          -77.36000000000001
+        ],
+        [
+          632.7919021157189,
+          -80.06632200254221
+        ],
+        [
+          649.1798650713307,
+          -79.5452880101688
+        ],
+        [
+          664.9165159821941,
+          -75.7968980228798
+        ],
+        [
+          680.0018548483093,
+          -68.8211520406752
+        ],
+        [
+          778.0614724098855,
+          -10.43280477609403
+        ],
+        [
+          786.7332811828859,
+          -4.470563028484861
+        ],
+        [
+          794.3030104199229,
+          2.199759826295633
+        ],
+        [
+          800.7706601209965,
+          9.578163788247451
+        ],
+        [
+          806.1362302861065,
+          17.66464885737058
+        ],
+        [
+          810.399720915253,
+          26.459215033665032
+        ],
+        [
+          813.5611320084362,
+          35.961862317130795
+        ],
+        [
+          815.6204635656558,
+          46.17259070776788
+        ],
+        [
+          816.577715586912,
+          57.09140020557629
+        ],
+        [
+          833.4244174258458,
+          330.9085997944237
+        ],
+        [
+          838.9240962680901,
+          376.2233497922532
+        ],
+        [
+          841.0267546251973,
+          421.9847993745889
+        ],
+        [
+          858.8614119138897,
+          806.0152006254111
+        ],
+        [
+          860.5040776074684,
+          828.9166844710198
+        ],
+        [
+          860.6940736711842,
+          851.6363366332569
+        ],
+        [
+          859.4314001050373,
+          874.1741571121224
+        ],
+        [
+          856.7160569090274,
+          896.5301459076163
+        ],
+        [
+          823.4785741341999,
+          1185.4698540923837
+        ],
+        [
+          820.7551817528854,
+          1196.1452151814124
+        ],
+        [
+          816.9631200569106,
+          1205.9062254946903
+        ],
+        [
+          812.1023890462754,
+          1214.752885032217
+        ],
+        [
+          806.1729887209799,
+          1222.685193793993
+        ],
+        [
+          799.174919081024,
+          1229.7031517800183
+        ],
+        [
+          791.1081801264078,
+          1235.8067589902926
+        ],
+        [
+          781.9727718571312,
+          1240.9960154248158
+        ],
+        [
+          771.7686942731943,
+          1245.2709210835883
+        ],
+        [
+          690.5358288471505,
+          1273.8850048758259
+        ],
+        [
+          673.1558519312719,
+          1278.645315242652
+        ],
+        [
+          655.7061530181168,
+          1280.8112512189566
+        ],
+        [
+          638.1867321076851,
+          1280.3828128047392
+        ],
+        [
+          620.5975891999769,
+          1277.3600000000001
+        ],
+        [
+          545.3972235124252,
+          1259
+        ],
+        [
+          544.5585946242917,
+          1264.6875
+        ],
+        [
+          542.1024311327677,
+          1268.75
+        ],
+        [
+          538.0287330378534,
+          1271.1875
+        ],
+        [
+          532.3375003395486,
+          1272
+        ],
+        [
+          530.3375003395486,
+          1272
+        ],
+        [
+          524.6537330378534,
+          1271.1875
+        ],
+        [
+          520.6024311327677,
+          1268.75
+        ],
+        [
+          518.1835946242917,
+          1264.6875
+        ],
+        [
+          517.3972235124252,
+          1259
+        ],
+        [
+          495.7412520853982,
+          1074.575625
+        ],
+        [
+          486.6972851028986,
+          994.2595951052479
+        ],
+        [
+          481.24740100176547,
+          959.375
+        ],
+        [
+          471.3708609604584,
+          887.5
+        ],
+        [
+          465.31879945460025,
+          815.625
+        ],
+        [
+          461.13972987442787,
+          743.75
+        ],
+        [
+          460.75995905050263,
+          728.2508201154884
+        ],
+        [
+          457.04626747303115,
+          671.8471093750001
+        ],
+        [
+          454.0884283052406,
+          600
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          636.1957680638527,
+          -1000.3244323009732
+        ],
+        [
+          639.1404781436687,
+          -1016.7818798082011
+        ],
+        [
+          645.183072255411,
+          -1032.9786578937762
+        ],
+        [
+          671.0819267539025,
+          -1087.790025747549
+        ],
+        [
+          675.2408501709566,
+          -1097.8087243667815
+        ],
+        [
+          678.2585837990702,
+          -1107.8460685874738
+        ],
+        [
+          680.1351276382431,
+          -1117.9020584096263
+        ],
+        [
+          680.8704816884756,
+          -1127.9766938332386
+        ],
+        [
+          680.4646459497676,
+          -1138.069974858311
+        ],
+        [
+          678.917620422119,
+          -1148.1819014848438
+        ],
+        [
+          676.2294051055297,
+          -1158.312473712836
+        ],
+        [
+          672.4,
+          -1168.4616915422885
+        ],
+        [
+          650.013447761741,
+          -1220.1468507427558
+        ],
+        [
+          646.7446709425828,
+          -1228.8055192500055
+        ],
+        [
+          644.4450643659793,
+          -1237.4503066937123
+        ],
+        [
+          643.11462803193,
+          -1246.0812130738766
+        ],
+        [
+          642.7533619404353,
+          -1254.6982383904983
+        ],
+        [
+          643.3612660914948,
+          -1263.3013826435772
+        ],
+        [
+          644.9383404851088,
+          -1271.8906458331137
+        ],
+        [
+          647.4845851212772,
+          -1280.4660279591076
+        ],
+        [
+          651,
+          -1289.0275290215588
+        ],
+        [
+          672.5554953047603,
+          -1335.1269763598984
+        ],
+        [
+          686.2888738261901,
+          -1360.9689746040708
+        ],
+        [
+          702.6,
+          -1385.2663349917082
+        ],
+        [
+          723.5710513462178,
+          -1413.2972925125234
+        ],
+        [
+          732.3587163822475,
+          -1423.5195446170671
+        ],
+        [
+          742.2927628365544,
+          -1432.226545350353
+        ],
+        [
+          753.3731907091386,
+          -1439.4182947123809
+        ],
+        [
+          765.6,
+          -1445.094792703151
+        ],
+        [
+          794.4,
+          -1456.162255389718
+        ],
+        [
+          807.3140745715358,
+          -1460.4662686567165
+        ],
+        [
+          820.4562982861432,
+          -1463.5405638474294
+        ],
+        [
+          833.8266711438223,
+          -1465.3851409618574
+        ],
+        [
+          847.425193144573,
+          -1466
+        ],
+        [
+          915.4549989965358,
+          -1466
+        ],
+        [
+          923.6914836067226,
+          -1465.4787064676616
+        ],
+        [
+          931.1284369355513,
+          -1463.9148258706468
+        ],
+        [
+          937.7658589830218,
+          -1461.3083582089553
+        ],
+        [
+          943.603749749134,
+          -1457.6593034825871
+        ],
+        [
+          948.6421092338878,
+          -1452.9676616915424
+        ],
+        [
+          952.8809374372835,
+          -1447.2334328358208
+        ],
+        [
+          956.3202343593209,
+          -1440.456616915423
+        ],
+        [
+          958.96,
+          -1432.6372139303483
+        ],
+        [
+          969.04,
+          -1395.1040796019902
+        ],
+        [
+          972.6240823612575,
+          -1378.3750900830416
+        ],
+        [
+          974.4163294450298,
+          -1361.5509075958485
+        ],
+        [
+          974.416741251317,
+          -1344.63153214041
+        ],
+        [
+          972.6253177801191,
+          -1327.6169637167266
+        ],
+        [
+          964.4,
+          -1275.3936981757877
+        ],
+        [
+          961.9804492240135,
+          -1255.0736146388483
+        ],
+        [
+          961.1217968960541,
+          -1234.7475265487597
+        ],
+        [
+          961.8240430161217,
+          -1214.4154339055221
+        ],
+        [
+          964.0871875842163,
+          -1194.0773367091351
+        ],
+        [
+          972.96,
+          -1134.7781094527363
+        ],
+        [
+          975.6,
+          -1111.2530679933666
+        ],
+        [
+          976.48,
+          -1087.7280265339966
+        ],
+        [
+          975.6,
+          -1064.202985074627
+        ],
+        [
+          972.96,
+          -1040.677943615257
+        ],
+        [
+          965.04,
+          -987.7466003316749
+        ],
+        [
+          962.2733810195656,
+          -964.2053836491673
+        ],
+        [
+          961.0135240782624,
+          -940.6318165203844
+        ],
+        [
+          961.2604291760904,
+          -917.0258989453258
+        ],
+        [
+          963.0140963130495,
+          -893.3876309239919
+        ],
+        [
+          970.6681518012019,
+          -821.1702621976153
+        ],
+        [
+          971.663335388176,
+          -800.8828993518302
+        ],
+        [
+          970.3170379503005,
+          -780.8925655494038
+        ],
+        [
+          966.6292594875752,
+          -761.199260790336
+        ],
+        [
+          960.6,
+          -741.8029850746268
+        ],
+        [
+          941.2177533920059,
+          -689.9884220031732
+        ],
+        [
+          938.0885924407545,
+          -682.976593722216
+        ],
+        [
+          934.3099862830034,
+          -676.9353198809308
+        ],
+        [
+          929.8819349187523,
+          -671.8646004793179
+        ],
+        [
+          924.8044383480014,
+          -667.764435517377
+        ],
+        [
+          919.0774965707508,
+          -664.6348249951084
+        ],
+        [
+          912.7011095870004,
+          -662.4757689125117
+        ],
+        [
+          905.6752773967501,
+          -661.2872672695873
+        ],
+        [
+          898,
+          -661.069320066335
+        ],
+        [
+          856.3481890745959,
+          -662.4611674795138
+        ],
+        [
+          843.4208563544602,
+          -663.7151902893161
+        ],
+        [
+          830.987047268649,
+          -666.5968009909398
+        ],
+        [
+          819.0467618171623,
+          -671.105999584385
+        ],
+        [
+          807.6,
+          -677.2427860696517
+        ],
+        [
+          782.4,
+          -692.8815920398009
+        ],
+        [
+          772.2970792580746,
+          -700.5829460563307
+        ],
+        [
+          764.3883170322985,
+          -709.7858472435651
+        ],
+        [
+          758.6737133226716,
+          -720.4902956015039
+        ],
+        [
+          755.1532681291939,
+          -732.6962911301474
+        ],
+        [
+          746.4,
+          -779.4965174129353
+        ],
+        [
+          742.0634420467977,
+          -796.0073785782931
+        ],
+        [
+          735.4537681871907,
+          -811.3217199516471
+        ],
+        [
+          726.5709784211791,
+          -825.439541532997
+        ],
+        [
+          715.4150727487628,
+          -838.360843322343
+        ],
+        [
+          685.0989052662123,
+          -868.7524241568402
+        ],
+        [
+          673.5181342122445,
+          -881.8991506943585
+        ],
+        [
+          663.874726316553,
+          -896.1779899529745
+        ],
+        [
+          656.1686815791383,
+          -911.5889419326879
+        ],
+        [
+          650.4,
+          -928.1320066334991
+        ],
+        [
+          639.6,
+          -966.6275290215589
+        ],
+        [
+          636.3489420159632,
+          -983.6063153720925
+        ],
+        [
+          636.1957680638527,
+          -1000.3244323009732
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "eight-biome-expansion",
+    "created": "2026-11-18",
+    "architectureId": "map-biome-desert-caravan-bend",
+    "summary": "A central north-south caravan path makes small alternating bends between three staggered sandstone buttes and one hooked southeastern oasis. Western and eastern side approaches join at different heights.",
+    "biomeOrdinal": 3,
+    "sourcePixelsPerWorldUnit": 1,
+    "resampling": "none",
+    "scaleContract": "All new terrain asset/default/object/layer scales are1; source crop pixels are world units.",
+    "approaches": [
+      {
+        "id": "north",
+        "side": "north",
+        "point": {
+          "x": -160,
+          "y": 1290
+        },
+        "clearWidth": 250
+      },
+      {
+        "id": "west",
+        "side": "west",
+        "point": {
+          "x": -750,
+          "y": 70
+        },
+        "clearWidth": 250
+      },
+      {
+        "id": "east",
+        "side": "east",
+        "point": {
+          "x": 750,
+          "y": -360
+        },
+        "clearWidth": 250
+      },
+      {
+        "id": "south",
+        "side": "south",
+        "point": {
+          "x": -80,
+          "y": -1290
+        },
+        "clearWidth": 250
+      }
+    ],
+    "buildPockets": [
+      {
+        "id": "upper-caravan-clearing",
+        "center": {
+          "x": 0,
+          "y": 1000
+        },
+        "radius": 150
+      },
+      {
+        "id": "central-stronghold",
+        "center": {
+          "x": 0,
+          "y": -500
+        },
+        "radius": 200
+      },
+      {
+        "id": "lower-caravan-clearing",
+        "center": {
+          "x": 180,
+          "y": -1080
+        },
+        "radius": 125
+      },
+      {
+        "id": "west-central-clearing",
+        "center": {
+          "x": -140,
+          "y": 350
+        },
+        "radius": 120
+      }
+    ],
+    "revision": {
+      "kind": "broad-rounded-side-hills",
+      "date": "2026-11-18",
+      "beforeMapSha256": "93f396433847dd3ffba82c1b861f1fc376ef0fc793262f97e42f1ff3b6bd8dec",
+      "architectureSha256": "3c9e196c28553a8bb92c0e210e5af4069a9b58df6b66302d6729911eeba468b3",
+      "geometryHelperSha256": "2a4aa4bd286ab2f0f3caf5aa6aa5484f1dd78579a0f0ae89dbb8dbae532c1be2",
+      "terrainGeometry": [
+        {
+          "key": "northwest-headland",
+          "objectId": "object-1",
+          "assetId": "terrain-biome-desert-caravan-bend-northwest-headland",
+          "kind": "cliff",
+          "world": {
+            "x": -680,
+            "y": 300
+          },
+          "width": 500,
+          "height": 1200,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -217.62898892706676,
+                "y": 792.8886975323499
+              },
+              {
+                "x": -215.76736888097346,
+                "y": 770.0206860379711
+              },
+              {
+                "x": -178.60489741658256,
+                "y": 453.97931396202887
+              },
+              {
+                "x": -174.49419547623086,
+                "y": 431.0648462193923
+              },
+              {
+                "x": -169.18827086821472,
+                "y": 408.3007569535114
+              },
+              {
+                "x": -162.68712359253414,
+                "y": 385.68704616438623
+              },
+              {
+                "x": -154.99075364918917,
+                "y": 363.2237138520168
+              },
+              {
+                "x": -87.52625114318491,
+                "y": 140.77628614798323
+              },
+              {
+                "x": -85.4740622504979,
+                "y": 129.971453051049
+              },
+              {
+                "x": -82.40728752092885,
+                "y": 119.94509683423792
+              },
+              {
+                "x": -78.3259269544778,
+                "y": 110.69721749754997
+              },
+              {
+                "x": -73.2299805511447,
+                "y": 102.22781504098518
+              },
+              {
+                "x": -67.11944831092961,
+                "y": 94.53688946454352
+              },
+              {
+                "x": -59.99433023383247,
+                "y": 87.62444076822501
+              },
+              {
+                "x": -51.854626319853324,
+                "y": 81.49046895202966
+              },
+              {
+                "x": -42.70033656899217,
+                "y": 76.13497401595748
+              },
+              {
+                "x": 50.617606785688,
+                "y": 27.14704657778225
+              },
+              {
+                "x": 65.28794764018093,
+                "y": 21.020213700002515
+              },
+              {
+                "x": 80.89194265720049,
+                "y": 17.786761644445562
+              },
+              {
+                "x": 97.42959183674664,
+                "y": 17.44669041111139
+              },
+              {
+                "x": 114.90089517881938,
+                "y": 20
+              },
+              {
+                "x": 190.97679129285225,
+                "y": 37
+              },
+              {
+                "x": 190.6253695483009,
+                "y": 31.3125
+              },
+              {
+                "x": 192.23149687362138,
+                "y": 27.250000000000004
+              },
+              {
+                "x": 195.79517326881364,
+                "y": 24.812500000000004
+              },
+              {
+                "x": 201.31639873387775,
+                "y": 24
+              },
+              {
+                "x": 203.31639873387775,
+                "y": 24
+              },
+              {
+                "x": 209.17017326881364,
+                "y": 24.812500000000004
+              },
+              {
+                "x": 213.73149687362138,
+                "y": 27.250000000000004
+              },
+              {
+                "x": 217.0003695483009,
+                "y": 31.3125
+              },
+              {
+                "x": 218.97679129285225,
+                "y": 37
+              },
+              {
+                "x": 221.15094032690592,
+                "y": 91.22689813370123
+              },
+              {
+                "x": 222.4283443420788,
+                "y": 93.23675307511294
+              },
+              {
+                "x": 226.6194197727208,
+                "y": 101.86186085886445
+              },
+              {
+                "x": 229.6734320564733,
+                "y": 110.79802281439925
+              },
+              {
+                "x": 231.51765525423104,
+                "y": 120
+              },
+              {
+                "x": 233.02994035460017,
+                "y": 150
+              },
+              {
+                "x": 233.66975844988076,
+                "y": 180
+              },
+              {
+                "x": 233.4579565094462,
+                "y": 210
+              },
+              {
+                "x": 232.41538150266985,
+                "y": 240
+              },
+              {
+                "x": 226.11740868273714,
+                "y": 300
+              },
+              {
+                "x": 218.51314505102334,
+                "y": 360
+              },
+              {
+                "x": 215.60724899357965,
+                "y": 382.2112476264364
+              },
+              {
+                "x": 213.9432974063447,
+                "y": 408.310546875
+              },
+              {
+                "x": 208.7069796674477,
+                "y": 474.563125
+              },
+              {
+                "x": 197.35079535011985,
+                "y": 600
+              },
+              {
+                "x": 187.61646227980077,
+                "y": 725.4368749999999
+              },
+              {
+                "x": 184.07584588274335,
+                "y": 791.6894531249999
+              },
+              {
+                "x": 182.18255138037523,
+                "y": 860.4549999999999
+              },
+              {
+                "x": 182.50879512466224,
+                "y": 931.8511718749999
+              },
+              {
+                "x": 185.62679346757025,
+                "y": 1005.995625
+              },
+              {
+                "x": 192.1087627610652,
+                "y": 1083.006015625
+              },
+              {
+                "x": 202.52691935711297,
+                "y": 1163
+              },
+              {
+                "x": 203.04512672550686,
+                "y": 1168.6875
+              },
+              {
+                "x": 201.5581319886453,
+                "y": 1172.75
+              },
+              {
+                "x": 198.06593514652837,
+                "y": 1175.1875
+              },
+              {
+                "x": 192.56853619915609,
+                "y": 1176
+              },
+              {
+                "x": 190.56853619915609,
+                "y": 1176
+              },
+              {
+                "x": 184.69093514652843,
+                "y": 1175.1875
+              },
+              {
+                "x": 180.0581319886453,
+                "y": 1172.75
+              },
+              {
+                "x": 176.67012672550686,
+                "y": 1168.6875
+              },
+              {
+                "x": 174.52691935711297,
+                "y": 1163
+              },
+              {
+                "x": 103.15551950080035,
+                "y": 1180
+              },
+              {
+                "x": 86.12603067086694,
+                "y": 1182.8439198471492
+              },
+              {
+                "x": 68.64364498823139,
+                "y": 1183.3756793885973
+              },
+              {
+                "x": 50.70836245289368,
+                "y": 1181.5952786243445
+              },
+              {
+                "x": 32.32018306485384,
+                "y": 1177.50271755439
+              },
+              {
+                "x": -53.62950917534315,
+                "y": 1153.2850219521652
+              },
+              {
+                "x": -65.0367325538958,
+                "y": 1149.4833295231288
+              },
+              {
+                "x": -75.69158103138295,
+                "y": 1144.7207632121017
+              },
+              {
+                "x": -85.59405460780465,
+                "y": 1138.9973230190844
+              },
+              {
+                "x": -94.74415328316084,
+                "y": 1132.313008944077
+              },
+              {
+                "x": -103.14187705745155,
+                "y": 1124.6678209870788
+              },
+              {
+                "x": -110.7872259306768,
+                "y": 1116.0617591480902
+              },
+              {
+                "x": -117.68019990283656,
+                "y": 1106.4948234271114
+              },
+              {
+                "x": -123.82079897393083,
+                "y": 1095.9670138241422
+              },
+              {
+                "x": -211.52192843440852,
+                "y": 860.0329861758578
+              },
+              {
+                "x": -215.5062687037843,
+                "y": 837.8948476012932
+              },
+              {
+                "x": -217.54195553467036,
+                "y": 815.5134180534571
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "left",
+            "bendAmplitude": 30,
+            "bendPhase": 0.3,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 30,
+            "faceEnd": 1170,
+            "stableBodyFraction": 0.8421052631578947,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "northeast-mesa",
+          "objectId": "object-2",
+          "assetId": "terrain-biome-desert-caravan-bend-northeast-mesa",
+          "kind": "cliff",
+          "world": {
+            "x": 680,
+            "y": -100
+          },
+          "width": 500,
+          "height": 1400,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -225.9115716947594,
+                "y": 700
+              },
+              {
+                "x": -225.52293895478041,
+                "y": 628.152890625
+              },
+              {
+                "x": -223.60286106186933,
+                "y": 570.0636715588539
+              },
+              {
+                "x": -223.7826638630453,
+                "y": 556.25
+              },
+              {
+                "x": -222.7462078524836,
+                "y": 484.375
+              },
+              {
+                "x": -219.91530270848654,
+                "y": 412.5
+              },
+              {
+                "x": -216.46548951228576,
+                "y": 376.5625
+              },
+              {
+                "x": -212.4051487950872,
+                "y": 340.625
+              },
+              {
+                "x": -207.7537037075457,
+                "y": 304.6875
+              },
+              {
+                "x": -202.53057740031625,
+                "y": 268.75
+              },
+              {
+                "x": -186.35209085639252,
+                "y": 176.73725506015774
+              },
+              {
+                "x": -180.62949552355178,
+                "y": 135.041484375
+              },
+              {
+                "x": -166.32314707152102,
+                "y": 41
+              },
+              {
+                "x": -165.0274081660496,
+                "y": 35.3125
+              },
+              {
+                "x": -162.24473751928434,
+                "y": 31.250000000000004
+              },
+              {
+                "x": -157.97513513122522,
+                "y": 28.812500000000004
+              },
+              {
+                "x": -152.21860100187214,
+                "y": 28
+              },
+              {
+                "x": -150.21860100187214,
+                "y": 28
+              },
+              {
+                "x": -144.60013513122522,
+                "y": 28.812500000000004
+              },
+              {
+                "x": -140.74473751928437,
+                "y": 31.250000000000004
+              },
+              {
+                "x": -138.65240816604967,
+                "y": 35.3125
+              },
+              {
+                "x": -138.32314707152102,
+                "y": 41
+              },
+              {
+                "x": -64.24737288464121,
+                "y": 22.639999999999986
+              },
+              {
+                "x": -47.20809788428111,
+                "y": 19.933677997457792
+              },
+              {
+                "x": -30.820134928669315,
+                "y": 20.454711989831196
+              },
+              {
+                "x": -15.083484017805837,
+                "y": 24.2031019771202
+              },
+              {
+                "x": 0.0018548483093212553,
+                "y": 31.1788479593248
+              },
+              {
+                "x": 98.06147240988548,
+                "y": 89.56719522390597
+              },
+              {
+                "x": 106.73328118288593,
+                "y": 95.52943697151514
+              },
+              {
+                "x": 114.30301041992293,
+                "y": 102.19975982629563
+              },
+              {
+                "x": 120.77066012099644,
+                "y": 109.57816378824745
+              },
+              {
+                "x": 126.1362302861065,
+                "y": 117.66464885737058
+              },
+              {
+                "x": 130.39972091525306,
+                "y": 126.45921503366503
+              },
+              {
+                "x": 133.56113200843618,
+                "y": 135.9618623171308
+              },
+              {
+                "x": 135.62046356565577,
+                "y": 146.17259070776788
+              },
+              {
+                "x": 136.57771558691195,
+                "y": 157.0914002055763
+              },
+              {
+                "x": 153.42441742584577,
+                "y": 430.9085997944237
+              },
+              {
+                "x": 158.92409626809012,
+                "y": 476.2233497922532
+              },
+              {
+                "x": 161.02675462519733,
+                "y": 521.9847993745889
+              },
+              {
+                "x": 178.86141191388975,
+                "y": 906.0152006254111
+              },
+              {
+                "x": 180.50407760746842,
+                "y": 928.9166844710198
+              },
+              {
+                "x": 180.69407367118424,
+                "y": 951.6363366332569
+              },
+              {
+                "x": 179.43140010503723,
+                "y": 974.1741571121224
+              },
+              {
+                "x": 176.71605690902737,
+                "y": 996.5301459076163
+              },
+              {
+                "x": 143.4785741341999,
+                "y": 1285.4698540923837
+              },
+              {
+                "x": 140.7551817528854,
+                "y": 1296.1452151814124
+              },
+              {
+                "x": 136.96312005691055,
+                "y": 1305.9062254946903
+              },
+              {
+                "x": 132.1023890462754,
+                "y": 1314.752885032217
+              },
+              {
+                "x": 126.17298872097986,
+                "y": 1322.685193793993
+              },
+              {
+                "x": 119.174919081024,
+                "y": 1329.7031517800183
+              },
+              {
+                "x": 111.1081801264078,
+                "y": 1335.8067589902926
+              },
+              {
+                "x": 101.97277185713122,
+                "y": 1340.9960154248158
+              },
+              {
+                "x": 91.76869427319434,
+                "y": 1345.2709210835883
+              },
+              {
+                "x": 10.535828847150427,
+                "y": 1373.8850048758259
+              },
+              {
+                "x": -6.844148068728102,
+                "y": 1378.645315242652
+              },
+              {
+                "x": -24.2938469818832,
+                "y": 1380.8112512189566
+              },
+              {
+                "x": -41.813267892314876,
+                "y": 1380.3828128047392
+              },
+              {
+                "x": -59.40241080002312,
+                "y": 1377.3600000000001
+              },
+              {
+                "x": -134.60277648757477,
+                "y": 1359
+              },
+              {
+                "x": -135.4414053757083,
+                "y": 1364.6875
+              },
+              {
+                "x": -137.89756886723228,
+                "y": 1368.75
+              },
+              {
+                "x": -141.97126696214664,
+                "y": 1371.1875
+              },
+              {
+                "x": -147.66249966045143,
+                "y": 1372
+              },
+              {
+                "x": -149.66249966045143,
+                "y": 1372
+              },
+              {
+                "x": -155.34626696214664,
+                "y": 1371.1875
+              },
+              {
+                "x": -159.39756886723228,
+                "y": 1368.75
+              },
+              {
+                "x": -161.81640537570834,
+                "y": 1364.6875
+              },
+              {
+                "x": -162.60277648757477,
+                "y": 1359
+              },
+              {
+                "x": -184.25874791460183,
+                "y": 1174.575625
+              },
+              {
+                "x": -193.30271489710142,
+                "y": 1094.2595951052479
+              },
+              {
+                "x": -198.75259899823453,
+                "y": 1059.375
+              },
+              {
+                "x": -208.6291390395416,
+                "y": 987.5
+              },
+              {
+                "x": -214.68120054539972,
+                "y": 915.625
+              },
+              {
+                "x": -218.86027012557213,
+                "y": 843.75
+              },
+              {
+                "x": -219.24004094949737,
+                "y": 828.2508201154884
+              },
+              {
+                "x": -222.95373252696885,
+                "y": 771.8471093750001
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "right",
+            "bendAmplitude": 30,
+            "bendPhase": 1.8,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 35,
+            "faceEnd": 1365,
+            "stableBodyFraction": 0.8646616541353384,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "southwest-stair",
+          "objectId": "object-3",
+          "assetId": "terrain-biome-desert-caravan-bend-southwest-stair",
+          "kind": "cliff",
+          "world": {
+            "x": -500,
+            "y": -1010
+          },
+          "width": 550,
+          "height": 740,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -234.5,
+                "y": 32
+              },
+              {
+                "x": -260.84332177936136,
+                "y": 197.28552750707857
+              },
+              {
+                "x": -264.217716093146,
+                "y": 224.4607208108968
+              },
+              {
+                "x": -265.68422081386166,
+                "y": 251.67182822943
+              },
+              {
+                "x": -265.242835941508,
+                "y": 278.9188497626782
+              },
+              {
+                "x": -262.8935614760852,
+                "y": 306.20178541064143
+              },
+              {
+                "x": -237.60643852391482,
+                "y": 515.1982145893586
+              },
+              {
+                "x": -235.42921925245088,
+                "y": 528.5812482847716
+              },
+              {
+                "x": -232.20078070001654,
+                "y": 541.4294566656898
+              },
+              {
+                "x": -227.9211228666117,
+                "y": 553.7428397321135
+              },
+              {
+                "x": -222.59024575223646,
+                "y": 565.5213974840423
+              },
+              {
+                "x": -216.20814935689071,
+                "y": 576.7651299214764
+              },
+              {
+                "x": -208.77483368057457,
+                "y": 587.4740370444158
+              },
+              {
+                "x": -200.29029872328795,
+                "y": 597.6481188528605
+              },
+              {
+                "x": -190.75454448503092,
+                "y": 607.2873753468104
+              },
+              {
+                "x": -128.24545551496908,
+                "y": 665.5126246531896
+              },
+              {
+                "x": -107.22453907019953,
+                "y": 682.3185939256264
+              },
+              {
+                "x": -84.40724525085996,
+                "y": 695.2491263961263
+              },
+              {
+                "x": -59.79357405695035,
+                "y": 704.3042220646892
+              },
+              {
+                "x": -33.38352548847073,
+                "y": 709.4838809313152
+              },
+              {
+                "x": 44.38352548847073,
+                "y": 718.7161190686847
+              },
+              {
+                "x": 57.735514799480015,
+                "y": 719.5765022303601
+              },
+              {
+                "x": 70.48324547674326,
+                "y": 718.9157112497285
+              },
+              {
+                "x": 82.62671752026046,
+                "y": 716.73374612679
+              },
+              {
+                "x": 94.1659309300316,
+                "y": 713.0306068615448
+              },
+              {
+                "x": 105.1008857060567,
+                "y": 707.8062934539926
+              },
+              {
+                "x": 115.43158184833574,
+                "y": 701.0608059041335
+              },
+              {
+                "x": 125.15801935686875,
+                "y": 692.7941442119675
+              },
+              {
+                "x": 134.28019823165567,
+                "y": 683.0063083774945
+              },
+              {
+                "x": 212.21980176834433,
+                "y": 589.7936916225054
+              },
+              {
+                "x": 227.91617132096144,
+                "y": 567.9063959167106
+              },
+              {
+                "x": 239.72508174715705,
+                "y": 544.4382004218313
+              },
+              {
+                "x": 247.64653304693127,
+                "y": 519.3891051378677
+              },
+              {
+                "x": 251.680525220284,
+                "y": 492.75911006481965
+              },
+              {
+                "x": 265.31947477971596,
+                "y": 313.84088993518037
+              },
+              {
+                "x": 266.6246333846359,
+                "y": 286.4506460850349
+              },
+              {
+                "x": 266.35958397911156,
+                "y": 259.12080446977916
+              },
+              {
+                "x": 264.52432656314306,
+                "y": 231.85136508941287
+              },
+              {
+                "x": 261.11886113673023,
+                "y": 204.64232794393612
+              },
+              {
+                "x": 234.5,
+                "y": 32
+              },
+              {
+                "x": 240.1875,
+                "y": 31.1875
+              },
+              {
+                "x": 244.25,
+                "y": 28.75
+              },
+              {
+                "x": 246.6875,
+                "y": 24.6875
+              },
+              {
+                "x": 247.5,
+                "y": 19
+              },
+              {
+                "x": 247.5,
+                "y": 17
+              },
+              {
+                "x": 246.6875,
+                "y": 11.3125
+              },
+              {
+                "x": 244.25,
+                "y": 7.250000000000001
+              },
+              {
+                "x": 240.1875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": 234.5,
+                "y": 4
+              },
+              {
+                "x": 110.9875,
+                "y": 2
+              },
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": -110.9875,
+                "y": 2
+              },
+              {
+                "x": -234.5,
+                "y": 4
+              },
+              {
+                "x": -240.1875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": -244.25,
+                "y": 7.250000000000001
+              },
+              {
+                "x": -246.6875,
+                "y": 11.3125
+              },
+              {
+                "x": -247.5,
+                "y": 17
+              },
+              {
+                "x": -247.5,
+                "y": 19
+              },
+              {
+                "x": -246.6875,
+                "y": 24.6875
+              },
+              {
+                "x": -244.25,
+                "y": 28.75
+              },
+              {
+                "x": -240.1875,
+                "y": 31.1875
+              },
+              {
+                "x": -234.5,
+                "y": 32
+              }
+            ]
+          ]
+        },
+        {
+          "key": "southeast-oasis",
+          "objectId": "object-4",
+          "assetId": "terrain-biome-desert-caravan-bend-southeast-oasis",
+          "kind": "water",
+          "world": {
+            "x": 800,
+            "y": -1510
+          },
+          "width": 450,
+          "height": 900,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": 158.96,
+                "y": 77.36278606965175
+              },
+              {
+                "x": 169.04,
+                "y": 114.89592039800993
+              },
+              {
+                "x": 172.62408236125745,
+                "y": 131.6249099169583
+              },
+              {
+                "x": 174.4163294450298,
+                "y": 148.44909240415166
+              },
+              {
+                "x": 174.41674125131703,
+                "y": 165.36846785959
+              },
+              {
+                "x": 172.62531778011913,
+                "y": 182.38303628327338
+              },
+              {
+                "x": 164.4,
+                "y": 234.6063018242123
+              },
+              {
+                "x": 161.9804492240135,
+                "y": 254.92638536115172
+              },
+              {
+                "x": 161.12179689605406,
+                "y": 275.25247345124023
+              },
+              {
+                "x": 161.82404301612164,
+                "y": 295.5845660944779
+              },
+              {
+                "x": 164.08718758421622,
+                "y": 315.92266329086476
+              },
+              {
+                "x": 172.96,
+                "y": 375.2218905472637
+              },
+              {
+                "x": 175.6,
+                "y": 398.7469320066335
+              },
+              {
+                "x": 176.48000000000002,
+                "y": 422.2719734660033
+              },
+              {
+                "x": 175.6,
+                "y": 445.79701492537316
+              },
+              {
+                "x": 172.96,
+                "y": 469.32205638474295
+              },
+              {
+                "x": 165.04,
+                "y": 522.2533996683251
+              },
+              {
+                "x": 162.2733810195656,
+                "y": 545.7946163508327
+              },
+              {
+                "x": 161.01352407826238,
+                "y": 569.3681834796156
+              },
+              {
+                "x": 161.26042917609038,
+                "y": 592.9741010546742
+              },
+              {
+                "x": 163.0140963130496,
+                "y": 616.6123690760081
+              },
+              {
+                "x": 170.66815180120187,
+                "y": 688.8297378023847
+              },
+              {
+                "x": 171.66333538817605,
+                "y": 709.1171006481698
+              },
+              {
+                "x": 170.31703795030046,
+                "y": 729.1074344505962
+              },
+              {
+                "x": 166.6292594875751,
+                "y": 748.800739209664
+              },
+              {
+                "x": 160.6,
+                "y": 768.1970149253732
+              },
+              {
+                "x": 141.21775339200587,
+                "y": 820.0115779968268
+              },
+              {
+                "x": 138.0885924407545,
+                "y": 827.023406277784
+              },
+              {
+                "x": 134.30998628300333,
+                "y": 833.0646801190692
+              },
+              {
+                "x": 129.88193491875234,
+                "y": 838.1353995206821
+              },
+              {
+                "x": 124.80443834800148,
+                "y": 842.235564482623
+              },
+              {
+                "x": 119.07749657075082,
+                "y": 845.3651750048916
+              },
+              {
+                "x": 112.70110958700036,
+                "y": 847.5242310874883
+              },
+              {
+                "x": 105.67527739675009,
+                "y": 848.7127327304127
+              },
+              {
+                "x": 98,
+                "y": 848.930679933665
+              },
+              {
+                "x": 56.34818907459589,
+                "y": 847.5388325204862
+              },
+              {
+                "x": 43.4208563544602,
+                "y": 846.2848097106839
+              },
+              {
+                "x": 30.987047268648972,
+                "y": 843.4031990090602
+              },
+              {
+                "x": 19.046761817162242,
+                "y": 838.894000415615
+              },
+              {
+                "x": 7.599999999999998,
+                "y": 832.7572139303483
+              },
+              {
+                "x": -17.599999999999998,
+                "y": 817.1184079601991
+              },
+              {
+                "x": -27.70292074192538,
+                "y": 809.4170539436693
+              },
+              {
+                "x": -35.611682967701526,
+                "y": 800.2141527564349
+              },
+              {
+                "x": -41.32628667732843,
+                "y": 789.5097043984961
+              },
+              {
+                "x": -44.84673187080611,
+                "y": 777.3037088698526
+              },
+              {
+                "x": -53.6,
+                "y": 730.5034825870647
+              },
+              {
+                "x": -57.936557953202325,
+                "y": 713.9926214217069
+              },
+              {
+                "x": -64.5462318128093,
+                "y": 698.6782800483529
+              },
+              {
+                "x": -73.42902157882091,
+                "y": 684.560458467003
+              },
+              {
+                "x": -84.58492725123719,
+                "y": 671.639156677657
+              },
+              {
+                "x": -114.90109473378766,
+                "y": 641.2475758431598
+              },
+              {
+                "x": -126.48186578775554,
+                "y": 628.1008493056415
+              },
+              {
+                "x": -136.1252736834469,
+                "y": 613.8220100470255
+              },
+              {
+                "x": -143.83131842086172,
+                "y": 598.4110580673121
+              },
+              {
+                "x": -149.6,
+                "y": 581.8679933665009
+              },
+              {
+                "x": -160.4,
+                "y": 543.3724709784411
+              },
+              {
+                "x": -163.6510579840368,
+                "y": 526.3936846279075
+              },
+              {
+                "x": -163.80423193614723,
+                "y": 509.67556769902683
+              },
+              {
+                "x": -160.8595218563313,
+                "y": 493.2181201917989
+              },
+              {
+                "x": -154.81692774458895,
+                "y": 477.02134210622376
+              },
+              {
+                "x": -128.91807324609746,
+                "y": 422.20997425245116
+              },
+              {
+                "x": -124.75914982904338,
+                "y": 412.19127563321865
+              },
+              {
+                "x": -121.74141620092983,
+                "y": 402.15393141252616
+              },
+              {
+                "x": -119.86487236175682,
+                "y": 392.0979415903737
+              },
+              {
+                "x": -119.12951831152436,
+                "y": 382.02330616676124
+              },
+              {
+                "x": -119.53535405023246,
+                "y": 371.9300251416888
+              },
+              {
+                "x": -121.08237957788108,
+                "y": 361.8180985151563
+              },
+              {
+                "x": -123.77059489447026,
+                "y": 351.6875262871639
+              },
+              {
+                "x": -127.6,
+                "y": 341.5383084577114
+              },
+              {
+                "x": -149.9865522382591,
+                "y": 289.8531492572441
+              },
+              {
+                "x": -153.25532905741713,
+                "y": 281.19448074999457
+              },
+              {
+                "x": -155.55493563402075,
+                "y": 272.54969330628774
+              },
+              {
+                "x": -156.88537196806996,
+                "y": 263.9187869261234
+              },
+              {
+                "x": -157.24663805956476,
+                "y": 255.30176160950174
+              },
+              {
+                "x": -156.63873390850517,
+                "y": 246.6986173564227
+              },
+              {
+                "x": -155.06165951489118,
+                "y": 238.10935416688622
+              },
+              {
+                "x": -152.5154148787228,
+                "y": 229.5339720408924
+              },
+              {
+                "x": -149,
+                "y": 220.97247097844112
+              },
+              {
+                "x": -127.44450469523976,
+                "y": 174.87302364010148
+              },
+              {
+                "x": -113.71112617380993,
+                "y": 149.0310253959292
+              },
+              {
+                "x": -97.4,
+                "y": 124.73366500829187
+              },
+              {
+                "x": -76.42894865378216,
+                "y": 96.70270748747663
+              },
+              {
+                "x": -67.64128361775248,
+                "y": 86.4804553829328
+              },
+              {
+                "x": -57.70723716344555,
+                "y": 77.77345464964694
+              },
+              {
+                "x": -46.626809290861395,
+                "y": 70.58170528761903
+              },
+              {
+                "x": -34.4,
+                "y": 64.90520729684908
+              },
+              {
+                "x": -5.600000000000001,
+                "y": 53.83774461028192
+              },
+              {
+                "x": 7.314074571535808,
+                "y": 49.53373134328358
+              },
+              {
+                "x": 20.456298286143237,
+                "y": 46.459436152570476
+              },
+              {
+                "x": 33.82667114382229,
+                "y": 44.61485903814262
+              },
+              {
+                "x": 47.42519314457295,
+                "y": 44
+              },
+              {
+                "x": 115.45499899653572,
+                "y": 44
+              },
+              {
+                "x": 123.69148360672266,
+                "y": 44.521293532338305
+              },
+              {
+                "x": 131.12843693555135,
+                "y": 46.085174129353234
+              },
+              {
+                "x": 137.76585898302176,
+                "y": 48.69164179104478
+              },
+              {
+                "x": 143.60374974913393,
+                "y": 52.34069651741294
+              },
+              {
+                "x": 148.64210923388782,
+                "y": 57.03233830845771
+              },
+              {
+                "x": 152.8809374372835,
+                "y": 62.766567164179115
+              },
+              {
+                "x": 156.3202343593209,
+                "y": 69.54338308457713
+              }
+            ]
+          ]
+        },
+        {
+          "key": "western-canyon-bank",
+          "objectId": "object-83",
+          "assetId": "terrain-biome-desert-caravan-bend-western-canyon-bank",
+          "kind": "cliff",
+          "world": {
+            "x": -765,
+            "y": -1760
+          },
+          "width": 450,
+          "height": 1300,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -194.24015292384195,
+                "y": 883.6736005610578
+              },
+              {
+                "x": -194.10498877135956,
+                "y": 860.9251870113969
+              },
+              {
+                "x": -192.37026987497325,
+                "y": 838.0135737422647
+              },
+              {
+                "x": -155.43753544313378,
+                "y": 487.9864262577352
+              },
+              {
+                "x": -147.10808699850554,
+                "y": 442.20007594976386
+              },
+              {
+                "x": -134.83738014380106,
+                "y": 396.81387754132027
+              },
+              {
+                "x": -72.30484603819522,
+                "y": 149.18612245867973
+              },
+              {
+                "x": -68.07429867465439,
+                "y": 127.95417464553684
+              },
+              {
+                "x": -64.45793151722623,
+                "y": 118.35903580111312
+              },
+              {
+                "x": -59.840835376026234,
+                "y": 109.44445366478791
+              },
+              {
+                "x": -54.22301025105442,
+                "y": 101.21042823656117
+              },
+              {
+                "x": -47.60445614231077,
+                "y": 93.65695951643293
+              },
+              {
+                "x": -39.985173049795286,
+                "y": 86.78404750440318
+              },
+              {
+                "x": -31.365160973507976,
+                "y": 80.59169220047193
+              },
+              {
+                "x": -22.245120762960113,
+                "y": 74.59453931923201
+              },
+              {
+                "x": -20.646385535799922,
+                "y": 72.18014417173131
+              },
+              {
+                "x": -14.784018042849723,
+                "y": 65.2516424922861
+              },
+              {
+                "x": -8.022052482135589,
+                "y": 58.86038969321072
+              },
+              {
+                "x": -0.4096328767694537,
+                "y": 53.05162471622251
+              },
+              {
+                "x": 8.004096750136746,
+                "y": 47.87058650303879
+              },
+              {
+                "x": 17.169992375471075,
+                "y": 43.36251399537685
+              },
+              {
+                "x": 27.0389099761216,
+                "y": 39.57264613495402
+              },
+              {
+                "x": 34.1035232306033,
+                "y": 37.54081752871579
+              },
+              {
+                "x": 48.29142784438319,
+                "y": 28.2111401293904
+              },
+              {
+                "x": 60.13521054415915,
+                "y": 22.076266322782104
+              },
+              {
+                "x": 72.93335215572294,
+                "y": 18.882785032347613
+              },
+              {
+                "x": 86.68585267907457,
+                "y": 18.630696258086928
+              },
+              {
+                "x": 101.39271211421404,
+                "y": 21.32000000000005
+              },
+              {
+                "x": 165.77731733356572,
+                "y": 39
+              },
+              {
+                "x": 165.51316544620224,
+                "y": 33.3125
+              },
+              {
+                "x": 167.18162838379976,
+                "y": 29.250000000000004
+              },
+              {
+                "x": 170.7827061463583,
+                "y": 26.812500000000004
+              },
+              {
+                "x": 176.31639873387775,
+                "y": 26
+              },
+              {
+                "x": 178.31639873387775,
+                "y": 26
+              },
+              {
+                "x": 184.15770614635824,
+                "y": 26.812500000000004
+              },
+              {
+                "x": 188.6816283837997,
+                "y": 29.250000000000004
+              },
+              {
+                "x": 191.8881654462022,
+                "y": 33.3125
+              },
+              {
+                "x": 193.77731733356572,
+                "y": 39
+              },
+              {
+                "x": 195.85073166097786,
+                "y": 94.1234731871196
+              },
+              {
+                "x": 196.86561565375217,
+                "y": 95.73675307511294
+              },
+              {
+                "x": 201.00705863842424,
+                "y": 104.36186085886445
+              },
+              {
+                "x": 204.0166958800438,
+                "y": 113.29802281439925
+              },
+              {
+                "x": 205.82303422380997,
+                "y": 122.5
+              },
+              {
+                "x": 207.65132665758864,
+                "y": 155.46875
+              },
+              {
+                "x": 208.57398628927336,
+                "y": 188.4375
+              },
+              {
+                "x": 208.60916283640398,
+                "y": 221.40625
+              },
+              {
+                "x": 207.77500601652036,
+                "y": 254.375
+              },
+              {
+                "x": 201.60340802318603,
+                "y": 320.3125
+              },
+              {
+                "x": 193.98924870763537,
+                "y": 386.25
+              },
+              {
+                "x": 190.55780238906138,
+                "y": 414.5463153830193
+              },
+              {
+                "x": 188.93277827177295,
+                "y": 442.2792968749999
+              },
+              {
+                "x": 183.70386288683386,
+                "y": 514.0931249999999
+              },
+              {
+                "x": 172.35079535011985,
+                "y": 650
+              },
+              {
+                "x": 162.62012514352526,
+                "y": 785.9068750000001
+              },
+              {
+                "x": 159.08820804781354,
+                "y": 857.7207031250001
+              },
+              {
+                "x": 157.21185429017123,
+                "y": 932.2950000000001
+              },
+              {
+                "x": 157.56602737035755,
+                "y": 1009.769921875
+              },
+              {
+                "x": 160.72569078813177,
+                "y": 1090.285625
+              },
+              {
+                "x": 167.26580804325314,
+                "y": 1173.982265625
+              },
+              {
+                "x": 177.761342635481,
+                "y": 1261
+              },
+              {
+                "x": 178.17698981958887,
+                "y": 1266.6875
+              },
+              {
+                "x": 176.6167378082373,
+                "y": 1270.75
+              },
+              {
+                "x": 173.08058660142638,
+                "y": 1273.1875
+              },
+              {
+                "x": 167.56853619915609,
+                "y": 1274
+              },
+              {
+                "x": 165.56853619915609,
+                "y": 1274
+              },
+              {
+                "x": 159.70558660142643,
+                "y": 1273.1875
+              },
+              {
+                "x": 155.1167378082373,
+                "y": 1270.75
+              },
+              {
+                "x": 151.80198981958887,
+                "y": 1266.6875
+              },
+              {
+                "x": 149.761342635481,
+                "y": 1261
+              },
+              {
+                "x": 90.12984730668565,
+                "y": 1278.6799999999998
+              },
+              {
+                "x": 75.88490930647194,
+                "y": 1281.6439155645855
+              },
+              {
+                "x": 61.230503918880814,
+                "y": 1282.2156622583425
+              },
+              {
+                "x": 46.166631143912284,
+                "y": 1280.3952400812702
+              },
+              {
+                "x": 30.693290981566328,
+                "y": 1276.1826490333694
+              },
+              {
+                "x": -42.20279316553541,
+                "y": 1251.0548684776843
+              },
+              {
+                "x": -53.429515031067496,
+                "y": 1246.5938707328837
+              },
+              {
+                "x": -63.829500964589116,
+                "y": 1241.2383117373245
+              },
+              {
+                "x": -73.4027509661003,
+                "y": 1234.9881914910063
+              },
+              {
+                "x": -82.14926503560102,
+                "y": 1227.8435099939295
+              },
+              {
+                "x": -90.06904317309129,
+                "y": 1219.8042672460936
+              },
+              {
+                "x": -97.16208537857108,
+                "y": 1210.8704632474992
+              },
+              {
+                "x": -103.42839165204042,
+                "y": 1201.0420979981457
+              },
+              {
+                "x": -108.86796199349929,
+                "y": 1190.3191714980335
+              },
+              {
+                "x": -189.71181699709507,
+                "y": 928.6808285019665
+              },
+              {
+                "x": -192.77576233242047,
+                "y": 906.2588143912478
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "left",
+            "bendAmplitude": 30,
+            "bendPhase": 0.3,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 32.5,
+            "faceEnd": 1267.5,
+            "stableBodyFraction": 0.854251012145749,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        }
+      ],
+      "spawnPockets": [
+        {
+          "id": "north",
+          "center": {
+            "x": -160,
+            "y": 1290
+          },
+          "radius": 125
+        },
+        {
+          "id": "west",
+          "center": {
+            "x": -750,
+            "y": 70
+          },
+          "radius": 125
+        },
+        {
+          "id": "east",
+          "center": {
+            "x": 750,
+            "y": -360
+          },
+          "radius": 125
+        },
+        {
+          "id": "south",
+          "center": {
+            "x": -80,
+            "y": -1290
+          },
+          "radius": 125
+        }
+      ],
+      "sourcePixelsPerWorldUnit": 1,
+      "resizeOperations": 0,
+      "positionsUnchanged": true,
+      "replacedTerrainImages": 3
+    }
+  }
+}

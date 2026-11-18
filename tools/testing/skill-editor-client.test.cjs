@@ -79,6 +79,17 @@ async function fixture(custom = {}) {
   const button = title => host.querySelectorAll('button').find(node => node.textContent === title), field = label => host.querySelector('[aria-label="' + label + '"]');
   return { host, client, backend, calls, button, field, options: () => options, async settle() { await client.flush(); await flush(); await flush(); }, close() { client.destroy(); } };
 }
+test('description editing previews real stat changes, inserts placeholders and resets invalid copy without publication',async()=>{
+ const f=await fixture({data:{skirmisher:{activeDamage:1.1}}});
+ const description=f.field('Description'),template=description.value,preview=()=>f.field('Description preview');assert.equal(description.tagName,'TEXTAREA');assert.match(preview().textContent,/110%/);
+ f.field('Active damage multiplier').value=.9;f.field('Active damage multiplier').oninput();assert.match(preview().textContent,/90%/);assert.equal(description.value,template);await f.settle();assert.equal(f.backend.calls.some(call=>call.name==='save'),false);
+ description.value='Damage {activeDamage:percent}.';description.oninput();await f.settle();assert.equal(preview().textContent,'Damage 90%.');
+ const insert=f.field('Insert description stat');insert.value='{cooldown}';insert.onchange();await f.settle();assert.equal(description.value,'Damage {activeDamage:percent}.{cooldown}');assert.equal(preview().textContent,'Damage 90%.12');
+ description.value='Bad {missing}';description.oninput();assert(description.className.includes('invalid'));assert.match(preview().textContent,/Unknown skill stat/);assert.equal(f.button('Save skills').disabled,true);
+ description.parentElement.querySelector('button').click();await f.settle();assert.equal(description.value,template);assert.match(preview().textContent,/90%/);assert.equal(description.className.includes('invalid'),false);
+ await f.client.selectEntry('fighter','passive');await f.settle();assert.match(f.field('Description preview').textContent,/stacks/);assert(f.field('Description').value.includes('{maxStacks}'));assert.equal(f.backend.calls.some(call=>call.name==='save'),false);f.close();
+});
+
 test('actual skills client lists six styles and browsing and scenario controls never stage game data', async () => {
   const f = await fixture(); assert.equal(f.host.querySelectorAll('.style-card').length, 6); assert.equal(f.calls.preview.at(-1).style, 'skirmisher');
   await f.client.selectStyle('mystic'); await f.settle(); f.field('Hero HP %').value = 25; f.field('Hero HP %').oninput();
@@ -178,7 +189,7 @@ test('reloading the latest draft refreshes the hero rig instead of retaining an 
 
 test('Reset and Discard recover an invalid-only local edit without publishing it',async()=>{
  const f=await fixture();f.field('Cooldown').value=-5;f.field('Cooldown').oninput();assert.equal(f.button('Discard changes').disabled,false);
- f.button('Reset').click();await f.settle();assert.equal(f.field('Cooldown').value,'12');assert.equal(f.backend.calls.some(call=>call.name==='save'),false);
+ f.field('Cooldown').parentElement.querySelector('button').click();await f.settle();assert.equal(f.field('Cooldown').value,'12');assert.equal(f.backend.calls.some(call=>call.name==='save'),false);
  f.field('Cooldown').value='';f.field('Cooldown').oninput();assert.equal(f.button('Discard changes').disabled,false);f.button('Discard changes').click();await f.settle();assert.equal(f.field('Cooldown').value,'12');assert.equal(f.button('Discard changes').disabled,true);f.close();
 });
 

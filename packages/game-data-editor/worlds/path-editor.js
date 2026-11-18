@@ -2,6 +2,7 @@
 // Topology edits are prepared on a clone and committed only after validation.
 // A point edit never guesses which conditional branch the author intended.
 const M=require('./model'),Doc=require('../lib/json-document');
+const Names=require('./stage-names'),CardOrder=require('./stage-card-order');
 const clone=value=>M.clone(value),condition=edge=>edge.requiresAnyBuilding||[];
 function locate(stage,graphId,nodeId){
  if(!stage||!Array.isArray(stage.graphs))throw Error('Select a path.');
@@ -64,4 +65,12 @@ function commit(stage,plan){stage.graphs[plan.index]=plan.graph;return plan.sele
 function insertNode(stage,graphId,nodeId){return commit(stage,insertPlan(stage,graphId,nodeId));}
 function removeNode(stage,graphId,nodeId){return commit(stage,removePlan(stage,graphId,nodeId));}
 function availability(stage,graphId,nodeId){const result={insert:true,remove:true,insertReason:'',removeReason:''};for(const [key,plan]of [['insert',insertPlan],['remove',removePlan]])try{plan(stage,graphId,nodeId);}catch(error){result[key]=false;result[key+'Reason']=error.message;}return result;}
-module.exports={insertNode,removeNode,availability};
+function duplicatePath(stage,graphId){
+ const matches=(stage.graphs||[]).filter(graph=>graph.id===graphId);
+ if(matches.length!==1)throw Error('Select an existing path with a unique identifier before duplicating it.');
+ let index=1;const used=new Set(stage.graphs.map(graph=>graph.id));while(used.has('path-'+index))index++;
+ const copy=clone(matches[0]);copy.id='path-'+index;copy.nameFromSpawns=true;delete copy.editorOrder;
+ // Point/edge IDs are scoped to their graph; retain their topology and metadata.
+ stage.graphs.push(copy);Names.refreshPaths(stage);CardOrder.move(stage.graphs,copy.id,graphId,true);return copy.id;
+}
+module.exports={insertNode,removeNode,availability,duplicatePath};

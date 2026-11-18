@@ -1,0 +1,271 @@
+[
+  {
+    "__type__": "cc.Prefab",
+    "_name": "GUI PRO Loading bar",
+    "data": {
+      "__id__": 1
+    },
+    "optimizationPolicy": 0,
+    "asyncLoadAssets": false
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "Slider_LoadingBar",
+    "_parent": null,
+    "_active": true,
+    "_children": [
+      {
+        "__id__": 4
+      },
+      {
+        "__id__": 7
+      }
+    ],
+    "_components": [
+      {
+        "__id__": 3
+      }
+    ],
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_opacity": 255,
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 600,
+      "height": 76
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_prefab": {
+      "__id__": 2
+    },
+    "groupIndex": 0
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "LoadingSlider_LoadingBar",
+    "sync": false
+  },
+  {
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__type__": "cc.Sprite",
+    "_spriteFrame": {
+      "__uuid__": "3d181082-fb03-4cd1-b067-d3becf698e22"
+    },
+    "_type": 1,
+    "_sizeMode": 0,
+    "_isTrimmedMode": false,
+    "_fillCenter": true
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "Fill",
+    "_parent": {
+      "__id__": 1
+    },
+    "_active": true,
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 6
+      }
+    ],
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_opacity": 255,
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 64
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -297,
+        3,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_prefab": {
+      "__id__": 5
+    },
+    "groupIndex": 0
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "LoadingFill",
+    "sync": false
+  },
+  {
+    "node": {
+      "__id__": 4
+    },
+    "_enabled": true,
+    "__type__": "cc.Sprite",
+    "_spriteFrame": {
+      "__uuid__": "aa3347e7-fece-4c15-87b9-e2fb869bd721"
+    },
+    "_type": 1,
+    "_sizeMode": 0,
+    "_isTrimmedMode": false,
+    "_fillCenter": true
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "Progress",
+    "_parent": {
+      "__id__": 1
+    },
+    "_active": true,
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 9
+      },
+      {
+        "__id__": 10
+      }
+    ],
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_opacity": 255,
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 568,
+      "height": 65
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_prefab": {
+      "__id__": 8
+    },
+    "groupIndex": 0
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "LoadingProgress",
+    "sync": false
+  },
+  {
+    "node": {
+      "__id__": 7
+    },
+    "_enabled": true,
+    "__type__": "cc.Label",
+    "_string": "[[loc:loading.barInitial]]",
+    "_N$string": "[[loc:loading.barInitial]]",
+    "_isSystemFontUsed": false,
+    "_fontSize": 40,
+    "_lineHeight": 48,
+    "_enableWrapText": false,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$overflow": 1,
+    "_N$cacheMode": 0,
+    "_N$file": {
+      "__uuid__": "bb64fda8-b769-4e12-8d6b-da30a3719d62"
+    }
+  },
+  {
+    "node": {
+      "__id__": 7
+    },
+    "_enabled": true,
+    "__type__": "cc.LabelOutline",
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 255
+    },
+    "_width": 3
+  }
+]

@@ -102,7 +102,7 @@ exports.loading = function (owner, parent, cc) {
   cc.view.on("canvas-resize", current.resize); current.resize();
   var view = { node: legacy, isclose: false, T: function (value) { return value; } };
   current.overlay = require("StageLoading").create(view, null, legacy, cc, {
-    transparent: true, detailed: true, panelY: -cc.winSize.height / 2 + 190,
+    transparent: true, detailed: true, panelBottom: 190,
     title: text("startup.title", "Preparing your kingdom")
   });
   current.overlay.node.on(cc.Node.EventType.TOUCH_END, function () { if (live(owner, cc)) owner.retryLoading(); });

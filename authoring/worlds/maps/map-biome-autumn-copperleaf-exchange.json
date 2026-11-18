@@ -1,0 +1,6026 @@
+{
+  "version": 1,
+  "id": "map-biome-autumn-copperleaf-exchange",
+  "name": "Autumn - Copperleaf Exchange",
+  "biome": "autumn",
+  "size": {
+    "width": 1860,
+    "height": 3028
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2668
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-d3381ff01a981794dbd142ea7727c5f8",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "key": "west-arm",
+          "name": "Western exchange arm",
+          "mode": "road",
+          "assetId": "env-8981b0f67968e10478825b35372cf717",
+          "edgeAssetId": "env-32433a601e577ff48b87bcaa6f4b8238",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": -70,
+              "y": 1514
+            },
+            {
+              "x": -70,
+              "y": 1300
+            },
+            {
+              "x": -10,
+              "y": 700
+            },
+            {
+              "x": -470,
+              "y": 450
+            },
+            {
+              "x": -470,
+              "y": -420
+            },
+            {
+              "x": -100,
+              "y": -590
+            },
+            {
+              "x": 180,
+              "y": -950
+            },
+            {
+              "x": 180,
+              "y": -1514
+            }
+          ]
+        },
+        {
+          "key": "upper-exchange",
+          "name": "Upper exchange",
+          "mode": "road",
+          "assetId": "env-8981b0f67968e10478825b35372cf717",
+          "edgeAssetId": "env-32433a601e577ff48b87bcaa6f4b8238",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": -10,
+              "y": 700
+            },
+            {
+              "x": 230,
+              "y": 600
+            }
+          ]
+        },
+        {
+          "key": "east-arm",
+          "name": "Eastern inner exchange arm",
+          "mode": "road",
+          "assetId": "env-8981b0f67968e10478825b35372cf717",
+          "edgeAssetId": "env-32433a601e577ff48b87bcaa6f4b8238",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": 230,
+              "y": 600
+            },
+            {
+              "x": 260,
+              "y": 100
+            },
+            {
+              "x": 300,
+              "y": -350
+            },
+            {
+              "x": -100,
+              "y": -590
+            }
+          ]
+        },
+        {
+          "key": "east-entry",
+          "name": "Eastern land bay",
+          "mode": "road",
+          "assetId": "env-8981b0f67968e10478825b35372cf717",
+          "edgeAssetId": "env-32433a601e577ff48b87bcaa6f4b8238",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": 930,
+              "y": 0
+            },
+            {
+              "x": 650,
+              "y": 0
+            },
+            {
+              "x": 260,
+              "y": 0
+            }
+          ]
+        },
+        {
+          "key": "west-entry",
+          "name": "Western pond bay",
+          "mode": "road",
+          "assetId": "env-8981b0f67968e10478825b35372cf717",
+          "edgeAssetId": "env-32433a601e577ff48b87bcaa6f4b8238",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": -930,
+              "y": -400
+            },
+            {
+              "x": -470,
+              "y": -400
+            }
+          ]
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    }
+  },
+  "layers": [
+    {
+      "id": "layer-3",
+      "name": "Side terrain - autumn",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-141",
+          "name": "Long western copperleaf bank",
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "globalShadow": false,
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-west-long-bank",
+          "x": -800,
+          "y": -200,
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "object-142",
+          "name": "Long lower eastern copperleaf bank",
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "globalShadow": false,
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-east-long-bank",
+          "x": 810,
+          "y": -1450,
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "terrain-objects",
+      "name": "Terrain objects - Autumn",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-1",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-northwest-table",
+          "name": "Northwest copper table",
+          "x": -580,
+          "y": 1050,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-2",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-center-terrace",
+          "name": "Upper eastern shoulder terrace",
+          "x": 400,
+          "y": 700,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-3",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-southeast-outcrop",
+          "name": "Eastern rounded layered outcrop",
+          "x": 680,
+          "y": 150,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-southwest-pond",
+          "name": "Southwest copperleaf pond",
+          "x": -675,
+          "y": -1180,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 580
+          },
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-91",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 394.634,
+          "y": -1265.442,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -780,
+          "y": 1240,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 718.322,
+          "y": 1276.783,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": -598.501,
+          "y": 539.841,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 384.265,
+          "y": -1142.219,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 371.741,
+          "y": -119.661,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -595.585,
+          "y": -1289.978,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 884,
+          "y": -1000,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "east-long-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 95.159,
+          "y": -295.242,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 348.985,
+          "y": -1260.712,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 430.595,
+          "y": -1261.13,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": -151.01,
+          "y": -767.632,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": -652.834,
+          "y": -1425.802,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 879.795,
+          "y": -801.513,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "east-long-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 612.48,
+          "y": -1314.076,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 741.68,
+          "y": 1197.732,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-107",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": -845.837,
+          "y": -1283.353,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 345.081,
+          "y": -1232.245,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 396.29,
+          "y": -225.3,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 304.242,
+          "y": -1126.011,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -915.295,
+          "y": 834.96,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 375.152,
+          "y": -181.553,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 620.831,
+          "y": -1342.437,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -313.346,
+          "y": -829.507,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -695.297,
+          "y": -1438.695,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -588.736,
+          "y": 647.665,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-117",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -891.018,
+          "y": 611.851,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-long-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -382.538,
+          "y": 922.732,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": -915.286,
+          "y": 833.366,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 683.618,
+          "y": 432.611,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 500,
+          "y": 1010,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 629.395,
+          "y": -1328.883,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-123",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": -605,
+          "y": 1385,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-table-native-detail-1",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -582,
+          "y": 1408,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-table-native-detail-2",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": -559.406,
+          "y": 1392.603,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-table-native-detail-3",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -520,
+          "y": 1406,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-table-native-detail-4",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-127",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": -595,
+          "y": 1425,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-table-native-detail-5",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": -552,
+          "y": 1428,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-table-native-detail-6",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 420,
+          "y": 1085,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0,
+          "artistKey": "center-terrace-native-detail-1",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 443,
+          "y": 1108,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0,
+          "artistKey": "center-terrace-native-detail-2",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 471,
+          "y": 1090,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0,
+          "artistKey": "center-terrace-native-detail-3",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 493,
+          "y": 1106,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0,
+          "artistKey": "center-terrace-native-detail-4",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 430,
+          "y": 1125,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0,
+          "artistKey": "center-terrace-native-detail-5",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 473,
+          "y": 1128,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0,
+          "artistKey": "center-terrace-native-detail-6",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 685,
+          "y": 545,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-outcrop-native-detail-1",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-136",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 708,
+          "y": 568,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-outcrop-native-detail-2",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 736,
+          "y": 550,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-outcrop-native-detail-3",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 752.594,
+          "y": 568.603,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-outcrop-native-detail-4",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-139",
+          "assetId": "env-3d693d727a4ecbd4e85448fe60cc630c",
+          "name": "Autumn Flower 2",
+          "x": 695,
+          "y": 585,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-outcrop-native-detail-5",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-d70de8f89e2d45a42984afd969ef31df",
+          "name": "Autumn Flower 1",
+          "x": 738,
+          "y": 588,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-outcrop-native-detail-6",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "native-props",
+      "name": "Native Environment props",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-5",
+          "assetId": "env-43ffaaa6ddb21e740838a8bfce941396",
+          "name": "Small Tree Orange 3",
+          "x": 584.33,
+          "y": -1364.584,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": -877.837,
+          "y": -165.262,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-07b8b164cf5403844ae3da29fb1a9404",
+          "name": "Birch Yellow 2",
+          "x": 670,
+          "y": 610,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-07b8b164cf5403844ae3da29fb1a9404",
+          "name": "Birch Yellow 2",
+          "x": -443.348,
+          "y": 739.199,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": 392.934,
+          "y": -165.653,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-72ca62082ad5c904ca885d84cd91e8ff",
+          "name": "Tree Orange 2",
+          "x": 114.761,
+          "y": -369.873,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": -722.681,
+          "y": -1339.681,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-eee349f60eee28b44b9d87fb05517e69",
+          "name": "Tree Orange 3",
+          "x": 444.298,
+          "y": -1411.679,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-72ca62082ad5c904ca885d84cd91e8ff",
+          "name": "Tree Orange 2",
+          "x": -681.623,
+          "y": 1379.587,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-43ffaaa6ddb21e740838a8bfce941396",
+          "name": "Small Tree Orange 3",
+          "x": 315,
+          "y": 1090,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-72ca62082ad5c904ca885d84cd91e8ff",
+          "name": "Tree Orange 2",
+          "x": 874,
+          "y": -490,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "east-long-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": -468.141,
+          "y": -1275.989,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": -779.213,
+          "y": -203.246,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": 545,
+          "y": 1140,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-43ffaaa6ddb21e740838a8bfce941396",
+          "name": "Small Tree Orange 3",
+          "x": -609.01,
+          "y": 1324.339,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": -555.211,
+          "y": 609.874,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": 438.927,
+          "y": -500.276,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-eee349f60eee28b44b9d87fb05517e69",
+          "name": "Tree Orange 3",
+          "x": 450,
+          "y": 1050,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": 830.39,
+          "y": 1379.933,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": 586.347,
+          "y": -1263.853,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-eee349f60eee28b44b9d87fb05517e69",
+          "name": "Tree Orange 3",
+          "x": 534,
+          "y": -800,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-72ca62082ad5c904ca885d84cd91e8ff",
+          "name": "Tree Orange 2",
+          "x": -529.011,
+          "y": 505.507,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-dd10ab534afb4fa41875bea7f0150143",
+          "name": "Tree Orange 6",
+          "x": -357.136,
+          "y": 605.297,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-eee349f60eee28b44b9d87fb05517e69",
+          "name": "Tree Orange 3",
+          "x": -575.929,
+          "y": 1368.17,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-dd10ab534afb4fa41875bea7f0150143",
+          "name": "Tree Orange 6",
+          "x": -74.633,
+          "y": -395.624,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-eee349f60eee28b44b9d87fb05517e69",
+          "name": "Tree Orange 3",
+          "x": -534.557,
+          "y": -1310.058,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-dd10ab534afb4fa41875bea7f0150143",
+          "name": "Tree Orange 6",
+          "x": 184.132,
+          "y": -258.308,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-72ca62082ad5c904ca885d84cd91e8ff",
+          "name": "Tree Orange 2",
+          "x": -286.981,
+          "y": 641.367,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-eee349f60eee28b44b9d87fb05517e69",
+          "name": "Tree Orange 3",
+          "x": 387.282,
+          "y": -216.462,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": -441.489,
+          "y": 1405.687,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-43ffaaa6ddb21e740838a8bfce941396",
+          "name": "Small Tree Orange 3",
+          "x": -575.873,
+          "y": 1286.674,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": 650,
+          "y": 530,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": -569.031,
+          "y": 547.446,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-72ca62082ad5c904ca885d84cd91e8ff",
+          "name": "Tree Orange 2",
+          "x": 683.618,
+          "y": 432.611,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-43ffaaa6ddb21e740838a8bfce941396",
+          "name": "Small Tree Orange 3",
+          "x": -254.401,
+          "y": 654.783,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": 393.326,
+          "y": -219.026,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-07b8b164cf5403844ae3da29fb1a9404",
+          "name": "Birch Yellow 2",
+          "x": -642.542,
+          "y": 1186.897,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-43ffaaa6ddb21e740838a8bfce941396",
+          "name": "Small Tree Orange 3",
+          "x": 298.331,
+          "y": -1097.039,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": -596,
+          "y": 350,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-46",
+          "assetId": "env-172264f016e663649bbf743f6efd0db0",
+          "name": "Birch Yellow 1",
+          "x": 495,
+          "y": 1160,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-ae247b161e7da99468abfb5fac7bb545",
+          "name": "Tree Orange 1",
+          "x": 558.108,
+          "y": -1464.198,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-72ca62082ad5c904ca885d84cd91e8ff",
+          "name": "Tree Orange 2",
+          "x": 334.986,
+          "y": -1171.831,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-172264f016e663649bbf743f6efd0db0",
+          "name": "Birch Yellow 1",
+          "x": 506.209,
+          "y": -538.427,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": -761.623,
+          "y": 1399.587,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-172264f016e663649bbf743f6efd0db0",
+          "name": "Birch Yellow 1",
+          "x": 531.134,
+          "y": -983.168,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-07b8b164cf5403844ae3da29fb1a9404",
+          "name": "Birch Yellow 2",
+          "x": -514,
+          "y": 650,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-eee349f60eee28b44b9d87fb05517e69",
+          "name": "Tree Orange 3",
+          "x": 529.309,
+          "y": -731.279,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": -581.001,
+          "y": 437.903,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-72ca62082ad5c904ca885d84cd91e8ff",
+          "name": "Tree Orange 2",
+          "x": 877.574,
+          "y": -581.508,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "east-long-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-172264f016e663649bbf743f6efd0db0",
+          "name": "Birch Yellow 1",
+          "x": 492.446,
+          "y": -581.722,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-dd10ab534afb4fa41875bea7f0150143",
+          "name": "Tree Orange 6",
+          "x": 782.817,
+          "y": 599.77,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-f067bd76916d39b4ca67fd05888d0cd7",
+          "name": "Small Tree Orange 1",
+          "x": -780,
+          "y": 1190,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-59",
+          "assetId": "env-172264f016e663649bbf743f6efd0db0",
+          "name": "Birch Yellow 1",
+          "x": 748.93,
+          "y": 657.658,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-07b8b164cf5403844ae3da29fb1a9404",
+          "name": "Birch Yellow 2",
+          "x": -642.542,
+          "y": 1186.897,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-eee349f60eee28b44b9d87fb05517e69",
+          "name": "Tree Orange 3",
+          "x": 683.618,
+          "y": 432.611,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-172264f016e663649bbf743f6efd0db0",
+          "name": "Birch Yellow 1",
+          "x": -777.589,
+          "y": -1465.745,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-172264f016e663649bbf743f6efd0db0",
+          "name": "Birch Yellow 1",
+          "x": 374.966,
+          "y": 59.362,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-07b8b164cf5403844ae3da29fb1a9404",
+          "name": "Birch Yellow 2",
+          "x": 307.018,
+          "y": 1186.082,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-daa4a3a86f96f1542ab7ce822547914d",
+          "name": "Stone Brown 4",
+          "x": -287.513,
+          "y": -238.738,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-daa4a3a86f96f1542ab7ce822547914d",
+          "name": "Stone Brown 4",
+          "x": -768.237,
+          "y": -1484.723,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-477847caba3b8d04bb01e1b3edac8e80",
+          "name": "Stone Brown 3",
+          "x": -407.253,
+          "y": -1168.994,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-daa4a3a86f96f1542ab7ce822547914d",
+          "name": "Stone Brown 4",
+          "x": 510.414,
+          "y": -1295.97,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-daa4a3a86f96f1542ab7ce822547914d",
+          "name": "Stone Brown 4",
+          "x": 670.545,
+          "y": 123.682,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-2e76b17d58bc3e64b80134ab16c2d831",
+          "name": "Stone Brown 5",
+          "x": -265.889,
+          "y": -225.884,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-71a6ca1b66908f042986f10564e6a32d",
+          "name": "Stone Brown 6",
+          "x": 879.795,
+          "y": -801.513,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "east-long-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-b130887dde5dfed45af656f9c02c654d",
+          "name": "Stone Brown 7",
+          "x": -570.12,
+          "y": 613.997,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-2e76b17d58bc3e64b80134ab16c2d831",
+          "name": "Stone Brown 5",
+          "x": 873.909,
+          "y": -513.71,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "east-long-bank",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-b130887dde5dfed45af656f9c02c654d",
+          "name": "Stone Brown 7",
+          "x": -246.542,
+          "y": 1278.463,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-c57d3910e4223c54fa1e272e60074dc9",
+          "name": "Stone Brown 2",
+          "x": 302.165,
+          "y": -1072.425,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-45c9fdf5f49a64b4498d5ab1c4d008f0",
+          "name": "Stone Brown 1",
+          "x": 689.72,
+          "y": -1452.844,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-71a6ca1b66908f042986f10564e6a32d",
+          "name": "Stone Brown 6",
+          "x": 770,
+          "y": 580,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-outcrop",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-45c9fdf5f49a64b4498d5ab1c4d008f0",
+          "name": "Stone Brown 1",
+          "x": 746.608,
+          "y": 871.047,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-71a6ca1b66908f042986f10564e6a32d",
+          "name": "Stone Brown 6",
+          "x": -168.119,
+          "y": 759.385,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-477847caba3b8d04bb01e1b3edac8e80",
+          "name": "Stone Brown 3",
+          "x": -401.29,
+          "y": 677.467,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-c57d3910e4223c54fa1e272e60074dc9",
+          "name": "Stone Brown 2",
+          "x": -885.645,
+          "y": -1248.852,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-daa4a3a86f96f1542ab7ce822547914d",
+          "name": "Stone Brown 4",
+          "x": 425,
+          "y": 1060,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "center-terrace",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-477847caba3b8d04bb01e1b3edac8e80",
+          "name": "Stone Brown 3",
+          "x": -564.29,
+          "y": 652.98,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-b130887dde5dfed45af656f9c02c654d",
+          "name": "Stone Brown 7",
+          "x": -610,
+          "y": 200,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-477847caba3b8d04bb01e1b3edac8e80",
+          "name": "Stone Brown 3",
+          "x": 728.296,
+          "y": 130.673,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-2e76b17d58bc3e64b80134ab16c2d831",
+          "name": "Stone Brown 5",
+          "x": -225.245,
+          "y": -203.313,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-45c9fdf5f49a64b4498d5ab1c4d008f0",
+          "name": "Stone Brown 1",
+          "x": -8.723,
+          "y": -284.02,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-477847caba3b8d04bb01e1b3edac8e80",
+          "name": "Stone Brown 3",
+          "x": -560,
+          "y": 1370,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-table",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-477847caba3b8d04bb01e1b3edac8e80",
+          "name": "Stone Brown 3",
+          "x": -730.294,
+          "y": -1369.262,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-b130887dde5dfed45af656f9c02c654d",
+          "name": "Stone Brown 7",
+          "x": 385.656,
+          "y": -99.825,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 143,
+  "nextLayer": 4,
+  "blockerMask": [
+    [
+      [
+        [
+          -1004.6875300547836,
+          288.97841805686045
+        ],
+        [
+          -1004.5420623817788,
+          257.0684395982282
+        ],
+        [
+          -1002.5733821701672,
+          225.3169222791921
+        ],
+        [
+          -998.7814894199485,
+          193.72386609975206
+        ],
+        [
+          -993.1663841311229,
+          162.28927105990795
+        ],
+        [
+          -910.671549546666,
+          -43.30299135841216
+        ],
+        [
+          -902.680518924798,
+          -57.028852758784296
+        ],
+        [
+          -893.7715761133134,
+          -69.85793263910682
+        ],
+        [
+          -883.9447211122122,
+          -81.79023099937974
+        ],
+        [
+          -873.1999539214944,
+          -92.82574783960304
+        ],
+        [
+          -861.53727454116,
+          -102.96448315977672
+        ],
+        [
+          -848.9566829712088,
+          -112.20643695990077
+        ],
+        [
+          -835.4581792116412,
+          -120.55160923997519
+        ],
+        [
+          -821.0417632624569,
+          -128
+        ],
+        [
+          -799.432469971092,
+          -138.34029054786419
+        ],
+        [
+          -793.3140666614527,
+          -142.38961030678928
+        ],
+        [
+          -783.067584398177,
+          -148.1983752837775
+        ],
+        [
+          -772.3020203028657,
+          -153.3794134969612
+        ],
+        [
+          -761.0877794083549,
+          -157.88748600462316
+        ],
+        [
+          -753.1792879092593,
+          -160.47295980427745
+        ],
+        [
+          -727.941474335327,
+          -172.54953822952245
+        ],
+        [
+          -712.8040906910261,
+          -178.58036525410637
+        ],
+        [
+          -698.0072235037223,
+          -181.72238455738062
+        ],
+        [
+          -683.5508727734158,
+          -181.97559613934516
+        ],
+        [
+          -669.4350385001064,
+          -179.34000000000003
+        ],
+        [
+          -610.5204727062375,
+          -162
+        ],
+        [
+          -608.243365381011,
+          -167.6875
+        ],
+        [
+          -604.7597172915637,
+          -171.75
+        ],
+        [
+          -600.0695284378953,
+          -174.1875
+        ],
+        [
+          -594.1727988200057,
+          -175
+        ],
+        [
+          -592.1727988200057,
+          -175
+        ],
+        [
+          -586.6945284378953,
+          -174.1875
+        ],
+        [
+          -583.2597172915637,
+          -171.75
+        ],
+        [
+          -581.868365381011,
+          -167.6875
+        ],
+        [
+          -582.5204727062375,
+          -162
+        ],
+        [
+          -604.6771322748988,
+          -78.494140625
+        ],
+        [
+          -621.7094530143652,
+          1.859375
+        ],
+        [
+          -634.110307494167,
+          79.189453125
+        ],
+        [
+          -642.3725682838349,
+          153.625
+        ],
+        [
+          -646.9891079528991,
+          225.294921875
+        ],
+        [
+          -648.4527990708905,
+          294.328125
+        ],
+        [
+          -647.2565142073391,
+          360.853515625
+        ],
+        [
+          -643.8931259317758,
+          425
+        ],
+        [
+          -637.0514403220419,
+          489.146484375
+        ],
+        [
+          -628.5349622103369,
+          555.671875
+        ],
+        [
+          -608.2583582300435,
+          696.375
+        ],
+        [
+          -602.8683292801222,
+          734.1875549761187
+        ],
+        [
+          -601.4901811257212,
+          739.84375
+        ],
+        [
+          -585.6165659143762,
+          802.8125
+        ],
+        [
+          -578.8983471112631,
+          834.296875
+        ],
+        [
+          -573.0738999442585,
+          865.78125
+        ],
+        [
+          -568.2295041933213,
+          897.265625
+        ],
+        [
+          -564.4514396384108,
+          928.75
+        ],
+        [
+          -565.0718238130557,
+          937.9519771856008
+        ],
+        [
+          -566.9762169385646,
+          946.8881391411355
+        ],
+        [
+          -570.0925467653067,
+          955.5132469248867
+        ],
+        [
+          -572.8407457320321,
+          960.8523706694134
+        ],
+        [
+          -567.1956674851347,
+          1012
+        ],
+        [
+          -568.8066829311284,
+          1017.6875
+        ],
+        [
+          -571.8145511068383,
+          1021.75
+        ],
+        [
+          -576.2192720122641,
+          1024.1875
+        ],
+        [
+          -582.0208456474061,
+          1025
+        ],
+        [
+          -584.0208456474061,
+          1025
+        ],
+        [
+          -589.5942720122641,
+          1024.1875
+        ],
+        [
+          -593.3145511068383,
+          1021.75
+        ],
+        [
+          -595.1816829311284,
+          1017.6875
+        ],
+        [
+          -595.1956674851347,
+          1012
+        ],
+        [
+          -663.5338446899802,
+          1029.3400000000001
+        ],
+        [
+          -679.4776484784991,
+          1032.2513459278189
+        ],
+        [
+          -694.932775910326,
+          1032.8253837112757
+        ],
+        [
+          -709.8992269854609,
+          1031.0621133503705
+        ],
+        [
+          -724.3770017039037,
+          1026.9615348451034
+        ],
+        [
+          -788.5941492892352,
+          1003.5
+        ],
+        [
+          -799.2003352676159,
+          999.0148538527619
+        ],
+        [
+          -808.7739658478486,
+          993.5594154110486
+        ],
+        [
+          -817.3150410299336,
+          987.1336846748593
+        ],
+        [
+          -824.8235608138709,
+          979.7376616441948
+        ],
+        [
+          -831.2995251996604,
+          971.3713463190543
+        ],
+        [
+          -836.7429341873021,
+          962.0347386994381
+        ],
+        [
+          -841.1537877767961,
+          951.7278387853462
+        ],
+        [
+          -844.5320859681423,
+          940.4506465767788
+        ],
+        [
+          -949.0731599728512,
+          711.9150968944148
+        ],
+        [
+          -962.7897797622446,
+          680.8285908745545
+        ],
+        [
+          -973.8910981066614,
+          649.4841697093887
+        ],
+        [
+          -982.3771150061017,
+          617.881833398917
+        ],
+        [
+          -988.2478304605653,
+          586.0215819431396
+        ],
+        [
+          -1004.6875300547836,
+          288.97841805686045
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -868.804026901162,
+          1240.5475791000044
+        ],
+        [
+          -866.7810067252905,
+          1215.0928947750012
+        ],
+        [
+          -862.1600000000001,
+          1189.712
+        ],
+        [
+          -837,
+          1082
+        ],
+        [
+          -842.6875,
+          1081.1875
+        ],
+        [
+          -846.75,
+          1078.75
+        ],
+        [
+          -849.1875,
+          1074.6875
+        ],
+        [
+          -850,
+          1069
+        ],
+        [
+          -850,
+          1067
+        ],
+        [
+          -849.1875,
+          1061.3125
+        ],
+        [
+          -846.75,
+          1057.25
+        ],
+        [
+          -842.6875,
+          1054.8125
+        ],
+        [
+          -837,
+          1054
+        ],
+        [
+          -701.225,
+          1052
+        ],
+        [
+          -580,
+          1050
+        ],
+        [
+          -458.775,
+          1052
+        ],
+        [
+          -323,
+          1054
+        ],
+        [
+          -317.3125,
+          1054.8125
+        ],
+        [
+          -313.25,
+          1057.25
+        ],
+        [
+          -310.8125,
+          1061.3125
+        ],
+        [
+          -310,
+          1067
+        ],
+        [
+          -310,
+          1069
+        ],
+        [
+          -310.8125,
+          1074.6875
+        ],
+        [
+          -313.25,
+          1078.75
+        ],
+        [
+          -317.3125,
+          1081.1875
+        ],
+        [
+          -323,
+          1082
+        ],
+        [
+          -297.84,
+          1193.52
+        ],
+        [
+          -293.027287856979,
+          1219.8223194985094
+        ],
+        [
+          -290.42915142791617,
+          1246.2492779940374
+        ],
+        [
+          -290.0455907128114,
+          1272.8008754865841
+        ],
+        [
+          -291.87660571166475,
+          1299.4771119761494
+        ],
+        [
+          -303.2275817841311,
+          1402.7709942355925
+        ],
+        [
+          -305.5604379359392,
+          1417.833839949299
+        ],
+        [
+          -309.17279728342913,
+          1432.2078742082156
+        ],
+        [
+          -314.06465982660086,
+          1445.8930970123415
+        ],
+        [
+          -320.2360255654543,
+          1458.8895083616776
+        ],
+        [
+          -327.6868944999896,
+          1471.197108256223
+        ],
+        [
+          -336.41726663020665,
+          1482.8158966959782
+        ],
+        [
+          -346.4271419561056,
+          1493.7458736809429
+        ],
+        [
+          -357.71652047768623,
+          1503.9870392111175
+        ],
+        [
+          -424.28347952231377,
+          1559.2129607888824
+        ],
+        [
+          -436.43252059013616,
+          1568.4116628561521
+        ],
+        [
+          -449.0213835547604,
+          1576.2142494524028
+        ],
+        [
+          -462.05006841618643,
+          1582.6207205776338
+        ],
+        [
+          -475.5185751744142,
+          1587.6310762318458
+        ],
+        [
+          -489.4269038294438,
+          1591.2453164150386
+        ],
+        [
+          -503.77505438127514,
+          1593.463441127212
+        ],
+        [
+          -518.5630268299083,
+          1594.2854503683661
+        ],
+        [
+          -533.7908211753431,
+          1593.711344138501
+        ],
+        [
+          -616.766055522287,
+          1586.8780895452232
+        ],
+        [
+          -645.8009062312865,
+          1582.7279253691881
+        ],
+        [
+          -673.6715138805718,
+          1575.1555223863058
+        ],
+        [
+          -700.377878470143,
+          1564.1608805965764
+        ],
+        [
+          -725.9200000000001,
+          1549.744
+        ],
+        [
+          -782.0799999999999,
+          1513.4560000000001
+        ],
+        [
+          -793.9395672207563,
+          1504.9811479343302
+        ],
+        [
+          -804.5582688830253,
+          1495.6845917373212
+        ],
+        [
+          -813.9361049868071,
+          1485.566331408973
+        ],
+        [
+          -822.0730755321015,
+          1474.626366949285
+        ],
+        [
+          -828.9691805189085,
+          1462.8646983582578
+        ],
+        [
+          -834.6244199472283,
+          1450.281325635891
+        ],
+        [
+          -839.0387938170608,
+          1436.8762487821853
+        ],
+        [
+          -842.2123021284058,
+          1422.64946779714
+        ],
+        [
+          -865.056107604648,
+          1291.678316400018
+        ],
+        [
+          -868.2290605276145,
+          1266.0760529750103
+        ],
+        [
+          -868.804026901162,
+          1240.5475791000044
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -866,
+          -1057
+        ],
+        [
+          -759,
+          -1138
+        ],
+        [
+          -607,
+          -1120
+        ],
+        [
+          -487,
+          -1020
+        ],
+        [
+          -505,
+          -813
+        ],
+        [
+          -570,
+          -690
+        ],
+        [
+          -678,
+          -644
+        ],
+        [
+          -778,
+          -712
+        ],
+        [
+          -835,
+          -851
+        ],
+        [
+          -866,
+          -1057
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          116.06868233280437,
+          914.3213569965303
+        ],
+        [
+          118.04817058320106,
+          885.0783392491326
+        ],
+        [
+          122.61199999999997,
+          855.896
+        ],
+        [
+          147.5,
+          732
+        ],
+        [
+          141.8125,
+          731.1875
+        ],
+        [
+          137.75,
+          728.75
+        ],
+        [
+          135.3125,
+          724.6875
+        ],
+        [
+          134.5,
+          719
+        ],
+        [
+          134.5,
+          717
+        ],
+        [
+          135.3125,
+          711.3125
+        ],
+        [
+          137.75,
+          707.25
+        ],
+        [
+          141.8125,
+          704.8125
+        ],
+        [
+          147.5,
+          704
+        ],
+        [
+          280.8225,
+          702
+        ],
+        [
+          400,
+          700
+        ],
+        [
+          486.4049271903136,
+          701.4500208041
+        ],
+        [
+          477.9943914032975,
+          691.9374827069892
+        ],
+        [
+          469.6753806574194,
+          680.5873360907258
+        ],
+        [
+          462.5215656131901,
+          668.6139308279569
+        ],
+        [
+          456.5329462706095,
+          656.0172669186826
+        ],
+        [
+          451.7095226296776,
+          642.7973443629029
+        ],
+        [
+          448.0512946903945,
+          628.9541631606177
+        ],
+        [
+          445.5582624527601,
+          614.4877233118272
+        ],
+        [
+          423.34890200048414,
+          442.68833187676097
+        ],
+        [
+          420.5343955787475,
+          411.96935054968816
+        ],
+        [
+          420.03977831402165,
+          381.30073844523076
+        ],
+        [
+          421.8650502063066,
+          350.68249556338867
+        ],
+        [
+          426.01021125560237,
+          320.114621904162
+        ],
+        [
+          450,
+          182
+        ],
+        [
+          444.3125,
+          181.1875
+        ],
+        [
+          440.25,
+          178.75
+        ],
+        [
+          437.8125,
+          174.6875
+        ],
+        [
+          437,
+          169
+        ],
+        [
+          437,
+          167
+        ],
+        [
+          437.8125,
+          161.3125
+        ],
+        [
+          440.25,
+          157.25
+        ],
+        [
+          444.3125,
+          154.8125
+        ],
+        [
+          450,
+          154
+        ],
+        [
+          571.06,
+          152
+        ],
+        [
+          680,
+          150
+        ],
+        [
+          788.94,
+          152
+        ],
+        [
+          910,
+          154
+        ],
+        [
+          915.6875,
+          154.8125
+        ],
+        [
+          919.75,
+          157.25
+        ],
+        [
+          922.1875,
+          161.3125
+        ],
+        [
+          923,
+          167
+        ],
+        [
+          923,
+          169
+        ],
+        [
+          922.1875,
+          174.6875
+        ],
+        [
+          919.75,
+          178.75
+        ],
+        [
+          915.6875,
+          181.1875
+        ],
+        [
+          910,
+          182
+        ],
+        [
+          934.3302598502414,
+          326.8564603800496
+        ],
+        [
+          938.5087019713151,
+          357.46896962891594
+        ],
+        [
+          940.7742881847778,
+          388.1629577555645
+        ],
+        [
+          941.1270184906293,
+          418.93842475999526
+        ],
+        [
+          939.5668928888699,
+          449.79537064220824
+        ],
+        [
+          928.0331071111301,
+          591.4046293577917
+        ],
+        [
+          926.2080587582744,
+          606.6103579267185
+        ],
+        [
+          923.2494672552727,
+          621.3298583123945
+        ],
+        [
+          919.1573326021248,
+          635.56313051482
+        ],
+        [
+          913.9316547988308,
+          649.3101745339948
+        ],
+        [
+          907.5724338453905,
+          662.570990369919
+        ],
+        [
+          900.0796697418041,
+          675.3455780225925
+        ],
+        [
+          891.4533624880715,
+          687.6339374920153
+        ],
+        [
+          881.6935120841929,
+          699.4360687781874
+        ],
+        [
+          816.5834405075698,
+          772.3164781149836
+        ],
+        [
+          806.434946638608,
+          782.5465535567843
+        ],
+        [
+          795.681185285508,
+          791.1950189396782
+        ],
+        [
+          784.3221564482694,
+          798.2618742636654
+        ],
+        [
+          772.3578601268924,
+          803.7471195287459
+        ],
+        [
+          759.788296321377,
+          807.6507547349196
+        ],
+        [
+          746.6134650317231,
+          809.9727798821865
+        ],
+        [
+          732.8333662579307,
+          810.7131949705466
+        ],
+        [
+          718.448,
+          809.872
+        ],
+        [
+          666.4992409181276,
+          804.0999156575697
+        ],
+        [
+          677.388,
+          860.1800000000001
+        ],
+        [
+          682.1448108376549,
+          890.3928125927197
+        ],
+        [
+          684.7032433506197,
+          920.7112503708788
+        ],
+        [
+          685.0632975388943,
+          951.1353133344774
+        ],
+        [
+          683.2249734024788,
+          981.6650014835152
+        ],
+        [
+          671.4279471034149,
+          1104.484042232668
+        ],
+        [
+          669.3359440317176,
+          1119.6156328222291
+        ],
+        [
+          666.0239083683332,
+          1134.1524257072472
+        ],
+        [
+          661.4918401132616,
+          1148.0944208877215
+        ],
+        [
+          655.7397392665027,
+          1161.4416183636527
+        ],
+        [
+          648.7676058280568,
+          1174.1940181350403
+        ],
+        [
+          640.5754397979238,
+          1186.3516202018845
+        ],
+        [
+          631.1632411761035,
+          1197.9144245641853
+        ],
+        [
+          620.531009962596,
+          1208.8824312219426
+        ],
+        [
+          551.1689900374039,
+          1274.7175687780573
+        ],
+        [
+          539.6649043337638,
+          1284.6303929738533
+        ],
+        [
+          527.6371422415453,
+          1293.0276499502697
+        ],
+        [
+          515.0857037607485,
+          1299.9093397073066
+        ],
+        [
+          502.01058889137346,
+          1305.275462244964
+        ],
+        [
+          488.41179763342,
+          1309.126017563242
+        ],
+        [
+          474.2893299868883,
+          1311.4610056621405
+        ],
+        [
+          459.6431859517782,
+          1312.2804265416594
+        ],
+        [
+          444.4733655280898,
+          1311.5842802017992
+        ],
+        [
+          366.37550809666607,
+          1304.2261071935543
+        ],
+        [
+          336.71822330437465,
+          1299.4529352963743
+        ],
+        [
+          308.52187702416654,
+          1290.8595267983885
+        ],
+        [
+          281.78646925604164,
+          1278.445881699597
+        ],
+        [
+          256.512,
+          1262.212
+        ],
+        [
+          201.288,
+          1221.388
+        ],
+        [
+          189.63924614979553,
+          1211.940072202896
+        ],
+        [
+          179.23698459918208,
+          1201.740288811584
+        ],
+        [
+          170.08121534815967,
+          1190.788649826064
+        ],
+        [
+          162.17193839672828,
+          1179.0851552463362
+        ],
+        [
+          155.5091537448879,
+          1166.6298050724001
+        ],
+        [
+          150.09286139263855,
+          1153.4225993042562
+        ],
+        [
+          145.92306133998028,
+          1139.4635379419044
+        ],
+        [
+          142.99975358691302,
+          1124.7526209853445
+        ],
+        [
+          119.86272933121745,
+          972.9894279861212
+        ],
+        [
+          116.6735352488098,
+          943.6250532421932
+        ],
+        [
+          116.06868233280437,
+          914.3213569965303
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          582.6156735200042,
+          -536.25
+        ],
+        [
+          585.9398921634154,
+          -602.1875
+        ],
+        [
+          589.5660532527004,
+          -656.6577279588116
+        ],
+        [
+          589.5702097882586,
+          -664.0931249999999
+        ],
+        [
+          591.6954066990381,
+          -733.286640625
+        ],
+        [
+          595.567746653731,
+          -800
+        ],
+        [
+          601.8985120802904,
+          -866.713359375
+        ],
+        [
+          609.4818798481867,
+          -935.9068750000001
+        ],
+        [
+          625.9971939887446,
+          -1082.295
+        ],
+        [
+          633.7245261517835,
+          -1159.769921875
+        ],
+        [
+          640.2952322369144,
+          -1240.285625
+        ],
+        [
+          645.1070051393258,
+          -1323.982265625
+        ],
+        [
+          647.5575377542064,
+          -1411
+        ],
+        [
+          647.4575053684446,
+          -1416.6875
+        ],
+        [
+          649.2431965214719,
+          -1420.75
+        ],
+        [
+          652.9146112132884,
+          -1423.1875
+        ],
+        [
+          658.4717494438938,
+          -1424
+        ],
+        [
+          660.4717494438938,
+          -1424
+        ],
+        [
+          666.2896112132884,
+          -1423.1875
+        ],
+        [
+          670.7431965214719,
+          -1420.75
+        ],
+        [
+          673.8325053684446,
+          -1416.6875
+        ],
+        [
+          675.5575377542064,
+          -1411
+        ],
+        [
+          742.9288635143383,
+          -1428.6799999999998
+        ],
+        [
+          758.7997345026386,
+          -1431.319611107348
+        ],
+        [
+          774.8343186310544,
+          -1430.918444429392
+        ],
+        [
+          791.032615899586,
+          -1427.476499966132
+        ],
+        [
+          807.3946263082332,
+          -1420.9937777175678
+        ],
+        [
+          899.8576345507072,
+          -1375.12
+        ],
+        [
+          913.4647286350497,
+          -1367.3469141087849
+        ],
+        [
+          925.7146288049787,
+          -1358.5876564351393
+        ],
+        [
+          936.6073350604943,
+          -1348.842226979063
+        ],
+        [
+          946.1428474015964,
+          -1338.1106257405565
+        ],
+        [
+          954.3211658282852,
+          -1326.3928527196197
+        ],
+        [
+          961.1422903405603,
+          -1313.6889079162522
+        ],
+        [
+          966.6062209384221,
+          -1299.9987913304544
+        ],
+        [
+          970.7129576218704,
+          -1285.3225029622263
+        ],
+        [
+          988.7743365664555,
+          -1070.6091252665965
+        ],
+        [
+          990.0817974659786,
+          -1039.2190916306122
+        ],
+        [
+          990.1635222373358,
+          -1007.6581159892551
+        ],
+        [
+          989.0195108805267,
+          -975.9261983425256
+        ],
+        [
+          986.6497633955515,
+          -944.0233386904235
+        ],
+        [
+          971.8534225816005,
+          -629.9766613095765
+        ],
+        [
+          969.7816070511805,
+          -598.1272387204199
+        ],
+        [
+          965.6965003126609,
+          -566.5556322625266
+        ],
+        [
+          959.5981023660419,
+          -535.2618419358964
+        ],
+        [
+          951.4864132113233,
+          -504.2458677405299
+        ],
+        [
+          918.5572826666767,
+          -265.54534078007646
+        ],
+        [
+          917.4559232846318,
+          -253.438776534746
+        ],
+        [
+          914.9757755618075,
+          -242.3917541887929
+        ],
+        [
+          911.1168394982037,
+          -232.40427374221736
+        ],
+        [
+          905.8791150938204,
+          -223.47633519501915
+        ],
+        [
+          899.2626023486575,
+          -215.60793854719827
+        ],
+        [
+          891.2673012627151,
+          -208.79908379875474
+        ],
+        [
+          881.8932118359933,
+          -203.04977094968854
+        ],
+        [
+          871.1403340684919,
+          -198.36000000000013
+        ],
+        [
+          804.5074172947112,
+          -174.2227018618687
+        ],
+        [
+          788.6383791817079,
+          -169.83276979730113
+        ],
+        [
+          772.1470606901952,
+          -167.8856754654671
+        ],
+        [
+          755.0334618201732,
+          -168.38141886636686
+        ],
+        [
+          737.2975825716419,
+          -171.32000000000016
+        ],
+        [
+          660.4319083350283,
+          -189
+        ],
+        [
+          660.883548758628,
+          -183.3125
+        ],
+        [
+          659.3490062040564,
+          -179.25
+        ],
+        [
+          655.8282806713133,
+          -176.8125
+        ],
+        [
+          650.321372160399,
+          -176
+        ],
+        [
+          648.321372160399,
+          -176
+        ],
+        [
+          642.4532806713133,
+          -176.8125
+        ],
+        [
+          637.8490062040564,
+          -179.25
+        ],
+        [
+          634.508548758628,
+          -183.3125
+        ],
+        [
+          632.4319083350283,
+          -189
+        ],
+        [
+          621.449131566025,
+          -250.8423992266089
+        ],
+        [
+          619.4062460823287,
+          -254.36186085886447
+        ],
+        [
+          615.4589627833419,
+          -263.29802281439925
+        ],
+        [
+          612.6411897663016,
+          -272.5
+        ],
+        [
+          605.5514979134664,
+          -305.46875
+        ],
+        [
+          599.0667711274718,
+          -338.4375
+        ],
+        [
+          593.2396153363552,
+          -371.40625
+        ],
+        [
+          588.1226364681537,
+          -404.375
+        ],
+        [
+          585.5309815966493,
+          -437.34375
+        ],
+        [
+          583.7672406110432,
+          -470.3125
+        ],
+        [
+          582.804456816955,
+          -503.28125
+        ],
+        [
+          582.6156735200042,
+          -536.25
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "eight-biome-expansion",
+    "created": "2026-11-18",
+    "architectureId": "map-biome-autumn-copperleaf-exchange",
+    "summary": "A compact central terrace splits two offset route arms. Four entries cross through an upper exchange and a lower exchange, leaving a clear southern build pocket beside a small copperleaf pond.",
+    "biomeOrdinal": 3,
+    "sourcePixelsPerWorldUnit": 1,
+    "resampling": "none",
+    "scaleContract": "All new terrain asset/default/object/layer scales are1; source crop pixels are world units.",
+    "approaches": [
+      {
+        "id": "approach-1",
+        "side": "north",
+        "point": {
+          "x": -70,
+          "y": 1514
+        },
+        "spawnPocketId": "spawn-pocket-1",
+        "clearWidth": 110
+      },
+      {
+        "id": "approach-2",
+        "side": "east",
+        "point": {
+          "x": 930,
+          "y": 0
+        },
+        "spawnPocketId": "spawn-pocket-2",
+        "clearWidth": 110
+      },
+      {
+        "id": "approach-3",
+        "side": "south",
+        "point": {
+          "x": 180,
+          "y": -1514
+        },
+        "spawnPocketId": "spawn-pocket-3",
+        "clearWidth": 110
+      },
+      {
+        "id": "approach-4",
+        "side": "west",
+        "point": {
+          "x": -930,
+          "y": -400
+        },
+        "spawnPocketId": "spawn-pocket-4",
+        "clearWidth": 110
+      }
+    ],
+    "buildPockets": [
+      {
+        "id": "pocket-1",
+        "name": "Central exchange clearing",
+        "center": {
+          "x": -50,
+          "y": 80
+        },
+        "radius": 170,
+        "role": "main build clearing",
+        "noDecoration": true
+      },
+      {
+        "id": "pocket-2",
+        "name": "Southern main clearing",
+        "center": {
+          "x": -70,
+          "y": -1040
+        },
+        "radius": 160,
+        "role": "secondary defense clearing",
+        "noDecoration": true
+      },
+      {
+        "id": "pocket-3",
+        "name": "Northwest inner pocket",
+        "center": {
+          "x": -250,
+          "y": 900
+        },
+        "radius": 100,
+        "role": "secondary defense clearing",
+        "noDecoration": true
+      },
+      {
+        "id": "pocket-4",
+        "name": "Lower eastern pocket",
+        "center": {
+          "x": 340,
+          "y": -650
+        },
+        "radius": 110,
+        "role": "secondary defense clearing",
+        "noDecoration": true
+      }
+    ],
+    "revision": {
+      "kind": "broad-rounded-side-hills",
+      "date": "2026-11-18",
+      "beforeMapSha256": "6fcbe6720cd2989250eec3d4d0e36e1c3e802e8e2ab818c3dac75ffea568df1f",
+      "architectureSha256": "0b194e0c960f75e80ed5399672880d37ef2144b02b5bbfd8b560003466857c9f",
+      "geometryHelperSha256": "2a4aa4bd286ab2f0f3caf5aa6aa5484f1dd78579a0f0ae89dbb8dbae532c1be2",
+      "terrainGeometry": [
+        {
+          "key": "northwest-table",
+          "objectId": "object-1",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-northwest-table",
+          "kind": "cliff",
+          "world": {
+            "x": -580,
+            "y": 1050
+          },
+          "width": 600,
+          "height": 560,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -257,
+                "y": 32
+              },
+              {
+                "x": -282.16,
+                "y": 139.712
+              },
+              {
+                "x": -286.78100672529047,
+                "y": 165.09289477500113
+              },
+              {
+                "x": -288.80402690116205,
+                "y": 190.54757910000455
+              },
+              {
+                "x": -288.2290605276145,
+                "y": 216.0760529750102
+              },
+              {
+                "x": -285.056107604648,
+                "y": 241.6783164000181
+              },
+              {
+                "x": -262.21230212840584,
+                "y": 372.6494677971399
+              },
+              {
+                "x": -259.03879381706076,
+                "y": 386.8762487821852
+              },
+              {
+                "x": -254.62441994722832,
+                "y": 400.28132563589116
+              },
+              {
+                "x": -248.9691805189085,
+                "y": 412.8646983582578
+              },
+              {
+                "x": -242.07307553210146,
+                "y": 424.626366949285
+              },
+              {
+                "x": -233.93610498680707,
+                "y": 435.5663314089728
+              },
+              {
+                "x": -224.55826888302536,
+                "y": 445.6845917373213
+              },
+              {
+                "x": -213.93956722075632,
+                "y": 454.98114793433035
+              },
+              {
+                "x": -202.07999999999998,
+                "y": 463.456
+              },
+              {
+                "x": -145.92000000000002,
+                "y": 499.74399999999997
+              },
+              {
+                "x": -120.37787847014297,
+                "y": 514.1608805965764
+              },
+              {
+                "x": -93.67151388057178,
+                "y": 525.1555223863058
+              },
+              {
+                "x": -65.80090623128646,
+                "y": 532.7279253691883
+              },
+              {
+                "x": -36.76605552228703,
+                "y": 536.8780895452234
+              },
+              {
+                "x": 46.20917882465686,
+                "y": 543.7113441385011
+              },
+              {
+                "x": 61.43697317009175,
+                "y": 544.2854503683661
+              },
+              {
+                "x": 76.22494561872486,
+                "y": 543.463441127212
+              },
+              {
+                "x": 90.5730961705562,
+                "y": 541.2453164150386
+              },
+              {
+                "x": 104.48142482558578,
+                "y": 537.6310762318459
+              },
+              {
+                "x": 117.94993158381357,
+                "y": 532.6207205776338
+              },
+              {
+                "x": 130.9786164452396,
+                "y": 526.2142494524027
+              },
+              {
+                "x": 143.5674794098638,
+                "y": 518.4116628561521
+              },
+              {
+                "x": 155.71652047768623,
+                "y": 509.21296078888247
+              },
+              {
+                "x": 222.28347952231377,
+                "y": 453.98703921111746
+              },
+              {
+                "x": 233.57285804389443,
+                "y": 443.74587368094285
+              },
+              {
+                "x": 243.58273336979335,
+                "y": 432.81589669597804
+              },
+              {
+                "x": 252.3131055000104,
+                "y": 421.1971082562229
+              },
+              {
+                "x": 259.7639744345457,
+                "y": 408.8895083616775
+              },
+              {
+                "x": 265.93534017339914,
+                "y": 395.8930970123416
+              },
+              {
+                "x": 270.82720271657087,
+                "y": 382.20787420821557
+              },
+              {
+                "x": 274.4395620640608,
+                "y": 367.8338399492992
+              },
+              {
+                "x": 276.7724182158689,
+                "y": 352.7709942355925
+              },
+              {
+                "x": 288.12339428833525,
+                "y": 249.47711197614947
+              },
+              {
+                "x": 289.9544092871886,
+                "y": 222.80087548658406
+              },
+              {
+                "x": 289.57084857208383,
+                "y": 196.24927799403736
+              },
+              {
+                "x": 286.972712143021,
+                "y": 169.82231949850933
+              },
+              {
+                "x": 282.16,
+                "y": 143.51999999999998
+              },
+              {
+                "x": 257,
+                "y": 32
+              },
+              {
+                "x": 262.6875,
+                "y": 31.1875
+              },
+              {
+                "x": 266.75,
+                "y": 28.75
+              },
+              {
+                "x": 269.1875,
+                "y": 24.6875
+              },
+              {
+                "x": 270,
+                "y": 19
+              },
+              {
+                "x": 270,
+                "y": 17
+              },
+              {
+                "x": 269.1875,
+                "y": 11.3125
+              },
+              {
+                "x": 266.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": 262.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": 257,
+                "y": 4
+              },
+              {
+                "x": 121.22500000000001,
+                "y": 2
+              },
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": -121.22500000000001,
+                "y": 2
+              },
+              {
+                "x": -257,
+                "y": 4
+              },
+              {
+                "x": -262.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": -266.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": -269.1875,
+                "y": 11.3125
+              },
+              {
+                "x": -270,
+                "y": 17
+              },
+              {
+                "x": -270,
+                "y": 19
+              },
+              {
+                "x": -269.1875,
+                "y": 24.6875
+              },
+              {
+                "x": -266.75,
+                "y": 28.75
+              },
+              {
+                "x": -262.6875,
+                "y": 31.1875
+              },
+              {
+                "x": -257,
+                "y": 32
+              }
+            ]
+          ]
+        },
+        {
+          "key": "center-terrace",
+          "objectId": "object-2",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-center-terrace",
+          "kind": "cliff",
+          "world": {
+            "x": 400,
+            "y": 700
+          },
+          "width": 590,
+          "height": 630,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -252.5,
+                "y": 32
+              },
+              {
+                "x": -277.38800000000003,
+                "y": 155.89600000000002
+              },
+              {
+                "x": -281.95182941679894,
+                "y": 185.07833924913257
+              },
+              {
+                "x": -283.93131766719563,
+                "y": 214.3213569965303
+              },
+              {
+                "x": -283.3264647511902,
+                "y": 243.62505324219322
+              },
+              {
+                "x": -280.13727066878255,
+                "y": 272.98942798612126
+              },
+              {
+                "x": -257.000246413087,
+                "y": 424.75262098534455
+              },
+              {
+                "x": -254.07693866001972,
+                "y": 439.4635379419044
+              },
+              {
+                "x": -249.90713860736145,
+                "y": 453.42259930425627
+              },
+              {
+                "x": -244.4908462551121,
+                "y": 466.6298050724002
+              },
+              {
+                "x": -237.82806160327172,
+                "y": 479.0851552463361
+              },
+              {
+                "x": -229.91878465184033,
+                "y": 490.78864982606405
+              },
+              {
+                "x": -220.76301540081792,
+                "y": 501.74028881158404
+              },
+              {
+                "x": -210.36075385020447,
+                "y": 511.9400722028961
+              },
+              {
+                "x": -198.712,
+                "y": 521.388
+              },
+              {
+                "x": -143.488,
+                "y": 562.212
+              },
+              {
+                "x": -118.21353074395837,
+                "y": 578.4458816995972
+              },
+              {
+                "x": -91.47812297583349,
+                "y": 590.8595267983885
+              },
+              {
+                "x": -63.28177669562533,
+                "y": 599.4529352963743
+              },
+              {
+                "x": -33.62449190333392,
+                "y": 604.2261071935543
+              },
+              {
+                "x": 44.4733655280898,
+                "y": 611.5842802017991
+              },
+              {
+                "x": 59.64318595177819,
+                "y": 612.2804265416595
+              },
+              {
+                "x": 74.28932998688826,
+                "y": 611.4610056621405
+              },
+              {
+                "x": 88.41179763342001,
+                "y": 609.1260175632419
+              },
+              {
+                "x": 102.01058889137343,
+                "y": 605.275462244964
+              },
+              {
+                "x": 115.08570376074854,
+                "y": 599.9093397073066
+              },
+              {
+                "x": 127.63714224154533,
+                "y": 593.0276499502696
+              },
+              {
+                "x": 139.66490433376381,
+                "y": 584.6303929738532
+              },
+              {
+                "x": 151.16899003740392,
+                "y": 574.7175687780573
+              },
+              {
+                "x": 220.5310099625961,
+                "y": 508.8824312219427
+              },
+              {
+                "x": 231.1632411761035,
+                "y": 497.9144245641853
+              },
+              {
+                "x": 240.57543979792376,
+                "y": 486.35162020188454
+              },
+              {
+                "x": 248.76760582805684,
+                "y": 474.1940181350403
+              },
+              {
+                "x": 255.7397392665028,
+                "y": 461.44161836365265
+              },
+              {
+                "x": 261.4918401132616,
+                "y": 448.0944208877216
+              },
+              {
+                "x": 266.0239083683332,
+                "y": 434.1524257072471
+              },
+              {
+                "x": 269.33594403171764,
+                "y": 419.6156328222292
+              },
+              {
+                "x": 271.4279471034149,
+                "y": 404.48404223266795
+              },
+              {
+                "x": 283.22497340247884,
+                "y": 281.6650014835152
+              },
+              {
+                "x": 285.0632975388943,
+                "y": 251.1353133344773
+              },
+              {
+                "x": 284.7032433506197,
+                "y": 220.71125037087882
+              },
+              {
+                "x": 282.1448108376549,
+                "y": 190.39281259271968
+              },
+              {
+                "x": 277.38800000000003,
+                "y": 160.18
+              },
+              {
+                "x": 252.5,
+                "y": 32
+              },
+              {
+                "x": 258.1875,
+                "y": 31.1875
+              },
+              {
+                "x": 262.25,
+                "y": 28.75
+              },
+              {
+                "x": 264.6875,
+                "y": 24.6875
+              },
+              {
+                "x": 265.5,
+                "y": 19
+              },
+              {
+                "x": 265.5,
+                "y": 17
+              },
+              {
+                "x": 264.6875,
+                "y": 11.3125
+              },
+              {
+                "x": 262.25,
+                "y": 7.250000000000001
+              },
+              {
+                "x": 258.1875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": 252.5,
+                "y": 4
+              },
+              {
+                "x": 119.17750000000001,
+                "y": 2
+              },
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": -119.17750000000001,
+                "y": 2
+              },
+              {
+                "x": -252.5,
+                "y": 4
+              },
+              {
+                "x": -258.1875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": -262.25,
+                "y": 7.250000000000001
+              },
+              {
+                "x": -264.6875,
+                "y": 11.3125
+              },
+              {
+                "x": -265.5,
+                "y": 17
+              },
+              {
+                "x": -265.5,
+                "y": 19
+              },
+              {
+                "x": -264.6875,
+                "y": 24.6875
+              },
+              {
+                "x": -262.25,
+                "y": 28.75
+              },
+              {
+                "x": -258.1875,
+                "y": 31.1875
+              },
+              {
+                "x": -252.5,
+                "y": 32
+              }
+            ]
+          ]
+        },
+        {
+          "key": "southeast-outcrop",
+          "objectId": "object-3",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-southeast-outcrop",
+          "kind": "cliff",
+          "world": {
+            "x": 680,
+            "y": 150
+          },
+          "width": 540,
+          "height": 680,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -230,
+                "y": 32
+              },
+              {
+                "x": -253.98978874439763,
+                "y": 170.114621904162
+              },
+              {
+                "x": -258.1349497936934,
+                "y": 200.68249556338867
+              },
+              {
+                "x": -259.96022168597835,
+                "y": 231.30073844523076
+              },
+              {
+                "x": -259.4656044212525,
+                "y": 261.96935054968816
+              },
+              {
+                "x": -256.65109799951586,
+                "y": 292.68833187676097
+              },
+              {
+                "x": -234.44173754723985,
+                "y": 464.48772331182715
+              },
+              {
+                "x": -231.9487053096055,
+                "y": 478.95416316061767
+              },
+              {
+                "x": -228.29047737032238,
+                "y": 492.7973443629029
+              },
+              {
+                "x": -223.46705372939053,
+                "y": 506.0172669186826
+              },
+              {
+                "x": -217.47843438680994,
+                "y": 518.6139308279569
+              },
+              {
+                "x": -210.3246193425806,
+                "y": 530.5873360907258
+              },
+              {
+                "x": -202.00560859670247,
+                "y": 541.9374827069892
+              },
+              {
+                "x": -192.5214021491756,
+                "y": 552.6643706767474
+              },
+              {
+                "x": -181.87199999999999,
+                "y": 562.768
+              },
+              {
+                "x": -130.95818511013778,
+                "y": 607.1544027244953
+              },
+              {
+                "x": -107.7919791244525,
+                "y": 624.5573515325286
+              },
+              {
+                "x": -82.85154627753444,
+                "y": 637.9206006811239
+              },
+              {
+                "x": -56.136886569383606,
+                "y": 647.244150170281
+              },
+              {
+                "x": -27.647999999999996,
+                "y": 652.528
+              },
+              {
+                "x": 38.44799999999999,
+                "y": 659.872
+              },
+              {
+                "x": 52.83336625793078,
+                "y": 660.7131949705466
+              },
+              {
+                "x": 66.61346503172311,
+                "y": 659.9727798821865
+              },
+              {
+                "x": 79.788296321377,
+                "y": 657.6507547349196
+              },
+              {
+                "x": 92.35786012689243,
+                "y": 653.7471195287459
+              },
+              {
+                "x": 104.32215644826942,
+                "y": 648.2618742636654
+              },
+              {
+                "x": 115.68118528550798,
+                "y": 641.1950189396782
+              },
+              {
+                "x": 126.43494663860808,
+                "y": 632.5465535567843
+              },
+              {
+                "x": 136.58344050756975,
+                "y": 622.3164781149836
+              },
+              {
+                "x": 201.69351208419283,
+                "y": 549.4360687781874
+              },
+              {
+                "x": 211.45336248807155,
+                "y": 537.6339374920153
+              },
+              {
+                "x": 220.07966974180408,
+                "y": 525.3455780225925
+              },
+              {
+                "x": 227.5724338453905,
+                "y": 512.570990369919
+              },
+              {
+                "x": 233.93165479883072,
+                "y": 499.3101745339948
+              },
+              {
+                "x": 239.1573326021248,
+                "y": 485.56313051482005
+              },
+              {
+                "x": 243.2494672552727,
+                "y": 471.32985831239455
+              },
+              {
+                "x": 246.20805875827446,
+                "y": 456.6103579267185
+              },
+              {
+                "x": 248.03310711113008,
+                "y": 441.40462935779175
+              },
+              {
+                "x": 259.5668928888699,
+                "y": 299.79537064220824
+              },
+              {
+                "x": 261.1270184906294,
+                "y": 268.93842475999526
+              },
+              {
+                "x": 260.7742881847778,
+                "y": 238.1629577555645
+              },
+              {
+                "x": 258.50870197131513,
+                "y": 207.46896962891594
+              },
+              {
+                "x": 254.33025985024136,
+                "y": 176.85646038004964
+              },
+              {
+                "x": 230,
+                "y": 32
+              },
+              {
+                "x": 235.6875,
+                "y": 31.1875
+              },
+              {
+                "x": 239.75,
+                "y": 28.75
+              },
+              {
+                "x": 242.1875,
+                "y": 24.6875
+              },
+              {
+                "x": 243,
+                "y": 19
+              },
+              {
+                "x": 243,
+                "y": 17
+              },
+              {
+                "x": 242.1875,
+                "y": 11.3125
+              },
+              {
+                "x": 239.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": 235.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": 230,
+                "y": 4
+              },
+              {
+                "x": 108.94000000000003,
+                "y": 2
+              },
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": -108.94000000000001,
+                "y": 2
+              },
+              {
+                "x": -230,
+                "y": 4
+              },
+              {
+                "x": -235.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": -239.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": -242.1875,
+                "y": 11.3125
+              },
+              {
+                "x": -243,
+                "y": 17
+              },
+              {
+                "x": -243,
+                "y": 19
+              },
+              {
+                "x": -242.1875,
+                "y": 24.6875
+              },
+              {
+                "x": -239.75,
+                "y": 28.75
+              },
+              {
+                "x": -235.6875,
+                "y": 31.1875
+              },
+              {
+                "x": -230,
+                "y": 32
+              }
+            ]
+          ]
+        },
+        {
+          "key": "southwest-pond",
+          "objectId": "object-4",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-southwest-pond",
+          "kind": "water",
+          "world": {
+            "x": -675,
+            "y": -1180
+          },
+          "width": 450,
+          "height": 580,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -191,
+                "y": 123
+              },
+              {
+                "x": -160,
+                "y": 329
+              },
+              {
+                "x": -103,
+                "y": 468
+              },
+              {
+                "x": -3,
+                "y": 536
+              },
+              {
+                "x": 105,
+                "y": 490
+              },
+              {
+                "x": 170,
+                "y": 367
+              },
+              {
+                "x": 188,
+                "y": 160
+              },
+              {
+                "x": 68,
+                "y": 60
+              },
+              {
+                "x": -84,
+                "y": 42
+              }
+            ]
+          ]
+        },
+        {
+          "key": "west-long-bank",
+          "objectId": "object-141",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-west-long-bank",
+          "kind": "cliff",
+          "world": {
+            "x": -800,
+            "y": -200
+          },
+          "width": 500,
+          "height": 1250,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -204.68753005478356,
+                "y": 488.97841805686045
+              },
+              {
+                "x": -204.5420623817788,
+                "y": 457.0684395982282
+              },
+              {
+                "x": -202.57338217016712,
+                "y": 425.3169222791921
+              },
+              {
+                "x": -198.78148941994846,
+                "y": 393.72386609975206
+              },
+              {
+                "x": -193.16638413112284,
+                "y": 362.28927105990795
+              },
+              {
+                "x": -110.67154954666597,
+                "y": 156.69700864158784
+              },
+              {
+                "x": -102.68051892479798,
+                "y": 142.9711472412157
+              },
+              {
+                "x": -93.77157611331339,
+                "y": 130.14206736089318
+              },
+              {
+                "x": -83.94472111221216,
+                "y": 118.20976900062026
+              },
+              {
+                "x": -73.19995392149434,
+                "y": 107.17425216039696
+              },
+              {
+                "x": -61.53727454115991,
+                "y": 97.03551684022328
+              },
+              {
+                "x": -48.95668297120885,
+                "y": 87.79356304009923
+              },
+              {
+                "x": -35.45817921164118,
+                "y": 79.44839076002481
+              },
+              {
+                "x": -21.04176326245691,
+                "y": 72
+              },
+              {
+                "x": 0.567530028908025,
+                "y": 61.659709452135814
+              },
+              {
+                "x": 6.685933338547379,
+                "y": 57.61038969321072
+              },
+              {
+                "x": 16.932415601823028,
+                "y": 51.80162471622251
+              },
+              {
+                "x": 27.69797969713437,
+                "y": 46.62058650303879
+              },
+              {
+                "x": 38.91222059164508,
+                "y": 42.11251399537685
+              },
+              {
+                "x": 46.820712090740734,
+                "y": 39.527040195722556
+              },
+              {
+                "x": 72.05852566467294,
+                "y": 27.450461770477546
+              },
+              {
+                "x": 87.19590930897391,
+                "y": 21.419634745893617
+              },
+              {
+                "x": 101.99277649627766,
+                "y": 18.27761544261938
+              },
+              {
+                "x": 116.44912722658422,
+                "y": 18.02440386065483
+              },
+              {
+                "x": 130.56496149989357,
+                "y": 20.659999999999968
+              },
+              {
+                "x": 189.47952729376257,
+                "y": 38
+              },
+              {
+                "x": 191.75663461898893,
+                "y": 32.3125
+              },
+              {
+                "x": 195.24028270843633,
+                "y": 28.250000000000004
+              },
+              {
+                "x": 199.93047156210474,
+                "y": 25.812500000000004
+              },
+              {
+                "x": 205.82720117999423,
+                "y": 25
+              },
+              {
+                "x": 207.82720117999423,
+                "y": 25
+              },
+              {
+                "x": 213.30547156210474,
+                "y": 25.812500000000004
+              },
+              {
+                "x": 216.74028270843633,
+                "y": 28.250000000000004
+              },
+              {
+                "x": 218.13163461898893,
+                "y": 32.3125
+              },
+              {
+                "x": 217.47952729376257,
+                "y": 38
+              },
+              {
+                "x": 195.32286772510122,
+                "y": 121.505859375
+              },
+              {
+                "x": 178.29054698563488,
+                "y": 201.859375
+              },
+              {
+                "x": 165.889692505833,
+                "y": 279.189453125
+              },
+              {
+                "x": 157.62743171616518,
+                "y": 353.625
+              },
+              {
+                "x": 153.01089204710087,
+                "y": 425.294921875
+              },
+              {
+                "x": 151.54720092910958,
+                "y": 494.328125
+              },
+              {
+                "x": 152.74348579266083,
+                "y": 560.853515625
+              },
+              {
+                "x": 156.10687406822416,
+                "y": 625
+              },
+              {
+                "x": 162.9485596779581,
+                "y": 689.146484375
+              },
+              {
+                "x": 171.4650377896631,
+                "y": 755.671875
+              },
+              {
+                "x": 191.74164176995646,
+                "y": 896.375
+              },
+              {
+                "x": 197.13167071987772,
+                "y": 934.1875549761187
+              },
+              {
+                "x": 198.50981887427884,
+                "y": 939.84375
+              },
+              {
+                "x": 214.38343408562372,
+                "y": 1002.8125
+              },
+              {
+                "x": 221.10165288873685,
+                "y": 1034.296875
+              },
+              {
+                "x": 226.92610005574153,
+                "y": 1065.78125
+              },
+              {
+                "x": 231.77049580667867,
+                "y": 1097.265625
+              },
+              {
+                "x": 235.54856036158924,
+                "y": 1128.75
+              },
+              {
+                "x": 234.92817618694426,
+                "y": 1137.9519771856008
+              },
+              {
+                "x": 233.02378306143544,
+                "y": 1146.8881391411355
+              },
+              {
+                "x": 229.90745323469338,
+                "y": 1155.5132469248867
+              },
+              {
+                "x": 227.15925426796787,
+                "y": 1160.8523706694134
+              },
+              {
+                "x": 232.80433251486534,
+                "y": 1212
+              },
+              {
+                "x": 231.19331706887158,
+                "y": 1217.6875
+              },
+              {
+                "x": 228.18544889316172,
+                "y": 1221.75
+              },
+              {
+                "x": 223.78072798773582,
+                "y": 1224.1875
+              },
+              {
+                "x": 217.97915435259387,
+                "y": 1225
+              },
+              {
+                "x": 215.97915435259387,
+                "y": 1225
+              },
+              {
+                "x": 210.40572798773584,
+                "y": 1224.1875
+              },
+              {
+                "x": 206.68544889316175,
+                "y": 1221.75
+              },
+              {
+                "x": 204.81831706887158,
+                "y": 1217.6875
+              },
+              {
+                "x": 204.80433251486534,
+                "y": 1212
+              },
+              {
+                "x": 136.46615531001981,
+                "y": 1229.3400000000001
+              },
+              {
+                "x": 120.52235152150092,
+                "y": 1232.2513459278189
+              },
+              {
+                "x": 105.06722408967403,
+                "y": 1232.8253837112757
+              },
+              {
+                "x": 90.10077301453913,
+                "y": 1231.0621133503705
+              },
+              {
+                "x": 75.62299829609623,
+                "y": 1226.9615348451034
+              },
+              {
+                "x": 11.405850710764724,
+                "y": 1203.5
+              },
+              {
+                "x": 0.799664732384183,
+                "y": 1199.014853852762
+              },
+              {
+                "x": -8.773965847848599,
+                "y": 1193.5594154110486
+              },
+              {
+                "x": -17.31504102993362,
+                "y": 1187.1336846748593
+              },
+              {
+                "x": -24.823560813870884,
+                "y": 1179.7376616441948
+              },
+              {
+                "x": -31.299525199660387,
+                "y": 1171.3713463190543
+              },
+              {
+                "x": -36.742934187302126,
+                "y": 1162.034738699438
+              },
+              {
+                "x": -41.1537877767961,
+                "y": 1151.7278387853462
+              },
+              {
+                "x": -44.53208596814232,
+                "y": 1140.4506465767788
+              },
+              {
+                "x": -149.0731599728512,
+                "y": 911.9150968944148
+              },
+              {
+                "x": -162.7897797622446,
+                "y": 880.8285908745545
+              },
+              {
+                "x": -173.89109810666142,
+                "y": 849.4841697093887
+              },
+              {
+                "x": -182.37711500610166,
+                "y": 817.881833398917
+              },
+              {
+                "x": -188.2478304605653,
+                "y": 786.0215819431396
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "left",
+            "bendAmplitude": 46,
+            "bendPhase": 2.2,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 31.25,
+            "faceEnd": 1218.75,
+            "stableBodyFraction": 0.848421052631579,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "east-long-bank",
+          "objectId": "object-142",
+          "assetId": "terrain-biome-autumn-copperleaf-exchange-east-long-bank",
+          "kind": "cliff",
+          "world": {
+            "x": 810,
+            "y": -1450
+          },
+          "width": 500,
+          "height": 1300,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -227.3843264799958,
+                "y": 913.75
+              },
+              {
+                "x": -224.06010783658462,
+                "y": 847.8125
+              },
+              {
+                "x": -220.43394674729956,
+                "y": 793.3422720411884
+              },
+              {
+                "x": -220.42979021174148,
+                "y": 785.9068750000001
+              },
+              {
+                "x": -218.30459330096184,
+                "y": 716.713359375
+              },
+              {
+                "x": -214.432253346269,
+                "y": 650
+              },
+              {
+                "x": -208.10148791970954,
+                "y": 583.286640625
+              },
+              {
+                "x": -200.51812015181332,
+                "y": 514.0931249999999
+              },
+              {
+                "x": -184.00280601125547,
+                "y": 367.705
+              },
+              {
+                "x": -176.27547384821645,
+                "y": 290.23007812500003
+              },
+              {
+                "x": -169.7047677630856,
+                "y": 209.71437500000002
+              },
+              {
+                "x": -164.89299486067426,
+                "y": 126.017734375
+              },
+              {
+                "x": -162.4424622457937,
+                "y": 39
+              },
+              {
+                "x": -162.54249463155543,
+                "y": 33.3125
+              },
+              {
+                "x": -160.75680347852807,
+                "y": 29.250000000000004
+              },
+              {
+                "x": -157.08538878671166,
+                "y": 26.812500000000004
+              },
+              {
+                "x": -151.5282505561062,
+                "y": 26
+              },
+              {
+                "x": -149.5282505561062,
+                "y": 26
+              },
+              {
+                "x": -143.71038878671166,
+                "y": 26.812500000000004
+              },
+              {
+                "x": -139.25680347852807,
+                "y": 29.250000000000004
+              },
+              {
+                "x": -136.16749463155543,
+                "y": 33.3125
+              },
+              {
+                "x": -134.4424622457937,
+                "y": 39
+              },
+              {
+                "x": -67.07113648566167,
+                "y": 21.32000000000005
+              },
+              {
+                "x": -51.20026549736144,
+                "y": 18.68038889265204
+              },
+              {
+                "x": -35.165681368945556,
+                "y": 19.08155557060806
+              },
+              {
+                "x": -18.967384100414,
+                "y": 22.52350003386811
+              },
+              {
+                "x": -2.6053736917667756,
+                "y": 29.00622228243219
+              },
+              {
+                "x": 89.85763455070717,
+                "y": 74.88
+              },
+              {
+                "x": 103.46472863504968,
+                "y": 82.6530858912152
+              },
+              {
+                "x": 115.71462880497873,
+                "y": 91.41234356486086
+              },
+              {
+                "x": 126.60733506049434,
+                "y": 101.15777302093693
+              },
+              {
+                "x": 136.14284740159647,
+                "y": 111.88937425944346
+              },
+              {
+                "x": 144.32116582828516,
+                "y": 123.60714728038039
+              },
+              {
+                "x": 151.14229034056035,
+                "y": 136.31109208374775
+              },
+              {
+                "x": 156.60622093842213,
+                "y": 150.00120866954555
+              },
+              {
+                "x": 160.71295762187043,
+                "y": 164.67749703777378
+              },
+              {
+                "x": 178.77433656645547,
+                "y": 379.39087473340345
+              },
+              {
+                "x": 180.08179746597867,
+                "y": 410.78090836938793
+              },
+              {
+                "x": 180.16352223733577,
+                "y": 442.34188401074493
+              },
+              {
+                "x": 179.01951088052672,
+                "y": 474.07380165747446
+              },
+              {
+                "x": 176.64976339555153,
+                "y": 505.97666130957646
+              },
+              {
+                "x": 161.8534225816005,
+                "y": 820.0233386904235
+              },
+              {
+                "x": 159.78160705118046,
+                "y": 851.8727612795801
+              },
+              {
+                "x": 155.69650031266093,
+                "y": 883.4443677374734
+              },
+              {
+                "x": 149.59810236604187,
+                "y": 914.7381580641036
+              },
+              {
+                "x": 141.48641321132337,
+                "y": 945.7541322594701
+              },
+              {
+                "x": 108.55728266667664,
+                "y": 1184.4546592199235
+              },
+              {
+                "x": 107.45592328463184,
+                "y": 1196.561223465254
+              },
+              {
+                "x": 104.97577556180752,
+                "y": 1207.608245811207
+              },
+              {
+                "x": 101.11683949820369,
+                "y": 1217.5957262577826
+              },
+              {
+                "x": 95.87911509382036,
+                "y": 1226.5236648049809
+              },
+              {
+                "x": 89.26260234865751,
+                "y": 1234.3920614528017
+              },
+              {
+                "x": 81.26730126271516,
+                "y": 1241.2009162012453
+              },
+              {
+                "x": 71.89321183599328,
+                "y": 1246.9502290503115
+              },
+              {
+                "x": 61.1403340684919,
+                "y": 1251.6399999999999
+              },
+              {
+                "x": -5.492582705288754,
+                "y": 1275.7772981381313
+              },
+              {
+                "x": -21.361620818292096,
+                "y": 1280.1672302026989
+              },
+              {
+                "x": -37.85293930980477,
+                "y": 1282.114324534533
+              },
+              {
+                "x": -54.966538179826756,
+                "y": 1281.6185811336331
+              },
+              {
+                "x": -72.70241742835807,
+                "y": 1278.6799999999998
+              },
+              {
+                "x": -149.56809166497163,
+                "y": 1261
+              },
+              {
+                "x": -149.11645124137198,
+                "y": 1266.6875
+              },
+              {
+                "x": -150.65099379594363,
+                "y": 1270.75
+              },
+              {
+                "x": -154.17171932868666,
+                "y": 1273.1875
+              },
+              {
+                "x": -159.67862783960098,
+                "y": 1274
+              },
+              {
+                "x": -161.67862783960098,
+                "y": 1274
+              },
+              {
+                "x": -167.54671932868666,
+                "y": 1273.1875
+              },
+              {
+                "x": -172.15099379594363,
+                "y": 1270.75
+              },
+              {
+                "x": -175.49145124137198,
+                "y": 1266.6875
+              },
+              {
+                "x": -177.56809166497163,
+                "y": 1261
+              },
+              {
+                "x": -188.55086843397504,
+                "y": 1199.157600773391
+              },
+              {
+                "x": -190.59375391767128,
+                "y": 1195.6381391411355
+              },
+              {
+                "x": -194.54103721665808,
+                "y": 1186.7019771856008
+              },
+              {
+                "x": -197.35881023369836,
+                "y": 1177.5
+              },
+              {
+                "x": -204.44850208653364,
+                "y": 1144.53125
+              },
+              {
+                "x": -210.93322887252816,
+                "y": 1111.5625
+              },
+              {
+                "x": -216.7603846636448,
+                "y": 1078.59375
+              },
+              {
+                "x": -221.87736353184633,
+                "y": 1045.625
+              },
+              {
+                "x": -224.46901840335067,
+                "y": 1012.65625
+              },
+              {
+                "x": -226.23275938895677,
+                "y": 979.6875
+              },
+              {
+                "x": -227.195543183045,
+                "y": 946.71875
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "right",
+            "bendAmplitude": 34,
+            "bendPhase": 0.65,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 32.5,
+            "faceEnd": 1267.5,
+            "stableBodyFraction": 0.854251012145749,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        }
+      ],
+      "spawnPockets": [
+        {
+          "id": "spawn-pocket-1",
+          "side": "north",
+          "center": {
+            "x": -70,
+            "y": 1200
+          },
+          "radius": 90,
+          "unitDiameterWorld": 85,
+          "freeOfTerrain": true
+        },
+        {
+          "id": "spawn-pocket-2",
+          "side": "east",
+          "center": {
+            "x": 650,
+            "y": 0
+          },
+          "radius": 90,
+          "unitDiameterWorld": 85,
+          "freeOfTerrain": true
+        },
+        {
+          "id": "spawn-pocket-3",
+          "side": "south",
+          "center": {
+            "x": 180,
+            "y": -1210
+          },
+          "radius": 90,
+          "unitDiameterWorld": 85,
+          "freeOfTerrain": true
+        },
+        {
+          "id": "spawn-pocket-4",
+          "side": "west",
+          "center": {
+            "x": -640,
+            "y": -400
+          },
+          "radius": 90,
+          "unitDiameterWorld": 85,
+          "freeOfTerrain": true
+        }
+      ],
+      "sourcePixelsPerWorldUnit": 1,
+      "resizeOperations": 0,
+      "positionsUnchanged": true,
+      "replacedTerrainImages": 2
+    }
+  }
+}

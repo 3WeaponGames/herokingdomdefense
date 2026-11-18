@@ -17,12 +17,27 @@ test('six square cards center padded weapon poses, keep the Equipped badge above
  assert(f.all().every(node=>!['Selection glow','Gold selection','Card edge','Card highlight'].includes(node.name)));assert.equal(f.poseIcons.length,6,'Changing the selection reuses artwork and frozen poses');assert(f.poseIcons.every(icon=>!icon.destroyed));f.api.close(owner);assert(f.poseIcons.every(icon=>icon.destroyed));assert(copies.every(frame=>frame.destroyed));
 });
 
-test('the Equip button straddles the panel bottom and each card loads its own main-weapon tier frame',()=>{
+test('the Equip button sits below the skill details inside the panel and each card keeps its own tier frame',()=>{
  const levels={skirmisher:1,fighter:11,vanguard:21,mystic:31,bruiser:41,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:50}),owner={node:f.canvas};f.api.open(owner);
- const panel=f.find('Panel outline'),action=f.find('Equipped action');assert.equal(action.y,panel.y-panel.height/2);assert(action.height>0);
+ const panel=f.find('Cream panel'),action=f.find('Equipped action'),skill=f.find('Skill panel outline');assert(action.y-action.height/2>panel.y-panel.height/2);assert(action.y+action.height/2<skill.y-skill.height/2);assert(action.height>0);
  assert.deepEqual(f.tierFrames.slice(0,6),['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd']);
  assert.equal(f.find('Style vanguard').getChildByName('Tier clip').getChildByName('Tier card').color,'#54c7ff');assert.equal(f.find('Style fighter').getChildByName('Tier clip').getChildByName('Tier card').color,'#ffffff');
  f.tap(f.find('Style fighter'));assert.deepEqual(f.tierFrames.slice(-6),f.tierFrames.slice(0,6));f.api.close(owner);
+});
+
+test('the skill icon and live stat description replace both weapon level references without equipping while browsing',()=>{
+ const config={HeroSkills:{skirmisher:{activeDamage:1.1},mystic:{maxCharges:17}}},before=JSON.stringify(config),f=fixture(user(),{config}),owner={node:f.canvas};f.api.open(owner);
+ const Description=require('../../assets/_script/HeroSkillDescriptions'),Settings=require('../../assets/_script/HeroSkillSettings'),Authoring=require('../../assets/_script/HeroSkillAuthoring');
+ for(const style of Weapons.styles){
+  f.tap(f.find('Style '+style.id));
+  assert.equal(f.find('Skill icon').getComponent(f.cc.Sprite).spriteFrame.key,'skills/icons/'+style.id);
+  assert.equal(f.find('Skill name').getComponent(f.cc.Label).string,Authoring.entry(style.id,'active').name);
+  const text=f.find('Skill description').getComponent(f.cc.Label);assert.equal(text.string,Description.render(style.id,'active',Settings.effective(style.id,config)));assert(text.enableWrapText);assert.equal(text.horizontalAlign,f.cc.Label.HorizontalAlign.LEFT);assert.equal(text.fontFamily,'Arial');assert.equal(text.font,null);
+  assert.equal(f.find('Level reference 4'),undefined);assert.equal(f.find('Level reference 3'),undefined);
+ }
+ f.tap(f.find('Style skirmisher'));assert.match(f.find('Skill description').getComponent(f.cc.Label).string,/110%/);
+ config.HeroSkills.skirmisher.activeDamage=.9;f.tap(f.find('Style fighter'));f.tap(f.find('Style skirmisher'));assert.match(f.find('Skill description').getComponent(f.cc.Label).string,/90%/);
+ config.HeroSkills.skirmisher.activeDamage=1.1;assert.equal(JSON.stringify(config),before);assert.equal(f.sounds.length,0);assert.equal(f.poseIcons.length,6);f.api.close(owner);
 });
 
 test('the portrait popup fits short/narrow viewports and removes its resize and asset subscriptions on dismissal',()=>{

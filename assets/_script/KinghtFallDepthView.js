@@ -1441,13 +1441,14 @@ DepthView.prototype.prepareObjects = function () {
       masks: new Map(), capture: null, texture: null, frame: null, signature: "" });
   });
 };
-// The lowest hip in the published horse setup pose is 44.49 units above its
-// ground origin. Use that fixed lower-body height, not an animated knee/hoof,
-// so walking and attacking cannot make a nearby plant change depth bands.
-function sceneryLegHeight(hero, main) {
-  var horse=hero.ctrPlayAni&&hero.ctrPlayAni.spAniMa, node=horse&&horse.node||hero.node;
-  if(!node||!node.convertToWorldSpaceAR||!main.convertToNodeSpaceAR)return 44.5;
-  return Math.abs(point(node,main,0,44.5).y-point(node,main,0,0).y);
+// This cutoff is in map coordinates; camera zoom and hero scale cannot turn
+// underfoot flowers or small stones into occluders.
+var SMALL_SCENERY_HEIGHT = 25;
+function actorGroundY(actor,main,hero,cache,fallback) {
+  var owner=actor.node||fallback,horse=actor===hero&&actor.ctrPlayAni&&actor.ctrPlayAni.spAniMa;
+  var ground=owner._depthGround||horse&&horse.node||owner;
+  if(ground===owner&&(!owner.parent||owner.parent===main))return owner.y;
+  return point(ground,main,0,0,cache).y;
 }
 function sceneryLocalShape(view,node,sources) {
   var shapes=view._sceneryShapes||(view._sceneryShapes=new WeakMap()),saved=shapes.get(node);
@@ -1482,11 +1483,11 @@ function sceneryWorldShape(view,node,main,sources) {
   return box;
 }
 function sceneryProps(view,ordered,main) {
-  var hero=view.game.ctrPlay,limit=sceneryLegHeight(hero,main),props=[];
+  var props=[];
   ordered.forEach(function(group){
     if(group.actor||group.building||group.owner._depthGroundVisual||group.owner.activeInHierarchy===false||!(group.owner._depthScenery||group.owner._depthMapObject))return;
     var box=sceneryWorldShape(view,group.owner,main);
-    if(box)props.push({group:group,box:box,low:box.maxY-box.minY<=limit});
+    if(box)props.push({group:group,box:box,low:box.maxY-box.minY<=SMALL_SCENERY_HEIGHT});
   });
   return props;
 }
@@ -1519,49 +1520,49 @@ function scenerySpatialCandidates(index,box) {
 }
 function sceneryActorOrder(view,ordered,main,props) {
   if(!props.length)return;
-  var hero=view.game.ctrPlay;
-  // Low decorations keep their authored order, but live below every actor.
-  // They must not contribute to the frontier that can lift a unit over rocks.
+  var hero=view.game.ctrPlay,actors=[],scenery=[],indices=new Map(),initial=new Map(),minimum=0;
   var low=new Set(props.filter(function(prop){return prop.low;}).map(function(prop){return prop.group;}));
-  var actors=ordered.filter(function(group){return group.actor;}),floors=ordered.filter(function(group){return !group.actor&&(low.has(group)||group.owner._depthGroundVisual);}),floorSet=new Set(floors),entries=new Map();
-  ordered.forEach(function(group,index){if(!floorSet.has(group))entries.set(group,{group:group,index:index,incoming:0,after:[]});});
-  function before(a,b){var first=entries.get(a),last=entries.get(b);first.after.push(last);last.incoming++;}
-  // Actor/prop ground crossings take precedence over conflicting map layers.
-  // A stable topological order changes only the authored order that blocks a
-  // crossing; choosing one insertion slot cannot satisfy both nearby props.
+  // Authored scenery is one immutable painter sequence. In particular, pieces
+  // of a continuous cliff cannot cross its trees when an actor walks nearby.
+  ordered.forEach(function(group){
+    if(group.actor){actors.push(group);initial.set(group,scenery.length);}
+    else{indices.set(group,scenery.length);scenery.push(group);if(low.has(group)||group.owner._depthGroundVisual)minimum=scenery.length;}
+  });
+  if(!actors.length)return;
   props=props.filter(function(prop){return !prop.low;});
   var spatial=scenerySpatialIndex(view,props,actors.length);
+  var placements=[];
+  actors.sort(function(a,b){return b.ground-a.ground||a.index-b.index;});
   actors.forEach(function(actor){
     var owner=actor.owner,component=owner===hero.node?hero:owner._combatActor;
-    var shape=component&&sceneryWorldShape(view,owner,main,bodyVisuals(component));
+    var shape=component&&sceneryWorldShape(view,owner,main,bodyVisuals(component)),behind=[],lower=minimum,upper=scenery.length;
     if(shape){var visit=function(prop){
       if(!overlaps(shape,prop.box))return;
-      if(actor.ground>prop.group.ground)before(actor,prop.group);
-      else before(prop.group,actor);
+      var index=indices.get(prop.group);
+      if(actor.ground>prop.group.ground)behind.push(index);else lower=Math.max(lower,index+1);
     },candidates=spatial&&scenerySpatialCandidates(spatial,shape);
     if(candidates)for(var i=0;i<candidates.length;i++)visit(props[candidates[i]]);
     else props.forEach(visit);
     }
+    // A front/equal-ground actor must remain above every contacted prop. A
+    // contradictory behind request cannot reverse the authored scenery or
+    // hide that front actor. Compatible behind contacts retain exact depth.
+    behind.forEach(function(index){if(index>=lower)upper=Math.min(upper,index);});
+    var slot=Math.max(lower,Math.min(upper,initial.get(actor)));
+    placements.push({group:actor,slot:slot});minimum=slot;
   });
-  actors.sort(function(a,b){return b.ground-a.ground||a.index-b.index;});
-  for(var a=1;a<actors.length;a++)before(actors[a-1],actors[a]);
-  var ready=[],result=floors.slice();
-  function push(entry){var index=ready.length;ready.push(entry);while(index){var parent=(index-1)>>1;if(ready[parent].index<=entry.index)break;ready[index]=ready[parent];index=parent;}ready[index]=entry;}
-  entries.forEach(function(entry){if(!entry.incoming)push(entry);});
-  while(ready.length){
-    var entry=ready[0],last=ready.pop();
-    if(ready.length){var index=0;while(index*2+1<ready.length){var child=index*2+1;if(child+1<ready.length&&ready[child+1].index<ready[child].index)child++;if(last.index<=ready[child].index)break;ready[index]=ready[child];index=child;}ready[index]=last;}
-    result.push(entry.group);entry.after.forEach(function(next){if(!--next.incoming)push(next);});
-  }
+  var result=[],next=0;
+  for(var index=0;index<=scenery.length;index++){while(next<placements.length&&placements[next].slot===index)result.push(placements[next++].group);if(index<scenery.length)result.push(scenery[index]);}
   ordered.splice.apply(ordered,[0,ordered.length].concat(result));
 }
 DepthView.prototype.sort = function () {
-  var hero = this.game.ctrPlay.node, main = this.main, groups = new Map(), maximum = 1;
+  var heroActor=this.game.ctrPlay,hero=heroActor.node,main=this.main,groups=new Map(),maximum=1;
   main.children.forEach(function (node, index) {
     if (node._occlusionMask) return;
     var groundVisual = !!node._depthGroundVisual, owner = groundVisual ? node : node._depthBuildingOwner || node, group = groups.get(owner);
     if (!group) {
-      var building = !groundVisual && !!node._depthBuilding, ground = owner._depthGround ? point(owner._depthGround, main).y : owner.y;
+      var building=!groundVisual&&!!node._depthBuilding,actor=node._combatActor||(node===hero?heroActor:null);
+      var ground=actor?actorGroundY(actor,main,heroActor,null,owner):owner._depthGround?point(owner._depthGround,main).y:owner.y;
       group = { owner:owner, ground:ground, actor:node._combatActor || node === hero ? 1 : 0, index:index, building:building, priority:node._depthMapForeground?1:0, nodes:[] };
       group.band = groundVisual ? -1 : building ? node._depthBuildingOrder : node._depthLayerOrder;
       if (!building && !Number.isFinite(group.band) && (node._depthScenery || node._depthMapObject)) group.band = node._depthMapForeground ? 3 : 1;
@@ -1756,6 +1757,7 @@ DepthView.prototype.update = function () {
   }
   var actors = [{ actor: game.ctrPlay, tint: ALLY }].concat(game.gameData.getSoldierList().map(function (actor) { return { actor: actor, tint: ALLY }; }), game.gameData.getEnemyList().map(function (actor) { return { actor: actor, tint: ENEMY }; }));
   var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
+  active.forEach(function(entry){entry.groundY=actorGroundY(entry.actor,self.main,game.ctrPlay,cache);});
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));
   this.objects.forEach(function (object) {
     refreshBuildingSources(object);
@@ -1774,20 +1776,29 @@ DepthView.prototype.update = function () {
     }
     var ground=point(object.node._depthGround||object.node,self.main).y;
     var hidden=[];
-    if(!modular&&box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
+    var scenery=!object.buildings&&!modular;
+    for(var owner=object.node;scenery&&owner&&owner!==self.main;owner=owner.parent)if(owner._depthBuilding||owner._depthBuildingOwner)scenery=false;
+    var shapeSupported=object.node.convertToNodeSpaceAR&&self.main.convertToNodeSpaceAR;
+    var sceneryBox=scenery&&shapeSupported&&sceneryWorldShape(self,object.node,self.main,object.sources);
+    var sceneryBounds=sceneryBox||box;
+    var smallScenery=scenery&&sceneryBounds&&sceneryBounds.maxY-sceneryBounds.minY<=SMALL_SCENERY_HEIGHT;
+    if(!modular&&!object.node._depthGroundVisual&&!smallScenery&&box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
+      // Ground is unconditional: stale/custom layer order cannot tint a unit
+      // standing in front of, or exactly level with, an object's ground point.
+      if(!(entry.groundY>ground))return;
       // Priority layers can put the full actor above an object even when its
       // ground point is behind it. Such actors need no hidden-unit capture.
       if(Number.isFinite(entry.actor.node.zIndex)&&Number.isFinite(object.node.zIndex)){
         if(entry.actor.node.zIndex>=object.node.zIndex)return;
-      }else if(entry.actor.node.y<=ground)return;
+      }
       if(!entry.sources){entry.sources=bodyVisuals(entry.actor);entry.bounds=entry.sources.reduce(function(value,source){return union(value,bounds(source,self.main,cache));},null);}
       if(overlaps(entry.bounds,box)&&(!visible||overlaps(entry.bounds,visible)))hidden.push(entry);
     });
     var hiddenActors=new Set(hidden.map(function(entry){return entry.actor;}));
     object.masks.forEach(function (mask, actor) {
-      // Avoid disabling/re-enabling every visible skeleton and its scheduler
-      // each draw. Only a visibility transition changes component lifecycle.
-      mask.node.active = hiddenActors.has(actor);
+      mask.node.active=hiddenActors.has(actor);
+      // Visibility transitions stop tint immediately without cycling a
+      // continuously visible renderer or discarding a reusable capture.
       if (!cc.isValid(actor.node) || !activeActors.has(actor)) { releaseOverlay(mask); object.masks.delete(actor); }
     });
     if (object.overlay) object.overlay.node.active = !!hidden.length;

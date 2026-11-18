@@ -1,7 +1,7 @@
 "use strict";
 // One field contract for runtime, authoring and preview. Reading defaults never
 // creates saved overrides or changes an existing skill document.
-var Core = require("./HeroStyleSkills"), VFXCatalog = require("./HeroSkillVFXCatalog");
+var Core = require("./HeroStyleSkills"), VFXCatalog = require("./HeroSkillVFXCatalog"), Descriptions = require("./HeroSkillDescriptions");
 var EFFECT_SLOTS=["passive","beam","mark","buff","taunt","shield","cast","castSecondary","channelHit","presence","defense","physicalShield"];
 var RESOURCE_PREFIXES=["resource","impactResource"].concat(EFFECT_SLOTS.map(function(slot){return slot+"Resource";}));
 var styles = [
@@ -198,7 +198,7 @@ function fields(style){
     if(field.key==="effectDuration")return style!=="skirmisher";
     return true;
   });
-  var tuning=tuningFields(style);
+  var tuning=Descriptions.fields(style).concat(tuningFields(style));
   if(style==='skirmisher'){
     visual=visual.filter(function(field){return ['offsetX','offsetY','rotation','arcDegrees','arcStartWidth','resource','resourceAnimation','resourcePlaybackRate','showBuiltin','animation','color','opacity','effectDuration'].indexOf(field.key)>=0||field.key.indexOf('impact')===0||field.key.indexOf('cast')===0;});
     visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':/^offset|^rotation$|^arcDegrees$/.test(field.key)?'Volley hit arc':'Volley artwork';if(field.key==='offsetX'||field.key==='offsetY'){field.label='Hit arc offset '+field.key.slice(-1);field.help='Moves the single gold damage arc relative to its captured bow origin. Positive Y moves upward. The three-arrow artwork has separate Cast offset controls.';}if(field.key==='rotation'){field.label='Hit arc rotation';field.help='Rotates the one damage arc relative to the captured aim. The three-arrow artwork has a separate Cast rotation control.';}if(field.key==='arcDegrees'){field.label='Hit arc angle';field.min=1;field.max=360;field.step=1;field.unit='degrees';field.help='Total angle of the single damaging volley arc. Every eligible enemy inside its gold boundary is hit once. Does not change the three-arrow artwork.';}});
@@ -214,6 +214,7 @@ function fields(style){
 function descriptors(style){var f=fields(style);return f.tuning.concat(f.visual,f.audio);}
 function get(object,path){return path.split(".").reduce(function(value,key){return value&&typeof value==="object"?value[key]:undefined;},object);}
 function valid(descriptor,value){
+  if(descriptor.type==="description")return !Descriptions.error(descriptor.style,value);
   if(descriptor.type==="boolean")return typeof value==="boolean";
   if(descriptor.type==="number")return typeof value==="number"&&isFinite(value)&&value>=descriptor.min&&value<=descriptor.max&&(!descriptor.integer||Math.floor(value)===value);
   if(typeof value!=="string")return false;
@@ -226,7 +227,7 @@ function playbackRate(value){return typeof value==="number"&&isFinite(value)&&va
 function animationPlaybackRate(style,visual){return style==="skirmisher"?1:playbackRate(visual&&visual.animationPlayback);}
 function defaults(style){
   style=known(style)?style:"skirmisher";
-  var result=Object.assign({},Core.DEFAULTS.common,Core.DEFAULTS[style],{visual:clone(VISUAL),audio:{cast:clone(AUDIO),impact:clone(AUDIO),channel:clone(AUDIO)}}),v=result.visual;
+  var result=Object.assign({},Core.DEFAULTS.common,Core.DEFAULTS[style],{descriptions:Descriptions.defaults(style),visual:clone(VISUAL),audio:{cast:clone(AUDIO),impact:clone(AUDIO),channel:clone(AUDIO)}}),v=result.visual;
   if(style==="mystic")result.audio.explosion=clone(AUDIO);
   var preset=VFXCatalog.presets[style]||{};Object.keys(preset).forEach(function(slot){var clip=VFXCatalog.clips.filter(function(row){return row.id===preset[slot];})[0];if(clip)applyClip(v,slot+"Resource",clip);});
   if(style==="fighter")Object.assign(v,{passiveScale:1.6,passiveOffsetY:0,passiveMinScale:.25,passiveMinPlayback:1,passivePlayback:1,passiveColor:"#fff0d0",buffScale:1.65,buffColor:"#fff0d0",castScale:1,castColor:""});
@@ -322,7 +323,7 @@ function effective(style,config){
 function validateStyle(style,value){
   if(!known(style))throw Error("Choose one of the six hero fighting styles.");
   if(!value||typeof value!=="object"||Array.isArray(value))throw Error("A skill override must be an object.");
-  ["visual","audio"].forEach(function(group){if(value[group]!==undefined&&(!value[group]||typeof value[group]!=="object"||Array.isArray(value[group])))throw Error("Invalid "+group+" skill settings.");});
+  ["visual","audio","descriptions"].forEach(function(group){if(value[group]!==undefined&&(!value[group]||typeof value[group]!=="object"||Array.isArray(value[group])))throw Error("Invalid "+group+" skill settings.");});
   AUDIO_PHASES.forEach(function(phase){var audio=value.audio&&value.audio[phase];if(audio!==undefined&&(!audio||typeof audio!=="object"||Array.isArray(audio)))throw Error("Invalid "+phase+" sound settings.");});
   descriptors(style).forEach(function(field){var current=get(value,field.path);if(current!==undefined&&!valid(field,current))throw Error(field.label+": choose a valid "+(field.type==="number"?"value between "+field.min+" and "+field.max:field.type)+".");});
   return true;

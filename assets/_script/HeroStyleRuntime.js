@@ -11,7 +11,11 @@ var Pose = require('./HeroSkillPose');
 var MAX_PROJECTILES = 64;
 var MAX_EFFECTS = 128;
 function point(actor) { return actor.node.getPosition(); }
-function valid(value) { return !!value && (typeof cc === "undefined" || !cc.isValid || cc.isValid(value, true)); }
+function valid(value) {
+  if(!value)return false;if(typeof cc==="undefined")return true;
+  var flags=cc.Object&&cc.Object.Flags;
+  return (!cc.isValid||cc.isValid(value,true))&&!(flags&&flags.Destroying&&(value._objFlags&flags.Destroying));
+}
 function living(actor) { return valid(actor) && valid(actor.node) && !actor._isPooled && actor.node.activeInHierarchy !== false && actor.hp > 0 && (!actor.isDead || !actor.isDead()); }
 function distance(a,b) { return Math.hypot(a.x-b.x,a.y-b.y); }
 function distanceSquared(a,b) { var x=a.x-b.x,y=a.y-b.y;return x*x+y*y; }
@@ -381,10 +385,10 @@ Runtime.prototype.update=function(dt){
   var sounds=require("BattleSounds");if(sounds.charge)sounds.charge(h,this.bowCharging);
   if(h.refreshAttackRange)h.refreshAttackRange();
 };
-Runtime.prototype.clear=function(reset){
+Runtime.prototype.clear=function(reset,disposing){
   this.knockbacks.forEach(function(record){if(record.enemy._heroKnockback===record)delete record.enemy._heroKnockback;});this.knockbacks=[];
   this.markNode=this.beamNode=this.beamVisibleNode=null;
-  this.moving=false;if(valid(this.hero)&&valid(this.hero.node))this.lastPosition=point(this.hero);
+  this.moving=false;if(!disposing&&valid(this.hero)&&valid(this.hero.node))this.lastPosition=point(this.hero);
   this.bowCharging=false;var sounds=require("BattleSounds");if(this.hero._styleRuntime===this){this.hero._styleShot=1;delete this.hero._styleShotCharge;delete this.hero._styleProjectileSpeed;delete this.hero._styleShotRange;if(sounds.charge)sounds.charge(this.hero,false);}
   Presentation.clear(this);this.skillCast=null;this.castOrigin=this.castDirection=null;this.scope=null;this.aiming=false;this.pendingArrowAim=null;this.aimPoint=null;this.aimTarget=this.aimTargetNode=null;this.channelTarget=null;this.beamTarget=null;this.beamVisibleSince=undefined;this.beamVisibleGeneration=undefined;this.beamWarmup=0;this.beamElapsed=0;this.beamSourceTime=0;this.beamAnimation=undefined;this.beamFrame=null;this.projectiles=[];this.effects=[];this.beamClock=0;
   this.taunted.forEach(function(record){if(record.enemy._heroTaunt===record.taunt)delete record.enemy._heroTaunt;});this.taunted=[];
@@ -393,7 +397,9 @@ Runtime.prototype.clear=function(reset){
   // A retained callback belonging to an obsolete runtime must not clear the
   // replacement runtime's rider pose or HUD after a loadout/scene change.
   if(this.hero._styleRuntime===this){
-    if(this.hero.refreshAttackRange)this.hero.refreshAttackRange();
+    // Node children may already be released when the component is destroyed.
+    // Retire owned state and presentation without redrawing their native ring.
+    if(!disposing&&this.hero.refreshAttackRange)this.hero.refreshAttackRange();
     require("HeroMakerRider").clearCombatState(this.hero.ctrPlayAni);
     if(!this.hero._skillHUD || this.hero._skillHUD.runtime===this)require("HeroSkillHUD").clear(this.hero);
   }
@@ -433,7 +439,7 @@ function install(hero,config){
   wrap(hero,"setLeft",function(base,args){var result=base.apply(this,args),active=this._styleRuntime.state.active;if(active&&this.ctrPlayAni.setBodyLeft)this.ctrPlayAni.setBodyLeft(active.direction.x);return result;});
   [["getAttack","damage"],["getAttSpeed","attackRate"],["getSpeed","move"]].forEach(function(pair){wrap(hero,pair[0],function(base,args){return base.apply(this,args)*(1+(this._styleRuntime.bonus()[pair[1]]||0))*(pair[0]==="getAttack"?(this._styleShot||1):1);});});
   wrap(hero,"addBuff",function(base,args){var data=args[1],bonus=this._styleRuntime.bonus(),types=require("KinghtFallInterface").KinghtFallEnemyBuffType,slow=data&&args[0]===types.MoveSpeed&&data.subNum>0;if(data&&data.time>0&&(slow||data.stun))args[1]=Object.assign({},data,{time:data.time*(1-(bonus.tenacity||0))});return base.apply(this,args);});
-  ["onRestart","endRoundGame","onDead","onDestroy"].forEach(function(key){wrap(hero,key,function(base,args){this._styleRuntime.clear(true);return base.apply(this,args);});});
+  ["onRestart","endRoundGame","onDead","onDestroy"].forEach(function(key){wrap(hero,key,function(base,args){this._styleRuntime.clear(true,key==="onDestroy");return base.apply(this,args);});});
 }
 exports.install=install;exports.Runtime=Runtime;exports.withinArc=withinArc;exports.segmentDistance=segmentDistance;exports.segmentEntry=segmentEntry;
 exports.limits={projectiles:MAX_PROJECTILES,effects:MAX_EFFECTS};

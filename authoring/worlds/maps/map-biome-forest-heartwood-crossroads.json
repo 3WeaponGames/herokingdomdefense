@@ -1,0 +1,6306 @@
+{
+  "version": 1,
+  "id": "map-biome-forest-heartwood-crossroads",
+  "name": "Forest - Heartwood Crossroads",
+  "biome": "forest",
+  "size": {
+    "width": 1860,
+    "height": 3028
+  },
+  "playable": {
+    "width": 1500,
+    "height": 2668
+  },
+  "ground": {
+    "foundation": {
+      "baseAsset": "env-53ec88f52bc969f4f9e77b078e5aabdd",
+      "nativeSize": true,
+      "strokes": []
+    },
+    "roads": {
+      "strokes": [
+        {
+          "key": "diamond",
+          "name": "Central diamond",
+          "mode": "road",
+          "assetId": "env-1244086878ea0e945bd879b5c5134bab",
+          "edgeAssetId": "env-40df0aef196c6474ba5dbb94cdc63cd1",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": 0,
+              "y": 650
+            },
+            {
+              "x": 320,
+              "y": 80
+            },
+            {
+              "x": 0,
+              "y": -550
+            },
+            {
+              "x": -320,
+              "y": 80
+            },
+            {
+              "x": 0,
+              "y": 650
+            }
+          ]
+        },
+        {
+          "key": "north-entry",
+          "name": "Northern approach",
+          "mode": "road",
+          "assetId": "env-1244086878ea0e945bd879b5c5134bab",
+          "edgeAssetId": "env-40df0aef196c6474ba5dbb94cdc63cd1",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": 0,
+              "y": 1514
+            },
+            {
+              "x": 190,
+              "y": 1200
+            },
+            {
+              "x": 0,
+              "y": 650
+            }
+          ]
+        },
+        {
+          "key": "east-entry",
+          "name": "Eastern land bay",
+          "mode": "road",
+          "assetId": "env-1244086878ea0e945bd879b5c5134bab",
+          "edgeAssetId": "env-40df0aef196c6474ba5dbb94cdc63cd1",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": 930,
+              "y": 0
+            },
+            {
+              "x": 650,
+              "y": 0
+            },
+            {
+              "x": 320,
+              "y": 80
+            }
+          ]
+        },
+        {
+          "key": "south-entry",
+          "name": "Southern approach",
+          "mode": "road",
+          "assetId": "env-1244086878ea0e945bd879b5c5134bab",
+          "edgeAssetId": "env-40df0aef196c6474ba5dbb94cdc63cd1",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": 0,
+              "y": -1514
+            },
+            {
+              "x": 0,
+              "y": -1120
+            },
+            {
+              "x": 0,
+              "y": -550
+            }
+          ]
+        },
+        {
+          "key": "west-entry",
+          "name": "Lower western land bay",
+          "mode": "road",
+          "assetId": "env-1244086878ea0e945bd879b5c5134bab",
+          "edgeAssetId": "env-40df0aef196c6474ba5dbb94cdc63cd1",
+          "nativeSize": true,
+          "size": 110,
+          "edgeScale": 1,
+          "edgeStyle": "textured",
+          "edgeSmoothing": 0.6,
+          "edgeWidthMode": "fixed",
+          "opacity": 1,
+          "op": "paint",
+          "points": [
+            {
+              "x": -930,
+              "y": -700
+            },
+            {
+              "x": -350,
+              "y": -700
+            },
+            {
+              "x": -320,
+              "y": 80
+            }
+          ]
+        }
+      ]
+    },
+    "grass": {
+      "strokes": []
+    }
+  },
+  "layers": [
+    {
+      "id": "layer-3",
+      "name": "Side terrain - forest",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-165",
+          "name": "Long western forest rock wall",
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "globalShadow": false,
+          "assetId": "terrain-biome-forest-heartwood-crossroads-west-long-wall",
+          "x": -770,
+          "y": -500,
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "object-166",
+          "name": "Long lower eastern forest river",
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "globalShadow": false,
+          "assetId": "terrain-biome-forest-heartwood-crossroads-east-long-river",
+          "x": 770,
+          "y": -1400,
+          "ground": {
+            "x": 0,
+            "y": 1250
+          }
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "terrain-objects",
+      "name": "Terrain objects - Forest",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-1",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-northwest-fan",
+          "name": "Northwest fan bluff",
+          "x": -590,
+          "y": 600,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-2",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-east-pond",
+          "name": "Eastern kidney pond",
+          "x": 625,
+          "y": 150,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 640
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-3",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-southwest-shelf",
+          "name": "Southwest low shelf",
+          "x": -700,
+          "y": -1400,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        },
+        {
+          "id": "object-4",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-southeast-twins",
+          "name": "Upper eastern paired crag",
+          "x": 680,
+          "y": 740,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
+    {
+      "id": "grass-detail",
+      "name": "Grass detail",
+      "depth": "ground",
+      "pinned": true,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-127",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -860,
+          "y": 100,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-long-wall",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-128",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 344.517,
+          "y": 512.728,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-129",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 752.411,
+          "y": 1049.854,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-130",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 630.982,
+          "y": 145.766,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-131",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -822.396,
+          "y": -610.953,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-132",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -337.116,
+          "y": -1064.923,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-133",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 477.769,
+          "y": -1186.241,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-134",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -303.972,
+          "y": -1023.776,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-135",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 832.223,
+          "y": 211.647,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-136",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 299.79,
+          "y": 457.708,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-137",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 506.982,
+          "y": 155.075,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-138",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -800,
+          "y": -1150,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-139",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -248.234,
+          "y": 1098.348,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-140",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -718.839,
+          "y": -559.306,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-141",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -385.993,
+          "y": -1332.165,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-142",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 533.929,
+          "y": -1216.251,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-143",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 334.016,
+          "y": -1063.217,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-144",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -695.538,
+          "y": -1182.536,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-145",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 305.105,
+          "y": 485.145,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-146",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -856.605,
+          "y": 571.487,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-long-wall",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-147",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -625,
+          "y": 1015,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-fan-native-detail-1",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-148",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -602,
+          "y": 1038,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-fan-native-detail-2",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-149",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -550,
+          "y": 1020,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-fan-native-detail-3",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-150",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -552,
+          "y": 1036,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-fan-native-detail-4",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-151",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -615,
+          "y": 1055,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-fan-native-detail-5",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-152",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -572,
+          "y": 1058,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0,
+          "artistKey": "northwest-fan-native-detail-6",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-153",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -780,
+          "y": -1040,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0,
+          "artistKey": "southwest-shelf-native-detail-1",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-154",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -757,
+          "y": -1017,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0,
+          "artistKey": "southwest-shelf-native-detail-2",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-155",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -729,
+          "y": -1035,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0,
+          "artistKey": "southwest-shelf-native-detail-3",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-156",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": -707,
+          "y": -1019,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0,
+          "artistKey": "southwest-shelf-native-detail-4",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-157",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": -770,
+          "y": -1000,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0,
+          "artistKey": "southwest-shelf-native-detail-5",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-158",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": -709,
+          "y": -997,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0,
+          "artistKey": "southwest-shelf-native-detail-6",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-159",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 659.594,
+          "y": 1027.603,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-twins-native-detail-1",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-160",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 691.741,
+          "y": 1052.691,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-twins-native-detail-2",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-161",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 728,
+          "y": 1030,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-twins-native-detail-3",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-162",
+          "assetId": "env-b8252091ca292ad47950c1b627617140",
+          "name": "Forest Flower 1",
+          "x": 738,
+          "y": 1046,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-twins-native-detail-4",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-163",
+          "assetId": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+          "name": "Forest Flower 2",
+          "x": 675,
+          "y": 1065,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-twins-native-detail-5",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        },
+        {
+          "id": "object-164",
+          "assetId": "env-bf46a6b1904b8c44ea6a143d701b6429",
+          "name": "Forest Grass",
+          "x": 718,
+          "y": 1068,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0,
+          "artistKey": "southeast-twins-native-detail-6",
+          "notes": "Native Environment ground detail; scale1/nativeSize true."
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "native-props",
+      "name": "Native Environment props",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-5",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": 635.05,
+          "y": 89.847,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-6",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": 695.179,
+          "y": 1079.708,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-7",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": -690,
+          "y": 1060,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-8",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 2.769,
+          "y": 1254.873,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-9",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": 738.929,
+          "y": -1449.743,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-10",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -209.189,
+          "y": 683.111,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-11",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": 319.704,
+          "y": 337.287,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-12",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -242.083,
+          "y": 1336.171,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-13",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": -180.158,
+          "y": 658.127,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-14",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": 476.792,
+          "y": -1247.787,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-15",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 834.821,
+          "y": 1000.292,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-16",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": -844.503,
+          "y": -1066.19,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-17",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": 312.179,
+          "y": -229.029,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-18",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": 287.179,
+          "y": 384.111,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-19",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": 472.782,
+          "y": -1404.406,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-20",
+          "assetId": "env-22d2cd90888d52b41b4ba0f99c981b52",
+          "name": "Tree Yellow Green 15",
+          "x": -670.06,
+          "y": -1123.475,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-21",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": 580.038,
+          "y": -1396.935,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-22",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": 345.852,
+          "y": 962.727,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-23",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": -507.093,
+          "y": 137.909,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-24",
+          "assetId": "env-22d2cd90888d52b41b4ba0f99c981b52",
+          "name": "Tree Yellow Green 15",
+          "x": -484,
+          "y": 470,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-25",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -166.015,
+          "y": -991.57,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-26",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": -743.008,
+          "y": -1463.228,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-27",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": -125.036,
+          "y": -573.291,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-28",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": 662.246,
+          "y": -1432.538,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-29",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": -114.858,
+          "y": -991.502,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-30",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -550,
+          "y": 1110,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-31",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -457.879,
+          "y": 1085.518,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-32",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": -596.623,
+          "y": -969.587,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-33",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": 810,
+          "y": 1060,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-34",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -760,
+          "y": 1050,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-35",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": -773.592,
+          "y": 1004.885,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-36",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": 618.217,
+          "y": 1033.469,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-37",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": 874.861,
+          "y": 80.734,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-38",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": -800.474,
+          "y": -1462.789,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-39",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": 322.18,
+          "y": -1165.011,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-40",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": -695.538,
+          "y": -1182.536,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-41",
+          "assetId": "env-de2cfdc2807376b41867859e5d37d2a8",
+          "name": "Tree Yellow Green 9",
+          "x": 301.186,
+          "y": 322.937,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-42",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": -293.874,
+          "y": 1331.613,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-43",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": 778.377,
+          "y": 1130.413,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-44",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": 840.838,
+          "y": 1198.141,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-45",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": 663.874,
+          "y": 95.509,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-47",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": 488.137,
+          "y": -1214.029,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-48",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": 181.702,
+          "y": -556.838,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-49",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": -585.85,
+          "y": 856.205,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-50",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": -471.924,
+          "y": -138.28,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-51",
+          "assetId": "env-22d2cd90888d52b41b4ba0f99c981b52",
+          "name": "Tree Yellow Green 15",
+          "x": -186.683,
+          "y": 616.735,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-52",
+          "assetId": "env-22d2cd90888d52b41b4ba0f99c981b52",
+          "name": "Tree Yellow Green 15",
+          "x": 640.24,
+          "y": 90.832,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-53",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 184.958,
+          "y": 739.255,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-54",
+          "assetId": "env-0faf34e166b358440b5eb1edd95637a1",
+          "name": "Tree Yellow Green 4",
+          "x": 611.383,
+          "y": 1201.171,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-55",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": 184.962,
+          "y": -1239.531,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-56",
+          "assetId": "env-d0c46dd800b190d479f8be63d807a3db",
+          "name": "Tree Yellow Green 14",
+          "x": -157.842,
+          "y": -1003.39,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-57",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -650,
+          "y": 1000,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-58",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": 407.424,
+          "y": -1415.035,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-60",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": -600,
+          "y": 1150,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-61",
+          "assetId": "env-b7ef965477a2177408801ed804681da9",
+          "name": "Tree Yellow Green 10",
+          "x": 432.126,
+          "y": 1163.811,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-62",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -230.608,
+          "y": 594.885,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-63",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": -855.438,
+          "y": -481.611,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-64",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -731.143,
+          "y": -991.767,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-65",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": 794.152,
+          "y": 132.873,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-66",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -847,
+          "y": -1020,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-67",
+          "assetId": "env-2cc2b12fc7e21754881091121d700363",
+          "name": "Small Tree Yellow Green 2",
+          "x": 679.44,
+          "y": 1036.193,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-68",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": -11.784,
+          "y": 1146.544,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-69",
+          "assetId": "env-551ed639f73b99043bd413629d8c115c",
+          "name": "Tree Yellow Green 7",
+          "x": -175.9,
+          "y": -996.954,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-70",
+          "assetId": "env-0903943501ab5ae4f8a8199bf1e46795",
+          "name": "Tree Yellow Green 12",
+          "x": -240.638,
+          "y": 619.191,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-71",
+          "assetId": "env-48a68e0cd85228b4ead7216331d45616",
+          "name": "Tree Yellow Green 13",
+          "x": -695.538,
+          "y": -1182.536,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-72",
+          "assetId": "env-536cf72b942d0cb4d9a004687f536002",
+          "name": "Tree Yellow Green 8",
+          "x": 856.738,
+          "y": 1196.097,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-73",
+          "assetId": "env-e3c9a893ae0fa5744aee7a257adbf804",
+          "name": "Small Tree Yellow Green 3",
+          "x": -143.53,
+          "y": 1309.434,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-74",
+          "assetId": "env-e18f44543b34ff845b1e9aa3d7136d60",
+          "name": "Small Tree Yellow Green 1",
+          "x": -884.042,
+          "y": 60.238,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-long-wall",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-75",
+          "assetId": "env-037a77b18a79f8f4692ed6b22be4eef5",
+          "name": "Stone Gray1 8",
+          "x": 313.828,
+          "y": 999.308,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-76",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": -695.538,
+          "y": -1182.536,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-77",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -480,
+          "y": 1020,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-78",
+          "assetId": "env-037a77b18a79f8f4692ed6b22be4eef5",
+          "name": "Stone Gray1 8",
+          "x": 312.129,
+          "y": 483.117,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-79",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -871.623,
+          "y": 60.413,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-long-wall",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-80",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": -239.608,
+          "y": 672.532,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-81",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": 523.199,
+          "y": -739.376,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-82",
+          "assetId": "env-8d970c734609a404e8cdcb4101d53e3b",
+          "name": "Stone Gray1 3",
+          "x": 490.38,
+          "y": 142.197,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-83",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 249.94,
+          "y": 437.821,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-84",
+          "assetId": "env-037a77b18a79f8f4692ed6b22be4eef5",
+          "name": "Stone Gray1 8",
+          "x": 743.045,
+          "y": 145.069,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-85",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 483.639,
+          "y": -1217.387,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-86",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": 760,
+          "y": 1030,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-87",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": -881.559,
+          "y": 159.977,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-long-wall",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-88",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": -861.277,
+          "y": 1306.757,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-89",
+          "assetId": "env-037a77b18a79f8f4692ed6b22be4eef5",
+          "name": "Stone Gray1 8",
+          "x": 513.59,
+          "y": -1282.519,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-90",
+          "assetId": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+          "name": "Stone Gray1 1",
+          "x": -228.372,
+          "y": 709.689,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-91",
+          "assetId": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+          "name": "Stone Gray1 4",
+          "x": -352.34,
+          "y": -1177.248,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-92",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 804.235,
+          "y": -1419.954,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-93",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": 241.106,
+          "y": 501.211,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-94",
+          "assetId": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+          "name": "Stone Gray1 4",
+          "x": 646.748,
+          "y": -1416.592,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-95",
+          "assetId": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+          "name": "Stone Gray1 4",
+          "x": -351.074,
+          "y": -1169.814,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-96",
+          "assetId": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+          "name": "Stone Gray1 7",
+          "x": 488.011,
+          "y": -1227.52,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-97",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -750,
+          "y": -1120,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-98",
+          "assetId": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+          "name": "Stone Gray1 5",
+          "x": -655,
+          "y": -1020,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-99",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": -695.538,
+          "y": -1182.536,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-100",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -796.449,
+          "y": -496.053,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-101",
+          "assetId": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+          "name": "Stone Gray1 11",
+          "x": 889.498,
+          "y": 464.157,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-102",
+          "assetId": "env-555991fdbf802c24ca9da61ba35c2578",
+          "name": "Stone Gray1 6",
+          "x": -338.807,
+          "y": -1101.294,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-103",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": 496.054,
+          "y": -1285.736,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-104",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 769.657,
+          "y": -1421.649,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-105",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 252.65,
+          "y": 1297.747,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-106",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": 567.82,
+          "y": 125.163,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-107",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": 309.811,
+          "y": -1084.842,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-108",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": 310.134,
+          "y": 402.499,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-109",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -896.605,
+          "y": 361.487,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-long-wall",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-110",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": -575,
+          "y": 1020,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "northwest-fan",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-111",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": 318.36,
+          "y": 824.016,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-112",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -560.235,
+          "y": 563.798,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-113",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": -815.341,
+          "y": -326.602,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "west-long-wall",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-114",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": 276.485,
+          "y": 908.255,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-115",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": 372.691,
+          "y": -1154.394,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-116",
+          "assetId": "env-b746d522c58db074d9651c963b527e00",
+          "name": "Bush Yellow Green 5",
+          "x": 683.542,
+          "y": 953.539,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-118",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 861.513,
+          "y": 235.144,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-119",
+          "assetId": "env-ce635900400bcc24fad3e3daad0ca6a6",
+          "name": "Bush Yellow Green 1",
+          "x": -884.815,
+          "y": -441.518,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-120",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": -319.052,
+          "y": 1190.29,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-121",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": 707.308,
+          "y": 155.193,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-122",
+          "assetId": "env-b68a7a04805d4634ba98ceeb1ec41700",
+          "name": "Bush Yellow Green 3",
+          "x": 703,
+          "y": 1030,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southeast-twins",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-124",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -888.682,
+          "y": -943.038,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        },
+        {
+          "id": "object-125",
+          "assetId": "env-d691023725bfcc948b013d515f8c1f14",
+          "name": "Bush Yellow Green 4",
+          "x": -805,
+          "y": -1040,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false,
+          "surfaceTerrain": "southwest-shelf",
+          "surfaceRegion": 0
+        },
+        {
+          "id": "object-126",
+          "assetId": "env-b73fe61f539dfb940ba082283be9aa07",
+          "name": "Bush Yellow Green 2",
+          "x": 772.398,
+          "y": 157.906,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true,
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    }
+  ],
+  "nextObject": 167,
+  "nextLayer": 4,
+  "blockerMask": [
+    [
+      [
+        [
+          -1003.3422807096478,
+          -1229.8184660447682
+        ],
+        [
+          -1001.2485701774119,
+          -1252.034616511192
+        ],
+        [
+          -996.476,
+          -1274.16
+        ],
+        [
+          -970.5,
+          -1368
+        ],
+        [
+          -976.1875,
+          -1368.8125
+        ],
+        [
+          -980.25,
+          -1371.25
+        ],
+        [
+          -982.6875,
+          -1375.3125
+        ],
+        [
+          -983.5,
+          -1381
+        ],
+        [
+          -983.5,
+          -1383
+        ],
+        [
+          -982.6875,
+          -1388.6875
+        ],
+        [
+          -980.25,
+          -1392.75
+        ],
+        [
+          -976.1875,
+          -1395.1875
+        ],
+        [
+          -970.5,
+          -1396
+        ],
+        [
+          -827.3675000000001,
+          -1398
+        ],
+        [
+          -700,
+          -1400
+        ],
+        [
+          -572.6324999999999,
+          -1398
+        ],
+        [
+          -429.5,
+          -1396
+        ],
+        [
+          -423.8125,
+          -1395.1875
+        ],
+        [
+          -419.75,
+          -1392.75
+        ],
+        [
+          -417.3125,
+          -1388.6875
+        ],
+        [
+          -416.5,
+          -1383
+        ],
+        [
+          -416.5,
+          -1381
+        ],
+        [
+          -417.3125,
+          -1375.3125
+        ],
+        [
+          -419.75,
+          -1371.25
+        ],
+        [
+          -423.8125,
+          -1368.8125
+        ],
+        [
+          -429.5,
+          -1368
+        ],
+        [
+          -403.524,
+          -1270.76
+        ],
+        [
+          -398.5554050715617,
+          -1247.8041274224393
+        ],
+        [
+          -395.8736202862468,
+          -1224.696509689757
+        ],
+        [
+          -395.4786456440553,
+          -1201.437146801953
+        ],
+        [
+          -397.3704811449872,
+          -1178.0260387590279
+        ],
+        [
+          -408.5537709257661,
+          -1091.4886773601434
+        ],
+        [
+          -411.20776071689454,
+          -1076.5188260275952
+        ],
+        [
+          -415.19661555316287,
+          -1062.3536107100228
+        ],
+        [
+          -420.52033543457117,
+          -1048.9930314074259
+        ],
+        [
+          -427.17892036111937,
+          -1036.4370881198047
+        ],
+        [
+          -435.1723703328075,
+          -1024.6857808471589
+        ],
+        [
+          -444.50068534963555,
+          -1013.7391095894886
+        ],
+        [
+          -455.1638654116035,
+          -1003.597074346794
+        ],
+        [
+          -467.1619105187114,
+          -994.2596751190748
+        ],
+        [
+          -535.9380894812886,
+          -945.7403248809252
+        ],
+        [
+          -548.7783581225249,
+          -937.4313601419592
+        ],
+        [
+          -561.9682087868779,
+          -930.3746283655241
+        ],
+        [
+          -575.5076414743477,
+          -924.5701295516197
+        ],
+        [
+          -589.3966561849343,
+          -920.0178637002462
+        ],
+        [
+          -603.6352529186377,
+          -916.7178308114034
+        ],
+        [
+          -618.223431675458,
+          -914.6700308850913
+        ],
+        [
+          -633.1611924553949,
+          -913.8744639213099
+        ],
+        [
+          -648.4485352584487,
+          -914.3311299200594
+        ],
+        [
+          -741.1391088966457,
+          -920.8220664493449
+        ],
+        [
+          -770.5167487543631,
+          -924.4499123777565
+        ],
+        [
+          -798.9887772241614,
+          -931.1555166123362
+        ],
+        [
+          -826.5551943060403,
+          -940.9388791530841
+        ],
+        [
+          -853.216,
+          -953.8
+        ],
+        [
+          -912.184,
+          -986.2
+        ],
+        [
+          -924.6567686808879,
+          -993.8654255417441
+        ],
+        [
+          -935.8670747235519,
+          -1002.4617021669766
+        ],
+        [
+          -945.8149181279919,
+          -1011.9888298756974
+        ],
+        [
+          -954.5002988942077,
+          -1022.4468086679066
+        ],
+        [
+          -961.9232170221997,
+          -1033.835638543604
+        ],
+        [
+          -968.0836725119675,
+          -1046.1553195027896
+        ],
+        [
+          -972.9816653635114,
+          -1059.4058515454637
+        ],
+        [
+          -976.6171955768311,
+          -1073.587234671626
+        ],
+        [
+          -999.4931228385913,
+          -1185.1138641790728
+        ],
+        [
+          -1002.7571315967075,
+          -1207.5115486007285
+        ],
+        [
+          -1003.3422807096478,
+          -1229.8184660447682
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          -981.8260925395849,
+          349.4407651884353
+        ],
+        [
+          -980.5550893422421,
+          317.8719404848847
+        ],
+        [
+          -976.7521200170511,
+          286.02349837555175
+        ],
+        [
+          -935.1283645555673,
+          -11.023498375551753
+        ],
+        [
+          -928.6328092174102,
+          -42.92571244438227
+        ],
+        [
+          -920.6025165504852,
+          -74.65585302642558
+        ],
+        [
+          -911.0374865547923,
+          -106.21392012168167
+        ],
+        [
+          -899.9377192303314,
+          -137.5999137301506
+        ],
+        [
+          -842.7796888423928,
+          -341.50937908590254
+        ],
+        [
+          -841.0410051719422,
+          -355.6556183626441
+        ],
+        [
+          -837.9694669669993,
+          -368.84902573582013
+        ],
+        [
+          -833.5650742275645,
+          -381.08960120543065
+        ],
+        [
+          -827.8278269536376,
+          -392.37734477147563
+        ],
+        [
+          -820.7577251452184,
+          -402.7122564339551
+        ],
+        [
+          -812.3547688023073,
+          -412.0943361928689
+        ],
+        [
+          -802.618957924904,
+          -420.52358404821723
+        ],
+        [
+          -791.5502925130086,
+          -428
+        ],
+        [
+          -719.415809509071,
+          -472.24591996085644
+        ],
+        [
+          -706.6023870851227,
+          -478.40957997798176
+        ],
+        [
+          -692.6099537671971,
+          -481.6464799902141
+        ],
+        [
+          -677.4385095552942,
+          -481.95661999755356
+        ],
+        [
+          -661.0880544494139,
+          -479.34000000000003
+        ],
+        [
+          -589.2580427466698,
+          -462
+        ],
+        [
+          -590.0130378798507,
+          -467.6875
+        ],
+        [
+          -588.6951772606942,
+          -471.75
+        ],
+        [
+          -585.3044608892002,
+          -474.1875
+        ],
+        [
+          -579.8408887653688,
+          -475
+        ],
+        [
+          -577.8408887653688,
+          -475
+        ],
+        [
+          -571.9294608892002,
+          -474.1875
+        ],
+        [
+          -567.1951772606942,
+          -471.75
+        ],
+        [
+          -563.6380378798507,
+          -467.6875
+        ],
+        [
+          -561.2580427466698,
+          -462
+        ],
+        [
+          -557.4618504444101,
+          -410.4794746838676
+        ],
+        [
+          -553.9791065712841,
+          -405.5132469248871
+        ],
+        [
+          -549.2253559781576,
+          -396.8881391411355
+        ],
+        [
+          -545.592965686663,
+          -387.95197718560075
+        ],
+        [
+          -543.1582461682887,
+          -378.75
+        ],
+        [
+          -540.2651183828128,
+          -350.9765625
+        ],
+        [
+          -538.300502583458,
+          -323.203125
+        ],
+        [
+          -537.2567647350112,
+          -295.4296875
+        ],
+        [
+          -537.1262708022593,
+          -267.65625
+        ],
+        [
+          -539.3604150470783,
+          -239.8828125
+        ],
+        [
+          -542.1822768900222,
+          -212.109375
+        ],
+        [
+          -549.3918715888876,
+          -156.5625
+        ],
+        [
+          -561.6921280610121,
+          -81.34150815739991
+        ],
+        [
+          -562.185018270207,
+          -74.705078125
+        ],
+        [
+          -568.8759410716282,
+          -5.671875
+        ],
+        [
+          -583.9600799238518,
+          125
+        ],
+        [
+          -597.7197505358333,
+          255.671875
+        ],
+        [
+          -603.0228953800457,
+          324.705078125
+        ],
+        [
+          -606.2642061150356,
+          396.375
+        ],
+        [
+          -606.6856523897752,
+          470.810546875
+        ],
+        [
+          -603.5292038532369,
+          548.140625
+        ],
+        [
+          -600.3723845460424,
+          587.931396484375
+        ],
+        [
+          -599.0669638430159,
+          600.1447009869617
+        ],
+        [
+          -590,
+          600
+        ],
+        [
+          -464.68,
+          602
+        ],
+        [
+          -324,
+          604
+        ],
+        [
+          -318.3125,
+          604.8125
+        ],
+        [
+          -314.25,
+          607.25
+        ],
+        [
+          -311.8125,
+          611.3125
+        ],
+        [
+          -311,
+          617
+        ],
+        [
+          -311,
+          619
+        ],
+        [
+          -311.8125,
+          624.6875
+        ],
+        [
+          -314.25,
+          628.75
+        ],
+        [
+          -318.3125,
+          631.1875
+        ],
+        [
+          -324,
+          632
+        ],
+        [
+          -298.296,
+          757.8
+        ],
+        [
+          -293.3893063876472,
+          787.4567372795603
+        ],
+        [
+          -290.76522555058887,
+          817.2269491182412
+        ],
+        [
+          -290.4237574888249,
+          847.1106355160429
+        ],
+        [
+          -292.3649022023554,
+          877.1077964729651
+        ],
+        [
+          -304.6742103390887,
+          997.1235508061147
+        ],
+        [
+          -306.88087006833956,
+          1012.2225710547981
+        ],
+        [
+          -310.33795442563655,
+          1026.6814072039056
+        ],
+        [
+          -315.04546341097966,
+          1040.500059253437
+        ],
+        [
+          -321.0033970243689,
+          1053.6785272033924
+        ],
+        [
+          -328.21175526580424,
+          1066.216811053772
+        ],
+        [
+          -336.67053813528565,
+          1078.1149108045756
+        ],
+        [
+          -346.37974563281324,
+          1089.3728264558033
+        ],
+        [
+          -357.33937775838695,
+          1099.990558007455
+        ],
+        [
+          -432.0606222416131,
+          1166.409441992545
+        ],
+        [
+          -443.8864146959471,
+          1175.9783318968175
+        ],
+        [
+          -456.19410317975576,
+          1184.0897226059083
+        ],
+        [
+          -468.9836876930389,
+          1190.7436141198164
+        ],
+        [
+          -482.25516823579665,
+          1195.9400064385427
+        ],
+        [
+          -496.008544808029,
+          1199.6788995620868
+        ],
+        [
+          -510.243817409736,
+          1201.9602934904487
+        ],
+        [
+          -524.9609860409175,
+          1202.7841882236285
+        ],
+        [
+          -540.1600507015736,
+          1202.150583761626
+        ],
+        [
+          -627.4399492984264,
+          1194.4494162383742
+        ],
+        [
+          -657.6459662229845,
+          1189.8596079661181
+        ],
+        [
+          -686.5039662950852,
+          1181.5395993877237
+        ],
+        [
+          -714.0139495147284,
+          1169.4893905031913
+        ],
+        [
+          -740.1759158819143,
+          1153.7089813125208
+        ],
+        [
+          -799.4240841180857,
+          1112.6910186874793
+        ],
+        [
+          -811.5272188924259,
+          1103.463522889856
+        ],
+        [
+          -822.3486652744898,
+          1093.4265448407264
+        ],
+        [
+          -831.8884232642771,
+          1082.58008454009
+        ],
+        [
+          -840.1464928617879,
+          1070.9241419879468
+        ],
+        [
+          -847.1228740670222,
+          1058.4587171842973
+        ],
+        [
+          -852.81756687998,
+          1045.183810129141
+        ],
+        [
+          -857.2305713006613,
+          1031.099420822478
+        ],
+        [
+          -860.3618873290661,
+          1016.2055492643084
+        ],
+        [
+          -884.4035898575116,
+          868.5208051610002
+        ],
+        [
+          -887.7585192948503,
+          839.6919529030627
+        ],
+        [
+          -888.4268974643779,
+          810.92620129025
+        ],
+        [
+          -886.4087243660945,
+          782.2235503225625
+        ],
+        [
+          -881.704,
+          753.5840000000001
+        ],
+        [
+          -865.7389396755339,
+          678.066730528716
+        ],
+        [
+          -873.859397521919,
+          670.711277423733
+        ],
+        [
+          -882.54453227606,
+          661.0842394901754
+        ],
+        [
+          -890.4160078799258,
+          650.4341037505164
+        ],
+        [
+          -897.4738243335167,
+          638.7608702047562
+        ],
+        [
+          -976.772200550725,
+          411.73956237818936
+        ],
+        [
+          -980.5651296090791,
+          380.72997248620345
+        ],
+        [
+          -981.8260925395849,
+          349.4407651884353
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          404,
+          461
+        ],
+        [
+          439,
+          213
+        ],
+        [
+          584,
+          194
+        ],
+        [
+          771,
+          239
+        ],
+        [
+          848,
+          396
+        ],
+        [
+          766,
+          533
+        ],
+        [
+          726,
+          669
+        ],
+        [
+          596.853324725464,
+          741.5860875630605
+        ],
+        [
+          680,
+          740
+        ],
+        [
+          784.845,
+          742
+        ],
+        [
+          901,
+          744
+        ],
+        [
+          906.6875,
+          744.8125
+        ],
+        [
+          910.75,
+          747.25
+        ],
+        [
+          913.1875,
+          751.3125
+        ],
+        [
+          914,
+          757
+        ],
+        [
+          914,
+          759
+        ],
+        [
+          913.1875,
+          764.6875
+        ],
+        [
+          910.75,
+          768.75
+        ],
+        [
+          906.6875,
+          771.1875
+        ],
+        [
+          901,
+          772
+        ],
+        [
+          923.9839999999999,
+          864.48
+        ],
+        [
+          928.4064886620935,
+          886.3056020411586
+        ],
+        [
+          930.857954648374,
+          908.2624081646347
+        ],
+        [
+          931.3383979588414,
+          930.350418370428
+        ],
+        [
+          929.8478185934957,
+          952.5696326585387
+        ],
+        [
+          920.4178482831371,
+          1037.439365451766
+        ],
+        [
+          918.2116650917768,
+          1051.5530141740082
+        ],
+        [
+          914.8020396592647,
+          1065.0136430666184
+        ],
+        [
+          910.1889719856003,
+          1077.8212521295961
+        ],
+        [
+          904.3724620707843,
+          1089.9758413629415
+        ],
+        [
+          897.3525099148162,
+          1101.4774107666547
+        ],
+        [
+          889.129115517696,
+          1112.3259603407355
+        ],
+        [
+          879.7022788794241,
+          1122.5214900851838
+        ],
+        [
+          869.072,
+          1132.0639999999999
+        ],
+        [
+          817.482231150015,
+          1174.3940667487057
+        ],
+        [
+          806.3133332242302,
+          1182.7609573544778
+        ],
+        [
+          794.7477550218834,
+          1189.858662546147
+        ],
+        [
+          782.7854965429746,
+          1195.6871823237132
+        ],
+        [
+          770.4265577875037,
+          1200.2465166871764
+        ],
+        [
+          757.6709387554708,
+          1203.5366656365368
+        ],
+        [
+          744.5186394468759,
+          1205.5576291717941
+        ],
+        [
+          730.9696598617189,
+          1206.3094072929484
+        ],
+        [
+          717.024,
+          1205.792
+        ],
+        [
+          647.9743392219699,
+          1200.1680457284863
+        ],
+        [
+          622.8815658123581,
+          1196.6165257222735
+        ],
+        [
+          598.7775848054924,
+          1190.1300114321216
+        ],
+        [
+          575.6623962013731,
+          1180.7085028580304
+        ],
+        [
+          553.5360000000001,
+          1168.352
+        ],
+        [
+          504.864,
+          1137.248
+        ],
+        [
+          494.5846686104893,
+          1129.9779450880496
+        ],
+        [
+          485.3786744419574,
+          1121.9917803521982
+        ],
+        [
+          477.2460174944042,
+          1113.2895057924459
+        ],
+        [
+          470.18669776782974,
+          1103.8711214087928
+        ],
+        [
+          464.200715262234,
+          1093.7366272012387
+        ],
+        [
+          459.2880699776169,
+          1082.8860231697838
+        ],
+        [
+          455.44876191397856,
+          1071.319309314428
+        ],
+        [
+          452.68279107131895,
+          1059.0364856351712
+        ],
+        [
+          432.7297149187616,
+          945.895965912978
+        ],
+        [
+          430.1114646418034,
+          924.5924808260502
+        ],
+        [
+          429.78642872969044,
+          903.3779914782446
+        ],
+        [
+          431.7546071824226,
+          882.2524978695611
+        ],
+        [
+          436.016,
+          861.216
+        ],
+        [
+          459,
+          772
+        ],
+        [
+          453.3125,
+          771.1875
+        ],
+        [
+          449.25,
+          768.75
+        ],
+        [
+          446.8125,
+          764.6875
+        ],
+        [
+          446,
+          759
+        ],
+        [
+          446,
+          757
+        ],
+        [
+          446.8125,
+          751.3125
+        ],
+        [
+          449.25,
+          747.25
+        ],
+        [
+          453.3125,
+          744.8125
+        ],
+        [
+          459,
+          744
+        ],
+        [
+          575.155,
+          742
+        ],
+        [
+          579.4020552333395,
+          741.9189841149632
+        ],
+        [
+          462,
+          692
+        ],
+        [
+          404,
+          461
+        ]
+      ]
+    ],
+    [
+      [
+        [
+          566.6,
+          -1050.8
+        ],
+        [
+          568.4,
+          -1119.2
+        ],
+        [
+          569.2076745903756,
+          -1134.2961191989568
+        ],
+        [
+          570.8306983615025,
+          -1149.184476795827
+        ],
+        [
+          573.2690713133807,
+          -1163.865072790611
+        ],
+        [
+          576.5227934460102,
+          -1178.3379071833087
+        ],
+        [
+          580.5918647593908,
+          -1192.6029799739197
+        ],
+        [
+          585.4762852535227,
+          -1206.6602911624445
+        ],
+        [
+          591.1760549284058,
+          -1220.5098407488827
+        ],
+        [
+          597.6911737840404,
+          -1234.1516287332345
+        ],
+        [
+          631.2,
+          -1299.68
+        ],
+        [
+          638.9383825170448,
+          -1312.88
+        ],
+        [
+          647.7535300681795,
+          -1324.32
+        ],
+        [
+          657.6454426534041,
+          -1334
+        ],
+        [
+          668.6141202727183,
+          -1341.92
+        ],
+        [
+          680.6595629261224,
+          -1348.08
+        ],
+        [
+          693.7817706136162,
+          -1352.48
+        ],
+        [
+          707.9807433351998,
+          -1355.12
+        ],
+        [
+          723.2564810908732,
+          -1356
+        ],
+        [
+          914,
+          -1356
+        ],
+        [
+          929.0097082803256,
+          -1355.0000471264639
+        ],
+        [
+          942.0388331213023,
+          -1352.0001885058555
+        ],
+        [
+          953.0873745229303,
+          -1347.000424138175
+        ],
+        [
+          962.1553324852096,
+          -1340.0007540234224
+        ],
+        [
+          969.2427070081399,
+          -1331.0011781615974
+        ],
+        [
+          974.3494980917213,
+          -1320.0016965527002
+        ],
+        [
+          977.4757057359541,
+          -1307.0023091967307
+        ],
+        [
+          978.621329940838,
+          -1292.003016093689
+        ],
+        [
+          979.378670059162,
+          -1213.996983906311
+        ],
+        [
+          980.4740610684619,
+          -1086.001755757651
+        ],
+        [
+          981.5259389315381,
+          -943.9982442423491
+        ],
+        [
+          981.6444499312859,
+          -816.0009876314592
+        ],
+        [
+          980.3555500687141,
+          -583.9990123685408
+        ],
+        [
+          980,
+          -456
+        ],
+        [
+          980,
+          -258
+        ],
+        [
+          979,
+          -243
+        ],
+        [
+          976,
+          -230
+        ],
+        [
+          971,
+          -219
+        ],
+        [
+          964,
+          -210
+        ],
+        [
+          955,
+          -203
+        ],
+        [
+          944,
+          -198
+        ],
+        [
+          931,
+          -195
+        ],
+        [
+          916,
+          -194
+        ],
+        [
+          716.203712305709,
+          -194
+        ],
+        [
+          701.3840922340585,
+          -194.82999999999993
+        ],
+        [
+          687.5270881719614,
+          -197.31999999999994
+        ],
+        [
+          674.6327001194176,
+          -201.47000000000003
+        ],
+        [
+          662.7009280764273,
+          -207.2800000000002
+        ],
+        [
+          651.7317720429903,
+          -214.75000000000023
+        ],
+        [
+          641.7252320191068,
+          -223.8800000000001
+        ],
+        [
+          632.6813080047767,
+          -234.67000000000007
+        ],
+        [
+          624.6,
+          -247.1199999999999
+        ],
+        [
+          590.4,
+          -306.8800000000001
+        ],
+        [
+          583.4869380353896,
+          -320.26252735571416
+        ],
+        [
+          577.9477521415583,
+          -333.8501094228566
+        ],
+        [
+          573.7824423185061,
+          -347.64274620142714
+        ],
+        [
+          570.9910085662332,
+          -361.6404376914263
+        ],
+        [
+          569.5734508847395,
+          -375.84318389285363
+        ],
+        [
+          569.5297692740248,
+          -390.2509848057091
+        ],
+        [
+          570.8599637340893,
+          -404.8638404299928
+        ],
+        [
+          573.564034264933,
+          -419.6817507657049
+        ],
+        [
+          595.816249370306,
+          -517.5914972293466
+        ],
+        [
+          603.607384335996,
+          -548.5674666056523
+        ],
+        [
+          612.797038603372,
+          -579.0868719639157
+        ],
+        [
+          623.385212172434,
+          -609.1497133041371
+        ],
+        [
+          635.371905043182,
+          -638.7559906263162
+        ],
+        [
+          679.628094956818,
+          -741.2440093736838
+        ],
+        [
+          684.9814361632639,
+          -755.82000051408
+        ],
+        [
+          688.3555072610108,
+          -770.1699786221105
+        ],
+        [
+          689.7503082500584,
+          -784.2939436977755
+        ],
+        [
+          689.1658391304069,
+          -798.1918957410747
+        ],
+        [
+          686.6020999020562,
+          -811.8638347520085
+        ],
+        [
+          682.0590905650065,
+          -825.3097607305765
+        ],
+        [
+          675.5368111192577,
+          -838.5296736767789
+        ],
+        [
+          667.0352615648096,
+          -851.5235735906156
+        ],
+        [
+          601.078987752861,
+          -941.0356594782601
+        ],
+        [
+          592.6479749982842,
+          -953.4616767880428
+        ],
+        [
+          585.3944306109843,
+          -966.2575584565212
+        ],
+        [
+          579.3183545909613,
+          -979.4233044836952
+        ],
+        [
+          574.4197469382152,
+          -992.958914869565
+        ],
+        [
+          570.6986076527461,
+          -1006.8643896141302
+        ],
+        [
+          568.1549367345538,
+          -1021.1397287173912
+        ],
+        [
+          566.7887341836384,
+          -1035.7849321793478
+        ],
+        [
+          566.6,
+          -1050.8
+        ]
+      ]
+    ]
+  ],
+  "source": {
+    "kind": "eight-biome-expansion",
+    "created": "2026-11-18",
+    "architectureId": "map-biome-forest-heartwood-crossroads",
+    "summary": "Four entries meet a small diamond-shaped route around an open central glade. Three corner bluffs and one eastern kidney pond frame four usable defense clearings.",
+    "biomeOrdinal": 3,
+    "sourcePixelsPerWorldUnit": 1,
+    "resampling": "none",
+    "scaleContract": "All new terrain asset/default/object/layer scales are1; source crop pixels are world units.",
+    "approaches": [
+      {
+        "id": "approach-1",
+        "side": "north",
+        "point": {
+          "x": 0,
+          "y": 1514
+        },
+        "spawnPocketId": "spawn-pocket-1",
+        "clearWidth": 110
+      },
+      {
+        "id": "approach-2",
+        "side": "east",
+        "point": {
+          "x": 930,
+          "y": 0
+        },
+        "spawnPocketId": "spawn-pocket-2",
+        "clearWidth": 110
+      },
+      {
+        "id": "approach-3",
+        "side": "south",
+        "point": {
+          "x": 0,
+          "y": -1514
+        },
+        "spawnPocketId": "spawn-pocket-3",
+        "clearWidth": 110
+      },
+      {
+        "id": "approach-4",
+        "side": "west",
+        "point": {
+          "x": -930,
+          "y": -700
+        },
+        "spawnPocketId": "spawn-pocket-4",
+        "clearWidth": 110
+      }
+    ],
+    "buildPockets": [
+      {
+        "id": "pocket-1",
+        "name": "Central glade",
+        "center": {
+          "x": 0,
+          "y": 80
+        },
+        "radius": 185,
+        "role": "main build clearing",
+        "noDecoration": true
+      },
+      {
+        "id": "pocket-2",
+        "name": "Upper inner clearing",
+        "center": {
+          "x": -120,
+          "y": 1010
+        },
+        "radius": 120,
+        "role": "secondary defense clearing",
+        "noDecoration": true
+      },
+      {
+        "id": "pocket-3",
+        "name": "Southwest inner pocket",
+        "center": {
+          "x": -200,
+          "y": -1100
+        },
+        "radius": 100,
+        "role": "secondary defense clearing",
+        "noDecoration": true
+      },
+      {
+        "id": "pocket-4",
+        "name": "Southeast inner pocket",
+        "center": {
+          "x": 360,
+          "y": -600
+        },
+        "radius": 120,
+        "role": "secondary defense clearing",
+        "noDecoration": true
+      }
+    ],
+    "revision": {
+      "kind": "broad-rounded-side-hills",
+      "date": "2026-11-18",
+      "beforeMapSha256": "edaf292c847298e412fae55731118d3d71e2c76a830b5c27a90270668ddb46eb",
+      "architectureSha256": "26ee7949bf2cad941ff367545e1788cb4e36d1994b6cb48f0d2d694217238779",
+      "geometryHelperSha256": "2a4aa4bd286ab2f0f3caf5aa6aa5484f1dd78579a0f0ae89dbb8dbae532c1be2",
+      "terrainGeometry": [
+        {
+          "key": "northwest-fan",
+          "objectId": "object-1",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-northwest-fan",
+          "kind": "cliff",
+          "world": {
+            "x": -590,
+            "y": 600
+          },
+          "width": 620,
+          "height": 620,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -266,
+                "y": 32
+              },
+              {
+                "x": -291.704,
+                "y": 153.584
+              },
+              {
+                "x": -296.4087243660945,
+                "y": 182.22355032256252
+              },
+              {
+                "x": -298.42689746437793,
+                "y": 210.92620129025005
+              },
+              {
+                "x": -297.7585192948503,
+                "y": 239.6919529030626
+              },
+              {
+                "x": -294.40358985751163,
+                "y": 268.52080516100017
+              },
+              {
+                "x": -270.36188732906606,
+                "y": 416.2055492643084
+              },
+              {
+                "x": -267.23057130066127,
+                "y": 431.099420822478
+              },
+              {
+                "x": -262.81756687998,
+                "y": 445.18381012914097
+              },
+              {
+                "x": -257.1228740670222,
+                "y": 458.45871718429726
+              },
+              {
+                "x": -250.14649286178792,
+                "y": 470.9241419879469
+              },
+              {
+                "x": -241.88842326427712,
+                "y": 482.58008454008996
+              },
+              {
+                "x": -232.34866527448983,
+                "y": 493.42654484072636
+              },
+              {
+                "x": -221.527218892426,
+                "y": 503.46352288985605
+              },
+              {
+                "x": -209.4240841180857,
+                "y": 512.6910186874792
+              },
+              {
+                "x": -150.17591588191428,
+                "y": 553.7089813125209
+              },
+              {
+                "x": -124.01394951472844,
+                "y": 569.4893905031913
+              },
+              {
+                "x": -96.50396629508518,
+                "y": 581.5395993877237
+              },
+              {
+                "x": -67.64596622298448,
+                "y": 589.8596079661181
+              },
+              {
+                "x": -37.43994929842638,
+                "y": 594.4494162383742
+              },
+              {
+                "x": 49.83994929842637,
+                "y": 602.1505837616259
+              },
+              {
+                "x": 65.03901395908248,
+                "y": 602.7841882236283
+              },
+              {
+                "x": 79.75618259026402,
+                "y": 601.9602934904486
+              },
+              {
+                "x": 93.99145519197097,
+                "y": 599.6788995620867
+              },
+              {
+                "x": 107.74483176420333,
+                "y": 595.9400064385427
+              },
+              {
+                "x": 121.0163123069611,
+                "y": 590.7436141198165
+              },
+              {
+                "x": 133.80589682024427,
+                "y": 584.0897226059082
+              },
+              {
+                "x": 146.11358530405286,
+                "y": 575.9783318968176
+              },
+              {
+                "x": 157.9393777583869,
+                "y": 566.409441992545
+              },
+              {
+                "x": 232.66062224161308,
+                "y": 499.99055800745504
+              },
+              {
+                "x": 243.62025436718676,
+                "y": 489.37282645580325
+              },
+              {
+                "x": 253.32946186471435,
+                "y": 478.1149108045756
+              },
+              {
+                "x": 261.78824473419576,
+                "y": 466.216811053772
+              },
+              {
+                "x": 268.9966029756311,
+                "y": 453.67852720339243
+              },
+              {
+                "x": 274.95453658902034,
+                "y": 440.5000592534369
+              },
+              {
+                "x": 279.66204557436345,
+                "y": 426.68140720390545
+              },
+              {
+                "x": 283.11912993166044,
+                "y": 412.2225710547981
+              },
+              {
+                "x": 285.3257896609113,
+                "y": 397.12355080611474
+              },
+              {
+                "x": 297.6350977976446,
+                "y": 277.1077964729651
+              },
+              {
+                "x": 299.5762425111751,
+                "y": 247.1106355160429
+              },
+              {
+                "x": 299.23477444941113,
+                "y": 217.2269491182413
+              },
+              {
+                "x": 296.6106936123528,
+                "y": 187.45673727956034
+              },
+              {
+                "x": 291.704,
+                "y": 157.8
+              },
+              {
+                "x": 266,
+                "y": 32
+              },
+              {
+                "x": 271.6875,
+                "y": 31.1875
+              },
+              {
+                "x": 275.75,
+                "y": 28.75
+              },
+              {
+                "x": 278.1875,
+                "y": 24.6875
+              },
+              {
+                "x": 279,
+                "y": 19
+              },
+              {
+                "x": 279,
+                "y": 17
+              },
+              {
+                "x": 278.1875,
+                "y": 11.3125
+              },
+              {
+                "x": 275.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": 271.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": 266,
+                "y": 4
+              },
+              {
+                "x": 125.32,
+                "y": 2
+              },
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": -125.32,
+                "y": 2
+              },
+              {
+                "x": -266,
+                "y": 4
+              },
+              {
+                "x": -271.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": -275.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": -278.1875,
+                "y": 11.3125
+              },
+              {
+                "x": -279,
+                "y": 17
+              },
+              {
+                "x": -279,
+                "y": 19
+              },
+              {
+                "x": -278.1875,
+                "y": 24.6875
+              },
+              {
+                "x": -275.75,
+                "y": 28.75
+              },
+              {
+                "x": -271.6875,
+                "y": 31.1875
+              },
+              {
+                "x": -266,
+                "y": 32
+              }
+            ]
+          ]
+        },
+        {
+          "key": "east-pond",
+          "objectId": "object-2",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-east-pond",
+          "kind": "water",
+          "world": {
+            "x": 625,
+            "y": 150
+          },
+          "width": 530,
+          "height": 640,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -186,
+                "y": 63
+              },
+              {
+                "x": -221,
+                "y": 311
+              },
+              {
+                "x": -163,
+                "y": 542
+              },
+              {
+                "x": -36,
+                "y": 596
+              },
+              {
+                "x": 101,
+                "y": 519
+              },
+              {
+                "x": 141,
+                "y": 383
+              },
+              {
+                "x": 223,
+                "y": 246
+              },
+              {
+                "x": 146,
+                "y": 89
+              },
+              {
+                "x": -41,
+                "y": 44
+              }
+            ]
+          ]
+        },
+        {
+          "key": "southwest-shelf",
+          "objectId": "object-3",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-southwest-shelf",
+          "kind": "cliff",
+          "world": {
+            "x": -700,
+            "y": -1400
+          },
+          "width": 630,
+          "height": 500,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -270.5,
+                "y": 32
+              },
+              {
+                "x": -296.476,
+                "y": 125.84
+              },
+              {
+                "x": -301.2485701774119,
+                "y": 147.96538348880796
+              },
+              {
+                "x": -303.34228070964775,
+                "y": 170.18153395523183
+              },
+              {
+                "x": -302.7571315967075,
+                "y": 192.48845139927158
+              },
+              {
+                "x": -299.4931228385912,
+                "y": 214.88613582092725
+              },
+              {
+                "x": -276.6171955768312,
+                "y": 326.4127653283739
+              },
+              {
+                "x": -272.9816653635114,
+                "y": 340.59414845453625
+              },
+              {
+                "x": -268.0836725119675,
+                "y": 353.84468049721033
+              },
+              {
+                "x": -261.92321702219965,
+                "y": 366.164361456396
+              },
+              {
+                "x": -254.50029889420776,
+                "y": 377.55319133209343
+              },
+              {
+                "x": -245.81491812799186,
+                "y": 388.01117012430257
+              },
+              {
+                "x": -235.8670747235519,
+                "y": 397.5382978330234
+              },
+              {
+                "x": -224.65676868088795,
+                "y": 406.1345744582559
+              },
+              {
+                "x": -212.18399999999997,
+                "y": 413.8
+              },
+              {
+                "x": -153.21599999999998,
+                "y": 446.2
+              },
+              {
+                "x": -126.55519430604032,
+                "y": 459.0611208469159
+              },
+              {
+                "x": -98.9887772241614,
+                "y": 468.8444833876638
+              },
+              {
+                "x": -70.51674875436315,
+                "y": 475.5500876222435
+              },
+              {
+                "x": -41.13910889664562,
+                "y": 479.17793355065504
+              },
+              {
+                "x": 51.551464741551335,
+                "y": 485.6688700799406
+              },
+              {
+                "x": 66.8388075446051,
+                "y": 486.12553607869006
+              },
+              {
+                "x": 81.77656832454208,
+                "y": 485.32996911490875
+              },
+              {
+                "x": 96.36474708136228,
+                "y": 483.28216918859664
+              },
+              {
+                "x": 110.60334381506568,
+                "y": 479.98213629975385
+              },
+              {
+                "x": 124.49235852565229,
+                "y": 475.42987044838026
+              },
+              {
+                "x": 138.03179121312212,
+                "y": 469.62537163447587
+              },
+              {
+                "x": 151.22164187747515,
+                "y": 462.56863985804074
+              },
+              {
+                "x": 164.06191051871141,
+                "y": 454.2596751190748
+              },
+              {
+                "x": 232.8380894812886,
+                "y": 405.7403248809252
+              },
+              {
+                "x": 244.83613458839648,
+                "y": 396.40292565320607
+              },
+              {
+                "x": 255.49931465036445,
+                "y": 386.2608904105114
+              },
+              {
+                "x": 264.8276296671925,
+                "y": 375.3142191528412
+              },
+              {
+                "x": 272.82107963888063,
+                "y": 363.56291188019543
+              },
+              {
+                "x": 279.47966456542883,
+                "y": 351.0069685925741
+              },
+              {
+                "x": 284.80338444683713,
+                "y": 337.6463892899772
+              },
+              {
+                "x": 288.79223928310546,
+                "y": 323.48117397240475
+              },
+              {
+                "x": 291.4462290742339,
+                "y": 308.5113226398567
+              },
+              {
+                "x": 302.6295188550128,
+                "y": 221.97396124097216
+              },
+              {
+                "x": 304.5213543559447,
+                "y": 198.56285319804684
+              },
+              {
+                "x": 304.1263797137532,
+                "y": 175.30349031024306
+              },
+              {
+                "x": 301.4445949284383,
+                "y": 152.19587257756078
+              },
+              {
+                "x": 296.476,
+                "y": 129.24
+              },
+              {
+                "x": 270.5,
+                "y": 32
+              },
+              {
+                "x": 276.1875,
+                "y": 31.1875
+              },
+              {
+                "x": 280.25,
+                "y": 28.75
+              },
+              {
+                "x": 282.6875,
+                "y": 24.6875
+              },
+              {
+                "x": 283.5,
+                "y": 19
+              },
+              {
+                "x": 283.5,
+                "y": 17
+              },
+              {
+                "x": 282.6875,
+                "y": 11.3125
+              },
+              {
+                "x": 280.25,
+                "y": 7.250000000000001
+              },
+              {
+                "x": 276.1875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": 270.5,
+                "y": 4
+              },
+              {
+                "x": 127.3675,
+                "y": 2
+              },
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": -127.3675,
+                "y": 2
+              },
+              {
+                "x": -270.5,
+                "y": 4
+              },
+              {
+                "x": -276.1875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": -280.25,
+                "y": 7.250000000000001
+              },
+              {
+                "x": -282.6875,
+                "y": 11.3125
+              },
+              {
+                "x": -283.5,
+                "y": 17
+              },
+              {
+                "x": -283.5,
+                "y": 19
+              },
+              {
+                "x": -282.6875,
+                "y": 24.6875
+              },
+              {
+                "x": -280.25,
+                "y": 28.75
+              },
+              {
+                "x": -276.1875,
+                "y": 31.1875
+              },
+              {
+                "x": -270.5,
+                "y": 32
+              }
+            ]
+          ]
+        },
+        {
+          "key": "southeast-twins",
+          "objectId": "object-4",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-southeast-twins",
+          "kind": "cliff",
+          "world": {
+            "x": 680,
+            "y": 740
+          },
+          "width": 520,
+          "height": 480,
+          "background": false,
+          "collisionLocal": [
+            [
+              {
+                "x": -221,
+                "y": 32
+              },
+              {
+                "x": -243.98399999999998,
+                "y": 121.21600000000001
+              },
+              {
+                "x": -248.2453928175774,
+                "y": 142.25249786956113
+              },
+              {
+                "x": -250.2135712703096,
+                "y": 163.37799147824452
+              },
+              {
+                "x": -249.88853535819658,
+                "y": 184.59248082605015
+              },
+              {
+                "x": -247.27028508123837,
+                "y": 205.89596591297803
+              },
+              {
+                "x": -227.31720892868105,
+                "y": 319.0364856351712
+              },
+              {
+                "x": -224.55123808602144,
+                "y": 331.3193093144279
+              },
+              {
+                "x": -220.71193002238311,
+                "y": 342.8860231697838
+              },
+              {
+                "x": -215.79928473776604,
+                "y": 353.7366272012387
+              },
+              {
+                "x": -209.81330223217026,
+                "y": 363.87112140879276
+              },
+              {
+                "x": -202.7539825055958,
+                "y": 373.28950579244594
+              },
+              {
+                "x": -194.6213255580426,
+                "y": 381.99178035219825
+              },
+              {
+                "x": -185.41533138951067,
+                "y": 389.9779450880495
+              },
+              {
+                "x": -175.13600000000002,
+                "y": 397.248
+              },
+              {
+                "x": -126.464,
+                "y": 428.35200000000003
+              },
+              {
+                "x": -104.33760379862689,
+                "y": 440.7085028580304
+              },
+              {
+                "x": -81.22241519450753,
+                "y": 450.13001143212153
+              },
+              {
+                "x": -57.11843418764193,
+                "y": 456.6165257222735
+              },
+              {
+                "x": -32.0256607780301,
+                "y": 460.1680457284862
+              },
+              {
+                "x": 37.02399999999999,
+                "y": 465.792
+              },
+              {
+                "x": 50.96965986171897,
+                "y": 466.3094072929485
+              },
+              {
+                "x": 64.51863944687592,
+                "y": 465.5576291717941
+              },
+              {
+                "x": 77.67093875547084,
+                "y": 463.53666563653667
+              },
+              {
+                "x": 90.42655778750373,
+                "y": 460.2465166871764
+              },
+              {
+                "x": 102.78549654297457,
+                "y": 455.68718232371316
+              },
+              {
+                "x": 114.74775502188339,
+                "y": 449.85866254614695
+              },
+              {
+                "x": 126.31333322423016,
+                "y": 442.7609573544778
+              },
+              {
+                "x": 137.4822311500149,
+                "y": 434.39406674870565
+              },
+              {
+                "x": 189.072,
+                "y": 392.06399999999996
+              },
+              {
+                "x": 199.702278879424,
+                "y": 382.5214900851838
+              },
+              {
+                "x": 209.12911551769605,
+                "y": 372.3259603407354
+              },
+              {
+                "x": 217.35250991481615,
+                "y": 361.47741076665466
+              },
+              {
+                "x": 224.37246207078428,
+                "y": 349.97584136294154
+              },
+              {
+                "x": 230.1889719856004,
+                "y": 337.82125212959613
+              },
+              {
+                "x": 234.8020396592646,
+                "y": 325.0136430666184
+              },
+              {
+                "x": 238.21166509177684,
+                "y": 311.55301417400835
+              },
+              {
+                "x": 240.4178482831371,
+                "y": 297.43936545176604
+              },
+              {
+                "x": 249.8478185934957,
+                "y": 212.56963265853864
+              },
+              {
+                "x": 251.3383979588413,
+                "y": 190.35041837042797
+              },
+              {
+                "x": 250.85795464837392,
+                "y": 168.26240816463468
+              },
+              {
+                "x": 248.40648866209347,
+                "y": 146.30560204115866
+              },
+              {
+                "x": 243.98399999999998,
+                "y": 124.47999999999999
+              },
+              {
+                "x": 221,
+                "y": 32
+              },
+              {
+                "x": 226.6875,
+                "y": 31.1875
+              },
+              {
+                "x": 230.75,
+                "y": 28.75
+              },
+              {
+                "x": 233.1875,
+                "y": 24.6875
+              },
+              {
+                "x": 234,
+                "y": 19
+              },
+              {
+                "x": 234,
+                "y": 17
+              },
+              {
+                "x": 233.1875,
+                "y": 11.3125
+              },
+              {
+                "x": 230.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": 226.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": 221,
+                "y": 4
+              },
+              {
+                "x": 104.845,
+                "y": 2
+              },
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": -104.845,
+                "y": 2
+              },
+              {
+                "x": -221,
+                "y": 4
+              },
+              {
+                "x": -226.6875,
+                "y": 4.812500000000001
+              },
+              {
+                "x": -230.75,
+                "y": 7.250000000000001
+              },
+              {
+                "x": -233.1875,
+                "y": 11.3125
+              },
+              {
+                "x": -234,
+                "y": 17
+              },
+              {
+                "x": -234,
+                "y": 19
+              },
+              {
+                "x": -233.1875,
+                "y": 24.6875
+              },
+              {
+                "x": -230.75,
+                "y": 28.75
+              },
+              {
+                "x": -226.6875,
+                "y": 31.1875
+              },
+              {
+                "x": -221,
+                "y": 32
+              }
+            ]
+          ]
+        },
+        {
+          "key": "west-long-wall",
+          "objectId": "object-165",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-west-long-wall",
+          "kind": "cliff",
+          "world": {
+            "x": -770,
+            "y": -500
+          },
+          "width": 500,
+          "height": 1250,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -211.8260925395849,
+                "y": 849.4407651884353
+              },
+              {
+                "x": -210.55508934224218,
+                "y": 817.8719404848847
+              },
+              {
+                "x": -206.7521200170511,
+                "y": 786.0234983755518
+              },
+              {
+                "x": -165.1283645555672,
+                "y": 488.97650162444825
+              },
+              {
+                "x": -158.6328092174102,
+                "y": 457.07428755561773
+              },
+              {
+                "x": -150.60251655048523,
+                "y": 425.3441469735744
+              },
+              {
+                "x": -141.03748655479228,
+                "y": 393.78607987831833
+              },
+              {
+                "x": -129.9377192303313,
+                "y": 362.4000862698494
+              },
+              {
+                "x": -72.77968884239287,
+                "y": 158.49062091409746
+              },
+              {
+                "x": -71.04100517194217,
+                "y": 144.34438163735592
+              },
+              {
+                "x": -67.96946696699939,
+                "y": 131.15097426417987
+              },
+              {
+                "x": -63.5650742275645,
+                "y": 118.91039879456933
+              },
+              {
+                "x": -57.82782695363751,
+                "y": 107.62265522852437
+              },
+              {
+                "x": -50.75772514521843,
+                "y": 97.28774356604495
+              },
+              {
+                "x": -42.35476880230725,
+                "y": 87.90566380713109
+              },
+              {
+                "x": -32.61895792490397,
+                "y": 79.47641595178277
+              },
+              {
+                "x": -21.550292513008586,
+                "y": 72
+              },
+              {
+                "x": 50.584190490929025,
+                "y": 27.75408003914356
+              },
+              {
+                "x": 63.3976129148773,
+                "y": 21.59042002201825
+              },
+              {
+                "x": 77.39004623280289,
+                "y": 18.353520009785882
+              },
+              {
+                "x": 92.56149044470581,
+                "y": 18.043380002446455
+              },
+              {
+                "x": 108.91194555058607,
+                "y": 20.659999999999968
+              },
+              {
+                "x": 180.74195725333016,
+                "y": 38
+              },
+              {
+                "x": 179.9869621201493,
+                "y": 32.3125
+              },
+              {
+                "x": 181.30482273930585,
+                "y": 28.250000000000004
+              },
+              {
+                "x": 184.69553911079979,
+                "y": 25.812500000000004
+              },
+              {
+                "x": 190.1591112346311,
+                "y": 25
+              },
+              {
+                "x": 192.1591112346311,
+                "y": 25
+              },
+              {
+                "x": 198.07053911079979,
+                "y": 25.812500000000004
+              },
+              {
+                "x": 202.80482273930585,
+                "y": 28.250000000000004
+              },
+              {
+                "x": 206.36196212014931,
+                "y": 32.3125
+              },
+              {
+                "x": 208.74195725333016,
+                "y": 38
+              },
+              {
+                "x": 212.53814955558994,
+                "y": 89.52052531613245
+              },
+              {
+                "x": 216.02089342871588,
+                "y": 94.48675307511294
+              },
+              {
+                "x": 220.7746440218424,
+                "y": 103.11186085886445
+              },
+              {
+                "x": 224.40703431333705,
+                "y": 112.04802281439925
+              },
+              {
+                "x": 226.84175383171134,
+                "y": 121.25
+              },
+              {
+                "x": 229.73488161718717,
+                "y": 149.0234375
+              },
+              {
+                "x": 231.699497416542,
+                "y": 176.796875
+              },
+              {
+                "x": 232.74323526498878,
+                "y": 204.5703125
+              },
+              {
+                "x": 232.8737291977406,
+                "y": 232.34375
+              },
+              {
+                "x": 230.63958495292167,
+                "y": 260.1171875
+              },
+              {
+                "x": 227.8177231099778,
+                "y": 287.890625
+              },
+              {
+                "x": 220.60812841111243,
+                "y": 343.4375
+              },
+              {
+                "x": 208.3078719389879,
+                "y": 418.6584918426001
+              },
+              {
+                "x": 207.814981729793,
+                "y": 425.294921875
+              },
+              {
+                "x": 201.1240589283718,
+                "y": 494.328125
+              },
+              {
+                "x": 186.03992007614815,
+                "y": 625
+              },
+              {
+                "x": 172.28024946416662,
+                "y": 755.671875
+              },
+              {
+                "x": 166.97710461995428,
+                "y": 824.705078125
+              },
+              {
+                "x": 163.73579388496447,
+                "y": 896.375
+              },
+              {
+                "x": 163.31434761022484,
+                "y": 970.810546875
+              },
+              {
+                "x": 166.4707961467631,
+                "y": 1048.140625
+              },
+              {
+                "x": 169.62761545395756,
+                "y": 1087.931396484375
+              },
+              {
+                "x": 173.9631698456069,
+                "y": 1128.494140625
+              },
+              {
+                "x": 179.5722131155895,
+                "y": 1169.844970703125
+              },
+              {
+                "x": 186.54949905778392,
+                "y": 1212
+              },
+              {
+                "x": 187.4468217610824,
+                "y": 1217.6875
+              },
+              {
+                "x": 186.23062369200986,
+                "y": 1221.75
+              },
+              {
+                "x": 182.90090485056635,
+                "y": 1224.1875
+              },
+              {
+                "x": 177.45766523675184,
+                "y": 1225
+              },
+              {
+                "x": 175.45766523675184,
+                "y": 1225
+              },
+              {
+                "x": 169.52590485056635,
+                "y": 1224.1875
+              },
+              {
+                "x": 164.73062369200989,
+                "y": 1221.75
+              },
+              {
+                "x": 161.0718217610824,
+                "y": 1217.6875
+              },
+              {
+                "x": 158.54949905778392,
+                "y": 1212
+              },
+              {
+                "x": 94.13116808236704,
+                "y": 1229.3400000000001
+              },
+              {
+                "x": 78.66400935727457,
+                "y": 1232.2416244009132
+              },
+              {
+                "x": 62.581486253376255,
+                "y": 1232.7864976036522
+              },
+              {
+                "x": 45.883598770672116,
+                "y": 1230.9746196082176
+              },
+              {
+                "x": 28.570346909162133,
+                "y": 1226.805990414609
+              },
+              {
+                "x": -48.22883649708941,
+                "y": 1203.5
+              },
+              {
+                "x": -60.98226700260538,
+                "y": 1198.9884510969491
+              },
+              {
+                "x": -72.92203835784633,
+                "y": 1193.4538043877974
+              },
+              {
+                "x": -84.04815056281227,
+                "y": 1186.896059872544
+              },
+              {
+                "x": -94.36060361750319,
+                "y": 1179.315217551189
+              },
+              {
+                "x": -103.85939752191909,
+                "y": 1170.711277423733
+              },
+              {
+                "x": -112.54453227605998,
+                "y": 1161.0842394901754
+              },
+              {
+                "x": -120.41600787992586,
+                "y": 1150.4341037505164
+              },
+              {
+                "x": -127.47382433351672,
+                "y": 1138.7608702047562
+              },
+              {
+                "x": -206.77220055072496,
+                "y": 911.7395623781894
+              },
+              {
+                "x": -210.56512960907912,
+                "y": 880.7299724862035
+              }
+            ]
+          ],
+          "geometryPolicy": {
+            "kind": "broad-rounded-side-band",
+            "faceHeight": 240,
+            "endRadius": 90,
+            "noRearOutline": true,
+            "curveTolerance": 0.35,
+            "side": "left",
+            "bendAmplitude": 40,
+            "bendPhase": 0.2,
+            "outwardBodyBulge": 18,
+            "faceWidthMin": 240,
+            "faceWidthMax": 258,
+            "faceWidth": 240,
+            "terminalDiameter": 180,
+            "faceStart": 31.25,
+            "faceEnd": 1100,
+            "stableBodyFraction": 0.8315789473684211,
+            "preserveOriginalFootprint": false,
+            "collisionPolicy": "union original full hill and complete rounded face; never clip rounded ends",
+            "nativeFieldCap": true
+          },
+          "nativePixelCropUnchanged": true
+        },
+        {
+          "key": "east-long-river",
+          "objectId": "object-166",
+          "assetId": "terrain-biome-forest-heartwood-crossroads-east-long-river",
+          "kind": "water",
+          "world": {
+            "x": 770,
+            "y": -1400
+          },
+          "width": 500,
+          "height": 1250,
+          "background": true,
+          "collisionLocal": [
+            [
+              {
+                "x": -138.8,
+                "y": 100.32
+              },
+              {
+                "x": -172.3088262159596,
+                "y": 165.84837126676547
+              },
+              {
+                "x": -178.8239450715941,
+                "y": 179.49015925111732
+              },
+              {
+                "x": -184.5237147464773,
+                "y": 193.33970883755558
+              },
+              {
+                "x": -189.40813524060923,
+                "y": 207.39702002608027
+              },
+              {
+                "x": -193.4772065539899,
+                "y": 221.66209281669137
+              },
+              {
+                "x": -196.7309286866193,
+                "y": 236.13492720938888
+              },
+              {
+                "x": -199.16930163849747,
+                "y": 250.81552320417285
+              },
+              {
+                "x": -200.79232540962437,
+                "y": 265.7038808010432
+              },
+              {
+                "x": -201.6,
+                "y": 280.8
+              },
+              {
+                "x": -203.4,
+                "y": 349.2
+              },
+              {
+                "x": -203.21126581636156,
+                "y": 364.2150678206522
+              },
+              {
+                "x": -201.84506326544619,
+                "y": 378.8602712826088
+              },
+              {
+                "x": -199.3013923472539,
+                "y": 393.1356103858697
+              },
+              {
+                "x": -195.58025306178473,
+                "y": 407.041085130435
+              },
+              {
+                "x": -190.68164540903865,
+                "y": 420.57669551630477
+              },
+              {
+                "x": -184.60556938901567,
+                "y": 433.7424415434788
+              },
+              {
+                "x": -177.35202500171576,
+                "y": 446.53832321195716
+              },
+              {
+                "x": -168.92101224713898,
+                "y": 458.9643405217399
+              },
+              {
+                "x": -102.96473843519041,
+                "y": 548.4764264093844
+              },
+              {
+                "x": -94.46318888074238,
+                "y": 561.4703263232211
+              },
+              {
+                "x": -87.9409094349935,
+                "y": 574.6902392694235
+              },
+              {
+                "x": -83.39790009794373,
+                "y": 588.1361652479915
+              },
+              {
+                "x": -80.83416086959312,
+                "y": 601.8081042589253
+              },
+              {
+                "x": -80.24969174994163,
+                "y": 615.7060563022245
+              },
+              {
+                "x": -81.64449273898929,
+                "y": 629.8300213778895
+              },
+              {
+                "x": -85.01856383673606,
+                "y": 644.17999948592
+              },
+              {
+                "x": -90.371905043182,
+                "y": 658.7559906263162
+              },
+              {
+                "x": -134.62809495681802,
+                "y": 761.2440093736838
+              },
+              {
+                "x": -146.614787827566,
+                "y": 790.8502866958629
+              },
+              {
+                "x": -157.20296139662798,
+                "y": 820.9131280360843
+              },
+              {
+                "x": -166.39261566400398,
+                "y": 851.4325333943477
+              },
+              {
+                "x": -174.18375062969398,
+                "y": 882.4085027706534
+              },
+              {
+                "x": -196.43596573506704,
+                "y": 980.3182492342951
+              },
+              {
+                "x": -199.14003626591068,
+                "y": 995.1361595700072
+              },
+              {
+                "x": -200.4702307259752,
+                "y": 1009.7490151942909
+              },
+              {
+                "x": -200.42654911526057,
+                "y": 1024.1568161071464
+              },
+              {
+                "x": -199.00899143376677,
+                "y": 1038.3595623085737
+              },
+              {
+                "x": -196.21755768149382,
+                "y": 1052.3572537985729
+              },
+              {
+                "x": -192.05224785844172,
+                "y": 1066.1498905771434
+              },
+              {
+                "x": -186.51306196461044,
+                "y": 1079.7374726442858
+              },
+              {
+                "x": -179.6,
+                "y": 1093.12
+              },
+              {
+                "x": -145.4,
+                "y": 1152.88
+              },
+              {
+                "x": -137.31869199522328,
+                "y": 1165.33
+              },
+              {
+                "x": -128.2747679808932,
+                "y": 1176.12
+              },
+              {
+                "x": -118.26822795700966,
+                "y": 1185.2499999999998
+              },
+              {
+                "x": -107.29907192357274,
+                "y": 1192.7199999999998
+              },
+              {
+                "x": -95.36729988058241,
+                "y": 1198.53
+              },
+              {
+                "x": -82.47291182803866,
+                "y": 1202.68
+              },
+              {
+                "x": -68.61590776594151,
+                "y": 1205.17
+              },
+              {
+                "x": -53.79628769429096,
+                "y": 1206
+              },
+              {
+                "x": 146,
+                "y": 1206
+              },
+              {
+                "x": 161,
+                "y": 1205
+              },
+              {
+                "x": 174,
+                "y": 1202
+              },
+              {
+                "x": 185,
+                "y": 1197
+              },
+              {
+                "x": 194,
+                "y": 1190
+              },
+              {
+                "x": 201,
+                "y": 1181
+              },
+              {
+                "x": 206,
+                "y": 1170
+              },
+              {
+                "x": 209,
+                "y": 1157
+              },
+              {
+                "x": 210,
+                "y": 1142
+              },
+              {
+                "x": 210,
+                "y": 944
+              },
+              {
+                "x": 210.3555500687141,
+                "y": 816.0009876314592
+              },
+              {
+                "x": 211.6444499312859,
+                "y": 583.9990123685408
+              },
+              {
+                "x": 211.52593893153815,
+                "y": 456.0017557576509
+              },
+              {
+                "x": 210.47406106846185,
+                "y": 313.9982442423491
+              },
+              {
+                "x": 209.37867005916203,
+                "y": 186.0030160936891
+              },
+              {
+                "x": 208.62132994083797,
+                "y": 107.9969839063109
+              },
+              {
+                "x": 207.47570573595408,
+                "y": 92.99769080326928
+              },
+              {
+                "x": 204.34949809172133,
+                "y": 79.99830344729988
+              },
+              {
+                "x": 199.2427070081398,
+                "y": 68.99882183840269
+              },
+              {
+                "x": 192.1553324852095,
+                "y": 59.999245976577726
+              },
+              {
+                "x": 183.0873745229303,
+                "y": 52.999575861824965
+              },
+              {
+                "x": 172.03883312130233,
+                "y": 47.99981149414443
+              },
+              {
+                "x": 159.00970828032558,
+                "y": 44.9999528735361
+              },
+              {
+                "x": 144,
+                "y": 44
+              },
+              {
+                "x": -46.74351890912677,
+                "y": 44
+              },
+              {
+                "x": -62.01925666480019,
+                "y": 44.88
+              },
+              {
+                "x": -76.21822938638381,
+                "y": 47.519999999999996
+              },
+              {
+                "x": -89.34043707387764,
+                "y": 51.92
+              },
+              {
+                "x": -101.38587972728169,
+                "y": 58.08
+              },
+              {
+                "x": -112.35455734659595,
+                "y": 66
+              },
+              {
+                "x": -122.24646993182043,
+                "y": 75.68
+              },
+              {
+                "x": -131.0616174829551,
+                "y": 87.12
+              }
+            ]
+          ]
+        }
+      ],
+      "spawnPockets": [
+        {
+          "id": "spawn-pocket-1",
+          "side": "north",
+          "center": {
+            "x": 150,
+            "y": 1190
+          },
+          "radius": 90,
+          "unitDiameterWorld": 85,
+          "freeOfTerrain": true
+        },
+        {
+          "id": "spawn-pocket-2",
+          "side": "east",
+          "center": {
+            "x": 650,
+            "y": 0
+          },
+          "radius": 90,
+          "unitDiameterWorld": 85,
+          "freeOfTerrain": true
+        },
+        {
+          "id": "spawn-pocket-3",
+          "side": "south",
+          "center": {
+            "x": 0,
+            "y": -1210
+          },
+          "radius": 90,
+          "unitDiameterWorld": 85,
+          "freeOfTerrain": true
+        },
+        {
+          "id": "spawn-pocket-4",
+          "side": "west",
+          "center": {
+            "x": -640,
+            "y": -700
+          },
+          "radius": 90,
+          "unitDiameterWorld": 85,
+          "freeOfTerrain": true
+        }
+      ],
+      "sourcePixelsPerWorldUnit": 1,
+      "resizeOperations": 0,
+      "positionsUnchanged": true,
+      "replacedTerrainImages": 1
+    }
+  }
+}

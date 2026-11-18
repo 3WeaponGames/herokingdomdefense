@@ -28,9 +28,9 @@ function assertEquivalent(rows,entries,interval,label){
 }
 
 test('all campaign and fallback waves expose explicit schedules and legacy conversion preserves every lane tick',()=>{
- const base=read(files[0]),baseInterval=Number(base.ParameterCfg['60018'].Value);let stages=0,waves=0,enemies=0;
+ const base=read(files[0]),baseInterval=Number(base.ParameterCfg['60018'].Value);let stages=0,enemies=0,expectedEnemies=0;
  for(const file of files){const doc=read(file),interval=Number(doc.ParameterCfg&&doc.ParameterCfg['60018']&&doc.ParameterCfg['60018'].Value)||baseInterval;
-  for(const stage of doc.LevelCfg){stages++;for(const wave of stage.WaveCfg){waves++;const label=file+' stage '+stage.Level+' wave '+wave.Wave;
+  for(const stage of doc.LevelCfg){stages++;assert(Array.isArray(stage.WaveCfg)&&stage.WaveCfg.length,file+' stage '+stage.Level+' keeps an authored wave list');for(const wave of stage.WaveCfg){const label=file+' stage '+stage.Level+' wave '+wave.Wave;
    assert(Array.isArray(wave.SpawnTimeline),label+' is still a legacy-only wave');
    // Saved schedules are now the editable source of truth. Replay conversion
    // from retained original strings independently, without freezing future
@@ -38,10 +38,13 @@ test('all campaign and fallback waves expose explicit schedules and legacy conve
    for(const entry of wave.SpawnTimeline){assert(Number.isInteger(entry.spawnId)&&entry.spawnId>0,label+' spawn');assert(Number.isInteger(entry.unitId)&&entry.unitId>0,label+' unit');assert(Number.isInteger(entry.count)&&entry.count>0,label+' count');assert(Number.isFinite(entry.startSeconds)&&entry.startSeconds>=0,label+' start');assert(Number.isFinite(entry.intervalSeconds)&&entry.intervalSeconds>=(entry.count>1?Number.MIN_VALUE:0),label+' interval');}
    const converted=M.legacyTimeline(wave.RefreshSoldierKind,interval);
    enemies+=converted.reduce((sum,entry)=>sum+entry.count,0);
+   // Hand-authored stage overrides may replace historical campaign packets.
+   // Count their effective lanes independently of the conversion under test.
+   expectedEnemies+=Object.values(legacyQueue(wave.RefreshSoldierKind)).reduce((sum,groups)=>sum+groups.reduce((n,group)=>n+(group.id===-1?0:group.num),0),0);
    assertEquivalent(wave.RefreshSoldierKind,converted,interval,label);
   }}
  }
- assert.equal(stages,80);assert.equal(waves,800);assert.equal(enemies,21584);
+ assert.equal(stages,80);assert.equal(enemies,expectedEnemies,'conversion preserves every enemy in the current authored lane queues');
 });
 
 test('conversion keeps last duplicate lane, independent waits, unit groups and numeric spawn order',()=>{

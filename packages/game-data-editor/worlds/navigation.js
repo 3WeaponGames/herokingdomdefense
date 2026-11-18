@@ -88,7 +88,7 @@ function preview(service,request){
  if((spawn.radius||0)>0||width>0){
   let seed=42871;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;},walkable=p=>grid.isWalkable(p,radius);response.traces=[];
   for(let i=0;i<8;i++){
-   const start=area.sample(spawn,spawn.radius||0,random,walkable);if(!start)continue;
+   const start=area.sampleInBounds(spawn,spawn.radius||0,random,bounds,radius);if(!start)continue;
    const lane=area.spread(route,start,spawn,width,random,walkable,(a,b)=>grid.segmentClear(a,b,radius)),trace=[start];let current=start;
    for(const goal of lane){const result=grid.findPath(current,goal,radius,true),segment=!result?[]:Array.isArray(result)?result:result.points||result.path||[];for(const p of segment){const last=trace[trace.length-1];if(last.x!==p.x||last.y!==p.y)trace.push(p);}if(!segment.length||result.partial)break;current=segment[segment.length-1];}
    response.traces.push(trace);
