@@ -28,6 +28,6 @@ test('new and duplicated maps start with a single independent world-space blocke
 });
 
 test('an omitted global mask in a legacy-format edit cannot reattach blockers to artwork',()=>{
- const map=sample(),s=service(map),next=M.clone(map);next.name='First edit';s.change({key:'map:fixed',version:s.version,value:next});const fixed=M.clone(s.doc().data.blockerMask);
+ const map=sample(),s=service(map),next=M.clone(map);next.layers[1].transform.x=40;s.change({key:'map:fixed',version:s.version,value:next});const fixed=M.clone(s.doc().data.blockerMask);
  const stale=M.clone(map);stale.name='Second edit';stale.layers[1].transform.x=300;s.change({key:'map:fixed',version:s.version,value:stale});assert.deepEqual(s.doc().data.blockerMask,fixed);assert.deepEqual(M.mapBlockerRegions(s.doc().data),fixed);
 });

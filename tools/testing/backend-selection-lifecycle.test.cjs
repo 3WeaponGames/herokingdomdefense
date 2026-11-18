@@ -21,7 +21,7 @@ test('Perk take-all and actual round completion each commit once',()=>{
  const p=perkDialog(true);p.b.btnGetAll.handlers.touchend();p.b.btnGetAll.handlers.touchend();p.b.clickItem(0);p.b.btnRefresh.handlers.touchend();p.flush();
  assert.equal(p.requests.length,1);assert.deepEqual(p.chosen,[[50001,50002,50003]]);assert(p.b.isclose);
  const h=setup(),cc=h.e.cc;h.e.stubs.KinghtFallConfig.KinghtFallUIID={UIBuff:1};h.e.stubs.KinghtFallModle.KinghtFallGameStage.End=4;tweens(cc);
- const U=load('KinghtFallUIGame',cc,{...h.e.stubs,BaseUI:{default:function(){}},AudioMgr:{AudioMgr:{getInstance:()=>({playMusic(){}})}}}).default,u=new U();let callback,buffs=0;
+ const U=load('KinghtFallUIGame',cc,{...h.e.stubs,BaseUI:{default:function(){}},BattleMusic:require('../../assets/_script/BattleMusic'),AudioMgr:{AudioMgr:{getInstance:()=>({playMusic(){}})}}}).default,u=new U();let callback,buffs=0;
  Object.assign(h.d,{levelCfg:authored.LevelCfg[0],round:1,coin:0,addTime:{},getGameBuff:()=>null,upMap(){},addGameBuff(){buffs++;}});
  Object.assign(h.g,{endRoundGame:()=>h.d.loadMonster(),saveGame(){},ctrPlay:{endRoundGame(){},ctrPlayAni:{setLevelUp(){}}}});
  Object.assign(u,{btnBuildInfo:{},ctrGame:h.g,ctrUI:{},scheduleOnce:fn=>fn(),onPauseGame(){},openBattleDialog(_dialog,_id,_ready,done){callback=done;},initView(){},initBtnView(){}});

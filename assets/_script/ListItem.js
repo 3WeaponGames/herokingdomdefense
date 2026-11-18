@@ -136,7 +136,7 @@ var def_ListItem = function (t) {
           }
         }
       }
-      e();
+      e && e();
     });
     return i.start();
   };

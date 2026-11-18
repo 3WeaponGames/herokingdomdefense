@@ -14,6 +14,8 @@ var $z1KinghtFallTextConfig = require("KinghtFallTextConfig");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
+var EarnedAds = require("GlobalAdReward");
+var $z1EventMgr = require("EventMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -65,26 +67,32 @@ var def_KinghtFallUISignIn = function (t) {
     this.btnSign.on(cc.Node.EventType.TOUCH_END, function () {
       e(1, 0);
     }, this);
-    this.btnVide.on(cc.Node.EventType.TOUCH_END, function () {
-      if (!t.canClaim(1, 1)) return;
-      var day = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay();
+    var signAd = function (multiplier, track) {
+      var pending = EarnedAds.get(t, "_signAdReward");
+      if (pending) { pending.retry(); return; }
+      if (!t.canClaim(multiplier, 1)) return;
+      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), daily = player.getDailyData(), day = daily.getSignDay();
       var date = new Date().toDateString();
-      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.day7_once);
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_day7_once_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        e(1, 1, day, date);
-      }, null, "home.signIn.extra");
-    }, this);
-    this.btnDouble.on(cc.Node.EventType.TOUCH_END, function () {
-      if (!t.canClaim(2, 1)) return;
-      var day = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay();
-      var date = new Date().toDateString();
-      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.day7_double);
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_day7_double_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        e(2, 1, day, date);
-      }, null, "home.signIn.double");
-    }, this);
+      var reward = { id: t.cfgList[day].Item[0], num: t.cfgList[day].Item[1] }, count = t.cfgList.length;
+      var position = EarnedAds.point(t.ndDayList[day].convertToWorldSpaceAR(t.ndDayList[day].getChildByName("sprIcon").position));
+      var stage = player.getUserData().getMaxStage(), tracked = false, expected = multiplier === 1 ? 1 : 0;
+      function eligible() { daily.ensureCurrentDay(); return date === new Date().toDateString() && daily.getSignDay() === day && daily.getSignReward() === expected; }
+      var request = EarnedAds.create(t, "_signAdReward", player, function () {
+        if (!eligible()) return { done: true, show: false };
+        if (!tracked) { tracked = true;
+          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack(track);
+          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack(multiplier === 1 ? $z1GameTrackDataEvent.TrackId.pay_day7_once_Y : $z1GameTrackDataEvent.TrackId.pay_day7_double_Y, stage);
+        }
+        var rewards = player.claimRewards([reward], multiplier, position, function () { return daily.sign(1, count); }, eligible);
+        return rewards && rewards.length || !eligible() ? { done: true } : false;
+      }, function () { t.initView(); }, function () { $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 4); });
+      if (request) {
+        if (multiplier === 1) $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, request.earn, request.cancel, "home.signIn.extra");
+        else $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, request.earn, request.cancel, "home.signIn.double");
+      }
+    };
+    this.btnVide.on(cc.Node.EventType.TOUCH_END, function () { signAd(1, $z1GameTrackDataEvent.TrackId.day7_once); }, this);
+    this.btnDouble.on(cc.Node.EventType.TOUCH_END, function () { signAd(2, $z1GameTrackDataEvent.TrackId.day7_double); }, this);
     this.btnClose.on(cc.Node.EventType.TOUCH_END, function () {
       t.closeUI();
     }, this);

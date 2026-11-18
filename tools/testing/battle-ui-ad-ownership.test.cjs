@@ -1,0 +1,37 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm');
+const {method,read,node,sdkAvailable,fixture:rewardFixture}=require('./global-ad-fixture.cjs');
+const noop=()=>{},one=x=>({getInstance:()=>x});
+function fixture(kind,options={}){
+ const pending=[],operations=[],holder={default:{}},cc={isValid:v=>!!v&&!v.destroyed,Node:{EventType:{TOUCH_END:'touch'}},Label:'label',v2:(x=0,y=0)=>({x,y}),v3:(x,y,z)=>({x,y,z}),Vec2:{random:noop},instantiate(){operations.push('coin');return{setParent:noop,destroy:noop};},tween(){const t={set:()=>t,by:()=>t,to:()=>t,call:()=>t,start:noop};return t;}};
+ const game={node:node('game'),_combatEpoch:1,gameStatus:0,gameData:{coin:10,videoCoin:4},ctrPlay:{node:node('hero'),onReborn(){operations.push('revive');this.node._combatGeneration++;}},setAudioPaused:noop,onPauseGame:noop,onResumeGame:noop};
+ const ui={node:node('ui'),_resourceGeneration:1,ctrGame:game,ctrUI:{node:node('controls'),setMoveFunc:noop},moveFun:noop,rallyCommand:noop,followCommand:noop,openPause:noop,scheduleOnce:noop,_stopTestMovement:noop,sendEvent:noop,initView(){operations.push('view');if(options.onView)options.onView(f);},onReviveShow(){operations.push('revive-ui');},_pauseOwners:new Set()};ui.ctrUI.node.convertToNodeSpaceAR=p=>p;
+ for(const name of ['btnStartFight','btnAddCoin','btnAgg','btnSuspend','btnReviveBreak','btnBuildInfo','ndTask','btnRevive','btnTest','ndCoin'])ui[name]=node(name);
+ ui.btnTest.getComponentInChildren=ui.btnTest.getComponent;ui.ndCoin.children=[node('template')];holder.default.instance=ui;
+ const scope={cc,$z1KinghtFallConfig:{KinghtFallEventName:{}},$z1SdkMgr:{AdType:{AdFreeTime:1},SdkMgr:one({playVideo(type,success,cancel,placement){pending.push({success,cancel,placement});if(options.sync)success();}})},$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:one({getUserData:()=>({getMaxStage:()=>1})})},$z1PlayerMgr:{PlayerMgr:one({getTrackData:()=>({youmengTrack(){operations.push('track');if(options.onTrack)options.onTrack(f);}})})},$z1GameTrackDataEvent:{TrackId:{}},TestMode:one({clearGameplayInput:noop}),require:name=>name==='LanguageMgr'?{LanguageMgr:one({t:()=>''})}:assert.fail(name)};
+ const helper={exports:{}};vm.runInNewContext(read('GameplayAdOwner'),{exports:helper.exports,cc,require:name=>name==='KinghtFallUIGame'?holder:assert.fail(name)});scope.GameplayAdOwner=helper.exports;
+ ui.onPauseGame=method('KinghtFallUIGame','onPauseGame',scope);method('KinghtFallUIGame','initBtnEvent',scope).call(ui);
+ const f={ui,game,scope,pending,operations,helper:helper.exports,trigger:()=>ui[kind==='supply'?'btnAddCoin':'btnRevive'].events.touch()};return f;
+}
+for(const kind of ['supply','revive'])test(kind+' grants once and releases only its owned pause in normal and synchronous SDK completion',()=>{
+ for(const sync of [false,true]){const f=fixture(kind,{sync}),other={};f.ui.onPauseGame(true,other);f.trigger();assert.equal(f.pending.length,1);f.pending[0].success();f.pending[0].success();f.pending[0].cancel();assert.deepEqual([...f.ui._pauseOwners],[other]);assert.equal(f.ui.isPauset,true);assert.equal(f.game._gameplayAds.size,0);assert.equal(f.game.gameData.coin,kind==='supply'?14:10);assert.equal(f.operations.filter(x=>x==='coin').length,kind==='supply'?10:0);assert.equal(f.operations.filter(x=>x==='revive').length,kind==='revive'?1:0);assert.equal(f.operations.filter(x=>x==='track').length,2);}
+});
+for(const kind of ['supply','revive'])test(kind+' rejects retired success/cancel and releases only the captured pause token',()=>{
+ for(const change of ['epoch','data','hero','resource','closed'])for(const outcome of ['success','cancel']){const f=fixture(kind),other={};f.ui.onPauseGame(true,other);f.trigger();const old=f.game.gameData;
+ if(change==='epoch')f.game._combatEpoch++;if(change==='data')f.game.gameData={coin:100,videoCoin:31};if(change==='hero')f.game.ctrPlay={node:node('replacement'),onReborn:()=>assert.fail('replacement revived')};if(change==='resource')f.ui._resourceGeneration++;if(change==='closed')f.ui.isclose=true;
+ f.pending[0][outcome]();assert.equal(old.coin,10);assert.equal(f.game.gameData.coin,change==='data'?100:10);assert.deepEqual(f.operations,[]);assert.deepEqual([...f.ui._pauseOwners],[other]);assert.equal(f.game._gameplayAds.size,0);}
+});
+test('supply captures its amount and stops cosmetics if its refresh retires the battle',()=>{
+ const f=fixture('supply',{onView:f=>f.game._combatEpoch++});f.trigger();f.game.gameData.videoCoin=400;f.pending[0].success();assert.equal(f.game.gameData.coin,14);assert.equal(f.operations.filter(x=>x==='coin').length,0);assert.equal(f.ui._pauseOwners.size,0);
+ const g=fixture('revive',{onTrack:f=>f.game._combatEpoch++});g.trigger();g.pending[0].success();assert.deepEqual(g.operations,['track']);assert.equal(g.ui._pauseOwners.size,0);
+});
+function wall(){const pending=[],entered=[],calls=[],daily={getSubTimeByIndex:()=>Date.now(),setSubTimeByIndex:()=>calls.push('cooldown')},user={data:{},getMaxStage:()=>100,getPowerNum:()=>100},player={getUserData:()=>user,getDailyData:()=>daily},ui={node:node('home-battle'),_resourceGeneration:1,subPlayStage:[2],subPlayTime:[300],T:x=>x,getYoumengTrack:()=>1,refreshSubView:()=>calls.push('refresh'),stopMissionDrawerTweens:noop,hideBoxReward:noop};
+ const scope={cc:{isValid:v=>!!v&&!v.destroyed,Node:{EventType:{TOUCH_END:'touch'}}},$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:one(player)},$z1Config:{UIID:{}},$z1KinghtFallConfig:{KinghtFallUIID:{},KinghtFallParameter:{}},TestMode:one({shouldBypassAdLimits:()=>false}),$z1SdkMgr:{AdType:{AdFreeTime:1},SdkMgr:one({playVideo(type,success,cancel){pending.push({success,cancel});}})},$z1PlayerMgr:{PlayerMgr:one({getTrackData:()=>({youmengTrack:()=>calls.push('track')})})},$z1GAD_App:{default:{instance:{enter_App(...args){entered.push(args);}}}},$z1AudioMgr:{AudioMgr:one({stopMusic:noop})},$z1UIMgr:{UIMgr:one({getUIById:()=>null})},require:name=>name==='GAD_Configs'?{GADConfig:{EnergyCost:5}}:assert.fail(name)};
+ ui.enter=method('KinghtFallHomeBattleCtrl','EnterSubPlay',scope);ui.disable=method('KinghtFallHomeBattleCtrl','onDisable',scope);return{ui,pending,entered,calls,scope,player};
+}
+test('wall cooldown ad captures unlock stage, launches once, and cannot outlive a disabled or destroyed home controller',()=>{
+ for(const change of ['none','disable','destroy','analytics']){const f=wall();f.ui.enter(0);assert.equal(f.pending.length,1);if(change==='disable')f.ui.disable();if(change==='destroy'){f.ui.node=null;f.ui.subPlayStage=null;f.ui.destroyed=true;}if(change==='analytics')f.scope.$z1PlayerMgr.PlayerMgr.getInstance().getTrackData=()=>({youmengTrack(){f.ui.disable();}});else f.ui.subPlayStage=[90];f.pending[0].success();f.pending[0].success();f.pending[0].cancel();assert.equal(f.entered.length,change==='none'?1:0);if(change==='none'){assert.equal(f.entered[0][2].unlockStage,3);f.entered[0][0]();f.entered[0][1]();assert.deepEqual(f.calls,['track','cooldown','refresh']);}assert.equal(f.ui._wallDefenseEntering,false);}
+});
+test('an old wall SDK cancellation cannot clear a newer offer after re-enable',()=>{
+ const f=wall();f.ui.enter(0);f.ui.disable();f.ui.enter(0);const replacement=f.ui._wallEntryRequest;f.pending[0].cancel();assert.equal(f.ui._wallEntryRequest,replacement);assert.equal(f.ui._wallDefenseEntering,true);f.pending[1].success();assert.equal(f.entered.length,1);
+});

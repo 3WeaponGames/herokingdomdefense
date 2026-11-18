@@ -71,9 +71,11 @@ var def_KinghtFallBulletEnemy8 = function (t) {
   _ctor.prototype.freeNode = function (t) {
     if (this.state === 2) return;
     undefined === t && (t = true);
-    t && $z1KinghtFallUIGame.default.instance.ctrGame.freeEnemyBullet(this);
+    var game = this.combatContext || $z1KinghtFallUIGame.default.instance.ctrGame, owner = this.ctrPar;
+    t && game && cc.isValid(game, true) && game.freeEnemyBullet(this);
     this.cancel();
-    this.ctrPar.freeBullet(this);
+    if (owner && cc.isValid(owner, true) && (!owner.node || cc.isValid(owner.node, true)) && (!owner.ndBulletPat || cc.isValid(owner.ndBulletPat, true))) owner.freeBullet(this);
+    else if (cc.isValid(this.node, true) && this.node.destroy) this.node.destroy();
   };
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallBulletEnemy.default);

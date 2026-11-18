@@ -32,3 +32,27 @@ test('blocked squad areas produce living units that walk out without doorway tel
 test('a casualty respawns safely around the squad point without moving or reviving living members',()=>{
  const f=fixture(4);f.b.initSoldier();safe(f);const casualty=f.b.enemyList[0],living=f.b.enemyList[1],position={x:living.node.x,y:living.node.y};living.hp=37;casualty.state=4;casualty.hp=0;casualty.node.active=false;casualty.rigidBody.active=false;f.b.addDie(casualty);f.b.doTime(.2);safe(f);assert.equal(living.hp,37);assert.equal(living.node.x,position.x);assert.equal(living.node.y,position.y);assert.equal(f.created(),4);
 });
+
+test('a prefab request cancelled by a battle epoch change is retried without resetting living squadmates',()=>{
+ const f=fixture(3),create=f.game.addSoldier,requests=[];f.game._combatEpoch=1;
+ f.game.addSoldier=(id,done)=>{const epoch=f.game._combatEpoch;requests.push(()=>{if(f.game._combatEpoch===epoch)create(id,done);});};
+ f.b.initSoldier();assert.equal(requests.length,3);requests[0]();requests[1]();
+ const living=f.b.enemyList.slice(),positions=living.map(u=>({x:u.node.x,y:u.node.y}));living[0].hp=37;
+ f.game._combatEpoch++;requests[2]();assert.equal(f.created(),2);
+ f.tick(.3);assert.equal(requests.length,4,'The abandoned roster slot must request its prefab again');requests[3]();
+ assert.equal(f.created(),3);safe(f);assert.equal(living[0].hp,37);living.forEach((unit,i)=>assert.deepEqual({x:unit.node.x,y:unit.node.y},positions[i]));
+ f.tick(.3);assert.equal(requests.length,4,'Repair must not request another copy of a filled slot');
+});
+
+test('slow current roster requests are shared by repeated repair ticks',()=>{
+ const f=fixture(3),create=f.game.addSoldier,requests=[];f.game._combatEpoch=1;
+ f.game.addSoldier=(id,done)=>requests.push(()=>create(id,done));f.b.initSoldier();
+ for(let i=0;i<5;i++)f.tick(.3);assert.equal(requests.length,3);requests.forEach(done=>done());safe(f);assert.equal(f.created(),3);
+});
+
+test('roster repair preserves the capacity reduction perk and authored bonus soldiers',()=>{
+ const f=fixture(3),buffs=f.e.stubs.KinghtFallEnum.KinghtFallEnumBuffCfg;let bonus=0;
+ f.game.gameData.getGameBuff=id=>id===buffs.Buff43?{}:id===buffs.Buff23&&bonus?{Pamer:[bonus]}:null;
+ f.b.initSoldier();f.tick(.3);assert.equal(f.created(),2);assert.equal(f.b.enemyList.filter(Boolean).length,2);
+ bonus=2;f.b.VideoTimes=1;f.b.initSoldier();f.tick(.3);assert.equal(f.b.enemyList.filter(Boolean).length,5);assert.equal(f.created(),5);
+});

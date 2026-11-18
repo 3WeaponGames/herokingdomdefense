@@ -162,9 +162,11 @@ var def_KinghtFallGameCtrlData = function () {
     this.loadMonster(restoring);
   };
   _ctor.prototype.setRound = function () {
+    var round = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getRoundNum(this.levelCfg.Level);
+    var t = Number.isInteger(round) && round > 0 && this.levelCfg.WaveCfg[round - 1];
+    if (!t) throw new Error("This saved wave is no longer available. Start a new game for this stage.");
     this._roundCompleted = false;
-    this.round = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getRoundNum(this.levelCfg.Level);
-    var t = this.levelCfg.WaveCfg[this.round - 1];
+    this.round = round;
     this.videoCoin = t.CommerceSliver;
     this.enemyQueue = {};
     this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
@@ -498,10 +500,15 @@ var def_KinghtFallGameCtrlData = function () {
     return false;
   };
   _ctor.prototype.onUpdata = function (t) {
+    var data = this, owner = this.ctrPar, epoch = owner && owner._combatEpoch, stage = owner && owner.gameStatus, ui = $z1KinghtFallUIGame.default.instance;
+    function current() { return !owner || cc.isValid(owner, true) && owner.gameData === data && owner._combatEpoch === epoch && owner.gameStatus === stage &&
+      (!ui || $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === owner); }
+    if (!current()) return;
     var advancedQueue = false;
     if (this.authoredTimeline) {
       var self = this;
-      this.authoredTimeline.advance(t, function (unit, spawn, route) { advancedQueue = true; self.ctrPar.addEnemy(unit, spawn, route); });
+      this.authoredTimeline.advance(t, function (unit, spawn, route) { if (current()) { advancedQueue = true; self.ctrPar.addEnemy(unit, spawn, route); } });
+      if (!current()) return;
       if (advancedQueue) this.enemyQueue = this.authoredTimeline.queue();
     } else {
     this.time[i.MonsterGenerate] += t;
@@ -514,6 +521,7 @@ var def_KinghtFallGameCtrlData = function () {
             var a = n[0];
             advancedQueue = true;
             this.ctrPar.addEnemy(a.id, parseInt(e));
+            if (!current()) return;
             a.num--;
             a.num <= 0 && n.shift();
           }
@@ -521,8 +529,12 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
     }
-    for (var o = 0; o < this.enemyList.length; o++) {
-      require("RelicCombat").updateEnemy(this.enemyList[o], t);
+    var roster = this.enemyList, o = 0;
+    for (var remaining = roster.length; remaining > 0 && o < roster.length; remaining--) {
+      var enemy = roster[o];
+      if (enemy) require("RelicCombat").updateEnemy(enemy, t);
+      if (!current() || this.enemyList !== roster) return;
+      if (roster[o] === enemy) o++;
     }
     require("RelicBattle").updateArmyBanner(this, t);
     // Delay groups do not create an enemy whose death can finish the wave.
@@ -536,12 +548,15 @@ var def_KinghtFallGameCtrlData = function () {
     this.enemyList.push(t);
   };
   _ctor.prototype.delEnemy = function (t) {
+    var removed = false;
     for (var e = 0; e < this.enemyList.length; e++) {
       if (this.enemyList[e].uuid == t.uuid) {
         this.enemyList.splice(e, 1);
+        removed = true;
         break;
       }
     }
+    if (!removed) return false;
     var n = this.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff03);
     if (n) {
       this.addTime[i.KillSoldier1]++;
@@ -636,6 +651,10 @@ var def_KinghtFallGameCtrlData = function () {
   _ctor.prototype.addGameBuff = function (t, restoring) {
     var e;
     var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuffCfgById(t);
+    if (!n) {
+      if (restoring) throw new Error("A saved perk is no longer available. Start a new game for this stage.");
+      return false;
+    }
     this.buffList.push({
       id: t,
       pamer: n.Pamer,

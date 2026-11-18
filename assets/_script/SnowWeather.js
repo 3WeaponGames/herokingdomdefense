@@ -46,12 +46,12 @@ function releaseSnapshot(record){
 }
 function capture(record){
   if(!cc.RenderTexture||!cc.Camera||!cc.SpriteFrame)return false;
-  var cameraNode,texture,frame,node;
+  var cameraNode,texture,frame,node,rendered=false;
   try{
     texture=new cc.RenderTexture();texture.initWithSize(Math.ceil(record.area.width),Math.ceil(record.area.height));
     cameraNode=new cc.Node("Snow pause capture");cameraNode.setParent(record.node.parent);cameraNode.setPosition(cc.v2(record.area.minX+record.area.width/2,record.area.minY+record.area.height/2));cameraNode.z=1000;var camera=cameraNode.addComponent(cc.Camera);camera.enabled=false;camera.alignWithScreen=false;camera.ortho=true;camera.orthoSize=record.area.height/2;camera.targetTexture=texture;
     camera.clearFlags=cc.Camera.ClearFlags.COLOR|cc.Camera.ClearFlags.DEPTH|cc.Camera.ClearFlags.STENCIL;camera.backgroundColor=cc.color(0,0,0,0);
-    camera.render(record.node);
+    rendered=true;camera.render(record.node);
     node=new cc.Node("Frozen snow");node.setParent(record.node.parent);node.group=record.node.group;node.setPosition(cc.v2(record.area.minX+record.area.width/2,record.area.minY+record.area.height/2));
     frame=new cc.SpriteFrame(texture);var sprite=node.addComponent(cc.Sprite);sprite.spriteFrame=frame;
     // The capture already contains the source-alpha weighted light. Add that
@@ -59,7 +59,12 @@ function capture(record){
     sprite.srcBlendFactor=cc.macro.ONE;sprite.dstBlendFactor=cc.macro.ONE;node.scaleY=-1;
     record.snapshot={node:node,sprite:sprite,texture:texture,frame:frame};return true;
   }catch(error){if(node)node.destroy();if(frame)frame.destroy();if(texture)texture.destroy();return false;}
-  finally{if(cameraNode){cameraNode.active=false;cameraNode.destroy();}}
+  finally{
+    if(cameraNode){cameraNode.active=false;cameraNode.destroy();}
+    // Native subtree capture consumes scene-wide transform/opacity changes.
+    // Re-inherit them for unrelated renderers, even when the capture throws.
+    if(rendered&&cc.sys&&cc.sys.isNative&&cc.RenderFlow){var scene=cc.director.getScene();if(scene)scene._renderFlag|=cc.RenderFlow.FLAG_WORLD_TRANSFORM|cc.RenderFlow.FLAG_OPACITY;}
+  }
 }
 function pause(record,value,allowCapture){
   var native=cc.sys&&cc.sys.isNative;

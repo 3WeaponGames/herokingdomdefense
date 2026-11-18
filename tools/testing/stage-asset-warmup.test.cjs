@@ -18,6 +18,16 @@ test('all later-wave enemies, legacy waves, all upgrade choices and allied rigs 
  const before=JSON.stringify(config);for(const level of config.LevelCfg){const plan=Warm.plan(config,level,names),keys=new Set(plan.items.map(i=>i.key));assert.equal(keys.size,plan.items.length);for(const wave of level.WaveCfg)for(const spawn of wave.SpawnTimeline||[])assert(keys.has(names.Enemy+'/'+config.SoldierCfg[spawn.unitId].prefab+':prefab'));for(const id of plan.kinds)for(const row of config.BuildEnum[id].levelList||[])if(row.Appearance)assert(keys.has('resources/'+row.Appearance.sprite+':frame'));}
  const legacy=Warm.unitIds({WaveCfg:[{RefreshSoldierKind:['1#123,4;456,2']},{SpawnTimeline:[{unitId:789}],RefreshSoldierKind:['1#999,1']}]});assert.deepEqual(legacy,['123','456','789']);assert.equal(JSON.stringify(config),before);
 });
+
+test('legacy wave pauses warm only real actors and retain timeline precedence without changing authored packets',()=>{
+ const level=JSON.parse(JSON.stringify(config.LevelCfg[6])),wave=level.WaveCfg[5];
+ assert(wave.RefreshSoldierKind.some(group=>group.includes('#-1,10;91064,3')));
+ level.WaveCfg=[{RefreshSoldierKind:wave.RefreshSoldierKind.slice()}];const before=JSON.stringify(level),plan=Warm.plan(config,level,names);
+ assert(!plan.enemies.includes('-1'));assert(plan.enemies.includes('91064'));
+ assert(plan.items.some(item=>item.bundle===names.Enemy&&item.path===config.SoldierCfg[91064].prefab));assert.equal(JSON.stringify(level),before);
+ assert.deepEqual(Warm.unitIds({WaveCfg:[{RefreshSoldierKind:['1#-1,10;123,2;-1,4;456,1']},{SpawnTimeline:[{unitId:789}],RefreshSoldierKind:['1#999,1;-1,1']}]}),['123','456','789']);
+ assert.throws(()=>Warm.plan(config,{...level,WaveCfg:[{RefreshSoldierKind:['1#-2,1']}]},names),/Missing stage enemy -2/);
+});
 test('selected character parts, baked layers, tower projectiles and every skill phase are prepared',()=>{
  const level=config.LevelCfg[0],base=Warm.plan(config,level,names),clips=require('../../assets/_script/HeroSkillVFXCatalog').clips,items=Warm.presentationPlan(config,level,base,catalogs,{names,style:'fighter',skillClips:clips}),keys=new Set(items.map(i=>i.key));
  for(const clip of clips.filter(c=>c.style==='fighter'))assert(keys.has((clip.bundle||'resources')+'/'+clip.resource+':'+(clip.kind==='spine'?'spine':'frame')));

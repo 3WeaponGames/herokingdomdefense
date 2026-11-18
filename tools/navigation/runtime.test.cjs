@@ -436,6 +436,7 @@ test('Game controller invalidates snapshots per update without accumulating hist
   Object.assign(ctrl, e.game, { ctrPlay: { node: new Node('hero', e.game.ndMain, 0, 0), doMove() {} }, gameStatus: -1, isAgg: true,
     pathList: [], pathIndex: 0 });
   ctrl.gameData.soldiers = [{ onUpdate() {} }];
+  e.stubs.KinghtFallUIGame.default.instance.ctrGame = ctrl;
   const nav = e.nav.get(ctrl); nav.refresh(); assert.equal(nav._refreshPending, false);
   ctrl.onUpdate(0); assert.equal(nav._refreshPending, true);
   for (let i = 0; i < 1000; i++) { ctrl.ctrPlay.node.x = i; ctrl.onUpdate(0); }
@@ -478,7 +479,7 @@ test('UIGame settles the ancestor Widget before activating map Rigidbody compone
   const context = { cc, require(name) {
     assert.equal(name, 'StageAssetWarmup');
     return { create: () => ({ reveal() {}, run: () => ({ then(ready) { ready({}); return { catch() {} }; } }) }) };
-  }, BattleSounds: {}, $z1Appcfg: { BaseEventName: {} }, TestMode: { getInstance: () => ({ setGameplayTarget() {} }) },
+  }, BattleMusic: require('../../assets/_script/BattleMusic'), BattleSounds: {}, $z1Appcfg: { BaseEventName: {} }, TestMode: { getInstance: () => ({ setGameplayTarget() {} }) },
     $z1KinghtFallConfig: { KinghtFallAudioId: {}, KinghtFallParameter: {}, KinghtFallBundelName: {} },
     $z1AudioMgr: { AudioMgr: { getInstance: () => ({ playMusic() {} }) } }, $z1KinghtFallGameCtrl: { default: function () {} },
     $z1KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getLevelCfgById: () => ({ prefab: 'Map01' }) }) } } };

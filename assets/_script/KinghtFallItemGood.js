@@ -22,8 +22,10 @@ var def_KinghtFallItemGood = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.initView = function (t, size) {
     var e = this;
+    var request = this._itemRequest = (this._itemRequest || 0) + 1;
     var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGoodsCfgById(t.id);
     this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, n.sprBg, function (t) {
+      if (e._itemRequest !== request) return;
       e.sprBg.spriteFrame = t;
       if (size) {
         var bounds = t.getOriginalSize(), scale = size / Math.max(bounds.width, bounds.height);
@@ -32,6 +34,7 @@ var def_KinghtFallItemGood = function (t) {
       }
     });
     this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, n.icon, function (t) {
+      if (e._itemRequest !== request) return;
       e.sprIcon.spriteFrame = t;
       if (size) {
         var bounds = t.getOriginalSize(), scale = size / Math.max(bounds.width, bounds.height);

@@ -36,8 +36,19 @@ function discard(owner, record) {
 }
 function points(source, attachment, slot, owner, box) {
     var vertices = [];
-    if (attachment.worldVerticesLength) attachment.computeWorldVertices(slot, 0, attachment.worldVerticesLength, vertices, 0, 2);
-    else attachment.computeWorldVertices(slot.bone, vertices, 0, 2);
+    if (typeof attachment.computeWorldVertices === "function") {
+        if (attachment.worldVerticesLength) attachment.computeWorldVertices(slot, 0, attachment.worldVerticesLength, vertices, 0, 2);
+        else attachment.computeWorldVertices(slot.bone, vertices, 0, 2);
+    } else {
+        // Native RegionAttachment exposes four local XY offsets, but does not
+        // bind the web vertex method. Keep the crop's current animated bone.
+        var offsets = typeof attachment.getOffset === "function" && attachment.getOffset(), bone = slot.bone;
+        if (!offsets || offsets.length !== 8 || !bone) return;
+        for (var at = 0; at < 8; at++) if (typeof offsets[at] !== "number" || !isFinite(offsets[at])) return;
+        var a = bone.a, b = bone.b, c = bone.c, d = bone.d, x = bone.worldX, y = bone.worldY;
+        for (at = 0; at < 8; at += 2) vertices.push(offsets[at] * a + offsets[at + 1] * b + x,
+            offsets[at] * c + offsets[at + 1] * d + y);
+    }
     for (var i = 0; i < vertices.length; i += 2) {
         var p = owner.node.convertToNodeSpaceAR(source.node.convertToWorldSpaceAR(cc.v2(vertices[i], vertices[i + 1])));
         box.minX = Math.min(box.minX, p.x);box.maxX = Math.max(box.maxX, p.x);box.minY = Math.min(box.minY, p.y);box.maxY = Math.max(box.maxY, p.y);

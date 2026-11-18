@@ -209,7 +209,7 @@ test('Upcoming columns follow the actual visible safe area through canvas transf
 });
 test('battle start immediately clears every marker and queued portraits stay hidden until planning resumes',()=>{
  const f=liveFixture(),s=f.state,pathNode=new Node('Path',f.ui);new Node('ndEnemy1',pathNode).setPosition(-600,650);
- Object.assign(s.ctrGame,{gameStatus:0,ndPath:pathNode,ctrPlay:{ndRange:new Node('Range')}});
+ Object.assign(s.ctrGame,{gameStatus:0,ndPath:pathNode,ctrPlay:{ndRange:new Node('Range')}});s.playBattleMusic=()=>{};
  Object.assign(s.ctrGame.gameData,{baseBuild:{getLevel:()=>1},enemyQueue:{1:[{id:7,num:9}]},getBulidList:()=>[],startRoundGame(){}});
  s.ctrUI.ndLight=new Node('Light');update.call(s,.016);assert(s.enemyIconInfo[1].ndItem.active);
  const live={id:7,tag:true,_guideLive:true,ndItem:f.indicator()};s.enemyIconInfo['live:0']=live;live.ndItem.active=true;

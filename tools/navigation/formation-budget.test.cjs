@@ -21,5 +21,11 @@ test('geometry changes cancel unfinished formation work before publishing destin
 });
 test('a pooled unit reused in the same roster invalidates an unfinished layout',()=>{
  const e=fixture();clock(e);e.nav.beginFrame(e.g);e.g.getArmyOrderGoal(e.units[0],{x:0,y:0});const old=e.g._followFormationJob;assert(old);
- e.units[0]._combatGeneration=(e.units[0]._combatGeneration||0)+1;e.nav.beginFrame(e.g);e.g.getArmyOrderGoal(e.units[0],{x:0,y:0});const next=e.g._followFormationJob;assert(next&&next!==old);assert.equal(next.generations[0],e.units[0]._combatGeneration);
+ e.units[0].node._combatGeneration=(e.units[0].node._combatGeneration||0)+1;e.nav.beginFrame(e.g);e.g.getArmyOrderGoal(e.units[0],{x:0,y:0});const next=e.g._followFormationJob;assert(next&&next!==old);assert.equal(next.generations[0],e.units[0].node._combatGeneration);
+});
+test('a completed formation rebuilds roles and slots after actual same-component initialization',()=>{
+ const e=environment(),g=e.game;Object.setPrototypeOf(g,e.load('KinghtFallGameCtrl').default.prototype);Object.assign(g,{pathIndex:0,isAgg:false,mapSize:{width:2000,height:2000},rallyPoint:{index:1,pos:{x:0,y:0}}});
+ const dm=e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance(),base={...e.cfg};dm.getSoldierCfgById=id=>({...base,ID:id,AttackType:id===90003?2:1});
+ const units=Array.from({length:8},(_,i)=>{const u=e.actor('KinghtFallSoldierBase',i*25-90,-180);u.node.addComponent(PhysicsBoxCollider).size={width:22,height:22};u.initData(i===7?90003:90001);g.gameData.soldiers.push(u);return u;});const u=units[0],anchor={x:0,y:0};e.nav.beginFrame(g);g.getArmyOrderGoal(u,anchor);const first=g._armyFormation;assert(first.layout.groups.front.includes(u));
+ u.initData(90003);g.getArmyOrderGoal(u,anchor);assert.notEqual(g._armyFormation,first);assert(g._armyFormation.layout.groups.rear.includes(u));assert(!g._armyFormation.layout.groups.front.includes(u));assert.equal(g._armyFormation.generations[0],u.node._combatGeneration);
 });

@@ -23,6 +23,24 @@ test('splash preserves authored nearest order, inclusive radius, recipient cap a
  const f=fixture(),edge=f.target(110),outside=f.target(111);f.enemy.cfg.Data[2]=3;f.h.d.soldierList=[outside,edge,f.later,f.first];f.enemy.doAttack();assert.deepEqual(f.hits.map(hit=>[hit.target.uuid,hit.amount]),[['unit-10',10],['unit-20',5],['unit-30',5],['unit-110',5]]);
 });
 
+for(const [id,expected]of [[90002,20*(2/3)],[90001,20]])test('splash feedback uses real saved '+(id===90002?'Guardian mitigation':'standard damage')+' without changing its flat authored attack',()=>{
+ const f=fixture(),manager=f.h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+ manager.data.GameTools=structuredClone(authored.GameTools);
+ f.h.e.stubs.GameToolsOverrides=f.h.load('GameToolsOverrides');f.h.e.stubs.RelicCombat=f.h.load('RelicCombat');
+ const target=f.h.e.actor('KinghtFallSoldierBase',20,0,f.h.g.ndMain);target.cfg=authored.AllyCfg[id];target.hp=target.hpMax=10000;target.node._combatGeneration=1;
+ f.h.d.soldierList=[target];f.enemy.cfg=authored.SoldierCfg[90007];
+ f.enemy.doSplashDamage(f.primary);
+ assert(Math.abs(10000-target.hp-expected)<1e-8);assert.equal(f.feedback.length,1);assert(Math.abs(f.feedback[0].n-expected)<1e-8);
+ assert.equal(f.effects.filter(effect=>effect==='splash').length,1);
+});
+
+test('a valid splash recipient returning zero never displays the unreduced attack',()=>{
+ const f=fixture();f.h.d.soldierList=[f.first];f.first.onAttacked=amount=>{f.hits.push({target:f.first,amount});return 0;};
+ f.enemy.doSplashDamage(f.primary);
+ assert.deepEqual(f.hits.map(hit=>hit.amount),[5]);assert.deepEqual(f.feedback.map(value=>value.n),[0]);
+ assert.equal(f.effects.filter(effect=>effect==='splash').length,1);
+});
+
 test('primary or splash callbacks cannot deliver an old splash into a retired battle/source',()=>{
  for(const [name,retire]of Object.entries(retirements)){
   const f=fixture();f.primary.onAttacked=function(amount){f.hits.push({target:this,amount});retire(f);return amount;};f.enemy.doAttack();assert.equal(f.hits.length,1,name);assert.equal(f.feedback.length,0,name);

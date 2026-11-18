@@ -16,6 +16,7 @@ var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
+var EarnedAds = require("GlobalAdReward");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -36,6 +37,7 @@ var def_KinghtFallUIAddCurrency = function (t) {
     this.goodId = t;
     this.call = e;
     this.callFail = n;
+    this._adRewardPending = false;
   };
   _ctor.prototype.start = function () {
     var t = this;
@@ -60,28 +62,46 @@ var def_KinghtFallUIAddCurrency = function (t) {
       t.closeUI();
     }, this);
     this.btnReward.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-        $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.gold_reward);
-        if (t.call) {
-          t.call(t.goldNum);
-        } else {
-          switch (t.goodId) {
+      var pending = EarnedAds.get(t, "_currencyAdReward");
+      if (pending) { pending.retry(); return; }
+      if (t._adRewardPending) { t.completeAdReward(); return; }
+      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), good = t.goodId, amount = t.goldNum, call = t.call;
+      // The legacy custom callback is owned by this panel; that branch has
+      // never credited the account's global currency balance.
+      var position = EarnedAds.point(t.sprIcon.node.convertToWorldSpaceAR(cc.Vec2.ZERO)), stage = player.getUserData().getMaxStage(), tracked = false;
+      var request = EarnedAds.create(t, "_currencyAdReward", player, function () {
+        if (!call) {
+          if (!tracked) { tracked = true; switch (good) {
             case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin:
               $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.gold);
-              $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_gold_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+              $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_gold_Y, stage);
               break;
             case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond:
               $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.diamond);
-              $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_diamond_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-          }
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([{
-            id: e.enumValue,
-            num: t.goldNum
-          }], 1, t.sprIcon.node.convertToWorldSpaceAR(cc.Vec2.ZERO));
+              $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_diamond_Y, stage);
+          } }
+          if (!player.grantAdRewards([{ id: good, num: amount }], position)) return false;
         }
-        t.closeUI();
-      }, null, t.goodId === $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin ? "home.currency.gold" : "home.currency.gems");
+        return { done: true };
+      }, function (_value, current) {
+        t._adRewardPending = false;
+        $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.gold_reward);
+        if (current() && call) call(amount);
+        if (current()) t.closeUI();
+      });
+      if (request) $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, request.earn, request.cancel, good === $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin ? "home.currency.gold" : "home.currency.gems");
     }, this);
+  };
+  _ctor.prototype.completeAdReward = function () {
+    var request = EarnedAds.get(this, "_currencyAdReward");
+    if (request) return request.retry();
+    if (!this._adRewardPending) return false;
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    if (!player.grantAdRewards([{ id: this.goodId, num: this.goldNum }], this.sprIcon.node.convertToWorldSpaceAR(cc.Vec2.ZERO))) return false;
+    this._adRewardPending = false;
+    $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.gold_reward);
+    this.closeUI();
+    return true;
   };
   cc__decorate([ccp_property(cc.Label)], _ctor.prototype, "labTitle1", undefined);
   cc__decorate([ccp_property(cc.Sprite)], _ctor.prototype, "sprIcon", undefined);

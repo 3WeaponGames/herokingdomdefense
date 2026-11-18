@@ -41,6 +41,21 @@ test('Mystic retains only its mark phase artwork and preloads it once without cr
  const f=fixture('mystic');f.P.preload(f.rt);assert.equal(f.loads.length,2);assert.equal(f.main.children.length,1);assert.equal(f.hud.visual.node.children.length,0);f.P.preload(f.rt);assert.equal(f.loads.length,2);f.finish();assert.equal(f.assets.length,2);f.P.preload(f.rt);assert.equal(f.loads.length,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
 });
 
+test('one Mystic attachment pass samples its live VFX anchors once and refreshes them on the next pass',()=>{
+ const f=fixture('mystic'),target=f.target();let samples=0;f.hero.getAttWpos=()=>{samples++;return{x:f.hero.node.x,y:70};};
+ f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;
+ f.paint();assert.equal(samples,1);f.hero.node.x=37;f.paint();assert.equal(samples,2);assert.equal(f.rt._presentation.vfxContext.origin.x,37);f.P.clear(f.rt);
+});
+
+test('Skirmisher artwork keeps its captured origin without resampling an unused live weapon or body',()=>{
+ const f=fixture('skirmisher',true);let samples=0;f.hero.getAttWpos=()=>{samples++;return{x:13,y:77};};
+ f.rt.skillCast={key:1,at:0,impactAt:.2,origin:{x:30,y:80},direction:{x:1,y:0},radius:250};f.rt.state.time=.3;
+ f.paint();f.finish();f.paint();assert.equal(samples,0);assert.equal(f.rt._presentation.vfxContext.origin,null);assert.equal(f.rt._presentation.vfxContext.heroBody,null);
+ const cast=f.rt._presentation.vfxFrame.entities.find(e=>e.slot==='cast');assert(cast);assert.deepEqual({...cast.origin},{x:30,y:80});
+ f.hero.node.x=55;f.paint();assert.equal(samples,0);assert.deepEqual({...f.rt._presentation.vfxFrame.entities.find(e=>e.slot==='cast').origin},{x:30,y:80});
+ f.rt.settings.visual.beamResource='custom';f.P.advanceVFX(f.rt);assert.equal(samples,1,'An authored cross-style beam must retain its live weapon anchor');f.P.clear(f.rt);
+});
+
 test('passive and buff may share one atlas without inheriting the other slot tint, opacity or scale',()=>{
  const f=fixture('fighter'),clip=Catalog.clips.find(c=>c.id==='mystic-beam-body-loop');
  Settings.applyClip(f.rt.settings.visual,'passiveResource',clip);Settings.applyClip(f.rt.settings.visual,'buffResource',clip);

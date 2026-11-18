@@ -1,3 +1,8 @@
+function heroLifeCurrent(owner, node, generation, timers, game, data, epoch) {
+  var ui = $z1KinghtFallUIGame.default.instance;
+  return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner.time === timers && !owner._isPooled &&
+    (!game || cc.isValid(game, true) && game.gameData === data && game._combatEpoch === epoch && ui && cc.isValid(ui, true) && !ui.isclose && ui.ctrGame === game);
+}
 var BattleSounds = require("BattleSounds");
 var Navigation = require("KinghtFallNavigation");
 var GameToolsOverrides = require("GameToolsOverrides");
@@ -102,6 +107,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     }
   };
   _ctor.prototype.initData = function () {
+    this._combatGame = $z1KinghtFallUIGame.default.instance.ctrGame;
     GameToolsOverrides.cancel(this);
     this._relicHero = true;
     this._relicMoving = false;
@@ -158,11 +164,15 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.ctrHp.setHp(this.hp, this.hpMax);
   };
   _ctor.prototype.onRestart = function (t) {
+    var node = this.node, generation = node._combatGeneration, timers = this.time, ui = $z1KinghtFallUIGame.default.instance;
+    var game = ui && ui.ctrGame, data = game && game.gameData, epoch = game && game._combatEpoch;
     GameToolsOverrides.cancel(this);
+    if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
     Navigation.reset(this);
     this._relicMoving = false;
     this.node._combatActor = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
+    generation = node._combatGeneration;
     this.time[C.Attack] = 0;
     undefined === t && (t = false);
     if (t) {
@@ -171,16 +181,22 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       this.time[C.hpRecover] = 0;
       this.time[C.RecoverCd] = 0;
       this.initBuffData();
+      if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
     }
     $z1AudioMgr.AudioMgr.getInstance().setChannelGain($z1KinghtFallConfig.KinghtFallParameter.BGMusic, 1);
+    if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
     this.ctrPlayAni.onRestart();
+    if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
     this.state = r.Alive;
     this.time[C.Reborn] = this.time[C.RebornTime];
     this.rigidBody.active = true;
     this.hp = this.hpMax;
     this.ctrHp.setHp(this.hp, this.hpMax);
+    if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
     this.ndRange.active = false;
+    if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
     t && this.ctrPlayAni.setBus(0);
+    if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
     this.tagEnemy = null;
     this.delAllBuff();
   };
@@ -222,12 +238,15 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return this.ctrPlayAni.node.scaleX < 0;
   };
   _ctor.prototype.onUpdata = function (t) {
+    var node = this.node, generation = node._combatGeneration, timers = this.time, game = $z1KinghtFallUIGame.default.instance.ctrGame, data = game.gameData, epoch = game._combatEpoch;
     for (var e = 0; e < this.debuffInfo.length; e++) {
       var n = this.debuffInfo[e];
       if (-1 != n.timeMax) {
         n.time += t;
         if (n.time >= n.timeMax) {
-          this.delBuffIdx(e), e--;
+          this.delBuffIdx(e);
+          if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
+          e--;
         }
       }
     }
@@ -236,19 +255,23 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         if (-1 != this.time[C.Attack]) {
           this.time[C.Attack] += t * this.getAttSpeed();
           this.time[C.Attack] >= 1 && this.onFindEnemy();
+          if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
         }
         this.time[C.NoDie] -= t;
         if (!this._regenerationDisabled) this.time[C.RecoverCd] -= t;
         if (!this._regenerationDisabled && this.time[C.RecoverCd] <= 0) {
           this.time[C.hpRecover] += t;
           if (this.time[C.hpRecover] >= 1) {
-            this.hp += this.getHpRecoverSpeed(), this.hp > this.hpMax && (this.hp = this.hpMax), this.ctrHp.setHp(this.hp, this.hpMax), this.time[C.hpRecover]--;
+            this.hp += this.getHpRecoverSpeed(), this.hp > this.hpMax && (this.hp = this.hpMax), this.ctrHp.setHp(this.hp, this.hpMax);
+            if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
+            this.time[C.hpRecover]--;
           }
         }
         break;
       case r.Dead:
         this.time[C.Reborn] += t;
         this.time[C.Reborn] >= this.time[C.RebornTime] && this.onReborn();
+        if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
         this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.ReviveShow, this.time[C.RebornTime] - this.time[C.Reborn]);
     }
   };
@@ -285,27 +308,37 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return this.state != r.Alive;
   };
   _ctor.prototype.onAttacked = function (t, attacker, ranged) {
+    var node = this.node, generation = node && node._combatGeneration, timers = this.time, game = $z1KinghtFallUIGame.default.instance.ctrGame, data = game && game.gameData, epoch = game && game._combatEpoch;
+    if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch) || this.isDead()) return 0;
     if (t > 0 && this.time[C.NoDie] > 0 && BattleSounds.effect) BattleSounds.effect("impact-shield", this);
     if (!(this.time[C.NoDie] > 0)) {
       var awareness = require("AllyAwareness"), notice = awareness.capture(this, attacker, $z1KinghtFallUIGame.default.instance.ctrGame);
       t = GameToolsOverrides.damageTaken(this, "hero", t);
+      if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return 0;
       t = RelicCombat.heroIncoming(this, t, attacker, ranged);
+      if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return 0;
       var received = Math.max(0, Math.min(this.hp, t));
       if (BattleSounds.hit) BattleSounds.hit(this, attacker, received);
+      if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return 0;
       this.time[C.NoDie] = this.time[C.NoDieTime];
       var shieldChance = RelicRuntime.value(RelicRuntime.current(), 120011);
       if (shieldChance > 0 && Math.random() < shieldChance) {
         $z1LogMgr.LogMgr.getInstance().info("***守护之盾");
         this.time[C.NoDie] += 3;
         if (BattleSounds.effect) BattleSounds.effect("shield-activate", this);
+        if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return 0;
       }
       this.hp -= t;
       awareness.notify(notice, received);
+      if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return t;
       if (this.hp <= 0) {
         this.hp = 0;
         this.onDead();
+        if (this.node === node && node._combatGeneration === (generation || 0) + 1) generation = node._combatGeneration;
+        if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return t;
       }
       this.ctrHp.setHp(this.hp, this.hpMax);
+      if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return t;
       RelicCombat.afterHeroHit(this, received, attacker);
       return t;
     }

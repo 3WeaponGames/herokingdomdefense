@@ -29,10 +29,11 @@ function fixture(width=750){
 }
 for(const width of [360,750])test('stage loading stays above the closed transition with readable native label bounds at width '+width,()=>{
   const f=fixture(width),root=f.screen.node,panel=root.getChildByName('Loading panel');
+  assert.equal(panel.getComponent(f.cc.Graphics),undefined,'Loading text and bar must have no dark card background');
   assert.equal(root.parent,f.uiRoot);assert(root.zIndex>f.transition.zIndex);assert(root.zIndex<f.cc.macro.MAX_ZINDEX,'Resource recovery must remain above preparation');
   for(const name of ['Stage name','Progress']){const node=panel.getChildByName(name),label=node.getComponent(f.cc.Label);assert(node.width>=120&&node.height>0);assert.equal(label.overflow,f.cc.Label.Overflow.SHRINK);assert(label.string.length>0);assert.equal(node.group,'UI');}
   f.screen.progress(.37);const label=panel.getChildByName('Progress').getComponent(f.cc.Label),fill=panel.getChildByName('Progress fill').getComponent(f.cc.Graphics);
-  assert.equal(label.string,'37%');assert.equal(fill.rectangles[0][2],Math.min(460,width-64)*.37);
+  assert.equal(label.string,'37%');assert.equal(fill.rectangles[0][2],Math.min(600,width-48)*.37);assert.equal(fill.rectangles[0][3],28);
   f.screen.progress(.2);assert.equal(label.string,'37%','Late callbacks cannot move the displayed preparation backwards');
   f.screen.progress(1);f.screen.reveal();assert.equal(root.getChildByName('Backdrop').active,false);assert.equal(root.destroyed,undefined);assert.equal(label.string,'100%');
   f.screen.destroy();f.screen.destroy();assert(root.destroyed);assert.equal(f.count(),0);

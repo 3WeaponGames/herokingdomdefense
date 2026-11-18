@@ -83,7 +83,8 @@ var exp_KinghtFallUtilLayout = function (t) {
       e = Math.ceil(this.layLen / this.maxCol);
       n = this.layLen > this.maxCol ? this.maxCol : this.layLen;
     }
-    this.node.setContentSize(t.width * n + (n - 1) * this.ctrLayout.spacingX + this.ctrLayout.paddingLeft + this.ctrLayout.paddingRight, t.height * e + (e - 1) * this.ctrLayout.spacingY + this.ctrLayout.paddingTop + this.ctrLayout.paddingBottom);
+    if (this.layLen === 0) e = n = 0;
+    this.node.setContentSize(t.width * n + Math.max(0, n - 1) * this.ctrLayout.spacingX + this.ctrLayout.paddingLeft + this.ctrLayout.paddingRight, t.height * e + Math.max(0, e - 1) * this.ctrLayout.spacingY + this.ctrLayout.paddingTop + this.ctrLayout.paddingBottom);
     var i = cc.v2(-this.node.width * this.node.anchorX, this.node.height * (1 - this.node.anchorY));
     var a = i.y - t.height / 2 - this.ctrLayout.paddingTop;
     var o = [];
@@ -110,7 +111,7 @@ var exp_KinghtFallUtilLayout = function (t) {
           break;
         case r.RIGHT:
           u = i.x + this.ctrLayout.paddingLeft + t.width / 2;
-          u += (this.maxCol - g) * (t.width + this.ctrLayout.spacingX);
+          u += (n - g) * (t.width + this.ctrLayout.spacingX);
       }
       for (var p = 0; p < g; p++) {
         switch (this.ctrLayout.horizontalDirection) {
@@ -137,7 +138,8 @@ var exp_KinghtFallUtilLayout = function (t) {
       e = this.layLen > this.maxCol ? this.maxCol : this.layLen;
       n = Math.ceil(this.layLen / this.maxCol);
     }
-    this.node.setContentSize(t.width * n + (n - 1) * this.ctrLayout.spacingX + this.ctrLayout.paddingLeft + this.ctrLayout.paddingRight, t.height * e + (e - 1) * this.ctrLayout.spacingY + this.ctrLayout.paddingTop + this.ctrLayout.paddingBottom);
+    if (this.layLen === 0) e = n = 0;
+    this.node.setContentSize(t.width * n + Math.max(0, n - 1) * this.ctrLayout.spacingX + this.ctrLayout.paddingLeft + this.ctrLayout.paddingRight, t.height * e + Math.max(0, e - 1) * this.ctrLayout.spacingY + this.ctrLayout.paddingTop + this.ctrLayout.paddingBottom);
     var i = cc.v2(-this.node.width * this.node.anchorX, this.node.height * (1 - this.node.anchorY));
     var a = i.x + t.width / 2 + this.ctrLayout.paddingLeft;
     var o = [];
@@ -156,15 +158,15 @@ var exp_KinghtFallUtilLayout = function (t) {
       var u = undefined;
       switch (this.alignColType) {
         case s.Top:
-          u = i.y - this.ctrLayout.paddingTop - t.width / 2;
+          u = i.y - this.ctrLayout.paddingTop - t.height / 2;
           break;
         case s.CENTER:
           var d = t.height * g + (g - 1) * this.ctrLayout.spacingY;
           u = i.y - this.ctrLayout.paddingTop - (this.node.height - this.ctrLayout.paddingTop - this.ctrLayout.paddingBottom) / 2 + d / 2 - t.height / 2;
           break;
         case s.BOTTOM:
-          u = i.y - this.ctrLayout.paddingTop - t.width / 2;
-          u -= (this.maxCol - g) * (t.height + this.ctrLayout.spacingY);
+          u = i.y - this.ctrLayout.paddingTop - t.height / 2;
+          u -= (e - g) * (t.height + this.ctrLayout.spacingY);
       }
       for (var p = 0; p < g; p++) {
         switch (this.ctrLayout.verticalDirection) {
@@ -181,7 +183,7 @@ var exp_KinghtFallUtilLayout = function (t) {
   _ctor.prototype.initLayout = function () {
     var t = Math.max(this.nodeList.length, this.layLen);
     for (var e = 0; e < t; e++) {
-      var n = this.getItem(e);
+      var n = this.nodeList[e];
       var i = this.getPos(e);
       if (i) {
         if (!n) {

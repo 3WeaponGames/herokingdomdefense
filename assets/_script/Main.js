@@ -169,8 +169,6 @@ var def_Main = function (t) {
       background.fill();
       var caption = new cc.Node("Message");
       caption.parent = node;
-      caption.width = node.width - 24;
-      caption.height = node.height - 12;
       var label = caption.addComponent(cc.Label);
       label.fontSize = 26;
       label.lineHeight = 30;
@@ -178,6 +176,8 @@ var def_Main = function (t) {
       label.overflow = cc.Label.Overflow.SHRINK;
       label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
       label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+      // Native Label creation measures its empty NONE-overflow text first.
+      caption.setContentSize(node.width - 24, node.height - 12);
       label.string = "[[loc:system.saveFailed]]";
     }
     this.saveNotice.active = true;

@@ -1,7 +1,7 @@
 "use strict";
 // Render-only stage preparation. We read the prefab template, then construct
 // only Sprite/Spine renderers. No building/controller/prefab lifecycle runs.
-var FX=require("BuildingDropShadow"), Runtime=require("BuildingDropShadowRuntime"),Manual=require("BuildingShadowRuntime"),serial=0;
+var FX=require("BuildingDropShadow"), Runtime=require("BuildingDropShadowRuntime"),Manual=require("BuildingShadowRuntime"),Parts=require("BuildingPartScale"),serial=0;
 function transform(node,frame){
   function p(x,y){return frame.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(x,y)));}
   var o=p(0,0),x=p(1,0),y=p(0,1);return[x.x-o.x,x.y-o.y,y.x-o.x,y.y-o.y,o.x,o.y];
@@ -11,7 +11,7 @@ function stamp(row,settings,owner){return JSON.stringify([row.ID,row.index,row.S
 function geometry(owner){return [owner.node.scaleX,owner.node.scaleY,owner.node.angle,[owner.ndAniMain,owner.ndAniDown].concat(owner.ndAniOther||[]).filter(Boolean).map(function(r){return[r.skeletonData&&(r.skeletonData.uuid||r.skeletonData._uuid),r.spriteFrame&&(r.spriteFrame.uuid||r.spriteFrame._uuid),transform(r.node,owner.node).map(function(n){return Math.round(n*100000)/100000;}),r.node.width,r.node.height,r.node.anchorX,r.node.anchorY];})];}
 function probe(template,row,root,assets,open){
   var node=new cc.Node("ShadowStructurePose");node.parent=root;node.angle=template.node.angle;var scale=require("BuildingWorldScale").value(row);node.scaleX=template.node.scaleX*scale;node.scaleY=template.node.scaleY*scale;
-  var owner={node:node,ndAniOther:[],buildInfo:{cfg:row},clones:[]};
+  var owner={node:node,ndAniOther:[],buildInfo:{cfg:row},clones:[],partScales:[]};
   var main=template.ndAniMain,kit=main&&main.skeletonData&&main.skeletonData.skeletonJson.wallKit,layout;
   if(kit){var endpoints=[];(template.ndAniOther||[]).forEach(function(r){(r.skeletonData&&r.skeletonData.skeletonJson.wallAnchors||[]).forEach(function(p){endpoints.push(main.node.convertToNodeSpaceAR(r.node.convertToWorldSpaceAR(cc.v2(p.x,p.y))));});});layout=require("WallKit").layout(template.wallRun?JSON.parse(template.wallRun):null,endpoints);}
   function dataFor(source){
@@ -34,10 +34,10 @@ function probe(template,row,root,assets,open){
       var opening=require("GateFacing").animation(r.skeletonData.skeletonJson,"open",template.wallOpening,false),animation=open&&r.findAnimation(opening)?opening:r.findAnimation("idle")?"idle":source.defaultAnimation;
       if(animation){var track=r.setAnimation(0,animation,false);if(open&&track){var duration=r.findAnimation(animation).duration;if(track.setTrackTime)track.setTrackTime(duration);else track.trackTime=duration;}}
       r.timeScale=0;if(r.update)r.update(0);if(r._nativeSkeleton&&r._nativeSkeleton.update)r._nativeSkeleton.update(0);
-      require("BuildingPartScale").apply(r,row);r.paused=true;
+      try{Parts.apply(r,row);}finally{if(r._buildingPartScale && r._buildingPartScale.ownerData)owner.partScales.push(r._buildingPartScale);}r.paused=true;
     });
   }
-  return owner;}catch(error){owner.ndAniOther.forEach(function(r){r.skeletonData=null;});owner.node.active=false;owner.node.destroy();owner.clones.forEach(function(asset){asset.destroy();});throw error;}
+  return owner;}catch(error){owner.partScales.forEach(Parts.dispose);owner.ndAniOther.forEach(function(r){r.skeletonData=null;});owner.node.active=false;owner.node.destroy();owner.clones.forEach(function(asset){asset.destroy();});throw error;}
 }
 function smaller(source){
   var factor=Math.min(1,256/Math.max(source.pixelWidth,source.pixelHeight));if(factor===1)return source;
@@ -56,7 +56,7 @@ async function prepare(prefab,config,level,session,progress){
     for(var i=0;i<jobs.length;i++){
       if(!session.current())throw Error("Stage shadow preparation cancelled");
       var job=jobs[i],s=stamp(job.row,job.style.settings,job.template),key="stage-shadow:"+JSON.stringify([s,geometry(job.template),job.open,job.manual&&job.row.Shadow]),entry=cache[key],plan;
-      if(!entry){var owner=probe(job.template,job.row,root,session.assets,job.open);try{if(job.manual){var renderer=owner.ndAniOther.find(function(r){return r.skeletonData&&r.skeletonData.skeletonJson.wallKit;}),json=renderer&&renderer.skeletonData.skeletonJson;plan=json&&json.wallKit.layout;entry=Manual.prepareEntry(job.row.Shadow,plan);if(entry)manualPins.push(entry);}else{var source=Runtime.capture(owner,{ndMain:root},Runtime.sources(owner));if(!source)throw Error("Could not prepare structure shadow "+job.template.ID+":"+job.row.index);entry=Runtime.prepareEntry(key,smaller(source),job.style.settings);pins.push(entry);}cache[key]=entry;}finally{owner.node.active=false;owner.ndAniOther.forEach(function(r){r.skeletonData=null;});owner.node.destroy();owner.clones.forEach(function(asset){asset.destroy();});}}
+      if(!entry){var owner=probe(job.template,job.row,root,session.assets,job.open);try{if(job.manual){var renderer=owner.ndAniOther.find(function(r){return r.skeletonData&&r.skeletonData.skeletonJson.wallKit;}),json=renderer&&renderer.skeletonData.skeletonJson;plan=json&&json.wallKit.layout;entry=Manual.prepareEntry(job.row.Shadow,plan);if(entry)manualPins.push(entry);}else{var source=Runtime.capture(owner,{ndMain:root},Runtime.sources(owner));if(!source)throw Error("Could not prepare structure shadow "+job.template.ID+":"+job.row.index);entry=Runtime.prepareEntry(key,smaller(source),job.style.settings);pins.push(entry);}cache[key]=entry;}finally{owner.node.active=false;owner.partScales.forEach(Parts.dispose);owner.ndAniOther.forEach(function(r){r.skeletonData=null;});owner.node.destroy();owner.clones.forEach(function(asset){asset.destroy();});}}
       var rows=slots[job.template.ID],value=rows[job.row.index]||(rows[job.row.index]={stamp:s});if(job.manual){value.manual=entry;value.manualStamp=entry&&entry.signature;}else value[job.open?"open":"closed"]=entry;
       if(progress)progress((i+1)/Math.max(1,jobs.length+casters.length));await new Promise(function(resolve){setTimeout(resolve,0);});
     }

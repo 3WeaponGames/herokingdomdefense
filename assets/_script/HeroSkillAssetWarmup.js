@@ -2,18 +2,34 @@
 // Fixed workbook atlases only. Load/decode/upload under the existing Loading
 // barrier; keep one session reference so later style/stage switches stay warm.
 var Catalog=require("./HeroSkillVFXCatalog");
-function plan(){var seen=new Set(),textures=new Set();return Catalog.clips.filter(function(clip){if(seen.has(clip.resource))return false;seen.add(clip.resource);return true;}).map(function(clip){var bytes=clip.kind==="spine"?clip.decodedBytes:clip.columns*clip.cell*Math.ceil(clip.frames/clip.columns)*clip.cell*4;if(clip.textureSet){if(textures.has(clip.textureSet))bytes=0;else textures.add(clip.textureSet);}return{resource:clip.resource,kind:clip.kind,bytes:bytes};});}
-function create(ops){
-  var held=new Map(),waiting=[],running=false,complete=false,epoch=0,request=null,queue=plan();
+function plan(config){
+  var selected=null;
+  if(config&&typeof config==="object"&&!Array.isArray(config)){
+    selected=new Set();var Settings=require("./HeroSkillSettings"),Layout=require("./HeroSkillVFXLayout");
+    Settings.styles.forEach(function(style){var visual=Settings.effective(style.id,config).visual;
+      Settings.resourcePrefixes.forEach(function(prefix){var id=visual[prefix],clip=id&&Layout.clipFor(id);if(!clip)return;selected.add(clip);
+        Catalog.clips.forEach(function(part){if(clip.group&&part.group===clip.group)selected.add(part);});
+        ["start","loop","end"].forEach(function(phase){Layout.phaseClips(prefix.replace(/Resource$/,""),clip,phase).forEach(function(part){if(part)selected.add(part);});});
+      });
+    });
+  }
+  var seen=new Set(),textures=new Set();return Catalog.clips.filter(function(clip){if(selected&&!selected.has(clip)||seen.has(clip.resource))return false;seen.add(clip.resource);return true;}).map(function(clip){var bytes=clip.kind==="spine"?clip.decodedBytes:clip.columns*clip.cell*Math.ceil(clip.frames/clip.columns)*clip.cell*4;if(clip.textureSet){if(textures.has(clip.textureSet))bytes=0;else textures.add(clip.textureSet);}return{resource:clip.resource,kind:clip.kind,bytes:bytes};});
+}
+function create(ops,config){
+  var held=new Map(),waiting=[],running=false,complete=false,epoch=0,request=null,queue=plan(config);
   function current(entry){try{return !entry.current||entry.current();}catch(_){return false;}}
   function finish(error){running=false;complete=!error;request=null;var callbacks=waiting;waiting=[];var firstError=null;callbacks.forEach(function(entry){if(!current(entry))return;try{entry.done(error||null);}catch(issue){if(!firstError)firstError=issue;}});if(firstError)throw firstError;}
   function preload(done,isCurrent){
     var entry={done:typeof done==="function"?done:function(){},current:isCurrent};
     if(complete){if(current(entry))entry.done(null);return;}
     waiting.push(entry);if(running)return;running=true;var generation=epoch;
+    function flush(){request=ops.flush(function(error){if(generation===epoch)finish(error);});}
     function next(index){
       if(generation!==epoch)return;
-      if(index>=queue.length){request=ops.flush(function(error){if(generation===epoch)finish(error);});return;}
+      if(index>=queue.length){
+        if(!ops.warm){flush();return;}
+        var pending=true,handle=ops.warm(held,function(error){pending=false;if(generation!==epoch)return;if(error)finish(error);else flush();});if(pending)request=handle;return;
+      }
       var row=queue[index];if(held.has(row.resource))return next(index+1);
       request=ops.load(row,function(error,asset){
         if(generation!==epoch)return;request=null;if(error||!asset)return finish(error||Error("Empty VFX warmup asset"));
@@ -40,6 +56,12 @@ function operations(){
   return{
     load:function(row,done){var cancelled=false,cancelTextures=[],handle=manager.loadWithRecovery("Hero VFX: "+row.resource,function(resolve){cancelTextures.forEach(function(cancel){cancel();});cancelTextures=[];var spine=row.kind==="spine",type=spine&&typeof sp!=="undefined"?sp.SkeletonData:cc.SpriteFrame;cc.resources.load(row.resource,type,function(error,asset){if(cancelled)return;if(error)return resolve(error);if(!spine){cancelTextures.push(textureReady(asset,resolve));return;}var textures=asset.textures||asset._textures||[],remaining=textures.length;if(!remaining)return resolve(Error("Spine VFX has no texture pages"));var failed=false;textures.forEach(function(texture){cancelTextures.push(textureReady({getTexture:function(){return texture;}},function(issue){if(cancelled||failed)return;if(issue){failed=true;resolve(issue);return;}if(--remaining===0)resolve(null,asset);}));});});},function(asset){done(null,asset);});return{cancel:function(){cancelled=true;cancelTextures.forEach(function(cancel){cancel();});handle.cancel();}};},
     retain:function(asset){asset.addRef();},release:function(asset){asset.decRef();},schedule:function(next){setTimeout(next,0);},
+    warm:function(held,done){
+      if(!cc.sys||!cc.sys.isNative){done(null);return null;}
+      var rows=[];held.forEach(function(asset,resource){var clip=Catalog.clips.find(function(clip){return clip.resource===resource;});rows.push({resource:resource,kind:clip.kind,clip:clip,asset:asset});});
+      var handle=null,request=manager.loadWithRecovery("Hero VFX renderer readiness",function(resolve){if(handle)handle.cancel();handle=require("./HeroSkillRendererWarmup").warm(rows,function(error){resolve(error,!error);},cc);},function(){done(null);});
+      return{cancel:function(){if(handle)handle.cancel();request.cancel();}};
+    },
     flush:function(done){return manager.loadWithRecovery("Hero VFX GPU readiness",function(resolve){var gl=cc.game&&cc.game._renderContext;if(gl&&typeof gl.finish==="function"){
       gl.finish();
       // JSB batches finish() itself. A read-only GL query drains that native
@@ -51,7 +73,7 @@ function operations(){
 var pool=null,abortScene=null;
 function disarm(){if(abortScene){cc.director.off(cc.Director.EVENT_BEFORE_SCENE_LAUNCH,abortScene);abortScene=null;}}
 exports.preload=function(done,isCurrent){
-  if(!pool)pool=create(operations());
+  if(!pool){var Data=require("KinghtFallDataMgr").KinghtFallDataMgr,config=Data&&Data.instance&&Data.instance.data;pool=create(operations(),config);}
   if(!pool.status().ready&&!abortScene&&cc.Director&&cc.director&&cc.director.on){
     abortScene=function(){if(!pool.status().ready)pool.release();disarm();};cc.director.on(cc.Director.EVENT_BEFORE_SCENE_LAUNCH,abortScene);
   }

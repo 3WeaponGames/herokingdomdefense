@@ -138,10 +138,12 @@ var exp_NetNode = function () {
   };
   _ctor.prototype.onMessage = function (t) {
     if (this._intentionalClose) return;
+    var generation = this._connectionGeneration;
     if (this._protocolHelper.checkPackage(t)) {
       this.resetReceiveMsgTimer();
       this.resetFixSeedMsgTimer();
       var e = this._protocolHelper.getPackageId(t);
+      if (this._intentionalClose || generation !== this._connectionGeneration) return;
       console.log("NetNode onMessage rspCmd = " + e);
       if (this._requests.length > 0) {
         for (var n in this._requests) {
@@ -150,6 +152,7 @@ var exp_NetNode = function () {
             console.log("NetNode execute request rspcmd " + e);
             this._requests.splice(parseInt(n), 1);
             this._callbackExecuter(a.rspObject, t);
+            if (this._intentionalClose || generation !== this._connectionGeneration) return;
             break;
           }
         }
@@ -164,6 +167,7 @@ var exp_NetNode = function () {
           if (this._listener[e] !== o || o.indexOf(l) < 0) continue;
           console.log("NetNode execute listener cmd " + e);
           this._callbackExecuter(l, t);
+          if (this._intentionalClose || generation !== this._connectionGeneration) return;
         }
       }
     } else {

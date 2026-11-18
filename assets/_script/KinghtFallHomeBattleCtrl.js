@@ -589,6 +589,9 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     popup.scale = 1;
   };
   _ctor.prototype.onDisable = function () {
+    this._wallEntryGeneration = (this._wallEntryGeneration || 0) + 1;
+    this._wallEntryRequest = null;
+    this._wallDefenseEntering = false;
     this.stopMissionDrawerTweens();
     this._missionDrawerLayout = null;
     if (this._boxRewardInputRoot) this._boxRewardInputRoot.off(cc.Node.EventType.TOUCH_END, this.onBoxRewardTouchEnd, this, true);
@@ -888,24 +891,33 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
       var i = (Date.now() - n) / 1e3;
       if (0 == t) {
         this._wallDefenseEntering = true;
-        var launched = false;
+        var launched = false, node = this.node, resourceGeneration = this._resourceGeneration;
+        var visibility = this._wallEntryGeneration || 0, daily = player.getDailyData(), unlockStage = this.subPlayStage[t] + 1;
+        var request = this._wallEntryRequest = {};
+        function ownerAlive() { return cc.isValid(e, true) && e.node === node && cc.isValid(node, true) && e._resourceGeneration === resourceGeneration; }
+        function current() { return ownerAlive() && node.activeInHierarchy !== false && e._wallEntryRequest === request && (e._wallEntryGeneration || 0) === visibility; }
+        function release() { if (e._wallEntryRequest === request) { e._wallEntryRequest = null; e._wallDefenseEntering = false; } }
         var a = function () {
-          if (launched) return; launched = true;
+          if (launched || !current()) { release(); return; } launched = true;
           $z1GAD_App.default.instance.enter_App(function () {
-            e._wallDefenseEntering = false;
-            $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = false;
+            release();
+            var home = $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome);
+            if (ownerAlive() && home && cc.isValid(home.node, true)) home.node.active = false;
             $z1AudioMgr.AudioMgr.getInstance().stopMusic($z1KinghtFallConfig.KinghtFallParameter.BGMusic);
           }, function () {
-            $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
-            $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().setSubTimeByIndex(t, Date.now());
-            e.refreshSubView();
-          }, { cost: cost, unlockStage: e.subPlayStage[t] + 1, onCancel: function () { e._wallDefenseEntering = false; } });
+            var home = $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome);
+            if (ownerAlive() && home && cc.isValid(home.node, true)) home.node.active = true;
+            if (player.getUserData() === user && player.getDailyData() === daily) daily.setSubTimeByIndex(t, Date.now());
+            if (ownerAlive() && node.activeInHierarchy !== false) e.refreshSubView();
+          }, { cost: cost, unlockStage: unlockStage, onCancel: release });
         };
         if (i < this.subPlayTime[t] && !TestMode.getInstance().shouldBypassAdLimits()) {
           $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+            if (launched) return;
+            if (!current()) { release(); return; }
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack(e.getYoumengTrack(t));
             a();
-          }, function () { e._wallDefenseEntering = false; }, "home.defendWall.cooldown");
+          }, function () { if (!launched) release(); }, "home.defendWall.cooldown");
         } else {
           a();
         }

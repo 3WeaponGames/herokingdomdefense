@@ -1,5 +1,6 @@
 var BattleSounds = require("BattleSounds");
 var BattleMusic = require("BattleMusic");
+var GameplayAdOwner = require("GameplayAdOwner");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -255,13 +256,12 @@ var def_KinghtFallUIGame = function (t) {
       }
     });
     this.btnAddCoin.on(cc.Node.EventType.TOUCH_END, function () {
-      t.onPauseGame(true);
+      var game = t.ctrGame, data = game.gameData, amount = data.videoCoin;
+      var offer = GameplayAdOwner.begin(game, t), showCoins = false;
+      if (!offer) return;
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.button_coin);
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_button_coin_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        t.ctrGame.gameData.coin += t.ctrGame.gameData.videoCoin;
-        t.initView();
-        t.onPauseGame(false);
+        offer.finish(function (current) {
+        if (!showCoins || !current()) return;
         var e = cc.v2(t.ndCoin.position.x + t.ndCoin.children[0].x, t.ndCoin.position.y + t.ndCoin.children[0].y);
         var n = t.btnAddCoin.convertToWorldSpaceAR(cc.v2(0, 0));
         var i = t.ctrUI.node.convertToNodeSpaceAR(n);
@@ -272,22 +272,20 @@ var def_KinghtFallUIGame = function (t) {
           n.setParent(t.ctrUI.node);
           var a = cc.v2();
           cc.Vec2.random(a, 40);
-          cc.tween(n).set({
-            position: cc.v3(i.x, i.y, 0)
-          }).by(.2, {
-            position: cc.v3(a.x, a.y, 0)
-          }).to(1, {
-            position: cc.v3(e.x, e.y, 0),
-            scale: 1
-          }).call(function () {
-            n.destroy();
-          }).start();
+          cc.tween(n).set({ position: cc.v3(i.x, i.y, 0) }).by(.2, { position: cc.v3(a.x, a.y, 0) }).to(1, { position: cc.v3(e.x, e.y, 0), scale: 1 }).call(function () { n.destroy(); }).start();
         };
-        for (var o = 0; o < 10; o++) {
-          a();
-        }
+        for (var o = 0; o < 10; o++) { if (!current()) return; a(); }
+        }, function () {
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.button_coin);
+        if (!offer.isCurrent()) return;
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_button_coin_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+        if (!offer.isCurrent()) return;
+        data.coin += amount;
+        t.initView();
+        showCoins = offer.isCurrent();
+        });
       }, function () {
-        t.onPauseGame(false);
+        offer.cancel();
       }, "battle.silver.supply");
     });
     this.btnAgg.on(cc.Node.EventType.TOUCH_END, this.rallyCommand, this);
@@ -306,15 +304,19 @@ var def_KinghtFallUIGame = function (t) {
       t.getTask();
     });
     this.btnRevive.on(cc.Node.EventType.TOUCH_END, function () {
-      t.onPauseGame(true);
+      var game = t.ctrGame, hero = game.ctrPlay, offer = GameplayAdOwner.begin(game, t);
+      if (!offer) return;
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+        offer.finish(function () {}, function () {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.hero_revive);
+        if (!offer.isCurrent()) return;
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_hero_revive_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+        if (!offer.isCurrent()) return;
         t.onReviveShow(0);
-        t.ctrGame.ctrPlay.onReborn();
-        t.onPauseGame(false);
+        if (offer.isCurrent()) hero.onReborn();
+        });
       }, function () {
-        t.onPauseGame(false);
+        offer.cancel();
       }, "battle.hero.revive");
     });
     this.btnTest.active = false;
@@ -459,6 +461,7 @@ var def_KinghtFallUIGame = function (t) {
     return true;
   };
   _ctor.prototype.onClose = function () {
+    GameplayAdOwner.cancel(this);
     if(this._stageAssets){if(this._stageAssets.retire)this._stageAssets.retire();else this._stageAssets.dispose();this._stageAssets=null;}
     if (this.ctrGame) $z1AudioMgr.AudioMgr.getInstance().stopOwnedEffects(this.ctrGame);
     if (this.ctrGame && BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
@@ -477,6 +480,7 @@ var def_KinghtFallUIGame = function (t) {
     }
   };
   _ctor.prototype.onDestroy = function () {
+    GameplayAdOwner.cancel(this);
     if(this._stageAssets){if(this._stageAssets.retire)this._stageAssets.retire();else this._stageAssets.dispose();this._stageAssets=null;}
     if (this._enemyGuide) require("EnemyGuide").close(this, true);
     if (this._battleHud) require("BattleHud").dispose(this);
@@ -490,6 +494,7 @@ var def_KinghtFallUIGame = function (t) {
     require("LanguageMgr").LanguageMgr.getInstance().onChange(this._refreshStartBattleCaption, this);
   };
   _ctor.prototype.onDisable = function () {
+    GameplayAdOwner.cancel(this);
     if (this._enemyGuide) require("EnemyGuide").close(this);
     this._stopTestMovement();
     TestMode.getInstance().removeGameplayTarget(this);
@@ -497,6 +502,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.onRestart = function (t) {
     if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return false;
+    GameplayAdOwner.cancel(this);
     if (this._enemyGuide) require("EnemyGuide").close(this, true);
     this.cancelBattleDialog();
     this.btnBuildInfo.active = true;

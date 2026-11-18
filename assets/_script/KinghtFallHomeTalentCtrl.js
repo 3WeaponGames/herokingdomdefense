@@ -209,6 +209,10 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
   };
   _ctor.prototype.initItem = function () {
     this.graphics3.clear();
+    var user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(), reduction = 0;
+    var book = user.getTreasureLevel(120012);
+    var effect = book && $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfgById(120012).levelInfo[book.level - 1];
+    if (effect && effect.param) reduction = effect.param[0];
     for (var t = 0; t < this.nodeInfo.length; t++) {
       var e = this.nodeInfo[t];
       for (var n = 0; n < e.cfgList.length; n++) {
@@ -230,7 +234,7 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
             break;
           case 2:
             var s = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getGoldNum();
-            i.getChildByName("ndArr").active = s >= e.cfgList[n].GoldCost;
+            i.getChildByName("ndArr").active = s >= e.cfgList[n].GoldCost - Math.floor(e.cfgList[n].GoldCost * reduction);
             i.getChildByName("ndMask").active = true;
             i.getChildByName("ndLayout").active = false;
             break;
@@ -249,40 +253,10 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     this.graphics3.stroke();
   };
   _ctor.prototype.canUnlock = function (t) {
-    var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(t.ID);
-    if (e && e.isLock) {
-      return 1;
-    }
-    if (1 == t.Level) {
-      return 2;
-    }
-    var n = this.nodeInfo[t.Level - 2];
-    var i = false;
-    for (var a = 0; a < n.cfgList.length; a++) {
-      var o = n.cfgList[a];
-      var r = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(o.ID);
-      if (r && r.isLock) {
-        i = true;
-        break;
-      }
-    }
-    if (i) {
-      var s = this.nodeInfo[t.Level - 1];
-      // The three visible paths are optional purchases. One opens the next
-      // tier; buying siblings later never forces an ad or blocks progression.
-      if (require("HeroStyleTalents").optional(t, s.cfgList)) return 2;
-      if (s.cfgList.length > 1) {
-        for (a = 0; a < s.cfgList.length; a++) {
-          o = s.cfgList[a];
-          var l = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(o.ID);
-          if (l && l.isLock) {
-            return 3;
-          }
-        }
-      }
-      return 2;
-    }
-    return 4;
+    var user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+    return require("HeroStyleTalents").unlockStatus(t, this.nodeInfo, function (id) {
+      var entry = user.getTalentLevel(id); return !!entry && entry.isLock;
+    });
   };
   _ctor.prototype.lineToLevelPro = function (t, e, n) {
     var i = this.nodeInfo[t.Level - 1];

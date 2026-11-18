@@ -60,3 +60,57 @@ const plainAligned=new Label();plainAligned.horizontalAlign=2;plainAligned.node.
 assert.equal(plainAligned.horizontalAlign,1);manager.setCurrentLanguage('zh');assert.equal(plainAligned.horizontalAlign,2);assert.equal(plainAligned.node.width,180);
 console.log('PASS: English default, persistence, validation/fallback, templates, nested rich text, live labels/numbers, user text, destroyed label cleanup.');
 console.log('PASS: Label and RichText English alignment overrides restore their original Chinese alignment and dimensions.');
+
+
+// Exercise the public message path through the actual BaseUI and UITips modules.
+const literalFs = require('node:fs'), literalPath = require('node:path'), literalVm = require('node:vm');
+const literalSourceRoot = literalPath.resolve(__dirname, '../../assets/_script');
+const literalCatalogPath = literalPath.resolve(__dirname, '../../assets/resources/localization/catalog.json');
+const literalCatalogBytes = literalFs.readFileSync(literalCatalogPath, 'utf8');
+manager._labels.clear();
+manager._sprites.clear();
+manager.setCatalog(JSON.parse(literalCatalogBytes));
+Manager.instance = manager;
+cc.Component = function () {};
+cc.Enum = value => value;
+cc._decorator = { ccclass: value => value, property: () => () => {} };
+const literalModules = { LanguageMgr: { LanguageMgr: Manager } };
+function loadLiteralUi(name) {
+  const context = { exports: {}, cc, console, require: id => literalModules[id] || {},
+    __extends: (Child, Parent) => Object.setPrototypeOf(Child.prototype, Parent.prototype),
+    __decorate: (decorators, target, key) => key === undefined ? target : undefined };
+  literalVm.runInNewContext(literalFs.readFileSync(literalPath.join(literalSourceRoot, name + '.js'), 'utf8'), context, { filename: name + '.js' });
+  return literalModules[name] = context.exports;
+}
+loadLiteralUi('BaseUI');
+const LiteralTips = loadLiteralUi('UITips').default;
+const literalResults = [];
+for (const language of ['en', 'zh']) {
+  manager.setCurrentLanguage(language);
+  manager._rendered.clear();
+  for (const value of ['constructor', 'toString', 'valueOf', 'hasOwnProperty']) {
+    assert.equal(Object.prototype.hasOwnProperty.call(manager.catalog.entries, value), false);
+    const ui = new LiteralTips();
+    ui.tips = new Label();
+    Object.assign(ui.tips.node, { width: 200, height: 60, x: 0, y: 0,
+      setContentSize(width, height) { this.width = width; this.height = height; },
+      setPosition(x, y) { this.x = x; this.y = y; } });
+    ui.tipsNode = { opacity: 0, scaleY: 1, setPosition() {} };
+    ui.tweenAction = { stop() {}, start() {} };
+    ui.init(value);
+    ui.start();
+    literalResults.push({ language, value, displayed: ui.tips.string });
+  }
+}
+assert.deepEqual(literalResults.filter(row => row.displayed !== row.value), [],
+  'Public BaseUI.T → UITips.init/start must preserve literal names absent from the catalog');
+manager.setCatalog({ defaultLanguage: 'en', languages: [{ code: 'en' }, { code: 'zh' }], images: {},
+  entries: { constructor: { en: 'Own constructor entry', zh: '自有构造词条' } } });
+for (const [language, expected] of [['en', 'Own constructor entry'], ['zh', '自有构造词条']]) {
+  manager.setCurrentLanguage(language);
+  const ui = new LiteralTips();
+  ui.init('constructor');
+  assert.equal(manager.t(ui.str), expected, 'An explicit own catalog key still translates');
+}
+assert.equal(literalFs.readFileSync(literalCatalogPath, 'utf8'), literalCatalogBytes);
+console.log('PASS: Public literal UI roundtrip in both languages and explicit own constructor catalog entries.');

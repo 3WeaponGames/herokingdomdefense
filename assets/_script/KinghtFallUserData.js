@@ -206,7 +206,7 @@ var exp_KinghtFallUserData = function (t) {
   _ctor.prototype.subGoldNum = function (t) {
     if (typeof t !== "number" || !isFinite(t) || t < 0 || this.data.goldNum < t) return false;
     this.data.goldNum -= t;
-    if (this.saveData() === false) { this.data.goldNum += t; return false; }
+    if (!this._saveDebit("goldNum", t)) return false;
     if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, t, false);
     return true;
   };
@@ -226,7 +226,7 @@ var exp_KinghtFallUserData = function (t) {
   _ctor.prototype.subDiamondNum = function (t) {
     if (typeof t !== "number" || !isFinite(t) || t < 0 || this.data.diamondNum < t) return false;
     this.data.diamondNum -= t;
-    if (this.saveData() === false) { this.data.diamondNum += t; return false; }
+    if (!this._saveDebit("diamondNum", t)) return false;
     if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, t, false);
     return true;
   };
@@ -246,9 +246,27 @@ var exp_KinghtFallUserData = function (t) {
     var previousTime = this.data.powerUpdateTime;
     if (this.data.powerNum >= this.maxPower) this.data.powerUpdateTime = Date.now();
     this.data.powerNum -= t;
-    if (this.saveData() === false) { this.data.powerNum += t; this.data.powerUpdateTime = previousTime; return false; }
+    if (!this._saveDebit("powerNum", t, previousTime)) return false;
     if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower);
     return true;
+  };
+  _ctor.prototype._saveDebit = function (field, amount, previousPowerTime) {
+    this._debitSaveDepth = (this._debitSaveDepth || 0) + 1;
+    try {
+      if (this.saveData() === false) {
+        this.data[field] += amount;
+        if (field === "powerNum") this.data.powerUpdateTime = previousPowerTime;
+        return false;
+      }
+      return true;
+    } finally {
+      this._debitSaveDepth--;
+      if (!this._debitSaveDepth && this._debitSaveFailed) {
+        this._debitSaveFailed = false;
+        // Nested recovery may already have persisted the restored balance.
+        if (this.localSavePending && this.saveFailureReported) $z1EventMgr.EventMgr.getInstance().emit("SaveFailed", { key: this.gameKey });
+      }
+    }
   };
   _ctor.prototype.getPowerUpdateTime = function () {
     return this.data.powerUpdateTime;

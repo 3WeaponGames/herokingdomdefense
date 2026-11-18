@@ -93,7 +93,7 @@ var def_KinghtFallModle = function () {
           t.string = Math.floor(e + l).toFixed(0);
           o && o(h++, e + l);
         }).delay(.05).union().repeat(s).call(function () {
-          i();
+          i && i();
         }).start();
       } else {
         i && i();
@@ -120,17 +120,19 @@ var def_KinghtFallModle = function () {
     return n == r && i == s && a == l;
   };
   _ctor.prototype.showRedPerson = function () {
-    var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getEquipCfgList();
-    var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getGoldNum();
-    var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage();
-    var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxOrder();
+    var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance(), user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+    var t = manager.getEquipCfgList(), e = user.getGoldNum(), n = user.getMaxStage(), i = user.getMaxOrder();
+    var cap = manager.getLevelCfgById2(n).EquipLevelCap, discount = 1;
+    var relic = user.getTreasureLevel($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.ForgeAmulet);
+    var effect = relic && manager.getTreasureCfgById($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.ForgeAmulet).levelInfo[relic.level - 1];
+    if (effect && effect.param) discount -= effect.param[0];
     for (var a = 0; a < t.length; a++) {
       var o = t[a];
       var r = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(o.id);
-      if (!(r >= o.levelInfo.length)) {
+      if (r < o.levelInfo.length && r < cap) {
         var s = true;
         o.Unlock && (s = o.Unlock[0] < n || !(o.Unlock[0] > n) && o.Unlock[1] < i);
-        if (s && e >= o.levelInfo[r - 1].GoldCost) {
+        if (s && e >= Math.floor(o.levelInfo[r - 1].GoldCost * discount)) {
           return true;
         }
       }
@@ -138,40 +140,17 @@ var def_KinghtFallModle = function () {
     return false;
   };
   _ctor.prototype.showRedTanlent = function () {
-    var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTalentLevelCfg();
+    var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance(), user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+    var t = manager.getTalentLevelCfg(), reduction = 0;
+    var book = user.getTreasureLevel($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.EconomyBook);
+    var effect = book && manager.getTreasureCfgById($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.EconomyBook).levelInfo[book.level - 1];
+    if (effect && effect.param) reduction = effect.param[0];
     var e = [];
     var n = function (t) {
-      var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(t.ID);
-      if (n && n.isLock) {
-        return 1;
-      }
-      if (1 == t.Level) {
-        return 2;
-      }
-      var i = e[t.Level - 2];
-      var a = false;
-      for (var o = 0; o < i.cfgList.length; o++) {
-        var r = i.cfgList[o];
-        var s = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(r.ID);
-        if (s && s.isLock) {
-          a = true;
-          break;
-        }
-      }
-      if (a) {
-        var l = e[t.Level - 1];
-        if (l.cfgList.length > 1) {
-          for (o = 0; o < l.cfgList.length; o++) {
-            r = l.cfgList[o];
-            var c = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(r.ID);
-            if (c && c.isLock) {
-              return 3;
-            }
-          }
-        }
-        return 2;
-      }
-      return 4;
+      var user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+      return require("HeroStyleTalents").unlockStatus(t, e, function (id) {
+        var entry = user.getTalentLevel(id); return !!entry && entry.isLock;
+      });
     };
     var i = function (e) {
       var n = [];
@@ -195,7 +174,7 @@ var def_KinghtFallModle = function () {
     for (var l = 0; l < e.length; l++) {
       var c = e[l];
       for (var h = 0; h < c.cfgList.length; h++) {
-        if (2 == n(c.cfgList[h]) && s >= c.cfgList[h].GoldCost) {
+        if (2 == n(c.cfgList[h]) && s >= c.cfgList[h].GoldCost - Math.floor(c.cfgList[h].GoldCost * reduction)) {
           return true;
         }
       }
@@ -235,7 +214,7 @@ var def_KinghtFallModle = function () {
     }
     switch ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignReward()) {
       case 0:
-        return true;
+        if ($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSignCfg()[$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay()]) return true;
     }
     var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
     if (missions.hasQuestReward) return missions.hasQuestReward();

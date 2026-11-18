@@ -47,8 +47,8 @@ test('the remaining approved ambience and all eight horse surfaces have real ass
   const biomes = ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice', 'fire', 'lava'];
   for (const biome of biomes) {
     const item = effects['hooves-' + biome + '-loop']; assert(item && item.loop);
-    const file = path.join(audio, item.path + '.wav'), bytes = fs.readFileSync(file);
-    assert.equal(bytes.toString('ascii', 0, 4), 'RIFF'); assert.equal(bytes.toString('ascii', 8, 12), 'WAVE'); assert(bytes.length > 10000);
+    const file = path.join(audio, item.path + '.ogg'), bytes = fs.readFileSync(file);
+    assert.equal(bytes.toString('ascii', 0, 4), 'OggS'); assert(bytes.subarray(0,64).includes(Buffer.from('vorbis'))); assert(bytes.length > 10000);
   }
 });
 
@@ -71,19 +71,19 @@ test('all Hurt audio and its playback references are removed while other review 
  for(const uuid of removed)assert.equal(review.marks['uuid:'+uuid],undefined);
 });
 
-test('boss, shared critical and Bruiser basic effects retain the exact supplied WAV samples',()=>{
+test('boss, shared critical and Bruiser basic effects retain their approved OGG encodings, identities and durations',()=>{
  const expected={
-  'sfx/boss-arrival.wav':['47cdad8fad507a44eb34dc5dc12e820ad6e260957eea8ab07ca4539d7ae125c7','46a8e3f4-5f59-48b8-a094-2afd74916202',4],
-  'sfx/critical-hit.wav':['4943aee4db3b43301cd39ff23a9e4b6806595df69557bd8532b50d8e798e8a57','77dc0009-77c0-434a-9bdb-1f66d0259960',1.48],
-  'sfx/impact-bruiser-basic.wav':['735a517480b3cbfcd98e14c448fad65ee8012c08698caa7664a629fa6b80833a',null,1.48]
+  'sfx/boss-arrival.ogg':['b69aefa217876f07c91d51ed7e73ca2d8ad7bc233f2891779b48fcf518814b69','46a8e3f4-5f59-48b8-a094-2afd74916202',4],
+  'sfx/critical-hit.ogg':['e011896a4c38d99d6319fd6edc3b91d9c5a5f59b593970a758fa3b2759915ad7','77dc0009-77c0-434a-9bdb-1f66d0259960',1.48],
+  'sfx/impact-bruiser-basic.ogg':['46e87423b29daf4b09360776c2c0195a7aa7915528f7d189d6c63789418ab4e4','91b02bf2-2eaa-4463-af1b-f1f657137ab4',1.48]
  };
  const indexed=require('../../packages/hkd-sounds/catalog').index(root);
  for(const [file,[hash,uuid,duration]]of Object.entries(expected)){
   const bytes=fs.readFileSync(path.join(audio,file)),meta=JSON.parse(fs.readFileSync(path.join(audio,file+'.meta'),'utf8'));
   assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),hash,file);
-  assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(meta.duration,duration);
+  assert.equal(bytes.toString('ascii',0,4),'OggS');assert.equal(meta.duration,duration);
   if(uuid)assert.equal(meta.uuid,uuid,'Existing asset identity must survive replacement');
-  assert(!fs.existsSync(path.join(audio,file.replace('.wav','.mp3'))));
+  assert(!fs.existsSync(path.join(audio,file.replace('.ogg','.wav'))));
   const item=indexed.items.find(row=>row.file==='assets/KinghtFallAudio/'+file);
   assert.equal(item.category,file.includes('boss-arrival')?'signals':'impacts');
  }

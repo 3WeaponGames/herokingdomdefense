@@ -12,6 +12,8 @@ test('fighting profiles keep independently saved clocks and unrelated edits neve
 test('the enemy balance table updates inherited enemy profiles and never ally stats, hero equipment or wave multipliers',()=>{
  const {store}=fixture(),before=store.draftState();change(store,'guardian',0,1.3);const after=store.draftState();for(const family of Object.values(after.overrides.unitProfiles.families)){const id=family.profiles.guardian;assert(Math.abs(after.A.SoldierCfg[id].Health-family.baseline.Health*1.3)<1e-6);for(const role of FP.ROLES.filter(r=>r!=='guardian'))assert.equal(after.A.SoldierCfg[family.profiles[role]].Health,before.A.SoldierCfg[family.profiles[role]].Health);}
  for(const key of ['AllyCfg','EquipCfg','HeroEquipment','TalentCfg','BuffCfg','LevelCfg'])assert.deepEqual(after.A[key],before.A[key],key+' must not change');assert.deepEqual(after.B,before.B);assert.deepEqual(after.D,before.D);for(const key of Object.keys(before.overrides).filter(key=>key!=='unitProfiles'))assert.deepEqual(after.overrides[key],before.overrides[key]);
+ const changedHealth=new Set(Object.values(before.overrides.unitProfiles.families).map(family=>family.profiles.guardian));let form=before.A.SoldierCfg[before.overrides.unitProfiles.families[90010].profiles.guardian];for(let index=0;index<2;index++){changedHealth.add(form.Data[2]);form=before.A.SoldierCfg[form.Data[2]];}
+ for(const [id,row]of Object.entries(before.A.SoldierCfg))for(const field of FP.FIELDS)if(field!=='Health'||!changedHealth.has(Number(id)))assert.equal(after.A.SoldierCfg[id][field],row[field],'unselected '+id+' '+field+' retains its exact authored value');
  store.undo({version:store.version});assert.deepEqual(store.draftState(),before);store.redo({version:store.version});assert.deepEqual(store.draftState(),after);
 });
 test('explicit per-enemy overrides survive global balance edits, while attack rate multiplies attacks per second',()=>{
@@ -19,7 +21,7 @@ test('explicit per-enemy overrides survive global balance edits, while attack ra
 });
 test('Reset restores the selected fighting type balance and keeps a boss profile in its own transformation chain',()=>{
  const {store}=fixture(),Profiles=require('../lib/unit-profiles');let state=store.draftState();const family=state.overrides.unitProfiles.families[91037],id=family.profiles.guardian;
- state=Profiles.operation(root,state,{id,action:'set',field:'Health',value:777}).state;state=Profiles.operation(root,state,{id,action:'reset',field:'Health'}).state;assert.equal(state.A.SoldierCfg[id].Health,family.baseline.Health*1.2);
+ state=Profiles.operation(root,state,{id,action:'set',field:'Health',value:777}).state;state=Profiles.operation(root,state,{id,action:'reset',field:'Health'}).state;assert.equal(state.A.SoldierCfg[id].Health,Number((family.baseline.Health*1.2).toFixed(8)));
  const boss=state.overrides.unitProfiles.families[90010].profiles.guardian,nextId=state.A.SoldierCfg[boss].Data[2];state=Profiles.operation(root,state,{id:boss,action:'reset',field:'Data'}).state;assert.equal(state.A.SoldierCfg[boss].Data[2],nextId);assert.notEqual(nextId,90011);
 });
 test('opening/defaults and no-change Save write nothing; an explicit Save persists enemy multipliers and rejects invalid edits atomically',()=>{

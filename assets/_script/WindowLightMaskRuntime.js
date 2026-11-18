@@ -16,7 +16,10 @@ function read(frame){
   // its exact source resolution, with a copy blend (straight RGB and alpha).
   var root=new cc.Node("WindowLightMaskRead"),cameraNode=new cc.Node("WindowLightMaskCamera"),target=new cc.RenderTexture(),sprite,camera;
   try{root.parent=cc.director.getScene();root.setPosition(100000,100000);root.setContentSize(width,height);sprite=root.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;sprite.trim=false;sprite.spriteFrame=frame;sprite.srcBlendFactor=cc.macro.BlendFactor.ONE;sprite.dstBlendFactor=cc.macro.BlendFactor.ZERO;
-   cameraNode.parent=cc.director.getScene();cameraNode.setPosition(100000,100000);camera=cameraNode.addComponent(cc.Camera);camera.enabled=false;camera.alignWithScreen=false;camera.ortho=true;camera.orthoSize=height/2;camera.nearClip=-1000;camera.farClip=1000;camera.backgroundColor=cc.color(0,0,0,0);camera.clearFlags=cc.Camera.ClearFlags.COLOR|cc.Camera.ClearFlags.DEPTH|cc.Camera.ClearFlags.STENCIL;target.initWithSize(width,height);camera.targetTexture=target;camera.render(root);
+   cameraNode.parent=cc.director.getScene();camera=cameraNode.addComponent(cc.Camera);camera.enabled=false;camera.alignWithScreen=false;camera.ortho=true;camera.orthoSize=height/2;camera.nearClip=-1000;camera.farClip=1000;camera.backgroundColor=cc.color(0,0,0,0);camera.clearFlags=cc.Camera.ClearFlags.COLOR|cc.Camera.ClearFlags.DEPTH|cc.Camera.ClearFlags.STENCIL;
+   // Active Camera preload aligns z to the screen. Restore all three capture
+   // coordinates after disabling alignment, so tall views cannot clip the light.
+   cameraNode.setPosition(100000,100000,0);target.initWithSize(width,height);camera.targetTexture=target;camera.render(root);
    var raw=target.readPixels(),stride=width*4;saved=new Uint8Array(width*height*4);for(var y=0;y<height;y++)saved.set(raw.subarray((height-1-y)*stride,(height-y)*stride),y*stride);
   }finally{if(sprite)sprite.spriteFrame=null;if(camera)camera.targetTexture=null;root.active=cameraNode.active=false;root.destroy();cameraNode.destroy();target.destroy();var scene=cc.director.getScene(),flow=cc.RenderFlow;if(scene&&flow)scene._renderFlag|=flow.FLAG_WORLD_TRANSFORM|flow.FLAG_OPACITY;}
  }

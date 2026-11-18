@@ -56,15 +56,19 @@ LanguageMgr.prototype.setCurrentLanguage = function (code) {
   this.currentLan = code;
   try { cc.sys.localStorage.setItem(STORAGE_KEY, code); } catch (error) { /* Session switching still works. */ }
   this.refresh();
-  this._listeners.slice().forEach(function (listener) { listener.fn.call(listener.target, code); });
+  this._listeners.slice().forEach(function (listener) { if (listener.active !== false) listener.fn.call(listener.target, code); });
   return true;
 };
 LanguageMgr.prototype.onChange = function (fn, target) {
   this.offChange(fn, target);
-  this._listeners.push({ fn: fn, target: target });
+  this._listeners.push({ fn: fn, target: target, active: true });
 };
 LanguageMgr.prototype.offChange = function (fn, target) {
-  this._listeners = this._listeners.filter(function (item) { return item.fn !== fn || item.target !== target; });
+  this._listeners = this._listeners.filter(function (item) {
+    if (item.fn !== fn || item.target !== target) return true;
+    item.active = false;
+    return false;
+  });
 };
 LanguageMgr.prototype._entry = function (key, language) {
   var entry = this.catalog.entries[key];
@@ -135,7 +139,7 @@ LanguageMgr.prototype._isLocalized = function (recipe) {
 LanguageMgr.prototype.token = function (value) {
   var text = value == null ? "" : String(value);
   if (/\[\[(?:loc|fmt):/.test(text)) return text;
-  if (this.catalog.entries[text]) return "[[loc:" + text + "]]";
+  if (Object.prototype.hasOwnProperty.call(this.catalog.entries, text)) return "[[loc:" + text + "]]";
   var recipe = this._rendered.get(text);
   return recipe ? "[[fmt:" + encodeURIComponent(JSON.stringify(recipe)) + "]]" : text;
 };
@@ -172,7 +176,7 @@ LanguageMgr.prototype.preloadArtwork = function (done) {
   }
   if (resource) this._loadTypeface(resource, artwork); else artwork();
 };
-LanguageMgr.prototype._loadTypeface = function (resource, done) {
+LanguageMgr.prototype._loadTypeface = function (resource, done, byUuid) {
   var cached = this._fontCache[resource];
   if (cached && (!cc.isValid || cc.isValid(cached, true))) { done(cached); return; }
   // A stale cache entry must not leave live labels retrying postLoadNative
@@ -181,7 +185,7 @@ LanguageMgr.prototype._loadTypeface = function (resource, done) {
   if (this._fontRequests[resource]) { this._fontRequests[resource].push(done); return; }
   this._fontRequests[resource] = [done];
   var self = this;
-  cc.resources.load(resource, cc.TTFFont, function (error, font) {
+  var loadedTypeface = function (error, font) {
     var loaded = !error && font && (!cc.isValid || cc.isValid(font, true)) ? font : null;
     // This application-wide cache is an asset owner, independent of any
     // prefab/modal that also references the same display font. Retain once,
@@ -194,7 +198,9 @@ LanguageMgr.prototype._loadTypeface = function (resource, done) {
     delete self._fontRequests[resource];
     if (error) cc.warn("UI font could not be loaded", resource, error);
     callbacks.forEach(function (callback) { callback(loaded); });
-  });
+  };
+  if (byUuid) cc.assetManager.loadAny(resource, loadedTypeface);
+  else cc.resources.load(resource, cc.TTFFont, loadedTypeface);
 };
 LanguageMgr.prototype._typefaceResource = function (text, label) {
   // Native language selectors can contain Chinese even in the English UI.
@@ -623,6 +629,15 @@ LanguageMgr.prototype._copyNodeBindings = function (source, clone) {
   });
   var sprite = source.getComponent(cc.Sprite), image = clone.getComponent(cc.Sprite);
   if (sprite && image && sprite._localizedOriginalFrame) {
+    // Creator copies the generated child, but omits its private Sprite handle.
+    // Retain the paired child before refresh can create a second text overlay.
+    var sourceOverlay = sprite._localizedOverlay;
+    var overlayIndex = sourceOverlay && cc.isValid(sourceOverlay, true) ? (source.children || []).indexOf(sourceOverlay) : -1;
+    var overlay = overlayIndex >= 0 && clone.children[overlayIndex];
+    if (overlay && cc.isValid(overlay, true)) {
+      image._localizedOverlay = overlay;
+      overlay._localizationGenerated = true;
+    }
     image._localizedOriginalFrame = sprite._localizedOriginalFrame;
     this.refreshSprite(image);
   }
@@ -803,15 +818,22 @@ LanguageMgr.prototype._drawTextImage = function (sprite, frame, binding) {
   var outline = overlay.getComponent(cc.LabelOutline);
   if (binding.outlineWidth) {
     outline = outline || overlay.addComponent(cc.LabelOutline);
+    outline.enabled = true;
     outline.color = cc.color(binding.outlineColor || "#000000"); outline.width = binding.outlineWidth;
   } else if (outline) outline.enabled = false;
   if (!binding.font) this._applyLabelTypeface(label, label.string);
   if (binding.font) {
-    var self = this;
-    if (this._fontCache[binding.font]) label.font = this._fontCache[binding.font];
-    else cc.assetManager.loadAny(binding.font, function (error, font) {
-      if (!error) { self._fontCache[binding.font] = font; if (cc.isValid(label)) label.font = font; }
-    });
+    var fontId = binding.font;
+    label._localizedFontRequest = fontId;
+    // Explicit artwork fonts share the same retained application cache as
+    // resource fonts. A retired request must not replace newer artwork text.
+    this._loadTypeface(fontId, function (font) {
+      if (!font || !cc.isValid(label, true) || !label.node || !cc.isValid(label.node, true) || label._localizedFontRequest !== fontId) return;
+      label._localizedFontRequest = null;
+      label.font = font;
+      label.useSystemFont = false;
+      label._localizedTypeface = fontId;
+    }, true);
   }
   if (binding.readableOptions) this._fitReadableText(label);
 };

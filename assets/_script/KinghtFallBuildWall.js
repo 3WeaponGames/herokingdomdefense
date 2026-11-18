@@ -70,7 +70,7 @@ var def_KinghtFallBuildWall = function (t) {
     if (!this.index || this.isDestroyed || !this.node.activeInHierarchy || this.wallHasGate === false) return [];
     var gate = this;
     return this.node.getComponents(cc.PhysicsPolygonCollider).filter(function (collider) {
-      return collider.tag == gate.index;
+      return collider.tag == gate.getColliderIndex();
     }).map(function (collider) {
       var offset = collider.offset || cc.Vec2.ZERO;
       return { collider: collider, points: (gate.colPoint[collider.uuid] || collider.points).map(function (point) {
@@ -186,7 +186,7 @@ var def_KinghtFallBuildWall = function (t) {
       } else {
         t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut : $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut_night, this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
           e._stopColliderTween(t);
-          t.enabled = t.tag == e.index;
+          t.enabled = t.tag == e.getColliderIndex();
           t.enabled && e._animateCollider(t, .1);
         });
       }
@@ -206,7 +206,7 @@ var def_KinghtFallBuildWall = function (t) {
       this.ndAniMain.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.create, false);
       this.ndAniMain.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle, false);
       this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (e) {
-        e.enabled = e.tag == t.index;
+        e.enabled = e.tag == t.getColliderIndex();
       });
       if (this.ndAniDown) {
         this.ndAniDown.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.create, false), this.ndAniDown.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle, false);
@@ -217,7 +217,7 @@ var def_KinghtFallBuildWall = function (t) {
         e.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.create, false);
         e.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle, false);
         e.getComponents(cc.PhysicsPolygonCollider).forEach(function (e) {
-          e.enabled = e.tag == t.index;
+          e.enabled = e.tag == t.getColliderIndex();
         });
       });
     } else {
@@ -232,39 +232,65 @@ var def_KinghtFallBuildWall = function (t) {
         e.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.upgrade, false);
         e.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle, false);
         e.getComponents(cc.PhysicsPolygonCollider).forEach(function (e) {
-          e.enabled = e.tag == t.index;
+          e.enabled = e.tag == t.getColliderIndex();
         });
       });
     }
     if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.WorldScale !== undefined) require("BuildingWorldScale").apply(this);
   };
   _ctor.prototype.onAttacked = function (t) {
-    var e = this;
     if (!this.isDestroyed) {
-      this.buildInfo.hp -= t;
+      var wall = this, info = this.buildInfo, node = this.node, generation = node && node._combatGeneration, hp = this.ctrHp;
+      var effect = this.ndAniEffect, effectNode = effect && effect.node, valid = cc.isValid;
+      var ui = $z1KinghtFallUIGame.default && $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+      var data = game && game.gameData, epoch = game && game._combatEpoch, round = data && data.round, uiGeneration = ui && ui._resourceGeneration;
+      function current() { return wall.node === node && (!node || node._combatGeneration === generation && node.activeInHierarchy !== false) && wall.buildInfo === info && wall.ctrHp === hp &&
+        wall.ndAniEffect === effect && (!effect || effect.node === effectNode && (!valid || valid(effect, true) && valid(effectNode, true))) && !wall._isPooled &&
+        (!valid || valid(wall, true) && (!node || valid(node, true))) && (!data || data.round === round) &&
+        (!game || game.gameData === data && game._combatEpoch === epoch && (!valid || valid(game, true))) &&
+        (!ui || $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui._resourceGeneration === uiGeneration && ui.ctrGame === game && (!valid || valid(ui, true))); }
+      if (!info || !current()) return 0;
+      info.hp -= t;
       if (BattleSounds.hit) BattleSounds.hit(this, null, t);
-      if (this.buildInfo.hp <= 0) {
+      if (!current()) return t;
+      if (info.hp <= 0 && !this.isDestroyed) {
+        var destruction = this._wallDestruction = (this._wallDestruction || 0) + 1;
         this.onDead();
-        this.ndAniEffect.node.active = true;
-        var n = this.ndAniEffect.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.destroy, false);
-        this.ndAniEffect.setTrackCompleteListener(n, function () {
-          e.ndAniEffect.node.active = false;
-        });
+        if (!current()) return t;
+        if (effect) {
+          effectNode.active = true;
+          var n = effect.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.destroy, false);
+          if (!current()) return t;
+          effect.setTrackCompleteListener(n, function () {
+            if (current() && wall._wallDestruction === destruction && wall.isDestroyed && info.hp <= 0) effectNode.active = false;
+          });
+        }
       }
-      this.ctrHp && this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
+      if (current() && hp && (!valid || valid(hp, true) && (!hp.node || valid(hp.node, true)))) hp.setHp(info.hp, info.hpMax);
       return t;
     }
   };
   _ctor.prototype.onDead = function () {
+    var wall = this, info = this.buildInfo, node = this.node, generation = node && node._combatGeneration;
+    var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, data = game && game.gameData;
+    var epoch = game && game._combatEpoch, round = data && data.round, uiGeneration = ui && ui._resourceGeneration, valid = cc.isValid;
+    function current() { return wall.node === node && wall.buildInfo === info && !wall._isPooled && (!node || node._combatGeneration === generation && node.activeInHierarchy !== false) &&
+      (!valid || valid(wall, true) && (!node || valid(node, true))) && $z1KinghtFallUIGame.default.instance === ui && ui && !ui.isclose && ui._resourceGeneration === uiGeneration && ui.ctrGame === game &&
+      (!valid || valid(ui, true) && (!game || valid(game, true))) && game && game.gameData === data && game._combatEpoch === epoch && data && data.round === round; }
+    if (!current()) return;
     t.prototype.onDead.call(this);
-    var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff06);
+    if (!current()) return;
+    var e = data.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff06);
+    if (!current()) return;
     if (e) {
-      var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
+      var n = data.getEnemyList();
+      if (!current()) return;
       for (var i = 0; i < n.length; i++) {
         n[i].addBuff($z1KinghtFallInterface.KinghtFallEnemyBuffType.DamageCut, {
           subNum: e.Pamer[0],
           time: 3
         });
+        if (!current()) return;
       }
     }
     $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game01), this.T(this.buildCfg.name)));

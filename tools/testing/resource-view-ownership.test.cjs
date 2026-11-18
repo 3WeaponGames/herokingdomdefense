@@ -36,7 +36,7 @@ function fixture(){
   KinghtFallTextConfig:{KinghtFallTextConfig:{}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user,drawTreasures:()=>({rewards:[{item:{id:1,num:1},isNew:false}]})})}},
   KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:{}},getSoldierCfgById:()=>({prefab:'monster'}),getGoodsCfgById:()=>({sprBg:'background',icon:'icon',itemID:1}),getTreasureCfgById:()=>({levelInfo:[]})})}},
   KinghtFallModle:{default:{getInstance:()=>({numberFomat:n=>String(n)})}},
-  LobbyBackground:{showForStage(){}},
+  LobbyBackground:{showForStage(){}},LobbyStageArt:require('../../assets/_script/LobbyStageArt'),
   PoolMgr:{PoolMgr:{getInstance:()=>({getNode:()=>null,getNodeFromPrefab(_key,prefab){h.pools++;return cc.instantiate(prefab);}})}}
  });
  const loaded=new Set();
@@ -64,6 +64,22 @@ test('home previews track cache-hit and cold-load acquisitions until their contr
  const h=fixture(),owner=h.home(),asset=h.monsterPrefab();owner.initMapView();h.requests.shift().done(null,asset);
  for(let i=0;i<19;i++)owner.initMapView();assert.equal(h.requests.length,0);assert.equal(asset.refCount,20);assert.equal(owner.resArray[0].defCount,20);
  owner.onDestroy();h.expire();assert.equal(asset.refCount,0);assert.equal(h.cache.permanentCache.length,0);
+});
+for(const [alias,bundle,key] of [['@icon/Stats Icons/Attack','resources','Stats Icons/Attack'],['icon/@icon/Stats Icons/Attack','resources','Stats Icons/Attack'],['@sprite/KinghtFallPrefabs/_res/test','KinghtFallPrefabs','_res/test']]) {
+ for(const mode of ['cold','cache-hit','late'])test('controller sprite alias releases its actual resource acquisition: '+alias+'/'+mode,()=>{
+  const h=fixture(),owner=new h.Ctrl(),asset=new h.cc.SpriteFrame(),received=[];
+  owner.loadSpriteFrame('original',alias,value=>received.push(value));
+  assert.equal(h.requests[0].file,key);if(mode==='late')owner.onDestroy();h.requests.shift().done(null,asset);
+  if(mode==='cache-hit'){owner.loadSpriteFrame('original',alias,value=>received.push(value));assert.equal(h.requests.length,0);assert.equal(asset.refCount,2);}
+  if(mode!=='late'){assert.equal(owner.resArray[0].cachekey,bundle+'/'+key);owner.onDestroy();}
+  owner.onDestroy();h.expire();assert.equal(asset.refCount,0);assert.equal(received.length,mode==='late'?0:mode==='cache-hit'?2:1);
+ });
+}
+test('canonical sprite owners retain independent credits when one controller closes first',()=>{
+ const h=fixture(),first=new h.Ctrl(),second=new h.Ctrl(),asset=new h.cc.SpriteFrame();
+ first.loadSpriteFrame('original','@icon/Stats Icons/Attack',()=>{});h.requests.shift().done(null,asset);
+ second.loadSpriteFrame('resources','Stats Icons/Attack',()=>{});first.onDestroy();h.expire();assert.equal(asset.refCount,1);
+ second.onDestroy();h.expire();assert.equal(asset.refCount,0);
 });
 test('home callbacks after destruction neither access the old preview nor present an abandoned load retry',()=>{
  for(const failed of [false,true]){const h=fixture(),owner=h.home(),asset=h.monsterPrefab();owner.initMapView();owner.onDestroy();assert.doesNotThrow(()=>h.requests.shift().done(failed?Error('offline'):null,failed?null:asset));h.expire();assert.equal(asset.refCount,0);assert.equal(h.prompts.length,0);}

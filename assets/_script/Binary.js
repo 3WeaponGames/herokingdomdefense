@@ -423,7 +423,9 @@ function _(t, e) {
   if (s(e)) {
     var n = {};
     u(e).forEach(function (i) {
-      n[i] = _(t, e[i]);
+      var value = _(t, e[i]);
+      if (i === "__proto__") Object.defineProperty(n, i, { value: value, enumerable: true, writable: true, configurable: true });
+      else n[i] = value;
     });
     return n;
   }

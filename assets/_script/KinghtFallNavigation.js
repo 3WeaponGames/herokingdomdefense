@@ -249,7 +249,7 @@ Navigation.prototype.radius = function (unit, includeSleepingBody) {
   });
   return Math.ceil((radius + 2) / 4) * 4;
 };
-Navigation.prototype.crowdDetour = function (unit, start, target, radius, grid) {
+Navigation.prototype.crowdDetour = function (unit, start, target, radius, grid, escapeOnly) {
   var navigation = this, data = this.game.gameData, neighbours = [];
   var actors = data.getSoldierList().concat(data.getEnemyList(), [this.game.ctrPlay]);
   actors.forEach(function (other) {
@@ -264,7 +264,7 @@ Navigation.prototype.crowdDetour = function (unit, start, target, radius, grid) 
   var turns = [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2, Math.PI * .75, -Math.PI * .75, Math.PI];
   for (var i = 0; i < turns.length; i++) {
     var candidate = { x: start.x + Math.cos(angle + turns[i]) * length, y: start.y + Math.sin(angle + turns[i]) * length };
-    if (!grid.segmentClear(start, candidate, radius)) continue;
+    if (!(escapeOnly ? grid.canExitBlocked(start, candidate, radius, true) : grid.segmentClear(start, candidate, radius))) continue;
     var dx = candidate.x - start.x, dy = candidate.y - start.y;
     var clear = neighbours.every(function (other) {
       var x = start.x - other.point.x, y = start.y - other.point.y;
@@ -385,7 +385,7 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly) {
     destination = state.points[state.index];
   } else { cancelRequest(unit); unit._navigationState = null; unit._navigationProgress = null; }
   var detouring = false, progress = unit._navigationProgress;
-  if (state && step > 0 && grid.isWalkable(start, radius)) {
+  if (state && step > 0 && (grid.isWalkable(start, radius) || escapeOnly)) {
     if (!progress || progress.owner !== this || progress.revision !== this.revision || distance(progress.target, target) > 20) {
       progress = unit._navigationProgress = { owner: this, revision: this.revision, target: { x: target.x, y: target.y }, point: start, elapsed: 0 };
     }
@@ -393,11 +393,11 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly) {
     else progress.elapsed += Math.min(Math.max(dt, 0), .1);
     if (progress.detour) {
       progress.remaining -= dt;
-      if (progress.remaining <= 0 || !grid.segmentClear(start, progress.detour, radius)) progress.detour = null;
+      if (progress.remaining <= 0 || !(escapeOnly ? grid.canExitBlocked(start, progress.detour, radius, true) : grid.segmentClear(start, progress.detour, radius))) progress.detour = null;
     }
     if (progress.elapsed >= .75) {
       progress.elapsed = 0;
-      progress.detour = this.crowdDetour(unit, start, destination, radius, grid);
+      progress.detour = this.crowdDetour(unit, start, destination, radius, grid, escapeOnly);
       progress.remaining = 1;
       // Physics may have invalidated a corridor without invalidating its last
       // segment. Retry through the existing fair search queue next update.

@@ -82,7 +82,9 @@ var def_GAD_PlayerMgr = function () {
     var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
     if (!player.restorePendingRewards()) return false;
     var pending = player.getUserData().data.wallDefensePending;
-    return !pending || !!player.settleWallDefense(pending);
+    if (pending && !player.settleWallDefense(pending)) return false;
+    var receipt = player.getUserData().data.wallDefenseReceipt;
+    return !receipt || Number.isSafeInteger(receipt.sequence) && receipt.sequence >= 0 && receipt.sequence < Number.MAX_SAFE_INTEGER;
   };
   _ctor.prototype.beginRun = function (admissionId) {
     var receipt = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().data.wallDefenseReceipt;

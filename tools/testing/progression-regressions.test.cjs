@@ -39,6 +39,7 @@ function harness() {
   modules.QuestBoardCore = require('../../assets/_script/QuestBoardCore');
   modules.HeroWeapons = require('../../assets/_script/HeroWeapons');
   modules.HeroEquipmentStats = require('../../assets/_script/HeroEquipmentStats');
+  modules.GlobalAdReward = require('../../assets/_script/GlobalAdReward');
   function load(name) {
     if (modules[name]) return modules[name];
     const context = { exports: {}, require: id => modules[id] || {}, console,
@@ -70,7 +71,7 @@ function harness() {
   }
   function signIn() {
     const ui = new (load('KinghtFallUISignIn').default)();
-    Object.assign(ui, { ndDayList: config.SignCfg.map(node), btnSign: node(), btnVide: node(), btnDouble: node(), btnGet: node(), btnClose: node(),
+    Object.assign(ui, { node:node(),ndDayList: config.SignCfg.map(node), btnSign: node(), btnVide: node(), btnDouble: node(), btnGet: node(), btnClose: node(),
       loadSpriteFrame: (bundle, icon, callback) => callback({}), T: text => text, sendEvent() {}, closeUI() {} });
     ui.start();
     return ui;

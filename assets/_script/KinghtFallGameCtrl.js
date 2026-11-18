@@ -1,6 +1,7 @@
 var BattleSounds = require("BattleSounds");
 var ProjectileLooks = require("ProjectileLooks");
 var GameToolsOverrides = require("GameToolsOverrides");
+var GameplayAdOwner = require("GameplayAdOwner");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -74,11 +75,17 @@ var TestMode = require("TestMode").TestMode;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
-function updateProjectiles(projectiles, dt) {
+function frameCurrent(game, ui, data, epoch, stage) {
+  return cc.isValid(game, true) && (!game.node || cc.isValid(game.node, true) && game.node.activeInHierarchy !== false) &&
+    game.gameData === data && game._combatEpoch === epoch && game.gameStatus === stage &&
+    (!ui || $z1KinghtFallUIGame.default.instance === ui && cc.isValid(ui, true) && !ui.isclose && ui.ctrGame === game && (!ui.node || cc.isValid(ui.node, true) && ui.node.activeInHierarchy !== false));
+}
+function updateProjectiles(projectiles, dt, game, ui, data, epoch, stage) {
   // Returning a shot to its pool removes it from this list immediately.
   // Advance over survivors only, and leave shots appended here for the next tick.
   var index = 0;
   for (var remaining = projectiles.length; remaining > 0 && index < projectiles.length; remaining--) {
+    if (!frameCurrent(game, ui, data, epoch, stage)) return;
     var shot = projectiles[index];
     if (shot) shot.onUpdate(dt);
     if (projectiles[index] === shot) index++;
@@ -121,6 +128,7 @@ var def_KinghtFallGameCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
+    GameplayAdOwner.retire(this);
     if (typeof cc !== "undefined" && cc.PhysicsContact) require("PhysicsContactCompat").install();
     this._restartRetired = false;
     this._waveStartCheckpoint = null;
@@ -205,6 +213,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.onDestroy = function () {
+    GameplayAdOwner.retire(this);
     if(this.gameData&&this.gameData.levelCfg)require("EnemyStageProfiles").clear(this.gameData.levelCfg);
     require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
@@ -219,6 +228,10 @@ var def_KinghtFallGameCtrl = function (t) {
     this._mapPhysicsManager = null;
     this._mapPhysicsRoot = null;
     t.prototype.onDestroy.call(this);
+  };
+  _ctor.prototype.onDisable = function () {
+    GameplayAdOwner.retire(this);
+    if (t.prototype.onDisable) t.prototype.onDisable.call(this);
   };
   _ctor.prototype.onRestart = function (t) {
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
@@ -272,8 +285,10 @@ var def_KinghtFallGameCtrl = function (t) {
     return false;
   };
   _ctor.prototype.onUpdate = function (t) {
-    if (this._battleSounds && BattleSounds.tick) BattleSounds.tick(this);
-    if (this._unitVoices) require("UnitVoices").tick(this);
+    var ui = $z1KinghtFallUIGame.default.instance, data = this.gameData, epoch = this._combatEpoch, stage = this.gameStatus;
+    if (!frameCurrent(this, ui, data, epoch, stage)) return;
+    if (this._battleSounds && BattleSounds.tick) { BattleSounds.tick(this); if (!frameCurrent(this, ui, data, epoch, stage)) return; }
+    if (this._unitVoices) { require("UnitVoices").tick(this); if (!frameCurrent(this, ui, data, epoch, stage)) return; }
     var l;
     if (this._rallyMarkerRemaining > 0) {
       var markerDelta = cc.director && cc.director.getDeltaTime ? Math.min(.1, cc.director.getDeltaTime()) : t;
@@ -282,15 +297,19 @@ var def_KinghtFallGameCtrl = function (t) {
       if (this._rallyMarkerRemaining < .000001) { this._rallyMarkerRemaining = 0; this.ndAggFlag.active = false; }
     }
     Navigation.beginFrame(this);
-    if (this._projectileLooks) this._projectileLooks.update(t);
-    if (this.gameData && this.gameData._relicSavePending && require("RelicRuntime").retry(this.gameData, t) && this.gameData._relicRoundCommitPending) this.gameData.tryEndGame();
+    if (this._projectileLooks) { this._projectileLooks.update(t); if (!frameCurrent(this, ui, data, epoch, stage)) return; }
+    if (this.gameData && this.gameData._relicSavePending) {
+      if (require("RelicRuntime").retry(this.gameData, t) && this.gameData._relicRoundCommitPending) this.gameData.tryEndGame();
+      if (!frameCurrent(this, ui, data, epoch, stage)) return;
+    }
     if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.gameData) {
       this.gameData._relicCombatTime = (this.gameData._relicCombatTime || 0) + t;
       this.ctrPlay._relicMoving = !this.ctrPlay.isDead() && !!(this.moveDir && (this.moveDir.x || this.moveDir.y));
       require("RelicCombat").updateHero(this.ctrPlay, t);
       require("RelicBattle").updateHeroAura(this.gameData, this.ctrPlay, t, this.ctrPlay._relicMoving);
+      if (!frameCurrent(this, ui, data, epoch, stage)) return;
     }
-    GameToolsOverrides.tick(t, this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight);
+    if (GameToolsOverrides.tick(t, this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight) && !frameCurrent(this, ui, data, epoch, stage)) return;
     switch (this.gameStatus) {
       case $z1KinghtFallModle.KinghtFallGameStage.Prepare:
         var e = this.gameData.getBulidList();
@@ -315,79 +334,104 @@ var def_KinghtFallGameCtrl = function (t) {
           } else {
             l.doUpgrade(t, false);
           }
+          if (!frameCurrent(this, ui, data, epoch, stage)) return;
         }
         this.onCommerce(t);
+        if (!frameCurrent(this, ui, data, epoch, stage)) return;
         break;
       case $z1KinghtFallModle.KinghtFallGameStage.Fight:
         this.gameData.onUpdata(t);
+        if (!frameCurrent(this, ui, data, epoch, stage)) return;
         this.ctrPlay.onUpdata(t);
-        updateProjectiles(this.ndPlayArr2, t);
-        updateProjectiles(this.ndEnemyArr, t);
-        updateProjectiles(this.ndSoldArr, t);
-        updateProjectiles(this.ndBuildArr2, t);
+        updateProjectiles(this.ndPlayArr2, t, this, ui, data, epoch, stage);
+        updateProjectiles(this.ndEnemyArr, t, this, ui, data, epoch, stage);
+        updateProjectiles(this.ndSoldArr, t, this, ui, data, epoch, stage);
+        updateProjectiles(this.ndBuildArr2, t, this, ui, data, epoch, stage);
     }
+    if (!frameCurrent(this, ui, data, epoch, stage)) return;
     this.ctrPlay.doMove(this.moveDir, t);
+    if (!frameCurrent(this, ui, data, epoch, stage)) return;
     // Skill geometry and world effects share the hero's final movement position
     // for this simulation step. Advancing them in the actor's stat update made
     // moving thrusts sample the previous position while the horse rendered ahead.
-    if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.ctrPlay._styleRuntime) this.ctrPlay._styleRuntime.update(t);
+    if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.ctrPlay._styleRuntime) {
+      this.ctrPlay._styleRuntime.update(t);
+      if (!frameCurrent(this, ui, data, epoch, stage)) return;
+    }
     this.collectFollowers();
+    if (!frameCurrent(this, ui, data, epoch, stage)) return;
     var o = this.gameData.getBulidList();
     for (n = 0; n < o.length; n++) {
       (l = o[n]).onUpdate(t);
+      if (!frameCurrent(this, ui, data, epoch, stage)) return;
     }
     var r = this.gameData.getSoldierList();
-    for (var s = 0; s < r.length; s++) {
-      (l = r[s]).onUpdate(t);
+    var s = 0;
+    for (var remaining = r.length; remaining > 0 && s < r.length; remaining--) {
+      l = r[s];
+      if (l) l.onUpdate(t);
+      if (!frameCurrent(this, ui, data, epoch, stage)) return;
+      if (r[s] === l) s++;
     }
   };
   _ctor.prototype.onCommerce = function (t) {
     var e = this;
     this.ctrPlay.node.getPosition(this.vec2_1);
     if (this.gameData.appearBusinessPoints && this.gameData.appearBusinessPoints.getInClick(this.vec2_1, t)) {
-      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, true);
+      var silverOfferPoint = this.gameData.appearBusinessPoints, silverOfferNode = silverOfferPoint.node, silverOfferGeneration = silverOfferNode._combatGeneration;
+      var silverOffer = GameplayAdOwner.begin(this, this, function () {
+        return e.gameData.appearBusinessPoints === silverOfferPoint && cc.isValid(silverOfferPoint, true) && silverOfferPoint.node === silverOfferNode && cc.isValid(silverOfferNode, true) && silverOfferNode._combatGeneration === silverOfferGeneration;
+      });
+      if (!silverOffer) return;
       var n = function (t) {
-        e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
-        if (t) {
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_coin);
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_coin_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-          e.gameData.appearBusinessPoints.node.active = false;
-          e.gameData.coin += e.gameData.appearBusinessPoints.coinNum;
-          $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, $z1Utils.Utils.StringFormat(e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom01), e.gameData.appearBusinessPoints.coinNum));
-          $z1KinghtFallUIGame.default.instance.initView();
-          var n = $z1KinghtFallUIGame.default.instance.ndCoin;
-          var i = cc.v2(n.position.x + n.children[0].x, n.position.y + n.children[0].y);
-          var a = e.gameData.appearBusinessPoints.node.convertToWorldSpaceAR(cc.v2(0, 0));
-          var o = e.camera.getWorldToScreenPoint(a);
-          var r = $z1KinghtFallUIGame.default.instance.ctrUI.node.convertToNodeSpaceAR(o);
-          var s = function () {
-            var t = cc.instantiate(n.children[0]);
-            t.active = true;
-            t.scale = .5;
-            t.setParent($z1KinghtFallUIGame.default.instance.ctrUI.node);
-            var e = cc.v2();
-            cc.Vec2.random(e, 40);
-            cc.tween(t).set({
-              position: cc.v3(r.x, r.y, 0)
-            }).by(.2, {
-              position: cc.v3(e.x, e.y, 0)
-            }).to(1, {
-              position: cc.v3(i.x, i.y, 0),
-              scale: 1
-            }).call(function () {
-              t.destroy();
-            }).start();
-          };
-          for (var l = 0; l < 10; l++) {
-            s();
+        silverOffer.finish(function (current) {
+          if (t) {
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_coin);
+            if (!current()) return;
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_coin_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+            if (!current()) return;
+            e.gameData.appearBusinessPoints.node.active = false;
+            e.gameData.coin += e.gameData.appearBusinessPoints.coinNum;
+            $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, $z1Utils.Utils.StringFormat(e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom01), e.gameData.appearBusinessPoints.coinNum));
+            if (!current()) return;
+            $z1KinghtFallUIGame.default.instance.initView();
+            if (!current()) return;
+            var n = $z1KinghtFallUIGame.default.instance.ndCoin;
+            var i = cc.v2(n.position.x + n.children[0].x, n.position.y + n.children[0].y);
+            var a = e.gameData.appearBusinessPoints.node.convertToWorldSpaceAR(cc.v2(0, 0));
+            var o = e.camera.getWorldToScreenPoint(a);
+            var r = $z1KinghtFallUIGame.default.instance.ctrUI.node.convertToNodeSpaceAR(o);
+            var s = function () {
+              var t = cc.instantiate(n.children[0]);
+              t.active = true;
+              t.scale = .5;
+              t.setParent($z1KinghtFallUIGame.default.instance.ctrUI.node);
+              var e = cc.v2();
+              cc.Vec2.random(e, 40);
+              cc.tween(t).set({
+                position: cc.v3(r.x, r.y, 0)
+              }).by(.2, {
+                position: cc.v3(e.x, e.y, 0)
+              }).to(1, {
+                position: cc.v3(i.x, i.y, 0),
+                scale: 1
+              }).call(function () {
+                t.destroy();
+              }).start();
+            };
+            for (var l = 0; l < 10; l++) {
+              if (!current()) return;
+              s();
+            }
+            e.gameData.appearBusinessPoints = null;
+          } else {
+            e.gameData.appearBusinessPoints.init(1);
           }
-          e.gameData.appearBusinessPoints = null;
-        } else {
-          e.gameData.appearBusinessPoints.init(1);
-        }
+
+        });
       };
       if ($z1KinghtFallModle.KinghtFallSwitch.isMapShopOpen()) {
-        $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 7, function (t) {
+        silverOffer.openDialog($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 7, function (t) {
           n(t);
         });
       } else {
@@ -397,27 +441,38 @@ var def_KinghtFallGameCtrl = function (t) {
           n(false);
         }, "battle.map.silver");
       }
+      return;
     }
     if (!this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon] && this.gameData.weaponBusinessPoints && this.gameData.weaponBusinessPoints.getInClick(this.vec2_1, t)) {
-      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, true);
+      var weaponOfferPoint = this.gameData.weaponBusinessPoints, weaponOfferNode = weaponOfferPoint.node, weaponOfferGeneration = weaponOfferNode._combatGeneration;
+      var weaponOffer = GameplayAdOwner.begin(this, this, function () {
+        return e.gameData.weaponBusinessPoints === weaponOfferPoint && cc.isValid(weaponOfferPoint, true) && weaponOfferPoint.node === weaponOfferNode && cc.isValid(weaponOfferNode, true) && weaponOfferNode._combatGeneration === weaponOfferGeneration;
+      });
+      if (!weaponOffer) return;
       var i = function (t) {
-        e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
-        if (t) {
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_weapon);
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_weapon_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon] = 1;
-          e.gameData.weaponBusinessPoints.node.active = false;
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Attack] = .5;
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.AttackSpeed] = .5;
-          $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom02));
-          e.ctrPlay.ctrPlayAni.setBus(1);
-          e.saveGame();
-        } else {
-          e.gameData.weaponBusinessPoints.init(1);
-        }
+        weaponOffer.finish(function (current) {
+          if (t) {
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_weapon);
+            if (!current()) return;
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_weapon_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+            if (!current()) return;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon] = 1;
+            e.gameData.weaponBusinessPoints.node.active = false;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Attack] = .5;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.AttackSpeed] = .5;
+            $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom02));
+            if (!current()) return;
+            e.ctrPlay.ctrPlayAni.setBus(1);
+            if (!current()) return;
+            e.saveGame();
+          } else {
+            e.gameData.weaponBusinessPoints.init(1);
+          }
+
+        });
       };
       if ($z1KinghtFallModle.KinghtFallSwitch.isMapShopOpen()) {
-        $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 6, function (t) {
+        weaponOffer.openDialog($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 6, function (t) {
           i(t);
         });
       } else {
@@ -427,27 +482,38 @@ var def_KinghtFallGameCtrl = function (t) {
           i(false);
         }, "battle.map.weapon1");
       }
+      return;
     }
     if (1 == this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon] && $z1KinghtFallModle.KinghtFallSwitch.isMapShopSecondOpen() && this.gameData.weaponBusinessPoints && this.gameData.weaponBusinessPoints.getInClick(this.vec2_1, t)) {
-      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, true);
+      var weaponUpgradeOfferPoint = this.gameData.weaponBusinessPoints, weaponUpgradeOfferNode = weaponUpgradeOfferPoint.node, weaponUpgradeOfferGeneration = weaponUpgradeOfferNode._combatGeneration;
+      var weaponUpgradeOffer = GameplayAdOwner.begin(this, this, function () {
+        return e.gameData.weaponBusinessPoints === weaponUpgradeOfferPoint && cc.isValid(weaponUpgradeOfferPoint, true) && weaponUpgradeOfferPoint.node === weaponUpgradeOfferNode && cc.isValid(weaponUpgradeOfferNode, true) && weaponUpgradeOfferNode._combatGeneration === weaponUpgradeOfferGeneration;
+      });
+      if (!weaponUpgradeOffer) return;
       var a = function (t) {
-        e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
-        if (t) {
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.arrow2);
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_arrow2_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon] = 2;
-          e.gameData.weaponBusinessPoints.node.active = false;
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Attack] = 1;
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.AttackSpeed] = 1;
-          $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom02));
-          e.ctrPlay.ctrPlayAni.setBus(3);
-          e.saveGame();
-        } else {
-          e.gameData.weaponBusinessPoints.init(2);
-        }
+        weaponUpgradeOffer.finish(function (current) {
+          if (t) {
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.arrow2);
+            if (!current()) return;
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_arrow2_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+            if (!current()) return;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon] = 2;
+            e.gameData.weaponBusinessPoints.node.active = false;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Attack] = 1;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.AttackSpeed] = 1;
+            $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom02));
+            if (!current()) return;
+            e.ctrPlay.ctrPlayAni.setBus(3);
+            if (!current()) return;
+            e.saveGame();
+          } else {
+            e.gameData.weaponBusinessPoints.init(2);
+          }
+
+        });
       };
       if ($z1KinghtFallModle.KinghtFallSwitch.isMapShopOpen()) {
-        $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 9, function (t) {
+        weaponUpgradeOffer.openDialog($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 9, function (t) {
           a(t);
         });
       } else {
@@ -457,26 +523,37 @@ var def_KinghtFallGameCtrl = function (t) {
           a(false);
         }, "battle.map.weapon2");
       }
+      return;
     }
     if (!this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagHorse] && this.gameData.horseBusinessPoints && this.gameData.horseBusinessPoints.getInClick(this.vec2_1, t)) {
-      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, true);
+      var horseOfferPoint = this.gameData.horseBusinessPoints, horseOfferNode = horseOfferPoint.node, horseOfferGeneration = horseOfferNode._combatGeneration;
+      var horseOffer = GameplayAdOwner.begin(this, this, function () {
+        return e.gameData.horseBusinessPoints === horseOfferPoint && cc.isValid(horseOfferPoint, true) && horseOfferPoint.node === horseOfferNode && cc.isValid(horseOfferNode, true) && horseOfferNode._combatGeneration === horseOfferGeneration;
+      });
+      if (!horseOffer) return;
       var o = function (t) {
-        e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
-        if (t) {
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_horse);
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_horse_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagHorse] = 1;
-          e.gameData.horseBusinessPoints.node.active = false;
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] = .5;
-          $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom03));
-          e.ctrPlay.ctrPlayAni.setBus(2);
-          e.saveGame();
-        } else {
-          e.gameData.horseBusinessPoints.init(1);
-        }
+        horseOffer.finish(function (current) {
+          if (t) {
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_horse);
+            if (!current()) return;
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_horse_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+            if (!current()) return;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagHorse] = 1;
+            e.gameData.horseBusinessPoints.node.active = false;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] = .5;
+            $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom03));
+            if (!current()) return;
+            e.ctrPlay.ctrPlayAni.setBus(2);
+            if (!current()) return;
+            e.saveGame();
+          } else {
+            e.gameData.horseBusinessPoints.init(1);
+          }
+
+        });
       };
       if ($z1KinghtFallModle.KinghtFallSwitch.isMapShopOpen()) {
-        $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 5, function (t) {
+        horseOffer.openDialog($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 5, function (t) {
           o(t);
         });
       } else {
@@ -486,26 +563,37 @@ var def_KinghtFallGameCtrl = function (t) {
           o(false);
         }, "battle.map.horse1");
       }
+      return;
     }
     if (1 == this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagHorse] && $z1KinghtFallModle.KinghtFallSwitch.isMapShopSecondOpen() && this.gameData.horseBusinessPoints && this.gameData.horseBusinessPoints.getInClick(this.vec2_1, t)) {
-      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, true);
+      var horseUpgradeOfferPoint = this.gameData.horseBusinessPoints, horseUpgradeOfferNode = horseUpgradeOfferPoint.node, horseUpgradeOfferGeneration = horseUpgradeOfferNode._combatGeneration;
+      var horseUpgradeOffer = GameplayAdOwner.begin(this, this, function () {
+        return e.gameData.horseBusinessPoints === horseUpgradeOfferPoint && cc.isValid(horseUpgradeOfferPoint, true) && horseUpgradeOfferPoint.node === horseUpgradeOfferNode && cc.isValid(horseUpgradeOfferNode, true) && horseUpgradeOfferNode._combatGeneration === horseUpgradeOfferGeneration;
+      });
+      if (!horseUpgradeOffer) return;
       var r = function (t) {
-        e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
-        if (t) {
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.horse2);
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_horse2_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagHorse] = 2;
-          e.gameData.horseBusinessPoints.node.active = false;
-          e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] = 1;
-          $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom03));
-          e.ctrPlay.ctrPlayAni.setBus(4);
-          e.saveGame();
-        } else {
-          e.gameData.horseBusinessPoints.init(2);
-        }
+        horseUpgradeOffer.finish(function (current) {
+          if (t) {
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.horse2);
+            if (!current()) return;
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_horse2_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+            if (!current()) return;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagHorse] = 2;
+            e.gameData.horseBusinessPoints.node.active = false;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] = 1;
+            $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom03));
+            if (!current()) return;
+            e.ctrPlay.ctrPlayAni.setBus(4);
+            if (!current()) return;
+            e.saveGame();
+          } else {
+            e.gameData.horseBusinessPoints.init(2);
+          }
+
+        });
       };
       if ($z1KinghtFallModle.KinghtFallSwitch.isMapShopOpen()) {
-        $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 8, function (t) {
+        horseUpgradeOffer.openDialog($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, 8, function (t) {
           r(t);
         });
       } else {
@@ -515,6 +603,7 @@ var def_KinghtFallGameCtrl = function (t) {
           r(false);
         }, "battle.map.horse2");
       }
+      return;
     }
   };
   _ctor.prototype.changeAge = function () {
@@ -696,7 +785,7 @@ var def_KinghtFallGameCtrl = function (t) {
     var cache = this._separateArmyCommands ? (rallyGroup ? '_rallyFormation' : '_followFormation') : '_armyFormation';
     var previous = this[cache];
     var jobKey=cache+'Job',job=this[jobKey];
-    if (job && (job.revision!==navigation.revision || job.order!==this.rallyPoint || job.following!==this.isAgg || job.members.length!==soldiers.length || job.members.some(function(member,i){return member!==soldiers[i] || member._combatGeneration!==job.generations[i];}))) job=this[jobKey]=null;
+    if (job && (job.revision!==navigation.revision || job.order!==this.rallyPoint || job.following!==this.isAgg || job.members.length!==soldiers.length || job.members.some(function(member,i){return member!==soldiers[i] || member.node!==job.nodes[i] || member.node._combatGeneration!==job.generations[i];}))) job=this[jobKey]=null;
     // Share each group's layout across its callers and yield after roughly two
     // milliseconds per managed frame. A moving hero cannot restart unfinished
     // work; geometry, orders, roster changes and pooled reuse invalidate it.
@@ -711,7 +800,7 @@ var def_KinghtFallGameCtrl = function (t) {
     if (previous && previous.frame === navigation._frameId) return previous.slots.get(unit) || { pending: true };
     var moved = !previous || cc.Vec2.distance(previous.anchor, anchor) > 20 || !navigation.grid.segmentClear(previous.anchor, anchor, 0);
     var changed = !previous || previous.order !== this.rallyPoint || previous.following !== this.isAgg || moved || previous.revision !== navigation.revision || previous.members.length !== soldiers.length;
-    if (!changed) for (var i = 0; i < soldiers.length; i++) if (previous.members[i] !== soldiers[i]) { changed = true; break; }
+    if (!changed) for (var i = 0; i < soldiers.length; i++) if (previous.members[i] !== soldiers[i] || previous.nodes[i] !== soldiers[i].node || previous.generations[i] !== soldiers[i].node._combatGeneration) { changed = true; break; }
     if (!changed) {
       previous.frame = navigation._frameId;
       return previous.slots.get(unit) || { pending: true };
@@ -847,9 +936,9 @@ var def_KinghtFallGameCtrl = function (t) {
       if (!slots.has(soldier)) slots.set(soldier, { pending: true });
     }
     this[cache] = { frame: navigation._frameId, order: order, following: following, anchor: center,
-      revision: navigation.revision, members: soldiers.slice(), slots: slots, forward: forward, headingAnchor: headingAnchor, layout: layout };
+      revision: navigation.revision, members: soldiers.slice(), nodes: soldiers.map(function(soldier){return soldier.node;}), generations: soldiers.map(function(soldier){return soldier.node._combatGeneration;}), slots: slots, forward: forward, headingAnchor: headingAnchor, layout: layout };
     }).call(this);
-    job=this[jobKey]={iterator:iterator,frame:-1,revision:navigation.revision,order:order,following:following,members:soldiers.slice(),generations:soldiers.map(function(soldier){return soldier._combatGeneration;})};
+    job=this[jobKey]={iterator:iterator,frame:-1,revision:navigation.revision,order:order,following:following,members:soldiers.slice(),nodes:soldiers.map(function(soldier){return soldier.node;}),generations:soldiers.map(function(soldier){return soldier.node._combatGeneration;})};
     if(advance(this,job))return this[cache].slots.get(unit)||{pending:true};
     return previous&&previous.revision===navigation.revision&&previous.order===this.rallyPoint&&previous.following===this.isAgg?previous.slots.get(unit)||{pending:true}:{pending:true};
   };
@@ -995,6 +1084,7 @@ var def_KinghtFallGameCtrl = function (t) {
     if (BattleSounds.start) BattleSounds.start(this);
   };
   _ctor.prototype.cleanMap = function () {
+    GameplayAdOwner.retire(this);
     require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
@@ -1024,31 +1114,45 @@ var def_KinghtFallGameCtrl = function (t) {
   _ctor.prototype.addEnemy = function (t, e, authoredRoute) {
     var announceSound = !!this._battleSounds;
     var n = this;
-    var epoch = this._combatEpoch;
+    var epoch = this._combatEpoch, data = this.gameData, main = this.ndMain, ui = $z1KinghtFallUIGame.default.instance;
     if (-1 != t) {
       var i = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
       var a = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + i.ID;
       var areaCollides = !!i.BuildingCross;
       var o = function (i) {
-        i.setParent(n.ndMain);
+        var generation = i._combatGeneration, actor = null;
+        function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && n._combatEpoch === epoch && n.gameData === data && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation; }
+        function abandon() {
+          if (!cc.isValid(i, true) || i._combatGeneration !== generation) return;
+          if (actor && !actor._isPooled && actor._combatData === data) actor.freeNode();
+          else $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i);
+        }
+        i.setParent(main);
+        if (!current()) { abandon(); return; }
         i.active = true;
+        if (!current()) { abandon(); return; }
         var spawnNode = n.ndPath.getChildByName("ndEnemy" + e);
         if (!spawnNode) { $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i); cc.warn('Missing authored spawn ' + e); return; }
-        var o = i.getComponent($z1KinghtFallEnemyBase.default);
+        var o = actor = i.getComponent($z1KinghtFallEnemyBase.default);
         var previousRoute = n._authoredRouteOverride;
+        var route = authoredRoute || null;
         try {
           i.setPosition(Navigation.positionOf(spawnNode, n));
+          if (!current()) { abandon(); return; }
           var spawnArea = require('SpawnArea').prepare(o, n, e, areaCollides);
           if (spawnArea === null) { cc.warn('Spawn circle '+e+' has no walkable position for enemy '+t);$z1PoolMgr.PoolMgr.getInstance().freeNode(a,i);return; }
-          n._authoredRouteOverride = authoredRoute || null;
-          o.initData(t, e);
-          if (!require('SpawnArea').apply(o, n, e, spawnArea)) { o._isPooled = true; o.bornInfo = null; Navigation.reset(o); $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i); return; }
+          n._authoredRouteOverride = route;
+          var lease = { generation: generation }, initialized = o.initData(t, e, lease);
+          generation = lease.generation;
+          if (initialized === false || !current()) { abandon(); return; }
+          if (!require('SpawnArea').apply(o, n, e, spawnArea)) { abandon(); return; }
+          if (!current()) { abandon(); return; }
         } catch (error) {
-          o._isPooled = true; o.bornInfo = null; Navigation.reset(o);
-          $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i);
+          if (lease) generation = lease.generation;
+          abandon();
           throw error;
-        } finally { n._authoredRouteOverride = previousRoute; }
-        n.gameData.addEnemy(o);
+        } finally { if (n._combatEpoch === epoch && n.gameData === data && n._authoredRouteOverride === route) n._authoredRouteOverride = previousRoute; }
+        data.addEnemy(o);
         if (BattleSounds.spawnEnemy) BattleSounds.spawnEnemy(o, announceSound);
       };
       var r = $z1PoolMgr.PoolMgr.getInstance().getNode(a);
@@ -1070,16 +1174,28 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.addSoldier = function (t, e) {
     var n = this;
-    var epoch = this._combatEpoch;
+    var epoch = this._combatEpoch, data = this.gameData, main = this.ndMain, ui = $z1KinghtFallUIGame.default.instance;
     var i = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t, "ally");
     var a = $z1KinghtFallConfig.KinghtFallPoolName.Soldier + "_" + i.ID;
     var o = function (i) {
-      i.setParent(n.ndMain);
+      var generation = i._combatGeneration;
+      function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && n._combatEpoch === epoch && n.gameData === data && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation; }
+      function abandon() { if (cc.isValid(i, true) && i._combatGeneration === generation) $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i); }
+      i.setParent(main);
+      if (!current()) { abandon(); return; }
       i.active = true;
-      var a = i.getComponent($z1KinghtFallSoldierBase.default);
-      a.initData(t);
-      n.gameData.addSoldier(a);
-      e(a);
+      if (!current()) { abandon(); return; }
+      var actor = i.getComponent($z1KinghtFallSoldierBase.default), lease = { generation: generation };
+      var initialized = actor.initData(t, lease);
+      // The initializer records only its own claim, even if cleanup reenters initData.
+      generation = lease.generation;
+      if (initialized === false || !current()) {
+        if (cc.isValid(i, true) && i._combatGeneration === generation && !actor._isPooled && actor._combatData === data) actor.freeNode();
+        else abandon();
+        return;
+      }
+      data.addSoldier(actor);
+      e(actor);
     };
     var r = $z1PoolMgr.PoolMgr.getInstance().getNode(a);
     if (r) {
@@ -1171,12 +1287,10 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.freeBullet = function (t) {
-    for (var e = 0; e < this.ndPlayArr2.length; e++) {
-      if (this.ndPlayArr2[e].uuid == t.uuid) {
-        this.ndPlayArr2.splice(e, 1);
-        break;
-      }
-    }
+    var e = this.ndPlayArr2.indexOf(t);
+    if (e < 0) return;
+    this.ndPlayArr2.splice(e, 1);
+    if (!cc.isValid(t.node, true)) return;
     t.node.active = false;
     this.ndPlayArr1.push(t.node);
   };
@@ -1264,12 +1378,10 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.freeBuildBullet = function (t) {
-    for (var e = 0; e < this.ndBuildArr2.length; e++) {
-      if (this.ndBuildArr2[e].uuid == t.uuid) {
-        this.ndBuildArr2.splice(e, 1);
-        break;
-      }
-    }
+    var e = this.ndBuildArr2.indexOf(t);
+    if (e < 0) return;
+    this.ndBuildArr2.splice(e, 1);
+    if (!cc.isValid(t.node, true)) return;
     t.node.active = false;
     this.ndBuildArr1.push(t.node);
   };
@@ -1314,6 +1426,8 @@ var def_KinghtFallGameCtrl = function (t) {
     var t = this;
     var record = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData(), stage = this.gameData.levelCfg.Level;
     if (record.hasSave(stage)) {
+      var issue = record.getResumeIssue && record.getResumeIssue(stage, $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data);
+      if (issue) throw new Error(issue);
       record.activateStage(stage);
       this.gameData.setRound();
       record.getBuffList(stage).forEach(function (e) {

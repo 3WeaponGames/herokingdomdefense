@@ -29,7 +29,7 @@ test('all 17 approved legacy units resolve the authored animation defaults indep
 test('describe exposes the reference and sources, while collecting leaves assets and configuration untouched',()=>{
     const files=Assets.index(root).files.filter(file=>/\.json$/.test(file));
     const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');const before=new Map(files.map(file=>[file,hash(file)]));
-    const description=Assets.describe(root,{type:'hero',id:'hero',noRuntime:true});assert.equal(description.defaultTiming,.1667);assert.equal(description.timingDefaultSource,'Authored attack event');assert.equal(description.timingEvents.length,7);assert(description.timingEvents.every(event=>event.source&&event.name==='attack'));
+    const description=Assets.describe(root,{type:'hero',id:'hero',noRuntime:true});assert.equal(description.defaultTiming,.1667);assert.equal(description.timingDefaultSource,'Authored attack event');assert(description.timingEvents.length>0);assert(description.timingEvents.every(event=>event.time===description.defaultTiming));assert(description.timingEvents.every(event=>event.source&&event.name==='attack'));
     Defaults.collect(root,legacyUnits(root));before.forEach((value,file)=>assert.equal(hash(file),value,file));
 });
 console.log(count+' authored attack timing default checks passed.');

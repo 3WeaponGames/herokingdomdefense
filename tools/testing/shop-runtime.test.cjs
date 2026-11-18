@@ -388,3 +388,25 @@ test('malformed shop state fails closed without rearming the daily deal or wipin
     const reopened = fixture(f.persist()); assert.equal(reopened.service.getView().ready, false); assert.deepEqual(account(reopened), before);
   }
 });
+
+test('terminal shop revision rejects resource and chest purchases before any staged debit or reward becomes durable',()=>{
+  for(const kind of ['resources','chests']){
+    const f=initialized();f.player.udata.data.shopState.revision=Number.MAX_SAFE_INTEGER;
+    f.player.udata.data.futureAccount={kept:true};f.player.udata.data.shopState.futureStock={kept:true};
+    f.player.udata.saveData();const view=ready(f),before=clone(f.player.rewardRecords().map(r=>r.data)),persisted=f.persist();f.state.writes=0;
+    assert.throws(()=>f.service.purchase(kind,kind==='resources'?'gold-pouch':view.chests[0].id,view.token),/revision exhausted/);
+    assert.deepEqual(clone(f.player.rewardRecords().map(r=>r.data)),before);assert.deepEqual(f.persist(),persisted);assert.equal(f.state.writes,0);
+    assert.equal(f.player.claimingRewardTransaction,false);assert(!f.player.pendingRewardJournal);assert.equal(ready(f).token,view.token);
+    const restarted=fixture(f.persist());assert.equal(ready(restarted).token,view.token);assert.deepEqual(account(restarted),account(f));
+  }
+});
+
+test('the last safe stock revision remains a valid persisted purchase with extensions intact',()=>{
+  const f=initialized();f.player.udata.data.shopState.revision=Number.MAX_SAFE_INTEGER-1;
+  f.player.udata.data.shopState.futureStock={kept:true};f.player.udata.data.shopState.slots[0].futureSlot='kept';f.player.udata.saveData();
+  const view=ready(f),gems=f.player.udata.getDiamondNum(),gold=f.player.udata.getGoldNum();
+  assert.equal(f.service.purchase('resources','gold-pouch',view.token).ok,true);assert.equal(f.player.udata.data.shopState.revision,Number.MAX_SAFE_INTEGER);
+  assert.equal(f.player.udata.getDiamondNum(),gems-50);assert.equal(f.player.udata.getGoldNum(),gold+5000);
+  const restarted=fixture(f.persist());assert.equal(ready(restarted).ready,true);assert.deepEqual(account(restarted),account(f));
+  assert.deepEqual(clone(restarted.player.udata.data.shopState.futureStock),{kept:true});assert.equal(restarted.player.udata.data.shopState.slots[0].futureSlot,'kept');
+});

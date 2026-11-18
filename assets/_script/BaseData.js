@@ -165,6 +165,8 @@ var exp_BaseData = function () {
   _ctor.prototype.reportSaveFailure = function () {
     this.localSavePending = true;
     this.saveFailureReported = true;
+    // A direct debit must restore its amount before subscribers can save it.
+    if (this._debitSaveDepth) { this._debitSaveFailed = true; return; }
     if ($z1EventMgr.EventMgr) $z1EventMgr.EventMgr.getInstance().emit("SaveFailed", { key: this.gameKey });
   };
   _ctor.prototype.initData = function () {};

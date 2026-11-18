@@ -45,3 +45,17 @@ test('pending-destroy nodes and templates cannot enter or grow the live pool',en
  const h=fixture(),node=h.manager.getNode(h.key);node.destroy();h.manager.freeNode(h.key,node);assert.equal(h.pool._nodes.size(),0);
  const next=h.manager.getNode(h.key);assert.notEqual(next,node);assert(h.e.cc.isValid(next,true));h.template.destroy();assert.equal(h.manager.getNode(h.key),null,'pool instantiated a template already scheduled for destruction');h.flush();assert(h.e.cc.isValid(next,true));
 });
+
+test('pool returns during parent deactivation wait until the hierarchy walk has finished',engineOptions,()=>{
+ const h=fixture(),cc=h.e.cc,afterDraw=[];cc.Object={Flags:{Deactivating:1<<8}};cc.Director={EVENT_AFTER_DRAW:'after-draw'};cc.director.once=(event,done)=>{assert.equal(event,'after-draw');afterDraw.push(done);};
+ const node=h.manager.getNode(h.key),parent=new Node('deactivating');node.setParent(parent);parent._objFlags=1<<8;
+ const detach=node.removeFromParent;node.removeFromParent=function(){assert.equal(!!(this.parent&&this.parent._objFlags&256),false,'Hierarchy changed during deactivation');detach.call(this);};
+ h.manager.freeNode(h.key,node);h.manager.freeNode(h.key,node);assert.equal(afterDraw.length,1);assert.equal(h.pool._nodes.size(),0);assert.equal(node.parent,parent);
+ parent._objFlags=0;afterDraw.shift()();assert.equal(node.parent,null);assert.equal(h.pool._nodes.size(),1);assert.equal(h.manager.getNode(h.key),node);
+});
+
+test('clearing a pool retires queued returns before a replacement pool can reuse them',engineOptions,()=>{
+ const h=fixture(),cc=h.e.cc,afterDraw=[];cc.Object={Flags:{Deactivating:256}};cc.Director={EVENT_AFTER_DRAW:'after-draw'};cc.director.once=(_event,done)=>afterDraw.push(done);
+ const node=h.manager.getNode(h.key),parent=new Node('deactivating');node.setParent(parent);parent._objFlags=256;h.manager.freeNode(h.key,node);
+ assert.equal(afterDraw.length,1);h.manager.clearPool(h.key);assert.equal(node.pendingDestroy,true);parent._objFlags=0;afterDraw.shift()();h.flush();assert.equal(node.destroyed,true);assert.equal(h.pool._nodes.size(),0);
+});

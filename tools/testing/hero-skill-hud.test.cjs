@@ -126,6 +126,29 @@ test('unchanged charge and empty world overlays do not rebuild Graphics every fr
  f.rt.state.charge=.75;f.hud.update(f.hero,f.rt);assert.equal(charge.clearCalls,before.charge+1);
 });
 
+function matrixLayout(f){
+ f.cc.mat4=()=>({m:new Float64Array(16)});
+ f.Node.prototype.getWorldMatrix=function(out){const o=this.convertToWorldSpaceAR({x:0,y:0}),x=this.convertToWorldSpaceAR({x:1,y:0}),y=this.convertToWorldSpaceAR({x:0,y:1});out.m.fill(0);Object.assign(out.m,{0:x.x-o.x,1:x.y-o.y,4:y.x-o.x,5:y.y-o.y,10:1,12:o.x,13:o.y,15:1});return out;};
+ const command=(name,x)=>{const n=new f.Node(name);n.setParent(f.root);n.setPosition(x,-480);n.setContentSize(104,104);const face=new f.Node('ndTag1');face.setParent(n);face.setContentSize(104,104);const label=new f.Node('labNum');label.setParent(n);label.setContentSize(28,20);label.y=-65;return n;};
+ f.ui.btnAgg=command('Rally',190);f.ui.btnFollow=command('Follow',40);f.hud.update(f.hero,f.rt);
+}
+
+test('stationary native HUD inputs reuse layout without setting its position on every frame',()=>{
+ const f=fixture('guardian');matrixLayout(f);const hud=f.hero._skillHUD,position=hud.button.setPosition;let writes=0;hud.button.setPosition=function(...args){writes++;return position.apply(this,args);};
+ for(let i=0;i<50;i++){f.rt.state.cooldown=i/10;f.hud.update(f.hero,f.rt);}
+ assert.equal(writes,0,'Cooldown updates must not repeat unchanged HUD layout');assert(hud.layoutCache.ready);
+ hud.button.x-=35;f.hud.update(f.hero,f.rt);assert.equal(writes,1,'An external move must be reconciled in the same frame');
+ f.hud.update(f.hero,f.rt);assert.equal(writes,1,'Layout must cache its own final position');
+});
+
+test('native layout caching reacts to live transforms, command dimensions, labels, visibility and safe bounds',()=>{
+ const f=fixture('guardian');matrixLayout(f);const hud=f.hero._skillHUD;let visible={width:750,height:1334},origin={x:-375,y:-667},safe={x:-375,y:-667,width:750,height:1334};
+ f.cc.view={getVisibleSize:()=>visible,getVisibleOrigin:()=>origin};f.cc.sys={getSafeAreaRect:()=>safe};f.hud.update(f.hero,f.rt);
+ const snapshot=()=>({x:hud.button.x,y:hud.button.y,width:hud.button.width,height:hud.button.height,diameter:hud.diameter});
+ const changes=[()=>f.ui.btnAgg.x-=43,()=>f.ui.btnAgg.height+=48,()=>f.ui.btnAgg.getChildByName('ndTag1').scaleX=1.3,()=>{f.root.scaleX=.9;f.root.scaleY=1.2;f.root.angle=8;},()=>{const label=f.ui.btnAgg.getChildByName('labNum');label.width=200;label.height=45;label.x=-45;label.y=120;},()=>f.ui.btnAgg.activeInHierarchy=false,()=>f.ui.btnAgg.activeInHierarchy=true,()=>{visible={width:610,height:1050};origin={x:-305,y:-525};safe={x:-285,y:-505,width:570,height:1010};},()=>safe={x:-240,y:-470,width:450,height:920},()=>{const next=new f.Node('New parent');next.setContentSize(750,1334);next.setPosition(17,-23);hud.button.setParent(next);},()=>{f.ui.btnAgg.getChildByName('labNum').activeInHierarchy=false;}];
+ for(const change of changes){change();f.hud.update(f.hero,f.rt);const cached=snapshot();hud.layoutCache.ready=false;f.hud.update(f.hero,f.rt);const fresh=snapshot();for(const key of Object.keys(cached))assert(Math.abs(fresh[key]-cached[key])<1e-8,'Cached and uncached '+key+' disagree after a live input edit');}
+});
+
 test('Skirmisher guide applies the authored hit-arc offsets to its captured bow release',()=>{
  const f=fixture('skirmisher',{skillOrigin:()=>({x:30,y:120})});f.hero.ctrPlayAni={};
  f.rt.settings={visual:Object.assign(require('../../assets/_script/HeroSkillSettings').defaults('skirmisher').visual,{originX:4,originY:5,offsetX:6,offsetY:7,castTrajectory:''})};

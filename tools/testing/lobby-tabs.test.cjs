@@ -41,6 +41,6 @@ test('cached talent and relic pages refresh current data without reconstructing 
   }
 });
 test('revisiting equipment reads current campaign caps and relic discounts without changing saved progression',()=>{
-  let stage=2,relic=null;const user={getMaxStage:()=>stage,getTreasureLevel:()=>relic},data={getLevelCfgById2:n=>({EquipLevelCap:n*10}),getTreasureCfgById:()=>({levelInfo:[{param:[.2]}]})};
+  let stage=2,relic=null;const stages=Array.from({length:5},(_,i)=>({Level:i+1,EquipLevelCap:(i+1)*10})),user={getMaxStage:()=>stage,getTreasureLevel:()=>relic},data={getLevelCfgById2:n=>stages[n-1],getLevelCfgList:()=>stages,getTreasureCfgById:()=>({levelInfo:[{param:[.2]}]})};
   const owner=controller('KinghtFallHomePersonCtrl',{KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single({getUserData:()=>user})},KinghtFallDataMgr:{KinghtFallDataMgr:single(data)},KinghtFallEnum:{KinghtFallEnumTreasureEnum:{ForgeAmulet:1}}});owner.nodeInfo=[];owner._homeTabReady=true;owner.initView=noop;owner.onEnable();assert.equal(owner.levelLimit,20);assert.equal(owner.subNum,1);stage=4;relic={level:1};owner.onEnable();assert.equal(owner.levelLimit,40);assert.equal(owner.subNum,.8);assert.equal(stage,4);assert.equal(owner.pending.size,1);owner.onDisable();assert.equal(owner.pending.size,0);
 });

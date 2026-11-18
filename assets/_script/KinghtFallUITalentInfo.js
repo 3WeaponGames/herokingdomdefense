@@ -19,6 +19,8 @@ var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
+var EarnedAds = require("GlobalAdReward");
+var $z1EventMgr = require("EventMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -117,33 +119,40 @@ var def_KinghtFallUITalentInfo = function (t) {
   };
   _ctor.prototype.onVideoBtnClick = function () {
     var t = this;
-    var owned = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(this.cfg.ID);
+    var pending = EarnedAds.get(this, "_talentAdReward");
+    if (pending) { pending.retry(); return; }
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), cfg = EarnedAds.clone(this.cfg), stage = player.getUserData().getMaxStage();
+    var owned = player.getUserData().getTalentLevel(cfg.ID), tracked = false;
     if (owned && owned.isLock) return;
-    $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), unlocked = false;
+    var request = EarnedAds.create(this, "_talentAdReward", player, function () {
+      var before = player.getUserData().getTalentLevel(cfg.ID), unlocked = false, video = before && before.video || 0;
+      if (before && before.isLock) return { done: true, show: false };
       var committed = player.transact(function () {
-        var progress = player.getUserData().getTalentLevel(t.cfg.ID) || { id: t.cfg.ID, isLock: false, video: 0 };
+        var progress = player.getUserData().getTalentLevel(cfg.ID) || { id: cfg.ID, isLock: false, video: 0 };
         progress.video++;
-        if (progress.video >= t.cfg.vedioCount || TestMode.getInstance().shouldBypassAdLimits()) {
+        if (progress.video >= cfg.vedioCount || TestMode.getInstance().shouldBypassAdLimits()) {
           progress.isLock = true;
           unlocked = true;
           player.getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.TalentUp, 1);
         }
         player.getUserData().setTalentLevel(progress);
-      }, function () { var current = player.getUserData().getTalentLevel(t.cfg.ID); return !(current && current.isLock); });
-      if (!committed) return;
+      }, function () { var current = player.getUserData().getTalentLevel(cfg.ID); return !(current && current.isLock); });
+      var progress = player.getUserData().getTalentLevel(cfg.ID);
+      if (!committed && !(progress && (progress.isLock || progress.video > video))) return false;
+      if (!tracked) { tracked = true;
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.talent);
-      $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_talent_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-      var e = player.getUserData().getTalentLevel(t.cfg.ID);
-      if (unlocked) {
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.talent_unlock_X, t.cfg.ID);
+      $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_talent_Y, stage);
+      if (unlocked) $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.talent_unlock_X, cfg.ID); }
+      return { done: true, value: { unlocked: unlocked, video: progress.video } };
+    }, function (result, current) {
+      if (result.unlocked) {
         $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.unlock);
-        t.closeUI();
+        if (current()) t.closeUI();
       } else {
-        t.btnVideo.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = e.video + "/" + t.cfg.vedioCount;
+        t.btnVideo.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = result.video + "/" + cfg.vedioCount;
       }
-      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.TalentUpdate);
-    }, null, "home.talent.unlock");
+    }, function () { $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.TalentUpdate); });
+    if (request) $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, request.earn, request.cancel, "home.talent.unlock");
   };
   _ctor.prototype.onGoldBtnClick = function () {
     var self = this, player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();

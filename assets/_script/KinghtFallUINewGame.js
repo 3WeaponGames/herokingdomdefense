@@ -24,7 +24,14 @@ var def_KinghtFallUINewGame = function (t) {
     var record = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
     this.stage = stage === undefined ? record.data.levelNum : stage;
     this.finished = false;
-    if (this.labInfo) require("LanguageMgr").LanguageMgr.getInstance().bindLabel(this.labInfo, "ui.layout.kinghtfalluinewgame.13", [this.stage, record.getRoundNum(this.stage)]);
+    this.refreshContinue();
+  };
+  _ctor.prototype.refreshContinue = function () {
+    var record = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
+    var issue = record.getResumeIssue && record.getResumeIssue(this.stage);
+    this.btnContinue.active = !issue;
+    if (this.labInfo) require("LanguageMgr").LanguageMgr.getInstance().bindLabel(this.labInfo, issue ? "campaign.resume.unavailable" : "ui.layout.kinghtfalluinewgame.13", [this.stage, record.getRoundNum(this.stage)]);
+    return !issue;
   };
   _ctor.prototype.start = function () {
     var t = this;
@@ -35,7 +42,7 @@ var def_KinghtFallUINewGame = function (t) {
       t.call();
     }, this);
     this.btnContinue.on(cc.Node.EventType.TOUCH_END, function () {
-      if (t.finished || !$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return;
+      if (t.finished || !t.refreshContinue() || !$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return;
       t.finished = true;
       t.closeUI();
       t.call();

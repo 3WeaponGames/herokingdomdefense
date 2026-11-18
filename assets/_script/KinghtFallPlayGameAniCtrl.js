@@ -11,6 +11,21 @@ var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
+function animationOperation(owner, key, renderer, field) {
+  var token = owner[key] = (owner[key] || 0) + 1, life = owner._animationLife || 0;
+  var node = owner.node, rendererNode = renderer && renderer.node, ancestry = [];
+  for (var current = node; current; current = current.parent) ancestry.push({ node: current, parent: current.parent, generation: current._combatGeneration });
+  var ui = $z1KinghtFallUIGame.default && $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+  var data = game && game.gameData, epoch = game && game._combatEpoch, generation = ui && ui._resourceGeneration, done = false;
+  return function () {
+    if (done || owner[key] !== token || (owner._animationLife || 0) !== life || owner.node !== node || owner.enabled === false || owner[field] !== renderer ||
+      !cc.isValid(owner, true) || renderer.node !== rendererNode || !cc.isValid(renderer, true) || !cc.isValid(rendererNode, true)) return false;
+    for (var i = 0; i < ancestry.length; i++) { var entry = ancestry[i]; if (!cc.isValid(entry.node, true) || entry.node.parent !== entry.parent || entry.node._combatGeneration !== entry.generation) return false; }
+    if (ui && ($z1KinghtFallUIGame.default.instance !== ui || ui.isclose || ui._resourceGeneration !== generation || ui.ctrGame !== game || !cc.isValid(ui, true))) return false;
+    if (game && (game.gameData !== data || game._combatEpoch !== epoch || !cc.isValid(game, true))) return false;
+    done = true; return true;
+  };
+}
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -35,6 +50,7 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initView = function () {
+    this._animationLife = (this._animationLife || 0) + 1;
     var t;
     var e = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getEquipCfgList();
     for (var n = 0; n < e.length; n++) {
@@ -159,6 +175,7 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     this.spAniLevelUp && (this.spAniLevelUp.paused = t);
   };
   _ctor.prototype.setDie = function (t) {
+    var complete = animationOperation(this, "_lifeAnimation", this.spAniSoulFire, "spAniSoulFire");
     this.isDie = true;
     require("HeroMakerRider").clearCombatState(this);
     this.spAniMa.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Die, false);
@@ -172,13 +189,14 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     this.spAniSoulFire.node.active = true;
     var e = this.spAniSoulFire.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Die, false);
     this.spAniSoulFire.setTrackCompleteListener(e, function () {
-      t && t();
+      complete() && t && t();
     });
     this.spAniSoulFire.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.DieKeep, true);
     this.ndReviveTail.active = true;
   };
   _ctor.prototype.setRevive = function (t) {
     var e = this;
+    var revive = this.spAniRevive, complete = animationOperation(this, "_lifeAnimation", revive, "spAniRevive");
     this.spAniMa.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Rise, false);
     this.spAniMa.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
     this.spAniBody.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Rise, false);
@@ -197,6 +215,8 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     this.spAniRevive.node.active = true;
     this.spAniRevive.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Rise, false);
     this.spAniRevive.setCompleteListener(function () {
+      if (e.spAniRevive !== revive || !complete()) return;
+      revive.setCompleteListener(null);
       e.isDie = false;
       e.spAniRevive.node.active = false;
       e.ndReviveTail.active = false;
@@ -210,20 +230,23 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
         e.spAniSmoke.setAnimation(0, "move_3", false);
       }
       t && t();
-      e.spAniRevive.setCompleteListener(null);
     });
   };
   _ctor.prototype.setLevelUp = function (t) {
     var e = this;
+    var levelUp = this.spAniLevelUp, complete = animationOperation(this, "_levelAnimation", levelUp, "spAniLevelUp");
     this.spAniLevelUp.node.active = true;
     this.spAniLevelUp.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.LevelUp, false);
     this.spAniLevelUp.setCompleteListener(function () {
-      e.spAniLevelUp.node.active = false;
+      if (e.spAniLevelUp !== levelUp || !complete()) return;
+      levelUp.setCompleteListener(null);
+      levelUp.node.active = false;
       t && t();
     });
     $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.get_idea);
   };
   _ctor.prototype.onRestart = function () {
+    this._animationLife = (this._animationLife || 0) + 1;
     var t;
     require("HeroMakerRider").clearCombatState(this);
     this.isMove = false;
@@ -242,6 +265,8 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     this.spAniLevelUp.node.active = false;
     this.ndReviveTail.active = false;
   };
+  _ctor.prototype.onDisable = function () { this._animationLife = (this._animationLife || 0) + 1; };
+  _ctor.prototype.onDestroy = function () { this._animationLife = (this._animationLife || 0) + 1; };
   _ctor.prototype.onChangeSpeed = function () {
     var t = $z1KinghtFallUIGame.default.instance.speed;
     this.spAniMa.timeScale = t;

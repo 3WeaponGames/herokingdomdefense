@@ -30,6 +30,16 @@ test('result stars use the frozen settlement mask, run once and leave defeat lay
 test('closing an owner before its star asset arrives performs no instantiation or presentation',()=>{
  const f=presentation();f.api.showLobby(f.owner,stage,7,2);f.owner.isclose=true;f.requests[0].done({});assert.equal(f.nodes.length,0);assert.equal(f.calls.length,0);
 });
+test('reopening after BaseCtrl suppresses an old generation restarts the cold star load',()=>{
+ const f=presentation(),load=f.owner.loadPrefab;f.owner._resourceGeneration=1;
+ f.owner.loadPrefab=function(bundle,file,done){const generation=this._resourceGeneration;load.call(this,bundle,file,asset=>{if(this._resourceGeneration===generation)done(asset);});};
+ f.api.showLobby(f.owner,stage,1,2);f.owner._resourceGeneration+=2;f.requests[0].done({});f.api.showLobby(f.owner,stage,7,2);
+ assert.equal(f.requests.length,2);f.requests[1].done({});assert.equal(f.nodes.length,1);assert.equal(f.calls[0].count,3);assert.equal(f.owner._lobbyStars.loading,false);
+});
+test('a late old star callback cannot clear the new request or instantiate into the current UI',()=>{
+ const f=presentation();f.owner._resourceGeneration=1;f.api.showLobby(f.owner,stage,1,2);f.owner._resourceGeneration++;f.api.showLobby(f.owner,stage,7,2);
+ f.requests[0].done({});assert.equal(f.nodes.length,0);assert.equal(f.owner._lobbyStars.loading,true);f.requests[1].done({});assert.equal(f.nodes.length,1);assert.equal(f.calls[0].count,3);
+});
 test('star outlines persist across earned states without creating duplicate nodes or changing artwork sizes',()=>{
  class Node{constructor(name){this.name=name;this.children=[];this.active=true;}set parent(value){this._parent=value;value.children.push(this);}get parent(){return this._parent;}setPosition(x,y){this.x=x;this.y=y;}setContentSize(width,height){this.width=width;this.height=height;}setScale(value){this.scale=value;}addComponent(Type){return new Type();}}
  class Sprite{setMaterial(){}}Sprite.SizeMode={CUSTOM:0};
@@ -45,4 +55,10 @@ test('the Cocos star prefab retains the full-resolution Unity artwork, its effec
  const script=JSON.parse(fs.readFileSync(path.join(root,'assets/_script/StageStars.js.meta')));assert(c.__type__.startsWith(script.uuid.slice(0,5)));
  const png=fs.readFileSync(path.join(root,'assets/resources/ui/stage-stars/star.png')),unity='C:/Users/danny/Documents/projects/Hero Line Wars/Idle Hero Defense/Assets/GUI PRO Kit - Casual Game/ResourcesData/Sprite/Demo/Demo_Icon/Icon_ImageIcon_Star01_l.png';assert.equal(png.readUInt32BE(16),323);assert.equal(png.readUInt32BE(20),325);if(fs.existsSync(unity))assert(png.equals(fs.readFileSync(unity)));
  for(const[name,property]of [['star','starFrame'],['sparkle','sparkleFrame'],['glow','glowFrame']]){const m=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/ui/stage-stars/'+name+'.png.meta')));assert.equal(c[property].__uuid__,m.subMetas[name].uuid);}
+});
+
+test('a pending or reused star row follows the latest parent in the same owner generation',()=>{
+ const f=presentation(),parents=[{getComponent:()=>f.label},{getComponent:()=>f.label},{getComponent:()=>f.label}];let parent=parents[0];f.owner.ndLevelInfo.getChildByName=()=>parent;
+ f.api.showLobby(f.owner,stage,1,2);parent=parents[1];f.api.showLobby(f.owner,stage,7,2);f.requests[0].done({});assert.equal(f.nodes[0].parent,parents[1]);
+ parent=parents[2];f.api.showLobby(f.owner,stage,3,2);assert.equal(f.nodes[0].parent,parents[2]);assert.equal(f.requests.length,1);
 });

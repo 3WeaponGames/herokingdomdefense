@@ -110,7 +110,7 @@ function barracks(e,members,spawn){
   const value=new module.exports.default(),progress={fillRange:0},view={active:false,getChildByName:()=>({getComponent:()=>progress})};
   const authored=Object.values(config.BuildEnum).find(row=>row.enumKey==='Barracks').levelList.find(row=>row.Data&&row.Data[1]===90001);
   assert(authored&&authored.Data[2]>0,'missing authored respawn interval');
-  Object.assign(value,{enemyList:members,waitEnemy:[],time:{Reborn:0,RebornMax:authored.Data[2]},ndPro:view,ndVideoSoldier:view,_testAdLimitBypass:false,
+  Object.assign(value,{node:new Node('barracks',e.game.ndMain,spawn.x,spawn.y),enemyList:members,waitEnemy:[],time:{Reborn:0,RebornMax:authored.Data[2]},ndPro:view,ndVideoSoldier:view,_testAdLimitBypass:false,
     getIsWork:()=>true,canAddVideoSoldier:()=>false,getPos:()=>new Vec2(spawn.x,spawn.y)});
   members.forEach(unit=>{unit.outBuild=value;});return value;
 }

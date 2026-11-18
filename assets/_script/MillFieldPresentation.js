@@ -53,7 +53,8 @@ function sync(runtime,field) {
     field.slot.setAttachment(ruined?null:field.attachment);
     Debris.field(runtime.owner,runtime.owner.ndAniDown,field,ruined);
     var c=ruined?[1,1,1,1]:deathColor(field,age);
-    field.slot.color.set(c[0],c[1],c[2],c[3]);
+    var slotColor=field.slot.color;
+    slotColor.r=c[0];slotColor.g=c[1];slotColor.b=c[2];slotColor.a=c[3];
     if(field.addon)field.addon.color.a=0;
   } else {
     Debris.field(runtime.owner,runtime.owner.ndAniDown,field,false);

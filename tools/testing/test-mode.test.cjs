@@ -22,7 +22,7 @@ function environment(options = {}) {
   const stored = options.storage || new Map(), calls = { reads: 0, writes: 0, bindings: 0 };
   const dom = emitter(), system = emitter(), director = emitter(), game = emitter(), nativeListeners = [];
   let nativeFocused = false, now = 0;
-  const scene = { getComponentsInChildren: () => nativeFocused ? [{ isFocused: () => true }] : [] };
+  const scene = { getComponentsInChildren: () => { calls.focusQueries=(calls.focusQueries||0)+1; return nativeFocused ? [{ isFocused: () => true }] : []; } };
   director.getScene = () => scene;
   class Node {
     constructor(name) { this.name = name; this.children = []; this.width = 0; this.height = 0; this.components = []; this.active = true; this.group = 'UI'; }
@@ -222,5 +222,18 @@ test('Native numeric WASD and action key releases survive GAD clearing system KE
   env.system.emit('down', { keyCode: 32 }); assert.equal(env.service.readGameplayInput(target).build, true);
   env.nativeListeners[0].onKeyReleased(32); env.system.emit('down', { keyCode: 32 });
   assert.equal(env.service.readGameplayInput(target).build, true);
+});
+test('Idle native gameplay avoids subtree focus discovery while active and opposing keys stay suppressed', () => {
+  const env=environment({debug:true,web:false}),target=gameplay(env);env.setNativeFocus(true);
+  const before=env.calls.focusQueries||0;
+  for(let i=0;i<120;i++){const input=env.service.readGameplayInput(target);assert.equal(input.x,0);assert.equal(input.y,0);assert.equal(input.build,false);}
+  assert.equal(env.calls.focusQueries||0,before,'Idle reads must not scan scene descendants');
+  for(const movement of [{w:true},{w:true,s:true},{a:true,d:true}]){
+    env.service._movement=movement;assert.equal(env.service.readGameplayInput(target),null);assert.deepEqual(Object.keys(env.service._movement),[]);
+  }
+  for(const action of ['rally','follow','pause','build']){
+    env.service._actions={[action]:true};assert.equal(env.service.readGameplayInput(target),null);assert.deepEqual(Object.keys(env.service._actions),[]);
+  }
+  assert.equal(env.calls.focusQueries,before+7);env.setNativeFocus(false);env.service._movement={d:true};assert.equal(env.service.readGameplayInput(target).x,1);
 });
 console.log(passed + ' TestMode checks passed; no SDK calls, rewards, or files written.');

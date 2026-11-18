@@ -8,6 +8,11 @@ function sameOwner(entry) {
   return !!entry && valid(entry.owner) && entry.owner.node === entry.node && valid(entry.node) &&
     entry.node._combatGeneration === entry.generation && entry.owner.time === entry.time;
 }
+function sameBattle(entry) {
+  var game = entry.game;
+  return !game || valid(game) && (!entry.gameNode || game.node === entry.gameNode && valid(entry.gameNode) && entry.gameNode.activeInHierarchy !== false) &&
+    game.gameData === entry.gameData && game._combatEpoch === entry.epoch;
+}
 function config() {
   var data = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
   return data && data.GameTools;
@@ -71,13 +76,13 @@ function animationPosition(track) {
   return {name:name,time:typeof time==="number"?time:0};
 }
 function attack(owner, type, callback) {
-  applyAttackPlayback(owner, type);
+  var relative = applyAttackPlayback(owner, type);
   var settings = config();
   var key = keyFor(owner, type);
   var item = settings && settings.timings && settings.timings[key];
   if (item === undefined || item && item.inherit === true && !Object.prototype.hasOwnProperty.call(item, "attack")) item = settings && settings.timingDefaults && settings.timingDefaults[key];
   var delay = item && item.attack;
-  var speed = attackPlayback(owner, type);
+  var speed = attackPlayback(owner, type, relative);
   // A missing timing must retain call order, RNG order, and the original stack.
   var validDelay = typeof delay === "number" && isFinite(delay) && delay > 0 && delay <= 10;
   if (!validDelay && speed > 0) return callback.call(owner);
@@ -87,29 +92,32 @@ function attack(owner, type, callback) {
   if (!valid(skeleton)) skeleton = null;
   var track = skeleton && skeleton.getCurrent ? skeleton.getCurrent(0) : null;
   var info = animationInfo(track);
+  var game = owner._combatGame;
   // Keep the outstanding authored time in source seconds. Per-level playback
   // can change during this windup, including entering/leaving whole-unit mode.
   pending.set(owner, { owner: owner, node: owner.node, generation: owner.node._combatGeneration, type: type, key: key, time: owner.time, remaining: validDelay ? delay : 0, callback: callback, skeleton: skeleton,
+    game: game, gameNode: game && game.node, gameData: game && game.gameData, epoch: game && game._combatEpoch,
     animation: info.name, animationEnd: info.end, animationTime: info.time,
     // Browser TrackEntry objects survive disposal. JSB wrappers may point at
     // freed native entries, so native interruption checks use captured values.
     browserTrack: !(cc.sys && cc.sys.isNative) ? track : null });
 }
 function tick(dt, fighting) {
-  if (!pending.size) return;
-  if (!fighting) { clear(); return; }
-  if (!(dt > 0) || !isFinite(dt)) return;
+  // The caller only needs a post-callback scope check when there was work.
+  if (!pending.size) return false;
+  if (!fighting) { clear(); return true; }
+  if (!(dt > 0) || !isFinite(dt)) return false;
   // Iterate a snapshot: callbacks may start/cancel other attacks.
   var work = Array.from(pending.values());
   for (var i = 0; i < work.length; i++) {
     var entry = work[i], owner = entry.owner;
     if (pending.get(owner) !== entry) continue;
-    var live = sameOwner(entry) && entry.node.activeInHierarchy !== false && entry.node.active !== false && !owner._isPooled &&
+    var live = sameOwner(entry) && sameBattle(entry) && entry.node.activeInHierarchy !== false && entry.node.active !== false && !owner._isPooled &&
       (!owner.isDead || !owner.isDead()) && (entry.type === "hero" || owner.cfg) && keyFor(owner, entry.type) === entry.key;
     if (!live) { cancel(owner); continue; }
     var skeleton = entry.skeleton;
     if (skeleton && (!valid(skeleton) || skeleton !== (owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody)))) { cancel(owner); continue; }
-    applyAttackPlayback(owner, entry.type);
+    var relative = applyAttackPlayback(owner, entry.type);
     var control = owner._relicControl;
     if (control && control.node && control.node !== owner.node) control = null;
     // RelicCombat releases its pause later in this frame, after this scheduler.
@@ -125,7 +133,7 @@ function tick(dt, fighting) {
       if (control.freeze > 0) effectDelta = Math.max(0, dt - control.freeze);
       else if (control.duration > 0 && control.slow > 0) effectDelta -= Math.min(dt, control.duration) * control.slow;
     }
-    var playback = attackPlayback(owner, entry.type);
+    var playback = attackPlayback(owner, entry.type, relative);
     if (!(playback > 0)) continue;
     entry.animationTime += effectDelta * playback;
     if (entry.animation && skeleton && skeleton.getCurrent) {
@@ -149,6 +157,7 @@ function tick(dt, fighting) {
       if (sameOwner(entry) && entry.time && entry.time.Attack === -1 && !isPending(owner)) entry.time.Attack = 0;
     }
   }
+  return true;
 }
 function clear() { while (pending.size) cancel(pending.keys().next().value); }
 function perkEnabled(id) {
@@ -174,8 +183,9 @@ function unitAnimationSpeed(owner, type) {
   if (!cc.resources) return undefined;
   return require("CharacterAppearance").animationSpeed(owner, type);
 }
-function animationPlayback(owner, type) {
-  var relative = unitAnimationSpeed(owner, type), baseline = defaultPlayback(owner, type);
+function animationPlayback(owner, type, relative) {
+  if (arguments.length < 3) relative = unitAnimationSpeed(owner, type);
+  var baseline = defaultPlayback(owner, type);
   if (relative !== undefined && type === "enemy") {
     // Native baked assets can omit skeletonJson while the unit record retains
     // its source package. Explicit saved playback must use that same baseline.
@@ -185,8 +195,9 @@ function animationPlayback(owner, type) {
   }
   return relative === undefined ? baseline : baseline * relative;
 }
-function attackPlayback(owner, type) {
-  if (unitAnimationSpeed(owner, type) !== undefined) return animationPlayback(owner, type);
+function attackPlayback(owner, type, relative) {
+  if (arguments.length < 3) relative = unitAnimationSpeed(owner, type);
+  if (relative !== undefined) return animationPlayback(owner, type, relative);
   var settings = config(), speeds = settings && settings.animationSpeeds;
   if (type === "ally" && speeds) {
     // Match the authored Barracks level used by unit stats and appearances.
@@ -204,11 +215,11 @@ function attackPlayback(owner, type) {
 }
 var playbackTracks = new WeakMap();
 function applyAttackPlayback(owner, type) {
-  applyPlayback(owner, type, false);
+  return applyPlayback(owner, type, false);
 }
 function applyPlayback(owner, type, all) {
   if (!valid(owner)) return;
-  var layers = owner.ctrPlayAni, custom = unitAnimationSpeed(owner, type) !== undefined;
+  var layers = owner.ctrPlayAni, relative = unitAnimationSpeed(owner, type), custom = relative !== undefined;
   if (layers && layers.spAniBody && !valid(layers.spAniBody)) return;
   var renderers = layers ? [layers.spAniBody, layers.spAniDrap, layers.spAniHead, layers.spAniBow, layers.spAniArrow, layers.spAniHand].concat(all ? [layers.spAniMa] : []) : [owner.getSpAni ? owner.getSpAni() : owner.spAni];
   renderers.forEach(function (renderer) {
@@ -225,7 +236,7 @@ function applyPlayback(owner, type, all) {
     var name = animation && (animation.name || animation.getName && animation.getName());
     var attack = /^attack(?:_|$)/.test(name);
     if (!all && !attack) return;
-    var speed = custom ? animationPlayback(owner, type) : track === hit && track !== primary ? 1 : attack ? attackPlayback(owner, type) : defaultPlayback(owner, type);
+    var speed = custom ? animationPlayback(owner, type, relative) : track === hit && track !== primary ? 1 : attack ? attackPlayback(owner, type, relative) : defaultPlayback(owner, type);
     // An inherited 1x level must clear this helper's previous override on a
     // retained/native track, while untouched authored tracks keep their speed.
     if (speed === 1 && !custom && !playbackTracks.has(track)) return;
@@ -239,6 +250,7 @@ function applyPlayback(owner, type, all) {
     if (speed === 1 && !custom) playbackTracks.delete(track);
     });
   });
+  return relative;
 }
 var visualNodes = new WeakMap();
 function applyModel(owner, type, node, left) {

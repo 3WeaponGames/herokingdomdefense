@@ -250,9 +250,9 @@ function prepare(runtime,s,v,owner) {
 }
 function resourceKey(v){return [v.resource,v.resourceKind,v.resourceBundle,v.resourcePath,v.resourceAnimation,v.resourceSkin,v.resourcePremultipliedAlpha,v.resourceFrames,v.resourceColumns,v.resourceCell,v.resourceFps,v.resourceLoop].join("|");}
 function attachments(hud,runtime) {
-  var v=visual(runtime),iv=Settings.impactVisual(v),s=runtime._presentation;
+  var v=visual(runtime),iv=Settings.impactVisual(v),s=runtime._presentation,frame;
   if(typeof cc==="undefined"||!cc.Sprite)return;
-  if(runtime.state.style==="mystic"){s=state(runtime);advanceVFX(runtime);paintMysticTrail(hud,runtime,s,v);}
+  if(runtime.state.style==="mystic"){s=state(runtime);frame=advanceVFX(runtime);paintMysticTrail(hud,runtime,s,v);}
   if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
   s=state(runtime);var entities=[];
   if(v.resource)prepare(runtime,s,v);else clearArt(s);
@@ -276,7 +276,7 @@ function attachments(hud,runtime) {
     var hits=s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}).map(function(item){var p=impactPoint(item);return{key:item,x:p.x+iv.offsetX,y:p.y+iv.offsetY,angle:iv.rotation,loop:false,age:Math.max(0,runtime.state.time-item.at)*Settings.playbackRate(iv.playbackRate)};});
     paintEntities(hud,runtime,art,iv,hits);
   }else if(s.impactArt)clearArt(s.impactArt);
-  styleAttachments(hud,runtime);
+  styleAttachments(hud,runtime,frame);
 }
 function paintEntities(hud,runtime,s,v,entities,parent) {
   parent=parent||hud.visual.node;
@@ -331,9 +331,10 @@ function vfxContext(runtime){
     var radius=Math.max(runtime.state.style==='fighter'?130:150,hero.attackRange),shape=runtime.skillArea(activeCast.aimDirection||activeCast.direction,radius);
     activeCast.origin=Projectile.point(shape.origin);activeCast.radius=shape.radius;activeCast.direction=Projectile.point(shape.direction);
   }
-  // These passive auras use only ground position, health, stacks or charge.
+  // These auras use only ground position, health, stacks or charge. Skirmisher
+  // cast artwork already owns its captured bow origin and needs no live tip.
   // Keep the full live anchor path for beams, shield art and other styles.
-  var groundOnly=/^(fighter|vanguard|bruiser)$/.test(runtime.state.style)&&!runtime.channelTarget&&!runtime.beamTarget&&!v.beamResource&&!v.markResource&&!v.shieldResource;
+  var groundOnly=/^(skirmisher|fighter|vanguard|bruiser)$/.test(runtime.state.style)&&!runtime.channelTarget&&!runtime.beamTarget&&!v.beamResource&&!v.markResource&&!v.shieldResource;
   function target(actor,overhead,expected,expectedNode){
     if(!actor||!alive(actor.node)||actor.node.activeInHierarchy===false||actor._isPooled||!(actor.hp>0)||actor.isDead&&actor.isDead()||expected!==undefined&&actor.node._combatGeneration!==expected||expectedNode&&actor.node!==expectedNode)return null;
     var ground=actor.node.convertToWorldSpaceAR(cc.v2(0,0)),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node,at;
@@ -370,7 +371,27 @@ function advanceVFX(runtime){
   var v=visual(runtime);if(!hasStyleArt(v)&&runtime.state.style!=="mystic"||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;
   var s=state(runtime);s.vfxClock=s.vfxClock||VFXState.create();s.vfxContext=vfxContext(runtime);if(runtime.state.style==="mystic"){s.mysticTrail=s.mysticTrail||MysticTrail.create();MysticTrail.update(s.mysticTrail,runtime.state,s.vfxContext,v);}s.vfxFrame=VFXState.update(s.vfxClock,runtime.state,s.vfxContext,v);return s.vfxFrame;
 }
-function paintMysticTrail(hud,runtime,s,v){if(!s.mysticTrail)return;var parent=hud.visual.node,main=runtime.game.ndMain;MysticTrail.paint(s.mysticTrail,s.mysticTrailView||(s.mysticTrailView={}),parent,v,cc,function(p){return parent.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(p.x,p.y)));});}
+function trailConvert(main,parent){
+  var direct=function(p){return parent.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(p.x,p.y)));},proto=cc.Node&&cc.Node.prototype;
+  if(!proto||!(main instanceof cc.Node)||!(parent instanceof cc.Node)||main.convertToWorldSpaceAR!==proto.convertToWorldSpaceAR||parent.convertToNodeSpaceAR!==proto.convertToNodeSpaceAR||main.getWorldMatrix!==proto.getWorldMatrix||parent.getWorldMatrix!==proto.getWorldMatrix||typeof proto.getWorldMatrix!=="function"||typeof cc.mat4!=="function")return direct;
+  function flat(node){for(;node;node=node.parent)if(node.is3DNode||node._is3DNode){
+    // Native Creator marks the root Scene as 3D even for a 2D game. Allow
+    // only that actual parentless Scene, after checking its fresh identity.
+    if(node.parent||!cc.Scene||!(node instanceof cc.Scene)||node.getWorldMatrix!==proto.getWorldMatrix)return false;
+    var rootMatrix=cc.mat4();node.getWorldMatrix(rootMatrix);var m=rootMatrix&&rootMatrix.m;if(!m||m.length!==16)return false;
+    for(var i=0;i<16;i++)if(m[i]!==((i%5===0)?1:0))return false;
+  }return true;}
+  if(!flat(main)||!flat(parent))return direct;
+  function affine(matrix){var m=matrix&&matrix.m;if(!m||m.length!==16)return false;for(var i=0;i<16;i++)if(!isFinite(m[i]))return false;return m[2]===0&&m[3]===0&&m[6]===0&&m[7]===0&&m[8]===0&&m[9]===0&&m[10]===1&&m[11]===0&&m[14]===0&&m[15]===1&&m[0]*m[5]-m[1]*m[4]!==0;}
+  var from=cc.mat4(),to=cc.mat4();main.getWorldMatrix(from);parent.getWorldMatrix(to);if(!affine(from)||!affine(to))return direct;
+  // A ribbon has 24 quads per leg. Sample its shared 2D transform once for
+  // this paint, retaining Cocos' anchor/space conversion without hundreds of
+  // repeated world-matrix reads. Custom and 3D coordinate paths stay direct.
+  var origin=direct({x:0,y:0}),x=direct({x:1,y:0}),y=direct({x:0,y:1}),xx=x.x-origin.x,xy=x.y-origin.y,yx=y.x-origin.x,yy=y.y-origin.y;
+  if(!isFinite(origin.x)||!isFinite(origin.y)||!isFinite(xx)||!isFinite(xy)||!isFinite(yx)||!isFinite(yy)||xx*yy-xy*yx===0)return direct;
+  return function(p){return{x:origin.x+xx*p.x+yx*p.y,y:origin.y+xy*p.x+yy*p.y};};
+}
+function paintMysticTrail(hud,runtime,s,v){if(!s.mysticTrail)return;var parent=hud.visual.node,main=runtime.game.ndMain;MysticTrail.paint(s.mysticTrail,s.mysticTrailView||(s.mysticTrailView={}),parent,v,cc,s.mysticTrail.legs.length?trailConvert(main,parent):function(p){return parent.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(p.x,p.y)));});}
 function preload(runtime){
   if(typeof cc==="undefined"||!cc.SpriteFrame||!cc.assetManager)return;
   var v=visual(runtime);if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
@@ -383,8 +404,8 @@ function preload(runtime){
     });});
   });
 }
-function styleAttachments(hud,runtime){
-  var s=state(runtime),v=visual(runtime),frame=advanceVFX(runtime);if(!frame){if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}return;}
+function styleAttachments(hud,runtime,frame){
+  var s=state(runtime),v=visual(runtime);if(frame===undefined)frame=advanceVFX(runtime);if(!frame){if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}return;}
   var arts=s.styleArts||(s.styleArts=new Map()),groups=new Map(),entities=VFXLayout.entities(frame,v,s.vfxContext);
   entities.forEach(function(entity){var key=resourceKey(entity.visual),group=groups.get(key);if(!group){group={visual:entity.visual,entities:[]};groups.set(key,group);}group.entities.push(entity);});
   groups.forEach(function(group,key){var art=arts.get(key);if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:key};arts.set(key,art);}prepare(runtime,art,group.visual,s);paintEntities(hud,runtime,art,group.visual,group.entities);});

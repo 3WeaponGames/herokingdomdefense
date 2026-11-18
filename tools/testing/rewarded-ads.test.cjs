@@ -206,11 +206,17 @@ test('synchronous test rewards do not chain standing weapon offers in one commer
   const keys = { FlagWeapon: 'weapon', FlagHorse: 'horse', Attack: 'attack', AttackSpeed: 'attackSpeed', Speed: 'speed' };
   const track = { youmengTrack() {} };
   const game = {
-    vec2_1: {}, ctrPlay: { node: { getPosition() {} }, ctrPlayAni: { setBus() {} } },
+    node: { activeInHierarchy: true }, vec2_1: {}, ctrPlay: { node: { activeInHierarchy: true, getPosition() {} }, ctrPlayAni: { setBus() {} } },
     gameData: { businessAdd: {}, appearBusinessPoints: null, weaponBusinessPoints: point(true), horseBusinessPoints: point(false) },
     sendEvent() {}, T: x => x, saves: 0, saveGame() { this.saves++; }
   };
+  const cc = { isValid: value => !!value && !value.invalid };
+  const ui = { node: { activeInHierarchy: true }, ctrGame: game, _pauseOwners: new Set(),
+    onPauseGame(paused, owner) { if (paused) this._pauseOwners.add(owner); else this._pauseOwners.delete(owner); } };
+  const adContext = { exports: {}, cc, require(name) { assert.equal(name, 'KinghtFallUIGame'); return { default: { instance: ui } }; } };
+  vm.runInNewContext(script('GameplayAdOwner'), adContext, { filename: 'GameplayAdOwner.js' });
   const onCommerce = vm.runInNewContext('(function(t){' + body + '})', {
+    cc, GameplayAdOwner: adContext.exports,
     $z1SdkMgr: { SdkMgr: { getInstance: () => h.manager }, AdType: { AdFreeTime: 3 } },
     $z1KinghtFallGameCtrlData: { KinghtFallCommerceKeyType: keys },
     $z1KinghtFallConfig: { KinghtFallEventName: { GamePause: 'pause' } },

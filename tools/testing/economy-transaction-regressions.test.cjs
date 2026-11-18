@@ -24,6 +24,8 @@ function node() {
 function context(h) {
   const chain = {}; for (const name of ['set', 'to', 'call', 'start']) chain[name] = () => chain;
   return {
+    EarnedAds: require('../../assets/_script/GlobalAdReward'),
+    $z1EventMgr: h.modules.EventMgr,
     console, Date, Math, P: 'gameSIDE_BOARD_REWARD', sp: { Skeleton() {} },
     cc: { Node: { EventType: { TOUCH_END: 'touch' } }, Sprite() {}, Label() {}, v2: () => ({ x: 0, y: 0 }), tween: () => chain },
     require: name => name === 'RelicRuntime' ? RelicRuntime : ({ LanguageMgr: singleton({ t: (_key, values) => values.join('') }) }),
@@ -105,6 +107,7 @@ for (const kind of Object.keys(operations)) {
 function draw(h, file, count, free = false) {
   const ctx = context(h), screen = ui({ cfgBox: config.ShopCfg[80001], btnClose: node(), btnOne: node(), btnTen: node(), btnVideo: node(), scheduleOnce() {}, ndCtr: { init() {}, node: { destroyAllChildren() {}, removeAllChildren() {} } } });
   screen.getReward = method(file, 'getReward', ctx);
+  screen.showDrawResult = method(file, 'showDrawResult', ctx);
   if (file === 'KinghtFallUITreasureReward') screen.closeRelicDetails = method(file, 'closeRelicDetails', ctx);
   method(file, 'initBtnListener', ctx).call(screen);
   if (free) screen.getReward(1, 1); else (count === 10 ? screen.btnTen : screen.btnOne).click();

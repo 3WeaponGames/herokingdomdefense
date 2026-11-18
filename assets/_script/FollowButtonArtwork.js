@@ -2,6 +2,7 @@
 
 // Rally and Follow use plain dark circles behind their white pictograms.
 // A cyan rim identifies an enabled command without the old baked gold artwork.
+function valid(value) { return !!value && (!cc.isValid || cc.isValid(value, true)); }
 function activeRim() {
   var size = 256, pixels = new Uint8Array(size * size * 4), scale = size / 128;
   for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) {
@@ -51,8 +52,11 @@ exports.install = function (button) {
 exports.dispose = function (button) {
   var rim = button && button._armyButtonArtwork;
   if (!rim) return;
-  rim.sprite.spriteFrame = null;
-  rim.backgrounds.concat(rim.highlight).forEach(function (node) { node.active = false; node.destroy(); });
-  rim.frame.destroy(); rim.texture.destroy();
   button._armyButtonArtwork = null;
+  // Cocos destroys children before the owning UI's onDestroy. Release the
+  // retained assets without touching already released native nodes/renderers.
+  if (valid(rim.sprite) && valid(rim.sprite.node)) rim.sprite.spriteFrame = null;
+  rim.backgrounds.concat(rim.highlight).forEach(function (node) { if (valid(node)) { node.active = false; node.destroy(); } });
+  if (valid(rim.frame)) rim.frame.destroy();
+  if (valid(rim.texture)) rim.texture.destroy();
 };

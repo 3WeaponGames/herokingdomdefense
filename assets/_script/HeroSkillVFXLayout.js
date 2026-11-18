@@ -21,11 +21,17 @@ function playbackRate(visual,slot,style){
 }
 function frameVisual(visual,slot,clip){var result=Settings.resourceVisual(visual,slot+"Resource");if(clip){var wrapped={};Settings.applyClip(wrapped,"resource",clip);Object.assign(result,wrapped);}return result;}
 function entities(frame,visual,context){
-  context=context||{};var result=[],hero=context.hero||{x:0,y:0};
+  context=context||{};var result=[],hero=context.hero||{x:0,y:0},selections=new Map();
   (frame.entities||[]).forEach(function(entity){
     var slot=entity.slot,resource=visual[slot+"Resource"];if(!resource)return;
-    phaseClips(slot,clipFor(resource),entity.phase).forEach(function(clip){
-      var v=frameVisual(visual,slot,clip),rate=playbackRate(visual,slot,entity.style||context.style),style=entity.style||context.style,base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:!clip||clip.loop,scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:hero.x+(v.offsetX||0),y:hero.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:(slot==="passive"||slot==="buff")&&style!=="fighter"&&style!=="vanguard"};
+    // A group of protected allies shares its slot artwork. Resolve that
+    // immutable description once for this layout pass; positions and clocks
+    // remain independent and the next pass still sees live authoring edits.
+    var selection=selections.get(slot);if(!selection){selection={clip:clipFor(resource),phases:new Map(),visuals:new Map()};selections.set(slot,selection);}
+    var parts=selection.phases.get(entity.phase);if(!parts){parts=phaseClips(slot,selection.clip,entity.phase);selection.phases.set(entity.phase,parts);}
+    parts.forEach(function(clip){
+      var v=selection.visuals.get(clip);if(!v){v=frameVisual(visual,slot,clip);selection.visuals.set(clip,v);}
+      var rate=playbackRate(visual,slot,entity.style||context.style),style=entity.style||context.style,base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:!clip||clip.loop,scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:hero.x+(v.offsetX||0),y:hero.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:(slot==="passive"||slot==="buff")&&style!=="fighter"&&style!=="vanguard"};
       if(v.flipX)base.scaleX*=-1;if(v.flipY)base.scaleY*=-1;
       if(style==="bruiser"&&slot==="passive")base.behind=false;
       if(clip&&clip.referenceCell&&clip.cell)base.scale=(base.scale===undefined?1:base.scale)*clip.referenceCell/clip.cell;

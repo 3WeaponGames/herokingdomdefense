@@ -10,12 +10,14 @@ function create(view, level, parent, cc, options) {
   root.setContentSize(cc.winSize.width, cc.winSize.height); root.addComponent(cc.BlockInputEvents);
   function node(name, owner) { var value = new cc.Node(name); value.group = root.group; value.parent = owner || root; return value; }
   function live() { return !disposed && !view.isclose && cc.isValid(view.node, true) && cc.isValid(root, true); }
-  var backdrop = node("Backdrop"), background = backdrop.addComponent(cc.Graphics);
-  background.fillColor = cc.color(18, 27, 38, 255);
-  if (!options.transparent) { background.rect(-root.width / 2, -root.height / 2, root.width, root.height); background.fill(); }
-  var width = Math.max(120, Math.min(460, root.width - 64));
-  var panel = node("Loading panel"), surface = panel.addComponent(cc.Graphics);
-  surface.fillColor = cc.color(24, 37, 50, 240); surface.roundRect(-width / 2 - 24, -83, width + 48, 226, 18); surface.fill();
+  var backdrop = node("Backdrop");
+  if (!options.transparent) {
+    var background = backdrop.addComponent(cc.Graphics);
+    background.fillColor = cc.color(18, 27, 38, 255);
+    background.rect(-root.width / 2, -root.height / 2, root.width, root.height); background.fill();
+  }
+  var width = Math.max(120, Math.min(600, root.width - 48)), barHeight = 28, barBottom = -30;
+  var panel = node("Loading panel");
   panel.y = options.panelY || 0;
   function label(name, y, height, size, value) {
     var child = node(name, panel); child.y = y;
@@ -33,9 +35,9 @@ function create(view, level, parent, cc, options) {
   }
   label("Stage name", 101, 48, 23, options.title || (level && level.Name ? view.T(level.Name) : ""));
   var progress = label("Progress", 44, 56, 32, progressText(0));
-  var detail = options.detailed ? label("Loading details", -54, 42, 16, "") : null;
+  var detail = options.detailed ? label("Loading details", -72, 42, 16, "") : null;
   var track = node("Progress track", panel), trackGraphics = track.addComponent(cc.Graphics);
-  trackGraphics.fillColor = cc.color(52, 69, 84, 255); trackGraphics.roundRect(-width / 2, -22, width, 12, 6); trackGraphics.fill();
+  trackGraphics.fillColor = cc.color(52, 69, 84, 255); trackGraphics.roundRect(-width / 2, barBottom, width, barHeight, barHeight / 2); trackGraphics.fill();
   var bar = node("Progress fill", panel), fill = bar.addComponent(cc.Graphics);
   var beforeDraw = cc.Director.EVENT_BEFORE_DRAW, afterDraw = cc.Director.EVENT_AFTER_DRAW;
   function recordDraw() { if (live()) lastDraw = Date.now(); }
@@ -64,7 +66,7 @@ function create(view, level, parent, cc, options) {
       var percent = Math.max(lastPercent, Math.max(0, Math.min(100, options.detailed ? Math.floor(value * 1000) / 10 : Math.round(value * 100))));
       if (percent === lastPercent) return; lastPercent = percent;
       progress.string = progressText(options.detailed ? percent.toFixed(1) : percent);
-      fill.clear(); if (percent > 0) { fill.fillColor = cc.color(237, 197, 100, 255); fill.roundRect(-width / 2, -22, width * percent / 100, 12, Math.min(6, width * percent / 200)); fill.fill(); }
+      fill.clear(); if (percent > 0) { fill.fillColor = cc.color(237, 197, 100, 255); fill.roundRect(-width / 2, barBottom, width * percent / 100, barHeight, Math.min(barHeight / 2, width * percent / 200)); fill.fill(); }
     },
     detail: function (value) { if (live() && detail) detail.string = value; },
     waitForDraw: waitForDraw,

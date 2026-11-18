@@ -6,15 +6,16 @@ const test = require('node:test');
 
 function harness() {
   const state = { ready: false, spent: 0, opened: 0, resumed: 0, closed: 0, reset: 0 };
-  const game = { readyForNewBattle: () => state.ready, hasSave: () => false, setNewGame: () => { state.reset++; return state.ready; } };
+  const game = { readyForNewBattle: () => state.ready, hasSave: () => false, getResumeIssue: () => null, setNewGame: () => { state.reset++; return state.ready; } };
   const user = { getPowerNum: () => 0, subPowerNum: () => { state.spent++; return false; } };
   const context = {
     cc: { Node: { EventType: { TOUCH_END: 'touch' } } },
+    EarnedAds: require('../../assets/_script/GlobalAdReward'),
     $z1KinghtFallPlayerMgr: { KinghtFallPlayerMgr: { getInstance: () => ({ getGameData: () => game, getUserData: () => user }) } },
     $z1KinghtFallConfig: { KinghtFallUIID: {}, KinghtFallEventName: {} }, $z1Config: { UIID: {} },
     $z1KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getParamsCfgById: () => 5 }) } },
     $z1KinghtFallEnum: { KinghtFallEnumParameterCfg: {} },
-    $z1UIMgr: { UIMgr: { getInstance: () => ({ openUI: () => state.opened++ }) } }
+    $z1UIMgr: { UIMgr: { getInstance: () => ({ getUIById: () => null, openUI: () => state.opened++ }) } }
   };
   function method(file, name) {
     const source = fs.readFileSync(path.resolve(__dirname, '../../assets/_script', file + '.js'), 'utf8').replace(/\r\n/g, '\n');
@@ -38,7 +39,9 @@ test('home battle entry waits for settlement durability before spending stamina'
 });
 
 test('discard and resume dialog stays open when settlement or reset cannot save', () => {
-  const h = harness(), ui = h.screen(); h.method('KinghtFallUINewGame', 'start').call(ui);
+  const h = harness(), ui = h.screen();
+  ui.refreshContinue = h.method('KinghtFallUINewGame', 'refreshContinue');
+  h.method('KinghtFallUINewGame', 'start').call(ui);
   ui.btnBreak.click(); ui.btnContinue.click();
   assert.equal(h.state.reset, 1); assert.equal(h.state.resumed, 0); assert.equal(h.state.closed, 0);
   h.state.ready = true; ui.btnBreak.click();

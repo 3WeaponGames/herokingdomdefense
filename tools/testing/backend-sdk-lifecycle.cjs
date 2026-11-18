@@ -1,0 +1,21 @@
+'use strict';
+// Exercise actual Creator hierarchy/activation callbacks without starting a preview.
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'../..'),engine=process.env.COCOS_ENGINE_DIR||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
+function block(source,needle){const at=source.indexOf(needle);assert(at>=0,needle);let begin=source.indexOf('{',at),end=begin+1,depth=1;while(depth){if(source[end]==='{')depth++;if(source[end]==='}')depth--;end++;}return source.slice(begin,end);}
+const source=fs.readFileSync(path.join(engine,'cocos2d/core/utils/base-node.js'),'utf8');
+const setParent=vm.runInNewContext('(function(value)'+block(source,'    setParent (value) {')+')',{CC_EDITOR:false,CC_DEBUG:false,CC_DEV:false,Destroying:1,Deactivating:2,CHILD_ADDED:'child-added',CHILD_REMOVED:'child-removed',eventManager:{_setDirtyForNode(){}},RenderFlow:{FLAG_CHILDREN:4}});
+const removeChild=vm.runInNewContext('(function(child,cleanup)'+block(source,'    removeChild (child, cleanup) {')+')');
+const removeFromParent=vm.runInNewContext('(function(cleanup)'+block(source,'    removeFromParent (cleanup) {')+')');
+function sdkNode(){const node={_parent:null,_children:[],_objFlags:0,_renderFlag:0,active:true,_onSetParent(){},_onHierarchyChanged(){},cleanup(){},setParent,removeChild,removeFromParent,emit(){},setPosition(){}};Object.defineProperties(node,{parent:{get(){return this._parent;},set(v){setParent.call(this,v);}},children:{get(){return this._children;}}});return node;}
+function activeNode(cc,callback){const s=fs.readFileSync(path.join(engine,'cocos2d/core/node-activator.js'),'utf8'),context={cc,CC_DEV:false,Deactivating:2},activator={_activatingStack:[]};
+ activator._deactivateNodeRecursively=vm.runInNewContext('(function(node)'+block(s,'    _deactivateNodeRecursively (node) {')+')',context);
+ activator.activateNode=vm.runInNewContext('(function(node,active)'+block(s,'    activateNode (node, active) {')+')',context);cc.director._nodeActivator=activator;
+ const setter=vm.runInNewContext('(function(value)'+block(source.slice(source.indexOf('        active: {')),'            set (value) {')+')',{cc}),node=sdkNode();Object.assign(node,{_active:true,_activeInHierarchy:true,_components:[],_onPostActivated(){}});node._parent={_activeInHierarchy:true};
+ Object.defineProperty(node,'active',{get(){return this._active;},set:setter});node.emit=name=>{if(name==='active-in-hierarchy-changed'&&!node._activeInHierarchy)callback();};return node;
+}
+function hp(node){return{node,sprPro:{},setType(){},showAni(){},setHp:vm.runInNewContext('(function(t,e)'+block(fs.readFileSync(path.join(root,'assets/_script/KinghtFallItemHp.js'),'utf8'),'_ctor.prototype.setHp = function (t, e)')+')')};}
+function actorNode(actor,Node){const old=actor.node,node=sdkNode();for(const k of ['components','x','y','width','height','anchorX','anchorY','scaleX','scaleY','angle','_combatGeneration','_combatActor'])node[k]=old[k];for(const k of ['getComponent','getComponents','getComponentsInChildren','addComponent','getPosition','convertToWorldSpaceAR','convertToNodeSpaceAR'])node[k]=Node.prototype[k];node.getComponent=()=>actor;actor.node=node;return node;}
+function pool(h,onPut){const p={_returned:new WeakSet(),_pendingReturns:new Map(),_isReady:true,_warterMark:50,_nodes:{size:()=>0,put:onPut||(()=>{})}};p.freeNode=vm.runInNewContext('(function(t)'+block(fs.readFileSync(path.join(root,'assets/_script/PoolMgr.js'),'utf8'),'_ctor.prototype.freeNode = function (t)')+')',{cc:h.e.cc,hierarchyChanging:()=>false});h.e.stubs.PoolMgr.PoolMgr.getInstance=()=>({freeNode:(_key,node)=>p.freeNode(node)});return p;}
+function effects(h,Node){const exports={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallGameEffect.js'),'utf8'),{exports,cc:h.e.cc,sp:{Skeleton:function(){}},require:n=>h.e.stubs[n]||h.load(n),__extends:(C,B)=>{C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},__decorate:(_d,T,k)=>k===undefined?T:undefined});const value=new exports.default();value.node=new Node('effects');value.ui=value.node;h.ui.ctrEffect=value;return value;}
+module.exports={block,sdkNode,activeNode,hp,actorNode,pool,effects};

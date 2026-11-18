@@ -151,6 +151,9 @@ var def_List = function (t) {
         if (null == t || t < 0) {
           cc.error("numItems set the wrong::", t);
         } else {
+          var settingItems = e._settingItems;
+          e._settingItems = true;
+          try {
           e._actualNumItems = e._numItems = t;
           e._forceUpdate = true;
           if (e._virtual) {
@@ -183,6 +186,7 @@ var def_List = function (t) {
               e.displayItemNum = e._numItems;
             }
           }
+          } finally { e._settingItems = settingItems; }
         }
       }
     },
@@ -206,8 +210,9 @@ var def_List = function (t) {
     t._pool && t._pool.clear();
   };
   _ctor.prototype.onEnable = function () {
-    this._registerEvent();
     this._init();
+    this._registerEvent();
+    if (this._align === cc.Layout.Type.GRID) this._onSizeChanged();
     if (this._aniDelRuning) {
       this._aniDelRuning = false;
       (this._aniDelTweens || []).forEach(function (tween) { tween.stop(); });
@@ -231,6 +236,10 @@ var def_List = function (t) {
     t.node.on("scroll-ended", t._onScrollEnded, t, true);
     t.node.on("scrolling", t._onScrolling, t, true);
     t.node.on(cc.Node.EventType.SIZE_CHANGED, t._onSizeChanged, t);
+    if (t._align === cc.Layout.Type.GRID && t.content && t.content !== t.node) {
+      t._sizeEventContent = t.content;
+      t.content.on(cc.Node.EventType.SIZE_CHANGED, t._onContentSizeChanged, t);
+    }
   };
   _ctor.prototype._unregisterEvent = function () {
     var t = this;
@@ -241,6 +250,10 @@ var def_List = function (t) {
     t.node.off("scroll-ended", t._onScrollEnded, t, true);
     t.node.off("scrolling", t._onScrolling, t, true);
     t.node.off(cc.Node.EventType.SIZE_CHANGED, t._onSizeChanged, t);
+    if (t._sizeEventContent) t._sizeEventContent.off(cc.Node.EventType.SIZE_CHANGED, t._onContentSizeChanged, t);
+    t._sizeEventContent = null;
+    t.unschedule(t._flushSizeChanged);
+    t._sizeUpdatePending = false;
   };
   _ctor.prototype._init = function () {
     var t = this;
@@ -376,19 +389,17 @@ var def_List = function (t) {
           e._sizeType = true;
           break;
         case cc.Layout.Type.GRID:
-          switch (e._startAxis) {
-            case cc.Layout.AxisDirection.HORIZONTAL:
-              var a = e.content.width - e._leftGap - e._rightGap;
-              e._colLineNum = Math.floor((a + e._columnGap) / (e._itemSize.width + e._columnGap));
-              e._sizeType = true;
-              break;
-            case cc.Layout.AxisDirection.VERTICAL:
-              var o = e.content.height - e._topGap - e._bottomGap;
-              e._colLineNum = Math.floor((o + e._lineGap) / (e._itemSize.height + e._lineGap));
-              e._sizeType = false;
-          }
+          e._sizeType = e._startAxis === cc.Layout.AxisDirection.HORIZONTAL;
+          e._updateGridSize();
       }
     }
+  };
+  _ctor.prototype._updateGridSize = function () {
+    var horizontal = this._startAxis === cc.Layout.AxisDirection.HORIZONTAL;
+    this._gridCrossSize = horizontal ? this.content.width : this.content.height;
+    var gap = horizontal ? this._columnGap : this._lineGap;
+    var available = this._gridCrossSize - (horizontal ? this._leftGap + this._rightGap : this._topGap + this._bottomGap);
+    this._colLineNum = Math.max(1, Math.floor((available + gap) / ((horizontal ? this._itemSize.width : this._itemSize.height) + gap)));
   };
   _ctor.prototype.checkInited = function (t) {
     undefined === t && (t = true);
@@ -426,6 +437,8 @@ var def_List = function (t) {
             t = e._leftGap + e._itemSize.width * a + e._columnGap * (a - 1) + e._rightGap;
         }
     }
+    // An empty list has padding but no inter-item gap or repeatable extent.
+    if (!e._numItems) t = e._sizeType ? e._topGap + e._bottomGap : e._leftGap + e._rightGap;
     var o = e.content.getComponent(cc.Layout);
     o && (o.enabled = false);
     e._allItemSize = t;
@@ -434,7 +447,7 @@ var def_List = function (t) {
       var r = e._sizeType ? e.node.height : e.node.width;
       e._cyclicPos1 = 0;
       r -= e._cyclicPos1;
-      e._cyclicNum = Math.ceil(r / e._allItemSizeNoEdge) + 1;
+      e._cyclicNum = e._allItemSizeNoEdge > 0 ? Math.ceil(r / e._allItemSizeNoEdge) + 1 : 1;
       var s = e._sizeType ? e._lineGap : e._columnGap;
       e._cyclicPos2 = e._cyclicPos1 + e._allItemSizeNoEdge + s;
       e._cyclicAllItemSize = e._allItemSize + e._allItemSizeNoEdge * (e._cyclicNum - 1) + s * (e._cyclicNum - 1);
@@ -459,7 +472,7 @@ var def_List = function (t) {
     } else {
       this.frameCount = this._updateRate;
       if (!this._aniDelRuning) {
-        if (this.cyclic) {
+        if (this.cyclic && this._numItems > 0) {
           var e = this.content.getPosition();
           e = this._sizeType ? e.y : e.x;
           var n = this._allItemSizeNoEdge + (this._sizeType ? this._lineGap : this._columnGap);
@@ -767,7 +780,7 @@ var def_List = function (t) {
                 i = (a = this._bottomGap + (this._itemSize.height + this._lineGap) * g) + this._itemSize.height;
                 l = a + this._itemTmp.anchorY * this._itemSize.height;
             }
-            s = this._leftGap + t % this._colLineNum * (this._itemSize.width + this._columnGap);
+            s = (this._horizontalDir === cc.Layout.HorizontalDirection.RIGHT_TO_LEFT ? this._rightGap : this._leftGap) + t % this._colLineNum * (this._itemSize.width + this._columnGap);
             switch (this._horizontalDir) {
               case cc.Layout.HorizontalDirection.LEFT_TO_RIGHT:
                 s += this._itemTmp.anchorX * this._itemSize.width;
@@ -796,7 +809,7 @@ var def_List = function (t) {
                 s = (o = (r = -this._rightGap - (this._itemSize.width + this._columnGap) * g) - this._itemSize.width) + this._itemTmp.anchorX * this._itemSize.width;
                 s += (1 - this.content.anchorX) * this.content.width;
             }
-            l = -this._topGap - t % this._colLineNum * (this._itemSize.height + this._lineGap);
+            l = -(this._verticalDir === cc.Layout.VerticalDirection.BOTTOM_TO_TOP ? this._bottomGap : this._topGap) - t % this._colLineNum * (this._itemSize.height + this._lineGap);
             switch (this._verticalDir) {
               case cc.Layout.VerticalDirection.TOP_TO_BOTTOM:
                 l -= (1 - this._itemTmp.anchorY) * this._itemSize.height;
@@ -929,7 +942,36 @@ var def_List = function (t) {
     }
   };
   _ctor.prototype._onSizeChanged = function () {
-    this.checkInited(false) && this._onScrolling();
+    if (this.checkInited(false) && !this._refreshGridSize(true)) this._onScrolling();
+  };
+  _ctor.prototype._onContentSizeChanged = function () {
+    this._refreshGridSize(false);
+  };
+  _ctor.prototype._refreshGridSize = function (force) {
+    if (!this.checkInited(false) || this._align !== cc.Layout.Type.GRID) return false;
+    var size = this._startAxis === cc.Layout.AxisDirection.HORIZONTAL ? this.content.width : this.content.height;
+    // Content's main axis is written by this list; only a Widget's changed
+    // cross axis should reflow it. A viewport notification forces a refresh.
+    if (!force && size === this._gridCrossSize) return true;
+    if (this._settingItems || this._resizingGrid) {
+      if (!this._sizeUpdatePending) {
+        this._sizeUpdatePending = true;
+        this.scheduleOnce(this._flushSizeChanged, 0);
+      }
+      return true;
+    }
+    this._resizingGrid = true;
+    try {
+      this._updateGridSize();
+      // Cyclic _numItems includes copies. Rebuild from the logical count and
+      // retain the template, selected IDs and multi-selection array.
+      if (this._actualNumItems !== undefined) this.numItems = this._actualNumItems;
+    } finally { this._resizingGrid = false; }
+    return true;
+  };
+  _ctor.prototype._flushSizeChanged = function () {
+    this._sizeUpdatePending = false;
+    this._onSizeChanged();
   };
   _ctor.prototype._onItemAdaptive = function (t) {
     // A recycled text row can also shrink back to the template size. Replace
@@ -1066,6 +1108,7 @@ var def_List = function (t) {
     var e;
     var n = this.content.children[t];
     if (n) {
+      e = n.listItem || n.getComponent($z1ListItem.default);
       if (this._forceUpdate && this.renderEvent) {
         n._listId = t, e && (e.listId = t), this.renderEvent && cc.Component.EventHandler.emitEvents([this.renderEvent], n, t % this._actualNumItems);
       }

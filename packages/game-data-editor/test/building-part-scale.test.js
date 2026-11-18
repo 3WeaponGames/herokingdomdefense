@@ -36,3 +36,16 @@ test('farm sizes use instance attachments, survive native setup/animation resets
  for(let i=0;i<3;i++){a.setToSetupPose();Parts.apply(component,row);assert.equal(slot.getAttachment().scaleX,base.scaleX*.7);assert.equal(addon.getAttachment().scaleY,extra.scaleY*1.5);assert.equal(addon.getAttachment().y-addon.getAttachment().height*addon.getAttachment().scaleY/2,feet);assert.equal(b.findSlot(slot.data.name).getAttachment(),base);assert.deepEqual(Array.from(base.offset),Object.values(original));}
  Parts.apply(component,{});assert.equal(slot.getAttachment(),base);assert.equal(addon.getAttachment(),extra);assert.deepEqual(json,before);assert.deepEqual(Parts.json(json,row).bones,json.bones);assert.deepEqual(json,before);
 });
+test('native attachment ownership survives setup resets and restores without leaking copies',t=>{
+ const {fixture}=require('../../../tools/testing/building-part-scale-fixture.cjs'),f=fixture(),saved={cc:global.cc,sp:global.sp,valid:global.__isObjectValid};
+ global.cc=f.cc;global.sp=f.sp;global.__isObjectValid=f.__isObjectValid;
+ t.after(()=>{try{if(Parts.dispose)Parts.dispose(f.component._buildingPartScale);}finally{for(const [key,value]of [['cc',saved.cc],['sp',saved.sp],['__isObjectValid',saved.valid]]){if(value===undefined)delete global[key];else global[key]=value;}}});
+ const [a,b]=f.currentSlots(),bed=f.bed,scarecrow=f.addon,before=f.sourceShape(),feet=scarecrow.y-scarecrow.height*scarecrow.scaleY/2;
+ for(let i=0;i<3;i++){
+  a.setAttachment(bed);b.setAttachment(scarecrow);Parts.apply(f.component,{PartScale:{farmBeds:.7,scarecrows:1.5}});
+  assert.equal(a.getAttachment().scaleX,.7);assert.equal(b.getAttachment().scaleY,1.5);assert.equal(b.getAttachment().y-b.getAttachment().height*b.getAttachment().scaleY/2,feet);
+  assert.notEqual(a.getAttachment().offset,bed.offset);assert.notEqual(a.getAttachment().color,bed.color);assert.equal(f.sourceShape(),before);
+ }
+ assert.equal(f.stats.copies,2,'cached copies survive setup resets');assert.equal(f.stats.owners,1,'one private Skin owns native copies');Parts.apply(f.component,{});assert.equal(a.getAttachment(),bed);assert.equal(b.getAttachment(),scarecrow);
+ Parts.dispose(f.component._buildingPartScale);assert.equal(f.stats.deletedCopies,2);assert.equal(f.stats.pins,f.stats.unpins);
+});

@@ -62,6 +62,23 @@ var exp_KinghtFallGameData = function (t) {
   _ctor.prototype.hasSave = function (t) {
     return !!this.checkpointForStage(t);
   };
+  // Compatibility is read-only. Keep an older checkpoint available for the
+  // player's explicit New Game choice rather than rewriting paid progress.
+  _ctor.prototype.getResumeIssue = function (stage, config) {
+    var saved = this.checkpointForStage(stage);
+    if (!saved) return null;
+    config = config || require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
+    var level = config && (config.LevelCfg || []).find(function (row) { return row.Level === saved.levelNum; });
+    if (!level || !Array.isArray(level.WaveCfg) || !level.WaveCfg[saved.roundNum - 1]) return "This saved wave is no longer available. Start a new game for this stage.";
+    if (!Array.isArray(saved.buffList) || saved.buffList.some(function (id) { return !(config.BuffCfg || []).some(function (row) { return row.ID === id; }); })) return "A saved perk is no longer available. Start a new game for this stage.";
+    var task = saved.taskList;
+    if (task) {
+      var definition = (config.InGameTaskCfg || []).find(function (row) { return row.ID === (saved.levelNum === 1 ? 1 : 2); });
+      if (!definition || !Array.isArray(definition.Award) || !Array.isArray(task.list) || !Number.isInteger(task.index) || task.index < 0 || task.index > task.list.length || task.list.length > definition.Award.length ||
+          task.stage === 1 && task.index >= task.list.length || task.list.some(function (id) { return !(config.InGameTaskEnum || {})[id]; })) return "A saved mission is no longer available. Start a new game for this stage.";
+    }
+    return null;
+  };
   _ctor.prototype.checkpointForStage = function (stage) {
     stage = stage === undefined ? this.data.levelNum : Number(stage);
     // The old flat record remains the active slot for existing callers. A
@@ -127,40 +144,63 @@ var exp_KinghtFallGameData = function (t) {
     return settlement;
   };
   _ctor.prototype.settleBattle = function (settlement, multiplier) {
+    if (this.data.pendingSettlement && this.data.pendingSettlement.id !== settlement.id) return false;
     if (multiplier > 1) {
       var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
       var receipt = player.getUserData().data.battleSettlement;
       // An ad belonging to a closed result screen must not overwrite a newer run.
       if (this.data.levelNum >= 0 || !receipt || receipt.id !== settlement.id) return false;
     }
-    var pending = Object.assign({}, settlement, { multiplier: multiplier });
-    this.data.pendingSettlement = pending;
+    var data = this.data, pending = Object.assign({}, settlement, { multiplier: multiplier });
+    data.pendingSettlement = pending;
     this.pendingSettlementNeedsSave = true;
-    if (this.saveData() === false) return false;
+    var saved = this.saveData();
+    if (this.data !== data || data.pendingSettlement !== pending) return !this.data.pendingSettlement;
+    if (saved === false) return false;
     this.pendingSettlementNeedsSave = false;
     return this.completeSettlement(pending);
   };
   _ctor.prototype.completeSettlement = function (settlement) {
+    var owner = this, data = this.data, pending = data.pendingSettlement;
+    var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
+    if (!pending) {
+      var userReceipt = player.getUserData().data.battleSettlement, missionReceipt = player.getMissionData().data.battleSettlement;
+      return !!userReceipt && userReceipt.id === settlement.id && userReceipt.multiplier >= settlement.multiplier &&
+        !!missionReceipt && missionReceipt.id === settlement.id && missionReceipt.multiplier >= settlement.multiplier;
+    }
+    if (pending.id !== settlement.id) return false;
+    // beginSettlement returns its original object; settleBattle stores a clone.
+    // Once matched, only the exact current journal may own later continuations.
+    settlement = pending;
+    function current() { return owner.data === data && data.pendingSettlement === pending; }
     if (this.pendingSettlementNeedsSave) {
-      if (this.saveData() === false) return false;
+      var saved = this.saveData();
+      if (!current()) return !this.data.pendingSettlement;
+      if (saved === false) return false;
       this.pendingSettlementNeedsSave = false;
     }
-    var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
     // Each target record saves its receipt together with its rewards. Retrying this
     // journal after a reload cannot award either balance twice.
-    if (player.getUserData().applyBattleSettlement(settlement) === false) return false;
-    if (player.getMissionData().applyBattleSettlement(settlement) === false) return false;
-    var previous = this.data;
-    this.data = this.resetCheckpointData(settlement.stage);
-    if (this.saveData() === false) { this.data = previous; return false; }
+    var applied = player.getUserData().applyBattleSettlement(settlement);
+    if (!current()) return !this.data.pendingSettlement;
+    if (applied === false) return false;
+    applied = player.getMissionData().applyBattleSettlement(settlement);
+    if (!current()) return !this.data.pendingSettlement;
+    if (applied === false) return false;
+    var previous = this.data, cleanup = this.resetCheckpointData(settlement.stage);
+    this.data = cleanup;
+    var saved = this.saveData();
+    // A callback can install B into this same cleanup object before returning.
+    if (this.data !== cleanup || cleanup.pendingSettlement) return !this.data.pendingSettlement;
+    if (saved === false) { this.data = previous; return false; }
     require("EventMgr").EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
     return true;
   };
   _ctor.prototype.setNewGame = function (stage) {
     if (this.data.pendingSettlement && !this.completeSettlement(this.data.pendingSettlement)) return false;
-    var previous = this.data;
-    this.data = this.resetCheckpointData(stage);
-    if (this.saveData() === false) { this.data = previous; return false; }
+    var previous = this.data, next = this.resetCheckpointData(stage), pending = next.pendingSettlement;
+    this.data = next;
+    if (this.saveData() === false) { if (this.data === next && next.pendingSettlement === pending) this.data = previous; return false; }
     return true;
   };
   _ctor.prototype.resetCheckpointData = function (stage) {
@@ -202,9 +242,9 @@ var exp_KinghtFallGameData = function (t) {
     if (!sanitizeRestartSetup(checkpoint)) return false;
     if (!validCheckpoint(checkpoint)) return false;
     saves[stage] = checkpoint;
-    var previous = this.data;
-    this.data = Object.assign(activateCheckpoint(this.data, checkpoint), { stageCheckpoints: saves });
-    if (this.saveData() === false) { this.data = previous; return false; }
+    var previous = this.data, next = Object.assign(activateCheckpoint(this.data, checkpoint), { stageCheckpoints: saves }), pending = next.pendingSettlement;
+    this.data = next;
+    if (this.saveData() === false) { if (this.data === next && next.pendingSettlement === pending) this.data = previous; return false; }
     return true;
   };
   _ctor.prototype.getBuffList = function (stage) {

@@ -110,11 +110,7 @@ var exp_KinghtFallDailyData = function (t) {
   };
   _ctor.prototype.setSubTimeByIndex = function (t, e) {
     this.data.subGameTime || (this.data.subGameTime = []);
-    if (this.data.subGameTime.length < t + 1) {
-      this.data.subGameTime.push(e);
-    } else {
-      this.data.subGameTime[t] = e;
-    }
+    this.data.subGameTime[t] = e;
     this.saveData();
   };
   _ctor.prototype.getSubTimeByIndex = function (t) {

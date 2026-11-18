@@ -23,13 +23,19 @@ function apply(list, profile) {
       target = job.asset;
     }
     if (renderer.skeletonData === target) return;
-    var track = renderer.getCurrent && renderer.getCurrent(0), name = track && track.animation && track.animation.name;
-    if (track && !track.loop && name && !/^(idle|move|walk|run)$/.test(name)) return;
-    var time = track && track.trackTime || 0, loop = track ? !!track.loop : !!renderer.loop;
+    var track = renderer.getCurrent && renderer.getCurrent(0), animation = track && (track.getAnimation ? track.getAnimation() : track.animation);
+    var name = animation && (animation.getName ? animation.getName() : animation.name);
+    var loop = track ? !!(track.getLoop ? track.getLoop() : track.loop) : !!renderer.loop;
+    if (track && !loop && name && !/^(idle|move|walk|run)$/.test(name)) return;
+    var time = track && (track.getTrackTime ? track.getTrackTime() : track.trackTime) || 0;
+    var rate = track && (track.getTimeScale ? track.getTimeScale() : track.timeScale);
     var skin = renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name || renderer.defaultSkin;
     renderer.skeletonData = target;
     if (skin) renderer.setSkin(skin);
-    if (name) { var resumed = renderer.setAnimation(0, name, loop); if (resumed) resumed.trackTime = time; }
+    if (name) { var resumed = renderer.setAnimation(0, name, loop); if (resumed) {
+      if (resumed.setTrackTime) resumed.setTrackTime(time); else resumed.trackTime = time;
+      if (typeof rate === "number" && isFinite(rate)) { if (resumed.setTimeScale) resumed.setTimeScale(rate); else resumed.timeScale = rate; }
+    } }
   });
 }
 exports.apply = apply; exports.originalId = originalId; exports.baked = baked;

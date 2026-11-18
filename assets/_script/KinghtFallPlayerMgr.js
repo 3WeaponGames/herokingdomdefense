@@ -106,12 +106,18 @@ var exp_KinghtFallPlayerMgr = function () {
       if (record.data.rewardTransaction !== pending.id) record.data = JSON.parse(JSON.stringify(entry.data));
     }
     if (this.dailyData) this.dailyData.ensureCurrentDay();
+    if (this.pendingRewardJournal !== pending) return !this.pendingRewardJournal;
     if (this.missionData) this.missionData.initData();
+    if (this.pendingRewardJournal !== pending) return !this.pendingRewardJournal;
     for (var j = 0; j < pending.records.length; j++) {
       var targetKey = pending.records[j].key;
       record = targets.filter(function (target) { return target.gameKey === targetKey; })[0];
       // A matching in-memory receipt can still have a failed write pending.
-      if (record.saveData() === false) { this.rewardSaveFailure(); return false; }
+      var saved = record.saveData();
+      // SaveRecovered listeners may finish this journal and begin another one.
+      // The old recovery must never clear or overwrite that newer transaction.
+      if (this.pendingRewardJournal !== pending) return !this.pendingRewardJournal;
+      if (saved === false) { this.rewardSaveFailure(); return false; }
     }
     if ($z1CacheUtils.CacheUtils.saveData(key, "") === false) { this.rewardSaveFailure(); return false; }
     this.pendingRewardJournal = null;
@@ -194,6 +200,14 @@ var exp_KinghtFallPlayerMgr = function () {
     });
     return awarded === null ? false : this.udata.data.wallDefenseReceipt;
   };
+  _ctor.prototype.grantAdRewards = function (rewards, position) {
+    if (!this.restorePendingRewards()) return false;
+    var previous = this.pendingRewardJournal;
+    var granted = this.claimRewards(rewards, 1, position, function () {}, function () { return true; });
+    // A failed target write still owns a durable award. A failed journal write
+    // leaves the earned reward on its panel so Retry never requires another ad.
+    return !!granted || !!this.pendingRewardJournal && this.pendingRewardJournal !== previous;
+  };
   // Run all changes on staged records. A successful journal contains the debit,
   // award, counters and checkpoint together before any target record is saved.
   _ctor.prototype.transact = function (mutate, eligible) {
@@ -222,14 +236,21 @@ var exp_KinghtFallPlayerMgr = function () {
   };
   _ctor.prototype.admitWallDefense = function (cost, eligible) {
     if (!eligible() || !this.restorePendingRewards()) return null;
+    var self = this;
+    function canEnter() {
+      if (!eligible()) return false;
+      var receipt = self.udata.data.wallDefenseReceipt;
+      return !receipt || Number.isSafeInteger(receipt.sequence) && receipt.sequence >= 0 && receipt.sequence < Number.MAX_SAFE_INTEGER;
+    }
+    if (!canEnter()) return null;
     var reserved = this.udata.data.wallDefenseAdmission;
     if (reserved && !reserved.used) return reserved.id;
-    var self = this, id = "wall-entry-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+    var id = "wall-entry-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
     // An unused paid entry survives a cancelled load or interrupted save. It is
     // consumed with the run's settlement, so retrying never charges twice.
     return this.purchase([{ id: $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.stamina, num: cost }], function () {
       self.udata.data.wallDefenseAdmission = { id: id, cost: cost, used: false }; return id;
-    }, eligible);
+    }, canEnter);
   };
   _ctor.prototype.drawTreasures = function (box, count, costs, video) {
     var self = this, config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();

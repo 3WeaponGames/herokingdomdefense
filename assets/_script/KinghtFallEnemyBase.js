@@ -1,11 +1,29 @@
 function millAttackTargets(data) { return data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList(); }
-function attackCurrent(owner, record) {
+function incomingCurrent(owner, life, pooled) {
+  return cc.isValid(owner, true) && owner.node === life.node && cc.isValid(life.node, true) && owner.cfg === life.cfg && owner.time === life.timers &&
+    (life.node._combatGeneration === life.generation && !owner._isPooled || pooled && owner._isPooled && life.node._combatGeneration === (life.generation || 0) + 1) &&
+    $z1KinghtFallUIGame.default.instance === life.ui && (!life.ui || cc.isValid(life.ui, true) && !life.ui.isclose && life.ui.ctrGame === life.game) &&
+    (!life.game || cc.isValid(life.game, true) && life.game.gameData === life.data && life.game._combatEpoch === life.epoch && (!owner._combatGame || owner._combatGame === life.game));
+}
+function attackCurrent(owner, record, released) {
   return record && cc.isValid(record.ui, true) && cc.isValid(record.game, true) && $z1KinghtFallUIGame.default.instance === record.ui &&
     !record.ui.isclose && record.ui.ctrGame === record.game && record.game.gameData === record.data && record.game._combatEpoch === record.epoch && record.game.gameStatus === record.stage &&
     (!record.game.node || cc.isValid(record.game.node, true) && record.game.node.activeInHierarchy !== false) && cc.isValid(owner, true) &&
     owner.node === record.node && cc.isValid(record.node, true) && record.node.activeInHierarchy !== false && record.node._combatGeneration === record.generation &&
-    owner.time === record.timers && !owner._isPooled && !owner.isDead() && owner.hp > 0 &&
+    owner.time === record.timers && !owner._isPooled && (!owner._combatGame || owner._combatGame === record.game) && (released || !owner.isDead() && owner.hp > 0) &&
     (!record.renderer || cc.isValid(record.renderer, true) && (!record.renderer.node || cc.isValid(record.renderer.node, true)));
+}
+// Setup runs on pooled/dead actors too; compare the captured lease, not alive state.
+function setupLife(owner) {
+  var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+  return { node: owner.node, generation: owner.node && owner.node._combatGeneration, cfg: owner.cfg, timers: owner.time, pooled: owner._isPooled,
+    ui: ui, game: game, data: game && game.gameData, epoch: game && game._combatEpoch };
+}
+function setupCurrent(owner, life) {
+  return cc.isValid(owner, true) && owner.node === life.node && cc.isValid(life.node, true) && life.node._combatGeneration === life.generation &&
+    owner.cfg === life.cfg && owner.time === life.timers && owner._isPooled === life.pooled &&
+    $z1KinghtFallUIGame.default.instance === life.ui && (!life.ui || cc.isValid(life.ui, true) && !life.ui.isclose && life.ui.ctrGame === life.game) &&
+    (!life.game || cc.isValid(life.game, true) && life.game.gameData === life.data && life.game._combatEpoch === life.epoch);
 }
 var BattleSounds = require("BattleSounds");
 var i;
@@ -68,18 +86,25 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.onPreSolve = function (contact, self, other) {
     Navigation.allowBlockedExit(this, contact, other);
   };
-  _ctor.prototype.initData = function (t, e) {
+  _ctor.prototype.initData = function (t, e, lease) {
+    var life = setupLife(this);
+    if (lease) lease.generation = life.generation;
+    this._combatGame = life.game;
+    this._combatData = life.data;
     this._attackAnimation = null;
     this._poolCfgID = t;
-    if (cc.resources) require("UnitHitFeedback").reset(this);
+    if (cc.resources) { require("UnitHitFeedback").reset(this); if (!setupCurrent(this, life)) return false; }
     GameToolsOverrides.cancel(this);
     RelicCombat.releaseControl(this);
     RelicRuntime.clearControl(this);
     this.releaseHealingEffects();
+    if (!setupCurrent(this, life)) return false;
     var n = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
+    life.generation = this.node._combatGeneration;
+    if (lease) lease.generation = life.generation;
     this.node._combatActor = this;
-    this._isPooled = false;
+    this._isPooled = false; life.pooled = false;
     this._deathAnimation = null;
     Navigation.reset(this);
     this._routeInterrupted = false;
@@ -87,6 +112,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this._targetSearchCache = null;
     this._unreachableTargets = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    life.cfg = this.cfg;
     if (this.spAni) this.setLeft(false);
     this.bornInfo = $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
     var i = this.node.getComponents(cc.CircleCollider);
@@ -104,6 +130,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.hp = this.hpMax;
     if (this.hpctrl) {
       this.hpctrl.setType($z1KinghtFallModle.KinghtFallGameArmy.Enemy, this);
+      if (!setupCurrent(this, life)) return false;
       this.hpctrl.setHp(this.hp, this.hpMax);
     } else if (!this._hpLoadPending) {
       this._hpLoadPending = true;
@@ -119,12 +146,14 @@ var def_KinghtFallEnemyBase = function (t) {
         n.ndHp.childrenCount > 1 && console.error("节点下有多个子节点");
       });
     }
+    if (!setupCurrent(this, life)) return false;
     this.attack = Math.round(this.cfg.AttackDamage * $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getAttAdd(this.cfg.ID));
-    this.time = {};
+    this.time = {}; life.timers = this.time;
     this.time[s.Attack] = 0;
     this.node.getPosition(this.vec2_1);
     this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
     this.doMove();
+    if (!setupCurrent(this, life)) return false;
     this.rigidBody.active = !!this.cfg.BuildingCross;
     this.onChangeSpeed();
   };
@@ -504,11 +533,18 @@ var def_KinghtFallEnemyBase = function (t) {
     this.doAttackFinish();
   };
   _ctor.prototype.doAttack = function () {
+    var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+    if (!game) return;
+    var node = this.node, effects = ui.ctrEffect, record = { ui: ui, game: game, data: game.gameData, epoch: game._combatEpoch, stage: game.gameStatus,
+      node: node, generation: node && node._combatGeneration, timers: this.time, renderer: this.spAni };
+    if (!attackCurrent(this, record)) return;
     if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
+    if (!attackCurrent(this, record)) return;
     var t = this;
     this.time[s.Attack] = 0;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
+    if (!attackCurrent(this, record)) return;
     var n = function () {
       var forced=RelicCombat.tauntedTarget(t);
       if(forced)return cc.Vec2.distance(t.node.getPosition(),forced.node.getPosition())<=t.cfg.AttackRange?forced:null;
@@ -555,10 +591,17 @@ var def_KinghtFallEnemyBase = function (t) {
       return e;
     }();
     if (n) {
+      if (!attackCurrent(this, record)) return;
+      var targetNode = n.node, targetGeneration = targetNode && targetNode._combatGeneration;
       var impactPoint=Navigation.attackPointOf(n,$z1KinghtFallUIGame.default.instance.ctrGame);this.vec2_2.x=impactPoint.x;this.vec2_2.y=impactPoint.y;
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
-      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e, t));
-      $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(this.vec2_2.clone(), "xb_gj");
+      var impact = this.vec2_2.clone(), origin = this.vec2_1.clone(), dealt = n.onAttacked(e, t);
+      if (!attackCurrent(this, record, true) || ui.ctrEffect !== effects || !cc.isValid(effects, true)) return;
+      if (cc.isValid(n, true) && n.node === targetNode && cc.isValid(targetNode, true) && targetNode._combatGeneration === targetGeneration && !n._isPooled) effects.showDamageNum(impact, dealt);
+      if (!attackCurrent(this, record, true) || ui.ctrEffect !== effects || !cc.isValid(effects, true)) return;
+      effects.onMonsterAttack(impact, "xb_gj");
+      if (!attackCurrent(this, record, true)) return;
+      this.vec2_1.x = origin.x; this.vec2_1.y = origin.y; this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       return void this.setLeft(this.vec2_2.x < 0);
     }
@@ -569,27 +612,37 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.onAttacked = function (t, source, secondary, context) {
     var e;
     if (!this.isDead()) {
+      var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+      var life = { node: this.node, generation: this.node._combatGeneration, timers: this.time, cfg: this.cfg, ui: ui, game: game, data: game && game.gameData, epoch: game && game._combatEpoch };
       t = RelicCombat.enemyDamage(this, t, source, secondary, context);
       t = GameToolsOverrides.damageTaken(this, "enemy", t);
       this.hp -= t;
-      if (BattleSounds.hit) BattleSounds.hit(this, source, t, { magic: !!secondary, context: context });
-      if (t > 0 && this.hp > 0 && cc.resources && !(source && source._styleRuntime && source._styleRuntime.deferHitReaction && source._styleRuntime.deferHitReaction(this, context))) require("UnitHitFeedback").play(this);
+      if (BattleSounds.hit) { BattleSounds.hit(this, source, t, { magic: !!secondary, context: context }); if (!incomingCurrent(this, life)) return t; }
+      if (t > 0 && this.hp > 0 && cc.resources && !(source && source._styleRuntime && source._styleRuntime.deferHitReaction && source._styleRuntime.deferHitReaction(this, context))) {
+        require("UnitHitFeedback").play(this);
+        if (!incomingCurrent(this, life)) return t;
+      }
       if (this.hp <= 0) {
         Navigation.reset(this);
         this.state = r.Dead;
         RelicCombat.releaseControl(this);
         RelicRuntime.clearControl(this);
         RelicCombat.enemyKilled(this, source, secondary, context);
+        if (!incomingCurrent(this, life)) return t;
         this.delAllBuff();
-        if (!secondary) RelicCombat.primaryImpact(this, source, context, t);
+        if (!incomingCurrent(this, life)) return t;
+        if (!secondary) { RelicCombat.primaryImpact(this, source, context, t); if (!incomingCurrent(this, life)) return t; }
         this.playDeath(function () {
           this.freeNode();
         });
+        // An ordinary missing/finished death animation may synchronously pool
+        // this corpse. Its one retirement still owns the kill; a fresh init does not.
+        if (!incomingCurrent(this, life, true)) return t;
         var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
         if (missions.recordQuestEvent) {
           var data = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
-          var profileId=this.cfg.ProfileBaseID||this.cfg.ID,form=profileId>=90010&&profileId<=90012?String(profileId-90009):"default";
-          var role = this.cfg.FightingType || data && data.GameTools && data.GameTools.unitTypeAssignments && data.GameTools.unitTypeAssignments["enemy:" + profileId + ":" + form];
+          var profileId=life.cfg.ProfileBaseID||life.cfg.ID,form=profileId>=90010&&profileId<=90012?String(profileId-90009):"default";
+          var role = life.cfg.FightingType || data && data.GameTools && data.GameTools.unitTypeAssignments && data.GameTools.unitTypeAssignments["enemy:" + profileId + ":" + form];
           missions.recordQuestEvent($z1KinghtFallEnum.KinghtFallEnumTaskEnum.SoldierDefeated, 1, false, role);
         }
         else {
@@ -599,15 +652,25 @@ var def_KinghtFallEnemyBase = function (t) {
           $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setTaskInfo(n);
         }
         }
+        if (!incomingCurrent(this, life, true)) return t;
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.Kill, 1);
+        if (!incomingCurrent(this, life, true)) return t;
       }
       null === (e = this.hpctrl) || undefined === e || e.setHp(this.hp, this.hpMax);
-      if (!secondary && this.hp > 0) RelicCombat.primaryImpact(this, source, context, t);
+      if (!secondary && this.hp > 0 && incomingCurrent(this, life)) RelicCombat.primaryImpact(this, source, context, t);
       return t;
     }
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    var owner = this, node = this.node, data = this._combatData || setupLife(this).data;
+    var key = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + (this._poolCfgID || this.cfg.ID);
+    this._isPooled = true;
+    var generation = node._combatGeneration = (node._combatGeneration || 0) + 1;
+    function retired() { return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner._isPooled; }
+    // Unlink this lease before cleanup can initialize the same component again.
+    if (data) data.delEnemy(this);
+    if (!retired()) return;
     this._attackAnimation = null;
     Navigation.reset(this);
     this.bornInfo = null;
@@ -615,17 +678,14 @@ var def_KinghtFallEnemyBase = function (t) {
     RelicCombat.releaseControl(this);
     RelicRuntime.clearControl(this);
     this._deathAnimation = null;
-    if (cc.resources) require("UnitHitFeedback").reset(this);
-    if (this.hpctrl) this.hpctrl.setHp(0, this.hpMax);
+    if (cc.resources) { require("UnitHitFeedback").reset(this); if (!retired()) return; }
+    if (this.hpctrl) { this.hpctrl.setHp(0, this.hpMax); if (!retired()) return; }
     this.releaseHealingEffects();
+    if (!retired()) return;
     GameToolsOverrides.cancel(this);
-    this._isPooled = true;
     this._targetSearchCache = null;
     this._unreachableTargets = null;
-    this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
-    var t = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + (this._poolCfgID || this.cfg.ID);
-    $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);
-    $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delEnemy(this);
+    $z1PoolMgr.PoolMgr.getInstance().freeNode(key, node);
   };
   _ctor.prototype.onDestroy = function () {
     this.releaseHealingEffects();

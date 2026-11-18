@@ -153,7 +153,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
       if (skillCurrent(this, scope, true)) this.setLeft(impact.x - origin.x < 0);
     }
   };
-  _ctor.prototype.initData = function (e, n) {
+  _ctor.prototype.initData = function (e, n, lease) {
     this._transform = null;
     this._attackAnimation = null;
     this.spIdx = 0;
@@ -161,7 +161,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     this.spAni2.node.active = false;
     this.spAni3.node.active = false;
     this.spAniUp.node.active = false;
-    t.prototype.initData.call(this, e, n);
+    if (t.prototype.initData.call(this, e, n, lease) === false) return false;
     this.time[r.Spell] = 0;
     this.time[r.SpellMax] = this.cfg.Data[1];
     this.setBody(this.getSpAni().node);

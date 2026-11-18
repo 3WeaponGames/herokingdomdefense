@@ -20,6 +20,8 @@ var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
+var EarnedAds = require("GlobalAdReward");
+var $z1EventMgr = require("EventMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -276,23 +278,45 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
       }
     }, this);
     this.btnVideo.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+      var pending = EarnedAds.get(t, "_treasureAdReward");
+      if (pending) { pending.retry(); return; }
+      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), box = EarnedAds.clone(t.cfgBox), stage = player.getUserData().getMaxStage(), tracked = false;
+      var emit = EarnedAds.events(function (name, value) { $z1EventMgr.EventMgr.getInstance().emit(name, value); });
+      var request = EarnedAds.create(t, "_treasureAdReward", player, function () {
+        if (!tracked) { tracked = true;
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.box_1);
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_box_1_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        t.getReward(1, 3, [], true);
-      }, null, "home.treasure.draw");
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_box_1_Y, stage); }
+        var before = player.pendingRewardJournal, result = player.drawTreasures(box, 1, [], true);
+        if (result) return { done: true, value: result };
+        return player.pendingRewardJournal && player.pendingRewardJournal !== before ? { done: true, show: false } : false;
+      }, function (result, current) { return t.showDrawResult(result, 3, { current: current, emit: emit }); }, function (result, shown) {
+        if (result && result.pending) return;
+        emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 8);
+        if (!shown) emit($z1KinghtFallConfig.KinghtFallEventName.TreasureUpdate);
+      });
+      if (request) $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, request.earn, request.cancel, "home.treasure.draw");
     }, this);
   };
   _ctor.prototype.getReward = function (count, type, costs, video) {
     var result = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().drawTreasures(this.cfgBox, count, costs || [], video);
     if (!result) return;
+    this.showDrawResult(result, type);
+  };
+  _ctor.prototype.showDrawResult = function (result, type, presentation) {
+    var current = presentation && presentation.current;
+    if (current && !current()) return false;
     if (result.pending) { this.upView(); return; }
     var a = result.rewards;
     $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.box_treasure);
+    if (current && !current()) return false;
     $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UITreasureReward, $z1Config.UIID.UINONE, a, type);
-    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 8);
+    if (presentation) presentation.emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 8);
+    else this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 8);
+    if (current && !current()) return false;
     this.initView();
+    if (current && !current()) return false;
     this.upView();
+    return !current || current();
   };
   _ctor.prototype.upView = function () {
     var t = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getShopInfo($z1KinghtFallEnum.KinghtFallEnumShopEnum.Treasure);

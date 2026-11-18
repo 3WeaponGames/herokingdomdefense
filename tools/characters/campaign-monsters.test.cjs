@@ -24,11 +24,13 @@ test('all sixty stage definitions retain exact spawn queues after the explicit f
 });
 test('legacy aliases stay byte-value equivalent while canonical enemies use the approved fighting balance',()=>{
   const Fighting=require('../../packages/game-data-editor/lib/fighting-profiles');
-  for(const [id,digest]of Object.entries(Baseline.unitHashes))if(!Fighting.familyFor(cfg.GameTools,id)||cfg.GameTools.unitProfiles.aliases[id])assert.equal(hash(withoutGuide(cfg.SoldierCfg[id])),digest,'Compatibility combat record '+id);
+  // The later global balance deliberately scales every unit, including legacy
+  // compatibility records. Project that approved change out of this old hash.
+  for(const [id,digest]of Object.entries(Baseline.unitHashes))if(!Fighting.familyFor(cfg.GameTools,id)||cfg.GameTools.unitProfiles.aliases[id]){const historical=withoutGuide(cfg.SoldierCfg[id]);historical.Health/=1.2;historical.AttackDamage*=2;assert.equal(hash(historical),digest,'Compatibility combat record '+id);}
   for(const family of Object.values(cfg.GameTools.unitProfiles.families))for(const [role,id]of Object.entries(family.profiles))for(const [index,field]of Fighting.FIELDS.entries())if(family.baseline[field]!==undefined)assert(Math.abs(cfg.SoldierCfg[id][field]-family.baseline[field]*Fighting.factors(cfg.GameTools,role)[index])<1e-6,id+'/'+field);
-  // Unit-type icons were intentionally reauthored after this migration. Keep
-  // the historical combat/settings contract without freezing that artwork.
-  const gameplayEntry=(table,entry)=>{const copy=structuredClone(entry);if(table==='unitTypes')delete copy.icon;return copy;};
+  // Icons and global incoming-damage authoring were approved after this
+  // migration. Fighting-type-damage tests cover the latter independently.
+  const gameplayEntry=(table,entry)=>{const copy=structuredClone(entry);if(table==='unitTypes'){delete copy.icon;delete copy.damageTaken;}return copy;};
   for(const [table,value]of Object.entries(Baseline.settings)){if(!value||typeof value!=='object'){assert.deepEqual(cfg.GameTools[table],value);continue;}for(const [key,entry]of Object.entries(value)){if(table==='unitTypeAssignments'&&/^enemy:9001[12]:/.test(key))continue;assert.deepEqual(gameplayEntry(table,cfg.GameTools[table][key]),gameplayEntry(table,entry),table+'/'+key);}}
 });
 

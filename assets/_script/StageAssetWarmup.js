@@ -11,7 +11,7 @@ function unitIds(level) {
   var ids = {};
   (level.WaveCfg || []).forEach(function (wave) {
     if (Array.isArray(wave.SpawnTimeline)) wave.SpawnTimeline.forEach(function (entry) { ids[entry.unitId] = true; });
-    else (wave.RefreshSoldierKind || []).forEach(function (group) { (String(group).split("#")[1] || "").split(";").forEach(function (entry) { var id = Number(entry.split(",")[0]); if (id) ids[id] = true; }); });
+    else (wave.RefreshSoldierKind || []).forEach(function (group) { (String(group).split("#")[1] || "").split(";").forEach(function (entry) { var id = Number(entry.split(",")[0]); if (id && id !== -1) ids[id] = true; }); });
   });
   return Object.keys(ids);
 }
@@ -83,11 +83,13 @@ function presentationPlan(config, level, base, catalogs, options, loadedAssets) 
     if (needed[asset.id] || /^hero-skin:/.test(asset.id) || asset.sourcePart && selected.some(function (profile) { return (profile.parts || []).some(function (part) { return part.sprite === asset.sourcePart; }); })) {if(asset.trail)needed[asset.trail]=true;if(asset.visualPrefab)add(asset.visualPrefab.bundle||asset.bundle||'resources',asset.visualPrefab.resource,'prefab');else add(asset.bundle || "resources", asset.resource, asset.kind === "spine" ? "spine" : asset.kind === "flipbook" ? "texture" : "frame");}
   });
   (projectiles.trails||[]).forEach(function(trail){if(needed[trail.id])add(trail.bundle||'resources',trail.resource,'texture');});
-  (options.skillClips || []).forEach(function (clip) { if (clip.style === options.style) add(clip.bundle || "resources", clip.resource, clip.kind === "spine" ? "spine" : "frame"); });
-  var visual=options.skills&&options.skills.visual||{};
-  ['resource','impactResource','passiveResource','beamResource','markResource','buffResource'].forEach(function(prefix){
-    var id=visual[prefix];if(!id)return;var clip=(options.skillClips||[]).find(function(clip){return clip.uuid===id;});
-    if(clip)(options.skillClips||[]).filter(function(part){return part===clip||part.group&&part.group===clip.group;}).forEach(function(part){add(part.bundle||'resources',part.resource,part.kind==='spine'?'spine':'frame');});
+  var prefixes=require("./HeroSkillSettings").resourcePrefixes,authoredVisual=options.skills&&options.skills.visual,hasVisual=!!authoredVisual&&typeof authoredVisual==="object"&&!Array.isArray(authoredVisual)&&prefixes.some(function(prefix){return Object.prototype.hasOwnProperty.call(authoredVisual,prefix);}),visual=hasVisual?authoredVisual:{};
+  // Legacy callers without effective settings still receive the broad style
+  // library. Authored settings pin only the selected resources and companions.
+  if(!hasVisual)(options.skillClips || []).forEach(function (clip) { if (clip.style === options.style) add(clip.bundle || "resources", clip.resource, clip.kind === "spine" ? "spine" : "frame"); });
+  prefixes.forEach(function(prefix){
+    var id=visual[prefix];if(!id)return;var clip=(options.skillClips||[]).find(function(clip){return clip.uuid===id||clip.id===id;});
+    if(clip)(options.skillClips||[]).filter(function(part){return part===clip||part.group&&part.group===clip.group||prefix==='beamResource'&&clip.slot==='beam'&&/^mystic-beam-/.test(clip.id)&&/^mystic-beam-/.test(part.id);}).forEach(function(part){add(part.bundle||'resources',part.resource,part.kind==='spine'?'spine':'frame');});
     else add(visual[prefix+'Bundle']||'',visual[prefix+'Path']||id,visual[prefix+'Kind']==='spine'?'spine':'frame',!visual[prefix+'Path']);
   });
   function resources(value) {

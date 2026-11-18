@@ -20,8 +20,8 @@ var def_KinghtFallEnemyItem06 = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.initData = function (e, n) {
-    t.prototype.initData.call(this, e, n);
+  _ctor.prototype.initData = function (e, n, lease) {
+    if (t.prototype.initData.call(this, e, n, lease) === false) return false;
     this.node.getComponent(cc.CircleCollider).radius = this.cfg.Data[2];
   };
   _ctor.prototype.doAttack = function () {

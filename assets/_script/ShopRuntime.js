@@ -35,7 +35,13 @@ exports.create = function (player, dataMgr, options) {
   }
 
   function commerce() { return Commerce.read(player.udata.data.shopCommerce); }
-  function bumpStock() { var next = Core.clone(player.udata.data.shopState); next.revision++; player.udata.data.shopState = next; }
+  function bumpStock() {
+    var next = Core.clone(player.udata.data.shopState);
+    // Match the stock helpers' checked revisions before a staged purchase can
+    // journal a debit/reward alongside a state that cannot be read on reload.
+    if (!Number.isSafeInteger(next.revision + 1)) throw new Error("Invalid shop: revision exhausted");
+    next.revision++; player.udata.data.shopState = next;
+  }
   function paymentPending() {
     return !!player.shopPaymentPending || !!(catalog && catalog.bundles.some(function (row) { return row.payment && payments.describe(row.payment).pending; }));
   }

@@ -62,11 +62,13 @@ function harness(points = 0, claimed = {}) {
     value.click = () => { if (value.listeners.touch) value.listeners.touch(); };
     return value;
   }
+  modules.GlobalAdReward=require('../../assets/_script/GlobalAdReward');
   const ctx = { exports: {}, require: name => modules[name] || {}, cc,
     __extends: (ctor, base) => Object.setPrototypeOf(ctor.prototype, base.prototype),
     __decorate: (decorators, target, key) => key === undefined ? target : undefined };
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/KinghtFallUIPassport.js'), 'utf8'), ctx);
   const ui = new ctx.exports.default();
+  ui.node=node('passport');
   ui.ndTop = node('top', ['labLevel', 'labPro', 'sprPro']);
   ui.btnClose = node('close');
   ui.btnClaimAll = node('claimAll', ['bgDisabled']);

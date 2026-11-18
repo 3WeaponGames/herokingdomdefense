@@ -4,6 +4,7 @@ const fs = require('node:fs'), path = require('node:path'), vm = require('node:v
 const { harness } = require('./persistence-harness.cjs');
 const { setup, hero, authored } = require('./backend-gameplay-harness.cjs');
 const AuthoredSpawnPlan = require('../../assets/_script/AuthoredSpawnPlan');
+const HeroEquipmentStats = require('../../assets/_script/HeroEquipmentStats');
 const single = value => ({ getInstance: () => value }), noop = () => {};
 function method(name, member, context) {
   const source = fs.readFileSync(path.resolve(__dirname, '../../assets/_script', name + '.js'), 'utf8').replace(/\r\n/g, '\n');
@@ -15,7 +16,7 @@ function runtime(persistence, stage = 1, loadHero = false) {
   const player = persistence.player;
   const h = setup({ AuthoredSpawnPlan, KinghtFallPlayerMgr: { KinghtFallPlayerMgr: single(player) }, KinghtFallEnum: persistence.load('KinghtFallEnum') });
   const data = h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
-  Object.assign(data, { getLevelCfgById: id => authored.LevelCfg.find(row => row.Level === id), getGameTask: () => authored.InGameTaskCfg[0],
+  Object.assign(data, { data: authored, getLevelCfgById: id => authored.LevelCfg.find(row => row.Level === id), getGameTask: () => authored.InGameTaskCfg[0],
     getTreasureCfg: () => loadHero ? authored.TreasureCfg : [], getEquipCfgList: () => authored.EquipCfg,
     getTalentLevelCfgById: id => authored.TalentLevelCfg.find(row => row.ID === id), getParamsCfgById: () => .5 });
   if (loadHero) {
@@ -66,14 +67,14 @@ test('Continue loads current equipment, talents and relics while keeping the sav
   const h = harness(), record = h.player.gameData, user = h.player.udata;
   record.setCheckpoint({ levelNum: 5, roundNum: 6, coin: 77, buffList: [], buildingLevel: [], businessList: { 1: .3 } });
   const before = runtime(h, 5, true);
-  user.setPersonLevel(1, 2); user.setPersonLevel(3, 2);
+  user.setPersonLevel(1, 2); user.setPersonLevel(4, 2);
   user.setTalentLevel({ id: authored.TalentLevelCfg[0].ID, level: 1, isLock: true });
   user.setTreasureLevel({ id: 120002, level: 2, frame: 0 });
   assert.equal(before.ctrPlay.baseHp, authored.EquipCfg[0].levelInfo[0].Parameters, 'an already-running hero keeps its initialized gear until reopening');
   const resumed = runtime(harness(h.persist()), 5, true);
   assert.equal(resumed.gameData.round, 6); assert.equal(resumed.gameData.coin, 77);
   assert.equal(resumed.ctrPlay.baseHp, authored.EquipCfg[0].levelInfo[1].Parameters);
-  assert.equal(resumed.ctrPlay.attack, authored.EquipCfg.find(row => row.id === 3).levelInfo[1].Parameters);
+  assert.equal(resumed.ctrPlay.attack, HeroEquipmentStats.damageAtLevel(authored, user.getHeroWeapon().id, 2));
   assert.deepEqual(JSON.parse(JSON.stringify(resumed.gameData.talentAdd[authored.TalentLevelCfg[0].kindID])), [authored.TalentLevelCfg[0].EffectNumber]);
   assert.deepEqual(JSON.parse(JSON.stringify(resumed.gameData.treasureAdd[120002])), [.3]);
   assert.equal(resumed.gameData.businessAdd[1], .3);

@@ -11,7 +11,7 @@ function fixture(owned={},style='skirmisher'){
   const Runtime=load('RelicRuntime'),Battle=load('RelicBattle');
   return {data,Runtime,Battle,load,commits:()=>commits};
 }
-function method(file,name,globals){const text=source(file),start=text.indexOf('_ctor.prototype.'+name+' = function'),end=text.indexOf('\n  };',start);assert(start>=0&&end>start);const body=text.slice(text.indexOf('function',start),end+4);return vm.runInNewContext('('+body+')',{BattleSounds:{},...globals});}
+function method(file,name,globals){const text=source(file),start=text.indexOf('_ctor.prototype.'+name+' = function'),end=text.indexOf('\n  };',start);assert(start>=0&&end>start);const body=text.slice(text.indexOf('function',start),end+4),helpers=file==='KinghtFallSoldierBase'?text.slice(0,text.indexOf('var BattleSounds')):'';return vm.runInNewContext(helpers+'('+body+')',{BattleSounds:{},...globals});}
 function actor(hp=50){return {hp,hpMax:100,node:new Node(),isDead(){return this.hp<=0;},ctrHp:{setHp(){}},cfg:{}};}
 function castle(hp=100){return {buildInfo:{BuildID:1,hp,hpMax:100},buildCfg:{enumValue:1},ctrHp:{setHp(){}},deaths:0,onDead(){this.deaths++;this.isDestroyed=true;}};}
 function building(id,kind,hp=100){return {ID:id,buildInfo:{BuildID:kind,cfg:{Hp:100},hp,hpMax:100},getIsWork(){return !this.isDestroyed&&this.buildInfo.hp>0;},upHpView(){}};}
@@ -142,7 +142,7 @@ test('Token of Thrift includes the last configured discounted wave even at relic
 
 test('repurposed hero relics no longer change soldier stats or melee haste, while ranged haste remains',()=>{
   const f=fixture({120014:[.16],120024:[.4,.4],120025:[.16,.16],120026:[.16,.16],120027:[.07,.07],120015:[.3]},'fighter');f.data.addTime={};
-  const globals={$z1KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:f.data}}}},$z1KinghtFallEnum:enums,$z1KinghtFallInterface:{KinghtFallEnemyBuffType:{AttackSpeed:1}},$z1KinghtFallGameCtrlData:{KinghtFallTimeType:{}},cc:{CircleCollider:function(){}}};
+  const globals={$z1KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:f.data}}}},$z1KinghtFallEnum:enums,$z1KinghtFallInterface:{KinghtFallEnemyBuffType:{AttackSpeed:1}},$z1KinghtFallGameCtrlData:{KinghtFallTimeType:{}},cc:{isValid:value=>!!value&&!value.destroyed,CircleCollider:function(){}}};
   const refresh=method('KinghtFallSoldierBase','initBuffData',globals),speed=method('KinghtFallSoldierBase','getAttSpeed',globals);
   const awareness=require('../../assets/_script/AllyAwareness'),getSightRange=method('KinghtFallSoldierBase','getSightRange',{AllyAwareness:awareness}),getAcquireRange=method('KinghtFallSoldierBase','getAcquireRange',{});
   for(const id of [90001,90002,90003,90004]){
@@ -163,7 +163,7 @@ test('real melee and ranged soldier hit callbacks pass their original life as th
     cc:{Vec2,isValid:()=>true},GameToolsOverrides:{counters:()=>false},
     $z1KinghtFallUIGame:{default:{instance:{ctrGame:game,ctrEffect:{showDamageNum(){},onMonsterAttack(){}}}}}
   };
-  const soldier={node:new Node(),time:{},vec2_1:new Vec2(),vec2_2:new Vec2(),attackRange:30,getAttack:()=>10,setLeft(){}};soldier.node._combatGeneration=1;target.node._combatGeneration=1;game._combatEpoch=1;
+  const soldier={node:new Node(),time:{},hp:100,isDead:()=>false,vec2_1:new Vec2(),vec2_2:new Vec2(),attackRange:30,getAttack:()=>10,setLeft(){}};soldier.node._combatGeneration=1;target.node._combatGeneration=1;game._combatEpoch=1;
   // Exercise the real release fence before checking the original projectile-life credit.
   const releaseGlobals={...globals,AllyAwareness:require('../../assets/_script/AllyAwareness'),Navigation:{positionOf:node=>node.getPosition()}};
   soldier.releaseAttackTarget=method('KinghtFallSoldierBase','releaseAttackTarget',releaseGlobals);

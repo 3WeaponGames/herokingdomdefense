@@ -2,6 +2,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.PoolMgr = exports.PoolNode = undefined;
+function hierarchyChanging(node) {
+  var flags = cc.Object && cc.Object.Flags, deactivating = flags && flags.Deactivating;
+  if (!deactivating) return false;
+  for (var parent = node; parent; parent = parent.parent) if (parent._objFlags & deactivating) return true;
+  return false;
+}
 var exp_PoolNode = function () {
   function _ctor() {
     this._isReady = false;
@@ -11,6 +17,7 @@ var exp_PoolNode = function () {
     this._ownsTemplate = false;
     this._nodes = new cc.NodePool();
     this._returned = new WeakSet();
+    this._pendingReturns = new Map();
   }
   _ctor.prototype.init = function (t, e, ownsTemplate) {
     this._node = t;
@@ -39,7 +46,21 @@ var exp_PoolNode = function () {
   };
   _ctor.prototype.freeNode = function (t) {
     if (t && cc.isValid(t, true)) {
-      if (this._returned.has(t)) return;
+      if (this._returned.has(t) || this._pendingReturns.has(t)) return;
+      if (hierarchyChanging(t)) {
+        // onDisable may run inside a parent's child traversal. Detaching an
+        // effect there corrupts that traversal and can leave native children
+        // alive after their resources are released. Keep it out of checkout
+        // until the frame has completed, and retire the return on pool clear.
+        var owner = this, request = {};
+        this._pendingReturns.set(t, request);
+        cc.director.once(cc.Director.EVENT_AFTER_DRAW, function () {
+          if (owner._pendingReturns.get(t) !== request) return;
+          owner._pendingReturns.delete(t);
+          owner.freeNode(t);
+        });
+        return;
+      }
       if (this._nodes.size() >= this._warterMark || !this._isReady) {
         this._createCount--;
         t.destroy();
@@ -56,6 +77,9 @@ var exp_PoolNode = function () {
     this._warterMark = t;
   };
   _ctor.prototype.destory = function () {
+    this._createCount -= this._pendingReturns.size;
+    this._pendingReturns.forEach(function (_request, node) { if (cc.isValid(node, true)) node.destroy(); });
+    this._pendingReturns.clear();
     this._createCount -= this._nodes.size();
     this._nodes.clear();
     if (this._ownsTemplate && cc.isValid(this._node)) this._node.destroy();

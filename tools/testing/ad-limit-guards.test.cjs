@@ -29,11 +29,13 @@ function harness(name) {
     LanguageMgr: { LanguageMgr: singleton({ t: (key, args) => args.join('') }) },
     BaseUI: { default: Base }, BaseCtrl: { default: Base }, KinghtFallBuildBase: { default: Base }
   };
-  const ctx = { exports: {}, require: n => modules[n] || {}, cc: { _decorator: { ccclass: t => t, property: () => () => {} }, Node: { EventType: { TOUCH_END: 'touch' } }, v2: (x,y) => ({x,y}) },
+  modules.GlobalAdReward=require('../../assets/_script/GlobalAdReward');
+  modules.EventMgr={EventMgr:singleton({emit(){}})};
+  const ctx = { exports: {}, require: n => modules[n] || {}, cc: { isValid:v=>!!v&&!v.destroyed,_decorator: { ccclass: t => t, property: () => () => {} }, Node: { EventType: { TOUCH_END: 'touch' } }, v2: (x,y) => ({x,y}) },
     __extends: (ctor, base) => { Object.setPrototypeOf(ctor.prototype,base.prototype); }, __decorate: (d,t,key) => key === undefined ? t : undefined, __spreadArrays: (...a) => [].concat(...a), console };
   vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script',name+'.js'),'utf8'),ctx);
   const instance = Object.create(ctx.exports.default.prototype);
-  Object.assign(instance,{ T: s => s, sendEvent() {}, closeUI: () => state.closed++ });
+  Object.assign(instance,{ node:{activeInHierarchy:true},_resourceGeneration:0,T: s => s, sendEvent() {}, closeUI: () => state.closed++ });
   return { state, instance };
 }
 

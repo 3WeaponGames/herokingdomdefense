@@ -70,9 +70,10 @@ test('respawns retain their tier while pooling and unconfigured tiers restore in
 });
 
 test('the shipped barracks roster refresh upgrades existing same-ID soldiers without replacing them',()=>{
-  const f=fixture(),u=f.actor,build={buildInfo:{cfg:{level:1,Data:[1,90001,8]}},VideoTimes:0,enemyList:[u],_rosterRequests:{},ndVideoSoldier:{SolID:90001}};
+  const f=fixture(),u=f.actor,build={node:new f.cc.Node('barracks',f.game.ndMain),buildInfo:{cfg:{level:1,Data:[1,90001,8]}},VideoTimes:0,enemyList:[u],_rosterRequests:{},ndVideoSoldier:{SolID:90001}};
   u.setParent(build);f.settings.unitLevels={};for(const level of [1,2,3])f.settings.unitLevels[Stats.key(90001,level)]={Health:100+level,AttackDamage:10+level,AttackRange:40+level};
-  const update=f.load('KinghtFallBuildBarracks').default.prototype.initSoldier;
+  const prototype=f.load('KinghtFallBuildBarracks').default.prototype;Object.setPrototypeOf(build,prototype);
+  const update=prototype.initSoldier;
   for(const level of [1,2,3]){build.buildInfo.cfg.level=level;update.call(build);assert.equal(build.enemyList[0],u);assert.equal(u.hpMax,100+level);assert.equal(u.getAttack(),10+level);assert.equal(u.attackRange,40+level);assert.equal(Stats.level(u),level);}
   assert.equal(build._rosterSignature,'90001:1','unchanged ID/count does not prevent a tier stat refresh');
 });

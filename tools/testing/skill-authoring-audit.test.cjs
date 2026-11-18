@@ -33,11 +33,11 @@ test('preview lifesteal uses described charm values, preserves fractional healin
 }));
 
 test('staff and spear mirror with the rider, keep authored arm poses and retain facing through idle',()=>isolated(async()=>{
- const f=fixture(),view=f.create(),pose=require('../../assets/_script/HeroSkillPose'),apply=pose.applyAim,scales=[];let aims=0;
- pose.applyAim=()=>{aims++;};f.renderer.drawCanvas=(_s,_canvas,layers)=>scales.push(layers.find(layer=>layer.description.uuid==='hero').description.scaleX);
+ const f=fixture(),view=f.create(),pose=require('../../assets/_script/HeroSkillPose'),apply=pose.applyAim,scales=[],aims=[];
+ pose.applyAim=(_s,direction)=>{aims.push({...direction});};f.renderer.drawCanvas=(_s,_canvas,layers)=>scales.push(layers.find(layer=>layer.description.uuid==='hero').description.scaleX);
  try{
-  await view.set({style:'vanguard',settings:{visual:{}},description:f.description});view.setScenario({direction:180,manualAim:true,attackRate:0});view.seek(.1);assert.equal(scales.at(-1),-1);view.seek(3);assert.equal(scales.at(-1),-1);
+  await view.set({style:'vanguard',settings:{visual:{}},description:f.description});view.setScenario({direction:180,manualAim:true,attackRate:0});view.seek(.1);assert.equal(scales.at(-1),-1);assert(aims.at(-1).x<0&&Math.abs(aims.at(-1).y)<1e-7,'Spear applies its captured left-facing aim');view.seek(3);assert.equal(scales.at(-1),-1);
   await view.set({style:'mystic',settings:{visual:{}},description:f.description});view.setScenario({mode:'basic',targetDistance:-100,targets:1});view.seek(.2);assert.equal(scales.at(-1),-1);view.setScenario({targetDistance:100});view.seek(.2);assert.equal(scales.at(-1),1);
-  const model=new Model('mystic',{}, {mode:'basic',targetDistance:-100,targets:1});model.advance(.1);model.targets[0].hp=0;model.advance(.1);assert.equal(model.bodyFace,-1);assert.equal(aims,0);
+  const model=new Model('mystic',{}, {mode:'basic',targetDistance:-100,targets:1});model.advance(.1);model.targets[0].hp=0;model.advance(.1);assert.equal(model.bodyFace,-1);assert(aims.length>0);
  }finally{pose.applyAim=apply;view.destroy();}
 }));

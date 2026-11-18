@@ -78,7 +78,6 @@ function resolve(config, user, styleId) {
   (Array.isArray(data.treasureInfo) ? data.treasureInfo : []).forEach(function (entry) { if (entry && !Object.prototype.hasOwnProperty.call(ownedRelics, entry.id)) ownedRelics[entry.id] = entry; });
   var records = inventory(config), stats = { health: 0, damage: 0, attackRate: 0 }, effects = {};
   records.forEach(function (record) {
-    var row = (record.source === "talent" ? config.TalentLevelCfg : config.TreasureCfg).filter(function (value) { return Number(value.ID) === record.id; })[0];
     var owned = record.source === "talent" ? ownedTalents[record.id] : ownedRelics[record.id], level = record.source === "talent" ? owned ? 1 : 0 : owned && Number(owned.level);
     if (record.source === "relic") level = finite(level) && level >= 1 && record.levels.length ? Math.min(record.levels.length, Math.floor(level)) : 0;
     record.owned = !!level; record.level = level || 0; record.eligible = record.scope === "hero" && record.kind !== "excluded" && required(record.requirements, style);

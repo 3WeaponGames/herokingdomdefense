@@ -46,7 +46,8 @@ test('an explicit stage face loads the selected battle unit while the legacy fac
 
 test('switching every authored A/B/D stage forward and backward never submits empty or missing native skins',()=>{
  const Units=require('../../packages/game-data-editor/lib/unit-assets'),prefabs=new Map();
- for(const id of [90001,90002,90003,90004]){const layer=Units.describe(root,{type:'enemy',id:String(id),noRuntime:true}).layers[0];prefabs.set(config.SoldierCfg[id].prefab,{data:{getComponentInChildren:()=>({defaultSkin:layer.skin,skeletonData:{id,skeletonJson:layer.json}})}});}
+ const faces=new Set([90001,90002,90003,90004]);for(const variant of ['','B','D'])for(const stage of JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig'+variant+'/GameJsonCfg.json'),'utf8')).LevelCfg)if(stage.StageFaceUnit)faces.add(stage.StageFaceUnit);
+ for(const id of faces){const layer=Units.describe(root,{type:'enemy',id:String(id),noRuntime:true}).layers[0];prefabs.set(config.SoldierCfg[id].prefab,{data:{getComponentInChildren:()=>({defaultSkin:layer.skin,skeletonData:{id,skeletonJson:layer.json}})}});}
  const before=JSON.stringify(config),seen=new Map();let total=0;
  for(const variant of ['','B','D']){
   const settings=Object.assign({},config,JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig'+variant+'/GameJsonCfg.json'),'utf8'))),f=previewFixture(settings);

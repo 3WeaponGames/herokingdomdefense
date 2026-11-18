@@ -23,7 +23,7 @@ function apply(owner) {
     if(prior){dispose(owner);nodes(owner).forEach(function (node) {enable(owner,node.getComponents(cc.PhysicsPolygonCollider));});}
     return;
   }
-  var main=owner.ndAniMain,layout=main&&main.skeletonData&&main.skeletonData.skeletonJson.wallKit&&main.skeletonData.skeletonJson.wallKit.layout;
+  var main=owner.ndAniMain,json=main&&main.skeletonData&&main.skeletonData.skeletonJson,layout=json&&json.wallKit&&json.wallKit.layout;
   var signature=JSON.stringify([owner.index,blocker,layout]);
   if(prior&&prior.signature===signature){enable(owner,prior.extra);return;}
   if(prior)dispose(owner);

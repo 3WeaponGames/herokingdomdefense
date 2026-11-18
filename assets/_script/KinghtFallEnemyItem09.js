@@ -26,8 +26,8 @@ var def_KinghtFallEnemyItem09 = function (t) {
     $z1KinghtFallUIGame.default.instance.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Attack);
     $z1KinghtFallUIGame.default.instance.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Buff);
   };
-  _ctor.prototype.initData = function (e, n) {
-    t.prototype.initData.call(this, e, n);
+  _ctor.prototype.initData = function (e, n, lease) {
+    if (t.prototype.initData.call(this, e, n, lease) === false) return false;
     this.node.getComponent(cc.CircleCollider).radius = this.cfg.Data[1];
   };
   _ctor.prototype.doAttack = function () {
@@ -85,15 +85,26 @@ var def_KinghtFallEnemyItem09 = function (t) {
           return;
         }
         var releases = target._healingEffects || (target._healingEffects = new Set());
+        var parent = target.ndEffect;
         var e = t.getComponentInChildren(sp.Skeleton);
         function release() {
           if (!releases.delete(release)) return;
+          if (t._healingEffectOwner !== release) return;
+          delete t._healingEffectOwner;
           if (cc.isValid(e, true)) e.setCompleteListener(null);
           if (cc.isValid(t, true)) $z1PoolMgr.PoolMgr.getInstance().freeNode(pool, t);
         }
+        function attached() {
+          if (!releases.has(release) || t._healingEffectOwner !== release) return false;
+          if (!cc.isValid(t, true) || !cc.isValid(e, true) || !current() || !recipient(n) || target.ndEffect !== parent || !cc.isValid(parent, true)) { release(); return false; }
+          return true;
+        }
         releases.add(release);
-        t.setParent(n.enemy.ndEffect);
+        t._healingEffectOwner = release;
+        t.setParent(parent);
+        if (!attached()) return;
         t.setPosition(0, 0, 0);
+        if (!attached()) return;
         e.setCompleteListener(release);
         e.setAnimation(0, "attack", true);
       });

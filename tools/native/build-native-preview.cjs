@@ -5,6 +5,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const {spawnSync} = require('node:child_process');
 const {inspect} = require('./pe-imports.cjs');
+const spineCleanup = require('./spine-inline-color-cleanup.cjs');
 
 const PROJECTS = [
   {file:'build/libcocos2d.vcxproj', sha256:'c15640fc06311fe10e8bb1d0cf0a0ab0ca20443c86e589e849d53cc987257a50', count:297},
@@ -54,6 +55,44 @@ function validateOutput(outputRoot,projectRoot,sdkRoot,toolRoot=__dirname) {
 }
 function once(text, from, to) { requireThat(text.split(from).length === 2, 'Unsupported SDK patch anchor: '+from.slice(0,100)); return text.replace(from,to); }
 function xml(value) { return value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+const isImplementation = file => /\.(h|hpp|c|cpp|cxx|cc|inl)$/i.test(file);
+function cloneFile(clone, relative) {
+  const root=fs.realpathSync.native(clone),file=path.join(root,relative);
+  requireThat(!path.isAbsolute(relative)&&!relative.split(/[\\/]/).some(part=>part==='..'),'Invalid copied source path: '+relative);
+  requireThat(!fs.lstatSync(file).isSymbolicLink()&&fs.lstatSync(file).isFile()&&inside(canonical(file),root),'Copied source escaped SDK clone: '+relative);
+  return file;
+}
+function prepareSourcePatches(clone, enabled, definitions=spineCleanup.PATCHES) {
+  if(!enabled)return [];
+  const seen=new Set();
+  // Prepare every result before the caller writes any source file.
+  return definitions.map(patch=>{
+    requireThat(!seen.has(patch.file),'Duplicate Spine cleanup source: '+patch.file);seen.add(patch.file);
+    const before=fs.readFileSync(cloneFile(clone,patch.file)),after=spineCleanup.patchSource(before,patch);
+    return {file:patch.file,before,after,beforeSha256:patch.beforeSha256,afterSha256:patch.afterSha256,changes:patch.changes};
+  });
+}
+function sourcePatchRecord(patch) { return {file:patch.file,feature:'spineInlineColorCleanup',kind:'implementation',beforeSha256:patch.beforeSha256,afterSha256:patch.afterSha256}; }
+function sourcePatchDiff(patches) { return Buffer.from(JSON.stringify({format:'exact-replacement-v1',feature:'spineInlineColorCleanup',patches:patches.map(patch=>({...sourcePatchRecord(patch),changes:patch.changes}))},null,2)+'\n'); }
+function verifySourcePatchArtifacts(output, patches, diff) {
+  if(!patches.length){requireThat(diff===null,'Unexpected source patch diff for stock build');return;}
+  requireThat(diff&&diff.format==='exact-replacement-v1'&&canonical(diff.file)===canonical(path.join(output,'spine-inline-color-cleanup-diff.json')),'Invalid source patch diff record');
+  requireThat(sha(fs.readFileSync(diff.file))===diff.sha256&&diff.sha256===sha(sourcePatchDiff(patches)),'Source patch diff changed during build');
+  for(const patch of patches){const backup=path.join(output,'source-patch-backups','spine-inline-color-cleanup',patch.file);requireThat(inside(canonical(backup),canonical(output))&&sha(fs.readFileSync(backup))===patch.beforeSha256,'Source patch backup changed during build: '+patch.file);}
+}
+function expectedImplementation(entries, patches) {
+  const overrides=new Map(patches.map(patch=>[patch.file,patch]));
+  requireThat(overrides.size===patches.length,'Duplicate copied source override');
+  for(const patch of patches)requireThat(entries.some(entry=>entry.file===patch.file&&entry.sha256===patch.beforeSha256)&&isImplementation(patch.file),'Unknown copied source override: '+patch.file);
+  return entries.filter(entry=>isImplementation(entry.file)).map(entry=>({...entry,sha256:overrides.has(entry.file)?overrides.get(entry.file).afterSha256:entry.sha256}));
+}
+function verifySourceFiles(sdk, clone, entries, patches) {
+  const expected=expectedImplementation(entries,patches),names=expected.map(entry=>entry.file).sort(order);
+  for(const root of [sdk,clone])requireThat(JSON.stringify(files(root).filter(isImplementation).map(file=>slash(path.relative(root,file))).sort(order))===JSON.stringify(names),'SDK implementation file set changed: '+root);
+  for(const item of entries.filter(item=>isImplementation(item.file)||PROJECTS.some(project=>project.file===item.file)))requireThat(sha(fs.readFileSync(path.join(sdk,item.file)))===item.sha256,'Installed SDK changed during build: '+item.file);
+  for(const item of expected)requireThat(sha(fs.readFileSync(cloneFile(clone,item.file)))===item.sha256,'Copied implementation changed during build: '+item.file);
+  return implementationDigest(expected);
+}
 
 function patchProject(before, project, output) {
   requireThat(sha(Buffer.from(before)) === project.sha256, 'Unsupported Creator SDK project: '+project.file);
@@ -182,12 +221,13 @@ function parseArgs(args) {
   const result={};const keys={'--sdk-root':'sdkRoot','--output-root':'outputRoot','--project-root':'projectRoot','--vs-root':'vsRoot','--windows-sdk-version':'windowsSdkVersion','--windows-sdk-root':'windowsSdkRoot'};
   for(let i=0;i<args.length;i++){
     const arg=args[i];if(arg==='--help'){result.help=true;continue;}
+    if(arg==='--spine-inline-color-cleanup'){result.spineInlineColorCleanup=true;continue;}
     requireThat(keys[arg] && args[i+1] && !args[i+1].startsWith('--'),'Unknown/missing argument: '+arg);result[keys[arg]]=args[++i];
   }return result;
 }
 function main(args) {
   const options=parseArgs(args);
-  if(options.help){console.log('node tools/native/build-native-preview.cjs --sdk-root <Creator2.4.13/resources/cocos2d-x> --output-root <fresh external directory> [--project-root <project>] [--vs-root <VS2022>] [--windows-sdk-root <Windows Kits/10>] [--windows-sdk-version <10.0.x.0>]');return;}
+  if(options.help){console.log('node tools/native/build-native-preview.cjs --sdk-root <Creator2.4.13/resources/cocos2d-x> --output-root <fresh external directory> [--project-root <project>] [--vs-root <VS2022>] [--windows-sdk-root <Windows Kits/10>] [--windows-sdk-version <10.0.x.0>] [--spine-inline-color-cleanup]');return;}
   requireThat(process.platform==='win32','This build tool supports Windows only');requireThat(options.sdkRoot&&options.outputRoot,'--sdk-root and --output-root are required');
   const sdk=fs.realpathSync.native(options.sdkRoot),project=fs.realpathSync.native(options.projectRoot||path.resolve(__dirname,'../..')),output=validateOutput(options.outputRoot,project,sdk);
   requireThat(JSON.parse(fs.readFileSync(path.join(project,'project.json'),'utf8')).version==='2.4.13','Project must use Creator2.4.13; supply --project-root if this tool is outside tools/native');
@@ -197,12 +237,25 @@ function main(args) {
   fs.mkdirSync(bin);fs.mkdirSync(logs);fs.cpSync(sdk,clone,{recursive:true,preserveTimestamps:true,errorOnExist:true,force:false});
   for(const item of sourceFiles){requireThat(sha(fs.readFileSync(path.join(sdk,item.file)))===item.sha256,'Installed SDK changed while cloning: '+item.file);requireThat(sha(fs.readFileSync(path.join(clone,item.file)))===item.sha256,'SDK clone verification failed: '+item.file);}
   fs.writeFileSync(path.join(output,'source-files.json'),JSON.stringify({sourceRoot:sdk,implementation:digest,files:sourceFiles},null,2)+'\n');
+  const sourcePatches=prepareSourcePatches(clone,options.spineInlineColorCleanup),features={highResolutionPacing:false,spineInlineColorCleanup:!!options.spineInlineColorCleanup};
+  let sourceDiff=null;
+  if(sourcePatches.length){
+    const diffFile=path.join(output,'spine-inline-color-cleanup-diff.json'),diff=sourcePatchDiff(sourcePatches);
+    fs.writeFileSync(diffFile,diff,{flag:'wx'});sourceDiff={file:diffFile,format:'exact-replacement-v1',sha256:sha(diff)};
+    for(const patch of sourcePatches){
+      const file=cloneFile(clone,patch.file);requireThat(sha(fs.readFileSync(file))===patch.beforeSha256,'Copied source changed before patch: '+patch.file);
+      const backup=path.join(output,'source-patch-backups','spine-inline-color-cleanup',patch.file);fs.mkdirSync(path.dirname(backup),{recursive:true});fs.writeFileSync(backup,patch.before,{flag:'wx'});
+      fs.writeFileSync(file,patch.after);requireThat(sha(fs.readFileSync(file))===patch.afterSha256,'Copied source patch verification failed: '+patch.file);
+    }
+  }
+  const copiedExpected=implementationDigest(expectedImplementation(sourceFiles,sourcePatches));
   const patches=[];
   for(const item of PROJECTS){const file=path.join(clone,item.file),before=fs.readFileSync(file,'utf8'),after=patchProject(before,item,output);fs.writeFileSync(file,after);patches.push({file:item.file,beforeSha256:item.sha256,afterSha256:sha(Buffer.from(after))});fs.mkdirSync(path.join(output,'obj',path.basename(file,'.vcxproj'),'objects'),{recursive:true});}
   verifyProjects(clone);
   for(const entry of fs.readdirSync(path.join(clone,'external/win32/libs'),{withFileTypes:true}))if(entry.isFile())fs.copyFileSync(path.join(clone,'external/win32/libs',entry.name),path.join(bin,entry.name));
   const arguments_=[path.join(clone,PROJECTS[2].file),'/t:Build',...Object.entries(msbuildProperties(tools)).map(([name,value])=>'/p:'+name+'='+value),'/m:3','/nr:false','/verbosity:minimal','/bl:'+path.join(logs,'build.binlog'),'/flp:logfile='+path.join(logs,'build.log')+';verbosity=normal'];
-  fs.writeFileSync(path.join(output,'preparation.json'),JSON.stringify({sdk,clone,output,toolchain:tools,patches,msbuildArguments:arguments_,state:'prepared',launched:false},null,2)+'\n');
+  patches.push(...sourcePatches.map(sourcePatchRecord));
+  fs.writeFileSync(path.join(output,'preparation.json'),JSON.stringify({sdk,clone,output,toolchain:tools,features,sourceDiff,implementation:{source:digest,copiedExpected},patches,msbuildArguments:arguments_,state:'prepared',launched:false},null,2)+'\n');
   command(tools.msbuild,arguments_,{stdio:'inherit'});
   const flags=checkCompileFlags(output);
   fs.copyFileSync(path.join(clone,'tools/simulator/frameworks/runtime-src/Classes/ide-support/lang'),path.join(bin,'lang'));
@@ -210,9 +263,11 @@ function main(args) {
   for(const entry of fs.readdirSync(path.join(clone,'simulator/win32')))if(/^(msvcp|msvcr|vcruntime|concrt|vccorlib)\d+\.dll$/i.test(entry))fs.copyFileSync(path.join(clone,'simulator/win32',entry),path.join(bin,entry));
   for(const entry of fs.readdirSync(tools.redist))if(/\.dll$/i.test(entry))fs.copyFileSync(path.join(tools.redist,entry),path.join(bin,entry));
   const runtime=inspectRuntime(bin),executable=path.join(bin,'simulator.exe');
-  for(const item of sourceFiles.filter(item=>/\.(h|hpp|c|cpp|cxx|cc|inl)$/i.test(item.file)||PROJECTS.some(project=>project.file===item.file))){requireThat(sha(fs.readFileSync(path.join(sdk,item.file)))===item.sha256,'Installed SDK changed during build: '+item.file);if(/\.(h|hpp|c|cpp|cxx|cc|inl)$/i.test(item.file))requireThat(sha(fs.readFileSync(path.join(clone,item.file)))===item.sha256,'Copied implementation changed during build: '+item.file);}
-  const manifest={kind:'hkd-native-preview-release',manifestVersion:1,createdAt:new Date().toISOString(),creatorVersion:'2.4.13',sdk:{sourceRoot:sdk,cloneRoot:clone,sharedResourceRoot:path.join(clone,'simulator/win32'),implementation:digest},build:{configuration:'Release',platform:'Win32',architecture:'x86',outputRoot:output,compileFlags:flags},features:{highResolutionPacing:false},runtime:{directory:bin,executable,executableSha256:sha(fs.readFileSync(executable)),...runtime},toolchain:tools,abi:{CC_STATIC:1,COCOS2D_DEBUG:0,USE_V8_DEBUGGER:0,NDEBUG:1},patches,tooling:inventory(__dirname).filter(item=>/\.cjs$/.test(item.file)),launched:false};
+  const copiedImplementation=verifySourceFiles(sdk,clone,sourceFiles,sourcePatches);
+  verifySourcePatchArtifacts(output,sourcePatches,sourceDiff);
+  requireThat(copiedImplementation.sha256===copiedExpected.sha256&&copiedImplementation.count===copiedExpected.count,'Copied SDK implementation digest changed');
+  const manifest={kind:'hkd-native-preview-release',manifestVersion:1,createdAt:new Date().toISOString(),creatorVersion:'2.4.13',sdk:{sourceRoot:sdk,cloneRoot:clone,sharedResourceRoot:path.join(clone,'simulator/win32'),implementation:digest,copiedImplementation},build:{configuration:'Release',platform:'Win32',architecture:'x86',outputRoot:output,compileFlags:flags},features,sourceDiff,runtime:{directory:bin,executable,executableSha256:sha(fs.readFileSync(executable)),...runtime},toolchain:tools,abi:{CC_STATIC:1,COCOS2D_DEBUG:0,USE_V8_DEBUGGER:0,NDEBUG:1},patches,tooling:inventory(__dirname).filter(item=>/\.cjs$/.test(item.file)),launched:false};
   const manifestFile=path.join(output,'build-manifest.json');fs.writeFileSync(manifestFile,JSON.stringify(manifest,null,2)+'\n');console.log('Release simulator built without launching. Manifest: '+manifestFile);
 }
 if(require.main===module){try{main(process.argv.slice(2));}catch(error){console.error('Native preview build refused/failed: '+error.message);process.exitCode=1;}}
-module.exports={parseArgs,patchProject,implementationDigest,validateSourceInventory,validateOutput,toolchain,inside,canonical,inspectRuntime,msbuildProperties,PROJECTS};
+module.exports={parseArgs,patchProject,implementationDigest,validateSourceInventory,validateOutput,toolchain,inside,canonical,inspectRuntime,msbuildProperties,PROJECTS,prepareSourcePatches,sourcePatchRecord,sourcePatchDiff,verifySourcePatchArtifacts,expectedImplementation,verifySourceFiles};

@@ -21,7 +21,7 @@ function artworkFixture(){
  class Node{
   constructor(name){this.name=name;this.children=[];this.components=[];this.active=true;}
   set parent(value){value.children.push(this);}setContentSize(width,height){this.width=width;this.height=height;}
-  addComponent(Type){const c=new Type();this.components.push(c);return c;}getComponent(Type){return this.components.find(c=>c instanceof Type);}
+  addComponent(Type){const c=new Type();c.node=this;this.components.push(c);return c;}getComponent(Type){return this.components.find(c=>c instanceof Type);}
   getChildByName(name){return this.children.find(n=>n.name===name);}
   destroy(){this.destroyed=true;}
  }
@@ -30,7 +30,7 @@ function artworkFixture(){
   setFilters(min,mag){this.filters=[min,mag];}update(options){Object.assign(this,options);}destroy(){this.destroyed=true;}
  }Texture2D.PixelFormat={RGBA8888:6};Texture2D.Filter={LINEAR:1};
  class SpriteFrame{constructor(texture){this.texture=texture;}destroy(){this.destroyed=true;}}
- const cc={Node,Sprite,Graphics,Texture2D,SpriteFrame,color:(r,g,b,a=255)=>({r,g,b,a})};
+ const cc={Node,Sprite,Graphics,Texture2D,SpriteFrame,isValid:(value,strict)=>!!value&&!value.destroyed&&!(strict&&value.pendingDestroy),color:(r,g,b,a=255)=>({r,g,b,a})};
  const button=new Node('Follow'),nodes={};
  for(const [name,frame] of [['ndTag1','gold'],['ndTag2','cyan']]){const node=nodes[name]=new Node(name);node.parent=button;node.addComponent(Sprite).spriteFrame=frame;}
  const exports={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/FollowButtonArtwork.js'),'utf8'),{exports,cc});
@@ -60,6 +60,15 @@ test('command faces remove the baked yellow frames while retaining full dark cir
  f.artwork.install(f.button);const replacement=f.button._armyButtonArtwork;assert(replacement);assert.notEqual(replacement,rim);assert.equal(idle.children.filter(n=>!n.destroyed).length,1);assert.equal(active.children.filter(n=>!n.destroyed).length,2);f.artwork.dispose(f.button);assert(replacement.texture.destroyed&&replacement.frame.destroyed);
 });
 
+test('parent teardown releases command assets without touching destroyed or pending native children',()=>{
+ for(const state of ['destroyed','pendingDestroy']){
+  const f=artworkFixture();f.artwork.install(f.button);const rim=f.button._armyButtonArtwork;
+  rim.sprite[state]=true;Object.defineProperty(rim.sprite,'spriteFrame',{set(){throw Error('Disposed native sprite setter');}});
+  for(const node of rim.backgrounds.concat(rim.highlight)){node[state]=true;Object.defineProperty(node,'active',{set(){throw Error('Disposed native node setter');}});node.destroy=()=>{throw Error('Duplicate native node destruction');};}
+  assert.doesNotThrow(()=>{f.artwork.dispose(f.button);f.artwork.dispose(f.button);});assert(rim.frame.destroyed&&rim.texture.destroyed);assert.equal(f.button._armyButtonArtwork,null);
+ }
+});
+
 function method(file,name,context){
  const source=fs.readFileSync(path.join(root,'assets/_script',file),'utf8'),marker='_ctor.prototype.'+name+' = ';
  const start=source.indexOf(marker)+marker.length,end=source.indexOf('\n  };',start);
@@ -70,7 +79,7 @@ test('fresh and restored battle initialization both disable gameplay Follow and 
  const follow=prefab.find(n=>n._name==='btnFollow'),tags=follow._children.map(r=>prefab[r.__id__]);
  assert.notEqual(tags.find(n=>n._name==='ndTag1')._active,false);assert.equal(tags.find(n=>n._name==='ndTag2')._active,false);
  for(const restoring of [false,true]){
-  const init=method('KinghtFallGameCtrl.js','initData',{GameToolsOverrides:{clear(){}},
+  const init=method('KinghtFallGameCtrl.js','initData',{GameToolsOverrides:{clear(){}},GameplayAdOwner:require('../../assets/_script/GameplayAdOwner'),
    require:name=>{if(name==='AudioMgr')return{AudioMgr:{getInstance:()=>({stopOwnedEffects(){}})}};assert.equal(name,'RelicRuntime');return RelicRuntime;},
    $z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getGameData:()=>({hasSave:()=>restoring})})}},
    $z1KinghtFallGameCtrlData:{default:function(){}}});

@@ -73,7 +73,7 @@ test('real lobby refresh selects biome art for every A/B/D stage and keeps high-
   const config=read('assets/KinghtFallConfig'+variant+'/GameJsonCfg.json'),before=JSON.stringify(config),f=fixture(config.LevelCfg);
   for(const stage of config.LevelCfg.concat(config.LevelCfg.slice().reverse())){
    f.select(stage.Level);const job=f.jobs.shift(),biome=stage.EnvironmentBiome||legacy[stage.EnvironmentMapId]||legacy[stage.prefab];
-   assert(biome);assert.equal(job.bundle,'maps');assert.equal(job.resource,'Thumbnails/biome-'+biome);
+   assert(biome);assert.equal(job.bundle,'maps');assert.equal(job.resource,stage.StageThumbnail||'Thumbnails/biome-'+biome);
    f.finish(job);assert.equal(f.sprite.sizeMode,0);assert(f.icon.width<=394+.001&&f.icon.height<=341+.001);
    assert(Math.abs(f.icon.width/f.icon.height-1351/1164)<1e-10);assert.equal(f.home.monsterStage.Level,stage.Level);
   }

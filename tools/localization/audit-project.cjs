@@ -113,7 +113,14 @@ for (const file of walk(assetRoot)) {
     });
   }
 }
-for (const [key,style] of Object.entries(catalog.labelStyles||{})) { if(!catalog.entries[key])error('layout-key-missing',key,null); for(const [language,options]of Object.entries(style)) if(!(options.width>0)||options.height!==undefined&&!(options.height>0))error('invalid-layout-bounds',key+':'+language,options); }
+for (const [key,style] of Object.entries(catalog.labelStyles||{})) {
+  if(!catalog.entries[key])error('layout-key-missing',key,null);
+  for(const [language,options]of Object.entries(style)) {
+    // Zero is Cocos' natural RichText width when wrapping is explicitly off.
+    const width=options.width, natural=width===0&&options.wrap===false;
+    if(!Number.isFinite(width)||!(width>0||natural)||options.height!==undefined&&(!Number.isFinite(options.height)||!(options.height>0)))error('invalid-layout-bounds',key+':'+language,options);
+  }
+}
 for (const [uuid,binding] of Object.entries(catalog.images||{})) { if(binding.key&&!catalog.entries[binding.key])error('artwork-key-missing',uuid,binding.key); if(binding.pending)report.warnings.push({type:'pending-artwork',source:uuid,key:binding.key}); }
 report.summary={passed:report.errors.length===0,errorCount:report.errors.length,warningCount:report.warnings.length};
 report.historicalBaseline=backup||'Not supplied; historical gameplay-value preservation was not checked.';

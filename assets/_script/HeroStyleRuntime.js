@@ -222,11 +222,11 @@ Runtime.prototype.resolveImpact=function(cast,pending){
   if(/^(fighter|bruiser|mystic|guardian)$/.test(s.style)&&Presentation.release)Presentation.release(this,strike);
   if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return;
   if(s.style==="fighter"){
-    var shape=this.skillArea(dir,Math.max(130,h.attackRange)),radius=shape.radius,self=this,knockbackOrigin=point(h);o=shape.origin;dir=shape.direction;
+    var shape=this.skillArea(dir,Math.max(130,h.attackRange)),radius=shape.radius,cosine=Math.cos(shape.halfAngle),self=this,knockbackOrigin=point(h);o=shape.origin;dir=shape.direction;
     if(this.skillCast){this.skillCast.origin=Projectile.point(o);this.skillCast.radius=radius;this.skillCast.direction=Projectile.point(dir);}
     // The authored arc decides who is hit. Push directions instead radiate
     // from the hero's ground position, sampled before any hit callbacks run.
-    var impacts=this.enemies().filter(function(e){return withinArc(o,Projectile.actorPoint(e,self.game.ndMain),dir,radius,Math.cos(shape.halfAngle));}).map(function(e){var record=candidate(e),ground=point(e);record.damage=h.getAttack(e)*(cast.damageMultiplier||1);record.away=Projectile.unit({x:ground.x-knockbackOrigin.x,y:ground.y-knockbackOrigin.y},dir);return record;});
+    var impacts=this.enemies().filter(function(e){return withinArc(o,Projectile.actorPoint(e,self.game.ndMain),dir,radius,cosine);}).map(function(e){var record=candidate(e),ground=point(e);record.damage=h.getAttack(e)*(cast.damageMultiplier||1);record.away=Projectile.unit({x:ground.x-knockbackOrigin.x,y:ground.y-knockbackOrigin.y},dir);return record;});
     impacts.forEach(function(impact){var e=impact.enemy;self.hit(e,1,true,strike,impact);if(self.resolvingState===self.state&&self.available()&&living(e)&&e.node===impact.node&&generation(e)===impact.generation)self.startKnockback(e,impact.away,cast.knockback===undefined?80:cast.knockback);});
     this.effect("arc",o,radius,dir,shape.halfAngle,true);
   }else if(s.style==="bruiser"){
@@ -310,7 +310,7 @@ Runtime.prototype.releaseVolley=function(event){
 };
 Runtime.prototype.resolveVolley=function(event){
   var cast=this.skillCast,state=this.state,scope=this.scope;if(!cast||cast.volleyResolved||!cast.area||!this.available())return;cast.volleyResolved=true;
-  var shape=cast.area,self=this,strike='volley:'+cast.key,impacts=this.enemies().filter(function(enemy){return Projectile.containsArea(shape,Projectile.actorPoint(enemy,self.game.ndMain));}).map(function(enemy){var record=candidate(enemy),body=Projectile.actorPoint(enemy,self.game.ndMain);record.damage=self.hero.getAttack(enemy)*Skills.projectileMultiplier(state,distance(shape.origin,body),event.damageMultiplier);record.at=event.time;return record;});
+  var shape=cast.area,contains=Projectile.areaQuery(shape),self=this,strike='volley:'+cast.key,impacts=this.enemies().filter(function(enemy){return contains(Projectile.actorPoint(enemy,self.game.ndMain));}).map(function(enemy){var record=candidate(enemy),body=Projectile.actorPoint(enemy,self.game.ndMain);record.damage=self.hero.getAttack(enemy)*Skills.projectileMultiplier(state,distance(shape.origin,body),event.damageMultiplier);record.at=event.time;return record;});
   for(var i=0;i<impacts.length;i++){if(this.skillCast!==cast||this.state!==state||this.scope!==scope||!this.scopeCurrent(scope))return;var record=impacts[i];this.hit(record.enemy,1,true,strike,record);}
   this.pendingArrowAim=null;if(this.skillCast===cast&&!this.settings.visual.castResource)this.effect('arc',shape.origin,shape.radius,shape.direction,shape.halfAngle,true);
 };
@@ -356,8 +356,8 @@ Runtime.prototype.update=function(dt){
       else if(event.type==="vanguard-thrust"){
         var shape=self.vanguardCastShape(),aim=shape.direction,origin=shape.origin,strike=++self.serial;self.skillCast.origin=Projectile.point(origin);
         if(event.index===1&&Presentation.release)Presentation.release(self,strike);
-        var multiplier=Skills.vanguardMultiplier(self.state,{moveSpeed:h.getSpeed(),attackRate:h.getAttSpeed()});
-        self.enemies().filter(function(target){return Projectile.containsArea(shape,Projectile.actorPoint(target,self.game.ndMain));}).map(function(target){var record=candidate(target);record.damage=h.getAttack(target)*multiplier;return record;}).forEach(function(record){self.hit(record.enemy,1,true,strike,record);});self.effect("arc",origin,shape.radius,aim,shape.halfAngle,true);
+        var multiplier=Skills.vanguardMultiplier(self.state,{moveSpeed:h.getSpeed(),attackRate:h.getAttSpeed()}),contains=Projectile.areaQuery(shape);
+        self.enemies().filter(function(target){return contains(Projectile.actorPoint(target,self.game.ndMain));}).map(function(target){var record=candidate(target);record.damage=h.getAttack(target)*multiplier;return record;}).forEach(function(record){self.hit(record.enemy,1,true,strike,record);});self.effect("arc",origin,shape.radius,aim,shape.halfAngle,true);
       }else if(event.cast)self.resolveImpact(event.cast,scheduled);
     });
     if(this.resolvingState!==this.state)return;

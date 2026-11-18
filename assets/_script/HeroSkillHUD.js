@@ -165,9 +165,35 @@ function resize(hud,rt) {
   hud.button.setContentSize(width,height);hud.button.anchorX=.5;hud.button.anchorY=-bottom/height;
   hud.cooldownCount.node.setPosition(0,ButtonArt.faceCenterY(diameter));hud.cooldownCount.node.setContentSize(diameter*.8,diameter*.65);hud.cooldownCount.fontSize=Math.round(diameter*.34);hud.cooldownCount.lineHeight=hud.cooldownCount.fontSize+2;
 }
+function layoutInputs(hud,rt) {
+  var cache=hud.layoutCache;
+  if(!cache){var matrix=cc.mat4?cc.mat4():cc.Mat4?new cc.Mat4():null;if(!matrix)return null;cache=hud.layoutCache={matrix:matrix,values:[],ready:false};}
+  var index=0,changed=!cache.ready;
+  function track(value){if(cache.values[index]!==value)changed=true;cache.values[index++]=value;}
+  function measure(node){
+    if(!live(node)){track(null);return true;}
+    if(typeof node.getWorldMatrix!=="function")return false;
+    track(node);track(node.parent);track(node.width);track(node.height);track(node.anchorX);track(node.anchorY);track(node.activeInHierarchy);
+    node.getWorldMatrix(cache.matrix);
+    var values=cache.matrix.m;if(!values||values.length!==16)return false;
+    for(var i=0;i<16;i++){var value=values[i];if(typeof value!=="number"||!isFinite(value))return false;track(value);}
+    return true;
+  }
+  function command(node){
+    if(!measure(node))return false;if(!live(node))return true;
+    return measure(node.getChildByName&&(node.getChildByName("ndTag1")||node.getChildByName("ndTag2"))||node)&&measure(node.getChildByName&&node.getChildByName("labNum"));
+  }
+  if(!measure(hud.button)||!measure(hud.button.parent)||!command(rt.ui.btnAgg)||!command(rt.ui.btnFollow)){cache.ready=false;return null;}
+  var bounds=safeBounds(hud.button.parent);track(bounds.left);track(bounds.right);track(bounds.bottom);track(bounds.top);
+  if(cache.values.length!==index)changed=true;cache.values.length=index;cache.safe=bounds;cache.ready=true;cache.unchanged=!changed;return cache;
+}
 function layout(hud,rt) {
+  // Native command geometry is normally stationary. Its world matrices still
+  // detect live ancestor/Widget edits without repeating every bounds transform
+  // and candidate search for an otherwise unchanged HUD.
+  var inputs=layoutInputs(hud,rt);if(inputs&&inputs.unchanged)return;
   resize(hud,rt);
-  var parent=hud.button.parent,b=safeBounds(parent),origin=hud.button.convertToWorldSpaceAR(vec(0,0)),r=worldRect(hud.button),obstacles=[];
+  var parent=hud.button.parent,b=inputs?inputs.safe:safeBounds(parent),origin=hud.button.convertToWorldSpaceAR(vec(0,0)),r=worldRect(hud.button),obstacles=[];
   r={left:r.left-origin.x,right:r.right-origin.x,bottom:r.bottom-origin.y,top:r.top-origin.y};
   [rt.ui.btnAgg,rt.ui.btnFollow].forEach(function(other){if(live(other)&&other.activeInHierarchy)obstacles.push(commandBounds(other));});
   var minX=b.left+20-r.left,maxX=b.right-20-r.right,minY=b.bottom+20-r.bottom,maxY=b.top-20-r.top,targetX=maxX,targetY=minY;
@@ -180,6 +206,9 @@ function layout(hud,rt) {
   xs.forEach(function(x){x=Math.max(minX,Math.min(maxX,x));ys.forEach(function(y){y=Math.max(minY,Math.min(maxY,y));if(obstacles.some(function(o){return x+r.left<o.right+12&&x+r.right>o.left-12&&y+r.bottom<o.top+12&&y+r.top>o.bottom-12;}))return;var cost=Math.abs(x-targetX)*2+Math.abs(y-targetY);if(!best||cost<best.cost)best={x:x,y:y,cost:cost};});});
   if(!best)best={x:Math.max(minX,maxX),y:Math.max(minY,Math.min(maxY,minY))};
   hud.button.setPosition(parent.convertToNodeSpaceAR(vec(best.x,best.y)));
+  // Include the size and position just applied by this layout rather than
+  // invalidating the next frame with our own setters.
+  if(inputs)layoutInputs(hud,rt);
 }
 function paintButton(hud,rt) {
   var s=rt.state,planning=waiting(rt),can=!planning&&usable(rt),remaining=!planning&&s.cooldown>COOLDOWN_EPSILON?s.cooldown:0,cooldown=remaining?Math.ceil(remaining):0;

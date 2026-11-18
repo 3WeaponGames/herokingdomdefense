@@ -18,6 +18,7 @@ var g = function () {
     this.isGetServer = false;
     this.isInited = false;
     this.isPause = false;
+    this._cloudSaveStates = new Map();
   }
   t.prototype.init = function (t) {
     var e = this;
@@ -99,18 +100,33 @@ var g = function () {
     }
   };
   t.prototype.saveData = function (t, e, n) {
+    this._writeCloudData(t, e, n, false);
+  };
+  t.prototype._writeCloudData = function (t, e, n, clear) {
     if (this.curServer && !this.isPause) {
-      var manager = this, completed = false;
+      var manager = this, server = this.curServer, completed = false, key = t;
+      // Track the adapter's actual remote key; custom adapters keep raw keys
+      // unless they explicitly provide their own identity mapping.
+      try { if (typeof server.getCloudSaveKey === "function") key = server.getCloudSaveKey(t, clear); }
+      catch (error) { n && n(null, error); return; }
+      var state = this._cloudSaveStates.get(key);
+      if (!state) { state = { revision: 0, settledRevision: 0, error: null }; this._cloudSaveStates.set(key, state); }
+      var revision = ++state.revision;
       this._pendingCloudSaves = (this._pendingCloudSaves || 0) + 1;
       function finish(data, error) {
         if (completed) return;
         completed = true;
         manager._pendingCloudSaves--;
-        if (error || data === false) manager._cloudSaveError = error || new Error("Cloud save was rejected.");
-        try { n && n(data, error); }
+        if (revision >= state.settledRevision) {
+          state.settledRevision = revision;
+          state.error = error || data === false ? error || new Error("Cloud save was rejected.") : null;
+        }
+        manager._cloudSaveError = null;
+        manager._cloudSaveStates.forEach(function (record) { if (!manager._cloudSaveError && record.error) manager._cloudSaveError = record.error; });
+        try { if (clear) return n && n.apply(this, arguments); return n && n(data, error); }
         finally { if (manager._flushCloudReset) manager._flushCloudReset(); }
       }
-      try { this.curServer.saveData(t, e, finish); }
+      try { if (clear) server.clearDataByKey(t, finish); else server.saveData(t, e, finish); }
       catch (error) { if (completed) throw error; finish(null, error); }
     } else if (this.curServer && this.isPause) {
       n && n(null, new Error("Cloud saves are paused during reset."));
@@ -142,8 +158,8 @@ var g = function () {
       // Only their terminal acknowledgements can order removal after them.
       e._flushCloudReset = function () {
         if (request.done) return;
-        if (e._cloudSaveError) { finish(false, e._cloudSaveError); return; }
         if (e._pendingCloudSaves) return;
+        if (e._cloudSaveError) { finish(false, e._cloudSaveError); return; }
         e._flushCloudReset = null;
         if (request.timer !== null) { clearTimeout(request.timer); request.timer = null; }
         try {
@@ -203,11 +219,7 @@ var g = function () {
     } catch (error) { if (request.done) throw error; finish(false, error); }
   };
   t.prototype.clearDataByKey = function (t, e) {
-    if (this.curServer) {
-      this.curServer.clearDataByKey(t, e);
-    } else {
-      e && e();
-    }
+    this._writeCloudData(t, null, e, true);
   };
   t.prototype.getDataByKey = function (t) {
     if (this.curServer) {

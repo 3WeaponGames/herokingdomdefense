@@ -9,6 +9,15 @@ function fixture(){
  h.soldier=(x=0,y=0,type=1)=>{const u=h.e.actor('KinghtFallSoldierItem0'+type,x,y,h.g.ndMain);delete u.getFind;delete u.onFindList;delete u.isDead;u.state=0;u.cfg={...u.cfg,Speed:60};u.node._combatGeneration=1;u.rallyPoint={pos:{x,y}};u._personalRallyPoint=u.rallyPoint;u._orderTarget=null;h.d.soldierList.push(u);return u;};
  h.enemy=(x=100,y=0)=>{const e={node:new Node('enemy',h.g.ndMain,x,y),hp:1000,attackRange:200,cfg:{AttackType:1,AttackRange:200},isDead(){return this.hp<=0;},onAttacked(n){this.hp-=n;}};e.node._combatGeneration=1;h.d.enemyList.push(e);return e;};return h;
 }
+test('Creator Vec2 conversion keeps transformed observer distances finite and respects the sight boundary',()=>{
+ const h=fixture(),near=h.soldier(239),far=h.soldier(241),attacker=h.enemy(-180);
+ h.g.ndMain.angle=29;h.g.ndMain.scaleX=1.7;h.g.ndMain.scaleY=.8;h.g.ndMain.x=1200;h.g.ndMain.y=-900;
+ // Creator's CCNode conversion selects Vec2 by instanceof. A plain {x,y}
+ // takes its Vec3 branch with undefined z and produces NaN even at identity.
+ for(const actor of [h.p,near,far]){const convert=actor.node.convertToWorldSpaceAR;actor.node.convertToWorldSpaceAR=function(point){assert(point instanceof h.e.cc.Vec2,'Use Creator Vec2 for 2D node conversion');return convert.call(this,point);};}
+ const event=h.A.capture(h.p,attacker,h.g);assert(Number.isFinite(event.position.x)&&Number.isFinite(event.position.y));assert(Math.abs(event.position.x)<1e-6&&Math.abs(event.position.y)<1e-6);
+ assert.equal(h.A.notify(event,1),1);assert.equal(near._orderTarget,attacker);assert.equal(far._orderTarget,null);
+});
 test('ally sight is independent of hero weapons, configurable including zero, and acquisition includes longer attacks',()=>{
  const h=fixture(),u=h.soldier();assert.equal(h.A.defaultSightRange,240);
  for(const heroRange of [0,100,105,300,1200]){h.p.attackRange=heroRange;assert.equal(u.getSightRange(),240);assert.equal(u.getAcquireRange(),240);}

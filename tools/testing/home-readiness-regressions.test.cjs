@@ -41,7 +41,7 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
   const modules = {
     BaseUI: { default: Component }, HeroWeapons: require('../../assets/_script/HeroWeapons'), HeroWeaponPicker: { close() {}, installSwitch: noop }, KinghtFallEnum: { KinghtFallEnumTreasureEnum: { ForgeAmulet: 1 } },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: once({ getUserData: () => ({ getTreasureLevel: () => null, getMaxStage: () => 2 }) }) },
-    KinghtFallDataMgr: { KinghtFallDataMgr: once({ getEquipCfgList: () => equipment, getLevelCfgById2: () => ({ EquipLevelCap: 10 }) }) },
+    KinghtFallDataMgr: { KinghtFallDataMgr: once({ getEquipCfgList: () => equipment, getLevelCfgById2: () => ({ EquipLevelCap: 10 }), getLevelCfgList: () => config.LevelCfg }) },
     Utils: { Utils: { StringFormat: () => '' } }, KinghtFallTextConfig: { KinghtFallTextConfig: {} },
     EventMgr: { EventMgr: once({ on: noop, off: noop }) },
     ResCacheMgr: { ResCacheMgr: once({ refreshTime: noop }) }, AudioMgr: { AudioMgr: once({ playAudioButtonClicked: noop }) }

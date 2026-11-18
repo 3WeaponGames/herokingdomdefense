@@ -149,7 +149,12 @@ TestMode.prototype._hasGameplayTarget = function () {
 };
 TestMode.prototype.readGameplayInput = function (target) {
   if (!this.isEnabled() || target !== this._gameplayTarget || !this._hasGameplayTarget()) return null;
-  if (this._isEditing()) { this._movement = {}; this._actions = {}; return null; }
+  // Idle frames have no input to suppress. Keep a fresh focus query whenever
+  // any key/action is present, including opposing movement keys that sum to 0.
+  if ((this._movement.w || this._movement.a || this._movement.s || this._movement.d ||
+      this._actions.rally || this._actions.follow || this._actions.pause || this._actions.build) && this._isEditing()) {
+    this._movement = {}; this._actions = {}; return null;
+  }
   var x = (this._movement.d ? 1 : 0) - (this._movement.a ? 1 : 0);
   var y = (this._movement.w ? 1 : 0) - (this._movement.s ? 1 : 0);
   var length = Math.sqrt(x * x + y * y) || 1;

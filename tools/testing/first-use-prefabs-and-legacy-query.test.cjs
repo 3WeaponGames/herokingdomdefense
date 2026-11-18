@@ -25,7 +25,9 @@ function fixture() {
   class Node {
     constructor() {
       this.children = []; this.parent = null;
-      this.component = { node: this, initData(...args) { this.initArgs = args; }, initView(reward) { this.reward = reward; } };
+      // Record the public unit/lane inputs, not the controller's private setup
+      // lease; allocation is isolated from the actor-init lifecycle in this fixture.
+      this.component = { node: this, initData(id, lane) { this.initArgs = typeof lane === 'number' ? [id, lane] : [id]; }, initView(reward) { this.reward = reward; } };
     }
     setParent(parent) { this.removeFromParent(); this.parent = parent; parent.children.push(this); }
     removeFromParent() { if (this.parent) this.parent.children.splice(this.parent.children.indexOf(this), 1); this.parent = null; }
@@ -64,11 +66,14 @@ function fixture() {
   // its own runtime harness with actual scene transforms and collision grids.
   modules.KinghtFallNavigation = { positionOf: node => node.position, reset: noop };
   modules.SpawnArea = { prepare: noop, apply: () => true };
+  const ui = { node: new Node(), isclose: false };
+  modules.KinghtFallUIGame = { default: { instance: ui } };
   const actors = [];
   const ctrl = Object.assign(Object.create(load('KinghtFallGameCtrl', cc, modules).default.prototype), {
     node: new Node(), ndMain: new Node(), ndPath: { getChildByName: () => ({ position: { x: 0, y: 0 } }) },
     _combatEpoch: 1, gameData: { pendingEnemySpawns: 0, addEnemy: actor => actors.push(actor), addSoldier: actor => actors.push(actor) }
   });
+  ui.ctrGame = ctrl;
   const fx = Object.create(load('KinghtFallGameEffect', cc, modules).default.prototype);
   const prefab = {};
   function loadPrefab(bundle, name, done) { pending.push({ bundle, name, deliver: () => done(prefab) }); }

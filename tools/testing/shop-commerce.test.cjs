@@ -58,6 +58,18 @@ async function initialized(saved, ledger) {
 function account(f) { const result = clone(f.player.udata.data); delete result.sft; delete result.rewardTransaction; return result; }
 function purchase(f, kind, id) { return f.service.purchase(kind, id, view(f).token); }
 
+test('terminal stock revision cannot consume banked chests or acknowledge a verified paid entitlement',async()=>{
+  const f=await initialized();f.player.udata.data.shopCommerce=Commerce.addChests(Commerce.empty(),[{chestId:'wooden-chest',num:1}]);
+  f.player.udata.data.shopState.revision=Number.MAX_SAFE_INTEGER;f.player.udata.saveData();
+  const quote=view(f),before=clone(f.player.rewardRecords().map(record=>record.data)),persisted=f.persist();f.state.writes=0;
+  assert.throws(()=>f.service.openChest('wooden-chest',quote.token),/revision exhausted/);
+  assert.deepEqual(clone(f.player.rewardRecords().map(record=>record.data)),before);assert.deepEqual(f.persist(),persisted);assert.equal(f.state.writes,0);
+  const offer=quote.bundles[0],transaction=f.ledger.transaction(offer.payment.productId,1,'exhausted-stock');
+  const result=await f.service.restorePurchases();assert.equal(result.ok,false);assert.equal(transaction.finished,false);assert.equal(f.ledger.finishes,0);
+  assert.deepEqual(clone(f.player.rewardRecords().map(record=>record.data)),before);assert.deepEqual(f.persist(),persisted);assert.equal(f.state.writes,0);assert(!f.player.pendingRewardJournal);
+  assert.equal(view(f).ready,true);
+});
+
 test('commerce remains optional, pure mutations preserve extensions and authoritative ordinals deduplicate receipts', () => {
   const state = Commerce.empty(); state.extension = { retained: true };
   const offer = { id: 'bundle', payment: { productId: 'bundle.product' }, purchaseLimit: 2 };

@@ -20,6 +20,7 @@ var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallUtilLayout = require("KinghtFallUtilLayout");
 var $z1KinghtFallItemGood = require("KinghtFallItemGood");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
+var EarnedAds = require("GlobalAdReward");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -203,28 +204,52 @@ var def_KinghtFallUIGameEnd = function (t) {
   };
   _ctor.prototype.initBtnEvent = function () {
     var t = this;
+    var manager = $z1UIMgr.UIMgr.getInstance(), fromId = this.fromId;
+    var battleUI = manager.getUIById(fromId), battleNode = battleUI && battleUI.node;
+    var battleGeneration = battleUI && battleUI._resourceGeneration, controller = battleUI && battleUI.ctrGame;
+    var epoch = controller && controller._combatEpoch, battleData = controller && controller.gameData;
+    function closeBattle() {
+      if (battleUI && !battleUI.isclose && manager.getUIById(fromId) === battleUI && battleUI.node === battleNode &&
+          battleUI._resourceGeneration === battleGeneration && battleUI.ctrGame === controller &&
+          (!controller || controller._combatEpoch === epoch && controller.gameData === battleData) &&
+          (!cc.isValid || cc.isValid(battleUI, true) && cc.isValid(battleNode, true))) manager.closeUI(battleNode);
+    }
     this.btnBreak.on(cc.Node.EventType.TOUCH_END, function () {
       if (t.finished || t.adPending) return;
       t.finished = true;
-      $z1UIMgr.UIMgr.getInstance().closeById(t.fromId);
-      t.closeUI();
+      closeBattle();
+      if (!t.isclose) t.closeUI();
     }, this);
     this.btnVideo.on(cc.Node.EventType.TOUCH_END, function () {
-      if (t.finished || t.adPending) return;
+      if (t.isclose || t.finished) return;
+      var pending = EarnedAds.get(t, "_victoryAdReward");
+      if (pending) { pending.retry(); return; }
+      if (t.adPending) return;
+      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), game = player.getGameData();
+      var settlement = EarnedAds.clone(t.settlement), stage = player.getUserData().getMaxStage(), tracked = false;
       t.adPending = true;
-      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-        if (t.finished) return;
-        if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().settleBattle(t.settlement, 2) === false) {
-          t.adPending = false;
-          return;
+      var request = EarnedAds.create(t, "_victoryAdReward", player, function () {
+        var receipt = player.getUserData().data.battleSettlement, pending = game.data.pendingSettlement;
+        // Keep settleBattle's exact newer-run/receipt gate. An obsolete offer
+        // finishes silently rather than retaining an earned retry forever.
+        if (game.data.levelNum >= 0 || !receipt || receipt.id !== settlement.id || pending && pending.id !== settlement.id) return { done: true, show: false };
+        if (game.settleBattle(settlement, 2) === false) return false;
+        if (!tracked) {
+          tracked = true;
+          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.win_double);
+          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_win_double_Y, stage);
         }
+        return { done: true };
+      }, function (_, current) {
         t.finished = true;
         t.adPending = false;
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.win_double);
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_win_double_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        $z1UIMgr.UIMgr.getInstance().closeById(t.fromId);
-        t.closeUI();
-      }, function () { t.adPending = false; }, "battle.victory.double");
+        closeBattle();
+        if (current()) t.closeUI();
+      }, function () { if (request.isUI()) t.adPending = false; });
+      if (!request) { t.adPending = false; return; }
+      function cancel() { request.cancel(); if (!request.earned && request.isUI()) t.adPending = false; }
+      try { $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, request.earn, cancel, "battle.victory.double"); }
+      catch (error) { cancel(); throw error; }
     }, this);
     this.btnNewGame.on(cc.Node.EventType.TOUCH_END, function () {
       if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return;

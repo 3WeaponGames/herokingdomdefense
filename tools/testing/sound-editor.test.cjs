@@ -25,6 +25,11 @@ test('the sound catalog finds every current audio asset, including all eight hor
   assert(indexed.items.filter(item => item.generated).every(item => item.origin === 'new' && item.category !== 'other'));
 });
 
+test('all current non-projectile hero skill clips appear under Abilities',()=>{
+ for(const name of ['bruiser-active-skill','fighter-active-skill','guardian-active-skill','mystic-arcane-burst-explosion','mystic-passive-channel-loop','vanguard-spear-barrage']){
+  const item=Catalog.details('assets/KinghtFallAudio/sfx/'+name+'.ogg');assert.equal(item.category,'abilities',name);assert.equal(item.loop,name.endsWith('-loop'));
+ }
+});
 test('Skirmisher charge and release clips stay in weapons while both on-hit clips stay in impacts', () => {
   const names = ['skirmisher-passive-hit', 'skirmisher-passive-release', 'skirmisher-passive-charged', 'skirmisher-passive-draw-loop', 'skirmisher-active-release', 'skirmisher-active-hit'];
   const indexed = Catalog.index(root), items = names.map(name => {

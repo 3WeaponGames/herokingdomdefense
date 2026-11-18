@@ -65,7 +65,8 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     }
     var stage = player.getUserData().getMaxStage();
     this.levelLimit = data.getLevelCfgById2(stage).EquipLevelCap;
-    this.nextLevel = 5 * ((stage - 1) / 5 + 1);
+    var next = data.getLevelCfgList().find(function (row) { return row.Level > stage && row.EquipLevelCap > this.levelLimit; }, this);
+    this.nextLevel = next ? next.Level - 1 : stage;
     for (var index = 0; index < this.nodeInfo.length; index++) {
       this.nodeInfo[index].ndInfo.getChildByName("btnLock").getChildByName("labNum").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomePerson03), this.nextLevel);
     }
@@ -203,6 +204,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
         else o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconCharacter, r.cfg.levelInfo[l - 1].Image, function (frame) { setItemIcon(frame, entry[0], null); });
       });
       o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, r.cfg.levelInfo[l - 1].EquipBottom, function (t) {
+        if (!cc.isValid(o.node) || r._itemIconRequest !== iconRequest) return;
         r.ndItem.getComponent(cc.Sprite).spriteFrame = t;
         r.ndInfo.getChildByName("ndItem").getComponent(cc.Sprite).spriteFrame = t;
         var tint = cc.color(require("EquipmentTiers").tint(r.cfg.levelInfo[l - 1]));

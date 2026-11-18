@@ -1,6 +1,6 @@
 "use strict";
 var Combat = require("TowerCombat");
-var Presentation = require("MillFieldPresentation");
+var Presentation = require("MillFieldPresentation"), Parts = require("BuildingPartScale");
 
 // Fields are attack targets, not buildings: income, saving and navigation keep
 // their existing building roster. Render attachments share the authored bones.
@@ -9,12 +9,19 @@ function Runtime(owner, game) {
   this.beforeDraw = this.sync.bind(this);
   cc.director.on(cc.Director.EVENT_BEFORE_DRAW, this.beforeDraw);
 }
+Runtime.prototype.applyPartScale = function (source, cfg) {
+  if (this.partScaleState && (!source || source._buildingPartScale !== this.partScaleState)) Parts.dispose(this.partScaleState);
+  try { return Parts.apply(source, cfg); }
+  // First apply can throw after native ownership was acquired. Retain that
+  // exact state even if child renderer destruction later clears its JS fields.
+  finally { this.partScaleState = source && source._buildingPartScale || null; }
+};
 Runtime.prototype.apply = function () {
   this.clear();
   var owner = this.owner, cfg = owner.buildInfo && owner.buildInfo.cfg;
   this.cfg = cfg && cfg.MillDefense;
   var skeleton = owner.ndAniDown && owner.ndAniDown._skeleton;
-  if (cfg && cfg.PartScale || owner.ndAniDown && owner.ndAniDown._buildingPartScale) require("BuildingPartScale").apply(owner.ndAniDown,cfg);
+  if (cfg && cfg.PartScale || owner.ndAniDown && owner.ndAniDown._buildingPartScale || this.partScaleState) this.applyPartScale(owner.ndAniDown,cfg);
   if (!this.cfg || !skeleton || !owner.getIsWork()) return;
   var skin = skeleton.skin, runtime = this;
   skeleton.slots.forEach(function (slot) {
@@ -80,7 +87,7 @@ Runtime.prototype.sync = function () {
     var world = source.node.convertToWorldSpaceAR(cc.v2(bone.worldX, bone.worldY - 20));
     field.node.setPosition(field.node.parent.convertToNodeSpaceAR(world));
   },this);
-  if (owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.PartScale || source._buildingPartScale) require("BuildingPartScale").apply(source,owner.buildInfo && owner.buildInfo.cfg);
+  if (owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.PartScale || source._buildingPartScale || this.partScaleState) this.applyPartScale(source,owner.buildInfo && owner.buildInfo.cfg);
 };
 Runtime.prototype.income = function () {
   if(!this.owner.getIsWork())return 0;
@@ -129,8 +136,9 @@ Runtime.prototype.explode = function (field) {
   var epoch = this.game._combatEpoch, data = this.game.gameData;
   Combat.damage(this.game, null, field.getAttPos(), field.getAttack(),
     {attackType:"cannon",splashRadius:this.cfg.splashRadius,splashFalloff:1}, null, field);
-  var game = this.game, center = field.getAttPos();
+  var game = this.game;
   if (!cc.Graphics || game._combatEpoch !== epoch || game.gameData !== data || !cc.isValid(game.ndUI, true)) return;
+  var center = field.getAttPos();
   var node = new cc.Node("Crop bomb blast"); node.setParent(game.ndUI); node.setPosition(center);
   var g = node.addComponent(cc.Graphics); g.fillColor = cc.color(255,183,53,100); g.strokeColor = cc.color("#ffe39b"); g.lineWidth = 3;
   g.circle(0,0,this.cfg.splashRadius); g.fill(); g.stroke();
@@ -159,5 +167,5 @@ Runtime.prototype.clear = function (retiring) {
   (this.effects || []).forEach(function(effect){if(cc.isValid(effect.node,true))effect.node.destroy();});this.effects=[];
 };
 Runtime.prototype.stop = function () { this.fighting=false; this.clear(); };
-Runtime.prototype.destroy = function () { this.fighting=false;cc.director.off(cc.Director.EVENT_BEFORE_DRAW,this.beforeDraw);this.clear(true); };
+Runtime.prototype.destroy = function () { this.fighting=false;cc.director.off(cc.Director.EVENT_BEFORE_DRAW,this.beforeDraw);this.clear(true);Parts.dispose(this.partScaleState);this.partScaleState=null; };
 exports.Runtime = Runtime;

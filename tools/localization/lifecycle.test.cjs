@@ -109,7 +109,7 @@ test('Startup waits for artwork before starting once; destroyed loading componen
   const source=fs.readFileSync(path.join(__dirname,'../../assets/_script/Loading.js'),'utf8');let preloadCallback,started=0,logo=0,preloads=0;
   const language={init(callback){if(callback)callback(null);},preloadArtwork(callback){preloads++;preloadCallback=callback;}};
   const context={exports:{},require(name){return name==='LanguageMgr'?{LanguageMgr:{getInstance(){return language;}}}:{};},__extends(ctor,base){ctor.prototype=Object.create(base.prototype);ctor.prototype.constructor=ctor;},__decorate(decorators,target){return target;},cc:{Component:function(){},_decorator:{ccclass:x=>x,property:()=>()=>{}},isValid:x=>!x.destroyed}};vm.runInNewContext(source,context);
-  const loading=new context.exports.default();loading.loadLogo=()=>logo++;loading.startGame=()=>started++;loading.start();assert.equal(preloads,1);assert.equal(started,0);preloadCallback([]);assert.equal(logo,1);assert.equal(started,1);
+  const loading=new context.exports.default();loading.loadLogo=()=>logo++;loading.startGame=()=>started++;loading.start();assert.equal(preloads,1);assert.equal(started,0);preloadCallback([]);assert.equal(logo,0,'StartupPresentation owns the title artwork');assert.equal(started,1);
   const destroyed=new context.exports.default();destroyed.loadLogo=()=>logo++;destroyed.startGame=()=>started++;destroyed.start();destroyed.destroyed=true;preloadCallback([{error:'asset absent'}]);assert.equal(started,1);
 });
 test('Centered mobile loading layout retains tap-to-retry recovery and restores its progress style',()=>{
@@ -300,5 +300,23 @@ test('shared relic header and outside instruction retain their authored safe rec
     assert(closeLeft-titleRight>=24,'title leaves a readable gap before Close');assert(title.node.y+title.node.height*scale/2<237,'title stays in the header');assert(title.node.y-title.node.height*scale/2>154,'title clears the body');
     assert(instruction.node.y+instruction.node.height*.5/2< -237,'instruction sits beneath panel');assert(instruction.node.width*.5<=584,'instruction width stays within the panel width');
   }
+});
+test('cloned readable artwork reuses its own copied overlay through repeated clones and locale changes',()=>{
+  const f=fixture(),catalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/resources/localization/catalog.json'),'utf8'));
+  f.Node.prototype.addChild=function(child){child.parent=this;this.children.push(child);};f.Node.prototype.addComponent=f.Node.prototype.add;
+  Object.assign(f.Node.prototype,{active:true,activeInHierarchy:true,scaleX:1,scaleY:1});
+  f.cc.Label.Overflow={SHRINK:1,RESIZE_HEIGHT:2};f.cc.Label.HorizontalAlign={CENTER:1};f.cc.Label.VerticalAlign={CENTER:1};
+  f.cc.LabelOutline=class {constructor(){this.enabled=true;}};f.cc.color=value=>value;f.cc.winSize={width:750};
+  f.manager.setCatalog(catalog);
+  const uuid='4a5f899e-20aa-43ac-aba5-b413e1cd0d18';assert(catalog.images[uuid].readableText);
+  const source=new f.Node('Readable template'),decoration=new f.Node('LocalizedArtwork');source.addChild(decoration);decoration.add(f.Label).string='Decoration';
+  const sprite=source.add(f.Sprite);sprite.spriteFrame=new f.Frame(uuid);
+  const first=f.cc.instantiate(source),second=f.cc.instantiate(first),third=f.cc.instantiate(source),nodes=[source,first,second,third];
+  for(const language of ['zh','en','zh']){
+    f.manager.setCurrentLanguage(language);const expected=f.manager.t(catalog.images[uuid].readableText.key);
+    for(const owner of nodes){const image=owner.getComponent(f.Sprite),generated=owner.children.filter(child=>child._localizationGenerated);assert.equal(generated.length,1);assert.equal(owner.children.length,2);assert.equal(generated[0],image._localizedOverlay);assert.equal(generated[0].getComponent(f.Label).string,expected);assert.equal(owner.children[0].getComponent(f.Label).string,'Decoration');}
+  }
+  assert.notEqual(first.getComponent(f.Sprite)._localizedOverlay,sprite._localizedOverlay);
+  assert.notEqual(second.getComponent(f.Sprite)._localizedOverlay,first.getComponent(f.Sprite)._localizedOverlay);
 });
 console.log(passed+' localization lifecycle checks passed.');

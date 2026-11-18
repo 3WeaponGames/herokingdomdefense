@@ -8,6 +8,7 @@ var $z1EventMgr = require("EventMgr");
 var $z1LanguageMgr = require("LanguageMgr");
 var $z1ResCacheMgr = require("ResCacheMgr");
 var $z1ResourceMgr = require("ResourceMgr");
+var $z1ArgsParseUtils = require("ArgsParseUtils");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -38,6 +39,10 @@ var def_BaseCtrl = function (t) {
   };
   _ctor.prototype.loadSpriteFrame = function (t, e, n, i, a) {
     var o = this;
+    var resource = $z1ArgsParseUtils.ArgsParseUtils._makeloadSpriteFrameResrgs(t, e);
+    if (!resource) return;
+    t = resource.bundle;
+    e = resource.path;
     var generation = this._resourceGeneration;
     undefined === i && (i = true);
     undefined === a && (a = 10);

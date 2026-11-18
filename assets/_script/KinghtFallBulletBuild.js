@@ -143,8 +143,9 @@ var def_KinghtFallBulletBuild = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this.state === 2) return;
+    var game = this.combatContext || $z1KinghtFallUIGame.default.instance.ctrGame;
     this.cancel();
-    $z1KinghtFallUIGame.default.instance.ctrGame.freeBuildBullet(this);
+    if (game && cc.isValid(game, true)) game.freeBuildBullet(this);
   };
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallBulletBase.default);

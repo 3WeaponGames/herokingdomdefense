@@ -93,6 +93,9 @@ var exp_CacheUtils = function () {
     });
   };
   _ctor.saveDataEncrypt = function (t, e, n) {
+    // Persisted values are serialized JSON. Keep the legacy byte cipher and
+    // let JSON restore UTF-16 escapes, including surrogate pairs, on reading.
+    e = e.replace(/[\u0100-\uffff]/g, function (character) { return "\\u" + ("0000" + character.charCodeAt(0).toString(16)).slice(-4); });
     var i = $z1Utils.Utils.encrypt(e, n);
     return this.saveData(t, i);
   };

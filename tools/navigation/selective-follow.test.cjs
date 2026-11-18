@@ -94,7 +94,7 @@ test('a selected casualty respawns at its barracks and walks to its last release
  const barracks=new(e.load('KinghtFallBuildBarracks').default)(),unit=e.soldier(-35);
  unit.ndEffect={removeAllChildren(){}};
  delete unit.isDead;barracks.enemyList=[unit];unit.setParent(barracks);
- Object.assign(barracks,{getIsWork:()=>true,canAddVideoSoldier:()=>false,_testAdLimitBypass:false,ndVideoSoldier:{},
+ Object.assign(barracks,{node:new Node('barracks',e.game.ndMain,-150,-20),getIsWork:()=>true,canAddVideoSoldier:()=>false,_testAdLimitBypass:false,ndVideoSoldier:{},
   time:{Reborn:0,RebornMax:1},ndPro:{active:false,getChildByName:()=>({getComponent:()=>({fillRange:0})})},getPos:()=>new Vec2(-150,-20)});
  e.game.changeAge();e.game.selectFollower(unit);unit.node.setPosition(20,20);e.game.changeAge();
  e.game.ctrPlay.node.setPosition(20,20);e.game.changeAge();e.game.selectFollower(unit);unit.node.setPosition(70,25);

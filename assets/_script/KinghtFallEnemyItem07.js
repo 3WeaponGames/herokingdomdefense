@@ -70,8 +70,8 @@ var def_KinghtFallEnemyItem07 = function (t) {
     $z1KinghtFallUIGame.default.instance.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Attack);
     $z1KinghtFallUIGame.default.instance.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Move);
   };
-  _ctor.prototype.initData = function (e, n) {
-    t.prototype.initData.call(this, e, n);
+  _ctor.prototype.initData = function (e, n, lease) {
+    if (t.prototype.initData.call(this, e, n, lease) === false) return false;
     this.node.getPosition(this.oldPos);
     this.time[r.Movetime] = this.moveTime;
   };
@@ -81,7 +81,10 @@ var def_KinghtFallEnemyItem07 = function (t) {
       cc.Vec2.subtract(this.vec2_2, this.vec2_1, this.oldPos);
       this.time[r.Movetime] += this.vec2_2.len();
       if (this.time[r.Movetime] >= this.moveTime) {
-        this.time[r.Movetime] -= this.moveTime, $z1KinghtFallUIGame.default.instance.ctrEffect.onMoveTrack(this.vec2_1.clone(), $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Move, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Move);
+        var scope = skillScope(this);
+        this.time[r.Movetime] -= this.moveTime;
+        scope.effects.onMoveTrack(this.vec2_1.clone(), $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Move, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Move);
+        if (!skillCurrent(this, scope, false)) return;
       }
       this.node.getPosition(this.oldPos);
       t.prototype.onUpdate.call(this, e);
@@ -171,10 +174,10 @@ var def_KinghtFallEnemyItem07 = function (t) {
       if (!skillCurrent(this, release.scope, true)) return;
       var record = release.records[index];if (!record) break;
       if (!targetCurrent(record, true)) continue;
-      record.item.onAttacked(release.damage, this);
+      var received = record.item.onAttacked(release.damage, this);
       if (!skillCurrent(this, release.scope, true)) return;
       if (!targetCurrent(record, false)) continue;
-      release.scope.effects.showDamageNum(record.position, release.damage);
+      release.scope.effects.showDamageNum(record.position, received);
       if (!skillCurrent(this, release.scope, true)) return;
       release.scope.effects.onAttack(record.position, $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Attack, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Attack);
     }

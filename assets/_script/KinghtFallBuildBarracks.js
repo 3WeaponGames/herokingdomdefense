@@ -1,4 +1,5 @@
 var BattleSounds = require("BattleSounds");
+var GameplayAdOwner = require("GameplayAdOwner");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -133,6 +134,10 @@ var def_KinghtFallBuildBarracks = function (t) {
     return cc.v2(position.x, position.y);
   };
   _ctor.prototype._placeSoldier = function (unit, index) {
+    var owner = this, ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, data = game && game.gameData, epoch = game && game._combatEpoch;
+    var node = this.node, generation = node._combatGeneration, info = this.buildInfo, roster = this.enemyList, unitNode = unit.node, unitGeneration = unitNode._combatGeneration;
+    function current() { return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner.buildInfo === info && owner.enemyList === roster && roster[index] === unit && !owner.isDestroyed &&
+      unit.node === unitNode && cc.isValid(unitNode, true) && unitNode._combatGeneration === unitGeneration && !unit._isPooled && $z1KinghtFallUIGame.default.instance === ui && ui.ctrGame === game && game.gameData === data && game._combatEpoch === epoch; }
     var position = this.getPos(index);
     if (!position) {
       // Keep the owned roster slot without putting a body inside terrain or
@@ -140,14 +145,19 @@ var def_KinghtFallBuildBarracks = function (t) {
       unit._spawnPending = true;
       Navigation.reset(unit);
       unit.node.active = false;
+      if (!current()) return false;
       if (unit.rigidBody) unit.rigidBody.active = false;
       unit.hp = 0;
       unit.state = $z1KinghtFallSoldierBase.KinghtFallSoldierStatus.Dead;
       return false;
     }
     unit.node.setPosition(position);
-    unit.setNew();
-    Navigation.prepareTerrainExit(unit, $z1KinghtFallUIGame.default.instance.ctrGame, true);
+    if (!current()) return false;
+    var lease = { generation: unitGeneration }, renewed = unit.setNew(lease);
+    if (renewed === false) return false;
+    unitGeneration = lease.generation;
+    if (!current()) return false;
+    Navigation.prepareTerrainExit(unit, game, true);
     unit._spawnPending = false;
     this.waitEnemy = this.waitEnemy.filter(function (waiting) { return waiting !== unit; });
     return true;
@@ -159,6 +169,13 @@ var def_KinghtFallBuildBarracks = function (t) {
   };
   _ctor.prototype.doTime = function (t) {
     var e = this;
+    this._rosterRetryTime = Math.max(0, (this._rosterRetryTime || 0) - t);
+    if (this._rosterRetryTime === 0 && this.buildInfo && this.buildInfo.cfg && this.getIsWork()) {
+      this._rosterRetryTime = .25;
+      var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+      var count = this._soldierCount(game);
+      for (var slot = 0; slot < count; slot++) if (!this.enemyList[slot]) this._requestSoldier(slot, game);
+    }
     this._spawnRetryTime = Math.max(0, (this._spawnRetryTime || 0) - t);
     var retryReady = this._spawnRetryTime === 0;
     if (retryReady) {
@@ -189,18 +206,22 @@ var def_KinghtFallBuildBarracks = function (t) {
     if (this.canAddVideoSoldier() && $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare) {
       $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay.node.getPosition(this.vec2_1);
       if (this.getInClick(this.vec2_1, t)) {
-        this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, true);
+        var offer = GameplayAdOwner.begin($z1KinghtFallUIGame.default.instance.ctrGame, this);
+        if (!offer) return;
         var o = function (t) {
-          e.init();
-          e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
-          if (t) {
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_add_soldier);
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_add_soldier_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-            e.VideoTimes++;
-            e.ndVideoSoldier.active = e.canAddVideoSoldier();
-            $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom04));
-            e.initBuffData();
-          }
+          offer.finish(function (current) {
+            if (t) {
+              $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_add_soldier);
+              if (!current()) return;
+              $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_add_soldier_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+              if (!current()) return;
+              e.VideoTimes++;
+              e.ndVideoSoldier.active = e.canAddVideoSoldier();
+              $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom04));
+              if (!current()) return;
+              e.initBuffData();
+            }
+          }, function () { e.init(); });
         };
         if ($z1KinghtFallModle.KinghtFallSwitch.isMapShopOpen()) {
           var h = 0;
@@ -215,7 +236,7 @@ var def_KinghtFallBuildBarracks = function (t) {
             case 90004:
               h = 4;
           }
-          $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, h, function (t) {
+          offer.openDialog($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, h, function (t) {
             o(t);
           });
         } else {
@@ -226,10 +247,12 @@ var def_KinghtFallBuildBarracks = function (t) {
           }, "battle.barracks.extraSoldier");
         }
       }
+      if (offer && !offer.isCurrent()) return;
       this.ndVideoSoldier.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.keepTime / this.standTimeMax;
     }
   };
   _ctor.prototype.reset = function (e) {
+    GameplayAdOwner.cancel(this);
     if (e) { this._soldierRallyPosts = []; this._spawnPosts = []; }
     this._rosterSignature = null;
     this._rosterRequests = {};
@@ -246,6 +269,14 @@ var def_KinghtFallBuildBarracks = function (t) {
     this.waitEnemy = [];
     this.ndVideoSoldier.active = this.canAddVideoSoldier();
     this.initBuffData();
+  };
+  _ctor.prototype.onDisable = function () {
+    GameplayAdOwner.cancel(this);
+    if (t.prototype.onDisable) t.prototype.onDisable.call(this);
+  };
+  _ctor.prototype.onDestroy = function () {
+    GameplayAdOwner.cancel(this);
+    if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.initBuffData = function () {
     t.prototype.initBuffData.call(this);
@@ -301,13 +332,45 @@ var def_KinghtFallBuildBarracks = function (t) {
       return this.isIn = false, this.keepTime -= e, this.keepTime < 0 && (this.keepTime = 0), false;
     }
   };
+  _ctor.prototype._soldierCount = function (game) {
+    var e = this.buildInfo.cfg.Data[0];
+    var n = game.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff23);
+    n && (e += n.Pamer[0]);
+    game.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff43) && e--;
+    return Math.max(0, e + this.VideoTimes);
+  };
+  _ctor.prototype._requestSoldier = function (index, game) {
+    var owner = this, id = this.buildInfo.cfg.Data[1], pending = this._rosterRequests[index];
+    if (this.enemyList[index] || pending && pending.id === id && pending.game === game && pending.data === game.gameData && pending.epoch === game._combatEpoch) return;
+    // addSoldier drops obsolete prefab callbacks at an epoch boundary. Replace
+    // that retired request instead of leaving its roster slot pending forever.
+    var request = { id: id, game: game, data: game.gameData, epoch: game._combatEpoch };
+    this._rosterRequests[index] = request;
+    game.addSoldier(id, function (unit) {
+      var current = owner._rosterRequests[index] === request;
+      if (current) delete owner._rosterRequests[index];
+      var ui = $z1KinghtFallUIGame.default.instance;
+      if (!current || !cc.isValid(owner, true) || !cc.isValid(owner.node, true) || owner.isDestroyed || !ui || ui.ctrGame !== game ||
+          game.gameData !== request.data || game._combatEpoch !== request.epoch || !owner.buildInfo.cfg ||
+          owner.buildInfo.cfg.Data[1] !== id || index >= owner._soldierCount(game) || owner.enemyList[index]) {
+        request.data.delSoldier(unit);
+        return;
+      }
+      var roster = owner.enemyList, info = owner.buildInfo, node = owner.node, generation = node._combatGeneration, unitNode = unit.node, unitGeneration = unitNode._combatGeneration;
+      owner.enemyList[index] = unit;
+      unit.setParent(owner);
+      if (unit.initBuffData() === false || !cc.isValid(owner, true) || owner.node !== node || !cc.isValid(node, true) || node._combatGeneration !== generation || owner.buildInfo !== info || owner.enemyList !== roster || roster[index] !== unit || owner.isDestroyed ||
+          unit.node !== unitNode || !cc.isValid(unitNode, true) || unitNode._combatGeneration !== unitGeneration || unit._isPooled || game.gameData !== request.data || game._combatEpoch !== request.epoch || $z1KinghtFallUIGame.default.instance !== ui || ui.ctrGame !== game) return;
+      owner._placeSoldier(unit, index);
+    });
+  };
   _ctor.prototype.initSoldier = function () {
     var t = this;
-    var e = this.buildInfo.cfg.Data[0];
-    var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff23);
-    n && (e += n.Pamer[0]);
-    $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff43) && e--;
-    e += this.VideoTimes;
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+    var data = game.gameData, epoch = game._combatEpoch, node = this.node, generation = node._combatGeneration, info = this.buildInfo, cfg = info.cfg, roster = this.enemyList;
+    function current() { return cc.isValid(t, true) && t.node === node && cc.isValid(node, true) && node._combatGeneration === generation && t.buildInfo === info && info.cfg === cfg && t.enemyList === roster && !t.isDestroyed &&
+      $z1KinghtFallUIGame.default.instance.ctrGame === game && game.gameData === data && game._combatEpoch === epoch; }
+    var e = this._soldierCount(game);
     var signature = this.buildInfo.cfg.Data[1] + ":" + e;
     if (signature !== this._rosterSignature) {
       this._rosterSignature = signature;
@@ -318,38 +381,25 @@ var def_KinghtFallBuildBarracks = function (t) {
       var i = o.enemyList[n];
       if (i && (n >= e || i.cfg.ID != o.buildInfo.cfg.Data[1])) {
         i && $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(i);
+        if (!current()) return false;
         o.enemyList[n] = null;
       }
       if (n < e) {
         if (o.enemyList[n]) {
-          if (i.isDead() || i._spawnPending) o._placeSoldier(i, n);
+          if (i.isDead() || i._spawnPending) { if (o._placeSoldier(i, n) === false && !current()) return false; }
           else {
-            i.setNew();
-            Navigation.prepareTerrainExit(i, $z1KinghtFallUIGame.default.instance.ctrGame, true);
+            if (i.setNew() === false || !current()) return false;
+            Navigation.prepareTerrainExit(i, game, true);
           }
         } else {
-          if (o._rosterRequests[n]) return;
-          var request = { id: o.buildInfo.cfg.Data[1] };
-          o._rosterRequests[n] = request;
-          $z1KinghtFallUIGame.default.instance.ctrGame.addSoldier(o.buildInfo.cfg.Data[1], function (e) {
-            var current = t._rosterRequests[n] === request;
-            if (current) delete t._rosterRequests[n];
-            if (!current || !cc.isValid(t, true) || !cc.isValid(t.node, true) ||
-                !t.buildInfo.cfg || t.buildInfo.cfg.Data[1] !== request.id || t.enemyList[n]) {
-              $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(e);
-            } else {
-              t.enemyList[n] = e;
-              e.setParent(t);
-              e.initBuffData();
-              t._placeSoldier(e, n);
-            }
-          });
+          o._requestSoldier(n, game);
+          if (!current()) return false;
         }
       }
     };
     var o = this;
     for (var r = 0; r < i; r++) {
-      a(r);
+      if (a(r) === false) return;
     }
     if (this.ndVideoSoldier.SolID != this.buildInfo.cfg.Data[1]) {
       this.ndVideoSoldier.SolID = this.buildInfo.cfg.Data[1];

@@ -33,16 +33,22 @@ var exp_KinghtFallInterface = function (t) {
     if (this.spAni && cc.resources) require("CharacterAppearance").bind(this, this.navigationTeam === "friendly" ? "ally" : "enemy");
   };
   _ctor.prototype.playDeath = function (done) {
-    var actor = this, token = this._deathAnimation = {}, generation = this.node._combatGeneration;
+    var actor = this, token = this._deathAnimation = {}, node = this.node, generation = node._combatGeneration;
+    var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, data = game && game.gameData, epoch = game && game._combatEpoch;
+    function current() { return actor._deathAnimation === token && !actor._isPooled && actor.node === node && cc.isValid(actor, true) && cc.isValid(node, true) && node._combatGeneration === generation &&
+      $z1KinghtFallUIGame.default.instance === ui && (!ui || cc.isValid(ui, true) && !ui.isclose && ui.ctrGame === game) && (!game || cc.isValid(game, true) && game.gameData === data && game._combatEpoch === epoch); }
     if (BattleSounds.death) BattleSounds.death(this);
+    if (!current()) return;
     require("GameToolsOverrides").cancel(this);
     var fxRenderer=this.getSpAni?this.getSpAni():this.spAni,fxJson=fxRenderer&&fxRenderer.skeletonData&&fxRenderer.skeletonData.skeletonJson;
     if(fxJson&&fxJson._fantasy&&fxJson._fantasy.effects&&fxJson._fantasy.effects.ambientAnimation)require("FantasyEffects").reset(this);
+    if (!current()) return;
     if (cc.resources) require("UnitHitFeedback").reset(this);
+    if (!current()) return;
     if (this.rigidBody) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; this.rigidBody.active = false; }
     if (this.hpctrl && this.hpctrl.node) this.hpctrl.node.active = false;
     var finish = function () {
-      if (actor._deathAnimation !== token || actor._isPooled || !cc.isValid(actor, true) || !cc.isValid(actor.node, true) || actor.node._combatGeneration !== generation || !actor.isDead()) return;
+      if (!current() || !actor.isDead()) return;
       actor._deathAnimation = null;
       done.call(actor);
     };
@@ -50,6 +56,7 @@ var exp_KinghtFallInterface = function (t) {
     var name = renderer && renderer.findAnimation && ["die", "dead1", "death"].filter(function (name) { return !!renderer.findAnimation(name); })[0];
     if (name && renderer.setTrackCompleteListener) {
       var entry = renderer.setAnimation(0, name, false);
+      if (!current() || !cc.isValid(renderer, true)) return;
       if (entry) {
         var completionQueued = false;
         renderer.setTrackCompleteListener(entry, function () {
@@ -113,9 +120,18 @@ var exp_KinghtFallInterface = function (t) {
           }
           i.node = t;
           t._statusBuffOwner = i;
+          var parent = n.ndEffect;
+          function attached() {
+            if (i.node !== t || t._statusBuffOwner !== i) return false;
+            if (!cc.isValid(t, true) || !current() || n.ndEffect !== parent || !cc.isValid(parent, true) || buffs.indexOf(i) < 0) { releaseBuffEffect(i); return false; }
+            return true;
+          }
           t.active = true;
-          t.setParent(n.ndEffect);
+          if (!attached()) return;
+          t.setParent(parent);
+          if (!attached()) return;
           t.setPosition(cc.Vec2.ZERO);
+          if (!attached()) return;
           t.getComponentInChildren(sp.Skeleton).setAnimation(0, n.isBig ? "debuff_da" : "debuff_xiao", true);
         });
     }

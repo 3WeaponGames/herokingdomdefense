@@ -301,7 +301,7 @@ test('the active effect library contains no death assets, keeps eight horse surf
   assert(!names.includes('archer-momentum-release'));assert(!names.includes('archer-momentum-draw-loop'));
   for(const id of ['skirmisher-passive-release','skirmisher-passive-hit','skirmisher-passive-charged','skirmisher-active-release','skirmisher-active-hit','skirmisher-passive-draw-loop'])assert(names.includes(id),id);
   for (const [id, item] of Object.entries(catalog.effects)) {
-    const file = path.join(root, 'assets/KinghtFallAudio', item.path + '.' + (item.format || (item.loop ? 'wav' : 'mp3')));
+    const file = path.join(root, 'assets/KinghtFallAudio', item.path + '.' + (item.format || (item.loop ? 'ogg' : 'mp3')));
     const meta = JSON.parse(fs.readFileSync(file + '.meta')); assert.equal(meta.importer, 'audio-clip'); assert(!uuids.has(meta.uuid)); uuids.add(meta.uuid); bytes += fs.statSync(file).size;
     assert(meta.duration > 0); assert(Math.abs(meta.duration - item.duration) < .1);
   }

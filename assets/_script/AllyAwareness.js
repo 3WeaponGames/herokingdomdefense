@@ -8,7 +8,7 @@ function soldiers(game) { return game.gameData.getSoldierList ? game.gameData.ge
 function enemies(game) { return game.gameData.getEnemyList ? game.gameData.getEnemyList() : game.gameData.enemyList || game.gameData.enemies || []; }
 function enemy(game, actor, expectedGeneration, list) { return !!game && !!game.gameData && alive(actor) && (expectedGeneration === undefined || generation(actor) === expectedGeneration) && (list || enemies(game)).indexOf(actor) >= 0; }
 function sightFromConfig(cfg) { var value = cfg && cfg.SightRange; return typeof value === "number" && isFinite(value) && value >= 0 ? value : DEFAULT_SIGHT; }
-function point(actor, game) { var node = actor.node; return game.ndMain && node.convertToWorldSpaceAR ? game.ndMain.convertToNodeSpaceAR(node.convertToWorldSpaceAR({ x: 0, y: 0 })) : node.getPosition(); }
+function point(actor, game) { var node = actor.node; return game.ndMain && node.convertToWorldSpaceAR ? game.ndMain.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0))) : node.getPosition(); }
 function currentGame(game) {
   var ui = require("KinghtFallUIGame").default.instance;
   return valid(game) && game.gameData && ui && ui.ctrGame === game && !ui.isclose && !ui.isPauset && (!ui.node || ui.node.activeInHierarchy !== false) && game.gameStatus === require("KinghtFallModle").KinghtFallGameStage.Fight;

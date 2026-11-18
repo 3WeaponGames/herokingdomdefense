@@ -18,7 +18,7 @@ function fixture(){
  function load(name){const context={exports:{},require:n=>modules[n],cc,Date,WeakMap,WeakSet,console,__extends(C,B){C.prototype=Object.create(B.prototype);C.prototype.constructor=C;}};vm.runInNewContext(fs.readFileSync(path.join(scripts,name+'.js'),'utf8'),context,{filename:name+'.js'});return context.exports;}
  modules.AudioMgr=load('AudioMgr');const manager=modules.AudioMgr.AudioMgr.getInstance();manager.init({});const sounds=load('BattleSounds'),voices=load('UnitVoices');modules.UnitVoices=voices;
  function finish(){while(pending.length){const request=pending.shift();request.done({path:request.file,duration:1});}}
- function method(name,file='KinghtFallGameCtrl',extra={}){const text=fs.readFileSync(path.join(scripts,file+'.js'),'utf8').replace(/\r\n/g,'\n'),start=text.indexOf('  _ctor.prototype.'+name+' = function '),end=text.indexOf('\n  };',start);assert(start>=0&&end>=0);return vm.runInNewContext('('+text.slice(text.indexOf('function ',start),end+4)+')',{cc,BattleSounds:sounds,require:n=>modules[n],$z1KinghtFallUIGame:modules.KinghtFallUIGame,...extra});}
+ function method(name,file='KinghtFallGameCtrl',extra={}){const text=fs.readFileSync(path.join(scripts,file+'.js'),'utf8').replace(/\r\n/g,'\n'),start=text.indexOf('  _ctor.prototype.'+name+' = function '),end=text.indexOf('\n  };',start);assert(start>=0&&end>=0);return vm.runInNewContext('('+text.slice(text.indexOf('function ',start),end+4)+')',{cc,BattleSounds:sounds,GameplayAdOwner:require('../../assets/_script/GameplayAdOwner'),require:n=>modules[n],$z1KinghtFallUIGame:modules.KinghtFallUIGame,...extra});}
  return {manager,sounds,voices,game,hero,data,ui,cc,modules,pending,played,released,deferred,listeners,errors,writes,finish,method};
 }
 

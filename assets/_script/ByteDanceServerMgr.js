@@ -46,6 +46,12 @@ var exp_ByteDanceServerMgr = function () {
   _ctor.prototype.getNeedSaveServer = function () {
     return this.isOpened;
   };
+  _ctor.prototype.getCloudSaveKey = function (key, clear) {
+    // Clear strips the cache prefix before saveData applies the same legacy
+    // normalization again. Expose that identity without changing dispatch.
+    key = key.replace($z1Config.GameConfig.AppCacheName, "").trim();
+    return clear ? key.replace($z1Config.GameConfig.AppCacheName, "").trim() : key;
+  };
   _ctor.prototype.clearDataByKey = function (t, e) {
     if (this.isOpened) {
       t = (t = t.replace($z1Config.GameConfig.AppCacheName, "")).trim();

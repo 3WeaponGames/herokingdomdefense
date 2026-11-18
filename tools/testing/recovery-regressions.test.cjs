@@ -174,12 +174,13 @@ function loading(options = {}) {
   };
   function node() {
     return { width: 128, height: 84, scaleX: .5, handlers: new Map(),
+      setAnchorPoint(x,y){this.anchorX=x;this.anchorY=y;},setPosition(x,y){this.x=x;this.y=y;},
       on(event, fn, target) { this.handlers.set(event, () => fn.call(target)); },
       off(event) { this.handlers.delete(event); } };
   }
   const cc = {
     Component: function () {}, Node: { EventType: { TOUCH_END: 'touch' } },
-    Label: { Overflow: { SHRINK: 2 }, HorizontalAlign: { CENTER: 1 } },
+    Label: { Overflow: { SHRINK: 2 }, HorizontalAlign: { CENTER: 1 }, VerticalAlign: { CENTER: 1 } },
     _decorator: { ccclass: x => x, property: () => () => {} },
     isValid: x => !!x && !x.destroyed, winSize: { width: 750 },
     director: { preloadScene() {}, loadScene(name, done) { state.sceneCalls.push({ name, done }); return true; } }
@@ -197,6 +198,7 @@ function loading(options = {}) {
   const component = new Loading();
   component.node = node();
   component.labPro = { node: node(), string: '0%', overflow: 0, horizontalAlign: 0 };
+  component.progressBar={fillRange:0,node:{parent:{x:0,y:0}}};
   component.loadLogo = () => state.logos++;
   component.startGame = () => state.started++;
   component.onLoad();
@@ -212,7 +214,7 @@ test('catalog failure offers an accessible retry before translations are availab
   h.language.ready = true;
   h.component.labPro.node.handlers.get('touch')();
   assert.equal(h.state.started, 1);
-  assert.equal(h.state.logos, 1);
+  assert.equal(h.state.logos, 0,'StartupPresentation owns the title artwork');
   assert.equal(h.component.labPro.node.width, 128);
   h.component.node.handlers.get('touch')();
   assert.equal(h.state.started, 1);

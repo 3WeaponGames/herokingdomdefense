@@ -233,7 +233,7 @@ exports.effects = {
   },
   "impact-bruiser-basic": {
     "path": "sfx/impact-bruiser-basic",
-    "format": "wav",
+    "format": "ogg",
     "group": "combat",
     "gain": 0.5,
     "cooldown": 65,
@@ -242,7 +242,7 @@ exports.effects = {
   },
   "critical-hit": {
     "path": "sfx/critical-hit",
-    "format": "wav",
+    "format": "ogg",
     "group": "combat",
     "gain": 0.5,
     "cooldown": 65,
@@ -403,7 +403,7 @@ exports.effects = {
   },
   "boss-arrival": {
     "path": "sfx/boss-arrival",
-    "format": "wav",
+    "format": "ogg",
     "group": "signal",
     "gain": 0.65,
     "cooldown": 5000,

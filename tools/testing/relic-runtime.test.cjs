@@ -93,12 +93,9 @@ test('a failed wave-end checkpoint holds progression and retries without duplica
  assert.equal(Runtime.retry(data,1),false);assert.equal(attempts,2);
  h.state.failKeys.clear();
  // Exercise the real game-update retry integration as well as the held end.
- const update=runtimeMethod('KinghtFallGameCtrl','onUpdate',{
-  require:name=>Runtime,Navigation:{beginFrame(){}},GameToolsOverrides:{tick(){}},
-  $z1KinghtFallModle:{KinghtFallGameStage:{Prepare:0,Fight:1}}
- });
+ const integration=require('./backend-gameplay-harness.cjs').setup({RelicRuntime:Runtime}),controller=integration.g;
  data.getBulidList=()=>[];data.getSoldierList=()=>[];
- update.call({gameData:data,gameStatus:99,ctrPlay:{doMove(){}},collectFollowers(){}},1);
+ Object.assign(controller,{gameData:data,gameStatus:99,ctrPlay:{doMove(){}},collectFollowers(){}});controller.onUpdate(1);
  assert.equal(attempts,3);assert.equal(data._relicRoundCommitPending,undefined);assert.equal(data._relicSavePending,undefined);
  assert.equal(hero.hp,50);assert.equal(soldier.hp,50);assert.equal(house.buildInfo.hpMax,104);assert.equal(data.coin,15);
  assert.deepEqual(achievements,[[11,5]]);assert.deepEqual(passes,[[1,3]]);assert.deepEqual(events,[['round-end']]);

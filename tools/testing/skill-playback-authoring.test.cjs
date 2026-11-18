@@ -29,7 +29,7 @@ test('playback controls are saved numeric fields, while native contact sequences
 
 test('playback edits stay in drafts, save to both mirrors without touching timing tables, and reset to inheritance',t=>{
   const f=fixture(t),before=f.bytes(),initial=f.service.snapshot();
-  const fields=[['fighter','visual.animationPlayback',.65],['fighter','visual.castPlaybackRate',.75],['guardian','visual.shieldPlaybackRate',1.4],['mystic','visual.beamPlaybackRate',.5],['bruiser','visual.passivePlaybackRate',1.5],['fighter','visual.resourcePlaybackRate',.8],['mystic','visual.impactPlaybackRate',1.25]];
+  const fields=[['fighter','visual.animationPlayback',.65],['fighter','visual.castPlaybackRate',.75],['guardian','visual.shieldPlaybackRate',1.4],['mystic','visual.animationPlayback',.5],['bruiser','visual.passivePlaybackRate',1.5],['fighter','visual.resourcePlaybackRate',.8],['mystic','visual.impactPlaybackRate',1.25]];
   for(const [style,field,value]of fields)f.service.change(f.req({style,path:field,value}));assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);assert.equal(f.service.save(f.req()).result.saved,true);assert.equal(f.commits(),1);
   const after=f.bytes().map(JSON.parse);for(const [index,data]of after.entries()){for(const [style,field,value]of fields)assert.equal(Settings.get(data.HeroSkills[style],field),value);assert.deepEqual(data.GameTools,JSON.parse(before[index]).GameTools);assert.deepEqual(data.independent,{index});assert.equal(data.HeroSkills.fighter.extension,index?'mirror':'primary');assert.deepEqual(data.HeroSkills.fighter.visual.futureAuthoring,{keep:index});}
   const saved=f.bytes();assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),saved);assert.equal(f.commits(),1);

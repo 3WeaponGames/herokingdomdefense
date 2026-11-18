@@ -142,7 +142,12 @@ function notice(h, stage) {
 }
 
 test('Continue notice names the selected saved stage and wave, even when another stage was last active', () => {
-  const h = seed(), ui = notice(h, 5);
+  const h = seed();
+  // The storage-isolation fixtures use arbitrary perk IDs. The Continue UI
+  // additionally requires the selected stage's saved content to still exist.
+  h.player.gameData.setCheckpoint({ ...h.player.gameData.getCheckpoint(5), buffList: [] });
+  h.player.gameData.activateStage(3);
+  const ui = notice(h, 5);
   assert.deepEqual(clone(ui.bindings[0].slice(1)), ['ui.layout.kinghtfalluinewgame.13', [5, 6]]);
   ui.ctrl.btnContinue.click(); ui.ctrl.btnContinue.click(); ui.ctrl.btnBreak.click();
   assert.equal(ui.state.entered, 1); assert.equal(ui.state.closed, 1);

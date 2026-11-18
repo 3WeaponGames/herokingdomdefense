@@ -95,6 +95,11 @@ var def_KinghtFallUIOnlineReward = function (t) {
   };
   _ctor.prototype.initListItem = function (t, e) {
     var n = this;
+    var binding = t._itemGoodBinding = (t._itemGoodBinding || 0) + 1, generation = this._resourceGeneration;
+    function current(slot) {
+      return !n.isclose && generation === n._resourceGeneration && t._itemGoodBinding === binding &&
+        (!cc.isValid || cc.isValid(n, true) && cc.isValid(t, true) && cc.isValid(slot, true));
+    }
     t.active = true;
     var i = this.cfgList[e];
     var a = t.getChildByName("ndItem");
@@ -107,18 +112,20 @@ var def_KinghtFallUIOnlineReward = function (t) {
       o.initView(r);
     } else {
       var s = function (t) {
+        if (!current(a)) return;
+        o = t.getComponent($z1KinghtFallItemGood.default);
+        a.ItemGood = o;
         t.setParent(a);
         t.active = true;
         t.setScale(1);
-        o = t.getComponent($z1KinghtFallItemGood.default);
-        a.ItemGood = o;
-        o.initView(r);
+        if (current(a) && a.ItemGood === o) o.initView(r);
       };
       var u = $z1PoolMgr.PoolMgr.getInstance().getNode($z1KinghtFallConfig.KinghtFallPoolName.ItemGood);
       if (u) {
         s(u);
       } else {
         this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconGood, $z1KinghtFallConfig.KinghtFallPrefabName.ItemGood, function (t) {
+          if (!current(a) || a.ItemGood) return;
           u = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab($z1KinghtFallConfig.KinghtFallPoolName.ItemGood, t, 10);
           s(u);
         });

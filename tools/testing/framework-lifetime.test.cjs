@@ -271,6 +271,7 @@ test('battle retry and building branch handlers resolve exactly one choice', () 
     row.getChildByName = () => ({ getComponent: () => ({}) }); rows.push(row); return row;
   };
   h.load('BuildingCost');
+  h.load('KinghtFallEnum');
   const Branch = h.load('KinghtFallUIBuildSel').default, branch = new Branch(), chosen = [];
   h.modules.KinghtFallConfig.KinghtFallBundelName = { IconBuild: 'build' };
   branch.onOpened(); branch.ndItem = {}; branch.ndParent = {getComponent:()=>null,setContentSize(){},setPosition(){}}; branch.loadSpriteFrame = () => {}; branch.T = value => value;

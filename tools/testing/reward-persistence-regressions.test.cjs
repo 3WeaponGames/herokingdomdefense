@@ -10,7 +10,7 @@ const clone = value => JSON.parse(JSON.stringify(value));
 
 function harness(saved = {}) {
   const storage = clone(saved);
-  const state = { writes: 0, crashAfter: Infinity, adCalls: 0, closed: 0, selected: 120001, randomCalls: 0 };
+  const state = { writes: 0, crashAfter: Infinity, adCalls: 0, closed: 0, selected: 120001, randomCalls: 0, retryTimers: new Map(), earnedErrors: [] };
   const modules = {};
   const singleton = object => ({ getInstance: () => object });
   function Base() {}
@@ -41,6 +41,10 @@ function harness(saved = {}) {
     saveData: (key, value) => { storage[key] = value; state.writes++; if (state.writes === state.crashAfter) throw Error('simulated process interruption'); return true; }
   } };
   modules.BaseUI = modules.BaseCtrl = { default: Base };
+  const earnedContext = { exports: {}, cc: { isValid: value => !!value && !value.destroyed }, console: { error: (...args) => state.earnedErrors.push(args) },
+    setInterval: callback => { const id = Symbol(); state.retryTimers.set(id, callback); return id; }, clearInterval: id => state.retryTimers.delete(id) };
+  vm.runInNewContext(fs.readFileSync(path.join(scriptRoot, 'GlobalAdReward.js'), 'utf8'), earnedContext);
+  modules.GlobalAdReward = earnedContext.exports;
   modules.Config = { GameConfig: { AppCacheName: 'test' }, UIID: {} };
   modules.KinghtFallConfig = { KinghtFallParameter: { AppCacheName: 'kinght' }, KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {} };
   modules.KinghtFallEnum = load('KinghtFallEnum');
@@ -56,7 +60,8 @@ function harness(saved = {}) {
   };
   modules.KinghtFallDataMgr = { KinghtFallDataMgr: singleton(dataMgr) };
   modules.Utils = { Utils: { weight_rand: () => ({ id: state.selected }) } };
-  modules.UIMgr = { UIMgr: singleton({ closeById: () => state.closed++, openUI: (a, b, rewards) => state.displayed = rewards }) };
+  let battleUI;
+  modules.UIMgr = { UIMgr: singleton({ getUIById: id => id === 99 ? battleUI : null, closeUI: () => { state.closed++; battleUI.isclose = true; }, closeById: () => state.closed++, openUI: (a, b, rewards) => state.displayed = rewards }) };
   modules.PlayerMgr = { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) };
   modules.GameTrackDataEvent = { TrackId: {} };
   modules.SdkMgr = { AdType: {}, SdkMgr: singleton({ playVideo: (type, success, fail) => { state.adCalls++; state.adSuccess = success; state.adFail = fail; } }) };
@@ -72,12 +77,14 @@ function harness(saved = {}) {
   }
   player.missionData.data.taskInfo = { id: 1, type: 0, num: 0, stage: 0 };
   const controller = { gameData: { levelCfg: { Level: 1, WaveCfg: [{ WaveReward: [[2001, 125], [2004, 50]] }] }, round: 1 }, gameTag: {} };
+  battleUI = { node: { activeInHierarchy: true }, ctrGame: controller, _resourceGeneration: 1, isclose: false };
   modules.KinghtFallUIGame = { default: { instance: { ctrGame: controller } } };
   function screen(win = true) {
     const UI = load('KinghtFallUIGameEnd').default;
     const ui = new UI();
     const node = () => { const n = {}; n.on = (event, fn) => { n.click = fn; }; return n; };
-    Object.assign(ui, { isWin: win, closeUI: () => state.closed++, ndReward: { init() {} },
+    Object.assign(ui, { isWin: win, isclose: false, node: { activeInHierarchy: true }, _resourceGeneration: 1, fromId: 99,
+      closeUI() { this.isclose = true; state.closed++; }, ndReward: { init() {} },
       btnBreak: node(), btnVideo: node(), btnNewGame: node(), spAni: { setAnimation() { return {}; }, addAnimation() {}, setTrackCompleteListener() {} } });
     return ui;
   }
@@ -153,7 +160,9 @@ test('interrupted double reward replays each target record without duplicating b
   for (let step = 1; step <= 4; step++) {
     const h = harness(), ui = h.screen(); ui.start(); ui.btnVideo.click();
     h.state.crashAfter = h.state.writes + step;
-    assert.throws(() => h.state.adSuccess(), /interruption/);
+    h.state.adSuccess();
+    assert.equal(h.state.retryTimers.size, 1, 'An earned interrupted settlement remains retryable without another SDK offer');
+    assert.equal(h.state.earnedErrors.length, 1);
     const restored = harness(h.storage); restored.player.gameData.initData(); restored.player.gameData.initData();
     verifyBase(restored, true, 2);
   }

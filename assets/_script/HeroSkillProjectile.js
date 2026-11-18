@@ -77,6 +77,20 @@ function containsArea(shape,target){
   if(width>0&&half<Math.PI/2){if(along< -1e-7)return false;var end=r*Math.cos(half);return along>=end||across<=Math.min(r,width/2)+(r*Math.sin(half)-Math.min(r,width/2))*along/end+1e-7;}
   return squared<=1e-14||along/Math.sqrt(squared)>=Math.cos(half)-1e-9;
 }
+// A hit scan uses one captured area for every candidate. Resolve its basis and
+// curved rear edge once rather than normalizing and evaluating trigonometry for
+// every enemy. Callers create a new query for each moving Vanguard strike.
+function areaQuery(shape){
+  var ox=shape.origin.x,oy=shape.origin.y,r=shape.radius,squaredRadius=r*r,d=unit(shape.direction),dx=d.x,dy=d.y;
+  var half=finite(shape.halfAngle,Math.PI),width=Math.max(0,finite(shape.startWidth)),rear=width>0&&half<Math.PI/2;
+  var cosine=Math.cos(half),end=r*cosine,start=Math.min(r,width/2),span=rear?r*Math.sin(half)-start:0;
+  return function(target){
+    var x=target.x-ox,y=target.y-oy,squared=x*x+y*y;if(squared>squaredRadius+1e-7)return false;
+    var along=x*dx+y*dy;
+    if(rear){if(along< -1e-7)return false;return along>=end||Math.abs(x*-dy+y*dx)<=start+span*along/end+1e-7;}
+    return squared<=1e-14||along/Math.sqrt(squared)>=cosine-1e-9;
+  };
+}
 function volleyArea(origin,direction,tuning,visual){
   tuning=tuning||{};visual=visual||{};
   return area('skirmisher',origin,{offsetX:visual.offsetX,offsetY:visual.offsetY,rotation:visual.rotation,arcDegrees:finite(visual.arcDegrees,16),arcStartWidth:visual.arcStartWidth,scale:1},direction,Math.max(0,finite(tuning.volleyRange,250)));
@@ -88,4 +102,5 @@ exports.visualPoint=point;exports.damagePoint=point;
 exports.facingTransform=facingTransform;
 exports.facingOffset=facingOffset;exports.areaOrigin=areaOrigin;exports.areaDirection=areaDirection;
 exports.containsArea=containsArea;
+exports.areaQuery=areaQuery;
 exports.volleyArea=volleyArea;

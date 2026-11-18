@@ -15,6 +15,7 @@ var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallItemGood = require("KinghtFallItemGood");
+var EarnedAds = require("GlobalAdReward");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -111,6 +112,11 @@ var def_KinghtFallUIPassport = function (t) {
   };
   _ctor.prototype.initItemView = function (t, e) {
     var n = this;
+    var binding = t._itemGoodBinding = (t._itemGoodBinding || 0) + 1, generation = this._resourceGeneration;
+    function current(slot) {
+      return !n.isclose && generation === n._resourceGeneration && t._itemGoodBinding === binding &&
+        (!cc.isValid || cc.isValid(n, true) && cc.isValid(t, true) && cc.isValid(slot, true));
+    }
     t.active = true;
     var i = t.getChildByName("ndLeft");
     var a = t.getChildByName("ndRight");
@@ -138,18 +144,20 @@ var def_KinghtFallUIPassport = function (t) {
       y.initView(v);
     } else {
       var _ = function (t) {
+        if (!current(d)) return;
+        y = t.getComponent($z1KinghtFallItemGood.default);
+        d.ItemGood = y;
         t.setParent(d);
         t.active = true;
         t.setScale(1);
-        y = t.getComponent($z1KinghtFallItemGood.default);
-        d.ItemGood = y;
-        y.initView(v);
+        if (current(d) && d.ItemGood === y) y.initView(v);
       };
       var I = $z1PoolMgr.PoolMgr.getInstance().getNode($z1KinghtFallConfig.KinghtFallPoolName.ItemGood);
       if (I) {
         _(I);
       } else {
         this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconGood, $z1KinghtFallConfig.KinghtFallPrefabName.ItemGood, function (t) {
+          if (!current(d) || d.ItemGood) return;
           I = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab($z1KinghtFallConfig.KinghtFallPoolName.ItemGood, t, 10);
           _(I);
         });
@@ -184,18 +192,20 @@ var def_KinghtFallUIPassport = function (t) {
       A.initView(D);
     } else {
       var M = function (t) {
+        if (!current(C)) return;
+        A = t.getComponent($z1KinghtFallItemGood.default);
+        C.ItemGood = A;
         t.setParent(C);
         t.active = true;
         t.setScale(1);
-        A = t.getComponent($z1KinghtFallItemGood.default);
-        C.ItemGood = A;
-        A.initView(D);
+        if (current(C) && C.ItemGood === A) A.initView(D);
       };
       var T = $z1PoolMgr.PoolMgr.getInstance().getNode($z1KinghtFallConfig.KinghtFallPoolName.ItemGood);
       if (T) {
         M(T);
       } else {
         this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconGood, $z1KinghtFallConfig.KinghtFallPrefabName.ItemGood, function (t) {
+          if (!current(C) || C.ItemGood) return;
           T = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab($z1KinghtFallConfig.KinghtFallPoolName.ItemGood, t, 10);
           M(T);
         });
@@ -211,20 +221,21 @@ var def_KinghtFallUIPassport = function (t) {
         b.active = false, F.active = true;
       } else {
         b.active = true, F.active = false, a.on(cc.Node.EventType.TOUCH_END, function () {
-          if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getAchReward(r.ID) & 2) return;
-          var granted = false;
-          $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-            if (granted || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getAchReward(r.ID) & 2) return;
-            granted = true;
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.token_better_X, r.ID);
+          var key = "_passAdReward:" + r.ID, pending = EarnedAds.get(n, key);
+          if (pending) { pending.retry(); return; }
+          var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), mission = player.getMissionData(), id = r.ID;
+          if (mission.getAchReward(id) & 2) return;
+          var reward = EarnedAds.clone(D), position = EarnedAds.point(a.convertToWorldSpaceAR(C.position)), stage = player.getUserData().getMaxStage(), tracked = false;
+          var request = EarnedAds.create(n, key, player, function () {
+            if (mission.getAchReward(id) & 2) return { done: true, show: false };
+            if (!tracked) { tracked = true;
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.token_better_X, id);
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.token);
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_talent_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-            var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
-            player.claimRewards([D], 1, a.convertToWorldSpaceAR(C.position), function () {
-              player.getMissionData().setAchReward(r.ID, 2);
-            }, function () { return !(player.getMissionData().getAchReward(r.ID) & 2); });
-            n.initView();
-          }, null, "home.pass.premium");
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_talent_Y, stage); }
+            var granted = player.claimRewards([reward], 1, position, function () { mission.setAchReward(id, 2); }, function () { return !(mission.getAchReward(id) & 2); });
+            return granted || mission.getAchReward(id) & 2 ? { done: true } : false;
+          }, function () { n.initView(); });
+          if (request) $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, request.earn, request.cancel, "home.pass.premium");
         });
       }
       P.active = false;
