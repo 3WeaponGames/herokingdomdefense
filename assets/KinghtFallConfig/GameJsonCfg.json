@@ -17494,7 +17494,7 @@
     {
       "Level": 1,
       "Name": "[[loc:data.levelcfg.1.name]]",
-      "Map": "Generated/Maps/map-original-01-rebuilt/thumbnail",
+      "Map": "Generated/Maps/map-c51330f0e65d/thumbnail",
       "EnemyAni": "wqyl_bb",
       "prefab": "Generated/Stages/A-1",
       "InGameCoefficient": 1,
@@ -17507,10 +17507,6 @@
         3
       ],
       "HomeLevel1Unlock": [
-        [
-          4,
-          9
-        ],
         [
           4,
           10
@@ -17544,6 +17540,10 @@
         [
           4,
           21
+        ],
+        [
+          4,
+          11
         ]
       ],
       "HomeLevel3Unlock": [
@@ -17552,16 +17552,12 @@
           8
         ],
         [
-          4,
-          11
+          6,
+          22
         ],
         [
           4,
           12
-        ],
-        [
-          6,
-          22
         ]
       ],
       "ChallengeReward": [
@@ -18176,10 +18172,10 @@
           ]
         }
       ],
-      "EnvironmentMapId": "map-original-01-rebuilt",
+      "EnvironmentMapId": "map-c51330f0e65d",
       "EnvironmentBiome": "forest",
       "StageLayoutId": "A-1",
-      "StageThumbnail": "Thumbnails/default-1",
+      "StageThumbnail": "Thumbnails/biome-forest",
       "StageFaceUnit": 91037
     },
     {
