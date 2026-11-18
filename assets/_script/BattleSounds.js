@@ -78,6 +78,13 @@ function warm(state, id, allowMuted) {
   var entry = entries[id]; if (!entry || !allowMuted && !audible(state)) return;
   try { state.manager.loadClip("KinghtFallAudio", entry.path, entry.path, function () {}); } catch (error) {}
 }
+function warmMovement(state, surface) {
+  if (state.movementBiome === surface) return;
+  state.movementBiome = surface;
+  // Prepare the current surface before the first short movement, including
+  // while effects are muted. Loading alone never starts a movement loop.
+  warm(state, "hooves-" + surface + "-loop", true);
+}
 function effect(id, owner, options) {
   options = options || {};
   var entry = entries && entries[id], state = context(owner, options);
@@ -261,6 +268,9 @@ function start(game) {
   if (game._battleSounds) dispose(game);
   var state = game._battleSounds = makeState(game);
   if (!current(state)) { dispose(game); return false; }
+  warmMovement(state, biome(game));
+  var hero = game.ctrPlay, position = point(hero);
+  if (position) state.positions.set(hero, { x: position.x, y: position.y, generation: hero.node._combatGeneration });
   ["bow-arrow-release", "impact-flesh-light", "arrow-impact-flesh", "wave-start-horn", "wave-clear", "boss-arrival"].forEach(function (id) { warm(state, id); });
   // Loading does not play audio. Decode even while muted so the first shot
   // after enabling effects can start on its gameplay event without cold I/O.
@@ -271,8 +281,10 @@ function tick(game) {
   var state = game && game._battleSounds;
   if (!state) return;
   if (!current(state)) { dispose(game); return; }
+  var surface = biome(game);
+  warmMovement(state, surface);
   if (!audible(state) || paused(state)) { stopAll(state); state.positions = new WeakMap(); return; }
-  var surface = biome(game), horse = false, foot = null, flying = false;
+  var horse = false, heroMoving = false, foot = null, flying = false;
   var hero = game.ctrPlay, center = point(hero), data = game.gameData;
   if (!center) { stopAll(state); state.positions = new WeakMap(); return; }
   var actors = [hero].concat(data.getSoldierList ? data.getSoldierList() : [], data.getEnemyList ? data.getEnemyList() : []);
@@ -284,13 +296,16 @@ function tick(game) {
     var dx = position.x - center.x, dy = position.y - center.y;
     if (dx * dx + dy * dy > 850 * 850) return;
     var friendly = actor === hero || actor._relicSoldier || actor.navigationTeam === "friendly";
-    if (actor === hero || friendly && Number(actor.cfg && actor.cfg.ID) === 90004) horse = true;
+    if (actor === hero) { horse = true; heroMoving = true; }
+    else if (friendly && Number(actor.cfg && actor.cfg.ID) === 90004) horse = true;
     else if (friendly) { if (Number(actor.cfg && actor.cfg.ID) === 90002) foot = "footsteps-heavy-infantry-loop"; else if (!foot) foot = "footsteps-infantry-loop"; }
     else if (family(actor) === "flying") flying = true;
   });
   var ambient = "ambience-" + surface + "-loop";
   loop(state, "ambience", entries[ambient] ? ambient : null, .5);
-  loop(state, "horse", horse ? "hooves-" + surface + "-loop" : null, .45);
+  // Keep the player's own mount in the foreground without making the shared
+  // nearby cavalry loop louder or allocating a second overlapping horse loop.
+  loop(state, "horse", horse ? "hooves-" + surface + "-loop" : null, heroMoving ? .65 : .45);
   loop(state, "foot", foot, .16);
   loop(state, "flying", flying ? "movement-flying-loop" : null, .12);
   charge(hero,!!(hero._styleRuntime&&hero._styleRuntime.bowCharging));

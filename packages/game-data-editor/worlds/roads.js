@@ -171,8 +171,11 @@ function coverageTiles(ctx,strokes,brush,result,patches){
  var pixels=out.getImageData(0,0,output.width,output.height);for(var i=0;i<pixels.data.length;i+=4){pixels.data[i+3]=pixels.data[i];pixels.data[i]=pixels.data[i+1]=pixels.data[i+2]=255;}out.putImageData(pixels,0,0);
  ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(output,0,0);ctx.restore();tile.width=tile.height=output.width=output.height=1;
 }
-function renderBatch(ctx,strokes,images,brush,options){
- if(!ready(images[strokes[0].assetId]))return;var result=raster(strokes,images,brush);if(!result)return;
+function renderBatch(ctx,strokes,images,brush,options,fieldCuts){
+ // Field paint defines a new contour, while its normal later paint operation
+ // supplies coverage exactly once. Erasing road coverage here as well would
+ // apply partial opacity twice and expose the foundation through the mixture.
+ if(!ready(images[strokes[0].assetId]))return;var result=raster(fieldCuts&&fieldCuts.length?strokes.concat(fieldCuts):strokes,images,brush);if(!result)return;
  function drawMask(context,records,patches){if(options&&options.canonicalCoverage)return coverageTiles(context,records,brush,result,patches);coverage(context,records,brush);if(patches)patchCoverage(context,result);}
  var t=ctx.getTransform(),corners=[[result.left,result.top],[result.right,result.top],[result.left,result.bottom],[result.right,result.bottom]].map(function(p){return [t.a*p[0]+t.c*p[1]+t.e,t.b*p[0]+t.d*p[1]+t.f];}),left=Math.max(0,Math.floor(Math.min.apply(null,corners.map(function(p){return p[0];})))-1),right=Math.min(ctx.canvas.width,Math.ceil(Math.max.apply(null,corners.map(function(p){return p[0];})))+1),top=Math.max(0,Math.floor(Math.min.apply(null,corners.map(function(p){return p[1];})))-1),bottom=Math.min(ctx.canvas.height,Math.ceil(Math.max.apply(null,corners.map(function(p){return p[1];})))+1);if(right<=left||bottom<=top)return;
  var painted=canvas(right-left,bottom-top),mask=canvas(right-left,bottom-top),p=painted.getContext('2d'),m=mask.getContext('2d');
@@ -180,7 +183,26 @@ function renderBatch(ctx,strokes,images,brush,options){
  p.setTransform(t.a,t.b,t.c,t.d,t.e-left,t.f-top);p.translate(result.left,result.top);p.scale(1/result.scale,-1/result.scale);p.drawImage(result.canvas,0,0);m.setTransform(t.a,t.b,t.c,t.d,t.e-left,t.f-top);drawMask(m,strokes,true);p.setTransform(1,0,0,1,0,0);p.globalCompositeOperation='destination-in';p.drawImage(mask,0,0);ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=strokes[0].opacity===undefined?1:strokes[0].opacity;ctx.drawImage(painted,left,top);ctx.restore();
 }
 function live(ctx,s,images){var source=images[s.assetId];if(!ready(source))return;var tiling=s.textureScale||1;ctx.save();ctx.scale(tiling,-tiling);ctx.globalAlpha=s.opacity===undefined?1:s.opacity;ctx.fillStyle=ctx.strokeStyle=ctx.createPattern(source.image,'repeat');ctx.lineWidth=s.size/tiling;ctx.lineCap=ctx.lineJoin='round';ctx.beginPath();for(var i=0;i<s.points.length;i++){var p=s.points[i];i?ctx.lineTo(p.x/tiling,-p.y/tiling):ctx.moveTo(p.x/tiling,-p.y/tiling);}if(s.points.length===1){var p=s.points[0];ctx.arc(p.x/tiling,-p.y/tiling,s.size/tiling/2,0,Math.PI*2);ctx.fill();}else ctx.stroke();ctx.restore();}
-function render(ctx,strokes,images,brush,options){var batch=[],key=null;function flush(){if(batch.length)renderBatch(ctx,batch,images,brush,options);batch=[];key=null;}for(var stroke of strokes){if(stroke.preview){flush();if(stroke.mode==='road'&&stroke.op!=='erase')live(ctx,stroke,images);else brush(ctx,stroke,images);continue;}if(stroke.mode==='road'&&stroke.op!=='erase'){var next=material(stroke);if(key!==null&&key!==next)flush();batch.push(stroke);key=next;}else if(stroke.op==='erase'&&batch.length){batch.push(stroke);}else{flush();brush(ctx,stroke,images);}}flush();}
+function fieldCut(stroke,images){
+ if(stroke.mode==='road'||stroke.op==='erase'||stroke.roadCutout===false||stroke.opacity===0)return false;
+ var source=images[stroke.assetId],role=source&&(source.terrainRole||(source.category==='field'?'field':null));
+ return ready(source)&&(stroke.roadCutout===true||role==='field');
+}
+function render(ctx,strokes,images,brush,options){
+ var batch=[],key=null;
+ function flush(after){
+  if(batch.length){var cuts=[];for(var i=after;i<strokes.length;i++)if(fieldCut(strokes[i],images))cuts.push(Object.assign({},strokes[i],{op:'erase'}));renderBatch(ctx,batch,images,brush,options,cuts);}
+  batch=[];key=null;
+ }
+ for(var i=0;i<strokes.length;i++){
+  var stroke=strokes[i];
+  if(stroke.preview){flush(i);if(stroke.mode==='road'&&stroke.op!=='erase')live(ctx,stroke,images);else brush(ctx,stroke,images);continue;}
+  if(stroke.mode==='road'&&stroke.op!=='erase'){var next=material(stroke);if(key!==null&&key!==next)flush(i);batch.push(stroke);key=next;}
+  else if(stroke.op==='erase'&&batch.length)batch.push(stroke);
+  else{flush(i);brush(ctx,stroke,images);}
+ }
+ flush(strokes.length);
+}
 function clear(){cache.clear();bytes=0;borders=new WeakMap();sourceIds=new WeakMap();sourceSerial=0;}
 return {render:render,assets:assets,clear:clear,stats:function(){return {builds:builds,bytes:bytes,entries:cache.size,fillets:Array.from(cache.values()).reduce(function(n,r){return n+r.patches.length;},0)};},simplifyRing:simplifyRing};
 }));

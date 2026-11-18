@@ -4,11 +4,77 @@
   "importer": "sprite-atlas",
   "rawTextureUuid": "91361446-8930-493a-a1f5-6e0f4582cadb",
   "size": {
-    "width": 284,
-    "height": 800
+    "width": 2044,
+    "height": 1434
   },
   "type": "Texture Packer",
   "subMetas": {
+    "masked-object-403-0-0": {
+      "ver": "1.0.6",
+      "uuid": "9f6170ef-c5a8-4d08-ad20-87433a40af38",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "91361446-8930-493a-a1f5-6e0f4582cadb",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1250,
+      "height": 1102,
+      "rawWidth": 1250,
+      "rawHeight": 1102,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
+    "masked-object-405-0-0": {
+      "ver": "1.0.6",
+      "uuid": "bf307049-23db-41fb-a90f-fd99bfc96971",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "91361446-8930-493a-a1f5-6e0f4582cadb",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 1108,
+      "width": 926,
+      "height": 324,
+      "rawWidth": 926,
+      "rawHeight": 324,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
+    "masked-object-406-0-0": {
+      "ver": "1.0.6",
+      "uuid": "2ff71e13-e66b-4803-a76f-1319fca4c2af",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "91361446-8930-493a-a1f5-6e0f4582cadb",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 932,
+      "trimY": 1108,
+      "width": 872,
+      "height": 314,
+      "rawWidth": 872,
+      "rawHeight": 314,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
     "native-env-eee349f60eee28b44b9d87fb05517e69-0-0": {
       "ver": "1.0.6",
       "uuid": "589c58db-dd9d-4abd-a912-75ac8515baae",
@@ -19,8 +85,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 122,
-      "trimY": 322,
+      "trimX": 1942,
+      "trimY": 2,
       "width": 89,
       "height": 136,
       "rawWidth": 89,
@@ -29,7 +95,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-72ca62082ad5c904ca885d84cd91e8ff-0-0": {
@@ -42,8 +107,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 136,
-      "trimY": 2,
+      "trimX": 1960,
+      "trimY": 251,
       "width": 81,
       "height": 118,
       "rawWidth": 81,
@@ -52,7 +117,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-f067bd76916d39b4ca67fd05888d0cd7-0-0": {
@@ -65,8 +129,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 136,
-      "trimY": 124,
+      "trimX": 1960,
+      "trimY": 373,
       "width": 77,
       "height": 99,
       "rawWidth": 77,
@@ -75,7 +139,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-dd10ab534afb4fa41875bea7f0150143-0-0": {
@@ -88,7 +151,7 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 2,
+      "trimX": 1808,
       "trimY": 623,
       "width": 148,
       "height": 175,
@@ -98,7 +161,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-172264f016e663649bbf743f6efd0db0-0-0": {
@@ -111,7 +173,7 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 2,
+      "trimX": 1808,
       "trimY": 322,
       "width": 116,
       "height": 297,
@@ -121,7 +183,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-43ffaaa6ddb21e740838a8bfce941396-0-0": {
@@ -134,8 +195,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 122,
-      "trimY": 462,
+      "trimX": 1942,
+      "trimY": 142,
       "width": 92,
       "height": 105,
       "rawWidth": 92,
@@ -144,7 +205,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-ae247b161e7da99468abfb5fac7bb545-0-0": {
@@ -157,8 +217,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 215,
-      "trimY": 227,
+      "trimX": 1960,
+      "trimY": 476,
       "width": 45,
       "height": 92,
       "rawWidth": 45,
@@ -167,7 +227,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-07b8b164cf5403844ae3da29fb1a9404-0-0": {
@@ -180,7 +239,7 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 2,
+      "trimX": 1808,
       "trimY": 2,
       "width": 130,
       "height": 316,
@@ -190,7 +249,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-45c9fdf5f49a64b4498d5ab1c4d008f0-0-0": {
@@ -203,8 +261,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 136,
-      "trimY": 227,
+      "trimX": 1960,
+      "trimY": 572,
       "width": 63,
       "height": 64,
       "rawWidth": 63,
@@ -213,7 +271,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-b130887dde5dfed45af656f9c02c654d-0-0": {
@@ -226,8 +283,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 217,
-      "trimY": 185,
+      "trimX": 1960,
+      "trimY": 790,
       "width": 41,
       "height": 15,
       "rawWidth": 41,
@@ -236,7 +293,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-2e76b17d58bc3e64b80134ab16c2d831-0-0": {
@@ -249,8 +305,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 122,
-      "trimY": 571,
+      "trimX": 1960,
+      "trimY": 701,
       "width": 77,
       "height": 40,
       "rawWidth": 77,
@@ -259,7 +315,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-477847caba3b8d04bb01e1b3edac8e80-0-0": {
@@ -272,8 +327,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 136,
-      "trimY": 295,
+      "trimX": 2009,
+      "trimY": 476,
       "width": 33,
       "height": 21,
       "rawWidth": 33,
@@ -282,7 +337,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-71a6ca1b66908f042986f10564e6a32d-0-0": {
@@ -295,8 +349,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 217,
-      "trimY": 204,
+      "trimX": 2009,
+      "trimY": 501,
       "width": 29,
       "height": 15,
       "rawWidth": 29,
@@ -305,7 +359,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-daa4a3a86f96f1542ab7ce822547914d-0-0": {
@@ -318,8 +371,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 217,
-      "trimY": 124,
+      "trimX": 1960,
+      "trimY": 640,
       "width": 65,
       "height": 57,
       "rawWidth": 65,
@@ -328,7 +381,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-c57d3910e4223c54fa1e272e60074dc9-0-0": {
@@ -341,8 +393,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 221,
-      "trimY": 2,
+      "trimX": 1960,
+      "trimY": 745,
       "width": 61,
       "height": 41,
       "rawWidth": 61,
@@ -351,7 +403,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     }
   }

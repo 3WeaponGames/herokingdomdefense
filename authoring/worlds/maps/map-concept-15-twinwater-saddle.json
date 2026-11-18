@@ -260,45 +260,328 @@
     "grass": {
       "strokes": []
     },
-    "custom": [
-      {
-        "id": "ground-1",
-        "name": "Concept terrain - Ice",
-        "transform": {
-          "x": 0,
-          "y": 0,
-          "scale": 1,
-          "angle": 0
-        },
-        "opacity": 1,
-        "blend": "source-over",
-        "images": [
-          {
-            "id": "ground-image-1",
-            "assetId": "concept-terrain-15-twinwater-saddle",
-            "name": "Ice - Twinwater Saddle terrain",
-            "x": 0,
-            "y": 0,
-            "scale": 1.8655967903711133,
-            "angle": 0,
-            "flipX": false,
-            "opacity": 1,
-            "mask": [],
-            "depth": "ground",
-            "globalShadow": false
-          }
-        ],
-        "strokes": []
-      }
-    ],
+    "custom": [],
     "order": [
       "foundation",
-      "ground-1",
       "roads",
       "grass"
     ]
   },
   "layers": [
+    {
+      "id": "layer-3",
+      "name": "Terrain objects - Ice",
+      "depth": "auto",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-344",
+          "assetId": "terrain-piece-15-twinwater-saddle-component-01",
+          "name": "Ice - Twinwater Saddle component 01",
+          "x": 264.91474423269807,
+          "y": -1471.0230692076227,
+          "scale": 0.9327983951855566,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 1290
+          },
+          "opacity": 1,
+          "mask": [
+            {
+              "op": "erase",
+              "size": 121.14086021505376,
+              "shape": "round",
+              "hardness": 1,
+              "opacity": 1,
+              "points": [
+                {
+                  "x": -1155.7329320000001,
+                  "y": 1243.608504468817
+                },
+                {
+                  "x": -1040.734964,
+                  "y": 1315.1306408107523
+                },
+                {
+                  "x": -940.109748,
+                  "y": 1393.5756985827954
+                },
+                {
+                  "x": -851.8074520000001,
+                  "y": 1442.029840692473
+                },
+                {
+                  "x": -757.3436959999999,
+                  "y": 1474.3294481483867
+                },
+                {
+                  "x": -642.3457279999999,
+                  "y": 1492.7863666946234
+                },
+                {
+                  "x": -506.8095599999999,
+                  "y": 1497.4005963311827
+                },
+                {
+                  "x": -412.347798,
+                  "y": 1504.32351776129
+                },
+                {
+                  "x": -305.563116,
+                  "y": 1504.32351776129
+                }
+              ],
+              "source": {
+                "kind": "native-road-clearance",
+                "roadId": "west-saddle",
+                "worldPadding": 4
+              }
+            },
+            {
+              "op": "erase",
+              "size": 121.14086021505376,
+              "shape": "round",
+              "hardness": 1,
+              "opacity": 1,
+              "points": [
+                {
+                  "x": -896.9855099999999,
+                  "y": 186.9089163397848
+                },
+                {
+                  "x": -851.8074520000001,
+                  "y": 355.3330289999996
+                },
+                {
+                  "x": -765.5589759999999,
+                  "y": 526.0689874043009
+                },
+                {
+                  "x": -662.87994,
+                  "y": 652.9650333354836
+                },
+                {
+                  "x": -588.9523899999999,
+                  "y": 766.018390356989
+                },
+                {
+                  "x": -535.561046,
+                  "y": 918.2942762645159
+                },
+                {
+                  "x": -488.3291679999999,
+                  "y": 1061.338548948387
+                },
+                {
+                  "x": -443.15111,
+                  "y": 1204.3859755827957
+                },
+                {
+                  "x": -381.54448599999995,
+                  "y": 1338.2049429440858
+                },
+                {
+                  "x": -305.563116,
+                  "y": 1504.32351776129
+                }
+              ],
+              "source": {
+                "kind": "native-road-clearance",
+                "roadId": "southwest-saddle",
+                "worldPadding": 4
+              }
+            }
+          ],
+          "globalShadow": false
+        },
+        {
+          "id": "object-345",
+          "assetId": "terrain-piece-15-twinwater-saddle-component-02",
+          "name": "Ice - Twinwater Saddle component 02",
+          "x": -332.0762286860582,
+          "y": 338.60581745235703,
+          "scale": 0.9327983951855566,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 1214
+          },
+          "opacity": 1,
+          "mask": [
+            {
+              "op": "erase",
+              "size": 121.14086021505376,
+              "shape": "round",
+              "hardness": 1,
+              "opacity": 1,
+              "points": [
+                {
+                  "x": 936.128378,
+                  "y": 1008.6341651139785
+                },
+                {
+                  "x": 897.11178,
+                  "y": 842.5155902967743
+                },
+                {
+                  "x": 837.5589760000001,
+                  "y": 699.4681636623657
+                },
+                {
+                  "x": 753.3623259999999,
+                  "y": 586.4148066408603
+                },
+                {
+                  "x": 650.6852839999999,
+                  "y": 498.7412895956989
+                },
+                {
+                  "x": 564.4348140000002,
+                  "y": 413.3733103935485
+                },
+                {
+                  "x": 486.3996240000001,
+                  "y": 311.85710443870977
+                },
+                {
+                  "x": 430.95446000000004,
+                  "y": 205.7266688473118
+                },
+                {
+                  "x": 387.83022199999994,
+                  "y": 71.90770148602152
+                },
+                {
+                  "x": 357.0269100000001,
+                  "y": -59.60257408172035
+                },
+                {
+                  "x": 340.598344,
+                  "y": -191.11284964946225
+                },
+                {
+                  "x": 336.49070400000005,
+                  "y": -292.629055604301
+                },
+                {
+                  "x": 334.436884,
+                  "y": -435.6764822387098
+                }
+              ],
+              "source": {
+                "kind": "native-road-clearance",
+                "roadId": "northeast-saddle",
+                "worldPadding": 4
+              }
+            }
+          ],
+          "globalShadow": false
+        },
+        {
+          "id": "object-346",
+          "assetId": "terrain-piece-15-twinwater-saddle-component-03",
+          "name": "Ice - Twinwater Saddle component 03",
+          "x": -818.0641925777331,
+          "y": -1443.039117352056,
+          "scale": 0.9327983951855566,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "opacity": 1,
+          "mask": [
+            {
+              "op": "erase",
+              "size": 121.14086021505376,
+              "shape": "round",
+              "hardness": 1,
+              "opacity": 1,
+              "points": [
+                {
+                  "x": 264.01448999999997,
+                  "y": 156.90891633978495
+                },
+                {
+                  "x": 309.1925479999999,
+                  "y": 325.3330289999997
+                },
+                {
+                  "x": 395.44102399999997,
+                  "y": 496.068987404301
+                },
+                {
+                  "x": 498.1200599999999,
+                  "y": 622.9650333354836
+                },
+                {
+                  "x": 572.04761,
+                  "y": 736.018390356989
+                },
+                {
+                  "x": 625.4389539999999,
+                  "y": 888.294276264516
+                },
+                {
+                  "x": 672.6708319999999,
+                  "y": 1031.338548948387
+                },
+                {
+                  "x": 717.84889,
+                  "y": 1174.3859755827957
+                },
+                {
+                  "x": 779.455514,
+                  "y": 1308.204942944086
+                },
+                {
+                  "x": 855.4368840000001,
+                  "y": 1474.3235177612903
+                }
+              ],
+              "source": {
+                "kind": "native-road-clearance",
+                "roadId": "southwest-saddle",
+                "worldPadding": 4
+              }
+            }
+          ],
+          "globalShadow": false
+        },
+        {
+          "id": "object-347",
+          "assetId": "terrain-piece-15-twinwater-saddle-component-04",
+          "name": "Ice - Twinwater Saddle component 04",
+          "x": 819.9297893681043,
+          "y": 1334.8345035105315,
+          "scale": 0.9327983951855566,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "opacity": 1,
+          "mask": [],
+          "globalShadow": false
+        }
+      ],
+      "blockers": [],
+      "globalShadow": false
+    },
     {
       "id": "grass-detail",
       "name": "Grass detail",
@@ -6158,8 +6441,8 @@
       "globalShadow": false
     }
   ],
-  "nextObject": 344,
-  "nextLayer": 3,
+  "nextObject": 348,
+  "nextLayer": 4,
   "nextGround": 2,
   "blockerMask": [
     [

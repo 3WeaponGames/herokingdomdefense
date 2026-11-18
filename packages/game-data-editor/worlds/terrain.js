@@ -32,5 +32,5 @@ function roadDefaults(asset,library,context){
  if(biome==='lava')defaults.edgeExterior='cutout';
  return defaults;
 }
-function strokeAssets(stroke){return stroke.op==='erase'?[]:[stroke.assetId,stroke.mode==='road'&&stroke.edgeAssetId].filter(Boolean);}
+function strokeAssets(stroke){const ids=[],active=new Set(),pending=[{stroke}];while(pending.length){const item=pending.pop(),s=item.stroke;if(item.exit){active.delete(s);continue;}if(!s)continue;if(s.mode==='merged'){if(!Array.isArray(s.strokes))throw Error('Merged paint groups need an array of brush strokes.');if(active.has(s))throw Error('Merged paint groups cannot contain cycles.');active.add(s);pending.push({stroke:s,exit:true});for(let i=s.strokes.length-1;i>=0;i--)pending.push({stroke:s.strokes[i]});}else if(s.op!=='erase'){if(s.assetId)ids.push(s.assetId);if(s.mode==='road'&&s.edgeAssetId)ids.push(s.edgeAssetId);}}return ids;}
 module.exports={terrainRole,groundAsset,objectAsset,inPalette,sortPalette,isRoad,roadPair,roadDefaults,strokeAssets};

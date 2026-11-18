@@ -10047,22 +10047,22 @@
       }
     },
     {
-      "id": "concept-terrain-01-switchback-pass",
-      "name": "Forest - Switchback Pass terrain",
+      "id": "terrain-piece-01-switchback-pass-component-01-segment-01",
+      "name": "Forest - Switchback Pass component 01 segment 01",
       "category": "cliffs",
       "biomes": [
         "forest"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/01-switchback-pass.png",
-      "width": 971,
-      "height": 1619,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/01-switchback-pass/component-01-segment-01.png",
+      "width": 1546,
+      "height": 844,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.9155509783728115,
-      "sha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "e6ad14a71aa685ff171a36b11c36b0c290464c0210a1a65b5ce158cad65c3bbf",
       "colorShift": {
         "alphaCutoff": 32,
         "palette": [
@@ -10087,86 +10087,1260 @@
         ]
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "switchback-pass",
-        "biome": "forest",
-        "outlineWorldScale": 1.9155509783728115
+        "component": 1,
+        "segment": 1,
+        "originalAsset": "concept-terrain-01-switchback-pass",
+        "sourceBounds": {
+          "x": 199,
+          "y": -1,
+          "width": 773,
+          "height": 422
+        },
+        "originalCoreBounds": {
+          "x": 200,
+          "y": 0,
+          "width": 771,
+          "height": 420
+        },
+        "generatedSha256": "d9a41cf0575a57a0ff6ce05c2a338bcbd8b13eeb0cba21267bf42a0d793baab8",
+        "originalSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 5986
       }
     },
     {
-      "id": "concept-terrain-02-lakeward-basin",
-      "name": "Ice - Lakeward Basin terrain",
+      "id": "terrain-piece-01-switchback-pass-component-01-segment-02",
+      "name": "Forest - Switchback Pass component 01 segment 02",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/01-switchback-pass/component-01-segment-02.png",
+      "width": 934,
+      "height": 804,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "312b8e078161ec50bd9f05f82910dc3437b54a2dde4f4f02a5c4918cd4b47593",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "switchback-pass",
+        "component": 1,
+        "segment": 2,
+        "originalAsset": "concept-terrain-01-switchback-pass",
+        "sourceBounds": {
+          "x": 505,
+          "y": 419,
+          "width": 467,
+          "height": 402
+        },
+        "originalCoreBounds": {
+          "x": 506,
+          "y": 420,
+          "width": 465,
+          "height": 400
+        },
+        "generatedSha256": "a3c18f06fa4fdc23cae8bfda5e2c410faf35a3d06812d38191d4435a509d6eb0",
+        "originalSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-01-switchback-pass-component-01-segment-03",
+      "name": "Forest - Switchback Pass component 01 segment 03",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/01-switchback-pass/component-01-segment-03.png",
+      "width": 1192,
+      "height": 844,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "8c6e2cb2dd9c5547c52a3722b16b45534f10f33aa98f969ae917026e9115f51a",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "switchback-pass",
+        "component": 1,
+        "segment": 3,
+        "originalAsset": "concept-terrain-01-switchback-pass",
+        "sourceBounds": {
+          "x": 376,
+          "y": 819,
+          "width": 596,
+          "height": 422
+        },
+        "originalCoreBounds": {
+          "x": 377,
+          "y": 820,
+          "width": 594,
+          "height": 420
+        },
+        "generatedSha256": "ea64b25df13c00ad2b7ccf35d7cd4bf6a9600ff1340c9bf3d3fb32be6efc8471",
+        "originalSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 3862
+      }
+    },
+    {
+      "id": "terrain-piece-01-switchback-pass-component-01-segment-04",
+      "name": "Forest - Switchback Pass component 01 segment 04",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/01-switchback-pass/component-01-segment-04.png",
+      "width": 1168,
+      "height": 762,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "4050691de3e4df5820c2136d9d65029953712a25530974b0b307e965c7272b51",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "switchback-pass",
+        "component": 1,
+        "segment": 4,
+        "originalAsset": "concept-terrain-01-switchback-pass",
+        "sourceBounds": {
+          "x": 388,
+          "y": 1239,
+          "width": 584,
+          "height": 381
+        },
+        "originalCoreBounds": {
+          "x": 389,
+          "y": 1240,
+          "width": 582,
+          "height": 379
+        },
+        "generatedSha256": "64f0434689a5f10a6d54e7bc9331dbe386d4da7a2a93370b85ecf279c1dd51b7",
+        "originalSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-01-switchback-pass-component-02-segment-01",
+      "name": "Forest - Switchback Pass component 02 segment 01",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/01-switchback-pass/component-02-segment-01.png",
+      "width": 456,
+      "height": 844,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "69d994e42b42602c810f6fdcac425b592d9d5d3c9ad8664a6583ac16765a38eb",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "switchback-pass",
+        "component": 2,
+        "segment": 1,
+        "originalAsset": "concept-terrain-01-switchback-pass",
+        "sourceBounds": {
+          "x": -1,
+          "y": -1,
+          "width": 228,
+          "height": 422
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 0,
+          "width": 226,
+          "height": 420
+        },
+        "generatedSha256": "7c0370c9827a970cfce068c3666ca9c260d5c396f68e40149192630195af1b8c",
+        "originalSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 15
+      }
+    },
+    {
+      "id": "terrain-piece-01-switchback-pass-component-02-segment-02",
+      "name": "Forest - Switchback Pass component 02 segment 02",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/01-switchback-pass/component-02-segment-02.png",
+      "width": 1010,
+      "height": 804,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "20fe0512d272dcc4eab1280d40a5018e7034fbcb11a915f232cba8ffef06fb5b",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "switchback-pass",
+        "component": 2,
+        "segment": 2,
+        "originalAsset": "concept-terrain-01-switchback-pass",
+        "sourceBounds": {
+          "x": -1,
+          "y": 419,
+          "width": 505,
+          "height": 402
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 420,
+          "width": 503,
+          "height": 400
+        },
+        "generatedSha256": "b56410fb2db8fe10e1a92e8deed816b92c61214baf0fe0e7f1e9ffa6211d66b5",
+        "originalSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 7693
+      }
+    },
+    {
+      "id": "terrain-piece-01-switchback-pass-component-02-segment-03",
+      "name": "Forest - Switchback Pass component 02 segment 03",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/01-switchback-pass/component-02-segment-03.png",
+      "width": 174,
+      "height": 844,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "310aec691b00971cbcf7b86a5291fab8f3e0fe031a5c6219f1a2fb9a92355917",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "switchback-pass",
+        "component": 2,
+        "segment": 3,
+        "originalAsset": "concept-terrain-01-switchback-pass",
+        "sourceBounds": {
+          "x": -1,
+          "y": 819,
+          "width": 87,
+          "height": 422
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 820,
+          "width": 85,
+          "height": 420
+        },
+        "generatedSha256": "53f9cb2e63f3163f8ca0fc41f6eba8b28a94e768c1e83d9b602eef7870eba49a",
+        "originalSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 472
+      }
+    },
+    {
+      "id": "terrain-piece-01-switchback-pass-component-02-segment-04",
+      "name": "Forest - Switchback Pass component 02 segment 04",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/01-switchback-pass/component-02-segment-04.png",
+      "width": 1076,
+      "height": 714,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "8b647593f05f28b5a979fcc4e73593a54000c038f9b203d072d86ed97d328175",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              120,
+              151,
+              82
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "switchback-pass",
+        "component": 2,
+        "segment": 4,
+        "originalAsset": "concept-terrain-01-switchback-pass",
+        "sourceBounds": {
+          "x": -1,
+          "y": 1239,
+          "width": 538,
+          "height": 357
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 1240,
+          "width": 536,
+          "height": 355
+        },
+        "generatedSha256": "f0c759f58f2a45a8ae2d34c2539391c3f0f970d064541d96806027f0c48c4022",
+        "originalSha256": "ca673185269da34e73a9ad1c7180dba20c4207710d3dac5064b1113c44241865",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 2277
+      }
+    },
+    {
+      "id": "terrain-piece-02-lakeward-basin-component-01",
+      "name": "Ice - Lakeward Basin component 01",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-01.png",
+      "width": 1240,
+      "height": 1562,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "69eecc31fcd2c39610f43a710517a564526f0b1c145baae222ecdcf341a311a2",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "lakeward-basin",
+        "component": 1,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": 164,
+          "y": 243,
+          "width": 620,
+          "height": 781
+        },
+        "originalCoreBounds": {
+          "x": 164,
+          "y": 243,
+          "width": 620,
+          "height": 781
+        },
+        "generatedSha256": "4e60941bd2c087b27897642aa0dc4aef03b1bcad0c7835d4bbed4963c9511233",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": true,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 4
+      }
+    },
+    {
+      "id": "terrain-piece-02-lakeward-basin-component-02-segment-01",
+      "name": "Ice - Lakeward Basin component 02 segment 01",
       "category": "cliffs",
       "biomes": [
         "ice"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/02-lakeward-basin.png",
-      "width": 997,
-      "height": 1577,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-02-segment-01.png",
+      "width": 344,
+      "height": 1054,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.8655967903711133,
-      "sha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "b09b9efdab46242c1a72beadb379bcc2c7c4f73dd34582f9bd5be0ab538243ae",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "lakeward-basin",
-        "biome": "ice",
-        "outlineWorldScale": 1.8655967903711133
+        "component": 2,
+        "segment": 1,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": 826,
+          "y": 1,
+          "width": 172,
+          "height": 527
+        },
+        "originalCoreBounds": {
+          "x": 827,
+          "y": 2,
+          "width": 170,
+          "height": 525
+        },
+        "generatedSha256": "647dab74304d0980aee6db4750052bfcbed6ed656c780b8418df41e5df1c14bb",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 42
       }
     },
     {
-      "id": "concept-terrain-04-broken-crown",
-      "name": "Lava - Broken Crown terrain",
+      "id": "terrain-piece-02-lakeward-basin-component-02-segment-02",
+      "name": "Ice - Lakeward Basin component 02 segment 02",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-02-segment-02.png",
+      "width": 460,
+      "height": 1054,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "7971fb5597a4ae368bbf65595dda8aacdb1cec56547dc5dbdc17e55af4c1cebb",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "lakeward-basin",
+        "component": 2,
+        "segment": 2,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": 768,
+          "y": 526,
+          "width": 230,
+          "height": 527
+        },
+        "originalCoreBounds": {
+          "x": 769,
+          "y": 527,
+          "width": 228,
+          "height": 525
+        },
+        "generatedSha256": "0d7de91fa7efe0999cb980903c31f261a276ba4978cdcd9184b6ac89b3aa256d",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 4178
+      }
+    },
+    {
+      "id": "terrain-piece-02-lakeward-basin-component-02-segment-03",
+      "name": "Ice - Lakeward Basin component 02 segment 03",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-02-segment-03.png",
+      "width": 960,
+      "height": 1054,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "b6c949929adb1ac4fd3717c0c5561a8eb6df18c25c61e55c0e4a77120ff9f470",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "lakeward-basin",
+        "component": 2,
+        "segment": 3,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": 518,
+          "y": 1051,
+          "width": 480,
+          "height": 527
+        },
+        "originalCoreBounds": {
+          "x": 519,
+          "y": 1052,
+          "width": 478,
+          "height": 525
+        },
+        "generatedSha256": "5a1edcb9c2630d058a02a8e980189ed325d94527d527f9646f693f0a8ba8b6f4",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 1643
+      }
+    },
+    {
+      "id": "terrain-piece-02-lakeward-basin-component-03-segment-01",
+      "name": "Ice - Lakeward Basin component 03 segment 01",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-03-segment-01.png",
+      "width": 264,
+      "height": 1054,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "89908174419b1a71f62f9fbc8626cb3553f7cc33988a354f0c7affa6d43cd79a",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "lakeward-basin",
+        "component": 3,
+        "segment": 1,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": -1,
+          "y": -1,
+          "width": 132,
+          "height": 527
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 0,
+          "width": 130,
+          "height": 525
+        },
+        "generatedSha256": "fb63eb079c9ce4f5c2cde056a2e7644815031206b310c2e34c43fec8bd7b3fdb",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 23
+      }
+    },
+    {
+      "id": "terrain-piece-02-lakeward-basin-component-03-segment-02",
+      "name": "Ice - Lakeward Basin component 03 segment 02",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-03-segment-02.png",
+      "width": 288,
+      "height": 1054,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "f719c3eb3e1d80bd72ff07b33c01d930940d7942331522a089f2cf60f85107fa",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "lakeward-basin",
+        "component": 3,
+        "segment": 2,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": -1,
+          "y": 524,
+          "width": 144,
+          "height": 527
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 525,
+          "width": 142,
+          "height": 525
+        },
+        "generatedSha256": "0f81b9feb4f2c6f678ae41d6d1ee48eb8888f33c793769f96779743ec6751b60",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 813
+      }
+    },
+    {
+      "id": "terrain-piece-02-lakeward-basin-component-03-segment-03",
+      "name": "Ice - Lakeward Basin component 03 segment 03",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-03-segment-03.png",
+      "width": 808,
+      "height": 1058,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "0d1246e67a40877f527c6f1cfe22a3223a196355524575c4a5630b62f0c445b2",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "lakeward-basin",
+        "component": 3,
+        "segment": 3,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": -1,
+          "y": 1049,
+          "width": 404,
+          "height": 529
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 1050,
+          "width": 402,
+          "height": 527
+        },
+        "generatedSha256": "689dbda55e67b13d335e14ebe36e0e53835a6319fc85bf30b11779facffff17c",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 97
+      }
+    },
+    {
+      "id": "terrain-piece-02-lakeward-basin-component-04",
+      "name": "Ice - Lakeward Basin component 04",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-04.png",
+      "width": 1298,
+      "height": 508,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "b459ca18bb2cea09cae19654e16e61c220c8bd81042cff479b1a5726afa07c64",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "lakeward-basin",
+        "component": 4,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": 153,
+          "y": 0,
+          "width": 649,
+          "height": 254
+        },
+        "originalCoreBounds": {
+          "x": 153,
+          "y": 0,
+          "width": 649,
+          "height": 254
+        },
+        "generatedSha256": "12f233172cfecf247a0040b53318fd31df87427cb55bd7251ad9b5ab0f6cb7a7",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 90
+      }
+    },
+    {
+      "id": "terrain-piece-02-lakeward-basin-component-05",
+      "name": "Ice - Lakeward Basin component 05",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/02-lakeward-basin/component-05.png",
+      "width": 326,
+      "height": 248,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "67da376c2ef8a0de25c5e27d47f1eed263ee5ce8d6e2e152d9d229dea44d1111",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "lakeward-basin",
+        "component": 5,
+        "originalAsset": "concept-terrain-02-lakeward-basin",
+        "sourceBounds": {
+          "x": 189,
+          "y": 230,
+          "width": 163,
+          "height": 124
+        },
+        "originalCoreBounds": {
+          "x": 189,
+          "y": 230,
+          "width": 163,
+          "height": 124
+        },
+        "generatedSha256": "a624ea6d143e4cd972ba9995de3655d8b4483196577d2695649e0a6dea6696ac",
+        "originalSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 23
+      }
+    },
+    {
+      "id": "terrain-piece-04-broken-crown-component-01",
+      "name": "Lava - Broken Crown component 01",
       "category": "cliffs",
       "biomes": [
         "lava"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/04-broken-crown.png",
-      "width": 971,
-      "height": 1620,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/04-broken-crown/component-01.png",
+      "width": 812,
+      "height": 1172,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.9155509783728115,
-      "sha256": "17a4be7951111f8f0b2d84a58a84b40fb3c2387065f2c9bc846a0c853a10d206",
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "5ebc1355c553b72ce997b68e0a3d26de7fe952bd8442af502c2e7931fdedadec",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "broken-crown",
-        "biome": "lava",
-        "outlineWorldScale": 1.9155509783728115
+        "component": 1,
+        "originalAsset": "concept-terrain-04-broken-crown",
+        "sourceBounds": {
+          "x": 8,
+          "y": 153,
+          "width": 406,
+          "height": 586
+        },
+        "originalCoreBounds": {
+          "x": 8,
+          "y": 153,
+          "width": 406,
+          "height": 586
+        },
+        "generatedSha256": "6d5ca7420e874e2fd224098e9032b42ae4731e477861bccd319de3c743fc2671",
+        "originalSha256": "17a4be7951111f8f0b2d84a58a84b40fb3c2387065f2c9bc846a0c853a10d206",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
       }
     },
     {
-      "id": "concept-terrain-05-six-gate-woodland",
-      "name": "Deep Forest - Six-gate Woodland terrain",
+      "id": "terrain-piece-04-broken-crown-component-02",
+      "name": "Lava - Broken Crown component 02",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/04-broken-crown/component-02.png",
+      "width": 482,
+      "height": 1342,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "57b81ca71b7a1d4356406a1152b6bf8bf5b5e4fabff78b07438b6fc88d65d8e8",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "broken-crown",
+        "component": 2,
+        "originalAsset": "concept-terrain-04-broken-crown",
+        "sourceBounds": {
+          "x": 730,
+          "y": 550,
+          "width": 241,
+          "height": 671
+        },
+        "originalCoreBounds": {
+          "x": 730,
+          "y": 550,
+          "width": 241,
+          "height": 671
+        },
+        "generatedSha256": "04500eae32bdfa36c822328618a5839e05a810d363cc9490ea30ab3d62f044dd",
+        "originalSha256": "17a4be7951111f8f0b2d84a58a84b40fb3c2387065f2c9bc846a0c853a10d206",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-04-broken-crown-component-03",
+      "name": "Lava - Broken Crown component 03",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/04-broken-crown/component-03.png",
+      "width": 1148,
+      "height": 528,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "64ac2aad67d1eb760e5ffc4a947e02c72ccdfd40cc6652a145c98bec125d9efe",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "broken-crown",
+        "component": 3,
+        "originalAsset": "concept-terrain-04-broken-crown",
+        "sourceBounds": {
+          "x": 225,
+          "y": 1235,
+          "width": 574,
+          "height": 264
+        },
+        "originalCoreBounds": {
+          "x": 225,
+          "y": 1235,
+          "width": 574,
+          "height": 264
+        },
+        "generatedSha256": "862244743986da82881ee945463a5a6346835543b5189623d4f0e22759ef9019",
+        "originalSha256": "17a4be7951111f8f0b2d84a58a84b40fb3c2387065f2c9bc846a0c853a10d206",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-04-broken-crown-component-04",
+      "name": "Lava - Broken Crown component 04",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/04-broken-crown/component-04.png",
+      "width": 678,
+      "height": 996,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "e46740edc23f4f5fa37817dea2ff96115f0aaf1fc48e11014467eadb15fb10c6",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "broken-crown",
+        "component": 4,
+        "originalAsset": "concept-terrain-04-broken-crown",
+        "sourceBounds": {
+          "x": 4,
+          "y": 835,
+          "width": 339,
+          "height": 498
+        },
+        "originalCoreBounds": {
+          "x": 4,
+          "y": 835,
+          "width": 339,
+          "height": 498
+        },
+        "generatedSha256": "37a8b8dbe92617a570009a7b0c1de0978114d511af7f190b935361642946f69f",
+        "originalSha256": "17a4be7951111f8f0b2d84a58a84b40fb3c2387065f2c9bc846a0c853a10d206",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-04-broken-crown-component-05",
+      "name": "Lava - Broken Crown component 05",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/04-broken-crown/component-05.png",
+      "width": 708,
+      "height": 742,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "2514bfa88ed3d4e34f74e5d741595b9fdb6470a121624bf87b5fbf94bb8d8aad",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "broken-crown",
+        "component": 5,
+        "originalAsset": "concept-terrain-04-broken-crown",
+        "sourceBounds": {
+          "x": 532,
+          "y": 159,
+          "width": 354,
+          "height": 371
+        },
+        "originalCoreBounds": {
+          "x": 532,
+          "y": 159,
+          "width": 354,
+          "height": 371
+        },
+        "generatedSha256": "8d273039b354ffa1f9b5e5640dc7bd3eff2441a717343f42f3f2c2995a370fe9",
+        "originalSha256": "17a4be7951111f8f0b2d84a58a84b40fb3c2387065f2c9bc846a0c853a10d206",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-04-broken-crown-component-06",
+      "name": "Lava - Broken Crown component 06",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/04-broken-crown/component-06.png",
+      "width": 220,
+      "height": 202,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "47573f04a576db491b380d675e48118b884d7bfe0c35ae2016f99e4806ac0f81",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "broken-crown",
+        "component": 6,
+        "originalAsset": "concept-terrain-04-broken-crown",
+        "sourceBounds": {
+          "x": 644,
+          "y": 567,
+          "width": 110,
+          "height": 101
+        },
+        "originalCoreBounds": {
+          "x": 644,
+          "y": 567,
+          "width": 110,
+          "height": 101
+        },
+        "generatedSha256": "6bf804c8cd03149f7c4de5007d78bf14f25224a645cb4dcb375279e313bb5533",
+        "originalSha256": "17a4be7951111f8f0b2d84a58a84b40fb3c2387065f2c9bc846a0c853a10d206",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-01",
+      "name": "Deep Forest - Six-gate Woodland component 01",
       "category": "cliffs",
       "biomes": [
         "deep-forest"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/05-six-gate-woodland.png",
-      "width": 971,
-      "height": 1620,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-01.png",
+      "width": 1188,
+      "height": 718,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.9155509783728115,
-      "sha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "5f77159b1d992dd3bf153304faf42b4b683bf99b3558ad70bfcd3e299425640c",
       "colorShift": {
         "alphaCutoff": 32,
         "palette": [
@@ -10191,207 +11365,3776 @@
         ]
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "six-gate-woodland",
-        "biome": "deep-forest",
-        "outlineWorldScale": 1.9155509783728115
+        "component": 1,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 141,
+          "y": 1154,
+          "width": 594,
+          "height": 359
+        },
+        "originalCoreBounds": {
+          "x": 141,
+          "y": 1154,
+          "width": 594,
+          "height": 359
+        },
+        "generatedSha256": "539e60cf20e44a4b0e70ccd1bca3e9cb3c92820abf91914f141a89c3e9fb6341",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 592
       }
     },
     {
-      "id": "concept-terrain-07-crescent-ridge",
-      "name": "Autumn - Crescent Ridge terrain",
+      "id": "terrain-piece-05-six-gate-woodland-component-02",
+      "name": "Deep Forest - Six-gate Woodland component 02",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-02.png",
+      "width": 888,
+      "height": 684,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "5ef6a57ef2d31e5946405331874923c42b4dcd2a36f8a5e083d1f7807ae54fb2",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 2,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 512,
+          "y": 105,
+          "width": 444,
+          "height": 342
+        },
+        "originalCoreBounds": {
+          "x": 512,
+          "y": 105,
+          "width": 444,
+          "height": 342
+        },
+        "generatedSha256": "a77a7bbd56fde37957b76d3148c54e34a62c4b56a1846d1c3496780d8c58b1fa",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 55
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-03",
+      "name": "Deep Forest - Six-gate Woodland component 03",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-03.png",
+      "width": 928,
+      "height": 596,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "9ee53f281791d728de55b14bb40dc7eae80c45c1f8b9cae28052c6efaca22199",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 3,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 363,
+          "y": 479,
+          "width": 464,
+          "height": 298
+        },
+        "originalCoreBounds": {
+          "x": 363,
+          "y": 479,
+          "width": 464,
+          "height": 298
+        },
+        "generatedSha256": "662afff0a01894428eadc98e3a9a09ecf8c18108d399afcf255e49f1fb81241f",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 593
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-04",
+      "name": "Deep Forest - Six-gate Woodland component 04",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-04.png",
+      "width": 688,
+      "height": 1058,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "64570cd93c79d3ce01164f08c86659567b42de43cc2fa30ca4a4b57b854f79a0",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 4,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 627,
+          "y": 984,
+          "width": 344,
+          "height": 529
+        },
+        "originalCoreBounds": {
+          "x": 627,
+          "y": 984,
+          "width": 344,
+          "height": 529
+        },
+        "generatedSha256": "41c83fc89fda287e53a37906c0a6144cfe0d019058c99b710e8659ad0b759505",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 2111
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-05",
+      "name": "Deep Forest - Six-gate Woodland component 05",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-05.png",
+      "width": 438,
+      "height": 1342,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "a8d9d121ee1e687bd367ddae040c0d50a1a63f7dbb0a258ee3b7e4162c9b50f2",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 5,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 752,
+          "y": 342,
+          "width": 219,
+          "height": 671
+        },
+        "originalCoreBounds": {
+          "x": 752,
+          "y": 342,
+          "width": 219,
+          "height": 671
+        },
+        "generatedSha256": "f03bd1910a788585d663c5c7c21161bd2732b5db2cacf388643e7142b0960cae",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 24
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-06",
+      "name": "Deep Forest - Six-gate Woodland component 06",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-06.png",
+      "width": 802,
+      "height": 696,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "d2b6ae742132f0bc747008d021c9aa5c5575c801de63aab0184cd49c61b2d170",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 6,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 155,
+          "y": 105,
+          "width": 401,
+          "height": 348
+        },
+        "originalCoreBounds": {
+          "x": 155,
+          "y": 105,
+          "width": 401,
+          "height": 348
+        },
+        "generatedSha256": "9513db6a8e422f2fb8be0aa93303b40383628a880363ecd24917283950e3b9af",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 283
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-07",
+      "name": "Deep Forest - Six-gate Woodland component 07",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-07.png",
+      "width": 624,
+      "height": 646,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "9e8c994b0f8693a8c2a420a1f0e6f3395c7b6aa570ade33150ae384b9449722e",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 7,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 0,
+          "y": 539,
+          "width": 312,
+          "height": 323
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 539,
+          "width": 312,
+          "height": 323
+        },
+        "generatedSha256": "9b2ce63718d27a7d10b56575644a5e00f44d919d7844d33f17ab8bcb035d441b",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 113242
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-08",
+      "name": "Deep Forest - Six-gate Woodland component 08",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-08.png",
+      "width": 422,
+      "height": 970,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "6029c9f13cf761a73d3ecacb82e58d13404a6f0d20bd6b39ffcf4efb533c1105",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 8,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 0,
+          "y": 105,
+          "width": 211,
+          "height": 485
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 105,
+          "width": 211,
+          "height": 485
+        },
+        "generatedSha256": "3d6df2766db65707156a42b3267e82156f569b911ebd80c55adce56b6ec901c2",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 47487
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-09",
+      "name": "Deep Forest - Six-gate Woodland component 09",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-09.png",
+      "width": 492,
+      "height": 692,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "ddb270d3fb05e69f1d53ccc9674a5265754e4800afd17edef0b83d61937dcbe0",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 9,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 0,
+          "y": 882,
+          "width": 246,
+          "height": 346
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 882,
+          "width": 246,
+          "height": 346
+        },
+        "generatedSha256": "4f42b56d64ca07670559c8c78fc15f7907a0dd5ed047b0dc4a8ab09f5b500f97",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 25585
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-10",
+      "name": "Deep Forest - Six-gate Woodland component 10",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-10.png",
+      "width": 210,
+      "height": 612,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "2802086b63d603042f859cf6de882b9e880873e7da5296ab2333fa7ad2346b28",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 10,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 0,
+          "y": 1207,
+          "width": 105,
+          "height": 306
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 1207,
+          "width": 105,
+          "height": 306
+        },
+        "generatedSha256": "d37e075a2c00cc21992258c33dfa3adf694338a642d307a3163a5302c9beb213",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 179
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-11",
+      "name": "Deep Forest - Six-gate Woodland component 11",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-11.png",
+      "width": 260,
+      "height": 310,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "67427fa7d3d8d8b2ba683382fd69f5f969eada98605d7323bd855bc75464ccce",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 11,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 383,
+          "y": 354,
+          "width": 130,
+          "height": 155
+        },
+        "originalCoreBounds": {
+          "x": 383,
+          "y": 354,
+          "width": 130,
+          "height": 155
+        },
+        "generatedSha256": "e74cd4ae9e16d2097114298093782b5735deb1ec6217994b3458eb8777afb2d5",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 22023
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-12",
+      "name": "Deep Forest - Six-gate Woodland component 12",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-12.png",
+      "width": 172,
+      "height": 216,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "e34b5759e5d43b915a3bd2636dbfcd262577e9454891c29593ffa8ec6cd3747f",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 12,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 206,
+          "y": 804,
+          "width": 86,
+          "height": 108
+        },
+        "originalCoreBounds": {
+          "x": 206,
+          "y": 804,
+          "width": 86,
+          "height": 108
+        },
+        "generatedSha256": "d5cada79399f477fb055b7ef972cc5867a9d0a10e72b01c012dc8b6156423df8",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 9641
+      }
+    },
+    {
+      "id": "terrain-piece-05-six-gate-woodland-component-13",
+      "name": "Deep Forest - Six-gate Woodland component 13",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/05-six-gate-woodland/component-13.png",
+      "width": 68,
+      "height": 276,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "e3ceb3d5c0fa9f322b7f0b43ffff22b213b8b1cfb01c6f89af44db3450ec12e6",
+      "colorShift": {
+        "alphaCutoff": 32,
+        "palette": [
+          {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "greenOnly": true,
+            "to": [
+              62,
+              98,
+              60
+            ]
+          }
+        ]
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "six-gate-woodland",
+        "component": 13,
+        "originalAsset": "concept-terrain-05-six-gate-woodland",
+        "sourceBounds": {
+          "x": 937,
+          "y": 178,
+          "width": 34,
+          "height": 138
+        },
+        "originalCoreBounds": {
+          "x": 937,
+          "y": 178,
+          "width": 34,
+          "height": 138
+        },
+        "generatedSha256": "a4df33384959500fe2a5bbec969ee74a940dcd3a18c9d9a671d8cbe35f40ed57",
+        "originalSha256": "390eebe413e05ae443e0a9f2fd500ee5193666e8c4b82300a3da80d7522985ea",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 23
+      }
+    },
+    {
+      "id": "terrain-piece-07-crescent-ridge-component-01-segment-01",
+      "name": "Autumn - Crescent Ridge component 01 segment 01",
       "category": "cliffs",
       "biomes": [
         "autumn"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/07-crescent-ridge.png",
-      "width": 971,
-      "height": 1619,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/07-crescent-ridge/component-01-segment-01.png",
+      "width": 1250,
+      "height": 1102,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.9155509783728115,
-      "sha256": "951e73799bcb50808d130c58f843924215d7e80888e1eeb1d50c569fef17846c",
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "864053a2d6ee5b8fed145c693b28d6ff35148182638ece60d7129d778095aceb",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "crescent-ridge",
-        "biome": "autumn",
-        "outlineWorldScale": 1.9155509783728115
+        "component": 1,
+        "segment": 1,
+        "originalAsset": "concept-terrain-07-crescent-ridge",
+        "sourceBounds": {
+          "x": -1,
+          "y": 239,
+          "width": 625,
+          "height": 551
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 240,
+          "width": 623,
+          "height": 549
+        },
+        "generatedSha256": "7ee049c2713055672c9097959f8cdd6dc05a9ae7b68a122b195ca3ade1145e82",
+        "originalSha256": "951e73799bcb50808d130c58f843924215d7e80888e1eeb1d50c569fef17846c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 1
       }
     },
     {
-      "id": "concept-terrain-08-longwall-frontier",
-      "name": "Desert - Longwall Frontier terrain",
+      "id": "terrain-piece-07-crescent-ridge-component-01-segment-02",
+      "name": "Autumn - Crescent Ridge component 01 segment 02",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/07-crescent-ridge/component-01-segment-02.png",
+      "width": 1224,
+      "height": 1102,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "ba2ef900d37014ddeb2403a2db999342f36570cbb4f1fbb85d74b1dc2fda30bb",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crescent-ridge",
+        "component": 1,
+        "segment": 2,
+        "originalAsset": "concept-terrain-07-crescent-ridge",
+        "sourceBounds": {
+          "x": -1,
+          "y": 788,
+          "width": 612,
+          "height": 551
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 789,
+          "width": 610,
+          "height": 549
+        },
+        "generatedSha256": "69006f265d911509d45239dab9d81c4e6adcfe8d66fb3c04e8d7e5f9de50c40b",
+        "originalSha256": "951e73799bcb50808d130c58f843924215d7e80888e1eeb1d50c569fef17846c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 212
+      }
+    },
+    {
+      "id": "terrain-piece-07-crescent-ridge-component-02",
+      "name": "Autumn - Crescent Ridge component 02",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/07-crescent-ridge/component-02.png",
+      "width": 926,
+      "height": 324,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "72db11c979f2d9702978adb57537ddff70bf9bcb1e58126841fe74083aa75ef6",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crescent-ridge",
+        "component": 2,
+        "originalAsset": "concept-terrain-07-crescent-ridge",
+        "sourceBounds": {
+          "x": 464,
+          "y": 1457,
+          "width": 463,
+          "height": 162
+        },
+        "originalCoreBounds": {
+          "x": 464,
+          "y": 1457,
+          "width": 463,
+          "height": 162
+        },
+        "generatedSha256": "6a0b99c7129d5e82b573b882c166b548a1d3f92f09556b3d156e5020f361aac6",
+        "originalSha256": "951e73799bcb50808d130c58f843924215d7e80888e1eeb1d50c569fef17846c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 3
+      }
+    },
+    {
+      "id": "terrain-piece-07-crescent-ridge-component-03",
+      "name": "Autumn - Crescent Ridge component 03",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/07-crescent-ridge/component-03.png",
+      "width": 872,
+      "height": 314,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "b61ad00648a1a5ac37d6b5d5e19422803636ec7aa6fa8f9adc653780e0b635d1",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crescent-ridge",
+        "component": 3,
+        "originalAsset": "concept-terrain-07-crescent-ridge",
+        "sourceBounds": {
+          "x": 491,
+          "y": 0,
+          "width": 436,
+          "height": 157
+        },
+        "originalCoreBounds": {
+          "x": 491,
+          "y": 0,
+          "width": 436,
+          "height": 157
+        },
+        "generatedSha256": "2c45bf4401dc2350c7d81278c28ba33a74259bc44182f02281001c292fc389b9",
+        "originalSha256": "951e73799bcb50808d130c58f843924215d7e80888e1eeb1d50c569fef17846c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-01",
+      "name": "Desert - Longwall Frontier component 01",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/08-longwall-frontier.png",
-      "width": 971,
-      "height": 1619,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-01.png",
+      "width": 444,
+      "height": 288,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.9155509783728115,
-      "sha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "43de0ed8bb59a809330597f6304bcc3d4e1dc199e96e92b8019a0c759abb25bf",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "longwall-frontier",
-        "biome": "desert",
-        "outlineWorldScale": 1.9155509783728115
+        "component": 1,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 217,
+          "y": 675,
+          "width": 222,
+          "height": 144
+        },
+        "originalCoreBounds": {
+          "x": 217,
+          "y": 675,
+          "width": 222,
+          "height": 144
+        },
+        "generatedSha256": "6c4652d1ff6df900c3cc814cd88860657182d1682c56604a02c8f4db26771838",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
       }
     },
     {
-      "id": "concept-terrain-09-terrace-citadel",
-      "name": "Snow - Terrace Citadel terrain",
+      "id": "terrain-piece-08-longwall-frontier-component-02",
+      "name": "Desert - Longwall Frontier component 02",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-02.png",
+      "width": 268,
+      "height": 644,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "6b436904395b8b2e54874cd3e755057ab78104a9e5e3cc40aa11ba7fc15eed5a",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 2,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 837,
+          "y": 342,
+          "width": 134,
+          "height": 322
+        },
+        "originalCoreBounds": {
+          "x": 837,
+          "y": 342,
+          "width": 134,
+          "height": 322
+        },
+        "generatedSha256": "4f9998ff077e33f23e90af844b3802ce7f3b7fa82ab7b7157e326351cc715024",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 566
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-03",
+      "name": "Desert - Longwall Frontier component 03",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-03.png",
+      "width": 426,
+      "height": 272,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "b286b09c06b209d8c7f6d7ed49c5126b8df9d585894145735d9e339600194bb5",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 3,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 533,
+          "y": 675,
+          "width": 213,
+          "height": 136
+        },
+        "originalCoreBounds": {
+          "x": 533,
+          "y": 675,
+          "width": 213,
+          "height": 136
+        },
+        "generatedSha256": "5fd86cf732b6a82af9f90b6df2ff1735ef679914947d9ea4891e286e6a47232a",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-04",
+      "name": "Desert - Longwall Frontier component 04",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-04.png",
+      "width": 510,
+      "height": 336,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "c47eb179e4d339aed34a59143d69a4932f6b384427a92aae65a8bfcca6f17669",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 4,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 716,
+          "y": 1366,
+          "width": 255,
+          "height": 168
+        },
+        "originalCoreBounds": {
+          "x": 716,
+          "y": 1366,
+          "width": 255,
+          "height": 168
+        },
+        "generatedSha256": "d0a0ea7424c97de2697358628a422e4f199964a89cbcebe7bbbb8dee6c9de6dd",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-05",
+      "name": "Desert - Longwall Frontier component 05",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-05.png",
+      "width": 472,
+      "height": 306,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "9969623b8a94cb92a6d9d023207f09a7fadbe8a388aa8d300518c20f9ea1474e",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 5,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 0,
+          "y": 1381,
+          "width": 236,
+          "height": 153
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 1381,
+          "width": 236,
+          "height": 153
+        },
+        "generatedSha256": "68be3edf11d7b6220bdb9f02a57a7f4c2049bd1be53af7a9cfe3bc9e82a34665",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-06",
+      "name": "Desert - Longwall Frontier component 06",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-06.png",
+      "width": 222,
+      "height": 480,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "503b9475c462264967f57bbcd3243ecd9507b86e5f05686162c354e5f1f3d8c2",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 6,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 860,
+          "y": 828,
+          "width": 111,
+          "height": 240
+        },
+        "originalCoreBounds": {
+          "x": 860,
+          "y": 828,
+          "width": 111,
+          "height": 240
+        },
+        "generatedSha256": "b832b4837ddd5a5fb7b3e60227b61bdcc98d6d0285e9184c01eff94844cb0e0d",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-07",
+      "name": "Desert - Longwall Frontier component 07",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-07.png",
+      "width": 220,
+      "height": 466,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "2ff6c7d4335485b4c3f25b4417049ca434acb8995a8e596dafaed2f5d78bfff5",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 7,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 0,
+          "y": 832,
+          "width": 110,
+          "height": 233
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 832,
+          "width": 110,
+          "height": 233
+        },
+        "generatedSha256": "31eacbc40b57a1c086293e3c55623e7c0663b764a72b5bef9da284d890cabb91",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 3
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-08",
+      "name": "Desert - Longwall Frontier component 08",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-08.png",
+      "width": 276,
+      "height": 266,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "757df80e9f399454bea6986ab71d5391b3e76dd56da3328f30b52f654d6e6f50",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 8,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 833,
+          "y": 677,
+          "width": 138,
+          "height": 133
+        },
+        "originalCoreBounds": {
+          "x": 833,
+          "y": 677,
+          "width": 138,
+          "height": 133
+        },
+        "generatedSha256": "12aaf62c537c8ecc142e244b363b5d6b386e42790811f15d5981686da3d2de02",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-09",
+      "name": "Desert - Longwall Frontier component 09",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-09.png",
+      "width": 264,
+      "height": 262,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "d899f885c0667712ca5fec9b51a94f5ddbd64960226f8f27b16866e5ecd5e7b5",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 9,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 0,
+          "y": 677,
+          "width": 132,
+          "height": 131
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 677,
+          "width": 132,
+          "height": 131
+        },
+        "generatedSha256": "7fd66d891f0287463d5c47f3ea79ae36c2571556cd7f237393183e7936e8fde2",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-10",
+      "name": "Desert - Longwall Frontier component 10",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-10.png",
+      "width": 272,
+      "height": 328,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "ebcdd44b496837c4cd026bc2ec59d6dccd7bfb96abdacd03475f8842fe367644",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 10,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 835,
+          "y": 118,
+          "width": 136,
+          "height": 164
+        },
+        "originalCoreBounds": {
+          "x": 835,
+          "y": 118,
+          "width": 136,
+          "height": 164
+        },
+        "generatedSha256": "b218e4bd6fb97580013e5b206d680c1ea4bec49bd61e72d25ede89f692b62525",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-11",
+      "name": "Desert - Longwall Frontier component 11",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-11.png",
+      "width": 222,
+      "height": 350,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "cd518f22950bbde210953c530224b6e363a2a7247aff97bf9a8165fdfb35413b",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 11,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 0,
+          "y": 480,
+          "width": 111,
+          "height": 175
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 480,
+          "width": 111,
+          "height": 175
+        },
+        "generatedSha256": "8435859ddff4f749ff0c0ad0b85ac81d250470b455523d8954e64a83fb51e327",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 3
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-12",
+      "name": "Desert - Longwall Frontier component 12",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-12.png",
+      "width": 172,
+      "height": 388,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "be6ba82b5964e92f8ec6afd7cb8da9cb0b52f74fa59886d95a678c1e8614e4c9",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 12,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 0,
+          "y": 275,
+          "width": 86,
+          "height": 194
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 275,
+          "width": 86,
+          "height": 194
+        },
+        "generatedSha256": "3902b42e046a1f566265e7918fce107aa0dc39f0764319d617b152d322a0540d",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 4
+      }
+    },
+    {
+      "id": "terrain-piece-08-longwall-frontier-component-13",
+      "name": "Desert - Longwall Frontier component 13",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-13.png",
+      "width": 270,
+      "height": 240,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "bf85124f65d938b15bd382a7374b5e187c62a8d4fcc154868f9d1c607933f14b",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "longwall-frontier",
+        "component": 13,
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 0,
+          "y": 118,
+          "width": 135,
+          "height": 120
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 118,
+          "width": 135,
+          "height": 120
+        },
+        "generatedSha256": "cdca9d2506c082eb01be89314295474afd57412ec66ea85c99b3fba1c8622dae",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-01-segment-01",
+      "name": "Snow - Terrace Citadel component 01 segment 01",
       "category": "cliffs",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/09-terrace-citadel.png",
-      "width": 983,
-      "height": 1600,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-01-segment-01.png",
+      "width": 774,
+      "height": 762,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.8921668362156663,
-      "sha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "195acd5ea72a11dd2608e6f5b6e9c33ce3193bc7a24b32bbf1853b75c43c24ac",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "terrace-citadel",
-        "biome": "snow",
-        "outlineWorldScale": 1.8921668362156663
+        "component": 1,
+        "segment": 1,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 206,
+          "y": 336,
+          "width": 387,
+          "height": 381
+        },
+        "originalCoreBounds": {
+          "x": 207,
+          "y": 337,
+          "width": 385,
+          "height": 379
+        },
+        "generatedSha256": "950952c2ddd24e87e9651a2f806ca691ac6d9915cdcee6d8780eb187b03ebe5c",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 68061
       }
     },
     {
-      "id": "concept-terrain-11-twin-courtyards",
-      "name": "Fire - Twin Courtyards terrain",
+      "id": "terrain-piece-09-terrace-citadel-component-01-segment-02",
+      "name": "Snow - Terrace Citadel component 01 segment 02",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-01-segment-02.png",
+      "width": 774,
+      "height": 806,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "85da5aa04971fbbbc20567bfa4856da13e6f434b23fa38216ede23887fa1bf0b",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 1,
+        "segment": 2,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 583,
+          "y": 314,
+          "width": 387,
+          "height": 403
+        },
+        "originalCoreBounds": {
+          "x": 584,
+          "y": 315,
+          "width": 385,
+          "height": 401
+        },
+        "generatedSha256": "ec588c1d2f5b2cc47c701e48ef733f081d7d476a5ec5e5a8c1beecb9642361d2",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 217
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-01-segment-03",
+      "name": "Snow - Terrace Citadel component 01 segment 03",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-01-segment-03.png",
+      "width": 774,
+      "height": 808,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "38d1d2fd8058b54858417acc01718d1d6a052eb2ec109cb0a6f391291f82ee02",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 1,
+        "segment": 3,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 206,
+          "y": 707,
+          "width": 387,
+          "height": 404
+        },
+        "originalCoreBounds": {
+          "x": 207,
+          "y": 708,
+          "width": 385,
+          "height": 402
+        },
+        "generatedSha256": "ae3ed30474aad2d262b71f2bc05b6a5f6ac6ec331567a94807cac8f6f9e979c7",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 12
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-01-segment-04",
+      "name": "Snow - Terrace Citadel component 01 segment 04",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-01-segment-04.png",
+      "width": 774,
+      "height": 808,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "52b5dfec730598d9bad9ba4e27ea88c62b5c792a49be5b6a39a476ec47a48f21",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 1,
+        "segment": 4,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 583,
+          "y": 707,
+          "width": 387,
+          "height": 404
+        },
+        "originalCoreBounds": {
+          "x": 584,
+          "y": 708,
+          "width": 385,
+          "height": 402
+        },
+        "generatedSha256": "72e7c853b98f9a48ffc00d8267382ab62679d436adbde76f5282cdd4a160a4c4",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-02",
+      "name": "Snow - Terrace Citadel component 02",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-02.png",
+      "width": 568,
+      "height": 690,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "4416584dd0620742feaa2c8dc8f26f64e4b9924d26bbe40776649c2d2c171c69",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 2,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 699,
+          "y": 79,
+          "width": 284,
+          "height": 345
+        },
+        "originalCoreBounds": {
+          "x": 699,
+          "y": 79,
+          "width": 284,
+          "height": 345
+        },
+        "generatedSha256": "208fd555839704e8ce50ed8c4d299c19097864d6d0c6d927cd6fc2850614c77a",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-03",
+      "name": "Snow - Terrace Citadel component 03",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-03.png",
+      "width": 414,
+      "height": 506,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "aef024419ed245db7ed73673c7ee30759174b4cc3101b92aed94afaf9c464379",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 3,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 0,
+          "y": 76,
+          "width": 207,
+          "height": 253
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 76,
+          "width": 207,
+          "height": 253
+        },
+        "generatedSha256": "2a15cab417bfac71b6a26763ec5e2a174ce50848e89ac4cc8d6b7cc1f2261742",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-04",
+      "name": "Snow - Terrace Citadel component 04",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-04.png",
+      "width": 458,
+      "height": 292,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "3ef9a6c2bf1b071641650f8c38dbcb903647ec95ab37f94932966ee10244dc25",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 4,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 754,
+          "y": 1357,
+          "width": 229,
+          "height": 146
+        },
+        "originalCoreBounds": {
+          "x": 754,
+          "y": 1357,
+          "width": 229,
+          "height": 146
+        },
+        "generatedSha256": "5a7f1bd9794d5255e8844e1def3ccdb77aba0c1a7398bc94dad312e8934a9cca",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-05",
+      "name": "Snow - Terrace Citadel component 05",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-05.png",
+      "width": 496,
+      "height": 220,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "5e2c06d186512a0a132913761d45db9b9334fa5a5a0289f57662ce950f5dbcc4",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 5,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 0,
+          "y": 1393,
+          "width": 248,
+          "height": 110
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 1393,
+          "width": 248,
+          "height": 110
+        },
+        "generatedSha256": "d209d703f46039ff46690732b50623d27a75e404d09a50f9e2488998b95b961a",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 3
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-06",
+      "name": "Snow - Terrace Citadel component 06",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-06.png",
+      "width": 228,
+      "height": 440,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "919b15399cfef49ac817219fa0f79792e3057faf3a9f70b5d46b72391932a01d",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 6,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 0,
+          "y": 334,
+          "width": 114,
+          "height": 220
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 334,
+          "width": 114,
+          "height": 220
+        },
+        "generatedSha256": "764da3ab341052c1574714aeb4a9d487355bafa182089e9c29ca958a90024770",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 6
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-07",
+      "name": "Snow - Terrace Citadel component 07",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-07.png",
+      "width": 194,
+      "height": 410,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "b661abf14ed2b524af6d9ba2e1b13ed965c0a1ec1fa9f9a642acd68708474497",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 7,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 886,
+          "y": 1102,
+          "width": 97,
+          "height": 205
+        },
+        "originalCoreBounds": {
+          "x": 886,
+          "y": 1102,
+          "width": 97,
+          "height": 205
+        },
+        "generatedSha256": "6c08ada7eb9b429d38957512adf884bc779490373a8122ee9986a44c79234df2",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 141
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-08",
+      "name": "Snow - Terrace Citadel component 08",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-08.png",
+      "width": 172,
+      "height": 428,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "221223456f0aec23e22737ce6ff70f1c0c6b0c69e225dbd08499a92ddd9a109a",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 8,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 0,
+          "y": 839,
+          "width": 86,
+          "height": 214
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 839,
+          "width": 86,
+          "height": 214
+        },
+        "generatedSha256": "18aeae4bec6dadb65e39c75293490d28e334c74bdaca9118cc2f4a510e4b80ae",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-09-terrace-citadel-component-09",
+      "name": "Snow - Terrace Citadel component 09",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/09-terrace-citadel/component-09.png",
+      "width": 150,
+      "height": 356,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9460834181078331,
+      "sha256": "33cc0f3b803faa04ca69969899f27c1cce58f1ddf95e26be85e6e841f2cfb26a",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "terrace-citadel",
+        "component": 9,
+        "originalAsset": "concept-terrain-09-terrace-citadel",
+        "sourceBounds": {
+          "x": 0,
+          "y": 1070,
+          "width": 75,
+          "height": 178
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 1070,
+          "width": 75,
+          "height": 178
+        },
+        "generatedSha256": "b1c857843f2d525dec6a4b4f325e00383a8d87356ca4bbfc5e0fb94719f5bcdf",
+        "originalSha256": "e3ac6442df5ab769d3afd3dbfa54f36e456ed6252144adca11f86c858d871c03",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-11-twin-courtyards-component-01",
+      "name": "Fire - Twin Courtyards component 01",
       "category": "cliffs",
       "biomes": [
         "fire"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/11-twin-courtyards.png",
-      "width": 971,
-      "height": 1619,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-01.png",
+      "width": 504,
+      "height": 1614,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.9155509783728115,
-      "sha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "24d02dbe0202c8981ec85326ec96e8d23e49999e857e70131f5223ab3d1b7133",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "twin-courtyards",
-        "biome": "fire",
-        "outlineWorldScale": 1.9155509783728115
+        "component": 1,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 381,
+          "y": 415,
+          "width": 252,
+          "height": 807
+        },
+        "originalCoreBounds": {
+          "x": 381,
+          "y": 415,
+          "width": 252,
+          "height": 807
+        },
+        "generatedSha256": "61aedb3cf196488a747376ff68d04c535d663da1c095bb538a30feaf79a81515",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 42
       }
     },
     {
-      "id": "concept-terrain-12-forked-harbor",
-      "name": "Autumn - Forked Harbor terrain",
+      "id": "terrain-piece-11-twin-courtyards-component-02",
+      "name": "Fire - Twin Courtyards component 02",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-02.png",
+      "width": 408,
+      "height": 536,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "6e478d8b0d4a1ebf65cd60bb00b60fc7251cacde525944c7a376e8cb08aa28b2",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twin-courtyards",
+        "component": 2,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 757,
+          "y": 145,
+          "width": 204,
+          "height": 268
+        },
+        "originalCoreBounds": {
+          "x": 757,
+          "y": 145,
+          "width": 204,
+          "height": 268
+        },
+        "generatedSha256": "d1d1a8097d5e8431d5667f1259266ea424815302c504f7cc710a15a301bd601a",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 7
+      }
+    },
+    {
+      "id": "terrain-piece-11-twin-courtyards-component-03",
+      "name": "Fire - Twin Courtyards component 03",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-03.png",
+      "width": 488,
+      "height": 260,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "9f36ca9cf3ee31250d67ca6a0efe79608386bb6c9c8eb5e9ca4f698ec837ea77",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twin-courtyards",
+        "component": 3,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 698,
+          "y": 1365,
+          "width": 244,
+          "height": 130
+        },
+        "originalCoreBounds": {
+          "x": 698,
+          "y": 1365,
+          "width": 244,
+          "height": 130
+        },
+        "generatedSha256": "5e145d70d133f890a264c30fce950d92efe8c76e49b6b946ea0459bc64b3057c",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 591
+      }
+    },
+    {
+      "id": "terrain-piece-11-twin-courtyards-component-04",
+      "name": "Fire - Twin Courtyards component 04",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-04.png",
+      "width": 388,
+      "height": 468,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "ef5b20eaed74c2179ad76978676a87575c10b40abaf9b6ce29cbc345f9d25488",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twin-courtyards",
+        "component": 4,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 10,
+          "y": 141,
+          "width": 194,
+          "height": 234
+        },
+        "originalCoreBounds": {
+          "x": 10,
+          "y": 141,
+          "width": 194,
+          "height": 234
+        },
+        "generatedSha256": "34aefdfac7fd46d9a7611ee1f1b02bfe1be8d17ae0238881269cf6fccba815e6",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 110
+      }
+    },
+    {
+      "id": "terrain-piece-11-twin-courtyards-component-05",
+      "name": "Fire - Twin Courtyards component 05",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-05.png",
+      "width": 312,
+      "height": 432,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "ad457f9e075ea72978eebdd5fa85db4ca8a56e0217fbaf1c8c695a8dc6a3e18f",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twin-courtyards",
+        "component": 5,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 807,
+          "y": 417,
+          "width": 156,
+          "height": 216
+        },
+        "originalCoreBounds": {
+          "x": 807,
+          "y": 417,
+          "width": 156,
+          "height": 216
+        },
+        "generatedSha256": "70bce41228374b925a5887b3023d2b038c7a712ab399dc9df23ba639e814a3aa",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 108
+      }
+    },
+    {
+      "id": "terrain-piece-11-twin-courtyards-component-06",
+      "name": "Fire - Twin Courtyards component 06",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-06.png",
+      "width": 350,
+      "height": 250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "3838dde7fb3fe274eba3ed7261996b95481e28323fb6254c1da2cdf108bbeb96",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twin-courtyards",
+        "component": 6,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 23,
+          "y": 1371,
+          "width": 175,
+          "height": 125
+        },
+        "originalCoreBounds": {
+          "x": 23,
+          "y": 1371,
+          "width": 175,
+          "height": 125
+        },
+        "generatedSha256": "4c77c9196e94c1e6b355483be5813dcf0f52795d8e339595d1828fbaed04835a",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 200
+      }
+    },
+    {
+      "id": "terrain-piece-11-twin-courtyards-component-07",
+      "name": "Fire - Twin Courtyards component 07",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-07.png",
+      "width": 212,
+      "height": 376,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "c9d600c6c676a0420423aa451d41132a8444f99062339192cabfb3f7c46fd95e",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twin-courtyards",
+        "component": 7,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 8,
+          "y": 419,
+          "width": 106,
+          "height": 188
+        },
+        "originalCoreBounds": {
+          "x": 8,
+          "y": 419,
+          "width": 106,
+          "height": 188
+        },
+        "generatedSha256": "6d1be92de06ee583d4036d978c1238a6ffe0d869d0fa36fc23da02b0f84296f1",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 176
+      }
+    },
+    {
+      "id": "terrain-piece-11-twin-courtyards-component-08",
+      "name": "Fire - Twin Courtyards component 08",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-08.png",
+      "width": 160,
+      "height": 350,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "23c3f38618f432a576fc4ef598c345856e09637ea1735fba7fe408ce904c21f9",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twin-courtyards",
+        "component": 8,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 10,
+          "y": 1156,
+          "width": 80,
+          "height": 175
+        },
+        "originalCoreBounds": {
+          "x": 10,
+          "y": 1156,
+          "width": 80,
+          "height": 175
+        },
+        "generatedSha256": "f104a34d25c0eaa135a8c00e2bd859f48a6d761fa021b5368494a302db6b75bf",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 168
+      }
+    },
+    {
+      "id": "terrain-piece-11-twin-courtyards-component-09",
+      "name": "Fire - Twin Courtyards component 09",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/11-twin-courtyards/component-09.png",
+      "width": 172,
+      "height": 350,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "0fc5a974bdcee199770898e31cbc897791958100da172de24124126961093053",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twin-courtyards",
+        "component": 9,
+        "originalAsset": "concept-terrain-11-twin-courtyards",
+        "sourceBounds": {
+          "x": 870,
+          "y": 1163,
+          "width": 86,
+          "height": 175
+        },
+        "originalCoreBounds": {
+          "x": 870,
+          "y": 1163,
+          "width": 86,
+          "height": 175
+        },
+        "generatedSha256": "f604ff150bf5163b591b2ca7ffad146956fb42c13fad9fc45ca0bbd3402cd40e",
+        "originalSha256": "5c43ea0033277928f67790191a13e583da82d4edcd870c6570e3d12205665874",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 54
+      }
+    },
+    {
+      "id": "terrain-piece-12-forked-harbor-component-01-segment-01",
+      "name": "Autumn - Forked Harbor component 01 segment 01",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-01-segment-01.png",
+      "width": 470,
+      "height": 1034,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "b0ee82bd8a71bd862d536504210a1470d942c51c73bc914e8bebd396ec5e64f0",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "forked-harbor",
+        "component": 1,
+        "segment": 1,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 252,
+          "y": 515,
+          "width": 235,
+          "height": 517
+        },
+        "originalCoreBounds": {
+          "x": 253,
+          "y": 516,
+          "width": 233,
+          "height": 515
+        },
+        "generatedSha256": "0565229bbe6e811c0e995410ea01dd625d64866c3c5d70db81f271e289b612d3",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": true,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-12-forked-harbor-component-01-segment-02",
+      "name": "Autumn - Forked Harbor component 01 segment 02",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-01-segment-02.png",
+      "width": 606,
+      "height": 1182,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "1e8dd35b1b7b3df78fb3c0c8d7285f2671d19ecfec70a43fefa07aca751f3684",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "forked-harbor",
+        "component": 1,
+        "segment": 2,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 485,
+          "y": 441,
+          "width": 303,
+          "height": 591
+        },
+        "originalCoreBounds": {
+          "x": 486,
+          "y": 442,
+          "width": 301,
+          "height": 589
+        },
+        "generatedSha256": "61a7f359217b8032367a035341045d2711a63f4d8032f35e74c6074a64c40b53",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": true,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-12-forked-harbor-component-01-segment-03",
+      "name": "Autumn - Forked Harbor component 01 segment 03",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-01-segment-03.png",
+      "width": 970,
+      "height": 1180,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "d53e8620b0c00d4ed700b60a95ea69d2e0b4d5abb67bb1e26c13332817b608b9",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "forked-harbor",
+        "component": 1,
+        "segment": 3,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 2,
+          "y": 1030,
+          "width": 485,
+          "height": 590
+        },
+        "originalCoreBounds": {
+          "x": 3,
+          "y": 1031,
+          "width": 483,
+          "height": 588
+        },
+        "generatedSha256": "7b2af0eb636c31eea09b2f22f2637364796f5b70b825086f14a56b0961902cc2",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": true,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 3
+      }
+    },
+    {
+      "id": "terrain-piece-12-forked-harbor-component-01-segment-04",
+      "name": "Autumn - Forked Harbor component 01 segment 04",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-01-segment-04.png",
+      "width": 970,
+      "height": 1180,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "6acd62923559102c80ad3978d65684b6429d1074fb2a327a2d1cf7bd7ca5fd9a",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "forked-harbor",
+        "component": 1,
+        "segment": 4,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 485,
+          "y": 1030,
+          "width": 485,
+          "height": 590
+        },
+        "originalCoreBounds": {
+          "x": 486,
+          "y": 1031,
+          "width": 483,
+          "height": 588
+        },
+        "generatedSha256": "6e2783178580430d82ff293c95c13c696a9dac1239d7a701551f83a8b1e73329",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": true,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 5
+      }
+    },
+    {
+      "id": "terrain-piece-12-forked-harbor-component-02",
+      "name": "Autumn - Forked Harbor component 02",
       "category": "cliffs",
       "biomes": [
         "autumn"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/12-forked-harbor.png",
-      "width": 971,
-      "height": 1619,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-02.png",
+      "width": 422,
+      "height": 1054,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.9155509783728115,
-      "sha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "31d157a5100fb573afb1d3b6c10ecc862dcfbb79ae00be48c441c38c1175cb4a",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "forked-harbor",
-        "biome": "autumn",
-        "outlineWorldScale": 1.9155509783728115
+        "component": 2,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 758,
+          "y": 145,
+          "width": 211,
+          "height": 527
+        },
+        "originalCoreBounds": {
+          "x": 758,
+          "y": 145,
+          "width": 211,
+          "height": 527
+        },
+        "generatedSha256": "4326e7a57ad30c924d84f34cdfb46fa965a7af66fe4c879b379e79ce709dcdbd",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 2
       }
     },
     {
-      "id": "concept-terrain-13-crossed-heights",
-      "name": "Fire - Crossed Heights terrain",
+      "id": "terrain-piece-12-forked-harbor-component-03",
+      "name": "Autumn - Forked Harbor component 03",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-03.png",
+      "width": 504,
+      "height": 624,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "28762e668033fcf08eec86e1f7aa55cec3e31c9839e367d25ed344c721e7205b",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "forked-harbor",
+        "component": 3,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 3,
+          "y": 145,
+          "width": 252,
+          "height": 312
+        },
+        "originalCoreBounds": {
+          "x": 3,
+          "y": 145,
+          "width": 252,
+          "height": 312
+        },
+        "generatedSha256": "dd816020c78665d47d07deccc750b05180eee3f52025c5283ec4225d45b41b27",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-12-forked-harbor-component-04",
+      "name": "Autumn - Forked Harbor component 04",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-04.png",
+      "width": 496,
+      "height": 260,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "fa09750a847bd84c3003ba015d76150ac0ae54e90ea923d42e7fe1ac329d0f86",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "forked-harbor",
+        "component": 4,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 275,
+          "y": 145,
+          "width": 248,
+          "height": 130
+        },
+        "originalCoreBounds": {
+          "x": 275,
+          "y": 145,
+          "width": 248,
+          "height": 130
+        },
+        "generatedSha256": "285319d8577547a756306d9cbc269d483ff682d9c4bf8cdf9d72f9428dde75ad",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 3
+      }
+    },
+    {
+      "id": "terrain-piece-12-forked-harbor-component-05",
+      "name": "Autumn - Forked Harbor component 05",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-05.png",
+      "width": 180,
+      "height": 628,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "dfb9bd6bb1804f1f7fd8d4a6eab513063c94faa274052b36fc11f1de1231ee1d",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "forked-harbor",
+        "component": 5,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 879,
+          "y": 909,
+          "width": 90,
+          "height": 314
+        },
+        "originalCoreBounds": {
+          "x": 879,
+          "y": 909,
+          "width": 90,
+          "height": 314
+        },
+        "generatedSha256": "adf4e992abbf3ad2d9b4b89b1446c555325218b58ae4063b62b77f09cee1f963",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-12-forked-harbor-component-06",
+      "name": "Autumn - Forked Harbor component 06",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/12-forked-harbor/component-06.png",
+      "width": 120,
+      "height": 228,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "265a708c5ddf51ba1b9a7ca9433c2e9ab560bdce82b773ad545a7b8f83daa49c",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "forked-harbor",
+        "component": 6,
+        "originalAsset": "concept-terrain-12-forked-harbor",
+        "sourceBounds": {
+          "x": 3,
+          "y": 832,
+          "width": 60,
+          "height": 114
+        },
+        "originalCoreBounds": {
+          "x": 3,
+          "y": 832,
+          "width": 60,
+          "height": 114
+        },
+        "generatedSha256": "375f9aa09592587842072a6c1d35e1d9cc081da8e10ee8ce3d57eb812bf826bb",
+        "originalSha256": "6f2346087aa5125c08ba514ab0581591e956790d52cdaaa93701e3ef0421e46c",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": [
+          67,
+          189,
+          226
+        ],
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-13-crossed-heights-component-01-semantic-01-bridge",
+      "name": "Fire - Crossed Heights component 01 semantic 01 bridge",
+      "category": "bridges",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-01-semantic-01-bridge.png",
+      "width": 238,
+      "height": 892,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "d0a3b90d4da81a394514a5310c1aeec58b00d361f8be8cbb7e04150c58e1b015",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crossed-heights",
+        "component": 1,
+        "segment": 1,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 419,
+          "y": 635,
+          "width": 119,
+          "height": 446
+        },
+        "originalCoreBounds": {
+          "x": 420,
+          "y": 636,
+          "width": 117,
+          "height": 444
+        },
+        "generatedSha256": "e8b77c27bfb7e9b29889b07542db462a8118f67dafee4c2468e6018c594ba3fc",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": true,
+        "semanticRole": "bridge",
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-13-crossed-heights-component-01-semantic-02-upper-cliff",
+      "name": "Fire - Crossed Heights component 01 semantic 02 upper cliff",
       "category": "cliffs",
       "biomes": [
         "fire"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/13-crossed-heights.png",
-      "width": 971,
-      "height": 1619,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-01-semantic-02-upper-cliff.png",
+      "width": 886,
+      "height": 386,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.9155509783728115,
-      "sha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "7008d2c38a235ea8718311ec7d5fa060fd040222be65c689072fb2c2aa7a3d97",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "crossed-heights",
-        "biome": "fire",
-        "outlineWorldScale": 1.9155509783728115
+        "component": 1,
+        "segment": 2,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 256,
+          "y": 620,
+          "width": 443,
+          "height": 193
+        },
+        "originalCoreBounds": {
+          "x": 257,
+          "y": 621,
+          "width": 441,
+          "height": 191
+        },
+        "generatedSha256": "f8c5e7af127c2d6da4c78ba7855057763bef2b08f5d151321820a03c0f0cd9f6",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": "upper-cliff",
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 337
       }
     },
     {
-      "id": "concept-terrain-15-twinwater-saddle",
-      "name": "Ice - Twinwater Saddle terrain",
+      "id": "terrain-piece-13-crossed-heights-component-01-semantic-03-lower-cliff",
+      "name": "Fire - Crossed Heights component 01 semantic 03 lower cliff",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-01-semantic-03-lower-cliff.png",
+      "width": 1936,
+      "height": 276,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "b41dfbbd215b2aabc818ef987b4a775eed5596219376ecf9328fbbdd54b09b24",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crossed-heights",
+        "component": 1,
+        "segment": 3,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 2,
+          "y": 974,
+          "width": 968,
+          "height": 138
+        },
+        "originalCoreBounds": {
+          "x": 3,
+          "y": 975,
+          "width": 966,
+          "height": 136
+        },
+        "generatedSha256": "8056fe61fdcc11e3ff03f3d30f50924512d972319b301a4b84951c5a265563d5",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": "lower-cliff",
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 1157
+      }
+    },
+    {
+      "id": "terrain-piece-13-crossed-heights-component-02",
+      "name": "Fire - Crossed Heights component 02",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-02.png",
+      "width": 276,
+      "height": 760,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "fdaa5ec138f8fd73163acf3fc49d9beec1c6f9030b4b6ab52d28d460478078ba",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crossed-heights",
+        "component": 2,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 832,
+          "y": 125,
+          "width": 138,
+          "height": 380
+        },
+        "originalCoreBounds": {
+          "x": 832,
+          "y": 125,
+          "width": 138,
+          "height": 380
+        },
+        "generatedSha256": "ed11a1e2fbd707b581aa2c89165434c80659806b01f9b1ae8d7f7fb7c586cb9c",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 37
+      }
+    },
+    {
+      "id": "terrain-piece-13-crossed-heights-component-03",
+      "name": "Fire - Crossed Heights component 03",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-03.png",
+      "width": 326,
+      "height": 564,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "08742d94f52b2a8099b14a5a10bf71fb7fb1a565713894e696b9c3342b71c391",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crossed-heights",
+        "component": 3,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 807,
+          "y": 1234,
+          "width": 163,
+          "height": 282
+        },
+        "originalCoreBounds": {
+          "x": 807,
+          "y": 1234,
+          "width": 163,
+          "height": 282
+        },
+        "generatedSha256": "c5f1ed9f03caac593287e1cc3fc92521c8b8663b2803a98b03bea6b12d10e77a",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 565
+      }
+    },
+    {
+      "id": "terrain-piece-13-crossed-heights-component-04",
+      "name": "Fire - Crossed Heights component 04",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-04.png",
+      "width": 456,
+      "height": 404,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "cd20324135392430d698acf1f26b256c8bf70ede0b9e0873a48ffe6ad7c8e1ac",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crossed-heights",
+        "component": 4,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 742,
+          "y": 615,
+          "width": 228,
+          "height": 202
+        },
+        "originalCoreBounds": {
+          "x": 742,
+          "y": 615,
+          "width": 228,
+          "height": 202
+        },
+        "generatedSha256": "02065d5374ba2efde6ecdf2787e1a6862ba8aac70c1b388e6267a895571e052d",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 3464
+      }
+    },
+    {
+      "id": "terrain-piece-13-crossed-heights-component-05",
+      "name": "Fire - Crossed Heights component 05",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-05.png",
+      "width": 422,
+      "height": 400,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "84bfdb3b8cb0a63968c6891513fefdaccf5047b02e82e5545f2ed75996975c4c",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crossed-heights",
+        "component": 5,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 2,
+          "y": 614,
+          "width": 211,
+          "height": 200
+        },
+        "originalCoreBounds": {
+          "x": 2,
+          "y": 614,
+          "width": 211,
+          "height": 200
+        },
+        "generatedSha256": "7f453b3b7486d71c2e6e4a170d7c52717dce25fefbbab3e934e24a8b48229046",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 1040
+      }
+    },
+    {
+      "id": "terrain-piece-13-crossed-heights-component-06",
+      "name": "Fire - Crossed Heights component 06",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-06.png",
+      "width": 266,
+      "height": 594,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "dae709524a1801a9b1d4b95653ac23a1af66f9009f3fb2d7a4bdd318af66b355",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crossed-heights",
+        "component": 6,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 3,
+          "y": 1218,
+          "width": 133,
+          "height": 297
+        },
+        "originalCoreBounds": {
+          "x": 3,
+          "y": 1218,
+          "width": 133,
+          "height": 297
+        },
+        "generatedSha256": "6662ee4d82dddfaed8cb9435d97ab557edb02e7abce7c8c787ee1b3213928a1b",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 21
+      }
+    },
+    {
+      "id": "terrain-piece-13-crossed-heights-component-07",
+      "name": "Fire - Crossed Heights component 07",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/component-07.png",
+      "width": 278,
+      "height": 462,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "bc474d6e0748e2e5e51d33943192885dceeacd8dd29f703ed0c35ccd84ba7889",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "crossed-heights",
+        "component": 7,
+        "originalAsset": "concept-terrain-13-crossed-heights",
+        "sourceBounds": {
+          "x": 3,
+          "y": 125,
+          "width": 139,
+          "height": 231
+        },
+        "originalCoreBounds": {
+          "x": 3,
+          "y": 125,
+          "width": 139,
+          "height": 231
+        },
+        "generatedSha256": "29366202cf83178dd9694a9ccc0524069aa2b3d8d63cb5759ff552c47ebe3326",
+        "originalSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-15-twinwater-saddle-component-01",
+      "name": "Ice - Twinwater Saddle component 01",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/15-twinwater-saddle/component-01.png",
+      "width": 1426,
+      "height": 1290,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "1035810104c6729edee8c807b2a5785ad466f3738efc2a06df1360b5cb058831",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twinwater-saddle",
+        "component": 1,
+        "originalAsset": "concept-terrain-15-twinwater-saddle",
+        "sourceBounds": {
+          "x": 284,
+          "y": 932,
+          "width": 713,
+          "height": 645
+        },
+        "originalCoreBounds": {
+          "x": 284,
+          "y": 932,
+          "width": 713,
+          "height": 645
+        },
+        "generatedSha256": "cc0ec3de16b0c078f53457306868b155e2b5e4e50086f7cb30645064f4011eda",
+        "originalSha256": "cf9d30741bb6f33e93c39d98d2a6547ff165328206dd27db50345993546c7c87",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": true,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-15-twinwater-saddle-component-02",
+      "name": "Ice - Twinwater Saddle component 02",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/15-twinwater-saddle/component-02.png",
+      "width": 1282,
+      "height": 1214,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "d8b95dd57062866a54287a5e971ac448597a983a3e03cb896cbc95489fd9fc5e",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twinwater-saddle",
+        "component": 2,
+        "originalAsset": "concept-terrain-15-twinwater-saddle",
+        "sourceBounds": {
+          "x": 0,
+          "y": 0,
+          "width": 641,
+          "height": 607
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 0,
+          "width": 641,
+          "height": 607
+        },
+        "generatedSha256": "6e64d152c9a7ebb4cfd3c9d339ce3fa9b9111c8a0425076abc394859a5e5c660",
+        "originalSha256": "cf9d30741bb6f33e93c39d98d2a6547ff165328206dd27db50345993546c7c87",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": true,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-15-twinwater-saddle-component-03",
+      "name": "Ice - Twinwater Saddle component 03",
       "category": "cliffs",
       "biomes": [
         "ice"
       ],
-      "file": "authoring/worlds/library/images/concept-biome-terrain/15-twinwater-saddle.png",
-      "width": 997,
-      "height": 1577,
+      "file": "authoring/worlds/library/images/concept-terrain-objects/15-twinwater-saddle/component-03.png",
+      "width": 208,
+      "height": 114,
       "anchor": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0
       },
-      "depth": "ground",
-      "defaultScale": 1.8655967903711133,
-      "sha256": "cf9d30741bb6f33e93c39d98d2a6547ff165328206dd27db50345993546c7c87",
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "449adc0b269888934c79c99b9439a93d67f773811187e83a92446897ac933135",
       "colorShift": {
         "alphaCutoff": 32
       },
       "source": {
-        "kind": "concept-biome-terrain",
-        "mode": "built-in imagegen",
+        "kind": "generated-terrain-piece",
         "concept": "twinwater-saddle",
-        "biome": "ice",
-        "outlineWorldScale": 1.8655967903711133
+        "component": 3,
+        "originalAsset": "concept-terrain-15-twinwater-saddle",
+        "sourceBounds": {
+          "x": 8,
+          "y": 1505,
+          "width": 104,
+          "height": 57
+        },
+        "originalCoreBounds": {
+          "x": 8,
+          "y": 1505,
+          "width": 104,
+          "height": 57
+        },
+        "generatedSha256": "7a65a63004dac1bea740cdc5577e60997b4a2236d17287872e61b366f9c33696",
+        "originalSha256": "cf9d30741bb6f33e93c39d98d2a6547ff165328206dd27db50345993546c7c87",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0
+      }
+    },
+    {
+      "id": "terrain-piece-15-twinwater-saddle-component-04",
+      "name": "Ice - Twinwater Saddle component 04",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/15-twinwater-saddle/component-04.png",
+      "width": 196,
+      "height": 104,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.9327983951855566,
+      "sha256": "135273e736ddaee502e91be2f77ac34864658f34b087d9ca4ee93755c52c5847",
+      "colorShift": {
+        "alphaCutoff": 32
+      },
+      "source": {
+        "kind": "generated-terrain-piece",
+        "concept": "twinwater-saddle",
+        "component": 4,
+        "originalAsset": "concept-terrain-15-twinwater-saddle",
+        "sourceBounds": {
+          "x": 889,
+          "y": 21,
+          "width": 98,
+          "height": 52
+        },
+        "originalCoreBounds": {
+          "x": 889,
+          "y": 21,
+          "width": 98,
+          "height": 52
+        },
+        "generatedSha256": "e4708c5d37c7ab7866a53a016bea4fa77249933435b9329a0fe8164baac8f16f",
+        "originalSha256": "cf9d30741bb6f33e93c39d98d2a6547ff165328206dd27db50345993546c7c87",
+        "pixelsPerSourcePixel": 2,
+        "geometry": "clipped original connected component",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": null,
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 28
       }
     }
   ],

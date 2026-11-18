@@ -12,15 +12,25 @@ function listJSON(root,folder){const directory=safe(root,folder);return fs.exist
 function cleanMap(value,id){
  const map=clone(value),stats={placements:0,strokes:0,foundation:false};
  const objects=list=>(list||[]).filter(object=>{if(object.assetId===id){stats.placements++;return false;}return true;});
+ function strokes(list){
+  const result=[],stack=[{source:list||[],output:result,at:0}];
+  while(stack.length){
+   const frame=stack[stack.length-1];
+   if(frame.at===frame.source.length){stack.pop();if(frame.group&&frame.output.length)stack[stack.length-1].output.push(frame.group);continue;}
+   const stroke=frame.source[frame.at++];
+   if(stroke.mode==='merged'&&Array.isArray(stroke.strokes)){const source=stroke.strokes;stroke.strokes=[];stack.push({source,output:stroke.strokes,at:0,group:stroke});continue;}
+   if(stroke.op==='erase'){if(stroke.assetId===id)delete stroke.assetId;if(stroke.edgeAssetId===id)delete stroke.edgeAssetId;}
+   else if(stroke.assetId===id||stroke.edgeAssetId===id){stats.strokes++;continue;}
+   frame.output.push(stroke);
+  }
+  return result;
+ }
  for(const layer of map.layers||[])layer.objects=objects(layer.objects);
  const layers=M.fixedGround.map(key=>map.ground&&map.ground[key]).concat(map.ground&&map.ground.custom||[]).filter(Boolean);
  for(const layer of layers){
   if(layer.baseAsset===id){layer.baseAsset=null;stats.foundation=true;}
   for(const key of ['images','tiles'])if(layer[key])layer[key]=objects(layer[key]);
-  if(layer.strokes)layer.strokes=layer.strokes.filter(stroke=>{
-   if(stroke.op==='erase'){if(stroke.assetId===id)delete stroke.assetId;if(stroke.edgeAssetId===id)delete stroke.edgeAssetId;return true;}
-   if(stroke.assetId===id||stroke.edgeAssetId===id){stats.strokes++;return false;}return true;
-  });
+  if(layer.strokes)layer.strokes=strokes(layer.strokes);
  }
  if(map.images)delete map.images[id];
  return {value:map,stats};

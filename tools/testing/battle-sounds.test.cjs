@@ -44,13 +44,55 @@ for (const biome of ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice',
   test('actual movement selects ' + biome + ' hooves and ambience using the effects volume channel', () => {
     const f = fixture(biome); f.start(); f.tick(); f.hero.node.x += 10; f.tick();
     const horse = f.played.find(p => p.path === 'sfx/hooves-' + biome + '-loop');
-    assert(horse); assert.equal(horse.loop, true); assert.equal(horse.volume, .225);
+    assert(horse); assert.equal(horse.loop, true); assert.equal(horse.volume, .325);
     assert.equal(f.played.some(p => p.path === 'sfx/ambience-' + biome + '-loop'), biome === 'lava');
     assert.equal(f.manager.musicKeys.length, 0); assert(f.played.every(p => p.source.mute));
     f.tick(); assert.equal(horse.source.state, 3, 'idle horse kept running');
     assert.deepEqual(f.writes, []);
   });
 }
+
+test('each hero style has its active biome decoded before the first movement without starting audio or saving', () => {
+  for (const style of ['fighter', 'vanguard', 'mystic', 'bruiser', 'guardian', 'skirmisher']) {
+    for (const surface of ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice', 'fire', 'lava']) {
+      const f = fixture(surface); f.hero.heroStyle = style; f.start();
+      const file = 'sfx/hooves-' + surface + '-loop';
+      assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio', file])));
+      assert.equal(f.played.length, 0); assert.equal(f.manager.audioSourceMap.size, 0);
+      f.hero.node.x += 4;
+      f.sounds.tick(f.game);
+      const horse = f.played.find(p => p.path === file);
+      assert(horse, style + ' waited for another movement frame or asset callback in ' + surface);
+      assert.equal(horse.volume, .325);
+      assert.deepEqual(f.writes, []);
+    }
+  }
+});
+
+test('muted setup and biome changes prepare movement clips without playback, including a later unmute', () => {
+  const f = fixture('forest'); f.preferences.effects = false; f.start();
+  assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio', 'sfx/hooves-forest-loop'])));
+  f.data.levelCfg.EnvironmentBiome = 'ice'; f.tick();
+  assert(f.manager.audioClipMap.has(JSON.stringify(['KinghtFallAudio', 'sfx/hooves-ice-loop'])));
+  assert.equal(f.played.length, 0); assert.equal(f.manager.audioSourceMap.size, 0);
+  f.preferences.effects = true; f.tick(); f.hero.node.x++; f.sounds.tick(f.game);
+  assert(f.played.some(p => p.path === 'sfx/hooves-ice-loop'));
+  assert.deepEqual(f.writes, []);
+});
+
+test('the hero is louder than nearby cavalry on their single shared loop and effects volume still scales both', () => {
+  const f = fixture('snow'), cavalry = f.actor(90004, { navigationTeam: 'friendly' });
+  f.soldiers.push(cavalry); f.start(); f.tick(); cavalry.node.x++; f.tick();
+  const horse = f.played.find(p => p.path === 'sfx/hooves-snow-loop');
+  assert.equal(horse.source.volume, .225);
+  f.hero.node.x++; cavalry.node.x++; f.tick();
+  assert.equal(horse.source.volume, .325);
+  assert.equal(f.played.filter(p => p.path === horse.path).length, 1, 'hero movement restarted the cavalry loop');
+  cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .225);
+  f.manager.setEffectVolume(.25); cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .1125);
+  f.hero.node.x++; cavalry.node.x++; f.tick(); assert.equal(horse.source.volume, .1625);
+  f.manager.setEffectVolume(0); f.tick(); assert.equal(horse.source.state, 3);
+});
 
 test('explicit biome wins over shared legacy maps, while legacy and invalid values have stable fallbacks', () => {
   const f = fixture('ice'); assert.equal(f.sounds.biome(f.game), 'ice');
@@ -108,7 +150,10 @@ test('hero death, hit-stop, distance, pause, hide, mute and battle exit stop mov
 
 test('a late loop from another biome, a paused game or a retired battle cannot start', () => {
   for (const mode of ['biome', 'pause', 'retire']) {
-    const f = fixture('snow'); f.start(); f.tick(); f.hero.node.x += 4; f.sounds.tick(f.game);
+    const f = fixture('snow'); f.start(); f.tick();
+    // Exercise a cold/retried request even though normal setup now preloads it.
+    f.manager.audioClipMap.delete(JSON.stringify(['KinghtFallAudio', 'sfx/hooves-snow-loop']));
+    f.hero.node.x += 4; f.sounds.tick(f.game);
     assert(f.pending.some(p => p.file === 'sfx/hooves-snow-loop'));
     if (mode === 'biome') { f.data.levelCfg.EnvironmentBiome = 'ice'; f.hero.node.x += 4; f.sounds.tick(f.game); }
     if (mode === 'pause') f.sounds.suspend(f.game, true);

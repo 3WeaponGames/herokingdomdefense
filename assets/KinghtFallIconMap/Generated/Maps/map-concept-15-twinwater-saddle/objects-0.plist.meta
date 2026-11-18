@@ -4,11 +4,77 @@
   "importer": "sprite-atlas",
   "rawTextureUuid": "5273e104-fecb-40a0-a0dd-213f505fcdde",
   "size": {
-    "width": 262,
-    "height": 871
+    "width": 2038,
+    "height": 1294
   },
   "type": "Texture Packer",
   "subMetas": {
+    "masked-object-344-0-0": {
+      "ver": "1.0.6",
+      "uuid": "fb68bca5-6538-48bc-ae76-ef69d2717a08",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "5273e104-fecb-40a0-a0dd-213f505fcdde",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1426,
+      "height": 1290,
+      "rawWidth": 1426,
+      "rawHeight": 1290,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
+    "masked-object-346-0-0": {
+      "ver": "1.0.6",
+      "uuid": "1d97ce13-f45f-41f6-abb2-f06c7851d83e",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "5273e104-fecb-40a0-a0dd-213f505fcdde",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 1709,
+      "trimY": 344,
+      "width": 208,
+      "height": 114,
+      "rawWidth": 208,
+      "rawHeight": 114,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
+    "terrain-piece-15-twinwater-saddle-component-04-0-0": {
+      "ver": "1.0.6",
+      "uuid": "c83ba96b-a14f-4cdd-a13e-9bd4ff94bc9b",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "5273e104-fecb-40a0-a0dd-213f505fcdde",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 1432,
+      "trimY": 411,
+      "width": 196,
+      "height": 104,
+      "rawWidth": 196,
+      "rawHeight": 104,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
     "native-env-8438892e8f2ed3a45899a920adbbdc94-0-0": {
       "ver": "1.0.6",
       "uuid": "411ec5cc-b93e-42fc-a6f3-0e1807706a5b",
@@ -19,8 +85,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 142,
-      "trimY": 453,
+      "trimX": 1709,
+      "trimY": 243,
       "width": 33,
       "height": 63,
       "rawWidth": 33,
@@ -29,7 +95,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-fd332a52614a84141afaeabab5a37564-0-0": {
@@ -42,8 +107,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 2,
-      "trimY": 523,
+      "trimX": 1732,
+      "trimY": 2,
       "width": 109,
       "height": 178,
       "rawWidth": 109,
@@ -52,7 +117,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-2ada25ca07af4cc4aa66f40852b22377-0-0": {
@@ -65,7 +129,7 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 162,
+      "trimX": 1950,
       "trimY": 2,
       "width": 86,
       "height": 113,
@@ -75,7 +139,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-6930a84ff76c0174ea4924a5d6cd4ec6-0-0": {
@@ -88,8 +151,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 2,
-      "trimY": 282,
+      "trimX": 1592,
+      "trimY": 2,
       "width": 136,
       "height": 237,
       "rawWidth": 136,
@@ -98,7 +161,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-0803a605ba81f1147bbc236f18763e2b-0-0": {
@@ -111,8 +173,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 2,
-      "trimY": 705,
+      "trimX": 1592,
+      "trimY": 243,
       "width": 113,
       "height": 164,
       "rawWidth": 113,
@@ -121,7 +183,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-98029dcad6e868d43bf01314db375b7f-0-0": {
@@ -134,8 +195,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 179,
-      "trimY": 453,
+      "trimX": 1632,
+      "trimY": 411,
       "width": 25,
       "height": 57,
       "rawWidth": 25,
@@ -144,7 +205,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-890075409d3f661449263dbcc59c1f68-0-0": {
@@ -157,7 +217,7 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 162,
+      "trimX": 1950,
       "trimY": 119,
       "width": 86,
       "height": 113,
@@ -167,7 +227,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-2db258c3cf2f7c247852da416ed29ac2-0-0": {
@@ -180,7 +239,7 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 2,
+      "trimX": 1432,
       "trimY": 2,
       "width": 156,
       "height": 276,
@@ -190,7 +249,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-3afac796f34b6a640a47928bd74a3f65-0-0": {
@@ -203,8 +261,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 115,
-      "trimY": 523,
+      "trimX": 1845,
+      "trimY": 2,
       "width": 101,
       "height": 167,
       "rawWidth": 101,
@@ -213,7 +271,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-3fd158c0033f53443bbc9a6d994d6f5e-0-0": {
@@ -226,8 +283,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 142,
-      "trimY": 282,
+      "trimX": 1845,
+      "trimY": 173,
       "width": 101,
       "height": 167,
       "rawWidth": 101,
@@ -236,7 +293,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-ea7be898b8391ad42ac3788fb93b23a9-0-0": {
@@ -249,8 +305,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 162,
-      "trimY": 236,
+      "trimX": 1661,
+      "trimY": 411,
       "width": 44,
       "height": 37,
       "rawWidth": 44,
@@ -259,7 +315,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-02d249533c54bae4f878c6e3f2a8b8ec-0-0": {
@@ -272,8 +327,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 208,
-      "trimY": 453,
+      "trimX": 1709,
+      "trimY": 310,
       "width": 36,
       "height": 30,
       "rawWidth": 36,
@@ -282,7 +337,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-20e260197e88ab642b75418c56393952-0-0": {
@@ -295,8 +349,8 @@
       "rotated": false,
       "offsetX": 0,
       "offsetY": 0,
-      "trimX": 210,
-      "trimY": 236,
+      "trimX": 1732,
+      "trimY": 184,
       "width": 50,
       "height": 32,
       "rawWidth": 50,
@@ -305,7 +359,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     }
   }

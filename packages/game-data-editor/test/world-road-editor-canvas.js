@@ -9,10 +9,10 @@ async function verify(){
  for(let i=0;i<60;i++)library.push(Object.assign({},library[3],{id:'scroll-tree-'+i,name:'Tree palette '+i}));
  for(let i=0;i<45;i++)library.push(Object.assign({},library[0],{id:'scroll-field-'+i,name:'Field palette '+i}));
  let map=M.createMap('RoadTest','Road test','forest','field');map.size={width:600,height:700};map.playable=clone(map.size);map.FutureSetting={keep:'original'};
- const original=clone(map),undo=[],redo=[];let version=1,saves=0,changes=0;
+ const original=clone(map),undo=[],redo=[];let version=1,saves=0,applies=0,changes=0;
  const collections={groups:[],favorites:[],dirty:false,canUndo:false,canRedo:false};
  const snapshot=()=>({key:'map:RoadTest',version,value:clone(map),collections,dirty:JSON.stringify(map)!==JSON.stringify(original),canUndo:!!undo.length,canRedo:!!redo.length,issues:[],affected:[]});
- async function ipc(name,q){if(name==='world-catalog')return {version,maps:[{id:map.id,name:map.name,biome:map.biome}],library,images:{},collections,recovery:false,interval:.5};if(name==='world-load')return snapshot();if(name==='world-save'){saves++;throw Error('Saves disabled in road UI audit');}if(q.version!==version)throw Error('Stale test revision');if(name==='world-change'){undo.push(clone(map));redo.length=0;map=clone(q.value);changes++;}else if(name==='world-undo'){redo.push(clone(map));map=undo.pop();}else if(name==='world-redo'){undo.push(clone(map));map=redo.pop();}else throw Error('Unexpected IPC '+name);version++;return snapshot();}
+ async function ipc(name,q){if(name==='world-catalog')return {version,maps:[{id:map.id,name:map.name,biome:map.biome}],library,images:{},collections,recovery:false,interval:.5};if(name==='world-load')return snapshot();if(name==='world-save'){saves++;throw Error('Saves disabled in road UI audit');}if(name==='world-apply'){applies++;throw Error('Apply disabled in road UI audit');}if(q.version!==version)throw Error('Stale test revision');if(name==='world-change'){undo.push(clone(map));redo.length=0;map=clone(q.value);changes++;}else if(name==='world-undo'){redo.push(clone(map));map=undo.pop();}else if(name==='world-redo'){undo.push(clone(map));map=redo.pop();}else throw Error('Unexpected IPC '+name);version++;return snapshot();}
  const host=document.createElement('div');host.style.cssText='height:850px;width:1260px';document.body.appendChild(host);const client=Client.mount(host,{kind:'maps',ipc,preferenceKey:'world-road-native-check'}),state=client._state;
  try{
   for(let i=0;i<100&&!state.snap;i++)await pause(10);if(!state.snap)throw Error('Road editor did not load');await raf();await raf();
@@ -23,6 +23,8 @@ async function verify(){
   const field=name=>{const row=Array.from(inspector.querySelectorAll('label')).find(l=>l.firstElementChild&&l.firstElementChild.textContent===name);return row&&row.querySelector('input,select');};
   const change=async(name,value)=>{const input=field(name);if(!input)throw Error('Missing field '+name);input.value=String(value);await input.onchange();await settle();};
   const choose=async id=>{const b=left.querySelector('[data-asset="'+id+'"]');if(!b)throw Error('Missing asset '+id);await b.onclick();await settle();};
+  const mergeButton=()=>Array.from(inspector.querySelectorAll('button')).find(b=>b.textContent==='Merge brush strokes');
+  const roadRow=()=>root.querySelector('[data-layer="roads"]');
   const event=(p,extra)=>{const r=canvas.getBoundingClientRect();return Object.assign({clientX:r.left+canvas.width/2+state.pan.x+p.x*state.zoom,clientY:r.top+canvas.height/2+state.pan.y-p.y*state.zoom,button:0,pointerId:4},extra);};
   async function stroke(points,extra){canvas.onpointerdown(event(points[0],extra));for(const p of points.slice(1))canvas.onpointermove(event(p));canvas.onpointerup();await settle();}
   assert(changes===0&&saves===0&&JSON.stringify(map)===JSON.stringify(original),'opening the ground editor leaves source documents and progress untouched');
@@ -31,6 +33,7 @@ async function verify(){
   await click('Objects');assert(left.querySelector('[data-asset="tree"]')&&!left.querySelector('[data-asset="road"]')&&!left.querySelector('[data-asset="field"]'),'Objects retains scenery while terrain tiles stay in Ground');await click('Ground');
   await choose('field');await change('Shape','square');
   await choose('edge');assert(field('Paint mode')&&field('Paint mode').value==='road'&&field('Road width'),'selecting Road up activates the paired curved road brush');
+  assert(mergeButton()&&mergeButton().disabled,'Merge is disabled for an empty paint layer');
   assert(!field('Hardness')&&!field('Shape'),'road brush hides unrelated stamp shape and soft-edge controls');
   assert(changes===0&&saves===0,'choosing terrain textures changes tools without writing a map');
   await change('Road width',90);await change('Edge scale',.7);await change('Texture tiling',1.5);
@@ -40,21 +43,33 @@ async function verify(){
   const points=[{x:-170,y:120},{x:-100,y:110},{x:-55,y:30},{x:20,y:-20},{x:120,y:20}],undoBefore=undo.length;await stroke(points);
   let first=map.ground.roads.strokes[0];assert(first.mode==='road'&&first.assetId==='road'&&first.edgeAssetId==='edge'&&first.edgeScale===.7,'Road up painting stores the paired fill and edge, not a repeating strip stamp');
   assert(first.points.length===points.length&&first.size===90&&first.textureScale===1.5,'freehand road keeps its turns, chosen width and tiling');
+  assert(mergeButton().disabled,'Merge is disabled when a layer has only one brush recipe');
   assert(undo.length===undoBefore+1,'one road gesture creates one undo entry');const afterFirst=clone(map);await click('Undo');assert(map.ground.roads.strokes.length===0&&map.FutureSetting.keep==='original','undo restores the complete road gesture without changing unknown data');await click('Redo');assert(JSON.stringify(map)===JSON.stringify(afterFirst),'redo restores all paired road settings');
   await stroke([{x:120,y:20},{x:130,y:120},{x:180,y:160}],{shiftKey:true});assert(map.ground.roads.strokes[1].points.length===2,'Shift constrains curved-road input to a single straight centerline');
   await tool('Soft Eraser (E)');await stroke([{x:0,y:0},{x:35,y:10}]);assert(map.ground.roads.strokes[2].op==='erase','the existing eraser can edit a road layer');
   await tool('Hand / pan (H)');assert(!field('Road width')&&!field('Edge scale')&&!field('Paint mode'),'road controls disappear when another tool is selected');
   await choose('field');assert(field('Paint mode').value==='texture'&&field('Hardness')&&!field('Edge scale'),'Field tiles keep the normal terrain brush');await stroke([{x:-60,y:-180},{x:60,y:-140}]);assert(map.ground.roads.strokes[3].mode!=='road'&&map.ground.roads.strokes[3].assetId==='field','ordinary field paint retains its existing stroke format');
+  assert(map.ground.roads.strokes[3].roadCutout===true,'a new Field gesture records its same-layer road-cutout intent');
+  const fieldPainted=clone(map);await click('Undo');assert(map.ground.roads.strokes.length===3,'undo removes one complete Field-cut gesture');await click('Redo');assert(JSON.stringify(map)===JSON.stringify(fieldPainted),'redo restores Field-cut geometry, opacity and its source settings exactly');
+  await click('Fill selected layer');const fill=map.ground.roads.strokes.at(-1);assert(fill.assetId==='field'&&fill.shape==='square'&&fill.roadCutout===true&&fill.hardness===1,'Fill selected layer preserves Field-cut intent in one editable stroke');await click('Undo');assert(JSON.stringify(map)===JSON.stringify(fieldPainted),'undoing a Field fill restores the entire previous map without saving');
+  await roadRow().querySelector('[aria-label="Lock layer"]').onclick();await settle();assert(!mergeButton()||mergeButton().disabled,'Merge cannot run on a locked paint layer');await click('Undo');assert(JSON.stringify(map)===JSON.stringify(fieldPainted),'undoing the lock restores all paint recipes and unknown map fields');
+  await roadRow().querySelector('[aria-label="Hide layer"]').onclick();await settle();assert(!mergeButton()||mergeButton().disabled,'Merge cannot run on a hidden paint layer');await click('Undo');
+  assert(mergeButton()&&!mergeButton().disabled,'Merge is enabled for multiple recipes in the visible unlocked selected layer');
+  const mergeUndo=undo.length;await click('Merge brush strokes');const mergedPainted=clone(map),count=roadRow().querySelector('.world-count');
+  assert(map.ground.roads.strokes.length===1&&map.ground.roads.strokes[0].mode==='merged'&&JSON.stringify(map.ground.roads.strokes[0].strokes)===JSON.stringify(fieldPainted.ground.roads.strokes),'the Merge button creates one group containing the exact chronological road, erase and Field recipes');
+  assert(count.textContent==='1'&&count.title.includes('1 paint group'),'the selected layer count describes one merged paint group');
+  assert(undo.length===mergeUndo+1&&mergeButton().disabled,'Merge makes one undoable draft edit and disables a redundant merge');
+  await click('Undo');assert(JSON.stringify(map)===JSON.stringify(fieldPainted),'Undo restores all unmerged brush recipes exactly');await click('Redo');assert(JSON.stringify(map)===JSON.stringify(mergedPainted),'Redo restores the same merged recipe group exactly');await click('Undo');
   await choose('road');assert(field('Paint mode').value==='road','selecting a Road fill also finds its matching edge automatically');await change('Paint mode','texture');assert(field('Hardness')&&!field('Edge scale'),'plain texture painting remains available for road tiles');
-  await choose('custom');assert(!field('Paint mode')&&field('Hardness'),'uploaded ground imagery remains available without being treated as a road');
+  assert(!left.querySelector('[data-asset="custom"]'),'custom object imagery stays outside the Field and Road brush palette');
   await choose('edge');const before=Number(field('Road width').value);canvas.onwheel(Object.assign(event({x:0,y:0}),{shiftKey:true,deltaY:-60,deltaMode:0,preventDefault(){}}));await settle();assert(Number(field('Road width').value)>before,'Shift + Scroll resizes road width');
   const grid=left.querySelector('#world-palette');grid.scrollTop=grid.scrollHeight-grid.clientHeight;const groundScroll=grid.scrollTop;assert(groundScroll>100,'terrain fixture contains enough tiles to exercise palette scrolling');await choose('scroll-field-44');assert(grid.scrollTop===groundScroll,'selecting a lower Ground tile keeps the palette scroll position');
   await click('Objects');const objectGrid=left.querySelector('#world-palette');objectGrid.scrollTop=objectGrid.scrollHeight-objectGrid.clientHeight;const objectScroll=objectGrid.scrollTop;assert(objectScroll>100,'scenery fixture contains enough assets to exercise palette scrolling');await choose('scroll-tree-59');assert(objectGrid.scrollTop===objectScroll,'selecting a lower Object asset keeps the palette scroll position');
   const selectedAsset=left.querySelector('[data-asset="scroll-tree-59"]'),gridBox=objectGrid.getBoundingClientRect(),assetBox=selectedAsset.getBoundingClientRect();assert(assetBox.top>=gridBox.top&&assetBox.bottom<=gridBox.bottom+1,'the selected lower asset stays visible after choosing it');
   await stroke([{x:160,y:-160}]);assert(objectGrid.scrollTop===objectScroll,'placing scenery keeps the Object palette at its current scroll position');const placed=map.layers[0].objects[map.layers[0].objects.length-1];await tool('Select / move (V)');await stroke([{x:160,y:-150}]);assert(state.selection.includes(placed.id)&&objectGrid.scrollTop===objectScroll,'selecting a placed map object keeps the asset palette scroll position');
   await click('Undo');assert(objectGrid.scrollTop===objectScroll,'undoing a placement keeps the Object palette scroll position');await click('Ground');assert(left.querySelector('#world-palette').scrollTop===groundScroll,'returning to Ground restores that tab palette scroll');await click('Objects');assert(left.querySelector('#world-palette').scrollTop===objectScroll,'returning to Objects restores its independent palette scroll');
-  assert(saves===0&&map.FutureSetting.keep==='original'&&original.ground.roads.strokes.length===0,'all road checks remain isolated drafts and preserve the original source');
-  return {checks,ownedDocumentWrites:0};
+  assert(saves===0&&applies===0&&map.FutureSetting.keep==='original'&&original.ground.roads.strokes.length===0,'all road and Merge checks remain isolated drafts with no Save or Apply and preserve the original source');
+  return {checks,ownedDocumentWrites:0,saveCalls:saves,applyCalls:applies};
  }finally{client.destroy();host.remove();}
 }
 module.exports={verify};
