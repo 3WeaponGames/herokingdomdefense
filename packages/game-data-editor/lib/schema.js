@@ -4,6 +4,7 @@ const EnemyClasses=require('./enemy-classes');
 const MapCatalog=require('./map-catalog');
 const HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
+const TowerCombat=require('../../../assets/_script/TowerCombat');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 
 // Editing metadata. Storage keys and runtime identifiers intentionally stay unchanged.
@@ -281,6 +282,7 @@ function validate(documents, changes) {
           if(own(tower,'attackType')&&!['arrow','cannon','sniper'].includes(tower.attackType))issue('A',at.concat('attackType'),'Choose Arrow, Cannon or Sniper.');
           if(own(tower,'targeting')&&!['nearest','highestHp','lowestHp','farthest'].includes(tower.targeting))issue('A',at.concat('targeting'),'Choose an implemented tower target priority.');
           if(own(tower,'projectileSpeed'))number('A',at.concat('projectileSpeed'),tower.projectileSpeed,Number.MIN_VALUE,false);
+          for(const key of ['shotsPerVolley','pierceTargets'])if(own(tower,key)&&!TowerCombat.validCount(tower[key]))issue('A',at.concat(key),'Enter a whole number of at least 1.');
           if(own(tower,'splashRadius'))number('A',at.concat('splashRadius'),tower.splashRadius,0,false);
           if(own(tower,'splashFalloff')){number('A',at.concat('splashFalloff'),tower.splashFalloff,0,false);if(tower.splashFalloff>1)issue('A',at.concat('splashFalloff'),'Splash edge damage multiplier must not exceed 1.');}
           if(own(tower,'projectileLook')&&typeof tower.projectileLook!=='string')issue('A',at.concat('projectileLook'),'Projectile appearance key must be a string; empty restores the attack type’s default.');

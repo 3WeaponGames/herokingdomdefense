@@ -34,13 +34,26 @@ test('all forty bodies, native skins, masks and distinct library icons resolve t
  }
  assert.equal(icons.size,40);const docs={A:{data:config}},before=JSON.stringify(docs);assert.deepEqual(Assets.validate(root,docs,[{doc:'A',path:['BuildEnum']}]),[]);assert.equal(JSON.stringify(docs),before);
 });
-function buildInfo(baseLevel){
- const module={exports:{}},game={getBaseLevel:()=>baseLevel,getGameBuff:()=>null,talentAdd:{},treasureAdd:{}},deps={KinghtFallEnum:{KinghtFallEnumBuildEnum:{CastleCenter:1,ArrowTower:2,Wall:6},KinghtFallEnumBuffCfg:{},KinghtFallEnumTalentCfg:{TalenType09:9},KinghtFallEnumTreasureEnum:{}},KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:game}}}},RelicRuntime:{current:()=>null,value:()=>0},RelicBattle:{applyEconomicGrowth(){}}};
+function buildInfo(baseLevel,stage){
+ const module={exports:{}},game={levelCfg:{Level:stage},getBaseLevel:()=>baseLevel,getGameBuff:()=>null,talentAdd:{},treasureAdd:{}},deps={KinghtFallEnum:{KinghtFallEnumBuildEnum:{CastleCenter:1,ArrowTower:2,Wall:6},KinghtFallEnumBuffCfg:{},KinghtFallEnumTalentCfg:{TalenType09:9},KinghtFallEnumTreasureEnum:{}},KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:game}}}},RelicRuntime:{current:()=>null,value:()=>0},RelicBattle:{applyEconomicGrowth(){}}};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallBuildInfo.js'),'utf8'),{module,exports:module.exports,require:name=>{assert(deps[name],name);return deps[name];}});return module.exports.KinghtFallBuildInfo;
 }
 test('actual upgrade eligibility requires castle4 for tier3 defenses and ends at tier4',()=>{
  const atThree=buildInfo(3),atFour=buildInfo(4);for(const family of contract.families){const third=row(family.category,family.indices[2]),fourth=row(family.category,family.indices[3]);
   assert.equal(new atThree(family.category,third).canUpgrade,family.category===1,family.family+' waits for castle4');assert.equal(new atFour(family.category,third).canUpgrade,true);const info=new atFour(family.category,fourth);assert.equal(info.canUpgrade,false);assert.equal(info.hpMax,fourth.Hp);
+ }
+});
+test('early campaign halls cap both paid and perk upgrade choices by stage slot',()=>{
+ const base=require('./backend-gameplay-harness.cjs').setup().load('KinghtFallBuildBase').default.prototype;
+ const buildCfg=config.BuildEnum[1];
+ for(const [stage,cap]of [[1,2],[2,3],[3,4],[12,4]]){
+  const Info=buildInfo(1,stage);
+  for(const level of [1,2,3,4]){
+   const hall={buildCfg,buildInfo:new Info(1,row(1,level)),getBranchCfg:base.getBranchCfg,getUpgradeChoices:base.getUpgradeChoices};
+   assert.equal(hall.buildInfo.canUpgrade,level<cap);
+   assert.equal(hall.getUpgradeChoices().join(','),level<cap?String(level+1):'');
+   if(level>=cap)assert.equal(base.onBuffUpgrade.call(hall),false);
+  }
  }
 });
 const dataSource=fs.readFileSync(path.join(root,'assets/_script/KinghtFallGameCtrlData.js'),'utf8');

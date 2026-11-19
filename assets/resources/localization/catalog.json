@@ -30,11 +30,11 @@
     "data.building.castle-4.name": {"en":"Crown Citadel","zh":"王冠城塞","context":"Approved four-tier building progression"},
     "data.building.castle-4.description": {"en":"Final upgrade: a stronger royal castle with improved defenses and firepower.","zh":"最终升级：强化皇家城堡，拥有更强的防御与火力。","context":"Approved four-tier building progression"},
     "data.building.archer-4.name": {"en":"Royal Archer Tower","zh":"皇家弓箭塔","context":"Approved four-tier building progression"},
-    "data.building.archer-4.description": {"en":"Final upgrade: an upgraded watchtower with greater range and firepower.","zh":"最终升级：强化瞭望塔，拥有更远的射程与更强的火力。","context":"Approved four-tier building progression"},
+    "data.building.archer-4.description": {"en":"Fires larger volleys at separate enemies over long range, one arrow per target.","zh":"远距离齐射更多箭矢，每支箭瞄准不同的敌人。","context":"Approved four-tier building progression"},
     "data.building.cannon-4.name": {"en":"Royal Cannon Tower","zh":"皇家加农炮塔","context":"Approved four-tier building progression"},
-    "data.building.cannon-4.description": {"en":"Final upgrade: a reinforced artillery tower with stronger attacks and longer range.","zh":"最终升级：加固炮塔，拥有更强的攻击与更远的射程。","context":"Approved four-tier building progression"},
+    "data.building.cannon-4.description": {"en":"Fires heavy shells over long range, damaging groups of enemies around the impact.","zh":"远距离发射重型炮弹，对落点周围的敌群造成伤害。","context":"Approved four-tier building progression"},
     "data.building.sniper-4.name": {"en":"Royal Sniper Tower","zh":"皇家狙击塔","context":"Approved four-tier building progression"},
-    "data.building.sniper-4.description": {"en":"Final upgrade: a reinforced crossbow tower with stronger attacks and longer range.","zh":"最终升级：加固弩塔，拥有更强的攻击与更远的射程。","context":"Approved four-tier building progression"},
+    "data.building.sniper-4.description": {"en":"Fires its strongest long-range bolt, piercing enemies in a straight line.","zh":"发射威力最强的远程弩箭，沿直线贯穿敌人。","context":"Approved four-tier building progression"},
     "data.building.royal-infantry-4.name": {"en":"Crown Garrison","zh":"王冠驻军营","context":"Approved four-tier building progression"},
     "data.building.royal-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Royal Infantry.","zh":"最终升级：加固兵营，可驻扎十二名皇家步兵。","context":"Approved four-tier building progression"},
     "data.building.heavy-infantry-4.name": {"en":"Ironwall Bastion","zh":"铁壁堡垒","context":"Approved four-tier building progression"},
@@ -747,8 +747,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.name; assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.0.Name"
     },
     "data.buildenum.2.levellist.1.levelupdescribe": {
-      "en": "Fires arrows at nearby monsters. Upgrade for more damage and range.",
-      "zh": "向附近怪物射箭。升级可提升伤害和射程。",
+      "en": "Fires at enemies in range. Upgrades add more arrows to hit separate targets.",
+      "zh": "向射程内的敌人射箭。升级后可发射更多箭矢，分别攻击不同目标。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.2.levellist.2.name": {
@@ -757,8 +757,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.1.Name"
     },
     "data.buildenum.2.levellist.2.levelupdescribe": {
-      "en": "Final upgrade: stronger arrows with longer range.",
-      "zh": "最终升级：箭矢伤害更高，射程更远。",
+      "en": "Fires volleys at separate enemies in range, one arrow per target.",
+      "zh": "向射程内的多个敌人齐射，每支箭瞄准不同的目标。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.2.levellist.3.name": {
@@ -766,7 +766,7 @@
       "zh": "坚固弓箭塔",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.2.Name"
     },
-    "data.buildenum.2.levellist.3.levelupdescribe": {"en":"Upgrade: faster arrows with high damage and long range.","zh":"升级：箭矢更快、伤害更高、射程更远。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.buildenum.2.levellist.3.levelupdescribe": {"en":"Fires larger, faster volleys, with each arrow aimed at a separate enemy.","zh":"齐射更频繁，每轮发射更多箭矢，分别瞄准不同敌人。","context":"Buildings · level capabilities and upgrade notes"},
     "data.buildenum.3.name": {
       "en": "Barracks",
       "zh": "兵营",
@@ -6244,8 +6244,8 @@
       "context": "Buildings · Sniper Tower · Lv 1"
     },
     "data.building.sniper-1.description": {
-      "en": "Picks the highest-HP monster at long range. Upgrade for stronger, faster shots.",
-      "zh": "远距离优先攻击生命最高的怪物。升级可提升伤害、射速和射程。",
+      "en": "Fires a long-range bolt that pierces enemies in a straight line.",
+      "zh": "发射远程弩箭，沿直线贯穿敌人。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.sniper-2.name": {
@@ -6254,8 +6254,8 @@
       "context": "Buildings · Sniper Tower · Lv 2"
     },
     "data.building.sniper-2.description": {
-      "en": "Stronger precision shots. Upgrade for maximum damage, range and fire rate.",
-      "zh": "精准射击伤害更高。升级可获得最高伤害、最远射程和最快射速。",
+      "en": "Fires stronger bolts that pierce enemies along their straight path.",
+      "zh": "发射威力更强的弩箭，沿直线贯穿路径上的敌人。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.sniper-3.name": {
@@ -6263,7 +6263,7 @@
       "zh": "装甲狙击塔",
       "context": "Buildings · Sniper Tower · Lv 3"
     },
-    "data.building.sniper-3.description": {"en":"Upgrade: strong, fast long-range shots at the highest-HP monster.","zh":"升级：对生命值最高的怪物发射强力、快速的远程弩箭。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.sniper-3.description": {"en":"Fires piercing bolts more often, damaging enemies lined up over long range.","zh":"更频繁地发射远程穿透弩箭，对直线上的敌人造成伤害。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.barracks.royal-guard.1.name": {
       "en": "Guard Barracks",
       "zh": "卫兵营房",

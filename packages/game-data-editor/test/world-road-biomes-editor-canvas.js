@@ -16,7 +16,8 @@ async function verify(){
   async function choose(asset){const button=left.querySelector('[data-asset="'+asset.id+'"]');if(!button)throw Error('Missing asset '+asset.name);await button.onclick();await settle();}
   async function change(name,value){const input=field(name);if(!input)throw Error('Missing field '+name);input.value=String(value);await input.onchange();await settle();}
   async function filter(value){const input=left.querySelector('select');input.value=value;await input.onchange();await settle();}
-  async function draw(y=100){const event=p=>{const r=canvas.getBoundingClientRect();return {clientX:r.left+canvas.width/2+state.pan.x+p.x*state.zoom,clientY:r.top+canvas.height/2+state.pan.y-p.y*state.zoom,button:0,pointerId:14};};canvas.onpointerdown(event({x:-100,y}));canvas.onpointermove(event({x:0,y:y+35}));canvas.onpointermove(event({x:100,y}));canvas.onpointerup();await settle();return map.ground.roads.strokes[map.ground.roads.strokes.length-1];}
+  const event=(x,y,shiftKey=false)=>{const r=canvas.getBoundingClientRect();return {clientX:r.left+canvas.width/2+state.pan.x+x*state.zoom,clientY:r.top+canvas.height/2+state.pan.y-y*state.zoom,button:0,pointerId:14,shiftKey,preventDefault(){}};};
+  async function draw(y=100){canvas.onpointerdown(event(-100,y));canvas.onpointermove(event(0,y+35));canvas.onpointermove(event(100,y));canvas.onpointerup();await settle();return map.ground.roads.strokes[map.ground.roads.strokes.length-1];}
   assert(changes===0&&saves===0&&JSON.stringify(map)===JSON.stringify(original),'opening the biome editor creates no authored road defaults or project writes');
   await choose(snowEdge);assert(inspector.textContent.includes('Surface: Road Ice')&&Number(field('Road width').value)===180,'shared Snow edge uses Ice fill when the palette is filtered to Ice');
   const ice=await draw();assert(ice.assetId===byName('Road Ice').id&&ice.edgeAssetId===snowEdge.id&&ice.edgeStyle==='textured','painting the shared Ice edge records the Ice surface and original Snow border');
@@ -41,6 +42,18 @@ async function verify(){
   await change('Edge style','textured');const lava=await draw();assert(lava.size===360&&lava.edgeScale===.8&&lava.edgeExterior==='cutout'&&lava.edgeStyle==='textured','custom Lava width retains its separately chosen Road up scale and cutout exterior');
   const after=JSON.stringify(map);const undoButton=Array.from(root.querySelectorAll('button')).find(b=>b.textContent==='Undo');await undoButton.onclick();await settle();assert(map.ground.roads.strokes.length===beforeCustomLava,'one undo removes the complete last biome road gesture');
   const redoButton=Array.from(root.querySelectorAll('button')).find(b=>b.textContent==='Redo');await redoButton.onclick();await settle();assert(JSON.stringify(map)===after,'redo restores the full biome-specific road authoring fields');
+  const beforeLine=changes,pointCount=map.ground.roads.strokes.length;
+  canvas.onpointerdown(event(-80,-80,true));canvas.onpointerup();await settle();
+  assert(!!state.roadStart&&!state.drag&&changes===beforeLine,'Shift-click marks the road start without drawing or writing a draft');
+  canvas.onpointermove(event(20,-10));await settle();
+  assert(changes===beforeLine&&map.ground.roads.strokes.length===pointCount,'the guide can preview a direction without adding ground paint');
+  canvas.onpointerdown(event(100,80));canvas.onpointerup();await settle();
+  const segment=map.ground.roads.strokes.at(-1);
+  assert(changes===beforeLine+1&&!state.roadStart&&segment.points.length===2&&segment.size===360&&segment.edgeScale===.8,'the next click commits a single straight road with the active brush settings');
+  assert(Math.hypot(segment.points[0].x+80,segment.points[0].y+80)<1e-5&&Math.hypot(segment.points[1].x-100,segment.points[1].y-80)<1e-5,'the stored road uses both clicked world positions');
+  await undoButton.onclick();await settle();assert(JSON.stringify(map)===after,'undo restores both endpoints in one operation');
+  canvas.onpointerdown(event(-80,-80,true));canvas.onpointerup();canvas.onkeydown({key:'Escape',preventDefault(){}});await settle();
+  assert(!state.roadStart&&JSON.stringify(map)===after,'Escape cancels an incomplete straight road');
   assert(JSON.stringify(map.ground.roads.strokes[0])===old&&map.FutureSetting.keep==='original'&&saves===0,'biome browsing and painting preserve original road records, unknown fields and player data');
   return {checks,ownedDocumentWrites:0};
  }finally{client.destroy();host.remove();}

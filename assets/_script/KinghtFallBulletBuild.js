@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallBulletBase = require("KinghtFallBulletBase");
+var TowerCombat = require("TowerCombat");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 cc__decorator.property;
@@ -25,7 +26,7 @@ var def_KinghtFallBulletBuild = function (t) {
     this.state = 0;
     if (!deferVisual && this._launchProjectileLook) this._launchProjectileLook();
   };
-  _ctor.prototype.setTowerTag = function (origin, target, attack, behavior) {
+  _ctor.prototype.prepareTowerFlight = function (behavior) {
     this._towerBehavior = behavior;
     // Draw the built-in fallback before starting an asynchronous art
     // override. A cached override can then hide it in the same frame as a cold one.
@@ -34,12 +35,15 @@ var def_KinghtFallBulletBuild = function (t) {
       trail.enabled = true;
       trail.reset();
     });
+  };
+  _ctor.prototype.setTowerTag = function (origin, target, attack, behavior) {
+    this.prepareTowerFlight(behavior);
     this.setTag(origin, target, attack, true);
     if (behavior.attackType === "cannon") {
       // Artillery commits to a ground location. A killed/pool-reused primary
       // target must not cancel a blast that can still hit nearby enemies.
       var bullet = this, game = this.combatContext, epoch = game && game._combatEpoch, shot = this._shot;
-      this._towerImpactPoint = require("TowerCombat").point(target, this.node.parent);
+      this._towerImpactPoint = TowerCombat.point(target, this.node.parent);
       var center = this._towerImpactPoint;
       this.tagNode = { getPosition: function (out) { out.x = center.x; out.y = center.y; return out; } };
       this.targetIsLive = function () {
@@ -59,7 +63,7 @@ var def_KinghtFallBulletBuild = function (t) {
       // parent's space instead of assuming world and effects nodes coincide.
       var projectile = this;
       this.tagNode = { getPosition: function (out) {
-        var position = require("TowerCombat").point(target, projectile.node.parent);
+        var position = TowerCombat.point(target, projectile.node.parent);
         out.x = position.x; out.y = position.y; return out;
       } };
       this.tagNode.getPosition(this.tagPos);
@@ -69,6 +73,60 @@ var def_KinghtFallBulletBuild = function (t) {
     // Begin after the converted heading and authored trails are ready. Cached
     // artwork must have the same final say over trails as asynchronous artwork.
     if (this._launchProjectileLook) this._launchProjectileLook();
+  };
+  _ctor.prototype.setSniperFlight = function (origin, end, behavior, onHit) {
+    this.prepareTowerFlight(behavior);
+    var game = this.combatContext, dx = end.x - origin.x, dy = end.y - origin.y;
+    var distance = Math.hypot(dx, dy);
+    this._dir = cc.v2(dx / (distance || 1), dy / (distance || 1));
+    this.node.angle = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
+    this.bullet.active = true;
+    this.state = 0;
+    this._shot = this._shotIdentity = {};
+    this._sniperFlight = { game: game, data: game.gameData, epoch: game._combatEpoch, stage: game.gameStatus,
+      distance: distance, remaining: behavior.pierceTargets, hits: new Map(), onHit: onHit };
+    if (this._launchProjectileLook) this._launchProjectileLook();
+  };
+  _ctor.prototype.advanceSniperFlight = function (dt) {
+    var bullet = this, flight = this._sniperFlight, game = flight.game, node = this.node;
+    if (flight.stepping) return;
+    function current() {
+      return bullet._sniperFlight === flight && bullet.node === node && bullet.state === 0 && cc.isValid(node, true) &&
+        node.activeInHierarchy !== false && cc.isValid(game, true) && cc.isValid(game.node, true) && game.node.activeInHierarchy !== false &&
+        game.gameData === flight.data && game._combatEpoch === flight.epoch && game.gameStatus === flight.stage;
+    }
+    if (!current() || !(flight.distance > 0)) return void this.freeNode();
+    if (!(dt > 0) || !isFinite(dt)) return;
+    flight.stepping = true;
+    try {
+      if (this._projectileVisual) this._projectileVisual.step(dt);
+      if (!current()) return;
+      var start = node.getPosition(), travel = Math.min(flight.distance, this.speed * dt);
+      var dx = this._dir.x * travel, dy = this._dir.y * travel;
+      var end = { x: start.x + dx, y: start.y + dy };
+      var contacts = TowerCombat.sniperContacts(flight.data.getEnemyList(), start, end, node.parent, flight.hits);
+      if (!current()) return;
+      for (var i = 0; i < contacts.length; i++) {
+        if (!current()) return;
+        var entry = contacts[i], hit = flight.onHit(entry, current);
+        if (!current()) return;
+        if (!hit) continue;
+        flight.hits.set(entry.node, entry);
+        if (--flight.remaining > 0) continue;
+        node.setPosition(start.x + dx * entry.fraction, start.y + dy * entry.fraction);
+        this._sniperFlight = this._shot = null;
+        this.onDie();
+        return;
+      }
+      node.setPosition(end.x, end.y);
+      flight.distance -= travel;
+      if (flight.distance <= 0) {
+        this._sniperFlight = this._shot = null;
+        this.onDie(false);
+      }
+    } finally {
+      flight.stepping = false;
+    }
   };
   _ctor.prototype._showTowerFlight = function (type) {
     if (!cc.Graphics) return;
@@ -115,14 +173,15 @@ var def_KinghtFallBulletBuild = function (t) {
     for (var i = 0; i < 8; i++) { var angle = i * Math.PI / 4; graphics.moveTo(Math.cos(angle) * radius * .35, Math.sin(angle) * radius * .35); graphics.lineTo(Math.cos(angle) * radius * .75, Math.sin(angle) * radius * .75); }
     graphics.stroke(); this._towerImpactAge = 0;
   };
-  _ctor.prototype.onDie = function () {
+  _ctor.prototype.onDie = function (emitImpact) {
     if (this.state !== 0) return;
     if (this._towerFlightNode && cc.isValid(this._towerFlightNode, true)) this._towerFlightNode.active = false;
     if (this._towerBehavior && this._towerBehavior.attackType === "cannon" && this._towerImpactPoint) this.node.setPosition(this._towerImpactPoint);
-    this._showTowerImpact();
-    t.prototype.onDie.call(this);
+    if (emitImpact !== false) this._showTowerImpact();
+    t.prototype.onDie.call(this, emitImpact);
   };
   _ctor.prototype.onUpdate = function (dt) {
+    if (this._sniperFlight) return this.advanceSniperFlight(dt);
     t.prototype.onUpdate.call(this, dt);
     if (this._towerImpactNode && this._towerImpactNode.active) {
       this._towerImpactAge += dt;
@@ -139,7 +198,7 @@ var def_KinghtFallBulletBuild = function (t) {
     this._towerOriginalRenderers = null;
     if (this._towerFlightNode && cc.isValid(this._towerFlightNode, true)) this._towerFlightNode.active = false;
     if (this._towerImpactNode && cc.isValid(this._towerImpactNode, true)) this._towerImpactNode.active = false;
-    this._towerBehavior = null; this._towerImpactPoint = null;
+    this._towerBehavior = null; this._towerImpactPoint = null; this._sniperFlight = null;
   };
   _ctor.prototype.freeNode = function () {
     if (this.state === 2) return;

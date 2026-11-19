@@ -134,7 +134,7 @@ var def_KinghtFallBulletBase = function (t) {
         this.time <= 0 && this.freeNode();
     }
   };
-  _ctor.prototype.onDie = function () {
+  _ctor.prototype.onDie = function (emitImpact) {
     if (this.state !== 0) return;
     var shot=this._shot,attack=this.callAttack;
     this.state = 1;
@@ -146,7 +146,7 @@ var def_KinghtFallBulletBase = function (t) {
     // Impact artwork and damage may immediately return/rebind this pooled
     // projectile. Retire old references before either callback can reuse it.
     // Optional artwork errors must not discard an otherwise valid launch.
-    try{if (this._projectileVisual) this._projectileVisual.impact();}
+    try{if (this._projectileVisual) this._projectileVisual.impact(emitImpact);}
     finally{if(this._shot===shot&&this.state===1&&attack)attack();}
   };
   _ctor.prototype.freeNode = function () {

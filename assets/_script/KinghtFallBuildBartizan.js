@@ -73,18 +73,25 @@ var def_KinghtFallBuildBartizan = function (t) {
     var artwork = require("BuildingAppearance");
     var appearance = this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Appearance;
     if (appearance && appearance.weapon && appearance.weapon.sprite && artwork.ready && !artwork.ready(this)) return;
-    var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
-    this.node.getPosition(this.vec2_1);
-    var n = TowerCombat.choose(t, this.vec2_1, this.attRange, this.getTowerSettings(), this.node.parent);
-    if (n) {
-      this.cacheAimTarget(n);
-      // Commit the exact firing target before onShotBuild samples the barrel
-      // muzzle. Tracking between shots can keep a different cached target.
-      if (artwork.aim) artwork.aim(this, n);
-      this.time[r.AttackTime] = 0;
-      $z1KinghtFallUIGame.default.instance.ctrGame.onShotBuild(this, n);
-      if (artwork.fire) artwork.fire(this);
+    var tower = this, node = this.node, generation = node._combatGeneration, clock = this.time;
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame, data = game.gameData, epoch = game._combatEpoch, stage = game.gameStatus;
+    var behavior = this.getTowerSettings(), count = behavior && behavior.shotsPerVolley || 1;
+    var targets = TowerCombat.chooseTargets(data.getEnemyList(), node.getPosition(), this.attRange, behavior, node.parent, count);
+    if (!targets.length) return;
+    var entries = targets.map(function (actor) { return TowerCombat.capture(actor); });
+    function current() {
+      return game.gameData === data && game._combatEpoch === epoch && game.gameStatus === stage &&
+        !tower.isDestroyed && tower.node === node && cc.isValid(node, true) && node._combatGeneration === generation && tower.time === clock;
     }
+    this.cacheAimTarget(targets[0]);
+    // Set the weapon pose before sampling the muzzle for the volley.
+    if (artwork.aim) artwork.aim(this, targets[0]);
+    if (!current()) return;
+    clock[r.AttackTime] = 0;
+    for (var i = 0; i < entries.length && current(); i++) {
+      if (TowerCombat.targetCurrent(entries[i])) game.onShotBuild(this, entries[i].actor);
+    }
+    if (artwork.fire && current()) artwork.fire(this);
   };
   _ctor.prototype.clearAimTarget = function () {
     this._towerAimTarget = null; this._towerAimNode = null; this._towerAimGeneration = null;

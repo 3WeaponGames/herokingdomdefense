@@ -449,25 +449,25 @@ for (const family of Object.values(authored.BuildEnum).filter(row => row.levelLi
       assert.equal(b.getLevel(), row.level);
       assert.equal(b.buildInfo.cfg.index, row.index);
       if (family.enumValue === 3) {
-        assert.equal(b.enemyList.length, row.Data[0] + 2);
+        assert.equal(b.enemyList.length, row.Data[0]);
         assert(b.enemyList.every(unit => unit.cfg.ID === row.Data[1]));
       }
       const initial = clone(b.getSave());
       original.g.captureWaveStart();
       b.isDestroyed = true; b.buildInfo.hp = 0;
-      if (family.enumValue === 3) { b.VideoTimes = 0; b.enemyList.forEach(unit => {unit.hp = 0; unit.node.active = false;}); }
+      if (family.enumValue === 3) b.enemyList.forEach(unit => {unit.hp = 0; unit.node.active = false;});
       disk.player.gameData.setCheckpoint(original.g.getRestartCheckpoint('wave'));
       const loaded = harness(disk.persist()), replacement = runtime(loaded, authored, 3);
       const restored = realBuilding(replacement, family.enumValue, {point: 7, level: 0});
       assert.equal(replacement.g.loadGame(), true);
-      assert.deepEqual(clone(restored.getSave()), initial, 'The selected branch, bonus ownership and rally posts return exactly');
+      assert.deepEqual(clone(restored.getSave()), initial, 'The selected branch and rally posts return exactly');
       assert.equal(restored.isDestroyed, false, 'A corpse does not survive fresh stage construction');
       assert.equal(restored.buildInfo.hp, restored.buildInfo.hpMax);
       assert(restored.buildInfo.hp > 0);
       assert.notEqual(restored, b);
       if (family.enumValue === 3) {
-        assert.equal(restored.enemyList.length, row.Data[0] + 2);
-        assert.equal(replacement.data.soldierList.length, row.Data[0] + 2);
+        assert.equal(restored.enemyList.length, row.Data[0]);
+        assert.equal(replacement.data.soldierList.length, row.Data[0]);
         assert(restored.enemyList.every(unit => unit.cfg.ID === row.Data[1] && unit.hp > 0 && unit.node.active));
         assert(restored.enemyList.every(unit => !b.enemyList.includes(unit)), 'Fresh squads contain no dead bodies or old roster references');
       }
@@ -476,7 +476,7 @@ for (const family of Object.values(authored.BuildEnum).filter(row => row.levelLi
       const empty = realBuilding(stage, family.enumValue, {point: 7, level: 0});
       assert.equal(stage.g.loadGame(), true);
       assert.equal(empty.index, 0);
-      if (family.enumValue === 3) { assert.equal(empty.VideoTimes, 0); assert.equal(empty.enemyList.length, 0); assert.deepEqual(clone(empty.getSave()), {point: 7, level: 0, data: 0}); }
+      if (family.enumValue === 3) { assert.equal(empty.enemyList.length, 0); assert.deepEqual(clone(empty.getSave()), {point: 7, level: 0, data: 0}); }
       assert.equal(stage.data.soldierList.length, 0);
     }
   });

@@ -288,6 +288,6 @@ test('every rewarded call site supplies a registered explicit placement', () => 
       }
     }
   }
-  assert.equal(callCount, 23);
+  assert.equal(callCount, 22);
   assert.deepEqual([...used].sort(), Object.keys(placements.RewardedAdPlacements).sort());
 });

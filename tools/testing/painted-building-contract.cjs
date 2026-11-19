@@ -54,10 +54,12 @@ function legacyRead(file,value){
 function withoutAuthoring(value){
  const result=clone(value);for(const family of Object.values(result.BuildEnum||{})){delete family.UnbuiltPad;for(const row of family.levelList||[])for(const key of ['WorldScale','ModelOffset','PartScale','Blocker','Shadow','PurchaseField','SpawnPosition','SpawnPositions','AdUnitPosition','DropShadow','Nightlight'])delete row[key];}return result;
 }
-// The approved troop-count rule is separate from the historical artwork baseline.
+// Apply reviewed combat changes to the historical artwork baseline.
 function currentRow(id,value){
  const row=withoutAuthoring({BuildEnum:{current:{levelList:[value]}}}).BuildEnum.current.levelList[0];
  if(id==='3')row.Data[0]=fixture.barracksCapacities[row.level-1];
+ if(id==='2'&&[1,2,3,10].includes(row.index))row.Tower={attackType:'arrow',shotsPerVolley:row.level};
+ if(id==='2'&&[7,8,9,12].includes(row.index))row.Tower.pierceTargets=2;
  return row;
 }
 function assertConfig(file,config){

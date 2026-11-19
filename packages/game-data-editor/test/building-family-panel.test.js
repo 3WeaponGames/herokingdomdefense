@@ -91,6 +91,25 @@ test('Arrow Tower browses all four linear levels without changing sparse branch 
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);
 });
 
+test('volley size and pierce limit are separate integer drafts on the selected tower tier',async()=>{
+    const f=fixture(),archer=f.position('2',3),sniper=f.position('2',8);
+    f.render('2:1',archer);
+    const arrows=f.field('Max arrows per volley');assert.equal(arrows.value,'3');assert.equal(arrows.step,'1');
+    assert.equal(f.field('Max enemies per bolt'),undefined);
+    arrows.value='2.5';arrows.onchange();assert.equal(f.store.changes().length,0);
+    arrows.value='5';arrows.onchange();await f.panel._queue;
+    f.render('2:7',sniper);
+    const pierce=f.field('Max enemies per bolt');assert.equal(pierce.value,'2');assert.equal(pierce.step,'1');
+    assert.equal(f.field('Max arrows per volley'),undefined);
+    pierce.value='1';pierce.onchange();await f.panel._queue;
+    assert.deepEqual(clone(f.messages.filter(message=>message.message==='game-data-editor:change').map(message=>message.request.edits)),[
+        [{doc:'A',path:['BuildEnum','2','levelList',archer,'Tower','shotsPerVolley'],value:5}],
+        [{doc:'A',path:['BuildEnum','2','levelList',sniper,'Tower','pierceTargets'],value:1}]
+    ]);
+    f.render('2:4');assert.equal(f.field('Max enemies per bolt'),undefined);assert.equal(f.field('Max arrows per volley'),undefined);
+    assert(!f.messages.some(message=>/:save$/.test(message.message)));
+});
+
 test('editing a family level keeps roster and upgrade cost drafts on their exact original branch paths',async()=>{
     const f=fixture(),position=f.position('3',12),third=f.position('3',13);f.render('3:11',position);const before=f.store.draftState(),row=before.A.BuildEnum[3].levelList[position];
     const capacity=f.field('Soldier capacity'),cost=f.field('Build / upgrade cost (silver)');assert(capacity&&cost);

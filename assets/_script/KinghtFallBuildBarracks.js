@@ -1,5 +1,4 @@
 var BattleSounds = require("BattleSounds");
-var GameplayAdOwner = require("GameplayAdOwner");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -7,20 +6,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var r;
-var $z1PlatformSetting = require("PlatformSetting");
-var $z1SdkMgr = require("SdkMgr");
-var TestMode = require("TestMode").TestMode;
 var $z1UIMgr = require("UIMgr");
 var $z1Utils = require("Utils");
 var $z1Config = require("Config");
-var $z1GameTrackDataEvent = require("GameTrackDataEvent");
-var $z1PlayerMgr = require("PlayerMgr");
 var $z1KinghtFallConfig = require("KinghtFallConfig");
 var $z1KinghtFallTextConfig = require("KinghtFallTextConfig");
 var $z1KinghtFallEnum = require("KinghtFallEnum");
-var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
-var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
-var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallSoldierBase = require("KinghtFallSoldierBase");
 var $z1KinghtFallBuildBase = require("KinghtFallBuildBase");
@@ -38,8 +29,6 @@ var def_KinghtFallBuildBarracks = function (t) {
     e.ndVideoSoldier = null;
     e.squadSpawnPosition = null;
     e.stratAge = 0;
-    e.VideoTimes = 0;
-    e.isIn = false;
     e.time = {};
     e.enemyList = [];
     e.waitEnemy = [];
@@ -47,19 +36,20 @@ var def_KinghtFallBuildBarracks = function (t) {
     e._rosterSignature = null;
     e._soldierRallyPosts = [];
     e._spawnRetryTime = 0;
-    e.keepTime = 0;
     e.standTimeMax = 1.5;
     return e;
   }
   cc__extends(_ctor, t);
   _ctor.prototype.start = function () {
+    // Older map prefabs still use this node as an alternate squad exit.
+    if (this.ndVideoSoldier) this.ndVideoSoldier.active = false;
     t.prototype.start.call(this);
     this.stratAge = $z1Utils.Utils.randomRang(1, 360);
     this.ndPro.active = false;
-    this.init();
   };
   _ctor.prototype.setLevel = function (e) {
     t.prototype.setLevel.call(this, e);
+    if (this.ndVideoSoldier) this.ndVideoSoldier.active = false;
     if(this.buildInfo.cfg&&this.buildInfo.cfg.AdUnitPosition||this._adUnitPosition)require("BuildingSpawnPositions").applyAd(this);
     this.time = {};
     this.ndPro.active = false;
@@ -78,14 +68,10 @@ var def_KinghtFallBuildBarracks = function (t) {
     if (cc.resources) require("UnitVoices").announce(this);
   };
   _ctor.prototype.getPos = function (t) {
-    var e = this.buildInfo.cfg.Data[0];
-    var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff23);
-    n && (e += n.Pamer[0]);
-    $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff43) && e--;
-    e += this.VideoTimes;
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame, unit = this.enemyList[t];
+    var e = Math.max(1, this._soldierCount(game));
     var i = (this.stratAge + 360 * t / e) * Math.PI / 180;
     var a = cc.v2(Math.cos(i), Math.sin(i)).multiplyScalar(20);
-    var game = $z1KinghtFallUIGame.default.instance.ctrGame, unit = this.enemyList[t];
     var anchor = Navigation.positionOf(this.ndBotnNodeList, game);
     var positions = this.squadSpawnPosition || this.buildInfo.cfg.SpawnPosition || this.buildInfo.cfg.SpawnPositions ? require("BuildingSpawnPositions") : null;
     var squad = positions && positions.anchor(this.buildInfo.cfg, this);
@@ -113,8 +99,8 @@ var def_KinghtFallBuildBarracks = function (t) {
     var position = Navigation.findStandingPoint(unit, game, anchor, custom ? preferred : this._spawnPosts[t] || preferred);
     if(!position&&!custom&&!squad&&this.ndVideoSoldier&&this.ndVideoSoldier.convertToWorldSpaceAR){
       // Older map templates can leave their formation marker inside a cliff
-      // after the barracks is moved. Its visible doorway/ad-unit marker is a
-      // second authored exit; retain all normal terrain and crowd checks.
+      // after the barracks is moved. The legacy marker is a second authored
+      // exit and uses the same terrain and crowd checks.
       var doorway=Navigation.positionOf(this.ndVideoSoldier,game);
       position=Navigation.findStandingPoint(unit,game,doorway,cc.v2(doorway.x+a.x,doorway.y+a.y));
     }
@@ -168,7 +154,6 @@ var def_KinghtFallBuildBarracks = function (t) {
     this.ndPro.active = this.getIsWork();
   };
   _ctor.prototype.doTime = function (t) {
-    var e = this;
     this._rosterRetryTime = Math.max(0, (this._rosterRetryTime || 0) - t);
     if (this._rosterRetryTime === 0 && this.buildInfo && this.buildInfo.cfg && this.getIsWork()) {
       this._rosterRetryTime = .25;
@@ -184,11 +169,6 @@ var def_KinghtFallBuildBarracks = function (t) {
         if (pending && pending._spawnPending && this.waitEnemy.indexOf(pending) < 0 && !this._placeSoldier(pending, pendingIndex)) this._spawnRetryTime = .25;
       }
     }
-    var bypassAdLimits = TestMode.getInstance().shouldBypassAdLimits();
-    if (this._testAdLimitBypass !== bypassAdLimits) {
-      this._testAdLimitBypass = bypassAdLimits;
-      this.ndVideoSoldier.active = this.canAddVideoSoldier() && $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare;
-    }
     if (this.waitEnemy.length > 0 && (this.ndPro.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.time[r.Reborn] / this.time[r.RebornMax], this.time[r.Reborn] += t, this.time[r.Reborn] >= this.time[r.RebornMax]) && retryReady) {
       var n = this.waitEnemy[0], found = false;
       for (var i = 0; i < this.enemyList.length; i++) {
@@ -203,56 +183,8 @@ var def_KinghtFallBuildBarracks = function (t) {
       if (!found) this.waitEnemy.shift();
       0 == this.waitEnemy.length && (this.ndPro.active = false);
     }
-    if (this.canAddVideoSoldier() && $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare) {
-      $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay.node.getPosition(this.vec2_1);
-      if (this.getInClick(this.vec2_1, t)) {
-        var offer = GameplayAdOwner.begin($z1KinghtFallUIGame.default.instance.ctrGame, this);
-        if (!offer) return;
-        var o = function (t) {
-          offer.finish(function (current) {
-            if (t) {
-              $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_add_soldier);
-              if (!current()) return;
-              $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_add_soldier_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-              if (!current()) return;
-              e.VideoTimes++;
-              e.ndVideoSoldier.active = e.canAddVideoSoldier();
-              $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom04));
-              if (!current()) return;
-              e.initBuffData();
-            }
-          }, function () { e.init(); });
-        };
-        if ($z1KinghtFallModle.KinghtFallSwitch.isMapShopOpen()) {
-          var h = 0;
-          switch (this.buildInfo.cfg.Data[1]) {
-            case 90001:
-            case 90002:
-              h = 1;
-              break;
-            case 90003:
-              h = 3;
-              break;
-            case 90004:
-              h = 4;
-          }
-          offer.openDialog($z1KinghtFallConfig.KinghtFallUIID.UIVideoTips, $z1Config.UIID.UINONE, h, function (t) {
-            o(t);
-          });
-        } else {
-          $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-            o(true);
-          }, function () {
-            o(false);
-          }, "battle.barracks.extraSoldier");
-        }
-      }
-      if (offer && !offer.isCurrent()) return;
-      this.ndVideoSoldier.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.keepTime / this.standTimeMax;
-    }
   };
   _ctor.prototype.reset = function (e) {
-    GameplayAdOwner.cancel(this);
     if (e) { this._soldierRallyPosts = []; this._spawnPosts = []; }
     this._rosterSignature = null;
     this._rosterRequests = {};
@@ -264,19 +196,10 @@ var def_KinghtFallBuildBarracks = function (t) {
         $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(i);
       }
       this.enemyList = [];
-      this.VideoTimes = 0;
     }
     this.waitEnemy = [];
-    this.ndVideoSoldier.active = this.canAddVideoSoldier();
+    if (this.ndVideoSoldier) this.ndVideoSoldier.active = false;
     this.initBuffData();
-  };
-  _ctor.prototype.onDisable = function () {
-    GameplayAdOwner.cancel(this);
-    if (t.prototype.onDisable) t.prototype.onDisable.call(this);
-  };
-  _ctor.prototype.onDestroy = function () {
-    GameplayAdOwner.cancel(this);
-    if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.initBuffData = function () {
     t.prototype.initBuffData.call(this);
@@ -295,7 +218,6 @@ var def_KinghtFallBuildBarracks = function (t) {
   };
   _ctor.prototype.startRoundGame = function () {
     this.buildInfo.initBuffData();
-    this.ndVideoSoldier.active = false;
   };
   _ctor.prototype.endRoundGame = function () {
     t.prototype.endRoundGame.call(this);
@@ -313,31 +235,13 @@ var def_KinghtFallBuildBarracks = function (t) {
     this.ndPro.active = false;
     this.waitEnemy = this.waitEnemy.filter(function (unit) { return unit._spawnPending; });
     if (this.waitEnemy.length) this.time[r.Reborn] = this.time[r.RebornMax];
-    this.ndVideoSoldier.active = this.canAddVideoSoldier();
-  };
-  _ctor.prototype.init = function () {
-    this.keepTime = 0;
-    this.ndVideoSoldier.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = 0;
-    this.ndVideoSoldier.active = this.canAddVideoSoldier();
-  };
-  _ctor.prototype.canAddVideoSoldier = function () {
-    return (TestMode.getInstance().shouldBypassAdLimits() || this.VideoTimes < 3) && !$z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe);
-  };
-  _ctor.prototype.getInClick = function (t, e) {
-    var n = cc.v2(this.node.x + this.ndVideoSoldier.position.x, this.node.y + this.ndVideoSoldier.position.y);
-    if(this.ndVideoSoldier.convertToNodeSpaceAR){var main=$z1KinghtFallUIGame.default.instance.ctrGame.ndMain;t=this.ndVideoSoldier.convertToNodeSpaceAR(main.convertToWorldSpaceAR(t));n=cc.v2(0,0);}
-    if (t.x >= n.x - this.ndVideoSoldier.width * this.ndVideoSoldier.anchorX && t.x <= n.x + this.ndVideoSoldier.width * (1 - this.ndVideoSoldier.anchorX) && t.y >= n.y - this.ndVideoSoldier.height * this.ndVideoSoldier.anchorY && t.y <= n.y + this.ndVideoSoldier.height * (1 - this.ndVideoSoldier.anchorY)) {
-      return !this.isIn && (this.keepTime += e, this.keepTime >= this.standTimeMax && (this.isIn = true, this.keepTime = 0, this.ndVideoSoldier.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = 0, true));
-    } else {
-      return this.isIn = false, this.keepTime -= e, this.keepTime < 0 && (this.keepTime = 0), false;
-    }
   };
   _ctor.prototype._soldierCount = function (game) {
     var e = this.buildInfo.cfg.Data[0];
     var n = game.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff23);
     n && (e += n.Pamer[0]);
     game.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff43) && e--;
-    return Math.max(0, e + this.VideoTimes);
+    return Math.max(0, e);
   };
   _ctor.prototype._requestSoldier = function (index, game) {
     var owner = this, id = this.buildInfo.cfg.Data[1], pending = this._rosterRequests[index];
@@ -401,29 +305,12 @@ var def_KinghtFallBuildBarracks = function (t) {
     for (var r = 0; r < i; r++) {
       if (a(r) === false) return;
     }
-    if (this.ndVideoSoldier.SolID != this.buildInfo.cfg.Data[1]) {
-      this.ndVideoSoldier.SolID = this.buildInfo.cfg.Data[1];
-      var s = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(this.buildInfo.cfg.Data[1], "ally");
-      var previewRequest = this._appearancePreviewRequest = { id: this.buildInfo.cfg.Data[1] };
-      this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "Play" + s.prefab, function (e) {
-        if (t._appearancePreviewRequest !== previewRequest || !cc.isValid(t, true) || !cc.isValid(t.node, true) ||
-            !cc.isValid(t.ndVideoSoldier, true) || !t.buildInfo.cfg || t.buildInfo.cfg.Data[1] !== previewRequest.id) return;
-        var n = e.data.getComponent($z1KinghtFallSoldierBase.default);
-        var i = t.ndVideoSoldier.getChildByName("spAni").getComponent(sp.Skeleton);
-        i.skeletonData = n.spAni.skeletonData;
-        i.setSkin(n.spAni.defaultSkin);
-        i.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Idle, true);
-        // A presentation actor shares the barracks level but never joins the
-        // gameplay roster, so the offer matches the troops it will produce.
-        require("CharacterAppearance").bind({ node: i.node, spAni: i, cfg: s, outBuild: t }, "ally");
-      });
-    }
   };
   _ctor.prototype.getSave = function () {
     var save = {
       point: this.ID,
       level: this.index,
-      data: this.VideoTimes
+      data: 0
     };
     if (this._freeInitialBuild && this.index === 0) save.freeInitialBuild = true;
     if (this._soldierRallyPosts && this._soldierRallyPosts.some(Boolean)) save.rallyPosts = this._soldierRallyPosts.map(function (point) { return point ? { x: point.x, y: point.y } : null; });
@@ -443,7 +330,6 @@ var def_KinghtFallBuildBarracks = function (t) {
     this._soldierRallyPosts = t && Array.isArray(t.rallyPosts) ? t.rallyPosts.map(function (point) {
       return point && typeof point.x === "number" && typeof point.y === "number" && isFinite(point.x) && isFinite(point.y) ? { x: point.x, y: point.y } : null;
     }) : [];
-    this.VideoTimes = t && typeof t.data === "number" && isFinite(t.data) ? Math.max(0, Math.floor(t.data)) : 0;
     $z1KinghtFallBuildBase.default.prototype.setSave.call(this, t);
   };
   cc__decorate([ccp_property({
@@ -456,7 +342,7 @@ var def_KinghtFallBuildBarracks = function (t) {
   })], _ctor.prototype, "ndBotnNodeList", undefined);
   cc__decorate([ccp_property({
     type: cc.Node,
-    tooltip: "视频小兵"
+    tooltip: "Legacy alternate squad exit"
   })], _ctor.prototype, "ndVideoSoldier", undefined);
   cc__decorate([ccp_property({ type: cc.Vec2, tooltip: "Stage squad spawn in the original building frame; unset inherits the building default." })], _ctor.prototype, "squadSpawnPosition", undefined);
   return cc__decorate([ccp_ccclass], _ctor);

@@ -63,7 +63,7 @@ test('all40 active family tiers retain original row values, authorized routes an
     assert.equal(rows.length,43);assert.equal(rows.filter(r=>r.level===4).length,11);
     for(const family of [config.BuildEnum['1'],config.BuildEnum['4']])assert.deepEqual(family.levelList.map(r=>r.level),[1,2,3,4]);
     for(const row of rows.filter(r=>r.ID!==2))assert.equal(row.Appearance,undefined,'non-tower artwork uses native animated attachments');
-    for(const row of rows.filter(r=>r.ID===2&&r.Tower))assert(row.Appearance.weapon?.sprite,'sniper/cannon preserve separate rotating weapon binding');
+    for(const row of rows.filter(r=>r.ID===2&&['sniper','cannon'].includes(r.Tower?.attackType)))assert(row.Appearance.weapon?.sprite,'sniper/cannon preserve separate rotating weapon binding');
   }
 });
 

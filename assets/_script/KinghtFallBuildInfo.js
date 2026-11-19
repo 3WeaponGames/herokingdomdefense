@@ -16,10 +16,15 @@ var exp_KinghtFallBuildInfo = function () {
     this.pointId = pointId;
     this.standTime = 0;
     this.cfg = e;
+    if (t == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter) {
+      var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+      var stage = game && game.gameData && game.gameData.levelCfg;
+      if (stage && (stage.Level === 1 || stage.Level === 2)) this.levelCap = stage.Level + 1;
+    }
     if (e) {
       if (e.BranchBuild && e.BranchBuild.length > 0) {
         if (t == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter) {
-          this.canUpgrade = true;
+          this.canUpgrade = !this.levelCap || e.level < this.levelCap;
         } else {
           var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getBaseLevel();
           this.canUpgrade = n > e.level;

@@ -14,7 +14,7 @@ function purchase(family,index,count){
  info.KinghtFallBuildInfo=plain('KinghtFallBuildInfo',{...h.e.stubs,RelicRuntime:h.load('RelicRuntime'),RelicBattle:h.load('RelicBattle')}).KinghtFallBuildInfo;
  class Label{}class Sprite{}class Color{fromHEX(value){this.value=value;return this;}}Color.WHITE={white:true};
  Object.assign(h.e.cc,{Label,Sprite,Color,tween(){return {set(){return this;},to(){return this;},start(){return this;}};}});
- Object.assign(h.d,{coin:100000,treasureAddTime:{},getBaseLevel:()=>4});Object.assign(h.ui,{canStart:true,isclose:false,initView:noop,addTask:noop,onPauseGame:noop});
+ Object.assign(h.d,{coin:100000,levelCfg:{...h.d.levelCfg,Level:3},treasureAddTime:{},getBaseLevel:()=>4});Object.assign(h.ui,{canStart:true,isclose:false,initView:noop,addTask:noop,onPauseGame:noop});
  const Type=h.load('KinghtFallBuildBase').default,b=new Type(),cfg=clone(authored.BuildEnum[family]);
  // Isolate selector reuse from independently tested saved pad transformations.
  for(const row of cfg.levelList)delete row.PurchaseField;
@@ -57,9 +57,9 @@ test('unavailable or terminal tiers cannot fabricate a purchase pad',()=>{
  const h=purchase(2,3,3),b=h.b;b.buildInfo.canUpgrade=false;assert.equal(b.getPurchaseField(),null);assert.equal(b.getLockPoint(),null);
  b.ndLockList=[];b.buildInfo.canUpgrade=true;assert.equal(b.getPurchaseField(),null);assert.equal(b.getLockPoint(),null);
 });
-for(const id of [90001,90002,90003,90004])for(const bonus of [0,3])test('barracks '+id+' places '+(10+bonus)+' distinct bodies without indexing authored move markers',()=>{
+for(const id of [90001,90002,90003,90004])test('barracks '+id+' places 10 distinct bodies without indexing authored move markers',()=>{
  const e=environment();e.stubs.KinghtFallBuildBase={default:function(){}};const B=e.load('KinghtFallBuildBarracks').default,b=new B();
- Object.assign(b,{node:new Node('barracks',e.game.ndMain),ndBotnNodeList:new Node('spawn',e.game.ndMain,-30,-10),buildInfo:{cfg:{Data:[10,id,8]}},ndVideoSoldier:{SolID:id},VideoTimes:bonus,stratAge:75});
+ Object.assign(b,{node:new Node('barracks',e.game.ndMain),ndBotnNodeList:new Node('spawn',e.game.ndMain,-30,-10),buildInfo:{cfg:{Data:[10,id,8]}},stratAge:75});
  // Intentionally fewer authored move markers than soldiers, matching the maps.
  b.ndMove=[new Node('legacy move marker')];e.game.addSoldier=(unitId,done)=>{
   const n=new Node('ally',e.game.ndMain);n.active=false;n.addComponent(e.cc.PhysicsCircleCollider).radius=id===90004?16:id===90002?12:8;
@@ -67,12 +67,12 @@ for(const id of [90001,90002,90003,90004])for(const bonus of [0,3])test('barrack
   e.game.gameData.soldiers.push(u);done(u);
  };
  b.buildInfo.cfg.Data[0]=8;b.initSoldier();const veterans=b.enemyList.slice(),veteranPositions=veterans.map(u=>u.node.getPosition());
- b.buildInfo.cfg.Data[0]=10;b.initSoldier();assert.equal(b.enemyList.filter(Boolean).length,10+bonus);assert(b.enemyList.every(u=>u.node.active&&!u._spawnPending&&Number.isFinite(u.node.x)&&Number.isFinite(u.node.y)));
+ b.buildInfo.cfg.Data[0]=10;b.initSoldier();assert.equal(b.enemyList.filter(Boolean).length,10);assert(b.enemyList.every(u=>u.node.active&&!u._spawnPending&&Number.isFinite(u.node.x)&&Number.isFinite(u.node.y)));
  veterans.forEach((u,i)=>{assert.equal(b.enemyList[i],u,'an upgrade keeps every existing soldier');assert.deepEqual(u.node.getPosition(),veteranPositions[i]);});
  for(let i=0;i<b.enemyList.length;i++)for(let j=0;j<i;j++){
   const a=b.enemyList[i],c=b.enemyList[j],clearance=e.nav.get(e.game).radius(a)+e.nav.get(e.game).radius(c)+4;
   assert(Math.hypot(a.node.x-c.node.x,a.node.y-c.node.y)>=clearance-1e-6,'spawn bodies must not collapse');
  }
- const positions=b.enemyList.map(u=>u.node.getPosition());b.initSoldier();assert.equal(e.game.gameData.soldiers.length,10+bonus);b.enemyList.forEach((u,i)=>assert.deepEqual(u.node.getPosition(),positions[i]));
- const last=b.enemyList[b.enemyList.length-1];b.setSoldierRallyPoint(last,{x:45,y:-80});assert.deepEqual(JSON.parse(JSON.stringify(b.getSoldierRallyPoint(last))),{x:45,y:-80});assert.equal(b.getSave().rallyPosts.length,10+bonus);
+ const positions=b.enemyList.map(u=>u.node.getPosition());b.initSoldier();assert.equal(e.game.gameData.soldiers.length,10);b.enemyList.forEach((u,i)=>assert.deepEqual(u.node.getPosition(),positions[i]));
+ const last=b.enemyList[b.enemyList.length-1];b.setSoldierRallyPoint(last,{x:45,y:-80});assert.deepEqual(JSON.parse(JSON.stringify(b.getSoldierRallyPoint(last))),{x:45,y:-80});assert.equal(b.getSave().rallyPosts.length,10);
 });

@@ -40,24 +40,6 @@ function harness(name, enableWallDefense = false) {
   return { state, instance };
 }
 
-test('barracks cap is bypassed only while test mode is on, without resetting earned soldiers', () => {
-  const {state,instance:b} = harness('KinghtFallBuildBarracks');
-  b.VideoTimes = 3;
-  assert.equal(b.canAddVideoSoldier(),false);
-  state.enabled=true; assert.equal(b.canAddVideoSoldier(),true);
-  b.VideoTimes=8; state.enabled=false; assert.equal(b.canAddVideoSoldier(),false);
-  assert.equal(b.VideoTimes,8);
-  state.enabled=true; state.review=true; assert.equal(b.canAddVideoSoldier(),false);
-});
-test('barracks standing interaction requires leaving and re-entering before another reward', () => {
-  const {instance:b} = harness('KinghtFallBuildBarracks');
-  b.node={x:0,y:0}; b.ndVideoSoldier={position:{x:0,y:0},width:20,height:20,anchorX:.5,anchorY:.5,getChildByName:()=>({getComponent:()=>({fillRange:0})})};
-  b.keepTime=0;b.standTimeMax=1.5;b.isIn=false;
-  assert.equal(b.getInClick({x:0,y:0},2),true);
-  assert.equal(b.getInClick({x:0,y:0},2),false);
-  assert.equal(b.getInClick({x:100,y:0},2),false);
-  assert.equal(b.getInClick({x:0,y:0},2),true);
-});
 test('the Wall Defense lobby button only shows Coming soon at every progression and energy level', () => {
   const {state,instance:h} = harness('KinghtFallHomeBattleCtrl');
   const entry = require('../../assets/resources/localization/catalog.json').entries['common.comingSoon'];

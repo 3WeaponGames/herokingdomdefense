@@ -169,7 +169,10 @@ function controllerFixture(type = 'cannon', level = 1, loadArtwork = true) {
     const tip = tower._buildingAppearance.weaponNode.convertToWorldSpaceAR(localMuzzle(h));
     const expected = this.ndUI.convertToNodeSpaceAR(tip), node = new h.Node('Projectile');
     node.parent = this.ndUI; node.setSiblingIndex = () => {};
-    const bullet = { node, speed: 550, setTowerTag(origin, target, attack, behavior) { shots.push({ origin, target, expected, nodePosition: node.getPosition(), behavior }); } };
+    function record(origin, behavior, extra) { shots.push({ origin, expected, nodePosition: node.getPosition(), behavior, ...extra }); }
+    const bullet = { node, speed: 550,
+      setTowerTag(origin, target, attack, behavior) { record(origin, behavior, { target }); },
+      setSniperFlight(origin, end, behavior) { record(origin, behavior, { end }); } };
     node.getComponent = () => bullet; this.ndBuildArr1.push(node);
     originalShot.call(this, tower, actor);
   };

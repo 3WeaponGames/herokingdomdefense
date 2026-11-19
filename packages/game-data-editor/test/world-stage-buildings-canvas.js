@@ -32,6 +32,7 @@ async function verify(){
   assert(tool.querySelector('.world-map-blocker-key')&&tool.querySelector('.world-building-blocker-key'),'legend identifies map and building blockers');
   ctx.fill=original;
   const previewBefore=JSON.stringify(state.snap.value),hall=Array.from(tool.querySelectorAll('.world-tabs label')).find(l=>l.querySelector('span').textContent==='Hall preview').querySelector('select');
+  assert(hall.value==='4'&&state.previewHall===4,'the Stages editor opens at hall tier 4');
   hall.value='1';hall.onchange();await ready();assert(JSON.stringify(state.snap.value)===previewBefore&&changes===0,'changing hall preview updates poses without editing stage data');
   const count=state.snap.value.buildings.length;await cards.find(c=>c.textContent.includes('House')).onclick();await raf();
   const event={button:0,clientX:canvas.getBoundingClientRect().left+canvas.getBoundingClientRect().width/2,clientY:canvas.getBoundingClientRect().top+canvas.getBoundingClientRect().height/2,preventDefault(){},pointerId:1};canvas.onpointerdown(event);await state.pending;await ready();

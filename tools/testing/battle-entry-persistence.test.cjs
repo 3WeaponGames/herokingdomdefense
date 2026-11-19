@@ -75,11 +75,12 @@ test('saved building branch IDs must exist in the current building configuration
   }
 });
 
-test('barracks restore validates sparse branch IDs and repairs invalid bonus troop counts', () => {
+test('barracks restore validates sparse branch IDs and ignores retired ad troop counts', () => {
   const h = harness();
   h.context.$z1KinghtFallBuildBase = { default: { prototype: { setSave: h.method('KinghtFallBuildBase', 'setSave') } } };
   const restore = h.method('KinghtFallBuildBarracks', 'setSave');
   const building = { buildCfg: { levelList: [{index:11}, {index:12}, {index:13}] }, getBranchCfg:h.method('KinghtFallBuildBase', 'getBranchCfg'), setLevel(level) { this.level = level; } };
-  restore.call(building, { level: 999, data: 'bad' }); assert.equal(building.level, 0); assert.equal(building.VideoTimes, 0);
-  restore.call(building, { level: 12, data: 4 }); assert.equal(building.level, 12); assert.equal(building.VideoTimes, 4);
+  restore.call(building, { level: 999, data: 'bad' }); assert.equal(building.level, 0);
+  restore.call(building, { level: 12, data: 4 }); assert.equal(building.level, 12);
+  assert.equal(h.method('KinghtFallBuildBarracks', 'getSave').call(building).data, 0);
 });

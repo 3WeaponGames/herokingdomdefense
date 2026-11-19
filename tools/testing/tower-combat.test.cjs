@@ -27,16 +27,22 @@ function tower(h, config) {
   value.getBuffList = () => [];
   return value;
 }
-function shotSetup() {
-  const h = setup();
+function shotSetup(overrides) {
+  const h = setup(overrides);
   h.g.ndUI = new Node('effects');
   h.ui.ctrEffect = { showDamageNum() {}, onMonsterAttack() {} };
-  const B = h.load('KinghtFallBulletBuild').default, bullet = new B();
-  bullet.node = new Node('shot', h.g.ndUI); bullet.uuid = 'shot';
-  bullet.node.setSiblingIndex = () => {};
-  bullet.bullet = new Node('authored arrow', bullet.node);
-  bullet.speed = 550;
-  bullet.node.getComponent = Type => bullet instanceof Type ? bullet : null;
+  const B = h.load('KinghtFallBulletBuild').default;
+  function makeShot() {
+    const bullet = new B();
+    bullet.node = new Node('shot', h.g.ndUI);
+    bullet.node.setSiblingIndex = () => {};
+    bullet.bullet = new Node('authored arrow', bullet.node);
+    bullet.speed = 550;
+    bullet.node.getComponent = Type => bullet instanceof Type ? bullet : null;
+    return bullet.node;
+  }
+  h.g.buildBullet = { node: makeShot };
+  const bullet = makeShot().getComponent(B);
   h.g.ndBuildArr1.push(bullet.node);
   return { h, bullet };
 }
@@ -83,6 +89,92 @@ test('sniper prefers highest living HP in range with deterministic nearest ties 
   for (const invalid of [-100, NaN, undefined]) {
     t.attRange = invalid; t.doAttack(); assert.equal(selected, null, 'invalid range cannot acquire enemies');
   }
+});
+
+test('Archer tier volleys launch one arrow per distinct reachable target in targeting order', () => {
+  const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+  for (const row of config.BuildEnum[2].levelList.filter(row => row.Tower?.attackType === 'arrow')) {
+    const { h } = shotSetup(), t = tower(h, row), selected = [];
+    const targets = [100, 190, 250, 350].map((x, index) => enemy('target ' + index, x, 0));
+    const boundary = enemy('out of range', t.attRange, 0);
+    h.d.enemyList = [boundary, targets[3], targets[0], targets[0], targets[2], targets[1]];
+    const launch = h.g.onShotBuild;
+    h.g.onShotBuild = function (source, target) { selected.push(target); launch.call(this, source, target); };
+    t.doAttack();
+    assert.deepEqual(selected, targets.slice(0, row.level));
+    assert.equal(h.g.ndBuildArr2.length, row.level);
+    assert.equal(t.time.AttackTime, 0);
+    h.g.ndBuildArr2.forEach(complete);
+    assert.deepEqual(targets.map(target => target.hits), targets.map((_, index) => index < row.level ? [50] : []));
+    assert.deepEqual(boundary.hits, []);
+  }
+  const { h } = shotSetup(), t = tower(h, { Tower: { shotsPerVolley: 4, targeting: 'highestHp' } });
+  const near = enemy('near', 90, 0), farther = enemy('higher HP', 250, 0, 200), retired = enemy('dead', 50, 0, 0);
+  h.d.enemyList = [near, farther, near, retired, farther];
+  const selected = [];
+  h.g.onShotBuild = (_source, target) => selected.push(target);
+  t.doAttack();
+  assert.deepEqual(selected, [farther, near], 'remaining arrows need distinct live enemies');
+});
+
+test('a fast Sniper bolt hits in straight travel order, up to the authored limit including the first hit', () => {
+  for (const cap of [1, 2, 3]) {
+    const { h, bullet } = shotSetup(), t = tower(h, { Tower: { attackType: 'sniper', projectileSpeed: 3000, pierceTargets: cap } });
+    const aligned = [90, 210, 320, 400].map((x, index) => enemy('aligned ' + index, x, 0, index === 1 ? 300 : 100));
+    const offLine = enemy('off line', 160, 26), behind = enemy('behind muzzle', -80, 0), order = [];
+    h.d.enemyList = [behind, aligned[3], aligned[1], offLine, aligned[0], aligned[2], aligned[0]];
+    aligned.forEach(actor => { actor.onAttacked = function (damage) { order.push(this); this.hits.push(damage); }; });
+    t.doAttack();
+    bullet.onUpdate(.5);
+    assert.deepEqual(order, aligned.slice(0, cap));
+    assert.deepEqual(aligned.map(actor => actor.hits), aligned.map((_, index) => index < cap ? [50] : []));
+    assert.deepEqual(offLine.hits, []); assert.deepEqual(behind.hits, []);
+    assert.equal(bullet.state, 1);
+    assert(Math.abs(bullet.node.x - (aligned[cap - 1].node.x - 25)) < 1e-6);
+  }
+});
+
+test('Sniper flight holds its launch direction across moving enemies and transformed layers, stopping at tower range', () => {
+  const { h, bullet } = shotSetup(), world = h.g.ndMain, effects = h.g.ndUI;
+  effects.setPosition(180, 30); effects.angle = 67; effects.scaleX = 1.5; effects.scaleY = .85;
+  h.e.stubs.BuildingAppearance.muzzle = () => effects.convertToNodeSpaceAR(world.convertToWorldSpaceAR(new Vec2(0, 80)));
+  const t = tower(h, { Tower: { attackType: 'sniper', projectileSpeed: 3000, pierceTargets: 2 } });
+  t.attRange = 300;
+  const target = enemy('initial aim', 160, 80, 300, world), entrant = enemy('moves onto the line', 220, -100, 100, world);
+  const beyond = enemy('past tower range', 370, 80, 100, world);
+  h.d.enemyList = [target, entrant, beyond];
+  t.doAttack();
+  const heading = bullet.node.angle;
+  target.node.setPosition(175, 180); entrant.node.setPosition(220, 80);
+  bullet.onUpdate(.01); bullet.onUpdate(.4);
+  assert.equal(bullet.node.angle, heading);
+  assert.deepEqual(target.hits, []); assert.deepEqual(entrant.hits, [50]); assert.deepEqual(beyond.hits, []);
+  const end = world.convertToNodeSpaceAR(effects.convertToWorldSpaceAR(bullet.node.getPosition()));
+  assert(Math.abs(end.x - Math.sqrt(300 ** 2 - 80 ** 2)) < 1e-6);
+  assert(Math.abs(end.y - 80) < 1e-6);
+});
+
+test('a piercing bolt skips a recycled contact and never repeats a hit across frames', () => {
+  const { h, bullet } = shotSetup(), t = tower(h, { Tower: { attackType: 'sniper', projectileSpeed: 1000, pierceTargets: 3 } });
+  const first = enemy('first', 120, 0), recycled = enemy('recycled', 140, 0), last = enemy('last', 330, 0);
+  first.onAttacked = function (damage) { this.hits.push(damage); recycled.node._combatGeneration++; recycled.node.setPosition(140, 100); };
+  h.d.enemyList = [first, recycled, last];
+  h.g.onShotBuild(t, last);
+  bullet.onUpdate(.14);
+  assert.deepEqual(first.hits, [50]); assert.deepEqual(recycled.hits, []);
+  complete(bullet);
+  assert.deepEqual(first.hits, [50]); assert.deepEqual(last.hits, [50]);
+});
+
+test('a battle retired during tower launch feedback cannot spawn a piercing shot in the next battle', () => {
+  const { h } = shotSetup({ BattleSounds: { attack() { h.g._combatEpoch++; } } });
+  const t = tower(h, { Tower: { attackType: 'sniper', pierceTargets: 2 } });
+  const target = enemy('target', 150, 0);
+  h.d.enemyList = [target];
+  t.doAttack();
+  assert.equal(h.g.ndBuildArr2.length, 0);
+  assert.equal(h.g.ndBuildArr1.length, 1);
+  assert.deepEqual(target.hits, []);
 });
 
 test('cannon impact damages current monsters inside its radius even after its initial target dies', () => {
@@ -238,7 +330,7 @@ test('an idle ready weapon keeps acquisition bounded when no enemies are in rang
   assert(t.time.AttackTime >= 1, 'the next shot remains ready');
 });
 
-test('Cannon and Sniper keep and reset their authored motion trails, use saved level speeds and retain single impacts',()=>{
+test('Cannon and Sniper keep and reset their fallback trails and use saved level speeds',()=>{
  const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
  for(const type of ['cannon','sniper'])for(const cfg of config.BuildEnum[2].levelList.filter(r=>r.Tower?.attackType===type)){
   const {h,bullet}=shotSetup();class Render{constructor(){this.enabled=true;}}class Trail extends Render{reset(){this.resets=(this.resets||0)+1;}}
@@ -251,4 +343,40 @@ test('Cannon and Sniper keep and reset their authored motion trails, use saved l
   complete(bullet);assert.deepEqual(target.hits,[50]);bullet.freeNode();assert.equal(trail.enabled,true);assert.equal(original.enabled,true);
   h.g.onShotBuild(tower(h,cfg),target);assert.equal(trail.resets,2,'pooled shots retain an old trail');assert.equal(trail.enabled,true);complete(bullet);assert.deepEqual(target.hits,[50,50]);
  }
+});
+
+test('all production tower tiers select their family trail and pooled flight keeps it visible through impact', () => {
+  const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+  const catalog = require('../../assets/resources/projectiles/catalog.json');
+  const trailIds = { arrow: 'trail:tower-archer', cannon: 'trail:tower-cannon', sniper: 'trail:tower-sniper' };
+  const { h, bullet } = shotSetup(), looks = h.load('ProjectileLooks');
+  class Renderer { constructor() { this.enabled = true; } }
+  class Trail extends Renderer { reset() {} }
+  class Texture {}
+  Object.assign(h.e.cc, {
+    RenderComponent: Renderer, MotionStreak: Trail, Texture2D: Texture, color: value => value,
+    assetManager: { getBundle: bundle => ({ load(resource, type, done) {
+      const descriptor = catalog.trails.find(trail => trail.bundle === bundle && trail.resource === resource);
+      if (descriptor && type === Texture) done(null, new Texture());
+      else done(new Error('Only trail textures are loaded in this fixture'));
+    } }) },
+    resources: { load(_resource, _type, done) { done(new Error('Only trail textures are loaded in this fixture')); } }
+  });
+  looks.prime(catalog);
+  const fallback = bullet.bullet.addComponent(Trail);
+  for (const row of config.BuildEnum[2].levelList) {
+    const trail = catalog.trails.find(value => value.id === trailIds[row.Tower.attackType]);
+    assert.equal(looks.select(catalog, 'tower:2:' + row.index).trail, trail.id);
+    const target = enemy('target', 250, 0);
+    h.d.enemyList = [target]; h.g.onShotBuild(tower(h, row), target);
+    const node = bullet._projectileVisual.trailNode;
+    assert(node && node.active, row.Tower.attackType);
+    assert.equal(node.getComponent(Trail).stroke, trail.width);
+    assert.equal(node.getComponent(Trail).fadeTime, trail.lifetime);
+    assert.equal(fallback.enabled, false);
+    complete(bullet);
+    assert.equal(node.active, true, 'the trail can fade after the projectile ends');
+    bullet.freeNode();
+    assert.equal(node.active, false); assert.equal(fallback.enabled, true);
+  }
 });

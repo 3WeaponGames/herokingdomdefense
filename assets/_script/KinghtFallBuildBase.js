@@ -176,6 +176,7 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.getUpgradeChoices = function () {
     var configured = this.buildInfo && this.buildInfo.cfg ? this.buildInfo.cfg.BranchBuild : this.buildCfg.InitialChoices;
+    var cap = this.buildInfo && this.buildInfo.levelCap;
     if (!Array.isArray(configured)) {
       var first = this.buildCfg.levelList[0];
       return this.buildInfo && this.buildInfo.cfg || !first ? [] : [first.index];
@@ -184,7 +185,7 @@ var def_KinghtFallBuildBase = function (t) {
     return configured.filter(function (index, position) {
       var row = build.getBranchCfg(index);
       return typeof index === "number" && Math.floor(index) === index && index > 0 && row &&
-        (build.buildInfo && build.buildInfo.cfg || row.level === 1) && configured.indexOf(index) === position;
+        (!cap || row.level <= cap) && (build.buildInfo && build.buildInfo.cfg || row.level === 1) && configured.indexOf(index) === position;
     });
   };
   _ctor.prototype.hasFreeInitialChoice = function () {

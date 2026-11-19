@@ -1,13 +1,16 @@
 'use strict';
 
 // Display defaults are read-only. A field is authored only after an explicit edit.
-const ATTACK_TYPES = [{value:'arrow',label:'Arrow — original projectile'},{value:'cannon',label:'Cannon — splash impact'},{value:'sniper',label:'Sniper — single target'}];
+const ATTACK_TYPES = [{value:'arrow',label:'Arrow — targeted volley'},{value:'cannon',label:'Cannon — splash impact'},{value:'sniper',label:'Sniper — piercing bolt'}];
 const TARGETING = [{value:'nearest',label:'Nearest enemy'},{value:'highestHp',label:'Highest current HP'},{value:'lowestHp',label:'Lowest current HP'},{value:'farthest',label:'Farthest enemy'}];
 function towerFields(value) {
     const mode=value&&value.attackType||'arrow';
+    const count=mode==='sniper'?{key:'pierceTargets',label:'Max enemies per bolt',value:1,integer:true,min:1,help:'Total enemies one straight bolt can hit, including its first hit.'}:
+        mode==='arrow'?{key:'shotsPerVolley',label:'Max arrows per volley',value:1,integer:true,min:1,help:'Each arrow aims at a different enemy in range, in targeting priority order.'}:null;
     return [
         {key:'attackType',label:'Tower attack type',value:mode,options:ATTACK_TYPES},
         {key:'targeting',label:'Tower targeting',value:mode==='sniper'?'highestHp':'nearest',options:TARGETING},
+        ...(count?[count]:[]),
         {key:'projectileSpeed',label:'Projectile speed',value:mode==='sniper'?1000:mode==='cannon'?300:550,min:.001,help:'World units per second. Damage, firing rate and range are edited above.'},
         {key:'splashRadius',label:'Splash radius',value:mode==='cannon'?90:0,min:0,help:'Cannon impact radius in world units. Other attack types do not apply splash damage.'},
         {key:'splashFalloff',label:'Splash edge damage multiplier',value:1,min:0,max:1,help:'1 keeps full damage at the edge; 0 falls to zero at the edge.'},

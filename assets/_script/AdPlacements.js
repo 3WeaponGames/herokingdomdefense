@@ -25,7 +25,6 @@ var placements = {
   "battle.map.weapon2": { adUnitId: "", description: "Second map weapon upgrade" },
   "battle.map.horse1": { adUnitId: "", description: "First map horse upgrade" },
   "battle.map.horse2": { adUnitId: "", description: "Second map horse upgrade" },
-  "battle.barracks.extraSoldier": { adUnitId: "", description: "Additional barracks soldier" },
   "battle.building.branch": { adUnitId: "", description: "Ad-funded building branch upgrade" },
   "battle.offer.confirm": { adUnitId: "", description: "Optional map offer confirmation dialog" }
 };

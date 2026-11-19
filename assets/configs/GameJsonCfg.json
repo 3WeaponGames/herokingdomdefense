@@ -2741,6 +2741,10 @@
             0.5,
             350
           ],
+          "Tower": {
+            "attackType": "arrow",
+            "shotsPerVolley": 1
+          },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-1",
             "width": 181.02577197149643,
@@ -3262,6 +3266,10 @@
           "BranchBuild": [
             3
           ],
+          "Tower": {
+            "attackType": "arrow",
+            "shotsPerVolley": 2
+          },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-2",
             "width": 180.81103202846978,
@@ -3546,6 +3554,10 @@
           "BranchBuild": [
             10
           ],
+          "Tower": {
+            "attackType": "arrow",
+            "shotsPerVolley": 3
+          },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-3",
             "width": 182.76223021582734,
@@ -4441,6 +4453,7 @@
             "attackType": "sniper",
             "targeting": "highestHp",
             "projectileSpeed": 3000,
+            "pierceTargets": 2,
             "splashRadius": 0,
             "splashFalloff": 1
           },
@@ -4666,6 +4679,7 @@
             "attackType": "sniper",
             "targeting": "highestHp",
             "projectileSpeed": 3000,
+            "pierceTargets": 2,
             "splashRadius": 0,
             "splashFalloff": 1
           },
@@ -4885,6 +4899,7 @@
             "attackType": "sniper",
             "targeting": "highestHp",
             "projectileSpeed": 3000,
+            "pierceTargets": 2,
             "splashRadius": 0,
             "splashFalloff": 1
           },
@@ -5110,6 +5125,10 @@
           ],
           "BuildCost": 5,
           "ColliderIndex": 3,
+          "Tower": {
+            "attackType": "arrow",
+            "shotsPerVolley": 4
+          },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-4",
             "width": 184.3994943109987,
@@ -5540,6 +5559,7 @@
             "attackType": "sniper",
             "targeting": "highestHp",
             "projectileSpeed": 3000,
+            "pierceTargets": 2,
             "splashRadius": 0,
             "splashFalloff": 1
           },

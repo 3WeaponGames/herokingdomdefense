@@ -12,7 +12,7 @@ function node(){return {active:true,handlers:{},on(type,cb){this.handlers[type]=
 function tweens(cc){const pending=[];cc.tween=()=>{let done;const chain={to(){return chain;},set(){return chain;},delay(){return chain;},call(fn){done=fn;return chain;},start(){if(done)pending.push(done);return chain;}};return chain;};return ()=>{while(pending.length)pending.shift()();};}
 function perkDialog(immediate=false){
  const h=setup(),cc=h.e.cc,requests=[],chosen=[],scheduled=[];cc.Enum=x=>x;cc.Node.EventType={TOUCH_END:'touchend'};cc.instantiate=node;const flush=tweens(cc);
- const mods={...h.e.stubs,SdkMgr:{SdkMgr:{getInstance:()=>({playVideo(_type,yes,no){requests.push({yes,no});if(immediate)yes();}})},AdType:{AdFreeTime:1}},PlayerMgr:{PlayerMgr:{getInstance:()=>({getTrackData:()=>({youmengTrack(){}})})}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getMaxStage:()=>1})})}},UIMgr:{UIMgr:{getInstance:()=>({closeUI(){}})}},GameTrackDataEvent:{TrackId:{}}};
+ const mods={...h.e.stubs,SdkMgr:{SdkMgr:{getInstance:()=>({playVideo(_type,yes,no){requests.push({yes,no});if(immediate)yes();}})},AdType:{AdFreeTime:1}},PlayerMgr:{PlayerMgr:{getInstance:()=>({getTrackData:()=>({youmengTrack(){}})})}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getMaxStage:()=>1}),getGuideData:()=>({getGroupId:()=>0})})}},UIMgr:{UIMgr:{getInstance:()=>({closeUI(){}})}},GameTrackDataEvent:{TrackId:{}}};
  mods.BaseUI=load('BaseUI',cc,mods);const B=load('KinghtFallUIBuff',cc,mods).default,b=new B();let refreshed=0;
  Object.assign(b,{node:node(),ndItem:node(),ndParent:node(),btnRefresh:node(),btnGetAll:node(),selInfo:[50001,50002,50003],initData(){},initBtnView(){},onRefreshBuff(){refreshed++;},showItem(){},showAni(){},startGuide(){},callBack:result=>chosen.push(Array.from(result)),scheduleOnce:fn=>scheduled.push(fn),release(){},offEvents(){}});
  b.onOpened();b.start();return {b,requests,chosen,flush,scheduled,refreshed:()=>refreshed};
@@ -44,13 +44,13 @@ test('Empty authored perk pool completes once and honors close ownership',()=>{
  const p=perkDialog();p.b._customPerkPool=true;p.b.canOutBuff=[];p.b.start();const finish=p.scheduled.at(-1);finish();finish();assert.deepEqual(p.chosen,[[]]);
  const q=perkDialog();q.b._customPerkPool=true;q.b.canOutBuff=[];q.b.start();q.b.closeUI();q.scheduled[0]();assert.equal(q.chosen.length,0);
 });
-test('Barracks saved ownership survives first start and real roster refresh',()=>{
+test('Barracks first start hides the old offer and restores only the authored roster',()=>{
  const h=setup();function Base(){};Base.prototype.start=function(){};Base.prototype.setSave=function(save){this.index=save.level;};Base.prototype.reset=function(){};
  h.e.stubs.KinghtFallBuildBase={default:Base};h.e.stubs.Utils={Utils:{randomRang:()=>100}};const B=h.load('KinghtFallBuildBarracks').default,b=new B();
- Object.assign(b,{ID:7,node:new Node(),ndPro:{},ndVideoSoldier:{SolID:90001},buildInfo:{cfg:{Data:[10,90001,8]}},init(){},getPos:()=>new Vec2(),canAddVideoSoldier:()=>true});
+ Object.assign(b,{ID:7,node:new Node(),ndPro:{},ndVideoSoldier:{active:true},buildInfo:{cfg:{Data:[10,90001,8]}},getPos:()=>new Vec2()});
  const removed=[];h.d.delSoldier=unit=>removed.push(unit);h.g.addSoldier=(id,done)=>done({cfg:{ID:id},node:new Node(),setParent(){},setNew(){},initBuffData(){},isDead:()=>false});
- b.setSave({point:7,level:4,data:3});b.initSoldier();assert.equal(b.enemyList.filter(Boolean).length,13);b.start();b.initSoldier();assert.equal(b.getSave().data,3);assert.equal(b.enemyList.filter(Boolean).length,13);assert.equal(removed.length,0);
- b.initBuffData=()=>{};b.reset(true);assert.equal(b.VideoTimes,0);assert.equal(b.enemyList.length,0);assert.equal(new B().VideoTimes,0);
+ b.setSave({point:7,level:4,data:3});b.initSoldier();assert.equal(b.enemyList.filter(Boolean).length,10);b.start();b.initSoldier();assert.equal(b.getSave().data,0);assert.equal(b.enemyList.filter(Boolean).length,10);assert.equal(removed.length,0);assert.equal(b.ndVideoSoldier.active,false);
+ b.initBuffData=()=>{};b.reset(true);assert.equal(b.enemyList.length,0);assert.equal(b.ndVideoSoldier.active,false);
 });
 test('Wall Defense pause ignores lottery, results, and unrelated pause owners',()=>{
  const h=setup();let state='Pause',opens=0;const game={_cardCtrl:{},_resourceGeneration:1};

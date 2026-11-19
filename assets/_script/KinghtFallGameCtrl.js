@@ -1329,44 +1329,70 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onShotBuild = function (t, e, released) {
     var game = this;
-    var shotData = this.gameData, shotEpoch = this._combatEpoch;
+    var towerCombat = require("TowerCombat");
+    var shotData = this.gameData, shotEpoch = this._combatEpoch, shotStage = this.gameStatus;
+    var targetNode = e && e.node, targetGeneration = targetNode && targetNode._combatGeneration;
+    function releaseCurrent() {
+      return game.gameData === shotData && game._combatEpoch === shotEpoch && game.gameStatus === shotStage &&
+        !t.isDestroyed && towerCombat.live(e) && e.node === targetNode && targetNode._combatGeneration === targetGeneration;
+    }
     var towerKey=t.buildInfo&&t.buildInfo.cfg&&t.buildInfo.cfg.ID&&t.buildInfo.cfg.index?'tower:'+t.buildInfo.cfg.ID+':'+t.buildInfo.cfg.index:'tower';
-    if(!released&&ProjectileLooks.launchDelay(towerKey)>0){var targetNode=e&&e.node,targetGeneration=targetNode&&targetNode._combatGeneration;return ProjectileLooks.queueLaunch(this,towerKey,t,function(){_ctor.prototype.onShotBuild.call(game,t,e,true);},function(){return game.gameData===shotData&&game._combatEpoch===shotEpoch&&game.gameStatus===$z1KinghtFallModle.KinghtFallGameStage.Fight&&!t.isDestroyed&&e&&e.node===targetNode&&cc.isValid(targetNode,true)&&targetNode._combatGeneration===targetGeneration&&(!e.isDead||!e.isDead());});}
+    if (!released && ProjectileLooks.launchDelay(towerKey) > 0) {
+      return ProjectileLooks.queueLaunch(this, towerKey, t, function () {
+        _ctor.prototype.onShotBuild.call(game, t, e, true);
+      }, function () {
+        return game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && releaseCurrent();
+      });
+    }
     var appearance = t.buildInfo && t.buildInfo.cfg && t.buildInfo.cfg.Appearance;
     var layered = appearance && appearance.weapon && appearance.weapon.sprite;
     if (layered) {
       var artwork = require("BuildingAppearance");
       if (artwork.ready && !artwork.ready(t)) return;
     }
+    var behavior = t.getTowerSettings ? t.getTowerSettings() : null;
+    if (BattleSounds.attack) BattleSounds.attack(t, "tower", behavior);
+    if (!releaseCurrent()) return;
+    if (layered && !behavior) behavior = towerCombat.settings({ Tower: {} });
+    var hasMuzzle = behavior && (behavior.attackType !== "arrow" || layered);
+    var modern = behavior && (hasMuzzle || behavior.fieldProjectile || behavior.shotsPerVolley);
+    if (layered && released && behavior.pierceTargets && artwork.aim) artwork.aim(t, e);
+    var i = hasMuzzle && !behavior.fieldProjectile ? require("BuildingAppearance").muzzle(t, this) : t.getAttPos();
+    var o = t.getAttack();
+    if (!releaseCurrent()) return;
     var n = this.ndBuildArr1.shift();
     n || (n = cc.instantiate(this.buildBullet.node)).setParent(this.ndUI);
     n.setSiblingIndex(0);
     n.active = true;
-    var behavior = t.getTowerSettings ? t.getTowerSettings() : null;
-    if (BattleSounds.attack) BattleSounds.attack(t, "tower", behavior);
-    if (layered && !behavior) behavior = require("TowerCombat").settings({ Tower: {} });
-    var modern = behavior && (behavior.attackType !== "arrow" || layered || behavior.fieldProjectile);
-    var i = modern && !behavior.fieldProjectile ? require("BuildingAppearance").muzzle(t, this) : t.getAttPos();
     n.setPosition(i);
     var a = n.getComponent($z1KinghtFallBulletBuild.default);
     this.ndBuildArr2.push(a);
-    var o = t.getAttack();
     if (a._towerBaseSpeed === undefined) a._towerBaseSpeed = a.speed;
     a.speed = behavior && behavior.projectileSpeed || a._towerBaseSpeed;
     a.combatContext = this;
     if (modern) {
-      var game = this, effects = $z1KinghtFallUIGame.default.instance.ctrEffect;
+      var effects = $z1KinghtFallUIGame.default.instance.ctrEffect;
       ProjectileLooks.prepare(a, this, behavior.projectileLook || towerKey);
+      function feedback(actor, position, damage) {
+        if (effects && cc.isValid(effects, true)) {
+          effects.showDamageNum(position, GameToolsOverrides.damageTaken(actor, "enemy", damage));
+          if (behavior.attackType !== "cannon") effects.onMonsterAttack(position, "jian_lv1");
+        }
+      }
+      if (behavior.pierceTargets) {
+        var end = towerCombat.sniperEnd(t, e.node, i, this.ndUI);
+        a.setSniperFlight(i, end, behavior, function (entry, current) {
+          if (!towerCombat.hit(entry, o, t, feedback, current)) return false;
+          if (current()) require("RelicBattle").towerImpact(shotData, t, entry.actor, entry.position, game.ndUI);
+          return true;
+        });
+        return;
+      }
       a.setTowerTag(i, e.node, function () {
         if (game.gameData !== shotData || game._combatEpoch !== shotEpoch) return;
-        var center = behavior.attackType === "cannon" ? a._towerImpactPoint : require("TowerCombat").point(e.node, game.ndUI);
+        var center = behavior.attackType === "cannon" ? a._towerImpactPoint : towerCombat.point(e.node, game.ndUI);
         if (behavior.attackType === "cannon" && BattleSounds.effect) BattleSounds.effect("cannon-impact-explosion", null, { game: game, point: center });
-        require("TowerCombat").damage(game, e, center, o, behavior, function (actor, position, damage) {
-          if (effects && cc.isValid(effects, true)) {
-            effects.showDamageNum(position, GameToolsOverrides.damageTaken(actor, "enemy", damage));
-            if (behavior.attackType !== "cannon") effects.onMonsterAttack(position, "jian_lv1");
-          }
-        }, t);
+        towerCombat.damage(game, e, center, o, behavior, feedback, t);
         if (game.gameData === shotData && game._combatEpoch === shotEpoch) require("RelicBattle").towerImpact(shotData, t, e, center, game.ndUI);
       }, behavior);
       return;

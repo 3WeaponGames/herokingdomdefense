@@ -142,7 +142,7 @@ test('tower combat and sprite authoring validates explicit values while retainin
   assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0);
   assert.equal(JSON.stringify(d),before);
   row.Tower={projectileSpeed:450};assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0,'partial overrides retain runtime defaults');
-  for(const [field,value]of [['attackType','laser'],['targeting','unsupported'],['projectileSpeed',0],['projectileSpeed','300'],['splashRadius',-1],['splashFalloff',1.1],['splashFalloff',-1],['projectileLook',42]]){
+  for(const [field,value]of [['attackType','laser'],['targeting','unsupported'],['projectileSpeed',0],['projectileSpeed','300'],['splashRadius',-1],['splashFalloff',1.1],['splashFalloff',-1],['projectileLook',42],['shotsPerVolley',0],['shotsPerVolley',1.5],['pierceTargets','2'],['pierceTargets',-1]]){
     row.Tower={[field]:value};assert(buildingIssues(d,[{doc:'A',path:at.concat('Tower',field)}]).some(issue=>issue.severity==='error'&&issue.path.includes('Tower')),field);
   }
   delete row.Tower;
