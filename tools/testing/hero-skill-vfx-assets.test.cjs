@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..'),Catalog=require('../../assets/_script/HeroSkillVFXCatalog'),Settings=require('../../assets/_script/HeroSkillSettings'),Layout=require('../../assets/_script/HeroSkillVFXLayout'),{Model}=require('../../packages/hkd-skills/preview-model');
 test('workbook particle captures and native Spine effects preserve bounded assets and source identity',()=>{
- assert.equal(Catalog.clips.length,39);
+ assert.equal(Catalog.clips.length,40);
  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,'assets/resources/vfx/hero-skills/catalog.json'))),Catalog);
  const selection=require('../skills-vfx/effects.json');assert.equal(selection.workbook,'Characters Plan.xlsx');assert(fs.statSync(path.join(root,selection.workbook)).isFile());assert.match(Catalog.workbookSha256,/^[a-f0-9]{64}$/);
  const planned=selection.clips.concat(selection.beam.parts.flatMap(part=>selection.beam.phases.map(phase=>({...selection.beam,...part,...phase,id:'mystic-beam-'+part.id+'-'+phase.phase}))));
@@ -60,8 +60,19 @@ test('preview integrates passive playback rather than jumping to age times a cha
 });
 
 test('legacy Guardian sheets retain source provenance while the new plan selects exclamation and native shield',()=>{
- const clips=Catalog.clips.filter(c=>c.style==='guardian'&&c.source.kind==='user-sheet');assert.equal(clips.length,4);assert(clips.every(c=>c.cell===128&&c.aspect===1));const taunt=clips.find(c=>c.slot==='taunt');assert.equal(taunt.frames,60);assert.equal(taunt.loop,false);assert.deepEqual(taunt.source.frames,Array.from({length:60},(_,i)=>i));const v=Settings.defaults('guardian').visual;assert.equal(v.tauntResource,Catalog.clips.find(c=>c.id==='guardian-taunt-exclamation').uuid);const shield=clips.find(c=>c.slot==='shield'&&c.phase==='loop');assert.equal(v.shieldResource,'');assert(v.physicalShieldResource);for(const phase of ['start','loop','end'])assert.equal(Layout.phaseClips('shield',shield,phase).length,1);
+ const clips=Catalog.clips.filter(c=>c.style==='guardian'&&c.source.kind==='user-sheet'&&c.slot!=='cast');assert.equal(clips.length,4);assert(clips.every(c=>c.cell===128&&c.aspect===1));const taunt=clips.find(c=>c.slot==='taunt');assert.equal(taunt.frames,60);assert.equal(taunt.loop,false);assert.deepEqual(taunt.source.frames,Array.from({length:60},(_,i)=>i));const v=Settings.defaults('guardian').visual;assert.equal(v.tauntResource,Catalog.clips.find(c=>c.id==='guardian-taunt-exclamation').uuid);const shield=clips.find(c=>c.slot==='shield'&&c.phase==='loop');assert.equal(v.shieldResource,'');assert(v.physicalShieldResource);for(const phase of ['start','loop','end'])assert.equal(Layout.phaseClips('shield',shield,phase).length,1);
  for(const style of Settings.styles.map(s=>s.id)){const keys=Settings.fields(style).visual.map(f=>f.key);assert.equal(keys.includes('tauntResource'),style==='guardian');assert.equal(keys.includes('shieldResource'),style==='guardian');}
+});
+
+test('the supplied taunt sheet is the Guardian’s one-shot ground cast with its visible frames in order',()=>{
+ const v=Settings.defaults('guardian').visual,ring=Layout.clipFor(v.castResource);
+ assert.equal(ring.id,'guardian-taunt-ring');
+ assert.equal(ring.source.file,'taunt-effect-sheet.png');
+ assert.deepEqual(ring.source.frames,Array.from({length:18},(_,i)=>i+3));
+ assert.equal(ring.fps,30);assert.equal(ring.startOnImpact,true);assert.equal(ring.loop,false);assert.equal(ring.ground,true);
+ const authoring=require('../../assets/_script/HeroSkillAuthoring');
+ assert(authoring.handles('guardian','active',v).some(([id,label])=>id==='cast'&&label==='Taunt ring'));
+ assert(Settings.fields('guardian').visual.some(field=>field.key==='castResource'));
 });
 
 test('legacy Skirmisher cast settings stay inert while the transparent sheets own their slots',()=>{

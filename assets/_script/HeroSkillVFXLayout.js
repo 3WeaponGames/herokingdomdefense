@@ -41,6 +41,7 @@ function entities(frame,visual,context){
       var behind=(slot==="passive"||slot==="buff")&&style!=="fighter";
       if(style==="vanguard"&&slot==="buff"&&entity.phase==="start")behind=false;
       var base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:entity.loop!==false&&(!clip||clip.loop),scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:origin.x+(v.offsetX||0),y:origin.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:behind};
+      if(clip&&clip.ground===true){base.ground=true;base.behind=true;}
       if(v.flipX)base.scaleX*=-1;if(v.flipY)base.scaleY*=-1;
       if(clip&&clip.referenceCell&&clip.cell)base.scale=(base.scale===undefined?1:base.scale)*clip.referenceCell/clip.cell;
       if(entity.phase==="start"&&typeof entity.progress==="number")base.age=Math.min(.999999,entity.progress)*visibleDuration(clip,entity.style||context.style,slot);
@@ -58,7 +59,7 @@ function entities(frame,visual,context){
         var direction=entity.direction||{x:1,y:0},offset=style==='vanguard'?Projectile.facingOffset(direction,{x:v.offsetX,y:v.offsetY}):{x:v.offsetX||0,y:v.offsetY||0};
         base.x=center.x+offset.x;base.y=center.y+offset.y;
         var correction=clip&&typeof clip.forwardX==='number'?Math.atan2(clip.forwardY*(v.scaleY===undefined?1:v.scaleY),clip.forwardX*(v.scaleX===undefined?1:v.scaleX))*180/Math.PI:0;
-        if(entity.style!=="mystic"){var castBasis=Projectile.facingTransform(direction,(v.rotation||0)-correction,base.scaleX,base.scaleY);base.angle=castBasis.angle;base.scaleX=castBasis.scaleX;base.scaleY=castBasis.scaleY;base.mirrored=castBasis.mirrored;}
+        if(entity.style!=="mystic"&&!base.ground){var castBasis=Projectile.facingTransform(direction,(v.rotation||0)-correction,base.scaleX,base.scaleY);base.angle=castBasis.angle;base.scaleX=castBasis.scaleX;base.scaleY=castBasis.scaleY;base.mirrored=castBasis.mirrored;}
         if(style==='vanguard'){var offsetBasis=Projectile.facingTransform(direction,0,1,1),oa=offsetBasis.angle*Math.PI/180;base.offsetAxes={x:{x:Math.cos(oa),y:Math.sin(oa)},y:{x:-Math.sin(oa)*offsetBasis.scaleY,y:Math.cos(oa)*offsetBasis.scaleY}};}
         if(entity.style!=="skirmisher"&&entity.radius>0){var extent=clip&&clip.kind==="spine"?Math.max(clip.width,clip.height):clip?clip.cell:128;base.scale=entity.radius*2/Math.max(1,extent);}
         if(clip&&/^skirmisher-atx117(?:-single)?$/.test(clip.trajectory||'')){

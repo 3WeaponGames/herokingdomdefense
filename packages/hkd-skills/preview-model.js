@@ -97,7 +97,12 @@ class Model{
   }else if(this.style==='mystic'){
    if(!target||target.hp<=0||distance(origin,target)>this.attackRange())return;const center={x:target.x,y:target.y},radius=result.radius||100,multiplier=result.damageMultiplier*(1+Math.max(0,finite(this.scenario.splashDamage,0)));this.effect('burst',center,radius,undefined,time);this.targets.filter(t=>t===target||distance(t,center)<=radius).forEach(t=>this.hit(t,multiplier,true,strike,undefined,time));
    if(this.skillCast){this.skillCast.origin=center;this.skillCast.radius=radius;this.skillCast.impactAt=time;}
-  }else if(this.style==='guardian'){const shape=this.area(d,origin,DefaultCore.guardianRadius(this.state.tuning,'tauntRadius'));origin=shape.origin;this.taunts=this.targets.filter(t=>t.hp>0&&distance(origin,this.targetPoint(t))<=shape.radius).map(t=>({key:'taunt:'+strike+':'+t.id,at:time,target:t}));this.effect('ring',origin,shape.radius,shape.direction,time,undefined,true);}
+  }else if(this.style==='guardian'){
+   const shape=this.area(d,origin,DefaultCore.guardianRadius(this.state.tuning,'tauntRadius'));origin=shape.origin;
+   if(this.skillCast)Object.assign(this.skillCast,{origin:{...origin},radius:shape.radius});
+   this.taunts=this.targets.filter(t=>t.hp>0&&distance(origin,this.targetPoint(t))<=shape.radius).map(t=>({key:'taunt:'+strike+':'+t.id,at:time,target:t}));
+   this.effect('ring',origin,shape.radius,shape.direction,time,undefined,true);
+  }
  }
  visibleBeam(target){
   const previous=this.beamTarget;this.beam=!!target;this.beamTarget=target;

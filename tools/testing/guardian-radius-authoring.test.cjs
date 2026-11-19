@@ -3,6 +3,7 @@
 // radii. No game configuration or progress is written by these checks.
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const Settings=require('../../assets/_script/HeroSkillSettings'),Core=require('../../assets/_script/HeroStyleSkills');
+const VFXLayout=require('../../assets/_script/HeroSkillVFXLayout');
 const {Model}=require('../../packages/hkd-skills/preview-model'),{setup,Node}=require('./backend-gameplay-harness.cjs');
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function fixture(settings={}){
@@ -27,6 +28,24 @@ test('protected ally radius is independent of taunt area size and changes actual
  near(combat.allyIncoming(inside,100),80);near(combat.allyIncoming(outside,100),100);
  f.rt.state.tuning.allyRadius=150;near(combat.allyIncoming(outside,100),80);f.rt.state.tuning.allyReduction=0;near(combat.allyIncoming(inside,100),100);
  const legacy=fixture();near(legacy.load('RelicCombat').allyIncoming(legacy.actor(250),100),90);near(legacy.load('RelicCombat').allyIncoming(legacy.actor(250.01),100),100);
+});
+
+test('the taunt ring follows the location of a delayed taunt in combat and preview',()=>{
+ const f=fixture({tauntRadius:90,visual:{castDelay:.3}});
+ f.e.stubs.HeroMakerRider.weaponOrigin=()=>({x:f.hero.node.x+20,y:30});
+ const edge=f.actor(180,30),outside=f.actor(180.01,30);f.d.enemyList.push(edge,outside);
+ let previewOffset={x:20,y:30};
+ const model=new Model('guardian',f.rt.settings,{mode:'basic',attackRate:0,targetPositions:[{x:180,y:30},{x:180.01,y:30}]},undefined,undefined,()=>previewOffset);
+ assert(f.rt.cast({x:1,y:0}));assert(model.cast());
+ model.advance(.2);f.rt.update(.2);
+ assert(!model.vfxFrame.entities.some(entity=>entity.slot==='cast'));assert.equal(f.rt.skillCast.impactAt,undefined);
+ f.hero.node.x=70;previewOffset={x:90,y:30};
+ model.advance(.11);f.rt.update(.11);
+ near(f.rt.skillCast.impactAt,.3);assert(edge._heroTaunt);assert(!outside._heroTaunt);
+ assert.deepEqual(model.taunts.map(record=>record.target.id),[0]);
+ const ring=VFXLayout.entities(model.vfxFrame,model.settings.visual,model.vfxContext).find(entity=>entity.slot==='cast');
+ assert(ring.behind);near(ring.x,f.rt.skillCast.origin.x);near(ring.y,f.rt.skillCast.origin.y);
+ near(ring.scale*ring.clip.cell,2*f.rt.skillCast.radius);
 });
 test('preview protection membership follows the authored radius and suppresses its aura when protection is disabled',()=>{
  const settings=Settings.defaults('guardian');settings.allyRadius=75;const model=new Model('guardian',settings,{mode:'basic'});model.allies=[{id:'edge',x:75,y:0,hp:1000},{id:'outside',x:75.01,y:0,hp:1000}];model.updateVFX();assert.deepEqual(model.vfxContext.presenceTargets.map(t=>t.id),['edge']);

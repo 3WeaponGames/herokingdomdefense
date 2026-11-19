@@ -67,7 +67,7 @@ test('every exposed VFX slot has exactly its supported direct transform capabili
     }
     assert.deepEqual(input.settings,before,'Selecting and inspecting handles must not mutate supplied data');
   }
-  assert.equal(checked,16+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));assert(ghosts>0,'Effects outside the current phase still have manipulators');assert.deepEqual(f.traces.changes,[]);assert.deepEqual(f.traces.ends,[]);assert(f.view.getState().silent);
+  assert.equal(checked,17+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));assert(ghosts>0,'Effects outside the current phase still have manipulators');assert.deepEqual(f.traces.changes,[]);assert.deepEqual(f.traces.ends,[]);assert(f.view.getState().silent);
 }));
 
 test('a VFX drag updates its live transform but commits exactly one batch on release',()=>withFixture(async f=>{
@@ -136,7 +136,7 @@ test('all active and passive VFX position handles edit only their own offsets or
       assert.equal(f.traces.ends.length,1,style+'/'+entry.id+'/'+name);assert.equal(f.traces.ends[0][1],true);assert.deepEqual(Object.keys(f.traces.ends[0][0]).sort(),[mapping.x,mapping.y].sort(),style+'/'+entry.id+'/'+name);assert.equal(f.traces.changes.length,0);moved++;
     }
   }
-  assert.equal(moved,16+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));
+  assert.equal(moved,17+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));
 }));
 
 test('changing the selected slot, transform tool, scenario or skill cancels a pending edit',()=>withFixture(async f=>{

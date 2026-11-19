@@ -40,6 +40,21 @@ test('Mystic keeps its mark while the old beam is replaced by bounded trail stat
 test('Guardian aura follows the actual shield rather than the short cast ring',()=>{
  const f=fixture('guardian');f.rt.state.shield=200;f.rt.state.shieldRemaining=5;f.paint();f.finish();f.rt.state.time=2;f.paint();assert.equal(f.main.children.length,2);f.rt.state.shield=0;f.rt.state.shieldRemaining=3;f.paint();assert.equal(f.main.children.length,1);f.P.clear(f.rt);
 });
+test('Guardian rents one ground ring at taunt impact and releases it after the sheet finishes',()=>{
+ const f=fixture('guardian',true),ground=new f.main.constructor('ground');
+ ground.x=8;ground.y=-4;f.rt.game.ndDown=ground;
+ f.rt.skillCast={key:1,at:0,origin:{x:28,y:12},radius:170,direction:{x:-1,y:0}};
+ f.rt.state.time=.2;f.paint();assert(!f.loads.some(row=>row.resource.endsWith('guardian-taunt-ring')));
+ f.rt.skillCast.impactAt=.25;f.rt.state.time=.26;f.paint();f.finish();f.paint();
+ const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes('guardian-taunt-ring'));
+ assert.equal(art.nodes.size,1);const {node,entity}=art.nodes.values().next().value;
+ assert.equal(node.parent,ground);
+ assert.equal(node.x,20);assert.equal(node.y,16);
+ assert.equal(node.scaleX*entity.clip.cell,340);assert.equal(node.scaleY*entity.clip.cell,340);
+ assert.equal(node.angle,0);assert.equal(entity.loop,false);
+ f.rt.state.time=.86;f.paint();assert.equal(art.nodes.size,0);
+ f.P.clear(f.rt);assert(f.assets.every(asset=>asset.refs===0));
+});
 test('Guardian protected-ally artwork uses the same authored inclusive radius as damage reduction',()=>{
  const f=fixture('guardian',true),edge=f.target(75),outside=f.target(75.01);f.rt.game.gameData.getSoldierList=()=>[edge,outside];f.rt.state.tuning.allyRadius=75;f.rt.settings.visual.scale=10;
  let frame=f.P.advanceVFX(f.rt),targets=f.rt._presentation.vfxContext.presenceTargets;assert.equal(targets.length,1);assert.equal(targets[0].id,edge);assert.equal(frame.entities.filter(e=>e.slot==='presence').length,1);

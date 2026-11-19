@@ -27,7 +27,7 @@ var SLOT_MAP={
   skirmisher:{active:[],passive:[]},
   mystic:{active:["cast"],passive:["mark"]},
   bruiser:{active:["cast","castSecondary"],passive:["passive"]},
-  guardian:{active:["buff","taunt","shield","defense","physicalShield"],passive:["presence"]}
+  guardian:{active:["buff","cast","taunt","shield","defense","physicalShield"],passive:["presence"]}
 };
 // Every exposed slot has the same saved/runtime transform contract.
 var TRANSFORM_SLOTS=["passive","beam","mark","buff","taunt","shield","cast","castSecondary","channelHit","presence","defense","physicalShield"];
@@ -43,6 +43,7 @@ function slotName(style,slot){
   if(slot==="buff"&&style==="fighter")return "Active center aura";
   if(slot==="buff"&&style==="vanguard")return "Locked momentum buff";
   if(slot==="passive"&&style==="guardian")return "Protected ally";
+  if(slot==="cast"&&style==="guardian")return "Taunt ring";
   return SLOT_NAMES[slot]||slot.replace(/([A-Z])/g," $1");
 }
 function slotOf(key){var match=/^(passive|beam|mark|buff|taunt|shield|channelHit|castSecondary|cast|defense|physicalShield|presence)(?=[A-Z])/.exec(key);return match&&match[1];}
@@ -93,7 +94,7 @@ function fields(style,id,source,effective,catalogs){
         if(key==="castDelay"){
           var castClip=VFXCatalog.clips.find(function(clip){return clip.uuid===currentVisual.castResource;});
           field.label=castClip&&castClip.startOnImpact?"Additional impact delay":"Additional VFX start delay";
-          if(castClip&&castClip.startOnImpact)field.help="Extra seconds before the hit and its slash effect.";
+          if(castClip&&castClip.startOnImpact)field.help=style==="guardian"?"Extra seconds before the taunt and its ring appear.":"Extra seconds before the hit and its slash effect.";
         }
       }
       if(style==='vanguard'&&id==='active'&&group==='visual'){

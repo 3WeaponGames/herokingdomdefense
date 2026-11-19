@@ -6105,6 +6105,16 @@
       "zh": "自动施放技能",
       "context": "Settings · automatically use the hero's active skill against available targets"
     },
+    "settings.autoSkillCastHudOn": {
+      "en": "AUTO ON",
+      "zh": "自动开启",
+      "context": "Battle HUD · auto skill cast is enabled"
+    },
+    "settings.autoSkillCastHudOff": {
+      "en": "AUTO OFF",
+      "zh": "自动关闭",
+      "context": "Battle HUD · auto skill cast is disabled"
+    },
     "settings.hideIdleControls": {
       "en": "Hide controls",
       "zh": "静止时隐藏摇杆",

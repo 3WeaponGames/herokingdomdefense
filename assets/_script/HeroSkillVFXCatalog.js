@@ -1836,6 +1836,64 @@ module.exports = {
         ]
       },
       "trimStart": 0
+    },
+    {
+      "id": "guardian-taunt-ring",
+      "name": "Guardian taunt ring",
+      "style": "guardian",
+      "slot": "cast",
+      "phase": "once",
+      "group": "guardian-taunt-ring",
+      "loop": false,
+      "frames": 18,
+      "columns": 6,
+      "cell": 256,
+      "fps": 30,
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "aspect": 1,
+      "alphaBounds": [
+        0,
+        0,
+        255,
+        255
+      ],
+      "visibleFrames": 18,
+      "kind": "flipbook",
+      "bundle": "resources",
+      "resource": "vfx/hero-skills/guardian-taunt-ring",
+      "uuid": "b74ade55-19ef-5f80-a00f-5849dd9a7218",
+      "sha256": "eaf0e0a1252a41195865d0edd9cb0657e584b083c20bbfe3d41bb82db047a638",
+      "source": {
+        "kind": "user-sheet",
+        "file": "taunt-effect-sheet.png",
+        "sha256": "0c7293187cb737204ea13462569f2d771d9cf1167da707fd10c92d39d0ddb8c2",
+        "columns": 7,
+        "rows": 7,
+        "frames": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ]
+      },
+      "trimStart": 0,
+      "startOnImpact": true,
+      "ground": true
     }
   ],
   "presets": {
@@ -1860,7 +1918,8 @@ module.exports = {
     "guardian": {
       "presence": "guardian-gold-presence",
       "taunt": "guardian-taunt-exclamation",
-      "physicalShield": "guardian-sp162-gold-shield"
+      "physicalShield": "guardian-sp162-gold-shield",
+      "cast": "guardian-taunt-ring"
     }
   }
 };

@@ -85,7 +85,7 @@ def run(bake,artifacts):
       'vanguard':{'cast':'vanguard-spear-barrage','buff':'vanguard-incomplete-buff'},
       'bruiser':{'passive':'bruiser-flame-aura','cast':'bruiser-ring-slash'},
       'mystic':{'beam':'mystic-electric-barrier','channelHit':'mystic-electrified-target','mark':'mystic-mark-loop','cast':'mystic-charged-burst'},
-      'guardian':{'presence':'guardian-gold-presence','taunt':'guardian-taunt-exclamation','physicalShield':'guardian-sp162-gold-shield'}}}
+      'guardian':{'presence':'guardian-gold-presence','taunt':'guardian-taunt-exclamation','physicalShield':'guardian-sp162-gold-shield','cast':'guardian-taunt-ring'}}}
     custom=ROOT/'tools/skills-vfx/sheet-clips.json'
     if custom.exists():
         catalog['clips'].extend(json.loads(custom.read_text(encoding="utf-8")))

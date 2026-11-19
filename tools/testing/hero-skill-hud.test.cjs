@@ -20,11 +20,14 @@ function fixture(style='skirmisher',maker={},buttonArt,cold=false){
  for(const method of ['roundRect','rect','fill','stroke','moveTo','lineTo','circle','close','arc'])Graphics.prototype[method]=function(...args){this.ops.push([method,...args]);};
  class Label{};Label.HorizontalAlign={CENTER:1};Label.VerticalAlign={CENTER:1};Label.Overflow={SHRINK:1};
  const fontLoads=[],cc={Node,Graphics,Label,Font:class{},LabelOutline:class{},BlockInputEvents:class{},resources:{load(resource,Type,callback){fontLoads.push({resource,Type,callback});}},v2:(x,y)=>({x,y}),color:value=>value,isValid:value=>!!value&&!value.destroyed};
+ const saved=new Map(),writes=[],preferences={exports:{},cc};
+ cc.sys={localStorage:{getItem:key=>saved.get(key),setItem(key,value){saved.set(key,value);writes.push([key,value]);}}};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/ControlPreferences.js'),'utf8'),preferences);
  if(cold)cc.Class=function(){};
  const entries=require('../../assets/resources/localization/catalog.json').entries,bindings=new Map();let language='en';
  const manager={bindLabel(label,key,params){bindings.set(label,{key,params});label.string=(entries[key]&&entries[key][language]||key).replace(/\{(\d+)\}/g,(_,i)=>params&&params[i]);}};
  const setLanguage=value=>{language=value;for(const [label,{key,params}]of bindings)manager.bindLabel(label,key,params);};
- const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date:{now:()=>now},Math,require:name=>cold&&name==='./ForestRain'?{ensure(rt){setupEvents.push({kind:'weather',game:rt.game,ui:rt.ui});}}:name==='HeroMakerRider'?maker:name==='./HeroSkillButton'&&buttonArt?buttonArt:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
+ const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date:{now:()=>now},Math,require:name=>cold&&name==='./ForestRain'?{ensure(rt){setupEvents.push({kind:'weather',game:rt.game,ui:rt.ui});}}:name==='HeroMakerRider'?maker:name==='./HeroSkillButton'&&buttonArt?buttonArt:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:name==='ControlPreferences'?preferences.exports:require(path.join(__dirname,'../../assets/_script',name))});
  const root=new Node('UI');root.setContentSize(750,1334);const main=new Node('Map'),visual=new Node('Effects');visual.setParent(main);
  const actor=new Node('Hero');actor.setParent(main);const hp=new Node('HP');hp.setParent(actor);hp.setContentSize(64,12);hp.y=80;hp.active=false;
  const hero={node:actor,hp:100,hpMax:100,attackRange:200,ctrHp:{node:hp},getAttWpos:()=>actor.convertToWorldSpaceAR({x:0,y:40})};
@@ -35,7 +38,7 @@ function fixture(style='skirmisher',maker={},buttonArt,cold=false){
  hero._styleRuntime=rt;const controller={touchID:false,_followGame:()=>ui.isPauset?null:game};
  function event(id,x=0,y=0){return{touch:{getID:()=>id,getLocation:()=>({x,y})},stopPropagation(){this.stopped=true;}};}
  function target(x=100,y=0){const node=new Node('target');node.setParent(main);node.setPosition(x,y);node._combatGeneration=1;const value={node,hp:100,isDead(){return this.hp<=0;}};targets.push(value);return value;}
- exports.update(hero,rt);return{hud:exports,hero,rt,ui,game,controller,event,root,Node,setLanguage,cc,fontLoads,setupEvents,target,targets,advance(ms){now+=ms;}};
+ exports.update(hero,rt);return{hud:exports,hero,rt,ui,game,controller,event,root,Node,setLanguage,cc,fontLoads,setupEvents,target,targets,writes,autoPreference:preferences.exports.autoSkillCast,advance(ms){now+=ms;}};
 }
 test('tap arms the piercing skill, world aiming consumes its own touch and fires once on confirmation',()=>{
  const f=fixture(),b=f.hero._skillHUD.button,e=f.event(1,200,-400);b.handlers.start(e);b.handlers.end(e);assert.equal(f.rt.aiming,true);assert.equal(f.rt.casts.length,0);assert(e.stopped);
@@ -45,11 +48,47 @@ test('the icon-only skill HUD retains a nonzero countdown box after Creator init
  const f=fixture(),hud=f.hero._skillHUD;assert.equal(hud.title,undefined);assert.equal(hud.status,undefined);assert.equal(hud.button.getChildByName('Skill name'),null);assert.equal(hud.button.getChildByName('Skill readiness'),null);assert(hud.cooldownCount.node.width>0);assert(hud.cooldownCount.node.height>0);
 });
 
-test('all six styles remain icon-only across ready, aiming, casting, unavailable and localized states',()=>{
+test('all six skill icons keep their cooldown number and dedicated localized auto badge',()=>{
  for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
   const f=fixture(style),hud=f.hero._skillHUD;
-  for(const state of [{cooldown:0,active:null},{cooldown:0,active:{elapsed:0}},{cooldown:3,active:null}]){Object.assign(f.rt.state,state);f.rt.aiming=!f.rt.aiming;f.rt.canCast=()=>false;f.hud.update(f.hero,f.rt);f.setLanguage('zh');assert.equal(hud.title,undefined);assert.equal(hud.status,undefined);assert.deepEqual(hud.button.children.map(n=>n.name),['Skill cooldown']);assert.equal(hud.cooldownCount.node.active,state.cooldown>0);if(state.cooldown)assert.equal(hud.cooldownCount.string,'3');}
+  for(const state of [{cooldown:0,active:null},{cooldown:0,active:{elapsed:0}},{cooldown:3,active:null}]){Object.assign(f.rt.state,state);f.rt.aiming=!f.rt.aiming;f.rt.canCast=()=>false;f.hud.update(f.hero,f.rt);f.setLanguage('zh');assert.equal(hud.title,undefined);assert.equal(hud.status,undefined);assert.deepEqual(hud.button.children.map(n=>n.name),['Skill cooldown','Auto Skill Cast']);assert.equal(hud.autoToggle.label.string,'自动关闭');assert.equal(hud.cooldownCount.node.active,state.cooldown>0);if(state.cooldown)assert.equal(hud.cooldownCount.string,'3');}
  }
+});
+
+test('the battle badge changes the saved Settings preference during cooldown without casting or arming',()=>{
+ const f=fixture(),hud=f.hero._skillHUD,toggle=hud.autoToggle;
+ f.rt.state.cooldown=7;f.hud.update(f.hero,f.rt);
+ assert.equal(toggle.label.string,'AUTO OFF');assert.deepEqual(f.writes,[]);
+ function tap(){
+  for(const phase of ['start','move','end']){
+   const event=f.event(10);
+   for(let node=toggle.node;node&&!event.stopped;node=node.parent)if(node.handlers[phase])node.handlers[phase](event);
+   assert(event.stopped,phase+' left the badge');
+  }
+ }
+ const previousFill=toggle.g.fillColor;
+ tap();assert.equal(toggle.label.string,'AUTO ON');assert.notEqual(toggle.g.fillColor,previousFill);
+ assert.equal(f.autoPreference.get(),true);assert.equal(f.rt.casts.length,0);
+ assert.equal(hud.press,undefined);assert.equal(hud.worldTouch,undefined);assert.equal(f.rt.aiming,false);
+ assert.equal(hud.cooldownCount.string,'7');
+ const draws=toggle.g.clearCalls;f.hud.update(f.hero,f.rt);assert.equal(toggle.g.clearCalls,draws);
+ f.autoPreference.set(false);f.hud.update(f.hero,f.rt);assert.equal(toggle.label.string,'AUTO OFF');
+ tap();assert.deepEqual(f.writes,[['project-cocos.autoSkillCast','1'],['project-cocos.autoSkillCast','0'],['project-cocos.autoSkillCast','1']]);
+ f.hud.clear(f.hero);f.hud.update(f.hero,f.rt);
+ assert.equal(f.hero._skillHUD.autoToggle.label.string,'AUTO ON');
+});
+
+test('the badge accepts its own release between waves and drops cancelled, paused and retired gestures',()=>{
+ const f=fixture('fighter'),hud=f.hero._skillHUD,handlers=hud.autoToggle.node.handlers;
+ f.game.gameStatus=0;f.hud.update(f.hero,f.rt);
+ handlers.start(f.event(3));handlers.end(f.event(4));assert.equal(f.autoPreference.get(),false);
+ handlers.end(f.event(3));assert.equal(f.autoPreference.get(),true);assert.equal(f.rt.casts.length,0);
+ handlers.start(f.event(5));handlers.cancel(f.event(5));handlers.end(f.event(5));assert.equal(f.autoPreference.get(),true);
+ handlers.start(f.event(6));f.ui.isPauset=true;f.hud.update(f.hero,f.rt);
+ handlers.end(f.event(6));assert.equal(f.autoPreference.get(),true);
+ f.ui.isPauset=false;f.hud.update(f.hero,f.rt);handlers.start(f.event(7));
+ f.hero.node._combatGeneration=1;handlers.end(f.event(7));
+ assert.equal(f.autoPreference.get(),true);assert.equal(f.writes.length,1);
 });
 
 test('cooldown labels, cache signatures and input share the rules engine readiness tolerance',()=>{
@@ -261,11 +300,15 @@ test('relative skill sizing includes nested command transforms and mirrored or s
  controls.scaleX=1.1;controls.scaleY=.8;controls.angle=-18;f.hud.update(f.hero,f.rt);const changed=circleDiameter(f.hero._skillHUD.button,f.hero._skillHUD.diameter),next=circleDiameter(f.ui.btnAgg.getChildByName('ndTag1'),104)*1.15;assert(Math.abs(changed-next)/next<1e-5);
 });
 
-test('the icon-only skill hit box avoids both commands and their captions in a narrow safe area',()=>{
+test('the skill and auto badge avoid both commands and their captions in a narrow safe area',()=>{
  const f=fixture('guardian');f.cc.view={getVisibleSize:()=>({width:400,height:500}),getVisibleOrigin:()=>({x:-200,y:-250})};f.cc.sys={getSafeAreaRect:()=>({x:-190,y:-240,width:380,height:480})};f.ui.btnAgg=command(f,'Rally',145,-150);f.ui.btnFollow=command(f,'Follow',145,20);f.hud.update(f.hero,f.rt);
- const hud=f.hero._skillHUD,b=rect(hud.button);assert(b.left>=-170-1e-9&&b.right<=170+1e-9);assert(b.bottom>=-220-1e-9&&b.top<=220+1e-9);
- for(const other of [f.ui.btnAgg,f.ui.btnFollow])for(const n of [other,other.getChildByName('labNum')]){const o=rect(n);assert(b.right<=o.left-12+1e-9||b.left>=o.right+12-1e-9||b.top<=o.bottom-12+1e-9||b.bottom>=o.top+12-1e-9,'Skill and command rectangles must not overlap');}
+ const hud=f.hero._skillHUD,b=rect(hud.button),badge=rect(hud.autoToggle.node);
+ for(const bounds of [b,badge]){
+  assert(bounds.left>=-170-1e-9&&bounds.right<=170+1e-9);assert(bounds.bottom>=-220-1e-9&&bounds.top<=220+1e-9);
+  for(const other of [f.ui.btnAgg,f.ui.btnFollow])for(const n of [other,other.getChildByName('labNum')]){const o=rect(n);assert(bounds.right<=o.left-12+1e-9||bounds.left>=o.right+12-1e-9||bounds.top<=o.bottom-12+1e-9||bounds.bottom>=o.top+12-1e-9,'Skill controls and command rectangles must not overlap');}
+ }
  const p=rect(hud.cooldownCount.node);assert(p.left>=b.left-1e-9&&p.right<=b.right+1e-9);assert(p.bottom>=b.bottom-1e-9&&p.top<=b.top+1e-9);
+ assert(badge.bottom>p.top,'The badge sits above the cooldown number');
 });
 
 test('the skill stays above Rally while Follow shares the bottom row and returns to the corner when commands hide',()=>{

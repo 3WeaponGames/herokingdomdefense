@@ -195,7 +195,7 @@ function fields(style){
     if(style==="mystic"&&/^(beam|channelHit)/.test(field.key))return false;
     if(field.key==="castPlaybackRate"&&style==="vanguard")return false;
     var slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|castSecondary|cast)/.exec(field.key);
-    if(slot){if(slot[1]==="castSecondary")return style==="bruiser";if(slot[1]==="cast")return style!=="guardian";if(slot[1]==="buff")return ["fighter","vanguard","guardian"].indexOf(style)>=0;if(slot[1]==="passive")return ["fighter","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark"||slot[1]==="channelHit")return style==="mystic";return style==="guardian";}
+    if(slot){if(slot[1]==="castSecondary")return style==="bruiser";if(slot[1]==="cast")return true;if(slot[1]==="buff")return ["fighter","vanguard","guardian"].indexOf(style)>=0;if(slot[1]==="passive")return ["fighter","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark"||slot[1]==="channelHit")return style==="mystic";return style==="guardian";}
     if(["holdTime","targetX","targetY"].indexOf(field.key)>=0)return style==="mystic";
     if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic";
     if(field.key==="arcDegrees")return style==="fighter"||style==="vanguard";

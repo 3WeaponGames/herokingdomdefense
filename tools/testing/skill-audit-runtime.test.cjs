@@ -28,6 +28,7 @@ test('Auto Skill Cast uses a live target the skill can hit and gives manual inpu
   h.d.enemyList.push(alive);
   h.ui.isPauset=true;h.rt.update(.1);assert(!h.rt.skillCast);
   h.ui.isPauset=false;h.hero._skillHUD={press:{}};h.rt.update(.01);assert(!h.rt.skillCast);
+  h.hero._skillHUD={autoPress:{}};h.rt.update(.01);assert(!h.rt.skillCast);
   delete h.hero._skillHUD;
   h.rt.aiming=true;h.rt.update(.01);assert(!h.rt.skillCast);
   h.rt.aiming=false;h.rt.update(.01);

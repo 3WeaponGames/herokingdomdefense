@@ -6,6 +6,7 @@ var Projectile=require("./HeroSkillProjectile");
 var ButtonArt=require("./HeroSkillButton");
 var COOLDOWN_EPSILON=1e-9;
 var COUNT_FONT="localization/fonts/Lilita One",COMMAND_SIZE_RATIO=1.15;
+var AUTO_BADGE_WIDTH=104,AUTO_BADGE_HEIGHT=36;
 function live(node) { return !!node && (typeof cc === "undefined" || !cc.isValid || cc.isValid(node, true)); }
 function targetLive(actor,generation,node){return !!actor&&live(actor.node)&&actor.node.activeInHierarchy!==false&&!actor._isPooled&&actor.hp>0&&(!actor.isDead||!actor.isDead())&&(generation===undefined||actor.node._combatGeneration===generation)&&(!node||actor.node===node);}
 function ready() { return typeof cc !== "undefined" && cc.Node && cc.Graphics && cc.Label; }
@@ -113,12 +114,65 @@ function buttonEnd(hud,event,cancelled) {
   // Tapping the armed button again still cancels that selection.
   rt.aiming=!p.wasArmed;
 }
+function autoToggleAlive(toggle) {
+  return toggle&&live(toggle.node)&&live(toggle.g)&&live(toggle.label)&&live(toggle.label.node);
+}
+function paintAutoToggle(toggle) {
+  if(!autoToggleAlive(toggle))return;
+  var enabled=toggle.preference.get();
+  if(toggle.enabled===enabled)return;
+  toggle.enabled=enabled;
+  var g=toggle.g;
+  g.clear();
+  g.fillColor=color(enabled?"#245143":"#293042");
+  g.strokeColor=color(enabled?"#b1e6b0":"#909ab0");
+  g.lineWidth=2;
+  g.roundRect(-AUTO_BADGE_WIDTH/2,-AUTO_BADGE_HEIGHT/2,AUTO_BADGE_WIDTH,AUTO_BADGE_HEIGHT,14);
+  g.fill();g.stroke();
+  require("LanguageMgr").LanguageMgr.getInstance().bindLabel(toggle.label,enabled?"settings.autoSkillCastHudOn":"settings.autoSkillCastHudOff");
+}
+function installAutoToggle(hud) {
+  var toggle=graphics(hud.button,"Auto Skill Cast");
+  toggle.preference=require("ControlPreferences").autoSkillCast;
+  toggle.node.setContentSize(AUTO_BADGE_WIDTH+8,AUTO_BADGE_HEIGHT+10);
+  toggle.node.zIndex=1;
+  if(cc.BlockInputEvents)toggle.node.addComponent(cc.BlockInputEvents);
+  toggle.label=text(toggle.node,"Auto status",20);
+  toggle.label.node.setContentSize(AUTO_BADGE_WIDTH-10,AUTO_BADGE_HEIGHT);
+  toggle.label.enableWrapText=false;
+  toggle.label.isBold=toggle.label.enableBold=true;
+  function current(press) {
+    var rt=hud.runtime;
+    return autoToggleAlive(toggle)&&gestureCurrent(hud,press)&&(available(rt)||waiting(rt))&&gestureCurrent(hud,press);
+  }
+  function release(event,cancelled) {
+    stop(event);
+    var press=hud.autoPress;
+    if(!press||press.id!==touchId(event))return;
+    hud.autoPress=null;
+    if(cancelled||!current(press))return;
+    toggle.preference.set(!toggle.preference.get());
+    paintAutoToggle(toggle);
+  }
+  var types=cc.Node.EventType;
+  toggle.node.on(types.TOUCH_START,function(event){
+    stop(event);
+    if(hud.autoPress)return;
+    var press=gesture(hud,touchId(event));
+    if(current(press))hud.autoPress=press;
+  });
+  toggle.node.on(types.TOUCH_MOVE,stop);
+  toggle.node.on(types.TOUCH_END,function(event){release(event,false);});
+  toggle.node.on(types.TOUCH_CANCEL,function(event){release(event,true);});
+  return toggle;
+}
 function install(hero,rt) {
   if(!ready()||!rt.ui||!rt.ui.ctrUI||!live(rt.ui.ctrUI.node)||!rt.game||!rt.game.ndUI||!rt.game.ndMain)return null;
   var parent=rt.ui.ctrUI.node,hud={runtime:rt};
   hud.button=node(parent,"Hero active skill",132,144);hud.button.zIndex=80;
   if(cc.BlockInputEvents)hud.button.addComponent(cc.BlockInputEvents);
   hud.cooldownCount=text(hud.button,"Skill cooldown",40,28);hud.cooldownCount.node.setContentSize(96,64);hud.cooldownCount.node.active=false;hud.cooldownCount.enableWrapText=false;
+  hud.autoToggle=installAutoToggle(hud);
   hud.visual=graphics(rt.game.ndUI,"Hero skill effects");hud.visual.node.zIndex=80;
   var types=cc.Node.EventType;
   hud.button.on(types.TOUCH_START,function(e){buttonStart(hud,e);});hud.button.on(types.TOUCH_MOVE,function(e){buttonMove(hud,e);});
@@ -164,6 +218,7 @@ function resize(hud,rt) {
   var b=ButtonArt.bounds(diameter),width=Math.max(132,b.right-b.left+16),bottom=b.bottom-8,top=b.top+8,height=top-bottom;
   hud.button.setContentSize(width,height);hud.button.anchorX=.5;hud.button.anchorY=-bottom/height;
   hud.cooldownCount.node.setPosition(0,ButtonArt.faceCenterY(diameter));hud.cooldownCount.node.setContentSize(diameter*.8,diameter*.65);hud.cooldownCount.fontSize=Math.round(diameter*.34);hud.cooldownCount.lineHeight=hud.cooldownCount.fontSize+2;
+  hud.autoToggle.node.setPosition(0,b.top+AUTO_BADGE_HEIGHT/2-6);
 }
 function layoutInputs(hud,rt) {
   var cache=hud.layoutCache;
@@ -194,7 +249,9 @@ function layout(hud,rt) {
   var inputs=layoutInputs(hud,rt);if(inputs&&inputs.unchanged)return;
   resize(hud,rt);
   var parent=hud.button.parent,b=inputs?inputs.safe:safeBounds(parent),origin=hud.button.convertToWorldSpaceAR(vec(0,0)),r=worldRect(hud.button),obstacles=[];
-  r={left:r.left-origin.x,right:r.right-origin.x,bottom:r.bottom-origin.y,top:r.top-origin.y};
+  var badge=worldRect(hud.autoToggle.node);
+  r={left:Math.min(r.left,badge.left)-origin.x,right:Math.max(r.right,badge.right)-origin.x,
+    bottom:Math.min(r.bottom,badge.bottom)-origin.y,top:Math.max(r.top,badge.top)-origin.y};
   [rt.ui.btnAgg,rt.ui.btnFollow].forEach(function(other){if(live(other)&&other.activeInHierarchy)obstacles.push(commandBounds(other));});
   var minX=b.left+20-r.left,maxX=b.right-20-r.right,minY=b.bottom+20-r.bottom,maxY=b.top-20-r.top,targetX=maxX,targetY=minY;
   // Ally commands share the bottom row. Keep the skill in the right column
@@ -213,6 +270,7 @@ function layout(hud,rt) {
 function paintButton(hud,rt) {
   var s=rt.state,planning=waiting(rt),can=!planning&&usable(rt),remaining=!planning&&s.cooldown>COOLDOWN_EPSILON?s.cooldown:0,cooldown=remaining?Math.ceil(remaining):0;
   if(hud.art)hud.art.set({style:s.style,usable:can,planning:planning,aiming:!!rt.aiming,cooldown:remaining,totalCooldown:s.tuning&&s.tuning.cooldown||rt.settings&&rt.settings.cooldown||12});
+  paintAutoToggle(hud.autoToggle);
   if(hud.buttonSignature===cooldown)return;hud.buttonSignature=cooldown;
   hud.cooldownCount.node.active=!!cooldown;
   if(cooldown)hud.cooldownCount.string=String(cooldown);
@@ -280,15 +338,17 @@ function update(hero,rt) {
   if(rt&&typeof rt.refresh==="function")rt.refresh();
   var active=available(rt),planning=!active&&waiting(rt);
   if(typeof cc.Class==="function")require("./ForestRain").ensure(rt);
-  var hud=hero._skillHUD;if(hud&&(!live(hud.button)||!live(hud.visual&&hud.visual.node)||!live(hud.visual&&hud.visual.g)||!live(hud.cooldownCount)||!live(hud.cooldownCount.node)||hud.runtime!==rt)){clear(hero);hud=null;}
+  var hud=hero._skillHUD;if(hud&&(!live(hud.button)||!live(hud.visual&&hud.visual.node)||!live(hud.visual&&hud.visual.g)||!live(hud.cooldownCount)||!live(hud.cooldownCount.node)||!autoToggleAlive(hud.autoToggle)||hud.runtime!==rt)){clear(hero);hud=null;}
   if(!hud&&!active&&!planning)return;
   if(!hud)hud=install(hero,rt);if(!hud)return;hud.runtime=rt;
   hud.button.active=active||planning;hud.visual.node.active=active;
+  if(!hud.button.active)hud.autoPress=null;
   if(!active){if(Presentation.suspend)Presentation.suspend(rt);rt.aiming=false;hud.press=null;hud.worldTouch=null;if(hud.charge)hud.charge.node.active=false;hud.visual.g.clear();hud.visualEmpty=true;if(hud.button.active){layout(hud,rt);paintButton(hud,rt);}return;}
   layout(hud,rt);paintButton(hud,rt);drawCharge(hud,hero,rt);draw(hud,hero,rt);
 }
 function clear(hero) {
   var hud=hero&&hero._skillHUD;if(!hud)return;
+  hud.autoPress=null;
   if(hud.runtime)Presentation.clear(hud.runtime);
   if(hud.runtime)hud.runtime.aiming=false;
   if(hud.controller&&hud.controller._skillAimHUD===hud)delete hud.controller._skillAimHUD;

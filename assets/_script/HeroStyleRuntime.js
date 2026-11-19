@@ -104,7 +104,7 @@ Runtime.prototype.castRadius=function(){
 };
 Runtime.prototype.tryAutoCast=function(target,basicDamage,critical){
   var h=this.hero,s=this.state,hud=h._skillHUD;
-  if(!AutoSkillCast.get()||this.aiming||hud&&(hud.press||hud.worldTouch)||!Skills.canActivate(s,{hp:h.hp})||!this.available())return false;
+  if(!AutoSkillCast.get()||this.aiming||hud&&(hud.press||hud.worldTouch||hud.autoPress)||!Skills.canActivate(s,{hp:h.hp})||!this.available())return false;
   if(s.style==="mystic"){
     if(target!==this.channelTarget||target!==s.target||!living(target)||target.node!==this.markNode||generation(target)!==this.markGeneration||!s.mysticCharges)return false;
     var full=Math.min(10,Math.max(1,Math.floor(s.tuning.maxCharges)));
@@ -297,7 +297,9 @@ Runtime.prototype.resolveImpact=function(cast,pending){
     if(this.skillCast&&this.skillCast.key===strike){this.skillCast.origin=Projectile.point(center);this.skillCast.radius=radius;this.skillCast.impactAt=s.time;}
     this.enemies().filter(function(e){return e===target||distanceSquared(center,point(e))<=radius*radius;}).map(candidate).forEach(function(record){self.hit(record.enemy,multiplier,true,strike,record);});this.effect("burst",center,radius);
   }else if(s.style==="guardian"){
-    var self=this,shape=this.skillArea(dir,this.castRadius());o=shape.origin;this.enemies().forEach(function(e,index){if(distanceSquared(o,Projectile.actorPoint(e,self.game.ndMain))>shape.radius*shape.radius)return;var taunt={hero:h,heroNode:h.node,generation:generation(h),enemyNode:e.node,enemyGeneration:generation(e),data:self.game.gameData,epoch:self.game._combatEpoch,started:s.time,visualKey:"taunt:"+strike+":"+index,remaining:cast.tauntDuration===undefined?4:cast.tauntDuration};e._heroTaunt=taunt;self.taunted.push({enemy:e,taunt:taunt});});this.effect("ring",o,shape.radius,shape.direction,undefined,true);
+    var self=this,shape=this.skillArea(dir,this.castRadius());o=shape.origin;
+    if(this.skillCast&&this.skillCast.key===strike){this.skillCast.origin=Projectile.point(o);this.skillCast.radius=shape.radius;}
+    this.enemies().forEach(function(e,index){if(distanceSquared(o,Projectile.actorPoint(e,self.game.ndMain))>shape.radius*shape.radius)return;var taunt={hero:h,heroNode:h.node,generation:generation(h),enemyNode:e.node,enemyGeneration:generation(e),data:self.game.gameData,epoch:self.game._combatEpoch,started:s.time,visualKey:"taunt:"+strike+":"+index,remaining:cast.tauntDuration===undefined?4:cast.tauntDuration};e._heroTaunt=taunt;self.taunted.push({enemy:e,taunt:taunt});});this.effect("ring",o,shape.radius,shape.direction,undefined,true);
   }
 };
 function beamCandidate(frame,target){var snapshot=frame.targets&&frame.targets.get(target);return living(target)&&!frame.blocked.has(target)&&(!frame.targets||snapshot&&snapshot.node===target.node&&snapshot.generation===generation(target));}

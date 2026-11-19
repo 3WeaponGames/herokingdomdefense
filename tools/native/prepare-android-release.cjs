@@ -20,8 +20,8 @@ const textAsset = /\.(?:anim|atlas|effect|fire|js|json|mtl|plist|prefab|ts|txt)$
 const jsonAsset = /\.(?:anim|fire|json|mtl|prefab)$/i;
 const projectEntries = ['project.json', 'jsconfig.json', 'tsconfig.json', 'settings', 'build-templates'];
 const textureQuality = [
-  [/^(?:KinghtFallIconMap\/(?:Generated\/Maps|Thumbnails)\/|resources\/stage-loading\/)/, 88],
-  [/^(?:KinghtFallIconMap\/com\/|KinghtFallIconBuild\/|resources\/(?:buildings|unit-library)\/)/, 90],
+  [/^(?:KinghtFallIconMap\/(?:Generated\/Maps|Thumbnails)\/|resources\/stage-loading\/)/, 84],
+  [/^(?:KinghtFallIconMap\/com\/|KinghtFallIconBuild\/|resources\/(?:buildings|unit-library)\/)/, 86],
   [/^resources\/(?:vfx|projectiles)\//, 92],
 ];
 

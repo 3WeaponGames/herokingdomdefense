@@ -275,7 +275,8 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     // Keep ground auras inside the hero's depth-sorted subtree, before the
     // horse, rider and HP bar, even as the whole hero moves through the scene.
     var behindRider=entity.behind&&(style==="bruiser"&&entity.slot==="passive"||style==="vanguard"&&entity.slot==="buff");
-    var destination=behindRider?runtime.hero.node:entity.behind?runtime.hero.node.parent:parent;
+    var ground=entity.ground&&alive(runtime.game.ndDown)&&runtime.game.ndDown;
+    var destination=entity.ground?(ground||runtime.game.ndMain):behindRider?runtime.hero.node:entity.behind?runtime.hero.node.parent:parent;
     keep.add(entity.key);var record=s.nodes.get(entity.key);
     if(record&&(!alive(record.node)||record.sprite&&!alive(record.sprite)||record.skeleton&&!alive(record.skeleton))){dispose(record);s.nodes.delete(entity.key);record=null;}
     if(!record){
@@ -299,7 +300,8 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     }
     record.node.scaleX=scale*(entity.scaleX===undefined?1:entity.scaleX);record.node.scaleY=scale*(entity.scaleY===undefined?1:entity.scaleY);record.node.angle=entity.angle+(view.resourceRotation||0);record.node.opacity=Math.round(255*view.opacity*(entity.opacity===undefined?1:entity.opacity));record.node.active=!entity.radius||!!record.initialized;
     if(entity.anchorX!==undefined){record.node.anchorX=entity.anchorX;record.node.anchorY=entity.anchorY;}
-    if(entity.behind)record.node.zIndex=behindRider?-1:(runtime.hero.node.zIndex||0)-1;
+    if(entity.ground)record.node.zIndex=ground?0:-1;
+    else if(entity.behind)record.node.zIndex=behindRider?-1:(runtime.hero.node.zIndex||0)-1;
     record.node.color=cc.color(view.color||"#ffffff");
     seek(record);
   });
