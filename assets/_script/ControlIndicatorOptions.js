@@ -5,32 +5,50 @@ var Options = cc.Class({
   extends: cc.Component,
   start: function () {
     var root = this.node.getChildByName("root") || this.node;
-    var row = this.row = new cc.Node("IdleControlOptions"); row.parent = root;
-    this.caption = this.makeLabel(row, "Caption", "settings.hideIdleControls", 0, 370, 28);
-    this.button = new cc.Node("Toggle"); this.button.parent = row;
-    this.button.setPosition(205, 0); this.button.setContentSize(108, 50);
-    this.graphics = this.button.addComponent(cc.Graphics);
-    this.label = this.makeLabel(this.button, "Value", "settings.controlsOff", 0, 100, 28);
+    this.idle = this.makeToggle(root, "IdleControlOptions", "settings.hideIdleControls", {
+      get: Preferences.getHideIdle, set: Preferences.setHideIdle, subscribe: Preferences.subscribe
+    });
+    this.auto = this.makeToggle(root, "AutoSkillCastOptions", "settings.autoSkillCast", Preferences.autoSkillCast);
     var help = this.help = new cc.Node("IdleControlHelp"); help.parent = root;
     this.helpLabel = this.makeLabel(help, "Text", "settings.idleControlsHelp", 0, 530, 22);
     this.helpLabel.enableWrapText = true;
     this.layout();
-    var self = this;
-    this.button.on(cc.Node.EventType.TOUCH_END, function (event) {
-      event.stopPropagation(); Preferences.setHideIdle(!Preferences.getHideIdle());
+  },
+  makeToggle: function (parent, name, key, preference) {
+    var row = new cc.Node(name); row.parent = parent;
+    var caption = this.makeLabel(row, "Caption", key, 0, 370, 28);
+    var button = new cc.Node("Toggle"); button.parent = row;
+    button.setContentSize(108, 50);
+    var graphics = button.addComponent(cc.Graphics);
+    var label = this.makeLabel(button, "Value", "settings.controlsOff", 0, 100, 28);
+    function refresh() {
+      var enabled = preference.get();
+      graphics.clear(); graphics.fillColor = cc.color(enabled ? "#239b81" : "#657185");
+      graphics.strokeColor = cc.color(enabled ? "#177561" : "#4b5668"); graphics.lineWidth = 2;
+      graphics.roundRect(-54, -25, 108, 50, 12); graphics.fill(); graphics.stroke();
+      LanguageMgr.getInstance().bindLabel(label, enabled ? "settings.controlsOn" : "settings.controlsOff");
+    }
+    button.on(cc.Node.EventType.TOUCH_END, function (event) {
+      event.stopPropagation();
+      preference.set(!preference.get());
     });
-    this.unsubscribe = Preferences.subscribe(function () { self.refresh(); });
-    this.refresh();
+    var unsubscribe = preference.subscribe(refresh);
+    refresh();
+    return { row: row, caption: caption, button: button, unsubscribe: unsubscribe };
+  },
+  placeToggle: function (toggle, width, rowY, icon) {
+    toggle.row.setPosition(0, rowY); toggle.row.setContentSize(width, 68);
+    Style.icon(toggle.row, "ControlIcon", "icons/Pictograms/" + icon, -width / 2 + 22, 0, 44);
+    var caption = toggle.caption;
+    caption.node.anchorX = 0; caption.node.setPosition(-width / 2 + 64, 0); caption.node.setContentSize(Math.max(40, width - 186), 68);
+    caption.lineHeight = 34; caption.enableWrapText = true; caption.overflow = cc.Label.Overflow.SHRINK;
+    toggle.button.setPosition(width / 2 - 54, 0);
   },
   layout: function () {
-    if (!this.row) return;
+    if (!this.idle) return;
     var o = this.options || {}, width = o.width || 530, rowY = o.rowY === undefined ? -78 : o.rowY;
-    this.row.setPosition(0, rowY); this.row.setContentSize(width, 68);
-    Style.icon(this.row, "ControlIcon", "icons/Pictograms/Pictoicon_Joystick", -width / 2 + 22, 0, 44);
-    this.caption.node.anchorX = 0; this.caption.node.setPosition(-width / 2 + 64, 0); this.caption.node.setContentSize(Math.max(40, width - 186), 68);
-    this.caption.lineHeight = 34; this.caption.enableWrapText = true;
-    this.caption.overflow = cc.Label.Overflow.SHRINK;
-    this.button.setPosition(width / 2 - 54, 0);
+    this.placeToggle(this.idle, width, rowY, "Pictoicon_Joystick");
+    this.placeToggle(this.auto, width, rowY + 78, "Pictoicon_Magic");
     this.help.setPosition(0, o.helpY === undefined ? rowY - 38 : o.helpY);
     this.helpLabel.node.anchorX = 0; this.helpLabel.node.setPosition(-width / 2 + 64, 0);
     this.helpLabel.node.setContentSize(width - 64, 56);
@@ -47,17 +65,14 @@ var Options = cc.Class({
     node.setContentSize(width, size + 8);
     LanguageMgr.getInstance().bindLabel(label, key); return label;
   },
-  refresh: function () {
-    var enabled = Preferences.getHideIdle(), graphics = this.graphics;
-    graphics.clear(); graphics.fillColor = cc.color(enabled ? "#239b81" : "#657185"); graphics.strokeColor = cc.color(enabled ? "#177561" : "#4b5668"); graphics.lineWidth = 2;
-    graphics.roundRect(-54, -25, 108, 50, 12); graphics.fill(); graphics.stroke();
-    LanguageMgr.getInstance().bindLabel(this.label, enabled ? "settings.controlsOn" : "settings.controlsOff");
-  },
-  onDestroy: function () { if (this.unsubscribe) this.unsubscribe(); }
+  onDestroy: function () {
+    if (this.idle) this.idle.unsubscribe();
+    if (this.auto) this.auto.unsubscribe();
+  }
 });
 exports.attach = function (node, options) {
   var component = node.getComponent(Options) || node.addComponent(Options);
   if (options) component.options = options;
-  if (component.row) component.layout();
+  if (component.idle) component.layout();
   return component;
 };

@@ -53,7 +53,7 @@ function volume(slider, innerWidth, y, icon) {
 exports.settings = function (owner) {
   if (!owner.node) return;
   var root = owner.node.getChildByName("root"), width = Math.min(600, owner.node.width - 64), inner = width - 64;
-  var height = owner.btnExchangeCode.active ? 710 : 620, language = Language.getInstance();
+  var height = owner.btnExchangeCode.active ? 788 : 698, language = Language.getInstance();
   var signature = [width, height, owner.node.height, language.getCurrentLanguage()].join(":");
   if (owner._settingsLayout === signature) return;
   owner._settingsLayout = signature;
@@ -64,7 +64,7 @@ exports.settings = function (owner) {
   volume(owner.musicSlider, inner, first, "Pictoicon_Music"); volume(owner.effectSlider, inner, first - 86, "Pictoicon_Volume_On");
   divider(root, "AudioDivider", inner, first - 140);
   require("LanguageOptions").attach(owner.node, first - 204, inner);
-  require("ControlIndicatorOptions").attach(owner.node, { width: inner, rowY: first - 298, helpY: first - 336 });
+  require("ControlIndicatorOptions").attach(owner.node, { width: inner, rowY: first - 376, helpY: first - 414 });
   owner.version.node.setScale(1); owner.version.node.setPosition(0, -height / 2 + 39);
   Style.body(owner.version, 20, false, "#796e5b"); owner.version.enableWrapText = false; owner.version.overflow = cc.Label.Overflow.SHRINK;
   owner.version.node.setContentSize(inner, 30);

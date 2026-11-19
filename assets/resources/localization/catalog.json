@@ -6100,6 +6100,11 @@
       "zh": "最高波次 {0}",
       "context": "Wall Defense · rewards and persistent best wave"
     },
+    "settings.autoSkillCast": {
+      "en": "Auto Skill Cast",
+      "zh": "自动施放技能",
+      "context": "Settings · automatically use the hero's active skill against available targets"
+    },
     "settings.hideIdleControls": {
       "en": "Hide controls",
       "zh": "静止时隐藏摇杆",

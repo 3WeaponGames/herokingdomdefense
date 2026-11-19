@@ -56,3 +56,17 @@ test('idle control preferences read without writing, persist only explicit chang
  assert.equal(p.getHideIdle(),false);assert.equal(writes,0);p.setHideIdle(false);assert.equal(writes,0);let changes=0;const off=p.subscribe(()=>changes++);p.setHideIdle(true);assert.equal(value,'1');assert.equal(changes,1);p.setHideIdle(true);assert.equal(writes,1);off();p.setHideIdle(false);assert.equal(changes,1);
  const blocked={exports:{},cc:{sys:{localStorage:{getItem(){throw Error('blocked');},setItem(){throw Error('blocked');}}}}};vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/ControlPreferences.js'),'utf8'),blocked);assert.equal(blocked.exports.getHideIdle(),false);assert.doesNotThrow(()=>blocked.exports.setHideIdle(true));assert.equal(blocked.exports.getHideIdle(),true);
 });
+
+test('Auto Skill Cast defaults off and persists independently of idle controls',()=>{
+ const storage=new Map(),writes=[];
+ function preferences(){
+  const context={exports:{},cc:{sys:{localStorage:{getItem:key=>storage.get(key),setItem(key,value){writes.push([key,value]);storage.set(key,value);}}}}};
+  vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/ControlPreferences.js'),'utf8'),context);
+  return context.exports;
+ }
+ const first=preferences();assert.equal(first.autoSkillCast.get(),false);assert.deepEqual(writes,[]);
+ first.autoSkillCast.set(true);first.autoSkillCast.set(true);
+ assert.deepEqual(writes,[['project-cocos.autoSkillCast','1']]);
+ const reopened=preferences();assert.equal(reopened.autoSkillCast.get(),true);assert.equal(reopened.getHideIdle(),false);
+ reopened.autoSkillCast.set(false);assert.equal(preferences().autoSkillCast.get(),false);
+});

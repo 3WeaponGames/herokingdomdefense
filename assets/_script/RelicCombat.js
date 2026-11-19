@@ -48,7 +48,7 @@ function primaryCurrent(record, target, hero) {
     generation(target) === record.targetGeneration;
 }
 function primaryValid(record, target, hero) { return primaryCurrent(record, target, hero) && sameBattle(record) && !record.used; }
-function enemyDamage(target, damage, source, secondary, context) {
+function enemyDamage(target, damage, source, secondary, context, preview) {
   if (!(damage > 0) || secondary) return damage;
   var data = current(), bonus = 0, primary = primaryValid(context, target, source);
   if (primary) {
@@ -59,7 +59,7 @@ function enemyDamage(target, damage, source, secondary, context) {
     if (focus > 0) {
       var previous = source._relicFocus, stacks = previous && previous.data === data && previous.round === data.round &&
         previous.epoch === context.epoch && previous.relicGeneration === context.relicGeneration && previous.heroNode === source.node && previous.heroGeneration === generation(source) && previous.target === target && previous.targetNode === target.node && previous.targetGeneration === generation(target) ? Math.min(3, previous.stacks + 1) : 0;
-      source._relicFocus = { data: data, round: data.round, epoch: context.epoch, relicGeneration: context.relicGeneration, heroNode: source.node, heroGeneration: generation(source), target: target, targetNode: target.node, targetGeneration: generation(target), stacks: stacks };
+      if (!preview) source._relicFocus = { data: data, round: data.round, epoch: context.epoch, relicGeneration: context.relicGeneration, heroNode: source.node, heroGeneration: generation(source), target: target, targetNode: target.node, targetGeneration: generation(target), stacks: stacks };
       bonus += focus * stacks;
     }
     var point = position(target), origin = position(source);
@@ -69,6 +69,9 @@ function enemyDamage(target, damage, source, secondary, context) {
   }
   if (source && source.navigationTeam === 'friendly' && !heroSource(source, data) && target.hp < target.hpMax * .25) bonus += Runtime.value(data, 120045);
   return damage * (1 + bonus);
+}
+function previewHeroHit(hero, target, damage) {
+  return enemyDamage(target, damage, hero, false, primaryContext(hero, target, damage, false), true);
 }
 function waveBarrier(data, hero) {
   var fraction = Runtime.value(data, 120036);
@@ -331,6 +334,7 @@ exports.afterHeroHit = afterHeroHit;
 exports.enemyKilled = enemyKilled;
 exports.heroAttack = heroAttack;
 exports.primaryContext = primaryContext;
+exports.previewHeroHit = previewHeroHit;
 exports.primaryCurrent = primaryCurrent;
 exports.primaryValid = primaryValid;
 exports.primaryImpact = primaryImpact;

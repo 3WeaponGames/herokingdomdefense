@@ -17,6 +17,80 @@ function scene(style,options={}){
  return {...h,hero,rt,enemy,feedback,animations,poses};
 }
 
+test('Auto Skill Cast uses a live target the skill can hit and gives manual input priority',()=>{
+ for(const style of ['skirmisher','fighter','vanguard','bruiser','guardian']){
+  const h=scene(style),preference=h.load('ControlPreferences').autoSkillCast,alive=h.enemy(90);
+  h.rt.update(.01);assert(!h.rt.skillCast,style+' cast with automation off');
+  h.d.enemyList.pop();h.hero.tagEnemy=alive;
+  h.enemy(1000);h.enemy(35).hp=0;h.enemy(36)._isPooled=true;
+  preference.set(true);
+  h.rt.update(.01);assert(!h.rt.skillCast,style+' cast without a reachable living enemy');
+  h.d.enemyList.push(alive);
+  h.ui.isPauset=true;h.rt.update(.1);assert(!h.rt.skillCast);
+  h.ui.isPauset=false;h.hero._skillHUD={press:{}};h.rt.update(.01);assert(!h.rt.skillCast);
+  delete h.hero._skillHUD;
+  h.rt.aiming=true;h.rt.update(.01);assert(!h.rt.skillCast);
+  h.rt.aiming=false;h.rt.update(.01);
+  assert(h.rt.skillCast,style+' missed an available enemy');
+  const cast=h.rt.skillCast;h.rt.update(.01);assert.equal(h.rt.skillCast,cast);
+ }
+});
+
+test('Mystic begins an automatic burst on the tenth stack of the current target',()=>{
+ const h=scene('mystic'),target=h.enemy();
+ h.load('ControlPreferences').autoSkillCast.set(true);
+ h.rt.update(9);
+ assert.equal(h.rt.state.mysticCharges,9);assert(!h.rt.skillCast);
+ h.rt.update(1);
+ near(h.rt.skillCast.at,10);assert.equal(h.rt.skillCast.target.id,target);
+ assert.equal(h.rt.state.active.cast.charges,10);assert.equal(h.rt.state.mysticCharges,0);
+ assert.equal(target.hp,9000,'The tenth ordinary hit lands before the burst begins');
+});
+
+test('Mystic replaces the lethal beam tick with a burst using the pending hit damage',()=>{
+ for(const kind of ['ordinary','critical','controlled']){
+  const h=scene('mystic'),target=h.enemy();
+  target.hp=target.hpMax=kind==='ordinary'?200:240;
+  h.load('ControlPreferences').autoSkillCast.set(true);
+  h.rt.update(1);const before=target.hp;
+  assert.equal(before,target.hpMax-100);assert.equal(h.rt.state.mysticCharges,1);assert(!h.rt.skillCast);
+  if(kind==='critical')h.hero.crit=1;
+  if(kind==='controlled'){
+   h.d.treasureAdd[120029]=[.5];
+   target._relicControl={node:target.node,generation:target.node._combatGeneration,freeze:2};
+  }
+  h.rt.update(1);
+  near(h.rt.skillCast.at,2);assert.equal(h.rt.skillCast.target.id,target);
+  assert.equal(h.rt.state.active.cast.charges,1);assert.equal(target.hp,before);
+  h.rt.update(.9);assert(target.hp<=0,kind+' burst missed the living target');
+ }
+});
+
+test('Mystic checks the new beam target after a switch and obeys the live toggle',()=>{
+ const h=scene('mystic'),first=h.enemy(80),second=h.enemy(90),preference=h.load('ControlPreferences').autoSkillCast;
+ h.rt.update(10);assert.equal(h.rt.state.mysticCharges,10);assert(!h.rt.skillCast);
+ first.node.x=1000;first.hp=10;preference.set(true);
+ h.rt.update(1);
+ assert(!h.rt.skillCast);assert.equal(h.rt.state.target,second);assert.equal(h.rt.state.mysticCharges,1);
+ preference.set(false);second.hp=100;
+ h.rt.update(1);assert(!h.rt.skillCast);assert.equal(second.hp,0);
+});
+
+test('Mystic waits for a lethal hit after fighting-type defense is applied',()=>{
+ const h=scene('mystic'),target=h.enemy(),overrides=h.load('GameToolsOverrides');
+ const data=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+ data.data={...data.data,GameTools:{unitTypes:{guardian:{damageTaken:{mode:'less',percent:200}}}}};
+ target.cfg={ID:90002,FightingType:'guardian'};
+ target.hp=target.hpMax=125;
+ const onAttacked=target.onAttacked;
+ target.onAttacked=function(damage,...args){return onAttacked.call(this,overrides.damageTaken(this,'enemy',damage),...args);};
+ h.load('ControlPreferences').autoSkillCast.set(true);
+ h.rt.update(2);
+ assert.equal(target.hp,25);assert.equal(h.rt.state.mysticCharges,2);assert(!h.rt.skillCast);
+ h.rt.update(1);
+ near(h.rt.skillCast.at,3);assert.equal(h.rt.state.active.cast.charges,2);assert.equal(target.hp,25);
+});
+
 test('actual slow movement gives the same Momentum and Steady Aim outcome at 30, 60 and 120 FPS',()=>{
  for(const style of ['vanguard','skirmisher'])for(const fps of [30,60,120]){
   const h=scene(style);h.rt.update(0);h.rt.state.charge=.4;

@@ -6,6 +6,7 @@ var SkillSettings = require("HeroSkillSettings"), Presentation = require("HeroSk
 var Projectile = require("./HeroSkillProjectile");
 var Timeline = require("./HeroSkillTimeline");
 var Pose = require('./HeroSkillPose');
+var AutoSkillCast = require("ControlPreferences").autoSkillCast;
 // A zero-cooldown authored skill is valid, but must not create an unbounded
 // collection when its projectiles take minutes to cross a map.
 var MAX_PROJECTILES = 64;
@@ -69,13 +70,24 @@ Runtime.prototype.canCast=function(){
 };
 Runtime.prototype.enemies=function(){return this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList().filter(living):[];};
 Runtime.prototype.attackRange=function(){var h=this.hero;return h.getAttackRange?h.getAttackRange():h.attackRange*(1+(h._relicMoving?0:this.bonus().range||0));};
-Runtime.prototype.nearest=function(){var h=this.hero,o=point(h),list=this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList():[],best=null,range=this.attackRange(),limit=range*range;for(var i=0;i<list.length;i++){var enemy=list[i];if(!living(enemy))continue;var d=distanceSquared(o,point(enemy));if(d<=limit&&(best===null||d<limit)){best=enemy;limit=d;}}return best;};
-Runtime.prototype.defaultAimTarget=function(){
-  var h=this.hero,target=h.tagEnemy,list=this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList():[],range=this.attackRange();
+Runtime.prototype.nearest=function(range,accept){
+  var o=point(this.hero),list=this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList():[],best=null;
+  if(range===undefined)range=this.attackRange();
+  var limit=range*range;
+  for(var i=0;i<list.length;i++){
+    var enemy=list[i];if(!living(enemy))continue;
+    var d=distanceSquared(o,point(enemy));
+    if(d<=limit&&(best===null||d<limit)&&(!accept||accept(enemy))){best=enemy;limit=d;}
+  }
+  return best;
+};
+Runtime.prototype.defaultAimTarget=function(range,accept){
+  var h=this.hero,target=h.tagEnemy,list=this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList():[];
+  if(range===undefined)range=this.attackRange();
   // A tap follows the hero's current target, but only its current battle and
   // reach. Otherwise acquire afresh instead of retaining stale attack intent.
-  if(list.indexOf(target)>=0&&living(target)&&distanceSquared(point(h),point(target))<=range*range)return target;
-  return this.nearest();
+  if(list.indexOf(target)>=0&&living(target)&&distanceSquared(point(h),point(target))<=range*range&&(!accept||accept(target)))return target;
+  return this.nearest(range,accept);
 };
 Runtime.prototype.projectileAim=function(aim,plan){
   plan=plan||{target:this.aimTarget,node:this.aimTargetNode,generation:this.aimTargetGeneration,point:this.aimPoint};var self=this,o=point(this.hero),target=plan.target,goal=living(target)&&target.node===plan.node&&generation(target)===plan.generation?Projectile.actorPoint(target,this.game.ndMain):plan.point;
@@ -85,6 +97,50 @@ Runtime.prototype.setAimTarget=function(target){this.aimTarget=living(target)?ta
 Runtime.prototype.setFreeAim=function(aim){this.aimTarget=this.aimTargetNode=null;this.aimPoint=null;this.aimDirection=direction(aim);};
 Runtime.prototype.screenAim=function(screen){this.refresh();var world=this.game.camera&&this.game.camera.getScreenToWorldPoint?this.game.camera.getScreenToWorldPoint(screen):screen,p=this.game.ndMain.convertToNodeSpaceAR(world),o=point(this.hero);this.aimTarget=this.aimTargetNode=null;this.aimPoint={x:p.x,y:p.y};this.aimDirection=this.state.style==='skirmisher'?this.projectileAim().direction:direction({x:p.x-o.x,y:p.y-o.y});return this.aimDirection;};
 Runtime.prototype.skillArea=function(aim,radius){var maker=require('HeroMakerRider'),world,origin,weaponAim=this.state.style==='vanguard'?Projectile.areaDirection(aim,this.settings.visual.rotation):aim;if(this.state.style==='bruiser'){var renderer=this.hero.ctrPlayAni&&this.hero.ctrPlayAni.spAniBody,body=renderer&&Pose.bodyPoint(renderer);world=body&&renderer.node&&renderer.node.convertToWorldSpaceAR?renderer.node.convertToWorldSpaceAR(cc.v2(body.x,body.y)):null;}else world=maker.weaponOrigin&&maker.weaponOrigin(this.hero.ctrPlayAni,this.state.style,weaponAim,this.settings.visual.animation);origin=world?this.game.ndMain.convertToNodeSpaceAR(world):point(this.hero);return Projectile.area(this.state.style,origin,this.settings.visual,aim,radius);};
+Runtime.prototype.castRadius=function(){
+  var style=this.state.style;
+  if(style==="guardian")return Skills.guardianRadius(this.state.tuning,"tauntRadius");
+  return Math.max(style==="bruiser"?150:style==="vanguard"?155:130,this.hero.attackRange);
+};
+Runtime.prototype.tryAutoCast=function(target,basicDamage,critical){
+  var h=this.hero,s=this.state,hud=h._skillHUD;
+  if(!AutoSkillCast.get()||this.aiming||hud&&(hud.press||hud.worldTouch)||!Skills.canActivate(s,{hp:h.hp})||!this.available())return false;
+  if(s.style==="mystic"){
+    if(target!==this.channelTarget||target!==s.target||!living(target)||target.node!==this.markNode||generation(target)!==this.markGeneration||!s.mysticCharges)return false;
+    var full=Math.min(10,Math.max(1,Math.floor(s.tuning.maxCharges)));
+    if(s.mysticCharges<full){
+      if(basicDamage===undefined)return false;
+      if(critical)basicDamage*=h.getCriticalDamage?h.getCriticalDamage():h.critDam;
+      var damage=require("RelicCombat").previewHeroHit(h,target,basicDamage);
+      damage=require("GameToolsOverrides").damageTaken(target,"enemy",damage);
+      if(!(damage>=target.hp))return false;
+    }
+    return this.game.gameData.getEnemyList().indexOf(target)>=0&&this.cast();
+  }
+  var self=this,origin=point(h),radius=this.castRadius(),visual=this.settings.visual,aim,shot;
+  var reach=s.style==="skirmisher"?s.tuning.volleyRange+Projectile.arrowHitRadius:radius*visual.scale+Math.hypot(visual.offsetX||0,visual.offsetY||0);
+  var selected=this.defaultAimTarget(Math.max(this.attackRange(),reach),function(enemy){
+    var center=Projectile.actorPoint(enemy,self.game.ndMain),heading=direction({x:center.x-origin.x,y:center.y-origin.y});
+    if(s.style==="skirmisher"){
+      var launch=self.projectileAim(heading,{target:enemy,node:enemy.node,generation:generation(enemy)});
+      var spread=Projectile.volleySpread(launch.origin,launch.direction,s.tuning,visual);
+      var canHit=spread.directions.some(function(path){
+        var end={x:launch.origin.x+path.x*spread.radius,y:launch.origin.y+path.y*spread.radius};
+        return Projectile.segmentEntry(center,launch.origin,end,Projectile.arrowHitRadius)!==null;
+      });
+      if(!canHit)return false;
+      shot=launch;
+    }else{
+      var shape=self.skillArea(heading,radius);
+      if(s.style==="fighter"&&!withinArc(shape.origin,center,shape.direction,shape.radius,Math.cos(shape.halfAngle)))return false;
+      if(s.style==="vanguard"&&!Projectile.containsArea(shape,center))return false;
+      if(!directional(s.style)&&distanceSquared(shape.origin,center)>shape.radius*shape.radius)return false;
+    }
+    aim=heading;
+    return true;
+  });
+  return !!selected&&this.cast(aim,shot);
+};
 Runtime.prototype.bonus=function(){return Skills.bonuses(this.state,{hp:this.hero.hp,maxHp:this.hero.hpMax});};
 Runtime.prototype.effect=function(kind,origin,radius,aim,halfAngle,resolved){if(this.resolvingState&&this.resolvingState!==this.state)return;var v=this.settings.visual,duration=v.effectDuration/(v.resource?SkillSettings.playbackRate(v.resourcePlaybackRate):1);if(this.effects.length>=MAX_EFFECTS)this.effects.splice(0,this.effects.length-MAX_EFFECTS+1);this.effects.push({kind:kind,x:origin.x,y:origin.y,radius:radius,direction:aim,halfAngle:halfAngle,resolved:!!resolved,remaining:duration,duration:duration});};
 Runtime.prototype.hit=function(target,multiplier,skill,strike,options){
@@ -95,6 +151,12 @@ Runtime.prototype.hit=function(target,multiplier,skill,strike,options){
   if(this.state!==state||this.scope!==scope||!this.scopeCurrent(scope)||target.node!==targetNode||generation(target)!==targetGeneration||!living(target))return 0;
   var critical=hero.crit>Math.random(),release;
   if(!skill){
+    // Intercept the scheduled beam tick while its target and rolled damage are
+    // still available. Previewing it leaves focus stacks and release perks alone.
+    if(state.style==="mystic"){
+      if(this.tryAutoCast(target,damage,critical))return 0;
+      if(this.state!==state||this.scope!==scope||!this.scopeCurrent(scope)||target.node!==targetNode||generation(target)!==targetGeneration||!living(target))return 0;
+    }
     release=Combat.heroAttack(hero,target,damage);
     if(this.state!==state||this.scope!==scope||!this.scopeCurrent(scope)||target.node!==targetNode||generation(target)!==targetGeneration||!living(target))return 0;
   }
@@ -134,7 +196,7 @@ Runtime.prototype.onImpact=function(target,damage,context){
 Runtime.prototype.deferHitReaction=function(target,context){
   return this.hero._styleRuntime===this&&this.scopeCurrent(this.scope)&&require("RelicCombat").primaryValid(context,target,this.hero)&&Presentation.deferHitReaction&&Presentation.deferHitReaction(this,target,context);
 };
-Runtime.prototype.cast=function(aim){
+Runtime.prototype.cast=function(aim,shot){
   if(!this.canCast())return false;
   var h=this.hero,s=this.state,scope=this.scope,o=point(h),target=s.target;
   if(!aim&&!directional(s.style)){
@@ -142,11 +204,14 @@ Runtime.prototype.cast=function(aim){
     if(living(nearest))aim={x:point(nearest).x-o.x,y:point(nearest).y-o.y};
     else {var body=h.ctrPlayAni&&h.ctrPlayAni.spAniBody,face=body&&body.node?body.node.scaleX:h.isLeft&&h.isLeft()?-1:1;aim={x:face<0?-1:1,y:0};}
   }
-  var dir=direction(aim||this.aimDirection),shot;
+  var dir=direction(aim||this.aimDirection);
   if(s.style==='skirmisher'){
-    var arrowPlan={target:this.aimTarget,node:this.aimTargetNode,generation:this.aimTargetGeneration,point:this.aimPoint,direction:dir};
-    if(!aim&&!arrowPlan.target&&!arrowPlan.point){arrowPlan.target=living(h.tagEnemy)?h.tagEnemy:this.nearest();arrowPlan.node=arrowPlan.target&&arrowPlan.target.node;arrowPlan.generation=generation(arrowPlan.target);if(arrowPlan.target)arrowPlan.point=Projectile.actorPoint(arrowPlan.target,this.game.ndMain);}
-    shot=this.projectileAim(dir,arrowPlan);dir=shot.direction;
+    if(!shot){
+      var arrowPlan={target:this.aimTarget,node:this.aimTargetNode,generation:this.aimTargetGeneration,point:this.aimPoint,direction:dir};
+      if(!aim&&!arrowPlan.target&&!arrowPlan.point){arrowPlan.target=living(h.tagEnemy)?h.tagEnemy:this.nearest();arrowPlan.node=arrowPlan.target&&arrowPlan.target.node;arrowPlan.generation=generation(arrowPlan.target);if(arrowPlan.target)arrowPlan.point=Projectile.actorPoint(arrowPlan.target,this.game.ndMain);}
+      shot=this.projectileAim(dir,arrowPlan);
+    }
+    dir=shot.direction;
   }
   if(s.style==="mystic"&&(!living(target)||target.node!==this.markNode||generation(target)!==this.markGeneration||distance(o,point(target))>h.attackRange))return false;
   var rider=require("HeroMakerRider"),overrides=require("GameToolsOverrides"),timing=this.timing();
@@ -156,7 +221,7 @@ Runtime.prototype.cast=function(aim){
   if(!cast.ok)return false;
   this.resolvingState=this.state;
   this.aiming=false;this.aimDirection=dir;this.castId=++this.serial;
-  var castShape=shot||this.skillArea(dir,s.style==='guardian'?Skills.guardianRadius(s.tuning,'tauntRadius'):Math.max(s.style==='bruiser'?150:s.style==='vanguard'?155:130,h.attackRange));
+  var castShape=shot||this.skillArea(dir,this.castRadius());
   this.castOrigin=Projectile.point(castShape.origin);this.castDirection=Projectile.point(castShape.direction);
   this.skillCast={key:this.castId,at:s.time,origin:Projectile.point(this.castOrigin),direction:Projectile.point(this.castDirection),aimDirection:Projectile.point(dir),radius:cast.radius||castShape.radius,halfAngle:castShape.halfAngle,startWidth:castShape.startWidth,duration:s.active?s.active.duration:this.settings.visual.effectDuration,target:target?{id:target,node:target.node,generation:generation(target),x:point(target).x,y:point(target).y}:null};
   if(s.style==='mystic'&&target)this.skillCast.origin=Projectile.point(point(target));
@@ -213,7 +278,7 @@ Runtime.prototype.resolveImpact=function(cast,pending){
   if(/^(fighter|bruiser|mystic|guardian)$/.test(s.style)&&Presentation.release)Presentation.release(this,strike);
   if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return;
   if(s.style==="fighter"){
-    var shape=this.skillArea(dir,Math.max(130,h.attackRange)),radius=shape.radius,cosine=Math.cos(shape.halfAngle),self=this,knockbackOrigin=point(h);o=shape.origin;dir=shape.direction;
+    var shape=this.skillArea(dir,this.castRadius()),radius=shape.radius,cosine=Math.cos(shape.halfAngle),self=this,knockbackOrigin=point(h);o=shape.origin;dir=shape.direction;
     if(this.skillCast){this.skillCast.origin=Projectile.point(o);this.skillCast.radius=radius;this.skillCast.direction=Projectile.point(dir);}
     // The authored arc decides who is hit. Push directions instead radiate
     // from the hero's ground position, sampled before any hit callbacks run.
@@ -221,7 +286,7 @@ Runtime.prototype.resolveImpact=function(cast,pending){
     impacts.forEach(function(impact){var e=impact.enemy;self.hit(e,1,true,strike,impact);if(self.resolvingState===self.state&&self.available()&&living(e)&&e.node===impact.node&&generation(e)===impact.generation)self.startKnockback(e,impact.away,cast.knockback===undefined?80:cast.knockback);});
     this.effect("arc",o,radius,dir,shape.halfAngle,true);
   }else if(s.style==="bruiser"){
-    var shape=this.skillArea(dir,Math.max(150,h.attackRange)),radius=shape.radius,self=this,multiplier=cast.damageMultiplier;o=shape.origin;
+    var shape=this.skillArea(dir,this.castRadius()),radius=shape.radius,self=this,multiplier=cast.damageMultiplier;o=shape.origin;
     if(this.skillCast){this.skillCast.origin=Projectile.point(o);this.skillCast.radius=radius;}
     var bonusRatio=pending.attackBonus/(1+this.bonus().damage);
     var impacts=this.enemies().filter(function(e){return distanceSquared(o,Projectile.actorPoint(e,self.game.ndMain))<=radius*radius;}).map(function(e){var record=candidate(e);record.damage=h.getAttack(e)*bonusRatio*multiplier;return record;});
@@ -232,7 +297,7 @@ Runtime.prototype.resolveImpact=function(cast,pending){
     if(this.skillCast&&this.skillCast.key===strike){this.skillCast.origin=Projectile.point(center);this.skillCast.radius=radius;this.skillCast.impactAt=s.time;}
     this.enemies().filter(function(e){return e===target||distanceSquared(center,point(e))<=radius*radius;}).map(candidate).forEach(function(record){self.hit(record.enemy,multiplier,true,strike,record);});this.effect("burst",center,radius);
   }else if(s.style==="guardian"){
-    var self=this,shape=this.skillArea(dir,Skills.guardianRadius(s.tuning,'tauntRadius'));o=shape.origin;this.enemies().forEach(function(e,index){if(distanceSquared(o,Projectile.actorPoint(e,self.game.ndMain))>shape.radius*shape.radius)return;var taunt={hero:h,heroNode:h.node,generation:generation(h),enemyNode:e.node,enemyGeneration:generation(e),data:self.game.gameData,epoch:self.game._combatEpoch,started:s.time,visualKey:"taunt:"+strike+":"+index,remaining:cast.tauntDuration===undefined?4:cast.tauntDuration};e._heroTaunt=taunt;self.taunted.push({enemy:e,taunt:taunt});});this.effect("ring",o,shape.radius,shape.direction,undefined,true);
+    var self=this,shape=this.skillArea(dir,this.castRadius());o=shape.origin;this.enemies().forEach(function(e,index){if(distanceSquared(o,Projectile.actorPoint(e,self.game.ndMain))>shape.radius*shape.radius)return;var taunt={hero:h,heroNode:h.node,generation:generation(h),enemyNode:e.node,enemyGeneration:generation(e),data:self.game.gameData,epoch:self.game._combatEpoch,started:s.time,visualKey:"taunt:"+strike+":"+index,remaining:cast.tauntDuration===undefined?4:cast.tauntDuration};e._heroTaunt=taunt;self.taunted.push({enemy:e,taunt:taunt});});this.effect("ring",o,shape.radius,shape.direction,undefined,true);
   }
 };
 function beamCandidate(frame,target){var snapshot=frame.targets&&frame.targets.get(target);return living(target)&&!frame.blocked.has(target)&&(!frame.targets||snapshot&&snapshot.node===target.node&&snapshot.generation===generation(target));}
@@ -254,7 +319,9 @@ Runtime.prototype.prepareBeam=function(frame){
   var sourceRemaining=Math.max(0,this.beamHoldSource-this.beamSourceTime);
   this.beamWarmup=sourceRemaining>1e-9?(playback>0?sourceRemaining/playback:Infinity):0;
   if(this.state.target!==target){Skills.setTarget(this.state,target);this.markNode=target.node;this.markGeneration=generation(target);}
-  h.tagEnemy=target;if(h.ctrPlayAni.setBodyLeft)h.ctrPlayAni.setBodyLeft(point(target).x-o.x);
+  h.tagEnemy=target;
+  if(this.tryAutoCast(target)||this.state!==frame.state||this.scope!==frame.scope||!this.scopeCurrent(frame.scope))return Skills.attackLockRemaining(this.state);
+  if(h.ctrPlayAni.setBodyLeft)h.ctrPlayAni.setBodyLeft(point(target).x-o.x);
   if(!(playback>0))return Infinity;
   if(this.beamWarmup>1e-9)return this.beamWarmup;
   var rate=Math.max(0,h.getAttSpeed());return frame.ticks<32&&rate>0?Math.max(0,(1-this.beamClock)/rate):Infinity;
@@ -292,6 +359,7 @@ Runtime.prototype.beam=function(dt,frame){
       break;
     }
     if(distanceSquared(point(h),point(target))>h.attackRange*h.attackRange){this.beamTarget=null;this.beamVisibleSince=undefined;break;}
+    if(this.tryAutoCast(target)||this.state!==frame.state||this.scope!==frame.scope)return;
   }
 };
 Runtime.prototype.releaseVolley=function(event){
@@ -360,14 +428,20 @@ Runtime.prototype.update=function(dt){
   // turn into standing still solely because the display refreshes faster.
   // Archer movement input also cancels its stationary draw before displacement.
   var h=this.hero,pos=point(h),moving=distance(pos,this.lastPosition)>Math.max(1e-7,.01*dt)||this.state.style==="skirmisher"&&!!h._relicMoving;this.lastPosition={x:pos.x,y:pos.y};this.moving=moving;
+  var frameState=this.state,frameScope=this.scope;
+  if(dt>0&&frameState.style!=="mystic")this.tryAutoCast();
+  if(this.state!==frameState||this.scope!==frameScope)return;
+  if(!this.scopeCurrent(frameScope)){this.clear(true);return;}
   var prior=this.state.active,remaining=dt,guard=0,self=this;
   var frame=this.state.style==="mystic"?{state:this.state,scope:this.scope,targets:null,blocked:new Set(),ticks:0,aborted:false}:null;this.beamFrame=frame;
   if(this.state.target&&(!living(this.state.target)||this.markNode!==undefined&&this.state.target.node!==this.markNode||this.markGeneration!==undefined&&generation(this.state.target)!==this.markGeneration))Skills.clearTarget(this.state);
   // Advance to each impact before releasing it. New projectiles/effects only
   // receive the part of this frame after their event, including on long frames.
   do{
-    var scheduled=this.state.active,until=scheduled?Math.max(0,Timeline.nextTime(scheduled)-scheduled.elapsed):Infinity;
     var nextBeam=frame?this.prepareBeam(frame):Infinity,beforeTicks=frame&&frame.ticks;
+    if(this.state!==frameState||this.scope!==frameScope)return;
+    if(!this.scopeCurrent(frameScope)){this.clear(true);return;}
+    var scheduled=this.state.active,until=scheduled?Math.max(0,Timeline.nextTime(scheduled)-scheduled.elapsed):Infinity;
     var chargeBefore=this.state.charge;
     var slice=Math.min(remaining,until,nextBeam),events=Skills.step(this.state,slice,{moving:moving,hp:h.hp,maxHp:h.hpMax,moveSpeed:h.getSpeed(),attackRate:h.getAttSpeed()});
     this.advanceKnockbacks();if(this.resolvingState!==this.state)return;

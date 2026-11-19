@@ -27,7 +27,7 @@ function setup(overrides={}){
  if(e.stubs.KinghtFallPlayerMgr&&e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr){const player=e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();if(!player.getGuideData)player.getGuideData=()=>({getGuideTips:()=>1,setGuideTips:noop});}
  function load(name){name=name.replace(/^\.\//,'');if(e.stubs[name])return e.stubs[name];if(mods[name])return mods[name].exports;
   const allowed=/^(MysticTrail|EnemyStageProfiles|SpawnArea|HeroWeapons|HeroEquipmentStats|HeroStyleTalents|HeroStyleSkills|HeroSkillTimeline|HeroSkillArrowPaths|HeroStyleRuntime|HeroSkillSettings|HeroSkillDescriptions|HeroSkillProjectile|HeroSkillVFXCatalog|HeroSkillVFXState|HeroSkillVFXLayout|HeroSkillPresentation|HeroSkillPose|HeroSkillAnimation|HeroSkillHUD|HeroMakerRider|HeroLoadout|HeroUpgradeEffects|CombatPower|HeroWeaponCombat|RelicEligibility|RelicRuntime|RelicCombat|RelicBattle|GameToolsOverrides|KinghtFall(GameCtrlData|GameCtrl|GamePlayCtrl|BuildBarracks|Bullet.*|PlayGameAniCtrl))$/;
-  if(name!=='TutorialFlow'&&!allowed.test(name))return e.load(name);
+  if(name!=='TutorialFlow'&&name!=='ControlPreferences'&&!allowed.test(name))return e.load(name);
   const module={exports:{}};mods[name]=module;
   vm.runInNewContext(fs.readFileSync(path.join(dir,name+'.js'),'utf8'),{exports:module.exports,module,require:load,cc:e.cc,sp:{Skeleton:function(){}},console,
    __extends:(C,B)=>{Object.setPrototypeOf(C,B);C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},

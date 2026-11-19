@@ -1,19 +1,20 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{fixture}=require('./backend-ui-harness.cjs');
 function settings(){
- const h=fixture(),listeners=new Set(),preferenceListeners=new Set(),writes=[],languages=Array.from({length:12},(_,i)=>({code:i?'language-'+i:'en',nameKey:'language.name'+i}));let current='en',hidden=false;
+ const h=fixture(),listeners=new Set(),preferenceListeners=new Set(),autoListeners=new Set(),writes=[],languages=Array.from({length:12},(_,i)=>({code:i?'language-'+i:'en',nameKey:'language.name'+i}));let current='en',hidden=false,auto=false;
  const lang={t:key=>key,getLanguages:()=>languages,getCurrentLanguage:()=>current,bindLabel:(label,key)=>label.string=key,setCurrentLanguage(code){current=code;writes.push(['language',code]);listeners.forEach(l=>l.fn.call(l.owner));},onChange(fn,owner){listeners.add({fn,owner});},offChange(fn,owner){for(const l of listeners)if(l.fn===fn&&l.owner===owner)listeners.delete(l);}};
  class Node extends h.cc.Node{constructor(name){super(name);this.components=new Map();Object.assign(this,{width:0,height:0,x:0,y:0,anchorX:.5,anchorY:.5,scaleX:1,scaleY:1});}addComponent(Type){const c=new Type();c.node=this;this.components.set(Type,c);return c;}getComponent(Type){return this.components.get(Type);}setScale(v){this.scaleX=this.scaleY=v;}setPosition(x,y){if(typeof x==='object')({x,y}=x);this.x=x;this.y=y;}setSiblingIndex(i){const a=this.parent.children;a.splice(a.indexOf(this),1);a.splice(i,0,this);}setAnchorPoint(x,y){this.anchorX=x;this.anchorY=y;}on(type,fn,owner){this.handlers[type]=owner?fn.bind(owner):fn;}}
  Node.EventType={TOUCH_END:'end'};class Label{}Label.HorizontalAlign={LEFT:0,CENTER:1};Label.VerticalAlign={CENTER:1};Label.Overflow={SHRINK:2,RESIZE_HEIGHT:3};class Outline{}class Shadow{}class Button{}Button.Transition={SCALE:1};class Graphics{clear(){}rect(){}roundRect(){}fill(){}stroke(){}moveTo(){}lineTo(){}}class Sprite{}Sprite.SizeMode={CUSTOM:0};Sprite.Type={SLICED:1};class Widget{}class Slider{}
  Object.assign(h.cc,{Node,Label,LabelOutline:Outline,LabelShadow:Shadow,Button,Graphics,Sprite,Widget,Slider,color:x=>x,Class(def){function C(){Object.assign(this,def.properties||{});}Object.assign(C.prototype,def);return C;}});
  const volumes={music:.6,effect:.3};h.modules.LanguageMgr={LanguageMgr:{getInstance:()=>lang}};
  h.modules.ControlPreferences={getHideIdle:()=>hidden,setHideIdle(value){hidden=value;writes.push(['controls',value]);preferenceListeners.forEach(fn=>fn());},subscribe(fn){preferenceListeners.add(fn);return()=>preferenceListeners.delete(fn);}};
+ h.modules.ControlPreferences.autoSkillCast={get:()=>auto,set(value){auto=value;writes.push(['auto',value]);autoListeners.forEach(fn=>fn());},subscribe(fn){autoListeners.add(fn);return()=>autoListeners.delete(fn);}};
  h.modules.AudioMgr={AudioMgr:{getInstance:()=>({getMusicVolume:()=>volumes.music,getEffectVolume:()=>volumes.effect,setMusicVolume(v){writes.push(['music',v]);volumes.music=v;},setEffectVolume(v){writes.push(['effect',v]);volumes.effect=v;}})}};
  const node=(name,parent,Type)=>{const n=new Node(name);if(parent)n.parent=parent;if(Type)n.addComponent(Type);return n;};
  function owner(width=750,height=1334){const ui={node:node('UI')};ui.node.setContentSize(width,height);const root=node('root',ui.node,Sprite);ui.ndTitle=node('title',root,Label);ui.version=node('version',root,Label).getComponent(Label);ui.btnClose=node('Close',root);ui.btnNewGame=node('Home',root);ui.btnDismiss=node('X',root);ui.btnExchangeCode=node('Gift',root);ui.btnExchangeCode.active=false;ui.btnCleardata=node('Clear',root,Label).getComponent(Label);
   function slider(name){const row=node(name,root);node(name+'Label',row,Label);const n=node(name+'Slider',row,Slider);node('Background',n,Sprite).width=306;node('Background2',n,Sprite).width=300;return n.getComponent(Slider);}ui.musicSlider=slider('music');ui.effectSlider=slider('effect');const scroll=node('Scroll',root);node('view',scroll,Widget);ui.ndParent={node:scroll};return ui;}
  function start(node){for(const c of node.components.values())if(c.start&&!c.started){c.started=true;c.start();}}
- return{h,lang,writes,volumes,languages,listeners,preferenceListeners,owner,start,load:h.load};
+ return{h,lang,writes,volumes,languages,listeners,preferenceListeners,autoListeners,owner,start,load:h.load};
 }
 test('arrow language selector reaches every future language in both directions without adding buttons or saving on open',()=>{
  const f=settings(),ui=f.owner(),options=f.load('LanguageOptions').attach(ui.node,12,448);f.start(ui.node);assert.equal(f.writes.length,0);assert.equal(options.arrows.length,2);const initial=options.value.string;
@@ -43,7 +44,31 @@ test('cached audio panels refresh stale fills and handles without writing prefer
 });
 test('Hide idle controls is shared between Settings and Pause and releases subscriptions when closed',()=>{
  const f=settings(),a=f.owner(),b=f.owner(),api=f.load('ControlIndicatorOptions'),one=api.attach(a.node,{width:448,rowY:-100,helpY:-150}),two=api.attach(b.node,{width:488,rowY:-200,helpY:-250});f.start(a.node);f.start(b.node);assert.equal(f.writes.length,0);
- one.button.handlers.end({stopPropagation(){}});assert.equal(two.label.string,'settings.controlsOn');assert(two.caption.node.x+two.caption.node.width<=two.button.x-54-12);one.onDestroy();two.onDestroy();assert.equal(f.preferenceListeners.size,0);
+ one.idle.button.handlers.end({stopPropagation(){}});assert.equal(two.idle.button.getChildByName('Value').getComponent(f.h.cc.Label).string,'settings.controlsOn');assert(two.idle.caption.node.x+two.idle.caption.node.width<=two.idle.button.x-54-12);one.onDestroy();two.onDestroy();assert.equal(f.preferenceListeners.size,0);
+});
+test('Auto Skill Cast is visible in Settings and updates both open panels only when changed',()=>{
+ const f=settings(),layouts=f.load('SettingsPanelLayout'),lobby=f.owner(),battle=f.owner(540,820);
+ battle.btnExchangeCode.active=true;
+ for(const ui of [lobby,battle]){layouts.settings(ui);f.start(ui.node);}
+ assert.deepEqual(f.writes,[]);
+ function row(ui){return ui.node.getChildByName('root').getChildByName('AutoSkillCastOptions');}
+ function button(ui){return row(ui).getChildByName('Toggle');}
+ function displayed(ui){return button(ui).getChildByName('Value').getComponent(f.h.cc.Label).string;}
+ for(const ui of [lobby,battle]){
+  const root=ui.node.getChildByName('root'),auto=row(ui),idle=root.getChildByName('IdleControlOptions');
+  assert.equal(auto.getChildByName('Caption').getComponent(f.h.cc.Label).string,'settings.autoSkillCast');
+  assert.equal(displayed(ui),'settings.controlsOff');
+  assert(idle.y+idle.height/2<auto.y-auto.height/2);
+  assert(auto.y+auto.height/2<ui.effectSlider.node.parent.y-ui.effectSlider.node.parent.height/2);
+ }
+ const tap={stopPropagation(){}};
+ button(lobby).handlers.end(tap);
+ assert.equal(displayed(battle),'settings.controlsOn');
+ button(battle).handlers.end(tap);
+ assert.equal(displayed(lobby),'settings.controlsOff');
+ assert.deepEqual(f.writes,[['auto',true],['auto',false]]);
+ for(const ui of [lobby,battle])for(const component of ui.node.components.values())if(component.auto)component.onDestroy();
+ assert.equal(f.autoListeners.size,0);
 });
 test('Settings matches the shared concept while Pause keeps details above four distinct GUI Pro actions',()=>{
  const f=settings(),layout=f.load('SettingsPanelLayout');for(const [width,height]of [[750,1334],[540,820]]){
