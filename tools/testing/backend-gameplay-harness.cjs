@@ -24,15 +24,17 @@ function setup(overrides={}){
  e.stubs.AudioMgr={AudioMgr:singleton({getAudioSource:()=>({}),getMusicVolume:()=>.5,setChannelGain(){},stopOwnedEffects(){}})};
  e.stubs.TestMode={TestMode:singleton({shouldBypassAdLimits:()=>false})};
  Object.assign(e.stubs,overrides);
+ if(e.stubs.KinghtFallPlayerMgr&&e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr){const player=e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();if(!player.getGuideData)player.getGuideData=()=>({getGuideTips:()=>1,setGuideTips:noop});}
  function load(name){name=name.replace(/^\.\//,'');if(e.stubs[name])return e.stubs[name];if(mods[name])return mods[name].exports;
   const allowed=/^(MysticTrail|EnemyStageProfiles|SpawnArea|HeroWeapons|HeroEquipmentStats|HeroStyleTalents|HeroStyleSkills|HeroSkillTimeline|HeroSkillArrowPaths|HeroStyleRuntime|HeroSkillSettings|HeroSkillDescriptions|HeroSkillProjectile|HeroSkillVFXCatalog|HeroSkillVFXState|HeroSkillVFXLayout|HeroSkillPresentation|HeroSkillPose|HeroSkillAnimation|HeroSkillHUD|HeroMakerRider|HeroLoadout|HeroUpgradeEffects|CombatPower|HeroWeaponCombat|RelicEligibility|RelicRuntime|RelicCombat|RelicBattle|GameToolsOverrides|KinghtFall(GameCtrlData|GameCtrl|GamePlayCtrl|BuildBarracks|Bullet.*|PlayGameAniCtrl))$/;
-  if(!allowed.test(name))return e.load(name);
+  if(name!=='TutorialFlow'&&!allowed.test(name))return e.load(name);
   const module={exports:{}};mods[name]=module;
   vm.runInNewContext(fs.readFileSync(path.join(dir,name+'.js'),'utf8'),{exports:module.exports,module,require:load,cc:e.cc,sp:{Skeleton:function(){}},console,
    __extends:(C,B)=>{Object.setPrototypeOf(C,B);C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},
    __decorate:(ds,t,k)=>k===undefined?t:undefined,__spreadArrays:(...xs)=>[].concat(...xs)}, {filename:name+'.js'});return module.exports;
  }
  const DM=load('KinghtFallGameCtrlData');e.stubs.KinghtFallGameCtrlData=DM;const D=DM.default,d=Object.create(D.prototype);
+ e.stubs.TutorialFlow=load('TutorialFlow');
  Object.assign(d,{buffList:[],addTime:{},talentAdd:{},treasureAdd:{},treasureAddTime:{},businessAdd:{},businessPoints:[],weaponBusinessPoints:{node:{}},horseBusinessPoints:{node:{}},coin:20,time:{MonsterGenerate:0},enemyQueue:{},enemyList:[],soldierList:[],bulidPointMap:{},obstacles:[],levelCfg:{Level:1,WaveCfg:[{},{}]},round:1});
  const G=load('KinghtFallGameCtrl').default,g=new G();Object.assign(g,{node:new Node(),ndMain:e.game.ndMain,ndAggFlag:new Node(),mapSize:e.game.mapSize,gameData:d,ctrPlay:e.game.ctrPlay,ndPath:new Node('ndPath')});
  // Queue/prefab tests accept arbitrary valid lane IDs. Give their inert marker
@@ -41,6 +43,16 @@ function setup(overrides={}){
  new Node('ndStar',g.ndPath);d.ctrPar=g;ui.ctrGame=g;ui.initView=noop;
  g.ctrPlay.onRestart=noop;g.loadPrefab=(bundle,prefab,cb)=>pending.push(cb);g.clearArmyOrder=noop;
  e.cc.instantiate=p=>p();
+ const launchVolleyArrow=g.launchVolleyArrow;
+ g.launchVolleyArrow=function(origin,direction){
+  if(!this.ndUI)this.ndUI=new Node('projectiles',this.node);
+  if(!this.ctrPlay.ctrArr)this.ctrPlay.ctrArr={node:()=>{
+   const node=new Node('hero arrow'),arrow=node.addComponent(load('KinghtFallBulletPlay').default);
+   node.setSiblingIndex=noop;arrow.bullet=new Node('arrow art',node);arrow.speed=500;arrow.setSkin=noop;
+   return node;
+  }};
+  return launchVolleyArrow.call(this,origin,direction);
+ };
  return {e,load,d,g,ui,events,pending,noop};
 }
 function hero(h){const H=h.load('KinghtFallGamePlayCtrl').default,p=new H();Object.assign(p,{node:new Node(),attackRange:200,baseHp:100,hpMax:100,hp:50,hpRecoverSpeed:10,time:{Attack:-1,RecoverCd:0,hpRecover:0},ctrHp:{setHp(){}},ndRange:{width:400},ndAgg:{},ndEffect:{removeAllChildren(){}},ctrPlayAni:{setAttack(){},onRestart(){},setBus(){}},rigidBody:{},getAttSpeed:()=>1});h.g.ctrPlay=p;return p;}

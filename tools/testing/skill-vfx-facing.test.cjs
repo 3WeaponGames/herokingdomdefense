@@ -29,8 +29,9 @@ test('melee damage arcs mirror their authored angle while retaining world-space 
  }
 });
 
-test('the calibrated Skirmisher VFX emitter and actual source mesh vertices reflect around the saved cast pivot',()=>{
+test('the archived Skirmisher emitter and source mesh retain their calibrated pivot',()=>{
  const visual={...Settings.defaults('skirmisher').visual,castScale:.23,castScaleX:1.4,castScaleY:.7,castRotation:Paths.defaultRotation+27,castOffsetX:37,castOffsetY:-23},direction=atAngle(29),origin={x:120,y:70},pivot={x:157,y:47};
+ Settings.applyClip(visual,'castResource',Layout.clipFor('skirmisher-triple-volley'));
  const right=cast('skirmisher',visual,direction,origin,0),left=cast('skirmisher',visual,{x:-direction.x,y:direction.y},origin,0);
  near(Layout.clipFor(visual.castResource).originX,Paths.sourceOrigin.x);near(Layout.clipFor(visual.castResource).originY,Paths.sourceOrigin.y);reflected(artwork(right,Paths.sourceOrigin),artwork(left,Paths.sourceOrigin),pivot,'Calibrated emitter');near(artwork(right,Paths.sourceOrigin).x,pivot.x);near(artwork(left,Paths.sourceOrigin).y,pivot.y);
  const source=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../assets/resources/vfx/hero-skills/skirmisher-triple-volley/skirmisher-triple-volley.json'),'utf8'));let vertices=0;
@@ -38,18 +39,23 @@ test('the calibrated Skirmisher VFX emitter and actual source mesh vertices refl
  assert(vertices>30,'Exercise real Spine source vertices, not a symmetric placeholder rectangle');
 });
 
-test('the final three source arrows reflect while the independently authored volley fan preserves mirrored contact membership',()=>{
- const settings=Settings.defaults('skirmisher'),visual={...settings.visual,castScale:.21,castScaleX:1.3,castScaleY:.8,castRotation:Paths.defaultRotation+19,castOffsetX:37,castOffsetY:-23,offsetX:37,offsetY:-23,rotation:19,arcDegrees:42},direction=atAngle(24),origin={x:120,y:70},pivot={x:157,y:47},leftDirection={x:-direction.x,y:direction.y},rightArt=cast('skirmisher',visual,direction,origin,0),leftArt=cast('skirmisher',visual,leftDirection,origin,0);
- const sources=Paths.trajectories.filter(source=>source.volley===2);assert.equal(sources.length,3);
- for(const source of sources)for(const point of source.points)reflected(artwork(rightArt,point),artwork(leftArt,point),pivot,'Original final-arrow artwork');
- const right=Projectile.volleyArea(origin,direction,{volleyRange:320},visual),left=Projectile.volleyArea(origin,leftDirection,{volleyRange:320},visual);assert.equal(right.radius,320);assert.equal(left.radius,320);near(left.direction.x,-right.direction.x);near(left.direction.y,right.direction.y);
- for(const degrees of [-22,-21,-20,0,20,21,22])for(const radius of [100,320,320.01]){const angle=Math.atan2(right.direction.y,right.direction.x)+degrees*Math.PI/180,target={x:pivot.x+Math.cos(angle)*radius,y:pivot.y+Math.sin(angle)*radius},reflectedTarget={x:2*pivot.x-target.x,y:target.y},hit=Projectile.containsArea(right,target);assert.equal(Projectile.containsArea(left,reflectedTarget),hit);assert.equal(hit,(radius===100||Math.abs(degrees)<=21)&&radius<=320,'The wide rear edge admits nearby side contacts while the outer arc keeps its angle and range');}
+test('the five volley trajectories and their contact points mirror with the aim',()=>{
+ const origin={x:120,y:70},direction=atAngle(24),tuning={volleyRange:320},visual={arcDegrees:42};
+ const right=Projectile.volleySpread(origin,direction,tuning,visual),left=Projectile.volleySpread(origin,{x:-direction.x,y:direction.y},tuning,visual);
+ assert.equal(right.radius,320);assert.equal(left.radius,320);
+ right.directions.forEach((heading,index)=>{
+  const mirror=left.directions[4-index];near(mirror.x,-heading.x);near(mirror.y,heading.y);
+  const target={x:origin.x+300*heading.x,y:origin.y+300*heading.y};
+  const reflectedTarget={x:2*origin.x-target.x,y:target.y};
+  const trace=(ray,at)=>Projectile.traceVolley([{...origin,direction:ray,speed:500,range:320,travelled:0}],1,[{position:at}]).contacts[0].offset;
+  near(trace(heading,target),trace(mirror,reflectedTarget));
+ });
 });
 
 test('ground, body, overhead and Mystic burst effects mirror exactly once while their attachment points stay upright',()=>{
- for(const [style,slots]of [['fighter',['passive','buff']],['vanguard',['passive','buff']],['mystic',['mark','channelHit','cast']],['bruiser',['passive']],['guardian',['buff','taunt','presence','defense','physicalShield']]])for(const slot of slots){
+ for(const [style,slots]of [['fighter',['passive','buff']],['vanguard',['buff']],['mystic',['mark','channelHit','cast']],['bruiser',['passive']],['guardian',['buff','taunt','presence','defense','physicalShield']]])for(const slot of slots){
   const visual=Settings.defaults(style).visual;if(style==='guardian'&&!visual[slot+'Resource'])Settings.applyClip(visual,slot+'Resource',Catalog.clips.find(clip=>clip.id===(slot==='buff'?'guardian-runic-shield':'guardian-defense')));Object.assign(visual,{[slot+'Scale']:.9,[slot+'ScaleX']:1.3,[slot+'ScaleY']:.7,[slot+'Rotation']:27,[slot+'OffsetX']:37,[slot+'OffsetY']:-23});
-  for(const phase of ['start','loop','end']){
+  for(const phase of style==='vanguard'?['start','loop']:['start','loop','end']){
    const entity={key:'phase',slot,phase,age:.4,progress:.5,scale:1,opacity:1,style,origin:{x:120,y:70},target:{x:180,y:130},direction:{x:1,y:0},radius:130},frame={entities:[entity]},context={style,hero:{x:100,y:40},heroBody:{x:100,y:100}},right=Layout.entities(frame,visual,{...context,facing:1}),left=Layout.entities(frame,visual,{...context,facing:-1});assert(right.length&&left.length);assert.equal(left.length,right.length);
    for(let i=0;i<right.length;i++){const r=right[i],l=left[i],pivot={x:r.pivotX===undefined?r.x:r.pivotX,y:r.pivotY===undefined?r.y:r.pivotY};near(l.pivotX===undefined?l.x:l.pivotX,pivot.x,'Attachment X remains world-space');near(l.pivotY===undefined?l.y:l.pivotY,pivot.y,'Attachment Y remains world-space');for(const p of [{x:17,y:29},{x:-23,y:11},{x:0,y:40}])reflected(artwork(r,p),artwork(l,p),pivot,style+' '+slot+' '+phase);}
   }

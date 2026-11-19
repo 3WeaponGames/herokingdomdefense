@@ -4,9 +4,9 @@ const Core=require('../../assets/_script/HeroStyleSkills'),Timeline=require('../
 const Stats=require('../../assets/_script/HeroEquipmentStats'),Food=require('../characters/character-plan-food.cjs');
 const {setup,Node}=require('./backend-gameplay-harness.cjs');
 const near=(a,b)=>assert(Math.abs(a-b)<1e-6,`${a} != ${b}`);
-test('the final volley retains one charge snapshot, one release and one cancellable arc hit',()=>{
+test('the volley retains one charge snapshot and one cancellable release',()=>{
  const state=Core.createState('skirmisher',{chargeRate:0});state.charge=.8;Core.beginActive(state,{direction:{x:1,y:0},presentationDuration:1});
- const events=Core.step(state,.3,{});assert.deepEqual(events.map(e=>e.type),['skirmisher-release','skirmisher-volley']);events.forEach(e=>near(e.charge,.8));assert(state.active);Core.step(state,.7,{});assert.equal(state.active,null);
+ const events=Core.step(state,.3,{});assert.deepEqual(events.map(e=>e.type),['skirmisher-release']);events.forEach(e=>near(e.charge,.8));assert(state.active);Core.step(state,.7,{});assert.equal(state.active,null);
  const cancel=Core.createState('skirmisher');Core.beginActive(cancel,{});Core.cancelActive(cancel);assert.equal(Core.step(cancel,3,{}).length,0);
 });
 
@@ -35,7 +35,7 @@ function fixture(){
  const location={x:100,y:0};
  const enemy={node:new Node('target',h.g.ndMain,location.x,location.y),hp:10000,isDead(){return this.hp<=0;},onAttacked(n){this.hp-=n;return n;}};enemy.node._combatGeneration=1;h.d.enemyList.push(enemy);return{h,hero,rt,enemy};
 }
-test('the final volley arc hits once and is independent of render frame partition',()=>{
+test('volley flight and impact remain independent of render frame partition',()=>{
  function run(frames){const f=fixture();assert(f.rt.cast({x:1,y:0}));for(const dt of frames)f.rt.update(dt);return f;}
  const large=run([2]),small=run(Array(120).fill(1/60));assert(large.enemy.hp<10000);near(large.enemy.hp,small.enemy.hp);assert.equal(large.rt.projectiles.length,0);const hp=large.enemy.hp;large.rt.update(10);near(large.enemy.hp,hp);
  const retired=fixture();retired.rt.cast({x:1,y:0});retired.rt.update(.1);retired.hero.onRestart();retired.rt.update(2);assert.equal(retired.rt.skillCast,null);near(retired.enemy.hp,10000);

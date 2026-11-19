@@ -9,13 +9,28 @@ test('Campaign costs 5 energy while Wall Defense retains its separate 10 energy 
  assert.equal(require('../../assets/_script/GAD_Configs').GADConfig.EnergyCost,10);
 });
 
-test('the Wall Defense button displays its own 10 energy price beside Campaign at 5',()=>{
- const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),exports={},label={string:''};
- const modules={GAD_Configs:require('../../assets/_script/GAD_Configs')};
- const context={exports,require:name=>modules[name]||{},cc:{Button:function(){},Label:function(){}}};
+test('the Wall Defense button stays gray and tappable with Coming soon while entry is unavailable',()=>{
+ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),exports={};
+ const gad=require('../../assets/_script/GAD_Configs'),label={string:''},caption={string:''};
+ const catalog=require('../../assets/resources/localization/catalog.json');
+ const sprite={setMaterial(index,material){assert.equal(index,0);this.material=material;}}, button={}, title={};
+ const graphics={clear(){},roundRect(){},fill(){}};
+ const cc={Sprite:'sprite',Button:'button',Graphics:'graphics',Label:'label',color:s=>s,Material:{getBuiltinMaterial:s=>s}};
+ const cost={getComponent:type=>type===cc.Graphics?graphics:null,getChildByName:()=>({getComponent:()=>label})};
+ const defense={getComponent:type=>type===cc.Sprite?sprite:button,getChildByName:name=>name==='Layout'?cost:title};
+ const modules={GAD_Configs:{...gad},LanguageMgr:{LanguageMgr:{getInstance:()=>({bindLabel(target,key){target.string=catalog.entries[key].en;}})}}};
+ const context={exports,require:name=>modules[name],cc};
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HomeLobbyLayout.js'),'utf8'),context);
- const defense={_blueState:true,getComponent:()=>({}),getChildByName:()=>({getChildByName:()=>({getComponent:()=>label})})};
- exports.modeState({costEnergy:5,_lobby:{defense,defenseCaption:{},status:'lobby.wallBestWave12'}},true,12,3);
+ const defenseCaption={getComponent:()=>caption},home={costEnergy:5,_lobby:{defense,defenseCaption}};
+ for(const unlocked of [false,true]){
+  exports.modeState(home,unlocked,12,4);
+  assert.equal(sprite.material,'2d-gray-sprite');assert.equal(defenseCaption.active,true);
+  assert.equal(caption.string,'Coming soon');assert.equal(button.interactable,true);
+  assert.equal(cost.active,false);assert.equal(title.y,0);
+ }
+ modules.GAD_Configs.GADConfig={...gad.GADConfig,LobbyAvailable:true};
+ exports.modeState(home,true,12,4);
+ assert.equal(sprite.material,'2d-sprite');assert.equal(cost.active,true);
  assert.equal(label.string,'10');
 });
 test('Wall Defense charges once, retains an unused entry through reload, and consumes it at settlement',()=>{

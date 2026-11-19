@@ -9,15 +9,33 @@ function fixture(map){
  return {config,source,stage,service};
 }
 function close(actual,expected){assert.equal(actual.length,expected.length);actual.forEach((v,i)=>assert(Math.abs(v-expected[i])<1e-8,actual+' differs from '+expected));}
-test('real stage preview contains complete models and only the first construction plate, without label or progress sprites',()=>{
+test('real stage preview keeps the first-upgrade name card separate from the model and construction plate',()=>{
  const f=fixture(),before=JSON.stringify({stage:f.stage,source:f.source.data,config:f.config}),result=Preview.describe(f.service,f.stage);
  assert.equal(Object.keys(result.buildings).length,f.stage.buildings.length);assert.match(result.runtimePath,/spine\.js$/);
  for(const building of f.stage.buildings){
   const entry=result.buildings[building.id],owner=f.source.info.byId[building.template.node],controller=f.source.data[owner.ownerComponent],plateId=controller.ndLockList[0].__id__,plateFrame=f.source.info.sprites.find(s=>s.node===plateId).frame;
+  const card=f.source.info.byId[plateId].children.map(id=>f.source.info.byId[id]).find(node=>node.name==='ndLock'),cardFrame=f.source.info.sprites.find(s=>s.node===card.id).frame;
   assert(!/\d|Map0/.test(entry.name),'display name does not contain source slot or map IDs');
-  for(const hall of [1,2,3]){const level=entry.levels[hall];const look=f.config.BuildEnum[building.kind].levelList[0].Appearance;assert.equal(level.sprites.length,look?look.weapon?3:2:1,'construction plate plus the configured model layers only');assert.equal(level.sprites[0].frame,plateFrame);assert(level.sprites[0].ground);if(look)assert.equal(level.skeletons.length,0);else assert(level.skeletons.length);assert(level.step.length>=3);assert.deepEqual(level.origin,owner.position);assert(level.blockers.length);}
+  for(const hall of [1,2,3]){const level=entry.levels[hall];const look=f.config.BuildEnum[building.kind].levelList[0].Appearance;assert.equal(level.sprites.length,look?look.weapon?3:2:1,'construction plate plus the configured model layers only');assert.equal(level.sprites[0].frame,plateFrame);assert(level.sprites[0].ground);if(look)assert.equal(level.skeletons.length,0);else assert(level.skeletons.length);assert(level.step.length>=3);assert.deepEqual(level.origin,owner.position);assert(level.blockers.length);assert.equal(level.firstUpgradeCard.sprites[0].frame,cardFrame);assert.deepEqual(level.firstUpgradeCard,entry.levels[1].firstUpgradeCard);}
  }
  assert.equal(JSON.stringify({stage:f.stage,source:f.source.data,config:f.config}),before,'asset browsing does not change drafts, configs, or source prefabs');
+});
+
+test('first-upgrade name cards honor a saved facing offset and follow the purchase field when using the prefab position',()=>{
+ const f=fixture(),gate=f.stage.buildings.find(b=>b.id===17),category=f.config.BuildEnum[6],Purchase=require('../worlds/purchase-field'),FieldPreview=require('../worlds/purchase-field-preview');
+ f.stage.buildings=[gate];
+ Object.assign(gate,{wallFacing:'SE',angle:25,scale:1.4,purchaseSide:'flip',purchaseOffset:{x:15,y:21}});
+ category.UnbuiltPad={variants:{SE:{x:38,y:12},SW:{x:-19,y:-1}}};
+ const describe=()=>Preview.describe(f.service,f.stage).buildings[gate.id].levels[1];
+ const record=describe(),card=record.firstUpgradeCard,m=card.sprites[0].matrix,projected=Purchase.project(GateSource.project(f.source.data,gate,root),gate),info=Maps.model(projected),owner=info.byId[gate.template.node];
+ const expected=Maps.point(owner.world,{x:38,y:12});
+ close(m.slice(4),[expected.x,expected.y]);
+ assert.equal(FieldPreview.translate(record,{x:9,y:-4}).firstUpgradeCard,card);
+ delete category.UnbuiltPad;
+ const fallback=describe(),original=fallback.firstUpgradeCard.sprites[0],field=info.byId[projected[owner.ownerComponent].ndLockList[0].__id__],prefabCard=field.children.map(id=>info.byId[id]).find(node=>node.name==='ndLock');
+ close(original.matrix,prefabCard.world);
+ close(FieldPreview.translate(fallback,{x:9,y:-4}).firstUpgradeCard.sprites[0].matrix.slice(4),[original.matrix[4]+9,original.matrix[5]-4]);
+ close(original.matrix,prefabCard.world);
 });
 test('mirrored wall wings and gate retain each source matrix and only one built collider tag',()=>{
  const f=fixture(),gate=f.stage.buildings.find(b=>b.id===17),owner=f.source.info.byId[gate.template.node],controller=f.source.data[owner.ownerComponent];f.stage.buildings=[gate];

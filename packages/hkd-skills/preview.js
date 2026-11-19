@@ -27,6 +27,7 @@ function flipbookFrame(meta,age,width,height){
   return {index,x:index%meta.columns*meta.cell,y:Math.floor(index/meta.columns)*meta.cell,width:meta.cell,height:meta.cell};
 }
 function bodyLayer(layers){return layers.find(layer=>layer.description.json&&layer.description.json._heroMaker&&layer.description.json._heroMaker.role===0)||layers.find(layer=>layer.description.json&&layer.description.json._heroMaker)||layers[0];}
+function isMountLayer(layer){return Boolean(layer.description.json&&layer.description.json._heroMakerMount)||layer.description.name==='wqyl_lead_ma';}
 const clipCache=new WeakMap();
 function clipInfo(description,animation){
   const json=description&&description.json;if(json&&clipCache.has(json)&&clipCache.get(json).has(animation))return clipCache.get(json).get(animation);
@@ -79,7 +80,7 @@ function create(host,options){
       if(event&&event.skill&&style==='mystic'&&settings.audio&&settings.audio.explosion&&settings.audio.explosion.clip){value=settings.audio.explosion;kind='explosion';}
       else{if(event&&event.skill&&settings.audio&&settings.audio.cast&&settings.audio.cast.clip)return;value=defaults[event&&event.skill?'release':'basicRelease']||{};}
     }
-    else if(cue==='impact'&&!value.clip)value=event&&!event.skill&&defaults.basicImpact||defaults.impact||{};
+    else if(cue==='impact'&&(!value.clip||style==='bruiser'&&event&&!event.skill))value=event&&!event.skill&&defaults.basicImpact||defaults.impact||{};
     else if(cue==='channel'&&!value.clip){value=defaults.channel||{};kind='release';}
     if(event&&value.delay)value={...value,delay:Math.max(0,value.delay-Math.max(0,model.time-event.time))};
     if(options.onSound)options.onSound(kind,value);
@@ -103,7 +104,7 @@ function create(host,options){
     shiftedLayers(heroLayers,model.hero);
     const visual=settings.visual||{},source=bodyLayer(heroLayers),basicAnimation=attackName(style),activeAnimation=visual.animation&&SkillSettings.riderAnimations(description).includes(visual.animation)?visual.animation:basicAnimation;
     const animation=style==='mystic'||model.lastAttackKind==='skill'?activeAnimation:basicAnimation,clip=clipInfo(source.description,animation),basicClip=clipInfo(source.description,basicAnimation);
-    const mount=heroLayers.filter(layer=>layer.description.json&&layer.description.json._heroMakerMount||layer.description.name==='wqyl_lead_ma'),riders=heroLayers.filter(layer=>!mount.includes(layer));
+    const mount=heroLayers.filter(isMountLayer),riders=heroLayers.filter(layer=>!mount.includes(layer));
     for(const layer of riders)layer.description.scaleX=Math.abs(layer._skillPreviewBase.scaleX)*model.bodyFace;
     const basicPlayback=finite(description.skillAttackPlayback,1),playback=basicPlayback*(style!=='skirmisher'&&(style==='mystic'||model.lastAttackKind==='skill')?SkillSettings.animationPlaybackRate(style,visual):1),locomotion=finite(description.unitAnimationSpeed,1),age=Math.max(0,model.time-model.lastAttack),skirmisherCast=style==='skirmisher'&&model.lastAttackKind==='skill'&&model.lastCast===model.lastAttack,release=Timeline.skirmisherReleaseTime(model.state.tuning,visual),castPlayback=skirmisherCast?(release>0?clip.hit/release:1):playback,castOffset=skirmisherCast&&release===0?clip.hit:0;
     let riderAnimation=model.isMoving()?'move':'idle',riderTime=model.time*locomotion,loop=true;
@@ -158,7 +159,7 @@ function create(host,options){
   function targetPoint(target){return Projectile.add(target,description&&description.target&&description.target.projectileTargetOffset);}
   function projectileLaunch(){if(style==='skirmisher'&&model.skillCast)return{origin:model.skillCast.origin,direction:model.skillCast.direction};const p=model.projectiles.filter(p=>p.skill).slice(-1)[0];return p?{origin:p.origin,direction:p.direction}:model.projectileShot();}
   function areaShape(){
-    if(style==='skirmisher'){const shot=projectileLaunch();return model.skillCast&&model.skillCast.area||Projectile.volleyArea(shot.origin,shot.direction,model.state.tuning,settings.visual);}
+    if(style==='skirmisher'){const shot=projectileLaunch();return Projectile.volleySpread(shot.origin,shot.direction,model.state.tuning,settings.visual);}
     if(style==='vanguard'&&model.skillCast){const cast=model.skillCast;return{origin:{...model.vanguardCastOrigin()},radius:cast.radius,direction:cast.direction,halfAngle:cast.halfAngle,startWidth:cast.startWidth};}
     const e=model.effects.filter(e=>e.resolved).slice(-1)[0];return e?{origin:{x:e.x,y:e.y},radius:e.radius,direction:e.direction,halfAngle:e.halfAngle,startWidth:0}:model.area(model.state.active&&model.state.active.direction||model.direction(),model.hero,{fighter:130,bruiser:150,guardian:core.guardianRadius(model.state.tuning,'tauntRadius')}[style]||100);
   }
@@ -166,9 +167,11 @@ function create(host,options){
   function bodyPoint(target){return Projectile.add(target,description&&description.target&&description.target.projectileTargetOffset||{x:0,y:50});}
   function torsoPoint(layers,fallback){const layer=layers&&bodyLayer(layers),point=layer&&SkillPose.bodyPoint(layer.skeleton,layer.description.json);return point?renderer.transformPoint(layer.description,point.x,point.y):fallback;}
   function allyTorso(index){return torsoPoint(allyLayers[index],Projectile.add(model.allies[index],model.scenario.allyBodyOffset||{x:0,y:50}));}
+  function mountGround(){const horse=heroLayers.find(isMountLayer);return horse?Projectile.add(model.hero,horse._skillPreviewBase):model.hero;}
   function anchors(){const v=settings.visual||{},heroBody=Projectile.add(model.hero,description&&description.skillHeroBodyOffset||{x:0,y:80}),shape=style!=='mystic'&&style!=='skirmisher'?areaShape():null,target=model.beamTarget||model.state.target||model.selected()||model.targets[0]||{x:150,y:0},beamTarget=Projectile.add(bodyPoint(target),{x:v.targetX,y:v.targetY}),shapeOffset=style==='vanguard'?Projectile.facingOffset(shape.direction,{x:v.offsetX,y:v.offsetY}):{x:finite(v.offsetX,0),y:finite(v.offsetY,0)},o=style==='mystic'?weaponOrigin():style==='skirmisher'?projectileLaunch().origin:{x:shape.origin.x-shapeOffset.x,y:shape.origin.y-shapeOffset.y};
     const center=style==='mystic'?(model.scenario.mode==='active'?target:beamTarget):areaShape().origin;
-    const result={taunt:Projectile.add(overhead(target),{x:v.tauntOffsetX,y:v.tauntOffsetY}),shield:Projectile.add(heroBody,{x:v.shieldOffsetX,y:v.shieldOffsetY}),origin:style==='mystic'?Projectile.add(o,{x:v.originX,y:v.originY}):o,target:beamTarget,effect:style==='mystic'?Projectile.add(center,{x:v.offsetX,y:v.offsetY}):center,passive:Projectile.add(model.hero,{x:v.passiveOffsetX,y:v.passiveOffsetY}),buff:Projectile.add(style==='vanguard'||style==='fighter'?model.hero:heroBody,{x:v.buffOffsetX,y:v.buffOffsetY}),mark:Projectile.add(overhead(target),{x:v.markOffsetX,y:v.markOffsetY}),impact:Projectile.add(model.impactPoint(feedback().slice(-1)[0])||target,{x:v.impactOffsetX,y:v.impactOffsetY})};
+    const buffOrigin=style==='vanguard'?mountGround():style==='fighter'?model.hero:heroBody;
+    const result={taunt:Projectile.add(overhead(target),{x:v.tauntOffsetX,y:v.tauntOffsetY}),shield:Projectile.add(heroBody,{x:v.shieldOffsetX,y:v.shieldOffsetY}),origin:style==='mystic'?Projectile.add(o,{x:v.originX,y:v.originY}):o,target:beamTarget,effect:style==='mystic'?Projectile.add(center,{x:v.offsetX,y:v.offsetY}):center,passive:Projectile.add(model.hero,{x:v.passiveOffsetX,y:v.passiveOffsetY}),buff:Projectile.add(buffOrigin,{x:v.buffOffsetX,y:v.buffOffsetY}),mark:Projectile.add(overhead(target),{x:v.markOffsetX,y:v.markOffsetY}),impact:Projectile.add(model.impactPoint(feedback().slice(-1)[0])||target,{x:v.impactOffsetX,y:v.impactOffsetY})};
     for(const prefix of SkillSettings.resourcePrefixes.slice(2)){const slot=prefix.replace(/Resource$/,'');if(result[slot])continue;const at=(slot==='cast'||slot==='castSecondary')&&model.skillCast?model.skillCast.origin:slot==='channelHit'?beamTarget:slot==='presence'&&model.allies[0]?allyTorso(0):slot==='beam'?result.origin:heroBody;result[slot]=Projectile.add(at,{x:v[slot+'OffsetX'],y:v[slot+'OffsetY']});}return result;
   }
   function line(a,b,width,color){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
@@ -212,25 +215,30 @@ function create(host,options){
   function drawGeometry(vp){
     ctx.save();ctx.fillStyle='#65d9ff10';ctx.strokeStyle='#65d9ff88';ctx.lineWidth=1;ctx.setLineDash([5,6]);
     if(entry==='passive'){ctx.restore();return;}
-    if(style==='mystic'){const shape=behaviorSpec(),p=screen(shape.origin,vp);ctx.beginPath();ctx.arc(p.x,p.y,shape.radius*vp.scale,0,Math.PI*2);ctx.fill();ctx.stroke();}
-    else{const shape=areaShape(),p=screen(shape.origin,vp);ctx.beginPath();if(style==='skirmisher'||style==='fighter'||style==='vanguard'){const guide=Gizmos.buildBehavior({...behaviorSpec(),paths:{}},point=>screen(point,vp));guide.outline.forEach((point,index)=>index?ctx.lineTo(point.x,point.y):ctx.moveTo(point.x,point.y));ctx.closePath();}else ctx.arc(p.x,p.y,shape.radius*vp.scale,0,Math.PI*2);ctx.fill();ctx.stroke();}
+    if(style==='skirmisher'){
+      const spread=areaShape(),from=screen(spread.origin,vp);
+      for(const d of spread.directions)line(from,screen({x:spread.origin.x+d.x*spread.radius,y:spread.origin.y+d.y*spread.radius},vp),1,'#65d9ff88');
+    }else if(style==='mystic'){const shape=behaviorSpec(),p=screen(shape.origin,vp);ctx.beginPath();ctx.arc(p.x,p.y,shape.radius*vp.scale,0,Math.PI*2);ctx.fill();ctx.stroke();}
+    else{const shape=areaShape(),p=screen(shape.origin,vp);ctx.beginPath();if(style==='fighter'||style==='vanguard'){const guide=Gizmos.buildBehavior({...behaviorSpec(),paths:{}},point=>screen(point,vp));guide.outline.forEach((point,index)=>index?ctx.lineTo(point.x,point.y):ctx.moveTo(point.x,point.y));ctx.closePath();}else ctx.arc(p.x,p.y,shape.radius*vp.scale,0,Math.PI*2);ctx.fill();ctx.stroke();}
     ctx.restore();
   }
   function drawEffects(vp){
     const v=settings.visual||{},a=anchors(),scale=finite(v.scale,1),alpha=clamp(finite(v.opacity,1),0,1),builtin=v.showBuiltin!==false&&!v.castResource&&!v.castSecondaryResource;
     ctx.save();ctx.globalAlpha=alpha;ctx.lineCap='round';
     if(model.beam&&style!=='mystic'){if(builtin&&!v.beamResource){const from=screen(a.origin,vp),to=screen(a.target,vp);line(from,to,Math.max(1,finite(v.lineWidth,0)||10)*scale*vp.scale,v.color||'#7134a4');line(from,to,Math.max(1,(finite(v.lineWidth,0)||4))*scale*vp.scale,v.color||'#d9a4ff');}customEffect({x:a.target.x+finite(v.offsetX,0),y:a.target.y+finite(v.offsetY,0)},finite(v.rotation,0),model.time-model.beamVisibleStarted,vp,true);}
-    for(const p of model.projectiles){if(p.skill&&v.castResource)continue;ctx.globalAlpha=p.skill?alpha:1;const pv=p.skill?v:{},center=Projectile.point(p),angle=Math.atan2(p.direction.y,p.direction.x)*180/Math.PI,d=p.direction,arrow=Projectile.arrow(p.width),at=screen(center,vp),place=(along,across)=>screen({x:center.x+d.x*along-d.y*across,y:center.y+d.y*along+d.x*across},vp);
-      if(p.skill){
-        const trail=pv.resourceTrail,age=Math.max(0,model.time-(p.started||0));
-        if(trail&&age>0&&p.speed>0){
-          const tail={x:center.x+d.x*finite(trail.offsetX,0)-d.y*finite(trail.offsetY,0),y:center.y+d.y*finite(trail.offsetX,0)+d.x*finite(trail.offsetY,0)},start=screen(tail,vp),end=screen({x:tail.x-d.x*p.speed*Math.min(age,trail.lifetime),y:tail.y-d.y*p.speed*Math.min(age,trail.lifetime)},vp),gradient=ctx.createLinearGradient(end.x,end.y,start.x,start.y);
-          gradient.addColorStop(0,trail.color+'00');gradient.addColorStop(1,trail.color);
-          ctx.save();ctx.globalAlpha*=finite(trail.opacity,255)/255;if(trail.additive)ctx.globalCompositeOperation='lighter';line(end,start,trail.width*vp.scale,gradient);ctx.restore();
-        }
-        ctx.lineWidth=1;circle(at,p.width*vp.scale,'#65d9ff88',false);
+    for(const p of model.projectiles){
+      ctx.globalAlpha=1;
+      const center=Projectile.point(p),d=p.direction,angle=Math.atan2(d.y,d.x)*180/Math.PI,age=Math.max(0,model.time-p.started),trail=v.resourceTrail;
+      if(trail&&age>0&&p.speed>0){
+        const tail={x:center.x+d.x*finite(trail.offsetX,0)-d.y*finite(trail.offsetY,0),y:center.y+d.y*finite(trail.offsetX,0)+d.x*finite(trail.offsetY,0)},start=screen(tail,vp),end=screen({x:tail.x-d.x*p.speed*Math.min(age,trail.lifetime),y:tail.y-d.y*p.speed*Math.min(age,trail.lifetime)},vp),gradient=ctx.createLinearGradient(end.x,end.y,start.x,start.y);
+        gradient.addColorStop(0,trail.color+'00');gradient.addColorStop(1,trail.color);
+        ctx.save();ctx.globalAlpha*=finite(trail.opacity,255)/255;if(trail.additive)ctx.globalCompositeOperation='lighter';line(end,start,trail.width*vp.scale,gradient);ctx.restore();
       }
-      if(!p.skill||builtin){line(place(arrow.tail,0),place(arrow.base,0),arrow.stroke*vp.scale,pv.color||'#fdf1a4');ctx.fillStyle=pv.color||'#ffffff';const a=place(arrow.tip,0),b=place(arrow.base,arrow.halfHeight),c=place(arrow.base,-arrow.halfHeight);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.closePath();ctx.fill();}if(p.skill)customEffect(center,angle,model.time-(p.started||0),vp,true,undefined,undefined,{radius:p.width});
+      if(effectImage||effectLayers.length)customEffect(center,angle,age,vp,true,undefined,undefined,{radius:p.width,handleName:'projectile'});
+      else{
+        const arrow=Projectile.arrow(p.width),place=(along,across)=>screen({x:center.x+d.x*along-d.y*across,y:center.y+d.y*along+d.x*across},vp);
+        line(place(arrow.tail,0),place(arrow.base,0),arrow.stroke*vp.scale,'#fdf1a4');ctx.fillStyle='#ffffff';const a=place(arrow.tip,0),b=place(arrow.base,arrow.halfHeight),c=place(arrow.base,-arrow.halfHeight);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.closePath();ctx.fill();
+      }
     }
     ctx.globalAlpha=alpha;
     for(const e of model.effects){const age=model.time-e.started,progress=clamp(age/e.duration,0,1),center=e.resolved?{x:e.x,y:e.y}:{x:e.x+finite(v.offsetX,0),y:e.y+finite(v.offsetY,0)},p=screen(center,vp),radius=e.radius*(e.resolved?1:scale)*vp.scale*(e.resolved?1:.65+.35*progress);if(builtin){ctx.lineWidth=(finite(v.lineWidth,0)>0?v.lineWidth:Math.max(2,7*(1-progress)))*scale*vp.scale;ctx.strokeStyle=v.color||(style==='guardian'?'#70c8ff':e.kind==='burst'?'#d69fff':e.kind==='arc'?'#fff5b0':'#ff5b65');ctx.beginPath();if(e.kind==='arc'){const angle=Math.atan2(e.direction.y,e.direction.x)+(e.resolved?0:finite(v.rotation,0)*Math.PI/180);ctx.arc(p.x,p.y,radius,-angle-(e.halfAngle||Math.PI/3),-angle+(e.halfAngle||Math.PI/3));}else ctx.arc(p.x,p.y,radius,0,Math.PI*2);ctx.stroke();}const angle=(e.direction?Math.atan2(e.direction.y,e.direction.x)*180/Math.PI:0)+(e.resolved?0:finite(v.rotation,0));customEffect(center,angle,age,vp,false);}
@@ -241,7 +249,7 @@ function create(host,options){
   }
   function drawStyleEffects(vp){
     const a=anchors(),v=style==='mystic'?MysticTrail.visual(settings.visual||{}):settings.visual||{},target=t=>t&&t.hp>0?{id:t.id,generation:0,ground:{x:t.x,y:t.y},...Projectile.add(bodyPoint(t),{x:v.targetX,y:v.targetY})}:null,marked=model.state.marked&&model.state.target;
-    const frame=model.updateVFX({facing:model.bodyFace,presenceTargets:model.allies.filter(ally=>model.state.tuning.allyReduction>0&&Math.hypot(ally.x-model.hero.x,ally.y-model.hero.y)<=core.guardianRadius(model.state.tuning,'allyRadius')).map(ally=>({id:ally.id,generation:0,...allyTorso(model.allies.indexOf(ally))})),origin:a.origin,channelTarget:target(model.channelTarget),beamTarget:target(model.beamTarget),markedTarget:marked?{id:marked.id,generation:0,...overhead(marked)}:null,taunts:model.taunts.filter(r=>r.target.hp>0).map(r=>({key:r.key,at:r.at,target:{id:r.target.id,generation:0,...overhead(r.target)}}))});
+    const frame=model.updateVFX({facing:model.bodyFace,mountGround:style==='vanguard'?mountGround():null,presenceTargets:model.allies.filter(ally=>model.state.tuning.allyReduction>0&&Math.hypot(ally.x-model.hero.x,ally.y-model.hero.y)<=core.guardianRadius(model.state.tuning,'allyRadius')).map(ally=>({id:ally.id,generation:0,...allyTorso(model.allies.indexOf(ally))})),origin:a.origin,channelTarget:target(model.channelTarget),beamTarget:target(model.beamTarget),markedTarget:marked?{id:marked.id,generation:0,...overhead(marked)}:null,taunts:model.taunts.filter(r=>r.target.hp>0).map(r=>({key:r.key,at:r.at,target:{id:r.target.id,generation:0,...overhead(r.target)}}))});
     for(const entity of VFXLayout.entities(frame,v,model.vfxContext)){
       const asset=styleResources.get(entity.visual.resource);if(!asset)continue;
       asset.visual=Object.assign({},entity.visual,{scale:finite(entity.visual.scale,1)*entity.scale});
@@ -300,7 +308,7 @@ function create(host,options){
     const v=settings.visual||{},t=model.state.tuning,aim=model.skillCast&&model.skillCast.aimDirection||model.direction(),base={type:'behavior',id:'behavior:area',label:'Hit area',values:settings,limits:fieldLimits(),hitInterior:false,rotationFactor:aim.x<0?-1:1};
     if(entry==='passive')return style==='guardian'?{...base,kind:'circle',origin:{...model.hero},direction:{x:1,y:0},radius:core.guardianRadius(t,'allyRadius'),paths:{radius:'allyRadius'},radiusLabel:'Protection radius'}:null;
     if(style==='mystic'){const target=model.selected()||model.state.target||model.targets[0],radius=Timeline.mysticRadius(model.castResult&&model.castResult.charges!==undefined?model.castResult.charges:3,t);return{...base,kind:'circle',origin:{x:target.x,y:target.y},direction:{x:1,y:0},radius,paths:{radius:'splashRadius'},radiusLabel:'Splash radius'};}
-    if(style==='skirmisher'){const shape=areaShape();return{...base,kind:'arc',origin:shape.origin,direction:shape.direction,radius:shape.radius,halfAngle:shape.halfAngle,startWidth:shape.startWidth,width:shape.startWidth,widthGain:.5,paths:{width:'visual.arcStartWidth',radius:'volleyRange',arc:'visual.arcDegrees',rotation:'visual.rotation'},radiusGain:1,radiusLabel:'Volley range'};}
+    if(style==='skirmisher'){const spread=areaShape();return{...base,kind:'arc',label:'Arrow spread',origin:spread.origin,direction:spread.direction,radius:spread.radius,halfAngle:spread.halfAngle,paths:{radius:'volleyRange',arc:'visual.arcDegrees'},radiusGain:1,radiusLabel:'Volley range'};}
     const shape=areaShape(),circle=style==='bruiser'||style==='guardian';return{...base,kind:circle?'circle':'arc',origin:shape.origin,direction:shape.direction,radius:shape.radius,halfAngle:shape.halfAngle,startWidth:shape.startWidth,width:shape.startWidth,widthGain:.5,paths:{...(style==='vanguard'?{width:'visual.arcStartWidth'}:{}),radius:style==='guardian'?'tauntRadius':'visual.scale',...(!circle?{arc:'visual.arcDegrees',rotation:'visual.rotation'}:{})},radiusGain:style==='guardian'?finite(v.scale,1):shape.radius/Math.max(.01,finite(v.scale,1)),radiusLabel:style==='guardian'?'Taunt radius':circle?'Cleave radius':'Hit range'};
   }
   function drawHandles(vp){
@@ -311,7 +319,7 @@ function create(host,options){
     for(const name of names){const instance=effectInstances.find(i=>i.name===name&&i.spec.id===selectedInstance)||effectInstances.find(i=>i.name===name);if(!instance)continue;const p=project(instance.spec.origin);handles.push({name,world:{...instance.spec.origin},...p});}
     if(chosen){const spec={...chosen.spec,minHandleDistance:22*ratio,rotationPadding:30*ratio},group=Gizmos.build(spec,project);group.name=chosen.name;gizmoGroups.push(group);}
     const behavior=behaviorSpec();if(behavior){const group=Gizmos.buildBehavior({...behavior,minHandleDistance:22*ratio,rotationPadding:30*ratio},project);group.name='behavior';gizmoGroups.push(group);}
-    for(const group of gizmoGroups){group.handles=group.handles.filter(h=>transformMode==='pivot'?h.kind==='pivot':transformMode==='all'?h.kind!=='pivot':transformMode==='move'?/^move/.test(h.kind):transformMode==='scale'?/^scale|radius|width|arc/.test(h.kind):h.kind==='rotate');const color=group.kind==='behavior'?'#ffce66':transformMode==='pivot'?'#ff9de1':'#65d9ff';ctx.save();ctx.lineWidth=1.5*ratio;ctx.strokeStyle=color;ctx.fillStyle='#172436';ctx.setLineDash(group.spec.ghost?[4*ratio,4*ratio]:[]);ctx.beginPath();group.outline.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.stroke();ctx.setLineDash([]);
+    for(const group of gizmoGroups){group.handles=group.handles.filter(h=>transformMode==='pivot'?h.kind==='pivot':transformMode==='all'?h.kind!=='pivot':transformMode==='move'?/^move/.test(h.kind):transformMode==='scale'?/^scale|radius|width|arc/.test(h.kind):h.kind==='rotate');const color=group.kind==='behavior'?'#ffce66':transformMode==='pivot'?'#ff9de1':'#65d9ff';ctx.save();ctx.lineWidth=1.5*ratio;ctx.strokeStyle=color;ctx.fillStyle='#172436';ctx.setLineDash(group.spec.ghost?[4*ratio,4*ratio]:[]);if(style!=='skirmisher'||group.kind!=='behavior'){ctx.beginPath();group.outline.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.stroke();}ctx.setLineDash([]);
       for(const handle of group.handles){if(handle.stem)line(handle.stem,handle,ratio,color);if(handle.anchor&&Math.hypot(handle.anchor.x-handle.x,handle.anchor.y-handle.y)>2*ratio)line(handle.anchor,handle,ratio,color);const size=5*ratio;ctx.beginPath();if(handle.shape==='square'){ctx.rect(handle.x-size,handle.y-size,size*2,size*2);}else if(handle.shape==='diamond'){ctx.moveTo(handle.x,handle.y-size*1.4);ctx.lineTo(handle.x+size*1.4,handle.y);ctx.lineTo(handle.x,handle.y+size*1.4);ctx.lineTo(handle.x-size*1.4,handle.y);ctx.closePath();}else ctx.arc(handle.x,handle.y,6*ratio,0,Math.PI*2);ctx.fill();ctx.stroke();}
       if(transformMode==='pivot')for(const h of group.handles){line({x:h.x-10*ratio,y:h.y},{x:h.x+10*ratio,y:h.y},ratio,color);line({x:h.x,y:h.y-10*ratio},{x:h.x,y:h.y+10*ratio},ratio,color);ctx.font=12*ratio+'px sans-serif';ctx.fillStyle=color;ctx.fillText('Pivot',h.x+12*ratio,h.y-10*ratio);}
       ctx.font=12*ratio+'px sans-serif';ctx.fillStyle=color;const point=group.screenOrigin,metrics=group.kind==='behavior'?' · '+(group.spec.radiusLabel||'Range')+' '+Math.round(group.spec.radius)+(group.spec.kind==='arc'?' · '+Math.round(group.spec.halfAngle*360/Math.PI)+'°'+(style==='vanguard'?' · start width '+Math.round(group.spec.startWidth):''):group.spec.kind==='corridor'?' · hit radius '+Math.round(group.spec.width):''):transformMode==='pivot'?' · Drag pivot; artwork stays in place':'';ctx.fillText((group.kind==='vfx'?'Selected: ':'')+group.label+metrics+(group.spec.ghost?' · outline (phase hidden)':''),12*ratio,(group.kind==='behavior'?40:60)*ratio);ctx.restore();}
@@ -341,7 +349,10 @@ function create(host,options){
     if(drag&&drag.kind==='transform')finishTransform(false);
     value=value||{};const nextStyle=value.style||style,nextDescription=value.description||description,nextSettings=clone(value.settings||settings);
     if(!nextDescription)return;
-    if(nextStyle==='skirmisher')nextSettings.visual=SkillSettings.projectileVisual({...nextSettings.visual,...(nextDescription.projectileAsset?{projectile:nextSettings.visual.projectile||nextDescription.projectileAsset.id,projectileAsset:nextDescription.projectileAsset}:{})});
+    if(nextStyle==='skirmisher'){
+      const visual=SkillSettings.effective(nextStyle,{HeroSkills:{skirmisher:nextSettings}}).visual,asset=nextDescription.projectileAsset;
+      nextSettings.visual=asset?SkillSettings.projectileVisual({...visual,projectile:asset.id,projectileAsset:asset}):visual;
+    }
     const requestId=++serial,key=nextDescription===rigDescription&&nextStyle===style?rigKey:nextStyle+':'+JSON.stringify({layers:nextDescription.layers,target:nextDescription.target&&nextDescription.target.layers,ally:nextDescription.ally&&nextDescription.ally.layers});
     const reset=!description||nextStyle!==model.style;
     const audioChanged=JSON.stringify(settings.audio)!==JSON.stringify(nextSettings.audio),audition=audioChanged&&soundEnabled&&playing;let stopped=reset||audioChanged;
@@ -361,13 +372,14 @@ function create(host,options){
     const hold=settings.visual&&settings.visual.holdTime>=0?Math.min(clip.end,settings.visual.holdTime):clip.hit;
     const previousTime=reset||audition?0:model.time,scenario=Object.assign({},model.scenario,{impactDelay:playback>0?clip.hit/playback:0,basicImpactDelay:finite(description.skillBasicImpactDelay,basicPlayback>0?basicClip.hit/basicPlayback:0),holdSource:hold,holdDelay:playback>0?hold/playback:0,attackPlayback:playback,attackSourceHit:clip.hit,attackSourceDuration:clip.end,lifeSteal:finite(description.skillSecondaryStats&&description.skillSecondaryStats.lifeSteal,0),splashDamage:finite(description.skillSecondaryStats&&description.skillSecondaryStats.splashDamage,0),attackRange:finite(description.skillAttackRange,reach[style]),heroBodyOffset:description.skillHeroBodyOffset,allyBodyOffset:description.ally&&description.ally.projectileTargetOffset,targetBodyOffset:description.target&&description.target.projectileTargetOffset});
     const simulation=state=>JSON.stringify({playbackRates:Object.fromEntries(Object.entries(state.visual||{}).filter(([key])=>/PlaybackRate$/.test(key))),tuning:Object.fromEntries(Object.entries(state).filter(([key])=>key!=='visual'&&key!=='audio')),duration:state.visual&&state.visual.effectDuration,castDelay:state.visual&&state.visual.castDelay,castSecondaryDelay:state.visual&&state.visual.castSecondaryDelay,geometry:style==='mystic'?null:['offsetX','offsetY','scale','rotation','arcDegrees','arcStartWidth','animation','castTrajectory','castScale','castScaleX','castScaleY','castRotation','castOffsetX','castOffsetY'].map(k=>state.visual&&state.visual[k])});
-    const clocks=state=>JSON.stringify([state.impactDelay,state.basicImpactDelay,state.holdSource,state.holdDelay,state.attackPlayback,state.lifeSteal,state.splashDamage,state.attackRange]);
+    scenario.projectileSpeed=description.skillProjectileSpeed;
+    const clocks=state=>JSON.stringify([state.impactDelay,state.basicImpactDelay,state.holdSource,state.holdDelay,state.attackPlayback,state.lifeSteal,state.splashDamage,state.attackRange,state.projectileSpeed]);
     if(reset||audition||simulation(model.settings)!==simulation(settings)||clocks(model.scenario)!==clocks(scenario)){
       if(!stopped){stopSounds();stopped=true;}model=new Model(style,settings,scenario,core,sampleArrowOffset,sampleWeaponOffset,targetPoint);if(previousTime)model.seek(previousTime);last=0;lastSoundTime=(reset||audition)&&model.time===0?-1:model.time;
     }else {model.settings=clone(settings);model.scenario=scenario;}
     if(stopped&&soundEnabled&&playing){if(lastSoundTime<0)forwardSounds();else if(model.beam)sound('channel');}
     // Optional artwork must never gate the selected style or its combat clock.
-    const item=(description.effects||[]).find(effect=>!settings.visual||effect.id===settings.visual.resource)||(description.effects||[])[0],nextEffectKey=JSON.stringify(item||null);
+    const effects=description.effects||[],item=effects.find(effect=>effect.id===settings.visual?.resource)||(style==='skirmisher'?undefined:effects[0]),nextEffectKey=JSON.stringify(item||null);
     if(nextEffectKey!==effectKey){effectKey=nextEffectKey;effectError=null;effectPromise=loadEffect(item,++effectSerial);fitted=null;}
     try{await effectPromise;}catch(error){if(!disposed&&requestId===serial){effectKey='';effectError=error;}}
     if(disposed||requestId!==serial)return;

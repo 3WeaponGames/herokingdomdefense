@@ -102,11 +102,12 @@ var exp_KinghtFallDataMgr = function () {
   };
   _ctor.prototype.getGuideCfgById = function (t) {
     var e = [];
-    for (var n = 0; n < this.data.GuideCfg.length; n++) {
-      var i = this.data.GuideCfg[n];
+    var rows = this.data && this.data.GuideCfg || [];
+    for (var n = 0; n < rows.length; n++) {
+      var i = rows[n];
       i.GuideGroup == t && e.push(i);
     }
-    return e;
+    return e.sort(function (left, right) { return left.GuideStep - right.GuideStep; });
   };
   _ctor.prototype.getTaskCfgById = function (t) {
     return this.data.TaskCfg[t - 1];

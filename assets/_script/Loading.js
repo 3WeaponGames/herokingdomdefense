@@ -39,6 +39,8 @@ var def_Loading = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.onLoad = function () {
+    this._resetProgressPage = require("ProgressReset").openIfRequested();
+    if (this._resetProgressPage) return;
     this.process = 0; this.progressBar.fillRange = 0; this.labPro.string = "0.0%";
     this._layoutLoadingScreen();
     if (Startup.loading) this._startupProgress = Startup.loading(this, this.uiRoot, cc);
@@ -78,6 +80,7 @@ var def_Loading = function (t) {
     }
   };
   _ctor.prototype.start = function () {
+    if (this._resetProgressPage) return;
     var self = this;
     var language = $z1LanguageMgr.LanguageMgr.getInstance();
     language.init(function (error) {

@@ -16,6 +16,7 @@ function fixture() {
   const context = { module: { exports: {} }, require(name) {
     imports.push(name);
     if(name==='StartupPresentation')return{start(){},carry(){}};
+    if(name==='ProgressReset')return require('../../assets/_script/ProgressReset');
     assert.equal(name, 'LanguageMgr', 'title screen initializes only language and its presentation');
     return { LanguageMgr: { getInstance: () => language } };
   }, cc: { Component: function () {}, Node: {}, Label: {}, JsonAsset: {},

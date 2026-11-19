@@ -794,6 +794,10 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   };
   _ctor.prototype.initSubView = function () {
     var t = this;
+    if (!require("GAD_Configs").GADConfig.LobbyAvailable) {
+      this.initSubButton();
+      return;
+    }
     this.btnSubEnter.active = this.haveArrow;
     this.initSubTime();
     this.initSubStage();
@@ -876,6 +880,11 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     }
   };
   _ctor.prototype.EnterSubPlay = function (t) {
+    var config = require("GAD_Configs").GADConfig;
+    if (!config.LobbyAvailable) {
+      $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, this.T("[[loc:common.comingSoon]]"));
+      return;
+    }
     var e = this;
     if (this._wallDefenseEntering) return;
     if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage() <= this.subPlayStage[t]) {
@@ -883,7 +892,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     } else {
       var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), user = player.getUserData();
       var reserved = user.data && user.data.wallDefenseAdmission;
-      var cost = require("GAD_Configs").GADConfig.EnergyCost;
+      var cost = config.EnergyCost;
       if (user.getPowerNum && user.getPowerNum() < cost && !(reserved && !reserved.used)) {
         $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddStrength, $z1Config.UIID.UINONE); return;
       }
@@ -925,6 +934,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     }
   };
   _ctor.prototype.refreshSubView = function () {
+    if (!require("GAD_Configs").GADConfig.LobbyAvailable) return;
     var t = Date.now();
     var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage();
     for (var n in this.btnSubBg.children) {

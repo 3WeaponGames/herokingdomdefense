@@ -2,6 +2,7 @@
 // Browsing is visual-only. Only the explicit Equip action changes the loadout.
 var Weapons = require("HeroWeapons");
 var WIDTH = 684, HEIGHT = 1120;
+var UNAVAILABLE_STYLE = "vanguard";
 function node(parent, name, x, y, width, height) {
   var value = new cc.Node(name); value.setParent(parent); value.setPosition(x || 0, y || 0);
   if (width) value.setContentSize(width, height); return value;
@@ -112,6 +113,7 @@ function open(owner) {
     if (cc.warn) cc.warn("Fighting style preview: " + error.message);
   });
   var chosen = user.getHeroWeapon().id, body = node(content, "Choices");
+  if (chosen === UNAVAILABLE_STYLE) chosen = Weapons.styles[0].id;
   var grid = node(body, "Style grid"), details = node(body, "Style details"), cardViews = [];
   function render(rebuildCards) {
     if (cancelled || !live(root)) return;
@@ -120,11 +122,21 @@ function open(owner) {
     details.destroyAllChildren(); details.removeAllChildren(); labels = labels.filter(function (entry) { return live(entry.node); });
     var mainGear = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList().filter(function (gear) { return gear.id === 4; })[0];
     Weapons.styles.forEach(function (style, index) {
-      var selected = chosen === style.id, equipped = user.getHeroWeapon().id === style.id;
+      var selected = chosen === style.id;
       if (!build) {
-        cardViews[index].frame.active = selected; return;
+        if (cardViews[index]) cardViews[index].active = selected;
+        return;
       }
       var tile = node(grid, "Style " + style.id, (index % 3 - 1) * 204, 38 - Math.floor(index / 3) * 216, 190, 190);
+      if (style.id === UNAVAILABLE_STYLE) {
+        tile.addComponent(cc.BlockInputEvents);
+        box(tile, "Unavailable card outline", 0, -1, 174, 174, 24, "#454545");
+        box(tile, "Unavailable card face", 0, 1, 166, 166, 21, "#787878");
+        label(tile, "Style name", style.name, 0, 20, 158, 40, 29);
+        var status = label(tile, "Availability", "", 0, -20, 158, 34, 24, "#f0f0f0", 2);
+        require("LanguageMgr").LanguageMgr.getInstance().bindLabel(status.getComponent(cc.Label), "common.comingSoon");
+        return;
+      }
       var frame = node(tile, "Selection frame"); frame.active = selected;
       box(frame, "Selection outline", 0, -1, 187, 187, 28, "#100e15");
       box(frame, "Selection yellow", 0, 1, 181, 181, 26, "#ffdf62");
@@ -151,9 +163,9 @@ function open(owner) {
       });
       var pose = node(tile, "Weapon pose", 0, 0, 172, 172);
       cardIcons.push(require("HeroWeaponIcon").create(pose, user, style.id, function (error) { if (cc.warn) cc.warn("Fighting style icon: " + error.message); }));
-      cardViews.push({ frame: frame });
+      cardViews[index] = frame;
       label(tile, "Style name", style.name, 0, -66, 176, 40, 29);
-      if (equipped) {
+      if (user.getHeroWeapon().id === style.id) {
         box(tile, "Equipped badge outline", 0, 80, 131, 36, 14, "#111409");
         box(tile, "Equipped badge", 0, 82, 123, 29, 11, "#8ce928");
         label(tile, "Equipped marker", "Equipped", 0, 82, 119, 29, 23, "#173b05", 0);

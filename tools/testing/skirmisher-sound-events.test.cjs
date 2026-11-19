@@ -42,12 +42,12 @@ test('cancel, pause and battle reset cannot play an early or retained charge com
  h.hero.onRestart();h.rt.update(.1);assert.equal(h.events.length,0);h.rt.update(3.9);assert.equal(h.events.filter(e=>e.kind==='ready').length,1);
 });
 
-test('active release and its one whole arc send immediate primary hit contexts at the authored hit time',()=>{
- const h=scene({HeroSkills:{skirmisher:{windup:.4,volleyHitTime:.4,chargeRate:0,projectileSpeed:1000,projectileWidth:12}}}),a=h.enemy(100),b=h.enemy(200),miss=h.enemy(100,60);
+test('one active release and two independent contacts send their own sound contexts',()=>{
+ const h=scene({HeroSkills:{skirmisher:{windup:.4,volleyHitTime:.4,chargeRate:0,projectileSpeed:1000,projectileWidth:12,visual:{arcDegrees:120}}}}),a=h.enemy(100),b=h.enemy(100,173),miss=h.enemy(80,190);
  assert(h.rt.cast({x:1,y:0}));assert.equal(h.events.length,0,'cast confirmation fired a release sound');h.rt.update(.399);assert.equal(h.events.length,0);
  h.rt.update(.001);const releases=h.events.filter(e=>e.kind==='release');assert.equal(releases.length,1);assert.equal(releases[0].active,true);close(releases[0].time,.4);
- h.rt.update(.3);const hits=h.events.filter(e=>e.kind==='hit');assert.equal(hits.length,2);assert.deepEqual(hits.map(e=>e.target),[a,b]);assert(!hits.some(e=>e.target===miss));
- assert(hits.every(e=>e.options.context.heroStyle==='skirmisher'&&e.options.context.styleSkill));
+ h.rt.update(.4);const hits=h.events.filter(e=>e.kind==='hit');assert.equal(hits.length,2);assert.deepEqual(hits.map(e=>e.target),[a,b]);assert(!hits.some(e=>e.target===miss));
+ assert(hits.every(e=>e.options.context.heroStyle==='skirmisher'&&e.options.context.styleSkill));close(hits[0].options.context.styleImpactAt,.55);
  h.rt.update(.5);assert.equal(h.events.filter(e=>e.kind==='release').length,1);assert.equal(h.events.filter(e=>e.kind==='hit').length,2);
 });
 

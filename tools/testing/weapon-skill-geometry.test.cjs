@@ -24,11 +24,6 @@ test('PC weapon geometry preserves native lifetime guards for disposed rigs and 
  const actor={node:{getPosition:()=>({x:10,y:20}),convertToWorldSpaceAR:()=>({x:10,y:20})},ndHp:{convertToWorldSpaceAR:()=>({x:10,y:120})}};
  near(geometry.actorPoint(actor,{convertToNodeSpaceAR:p=>p}).y,75);
 });
-test('the captured bow-origin volley arc uses fresh target positions once at its authored hit time',()=>{
- const make=()=>new Model('skirmisher',{windup:.2,volleyHitTime:.4,volleyRange:300,chargeRate:0,chargedDamage:0},{mode:'active',targets:1,targetPositions:[{x:220,y:30}],attackRate:0},undefined,()=>({x:30,y:80}));
- const hit=make(),shape=hit.skillCast.area;near(shape.origin.x,30);near(shape.origin.y,80);near((220-30)*shape.direction.y-(30-80)*shape.direction.x,0);hit.advance(.399);assert.equal(hit.hits,0);hit.advance(.002);assert.equal(hit.hits,1);assert.equal(hit.projectiles.length,0);hit.advance(1);assert.equal(hit.hits,1,'The whole arc resolves once, without per-arrow damage');
- const dodge=make(),direction={...dodge.skillCast.direction};dodge.moveTarget(0,{x:250,y:300});dodge.advance(.5);assert.deepEqual(dodge.skillCast.direction,direction);assert.equal(dodge.hits,0);assert.equal(dodge.projectiles.length,0);
-});
 test('Fighter arc offset, reach and angle change its visible effect and actual selected hits together',()=>{
  const settings={knockback:0,visual:{offsetY:20,scale:.5,arcDegrees:40}},before=JSON.stringify(settings),m=new Model('fighter',settings,{mode:'active',targets:3,attackRate:0},undefined,undefined,()=>({x:40,y:80}));
  Object.assign(m.targets[0],{x:90,y:100});Object.assign(m.targets[1],{x:110,y:100});Object.assign(m.targets[2],{x:80,y:150});m.advance(.2);assert.equal(m.hits,1);const e=m.effects[0];near(e.x,40);near(e.y,100);near(e.radius,65);near(e.halfAngle,20*Math.PI/180);assert.equal(e.resolved,true);assert.equal(JSON.stringify(settings),before);
@@ -38,7 +33,7 @@ test('sword, spear, axe and hammer area effects all originate at their equipped 
   const offset={x:30,y:80},m=new Model(style,{duration:1,strikes:1,visual:{offsetX:5,offsetY:10,scale:.75,arcDegrees:60}},{mode:'active',targetDistance:100,targets:1,attackRate:0},undefined,undefined,()=>offset);m.advance(style==='vanguard'?1:.2);const effect=m.effects[0];assert(effect,style);near(effect.x,35);near(effect.y,90);near(effect.radius,{fighter:130,vanguard:155,bruiser:150,guardian:250}[style]*.75);assert(effect.resolved,style);
  }
 });
-test('Skirmisher exposes one adjustable hit arc separately from its artwork while legacy projectile fields stay hidden',()=>{
- const fields=Settings.fields('skirmisher'),arrow=fields.visual.map(f=>f.path),all=Settings.descriptors('skirmisher');for(const field of ['visual.originX','visual.scale','projectileFromBow','projectileOffsetY','projectileWidth'])assert(!arrow.includes(field),field);for(const field of ['visual.offsetX','visual.offsetY','visual.rotation','visual.arcDegrees','visual.arcStartWidth','volleyRange','volleyHitTime'])assert(all.some(f=>f.path===field)||arrow.includes(field),field);
+test('Skirmisher exposes a spread angle, range and release windup while legacy projectile fields stay hidden',()=>{
+ const fields=Settings.fields('skirmisher'),arrow=fields.visual.map(f=>f.path),all=Settings.descriptors('skirmisher');for(const field of ['visual.originX','visual.scale','projectileFromBow','projectileOffsetY','projectileWidth'])assert(!arrow.includes(field),field);for(const field of ['visual.arcDegrees','volleyRange','windup'])assert(all.some(f=>f.path===field)||arrow.includes(field),field);
  for(const style of ['fighter','vanguard']){const fields=Settings.fields(style).visual;for(const key of ['offsetY','scale','arcDegrees'])assert(fields.some(f=>f.key===key),style+' '+key);}
 });

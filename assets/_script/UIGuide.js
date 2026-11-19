@@ -71,7 +71,7 @@ var def_UIGuide = function (t) {
   };
   _ctor.prototype._releaseGuideInput = function () {};
   _ctor.prototype.release = function (force) {
-    try { this._releaseGuideInput(); }
+    try { this._releaseGuideInput(); if (this.cfg && this.cfg.onClosed) this.cfg.onClosed(); }
     finally { t.prototype.release.call(this, force); }
   };
   _ctor.prototype.clickTouch = function (t) {
@@ -225,6 +225,8 @@ var def_UIGuide = function (t) {
     }, this);
   };
   _ctor.prototype.resolvePress = function (close) {
+    if (this.isclose || this._decisionCompleted) return;
+    if (close && this.cfg.onComplete && this.cfg.onComplete() === false) return;
     var guide = this;
     function resolve() {
       if (guide.cfg.callBack) guide.cfg.callBack();
@@ -272,7 +274,11 @@ var def_UIGuide = function (t) {
       this.tipBg.active = false;
     }
   };
-  _ctor.prototype.update = function () {};
+  _ctor.prototype.update = function () {
+    if (!this.cfg || this.isclose) return;
+    var visible = require("TutorialFlow").visible;
+    if (this.cfg.isCurrent && !this.cfg.isCurrent() || this.distNode && !visible(this.distNode)) this.closeUI();
+  };
   cc__decorate([ccp_property(cc.Mask)], _ctor.prototype, "mask", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "hand", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndArr", undefined);

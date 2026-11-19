@@ -17,14 +17,6 @@ exports.effects = {
     "loop": false,
     "duration": 0.5917913832199546
   },
-  "cavalry-lance-thrust": {
-    "path": "sfx/cavalry-lance-thrust",
-    "group": "combat",
-    "gain": 0.4,
-    "cooldown": 65,
-    "loop": false,
-    "duration": 0.6759637188208617
-  },
   "monster-claw-swipe": {
     "path": "sfx/monster-claw-swipe",
     "group": "combat",

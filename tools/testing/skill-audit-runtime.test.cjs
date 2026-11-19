@@ -11,8 +11,7 @@ function scene(style,options={}){
  h.g.gameStatus=1;h.g.mapSize={width:2000,height:1000};h.ui.isPauset=false;h.d.heroStyle=style;h.ui.ctrEffect={showDamageNum(p,n){feedback.push({x:p.x,y:p.y,damage:n});}};
  const hero={heroStyle:style,node:new Node('hero',h.g.ndMain),hp:500,hpMax:1000,attackRange:200,crit:-1,critDam:1.5,time:{Attack:0},_relicHero:true,_heroSecondary:{},ctrHp:{setHp(){}},ctrPlayAni:{setAttack(){animations.push('attack');},setBodyLeft(){}},isDead(){return this.hp<=0;},getAttack:()=>100,getSpeed:()=>300,getAttSpeed:()=>1,getCriticalDamage:()=>1.5,onUpdata(){if(options.update)return options.update.call(this);},doAttack(){this.basicCalls=(this.basicCalls||0)+1;if(options.attack)return options.attack.call(this);},doAttackFinish(){},addBuff(){},onRestart(){},endRoundGame(){},onDead(){},onDestroy(){}};
  hero.node._combatGeneration=1;h.g.ctrPlay=hero;const adapter=h.load('HeroStyleRuntime');adapter.install(hero,{});const rt=hero._styleRuntime;rt.refresh();
- // These regressions keep their art clock generic; the one-arc hit semantics
- // remain identical with native and custom artwork.
+ // These regressions keep their art clock generic.
  if(!options.authored)rt.settings.visual.castTrajectory='';
  function enemy(x=100,y=0){const e={node:new Node('enemy',h.g.ndMain,x,y),hp:10000,hpMax:10000,debuffInfo:[],isDead(){return this.hp<=0;},addBuff(type,data){this.debuffInfo.push({type,data,time:0,timeMax:data.time});},onAttacked(n,source,secondary,context){const combat=h.load('RelicCombat'),damage=combat.enemyDamage(this,n,source,secondary,context);this.hp-=damage;if(!secondary)combat.primaryImpact(this,source,context,damage);return damage;}};e.node._combatGeneration=1;h.d.enemyList.push(e);return e;}
  return {...h,hero,rt,enemy,feedback,animations,poses};
@@ -93,9 +92,11 @@ test('Mystic slow tags only its own accepted status in the original target lifet
  const h=scene('mystic'),target=h.enemy(),unrelated={type:3,data:{subNum:.7,time:10}};target.addBuff=function(type,data){this.debuffInfo.push({type,data},unrelated);};h.rt.onImpact(target,1,{styleSkill:false,styleStrike:1});assert.equal(target.debuffInfo[0]._mysticSlow,true);assert.equal(unrelated._mysticSlow,undefined);
 });
 
-test('quiet volley frames do not scan the crowd and one hit samples current membership once',()=>{
- const h=scene('skirmisher'),count=150;let reads=0;for(let i=0;i<count;i++){const enemy=h.enemy(700+i,300),get=enemy.node.getPosition;enemy.node.getPosition=function(...args){reads++;return get.apply(this,args);};}h.rt.cast({x:1,y:0});reads=0;h.rt.update(.1);assert.equal(reads,0);h.rt.update(.11);assert.equal(reads,count);h.rt.update(.1);assert.equal(reads,count);assert.equal(h.rt.projectiles.length,0);
- const fresh=scene('skirmisher'),first=fresh.enemy(40),moved=fresh.enemy(800,300),hit=first.onAttacked;let movedHits=0;first.onAttacked=function(...args){const damage=hit.apply(this,args);moved.node.setPosition(45,0);return damage;};moved.onAttacked=()=>{movedHits++;return 1;};fresh.rt.cast({x:1,y:0});fresh.rt.update(.3);assert.equal(movedHits,0,'Callback arrivals do not join the already sampled simultaneous arc');
+test('flight samples current enemies once per step and winding up or resting does not scan',()=>{
+ const h=scene('skirmisher'),count=150;let reads=0;for(let i=0;i<count;i++){const enemy=h.enemy(700+i,300),get=enemy.node.getPosition;enemy.node.getPosition=function(...args){reads++;return get.apply(this,args);};}h.rt.cast({x:1,y:0});reads=0;
+ h.rt.update(.1);assert.equal(reads,0);h.rt.update(.11);assert.equal(reads,count);h.rt.update(.1);assert.equal(reads,2*count);assert.equal(h.rt.projectiles.length,5);
+ h.rt.update(2);assert.equal(h.rt.projectiles.length,0);const afterFlight=reads;h.rt.update(.2);assert.equal(reads,afterFlight);
+ const fresh=scene('skirmisher'),first=fresh.enemy(40),moved=fresh.enemy(800,300),hit=first.onAttacked;let movedHits=0;first.onAttacked=function(...args){const damage=hit.apply(this,args);moved.node.setPosition(45,0);return damage;};moved.onAttacked=()=>{movedHits++;return 1;};fresh.rt.cast({x:1,y:0});fresh.rt.update(.4);assert(first.hp<10000);assert.equal(movedHits,0);
 });
 
 test('a Guardian release callback cannot install taunts or effects after its cast has been retired',()=>{
@@ -107,18 +108,20 @@ test('a retiring charged-rider release cannot append volley damage or release so
  const h=scene('skirmisher'),target=h.enemy(),sounds=[];h.e.stubs.HeroMakerRider.releaseChargedAttack=()=>h.hero.onRestart();h.e.stubs.BattleSounds={attack(){sounds.push('release');},charge(){}};assert(h.rt.cast({x:1,y:0}));h.rt.update(.2);assert.equal(target.hp,10000);assert.equal(h.rt.projectiles.length,0);assert.deepEqual(sounds,[]);assert.equal(h.rt.scope,null);
 });
 
-test('PC weapon-origin aiming follows a live body during windup and keeps its saved point when the target node is replaced',()=>{
+test('PC weapon-origin aiming follows the live body before confirmation and fixes the headings at confirmation',()=>{
  const h=scene('skirmisher'),target=h.enemy(200,40);target.ndHp=new Node('hp',target.node,0,100);h.e.stubs.HeroMakerRider.skillOrigin=()=>({x:30,y:80});
- h.rt.setAimTarget(target);assert(h.rt.cast());const saved={x:h.rt.pendingArrowAim.point.x,y:h.rt.pendingArrowAim.point.y};near(saved.x,200);near(saved.y,95);
- target.node.setPosition(250,100);h.rt.update(.05);const live=h.rt.projectileAim(undefined,h.rt.pendingArrowAim);near(live.target.x,250);near(live.target.y,155);near((250-live.origin.x)*live.direction.y-(155-live.origin.y)*live.direction.x,0);
+ h.rt.setAimTarget(target);near(h.rt.aimPoint.x,200);near(h.rt.aimPoint.y,95);
+ target.node.setPosition(250,100);const live=h.rt.projectileAim();near(live.target.x,250);near(live.target.y,155);near((250-live.origin.x)*live.direction.y-(155-live.origin.y)*live.direction.x,0);
+ assert(h.rt.cast());const captured=h.rt.skillCast.direction;
  target.node=new Node('replacement aimed victim',h.g.ndMain,-400,-300);target.node._combatGeneration=1;target.ndHp=new Node('hp',target.node,0,100);
- const fallback=h.rt.projectileAim(undefined,h.rt.pendingArrowAim);near(fallback.target.x,saved.x);near(fallback.target.y,saved.y);const preview=h.rt.projectileAim();near(preview.target.x,saved.x);near(preview.target.y,saved.y);
- const captured=h.rt.skillCast.area;near(captured.origin.x,30);near(captured.origin.y,80);h.rt.update(.2);assert.equal(h.rt.skillCast.area,captured,'The committed arc does not track a later target node');assert.equal(h.rt.projectiles.length,0);
- h.rt.clear(true);assert.equal(h.rt.pendingArrowAim,null);assert.equal(h.rt.aimTarget,null);assert.equal(h.rt.aimTargetNode,null);assert.equal(h.rt.aimPoint,null);
+ const fallback=h.rt.projectileAim();near(fallback.target.x,200);near(fallback.target.y,95);
+ h.rt.update(.2);assert.equal(h.rt.projectiles.length,5);const center=h.rt.projectiles[2];near(center.direction.x,captured.x);near(center.direction.y,captured.y);near(center.x,30);near(center.y,80);
+ h.rt.clear(true);assert.equal(h.rt.aimTarget,null);assert.equal(h.rt.aimTargetNode,null);assert.equal(h.rt.aimPoint,null);
 });
 
-test('the single arc uses PC body collision and the captured weapon release point',()=>{
- const h=scene('skirmisher'),body=h.enemy(100,0),feet=h.enemy(100,0);body.ndHp=new Node('hp',body.node,0,160);h.e.stubs.HeroMakerRider.skillOrigin=()=>({x:30,y:88});assert(h.rt.cast({x:1,y:0}));near(h.rt.skillCast.area.origin.x,30);near(h.rt.skillCast.area.origin.y,88);h.rt.update(.2);assert(body.hp<10000);assert.equal(feet.hp,10000);assert.equal(h.rt.projectiles.length,0);
+test('volley arrows use PC body collision and the captured weapon release point',()=>{
+ const h=scene('skirmisher'),body=h.enemy(100,0),feet=h.enemy(100,0);body.ndHp=new Node('hp',body.node,0,160);h.e.stubs.HeroMakerRider.skillOrigin=()=>({x:30,y:88});assert(h.rt.cast({x:1,y:0}));near(h.rt.skillCast.origin.x,30);near(h.rt.skillCast.origin.y,88);
+ h.rt.update(.8);assert(body.hp<10000);assert.equal(feet.hp,10000);assert.equal(h.rt.projectiles.length,0);
 });
 
 test('replacing a hero node at the same generation retires its pending skill and original battle scope',()=>{
@@ -127,14 +130,15 @@ test('replacing a hero node at the same generation retires its pending skill and
  h.rt.update(1);assert.equal(h.rt.state.charge,0,'retiring the old position must not grant movement charge to an unmoved replacement');
 });
 
-test('a resolved volley cannot hit a replacement node even when actor and generation are reused',()=>{
- const h=scene('skirmisher'),target=h.enemy(40);let hits=0;target.onAttacked=()=>{hits++;return 100;};h.rt.cast({x:1,y:0});h.rt.update(.2);assert.equal(hits,1);target.node=new Node('replacement victim',h.g.ndMain,80,0);target.node._combatGeneration=1;h.rt.update(1);assert.equal(hits,1);h.rt.resolveVolley({time:1,damageMultiplier:1});assert.equal(hits,1);
+test('spent arrows cannot hit a replacement node even when actor and generation are reused',()=>{
+ const h=scene('skirmisher'),target=h.enemy(40);let hits=0;target.onAttacked=()=>{hits++;return 100;};h.rt.cast({x:1,y:0});h.rt.update(.4);assert.equal(hits,5);assert.equal(h.rt.projectiles.length,0);
+ target.node=new Node('replacement victim',h.g.ndMain,80,0);target.node._combatGeneration=1;h.rt.update(1);assert.equal(hits,5);
 });
 
 test('volley candidates and hit feedback stay with the original node even when a replacement reuses its generation',()=>{
  const h=scene('skirmisher'),first=h.enemy(40),later=h.enemy(80),hit=first.onAttacked;let laterHits=0;
  later.onAttacked=()=>{laterHits++;return 100;};first.onAttacked=function(...args){const result=hit.apply(this,args);later.node=new Node('replacement victim',h.g.ndMain,80,0);later.node._combatGeneration=1;return result;};
- h.rt.cast({x:1,y:0});h.rt.update(.2);assert.equal(laterHits,0);
+ h.rt.cast({x:1,y:0});h.rt.update(.4);assert(first.hp<10000);assert.equal(laterHits,0);
  const feedback=scene('fighter'),target=feedback.enemy();target.onAttacked=()=>{target.node=new Node('replacement victim',feedback.g.ndMain,500,0);target.node._combatGeneration=1;return 100;};feedback.rt.hit(target,1,true,1);assert.deepEqual(feedback.feedback,[]);
 });
 

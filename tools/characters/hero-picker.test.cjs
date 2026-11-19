@@ -3,32 +3,64 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const Weapons=require('../../assets/_script/HeroWeapons'),equipment=require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg;
 const {fixture}=require('./hero-picker-harness.cjs');
 const user=()=>({getHeroWeapon:()=>Weapons.find('guardian'),getHeroWeaponLevel:()=>1});
+const selectable=Weapons.styles.filter(style=>style.id!=='vanguard');
 
 test('six square cards center padded weapon poses, keep the Equipped badge above the title, and show a separate frame only behind the selected card',()=>{
  const f=fixture(user()),owner={node:f.canvas};f.api.open(owner);
  const tiles=Weapons.styles.map(style=>f.find('Style '+style.id));assert.equal(new Set(tiles.map(tile=>tile.x)).size,3);assert.equal(new Set(tiles.map(tile=>tile.y)).size,2);
- for(const tile of tiles){assert.equal(tile.width,tile.height);const area=tile.getChildByName('Weapon pose');assert.equal(area.width,area.height);assert(area.width<=tile.width-16);assert(area.width>tile.width*.8);assert.equal(area.x,0);assert.equal(area.y,0);}
+ const available=selectable.map(style=>f.find('Style '+style.id));
+ for(const tile of tiles)assert.equal(tile.width,tile.height);
+ for(const tile of available){const area=tile.getChildByName('Weapon pose');assert.equal(area.width,area.height);assert(area.width<=tile.width-16);assert(area.width>tile.width*.8);assert.equal(area.x,0);assert.equal(area.y,0);}
  const equipped=f.find('Style guardian'),badge=equipped.getChildByName('Equipped marker'),title=equipped.getChildByName('Style name');assert(badge.y>equipped.height/3);assert(badge.y-badge.height/2>title.y+title.height/2);
- assert.equal(f.poseIcons.length,6);assert.deepEqual(f.poseIcons.map(icon=>icon.style),Weapons.styles.map(style=>style.id));
+ assert.deepEqual(f.poseIcons.map(icon=>icon.style),selectable.map(style=>style.id));
  const face=tile=>tile.getChildByName('Tier clip').getChildByName('Tier card'),before=face(f.find('Style guardian')).getComponent(f.cc.Sprite).spriteFrame.key;
- assert.equal(tiles.filter(tile=>tile.getChildByName('Selection frame').active).length,1);assert(f.find('Style guardian').getChildByName('Selection frame').active);
+ assert.equal(available.filter(tile=>tile.getChildByName('Selection frame').active).length,1);assert(f.find('Style guardian').getChildByName('Selection frame').active);
  f.tap(f.find('Style fighter'));assert(f.find('Style fighter').getChildByName('Selection frame').active);assert.equal(f.find('Style guardian').getChildByName('Selection frame').active,false);assert(f.find('Style guardian').getChildByName('Equipped marker'));assert.equal(face(f.find('Style guardian')).getComponent(f.cc.Sprite).spriteFrame.key,before);
- const copies=tiles.map(tile=>face(tile).getComponent(f.cc.Sprite).spriteFrame);assert(copies.every(frame=>!frame.destroyed));
- assert(f.all().every(node=>!['Selection glow','Gold selection','Card edge','Card highlight'].includes(node.name)));assert.equal(f.poseIcons.length,6,'Changing the selection reuses artwork and frozen poses');assert(f.poseIcons.every(icon=>!icon.destroyed));f.api.close(owner);assert(f.poseIcons.every(icon=>icon.destroyed));assert(copies.every(frame=>frame.destroyed));
+ const copies=available.map(tile=>face(tile).getComponent(f.cc.Sprite).spriteFrame);assert(copies.every(frame=>!frame.destroyed));
+ assert(f.all().every(node=>!['Selection glow','Gold selection','Card edge','Card highlight'].includes(node.name)));assert.equal(f.poseIcons.length,available.length,'Changing the selection reuses artwork and frozen poses');assert(f.poseIcons.every(icon=>!icon.destroyed));f.api.close(owner);assert(f.poseIcons.every(icon=>icon.destroyed));assert(copies.every(frame=>frame.destroyed));
 });
 
 test('the Equip button sits below the skill details inside the panel and each card keeps its own tier frame',()=>{
  const levels={skirmisher:1,fighter:11,vanguard:21,mystic:31,bruiser:41,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:50}),owner={node:f.canvas};f.api.open(owner);
  const panel=f.find('Cream panel'),action=f.find('Equipped action'),skill=f.find('Skill panel outline');assert(action.y-action.height/2>panel.y-panel.height/2);assert(action.y+action.height/2<skill.y-skill.height/2);assert(action.height>0);
- assert.deepEqual(f.tierFrames.slice(0,6),['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd']);
- assert.equal(f.find('Style vanguard').getChildByName('Tier clip').getChildByName('Tier card').color,'#54c7ff');assert.equal(f.find('Style fighter').getChildByName('Tier clip').getChildByName('Tier card').color,'#ffffff');
- f.tap(f.find('Style fighter'));assert.deepEqual(f.tierFrames.slice(-6),f.tierFrames.slice(0,6));f.api.close(owner);
+ const frames=['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd'];
+ assert.deepEqual(f.tierFrames,frames);
+ assert.equal(f.find('Style fighter').getChildByName('Tier clip').getChildByName('Tier card').color,'#ffffff');
+ f.tap(f.find('Style fighter'));assert.deepEqual(f.tierFrames,frames);f.api.close(owner);
+});
+
+test('Vanguard stays gray and ignores taps even when it was equipped in saved progress',()=>{
+ for(const [name,language,caption] of [['guardian','en','Coming soon'],['vanguard','zh','敬请期待']]){
+  const data={heroWeapon:{selected:name,levels:{vanguard:{3:8,4:12}}}},before=structuredClone(data);
+  const equipped=[],f=fixture({getHeroWeapon:()=>Weapons.selected(data),getHeroWeaponLevel:()=>1,setHeroWeapon(id){equipped.push(id);return Weapons.select(data,id);}},{language});
+  const owner={node:f.canvas,initView(){}};f.api.open(owner);
+  const selected=name==='vanguard'?'skirmisher':name;
+  assert.deepEqual(f.previews[0].styles,[selected]);
+  for(const rebuild of [false,true]){
+   if(rebuild)f.ready();
+   const tile=f.find('Style vanguard');
+   assert.equal(tile.getChildByName('Availability').getComponent(f.cc.Label).string,caption);
+   assert(tile.getChildByName('Unavailable card face'));
+   assert(tile.getComponent(f.cc.BlockInputEvents));
+   assert.equal(tile.handlers.tap,undefined);
+   assert.equal(tile.getChildByName('Selection frame'),undefined);
+   f.tap(tile);
+   assert.equal(f.previews[0].styles.at(-1),selected);
+   assert.deepEqual(data,before);
+   assert.deepEqual(equipped,[]);
+  }
+  f.tap(f.find('Style fighter'));f.tap(f.find('Equip Fighter'));
+  assert.deepEqual(equipped,['fighter']);
+  assert.equal(Weapons.selected(data).id,'fighter');
+  assert.deepEqual(data.heroWeapon.levels.vanguard,before.heroWeapon.levels.vanguard);
+  assert.equal(owner._weaponPicker,null);
+ }
 });
 
 test('the skill icon and live stat description replace both weapon level references without equipping while browsing',()=>{
  const config={HeroSkills:{skirmisher:{activeDamage:1.1},mystic:{maxCharges:17}}},before=JSON.stringify(config),f=fixture(user(),{config}),owner={node:f.canvas};f.api.open(owner);
  const Description=require('../../assets/_script/HeroSkillDescriptions'),Settings=require('../../assets/_script/HeroSkillSettings'),Authoring=require('../../assets/_script/HeroSkillAuthoring');
- for(const style of Weapons.styles){
+ for(const style of selectable){
   f.tap(f.find('Style '+style.id));
   assert.equal(f.find('Skill icon').getComponent(f.cc.Sprite).spriteFrame.key,'skills/icons/'+style.id);
   assert.equal(f.find('Skill name').getComponent(f.cc.Label).string,Authoring.entry(style.id,'active').name);
@@ -37,7 +69,7 @@ test('the skill icon and live stat description replace both weapon level referen
  }
  f.tap(f.find('Style skirmisher'));assert.match(f.find('Skill description').getComponent(f.cc.Label).string,/110%/);
  config.HeroSkills.skirmisher.activeDamage=.9;f.tap(f.find('Style fighter'));f.tap(f.find('Style skirmisher'));assert.match(f.find('Skill description').getComponent(f.cc.Label).string,/90%/);
- config.HeroSkills.skirmisher.activeDamage=1.1;assert.equal(JSON.stringify(config),before);assert.equal(f.sounds.length,0);assert.equal(f.poseIcons.length,6);f.api.close(owner);
+ config.HeroSkills.skirmisher.activeDamage=1.1;assert.equal(JSON.stringify(config),before);assert.equal(f.sounds.length,0);assert.equal(f.poseIcons.length,selectable.length);f.api.close(owner);
 });
 
 test('the portrait popup fits short/narrow viewports and removes its resize and asset subscriptions on dismissal',()=>{

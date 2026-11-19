@@ -103,7 +103,12 @@ var def_KinghtFallUIBuff = function (t) {
     if (this._customPerkPool && this.canOutBuff.length === 0) {
       var emptyGeneration = this._resourceGeneration;
       this._decisionPending = true;
-      this.scheduleOnce(function () { t.finishDecision(t.callBack, [], emptyGeneration); }, 0);
+      this.scheduleOnce(function () {
+        if (t.isclose || t._resourceGeneration !== emptyGeneration) return;
+        var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+        if (guide.getGroupId() === 3 && !require("TutorialFlow").state(guide, 4, 0)) return;
+        t.finishDecision(t.callBack, [], emptyGeneration);
+      }, 0);
       return;
     }
     this.initBtnView();
@@ -240,6 +245,7 @@ var def_KinghtFallUIBuff = function (t) {
   };
   _ctor.prototype.initEvent = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, this.startGuide);
+    this.addEvent($z1Appcfg.BaseEventName.CloseUI, this.startGuide);
   };
   _ctor.prototype.initBtnView = function () {
     var t = this.btnRefresh.getChildByName("layout1").getChildByName("labQue").getComponent(cc.Label);
@@ -410,6 +416,8 @@ var def_KinghtFallUIBuff = function (t) {
     }
   };
   _ctor.prototype.startGuide = function () {
+    var flow = require("TutorialFlow");
+    if (!flow.active(this) || this._tutorialOpen) return;
     if ($z1PlatformSetting.PlatformSetting.currentPlatform != $z1BasePlatform.Platform.WEB_LINK) {
       var t = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
       var e = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(t);
@@ -417,6 +425,7 @@ var def_KinghtFallUIBuff = function (t) {
         var n;
         var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId();
         var a = e[i];
+        if (!a) return;
         switch (t) {
           case 3:
             (n = new $z1UIGuide.GuildCfg()).isWeek = !!a.Close;
@@ -433,16 +442,7 @@ var def_KinghtFallUIBuff = function (t) {
             }
         }
         if (n) {
-          this.openUICallBack($z1Config.UIID.UIGuide, function () {
-            if (e[i + 1]) {
-              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(i + 1);
-            } else {
-              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGroupId(t + 1);
-              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(0);
-            }
-          }, n);
-        } else {
-          this.sendEvent($z1Appcfg.BaseEventName.blocktouch, true);
+          flow.present(this, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData(), t, i, e, n);
         }
       }
     }

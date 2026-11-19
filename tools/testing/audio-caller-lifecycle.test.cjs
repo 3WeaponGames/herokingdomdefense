@@ -139,7 +139,7 @@ test('Wall Defense entry replaces menu music only after opening, and exit restor
  for(const cancelled of [false,true]){
   const f=adFixture(),config={KinghtFallParameter:{BGMusic:'bg'},KinghtFallAudioId:{menu_bgm:'menu'},KinghtFallUIID:{UIHome:'home'}};
   Object.assign(f.audio.ADConf,{menu:{bundle:'audio',path:'menu'},wall:{bundle:'audio',path:'wall'}});
-  const gad={GAD_UIID:{UIGame:'wall-game',UIResult:'wall-result',UIPause:'wall-pause'},GAD_AudioId:{bgm:'wall',mission:'hit'},GADConfig:{BgMusic:'wall-bg',EnergyCost:10},emGADGameState:{Over:3}};
+  const gad={GAD_UIID:{UIGame:'wall-game',UIResult:'wall-result',UIPause:'wall-pause'},GAD_AudioId:{bgm:'wall',mission:'hit'},GADConfig:{LobbyAvailable:true,BgMusic:'wall-bg',EnergyCost:10},emGADGameState:{Over:3}};
   f.modules.GAD_Configs=gad;f.modules.KinghtFallConfig=config;
   f.modules.GAD_PlayerMgr={default:{getInstance:()=>({readyForRun:()=>true,reset(){},setState(){},finishRun(){}})}};
   f.cc.systemEvent={on(){},off(){}};f.cc.SystemEvent={EventType:{KEY_UP:'keyup'}};

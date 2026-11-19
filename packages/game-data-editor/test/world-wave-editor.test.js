@@ -45,6 +45,47 @@ test('wave add/duplicate/remove preserve stage IDs, settings, routes and unknown
  s.config.WaveCfg=Array.from({length:8},(_,index)=>({...clone(original),id:7,Wave:index+1}));W.removeWave(s,0);assert(s.config.WaveCfg.every((wave,index)=>wave.id===7&&wave.Wave===index+1));
 });
 
+test('copying into a wave preserves its identity and replaces its content with a detached copy',()=>{
+ const s=timed(),list=s.config.WaveCfg;
+ list.push({Wave:2,id:7,SpawnTimeline:[],HealthCoefficient:4,WaveReward:[],oldWaveField:true});
+ list.push({Wave:3,id:7,RefreshSoldierKind:['1#90003,1']});
+ const before=clone(s);
+ assert.equal(W.copyWaveFrom(s,0,1),true);
+ const expected=clone(before);
+ expected.config.WaveCfg[1]={...clone(before.config.WaveCfg[0]),Wave:2};
+ assert.deepEqual(s,expected);
+ list[1].SpawnTimeline[0].future.keep.push(2);
+ list[1].WaveReward[0][1]=500;
+ assert.deepEqual(list[0],before.config.WaveCfg[0]);
+});
+
+test('copy options retain unchecked wave fields and give copied groups a spawn-default route',()=>{
+ const s=timed(),list=s.config.WaveCfg;
+ list.push({Wave:2,id:7,SpawnTimeline:[],HealthCoefficient:4,AttackCoefficient:3,WaveReward:[],future:{destination:true}});
+ const before=clone(s),source=before.config.WaveCfg[0];
+ assert.equal(W.copyWaveFrom(s,0,1,{paths:false,multipliers:false,settings:false}),true);
+ const groups=source.SpawnTimeline.map(({routeGraphId,...entry})=>entry);
+ assert.deepEqual(list[1],{...before.config.WaveCfg[1],SpawnTimeline:groups,RefreshSoldierKind:source.RefreshSoldierKind});
+ const withGroups=clone(list[1]);
+ assert.equal(W.copyWaveFrom(s,0,1,{groups:false}),true);
+ assert.deepEqual(list[1],{...source,Wave:2,SpawnTimeline:withGroups.SpawnTimeline});
+ assert.deepEqual(list[0],source);
+});
+
+test('copying a legacy wave keeps its encoding and an identical copy is a no-op',()=>{
+ const s=stage(),list=s.config.WaveCfg;
+ list.push({...clone(list[0]),Wave:2,SpawnTimeline:[{id:'dest'}]});
+ assert.equal(W.copyWaveFrom(s,0,1),true);
+ assert.deepEqual(list[1],{...list[0],Wave:2});
+ assert(!Object.hasOwn(list[1],'SpawnTimeline'));
+ const destination=list[1],before=clone(s);
+ list[0]=Object.fromEntries(Object.entries(list[0]).reverse());
+ assert.equal(W.copyWaveFrom(s,0,1),false);
+ assert.equal(list[1],destination);
+ for(const apply of [()=>W.copyWaveFrom(s,1,1),()=>W.copyWaveFrom(s,5,1),()=>W.copyWaveFrom(s,0,1,{groups:false,multipliers:false,settings:false})])assert.throws(apply);
+ assert.deepEqual(s,before);
+});
+
 
 test('explicit group edits reject unsafe integers, unreachable final emission times and newly disabled lanes atomically',()=>{
  for(const patch of [{count:1e308},{unitId:Number.MAX_SAFE_INTEGER+1},{spawnId:1e308},{count:3,intervalSeconds:1e308}]){

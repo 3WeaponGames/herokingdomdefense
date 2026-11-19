@@ -67,7 +67,7 @@ test('every exposed VFX slot has exactly its supported direct transform capabili
     }
     assert.deepEqual(input.settings,before,'Selecting and inspecting handles must not mutate supplied data');
   }
-  assert(checked>=20);assert(ghosts>0,'Effects outside the current phase still have manipulators');assert.deepEqual(f.traces.changes,[]);assert.deepEqual(f.traces.ends,[]);assert(f.view.getState().silent);
+  assert.equal(checked,17+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));assert(ghosts>0,'Effects outside the current phase still have manipulators');assert.deepEqual(f.traces.changes,[]);assert.deepEqual(f.traces.ends,[]);assert(f.view.getState().silent);
 }));
 
 test('a VFX drag updates its live transform but commits exactly one batch on release',()=>withFixture(async f=>{
@@ -100,14 +100,6 @@ test('uniform, axis and rotation controls change only the selected VFX fields',(
 test('a click without movement and a middle-button pan produce no settings edits',()=>withFixture(async f=>{
   await f.load('guardian');f.view.selectHandle('physicalShield');const before=f.view.getState(),node=handle(effect(f,'physicalShield'),'move');f.reset();f.emit('pointerdown',node);f.emit('pointerup',node);assert.deepEqual(f.traces.ends,[[{},true]]);assert.deepEqual(f.view.getState().settings,before.settings);
   f.reset();f.emit('pointerdown',{x:300,y:240},{button:1});f.emit('pointermove',{x:330,y:260},{button:1});f.emit('pointerup',{x:330,y:260},{button:1});const after=f.view.getState();assert.equal(after.view.panX,before.view.panX+30);assert.equal(after.view.panY,before.view.panY+20);assert.deepEqual(after.settings,before.settings);assert.equal(f.traces.starts.length,0);assert.equal(f.traces.ends.length,0);assert.equal(f.traces.changes.length,0);
-}));
-
-test('single-volley VFX transforms move the selected artwork without changing its independent gameplay arc',()=>withFixture(async f=>{
-  for(const control of ['scale-0','scale-x','scale-y','rotate','move']){
-    await f.load('skirmisher');f.view.selectHandle('cast');f.view.setTransformMode(control==='move'?'move':control==='rotate'?'rotate':'scale');const before=f.view.getState(),group=effect(f,'cast'),node=handle(group,control),p=group.screenOrigin,area=clone(behavior(f).geometry);
-    const next=control==='move'?{x:node.x+25,y:node.y-15}:control==='rotate'?{x:p.x-(node.y-p.y),y:p.y+(node.x-p.x)}:{x:p.x+(node.x-p.x)*1.2,y:p.y+(node.y-p.y)*1.2};f.reset();drag(f,node,{x:next.x-node.x,y:next.y-node.y});const after=f.view.getState();assert.notDeepEqual(after.settings.visual,before.settings.visual);assert.deepEqual(clone(behavior(f).geometry),area);assert.equal(f.traces.ends.length,1);assert.equal(f.traces.ends[0][1],true);
-    const expected=control==='move'?['visual.castOffsetX','visual.castOffsetY']:[control==='scale-0'?'visual.castScale':control==='scale-x'?'visual.castScaleX':control==='scale-y'?'visual.castScaleY':'visual.castRotation'];assert.deepEqual(Object.keys(f.traces.ends[0][0]).sort(),expected.sort());
-  }
 }));
 
 test('single-volley arc and reach nodes edit the actual damage area independently of the native artwork',()=>withFixture(async f=>{
@@ -144,7 +136,7 @@ test('all active and passive VFX position handles edit only their own offsets or
       assert.equal(f.traces.ends.length,1,style+'/'+entry.id+'/'+name);assert.equal(f.traces.ends[0][1],true);assert.deepEqual(Object.keys(f.traces.ends[0][0]).sort(),[mapping.x,mapping.y].sort(),style+'/'+entry.id+'/'+name);assert.equal(f.traces.changes.length,0);moved++;
     }
   }
-  assert(moved>=20);
+  assert.equal(moved,17+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));
 }));
 
 test('changing the selected slot, transform tool, scenario or skill cancels a pending edit',()=>withFixture(async f=>{
@@ -163,8 +155,9 @@ test('preview tool modes expose only matching nodes while retaining read-only ou
 }));
 
 test('both Blood Cleave pivot crosshairs drag without moving artwork, the other effect or the gold hit area',()=>withFixture(async f=>{
+  const legacyCleave=Object.fromEntries(['cast','castSecondary'].map((slot,i)=>[slot+'Resource',Catalog.clips.find(c=>c.id===['bruiser-energy-cleave','mystic-charged-burst'][i]).uuid]));
   for(const slot of ['cast','castSecondary']){
-    await f.load('bruiser','active',{visual:{castScale:.8,castScaleX:1.3,castScaleY:.6,castSecondaryScale:.7,castSecondaryScaleX:.8,castSecondaryScaleY:1.4}});
+    await f.load('bruiser','active',{visual:{...legacyCleave,castScale:.8,castScaleX:1.3,castScaleY:.6,castSecondaryScale:.7,castSecondaryScaleX:.8,castSecondaryScaleY:1.4}});
     f.view.setScenario({direction:137});f.view.seek(.3);f.view.selectHandle(slot);f.view.setTransformMode('pivot');
     const before=f.view.getState(),group=effect(f,slot),node=handle(group,'pivot'),other=before.gizmos.find(row=>row.selection!==slot&&row.kind==='vfx'),area=clone(behavior(f).geometry);assert.equal(group.handles.length,1);f.reset();
     drag(f,node,{x:23,y:-17});const after=f.view.getState(),next=effect(f,slot);assert.equal(f.traces.ends.length,1);assert.equal(f.traces.ends[0][1],true);assert.deepEqual(Object.keys(f.traces.ends[0][0]).sort(),['OffsetX','OffsetY','PivotX','PivotY'].map(suffix=>'visual.'+slot+suffix).sort());
@@ -178,7 +171,7 @@ test('both Blood Cleave pivot crosshairs drag without moving artwork, the other 
 
 test('pivot clicks and cancelled drags preserve the whole draft and playback state',()=>withFixture(async f=>{
   for(const cancel of ['pointercancel','Escape','lostpointercapture','blur']){
-    await f.load('bruiser');f.view.selectHandle('castSecondary');f.view.setTransformMode('pivot');f.view.play(true);const before=f.view.getState(),node=handle(effect(f,'castSecondary'),'pivot');f.reset();
+    await f.load('bruiser','active',{visual:{castSecondaryResource:Catalog.clips.find(c=>c.id==='mystic-charged-burst').uuid}});f.view.selectHandle('castSecondary');f.view.setTransformMode('pivot');f.view.play(true);const before=f.view.getState(),node=handle(effect(f,'castSecondary'),'pivot');f.reset();
     drag(f,node,{x:25,y:-14},null);assert.notEqual(f.view.getState().settings.visual.castSecondaryPivotX,before.settings.visual.castSecondaryPivotX);
     if(cancel==='Escape')f.emit('keydown',node,{key:'Escape'});else if(cancel==='blur')f.document.defaultView.emit('blur');else f.emit(cancel,node);
     assert.deepEqual(f.view.getState().settings,before.settings);assert.equal(f.view.getState().playing,true);assert.deepEqual(f.traces.ends,[[{},false]]);

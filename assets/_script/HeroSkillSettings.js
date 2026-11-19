@@ -5,7 +5,7 @@ var Core = require("./HeroStyleSkills"), VFXCatalog = require("./HeroSkillVFXCat
 var EFFECT_SLOTS=["passive","beam","mark","buff","taunt","shield","cast","castSecondary","channelHit","presence","defense","physicalShield"];
 var RESOURCE_PREFIXES=["resource","impactResource"].concat(EFFECT_SLOTS.map(function(slot){return slot+"Resource";}));
 var styles = [
-  {id:"skirmisher",name:"Skirmisher",weapon:"Bow",skill:"Piercing Arrow"},
+  {id:"skirmisher",name:"Skirmisher",weapon:"Bow",skill:"Arrow Volley"},
   {id:"fighter",name:"Fighter",weapon:"Sword",skill:"Battle Cry"},
   {id:"vanguard",name:"Vanguard",weapon:"Spear",skill:"Spear Barrage"},
   {id:"mystic",name:"Mystic",weapon:"Staff",skill:"Arcane Burst"},
@@ -32,15 +32,12 @@ var HELP = {
   chargeDecay:"Fraction of momentum lost each second while standing still.",
   chargedDamage:"Extra shot damage at full Steady Aim charge. 0.5 means 50% additional damage.",
   chargedRange:"Extra basic-attack range at full Steady Aim charge. 0.5 means 50% additional range; the range ring grows with the charge.",
-  windup:"Seconds from the cast start to the single rider/bow release. Independent of the one damaging volley hit time.",
-  volleyHitTime:"Gameplay seconds after the cast start before the one volley arc hit. Every living enemy inside the fixed arc is hit once at this moment. Cast start delay and additional contact delay are added separately; VFX playback does not change damage timing.",
-  volleyRange:"Maximum radius of the single volley hit arc, measured from its captured bow origin. This changes the gold damage boundary; the three-arrow VFX has independent transform controls.",
-  distanceDamagePer100:"Added damage multiplier for every 100 units from the captured volley origin to an enemy at the one hit moment. 0.1 adds 10% per 100 units.",
-  volleyPlayback:"Playback multiplier for the one three-arrow VFX. Windup fits its release pose; the independent actual hit time remains unchanged.",
+  windup:"Seconds from the start of the bow draw to the release of all five arrows.",
+  volleyRange:"Maximum distance each arrow travels from the bow before it disappears.",
   splashRadius:"Base active-skill splash radius in world units before stored target charges.",
   splashRadiusPerCharge:"Additional splash radius in world units per same-target channel hit.",
-  maxStacks:"Maximum number of temporary melee-hit stacks.",
-  stackDuration:"Time after the latest qualifying hit before the melee stacks expire.",
+  maxStacks:"Landed melee hits required to activate the full Combat Stacks buff.",
+  stackDuration:"Seconds the full Combat Stacks buff lasts after the most recent landed hit.",
   stackDamage:"Additional attack damage per stack. 0.03 means 3% per stack.",
   stackReduction:"Incoming damage reduction per stack. 0.025 means 2.5% per stack.",
   stackTenacity:"Slow and stun duration reduction per stack. 0.08 means 8% per stack.",
@@ -87,7 +84,7 @@ var VISUAL_HELP = {
   effectDuration:"Lifetime of the skill's area or arc artwork in gameplay seconds. Does not change damage timing or buff duration.",
   castDelay:"Additional seconds before the active effect and its matching damage contacts. The authored barrage and spear sequence use the same delay in gameplay and preview.",
   castSecondaryDelay:"Additional seconds after the shared cast start delay before Blood Cleave's second effect appears. Zero starts both effects together. Does not change damage timing.",
-  arcStartWidth:"Width in world units of the flat rear hit-area edge for Vanguard and Skirmisher. The sides join its rounded outer arc. 0 restores a pointed cone. This changes actual skill hits and the preview boundary; VFX artwork has its own scale controls.",
+  arcStartWidth:"Width in world units of the flat rear hit-area edge for Vanguard. The sides join its rounded outer arc. Set to 0 for a pointed cone.",
   castScale:"Size of the complete skill VFX. The gold hit boundary has separate gameplay size controls.",
   castScaleX:"Horizontal size multiplier for the complete effect. Changes artwork only.",
   castScaleY:"Vertical size multiplier for the complete effect. Changes artwork only.",
@@ -128,14 +125,13 @@ function tuningFields(style){
     if(key==="referenceMove"){min=1;max=5000;step=1;unit="units / second";}
     if(key==="splashRadius"||key==="splashRadiusPerCharge"){min=key==="splashRadius"?1:0;max=2000;step=1;unit="units";}
     if(key==="tauntRadius"||key==="allyRadius"){min=1;max=2000;step=1;unit="units";}
-    if(key==="volleyPlayback"){min=.05;max=4;unit="playback multiplier";}
-    if(key==="contactDelay"||key==="volleyHitTime"){max=30;unit="seconds";}
+    if(key==="contactDelay"){max=30;unit="seconds";}
     if(key==="volleyRange"){min=1;max=2000;step=1;unit="units";}
     if(key==="explosionTime"){max=30;step=.001;unit="VFX source seconds";}
     if(key==="knockback"){max=2000;step=1;unit="units";}
     if(key==="slow"||key==="stackTenacity"||key==="stackReduction"||key==="allyReduction"){max=.95;unit="fraction";}
     if(key==="sacrifice"){max=.99;unit="current HP fraction";}
-    var field=number(key,key==='explosionTime'?'Explosion / actual hit time':key==='volleyHitTime'?'Volley actual hit time':key==='volleyRange'?'Volley range':label(key),min,max,step,unit);if(/^(maxStacks|maxCharges|strikes)$/.test(key))field.integer=true;if(HELP[key])field.help=HELP[key];if(key==='activeDamage'&&style!=='mystic'){field.label='Active damage multiplier';field.help=style==='skirmisher'?'Final multiplier for the single volley hit after Steady Aim and distance bonuses. 0.8 is 80% of that damage. Does not change ordinary bow attacks.':'Final Blood Cleave damage multiplier after its missing-HP bonus. 0.5 is half damage. The HP sacrifice and missing-HP passive are unchanged.';}return field;
+    var field=number(key,key==='explosionTime'?'Explosion / actual hit time':label(key),min,max,step,unit);if(/^(maxStacks|maxCharges|strikes)$/.test(key))field.integer=true;if(HELP[key])field.help=HELP[key];if(key==='activeDamage'&&style!=='mystic'){field.label='Active damage multiplier';field.help=style==='skirmisher'?'Bow damage per arrow. 1 is 100% of bow damage.':'Final Blood Cleave damage multiplier after its missing-HP bonus. 0.5 is half damage. The HP sacrifice and missing-HP passive are unchanged.';}if(style==='skirmisher'&&key==='contactDelay'){field.label='Additional release delay';field.help='Extra gameplay seconds before the five arrows leave the bow.';}return field;
   });
 }
 var visualFields = Object.keys(VISUAL).map(function(key){
@@ -184,26 +180,30 @@ AUDIO_PHASES.forEach(function(phase){
   audioFields.push(Object.assign(number("audio."+phase+".delay",label(phase)+" delay",0,30,.01,"seconds"),{phase:phase,help:"Gameplay seconds after "+anchor+" before this sound starts. Independent of visual on-hit delay; use matching values to align them."}));
 });
 function fields(style){
+  if(style==='skirmisher'){
+    var volleyVisual=visualFields.filter(function(field){return ['arcDegrees','animation','castDelay'].indexOf(field.key)>=0||field.key.indexOf('impact')===0;}).map(function(field){return Object.assign({},field);});
+    volleyVisual.forEach(function(field){
+      if(field.key==='arcDegrees')Object.assign(field,{label:'Arrow spread',min:1,max:180,step:1,unit:'degrees',help:'Angle between the two outer arrows. Five paths are spaced evenly around the aim direction.'});
+      if(field.key==='castDelay')Object.assign(field,{label:'Cast start delay',help:'Extra gameplay seconds before the bow release.'});
+    });
+    return {tuning:Descriptions.fields(style).concat(tuningFields(style)),visual:volleyVisual,audio:clone(audioFields).filter(function(field){return field.phase==="cast"||field.phase==="impact";})};
+  }
   var visual=clone(visualFields).filter(function(field){
+    if((style==="fighter"||style==="bruiser")&&["passiveMinScale","passiveMinPlayback","passivePlayback"].indexOf(field.key)>=0||style==="bruiser"&&field.key==="passiveOpacity")return false;
     if(/(?:Pivot|Flip)[XY]$/.test(field.key))return style==="bruiser";
     if(/^channelTrail/.test(field.key))return style==="mystic";
     if(style==="mystic"&&/^(beam|channelHit)/.test(field.key))return false;
-    if(field.key==="animationPlayback"&&style==="skirmisher"||field.key==="castPlaybackRate"&&(style==="skirmisher"||style==="vanguard"))return false;
+    if(field.key==="castPlaybackRate"&&style==="vanguard")return false;
     var slot=/^(physicalShield|channelHit|presence|defense|passive|beam|mark|buff|taunt|shield|castSecondary|cast)/.exec(field.key);
-    if(slot){if(slot[1]==="castSecondary")return style==="bruiser";if(slot[1]==="cast")return style!=="guardian";if(slot[1]==="buff")return ["fighter","vanguard","guardian"].indexOf(style)>=0;if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark"||slot[1]==="channelHit")return style==="mystic";return style==="guardian";}
+    if(slot){if(slot[1]==="castSecondary")return style==="bruiser";if(slot[1]==="cast")return style!=="guardian";if(slot[1]==="buff")return ["fighter","vanguard","guardian"].indexOf(style)>=0;if(slot[1]==="passive")return ["fighter","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark"||slot[1]==="channelHit")return style==="mystic";return style==="guardian";}
     if(["holdTime","targetX","targetY"].indexOf(field.key)>=0)return style==="mystic";
-    if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic"||style==="skirmisher";
-    if(field.key==="arcDegrees")return style==="fighter"||style==="vanguard"||style==="skirmisher";
-    if(field.key==="arcStartWidth")return style==="vanguard"||style==="skirmisher";
-    if(field.key==="effectDuration")return style!=="skirmisher";
+    if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic";
+    if(field.key==="arcDegrees")return style==="fighter"||style==="vanguard";
+    if(field.key==="arcStartWidth")return style==="vanguard";
     return true;
   });
   var tuning=Descriptions.fields(style).concat(tuningFields(style));
-  if(style==='skirmisher'){
-    visual=visual.filter(function(field){return ['offsetX','offsetY','rotation','arcDegrees','arcStartWidth','resource','resourceAnimation','resourcePlaybackRate','showBuiltin','animation','color','opacity','effectDuration'].indexOf(field.key)>=0||field.key.indexOf('impact')===0||field.key.indexOf('cast')===0;});
-    visual.forEach(function(field){field.group=field.key.indexOf('impact')===0?'On-hit feedback':/^offset|^rotation$|^arcDegrees$/.test(field.key)?'Volley hit arc':'Volley artwork';if(field.key==='offsetX'||field.key==='offsetY'){field.label='Hit arc offset '+field.key.slice(-1);field.help='Moves the single gold damage arc relative to its captured bow origin. Positive Y moves upward. The three-arrow artwork has separate Cast offset controls.';}if(field.key==='rotation'){field.label='Hit arc rotation';field.help='Rotates the one damage arc relative to the captured aim. The three-arrow artwork has a separate Cast rotation control.';}if(field.key==='arcDegrees'){field.label='Hit arc angle';field.min=1;field.max=360;field.step=1;field.unit='degrees';field.help='Total angle of the single damaging volley arc. Every eligible enemy inside its gold boundary is hit once. Does not change the three-arrow artwork.';}});
-    visual.forEach(function(field){if(field.key==='arcStartWidth'){field.group='Volley hit arc';field.label='Hit arc start width';}});
-  }else if(style!=='mystic')visual.forEach(function(field){
+  if(style!=='mystic')visual.forEach(function(field){
     if(field.key==='offsetX'||field.key==='offsetY'){field.label=(style==='bruiser'?'Body':'Weapon')+' offset '+field.key.slice(-1);field.help=style==='bruiser'?'Moves Blood Cleave hit area and both cast layers relative to the animated torso. Positive Y moves upward. Zero centers the cleave on the body.':'Moves both the active skill hit area and its artwork relative to the equipped weapon tip. Positive Y moves upward. Zero uses the weapon tip automatically.';}
     if(field.key==='scale'){field.label=style==='fighter'||style==='vanguard'?'Arc size':'Area size';field.help=style==='bruiser'?'Scales the circular hit area and both cast layers together around the animated torso. 0.5 is half the radius; 1 uses the normal radius.':'Scales the active skill hit area and artwork together around the weapon point. 0.5 is half the reach; 1 uses the normal reach.';}
     if(field.key==='rotation'){field.label='Skill rotation';field.help='Rotates the active skill hit area and its artwork together around the weapon point.';}
@@ -230,13 +230,12 @@ function defaults(style){
   var result=Object.assign({},Core.DEFAULTS.common,Core.DEFAULTS[style],{descriptions:Descriptions.defaults(style),visual:clone(VISUAL),audio:{cast:clone(AUDIO),impact:clone(AUDIO),channel:clone(AUDIO)}}),v=result.visual;
   if(style==="mystic")result.audio.explosion=clone(AUDIO);
   var preset=VFXCatalog.presets[style]||{};Object.keys(preset).forEach(function(slot){var clip=VFXCatalog.clips.filter(function(row){return row.id===preset[slot];})[0];if(clip)applyClip(v,slot+"Resource",clip);});
-  if(style==="fighter")Object.assign(v,{passiveScale:1.6,passiveOffsetY:0,passiveMinScale:.25,passiveMinPlayback:1,passivePlayback:1,passiveColor:"#fff0d0",buffScale:1.65,buffColor:"#fff0d0",castScale:1,castColor:""});
-  if(style==="vanguard")Object.assign(v,{passiveScale:1.65,passiveOffsetY:0,passiveMinScale:1,passiveMinPlayback:.5,passivePlayback:1,buffScale:1.65,buffOffsetY:0,castScale:1,castRotation:0});
-  if(style==="bruiser")Object.assign(v,{passiveScale:1.8,passiveScaleY:1.5,passiveOffsetY:60,passiveColor:"#ff5367",passiveMinScale:.6,passiveMinPlayback:.3,passivePlayback:1,castScale:1,castFlipX:true,castSecondaryFlipX:true});
+  if(style==="fighter")Object.assign(v,{passiveScale:1.15,buffScale:1.65,buffColor:"#fff0d0",castScale:.8});
+  if(style==="vanguard")Object.assign(v,{buffScale:1.65,buffOffsetY:0,castScale:1,castRotation:0});
+  if(style==="bruiser")Object.assign(v,{passiveScale:1.4,passiveScaleX:1.5,castScale:1.2});
   if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45,channelHitScale:1,castScale:1});
   if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.1,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85,presenceScale:1.3,presenceOffsetY:0,defenseScale:.48,physicalShieldScale:.31});
   if(style==="vanguard")v.arcDegrees=72;if(style==="skirmisher")v.arcDegrees=16;
-  if(style==="skirmisher"){var authored=VFXCatalog.clips.filter(function(clip){return clip.id==="skirmisher-single-volley";})[0];Object.assign(v,{projectile:"",castScale:.16,castRotation:authored&&typeof authored.defaultRotation==="number"?authored.defaultRotation:-62.345520429791684});}
   return result;
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}
@@ -312,10 +311,6 @@ function effective(style,config){
   RESOURCE_PREFIXES.reduce(function(paths,prefix){return paths.concat("visual."+prefix+"Bundle","visual."+prefix+"Path","visual."+prefix+"Kind");},[]).concat(AUDIO_PHASES.reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var match=RESOURCE_PREFIXES.filter(function(prefix){return path.indexOf("visual."+prefix)===0;}).sort(function(a,b){return b.length-a.length;})[0];if(match&&RESOURCE_PREFIXES.indexOf(match)>=2&&get(saved,"visual."+match)!==result.visual[match])return;var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
   RESOURCE_PREFIXES.forEach(function(prefix){if(RESOURCE_PREFIXES.indexOf(prefix)>=2&&get(saved,"visual."+prefix)!==result.visual[prefix])return;var raw={};["Frames","Columns","Cell","Fps","Loop"].forEach(function(key){raw["resource"+key]=saved.visual&&saved.visual[prefix+key];});var frames=flipbook(raw);if(frames)Object.keys(frames).forEach(function(key){result.visual[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});});
   RESOURCE_PREFIXES.forEach(function(prefix){if(saved.visual&&Object.prototype.hasOwnProperty.call(saved.visual,prefix+'Animation'))return;var id=result.visual[prefix],clip=id&&VFXCatalog.clips.filter(function(clip){return clip.uuid===id||clip.id===id;})[0];if(clip&&clip.kind==='spine')result.visual[prefix+'Animation']=clip.animation;});
-  if(style==='skirmisher'&&saved.visual&&saved.visual.projectileAsset){
-    var candidate=Object.assign({},result.visual,{projectileAsset:saved.visual.projectileAsset});
-    if(projectileVisual(candidate)!==candidate)result.visual.projectileAsset=clone(saved.visual.projectileAsset);
-  }
   delete result.visual.castTrajectory;
   if(result.visual.castResource){var castClip=VFXCatalog.clips.filter(function(clip){return clip.uuid===result.visual.castResource||clip.id===result.visual.castResource;})[0];delete result.visual.castTrajectory;if(castClip&&castClip.trajectory)result.visual.castTrajectory=castClip.trajectory;}
   return result;

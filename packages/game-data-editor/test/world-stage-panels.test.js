@@ -13,8 +13,8 @@ class Element{
 function fixture(){
  const stage={id:'A-7',level:7,variant:'A',mapId:'Map07',hero:{x:0,y:0},buildings:[],spawns:[{id:1,name:'Spawn 1',enabled:true,x:0,y:100}],graphs:[{id:'one',name:'First path',entry:'start',spawnIds:[1],nodes:[{id:'start',x:0,y:100},{id:'goal',x:0,y:0,goal:true}],edges:[{id:'link',from:'start',to:'goal',weight:1}]},{id:'two',name:'Other path',entry:'goal',spawnIds:[1],nodes:[{id:'goal',x:1,y:0,goal:true}],edges:[]}],config:{Level:7,WaveCfg:[{id:7,Wave:1,SpawnTimeline:[{id:'a',unitId:3,spawnId:1,count:1,startSeconds:1,intervalSeconds:1,routeGraphId:'one',future:{keep:1}},{id:'b',unitId:3,spawnId:1,count:1,startSeconds:2,intervalSeconds:1,routeGraphId:'two'},{id:'c',unitId:3,spawnId:1,count:1,startSeconds:3,intervalSeconds:1},{id:'d',unitId:3,spawnId:1,count:1,startSeconds:4,intervalSeconds:1,routeGraphId:null}]},{id:7,Wave:2,RefreshSoldierKind:['1#3,1'],future:{keep:true}}],future:{keep:[1,2]}}};
  const el=(tag,text,cls)=>new Element(tag,text,cls),state={snap:{value:stage,issues:[]},catalog:{interval:.5,stages:[{id:'A-7',variant:'A',level:7,name:'7. Desert',mapId:'Map07',waves:2}],maps:[{id:'Map07',name:'Fire map'}],units:[{id:3,name:'Unit'}]},variant:'A',wave:0,selection:[],previewHall:3,showBlockers:true,snapGrid:0,spawn:1,graph:'one',radius:18,gate:'closed'},noop=()=>{};let edits=0;
- const context={state,el,button(parent,text,handler,active){const button=el('button',text,active?'active':'');button.onclick=handler;parent.appendChild(button);return button;},field(parent,name,value,change,choices){const input=el('input');input.choices=choices;input.value=value;input.fieldName=name;input.change=change;parent.appendChild(input);return input;},select(parent){const input=el('select');parent.appendChild(input);return input;},section(parent,text){parent.appendChild(el('h3',text));},note(parent,text){parent.appendChild(el('p',text));},edit(change){edits++;const draft=clone(state.snap.value);change(draft);state.snap.value=draft;},render:noop,draw:noop,top:el('div'),tabs:el('div'),left:el('div'),right:el('div'),buildingPalette:noop,buildingInspector:noop};
- for(const name of ['load','fit','startPreview','closePreview','replaceStage','action','refresh','discard','save','cancelDrag','prepareImages','editMap','jsonField','patchSelected','remove','newPath','insertPathNode','removePathNode','navigation','modal','copyWave'])context[name]=noop;
+ const context={state,el,button(parent,text,handler,active){const button=el('button',text,active?'active':'');button.onclick=handler;parent.appendChild(button);return button;},field(parent,name,value,change,choices){const input=el('input');input.choices=choices;input.value=value;input.fieldName=name;input.change=change;if(typeof value==='boolean')input.checked=value;parent.appendChild(input);return input;},select(parent){const input=el('select');parent.appendChild(input);return input;},section(parent,text){parent.appendChild(el('h3',text));},note(parent,text){parent.appendChild(el('p',text));},edit(change){edits++;const draft=clone(state.snap.value);change(draft);state.snap.value=draft;},render:noop,draw:noop,top:el('div'),tabs:el('div'),left:el('div'),right:el('div'),buildingPalette:noop,buildingInspector:noop};
+ for(const name of ['load','fit','startPreview','closePreview','replaceStage','action','refresh','discard','save','cancelDrag','prepareImages','editMap','jsonField','patchSelected','remove','newPath','insertPathNode','removePathNode','navigation','modal'])context[name]=noop;
  context.unitPicker=(dialog,spec)=>{dialog.appendChild(spec.controls);const search=el('input',undefined,'world-unit-picker-search'),grid=el('div',undefined,'world-unit-picker');search.value='';dialog.appendChild(search);dialog.appendChild(grid);const render=()=>{grid.textContent='';for(const unit of spec.units.filter(unit=>require('../worlds/unit-catalog').matches(unit,search.value))){const b=context.button(grid,require('../worlds/unit-catalog').name(unit),()=>{if(spec.selected.has(unit.id))spec.selected.delete(unit.id);else spec.selected.add(unit.id);render();},spec.selected.has(unit.id));b.dataset.unitId=unit.id;b.setAttribute('aria-pressed',String(spec.selected.has(unit.id)));}};search.oninput=render;render();};
  return{state,context,panels:Panels.create(context),edits:()=>edits};
 }
@@ -91,6 +91,23 @@ test('Duplicate path sits directly above Delete path, retains spawn references a
 });
 test('rendering every contextual stage tab makes no draft changes or edit requests',()=>{
  const f=fixture(),before=JSON.stringify(f.state.snap.value);for(const tab of ['Stage','Buildings','Spawns','Paths','Waves']){f.state.tab=tab;f.panels.top();f.panels.tabs();f.panels.left();f.panels.right();assert.equal(JSON.stringify(f.state.snap.value),before,tab);}assert.equal(f.edits(),0);
+});
+
+test('first-upgrade cards are a Buildings-only preview toggle and redraw without editing the stage',()=>{
+ const f=fixture(),before=clone(f.state.snap.value);
+ let prepared=0,drawn=0;
+ f.context.prepareImages=()=>prepared++;
+ f.context.draw=()=>drawn++;
+ const panels=Panels.create(f.context);
+ const toggle=()=>descendants(f.context.tabs).find(e=>e.fieldName==='First-upgrade cards');
+ f.state.tab='Stage';panels.tabs();assert.equal(toggle(),undefined);
+ f.context.tabs.textContent='';f.state.tab='Buildings';panels.tabs();
+ assert.equal(toggle().checked,false);toggle().change(true);
+ assert.equal(f.state.showFirstUpgradeCards,true);
+ f.context.tabs.textContent='';panels.tabs();assert.equal(toggle().checked,true);toggle().change(false);
+ assert.equal(f.state.showFirstUpgradeCards,false);
+ assert.deepEqual([prepared,drawn,f.edits()],[2,2,0]);
+ assert.deepEqual(f.state.snap.value,before);
 });
 
 test('the stage face uses its model chooser without exposing a second numeric ID control',()=>{
@@ -225,6 +242,37 @@ test('queued wave actions retain the clicked source after another wave is select
   if(action==='Remove wave'){assert.equal(list.length,1);assert.equal(list[0].sourceMarker,'second');assert.equal(list[0].Wave,1);}
   else{assert.equal(list.length,3);assert.equal(list[2].sourceMarker,'first');assert.equal(list[2].Wave,3);assert.equal(list[2].id,7);if(action==='Add wave')assert.deepEqual(list[2].SpawnTimeline,[]);else assert.deepEqual(list[2].SpawnTimeline,before.config.WaveCfg[0].SpawnTimeline);}
  }
+});
+
+test('Copy From defaults to the previous wave and leaves the selected wave number in place',()=>{
+ const f=fixture();f.state.tab='Waves';f.state.wave=1;
+ let dialog,apply;
+ f.context.modal=(title,body,action,label)=>{
+  assert.equal(title,'Copy into Wave 2');assert.equal(label,'Copy wave');
+  dialog=f.context.el('div');body(dialog);apply=action;
+ };
+ f.panels.right();descendants(f.context.right).find(e=>e.textContent==='Copy From…').onclick();
+ const field=name=>descendants(dialog).find(e=>e.fieldName===name);
+ assert.equal(field('Copy from wave').value,0);
+ assert.deepEqual(field('Copy from wave').choices,[{value:0,label:'Wave 1'}]);
+ const groups=field('Unit groups and timing'),paths=field('Copy path overrides');
+ assert([groups,paths,field('Enemy health and attack multipliers'),field('Other wave settings and rewards')].every(input=>input.checked));
+ groups.change(false);assert(paths.disabled);groups.change(true);assert.equal(paths.disabled,false);
+ assert.equal(f.edits(),0);
+ const original=clone(f.state.snap.value);apply();
+ assert.equal(f.edits(),1);assert.equal(f.state.wave,1);
+ assert.deepEqual(f.state.snap.value.config.WaveCfg,[original.config.WaveCfg[0],{...original.config.WaveCfg[0],Wave:2}]);
+});
+
+test('a queued copy cannot replace a wave using a source that changed while the popup was open',async()=>{
+ const f=queuedFixture();f.state.wave=1;
+ let apply;
+ f.context.modal=(_title,body,action)=>{body(f.context.el('div'));apply=action;};
+ f.render();descendants(f.context.right).find(e=>e.textContent==='Copy From…').onclick();
+ const copy=apply(),rejection=assert.rejects(copy,/waves changed/);
+ f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0].count=42;
+ const before=clone(f.state.snap.value);await f.flush();await rejection;
+ assert.deepEqual(f.state.snap.value,before);
 });
 
 test('queued wave fields compose sibling edits even while an older snapshot is still rendered',async()=>{

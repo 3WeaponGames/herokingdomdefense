@@ -10,30 +10,13 @@ var MAX_FEEDBACK=256,MAX_IMPACTS=128;
 var STYLE_SELECTION_KEYS=[];Settings.resourcePrefixes.slice(2).forEach(function(prefix){["","Kind","Bundle","Path","Animation","Skin","PremultipliedAlpha","Frames","Columns","Cell","Fps","Loop"].forEach(function(suffix){STYLE_SELECTION_KEYS.push(prefix+suffix);});});
 function visual(runtime) {
   var value=(runtime.settings || Settings.effective(runtime.state.style, runtime.config)).visual;
-  if(runtime.state.style==='mystic')return MysticTrail.visual(value);
-  if(runtime.state.style!=='skirmisher')return value;
-  var Looks=require('./ProjectileLooks'),data=Looks.currentCatalog();
-  if(!value.projectile&&!value.resource&&runtime.config){
-    if(data){
-      var user=require('KinghtFallPlayerMgr').KinghtFallPlayerMgr.getInstance().getUserData(),level=user.getHeroWeaponLevel?user.getHeroWeaponLevel('skirmisher',3):user.getPersonLevel(3),asset=Looks.skillAsset(data,runtime.config,level);
-      if(asset)value=Object.assign({},value,{projectile:asset.id,projectileAsset:asset});
-    }
-  }
-  // Saved selections from before tier trails were added retain their artwork
-  // and pick up its trail without rewriting the saved skill settings.
-  if(data&&value.projectile&&value.projectileAsset&&value.projectileAsset.trail===undefined){
-    var flight=(data.assets||[]).find(function(asset){return asset.id===value.projectile;}),trail=flight&&(data.trails||[]).find(function(trail){return trail.id===flight.trail;});
-    if(trail)value=Object.assign({},value,{projectileAsset:Object.assign({},value.projectileAsset,{trail:trail})});
-  }
-  return Settings.projectileVisual(value);
+  return runtime.state.style==='mystic'?MysticTrail.visual(value):value;
 }
 function color(runtime, fallback) { return visual(runtime).color || fallback; }
 function width(runtime, fallback) { var v=visual(runtime);return (v.lineWidth || fallback)*v.scale; }
 function offset(point,x,y) { return {x:point.x+(x||0),y:point.y+(y||0)}; }
 function rotated(vector,degrees) { var a=degrees*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return {x:vector.x*c-vector.y*s,y:vector.x*s+vector.y*c}; }
-function projectilePoint(projectile,v) {
-  return Projectile.visualPoint(projectile,v);
-}
+function projectilePoint(projectile) { return Projectile.visualPoint(projectile); }
 function release(runtime,strike,charge) {
   if(!runtime.available())return;
   var s=state(runtime);if(s.lastRelease===strike)return;s.lastRelease=strike;
@@ -115,7 +98,6 @@ function queue(runtime,phase,strike,onsetTime) {
   if(phase==="impact"){
     var key=strike===undefined?"basic:"+runtime.state.time:"strike:"+strike;
     if(s.impactKeys.has(key))return;s.impactKeys.set(key,true);
-    // Interleaved piercing arrows must not reset each other's strike budget.
     // Bound history and delayed audio independently of the gameplay hit count.
     if(s.impactKeys.size>512)s.impactKeys.delete(s.impactKeys.keys().next().value);
   }
@@ -268,7 +250,10 @@ function attachments(hud,runtime) {
   }else {
     s.beamEntity=null;
   }
-  (runtime.projectiles||[]).forEach(function(p){var at=projectilePoint(p,v);entities.push({key:p,x:at.x,y:at.y,angle:Math.atan2(p.direction.y,p.direction.x)*180/Math.PI,radius:p.width,loop:true,age:p.speed>0?p.travelled/p.speed:0});});
+  (runtime.projectiles||[]).forEach(function(p){
+    if(p.bullet)return;
+    var at=projectilePoint(p);entities.push({key:p,x:at.x,y:at.y,angle:Math.atan2(p.direction.y,p.direction.x)*180/Math.PI,radius:p.width,loop:true,age:p.speed>0?p.travelled/p.speed:0});
+  });
   (runtime.effects||[]).forEach(function(e){entities.push({key:e,x:e.x+(e.resolved?0:v.offsetX),y:e.y+(e.resolved?0:v.offsetY),angle:(e.direction?Math.atan2(e.direction.y,e.direction.x)*180/Math.PI:0)+(e.resolved?0:v.rotation),loop:false,age:Math.max(0,(e.duration||0)-(e.remaining||0))});});
   if(v.resource){var rate=Settings.playbackRate(v.resourcePlaybackRate);entities.forEach(function(entity){entity.age*=rate;});paintEntities(hud,runtime,s,v,entities);}
   if(iv.resource){
@@ -286,7 +271,11 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     // slot's authored tint, opacity and scale independent.
     var view=entity.visual||v;
     if(!entity.slot)entity.age=VFXLayout.sourceTime(VFXLayout.clipFor(view.resource),entity.age,entity.loop,runtime.state.style,"custom");
-    var destination=entity.behind?runtime.hero.node.parent:parent;
+    var style=runtime.state.style;
+    // Keep ground auras inside the hero's depth-sorted subtree, before the
+    // horse, rider and HP bar, even as the whole hero moves through the scene.
+    var behindRider=entity.behind&&(style==="bruiser"&&entity.slot==="passive"||style==="vanguard"&&entity.slot==="buff");
+    var destination=behindRider?runtime.hero.node:entity.behind?runtime.hero.node.parent:parent;
     keep.add(entity.key);var record=s.nodes.get(entity.key);
     if(record&&(!alive(record.node)||record.sprite&&!alive(record.sprite)||record.skeleton&&!alive(record.skeleton))){dispose(record);s.nodes.delete(entity.key);record=null;}
     if(!record){
@@ -310,7 +299,7 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     }
     record.node.scaleX=scale*(entity.scaleX===undefined?1:entity.scaleX);record.node.scaleY=scale*(entity.scaleY===undefined?1:entity.scaleY);record.node.angle=entity.angle+(view.resourceRotation||0);record.node.opacity=Math.round(255*view.opacity*(entity.opacity===undefined?1:entity.opacity));record.node.active=!entity.radius||!!record.initialized;
     if(entity.anchorX!==undefined){record.node.anchorX=entity.anchorX;record.node.anchorY=entity.anchorY;}
-    if(entity.behind)record.node.zIndex=(runtime.hero.node.zIndex||0)-1;
+    if(entity.behind)record.node.zIndex=behindRider?-1:(runtime.hero.node.zIndex||0)-1;
     record.node.color=cc.color(view.color||"#ffffff");
     seek(record);
   });
@@ -348,7 +337,12 @@ function vfxContext(runtime){
     if(!t||typeof t.started!=="number"||!isFinite(t.started)||runtime.state.time-t.started>=tauntDuration/VFXLayout.playbackRate(v,"taunt",runtime.state.style)+Math.max(0,v.tauntDelay||0)||enemy._heroTaunt!==t||t.data!==runtime.game.gameData||t.epoch!==runtime.game._combatEpoch||!(t.remaining>0))return;
     var at=target(enemy,true,t.enemyGeneration,t.enemyNode);if(at)taunts.push({key:t.visualKey,at:t.started,target:at});
   });
-  // Fighter and Vanguard passive/buff effects follow their ground pivot.
+  // Vanguard's mount can be offset from the physics owner's origin.
+  var mountGround=null;
+  if(runtime.state.style==="vanguard"&&v.buffResource&&runtime.state.buffRemaining>0){
+    var horse=hero.ctrPlayAni&&hero.ctrPlayAni.spAniMa;
+    if(horse&&alive(horse.node))mountGround=main.convertToNodeSpaceAR(horse.node.convertToWorldSpaceAR(cc.v2(0,0)));
+  }
   var body=groundOnly?null:target(hero,false);if(body){body.x-=v.targetX;body.y-=v.targetY;}
   var presence=[];
   if(runtime.state.style==="guardian"&&v.presenceResource&&runtime.state.tuning.allyReduction>0){
@@ -364,7 +358,7 @@ function vfxContext(runtime){
     var captured=cast.target,enemy=captured&&captured.id,liveTarget=enemy&&target(enemy,false,captured.generation,captured.node),heroGround=hero.node.getPosition(),enemyGround=enemy&&enemy.node&&enemy.node.getPosition();
     castValid=!!liveTarget&&!!enemyGround&&Math.hypot(enemyGround.x-heroGround.x,enemyGround.y-heroGround.y)<=hero.attackRange;
   }
-  return{style:runtime.state.style,facing:hero.ctrPlayAni&&hero.ctrPlayAni.spAniBody&&hero.ctrPlayAni.spAniBody.node&&hero.ctrPlayAni.spAniBody.node.scaleX<0?-1:1,skillCast:runtime.skillCast,skillCastValid:castValid,castDuration:clipDuration(castClip,'cast'),castSecondaryDuration:clipDuration(castSecondaryClip,'castSecondary'),presenceTargets:presence,defenseDuration:clipDuration(defenseClip,'defense'),physicalShieldSpawnDuration:clipDuration(physicalClip,'physicalShield'),heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:origin&&offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration,runtime.beamNode),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration,runtime.beamVisibleNode),beamOnset:beamOnset(runtime),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration,runtime.markNode):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
+  return{style:runtime.state.style,facing:hero.ctrPlayAni&&hero.ctrPlayAni.spAniBody&&hero.ctrPlayAni.spAniBody.node&&hero.ctrPlayAni.spAniBody.node.scaleX<0?-1:1,skillCast:runtime.skillCast,skillCastValid:castValid,castDuration:clipDuration(castClip,'cast'),castSecondaryDuration:clipDuration(castSecondaryClip,'castSecondary'),presenceTargets:presence,defenseDuration:clipDuration(defenseClip,'defense'),physicalShieldSpawnDuration:clipDuration(physicalClip,'physicalShield'),heroBody:body,mountGround:mountGround,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:origin&&offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration,runtime.beamNode),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration,runtime.beamVisibleNode),beamOnset:beamOnset(runtime),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration,runtime.markNode):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
 }
 function advanceVFX(runtime){
   if(runtime.state.style==="mystic"&&!hasStyleArt(visual(runtime))&&!runtime.channelTarget&&!runtime.beamTarget&&!(runtime._presentation&&runtime._presentation.mysticTrail))return null;

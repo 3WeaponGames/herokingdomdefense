@@ -27,17 +27,19 @@ function fixture(user,options={}){
  const cc={Node,Graphics,Label,LabelOutline:class{},Sprite,Mask,Font:class{},BlockInputEvents:class{},find:()=>canvas,color:value=>value,isValid:node=>!node.destroyed,rect:(x,y,width,height)=>({x,y,width,height}),size:(width,height)=>({width,height}),v2:(x,y)=>({x,y}),
   resources:{load},assetManager:{getBundle:()=>({load:(resource,type,callback)=>load(resource,type,callback,'KinghtFallIconGood')})}};
  let ready,cancels=0;
+ const catalog=require('../../assets/resources/localization/catalog.json');
  const modules={HeroWeapons:require('../../assets/_script/HeroWeapons'),EquipmentTiers:require('../../assets/_script/EquipmentTiers'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},
   KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:options.config||require('../../assets/KinghtFallConfig/GameJsonCfg.json'),getEquipCfgList:()=>require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg})}},
   HeroSkillSettings:require('../../assets/_script/HeroSkillSettings'),HeroSkillAuthoring:require('../../assets/_script/HeroSkillAuthoring'),HeroSkillDescriptions:require('../../assets/_script/HeroSkillDescriptions'),
   EquipmentIconFit:{apply(sprite,frame){sprite.spriteFrame=frame;}},
+  LanguageMgr:{LanguageMgr:{getInstance:()=>({bindLabel(label,key){label.string=catalog.entries[key][options.language||'en'];}})}},
   BattleSounds:{effect(id,owner,options){sounds.push({id,owner,options});}},
   HeroItemLooks:{gearImage(slot,level,area,style){icons.push({slot,level,area,style});return{resource:'items/'+style+'/'+slot+'/'+level};},whenReady(callback){ready=callback;return()=>{ready=null;cancels++;};}},
   HeroStylePreview:{create(){const preview={styles:[],setStyle(style){this.styles.push(style);},destroy(){this.destroyed=true;}};previews.push(preview);return preview;}},
   HeroWeaponIcon:{create(parent,_user,style){const value={parent,style,destroy(){this.destroyed=true;}};poseIcons.push(value);return value;}}};
  const context={exports:{},cc,require:name=>modules[name]};
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroWeaponPicker.js'),'utf8'),context);
- const all=(value=canvas)=>[value,...value.children.flatMap(all)],find=name=>all().find(node=>node.name===name),tap=value=>{if(!value)throw Error('Missing tap target');value.handlers.tap({target:value,stopPropagation(){}});};
+ const all=(value=canvas)=>[value,...value.children.flatMap(all)],find=name=>all().find(node=>node.name===name),tap=value=>{if(!value)throw Error('Missing tap target');value.handlers.tap?.({target:value,stopPropagation(){}});};
  return{api:context.exports,cc,Node,canvas,all,find,tap,icons,previews,poseIcons,tierFrames,pending,sounds,ready:()=>ready&&ready(),cancels:()=>cancels};
 }
 exports.fixture=fixture;

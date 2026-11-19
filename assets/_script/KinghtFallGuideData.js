@@ -34,7 +34,11 @@ var exp_KinghtFallGuideData = function (t) {
     return this.data;
   };
   _ctor.prototype.initData = function () {
-    this.data.stepId = 0;
+    // Keep an acknowledged step when reopening. Resetting every group replayed
+    // the relic's free draw and could wait on an already constructed castle.
+    if (!Number.isSafeInteger(this.data.GroupId) || this.data.GroupId < 1) this.data.GroupId = 1;
+    var rows = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getGuideCfgById(this.data.GroupId);
+    if (!Number.isSafeInteger(this.data.stepId) || this.data.stepId < 0 || this.data.stepId >= rows.length) this.data.stepId = 0;
   };
   _ctor.prototype.validateSaveRecord = function (data) {
     data = this.normalizeSaveRecord(data, new l());
@@ -56,6 +60,17 @@ var exp_KinghtFallGuideData = function (t) {
     this.data.stepId = t;
     this.saveData();
   };
+  _ctor.prototype.setGuideState = function (group, step) {
+    if (!Number.isSafeInteger(group) || group < 1 || !Number.isSafeInteger(step) || step < 0) return false;
+    var oldGroup = this.data.GroupId, oldStep = this.data.stepId;
+    this.data.GroupId = group; this.data.stepId = step;
+    if (this.saveData() === false) { this.data.GroupId = oldGroup; this.data.stepId = oldStep; return false; }
+    return true;
+  };
+  _ctor.prototype.advanceStep = function (group, step, length) {
+    if (this.getGroupId() !== group || this.getStepId() !== step) return false;
+    return this.setGuideState(step + 1 < length ? group : group + 1, step + 1 < length ? step + 1 : 0);
+  };
   _ctor.prototype.addCurrentId = function (t) {
     undefined === t && (t = true);
     this.data.GroupId += 1;
@@ -69,8 +84,10 @@ var exp_KinghtFallGuideData = function (t) {
   };
   _ctor.prototype.setGuideTips = function (t, e) {
     undefined === e && (e = 1);
+    var previous = this.data.tips.slice();
     this.data.tips[t] = e;
-    this.saveData();
+    if (this.saveData() === false) { this.data.tips = previous; return false; }
+    return true;
   };
   _ctor.prototype.getTimeByKey = function (t) {
     this.data.listTime[t] || (this.data.listTime[t] = 0);

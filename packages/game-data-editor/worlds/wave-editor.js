@@ -2,6 +2,7 @@
 // Draft-only wave operations. Reading a legacy schedule never converts or saves
 // it; the first explicit group edit materializes that wave's displayed schedule.
 const M=require('./model'),own=(value,key)=>Object.prototype.hasOwnProperty.call(value,key);
+const {equal}=require('../lib/json-document');
 const clone=value=>M.clone(value);
 function fallbackInterval(interval){if(!Number.isFinite(interval)||interval<=0)throw Error('Spawn interval must be greater than zero.');return interval;}
 function uniqueEntries(source){
@@ -63,5 +64,28 @@ function stageLevel(stage){const level=stage.config.Level===undefined?stage.leve
 function appendWave(stage,sourceIndex,blank){const source=waveAt(stage,sourceIndex);if(!source||typeof source!=='object'||Array.isArray(source))throw Error('Repair the selected wave before copying its settings.');const level=stageLevel(stage),next=clone(source),list=waves(stage);next.Wave=list.length+1;next.id=level;if(blank){next.SpawnTimeline=[];next.RefreshSoldierKind=[];}list.push(next);return list.length-1;}
 function addWave(stage,sourceIndex){const list=waves(stage);return appendWave(stage,sourceIndex===undefined?list.length-1:sourceIndex,true);}
 function duplicateWave(stage,index){return appendWave(stage,index,false);}
+function copyWaveFrom(stage,sourceIndex,destinationIndex,{groups=true,paths=true,multipliers=true,settings=true}={}){
+ if(sourceIndex===destinationIndex)throw Error('Choose a different source wave.');
+ const source=waveAt(stage,sourceIndex),destination=waveAt(stage,destinationIndex);
+ if([source,destination].some(row=>!row||typeof row!=='object'||Array.isArray(row)))throw Error('Choose valid source and destination waves.');
+ if(!groups&&!multipliers&&!settings)throw Error('Select at least one option to copy.');
+ const copies=key=>{
+  if(key==='id'||key==='Wave')return false;
+  if(key==='SpawnTimeline'||key==='RefreshSoldierKind')return groups;
+  if(key==='HealthCoefficient'||key==='AttackCoefficient')return multipliers;
+  return settings;
+ };
+ const retained=Object.entries(destination).filter(([key])=>!copies(key));
+ const copied=Object.entries(source).filter(([key])=>copies(key));
+ const next=clone(Object.fromEntries(retained.concat(copied)));
+ // Both schedule fields retain their authored format. Routes belong to the stage;
+ // dropping an override makes the copied group follow its spawn's default path.
+ if(groups&&!paths&&Array.isArray(next.SpawnTimeline)){
+  for(const entry of next.SpawnTimeline)if(entry&&typeof entry==='object')delete entry.routeGraphId;
+ }
+ if(equal(destination,next))return false;
+ stage.config.WaveCfg[destinationIndex]=next;
+ return true;
+}
 function removeWave(stage,index){waveAt(stage,index);const list=waves(stage);if(list.length===1)throw Error('Keep at least one wave in the stage.');const remaining=list.filter((wave,at)=>at!==index);if(remaining.some(wave=>!wave||typeof wave!=='object'||Array.isArray(wave)))throw Error('Repair the other malformed wave rows before removing this wave.');list.splice(index,1);list.forEach((wave,index)=>{wave.Wave=index+1;});return Math.min(index,list.length-1);}
-module.exports={entries,summary,addGroup,editGroup,removeGroup,chooseGroups,addWave,duplicateWave,removeWave};
+module.exports={entries,summary,addGroup,editGroup,removeGroup,chooseGroups,addWave,duplicateWave,copyWaveFrom,removeWave};

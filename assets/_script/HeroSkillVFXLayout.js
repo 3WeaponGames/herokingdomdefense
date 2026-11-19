@@ -5,6 +5,9 @@ function clipFor(id){return Catalog.clips.filter(function(clip){return clip.uuid
 function phaseClips(slot,selected,phase){
   if(!selected)return [null];
   if(slot==="beam"&&selected.slot==="beam"&&selected.id.indexOf("mystic-beam-")===0)return Catalog.clips.filter(function(clip){return clip.id.indexOf("mystic-beam-")===0&&clip.phase===phase;});
+  if(slot==="buff"&&selected.group==="vanguard-momentum-lock"){
+    return Catalog.clips.filter(function(clip){return clip.group===selected.group&&clip.phase===phase;});
+  }
   if((slot==="mark"||slot==="shield"||slot==="physicalShield")&&selected.slot===slot){var found=Catalog.clips.filter(function(clip){return clip.group===selected.group&&clip.phase===phase;});if(found.length)return found;}
   return [selected];
 }
@@ -29,11 +32,14 @@ function entities(frame,visual,context){
     // remain independent and the next pass still sees live authoring edits.
     var selection=selections.get(slot);if(!selection){selection={clip:clipFor(resource),phases:new Map(),visuals:new Map()};selections.set(slot,selection);}
     var parts=selection.phases.get(entity.phase);if(!parts){parts=phaseClips(slot,selection.clip,entity.phase);selection.phases.set(entity.phase,parts);}
+    var variant=entity.variant||selection.clip&&selection.clip.variant||"incomplete";
     parts.forEach(function(clip){
+      if(clip&&clip.variant&&clip.variant!==variant)return;
       var v=selection.visuals.get(clip);if(!v){v=frameVisual(visual,slot,clip);selection.visuals.set(clip,v);}
-      var rate=playbackRate(visual,slot,entity.style||context.style),style=entity.style||context.style,base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:!clip||clip.loop,scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:hero.x+(v.offsetX||0),y:hero.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:(slot==="passive"||slot==="buff")&&style!=="fighter"};
+      var style=entity.style||context.style,rate=playbackRate(visual,slot,style);
+      var origin=style==="vanguard"&&slot==="buff"&&context.mountGround||hero;
+      var base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:entity.loop!==false&&(!clip||clip.loop),scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:origin.x+(v.offsetX||0),y:origin.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:(slot==="passive"||slot==="buff")&&style!=="fighter"};
       if(v.flipX)base.scaleX*=-1;if(v.flipY)base.scaleY*=-1;
-      if(style==="bruiser"&&slot==="passive")base.behind=false;
       if(clip&&clip.referenceCell&&clip.cell)base.scale=(base.scale===undefined?1:base.scale)*clip.referenceCell/clip.cell;
       if(entity.phase==="start"&&typeof entity.progress==="number")base.age=Math.min(.999999,entity.progress)*visibleDuration(clip,entity.style||context.style,slot);
       if(entity.phase==="end")base.age=Math.min(.999999,entity.progress||0)*visibleDuration(clip,entity.style||context.style,slot);

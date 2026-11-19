@@ -1,6 +1,6 @@
 'use strict';
-const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const root=path.resolve(__dirname,'../..'),PNG=require('../../packages/hkd-characters/lib/png-atlas'),Looks=require('../../assets/_script/ProjectileLooks'),Settings=require('../../assets/_script/HeroSkillSettings');
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../..'),PNG=require('../../packages/hkd-characters/lib/png-atlas'),Looks=require('../../assets/_script/ProjectileLooks');
 const read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8')),sourceData=read('assets/resources/projectiles/catalog.json'),data={...sourceData,assignments:{...sourceData.assignments,hero:{}}},config=read('assets/KinghtFallConfig/GameJsonCfg.json');
 const original='assets/KinghtFallEnemyAni/wqyl_lead/wqyl_lead_bullet_jian/wqyl_lead_bullet_jian',purple='assets/resources/projectiles/hero-arrow-tier4/hero-arrow-tier4';
 const ids=['hero-skin:lv1','hero-skin:lv2','hero-skin:lv3','hero-skin:lv4-purple','hero-skin:lv4'];
@@ -14,12 +14,25 @@ test('all 25 Skirmisher arrow upgrades select the correct one of five tier proje
  assert.equal(Looks.select(data,'hero',20,null,false).flight,undefined,'Skirmisher defaults leaked into another hero style');assert.equal(JSON.stringify(data),before);
 });
 
-test('active skills follow the live arrow tier automatically and still accept an explicit Skills projectile override',()=>{
- const P={},visual=Settings.defaults('skirmisher').visual;let level=1;
- vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroSkillPresentation.js'),'utf8'),{exports:P,require:name=>name==='./ProjectileLooks'?{...Looks,currentCatalog:()=>data}:name==='KinghtFallPlayerMgr'?{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeaponLevel:()=>level})})}}:name.startsWith('./')?require(path.join(root,'assets/_script',name)):{} });
- const runtime={state:{style:'skirmisher'},settings:{visual},config};for(level=1;level<=25;level++){const result=P.visual(runtime),tier=Math.floor((level-1)/5);assert.equal(result.projectile,ids[tier]);assert.equal(result.resourceTrail.id,'trail:hero-arrow-lv'+(tier+1));assert.equal(result.showBuiltin,false);}
- runtime.settings.visual={...visual,projectile:ids[0],projectileAsset:Looks.skillAsset(data,config,1)};level=25;assert.equal(P.visual(runtime).projectile,ids[0]);assert.equal(visual.projectile,'','Resolving equipped tiers wrote default selections');
- delete runtime.settings.visual.projectileAsset.trail;assert.equal(P.visual(runtime).resourceTrail.id,'trail:hero-arrow-lv1');assert.equal(runtime.settings.visual.projectileAsset.trail,undefined,'Upgrading old selection metadata wrote to saved settings');
+test('the volley and ordinary bow shots select the same tiered flight artwork',()=>{
+ const {setup,Node}=require('./backend-gameplay-harness.cjs'),flights=[];
+ let level=1;
+ const h=setup({ProjectileLooks:{prepare(shot,_owner,key){
+  shot._launchProjectileLook=()=>{
+   const skin=config.EquipCfg.find(row=>row.id===3).levelInfo[level-1].EquipSkin;
+   flights.push(Looks.select(data,key,level,null,skin));
+  };
+ }}});
+ h.g.ctrPlay={heroStyle:'skirmisher',node:new Node('hero',h.g.ndMain),ctrPlayAni:{arrName:'lv1'},getAttWpos:()=>h.e.cc.v2(0,0),getAttack:()=>100,crit:-1};
+ for(level=1;level<=25;level+=5){
+  h.g.ctrPlay.ctrPlayAni.arrName=config.EquipCfg.find(row=>row.id===3).levelInfo[level-1].EquipSkin;
+  const volley=Array.from({length:5},()=>h.g.launchVolleyArrow({x:0,y:0},{x:1,y:0}));
+  h.g.onPlayAttack({node:new Node('enemy',h.g.ndMain,100,0)});
+  assert.equal(flights.length,6);const tier=Math.floor((level-1)/5);
+  for(const flight of flights.splice(0)){assert.equal(flight.flight,ids[tier]);assert.equal(flight.trail,'trail:hero-arrow-lv'+(tier+1));}
+  for(const shot of volley)shot.freeNode();
+  h.g.ndPlayArr2[0].freeNode();
+ }
 });
 
 test('each arrow tier supplies its matching short trail while explicit trail choices retain precedence',()=>{

@@ -181,7 +181,7 @@ async function handle(Editor,root,request,deps){
                 throw Error('Unable to prepare the managed player for reset: '+error.message);
             }
             if(!snapshot.ready)throw Error('Wait for the managed player to finish loading before reset.');
-            const directory=path.join(root,'local/game-data-editor/testing-backups');
+            const directory=path.join(require('../progress-reset/service').backupRoot(root),'testing-backups');
             const backup=path.join(directory,'test-player-'+Date.now()+'-'+crypto.randomBytes(3).toString('hex')+'.json');
             try{
                 fs.mkdirSync(directory,{recursive:true});

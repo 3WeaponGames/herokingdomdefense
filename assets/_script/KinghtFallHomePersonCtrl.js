@@ -159,7 +159,21 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     this.scheduleOnce(this.showHomeGuide, .5);
   };
   _ctor.prototype.showHomeGuide = function () {
-    if (this.node.activeInHierarchy) this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 4, this.nodeInfo[0].ndInfo.getChildByName("btnUpgeade"));
+    if (!this.node.activeInHierarchy) return;
+    var flow = require("TutorialFlow"), guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    if (guide.getGroupId() !== 4 || guide.getStepId() !== 1) return;
+    var target;
+    for (var row of this.nodeInfo) {
+      var button = row.ndInfo && row.ndInfo.getChildByName("btnUpgeade");
+      if (flow.visible(button)) { target = button; break; }
+    }
+    var informational = !target;
+    if (!target) target = this.nodeInfo.find(function (row) { return flow.visible(row.ndInfo); });
+    if (informational) target = target && target.ndInfo;
+    if (!target) return;
+    flow.scrollTo(this, target);
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 4, target, undefined,
+      informational ? { informational: true, text: "[[loc:tutorial.equipment.overview]]" } : undefined);
   };
   _ctor.prototype.onDestroy = function () {
     require("HeroWeaponPicker").close(this);

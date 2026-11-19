@@ -1,7 +1,7 @@
 'use strict';
 const path=require('path');
 const Store=require('./lib/store').Store;
-const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Fighting Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
+const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Fighting Types',maps:'Maps',settings:'Battle Settings',testing:'Testing','progress-reset':'Reset All Progress'};
 let store=null,assets=null,restoreMetadataSave=null,restoreSpineLibrarySave=null,restoreSpineAtlasRefresh=null,worlds=null;
 function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:variant=>{const docs=getStore().snapshot().documents,selected=docs[variant]&&docs[variant].data;const config=selected&&selected.BuildEnum?selected:docs.A.data;return Object.assign({},config,{GameTools:variant==='A'&&docs.overrides?docs.overrides.data:config.GameTools});}});return worlds;}
 function worldBroadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});return snapshot;}
@@ -31,6 +31,11 @@ function refreshImports(files){
     });
 }
 const messages={
+    'progress-reset'(event,request){reply(event,()=>require('./progress-reset/service').handle(Editor,project(),request));},
+    'progress-reset-pick'(event){reply(event,()=>new Promise((resolve,reject)=>{
+        const dialog=require('electron').dialog,options={title:'Choose the Simulator jsb.sqlite save file',defaultPath:project(),properties:['openFile'],filters:[{name:'Simulator save (jsb.sqlite)',extensions:['sqlite']}]};
+        try{const modern=Number((process.versions.electron||'0').split('.')[0])>=6,result=modern?dialog.showOpenDialog(options):dialog.showOpenDialog(options,files=>resolve(files&&files[0]||null));if(result&&result.then)result.then(value=>resolve(value.canceled?null:value.filePaths[0]),reject);else if(Array.isArray(result))resolve(result[0]||null);}catch(error){reject(error);}
+    }));},
     'wall-adjustments-load'(event,request){reply(event,()=>require('./walls/service').load(project(),request));},
     'wall-adjustments-preview'(event,request){reply(event,()=>require('./walls/service').preview(project(),request));},
     'wall-adjustments-save'(event,request){reply(event,async()=>{
@@ -133,4 +138,4 @@ module.exports={load(){
         restoreMetadataSave=require('./lib/metadata-save').install(Editor.require('app://asset-db/lib/meta'),path.join(project(),'assets'));
     }
     if(Editor.versions&&/^2\.4\./.test(Editor.versions.CocosCreator)&&Editor.assetdb&&typeof Editor.assetdb.refresh==='function'&&typeof Editor.assetdb.clearImports==='function')restoreSpineAtlasRefresh=require('./lib/spine-atlas-refresh').install(Editor,project());
-},unload(){if(restoreMetadataSave){restoreMetadataSave();restoreMetadataSave=null;}if(restoreSpineLibrarySave){restoreSpineLibrarySave();restoreSpineLibrarySave=null;}if(restoreSpineAtlasRefresh){restoreSpineAtlasRefresh();restoreSpineAtlasRefresh=null;}if(store&&store.changes().length)Editor.warn('[Game Tools] Unsaved drafts were not applied to the game. Keep the panels open until Save or Discard.');try{require('./worlds/preview').shutdown();require('./testing/session').shutdown();}catch(e){if(e.code!=='MODULE_NOT_FOUND')Editor.warn('[Game Tools] '+e.message);}store=null;assets=null;worlds=null;},messages,_getStore:getStore,_getWorlds:getWorlds};
+},unload(){if(restoreMetadataSave){restoreMetadataSave();restoreMetadataSave=null;}if(restoreSpineLibrarySave){restoreSpineLibrarySave();restoreSpineLibrarySave=null;}if(restoreSpineAtlasRefresh){restoreSpineAtlasRefresh();restoreSpineAtlasRefresh=null;}if(store&&store.changes().length)Editor.warn('[Game Tools] Unsaved drafts were not applied to the game. Keep the panels open until Save or Discard.');try{require('./progress-reset/service').shutdown();require('./worlds/preview').shutdown();require('./testing/session').shutdown();}catch(e){if(e.code!=='MODULE_NOT_FOUND')Editor.warn('[Game Tools] '+e.message);}store=null;assets=null;worlds=null;},messages,_getStore:getStore,_getWorlds:getWorlds};

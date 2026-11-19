@@ -3,14 +3,14 @@
 // percentages, evaluated expressions, or player-state mutations are needed.
 var Core = require("./HeroStyleSkills");
 var templates = {
-  skirmisher: { active: "Volley deals {activeDamage:percent} of bow damage after Steady Aim, plus {distanceDamagePer100:percent} per 100 distance. Cooldown: {cooldown}s." },
+  skirmisher: { active: "Fire five arrows in a spread. Each travels straight and deals {activeDamage:percent} bow damage to the first enemy it hits. Cooldown {cooldown}s." },
   fighter: {
     active: "Knock enemies back. Gain +{buffDamage:percent} damage and +{buffAttackRate:percent} attack speed for {buffDuration}s. Cooldown: {cooldown}s.",
-    passive: "Melee hits build up to {maxStacks} stacks: up to +{stackDamageTotal:percent} damage, {stackReductionTotal:percent} damage reduction and {stackTenacityTotal:percent} tenacity. Stacks expire after {stackDuration}s without a hit."
+    passive: "Land {maxStacks} hits to gain +{stackDamageTotal:percent} damage, {stackReductionTotal:percent} damage reduction, and {stackTenacityTotal:percent} tenacity. Each hit refreshes the {stackDuration}s buff."
   },
   vanguard: {
     active: "Strike {strikes} times over {duration}s for {strikeDamage:percent} base damage per hit. Movement and attack speed increase damage. Cooldown: {cooldown}s.",
-    passive: "Moving builds momentum. The first hit locks up to +{momentumMove:percent} movement speed and +{momentumAttackRate:percent} attack speed for {buffDuration}s."
+    passive: "Moving builds Momentum and grants up to +{momentumMove:percent} movement speed. A hit with Momentum locks it for {buffDuration}s and adds up to +{momentumAttackRate:percent} attack speed. Momentum resets when the buff expires."
   },
   mystic: {
     active: "Marked-target burst: {activeDamage:percent} damage, +{chargeDamage:percent} damage and +{splashRadiusPerCharge} radius per charge (max {maxCharges}). Cooldown: {cooldown}s.",

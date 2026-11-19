@@ -441,17 +441,6 @@ exports.clips = {
     "referenceGain": 0.65,
     "loopCrossfade": 0
   },
-  "68690382-ae8b-45e1-8203-0da6c2d8c5e7": {
-    "bundle": "KinghtFallAudio",
-    "path": "sfx/cavalry-lance-thrust",
-    "gain": 1.644145,
-    "previewGain": 0.657658,
-    "integrated": -20.36,
-    "peak": -1.53,
-    "target": -24,
-    "referenceGain": 0.4,
-    "loopCrossfade": 0
-  },
   "bf9f9a71-664a-4fe0-88f4-28995425444f": {
     "bundle": "KinghtFallAudio",
     "path": "sfx/chain-lightning",

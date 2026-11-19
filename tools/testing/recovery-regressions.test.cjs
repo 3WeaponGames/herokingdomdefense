@@ -186,6 +186,7 @@ function loading(options = {}) {
     director: { preloadScene() {}, loadScene(name, done) { state.sceneCalls.push({ name, done }); return true; } }
   };
   const Loading = load('Loading', {
+    ProgressReset: require('../../assets/_script/ProgressReset'),
     ResourceMgr: { ResourceMgr: { getInstance: () => resources } },
     LanguageMgr: { LanguageMgr: { getInstance: () => language } },
     EventMgr: { EventMgr: { getInstance: () => ({ off() { state.offs++; } }) } },

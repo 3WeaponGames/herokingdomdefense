@@ -12,9 +12,10 @@ test('hero movement consumes slow statuses and never reverses direction from sta
 });
 
 test('Fighter tenacity and native slow movement share the same shortened status lifetime',()=>{
- const h=setup(),p=hero(h);p.heroStyle='fighter';p.moveSpeed=100;p.state=0;p._regenerationDisabled=true;h.load('HeroStyleRuntime').install(p,{});p._styleRuntime.state.stacks=5;p._styleRuntime.state.stackRemaining=5;
- const type=h.load('KinghtFallInterface').KinghtFallEnemyBuffType.MoveSpeed,input={subNum:.4,time:1};p.addBuff(type,input);assert.equal(input.time,1);assert(Math.abs(p.debuffInfo[0].timeMax-.6)<1e-9);assert.equal(p.getSpeed(),60);
- p.onUpdata(.59);assert.equal(p.getSpeed(),60);p.onUpdata(.011);assert.equal(p.getSpeed(),100);assert.equal(p.debuffInfo.length,0);
+ const h=setup(),p=hero(h);p.heroStyle='fighter';p.moveSpeed=100;p.state=0;p._regenerationDisabled=true;h.load('HeroStyleRuntime').install(p,{});
+ const skills=h.load('HeroStyleSkills');for(let n=0;n<10;n++)skills.onHit(p._styleRuntime.state,{}, {strikeId:n});
+ const type=h.load('KinghtFallInterface').KinghtFallEnemyBuffType.MoveSpeed,input={subNum:.4,time:1};p.addBuff(type,input);assert.equal(input.time,1);assert(Math.abs(p.debuffInfo[0].timeMax-.2)<1e-9);assert.equal(p.getSpeed(),60);
+ p.onUpdata(.19);assert.equal(p.getSpeed(),60);p.onUpdata(.011);assert.equal(p.getSpeed(),100);assert.equal(p.debuffInfo.length,0);
 });
 
 for(const kind of ['KinghtFallEnemyItem06','KinghtFallEnemyItem09'])test(kind+' support selects living units before corpses and pooled actors',()=>{

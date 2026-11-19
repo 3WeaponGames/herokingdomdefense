@@ -245,7 +245,7 @@ test('failed loops retry after a bounded delay and interrupted native loops reco
 });
 
 test('releases select the unit weapon, and confirmed impacts distinguish arrows, magic, armour and splash', () => {
-  const cases = [[90001, 'sword-light-swing'], [90002, 'sword-heavy-swing'], [90003, 'crossbow-fire'], [90004, 'cavalry-lance-thrust']];
+  const cases = [[90001, 'sword-light-swing'], [90002, 'sword-heavy-swing'], [90003, 'crossbow-fire'], [90004, 'sword-light-swing']];
   for (const [id, clip] of cases) { const f = fixture(); f.start(); f.sounds.attack(f.actor(id, { navigationTeam: 'friendly' }), 'ally'); f.finishAll(); assert(f.played.some(p => p.path === 'sfx/' + clip)); }
   for (const [type, clip] of [['arrow', 'bow-arrow-release'], ['sniper', 'sniper-tower-fire'], ['cannon', 'cannon-tower-fire']]) {
     const f = fixture(); f.start(); f.sounds.attack(f.actor(0), 'tower', { attackType: type }); f.finishAll(); assert(f.played.some(p => p.path === 'sfx/' + clip));
@@ -610,9 +610,9 @@ test('switching from approved lava ambience to a removed biome background stops 
 });
 
 test('the six hero styles use their own weapon release and impact families',()=>{
- const expected={skirmisher:'bow-arrow-release',fighter:'sword-light-swing',vanguard:'cavalry-lance-thrust',mystic:'enemy-magic-projectile',bruiser:'sword-heavy-swing',guardian:'sword-heavy-swing'};
+ const expected={skirmisher:'bow-arrow-release',fighter:'sword-light-swing',vanguard:'sword-light-swing',mystic:'enemy-magic-projectile',bruiser:null,guardian:'sword-heavy-swing'};
  for(const [style,clip]of Object.entries(expected)){
-  const f=fixture();f.start();f.hero.heroStyle=style;f.sounds.attack(f.hero,'hero');f.finishAll();assert(f.played.some(p=>p.path==='sfx/'+clip),style);
+  const f=fixture();f.start();f.hero.heroStyle=style;f.sounds.attack(f.hero,'hero');f.finishAll();if(clip)assert(f.played.some(p=>p.path==='sfx/'+clip),style);else assert.equal(f.played.length,0,style);
   const target=f.actor(90002,{navigationTeam:'friendly'});f.sounds.hit(target,f.hero,10);f.finishAll();
   assert(f.played.some(p=>p.path==='sfx/'+(style==='mystic'?'magic-impact':style==='bruiser'?'impact-bruiser-basic':style==='skirmisher'?'arrow-impact-armour':style==='vanguard'?'skirmisher-passive-hit':'impact-armour')),style);
  }
@@ -631,14 +631,45 @@ test('Bruiser basic hits use their dedicated clip while active and secondary hit
  }
 });
 
-test('all six hero styles select the shared critical cue before ordinary or charged impacts',()=>{
- for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian'])for(const active of [false,true]){
-  const f=fixture();f.hero.heroStyle=style;f.start();
-  const target=f.actor(90002,{navigationTeam:'friendly'}),context={heroStyle:style,critical:true,styleSkill:active,styleShotCharge:1};
-  f.sounds.hit(target,f.hero,50,{context});f.finishAll();
-  assert.deepEqual(f.played.map(p=>p.path),['sfx/critical-hit'],style+(active?' active':' basic'));
-  assert.equal(f.pending.length,0);assert(f.played.every(p=>p.source.mute));
+test('critical basic and active hits use the shared cue for all six hero styles', () => {
+  for (const style of ['skirmisher', 'fighter', 'vanguard', 'mystic', 'bruiser', 'guardian']) {
+    for (const active of [false, true]) {
+      const f = fixture();
+      f.hero.heroStyle = style;
+      f.start();
+      const target = f.actor(90002, { navigationTeam: 'friendly' });
+      const context = { heroStyle: style, critical: true, styleSkill: active, styleShotCharge: 1 };
+      f.sounds.hit(target, f.hero, 50, { context });
+      f.finishAll();
+      assert.deepEqual(f.played.map(play => play.path), ['sfx/critical-hit'], style + (active ? ' active' : ' basic'));
+      assert.equal(f.pending.length, 0);
+      assert(f.played.every(play => play.source.mute));
+    }
+  }
+});
+
+test('the removed Cavalry Lance Thrust asset has no active entry or playback route',()=>{
+ const f=fixture();f.start();assert.equal(f.sounds.effect('cavalry-lance-thrust',f.hero),false);
+ assert.equal(catalog.effects['cavalry-lance-thrust'],undefined);
+ assert(!fs.existsSync(path.join(root,'assets/KinghtFallAudio/sfx/cavalry-lance-thrust.mp3')));
+ assert(!fs.existsSync(path.join(root,'assets/KinghtFallAudio/sfx/cavalry-lance-thrust.mp3.meta')));
+ assert.equal(f.pending.length,0);assert.equal(f.played.length,0);
+});
+
+test('Bruiser basic contacts reject a custom layered impact but active attacks retain it',()=>{
+ for(const active of [false,true]){
+  const f=fixture();f.start();f.hero.heroStyle='bruiser';f.hero._styleRuntime={settings:{audio:{impact:{clip:'old-custom-cue'}}}};
+  f.sounds.attack(f.hero,'hero');f.sounds.hit(f.actor(90001),f.hero,10,{context:{heroStyle:'bruiser',styleSkill:active}});f.finishAll();
+  assert.deepEqual(f.played.map(p=>p.path),active?[]:['sfx/impact-bruiser-basic']);
  }
+});
+
+test('Bruiser healing from every caller stays silent, while other heroes retain their healing sound',()=>{
+ const f=fixture();f.start();f.hero.heroStyle='bruiser';
+ for(const cue of ['healing-receive','life-steal'])assert.equal(f.sounds.effect(cue,f.hero),false);
+ assert.equal(f.pending.length,0);assert.equal(f.played.length,0);
+ f.hero.heroStyle='fighter';assert.equal(f.sounds.effect('healing-receive',f.hero),true);f.finishAll();
+ assert.deepEqual(f.played.map(p=>p.path),['sfx/healing-receive']);
 });
 
 test('removed creature hurt cues cannot load or play while material hit feedback remains available',()=>{

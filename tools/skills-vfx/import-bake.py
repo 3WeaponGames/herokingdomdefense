@@ -81,10 +81,9 @@ def run(bake,artifacts):
         if row['id']=='mystic-electric-barrier':clip.update(startX=0,startY=.5,endX=1,endY=.5)
         clips.append(clip)
     catalog={'version':1,'workbookSha256':source['workbookSha256'],'clips':clips,'presets':{
-      'skirmisher':{'cast':'skirmisher-single-volley'},
-      'fighter':{'passive':'fighter-windup','buff':'fighter-meshy-center','cast':'fighter-sp162-attack2'},
-      'vanguard':{'passive':'vanguard-momentum','buff':'vanguard-momentum-buff','cast':'vanguard-spear-barrage'},
-      'bruiser':{'passive':'bruiser-blood-aura','cast':'bruiser-sp162-skill3','castSecondary':'bruiser-sp162-hit1'},
+      'fighter':{'passive':'fighter-stack-activation','buff':'fighter-meshy-center','cast':'fighter-crescent-slash'},
+      'vanguard':{'cast':'vanguard-spear-barrage','buff':'vanguard-incomplete-buff'},
+      'bruiser':{'passive':'bruiser-flame-aura','cast':'bruiser-ring-slash'},
       'mystic':{'beam':'mystic-electric-barrier','channelHit':'mystic-electrified-target','mark':'mystic-mark-loop','cast':'mystic-charged-burst'},
       'guardian':{'presence':'guardian-gold-presence','taunt':'guardian-taunt-exclamation','physicalShield':'guardian-sp162-gold-shield'}}}
     custom=ROOT/'tools/skills-vfx/sheet-clips.json'

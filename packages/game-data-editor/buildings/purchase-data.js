@@ -29,12 +29,8 @@ function describe(service,request){
 }
 function unbuiltPad(service,config,building,variant){
  const Purchase=require('../worlds/purchase-field'),category=config.BuildEnum[building.kind],first=category.levelList.find(r=>(category.InitialChoices||[category.levelList[0].index]).includes(r.index))||category.levelList[0],raw=require('../worlds/gate-facing').project(service.source(building.template.prefab),building,service.root),base=Object.assign({},building,{previewBranch:first.index,purchaseOverride:false});delete base.purchaseSide;delete base.purchaseOffset;
- const selected=Purchase.withDefaults(base,config,1,raw),source=Purchase.project(raw,selected),info=Maps.model(source),owner=info.byId[building.template.node],controller=owner.components.find(c=>c.value.ndAniMain).value,field=info.byId[controller.ndLockList[0].__id__],card=field&&field.children.map(id=>info.byId[id]).find(n=>n.name==='ndLock'),spec=card&&info.sprites.find(s=>s.node===card.id&&s.enabled);
- if(!spec)return null;
- const matrix=[owner.world[0],owner.world[1],owner.world[2],owner.world[3],0,0],offset=Settings.unbuilt(category,variant),scale=Scale.value(first),m=card.world.slice();
- if(offset){const p=Maps.point(matrix,offset);m[4]=owner.position.x+p.x;m[5]=owner.position.y+p.y;}else{m[4]+=(field.position.x-owner.position.x)*(scale-1);m[5]+=(field.position.y-owner.position.y)*(scale-1);}
- const position=offset||Maps.point(Maps.inverse(matrix),{x:m[4]-owner.position.x,y:m[5]-owner.position.y}),sprite={frame:spec.frame,matrix:m,width:card.width,height:card.height,anchor:clone(card.anchor),color:clone(card.source._color||{r:255,g:255,b:255,a:255}),active:true,ground:true};
- return{position,matrix,record:{origin:clone(owner.position),sprites:[sprite],skeletons:[]}};
+ const selected=Purchase.withDefaults(base,config,1,raw),source=Purchase.project(raw,selected),info=Maps.model(source),owner=info.byId[building.template.node],controller=owner.components.find(c=>c.value.ndAniMain).value,field=info.byId[controller.ndLockList[0].__id__];
+ return require('../worlds/purchase-field-preview').describeNameCard(info,owner,field,Settings.unbuilt(category,variant),Scale.value(first));
 }
 function place(service,request){
  if(request.positions)return positionChanges(service,request);

@@ -11,9 +11,19 @@ var $z1BasePlatform = require("BasePlatform");
 var $z1PlatformManager = require("PlatformManager");
 var $z1ServerDataMgr = require("ServerDataMgr");
 var $z1Utils = require("Utils");
+var progressGeneration, generationRead = false;
+function currentProgressGeneration() {
+  try {
+    var value = localStorage.getItem("project-cocos.progress-generation");
+    if (!generationRead) { progressGeneration = value; generationRead = true; }
+    return value === progressGeneration;
+  } catch (error) { return true; }
+}
+currentProgressGeneration();
 var exp_CacheUtils = function () {
   function _ctor() {}
   _ctor.saveData = function (key, value) {
+    if (!currentProgressGeneration()) return false;
     var platform = $z1PlatformManager.PlatformManager.currentPlatform;
     var nativeFile = platform == $z1BasePlatform.Platform.BYTEDANCE || platform == $z1BasePlatform.Platform.WECHAT;
     if (nativeFile) {
@@ -41,6 +51,7 @@ var exp_CacheUtils = function () {
     }
   };
   _ctor.clearAll = function (t) {
+    if (!currentProgressGeneration()) return false;
     try {
       var platform = $z1PlatformManager.PlatformManager.currentPlatform;
       var native = platform === $z1BasePlatform.Platform.BYTEDANCE ? tt : platform === $z1BasePlatform.Platform.WECHAT ? wx : null;
