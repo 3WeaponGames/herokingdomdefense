@@ -49,6 +49,11 @@ test('command voices and biome easter eggs retain action labels and composable b
       const item = Catalog.details('assets/KinghtFallAudio/voices/units/' + unit + '/' + unit + '-' + action + '-variant-3.mp3');
       assert.equal(item.category, 'voices'); assert.equal(item.tier, null); assert.equal(item.voiceAction, action);
       assert.equal(item.biome, null); assert(item.name.includes('Line 3')); assert(!item.name.includes('Death'));
+      if (unit === 'crossbowman') {
+        assert.equal(item.unit, unit);
+        assert.equal(item.unitName, 'Crossbow Trooper');
+        assert(item.name.startsWith('Crossbow Trooper · '));
+      }
     }
     for (const biome of Catalog.BIOMES) for (const action of ['build', 'follow', 'rally']) {
       const item = Catalog.details('assets/KinghtFallAudio/voices/units/' + unit + '/' + unit + '-biome-' + biome + '-' + action + '.mp3');
@@ -108,7 +113,7 @@ function sample() {
   return { categories: [{ id: 'weapons', name: 'Weapons' }, { id: 'voices', name: 'Voices' }], marks: { a: 'red', b: 'green', c: 'yellow' }, items: [
     { id: 'a', name: 'Arrow', key: 'arrow', file: 'a.wav', origin: 'original', category: 'weapons', kind: 'effect', duration: 2, biome: 'forest' },
     { id: 'b', name: 'Bolt', key: 'bolt', file: 'b.wav', origin: 'new', category: 'weapons', kind: 'effect', duration: 1, biome: 'ice' },
-    { id: 'c', name: 'Crossbowman line', key: 'crossbowman-level-1', file: 'c.mp3', origin: 'new', category: 'voices', kind: 'voice', unit: 'crossbowman', tier: 1, duration: 3 },
+    { id: 'c', name: 'Crossbow Trooper line', key: 'crossbowman-level-1', file: 'c.mp3', origin: 'new', category: 'voices', kind: 'voice', unit: 'crossbowman', tier: 1, duration: 3 },
     { id: 'd', name: 'Different line', key: 'line', file: 'd.mp3', origin: 'new', category: 'voices', kind: 'voice', duration: null }
   ] };
 }

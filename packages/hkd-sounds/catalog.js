@@ -52,11 +52,12 @@ function details(file) {
   else if (/(reward|treasure|level_up|get_idea|unlock)/.test(key)) category = 'rewards';
   else if (/^ui-/.test(key) || ['button_click', 'btnclick', 'cuo', 'Scroll_down', 'Cards', 'open'].includes(key)) category = 'interface';
   let name = TITLES[key] || title(key.replace(/-loop$/, ''));
+  const unitName = unit && (unit === 'crossbowman' ? 'Crossbow Trooper' : title(unit));
   if (voice) {
     const variant = /-variant-(\d+)/.exec(key), action = voiceAction === 'follow' ? 'Follow hero' : voiceAction === 'build' ? 'Building' : title(voiceAction || key);
-    name = title(unit) + (tier ? ' · Tier ' + tier : ' · ' + action) + (biome ? ' · ' + title(biome) + ' · Easter egg' : variant ? ' · Line ' + variant[1] : '');
+    name = unitName + (tier ? ' · Tier ' + tier : ' · ' + action) + (biome ? ' · ' + title(biome) + ' · Easter egg' : variant ? ' · Line ' + variant[1] : '');
   } else if (biome) name = title(biome) + (kind === 'music' ? ' · Planning theme' : category === 'horses' ? ' · Horse steps' : ' · Ambience');
-  return { key, name, category, kind, biome, unit, tier, voiceAction, loop: /-loop$/.test(key) || kind === 'music', generated: sfx || voice };
+  return { key, name, category, kind, biome, unit, unitName, tier, voiceAction, loop: /-loop$/.test(key) || kind === 'music', generated: sfx || voice };
 }
 function index(root) {
   root = path.resolve(root); const assets = path.join(root, 'assets'), result = [], warnings = [], ids = new Set();

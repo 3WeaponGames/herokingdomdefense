@@ -40,7 +40,7 @@
     "data.building.heavy-infantry-4.name": {"en":"Ironwall Bastion","zh":"铁壁堡垒","context":"Approved four-tier building progression"},
     "data.building.heavy-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Heavy Infantry.","zh":"最终升级：加固兵营，可驻扎十二名重装步兵。","context":"Approved four-tier building progression"},
     "data.building.crossbow-4.name": {"en":"Crossbow Stronghold","zh":"弩兵要塞","context":"Approved four-tier building progression"},
-    "data.building.crossbow-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Crossbowmen.","zh":"最终升级：加固兵营，可驻扎十二名弩手。","context":"Approved four-tier building progression"},
+    "data.building.crossbow-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Crossbow Troopers.","zh":"最终升级：加固兵营，可驻扎十二名弩手。","context":"Approved four-tier building progression"},
     "data.building.stables-4.name": {"en":"Crown Stables","zh":"王冠马厩","context":"Approved four-tier building progression"},
     "data.building.stables-4.description": {"en":"Final upgrade: reinforced stables with room for twelve cavalry units.","zh":"最终升级：加固马厩，可驻扎十二名骑兵。","context":"Approved four-tier building progression"},
     "data.building.farmhouse-4.name": {"en":"Stone Farmhouse","zh":"石砌农舍","context":"Approved four-tier building progression"},
@@ -6129,7 +6129,7 @@
       "zh": "重装步兵"
     },
     "data.allycfg.90003.name": {
-      "en": "Crossbowman",
+      "en": "Crossbow Trooper",
       "zh": "弩手"
     },
     "data.allycfg.90004.name": {

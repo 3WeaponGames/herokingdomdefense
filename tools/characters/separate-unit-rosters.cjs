@@ -8,7 +8,7 @@ const enemies=[
  [90007,'Iron Golem','钢铁魔像','iron-golem','guardian'],[90008,'Pirate Ghost','海盗幽灵','ghost','skirmisher'],[90009,'Vampire','吸血鬼','vampire','mystic'],
  [90010,'Stone Scorpion','岩石蝎子','scorpion','bruiser'],[90011,'Tree Golem','树木魔像','tree-golem','guardian'],[90012,'Skeleton Warlord','骷髅战将','skeleton','bruiser']
 ];
-const allies=[[90001,'Royal Guard','王国卫士','fighter','wg_zd_dr1'],[90002,'Heavy Infantry','重装步兵','guardian','wg_zd_dr2'],[90003,'Crossbowman','弩手','skirmisher','wg_zd_dr3'],[90004,'Cavalry','骑兵','vanguard','wg_zd_dr4']];
+const allies=[[90001,'Royal Guard','王国卫士','fighter','wg_zd_dr1'],[90002,'Heavy Infantry','重装步兵','guardian','wg_zd_dr2'],[90003,'Crossbow Trooper','弩手','skirmisher','wg_zd_dr3'],[90004,'Cavalry','骑兵','vanguard','wg_zd_dr4']];
 const key=(side,id)=>side+':'+id+':'+(side==='enemy'&&id>=90010?id-90009:'default');
 function migrate(root){
  const configFile='assets/KinghtFallConfig/GameJsonCfg.json',catalogFile='assets/resources/localization/catalog.json',reads=new Map(),files=new Map();

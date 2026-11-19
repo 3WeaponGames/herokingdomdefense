@@ -50,7 +50,7 @@
       "skinTint": "#ffbdab"
     },
     "crossbowman": {
-      "name": "Crossbowman",
+      "name": "Crossbow Trooper",
       "base": {
         "type": "ally",
         "id": "90003",
@@ -1217,7 +1217,7 @@
       }
     },
     "ally-90003-level-1-2": {
-      "name": "Crossbowman · Level 1",
+      "name": "Crossbow Trooper · Level 1",
       "base": {
         "type": "ally",
         "id": "90003",
@@ -1321,7 +1321,7 @@
       "skinTint": "#ffbdab"
     },
     "ally-90003-level-2": {
-      "name": "Crossbowman · Level 2",
+      "name": "Crossbow Trooper · Level 2",
       "base": {
         "type": "ally",
         "id": "90003",
@@ -1425,7 +1425,7 @@
       "skinTint": "#ffbdab"
     },
     "ally-90003-level-3": {
-      "name": "Crossbowman · Level 3",
+      "name": "Crossbow Trooper · Level 3",
       "base": {
         "type": "ally",
         "id": "90003",
@@ -1835,7 +1835,7 @@
       }
     },
     "ally-90003-level-4": {
-      "name": "Crossbowman · Level 4",
+      "name": "Crossbow Trooper · Level 4",
       "base": {
         "type": "ally",
         "id": "90003",

@@ -37,7 +37,7 @@ function create(root,apply){
   const presets={
     'royal-guard':ally(90001,'Royal Guard',[['chest',armor],['helmet',helmet],['weapon',/^HandRight\/Sword\/FA_WP_Main_Sword_022_DarkGary$/],['shield',shield]]),
     'heavy-infantry':ally(90002,'Heavy Infantry',[['chest',/^Chest\/.*White/],['helmet',/^Helmet\/.*White/],['weapon',/^HandRight\/Blunt\/.*Gray/],['shield',shield]]),
-    'crossbowman':ally(90003,'Crossbowman',[['chest',armor],['helmet',helmet],['weapon',/^HandRight\/Crossbow\/FA_WP_Main_Crossbow_010_BrownGray$/],['stock',/^HandRight\/Crossbow\/FA_WP_Main_Crossbow_010_BrownGray_Down$/]]),
+    'crossbowman':ally(90003,'Crossbow Trooper',[['chest',armor],['helmet',helmet],['weapon',/^HandRight\/Crossbow\/FA_WP_Main_Crossbow_010_BrownGray$/],['stock',/^HandRight\/Crossbow\/FA_WP_Main_Crossbow_010_BrownGray_Down$/]]),
     'cavalry':ally(90004,'Cavalry',[['chest',armor],['helmet',helmet],['weapon',/^HandRight\/Spear\/.*Blue/],['shield',shield]])
   };
   presets.cavalry.base.mount='legacy-cavalry';
