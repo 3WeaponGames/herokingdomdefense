@@ -1,4 +1,4 @@
-"""Publish four exact data-only SP162 effects after binary/JSON pose validation.
+"""Publish the data-only Guardian SP162 effect after binary/JSON pose validation.
 
 First run prepare-sp162.cjs SOURCE EXTERNAL_STAGING, then this importer with
 EXTERNAL_STAGING EXTERNAL_BACKUPS. No Unity code or game settings are executed.
@@ -11,8 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/characters'))
 from import_units import Transaction, asset_uuid, texture_meta
 
-IDS = {'fighter-sp162-attack2', 'bruiser-sp162-skill3',
-       'bruiser-sp162-hit1', 'guardian-sp162-gold-shield'}
+IDS = {'guardian-sp162-gold-shield'}
 BASE = 'assets/resources/vfx/hero-skills'
 
 def digest(raw):
@@ -25,7 +24,7 @@ def run(staging, backups, project=ROOT):
     manifest = json.loads((staging / 'manifest.json').read_bytes())
     rows = manifest.get('clips', [])
     if len(rows) != len(IDS) or {row.get('id') for row in rows} != IDS:
-        raise ValueError('Expected the four verified SP162 effects')
+        raise ValueError('Expected the verified Guardian SP162 effect')
     tx = Transaction(project, Path(backups)); clips = []
     for row in rows:
         ident = row['id']; folder = staging / ident
@@ -86,8 +85,6 @@ def run(staging, backups, project=ROOT):
     tx.json(nativefile, native)
     catalogfile = BASE + '/catalog.json'; catalog = json.loads(tx.read(catalogfile))
     catalog['clips'] = [row for row in catalog['clips'] if row.get('id') not in IDS] + clips
-    catalog['presets']['fighter']['cast'] = 'fighter-sp162-attack2'
-    catalog['presets']['bruiser'].update(cast='bruiser-sp162-skill3', castSecondary='bruiser-sp162-hit1')
     guardian = catalog['presets']['guardian']
     for key in ('buff', 'defense', 'shield'): guardian.pop(key, None)
     guardian['physicalShield'] = 'guardian-sp162-gold-shield'

@@ -252,9 +252,10 @@ var exp_KinghtFallPlayerMgr = function () {
       self.udata.data.wallDefenseAdmission = { id: id, cost: cost, used: false }; return id;
     }, canEnter);
   };
-  _ctor.prototype.drawTreasures = function (box, count, costs, video) {
+  _ctor.prototype.drawTreasures = function (box, count, costs, video, tutorial) {
     var self = this, config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
     if (!box || !Number.isInteger(count) || count < 1) return null;
+    if (tutorial && (count !== 1 || video || (costs || []).length)) return null;
     return this.purchase(costs || [], function () {
       var shop = self.udata.getShopInfo(box.ID) || { id: box.ID, time: 0, video: 0 };
       if (video) {
@@ -285,8 +286,9 @@ var exp_KinghtFallPlayerMgr = function () {
         if (effect && effect.param && Math.random() <= effect.param[0]) Array.prototype.push.apply(rewards, self.addTreasureReward(selected.id, 1));
       }
       self.udata.setShopInfo(shop);
+      if (tutorial) self.guideData.setGuideTips(5);
       return { pending: false, rewards: rewards };
-    });
+    }, tutorial ? function () { return self.guideData.getGroupId() === 5 && self.guideData.getStepId() >= 1 && self.guideData.getStepId() <= 2 && !self.guideData.getGuideTips(5); } : undefined);
   };
   _ctor.prototype.getUserData = function () {
     return this.udata;

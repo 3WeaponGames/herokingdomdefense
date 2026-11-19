@@ -80,9 +80,10 @@ def run(taunt, shield, backups):
             alphaBounds=list(bounds) if bounds else [], visibleFrames=sum(bool(images[key][i].getchannel('A').getbbox()) for i in indices),
             kind='flipbook', bundle='resources', resource='vfx/hero-skills/'+ident, uuid=asset_uuid(relative+'#sprite'), sha256=hashlib.sha256(raw).hexdigest(),
             source=dict(kind='user-sheet', file=originals[key].name, sha256=SOURCES[key][0], columns=SOURCES[key][1], rows=SOURCES[key][2], frames=indices)))
-    tx.json('tools/skills-vfx/sheet-clips.json', clips)
     relative='assets/resources/vfx/hero-skills/catalog.json'; catalog=json.loads(tx.read(relative))
-    catalog['clips']=[c for c in catalog['clips'] if c.get('source',{}).get('kind')!='user-sheet']+clips
+    new_clips={c['id']:c for c in clips}
+    catalog['clips']=[new_clips.pop(c['id'], c) for c in catalog['clips']]+list(new_clips.values())
+    tx.json('tools/skills-vfx/sheet-clips.json', [c for c in catalog['clips'] if c.get('source',{}).get('kind')=='user-sheet'])
     catalog['presets']['guardian'].update(taunt='guardian-taunt-test', shield='guardian-body-shield-loop')
     tx.json(relative,catalog)
     tx.stage('assets/_script/HeroSkillVFXCatalog.js', b'"use strict";\n// Generated VFX atlas metadata; see tools/skills-vfx.\nmodule.exports = '+json.dumps(catalog,ensure_ascii=False,indent=2).encode()+b';\n')

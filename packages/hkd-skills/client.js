@@ -158,7 +158,7 @@ function mount(host, api) {
   const speed = makeSelect(row, 'Speed', [['.25', '0.25×'], ['.5', '0.5×'], ['1', '1×'], ['1.5', '1.5×'], ['2', '2×']], '1', value => setScenario('speed', Number(value)));
   const handle = makeSelect(row, 'Handle', [['origin', 'Skill origin'], ['effect', 'Effect position']], 'origin', value => { if (preview && preview.selectHandle) preview.selectHandle(value); });
   const transformMode=makeSelect(row,'Transform',[['all','All handles'],['move','Move'],['scale','Scale'],['rotate','Rotate'],['pivot','Pivot']],'all',value=>{if(preview&&preview.setTransformMode)preview.setTransformMode(value);});
-  transformMode.title='Select an effect in the preview. Drag its center to move, squares to scale, and round handle to rotate. For either Blood Cleave effect, choose Pivot and drag the pink crosshair to change its rotation center while keeping the artwork in place. Gold handles edit actual range, radius or arc.';
+  transformMode.title='Select an effect in the preview. Drag its center to move, squares to scale, and round handle to rotate. For Blood Cleave, choose Pivot to move the rotation center. Gold handles edit gameplay geometry.';
   const clock = el('span', '0.000 s', row, 'clock');
   const timeline = el('input', undefined, transport, 'timeline'); timeline.type = 'range'; timeline.min = 0; timeline.max = 4; timeline.step = .001; timeline.value = 0; timeline.setAttribute('aria-label', 'Skill preview position');
   timeline.title='Drag to seek through the preview in seconds. Seeking pauses playback and does not edit skill settings.';
@@ -362,7 +362,7 @@ function mount(host, api) {
         onTransformPreview(patches){if(!previewGesture)return;previewGesture.patches={...patches};updateFields();updateButtons(session.state());},
         onTransformEnd(patches,commit){const gesture=previewGesture;previewGesture=null;if(gesture&&commit)session.changeMany(gesture.style,Object.entries(patches).map(([path,value])=>({path,value})));else updatePreview();updateFields();updateButtons(session.state());},
         onSelect(name){if(disposed)return;handle.value=name;},
-        onStatus(value) { if (disposed) return; Object.assign(playback, value); updatePlayback(); facts.textContent = value.error || (value.approaching?'Moving into skill range · ':'')+['Charge ' + Math.round((value.charge || 0) * 100) + '%', 'Cooldown ' + Number(value.cooldown || 0).toFixed(1) + ' s', 'Hits ' + (value.hits || 0)].join(' · '); },
+        onStatus(value) { if (disposed) return; Object.assign(playback, value); updatePlayback(); const progress=selected==='fighter'?'Stacks '+(value.stacks||0)+'/'+effective().maxStacks:'Charge '+Math.round((value.charge||0)*100)+'%';facts.textContent=value.error||(value.approaching?'Moving into skill range · ':'')+[progress,'Cooldown '+Number(value.cooldown||0).toFixed(1)+' s','Hits '+(value.hits||0)].join(' · '); },
         onSound(kind, value) { if (kind === 'stop' || kind === 'stopChannel' || soundEnabled) audio.cue(kind, Object.assign({}, value, {delay:(Number(value.delay)||0)/Math.max(.01,scenario.speed)})); }
       }); preview.setScenario(scenario); if (preview.setAudioEnabled) preview.setAudioEnabled(soundEnabled); if (preview.selectHandle) preview.selectHandle(handle.value);if(preview.setTransformMode)preview.setTransformMode(transformMode.value);
     }

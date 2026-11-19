@@ -87,7 +87,7 @@ test('description editing previews real stat changes, inserts placeholders and r
  const insert=f.field('Insert description stat');insert.value='{cooldown}';insert.onchange();await f.settle();assert.equal(description.value,'Damage {activeDamage:percent}.{cooldown}');assert.equal(preview().textContent,'Damage 90%.12');
  description.value='Bad {missing}';description.oninput();assert(description.className.includes('invalid'));assert.match(preview().textContent,/Unknown skill stat/);assert.equal(f.button('Save skills').disabled,true);
  description.parentElement.querySelector('button').click();await f.settle();assert.equal(description.value,template);assert.match(preview().textContent,/90%/);assert.equal(description.className.includes('invalid'),false);
- await f.client.selectEntry('fighter','passive');await f.settle();assert.match(f.field('Description preview').textContent,/stacks/);assert(f.field('Description').value.includes('{maxStacks}'));assert.equal(f.backend.calls.some(call=>call.name==='save'),false);f.close();
+ await f.client.selectEntry('fighter','passive');await f.settle();assert.match(f.field('Description preview').textContent,/Land 10 hits/);assert(f.field('Description').value.includes('{maxStacks}'));assert.equal(f.backend.calls.some(call=>call.name==='save'),false);f.close();
 });
 
 test('actual skills client lists six styles and browsing and scenario controls never stage game data', async () => {
@@ -116,14 +116,18 @@ test('position handles expose only useful anchors for the selected style and res
   assert.equal(f.backend.calls.some(call => call.name === 'change' || call.name === 'save'), false); f.close();
 });
 
-test('single-volley controls expose the actual hit arc without obsolete projectile-collider fields',async()=>{
- const f=await fixture();f.button('Position & VFX').click();await f.settle();assert(f.field('Hit arc angle'));for(const id of ['skill-visual-offsetX','skill-visual-offsetY','skill-visual-rotation'])assert(f.host.querySelectorAll('input').some(node=>node.id===id),id);assert.equal(f.field('Projectile radius'),null);assert.equal(f.field('Projectile'),null);assert.equal(f.button('Align projectile to bow'),undefined);assert.equal(f.backend.snapshot().dirty,false);f.field('Hit arc angle').value='24';f.field('Hit arc angle').onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.visual.arcDegrees,24);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
+test('Skirmisher shows editable spread with launch geometry centered on the bow',async()=>{
+ const f=await fixture();f.button('Position & VFX').click();await f.settle();assert(f.field('Arrow spread'));for(const id of ['skill-visual-offsetX','skill-visual-offsetY','skill-visual-rotation'])assert(!f.host.querySelectorAll('input').some(node=>node.id===id),id);assert.equal(f.field('Projectile radius'),null);assert.equal(f.field('Projectile'),null);assert.equal(f.button('Align projectile to bow'),undefined);assert.equal(f.backend.snapshot().dirty,false);f.field('Arrow spread').value='24';f.field('Arrow spread').onchange();await f.settle();assert.equal(f.backend.snapshot().effective.skirmisher.visual.arcDegrees,24);assert.equal(f.backend.calls.some(c=>c.name==='save'),false);f.close();
 });
 
-test('native Skirmisher exposes the complete volley effect and its contact controls without unrelated projectile artwork',async()=>{
- const id='bbbb0000-0000-0000-0000-000000000021',f=await fixture({catalogs:{vfx:[{id,name:'Three volley effect'}]}});
- f.button('Position & VFX').click();await f.settle();assert.equal(f.field('Projectile'),null);assert.equal(f.field('VFX asset'),null);const picker=f.field('Cast effect VFX asset');assert(picker);assert(picker.options.some(option=>option.value===id));
- picker.value=id;picker.onchange();await f.settle();assert(f.backend.calls.some(call=>call.name==='describe'&&call.request.castResource===id));assert.equal(f.calls.preview.at(-1).settings.visual.castResource,id);assert(f.field('Hit arc angle'));assert.equal(f.field('Projectile radius'),null);assert.equal(f.backend.calls.some(call=>call.name==='save'),false);assert.equal(f.calls.audio.length,0);f.close();
+test('Skirmisher preview uses the equipped projectile path without a cast-art picker',async()=>{
+ const f=await fixture();
+ f.button('Position & VFX').click();await f.settle();
+ assert.equal(f.field('Projectile'),null);assert.equal(f.field('VFX asset'),null);
+ assert.equal(f.field('Cast effect VFX asset'),null);assert(f.field('Arrow spread'));
+ const request=f.backend.calls.find(call=>call.name==='describe'&&call.request.style==='skirmisher').request;
+ assert.equal(request.castResource,'');assert.equal(f.calls.audio.length,0);assert.equal(f.backend.snapshot().dirty,false);
+ f.close();
 });
 
 test('R restarts the current preview without editing drafts and stays available for typing in fields',async()=>{
@@ -288,7 +292,7 @@ test('native skill inspectors omit controls their fixed presentation cannot appl
  const ids=()=>f.host.querySelectorAll('input,select').map(node=>node.id);
  for(const key of ['offsetX','offsetY','rotation','scale','animation','castResourceAnimation'])assert(!ids().includes('skill-visual-'+key),key+' must not pretend to change the native burst');assert(ids().includes('skill-visual-castScale'));assert(ids().includes('skill-visual-castDelay'));assert(!f.field('Handle').options.some(option=>option.value==='effect'));
  const asset=f.field('Cast effect VFX asset');asset.value=custom;asset.onchange();await f.settle();const animation=f.field('Cast effect VFX animation');assert(animation);assert(animation.options.some(option=>option.value==='cast-custom'));assert(animation.options.some(option=>option.value==='loop-custom'));animation.value='cast-custom';animation.onchange();await f.settle();assert.equal(f.client.session.effective('mystic').visual.castResourceAnimation,'cast-custom');
- await f.client.selectEntry('vanguard','passive');await f.settle();assert(!ids().includes('skill-visual-passiveMinScale'));assert(ids().includes('skill-visual-passiveMinPlayback'));assert(ids().includes('skill-visual-passiveScale'));
+ await f.client.selectEntry('vanguard','passive');await f.settle();assert(!ids().some(id=>id&&id.startsWith('skill-visual-passive')));assert(ids().includes('skill-visual-buffResource'));
  await f.client.selectStyle('guardian');await f.settle();assert(!ids().includes('skill-visual-physicalShieldResourceAnimation'));assert(!ids().includes('skill-visual-defenseResourceAnimation'));assert(ids().includes('skill-visual-physicalShieldDelay'));assert(!f.backend.calls.some(call=>call.name==='save'));f.close();
 });
 

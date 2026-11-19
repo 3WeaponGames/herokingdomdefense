@@ -22,25 +22,25 @@ test('Steady Aim charges only standing and first basic shot snapshots then clear
  Skills.step(s,.001,{moving:true});assert.equal(s.charge,0);
 });
 
-test('Momentum preserves basic arrow speed while the active snapshots one charged arc multiplier',()=>{
+test('Steady Aim speeds up basic arrows and the active releases once at its own damage multiplier',()=>{
  for(const charge of[0,.25,.5,.75,1]){
   const s=Skills.createState('skirmisher',{chargeRate:0});s.charge=charge;const fire=Skills.onBasicFire(s);close(fire.speedMultiplier,1+charge);assert.equal(s.charge,0);
-  s.charge=charge;Skills.beginActive(s,{});const events=Skills.step(s,s.tuning.windup,{moving:false});assert.deepEqual(events.map(e=>e.type),['skirmisher-release','skirmisher-volley']);for(const event of events){close(event.charge,charge);close(event.damageMultiplier,(1+charge*s.tuning.chargedDamage)*s.tuning.activeDamage);assert.equal(event.speed,undefined);}
+  s.charge=charge;Skills.beginActive(s,{});const events=Skills.step(s,s.tuning.windup,{moving:false});assert.deepEqual(events.map(e=>e.type),['skirmisher-release']);close(events[0].charge,charge);close(events[0].damageMultiplier,1);
  }
 });
 test('aim confirmation does not consume charge before Skirmisher actually fires',()=>{
  const s=Skills.createState('skirmisher');s.charge=.5;
  assert.equal(Skills.beginActive(s,{direction:{x:0,y:5}}).ok,true);close(s.charge,.5);
  assert.equal(Skills.step(s,.1,{moving:false}).length,0);
- const events=Skills.step(s,s.tuning.windup-.1,{moving:false});assert.equal(events.length,2);
- assert.deepEqual(events.map(e=>e.type),['skirmisher-release','skirmisher-volley']);close(events[0].charge,.5+s.tuning.windup*.25);close(s.charge,0);
+ const events=Skills.step(s,s.tuning.windup-.1,{moving:false});assert.equal(events.length,1);
+ assert.equal(events[0].type,'skirmisher-release');close(events[0].charge,.5+s.tuning.windup*.25);close(s.charge,0);
  assert.deepEqual(events[0].direction,{x:0,y:1});
- close(events[1].charge,events[0].charge);const later=Skills.step(s,1,{moving:false});assert.equal(later.length,0,'The completed single arc cannot emit hidden later arrows');
+ assert.equal(Skills.step(s,1,{moving:false}).length,0);
 });
-test('Skirmisher movement during wind-up clears charge and distance always increases shot damage',()=>{
+test('Skirmisher movement during wind-up clears charge without changing active damage',()=>{
  const s=Skills.createState('skirmisher');s.charge=1;Skills.beginActive(s,{});
  const [arrow]=Skills.step(s,s.tuning.windup,{moving:true});assert.equal(arrow.charge,0);
- assert(Skills.projectileMultiplier(s,600,arrow.damageMultiplier)>Skills.projectileMultiplier(s,100,arrow.damageMultiplier));
+ assert.equal(arrow.damageMultiplier,1);
 });
 test('Skirmisher wind-up and passive result do not depend on frame partition',()=>{
  function run(frames){const s=Skills.createState('skirmisher');Skills.beginActive(s,{});return {s,events:frames.flatMap(dt=>Skills.step(s,dt,{moving:false}))};}
@@ -84,12 +84,23 @@ test('Vanguard timing is frame independent and no first target list is stored',(
  const slow=run([2.5]),fast=run(Array(250).fill(.01));assert.equal(fast.length,5);
  fast.forEach((e,i)=>{close(e.time,slow[i].time);assert(!('targets' in e));});
 });
-test('Fighter landed melee hits stack damage, reduction and tenacity and all expire',()=>{
+test('Fighter activates full bonuses on hit ten and only refreshes the active timer on later hits',()=>{
  const s=Skills.createState('fighter');Skills.onHit(s,{}, {hit:false});assert.equal(s.stacks,0);
  Skills.onHit(s,{}, {melee:false});assert.equal(s.stacks,0);
- for(let i=0;i<15;i++)Skills.onHit(s,{}, {strikeId:i});assert.equal(s.stacks,10);
+ for(let i=0;i<9;i++){
+  Skills.onHit(s,{}, {strikeId:i});Skills.onHit(s,{}, {strikeId:i});
+  assert.equal(s.stacks,i+1);
+  const bonus=Skills.bonuses(s);assert.equal(bonus.damage+bonus.damageReduction+bonus.tenacity,0);
+  Skills.step(s,6,{});
+ }
+ assert.equal(s.stackBuffAt,null);
+ Skills.onHit(s,{}, {strikeId:9});assert.equal(s.stacks,10);assert.equal(s.stackRemaining,5);
+ const activated=s.stackBuffAt;
  const bonus=Skills.bonuses(s);close(bonus.damage,.3);close(bonus.damageReduction,.25);close(bonus.tenacity,.8);
- Skills.step(s,5,{});assert.equal(s.stacks,0);assert.equal(Skills.bonuses(s).damage,0);
+ Skills.step(s,4.9,{});Skills.onHit(s,{}, {strikeId:10});
+ assert.equal(s.stackRemaining,5);assert.equal(s.stackBuffAt,activated);
+ Skills.step(s,5,{});assert.equal(s.stacks,0);assert.equal(s.stackBuffAt,null);assert.equal(Skills.bonuses(s).damage,0);
+ Skills.onHit(s,{}, {strikeId:11});assert.equal(s.stacks,1);assert.equal(s.stackRemaining,0);
 });
 test('Fighter active grants ten-second attack speed and damage, then expires',()=>{
  const s=Skills.createState('fighter'),cast=Skills.beginActive(s,{});assert.equal(cast.buffDuration,10);assert(cast.knockback>0);
@@ -140,7 +151,7 @@ test('dead heroes cannot cast or emit scheduled skill impacts and cooldown block
 });
 test('tuning overrides are local and invalid values cannot poison timers or state',()=>{
  const s=Skills.createState('fighter',{stackDamage:.1,cooldown:NaN,unrelated:100}),normal=Skills.createState('fighter');
- Skills.onHit(s,{},{});Skills.onHit(normal,{},{});assert.equal(Skills.bonuses(s).damage,.1);assert.equal(Skills.bonuses(normal).damage,.03);
+ for(let n=0;n<10;n++){Skills.onHit(s,{},{});Skills.onHit(normal,{},{});}assert.equal(Skills.bonuses(s).damage,1);assert.equal(Skills.bonuses(normal).damage,.3);
  assert.equal(s.tuning.cooldown,12);Skills.step(s,NaN,{});assert.equal(s.time,0);assert(!('unrelated' in s.tuning));
 });
 

@@ -4,9 +4,6 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto'),Module=require('node:module');
 const ROOT=path.resolve(__dirname,'../..'),PNG=require('../../packages/hkd-characters/lib/png-atlas'),renderer=require('../../packages/game-data-editor/preview/spine-renderer');
 const SOURCES=[
-  ['fighter-sp162-attack2','301020_attack2','Fighter Arc Slash','fighter','cast'],
-  ['bruiser-sp162-skill3','301010_skill3','Blood Cleave · circular slash','bruiser','cast'],
-  ['bruiser-sp162-hit1','300950_skill_hit1','Blood Cleave · impact','bruiser','castSecondary'],
   ['guardian-sp162-gold-shield','301060_skill_hit','Guardian Golden Shield','guardian','physicalShield']
 ];
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');

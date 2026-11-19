@@ -805,6 +805,7 @@ var def_KinghtFallUIGame = function (t) {
         t.ctrGame.gameData.upMap();
         t.initBtnView();
         t.ctrGame.saveGame();
+        t.startGuide();
         // Upgrade presentation belongs to the committed roster after wave cleanup.
         if (upgradeAudio.size && require("KinghtFallUIGame").default.instance === t && !t.isclose &&
             cc.isValid(t, true) && t.node && cc.isValid(t.node, true) && t.node.activeInHierarchy !== false &&
@@ -1252,109 +1253,71 @@ var def_KinghtFallUIGame = function (t) {
       });
     }
   };
-  _ctor.prototype.startGuide = function (t) {
+  _ctor.prototype.startGuide = function (tip) {
+    var flow = require("TutorialFlow");
+    if (!flow.active(this) || $z1PlatformSetting.PlatformSetting.currentPlatform === $z1BasePlatform.Platform.WEB_LINK) return;
     if (this._battleHud) require("BattleHud").layout(this);
-    var e = this;
-    if ($z1PlatformSetting.PlatformSetting.currentPlatform != $z1BasePlatform.Platform.WEB_LINK) {
-      if (t) {
-        if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideTips(t)) {
-          return;
-        }
-        var i = new $z1UIGuide.GuildCfg();
-        var a = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(t)[0];
-        i.isWeek = !!a.Close;
-        i.showHand = a.Finger;
-        i.hideMask = !a.Mask;
-        i.tipstring = a.Describe;
-        i.showAni = !!a.ShowKing;
-        i.deviationTipsAll = cc.v2(0, a.Offset || 0);
-        11 == t && (i.distNode = this.btnAgg);
-        switch (t) {
-          case 7:
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide12);
-            break;
-          case 8:
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide10);
-            break;
-          case 9:
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide11);
-            break;
-          case 10:
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide13);
-            break;
-          case 11:
-            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide14);
-        }
-        this.openUICallBack($z1Config.UIID.UIGuide, function () {
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGuideTips(t);
-        }, i);
+    if (!this._pendingGuideTips) this._pendingGuideTips = new Set();
+    if (Number.isInteger(tip) && tip >= 7 && tip <= 11) this._pendingGuideTips.add(tip);
+    if (this._tutorialOpen) return;
+    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    var group = guide.getGroupId(), step = guide.getStepId(), rows = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(group);
+    if (group === 2 && rows[step]) {
+      var main = this.ctrGame.gameData.baseBuild, level = main && main.getLevel();
+      // Edited maps and resumed checkpoints may already have their main hall.
+      // Never require a later upgrade merely to finish the construction lesson.
+      if (step === 1 && level >= 1) {
+        if (flow.state(guide, 2, 2)) return this.startGuide();
+        return;
       }
-      var o = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
-      var s = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(o);
-      if (!(s.length <= 0)) {
-        var h;
-        var g = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId();
-        var u = s[g];
-        switch (o) {
-          case 2:
-            this.isPauset = true;
-            (h = new $z1UIGuide.GuildCfg()).isWeek = !!u.Close;
-            h.showHand = u.Finger;
-            h.hideMask = !u.Mask;
-            h.tipstring = u.Describe;
-            h.showAni = !!u.ShowKing;
-            switch (g) {
-              case 0:
-                h.distNode = this.ndCoin;
-                h.addSize = new cc.Size(40, 0);
-                h.deviationTipsAll = cc.v2(0, u.Offset || 0);
-                h.lightType = 1;
-                $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide4);
-                break;
-              case 1:
-                h.distNode = this.ctrGame.gameData.baseBuild.ndLockList[this.ctrGame.gameData.baseBuild.getLevel()];
-                h.distCamera = this.ctrGame.camera;
-                h.deviationTipsAll = cc.v2(0, u.Offset || 0);
-                h.callBack = function () {
-                  n.instance.ctrUI.setGuide(e.ctrGame.gameData.baseBuild.ndLockList[e.ctrGame.gameData.baseBuild.getLevel()]);
-                };
-                this.isPauset = false;
-                $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide5);
-                break;
-              case 2:
-                for (var d in this.enemyIconInfo) {
-                  if (Object.prototype.hasOwnProperty.call(this.enemyIconInfo, d)) {
-                    var v = this.enemyIconInfo[d];
-                    if (v.ndItem && v.ndItem.active) {
-                      h.distNode = v.ndItem;
-                      break;
-                    }
-                  }
-                }
-                h.deviationTipsAll = cc.v2(0, u.Offset || 0);
-                $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide7);
-                break;
-              case 3:
-                h.lightType = 1;
-                h.distNode = this.btnStartFight;
-                h.deviationTipsAll = cc.v2(0, u.Offset || 0);
-                this.isPauset = false;
-            }
-        }
+      if (step >= 2 && !(level >= 1)) return;
+      var cfg = flow.config(rows[step]), ui = this;
+      switch (step) {
+        case 0:
+          cfg.distNode = this.ndCoin; cfg.addSize = new cc.Size(40, 0); cfg.lightType = 1;
+          break;
+        case 1:
+          var field = main && (main.getPurchaseField ? main.getPurchaseField() : main.ndLockList && main.ndLockList[level]);
+          if (!flow.visible(field)) return;
+          cfg.distNode = field; cfg.distCamera = this.ctrGame.camera;
+          cfg.callBack = function () { if (flow.active(ui)) ui.ctrUI.setGuide(field); };
+          break;
+        case 2:
+          for (var id in this.enemyIconInfo) {
+            if (Object.prototype.hasOwnProperty.call(this.enemyIconInfo, id) && flow.visible(this.enemyIconInfo[id].ndItem)) { cfg.distNode = this.enemyIconInfo[id].ndItem; break; }
+          }
+          // Empty authored waves still have a readable wave heading.
+          if (!cfg.distNode) cfg.distNode = this.ndLevelInfo;
+          break;
+        case 3:
+          cfg.lightType = 1; cfg.distNode = this.btnStartFight;
+          break;
+      }
+      if (flow.present(this, guide, group, step, rows, cfg)) {
+        this.isPauset = step !== 1 && step !== 3;
         if (this.ctrGame.setAudioPaused) this.ctrGame.setAudioPaused(this.isPauset);
-        if (h) {
-          this.openUICallBack($z1Config.UIID.UIGuide, function () {
-            if (s[g + 1]) {
-              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(g + 1);
-            } else {
-              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGroupId(o + 1);
-              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(0);
-            }
-          }, h);
-        } else {
-          this.sendEvent($z1Appcfg.BaseEventName.blocktouch, true);
-        }
+        var track = ["guide4", "guide5", "guide7"][step];
+        if (track) $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId[track]);
       }
+      return;
+    }
+    // Building help waits for the current battle decision instead of covering
+    // the perk/tutorial dialog or being discarded by a competing UI request.
+    if (this._battleDialog) return;
+    for (var id of this._pendingGuideTips) {
+      if (guide.getGuideTips(id)) { this._pendingGuideTips.delete(id); continue; }
+      var row = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(id)[0];
+      if (!row) { this._pendingGuideTips.delete(id); continue; }
+      var cfg = flow.config(row);
+      if (id === 11) {
+        cfg.distNode = flow.visible(this.btnAgg) ? this.btnAgg : flow.visible(this.btnFollow) ? this.btnFollow : null;
+        if (!cfg.distNode) { cfg.isWeek = true; cfg.hideMask = true; }
+      }
+      if (flow.tip(this, guide, id, cfg)) {
+        var track = { 7: "guide12", 8: "guide10", 9: "guide11", 10: "guide13", 11: "guide14" }[id];
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId[track]);
+      }
+      return;
     }
   };
   _ctor.prototype.aniBtnAddCoin = function () {

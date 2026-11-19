@@ -1,5 +1,5 @@
 'use strict';
-const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {test}=require('node:test'),assert=require('node:assert/strict');
 const P=require('../../assets/_script/HeroSkillProjectile'),Layout=require('../../assets/_script/HeroSkillVFXLayout'),Settings=require('../../assets/_script/HeroSkillSettings'),Gizmos=require('../../packages/hkd-skills/preview-gizmos');
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`),aim=angle=>({x:Math.cos(angle*Math.PI/180),y:Math.sin(angle*Math.PI/180)});
 function point(entity,p){const r=entity.angle*Math.PI/180,scale=entity.visual.scale*entity.scale,x=p.x*scale*entity.scaleX,y=p.y*scale*entity.scaleY;return{x:entity.x+x*Math.cos(r)-y*Math.sin(r),y:entity.y+x*Math.sin(r)+y*Math.cos(r)};}
@@ -23,7 +23,14 @@ test('Vanguard local offsets and asymmetric source art mirror together around th
 test('dragging a Vanguard pivot converts screen travel into the same rotating and mirrored offset axes',()=>{
  for(const degrees of [0,45,90,135,180,225,270,315]){const d=aim(degrees),basis=P.facingTransform(d,0,1,1),r=basis.angle*Math.PI/180,axes={x:{x:Math.cos(r),y:Math.sin(r)},y:{x:-Math.sin(r)*basis.scaleY,y:Math.cos(r)*basis.scaleY}},spec={id:'cast',origin:{x:0,y:0},offsetAxes:axes,paths:{x:'visual.castOffsetX',y:'visual.castOffsetY'},values:{visual:{castOffsetX:0,castOffsetY:0}}},drag=Gizmos.begin(spec,'move',{x:0,y:0}),delta=P.facingOffset(d,{x:23,y:-11}),result=Gizmos.update(drag,delta);near(result.patches['visual.castOffsetX'],23);near(result.patches['visual.castOffsetY'],-11);}
 });
-test('original-material Momentum captures are high resolution, keep their world size and loop period, and render behind the hero',()=>{
- const v=Settings.defaults('vanguard').visual;
- for(const slot of ['passive','buff']){const e=Layout.entities({entities:[{key:slot,slot,phase:'loop',age:.7,scale:1,opacity:1}]},v,{style:'vanguard',hero:{x:17,y:23},facing:-1})[0],clip=e.clip,file=path.resolve(__dirname,'../../assets/resources/'+clip.resource+'.png'),bytes=fs.readFileSync(file);assert.equal(clip.preserveMaterials,true);assert.equal(clip.cell,256);near(clip.frames/clip.fps,1.5);near(e.visual.scale*e.scale*clip.cell,1.65*128);assert.equal(e.behind,true);assert.equal(e.scaleX,-1);assert.equal(e.x,17);assert.equal(e.y,23);assert(bytes.readUInt32BE(16)<=2048&&bytes.readUInt32BE(20)<=2048);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),clip.sha256);}
+test('both Momentum loops use the horse ground pivot and stay behind the hero in either facing',()=>{
+ const visual=Settings.defaults('vanguard').visual;visual.buffOffsetX=4;visual.buffOffsetY=-2;
+ const context={style:'vanguard',hero:{x:10,y:15},mountGround:{x:24,y:32},heroBody:{x:50,y:120}};
+ for(const variant of ['incomplete','full'])for(const facing of [-1,1]){
+  const entities=Layout.entities({entities:[{key:variant,slot:'buff',phase:'loop',variant,age:.4,scale:1,opacity:1}]},visual,{...context,facing});
+  assert.equal(entities.length,1);
+  const [loop]=entities;
+  assert.equal(loop.clip.id,'vanguard-'+variant+'-buff');assert.equal(loop.behind,true);assert.equal(loop.scaleX,facing);
+  assert.deepEqual({x:loop.x,y:loop.y},{x:28,y:30});
+ }
 });

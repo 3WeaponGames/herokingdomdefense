@@ -61,7 +61,16 @@ test('Vampire quota uses the original maximum HP and its cue stays in the healin
  for(const change of ['stats','node','generation','epoch']){
   const h=fixture(),target=h.enemy(10,0,1),sounds=[];h.d.heroStyle='bruiser';h.d.treasureAdd[120042]=[.01];h.hero.hpMax=100;h.hero.hp=20;h.e.cc.resources={};h.e.stubs.BattleSounds={effect(id){sounds.push(id);}};
   h.hero.ctrHp={setHp(){h.hero.hpMax=200;if(change==='node'){h.hero.node=new Node('replacement',h.g.ndMain);h.hero.node._combatGeneration=1;}else if(change==='generation')h.hero.node._combatGeneration++;else if(change==='epoch')h.g._combatEpoch=(h.g._combatEpoch||0)+1;}};
-  const context=h.combat.primaryContext(h.hero,target,5,false);target.hp=0;h.combat.enemyKilled(target,h.hero,false,context);assert.equal(h.hero.hp,21,change);assert.equal(h.d.relicState.vampireHealedByWave['1'],.01,change);assert.equal(sounds.filter(id=>id==='life-steal').length,change==='stats'?1:0,change);
+  const context=h.combat.primaryContext(h.hero,target,5,false);target.hp=0;h.combat.enemyKilled(target,h.hero,false,context);assert.equal(h.hero.hp,21,change);assert.equal(h.d.relicState.vampireHealedByWave['1'],.01,change);assert.deepEqual(sounds,[],change+' Bruiser kill healing must stay silent');
+ }
+});
+
+test('Bruiser life steal keeps its healing and HP feedback without layering cartoon healing audio on an attack',()=>{
+ for(const style of ['bruiser','fighter']){
+  const h=fixture(),target=h.enemy(),sounds=[];h.d.heroStyle=style;h.hero.heroStyle=style;h.hero.hpMax=100;h.hero.hp=20;h.hero._heroSecondary={lifeSteal:.1};
+  h.e.cc.resources={};h.e.stubs.BattleSounds={effect:id=>sounds.push(id)};
+  const context=h.combat.primaryContext(h.hero,target,5,false);target.hp-=5;h.combat.primaryImpact(target,h.hero,context,5);
+  assert.equal(h.hero.hp,20.5);assert.deepEqual(sounds,style==='bruiser'?[]:['healing-receive']);
  }
 });
 

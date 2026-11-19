@@ -51,7 +51,10 @@ var def_KinghtFallUITalentInfo = function (t) {
     }
     this.initView();
     this.initBtnListener();
-    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 6, this.btnGold);
+    var flow = require("TutorialFlow"), target = flow.visible(this.btnGold) ? this.btnGold : flow.visible(this.btnVideo) ? this.btnVideo : this.btnClose;
+    var informational = target === this.btnClose;
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 6, target, undefined,
+      informational ? { informational: true, text: "[[loc:tutorial.talent.overview]]" } : undefined);
   };
   _ctor.prototype.initBtnListener = function () {
     this.btnClose.on(cc.Node.EventType.TOUCH_END, this.closeUI, this);

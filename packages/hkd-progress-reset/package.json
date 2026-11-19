@@ -1,0 +1,15 @@
+{
+  "name": "hkd-progress-reset",
+  "version": "1.0.0",
+  "description": "Reset a Browser or Simulator playthrough with a verified backup",
+  "main": "main.js",
+  "panel": {
+    "main": "panel.js",
+    "type": "dockable",
+    "title": "Reset All Progress",
+    "width": 760,
+    "height": 860,
+    "min-width": 520,
+    "min-height": 480
+  }
+}

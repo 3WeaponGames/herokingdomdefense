@@ -12,12 +12,14 @@ const STAGE_SECTIONS=[
 ];
 const cleanName=value=>String(value||'').replace(/^\s*(?:Stage\s+)?\d+(?:[.)]\s*|\s*[—–:-]\s*)/i,'').trim();
 const spawnRanges=Names.spawnRanges,pathTitle=Names.pathName;
+const isWaveRow=wave=>wave&&typeof wave==='object'&&!Array.isArray(wave);
+const waveLabel=(wave,index)=>'Wave '+(wave&&wave.Wave||index+1);
 function pathSubtitle(stage,graph){const required=graph.requiresAnyBuilding||[],condition=Model.legacyUnavailable(graph)?'Unavailable legacy route':!Array.isArray(required)?'Invalid building conditions':required.length?'Requires: '+required.map(id=>{const building=stage.buildings.find(building=>building.id===id);return building?building.name:'Building '+id;}).join(' or '):'Always available';return graph.nodes.length+(graph.nodes.length===1?' point · ':' points · ')+condition;}
 function create(c){
  const {state,el,button,field,select,note,section,edit,render,draw}=c;
  const stage=()=>state.snap.value,catalog=()=>state.catalog,unitRows=()=>StageProfiles.rows(stage().config,catalog().units),summary=wave=>Waves.summary(wave,catalog().interval),wave=()=>stage().config.WaveCfg[state.wave],stageCards=StageCards.create(c);
  function draggable(list,rows,items){CardDrag.bind(list,rows,{stage,items,edit,cancelDrag:c.cancelDrag,busy:()=>!!(state.closed||state.loading||state.snap.busy)});}
- state.stageSearch='';state.waveSpawnFilter='all';
+ state.stageSearch='';state.waveSpawnFilter='all';state.showFirstUpgradeCards=false;
  const expanded=state.stageDetails||(state.stageDetails=Object.create(null));
  // Tokens are editor-only: wave rows deliberately retain their authored format.
  // A queued handler may compose our own edits, but never follow a shifted row.
@@ -51,6 +53,10 @@ function create(c){
   if(state.tab==='Spawns')button(tools,'Add spawn',()=>{state.tool='spawn';render();},state.tool==='spawn');
   if(state.tab==='Paths'){button(tools,'Add point',()=>{state.tool='node';render();},state.tool==='node');button(tools,'Connect points',()=>{state.tool='connect';state.connect=null;render();},state.tool==='connect');}
   if(['Stage','Buildings'].includes(state.tab))field(tools,'Hall preview',state.previewHall,value=>{state.previewHall=value;c.prepareImages();draw();},[1,2,3,4]);
+  if(state.tab==='Buildings'){
+   const cards=field(tools,'First-upgrade cards',state.showFirstUpgradeCards,value=>{state.showFirstUpgradeCards=value;c.prepareImages();draw();});
+   cards.title='Show the in-game name cards for the building plots available at this hall level.';
+  }
   if(state.tab!=='Waves'){field(tools,'Blockers',state.showBlockers,value=>{state.showBlockers=value;render();});field(tools,'Snap',state.snapGrid,value=>state.snapGrid=Math.max(0,value));}
   if(state.tab!=='Waves'&&state.showBlockers){const legend=el('span',undefined,'world-blocker-legend');legend.appendChild(el('span','Map','world-map-blocker-key'));legend.appendChild(el('span','Buildings','world-building-blocker-key'));tools.appendChild(legend);}
  }
@@ -119,6 +125,48 @@ function create(c){
  }
  function numericValue(value){return value===null||value===undefined||value===''?NaN:Number(value);}
  function numericEntry(parent,name,value,onchange,integer){const input=field(parent,name,numericValue(value),next=>onchange(Number(next)));input.min=integer?'1':'0';input.step=integer?'1':'0.1';return input;}
+ function copyWaveButton(parent,waves,target){
+  const copy=button(parent,'Copy From…',()=>copyWave(target));
+  copy.disabled=!waves.some((row,index)=>index!==target.index&&isWaveRow(row));
+  copy.setAttribute('aria-haspopup','dialog');
+  if(copy.disabled)copy.title='Add another wave to use as a source.';
+ }
+ function copyWave(target){
+  const {index}=target,waves=stage().config.WaveCfg,version=state.snap.version;
+  const original=JSON.stringify(Array.isArray(waves)&&waves[index]);
+  const selected=state.tab==='Waves'&&state.wave===index&&stage().id===target.stageId&&waveTargets.get(target.key)===target;
+  if(!selected||original!==target.latest)throw Error('Select the destination wave again before copying.');
+  const sources=waves.map((row,index)=>({row,index})).filter(choice=>choice.index!==index&&isWaveRow(choice.row));
+  const preferred=sources.filter(choice=>choice.index<index).pop()||sources[0];
+  if(!preferred)throw Error('Add another wave to use as a source.');
+  const fingerprints=new Map(sources.map(({row,index})=>[index,JSON.stringify(row)]));
+  c.cancelDrag();
+  let picker,groups,paths,multipliers,settings;
+  return c.modal('Copy into '+waveLabel(waves[index],index),dialog=>{
+   dialog.classList.add('world-wave-copy-dialog');
+   picker=field(dialog,'Copy from wave',preferred.index,()=>{},sources.map(({row,index})=>({value:index,label:waveLabel(row,index)})));
+   const choices=el('fieldset',undefined,'world-wave-copy-options');dialog.appendChild(choices);
+   choices.appendChild(el('legend','Copy options'));
+   groups=field(choices,'Unit groups and timing',true,checked=>{paths.disabled=!checked;});
+   paths=field(choices,'Copy path overrides',true,()=>{});
+   multipliers=field(choices,'Enemy health and attack multipliers',true,()=>{});
+   settings=field(choices,'Other wave settings and rewards',true,()=>{});
+   note(choices,'Copied groups use their spawn’s default path when path overrides are unchecked.');
+   note(dialog,'Checked options replace content in the draft. Use Undo to restore the wave.');
+  },()=>{
+   const sourceIndex=Number(picker.value),options={groups:groups.checked,paths:paths.checked,multipliers:multipliers.checked,settings:settings.checked};
+   if(String(picker.value).trim()===''||!fingerprints.has(sourceIndex))throw Error('Choose a source wave from the list.');
+   if(!options.groups&&!options.multipliers&&!options.settings)throw Error('Select at least one option to copy.');
+   return waveEdit(target,(draft,index,row)=>{
+    const source=JSON.stringify(draft.config.WaveCfg[sourceIndex]);
+    if(state.tab!=='Waves'||state.wave!==index||state.snap.version!==version||JSON.stringify(row)!==original||source!==fingerprints.get(sourceIndex))throw Error('The waves changed while the popup was open. Reopen it to review the current waves.');
+    if(Waves.copyWaveFrom(draft,sourceIndex,index,options)){
+     waveTargets.delete(target.key);
+     if(options.groups)state.waveSpawnFilter='all';
+    }
+   },true);
+  },'Copy wave');
+ }
  function addUnits(existing){
   const spawns=stage().spawns.filter(spawn=>spawn.enabled!==false||existing&&spawn.id===existing.spawnId);if(!spawns.length)throw Error('Add an enabled spawn point in Spawns first.');
   const selected=new Set(existing?[existing.unitId]:[]),index=state.wave,stageId=stage().id,revision=state.snap.version,target=waveTarget(index),baseline=JSON.stringify(wave());
@@ -135,7 +183,30 @@ function create(c){
   },true);},existing?'Apply selection':'Add group');
  }
  function waveInspector(){
-  const index=state.wave,waves=stage().config.WaveCfg,w=Array.isArray(waves)&&waves[index];let total,allEntries;try{if(!Array.isArray(waves)||!waves.length)throw Error('This stage needs a valid list of waves.');total=summary(w);allEntries=Waves.entries(w,catalog().interval);}catch(error){section(c.right,'Wave '+(index+1));note(c.right,'Cannot read this schedule: '+error.message,true);const rowValid=w&&typeof w==='object'&&!Array.isArray(w),key=rowValid?(w.SpawnTimeline!==undefined?'SpawnTimeline':'RefreshSoldierKind'):'WaveCfg';button(c.right,key==='WaveCfg'?'Repair waves JSON…':'Repair schedule JSON…',()=>key==='WaveCfg'?c.jsonField(key):c.jsonField(key,index));return;}const target=waveTarget(index);if(state.waveSpawnFilter!=='all'&&!allEntries.some(entry=>String(entry.spawnId)===String(state.waveSpawnFilter)))state.waveSpawnFilter='all';const parent=el('section',undefined,'world-wave-editor');c.right.appendChild(parent);section(parent,'Wave '+w.Wave);note(parent,total.units+' units · '+total.groups+' groups · last spawn at '+Number(total.duration.toFixed(2))+' s');const add=button(parent,'Add units',addUnits,true);add.disabled=!unitRows().length||!stage().spawns.some(spawn=>spawn.enabled!==false);
+  const index=state.wave,waves=stage().config.WaveCfg,w=Array.isArray(waves)&&waves[index];
+  let total,allEntries;
+  try{
+   if(!Array.isArray(waves)||!waves.length)throw Error('This stage needs a valid list of waves.');
+   total=summary(w);
+   allEntries=Waves.entries(w,catalog().interval);
+  }catch(error){
+   section(c.right,waveLabel(w,index));
+   note(c.right,'Cannot read this schedule: '+error.message,true);
+   if(isWaveRow(w)){
+    copyWaveButton(c.right,waves,waveTarget(index));
+    const key=w.SpawnTimeline!==undefined?'SpawnTimeline':'RefreshSoldierKind';
+    button(c.right,'Repair schedule JSON…',()=>c.jsonField(key,index));
+   }else button(c.right,'Repair waves JSON…',()=>c.jsonField('WaveCfg'));
+   return;
+  }
+  const target=waveTarget(index),parent=el('section',undefined,'world-wave-editor');
+  if(state.waveSpawnFilter!=='all'&&!allEntries.some(entry=>String(entry.spawnId)===String(state.waveSpawnFilter)))state.waveSpawnFilter='all';
+  c.right.appendChild(parent);
+  section(parent,waveLabel(w,index));
+  note(parent,total.units+' units · '+total.groups+' groups · last spawn at '+Number(total.duration.toFixed(2))+' s');
+  const actions=el('div',undefined,'world-wave-actions');parent.appendChild(actions);
+  const add=button(actions,'Add units',addUnits,true);add.disabled=!unitRows().length||!stage().spawns.some(spawn=>spawn.enabled!==false);
+  copyWaveButton(actions,waves,target);
   const scaling=el('div',undefined,'world-wave-scaling');parent.appendChild(scaling);for(const [key,label]of [['HealthCoefficient','Enemy health ×'],['AttackCoefficient','Enemy attack ×']])numericEntry(scaling,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value));note(scaling,'Applied to every enemy in this wave. HP and damage below are per unit, before battle buffs.');
   if(total.spawnIds.length>1)field(parent,'Show spawns',state.waveSpawnFilter,value=>{state.waveSpawnFilter=value;render();},[{value:'all',label:'All spawn points'}].concat(stage().spawns.map(s=>({value:String(s.id),label:s.name}))));
   const entries=allEntries.filter(entry=>state.waveSpawnFilter==='all'||String(entry.spawnId)===String(state.waveSpawnFilter));
@@ -145,7 +216,7 @@ function create(c){
    const timing=details('Timing & route · '+entry.startSeconds+' s / every '+entry.intervalSeconds+' s','wave:'+index+':entry:'+entry.id+':timing');card.appendChild(timing);numericEntry(timing,'Starts at (s)',entry.startSeconds,value=>change('startSeconds',value));numericEntry(timing,'Interval (s)',entry.intervalSeconds,value=>change('intervalSeconds',value));const routeChoices=[{value:'',label:'Spawn default'}].concat(stage().graphs.filter(graph=>graph.spawnIds.includes(entry.spawnId)).map(graph=>({value:graph.id,label:pathTitle(stage(),graph)})));if(entry.routeGraphId&&!routeChoices.some(choice=>choice.value===entry.routeGraphId))routeChoices.push({value:entry.routeGraphId,label:'Unavailable route: '+entry.routeGraphId});field(timing,'Route override',entry.routeGraphId||'',value=>change('routeGraphId',value||null),routeChoices);
   }
   if(!entries.length)note(parent,total.groups?'No groups match this spawn filter. Choose All spawn points.':'This wave has no units yet. Use Add units to create its first group.');
-  const settings=details('Wave settings & rewards','wave:'+index+':settings');parent.appendChild(settings);for(const [key,label]of [['StartSliver','Starting silver'],['CommerceSliver','Merchant silver']]){const input=numericEntry(settings,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value),true);input.min='0';}button(settings,'Rewards…',()=>c.jsonField('WaveReward',index));button(settings,'Edit schedule JSON…',()=>c.jsonField(w.SpawnTimeline!==undefined?'SpawnTimeline':'RefreshSoldierKind',index));button(settings,'Copy unit groups from wave…',c.copyWave);
+  const settings=details('Wave settings & rewards','wave:'+index+':settings');parent.appendChild(settings);for(const [key,label]of [['StartSliver','Starting silver'],['CommerceSliver','Merchant silver']]){const input=numericEntry(settings,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value),true);input.min='0';}button(settings,'Rewards…',()=>c.jsonField('WaveReward',index));button(settings,'Edit schedule JSON…',()=>c.jsonField(w.SpawnTimeline!==undefined?'SpawnTimeline':'RefreshSoldierKind',index));
  }
  function right(){if(state.tab==='Stage')stageInspector();else if(state.tab==='Waves')waveInspector();else if(state.tab==='Paths')pathInspector();else if(state.tab==='Spawns')spawnInspector();else c.buildingInspector();if(state.snap.issues.length){section(c.right,'Validation');state.snap.issues.slice(0,12).forEach(issue=>note(c.right,issue,true));}}
  return {top,tabs,left,right,title};

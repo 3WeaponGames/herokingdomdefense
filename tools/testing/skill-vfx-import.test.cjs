@@ -26,15 +26,16 @@ function run(code){
 }
 test('VFX importer accepts the complete capture contract without comparing a later workbook hash',()=>run(String.raw`
     accepted,source=module.capture_rows(bake)
-    assert len(accepted)==26
+    assert len(accepted)==22
     assert source['workbookSha256']==catalog['workbookSha256']
     write(source={'workbookSha256':'f'*64})
     assert module.capture_rows(bake)[1]['workbookSha256']=='f'*64
 `));
 test('VFX importer rejects missing, duplicate, mismatched, unsafe and invalid capture rows before publication',()=>run(String.raw`
     cases=[]
+    visible_index=next(i for i,row in enumerate(rows) if row['phase']!='start')
     def changed(key,value):
-        altered=copy.deepcopy(rows);altered[0][key]=value;return altered
+        altered=copy.deepcopy(rows);altered[visible_index][key]=value;return altered
     cases.extend([[],rows[:-1],rows+[rows[0]],changed('file','../outside.png'),changed('frames',1),changed('fps',True),changed('anchorX',float('nan')),changed('visibleFrames',0),changed('alphaBounds',[-1,0,20,20])])
     for altered in cases:
         write(altered)

@@ -94,7 +94,8 @@
 .world-stages .world-wave-editor{display:flex;flex-direction:column;gap:11px;min-width:0}
 .world-stages .world-wave-editor>h3{margin:0}
 .world-stages .world-wave-editor>.world-note{margin:0}
-.world-stages .world-wave-editor>button{min-height:33px}
+.world-stages .world-wave-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.world-stages .world-wave-actions>button{min-height:33px}
 .world-stages .world-wave-unit-card{display:flex;flex-direction:column;gap:10px;padding:11px;border:1px solid #54616c;border-radius:5px;background:#252e35;min-width:0}
 .world-stages .world-wave-unit-heading{display:flex;align-items:center;gap:9px;min-width:0}
 .world-stages .world-wave-unit-heading>img{width:43px;height:43px;object-fit:contain;flex-shrink:0}
@@ -122,6 +123,12 @@
 .world-stages .world-modal>div>h3{margin:0 0 4px;color:#e1eaf1}
 .world-stages .world-modal label>span{flex:0 0 80px}
 .world-stages .world-modal label>input,.world-stages .world-modal label>select{flex:1;min-width:0;width:auto}
+.world-stages .world-modal>.world-wave-copy-dialog{width:470px}
+.world-stages .world-wave-copy-dialog>label>span{flex-basis:100px}
+.world-stages .world-wave-copy-options{display:grid;gap:8px;min-width:0;margin:0;padding:10px 12px;border:1px solid #54616c;border-radius:4px}
+.world-stages .world-wave-copy-options label>span{flex:1}
+.world-stages .world-wave-copy-options label>input{order:-1;flex:0 0 auto;margin:0 2px 0 0}
+.world-stages .world-wave-copy-options label>input:disabled{opacity:.55}
 .world-stages .world-unit-picker-search{width:100%;min-height:32px}
 .world-stages .world-unit-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:7px;flex:1;min-width:0;max-height:310px;overflow:auto;padding:2px}
 .world-stages .world-unit-picker>.world-unit-choice{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;min-height:105px;padding:8px 5px;border-radius:4px;text-align:center}

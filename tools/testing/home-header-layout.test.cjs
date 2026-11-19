@@ -18,7 +18,7 @@ test('clicking the energy counter opens the energy panel that owns the countdown
  for(const key of ['ndPower','ndGold','ndDiamond'])top[key]={on:(event,callback)=>{assert.equal(event,'end');handlers[key]=callback;}};
  const opened=[];top.openUI=(...args)=>opened.push(args);top.initBtnListener();handlers.ndPower();assert.deepEqual(opened,[['energy']]);
 });
-test('Wall Defense replaces both locked captions with Best Wave only after the existing unlock threshold',()=>{
+test('the legacy mode display shows Best Wave after the configured unlock threshold',()=>{
  const bindings=[],user={data:{wallDefenseBestWave:12}},Home=load('KinghtFallHomeBattleCtrl',{BaseCtrl:{default:function(){}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},TestMode:{TestMode:{getInstance:()=>({shouldBypassAdLimits:()=>false})}},LanguageMgr:{LanguageMgr:{getInstance:()=>({bindLabel(label,key,values){bindings.push([key,...values]);label.string='Best Wave '+values[0];},t:(_key,values)=>values[0]+'s'})}}}),home=new Home();
  const label={string:''},nodes={labName:{active:true},labInfo:{active:true},labBestWave:{active:true,getComponent:()=>label},ndMask:{active:true},Layout:{active:true,getChildByName:()=>({getComponent:()=>({})})}},node={getChildByName:name=>nodes[name]};
  home.onSubView(node,3,3,100000,0,30);assert(nodes.labName.active&&nodes.labInfo.active);assert.equal(nodes.labBestWave.active,false);assert.equal(bindings.length,0);

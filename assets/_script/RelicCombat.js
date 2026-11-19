@@ -118,11 +118,12 @@ function enemyKilled(target, source, secondary, context) {
   if (!(remaining > 1e-9)) return;
   var planned = Math.min(fraction, remaining), previous = used[key], maximum = source.hpMax;
   used[key] = Math.min(.1, (Number(previous) || 0) + planned);
-  var actual = Math.min(planned, Math.max(0, Runtime.heal(source, planned)) / maximum);
+  var silent = (source.heroStyle || context.heroStyle || data.heroStyle) === "bruiser";
+  var actual = Math.min(planned, Math.max(0, Runtime.heal(source, planned, {silent:silent})) / maximum);
   used[key] = Math.max(0, used[key] - planned + actual);
   if (.1 - used[key] < 1e-9) used[key] = .1;
   if (!used[key] && previous === undefined) delete used[key];
-  if (actual > 0 && sameBattle(context)) {
+  if (actual > 0 && !silent && sameBattle(context)) {
     relicSound("life-steal", source);
   }
 }
@@ -166,6 +167,7 @@ function heroAttack(hero, primary, damage) {
 function primaryImpact(target, hero, context, damage) {
   if (!(damage > 0) || !primaryValid(context, target, hero)) return;
   context.used = true;
+  require("TutorialFlow").heroHit(context.game);
   var data = context.data;
   var gear = hero._heroSecondary || {};
   // Capture the hit before style callbacks can heal/change the same target.
@@ -176,7 +178,7 @@ function primaryImpact(target, hero, context, damage) {
   if (!primaryCurrent(context, target, hero) || !sameBattle(context)) return;
   // Life steal uses damage actually removed, excluding overkill and all
   // reflected/splash hits. It cannot revive a dead or recycled hero.
-  if (gear.lifeSteal > 0 && hero.hpMax > 0) Runtime.heal(hero, dealt * gear.lifeSteal / hero.hpMax);
+  if (gear.lifeSteal > 0 && hero.hpMax > 0) Runtime.heal(hero, dealt * gear.lifeSteal / hero.hpMax, {silent:(context.heroStyle || hero.heroStyle || data.heroStyle) === "bruiser"});
   if (!sameBattle(context)) return;
   if (hero.heroStyle !== "mystic" && gear.splashDamage > 0 && gear.splashRadius > 0 && context.point) {
     var splash = [], targets = data.getEnemyList ? data.getEnemyList() : data.enemyList || [];

@@ -60,7 +60,7 @@ function paintCostPlate(node, color) {
 function paintMode(node, enabled) {
   if (node._blueState === enabled) return; node._blueState = enabled;
   var sprite = node.getComponent(cc.Sprite);
-  sprite.setState(enabled ? cc.Sprite.State.NORMAL : cc.Sprite.State.GRAY);
+  sprite.setMaterial(0, cc.Material.getBuiltinMaterial(enabled ? "2d-sprite" : "2d-gray-sprite"));
   paintCostPlate(node, enabled ? "#004f80" : "#626574");
 }
 function install(home) {
@@ -105,6 +105,7 @@ function install(home) {
   var caption = state.defenseCaption = new cc.Node("WallDefenseStatus"); caption.parent = home.node; caption.setContentSize(341, 38);
   var label = caption.addComponent(cc.Label); label.fontSize = 26; label.lineHeight = 32; label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
   var outline = caption.addComponent(cc.LabelOutline); outline.color = cc.Color.BLACK; outline.width = 2;
+  if (!require("GAD_Configs").GADConfig.LobbyAvailable) modeState(home, false);
   var legacyTray = home.node.getChildByName("ndBtnRight");
   disable(legacyTray, cc.Sprite);
   // The old sidebar is now transparent and overlaps the reward carousel.
@@ -209,12 +210,20 @@ function refresh(home) {
 }
 function modeState(home, unlocked, best, unlockStage) {
   var state = home._lobby; if (!state) return;
-  paintMode(state.defense, unlocked);
-  state.defenseCaption.active = !unlocked;
-  var button = state.defense.getComponent(cc.Button); if (button) button.interactable = unlocked;
-  var key = unlocked ? "lobby.wallBestWave" : "lobby.wallUnlock", value = unlocked ? best : unlockStage;
-  if (state.status !== key + value) { state.status = key + value; bind(state.defenseCaption, key, [value]); }
-  var amount = state.defense.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label); amount.string = String(require("GAD_Configs").GADConfig.EnergyCost);
+  var config = require("GAD_Configs").GADConfig, comingSoon = !config.LobbyAvailable;
+  var playable = !comingSoon && unlocked;
+  paintMode(state.defense, playable);
+  state.defenseCaption.active = !playable;
+  var button = state.defense.getComponent(cc.Button); if (button) button.interactable = comingSoon || unlocked;
+  var key = comingSoon ? "common.comingSoon" : playable ? "lobby.wallBestWave" : "lobby.wallUnlock";
+  var value = comingSoon ? "" : playable ? best : unlockStage;
+  if (state.status !== key + value) {
+    state.status = key + value;
+    bind(state.defenseCaption, key, comingSoon ? undefined : [value]);
+  }
+  var cost = state.defense.getChildByName("Layout"); cost.active = !comingSoon;
+  state.defense.getChildByName("labName").y = comingSoon ? 0 : 30;
+  if (!comingSoon) cost.getChildByName("labNum").getComponent(cc.Label).string = String(config.EnergyCost);
 }
 exports.install = install;
 exports.layout = layout;

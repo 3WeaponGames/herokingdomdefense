@@ -12,7 +12,7 @@ test('every selectable hero effect exposes only numeric transform paths supplied
 });
 test('cast and on-hit gizmos map their independent saved transforms without inventing unsupported impact axes',()=>{
  const visual=Settings.defaults('skirmisher').visual;visual.impactResource='fixture-impact';
- assert.deepEqual(Authoring.transform('skirmisher','active','cast',visual),{id:'cast',label:'Cast effect',x:'visual.castOffsetX',y:'visual.castOffsetY',scale:'visual.castScale',scaleX:'visual.castScaleX',scaleY:'visual.castScaleY',rotation:'visual.castRotation'});
+ assert.equal(Authoring.transform('skirmisher','active','cast',visual),null);
  assert.deepEqual(Authoring.transform('skirmisher','active','impact',visual),{id:'impact',label:'On-hit effect',x:'visual.impactOffsetX',y:'visual.impactOffsetY',scale:'visual.impactScale',rotation:'visual.impactRotation'});
  assert.equal(Authoring.transform('guardian','active','impact',{impactResource:'fixture-impact'}),null);
 });

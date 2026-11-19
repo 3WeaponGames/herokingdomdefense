@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallBulletBase = require("KinghtFallBulletBase");
 var EquipmentTiers = require("EquipmentTiers"), warnedSkin = false;
+var STRAIGHT_FLIGHT = 3;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 cc__decorator.property;
@@ -36,6 +37,24 @@ var def_KinghtFallBulletPlay = function (t) {
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
     if (this._launchProjectileLook) this._launchProjectileLook();
+  };
+  _ctor.prototype.beginStraightFlight = function (heading) {
+    this._shot = this._shotIdentity = {};
+    this.tagNode = this.targetIsLive = this.callAttack = null;
+    this.bullet.active = true;
+    this.node.angle = heading;
+    this.state = STRAIGHT_FLIGHT;
+    if (this._launchProjectileLook) this._launchProjectileLook();
+  };
+  _ctor.prototype.moveStraightFlight = function (position, dt) {
+    var world = this.combatContext.ndMain.convertToWorldSpaceAR(cc.v2(position.x, position.y));
+    this.node.setPosition(this.node.parent.convertToNodeSpaceAR(world));
+    if (this._projectileVisual) this._projectileVisual.step(dt);
+  };
+  _ctor.prototype.onUpdate = function (dt) {
+    // The skill runtime owns straight flight and advances it from the release
+    // marker. The battle still owns the arrow's pool and wave cleanup.
+    if (this.state !== STRAIGHT_FLIGHT) t.prototype.onUpdate.call(this, dt);
   };
   _ctor.prototype.setSkin = function (t) {
     var renderer = this.bullet && this.bullet.getComponent(sp.Skeleton), data = renderer && renderer.skeletonData, runtime, name;

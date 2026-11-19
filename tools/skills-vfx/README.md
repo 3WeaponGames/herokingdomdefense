@@ -147,13 +147,10 @@ binary fixtures support the maintained source-pose regression tests without
 requiring the external Unity project. Publication validates source hashes and
 uses the same revision checks and external backups as the other importers.
 
-The current native defaults are Fighter `301020_attack2`, Bruiser
-`301010_skill3` plus `300950_skill_hit1`, and Guardian `301060_skill_hit`.
-Both Bruiser effects start together and retain independent authoring controls.
-An explicitly saved legacy/custom/disabled primary keeps its existing look;
-the new secondary is inherited only with the new default pair, unless selected
-explicitly. Source-center metadata centers native artwork on its authored
-attachment without rewriting original bones, meshes or animation keyframes.
+The Guardian SP162 import publishes `301060_skill_hit`. Fighter, Bruiser and
+Vanguard use the new RGBA sheets listed in `sheet-clips.json`. The default Blood
+Cleave has one ring. An explicitly authored second cast layer has independent
+transforms and playback.
 Guardian's selected source window is frames 15–140 on the preview's 60 FPS
 ruler (`sourceStart=.25`, `sourceEnd=140/60`); its original animation is 2.667
 seconds long. The source artwork and source frame transitions remain exact.
@@ -163,46 +160,32 @@ from source, then publish the particle catalog with `import-bake.py`.
 Collection refreshes preserve independently imported native IDs, and particle
 publication retains their current default presets.
 
-`import-single-volley.py <external backups> [--node <Node executable>]` derives
-Skirmisher's selected final three-arrow set from source seconds 1.44–2.0. It
-retains those three meshes and their two original release-flash layers, samples
-the crop-boundary deformation, and rebases the authored keys. The sibling
-skeleton and atlas share the original PNG texture UUIDs; the original triple
-volley stays selectable. Publication compares actual selected-source geometry
-at 1000 Hz and on both sides of key boundaries before applying its transaction.
-Float32 key rebasing introduces less than .001 source-coordinate displacement
-(less than .00016 world units at the default scale). Its own release is
-.0933333333 source seconds after the crop start; the gameplay fan's hit delay
-and range remain separate authoring controls.
+`import-single-volley.py <external directory> [--node <Node executable>]` exports
+a verification crop of the retained Triple Volley clip. It checks the three
+final arrow meshes and two flash layers at 1000 Hz. Triple Volley still uses
+the original shared PNG page. The verification export stays outside the project.
 
-Skirmisher now performs one rider attack and one whole-fan damage check. The
-three visible arrows do not run individual collision queries. `volleyHitTime`
-(default .2 seconds) plus `contactDelay` and `visual.castDelay` selects the one
-hit moment. `volleyRange` (250 units), `visual.arcDegrees` (16 degrees), and the
-hit-arc offset/rotation controls define its gold preview boundary. The origin
-and direction stay captured at cast; targets are sampled at the hit moment.
-Cast VFX transforms and `volleyPlayback` change the artwork independently.
-Legacy saved repeat/count fields remain untouched but no longer add attacks.
+Skirmisher releases five equipped-tier arrows at
+`windup + contactDelay + visual.castDelay`. Each projectile follows a fixed
+heading and hits its first enemy. `volleyRange` defines travel distance, and
+`visual.arcDegrees` defines the total spread. Each arrow uses the active damage
+multiplier, which defaults to 1.
 
-Vanguard's five contacts and cast effect translate with hero ground position
-while their captured direction, radius and local offset stay fixed. Each
-contact checks current enemies afresh. Fighter's wind and active aura and both
-Vanguard momentum effects use ground emitters with zero default vertical offset;
-explicit saved offsets remain authorable. The active-only `activeDamage`
-defaults are .8 for Skirmisher and .5 for Bruiser, applied after their existing
-charged/distance or missing-HP calculations. Ordinary attacks, passive bonuses
-and Blood Cleave's current-HP sacrifice keep their existing rules.
+Vanguard's spear cast follows the moving hero with a captured direction. The
+Momentum activation and the partial and full loops follow the horse's ground
+pivot under the rider and HP bar. The first hit with Momentum plays activation.
+The chosen loop plays until the lock expires.
 
 ## Loading barrier and memory
 
 `HeroSkillAssetWarmup` joins the existing `KinghtFallModle` startup Loading
-chain. It loads the fixed 40 unique sprite/Spine assets sequentially, waits for each texture
+chain. It loads the selected sprite and Spine assets sequentially, waits for each texture
 to decode and initialize its GPU object, then fences GPU work before Main can
 open. On JSB the read-only GL query drains the buffered finish command. It does
 not render a camera, instantiate actors, or change gameplay or player records.
 
 The pool retains one session reference per resource. Shared texture pages are
-counted once (179.70 MiB of RGBA base levels, no mipmaps). Active hero/weather consumers own and release independent
+counted once at their decoded RGBA size with mipmaps disabled. Active hero/weather consumers own and release independent
 references. This avoids later cold style/stage switches, which do not all enter
 the Loading scene. The decoded budget is verified from every actual PNG page. Native integration
 must also check process peak residency, including possible decoded copies.

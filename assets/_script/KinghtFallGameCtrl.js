@@ -1246,20 +1246,32 @@ var def_KinghtFallGameCtrl = function (t) {
     if (s.length) (e = n.pathList).push.apply(e, s[$z1Utils.Utils.randomRang(0, s.length)].children);
     return n;
   };
-  _ctor.prototype.onPlayAttack = function (t, release) {
-    if (require("HeroWeaponCombat").melee(this, t, release)) return;
+  _ctor.prototype.takeHeroArrow = function (position, speedMultiplier) {
     var n = this.ndPlayArr1.shift();
     n || (n = cc.instantiate(this.ctrPlay.ctrArr.node)).setParent(this.ndUI);
     n.setSiblingIndex(0);
     n.active = true;
-    var i = this.ctrPlay.getAttWpos();
-    var a = this.ndUI.convertToNodeSpaceAR(i);
-    n.setPosition(a);
+    n.setPosition(position);
     var o = n.getComponent($z1KinghtFallBulletPlay.default);
     if (o._heroBaseSpeed === undefined) o._heroBaseSpeed = o.speed;
-    o.speed = GameToolsOverrides.projectileSpeed(this.ctrPlay, 'hero', o._heroBaseSpeed) * (this.ctrPlay._styleProjectileSpeed || 1);
+    o.speed = GameToolsOverrides.projectileSpeed(this.ctrPlay, 'hero', o._heroBaseSpeed) * speedMultiplier;
     o.setSkin(this.ctrPlay.ctrPlayAni.arrName);
     this.ndPlayArr2.push(o);
+    o.combatContext = this;
+    ProjectileLooks.prepare(o, this, "hero");
+    return o;
+  };
+  _ctor.prototype.launchVolleyArrow = function (origin, direction) {
+    var at = this.ndUI.convertToNodeSpaceAR(this.ndMain.convertToWorldSpaceAR(cc.v2(origin.x, origin.y)));
+    var ahead = this.ndUI.convertToNodeSpaceAR(this.ndMain.convertToWorldSpaceAR(cc.v2(origin.x + direction.x, origin.y + direction.y)));
+    var arrow = this.takeHeroArrow(at, 1);
+    arrow.beginStraightFlight(Math.atan2(ahead.y - at.y, ahead.x - at.x) * 180 / Math.PI);
+    return arrow;
+  };
+  _ctor.prototype.onPlayAttack = function (t, release) {
+    if (require("HeroWeaponCombat").melee(this, t, release)) return;
+    var a = this.ndUI.convertToNodeSpaceAR(this.ctrPlay.getAttWpos());
+    var o = this.takeHeroArrow(a, this.ctrPlay._styleProjectileSpeed || 1), n = o.node;
     var r = this.ctrPlay.getAttack(t);
     var s = this.ctrPlay.crit > Math.random();
     var hero = this.ctrPlay, context = require("RelicCombat").primaryContext(hero, t, r, s, release);
@@ -1268,14 +1280,8 @@ var def_KinghtFallGameCtrl = function (t) {
     context.heroStyle = hero.heroStyle;
     context.styleShotCharge = hero._styleShotCharge || 0;
     s && (r *= this.ctrPlay.getCriticalDamage ? this.ctrPlay.getCriticalDamage() : this.ctrPlay.critDam);
-    o.combatContext = this;
-    ProjectileLooks.prepare(o, this, "hero");
     o.setTag(a, t.node, function () {
       if (cc.isValid(t) && cc.isValid(t.node) && require("RelicCombat").primaryCurrent(context, t, hero) && !context.used) {
-        if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideTips(2)) {
-          $z1KinghtFallUIGame.default.instance.ctrUI.setGuide(null);
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGuideTips(2);
-        }
         var impactPosition = t.node.getPosition();
         n.active = false;
         $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(impactPosition, "jian_" + hero.ctrPlayAni.arrName);

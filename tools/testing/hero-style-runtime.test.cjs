@@ -63,6 +63,20 @@ function scene(style,options={}){
  return {...h,hero,rt,enemy,poses,clears,hpUpdates,buffs,retimes,attacks};
 }
 
+for(const style of ['skirmisher','vanguard','guardian','mystic','bruiser'])test(style+' primary hits complete the original combat lesson through the shared impact path',()=>{
+ const h=scene(style),target=h.enemy(100);let complete=0,cleared=0;
+ h.e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData=()=>({getGuideTips:()=>complete,setGuideTips(){complete++;}});
+ h.ui.ctrUI={guideTag:{},setGuide(value){this.guideTag=value;cleared++;}};
+ const combat=h.load('RelicCombat'),hit=()=>target.onAttacked(10,h.hero,false,combat.primaryContext(h.hero,target,10,false));hit();hit();assert.equal(complete,1);assert.equal(cleared,1);
+ h.ui.ctrUI.guideTag={};const old=combat.primaryContext(h.hero,target,10,false);h.g._combatEpoch=(h.g._combatEpoch||0)+1;combat.primaryImpact(target,h.hero,old,10);assert.equal(complete,1);assert.equal(cleared,1);
+});
+
+test('a successful hero hit records combat completion even when no spawn arrow was available',()=>{
+ const h=scene('skirmisher'),target=h.enemy(100);let complete=0;
+ h.e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData=()=>({getGuideTips:()=>complete,setGuideTips(){complete++;}});
+ h.ui.ctrUI={setGuide(){}};const combat=h.load('RelicCombat');target.onAttacked(10,h.hero,false,combat.primaryContext(h.hero,target,10,false));assert.equal(complete,1);
+});
+
 test('all hero classes keep locomotion while input is blocked or tiny without granting movement-based skill charge',()=>{
  for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
   const h=scene(style),origin=h.hero.node.getPosition();h.g.moveDir={x:0,y:.000001};
@@ -181,49 +195,29 @@ test('Blood Cleave snapshots post-sacrifice damage before lifesteal can change l
  assert(h.rt.cast({x:1,y:0}));h.rt.update(.1667);close(a.hits[0].damage,120.3125);close(b.hits[0].damage,a.hits[0].damage);
  close(h.hero.hp,370.3125);
 });
-test('Skirmisher single arc hits each eligible enemy once and retains distance damage',()=>{
- const h=scene('skirmisher'),near=h.enemy(100),far=h.enemy(200),outside=h.enemy(251);assert(h.rt.cast({x:1,y:0}));h.rt.update(.34);assert.equal(near.hits.length,0);h.rt.update(.01);assert.equal(near.hits.length,1);assert.equal(far.hits.length,1);assert(far.hits[0].damage>near.hits[0].damage);assert.equal(outside.hits.length,0);h.rt.update(10);assert.equal(near.hits.length,1);assert.equal(far.hits.length,1);assert.equal(h.rt.projectiles.length,0);
-});
-
-test('Skirmisher arc boundaries and target-distance damage are frame independent under rotated aim',()=>{
- const cases=[{x:100,y:0,inside:true},{x:180,y:21,inside:true},{x:220,y:35,inside:true},{x:10,y:55,inside:true},{x:10,y:65,inside:false},{x:-10,y:0,inside:false},{x:0,y:0,inside:true}];for(const aim of [{x:1,y:0},{x:.6,y:.8},{x:-.8,y:.6}]){const run=steps=>{const h=scene('skirmisher'),targets=cases.map(p=>h.enemy(p.x*aim.x-p.y*aim.y,p.x*aim.y+p.y*aim.x));h.rt.cast(aim);steps.forEach(dt=>h.rt.update(dt));return targets.map(t=>t.hits.map(hit=>hit.damage));};const long=run([1]),short=run(Array(100).fill(.01));cases.forEach((p,i)=>{assert.equal(long[i].length,p.inside?1:0);assert.deepEqual(short[i],long[i]);});}
-});
-
-test('Skirmisher snapshots one stable eligible-target pass at the same time across frame partitions',()=>{
- const run=steps=>{const h=scene('skirmisher'),order=[],targets=[h.enemy(100,10),h.enemy(105),h.enemy(200),h.enemy(200)];targets.forEach((t,i)=>{const hit=t.onAttacked;t.onAttacked=function(...args){order.push(i);return hit.apply(this,args);};});h.rt.cast({x:1,y:0});steps.forEach(dt=>h.rt.update(dt));return{damage:targets.map(t=>t.hits[0].damage),counts:targets.map(t=>t.hits.length),order};};const long=run([1]),short=run(Array(100).fill(.01));assert.deepEqual(long.counts,[1,1,1,1]);assert.deepEqual(short,long);assert.deepEqual(long.order,[0,1,2,3],'One simultaneous arc preserves the army iteration order');
-});
-
-test('Skirmisher actual range includes the outer cap and excludes targets beyond it without a map-wide projectile',()=>{
- const run=steps=>{const h=scene('skirmisher'),targets=[h.enemy(249),h.enemy(250),h.enemy(250.01),h.enemy(250,28)];h.rt.cast({x:1,y:0});steps.forEach(dt=>h.rt.update(dt));return targets.map(t=>t.hits.map(hit=>hit.damage));};const long=run([2]),short=run(Array(200).fill(.01));assert.deepEqual(long.map(x=>x.length),[1,1,0,0]);assert.deepEqual(short,long);
-});
-
-test('the simultaneous volley fences recycled later candidates and retired battles',()=>{
- for(const retire of [false,true]){const h=scene('skirmisher'),first=h.enemy(100),later=h.enemy(120),base=first.onAttacked;first.onAttacked=function(...args){const result=base.apply(this,args);if(retire)h.g._combatEpoch=(h.g._combatEpoch||0)+1;else later.node._combatGeneration++;return result;};h.rt.cast({x:1,y:0});h.rt.update(1);assert.equal(first.hits.length,1);assert.equal(later.hits.length,0);}
-});
-
-test('Skirmisher release and one actual hit share their authored core timing and retain a single recovery',()=>{
- const h=scene('skirmisher'),a=h.enemy(150);h.rt.state.charge=.5;assert(h.rt.cast({x:1,y:0}));h.rt.update(.34);assert.equal(a.hits.length,0);h.rt.update(.01);assert.equal(a.hits.length,1);assert.equal(h.rt.projectiles.length,0);assert(h.rt.state.active);h.rt.update(h.rt.state.active.duration-h.rt.state.active.elapsed);assert.equal(a.hits.length,1);assert.equal(h.rt.state.active,null);assert.deepEqual(h.retimes,[.35]);assert.equal(h.attacks.length,1);
+test('Skirmisher releases all five arrows on the authored rider marker with one recovery',()=>{
+ const h=scene('skirmisher'),a=h.enemy(150);h.rt.state.charge=.5;assert(h.rt.cast({x:1,y:0}));h.rt.update(.34);assert.equal(a.hits.length,0);h.rt.update(.01);assert.equal(a.hits.length,0);assert.equal(h.rt.projectiles.length,5);assert(h.rt.state.active);h.rt.update(h.rt.state.active.duration-h.rt.state.active.elapsed);assert(a.hits.length>0&&a.hits.length<=5);assert.equal(h.rt.state.active,null);assert.deepEqual(h.retimes,[.35]);assert.equal(h.attacks.length,1);
 });
 
 test('Skirmisher cast captures the selected clip bow origin used by its aim guide',()=>{
- const h=scene('skirmisher',{config:{HeroSkills:{skirmisher:{visual:{animation:'attack_fighter'}}}}}),clips=[];h.e.stubs.HeroMakerRider.skillOrigin=(_controller,_aim,clip)=>{clips.push(clip);return{x:30,y:110};};assert(h.rt.cast({x:1,y:0}));assert(clips.length);assert(clips.every(clip=>clip==='attack_fighter'));close(h.rt.skillCast.origin.x,30);close(h.rt.skillCast.origin.y,110);close(h.rt.skillCast.area.origin.x,30);close(h.rt.skillCast.area.origin.y,110);
+ const h=scene('skirmisher',{config:{HeroSkills:{skirmisher:{visual:{animation:'attack_fighter'}}}}}),clips=[];h.e.stubs.HeroMakerRider.skillOrigin=(_controller,_aim,clip)=>{clips.push(clip);return{x:30,y:110};};assert(h.rt.cast({x:1,y:0}));assert(clips.length);assert(clips.every(clip=>clip==='attack_fighter'));close(h.rt.skillCast.origin.x,30);close(h.rt.skillCast.origin.y,110);h.rt.update(h.rt.state.tuning.windup);assert.equal(h.rt.projectiles.length,5);for(const arrow of h.rt.projectiles){close(arrow.x,30);close(arrow.y,110);}
 });
 
 test('Fighter incoming reduction and tenacity use temporary landed-hit stacks',()=>{
  const h=scene('fighter'),e=h.enemy(100);
- for(let i=0;i<5;i++)h.rt.onImpact(e,1,{styleSkill:false,styleStrike:i});
- close(h.load('RelicCombat').heroIncoming(h.hero,100,e,false),87.5);
- h.hero.addBuff('stun',{stun:true,time:10});close(h.buffs.at(-1).data.time,6);
+ for(let i=0;i<10;i++)h.rt.onImpact(e,1,{styleSkill:false,styleStrike:i});
+ close(h.load('RelicCombat').heroIncoming(h.hero,100,e,false),75);
+ h.hero.addBuff('stun',{stun:true,time:10});close(h.buffs.at(-1).data.time,2);
  h.rt.update(5);close(h.load('RelicCombat').heroIncoming(h.hero,100,e,false),100);
 });
 
 test('Fighter tenacity shortens only movement slows and stuns, preserving other debuffs and caller data',()=>{
  const h=scene('fighter'),enemy=h.enemy(100),types=h.load('KinghtFallInterface').KinghtFallEnemyBuffType;
- for(let i=0;i<5;i++)h.rt.onImpact(enemy,1,{styleSkill:false,styleStrike:i});
+ for(let i=0;i<10;i++)h.rt.onImpact(enemy,1,{styleSkill:false,styleStrike:i});
  for(const type of [types.AttackSpeed,types.DamageAdd,types.DamageCut,types.MoveSpeedAdd]){const data={subNum:.3,time:10};h.hero.addBuff(type,data);assert.equal(h.buffs.at(-1).data.time,10);assert.equal(h.buffs.at(-1).data,data);}
- const slow={subNum:.3,time:10};h.hero.addBuff(types.MoveSpeed,slow);close(h.buffs.at(-1).data.time,6);assert.equal(slow.time,10);
+ const slow={subNum:.3,time:10};h.hero.addBuff(types.MoveSpeed,slow);close(h.buffs.at(-1).data.time,2);assert.equal(slow.time,10);
  const haste={subNum:-.3,time:10};h.hero.addBuff(types.MoveSpeed,haste);assert.equal(h.buffs.at(-1).data,haste);
- const stun={stun:true,time:10};h.hero.addBuff('stun',stun);close(h.buffs.at(-1).data.time,6);assert.equal(stun.time,10);
+ const stun={stun:true,time:10};h.hero.addBuff('stun',stun);close(h.buffs.at(-1).data.time,2);assert.equal(stun.time,10);
 });
 
 test('immediate skills face their current target or rider facing while directional skills retain chosen aim',()=>{
@@ -274,7 +268,7 @@ test('ending the round inside an area hit prevents remaining enemies from receiv
 test('round cleanup during a volley impact prevents later candidates from receiving damage',()=>{
  const h=scene('skirmisher'),a=h.enemy(100),b=h.enemy(120),base=a.onAttacked;
  a.onAttacked=function(...args){const result=base.apply(this,args);h.hero.endRoundGame();return result;};
- h.rt.cast({x:1,y:0});h.rt.update(.35);
+ h.rt.cast({x:1,y:0});h.rt.update(1);
  assert.equal(a.hits.length,1);assert.equal(b.hits.length,0);assert.equal(h.rt.projectiles.length,0);
 });
 test('ending a round inside Fighter arc damage also prevents subsequent stale knockbacks',()=>{
@@ -313,8 +307,8 @@ test('authored impact delay gates Fighter damage, VFX and knockback and checks p
  h.rt.update(.15);assert(entering.node.x>120&&entering.node.x<260);h.rt.update(.15);close(entering.node.x,260);assert.equal(entering._heroKnockback,undefined);
 });
 
-test('long and short frames preserve the single volley contact and fresh final thrust effect',()=>{
- function volley(frames){const h=scene('skirmisher'),target=h.enemy(100);h.rt.cast({x:1,y:0});frames.forEach(dt=>h.rt.update(dt));return target.hits.map(hit=>hit.damage);}assert.deepEqual(volley([.4]),volley(Array(40).fill(.01)));const h=scene('vanguard');h.rt.cast({x:1,y:0});h.rt.update(2.5);assert.equal(h.rt.effects.length,1);close(h.rt.effects[0].remaining,.35);
+test('long and short frames preserve volley damage and fresh final thrust effect',()=>{
+ function volley(frames){const h=scene('skirmisher'),target=h.enemy(100);h.rt.cast({x:1,y:0});frames.forEach(dt=>h.rt.update(dt));return target.hits.map(hit=>hit.damage);}assert.deepEqual(volley([1]),volley(Array(100).fill(.01)));const h=scene('vanguard');h.rt.cast({x:1,y:0});h.rt.update(2.5);assert.equal(h.rt.effects.length,1);close(h.rt.effects[0].remaining,.35);
 });
 
 test('queued active impacts are cancelled on lifecycle cleanup and Mystic marks cannot hit recycled targets',()=>{
@@ -325,8 +319,8 @@ test('queued active impacts are cancelled on lifecycle cleanup and Mystic marks 
 });
 
 test('one Fighter arc snapshots every target before its landed-hit stack changes subsequent damage',()=>{
- const h=scene('fighter'),a=h.enemy(100),b=h.enemy(120);h.rt.cast({x:1,y:0});h.rt.update(.1667);
- close(a.hits[0].damage,b.hits[0].damage);assert.equal(h.rt.state.stacks,1);
+ const h=scene('fighter'),a=h.enemy(100),b=h.enemy(120);for(let i=0;i<9;i++)h.rt.onImpact(a,1,{styleStrike:"prior:"+i});h.rt.cast({x:1,y:0});h.rt.update(.1667);
+ close(a.hits[0].damage,b.hits[0].damage);assert.equal(h.rt.state.stacks,10);
 });
 
 test('zero authored knockback and slow duration remain zero rather than using fallback effects',()=>{
@@ -372,7 +366,7 @@ test('basic arrows snapshot Momentum speed at release and movement input cancels
 test('stationary Momentum drives the rider draw and a fully charged skill emits its ready and active release cues once',()=>{
  const h=scene('skirmisher'),sounds=[];h.e.stubs.BattleSounds={chargeReady:()=>sounds.push('skirmisher-passive-charged'),skirmisherRelease:(_hero,active)=>sounds.push(active?'skirmisher-active-release':'skirmisher-passive-release'),charge(){}};
  h.rt.update(2);close(h.poses.at(-1).charge,.5);h.rt.update(4);close(h.poses.at(-1).charge,1);
- assert(h.rt.cast({x:1,y:0}));h.rt.update(.35);assert.equal(h.rt.projectiles.length,0);assert.equal(h.rt.skillCast.released,true);assert.deepEqual(sounds,['skirmisher-passive-charged','skirmisher-active-release']);h.rt.update(.01);assert.equal(sounds.length,2);
+ assert(h.rt.cast({x:1,y:0}));h.rt.update(.35);assert.equal(h.rt.projectiles.length,5);assert.equal(h.rt.skillCast.released,true);assert.deepEqual(sounds,['skirmisher-passive-charged','skirmisher-active-release']);h.rt.update(.01);assert.equal(sounds.length,2);
 });
 
 test('Mystic custom hold times beyond the animation duration clamp to the same final frame as the rider',()=>{
@@ -419,15 +413,12 @@ test('a skill from an older battle lifetime cannot damage a new epoch or a repla
  assert.equal(old.canCast(),false);old.update(.2);assert.equal(target.hits.length,0);assert.equal(h.hero._styleRuntime.state.time,0);
 });
 
-test('area and volley candidates cannot hit an actor recycled during an earlier impact callback',()=>{
+test('area candidates cannot hit an actor recycled during an earlier impact callback',()=>{
  for(const style of ['fighter','bruiser','vanguard']){
   const h=scene(style),a=h.enemy(100),b=h.enemy(120),hit=a.onAttacked;
   a.onAttacked=function(){const result=hit.apply(this,arguments);b.node._combatGeneration++;b.node.x=1000;return result;};
   h.rt.cast({x:1,y:0});h.rt.update(style==='vanguard'?.36:.1667);assert.equal(a.hits.length,1);assert.equal(b.hits.length,0,style);
  }
- const h=scene('skirmisher'),a=h.enemy(100),b=h.enemy(120),hit=a.onAttacked;
- a.onAttacked=function(){const result=hit.apply(this,arguments);b.node._combatGeneration++;b.node.x=1000;return result;};
- h.rt.cast({x:1,y:0});h.rt.update(.35);assert.equal(a.hits.length,1);assert.equal(b.hits.length,0);
 });
 
 test('a recycled Mystic target cannot receive the rest of a long frame and dead beams disappear immediately',()=>{
@@ -438,8 +429,8 @@ test('a recycled Mystic target cannot receive the rest of a long frame and dead 
  assert.equal(victim.hits.length,1);assert.equal(m.rt.beamTarget,null);assert.equal(m.rt.state.marked,false);
 });
 
-test('zero-cooldown volleys retain bounded cast work with no accumulating projectile budget',()=>{
- const h=scene('skirmisher',{config:{HeroSkills:{skirmisher:{cooldown:0,windup:0,volleyHitTime:0}}}});for(let i=0;i<100;i++){assert(h.rt.cast({x:1,y:0}));assert.equal(h.rt.projectiles.length,0);assert(h.rt.state.active);h.rt.update(h.rt.state.active.duration-h.rt.state.active.elapsed);}assert.equal(h.rt.projectiles.length,0);assert.equal(h.rt.canCast(),true);
+test('zero-cooldown volleys retain bounded cast work and return spent arrows to the native pool',()=>{
+ const h=scene('skirmisher',{config:{HeroSkills:{skirmisher:{cooldown:0,windup:0,volleyHitTime:0}}}});for(let i=0;i<100;i++){assert(h.rt.cast({x:1,y:0}));assert.equal(h.rt.projectiles.length,5);assert(h.rt.state.active);h.rt.update(h.rt.state.active.duration-h.rt.state.active.elapsed);}assert.equal(h.rt.projectiles.length,0);assert.equal(h.rt.canCast(),true);assert.equal(h.g.ndPlayArr1.length,5);
 });
 
 test('a frozen authored rider never advertises a cast as ready',()=>{

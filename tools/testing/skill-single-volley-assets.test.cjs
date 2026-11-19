@@ -1,13 +1,30 @@
 'use strict';
-const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const Catalog=require('../../assets/_script/HeroSkillVFXCatalog'),Verify=require('../skills-vfx/verify-single-volley.cjs'),root=path.resolve(__dirname,'../..'),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
-const original=Catalog.clips.find(clip=>clip.id==='skirmisher-triple-volley'),single=Catalog.clips.find(clip=>clip.id==='skirmisher-single-volley'),file=clip=>path.join(root,'assets/resources',clip.resource+'.json');
-test('the single native volley is the final three original arrows over the authored 1.44–2.0 second crop',()=>{
-  const report=Verify.verify(file(original),file(single));assert.equal(report.arrows,3);assert.equal(report.flashLayers,2);assert(report.samples>700);assert(report.pieces>3000);assert(report.maxDrift<=.001);
-  assert.equal(Catalog.presets.skirmisher.cast,single.id);assert.equal(single.animation,'single_volley');assert.equal(single.duration,.56);assert.equal(single.trimStart,0);assert(Math.abs(single.sourceRelease-(1.5333333333333334-1.44))<1e-12);assert.equal(single.originX,original.originX);assert.equal(single.originY,original.originY);assert.equal(single.defaultRotation,original.defaultRotation);assert.equal(hash(fs.readFileSync(file(original))),single.source.originalSha256);assert.equal(hash(fs.readFileSync(file(single))),single.sourceSha256);
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const {execFileSync}=require('node:child_process');
+const Catalog=require('../../assets/_script/HeroSkillVFXCatalog'),root=path.resolve(__dirname,'../..');
+const original=Catalog.clips.find(clip=>clip.id==='skirmisher-triple-volley'),folder=path.dirname(path.join(root,'assets/resources',original.resource));
+
+test('the three-arrow crop can still be verified outside the game library',t=>{
+  const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-volley-source-'));
+  t.after(()=>{
+    assert.equal(path.dirname(path.resolve(temporary)),path.resolve(os.tmpdir()));
+    assert(path.basename(temporary).startsWith('hkd-volley-source-'));
+    fs.rmSync(temporary,{recursive:true,force:true});
+  });
+  const python=process.env.PYTHON||(process.platform==='win32'?'python':'python3');
+  execFileSync(python,['-B','tools/skills-vfx/import-single-volley.py',temporary,'--node',process.execPath],{cwd:root,encoding:'utf8'});
+  const output=path.join(temporary,fs.readdirSync(temporary)[0]);
+  const report=JSON.parse(fs.readFileSync(path.join(output,'verification.json')));
+  assert.equal(report.arrows,3);assert.equal(report.flashLayers,2);assert(report.samples>700);assert(report.pieces>3000);assert(report.maxDrift<=.001);
 });
-test('selecting the original or single volley shares the original decoded PNG pages without copying artwork',()=>{
-  assert.notEqual(single.uuid,original.uuid);assert.notEqual(single.resource,original.resource);assert.equal(single.textureSet,original.textureSet);assert.equal(single.decodedBytes,original.decodedBytes);
-  const a=JSON.parse(fs.readFileSync(file(original)+'.meta')),b=JSON.parse(fs.readFileSync(file(single)+'.meta'));assert.deepEqual(b.textures,a.textures);assert.equal(b.uuid,single.uuid);
-  assert(fs.readFileSync(file(original).replace(/\.json$/,'.atlas')).equals(fs.readFileSync(file(single).replace(/\.json$/,'.atlas'))));const slots=JSON.parse(fs.readFileSync(file(single))).slots;assert.equal(slots.length,5);assert.equal(slots.filter(slot=>slot.name.includes('jujijian')).length,3);assert(!fs.existsSync(file(single).replace(/\.json$/,'.png')),'The derived asset must not create another atlas texture');
+
+test('the single-volley removal preserves the triple-volley Spine and shared texture page',()=>{
+  assert.equal(Catalog.presets.skirmisher,undefined);
+  assert(!Catalog.clips.some(clip=>clip.id==='skirmisher-single-volley'));
+  for(const suffix of ['.json','.atlas','.json.meta','.atlas.meta'])assert(!fs.existsSync(path.join(folder,'skirmisher-single-volley'+suffix)));
+  const meta=JSON.parse(fs.readFileSync(path.join(folder,'skirmisher-triple-volley.json.meta')));
+  const page=JSON.parse(fs.readFileSync(path.join(folder,'page_000.png.meta')));
+  assert.deepEqual(meta.textures,[page.uuid]);
+  const atlas=fs.readFileSync(path.join(folder,'skirmisher-triple-volley.atlas'),'utf8');
+  assert(atlas.split(/\r?\n/).includes('page_000.png'));assert(fs.statSync(path.join(folder,'page_000.png')).size>0);
 });

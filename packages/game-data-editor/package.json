@@ -37,6 +37,9 @@
     "Tools/Battle/Testing": {
       "message": "game-data-editor:open-testing"
     },
+    "Tools/Battle/Reset All Progress": {
+      "message": "game-data-editor:open-progress-reset"
+    },
     "Tools/Items/Relics": {
       "message": "game-data-editor:open-relics"
     }

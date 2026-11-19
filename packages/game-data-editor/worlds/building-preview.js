@@ -3,6 +3,7 @@
 // it never instantiates gameplay components, loads a scene, or writes a draft.
 const fs=require('fs'),path=require('path'),url=require('url');
 const M=require('./model'),L=require('./legacy'),Maps=require('../lib/map-assets'),Units=require('../lib/unit-assets'),Assets=require('../lib/asset-validation'),Navigation=require('./navigation'),WeaponPose=require('../../../assets/_script/BuildingWeaponPose'),GateSource=require('./gate-facing'),GateFacing=require('../../../assets/_script/GateFacing'),Purchase=require('./purchase-field'),WallRun=require('./wall-run');
+const PurchasePreview=require('./purchase-field-preview'),PurchaseSettings=require('../../../assets/_script/BuildingPurchaseField'),WorldScale=require('../../../assets/_script/BuildingWorldScale');
 const NAMES={1:'Main Hall',2:'Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall / Gate'},files=new Map(),descriptions=new WeakMap();
 const clone=M.clone,number=(v,f)=>typeof v==='number'&&Number.isFinite(v)?v:f,positive=(v,f)=>Math.max(1,number(v,f));
 const WallData=require('../walls/service');
@@ -50,6 +51,15 @@ function describe(service,stage){
   const owner=info.byId[building.template.node];if(!owner){errors.push('A building source was removed. Refresh its template.');continue;}
   const controller=owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(!controller)errors.push('A building controller is missing from its template.');const component=controller?controller.value:{},effectiveFace=GateFacing.valid(building.wallFacing)?building.wallFacing:component.wallFacing,origin=clone(owner.position),plateId=reference(source,(component.ndLockList||[])[0]),plate=info.byId[plateId],ids=new Set(),excluded=new Set();
   if(building.kind===6)try{result.wallFacing=GateSource.facing(rawSource,building);}catch(error){errors.push(error.message);}
+  let firstUpgradeCard;
+  const category=config.BuildEnum&&config.BuildEnum[building.kind];
+  if(plate&&category)try{
+   const variant=result.wallFacing||building.placementVariant||component.placementVariant||'default';
+   const first=Navigation.buildingRow(building,1,config),offset=PurchaseSettings.unbuilt(category,variant);
+   const padScale=building.purchaseOverride!==true&&component.purchaseOverride!==true&&PurchaseSettings.resolve(category,first,variant)?WorldScale.value(first):1;
+   const card=PurchasePreview.describeNameCard(info,owner,plate,offset,padScale);
+   if(card)firstUpgradeCard=Object.assign(card.record,{followsPurchaseField:!offset});
+  }catch(error){errors.push(error.message);}
   for(const root of building.template.roots)L.descendants(source,root,ids);
   for(const key of ['ndLockList','ndMove','ndHp','ndEffect','ndShot','ndCoin','ndVideoSoldier','ndPro','ndBotnNodeList','ndAniEffect']){const refs=Array.isArray(component[key])?component[key]:[component[key]];for(const ref of refs){const id=reference(source,ref);if(id!==undefined)L.descendants(source,id,excluded);}}
   const moving=new Set();if(building.kind===6)for(const key of ['ndAniMain','ndAniDown','ndAniOther','ndAniEffect','ndEffect','ndMove'])for(const ref of Array.isArray(component[key])?component[key]:[component[key]]){const id=reference(source,ref);if(id!==undefined&&id!==owner.id)L.descendants(source,id,moving);}
@@ -80,7 +90,8 @@ function describe(service,stage){
    if(row){const FX=require('../../../assets/_script/BuildingDropShadow'),style=FX.resolve(config.BuildEnum[building.kind],row,config.GameTools);if(style.active){delete level.shadow;level.dropShadow=style.settings;}else if(style.mode==='none')delete level.shadow;}
    if(building.kind===5&&row&&row.PartScale)level.skeletons=level.skeletons.map(d=>{if(!d.ground)return d;const json=require('../../../assets/_script/BuildingPartScale').json(d.json,row);return json===d.json?d:Object.assign({},d,{json,revision:d.revision+':parts:'+JSON.stringify(row.PartScale)});});
    if(row&&row.ModelOffset){const Offset=require('../../../assets/_script/BuildingModelOffset');Object.assign(level,Offset.record(level,Offset.vector(owner.world,Offset.value(row))));}
-   result.levels[hall]=require('../../../assets/_script/BuildingWorldScale').record(level,require('../../../assets/_script/BuildingWorldScale').value(row),false);
+   result.levels[hall]=WorldScale.record(level,WorldScale.value(row),false);
+   if(firstUpgradeCard)result.levels[hall].firstUpgradeCard=firstUpgradeCard;
    if(building.kind===3)try{const marker=require('./barracks-spawn').describe(Object.assign({},authoredBuilding,{x:0,y:0,scale:1,angle:0}),source,config,hall,info);if(marker)result.levels[hall].squadSpawn=marker;}catch(error){errors.push(error.message);}
   }
  }

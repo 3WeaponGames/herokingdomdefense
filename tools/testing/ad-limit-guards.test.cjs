@@ -3,9 +3,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const test = require('node:test');
+const gad = require('../../assets/_script/GAD_Configs');
 
-function harness(name) {
-  const state = { enabled: false, review: false, stage: 10, power: 30, savedTime: Date.now(), entered: 0, adCalls: 0, tasks: 0, closed: 0, progress: null };
+function harness(name, enableWallDefense = false) {
+  const state = { enabled: false, review: false, stage: 10, power: 30, savedTime: Date.now(), entered: 0, adCalls: 0, tasks: 0, closed: 0, progress: null, notices: [] };
   function Base() {}
   const singleton = object => ({ getInstance: () => object });
   const user = { getMaxStage: () => state.stage, getPowerNum: () => state.power, getTalentLevel: () => state.progress, setTalentLevel: p => state.progress = p };
@@ -16,14 +17,14 @@ function harness(name) {
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ transact: (mutate, eligible) => { if (!eligible()) return null; mutate(); return true; }, getUserData: () => user, getDailyData: () => ({ getSubTimeByIndex: () => state.savedTime, setSubTimeByIndex: (i, n) => state.savedTime = n }), getMissionData: () => ({ addTaskNum: () => state.tasks++ }) }) },
     PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) },
     GAD_App: { default: { instance: { enter_App: (done, exit, entry) => { state.entryCost = entry.cost; state.entered++; done(); } } } },
-    GAD_Configs: require('../../assets/_script/GAD_Configs'),
+    GAD_Configs: enableWallDefense ? { ...gad, GADConfig: { ...gad.GADConfig, LobbyAvailable: true } } : gad,
     GameTrackDataEvent: { TrackId: {} },
     KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {}, KinghtFallParameter: { BGMusic: 'bg' } },
     KinghtFallMissionData: { KinghtFallTaskCountName: {} },
     KinghtFallTextConfig: { KinghtFallTextConfig: { HomeTalent01: 'Unlock' } },
     TextConfig: { TextConfig: { Tips19: 'Reach level {0}' } },
-    Config: { UIID: {} },
-    UIMgr: { UIMgr: singleton({ openUI() {}, getUIById:()=>({node:{active:true}}) }) },
+    Config: { UIID: { UITips: 'tips', UINONE: 'none' } },
+    UIMgr: { UIMgr: singleton({ openUI(...args) { state.notices.push(args); }, getUIById:()=>({node:{active:true}}) }) },
     Utils: { Utils: { StringFormat: s => s } },
     AudioMgr: { AudioMgr: singleton({ playEffect() {}, stopMusic() {} }) },
     LanguageMgr: { LanguageMgr: singleton({ t: (key, args) => args.join('') }) },
@@ -57,8 +58,30 @@ test('barracks standing interaction requires leaving and re-entering before anot
   assert.equal(b.getInClick({x:100,y:0},2),false);
   assert.equal(b.getInClick({x:0,y:0},2),true);
 });
-test('wall cooldown bypass preserves normal cooldown and stage unlock requirements', () => {
+test('the Wall Defense lobby button only shows Coming soon at every progression and energy level', () => {
   const {state,instance:h} = harness('KinghtFallHomeBattleCtrl');
+  const entry = require('../../assets/resources/localization/catalog.json').entries['common.comingSoon'];
+  const taps = [];
+  h.T = token => token === '[[loc:common.comingSoon]]' ? entry.en : token;
+  h.btnSubBg = { children: [{ on(type, handler) { assert.equal(type, 'touch'); taps.push(handler); } }] };
+  h.initSubTime = h.initSubStage = () => assert.fail('Unavailable Wall Defense does not initialize entry conditions');
+  const savedTime = state.savedTime;
+  h.initSubView();
+  assert.equal(taps.length, 1);
+  for (const [stage, power, bypass] of [[1, 30, false], [4, 30, false], [20, 0, false], [20, 30, true]]) {
+    Object.assign(state, { stage, power, enabled: bypass });
+    h.refreshSubView();
+    taps[0]();
+    assert.deepEqual(state.notices.pop(), ['tips', 'none', 'Coming soon']);
+    assert.equal(state.power, power);
+  }
+  assert.deepEqual(state.notices, []);
+  assert.equal(state.entered, 0);
+  assert.equal(state.adCalls, 0);
+  assert.equal(state.savedTime, savedTime);
+});
+test('wall cooldown bypass preserves normal cooldown and stage unlock requirements when entry is enabled', () => {
+  const {state,instance:h} = harness('KinghtFallHomeBattleCtrl', true);
   h.subPlayTime=[1800];h.subPlayStage=[2];h.getYoumengTrack=()=> 'wall';
   const saved=state.savedTime;
   h.EnterSubPlay(0); assert.equal(state.adCalls,1); assert.equal(state.entered,1); assert.equal(state.placement,'home.defendWall.cooldown');
@@ -67,14 +90,14 @@ test('wall cooldown bypass preserves normal cooldown and stage unlock requiremen
   state.enabled=true;state.stage=1;h.EnterSubPlay(0);assert.equal(state.entered,3);
 });
 
-test('Wall Defense requires and admits 10 energy even when Campaign costs 5', () => {
-  const {state,instance:h} = harness('KinghtFallHomeBattleCtrl');
+test('enabled Wall Defense requires and admits 10 energy even when Campaign costs 5', () => {
+  const {state,instance:h} = harness('KinghtFallHomeBattleCtrl', true);
   h.costEnergy=5;h.subPlayTime=[1800];h.subPlayStage=[2];h.getYoumengTrack=()=> 'wall';
   state.power=9;h.EnterSubPlay(0);assert.equal(state.entered,0);assert.equal(state.adCalls,0);
   state.power=10;h.EnterSubPlay(0);assert.equal(state.entered,1);assert.equal(state.entryCost,10);
 });
-test('wall cooldown display updates in both modes without hiding stage locks', () => {
-  const {state,instance:h} = harness('KinghtFallHomeBattleCtrl');
+test('the enabled wall cooldown display updates in both modes without hiding stage locks', () => {
+  const {state,instance:h} = harness('KinghtFallHomeBattleCtrl', true);
   const nodes={ndMask:{},Layout:{getChildByName:()=>({getComponent:()=>({})})},labInfo:{}};
   const node={getChildByName:n=>nodes[n]};
   h.onSubView(node,10,2,Date.now(),Date.now(),1800);assert.equal(nodes.Layout.active,true);

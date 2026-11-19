@@ -40,7 +40,7 @@ test('runtime startup uses already initialized data and falls back without creat
 test('effective stage settings include every selected slot and all group members while excluding alternate style artwork',()=>{
  for(const style of Settings.styles){const settings=Settings.effective(style.id,config),before=JSON.stringify(settings),rows=stage(settings,style.id),keys=resources(rows);let expected=0;
   for(const prefix of Settings.resourcePrefixes){const id=settings.visual[prefix],clip=Layout.clipFor(id);if(!clip)continue;expected++;for(const part of Catalog.clips.filter(part=>part===clip||part.group&&part.group===clip.group))assert(keys.has(part.resource),style.id+' missing '+prefix+' '+part.id);}
-  assert(expected>0);for(const clip of Catalog.clips.filter(c=>c.style===style.id&&!Pool.plan(config).some(row=>row.resource===c.resource)))assert(!keys.has(clip.resource),'Unused style alternate leaked into stage: '+clip.id);assert.equal(JSON.stringify(settings),before);
+  if(style.id==='skirmisher')assert.equal(expected,0);else assert(expected>0);for(const clip of Catalog.clips.filter(c=>c.style===style.id&&!Pool.plan(config).some(row=>row.resource===c.resource)))assert(!keys.has(clip.resource),'Unused style alternate leaked into stage: '+clip.id);assert.equal(JSON.stringify(settings),before);
  }
 });
 

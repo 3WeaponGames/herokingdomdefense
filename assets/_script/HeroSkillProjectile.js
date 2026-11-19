@@ -1,6 +1,7 @@
 "use strict";
 // One world-space position drives each projectile's art and collision.
 // Area skills share the equipped weapon's sampled release point as well.
+var arrowHitRadius = 25;
 function finite(value,fallback) { return typeof value==="number"&&isFinite(value)?value:(fallback||0); }
 function add(point,offset) { return {x:point.x+finite(offset&&offset.x),y:point.y+finite(offset&&offset.y)}; }
 function point(value) { return {x:value.x,y:value.y}; }
@@ -69,7 +70,7 @@ function actorPoint(actor,main) {
 }
 function area(style,origin,visual,direction,radius) {
   visual=visual||{};var d=areaDirection(direction,visual.rotation),degrees=finite(visual.arcDegrees,style==='vanguard'?72:120);
-  var reach=radius*finite(visual.scale,1);return {origin:areaOrigin(style,origin,visual,d),radius:reach,direction:d,halfAngle:degrees*Math.PI/360,startWidth:style==='vanguard'||style==='skirmisher'?Math.min(reach*2,Math.max(0,finite(visual.arcStartWidth,120))):0};
+  var reach=radius*finite(visual.scale,1);return {origin:areaOrigin(style,origin,visual,d),radius:reach,direction:d,halfAngle:degrees*Math.PI/360,startWidth:style==='vanguard'?Math.min(reach*2,Math.max(0,finite(visual.arcStartWidth,120))):0};
 }
 function containsArea(shape,target){
   var x=target.x-shape.origin.x,y=target.y-shape.origin.y,r=shape.radius,squared=x*x+y*y;if(squared>r*r+1e-7)return false;
@@ -91,9 +92,41 @@ function areaQuery(shape){
     return squared<=1e-14||along/Math.sqrt(squared)>=cosine-1e-9;
   };
 }
-function volleyArea(origin,direction,tuning,visual){
-  tuning=tuning||{};visual=visual||{};
-  return area('skirmisher',origin,{offsetX:visual.offsetX,offsetY:visual.offsetY,rotation:visual.rotation,arcDegrees:finite(visual.arcDegrees,16),arcStartWidth:visual.arcStartWidth,scale:1},direction,Math.max(0,finite(tuning.volleyRange,250)));
+function volleySpread(origin,direction,tuning,visual){
+  var degrees=Math.max(1,Math.min(180,finite(visual&&visual.arcDegrees,16))),aim=unit(direction);
+  var halfAngle=degrees*Math.PI/360,center=Math.atan2(aim.y,aim.x),directions=[];
+  for(var i=-2;i<=2;i++){
+    var angle=center+i*halfAngle/2;
+    directions.push({x:Math.cos(angle),y:Math.sin(angle)});
+  }
+  return {origin:point(origin),direction:aim,radius:Math.max(0,finite(tuning&&tuning.volleyRange,250)),
+    halfAngle:halfAngle,directions:directions};
+}
+// Return the first entry into the target circle, including crossings that
+// begin and end outside it on the same frame.
+function segmentEntry(p,a,b,radius) {
+  var x=p.x-a.x,y=p.y-a.y,radiusSquared=radius*radius,epsilon=1e-9;
+  if(x*x+y*y<=radiusSquared+epsilon)return 0;
+  var dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);if(!(length>0))return null;
+  var ux=dx/length,uy=dy/length,along=x*ux+y*uy,across=x*uy-y*ux,halfSquared=radiusSquared-across*across;
+  if(halfSquared < -epsilon)return null;
+  var entry=along-Math.sqrt(halfSquared<=epsilon?0:halfSquared);
+  return entry>=-epsilon&&entry<=length+epsilon?Math.max(0,Math.min(1,entry/length)):null;
+}
+function traceVolley(arrows,dt,targets) {
+  var contacts=[];
+  var steps=arrows.map(function(arrow){
+    var travel=Math.min(arrow.speed*dt,Math.max(0,arrow.range-arrow.travelled));
+    var end={x:arrow.x+arrow.direction.x*travel,y:arrow.y+arrow.direction.y*travel};
+    targets.forEach(function(target){
+      var entry=segmentEntry(target.position,arrow,end,arrowHitRadius);
+      if(entry!==null)contacts.push({arrow:arrow,target:target,offset:travel*entry/arrow.speed,order:contacts.length});
+    });
+    return {arrow:arrow,end:end,travel:travel};
+  });
+  // A nearer hit may kill a target and open a path for a later arrow.
+  contacts.sort(function(a,b){return a.offset-b.offset||a.order-b.order;});
+  return {steps:steps,contacts:contacts};
 }
 function arrow(radius) { radius=Math.max(1,finite(radius,28));return {tail:-radius*.85,base:radius*.4,tip:radius*.85,halfHeight:radius*.35,stroke:radius*.18}; }
 var bones={skirmisher:'Rider/HandRight/Bow/Arrow',fighter:'Rider/HandRight/Sword',vanguard:'Rider/HandRight/Spear',mystic:'Rider/HandRight/Staff',bruiser:'Rider/HandRight/Axe',guardian:'Rider/HandRight/Blunt'};
@@ -103,4 +136,5 @@ exports.facingTransform=facingTransform;
 exports.facingOffset=facingOffset;exports.areaOrigin=areaOrigin;exports.areaDirection=areaDirection;
 exports.containsArea=containsArea;
 exports.areaQuery=areaQuery;
-exports.volleyArea=volleyArea;
+exports.volleySpread=volleySpread;exports.traceVolley=traceVolley;exports.segmentEntry=segmentEntry;
+exports.arrowHitRadius=arrowHitRadius;

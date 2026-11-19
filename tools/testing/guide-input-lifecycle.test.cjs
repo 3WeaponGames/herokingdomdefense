@@ -138,3 +138,24 @@ test('a maskless movement guide releases its reveal claim without unlocking anot
   assert.deepEqual([...h.touch._inputOwners], ['ad']);
   h.touch.onBlockTouch(true, 'ad'); assert.equal(h.blocked(), false);
 });
+
+test('the actual guide acknowledges its lesson once on press and leaves an unsuccessful save open for retry',()=>{
+ const h=fixture(),cfg=new h.Guide.GuildCfg();let attempts=0,accepted=false,actions=0,closed=0;
+ cfg.onComplete=()=>{attempts++;return accepted;};cfg.onClosed=()=>closed++;cfg.callBack=()=>actions++;
+ h.open(cfg);h.requests[0].done(null,h.asset);const guide=h.ui.uistatck.get('guide');guide.start();h.flush();
+ assert.equal(attempts,0);guide.resolvePress(true);assert.equal(attempts,1);assert.equal(actions,0);assert.equal(guide.isclose,false);
+ accepted=true;guide.resolvePress(true);guide.resolvePress(true);h.flush();assert.equal(attempts,2);assert.equal(actions,1);assert(closed>=1);
+});
+
+test('force-closing the actual guide releases its pending lesson without acknowledging it',()=>{
+ const h=fixture(),cfg=new h.Guide.GuildCfg();let acknowledged=0,closed=0;cfg.onComplete=()=>{acknowledged++;return true;};cfg.onClosed=()=>closed++;
+ h.open(cfg);h.requests[0].done(null,h.asset);const guide=h.ui.uistatck.get('guide');guide.closeUI();h.flush();assert.equal(acknowledged,0);assert(closed>=1);assert.equal(h.blocked(),false);
+});
+
+
+test('a guide whose page or target disappears closes without consuming its lesson',()=>{
+ for(const changed of ['page','target']){
+  const h=fixture(),cfg=new h.Guide.GuildCfg();let acknowledged=0;cfg.onComplete=()=>{acknowledged++;return true;};cfg.isCurrent=()=>changed!=='page';
+  h.open(cfg);h.requests[0].done(null,h.asset);const guide=h.ui.uistatck.get('guide');if(changed==='target')guide.distNode={activeInHierarchy:false};guide.update();h.flush();assert.equal(acknowledged,0);assert.equal(h.ui.uistatck.has('guide'),false);assert.equal(h.blocked(),false);
+ }
+});

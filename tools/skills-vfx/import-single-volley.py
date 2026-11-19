@@ -1,20 +1,18 @@
-"""Keep the final three native arrows, cropped from source time 1.44 to 2.0.
+"""Export a verified three-arrow crop to an external directory.
 
-Original triple-volley artwork remains selectable. The derived skeleton shares
-the original PNG pages and is verified against the selected original poses.
+The crop is a source verification aid. It uses the original triple-volley texture pages.
 """
-import argparse, bisect, copy, hashlib, json, math, subprocess, sys, time
+import argparse, bisect, copy, json, subprocess, sys, time
 from pathlib import Path
 sys.dont_write_bytecode = True
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools/characters'))
-from import_units import Transaction, asset_uuid, encoded
+from import_units import encoded
 from authored_paths import sample, deformation
 
 START,END=1.44,2.0
 ID='skirmisher-single-volley'
 SOURCE='assets/resources/vfx/hero-skills/skirmisher-triple-volley/skirmisher-triple-volley.json'
-TARGET='assets/resources/vfx/hero-skills/skirmisher-triple-volley/'+ID+'.json'
 
 def color_at(keys, at):
     index=max(0,bisect.bisect_right([k.get('time',0) for k in keys],at)-1)
@@ -64,30 +62,25 @@ def crop(data):
     result['skeleton']['name']=data['skeleton'].get('name','')+'_single_volley'
     return result,paths,sorted(selected),[row['slot'] for row in last]
 
-def run(backups,node='node'):
-    tx=Transaction(ROOT,backups);raw=tx.read(SOURCE);source=json.loads(raw);derived,paths,selected,arrows=crop(source)
-    output=backups.resolve()/('single-volley-'+str(time.time_ns()));output.mkdir(parents=True)
-    prepared=output/(ID+'.json');prepared.write_bytes(encoded(derived))
-    subprocess.run([node,str(Path(__file__).with_name('verify-single-volley.cjs')),str(ROOT/SOURCE),str(prepared),str(output/'verification.json')],check=True)
-    tx.stage(TARGET,prepared.read_bytes())
-    old_meta=json.loads(tx.read(SOURCE+'.meta'));tx.json(TARGET+'.meta',dict(old_meta,uuid=asset_uuid(TARGET)))
-    atlas=SOURCE[:-5]+'.atlas';target_atlas=TARGET[:-5]+'.atlas'
-    tx.stage(target_atlas,tx.read(atlas));tx.json(target_atlas+'.meta',dict(ver='1.0.3',uuid=asset_uuid(target_atlas),importer='asset',subMetas={}))
-    nativefile='tools/skills-vfx/native-clips.json';native=json.loads(tx.read(nativefile));old=next(row for row in native if row['id']=='skirmisher-triple-volley')
-    old['textureSet']='skirmisher-atx117'
-    clip=copy.deepcopy(old);clip.update(id=ID,name='Single three-arrow volley',group=ID,resource='vfx/hero-skills/skirmisher-triple-volley/'+ID,
-        uuid=asset_uuid(TARGET),animation='single_volley',duration=END-START,frames=round((END-START)*120),trimStart=0,
-        trajectory='skirmisher-atx117-single',sourceRelease=paths['firingTimes'][-1]-START,sourceEnd=END-START,
-        sourceSha256=hashlib.sha256(prepared.read_bytes()).hexdigest(),source=dict(old['source'],cropStart=START,cropEnd=END,
-            originalResource=old['resource'],originalSha256=hashlib.sha256(raw).hexdigest(),arrowSlots=arrows,selectedSlots=selected))
-    native=[row for row in native if row['id']!=ID]+[clip];tx.json(nativefile,native)
-    catalogfile='assets/resources/vfx/hero-skills/catalog.json';catalog=json.loads(tx.read(catalogfile))
-    next(row for row in catalog['clips'] if row['id']=='skirmisher-triple-volley')['textureSet']='skirmisher-atx117'
-    catalog['clips']=[row for row in catalog['clips'] if row['id']!=ID]+[clip];catalog['presets']['skirmisher']['cast']=ID
-    tx.json(catalogfile,catalog)
-    tx.stage('assets/_script/HeroSkillVFXCatalog.js',b'"use strict";\n// Generated skill VFX catalog, including measured blank-frame source trims.\nmodule.exports = '+json.dumps(catalog,ensure_ascii=False,indent=2).encode()+b';\n')
-    result=dict(clip=clip,verification=str(output/'verification.json'),transaction=tx.commit());print(json.dumps(result,indent=2));return result
+def run(directory, node='node'):
+    directory = directory.resolve()
+    if directory.is_relative_to(ROOT):
+        raise ValueError('Source verification outputs must stay outside the project')
+    original = ROOT / SOURCE
+    derived, _, _, _ = crop(json.loads(original.read_bytes()))
+    output = directory / ('single-volley-' + str(time.time_ns()))
+    output.mkdir(parents=True)
+    prepared = output / (ID + '.json')
+    prepared.write_bytes(encoded(derived))
+    verification = output / 'verification.json'
+    tool = Path(__file__).with_name('verify-single-volley.cjs')
+    subprocess.run([node, str(tool), str(original), str(prepared), str(verification)], check=True)
+    return verification
 
-if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('backups',type=Path);parser.add_argument('--node',default='node')
-    args=parser.parse_args();run(args.backups,args.node)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('directory', type=Path)
+    parser.add_argument('--node', default='node')
+    args = parser.parse_args()
+    print(run(args.directory, args.node))

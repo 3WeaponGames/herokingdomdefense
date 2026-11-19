@@ -90,6 +90,9 @@ function warmMovement(state, surface) {
 }
 function effect(id, owner, options) {
   options = options || {};
+  // All Bruiser healing paths (equipment, relics, kill perks and ally bonuses)
+  // keep their HP benefit without adding a second cartoon cue to an attack.
+  if (owner && owner._relicHero && owner.heroStyle === "bruiser" && (id === "healing-receive" || id === "life-steal")) return false;
   var entry = entries && entries[id], state = context(owner, options);
   var closingMenu = options.menu && options.closing;
   if (!entry || entry.loop || !current(state) || !audible(state) || paused(state) && entry.group !== "signal" && entry.group !== "ui" || !closingMenu && !validNode(owner)) return false;
@@ -150,9 +153,11 @@ function family(actor, side) {
 }
 function attack(actor, side, tower) {
   var cfg = actor && actor.cfg || {}, kind = family(actor, side), id;
+  // Bruiser basic attacks play a single cue at confirmed contact.
+  if (side === "hero" && actor && actor.heroStyle === "bruiser") return false;
   if (side === "tower") id = tower && tower.attackType === "cannon" ? "cannon-tower-fire" : tower && tower.attackType === "sniper" ? "sniper-tower-fire" : "bow-arrow-release";
-  else if (side === "hero") id = actor && actor.heroStyle === "skirmisher" && actor._styleShotCharge >= 1-1e-9 ? "skirmisher-passive-release" : {fighter:"sword-light-swing",vanguard:"cavalry-lance-thrust",mystic:"enemy-magic-projectile",bruiser:"sword-heavy-swing",guardian:"sword-heavy-swing"}[actor&&actor.heroStyle] || "bow-arrow-release";
-  else if (side === "ally") id = Number(cfg.ID) === 90003 ? "crossbow-fire" : Number(cfg.ID) === 90004 ? "cavalry-lance-thrust" : Number(cfg.ID) === 90002 ? "sword-heavy-swing" : "sword-light-swing";
+  else if (side === "hero") id = actor && actor.heroStyle === "skirmisher" && actor._styleShotCharge >= 1-1e-9 ? "skirmisher-passive-release" : {fighter:"sword-light-swing",vanguard:"sword-light-swing",mystic:"enemy-magic-projectile",guardian:"sword-heavy-swing"}[actor&&actor.heroStyle] || "bow-arrow-release";
+  else if (side === "ally") id = Number(cfg.ID) === 90003 ? "crossbow-fire" : Number(cfg.ID) === 90002 ? "sword-heavy-swing" : "sword-light-swing";
   else if (Number(cfg.AttackType) === 3) id = Number(cfg.BehaviorTemplate||cfg.CampaignBaseUnit||sourceConfig(cfg).ID) === 90009 ? "healing-cast" : "enemy-magic-projectile";
   else if (Number(cfg.AttackType) === 2) id = kind === "ghost" ? "enemy-magic-projectile" : "enemy-spit-launch";
   else id = kind === "stone" || kind === "metal" ? "golem-ground-slam" : kind === "skeleton" ? "sword-light-swing" : kind === "beast" || kind === "shell" ? "monster-bite" : "monster-claw-swipe";
@@ -177,17 +182,18 @@ function hit(target, source, damage, options) {
   var shot = !options.magic && options.context, skirmisher = source && source._relicHero && shot && shot.heroStyle === "skirmisher";
   // Vanguard shares Skirmisher's basic and active confirmed-hit sounds.
   var vanguard = source && source._relicHero && !options.magic && (shot && shot.heroStyle || heroStyle) === "vanguard";
-  // A critical is the hit cue itself, so an ordinary impact cannot consume its channel first.
+  var bruiserBasic = heroStyle === "bruiser" && !options.magic && !(shot && shot.styleSkill);
+  // Critical strikes take priority over the Bruiser's basic impact.
   if (shot && shot.critical) id = "critical-hit";
+  else if (bruiserBasic) id = "impact-bruiser-basic";
   else if ((skirmisher || vanguard) && shot && shot.styleSkill) id = "skirmisher-active-hit";
   else if (vanguard || skirmisher && shot.styleShotCharge >= 1-1e-9) id = "skirmisher-passive-hit";
   else if (tower && tower.attackType === "cannon") id = null; // One explosion is emitted per shell, outside the splash-victim loop.
   else if (options.magic || heroStyle === "mystic" || sourceType === 3 || sourceType === 2 && family(source) === "ghost") id = "magic-impact";
-  else if (heroStyle === "bruiser" && !(shot && shot.styleSkill)) id = "impact-bruiser-basic";
   else if (arrow) id = armored ? "arrow-impact-armour" : "arrow-impact-flesh";
   else id = armored ? "impact-armour" : damage >= (target.hpMax || Infinity) * .2 ? "impact-flesh-heavy" : "impact-flesh-light";
   var customImpact=source&&source._styleRuntime&&source._styleRuntime.settings&&source._styleRuntime.settings.audio&&source._styleRuntime.settings.audio.impact;
-  if(customImpact&&customImpact.clip&&!options.magic)id=null;
+  if(customImpact&&customImpact.clip&&!options.magic&&!bruiserBasic)id=null;
   if (id) effect(id, target, { allowDead: true });
   return true;
 }

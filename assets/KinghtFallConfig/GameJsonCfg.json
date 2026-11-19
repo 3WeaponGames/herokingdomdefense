@@ -147244,14 +147244,7 @@
     },
     "fighter": {
       "visual": {
-        "castOffsetX": 0,
-        "castOffsetY": -20,
         "arcDegrees": 272.73,
-        "castScale": 1.67,
-        "castScaleX": 0.77,
-        "castRotation": 96.2,
-        "castColor": "",
-        "castScaleY": 1.26,
         "impactDelay": 0,
         "castDelay": 0.14,
         "scale": 1.22,
@@ -147289,22 +147282,8 @@
     },
     "bruiser": {
       "visual": {
-        "castOffsetX": -2.79,
-        "castOffsetY": 2.05,
-        "castScale": 1.64,
-        "castSecondaryOffsetY": 0.88,
         "castDelay": 0.14,
-        "castSecondaryDelay": 0.1,
-        "castScaleY": 2.91,
-        "castRotation": 90.21,
-        "scale": 1.29,
-        "castSecondaryScaleY": 2.38,
-        "castSecondaryScale": 1.74,
-        "castSecondaryOffsetX": -1.48,
-        "castPivotX": -18,
-        "castPivotY": 26.5,
-        "castSecondaryPivotX": 18.6,
-        "castSecondaryPivotY": 34
+        "scale": 1.29
       },
       "audio": {
         "cast": {

@@ -144,10 +144,21 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
   };
   _ctor.prototype.showHomeGuide = function () {
     if (!this.node.activeInHierarchy) return;
+    var flow = require("TutorialFlow"), player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), guide = player.getGuideData();
+    if (guide.getGroupId() !== 5 || guide.getStepId() === 0) return;
+    var owned = this.ndInfo.find(function (entry) { return player.getUserData().getTreasureLevel(entry.cfg.ID) && flow.visible(entry.node); });
+    if (guide.getStepId() >= 2 && owned) {
+      flow.scrollTo(this, owned.node);
+      var controller = this;
+      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 5, owned.node, function () { controller.onClick(owned.cfg); });
+      return;
+    }
+    if (guide.getGuideTips(5)) return;
+    if (guide.getStepId() !== 1 && !flow.state(guide, 5, 1)) return;
     var target = this;
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 5, this.btnOne, function () {
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.box_draw1);
-      target.getReward(1, 1);
+      target.getReward(1, 1, [], false, true);
     });
   };
   _ctor.prototype.initEventListener = function () {
@@ -297,10 +308,11 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
       if (request) $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, request.earn, request.cancel, "home.treasure.draw");
     }, this);
   };
-  _ctor.prototype.getReward = function (count, type, costs, video) {
-    var result = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().drawTreasures(this.cfgBox, count, costs || [], video);
+  _ctor.prototype.getReward = function (count, type, costs, video, tutorial) {
+    var result = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().drawTreasures(this.cfgBox, count, costs || [], video, tutorial);
     if (!result) return;
     this.showDrawResult(result, type);
+    return result;
   };
   _ctor.prototype.showDrawResult = function (result, type, presentation) {
     var current = presentation && presentation.current;
@@ -329,7 +341,7 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
     this.btnVideo.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = t.video + "/" + this.cfgBox.VedioCount;
   };
   _ctor.prototype.onCloseUI = function (t) {
-    t == $z1KinghtFallConfig.KinghtFallUIID.UITreasureReward && this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 5, this.ndInfo[0].node);
+    if (t === $z1KinghtFallConfig.KinghtFallUIID.UITreasureReward) this.scheduleHomeGuide();
   };
   cc__decorate([ccp_property({
     type: cc.Label,

@@ -8,7 +8,6 @@ function point(value){return value?{x:finite(value.x,0),y:finite(value.y,0)}:nul
 function same(a,b){return !!a&&!!b&&a.id===b.id&&a.node===b.node&&a.generation===b.generation;}
 function create(){return{scope:null,time:0,passive:null,beam:null,mark:null,buff:null,shieldTail:null,tails:[],presence:new Map(),frame:{entities:[],active:{}}};}
 function reset(cache,state){cache.scope=state;cache.time=finite(state.time,0);cache.passive=cache.beam=cache.mark=cache.buff=null;cache.shieldTail=null;cache.tails=[];cache.presence=new Map();}
-function setting(visual,prefix,key,fallback){return finite(visual[prefix+key],fallback);}
 function advanceClock(clock,dt){if(clock){var before=clock.elapsed||0;clock.elapsed=before+dt;clock.age+=Math.max(0,clock.elapsed-Math.max(before,clock.delay||0))*clock.speed;}}
 function clock(speed,delay){return{age:0,elapsed:0,delay:Math.max(0,finite(delay,0)),speed:speed};}
 function delayed(age,visual,slot){return age-Math.max(0,finite(visual[slot+"Delay"],0));}
@@ -22,35 +21,38 @@ function update(cache,state,context,visual){
   advanceClock(cache.passive,dt);advanceClock(cache.beam,dt);advanceClock(cache.mark,dt);advanceClock(cache.buff,dt);advanceClock(cache.shieldTail,dt);
   cache.tails.forEach(function(tail){tail.age+=dt;});
   cache.tails=cache.tails.filter(function(tail){return tail.age<tail.duration;});
-  var intensity=0,speed=1,copies=1,restart=false;
-  if(style==="fighter"&&state.stackRemaining>0&&state.stacks>0){
-    intensity=clamp(state.stacks/Math.max(1,finite(tuning.maxStacks,5)),0,1);
-    copies=1;
-    speed=setting(visual,"passive","MinPlayback",.55)+(setting(visual,"passive","Playback",1.35)-setting(visual,"passive","MinPlayback",.55))*intensity;
-  }else if(style==="vanguard"){
-    intensity=clamp(state.buffRemaining>0?state.buffStrength:state.charge,0,1);
-    speed=setting(visual,"passive","MinPlayback",.5)+(setting(visual,"passive","Playback",1)-setting(visual,"passive","MinPlayback",.5))*Math.floor(intensity*10+1e-8)/10;
-    restart=!!cache.passive&&cache.passive.buff&&!(state.buffRemaining>0);
-  }else if(style==="bruiser"){
+  var intensity=0;
+  if(style==="bruiser"){
     var hp=finite(context.maxHp,0)>0?clamp(finite(context.hp,context.maxHp)/context.maxHp,0,1):1;
-    if(hp<.95){
-      var levels=clamp(Math.floor((.95-hp)/.05+1e-8),0,18);intensity=levels/18;
-      speed=setting(visual,"passive","MinPlayback",.3)+(setting(visual,"passive","Playback",1)-setting(visual,"passive","MinPlayback",.3))*intensity;
-      // The first level remains visible at its minimum size and playback.
+    if(hp<=.9){
+      var levels=clamp(Math.floor((.9-hp)/.05+1e-8),0,17);intensity=levels/17;
       active.passive=true;
     }
   }
-  var passive=(!!active.passive||intensity>0)&&!(style==="vanguard"&&state.buffRemaining>0);active.passive=passive;
-  if(passive){
-    if(!cache.passive||restart)cache.passive=clock(speed,visual.passiveDelay);
-    cache.passive.speed=Math.max(0,speed);cache.passive.buff=state.buffRemaining>0;
-    var minimum=setting(visual,"passive","MinScale",style==="vanguard"?.3:style==="bruiser"?.35:.5);
-    var scale=style==="vanguard"?1:minimum+(1-minimum)*intensity;
-    if(cache.passive.elapsed>=cache.passive.delay)for(var i=0;i<copies;i++)entities.push(payload("passive","loop",cache.passive.age+i*.19,{key:"passive:"+i,scale:scale*(1+i*.035),opacity:1/(1+i*.16),copy:i,intensity:intensity}));
+  if(active.passive){
+    if(!cache.passive)cache.passive=clock(1,visual.passiveDelay);
+    if(cache.passive.elapsed>=cache.passive.delay)entities.push(payload("passive","loop",cache.passive.age,{key:"passive:0",opacity:.1+.9*intensity,intensity:intensity}));
   }else cache.passive=null;
-  if((style==="fighter"||style==="vanguard")&&state.buffRemaining>0){
-    if(!cache.buff||state.buffRemaining>cache.buff.remaining+1e-8)cache.buff=clock(style==="vanguard"?speed:1);
-    cache.buff.speed=style==="vanguard"?speed:1;cache.buff.remaining=state.buffRemaining;active.buff=true;var buffAge=cache.buff.age-Math.max(0,finite(visual.buffDelay,0))*cache.buff.speed;if(buffAge>=0)entities.push(payload("buff","loop",buffAge));
+  if(style==="fighter"&&state.stackRemaining>0&&typeof state.stackBuffAt==="number"){
+    active.passive=true;
+    var activation=Layout.clipFor(visual.passiveResource);
+    var age=delayed(time-state.stackBuffAt,visual,"passive");
+    var duration=Layout.visibleDuration(activation,style,"passive")/Layout.playbackRate(visual,"passive",style);
+    if(age>=0&&age<duration)entities.push(payload("passive","once",age,{key:"passive:"+state.stackBuffAt,loop:false}));
+  }
+  if(style==="vanguard"&&state.buffRemaining>0&&typeof state.momentumLockedAt==="number"){
+    active.buff=true;
+    var locked=Layout.clipFor(visual.buffResource),lockedAge=delayed(time-state.momentumLockedAt,visual,"buff");
+    if(visual.buffResource&&lockedAge>=0){
+      var intro=locked&&locked.group==="vanguard-momentum-lock"&&Layout.phaseClips("buff",locked,"start")[0];
+      var introDuration=intro?Layout.visibleDuration(intro,style,"buff")/Layout.playbackRate(visual,"buff",style):0;
+      if(lockedAge<introDuration)entities.push(payload("buff","start",lockedAge,{key:"momentum-start:"+state.momentumLockedAt,loop:false}));
+      else entities.push(payload("buff","loop",lockedAge-introDuration,{key:"momentum-locked:"+state.momentumLockedAt,variant:state.buffStrength>=1-1e-9?"full":"incomplete"}));
+    }
+  }
+  if(style==="fighter"&&state.buffRemaining>0){
+    if(!cache.buff||state.buffRemaining>cache.buff.remaining+1e-8)cache.buff=clock(1);
+    cache.buff.remaining=state.buffRemaining;active.buff=true;var buffAge=delayed(cache.buff.age,visual,"buff");if(buffAge>=0)entities.push(payload("buff","loop",buffAge));
   }else if(style!=="guardian")cache.buff=null;
   var beam=context.channelTarget||context.beamTarget,visible=context.beamTarget;
   active.beam=!!beam;
@@ -112,9 +114,10 @@ function update(cache,state,context,visual){
   var cast=context.skillCast;
   if(cast&&context.skillCastValid!==false)["cast","castSecondary"].forEach(function(slot){
     if(!visual[slot+"Resource"]||slot==="castSecondary"&&style!=="bruiser")return;
-    var onset=cast.at;
+    var clip=slot==="cast"&&Layout.clipFor(visual.castResource);
+    var atImpact=clip&&clip.startOnImpact===true,onset=atImpact?cast.impactAt:cast.at;
     if(typeof onset==="number"){
-      var castAge=time-onset-Math.max(0,finite(visual.castDelay,0))-(slot==="castSecondary"?Math.max(0,finite(visual.castSecondaryDelay,0)):0),castDuration=finite(context[slot+"Duration"],finite(cast.duration,1))/Layout.playbackRate(visual,slot,style);
+      var castAge=time-onset-(atImpact?0:Math.max(0,finite(visual.castDelay,0)))-(slot==="castSecondary"?Math.max(0,finite(visual.castSecondaryDelay,0)):0),castDuration=finite(context[slot+"Duration"],finite(cast.duration,1))/Layout.playbackRate(visual,slot,style);
       if(slot==="cast"&&style==="vanguard")castAge=require('./HeroSkillTimeline').vanguardSourceTime(time-cast.at,tuning,visual);
       if(slot==="cast"&&style==="skirmisher")castAge=require("./HeroSkillTimeline").skirmisherSourceTime(time-cast.at,tuning,visual);
       if(castAge>=0&&castAge<castDuration)entities.push(payload(slot,"once",castAge,{key:slot+":"+cast.key,origin:cast.origin,direction:cast.direction,target:cast.target,radius:cast.radius,style:style}));

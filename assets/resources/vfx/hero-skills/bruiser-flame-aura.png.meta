@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "75180007-5512-5f2c-9195-c64217cbac99",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 1152,
+  "height": 960,
+  "platformSettings": {},
+  "subMetas": {
+    "bruiser-flame-aura": {
+      "ver": "1.0.6",
+      "uuid": "75931594-f812-5ce6-aded-b9368296363d",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "75180007-5512-5f2c-9195-c64217cbac99",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1152,
+      "height": 960,
+      "rawWidth": 1152,
+      "rawHeight": 960,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

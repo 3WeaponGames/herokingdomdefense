@@ -1175,8 +1175,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.0.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.0.Describe"
     },
     "data.guidecfg.2.describe": {
-      "en": "<b>Expand your kingdom! <color=#106cff>Tap a stage</c> to begin!</b>",
-      "zh": "<b>去开拓疆土吧，<color=#106cff>点击关卡</c>开始战斗！</b>",
+      "en": "<b>Expand your kingdom! <color=#106cff>Tap Campaign</c> to enter the selected stage.</b>",
+      "zh": "<b>扩展你的王国！<color=#106cff>点击战役</c>，进入所选关卡。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.1.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.1.Describe"
     },
     "data.guidecfg.3.describe": {
@@ -1185,8 +1185,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.2.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.2.Describe"
     },
     "data.guidecfg.4.describe": {
-      "en": "<b>Use the joystick to move here and <color=#106cff>build your castle</c>.</b>",
-      "zh": "<b>拖动摇杆移动来这，<color=#106cff>建造主堡</c>吧</b>",
+      "en": "<b>Move to the marked spot and stand there to <color=#106cff>build your main hall</c>.</b>",
+      "zh": "<b>移动到标记的位置并停留，<color=#106cff>建造主城</c>。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.3.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.3.Describe"
     },
     "data.guidecfg.5.describe": {
@@ -1240,13 +1240,13 @@
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.13.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.13.Describe"
     },
     "data.guidecfg.15.describe": {
-      "en": "<b><color=#106cff>Tap Unlock</c> to strengthen your buildings.</b>",
-      "zh": "<b><color=#106cff>点击解锁按钮</c>，为建筑强化吧。</b>",
+      "en": "<b>Use the available <color=#106cff>Unlock</c> option to gain this talent.</b>",
+      "zh": "<b>使用可用的<color=#106cff>解锁</c>选项，获得这项天赋。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.14.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.14.Describe"
     },
     "data.guidecfg.16.describe": {
-      "en": "<b>Houses <color=#106cff>produce extra silver</c>. A destroyed house produces nothing that day.</b>",
-      "zh": "<b>房屋能<color=#106cff>提供额外的银币</c>（民宅被毁后，当天将不生效）</b>",
+      "en": "<b>Houses earn <color=#106cff>silver after each wave</c>. Protect them to keep that income.</b>",
+      "zh": "<b>房屋在<color=#106cff>每波结束后产出银币</c>。保护它们，维持收入。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.15.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.15.Describe"
     },
     "data.guidecfg.17.describe": {
@@ -1260,13 +1260,13 @@
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.17.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.17.Describe"
     },
     "data.guidecfg.19.describe": {
-      "en": "<b>Mills <color=#106cff>produce even more silver</c>. A destroyed mill produces nothing that day.</b>",
-      "zh": "<b>磨坊能<color=#106cff>为你提供更多的银币</c>（建筑被摧毁后，当天将不生效）</b>",
+      "en": "<b>Mills earn silver from <color=#106cff>surviving crop fields</c>. Their upgrades help protect the fields.</b>",
+      "zh": "<b>磨坊通过<color=#106cff>幸存的农田产出银币</c>。升级磨坊可以保护农田。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.18.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.18.Describe"
     },
     "data.guidecfg.20.describe": {
-      "en": "<b>Barracks recruit soldiers for you. <color=#106cff>Tap Rally</c> to gather them around you.</b>",
-      "zh": "<b>兵营会为你招募士兵，试着<color=#106cff>点击召集按钮</c>，将士兵们都召集过来吧</b>",
+      "en": "<b>Barracks recruit allies. <color=#106cff>Rally</c> orders them to your position; <color=#106cff>Follow</c> lets them travel with you.</b>",
+      "zh": "<b>兵营招募友军。<color=#106cff>集结</c>命令他们前往你的位置；<color=#106cff>跟随</c>让他们与你同行。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.19.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.19.Describe"
     },
     "data.ingametaskenum.1.name": {
@@ -6155,6 +6155,10 @@
     "lobby.wallDefense": {
       "en": "Wall Defense",
       "zh": "城墙防御"
+    },
+    "common.comingSoon": {
+      "en": "Coming soon",
+      "zh": "敬请期待"
     },
     "lobby.wallUnlock": {
       "en": "Unlocks at stage {0}",
@@ -11746,8 +11750,8 @@
       "context": "Hero active skill button; includes cooldown and targeting feedback"
     },
     "hero.skills.skirmisher": {
-      "en": "Piercing Arrow",
-      "zh": "贯穿箭",
+      "en": "Arrow Volley",
+      "zh": "扇形齐射",
       "context": "Hero active skill button; includes cooldown and targeting feedback"
     },
     "hero.skills.fighter": {
@@ -11924,6 +11928,16 @@
       "context": "assets/KinghtFallConfig/GameJsonCfg.json:LevelCfg.23.Name; assets/KinghtFallConfigB/GameJsonCfg.json:LevelCfg.23.Name; assets/KinghtFallConfigD/GameJsonCfg.json:LevelCfg.23.Name; assets/configs/GameJsonCfg.json:LevelCfg.23.Name",
       "en": "24. Emberfall Heights",
       "zh": "24.烬落高地"
+    },
+    "tutorial.equipment.overview": {
+      "en": "<b>Improve equipment here when an upgrade is available. Stage progress unlocks more upgrades.</b>",
+      "zh": "<b>装备可以在这里升级。推进关卡，解锁更多升级。</b>",
+      "context": "Tutorial fallback when current equipment has no available upgrade button"
+    },
+    "tutorial.talent.overview": {
+      "en": "<b>This talent is already unlocked or needs an earlier talent. Close this panel to continue.</b>",
+      "zh": "<b>此天赋已解锁，或需要先解锁前置天赋。关闭面板以继续。</b>",
+      "context": "Tutorial fallback when the inspected talent has no active unlock action"
     }
   },
   "images": {

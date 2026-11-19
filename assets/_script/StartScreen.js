@@ -11,6 +11,8 @@ var StartScreen = cc.Class({
   },
 
   onLoad: function () {
+    this._resetProgressPage = require("ProgressReset").openIfRequested();
+    if (this._resetProgressPage) return;
     this._starting = false;
     Startup.start(this, cc);
     this._requestGeneration = 0;
@@ -50,6 +52,7 @@ var StartScreen = cc.Class({
   },
 
   beginLoading: function () {
+    if (this._resetProgressPage) return;
     if (this._starting || !cc.isValid(this, true)) return;
     this._starting = true;
     if (this._pulse) this._pulse.stop();

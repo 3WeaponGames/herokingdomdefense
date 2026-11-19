@@ -40,6 +40,7 @@ function harness(saved = {}) {
     getEquipCfgList: () => config.EquipCfg,
     getBannerCfg: id => config.BannerCfg.filter(row => row.LibraryID === id),
     getTaskCfgById: id => config.TaskCfg.find(row => row.ID === id),
+    getGuideCfgById: id => config.GuideCfg.filter(row => row.GuideGroup === id).sort((a,b) => a.GuideStep-b.GuideStep),
     getParamsCfgById: id => id === 60001 ? '100' : '300'
   }) };
   for (const name of ['LanguageMgr', 'UIMgr', 'KinghtFallTextConfig']) modules[name] = {};

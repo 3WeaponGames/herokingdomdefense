@@ -22,7 +22,7 @@ test('playback controls are saved numeric fields, while native contact sequences
     }
     const active=Authoring.fields(style,'active',Settings.fields(style),defaults,{vfx:[]}),paths=Object.values(active).flat().map(field=>field.path);
     assert.equal(paths.includes('visual.animationPlayback'),!['skirmisher','mystic'].includes(style),style+' rider rate exposure');assert.equal(paths.includes('visual.castPlaybackRate'),!['skirmisher','vanguard','guardian'].includes(style),style+' cast rate exposure');
-    if(style==='skirmisher')assert(paths.includes('volleyPlayback'),'Native volley source clock stays authorable');if(style==='vanguard')assert(paths.includes('duration'),'Native spear source duration stays authorable');
+    if(style==='skirmisher')assert(!paths.includes('volleyPlayback'),'Native volley art has been retired');if(style==='vanguard')assert(paths.includes('duration'),'Native spear source duration stays authorable');
     if(style==='mystic')assert(Object.values(Authoring.fields(style,'passive',Settings.fields(style),defaults,{vfx:[]})).flat().some(field=>field.path==='visual.animationPlayback'),'Mystic warmup animation rate belongs to its channel');
   }
 });
@@ -68,16 +68,18 @@ test('simple cast one-shots complete source animation at the edited rate without
   for(const style of ['fighter','mystic','bruiser']){const state=Core.createState(style),cache=VFX.create(),visual={...Settings.defaults(style).visual,castPlaybackRate:2},clip=Layout.clipFor(visual.castResource),duration=Layout.visibleDuration(clip,style,'cast'),cast={key:1,at:0,impactAt:0,origin:{x:0,y:0},direction:{x:1,y:0},radius:100};state.time=0;VFX.update(cache,state,{skillCast:cast,castDuration:duration},visual);state.time=duration*.99/2;let frame=VFX.update(cache,state,{skillCast:cast,castDuration:duration},visual),source=Layout.entities(frame,visual,{style,hero:{x:0,y:0}}).find(entity=>entity.slot==='cast');assert(source,style);close(source.age,(clip.trimStart||0)+duration*.99);state.time=duration*1.01/2;frame=VFX.update(cache,state,{skillCast:cast,castDuration:duration},visual);assert.equal(frame.entities.find(entity=>entity.slot==='cast'),undefined);}
 });
 
-test('native volley and spear casts ignore a hidden second art rate so every contact keeps the same source timeline',()=>{
-  for(const style of ['skirmisher','vanguard']){const settings=Settings.defaults(style),visual={...settings.visual,castPlaybackRate:3},state=Core.createState(style,settings),cache=VFX.create(),cast={key:1,at:0,origin:{x:0,y:0},direction:{x:1,y:0},radius:100},time=style==='skirmisher'?.3:.5;state.time=time;const frame=VFX.update(cache,state,{skillCast:cast,castDuration:10},visual),rendered=Layout.entities(frame,visual,{style,hero:{x:0,y:0}}).find(entity=>entity.slot==='cast');assert(rendered,style);const expected=style==='skirmisher'?Timeline.skirmisherSourceTime(time,state.tuning,visual):time*(4/3)/settings.duration;close(rendered.age,expected);}
+test('native spear casts ignore a hidden second art rate so every contact keeps the same source timeline',()=>{
+  for(const style of ['vanguard']){const settings=Settings.defaults(style),visual={...settings.visual,castPlaybackRate:3},state=Core.createState(style,settings),cache=VFX.create(),cast={key:1,at:0,origin:{x:0,y:0},direction:{x:1,y:0},radius:100},time=style==='skirmisher'?.3:.5;state.time=time;const frame=VFX.update(cache,state,{skillCast:cast,castDuration:10},visual),rendered=Layout.entities(frame,visual,{style,hero:{x:0,y:0}}).find(entity=>entity.slot==='cast');assert(rendered,style);const expected=style==='skirmisher'?Timeline.skirmisherSourceTime(time,state.tuning,visual):time*(4/3)/settings.duration;close(rendered.age,expected);}
 });
 
 test('native source formations start at only the explicit VFX delay while saved windup, contact delay and speed preserve every release',()=>{
   for(const contactDelay of [0,.3])for(const castDelay of [0,.4]){
-    for(const windup of [0,2])for(const volleyPlayback of [.25,2]){
-      const settings=Settings.defaults('skirmisher');Object.assign(settings,{contactDelay,windup,volleyPlayback});settings.visual.castDelay=castDelay;const clip=Layout.clipFor(settings.visual.castResource),state=Core.createState('skirmisher',settings),cache=VFX.create(),cast={key:1,at:0,origin:{x:0,y:0},direction:{x:1,y:0}},context={skillCast:cast,castDuration:clip.duration},age=time=>{state.time=time;return VFX.update(cache,state,context,settings.visual).entities.find(entity=>entity.slot==='cast')?.age;};
-      if(castDelay)assert.equal(age(castDelay-.001),undefined);close(age(castDelay),windup+contactDelay>0?clip.trimStart:clip.sourceRelease);const first=Timeline.skirmisherReleaseTime(settings,settings.visual);if(first>castDelay)assert(age((first+castDelay)/2)>clip.trimStart);close(Timeline.skirmisherSourceTime(first,settings,settings.visual),clip.sourceRelease);
-      for(const source of [clip.sourceRelease,.2,.4,clip.duration])close(Timeline.skirmisherSourceTime(first+(source-clip.sourceRelease)/volleyPlayback,settings,settings.visual),source);close(Timeline.skirmisherHitTime(settings,settings.visual),castDelay+contactDelay+settings.volleyHitTime);assert.equal(Timeline.skirmisherEvents(settings).filter(event=>event.type==='skirmisher-volley').length,1);
+    for(const windup of [0,2]){
+      const settings={...Settings.defaults('skirmisher'),windup,contactDelay},state=Core.createState('skirmisher',settings);
+      Core.beginActive(state,{effectDelay:castDelay});
+      const events=Core.step(state,3,{});
+      assert.equal(events.length,1);assert.equal(events[0].type,'skirmisher-release');
+      close(events[0].time,windup+contactDelay+castDelay);
     }
     for(const duration of [.4,2.5]){
       const settings=Settings.defaults('vanguard');Object.assign(settings,{contactDelay,duration});settings.visual.castDelay=castDelay;const state=Core.createState('vanguard',settings),cache=VFX.create(),cast={key:1,at:0,origin:{x:0,y:0},direction:{x:1,y:0}},context={skillCast:cast,castDuration:4/3},age=time=>{state.time=time;return VFX.update(cache,state,context,settings.visual).entities.find(entity=>entity.slot==='cast')?.age;};if(castDelay)assert.equal(age(castDelay-.001),undefined);close(age(castDelay),0);const schedule=Timeline.vanguardSchedule(settings),sources=[.4333333333,.5333333333,.5666666667,.6333333333,.8666666667];for(const [index,time]of schedule.entries()){close(age(time+castDelay),sources[index]);close(Timeline.vanguardSourceTime(time+castDelay,settings,settings.visual),sources[index]);}
@@ -85,9 +87,8 @@ test('native source formations start at only the explicit VFX delay while saved 
   }
 });
 
-test('native VFX speed retimes the single arrow artwork independently of its one hit and preserves all five spear contact frames',()=>{
-  const base=Settings.defaults('skirmisher'),fast={...base,volleyPlayback:2},cast={key:1,at:0,origin:{x:20,y:30},direction:{x:1,y:0}},release=Timeline.skirmisherReleaseTime(base,base.visual),clip=Layout.clipFor(base.visual.castResource);
-  close(Timeline.skirmisherSourceTime(release+.2,base,base.visual),Timeline.skirmisherSourceTime(release+.1,fast,base.visual));close(Timeline.skirmisherHitTime(base,base.visual),Timeline.skirmisherHitTime(fast,base.visual));close(Timeline.skirmisherVFXEnd(fast,base.visual)-release,(clip.duration-clip.sourceRelease)/2);assert.equal(Timeline.arrowSegments,undefined,'No nine-path collision clock remains in the runtime');
+test('Vanguard playback preserves all five spear contact frames',()=>{
+  const cast={key:1,at:0,origin:{x:20,y:30},direction:{x:1,y:0}};
   const spear=Settings.defaults('vanguard'),shorter={...spear,duration:spear.duration/2},normalContacts=Timeline.vanguardSchedule(spear),fastContacts=Timeline.vanguardSchedule(shorter);assert.equal(normalContacts.length,5);
   for(let index=0;index<5;index++){close(fastContacts[index],normalContacts[index]/2);const state=Core.createState('vanguard',shorter),cache=VFX.create();state.time=fastContacts[index];const frame=VFX.update(cache,state,{skillCast:{...cast,radius:155},castDuration:4/3},shorter.visual),art=Layout.entities(frame,shorter.visual,{style:'vanguard',hero:{x:0,y:0}}).find(entity=>entity.slot==='cast');assert(art);close(art.age,normalContacts[index]);}
 });
@@ -131,7 +132,7 @@ test('actual custom and impact render records sample independent speeds without 
 test('preview duration retains slow custom and on-hit tails after the final planned contact',()=>{
   const custom=new Model('fighter',{buffDuration:1,visual:{resource:'fixture',effectDuration:2,resourcePlaybackRate:.05}},{mode:'active',attackRate:0,targetDistance:100,impactDelay:.4});assert(custom.duration()>=.4+2/.05+1,'The complete slow custom cast remains scrubbable');
   const feedback=new Model('bruiser',{visual:{impactDelay:1,impactDuration:2,impactPlaybackRate:.05}},{mode:'active',attackRate:0,targetDistance:100,impactDelay:.4}),before=feedback.duration();assert(before>=.4+1+2/.05+1);feedback.seek(.4);assert(feedback.hits>0);close(feedback.duration(),before);
-  const authored=Settings.defaults('skirmisher');Object.assign(authored,{windup:3.25,contactDelay:1,volleyPlayback:.25});Object.assign(authored.visual,{castDelay:2,impactDelay:1.75,impactDuration:2,impactPlaybackRate:.1});const volley=new Model('skirmisher',authored,{mode:'active',attackRate:0,targetDistance:100}),lastContact=Timeline.skirmisherHitTime(volley.state.tuning,volley.settings.visual);assert(volley.duration()>=lastContact+1.75+2/.1+1,'The one delayed arc impact retains its full slowed source tail');
+  const authored=Settings.defaults('skirmisher');Object.assign(authored,{windup:3.25,contactDelay:1,volleyPlayback:.25});Object.assign(authored.visual,{castDelay:2,impactDelay:1.75,impactDuration:2,impactPlaybackRate:.1});const volley=new Model('skirmisher',authored,{mode:'active',attackRate:0,targetDistance:100}),lastContact=Timeline.skirmisherReleaseTime(volley.state.tuning,volley.settings.visual)+authored.volleyRange/500;assert(volley.duration()>=lastContact+1.75+2/.1+1,'The delayed arrow contacts retains its full slowed source tail');
 });
 
 test('ordinary preview attacks have a fixed authoring horizon despite continuous later feedback events',()=>{
@@ -144,13 +145,13 @@ test('the cropped native source removes obsolete lead-in tuning while preserving
   const legacy={castLeadInTrim:0},f=fixture(t,legacy),before=f.bytes();assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);f.service.change(f.req({style:'fighter',path:'cooldown',value:13}));f.service.save(f.req());for(const text of f.bytes())assert.deepEqual(JSON.parse(text).HeroSkills.skirmisher.visual,legacy,'An unrelated save preserves retired fields without reauthoring them');
 });
 
-test('retired blank-frame values cannot alter the single visible cast source clock or its independent hit',()=>{
-  const settings=Settings.defaults('skirmisher'),base={...settings.visual,castLeadInTrim:0},legacy={...base,castLeadInTrim:.6},clip=Layout.clipFor(base.castResource);close(clip.trimStart,0);close(Timeline.skirmisherSourceTime(0,settings,base),0);close(Timeline.skirmisherSourceTime(settings.windup/2,settings,base),clip.sourceRelease/2);close(Timeline.skirmisherSourceTime(settings.windup,settings,base),clip.sourceRelease);
-  for(const time of [-.1,0,.05,.2,.4,.6])close(Timeline.skirmisherSourceTime(time,settings,base),Timeline.skirmisherSourceTime(time,settings,legacy));close(Timeline.skirmisherVFXEnd(settings,base),Timeline.skirmisherVFXEnd(settings,legacy));close(Timeline.skirmisherHitTime(settings,base),Timeline.skirmisherHitTime(settings,legacy));
+test('retired blank-frame values cannot alter the archived cast clip source clock',()=>{
+  const settings=Settings.defaults('skirmisher');Settings.applyClip(settings.visual,'castResource',Layout.clipFor('skirmisher-triple-volley'));const base={...settings.visual,castLeadInTrim:0},legacy={...base,castLeadInTrim:.6},clip=Layout.clipFor(base.castResource);assert(clip.trimStart>0);close(Timeline.skirmisherSourceTime(0,settings,base),clip.trimStart);close(Timeline.skirmisherSourceTime(settings.windup/2,settings,base),(clip.trimStart+2/3)/2);close(Timeline.skirmisherSourceTime(settings.windup,settings,base),2/3);
+  for(const time of [-.1,0,.05,.2,.4,.6])close(Timeline.skirmisherSourceTime(time,settings,base),Timeline.skirmisherSourceTime(time,settings,legacy));close(Timeline.skirmisherVFXEnd(settings,base),Timeline.skirmisherVFXEnd(settings,legacy));
 });
 
 test('active cast VFX starts immediately or at its explicit delay while damage retains the separate impact marker',()=>{
-  for(const style of ['fighter','mystic','bruiser'])for(const delay of [0,.25]){
+  for(const style of ['mystic'])for(const delay of [0,.25]){
     const settings=Settings.defaults(style);settings.visual.castDelay=delay;const model=new Model(style,settings,{mode:'active',attackRate:0,targetDistance:100,impactDelay:.8}),castEntity=()=>model.vfxFrame.entities.find(entity=>entity.slot==='cast');
     assert.equal(model.hits,0);assert.equal(!!castEntity(),delay===0,style+' onset at zero');if(delay){model.seek(delay-.001);assert.equal(castEntity(),undefined);model.seek(delay);assert(castEntity(),style+' explicit onset');}close(castEntity().age,0);
     const origin={...castEntity().origin};if(style==='mystic')assert.deepEqual(origin,{x:100,y:0},'Mystic formation begins at the marked target rather than the hero');model.seek(delay+.2);assert(castEntity());assert(model.hits===0,'Visible cast formation does not prematurely apply damage');model.seek(delay+.81);assert(model.hits>0,style+' applies damage at the saved impact marker');

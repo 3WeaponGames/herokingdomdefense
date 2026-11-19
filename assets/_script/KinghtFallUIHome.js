@@ -269,18 +269,8 @@ var def_KinghtFallUIHome = function (t) {
   _ctor.prototype.onCloseUI = function (t) {
     var e = this;
     if (t == $z1Config.UIID.UIGuide) {
-      var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
-      if (5 == n && !this.isLock(2)) {
-        return void (0 == $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId() && this.scheduleOnce(function () {
-          e.startGuide();
-        }));
-      }
-      if (1 != n) {
-        return;
-      }
-      this.scheduleOnce(function () {
-        e.startGuide();
-      });
+      if (require("TutorialFlow").active(this)) this.scheduleOnce(function () { e.startGuide(); });
+      return;
     }
     if (t == $z1KinghtFallConfig.KinghtFallUIID.UINewModular) {
       this._unlockNotice = null;
@@ -293,9 +283,17 @@ var def_KinghtFallUIHome = function (t) {
       this.canGuide = true;
       this.startGuide();
     }
+    if (require("TutorialFlow").active(this) && this.canGuide) this.scheduleOnce(function () { e.startGuide(); });
   };
-  _ctor.prototype.startGuide = function (t, e, n) {
+  _ctor.prototype.startGuide = function (t, e, n, options) {
     var i = this;
+    var flow = require("TutorialFlow");
+    if (!flow.active(this) || this._tutorialOpen || !e && flow.homeBlocked()) return;
+    if (!e && $z1UIMgr.UIMgr.getInstance().isopening) {
+      this.unschedule(this.retryGuideAfterLoading);
+      this.scheduleOnce(this.retryGuideAfterLoading, .1);
+      return;
+    }
     if ($z1PlatformSetting.PlatformSetting.currentPlatform != $z1BasePlatform.Platform.WEB_LINK && this.canGuide) {
       var a = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
       if (!t || a == t) {
@@ -304,6 +302,8 @@ var def_KinghtFallUIHome = function (t) {
           var r;
           var l = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId();
           var g = o[l];
+          if (!g) return;
+          if (a >= 4 && a <= 6 && l > 0 && !e) { this.resumeGuidePage(a); return; }
           switch (a) {
             case 1:
               (r = new $z1UIGuide.GuildCfg()).isWeek = !!g.Close;
@@ -429,21 +429,28 @@ var def_KinghtFallUIHome = function (t) {
               }
           }
           if (r) {
-            this.openUICallBack($z1Config.UIID.UIGuide, function () {
-              if (o[l + 1]) {
-                $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(l + 1);
-              } else {
-                $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGroupId(a + 1);
-                $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(0);
-              }
-            }, r);
-          } else {
-            this.sendEvent($z1Appcfg.BaseEventName.blocktouch, true);
+            if (options && options.informational) { r.isWeek = true; r.tipstring = options.text || r.tipstring; }
+            flow.present(this, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData(), a, l, o, r);
           }
         }
       }
     }
   };
+  _ctor.prototype.resumeGuidePage = function (group) {
+    var index = { 4: 0, 5: 3, 6: 1 }[group];
+    if (index === undefined || this.isLock(index)) return;
+    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    var manager = $z1UIMgr.UIMgr.getInstance();
+    if (group === 6 && guide.getStepId() === 2 && !manager.isopening && !require("TutorialFlow").homeBlocked()) {
+      if (!require("TutorialFlow").state(guide, 6, 1)) return;
+    }
+    var toggle = this.togCon.toggleItems[index]; toggle.isChecked = true; this.showView(toggle);
+    if (!this.tagNode || !this.tagNode.getComponentsInChildren) return;
+    this.tagNode.getComponentsInChildren($z1BaseCtrl.default).forEach(function (controller) {
+      if (controller._homeTabReady && controller.scheduleHomeGuide) controller.scheduleHomeGuide();
+    });
+  };
+  _ctor.prototype.retryGuideAfterLoading = function () { this.startGuide(); };
   cc__decorate([ccp_property({
     type: cc.ToggleContainer,
     tooltip: "切换按钮组"
