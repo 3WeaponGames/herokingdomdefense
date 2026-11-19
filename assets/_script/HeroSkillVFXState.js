@@ -46,13 +46,20 @@ function update(cache,state,context,visual){
     if(visual.buffResource&&lockedAge>=0){
       var intro=locked&&locked.group==="vanguard-momentum-lock"&&Layout.phaseClips("buff",locked,"start")[0];
       var introDuration=intro?Layout.visibleDuration(intro,style,"buff")/Layout.playbackRate(visual,"buff",style):0;
-      if(lockedAge<introDuration)entities.push(payload("buff","start",lockedAge,{key:"momentum-start:"+state.momentumLockedAt,loop:false}));
-      else entities.push(payload("buff","loop",lockedAge-introDuration,{key:"momentum-locked:"+state.momentumLockedAt,variant:state.buffStrength>=1-1e-9?"full":"incomplete"}));
+      // Keep an overlap even when faster playback shortens the activation.
+      var loopStart=Math.min(.5,introDuration*.75);
+      var blend=introDuration>0?clamp((lockedAge-loopStart)/(introDuration-loopStart),0,1):1;
+      if(lockedAge<introDuration)entities.push(payload("buff","start",lockedAge,{key:"momentum-start:"+state.momentumLockedAt,loop:false,opacity:1-blend}));
+      if(lockedAge>=loopStart)entities.push(payload("buff","loop",lockedAge-loopStart,{key:"momentum-locked:"+state.momentumLockedAt,variant:state.buffStrength>=1-1e-9?"full":"incomplete",opacity:blend}));
     }
   }
-  if(style==="fighter"&&state.buffRemaining>0){
+  var fighterBuff=style==="fighter"&&state.buffRemaining>0;
+  if(fighterBuff)active.buff=true;
+  if(fighterBuff&&visual.buffResource){
     if(!cache.buff||state.buffRemaining>cache.buff.remaining+1e-8)cache.buff=clock(1);
-    cache.buff.remaining=state.buffRemaining;active.buff=true;var buffAge=delayed(cache.buff.age,visual,"buff");if(buffAge>=0)entities.push(payload("buff","loop",buffAge));
+    cache.buff.remaining=state.buffRemaining;
+    var buffAge=delayed(cache.buff.age,visual,"buff");
+    if(buffAge>=0)entities.push(payload("buff","loop",buffAge));
   }else if(style!=="guardian")cache.buff=null;
   var beam=context.channelTarget||context.beamTarget,visible=context.beamTarget;
   active.beam=!!beam;

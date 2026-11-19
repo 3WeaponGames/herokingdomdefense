@@ -231,44 +231,6 @@
       "trimStart": 0
     },
     {
-      "id": "fighter-meshy-center",
-      "name": "Meshy Ki Center (Fighter Active Buff)",
-      "style": "fighter",
-      "slot": "buff",
-      "phase": "loop",
-      "group": "fighter-meshy-center",
-      "part": "",
-      "loop": true,
-      "frames": 96,
-      "columns": 16,
-      "cell": 128,
-      "fps": 64,
-      "anchorX": 0.47132813930511475,
-      "anchorY": 0.3976060152053833,
-      "startX": 0.47132813930511475,
-      "startY": 0.3976060152053833,
-      "endX": 1.2536647319793701,
-      "endY": 0.3976060152053833,
-      "aspect": 1,
-      "alphaBounds": [
-        7,
-        7,
-        119,
-        122
-      ],
-      "visibleFrames": 96,
-      "kind": "flipbook",
-      "bundle": "resources",
-      "resource": "vfx/hero-skills/fighter-meshy-center",
-      "uuid": "7099be28-1ad2-53e1-b671-0250e261c93d",
-      "sha256": "7b623e917bce7129f258ee4779a71d476c8f6b5070a45ddd3ebb8686bd3e5757",
-      "source": {
-        "package": "Anime Powers Pack 1.5.unitypackage",
-        "prefab": "Assets/Piloto Studio/Anime_VFX_Pack_Vol1/Aura/Meshy_Ki_Charge_White.prefab"
-      },
-      "trimStart": 0
-    },
-    {
       "id": "fighter-arc-slash",
       "name": "Sword Trail Slash 360 Thick (Fighter)",
       "style": "fighter",
@@ -1877,7 +1839,6 @@
   "presets": {
     "fighter": {
       "passive": "fighter-stack-activation",
-      "buff": "fighter-meshy-center",
       "cast": "fighter-crescent-slash"
     },
     "vanguard": {

@@ -26,7 +26,7 @@ test('Bruiser aura holds one size and raises opacity in five-percent HP steps',(
  close(passive(show(10))[0].opacity,1);
  assert.equal(passive(show(960)).length,0);assert.equal(VFX.update(cache,state,{hp:0,maxHp:1000,alive:false}).entities.length,0);
 });
-test('Vanguard plays the intro once per lock and then displays the variant for the frozen Momentum',()=>{
+test('Vanguard crossfades into the frozen Momentum variant half a second into each activation',()=>{
  const s=Core.createState('vanguard'),cache=VFX.create(),visual=Settings.defaults('vanguard').visual;
  const intro=Layout.clipFor('vanguard-buff-up'),introDuration=Layout.visibleDuration(intro,'vanguard','buff');
  const show=()=>VFX.update(cache,s,{},visual),render=()=>Layout.entities(show(),visual,{style:'vanguard'});
@@ -36,11 +36,21 @@ test('Vanguard plays the intro once per lock and then displays the variant for t
  hit(2);let phase=show().entities[0];const first=phase.key;assert.equal(phase.phase,'start');assert.equal(phase.age,0);assert.equal(phase.loop,false);
  assert.deepEqual(render().map(e=>e.clip.id),[intro.id]);close(Core.bonuses(s).attackRate,.35*.4);
  Core.step(s,.2,{moving:true});hit(3);phase=show().entities[0];assert.equal(phase.key,first);close(phase.age,.2);close(s.buffRemaining,9.8);
- Core.step(s,introDuration,{moving:true});assert.deepEqual(render().map(e=>e.clip.id),['vanguard-incomplete-buff']);close(s.charge,.4);
- Core.step(s,9.8-introDuration,{});assert.deepEqual(render(),[]);assert.equal(s.charge,0);assert.equal(s.momentumLockedAt,null);assert.equal(Core.bonuses(s).attackRate,0);
+ const midpoint=(.5+introDuration)/2;
+ Core.step(s,midpoint-.2,{moving:true});const both=render();
+ assert.deepEqual(both.map(e=>e.clip.id),[intro.id,'vanguard-incomplete-buff']);
+ assert.equal(both[0].behind,false);assert.equal(both[1].behind,true);
+ close(both[0].opacity,.5);close(both[1].opacity,.5);close(both[1].age,midpoint-.5);
+ Core.step(s,introDuration-midpoint+.1,{moving:true});const [loop]=render();
+ assert.equal(render().length,1);assert.equal(loop.key,both[1].key);assert.equal(loop.opacity,1);
+ close(loop.age,introDuration+.1-.5);close(s.charge,.4);
+ Core.step(s,10-introDuration-.1,{});assert.deepEqual(render(),[]);assert.equal(s.charge,0);assert.equal(s.momentumLockedAt,null);assert.equal(Core.bonuses(s).attackRate,0);
  Core.step(s,5,{moving:true});assert.deepEqual(render(),[]);close(s.charge,1);hit(4);
  phase=show().entities[0];assert.equal(phase.phase,'start');assert.notEqual(phase.key,first);assert.deepEqual(render().map(e=>e.clip.id),[intro.id]);
- Core.step(s,introDuration+.1,{});assert.deepEqual(render().map(e=>e.clip.id),['vanguard-full-buff']);
+ Core.step(s,midpoint,{});const full=render();
+ assert.deepEqual(full.map(e=>e.clip.id),[intro.id,'vanguard-full-buff']);
+ close(full[1].opacity,.5);close(full[1].age,midpoint-.5);
+ Core.step(s,introDuration-midpoint+.1,{});assert.deepEqual(render().map(e=>e.clip.id),['vanguard-full-buff']);
 });
 test('Mystic beam has buildup, loop and a bounded release at the last visible endpoints',()=>{
  const state=Core.createState('mystic'),cache=VFX.create(),enemy={id:1,generation:1,x:200,y:0},origin={x:0,y:70};
@@ -79,8 +89,15 @@ test('Guardian body shield has one intro, a sustained loop and one release, with
  const state=Core.createState('guardian'),cache=VFX.create(),visual={shieldResource:'test'},context={shieldSpawnDuration:.5,shieldEndDuration:.625};state.shield=100;state.shieldRemaining=5;let frame=VFX.update(cache,state,context,visual);assert.equal(frame.entities.find(e=>e.slot==='shield').phase,'start');state.time=1;frame=VFX.update(cache,state,context,visual);const loop=frame.entities.find(e=>e.slot==='shield');assert.equal(loop.phase,'loop');close(loop.age,.5);state.shield=0;frame=VFX.update(cache,state,context,visual);assert.equal(frame.entities.find(e=>e.slot==='shield').phase,'end');assert(!frame.entities.some(e=>e.slot==='buff'));state.time=1.7;assert.equal(VFX.update(cache,state,context,visual).entities.length,0);state.shield=50;state.shieldRemaining=3;assert.equal(VFX.update(cache,state,context,visual).entities.find(e=>e.slot==='shield').phase,'start');assert.equal(VFX.update(cache,state,{...context,alive:false},visual).entities.length,0);
 });
 
-test('Fighter center appears only for the active buff',()=>{
- const Settings=require('../../assets/_script/HeroSkillSettings'),f=Core.createState('fighter'),fc=VFX.create(),fv=Settings.defaults('fighter').visual;for(let n=0;n<10;n++)Core.onHit(f,{},{strikeId:n});let frame=VFX.update(fc,f,{},fv);assert.equal(frame.entities.filter(e=>e.slot==='passive').length,1);assert(!frame.entities.some(e=>e.slot==='buff'));f.buffRemaining=10;frame=VFX.update(fc,f,{},fv);assert(frame.entities.some(e=>e.slot==='buff'));f.buffRemaining=0;assert(!VFX.update(fc,f,{},fv).entities.some(e=>e.slot==='buff'));
+test('Battle Cry grants its combat bonuses and only the tenth hit creates a buff-related effect',()=>{
+ const settings=Settings.defaults('fighter'),state=Core.createState('fighter',settings),cache=VFX.create();
+ assert(Core.beginActive(state,{}).ok);
+ const bonuses=Core.bonuses(state);
+ close(bonuses.damage,settings.buffDamage);close(bonuses.attackRate,settings.buffAttackRate);
+ const frame=()=>VFX.update(cache,state,{},settings.visual);
+ assert.deepEqual(frame().entities,[]);
+ for(let n=0;n<10;n++)Core.onHit(state,{},{strikeId:n});
+ assert.deepEqual(frame().entities.map(entity=>entity.slot),['passive']);
 });
 
 test('protected allies have independent aura clocks and are retired when leaving the protected set',()=>{

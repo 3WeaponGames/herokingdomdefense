@@ -81,7 +81,7 @@ def run(bake,artifacts):
         if row['id']=='mystic-electric-barrier':clip.update(startX=0,startY=.5,endX=1,endY=.5)
         clips.append(clip)
     catalog={'version':1,'workbookSha256':source['workbookSha256'],'clips':clips,'presets':{
-      'fighter':{'passive':'fighter-stack-activation','buff':'fighter-meshy-center','cast':'fighter-crescent-slash'},
+      'fighter':{'passive':'fighter-stack-activation','cast':'fighter-crescent-slash'},
       'vanguard':{'cast':'vanguard-spear-barrage','buff':'vanguard-incomplete-buff'},
       'bruiser':{'passive':'bruiser-flame-aura','cast':'bruiser-ring-slash'},
       'mystic':{'beam':'mystic-electric-barrier','channelHit':'mystic-electrified-target','mark':'mystic-mark-loop','cast':'mystic-charged-burst'},

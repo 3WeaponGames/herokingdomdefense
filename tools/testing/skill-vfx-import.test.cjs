@@ -26,7 +26,7 @@ function run(code){
 }
 test('VFX importer accepts the complete capture contract without comparing a later workbook hash',()=>run(String.raw`
     accepted,source=module.capture_rows(bake)
-    assert len(accepted)==22
+    assert len(accepted)==21
     assert source['workbookSha256']==catalog['workbookSha256']
     write(source={'workbookSha256':'f'*64})
     assert module.capture_rows(bake)[1]['workbookSha256']=='f'*64

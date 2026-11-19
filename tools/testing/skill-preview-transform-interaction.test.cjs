@@ -67,7 +67,7 @@ test('every exposed VFX slot has exactly its supported direct transform capabili
     }
     assert.deepEqual(input.settings,before,'Selecting and inspecting handles must not mutate supplied data');
   }
-  assert.equal(checked,17+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));assert(ghosts>0,'Effects outside the current phase still have manipulators');assert.deepEqual(f.traces.changes,[]);assert.deepEqual(f.traces.ends,[]);assert(f.view.getState().silent);
+  assert.equal(checked,16+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));assert(ghosts>0,'Effects outside the current phase still have manipulators');assert.deepEqual(f.traces.changes,[]);assert.deepEqual(f.traces.ends,[]);assert(f.view.getState().silent);
 }));
 
 test('a VFX drag updates its live transform but commits exactly one batch on release',()=>withFixture(async f=>{
@@ -90,7 +90,7 @@ test('pointer cancellation, Escape, lost capture and window blur restore VFX tra
 
 test('uniform, axis and rotation controls change only the selected VFX fields',()=>withFixture(async f=>{
   for(const control of ['scale-0','scale-x','scale-y','rotate']){
-    await f.load('fighter');f.view.selectHandle('buff');f.view.setTransformMode(control==='rotate'?'rotate':'scale');const group=effect(f,'buff'),node=handle(group,control),before=f.view.getState().settings,p=group.screenOrigin;
+    await f.load('fighter','active',{visual:{buffResource:Catalog.clips.find(clip=>clip.id==='guardian-runic-shield').uuid}});f.view.selectHandle('buff');f.view.setTransformMode(control==='rotate'?'rotate':'scale');const group=effect(f,'buff'),node=handle(group,control),before=f.view.getState().settings,p=group.screenOrigin;
     const next=control==='rotate'?{x:p.x-(node.y-p.y),y:p.y+(node.x-p.x)}:{x:p.x+(node.x-p.x)*1.25,y:p.y+(node.y-p.y)*1.25};f.reset();
     drag(f,node,{x:next.x-node.x,y:next.y-node.y});const expected=control==='scale-0'?'visual.buffScale':control==='scale-x'?'visual.buffScaleX':control==='scale-y'?'visual.buffScaleY':'visual.buffRotation',committed=f.traces.ends[0];
     assert(committed,control+' starts a gesture');assert.equal(committed[1],true);assert.deepEqual(Object.keys(committed[0]),[expected]);assert.notEqual(committed[0][expected],expected.split('.').reduce((object,key)=>object[key],before));assert.equal(f.traces.changes.length,0);
@@ -136,7 +136,7 @@ test('all active and passive VFX position handles edit only their own offsets or
       assert.equal(f.traces.ends.length,1,style+'/'+entry.id+'/'+name);assert.equal(f.traces.ends[0][1],true);assert.deepEqual(Object.keys(f.traces.ends[0][0]).sort(),[mapping.x,mapping.y].sort(),style+'/'+entry.id+'/'+name);assert.equal(f.traces.changes.length,0);moved++;
     }
   }
-  assert.equal(moved,17+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));
+  assert.equal(moved,16+Number(Boolean(Settings.defaults('vanguard').visual.buffResource)));
 }));
 
 test('changing the selected slot, transform tool, scenario or skill cancels a pending edit',()=>withFixture(async f=>{

@@ -235,6 +235,30 @@ test('preview ordinary windups use the saved gold timing and never rewrite eithe
  f.service.saved[0].config.GameTools.timings['hero:hero:default']={attack:0};assert.equal(f.service.describe({style:'fighter'}).skillBasicImpactDelay,0);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
 });
 
+test('the Skills preview sizes all mounted hero layers in battle units', () => {
+ const root = path.resolve(__dirname, '../..');
+ const units = require('../../packages/game-data-editor/lib/unit-assets');
+ const service = new SkillService(root, { catalogs });
+ const detached = units.describe(root, { type: 'hero', heroStyle: 'bruiser', noRuntime: true, noShared: true });
+ const preview = service.describe({ style: 'bruiser', noRuntime: true });
+ const game = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'), 'utf8'));
+ const actor = game.find(row => row.ctrPlayAni && row.ctrHp);
+ const animation = game[actor.ctrPlayAni.__id__];
+ const [, , , , , , , scaleX, scaleY] = game[animation.node.__id__]._trs.array;
+
+ assert(preview.layers.some(layer => layer.name === 'wqyl_lead_ma'));
+ assert.deepEqual(preview.layers.map(layer => layer.uuid), detached.layers.map(layer => layer.uuid));
+ preview.layers.forEach((layer, i) => {
+  const source = detached.layers[i];
+  assert(Math.abs(layer.scaleX - source.scaleX * scaleX) < 1e-9, layer.name);
+  assert(Math.abs(layer.scaleY - source.scaleY * scaleY) < 1e-9, layer.name);
+  assert(Math.abs(layer.x - source.x * scaleX) < 1e-9, layer.name);
+  assert(Math.abs(layer.y - source.y * scaleY) < 1e-9, layer.name);
+ });
+ assert.equal(preview.settings.visual.passiveScale, service.snapshot().effective.bruiser.visual.passiveScale);
+ assert.equal(service.dirty(), false);
+});
+
 test('every hero preview uses the real gameplay HP-controller body anchor without publishing drafts',t=>{
  const f=fixture(t),before=f.bytes(),relative='assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab',real=fs.readFileSync(path.resolve(__dirname,'../..',relative)),prefab=JSON.parse(real),actor=prefab.find(row=>row&&row.ctrPlayAni&&row.ctrHp&&row.node),hp=prefab[actor.ctrHp.__id__];
  assert(hp.node);let node=prefab[hp.node.__id__],x=0,y=0;

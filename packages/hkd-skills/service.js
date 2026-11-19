@@ -132,7 +132,7 @@ class SkillService{
   describe(request){
     if(!request||!Settings.styles.some(row=>row.id===request.style))throw Error('Choose one of the six hero skills.');
     const Units=require('../game-data-editor/lib/unit-assets'),describe=this.options.describe||Units.describe;
-    const result=describe(this.root,{type:'hero',id:'hero',heroStyle:request.style,noRuntime:!!request.noRuntime});
+    const result=describe(this.root,{type:'hero',id:'hero',heroStyle:request.style,noRuntime:!!request.noRuntime,battleSpace:true});
     result.skillHeroBodyOffset=bodyOffset(this.root,result,true);
     const config=this.saved[0].config,enemy=Object.values(config.SoldierCfg||{}).find(row=>row.ID&&row.prefab),rawVisual=Settings.effective(request.style,{HeroSkills:this.data}).visual;
     const projectile=request.style==='skirmisher'&&require('../../assets/_script/ProjectileLooks').tierFlight({assets:this.catalogs.projectiles||[],heroArrowTiers:this.catalogs.heroArrowTiers||[]},1);

@@ -38,7 +38,9 @@ function entities(frame,visual,context){
       var v=selection.visuals.get(clip);if(!v){v=frameVisual(visual,slot,clip);selection.visuals.set(clip,v);}
       var style=entity.style||context.style,rate=playbackRate(visual,slot,style);
       var origin=style==="vanguard"&&slot==="buff"&&context.mountGround||hero;
-      var base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:entity.loop!==false&&(!clip||clip.loop),scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:origin.x+(v.offsetX||0),y:origin.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:(slot==="passive"||slot==="buff")&&style!=="fighter"};
+      var behind=(slot==="passive"||slot==="buff")&&style!=="fighter";
+      if(style==="vanguard"&&slot==="buff"&&entity.phase==="start")behind=false;
+      var base={key:entity.key+":"+(clip?clip.id:resource),slot:slot,clip:clip,visual:v,age:entity.age*rate,loop:entity.loop!==false&&(!clip||clip.loop),scale:entity.scale,scaleX:v.scaleX===undefined?1:v.scaleX,scaleY:v.scaleY===undefined?1:v.scaleY,opacity:entity.opacity,angle:v.rotation||0,x:origin.x+(v.offsetX||0),y:origin.y+(v.offsetY||0),anchorX:clip?clip.anchorX:.5,anchorY:clip?clip.anchorY:.5,behind:behind};
       if(v.flipX)base.scaleX*=-1;if(v.flipY)base.scaleY*=-1;
       if(clip&&clip.referenceCell&&clip.cell)base.scale=(base.scale===undefined?1:base.scale)*clip.referenceCell/clip.cell;
       if(entity.phase==="start"&&typeof entity.progress==="number")base.age=Math.min(.999999,entity.progress)*visibleDuration(clip,entity.style||context.style,slot);

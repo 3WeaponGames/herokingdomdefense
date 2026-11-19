@@ -72,6 +72,31 @@ function projectile(prefab, type, id) {
         addAngleSpeed: 100, arrivalRadius: 25, straight: type === 'hero' || Number(id) === 90008,
         directHoming: type === 'enemy' && Number(id) === 90008 };
 }
+function battleHeroLayers(prefab, gamePrefab, layers) {
+    const Maps = require('./map-assets');
+    const source = Maps.model(prefab), game = Maps.model(gamePrefab);
+    const controller = gamePrefab.find(component => component.ctrPlayAni && component.ndAgg);
+    const ground = controller && game.byId[controller.node.__id__];
+    if (!ground) throw new Error('The gameplay hero reference is missing.');
+
+    // The battle reparents the hero to ndMain and sets its position there.
+    // Keep the actor's scale and rotation and measure the layers from its ground origin.
+    const basis = Maps.transform(ground.source);
+    basis[4] = basis[5] = 0;
+    const relativeToGround = Maps.multiply(basis, Maps.inverse(ground.world));
+    return layers.map(layer => {
+        const node = source.nodes.find(entry => entry.name === layer.name);
+        const native = game.nodes.find(entry => entry.name === layer.name);
+        if (!node || !native) throw new Error('Missing gameplay hero layer ' + layer.name);
+
+        // Carry the appearance adjustments from the detached rig onto the battle instance.
+        const placement = Maps.multiply(Maps.multiply(relativeToGround, native.world), Maps.inverse(Maps.transform(node.source)));
+        const angle = (layer.rotation || 0) * Math.PI / 180, c = Math.cos(angle), s = Math.sin(angle);
+        const local = [c * layer.scaleX, s * layer.scaleX, -s * layer.scaleY, c * layer.scaleY, layer.x, layer.y];
+        const pose = Maps.multiply(placement, local), scaleX = Math.hypot(pose[0], pose[1]);
+        return { ...layer, x: pose[4], y: pose[5], scaleX, scaleY: scaleX ? (pose[0] * pose[3] - pose[1] * pose[2]) / scaleX : 0, rotation: Math.atan2(pose[1], pose[0]) * 180 / Math.PI };
+    });
+}
 function describe(root, request) {
     const type = request.type || 'enemy', id = String(request.id || 'hero');
     const documents = request.documents || {}, cfg = documents.A ? documents.A.data : json(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json')), settings=documents.overrides?documents.overrides.data:cfg.GameTools;
@@ -152,7 +177,10 @@ function describe(root, request) {
     const form = UnitRecords.form(type,id), behavior=UnitRecords.behavior(record,id);
     const effect = type === 'hero' || record && record.AttackType === 2 ? 'Projectile release' : behavior === 90006 ? 'Attack-speed buff' : behavior === 90009 ? 'Healing pulse' : behavior === 90007 ? 'Hit and splash damage' : 'Melee hit';
     let shotPrefab = prefab;
-    if (type === 'hero') shotPrefab = json(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'));
+    if (type === 'hero') {
+        shotPrefab = json(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'));
+        if (request.battleSpace) layers = battleHeroLayers(prefab, shotPrefab, layers);
+    }
     const timing = AttackTimings.fromLayers(layers);
     const shotSettings=/Projectile/.test(effect)?projectile(shotPrefab,type,behavior):null,speedKey=type+':'+id+':'+form;let savedSpeed=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[speedKey];
     if(savedSpeed===undefined&&type==='enemy')for(const key of parentKeys){const value=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[key];if(value!==undefined){savedSpeed=value;break;}}

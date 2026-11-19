@@ -126,20 +126,21 @@ test('ground-only passive auras follow live hero positions without sampling unus
  }
 });
 
-test('Fighter active Ki follows the live ground pivot and matches preview placement without sampling body or weapon',()=>{
- const f=fixture('fighter',true);f.main.x=11;f.main.y=13;f.hero.node.x=37;f.hero.node.y=-19;let bodyReads=0;
+test('An authored Battle Cry aura follows the live ground pivot in battle and preview',()=>{
+ const f=fixture('fighter',true),custom=Catalog.clips.find(clip=>clip.id==='guardian-runic-shield');
+ Settings.applyClip(f.rt.settings.visual,'buffResource',custom);f.main.x=11;f.main.y=13;f.hero.node.x=37;f.hero.node.y=-19;let bodyReads=0;
  f.hero.ctrHp={node:{convertToWorldSpaceAR(){bodyReads++;throw Error('ground-only Fighter sampled its unused HP body anchor');}}};
  f.hero.getAttWpos=()=>{throw Error('ground-only Fighter sampled its unused weapon');};Object.assign(f.rt.settings.visual,{targetX:150,targetY:300,buffOffsetX:7,buffOffsetY:-3});f.rt.state.buffRemaining=10;
  const frame=f.P.advanceVFX(f.rt),context=f.rt._presentation.vfxContext,Layout=require('../../assets/_script/HeroSkillVFXLayout'),{Model}=require('../../packages/hkd-skills/preview-model'),preview=new Model('fighter',f.rt.settings,{mode:'basic'});
  preview.hero.x=f.hero.node.x;preview.hero.y=f.hero.node.y;preview.state.buffRemaining=10;preview.updateVFX();
  const at=Layout.entities(frame,f.rt.settings.visual,context).find(e=>e.slot==='buff'),expected=Layout.entities(preview.vfxFrame,preview.settings.visual,preview.vfxContext).find(e=>e.slot==='buff');
  assert.equal(bodyReads,0);assert.equal(context.origin,null);assert.equal(context.heroBody,null);assert(Math.abs(at.x-expected.x)<1e-9);assert(Math.abs(at.y-expected.y)<1e-9);assert.equal(at.x,f.hero.node.x+7);assert.equal(at.y,f.hero.node.y-3);
- f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes('fighter-meshy-center')),node=[...art.nodes.values()][0].node,displayed=f.main.convertToWorldSpaceAR(at);assert.equal(node.parent,f.hud.visual.node);assert.equal(node.x,displayed.x);assert.equal(node.y,displayed.y);
- f.hero.node.y+=21;f.rt.state.time=.1;f.paint();assert(Math.abs(node.y-displayed.y-21)<1e-9,'Ki follows the live ground transform');
- f.rt.state.buffRemaining=0;const reads=bodyReads;f.P.advanceVFX(f.rt);assert.equal(bodyReads,reads,'expired Ki restores the no-body-anchor fast path');assert.equal(f.rt._presentation.vfxContext.heroBody,null);f.P.clear(f.rt);
+ f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes(custom.uuid)),node=[...art.nodes.values()][0].node,displayed=f.main.convertToWorldSpaceAR(at);assert.equal(node.parent,f.hud.visual.node);assert.equal(node.x,displayed.x);assert.equal(node.y,displayed.y);
+ f.hero.node.y+=21;f.rt.state.time=.1;f.paint();assert(Math.abs(node.y-displayed.y-21)<1e-9,'The custom aura follows the live ground transform');
+ f.rt.state.buffRemaining=0;const reads=bodyReads;f.P.advanceVFX(f.rt);assert.equal(bodyReads,reads,'Expiry keeps the ground-only placement path');assert.equal(f.rt._presentation.vfxContext.heroBody,null);f.P.clear(f.rt);
 });
 
-test('Vanguard locks both aura variants to the horse ground pivot behind the rider and HP bar',()=>{
+test('Vanguard plays buff-up in front and both loops under the hero and HP bar at the horse pivot',()=>{
  const f=fixture('vanguard'),s=f.rt.state,target=f.target();
  const Node=f.hero.node.constructor,rider=new Node('ndPlay'),horse=new Node('wqyl_lead_ma'),bar=new Node('ndHp');
  rider.setParent(f.hero.node);horse.setParent(rider);bar.setParent(f.hero.node);
@@ -153,28 +154,37 @@ test('Vanguard locks both aura variants to the horse ground pivot behind the rid
  assert.deepEqual(f.loads.map(row=>path.basename(row.resource)).sort(),['vanguard-buff-up','vanguard-full-buff','vanguard-incomplete-buff']);
  f.finish();
  const records=()=>[...f.rt._presentation.styleArts.values()].flatMap(art=>[...art.nodes.values()]);
- function checkLayer(record){
-  assert.equal(record.node.parent,f.hero.node);assert(record.node.zIndex<rider.zIndex&&record.node.zIndex<bar.zIndex);
-  assert.equal(record.node.x,rider.x+horse.x);assert.equal(record.node.y,rider.y+horse.y);
-  assert.deepEqual(f.hero.node.convertToWorldSpaceAR(record.node.getPosition()),horse.convertToWorldSpaceAR({x:0,y:0}));
+ function checkLayer(record,behind){
+  const parent=behind?f.hero.node:f.hud.visual.node;
+  assert.equal(record.node.parent,parent);
+  if(behind)assert(record.node.zIndex<rider.zIndex&&record.node.zIndex<bar.zIndex);
+  assert.deepEqual(parent.convertToWorldSpaceAR(record.node.getPosition()),horse.convertToWorldSpaceAR({x:0,y:0}));
  }
  for(const [seconds,variant] of [[2,'incomplete'],[5,'full']]){
   Core.step(s,seconds,{moving:true});f.paint();assert.equal(records().length,0);
-  Core.onHit(s,target);f.paint();assert.deepEqual(records().map(r=>r.entity.clip.id),['vanguard-buff-up']);checkLayer(records()[0]);
-  Core.step(s,1,{});f.paint();const [loop]=records();assert.deepEqual(records().map(r=>r.entity.clip.id),['vanguard-'+variant+'-buff']);
-  checkLayer(loop);f.hero.node.x+=45;f.hero.node.y-=32;horse.x+=22;horse.y-=8;f.paint();assert.equal(records()[0],loop);checkLayer(loop);
+  Core.onHit(s,target);f.paint();assert.deepEqual(records().map(r=>r.entity.clip.id),['vanguard-buff-up']);checkLayer(records()[0],false);
+  Core.step(s,.65,{});f.paint();
+  const intro=records().find(record=>record.entity.clip.id==='vanguard-buff-up');
+  const loop=records().find(record=>record.entity.clip.id==='vanguard-'+variant+'-buff');
+  assert.equal(records().length,2);assert(intro&&loop);
+  checkLayer(intro,false);checkLayer(loop,true);
+  for(const record of [intro,loop])assert(record.node.opacity>0&&record.node.opacity<255);
+  Core.step(s,.35,{});f.paint();assert.deepEqual(records(),[loop]);assert.equal(loop.node.opacity,255);
+  f.hero.node.x+=45;f.hero.node.y-=32;horse.x+=22;horse.y-=8;f.paint();assert.equal(records()[0],loop);checkLayer(loop,true);
   assert.equal(loop.sprite.spriteFrame.rect.width,loop.entity.clip.cell);assert.equal(f.loads.length,0);
   Core.step(s,9,{});f.paint();assert.equal(records().length,0);
  }
  f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
 });
 
-test('a disabled Fighter Ki effect leaves body and weapon anchors unused',()=>{
- const f=fixture('fighter',true);f.rt.state.buffRemaining=10;f.rt.settings.visual.buffResource='';
+test('Battle Cry draws no default aura during its active buff',()=>{
+ const f=fixture('fighter',true);Core.beginActive(f.rt.state,{});
  f.hero.getAttWpos=()=>{throw Error('unused weapon');};
  f.hero.ctrHp={node:{convertToWorldSpaceAR(){throw Error('unused body');}}};
  const frame=f.P.advanceVFX(f.rt);
- assert.equal(frame.entities.some(e=>e.slot==='buff'),true);assert.equal(f.rt._presentation.vfxContext.heroBody,null);assert.equal(f.rt._presentation.vfxContext.origin,null);
+ assert.equal(frame.active.buff,true);assert.equal(frame.entities.some(e=>e.slot==='buff'),false);
+ assert.equal(f.rt._presentation.vfxContext.heroBody,null);assert.equal(f.rt._presentation.vfxContext.origin,null);
+ f.paint();assert.equal(f.loads.length,0);
  f.P.clear(f.rt);
 });
 

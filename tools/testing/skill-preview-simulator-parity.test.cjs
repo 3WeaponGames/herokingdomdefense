@@ -46,9 +46,12 @@ test('the single Skirmisher cast retains moving horse locomotion and its path ha
   for(const path of ['volleyRange','visual.arcDegrees']){await f.load('skirmisher');f.view.seek(.25);f.view.selectHandle('behavior');f.view.setTransformMode('all');const before=f.view.getState(),area=group(f,'behavior'),node=area.handles.find(row=>row.paths.includes(path)),center=area.screenOrigin;assert(node,path+' has a direct node');const dx=node.x-center.x,dy=node.y-center.y,to=path==='volleyRange'?{x:center.x+dx*1.2,y:center.y+dy*1.2}:{x:center.x+dx*Math.cos(.15)-dy*Math.sin(.15),y:center.y+dx*Math.sin(.15)+dy*Math.cos(.15)};f.reset();f.emit('pointerdown',node);f.emit('pointermove',to);f.emit('pointerup',to);assert.equal(f.traces.ends.length,1);assert.equal(f.traces.ends[0][1],true);assert.deepEqual(Object.keys(f.traces.ends[0][0]),[path]);const after=f.view.getState();assert.notEqual(Settings.get(after.settings,path),Settings.get(before.settings,path));if(path==='volleyRange')close(group(f,'behavior').geometry.radius,after.settings.volleyRange);if(path==='visual.arcDegrees')close(group(f,'behavior').geometry.halfAngle,after.settings.visual.arcDegrees*Math.PI/360);assert.equal(after.settings.visual.castScale,before.settings.visual.castScale,'Gameplay nodes leave the VFX scale independent');}
 }));
 
-test('Fighter active aura and inactive Vanguard buff handles use the ground rather than a torso or weapon anchor',()=>withFixture(async f=>{
-  await f.load('fighter','active',{visual:{buffOffsetX:7,buffOffsetY:-3}});f.view.seek(.3);f.view.selectHandle('buff');let area=group(f,'buff'),state=f.view.getState();assert(!area.ghost);close(area.origin.x,state.hero.x+7);close(area.origin.y,state.hero.y-3);
-  await f.load('fighter','active',{buffDuration:0,visual:{buffOffsetX:7,buffOffsetY:-3}});f.view.seek(.3);f.view.selectHandle('buff');area=group(f,'buff');state=f.view.getState();assert(area.ghost);close(area.origin.x,state.hero.x+7);close(area.origin.y,state.hero.y-3);
+test('the default Fighter preview has no aura and custom aura handles use the ground pivots',()=>withFixture(async f=>{
+  await f.load('fighter');f.view.seek(.3);
+  assert(!f.view.getState().handles.some(handle=>handle.name==='buff'));
+  const buffResource=Catalog.clips.find(clip=>clip.id==='guardian-runic-shield').uuid;
+  await f.load('fighter','active',{visual:{buffResource,buffOffsetX:7,buffOffsetY:-3}});f.view.seek(.3);f.view.selectHandle('buff');let area=group(f,'buff'),state=f.view.getState();assert(!area.ghost);close(area.origin.x,state.hero.x+7);close(area.origin.y,state.hero.y-3);
+  await f.load('fighter','active',{buffDuration:0,visual:{buffResource,buffOffsetX:7,buffOffsetY:-3}});f.view.seek(.3);f.view.selectHandle('buff');area=group(f,'buff');state=f.view.getState();assert(area.ghost);close(area.origin.x,state.hero.x+7);close(area.origin.y,state.hero.y-3);
   await f.load('vanguard','passive',{visual:{buffOffsetX:5,buffOffsetY:-8}});f.view.seek(.3);f.view.selectHandle('buff');area=group(f,'buff');const horse=f.rig('horse').description;assert(area.ghost);close(area.origin.x,horse.x+5);close(area.origin.y,horse.y-8);assert.deepEqual(f.traces.changes,[]);
 }));
 

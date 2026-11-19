@@ -172,9 +172,10 @@ heading and hits its first enemy. `volleyRange` defines travel distance, and
 multiplier, which defaults to 1.
 
 Vanguard's spear cast follows the moving hero with a captured direction. The
-Momentum activation and the partial and full loops follow the horse's ground
-pivot under the rider and HP bar. The first hit with Momentum plays activation.
-The chosen loop plays until the lock expires.
+Momentum effects follow the horse's ground pivot. The first hit with Momentum
+plays the activation in front of the hero. The selected loop crossfades in
+about half a second into the activation and plays beneath the rider and HP bar
+until the lock expires.
 
 ## Loading barrier and memory
 

@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..'),Catalog=require('../../assets/_script/HeroSkillVFXCatalog'),Settings=require('../../assets/_script/HeroSkillSettings'),Layout=require('../../assets/_script/HeroSkillVFXLayout'),{Model}=require('../../packages/hkd-skills/preview-model');
 test('workbook particle captures and native Spine effects preserve bounded assets and source identity',()=>{
- assert.equal(Catalog.clips.length,40);
+ assert.equal(Catalog.clips.length,39);
  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,'assets/resources/vfx/hero-skills/catalog.json'))),Catalog);
  const selection=require('../skills-vfx/effects.json');assert.equal(selection.workbook,'Characters Plan.xlsx');assert(fs.statSync(path.join(root,selection.workbook)).isFile());assert.match(Catalog.workbookSha256,/^[a-f0-9]{64}$/);
  const planned=selection.clips.concat(selection.beam.parts.flatMap(part=>selection.beam.phases.map(phase=>({...selection.beam,...part,...phase,id:'mystic-beam-'+part.id+'-'+phase.phase}))));
@@ -16,8 +16,8 @@ test('workbook particle captures and native Spine effects preserve bounded asset
  }
 });
 
-test('the eight retired hero effects are absent from the catalog and rebake manifests',()=>{
- const retired=['skirmisher-single-volley','bruiser-blood-aura','bruiser-sp162-skill3','bruiser-sp162-hit1','fighter-sp162-attack2','fighter-windup','vanguard-momentum','vanguard-momentum-buff'];
+test('the retired hero effects are absent from the catalog and rebake manifests',()=>{
+ const retired=['skirmisher-single-volley','bruiser-blood-aura','bruiser-sp162-skill3','bruiser-sp162-hit1','fighter-sp162-attack2','fighter-windup','fighter-meshy-center','vanguard-momentum','vanguard-momentum-buff'];
  const records=Catalog.clips.concat(require('../skills-vfx/effects.json').clips,require('../skills-vfx/native-clips.json'));
  for(const id of retired)assert(!records.some(row=>row.id===id),id);
 });
@@ -28,8 +28,17 @@ test('style presets do not change gameplay tuning, write overrides, or expose in
  assert.equal(JSON.stringify(config),before);
  assert.equal(Settings.defaults('vanguard').visual.passiveResource,'');assert.equal(Settings.defaults('bruiser').visual.passiveScaleX,1.5);
 });
+test('a saved Meshy Ki selection resolves to an empty Battle Cry aura slot',()=>{
+ const config={HeroSkills:{fighter:{visual:{
+  buffResource:'7099be28-1ad2-53e1-b671-0250e261c93d',buffResourcePath:'vfx/hero-skills/fighter-meshy-center',
+  buffResourceKind:'sprite',buffResourceFrames:96,buffResourceColumns:16,buffResourceCell:128,buffResourceFps:64
+ }}}},before=JSON.stringify(config);
+ const visual=Settings.effective('fighter',config).visual;
+ assert.equal(visual.buffResource,'');assert.equal(visual.buffResourcePath,undefined);assert.equal(visual.buffResourceFrames,undefined);
+ assert.equal(JSON.stringify(config),before);
+});
 test('a custom or disabled resource cannot inherit the preset path or atlas metadata',()=>{
- const uuid='12345678-1234-4234-8234-123456789012';for(const [style,slot]of [['fighter','passive'],['mystic','mark'],['guardian','buff'],['guardian','taunt'],['guardian','shield']]){
+ const uuid='12345678-1234-4234-8234-123456789012';for(const [style,slot]of [['fighter','passive'],['fighter','buff'],['mystic','mark'],['guardian','buff'],['guardian','taunt'],['guardian','shield']]){
   const prefix=slot+'Resource',v=Settings.effective(style,{HeroSkills:{[style]:{visual:{[prefix]:uuid,[prefix+'Kind']:'sprite',[prefix+'Bundle']:'resources',[prefix+'Path']:'custom/effect'}}}}).visual;assert.equal(v[prefix],uuid);assert.equal(v[prefix+'Path'],'custom/effect');assert.equal(v[prefix+'Frames'],undefined);
   const disabled=Settings.effective(style,{HeroSkills:{[style]:{visual:{[prefix]:''}}}}).visual;assert.equal(disabled[prefix],'');assert.equal(disabled[prefix+'Path'],undefined);
  }

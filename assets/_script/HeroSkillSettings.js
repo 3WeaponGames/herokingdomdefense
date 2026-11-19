@@ -313,6 +313,11 @@ function effective(style,config){
   RESOURCE_PREFIXES.forEach(function(prefix){if(saved.visual&&Object.prototype.hasOwnProperty.call(saved.visual,prefix+'Animation'))return;var id=result.visual[prefix],clip=id&&VFXCatalog.clips.filter(function(clip){return clip.uuid===id||clip.id===id;})[0];if(clip&&clip.kind==='spine')result.visual[prefix+'Animation']=clip.animation;});
   delete result.visual.castTrajectory;
   if(result.visual.castResource){var castClip=VFXCatalog.clips.filter(function(clip){return clip.uuid===result.visual.castResource||clip.id===result.visual.castResource;})[0];delete result.visual.castTrajectory;if(castClip&&castClip.trajectory)result.visual.castTrajectory=castClip.trajectory;}
+  // Resolve saved selections of the retired Battle Cry aura as an empty slot.
+  if(style==="fighter"&&(result.visual.buffResource==="7099be28-1ad2-53e1-b671-0250e261c93d"||result.visual.buffResourcePath==="vfx/hero-skills/fighter-meshy-center")){
+    Object.keys(result.visual).forEach(function(key){if(key.indexOf("buffResource")===0)delete result.visual[key];});
+    result.visual.buffResource="";
+  }
   return result;
 }
 function validateStyle(style,value){

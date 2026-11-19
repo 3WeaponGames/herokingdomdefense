@@ -91,29 +91,6 @@
       "rain": true
     },
     {
-      "id": "fighter-meshy-center",
-      "name": "Meshy Ki Center (Fighter Active Buff)",
-      "package": "Anime Powers Pack 1.5.unitypackage",
-      "prefab": "Assets/Piloto Studio/Anime_VFX_Pack_Vol1/Aura/Meshy_Ki_Charge_White.prefab",
-      "style": "fighter",
-      "slot": "buff",
-      "phase": "loop",
-      "group": "fighter-meshy-center",
-      "loop": true,
-      "frames": 96,
-      "fps": 64,
-      "warmup": 2,
-      "includeParticles": [
-        "Ki_Panner",
-        "Ki_Pickbook_Desaturated",
-        "AlphaFuzzball_NoDarkSoft",
-        "AnimeShock_FlipbookADD",
-        "kI_Soft"
-      ],
-      "pitch": 15,
-      "grayscale": true
-    },
-    {
       "id": "fighter-arc-slash",
       "name": "Sword Trail Slash 360 Thick (Fighter)",
       "package": "Cartoon FX 4 Remaster R 1.5.1.unitypackage",
