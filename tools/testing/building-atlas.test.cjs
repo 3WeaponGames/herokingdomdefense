@@ -105,7 +105,8 @@ test('every authored preview branch has a portrait and level-specific notes, wit
   seen.push(entry.cfg);assert(entry.info.string.length>0);assert(entry.info.node.y-entry.info.lineHeight*3>=-entry.node.height/2+12);inside(entry);
   if(entry.kind===2&&entry.index===1)assert.match(entry.info.string,/separate (?:targets|enemy|enemies)/i);
   else if(entry.kind===2&&entry.index===7)assert.match(entry.info.string,/pierc/i);
-  else if(entry.kind===2&&entry.index===4&&entry.cfg.level===4)assert.match(entry.info.string,/around the impact/i);
+  else if(entry.kind===2&&entry.index===4)assert.match(entry.info.string,/falls off toward the edge|damage is highest at the center|most damage at the center/i);
+  else if(entry.kind===1&&entry.cfg.level>=3)assert.match(entry.info.string,/volleys/i);
   else if(entry.cfg.BranchBuild?.length)assert.match(entry.info.string,/upgrade/i);
   else assert.match(entry.info.string,/final upgrade/i);
   entry.badge.handlers.end({stopPropagation(){}});

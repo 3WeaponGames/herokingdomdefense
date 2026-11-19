@@ -276,10 +276,13 @@ function validate(documents, changes) {
       }
       if(own(level,'Tower')){
         const tower=level.Tower,at=q.concat('Tower');
-        if(id!=='2')issue('A',at,'Tower attack settings apply only to tower branches.');
+        if(id!=='1'&&id!=='2')issue('A',at,'Attack settings apply only to keeps and tower branches.');
         if(!tower||typeof tower!=='object'||Array.isArray(tower))issue('A',at,'Tower settings must retain their object format.');
         else {
-          if(own(tower,'attackType')&&!['arrow','cannon','sniper'].includes(tower.attackType))issue('A',at.concat('attackType'),'Choose Arrow, Cannon or Sniper.');
+          if(own(tower,'attackType')){
+            if(id==='1'&&tower.attackType!=='arrow')issue('A',at.concat('attackType'),'Keep volleys use arrows.');
+            else if(!['arrow','cannon','sniper'].includes(tower.attackType))issue('A',at.concat('attackType'),'Choose Arrow, Cannon or Sniper.');
+          }
           if(own(tower,'targeting')&&!['nearest','highestHp','lowestHp','farthest'].includes(tower.targeting))issue('A',at.concat('targeting'),'Choose an implemented tower target priority.');
           if(own(tower,'projectileSpeed'))number('A',at.concat('projectileSpeed'),tower.projectileSpeed,Number.MIN_VALUE,false);
           for(const key of ['shotsPerVolley','pierceTargets'])if(own(tower,key)&&!TowerCombat.validCount(tower[key]))issue('A',at.concat(key),'Enter a whole number of at least 1.');

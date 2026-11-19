@@ -91,20 +91,26 @@ test('Arrow Tower browses all four linear levels without changing sparse branch 
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);
 });
 
-test('volley size and pierce limit are separate integer drafts on the selected tower tier',async()=>{
-    const f=fixture(),archer=f.position('2',3),sniper=f.position('2',8);
+test('volley size and pierce limit are separate integer drafts on the selected tier',async()=>{
+    const f=fixture(),archer=f.position('2',3),sniper=f.position('2',8),keep=f.position('1',3);
     f.render('2:1',archer);
     const arrows=f.field('Max arrows per volley');assert.equal(arrows.value,'3');assert.equal(arrows.step,'1');
     assert.equal(f.field('Max enemies per bolt'),undefined);
     arrows.value='2.5';arrows.onchange();assert.equal(f.store.changes().length,0);
     arrows.value='5';arrows.onchange();await f.panel._queue;
     f.render('2:7',sniper);
-    const pierce=f.field('Max enemies per bolt');assert.equal(pierce.value,'2');assert.equal(pierce.step,'1');
+    const pierce=f.field('Max enemies per bolt');assert.equal(pierce.value,'3');assert.equal(pierce.step,'1');
     assert.equal(f.field('Max arrows per volley'),undefined);
     pierce.value='1';pierce.onchange();await f.panel._queue;
+    f.render('1',keep);
+    const keepArrows=f.field('Max arrows per volley');assert.equal(keepArrows.value,'2');assert.equal(keepArrows.step,'1');
+    assert.equal(f.field('Projectile speed').value,'700');
+    assert.equal(f.field('Tower attack type'),undefined);
+    keepArrows.value='3';keepArrows.onchange();await f.panel._queue;
     assert.deepEqual(clone(f.messages.filter(message=>message.message==='game-data-editor:change').map(message=>message.request.edits)),[
         [{doc:'A',path:['BuildEnum','2','levelList',archer,'Tower','shotsPerVolley'],value:5}],
-        [{doc:'A',path:['BuildEnum','2','levelList',sniper,'Tower','pierceTargets'],value:1}]
+        [{doc:'A',path:['BuildEnum','2','levelList',sniper,'Tower','pierceTargets'],value:1}],
+        [{doc:'A',path:['BuildEnum','1','levelList',keep,'Tower','shotsPerVolley'],value:3}]
     ]);
     f.render('2:4');assert.equal(f.field('Max enemies per bolt'),undefined);assert.equal(f.field('Max arrows per volley'),undefined);
     assert(!f.messages.some(message=>/:save$/.test(message.message)));

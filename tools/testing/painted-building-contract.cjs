@@ -4,6 +4,7 @@
 // contracts run; never rebaseline an original skeleton or ignore a timeline.
 const assert=require('node:assert/strict'),crypto=require('node:crypto');
 const fixture=require('./painted-building-integration.fixture.json');
+const progression=require('./four-tier-building-progression.fixture.json');
 const clone=value=>JSON.parse(JSON.stringify(value));
 function canonical(value){
   if(typeof value==='number')return Math.round(value*1e6)/1e6;
@@ -58,8 +59,21 @@ function withoutAuthoring(value){
 function currentRow(id,value){
  const row=withoutAuthoring({BuildEnum:{current:{levelList:[value]}}}).BuildEnum.current.levelList[0];
  if(id==='3')row.Data[0]=fixture.barracksCapacities[row.level-1];
- if(id==='2'&&[1,2,3,10].includes(row.index))row.Tower={attackType:'arrow',shotsPerVolley:row.level};
- if(id==='2'&&[7,8,9,12].includes(row.index))row.Tower.pierceTargets=2;
+ if(id==='1'||id==='2'){
+  const family=progression.families.find(item=>item.category===Number(id)&&item.indices.includes(row.index));
+  const stats=row.level===4?{Hp:family.newTier4Hp,Data:family.newTier4Data}:family.originalStatRows.find(item=>item.index===row.index);
+  row.Hp=stats.Hp;
+  row.Data=stats.Data;
+ }
+ if(id==='1'){
+  row.Tower={attackType:'arrow',shotsPerVolley:row.level>=3?2:1,projectileSpeed:700};
+ }
+ if(id==='2'){
+  const mode=row.Tower?.attackType||'arrow';
+  if(mode==='arrow')row.Tower={attackType:'arrow',shotsPerVolley:row.level,projectileSpeed:700};
+  if(mode==='cannon')Object.assign(row.Tower,{splashRadius:10*(row.level+3),splashFalloff:[.1,.15,.2,.25][row.level-1]});
+  if(mode==='sniper')Object.assign(row.Tower,{projectileSpeed:2100,pierceTargets:row.level+1});
+ }
  return row;
 }
 function assertConfig(file,config){

@@ -19,7 +19,8 @@ function enemy(name, x, y, hp = 100, parent) {
   return unit;
 }
 function tower(h, config) {
-  const T = h.load('KinghtFallBuildBartizan').default, value = new T();
+  const component = config.ID === 1 ? 'KinghtFallBuildMainFortress' : 'KinghtFallBuildBartizan';
+  const T = h.load(component).default, value = new T();
   value.node = new Node('tower', h.g.ndMain);
   value.buildInfo = { cfg: config };
   value.attRange = 500;
@@ -61,6 +62,9 @@ test('legacy towers retain nearest targeting and no override; partial authored s
   let selected;
   h.g.onShotBuild = (_tower, target) => selected = target;
   t.doAttack(); assert.equal(selected, near); assert.equal(t.time.AttackTime, 0);
+  selected = null;
+  tower(h, { ID: 1 }).doAttack();
+  assert.equal(selected, near, 'a keep without authored settings also keeps its nearest-target shot');
 });
 
 test('a killing tower impact cannot apply a relic pulse to a replacement battle', () => {
@@ -91,21 +95,32 @@ test('sniper prefers highest living HP in range with deterministic nearest ties 
   }
 });
 
-test('Archer tier volleys launch one arrow per distinct reachable target in targeting order', () => {
+test('Archer and Keep tiers use their authored speed, range and damage and fire one arrow per target', () => {
   const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
-  for (const row of config.BuildEnum[2].levelList.filter(row => row.Tower?.attackType === 'arrow')) {
+  const rows = config.BuildEnum[1].levelList.concat(config.BuildEnum[2].levelList.filter(row => row.Tower?.attackType === 'arrow'));
+  for (const row of rows) {
     const { h } = shotSetup(), t = tower(h, row), selected = [];
-    const targets = [100, 190, 250, 350].map((x, index) => enemy('target ' + index, x, 0));
+    const [damage, rate, range] = row.Data;
+    const count = row.ID === 1 ? (row.level >= 3 ? 2 : 1) : row.level;
+    t.buildInfo.initBuffData = () => {};
+    const collider = t.node.addComponent(h.e.cc.CircleCollider);
+    t.startRoundGame();
+    assert.equal(t.attRange, range);
+    assert.equal(collider.radius, range);
+    const targets = [100, 150, 200, 250].map((x, index) => enemy('target ' + index, x, 0));
     const boundary = enemy('out of range', t.attRange, 0);
     h.d.enemyList = [boundary, targets[3], targets[0], targets[0], targets[2], targets[1]];
     const launch = h.g.onShotBuild;
     h.g.onShotBuild = function (source, target) { selected.push(target); launch.call(this, source, target); };
-    t.doAttack();
-    assert.deepEqual(selected, targets.slice(0, row.level));
-    assert.equal(h.g.ndBuildArr2.length, row.level);
+    t.time.AttackTime = 0;
+    t.doTime(.99 / rate);
+    assert.equal(selected.length, 0);
+    t.doTime(.02 / rate);
+    assert.deepEqual(selected, targets.slice(0, count));
+    assert.equal(h.g.ndBuildArr2.length, count);
     assert.equal(t.time.AttackTime, 0);
-    h.g.ndBuildArr2.forEach(complete);
-    assert.deepEqual(targets.map(target => target.hits), targets.map((_, index) => index < row.level ? [50] : []));
+    h.g.ndBuildArr2.forEach(shot => { assert.equal(shot.speed, 700); complete(shot); });
+    assert.deepEqual(targets.map(target => target.hits), targets.map((_, index) => index < count ? [damage] : []));
     assert.deepEqual(boundary.hits, []);
   }
   const { h } = shotSetup(), t = tower(h, { Tower: { shotsPerVolley: 4, targeting: 'highestHp' } });
@@ -118,16 +133,22 @@ test('Archer tier volleys launch one arrow per distinct reachable target in targ
 });
 
 test('a fast Sniper bolt hits in straight travel order, up to the authored limit including the first hit', () => {
-  for (const cap of [1, 2, 3]) {
-    const { h, bullet } = shotSetup(), t = tower(h, { Tower: { attackType: 'sniper', projectileSpeed: 3000, pierceTargets: cap } });
-    const aligned = [90, 210, 320, 400].map((x, index) => enemy('aligned ' + index, x, 0, index === 1 ? 300 : 100));
+  const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+  const tiers = config.BuildEnum[2].levelList.filter(row => row.Tower?.attackType === 'sniper');
+  const single = { Tower: { attackType: 'sniper', projectileSpeed: 3000, pierceTargets: 1 } };
+  for (const row of [single, ...tiers]) {
+    const cap = row.level ? row.level + 1 : 1, damage = row.Data?.[0] ?? 50;
+    const { h, bullet } = shotSetup(), t = tower(h, row);
+    t.attRange = row.Data?.[2] ?? 500;
+    t.time.AttackNum = damage;
+    const aligned = [90, 150, 220, 290, 360, 420].map((x, index) => enemy('aligned ' + index, x, 0, index === 1 ? 300 : 100));
     const offLine = enemy('off line', 160, 26), behind = enemy('behind muzzle', -80, 0), order = [];
-    h.d.enemyList = [behind, aligned[3], aligned[1], offLine, aligned[0], aligned[2], aligned[0]];
+    h.d.enemyList = [behind, offLine, ...aligned.slice().reverse(), aligned[0]];
     aligned.forEach(actor => { actor.onAttacked = function (damage) { order.push(this); this.hits.push(damage); }; });
     t.doAttack();
     bullet.onUpdate(.5);
     assert.deepEqual(order, aligned.slice(0, cap));
-    assert.deepEqual(aligned.map(actor => actor.hits), aligned.map((_, index) => index < cap ? [50] : []));
+    assert.deepEqual(aligned.map(actor => actor.hits), aligned.map((_, index) => index < cap ? [damage] : []));
     assert.deepEqual(offLine.hits, []); assert.deepEqual(behind.hits, []);
     assert.equal(bullet.state, 1);
     assert(Math.abs(bullet.node.x - (aligned[cap - 1].node.x - 25)) < 1e-6);
@@ -187,13 +208,21 @@ test('cannon impact damages current monsters inside its radius even after its in
   assert.equal(bullet.node.x, 200, 'blast is centered on the committed ground position');
 });
 
-test('cannon commits to the aim position, hits newly arrived enemies, and respects splash falloff', () => {
-  const { h, bullet } = shotSetup(), t = tower(h, { Tower: { attackType: 'cannon', splashRadius: 100, splashFalloff: .5 } });
-  const primary = enemy('moving', 200, 0), edge = enemy('edge', 700, 0), arrival = enemy('arrival', 700, 0);
-  h.d.enemyList = [primary, edge, arrival]; h.g.onShotBuild(t, primary);
-  primary.node.setPosition(500, 0); edge.node.setPosition(300, 0); arrival.node.setPosition(250, 0);
-  complete(bullet);
-  assert.deepEqual(primary.hits, []); assert.deepEqual(edge.hits, [25]); assert.deepEqual(arrival.hits, [37.5]);
+test('cannon impacts apply each tier’s splash radius and edge damage at the committed aim position', () => {
+  const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+  for (const row of config.BuildEnum[2].levelList.filter(row => row.Tower?.attackType === 'cannon')) {
+    const { h, bullet } = shotSetup(), t = tower(h, row);
+    const [damage] = row.Data, radius = [40, 50, 60, 70][row.level - 1], edgeRatio = [.1, .15, .2, .25][row.level - 1];
+    t.time.AttackNum = damage;
+    const primary = enemy('moving', 100, 0), edge = enemy('edge', 700, 0), arrival = enemy('arrival', 700, 0);
+    const outside = enemy('past the blast', 101 + radius, 0);
+    h.d.enemyList = [primary, edge, arrival, outside]; h.g.onShotBuild(t, primary);
+    primary.node.setPosition(500, 0); edge.node.setPosition(100 + radius, 0); arrival.node.setPosition(100 + radius / 2, 0);
+    complete(bullet);
+    assert.deepEqual(primary.hits, []); assert.deepEqual(outside.hits, []);
+    assert.equal(edge.hits.length, 1); assert(Math.abs(edge.hits[0] - damage * edgeRatio) < 1e-9);
+    assert.equal(arrival.hits.length, 1); assert(Math.abs(arrival.hits[0] - damage * (1 + edgeRatio) / 2) < 1e-9);
+  }
 });
 
 test('sniper fires a fast single-target shot and discards a target recycled before impact', () => {
@@ -339,13 +368,13 @@ test('Cannon and Sniper keep and reset their fallback trails and use saved level
   Node.prototype.setScale=function(s){this.scaleX=this.scaleY=s;};
   const trailNode=new Node('authored trail',bullet.node),trail=trailNode.addComponent(Trail),original=bullet.bullet.addComponent(Render),target=enemy('target',330,80,1000);
   h.d.enemyList=[target];h.g.onShotBuild(tower(h,cfg),target);
-  assert.equal(bullet.speed,type==='cannon'?375:3000);assert.equal(trail.enabled,true);assert.equal(trail.resets,1);assert.equal(original.enabled,false);
+  assert.equal(bullet.speed,type==='cannon'?375:2100);assert.equal(trail.enabled,true);assert.equal(trail.resets,1);assert.equal(original.enabled,false);
   complete(bullet);assert.deepEqual(target.hits,[50]);bullet.freeNode();assert.equal(trail.enabled,true);assert.equal(original.enabled,true);
   h.g.onShotBuild(tower(h,cfg),target);assert.equal(trail.resets,2,'pooled shots retain an old trail');assert.equal(trail.enabled,true);complete(bullet);assert.deepEqual(target.hits,[50,50]);
  }
 });
 
-test('all production tower tiers select their family trail and pooled flight keeps it visible through impact', () => {
+test('all Keep and tower tiers select their family trail and pooled flight keeps it visible through impact', () => {
   const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
   const catalog = require('../../assets/resources/projectiles/catalog.json');
   const trailIds = { arrow: 'trail:tower-archer', cannon: 'trail:tower-cannon', sniper: 'trail:tower-sniper' };
@@ -364,9 +393,9 @@ test('all production tower tiers select their family trail and pooled flight kee
   });
   looks.prime(catalog);
   const fallback = bullet.bullet.addComponent(Trail);
-  for (const row of config.BuildEnum[2].levelList) {
+  for (const row of config.BuildEnum[1].levelList.concat(config.BuildEnum[2].levelList)) {
     const trail = catalog.trails.find(value => value.id === trailIds[row.Tower.attackType]);
-    assert.equal(looks.select(catalog, 'tower:2:' + row.index).trail, trail.id);
+    assert.equal(looks.select(catalog, 'tower:' + row.ID + ':' + row.index).trail, trail.id);
     const target = enemy('target', 250, 0);
     h.d.enemyList = [target]; h.g.onShotBuild(tower(h, row), target);
     const node = bullet._projectileVisual.trailNode;

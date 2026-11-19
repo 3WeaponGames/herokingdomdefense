@@ -2176,7 +2176,7 @@
           "Icon": "painted-castle-1",
           "Zoom": 0.3,
           "Skin": "cb-painted-1",
-          "Hp": 500,
+          "Hp": 300,
           "BranchBuild": [
             2
           ],
@@ -2185,10 +2185,15 @@
             29
           ],
           "Data": [
-            40,
+            18,
             0.4,
-            450
+            300
           ],
+          "Tower": {
+            "attackType": "arrow",
+            "shotsPerVolley": 1,
+            "projectileSpeed": 700
+          },
           "WorldScale": 0.8552987190364798,
           "Blocker": {
             "version": 1,
@@ -2267,15 +2272,20 @@
           "Icon": "painted-castle-2",
           "Zoom": 0.3,
           "Skin": "cb-painted-2",
-          "Hp": 800,
+          "Hp": 500,
           "BranchBuild": [
             3
           ],
           "Data": [
-            50,
-            0.4,
-            500
+            25,
+            0.6,
+            325
           ],
+          "Tower": {
+            "attackType": "arrow",
+            "shotsPerVolley": 1,
+            "projectileSpeed": 700
+          },
           "LevelUpDescribe": "[[loc:data.building.guide.1.2.description]]",
           "WorldScale": 0.8552987190364798,
           "Blocker": {
@@ -2440,12 +2450,17 @@
           "Icon": "painted-castle-3",
           "Zoom": 0.3,
           "Skin": "cb-painted-3",
-          "Hp": 1000,
+          "Hp": 750,
           "Data": [
-            60,
-            0.5,
-            600
+            32,
+            0.8,
+            350
           ],
+          "Tower": {
+            "attackType": "arrow",
+            "shotsPerVolley": 2,
+            "projectileSpeed": 700
+          },
           "LevelUpDescribe": "[[loc:data.building.guide.1.3.description]]",
           "BranchBuild": [
             4
@@ -2579,12 +2594,17 @@
           "Icon": "painted-castle-4",
           "Zoom": 0.3,
           "Skin": "cb-painted-4",
-          "Hp": 1200,
+          "Hp": 1000,
           "Data": [
-            70,
-            0.6,
-            700
+            40,
+            1,
+            375
           ],
+          "Tower": {
+            "attackType": "arrow",
+            "shotsPerVolley": 2,
+            "projectileSpeed": 700
+          },
           "LevelUpDescribe": "[[loc:data.building.castle-4.description]]",
           "BuildCost": 20,
           "VedioCount": 0,
@@ -2737,13 +2757,14 @@
             29
           ],
           "Data": [
-            20,
-            0.5,
-            350
+            7,
+            1,
+            300
           ],
           "Tower": {
             "attackType": "arrow",
-            "shotsPerVolley": 1
+            "shotsPerVolley": 1,
+            "projectileSpeed": 700
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-1",
@@ -3259,16 +3280,17 @@
             29
           ],
           "Data": [
-            40,
-            0.5,
-            400
+            13,
+            1.25,
+            325
           ],
           "BranchBuild": [
             3
           ],
           "Tower": {
             "attackType": "arrow",
-            "shotsPerVolley": 2
+            "shotsPerVolley": 2,
+            "projectileSpeed": 700
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-2",
@@ -3541,22 +3563,23 @@
           "Icon": "painted-archer-3",
           "Zoom": 0.4,
           "Skin": "jt-2-2",
-          "Hp": 500,
+          "Hp": 400,
           "Excursion": [
             -200,
             37
           ],
           "Data": [
-            60,
-            0.67,
-            500
+            20,
+            1.5,
+            350
           ],
           "BranchBuild": [
             10
           ],
           "Tower": {
             "attackType": "arrow",
-            "shotsPerVolley": 3
+            "shotsPerVolley": 3,
+            "projectileSpeed": 700
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-3",
@@ -3777,16 +3800,16 @@
             34
           ],
           "Data": [
-            30,
+            10,
             0.25,
-            300
+            200
           ],
           "Tower": {
             "attackType": "cannon",
             "targeting": "nearest",
             "projectileSpeed": 375,
-            "splashRadius": 80,
-            "splashFalloff": 1
+            "splashRadius": 40,
+            "splashFalloff": 0.1
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-1",
@@ -4000,16 +4023,16 @@
             34
           ],
           "Data": [
-            60,
+            17,
             0.28,
-            325
+            225
           ],
           "Tower": {
             "attackType": "cannon",
             "targeting": "nearest",
             "projectileSpeed": 375,
-            "splashRadius": 95,
-            "splashFalloff": 1
+            "splashRadius": 50,
+            "splashFalloff": 0.15
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-2",
@@ -4216,23 +4239,23 @@
           "Icon": "painted-cannon-3",
           "Zoom": 0.133,
           "Skin": "jt-2-2",
-          "Hp": 500,
+          "Hp": 400,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            90,
+            24,
             0.35,
-            350
+            250
           ],
           "Tower": {
             "attackType": "cannon",
             "targeting": "nearest",
             "projectileSpeed": 375,
-            "splashRadius": 110,
-            "splashFalloff": 1
+            "splashRadius": 60,
+            "splashFalloff": 0.2
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-3",
@@ -4445,14 +4468,14 @@
             34
           ],
           "Data": [
-            60,
-            0.16,
-            500
+            20,
+            0.25,
+            450
           ],
           "Tower": {
             "attackType": "sniper",
             "targeting": "highestHp",
-            "projectileSpeed": 3000,
+            "projectileSpeed": 2100,
             "pierceTargets": 2,
             "splashRadius": 0,
             "splashFalloff": 1
@@ -4671,15 +4694,15 @@
             34
           ],
           "Data": [
-            100,
-            0.18,
-            550
+            34,
+            0.3,
+            500
           ],
           "Tower": {
             "attackType": "sniper",
             "targeting": "highestHp",
-            "projectileSpeed": 3000,
-            "pierceTargets": 2,
+            "projectileSpeed": 2100,
+            "pierceTargets": 3,
             "splashRadius": 0,
             "splashFalloff": 1
           },
@@ -4884,22 +4907,22 @@
           "Icon": "painted-sniper-3",
           "Zoom": 0.133,
           "Skin": "jt-2-2",
-          "Hp": 500,
+          "Hp": 400,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            150,
-            0.23,
-            600
+            48,
+            0.35,
+            550
           ],
           "Tower": {
             "attackType": "sniper",
             "targeting": "highestHp",
-            "projectileSpeed": 3000,
-            "pierceTargets": 2,
+            "projectileSpeed": 2100,
+            "pierceTargets": 4,
             "splashRadius": 0,
             "splashFalloff": 1
           },
@@ -5113,21 +5136,22 @@
           "Icon": "painted-archer-4",
           "Zoom": 0.4,
           "Skin": "jt-2-2",
-          "Hp": 700,
+          "Hp": 500,
           "Excursion": [
             -200,
             37
           ],
           "Data": [
-            80,
-            0.84,
-            600
+            25,
+            2,
+            375
           ],
           "BuildCost": 5,
           "ColliderIndex": 3,
           "Tower": {
             "attackType": "arrow",
-            "shotsPerVolley": 4
+            "shotsPerVolley": 4,
+            "projectileSpeed": 700
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-4",
@@ -5340,23 +5364,23 @@
           "Icon": "painted-cannon-4",
           "Zoom": 0.133,
           "Skin": "jt-2-2",
-          "Hp": 700,
+          "Hp": 500,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            120,
+            32,
             0.42,
-            375
+            275
           ],
           "Tower": {
             "attackType": "cannon",
             "targeting": "nearest",
             "projectileSpeed": 375,
-            "splashRadius": 110,
-            "splashFalloff": 1
+            "splashRadius": 70,
+            "splashFalloff": 0.25
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-4",
@@ -5544,22 +5568,22 @@
           "Icon": "painted-sniper-4",
           "Zoom": 0.133,
           "Skin": "jt-2-2",
-          "Hp": 700,
+          "Hp": 500,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            200,
-            0.28,
-            650
+            65,
+            0.4,
+            600
           ],
           "Tower": {
             "attackType": "sniper",
             "targeting": "highestHp",
-            "projectileSpeed": 3000,
-            "pierceTargets": 2,
+            "projectileSpeed": 2100,
+            "pierceTargets": 5,
             "splashRadius": 0,
             "splashFalloff": 1
           },

@@ -28,13 +28,13 @@
     "data.mill.bomb.4.name": {"en":"Royal Bomb Mill","zh":"皇家炸弹磨坊","context":"Mill crop defense choice"},
     "data.mill.bomb.4.description": {"en":"Final upgrade: 4 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"最终升级：4块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
     "data.building.castle-4.name": {"en":"Crown Citadel","zh":"王冠城塞","context":"Approved four-tier building progression"},
-    "data.building.castle-4.description": {"en":"Final upgrade: a stronger royal castle with improved defenses and firepower.","zh":"最终升级：强化皇家城堡，拥有更强的防御与火力。","context":"Approved four-tier building progression"},
+    "data.building.castle-4.description": {"en":"The strongest keep fires its fastest volleys at separate enemies.","zh":"最坚固的城塞以最快速度齐射，分别瞄准不同敌人。","context":"Approved four-tier building progression"},
     "data.building.archer-4.name": {"en":"Royal Archer Tower","zh":"皇家弓箭塔","context":"Approved four-tier building progression"},
     "data.building.archer-4.description": {"en":"Fires larger volleys at separate enemies over long range, one arrow per target.","zh":"远距离齐射更多箭矢，每支箭瞄准不同的敌人。","context":"Approved four-tier building progression"},
     "data.building.cannon-4.name": {"en":"Royal Cannon Tower","zh":"皇家加农炮塔","context":"Approved four-tier building progression"},
-    "data.building.cannon-4.description": {"en":"Fires heavy shells over long range, damaging groups of enemies around the impact.","zh":"远距离发射重型炮弹，对落点周围的敌群造成伤害。","context":"Approved four-tier building progression"},
+    "data.building.cannon-4.description": {"en":"Heavy shells damage enemies around the impact, dealing the most damage at the center.","zh":"重型炮弹对落点周围的敌人造成伤害，爆炸中心的伤害最高。","context":"Approved four-tier building progression"},
     "data.building.sniper-4.name": {"en":"Royal Sniper Tower","zh":"皇家狙击塔","context":"Approved four-tier building progression"},
-    "data.building.sniper-4.description": {"en":"Fires its strongest long-range bolt, piercing enemies in a straight line.","zh":"发射威力最强的远程弩箭，沿直线贯穿敌人。","context":"Approved four-tier building progression"},
+    "data.building.sniper-4.description": {"en":"Fires its strongest long-range bolt, piercing more enemies in a straight line.","zh":"发射威力最强的远程弩箭，沿直线贯穿更多敌人。","context":"Approved four-tier building progression"},
     "data.building.royal-infantry-4.name": {"en":"Crown Garrison","zh":"王冠驻军营","context":"Approved four-tier building progression"},
     "data.building.royal-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Royal Infantry.","zh":"最终升级：加固兵营，可驻扎十二名皇家步兵。","context":"Approved four-tier building progression"},
     "data.building.heavy-infantry-4.name": {"en":"Ironwall Bastion","zh":"铁壁堡垒","context":"Approved four-tier building progression"},
@@ -6218,8 +6218,8 @@
       "context": "Buildings · Cannon Tower · Lv 1"
     },
     "data.building.cannon-1.description": {
-      "en": "Blasts groups of monsters. Upgrade for more damage, range and blast size.",
-      "zh": "炮弹爆炸打击成群怪物。升级可提升伤害、射程和爆炸范围。",
+        "en": "Blasts groups of monsters. Damage falls off toward the edge of the blast.",
+        "zh": "炮弹爆炸打击成群怪物，距离爆炸中心越远，伤害越低。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.cannon-2.name": {
@@ -6228,8 +6228,8 @@
       "context": "Buildings · Cannon Tower · Lv 2"
     },
     "data.building.cannon-2.description": {
-      "en": "Larger blasts hit more monsters. Upgrade for stronger, faster, longer-range shots.",
-      "zh": "更大爆炸打击更多怪物。升级可提升伤害、射速和射程。",
+        "en": "Larger blasts hit more monsters. Damage is highest at the center.",
+        "zh": "更大的爆炸可打击更多怪物，爆炸中心的伤害最高。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.cannon-3.name": {
@@ -6237,7 +6237,7 @@
       "zh": "装甲加农炮塔",
       "context": "Buildings · Cannon Tower · Lv 3"
     },
-    "data.building.cannon-3.description": {"en":"Upgrade: powerful, faster shells with a wide blast and long range.","zh":"升级：炮弹威力更强、速度更快，爆炸范围更广、射程更远。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.cannon-3.description": {"en":"Upgraded shells hit harder and have a wider blast. Damage is highest at the center.","zh":"升级后的炮弹伤害更高，爆炸范围更广，爆炸中心的伤害最高。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.sniper-1.name": {
       "en": "Sniper Tower",
       "zh": "狙击塔",
@@ -6254,8 +6254,8 @@
       "context": "Buildings · Sniper Tower · Lv 2"
     },
     "data.building.sniper-2.description": {
-      "en": "Fires stronger bolts that pierce enemies along their straight path.",
-      "zh": "发射威力更强的弩箭，沿直线贯穿路径上的敌人。",
+        "en": "Fires stronger bolts that pierce more enemies along their straight path.",
+        "zh": "发射威力更强的弩箭，沿直线贯穿更多敌人。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.sniper-3.name": {
@@ -6263,7 +6263,7 @@
       "zh": "装甲狙击塔",
       "context": "Buildings · Sniper Tower · Lv 3"
     },
-    "data.building.sniper-3.description": {"en":"Fires piercing bolts more often, damaging enemies lined up over long range.","zh":"更频繁地发射远程穿透弩箭，对直线上的敌人造成伤害。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.sniper-3.description": {"en":"Fires more often and pierces more enemies along a straight line.","zh":"发射速度更快，沿直线贯穿更多敌人。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.barracks.royal-guard.1.name": {
       "en": "Guard Barracks",
       "zh": "卫兵营房",
@@ -10209,7 +10209,7 @@
       "zh": "解锁更多建筑并守护军队。升级可提升生命、伤害和射程。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.1.3.description": {"en":"Upgrade: a stronger castle with increased HP, damage and attack range.","zh":"升级：更坚固的城堡，拥有更高的生命值、伤害与更远的射程。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.1.3.description": {"en":"A stronger castle that fires volleys with one arrow per target.","zh":"更坚固的城堡能够齐射，每支箭分别瞄准不同敌人。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.5.1.description": {
       "en": "Earns 3 silver after each wave if it survives. Upgrade for more silver income.",
       "zh": "磨坊存活时，每波结束获得3白银。升级可增加白银收入。",

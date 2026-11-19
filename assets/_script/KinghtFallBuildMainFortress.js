@@ -14,6 +14,7 @@ var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallBuildBase = require("KinghtFallBuildBase");
+var TowerCombat = require("TowerCombat");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -45,26 +46,24 @@ var def_KinghtFallBuildMainFortress = function (t) {
     this.time[r.AttackTime] >= 1 && this.doAttack();
   };
   _ctor.prototype.doAttack = function () {
-    var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
-    var e = -1;
-    var n = null;
-    this.node.getPosition(this.vec2_1);
-    for (var i = 0; i < t.length; i++) {
-      var a = t[i];
-      if (!a.isDead()) {
-        a.node.getPosition(this.vec2_2);
-        cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
-        var o = this.vec2_2.len();
-        if (o < this.attRange && (-1 == e || o < e)) {
-          e = o;
-          n = a;
-        }
-      }
+    if (this.isDestroyed) return;
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+    var data = game.gameData, epoch = game._combatEpoch, stage = game.gameStatus;
+    var node = this.node, generation = node._combatGeneration, clock = this.time;
+    var behavior = this.getTowerSettings(), count = behavior && behavior.shotsPerVolley || 1;
+    var targets = TowerCombat.chooseTargets(data.getEnemyList(), node.getPosition(), this.attRange, behavior, node.parent, count);
+    if (!targets.length) return;
+    var entries = targets.map(function (target) { return TowerCombat.capture(target); });
+    clock[r.AttackTime] = 0;
+    for (var i = 0; i < entries.length; i++) {
+      if (this.isDestroyed || this.node !== node || !cc.isValid(node, true) || node._combatGeneration !== generation ||
+          this.time !== clock || game.gameData !== data || game._combatEpoch !== epoch || game.gameStatus !== stage) break;
+      if (TowerCombat.targetCurrent(entries[i])) game.onShotBuild(this, entries[i].actor);
     }
-    if (n) {
-      this.time[r.AttackTime] = 0;
-      $z1KinghtFallUIGame.default.instance.ctrGame.onShotBuild(this, n);
-    }
+  };
+  _ctor.prototype.getTowerSettings = function () {
+    var behavior = TowerCombat.settings(this.buildInfo && this.buildInfo.cfg);
+    return behavior && behavior.attackType === "arrow" ? behavior : null;
   };
   _ctor.prototype.onAttacked = function (e) {
     if (!this.isDestroyed) {

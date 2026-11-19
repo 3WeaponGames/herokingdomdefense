@@ -142,10 +142,13 @@ function initialChoices(panel, row, branches) {
     },'gt-mini'));
 }
 function towerSettings(panel, row, level, at) {
-    if(Number(typeID(row))!==2)return;
-    const section=panel._section('Tower attack & targeting');
-    panel._note('Attack type, targeting and projectile settings apply to this tower level. Editing a field changes only this level’s draft.',false,section);
-    Settings.towerFields(level.Tower).forEach(field=>panel._field(section,field.label,field.value,next=>level.Tower&&typeof level.Tower==='object'&&!Array.isArray(level.Tower)?panel._set('A',at.concat('Tower',field.key),next):panel._set('A',at.concat('Tower'),{[field.key]:next}),field));
+    const id=typeID(row), keep=id==='1';
+    if(!keep&&id!=='2')return;
+    const section=panel._section(keep?'Keep attack & targeting':'Tower attack & targeting');
+    panel._note('Attack settings apply to this level. Editing a field changes only this level’s draft.',false,section);
+    const fields=Settings.towerFields(level.Tower);
+    const editable=keep?fields.filter(field=>['targeting','shotsPerVolley','projectileSpeed','projectileLook'].includes(field.key)):fields;
+    editable.forEach(field=>panel._field(section,field.label,field.value,next=>level.Tower&&typeof level.Tower==='object'&&!Array.isArray(level.Tower)?panel._set('A',at.concat('Tower',field.key),next):panel._set('A',at.concat('Tower'),{[field.key]:next}),field));
 }
 function carryPreviewState(previous){
     previous=previous||{};const result={};
