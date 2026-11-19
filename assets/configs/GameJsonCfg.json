@@ -42526,8 +42526,12 @@
         "arcDegrees": 272.73,
         "impactDelay": 0,
         "castDelay": 0.14,
-        "scale": 1.22,
-        "rotation": -8.3
+        "scale": 0.97,
+        "rotation": -8.3,
+        "castScaleY": 2.71,
+        "castScaleX": 1.08,
+        "castScale": 1.03,
+        "passiveScale": 0.72
       },
       "audio": {
         "cast": {
@@ -42540,13 +42544,14 @@
     },
     "guardian": {
       "visual": {
-        "presenceOffsetY": -19.91,
-        "presenceOffsetX": -3.46,
-        "physicalShieldOffsetY": 0.76,
-        "physicalShieldScale": 0.48
+        "presenceOffsetY": 0,
+        "presenceOffsetX": 0,
+        "physicalShieldOffsetY": -15,
+        "physicalShieldScale": 0.3,
+        "physicalShieldOffsetX": 0
       },
       "allyRadius": 400,
-      "tauntRadius": 450,
+      "tauntRadius": 400,
       "tauntDuration": 5,
       "shieldHealth": 0.25,
       "cooldown": 17,
@@ -42562,7 +42567,10 @@
     "bruiser": {
       "visual": {
         "castDelay": 0.14,
-        "scale": 1.29
+        "scale": 0.64,
+        "castOffsetY": 0.85,
+        "castScale": 1.1,
+        "passiveScale": 0.77
       },
       "audio": {
         "cast": {
@@ -42582,7 +42590,8 @@
         "scale": 2.73,
         "arcDegrees": 46.38,
         "castOpacity": 1,
-        "arcStartWidth": 116.28
+        "arcStartWidth": 116.28,
+        "buffScale": 0.8
       },
       "audio": {
         "cast": {
@@ -42601,7 +42610,7 @@
         "beamWidth": 52,
         "markScaleX": 1,
         "markOffsetX": 0,
-        "markOffsetY": 5,
+        "markOffsetY": -5,
         "channelHitScale": 1,
         "beamRotation": 0,
         "beamOffsetY": 0,

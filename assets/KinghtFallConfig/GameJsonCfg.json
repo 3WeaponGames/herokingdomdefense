@@ -11933,8 +11933,8 @@
         20
       ],
       "UnbuiltPad": {
-        "x": 37.95,
-        "y": 54.48
+        "x": -13.76,
+        "y": 24.43
       }
     },
     "4": {
@@ -13492,8 +13492,8 @@
             "variants": {
               "NE": {
                 "southwest": true,
-                "x": 22.37,
-                "y": 41.53,
+                "x": 7.529999999999999,
+                "y": 39.27,
                 "Reference": {
                   "version": 1,
                   "distance": 104.39067763933711
@@ -13501,8 +13501,8 @@
               },
               "NW": {
                 "southwest": false,
-                "x": -23.16,
-                "y": 44.73,
+                "x": -0.8399999999999973,
+                "y": 40.81999999999999,
                 "Reference": {
                   "version": 1,
                   "distance": 104.39067763933714
@@ -13510,8 +13510,8 @@
               },
               "SE": {
                 "southwest": false,
-                "x": -151.42,
-                "y": 148.15,
+                "x": -175.82999999999998,
+                "y": 169.07999999999998,
                 "Reference": {
                   "version": 1,
                   "distance": 134.76778533215315
@@ -13519,8 +13519,8 @@
               },
               "SW": {
                 "southwest": true,
-                "x": 160.38,
-                "y": 146.53,
+                "x": 185.49999999999997,
+                "y": 165.58999999999997,
                 "Reference": {
                   "version": 1,
                   "distance": 134.7677853321533
@@ -13716,12 +13716,20 @@
       "UnbuiltPad": {
         "variants": {
           "SE": {
-            "x": 38.28,
-            "y": -2.27
+            "x": 16.18,
+            "y": 14.7
           },
           "SW": {
-            "x": 28.14,
-            "y": -4.47
+            "x": 9.52,
+            "y": 13.2
+          },
+          "NE": {
+            "x": -34.3,
+            "y": 26.59
+          },
+          "NW": {
+            "x": -21.29,
+            "y": 29.06
           }
         }
       }
@@ -146796,7 +146804,7 @@
   },
   "HeroEquipment": {
     "version": 1,
-    "baseRange": 300,
+    "baseRange": 320,
     "splashRadius": 100,
     "migration": {
       "mainLevels": 25,
@@ -147034,7 +147042,7 @@
         ]
       },
       "mystic": {
-        "baseDamage": 16,
+        "baseDamage": 9,
         "gains": [
           2,
           2,
@@ -147231,7 +147239,10 @@
         }
       }
     },
-    "foodRegenerationVersion": 1
+    "foodRegenerationVersion": 1,
+    "baseAttackRates": {
+      "mystic": 2
+    }
   },
   "HeroSkills": {
     "skirmisher": {
@@ -147267,8 +147278,12 @@
         "arcDegrees": 272.73,
         "impactDelay": 0,
         "castDelay": 0.14,
-        "scale": 1.22,
-        "rotation": -8.3
+        "scale": 0.97,
+        "rotation": -8.3,
+        "castScaleY": 2.71,
+        "castScaleX": 1.08,
+        "castScale": 1.03,
+        "passiveScale": 0.72
       },
       "audio": {
         "cast": {
@@ -147281,13 +147296,14 @@
     },
     "guardian": {
       "visual": {
-        "presenceOffsetY": -19.91,
-        "presenceOffsetX": -3.46,
-        "physicalShieldOffsetY": 0.76,
-        "physicalShieldScale": 0.48
+        "presenceOffsetY": 0,
+        "presenceOffsetX": 0,
+        "physicalShieldOffsetY": -15,
+        "physicalShieldScale": 0.3,
+        "physicalShieldOffsetX": 0
       },
       "allyRadius": 400,
-      "tauntRadius": 450,
+      "tauntRadius": 400,
       "tauntDuration": 5,
       "shieldHealth": 0.25,
       "cooldown": 17,
@@ -147303,7 +147319,10 @@
     "bruiser": {
       "visual": {
         "castDelay": 0.14,
-        "scale": 1.29
+        "scale": 0.64,
+        "castOffsetY": 0.85,
+        "castScale": 1.1,
+        "passiveScale": 0.77
       },
       "audio": {
         "cast": {
@@ -147323,7 +147342,8 @@
         "scale": 2.73,
         "arcDegrees": 46.38,
         "castOpacity": 1,
-        "arcStartWidth": 116.28
+        "arcStartWidth": 116.28,
+        "buffScale": 0.8
       },
       "audio": {
         "cast": {
@@ -147342,7 +147362,7 @@
         "beamWidth": 52,
         "markScaleX": 1,
         "markOffsetX": 0,
-        "markOffsetY": 5,
+        "markOffsetY": -5,
         "channelHitScale": 1,
         "beamRotation": 0,
         "beamOffsetY": 0,
