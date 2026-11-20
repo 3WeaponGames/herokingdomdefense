@@ -1756,6 +1756,7 @@ DepthView.prototype.update = function () {
     cache.previousVertexConsumers = this._vertexConsumers;
   }
   var actors = [{ actor: game.ctrPlay, tint: ALLY }].concat(game.gameData.getSoldierList().map(function (actor) { return { actor: actor, tint: ALLY }; }), game.gameData.getEnemyList().map(function (actor) { return { actor: actor, tint: ENEMY }; }));
+  if (game._unitTest) game._unitTest.actors.forEach(function (actor) { actors.push({ actor: actor, tint: ENEMY }); });
   var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
   active.forEach(function(entry){entry.groundY=actorGroundY(entry.actor,self.main,game.ctrPlay,cache);});
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));

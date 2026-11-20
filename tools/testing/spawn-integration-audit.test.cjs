@@ -29,3 +29,32 @@ test('restarting places the hero at the authored marker across transformed layer
  const h=fixture(),star=new Node('ndStar',h.g.ndPath,-40,60);h.g.cleanMap=()=>{};h.d.onRestart=()=>{};h.g.onRestart(false);const expected=star.convertToWorldSpaceAR(Vec2.ZERO),actual=h.g.ctrPlay.node.convertToWorldSpaceAR(Vec2.ZERO);
  assert(Math.hypot(actual.x-expected.x,actual.y-expected.y)<1e-6);
 });
+test('F7 actors use the live spawn transform without entering the enemy roster or pool', () => {
+  const h = fixture();
+  h.d.pendingEnemySpawns = 0;
+  const pool = h.e.stubs.PoolMgr.PoolMgr.getInstance();
+  pool.getNode = () => { throw Error('Test actors must have a private lifetime'); };
+  let requestCurrent = true, instantiations = 0;
+  const preview = {
+    current: () => requestCurrent,
+    prefab() {
+      instantiations++;
+      const node = new Node('F7 actor');
+      const actor = { node, rigidBody: { active: true }, initData() {} };
+      node.getComponent = () => actor;
+      return node;
+    }
+  };
+  const actor = h.g.addEnemy(90001, 1, null, preview);
+  const position = actor.node.convertToWorldSpaceAR(Vec2.ZERO);
+  const expected = h.spawn.convertToWorldSpaceAR(Vec2.ZERO);
+  assert(Math.hypot(position.x - expected.x, position.y - expected.y) < 1e-6);
+  assert.equal(actor._unitTestActor, true);
+  assert.equal(actor.rigidBody.active, false);
+  assert.equal(h.d.enemyList.length, 0);
+  assert.equal(h.d.pendingEnemySpawns, 0);
+  assert.equal(h.pending.length, 0);
+  requestCurrent = false;
+  assert.equal(h.g.addEnemy(90001, 1, null, preview), false);
+  assert.equal(instantiations, 1);
+});

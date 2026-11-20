@@ -49,7 +49,7 @@ function environment(options = {}) {
   const document = { activeElement: null };
   const context = {
     cc, exports: {}, performance: { now: () => now }, CC_PREVIEW: !!options.preview, CC_DEBUG: !!options.debug, CC_EDITOR: !!options.editor,
-    require(id) { assert.equal(id, 'LanguageMgr'); return { LanguageMgr: { getInstance: () => ({
+    require(id) { if (id === 'UnitTestPanel' && options.panel) return options.panel; assert.equal(id, 'LanguageMgr'); return { LanguageMgr: { getInstance: () => ({
       bindLabel(label, key) { calls.bindings++; label.key = key; label.string = 'localized badge'; },
       t(key, values) { assert.equal(key, 'testing.fps'); return '\u00b7 ' + values[0] + ' FPS'; }
     }) } }; }
@@ -235,5 +235,49 @@ test('Idle native gameplay avoids subtree focus discovery while active and oppos
     env.service._actions={[action]:true};assert.equal(env.service.readGameplayInput(target),null);assert.deepEqual(Object.keys(env.service._actions),[]);
   }
   assert.equal(env.calls.focusQueries,before+7);env.setNativeFocus(false);env.service._movement={d:true};assert.equal(env.service.readGameplayInput(target).x,1);
+});
+test('F7 opens once per press without changing the F8 preference and retires the panel with its battle', () => {
+  let toggles = 0, closes = 0, retired = 0;
+  const panel = { toggle(target) {
+    toggles++;
+    if (target._unitTestPanel) target._unitTestPanel.close();
+    else target._unitTestPanel = { close() { closes++; target._unitTestPanel = null; } };
+    return true;
+  } };
+  const env = environment({ preview: true, panel });
+  const target = { node: { active: true }, ctrGame: { _unitTest: { dispose() { retired++; } } } };
+  env.service.init();
+  env.service.setGameplayTarget(target);
+  down(env, 'F7', { target: { tagName: 'INPUT' } });
+  assert.equal(toggles, 0);
+  up(env, 'F7');
+  down(env, 'F7'); down(env, 'F7', { repeat: true });
+  assert.equal(toggles, 1);
+  assert.equal(env.service.isEnabled(), false);
+  assert.equal(env.calls.writes, 0);
+  up(env, 'F7');
+  down(env, 'Escape');
+  assert.equal(closes, 1);
+  up(env, 'Escape');
+  down(env, 'F7');
+  env.service.removeGameplayTarget(target);
+  assert.equal(closes, 2);
+  assert.equal(retired, 1);
+});
+test('Native F7 releases correctly and a release build cannot open the panel', () => {
+  let toggles = 0;
+  const panel = { toggle() { toggles++; return true; } };
+  const target = { node: { active: true } };
+  const native = environment({ debug: true, web: false, panel });
+  native.service.init(); native.service.setGameplayTarget(target);
+  native.system.emit('down', { keyCode: 118 });
+  native.system.emit('down', { keyCode: 118 });
+  native.nativeListeners[0].onKeyReleased(118);
+  native.system.emit('down', { keyCode: 118 });
+  assert.equal(toggles, 2);
+  const release = environment({ panel });
+  release.service.init(); release.service.setGameplayTarget(target);
+  release.service._keyDown({ key: 'F7' });
+  assert.equal(toggles, 2);
 });
 console.log(passed + ' TestMode checks passed; no SDK calls, rewards, or files written.');

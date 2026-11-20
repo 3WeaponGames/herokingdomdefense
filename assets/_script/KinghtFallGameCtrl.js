@@ -129,6 +129,7 @@ var def_KinghtFallGameCtrl = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
     GameplayAdOwner.retire(this);
+    if (this._unitTest) this._unitTest.dispose();
     if (typeof cc !== "undefined" && cc.PhysicsContact) require("PhysicsContactCompat").install();
     this._restartRetired = false;
     this._waveStartCheckpoint = null;
@@ -214,6 +215,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onDestroy = function () {
     GameplayAdOwner.retire(this);
+    if (this._unitTest) this._unitTest.dispose();
     if(this.gameData&&this.gameData.levelCfg)require("EnemyStageProfiles").clear(this.gameData.levelCfg);
     require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
@@ -231,6 +233,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onDisable = function () {
     GameplayAdOwner.retire(this);
+    if (this._unitTest) this._unitTest.dispose();
     if (t.prototype.onDisable) t.prototype.onDisable.call(this);
   };
   _ctor.prototype.onRestart = function (t) {
@@ -264,6 +267,8 @@ var def_KinghtFallGameCtrl = function (t) {
     this.vec2_1.y = cc.misc.clampf(this.vec2_1.y, -this.moveSize.height / 2, this.moveSize.height / 2);
     this.ctrPlay.node.setPosition(this.vec2_1);
     this.ctrPlay.ndRange.setPosition(this.vec2_1);
+    var testTarget = this._unitTest && this._unitTest.cameraTarget();
+    if (testTarget) testTarget.getPosition(this.vec2_2);
     this.vec2_2.x = cc.misc.clampf(this.vec2_2.x, -this.mapSize.width / 2 + cc.winSize.width / 2, this.mapSize.width / 2 - cc.winSize.width / 2);
     this.vec2_2.y = cc.misc.clampf(this.vec2_2.y, -this.mapSize.height / 2 + cc.winSize.height / 2, this.mapSize.height / 2 - cc.winSize.height / 2);
     this.camera.node.setPosition(this.vec2_2);
@@ -373,6 +378,7 @@ var def_KinghtFallGameCtrl = function (t) {
       if (!frameCurrent(this, ui, data, epoch, stage)) return;
       if (r[s] === l) s++;
     }
+    if (this._unitTest) this._unitTest.update(t);
   };
   _ctor.prototype.onCommerce = function (t) {
     var e = this;
@@ -1005,6 +1011,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onPauseGame = function () {
     this.setAudioPaused(true);
+    if (this._unitTest) this._unitTest.setPause(true);
     this.ctrPlay.setPause(true);
     var t = this.gameData.getEnemyList();
     for (var e = 0; e < t.length; e++) {
@@ -1017,6 +1024,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onResumeGame = function () {
     this.setAudioPaused(false);
+    if (this._unitTest) this._unitTest.setPause(false);
     this.ctrPlay.setPause(false);
     var t = this.gameData.getEnemyList();
     for (var e = 0; e < t.length; e++) {
@@ -1085,6 +1093,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.cleanMap = function () {
     GameplayAdOwner.retire(this);
+    if (this._unitTest) this._unitTest.dispose();
     require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
@@ -1111,7 +1120,7 @@ var def_KinghtFallGameCtrl = function (t) {
     }
     this.ndBuildArr2 = [];
   };
-  _ctor.prototype.addEnemy = function (t, e, authoredRoute) {
+  _ctor.prototype.addEnemy = function (t, e, authoredRoute, preview) {
     var announceSound = !!this._battleSounds;
     var n = this;
     var epoch = this._combatEpoch, data = this.gameData, main = this.ndMain, ui = $z1KinghtFallUIGame.default.instance;
@@ -1121,10 +1130,11 @@ var def_KinghtFallGameCtrl = function (t) {
       var areaCollides = !!i.BuildingCross;
       var o = function (i) {
         var generation = i._combatGeneration, actor = null;
-        function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && n._combatEpoch === epoch && n.gameData === data && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation; }
+        function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && n._combatEpoch === epoch && n.gameData === data && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation && (!preview || preview.current()); }
         function abandon() {
           if (!cc.isValid(i, true) || i._combatGeneration !== generation) return;
-          if (actor && !actor._isPooled && actor._combatData === data) actor.freeNode();
+          if (preview) { i.active = false; i.destroy(); }
+          else if (actor && !actor._isPooled && actor._combatData === data) actor.freeNode();
           else $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i);
         }
         i.setParent(main);
@@ -1132,7 +1142,7 @@ var def_KinghtFallGameCtrl = function (t) {
         i.active = true;
         if (!current()) { abandon(); return; }
         var spawnNode = n.ndPath.getChildByName("ndEnemy" + e);
-        if (!spawnNode) { $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i); cc.warn('Missing authored spawn ' + e); return; }
+        if (!spawnNode) { abandon(); cc.warn('Missing authored spawn ' + e); return; }
         var o = actor = i.getComponent($z1KinghtFallEnemyBase.default);
         var previousRoute = n._authoredRouteOverride;
         var route = authoredRoute || null;
@@ -1140,13 +1150,21 @@ var def_KinghtFallGameCtrl = function (t) {
           i.setPosition(Navigation.positionOf(spawnNode, n));
           if (!current()) { abandon(); return; }
           var spawnArea = require('SpawnArea').prepare(o, n, e, areaCollides);
-          if (spawnArea === null) { cc.warn('Spawn circle '+e+' has no walkable position for enemy '+t);$z1PoolMgr.PoolMgr.getInstance().freeNode(a,i);return; }
+          if (spawnArea === null) { cc.warn('Spawn circle '+e+' has no walkable position for enemy '+t);abandon();return; }
           n._authoredRouteOverride = route;
           var lease = { generation: generation }, initialized = o.initData(t, e, lease);
           generation = lease.generation;
           if (initialized === false || !current()) { abandon(); return; }
           if (!require('SpawnArea').apply(o, n, e, spawnArea)) { abandon(); return; }
           if (!current()) { abandon(); return; }
+          if (preview) {
+            // Private actors use the same terrain clearance without contacts
+            // against the hero, structures, or ordinary combat actors.
+            o._unitTestActor = true;
+            o._unitTestRadius = areaCollides ? Navigation.get(n).radius(o, true) : 0;
+            o.rigidBody.active = false;
+            return o;
+          }
         } catch (error) {
           if (lease) generation = lease.generation;
           abandon();
@@ -1155,6 +1173,7 @@ var def_KinghtFallGameCtrl = function (t) {
         data.addEnemy(o);
         if (BattleSounds.spawnEnemy) BattleSounds.spawnEnemy(o, announceSound);
       };
+      if (preview) return preview.current() && o(cc.instantiate(preview.prefab));
       var r = $z1PoolMgr.PoolMgr.getInstance().getNode(a);
       if (r) {
         o(r);
@@ -1453,6 +1472,7 @@ var def_KinghtFallGameCtrl = function (t) {
   _ctor.prototype.onChangeSpeed = function () {
     this.ctrPlay.ctrPlayAni.onChangeSpeed();
     this.gameData.onChangeSpeed();
+    if (this._unitTest) this._unitTest.actors.forEach(function (actor) { if (cc.isValid(actor, true)) actor.onChangeSpeed(); });
   };
   _ctor.prototype.loadGame = function () {
     var t = this;

@@ -289,10 +289,10 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly) {
   // Also clear velocity on blocked/finished routes, before any early return.
   if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
   // Some unit types intentionally cross buildings with their physics disabled.
-  if (!unit.rigidBody || unit.rigidBody.active !== false) {
+  if (unit._unitTestRadius || !unit.rigidBody || unit.rigidBody.active !== false) {
     this.refresh();
     var grid = this.gridFor(unit);
-    var radius = this.radius(unit);
+    var radius = unit._unitTestRadius || this.radius(unit);
     recordTerrainExit(unit,this,grid,start,radius);
     state = unit._navigationState;
     // Let a bounded in-flight query finish when its moving target advances.
@@ -453,7 +453,7 @@ exports.recoverStranded = function (unit, game, dt) {
   // Body measurement scans the collider subtree and transforms its vertices.
   // Ordinary movement already measures it; only repeat that work when this
   // five-second watchdog is actually going to search for a recovery position.
-  var radius=navigation.radius(unit),anchors=[],bounds=grid.bounds,margin=radius+.01;
+  var radius=unit._unitTestRadius||navigation.radius(unit),anchors=[],bounds=grid.bounds,margin=radius+.01;
   function anchor(value) {
     if(!value||!isFinite(value.x)||!isFinite(value.y))return;
     var p={x:Math.max(bounds.minX+margin,Math.min(bounds.maxX-margin,value.x)),y:Math.max(bounds.minY+margin,Math.min(bounds.maxY-margin,value.y))};
@@ -615,8 +615,8 @@ exports.resumeEnemyRoute = function (unit, game) {
   var main = game.ndMain, start = point(unit.node, main), index = route.nodeIndex;
   var best = distance(start, point(nodes[index], main));
   var navigation = get(game), radius = 0;
-  var collides = !unit.rigidBody || unit.rigidBody.active !== false;
-  if (collides) { navigation.refresh(); radius = navigation.radius(unit); }
+  var collides = unit._unitTestRadius || !unit.rigidBody || unit.rigidBody.active !== false;
+  if (collides) { navigation.refresh(); radius = unit._unitTestRadius || navigation.radius(unit); }
   // Find the nearest forward route segment that can be rejoined directly.
   // A segment behind a wall is not evidence that its preceding waypoints were
   // passed. Ties keep the earlier segment, including at crossing/looping routes.

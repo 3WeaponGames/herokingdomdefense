@@ -517,10 +517,20 @@ var def_KinghtFallEnemyBase = function (t) {
     var record = { ui: ui, game: game, data: game && game.gameData, epoch: game && game._combatEpoch, stage: game && game.gameStatus,
       node: node, generation: node && node._combatGeneration, timers: this.time, renderer: renderer };
     if (!attackCurrent(this, record)) return;
+    if (this._unitTestActor) {
+      var target = this.getUpdateTarget();
+      if (target && target.canAtt) this.setLeft(Navigation.attackPositionOf(target, this, game).x < node.x);
+    }
     this._attackAnimation = record;
     this.state = r.Attack;
     record.entry = renderer.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
     if (this._attackAnimation !== record || !attackCurrent(this, record)) return;
+    if (this._unitTestActor) {
+      this.time[s.Attack] = 0;
+      GameToolsOverrides.applyAttackPlayback(this, "enemy");
+      if (!record.entry) this._completeAttackAnimation(renderer, record.entry);
+      return;
+    }
     // Ranged attacks count their cooldown from animation start; melee waits
     // for its damage release. Both must register the same owned TrackEntry.
     this.time[s.Attack] = startCooldown === 0 ? 0 : -1;

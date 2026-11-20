@@ -125,6 +125,29 @@ function validateMap(map,assets){
  const order=map.ground.order||fixedGround,custom=map.ground.custom||[];if(new Set(order).size!==order.length||order[0]!=='foundation'||custom.some(l=>!order.includes(l.id))||order.some(id=>!fixedGround.includes(id)&&!custom.some(l=>l.id===id)))issues.push('Keep the internal foundation below ground layers.');for(const layer of groundLayers(map)){claim(layer.id);transform(layer.transform);strokes(layer.strokes,layer.transform&&layer.transform.scale||1,true);if(layer.baseAsset&&assets&&!assets[layer.baseAsset])issues.push('Missing foundation texture.');for(const image of layer.images||[])object(image,layer.transform&&layer.transform.scale||1);if(layer.opacity!==undefined&&(!finite(layer.opacity)||layer.opacity<0||layer.opacity>1))issues.push('Layer opacity must be between 0 and 100%.');}
  for(const tile of map.ground.foundation.tiles||[])object(tile,map.ground.foundation.transform&&map.ground.foundation.transform.scale||1);for(const layer of map.layers||[]){shadow(layer);claim(layer.id);transform(layer.transform);strokes(layer.blockers);if(layer.blockerMask!==undefined)issues.push(...Blockers.issues(layer.blockerMask));polygons(layer.polygons);for(const o of layer.objects||[])object(o,layer.transform&&layer.transform.scale||1);}return Array.from(new Set(issues));
 }
+function stagePlacementIssues(stage,map){
+ const outsideMap=[],invalidCoordinates=[];
+ const placements=[
+  [stage.spawns,'Spawn point','Spawns'],
+  [stage.buildings,'Building','Buildings'],
+  [stage.specials,'Offer','Buildings'],
+ ].flatMap(([items,type,tab])=>(Array.isArray(items)?items:[])
+  .filter(point=>point&&typeof point==='object'&&!Array.isArray(point)&&point.enabled!==false)
+  .map(point=>({point,type,tab})));
+ placements.push({point:stage.hero,type:'Hero start',tab:'Spawns'});
+ for(const {point,type,tab} of placements){
+  const hasCoordinates=point&&finite(point.x)&&finite(point.y);
+  const outside=hasCoordinates&&map&&(Math.abs(point.x)>map.size.width/2||Math.abs(point.y)>map.size.height/2);
+  if(hasCoordinates&&!outside)continue;
+  const name=typeof point?.name==='string'&&point.name.trim();
+  const id=typeof point?.id==='number'||typeof point?.id==='string'?` (ID ${point.id})`:'';
+  const label=name?`${type} “${name}”${id}`:`${type}${id}`;
+  if(outside)outsideMap.push(`${label} is outside the map at X ${point.x}, Y ${point.y}. Select it in the ${tab} tab.`);
+  else invalidCoordinates.push(`${label} needs finite X and Y coordinates. Select it in the ${tab} tab.`);
+ }
+ return {outsideMap,invalidCoordinates};
+}
+
 function validateStage(stage,map,units){
  const StageProfiles=require('../../../assets/_script/EnemyStageProfiles'),profileIssues=units?StageProfiles.validate(stage.config,units):[];if(units)units=StageProfiles.records(stage.config,units);
  const issues=[],allBuildings=stage.buildings||[],allSpawns=Array.isArray(stage.spawns)?stage.spawns.filter(s=>s&&typeof s==='object'&&!Array.isArray(s)):[],buildings=allBuildings.filter(b=>b.enabled!==false),ids=new Set(allBuildings.map(b=>b.id)),spawns=allSpawns.filter(s=>s.enabled!==false),spawnIds=new Set(spawns.map(s=>s.id)),allSpawnIds=new Set(allSpawns.map(s=>s.id)),graphs=Array.isArray(stage.graphs)?stage.graphs.filter(g=>g&&typeof g==='object'&&!Array.isArray(g)):[],graphIds=new Set(),buildingIds=new Set(allBuildings.map(b=>b.id));
@@ -173,9 +196,8 @@ function validateStage(stage,map,units){
   if(p.wallFacing!==undefined&&(p.kind!==6||!GateFacing.valid(p.wallFacing)))issues.push('Wall facing must be Northeast, Northwest, Southeast or Southwest.');
   if(p.wallRun!==undefined&&(p.kind!==6||!require('../../../assets/_script/WallKit').validRun(p.wallRun)))issues.push('Wall runs need valid whole-piece counts, clear diagonal routes, valid end joins, and a gate or at least one piece. Native runs support up to 256 pieces per side.');
  }
- const placements=buildings.concat(specials,spawns,[stage.hero]);
- if(placements.some(p=>!p||!finite(p.x)||!finite(p.y)))issues.push('Placement coordinates must be finite.');
- if(map){const bounds={x:map.size.width/2,y:map.size.height/2};for(const p of placements)if(p&&(Math.abs(p.x)>bounds.x||Math.abs(p.y)>bounds.y))issues.push('A placement is outside the map.');}
+ const placements=stagePlacementIssues(stage,map);
+ issues.unshift(...placements.outsideMap,...placements.invalidCoordinates);
  return Array.from(new Set(issues));
 }
-module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,mergeGroundStrokes,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,validateMap,validateStage};
+module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,mergeGroundStrokes,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,validateMap,stagePlacementIssues,validateStage};

@@ -242,8 +242,12 @@ class Service{
     if(!config)throw Error('Stage '+stageId+' was removed. Refresh before saving.');
     stage=L.adaptStage(this.root,variant,level,config);
    }
-   const placements=stage.buildings.concat(stage.specials,stage.spawns).filter(p=>p.enabled!==false).concat([stage.hero]);
-   if(placements.some(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&(Math.abs(p.x)>map.size.width/2||Math.abs(p.y)>map.size.height/2)))throw Error('Stage '+stageId+' has enabled placements outside the resized map. Keep a larger map or move those stage placements before shrinking it. Your draft is retained.');
+   const {outsideMap}=M.stagePlacementIssues(stage,map);
+   if(outsideMap.length)throw Error([
+    'Stage '+stageId+' has enabled placements outside the resized map.',
+    ...outsideMap,
+    'Keep a larger map or move the listed placements before shrinking it. Your draft is retained.',
+   ].join('\n'));
   }
  }
  if(fingerprint(safe(this.root,doc.file))!==doc.revision)throw Error('Authoring source changed on disk. Draft retained.');

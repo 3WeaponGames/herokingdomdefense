@@ -35,7 +35,14 @@ test('world persistence: map shrink rejects any enabled saved stage placement ou
   if(type==='spawn')stage.spawns=[{id:1,name:'Spawn',enabled:true,x:700,y:0}];
   f.write('authoring/worlds/stages/A-1.json',stage);const before=fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json'));let renders=0;
   s.options.render=async()=>{renders++;return {files:[],ground:[],assets:{}};};resizeMap(s,800,1200);
-  await assert.rejects(s.save({key:'map:map-test',version:s.version}),/Stage A-1 has enabled placements outside the resized map/);assert.equal(renders,0,type);assert.equal(fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json')),before);assert(s.snapshot('map:map-test').dirty);assert(!s.docs['stage:A-1'],'validation must not open stage drafts');
+  const expected={hero:'Hero start',building:'Building',special:'Offer “Offer”',spawn:'Spawn point “Spawn”'};
+  await assert.rejects(s.save({key:'map:map-test',version:s.version}),error=>{
+   assert.match(error.message,/Stage A-1 has enabled placements outside the resized map/);
+   assert.ok(error.message.includes('\n'+expected[type]),error.message);
+   assert.ok(error.message.includes('is outside the map at X 700, Y 0.'),error.message);
+   return true;
+  });
+  assert.equal(renders,0,type);assert.equal(fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json')),before);assert(s.snapshot('map:map-test').dirty);assert(!s.docs['stage:A-1'],'validation must not open stage drafts');
  }
 });
 test('world persistence: a valid map shrink ignores disabled placements and unrelated preexisting stage issues',async()=>{

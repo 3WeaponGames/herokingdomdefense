@@ -696,6 +696,8 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrGame.gameStatus != $z1KinghtFallModle.KinghtFallGameStage.End && this.ctrGame.moveFun(t);
   };
   _ctor.prototype.startRoundGame = function () {
+    if (this._unitTestPanel) this._unitTestPanel.close();
+    if (this.ctrGame._unitTest) this.ctrGame._unitTest.dispose();
     if (this.ctrGame.captureWaveStart) this.ctrGame.captureWaveStart();
     if (BattleSounds.wave) BattleSounds.wave(this.ctrGame, "start");
     var t = this;
@@ -853,6 +855,7 @@ var def_KinghtFallUIGame = function (t) {
       this.ctrGame.gameData.taskInfo.index < this.ctrGame.gameData.taskInfo.list.length, this.ctrGame.gameData.taskInfo.stage === 1);
   };
   _ctor.prototype.lateUpdate = function (t) {
+    if (this._unitTestPanel) this._unitTestPanel.layout();
     if (this._enemyGuide || this._enemyGuideMarkersBound) require("EnemyGuide").update(this);
     this.isPauset || this.ctrGame.onLateUpdate(t);
     this._fitBuildingsButton();

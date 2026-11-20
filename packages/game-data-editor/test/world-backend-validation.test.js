@@ -4,8 +4,30 @@ const M=require('../worlds/model'),L=require('../worlds/legacy'),Catalog=require
 function stage(){return {id:'A-1',buildings:[{id:1,kind:1,x:0,y:0,scale:1}],specials:[],spawns:[{id:1,name:'Spawn 1',x:0,y:100,enabled:true}],graphs:[{id:'route',entry:'start',spawnIds:[1],nodes:[{id:'start',x:0,y:100},{id:'goal',x:0,y:0,goal:true}],edges:[{id:'edge',from:'start',to:'goal',weight:1}]}],hero:{x:0,y:0},config:{WaveCfg:[{Wave:1,SpawnTimeline:[{spawnId:1,unitId:3,count:1,startSeconds:0,intervalSeconds:1}]}]}};}
 test('backend validation rejects broken placement transforms and special offer IDs before export',()=>{
  const s=stage(),map=M.createMap('test','Test','forest');s.buildings[0].scale=0;s.specials=[{id:'offer',x:Infinity,y:0,scale:-1},{id:'offer',x:0,y:0,angle:NaN}];
- const issues=M.validateStage(s,map);assert(issues.some(i=>i.includes('positive scale')));assert(issues.some(i=>i.includes('finite')));assert(issues.some(i=>i.includes('Duplicate special')));
+ const issues=M.validateStage(s,map);assert(issues.some(i=>i.includes('positive scale')));assert(issues.includes('Offer (ID offer) needs finite X and Y coordinates. Select it in the Buildings tab.'));assert(issues.some(i=>i.includes('Duplicate special')));
  for(const value of [0,1.5,-1]){const invalid=stage();invalid.spawns[0].id=value;assert(M.validateStage(invalid).some(i=>i.includes('Spawn IDs')));}
+});
+test('outside-map warnings identify each placement and where to edit it',()=>{
+ const s=stage(),map=M.createMap('test','Test','forest');
+ map.size={width:200,height:400};map.playable={width:100,height:200};
+ Object.assign(s.spawns[0],{name:'North entrance',x:0,y:201});
+ Object.assign(s.buildings[0],{name:'Main Hall 1',x:-101,y:0});
+ s.spawns.push({id:2,name:'Disabled spawn',enabled:false,x:0,y:501});
+ s.specials=[
+  {id:'offer-1',name:'Silver offer',x:102,y:30},
+  {id:'offer-2',name:'Silver offer',x:102,y:30},
+  {id:'offer-3',name:'Edge offer',x:100,y:-200},
+ ];
+ s.hero={x:50,y:-201};
+ const before=JSON.stringify(s);
+ assert.deepEqual(M.validateStage(s,map),[
+  'Spawn point “North entrance” (ID 1) is outside the map at X 0, Y 201. Select it in the Spawns tab.',
+  'Building “Main Hall 1” (ID 1) is outside the map at X -101, Y 0. Select it in the Buildings tab.',
+  'Offer “Silver offer” (ID offer-1) is outside the map at X 102, Y 30. Select it in the Buildings tab.',
+  'Offer “Silver offer” (ID offer-2) is outside the map at X 102, Y 30. Select it in the Buildings tab.',
+  'Hero start is outside the map at X 50, Y -201. Select it in the Spawns tab.',
+ ]);
+ assert.equal(JSON.stringify(s),before);
 });
 test('backend validation detects colliding path and edge IDs and invalid graph weights',()=>{
  const s=stage();s.graphs.push(M.clone(s.graphs[0]));assert(M.validateStage(s).includes('Duplicate path ID.'));
