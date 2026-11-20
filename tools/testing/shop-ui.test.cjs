@@ -55,10 +55,12 @@ function fixture(options={}){
   function Base(){this.eventList=[];this.isDestroy=false;}Base.prototype.addEvent=function(){};Base.prototype.T=x=>x;Base.prototype.schedule=function(fn,time){scheduled.set(fn,time);};Base.prototype.scheduleOnce=Base.prototype.schedule;Base.prototype.unschedule=function(fn){scheduled.delete(fn);};Base.prototype.loadSpriteFrame=function(bundle,p,cb){loads.push({bundle,path:p,cb});};Base.prototype.onDestroy=function(){this.isDestroy=true;};
   const visible={width:750,height:1334};const cc={Node,Graphics,Label,Button,Sprite,ScrollView:Scroll,Mask,LabelOutline:class{},LabelShadow:class{},BlockInputEvents:class{},Color:{BLACK:'#000'},color:x=>x,v2:(x,y)=>({x,y}),rect:(x,y,width,height)=>({x,y,width,height}),size:(width,height)=>({width,height}),isValid:n=>!!n&&!n.destroyed,view:{getVisibleOrigin:()=>({x:0,y:0}),getVisibleSize:()=>visible},sys:{getSafeAreaRect:()=>({x:0,y:0,width:visible.width,height:visible.height})},Class(def){function C(){Base.call(this);}Object.assign(C.prototype,Base.prototype,def);return C;}};
   const dependencies={BaseCtrl:{default:Base},ShopViewCore:Core,LanguageMgr:{LanguageMgr:{getInstance:()=>language}},Config:{UIID:{UINONE:0}},Appcfg:{OrderLayer:{pop2:300}},UIMgr:{UIMgr:{getInstance:()=>manager}},KinghtFallConfig:{KinghtFallUIID:{UIHome:'home',UITop:'top',UITreasureInfo:77},KinghtFallEventName:{RefreshGold:'gold',RefreshDiamond:'gem',TreasureUpdate:'relic'}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({})}},KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>data}},ShopRuntime:{create:()=>service}};
+  const header={cc,exports:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/LobbyHeaderLayout.js'),'utf8'),header);
+  dependencies.LobbyHeaderLayout=header.exports;
   const context={cc,exports:{},require:id=>{assert(id in dependencies,id);return dependencies[id];}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallHomeShopCtrl.js'),'utf8'),context);
   const shop=new context.exports.default();shop.node=new Node('Shop');shop.node.x=375;shop.node.y=667;shop.onLoad();shop.onEnable();
   const click=node=>node.emit('touch-end',{stopPropagation(){},getLocation:()=>({x:0,y:0}),getStartLocation:()=>({x:0,y:0})});
-  return{shop,view,service,actions,loads,scheduled,languageListeners,visible,click,opens,closes,manager,uiRoot,completeOpen,cc};
+  return{shop,view,service,actions,loads,scheduled,languageListeners,visible,click,opens,closes,manager,uiRoot,completeOpen,cc,header:header.exports};
 }
 test('opening, category visits and timer ticks do not claim or purchase, and reuse products while token is stable',()=>{const f=fixture(),first=f.shop.content.children[0],requests=f.loads.length,draws=f.shop.dailyClaim.getComponent(Graphics).clears;for(let i=0;i<30;i++)f.shop.tick();assert.equal(f.shop.content.children[0],first);assert.equal(f.loads.length,requests);assert.equal(f.shop.dailyClaim.getComponent(Graphics).clears,draws,'stable timer does not repaint static button');for(const tab of ['relics','chests','resources','bundles'])f.shop.selectTab(tab);assert.deepEqual(f.actions,[]);assert.equal(f.shop.daily.parent,f.shop.surface);assert.equal(f.shop.scrollNode.parent,f.shop.surface);});
 test('one global daily claim updates all tabs and claimed card has no second action',()=>{const f=fixture();f.click(f.shop.dailyClaim);assert.deepEqual(f.actions,[['daily','day:1']]);for(const tab of ['chests','relics','resources','bundles']){f.shop.selectTab(tab);f.click(f.shop.dailyClaim);}assert.equal(f.actions.length,1);assert.equal(f.shop.dailyClaim._enabled,false);assert.match(f.shop.dailyTimer.string,/00h 02m/);});
@@ -139,6 +141,23 @@ test('Shop viewport exactly reaches transformed real footer top and observes pla
   const f=fixture(),home=new Node('UIHome'),holder=new Node('Controllers'),footer=new Node('ndBottom');home.x=375;home.y=667;home.parent=f.uiRoot;holder.parent=home;holder.y=20;f.shop.node.parent=holder;f.shop.node.setPosition(0,-20);footer.parent=home;footer.y=-607;footer.height=120;f.shop.relayout();
   let top=f.shop.node.convertToNodeSpaceAR(footer.convertToWorldSpaceAR({x:0,y:60})).y;assert.equal(f.shop.geometry.listBottom,top);assert.equal(f.shop.scrollNode.y-f.shop.scrollNode.height/2,top);assert.equal(footer.events['position-changed'].length,1);footer.y+=14;footer.emit('position-changed');top=f.shop.node.convertToNodeSpaceAR(footer.convertToWorldSpaceAR({x:0,y:60})).y;assert.equal(f.shop.geometry.listBottom,top);
   footer.height=156;footer.emit('size-changed');top=f.shop.node.convertToNodeSpaceAR(footer.convertToWorldSpaceAR({x:0,y:78})).y;assert.equal(f.shop.geometry.listBottom,top);f.shop.node.active=false;f.shop.onDisable();assert.equal(footer.events['position-changed'].length,0);assert.equal(footer.events['size-changed'].length,0);assert.deepEqual(f.actions,[]);
+});
+
+test('on the tall phone Shop paints behind the camera inset while its title clears the shared header',()=>{
+  const f=fixture(),world=new Node('World'),origin={x:0,y:-158};
+  f.visible.height=1650;
+  f.cc.view.getVisibleOrigin=()=>origin;
+  f.cc.sys.getSafeAreaRect=()=>({x:0,y:-158,width:750,height:1650-120/1.44});
+  f.shop.relayout();
+  assert.deepEqual(rectIn(f.shop.backdropSkin,world),{left:0,right:750,bottom:-158,top:1492});
+  const heading=rectIn(f.shop.titleRoot,f.shop.node),frame=f.header.viewport();
+  assert(heading.top<=f.header.contentTop(f.shop.node,frame)+1e-7);
+  const offer=f.shop.content.children[0];
+  f.visible.height+=20;
+  f.shop.relayout();
+  assert.equal(rectIn(f.shop.backdropSkin,world).top,1512);
+  assert.equal(f.shop.content.children[0],offer,'only the background changes when the safe area is unchanged');
+  assert.deepEqual(f.actions,[]);
 });
 
 function rectIn(item, ancestor){

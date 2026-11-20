@@ -32,10 +32,10 @@ var def_KinghtFallUITop = function (t) {
   };
   _ctor.prototype.onEnable = function () {
     this.initView();
-    require("LobbyHeaderLayout").layout(this);
+    this.lateUpdate();
   };
   _ctor.prototype.lateUpdate = function () {
-    require("LobbyHeaderLayout").layout(this);
+    if (require("LobbyHeaderLayout").layout(this) === true) this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.LobbyHeaderChanged);
   };
   _ctor.prototype.start = function () {
     this.initEventListener();

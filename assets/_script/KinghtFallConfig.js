@@ -388,6 +388,7 @@ exports.KinghtFallAudioCF = ((a = {})[r.menu_bgm] = {
   t.RefreshGold = "KinghtFallRefreshGold";
   t.RefreshDiamond = "KinghtFallRefreshDiamond";
   t.RefreshPower = "KinghtFallRefreshPower";
+  t.LobbyHeaderChanged = "KinghtFallLobbyHeaderChanged";
   t.AniGold = "KinghtFallAniGold";
   t.AniDiamond = "KinghtFallAniDiamond";
   t.TalentUpdate = "KinghtFallTalentUpdate";

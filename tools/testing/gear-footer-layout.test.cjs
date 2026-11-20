@@ -69,17 +69,22 @@ function fixture(width, height, safeBottom = 0, scale = 1) {
   const footer = lobby.getChildByName('ndBottom'); footer.getComponent(Widget).bottom = safeBottom;
   const page = tree(gear, 1, lobby.getChildByName('ndMain')); page.parent.children.push(page); align(lobby);
   const scroll = page.getChildByName('ScrollView'), viewport = scroll.getChildByName('view'), content = viewport.getChildByName('content');
+  const screen = bounds(lobby), visible = {width:screen.right-screen.left,height:screen.top-screen.bottom};
+  const safe = {x:screen.left,y:screen.bottom,...visible};
   function Base() {} Base.prototype.onDestroy = function () { this.baseDestroyed = true; };
-  const context = { exports: {}, require: name => name === 'BaseCtrl' ? { default: Base } : name === 'HeroWeaponPicker' ? { close() {} } : {},
-    cc: { _decorator: { ccclass: value => value, property: () => () => {} }, Node, Widget, Label: function () {}, Sprite: function () {}, ScrollView: function () {}, v2: (x, y) => ({ x, y }) },
+  const context = { exports: {}, require: name => name === 'BaseCtrl' ? { default: Base } : name === 'HeroWeaponPicker' ? { close() {} } : name === 'LobbyHeaderLayout' ? header.exports : {},
+    cc: { _decorator: { ccclass: value => value, property: () => () => {} }, Node, Widget, Label: function () {}, Sprite: function () {}, ScrollView: function () {}, v2: (x, y) => ({ x, y }),
+      view:{getVisibleOrigin:()=>({x:screen.left,y:screen.bottom}),getVisibleSize:()=>visible},sys:{getSafeAreaRect:()=>safe} },
     sp: { Skeleton: function () {} }, __extends(C, B) { C.prototype = Object.create(B.prototype); C.prototype.constructor = C; }, __decorate: (_decorators, value) => value };
+  const header = {exports:{},cc:context.cc};
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/LobbyHeaderLayout.js'), 'utf8'), header);
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/KinghtFallHomePersonCtrl.js'), 'utf8'), context);
   const scheduled = [];
   const controller = new context.exports.default(); controller.node = page; controller.scrView = { node: scroll, content };
   controller.scheduleOnce = callback => { if (!scheduled.includes(callback)) scheduled.push(callback); };
   controller.unschedule = callback => { const index = scheduled.indexOf(callback); if (index >= 0) scheduled.splice(index, 1); };
   controller.bindScrollFooter(); controller.layoutScrollToFooter(); align(content);
-  return { controller, lobby, page, footer, scroll, viewport, content, scheduled,
+  return { controller, lobby, page, footer, scroll, viewport, content, scheduled, safe, header:header.exports,
     flush() { const work = scheduled.splice(0); for (const callback of work) callback.call(controller); } };
 }
 function close(a, b) { assert(Math.abs(a - b) < 1e-7, a + ' must meet ' + b); }
@@ -91,6 +96,24 @@ test('Gear prefab removes only the twenty-unit strip while retaining the existin
   assert.equal(widget._top, 650); assert.equal(widget._bottom, footer._contentSize.height); assert.equal(footer._contentSize.height, 120);
   const f = fixture(750, 1334); assert.equal(f.scroll.height, 564); assert.equal(f.viewport.height, 564);
   close(bounds(f.viewport).bottom, bounds(f.footer).top); assert(f.viewport.getComponent(Mask));
+});
+
+test('phone cutouts move Gear CP, equipment, stats and list together without covering navigation', () => {
+  const f=fixture(750,1650);
+  const profile=f.page.getChildByName('ndPersonInfo'), panels=['ndPower','ndLevelInfo','ndInfo'].map(name=>profile.getChildByName(name));
+  const snapshot=()=>[...panels,f.scroll].map(item=>bounds(item).top);
+  const original=snapshot();
+  for(const inset of [120/1.44,115,0]){
+    f.safe.height=1650-inset;
+    f.controller.layoutScrollToFooter(true);
+    const updated=snapshot(), frame=f.header.viewport();
+    const clearance=f.page.convertToWorldSpaceAR({x:0,y:f.header.contentTop(f.page,frame)}).y;
+    assert(Math.max(...updated.slice(0,2))<=clearance+1e-7);
+    updated.forEach((y,index)=>close(original[index]-y,original[0]-updated[0]));
+    close(bounds(f.viewport).bottom,bounds(f.footer).top);
+    if(inset) assert(updated[0]<original[0]);
+    else assert.deepEqual(updated,original);
+  }
 });
 
 test('phone, tablet and safe-area Gear viewports end exactly at the actual footer and keep the last Upgrade fully reachable', () => {

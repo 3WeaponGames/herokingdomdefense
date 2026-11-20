@@ -135,6 +135,14 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
     var top = target.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y;
     widget.isAbsoluteBottom = true;
     widget.bottom = top + target.height * target.anchorY + 4;
+    var title = cc.view && collection.getChildByName("wg_tf_bt");
+    var titleWidget = title && title.getComponent(cc.Widget);
+    if (titleWidget) {
+      if (this._relicAuthoredTop === undefined) this._relicAuthoredTop = widget.top;
+      var extra = require("LobbyHeaderLayout").extraTopInset(target, this._relicAuthoredTop + titleWidget.top);
+      widget.isAbsoluteTop = true;
+      widget.top = this._relicAuthoredTop + extra;
+    }
     widget.updateAlignment();
     var scrollWidget = scroll.getComponent(cc.Widget), viewWidget = view.getComponent(cc.Widget);
     if (scrollWidget) scrollWidget.updateAlignment();
@@ -187,6 +195,7 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
   _ctor.prototype.initEventListener = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.TreasureUpdate, this.initView);
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.TreasureUpdate2, this.upView);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.LobbyHeaderChanged, this.layoutRelicViewport);
     this.addEvent($z1Appcfg.BaseEventName.CloseUI, this.onCloseUI);
   };
   _ctor.prototype.initData = function () {

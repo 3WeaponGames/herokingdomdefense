@@ -150,9 +150,27 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       widget.isAbsoluteBottom = true;
       widget.bottom = top + target.height * target.anchorY;
     }
+    if (cc.view) this.layoutGearHeader(widget);
     widget.updateAlignment();
     var viewport = scroll.children[0], viewWidget = viewport && viewport.getComponent(cc.Widget);
     if (viewWidget) viewWidget.updateAlignment();
+  };
+  _ctor.prototype.layoutGearHeader = function (scrollWidget) {
+    var profile = this.node.getChildByName("ndPersonInfo");
+    var widget = profile && profile.getComponent(cc.Widget);
+    var target = widget && (widget.target || profile.parent);
+    if (!target || !(target.height > 0)) return;
+    if (!this._gearAuthoredTop) this._gearAuthoredTop = { profile: widget.top, scroll: scrollWidget.top };
+    function topOf(node) {
+      return target.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, node.height * (1 - node.anchorY)))).y;
+    }
+    var panels = [profile.getChildByName("ndPower"), profile.getChildByName("ndLevelInfo")].filter(Boolean);
+    var extension = panels.reduce(function (highest, panel) { return Math.max(highest, topOf(panel)); }, topOf(profile)) - topOf(profile);
+    var extra = require("LobbyHeaderLayout").extraTopInset(target, this._gearAuthoredTop.profile - extension);
+    widget.isAbsoluteTop = scrollWidget.isAbsoluteTop = true;
+    widget.top = this._gearAuthoredTop.profile + extra;
+    scrollWidget.top = this._gearAuthoredTop.scroll + extra;
+    widget.updateAlignment();
   };
   _ctor.prototype.scheduleHomeGuide = function () {
     this.unschedule(this.showHomeGuide);
@@ -192,6 +210,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
   };
   _ctor.prototype.initEventListener = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, this.initBtnView);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.LobbyHeaderChanged, this.layoutScrollToFooter);
   };
   _ctor.prototype.initView = function () {
     var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getGoldNum();

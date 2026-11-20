@@ -4,6 +4,7 @@ exports.layout = function (bounds) {
   var baseWidth = Math.max(1, Math.min(900, bounds.right - bounds.left - 36));
   var currencyScale = Math.min(1, baseWidth / 722), center = (bounds.left + bounds.right) / 2;
   var top = bounds.top - 86 * currencyScale;
+  if (isFinite(bounds.contentTop)) top = Math.min(top, bounds.contentTop);
   var bottom = Math.min(bounds.top, isFinite(bounds.footer) ? Math.max(bounds.bottom, bounds.footer) : bounds.bottom + 120);
   var available = Math.max(0, top - bottom);
   // Keep the selected concept's card proportions, including a complete first

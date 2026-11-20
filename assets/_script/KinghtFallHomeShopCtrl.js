@@ -1,5 +1,5 @@
 "use strict";
-var Base = require("BaseCtrl").default, Layout = require("ShopViewCore"), Language = require("LanguageMgr").LanguageMgr;
+var Base = require("BaseCtrl").default, Layout = require("ShopViewCore"), Header = require("LobbyHeaderLayout"), Language = require("LanguageMgr").LanguageMgr;
 var Config = require("KinghtFallConfig"), Player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr, Data = require("KinghtFallDataMgr").KinghtFallDataMgr;
 var TABS = ["bundles", "chests", "relics", "resources"], COLORS = { cream: "#fff7e5", inset: "#f3e7cc", ink: "#51402a", body: "#503d27", border: "#c5ab7d", header: "#34445f", blue: "#279fff", gold: "#ffda43" };
 var RARITY_KEYS = { 1: "shop.rarity.1", 2: "shop.rarity.2", 3: "shop.rarity.3", 4: "shop.rarity.4" };
@@ -50,6 +50,7 @@ var Shop = cc.Class({
     this.addEvent(Config.KinghtFallEventName.RefreshGold, this.refresh);
     this.addEvent(Config.KinghtFallEventName.RefreshDiamond, this.refresh);
     this.addEvent(Config.KinghtFallEventName.TreasureUpdate, this.refresh);
+    this.addEvent(Config.KinghtFallEventName.LobbyHeaderChanged, this.relayout);
   },
   onEnable: function () {
     if (!this.service) return;
@@ -283,18 +284,27 @@ var Shop = cc.Class({
     if (footer) events.forEach(function (event) { footer.on(event, this.relayout, this); }, this);
   },
   bounds: function () {
-    var origin = cc.view.getVisibleOrigin(), size = cc.view.getVisibleSize(), safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: size.width, height: size.height };
-    var a = this.node.convertToNodeSpaceAR(cc.v2(Math.max(origin.x, safe.x), Math.max(origin.y, safe.y))), b = this.node.convertToNodeSpaceAR(cc.v2(Math.min(origin.x + size.width, safe.x + safe.width), Math.min(origin.y + size.height, safe.y + safe.height)));
-    var bounds = { left: Math.min(a.x, b.x), right: Math.max(a.x, b.x), bottom: Math.min(a.y, b.y), top: Math.max(a.y, b.y) };
+    var frame = Header.viewport(), owner = this.node;
+    function local(rect) {
+      var low = owner.convertToNodeSpaceAR(cc.v2(rect.left, rect.bottom)), high = owner.convertToNodeSpaceAR(cc.v2(rect.right, rect.top));
+      return { left: Math.min(low.x, high.x), right: Math.max(low.x, high.x), bottom: Math.min(low.y, high.y), top: Math.max(low.y, high.y) };
+    }
+    var bounds = local(frame);
+    bounds.visible = local(frame.visible);
+    if (frame.topInset > .5) bounds.contentTop = Header.contentTop(owner, frame);
     var footer = this.footer(); this.observeFooter(footer);
     if (footer) bounds.footer = this.node.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y;
     return bounds;
   },
   relayout: function () {
     if (!this.surface) return; var bounds = this.bounds(), geometry = Layout.layout(bounds), signature = JSON.stringify(geometry);
+    var visible = bounds.visible, x = (visible.left + visible.right) / 2, y = (visible.bottom + visible.top) / 2;
+    var width = visible.right - visible.left, height = visible.top - visible.bottom;
+    if (this.backdrop.width !== width || this.backdrop.height !== height || this.backdrop.x !== x || this.backdrop.y !== y) {
+      place(this.backdrop, x, y, width, height); fitSkin(this.backdropSkin, width, height);
+    }
     if (this._geometrySignature === signature) return; this.rememberOffset(); this._geometrySignature = signature; this.geometry = geometry;
     var w = geometry.width, s = geometry.chromeScale; this.surface.x = geometry.center;
-    place(this.backdrop, geometry.center, (bounds.top + geometry.listBottom) / 2, bounds.right - bounds.left, bounds.top - geometry.listBottom); fitSkin(this.backdropSkin, this.backdrop.width, this.backdrop.height);
     this.layoutTitle();
     place(this.tabRoot, 0, geometry.tabs); this.layoutCategories();
     place(this.daily, 0, geometry.daily, w, 158 * s); fitSkin(this.dailySkin, w, this.daily.height); fitSkin(this.dailyRim, w - 8 * s, this.daily.height - 8 * s);

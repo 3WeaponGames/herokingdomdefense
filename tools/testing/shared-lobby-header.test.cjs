@@ -31,16 +31,16 @@ function fixture(){
   for(const [index,name]of ['ndPower','ndGold','ndDiamond'].entries()){const n=top[name]=new Node(name,currencyParent),text=new Node('labNum',n),icon=new Node('sprIcon',n);text.label=new Label();text.label.node=text;icon.height=[54,51,48][index];icon.width=[43,50,55][index];new Node('wg_zy_j',n);n.components.push({enabled:true,content:[text],minWidth:80});}
   const layout=load('LobbyHeaderLayout',{},cc);
   function positions(){return ['ndPower','ndGold','ndDiamond','btnSetting'].map(name=>{const n=top[name],p=owner.convertToNodeSpaceAR(n.convertToWorldSpaceAR({x:0,y:0}));return{name,x:p.x,y:p.y,scaleX:n.scaleX,scaleY:n.scaleY};});}
-  function check(){const a=owner.convertToNodeSpaceAR({x:Math.max(visible.x,safe.x),y:Math.max(visible.y,safe.y)}),b=owner.convertToNodeSpaceAR({x:Math.min(visible.x+visible.width,safe.x+safe.width),y:Math.min(visible.y+visible.height,safe.y+safe.height)}),scale=Math.min(1,(b.x-a.x)/750),available=b.x-a.x-218*scale-30;let left=a.x+24*scale,lastRight=null;
+  function check(){const a=owner.convertToNodeSpaceAR({x:Math.max(visible.x,safe.x),y:Math.max(visible.y,safe.y)}),b=owner.convertToNodeSpaceAR({x:Math.min(visible.x+visible.width,safe.x+safe.width),y:Math.min(visible.y+visible.height,safe.y+safe.height)}),scale=Math.min(1,(b.x-a.x)/750),available=b.x-a.x-218*scale-30,centerY=b.y-(visible.y+visible.height-safe.y-safe.height>.5?36*scale*1.2+2:62);let left=a.x+24*scale,lastRight=null;
     for(const [index,name]of ['ndPower','ndGold','ndDiamond'].entries()){
       const node=top[name],expectedWidth=available*[.3,.35,.35][index],p=owner.convertToNodeSpaceAR(node.convertToWorldSpaceAR({x:0,y:0})),lo=owner.convertToNodeSpaceAR(node.convertToWorldSpaceAR({x:-node.width/2,y:-node.height/2})),hi=owner.convertToNodeSpaceAR(node.convertToWorldSpaceAR({x:node.width/2,y:node.height/2}));
       const icon=node.getChildByName('sprIcon'),plus=node.getChildByName('wg_zy_j'),half=icon.width*scale/2,iconLeft=owner.convertToNodeSpaceAR(icon.convertToWorldSpaceAR({x:-icon.width/2,y:0})).x,iconRight=owner.convertToNodeSpaceAR(icon.convertToWorldSpaceAR({x:icon.width/2,y:0})).x,plusLeft=owner.convertToNodeSpaceAR(plus.convertToWorldSpaceAR({x:-plus.width/2,y:0})).x;
-      near(p.x,left+half+expectedWidth/2,name+' x');near(p.y,b.y-62,name+' y');near(hi.x-lo.x,expectedWidth,name+' proportional width');near(hi.y-lo.y,56*scale,name+' height in shared space');near(node.width,expectedWidth/scale);
+      near(p.x,left+half+expectedWidth/2,name+' x');near(p.y,centerY,name+' y');near(hi.x-lo.x,expectedWidth,name+' proportional width');near(hi.y-lo.y,56*scale,name+' height in shared space');near(node.width,expectedWidth/scale);
       near(icon.x,-node.width/2,name+' icon centered on the bar left edge');near(iconLeft,lo.x-half,name+' half icon outside the bar');near(iconRight,lo.x+half,name+' half icon inside the bar');near(iconLeft,left,name+' first visible edge');assert(plusLeft>=iconLeft,'full green plus remains inside the composite');if(lastRight!==null)near(iconLeft-lastRight,15,name+' previous bar to next icon gap');
       assert.equal(node.height,56);assert.equal(node.widget.enabled,false);lastRight=hi.x;left+=half+expectedWidth+(index<2?15:24*scale);
     }
     const button=top.btnSetting,p=owner.convertToNodeSpaceAR(button.convertToWorldSpaceAR({x:0,y:0})),lo=owner.convertToNodeSpaceAR(button.convertToWorldSpaceAR({x:-button.width/2,y:-button.height/2})),hi=owner.convertToNodeSpaceAR(button.convertToWorldSpaceAR({x:button.width/2,y:button.height/2}));
-    near(hi.y-lo.y,72*scale,'settings displayed size');near(p.x,left+36*scale,'settings x');near(lo.x-lastRight,24*scale,'settings gap');near(hi.x,b.x-24*scale,'header fills safe width except margins');near(p.y,b.y-62,'settings row');assert.equal(button.widget.enabled,false);
+    near(hi.y-lo.y,72*scale,'settings displayed size');near(p.x,left+36*scale,'settings x');near(lo.x-lastRight,24*scale,'settings gap');near(hi.x,b.x-24*scale,'header fills safe width except margins');near(p.y,centerY,'settings row');assert.equal(button.widget.enabled,false);
   }
   return{top,owner,currencyParent,layout,cc,visible,safe,positions,check};
 }
@@ -57,6 +57,23 @@ test('shared header retains currency nodes and layout through page visits, safe-
   Object.assign(f.safe,{x:28,y:34,width:694,height:1255});f.layout.layout(f.top);f.check();assert.notDeepEqual(f.positions(),baseline);
   Object.assign(f.visible,{width:1334,height:750});Object.assign(f.safe,{x:42,y:18,width:1250,height:710});f.owner.x=667;f.owner.y=375;f.layout.layout(f.top);f.check();
   Object.assign(f.visible,{width:360,height:800});Object.assign(f.safe,{x:12,y:0,width:336,height:780});f.owner.x=180;f.owner.y=400;f.layout.layout(f.top);f.check();
+});
+
+test('the photographed tall phone raises the header within its cutout and publishes changes to the usable frame',()=>{
+  const f=fixture();
+  Object.assign(f.visible,{y:-158,height:1650});
+  Object.assign(f.safe,{y:f.visible.y,height:1650-120/1.44});
+  f.layout.install(f.top);f.check();
+  const settings=f.top.btnSetting;
+  const safeTop=f.safe.y+f.safe.height;
+  assert(settings.convertToWorldSpaceAR({x:0,y:0}).y>safeTop-62);
+  settings.setScale(settings.scaleX*1.2,settings.scaleY*1.2);
+  near(settings.convertToWorldSpaceAR({x:0,y:settings.height/2}).y,safeTop-2);
+  near(f.layout.contentTop(f.owner,f.layout.viewport()),f.owner.convertToNodeSpaceAR(settings.convertToWorldSpaceAR({x:0,y:-settings.height/2})).y-12);
+  assert.equal(f.layout.layout(f.top),false);
+  f.visible.y-=20;f.visible.height+=20;
+  assert.equal(f.layout.layout(f.top),true,'a full-bleed background needs an update even when the safe header stays still');
+  near(settings.convertToWorldSpaceAR({x:0,y:settings.height/2}).y,safeTop-2);
 });
 
 test('unchanged shared geometry preserves an active button press animation and does not write transforms every frame',()=>{const f=fixture();f.layout.install(f.top);const writes=()=>['ndPower','ndGold','ndDiamond','btnSetting'].map(k=>[f.top[k].positionWrites,f.top[k].scaleWrites]);const stable=writes(),original=f.top.btnSetting.scaleX;f.top.btnSetting.setScale(original*.9);const pressed=writes();for(let i=0;i<60;i++)f.layout.layout(f.top);assert.deepEqual(writes(),pressed);near(f.top.btnSetting.scaleX,original*.9);assert.equal(pressed[3][1],stable[3][1]+1);f.safe.y=40;f.safe.height-=60;f.layout.layout(f.top);f.check();});

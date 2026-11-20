@@ -35,9 +35,12 @@ function fixture(width=750,language='en',rect={x:12,y:34,width:1500,height:716})
  function Base(){}Base.prototype.onDestroy=function(){this.baseDestroyed=(this.baseDestroyed||0)+1;};
  const deps={BaseCtrl:{default:Base},Utils:{Utils:{StringFormat:(text,...args)=>text.replace(/\{(\d+)\}/g,(_,n)=>args[+n])}},KinghtFallTextConfig:{KinghtFallTextConfig:{HomeTrea03:'[[loc:'+key+']]'}},KinghtFallEnum:{KinghtFallEnumShopEnum:{Treasure:80001}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getShopInfo:id=>{state.reads.push(id);return state.shop;}})})}},KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getBoxCfgById:()=>state.cfg,getGoodsCfgById:id=>({icon:'goods-'+id})})}},KinghtFallConfig:{KinghtFallBundelName:{IconGood:'goods'}},KinghtFallModle:{default:{getInstance:()=>({numberFomat:v=>String(v)})}}};
  const context={exports:{},require:name=>deps[name]||{},cc:{_decorator:{ccclass:v=>v,property:()=>()=>{}},Node,Label,RichText,Sprite,isValid:v=>!!v&&!v.destroyed,rect:(x,y,width,height)=>({x,y,width,height}),size:(width,height)=>({width,height}),v2:(x,y)=>({x,y})},__extends(C,B){C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},__decorate:(_d,v)=>v};
+ const header={exports:{},cc:context.cc};
+ vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/LobbyHeaderLayout.js'),'utf8'),header);
+ deps.LobbyHeaderLayout=header.exports;
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallHomeTreasureCtrl.js'),'utf8'),context);
  const controller=new context.exports.default(),binding=prefab.find(c=>c.btnOne&&c.btnVideo&&c.labTime);controller.node=page;for(const k of['btnOne','btnVideo','btnTen','ndItem','ndParent'])controller[k]=nodes.get(binding[k].__id__);for(const k of['labBox','labTime','labNum'])controller[k]=components.get(binding[k].__id__);controller.cfgBox=state.cfg;controller.T=token=>{const match=/\[\[loc:([^\]]+)\]\]/.exec(token);return match?catalog.entries[match[1]][language]:token;};controller.loadSpriteFrame=(bundle,name,done)=>{const frame={bundle,name};goods.push(frame);done(frame);};
- return{controller,page,footer,nodes,components,state,source,sprites,frames,goods,context};
+ return{controller,page,footer,nodes,components,state,source,sprites,frames,goods,context,header:header.exports};
 }
 function bounds(n,press=1){return{left:n.x-n.width*n.anchorX*press,right:n.x+n.width*(1-n.anchorX)*press,bottom:n.y-n.height*n.anchorY*press,top:n.y+n.height*(1-n.anchorY)*press};}
 
@@ -65,9 +68,11 @@ test('the combined guarantee stays centered and fits long live copy after width 
 test('relic viewport ends above the live draw footer and the last progress bar fits inside the scroll content',()=>{
  const f=fixture(), collection=f.nodes.get(2), scroll=f.nodes.get(48), view=f.nodes.get(49), passes=[];
  class Widget { constructor(name){this.name=name;} updateAlignment(){passes.push(this.name);} }
- const widget=new Widget('collection');
+ const widget=new Widget('collection'), banner=new Widget('banner');
+ widget.top=prefab[60]._top;banner.top=prefab[11]._top;
  f.context.cc.Widget=Widget;
  collection.components.push(widget);
+ f.nodes.get(3).components.push(banner);
  scroll.components.push(new Widget('scroll'));
  view.components.push(new Widget('view'));
  f.controller.scheduleOnce=callback=>callback.call(f.controller);
@@ -77,6 +82,18 @@ test('relic viewport ends above the live draw footer and the last progress bar f
  assert.deepEqual(passes.slice(-3),['collection','scroll','view']);
  f.footer.y+=35;f.footer.emit('position');
  assert(Math.abs(widget.bottom-base-35)<1e-8);
+ f.page.height=1650;
+ const origin=f.page.convertToWorldSpaceAR({x:-375,y:-825});
+ const safe={...origin,width:750,height:1650-120/1.44};
+ f.context.cc.view={getVisibleOrigin:()=>origin,getVisibleSize:()=>({width:750,height:1650})};
+ f.context.cc.sys={getSafeAreaRect:()=>safe};
+ f.controller.layoutRelicViewport();
+ assert(widget.top>prefab[60]._top);
+ const titleTop=825-widget.top-banner.top;
+ assert(Math.abs(titleTop-f.header.contentTop(f.page,f.header.viewport()))<1e-7);
+ assert(825-widget.top-prefab[58]._top<titleTop,'the grid stays below the banner');
+ assert(Math.abs(widget.bottom-(base+35+158))<1e-8);
+ safe.height=1650;f.controller.layoutRelicViewport();assert.equal(widget.top,prefab[60]._top);
  const item=f.controller.ndItem, progress=item.getChildByName('ndPro');
  const extraBelowTile=-bounds(progress).bottom-item.height*item.anchorY;
  assert(prefab[52]['_N$paddingBottom']>=extraBelowTile+12);
