@@ -14,8 +14,10 @@ class Node{
  emit(type){for(const r of(this.handlers.get(type)||[]).slice())r.fn.call(r.target);}
  setContentSize(width,height){if(typeof width==='object')({width,height}=width);const changed=this.width!==width||this.height!==height;this.width=width;this.height=height;if(changed)this.emit('size');}
  setPosition(x,y){if(typeof x==='object')({x,y}=x);this.x=x;this.y=y;}
+ convertToWorldSpaceAR(p){return this.parent?this.parent.convertToWorldSpaceAR({x:p.x+this.x,y:p.y+this.y}):{x:p.x+this.x,y:p.y+this.y};}
+ convertToNodeSpaceAR(p){const origin=this.convertToWorldSpaceAR({x:0,y:0});return{x:p.x-origin.x,y:p.y-origin.y};}
 }
-Node.EventType={SIZE_CHANGED:'size',TOUCH_END:'touch'};
+Node.EventType={SIZE_CHANGED:'size',POSITION_CHANGED:'position',TOUCH_END:'touch'};
 class Label{constructor(row,node){this.node=node;this.fontSize=row._fontSize||row._N$fontSize||54;this.lineHeight=row._lineHeight||row._N$lineHeight||72;this.value=row._string||row._N$string||'';}get string(){return this.value;}set string(v){this.value=v;this.node.setContentSize(Math.max(1,clean(v).length*this.fontSize*.55),this.lineHeight);}}
 class RichText extends Label{}
 class Sprite{constructor(frame){this.spriteFrame=frame;}}
@@ -35,7 +37,7 @@ function fixture(width=750,language='en',rect={x:12,y:34,width:1500,height:716})
  const context={exports:{},require:name=>deps[name]||{},cc:{_decorator:{ccclass:v=>v,property:()=>()=>{}},Node,Label,RichText,Sprite,isValid:v=>!!v&&!v.destroyed,rect:(x,y,width,height)=>({x,y,width,height}),size:(width,height)=>({width,height}),v2:(x,y)=>({x,y})},__extends(C,B){C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},__decorate:(_d,v)=>v};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallHomeTreasureCtrl.js'),'utf8'),context);
  const controller=new context.exports.default(),binding=prefab.find(c=>c.btnOne&&c.btnVideo&&c.labTime);controller.node=page;for(const k of['btnOne','btnVideo','btnTen','ndItem','ndParent'])controller[k]=nodes.get(binding[k].__id__);for(const k of['labBox','labTime','labNum'])controller[k]=components.get(binding[k].__id__);controller.cfgBox=state.cfg;controller.T=token=>{const match=/\[\[loc:([^\]]+)\]\]/.exec(token);return match?catalog.entries[match[1]][language]:token;};controller.loadSpriteFrame=(bundle,name,done)=>{const frame={bundle,name};goods.push(frame);done(frame);};
- return{controller,page,footer,nodes,components,state,source,sprites,frames,goods};
+ return{controller,page,footer,nodes,components,state,source,sprites,frames,goods,context};
 }
 function bounds(n,press=1){return{left:n.x-n.width*n.anchorX*press,right:n.x+n.width*(1-n.anchorX)*press,bottom:n.y-n.height*n.anchorY*press,top:n.y+n.height*(1-n.anchorY)*press};}
 
@@ -57,13 +59,36 @@ test('responsive draw hitboxes remain separated and inside the panel even at the
 });
 
 test('the combined guarantee stays centered and fits long live copy after width changes',()=>{
- const f=fixture();f.controller.prepareDrawFooter();for(const height of[250,310])for(const width of[640,750,900])for(const textWidth of[1000,1800,2600]){f.footer.setContentSize(width,height);f.nodes.get(71).setContentSize(textWidth,76);const n=f.nodes.get(71),box=bounds({...n,width:n.width*n.scaleX,height:n.height*n.scaleY});assert.equal(n.x,0);assert.equal(n.y,f.footer.height/2-50);assert(n.scaleX===n.scaleY&&n.scaleX<=.5);assert(box.left>=-width/2+18&&box.right<=width/2-18);const buttonTop=Math.max(...[f.controller.btnOne,f.controller.btnVideo,f.controller.btnTen].map(n=>bounds(n,1.04).top));assert(box.bottom>buttonTop,'guarantee clears pressed button tops');}
+ const f=fixture();f.controller.prepareDrawFooter();for(const height of[220,250,310])for(const width of[640,750,900])for(const textWidth of[1000,1800,2600]){f.footer.setContentSize(width,height);f.nodes.get(71).setContentSize(textWidth,76);const n=f.nodes.get(71),box=bounds({...n,width:n.width*n.scaleX,height:n.height*n.scaleY});assert.equal(n.x,0);assert.equal(n.y,f.footer.height/2-34);assert(n.scaleX===n.scaleY&&n.scaleX<=.5);assert(box.left>=-width/2+18&&box.right<=width/2-18);const buttonTop=Math.max(...[f.controller.btnOne,f.controller.btnVideo,f.controller.btnTen].map(n=>bounds(n,1.04).top));assert(box.bottom>buttonTop,'guarantee clears pressed button tops');}
+});
+
+test('relic viewport ends above the live draw footer and the last progress bar fits inside the scroll content',()=>{
+ const f=fixture(), collection=f.nodes.get(2), scroll=f.nodes.get(48), view=f.nodes.get(49), passes=[];
+ class Widget { constructor(name){this.name=name;} updateAlignment(){passes.push(this.name);} }
+ const widget=new Widget('collection');
+ f.context.cc.Widget=Widget;
+ collection.components.push(widget);
+ scroll.components.push(new Widget('scroll'));
+ view.components.push(new Widget('view'));
+ f.controller.scheduleOnce=callback=>callback.call(f.controller);
+ f.controller.prepareDrawFooter();
+ const base=widget.bottom;
+ assert(Math.abs(base-331.381)<1e-8);
+ assert.deepEqual(passes.slice(-3),['collection','scroll','view']);
+ f.footer.y+=35;f.footer.emit('position');
+ assert(Math.abs(widget.bottom-base-35)<1e-8);
+ const item=f.controller.ndItem, progress=item.getChildByName('ndPro');
+ const extraBelowTile=-bounds(progress).bottom-item.height*item.anchorY;
+ assert(prefab[52]['_N$paddingBottom']>=extraBelowTile+12);
+ f.controller.onDestroy();
+ assert.equal(f.footer.handlers.get('position').length,0);
+ assert.equal(f.page.handlers.get('size').length,0);
 });
 
 test('prefab and scoped localization provide one complete guarantee row without removing control bindings',()=>{
- for(const id of[63,66,74])assert.equal(prefab[id]._active,false);assert.equal(prefab[62]._contentSize.height,250);const binding=prefab.find(c=>c.btnOne&&c.btnVideo&&c.labTime);assert.deepEqual([binding.btnOne.__id__,binding.btnVideo.__id__,binding.btnTen.__id__,binding.labTime.__id__,binding.labBox.__id__],[78,96,114,72,67]);assert.equal(prefab[72]._N$maxWidth,0);assert.equal(prefab[72]._N$horizontalAlign,1);assert.equal(prefab[72]._N$fontSize,60);assert.equal(prefab[72]._N$lineHeight,76);
+ for(const id of[63,66,74])assert.equal(prefab[id]._active,false);assert.equal(prefab[62]._contentSize.height,220);const binding=prefab.find(c=>c.btnOne&&c.btnVideo&&c.labTime);assert.deepEqual([binding.btnOne.__id__,binding.btnVideo.__id__,binding.btnTen.__id__,binding.labTime.__id__,binding.labBox.__id__],[78,96,114,72,67]);assert.equal(prefab[72]._N$maxWidth,0);assert.equal(prefab[72]._N$horizontalAlign,1);assert.equal(prefab[72]._N$fontSize,60);assert.equal(prefab[72]._N$lineHeight,76);
  for(const id of[94,112,130])assert.equal(prefab[id].zoomScale,1.04);
- for(const entry of[key,'ui.kinghtfallhometreasurectrl.labtime.72'])for(const lang of['en','zh']){const text=catalog.entries[entry][lang],style=catalog.labelStyles[entry][lang];assert(!/\n|\\n|<br\s*\/?\s*>/i.test(text));assert.equal(style.width,0);assert.equal(style.wrap,false);assert.equal(style.maxLines,1);assert.equal(style.horizontalAlign,1);assert.equal(style.x,0);assert.equal(style.y,prefab[62]._contentSize.height/2-50);assert.equal(style.fontSize,60);assert.equal(style.lineHeight,76);if(lang==='en'){assert.match(clean(text),/more draws Guaranteed Epic or better relic/);assert.match(text,/#75ff10/);assert.match(text,/#e95cff/);}if(entry===key)assert.equal((text.match(/\{0\}/g)||[]).length,1);}
+ for(const entry of[key,'ui.kinghtfallhometreasurectrl.labtime.72'])for(const lang of['en','zh']){const text=catalog.entries[entry][lang],style=catalog.labelStyles[entry][lang];assert(!/\n|\\n|<br\s*\/?\s*>/i.test(text));assert.equal(style.width,0);assert.equal(style.wrap,false);assert.equal(style.maxLines,1);assert.equal(style.horizontalAlign,1);assert.equal(style.x,0);assert.equal(style.y,prefab[62]._contentSize.height/2-34);assert.equal(style.fontSize,60);assert.equal(style.lineHeight,76);if(lang==='en'){assert.match(clean(text),/more draws Guaranteed Epic or better relic/);assert.match(text,/#75ff10/);assert.match(text,/#e95cff/);}if(entry===key)assert.equal((text.match(/\{0\}/g)||[]).length,1);}
 });
 
 test('upView retains live pity arithmetic and configured ad progress without changing player state',()=>{

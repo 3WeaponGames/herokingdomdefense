@@ -18679,6 +18679,281 @@
         "piece": "river-lookout",
         "pixelsPerWorldUnit": 1
       }
+    },
+    {
+      "id": "terrain-six-gate-woodland-southwatch",
+      "name": "Southwatch Terrace",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/southwatch.png",
+      "width": 1096,
+      "height": 859,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "c29077f0715014233af74570e976c667141f39382d01a610062a3326fd44b145",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "southwatch",
+        "pixelsPerWorldUnit": 1,
+        "access": "ramp"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-east-canopy",
+      "name": "Northeast Canopy Escarpment",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/east-canopy.png",
+      "width": 711,
+      "height": 804,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "a80c5ddec8bd9f60f7e44f4e590b42b19cec7903fc71f5fde012a84e70265413",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "east-canopy",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-rune-terrace",
+      "name": "Rune Terrace",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/rune-terrace.png",
+      "width": 823,
+      "height": 547,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "4c6743bb3b8c89044f5ecbcb497b53b351f4b4644aa19dd06f0505c4a96d7a4e",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "rune-terrace",
+        "pixelsPerWorldUnit": 1,
+        "access": "ramp"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-east-brackenwall",
+      "name": "Southeast Brackenwall",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/east-brackenwall.png",
+      "width": 616,
+      "height": 1133,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "a82524f4f9b13240700a4bcb190adb9d282f8afd2f5f3772ffcb4e0175622ad9",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "east-brackenwall",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-eastern-ridge",
+      "name": "Eastern Ridge",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/eastern-ridge.png",
+      "width": 416,
+      "height": 970,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "78b2d3894ca4104cf36cd97b446e2aaf4acbc9cad3ef9d85c0923db4a057ba62",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "eastern-ridge",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-split-gate-crown",
+      "name": "Split-Gate Crown",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/split-gate-crown.png",
+      "width": 711,
+      "height": 852,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "24361997e8a1237001e0d639d3a07ec7f33c1273e28d538c7e80025cdd20c3db",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "split-gate-crown",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-western-hollow",
+      "name": "West Hollow Wall",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/western-hollow.png",
+      "width": 550,
+      "height": 641,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "82bbc01dc8e8aa7746bc69e8c1d1db3fbc1d249153a4b3a62a4ffc4c706a2c55",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "western-hollow",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-west-gate-ledge",
+      "name": "Northwest Gate Ledge",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/west-gate-ledge.png",
+      "width": 328,
+      "height": 1010,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "9ef1dc677b9070798ed22a7d40175fda3eec958895c4f34d3ca469a079835ab1",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "west-gate-ledge",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-western-rampart",
+      "name": "Western Rampart",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/western-rampart.png",
+      "width": 498,
+      "height": 570,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "fcb8a47e0fa450f055d3d52493cbe59eb95a39df7086903d97cceb75ef720181",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "western-rampart",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-west-root-shelf",
+      "name": "Southwest Root Shelf",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/west-root-shelf.png",
+      "width": 256,
+      "height": 657,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "44ab85b400ac828f1876c4c3999f0b548b737711351c41123e94a5480a792628",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "west-root-shelf",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
+    },
+    {
+      "id": "terrain-six-gate-woodland-gate-spur",
+      "name": "Deepwood Gate Spur",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/gate-spur.png",
+      "width": 235,
+      "height": 224,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "d7f64622bfdc158e482ab64f4f6d1fc7b3bdf028814c333567bd927fb759b632",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-05-six-gate-woodland",
+        "piece": "gate-spur",
+        "pixelsPerWorldUnit": 1,
+        "access": "closed"
+      }
     }
   ],
   "biomes": [

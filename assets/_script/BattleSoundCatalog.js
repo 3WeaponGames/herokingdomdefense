@@ -128,12 +128,13 @@ exports.effects = {
     "duration": 0.9129024943310657
   },
   "sniper-tower-fire": {
-    "path": "sfx/sniper-tower-fire",
+    "path": "sfx/skirmisher-passive-release",
+    "format": "ogg",
     "group": "combat",
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.4284353741496599
+    "duration": 2.15
   },
   "cannon-tower-fire": {
     "path": "sfx/cannon-tower-fire",

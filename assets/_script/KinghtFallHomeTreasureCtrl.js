@@ -43,6 +43,7 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.onEnable = function () {
     if (!this._homeTabReady) return;
+    if (this._drawFooter) this.layoutRelicViewport();
     this.initView();
     this.upView();
     this.scheduleHomeGuide();
@@ -97,8 +98,11 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
       this._drawFooterSprite = sprite;
     }
     footer.on(cc.Node.EventType.SIZE_CHANGED, this.layoutDrawFooter, this);
+    footer.on(cc.Node.EventType.POSITION_CHANGED, this.layoutRelicViewport, this);
+    this.node.on(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
     this._drawGuaranteeNode.on(cc.Node.EventType.SIZE_CHANGED, this.fitDrawGuarantee, this);
     this.layoutDrawFooter();
+    if (cc.Widget) this.scheduleOnce(this.layoutRelicViewport, 0);
   };
   _ctor.prototype.layoutDrawFooter = function () {
     var footer = this._drawFooter;
@@ -107,7 +111,7 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
     [this.btnOne, this.btnVideo, this.btnTen].forEach(function (button, index) {
       button.setContentSize(width, 132);
       button.x = (index - 1) * (width + 16);
-      button.y = -37;
+      button.y = 88 - footer.height / 2;
       var padding = button.getComponent("PaddedTextBackground");
       if (padding) {
         padding.minWidth = padding.maxWidth = width;
@@ -120,17 +124,36 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
       row.getChildByName("sprIcon").scaleX = row.getChildByName("sprIcon").scaleY = (index === 1 ? .9 : .65) * scale;
     });
     this.fitDrawGuarantee();
+    this.layoutRelicViewport();
+  };
+  _ctor.prototype.layoutRelicViewport = function () {
+    var footer = this._drawFooter, view = this.ndParent && this.ndParent.parent;
+    var scroll = view && view.parent, collection = scroll && scroll.parent;
+    var widget = cc.Widget && collection && collection.getComponent(cc.Widget);
+    var target = widget && (widget.target || collection.parent);
+    if (!footer || !target || !(target.height > 0)) return;
+    var top = target.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y;
+    widget.isAbsoluteBottom = true;
+    widget.bottom = top + target.height * target.anchorY + 4;
+    widget.updateAlignment();
+    var scrollWidget = scroll.getComponent(cc.Widget), viewWidget = view.getComponent(cc.Widget);
+    if (scrollWidget) scrollWidget.updateAlignment();
+    if (viewWidget) viewWidget.updateAlignment();
   };
   _ctor.prototype.fitDrawGuarantee = function () {
     var node = this._drawGuaranteeNode, footer = this._drawFooter;
     if (!node || !footer || footer.width <= 0) return;
     var scale = Math.min(.5, Math.max(1, footer.width - 36) / Math.max(1, node.width));
     node.scaleX = node.scaleY = scale;
-    node.setPosition(0, footer.height / 2 - 50);
+    node.setPosition(0, footer.height / 2 - 34);
   };
   _ctor.prototype.onDestroy = function () {
     var footer = this._drawFooter, label = this._drawGuaranteeNode;
-    if (footer && (!cc.isValid || cc.isValid(footer))) footer.off(cc.Node.EventType.SIZE_CHANGED, this.layoutDrawFooter, this);
+    if (footer && (!cc.isValid || cc.isValid(footer))) {
+      footer.off(cc.Node.EventType.SIZE_CHANGED, this.layoutDrawFooter, this);
+      footer.off(cc.Node.EventType.POSITION_CHANGED, this.layoutRelicViewport, this);
+    }
+    if (footer && this.node && (!cc.isValid || cc.isValid(this.node))) this.node.off(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
     if (label && (!cc.isValid || cc.isValid(label))) label.off(cc.Node.EventType.SIZE_CHANGED, this.fitDrawGuarantee, this);
     var frame = this._drawFooterFrame, sprite = this._drawFooterSprite;
     if (sprite && (!cc.isValid || cc.isValid(sprite)) && sprite.spriteFrame === frame) sprite.spriteFrame = this._drawFooterSource;

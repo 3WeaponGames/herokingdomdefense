@@ -388,6 +388,20 @@ function removeFollow(controller) {
   keys.forEach(function(key){var node=controller[key]&&controller[key].node;if(node&&(typeof cc==='undefined'||!cc.isValid||cc.isValid(node,true))){node.x-=previous.x;node.y-=previous.y;}});
   states.set(controller,{x:0,y:0});
 }
+function createLobbyIdle(node, feet) {
+  var scaleX = node.scaleX, scaleY = node.scaleY, y = node.y, elapsed = 0;
+  // The original idle track holds a pose. Add a small breathing motion in
+  // lobby views, scaling around the hooves so the mount stays on its stand.
+  return function (dt) {
+    if (!(dt > 0) || !isFinite(dt)) return;
+    elapsed = (elapsed + dt) % 2.6;
+    var breath = (1 - Math.cos(elapsed * Math.PI * 2 / 2.6)) / 2;
+    node.scaleX = scaleX * (1 - .012 * breath);
+    node.scaleY = scaleY * (1 + .024 * breath);
+    node.y = y + (scaleY - node.scaleY) * feet;
+  };
+}
+exports.createLobbyIdle = createLobbyIdle;
 exports.isMaker = metadata; exports.attackName = attackName; exports.skins = skins; exports.update = update; exports.style = style;
 exports.follow = follow; exports.removeFollow = removeFollow;
 exports.projectileOrigin = projectileOrigin;

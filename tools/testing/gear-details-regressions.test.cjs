@@ -61,6 +61,80 @@ test('both upper weapon slots open the picker, lower upgrade icons have no misle
   owner.start();assert.equal(installed,1);for(const slot of [3,4]){owner.ndItemTop[slot-1].handlers.tap();assert.equal(owner.ndItemDown[slot-1].getChildByName('ndItem').handlers.tap,undefined);owner.ndItemDown[slot-1].getChildByName('btnUpgeade').handlers.tap();}assert.equal(opened,2);assert.equal(upgraded,2);assert.equal(owner.ndItemTop[0].handlers.tap,undefined);
 });
 
+test('Gear skill icon follows the equipped style and opens its saved active description',()=>{
+  class Node {
+    constructor(name) { this.name=name; this.children=[]; this.handlers={}; this.components=new Map(); }
+    setParent(parent) { this.parent=parent; parent.children.push(this); }
+    setPosition(x,y) { this.x=x; this.y=y; }
+    setContentSize(width,height) { this.width=width; this.height=height; }
+    addComponent(Type) { const component=new Type(); this.components.set(Type,component); return component; }
+    on(type,handler) { this.handlers[type]=handler; }
+    off(type) { delete this.handlers[type]; }
+    destroy() { this.destroyed=true; this.children.forEach(child=>child.destroy()); }
+    child(name) { return this.children.find(child=>child.name===name&&!child.destroyed); }
+  }
+  Node.EventType={TOUCH_END:'tap',SIZE_CHANGED:'size'};
+  class Graphics { roundRect(){} rect(){} fill(){} clear(){} }
+  class Label {}
+  Label.HorizontalAlign={LEFT:0}; Label.VerticalAlign={TOP:0,CENTER:1}; Label.Overflow={SHRINK:1};
+  class Sprite {}
+  Sprite.SizeMode={CUSTOM:0}; Sprite.Type={SIMPLE:0};
+  class Mask {}
+  Mask.Type={IMAGE_STENCIL:2};
+  const canvas=new Node('Canvas'), info=new Node('ndPersonInfo'), preview=new Node('ndPlayAni'), actor=new Node('ndPlay');
+  canvas.setContentSize(750,1334);info.setParent(canvas);preview.setParent(info);preview.setPosition(-206,-89);actor.setParent(preview);
+  const owner={node:info,ctrPlayAni:{node:actor}}, loads=[];
+  const data={HeroSkills:{bruiser:{cooldown:12,descriptions:{active:'Cleave. Cooldown {cooldown}s.'}}}};
+  let style='bruiser';
+  const cc={Node,Graphics,Label,Sprite,Mask,BlockInputEvents:class{},color:(...args)=>args,isValid:node=>!!node&&!node.destroyed,
+    find:()=>canvas,resources:{load(resource,Type,done){loads.push(resource);done(null,{getOriginalSize:()=>({width:80,height:80})});}}};
+  const deps={KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data})}},
+    KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>({id:style})})})}}};
+  const context={exports:{},cc,require:name=>deps[name]||require('../../assets/_script/'+name)};
+  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroWeaponPicker.js'),'utf8'),context);
+  const picker=context.exports, before=JSON.stringify(data), tap=()=>({stopPropagation(){}});
+  picker.refreshSkill(owner);
+  const button=info.child('Fighting skill');
+  assert.deepEqual([button.x,button.y,button.width],[-302,3,82]);
+  assert.deepEqual(loads,['skills/rounded-icon-mask','skills/icons/bruiser']);
+  assert.equal(button.child('Rounded skill icon').components.get(Mask).type,Mask.Type.IMAGE_STENCIL);
+  picker.refreshSkill(owner);assert.equal(loads.length,2);
+  button.handlers.tap(tap());button.handlers.tap(tap());
+  const popup=canvas.child('Fighting skill details'), panel=popup.child('Skill panel outline');
+  assert.equal(canvas.children.filter(child=>child.name==='Fighting skill details').length,1);
+  assert.equal(panel.child('Skill name').components.get(Label).string,'Blood Cleave');
+  assert.equal(panel.child('Skill description').components.get(Label).string,'Cleave. Cooldown 12s.');
+  canvas.setContentSize(540,960);canvas.handlers.size();
+  assert.equal(popup.width,540);assert.equal(panel.scale,(540-28)/604);
+  panel.child('Close').handlers.tap(tap());
+  assert.equal(canvas.child('Fighting skill details'),undefined);
+  style='guardian';picker.refreshSkill(owner);
+  assert.equal(info.child('Fighting skill'),button);
+  assert.equal(loads.at(-1),'skills/icons/guardian');
+  button.handlers.tap(tap());
+  const guardian=canvas.child('Fighting skill details');
+  assert.equal(guardian.child('Skill panel outline').child('Skill name').components.get(Label).string,'Iron Bulwark');
+  guardian.handlers.tap({target:guardian});
+  assert.equal(canvas.child('Fighting skill details'),undefined);
+  button.handlers.tap(tap());
+  picker.close(owner);assert.equal(canvas.child('Fighting skill details'),undefined);assert.equal(canvas.handlers.size,undefined);
+  assert.equal(JSON.stringify(data),before);
+});
+
+test('lobby idle loops without moving the hooves or drifting from the fitted base pose',()=>{
+  const root={scaleX:.8,scaleY:.8,y:40};
+  const context={exports:{},require:()=>({})};
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroMakerRider.js'),'utf8'),context);
+  const animate=context.exports.createLobbyIdle(root,-25);
+  const hoof=root.y-25*root.scaleY;
+  animate(1.3);
+  assert(root.scaleY>.8);
+  assert(root.scaleX<.8);
+  assert(Math.abs(root.y-25*root.scaleY-hoof)<1e-9);
+  animate(1.3);
+  assert.deepEqual(root,{scaleX:.8,scaleY:.8,y:40});
+});
+
 test('Gear account CP follows only the equipped weapon and retains owned style contributions through repeated refreshes',()=>{
   const f=fixture(),Weapons=f.deps.HeroWeapons,Loadout=f.deps.HeroLoadout;f.levels.fill(1);Weapons.upgrade(f.user.data,3,10,'skirmisher');Weapons.upgrade(f.user.data,4,10,'skirmisher');
   f.user.data.talentInfo=f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='skirmisher').map(row=>({id:row.ID,isLock:true}));

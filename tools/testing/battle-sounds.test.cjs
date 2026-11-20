@@ -247,7 +247,7 @@ test('failed loops retry after a bounded delay and interrupted native loops reco
 test('releases select the unit weapon, and confirmed impacts distinguish arrows, magic, armour and splash', () => {
   const cases = [[90001, 'sword-light-swing'], [90002, 'sword-heavy-swing'], [90003, 'crossbow-fire'], [90004, 'sword-light-swing']];
   for (const [id, clip] of cases) { const f = fixture(); f.start(); f.sounds.attack(f.actor(id, { navigationTeam: 'friendly' }), 'ally'); f.finishAll(); assert(f.played.some(p => p.path === 'sfx/' + clip)); }
-  for (const [type, clip] of [['arrow', 'bow-arrow-release'], ['sniper', 'sniper-tower-fire'], ['cannon', 'cannon-tower-fire']]) {
+  for (const [type, clip] of [['arrow', 'bow-arrow-release'], ['sniper', 'skirmisher-passive-release'], ['cannon', 'cannon-tower-fire']]) {
     const f = fixture(); f.start(); f.sounds.attack(f.actor(0), 'tower', { attackType: type }); f.finishAll(); assert(f.played.some(p => p.path === 'sfx/' + clip));
   }
   const f = fixture(); f.start(); const target = f.actor(90007);
@@ -390,12 +390,19 @@ test('a detached hero during battle teardown stops loops without crashing on sur
 });
 
 test('the active effect library contains no death assets, keeps eight horse surfaces and only the approved lava ambience', () => {
-  const names = Object.keys(catalog.effects); const uuids = new Set(); let bytes = 0;
+  const names = Object.keys(catalog.effects); const cuesByUuid = new Map(); let bytes = 0;
   assert(!names.includes('archer-momentum-release'));assert(!names.includes('archer-momentum-draw-loop'));
   for(const id of ['skirmisher-passive-release','skirmisher-passive-hit','skirmisher-passive-charged','skirmisher-active-release','skirmisher-active-hit','skirmisher-passive-draw-loop'])assert(names.includes(id),id);
   for (const [id, item] of Object.entries(catalog.effects)) {
     const file = path.join(root, 'assets/KinghtFallAudio', item.path + '.' + (item.format || (item.loop ? 'ogg' : 'mp3')));
-    const meta = JSON.parse(fs.readFileSync(file + '.meta')); assert.equal(meta.importer, 'audio-clip'); assert(!uuids.has(meta.uuid)); uuids.add(meta.uuid); bytes += fs.statSync(file).size;
+    const meta = JSON.parse(fs.readFileSync(file + '.meta')); assert.equal(meta.importer, 'audio-clip');
+    const existingCue = cuesByUuid.get(meta.uuid);
+    if (existingCue) {
+      assert.deepEqual([existingCue, id].sort(), ['skirmisher-passive-release', 'sniper-tower-fire']);
+    } else {
+      cuesByUuid.set(meta.uuid, id);
+      bytes += fs.statSync(file).size;
+    }
     assert(meta.duration > 0); assert(Math.abs(meta.duration - item.duration) < .1);
   }
   assert(bytes < 8 * 1024 * 1024); assert.equal(names.filter(n => n.startsWith('hooves-')).length, 8);

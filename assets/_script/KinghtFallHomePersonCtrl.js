@@ -282,8 +282,12 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     this.nodeInfo.forEach(function (row) { o.renderWeaponUpgrade(row); });
     this.refreshCombatPower();
     if (cc.resources) require("CharacterAppearance").reset(this);
+    this.ctrPlayAni._gearPreview = true;
     this.ctrPlayAni.initView();
-    if (cc.resources) require("CharacterAppearance").bind(this, "hero");
+    if (cc.resources) {
+      require("CharacterAppearance").bind(this, "hero");
+      require("HeroWeaponPicker").refreshSkill(this);
+    }
   };
   _ctor.prototype.refreshCombatPower = function () {
     if (!this.labPower) return;

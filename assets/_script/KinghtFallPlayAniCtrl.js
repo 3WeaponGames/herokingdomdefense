@@ -50,7 +50,17 @@ var def_KinghtFallPlayAniCtrl = function (t) {
     }
     require("HeroMakerRider").skins(this);
   };
-  _ctor.prototype.lateUpdate = function () { require("HeroMakerRider").update(this); };
+  _ctor.prototype.lateUpdate = function (dt) {
+    var rider = require("HeroMakerRider");
+    rider.update(this);
+    if (!this._gearPreview) return;
+    if (!this._lobbyIdle) {
+      var mount = this.spAniMa, data = mount && mount.skeletonData;
+      var bounds = data && data.skeletonJson && data.skeletonJson.skeleton;
+      if (bounds) this._lobbyIdle = rider.createLobbyIdle(this.node, mount.node.y + (bounds.y || 0) * mount.node.scaleY);
+    }
+    if (this._lobbyIdle) this._lobbyIdle(dt);
+  };
   cc__decorate([ccp_property({
     type: sp.Skeleton,
     tooltip: "马"

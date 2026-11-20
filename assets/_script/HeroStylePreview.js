@@ -15,7 +15,7 @@ var layers = [
 ];
 var Clock = cc.Class({
   extends: cc.Component,
-  lateUpdate: function () {
+  lateUpdate: function (dt) {
     if (!this.controller) return;
     var controller = this.controller;
     layers.forEach(function (layer) {
@@ -26,6 +26,7 @@ var Clock = cc.Class({
     Maker.update(controller);
     hideShadow(controller.spAniMa);
     if (this.fit && --this.fitFrames <= 0) { this.fit(); this.fit = null; }
+    if (this.idle) this.idle(dt);
   }
 });
 function load(resource, type) {
@@ -56,7 +57,7 @@ function create(parent, user, onError) {
         if (!alive(request)) return;
         // Spine skips pose evaluation at zero opacity. Keep one alpha step
         // during activation so its real attachment bounds become available.
-        clock.controller = null; clock.fit = null; root.opacity = 1; root.destroyAllChildren(); root.removeAllChildren();
+        clock.controller = null; clock.fit = null; clock.idle = null; root.opacity = 1; root.destroyAllChildren(); root.removeAllChildren();
         var controller = {}, cfg = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList();
         var bounds = { left: Infinity, right: -Infinity, bottom: Infinity, top: -Infinity };
         layers.forEach(function (layer, index) {
@@ -105,12 +106,13 @@ function create(parent, user, onError) {
           bounds.top += height * .08; bounds.bottom -= height * .02;
           root.scale = Math.min((parent.width || 300) / (bounds.right - bounds.left), (parent.height || 212) / (bounds.top - bounds.bottom));
           root.setPosition(-(bounds.left + bounds.right) / 2 * root.scale, -(parent.height || 212) / 2 - feet * root.scale - 5);
+          clock.idle = Maker.createLobbyIdle(root, feet);
           root.opacity = 255;
         };
         clock.controller = controller;
       });
     }).catch(function (error) { if (alive(request) && onError) onError(error); });
   }
-  return { node: root, setStyle: setStyle, destroy: function () { disposed = true; ++revision; clock.controller = null; clock.fit = null; root.destroy(); } };
+  return { node: root, setStyle: setStyle, destroy: function () { disposed = true; ++revision; clock.controller = null; clock.fit = null; clock.idle = null; root.destroy(); } };
 }
 exports.create = create;

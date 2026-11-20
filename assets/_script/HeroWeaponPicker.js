@@ -12,6 +12,13 @@ function box(parent, name, x, y, width, height, radius, color) {
   g.fillColor = cc.color(color); g.roundRect(-width / 2, -height / 2, width, height, radius); g.fill(); return value;
 }
 function live(value) { return cc.isValid(value, true); }
+function activeSkill(style) {
+  var skill = require("HeroSkillAuthoring").entry(style, "active");
+  if (!skill) return null;
+  var config = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
+  var tuning = require("HeroSkillSettings").effective(style, config);
+  return { name: skill.name, description: require("HeroSkillDescriptions").render(style, "active", tuning) };
+}
 function art(parent, name, resource, x, y, width, height, sliced, tint, loadFrame) {
   var value = node(parent, name, x, y, width, height), sprite = value.addComponent(cc.Sprite);
   sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
@@ -30,6 +37,19 @@ function art(parent, name, resource, x, y, width, height, sliced, tint, loadFram
   }
   if (loadFrame) loadFrame(loaded); else cc.resources.load(resource, cc.SpriteFrame, loaded);
   return value;
+}
+function skillIcon(parent, style, x, y, size) {
+  var clip = node(parent, "Rounded skill icon", x, y, size, size);
+  var mask = clip.addComponent(cc.Mask);
+  mask.type = cc.Mask.Type.IMAGE_STENCIL;
+  mask.alphaThreshold = .5;
+  cc.resources.load("skills/rounded-icon-mask", cc.SpriteFrame, function (error, frame) {
+    if (error || !frame || !live(clip)) return;
+    mask.spriteFrame = frame;
+    clip.setContentSize(size, size);
+    art(clip, "Skill icon", "skills/icons/" + style, 0, 0, size, size, false);
+  });
+  return clip;
 }
 function scenery(parent) {
   var value = node(parent, "Preview scenery"), g = value.addComponent(cc.Graphics);
@@ -173,18 +193,17 @@ function open(owner) {
       tile.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); if (chosen !== style.id) { chosen = style.id; render(); } });
     });
     var weapon = Weapons.find(chosen), equipped = user.getHeroWeapon().id === chosen;
-    var config = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
-    var tuning = require("HeroSkillSettings").effective(chosen, config), skill = require("HeroSkillAuthoring").entry(chosen, "active");
-    var description = require("HeroSkillDescriptions").render(chosen, "active", tuning);
+    var skill = activeSkill(chosen);
     box(details, "Skill panel outline", 0, -374, 612, 180, 24, "#28436c");
     box(details, "Skill panel rim", 0, -371, 602, 170, 20, "#638abd");
     box(details, "Skill panel", 0, -374, 588, 158, 16, "#294970");
     box(details, "Skill icon outline", -232, -374, 122, 122, 20, "#170f20");
     box(details, "Skill icon frame", -232, -372, 114, 114, 17, "#cb7af4");
-    art(details, "Skill icon", "skills/icons/" + chosen, -232, -372, 104, 104, false);
-    var category = paragraph(details, "Skill category", "ACTIVE SKILL", 59, -300, 434, 20, 16); category.getComponent(cc.Label).isBold = true;
-    var title = label(details, "Skill name", skill.name, 59, -329, 434, 34, 30, "#ffffff", 1); title.getComponent(cc.Label).horizontalAlign = cc.Label.HorizontalAlign.LEFT;
-    paragraph(details, "Skill description", description, 59, -400, 434, 104, 24).getComponent(cc.Label).lineHeight = 26;
+    skillIcon(details, chosen, -232, -372, 104);
+    var category = paragraph(details, "Skill category", "ACTIVE SKILL", 59, -316, 434, 20, 17).getComponent(cc.Label);
+    category.isBold = true; category._uiTypography.isBold = true;
+    var title = label(details, "Skill name", skill.name, 59, -341, 434, 30, 30, "#ffffff", 1); title.getComponent(cc.Label).horizontalAlign = cc.Label.HorizontalAlign.LEFT;
+    paragraph(details, "Skill description", skill.description, 59, -402, 434, 88, 24).getComponent(cc.Label).lineHeight = 26;
     var action = box(details, equipped ? "Equipped action" : "Equip " + weapon.name, 0, -533, 492, 96, 31, "#1b120a");
     box(action, "Action shadow", 0, -1, 480, 84, 26, equipped ? "#62717d" : "#ce8500");
     box(action, "Action highlight", 0, 6, 474, 72, 24, equipped ? "#c6d0d6" : "#fff9bb");
@@ -210,9 +229,76 @@ function open(owner) {
   root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event.target === root) closePicker(); });
 }
 function close(owner) {
+  closeSkill(owner);
   if (!owner._weaponPicker) return;
   if (owner._weaponPicker._closePicker) owner._weaponPicker._closePicker();
   else { owner._weaponPicker.destroy(); owner._weaponPicker = null; }
+}
+function closeSkill(owner) {
+  if (owner._gearSkillPopup) owner._gearSkillPopup.close();
+}
+function openSkill(owner, style) {
+  if (owner._gearSkillPopup || owner._weaponPicker) return;
+  var skill = activeSkill(style);
+  if (!skill) return;
+  var canvas = cc.find("Canvas") || owner.node;
+  var root = node(canvas, "Fighting skill details", 0, 0, canvas.width, canvas.height);
+  root.zIndex = 10000;
+  root.addComponent(cc.BlockInputEvents);
+  var backdrop = root.addComponent(cc.Graphics);
+  var panel = box(root, "Skill panel outline", 0, 0, 604, 400, 28, "#170f20");
+  panel.addComponent(cc.BlockInputEvents);
+  box(panel, "Skill panel rim", 0, 0, 594, 390, 24, "#cb7af4");
+  box(panel, "Skill panel face", 0, 0, 580, 376, 20, "#294970");
+  box(panel, "Skill icon frame", -222, 118, 88, 88, 15, "#170f20");
+  skillIcon(panel, style, -222, 118, 80);
+  function text(name, value, x, y, width, height, size, wrap) {
+    var child = node(panel, name, x, y, width, height), label = child.addComponent(cc.Label);
+    label.useSystemFont = true; label.fontFamily = "Arial";
+    label.fontSize = size; label.lineHeight = size + 5; label.isBold = !wrap;
+    label.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
+    label.verticalAlign = wrap ? cc.Label.VerticalAlign.TOP : cc.Label.VerticalAlign.CENTER;
+    label.enableWrapText = wrap; label.overflow = cc.Label.Overflow.SHRINK;
+    child.color = cc.color("#fff3d8"); child.setContentSize(width, height); label.string = value;
+  }
+  text("Skill name", skill.name, 12, 118, 346, 64, 38, false);
+  text("Skill description", skill.description, 0, -49, 516, 224, 30, true);
+  var dismiss = box(panel, "Close", 245, 123, 62, 62, 16, "#13a6dd");
+  art(dismiss, "Close icon", "icons/Pictograms/Pictoicon_Close_Outlined", 0, 0, 42, 42, false);
+  function resize() {
+    root.setContentSize(canvas.width, canvas.height);
+    backdrop.clear(); backdrop.fillColor = cc.color(0, 0, 0, 185);
+    backdrop.rect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height); backdrop.fill();
+    panel.scale = Math.min(1, (canvas.width - 28) / 604, (canvas.height - 48) / 400);
+  }
+  function dismissPopup() {
+    canvas.off(cc.Node.EventType.SIZE_CHANGED, resize);
+    owner._gearSkillPopup = null;
+    root.active = false; root.destroy();
+  }
+  owner._gearSkillPopup = { close: dismissPopup };
+  canvas.on(cc.Node.EventType.SIZE_CHANGED, resize);
+  dismiss.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); dismissPopup(); });
+  root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event.target === root) dismissPopup(); });
+  resize();
+}
+function refreshSkill(owner) {
+  var actor = owner.ctrPlayAni && owner.ctrPlayAni.node, preview = actor && actor.parent;
+  if (!preview || !preview.parent) return;
+  var style = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon().id;
+  var button = owner._gearSkillButton;
+  if (!live(button)) {
+    button = box(preview.parent, "Fighting skill", preview.x - 96, preview.y + 92, 82, 82, 16, "#170f20");
+    box(button, "Skill button rim", 0, 0, 76, 76, 13, "#cb7af4");
+    button.zIndex = 20;
+    button.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); openSkill(owner, button._skillStyle); });
+    owner._gearSkillButton = button;
+  }
+  if (style === button._skillStyle) return;
+  closeSkill(owner);
+  if (button._skillIcon) button._skillIcon.destroy();
+  button._skillStyle = style;
+  button._skillIcon = skillIcon(button, style, 0, 0, 70);
 }
 function installSwitch(owner) {
   if (owner._weaponSwitch || !owner.ndItemTop[0]) return;
@@ -223,4 +309,4 @@ function installSwitch(owner) {
   art(value,"Switch icon","icons/Pictograms/Pictoicon_Switch",0,0,36,36,false);
   value.on(cc.Node.EventType.TOUCH_END,function(event){event.stopPropagation();open(owner);});owner._weaponSwitch=value;
 }
-exports.open=open; exports.close=close; exports.installSwitch=installSwitch;
+exports.open=open; exports.close=close; exports.installSwitch=installSwitch; exports.refreshSkill=refreshSkill;
