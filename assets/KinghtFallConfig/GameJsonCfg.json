@@ -33969,7 +33969,7 @@
     {
       "Level": 21,
       "Name": "[[loc:data.levelcfg.21.name]]",
-      "Map": "Generated/Maps/map-stage-21-goldenwood-crossroads/thumbnail",
+      "Map": "Generated/Maps/map-original-01-rebuilt/thumbnail",
       "EnemyAni": "wqyl_bb",
       "prefab": "Generated/Stages/A-21",
       "InGameCoefficient": 1,
@@ -34663,7 +34663,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "map-stage-21-goldenwood-crossroads",
+      "EnvironmentMapId": "map-original-01-rebuilt",
       "EnvironmentBiome": "autumn",
       "StageLayoutId": "A-21",
       "StageThumbnail": "Thumbnails/biome-autumn",
@@ -34691,7 +34691,7 @@
     {
       "Level": 22,
       "Name": "[[loc:data.levelcfg.22.name]]",
-      "Map": "Generated/Maps/map-stage-22-shardgate-junction/thumbnail",
+      "Map": "Generated/Maps/Map02/thumbnail",
       "EnemyAni": "wqyl_zbb",
       "prefab": "Generated/Stages/A-22",
       "InGameCoefficient": 154,
@@ -35573,7 +35573,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "map-stage-22-shardgate-junction",
+      "EnvironmentMapId": "Map02",
       "EnvironmentBiome": "ice",
       "EnvironmentBiomeOverride": true,
       "StageLayoutId": "A-22",
@@ -35582,7 +35582,7 @@
     {
       "Level": 23,
       "Name": "[[loc:data.levelcfg.23.name]]",
-      "Map": "Generated/Maps/map-stage-23-ashfall-divide/thumbnail",
+      "Map": "Generated/Maps/Map03/thumbnail",
       "EnemyAni": "wqyl_gb",
       "prefab": "Generated/Stages/A-23",
       "InGameCoefficient": 172,
@@ -36468,7 +36468,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "map-stage-23-ashfall-divide",
+      "EnvironmentMapId": "Map03",
       "EnvironmentBiome": "fire",
       "EnvironmentBiomeOverride": true,
       "StageLayoutId": "A-23",
@@ -36477,7 +36477,7 @@
     {
       "Level": 24,
       "Name": "[[loc:data.levelcfg.24.name]]",
-      "Map": "Generated/Maps/map-stage-24-emberfall-heights/thumbnail",
+      "Map": "Generated/Maps/Map04/thumbnail",
       "EnemyAni": "wqyl_qb",
       "prefab": "Generated/Stages/A-24",
       "InGameCoefficient": 191,
@@ -37442,7 +37442,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "map-stage-24-emberfall-heights",
+      "EnvironmentMapId": "Map04",
       "EnvironmentBiome": "lava",
       "EnvironmentBiomeOverride": true,
       "StageLayoutId": "A-24",

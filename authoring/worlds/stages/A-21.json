@@ -3,12 +3,12 @@
   "id": "A-21",
   "variant": "A",
   "level": 21,
-  "mapId": "map-stage-21-goldenwood-crossroads",
+  "mapId": "map-original-01-rebuilt",
   "name": "Goldenwood Crossroads",
   "config": {
     "Level": 21,
     "Name": "[[loc:data.levelcfg.21.name]]",
-    "Map": "Generated/Maps/map-stage-21-goldenwood-crossroads/thumbnail",
+    "Map": "Generated/Maps/map-original-01-rebuilt/thumbnail",
     "EnemyAni": "wqyl_bb",
     "prefab": "Generated/Stages/A-21",
     "InGameCoefficient": 1,
@@ -702,7 +702,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "map-stage-21-goldenwood-crossroads",
+    "EnvironmentMapId": "map-original-01-rebuilt",
     "EnvironmentBiome": "autumn",
     "StageLayoutId": "A-21",
     "StageThumbnail": "Thumbnails/biome-autumn",
@@ -8292,7 +8292,7 @@
   "nextBuilding": 31,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "156b4c532b5df0be3bacf32e931661d7d65af429234854eb6d43511bbd864c09",
+  "sourceRevision": "1643af72f24399016b659c63c62b3c6ff63910c6a93a4d456f1ad3e797f97c34",
   "templates": {
     "Map01": [
       {

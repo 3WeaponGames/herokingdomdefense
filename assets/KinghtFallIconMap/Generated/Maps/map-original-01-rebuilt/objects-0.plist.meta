@@ -9,9 +9,9 @@
   },
   "type": "Texture Packer",
   "subMetas": {
-    "original-map01-west-cliff-0-0": {
+    "native-original-map01-west-cliff-0-0": {
       "ver": "1.0.6",
-      "uuid": "a42bd153-af9d-45ff-a39d-b1b6f6d90615",
+      "uuid": "e842299e-dd4a-4e49-a3de-3a99833ffcfa",
       "importer": "sprite-frame",
       "rawTextureUuid": "05fab435-c541-46d5-a591-519fbee1967b",
       "trimType": "custom",
@@ -29,12 +29,11 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
-    "original-map01-west-hillpath-2044-0": {
+    "native-original-map01-west-hillpath-2044-0": {
       "ver": "1.0.6",
-      "uuid": "9e25c00a-bce2-416c-a22e-b3f4e4aa010e",
+      "uuid": "5520aedf-529a-43d5-a688-1c94b665ad20",
       "importer": "sprite-frame",
       "rawTextureUuid": "05fab435-c541-46d5-a591-519fbee1967b",
       "trimType": "custom",
@@ -52,7 +51,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     }
   }

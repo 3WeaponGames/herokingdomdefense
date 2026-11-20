@@ -9,9 +9,9 @@
   },
   "type": "Texture Packer",
   "subMetas": {
-    "original-map01-west-hillpath-0-0": {
+    "native-original-map01-west-hillpath-0-0": {
       "ver": "1.0.6",
-      "uuid": "e14c294b-c7de-4c8f-a996-68c48f379375",
+      "uuid": "6905ceb6-fc00-4bc3-aef0-c53cfde0b0cb",
       "importer": "sprite-frame",
       "rawTextureUuid": "641b4b26-8114-4871-a29a-971d75570802",
       "trimType": "custom",
@@ -29,7 +29,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "masked-object-6-0-0": {
@@ -52,7 +51,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     }
   }

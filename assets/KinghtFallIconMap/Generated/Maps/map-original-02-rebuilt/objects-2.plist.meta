@@ -9,9 +9,9 @@
   },
   "type": "Texture Packer",
   "subMetas": {
-    "original-map02-low-east-hill-0-0": {
+    "native-original-map02-low-east-hill-0-0": {
       "ver": "1.0.6",
-      "uuid": "b3a2ec12-ccec-41ae-a61f-96a74a4890ca",
+      "uuid": "d6018317-bcfd-4e3b-a7a9-4447ab999a0d",
       "importer": "sprite-frame",
       "rawTextureUuid": "27a2c651-0406-4b57-aa11-19dea8be22af",
       "trimType": "custom",
@@ -29,7 +29,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     }
   }

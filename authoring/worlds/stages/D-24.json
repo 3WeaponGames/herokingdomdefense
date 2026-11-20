@@ -3,12 +3,12 @@
   "id": "D-24",
   "variant": "D",
   "level": 24,
-  "mapId": "map-stage-24-emberfall-heights",
+  "mapId": "Map04",
   "name": "Emberfall Heights",
   "config": {
     "Level": 24,
     "Name": "[[loc:data.levelcfg.24.name]]",
-    "Map": "Generated/Maps/map-stage-24-emberfall-heights/thumbnail",
+    "Map": "Generated/Maps/Map04/thumbnail",
     "EnemyAni": "wqyl_qb",
     "prefab": "Generated/Stages/D-24",
     "InGameCoefficient": 191,
@@ -973,7 +973,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "map-stage-24-emberfall-heights",
+    "EnvironmentMapId": "Map04",
     "EnvironmentBiome": "lava",
     "EnvironmentBiomeOverride": true,
     "StageLayoutId": "D-24",
@@ -6792,7 +6792,7 @@
   "nextBuilding": 21,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "f21b9a74d0a343ef89ec73e54ebcf7250220c691377dbdd5f448a04b2e94cd34",
+  "sourceRevision": "8e48b03eb2ead7580fadbe31af971177eb4fdc6b9f0d91930a789b22066b50b3",
   "templates": {
     "Map04": [
       {

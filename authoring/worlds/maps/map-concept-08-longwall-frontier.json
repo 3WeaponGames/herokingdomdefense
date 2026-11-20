@@ -95,9 +95,9 @@
           "opacity": 1,
           "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
           "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         },
@@ -173,9 +173,9 @@
           "opacity": 1,
           "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
           "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         },
@@ -247,9 +247,9 @@
           "opacity": 1,
           "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
           "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         },
@@ -313,9 +313,9 @@
           "opacity": 1,
           "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
           "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         },
@@ -399,9 +399,9 @@
           "opacity": 1,
           "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
           "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         },
@@ -477,9 +477,9 @@
           "opacity": 1,
           "assetId": "env-b1407eb2933efda4abc53c1f60022a77",
           "edgeAssetId": "env-37a5970a33da508469c5ce0b6b641d5f",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         }
@@ -808,7 +808,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-186",
@@ -983,7 +984,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-187",
@@ -1290,7 +1292,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-188",
@@ -1308,7 +1311,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-189",
@@ -1326,7 +1330,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-190",
@@ -1501,7 +1506,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-191",
@@ -1672,7 +1678,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-192",
@@ -1847,7 +1854,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-193",
@@ -2018,7 +2026,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-194",
@@ -2193,7 +2202,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-195",
@@ -2364,7 +2374,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-196",
@@ -2461,7 +2472,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-197",
@@ -2558,7 +2570,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -7244,6 +7257,10 @@
     "terrainWorldUnitsPerPixel": 1.9155509783728115,
     "blockerSource": "actual-alpha-with-authored-walkable-openings",
     "blockerAlphaThreshold": 32,
-    "blockerSourceSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f"
+    "blockerSourceSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+    "terrainArtwork": {
+      "sourcePixelsPerWorldUnit": 2,
+      "castShadow": false
+    }
   }
 }

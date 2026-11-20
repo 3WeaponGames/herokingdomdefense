@@ -21,13 +21,14 @@ test('campaign: all configurations expose 24 named stages in the authored biome 
  assert.equal(names.size,24);
 });
 
-test('campaign: the four new maps and all mode layouts are independent editable documents',()=>{
- const maps=new Set(),prefabs=new Set();
+test('campaign: stages 21–24 reuse shared maps and retain independent mode layouts',()=>{
+ const sharedMaps=['map-original-01-rebuilt','Map02','Map03','Map04'],maps=new Set(),prefabs=new Set();
  for(const variant of ['A','B','D']){
   const stages=read('assets/KinghtFallConfig'+(variant==='A'?'':variant)+'/GameJsonCfg.json').LevelCfg;
   for(const cfg of stages.slice(20)){
    const stage=read('authoring/worlds/stages/'+variant+'-'+cfg.Level+'.json'),map=read('authoring/worlds/maps/'+cfg.EnvironmentMapId+'.json');
-   assert.equal(stage.mapId,map.id);assert.equal(map.biome,cfg.EnvironmentBiome);assert.equal(map.legacy,undefined,'A duplicate must not overwrite the original native map on Save');
+   assert.equal(cfg.EnvironmentMapId,sharedMaps[cfg.Level-21]);assert.equal(stage.mapId,map.id);
+   assert.equal(cfg.Map,'Generated/Maps/'+map.id+'/thumbnail');
    assert.deepEqual(stage.config,cfg);assert.equal(stage.level,cfg.Level);assert.equal(stage.id,variant+'-'+cfg.Level);
    for(const wave of cfg.WaveCfg)if(Object.hasOwn(wave,'id'))assert.equal(wave.id,cfg.Level);
    assert.equal(Lobby.resource(cfg),'Thumbnails/biome-'+cfg.EnvironmentBiome);

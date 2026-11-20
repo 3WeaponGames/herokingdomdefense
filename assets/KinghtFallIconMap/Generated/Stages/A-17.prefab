@@ -1123,16 +1123,13 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 13
       },
-      {
+            {
         "__id__": 16
-      },
-      {
-        "__id__": 17
       }
-    ],
+        ],
     "_active": true,
     "_color": {
       "__type__": "cc.Color",
@@ -1303,28 +1300,7 @@
       "__id__": 12
     }
   },
-  {
-    "__type__": "c64a6y+jgxFPZrQZGdrlJhH",
-    "sources": [
-      {
-        "__id__": 15
-      }
-    ],
-    "mapMain": {
-      "__id__": 6
-    },
-    "shadowParent": {
-      "__id__": 3
-    },
-    "mapBackground": {
-      "__id__": 2
-    },
-    "shadowKey": "map-original-01-rebuilt:object-2",
-    "groundOnly": false,
-    "node": {
-      "__id__": 12
-    }
-  },
+  {},
   {
     "__type__": "cc.Node",
     "_name": "original-map01-northwest-rocks-0-0",
@@ -1388,7 +1364,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "0c465224-8e3b-461b-ac71-1cc287255ba6"
+      "__uuid__": "a1d44029-02cc-41b3-a2ee-ccec59d1df53"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -16665,16 +16641,13 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 427
       },
-      {
+            {
         "__id__": 430
-      },
-      {
-        "__id__": 431
       }
-    ],
+        ],
     "_active": true,
     "_color": {
       "__type__": "cc.Color",
@@ -16845,28 +16818,7 @@
       "__id__": 426
     }
   },
-  {
-    "__type__": "c64a6y+jgxFPZrQZGdrlJhH",
-    "sources": [
-      {
-        "__id__": 429
-      }
-    ],
-    "mapMain": {
-      "__id__": 6
-    },
-    "shadowParent": {
-      "__id__": 3
-    },
-    "mapBackground": {
-      "__id__": 2
-    },
-    "shadowKey": "map-original-01-rebuilt:object-3",
-    "groundOnly": false,
-    "node": {
-      "__id__": 426
-    }
-  },
+  {},
   {
     "__type__": "cc.Node",
     "_name": "original-map01-west-cliff-0-0",
@@ -16930,7 +16882,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "a42bd153-af9d-45ff-a39d-b1b6f6d90615"
+      "__uuid__": "e842299e-dd4a-4e49-a3de-3a99833ffcfa"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -21950,16 +21902,13 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 568
       },
-      {
+            {
         "__id__": 571
-      },
-      {
-        "__id__": 572
       }
-    ],
+        ],
     "_active": true,
     "_color": {
       "__type__": "cc.Color",
@@ -22133,28 +22082,7 @@
       "__id__": 567
     }
   },
-  {
-    "__type__": "c64a6y+jgxFPZrQZGdrlJhH",
-    "sources": [
-      {
-        "__id__": 570
-      }
-    ],
-    "mapMain": {
-      "__id__": 6
-    },
-    "shadowParent": {
-      "__id__": 3
-    },
-    "mapBackground": {
-      "__id__": 2
-    },
-    "shadowKey": "map-original-01-rebuilt:object-4",
-    "groundOnly": false,
-    "node": {
-      "__id__": 567
-    }
-  },
+  {},
   {
     "__type__": "cc.Node",
     "_name": "original-map01-east-hillpath-0-0",
@@ -22218,7 +22146,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "d0217001-372d-4d02-adb1-6d8575443ad7"
+      "__uuid__": "66cfde3f-992a-45d4-a5f5-b3139f20fc71"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -22289,7 +22217,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "44e52337-92e9-4436-a5f7-1382065b051a"
+      "__uuid__": "aa4f6026-17c7-4613-aeff-c77cd78876ef"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -22312,16 +22240,13 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 578
       },
-      {
+            {
         "__id__": 581
-      },
-      {
-        "__id__": 582
       }
-    ],
+        ],
     "_active": true,
     "_color": {
       "__type__": "cc.Color",
@@ -22495,28 +22420,7 @@
       "__id__": 577
     }
   },
-  {
-    "__type__": "c64a6y+jgxFPZrQZGdrlJhH",
-    "sources": [
-      {
-        "__id__": 580
-      }
-    ],
-    "mapMain": {
-      "__id__": 6
-    },
-    "shadowParent": {
-      "__id__": 3
-    },
-    "mapBackground": {
-      "__id__": 2
-    },
-    "shadowKey": "map-original-01-rebuilt:object-5",
-    "groundOnly": false,
-    "node": {
-      "__id__": 577
-    }
-  },
+  {},
   {
     "__type__": "cc.Node",
     "_name": "original-map01-west-hillpath-0-0",
@@ -22580,7 +22484,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "e14c294b-c7de-4c8f-a996-68c48f379375"
+      "__uuid__": "6905ceb6-fc00-4bc3-aef0-c53cfde0b0cb"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -22651,7 +22555,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "9e25c00a-bce2-416c-a22e-b3f4e4aa010e"
+      "__uuid__": "5520aedf-529a-43d5-a688-1c94b665ad20"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -22674,16 +22578,13 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 588
       },
-      {
+            {
         "__id__": 591
-      },
-      {
-        "__id__": 592
       }
-    ],
+        ],
     "_active": true,
     "_color": {
       "__type__": "cc.Color",
@@ -22857,28 +22758,7 @@
       "__id__": 587
     }
   },
-  {
-    "__type__": "c64a6y+jgxFPZrQZGdrlJhH",
-    "sources": [
-      {
-        "__id__": 590
-      }
-    ],
-    "mapMain": {
-      "__id__": 6
-    },
-    "shadowParent": {
-      "__id__": 3
-    },
-    "mapBackground": {
-      "__id__": 2
-    },
-    "shadowKey": "map-original-01-rebuilt:object-6",
-    "groundOnly": false,
-    "node": {
-      "__id__": 587
-    }
-  },
+  {},
   {
     "__type__": "cc.Node",
     "_name": "masked-object-6-0-0",

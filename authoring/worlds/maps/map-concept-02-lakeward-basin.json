@@ -95,9 +95,9 @@
           "opacity": 1,
           "assetId": "env-a04fa94a929bbcd478cfdddbbd845a6a",
           "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         },
@@ -189,9 +189,9 @@
           "opacity": 1,
           "assetId": "env-a04fa94a929bbcd478cfdddbbd845a6a",
           "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         },
@@ -231,9 +231,9 @@
           "opacity": 1,
           "assetId": "env-a04fa94a929bbcd478cfdddbbd845a6a",
           "edgeAssetId": "env-94a808e74f3e34741900c482e6090c2a",
-          "edgeStyle": "textured",
+          "edgeStyle": "clean",
           "edgeScale": 1,
-          "edgeSmoothing": 0.6,
+          "edgeSmoothing": 0.84,
           "textureScale": 1,
           "nativeSize": true
         }
@@ -446,7 +446,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-342",
@@ -555,7 +556,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-343",
@@ -664,7 +666,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-344",
@@ -889,7 +892,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-345",
@@ -986,7 +990,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-346",
@@ -1083,7 +1088,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-347",
@@ -1218,7 +1224,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-348",
@@ -1405,7 +1412,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-349",
@@ -1502,7 +1510,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -9221,6 +9230,10 @@
     "terrainWorldUnitsPerPixel": 1.8655967903711133,
     "blockerSource": "actual-alpha-with-authored-walkable-openings",
     "blockerAlphaThreshold": 32,
-    "blockerSourceSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab"
+    "blockerSourceSha256": "690dad1404affc8caf6a6e1bd4a1d8fdbbe94efae21855f94b3bb083e767f9ab",
+    "terrainArtwork": {
+      "sourcePixelsPerWorldUnit": 2,
+      "castShadow": false
+    }
   }
 }

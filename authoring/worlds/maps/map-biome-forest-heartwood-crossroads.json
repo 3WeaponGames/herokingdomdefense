@@ -28,8 +28,8 @@
           "nativeSize": true,
           "size": 110,
           "edgeScale": 1,
-          "edgeStyle": "textured",
-          "edgeSmoothing": 0.6,
+          "edgeStyle": "clean",
+          "edgeSmoothing": 0.84,
           "edgeWidthMode": "fixed",
           "opacity": 1,
           "op": "paint",
@@ -65,8 +65,8 @@
           "nativeSize": true,
           "size": 110,
           "edgeScale": 1,
-          "edgeStyle": "textured",
-          "edgeSmoothing": 0.6,
+          "edgeStyle": "clean",
+          "edgeSmoothing": 0.84,
           "edgeWidthMode": "fixed",
           "opacity": 1,
           "op": "paint",
@@ -94,8 +94,8 @@
           "nativeSize": true,
           "size": 110,
           "edgeScale": 1,
-          "edgeStyle": "textured",
-          "edgeSmoothing": 0.6,
+          "edgeStyle": "clean",
+          "edgeSmoothing": 0.84,
           "edgeWidthMode": "fixed",
           "opacity": 1,
           "op": "paint",
@@ -123,8 +123,8 @@
           "nativeSize": true,
           "size": 110,
           "edgeScale": 1,
-          "edgeStyle": "textured",
-          "edgeSmoothing": 0.6,
+          "edgeStyle": "clean",
+          "edgeSmoothing": 0.84,
           "edgeWidthMode": "fixed",
           "opacity": 1,
           "op": "paint",
@@ -152,8 +152,8 @@
           "nativeSize": true,
           "size": 110,
           "edgeScale": 1,
-          "edgeStyle": "textured",
-          "edgeSmoothing": 0.6,
+          "edgeStyle": "clean",
+          "edgeSmoothing": 0.84,
           "edgeWidthMode": "fixed",
           "opacity": 1,
           "op": "paint",
@@ -204,7 +204,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "nativeSize": true
         },
         {
           "id": "object-166",
@@ -220,7 +221,8 @@
           "ground": {
             "x": 0,
             "y": 1250
-          }
+          },
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -251,7 +253,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-2",
@@ -267,7 +270,8 @@
             "x": 0,
             "y": 640
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-3",
@@ -283,7 +287,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-4",
@@ -299,7 +304,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -6301,6 +6307,10 @@
       "resizeOperations": 0,
       "positionsUnchanged": true,
       "replacedTerrainImages": 1
+    },
+    "terrainArtwork": {
+      "sourcePixelsPerWorldUnit": 2,
+      "castShadow": false
     }
   }
 }

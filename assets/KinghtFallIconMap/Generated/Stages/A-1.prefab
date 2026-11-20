@@ -1018,16 +1018,13 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 13
       },
-      {
+            {
         "__id__": 16
-      },
-      {
-        "__id__": 17
       }
-    ],
+        ],
     "_active": true,
     "_color": {
       "__type__": "cc.Color",
@@ -1198,28 +1195,7 @@
       "__id__": 12
     }
   },
-  {
-    "__type__": "c64a6y+jgxFPZrQZGdrlJhH",
-    "sources": [
-      {
-        "__id__": 15
-      }
-    ],
-    "mapMain": {
-      "__id__": 6
-    },
-    "shadowParent": {
-      "__id__": 3
-    },
-    "mapBackground": {
-      "__id__": 2
-    },
-    "shadowKey": "map-c51330f0e65d:object-2",
-    "groundOnly": false,
-    "node": {
-      "__id__": 12
-    }
-  },
+  {},
   {
     "__type__": "cc.Node",
     "_name": "original-map01-northwest-rocks-0-0",
@@ -1283,7 +1259,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "a56a2c9a-5b02-4d6d-aaf9-3cd7bab02c77"
+      "__uuid__": "d9094e61-75f0-461d-a43d-6b8163a69bfc"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -15508,16 +15484,13 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 399
       },
-      {
+            {
         "__id__": 402
-      },
-      {
-        "__id__": 403
       }
-    ],
+        ],
     "_active": true,
     "_color": {
       "__type__": "cc.Color",
@@ -15688,28 +15661,7 @@
       "__id__": 398
     }
   },
-  {
-    "__type__": "c64a6y+jgxFPZrQZGdrlJhH",
-    "sources": [
-      {
-        "__id__": 401
-      }
-    ],
-    "mapMain": {
-      "__id__": 6
-    },
-    "shadowParent": {
-      "__id__": 3
-    },
-    "mapBackground": {
-      "__id__": 2
-    },
-    "shadowKey": "map-c51330f0e65d:object-3",
-    "groundOnly": false,
-    "node": {
-      "__id__": 398
-    }
-  },
+  {},
   {
     "__type__": "cc.Node",
     "_name": "original-map01-west-cliff-0-0",
@@ -15773,7 +15725,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "ec24053d-5ba6-4dfc-adcd-38f9bd272328"
+      "__uuid__": "f6dcc157-3104-473f-aa9d-000225c864aa"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -16585,16 +16537,13 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 428
       },
-      {
+            {
         "__id__": 431
-      },
-      {
-        "__id__": 432
       }
-    ],
+        ],
     "_active": true,
     "_color": {
       "__type__": "cc.Color",
@@ -16768,28 +16717,7 @@
       "__id__": 427
     }
   },
-  {
-    "__type__": "c64a6y+jgxFPZrQZGdrlJhH",
-    "sources": [
-      {
-        "__id__": 430
-      }
-    ],
-    "mapMain": {
-      "__id__": 6
-    },
-    "shadowParent": {
-      "__id__": 3
-    },
-    "mapBackground": {
-      "__id__": 2
-    },
-    "shadowKey": "map-c51330f0e65d:object-6",
-    "groundOnly": false,
-    "node": {
-      "__id__": 427
-    }
-  },
+  {},
   {
     "__type__": "cc.Node",
     "_name": "masked-object-6-0-0",

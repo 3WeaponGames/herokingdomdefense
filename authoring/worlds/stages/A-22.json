@@ -3,12 +3,12 @@
   "id": "A-22",
   "variant": "A",
   "level": 22,
-  "mapId": "map-stage-22-shardgate-junction",
+  "mapId": "Map02",
   "name": "Shardgate Junction",
   "config": {
     "Level": 22,
     "Name": "[[loc:data.levelcfg.22.name]]",
-    "Map": "Generated/Maps/map-stage-22-shardgate-junction/thumbnail",
+    "Map": "Generated/Maps/Map02/thumbnail",
     "EnemyAni": "wqyl_zbb",
     "prefab": "Generated/Stages/A-22",
     "InGameCoefficient": 154,
@@ -890,7 +890,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "map-stage-22-shardgate-junction",
+    "EnvironmentMapId": "Map02",
     "EnvironmentBiome": "ice",
     "EnvironmentBiomeOverride": true,
     "StageLayoutId": "A-22",
@@ -6879,7 +6879,7 @@
   "nextBuilding": 21,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "4ff1583e969e9d124855c6c0dc49a3504ab52622ad7c0c27a8d5964149ccc7eb",
+  "sourceRevision": "b0cf916341c43fcf7b5f125c1d9e8e5a486ce1b4f393e082a59ac90a2de47b77",
   "templates": {
     "Map02": [
       {

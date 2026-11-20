@@ -3,12 +3,12 @@
   "id": "D-23",
   "variant": "D",
   "level": 23,
-  "mapId": "map-stage-23-ashfall-divide",
+  "mapId": "Map03",
   "name": "Ashfall Divide",
   "config": {
     "Level": 23,
     "Name": "[[loc:data.levelcfg.23.name]]",
-    "Map": "Generated/Maps/map-stage-23-ashfall-divide/thumbnail",
+    "Map": "Generated/Maps/Map03/thumbnail",
     "EnemyAni": "wqyl_gb",
     "prefab": "Generated/Stages/D-23",
     "InGameCoefficient": 172,
@@ -894,7 +894,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "map-stage-23-ashfall-divide",
+    "EnvironmentMapId": "Map03",
     "EnvironmentBiome": "fire",
     "EnvironmentBiomeOverride": true,
     "StageLayoutId": "D-23",
@@ -6799,7 +6799,7 @@
   "nextBuilding": 22,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "0588fd330f2691df92e3c14d4fbce01c75ad532424d0dbcc2d0edc3a41b6482c",
+  "sourceRevision": "aabde99e22187c01431b8c8765a23569cb5a8aaa2b23fef21ed7bf3b191111cc",
   "templates": {
     "Map03": [
       {

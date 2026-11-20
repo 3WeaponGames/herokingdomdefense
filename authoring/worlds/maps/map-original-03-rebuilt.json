@@ -4333,7 +4333,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "nativeSize": true
         }
       ],
       "blockers": []
@@ -4362,7 +4363,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "nativeSize": true
         }
       ],
       "blockers": []
@@ -4391,7 +4393,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "nativeSize": true
         }
       ],
       "blockers": []
@@ -4420,7 +4423,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "nativeSize": true
         }
       ],
       "blockers": []
@@ -4449,7 +4453,8 @@
           "ground": {
             "x": 0,
             "y": 0
-          }
+          },
+          "nativeSize": true
         }
       ],
       "blockers": []
@@ -7666,7 +7671,11 @@
   "authoringSource": {
     "kind": "original-terrain-reconstruction",
     "originalMap": "Map03",
-    "originalRevision": "cd51c5b74438eb8597e6e6463282c4a4dd4068d296497674cdf95b40edad2e46"
+    "originalRevision": "cd51c5b74438eb8597e6e6463282c4a4dd4068d296497674cdf95b40edad2e46",
+    "terrainArtwork": {
+      "sourcePixelsPerWorldUnit": 2,
+      "castShadow": false
+    }
   },
   "nextGround": 2
 }

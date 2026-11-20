@@ -29,7 +29,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-274d100f185f48f4cb5993200e9a7dfc-0-0": {
@@ -52,7 +51,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-551ed639f73b99043bd413629d8c115c-0-0": {
@@ -75,12 +73,11 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
-    "original-map02-east-upper-rocks-0-0": {
+    "native-original-map02-east-upper-rocks-0-0": {
       "ver": "1.0.6",
-      "uuid": "a540ba42-8b94-4e83-a77f-6fe590bb83c3",
+      "uuid": "e601d763-6d7a-4e4c-ae15-4dab2a43f208",
       "importer": "sprite-frame",
       "rawTextureUuid": "ad61eeda-19f4-4cae-ae69-30e60b5b2f3d",
       "trimType": "custom",
@@ -98,12 +95,11 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
-    "original-map02-east-upper-rocks-0-2044": {
+    "native-original-map02-east-upper-rocks-0-2044": {
       "ver": "1.0.6",
-      "uuid": "d10bb087-af09-46ff-a77e-dfb1b96970c7",
+      "uuid": "ba04dd4b-cbd8-45a2-a4ba-4569b54e0d41",
       "importer": "sprite-frame",
       "rawTextureUuid": "ad61eeda-19f4-4cae-ae69-30e60b5b2f3d",
       "trimType": "custom",
@@ -121,12 +117,11 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
-    "original-map02-low-east-hill-2044-0": {
+    "native-original-map02-low-east-hill-2044-0": {
       "ver": "1.0.6",
-      "uuid": "1000be68-09b4-4315-ad3f-8af345ecbf2c",
+      "uuid": "43e9f3a0-aa42-4297-a695-02b53f9c9932",
       "importer": "sprite-frame",
       "rawTextureUuid": "ad61eeda-19f4-4cae-ae69-30e60b5b2f3d",
       "trimType": "custom",
@@ -144,12 +139,11 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
-    "original-map02-southwest-rocks-0-0": {
+    "native-original-map02-southwest-rocks-0-0": {
       "ver": "1.0.6",
-      "uuid": "475c0d6a-dd7d-4074-a509-24665ba20ba6",
+      "uuid": "f39e3c90-4bb1-44f4-afef-631496c7b86b",
       "importer": "sprite-frame",
       "rawTextureUuid": "ad61eeda-19f4-4cae-ae69-30e60b5b2f3d",
       "trimType": "custom",
@@ -167,7 +161,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-087def4e9e2ecc74d86011413b2b4d30-0-0": {
@@ -190,7 +183,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-5d82e41b415f78b4bb2048fce135792e-0-0": {
@@ -213,7 +205,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-a737ec99f4336de40a2357fe2bb5521c-0-0": {
@@ -236,7 +227,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     },
     "native-env-e8da70ae473404d4e9244418364e5e48-0-0": {
@@ -259,7 +249,6 @@
       "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
-      "spriteType": "normal",
       "subMetas": {}
     }
   }

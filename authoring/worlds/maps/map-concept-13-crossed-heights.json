@@ -316,69 +316,9 @@
             "y": 892
           },
           "opacity": 1,
-          "mask": [
-            {
-              "op": "erase",
-              "size": 112.76129032258065,
-              "shape": "round",
-              "hardness": 1,
-              "opacity": 1,
-              "points": [
-                {
-                  "x": 5.000771999999946,
-                  "y": -751.3687669989246
-                },
-                {
-                  "x": 5.000771999999946,
-                  "y": -543.7926552225807
-                },
-                {
-                  "x": 5.000771999999946,
-                  "y": -317.13023855913985
-                },
-                {
-                  "x": 5.000771999999946,
-                  "y": -95.2369698344086
-                },
-                {
-                  "x": 5.000771999999946,
-                  "y": -13.886249462365766
-                }
-              ],
-              "source": {
-                "kind": "native-road-clearance",
-                "roadId": "central-bridge-deck-gap-1",
-                "worldPadding": 4
-              }
-            },
-            {
-              "op": "erase",
-              "size": 112.76129032258065,
-              "shape": "round",
-              "hardness": 1,
-              "opacity": 1,
-              "points": [
-                {
-                  "x": 5.000771999999946,
-                  "y": 905.6236043010751
-                },
-                {
-                  "x": 5.000771999999946,
-                  "y": 1085.7989699774193
-                },
-                {
-                  "x": 10.999609999999963,
-                  "y": 1479.4786958182794
-                }
-              ],
-              "source": {
-                "kind": "native-road-clearance",
-                "roadId": "central-bridge-deck-gap-2",
-                "worldPadding": 4
-              }
-            }
-          ],
-          "globalShadow": false
+          "mask": [],
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-179",
@@ -555,7 +495,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-180",
@@ -740,7 +681,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-181",
@@ -805,7 +747,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-182",
@@ -823,7 +766,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-183",
@@ -908,7 +852,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-184",
@@ -993,7 +938,8 @@
               }
             }
           ],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-185",
@@ -1011,7 +957,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-186",
@@ -1029,7 +976,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -4942,6 +4890,10 @@
     "terrainWorldUnitsPerPixel": 1.9155509783728115,
     "blockerSource": "actual-alpha-with-authored-walkable-openings",
     "blockerAlphaThreshold": 32,
-    "blockerSourceSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6"
+    "blockerSourceSha256": "1194266ff4162a09f62efd3cf951e83d7589ee983bb677d7c369ce4487c188d6",
+    "terrainArtwork": {
+      "sourcePixelsPerWorldUnit": 2,
+      "castShadow": false
+    }
   }
 }
