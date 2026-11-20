@@ -17551,6 +17551,1134 @@
           "styleBoardSha256": "6d023e3ae2b8eb4b6f00d4e1c89c08a7060aa9e571b5a9dfbde76944dcd741b9"
         }
       }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-redesign-aldercliff",
+      "name": "Aldercliff upper ledges",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/aldercliff.png",
+      "width": 695,
+      "height": 1018,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "d1506faf22af9cb682e8cbde4f3148b5a807fcab2b34979bed48335203998592",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "aldercliff",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-redesign-west-watch",
+      "name": "Broken western bluff",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/west-watch.png",
+      "width": 349,
+      "height": 682,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "db93f0faf0fa4881f1638d25eccda488b08f518b8129cdfeea3f9bd7f5cccab5",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "west-watch",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-redesign-copper-river",
+      "name": "Copperleaf River and gravel shoals",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/copper-river.png",
+      "width": 540,
+      "height": 1190,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "c885f84e858a17d898aa19404af12288b61ee77005af1dfa9a73813ad7f64d49",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "copper-river",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-redesign-east-overlook",
+      "name": "Copperwood river overlook",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/east-overlook.png",
+      "width": 398,
+      "height": 510,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "16d7e37ef8afa48fa7bff38c60e2bb8367ffa4f2e90867a650d366b9a403ac53",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "east-overlook",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-redesign-reed-lake",
+      "name": "Copperleaf reed lake",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/reed-lake.png",
+      "width": 628,
+      "height": 674,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "dbc3d08503590148f26f711c73f7ba976a902be17d4126dc08d49281478788a2",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "reed-lake",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-redesign-exchange-knoll",
+      "name": "Old exchange knoll",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/exchange-knoll.png",
+      "width": 302,
+      "height": 235,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "b0391d7456623d7e6ddb2a54cbe5fa85d14228ae2130ae3a1f66292e86107ea9",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "exchange-knoll",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-redesign-east-terraces",
+      "name": "Lower copperwood terraces",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/east-terraces.png",
+      "width": 583,
+      "height": 1290,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "f6253ab0aa20144e7a5e2573d8cc091e0ace2c982f9992b4f897bb3dea94a692",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "east-terraces",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-autumn-copperleaf-exchange-redesign-south-ledge",
+      "name": "Reed lake outlet ledge",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/south-ledge.png",
+      "width": 771,
+      "height": 254,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "4e4974a32fb806f0a2704c00dd31f34284e3e523cab6b6e6a019c907c7265057",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-autumn-copperleaf-exchange",
+        "piece": "south-ledge",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-root-crown",
+      "name": "Root-crown limestone ridge",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/root-crown.png",
+      "width": 812,
+      "height": 847,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "204fe15ed05a37cb31bf773a4b9b598ceeff01f8f83571b1ac34ad9cf2c5bcef",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "root-crown",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-west-hook",
+      "name": "Bracken bluff",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/west-hook.png",
+      "width": 546,
+      "height": 687,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "75dc9c8fe3cb24ec13659b151713c65f8bb6aff7f6efa319b59818bee7d68134",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "west-hook",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-oldroot-knoll",
+      "name": "Oldroot knoll and fern ledges",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/oldroot-knoll.png",
+      "width": 445,
+      "height": 314,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "aa7cd7b0a6cd62f179f73f64688107f3fee9a6173dbddd9312b1f52c6e5a028b",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "oldroot-knoll",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-eastern-roots",
+      "name": "Eastern knotted shelves",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/eastern-roots.png",
+      "width": 413,
+      "height": 965,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "9e03215455361246271336bff75c1a6cf58435be3ed2c3123119b538693ca26f",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "eastern-roots",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-rootbreak-creek",
+      "name": "Rootbreak Creek and gravel bars",
+      "category": "water",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/rootbreak-creek.png",
+      "width": 413,
+      "height": 1287,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "c22d9ba36f2c784a8f91c99506ac42c65e11dd77ceb608289d8c345afb9e75ba",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "rootbreak-creek",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-fern-steps",
+      "name": "Fern steps above the creek",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/fern-steps.png",
+      "width": 297,
+      "height": 376,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "621246029df41283b2d505aec68948bd26a6f74e08ee336849a5f9da8e260325",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "fern-steps",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-willow-fen",
+      "name": "Willow fen",
+      "category": "water",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/willow-fen.png",
+      "width": 532,
+      "height": 884,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "af51ac21525e1ca96397d8c7d2a10c80ec67bd24006d0300a83e79596464f6e0",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "willow-fen",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-fen-overlook",
+      "name": "Mossy fen overlook",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/fen-overlook.png",
+      "width": 570,
+      "height": 920,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "87315392d8dac09a9116b104ed3cec73a0d4bf8145bb296d9ae1c5b5c72678a9",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "fen-overlook",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-low-root-ledge",
+      "name": "Lower fern ledge",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/low-root-ledge.png",
+      "width": 558,
+      "height": 492,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "89dbd2d8c9a0bd29c01a41a108a287037b0f3d3582b71e3e5b9526ef0312cf48",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-deep-forest-rootbreak-hollow",
+        "piece": "low-root-ledge",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-redesign-ashfan-escarpment",
+      "name": "Ashfan escarpment",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/ashfan-escarpment.png",
+      "width": 789,
+      "height": 1031,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "f82ea052198c72a6041499d178c466d72419683c28c9efec42cee333084206c4",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "ashfan-escarpment",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-redesign-ash-west-wall",
+      "name": "Northwest scoria wall",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/ash-west-wall.png",
+      "width": 313,
+      "height": 1021,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "e6e9e5f320584b1bffa4fb6b43b264a15e88b1f1c052d606dcf7585119983e95",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "ash-west-wall",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-redesign-black-needles",
+      "name": "Eastern black needles",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/black-needles.png",
+      "width": 254,
+      "height": 720,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "395ae76a860170d3d6fe5cd6c71af8ebe3f258f849ddfbb55ca6818715e57246",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "black-needles",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-redesign-west-fan",
+      "name": "Split lower ash shelf",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/west-fan.png",
+      "width": 546,
+      "height": 916,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "80964864913ed87fdd3db0d3ebf601826055b496ae66a92f61855da4d60148a1",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "west-fan",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-redesign-cinder-fissure",
+      "name": "Cinder ravine and ember seams",
+      "category": "lava",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/cinder-fissure.png",
+      "width": 946,
+      "height": 776,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "5bb9523a786981235f02cdca6cb6109dcee2e473085b5b39d6080b49a510c8dc",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "cinder-fissure",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-redesign-cinder-rim",
+      "name": "Fan of cinder pillars",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/cinder-rim.png",
+      "width": 412,
+      "height": 436,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "0b4adb9b456e05880de62d3c4372e743fe1702065fad6e1fe5d9fdb8deef08a6",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "cinder-rim",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-fire-ashfan-divide-redesign-ash-toe",
+      "name": "Low cinder outcrop",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/ash-toe.png",
+      "width": 227,
+      "height": 225,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "ecfacc606b8fab0b5603786b3e6b41100477954b6263498b288b0d8a555e6481",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-fire-ashfan-divide",
+        "piece": "ash-toe",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-redesign-shard-wall",
+      "name": "Glacier wall and split upper shelf",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/shard-wall.png",
+      "width": 703,
+      "height": 1062,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "c928524c4952ea3d3ca659f361bf463ea66f6b4a27cf2bab9b404fe9e77c004e",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "shard-wall",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-redesign-shard-promontory",
+      "name": "Blue ice promontory",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/shard-promontory.png",
+      "width": 533,
+      "height": 347,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "411d6060c6238db724ef19dd74282a157bb3f939e23e4eb3206afe64e78035d7",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "shard-promontory",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-redesign-glacial-river",
+      "name": "Glacial meltwater reach",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/glacial-river.png",
+      "width": 547,
+      "height": 1141,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "2a2d3211e530f44ee6df32405804876825fa98406d6155a4a8bebec65e3f2c28",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "glacial-river",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-redesign-split-serac",
+      "name": "Split serac at the pass",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/split-serac.png",
+      "width": 215,
+      "height": 334,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "9f364155dea91be39cd0793bbb996df5d86ccb4f95286f2c8b4b93e18f831a93",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "split-serac",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-redesign-meltwater-toe",
+      "name": "Broken meltwater ice toe",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/meltwater-toe.png",
+      "width": 439,
+      "height": 428,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "8b42268478dcba879f08316645962c84f042b08e5c4d32fe3133597a3a4bb275",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "meltwater-toe",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-redesign-lower-westfall",
+      "name": "Westfall crevasse wall",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/lower-westfall.png",
+      "width": 360,
+      "height": 1284,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "eb6936adc56739366b1df122b7d534ee9c5f69a8a6d815917ab9236b9d3d105f",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "lower-westfall",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-redesign-south-tarn",
+      "name": "South glass tarn",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/south-tarn.png",
+      "width": 756,
+      "height": 748,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "8e79d7ce58f4c84e7289bc510687339fdf085ae6731f6e8d0b9629f6a32a361f",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "south-tarn",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-ice-shardgate-junction-redesign-tarn-wall",
+      "name": "Turquoise moraine above the tarn",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/tarn-wall.png",
+      "width": 320,
+      "height": 905,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "e14467316d67c3d2a2d8ead2a02375747fa9bdded7cfe3ffe672f5b8f2f159d9",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-ice-shardgate-junction",
+        "piece": "tarn-wall",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-redesign-west-stair",
+      "name": "Basalt stair and high shelf",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/west-stair.png",
+      "width": 804,
+      "height": 1126,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "9e951b5a6a92867a8b1cc2757981f93075e0b10aca191d541aa537e1e0404ea5",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "west-stair",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-redesign-east-stair",
+      "name": "Split upper basalt rampart",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/east-stair.png",
+      "width": 646,
+      "height": 1202,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "201231641786405da201b69a5b709682c7394791f4c88c9d2a6732e60d1dfffb",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "east-stair",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-redesign-west-low-step",
+      "name": "Low stair above the west crossing",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/west-low-step.png",
+      "width": 526,
+      "height": 306,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "aff622d5d1a86bf38336bbcaa649ccdf84cddd06b08bb072567fa7066b3dcdd8",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "west-low-step",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-redesign-western-molten-channel",
+      "name": "Western molten channel",
+      "category": "lava",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/western-molten-channel.png",
+      "width": 729,
+      "height": 1319,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "1c20841dddcf037565e5b6cad1e207750fb8ef386aed25e7de0628e2e99c53d0",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "western-molten-channel",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-redesign-lower-ember-step",
+      "name": "Lower ember stair",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/lower-ember-step.png",
+      "width": 313,
+      "height": 671,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "cb47ac4d8461431dab7ce88f86560352d283ddac2ad2f5b13e0462e747a8ab63",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "lower-ember-step",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-redesign-ember-basin",
+      "name": "Ember Basin and branch",
+      "category": "lava",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/ember-basin.png",
+      "width": 513,
+      "height": 1165,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "faee47560c524674cfa9689ff0273842f4ab60584ae663538139339ab321dd5c",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "ember-basin",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-lava-ember-stair-redesign-basin-ledge",
+      "name": "Obsidian ledge below Ember Basin",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/basin-ledge.png",
+      "width": 242,
+      "height": 410,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "aea2cf4ed967fedbb5fab55a8b774a88d772016b38ccebc7f7197fcd321f0995",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "piece": "basin-ledge",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-redesign-north-spur",
+      "name": "Pine crown snow cliffs",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/north-spur.png",
+      "width": 781,
+      "height": 718,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "716e62c23577dcbf3eb640941950add7997be5f90d5b92eeb4a84e8f370ca935",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "north-spur",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-redesign-frozen-oxbow",
+      "name": "Blue oxbow beneath the pine crown",
+      "category": "water",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/frozen-oxbow.png",
+      "width": 615,
+      "height": 299,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "45f19fb480be6dbc95359abd2e81e8e99dac5a5b324960ae539f9ea372530c19",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "frozen-oxbow",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-redesign-east-spur",
+      "name": "Needle spur and snow ledges",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/east-spur.png",
+      "width": 712,
+      "height": 884,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "b5aae15fcfcf63c1160be0c1a7f1df6b32ff1877a4d05b0fb35546cd6af61fc3",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "east-spur",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-redesign-second-spur",
+      "name": "Pine shoulder below the oxbow",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/second-spur.png",
+      "width": 405,
+      "height": 227,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "a63d40c27fbbd1f1b8ec45ea2a396cb0a9f8f082b961aeda6634116d78705b19",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "second-spur",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-redesign-west-spur",
+      "name": "Western switchback snowbank",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/west-spur.png",
+      "width": 600,
+      "height": 626,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "cc835102aa1d8c977495f665ad0f768926cce184e63bb31dc22985371c903ce6",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "west-spur",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-redesign-east-meltwater",
+      "name": "East fork of the meltwater river",
+      "category": "water",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/east-meltwater.png",
+      "width": 705,
+      "height": 1330,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "sha256": "5f24318eb51440d1cb971e7ee957a6b3397bd54a7dd94bd3d09b95f45e63a584",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "east-meltwater",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-redesign-southwest-bank",
+      "name": "Southwest spruce bank",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/southwest-bank.png",
+      "width": 428,
+      "height": 1012,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "cfb77122b6ac9ae3c05edaf53e3adf7cce92cf2ef4a2ce38178a26cd83cfabe0",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "southwest-bank",
+        "pixelsPerWorldUnit": 1
+      }
+    },
+    {
+      "id": "terrain-expansion-snow-staggered-spurs-redesign-river-lookout",
+      "name": "Low river lookout",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/river-lookout.png",
+      "width": 305,
+      "height": 346,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "a9620deb1f62bd3e460bd065a4b2bd4292031577cdf61074e5f9891ddb5dd649",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-snow-staggered-spurs",
+        "piece": "river-lookout",
+        "pixelsPerWorldUnit": 1
+      }
     }
   ],
   "biomes": [
