@@ -159,6 +159,43 @@ async function soloSelection(){
  return {checks};
 }
 
-async function verify(){return {interactions:await interactions(),placeDelete:await placeDelete(),globalBlockers:await globalBlockers(),scaledGround:await scaledGround(),blockerBrush:await blockerBrush(),roadErasePreview:await roadErasePreview(),soloSelection:await soloSelection()};}
-module.exports={verify,interactions,placeDelete,globalBlockers,scaledGround,blockerBrush,roadErasePreview,soloSelection};
+async function verticalFlip(){
+ const checks=[],assert=(ok,name)=>{if(!ok)throw Error(name);checks.push(name);};
+ const f=await fixture((map,library)=>{
+  library[0].anchor={x:0,y:0};
+  map.layers[1].transform={x:15,y:-8,scale:1.2,angle:20};
+  map.layers[1].objects[0].angle=25;
+  map.layers[2].objects=[];
+ });
+ try{
+  const layer=f.map().layers[1],object=layer.objects[0],current=()=>f.map().layers[1].objects[0];
+  const upright=M.toWorld(layer.transform,M.toWorld(object,{x:20,y:26}));
+  const reflected=M.toWorld(layer.transform,M.toWorld(object,{x:20,y:-26}));
+  for(let i=0;i<100&&!f.state.images.red?.image.complete;i++)await pause(10);
+  await f.settle();
+  f.down(upright.x,upright.y);await f.up();
+  const flipX=Array.from(f.root.querySelectorAll('.world-inspector label')).find(label=>label.textContent==='Flip X');
+  const flipY=flipX?.nextElementSibling?.querySelector('input');
+  assert(flipY&&flipY.type==='checkbox'&&flipY.parentElement.textContent==='Flip Y'&&!flipY.checked&&f.changes()===0,'Flip Y appears beside Flip X and defaults off in older map records');
+  flipY.click();await f.settle();
+  assert(current().flipY===true&&current().flipX===false&&f.state.snap.dirty&&f.changes()===1,'Flip Y changes only the vertical orientation in the map draft');
+  assert(f.pixel(reflected.x,reflected.y)[0]===255&&f.pixel(upright.x,upright.y)[0]!==255,'Canvas artwork reflects around the offset anchor before rotation');
+  f.down(upright.x,upright.y);await f.up();
+  assert(!f.state.selection.length,'the pre-flip footprint no longer intercepts clicks');
+  f.down(reflected.x,reflected.y);await f.up();
+  assert(f.state.selection[0]===object.id,'the reflected footprint is selectable');
+  await f.tool('Soft Eraser');f.state.size=14;f.state.hardness=1;f.state.opacity=1;
+  f.down(reflected.x,reflected.y);await f.up();
+  const point=current().mask[0].points[0];
+  assert(Math.hypot(point.x-20,point.y-26)<1e-6,'mask strokes on reflected artwork are stored in the source image coordinates');
+  await f.click('Undo');await f.click('Undo');
+  assert(current().flipY===undefined&&!f.state.snap.dirty,'Undo restores the original orientation and clean draft');
+  await f.click('Redo');
+  assert(current().flipY===true&&f.pixel(reflected.x,reflected.y)[0]===255,'Redo restores the reflection');
+ }finally{f.close();}
+ return {checks};
+}
+
+async function verify(){return {verticalFlip:await verticalFlip(),interactions:await interactions(),placeDelete:await placeDelete(),globalBlockers:await globalBlockers(),scaledGround:await scaledGround(),blockerBrush:await blockerBrush(),roadErasePreview:await roadErasePreview(),soloSelection:await soloSelection()};}
+module.exports={verify,verticalFlip,interactions,placeDelete,globalBlockers,scaledGround,blockerBrush,roadErasePreview,soloSelection};
 

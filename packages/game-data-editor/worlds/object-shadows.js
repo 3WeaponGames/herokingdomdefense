@@ -3,7 +3,7 @@
 function point(m,p){return{x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};}
 function multiply(a,b){return[a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];}
 function bounds(layer,o,images){
- var m=multiply(Paint.matrix(layer.transform),Paint.matrix(o)),points=[],parts=[],origin=point(m,{x:0,y:0});if(o.flipX){m[0]*=-1;m[1]*=-1;}
+ var m=multiply(Paint.matrix(layer.transform),Paint.objectMatrix(o)),points=[],parts=[],origin=point(m,{x:0,y:0});
  function add(matrix,width,height,anchor,frame,opacity){anchor=anchor||{x:.5,y:0};parts.push({matrix:matrix,width:width,height:height,anchor:anchor,frame:frame,opacity:opacity});for(var x of [-anchor.x*width,(1-anchor.x)*width])for(var y of [-anchor.y*height,(1-anchor.y)*height])points.push(point(matrix,{x:x,y:y}));}
  if(o.legacy){var offset=o.legacy.origin||{x:0,y:0};for(var s of o.legacy.sprites||[]){if(s.active===false)continue;var source=images[s.frame];if(!ready(source))return null;add(multiply(m,multiply([1,0,0,1,-offset.x,-offset.y],s.matrix)),s.width,s.height,s.anchor,s.frame,s.color&&s.color.a);}}
  else{var source=Paint.objectImage(o,images);if(!ready(source))return null;add(m,source.width,source.height,source.anchor,o.assetId,o.opacity);}

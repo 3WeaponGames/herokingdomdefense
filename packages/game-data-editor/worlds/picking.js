@@ -15,7 +15,7 @@ function inverse(matrix,p){
  return {x:(matrix[3]*x-matrix[2]*y)/det,y:(-matrix[1]*x+matrix[0]*y)/det};
 }
 function local(object,layer,p){
- const value=M.toLocal(object,M.toLocal(layer.transform,p));if(object.flipX)value.x=-value.x;return value;
+ return M.flipPoint(object,M.toLocal(object,M.toLocal(layer.transform,p)));
 }
 function clip(a,b,rect){
  let first=0,last=1;const dx=b.x-a.x,dy=b.y-a.y;

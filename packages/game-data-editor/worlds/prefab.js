@@ -6,16 +6,56 @@ function append(data,name,parent,x,y,w,h){const id=data.length;data.push(node(na
 function component(data,id,value){const index=data.length;data.push(Object.assign({},value,{node:ref(id)}));data[id]._components.push(ref(index));return index;}
 function skeleton(name,map){const data=[{__type__:'cc.Prefab',_name:name,data:ref(1)}];append(data,name,null,0,0,map.playable.width,map.playable.height);for(const name of ['ndBg','ndDown','ndPath','ndTrack','ndMain','ndUI'])append(data,name,1,0,0,name==='ndBg'?map.size.width:0,name==='ndBg'?map.size.height:0);return data;}
 function collect(source,roots){const ids=new Set();function visit(id){if(ids.has(id)||!source[id])return;ids.add(id);for(const r of source[id]._components||[])visit(r.__id__);if(source[id]._prefab)visit(source[id]._prefab.__id__);for(const r of source[id]._children||[])visit(r.__id__);}roots.forEach(visit);return Array.from(ids).sort((a,b)=>a-b);}
-function copyFamily(target,source,roots,rootParents,delta,scale,angle,flipX){const ids=collect(source,roots),mapping={};ids.forEach((old,i)=>mapping[old]=target.length+i);function remap(value){if(!value||typeof value!=='object')return value;if(Object.prototype.hasOwnProperty.call(value,'__id__'))return mapping[value.__id__]===undefined?null:ref(mapping[value.__id__]);if(Array.isArray(value))return value.map(remap);const result={};Object.keys(value).forEach(k=>result[k]=remap(value[k]));return result;}for(const old of ids){const value=remap(source[old]);if(value&&value.__type__==='cc.Node')value._prefab=null;target.push(value);}const info=require('../lib/map-assets').model(source);for(const old of roots){const id=mapping[old],n=target[id],parent=rootParents[old];n._parent=ref(parent);target[parent]._children.push(ref(id));n._prefab=null;const p=info.byId[old].position,origin=delta.origin||{x:0,y:0},t={x:delta.x,y:delta.y,scale:scale||1,angle:angle||0},pos=Model.toWorld(t,{x:(flipX?-1:1)*(p.x-origin.x),y:p.y-origin.y});const oldMatrix=info.byId[old].world,oldScale=Math.hypot(oldMatrix[0],oldMatrix[1]),oldAngle=Math.atan2(oldMatrix[1],oldMatrix[0])*180/Math.PI;n._trs=node('',null,pos.x,pos.y)._trs;n._trs.array[7]=oldScale*(scale||1);n._trs.array[8]=(oldMatrix[0]*oldMatrix[3]-oldMatrix[1]*oldMatrix[2])/oldScale*(scale||1)*(flipX?-1:1);const degrees=(flipX?180-oldAngle:oldAngle)+(angle||0),half=degrees*Math.PI/360;n._trs.array[5]=Math.sin(half);n._trs.array[6]=Math.cos(half);n._eulerAngles={__type__:'cc.Vec3',x:0,y:0,z:degrees};}return mapping;}
+function copyFamily(target,source,roots,rootParents,delta,scale,angle,flipX,flipY){
+ const ids=collect(source,roots), mapping={};
+ ids.forEach((old,i)=>mapping[old]=target.length+i);
+ function remap(value){
+  if(!value||typeof value!=='object')return value;
+  if(Object.prototype.hasOwnProperty.call(value,'__id__'))return mapping[value.__id__]===undefined?null:ref(mapping[value.__id__]);
+  if(Array.isArray(value))return value.map(remap);
+  const result={};
+  Object.keys(value).forEach(k=>result[k]=remap(value[k]));
+  return result;
+ }
+ for(const old of ids){
+  const value=remap(source[old]);
+  if(value&&value.__type__==='cc.Node')value._prefab=null;
+  target.push(value);
+ }
+ const info=require('../lib/map-assets').model(source);
+ const origin=delta.origin||{x:0,y:0},transform={x:delta.x,y:delta.y,scale:scale||1,angle:angle||0};
+ const scaleX=flipX?-1:1,scaleY=flipY?-1:1,handedness=scaleX*scaleY;
+ for(const old of roots){
+  const id=mapping[old],n=target[id],parent=rootParents[old];
+  n._parent=ref(parent);
+  target[parent]._children.push(ref(id));
+  n._prefab=null;
+  const {position:p,world:oldMatrix}=info.byId[old];
+  const pos=Model.toWorld(transform,{x:scaleX*(p.x-origin.x),y:scaleY*(p.y-origin.y)});
+  const oldScale=Math.hypot(oldMatrix[0],oldMatrix[1]);
+  const oldAngle=Math.atan2(oldMatrix[1],oldMatrix[0])*180/Math.PI;
+  const determinant=oldMatrix[0]*oldMatrix[3]-oldMatrix[1]*oldMatrix[2];
+  // Keep the decomposed X scale positive and put the reflection into the rotation and Y scale.
+  const degrees=(flipX?180:0)+handedness*oldAngle+transform.angle;
+  const half=degrees*Math.PI/360;
+  n._trs=node('',null,pos.x,pos.y)._trs;
+  n._trs.array[7]=oldScale*transform.scale;
+  n._trs.array[8]=determinant/oldScale*transform.scale*handedness;
+  n._trs.array[5]=Math.sin(half);
+  n._trs.array[6]=Math.cos(half);
+  n._eulerAngles={__type__:'cc.Vec3',x:0,y:0,z:degrees};
+ }
+ return mapping;
+}
 function textureNode(data,parent,name,frame,x,y,width,height,anchor,color){const id=append(data,name,parent,x,y,width,height);data[id]._anchorPoint=Object.assign({__type__:'cc.Vec2'},anchor||{x:.5,y:.5});if(color)data[id]._color=Object.assign({__type__:'cc.Color'},color);component(data,id,{__type__:'cc.Sprite',_materials:[{__uuid__:'eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432'}],_spriteFrame:{__uuid__:frame},_sizeMode:0,_type:0});return id;}
 function objectDepth(root,data,id,front,order,groundOnly){const type=Legacy.script(root,'MapTerrainLayer'),existing=(data[id]._components||[]).map(r=>data[r.__id__]).filter(c=>c&&c.__type__===type);if(existing.length)existing.forEach(c=>{c.frontOfBuildings=front;c.objectLayerOrder=order;if(groundOnly!==undefined)c.groundOnly=groundOnly;});else component(data,id,{__type__:type,ground:null,artwork:null,frontOfBuildings:front,objectLayerOrder:order,...(groundOnly===undefined?{}:{groundOnly})});}
 function addEnvironment(root,data,map,bake){const info=require('../lib/map-assets').model(data),layers=info.roots,globalBlockers=Model.hasGlobalBlockers(map);
  // Editable foundation sprites are included in the baked ground.
  for(const tile of bake.ground||[])textureNode(data,layers.ndBg,tile.name,tile.frameUuid,tile.x,tile.y,tile.width,tile.height);
  for(const layer of map.layers){if(layer.hidden)continue;for(const object of layer.objects){const p=Model.toWorld(layer.transform,object),scale=layer.transform.scale*object.scale,angle=layer.transform.angle+object.angle;
-   if(object.legacy){const parents={};object.legacy.roots.forEach(id=>parents[id]=object.animationPreset&&Model.isGroundObject(layer,object)?layers.ndDown:layers.ndMain);const mapping=copyFamily(data,object.legacy.sourceId?(map.legacySources||{})[object.legacy.sourceId]:map.legacyData,object.legacy.roots,parents,{x:p.x,y:p.y,origin:object.legacy.origin},scale,angle,!!object.flipX);for(const sourceId of object.legacy.roots)objectDepth(root,data,mapping[sourceId],object.buildingOverlap==='front',map.layers.indexOf(layer),object.animationPreset?Model.isGroundObject(layer,object):undefined);objectShadow(root,data,map,layer,object,object.legacy.roots.map(id=>mapping[id]),object.legacy.roots.map(id=>mapping[id]),layers,false);if(globalBlockers||object.ignoreLegacyColliders)for(const id of Object.values(mapping)){const n=data[id];if(n&&n.__type__==='cc.Node')n._components=(n._components||[]).filter(r=>!/^cc\.(Physics|RigidBody)/.test(data[r.__id__].__type__));}continue;}
+   if(object.legacy){const parents={};object.legacy.roots.forEach(id=>parents[id]=object.animationPreset&&Model.isGroundObject(layer,object)?layers.ndDown:layers.ndMain);const mapping=copyFamily(data,object.legacy.sourceId?(map.legacySources||{})[object.legacy.sourceId]:map.legacyData,object.legacy.roots,parents,{x:p.x,y:p.y,origin:object.legacy.origin},scale,angle,!!object.flipX,!!object.flipY);for(const sourceId of object.legacy.roots)objectDepth(root,data,mapping[sourceId],object.buildingOverlap==='front',map.layers.indexOf(layer),object.animationPreset?Model.isGroundObject(layer,object):undefined);objectShadow(root,data,map,layer,object,object.legacy.roots.map(id=>mapping[id]),object.legacy.roots.map(id=>mapping[id]),layers,false);if(globalBlockers||object.ignoreLegacyColliders)for(const id of Object.values(mapping)){const n=data[id];if(n&&n.__type__==='cc.Node')n._components=(n._components||[]).filter(r=>!/^cc\.(Physics|RigidBody)/.test(data[r.__id__].__type__));}continue;}
    const groundOnly=Model.isGroundObject(layer,object);if(groundOnly&&!require('../../../assets/_script/MapObjectShadowPolicy').enabled(layer,object))continue;
-   const owner=append(data,object.name,groundOnly?layers.ndDown:layers.ndMain,p.x,p.y);const trs=data[owner]._trs.array;trs[7]=scale*(object.flipX?-1:1);trs[8]=scale;trs[5]=Math.sin(angle*Math.PI/360);trs[6]=Math.cos(angle*Math.PI/360);data[owner]._eulerAngles.z=angle;if(!groundOnly)component(data,owner,{__type__:Legacy.script(root,'KinghtFallBuildObstacle'),ndMove:[]});if(object.opacity!==undefined)data[owner]._opacity=Math.round(object.opacity*255);if(!groundOnly&&!globalBlockers&&(object.polygons||[]).length){component(data,owner,{__type__:'cc.RigidBody',_type:0});for(const shape of object.polygons)component(data,owner,{__type__:'cc.PhysicsPolygonCollider',points:shape.map(p=>Object.assign({__type__:'cc.Vec2'},p))});}const ground=append(data,'Ground',owner,object.ground&&object.ground.x||0,object.ground&&object.ground.y||0),art=append(data,'Artwork',owner,0,0);component(data,owner,{__type__:Legacy.script(root,'MapTerrainLayer'),ground:ref(ground),artwork:ref(art),frontOfBuildings:object.buildingOverlap==='front',objectLayerOrder:map.layers.indexOf(layer),...(groundOnly?{groundOnly:true}:{})});objectShadow(root,data,map,layer,object,[owner],[art],layers,groundOnly);
+   const owner=append(data,object.name,groundOnly?layers.ndDown:layers.ndMain,p.x,p.y);const trs=data[owner]._trs.array;trs[7]=scale*(object.flipX?-1:1);trs[8]=scale*(object.flipY?-1:1);trs[5]=Math.sin(angle*Math.PI/360);trs[6]=Math.cos(angle*Math.PI/360);data[owner]._eulerAngles.z=angle;if(!groundOnly)component(data,owner,{__type__:Legacy.script(root,'KinghtFallBuildObstacle'),ndMove:[]});if(object.opacity!==undefined)data[owner]._opacity=Math.round(object.opacity*255);if(!groundOnly&&!globalBlockers&&(object.polygons||[]).length){component(data,owner,{__type__:'cc.RigidBody',_type:0});for(const shape of object.polygons)component(data,owner,{__type__:'cc.PhysicsPolygonCollider',points:shape.map(p=>Object.assign({__type__:'cc.Vec2'},p))});}const ground=append(data,'Ground',owner,object.ground&&object.ground.x||0,object.ground&&object.ground.y||0),art=append(data,'Artwork',owner,0,0);component(data,owner,{__type__:Legacy.script(root,'MapTerrainLayer'),ground:ref(ground),artwork:ref(art),frontOfBuildings:object.buildingOverlap==='front',objectLayerOrder:map.layers.indexOf(layer),...(groundOnly?{groundOnly:true}:{})});objectShadow(root,data,map,layer,object,[owner],[art],layers,groundOnly);
    const asset=bake.assets[require('./paint').assetKey(object)];if(!asset)throw Error('Missing baked asset '+object.assetId);for(const frame of asset.frames)textureNode(data,art,frame.name,frame.frameUuid,frame.x,frame.y,frame.worldWidth===undefined?frame.width:frame.worldWidth,frame.worldHeight===undefined?frame.height:frame.worldHeight,{x:0,y:0});
  }}
  const blockerOwners=new Map();for(const shape of Model.blockerPolygons(map)){let id=blockerOwners.get(shape.layerId);if(id===undefined){id=append(data,'Blocker '+shape.layerId,layers.ndMain,0,0);blockerOwners.set(shape.layerId,id);component(data,id,{__type__:Legacy.script(root,'KinghtFallBuildObstacle'),ndMove:[]});component(data,id,{__type__:'cc.RigidBody',_type:0});}for(const points of require('./physics-polygons').fixtures(shape.points))component(data,id,{__type__:'cc.PhysicsPolygonCollider',points:points.map(p=>Object.assign({__type__:'cc.Vec2'},p))});}

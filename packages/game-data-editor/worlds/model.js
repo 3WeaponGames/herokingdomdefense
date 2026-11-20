@@ -31,6 +31,7 @@ function place(map,layerId,asset,position,min,max,sample){
  const local=toLocal(layer.transform,position),object={id:'object-'+next.nextObject++,assetId:asset.id,name:asset.name,x:local.x,y:local.y,scale:(min+(max-min)*random)*baseScale,angle:0,flipX:false,depth:asset.depth||'world',ground:{x:0,y:0}};if(asset.nativeScale!==undefined)object.nativeSize=true;if(asset.animatedObject)require('./animated-placement').attach(next,object,asset);layer.objects.push(object);return {map:next,object};
 }
 function matrix(t){t=t||{};const angle=(t.angle||0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),scale=t.scale===undefined?1:t.scale;return [c*scale,s*scale,-s*scale,c*scale,t.x||0,t.y||0];}
+function flipPoint(object,p){return {x:object.flipX?-p.x:p.x,y:object.flipY?-p.y:p.y};}
 function point(m,p){return {x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};}
 function toWorld(t,p){return point(matrix(t),p);}
 function toLocal(t,p){const m=matrix(t),det=m[0]*m[3]-m[1]*m[2];if(Math.abs(det)<1e-9)throw Error('Layer scale cannot be zero.');return {x:(m[3]*(p.x-m[4])-m[2]*(p.y-m[5]))/det,y:(-m[1]*(p.x-m[4])+m[0]*(p.y-m[5]))/det};}
@@ -200,4 +201,4 @@ function validateStage(stage,map,units){
  issues.unshift(...placements.outsideMap,...placements.invalidCoordinates);
  return Array.from(new Set(issues));
 }
-module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,mergeGroundStrokes,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,validateMap,stagePlacementIssues,validateStage};
+module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,mergeGroundStrokes,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,flipPoint,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,validateMap,stagePlacementIssues,validateStage};

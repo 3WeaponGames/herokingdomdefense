@@ -12245,21 +12245,21 @@
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-01",
-      "name": "Desert - Longwall Frontier component 01",
+      "name": "West Processional Wall",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-01.png",
-      "width": 888,
-      "height": 576,
+      "width": 780,
+      "height": 538,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "63c8d268f6bdb37548b8c2d88970e0686c21a583fcbd7f95be0780aa19bc0fb5",
+      "defaultScale": 1,
+      "sha256": "2199bb72ebd3ddf2aafceeeb9fc604dec848a00287795ea5fdbc9521870bdd59",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12277,38 +12277,44 @@
           "width": 222,
           "height": 144
         },
-        "generatedSha256": "63c8d268f6bdb37548b8c2d88970e0686c21a583fcbd7f95be0780aa19bc0fb5",
+        "generatedSha256": "2199bb72ebd3ddf2aafceeeb9fc604dec848a00287795ea5fdbc9521870bdd59",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "sandstone-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 437,
+          "y": 1290,
+          "width": 390,
+          "height": 269
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-02",
-      "name": "Desert - Longwall Frontier component 02",
+      "name": "Eastern Pyramid Court",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-02.png",
-      "width": 536,
-      "height": 1288,
+      "width": 418,
+      "height": 1014,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "70f86b8e3a3f7e48397d14747212427ca19939f28506512af5dc5c29dc35854f",
+      "defaultScale": 1,
+      "sha256": "58de49960afcf9bfdf8305475f71ce3ffa49e4e8b7e9a9fdcc68802b9ac9172c",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12326,38 +12332,44 @@
           "width": 134,
           "height": 322
         },
-        "generatedSha256": "70f86b8e3a3f7e48397d14747212427ca19939f28506512af5dc5c29dc35854f",
+        "generatedSha256": "58de49960afcf9bfdf8305475f71ce3ffa49e4e8b7e9a9fdcc68802b9ac9172c",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "pyramid-court",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 566,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 1656,
+          "y": 745,
+          "width": 209,
+          "height": 507
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-03",
-      "name": "Desert - Longwall Frontier component 03",
+      "name": "East Processional Wall",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-03.png",
-      "width": 852,
-      "height": 544,
+      "width": 736,
+      "height": 530,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "95f23bcb0165acd98840df7daa35199215ac3c2a37eb04d5c601131e727ce38b",
+      "defaultScale": 1,
+      "sha256": "cecbb2f6ee43f170c4f5ca6180894922c44a9b6ecba6dfdda59c61a1decc3cf4",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12375,38 +12387,44 @@
           "width": 213,
           "height": 136
         },
-        "generatedSha256": "95f23bcb0165acd98840df7daa35199215ac3c2a37eb04d5c601131e727ce38b",
+        "generatedSha256": "cecbb2f6ee43f170c4f5ca6180894922c44a9b6ecba6dfdda59c61a1decc3cf4",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "sandstone-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 1037,
+          "y": 1286,
+          "width": 368,
+          "height": 265
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-04",
-      "name": "Desert - Longwall Frontier component 04",
+      "name": "Southeast Sun Pyramid",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-04.png",
-      "width": 1020,
-      "height": 672,
+      "width": 828,
+      "height": 612,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "bd1e76a3c782bba92806c3c0d53a9df269e9c6ed1150001752130904974b55c6",
+      "defaultScale": 1,
+      "sha256": "3537c8ef0c2de573bb4b5201f0a9b641aaa8d98202f8b4490e2f47765ceec1c0",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12424,38 +12442,44 @@
           "width": 255,
           "height": 168
         },
-        "generatedSha256": "bd1e76a3c782bba92806c3c0d53a9df269e9c6ed1150001752130904974b55c6",
+        "generatedSha256": "3537c8ef0c2de573bb4b5201f0a9b641aaa8d98202f8b4490e2f47765ceec1c0",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "sloped-pyramid",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 1437,
+          "y": 2634,
+          "width": 414,
+          "height": 306
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-05",
-      "name": "Desert - Longwall Frontier component 05",
+      "name": "Southwest Step Pyramid",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-05.png",
-      "width": 944,
-      "height": 612,
+      "width": 760,
+      "height": 606,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "5e5237527d5ee7cfd80f9c5d6d6cdf9b81ec7d25f0acd5a25777c51ec93a6c3d",
+      "defaultScale": 1,
+      "sha256": "18600cea6c1330ca0e14959fb64243f6682cd519d7b6537b1ce99793217de57e",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12473,38 +12497,44 @@
           "width": 236,
           "height": 153
         },
-        "generatedSha256": "5e5237527d5ee7cfd80f9c5d6d6cdf9b81ec7d25f0acd5a25777c51ec93a6c3d",
+        "generatedSha256": "18600cea6c1330ca0e14959fb64243f6682cd519d7b6537b1ce99793217de57e",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "step-pyramid",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 60,
+          "y": 2632,
+          "width": 380,
+          "height": 303
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-06",
-      "name": "Desert - Longwall Frontier component 06",
+      "name": "Eastern Pyramid Pair",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-06.png",
-      "width": 444,
-      "height": 960,
+      "width": 450,
+      "height": 714,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "feb802647e07db9039dd7661308eca8601ef4f3275ee8359287e07abd159bc5e",
+      "defaultScale": 1,
+      "sha256": "8b70d4a88ca625b4aa42d8b76003904c32ee279e13cbfeb45e8ade7c8b8fc659",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12522,38 +12552,44 @@
           "width": 111,
           "height": 240
         },
-        "generatedSha256": "feb802647e07db9039dd7661308eca8601ef4f3275ee8359287e07abd159bc5e",
+        "generatedSha256": "8b70d4a88ca625b4aa42d8b76003904c32ee279e13cbfeb45e8ade7c8b8fc659",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "pyramid-court",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 1638,
+          "y": 1681,
+          "width": 225,
+          "height": 357
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-07",
-      "name": "Desert - Longwall Frontier component 07",
+      "name": "Western Pyramid Pair",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-07.png",
-      "width": 440,
-      "height": 932,
+      "width": 334,
+      "height": 866,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "71a5dbb0d3ee3889f502db46fa19a80444d20bf7c3a29fd6a33395718e1f3709",
+      "defaultScale": 1,
+      "sha256": "b2a496ea590b70aeb1032b25ebc93f7f8b3054c139c1ae7c3a1383328fb40d51",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12571,38 +12607,44 @@
           "width": 110,
           "height": 233
         },
-        "generatedSha256": "71a5dbb0d3ee3889f502db46fa19a80444d20bf7c3a29fd6a33395718e1f3709",
+        "generatedSha256": "b2a496ea590b70aeb1032b25ebc93f7f8b3054c139c1ae7c3a1383328fb40d51",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "pyramid-court",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 3,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": -18,
+          "y": 1592,
+          "width": 167,
+          "height": 433
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-08",
-      "name": "Desert - Longwall Frontier component 08",
+      "name": "East Rampart",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-08.png",
-      "width": 552,
-      "height": 532,
+      "width": 564,
+      "height": 516,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "3f9653243acdbf9df55f2d5c31b3b43c00f251dc8ca99d5ccf8cacb34341c1a0",
+      "defaultScale": 1,
+      "sha256": "2b08012c9e093a1f2f0043e4ca9af09284a0435c2d80652491b96f5ae106e6d1",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12620,38 +12662,44 @@
           "width": 138,
           "height": 133
         },
-        "generatedSha256": "3f9653243acdbf9df55f2d5c31b3b43c00f251dc8ca99d5ccf8cacb34341c1a0",
+        "generatedSha256": "2b08012c9e093a1f2f0043e4ca9af09284a0435c2d80652491b96f5ae106e6d1",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "sandstone-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 1610,
+          "y": 1294,
+          "width": 282,
+          "height": 258
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-09",
-      "name": "Desert - Longwall Frontier component 09",
+      "name": "West Rampart",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-09.png",
-      "width": 528,
-      "height": 524,
+      "width": 526,
+      "height": 518,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "ab70fa6108d2c2b560ab0d17cb5366f223ff405380a3befbd237fdf807f48825",
+      "defaultScale": 1,
+      "sha256": "a1151d8d76e0c9551d59b479c525a372c3b07f4d531b8fa3471e9c3f4b7b3b78",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12669,38 +12717,44 @@
           "width": 132,
           "height": 131
         },
-        "generatedSha256": "ab70fa6108d2c2b560ab0d17cb5366f223ff405380a3befbd237fdf807f48825",
+        "generatedSha256": "a1151d8d76e0c9551d59b479c525a372c3b07f4d531b8fa3471e9c3f4b7b3b78",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "sandstone-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": -29,
+          "y": 1290,
+          "width": 263,
+          "height": 259
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-10",
-      "name": "Desert - Longwall Frontier component 10",
+      "name": "Northeast Pylon Ruin",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-10.png",
-      "width": 544,
-      "height": 656,
+      "width": 438,
+      "height": 476,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "35f2b09d0847881823aac6ac7b270408dbcaddd4e1b5991bc92876efd4d291f0",
+      "defaultScale": 1,
+      "sha256": "8d0cd326c175c59a27f381212501a45e0871f7ff23506f8a447d0073a6fb8d33",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12718,38 +12772,44 @@
           "width": 136,
           "height": 164
         },
-        "generatedSha256": "35f2b09d0847881823aac6ac7b270408dbcaddd4e1b5991bc92876efd4d291f0",
+        "generatedSha256": "8d0cd326c175c59a27f381212501a45e0871f7ff23506f8a447d0073a6fb8d33",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "pylon-ruin",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 1668,
+          "y": 232,
+          "width": 219,
+          "height": 238
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-11",
-      "name": "Desert - Longwall Frontier component 11",
+      "name": "Western Stepped Pyramid",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-11.png",
-      "width": 444,
-      "height": 700,
+      "width": 392,
+      "height": 422,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "e84d27e91a62962833d2dd6a786ea56944ae803020c4d0861b503de2ce715e9e",
+      "defaultScale": 1,
+      "sha256": "242b29c1c96ff9f30fcb9801c79dd57b5c186de972939aeccd56395e6b12f43d",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12767,38 +12827,44 @@
           "width": 111,
           "height": 175
         },
-        "generatedSha256": "e84d27e91a62962833d2dd6a786ea56944ae803020c4d0861b503de2ce715e9e",
+        "generatedSha256": "242b29c1c96ff9f30fcb9801c79dd57b5c186de972939aeccd56395e6b12f43d",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "step-pyramid",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 3,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": 2,
+          "y": 1026,
+          "width": 196,
+          "height": 211
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-12",
-      "name": "Desert - Longwall Frontier component 12",
+      "name": "Northwest Pyramid Court",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-12.png",
-      "width": 344,
-      "height": 776,
+      "width": 342,
+      "height": 618,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "11350601f231c487cd26db888ad59c86176d406401a2c3a24dbc56d6273362a5",
+      "defaultScale": 1,
+      "sha256": "7d3bd1dae16fb9fd27e6ab4060ab4d4b502aaeb22b544ce912bdb1245263a513",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12816,38 +12882,44 @@
           "width": 86,
           "height": 194
         },
-        "generatedSha256": "11350601f231c487cd26db888ad59c86176d406401a2c3a24dbc56d6273362a5",
+        "generatedSha256": "7d3bd1dae16fb9fd27e6ab4060ab4d4b502aaeb22b544ce912bdb1245263a513",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "pyramid-court",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 4,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": -11,
+          "y": 580,
+          "width": 171,
+          "height": 309
+        }
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-13",
-      "name": "Desert - Longwall Frontier component 13",
+      "name": "Northwest Pylon Ruin",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-13.png",
-      "width": 540,
-      "height": 480,
+      "width": 346,
+      "height": 450,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 0.9577754891864058,
-      "sha256": "4ade90db0fd19d6b8d4fb2ac89860bb5663c34420e9b2f0459101f922bf9badb",
+      "defaultScale": 1,
+      "sha256": "0fe8ae60db250387c5cb0451a33d204a030b593f35de9985cb29ab0724d5ad9e",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12865,18 +12937,24 @@
           "width": 135,
           "height": 120
         },
-        "generatedSha256": "4ade90db0fd19d6b8d4fb2ac89860bb5663c34420e9b2f0459101f922bf9badb",
+        "generatedSha256": "0fe8ae60db250387c5cb0451a33d204a030b593f35de9985cb29ab0724d5ad9e",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "repainted terrain at its existing placement",
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": null,
+        "semanticRole": "pylon-ruin",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false
+        "castShadow": false,
+        "registeredScreenBounds": {
+          "x": -31,
+          "y": 227,
+          "width": 173,
+          "height": 225
+        }
       },
       "nativeScale": 0.5
     },

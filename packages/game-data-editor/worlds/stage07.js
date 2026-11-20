@@ -56,7 +56,7 @@ async function recover(service,request){
   }else if(image.role==='obstacle'){
    const entry=owners[image.key];if(!entry)throw Error('Original cliff layer was removed.');
    const old=entry.object,left=image.center.x-image.width/2,bottom=image.center.y-image.height/2,asset=assetFor('Stage 7 '+image.key+' cliffs',image.png,image.width,image.height,{x:(image.ground.x-left)/image.width,y:(image.ground.y-bottom)/image.height},'world'),origin=old.legacy.origin;
-   const offset={x:image.ground.x-origin.x,y:image.ground.y-origin.y},position=M.toWorld(old,{x:old.flipX?-offset.x:offset.x,y:offset.y}),polygons=(old.polygons||[]).map(poly=>poly.map(p=>({x:p.x+origin.x-image.ground.x,y:p.y+origin.y-image.ground.y})));
+   const offset={x:image.ground.x-origin.x,y:image.ground.y-origin.y},position=M.toWorld(old,M.flipPoint(old,offset)),polygons=(old.polygons||[]).map(poly=>poly.map(p=>({x:p.x+origin.x-image.ground.x,y:p.y+origin.y-image.ground.y})));
    const object=Object.assign({},old,{name:asset.name,assetId:asset.id,x:position.x,y:position.y,ground:{x:(old.ground&&old.ground.x||0)-offset.x,y:(old.ground&&old.ground.y||0)-offset.y},polygons});
    delete object.legacy;delete object.ignoreLegacyColliders;
    entry.layer.objects=entry.layer.objects.map(o=>o===old?object:o);
@@ -88,8 +88,8 @@ async function recover(service,request){
   if(!layer)throw Error('Original cliff layer was removed.');
   const point={x:prop.x*recipe.width-recipe.width/2,y:recipe.height/2-prop.y*recipe.height},old=prop.layer==='ground'?null:entry.object;
   let position=point;
-  if(old){const local={x:point.x-old.legacy.origin.x,y:point.y-old.legacy.origin.y};position=M.toWorld(old,{x:old.flipX?-local.x:local.x,y:local.y});}
-  layer.objects.push({id:'object-'+map.nextObject++,name:asset.name,assetId:asset.id,x:position.x,y:position.y,scale:(prop.height?prop.height/asset.height:prop.width/asset.width)*(old?old.scale:1),angle:old&&old.angle||0,flipX:!!prop.flip!==!!(old&&old.flipX),opacity:(prop.opacity===undefined?1:prop.opacity)*(old&&old.opacity!==undefined?old.opacity:1),depth:prop.layer==='ground'?'ground':'world',ground:{x:0,y:0}});
+  if(old){const local={x:point.x-old.legacy.origin.x,y:point.y-old.legacy.origin.y};position=M.toWorld(old,M.flipPoint(old,local));}
+  layer.objects.push({id:'object-'+map.nextObject++,name:asset.name,assetId:asset.id,x:position.x,y:position.y,scale:(prop.height?prop.height/asset.height:prop.width/asset.width)*(old?old.scale:1),angle:old&&old.angle||0,flipX:!!prop.flip!==!!(old&&old.flipX),...(old&&old.flipY?{flipY:true}:{}),opacity:(prop.opacity===undefined?1:prop.opacity)*(old&&old.opacity!==undefined?old.opacity:1),depth:prop.layer==='ground'?'ground':'world',ground:{x:0,y:0}});
  }
  // Keep staged images in the service as well as the current palette so refresh
  // and another document's Save cannot strand the still-unsaved recovered map.

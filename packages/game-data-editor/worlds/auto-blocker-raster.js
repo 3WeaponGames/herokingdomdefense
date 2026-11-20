@@ -34,7 +34,7 @@ function simplify(mask,tolerance,stats){
  const result=combine(pieces);if(stats){stats.filteredHoles=filteredHoles;stats.filteredIslands=filteredIslands;}return result;
 }
 function point(matrix,p){return [matrix[0]*p[0]+matrix[2]*p[1]+matrix[4],matrix[1]*p[0]+matrix[3]*p[1]+matrix[5]];}
-function placement(p,object,layer){if(object.flipX)p=[-p[0],p[1]];return point(Paint.matrix(layer.transform||{}),point(Paint.matrix(object),p));}
+function placement(p,object,layer){return point(Paint.matrix(layer.transform||{}),point(Paint.objectMatrix(object),p));}
 function transform(mask,convert){return mask.map(region=>region.map(ring=>ring.map(convert)));}
 function combine(shapes){let mask=[];for(let i=0;i<shapes.length;i+=16){const batch=shapes.slice(i,i+16).filter(p=>p.length);if(batch.length)mask=Clip.union(mask,...batch);}return mask;}
 function dimensions(width,height){width=Math.round(width);height=Math.round(height);if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width*height>MAX_SOURCE_PIXELS)throw Error('An image is too large to trace safely. Use source images up to 16 megapixels.');return {width,height};}

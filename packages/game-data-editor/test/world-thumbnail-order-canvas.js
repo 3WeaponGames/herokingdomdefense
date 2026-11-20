@@ -51,6 +51,10 @@ async function verify(){
   object('rotated-flipped','green',{ground:{x:10,y:0},flipX:true,angle:90}),object('origin-foot','red')
  ],{transform:{x:0,y:0,scale:1,angle:15}})]);
  await compare('rotated and flipped ground points use world space',value,'green');
+ value=map('vertically-flipped-foot',[layer('only',[
+  object('upside-down','green',{ground:{x:0,y:10},flipY:true,angle:25}),object('origin-foot','red')
+ ],{transform:{x:0,y:0,scale:1,angle:15}})]);
+ await compare('vertical flips reflect the ground point for editor and thumbnail sort order',value,'green');
  value=map('hidden',[layer('visible',[object('visible','green')]),layer('hidden',[object('hidden','red')],{hidden:true})]);
  await compare('hidden layers never cover visible artwork',value,'green');
  value=map('ground-children',[layer('ground',[object('first','red'),object('second','green')],{depth:'ground'})]);
