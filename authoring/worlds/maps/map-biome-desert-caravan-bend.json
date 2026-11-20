@@ -15,7 +15,8 @@
     "foundation": {
       "baseAsset": "env-b48c8acfefa82784d89230d88f0642c9",
       "nativeSize": true,
-      "strokes": []
+      "strokes": [],
+      "images": []
     },
     "roads": {
       "strokes": [
@@ -126,10 +127,12 @@
             }
           ]
         }
-      ]
+      ],
+      "images": []
     },
     "grass": {
-      "strokes": []
+      "strokes": [],
+      "images": []
     }
   },
   "layers": [
@@ -148,8 +151,8 @@
           "id": "object-1",
           "assetId": "terrain-biome-desert-caravan-bend-northwest-headland",
           "name": "Northwest Headland",
-          "x": -665.5,
-          "y": 311,
+          "x": -889.0049333141117,
+          "y": 176.8970400115329,
           "scale": 1,
           "angle": 0,
           "flipX": false,
@@ -165,8 +168,8 @@
           "id": "object-2",
           "assetId": "terrain-biome-desert-caravan-bend-northeast-mesa",
           "name": "Northeast Mesa",
-          "x": 652,
-          "y": -21,
+          "x": 826.3338479850072,
+          "y": 303.082153305462,
           "scale": 1,
           "angle": 0,
           "flipX": false,
@@ -182,8 +185,8 @@
           "id": "object-4",
           "assetId": "terrain-biome-desert-caravan-bend-southeast-oasis",
           "name": "Southeast Oasis",
-          "x": 866,
-          "y": -1452,
+          "x": 960.2263048530147,
+          "y": -1598.2706434620409,
           "scale": 1,
           "angle": 0,
           "flipX": false,
@@ -204,8 +207,8 @@
           "depth": "world",
           "globalShadow": false,
           "assetId": "terrain-biome-desert-caravan-bend-western-canyon-bank",
-          "x": -769.5,
-          "y": -1664,
+          "x": -748.4443072404868,
+          "y": -1629.2480273964313,
           "ground": {
             "x": 0,
             "y": 0
@@ -231,8 +234,8 @@
           "id": "object-3",
           "assetId": "terrain-biome-desert-caravan-bend-southwest-stair",
           "name": "Southwest Stair",
-          "x": -525,
-          "y": -997,
+          "x": 163.07273370827846,
+          "y": -1720.8898819587353,
           "scale": 1,
           "angle": 0,
           "flipX": false,
@@ -1826,7 +1829,7 @@
       "globalShadow": false
     }
   ],
-  "nextObject": 93,
+  "nextObject": 96,
   "nextLayer": 4,
   "blockerMask": [
     [

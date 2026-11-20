@@ -15,7 +15,8 @@
     "foundation": {
       "baseAsset": "env-b48c8acfefa82784d89230d88f0642c9",
       "nativeSize": true,
-      "strokes": []
+      "strokes": [],
+      "images": []
     },
     "roads": {
       "strokes": [
@@ -483,10 +484,12 @@
           "textureScale": 1,
           "nativeSize": true
         }
-      ]
+      ],
+      "images": []
     },
     "grass": {
-      "strokes": []
+      "strokes": [],
+      "images": []
     },
     "custom": [],
     "order": [
@@ -510,10 +513,10 @@
         {
           "id": "object-185",
           "assetId": "terrain-piece-08-longwall-frontier-component-01",
-          "name": "West Processional Wall",
-          "x": -298,
-          "y": -8.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 01",
+          "x": -308.44201180363865,
+          "y": -510.4172221187642,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -528,10 +531,10 @@
         {
           "id": "object-186",
           "assetId": "terrain-piece-08-longwall-frontier-component-02",
-          "name": "Eastern Pyramid Court",
-          "x": 830.5,
-          "y": 298.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 02",
+          "x": 807.0582109762771,
+          "y": 697.6693608768458,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -546,10 +549,10 @@
         {
           "id": "object-187",
           "assetId": "terrain-piece-08-longwall-frontier-component-03",
-          "name": "East Processional Wall",
-          "x": 291,
-          "y": -0.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 03",
+          "x": 284.88075160453167,
+          "y": -490.0357647593411,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -564,10 +567,10 @@
         {
           "id": "object-188",
           "assetId": "terrain-piece-08-longwall-frontier-component-04",
-          "name": "Southeast Sun Pyramid",
-          "x": 714,
-          "y": -1389.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 04",
+          "x": 694.1956661448677,
+          "y": -1571.5561501764453,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -582,10 +585,10 @@
         {
           "id": "object-189",
           "assetId": "terrain-piece-08-longwall-frontier-component-05",
-          "name": "Southwest Step Pyramid",
-          "x": -680,
-          "y": -1384.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 05",
+          "x": -710.7077172619291,
+          "y": -1558.0706847566034,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -600,10 +603,10 @@
         {
           "id": "object-190",
           "assetId": "terrain-piece-08-longwall-frontier-component-06",
-          "name": "Eastern Pyramid Pair",
-          "x": 820.5,
-          "y": -487.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 06",
+          "x": 829.7902936797552,
+          "y": -883.8024489192175,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -618,10 +621,10 @@
         {
           "id": "object-191",
           "assetId": "terrain-piece-08-longwall-frontier-component-07",
-          "name": "Western Pyramid Pair",
-          "x": -864.5,
-          "y": -474.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 07",
+          "x": -832.4638933484939,
+          "y": -895.8437513725311,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -636,10 +639,10 @@
         {
           "id": "object-192",
           "assetId": "terrain-piece-08-longwall-frontier-component-08",
-          "name": "East Rampart",
-          "x": 821,
-          "y": -1.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 08",
+          "x": 801.1983488472364,
+          "y": -479.6917978935672,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -654,10 +657,10 @@
         {
           "id": "object-193",
           "assetId": "terrain-piece-08-longwall-frontier-component-09",
-          "name": "West Rampart",
-          "x": -827.5,
-          "y": 1.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 09",
+          "x": -803.5736354273944,
+          "y": -497.7745772440644,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -672,10 +675,10 @@
         {
           "id": "object-194",
           "assetId": "terrain-piece-08-longwall-frontier-component-10",
-          "name": "Northeast Pylon Ruin",
-          "x": 847.5,
-          "y": 1080.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 10",
+          "x": 765.5870050551117,
+          "y": -282.08423551815883,
+          "scale": 1.5469916723381483,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -690,10 +693,10 @@
         {
           "id": "object-195",
           "assetId": "terrain-piece-08-longwall-frontier-component-11",
-          "name": "Western Stepped Pyramid",
-          "x": -830,
-          "y": 313.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 11",
+          "x": -832.3208752366173,
+          "y": 96.69448730200685,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -708,10 +711,10 @@
         {
           "id": "object-196",
           "assetId": "terrain-piece-08-longwall-frontier-component-12",
-          "name": "Northwest Pyramid Court",
-          "x": -855.5,
-          "y": 661.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 12",
+          "x": -860.8307477111942,
+          "y": -280.823476160022,
+          "scale": 0.9577754891864058,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -726,10 +729,10 @@
         {
           "id": "object-197",
           "assetId": "terrain-piece-08-longwall-frontier-component-13",
-          "name": "Northwest Pylon Ruin",
-          "x": -874.5,
-          "y": 1098.5,
-          "scale": 1,
+          "name": "Desert - Longwall Frontier component 13",
+          "x": -206.81668659297776,
+          "y": 303.41863388267967,
+          "scale": 1.64468056628162,
           "angle": 0,
           "flipX": false,
           "depth": "world",
@@ -740,10 +743,59 @@
           "opacity": 1,
           "globalShadow": false,
           "nativeSize": true
+        },
+        {
+          "id": "object-198",
+          "assetId": "original-map03-western-dry-channel",
+          "name": "Map03 · Western Dry Channel",
+          "x": 147.5982939517105,
+          "y": 986.2865698684445,
+          "scale": 1.3778474473510882,
+          "angle": -90,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-200",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -700.4028100130226,
+          "y": -553.7260763854589,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
+        },
+        {
+          "id": "object-201",
+          "assetId": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+          "name": "Stone Gray1 2",
+          "x": -626.6075559595237,
+          "y": -569.229281018547,
+          "scale": 1,
+          "angle": 0,
+          "flipX": false,
+          "depth": "world",
+          "ground": {
+            "x": 0,
+            "y": 0
+          },
+          "nativeSize": true
         }
       ],
       "blockers": [],
-      "globalShadow": false
+      "globalShadow": false,
+      "hidden": false
     },
     {
       "id": "grass-detail",
@@ -1948,7 +2000,8 @@
           "globalShadow": false
         }
       ],
-      "blockers": []
+      "blockers": [],
+      "hidden": true
     },
     {
       "id": "layer-1",
@@ -2541,7 +2594,8 @@
         }
       ],
       "blockers": [],
-      "globalShadow": false
+      "globalShadow": false,
+      "hidden": true
     },
     {
       "id": "layer-2",
@@ -3406,7 +3460,8 @@
         }
       ],
       "blockers": [],
-      "globalShadow": false
+      "globalShadow": false,
+      "hidden": true
     },
     {
       "id": "layer-3",
@@ -3897,10 +3952,11 @@
         }
       ],
       "blockers": [],
-      "globalShadow": false
+      "globalShadow": false,
+      "hidden": true
     }
   ],
-  "nextObject": 198,
+  "nextObject": 202,
   "nextLayer": 5,
   "nextGround": 2,
   "blockerMask": [
