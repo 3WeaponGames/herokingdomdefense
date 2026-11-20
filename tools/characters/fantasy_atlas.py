@@ -157,12 +157,14 @@ def _checked(tx, relative):
 
 
 def existing_units(tx, target, manifest):
-    """Read every variant and verify the current rendered pixels before edits."""
+    """Read the archive rigs and verify their rendered pixels before repacking."""
     registered = {unit['skeleton']: unit['uuid'] for unit in manifest.get('units', [])}
+    authored_variants = {unit['skeleton'] for unit in manifest.get('units', []) if unit.get('variantOf')}
     part_lookup = {'u_' + part['guid']: part for part in manifest.get('parts', [])}
-    units, by_page = [], {}
+    units, by_page, seen = [], {}, set()
     for file in tx.files(target + '/Units', '*.json'):
         relative = file.relative_to(tx.project).as_posix()
+        seen.add(relative)
         rig = json.loads(tx.read(relative).decode('utf-8-sig'))
         raw = _checked(tx, relative[:-5] + '.atlas')
         regions, _ = _read_atlas_regions(raw)
@@ -171,6 +173,9 @@ def existing_units(tx, target, manifest):
         meta = json.loads(tx.read(relative + '.meta').decode('utf-8-sig'))
         if relative in registered and meta.get('uuid') != registered[relative]:
             raise ValueError('Fantasy unit UUID differs from its catalog: ' + relative)
+        # Authored variants ship their own atlases and keep their texture pages during an archive import.
+        if relative in authored_variants:
+            continue
         for name, region in regions.items():
             if name not in part_lookup:
                 raise ValueError('Fantasy atlas region has no original part: ' + name)
@@ -182,7 +187,7 @@ def existing_units(tx, target, manifest):
                 raise ValueError('Fantasy region coordinates differ between variants: ' + name)
             page_regions[name] = region
         units.append((relative, rig))
-    if registered.keys() - {relative for relative, _ in units}:
+    if registered.keys() - seen:
         raise ValueError('Fantasy catalog references a missing registered unit')
     for page, regions in by_page.items():
         raw = _checked(tx, target + '/Units/' + page)

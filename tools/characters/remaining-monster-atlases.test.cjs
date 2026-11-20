@@ -49,32 +49,41 @@ test('Monster 3 and both Fantasy packs have capped native pages and complete var
     const checked = new Set();
     for (const file of fs.readdirSync(path.join(base, 'Units')).filter(file => file.endsWith('.json'))) {
       const skeleton = path.join(base, 'Units', file), atlas = skeleton.replace(/\.json$/, '.atlas');
+      const row = catalog.units.find(unit => path.resolve(root, unit.skeleton) === skeleton);
       const declared = pages(fs.readFileSync(atlas, 'utf8')), textures = [];
       assert(declared.length, file + ' declares its native atlas pages');
       for (const page of declared) {
         assert.equal(page.name, path.basename(page.name), 'Creator resolves native sibling page basenames');
         const sibling = path.join(base, 'Units', page.name), canonical = path.join(base, 'Atlases', page.name);
-        const metadata = json(sibling + '.meta'), sourceMetadata = json(canonical + '.meta');
+        const metadata = json(sibling + '.meta');
         textures.push(metadata.uuid);
         if (checked.has(page.name)) continue;
         checked.add(page.name); pageCount++;
         const dimensions = pngSize(sibling);
         assert.deepEqual(page.size.split(',').map(Number), dimensions, 'Declared atlas dimensions match the texture');
         assert.deepEqual([metadata.width, metadata.height], dimensions);
-        assert.deepEqual([sourceMetadata.width, sourceMetadata.height], dimensions);
-        for (const value of [metadata, sourceMetadata]) {
+        const pageMetadata = [metadata];
+        if (row?.variantOf) {
+          const stem = path.basename(skeleton, '.json');
+          assert(page.name === stem + '.png' || page.name.startsWith(stem + '_'), row.id + ' has an independent atlas');
+        } else {
+          const sourceMetadata = json(canonical + '.meta');
+          assert.deepEqual([sourceMetadata.width, sourceMetadata.height], dimensions);
+          assert.notEqual(metadata.uuid, sourceMetadata.uuid, 'Native sibling pages retain distinct asset identities');
+          assert.deepEqual(fs.readFileSync(sibling), fs.readFileSync(canonical), 'Both import paths preserve the same exact packed pixels');
+          for (const image of [sibling, canonical]) {
+            const relative = path.relative(root, image).replace(/\\/g, '/');
+            assert.equal(catalog.importedFiles[relative], hash(fs.readFileSync(image)), 'Manifest includes the current page content');
+          }
+          pageMetadata.push(sourceMetadata);
+        }
+        for (const value of pageMetadata) {
           assert.equal(value.genMipmaps, false, 'NPOT runtime pages do not enable unsupported mipmaps');
           assert.equal(value.wrapMode, 'clamp', 'NPOT pages keep clamp sampling');
           assert.equal(value.premultiplyAlpha, false, 'Packed pixels retain their authored straight-alpha convention');
         }
-        assert.notEqual(metadata.uuid, sourceMetadata.uuid, 'Native sibling pages retain distinct asset identities');
-        assert.deepEqual(fs.readFileSync(sibling), fs.readFileSync(canonical), 'Both import paths preserve the same exact packed pixels');
-        for (const image of [sibling, canonical]) {
-          const relative = path.relative(root, image).replace(/\\/g, '/');
-          assert.equal(catalog.importedFiles[relative], hash(fs.readFileSync(image)), 'Manifest includes the current page content');
-        }
       }
-      const metadata = json(skeleton + '.meta'), row = catalog.units.find(row => path.resolve(root, row.skeleton) === skeleton);
+      const metadata = json(skeleton + '.meta');
       assert.deepEqual(metadata.textures, textures, file + ' native texture array matches atlas page order');
       if (row) assert.equal(metadata.uuid, row.uuid, 'Published source model identifiers remain stable');
       rigs++;
@@ -117,8 +126,9 @@ for pack in ['monster3','fantasy-monsters','fantasy-bosses']:
  @lru_cache(maxsize=4)
  def image(name):
   with Image.open(base/'Units'/name) as picture:return picture.convert('RGBA')
- checked=set();layouts={}
+ checked=set();layouts={};models={root/unit['skeleton']:unit for unit in catalog['units']}
  for skeleton in sorted((base/'Units').glob('*.json')):
+  model=models.get(skeleton,{})
   text=skeleton.with_suffix('.atlas').read_text(encoding='utf-8-sig')
   if text not in layouts:
    regions={};page=None;current=None;lines=text.splitlines()
@@ -135,27 +145,32 @@ for pack in ['monster3','fantasy-monsters','fantasy-bosses']:
    layouts[text]=regions
   regions=layouts[text]
   for name,region in sorted(regions.items(),key=lambda row:(row[1]['page'],row[0])):
-   assert name in sources,'unknown source image: '+name
-   part=sources[name];size=tuple(map(int,region['size'].split(',')));xy=tuple(map(int,region['xy'].split(',')))
+   part=sources.get(name)
+   assert part or model.get('variantOf'),'unknown source image: '+name
+   size=tuple(map(int,region['size'].split(',')));xy=tuple(map(int,region['xy'].split(',')))
    identity=(region['page'],name,xy,size)
    if identity in checked:continue
    checked.add(identity)
-   with Image.open(root/part['image']) as picture:original=picture.convert('RGBA')
-   assert size==original.size==tuple(map(int,region['orig'].split(','))),name+' was resized or trimmed'
+   assert size==tuple(map(int,region['orig'].split(','))),name+' was resized or trimmed'
    assert tuple(map(int,region['offset'].split(',')))==(0,0),name+' origin changed'
    assert region.get('rotate','false')=='false',name+' orientation changed'
    packed=image(region['page']);x,y=xy;w,h=size
    assert x>=0 and y>=0 and x+w<=packed.width and y+h<=packed.height,name+' image bounds'
-   assert packed.crop((x,y,x+w,y+h)).tobytes()==original.tobytes(),name+' source pixels changed'
+   interior=packed.crop((x,y,x+w,y+h))
+   if part:
+    with Image.open(root/part['image']) as picture:original=picture.convert('RGBA')
+    assert interior.size==original.size and interior.tobytes()==original.tobytes(),name+' source pixels changed'
+   else:
+    assert interior.getchannel('A').getbbox(),name+' authored region has no visible pixels'
    # Legal legacy pages may be retained byte for byte when repacking would
    # grow or split them. Only unchanged originals may keep their old padding.
    if not retained_page(region['page']):
     assert x>=2 and y>=2 and x+w+2<=packed.width and y+h+2<=packed.height,name+' padded bounds'
     for distance in [1,2]:
-     assert packed.crop((x-distance,y,x-distance+1,y+h)).tobytes()==original.crop((0,0,1,h)).tobytes(),name+' left border'
-     assert packed.crop((x+w+distance-1,y,x+w+distance,y+h)).tobytes()==original.crop((w-1,0,w,h)).tobytes(),name+' right border'
-     assert packed.crop((x,y-distance,x+w,y-distance+1)).tobytes()==original.crop((0,0,w,1)).tobytes(),name+' top border'
-     assert packed.crop((x,y+h+distance-1,x+w,y+h+distance)).tobytes()==original.crop((0,h-1,w,h)).tobytes(),name+' bottom border'
+     assert packed.crop((x-distance,y,x-distance+1,y+h)).tobytes()==interior.crop((0,0,1,h)).tobytes(),name+' left border'
+     assert packed.crop((x+w+distance-1,y,x+w+distance,y+h)).tobytes()==interior.crop((w-1,0,w,h)).tobytes(),name+' right border'
+     assert packed.crop((x,y-distance,x+w,y-distance+1)).tobytes()==interior.crop((0,0,w,1)).tobytes(),name+' top border'
+     assert packed.crop((x,y+h+distance-1,x+w,y+h+distance)).tobytes()==interior.crop((0,h-1,w,h)).tobytes(),name+' bottom border'
    regions_checked+=1
   rig=json.loads(skeleton.read_text(encoding='utf-8-sig'));skins=rig.get('skins',[])
   if isinstance(skins,dict):skins=[{'attachments':value} for value in skins.values()]
@@ -171,7 +186,6 @@ for pack in ['monster3','fantasy-monsters','fantasy-bosses']:
     for frame in timelines.get('attachment',[]):
      if frame.get('name') is not None:assert frame['name'] in attachment_keys.get(slot,set()),str(skeleton)+' missing animated expression: '+frame['name']
   if pack.startswith('fantasy-'):
-   model=next((unit for unit in catalog['units'] if root/unit['skeleton']==skeleton),None)
    if model:
     assert rig['_fantasy']['expressions']==model['expressions'],'expression controls changed'
     assert rig['_fantasy']['animationAliases']==model['animationAliases'],'animation aliases changed'
@@ -226,7 +240,9 @@ for pack in ['fantasy-monsters','fantasy-bosses']:
    if (root/image).exists():assert json.loads((root/(image+'.meta')).read_text(encoding='utf-8-sig'))['uuid']==record[key],'published source page identity changed'
   guid=Path(original).stem.removeprefix('sheet_');mapping[guid]=path;sheets_checked+=1
   source_profiles[Path(original).stem]=profiles((root/path).read_bytes())
+ variants={Path(unit['skeleton']).stem for unit in catalog['units'] if unit.get('variantOf')}
  for native in (base/'Units').glob('*.png'):
+  if any(native.stem==stem or native.stem.startswith(stem+'_') for stem in variants):continue
   source=next((stem for stem in source_profiles if native.stem==stem or native.stem.startswith(stem+'-')),None)
   assert source is not None,'runtime page has no original color-profile provenance: '+str(native)
   assert profiles(native.read_bytes())==source_profiles[source],'ICC/gamma/chromaticity profile changed: '+str(native)

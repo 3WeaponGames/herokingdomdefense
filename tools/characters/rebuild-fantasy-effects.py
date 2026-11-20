@@ -13,6 +13,8 @@ def rebuild(project,artifacts):
     for pack in ['fantasy-bosses','fantasy-monsters']:
         catalog_file='assets/resources/unit-library/'+pack+'/catalog.json';catalog=json.loads(tx.read(catalog_file));tx.managed.update(catalog['importedFiles'])
         for unit in catalog['units']:
+            if unit.get('variantOf'):
+                continue
             file=unit['skeleton'];raw=tx.read(file)
             if digest(raw)!=catalog['importedFiles'].get(file):raise ValueError('Imported model was edited: '+file)
             rig=json.loads(raw);old=copy.deepcopy(rig['_fantasy'].get('effects',{}))

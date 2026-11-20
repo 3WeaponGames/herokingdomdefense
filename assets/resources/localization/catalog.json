@@ -11953,6 +11953,21 @@
       "en": "<b>This talent is already unlocked or needs an earlier talent. Close this panel to continue.</b>",
       "zh": "<b>此天赋已解锁，或需要先解锁前置天赋。关闭面板以继续。</b>",
       "context": "Tutorial fallback when the inspected talent has no active unlock action"
+    },
+    "data.monster-roster.93120.name": {
+      "en": "Butcher V2",
+      "zh": "屠夫 V2",
+      "context": "Minimal-style reskin · fantasy-monsters/ButcherV2"
+    },
+    "data.monster-roster.93121.name": {
+      "en": "Punisher V2",
+      "zh": "惩罚者 V2",
+      "context": "Minimal-style reskin · fantasy-monsters/PunisherV2"
+    },
+    "data.monster-roster.93122.name": {
+      "en": "Possessed Black Bear V2",
+      "zh": "附身黑熊 V2",
+      "context": "Minimal-style reskin · fantasy-monsters/PossessedBlackBearV2"
     }
   },
   "images": {

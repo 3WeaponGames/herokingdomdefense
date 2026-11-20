@@ -3831,6 +3831,105 @@
       ],
       "bones": 31,
       "slots": 25
+    },
+    {
+      "id": "fantasy-monsters/ButcherV2",
+      "name": "Butcher V2",
+      "pack": "fantasy-monsters",
+      "source": "Assets/FantasyMonsters/Monsters/Giants/Butcher/Butcher.prefab",
+      "skeleton": "assets/resources/unit-library/fantasy-monsters/Units/ButcherV2.json",
+      "resource": "unit-library/fantasy-monsters/Units/ButcherV2",
+      "uuid": "8dd2a883-046a-56c8-ad88-0c2e10e81bbc",
+      "family": "Giants",
+      "controller": "Assets/FantasyMonsters/Common/Animations/Giant/Controller.controller",
+      "expressions": [
+        {
+          "field": "Head",
+          "slot": "Body/Head",
+          "states": [
+            "sprite_HeadNormal",
+            "sprite_HeadAngry",
+            "sprite_HeadDead"
+          ]
+        }
+      ],
+      "animationAliases": [],
+      "animations": [
+        "idle",
+        "move",
+        "attack",
+        "die",
+        "hit"
+      ],
+      "bones": 25,
+      "slots": 19,
+      "variantOf": "fantasy-monsters/Butcher"
+    },
+    {
+      "id": "fantasy-monsters/PunisherV2",
+      "name": "Punisher V2",
+      "pack": "fantasy-monsters",
+      "source": "Assets/FantasyMonsters/Monsters/Giants/Punisher/Punisher.prefab",
+      "skeleton": "assets/resources/unit-library/fantasy-monsters/Units/PunisherV2.json",
+      "resource": "unit-library/fantasy-monsters/Units/PunisherV2",
+      "uuid": "09fe15f2-5efd-52c2-a933-328f42bad663",
+      "family": "Giants",
+      "controller": "Assets/FantasyMonsters/Common/Animations/Giant/Controller.controller",
+      "expressions": [
+        {
+          "field": "Head",
+          "slot": "Body/Head",
+          "states": [
+            "sprite_HeadNormal",
+            "sprite_HeadAngry",
+            "sprite_HeadDead"
+          ]
+        }
+      ],
+      "animationAliases": [],
+      "animations": [
+        "idle",
+        "move",
+        "attack",
+        "die",
+        "hit"
+      ],
+      "bones": 25,
+      "slots": 19,
+      "variantOf": "fantasy-monsters/Punisher"
+    },
+    {
+      "id": "fantasy-monsters/PossessedBlackBearV2",
+      "name": "Possessed Black Bear V2",
+      "pack": "fantasy-monsters",
+      "source": "Assets/FantasyMonsters/Monsters/Dogs/PossessedBear/PossessedBlackBear.prefab",
+      "skeleton": "assets/resources/unit-library/fantasy-monsters/Units/PossessedBlackBearV2.json",
+      "resource": "unit-library/fantasy-monsters/Units/PossessedBlackBearV2",
+      "uuid": "4b7f8993-abee-5639-a290-7506d0fc56f5",
+      "family": "Dogs",
+      "controller": "Assets/FantasyMonsters/Common/Animations/Bear/Controller.controller",
+      "expressions": [
+        {
+          "field": "Head",
+          "slot": "Body/Head",
+          "states": [
+            "sprite_HeadNormal",
+            "sprite_HeadAngry",
+            "sprite_HeadDead"
+          ]
+        }
+      ],
+      "animationAliases": [],
+      "animations": [
+        "idle",
+        "move",
+        "attack",
+        "die",
+        "hit"
+      ],
+      "bones": 24,
+      "slots": 18,
+      "variantOf": "fantasy-monsters/PossessedBlackBear"
     }
   ],
   "parts": [

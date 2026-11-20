@@ -13,6 +13,7 @@ const EquipmentCurve=require('./equipment-curve');
 const Buildings=require('../buildings/client');
 const IconPicker=require('./icon-picker');
 const UnitProfiles=require('../units/panel-profiles');
+const UnitCatalog=require('../worlds/unit-catalog');
 const EnemyClasses=require('../lib/enemy-classes');
 const EnemyBalance=require('./enemy-balance');
 const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
@@ -36,7 +37,7 @@ function display(value){if(value===undefined)return '(not set)';if(value===null)
 function create(kind){
   return Editor.Panel.extend({
     template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:require('./control-theme')(fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:'')),
-    $:{root:'#root',title:'#title',toolbar:'#toolbar',variant:'#variant',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
+    $:{root:'#root',title:'#title',toolbar:'#toolbar',variant:'#variant',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',searchLabel:'#searchLabel',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
     ready(){
       this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;this._unitPack='all';this._variant='A';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
       this.$title.textContent=TITLES[kind]||kind;
@@ -56,7 +57,17 @@ function create(kind){
       this.$variant.disabled=kind!=='stages';this.$variant.title=kind==='stages'?'B and D replace the entire stage table; other settings are shared from A.':'Shared settings come from A for every variant.';
       this.$variant.onchange=()=>{this._variant=this.$variant.value;this._selected=null;this._wave=0;this._render();};
       this.$language.onchange=()=>{this._language=this.$language.value;this._render();};
-      this.$search.oninput=()=>this._renderList();
+      this.$search.oninput=()=>{if(this._snapshot)this._renderList();};
+      if(kind==='units'){
+        this.$searchLabel.hidden=false;
+        this.$search.placeholder='Name or ID…';
+        this.$search.removeAttribute('aria-label');
+        this.$search.onkeydown=event=>{
+          if(event.key!=='Enter'||event.isComposing||!this.$search.value.trim())return;
+          const match=this.$list.querySelector('.gt-record');
+          if(match){event.preventDefault();match.click();}
+        };
+      }
       this.$unitPack.hidden=kind!=='units';this.$unitPack.onchange=()=>{this._unitPack=this.$unitPack.value;this._selected=null;this._render();};
       this.$undo.onclick=()=>this._action('undo');this.$redo.onclick=()=>this._action('redo');
       this.$reload.onclick=()=>this._load(true);this.$review.onclick=()=>this._review(false);this.$save.onclick=()=>this._review(true);
@@ -163,9 +174,19 @@ function create(kind){
       return rows;
     },
     _renderList(){
-      const all=this._rows(),pack=this._unitPack||'all',scoped=kind!=='units'||pack==='all'?all:all.filter(r=>pack==='allies'?r.unitType!=='enemy':r.unitType==='enemy'&&(pack==='campaign'?!r.record.MonsterPack:r.record.MonsterPack===pack)),query=this.$search.value.trim().toLowerCase(),rows=scoped.filter(r=>(r.label+' '+r.subtitle+' '+(r.record.MonsterSource||'')).toLowerCase().indexOf(query)>=0);
+      const all=this._rows(),pack=this._unitPack||'all',scoped=kind!=='units'||pack==='all'?all:all.filter(r=>pack==='allies'?r.unitType!=='enemy':r.unitType==='enemy'&&(pack==='campaign'?!r.record.MonsterPack:r.record.MonsterPack===pack));
+      const query=this.$search.value.trim().toLowerCase();
+      const rows=query?scoped.filter(row=>{
+        const details=row.subtitle+' '+(row.record.MonsterSource||'');
+        return kind==='units'?UnitCatalog.matches({name:stripRich(row.label),description:details},query):(row.label+' '+details).toLowerCase().includes(query);
+      }):scoped;
+      if(kind==='units'&&query){
+        const exactName=row=>Number(stripRich(row.label).toLowerCase()===query);
+        rows.sort((left,right)=>exactName(right)-exactName(left));
+      }
       if(!scoped.some(r=>r.key===this._selected))this._selected=rows.length?rows[0].key:null;
       clear(this.$list);const shown=kind==='units'?UnitProfiles.list(this,rows):rows;this.$count.textContent=kind==='units'?shown.length+' models · '+rows.length+' profiles':rows.length+' / '+all.length+' items';
+      if(kind==='units'&&query&&!shown.length)this.$list.appendChild(node('div','No units match your search.','gt-empty'));
       shown.forEach(row=>{const b=button('',()=>{this._selected=row.key;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;if(kind!=='buildings')this.$detail.scrollTop=0;this._render();},'gt-record'+(row.key===this._selected?' active':'')+(kind==='buildings'&&row.indented?' bld-child':'')+(kind==='buildings'&&row.category?' bld-category':''));
         const asset=kind==='equipment'?this._equipmentIcon(row):this._image(row.icon);if(asset){const image=node('img');image.src=asset.url;image.alt='';b.appendChild(image);}else if(kind!=='equipment')b.appendChild(node('span',row.label.slice(0,2),'gt-initial'));
         const text=node('div');text.appendChild(node('strong',stripRich(row.label)));text.appendChild(node('small',row.subtitle));b.appendChild(text);this.$list.appendChild(b);

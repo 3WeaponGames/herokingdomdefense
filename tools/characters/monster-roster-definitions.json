@@ -4111,6 +4111,45 @@
         "cropHeight": 1,
         "cropWidth": 1
       }
+    },
+    {
+      "id": 93120,
+      "source": "fantasy-monsters/ButcherV2",
+      "name": "Butcher V2",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "(?:^|/)(?:Head|Jaw)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 93121,
+      "source": "fantasy-monsters/PunisherV2",
+      "name": "Punisher V2",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "(?:^|/)(?:Head|Jaw)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 93122,
+      "source": "fantasy-monsters/PossessedBlackBearV2",
+      "name": "Possessed Black Bear V2",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "(?:^|/)(?:Head|Jaw)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
     }
   ]
 }

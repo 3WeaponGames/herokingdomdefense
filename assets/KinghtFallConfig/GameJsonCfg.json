@@ -49483,6 +49483,90 @@
       "MonsterPack": "fantasy-monsters",
       "BehaviorTemplate": 90001
     },
+    "93120": {
+      "ID": 93120,
+      "Name": "[[loc:data.monster-roster.93120.name]]",
+      "prefab": "fantasy-monsters_ButcherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/butcherv2",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterSource": "fantasy-monsters/ButcherV2",
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "93121": {
+      "ID": 93121,
+      "Name": "[[loc:data.monster-roster.93121.name]]",
+      "prefab": "fantasy-monsters_PunisherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/punisherv2",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterSource": "fantasy-monsters/PunisherV2",
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "93122": {
+      "ID": 93122,
+      "Name": "[[loc:data.monster-roster.93122.name]]",
+      "prefab": "fantasy-monsters_PossessedBlackBearV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/possessedblackbearv2",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102,
+      "BuildingCross": 1,
+      "DeathAni": 0.4166667,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterSource": "fantasy-monsters/PossessedBlackBearV2",
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
     "94001": {
       "ID": 94001,
       "Name": "[[loc:data.monster-roster.94001.name]]",
@@ -95213,6 +95297,411 @@
       },
       "MonsterPack": "fantasy-bosses",
       "BehaviorTemplate": 90002
+    },
+    "101640": {
+      "ID": 101640,
+      "Name": "[[loc:data.monster-roster.93120.name]]",
+      "prefab": "fantasy-monsters_ButcherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/butcherv2",
+      "AttackType": 1,
+      "Health": 57.6,
+      "AttackDamage": 4.5,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 91.8,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101641": {
+      "ID": 101641,
+      "Name": "[[loc:data.monster-roster.93120.name]]",
+      "prefab": "fantasy-monsters_ButcherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/butcherv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.75,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 117.3,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101642": {
+      "ID": 101642,
+      "Name": "[[loc:data.monster-roster.93120.name]]",
+      "prefab": "fantasy-monsters_ButcherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/butcherv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.5,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 112.2,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101643": {
+      "ID": 101643,
+      "Name": "[[loc:data.monster-roster.93120.name]]",
+      "prefab": "fantasy-monsters_ButcherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/butcherv2",
+      "AttackType": 1,
+      "Health": 52.8,
+      "AttackDamage": 6,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 96.9,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101644": {
+      "ID": 101644,
+      "Name": "[[loc:data.monster-roster.93120.name]]",
+      "prefab": "fantasy-monsters_ButcherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/butcherv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 6.25,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 86.7,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101645": {
+      "ID": 101645,
+      "Name": "[[loc:data.monster-roster.93121.name]]",
+      "prefab": "fantasy-monsters_PunisherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/punisherv2",
+      "AttackType": 1,
+      "Health": 57.6,
+      "AttackDamage": 4.5,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 91.8,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101646": {
+      "ID": 101646,
+      "Name": "[[loc:data.monster-roster.93121.name]]",
+      "prefab": "fantasy-monsters_PunisherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/punisherv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.75,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 117.3,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101647": {
+      "ID": 101647,
+      "Name": "[[loc:data.monster-roster.93121.name]]",
+      "prefab": "fantasy-monsters_PunisherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/punisherv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.5,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 112.2,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101648": {
+      "ID": 101648,
+      "Name": "[[loc:data.monster-roster.93121.name]]",
+      "prefab": "fantasy-monsters_PunisherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/punisherv2",
+      "AttackType": 1,
+      "Health": 52.8,
+      "AttackDamage": 6,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 96.9,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101649": {
+      "ID": 101649,
+      "Name": "[[loc:data.monster-roster.93121.name]]",
+      "prefab": "fantasy-monsters_PunisherV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/punisherv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 6.25,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 86.7,
+      "BuildingCross": 1,
+      "DeathAni": 0.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101650": {
+      "ID": 101650,
+      "Name": "[[loc:data.monster-roster.93122.name]]",
+      "prefab": "fantasy-monsters_PossessedBlackBearV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/possessedblackbearv2",
+      "AttackType": 1,
+      "Health": 57.6,
+      "AttackDamage": 4.5,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 91.8,
+      "BuildingCross": 1,
+      "DeathAni": 0.4166667,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101651": {
+      "ID": 101651,
+      "Name": "[[loc:data.monster-roster.93122.name]]",
+      "prefab": "fantasy-monsters_PossessedBlackBearV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/possessedblackbearv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.75,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 117.3,
+      "BuildingCross": 1,
+      "DeathAni": 0.4166667,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101652": {
+      "ID": 101652,
+      "Name": "[[loc:data.monster-roster.93122.name]]",
+      "prefab": "fantasy-monsters_PossessedBlackBearV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/possessedblackbearv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.5,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 112.2,
+      "BuildingCross": 1,
+      "DeathAni": 0.4166667,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101653": {
+      "ID": 101653,
+      "Name": "[[loc:data.monster-roster.93122.name]]",
+      "prefab": "fantasy-monsters_PossessedBlackBearV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/possessedblackbearv2",
+      "AttackType": 1,
+      "Health": 52.8,
+      "AttackDamage": 6,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 96.9,
+      "BuildingCross": 1,
+      "DeathAni": 0.4166667,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
+    },
+    "101654": {
+      "ID": 101654,
+      "Name": "[[loc:data.monster-roster.93122.name]]",
+      "prefab": "fantasy-monsters_PossessedBlackBearV2",
+      "loadIcon": "@icon/icons/monster-roster/fantasy-monsters/possessedblackbearv2",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 6.25,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 86.7,
+      "BuildingCross": 1,
+      "DeathAni": 0.4166667,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.90001.description]]",
+        "lore": "[[loc:data.unitguide.90001.lore]]"
+      },
+      "MonsterPack": "fantasy-monsters",
+      "BehaviorTemplate": 90001
     }
   },
   "TalentCfg": {
@@ -109155,6 +109644,60 @@
       },
       "enemy:101639:default": {
         "attack": 0.4666667
+      },
+      "enemy:93120:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101640:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101641:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101642:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101643:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101644:default": {
+        "attack": 0.7666667
+      },
+      "enemy:93121:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101645:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101646:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101647:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101648:default": {
+        "attack": 0.7666667
+      },
+      "enemy:101649:default": {
+        "attack": 0.7666667
+      },
+      "enemy:93122:default": {
+        "attack": 0.25
+      },
+      "enemy:101650:default": {
+        "attack": 0.25
+      },
+      "enemy:101651:default": {
+        "attack": 0.25
+      },
+      "enemy:101652:default": {
+        "attack": 0.25
+      },
+      "enemy:101653:default": {
+        "attack": 0.25
+      },
+      "enemy:101654:default": {
+        "attack": 0.25
       }
     },
     "visuals": {
@@ -115454,6 +115997,60 @@
       },
       "enemy:101639:default": {
         "mirrorX": true
+      },
+      "enemy:93120:default": {
+        "mirrorX": true
+      },
+      "enemy:101640:default": {
+        "mirrorX": true
+      },
+      "enemy:101641:default": {
+        "mirrorX": true
+      },
+      "enemy:101642:default": {
+        "mirrorX": true
+      },
+      "enemy:101643:default": {
+        "mirrorX": true
+      },
+      "enemy:101644:default": {
+        "mirrorX": true
+      },
+      "enemy:93121:default": {
+        "mirrorX": true
+      },
+      "enemy:101645:default": {
+        "mirrorX": true
+      },
+      "enemy:101646:default": {
+        "mirrorX": true
+      },
+      "enemy:101647:default": {
+        "mirrorX": true
+      },
+      "enemy:101648:default": {
+        "mirrorX": true
+      },
+      "enemy:101649:default": {
+        "mirrorX": true
+      },
+      "enemy:93122:default": {
+        "mirrorX": true
+      },
+      "enemy:101650:default": {
+        "mirrorX": true
+      },
+      "enemy:101651:default": {
+        "mirrorX": true
+      },
+      "enemy:101652:default": {
+        "mirrorX": true
+      },
+      "enemy:101653:default": {
+        "mirrorX": true
+      },
+      "enemy:101654:default": {
+        "mirrorX": true
       }
     },
     "unitTypes": {
@@ -117593,7 +118190,25 @@
       "enemy:101636:default": "guardian",
       "enemy:101637:default": "vanguard",
       "enemy:101638:default": "skirmisher",
-      "enemy:101639:default": "mystic"
+      "enemy:101639:default": "mystic",
+      "enemy:93120:default": "fighter",
+      "enemy:101640:default": "guardian",
+      "enemy:101641:default": "vanguard",
+      "enemy:101642:default": "skirmisher",
+      "enemy:101643:default": "bruiser",
+      "enemy:101644:default": "mystic",
+      "enemy:93121:default": "fighter",
+      "enemy:101645:default": "guardian",
+      "enemy:101646:default": "vanguard",
+      "enemy:101647:default": "skirmisher",
+      "enemy:101648:default": "bruiser",
+      "enemy:101649:default": "mystic",
+      "enemy:93122:default": "fighter",
+      "enemy:101650:default": "guardian",
+      "enemy:101651:default": "vanguard",
+      "enemy:101652:default": "skirmisher",
+      "enemy:101653:default": "bruiser",
+      "enemy:101654:default": "mystic"
     },
     "unitLevels": {
       "ally:90001:level:2": {
@@ -117669,7 +118284,7 @@
     },
     "unitProfiles": {
       "version": 1,
-      "nextId": 101640,
+      "nextId": 101655,
       "entries": {
         "100000": {
           "baseId": 90001,
@@ -140405,6 +141020,216 @@
           },
           "visual": {},
           "fightingProfile": true
+        },
+        "101640": {
+          "baseId": 93120,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 57.6,
+            "AttackDamage": 4.5,
+            "AttackInterval": 0.9,
+            "Speed": 91.8
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101641": {
+          "baseId": 93120,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.75,
+            "AttackInterval": 1,
+            "Speed": 117.3
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101642": {
+          "baseId": 93120,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.5,
+            "AttackInterval": 1.1,
+            "Speed": 112.2
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101643": {
+          "baseId": 93120,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 52.8,
+            "AttackDamage": 6,
+            "AttackInterval": 0.9,
+            "Speed": 96.9
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101644": {
+          "baseId": 93120,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 6.25,
+            "AttackInterval": 0.85,
+            "Speed": 86.7
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101645": {
+          "baseId": 93121,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 57.6,
+            "AttackDamage": 4.5,
+            "AttackInterval": 0.9,
+            "Speed": 91.8
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101646": {
+          "baseId": 93121,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.75,
+            "AttackInterval": 1,
+            "Speed": 117.3
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101647": {
+          "baseId": 93121,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.5,
+            "AttackInterval": 1.1,
+            "Speed": 112.2
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101648": {
+          "baseId": 93121,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 52.8,
+            "AttackDamage": 6,
+            "AttackInterval": 0.9,
+            "Speed": 96.9
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101649": {
+          "baseId": 93121,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 6.25,
+            "AttackInterval": 0.85,
+            "Speed": 86.7
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101650": {
+          "baseId": 93122,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 57.6,
+            "AttackDamage": 4.5,
+            "AttackInterval": 0.9,
+            "Speed": 91.8
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101651": {
+          "baseId": 93122,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.75,
+            "AttackInterval": 1,
+            "Speed": 117.3
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101652": {
+          "baseId": 93122,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.5,
+            "AttackInterval": 1.1,
+            "Speed": 112.2
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101653": {
+          "baseId": 93122,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 52.8,
+            "AttackDamage": 6,
+            "AttackInterval": 0.9,
+            "Speed": 96.9
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101654": {
+          "baseId": 93122,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 6.25,
+            "AttackInterval": 0.85,
+            "Speed": 86.7
+          },
+          "visual": {},
+          "fightingProfile": true
         }
       },
       "families": {
@@ -145686,6 +146511,63 @@
             "Speed": 102
           },
           "referenceId": 93119
+        },
+        "93120": {
+          "modelKey": "source:fantasy-monsters/ButcherV2",
+          "name": "Butcher V2",
+          "profiles": {
+            "fighter": 93120,
+            "guardian": 101640,
+            "vanguard": 101641,
+            "skirmisher": 101642,
+            "bruiser": 101643,
+            "mystic": 101644
+          },
+          "baseline": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "referenceId": 93120
+        },
+        "93121": {
+          "modelKey": "source:fantasy-monsters/PunisherV2",
+          "name": "Punisher V2",
+          "profiles": {
+            "fighter": 93121,
+            "guardian": 101645,
+            "vanguard": 101646,
+            "skirmisher": 101647,
+            "bruiser": 101648,
+            "mystic": 101649
+          },
+          "baseline": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "referenceId": 93121
+        },
+        "93122": {
+          "modelKey": "source:fantasy-monsters/PossessedBlackBearV2",
+          "name": "Possessed Black Bear V2",
+          "profiles": {
+            "fighter": 93122,
+            "guardian": 101650,
+            "vanguard": 101651,
+            "skirmisher": 101652,
+            "bruiser": 101653,
+            "mystic": 101654
+          },
+          "baseline": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "referenceId": 93122
         },
         "94001": {
           "modelKey": "source:fantasy-bosses/BlackDragon",

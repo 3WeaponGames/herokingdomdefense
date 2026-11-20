@@ -7,9 +7,9 @@ test('Fantasy previews hide empty hit placeholders and keep real hit animations 
  for(const source of sources){const json=Library.describe(root,source.id,true).layers[0].json;assert(!Renderer.animationNames(json).includes('hit'),source.id);assert(Renderer.animationNames(json).includes('attack'));}
  const json={_fantasy:{},slots:[{name:'body'}],animations:{hit:{slots:{body:{color:[{time:0,color:'ff0000ff'},{time:.16,color:'ffffffff'}]}}}}};assert(Renderer.animationNames(json).includes('hit'),'A real hit flash is still selectable');
 });
-test('particle import preserves all 166 original body animations, bones and authored event contracts',()=>{
+test('Fantasy rigs preserve the original body animations, bones and authored event contracts',()=>{
  const crypto=require('node:crypto'),contracts=require('./fixtures/fantasy-body-animation-contracts.json'),hash=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');assert.equal(Object.keys(contracts).length,166);
- for(const source of sources){const rig=Library.describe(root,source.id,true).layers[0].json,animations=structuredClone(rig.animations);delete animations.__fx_ambient;for(const clip of Object.values(animations))for(const key of ['bones','slots'])for(const name of Object.keys(clip[key]||{}))if(name.startsWith('__fx/'))delete clip[key][name];assert.equal(hash(animations),contracts[source.id].animations,source.id+' body animation');assert.equal(hash(rig.bones.filter(bone=>!bone.name.startsWith('__fx/'))),contracts[source.id].bones,source.id+' bones');assert.equal(hash(rig.events||{}),contracts[source.id].events,source.id+' authored events');}
+ for(const source of sources){const contract=contracts[source.id]||contracts[source.id.replace(/V2$/,'')];assert(contract,source.id+' body contract');const rig=Library.describe(root,source.id,true).layers[0].json,animations=structuredClone(rig.animations);delete animations.__fx_ambient;for(const clip of Object.values(animations))for(const key of ['bones','slots'])for(const name of Object.keys(clip[key]||{}))if(name.startsWith('__fx/'))delete clip[key][name];assert.equal(hash(animations),contract.animations,source.id+' body animation');assert.equal(hash(rig.bones.filter(bone=>!bone.name.startsWith('__fx/'))),contract.bones,source.id+' bones');assert.equal(hash(rig.events||{}),contract.events,source.id+' authored events');}
 });
 function skeleton(source){const spine=require(Units.enginePath()),description=Library.describe(root,source.id,true).layers[0],atlas=new spine.TextureAtlas(description.atlas,name=>{const bytes=fs.readFileSync(require('node:url').fileURLToPath(description.pages[name]));return new spine.FakeTexture({width:bytes.readUInt32BE(16),height:bytes.readUInt32BE(20)});}),data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(description.json);return{spine,layer:{description,data,skeleton:new spine.Skeleton(data)}};}
 function visibleFx(layer,prefix){return layer.skeleton.slots.filter(slot=>slot.data.name.startsWith(prefix)&&slot.color.a>.01);}
@@ -23,7 +23,7 @@ test('every attacking Fantasy unit has bounded native particles without changing
     Renderer.seek(spine,[layer],cue.animation,clip.duration,false);assert.equal(visibleFx(layer,'__fx/attack-').length,0);
     Renderer.seek(spine,[layer],'idle',0,false);assert.equal(visibleFx(layer,'__fx/attack-').length,0);
    }
- }assert.equal(attacks,164);
+ }assert.equal(attacks,167);
 });
 test('the three source emitters keep their rate, lifetime, colors, population limit and seamless independent loop',()=>{
  const ambient=sources.filter(source=>{const rig=Library.describe(root,source.id,true).layers[0].json;return !!rig._fantasy.effects.ambientAnimation;});assert.equal(ambient.length,3);

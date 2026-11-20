@@ -33,7 +33,7 @@ function panelFixture() {
 test('every imported monster is an independent spawnable Units record with its actual rig and all five animations', () => {
     const store = new Store(root), documents = store.snapshot().documents, cfg = documents.A.data;
     const monsters = Object.values(cfg.SoldierCfg).filter(unit => unit.MonsterSource);
-    assert.equal(catalogs.length, 316);
+    assert.equal(catalogs.length, 319);
     assert.equal(monsters.length, catalogs.length);
     assert.equal(new Set(monsters.map(unit => unit.MonsterSource)).size, catalogs.length);
     assert.equal(new Set(monsters.map(unit => unit.prefab)).size, catalogs.length);
@@ -102,6 +102,20 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
     }
     f.panel._unitPack = 'monster1'; f.panel.$search.value = catalogs[0].id; f.panel._renderList();
     assert.equal(f.panel.$list.children.length, 1, 'source identifiers are searchable');
+    f.panel._unitPack = 'fantasy-monsters';
+    f.panel.$search.value = '  V2  ';
+    f.panel._renderList();
+    assert.deepEqual(Array.from(f.panel.$list.children, button => button.children[1].children[0].textContent).sort(),
+        ['Butcher V2', 'Possessed Black Bear V2', 'Punisher V2']);
+    f.panel.$search.value = 'bEaR   BLACK v2';
+    f.panel._renderList();
+    assert.equal(f.panel.$list.children.length, 1);
+    f.panel.$list.children[0].onclick();
+    assert.equal(f.panel._rows().find(row => row.key === f.panel._selected).label, 'Possessed Black Bear V2');
+    f.panel.$search.value = 'No such unit';
+    f.panel._renderList();
+    assert.equal(f.panel.$count.textContent, '0 models · 0 profiles');
+    assert.match(f.panel.$list.children[0].textContent, /No units match/);
     const choices = f.panel._unitOptions(false);
     for (const row of monsters) {
         const choice = choices.find(option => option.value === Number(row.unitID));

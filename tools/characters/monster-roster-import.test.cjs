@@ -19,10 +19,10 @@ function fixture(t,mutate=()=>{}){
     }
     return folder;
 }
-test('stable roster definitions cover all 316 imported variants once, with separate IDs, names, valid roles and portraits',()=>{
-    assert.equal(Definitions.units.length,316);
+test('stable roster definitions cover all 319 imported variants once, with separate IDs, names, valid roles and portraits',()=>{
+    assert.equal(Definitions.units.length,319);
     assert.deepEqual(Definitions.units.map(unit=>unit.source).sort(),sources.map(unit=>unit.id).sort());
-    assert.equal(new Set(Definitions.units.map(unit=>unit.id)).size,316);
+    assert.equal(new Set(Definitions.units.map(unit=>unit.id)).size,319);
     assert(Definitions.units.every(unit=>unit.name.trim()));
     assert.deepEqual(Definitions.units.slice(0,150).map(unit=>unit.id),Array.from({length:150},(_,i)=>91001+i));
     for(const definition of Definitions.units){

@@ -40,8 +40,8 @@ test('locomotion keeps authored run cadence, death clips survive baking, and att
  const mounted=structuredClone(original);Bake.retime(mounted,contract,true);assert.equal(Bake.duration(mounted.animations.move),1.4);
  assert.equal(Bake.duration(original.animations.attack),2,'Source animation data is unchanged');
 });
-test('317 imported bases and every converted animation parse and produce finite live Spine geometry',{skip:!fs.existsSync(engine)},()=>{
-  const spine=require(engine),library=Library.load(root);assert.equal(library.sources.length,317);
+test('320 imported bases and every converted animation parse and produce finite live Spine geometry',{skip:!fs.existsSync(engine)},()=>{
+  const spine=require(engine),library=Library.load(root);assert.equal(library.sources.length,320);
   for(const source of library.sources){
     const layer=Library.describe(root,source.id,true).layers[0],atlas=new spine.TextureAtlas(layer.atlas,name=>{const png=fs.readFileSync(require('node:url').fileURLToPath(layer.pages[name]));return new spine.FakeTexture({width:png.readUInt32BE(16),height:png.readUInt32BE(20)});}),data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(layer.json),skeleton=new spine.Skeleton(data);
     const faceless=source.pack==='character-maker'?Core.prepare(spine,skeleton,[],{}, {},{faceless:true}):null;

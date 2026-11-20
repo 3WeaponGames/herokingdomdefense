@@ -8,3 +8,4 @@
 
 .gt-grid-table{color:inherit}
 .gt-enemy-balance{grid-column:1/-1;width:100%;border-collapse:collapse}.gt-enemy-balance th,.gt-enemy-balance td{padding:6px;text-align:left;border-bottom:1px solid #4a555f}.gt-enemy-balance td{min-width:65px}.gt-enemy-balance .gt-field{min-width:0}.gt-enemy-balance .gt-field>span{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.gt-enemy-balance input{box-sizing:border-box;width:100%;min-width:58px}.gt-enemy-balance+div{grid-column:1/-1}
+.gt-search-label{display:block;margin:0 0 5px;color:#bdcbe0;font-size:11px;font-weight:600}.gt-search-label[hidden]{display:none}

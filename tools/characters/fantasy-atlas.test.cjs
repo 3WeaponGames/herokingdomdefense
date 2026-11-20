@@ -69,7 +69,18 @@ print('retained-source-pass')`);
 
 test('Fantasy repacking archives original sheets, preserves variant rigs/metadata, and repeats without writes',()=>{
   run(String.raw`
-project,artifacts,target,original,parts=fixture(base);before=tree(project);catalog_before=json.loads((project/target/'catalog.json').read_text())
+project,artifacts,target,original,parts=fixture(base)
+units_dir=project/target/'Units'; catalog_file=project/target/'catalog.json'
+native_variant=target+'/Units/UnitV2.json'
+variant=json.loads((units_dir/'Unit.json').read_bytes())
+variant['skins']=[{'name':'default','attachments':{'body':{'normal':{'path':'painted','width':16,'height':16}}}}]
+(project/native_variant).write_text(json.dumps(variant))
+(units_dir/'UnitV2.json.meta').write_text(json.dumps({'uuid':'unit-v2','textures':['painted-page']}))
+(units_dir/'UnitV2.atlas').write_text('\nUnitV2.png\nsize: 16,16\nformat: RGBA8888\nfilter: Linear,Linear\nrepeat: none\npainted\n  rotate: false\n  xy: 0, 0\n  size: 16, 16\n  orig: 16, 16\n  offset: 0, 0\n  index: -1\n')
+(units_dir/'UnitV2.png').write_bytes(png(Image.new('RGBA',(16,16),(33,170,75,255))))
+catalog_before=json.loads(catalog_file.read_bytes())
+catalog_before['units'].append({'id':'fantasy-monsters/UnitV2','skeleton':native_variant,'uuid':'unit-v2','variantOf':'fantasy-monsters/Unit'})
+catalog_file.write_text(json.dumps(catalog_before));before=tree(project)
 report=m.repack_atlases(project,artifacts,['fantasy-monsters'],True);assert report['backup'] is None;assert tree(project)==before;assert not artifacts.exists()
 report=m.repack_atlases(project,artifacts,['fantasy-monsters']);assert report['units']==2;assert report['repacked']==1
 catalog=json.loads((project/target/'catalog.json').read_text());assert catalog['parts']==catalog_before['parts'];assert catalog['units']==catalog_before['units'];assert catalog['source']==catalog_before['source'];assert catalog['conversion']['futureConversion'];assert catalog['futureCatalog']
@@ -77,7 +88,7 @@ record=catalog['sourceSheets'][0];assert record['layout']=='repacked';assert (pr
 runtime=(project/target/'Units/sheet_sheet.png').read_bytes();assert a.color_chunks(runtime)==a.color_chunks(original)
 assert runtime==(project/target/'Atlases/sheet_sheet.png').read_bytes();assert max(Image.open(io.BytesIO(runtime)).size)<=2048
 for relative,hash in before.items():
- if '/Parts/' in relative or relative.endswith('.json') and not relative.endswith('catalog.json') or relative.endswith('.atlas.meta') or relative.endswith('.json.meta'):assert tree(project)[relative]==hash,relative
+ if '/Parts/' in relative or '/UnitV2.' in relative or relative.endswith('.json') and not relative.endswith('catalog.json') or relative.endswith('.atlas.meta') or relative.endswith('.json.meta'):assert tree(project)[relative]==hash,relative
 for name in ['Unit','Variant']:
  atlas=(project/target/'Units'/(name+'.atlas')).read_text();assert 'futurePage: retained' in atlas and 'futureRegion: retained' in atlas and 'index: 7' in atlas
 after=tree(project);stamp=(project/target/'catalog.json').stat().st_mtime_ns;count=len(list(artifacts.iterdir()))

@@ -4,7 +4,7 @@ const Library=require('../../packages/hkd-characters/lib/unit-library'),Boss=req
 const root=path.resolve(__dirname,'../..'),read=relative=>JSON.parse(fs.readFileSync(path.join(root,relative))),clone=structuredClone;
 const sources=Library.load(root).sources.filter(source=>source.pack.startsWith('fantasy-'));
 test('all Fantasy models expose only visible authored slots and compatible outfits, including every Golem outfit',()=>{
-  assert.equal(sources.length,166);
+  assert.equal(sources.length,169);
   for(const source of sources){
     const rig=read(source.skeleton),meta=Boss.metadata(rig);assert.equal(meta.preset,source.id);
     assert(meta.presets.length);assert(Object.keys(meta.slots).length);
@@ -16,6 +16,28 @@ test('all Fantasy models expose only visible authored slots and compatible outfi
     }
     if(source.pack==='fantasy-bosses'&&source.family==='Golems'){assert.equal(meta.presets.length,6);assert(!Object.keys(meta.slots).some(slot=>/Weapon/.test(slot)),'The disabled placeholder weapon is not an option');}
     if(source.family.startsWith('Titans/'))assert.equal(meta.presets.length,3,'Titan outfits stay with their own species');
+  }
+});
+test('Minimal-style V2 art preserves the original skeleton, attachment geometry, expressions and animation events',()=>{
+  for(const name of ['Butcher','Punisher','PossessedBlackBear']){
+    const id='fantasy-monsters/'+name;
+    const original=Library.describe(root,id,true).layers[0],variant=Library.describe(root,id+'V2',true).layers[0];
+    assert.notEqual(variant.uuid,original.uuid);
+    for(const key of ['skeleton','bones','slots','animations','events'])assert.deepEqual(variant.json[key],original.json[key],id+'/'+key);
+    assert.deepEqual(variant.json._fantasy.effects,original.json._fantasy.effects);
+    assert.deepEqual(variant.json._fantasy.expressions,original.json._fantasy.expressions);
+    const before=original.json.skins.find(skin=>skin.name==='default').attachments;
+    const after=variant.json.skins.find(skin=>skin.name==='default').attachments;
+    assert.deepEqual(Object.keys(after),Object.keys(before));
+    for(const [slot,attachments] of Object.entries(before)){
+      assert.deepEqual(Object.keys(after[slot]),Object.keys(attachments));
+      for(const [key,attachment] of Object.entries(attachments)){
+        const {path:oldPath,...oldGeometry}=attachment,{path:newPath,...newGeometry}=after[slot][key];
+        assert.deepEqual(newGeometry,oldGeometry,id+'/'+slot+'/'+key);
+        if(slot==='Shadow'||slot.startsWith('__fx/'))assert.equal(newPath,oldPath);
+        else assert.notEqual(newPath,oldPath);
+      }
+    }
   }
 });
 test('Fantasy colors, transforms, visibility and expression overrides survive baking without changing source animations',()=>{
@@ -36,7 +58,7 @@ test('unsupported slots, outfits, expressions and invalid transforms are rejecte
 });
 test('package filtering and sorting include created entries without mutating the list or changing profiles',()=>{
   const units=new Service(root).units(),data=read('assets/resources/characters/catalog.json'),before=JSON.stringify(data),listed=Catalog.listed(data,units);
-  assert.equal(Packs.list(listed,{pack:'fantasy-bosses'}).length,47);assert.equal(Packs.list(listed,{pack:'fantasy-monsters'}).length,119);assert.equal(Packs.list(listed,{pack:'monster3'}).length,50);
+  assert.equal(Packs.list(listed,{pack:'fantasy-bosses'}).length,47);assert.equal(Packs.list(listed,{pack:'fantasy-monsters'}).length,122);assert.equal(Packs.list(listed,{pack:'monster3'}).length,50);
   const ordered=Packs.list(listed,{sort:'package'});for(let i=1;i<ordered.length;i++)assert(Packs.forUnit(ordered[i-1]).label.localeCompare(Packs.forUnit(ordered[i]).label)<=0);
   assert.equal(JSON.stringify(data),before);assert.equal(Packs.forUnit(units.find(unit=>unit.type==='ally')).mode,'maker');
   const boss=units.find(unit=>unit.sourcePack==='fantasy-bosses');assert.equal(Catalog.defaults(boss).source,boss.appearance);
