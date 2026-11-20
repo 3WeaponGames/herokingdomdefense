@@ -23,6 +23,7 @@ var StartScreen = cc.Class({
     this.node.on(cc.Node.EventType.TOUCH_END, this.beginLoading, this);
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     cc.view.on("canvas-resize", this.fitContent, this);
+    cc.view.on("design-resolution-changed", this.fitContent, this);
     this.fitContent();
     this._pulse = cc.tween(this.prompt.node)
       .to(.9, { opacity: 175 }, { easing: "sineInOut" })
@@ -31,19 +32,7 @@ var StartScreen = cc.Class({
   },
 
   fitContent: function () {
-    var size = cc.view.getVisibleSize();
-    // Keep the complete title and tap target visible on short/wide displays.
-    var scale = Math.min(1, (size.width - 64) / 720, (size.height - 96) / 1120);
-    this.content.setScale(scale);
-    var logo = this.content.getChildByName && this.content.getChildByName("GameLogo");
-    if (logo) {
-      var topInset = 44;
-      if (cc.sys && cc.sys.getSafeAreaRect && cc.view.getVisibleOrigin) {
-        var safe = cc.sys.getSafeAreaRect(), origin = cc.view.getVisibleOrigin();
-        topInset += Math.max(0, origin.y + size.height - safe.y - safe.height);
-      }
-      logo.y = (size.height / 2 - topInset) / scale - logo.height * Math.abs(logo.scaleY) * (1 - logo.anchorY);
-    }
+    Startup.fit(this.content, cc);
   },
 
   onKeyDown: function (event) {
@@ -78,6 +67,7 @@ var StartScreen = cc.Class({
     this.node.off(cc.Node.EventType.TOUCH_END, this.beginLoading, this);
     cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     cc.view.off("canvas-resize", this.fitContent, this);
+    cc.view.off("design-resolution-changed", this.fitContent, this);
   }
 });
 

@@ -19,10 +19,10 @@ function fixture(width=750,options={}){
   class Graphics{constructor(){this.rectangles=[];}rect(...args){this.rectangles.push(args);}roundRect(...args){this.rectangles.push(args);}arc(){}stroke(){}fill(){}clear(){this.rectangles=[];}}
   class Label{};Label.Overflow={SHRINK:2,CLAMP:1};Label.HorizontalAlign={CENTER:1};Label.VerticalAlign={CENTER:1};
   class Sprite{};Sprite.Type={SIMPLE:0};Sprite.SizeMode={CUSTOM:0};
-  const barRequests=[],prefab=Kit.asset(),requests=[],resizes=new Set(),frame={refs:0,releases:0,addRef(){this.refs++;},decRef(){this.refs--;this.releases++;},getOriginalSize:()=>({width:1024,height:1536})};
+  const barRequests=[],prefab=Kit.asset(),requests=[],resizes=new Map(),frame={refs:0,releases:0,addRef(){this.refs++;},decRef(){this.refs--;this.releases++;},getOriginalSize:()=>({width:1024,height:1536})};
   const events=new Map(),once=new Map(),cc={Node,Graphics,Label,Sprite,Prefab:class{},instantiate:asset=>Kit.instantiate(cc,asset),SpriteFrame:class{},LabelOutline:class{},BlockInputEvents:class{},macro:{MAX_ZINDEX:32767},winSize:{width,height:options.height||1334},color:(...rgba)=>rgba,isValid:value=>!!value&&!value.destroyed,
     resources:{load(resource,type,done){if(type===cc.Prefab){barRequests.push({resource,type,done});if(!options.pendingBar)done(options.barError||null,options.barError?null:prefab);return;}requests.push({resource,type,done});if(!options.pendingArtwork)done(options.artError||null,options.artError?null:frame);}},
-    view:{on(event,fn){assert.equal(event,'canvas-resize');resizes.add(fn);},off(event,fn){assert.equal(event,'canvas-resize');resizes.delete(fn);}},
+    view:{on(event,fn){resizes.set(event,fn);},off(event){resizes.delete(event);}},
     Director:{EVENT_BEFORE_DRAW:'before',EVENT_AFTER_DRAW:'after'},director:{on(event,fn){if(!events.has(event))events.set(event,new Set());events.get(event).add(fn);},once(event,fn){if(!once.has(event))once.set(event,new Set());once.get(event).add(fn);},off(event,fn){events.get(event)?.delete(fn);once.get(event)?.delete(fn);}}};
   const uiRoot=new Node('UI');uiRoot.group='UI';const transition=new Node('UITouch');transition.parent=uiRoot;transition.zIndex=1000;
   // BaseUI.T accepts one key and discards formatting arguments. Model its
@@ -32,7 +32,7 @@ function fixture(width=750,options={}){
   const screen=Loading.create(view,level,uiRoot,cc,options.loadingOptions);
   function draw(){for(const event of ['before','after']){for(const fn of [...events.get(event)||[]])fn(1/60);const listeners=[...once.get(event)||[]];once.get(event)?.clear();listeners.forEach(fn=>fn(1/60));}}
   const count=()=>[...events.values(),...once.values()].reduce((total,listeners)=>total+listeners.size,0);
-  return{cc,uiRoot,transition,view,screen,draw,count,requests,barRequests,prefab,resizes,frame,resize(width,height){cc.winSize.width=width;cc.winSize.height=height;for(const fn of resizes)fn();}};
+  return{cc,uiRoot,transition,view,screen,draw,count,requests,barRequests,prefab,resizes,frame,resize(width,height){cc.winSize.width=width;cc.winSize.height=height;resizes.get('design-resolution-changed')();}};
 }
 for(const width of [360,750])test('stage loading stays above the closed transition with readable native label bounds at width '+width,()=>{
   const f=fixture(width),root=f.screen.node,panel=root.getChildByName('Loading panel');
@@ -128,7 +128,7 @@ test('closing or revealing during an image request cannot revive the backdrop or
 
 test('transparent startup loading keeps its existing artwork and panel position without requesting biome art',async()=>{
   const f=fixture(750,{level:null,loadingOptions:{transparent:true,detailed:true,panelY:-477,title:'Preparing your kingdom'}});
-  assert.equal(f.requests.length,0);assert.equal(f.barRequests.length,1);assert.equal(f.resizes.size,1);assert.equal(f.screen.node.getChildByName('Backdrop').children.length,0);
+  assert.equal(f.requests.length,0);assert.equal(f.barRequests.length,1);assert.equal(f.resizes.size,2);assert.equal(f.screen.node.getChildByName('Backdrop').children.length,0);
   const panel=f.screen.node.getChildByName('Loading panel');assert.equal(panel.y,-477);f.screen.progress(.123);assert.equal(Kit.progress(panel).getComponent(f.cc.Label).string,'Loading...12.3%');
   await f.screen.waitForArtwork();f.screen.destroy();
 });

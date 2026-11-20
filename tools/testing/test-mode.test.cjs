@@ -134,6 +134,22 @@ test('Badge is localized, restores label width, stays inside spare top margin, a
   assert.equal(env.calls.bindings, 2);
 });
 
+test('startup defers the saved test badge and FPS sampling until the lobby is ready', () => {
+  const env = environment({ preview: true, canvas: true, storage: new Map([['project-cocos.test-mode','1']]) });
+  env.service.setStartupActive(true);
+  env.service.init(); env.director.emit('scene');
+  assert(env.service.isEnabled());
+  assert.equal(env.cc.Canvas.instance.node.children.length, 0);
+  assert.equal(env.director.listeners.has('draw'), false);
+  env.service.setStartupActive(false);
+  const badge = env.service._badge;
+  assert(badge.active); assert.equal(env.director.listeners.get('draw').length, 1);
+  env.service.setStartupActive(true);
+  assert.equal(badge.active, false); assert.equal(env.director.listeners.has('draw'), false);
+  env.service.setStartupActive(false);
+  assert.equal(env.service._badge, badge); assert.equal(env.calls.writes, 0);
+});
+
 test('FPS samples completed render frames and updates every half second in Browser and native', () => {
   for (const web of [true, false]) {
     const env = environment({ debug: true, web, canvas: true }); env.service.setEnabled(true);

@@ -638,6 +638,40 @@ test('Bruiser basic hits use their dedicated clip while active and secondary hit
  }
 });
 
+test('every confirmed Bruiser basic hit plays over crowd impacts, including rapid hits and criticals', () => {
+  const f = fixture();
+  f.hero.heroStyle = 'bruiser'; f.start();
+  const target = f.actor(90007);
+  f.sounds.effect('impact-armour', target); f.finishAll();
+  const crowd = f.played[0].source;
+  for (let i = 0; i < 12; i++) {
+    f.sounds.hit(target, f.hero, 10, { context: { heroStyle: 'bruiser', critical: i === 2 || i === 3 } });
+    f.finishAll();
+    f.advance(40);
+  }
+  const contacts = f.played.slice(1);
+  assert.equal(contacts.length, 12);
+  assert.deepEqual(contacts.map(hit => hit.path), Array.from({ length: 12 }, (_, i) =>
+    'sfx/' + (i === 2 || i === 3 ? 'critical-hit' : 'impact-bruiser-basic')));
+  assert.equal(new Set(contacts.map(hit => hit.source)).size, 8);
+  assert(contacts.every(hit => hit.source !== crowd));
+  assert.equal(crowd.state, 1);
+  f.sounds.hit(target, f.hero, 0); f.finishAll();
+  assert.equal(f.played.length, 13);
+});
+
+test('a confirmed lethal Bruiser contact can play after the victim is pooled during an asset load', () => {
+  const f = fixture();
+  f.hero.heroStyle = 'bruiser'; f.start();
+  f.manager.audioClipMap.delete(JSON.stringify(['KinghtFallAudio', 'sfx/impact-bruiser-basic']));
+  const target = f.actor(90007);
+  f.sounds.hit(target, f.hero, 10, { context: { heroStyle: 'bruiser' } });
+  target.node._combatGeneration++;
+  target.node.activeInHierarchy = false;
+  f.finishAll();
+  assert.deepEqual(f.played.map(hit => hit.path), ['sfx/impact-bruiser-basic']);
+});
+
 test('critical basic and active hits use the shared cue for all six hero styles', () => {
   for (const style of ['skirmisher', 'fighter', 'vanguard', 'mystic', 'bruiser', 'guardian']) {
     for (const active of [false, true]) {

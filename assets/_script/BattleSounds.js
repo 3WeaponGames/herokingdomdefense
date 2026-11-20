@@ -98,30 +98,32 @@ function effect(id, owner, options) {
   if (!entry || entry.loop || !current(state) || !audible(state) || paused(state) && entry.group !== "signal" && entry.group !== "ui" || !closingMenu && !validNode(owner)) return false;
   if (owner && !options.allowDead && (owner._isPooled || owner.isDead && owner.isDead())) return false;
   var now = Date.now(), cooldown = options.cooldown === undefined ? entry.cooldown : options.cooldown;
-  if (state.last[id] !== undefined && now - state.last[id] < cooldown) return false;
-  var hit = /^(?:impact-|arrow-impact-)|^(?:magic-impact|cannon-impact-explosion|critical-hit)$/.test(id);
+  var bruiserContact = options.bruiserContact === true;
+  if (!bruiserContact && state.last[id] !== undefined && now - state.last[id] < cooldown) return false;
+  var hit = !bruiserContact && /^(?:impact-|arrow-impact-)|^(?:magic-impact|cannon-impact-explosion|critical-hit)$/.test(id);
   if (hit && state.lastHitStartedAt !== undefined && now - state.lastHitStartedAt < 500) return false;
   var location = options.point || point(owner), distanceGain = attenuation(state, location);
   if (!distanceGain) return false;
   var generation = owner && owner.node && owner.node._combatGeneration, version = state.effectsEpoch, cancelEpoch = state.cancelEpoch, managerEpoch = state.manager.effectEpoch;
   var resourceGeneration = owner && owner._resourceGeneration, closing = !!options.closing;
-  state.last[id] = now;
+  if (!bruiserContact) state.last[id] = now;
   try { state.manager.loadClip("KinghtFallAudio", entry.path, entry.path, function (clip) {
     if (!clip || !current(state) || !audible(state) || state.cancelEpoch !== cancelEpoch || state.manager.effectEpoch !== managerEpoch || Date.now() - now > 500 || !closingMenu && !validNode(owner)) return;
     if (entry.group !== "signal" && entry.group !== "ui" && (paused(state) || state.effectsEpoch !== version)) return;
     if (owner && owner.node && owner.node._combatGeneration !== generation) return;
     if (owner && !options.allowDead && (owner._isPooled || owner.isDead && owner.isDead())) return;
     if (options.menu && owner && (closing ? owner._resourceGeneration !== resourceGeneration && owner._resourceGeneration !== resourceGeneration + 1 : owner._resourceGeneration !== resourceGeneration || owner.isclose)) return;
-    // All weapons share one impact budget, including delayed asset callbacks.
-    // Let an accepted hit finish; swings must not keep cutting it into stutters.
+    // Crowd impacts share one voice and cooldown, even after an asset load.
+    // Bruiser contacts use the hero voices and can reuse the oldest at capacity.
     var startedAt = Date.now();
     if (hit && state.lastHitStartedAt !== undefined && startedAt - state.lastHitStartedAt < 500) return;
-    var group = hit ? "hit" : entry.group, count = SLOTS[group] || 2, selected = null, oldest = Infinity;
+    var group = bruiserContact ? "heroHit" : hit ? "hit" : entry.group;
+    var count = SLOTS[group] || 2, selected = null, oldest = Infinity;
     for (var i = 0; i < count; i++) {
       var slot = getSource(state, group + "-" + i);
       if (!busy(state, slot.source)) { selected = slot; break; }
       if (hit) return;
-      if (entry.group === "heroHit") continue;
+      if (entry.group === "heroHit" && !bruiserContact) continue;
       if ((slot.source._sfxStartedAt || 0) < oldest) { oldest = slot.source._sfxStartedAt || 0; selected = slot; }
     }
     if (!selected) return;
@@ -194,7 +196,10 @@ function hit(target, source, damage, options) {
   else id = armored ? "impact-armour" : damage >= (target.hpMax || Infinity) * .2 ? "impact-flesh-heavy" : "impact-flesh-light";
   var customImpact=source&&source._styleRuntime&&source._styleRuntime.settings&&source._styleRuntime.settings.audio&&source._styleRuntime.settings.audio.impact;
   if(customImpact&&customImpact.clip&&!options.magic&&!bruiserBasic)id=null;
-  if (id) effect(id, target, { allowDead: true });
+  // Own confirmed Bruiser contacts by the hero so a lethal hit can finish
+  // loading after its victim has left the battlefield.
+  if (id && bruiserBasic) effect(id, source, { allowDead: true, point: point(target), bruiserContact: true });
+  else if (id) effect(id, target, { allowDead: true });
   return true;
 }
 function death() {

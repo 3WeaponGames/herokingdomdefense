@@ -9,13 +9,15 @@ function fixture() {
   const requests = [], listeners = [], imports = [];
   let pulseStopped = 0, size = { width: 750, height: 1334 };
   const language = { setCatalog(data) { this.catalog = data; }, t: key => key };
+  const presentation = { exports: {}, require: () => ({}) };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/StartupPresentation.js'), 'utf8'), presentation);
   const eventTarget = { on: (...args) => listeners.push(args), off: (name, fn, owner) => {
     const index = listeners.findIndex(v => v[0] === name && v[1] === fn && v[2] === owner);
     if (index >= 0) listeners.splice(index, 1);
   } };
   const context = { module: { exports: {} }, require(name) {
     imports.push(name);
-    if(name==='StartupPresentation')return{start(){},carry(){}};
+    if(name==='StartupPresentation')return{fit:presentation.exports.fit,start(){},carry(){}};
     if(name==='ProgressReset')return require('../../assets/_script/ProgressReset');
     assert.equal(name, 'LanguageMgr', 'title screen initializes only language and its presentation');
     return { LanguageMgr: { getInstance: () => language } };
@@ -30,7 +32,7 @@ function fixture() {
   } };
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/StartScreen.js'), 'utf8'), context);
   const owner = new context.module.exports();
-  Object.assign(owner, { node: eventTarget, prompt: { node: {} }, catalog: { json: { entries: {} } }, content: { setScale(value) { this.scale = value; } } });
+  Object.assign(owner, { node: eventTarget, prompt: { node: {} }, catalog: { json: { entries: {} } }, content: { setScale(value) { this.scale = value; }, getChildByName() {} } });
   owner.onLoad();
   return { owner, context, requests, listeners, imports, resize(width, height) { size = { width, height }; owner.fitContent(); }, get pulseStopped() { return pulseStopped; } };
 }
@@ -82,6 +84,7 @@ test('both build and editor start at the dedicated title scene with all required
   const classId = hex.slice(0, 5) + hex.slice(5).replace(/.../g, group => { const value = parseInt(group, 16); return alphabet[value >> 6] + alphabet[value & 63]; });
   assert(scene.some(value => value.__type__ === classId));
   for (const name of ['Background','GameLogo','Castle','TapToStart']) assert(scene.some(value => value._name === name));
+  assert.equal(scene.find(value => value.__type__ === 'cc.Camera')._clearFlags & 1, 1);
   const catalog = read('assets/resources/localization/catalog.json');
   assert.equal(catalog.entries['start.tap'].en, 'Tap to Start'); assert(catalog.entries['start.tap'].zh);
 });

@@ -231,7 +231,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 1.48
+    "duration": 1
   },
   "critical-hit": {
     "path": "sfx/critical-hit",

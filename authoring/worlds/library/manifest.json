@@ -15701,15 +15701,15 @@
         "desert"
       ],
       "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/northwest-headland.png",
-      "width": 1000,
-      "height": 2400,
+      "width": 1066,
+      "height": 2254,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "fb63c1a9ad4c25138c3192cc20bb2387e101e4b994f62437f4fdbf0d3eb21581",
+      "sha256": "c556c66c6d0eba693054dacd4c4f7dd6ae31f4a16bf72a4172c8c34ae3ba77cc",
       "source": {
         "kind": "authored-terrain-piece",
         "generation": "eight-biome-expansion-2026-11-18",
@@ -15749,8 +15749,14 @@
           "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
         },
         "castShadow": false,
-        "generatedSha256": "fb63c1a9ad4c25138c3192cc20bb2387e101e4b994f62437f4fdbf0d3eb21581",
-        "geometry": "stepped sandstone formation"
+        "generatedSha256": "c556c66c6d0eba693054dacd4c4f7dd6ae31f4a16bf72a4172c8c34ae3ba77cc",
+        "geometry": "Connected sandstone tiers with closed crowns and exposed rock faces",
+        "registeredScreenBounds": {
+          "x": -2,
+          "y": 76,
+          "width": 533,
+          "height": 1127
+        }
       },
       "nativeScale": 0.5
     },
@@ -15762,15 +15768,15 @@
         "desert"
       ],
       "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/northeast-mesa.png",
-      "width": 1000,
-      "height": 2800,
+      "width": 1100,
+      "height": 2556,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "4e56ca9d5eb4fc94f861760c15f105dbcc0d8e3898e118fc9292b86754607bf2",
+      "sha256": "ed06690f5430aaea3ab1d92b2938c76cc0faed2f1fdbbcadb6c4fddc40ce4a76",
       "source": {
         "kind": "authored-terrain-piece",
         "generation": "eight-biome-expansion-2026-11-18",
@@ -15810,8 +15816,14 @@
           "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
         },
         "castShadow": false,
-        "generatedSha256": "4e56ca9d5eb4fc94f861760c15f105dbcc0d8e3898e118fc9292b86754607bf2",
-        "geometry": "stepped sandstone formation"
+        "generatedSha256": "ed06690f5430aaea3ab1d92b2938c76cc0faed2f1fdbbcadb6c4fddc40ce4a76",
+        "geometry": "Connected sandstone tiers with closed crowns and exposed rock faces",
+        "registeredScreenBounds": {
+          "x": 1307,
+          "y": 257,
+          "width": 550,
+          "height": 1278
+        }
       },
       "nativeScale": 0.5
     },
@@ -15823,15 +15835,15 @@
         "desert"
       ],
       "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/southwest-stair.png",
-      "width": 1100,
-      "height": 1480,
+      "width": 1288,
+      "height": 1442,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "9c5586da270aac0118b90d2e4c185723293e6e22cd17ec221688e14a79bec6ee",
+      "sha256": "29735ed4fb6c4fc6c13ef6c250572247bc5a0cc63a49706b235cdd4d871a1a62",
       "source": {
         "kind": "authored-terrain-piece",
         "generation": "eight-biome-expansion-2026-11-18",
@@ -15871,8 +15883,14 @@
           "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
         },
         "castShadow": false,
-        "generatedSha256": "9c5586da270aac0118b90d2e4c185723293e6e22cd17ec221688e14a79bec6ee",
-        "geometry": "stepped sandstone formation"
+        "generatedSha256": "29735ed4fb6c4fc6c13ef6c250572247bc5a0cc63a49706b235cdd4d871a1a62",
+        "geometry": "Connected sandstone tiers with closed crowns and exposed rock faces",
+        "registeredScreenBounds": {
+          "x": 83,
+          "y": 1790,
+          "width": 644,
+          "height": 721
+        }
       },
       "nativeScale": 0.5
     },
@@ -15884,15 +15902,15 @@
         "desert"
       ],
       "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/southeast-oasis.png",
-      "width": 900,
-      "height": 1800,
+      "width": 964,
+      "height": 1662,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "30e96b0b264b556622bd679aee09bc4943a6a1cc4a210a451a5badb32cfee84c",
+      "sha256": "7b57a305d413048b599853f34cd8b91f46245415fe5ff8d21da9f9018b98cafc",
       "source": {
         "kind": "authored-terrain-piece",
         "generation": "eight-biome-expansion-2026-11-18",
@@ -15932,9 +15950,15 @@
           "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
         },
         "castShadow": false,
-        "generatedSha256": "30e96b0b264b556622bd679aee09bc4943a6a1cc4a210a451a5badb32cfee84c",
+        "generatedSha256": "7b57a305d413048b599853f34cd8b91f46245415fe5ff8d21da9f9018b98cafc",
         "registeredWaterRGB": null,
-        "geometry": "repainted terrain at its existing placement"
+        "geometry": "Layered oasis shoreline and turquoise depth bands",
+        "registeredScreenBounds": {
+          "x": 1555,
+          "y": 2135,
+          "width": 482,
+          "height": 831
+        }
       },
       "nativeScale": 0.5
     },
@@ -17179,15 +17203,15 @@
         "desert"
       ],
       "file": "authoring/worlds/library/images/biome-expansion/map-biome-desert-caravan-bend/western-canyon-bank.png",
-      "width": 900,
-      "height": 2600,
+      "width": 1162,
+      "height": 2452,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "df6f1b1b94ed594cbd42f6c05e9e1c9c9c76769d05b5f0f7b7803281f82360f1",
+      "sha256": "b9e1eb81900482391a5264ba602cd66bb92b23f68fc17c74f520906e04a78202",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-desert-caravan-bend",
@@ -17208,7 +17232,7 @@
           "y": 0
         },
         "resampling": "none; exact native-pixel crop only",
-        "nativeFoundationCapTransparent": true,
+        "nativeFoundationCapTransparent": false,
         "nativeFieldShore": false,
         "flatWater": false,
         "flatGround": false,
@@ -17222,8 +17246,14 @@
           "styleBoardSha256": "353d78f52a569cad664736575f3c422becfdf99fd4f51e5650db21c7d078fdcc"
         },
         "castShadow": false,
-        "generatedSha256": "df6f1b1b94ed594cbd42f6c05e9e1c9c9c76769d05b5f0f7b7803281f82360f1",
-        "geometry": "stepped sandstone formation"
+        "generatedSha256": "b9e1eb81900482391a5264ba602cd66bb92b23f68fc17c74f520906e04a78202",
+        "geometry": "Connected sandstone tiers with closed crowns and exposed rock faces",
+        "registeredScreenBounds": {
+          "x": -130,
+          "y": 1952,
+          "width": 581,
+          "height": 1226
+        }
       },
       "nativeScale": 0.5
     },

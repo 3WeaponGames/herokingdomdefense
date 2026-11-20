@@ -7,6 +7,9 @@ function text(key, fallback, args) {
   return value && value !== key ? value : fallback;
 }
 function live(node, cc) { return node && cc.isValid(node, true); }
+function setStartupActive(active) {
+  require("TestMode").TestMode.getInstance().setStartupActive(active);
+}
 function playStart(cc) {
   var audio = require("AudioMgr").AudioMgr.getInstance();
   if (!audio.audioLifecycleBound) audio.init({});
@@ -23,18 +26,42 @@ function release(current, cc) {
     var resources = require("ResourceMgr").ResourceMgr.getInstance();
     if (resources.startupProgress === current.session) resources.startupProgress = null;
   }
-  if (current.resize) cc.view.off("canvas-resize", current.resize);
-  if (current.overlay) current.overlay.destroy();
-  if (live(current.backdrop, cc)) current.backdrop.destroy();
+  if (current.resize) {
+    cc.view.off("canvas-resize", current.resize);
+    cc.view.off("design-resolution-changed", current.resize);
+  }
+  if (current.overlay) {
+    if (live(current.overlay.node, cc)) current.overlay.node.active = false;
+    current.overlay.destroy();
+  }
+  if (live(current.backdrop, cc)) {
+    current.backdrop.active = false;
+    current.backdrop.destroy();
+  }
+  if (live(current.camera, cc)) current.camera.clearFlags = current.clearFlags;
   if (current.persisted && live(current.startRoot, cc)) {
     if (cc.game.removePersistRootNode) cc.game.removePersistRootNode(current.startRoot);
     current.startRoot.destroy();
   }
 }
+function finishPresentation(current, cc) {
+  current.active = false;
+  release(current, cc);
+  state = null;
+  setStartupActive(false);
+}
+function moveBackground(background, parent) {
+  if (!background) return;
+  // Re-enable under the new parent so LobbyBackground follows its size changes.
+  var active = background.active;
+  background.active = false;
+  background.parent = parent;
+  background.active = active;
+}
 function fit(content, cc) {
   if (!live(content, cc)) return;
   var size = cc.view.getVisibleSize();
-  var scale = Math.min(1, (size.width - 64) / 720, (size.height - 96) / 1120);
+  var scale = Math.max(.01, Math.min(1, (size.width - 64) / 720, (size.height - 96) / 1120));
   content.setScale(scale);
   var logo = content.getChildByName("GameLogo");
   if (logo) {
@@ -46,9 +73,11 @@ function fit(content, cc) {
     logo.y = (size.height / 2 - inset) / scale - logo.height * Math.abs(logo.scaleY) * (1 - logo.anchorY);
   }
 }
+exports.fit = fit;
 exports.start = function (owner, cc) {
   release(state, cc);
   state = { active: true, startOwner: owner, startRoot: owner.node, content: owner.content };
+  setStartupActive(true);
   playStart(cc);
 };
 exports.carry = function (owner, cc) {
@@ -59,8 +88,8 @@ exports.carry = function (owner, cc) {
     var root = new cc.Node("Startup artwork carry");
     root.parent = cc.director.getScene(); root.group = owner.node.group;
     root.setPosition(owner.node.getPosition()); root.setScale(owner.node.scaleX, owner.node.scaleY);
-    var background = owner.node.getChildByName("Background");
-    if (background) background.parent = root;
+    root.setContentSize(owner.node.width, owner.node.height);
+    moveBackground(owner.node.getChildByName("Background"), root);
     owner.content.parent = root;
     state.startRoot = root; cc.game.addPersistRootNode(root); state.persisted = true;
   }
@@ -69,21 +98,43 @@ exports.carry = function (owner, cc) {
 exports.restore = function (owner, cc) {
   if (!state || state.startOwner !== owner || !state.persisted || !live(state.startRoot, cc)) return;
   var root = state.startRoot, background = root.getChildByName("Background");
-  if (background) background.parent = owner.node;
+  moveBackground(background, owner.node);
   owner.content.parent = owner.node;
   if (cc.game.removePersistRootNode) cc.game.removePersistRootNode(root);
   root.destroy(); state.startRoot = owner.node; state.persisted = false;
 };
 exports.loading = function (owner, parent, cc) {
   if (!state || !state.active) { state = { active: true }; playStart(cc); }
+  setStartupActive(true);
   var current = state, legacy = parent.getChildByName("UILoading") || parent;
   current.loadingOwner = owner;
+  var cameraNode = parent.getChildByName("Main Camera");
+  var camera = cameraNode && cameraNode.getComponent(cc.Camera);
+  if (camera) {
+    // The persistent UI camera is depth-only when compositing the battle.
+    // During startup it also owns the color buffer on native backends.
+    current.camera = camera; current.clearFlags = camera.clearFlags;
+    camera.clearFlags |= cc.Camera.ClearFlags.COLOR;
+  }
   var backdrop = current.backdrop = new cc.Node("Startup backdrop");
-  backdrop.parent = parent; backdrop.group = parent.group; backdrop.zIndex = 9998;
+  backdrop.parent = legacy; backdrop.group = legacy.group;
+  var matte = backdrop.addComponent(cc.Graphics);
+  matte.fillColor = cc.color(18, 27, 38, 255);
   legacy.zIndex = 9999;
+  current.resize = function () {
+    var size = cc.view.getVisibleSize();
+    if (backdrop.width !== size.width || backdrop.height !== size.height) {
+      backdrop.setContentSize(size.width, size.height);
+      matte.clear();
+      matte.rect(-size.width / 2, -size.height / 2, size.width, size.height);
+      matte.fill();
+    }
+    if (live(current.artwork, cc)) current.artwork.setContentSize(size.width, size.height);
+    fit(current.content, cc);
+  };
+  current.resize();
   if (live(current.startRoot, cc)) {
-    var background = current.startRoot.getChildByName("Background");
-    if (background) background.parent = backdrop;
+    moveBackground(current.startRoot.getChildByName("Background"), backdrop);
     if (live(current.content, cc)) {
       current.content.parent = backdrop;
       var button = current.content.getChildByName("StartButton");
@@ -94,12 +145,14 @@ exports.loading = function (owner, parent, cc) {
   } else {
     require("ResourceMgr").ResourceMgr.getInstance().loadRes("resources", "startup/backdrop", cc.Prefab, function (prefab) {
       if (state !== current || !current.active || !live(backdrop, cc)) return;
-      var artwork = cc.instantiate(prefab); artwork.parent = backdrop;
-      current.content = artwork.getChildByName("TitleContent"); fit(current.content, cc);
+      var artwork = current.artwork = cc.instantiate(prefab); artwork.parent = backdrop;
+      artwork.setPosition(0, 0);
+      current.content = artwork.getChildByName("TitleContent");
+      current.resize();
     }, { isCurrent: function () { return state === current && current.active && live(backdrop, cc); } });
   }
-  current.resize = function () { fit(current.content, cc); };
-  cc.view.on("canvas-resize", current.resize); current.resize();
+  cc.view.on("canvas-resize", current.resize);
+  cc.view.on("design-resolution-changed", current.resize);
   var view = { node: legacy, isclose: false, T: function (value) { return value; } };
   current.overlay = require("StageLoading").create(view, null, legacy, cc, {
     transparent: true, detailed: true, panelBottom: 190,
@@ -124,8 +177,8 @@ exports.finish = function (cc, complete, isCurrent) {
   current.finishing = true;
   function done() {
     if (state !== current) return;
-    if (isCurrent && !isCurrent()) { current.active = false; release(current, cc); state = null; require("AudioMgr").AudioMgr.getInstance().stopMusic(CHANNEL); return; }
-    current.active = false; release(current, cc); state = null; complete();
+    if (isCurrent && !isCurrent()) { finishPresentation(current, cc); require("AudioMgr").AudioMgr.getInstance().stopMusic(CHANNEL); return; }
+    finishPresentation(current, cc); complete();
     var config = require("KinghtFallConfig");
     require("AudioMgr").AudioMgr.getInstance().playMusic(config.KinghtFallAudioId.menu_bgm, config.KinghtFallParameter.BGMusic);
   }
@@ -144,7 +197,7 @@ exports.finish = function (cc, complete, isCurrent) {
 };
 exports.cancelLoading = function (owner, cc) {
   if (state && state.loadingOwner === owner && !owner._startupMainRequested) {
-    state.active = false; release(state, cc); state = null;
+    finishPresentation(state, cc);
     require("AudioMgr").AudioMgr.getInstance().stopMusic(CHANNEL);
   }
 };

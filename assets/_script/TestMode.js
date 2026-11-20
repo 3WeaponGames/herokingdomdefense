@@ -9,6 +9,7 @@ var BADGE_KEY = "testing.modeBadge";
 function TestMode() {
   this._initialized = false;
   this._enabled = false;
+  this._startupActive = false;
   this._f7Down = false;
   this._f8Down = false;
   this._badge = null;
@@ -67,6 +68,12 @@ TestMode.prototype.setEnabled = function (enabled) {
 };
 
 TestMode.prototype.toggle = function () { return this.setEnabled(!this.isEnabled()); };
+
+TestMode.prototype.setStartupActive = function (active) {
+  if (this._startupActive === active) return;
+  this._startupActive = active;
+  this._refreshBadge();
+};
 
 TestMode.prototype._isF7 = function (event) {
   return !!event && (event.code === "F7" || event.key === "F7" || event.keyCode === 118);
@@ -257,7 +264,7 @@ TestMode.prototype._sampleFps = function () {
 };
 
 TestMode.prototype._refreshBadge = function () {
-  var shown = this.isAvailable() && this._enabled;
+  var shown = this.isAvailable() && this._enabled && !this._startupActive;
   if (!shown) {
     if (this._badge && cc.isValid(this._badge)) this._badge.active = false;
     this._trackFps(false);

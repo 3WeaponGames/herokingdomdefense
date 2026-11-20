@@ -75,7 +75,7 @@ test('boss, shared critical and Bruiser basic effects retain their approved OGG 
  const expected={
   'sfx/boss-arrival.ogg':['b69aefa217876f07c91d51ed7e73ca2d8ad7bc233f2891779b48fcf518814b69','46a8e3f4-5f59-48b8-a094-2afd74916202',4],
   'sfx/critical-hit.ogg':['e011896a4c38d99d6319fd6edc3b91d9c5a5f59b593970a758fa3b2759915ad7','77dc0009-77c0-434a-9bdb-1f66d0259960',1.48],
-  'sfx/impact-bruiser-basic.ogg':['46e87423b29daf4b09360776c2c0195a7aa7915528f7d189d6c63789418ab4e4','91b02bf2-2eaa-4463-af1b-f1f657137ab4',1.48]
+  'sfx/impact-bruiser-basic.ogg':['e596cf844f3970994ac91021f9b78ff137b0c87dc0aba8d332c556974570f70b','91b02bf2-2eaa-4463-af1b-f1f657137ab4',1]
  };
  const indexed=require('../../packages/hkd-sounds/catalog').index(root);
  for(const [file,[hash,uuid,duration]]of Object.entries(expected)){

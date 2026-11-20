@@ -93,7 +93,7 @@ function create(view, level, parent, cc, options) {
     try { cc.resources.load(stageArt.resource(level), cc.SpriteFrame, loaded); }
     catch (error) { loaded(error); }
   }
-  fit(); cc.view.on("canvas-resize", fit);
+  fit(); cc.view.on("canvas-resize", fit); cc.view.on("design-resolution-changed", fit);
   var beforeDraw = cc.Director.EVENT_BEFORE_DRAW, afterDraw = cc.Director.EVENT_AFTER_DRAW;
   function recordDraw() { if (live()) lastDraw = Date.now(); }
   cc.director.on(beforeDraw, recordDraw);
@@ -127,7 +127,7 @@ function create(view, level, parent, cc, options) {
       if (percent === lastPercent) return; lastPercent = percent;
       paintProgress();
     },
-    detail: function (value) { if (live() && detail) detail.string = value; },
+    detail: function (value) { if (live() && detail && detail.string !== value) detail.string = value; },
     waitForArtwork: function () { return Promise.all([artworkReady, bar.ready]); },
     waitForDraw: waitForDraw,
     yieldProgress: function () { return drawWait || (Date.now() - lastDraw >= 32 ? waitForDraw() : null); },
@@ -135,6 +135,7 @@ function create(view, level, parent, cc, options) {
     destroy: function () {
       if (disposed) return; disposed = true;
       cc.view.off("canvas-resize", fit);
+      cc.view.off("design-resolution-changed", fit);
       settleArtwork();
       cc.director.off(beforeDraw, recordDraw); if (cancelDraw) cancelDraw();
       if (artwork) artwork.spriteFrame = null;
