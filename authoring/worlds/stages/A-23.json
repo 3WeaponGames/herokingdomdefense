@@ -3,12 +3,12 @@
   "id": "A-23",
   "variant": "A",
   "level": 23,
-  "mapId": "Map03",
+  "mapId": "map-expansion-fire-ashfan-divide",
   "name": "Ashfall Divide",
   "config": {
     "Level": 23,
     "Name": "[[loc:data.levelcfg.23.name]]",
-    "Map": "Generated/Maps/Map03/thumbnail",
+    "Map": "Generated/Maps/map-expansion-fire-ashfan-divide/thumbnail",
     "EnemyAni": "wqyl_gb",
     "prefab": "Generated/Stages/A-23",
     "InGameCoefficient": 172,
@@ -894,7 +894,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "Map03",
+    "EnvironmentMapId": "map-expansion-fire-ashfan-divide",
     "EnvironmentBiome": "fire",
     "EnvironmentBiomeOverride": true,
     "StageLayoutId": "A-23",
@@ -6200,7 +6200,7 @@
     {
       "id": 1,
       "name": "Spawn 1",
-      "x": -668.558,
+      "x": -605.8983314709258,
       "y": 1167.758,
       "enabled": true,
       "radius": 150
@@ -6208,7 +6208,7 @@
     {
       "id": 2,
       "name": "Spawn 2",
-      "x": -641.456,
+      "x": -578.7963314709258,
       "y": 1268.666,
       "enabled": true,
       "radius": 150
@@ -6216,7 +6216,7 @@
     {
       "id": 3,
       "name": "Spawn 3",
-      "x": -743.736,
+      "x": -681.0763314709258,
       "y": 1241.186,
       "enabled": true,
       "radius": 150
@@ -6224,72 +6224,72 @@
     {
       "id": 4,
       "name": "Spawn 4",
-      "x": -90.052,
-      "y": 1471.53,
+      "x": -61.57033248678441,
+      "y": 1289.2473279154203,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 5,
       "name": "Spawn 5",
-      "x": -15.052,
-      "y": 1446.53,
+      "x": 13.429667513215598,
+      "y": 1264.2473279154203,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 6,
       "name": "Spawn 6",
-      "x": -120.321,
-      "y": 1403.532,
+      "x": -91.8393324867844,
+      "y": 1221.2493279154203,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 7,
       "name": "Spawn 7",
-      "x": 492.094,
-      "y": 1389.895,
+      "x": 520.5756675132156,
+      "y": 1207.6123279154203,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 8,
       "name": "Spawn 8",
-      "x": 585.514,
-      "y": 1431.221,
+      "x": 613.9956675132156,
+      "y": 1248.9383279154204,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 9,
       "name": "Spawn 9",
-      "x": 493.334,
-      "y": 1475.855,
+      "x": 521.8156675132157,
+      "y": 1293.5723279154204,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 10,
       "name": "Spawn 10",
-      "x": -931.408,
-      "y": -1207.797,
+      "x": -780,
+      "y": -1213.4933335026433,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 11,
       "name": "Spawn 11",
-      "x": -926.756,
-      "y": -1299.66,
+      "x": -772.9549954286358,
+      "y": -1296.8118332486786,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 12,
       "name": "Spawn 12",
-      "x": -842.453,
-      "y": -1248.745,
+      "x": -688.6519954286358,
+      "y": -1257.2895002539647,
       "enabled": true,
       "radius": 150
     }
@@ -6799,7 +6799,7 @@
   "nextBuilding": 22,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "8ec1ffd21b5a260bf19743331df26c0574e7a9161816c5019aea027d58d4959a",
+  "sourceRevision": "3bfc2e6913f0335626e75020824dc018ea61d74e26f7b01bb53849180d51ca4f",
   "templates": {
     "Map03": [
       {

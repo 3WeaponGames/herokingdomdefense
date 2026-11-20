@@ -18820,7 +18820,7 @@
     {
       "Level": 3,
       "Name": "[[loc:data.levelcfg.3.name]]",
-      "Map": "Generated/Maps/map-biome-deep-forest-rootbreak-hollow/thumbnail",
+      "Map": "Generated/Maps/map-concept-08-longwall-frontier/thumbnail",
       "EnemyAni": "wqyl_gb",
       "prefab": "Generated/Stages/A-3",
       "InGameCoefficient": 4,
@@ -19588,15 +19588,15 @@
       ],
       "EnvironmentBiome": "desert",
       "EnvironmentBiomeOverride": true,
-      "EnvironmentMapId": "map-biome-deep-forest-rootbreak-hollow",
+      "EnvironmentMapId": "map-concept-08-longwall-frontier",
       "StageLayoutId": "A-3"
     },
     {
       "Level": 4,
       "Name": "[[loc:data.levelcfg.4.name]]",
-      "Map": "wg_zy_gq4",
+      "Map": "Generated/Maps/map-biome-desert-caravan-bend/thumbnail",
       "EnemyAni": "wqyl_qb",
-      "prefab": "Map04",
+      "prefab": "Generated/Stages/A-4",
       "InGameCoefficient": 7,
       "GoldSupplyCoefficient": 8,
       "ConversionCoefficient": 8,
@@ -20341,7 +20341,9 @@
         }
       ],
       "EnvironmentBiome": "desert",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-biome-desert-caravan-bend",
+      "StageLayoutId": "A-4"
     },
     {
       "Level": 5,
@@ -21120,9 +21122,9 @@
     {
       "Level": 6,
       "Name": "[[loc:data.levelcfg.6.name]]",
-      "Map": "wg_zy_gq2",
+      "Map": "Generated/Maps/map-original-02-rebuilt/thumbnail",
       "EnemyAni": "wqyl_gb",
-      "prefab": "Map02",
+      "prefab": "Generated/Stages/A-6",
       "InGameCoefficient": 16,
       "GoldSupplyCoefficient": 17,
       "ConversionCoefficient": 17,
@@ -21871,12 +21873,14 @@
         }
       ],
       "EnvironmentBiome": "deep-forest",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-original-02-rebuilt",
+      "StageLayoutId": "A-6"
     },
     {
       "Level": 7,
       "Name": "[[loc:data.levelcfg.7.name]]",
-      "Map": "wg_zy_gq7",
+      "Map": "Generated/Maps/map-expansion-snow-staggered-spurs/thumbnail",
       "EnemyAni": "wqyl_qb",
       "prefab": "Generated/Stages/A-7",
       "InGameCoefficient": 22,
@@ -22755,7 +22759,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "Map07",
+      "EnvironmentMapId": "map-expansion-snow-staggered-spurs",
       "EnvironmentBiome": "snow",
       "StageLayoutId": "A-7",
       "EnvironmentBiomeOverride": true
@@ -22763,9 +22767,9 @@
     {
       "Level": 8,
       "Name": "[[loc:data.levelcfg.8.name]]",
-      "Map": "wg_zy_gq4",
+      "Map": "Generated/Maps/map-concept-09-terrace-citadel/thumbnail",
       "EnemyAni": "wqyl_bb",
-      "prefab": "Map04",
+      "prefab": "Generated/Stages/A-8",
       "InGameCoefficient": 29,
       "GoldSupplyCoefficient": 30,
       "ConversionCoefficient": 30,
@@ -22787,10 +22791,6 @@
         [
           2,
           4
-        ],
-        [
-          2,
-          7
         ],
         [
           4,
@@ -23643,14 +23643,16 @@
         }
       ],
       "EnvironmentBiome": "snow",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-concept-09-terrace-citadel",
+      "StageLayoutId": "A-8"
     },
     {
       "Level": 9,
       "Name": "[[loc:data.levelcfg.9.name]]",
-      "Map": "wg_zy_gq1",
+      "Map": "Generated/Maps/map-biome-autumn-copperleaf-exchange/thumbnail",
       "EnemyAni": "wqyl_gb",
-      "prefab": "Map01",
+      "prefab": "Generated/Stages/A-9",
       "InGameCoefficient": 37,
       "GoldSupplyCoefficient": 38,
       "ConversionCoefficient": 38,
@@ -24406,16 +24408,17 @@
           ]
         }
       ],
-      "EnvironmentMapId": "Map01",
+      "EnvironmentMapId": "map-biome-autumn-copperleaf-exchange",
       "EnvironmentBiome": "autumn",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "StageLayoutId": "A-9"
     },
     {
       "Level": 10,
       "Name": "[[loc:data.levelcfg.10.name]]",
-      "Map": "wg_zy_gq2",
+      "Map": "Generated/Maps/map-concept-07-crescent-ridge/thumbnail",
       "EnemyAni": "wqyl_qb",
-      "prefab": "Map02",
+      "prefab": "Generated/Stages/A-10",
       "InGameCoefficient": 46,
       "GoldSupplyCoefficient": 47,
       "ConversionCoefficient": 47,
@@ -24445,20 +24448,12 @@
         [
           4,
           15
-        ],
-        [
-          4,
-          16
         ]
       ],
       "HomeLevel2Unlock": [
         [
           2,
           4
-        ],
-        [
-          4,
-          13
         ],
         [
           4,
@@ -25176,14 +25171,16 @@
         }
       ],
       "EnvironmentBiome": "autumn",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-concept-07-crescent-ridge",
+      "StageLayoutId": "A-10"
     },
     {
       "Level": 11,
       "Name": "[[loc:data.levelcfg.11.name]]",
-      "Map": "wg_zy_gq3",
+      "Map": "Generated/Maps/map-concept-02-lakeward-basin/thumbnail",
       "EnemyAni": "wqyl_bb",
-      "prefab": "Map03",
+      "prefab": "Generated/Stages/A-11",
       "InGameCoefficient": 56,
       "GoldSupplyCoefficient": 57,
       "ConversionCoefficient": 57,
@@ -26061,14 +26058,16 @@
         }
       ],
       "EnvironmentBiome": "ice",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-concept-02-lakeward-basin",
+      "StageLayoutId": "A-11"
     },
     {
       "Level": 12,
       "Name": "[[loc:data.levelcfg.12.name]]",
-      "Map": "wg_zy_gq4",
+      "Map": "Generated/Maps/map-concept-15-twinwater-saddle/thumbnail",
       "EnemyAni": "wqyl_zbb",
-      "prefab": "Map04",
+      "prefab": "Generated/Stages/A-12",
       "InGameCoefficient": 67,
       "GoldSupplyCoefficient": 68,
       "ConversionCoefficient": 68,
@@ -26946,14 +26945,16 @@
         }
       ],
       "EnvironmentBiome": "ice",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-concept-15-twinwater-saddle",
+      "StageLayoutId": "A-12"
     },
     {
       "Level": 13,
       "Name": "[[loc:data.levelcfg.13.name]]",
       "Map": "wg_zy_gq1",
       "EnemyAni": "wqyl_qb",
-      "prefab": "Map01",
+      "prefab": "Generated/Stages/A-13",
       "InGameCoefficient": 79,
       "GoldSupplyCoefficient": 80,
       "ConversionCoefficient": 80,
@@ -26964,10 +26965,6 @@
         3
       ],
       "HomeLevel1Unlock": [
-        [
-          2,
-          4
-        ],
         [
           2,
           5
@@ -27838,16 +27835,17 @@
           ]
         }
       ],
-      "EnvironmentMapId": "Map01",
+      "EnvironmentMapId": "Map07",
       "EnvironmentBiome": "fire",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "StageLayoutId": "A-13"
     },
     {
       "Level": 14,
       "Name": "[[loc:data.levelcfg.14.name]]",
-      "Map": "wg_zy_gq2",
+      "Map": "Generated/Maps/map-concept-13-crossed-heights/thumbnail",
       "EnemyAni": "wqyl_bb",
-      "prefab": "Map02",
+      "prefab": "Generated/Stages/A-14",
       "InGameCoefficient": 92,
       "GoldSupplyCoefficient": 93,
       "ConversionCoefficient": 93,
@@ -28737,14 +28735,16 @@
         }
       ],
       "EnvironmentBiome": "fire",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-concept-13-crossed-heights",
+      "StageLayoutId": "A-14"
     },
     {
       "Level": 15,
       "Name": "[[loc:data.levelcfg.15.name]]",
-      "Map": "wg_zy_gq3",
+      "Map": "Generated/Maps/map-expansion-lava-ember-stair/thumbnail",
       "EnemyAni": "wqyl_zbb",
-      "prefab": "Map03",
+      "prefab": "Generated/Stages/A-15",
       "InGameCoefficient": 106,
       "GoldSupplyCoefficient": 107,
       "ConversionCoefficient": 107,
@@ -29638,14 +29638,16 @@
         }
       ],
       "EnvironmentBiome": "lava",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-expansion-lava-ember-stair",
+      "StageLayoutId": "A-15"
     },
     {
       "Level": 16,
       "Name": "[[loc:data.levelcfg.16.name]]",
-      "Map": "wg_zy_gq4",
+      "Map": "Generated/Maps/map-concept-04-broken-crown/thumbnail",
       "EnemyAni": "wqyl_gb",
-      "prefab": "Map04",
+      "prefab": "Generated/Stages/A-16",
       "InGameCoefficient": 121,
       "GoldSupplyCoefficient": 122,
       "ConversionCoefficient": 122,
@@ -30526,7 +30528,9 @@
         }
       ],
       "EnvironmentBiome": "lava",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-concept-04-broken-crown",
+      "StageLayoutId": "A-16"
     },
     {
       "Level": 17,
@@ -31253,9 +31257,9 @@
     {
       "Level": 18,
       "Name": "[[loc:data.levelcfg.18.name]]",
-      "Map": "wg_zy_gq2",
+      "Map": "Generated/Maps/map-original-03-rebuilt/thumbnail",
       "EnemyAni": "wqyl_zbb",
-      "prefab": "Map02",
+      "prefab": "Generated/Stages/A-18",
       "InGameCoefficient": 154,
       "GoldSupplyCoefficient": 155,
       "ConversionCoefficient": 155,
@@ -32136,14 +32140,16 @@
         }
       ],
       "EnvironmentBiome": "desert",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-original-03-rebuilt",
+      "StageLayoutId": "A-18"
     },
     {
       "Level": 19,
       "Name": "[[loc:data.levelcfg.19.name]]",
-      "Map": "wg_zy_gq3",
+      "Map": "Generated/Maps/map-concept-05-six-gate-woodland/thumbnail",
       "EnemyAni": "wqyl_gb",
-      "prefab": "Map03",
+      "prefab": "Generated/Stages/A-19",
       "InGameCoefficient": 172,
       "GoldSupplyCoefficient": 173,
       "ConversionCoefficient": 173,
@@ -33028,14 +33034,16 @@
         }
       ],
       "EnvironmentBiome": "deep-forest",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-concept-05-six-gate-woodland",
+      "StageLayoutId": "A-19"
     },
     {
       "Level": 20,
       "Name": "[[loc:data.levelcfg.20.name]]",
-      "Map": "wg_zy_gq4",
+      "Map": "Generated/Maps/map-original-04-rebuilt/thumbnail",
       "EnemyAni": "wqyl_qb",
-      "prefab": "Map04",
+      "prefab": "Generated/Stages/A-20",
       "InGameCoefficient": 191,
       "GoldSupplyCoefficient": 192,
       "ConversionCoefficient": 192,
@@ -33999,12 +34007,14 @@
         }
       ],
       "EnvironmentBiome": "snow",
-      "EnvironmentBiomeOverride": true
+      "EnvironmentBiomeOverride": true,
+      "EnvironmentMapId": "map-original-04-rebuilt",
+      "StageLayoutId": "A-20"
     },
     {
       "Level": 21,
       "Name": "[[loc:data.levelcfg.21.name]]",
-      "Map": "Generated/Maps/map-original-01-rebuilt/thumbnail",
+      "Map": "Generated/Maps/map-concept-12-forked-harbor/thumbnail",
       "EnemyAni": "wqyl_bb",
       "prefab": "Generated/Stages/A-21",
       "InGameCoefficient": 1,
@@ -34698,7 +34708,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "map-original-01-rebuilt",
+      "EnvironmentMapId": "map-concept-12-forked-harbor",
       "EnvironmentBiome": "autumn",
       "StageLayoutId": "A-21",
       "StageThumbnail": "Thumbnails/biome-autumn",
@@ -34726,7 +34736,7 @@
     {
       "Level": 22,
       "Name": "[[loc:data.levelcfg.22.name]]",
-      "Map": "Generated/Maps/Map02/thumbnail",
+      "Map": "Generated/Maps/map-expansion-ice-shardgate-junction/thumbnail",
       "EnemyAni": "wqyl_zbb",
       "prefab": "Generated/Stages/A-22",
       "InGameCoefficient": 154,
@@ -35608,7 +35618,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "Map02",
+      "EnvironmentMapId": "map-expansion-ice-shardgate-junction",
       "EnvironmentBiome": "ice",
       "EnvironmentBiomeOverride": true,
       "StageLayoutId": "A-22",
@@ -35617,7 +35627,7 @@
     {
       "Level": 23,
       "Name": "[[loc:data.levelcfg.23.name]]",
-      "Map": "Generated/Maps/Map03/thumbnail",
+      "Map": "Generated/Maps/map-expansion-fire-ashfan-divide/thumbnail",
       "EnemyAni": "wqyl_gb",
       "prefab": "Generated/Stages/A-23",
       "InGameCoefficient": 172,
@@ -36503,7 +36513,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "Map03",
+      "EnvironmentMapId": "map-expansion-fire-ashfan-divide",
       "EnvironmentBiome": "fire",
       "EnvironmentBiomeOverride": true,
       "StageLayoutId": "A-23",
@@ -36512,7 +36522,7 @@
     {
       "Level": 24,
       "Name": "[[loc:data.levelcfg.24.name]]",
-      "Map": "Generated/Maps/Map04/thumbnail",
+      "Map": "Generated/Maps/map-concept-11-twin-courtyards/thumbnail",
       "EnemyAni": "wqyl_qb",
       "prefab": "Generated/Stages/A-24",
       "InGameCoefficient": 191,
@@ -37477,7 +37487,7 @@
           ]
         }
       ],
-      "EnvironmentMapId": "Map04",
+      "EnvironmentMapId": "map-concept-11-twin-courtyards",
       "EnvironmentBiome": "lava",
       "EnvironmentBiomeOverride": true,
       "StageLayoutId": "A-24",

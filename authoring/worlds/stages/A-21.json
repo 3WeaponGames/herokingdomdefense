@@ -3,12 +3,12 @@
   "id": "A-21",
   "variant": "A",
   "level": 21,
-  "mapId": "map-original-01-rebuilt",
+  "mapId": "map-concept-12-forked-harbor",
   "name": "Goldenwood Crossroads",
   "config": {
     "Level": 21,
     "Name": "[[loc:data.levelcfg.21.name]]",
-    "Map": "Generated/Maps/map-original-01-rebuilt/thumbnail",
+    "Map": "Generated/Maps/map-concept-12-forked-harbor/thumbnail",
     "EnemyAni": "wqyl_bb",
     "prefab": "Generated/Stages/A-21",
     "InGameCoefficient": 1,
@@ -702,7 +702,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "map-original-01-rebuilt",
+    "EnvironmentMapId": "map-concept-12-forked-harbor",
     "EnvironmentBiome": "autumn",
     "StageLayoutId": "A-21",
     "StageThumbnail": "Thumbnails/biome-autumn",
@@ -978,7 +978,7 @@
     },
     {
       "id": 2,
-      "name": "Archer Tower 2",
+      "name": "Tower 2",
       "kind": 2,
       "origin": {
         "x": 274.834,
@@ -1173,7 +1173,7 @@
     },
     {
       "id": 3,
-      "name": "Archer Tower 3",
+      "name": "Tower 3",
       "kind": 2,
       "origin": {
         "x": -65.079,
@@ -1372,7 +1372,7 @@
     },
     {
       "id": 4,
-      "name": "Archer Tower 4",
+      "name": "Tower 4",
       "kind": 2,
       "origin": {
         "x": -447.249,
@@ -1572,7 +1572,7 @@
     },
     {
       "id": 5,
-      "name": "Archer Tower 5",
+      "name": "Tower 5",
       "kind": 2,
       "origin": {
         "x": -524.948,
@@ -1767,7 +1767,7 @@
     },
     {
       "id": 6,
-      "name": "Archer Tower 6",
+      "name": "Tower 6",
       "kind": 2,
       "origin": {
         "x": 293.925,
@@ -5922,7 +5922,7 @@
     },
     {
       "id": 25,
-      "name": "Archer Tower",
+      "name": "Tower 1",
       "kind": 2,
       "origin": {
         "x": 274.834,
@@ -6121,7 +6121,7 @@
     },
     {
       "id": 26,
-      "name": "Archer Tower",
+      "name": "Tower 7",
       "kind": 2,
       "origin": {
         "x": 274.834,
@@ -6893,7 +6893,7 @@
     },
     {
       "id": 30,
-      "name": "Archer Tower",
+      "name": "Tower 8",
       "kind": 2,
       "origin": {
         "x": 274.834,
@@ -7572,7 +7572,7 @@
   "graphs": [
     {
       "id": "legacy-route-741",
-      "name": "Path1_2_3",
+      "name": "Spawns 1–3 · Route 1",
       "spawnIds": [
         1,
         3,
@@ -7626,11 +7626,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-753",
-      "name": "Path1_2_3",
+      "name": "Spawns 1–3 · Route 2",
       "spawnIds": [
         1,
         2,
@@ -7698,11 +7699,12 @@
       "requiresAnyBuilding": [
         7
       ],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-771",
-      "name": "Path4_5_6",
+      "name": "Spawns 4–6 · Route 1",
       "spawnIds": [
         4,
         5,
@@ -7756,11 +7758,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-783",
-      "name": "Path7_8_9",
+      "name": "Spawns 7–9 · Route 1",
       "spawnIds": [
         7,
         8,
@@ -7862,11 +7865,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-810",
-      "name": "Path7_8_9",
+      "name": "Spawns 7–9 · Route 2",
       "spawnIds": [
         7,
         8,
@@ -7956,11 +7960,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-834",
-      "name": "Path7_8_9",
+      "name": "Spawns 7–9 · Route 3",
       "spawnIds": [
         7,
         8,
@@ -8078,7 +8083,8 @@
         12,
         13
       ],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "route-10",
@@ -8292,7 +8298,7 @@
   "nextBuilding": 31,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "1643af72f24399016b659c63c62b3c6ff63910c6a93a4d456f1ad3e797f97c34",
+  "sourceRevision": "8b555772f448907c3a4c16f772d84167e4c8c39db04535a002d8cf7462b9d85b",
   "templates": {
     "Map01": [
       {

@@ -282,7 +282,8 @@
     "grass": {
       "strokes": []
     },
-    "custom": [ {
+    "custom": [
+      {
         "id": "ground-2",
         "name": "Central stairway path",
         "transform": {
@@ -330,7 +331,8 @@
             "nativeSize": true
           }
         ]
-      } ],
+      }
+    ],
     "order": [
       "foundation",
       "ground-2",

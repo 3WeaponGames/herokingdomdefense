@@ -3,12 +3,12 @@
   "id": "A-24",
   "variant": "A",
   "level": 24,
-  "mapId": "Map04",
+  "mapId": "map-concept-11-twin-courtyards",
   "name": "Emberfall Heights",
   "config": {
     "Level": 24,
     "Name": "[[loc:data.levelcfg.24.name]]",
-    "Map": "Generated/Maps/Map04/thumbnail",
+    "Map": "Generated/Maps/map-concept-11-twin-courtyards/thumbnail",
     "EnemyAni": "wqyl_qb",
     "prefab": "Generated/Stages/A-24",
     "InGameCoefficient": 191,
@@ -973,7 +973,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "Map04",
+    "EnvironmentMapId": "map-concept-11-twin-courtyards",
     "EnvironmentBiome": "lava",
     "EnvironmentBiomeOverride": true,
     "StageLayoutId": "A-24",
@@ -6792,7 +6792,7 @@
   "nextBuilding": 21,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "53cf136c969b2b20417f66e98949f28465383a9e2688eaec825d0d44cda43986",
+  "sourceRevision": "b4775d3ea6598f018f215afaf6f13f1971d7dfbae02174699af8db26d6a0a0fc",
   "templates": {
     "Map04": [
       {

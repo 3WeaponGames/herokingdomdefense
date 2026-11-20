@@ -3,12 +3,12 @@
   "id": "A-3",
   "variant": "A",
   "level": 3,
-  "mapId": "map-biome-deep-forest-rootbreak-hollow",
+  "mapId": "map-concept-08-longwall-frontier",
   "name": "Stage 3",
   "config": {
     "Level": 3,
     "Name": "[[loc:data.levelcfg.3.name]]",
-    "Map": "Generated/Maps/map-biome-deep-forest-rootbreak-hollow/thumbnail",
+    "Map": "Generated/Maps/map-concept-08-longwall-frontier/thumbnail",
     "EnemyAni": "wqyl_gb",
     "prefab": "Generated/Stages/A-3",
     "InGameCoefficient": 4,
@@ -776,7 +776,7 @@
     ],
     "EnvironmentBiome": "desert",
     "EnvironmentBiomeOverride": true,
-    "EnvironmentMapId": "map-biome-deep-forest-rootbreak-hollow",
+    "EnvironmentMapId": "map-concept-08-longwall-frontier",
     "StageLayoutId": "A-3"
   },
   "basePrefab": "Map03",
@@ -5914,7 +5914,7 @@
   "nextBuilding": 27,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "c41c246b68ebc99bad75cd82b2910c121193e95aca34c7b7f968195a5b64a9cd",
+  "sourceRevision": "1dbaef9825bfbfb46649f46b065aed8911a428e101bf5d20619677f2b5417b91",
   "templates": {
     "Map03": [
       {

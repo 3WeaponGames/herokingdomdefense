@@ -3,12 +3,12 @@
   "id": "A-7",
   "variant": "A",
   "level": 7,
-  "mapId": "Map07",
+  "mapId": "map-expansion-snow-staggered-spurs",
   "name": "Pristine Snowfield",
   "config": {
     "Level": 7,
     "Name": "[[loc:data.levelcfg.7.name]]",
-    "Map": "wg_zy_gq7",
+    "Map": "Generated/Maps/map-expansion-snow-staggered-spurs/thumbnail",
     "EnemyAni": "wqyl_qb",
     "prefab": "Generated/Stages/A-7",
     "InGameCoefficient": 22,
@@ -887,7 +887,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "Map07",
+    "EnvironmentMapId": "map-expansion-snow-staggered-spurs",
     "EnvironmentBiome": "snow",
     "StageLayoutId": "A-7",
     "EnvironmentBiomeOverride": true
@@ -1139,7 +1139,7 @@
     },
     {
       "id": 4,
-      "name": "Archer Tower 4",
+      "name": "Tower 4",
       "kind": 2,
       "origin": {
         "x": -407.7619532044761,
@@ -1334,7 +1334,7 @@
     },
     {
       "id": 5,
-      "name": "Archer Tower 5",
+      "name": "Tower 5",
       "kind": 2,
       "origin": {
         "x": 118.26042726347916,
@@ -1529,7 +1529,7 @@
     },
     {
       "id": 6,
-      "name": "Archer Tower 6",
+      "name": "Tower 6",
       "kind": 2,
       "origin": {
         "x": -233.68260427263476,
@@ -1724,7 +1724,7 @@
     },
     {
       "id": 7,
-      "name": "Archer Tower 7",
+      "name": "Tower 7",
       "kind": 2,
       "origin": {
         "x": 296.12410986775177,
@@ -4769,7 +4769,7 @@
     },
     {
       "id": 2,
-      "name": "Archer Tower 2",
+      "name": "Tower 2",
       "kind": 2,
       "origin": {
         "x": -292.33977619532044,
@@ -4964,7 +4964,7 @@
     },
     {
       "id": 3,
-      "name": "Archer Tower 3",
+      "name": "Tower 3",
       "kind": 2,
       "origin": {
         "x": -456.95829094608337,
@@ -6896,7 +6896,7 @@
     },
     {
       "id": "path-1794260517664",
-      "name": "New approach",
+      "name": "Spawn 9 · Route 1",
       "spawnIds": [
         9
       ],
@@ -6922,7 +6922,8 @@
           "weight": 1
         }
       ],
-      "legacy": false
+      "legacy": false,
+      "nameFromSpawns": true
     }
   ],
   "hero": {
@@ -6932,7 +6933,7 @@
   "nextBuilding": 21,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "6008e9d7bd9e10cbdd1d69a0bf9d9c6d4cf7e327476cd1e63932b65db3213189",
+  "sourceRevision": "7d30932f86423bfb38db2678f77468b4d68a17461206968e4ae43d5c97464846",
   "templates": {
     "Map07": [
       {
