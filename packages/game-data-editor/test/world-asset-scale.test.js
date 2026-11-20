@@ -54,10 +54,21 @@ test('new terrain strokes use native texture sizing without altering existing st
  assert.deepEqual(M.stroke(map,'roads',old).ground.roads.strokes[1],old,'scripted strokes without the new setting retain their exact behavior');
 });
 
-test('all stock Environment assets including RoadUp have the new native size; custom art is excluded',()=>{
+test('stock Environment assets and explicitly supersampled terrain retain their authored sizing',()=>{
  const fs=require('fs'),path=require('path'),root=path.resolve(__dirname,'../../..'),manifest=JSON.parse(fs.readFileSync(path.join(root,'authoring/worlds/library/manifest.json'),'utf8'));
  const stock=manifest.assets.filter(a=>/^environment-[12]$/.test(a.source&&a.source.pack));assert(stock.length>=257);
- for(const asset of stock){assert.equal(asset.nativeScale,.45,asset.name);const bytes=fs.readFileSync(path.join(root,asset.file));assert.equal(bytes.readUInt32BE(16),asset.width);assert.equal(bytes.readUInt32BE(20),asset.height);}
  assert(stock.filter(a=>/^Road up /i.test(a.terrainName||a.name)).length>=7);
- for(const asset of manifest.assets.filter(a=>!stock.includes(a)))assert.equal(asset.nativeScale,undefined,asset.name);
+ const stockIds=new Set(stock.map(asset=>asset.id));
+ for(const asset of manifest.assets){
+  const density=asset.source&&asset.source.kind==='authored-terrain-piece'&&asset.source.pixelsPerWorldUnit;
+  const supersampled=Number.isInteger(density)&&density>1;
+  let expected;
+  if(stockIds.has(asset.id))expected=.45;
+  else if(supersampled)expected=1/density;
+  assert.equal(asset.nativeScale,expected,asset.name);
+  if(expected===undefined)continue;
+  const bytes=fs.readFileSync(path.join(root,asset.file));
+  assert.equal(bytes.readUInt32BE(16),asset.width,asset.name);
+  assert.equal(bytes.readUInt32BE(20),asset.height,asset.name);
+ }
 });

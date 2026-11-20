@@ -564,78 +564,6 @@
           "edgeSmoothing": 0.6,
           "textureScale": 1,
           "nativeSize": true
-        },
-        {
-          "id": "northwest-gate",
-          "mode": "road",
-          "op": "paint",
-          "points": [
-            {
-              "x": -303.6152,
-              "y": 295.4507
-            },
-            {
-              "x": -267.8599,
-              "y": 297.0058
-            },
-            {
-              "x": -245.0,
-              "y": 298.0
-            },
-            {
-              "x": -204.982,
-              "y": 301.638
-            }
-          ],
-          "size": 98,
-          "shape": "round",
-          "hardness": 1,
-          "opacity": 1,
-          "assetId": "env-468c6b3f22c9ce147ba12109f4e390de",
-          "edgeAssetId": "env-4f0d6d0ca3aa8d244b6891829818daed",
-          "edgeStyle": "textured",
-          "edgeScale": 1,
-          "edgeSmoothing": 0.6,
-          "textureScale": 1,
-          "nativeSize": true,
-          "name": "Rune Terrace Ramp",
-          "key": "ground-2"
-        },
-        {
-          "id": "northwest-gate",
-          "mode": "road",
-          "op": "paint",
-          "points": [
-            {
-              "x": -439.6184,
-              "y": -644.9719
-            },
-            {
-              "x": -393.4912,
-              "y": -668.1691
-            },
-            {
-              "x": -364.0,
-              "y": -683.0
-            },
-            {
-              "x": -334.575,
-              "y": -703.009
-            }
-          ],
-          "size": 98,
-          "shape": "round",
-          "hardness": 1,
-          "opacity": 1,
-          "assetId": "env-468c6b3f22c9ce147ba12109f4e390de",
-          "edgeAssetId": "env-4f0d6d0ca3aa8d244b6891829818daed",
-          "edgeStyle": "textured",
-          "edgeScale": 1,
-          "edgeSmoothing": 0.6,
-          "textureScale": 1,
-          "nativeSize": true,
-          "name": "Southwatch Ramp",
-          "key": "ground-3"
         }
       ]
     },
@@ -677,7 +605,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-450",
@@ -695,7 +624,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-451",
@@ -713,7 +643,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-452",
@@ -731,7 +662,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-453",
@@ -749,7 +681,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-454",
@@ -767,7 +700,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-455",
@@ -785,7 +719,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-456",
@@ -803,7 +738,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-457",
@@ -821,7 +757,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -854,7 +791,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-449",
@@ -872,7 +810,8 @@
           },
           "opacity": 1,
           "mask": [],
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -10092,7 +10031,7 @@
           "assetId": "terrain-six-gate-woodland-southwatch",
           "name": "Southwatch Terrace",
           "access": "ramp",
-          "spriteHash": "c29077f0715014233af74570e976c667141f39382d01a610062a3326fd44b145",
+          "spriteHash": "e079473b00504fd3708a46e0bb324eccc66a16c8ad6eee4f32cc0abf7e41901a",
           "collisionSample": {
             "x": -65.0,
             "y": -988.5
@@ -10251,7 +10190,7 @@
           "assetId": "terrain-six-gate-woodland-east-canopy",
           "name": "Northeast Canopy Escarpment",
           "access": "closed",
-          "spriteHash": "a80c5ddec8bd9f60f7e44f4e590b42b19cec7903fc71f5fde012a84e70265413",
+          "spriteHash": "78c98d51da9f45526fed57eebfca0225b829abd9e864a47d6df7e830c1e75542",
           "collisionSample": {
             "x": 692.0,
             "y": 1284.5
@@ -10263,7 +10202,7 @@
           "assetId": "terrain-six-gate-woodland-rune-terrace",
           "name": "Rune Terrace",
           "access": "ramp",
-          "spriteHash": "4c6743bb3b8c89044f5ecbcb497b53b351f4b4644aa19dd06f0505c4a96d7a4e",
+          "spriteHash": "a1fc1710e4f777ddd851974c9a2f04085ce22a95f943d2ede3f7ad32b813d23b",
           "collisionSample": {
             "x": 197.0,
             "y": 301.5
@@ -10422,7 +10361,7 @@
           "assetId": "terrain-six-gate-woodland-east-brackenwall",
           "name": "Southeast Brackenwall",
           "access": "closed",
-          "spriteHash": "a82524f4f9b13240700a4bcb190adb9d282f8afd2f5f3772ffcb4e0175622ad9",
+          "spriteHash": "cc3cde5902c0dcd69e8305870e930f7a366b1ff457d26d80faaff5c17fa5e158",
           "collisionSample": {
             "x": 780.0,
             "y": -555.5
@@ -10434,7 +10373,7 @@
           "assetId": "terrain-six-gate-woodland-eastern-ridge",
           "name": "Eastern Ridge",
           "access": "closed",
-          "spriteHash": "78b2d3894ca4104cf36cd97b446e2aaf4acbc9cad3ef9d85c0923db4a057ba62",
+          "spriteHash": "dacd8791ad02ec49ccd63e971170302ebfd49daab3a470df6f98ed25b0d4d6c8",
           "collisionSample": {
             "x": 905.0,
             "y": 52.5
@@ -10446,7 +10385,7 @@
           "assetId": "terrain-six-gate-woodland-split-gate-crown",
           "name": "Split-Gate Crown",
           "access": "closed",
-          "spriteHash": "24361997e8a1237001e0d639d3a07ec7f33c1273e28d538c7e80025cdd20c3db",
+          "spriteHash": "30f03465fb113f970349832c5371956d94b386bde9a88a51bc12b7d017f6c2e7",
           "collisionSample": {
             "x": -377.0,
             "y": 1495.5
@@ -10458,7 +10397,7 @@
           "assetId": "terrain-six-gate-woodland-western-hollow",
           "name": "West Hollow Wall",
           "access": "closed",
-          "spriteHash": "82bbc01dc8e8aa7746bc69e8c1d1db3fbc1d249153a4b3a62a4ffc4c706a2c55",
+          "spriteHash": "1ed4d4ff1bb925b0b69bcf38e1facefeaf0ec3006ca7bd0f862bc96f366f6f56",
           "collisionSample": {
             "x": -889.0,
             "y": 312.5
@@ -10470,7 +10409,7 @@
           "assetId": "terrain-six-gate-woodland-west-gate-ledge",
           "name": "Northwest Gate Ledge",
           "access": "closed",
-          "spriteHash": "9ef1dc677b9070798ed22a7d40175fda3eec958895c4f34d3ca469a079835ab1",
+          "spriteHash": "e4a2678e35fe20a1d7dda790538bf6fce34d11eafbe07ed9c49381cc6b55ef30",
           "collisionSample": {
             "x": -906.0,
             "y": 741.5
@@ -10482,7 +10421,7 @@
           "assetId": "terrain-six-gate-woodland-western-rampart",
           "name": "Western Rampart",
           "access": "closed",
-          "spriteHash": "fcb8a47e0fa450f055d3d52493cbe59eb95a39df7086903d97cceb75ef720181",
+          "spriteHash": "9ba8006e4a5d4c62226186eb684d9a3b4f8ae7a4840e25f9bb58891b17e44b59",
           "collisionSample": {
             "x": -906.0,
             "y": -437.5
@@ -10494,7 +10433,7 @@
           "assetId": "terrain-six-gate-woodland-west-root-shelf",
           "name": "Southwest Root Shelf",
           "access": "closed",
-          "spriteHash": "44ab85b400ac828f1876c4c3999f0b548b737711351c41123e94a5480a792628",
+          "spriteHash": "571dce1b1ab13c95ce80ed745f91e215793dfff877c870228ebbc93efffe0eeb",
           "collisionSample": {
             "x": -906.0,
             "y": -862.5
@@ -10506,13 +10445,18 @@
           "assetId": "terrain-six-gate-woodland-gate-spur",
           "name": "Deepwood Gate Spur",
           "access": "closed",
-          "spriteHash": "d7f64622bfdc158e482ab64f4f6d1fc7b3bdf028814c333567bd927fb759b632",
+          "spriteHash": "ef3feb13e450c7d821686e2fedd3a9ecfc4c3603596bcd971eda8f25d1f2fa72",
           "collisionSample": {
             "x": 133.0,
             "y": 837.5
           }
         }
       ]
+    },
+    "terrainArtwork": {
+      "sourcePixelsPerWorldUnit": 2,
+      "castShadow": false,
+      "upperFieldAsset": "env-26bc7704ee34f6047962f010f1fc774c"
     }
   }
 }

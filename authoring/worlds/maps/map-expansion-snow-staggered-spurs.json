@@ -947,7 +947,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-168",
@@ -963,7 +964,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -994,7 +996,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-165",
@@ -1010,7 +1013,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-166",
@@ -1026,7 +1030,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-167",
@@ -1042,7 +1047,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-169",
@@ -1058,7 +1064,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-170",
@@ -1074,7 +1081,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -9465,6 +9473,10 @@
           "height": 346
         }
       ]
+    },
+    "terrainArtwork": {
+      "sourcePixelsPerWorldUnit": 2,
+      "castShadow": false
     }
   }
 }

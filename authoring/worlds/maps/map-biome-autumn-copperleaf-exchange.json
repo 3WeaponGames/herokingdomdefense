@@ -1104,7 +1104,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-147",
@@ -1120,7 +1121,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -1151,7 +1153,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-144",
@@ -1167,7 +1170,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-146",
@@ -1183,7 +1187,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-148",
@@ -1199,7 +1204,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-149",
@@ -1215,7 +1221,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         },
         {
           "id": "object-150",
@@ -1231,7 +1238,8 @@
             "x": 0,
             "y": 0
           },
-          "globalShadow": false
+          "globalShadow": false,
+          "nativeSize": true
         }
       ],
       "blockers": [],
@@ -7740,6 +7748,10 @@
           "height": 254
         }
       ]
+    },
+    "terrainArtwork": {
+      "sourcePixelsPerWorldUnit": 2,
+      "castShadow": false
     }
   }
 }

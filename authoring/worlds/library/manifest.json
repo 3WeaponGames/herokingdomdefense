@@ -17560,21 +17560,23 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/aldercliff.png",
-      "width": 695,
-      "height": 1018,
+      "width": 1390,
+      "height": 2036,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "d1506faf22af9cb682e8cbde4f3148b5a807fcab2b34979bed48335203998592",
+      "sha256": "08310c730461ff40032c867fefeaa82bc74617a674f7d48ce06aed6b01068977",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-autumn-copperleaf-exchange",
         "piece": "aldercliff",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-autumn-copperleaf-exchange-redesign-west-watch",
@@ -17584,21 +17586,23 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/west-watch.png",
-      "width": 349,
-      "height": 682,
+      "width": 698,
+      "height": 1364,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "db93f0faf0fa4881f1638d25eccda488b08f518b8129cdfeea3f9bd7f5cccab5",
+      "sha256": "94fe41e604faaabf887eb7f3f1a848dc3911ec32ac87db17fa94cb6632df23d8",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-autumn-copperleaf-exchange",
         "piece": "west-watch",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-autumn-copperleaf-exchange-redesign-copper-river",
@@ -17608,21 +17612,23 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/copper-river.png",
-      "width": 540,
-      "height": 1190,
+      "width": 1080,
+      "height": 2380,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "c885f84e858a17d898aa19404af12288b61ee77005af1dfa9a73813ad7f64d49",
+      "sha256": "691e4b4133f6770ba82db90c9fdb55704782c5dca8b40819ad40909942b52ea7",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-autumn-copperleaf-exchange",
         "piece": "copper-river",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-autumn-copperleaf-exchange-redesign-east-overlook",
@@ -17632,21 +17638,23 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/east-overlook.png",
-      "width": 398,
-      "height": 510,
+      "width": 796,
+      "height": 1020,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "16d7e37ef8afa48fa7bff38c60e2bb8367ffa4f2e90867a650d366b9a403ac53",
+      "sha256": "227b913769ad058f87ca70a35565cc858a7a6b73f7560b9e1647a6fdc8150a39",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-autumn-copperleaf-exchange",
         "piece": "east-overlook",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-autumn-copperleaf-exchange-redesign-reed-lake",
@@ -17656,21 +17664,23 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/reed-lake.png",
-      "width": 628,
-      "height": 674,
+      "width": 1256,
+      "height": 1348,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "dbc3d08503590148f26f711c73f7ba976a902be17d4126dc08d49281478788a2",
+      "sha256": "c46f0c7aad0408b44513d45ea8c467a6f97d732a37831e046b7213b95f8cab5e",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-autumn-copperleaf-exchange",
         "piece": "reed-lake",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-autumn-copperleaf-exchange-redesign-exchange-knoll",
@@ -17680,21 +17690,23 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/exchange-knoll.png",
-      "width": 302,
-      "height": 235,
+      "width": 604,
+      "height": 470,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "b0391d7456623d7e6ddb2a54cbe5fa85d14228ae2130ae3a1f66292e86107ea9",
+      "sha256": "eeaeedab65b9f1b8edfe3f0c33ba3c4cebccd4f797689e062d9c18f58652c954",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-autumn-copperleaf-exchange",
         "piece": "exchange-knoll",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-autumn-copperleaf-exchange-redesign-east-terraces",
@@ -17704,21 +17716,23 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/east-terraces.png",
-      "width": 583,
-      "height": 1290,
+      "width": 1166,
+      "height": 2580,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "f6253ab0aa20144e7a5e2573d8cc091e0ace2c982f9992b4f897bb3dea94a692",
+      "sha256": "992a4beadb719c95aaf59f576d6ff21fdbf18306504848c4c9d252b04c3b979e",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-autumn-copperleaf-exchange",
         "piece": "east-terraces",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-autumn-copperleaf-exchange-redesign-south-ledge",
@@ -17728,21 +17742,23 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-autumn-copperleaf-exchange/south-ledge.png",
-      "width": 771,
-      "height": 254,
+      "width": 1542,
+      "height": 508,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "4e4974a32fb806f0a2704c00dd31f34284e3e523cab6b6e6a019c907c7265057",
+      "sha256": "ed20c0f637399c584fffffee1f29aa58cf0ff9a8619fb68f5e3737849a9f9aea",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-autumn-copperleaf-exchange",
         "piece": "south-ledge",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-root-crown",
@@ -17752,21 +17768,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/root-crown.png",
-      "width": 812,
-      "height": 847,
+      "width": 1624,
+      "height": 1694,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "204fe15ed05a37cb31bf773a4b9b598ceeff01f8f83571b1ac34ad9cf2c5bcef",
+      "sha256": "4f6bf314902fad007c84d119dd26f0d6e49666cc03e163ae76f6bb60c093cd56",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "root-crown",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-west-hook",
@@ -17776,21 +17794,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/west-hook.png",
-      "width": 546,
-      "height": 687,
+      "width": 1092,
+      "height": 1374,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "75dc9c8fe3cb24ec13659b151713c65f8bb6aff7f6efa319b59818bee7d68134",
+      "sha256": "435fd1c2ea6ef4b908cab2e3692b396a44494adee9838217fb080ff519cd17f0",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "west-hook",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-oldroot-knoll",
@@ -17800,21 +17820,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/oldroot-knoll.png",
-      "width": 445,
-      "height": 314,
+      "width": 890,
+      "height": 628,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "aa7cd7b0a6cd62f179f73f64688107f3fee9a6173dbddd9312b1f52c6e5a028b",
+      "sha256": "ea16f81cd2a280c065fd2d8524a024deb4769b0a50eb2bdb025f225c633bc222",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "oldroot-knoll",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-eastern-roots",
@@ -17824,21 +17846,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/eastern-roots.png",
-      "width": 413,
-      "height": 965,
+      "width": 826,
+      "height": 1930,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "9e03215455361246271336bff75c1a6cf58435be3ed2c3123119b538693ca26f",
+      "sha256": "c58405243828c52d4b8cf37315c6ae697458462dc10439deecdbe09c858c5d61",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "eastern-roots",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-rootbreak-creek",
@@ -17848,21 +17872,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/rootbreak-creek.png",
-      "width": 413,
-      "height": 1287,
+      "width": 826,
+      "height": 2574,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "c22d9ba36f2c784a8f91c99506ac42c65e11dd77ceb608289d8c345afb9e75ba",
+      "sha256": "fda00368a62333d869a997eed0e81619de38d9f7576b67487a4b10d45b52dfe3",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "rootbreak-creek",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-fern-steps",
@@ -17872,21 +17898,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/fern-steps.png",
-      "width": 297,
-      "height": 376,
+      "width": 594,
+      "height": 752,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "621246029df41283b2d505aec68948bd26a6f74e08ee336849a5f9da8e260325",
+      "sha256": "d50d37a96ce37a75d2e1c9fb64d4b45b15334c525e55243f22ba36b3fae60f01",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "fern-steps",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-willow-fen",
@@ -17896,21 +17924,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/willow-fen.png",
-      "width": 532,
-      "height": 884,
+      "width": 1064,
+      "height": 1768,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "af51ac21525e1ca96397d8c7d2a10c80ec67bd24006d0300a83e79596464f6e0",
+      "sha256": "1a96ace18fc26011f9d6046724e5de780c08a483bb6de7032498445d680adaf8",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "willow-fen",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-fen-overlook",
@@ -17920,21 +17950,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/fen-overlook.png",
-      "width": 570,
-      "height": 920,
+      "width": 1140,
+      "height": 1840,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "87315392d8dac09a9116b104ed3cec73a0d4bf8145bb296d9ae1c5b5c72678a9",
+      "sha256": "b1f32506e4d07d601fee658ed419fb03e8e5a30a3e36d531e2588a9710ff5ee2",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "fen-overlook",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-biome-deep-forest-rootbreak-hollow-redesign-low-root-ledge",
@@ -17944,21 +17976,23 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-biome-deep-forest-rootbreak-hollow/low-root-ledge.png",
-      "width": 558,
-      "height": 492,
+      "width": 1116,
+      "height": 984,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "89dbd2d8c9a0bd29c01a41a108a287037b0f3d3582b71e3e5b9526ef0312cf48",
+      "sha256": "a085d5a3c555cad6a8c4b1ee57b2435146caf8cdcee803737f60469b46f2d16a",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-biome-deep-forest-rootbreak-hollow",
         "piece": "low-root-ledge",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-fire-ashfan-divide-redesign-ashfan-escarpment",
@@ -17968,21 +18002,23 @@
         "fire"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/ashfan-escarpment.png",
-      "width": 789,
-      "height": 1031,
+      "width": 1578,
+      "height": 2062,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "f82ea052198c72a6041499d178c466d72419683c28c9efec42cee333084206c4",
+      "sha256": "2e8f7a95fa62031675ba07e3030780355f59efcaaae3acf529fbc5dee0225d5b",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-fire-ashfan-divide",
         "piece": "ashfan-escarpment",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-fire-ashfan-divide-redesign-ash-west-wall",
@@ -17992,21 +18028,23 @@
         "fire"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/ash-west-wall.png",
-      "width": 313,
-      "height": 1021,
+      "width": 626,
+      "height": 2042,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "e6e9e5f320584b1bffa4fb6b43b264a15e88b1f1c052d606dcf7585119983e95",
+      "sha256": "777d81f7eb846a1a501717c1e4f5f178243201f5813b4dedc7b0737e311c7c2b",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-fire-ashfan-divide",
         "piece": "ash-west-wall",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-fire-ashfan-divide-redesign-black-needles",
@@ -18016,21 +18054,23 @@
         "fire"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/black-needles.png",
-      "width": 254,
-      "height": 720,
+      "width": 508,
+      "height": 1440,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "395ae76a860170d3d6fe5cd6c71af8ebe3f258f849ddfbb55ca6818715e57246",
+      "sha256": "b1b2ce3b19c9e6413052cdd21bb8a992a26044adf37a7009094461014f8b1e5f",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-fire-ashfan-divide",
         "piece": "black-needles",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-fire-ashfan-divide-redesign-west-fan",
@@ -18040,21 +18080,23 @@
         "fire"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/west-fan.png",
-      "width": 546,
-      "height": 916,
+      "width": 1092,
+      "height": 1832,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "80964864913ed87fdd3db0d3ebf601826055b496ae66a92f61855da4d60148a1",
+      "sha256": "2ea336632806e15a844ebc76d1952fa53539b96d250a59759b0c961e9df85df6",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-fire-ashfan-divide",
         "piece": "west-fan",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-fire-ashfan-divide-redesign-cinder-fissure",
@@ -18064,21 +18106,23 @@
         "fire"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/cinder-fissure.png",
-      "width": 946,
-      "height": 776,
+      "width": 1892,
+      "height": 1552,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "5bb9523a786981235f02cdca6cb6109dcee2e473085b5b39d6080b49a510c8dc",
+      "sha256": "fcd1f3aa54c1c60cdbc5a648a2e0f9509cc160da61c2f455ec7897a9c82728c1",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-fire-ashfan-divide",
         "piece": "cinder-fissure",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-fire-ashfan-divide-redesign-cinder-rim",
@@ -18088,21 +18132,23 @@
         "fire"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/cinder-rim.png",
-      "width": 412,
-      "height": 436,
+      "width": 824,
+      "height": 872,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "0b4adb9b456e05880de62d3c4372e743fe1702065fad6e1fe5d9fdb8deef08a6",
+      "sha256": "0922ffb46a7c5776b07c94e2a63282127778dbcfdc5728aaedb149ef1fbd335a",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-fire-ashfan-divide",
         "piece": "cinder-rim",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-fire-ashfan-divide-redesign-ash-toe",
@@ -18112,21 +18158,23 @@
         "fire"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-fire-ashfan-divide/ash-toe.png",
-      "width": 227,
-      "height": 225,
+      "width": 454,
+      "height": 450,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "ecfacc606b8fab0b5603786b3e6b41100477954b6263498b288b0d8a555e6481",
+      "sha256": "bbbbf26e1c0edcb8a8e6446cb7394c00de89b5d2b709f0e93830e2ea6c6bca6f",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-fire-ashfan-divide",
         "piece": "ash-toe",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-ice-shardgate-junction-redesign-shard-wall",
@@ -18136,21 +18184,23 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/shard-wall.png",
-      "width": 703,
-      "height": 1062,
+      "width": 1406,
+      "height": 2124,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "c928524c4952ea3d3ca659f361bf463ea66f6b4a27cf2bab9b404fe9e77c004e",
+      "sha256": "0871e8aeb8d30d9023cff377d41b4742b31366dd623a1d2796e69c98471f1f3d",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-ice-shardgate-junction",
         "piece": "shard-wall",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-ice-shardgate-junction-redesign-shard-promontory",
@@ -18160,21 +18210,23 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/shard-promontory.png",
-      "width": 533,
-      "height": 347,
+      "width": 1066,
+      "height": 694,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "411d6060c6238db724ef19dd74282a157bb3f939e23e4eb3206afe64e78035d7",
+      "sha256": "381952c2370b0f77964952a32aac26de768dbb24134e54c0092ad7c06b5d6f4c",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-ice-shardgate-junction",
         "piece": "shard-promontory",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-ice-shardgate-junction-redesign-glacial-river",
@@ -18184,21 +18236,23 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/glacial-river.png",
-      "width": 547,
-      "height": 1141,
+      "width": 1094,
+      "height": 2282,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "2a2d3211e530f44ee6df32405804876825fa98406d6155a4a8bebec65e3f2c28",
+      "sha256": "22da8d126b2fa700038859b2b62fb09b0751d2035010e6af5e48d8d7ead057c0",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-ice-shardgate-junction",
         "piece": "glacial-river",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-ice-shardgate-junction-redesign-split-serac",
@@ -18208,21 +18262,23 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/split-serac.png",
-      "width": 215,
-      "height": 334,
+      "width": 430,
+      "height": 668,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "9f364155dea91be39cd0793bbb996df5d86ccb4f95286f2c8b4b93e18f831a93",
+      "sha256": "997d67f57f79fea648d67e25597853a80afdb0ebb44690d7cc4eae25ff087d9f",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-ice-shardgate-junction",
         "piece": "split-serac",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-ice-shardgate-junction-redesign-meltwater-toe",
@@ -18232,21 +18288,23 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/meltwater-toe.png",
-      "width": 439,
-      "height": 428,
+      "width": 878,
+      "height": 856,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "8b42268478dcba879f08316645962c84f042b08e5c4d32fe3133597a3a4bb275",
+      "sha256": "4f131deac6abaf61a4e357201965bc1d0f6b22ce7805ce7abad103c11d30ec28",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-ice-shardgate-junction",
         "piece": "meltwater-toe",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-ice-shardgate-junction-redesign-lower-westfall",
@@ -18256,21 +18314,23 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/lower-westfall.png",
-      "width": 360,
-      "height": 1284,
+      "width": 720,
+      "height": 2568,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "eb6936adc56739366b1df122b7d534ee9c5f69a8a6d815917ab9236b9d3d105f",
+      "sha256": "7f45b802ab3c5e84c7ba394c51f54aaf74f9693c9c8dfd5a4e0366daf5d0b9c6",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-ice-shardgate-junction",
         "piece": "lower-westfall",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-ice-shardgate-junction-redesign-south-tarn",
@@ -18280,21 +18340,23 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/south-tarn.png",
-      "width": 756,
-      "height": 748,
+      "width": 1512,
+      "height": 1496,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "8e79d7ce58f4c84e7289bc510687339fdf085ae6731f6e8d0b9629f6a32a361f",
+      "sha256": "a6af7937668ae86114ddac5dc6f067c58fabcb8c19b47078c083e5382b744263",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-ice-shardgate-junction",
         "piece": "south-tarn",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-ice-shardgate-junction-redesign-tarn-wall",
@@ -18304,21 +18366,23 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-ice-shardgate-junction/tarn-wall.png",
-      "width": 320,
-      "height": 905,
+      "width": 640,
+      "height": 1810,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "e14467316d67c3d2a2d8ead2a02375747fa9bdded7cfe3ffe672f5b8f2f159d9",
+      "sha256": "8a78ff89121f86607123a48a2c4ccbdc5cc8f51066a0832bbfec90592f2cb8a4",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-ice-shardgate-junction",
         "piece": "tarn-wall",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-lava-ember-stair-redesign-west-stair",
@@ -18328,21 +18392,23 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/west-stair.png",
-      "width": 804,
-      "height": 1126,
+      "width": 1608,
+      "height": 2252,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "9e951b5a6a92867a8b1cc2757981f93075e0b10aca191d541aa537e1e0404ea5",
+      "sha256": "7858d65f9a38775d414c323bf0ebcfc30dd56e45351a7b6ed780167d793faf7e",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-lava-ember-stair",
         "piece": "west-stair",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-lava-ember-stair-redesign-east-stair",
@@ -18352,21 +18418,23 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/east-stair.png",
-      "width": 646,
-      "height": 1202,
+      "width": 1292,
+      "height": 2404,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "201231641786405da201b69a5b709682c7394791f4c88c9d2a6732e60d1dfffb",
+      "sha256": "cd09adaf1fcd6df2496385dd3c617421a53c08183062f001a8e462bbb776dd42",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-lava-ember-stair",
         "piece": "east-stair",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-lava-ember-stair-redesign-west-low-step",
@@ -18376,21 +18444,23 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/west-low-step.png",
-      "width": 526,
-      "height": 306,
+      "width": 1052,
+      "height": 612,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "aff622d5d1a86bf38336bbcaa649ccdf84cddd06b08bb072567fa7066b3dcdd8",
+      "sha256": "ec07974bd64259c716659fb4cdebd86ab2f42f72d7a96ceab78a688dd0c7e76b",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-lava-ember-stair",
         "piece": "west-low-step",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-lava-ember-stair-redesign-western-molten-channel",
@@ -18400,21 +18470,23 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/western-molten-channel.png",
-      "width": 729,
-      "height": 1319,
+      "width": 1458,
+      "height": 2638,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "1c20841dddcf037565e5b6cad1e207750fb8ef386aed25e7de0628e2e99c53d0",
+      "sha256": "6ff84d95f177ce0f3e16ed7ea224a841c4edc4d355917dbb9743e42e577a1184",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-lava-ember-stair",
         "piece": "western-molten-channel",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-lava-ember-stair-redesign-lower-ember-step",
@@ -18424,21 +18496,23 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/lower-ember-step.png",
-      "width": 313,
-      "height": 671,
+      "width": 626,
+      "height": 1342,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "cb47ac4d8461431dab7ce88f86560352d283ddac2ad2f5b13e0462e747a8ab63",
+      "sha256": "c49809ce5b9f7fa332c7276e10a445227bf7ab1d470dd7873873bf3958850f7c",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-lava-ember-stair",
         "piece": "lower-ember-step",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-lava-ember-stair-redesign-ember-basin",
@@ -18448,21 +18522,23 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/ember-basin.png",
-      "width": 513,
-      "height": 1165,
+      "width": 1026,
+      "height": 2330,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "faee47560c524674cfa9689ff0273842f4ab60584ae663538139339ab321dd5c",
+      "sha256": "e773c02907e44e6c5bed95a8da0b102a7bc48b4ceab6fb02f3e8450466ece395",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-lava-ember-stair",
         "piece": "ember-basin",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-lava-ember-stair-redesign-basin-ledge",
@@ -18472,21 +18548,23 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/basin-ledge.png",
-      "width": 242,
-      "height": 410,
+      "width": 484,
+      "height": 820,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "aea2cf4ed967fedbb5fab55a8b774a88d772016b38ccebc7f7197fcd321f0995",
+      "sha256": "5b34007dd927eb79ab1ea74a62b7cbd9b2e2c51e8aa06e0eeb3e14b4cb3e476f",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-lava-ember-stair",
         "piece": "basin-ledge",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-snow-staggered-spurs-redesign-north-spur",
@@ -18496,21 +18574,23 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/north-spur.png",
-      "width": 781,
-      "height": 718,
+      "width": 1562,
+      "height": 1436,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "716e62c23577dcbf3eb640941950add7997be5f90d5b92eeb4a84e8f370ca935",
+      "sha256": "1aa918cfe19d7c041b0e62708b3eb90004decfe6ce3df081c5f96ddf7de1eb4d",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-snow-staggered-spurs",
         "piece": "north-spur",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-snow-staggered-spurs-redesign-frozen-oxbow",
@@ -18520,21 +18600,23 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/frozen-oxbow.png",
-      "width": 615,
-      "height": 299,
+      "width": 1230,
+      "height": 598,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "45f19fb480be6dbc95359abd2e81e8e99dac5a5b324960ae539f9ea372530c19",
+      "sha256": "6674380027f81a8bc2caf5ea40c6b2f45fb52455a555a97dd4579c64ac03ef6a",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-snow-staggered-spurs",
         "piece": "frozen-oxbow",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-snow-staggered-spurs-redesign-east-spur",
@@ -18544,21 +18626,23 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/east-spur.png",
-      "width": 712,
-      "height": 884,
+      "width": 1424,
+      "height": 1768,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "b5aae15fcfcf63c1160be0c1a7f1df6b32ff1877a4d05b0fb35546cd6af61fc3",
+      "sha256": "27722cfbc10ee1aab832d8259227e4718500f8eeee8a6f5ada4e546bf5754c95",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-snow-staggered-spurs",
         "piece": "east-spur",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-snow-staggered-spurs-redesign-second-spur",
@@ -18568,21 +18652,23 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/second-spur.png",
-      "width": 405,
-      "height": 227,
+      "width": 810,
+      "height": 454,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "a63d40c27fbbd1f1b8ec45ea2a396cb0a9f8f082b961aeda6634116d78705b19",
+      "sha256": "c5fa1b3f0d426fe8719ed17a99a6c27336c9e6e26b6169014e377b392f4661be",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-snow-staggered-spurs",
         "piece": "second-spur",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-snow-staggered-spurs-redesign-west-spur",
@@ -18592,21 +18678,23 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/west-spur.png",
-      "width": 600,
-      "height": 626,
+      "width": 1200,
+      "height": 1252,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "cc835102aa1d8c977495f665ad0f768926cce184e63bb31dc22985371c903ce6",
+      "sha256": "cfe94d62a1e99e4ecfe80b59911cf94998cb527a376290812069073a25085df7",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-snow-staggered-spurs",
         "piece": "west-spur",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-snow-staggered-spurs-redesign-east-meltwater",
@@ -18616,21 +18704,23 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/east-meltwater.png",
-      "width": 705,
-      "height": 1330,
+      "width": 1410,
+      "height": 2660,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "5f24318eb51440d1cb971e7ee957a6b3397bd54a7dd94bd3d09b95f45e63a584",
+      "sha256": "7261e6b839591c86baed75e46bdfde3b37cfef7600b29eddf5def084fce6cc0d",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-snow-staggered-spurs",
         "piece": "east-meltwater",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-snow-staggered-spurs-redesign-southwest-bank",
@@ -18640,21 +18730,23 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/southwest-bank.png",
-      "width": 428,
-      "height": 1012,
+      "width": 856,
+      "height": 2024,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "cfb77122b6ac9ae3c05edaf53e3adf7cce92cf2ef4a2ce38178a26cd83cfabe0",
+      "sha256": "1cdef67c3d4faedadfb88b9a6f92d76bcf308d1de310f2bdfa158831863a7382",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-snow-staggered-spurs",
         "piece": "southwest-bank",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-expansion-snow-staggered-spurs-redesign-river-lookout",
@@ -18664,21 +18756,23 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-snow-staggered-spurs/river-lookout.png",
-      "width": 305,
-      "height": 346,
+      "width": 610,
+      "height": 692,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "a9620deb1f62bd3e460bd065a4b2bd4292031577cdf61074e5f9891ddb5dd649",
+      "sha256": "e5878f2b68ba87979a9225c8a4200c2e908acf7e87a386a9bfd9b5736349458c",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-expansion-snow-staggered-spurs",
         "piece": "river-lookout",
-        "pixelsPerWorldUnit": 1
-      }
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-southwatch",
@@ -18688,22 +18782,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/southwatch.png",
-      "width": 1096,
-      "height": 859,
+      "width": 2192,
+      "height": 1718,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "c29077f0715014233af74570e976c667141f39382d01a610062a3326fd44b145",
+      "sha256": "e079473b00504fd3708a46e0bb324eccc66a16c8ad6eee4f32cc0abf7e41901a",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "southwatch",
-        "pixelsPerWorldUnit": 1,
-        "access": "ramp"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "ramp",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-east-canopy",
@@ -18713,22 +18809,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/east-canopy.png",
-      "width": 711,
-      "height": 804,
+      "width": 1422,
+      "height": 1608,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "a80c5ddec8bd9f60f7e44f4e590b42b19cec7903fc71f5fde012a84e70265413",
+      "sha256": "78c98d51da9f45526fed57eebfca0225b829abd9e864a47d6df7e830c1e75542",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "east-canopy",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-rune-terrace",
@@ -18738,22 +18836,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/rune-terrace.png",
-      "width": 823,
-      "height": 547,
+      "width": 1646,
+      "height": 1094,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "4c6743bb3b8c89044f5ecbcb497b53b351f4b4644aa19dd06f0505c4a96d7a4e",
+      "sha256": "a1fc1710e4f777ddd851974c9a2f04085ce22a95f943d2ede3f7ad32b813d23b",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "rune-terrace",
-        "pixelsPerWorldUnit": 1,
-        "access": "ramp"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "ramp",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-east-brackenwall",
@@ -18763,22 +18863,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/east-brackenwall.png",
-      "width": 616,
-      "height": 1133,
+      "width": 1232,
+      "height": 2266,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "a82524f4f9b13240700a4bcb190adb9d282f8afd2f5f3772ffcb4e0175622ad9",
+      "sha256": "cc3cde5902c0dcd69e8305870e930f7a366b1ff457d26d80faaff5c17fa5e158",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "east-brackenwall",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-eastern-ridge",
@@ -18788,22 +18890,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/eastern-ridge.png",
-      "width": 416,
-      "height": 970,
+      "width": 832,
+      "height": 1940,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "78b2d3894ca4104cf36cd97b446e2aaf4acbc9cad3ef9d85c0923db4a057ba62",
+      "sha256": "dacd8791ad02ec49ccd63e971170302ebfd49daab3a470df6f98ed25b0d4d6c8",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "eastern-ridge",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-split-gate-crown",
@@ -18813,22 +18917,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/split-gate-crown.png",
-      "width": 711,
-      "height": 852,
+      "width": 1422,
+      "height": 1704,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "24361997e8a1237001e0d639d3a07ec7f33c1273e28d538c7e80025cdd20c3db",
+      "sha256": "30f03465fb113f970349832c5371956d94b386bde9a88a51bc12b7d017f6c2e7",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "split-gate-crown",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-western-hollow",
@@ -18838,22 +18944,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/western-hollow.png",
-      "width": 550,
-      "height": 641,
+      "width": 1100,
+      "height": 1282,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "82bbc01dc8e8aa7746bc69e8c1d1db3fbc1d249153a4b3a62a4ffc4c706a2c55",
+      "sha256": "1ed4d4ff1bb925b0b69bcf38e1facefeaf0ec3006ca7bd0f862bc96f366f6f56",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "western-hollow",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-west-gate-ledge",
@@ -18863,22 +18971,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/west-gate-ledge.png",
-      "width": 328,
-      "height": 1010,
+      "width": 656,
+      "height": 2020,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "9ef1dc677b9070798ed22a7d40175fda3eec958895c4f34d3ca469a079835ab1",
+      "sha256": "e4a2678e35fe20a1d7dda790538bf6fce34d11eafbe07ed9c49381cc6b55ef30",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "west-gate-ledge",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-western-rampart",
@@ -18888,22 +18998,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/western-rampart.png",
-      "width": 498,
-      "height": 570,
+      "width": 996,
+      "height": 1140,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "fcb8a47e0fa450f055d3d52493cbe59eb95a39df7086903d97cceb75ef720181",
+      "sha256": "9ba8006e4a5d4c62226186eb684d9a3b4f8ae7a4840e25f9bb58891b17e44b59",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "western-rampart",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-west-root-shelf",
@@ -18913,22 +19025,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/west-root-shelf.png",
-      "width": 256,
-      "height": 657,
+      "width": 512,
+      "height": 1314,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "44ab85b400ac828f1876c4c3999f0b548b737711351c41123e94a5480a792628",
+      "sha256": "571dce1b1ab13c95ce80ed745f91e215793dfff877c870228ebbc93efffe0eeb",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "west-root-shelf",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     },
     {
       "id": "terrain-six-gate-woodland-gate-spur",
@@ -18938,22 +19052,24 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-05-six-gate-woodland/gate-spur.png",
-      "width": 235,
-      "height": 224,
+      "width": 470,
+      "height": 448,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
       "defaultScale": 1,
-      "sha256": "d7f64622bfdc158e482ab64f4f6d1fc7b3bdf028814c333567bd927fb759b632",
+      "sha256": "ef3feb13e450c7d821686e2fedd3a9ecfc4c3603596bcd971eda8f25d1f2fa72",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-05-six-gate-woodland",
         "piece": "gate-spur",
-        "pixelsPerWorldUnit": 1,
-        "access": "closed"
-      }
+        "pixelsPerWorldUnit": 2,
+        "access": "closed",
+        "castShadow": false
+      },
+      "nativeScale": 0.5
     }
   ],
   "biomes": [
