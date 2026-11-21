@@ -1,5 +1,6 @@
 "use strict";
 
+var FightingTypeDamage = require("./FightingTypeDamage");
 // Saved combat settings, animation defaults and per-unit authoring overrides. No configuration
 // is created or loaded here. Without either, retain the synchronous legacy path.
 var pending = new Map();
@@ -24,25 +25,43 @@ function keyFor(owner, type) {
   if(type === "enemy" && owner.cfg.ProfileBaseID && id>=90010&&id<=90012)form=String(id-90009);
   return type + ":" + id + ":" + form;
 }
+function roleFor(owner, side, settings) {
+  if (side === "hero") return owner.heroStyle;
+  if (!side || !owner.cfg || !settings) return undefined;
+  return side === "enemy" && owner.cfg.FightingType || (settings.unitTypeAssignments || {})[keyFor(owner, side)];
+}
+function roleOf(owner, settings) {
+  var side = owner.heroStyle ? "hero" : owner.navigationTeam === "friendly" ? "ally" : owner.navigationTeam === "enemy" ? "enemy" : null;
+  return roleFor(owner, side, settings);
+}
 function counters(owner, target) {
-  if (!owner || !owner.cfg || !target || !target.cfg && !target.heroStyle) return false;
-  if (owner.cfg.CounterType === undefined) return !!(owner.cfg.Suppressed && target.cfg && owner.cfg.Suppressed == target.cfg.ID);
-  if (!owner.cfg.CounterType) return false;
-  if (target.heroStyle) return owner.cfg.CounterType === target.heroStyle;
-  var settings = config(), side = target.navigationTeam === "friendly" ? "ally" : target.navigationTeam === "enemy" ? "enemy" : null;
-  if (!settings || !side) return false;
-  var assignments = settings.unitTypeAssignments || {};
-  return (side==="enemy"&&target.cfg.FightingType||assignments[keyFor(target, side)]) === owner.cfg.CounterType;
+  if (!owner || !target || !target.cfg && !target.heroStyle) return false;
+  var settings = config();
+  var counter = FightingTypeDamage.counterType(settings && settings.unitTypes, roleOf(owner, settings));
+  if (counter !== undefined) return counter === roleOf(target, settings);
+  if (!owner.cfg) return false;
+  var legacy = owner.cfg.CounterType;
+  if (legacy === undefined) return !!(owner.cfg.Suppressed && target.cfg && owner.cfg.Suppressed == target.cfg.ID);
+  return !!legacy && legacy === roleOf(target, settings);
+}
+// Used by hit paths that have no legacy per-unit bonus. Projectiles may pass the
+// source role captured at release.
+function typeCounterDamage(owner, target, amount, releasedRole) {
+  if (!(amount > 0) || !owner || !target) return amount;
+  var settings = config();
+  var counter = FightingTypeDamage.counterType(settings && settings.unitTypes, releasedRole || roleOf(owner, settings));
+  if (!counter || counter !== roleOf(target, settings)) return amount;
+  var parameter = require("KinghtFallEnum").KinghtFallEnumParameterCfg.RestrainedArms;
+  return amount * Number(require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getParamsCfgById(parameter));
 }
 function damageTaken(owner, side, amount) {
   if (!(amount > 0) || !owner || side !== "hero" && !owner.cfg) return amount;
   var settings = config();
   if (!settings) return amount;
-  var role = side === "hero" ? owner.heroStyle : side === "enemy" && owner.cfg.FightingType ||
-    (settings.unitTypeAssignments || {})[keyFor(owner, side)];
+  var role = roleFor(owner, side, settings);
   var type = (settings.unitTypes || {})[role];
   if (!type || type.damageTaken === undefined) return amount;
-  return amount * require("./FightingTypeDamage").multiplier(type.damageTaken);
+  return amount * FightingTypeDamage.multiplier(type.damageTaken);
 }
 function cancel(owner) {
   var entry = pending.get(owner);
@@ -282,6 +301,7 @@ exports.clear = clear;
 exports.isPending = isPending;
 exports.keyFor = keyFor;
 exports.counters = counters;
+exports.typeCounterDamage = typeCounterDamage;
 exports.damageTaken = damageTaken;
 exports.perkEnabled = perkEnabled;
 exports.parameter = parameter;

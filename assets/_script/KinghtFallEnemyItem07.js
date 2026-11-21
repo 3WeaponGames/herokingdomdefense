@@ -174,7 +174,8 @@ var def_KinghtFallEnemyItem07 = function (t) {
       if (!skillCurrent(this, release.scope, true)) return;
       var record = release.records[index];if (!record) break;
       if (!targetCurrent(record, true)) continue;
-      var received = record.item.onAttacked(release.damage, this);
+      var damage = GameToolsOverrides.typeCounterDamage(this, record.item, release.damage);
+      var received = record.item.onAttacked(damage, this);
       if (!skillCurrent(this, release.scope, true)) return;
       if (!targetCurrent(record, false)) continue;
       release.scope.effects.showDamageNum(record.position, received);

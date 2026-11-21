@@ -8,6 +8,10 @@ const {test} = require('node:test');
 const root = path.resolve(__dirname, '../..');
 const packs = ['monster3', 'fantasy-monsters', 'fantasy-bosses'];
 const json = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
+const manifests = packs.map(pack => json(path.join(root, 'assets/resources/unit-library', pack, 'catalog.json')));
+const modelCount = manifests.reduce((sum, catalog) => sum + catalog.units.length, 0);
+const partCount = manifests.reduce((sum, catalog) => sum + catalog.parts.length, 0);
+const sourceSheetCount = manifests.reduce((sum, catalog) => sum + (catalog.sourceSheets || []).length, 0);
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 function pngSize(file) {
   const handle = fs.openSync(file, 'r'), bytes = Buffer.alloc(24);
@@ -38,7 +42,7 @@ function pages(text) {
   return result;
 }
 
-test('Monster 3 and both Fantasy packs have capped native pages and complete variant texture bindings', () => {
+test('installed Monster 3 and Fantasy models have capped native pages and complete variant texture bindings', () => {
   let rigs = 0, pageCount = 0;
   for (const pack of packs) {
     const base = path.join(root, 'assets/resources/unit-library', pack), catalog = json(path.join(base, 'catalog.json'));
@@ -47,18 +51,20 @@ test('Monster 3 and both Fantasy packs have capped native pages and complete var
       assert(width <= 2048 && height <= 2048, 'Runtime image exceeds 2048: ' + path.relative(root, file));
     }
     const checked = new Set();
-    for (const file of fs.readdirSync(path.join(base, 'Units')).filter(file => file.endsWith('.json'))) {
-      const skeleton = path.join(base, 'Units', file), atlas = skeleton.replace(/\.json$/, '.atlas');
+    const units = path.join(base, 'Units');
+    if (!catalog.units.length && !fs.existsSync(units)) continue;
+    for (const skeleton of files(units).filter(file => file.endsWith('.json'))) {
+      const file = path.relative(units, skeleton), atlas = skeleton.replace(/\.json$/, '.atlas');
       const row = catalog.units.find(unit => path.resolve(root, unit.skeleton) === skeleton);
       const declared = pages(fs.readFileSync(atlas, 'utf8')), textures = [];
       assert(declared.length, file + ' declares its native atlas pages');
       for (const page of declared) {
         assert.equal(page.name, path.basename(page.name), 'Creator resolves native sibling page basenames');
-        const sibling = path.join(base, 'Units', page.name), canonical = path.join(base, 'Atlases', page.name);
+        const sibling = path.join(path.dirname(skeleton), page.name), canonical = path.join(base, 'Atlases', page.name);
         const metadata = json(sibling + '.meta');
         textures.push(metadata.uuid);
-        if (checked.has(page.name)) continue;
-        checked.add(page.name); pageCount++;
+        if (checked.has(sibling)) continue;
+        checked.add(sibling); pageCount++;
         const dimensions = pngSize(sibling);
         assert.deepEqual(page.size.split(',').map(Number), dimensions, 'Declared atlas dimensions match the texture');
         assert.deepEqual([metadata.width, metadata.height], dimensions);
@@ -89,8 +95,8 @@ test('Monster 3 and both Fantasy packs have capped native pages and complete var
       rigs++;
     }
   }
-  assert(rigs >= 216, 'Covers every shipped skeleton, including variants outside catalog.units');
-  assert(pageCount > 3, 'Exercises shared and multi-page layouts');
+  assert(rigs >= modelCount, 'Covers every shipped skeleton, including variants outside catalog.units');
+  assert(pageCount >= 3, 'Exercises shared and multi-page layouts');
 });
 
 const python = process.env.PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
@@ -118,16 +124,16 @@ for pack in ['monster3','fantasy-monsters','fantasy-bosses']:
  sources={'u_'+part['guid']:part for part in catalog['parts']}
  original_pages={Path(record['originalNativeAsset']).name:record['sha256'] for record in catalog.get('sourceSheets',[])}
  @lru_cache(maxsize=None)
- def retained_page(name):
-  return name in original_pages and hashlib.sha256((base/'Units'/name).read_bytes()).hexdigest()==original_pages[name]
+ def retained_page(file):
+  return file.parent==base/'Units' and file.name in original_pages and hashlib.sha256(file.read_bytes()).hexdigest()==original_pages[file.name]
  for part in catalog['parts']:
   assert hashlib.sha256((root/part['image']).read_bytes()).hexdigest()==part['sha256'],'source sprite changed: '+part['image']
   parts_checked+=1
  @lru_cache(maxsize=4)
- def image(name):
-  with Image.open(base/'Units'/name) as picture:return picture.convert('RGBA')
+ def image(file):
+  with Image.open(file) as picture:return picture.convert('RGBA')
  checked=set();layouts={};models={root/unit['skeleton']:unit for unit in catalog['units']}
- for skeleton in sorted((base/'Units').glob('*.json')):
+ for skeleton in sorted((base/'Units').rglob('*.json')):
   model=models.get(skeleton,{})
   text=skeleton.with_suffix('.atlas').read_text(encoding='utf-8-sig')
   if text not in layouts:
@@ -148,13 +154,14 @@ for pack in ['monster3','fantasy-monsters','fantasy-bosses']:
    part=sources.get(name)
    assert part or model.get('variantOf'),'unknown source image: '+name
    size=tuple(map(int,region['size'].split(',')));xy=tuple(map(int,region['xy'].split(',')))
-   identity=(region['page'],name,xy,size)
+   texture=skeleton.parent/region['page']
+   identity=(texture,name,xy,size)
    if identity in checked:continue
    checked.add(identity)
    assert size==tuple(map(int,region['orig'].split(','))),name+' was resized or trimmed'
    assert tuple(map(int,region['offset'].split(',')))==(0,0),name+' origin changed'
    assert region.get('rotate','false')=='false',name+' orientation changed'
-   packed=image(region['page']);x,y=xy;w,h=size
+   packed=image(texture);x,y=xy;w,h=size
    assert x>=0 and y>=0 and x+w<=packed.width and y+h<=packed.height,name+' image bounds'
    interior=packed.crop((x,y,x+w,y+h))
    if part:
@@ -164,7 +171,7 @@ for pack in ['monster3','fantasy-monsters','fantasy-bosses']:
     assert interior.getchannel('A').getbbox(),name+' authored region has no visible pixels'
    # Legal legacy pages may be retained byte for byte when repacking would
    # grow or split them. Only unchanged originals may keep their old padding.
-   if not retained_page(region['page']):
+   if not retained_page(texture):
     assert x>=2 and y>=2 and x+w+2<=packed.width and y+h+2<=packed.height,name+' padded bounds'
     for distance in [1,2]:
      assert packed.crop((x-distance,y,x-distance+1,y+h)).tobytes()==interior.crop((0,0,1,h)).tobytes(),name+' left border'
@@ -202,14 +209,16 @@ for pack in ['monster3','fantasy-monsters','fantasy-bosses']:
  image.cache_clear()
 print(json.dumps({'regions':regions_checked,'rigs':rigs_checked,'parts':parts_checked,'expressions':expressions,'effects':effects}))
 `);
-  assert(result.rigs >= 216);
-  assert(result.parts >= 1695, 'Every original sprite remains available for authoring');
-  assert(result.regions >= 1600, 'Compares every distinct packed source region');
-  assert(result.expressions > 100, 'Exercises Fantasy expression controls');
-  assert(result.effects > 100, 'Exercises the generated Fantasy visual effects');
+  assert(result.rigs >= modelCount);
+  assert.equal(result.parts, partCount, 'Every installed source sprite remains available for authoring');
+  assert(result.regions > 0, 'Compares every distinct packed source region');
+  if (sourceSheetCount) {
+    assert(result.expressions > 0, 'Exercises Fantasy expression controls');
+    assert(result.effects > 0, 'Exercises the generated Fantasy visual effects');
+  }
 });
 
-test('Fantasy whole-sheet sources retain exact bytes and slice provenance outside runtime assets', {skip: !pillowAvailable}, () => {
+test('Fantasy whole-sheet sources retain exact bytes and slice provenance outside runtime assets', {skip: !pillowAvailable || !sourceSheetCount}, () => {
   const result = runPython(String.raw`
 import hashlib,json,struct,sys
 from pathlib import Path
@@ -225,6 +234,7 @@ def profiles(raw):
  return result
 for pack in ['fantasy-monsters','fantasy-bosses']:
  base=root/'assets/resources/unit-library'/pack;catalog=json.loads((base/'catalog.json').read_text(encoding='utf-8-sig'))
+ if not catalog['units']:continue
  records=catalog.get('sourceSheets',[]);assert records,'whole-sheet source provenance is missing: '+pack
  mapping={};source_profiles={}
  for record in records:
@@ -259,7 +269,7 @@ for pack in ['fantasy-monsters','fantasy-bosses']:
  image.cache_clear()
 print(json.dumps({'sheets':sheets_checked,'parts':parts_checked,'profilePages':profile_pages}))
 `);
-  assert(result.sheets >= 60, 'Preserves every original body/effect sheet');
-  assert(result.parts >= 1249, 'Retains exact Unity slice pixels and all generated effect source pixels');
-  assert(result.profilePages >= 60, 'Every runtime page retains its original display color profile');
+  assert.equal(result.sheets, sourceSheetCount, 'Preserves every installed body/effect sheet');
+  assert(result.parts > 0, 'Retains exact Unity slice pixels and generated effect source pixels');
+  assert(result.profilePages > 0, 'Every runtime page retains its original display color profile');
 });

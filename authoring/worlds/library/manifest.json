@@ -12245,21 +12245,21 @@
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-01",
-      "name": "West Processional Wall",
+      "name": "Desert - Longwall Frontier component 01",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-01.png",
-      "width": 780,
-      "height": 538,
+      "width": 888,
+      "height": 576,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "2199bb72ebd3ddf2aafceeeb9fc604dec848a00287795ea5fdbc9521870bdd59",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "cd3ca1f6bda933ac1ccf1e997c0e8bcf7975744cc2dcc6ff9f43b6212ee1702d",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12277,44 +12277,38 @@
           "width": 222,
           "height": 144
         },
-        "generatedSha256": "2199bb72ebd3ddf2aafceeeb9fc604dec848a00287795ea5fdbc9521870bdd59",
+        "generatedSha256": "cd3ca1f6bda933ac1ccf1e997c0e8bcf7975744cc2dcc6ff9f43b6212ee1702d",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original stone with angular facets",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "sandstone-wall",
+        "semanticRole": "weathered-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 437,
-          "y": 1290,
-          "width": 390,
-          "height": 269
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-02",
-      "name": "Eastern Pyramid Court",
+      "name": "Desert - Longwall Frontier component 02",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-02.png",
-      "width": 418,
-      "height": 1014,
+      "width": 536,
+      "height": 1288,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "58de49960afcf9bfdf8305475f71ce3ffa49e4e8b7e9a9fdcc68802b9ac9172c",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "54231e413e6df04186424c8368822653c078b06c1167fbe7ede830c7e12bfd85",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12332,44 +12326,38 @@
           "width": 134,
           "height": 322
         },
-        "generatedSha256": "58de49960afcf9bfdf8305475f71ce3ffa49e4e8b7e9a9fdcc68802b9ac9172c",
+        "generatedSha256": "54231e413e6df04186424c8368822653c078b06c1167fbe7ede830c7e12bfd85",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original hill with sand crests and slip faces",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "pyramid-court",
+        "semanticRole": "wind-shaped-sand-hill",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 566,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 1656,
-          "y": 745,
-          "width": 209,
-          "height": 507
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-03",
-      "name": "East Processional Wall",
+      "name": "Desert - Longwall Frontier component 03",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-03.png",
-      "width": 736,
-      "height": 530,
+      "width": 852,
+      "height": 544,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "cecbb2f6ee43f170c4f5ca6180894922c44a9b6ecba6dfdda59c61a1decc3cf4",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "84d02c5388b4a54adc40123cc8a6cd0b15fad8038752f212baeee0afbdfeebdd",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12387,44 +12375,38 @@
           "width": 213,
           "height": 136
         },
-        "generatedSha256": "cecbb2f6ee43f170c4f5ca6180894922c44a9b6ecba6dfdda59c61a1decc3cf4",
+        "generatedSha256": "84d02c5388b4a54adc40123cc8a6cd0b15fad8038752f212baeee0afbdfeebdd",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original stone with angular facets",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "sandstone-wall",
+        "semanticRole": "weathered-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 1037,
-          "y": 1286,
-          "width": 368,
-          "height": 265
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-04",
-      "name": "Southeast Sun Pyramid",
+      "name": "Desert - Longwall Frontier component 04",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-04.png",
-      "width": 828,
-      "height": 612,
+      "width": 1020,
+      "height": 672,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "3537c8ef0c2de573bb4b5201f0a9b641aaa8d98202f8b4490e2f47765ceec1c0",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "7fa3caabf3190cc6af3bdcd4e33ccef24c7a4239ec6851d3230a29e78008a4d5",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12442,44 +12424,38 @@
           "width": 255,
           "height": 168
         },
-        "generatedSha256": "3537c8ef0c2de573bb4b5201f0a9b641aaa8d98202f8b4490e2f47765ceec1c0",
+        "generatedSha256": "7fa3caabf3190cc6af3bdcd4e33ccef24c7a4239ec6851d3230a29e78008a4d5",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original hill with sand crests and slip faces",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "sloped-pyramid",
+        "semanticRole": "wind-shaped-sand-hill",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 1437,
-          "y": 2634,
-          "width": 414,
-          "height": 306
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-05",
-      "name": "Southwest Step Pyramid",
+      "name": "Desert - Longwall Frontier component 05",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-05.png",
-      "width": 760,
-      "height": 606,
+      "width": 944,
+      "height": 612,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "18600cea6c1330ca0e14959fb64243f6682cd519d7b6537b1ce99793217de57e",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "58d6138028b6eceac0cf6a07bfd38ba4a5342cfbfe4f0d208d7ba4a53df2f419",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12497,44 +12473,38 @@
           "width": 236,
           "height": 153
         },
-        "generatedSha256": "18600cea6c1330ca0e14959fb64243f6682cd519d7b6537b1ce99793217de57e",
+        "generatedSha256": "58d6138028b6eceac0cf6a07bfd38ba4a5342cfbfe4f0d208d7ba4a53df2f419",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original hill with sand crests and slip faces",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "step-pyramid",
+        "semanticRole": "wind-shaped-sand-hill",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 60,
-          "y": 2632,
-          "width": 380,
-          "height": 303
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-06",
-      "name": "Eastern Pyramid Pair",
+      "name": "Desert - Longwall Frontier component 06",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-06.png",
-      "width": 450,
-      "height": 714,
+      "width": 444,
+      "height": 960,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "8b70d4a88ca625b4aa42d8b76003904c32ee279e13cbfeb45e8ade7c8b8fc659",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "731d979e1e09e76efe6ba24297c729b939cfe6dec8b62eb2399d0c36cfdc8474",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12552,44 +12522,38 @@
           "width": 111,
           "height": 240
         },
-        "generatedSha256": "8b70d4a88ca625b4aa42d8b76003904c32ee279e13cbfeb45e8ade7c8b8fc659",
+        "generatedSha256": "731d979e1e09e76efe6ba24297c729b939cfe6dec8b62eb2399d0c36cfdc8474",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original hill with sand crests and slip faces",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "pyramid-court",
+        "semanticRole": "wind-shaped-sand-hill",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 1638,
-          "y": 1681,
-          "width": 225,
-          "height": 357
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-07",
-      "name": "Western Pyramid Pair",
+      "name": "Desert - Longwall Frontier component 07",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-07.png",
-      "width": 334,
-      "height": 866,
+      "width": 440,
+      "height": 932,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "b2a496ea590b70aeb1032b25ebc93f7f8b3054c139c1ae7c3a1383328fb40d51",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "7b0f7add422a300dda38fe44a52bee6c43c6e5c6af522e6ed4985f6fd990fce0",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12607,44 +12571,38 @@
           "width": 110,
           "height": 233
         },
-        "generatedSha256": "b2a496ea590b70aeb1032b25ebc93f7f8b3054c139c1ae7c3a1383328fb40d51",
+        "generatedSha256": "7b0f7add422a300dda38fe44a52bee6c43c6e5c6af522e6ed4985f6fd990fce0",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original hill with sand crests and slip faces",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "pyramid-court",
+        "semanticRole": "wind-shaped-sand-hill",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 3,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": -18,
-          "y": 1592,
-          "width": 167,
-          "height": 433
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-08",
-      "name": "East Rampart",
+      "name": "Desert - Longwall Frontier component 08",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-08.png",
-      "width": 564,
-      "height": 516,
+      "width": 552,
+      "height": 532,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "2b08012c9e093a1f2f0043e4ca9af09284a0435c2d80652491b96f5ae106e6d1",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "34d8722957072d8d1392249f768d43d712708e77db54eb6084d2e0c10c3a8d9e",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12662,44 +12620,38 @@
           "width": 138,
           "height": 133
         },
-        "generatedSha256": "2b08012c9e093a1f2f0043e4ca9af09284a0435c2d80652491b96f5ae106e6d1",
+        "generatedSha256": "34d8722957072d8d1392249f768d43d712708e77db54eb6084d2e0c10c3a8d9e",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original stone with angular facets",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "sandstone-wall",
+        "semanticRole": "weathered-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 1610,
-          "y": 1294,
-          "width": 282,
-          "height": 258
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-09",
-      "name": "West Rampart",
+      "name": "Desert - Longwall Frontier component 09",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-09.png",
-      "width": 526,
-      "height": 518,
+      "width": 528,
+      "height": 524,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "a1151d8d76e0c9551d59b479c525a372c3b07f4d531b8fa3471e9c3f4b7b3b78",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "df269357157913e72cfe3720c5aa872f9ddd3b494c9dadb6bc061bd2879e0081",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12717,44 +12669,38 @@
           "width": 132,
           "height": 131
         },
-        "generatedSha256": "a1151d8d76e0c9551d59b479c525a372c3b07f4d531b8fa3471e9c3f4b7b3b78",
+        "generatedSha256": "df269357157913e72cfe3720c5aa872f9ddd3b494c9dadb6bc061bd2879e0081",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original stone with angular facets",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "sandstone-wall",
+        "semanticRole": "weathered-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": -29,
-          "y": 1290,
-          "width": 263,
-          "height": 259
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-10",
-      "name": "Northeast Pylon Ruin",
+      "name": "Desert - Longwall Frontier component 10",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-10.png",
-      "width": 438,
-      "height": 476,
+      "width": 544,
+      "height": 656,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "8d0cd326c175c59a27f381212501a45e0871f7ff23506f8a447d0073a6fb8d33",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "6e5ad823cb0903f48f83f1c6c915c3948964b05c0444e2523590efcc33d9625c",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12772,44 +12718,38 @@
           "width": 136,
           "height": 164
         },
-        "generatedSha256": "8d0cd326c175c59a27f381212501a45e0871f7ff23506f8a447d0073a6fb8d33",
+        "generatedSha256": "6e5ad823cb0903f48f83f1c6c915c3948964b05c0444e2523590efcc33d9625c",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original stone with angular facets",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "pylon-ruin",
+        "semanticRole": "weathered-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 1668,
-          "y": 232,
-          "width": 219,
-          "height": 238
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-11",
-      "name": "Western Stepped Pyramid",
+      "name": "Desert - Longwall Frontier component 11",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-11.png",
-      "width": 392,
-      "height": 422,
+      "width": 444,
+      "height": 700,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "242b29c1c96ff9f30fcb9801c79dd57b5c186de972939aeccd56395e6b12f43d",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "b9e41a46267884ac0be0fed450ab8774e537055457478a949edeee1d8fc37c7a",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12827,44 +12767,38 @@
           "width": 111,
           "height": 175
         },
-        "generatedSha256": "242b29c1c96ff9f30fcb9801c79dd57b5c186de972939aeccd56395e6b12f43d",
+        "generatedSha256": "b9e41a46267884ac0be0fed450ab8774e537055457478a949edeee1d8fc37c7a",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original hill with sand crests and slip faces",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "step-pyramid",
+        "semanticRole": "wind-shaped-sand-hill",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 3,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": 2,
-          "y": 1026,
-          "width": 196,
-          "height": 211
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-12",
-      "name": "Northwest Pyramid Court",
+      "name": "Desert - Longwall Frontier component 12",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-12.png",
-      "width": 342,
-      "height": 618,
+      "width": 344,
+      "height": 776,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "7d3bd1dae16fb9fd27e6ab4060ab4d4b502aaeb22b544ce912bdb1245263a513",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "0cdc27f9a3a25d4704e086374e98af32ddc5a42b5c99c3be2c179c6f87cd1ab4",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12882,44 +12816,38 @@
           "width": 86,
           "height": 194
         },
-        "generatedSha256": "7d3bd1dae16fb9fd27e6ab4060ab4d4b502aaeb22b544ce912bdb1245263a513",
+        "generatedSha256": "0cdc27f9a3a25d4704e086374e98af32ddc5a42b5c99c3be2c179c6f87cd1ab4",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original hill with sand crests and slip faces",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "pyramid-court",
+        "semanticRole": "wind-shaped-sand-hill",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 4,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": -11,
-          "y": 580,
-          "width": 171,
-          "height": 309
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
     {
       "id": "terrain-piece-08-longwall-frontier-component-13",
-      "name": "Northwest Pylon Ruin",
+      "name": "Desert - Longwall Frontier component 13",
       "category": "cliffs",
       "biomes": [
         "desert"
       ],
       "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/component-13.png",
-      "width": 346,
-      "height": 450,
+      "width": 540,
+      "height": 480,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "defaultScale": 1,
-      "sha256": "0fe8ae60db250387c5cb0451a33d204a030b593f35de9985cb29ab0724d5ad9e",
+      "defaultScale": 0.9577754891864058,
+      "sha256": "f261d1d24d7173f813b18b9080e03b494212f219c4a6fe9ebb670efb057e414e",
       "source": {
         "kind": "authored-terrain-piece",
         "concept": "longwall-frontier",
@@ -12937,24 +12865,18 @@
           "width": 135,
           "height": 120
         },
-        "generatedSha256": "0fe8ae60db250387c5cb0451a33d204a030b593f35de9985cb29ab0724d5ad9e",
+        "generatedSha256": "f261d1d24d7173f813b18b9080e03b494212f219c4a6fe9ebb670efb057e414e",
         "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
         "pixelsPerSourcePixel": 4,
-        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "geometry": "refinished original stone with angular facets",
         "flatWater": false,
         "flatDeck": false,
-        "semanticRole": "pylon-ruin",
+        "semanticRole": "weathered-wall",
         "registeredWaterRGB": null,
         "nativeCapFillPixels": 0,
         "mapId": "map-concept-08-longwall-frontier",
         "pixelsPerWorldUnit": 2,
-        "castShadow": false,
-        "registeredScreenBounds": {
-          "x": -31,
-          "y": 227,
-          "width": 173,
-          "height": 225
-        }
+        "castShadow": false
       },
       "nativeScale": 0.5
     },
@@ -19142,6 +19064,698 @@
         "castShadow": false,
         "generatedSha256": "8d0e67be03267af409105f88bed4ade1bcf7d9b5e8ff270df71a79d1243110c3"
       }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-melt-1",
+      "name": "Lava basin 1",
+      "category": "lava",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-melt-1.png",
+      "width": 1866,
+      "height": 2074,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "ee0bd99f863d78f6f68cf5101b90b6be9859d400ca6c72ba99d4e83a25b95e59",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-melt-2",
+      "name": "Lava basin 2",
+      "category": "lava",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-melt-2.png",
+      "width": 1866,
+      "height": 2074,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "1b5e483921a615fc5543b8df7d8eb182e4e0fda1316ea391073b6b138a6cf904",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-melt-3",
+      "name": "Lava basin 3",
+      "category": "lava",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-melt-3.png",
+      "width": 1866,
+      "height": 2078,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "a117d0445db2a44452d035c17c543577514d0a3bc4f2b31186cfa35c2f534399",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-melt-4",
+      "name": "Lava basin 4",
+      "category": "lava",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-melt-4.png",
+      "width": 1866,
+      "height": 2078,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "bf588193dfa1d94b8f864caef7d7e0cbe9c94544ecf9d21cde1cbce45494e2af",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-melt-5",
+      "name": "Lava basin 5",
+      "category": "lava",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-melt-5.png",
+      "width": 1866,
+      "height": 2074,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "eba0940811e77a9a9e05ac72c980b980f04d7e153bca4d466e8a1581df167904",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-melt-6",
+      "name": "Lava basin 6",
+      "category": "lava",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-melt-6.png",
+      "width": 1866,
+      "height": 2074,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "f4ab128d68c1e8dbf7256b17b6fa36959e8732940abb178ac89393e7a62bbe6b",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-cinder-landing",
+      "name": "Cinder Landing",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-cinder-landing.png",
+      "width": 2030,
+      "height": 1120,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "019285029b781705d193f062d8dede60609351f5bcd056e9cf01db9d597fe031",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-west-anvil",
+      "name": "West Anvil",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-west-anvil.png",
+      "width": 1400,
+      "height": 1364,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "4ca99268a1ff91abbba4e8523fb6f9791edd33adbba46f89a9b539137326bcde",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-kiln-shelf",
+      "name": "Kiln Shelf",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-kiln-shelf.png",
+      "width": 1474,
+      "height": 1366,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "be0c215b71ad089efec4b8c34b09c4dd69bcc2a8f93524c61791294d5f6e384f",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-crucible",
+      "name": "The Crucible",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-crucible.png",
+      "width": 1710,
+      "height": 1618,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "872078623998a938ac47d42c37904d15381f7b6b6969d3067d0c51906d9799f2",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-slag-pier",
+      "name": "Slag Pier",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-slag-pier.png",
+      "width": 894,
+      "height": 856,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "94c5f9c985a3249f756c53295c20e140f98af2326bbb1fa16e97f0433fe76c11",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-furnace-pier",
+      "name": "Furnace Pier",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-furnace-pier.png",
+      "width": 880,
+      "height": 842,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "a884627f1f4085506e096c2870427e67fd4171f07d4808b5b5271306d3d18e62",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-scoria-bastion",
+      "name": "Scoria Bastion",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-scoria-bastion.png",
+      "width": 1362,
+      "height": 1338,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "771e3655104473f9af87ccace2f6d857aa63d82b683f19cee0f9ee2a567dda86",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-clinker-rise",
+      "name": "Clinker Rise",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-clinker-rise.png",
+      "width": 1392,
+      "height": 1342,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "00203d6412119bccf8da220099e1477a919adcb3ba8b218cab58cfdfd5065c87",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-forge-landing",
+      "name": "Forge Landing",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-forge-landing.png",
+      "width": 2026,
+      "height": 1278,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "f6430ba63f5e4196c4f55c713fb671c7edb772b2129daeba95a7ff3edd826e8c",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-anvil-crossing",
+      "name": "Anvil Crossing",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-anvil-crossing.png",
+      "width": 876,
+      "height": 1018,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "617021772b1263fe6a23b47139316c6f51e7c955223c8a621bb0e6bf27f23446",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-kiln-crossing",
+      "name": "Kiln Crossing",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-kiln-crossing.png",
+      "width": 904,
+      "height": 1100,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "79d5c389b57c46c20fe7fd0c8363af77bd71c2a28ea952d5542f09dd734da8a5",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-crucible-west",
+      "name": "West Crucible Bridge",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-crucible-west.png",
+      "width": 926,
+      "height": 1100,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "7cfe0b330f9928675217b8afb06311491575915b2482807fcc075a3f4f0b5360",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-crucible-east",
+      "name": "East Crucible Bridge",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-crucible-east.png",
+      "width": 938,
+      "height": 1008,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "ed6c99d3e4c187417cdedf724c4eb21bbd5fc00a49fd3057209b5094d3c6940b",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-slag-north",
+      "name": "North Slag Bridge",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-slag-north.png",
+      "width": 550,
+      "height": 974,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "f275c3730d3b8f63906ec75813321f00b42931d12e4561fee4f51db18c988d15",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-slag-south",
+      "name": "South Slag Bridge",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-slag-south.png",
+      "width": 608,
+      "height": 980,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "c0aa44df9343952bd8f0d0c0535593e8c82d0d1713b66edd6bb3aaba5d7f23c4",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-furnace-north",
+      "name": "North Furnace Bridge",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-furnace-north.png",
+      "width": 596,
+      "height": 1020,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "bfe06f2e7cb2b413eb8a88d87d6a091d1fef23517c4a4e644da43d3cd6fd8902",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-furnace-south",
+      "name": "South Furnace Bridge",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-furnace-south.png",
+      "width": 716,
+      "height": 1030,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "30542c1ce49369e86871a1db85b824161f93695ac3640e8107767f9392262c71",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-bastion-crossing",
+      "name": "Scoria Crossing",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-bastion-crossing.png",
+      "width": 918,
+      "height": 968,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "2bd3867a341489c45459eefb9a182ee77f5f35384e2a27966efd135d5a570cda",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-clinker-crossing",
+      "name": "Clinker Crossing",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-clinker-crossing.png",
+      "width": 804,
+      "height": 920,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "7f5c67c1e637eacbd41b43ab61de66cf95b174151599e98971038de86fd6e050",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-forge-west",
+      "name": "West Forge Bridge",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-forge-west.png",
+      "width": 934,
+      "height": 1112,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "9dc63f6fb6be8b381bf4893fd523bff8554c39f9a0a2eb567117ad2aef186eb6",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-lava-basalt-causeways-forge-east",
+      "name": "East Forge Bridge",
+      "category": "bridges",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-lava-basalt-causeways-forge-east.png",
+      "width": 958,
+      "height": 1120,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "nativeScale": 0.5,
+      "sha256": "d4e50a52fcefa79b52b4c713181b2005922d9ad6d9319b60d34edd435bed997b",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways"
+      }
+    },
+    {
+      "id": "terrain-longwall-southeast-sun-pyramid",
+      "name": "Southeast Sun Pyramid",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/southeast-sun-pyramid.png",
+      "width": 828,
+      "height": 612,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "3537c8ef0c2de573bb4b5201f0a9b641aaa8d98202f8b4490e2f47765ceec1c0",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "concept": "longwall-frontier",
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 716,
+          "y": 1366,
+          "width": 255,
+          "height": 168
+        },
+        "originalCoreBounds": {
+          "x": 716,
+          "y": 1366,
+          "width": 255,
+          "height": 168
+        },
+        "generatedSha256": "3537c8ef0c2de573bb4b5201f0a9b641aaa8d98202f8b4490e2f47765ceec1c0",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 4,
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": "pyramid",
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0,
+        "mapId": "map-concept-08-longwall-frontier",
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false,
+        "copiedFrom": "terrain-piece-08-longwall-frontier-component-04"
+      },
+      "nativeScale": 0.5
+    },
+    {
+      "id": "terrain-longwall-southwest-step-pyramid",
+      "name": "Southwest Step Pyramid",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/08-longwall-frontier/southwest-step-pyramid.png",
+      "width": 760,
+      "height": 606,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1,
+      "sha256": "18600cea6c1330ca0e14959fb64243f6682cd519d7b6537b1ce99793217de57e",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "concept": "longwall-frontier",
+        "originalAsset": "concept-terrain-08-longwall-frontier",
+        "sourceBounds": {
+          "x": 0,
+          "y": 1381,
+          "width": 236,
+          "height": 153
+        },
+        "originalCoreBounds": {
+          "x": 0,
+          "y": 1381,
+          "width": 236,
+          "height": 153
+        },
+        "generatedSha256": "18600cea6c1330ca0e14959fb64243f6682cd519d7b6537b1ce99793217de57e",
+        "originalSha256": "a6933a824a01ff56fb37fa981268e78392677133e2a683d214faab3557deb16f",
+        "pixelsPerSourcePixel": 4,
+        "geometry": "angular sandstone masonry with finished faces and sand contact",
+        "flatWater": false,
+        "flatDeck": false,
+        "semanticRole": "pyramid",
+        "registeredWaterRGB": null,
+        "nativeCapFillPixels": 0,
+        "mapId": "map-concept-08-longwall-frontier",
+        "pixelsPerWorldUnit": 2,
+        "castShadow": false,
+        "copiedFrom": "terrain-piece-08-longwall-frontier-component-05"
+      },
+      "nativeScale": 0.5
     }
   ],
   "biomes": [

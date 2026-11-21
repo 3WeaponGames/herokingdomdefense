@@ -1,0 +1,48 @@
+
+Slime_Glacier.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+u_b0f6c00bb569bf8478dd1e9c5ccc51a5
+  rotate: false
+  xy: 2, 2
+  size: 113, 158
+  orig: 113, 158
+  offset: 0, 0
+  index: -1
+Slime_Glacier_Body
+  rotate: false
+  xy: 119, 2
+  size: 161, 155
+  orig: 161, 155
+  offset: 0, 0
+  index: -1
+Slime_Glacier_Attack
+  rotate: false
+  xy: 284, 2
+  size: 171, 146
+  orig: 171, 146
+  offset: 0, 0
+  index: -1
+Slime_Glacier_Hit
+  rotate: false
+  xy: 459, 2
+  size: 179, 146
+  orig: 179, 146
+  offset: 0, 0
+  index: -1
+Slime_Glacier_Hit_2
+  rotate: false
+  xy: 642, 2
+  size: 179, 146
+  orig: 179, 146
+  offset: 0, 0
+  index: -1
+u_5dd6d929e4554704395ec53c54169df4
+  rotate: false
+  xy: 825, 2
+  size: 183, 59
+  orig: 183, 59
+  offset: 0, 0
+  index: -1

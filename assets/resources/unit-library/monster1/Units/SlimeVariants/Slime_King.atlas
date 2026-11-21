@@ -1,0 +1,48 @@
+
+Slime_King.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Slime_King_Body
+  rotate: false
+  xy: 2, 2
+  size: 178, 169
+  orig: 178, 169
+  offset: 0, 0
+  index: -1
+Slime_King_Attack
+  rotate: false
+  xy: 184, 2
+  size: 225, 160
+  orig: 225, 160
+  offset: 0, 0
+  index: -1
+Slime_King_Hit
+  rotate: false
+  xy: 413, 2
+  size: 183, 160
+  orig: 183, 160
+  offset: 0, 0
+  index: -1
+Slime_King_Hit_2
+  rotate: false
+  xy: 600, 2
+  size: 183, 160
+  orig: 183, 160
+  offset: 0, 0
+  index: -1
+u_b0f6c00bb569bf8478dd1e9c5ccc51a5
+  rotate: false
+  xy: 787, 2
+  size: 113, 158
+  orig: 113, 158
+  offset: 0, 0
+  index: -1
+u_5dd6d929e4554704395ec53c54169df4
+  rotate: false
+  xy: 904, 2
+  size: 183, 59
+  orig: 183, 59
+  offset: 0, 0
+  index: -1

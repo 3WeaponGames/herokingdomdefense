@@ -905,6 +905,139 @@
       ],
       "bones": 26,
       "slots": 11
+    },
+    {
+      "id": "monster1/Slime_Magma",
+      "name": "Magma Slime",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Magma.json",
+      "uuid": "bbee0832-c558-57d3-a7d1-54c41835df05",
+      "resource": "unit-library/monster1/Units/SlimeVariants/Slime_Magma",
+      "animations": [
+        "idle",
+        "hit",
+        "die",
+        "move",
+        "attack"
+      ],
+      "bones": 9,
+      "slots": 6,
+      "variantOf": "monster1/Slime_Green"
+    },
+    {
+      "id": "monster1/Slime_Glacier",
+      "name": "Glacier Slime",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Purple.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Glacier.json",
+      "uuid": "2613478d-1d6e-5490-a36c-5435ba077b3b",
+      "resource": "unit-library/monster1/Units/SlimeVariants/Slime_Glacier",
+      "animations": [
+        "idle",
+        "hit",
+        "die",
+        "move",
+        "attack"
+      ],
+      "bones": 9,
+      "slots": 6,
+      "variantOf": "monster1/Slime_Purple"
+    },
+    {
+      "id": "monster1/Slime_Ironclad",
+      "name": "Ironclad Slime",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Purple.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Ironclad.json",
+      "uuid": "2de3ce97-d9b3-523f-a0ec-42fae852fc70",
+      "resource": "unit-library/monster1/Units/SlimeVariants/Slime_Ironclad",
+      "animations": [
+        "idle",
+        "hit",
+        "die",
+        "move",
+        "attack"
+      ],
+      "bones": 9,
+      "slots": 6,
+      "variantOf": "monster1/Slime_Purple"
+    },
+    {
+      "id": "monster1/Slime_Spore",
+      "name": "Spore Slime",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Spore.json",
+      "uuid": "77fc1e20-64aa-5586-a0f5-5ebf8a00229c",
+      "resource": "unit-library/monster1/Units/SlimeVariants/Slime_Spore",
+      "animations": [
+        "idle",
+        "hit",
+        "die",
+        "move",
+        "attack"
+      ],
+      "bones": 9,
+      "slots": 6,
+      "variantOf": "monster1/Slime_Green"
+    },
+    {
+      "id": "monster1/Slime_Honey",
+      "name": "Honey Slime",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Honey.json",
+      "uuid": "c1b62c50-017f-5124-a1aa-f12a646336dd",
+      "resource": "unit-library/monster1/Units/SlimeVariants/Slime_Honey",
+      "animations": [
+        "idle",
+        "hit",
+        "die",
+        "move",
+        "attack"
+      ],
+      "bones": 9,
+      "slots": 6,
+      "variantOf": "monster1/Slime_Green"
+    },
+    {
+      "id": "monster1/Slime_King",
+      "name": "Slime King",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_King.json",
+      "uuid": "d605cf27-e90f-54a0-a433-20d6b0881864",
+      "resource": "unit-library/monster1/Units/SlimeVariants/Slime_King",
+      "animations": [
+        "idle",
+        "hit",
+        "die",
+        "move",
+        "attack"
+      ],
+      "bones": 9,
+      "slots": 6,
+      "variantOf": "monster1/Slime_Green"
+    },
+    {
+      "id": "monster1/Slime_Abyssal",
+      "name": "Abyssal Slime",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Purple.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Abyssal.json",
+      "uuid": "a10c0659-677a-5071-a8a0-0b78f54bf064",
+      "resource": "unit-library/monster1/Units/SlimeVariants/Slime_Abyssal",
+      "animations": [
+        "idle",
+        "hit",
+        "die",
+        "move",
+        "attack"
+      ],
+      "bones": 9,
+      "slots": 6,
+      "variantOf": "monster1/Slime_Purple"
     }
   ],
   "parts": [

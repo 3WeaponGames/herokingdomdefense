@@ -142,7 +142,10 @@ test('roster snapshots cache model defaults and translations while adopting exte
 });
 
 test('explicit Reload resolves repaired portrait metadata, shot prefabs and model defaults without losing drafts',t=>{
-  const f=fixture(t),initial=f.service.load(),before=fs.readFileSync(f.config),enemy=initial.units.find(unit=>unit.key==='enemy:90003'),boss=initial.units.find(unit=>unit.key==='enemy:94001');
+  const f=fixture(t,data=>{
+    data.SoldierCfg[94001]={...data.SoldierCfg[90003],ID:94001,Name:'Boss preview fixture',prefab:'AuditBoss',MonsterPack:'fantasy-bosses'};
+  });
+  const initial=f.service.load(),before=fs.readFileSync(f.config),enemy=initial.units.find(unit=>unit.key==='enemy:90003'),boss=initial.units.find(unit=>unit.key==='enemy:94001');
   assert.equal(enemy.portrait,null);assert.equal(enemy.speed,500);
   initial.data.assignments.hero={flight:initial.data.assets[0].id};f.service.change({version:initial.version,data:initial.data,timings:initial.timings});
   function write(relative,value){const file=path.join(f.dir,relative);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,value);}

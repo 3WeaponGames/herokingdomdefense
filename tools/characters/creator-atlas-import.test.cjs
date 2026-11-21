@@ -12,7 +12,7 @@ const runtime = Units.enginePath();
 const importerFile = path.resolve(path.dirname(runtime), '../editor/spine-meta.js');
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 
-test('Creator imports all 320 library rigs with their exact sibling texture UUIDs', async () => {
+test('Creator imports all installed library rigs with their exact sibling texture UUIDs', async () => {
     // Run the installed importer's real postImport path without starting the
     // editor or writing its library cache. Only Editor services are replaced.
     const errors = [];
@@ -73,6 +73,6 @@ test('Creator imports all 320 library rigs with their exact sibling texture UUID
             units++;
         }
     }
-    assert.equal(units, 320);
-    assert.equal(saved.size, 320);
+    assert.equal(units, 1 + require('./monster-roster-definitions.json').units.length);
+    assert.equal(saved.size, units);
 });

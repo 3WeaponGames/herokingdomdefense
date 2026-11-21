@@ -423,6 +423,8 @@ def plan_atlas_layout(tx, kinds):
         managed = dict(manifest.get("importedFiles", {}))
         seen = {}
         for unit in manifest.get("units", []):
+            if unit.get("variantOf"):
+                continue  # Authored variants ship with their own sibling pages.
             skeleton = unit["skeleton"]
             if not skeleton.startswith(target + "/Units/") or "/../" in skeleton or not skeleton.endswith(".json"):
                 raise ValueError("Unexpected imported unit resource: " + skeleton)
@@ -677,7 +679,11 @@ def import_pack(project, file, kind, artifacts):
         if meta.get("textures")!=textures:tx.json(meta_file,dict(meta,textures=textures))
     prior_units={item["id"]:item for item in manifest.get("units",[])}
     prior_parts={item["id"]:item for item in manifest.get("parts",[])}
-    units=[dict(prior_units.get(item["id"],{}),**item) for item in units]
+    authored=[item for item in prior_units.values() if item.get("variantOf")]
+    for item in units:
+        if prior_units.get(item["id"], {}).get("variantOf"):
+            raise ValueError("Package model ID conflicts with an authored variant: " + item["id"])
+    units=[dict(prior_units.get(item["id"],{}),**item) for item in units]+authored
     parts=[dict(prior_parts.get(item["id"],{}),**item) for item in parts]
     managed=dict(tx.managed)
     for relative,before in tx.reads.items():

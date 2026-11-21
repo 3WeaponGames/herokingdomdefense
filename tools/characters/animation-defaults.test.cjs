@@ -2,6 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{test}=require('node:test');
 const Defaults=require('../../packages/hkd-characters/lib/animation-defaults'),Library=require('../../packages/hkd-characters/lib/unit-library'),Units=require('../../packages/game-data-editor/lib/unit-assets');
 const root=path.resolve(__dirname,'../..');
+const fantasySources=Library.load(root).sources.filter(source=>/^fantasy-/.test(source.pack));
 test('package defaults are prepared before preview parsing without changing source data or applying twice',()=>{
  assert.equal(Defaults.rate('fantasy-bosses'),.25);assert.equal(Defaults.rate('fantasy-monsters'),.35);assert.equal(Defaults.rate('monster3'),1);
  const json={_fantasy:{pack:'fantasy-bosses',future:{keep:7}},animations:{attack:{bones:{root:{rotate:[{time:0,angle:3},{time:.65,angle:9,curve:[.2,.4,.7,.8]}]}},events:[{time:.325,name:'hit',float:8}],deform:{default:{body:{mesh:[{time:.65,vertices:[1,2]}]}}},drawOrder:[{time:.65,offsets:[]}]},__fx_ambient:{slots:{glow:{color:[{time:.65,color:'ffffffff'}]}}}}};
@@ -9,9 +10,9 @@ test('package defaults are prepared before preview parsing without changing sour
  assert.deepEqual(input,before);assert.equal(prepared.future,'keep');assert.equal(prepared.layers[0].json.animations.attack.bones.root.rotate[1].time,.65/.25);assert.equal(prepared.layers[0].json.animations.attack.events[0].time,.325/.25);assert.equal(prepared.layers[0].json.animations.attack.events[0].float,8);assert.equal(prepared.layers[0].json.animations.__fx_ambient.slots.glow.color[0].time,.65/.25);assert.deepEqual(prepared.layers[0].json.animations.attack.bones.root.rotate[1].curve,[.2,.4,.7,.8]);assert.equal(prepared.layers[0].json.animations.attack.deform.default.body.mesh[0].time,.65/.25);assert.equal(prepared.layers[0].json.animations.attack.drawOrder[0].time,.65/.25);
  assert.equal(prepared.layers[1].json.animations.attack.events[0].time,.325/.35);assert.equal(prepared.layers[2],input.layers[2]);assert.deepEqual(Defaults.prepare(prepared),prepared);assert.deepEqual(prepared.layers[0].json._fantasy,before.layers[0].json._fantasy);
 });
-test('every Fantasy source clip retains its pose at the slower package baseline, including independent ambient effects',()=>{
+test('every installed Fantasy clip retains its pose at the slower package baseline, including independent ambient effects',{skip:!fantasySources.length},()=>{
  const spine=require(Units.enginePath());let checked=0;
- for(const source of Library.load(root).sources.filter(source=>/^fantasy-/.test(source.pack))){
+ for(const source of fantasySources){
   const description=Library.describe(root,source.id,true),original=description.layers[0],prepared=Defaults.prepare(description).layers[0],rate=Defaults.rate(source.pack);
   const atlas=new spine.TextureAtlas(original.atlas,name=>{const bytes=fs.readFileSync(require('node:url').fileURLToPath(original.pages[name]));return new spine.FakeTexture({width:bytes.readUInt32BE(16),height:bytes.readUInt32BE(20)});});
   const reader=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)),a=reader.readSkeletonData(original.json),b=reader.readSkeletonData(prepared.json);

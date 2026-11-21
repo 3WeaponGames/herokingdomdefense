@@ -44,7 +44,7 @@ function fixture(){
  const game={gameData:data,gameStatus:0,_combatEpoch:1,moveFun:value=>events.push(['move',value])},ui={node:parent,enemyIconInfo:{},ctrUI:{node:parent,onBlockTouch(){events.push(['stopTouch']);}},ctrGame:game,canBreak:true,_pauseOwners:new Set(),
   onPauseGame(paused,owner){if(paused)this._pauseOwners.add(owner);else this._pauseOwners.delete(owner);this.isPauset=!!this._legacyGamePause||this._pauseOwners.size>0;events.push(['pause',paused]);},
   loadSpriteFrame(bundle,key,done){pending.push({bundle,key,done});}};
- const context={exports:{},cc,require:id=>id==='KinghtFallDataMgr'?{KinghtFallDataMgr:{getInstance:()=>({data:config,getSoldierCfgById:id=>config.SoldierCfg[id]})}}:id==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:id==='LanguageMgr'?{LanguageMgr:{getInstance:()=>language}}:id==='TestMode'?{TestMode:{getInstance:()=>({clearGameplayInput:()=>events.push(['clearInput'])})}}:null};
+ const context={exports:{},cc,require:id=>id==='KinghtFallDataMgr'?{KinghtFallDataMgr:{getInstance:()=>({data:config,getSoldierCfgById:id=>config.SoldierCfg[id]})}}:id==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:id==='LanguageMgr'?{LanguageMgr:{getInstance:()=>language}}:id==='TestMode'?{TestMode:{getInstance:()=>({clearGameplayInput:()=>events.push(['clearInput'])})}}:id==='./FightingTypeDamage'?require('../../assets/_script/FightingTypeDamage'):null};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/EnemyGuide.js'),'utf8'),context,{filename:'EnemyGuide.js'});
  const frame=()=>({getOriginalSize:()=>({width:256,height:128}),clone(){return{destroy(){this.destroyed=true;}};}});
  return{api:context.exports,ui,cc,config,game,data,pending,events,size,origin,safe,keys,listeners,frame,Node,language};
@@ -206,6 +206,7 @@ test('long guide copy grows within its card and the visible scrollbar supports t
 
 test('type explanations derive exact enemy and aggregate matchups from saved types without changing records or reviving cleared legacy counters',()=>{
  const f=fixture(),assign=f.config.GameTools.unitTypeAssignments,types=f.config.GameTools.unitTypes;
+ Object.values(types).forEach(type=>delete type.counterType);
  assign['enemy:91001:default']='fighter';f.config.SoldierCfg[91001].CounterType='';f.config.SoldierCfg[91001].Suppressed=90002;
  assign['ally:90002:default']='guardian';f.config.AllyCfg[90002].CounterType='fighter';
  types.custom={name:'Custom Hunters',description:'An authored custom explanation.',icon:'@icon/custom/head',tint:'#ff8080'};
@@ -218,6 +219,20 @@ test('type explanations derive exact enemy and aggregate matchups from saved typ
  delete f.config.SoldierCfg[91001].CounterType;
  assert(f.api.describeTypes(f.ui,91001).unit.strong.includes('guardian'),'missing overrides retain exact-ID legacy behavior');
  f.config.SoldierCfg[91001].CounterType='skirmisher';assert.deepEqual(Array.from(f.api.describeTypes(f.ui,91001).unit.strong),['skirmisher']);
+});
+
+test('type explanations show the shared cycle and use the stage profile’s actual type',()=>{
+ const f=fixture(),id=1000000000;
+ f.config.SoldierCfg[id]={...f.config.SoldierCfg[91001],ID:id,ProfileBaseID:91001,FightingType:'mystic',CounterType:'skirmisher'};
+ f.config.GameTools.unitTypeAssignments={};
+ const guide=f.api.describeTypes(f.ui,id),cycle=['fighter','skirmisher','vanguard','mystic','guardian','bruiser'];
+ cycle.forEach((role,index)=>{
+  const row=guide.types.find(type=>type.id===role);
+  assert.deepEqual(Array.from(row.strong),[cycle[(index+1)%cycle.length]]);
+  assert.deepEqual(Array.from(row.weak),[cycle[(index+cycle.length-1)%cycle.length]]);
+ });
+ assert.deepEqual(Array.from(guide.unit.strong),['guardian']);
+ assert.deepEqual(Array.from(guide.unit.weak),['vanguard']);
 });
 
 test('type tooltip is safe, scrollable and dismisses anywhere or by Escape without stacking visible panels or releasing the guide pause',()=>{

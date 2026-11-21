@@ -3,12 +3,12 @@
   "id": "A-24",
   "variant": "A",
   "level": 24,
-  "mapId": "map-concept-11-twin-courtyards",
+  "mapId": "map-biome-lava-basalt-causeways",
   "name": "Emberfall Heights",
   "config": {
     "Level": 24,
     "Name": "[[loc:data.levelcfg.24.name]]",
-    "Map": "Generated/Maps/map-concept-11-twin-courtyards/thumbnail",
+    "Map": "Generated/Maps/map-biome-lava-basalt-causeways/thumbnail",
     "EnemyAni": "wqyl_qb",
     "prefab": "Generated/Stages/A-24",
     "InGameCoefficient": 191,
@@ -973,7 +973,7 @@
         ]
       }
     ],
-    "EnvironmentMapId": "map-concept-11-twin-courtyards",
+    "EnvironmentMapId": "map-biome-lava-basalt-causeways",
     "EnvironmentBiome": "lava",
     "EnvironmentBiomeOverride": true,
     "StageLayoutId": "A-24",
@@ -989,8 +989,8 @@
         "x": 92.744,
         "y": -58.262
       },
-      "x": 92.744,
-      "y": -58.262,
+      "x": 17,
+      "y": -39.5,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -1232,8 +1232,8 @@
         "x": -194.046,
         "y": 949.416
       },
-      "x": -194.046,
-      "y": 949.416,
+      "x": -285,
+      "y": 1220.5,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -1427,8 +1427,8 @@
         "x": 234.073,
         "y": 911.026
       },
-      "x": 234.073,
-      "y": 911.026,
+      "x": 332,
+      "y": 1235.5,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -1612,7 +1612,16 @@
           "active": false
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -80.24999741979519,
+        "y": -19.750002580204836
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 103.59113979486855
+      }
     },
     {
       "id": 4,
@@ -1622,8 +1631,8 @@
         "x": 391.282,
         "y": 467.363
       },
-      "x": 391.282,
-      "y": 467.363,
+      "x": 676,
+      "y": 565.5,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -1807,7 +1816,16 @@
           "active": false
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -39.249997419795186,
+        "y": -16.750002580204836
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 103.59113979486855
+      }
     },
     {
       "id": 5,
@@ -1817,8 +1835,8 @@
         "x": -221.632,
         "y": 283.899
       },
-      "x": -221.632,
-      "y": 283.899,
+      "x": -326,
+      "y": 606.5,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -2002,7 +2020,16 @@
           "active": false
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -75.24999741979519,
+        "y": -24.750002580204836
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 103.59113979486855
+      }
     },
     {
       "id": 6,
@@ -2012,8 +2039,8 @@
         "x": -606.172,
         "y": -354.183
       },
-      "x": -606.172,
-      "y": -354.183,
+      "x": -635,
+      "y": -531.5,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -2207,8 +2234,8 @@
         "x": 666.099,
         "y": -752.461
       },
-      "x": 666.099,
-      "y": -752.461,
+      "x": 630,
+      "y": -598.5,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -2392,7 +2419,16 @@
           "active": false
         }
       ],
-      "purchaseSide": "flip"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -100.24999741979519,
+        "y": 0.24999741979516443
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 103.59113979486855
+      }
     },
     {
       "id": 8,
@@ -2402,8 +2438,8 @@
         "x": -541.207,
         "y": 170.111
       },
-      "x": -541.207,
-      "y": 170.111,
+      "x": -541,
+      "y": 27.5,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -2755,7 +2791,16 @@
           "active": true
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -156.8758842188644,
+        "y": 40.8758842188644
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 141.245830016323
+      }
     },
     {
       "id": 9,
@@ -2765,8 +2810,8 @@
         "x": 477.583,
         "y": 179.8
       },
-      "x": 477.583,
-      "y": 179.8,
+      "x": 606,
+      "y": 18.5,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -3128,8 +3173,8 @@
         "x": 597.768,
         "y": -530.68
       },
-      "x": 597.768,
-      "y": -530.68,
+      "x": 37,
+      "y": -994.5,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -3491,8 +3536,8 @@
         "x": -308.631,
         "y": 713.891
       },
-      "x": -308.631,
-      "y": 713.891,
+      "x": -663,
+      "y": 546.5,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -3686,8 +3731,8 @@
         "x": 63.002,
         "y": 283.512
       },
-      "x": 63.002,
-      "y": 283.512,
+      "x": -38,
+      "y": 1077.5,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -3871,7 +3916,16 @@
           "active": false
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -27.880674639292423,
+        "y": 50.88067463929246
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 121.45361482063846
+      }
     },
     {
       "id": 13,
@@ -3881,8 +3935,8 @@
         "x": -263.018,
         "y": -70.778
       },
-      "x": -263.018,
-      "y": -70.778,
+      "x": -224,
+      "y": 4.5,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -4076,8 +4130,8 @@
         "x": 391.744,
         "y": -22.661
       },
-      "x": 391.744,
-      "y": -22.661,
+      "x": 264,
+      "y": 20.5,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -4261,7 +4315,16 @@
           "active": false
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -59.88067463929245,
+        "y": 4.88067463929243
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 121.45361482063846
+      }
     },
     {
       "id": 15,
@@ -4271,8 +4334,8 @@
         "x": 133.275,
         "y": -694.289
       },
-      "x": 133.275,
-      "y": -694.289,
+      "x": -506,
+      "y": -611.5,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -4466,8 +4529,8 @@
         "x": 74.024,
         "y": 768.632
       },
-      "x": 74.024,
-      "y": 768.632,
+      "x": -382,
+      "y": 1165.5,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -4652,7 +4715,16 @@
           "active": false
         }
       ],
-      "purchaseSide": "flip"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -38.32994609140759,
+        "y": 17.329946091407635
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 109.3610585400489
+      }
     },
     {
       "id": 17,
@@ -4662,8 +4734,8 @@
         "x": 13.195,
         "y": -283.369
       },
-      "x": 13.195,
-      "y": -283.369,
+      "x": -20,
+      "y": -166.5,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -4848,7 +4920,16 @@
           "active": false
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "x": -44.32994609140758,
+        "y": 10.329946091407578
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 109.3610585400489
+      }
     },
     {
       "id": 18,
@@ -4858,9 +4939,9 @@
         "x": 120.65,
         "y": 522.165
       },
-      "x": 120.65,
-      "y": 522.165,
-      "scale": 1,
+      "x": 46,
+      "y": 212.5,
+      "scale": 0.55,
       "angle": 0,
       "unlock": 3,
       "enabled": true,
@@ -5057,9 +5138,9 @@
         "x": -307.191,
         "y": -404.372
       },
-      "x": -307.191,
-      "y": -404.372,
-      "scale": 1,
+      "x": -490,
+      "y": 534.5,
+      "scale": 0.64,
       "angle": 0,
       "unlock": 2,
       "enabled": true,
@@ -5256,9 +5337,9 @@
         "x": 225.504,
         "y": -541.327
       },
-      "x": 225.504,
-      "y": -541.327,
-      "scale": 1,
+      "x": 600,
+      "y": -447.5,
+      "scale": 0.58,
       "angle": 0,
       "unlock": 3,
       "enabled": true,
@@ -5445,7 +5526,16 @@
         }
       ],
       "wallFacing": "NE",
-      "purchaseSide": "default"
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "x": 0.6334482758620679,
+        "y": 73.75275862068966
+      },
+      "purchaseOverride": true,
+      "purchaseReference": {
+        "version": 1,
+        "distance": 104.39067763933711
+      }
     }
   ],
   "specials": [
@@ -5457,8 +5547,8 @@
         "x": -651.714,
         "y": 391.124
       },
-      "x": -651.714,
-      "y": 391.124,
+      "x": -409,
+      "y": -486.5,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5553,8 +5643,8 @@
         "x": 26.212,
         "y": -476.752
       },
-      "x": 26.212,
-      "y": -476.752,
+      "x": 113,
+      "y": -178.5,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5649,8 +5739,8 @@
         "x": -246.102,
         "y": -220.466
       },
-      "x": -246.102,
-      "y": -220.466,
+      "x": -335,
+      "y": -565.5,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5745,8 +5835,8 @@
         "x": -171.346,
         "y": 96.095
       },
-      "x": -171.346,
-      "y": 96.095,
+      "x": -567,
+      "y": -36.5,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5841,8 +5931,8 @@
         "x": 258.396,
         "y": 149.082
       },
-      "x": 258.396,
-      "y": 149.082,
+      "x": 775,
+      "y": 5.5,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5937,8 +6027,8 @@
         "x": 167.844,
         "y": -236.017
       },
-      "x": 167.844,
-      "y": -236.017,
+      "x": 485,
+      "y": -657.5,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -6030,120 +6120,120 @@
     {
       "id": 1,
       "name": "Spawn 1",
-      "x": -860.286,
-      "y": 1305.16,
+      "x": -586,
+      "y": 739.5,
       "enabled": true,
-      "radius": 150
+      "radius": 86
     },
     {
       "id": 2,
       "name": "Spawn 2",
-      "x": -752.921,
-      "y": 1250.877,
+      "x": -521,
+      "y": 725.5,
       "enabled": true,
-      "radius": 150
+      "radius": 108
     },
     {
       "id": 3,
       "name": "Spawn 3",
-      "x": -852.58,
-      "y": 1198.135,
+      "x": -453,
+      "y": 745.5,
       "enabled": true,
-      "radius": 150
+      "radius": 110
     },
     {
       "id": 4,
       "name": "Spawn 4",
-      "x": 37.101,
-      "y": 1464.309,
+      "x": -49,
+      "y": 1247.5,
       "enabled": true,
-      "radius": 150
+      "radius": 114
     },
     {
       "id": 5,
       "name": "Spawn 5",
-      "x": 132.137,
-      "y": 1406.943,
+      "x": 22,
+      "y": 1231.5,
       "enabled": true,
-      "radius": 150
+      "radius": 106
     },
     {
       "id": 6,
       "name": "Spawn 6",
-      "x": -53.83,
-      "y": 1406.603,
+      "x": 103,
+      "y": 1234.5,
       "enabled": true,
-      "radius": 150
+      "radius": 128
     },
     {
       "id": 7,
       "name": "Spawn 7",
-      "x": 799.904,
-      "y": 999.002,
+      "x": 480,
+      "y": 697.5,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 8,
       "name": "Spawn 8",
-      "x": 869.691,
-      "y": 1091.126,
+      "x": 581,
+      "y": 701.5,
       "enabled": true,
-      "radius": 150
+      "radius": 118
     },
     {
       "id": 9,
       "name": "Spawn 9",
-      "x": 763.372,
-      "y": 1096.083,
+      "x": 660,
+      "y": 700.5,
       "enabled": true,
-      "radius": 150
+      "radius": 98
     },
     {
       "id": 10,
       "name": "Spawn 10",
-      "x": -594.964,
-      "y": -1426.669,
+      "x": -200,
+      "y": -1120.5,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 11,
       "name": "Spawn 11",
-      "x": -680.349,
-      "y": -1353.334,
+      "x": -109,
+      "y": -1159.5,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 12,
       "name": "Spawn 12",
-      "x": -561.25,
-      "y": -1243.08,
+      "x": -135,
+      "y": -1212.5,
       "enabled": true,
-      "radius": 150
+      "radius": 110
     },
     {
       "id": 13,
       "name": "Spawn 13",
-      "x": 427.206,
-      "y": -1441.059,
+      "x": 100,
+      "y": -1165.5,
       "enabled": true,
-      "radius": 150
+      "radius": 146
     },
     {
       "id": 14,
       "name": "Spawn 14",
-      "x": 362.476,
-      "y": -1358.515,
+      "x": 193,
+      "y": -1201.5,
       "enabled": true,
-      "radius": 150
+      "radius": 102
     },
     {
       "id": 15,
       "name": "Spawn 15",
-      "x": 479.088,
-      "y": -1356.633,
+      "x": 240,
+      "y": -1132.5,
       "enabled": true,
       "radius": 150
     }
@@ -6162,44 +6252,80 @@
         {
           "id": "legacy-route-798-0",
           "goal": false,
-          "x": -431.651,
-          "y": 915.825
+          "x": -531,
+          "y": 688.5
+        },
+        {
+          "id": "legacy-route-798-crossing-1",
+          "goal": false,
+          "x": -472,
+          "y": 612.5
         },
         {
           "id": "legacy-route-798-1",
           "goal": false,
-          "x": -170.436,
-          "y": 699.246
+          "x": -355,
+          "y": 520.5
+        },
+        {
+          "id": "legacy-route-798-crossing-3",
+          "goal": false,
+          "x": -311,
+          "y": 465.5
         },
         {
           "id": "legacy-route-798-2",
           "goal": false,
-          "x": 224.206,
-          "y": 385.12
+          "x": -137,
+          "y": 180.5
+        },
+        {
+          "id": "legacy-route-798-crossing-5",
+          "goal": false,
+          "x": -157,
+          "y": 90.5
         },
         {
           "id": "legacy-route-798-3",
           "goal": true,
-          "x": 223.855,
-          "y": 107.911
+          "x": -178,
+          "y": 69.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-798-edge-0",
           "from": "legacy-route-798-0",
+          "to": "legacy-route-798-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-798-crossing-edge-1",
+          "from": "legacy-route-798-crossing-1",
           "to": "legacy-route-798-1",
           "weight": 1
         },
         {
           "id": "legacy-route-798-edge-1",
           "from": "legacy-route-798-1",
+          "to": "legacy-route-798-crossing-3",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-798-crossing-edge-3",
+          "from": "legacy-route-798-crossing-3",
           "to": "legacy-route-798-2",
           "weight": 1
         },
         {
           "id": "legacy-route-798-edge-2",
           "from": "legacy-route-798-2",
+          "to": "legacy-route-798-crossing-5",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-798-crossing-edge-5",
+          "from": "legacy-route-798-crossing-5",
           "to": "legacy-route-798-3",
           "weight": 1
         }
@@ -6221,32 +6347,38 @@
         {
           "id": "legacy-route-813-0",
           "goal": false,
-          "x": -440.696,
-          "y": 882.617
+          "x": -522,
+          "y": 688.5
         },
         {
           "id": "legacy-route-813-1",
           "goal": false,
-          "x": -144.198,
-          "y": 691.878
+          "x": -422,
+          "y": 582.5
+        },
+        {
+          "id": "legacy-route-813-crossing-2",
+          "goal": false,
+          "x": -290,
+          "y": 475.5
         },
         {
           "id": "legacy-route-813-2",
           "goal": false,
-          "x": 60.291,
-          "y": 713.367
+          "x": -135,
+          "y": 185.5
         },
         {
           "id": "legacy-route-813-3",
           "goal": false,
-          "x": 163.075,
-          "y": 393.226
+          "x": -130,
+          "y": 118.5
         },
         {
           "id": "legacy-route-813-4",
           "goal": true,
-          "x": 191.447,
-          "y": 16.938
+          "x": -175,
+          "y": 86.5
         }
       ],
       "edges": [
@@ -6259,6 +6391,12 @@
         {
           "id": "legacy-route-813-edge-1",
           "from": "legacy-route-813-1",
+          "to": "legacy-route-813-crossing-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-813-crossing-edge-2",
+          "from": "legacy-route-813-crossing-2",
           "to": "legacy-route-813-2",
           "weight": 1
         },
@@ -6295,32 +6433,92 @@
         {
           "id": "legacy-route-831-0",
           "goal": false,
-          "x": 97.232,
-          "y": 1288.364
+          "x": -52,
+          "y": 1175.5
+        },
+        {
+          "id": "legacy-route-831-crossing-1",
+          "goal": false,
+          "x": -236,
+          "y": 1066.5
+        },
+        {
+          "id": "legacy-route-831-crossing-2",
+          "goal": false,
+          "x": -393,
+          "y": 788.5
+        },
+        {
+          "id": "legacy-route-831-crossing-3",
+          "goal": false,
+          "x": -442,
+          "y": 663.5
         },
         {
           "id": "legacy-route-831-1",
           "goal": false,
-          "x": 106.59,
-          "y": 635.256
+          "x": -422,
+          "y": 580.5
+        },
+        {
+          "id": "legacy-route-831-crossing-5",
+          "goal": false,
+          "x": -321,
+          "y": 485.5
+        },
+        {
+          "id": "legacy-route-831-crossing-6",
+          "goal": false,
+          "x": -137,
+          "y": 173.5
         },
         {
           "id": "legacy-route-831-2",
           "goal": true,
-          "x": 159.967,
-          "y": -5.829
+          "x": -171,
+          "y": 93.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-831-edge-0",
           "from": "legacy-route-831-0",
+          "to": "legacy-route-831-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-831-crossing-edge-1",
+          "from": "legacy-route-831-crossing-1",
+          "to": "legacy-route-831-crossing-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-831-crossing-edge-2",
+          "from": "legacy-route-831-crossing-2",
+          "to": "legacy-route-831-crossing-3",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-831-crossing-edge-3",
+          "from": "legacy-route-831-crossing-3",
           "to": "legacy-route-831-1",
           "weight": 1
         },
         {
           "id": "legacy-route-831-edge-1",
           "from": "legacy-route-831-1",
+          "to": "legacy-route-831-crossing-5",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-831-crossing-edge-5",
+          "from": "legacy-route-831-crossing-5",
+          "to": "legacy-route-831-crossing-6",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-831-crossing-edge-6",
+          "from": "legacy-route-831-crossing-6",
           "to": "legacy-route-831-2",
           "weight": 1
         }
@@ -6342,44 +6540,80 @@
         {
           "id": "legacy-route-843-0",
           "goal": false,
-          "x": 97.232,
-          "y": 1288.364
+          "x": 144,
+          "y": 1171.5
+        },
+        {
+          "id": "legacy-route-843-crossing-1",
+          "goal": false,
+          "x": 217,
+          "y": 1106.5
         },
         {
           "id": "legacy-route-843-1",
           "goal": false,
-          "x": 106.59,
-          "y": 635.256
+          "x": 397,
+          "y": 775.5
+        },
+        {
+          "id": "legacy-route-843-crossing-3",
+          "goal": false,
+          "x": 434,
+          "y": 460.5
         },
         {
           "id": "legacy-route-843-2",
           "goal": false,
-          "x": 425.779,
-          "y": 240.826
+          "x": 226,
+          "y": 206.5
+        },
+        {
+          "id": "legacy-route-843-crossing-5",
+          "goal": false,
+          "x": 185,
+          "y": 124.5
         },
         {
           "id": "legacy-route-843-3",
           "goal": true,
-          "x": 176.73,
-          "y": 3.75
+          "x": 162,
+          "y": 70.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-843-edge-0",
           "from": "legacy-route-843-0",
+          "to": "legacy-route-843-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-843-crossing-edge-1",
+          "from": "legacy-route-843-crossing-1",
           "to": "legacy-route-843-1",
           "weight": 1
         },
         {
           "id": "legacy-route-843-edge-1",
           "from": "legacy-route-843-1",
+          "to": "legacy-route-843-crossing-3",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-843-crossing-edge-3",
+          "from": "legacy-route-843-crossing-3",
           "to": "legacy-route-843-2",
           "weight": 1
         },
         {
           "id": "legacy-route-843-edge-2",
           "from": "legacy-route-843-2",
+          "to": "legacy-route-843-crossing-5",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-843-crossing-edge-5",
+          "from": "legacy-route-843-crossing-5",
           "to": "legacy-route-843-3",
           "weight": 1
         }
@@ -6403,26 +6637,32 @@
         {
           "id": "legacy-route-858-0",
           "goal": false,
-          "x": 400.88,
-          "y": 882.44
+          "x": 525,
+          "y": 604.5
         },
         {
           "id": "legacy-route-858-1",
           "goal": false,
-          "x": 125.844,
-          "y": 735.754
+          "x": 436,
+          "y": 454.5
+        },
+        {
+          "id": "legacy-route-858-crossing-2",
+          "goal": false,
+          "x": 221,
+          "y": 200.5
         },
         {
           "id": "legacy-route-858-2",
           "goal": false,
-          "x": 234.024,
-          "y": 289.787
+          "x": 181,
+          "y": 126.5
         },
         {
           "id": "legacy-route-858-3",
           "goal": true,
-          "x": 116.258,
-          "y": -15.226
+          "x": 164,
+          "y": 50.5
         }
       ],
       "edges": [
@@ -6435,6 +6675,12 @@
         {
           "id": "legacy-route-858-edge-1",
           "from": "legacy-route-858-1",
+          "to": "legacy-route-858-crossing-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-858-crossing-edge-2",
+          "from": "legacy-route-858-crossing-2",
           "to": "legacy-route-858-2",
           "weight": 1
         },
@@ -6462,44 +6708,116 @@
         {
           "id": "legacy-route-873-0",
           "goal": false,
-          "x": 424.371,
-          "y": 925.108
+          "x": 611,
+          "y": 616.5
+        },
+        {
+          "id": "legacy-route-873-crossing-1",
+          "goal": false,
+          "x": 693,
+          "y": 473.5
+        },
+        {
+          "id": "legacy-route-873-crossing-2",
+          "goal": false,
+          "x": 719,
+          "y": 60.5
         },
         {
           "id": "legacy-route-873-1",
           "goal": false,
-          "x": 75.428,
-          "y": 675.409
+          "x": 720,
+          "y": 11.5
+        },
+        {
+          "id": "legacy-route-873-crossing-4",
+          "goal": false,
+          "x": 602,
+          "y": -337.5
+        },
+        {
+          "id": "legacy-route-873-crossing-5",
+          "goal": false,
+          "x": 487,
+          "y": -364.5
         },
         {
           "id": "legacy-route-873-2",
           "goal": false,
-          "x": 432.51,
-          "y": 251.483
+          "x": 377,
+          "y": -430.5
+        },
+        {
+          "id": "legacy-route-873-crossing-7",
+          "goal": false,
+          "x": 247,
+          "y": -188.5
+        },
+        {
+          "id": "legacy-route-873-crossing-8",
+          "goal": false,
+          "x": 158,
+          "y": -109.5
         },
         {
           "id": "legacy-route-873-3",
           "goal": true,
-          "x": 116.258,
-          "y": -15.226
+          "x": 146,
+          "y": -46.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-873-edge-0",
           "from": "legacy-route-873-0",
+          "to": "legacy-route-873-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-873-crossing-edge-1",
+          "from": "legacy-route-873-crossing-1",
+          "to": "legacy-route-873-crossing-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-873-crossing-edge-2",
+          "from": "legacy-route-873-crossing-2",
           "to": "legacy-route-873-1",
           "weight": 1
         },
         {
           "id": "legacy-route-873-edge-1",
           "from": "legacy-route-873-1",
+          "to": "legacy-route-873-crossing-4",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-873-crossing-edge-4",
+          "from": "legacy-route-873-crossing-4",
+          "to": "legacy-route-873-crossing-5",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-873-crossing-edge-5",
+          "from": "legacy-route-873-crossing-5",
           "to": "legacy-route-873-2",
           "weight": 1
         },
         {
           "id": "legacy-route-873-edge-2",
           "from": "legacy-route-873-2",
+          "to": "legacy-route-873-crossing-7",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-873-crossing-edge-7",
+          "from": "legacy-route-873-crossing-7",
+          "to": "legacy-route-873-crossing-8",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-873-crossing-edge-8",
+          "from": "legacy-route-873-crossing-8",
           "to": "legacy-route-873-3",
           "weight": 1
         }
@@ -6523,32 +6841,68 @@
         {
           "id": "legacy-route-888-0",
           "goal": false,
-          "x": -430.391,
-          "y": -615.747
+          "x": -116,
+          "y": -1055.5
+        },
+        {
+          "id": "legacy-route-888-crossing-1",
+          "goal": false,
+          "x": -180,
+          "y": -966.5
+        },
+        {
+          "id": "legacy-route-888-crossing-2",
+          "goal": false,
+          "x": -384,
+          "y": -653.5
         },
         {
           "id": "legacy-route-888-1",
           "goal": false,
-          "x": -152.974,
-          "y": -246.32
+          "x": -367,
+          "y": -393.5
+        },
+        {
+          "id": "legacy-route-888-crossing-4",
+          "goal": false,
+          "x": -158,
+          "y": -182.5
         },
         {
           "id": "legacy-route-888-2",
           "goal": true,
-          "x": 116.258,
-          "y": -15.226
+          "x": -94,
+          "y": -91.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-888-edge-0",
           "from": "legacy-route-888-0",
+          "to": "legacy-route-888-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-888-crossing-edge-1",
+          "from": "legacy-route-888-crossing-1",
+          "to": "legacy-route-888-crossing-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-888-crossing-edge-2",
+          "from": "legacy-route-888-crossing-2",
           "to": "legacy-route-888-1",
           "weight": 1
         },
         {
           "id": "legacy-route-888-edge-1",
           "from": "legacy-route-888-1",
+          "to": "legacy-route-888-crossing-4",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-888-crossing-edge-4",
+          "from": "legacy-route-888-crossing-4",
           "to": "legacy-route-888-2",
           "weight": 1
         }
@@ -6570,44 +6924,164 @@
         {
           "id": "legacy-route-900-0",
           "goal": false,
-          "x": -430.391,
-          "y": -615.747
+          "x": -141,
+          "y": -1050.5
+        },
+        {
+          "id": "legacy-route-900-crossing-1",
+          "goal": false,
+          "x": -180,
+          "y": -968.5
+        },
+        {
+          "id": "legacy-route-900-crossing-2",
+          "goal": false,
+          "x": -400,
+          "y": -671.5
+        },
+        {
+          "id": "legacy-route-900-crossing-3",
+          "goal": false,
+          "x": -503,
+          "y": -466.5
         },
         {
           "id": "legacy-route-900-1",
           "goal": false,
-          "x": -260.453,
-          "y": -246.319
+          "x": -577,
+          "y": -362.5
+        },
+        {
+          "id": "legacy-route-900-crossing-5",
+          "goal": false,
+          "x": -629,
+          "y": -39.5
+        },
+        {
+          "id": "legacy-route-900-crossing-6",
+          "goal": false,
+          "x": -696,
+          "y": 28.5
+        },
+        {
+          "id": "legacy-route-900-crossing-7",
+          "goal": false,
+          "x": -683,
+          "y": 108.5
+        },
+        {
+          "id": "legacy-route-900-crossing-8",
+          "goal": false,
+          "x": -643,
+          "y": 462.5
         },
         {
           "id": "legacy-route-900-2",
           "goal": false,
-          "x": -503.168,
-          "y": 52.656
+          "x": -570,
+          "y": 453.5
+        },
+        {
+          "id": "legacy-route-900-crossing-10",
+          "goal": false,
+          "x": -432,
+          "y": 431.5
+        },
+        {
+          "id": "legacy-route-900-crossing-11",
+          "goal": false,
+          "x": -326,
+          "y": 473.5
+        },
+        {
+          "id": "legacy-route-900-crossing-12",
+          "goal": false,
+          "x": -140,
+          "y": 182.5
         },
         {
           "id": "legacy-route-900-3",
           "goal": true,
-          "x": 138.885,
-          "y": -54.824
+          "x": -169,
+          "y": 90.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-900-edge-0",
           "from": "legacy-route-900-0",
+          "to": "legacy-route-900-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-1",
+          "from": "legacy-route-900-crossing-1",
+          "to": "legacy-route-900-crossing-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-2",
+          "from": "legacy-route-900-crossing-2",
+          "to": "legacy-route-900-crossing-3",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-3",
+          "from": "legacy-route-900-crossing-3",
           "to": "legacy-route-900-1",
           "weight": 1
         },
         {
           "id": "legacy-route-900-edge-1",
           "from": "legacy-route-900-1",
+          "to": "legacy-route-900-crossing-5",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-5",
+          "from": "legacy-route-900-crossing-5",
+          "to": "legacy-route-900-crossing-6",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-6",
+          "from": "legacy-route-900-crossing-6",
+          "to": "legacy-route-900-crossing-7",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-7",
+          "from": "legacy-route-900-crossing-7",
+          "to": "legacy-route-900-crossing-8",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-8",
+          "from": "legacy-route-900-crossing-8",
           "to": "legacy-route-900-2",
           "weight": 1
         },
         {
           "id": "legacy-route-900-edge-2",
           "from": "legacy-route-900-2",
+          "to": "legacy-route-900-crossing-10",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-10",
+          "from": "legacy-route-900-crossing-10",
+          "to": "legacy-route-900-crossing-11",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-11",
+          "from": "legacy-route-900-crossing-11",
+          "to": "legacy-route-900-crossing-12",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-900-crossing-edge-12",
+          "from": "legacy-route-900-crossing-12",
           "to": "legacy-route-900-3",
           "weight": 1
         }
@@ -6631,32 +7105,80 @@
         {
           "id": "legacy-route-915-0",
           "goal": false,
-          "x": -430.391,
-          "y": -615.747
+          "x": -125,
+          "y": -1049.5
+        },
+        {
+          "id": "legacy-route-915-crossing-1",
+          "goal": false,
+          "x": -179,
+          "y": -968.5
+        },
+        {
+          "id": "legacy-route-915-crossing-2",
+          "goal": false,
+          "x": -379,
+          "y": -648.5
         },
         {
           "id": "legacy-route-915-1",
           "goal": false,
-          "x": -110.546,
-          "y": -345.314
+          "x": -358,
+          "y": -391.5
+        },
+        {
+          "id": "legacy-route-915-crossing-4",
+          "goal": false,
+          "x": -155,
+          "y": -187.5
+        },
+        {
+          "id": "legacy-route-915-crossing-5",
+          "goal": false,
+          "x": -81,
+          "y": -115.5
         },
         {
           "id": "legacy-route-915-2",
           "goal": true,
-          "x": 147.37,
-          "y": -54.824
+          "x": -43,
+          "y": -106.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-915-edge-0",
           "from": "legacy-route-915-0",
+          "to": "legacy-route-915-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-915-crossing-edge-1",
+          "from": "legacy-route-915-crossing-1",
+          "to": "legacy-route-915-crossing-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-915-crossing-edge-2",
+          "from": "legacy-route-915-crossing-2",
           "to": "legacy-route-915-1",
           "weight": 1
         },
         {
           "id": "legacy-route-915-edge-1",
           "from": "legacy-route-915-1",
+          "to": "legacy-route-915-crossing-4",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-915-crossing-edge-4",
+          "from": "legacy-route-915-crossing-4",
+          "to": "legacy-route-915-crossing-5",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-915-crossing-edge-5",
+          "from": "legacy-route-915-crossing-5",
           "to": "legacy-route-915-2",
           "weight": 1
         }
@@ -6680,32 +7202,68 @@
         {
           "id": "legacy-route-927-0",
           "goal": false,
-          "x": 389.853,
-          "y": -771.31
+          "x": 200,
+          "y": -1046.5
+        },
+        {
+          "id": "legacy-route-927-crossing-1",
+          "goal": false,
+          "x": 193,
+          "y": -969.5
+        },
+        {
+          "id": "legacy-route-927-crossing-2",
+          "goal": false,
+          "x": 393,
+          "y": -649.5
         },
         {
           "id": "legacy-route-927-1",
           "goal": false,
-          "x": 124.213,
-          "y": -311.373
+          "x": 368,
+          "y": -445.5
+        },
+        {
+          "id": "legacy-route-927-crossing-4",
+          "goal": false,
+          "x": 248,
+          "y": -190.5
         },
         {
           "id": "legacy-route-927-2",
           "goal": true,
-          "x": 147.37,
-          "y": -54.824
+          "x": 108,
+          "y": -104.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-927-edge-0",
           "from": "legacy-route-927-0",
+          "to": "legacy-route-927-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-927-crossing-edge-1",
+          "from": "legacy-route-927-crossing-1",
+          "to": "legacy-route-927-crossing-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-927-crossing-edge-2",
+          "from": "legacy-route-927-crossing-2",
           "to": "legacy-route-927-1",
           "weight": 1
         },
         {
           "id": "legacy-route-927-edge-1",
           "from": "legacy-route-927-1",
+          "to": "legacy-route-927-crossing-4",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-927-crossing-edge-4",
+          "from": "legacy-route-927-crossing-4",
           "to": "legacy-route-927-2",
           "weight": 1
         }
@@ -6727,44 +7285,80 @@
         {
           "id": "legacy-route-939-0",
           "goal": false,
-          "x": 389.853,
-          "y": -771.31
+          "x": 219,
+          "y": -1046.5
+        },
+        {
+          "id": "legacy-route-939-crossing-1",
+          "goal": false,
+          "x": 194,
+          "y": -969.5
         },
         {
           "id": "legacy-route-939-1",
           "goal": false,
-          "x": 582.418,
-          "y": -517.848
+          "x": 398,
+          "y": -647.5
+        },
+        {
+          "id": "legacy-route-939-crossing-3",
+          "goal": false,
+          "x": 434,
+          "y": -471.5
         },
         {
           "id": "legacy-route-939-2",
           "goal": false,
-          "x": 175.654,
-          "y": -428.176
+          "x": 373,
+          "y": -424.5
+        },
+        {
+          "id": "legacy-route-939-crossing-5",
+          "goal": false,
+          "x": 248,
+          "y": -192.5
         },
         {
           "id": "legacy-route-939-3",
           "goal": true,
-          "x": 169.997,
-          "y": -15.226
+          "x": 107,
+          "y": -109.5
         }
       ],
       "edges": [
         {
           "id": "legacy-route-939-edge-0",
           "from": "legacy-route-939-0",
+          "to": "legacy-route-939-crossing-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-939-crossing-edge-1",
+          "from": "legacy-route-939-crossing-1",
           "to": "legacy-route-939-1",
           "weight": 1
         },
         {
           "id": "legacy-route-939-edge-1",
           "from": "legacy-route-939-1",
+          "to": "legacy-route-939-crossing-3",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-939-crossing-edge-3",
+          "from": "legacy-route-939-crossing-3",
           "to": "legacy-route-939-2",
           "weight": 1
         },
         {
           "id": "legacy-route-939-edge-2",
           "from": "legacy-route-939-2",
+          "to": "legacy-route-939-crossing-5",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-939-crossing-edge-5",
+          "from": "legacy-route-939-crossing-5",
           "to": "legacy-route-939-3",
           "weight": 1
         }
@@ -6786,13 +7380,13 @@
     }
   ],
   "hero": {
-    "x": 138.581,
-    "y": -225.657
+    "x": 86,
+    "y": -199.5
   },
   "nextBuilding": 21,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "b4775d3ea6598f018f215afaf6f13f1971d7dfbae02174699af8db26d6a0a0fc",
+  "sourceRevision": "c9cfacedc815f74f07bcee5148608ec26091a273c77e7a71bab91ecd4ad388e9",
   "templates": {
     "Map04": [
       {

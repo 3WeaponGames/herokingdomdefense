@@ -230,9 +230,11 @@ function validate(root, documents, changes) {
         check('A', at.concat('loadIcon'), unit.loadIcon, name => imported(root, 'KinghtFallEnemy', 'icon/' + name, 'sprite'), internalForm);
         if(unit.MonsterSource!==undefined)check('A',at.concat('MonsterSource'),unit.MonsterSource,source=>{
             if(!UnitPacks.isMonsterSource(source))throw new Error('Choose a known imported monster source.');
-            const [pack,name]=source.split('/'),catalog=read(path.join(root,'assets/resources/unit-library',pack,'catalog.json'));
-            if(!catalog.units.some(unit=>unit.id===source))throw new Error('Monster source is not present in its imported pack catalog.');
-            imported(root,'resources','unit-library/'+pack+'/Units/'+name,'spine');
+            const [pack]=source.split('/'),catalog=read(path.join(root,'assets/resources/unit-library',pack,'catalog.json'));
+            const model=catalog.units.find(unit=>unit.id===source);
+            if(!model)throw new Error('Monster source is not present in its imported pack catalog.');
+            if(typeof model.resource!=='string'||!model.resource.startsWith('unit-library/'+pack+'/Units/'))throw new Error('Monster source must reference a rig in its pack.');
+            imported(root,'resources',model.resource,'spine');
         });
     });
     Object.keys(base.BuildEnum || {}).forEach(id => {

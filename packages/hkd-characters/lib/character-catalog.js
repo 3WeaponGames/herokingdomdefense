@@ -7,7 +7,8 @@ function created(data,units){return Object.keys(data.characters||{}).filter(id=>
   return {...unit,key:'character:'+id,character:id,name:p.name,group:'Created'};
 });}
 function listed(data,units,options){
-  const matches=unit=>require('./unit-packs').matchesClass(unit,options&&options.enemyClass);
+  const words=(options&&options.search||'').trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const matches=unit=>require('./unit-packs').matchesClass(unit,options&&options.enemyClass)&&words.every(word=>unit.name.toLowerCase().includes(word));
   const groups=new Map();for(const unit of units.filter(matches)){const key=unit.type==='enemy'&&unit.appearance?'enemy:'+unit.appearance:unit.key;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(unit);}
   const result=[...groups.values()].map(members=>{const unit=members.find(u=>data.assignments[u.key])||members[0];return {...unit,members};});
   return result.concat(created(data,units).filter(matches));

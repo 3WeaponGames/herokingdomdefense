@@ -905,6 +905,63 @@
       ],
       "bones": 12,
       "slots": 7
+    },
+    {
+      "id": "monster3/OrcSmasher_SiegeChief",
+      "name": "Orc Siege Chief",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Warlord.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/OrcVariants/OrcSmasher_SiegeChief.json",
+      "uuid": "5b2ea1dd-efa2-5347-a91c-51ff584ed1dd",
+      "resource": "unit-library/monster3/Units/OrcVariants/OrcSmasher_SiegeChief",
+      "animations": [
+        "die",
+        "move",
+        "idle",
+        "hit",
+        "attack"
+      ],
+      "bones": 35,
+      "slots": 15,
+      "variantOf": "monster3/OrcSmasher_Warlord"
+    },
+    {
+      "id": "monster3/OrcSword_CrimsonGuard",
+      "name": "Orc Crimson Guard",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSword_Veteran.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/OrcVariants/OrcSword_CrimsonGuard.json",
+      "uuid": "74e3f4bb-94fe-595f-a833-79cf013d899d",
+      "resource": "unit-library/monster3/Units/OrcVariants/OrcSword_CrimsonGuard",
+      "animations": [
+        "die",
+        "move",
+        "idle",
+        "hit",
+        "attack"
+      ],
+      "bones": 35,
+      "slots": 13,
+      "variantOf": "monster3/OrcSword_Veteran"
+    },
+    {
+      "id": "monster3/Reaper_OrcShaman",
+      "name": "Orc Shaman",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Reaper/Reaper_Death.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/OrcVariants/Reaper_OrcShaman.json",
+      "uuid": "d6f4cc3f-d601-5f3d-a29e-936d7660c2de",
+      "resource": "unit-library/monster3/Units/OrcVariants/Reaper_OrcShaman",
+      "animations": [
+        "idle",
+        "move",
+        "die",
+        "attack",
+        "hit"
+      ],
+      "bones": 17,
+      "slots": 9,
+      "variantOf": "monster3/Reaper_Death"
     }
   ],
   "parts": [

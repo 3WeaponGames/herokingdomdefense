@@ -26,6 +26,15 @@ function mount(host,api){
   const reloadButton=button(tools,'Reload latest draft',reloadDraft);reloadButton.title='Replace this window’s draft with the latest shared draft. Does not save or discard another window’s work.';
   const body=el('div',undefined,root,'body'),library=el('aside',undefined,body,'library resizable-library'),main=el('main',undefined,body),inspector=el('aside',undefined,body,'inspector');
   el('h2',itemMode?'HERO ITEMS':'CHARACTERS',library);const unitFilter=el('select',undefined,library);unitFilter.className='wide';unitFilter.setAttribute('aria-label','Character group');for(const group of ['All characters','Hero','Allies','Enemies']){const option=el('option',group,unitFilter);option.value=group==='All characters'?'':group;}const unitList=el('div',undefined,library,'look-list');unitList.style.marginTop='7px';
+  const unitSearch=itemMode?null:el('input',undefined,undefined,'wide character-search');
+  if(unitSearch){
+    unitSearch.type='search';unitSearch.placeholder='Search character names…';
+    unitSearch.setAttribute('aria-label','Search character names');
+    library.insertBefore(unitSearch,unitFilter);
+    unitList.setAttribute('role','group');unitList.setAttribute('aria-label','Character results');
+    unitList.setAttribute('aria-keyshortcuts','Shift+Q Shift+E');
+    unitList.title='Shift+Q: previous character · Shift+E: next character';
+  }
   const packageFilter=el('select',undefined,library),classFilter=el('select',undefined,library),unitSort=el('select',undefined,library);for(const control of [packageFilter,classFilter,unitSort]){control.className='wide';control.style.marginBottom='7px';control.hidden=itemMode;library.insertBefore(control,unitList);}packageFilter.setAttribute('aria-label','Character package');classFilter.setAttribute('aria-label','Enemy class');unitSort.setAttribute('aria-label','Sort characters');
   for(const option of [{id:'',label:'All packages'},...UnitPacks.packs]){const entry=el('option',option.label,packageFilter);entry.value=option.id;}
   for(const option of [{value:'',label:'All enemy classes'},...UnitPacks.enemyClasses]){const entry=el('option',option.label,classFilter);entry.value=option.value;}
@@ -36,7 +45,7 @@ function mount(host,api){
   const count=el('div','',partLibrary,'assets-count'),gallery=el('div',undefined,partLibrary,'parts-grid');const more=button(partLibrary,'Show more parts',()=>{limit+=60;renderAssets();},'more');
   const disposeLibrarySplit=installLibrarySplit();
   function installLibrarySplit(){
-    const minimum=72,partMinimum=120,initial=175;let height=initial,pointer=null,half=itemMode;
+    const minimum=72,partMinimum=120,initial=itemMode?175:240;let height=initial,pointer=null,half=itemMode;
     librarySplit.tabIndex=0;librarySplit.setAttribute('role','separator');librarySplit.setAttribute('aria-orientation','horizontal');librarySplit.setAttribute('aria-label',itemMode?'Resize Hero Items and Part Library':'Resize Characters list and Part Library');librarySplit.title='Drag to resize · Arrow keys to adjust · Double-click to reset';
     function initialHeight(){const area=library.getBoundingClientRect();return itemMode?area.height/2-(unitList.getBoundingClientRect().top-area.top)-librarySplit.getBoundingClientRect().height/2:initial;}
     function maximum(){const available=unitList.getBoundingClientRect().height+partLibrary.getBoundingClientRect().height;return available>0?Math.max(minimum,available-partMinimum):height;}
@@ -93,6 +102,7 @@ function mount(host,api){
   const footer=el('footer',undefined,root),status=el('span','Loading character library…',footer,'status'),saveState=el('span','',footer);
   let data=null,saved=null,version=0,parts=[],units=[],sources=[],assets={},selected='',virtual=null,selectedPart='',selectedAsset='',selectedModel='',rig=null,spine=null,layers=[],baseLayers=[],states=[],fittingKey='',poseBounds=null,token=0,disposed=false,playing=true,time=0,duration=1,last=0,raf=null,direction=1,limit=60,drag=null,stages=Promise.resolve(),lastSent='',stageError=null,busy=false;
   let canUndo=false,canRedo=false,scrubs=[],virtualUnit=null,creator=null;
+  let rosterRows=[];
   let pendingFocus=null,focusTask=null,focusSequence=0;
   let selectedBossSlot='',selectedBossVariant='',libraryKey='';
   let previewSpeedKey='';
@@ -148,7 +158,7 @@ function mount(host,api){
         const target=pendingFocus;pendingFocus=null;const unit=units.find(unit=>unit.type===target.type&&unit.id===target.id);
         if(!unit)throw Error('Choose an existing character unit.');
         if(target.level!==undefined&&(!Number.isInteger(target.level)||!Levels.levels(unit).includes(target.level)))throw Error('Choose an existing character level.');
-        unitFilter.value=packageFilter.value=classFilter.value='';await selectUnit(unit,target.level);applied=true;
+        unitSearch.value=unitFilter.value=packageFilter.value=classFilter.value='';await selectUnit(unit,target.level);applied=true;
       }
       return applied;
     }).catch(error=>{if(!disposed)message(error.message,true);return false;}).finally(()=>{focusTask=null;if(pendingFocus&&!busy&&!creator&&!disposed)applyFocus();});
@@ -178,7 +188,7 @@ function mount(host,api){
     const actions=el('div',undefined,dialog,'row'),close=()=>{creator.remove();creator=null;Promise.resolve().then(applyFocus);};button(actions,'Cancel',close);button(actions,'Create character',()=>{
       if(!name.value.trim())throw Error('Enter a character name.');if(Catalog.listed(data,units).some(unit=>unit.name.toLowerCase()===name.value.trim().toLowerCase()))throw Error('A character with this name already exists.');const baseUnit=kind.value==='maker'?units.find(unit=>unit.type==='ally'):units.find(unit=>unit.key===model.value);if(!baseUnit)throw Error('Choose a unit model.');
       const id=unique('character-'+name.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40),data.profiles),base=kind.value==='maker'?{...Catalog.defaults(baseUnit),source:Catalog.maker}:UnitPacks.forUnit(baseUnit).mode==='modular'?Catalog.defaults(baseUnit):{type:baseUnit.type,id:baseUnit.id,currentModel:true};
-      data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:CharacterOptions.skinTones[0].value}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitFilter.value=packageFilter.value=classFilter.value='';selectProfile(id);changed();
+      data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:CharacterOptions.skinTones[0].value}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitSearch.value=unitFilter.value=packageFilter.value=classFilter.value='';selectProfile(id);changed();
     },'primary');name.focus();
   }
   async function save(){
@@ -206,6 +216,16 @@ function mount(host,api){
     if(event.defaultPrevented||event.isComposing||event.altKey)return;
     if(creator&&creator.contains(event.target))return;
     const key=String(event.key).toLowerCase(),target=event.target,tag=String(target&&target.tagName||'').toLowerCase();
+    if(!itemMode&&event.shiftKey&&!event.ctrlKey&&!event.metaKey&&(key==='q'||key==='e')){
+      if(busy||!rosterRows.length||(target&&target.isContentEditable)||['input','textarea','select'].includes(tag))return;
+      event.preventDefault();event.stopPropagation();
+      if(event.repeat)return;
+      const index=rosterRows.findIndex(row=>row.button.getAttribute('aria-current')==='true');
+      const offset=key==='q'?-1:1;
+      const next=index<0?(offset<0?rosterRows.length-1:0):index+offset;
+      if(rosterRows[next])rosterRows[next].button.click();
+      return;
+    }
     if((event.code==='Space'||key===' ')&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&current.box.contains(target)){
       event.stopPropagation();event.preventDefault();if(!event.repeat&&!busy)play.click();return;
     }
@@ -250,9 +270,72 @@ function mount(host,api){
   }
   root.addEventListener('keydown',editorKey,true);
   function renderLooks(){
-    const allListed=itemMode?units:Catalog.listed(data,units),listed=itemMode?units:Catalog.listed(data,units,{enemyClass:classFilter.value}),filter=unitFilter.value;unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(allListed.map(unit=>unit.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}unitFilter.value=filter;
-    const active=profile()&&(speedSelection?speedSelection.unit:unitFor(profile()));unitList.innerHTML='';for(const unit of itemMode?listed.filter(unit=>!unitFilter.value||unit.group===unitFilter.value):UnitPacks.list(listed,{group:unitFilter.value,pack:packageFilter.value,enemyClass:classFilter.value,sort:unitSort.value})){const b=button(unitList,itemMode?unit.group+' · '+unit.name:UnitPacks.caption(unit),()=>selectUnit(unit));b.title=itemMode?'Appearance applies to this entire tier.':UnitPacks.forUnit(unit).label;b.classList.toggle('selected',!!active&&active.key===unit.key);if(itemMode&&data.assignments[unit.key])el('span',' · Custom',b,'assigned');}
+    if(!data)return;
+    const allListed=itemMode?units:Catalog.listed(data,units);
+    const listed=itemMode?units:Catalog.listed(data,units,{enemyClass:classFilter.value,search:unitSearch.value});
+    const filter=unitFilter.value;
+    unitFilter.innerHTML='';
+    for(const group of [itemMode?'All equipment':'All characters',...new Set(allListed.map(unit=>unit.group))]){
+      const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;
+    }
+    unitFilter.value=filter;
+    if(!itemMode){
+      const available=new Set(allListed.map(unit=>UnitPacks.forUnit(unit).id));
+      for(const option of packageFilter.children)option.hidden=option.disabled=!!option.value&&!available.has(option.value);
+      if(!available.has(packageFilter.value))packageFilter.value='';
+    }
+    const active=profile()&&(speedSelection?speedSelection.unit:unitFor(profile()));
+    const scroll=unitList.scrollTop||0;
+    const visible=itemMode?listed.filter(unit=>!unitFilter.value||unit.group===unitFilter.value):
+      UnitPacks.list(listed,{group:unitFilter.value,pack:packageFilter.value,enemyClass:classFilter.value,sort:unitSort.value});
+    unitList.innerHTML='';rosterRows=[];
+    for(const unit of visible){
+      const isActive=!!active&&active.key===unit.key;
+      if(itemMode){
+        const row=button(unitList,unit.group+' · '+unit.name,()=>selectUnit(unit));
+        row.title='Appearance applies to this entire tier.';row.classList.toggle('selected',isActive);
+        if(data.assignments[unit.key])el('span',' · Custom',row,'assigned');
+        continue;
+      }
+      const row=button(unitList,undefined,()=>selectRosterUnit(unit),'character-card');
+      row.title=UnitPacks.forUnit(unit).label;
+      row.setAttribute('aria-label',UnitPacks.caption(unit));
+      row.setAttribute('aria-current',String(isActive));row.classList.toggle('selected',isActive);
+      const portrait=el('span',undefined,row,'character-card-portrait');
+      portrait.setAttribute('aria-hidden','true');
+      const initials=()=>{portrait.textContent=unit.name.trim().split(/\s+/).slice(0,2).map(word=>Array.from(word)[0]).join('').toUpperCase();};
+      if(unit.portrait){
+        const img=el('img',undefined,portrait);img.alt='';img.loading='lazy';img.onerror=initials;
+        img.src=api.image(unit.portrait);
+      }else initials();
+      const labels=el('span',undefined,row,'character-card-labels');
+      el('strong',unit.name,labels,'character-card-name');
+      const classOption=UnitPacks.enemyClasses.find(option=>option.value===UnitPacks.enemyClass(unit));
+      const detail=[unit.character?'Created':'',classOption&&classOption.label].filter(Boolean).join(' · ');
+      if(detail)el('small',detail,labels,'character-card-detail');
+      rosterRows.push({unit,button:row});
+    }
+    unitList.scrollTop=scroll;
     if(!unitList.children.length)el('div','No characters match these filters.',unitList,'empty');
+  }
+  function selectRosterUnit(unit){
+    const loading=selectUnit(unit);
+    const row=rosterRows.find(entry=>entry.unit.key===unit.key);
+    if(row){
+      row.button.focus({preventScroll:true});
+      const bounds=row.button.getBoundingClientRect();
+      const top=bounds.top-unitList.getBoundingClientRect().top;
+      if(top<0)unitList.scrollTop+=top;
+      else if(top+bounds.height>unitList.clientHeight)unitList.scrollTop+=top+bounds.height-unitList.clientHeight;
+    }
+    return loading;
+  }
+  if(unitSearch){
+    unitSearch.oninput=()=>{unitList.scrollTop=0;renderLooks();};
+    unitSearch.onkeydown=event=>{
+      if(event.key!=='Enter'||event.isComposing||!unitSearch.value.trim()||!rosterRows.length)return;
+      event.preventDefault();event.stopPropagation();rosterRows[0].button.click();
+    };
   }
   unitFilter.onchange=renderLooks;
   packageFilter.onchange=classFilter.onchange=unitSort.onchange=renderLooks;

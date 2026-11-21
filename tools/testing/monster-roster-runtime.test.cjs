@@ -10,10 +10,11 @@ const { environment } = require('../navigation/runtime-harness.cjs');
 const root = path.resolve(__dirname, '../..');
 const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 const monsters = Object.values(config.SoldierCfg).filter(row => row.MonsterSource);
+const registeredCount = require('../characters/monster-roster-definitions.json').units.length;
 const classFor = { 90001: 'KinghtFallEnemyItem01', 90002: 'KinghtFallEnemyItem02', 90003: 'KinghtFallEnemyItem03', 90006: 'KinghtFallEnemyItem06', 90009: 'KinghtFallEnemyItem09' };
 
 test('every new runtime prefab binds its own imported rig to the intended controller and preserves ranged projectile references', () => {
-  assert.equal(monsters.length, 319);
+  assert.equal(monsters.length, registeredCount);
   const sources = new Map([...new Set(monsters.map(unit=>unit.MonsterPack))].flatMap(pack =>
     require('../../assets/resources/unit-library/' + pack + '/catalog.json').units.map(unit => [unit.id, unit])));
   const readPrefab = name => JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallEnemy', name + '.prefab'), 'utf8'));
@@ -59,7 +60,7 @@ test('independent pack monsters use default role keys while the original transfo
 });
 
 test('every imported monster spawns through the shipped enemy factory with its own prefab and pool, including warm reuse', () => {
-  assert.equal(monsters.length, 319);
+  assert.equal(monsters.length, registeredCount);
   const pool = new Map(), requests = [], allocations = [];
   const manager = {
     getNode: key => { const values = pool.get(key); return values && values.pop(); },
@@ -134,7 +135,7 @@ function actorFixture(row) {
 }
 
 test('all added monsters initialize their real melee, ranged, buff or healing controller and perform that behavior', () => {
-  assert.equal(monsters.length, 319);
+  assert.equal(monsters.length, registeredCount);
   const behaviors = new Set();
   for (const row of monsters) {
     assert(classFor[row.BehaviorTemplate], row.MonsterSource);
@@ -186,7 +187,7 @@ test('flying imported monsters retain their obstacle-crossing behavior and reach
 });
 
 test('new monster timing, mirror and counter settings use independent default keys without mutating authored settings', () => {
-  assert.equal(monsters.length, 319);
+  assert.equal(monsters.length, registeredCount);
   const e = environment(), settings = structuredClone(config.GameTools);
   e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data = { GameTools: settings };
   const tools = e.load('GameToolsOverrides');

@@ -17,7 +17,9 @@ const Profiles = require('../lib/unit-profiles');
 const Catalog = require('../worlds/unit-catalog');
 const root = path.resolve(__dirname, '../../..');
 const read = relative => JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'));
-const catalogs = require('../../../tools/characters/monster-roster-definitions.json').units.map(unit=>unit.source.split('/')[0]).filter((pack,index,all)=>all.indexOf(pack)===index).flatMap(pack => read('assets/resources/unit-library/' + pack + '/catalog.json').units);
+const definitions = require('../../../tools/characters/monster-roster-definitions.json').units;
+const packs = [...new Set(definitions.map(unit => unit.source.split('/')[0]))];
+const catalogs = packs.flatMap(pack => read('assets/resources/unit-library/' + pack + '/catalog.json').units);
 const clone = value => JSON.parse(JSON.stringify(value));
 
 function panelFixture() {
@@ -33,7 +35,7 @@ function panelFixture() {
 test('every imported monster is an independent spawnable Units record with its actual rig and all five animations', () => {
     const store = new Store(root), documents = store.snapshot().documents, cfg = documents.A.data;
     const monsters = Object.values(cfg.SoldierCfg).filter(unit => unit.MonsterSource);
-    assert.equal(catalogs.length, 319);
+    assert.equal(catalogs.length, definitions.length);
     assert.equal(monsters.length, catalogs.length);
     assert.equal(new Set(monsters.map(unit => unit.MonsterSource)).size, catalogs.length);
     assert.equal(new Set(monsters.map(unit => unit.prefab)).size, catalogs.length);
@@ -67,6 +69,11 @@ test('every imported monster is an independent spawnable Units record with its a
 
 test('pack filters, search, wave choices and browsing every new unit leave drafts and files untouched', () => {
     const f = panelFixture(), before = f.store.draftState(), configFile = path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json'), bytes = fs.readFileSync(configFile);
+    const options = ['monster3', 'fantasy-monsters', 'fantasy-bosses'].map(value => {
+        const option = new f.panel.$unitPack.constructor('option');
+        option.value = value;
+        return f.panel.$unitPack.appendChild(option);
+    });
     const rows = f.panel._rows(), monsters = rows.filter(row => row.record.MonsterSource);
     assert.equal(monsters.length, catalogs.length);
     for (const row of monsters) f.render(row.key);
@@ -81,7 +88,7 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
             return byCaption.get(value);
         });
     };
-    for (const pack of ['all','monster1','monster2','monster3','fantasy-bosses','fantasy-monsters','campaign','allies']) {
+    for (const pack of ['all', ...packs, 'campaign','allies']) {
         f.panel._unitPack = pack; f.panel._selected = null; f.panel.$search.value = ''; f.panel._render();
         const expected = rows.filter(row => pack === 'all' || (pack === 'allies' ? row.unitType !== 'enemy' : row.unitType === 'enemy' && (pack === 'campaign' ? !row.record.MonsterPack : row.record.MonsterPack === pack)));
         const expectedModels = [...new Set(expected.map(modelKey))].sort(), shown = listedRows(expected);
@@ -100,18 +107,25 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
             }
         }
     }
+    for (const option of options) {
+        assert.equal(option.hidden, !packs.includes(option.value), option.value);
+        assert.equal(option.disabled, option.hidden);
+    }
     f.panel._unitPack = 'monster1'; f.panel.$search.value = catalogs[0].id; f.panel._renderList();
     assert.equal(f.panel.$list.children.length, 1, 'source identifiers are searchable');
-    f.panel._unitPack = 'fantasy-monsters';
-    f.panel.$search.value = '  V2  ';
+    f.panel._unitPack = 'monster3';
+    f.panel.$search.value = '  Orc  Sword  ';
     f.panel._renderList();
     assert.deepEqual(Array.from(f.panel.$list.children, button => button.children[1].children[0].textContent).sort(),
-        ['Butcher V2', 'Possessed Black Bear V2', 'Punisher V2']);
-    f.panel.$search.value = 'bEaR   BLACK v2';
+        ['Orc Crimson Guard', 'Orc Sword Butcher', 'Orc Sword Rookie', 'Orc Sword Veteran']);
+    f.panel.$search.value = 'rOOkie   SWORD orc';
     f.panel._renderList();
     assert.equal(f.panel.$list.children.length, 1);
     f.panel.$list.children[0].onclick();
-    assert.equal(f.panel._rows().find(row => row.key === f.panel._selected).label, 'Possessed Black Bear V2');
+    assert.equal(f.panel._rows().find(row => row.key === f.panel._selected).label, 'Orc Sword Rookie');
+    f.panel.$search.value = 'shaman orc';
+    f.panel._renderList();
+    assert.deepEqual(Array.from(f.panel.$list.children, button => button.children[1].children[0].textContent), ['Orc Shaman']);
     f.panel.$search.value = 'No such unit';
     f.panel._renderList();
     assert.equal(f.panel.$count.textContent, '0 models · 0 profiles');

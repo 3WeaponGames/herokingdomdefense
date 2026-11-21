@@ -2,8 +2,28 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const {Node,Vec2}=require('../navigation/runtime-harness.cjs');
 function fixture(){
-  class Sprite{} class Skeleton{}
-  const cc={Sprite,v2:(x,y)=>new Vec2(x,y),isValid:value=>!!value&&!value.destroyed},context={exports:{},cc,sp:{Skeleton}};
+  class Sprite{setMaterial(){}}
+  Sprite.SizeMode={CUSTOM:0};
+  class Skeleton{}
+  class Mask{}
+  Mask.Type={IMAGE_STENCIL:2};
+  class RenderNode extends Node{
+    get parent(){return this._parent||null;}
+    set parent(next){
+      const before=this._parent;
+      if(before===next)return;
+      if(before)before.children.splice(before.children.indexOf(this),1);
+      this._parent=next;
+      if(next)next.children.push(this);
+    }
+    setParent(parent){this.parent=parent;}
+    setContentSize(size){this.width=size.width;this.height=size.height;}
+    setScale(x,y=x){this.scaleX=x;this.scaleY=y;}
+    setAnchorPoint(point){this.anchorX=point.x;this.anchorY=point.y;}
+    destroy(){this.destroyed=true;this.parent=null;}
+  }
+  const cc={Node:RenderNode,Mask,Sprite,color:(r,g,b)=>({r,g,b}),v2:(x,y)=>new Vec2(x,y),isValid:value=>!!value&&!value.destroyed};
+  const context={exports:{},cc,sp:{Skeleton}};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/KinghtFallDepthView.js'),'utf8'),context);
   const main=new Node('World'),node=new Node('Hero',main,0,10),horseNode=new Node('Horse',node),horse=horseNode.addComponent(Skeleton);
   horse.enabled=true;horse.skeletonData={skeletonJson:{skeleton:{x:-50,y:0,width:100,height:128}}};
@@ -34,6 +54,60 @@ test('25 map world units is the exact small-scenery cutoff, independent of layer
 test('large props switch immediately at the authored ground pivot, including ties and subpixel crossings',()=>{
   const h=fixture(),tree=h.prop('Tree',90,150,0,11);tree.root._depthGround=new Node('Ground',tree.root,0,25);
   for(const [y,behind]of [[25.01,true],[25,false],[24.99,false],[25.001,true]]){h.hero.node.y=y;h.sort();assert.equal(h.hero.node.zIndex<tree.root.zIndex,behind);}
+});
+
+for(const native of [false,true])test('a rock in a front layer cannot suppress a rear-tree silhouette ('+(native?'native':'web')+')',()=>{
+  const h=fixture(),tree=h.prop('Tree',120,180,0,1),stone=h.prop('Rock',100,90,40,9);
+  tree.root._depthGround=new Node('Trunk base',tree.root,0,12);
+  const other=new Node('Enemy',h.main,0,70);
+  const actor={node:other,spAni:other.addComponent(h.Sprite)};
+  other._combatActor=actor;
+  for(const node of [h.horse.node,other]){
+    node.width=40;node.height=100;node.anchorY=0;
+    node.getAnchorPoint=()=>({x:node.anchorX,y:node.anchorY});
+  }
+  h.hero.spAni=h.horse.node.addComponent(h.Sprite);
+  h.hero.spAni.enabled=actor.spAni.enabled=true;
+  const treeRecord={node:tree.root,sources:[tree.sprite],masks:new Map()};
+  let actorCaptures=0;
+  Object.setPrototypeOf(h.view,h.DepthView.prototype);
+  Object.assign(h.view,{nativeCapture:native,captureSupported:true,nativeActors:new Map(),objects:[treeRecord],
+    snapshot(object){
+      object.center={x:0,y:90};object.size={width:120,height:180};object.frame=object.frame||{};
+    },
+    snapshotActor(record,sources,box){
+      actorCaptures++;
+      record.center={x:box.minX,y:box.minY};record.size={width:40,height:100};record.frame={destroy(){}};
+    }
+  });
+  h.view.game.gameData={getSoldierList:()=>[],getEnemyList:()=>[actor]};
+  h.hero.node.y=20;
+  h.view.update();
+  const mask=treeRecord.masks.get(h.hero),shared=treeRecord.masks.get(actor),overlay=mask.foreground;
+  assert(tree.root.zIndex<stone.root.zIndex&&stone.root.zIndex<h.hero.node.zIndex,'authored layering creates the original conflict');
+  assert.equal(overlay.mask.spriteFrame,treeRecord.frame,'the higher stencil uses the exact tree artwork');
+  assert.equal(overlay.node.zIndex,h.hero.node.zIndex+1);
+  assert.equal(mask.node.parent,overlay.node);
+  assert.equal(native?mask.node.opacity:mask.visuals[0].node.opacity,255,'the correction covers the full-color actor under the canopy');
+  assert.equal(shared.node.parent,treeRecord.overlay.node,'a second rear actor retains the shared lower stencil');
+  assert.equal(native?shared.node.opacity:shared.visuals[0].node.opacity,204);
+  if(native)assert.equal(actorCaptures,2);
+
+  for(const y of [12,11.99]){
+    h.hero.node.y=y;h.view.update();
+    assert.equal(mask.node.active,false,'at or in front of the trunk base there is no occlusion');
+    assert.equal(overlay.node.active,false);
+    assert(shared.node.active,'another rear actor stays covered');
+  }
+  h.hero.node.y=20;h.view.update();
+  assert.equal(mask.foreground,overlay,'crossing the root reuses the same stencil');
+  assert(overlay.node.active);
+  stone.root.x=600;h.view.update();
+  assert.equal(mask.node.parent,treeRecord.overlay.node,'once the layer conflict clears, use the ordinary tree silhouette');
+  assert.equal(overlay.node.active,false);
+  h.hero.node.active=false;h.view.update();
+  assert(mask.node.destroyed&&overlay.node.destroyed);
+  assert.equal(overlay.mask.spriteFrame,null,'retiring the actor detaches its reference to the tree capture');
 });
 
 test('draw order uses the authored hero ground or stable horse origin independently of body bounds',()=>{

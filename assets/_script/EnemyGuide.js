@@ -21,6 +21,7 @@ var approvedRoles = { fighter: "Fighter", skirmisher: "Skirmisher", vanguard: "V
 function roleName(id, role) { return role ? approvedRoles[id] === role.name ? "enemyGuide.role." + id : role.name : "enemyGuide.unknown"; }
 function typeGuide(ui, id) {
   var data = manager().data || {}, settings = data.GameTools || {}, definitions = settings.unitTypes || {}, members = [];
+  var rules = require("./FightingTypeDamage");
   var types = Object.keys(definitions).map(function (key) {
     var type = definitions[key];
     return { id: key, name: roleName(key, type), icon: type.icon, tint: type.tint || "#ffffff",
@@ -34,22 +35,35 @@ function typeGuide(ui, id) {
     if (cfg && byId[role]) members.push({ side: side, cfg: cfg, role: role });
   });
   function add(list, value) { if (byId[value] && list.indexOf(value) < 0) list.push(value); }
+  function counter(role) { return rules.counterType(definitions, role); }
   function targets(member) {
+    var type = counter(member.role);
+    if (type !== undefined) return [type];
     if (member.cfg.CounterType !== undefined) return byId[member.cfg.CounterType] ? [member.cfg.CounterType] : [];
     // An absent type override retains the game's exact-ID legacy matchup.
     var result = [];
     members.forEach(function (target) { if (target.side !== member.side && member.cfg.Suppressed && target.cfg.ID == member.cfg.Suppressed) add(result, target.role); });
     return result;
   }
+  function matchup(source, target) {
+    add(byId[source].strong, target); add(byId[target].weak, source);
+  }
+  types.forEach(function (type) {
+    var target = counter(type.id);
+    if (target !== undefined) matchup(type.id, target);
+  });
   members.forEach(function (member) {
-    targets(member).forEach(function (target) { add(byId[member.role].strong, target); add(byId[target].weak, member.role); });
+    if (counter(member.role) === undefined) targets(member).forEach(function (target) { matchup(member.role, target); });
   });
   var model = describe(ui, id, false), unit = { name: model && model.name || "enemyGuide.unknown", strong: [], weak: [] };
   if (model) {
     var cfg = manager().getSoldierCfgById(id);
     targets({ side: "enemy", cfg: cfg, role: model.roleId }).forEach(function (target) { add(unit.strong, target); });
+    types.forEach(function (type) {
+      if (model.roleId && counter(type.id) === model.roleId) add(unit.weak, type.id);
+    });
     members.forEach(function (member) {
-      if (member.side !== "ally") return;
+      if (member.side !== "ally" || counter(member.role) !== undefined) return;
       var matches = member.cfg.CounterType === undefined ? member.cfg.Suppressed && member.cfg.Suppressed == id : member.cfg.CounterType && member.cfg.CounterType === model.roleId;
       if (matches) add(unit.weak, member.role);
     });
@@ -62,7 +76,7 @@ function describe(ui, id, live) {
   var actor = live && battle.getEnemyList && battle.getEnemyList().filter(function (enemy) { return enemy.cfg && Number(enemy.cfg.ID) === Number(id) && alive(enemy); })[0];
   var settings = data.data && data.data.GameTools || {}, number = Number(id);
   var form = actor && actor.spIdx !== undefined ? actor.spIdx + 1 : number >= 90010 && number <= 90012 ? number - 90009 : "default";
-  var roleId = settings.unitTypeAssignments && settings.unitTypeAssignments["enemy:" + id + ":" + form];
+  var roleId = actor && actor.cfg.FightingType || cfg.FightingType || settings.unitTypeAssignments && settings.unitTypeAssignments["enemy:" + id + ":" + form];
   var role = settings.unitTypes && settings.unitTypes[roleId], wave = battle.levelCfg && battle.levelCfg.WaveCfg[battle.round - 1] || {};
   var hpFactor = battle.getHpAdd ? battle.getHpAdd(id) : wave.HealthCoefficient;
   var damageFactor = battle.getAttAdd ? battle.getAttAdd(id) : wave.AttackCoefficient;

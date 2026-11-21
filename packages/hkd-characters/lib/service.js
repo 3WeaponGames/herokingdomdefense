@@ -7,6 +7,7 @@ const Levels=require('./character-levels');
 const Catalog=require('./character-catalog');
 const UnitAnimationSpeeds=require('./unit-animation-speeds');
 const EnemyClasses=require('../../game-data-editor/lib/enemy-classes');
+const AssetValidation=require('../../game-data-editor/lib/asset-validation');
 const Packs=require('./unit-packs'),Boss=require('./boss-model');
 const clone=value=>JSON.parse(JSON.stringify(value)),hash=text=>crypto.createHash('sha256').update(text).digest('hex');
 function read(file){return JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));}
@@ -16,22 +17,34 @@ class Service{
   snapshot(){return {version:this.version,revision:this.revision,dirty:!JSONDocument.equal(this.original,this.data),canUndo:!!this.undoStack.length,canRedo:!!this.redoStack.length,data:clone(this.data),savedData:clone(this.original)};}
   check(request){if(!request||request.version!==this.version)throw Error('The character draft changed in another window. Reload the latest draft before editing.');}
   assets(){const original=read(path.join(this.root,'assets/resources/character-parts/catalog.json'));const mounts=this.relativeFile==='assets/resources/characters/catalog.json'&&fs.existsSync(path.join(this.root,'assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json'))?require('./original-mounts').assets():[];return Object.assign({},original,{parts:original.parts.concat(UnitLibrary.load(this.root).parts,mounts)});}
-  units(){
+  units(includePortraits=false){
     const cfg=read(path.join(this.root,'assets/KinghtFallConfig/GameJsonCfg.json')),entries=read(path.join(this.root,'assets/resources/localization/catalog.json')).entries;
     const text=value=>String(value||'').replace(/\[\[loc:([^\]]+)\]\]/g,(m,key)=>entries[key]&&entries[key].en||m);
-    const result=[{type:'hero',id:'hero',key:'hero:hero:default',name:'Hero',group:'Hero',sourcePack:'character-maker'}];
+    const portraits=new Map();
+    const portrait=reference=>{
+      if(!includePortraits||typeof reference!=='string'||!reference)return {};
+      if(!portraits.has(reference)){
+        const key=reference.includes('/')?reference:'icon/'+reference;
+        let file=null;
+        try{file=path.relative(this.root,AssetValidation.imported(this.root,'KinghtFallEnemy',key,'sprite').file).replace(/\\/g,'/');}
+        catch(_){/* The editor uses initials when a unit has no imported icon. */}
+        portraits.set(reference,file);
+      }
+      return {portrait:portraits.get(reference)};
+    };
+    const result=[{type:'hero',id:'hero',key:'hero:hero:default',name:'Hero',group:'Hero',sourcePack:'character-maker',...portrait('@icon/Stats Icons/hero-fighter-health')}];
     for(const type of ['ally','enemy'])for(const row of Object.values(type==='ally'&&cfg.AllyCfg||cfg.SoldierCfg)){
       if(type==='enemy'&&cfg.GameTools&&cfg.GameTools.unitProfiles&&(cfg.GameTools.unitProfiles.bossForms&&cfg.GameTools.unitProfiles.bossForms[row.ID]||cfg.GameTools.unitProfiles.entries&&cfg.GameTools.unitProfiles.entries[row.ID]&&cfg.GameTools.unitProfiles.entries[row.ID].created))continue;
       if(type==='ally'&&(!row.prefab||!fs.existsSync(path.join(this.root,'assets/KinghtFallEnemy/Play'+row.prefab+'.prefab'))))continue;
       const boss=type==='enemy'&&[90010,90011,90012].includes(row.ID),form=boss?String(row.ID-90009):'default';
       const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(row.ID)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
       const key=type+':'+row.ID+':'+form,p=this.original.profiles[this.original.assignments[key]],source=type==='enemy'&&(row.MonsterSource||row.AppearanceSourceUnit&&cfg.SoldierCfg[row.AppearanceSourceUnit]&&cfg.SoldierCfg[row.AppearanceSourceUnit].MonsterSource||p&&(p.base.appearance||p.base.source||p.baked&&p.baked.source));
-      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(type==='enemy'?{enemyClass:EnemyClasses.resolve(cfg.GameTools,row.ID)}:{}),...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{})});
+      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(type==='enemy'?{enemyClass:EnemyClasses.resolve(cfg.GameTools,row.ID)}:{}),...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{}),...portrait(row.loadIcon)});
     }
     return result;
   }
   describe(base,noRuntime){if(!this.units().some(u=>u.type===base.type&&u.id===String(base.id)))throw Error('Choose an existing character base.');const description=base.model?require('./current-model').describe(this.root,base,noRuntime):base.source?require('./mounts').describe(this.root,base,noRuntime):Units.describe(this.root,{type:base.type,id:base.id,noRuntime:!!noRuntime});if(!noRuntime)description.previewWorld=require('./preview-reference').world(this.root,base,description);return description;}
-  load(){return {...this.snapshot(),parts:this.assets().parts,units:this.units(),sources:UnitLibrary.load(this.root).sources};}
+  load(){return {...this.snapshot(),parts:this.assets().parts,units:this.units(true),sources:UnitLibrary.load(this.root).sources};}
   validate(data){
     if(!data||data.version!==1||!data.profiles||typeof data.profiles!=='object'||Array.isArray(data.profiles)||!data.assignments||typeof data.assignments!=='object'||Array.isArray(data.assignments))throw Error('Invalid character document.');
     const assets=new Map(this.assets().parts.map(p=>[p.id,p])),units=this.validationUnits?this.validationUnits():this.units();

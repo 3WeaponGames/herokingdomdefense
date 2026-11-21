@@ -42,7 +42,7 @@ function fixture(options={}){
  const document={createElement:tag=>{const node=new Element(tag);node.ownerDocument=document;return node;}};host.ownerDocument=document;
  const context={module:{exports:{}},require:createRequire(file),document,requestAnimationFrame:callback=>{frames.set(++frameId,callback);return frameId;},cancelAnimationFrame:id=>frames.delete(id),Image,queueMicrotask,Date};
  vm.runInNewContext(fs.readFileSync(file,'utf8'),context,{filename:file});const client=context.module.exports.mount(host,api);
- const byLabel=label=>host.querySelector('[aria-label="'+label+'"]'),button=text=>host.querySelectorAll('button').find(b=>b.textContent===text);
+ const byLabel=label=>host.querySelector('[aria-label="'+label+'"]'),button=text=>host.querySelectorAll('button').find(b=>b.textContent===text||b.getAttribute('aria-label')===text);
  return{host,client,calls,frames,pendingImages,parts,initial,byLabel,button,snapshot,get activeElement(){return document.activeElement;},tick(time){const scheduled=[...frames.values()];frames.clear();scheduled.forEach(callback=>callback(time));},async settle(){for(let i=0;i<4;i++)await flush();},close(){client.destroy();}};
 }
 module.exports={fixture,flush};

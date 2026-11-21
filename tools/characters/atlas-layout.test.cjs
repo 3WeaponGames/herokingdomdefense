@@ -96,5 +96,5 @@ test('actual raw unit packs resolve every atlas page using Creator 2.4 basename 
     }
     pages+=unique.size;
   }
-  assert.equal(units,320);assert(pages>3);assert.equal(pageIds.size,pages);
+  assert.equal(units,1+require('./monster-roster-definitions.json').units.length);assert(pages>3);assert.equal(pageIds.size,pages);
 });

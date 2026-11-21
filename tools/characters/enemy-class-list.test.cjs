@@ -11,7 +11,7 @@ const units=[
  {type:'ally',id:'90002',key:'ally:90002:default',name:'Infantry',group:'Allies',levels:[1,2,3]},
  enemy(91001,'Zebra','normal','monster1/shared'),enemy(91002,'Archer','elite','monster1/shared'),enemy(91003,'Behemoth','boss','monster1/boss'),enemy(91004,'Ant','normal','monster2/ant')
 ];
-const rows=f=>f.host.querySelector('.look-list').querySelectorAll('button').map(button=>button.textContent);
+const rows=f=>f.host.querySelector('.look-list').querySelectorAll('button').map(button=>button.getAttribute('aria-label'));
 
 test('character class filters operate before shared-model grouping and combine with package/group filters without writing drafts',async t=>{
  const f=fixture({units});t.after(()=>f.close());await f.settle();
@@ -44,6 +44,35 @@ test('default character grouping and publication retain every appearance member 
  const elite=Catalog.listed(data,units,{enemyClass:'elite'});assert.deepEqual(elite.map(unit=>unit.id),['91002']);
  assert.equal(elite[0].members.length,1);assert.deepEqual(data,before);
  assert.equal(Packs.enemyClass({type:'enemy',id:'90010'}),'boss');assert.equal(Packs.enemyClass({type:'enemy',id:'91001',sourcePack:'fantasy-bosses'}),'normal','model package does not invent an enemy class');
+});
+
+test('name search and Shift+Q/E browse visible character cards in order without changing drafts',async t=>{
+ const portraits=units.map(unit=>unit.id==='91002'?{...unit,portrait:'assets/icons/archer.png'}:unit);
+ const f=fixture({units:portraits});t.after(()=>f.close());await f.settle();
+ const editor=f.host.querySelector('.character-editor'),list=f.byLabel('Character results'),search=f.byLabel('Search character names');
+ const name=()=>f.byLabel('Character name').value;
+ const event=(key,target,options={})=>({key,target,shiftKey:true,preventDefault(){this.defaultPrevented=true;},stopPropagation(){},...options});
+ const press=async(key,target=f.activeElement||list)=>{const stroke=event(key,target);editor.listeners.keydown(stroke);await f.settle();return stroke;};
+ assert.equal(list.style.flexBasis,'240px');
+ const group=f.byLabel('Character group'),pack=f.byLabel('Character package'),sort=f.byLabel('Sort characters');
+ group.value='Enemies';group.onchange();pack.value='monster1';pack.onchange();sort.value='enemy-class-desc';sort.onchange();
+ search.value='  cHeR  AR ';search.oninput();
+ assert.deepEqual(rows(f),['Enemy · Elite · Archer'],'a matching name stays visible when its model is shared');
+ const row=list.querySelector('.character-card');assert.equal(row.querySelector('.character-card-name').textContent,'Archer');
+ assert.equal(row.textContent,'ArcherElite');assert.equal(row.querySelector('img').src,'assets/icons/archer.png');
+ assert.equal(row.querySelector('img').alt,'');row.querySelector('img').onerror();assert.equal(row.querySelector('.character-card-portrait').textContent,'A');
+ assert.equal((await press('E',search)).defaultPrevented,undefined);assert.equal(name(),'Guard');
+ search.onkeydown(event('Enter',search,{shiftKey:false}));await f.settle();
+ assert.equal(name(),'Archer');assert.equal(f.activeElement.getAttribute('aria-current'),'true');
+ search.value='';search.oninput();assert.deepEqual(rows(f),['Enemy · Boss · Behemoth','Enemy · Normal · Zebra']);
+ assert((await press('E',list)).defaultPrevented);assert.equal(name(),'Behemoth');
+ await press('E');assert.equal(name(),'Zebra');assert.equal(f.activeElement.getAttribute('aria-current'),'true');
+ const requests=f.calls.describes.length;await press('E');assert.equal(f.calls.describes.length,requests,'the last row is the boundary');
+ await press('Q');assert.equal(name(),'Behemoth');
+ await press('Q',f.byLabel('Search character parts'));assert.equal(name(),'Behemoth');
+ search.value='No matches';search.oninput();assert.deepEqual(rows(f),[]);await press('E',list);assert.equal(name(),'Behemoth');
+ await f.client.focusUnit({type:'ally',id:'90001'});await f.settle();assert.equal(search.value,'');assert.equal(name(),'Guard');
+ assert.deepEqual(f.snapshot().data,f.initial);assert.equal(f.calls.changes.length,0);assert.equal(f.calls.saves,0);
 });
 
 test('character service exposes saved and inherited classes without creating defaults or changing gameplay files',t=>{

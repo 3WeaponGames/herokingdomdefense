@@ -908,13 +908,13 @@ function copyPose(source, target, tint, cache) {
   if(target.useTint!==useTint)target.useTint=useTint;
   target.markForRender(true);
 }
-function syncVisual(pair, main, offset, tint, cache) {
+function syncVisual(pair, main, offset, tint, cache, tintOpacity) {
   var source = pair.source, node = pair.node;
   node.active = source.enabled && source.node.activeInHierarchy;
   if (!node.active) return;
   transform(source.node, node, main, offset,cache);
   node.color = tint ? cc.color(tint.r, tint.g, tint.b) : source.node.color;
-  node.opacity = tint ? 204 : source.node.opacity;
+  node.opacity = tint ? (tintOpacity === undefined ? 204 : tintOpacity) : source.node.opacity;
   if (source instanceof sp.Skeleton) copyPose(source, pair.visual, tint,cache);
   else {
     ["spriteFrame", "type", "sizeMode", "fillType", "fillCenter", "fillStart", "fillRange", "trim"].forEach(function (key) { pair.visual[key] = source[key]; });
@@ -1588,16 +1588,32 @@ DepthView.prototype.sort = function () {
   ordered.forEach(function (group,index) { group.nodes.forEach(function(node){node.zIndex=index*4;}); });
   if (main.sortAllChildren) main.sortAllChildren();
 };
+function makeObjectStencil(main, name) {
+  var node = new cc.Node(name);
+  node._occlusionMask = true;
+  node.parent = main;
+  var mask = node.addComponent(cc.Mask);
+  mask.type = cc.Mask.Type.IMAGE_STENCIL;
+  mask.alphaThreshold = .1;
+  return { node: node, mask: mask };
+}
+function syncObjectStencil(overlay, object, zIndex) {
+  overlay.node.zIndex = zIndex;
+  overlay.node.setPosition(object.center.x, object.center.y);
+  overlay.node.setContentSize(object.size);
+  bindCapture(overlay.mask, object);
+  overlay.node.active = true;
+}
+function releaseObjectMask(mask) {
+  releaseOverlay(mask);
+  if (mask.foreground) releaseOverlay(mask.foreground);
+}
+function actorDrawnAbove(actor, object) {
+  var actorZ = actor.node.zIndex, objectZ = object.node.zIndex;
+  return Number.isFinite(actorZ) && Number.isFinite(objectZ) && actorZ >= objectZ;
+}
 DepthView.prototype.makeMask = function (object, actor, sources) {
-  if (!object.overlay) {
-    var overlay = new cc.Node("ObjectOcclusion");
-    overlay._occlusionMask = true;
-    overlay.parent = this.main;
-    var mask = overlay.addComponent(cc.Mask);
-    mask.type = cc.Mask.Type.IMAGE_STENCIL;
-    mask.alphaThreshold = .1;
-    object.overlay = { node: overlay, mask: mask };
-  }
+  if (!object.overlay) object.overlay = makeObjectStencil(this.main, "ObjectOcclusion");
   var node = new cc.Node("UnitSilhouette");
   node.parent = object.overlay.node;
   var result;
@@ -1706,7 +1722,7 @@ DepthView.prototype.renderNative = function (sources, center, height, texture, a
     camera.targetTexture = null;
   }
 };
-DepthView.prototype.syncNativeMask = function (mask, entry, object, drawId) {
+DepthView.prototype.syncNativeMask = function (mask, entry, object, drawId, opacity) {
   var actor = entry.actor, box = entry.bounds, record = this.nativeActors.get(actor);
   if (!record) { record = {}; this.nativeActors.set(actor, record); }
   if (record.draw !== drawId) {
@@ -1719,7 +1735,7 @@ DepthView.prototype.syncNativeMask = function (mask, entry, object, drawId) {
   mask.node.setPosition(record.center.x - object.center.x, record.center.y - object.center.y);
   mask.node.setContentSize(record.size);
   mask.node.color = cc.color(entry.tint.r, entry.tint.g, entry.tint.b);
-  mask.node.opacity = 204;
+  mask.node.opacity = opacity === undefined ? 204 : opacity;
 };
 DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
   var center = { x: (box.minX + box.maxX) / 2, y: (box.minY + box.maxY) / 2 };
@@ -1787,27 +1803,27 @@ DepthView.prototype.update = function () {
       // Ground is unconditional: stale/custom layer order cannot tint a unit
       // standing in front of, or exactly level with, an object's ground point.
       if(!(entry.groundY>ground))return;
-      // Priority layers can put the full actor above an object even when its
-      // ground point is behind it. Such actors need no hidden-unit capture.
-      if(Number.isFinite(entry.actor.node.zIndex)&&Number.isFinite(object.node.zIndex)){
-        if(entry.actor.node.zIndex>=object.node.zIndex)return;
-      }
+      // Buildings retain their render priority. A scenery layer conflict is
+      // handled by clipping the rear actor against that scenery's alpha.
+      if(!scenery&&actorDrawnAbove(entry.actor,object))return;
       if(!entry.sources){entry.sources=bodyVisuals(entry.actor);entry.bounds=entry.sources.reduce(function(value,source){return union(value,bounds(source,self.main,cache));},null);}
       if(overlaps(entry.bounds,box)&&(!visible||overlaps(entry.bounds,visible)))hidden.push(entry);
     });
     var hiddenActors=new Set(hidden.map(function(entry){return entry.actor;}));
     object.masks.forEach(function (mask, actor) {
-      mask.node.active=hiddenActors.has(actor);
+      var visible=hiddenActors.has(actor);
+      mask.node.active=visible;
+      if(!visible&&mask.foreground)mask.foreground.node.active=false;
       // Visibility transitions stop tint immediately without cycling a
       // continuously visible renderer or discarding a reusable capture.
-      if (!cc.isValid(actor.node) || !activeActors.has(actor)) { releaseOverlay(mask); object.masks.delete(actor); }
+      if (!cc.isValid(actor.node) || !activeActors.has(actor)) { releaseObjectMask(mask); object.masks.delete(actor); }
     });
-    if (object.overlay) object.overlay.node.active = !!hidden.length;
+    if (object.overlay && !hidden.length) object.overlay.node.active = false;
     if (!hidden.length) return;
     if (cache.vertexConsumers) hidden.forEach(function (entry) {
       entry.sources.forEach(function (source) { cache.vertexConsumers.set(source, (cache.vertexConsumers.get(source) || 0) + 1); });
     });
-    draw.push({ object: object, box: box, hidden: hidden });
+    draw.push({ object: object, box: box, hidden: hidden, scenery: scenery });
   });
   this._vertexConsumers = cache.vertexConsumers;
   try {
@@ -1844,18 +1860,29 @@ DepthView.prototype.update = function () {
     draw.forEach(function (item,index) {
       var object = item.object, box = item.box, hidden = item.hidden;
       if(index||!firstSnapshot)self.snapshot(object, box,cache);
+      var shared = false;
       hidden.forEach(function (entry) {
         var mask = object.masks.get(entry.actor) || self.makeMask(object, entry.actor, entry.sources);
+        var above = item.scenery && actorDrawnAbove(entry.actor, object);
+        var overlay = object.overlay;
+        if (above) {
+          // The actor stays in its shared paint slot for other contacts. Cover
+          // just its pixels inside this object's silhouette at its own depth.
+          overlay = mask.foreground || (mask.foreground = makeObjectStencil(self.main, "SceneryOcclusion"));
+          syncObjectStencil(overlay, object, entry.actor.node.zIndex + 1);
+        } else {
+          shared = true;
+          if (mask.foreground) mask.foreground.node.active = false;
+        }
+        if (mask.node.parent !== overlay.node) mask.node.parent = overlay.node;
         mask.node.active = true;
         mask.node.zIndex = entry.actor.node.zIndex;
-        if (self.nativeCapture) self.syncNativeMask(mask, entry, object, nativeDraw);
-        else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache); });
+        var opacity = above ? 255 : 204;
+        if (self.nativeCapture) self.syncNativeMask(mask, entry, object, nativeDraw, opacity);
+        else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache, opacity); });
       });
-      object.overlay.node.zIndex = object.node.zIndex + 1;
-      object.overlay.node.setPosition(object.center.x, object.center.y);
-      object.overlay.node.setContentSize(object.size);
-      bindCapture(object.overlay.mask, object);
-      object.overlay.node.active = true;
+      if (shared) syncObjectStencil(object.overlay, object, object.node.zIndex + 1);
+      else object.overlay.node.active = false;
     });
     if(this.gateOcclusion)this.gateOcclusion.update(active,cache,visible);
   } finally {
@@ -1893,7 +1920,7 @@ DepthView.prototype.destroy = function () {
   if(this._nativeActorAtlas)this._nativeActorAtlas.dispose();
   this._nativeActorAtlas=null;
   this.objects.forEach(function (object) {
-    if (object.masks) object.masks.forEach(releaseOverlay);
+    if (object.masks) object.masks.forEach(releaseObjectMask);
     if (object.overlay && cc.isValid(object.overlay.node, true)) releaseOverlay(object.overlay);
     releaseCapture(object);
   });

@@ -18,7 +18,7 @@ function build(service,request){
  if(saved&&saved.id!==mapId)throw Error('The map identifier does not match its file.');
  const blocked=[],stages=new Map();
  if(Builtins.includes(mapId))blocked.push('Original maps are shared source prefabs. Keep these sources; copied maps and Terrain concepts can be deleted when unused.');
- if(catalog.length<=1)blocked.push('Keep at least one map in the project.');
+ if(service.availableMaps().every(candidate=>candidate.id===mapId))blocked.push('Keep at least one map in the project.');
  if(doc&&doc.original!==null&&doc.revision!==revisions[file])blocked.push('The map changed on disk. Refresh it before deleting.');
  const folder='assets/KinghtFallIconMap/Generated/Maps/'+mapId,owned=files(root,folder,true),removals=[file,file+'.meta',...owned,folder+'.meta'].filter(f=>{capture(f);if(revisions[f]!==null&&fs.lstatSync(safe(root,f)).isSymbolicLink())throw Error('Linked map files must be removed before deletion: '+f);return revisions[f]!==null;});
  const used=value=>value&&(value.mapId===mapId||value.EnvironmentMapId===mapId||value.prefab===mapId||typeof value.prefab==='string'&&value.prefab.startsWith('Generated/Maps/'+mapId+'/')||typeof value.Map==='string'&&value.Map.startsWith('Generated/Maps/'+mapId+'/'));
@@ -60,7 +60,7 @@ function remove(service,request){
   if(service.stageClipboard&&service.stageClipboard.value.mapId===plan.map.id)service.stageClipboard=null;
   if(service.indexData)service.indexData.maps=service.indexData.maps.filter(m=>m.id!==plan.map.id);service.palette=null;service.sources={};service.version++;
   try{service.persist();}catch(error){warning=[warning,'The external draft recovery copy could not be updated: '+error.message].filter(Boolean).join('; ');}
-  const next=service.index().maps.find(m=>m.id==='Map01')||service.index().maps[0];
+  const available=service.availableMaps(),next=available.find(m=>m.id==='Map01')||available[0];
   return Object.assign(service.snapshot('map:'+next.id),{busy:false,result:Object.assign(result,{mapDeleted:true,mapId:plan.map.id,mapName:plan.map.name},warning?{warning}:null)});
  }finally{service.busy=false;}
 }

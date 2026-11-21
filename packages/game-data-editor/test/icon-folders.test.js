@@ -53,7 +53,7 @@ test('Stats Icons preserves exact spaced resource paths and optional subfolders'
 
 test('the installed packs and all previously selectable runtime images remain available exactly once',()=>{
   const root=path.resolve(__dirname,'../../..'),assets=require('../lib/assets').index(root).images,valid=assets.filter(a=>a.reference),library=Picker.createLibrary(assets),folder=library.root;
-  assert.equal(find(folder,'2D Minimal Icon Pack').count,900);assert.equal(find(folder,'Minimal Hero Equipment').count,60);assert.equal(find(folder,'GUI Pro Kit','Pictograms').count,321);assert.equal(find(folder,'GUI Pro Kit','Icons').count,90);assert.equal(find(folder,'Monster Portraits').count,331);
+  assert.equal(find(folder,'2D Minimal Icon Pack').count,900);assert.equal(find(folder,'Minimal Hero Equipment').count,60);assert.equal(find(folder,'GUI Pro Kit','Pictograms').count,321);assert.equal(find(folder,'GUI Pro Kit','Icons').count,90);assert.equal(find(folder,'Monster Portraits').count,12+require('../../../tools/characters/monster-roster-definitions.json').units.length);
   // The matching popup-close treatment is an additional approved pictogram,
   // not a replacement for any of the original 320 imported icons.
   assert.equal(find(folder,'GUI Pro Kit','Pictograms').assets.find(record=>record.asset.path==='assets/resources/icons/Pictograms/Pictoicon_Close_Outlined.png').asset.reference,'@icon/icons/Pictograms/Pictoicon_Close_Outlined');

@@ -174,7 +174,19 @@ function create(kind){
       return rows;
     },
     _renderList(){
-      const all=this._rows(),pack=this._unitPack||'all',scoped=kind!=='units'||pack==='all'?all:all.filter(r=>pack==='allies'?r.unitType!=='enemy':r.unitType==='enemy'&&(pack==='campaign'?!r.record.MonsterPack:r.record.MonsterPack===pack));
+      const all=this._rows();
+      let pack=this._unitPack||'all';
+      if(kind==='units'){
+        const available=new Set(all.map(row=>row.record.MonsterPack));
+        for(const option of this.$unitPack.children){
+          if(UnitPacks.info(option.value))option.hidden=option.disabled=!available.has(option.value);
+        }
+        if(UnitPacks.info(pack)&&!available.has(pack)){
+          pack=this._unitPack='all';
+          this.$unitPack.value=pack;
+        }
+      }
+      const scoped=kind!=='units'||pack==='all'?all:all.filter(r=>pack==='allies'?r.unitType!=='enemy':r.unitType==='enemy'&&(pack==='campaign'?!r.record.MonsterPack:r.record.MonsterPack===pack));
       const query=this.$search.value.trim().toLowerCase();
       const rows=query?scoped.filter(row=>{
         const details=row.subtitle+' '+(row.record.MonsterSource||'');
@@ -413,7 +425,12 @@ function create(kind){
       const typeKey=row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,id),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Fighting type & map pictogram');
       if(row.unitType==='enemy')this._field(typeFields,'Enemy class',EnemyClasses.resolve(this._data('overrides'),id),value=>this._change(()=>{if(!EnemyClasses.CHOICES.some(choice=>choice.value===value))throw Error('Choose Normal, Elite or Boss.');const settings=this._data('overrides');if(EnemyClasses.resolve(settings,id)===value)return [];return [{doc:'overrides',path:['enemyClasses'],value:Object.assign({},settings.enemyClasses||{},{[typeKey]:value})}];}),{options:EnemyClasses.CHOICES,help:'Normal, Elite or Boss classification for this enemy profile. Stats, abilities and combat-role counters are edited separately.'});
       this._field(typeFields,'Fighting type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],readOnly:row.unitType==='enemy'&&!!require('../lib/fighting-profiles').familyFor(this._data('overrides'),id),help:'Combat role used for counter bonuses and global damage taken. The Battle icon below overrides the type pictogram for this unit.'});
-      this._field(typeFields,'Countered fighting type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
+      const counterType=FightingTypeDamage.counterType(types,assignments[typeKey]);
+      if(counterType!==undefined){
+        this._field(typeFields,'Countered fighting type',types[counterType].name,null,{readOnly:true,help:'Inherited from this unit’s fighting type.'});
+      }else{
+        this._field(typeFields,'Countered fighting type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
+      }
       typeFields.appendChild(button('Manage types & pictograms',()=>openPanel('unit-types').catch(error=>this._status(error.message,true))));
       const visualFields=this._section('Model transform'),visuals=this._data('overrides').visuals||{},visual=visuals[typeKey]||{};
       const setVisual=(field,value)=>{const next=Object.assign({},this._data('overrides').visuals||{});next[typeKey]=Object.assign({},next[typeKey],{[field]:value});return this._set('overrides',['visuals'],next);};
@@ -597,10 +614,12 @@ function create(kind){
     },
     _unitType(row){
       EnemyBalance.render(this,node);
-      const fields=this._section('Type & pictogram'),p=['unitTypes',row.key];
+      const fields=this._section('Type & pictogram'),p=['unitTypes',row.key],types=this._data('overrides').unitTypes||{};
       this._field(fields,'Name',row.record.name,value=>this._set('overrides',p.concat('name'),value));
       this._field(fields,'Pictogram',row.record.icon,value=>this._set('overrides',p.concat('icon'),value),{asset:'images',bundle:'KinghtFallEnemy',wide:true,help:'Choose an imported monster part, an existing battle icon, or another Resources image.'});
       this._field(fields,'Pictogram tint',row.record.tint||'#ffffff',value=>this._set('overrides',p.concat('tint'),value),{color:true});
+      const counterType=FightingTypeDamage.counterType(types,row.key);
+      if(counterType!==undefined)this._field(fields,'Countered fighting type',types[counterType].name,null,{readOnly:true,help:'All units of this type deal bonus damage against this matchup.'});
       const defense=this._section('Global damage taken'),saved=row.record.damageTaken,invalid=saved!==undefined&&!FightingTypeDamage.valid(saved),damage=FightingTypeDamage.valid(saved)?saved:{mode:'more',percent:0};
       this._field(defense,'Damage taken',damage.mode,value=>this._setUnitTypeDamageTaken(row.key,'mode',value),{options:[{value:'more',label:'More'},{value:'less',label:'Less'}],readOnly:invalid,commitUnchanged:true,help:'More adds the entered percentage. Less divides damage by the entered percentage of standard.'});
       this._field(defense,'Amount (%)',damage.percent,value=>this._setUnitTypeDamageTaken(row.key,'percent',value),{numeric:true,min:0,readOnly:invalid,commitUnchanged:true,help:'More: 10 = 10% more, 100 = double, 400 = 5× damage. Less: 100 = standard, 200 = half, 300 = one-third, 400 = one-quarter damage (minimum 100).'});
@@ -608,7 +627,8 @@ function create(kind){
       this._note('Global damage taken applies to heroes, allies and enemies of this fighting type, from every attack. Counter bonuses, damage reduction and shields still apply. The balance table above changes enemy base stats only.');
       if(HeroWeapons.find(row.key)){const defaults=this._section('Hero fighting-style defaults');this._heroAttackRateField(defaults,row.key);HeroDamage.startingField(this,defaults,row.key);}
       const assigned=Object.entries(this._data('overrides').unitTypeAssignments||{}).filter(([key,value])=>value===row.key);this._note(assigned.length?'Assigned to: '+assigned.map(([key])=>key).join(', '):'No units use this type yet.');
-      const remove=button('Delete type',()=>{if(assigned.length||['SoldierCfg','AllyCfg'].some(table=>Object.values(this._data('A')[table]||{}).some(unit=>unit.CounterType===row.key)))return this._status('Remove unit assignments and counter references before deleting this type.',true);const types=clone(this._data('overrides').unitTypes);delete types[row.key];return this._set('overrides',['unitTypes'],types);},'gt-danger');remove.disabled=assigned.length>0;fields.appendChild(remove);
+      const countered=Object.values(types).some(type=>type.counterType===row.key);
+      const remove=button('Delete type',()=>{if(assigned.length||countered||['SoldierCfg','AllyCfg'].some(table=>Object.values(this._data('A')[table]||{}).some(unit=>unit.CounterType===row.key)))return this._status('Remove unit assignments and counter references before deleting this type.',true);const next=clone(types);delete next[row.key];return this._set('overrides',['unitTypes'],next);},'gt-danger');remove.disabled=assigned.length>0||countered;fields.appendChild(remove);
     },
     _setting(row){
       if(row.override){

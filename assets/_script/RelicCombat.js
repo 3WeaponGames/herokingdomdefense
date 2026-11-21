@@ -39,7 +39,7 @@ function sameBattle(record, releasedDamage) {
 function primaryContext(hero, target, damage, critical, release) {
   var data = current();
   return { data: data, relicGeneration: data && data._relicGeneration, game: data && data.ctrPar, epoch: data && data.ctrPar && data.ctrPar._combatEpoch,
-    hero: hero, heroNode: hero && hero.node, heroGeneration: generation(hero), target: target, targetNode: target && target.node, targetGeneration: generation(target),
+    hero: hero, heroNode: hero && hero.node, heroGeneration: generation(hero), heroStyle: hero && hero.heroStyle, target: target, targetNode: target && target.node, targetGeneration: generation(target),
     nonCritical: damage, critical: !!critical, echo: release && release.target === target && release.targetNode === (target && target.node) && release.targetGeneration === generation(target) && sameBattle(release) ? release.echo : 0 };
 }
 function primaryCurrent(record, target, hero) {
@@ -68,7 +68,12 @@ function enemyDamage(target, damage, source, secondary, context, preview) {
     context.nonCritical *= 1 + bonus;
   }
   if (source && source.navigationTeam === 'friendly' && !heroSource(source, data) && target.hp < target.hpMax * .25) bonus += Runtime.value(data, 120045);
-  return damage * (1 + bonus);
+  damage *= 1 + bonus;
+  // This target's matchup is separate from the base damage used by relic procs.
+  if (context && context.heroStyle && !context.used && (primary || primaryCurrent(context, target, source))) {
+    damage = require('GameToolsOverrides').typeCounterDamage(source, target, damage, context.heroStyle);
+  }
+  return damage;
 }
 function previewHeroHit(hero, target, damage) {
   return enemyDamage(target, damage, hero, false, primaryContext(hero, target, damage, false), true);

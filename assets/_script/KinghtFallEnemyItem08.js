@@ -1,5 +1,6 @@
 function millAttackTargets(data) { return data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList(); }
 var BattleSounds = require("BattleSounds");
+var GameToolsOverrides = require("GameToolsOverrides");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -85,6 +86,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
     }();
     if (n) {
       targetNode = n.node; targetGeneration = targetNode._combatGeneration;
+      e = GameToolsOverrides.typeCounterDamage(this, n, e);
       var impactPoint=Navigation.attackPointOf(n,$z1KinghtFallUIGame.default.instance.ctrGame);this.vec2_2.x=impactPoint.x;this.vec2_2.y=impactPoint.y;
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);

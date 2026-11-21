@@ -14,6 +14,8 @@ test('Fighting Types browsing creates no draft; new types, pictograms and unit a
 test('fighting types reject missing images, path traversal, dangling references and invalid visual scales',()=>{
  const store=new Store(root),docs=store.draftState();docs.overrides.unitTypes.test={name:'Test',icon:'@icon/../../escape'};docs.overrides.unitTypeAssignments['enemy:90001:default']='missing';docs.overrides.visuals['ally:90001:default']={scaleX:0};
  const changes=[{doc:'overrides',path:['unitTypes']},{doc:'overrides',path:['unitTypeAssignments']},{doc:'overrides',path:['visuals']}];
+ docs.overrides.unitTypes.fighter.counterType='missing';
+ assert(Schema.validate(docs,changes).some(i=>i.path.includes('counterType')));
  assert(Schema.validate(docs,changes).some(i=>i.path.includes('unitTypeAssignments')));assert(Schema.validate(docs,changes).some(i=>i.path.includes('scaleX')));assert(Assets.validate(root,docs,changes).some(i=>i.path.includes('unitTypes')));
 });
 
@@ -28,11 +30,13 @@ test('Manage types opens the registered panel directly even with a stale main-pr
  assert.deepEqual(f.store.draftState(),before);assert.equal(JSON.stringify(f.store.changes()),changes);assert.deepEqual(fs.readFileSync(file),bytes);
 });
 
-test('Units exposes six role counters and edits the allied record without touching its enemy or writing files',async()=>{
+test('Units displays the inherited role counter and keeps legacy counter edits in the draft',async()=>{
  const filename=path.join(__dirname,'building-panel.test.js');let prefix=fs.readFileSync(filename,'utf8').split("test('building catalog")[0];prefix=prefix.replace('function fixture()','function fixture(kind)').replace(".create('buildings')",'.create(kind)').replace("_kind: 'buildings'",'_kind: kind');
  const context={require:createRequire(filename),__dirname,module:{exports:{}},exports:{},setTimeout,clearTimeout,setImmediate};vm.createContext(context);vm.runInContext(prefix+'\nmodule.exports={fixture,fields};',context);const {fixture,fields}=context.module.exports,f=fixture('units'),file=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),bytes=fs.readFileSync(file),before=f.store.draftState();
  const rows=f.panel._rows();assert.equal(rows.length,1+Object.keys(before.overrides.unitProfiles.families).length*6+Object.keys(before.A.AllyCfg).length);assert.deepEqual(Array.from(rows.find(row=>row.key==='ally:90001').path),['AllyCfg','90001']);assert.deepEqual(Array.from(rows.find(row=>row.key==='enemy:90001').path),['SoldierCfg','90001']);
- f.render('ally:90001');assert.equal(f.store.changes().length,0);const counter=fields(f.panel.$detail,'Countered fighting type')[0];assert(counter);assert.equal(counter.children.length,7);assert.deepEqual(Array.from(counter.children,o=>o.value).sort(),['','fighter','skirmisher','vanguard','mystic','bruiser','guardian'].sort());
+ f.render('ally:90001');assert.equal(f.store.changes().length,0);const inherited=fields(f.panel.$detail,'Countered fighting type')[0];assert(inherited.disabled);assert.equal(inherited.value,'Skirmisher');
+ await f.panel._change([{doc:'overrides',path:['unitTypes','fighter','counterType'],remove:true}]);await f.panel._queue;
+ const counter=fields(f.panel.$detail,'Countered fighting type')[0];assert(counter);assert.equal(counter.children.length,7);assert.deepEqual(Array.from(counter.children,o=>o.value).sort(),['','fighter','skirmisher','vanguard','mystic','bruiser','guardian'].sort());
  counter.value='guardian';counter.onchange();await f.panel._queue;
  const shared=f.panel.$detail.children.find(element=>element.tagName==='details'&&element.children[0].textContent==='Shared base stats');assert(shared);
  const health=fields(shared,Schema.descriptor('Health',{table:'SoldierCfg',id:'90001'}).label)[0];assert(health);health.value=String(before.A.AllyCfg['90001'].Health+17);health.onchange();await f.panel._queue;

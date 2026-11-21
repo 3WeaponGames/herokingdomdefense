@@ -28,3 +28,12 @@
 .character-editor .library-splitter::after{content:'';position:absolute;width:36px;height:3px;left:calc(50% - 18px);top:8px;border-radius:3px;background:#7186a2}
 .character-editor .library-splitter:hover::after,.character-editor .library-splitter.resizing::after{background:#74b6ff}
 .character-editor .library-splitter:focus-visible{outline:2px solid #74b6ff}
+.character-editor .character-search{flex:none;margin-bottom:7px}
+.character-editor .character-search+select{margin-bottom:7px}
+.character-editor .look-list .character-card{display:flex;flex:none;align-items:center;gap:10px;min-height:58px;padding:6px 9px}
+.character-editor .look-list .character-card:focus-visible{outline:2px solid #74b6ff;outline-offset:-2px}
+.character-editor .character-card-portrait{display:flex;flex:0 0 44px;align-items:center;justify-content:center;height:44px;border-radius:5px;background:#192230;color:#b8c9df;font-size:13px;font-weight:600}
+.character-editor .character-card-portrait img{display:block;width:100%;height:100%;object-fit:contain}
+.character-editor .character-card-labels{display:flex;min-width:0;flex-direction:column;gap:2px;white-space:normal;overflow-wrap:anywhere}
+.character-editor .character-card-name{font-size:13px;font-weight:600}
+.character-editor .character-card-detail{color:#a7b8ce;font-size:11px}

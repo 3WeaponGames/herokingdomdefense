@@ -55,6 +55,18 @@ test('original source prefabs and the last remaining map cannot be deleted',()=>
  const f=fixture(),q={key:'map:Map01',version:1},plan=Maps.inspect(f.service,q);assert(plan.blocked.some(s=>s.includes('Original maps')));assert.throws(()=>Maps.remove(f.service,{...q,token:plan.token}),/Original maps/);
  fs.unlinkSync(path.join(f.root,'authoring/worlds/maps/Map01.json'));assert.throws(()=>Maps.remove(f.service,f.confirmed()),/at least one map/);
 });
+test('archived source maps still load for stages and never replace a deleted map in the picker',()=>{
+ const f=fixture(),source='authoring/worlds/maps/Map01.json',archived=JSON.parse(fs.readFileSync(path.join(f.root,source)));
+ f.write(source,{...archived,archived:true});
+ assert.deepEqual(f.service.mapCatalog().map(map=>map.id),[f.map.id]);
+ f.service.indexData=f.service.index();
+ assert.equal(f.service.loadMap('Map01').data.archived,true);
+ assert.throws(()=>Maps.remove(f.service,f.confirmed()),/at least one map/);
+ const replacement=M.createMap('map-kept','Playable map','forest');
+ f.write('authoring/worlds/maps/'+replacement.id+'.json',replacement);
+ assert.equal(Maps.remove(f.service,f.confirmed()).key,'map:'+replacement.id);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(f.root,source))).id,'Map01');
+});
 test('invalid identifiers, stale loaded maps and interrupted saves retain all files',()=>{
  const f=fixture();assert.throws(()=>Maps.inspect(f.service,{key:'map:../Map01',version:1}),/Choose a map/);
  f.service.docs[f.key]={key:f.key,data:f.map,original:f.map,revision:'stale'};let q=f.confirmed();assert.throws(()=>Maps.remove(f.service,q),/changed on disk/);delete f.service.docs[f.key];

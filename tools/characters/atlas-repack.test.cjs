@@ -73,8 +73,20 @@ test('all skin formats preserve attachment name overrides and mesh regions while
  assert.equal(result.status,0,result.stderr);assert.match(result.stdout,/skin-reference-pass/);
 });
 
-test('future package imports keep outside-catalog variants and exclude unused art without deleting source sprites',{skip:!available},t=>{
+test('package import, atlas repair and repack preserve authored variants and their independent pages',{skip:!available},t=>{
  const f=fixture(t),variant=fs.readFileSync(path.join(f.project,f.base+'/Units/Variant.json'));const packageFile=path.join(f.dir,'fixture.unitypackage');fs.writeFileSync(packageFile,'fixture');
+ const paintedBase=f.base+'/Units/Authored/Painted',catalogPath=f.base+'/catalog.json',paintedRig=structuredClone(f.rigs.Wolf);
+ paintedRig.skins[0].attachments.body.u_a.path='painted';
+ const paintedFiles=[
+  f.write(paintedBase+'.json',paintedRig),
+  f.write(paintedBase+'.json.meta',{uuid:'painted-rig',importer:'spine',textures:['painted-page'],scale:1}),
+  f.write(paintedBase+'.atlas','\nPainted.png\nsize: 2,3\nformat: RGBA8888\nfilter: Linear,Linear\nrepeat: none\npainted\n  rotate: false\n  xy: 0, 0\n  size: 2, 3\n  orig: 2, 3\n  offset: 0, 0\n  index: -1\n'),
+  f.write(paintedBase+'.png',f.images.a.png),
+  f.write(paintedBase+'.png.meta',{uuid:'painted-page',importer:'texture',width:2,height:3})
+ ];
+ const before=paintedFiles.map(file=>fs.readFileSync(file));
+ const authored={id:'monster1/Painted',variantOf:'monster1/Wolf',skeleton:paintedBase+'.json',uuid:'painted-rig'};
+ const installed=parse(path.join(f.project,catalogPath));installed.units.push(authored);f.write(catalogPath,installed);
  const code='u=types.ModuleType("unity_monsters");sys.modules["unity_monsters"]=u\nentries={}\n'+
   'for guid in ["a","b","bg"]:\n name="Assets/X/EnemyMonster 1/ResourcesData/Sprites/"+guid+".png";entries[name]={"guid":guid,"asset":(project/'+JSON.stringify(f.base+'/Sprites/ResourcesData/Sprites/')+'/(guid+".png")).read_bytes()}\n'+
   'entries["Assets/X/EnemyMonster 1/Prefabs/Wolf.prefab"]={"name":"Assets/X/EnemyMonster 1/Prefabs/Wolf.prefab"}\nu.unpack=lambda file:entries\n'+
@@ -83,7 +95,13 @@ test('future package imports keep outside-catalog variants and exclude unused ar
   'print(json.dumps(m.import_pack(project,Path('+JSON.stringify(packageFile)+'),"monster1",artifacts)))';
  const result=run(f,code);assert.equal(result.status,0,result.stderr);assert.deepEqual(fs.readFileSync(path.join(f.project,f.base+'/Units/Variant.json')),variant);
  const catalog=parse(path.join(f.project,f.base+'/catalog.json'));assert.equal(catalog.source.package,'fixture.unitypackage');assert.equal(catalog.source.sha256,hash(fs.readFileSync(packageFile)),'Retained variants cannot replace the original Unity package identity');assert.equal(catalog.source.futureSource,1);assert.equal(catalog.futureCatalog,11);assert(catalog.conversion.futureConversion);
+ assert.deepEqual(catalog.units.find(unit=>unit.id===authored.id),authored);
  const atlas=fs.readFileSync(path.join(f.project,f.base+'/Units/Variant.atlas'),'utf8');assert(atlas.includes('u_b\n'));assert(!atlas.includes('u_bg\n'));for(const part of f.parts)assert.equal(hash(fs.readFileSync(path.join(f.project,part.image))),part.sha256);assert.equal(parse(path.join(f.project,f.base+'/Units/Variant.json.meta')).uuid,'unit-Variant');
+ for(const maintenance of ['m.repair_atlas_layout(project,artifacts,["monster1"])','m.repack_atlases(project,artifacts,["monster1"])']){
+  const checked=run(f,maintenance);assert.equal(checked.status,0,checked.stderr);
+ }
+ assert.deepEqual(paintedFiles.map(file=>fs.readFileSync(file)),before);
+ assert.deepEqual(parse(path.join(f.project,catalogPath)).units.find(unit=>unit.id===authored.id),authored);
 });
 
 test('Python packer enforces its 2048 default, splits pages losslessly and copies transparent edge RGB exactly',{skip:!available},t=>{

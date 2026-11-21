@@ -1,0 +1,111 @@
+
+OrcSmasher_SiegeChief.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+OrcSmasher_SiegeChief_Hit
+  rotate: false
+  xy: 2, 2
+  size: 244, 259
+  orig: 244, 259
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Hit_2
+  rotate: false
+  xy: 250, 2
+  size: 244, 259
+  orig: 244, 259
+  offset: 0, 0
+  index: -1
+u_75490f994690b3f439dc5811f502bcac
+  rotate: false
+  xy: 498, 2
+  size: 119, 213
+  orig: 119, 213
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Attack
+  rotate: false
+  xy: 621, 2
+  size: 162, 193
+  orig: 162, 193
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Head
+  rotate: false
+  xy: 787, 2
+  size: 163, 180
+  orig: 163, 180
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Body
+  rotate: false
+  xy: 954, 2
+  size: 182, 157
+  orig: 182, 157
+  offset: 0, 0
+  index: -1
+u_b647fc43dda20514b810d2a550e48f12
+  rotate: false
+  xy: 1140, 2
+  size: 115, 149
+  orig: 115, 149
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Weapon
+  rotate: false
+  xy: 1259, 2
+  size: 250, 127
+  orig: 250, 127
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Arm_
+  rotate: false
+  xy: 1513, 2
+  size: 55, 84
+  orig: 55, 84
+  offset: 0, 0
+  index: -1
+u_023589bc9e900194d87608b87c7f3ae2
+  rotate: false
+  xy: 1572, 2
+  size: 176, 57
+  orig: 176, 57
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Arm
+  rotate: false
+  xy: 1752, 2
+  size: 59, 56
+  orig: 59, 56
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Leg_
+  rotate: false
+  xy: 1815, 2
+  size: 58, 50
+  orig: 58, 50
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Leg
+  rotate: false
+  xy: 1877, 2
+  size: 52, 48
+  orig: 52, 48
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Hand_L
+  rotate: false
+  xy: 1933, 2
+  size: 55, 37
+  orig: 55, 37
+  offset: 0, 0
+  index: -1
+OrcSmasher_SiegeChief_Hand_R
+  rotate: false
+  xy: 1992, 2
+  size: 48, 34
+  orig: 48, 34
+  offset: 0, 0
+  index: -1

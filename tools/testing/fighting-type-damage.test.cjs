@@ -9,6 +9,7 @@ function fixture(){
  const h=setup({BattleSounds:{attack(){},hit(){}},LogMgr:{LogMgr:{getInstance:()=>({info(){}})}},KinghtFallAudioMgr:{KinghtFallAudioMgr:{getInstance:()=>({playEffectFree(){},stopEffectName(){}})}}});
  const p=hero(h),manager=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
  const tools=manager.data.GameTools=structuredClone(authored.GameTools);
+ manager.getParamsCfgById=id=>authored.ParameterCfg[id==='RestrainedArms'?'60017':id]?.Value;
  h.g._combatEpoch=1;h.g.gameStatus=h.e.stubs.KinghtFallModle.KinghtFallGameStage.Fight;
  p._relicHero=true;p.state=0;p.node.setParent(h.g.ndMain);p.node.setPosition(10,0);p.node._combatGeneration=1;p.hp=p.hpMax=10000;p.time.NoDie=p.time.NoDieTime=0;
  h.ui.ctrEffect={showDamageNum(){},onMonsterAttack(){}};
@@ -83,24 +84,83 @@ test('type defense stacks with existing hero reductions, finite shields, ally au
  h.p.addHpPro(.001);near(h.p.hp,hp+10);near(h.p.hpMax,10000);near(ally.hpMax,10000);
 });
 
-test('counters stack multiplicatively with global type defense and do not depend on the attacker style',()=>{
+test('legacy unit counters still stack with global defense when their fighting type has no counter',()=>{
  const h=fixture(),enemy=h.unit('enemy','fighter');h.p.heroStyle=h.d.heroStyle='guardian';
+ delete h.tools.unitTypes.fighter.counterType;
  enemy.node.setPosition(0,0);enemy.cfg.AttackRange=200;enemy.cfg.CounterType='guardian';enemy.getAttack=()=>100;
  h.manager.getParamsCfgById=()=>1.2;
  enemy.doAttack();near(h.p.hp,10000-80);
  enemy.cfg.CounterType='mystic';enemy.doAttack();near(h.p.hp,10000-80-100*(2/3));
 });
 
+test('fighter counters the skirmisher hero while late-game HP leaves the base defense gap intact',()=>{
+ const h=fixture(),enemy=h.unit('enemy','fighter');
+ enemy.node.setPosition(0,0);enemy.cfg.AttackRange=200;enemy.cfg.CounterType='guardian';enemy.getAttack=()=>100;
+ h.p.heroStyle=h.d.heroStyle='skirmisher';h.p.hp=h.p.hpMax=2025;
+ enemy.doAttack();near(h.p.hp,2025-250);near(h.p.hpMax,2025);
+ h.p.heroStyle=h.d.heroStyle='guardian';h.p.hp=h.p.hpMax=2050;
+ enemy.doAttack();near(h.p.hp,2050-100*(2/3));near(h.p.hpMax,2050);
+ enemy.cfg.FightingType='vanguard';
+ for(const [role,hp,multiplier]of [['skirmisher',2025,2],['guardian',2050,2/3]]){
+  h.p.heroStyle=h.d.heroStyle=role;h.p.hp=h.p.hpMax=hp;
+  enemy.doAttack();near(h.p.hp,hp-100*multiplier);
+ }
+});
+
+test('all six hero matchups take precedence over per-unit counters and apply only to the direct victim',()=>{
+ const h=fixture(),Combat=h.load('RelicCombat'),target=h.unit('enemy','fighter');
+ const cycle={fighter:'skirmisher',skirmisher:'vanguard',vanguard:'mystic',mystic:'guardian',guardian:'bruiser',bruiser:'fighter'};
+ for(const [attacker,countered]of Object.entries(cycle)){
+  h.p.heroStyle=h.d.heroStyle=attacker;
+  for(const [defender,defense]of Object.entries(expected)){
+   target.cfg.FightingType=defender;
+   const context=Combat.primaryContext(h.p,target,100,false);
+   const outgoing=defender===countered?125:100;
+   near(Combat.previewHeroHit(h.p,target,100),outgoing);
+   near(target.onAttacked(100,h.p,false,context),outgoing*defense);
+   near(context.nonCritical,100);
+   near(target.onAttacked(100,h.p,true),100*defense);
+  }
+ }
+});
+
+test('hero basic melee and arrows get one counter bonus using the role at release',()=>{
+ const h=fixture(),fighter=h.unit('enemy','fighter',90001),vanguard=h.unit('enemy','vanguard',90002);
+ h.p.getAttack=()=>100;h.p.crit=0;h.p.heroRanged=false;h.p.heroStyle=h.d.heroStyle='bruiser';
+ h.g.onPlayAttack(fighter);near(fighter.hp,10000-125);
+ h.p.heroRanged=true;h.p.heroStyle=h.d.heroStyle='skirmisher';
+ h.g.ndUI=h.g.ndMain;h.p.getAttWpos=()=>h.p.node.getPosition();
+ let impact;h.g.takeHeroArrow=()=>({node:new Node(),setTag(_origin,_target,callback){impact=callback;}});
+ h.g.onPlayAttack(vanguard);assert(impact);
+ h.p.heroStyle='guardian';
+ impact();near(vanguard.hp,10000-125*1.15);
+});
+
 test('launched enemy and ally projectiles apply the target type exactly once and display the resulting damage after shooter reuse',()=>{
  for(const kind of ['KinghtFallEnemyLong','KinghtFallEnemyItem08','KinghtFallSoldierItem03']){
   const h=fixture(),ally=kind==='KinghtFallSoldierItem03',target=ally?h.unit('enemy','skirmisher'):h.p;
   h.p.heroStyle=h.d.heroStyle='skirmisher';target.node.setPosition(10,0);h.d.enemyList=ally?[target]:[];
-  const source=h.e.actor(kind,0,0,h.g.ndMain);source.node._combatGeneration=1;source.cfg={ID:90003,AttackType:2,AttackRange:200,CounterType:''};source.getAttack=()=>100;source.releaseAttackTarget=()=>target;
+  const side=ally?'ally':'enemy';h.tools.unitTypeAssignments[`${side}:90001:default`]='fighter';
+  const source=h.e.actor(kind,0,0,h.g.ndMain);source.node._combatGeneration=1;source.cfg={ID:90001,AttackType:2,AttackRange:200,CounterType:''};source.getAttack=()=>100;source.releaseAttackTarget=()=>target;
   let impact;h.g.onShotEnemy=h.g.onShotSoldier=()=>({pos:{x:0,y:0},ctr:{setParent(){},setTag(_p,_n,callback){impact=callback;}}});
   const shown=[];h.ui.ctrEffect.showDamageNum=(_point,amount)=>shown.push(amount);
-  source.doAttack();assert(impact,kind);source.node._combatGeneration++;source.cfg.ID=90001;
-  impact();near(target.hp,9800);assert.deepEqual(shown,[200]);
+  source.doAttack();assert(impact,kind);source.node._combatGeneration++;source.cfg.ID=90003;
+  impact();near(target.hp,9750);assert.deepEqual(shown,[250]);
  }
+});
+
+test('enemy splash checks each victim’s matchup against the attacker’s type',()=>{
+ const h=fixture(),primary=h.unit('ally','fighter',90001),guardian=h.unit('ally','guardian',90002);
+ const source=h.e.actor('KinghtFallEnemyItem07',0,0,h.g.ndMain);
+ source.cfg={...source.cfg,FightingType:'fighter',Data:[100,50,3]};
+ source.node._combatGeneration=1;
+ primary.uuid='primary';guardian.uuid='guardian';h.p.uuid='skirmisher';
+ h.d.soldierList=[primary,guardian];h.p.heroStyle=h.d.heroStyle='skirmisher';
+ h.ui.ctrEffect.onAttack=()=>{};
+ source.doSplashDamage(primary);
+ near(primary.hp,10000);
+ near(guardian.hp,10000-100*(2/3));
+ near(h.p.hp,9750);
 });
 
 test('cannon splash, critical hits and relic secondary hits use each recipient type',()=>{
