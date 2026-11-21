@@ -155,7 +155,7 @@
         "StartSliver": 6,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "1#91082,10"
+          "1#100296,10"
         ],
         "WaveReward": [
           [
@@ -171,7 +171,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 91082,
+            "unitId": 100296,
             "count": 10,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -186,9 +186,9 @@
         "StartSliver": 4,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "1#100350,5",
-          "2#91074,3",
-          "13#100520,5"
+          "1#100355,5",
+          "2#91031,3",
+          "13#100300,5"
         ],
         "WaveReward": [
           [
@@ -204,7 +204,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 100350,
+            "unitId": 100355,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -212,7 +212,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 91074,
+            "unitId": 91031,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -220,7 +220,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 100520,
+            "unitId": 100300,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -235,10 +235,10 @@
         "StartSliver": 5,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "1#100350,7",
-          "2#100391,4",
-          "13#100350,5",
-          "14#91074,3"
+          "1#100355,7",
+          "2#91116,4",
+          "13#100770,5",
+          "14#91064,3"
         ],
         "WaveReward": [
           [
@@ -254,7 +254,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 100350,
+            "unitId": 100355,
             "count": 7,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -262,7 +262,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 100391,
+            "unitId": 91116,
             "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -270,7 +270,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 100350,
+            "unitId": 100770,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -278,7 +278,7 @@
           {
             "id": "legacy-14-0",
             "spawnId": 14,
-            "unitId": 91074,
+            "unitId": 91064,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -293,11 +293,11 @@
         "StartSliver": 6,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "1#100350,5",
-          "2#91074,3",
-          "13#100391,3",
-          "14#100350,7",
-          "15#100391,4"
+          "1#100355,5",
+          "2#91031,3",
+          "13#91119,3",
+          "14#100775,7",
+          "15#91116,4"
         ],
         "WaveReward": [
           [
@@ -313,7 +313,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 100350,
+            "unitId": 100355,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -321,7 +321,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 91074,
+            "unitId": 91031,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -329,7 +329,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 100391,
+            "unitId": 91119,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -337,7 +337,7 @@
           {
             "id": "legacy-14-0",
             "spawnId": 14,
-            "unitId": 100350,
+            "unitId": 100775,
             "count": 7,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -345,7 +345,7 @@
           {
             "id": "legacy-15-0",
             "spawnId": 15,
-            "unitId": 100391,
+            "unitId": 91116,
             "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -360,10 +360,10 @@
         "StartSliver": 7,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "1#91090,1",
-          "2#100350,7",
-          "3#91082,3",
-          "13#91072,1"
+          "1#91048,1",
+          "2#100355,7",
+          "3#100301,3",
+          "13#100774,1"
         ],
         "WaveReward": [
           [
@@ -379,7 +379,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 91090,
+            "unitId": 91048,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -387,7 +387,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 100350,
+            "unitId": 100355,
             "count": 7,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -395,7 +395,7 @@
           {
             "id": "legacy-3-0",
             "spawnId": 3,
-            "unitId": 91082,
+            "unitId": 100301,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -403,7 +403,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 91072,
+            "unitId": 100774,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -418,13 +418,13 @@
         "StartSliver": 8,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "1#100391,10",
-          "2#91074,4",
-          "3#91082,3",
-          "13#91082,5",
+          "1#91119,10",
+          "2#91064,4",
+          "3#100296,3",
+          "13#100636,5",
           "14#91043,3",
-          "7#91074,3",
-          "8#91082,3"
+          "7#91031,3",
+          "8#100301,3"
         ],
         "WaveReward": [
           [
@@ -440,7 +440,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 100391,
+            "unitId": 91119,
             "count": 10,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -448,7 +448,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 91074,
+            "unitId": 91064,
             "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -456,7 +456,7 @@
           {
             "id": "legacy-3-0",
             "spawnId": 3,
-            "unitId": 91082,
+            "unitId": 100296,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -464,7 +464,7 @@
           {
             "id": "legacy-7-0",
             "spawnId": 7,
-            "unitId": 91074,
+            "unitId": 91031,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -472,7 +472,7 @@
           {
             "id": "legacy-8-0",
             "spawnId": 8,
-            "unitId": 91082,
+            "unitId": 100301,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -480,7 +480,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 91082,
+            "unitId": 100636,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -503,14 +503,14 @@
         "StartSliver": 10,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "1#91074,5",
-          "2#91082,8",
+          "1#91064,5",
+          "2#100651,8",
           "3#91043,3",
-          "13#100391,5",
-          "14#91074,3",
-          "15#91082,5",
-          "7#100391,5",
-          "8#91074,5"
+          "13#100297,5",
+          "14#91064,3",
+          "15#100301,5",
+          "7#91116,5",
+          "8#91031,5"
         ],
         "WaveReward": [
           [
@@ -526,7 +526,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 91074,
+            "unitId": 91064,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -534,7 +534,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 91082,
+            "unitId": 100651,
             "count": 8,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -550,7 +550,7 @@
           {
             "id": "legacy-7-0",
             "spawnId": 7,
-            "unitId": 100391,
+            "unitId": 91116,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -558,7 +558,7 @@
           {
             "id": "legacy-8-0",
             "spawnId": 8,
-            "unitId": 91074,
+            "unitId": 91031,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -566,7 +566,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 100391,
+            "unitId": 100297,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -574,7 +574,7 @@
           {
             "id": "legacy-14-0",
             "spawnId": 14,
-            "unitId": 91074,
+            "unitId": 91064,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -582,7 +582,7 @@
           {
             "id": "legacy-15-0",
             "spawnId": 15,
-            "unitId": 91082,
+            "unitId": 100301,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -597,14 +597,14 @@
         "StartSliver": 11,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
-          "1#100391,10",
+          "1#91119,10",
           "2#91043,3",
-          "3#91082,5",
-          "13#91074,5",
-          "14#91082,8",
+          "3#100296,5",
+          "13#91064,5",
+          "14#100636,8",
           "4#91043,3",
-          "5#91074,6",
-          "7#91082,6"
+          "5#91031,6",
+          "7#100301,6"
         ],
         "WaveReward": [
           [
@@ -620,7 +620,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 100391,
+            "unitId": 91119,
             "count": 10,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -636,7 +636,7 @@
           {
             "id": "legacy-3-0",
             "spawnId": 3,
-            "unitId": 91082,
+            "unitId": 100296,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -652,7 +652,7 @@
           {
             "id": "legacy-5-0",
             "spawnId": 5,
-            "unitId": 91074,
+            "unitId": 91031,
             "count": 6,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -660,7 +660,7 @@
           {
             "id": "legacy-7-0",
             "spawnId": 7,
-            "unitId": 91082,
+            "unitId": 100301,
             "count": 6,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -668,7 +668,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 91074,
+            "unitId": 91064,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -676,7 +676,7 @@
           {
             "id": "legacy-14-0",
             "spawnId": 14,
-            "unitId": 91082,
+            "unitId": 100636,
             "count": 8,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -691,14 +691,14 @@
         "StartSliver": 12,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
-          "1#91082,8",
-          "2#91082,7",
+          "1#100651,8",
+          "2#100296,7",
           "3#91043,5",
-          "13#100391,10",
-          "14#91074,5",
-          "4#91082,5",
-          "5#100391,5",
-          "7#91074,5",
+          "13#91119,10",
+          "14#91064,5",
+          "4#100301,5",
+          "5#91116,5",
+          "7#91031,5",
           "8#91043,3"
         ],
         "WaveReward": [
@@ -715,7 +715,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 91082,
+            "unitId": 100651,
             "count": 8,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -723,7 +723,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 91082,
+            "unitId": 100296,
             "count": 7,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -739,7 +739,7 @@
           {
             "id": "legacy-4-0",
             "spawnId": 4,
-            "unitId": 91082,
+            "unitId": 100301,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -747,7 +747,7 @@
           {
             "id": "legacy-5-0",
             "spawnId": 5,
-            "unitId": 100391,
+            "unitId": 91116,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -755,7 +755,7 @@
           {
             "id": "legacy-7-0",
             "spawnId": 7,
-            "unitId": 91074,
+            "unitId": 91031,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -771,7 +771,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 100391,
+            "unitId": 91119,
             "count": 10,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -779,7 +779,7 @@
           {
             "id": "legacy-14-0",
             "spawnId": 14,
-            "unitId": 91074,
+            "unitId": 91064,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -794,14 +794,14 @@
         "StartSliver": 12,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
-          "1#91079,1",
-          "2#100391,9",
+          "1#100779,1",
+          "2#91116,9",
           "3#91043,2",
-          "4#91100,1",
-          "5#91082,4",
+          "4#100651,1",
+          "5#100296,4",
           "7#91043,3",
-          "8#91074,5",
-          "13#100391,11",
+          "8#91031,5",
+          "13#100302,11",
           "6#91043,3"
         ],
         "WaveReward": [
@@ -818,7 +818,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 91079,
+            "unitId": 100779,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -826,7 +826,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 100391,
+            "unitId": 91116,
             "count": 9,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -842,7 +842,7 @@
           {
             "id": "legacy-4-0",
             "spawnId": 4,
-            "unitId": 91100,
+            "unitId": 100651,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -850,7 +850,7 @@
           {
             "id": "legacy-5-0",
             "spawnId": 5,
-            "unitId": 91082,
+            "unitId": 100296,
             "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -874,7 +874,7 @@
           {
             "id": "legacy-8-0",
             "spawnId": 8,
-            "unitId": 91074,
+            "unitId": 91031,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -882,7 +882,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 100391,
+            "unitId": 100302,
             "count": 11,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -6708,7 +6708,7 @@
   "nextBuilding": 21,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "60e7d26db3eb6fb497387e65c7e29db4bd0ea8deb9d846e76104de96ded85bee",
+  "sourceRevision": "cb07c7e90105585e34bb6e6576c69273a27120e5c73705308bfad7ae9ae06d35",
   "templates": {
     "Map04": [
       {

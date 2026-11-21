@@ -21,10 +21,12 @@ test('all later-wave enemies, legacy waves, all upgrade choices and allied rigs 
 
 test('legacy wave pauses warm only real actors and retain timeline precedence without changing authored packets',()=>{
  const level=JSON.parse(JSON.stringify(config.LevelCfg[6])),wave=level.WaveCfg[5];
- assert(wave.RefreshSoldierKind.some(group=>group.includes('#-1,10;91064,3')));
+ const delayedGroup=wave.RefreshSoldierKind.map(group=>/#-1,10;(\d+),3(?:;|$)/.exec(group)).find(Boolean);
+ assert(delayedGroup,'Stage 7 retains its delayed spawn group');
+ const delayedId=delayedGroup[1];
  level.WaveCfg=[{RefreshSoldierKind:wave.RefreshSoldierKind.slice()}];const before=JSON.stringify(level),plan=Warm.plan(config,level,names);
- assert(!plan.enemies.includes('-1'));assert(plan.enemies.includes('91064'));
- assert(plan.items.some(item=>item.bundle===names.Enemy&&item.path===config.SoldierCfg[91064].prefab));assert.equal(JSON.stringify(level),before);
+ assert(!plan.enemies.includes('-1'));assert(plan.enemies.includes(delayedId));
+ assert(plan.items.some(item=>item.bundle===names.Enemy&&item.path===config.SoldierCfg[delayedId].prefab));assert.equal(JSON.stringify(level),before);
  assert.deepEqual(Warm.unitIds({WaveCfg:[{RefreshSoldierKind:['1#-1,10;123,2;-1,4;456,1']},{SpawnTimeline:[{unitId:789}],RefreshSoldierKind:['1#999,1;-1,1']}]}),['123','456','789']);
  assert.throws(()=>Warm.plan(config,{...level,WaveCfg:[{RefreshSoldierKind:['1#-2,1']}]},names),/Missing stage enemy -2/);
 });

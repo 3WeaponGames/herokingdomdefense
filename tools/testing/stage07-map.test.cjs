@@ -10,7 +10,7 @@ const grid=new NavigationGrid(terrain.map(c=>c.points),info.bounds,20);
 function compressed(uuid){const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',s=uuid.replace(/-/g,'');let result=s.slice(0,5);for(let i=5;i<32;i+=3){const n=parseInt(s.slice(i,i+3),16);result+=chars[n>>6]+chars[n&63];}return result;}
 function apply(data,edits){for(const edit of edits){let parent=data;for(const key of edit.path.slice(0,-1))parent=parent[key];parent[edit.path.at(-1)]=clone(edit.value);}return data;}
 
-test('Stage 7 has a separate full-size map, valid references and bounded baked textures',()=>{
+test('the legacy Stage 7 map keeps valid references and bounded baked textures',()=>{
  assert(Catalog.has('Map07'));assert.equal(Catalog.lanes('Map07'),12);assert.equal(source[0]._name,'Map07');
  assert.deepEqual(info.bounds,{minX:-930,minY:-1514,maxX:930,maxY:1514});
  assert.deepEqual(Maps.validate(source).filter(x=>x.severity==='error'),[]);
@@ -30,12 +30,18 @@ test('Stage 7 has a separate full-size map, valid references and bounded baked t
  assert(!info.sprites.some(s=>legacy.has(s.frame)),'old forest textures must not be pulled into the fire map');
 });
 
-test('every Stage 7 unlock uses an existing structure of the right type in A, B and D',()=>{
+test('Stage 7 uses its authored layout with valid unlocks and spawn lanes in each campaign',()=>{
  const classes={1:'KinghtFallBuildMainFortress',2:'KinghtFallBuildBartizan',3:'KinghtFallBuildBarracks',4:'KinghtFallBuildHome',5:'KinghtFallBuildMill',6:'KinghtFallBuildWall'};
  const typeByScript=Object.fromEntries(Object.entries(classes).map(([type,name])=>[compressed(read('assets/_script/'+name+'.js.meta').uuid),Number(type)]));
- for(const config of configs){const stage=config.LevelCfg.find(s=>s.Level===7),seen=new Set([1]),stageSource=read('assets/KinghtFallIconMap/'+stage.prefab+'.prefab'),stageInfo=Maps.model(stageSource),buildings=stageInfo.owners.filter(n=>n.kind==='building'),slots=new Map(buildings.map(n=>[n.slot,{node:n,type:typeByScript[stageSource[n.ownerComponent].__type__]}]));assert.equal(stage.EnvironmentMapId||stage.prefab,'Map07');assert.equal(stage.Map,'wg_zy_gq7');assert.equal(slots.size,buildings.length,'configured structures have unique site IDs');assert.equal([...slots.values()].filter(b=>b.type===1).length,1);assert.equal(slots.get(1).type,1);
+ const expandedMap='map-expansion-snow-staggered-spurs';
+ for(const [index,config] of configs.entries()){
+  const expanded=index===0;
+  const stage=config.LevelCfg.find(s=>s.Level===7),seen=new Set([1]),stageSource=read('assets/KinghtFallIconMap/'+stage.prefab+'.prefab'),stageInfo=Maps.model(stageSource),buildings=stageInfo.owners.filter(n=>n.kind==='building'),slots=new Map(buildings.map(n=>[n.slot,{node:n,type:typeByScript[stageSource[n.ownerComponent].__type__]}]));
+  assert.equal(stage.EnvironmentMapId||stage.prefab,expanded?expandedMap:'Map07');
+  assert.equal(stage.Map,expanded?'Generated/Maps/'+expandedMap+'/thumbnail':'wg_zy_gq7');
+  assert.equal(slots.size,buildings.length,'configured structures have unique site IDs');assert.equal([...slots.values()].filter(b=>b.type===1).length,1);assert.equal(slots.get(1).type,1);
   for(const key of ['HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock'])for(const [type,id]of stage[key]){assert(slots.has(id),'missing site '+id);assert.equal(slots.get(id).type,type,'wrong structure at '+id);assert(!seen.has(id),'duplicate site '+id);seen.add(id);}
-  assert.equal([...seen].filter(id=>slots.get(id).type===6).length,2);
+  assert.equal([...seen].filter(id=>slots.get(id).type===6).length,expanded?3:2);
   for(const wave of stage.WaveCfg){const lanes=Array.isArray(wave.SpawnTimeline)?wave.SpawnTimeline.map(entry=>entry.spawnId):(wave.RefreshSoldierKind||[]).filter(Boolean).map(encoded=>Number(encoded.split('#')[0]));for(const lane of lanes)assert(stageInfo.nodes.some(n=>n.kind==='spawn'&&n.lane===lane),'wave uses a missing entrance');}
  }
 });

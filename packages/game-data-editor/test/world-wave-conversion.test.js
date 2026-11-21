@@ -44,7 +44,7 @@ test('all campaign and fallback waves expose explicit schedules and legacy conve
    assertEquivalent(wave.RefreshSoldierKind,converted,interval,label);
   }}
  }
- assert.equal(stages,80);assert.equal(enemies,expectedEnemies,'conversion preserves every enemy in the current authored lane queues');
+ assert.equal(stages,96);assert.equal(enemies,expectedEnemies,'conversion preserves every enemy in the current authored lane queues');
 });
 
 test('conversion keeps last duplicate lane, independent waits, unit groups and numeric spawn order',()=>{
