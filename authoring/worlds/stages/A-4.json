@@ -5850,26 +5850,32 @@
         {
           "id": "legacy-route-798-0",
           "goal": false,
-          "x": -431.651,
-          "y": 915.825
+          "x": -369.4860130645763,
+          "y": -898.2623460246359
         },
         {
           "id": "legacy-route-798-1",
           "goal": false,
-          "x": -170.436,
-          "y": 699.246
+          "x": -113.92237551325123,
+          "y": -614.6957693169091
+        },
+        {
+          "id": "node-1",
+          "x": -269.8115285554311,
+          "y": -460.93383463979086,
+          "goal": false
         },
         {
           "id": "legacy-route-798-2",
           "goal": false,
-          "x": 224.206,
-          "y": 385.12
+          "x": -267.4625330347144,
+          "y": -205.4473758865248
         },
         {
           "id": "legacy-route-798-3",
           "goal": true,
-          "x": 223.855,
-          "y": 107.911
+          "x": -188.69445875326616,
+          "y": 223.763930197835
         }
       ],
       "edges": [
@@ -5882,6 +5888,12 @@
         {
           "id": "legacy-route-798-edge-1",
           "from": "legacy-route-798-1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "legacy-route-798-2",
           "weight": 1
         },
@@ -5909,32 +5921,32 @@
         {
           "id": "legacy-route-813-0",
           "goal": false,
-          "x": -440.696,
-          "y": 882.617
+          "x": -358.7512444942143,
+          "y": -900.3878525569241
         },
         {
           "id": "legacy-route-813-1",
           "goal": false,
-          "x": -144.198,
-          "y": 691.878
+          "x": 36.6455983575961,
+          "y": -503.38515789473684
         },
         {
           "id": "legacy-route-813-2",
           "goal": false,
-          "x": 60.291,
-          "y": 713.367
+          "x": 325.9050350877193,
+          "y": -309.529603210153
         },
         {
           "id": "legacy-route-813-3",
           "goal": false,
-          "x": 163.075,
-          "y": 393.226
+          "x": 281.7536114221724,
+          "y": -36.27754609929076
         },
         {
           "id": "legacy-route-813-4",
           "goal": true,
-          "x": 191.447,
-          "y": 16.938
+          "x": -110.90089100410603,
+          "y": 220.38704815229562
         }
       ],
       "edges": [
@@ -5980,20 +5992,20 @@
         {
           "id": "legacy-route-831-0",
           "goal": false,
-          "x": 97.232,
-          "y": 1288.364
+          "x": 473.0476028368794,
+          "y": -975.0066606942887
         },
         {
           "id": "legacy-route-831-1",
           "goal": false,
-          "x": 106.59,
-          "y": 635.256
+          "x": 510.6624150802538,
+          "y": -523.2733019783501
         },
         {
           "id": "legacy-route-831-2",
           "goal": true,
-          "x": 159.967,
-          "y": -5.829
+          "x": -66.08749794699511,
+          "y": 194.79436692795818
         }
       ],
       "edges": [
@@ -6027,26 +6039,38 @@
         {
           "id": "legacy-route-843-0",
           "goal": false,
-          "x": 97.232,
-          "y": 1288.364
+          "x": 475.87328406121685,
+          "y": -842.199643150429
         },
         {
           "id": "legacy-route-843-1",
           "goal": false,
-          "x": 106.59,
-          "y": 635.256
+          "x": 490.88264650989174,
+          "y": -509.14489585666286
         },
         {
           "id": "legacy-route-843-2",
           "goal": false,
-          "x": 425.779,
-          "y": 240.826
+          "x": 318.4031134751773,
+          "y": -355.39273833519974
+        },
+        {
+          "id": "node-1",
+          "x": -224.32220772676374,
+          "y": -564.3525375139978,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": -300.712863848451,
+          "y": 9.331056737588597,
+          "goal": false
         },
         {
           "id": "legacy-route-843-3",
           "goal": true,
-          "x": 176.73,
-          "y": 3.75
+          "x": -71.92994774169469,
+          "y": 221.32745427398282
         }
       ],
       "edges": [
@@ -6065,6 +6089,18 @@
         {
           "id": "legacy-route-843-edge-2",
           "from": "legacy-route-843-2",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
           "to": "legacy-route-843-3",
           "weight": 1
         }
@@ -6086,26 +6122,32 @@
         {
           "id": "legacy-route-858-0",
           "goal": false,
-          "x": 400.88,
-          "y": 882.44
+          "x": 519.5586114221724,
+          "y": -555.8317431877565
         },
         {
           "id": "legacy-route-858-1",
           "goal": false,
-          "x": 125.844,
-          "y": 735.754
+          "x": 278.43078611422175,
+          "y": -227.80329749906673
         },
         {
           "id": "legacy-route-858-2",
           "goal": false,
-          "x": 234.024,
-          "y": 289.787
+          "x": 477.0325852930198,
+          "y": 80.68658939902949
+        },
+        {
+          "id": "node-1",
+          "x": 355.9845983575961,
+          "y": 636.013236095558,
+          "goal": false
         },
         {
           "id": "legacy-route-858-3",
           "goal": true,
-          "x": 116.258,
-          "y": -15.226
+          "x": -146.5303538633819,
+          "y": 309.7273407988055
         }
       ],
       "edges": [
@@ -6124,6 +6166,12 @@
         {
           "id": "legacy-route-858-edge-2",
           "from": "legacy-route-858-2",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "legacy-route-858-3",
           "weight": 1
         }
@@ -6145,26 +6193,26 @@
         {
           "id": "legacy-route-873-0",
           "goal": false,
-          "x": 424.371,
-          "y": 925.108
+          "x": 509.1414367301232,
+          "y": -527.2921493094439
         },
         {
           "id": "legacy-route-873-1",
           "goal": false,
-          "x": 75.428,
-          "y": 675.409
+          "x": 329.73931019036957,
+          "y": -302.2767036207541
         },
         {
           "id": "legacy-route-873-2",
           "goal": false,
-          "x": 432.51,
-          "y": 251.483
+          "x": -248.4791750653228,
+          "y": -291.04779507278835
         },
         {
           "id": "legacy-route-873-3",
           "goal": true,
-          "x": 116.258,
-          "y": -15.226
+          "x": -135.2276289660321,
+          "y": 208.0028167226577
         }
       ],
       "edges": [
@@ -6204,20 +6252,20 @@
         {
           "id": "legacy-route-888-0",
           "goal": false,
-          "x": -430.391,
-          "y": -615.747
+          "x": -235.4189955207167,
+          "y": 912.9465423665546
         },
         {
           "id": "legacy-route-888-1",
           "goal": false,
-          "x": -152.974,
-          "y": -246.32
+          "x": 70.25481672265772,
+          "y": 556.1734677118327
         },
         {
           "id": "legacy-route-888-2",
           "goal": true,
-          "x": 116.258,
-          "y": -15.226
+          "x": -138.05331019036953,
+          "y": 239.08531019036954
         }
       ],
       "edges": [
@@ -6251,26 +6299,20 @@
         {
           "id": "legacy-route-900-0",
           "goal": false,
-          "x": -430.391,
-          "y": -615.747
+          "x": -258.02444531541624,
+          "y": 918.5979048152298
         },
         {
           "id": "legacy-route-900-1",
           "goal": false,
-          "x": -260.453,
-          "y": -246.319
-        },
-        {
-          "id": "legacy-route-900-2",
-          "goal": false,
-          "x": -503.168,
-          "y": 52.656
+          "x": -384.7829738708473,
+          "y": 584.4312799552072
         },
         {
           "id": "legacy-route-900-3",
           "goal": true,
-          "x": 138.885,
-          "y": -54.824
+          "x": -149.3344848824188,
+          "y": 250.34957222844344
         }
       ],
       "edges": [
@@ -6283,158 +6325,7 @@
         {
           "id": "legacy-route-900-edge-1",
           "from": "legacy-route-900-1",
-          "to": "legacy-route-900-2",
-          "weight": 1
-        },
-        {
-          "id": "legacy-route-900-edge-2",
-          "from": "legacy-route-900-2",
           "to": "legacy-route-900-3",
-          "weight": 1
-        }
-      ],
-      "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
-    },
-    {
-      "id": "legacy-route-915",
-      "name": "Spawns 10–12 · Route 3",
-      "spawnIds": [
-        10,
-        11,
-        12
-      ],
-      "entry": "legacy-route-915-0",
-      "nodes": [
-        {
-          "id": "legacy-route-915-0",
-          "goal": false,
-          "x": -430.391,
-          "y": -615.747
-        },
-        {
-          "id": "legacy-route-915-1",
-          "goal": false,
-          "x": -110.546,
-          "y": -345.314
-        },
-        {
-          "id": "legacy-route-915-2",
-          "goal": true,
-          "x": 147.37,
-          "y": -54.824
-        }
-      ],
-      "edges": [
-        {
-          "id": "legacy-route-915-edge-0",
-          "from": "legacy-route-915-0",
-          "to": "legacy-route-915-1",
-          "weight": 1
-        },
-        {
-          "id": "legacy-route-915-edge-1",
-          "from": "legacy-route-915-1",
-          "to": "legacy-route-915-2",
-          "weight": 1
-        }
-      ],
-      "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
-    },
-    {
-      "id": "legacy-route-927",
-      "name": "Unassigned spawns · Route 1",
-      "spawnIds": [],
-      "entry": "legacy-route-927-0",
-      "nodes": [
-        {
-          "id": "legacy-route-927-0",
-          "goal": false,
-          "x": 389.853,
-          "y": -771.31
-        },
-        {
-          "id": "legacy-route-927-1",
-          "goal": false,
-          "x": 124.213,
-          "y": -311.373
-        },
-        {
-          "id": "legacy-route-927-2",
-          "goal": true,
-          "x": 147.37,
-          "y": -54.824
-        }
-      ],
-      "edges": [
-        {
-          "id": "legacy-route-927-edge-0",
-          "from": "legacy-route-927-0",
-          "to": "legacy-route-927-1",
-          "weight": 1
-        },
-        {
-          "id": "legacy-route-927-edge-1",
-          "from": "legacy-route-927-1",
-          "to": "legacy-route-927-2",
-          "weight": 1
-        }
-      ],
-      "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
-    },
-    {
-      "id": "legacy-route-939",
-      "name": "Unassigned spawns · Route 2",
-      "spawnIds": [],
-      "entry": "legacy-route-939-0",
-      "nodes": [
-        {
-          "id": "legacy-route-939-0",
-          "goal": false,
-          "x": 389.853,
-          "y": -771.31
-        },
-        {
-          "id": "legacy-route-939-1",
-          "goal": false,
-          "x": 582.418,
-          "y": -517.848
-        },
-        {
-          "id": "legacy-route-939-2",
-          "goal": false,
-          "x": 175.654,
-          "y": -428.176
-        },
-        {
-          "id": "legacy-route-939-3",
-          "goal": true,
-          "x": 169.997,
-          "y": -15.226
-        }
-      ],
-      "edges": [
-        {
-          "id": "legacy-route-939-edge-0",
-          "from": "legacy-route-939-0",
-          "to": "legacy-route-939-1",
-          "weight": 1
-        },
-        {
-          "id": "legacy-route-939-edge-1",
-          "from": "legacy-route-939-1",
-          "to": "legacy-route-939-2",
-          "weight": 1
-        },
-        {
-          "id": "legacy-route-939-edge-2",
-          "from": "legacy-route-939-2",
-          "to": "legacy-route-939-3",
           "weight": 1
         }
       ],
@@ -6450,7 +6341,7 @@
   "nextBuilding": 29,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "f7d679394bf983b58dd84037c2bea309d53b5a648023852b80204622e62b73cd",
+  "sourceRevision": "3e17519c973793dc6de08cfa1e2a9fbe9a08ae662da6edf64e15e91b5e618714",
   "templates": {
     "Map04": [
       {

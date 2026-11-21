@@ -156134,27 +156134,6 @@
       },
       {
         "__id__": 4069
-      },
-      {
-        "__id__": 4070
-      },
-      {
-        "__id__": 4071
-      },
-      {
-        "__id__": 4072
-      },
-      {
-        "__id__": 4073
-      },
-      {
-        "__id__": 4074
-      },
-      {
-        "__id__": 4075
-      },
-      {
-        "__id__": 4076
       }
     ],
     "_components": [
@@ -156207,7 +156186,7 @@
   },
   {
     "__type__": "ef20dGN+M5C6JKo/CVJ9bIM",
-    "graphs": "[{\"id\":\"legacy-route-798\",\"name\":\"Spawns 1–3 · Route 1\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-798-0\",\"nodes\":[{\"id\":\"legacy-route-798-0\",\"goal\":false,\"x\":-431.651,\"y\":915.825},{\"id\":\"legacy-route-798-1\",\"goal\":false,\"x\":-170.436,\"y\":699.246},{\"id\":\"legacy-route-798-2\",\"goal\":false,\"x\":224.206,\"y\":385.12},{\"id\":\"legacy-route-798-3\",\"goal\":true,\"x\":223.855,\"y\":107.911}],\"edges\":[{\"id\":\"legacy-route-798-edge-0\",\"from\":\"legacy-route-798-0\",\"to\":\"legacy-route-798-1\",\"weight\":1},{\"id\":\"legacy-route-798-edge-1\",\"from\":\"legacy-route-798-1\",\"to\":\"legacy-route-798-2\",\"weight\":1},{\"id\":\"legacy-route-798-edge-2\",\"from\":\"legacy-route-798-2\",\"to\":\"legacy-route-798-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-813\",\"name\":\"Spawns 1–3 · Route 2\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-813-0\",\"nodes\":[{\"id\":\"legacy-route-813-0\",\"goal\":false,\"x\":-440.696,\"y\":882.617},{\"id\":\"legacy-route-813-1\",\"goal\":false,\"x\":-144.198,\"y\":691.878},{\"id\":\"legacy-route-813-2\",\"goal\":false,\"x\":60.291,\"y\":713.367},{\"id\":\"legacy-route-813-3\",\"goal\":false,\"x\":163.075,\"y\":393.226},{\"id\":\"legacy-route-813-4\",\"goal\":true,\"x\":191.447,\"y\":16.938}],\"edges\":[{\"id\":\"legacy-route-813-edge-0\",\"from\":\"legacy-route-813-0\",\"to\":\"legacy-route-813-1\",\"weight\":1},{\"id\":\"legacy-route-813-edge-1\",\"from\":\"legacy-route-813-1\",\"to\":\"legacy-route-813-2\",\"weight\":1},{\"id\":\"legacy-route-813-edge-2\",\"from\":\"legacy-route-813-2\",\"to\":\"legacy-route-813-3\",\"weight\":1},{\"id\":\"legacy-route-813-edge-3\",\"from\":\"legacy-route-813-3\",\"to\":\"legacy-route-813-4\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-831\",\"name\":\"Spawns 4–6 · Route 1\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-831-0\",\"nodes\":[{\"id\":\"legacy-route-831-0\",\"goal\":false,\"x\":97.232,\"y\":1288.364},{\"id\":\"legacy-route-831-1\",\"goal\":false,\"x\":106.59,\"y\":635.256},{\"id\":\"legacy-route-831-2\",\"goal\":true,\"x\":159.967,\"y\":-5.829}],\"edges\":[{\"id\":\"legacy-route-831-edge-0\",\"from\":\"legacy-route-831-0\",\"to\":\"legacy-route-831-1\",\"weight\":1},{\"id\":\"legacy-route-831-edge-1\",\"from\":\"legacy-route-831-1\",\"to\":\"legacy-route-831-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-843\",\"name\":\"Spawns 4–6 · Route 2\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-843-0\",\"nodes\":[{\"id\":\"legacy-route-843-0\",\"goal\":false,\"x\":97.232,\"y\":1288.364},{\"id\":\"legacy-route-843-1\",\"goal\":false,\"x\":106.59,\"y\":635.256},{\"id\":\"legacy-route-843-2\",\"goal\":false,\"x\":425.779,\"y\":240.826},{\"id\":\"legacy-route-843-3\",\"goal\":true,\"x\":176.73,\"y\":3.75}],\"edges\":[{\"id\":\"legacy-route-843-edge-0\",\"from\":\"legacy-route-843-0\",\"to\":\"legacy-route-843-1\",\"weight\":1},{\"id\":\"legacy-route-843-edge-1\",\"from\":\"legacy-route-843-1\",\"to\":\"legacy-route-843-2\",\"weight\":1},{\"id\":\"legacy-route-843-edge-2\",\"from\":\"legacy-route-843-2\",\"to\":\"legacy-route-843-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-858\",\"name\":\"Spawns 7–9 · Route 1\",\"spawnIds\":[7,8,9],\"entry\":\"legacy-route-858-0\",\"nodes\":[{\"id\":\"legacy-route-858-0\",\"goal\":false,\"x\":400.88,\"y\":882.44},{\"id\":\"legacy-route-858-1\",\"goal\":false,\"x\":125.844,\"y\":735.754},{\"id\":\"legacy-route-858-2\",\"goal\":false,\"x\":234.024,\"y\":289.787},{\"id\":\"legacy-route-858-3\",\"goal\":true,\"x\":116.258,\"y\":-15.226}],\"edges\":[{\"id\":\"legacy-route-858-edge-0\",\"from\":\"legacy-route-858-0\",\"to\":\"legacy-route-858-1\",\"weight\":1},{\"id\":\"legacy-route-858-edge-1\",\"from\":\"legacy-route-858-1\",\"to\":\"legacy-route-858-2\",\"weight\":1},{\"id\":\"legacy-route-858-edge-2\",\"from\":\"legacy-route-858-2\",\"to\":\"legacy-route-858-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-873\",\"name\":\"Spawns 7–9 · Route 2\",\"spawnIds\":[7,8,9],\"entry\":\"legacy-route-873-0\",\"nodes\":[{\"id\":\"legacy-route-873-0\",\"goal\":false,\"x\":424.371,\"y\":925.108},{\"id\":\"legacy-route-873-1\",\"goal\":false,\"x\":75.428,\"y\":675.409},{\"id\":\"legacy-route-873-2\",\"goal\":false,\"x\":432.51,\"y\":251.483},{\"id\":\"legacy-route-873-3\",\"goal\":true,\"x\":116.258,\"y\":-15.226}],\"edges\":[{\"id\":\"legacy-route-873-edge-0\",\"from\":\"legacy-route-873-0\",\"to\":\"legacy-route-873-1\",\"weight\":1},{\"id\":\"legacy-route-873-edge-1\",\"from\":\"legacy-route-873-1\",\"to\":\"legacy-route-873-2\",\"weight\":1},{\"id\":\"legacy-route-873-edge-2\",\"from\":\"legacy-route-873-2\",\"to\":\"legacy-route-873-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-888\",\"name\":\"Spawns 10–12 · Route 1\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-888-0\",\"nodes\":[{\"id\":\"legacy-route-888-0\",\"goal\":false,\"x\":-430.391,\"y\":-615.747},{\"id\":\"legacy-route-888-1\",\"goal\":false,\"x\":-152.974,\"y\":-246.32},{\"id\":\"legacy-route-888-2\",\"goal\":true,\"x\":116.258,\"y\":-15.226}],\"edges\":[{\"id\":\"legacy-route-888-edge-0\",\"from\":\"legacy-route-888-0\",\"to\":\"legacy-route-888-1\",\"weight\":1},{\"id\":\"legacy-route-888-edge-1\",\"from\":\"legacy-route-888-1\",\"to\":\"legacy-route-888-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-900\",\"name\":\"Spawns 10–12 · Route 2\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-900-0\",\"nodes\":[{\"id\":\"legacy-route-900-0\",\"goal\":false,\"x\":-430.391,\"y\":-615.747},{\"id\":\"legacy-route-900-1\",\"goal\":false,\"x\":-260.453,\"y\":-246.319},{\"id\":\"legacy-route-900-2\",\"goal\":false,\"x\":-503.168,\"y\":52.656},{\"id\":\"legacy-route-900-3\",\"goal\":true,\"x\":138.885,\"y\":-54.824}],\"edges\":[{\"id\":\"legacy-route-900-edge-0\",\"from\":\"legacy-route-900-0\",\"to\":\"legacy-route-900-1\",\"weight\":1},{\"id\":\"legacy-route-900-edge-1\",\"from\":\"legacy-route-900-1\",\"to\":\"legacy-route-900-2\",\"weight\":1},{\"id\":\"legacy-route-900-edge-2\",\"from\":\"legacy-route-900-2\",\"to\":\"legacy-route-900-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-915\",\"name\":\"Spawns 10–12 · Route 3\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-915-0\",\"nodes\":[{\"id\":\"legacy-route-915-0\",\"goal\":false,\"x\":-430.391,\"y\":-615.747},{\"id\":\"legacy-route-915-1\",\"goal\":false,\"x\":-110.546,\"y\":-345.314},{\"id\":\"legacy-route-915-2\",\"goal\":true,\"x\":147.37,\"y\":-54.824}],\"edges\":[{\"id\":\"legacy-route-915-edge-0\",\"from\":\"legacy-route-915-0\",\"to\":\"legacy-route-915-1\",\"weight\":1},{\"id\":\"legacy-route-915-edge-1\",\"from\":\"legacy-route-915-1\",\"to\":\"legacy-route-915-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-927\",\"name\":\"Unassigned spawns · Route 1\",\"spawnIds\":[],\"entry\":\"legacy-route-927-0\",\"nodes\":[{\"id\":\"legacy-route-927-0\",\"goal\":false,\"x\":389.853,\"y\":-771.31},{\"id\":\"legacy-route-927-1\",\"goal\":false,\"x\":124.213,\"y\":-311.373},{\"id\":\"legacy-route-927-2\",\"goal\":true,\"x\":147.37,\"y\":-54.824}],\"edges\":[{\"id\":\"legacy-route-927-edge-0\",\"from\":\"legacy-route-927-0\",\"to\":\"legacy-route-927-1\",\"weight\":1},{\"id\":\"legacy-route-927-edge-1\",\"from\":\"legacy-route-927-1\",\"to\":\"legacy-route-927-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-939\",\"name\":\"Unassigned spawns · Route 2\",\"spawnIds\":[],\"entry\":\"legacy-route-939-0\",\"nodes\":[{\"id\":\"legacy-route-939-0\",\"goal\":false,\"x\":389.853,\"y\":-771.31},{\"id\":\"legacy-route-939-1\",\"goal\":false,\"x\":582.418,\"y\":-517.848},{\"id\":\"legacy-route-939-2\",\"goal\":false,\"x\":175.654,\"y\":-428.176},{\"id\":\"legacy-route-939-3\",\"goal\":true,\"x\":169.997,\"y\":-15.226}],\"edges\":[{\"id\":\"legacy-route-939-edge-0\",\"from\":\"legacy-route-939-0\",\"to\":\"legacy-route-939-1\",\"weight\":1},{\"id\":\"legacy-route-939-edge-1\",\"from\":\"legacy-route-939-1\",\"to\":\"legacy-route-939-2\",\"weight\":1},{\"id\":\"legacy-route-939-edge-2\",\"from\":\"legacy-route-939-2\",\"to\":\"legacy-route-939-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true}]",
+    "graphs": "[{\"id\":\"legacy-route-798\",\"name\":\"Spawns 1–3 · Route 1\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-798-0\",\"nodes\":[{\"id\":\"legacy-route-798-0\",\"goal\":false,\"x\":-369.4860130645763,\"y\":-898.2623460246359},{\"id\":\"legacy-route-798-1\",\"goal\":false,\"x\":-113.92237551325123,\"y\":-614.6957693169091},{\"id\":\"node-1\",\"x\":-269.8115285554311,\"y\":-460.93383463979086,\"goal\":false},{\"id\":\"legacy-route-798-2\",\"goal\":false,\"x\":-267.4625330347144,\"y\":-205.4473758865248},{\"id\":\"legacy-route-798-3\",\"goal\":true,\"x\":-188.69445875326616,\"y\":223.763930197835}],\"edges\":[{\"id\":\"legacy-route-798-edge-0\",\"from\":\"legacy-route-798-0\",\"to\":\"legacy-route-798-1\",\"weight\":1},{\"id\":\"legacy-route-798-edge-1\",\"from\":\"legacy-route-798-1\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-798-2\",\"weight\":1},{\"id\":\"legacy-route-798-edge-2\",\"from\":\"legacy-route-798-2\",\"to\":\"legacy-route-798-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-813\",\"name\":\"Spawns 1–3 · Route 2\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-813-0\",\"nodes\":[{\"id\":\"legacy-route-813-0\",\"goal\":false,\"x\":-358.7512444942143,\"y\":-900.3878525569241},{\"id\":\"legacy-route-813-1\",\"goal\":false,\"x\":36.6455983575961,\"y\":-503.38515789473684},{\"id\":\"legacy-route-813-2\",\"goal\":false,\"x\":325.9050350877193,\"y\":-309.529603210153},{\"id\":\"legacy-route-813-3\",\"goal\":false,\"x\":281.7536114221724,\"y\":-36.27754609929076},{\"id\":\"legacy-route-813-4\",\"goal\":true,\"x\":-110.90089100410603,\"y\":220.38704815229562}],\"edges\":[{\"id\":\"legacy-route-813-edge-0\",\"from\":\"legacy-route-813-0\",\"to\":\"legacy-route-813-1\",\"weight\":1},{\"id\":\"legacy-route-813-edge-1\",\"from\":\"legacy-route-813-1\",\"to\":\"legacy-route-813-2\",\"weight\":1},{\"id\":\"legacy-route-813-edge-2\",\"from\":\"legacy-route-813-2\",\"to\":\"legacy-route-813-3\",\"weight\":1},{\"id\":\"legacy-route-813-edge-3\",\"from\":\"legacy-route-813-3\",\"to\":\"legacy-route-813-4\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-831\",\"name\":\"Spawns 4–6 · Route 1\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-831-0\",\"nodes\":[{\"id\":\"legacy-route-831-0\",\"goal\":false,\"x\":473.0476028368794,\"y\":-975.0066606942887},{\"id\":\"legacy-route-831-1\",\"goal\":false,\"x\":510.6624150802538,\"y\":-523.2733019783501},{\"id\":\"legacy-route-831-2\",\"goal\":true,\"x\":-66.08749794699511,\"y\":194.79436692795818}],\"edges\":[{\"id\":\"legacy-route-831-edge-0\",\"from\":\"legacy-route-831-0\",\"to\":\"legacy-route-831-1\",\"weight\":1},{\"id\":\"legacy-route-831-edge-1\",\"from\":\"legacy-route-831-1\",\"to\":\"legacy-route-831-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-843\",\"name\":\"Spawns 4–6 · Route 2\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-843-0\",\"nodes\":[{\"id\":\"legacy-route-843-0\",\"goal\":false,\"x\":475.87328406121685,\"y\":-842.199643150429},{\"id\":\"legacy-route-843-1\",\"goal\":false,\"x\":490.88264650989174,\"y\":-509.14489585666286},{\"id\":\"legacy-route-843-2\",\"goal\":false,\"x\":318.4031134751773,\"y\":-355.39273833519974},{\"id\":\"node-1\",\"x\":-224.32220772676374,\"y\":-564.3525375139978,\"goal\":false},{\"id\":\"node-2\",\"x\":-300.712863848451,\"y\":9.331056737588597,\"goal\":false},{\"id\":\"legacy-route-843-3\",\"goal\":true,\"x\":-71.92994774169469,\"y\":221.32745427398282}],\"edges\":[{\"id\":\"legacy-route-843-edge-0\",\"from\":\"legacy-route-843-0\",\"to\":\"legacy-route-843-1\",\"weight\":1},{\"id\":\"legacy-route-843-edge-1\",\"from\":\"legacy-route-843-1\",\"to\":\"legacy-route-843-2\",\"weight\":1},{\"id\":\"legacy-route-843-edge-2\",\"from\":\"legacy-route-843-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-843-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-858\",\"name\":\"Spawns 7–9 · Route 1\",\"spawnIds\":[7,8,9],\"entry\":\"legacy-route-858-0\",\"nodes\":[{\"id\":\"legacy-route-858-0\",\"goal\":false,\"x\":519.5586114221724,\"y\":-555.8317431877565},{\"id\":\"legacy-route-858-1\",\"goal\":false,\"x\":278.43078611422175,\"y\":-227.80329749906673},{\"id\":\"legacy-route-858-2\",\"goal\":false,\"x\":477.0325852930198,\"y\":80.68658939902949},{\"id\":\"node-1\",\"x\":355.9845983575961,\"y\":636.013236095558,\"goal\":false},{\"id\":\"legacy-route-858-3\",\"goal\":true,\"x\":-146.5303538633819,\"y\":309.7273407988055}],\"edges\":[{\"id\":\"legacy-route-858-edge-0\",\"from\":\"legacy-route-858-0\",\"to\":\"legacy-route-858-1\",\"weight\":1},{\"id\":\"legacy-route-858-edge-1\",\"from\":\"legacy-route-858-1\",\"to\":\"legacy-route-858-2\",\"weight\":1},{\"id\":\"legacy-route-858-edge-2\",\"from\":\"legacy-route-858-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-858-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-873\",\"name\":\"Spawns 7–9 · Route 2\",\"spawnIds\":[7,8,9],\"entry\":\"legacy-route-873-0\",\"nodes\":[{\"id\":\"legacy-route-873-0\",\"goal\":false,\"x\":509.1414367301232,\"y\":-527.2921493094439},{\"id\":\"legacy-route-873-1\",\"goal\":false,\"x\":329.73931019036957,\"y\":-302.2767036207541},{\"id\":\"legacy-route-873-2\",\"goal\":false,\"x\":-248.4791750653228,\"y\":-291.04779507278835},{\"id\":\"legacy-route-873-3\",\"goal\":true,\"x\":-135.2276289660321,\"y\":208.0028167226577}],\"edges\":[{\"id\":\"legacy-route-873-edge-0\",\"from\":\"legacy-route-873-0\",\"to\":\"legacy-route-873-1\",\"weight\":1},{\"id\":\"legacy-route-873-edge-1\",\"from\":\"legacy-route-873-1\",\"to\":\"legacy-route-873-2\",\"weight\":1},{\"id\":\"legacy-route-873-edge-2\",\"from\":\"legacy-route-873-2\",\"to\":\"legacy-route-873-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-888\",\"name\":\"Spawns 10–12 · Route 1\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-888-0\",\"nodes\":[{\"id\":\"legacy-route-888-0\",\"goal\":false,\"x\":-235.4189955207167,\"y\":912.9465423665546},{\"id\":\"legacy-route-888-1\",\"goal\":false,\"x\":70.25481672265772,\"y\":556.1734677118327},{\"id\":\"legacy-route-888-2\",\"goal\":true,\"x\":-138.05331019036953,\"y\":239.08531019036954}],\"edges\":[{\"id\":\"legacy-route-888-edge-0\",\"from\":\"legacy-route-888-0\",\"to\":\"legacy-route-888-1\",\"weight\":1},{\"id\":\"legacy-route-888-edge-1\",\"from\":\"legacy-route-888-1\",\"to\":\"legacy-route-888-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-900\",\"name\":\"Spawns 10–12 · Route 2\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-900-0\",\"nodes\":[{\"id\":\"legacy-route-900-0\",\"goal\":false,\"x\":-258.02444531541624,\"y\":918.5979048152298},{\"id\":\"legacy-route-900-1\",\"goal\":false,\"x\":-384.7829738708473,\"y\":584.4312799552072},{\"id\":\"legacy-route-900-3\",\"goal\":true,\"x\":-149.3344848824188,\"y\":250.34957222844344}],\"edges\":[{\"id\":\"legacy-route-900-edge-0\",\"from\":\"legacy-route-900-0\",\"to\":\"legacy-route-900-1\",\"weight\":1},{\"id\":\"legacy-route-900-edge-1\",\"from\":\"legacy-route-900-1\",\"to\":\"legacy-route-900-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true}]",
     "spawns": "[{\"id\":1,\"name\":\"Spawn 1\",\"x\":-367.31271816378234,\"y\":-1328.6571151984674,\"enabled\":true,\"radius\":150},{\"id\":2,\"name\":\"Spawn 2\",\"x\":-308.7058110850307,\"y\":-1327.0842734913304,\"enabled\":true,\"radius\":150},{\"id\":3,\"name\":\"Spawn 3\",\"x\":-381.62650206370097,\"y\":-1349.654051260695,\"enabled\":true,\"radius\":150},{\"id\":4,\"name\":\"Spawn 4\",\"x\":570.1592266979632,\"y\":-1315.6183112743247,\"enabled\":true,\"radius\":150},{\"id\":5,\"name\":\"Spawn 5\",\"x\":522.7752619693762,\"y\":-1330.395928385317,\"enabled\":true,\"radius\":150},{\"id\":6,\"name\":\"Spawn 6\",\"x\":548.009933368668,\"y\":-1364,\"enabled\":true,\"radius\":150},{\"id\":7,\"name\":\"Spawn 7\",\"x\":780,\"y\":-635.3798070770378,\"enabled\":true,\"radius\":150},{\"id\":8,\"name\":\"Spawn 8\",\"x\":780,\"y\":-585.4281000984327,\"enabled\":true,\"radius\":150},{\"id\":9,\"name\":\"Spawn 9\",\"x\":780,\"y\":-546.7332656813165,\"enabled\":true,\"radius\":150},{\"id\":10,\"name\":\"Spawn 10\",\"x\":-488.9255355493299,\"y\":1364,\"enabled\":true,\"radius\":150},{\"id\":11,\"name\":\"Spawn 11\",\"x\":-380.31798765091304,\"y\":1364,\"enabled\":true,\"radius\":150},{\"id\":12,\"name\":\"Spawn 12\",\"x\":-455.2115355493298,\"y\":1364,\"enabled\":true,\"radius\":150}]",
     "node": {
       "__id__": 4034
@@ -156243,8 +156222,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -431.651,
-        915.825,
+        -369.4860130645763,
+        -898.2623460246359,
         0,
         0,
         0,
@@ -156294,8 +156273,59 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -170.436,
-        699.246,
+        -113.92237551325123,
+        -614.6957693169091,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-16-legacy-route-798-node-1",
+    "_parent": {
+      "__id__": 4034
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -269.8115285554311,
+        -460.93383463979086,
         0,
         0,
         0,
@@ -156345,8 +156375,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        224.206,
-        385.12,
+        -267.4625330347144,
+        -205.4473758865248,
         0,
         0,
         0,
@@ -156396,8 +156426,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        223.855,
-        107.911,
+        -188.69445875326616,
+        223.763930197835,
         0,
         0,
         0,
@@ -156447,8 +156477,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -440.696,
-        882.617,
+        -358.7512444942143,
+        -900.3878525569241,
         0,
         0,
         0,
@@ -156498,8 +156528,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -144.198,
-        691.878,
+        36.6455983575961,
+        -503.38515789473684,
         0,
         0,
         0,
@@ -156549,8 +156579,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        60.291,
-        713.367,
+        325.9050350877193,
+        -309.529603210153,
         0,
         0,
         0,
@@ -156600,8 +156630,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        163.075,
-        393.226,
+        281.7536114221724,
+        -36.27754609929076,
         0,
         0,
         0,
@@ -156651,8 +156681,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        191.447,
-        16.938,
+        -110.90089100410603,
+        220.38704815229562,
         0,
         0,
         0,
@@ -156702,8 +156732,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        97.232,
-        1288.364,
+        473.0476028368794,
+        -975.0066606942887,
         0,
         0,
         0,
@@ -156753,8 +156783,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        106.59,
-        635.256,
+        510.6624150802538,
+        -523.2733019783501,
         0,
         0,
         0,
@@ -156804,8 +156834,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        159.967,
-        -5.829,
+        -66.08749794699511,
+        194.79436692795818,
         0,
         0,
         0,
@@ -156855,8 +156885,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        97.232,
-        1288.364,
+        475.87328406121685,
+        -842.199643150429,
         0,
         0,
         0,
@@ -156906,8 +156936,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        106.59,
-        635.256,
+        490.88264650989174,
+        -509.14489585666286,
         0,
         0,
         0,
@@ -156957,8 +156987,110 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        425.779,
-        240.826,
+        318.4031134751773,
+        -355.39273833519974,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-16-legacy-route-843-node-1",
+    "_parent": {
+      "__id__": 4034
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -224.32220772676374,
+        -564.3525375139978,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-16-legacy-route-843-node-2",
+    "_parent": {
+      "__id__": 4034
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -300.712863848451,
+        9.331056737588597,
         0,
         0,
         0,
@@ -157008,8 +157140,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        176.73,
-        3.75,
+        -71.92994774169469,
+        221.32745427398282,
         0,
         0,
         0,
@@ -157059,8 +157191,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        400.88,
-        882.44,
+        519.5586114221724,
+        -555.8317431877565,
         0,
         0,
         0,
@@ -157110,8 +157242,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        125.844,
-        735.754,
+        278.43078611422175,
+        -227.80329749906673,
         0,
         0,
         0,
@@ -157161,8 +157293,59 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        234.024,
-        289.787,
+        477.0325852930198,
+        80.68658939902949,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-16-legacy-route-858-node-1",
+    "_parent": {
+      "__id__": 4034
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        355.9845983575961,
+        636.013236095558,
         0,
         0,
         0,
@@ -157212,8 +157395,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        116.258,
-        -15.226,
+        -146.5303538633819,
+        309.7273407988055,
         0,
         0,
         0,
@@ -157263,8 +157446,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        424.371,
-        925.108,
+        509.1414367301232,
+        -527.2921493094439,
         0,
         0,
         0,
@@ -157314,8 +157497,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        75.428,
-        675.409,
+        329.73931019036957,
+        -302.2767036207541,
         0,
         0,
         0,
@@ -157365,8 +157548,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        432.51,
-        251.483,
+        -248.4791750653228,
+        -291.04779507278835,
         0,
         0,
         0,
@@ -157416,8 +157599,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        116.258,
-        -15.226,
+        -135.2276289660321,
+        208.0028167226577,
         0,
         0,
         0,
@@ -157467,8 +157650,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -430.391,
-        -615.747,
+        -235.4189955207167,
+        912.9465423665546,
         0,
         0,
         0,
@@ -157518,8 +157701,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -152.974,
-        -246.32,
+        70.25481672265772,
+        556.1734677118327,
         0,
         0,
         0,
@@ -157569,8 +157752,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        116.258,
-        -15.226,
+        -138.05331019036953,
+        239.08531019036954,
         0,
         0,
         0,
@@ -157620,8 +157803,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -430.391,
-        -615.747,
+        -258.02444531541624,
+        918.5979048152298,
         0,
         0,
         0,
@@ -157671,59 +157854,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -260.453,
-        -246.319,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-900-legacy-route-900-2",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -503.168,
-        52.656,
+        -384.7829738708473,
+        584.4312799552072,
         0,
         0,
         0,
@@ -157773,518 +157905,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        138.885,
-        -54.824,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-915-legacy-route-915-0",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -430.391,
-        -615.747,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-915-legacy-route-915-1",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -110.546,
-        -345.314,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-915-legacy-route-915-2",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        147.37,
-        -54.824,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-927-legacy-route-927-0",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        389.853,
-        -771.31,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-927-legacy-route-927-1",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        124.213,
-        -311.373,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-927-legacy-route-927-2",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        147.37,
-        -54.824,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-939-legacy-route-939-0",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        389.853,
-        -771.31,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-939-legacy-route-939-1",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        582.418,
-        -517.848,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-939-legacy-route-939-2",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        175.654,
-        -428.176,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "point-16-legacy-route-939-legacy-route-939-3",
-    "_parent": {
-      "__id__": 4034
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        169.997,
-        -15.226,
+        -149.3344848824188,
+        250.34957222844344,
         0,
         0,
         0,
