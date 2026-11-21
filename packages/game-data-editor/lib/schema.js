@@ -5,6 +5,9 @@ const MapCatalog=require('./map-catalog');
 const HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
 const UnitAttack=require('../../../assets/_script/UnitAttackRules');
+const EnemyTargeting=require('../../../assets/_script/EnemyTargeting');
+const EnemyTransform=require('../../../assets/_script/EnemyTransform');
+const EnemySkills=require('../../../assets/_script/EnemySkills');
 const TowerCombat=require('../../../assets/_script/TowerCombat');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 
@@ -244,6 +247,18 @@ function validate(documents, changes) {
     }
     if(own(unit,'UnitAttack'))for(const problem of UnitAttack.issues(unit.UnitAttack)){
       issue('A',problem.field?p.concat('UnitAttack',problem.field):p.concat('UnitAttack'),problem.message);
+    }
+    if(table==='SoldierCfg'&&own(unit,'EnemyTargeting')){
+      const problem=EnemyTargeting.issue(unit.EnemyTargeting);
+      if(problem)issue('A',p.concat('EnemyTargeting'),problem);
+    }
+    if(own(unit,'TransformSkill')){
+      const problem=table==='SoldierCfg'?EnemyTransform.issue(unit,unit.TransformSkill,units,docs.overrides||base.GameTools):'Transform is available on enemy profiles.';
+      if(problem)issue('A',p.concat('TransformSkill'),problem);
+    }
+    if(own(unit,'EnemySkills')){
+      const problem=table==='SoldierCfg'&&EnemyTransform.supported(unit,docs.overrides||base.GameTools)?EnemySkills.issue(unit.EnemySkills):'Choose a spawnable enemy profile for skills.';
+      if(problem)issue('A',p.concat('EnemySkills'),problem);
     }
     ['Health','AttackInterval'].forEach(k=>number('A',p.concat(k),unit[k],Number.MIN_VALUE,false));
     ['AttackDamage','AttackRange','SearchRange','Speed','DeathAni'].forEach(k=>{if(own(unit,k))number('A',p.concat(k),unit[k],0,false);});

@@ -122,7 +122,7 @@ function build(owner, state, lights, layoutSignature) {
       glow.setAnchorPoint(.5,.5);var sprite = glow.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
       sprite._windowLightType=settings.lightType;
       if(adjustment.warp||adjustment.warpNodes&&adjustment.warpNodes.length){sprite._windowLightWarp=adjustment.warp||require("WindowLightWarp").forType(settings.lightType).controls();sprite._windowLightNodes=adjustment.warpNodes;}
-      if(adjustment.erase&&adjustment.erase.strokes.length)sprite._windowLightErase=adjustment.erase;
+      if(adjustment.erase)sprite._windowLightErase=adjustment.erase;
       entry.glows.push({ node: glow, sprite: sprite, config: settings });
       if (!at) { entry.glow = glow; entry.sprite = sprite; }
       resource(settings.sprite, sprite);

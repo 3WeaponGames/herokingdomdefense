@@ -200,7 +200,11 @@ var exp_KinghtFallDataMgr = function () {
   };
   _ctor.prototype.getSoldierCfgById = function (t, side) {
     if (side === "ally" && this.data.AllyCfg && this.data.AllyCfg[t]) return this.data.AllyCfg[t];
-    return (side!=="ally"&&Number(t)>=1000000000&&require("EnemyStageProfiles").current(this.data,t)) || this.data.SoldierCfg[t];
+    var units = this.data.SoldierCfg;
+    var unit = (side!=="ally"&&Number(t)>=1000000000&&require("EnemyStageProfiles").current(this.data,t)) || units[t];
+    if (unit || side === "ally") return unit;
+    var profiles = this.data.GameTools && this.data.GameTools.unitProfiles;
+    return units[profiles && profiles.aliases && profiles.aliases[t]];
   };
   _ctor.prototype.getCode = function (t) {
     var e = t.toLocaleLowerCase();

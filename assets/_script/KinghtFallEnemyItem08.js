@@ -32,9 +32,9 @@ var def_KinghtFallEnemyItem08 = function (t) {
     if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
     if (!currentShot() || !cc.isValid(this, true) || this.node !== sourceNode || !cc.isValid(sourceNode, true) || sourceNode._combatGeneration !== sourceGeneration || this._isPooled || this.isDead && this.isDead()) return;
     this.node.getPosition(this.vec2_1);
-    this.rigidBody.active = true;
+    this.rigidBody.active = !this._unitTestActor && (this.cfg.BuildingCross === undefined || !!this.cfg.BuildingCross);
     var e = this.getAttack();
-    var n = function () {
+    var n = this.pickAttackVictim(game, function () {
       var forced = require("RelicCombat").tauntedTarget(t);
       if (forced) {
         forced.node.getPosition(t.vec2_2);
@@ -83,7 +83,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
         }
       }
       return e;
-    }();
+    });
     if (n) {
       targetNode = n.node; targetGeneration = targetNode._combatGeneration;
       e = GameToolsOverrides.typeCounterDamage(this, n, e);

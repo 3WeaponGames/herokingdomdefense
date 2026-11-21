@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'../..'),cfg=require('../../assets/KinghtFallC
 test('the six selected roles cover every independent ally and enemy with individual names and portraits',()=>{
  assert.deepEqual(Object.values(cfg.GameTools.unitTypes).map(t=>t.name).sort(),['Fighter','Skirmisher','Vanguard','Mystic','Bruiser','Guardian'].sort());
  const aliases=Object.values(cfg.SoldierCfg).filter(unit=>unit.CampaignBaseUnit),packs=['monster1','monster2','monster3','fantasy-monsters','fantasy-bosses'],sources=packs.flatMap(pack=>require('../../assets/resources/unit-library/'+pack+'/catalog.json').units.map(unit=>unit.id));
- const profiles=cfg.GameTools.unitProfiles;assert.equal(Object.keys(cfg.AllyCfg).length,4);assert.equal(aliases.length,127);assert.equal(Object.keys(cfg.SoldierCfg).length,12+sources.length+aliases.length+Object.values(profiles.entries).filter(p=>p.fightingProfile).length+Object.keys(profiles.bossForms).length);
+ const profiles=cfg.GameTools.unitProfiles;assert.equal(Object.keys(cfg.AllyCfg).length,4);assert.equal(aliases.length,0);assert.equal(Object.keys(cfg.SoldierCfg).length,12+sources.length+Object.values(profiles.entries).filter(p=>p.fightingProfile).length+Object.keys(profiles.bossForms).length);
  for(const [id,ally]of Object.entries(cfg.AllyCfg)){assert.notEqual(ally,cfg.SoldierCfg[id]);assert.notEqual(ally.Name,cfg.SoldierCfg[id].Name);assert(!ally.loadIcon.startsWith('@icon/icons/enemy-heads/'));}
  const legacy=Object.values(cfg.SoldierCfg).filter(unit=>unit.ID>=90001&&unit.ID<=90012), imported=Object.values(cfg.SoldierCfg).filter(unit=>unit.MonsterSource);
  assert.deepEqual(legacy.map(unit=>unit.ID).sort((a,b)=>a-b),Array.from({length:12},(_,i)=>90001+i));
@@ -46,6 +46,10 @@ test('campaign waves use canonical fighting profiles and retain valid spawn coun
 test('runtime ally lookup returns its own record while legacy data without a split retains its original lookup',()=>{
  const context={exports:{},require:()=>({})};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallDataMgr.js'),'utf8'),context);const mgr=new context.exports.KinghtFallDataMgr();mgr.data=structuredClone(cfg);
  const ally=mgr.getSoldierCfgById(90001,'ally'),enemy=mgr.getSoldierCfgById(90001);assert.notEqual(ally,enemy);const hp=enemy.Health;ally.Health+=123;assert.equal(enemy.Health,hp);assert.equal(mgr.getSoldierCfgById(90001,'enemy'),enemy);delete mgr.data.AllyCfg;assert.equal(mgr.getSoldierCfgById(90001,'ally'),enemy);
+ assert.equal(mgr.data.SoldierCfg[92104],undefined);
+ assert.equal(mgr.getSoldierCfgById(92104,'enemy'),mgr.data.SoldierCfg[91081]);
+ assert.equal(mgr.getSoldierCfgById(92104,'ally'),undefined);
+ assert.equal(mgr.getSoldierCfgById(90008,'enemy'),mgr.data.SoldierCfg[90008]);
 });
 test('counter bonuses match the target role across different unit IDs, with separate sides, boss forms and legacy fallback',()=>{
  const settings={unitTypeAssignments:{'enemy:90001:default':'fighter','enemy:90002:default':'fighter','enemy:90003:default':'skirmisher','ally:90001:default':'guardian','enemy:90011:2':'guardian'}};

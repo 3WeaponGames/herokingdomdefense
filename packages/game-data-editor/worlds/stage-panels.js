@@ -2,10 +2,11 @@
 // Contextual authoring UI. All content changes go through the shared draft API.
 const Waves=require('./wave-editor'),Paths=require('./path-editor'),Stats=require('./wave-stats'),Model=require('./model'),StageCards=require('./stage-cards-client'),StageProfiles=require('./stage-profile-editor');
 const Names=require('./stage-names'),CardOrder=require('./stage-card-order'),CardDrag=require('./stage-card-drag');
+const TaskPosition=require('../../../assets/_script/StageTaskPosition');
 const SETS=[{value:'A',label:'Default stages'},{value:'B',label:'Alternate configuration B'},{value:'D',label:'Alternate configuration D'}];
 const STAGE_SECTIONS=[
  {value:'buildings',label:'Buildings',description:'All buildings and special offers, including unlock settings and appearance.'},
- {value:'spawns',label:'Spawn points',description:'Enemy spawn points and the hero start.'},
+ {value:'spawns',label:'Spawn points',description:'Enemy spawn points, the hero start and the Tasks position.'},
  {value:'paths',label:'Paths',description:'Every path, point and connection.'},
  {value:'waves',label:'Waves',description:'All waves, including enemies, timing, settings and rewards.'},
  {value:'settings',label:'Map and stage settings',description:'The map choice and other stage settings. The current stage keeps its number, configuration and name.'}
@@ -78,6 +79,8 @@ function create(c){
    section(parent,'Paths');note(parent,'Choose a route to edit its points on the map. Drag cards to rearrange them.');const rows=el('div',undefined,'world-path-list'),cards=[];parent.appendChild(rows);for(const graph of CardOrder.ordered(stage().graphs)){const b=button(rows,'',()=>{c.cancelDrag();state.graph=graph.id;state.spawn=(stage().spawns.find(spawn=>spawn.enabled!==false&&graph.spawnIds.includes(spawn.id))||{}).id||null;state.selection=[];state.tool='select';render();},state.graph===graph.id);b.dataset.graphId=graph.id;b.setAttribute('aria-current',String(state.graph===graph.id));b.appendChild(el('strong',pathTitle(stage(),graph)));b.appendChild(el('small',pathSubtitle(stage(),graph)));cards.push({id:graph.id,node:b});}draggable(rows,cards,s=>s.graphs);button(parent,'New path',()=>{c.cancelDrag();return c.newPath();});return;
   }
   section(parent,'Spawn points');const rows=el('div',undefined,'world-spawn-list');parent.appendChild(rows);for(const spawn of stage().spawns){const item=button(rows,spawn.name+(spawn.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.spawn=spawn.id;state.selection=['spawn:'+spawn.id];state.tool='select';render();},state.selection.includes('spawn:'+spawn.id));item.setAttribute('aria-current',String(state.selection[0]==='spawn:'+spawn.id));item.setAttribute('aria-pressed',String(state.selection.includes('spawn:'+spawn.id)));}button(parent,'Add spawn on map',()=>{state.tool='spawn';render();});button(parent,'Hero start',()=>{c.cancelDrag();state.selection=['hero'];state.tool='select';render();},state.selection.includes('hero'));
+  const tasks=button(parent,'Tasks position',()=>{c.cancelDrag();state.selection=['tasks-position'];state.tool='tasks-position';render();},state.selection.includes('tasks-position'));
+  tasks.title='Click the map to place the Retired King';
  }
  function stageInspector(){
   section(c.right,title(rowForCurrent()));
@@ -105,7 +108,16 @@ function create(c){
  }
  function valueOrZero(value){return value===undefined?0:value;}
  function spawnInspector(){
-  const id=state.selection.find(value=>value==='hero'||value.startsWith('spawn:')),spawn=id==='hero'?stage().hero:stage().spawns.find(s=>'spawn:'+s.id===id);
+  const id=state.selection.find(value=>value==='hero'||value==='tasks-position'||value.startsWith('spawn:'));
+  if(id==='tasks-position'){
+   section(c.right,'Tasks position');
+   note(c.right,state.tool==='tasks-position'?'Click the map to place the Retired King. Escape cancels placement.':'Drag the marker or edit its coordinates to move the Retired King.');
+   const position=TaskPosition.resolve(stage().tasksPosition,stage().hero,state.map&&state.map.size);
+   field(c.right,'X',position.x,value=>c.patchSelected('x',value));
+   field(c.right,'Y',position.y,value=>c.patchSelected('y',value));
+   return;
+  }
+  const spawn=id==='hero'?stage().hero:stage().spawns.find(s=>'spawn:'+s.id===id);
   section(c.right,id==='hero'?'Hero start':'Spawn point');if(!spawn){note(c.right,'Select a spawn on the left or click its marker on the map.');return;}if(id!=='hero'){field(c.right,'Name',spawn.name===undefined||spawn.name===null?'':String(spawn.name),value=>c.patchSelected('name',value));field(c.right,'Enabled',spawn.enabled!==false,value=>c.patchSelected('enabled',value));const radius=field(c.right,'Spawn radius',numericValue(spawn.radius||0),value=>{if(!Number.isFinite(value)||value<0||value>1500)throw Error('Choose a radius from 0 to 1500.');return c.patchSelected('radius',value);});radius.min='0';radius.max='1500';radius.step='0.1';if(c.spawnRadiusScrubber)c.spawnRadiusScrubber(radius);note(c.right,'Drag the Spawn radius label or circle handle to resize. Ctrl + wheel: ±10. The circle stays inside the map. Enemies appear inside it and can move out of blocked terrain. Radius 0 keeps a point spawn.');}for(const key of ['x','y'])field(c.right,key.toUpperCase(),spawn[key],value=>c.patchSelected(key,value));if(id!=='hero'){section(c.right,'Routes using this spawn');for(const graph of stage().graphs.filter(g=>g.spawnIds.includes(spawn.id)))button(c.right,pathTitle(stage(),graph),()=>{c.cancelDrag();state.tab='Paths';state.graph=graph.id;state.spawn=spawn.id;state.selection=[];render();});button(c.right,'Delete spawn',c.remove);note(c.right,'Use Waves to choose which enemies enter here.');}
  }
  function sameCondition(a,b){return a===b||!!a&&!!b&&typeof a==='object'&&typeof b==='object'&&JSON.stringify(a)===JSON.stringify(b);}

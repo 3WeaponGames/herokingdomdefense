@@ -322,5 +322,5 @@ function routeTest(root, data, start, goal, radius, includeBuildings) {
     const pathResult = grid.findPath(start, goal, radius);
     return { path: pathResult, polygons: polygons.length, bounds: info.bounds, note: 'Authored collision state. Battle upgrades can enable different building shapes.' };
 }
-module.exports = { IDS, OBSTACLE, loadMap, loadIndex, indexSources, stagesFor, model, transform, multiply, inverse, point, colliderPoints,
+module.exports = { IDS, OBSTACLE, loadMap, loadIndex, indexSources, assetIndex, stagesFor, model, transform, multiply, inverse, point, colliderPoints,
     trsEdit, moveEdit, moveObjectEdits, duplicateObstacle, validate, issuesFor, routeTest, fileFor };

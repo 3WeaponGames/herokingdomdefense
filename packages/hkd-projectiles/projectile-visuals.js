@@ -1,4 +1,5 @@
 'use strict';
+const Looks=require('../../assets/_script/ProjectileLooks');
 
 // Canvas counterpart of the authored wall projectile components. Gameplay uses
 // the original prefab; this renderer reads its indexed visual parameters only.
@@ -46,7 +47,7 @@ function create(api,options){
     ctx.restore();
   }
   function draw(ctx,asset,settings){
-    if(closed||!asset||!asset.visualLayers||!asset.visualLayers.length)return false;const value=settings||{},time=Math.max(0,number(value.time,0)),size=Math.max(1,number(value.size,asset.size||48)),scale=size/Math.max(1,number(asset.visualPrefab&&asset.visualPrefab.width,asset.width||48)),speed=number(value.speed,160)/scale,angle=number(value.rotation,0)+number(asset.visualPrefab&&asset.visualPrefab.rotation,asset.rotation||0);
+    if(closed||!asset||!asset.visualLayers||!asset.visualLayers.length)return false;const value=settings||{},time=Math.max(0,number(value.time,0)),size=number(value.size,asset.size||48),scale=asset.visualPrefab?Looks.artworkScale(asset,size):size/Math.max(1,number(asset.width,48)),speed=number(value.speed,160)/scale,angle=number(value.rotation,0)+number(asset.visualPrefab&&asset.visualPrefab.rotation,asset.rotation||0);
     const direction=(number(value.heading,-angle-90)+angle)*Math.PI/180,motion={x:Math.cos(direction)*speed,y:-Math.sin(direction)*speed};
     ctx.save();ctx.translate(number(value.x,0),number(value.y,0));ctx.rotate(-angle*Math.PI/180);ctx.scale(scale,-scale);
     for(let index=0;index<asset.visualLayers.length;index++){

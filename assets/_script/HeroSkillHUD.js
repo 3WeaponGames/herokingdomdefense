@@ -254,10 +254,17 @@ function layout(hud,rt) {
     bottom:Math.min(r.bottom,badge.bottom)-origin.y,top:Math.max(r.top,badge.top)-origin.y};
   [rt.ui.btnAgg,rt.ui.btnFollow].forEach(function(other){if(live(other)&&other.activeInHierarchy)obstacles.push(commandBounds(other));});
   var minX=b.left+20-r.left,maxX=b.right-20-r.right,minY=b.bottom+20-r.bottom,maxY=b.top-20-r.top,targetX=maxX,targetY=minY;
-  // Ally commands share the bottom row. Keep the skill in the right column
-  // directly above Rally instead of searching for an unrelated footer gap.
-  var rally=rt.ui.btnAgg;
-  if(live(rally)&&rally.activeInHierarchy){var command=commandBounds(rally),center=rally.convertToWorldSpaceAR(vec(0,0));targetX=Math.max(minX,Math.min(maxX,center.x));targetY=Math.max(minY,Math.min(maxY,command.top+12-r.bottom));}
+  var follow=rt.ui.btnFollow,command=live(follow)&&follow.activeInHierarchy?follow:rt.ui.btnAgg;
+  if(live(command)&&command.activeInHierarchy){
+    var center=command.convertToWorldSpaceAR(vec(0,0));
+    // Align the center of the wider skill button with the commands when its
+    // full touch area still fits inside the safe area.
+    if(center.x+r.left>=b.left+12&&center.x+r.right<=b.right-12){
+      minX=Math.min(minX,center.x);maxX=Math.max(maxX,center.x);
+    }
+    targetX=Math.max(minX,Math.min(maxX,center.x));
+    targetY=Math.max(minY,Math.min(maxY,commandBounds(command).top+12-r.bottom));
+  }
   var xs=[targetX,maxX,minX],ys=[targetY,minY,maxY],best=null;
   obstacles.forEach(function(o){xs.push(o.left-12-r.right,o.right+12-r.left);ys.push(o.top+12-r.bottom,o.bottom-12-r.top);});
   xs.forEach(function(x){x=Math.max(minX,Math.min(maxX,x));ys.forEach(function(y){y=Math.max(minY,Math.min(maxY,y));if(obstacles.some(function(o){return x+r.left<o.right+12&&x+r.right>o.left-12&&y+r.bottom<o.top+12&&y+r.top>o.bottom-12;}))return;var cost=Math.abs(x-targetX)*2+Math.abs(y-targetY);if(!best||cost<best.cost)best={x:x,y:y,cost:cost};});});

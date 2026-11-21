@@ -12,13 +12,24 @@ function unchanged(dependencies){if(!dependencies)return false;try{for(const [fi
 function read(file,json,dependencies){const version=revision(file,dependencies),old=files.get(file);if(old&&old.revision===version)return old.value;const text=fs.readFileSync(file,'utf8'),value=json?JSON.parse(text.replace(/^\uFEFF/,'')):text;files.set(file,{revision:version,value});return value;}
 function reference(data,ref){const value=ref&&data[ref.__id__];return value&&value.__type__==='cc.Node'?ref.__id__:value&&value.node&&value.node.__id__;}
 function multiply(a,b){return [a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];}
-function rowFor(config,building,hall){
- const definition=config.BuildEnum&&config.BuildEnum[building.kind],rows=definition&&definition.levelList||[];
- if(Number.isInteger(building.previewBranch))return {row:rows.find(row=>row.index===building.previewBranch)};
- let row=rows[0];
- if(building.kind===1)row=rows.find(row=>row.level===hall)||rows.reduce((best,row)=>row.level<=hall&&(!best||row.level>best.level)?row:best,null);
- else if(definition&&Array.isArray(definition.InitialChoices))row=definition.InitialChoices.map(index=>rows.find(row=>row.index===index&&row.level===1)).find(Boolean);
- return {index:row&&row.index,row};
+function previewRow(config,building,level,buildingLevels){
+ const row=Navigation.buildingRow(building,level,config);
+ if(!row||building.kind===1||!buildingLevels)return row;
+ const rows=config.BuildEnum[building.kind].levelList;
+ // Stay on the selected construction branch. Use the first path that reaches
+ // the requested level, or the highest reachable row when the branch caps.
+ function bestThrough(current){
+  let best=current;
+  for(const index of Array.isArray(current.BranchBuild)?current.BranchBuild:[]){
+   const next=rows.find(row=>row.index===index&&row.level>current.level&&row.level<=level);
+   if(!next)continue;
+   const candidate=bestThrough(next);
+   if(candidate.level>best.level)best=candidate;
+   if(best.level===level)break;
+  }
+  return best;
+ }
+ return bestThrough(row);
 }
 function sprite(info,s,ground){const n=info.byId[s.node];return {frame:s.frame,matrix:n.world.slice(),width:n.width,height:n.height,anchor:clone(n.anchor),color:clone(n.source._color||{r:255,g:255,b:255,a:255}),active:true,ground:!!ground};}
 function skeleton(root,component,info,assetIndex,skin,ground,cache,dependencies){
@@ -34,7 +45,7 @@ function appearanceSprites(root,appearance,owner,images,dependencies,partScale){
  if(weapon&&typeof weapon.sprite==='string'&&weapon.sprite){const p=WeaponPose.pose(weapon,null,partScale),a=p.angle*Math.PI/180,c=Math.cos(a),s=Math.sin(a);sprites.push({frame:artwork(root,p.sprite,images,dependencies),matrix:multiply(owner.world,[c*p.flipX,s*p.flipX,-s,c,p.x,p.y]),width:p.width,height:p.height,anchor:{x:p.pivotX,y:p.pivotY},active:true,ground:false,shadowExcluded:true});}
  return sprites;
 }
-function describe(service,stage){
+function describe(service,stage,{buildingLevels=false}={}){
  const index=service.index(),config=service.previewConfig?service.previewConfig(stage.variant||'A'):index.documents[stage.variant||'A']&&index.documents[stage.variant||'A'].BuildEnum?index.documents[stage.variant||'A']:index.documents.A,buildings={},images={},errors=[],sourceModels=new Map(),assetCache=new Map(),sources=new Map(),dependencies=new Map();let assetIndex=null,needsRuntime=false;
  let wallAdjustments=null;
  if((stage.buildings||[]).some(building=>building.kind===6))try{wallAdjustments=WallData.readSource(service.root);revision(wallAdjustments.file,dependencies);}catch(error){if(error.code!=='ENOENT')errors.push(error.message);wallAdjustments={data:{version:1,poses:{}},revision:error.code==='ENOENT'?'missing':'unavailable'};}
@@ -43,7 +54,7 @@ function describe(service,stage){
  // rows. Referenced artwork is checked with cheap file stamps before reuse,
  // so live texture/model replacement does not require editing or saving a draft.
  for(const building of stage.buildings||[]){const id=building.template.prefab;if(!sources.has(id)){try{const data=stage.templates&&stage.templates[id]||service.source(id);sources.set(id,{data,revision:L.hash(JSON.stringify(data))});}catch(error){sources.set(id,{data:null,revision:'missing'});errors.push(error.message);}}}
- const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseOverride,b.spawnPosition,b.placementVariant,b.angle,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum,config.GameTools&&config.GameTools.buildingShadows,wallAdjustments&&wallAdjustments.revision]),previous=descriptions.get(service);
+ const signature=JSON.stringify([buildingLevels,(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseOverride,b.spawnPosition,b.placementVariant,b.angle,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum,config.GameTools&&config.GameTools.buildingShadows,wallAdjustments&&wallAdjustments.revision]),previous=descriptions.get(service);
  if(previous&&previous.index===index&&previous.signature===signature&&unchanged(previous.dependencies))return previous.value;
  for(const authoredBuilding of stage.buildings||[]){
   const building=Purchase.withDefaults(authoredBuilding,config,1,sources.get(authoredBuilding.template.prefab).data);
@@ -68,17 +79,20 @@ function describe(service,stage){
   const trigger=plate&&plate.components.find(c=>c.value.__type__==='cc.PolygonCollider');
   const trs=plate&&plate.source._trs&&plate.source._trs.array,step=trigger?(trigger.value.points||[]).map(p=>{const x=p.x/(trs?trs[7]:1),y=p.y/(trs?trs[8]:1),m=plate.world;return {x:m[0]*x+m[2]*y+m[4]-origin.x,y:m[1]*x+m[3]*y+m[5]-origin.y};}):null;
   for(const hall of [1,2,3,4]){
-   const chosen=rowFor(config,building,hall),row=chosen.row,look=row&&row.Appearance,level={origin:clone(origin),sprites:plateSprites.concat(native),skeletons:[],blockers:Navigation.buildingPolygons(service,stage,Object.assign({},building,{x:0,y:0,scale:1,angle:0}),hall,'closed',config,sourceModels),step:step&&clone(step)};
+   const row=previewRow(config,building,hall,buildingLevels),look=row&&row.Appearance;
+   const branch=buildingLevels&&building.kind!==1&&row?{previewBranch:row.index}:null;
+   const posed=Object.assign({},building,branch,{x:0,y:0,scale:1,angle:0});
+   const level={origin:clone(origin),sprites:plateSprites.concat(native),skeletons:[],blockers:Navigation.buildingPolygons(service,stage,posed,hall,'closed',config,sourceModels),step:step&&clone(step)};
    if(building.kind===6)level.wallOpening=GateFacing.validOpening(component.wallOpening)?component.wallOpening:'outward';
    if(plate)level.purchaseField={angle:Purchase.angle(building.purchaseSide||component.purchaseSide),center:{x:plate.position.x-origin.x,y:plate.position.y-origin.y},offset:clone(Purchase.offset(building.purchaseOffset?building:component)),sprites:plateSprites.map(()=>true).concat(nativeSpecs.map(()=>false))};
-   const perLevel=Purchase.withDefaults(authoredBuilding,config,hall,rawSource);
+   const perLevel=Purchase.withDefaults(branch?Object.assign({},authoredBuilding,branch):authoredBuilding,config,hall,rawSource);
    if(plate&&JSON.stringify([perLevel.purchaseSide,perLevel.purchaseOffset])!==JSON.stringify([building.purchaseSide,building.purchaseOffset])){
     const projected=Purchase.project(GateSource.project(rawSource,perLevel,service.root),perLevel),model=Maps.model(projected),p=model.byId[plateId],trigger=p.components.find(c=>c.value.__type__==='cc.PolygonCollider'),trs=p.source._trs.array;
     level.sprites=model.sprites.filter(s=>s.node===plateId&&s.enabled).map(s=>sprite(model,s,true)).concat(native);
     level.step=trigger?trigger.value.points.map(q=>{const v=Maps.point(p.world,{x:q.x/trs[7],y:q.y/trs[8]});return {x:v.x-origin.x,y:v.y-origin.y};}):null;
     level.purchaseField={angle:Purchase.angle(perLevel.purchaseSide),center:{x:p.position.x-origin.x,y:p.position.y-origin.y},offset:clone(Purchase.offset(perLevel)),sprites:plateSprites.map(()=>true).concat(nativeSpecs.map(()=>false))};
    }
-   if(building.kind===6){level.openBlockers=Navigation.buildingPolygons(service,stage,Object.assign({},building,{x:0,y:0,scale:1,angle:0}),hall,'open',config,sourceModels);const flags=gate=>Navigation.buildingColliderData(service,stage,building,hall,gate,config,sourceModels).colliders.map(c=>moving.has(c.node)||c.node===owner.id&&c.type==='cc.PhysicsPolygonCollider');level.rotationPreview={angle:number(component.wallRotation,0),sprites:plateSprites.map(()=>false).concat(nativeSpecs.map(s=>moving.has(s.node))),skeletons:[],blockers:flags('closed'),openBlockers:flags('open')};}
+   if(building.kind===6){level.openBlockers=Navigation.buildingPolygons(service,stage,posed,hall,'open',config,sourceModels);const flags=gate=>Navigation.buildingColliderData(service,stage,branch?Object.assign({},building,branch):building,hall,gate,config,sourceModels).colliders.map(c=>moving.has(c.node)||c.node===owner.id&&c.type==='cc.PhysicsPolygonCollider');level.rotationPreview={angle:number(component.wallRotation,0),sprites:plateSprites.map(()=>false).concat(nativeSpecs.map(s=>moving.has(s.node))),skeletons:[],blockers:flags('closed'),openBlockers:flags('open')};}
    if(look&&typeof look.sprite==='string'&&look.sprite){try{const renderedOwner=building.kind===6&&component.wallRotation?Object.assign({},owner,{world:Maps.multiply(GateSource.around(origin,component.wallRotation),owner.world)}):owner;const additions=appearanceSprites(service.root,look,renderedOwner,images,dependencies,require('../../../assets/_script/BuildingPartScale').value(row,'weapon'));level.sprites=level.sprites.concat(additions);if(level.rotationPreview)level.rotationPreview.sprites.push(...additions.map(()=>true));if(level.purchaseField)level.purchaseField.sprites.push(...additions.map(()=>false));}catch(error){errors.push(error.message);}}
    else{
     const refs=[{ref:component.ndAniDown,ground:building.kind!==6},{ref:component.ndAniMain,ground:false}].concat((component.ndAniOther||[]).map(ref=>({ref,ground:false})));
@@ -92,7 +106,7 @@ function describe(service,stage){
    if(row&&row.ModelOffset){const Offset=require('../../../assets/_script/BuildingModelOffset');Object.assign(level,Offset.record(level,Offset.vector(owner.world,Offset.value(row))));}
    result.levels[hall]=WorldScale.record(level,WorldScale.value(row),false);
    if(firstUpgradeCard)result.levels[hall].firstUpgradeCard=firstUpgradeCard;
-   if(building.kind===3)try{const marker=require('./barracks-spawn').describe(Object.assign({},authoredBuilding,{x:0,y:0,scale:1,angle:0}),source,config,hall,info);if(marker)result.levels[hall].squadSpawn=marker;}catch(error){errors.push(error.message);}
+   if(building.kind===3)try{const marker=require('./barracks-spawn').describe(Object.assign({},authoredBuilding,branch,{x:0,y:0,scale:1,angle:0}),source,config,hall,info);if(marker)result.levels[hall].squadSpawn=marker;}catch(error){errors.push(error.message);}
   }
  }
  let runtimePath=null;if(needsRuntime)try{runtimePath=Units.enginePath();}catch(error){errors.push(error.message);}

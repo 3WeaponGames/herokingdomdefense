@@ -5,6 +5,56 @@ const Preview=require('../../packages/hkd-skills/preview');
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function simulate(model,seconds){for(let time=0;time<seconds;){const dt=Math.min(1/120,seconds-time);model.advance(dt);time+=dt;}return model;}
 
+test('enemy preview draws the built-in recipient clip with the model form identifier intact',async()=>{
+ const create=require('../../packages/hkd-skills/enemy-preview').create;
+ const visual=require('../../assets/_script/EnemySkillVisuals').effective('heal');
+ const frames=[],errors=[],description={form:'default',skill:'heal',duration:1,layers:[{uuid:'model'}],builtin:{layers:[{uuid:'heal',animation:'animation'}]}};
+ const host={ownerDocument:{createElement:()=>({style:{},setAttribute(){},remove(){}})},clientWidth:440,clientHeight:380,appendChild(){}};
+ const renderer={createLayers:async(_runtime,layers)=>layers.map(description=>({description,skeleton:{},data:{findAnimation(name){assert(name);return {name,duration:1};}}})),
+  seek(){},bounds:()=>({minX:-20,maxX:20,minY:0,maxY:60}),drawCanvas(_runtime,_canvas,layers){frames.push(layers.map(layer=>layer.description.uuid));},destroyCanvas(){}};
+ const preview=create(host,{runtime:()=>({}),renderer,onStatus(value){if(value.error)errors.push(value.error);}});
+ try{
+  preview.play(false);await preview.set({settings:{visual},description});
+  assert.deepEqual(frames.at(-1),['model']);preview.seek(.75);
+  assert.deepEqual(frames.at(-1),['model','heal']);assert.deepEqual(errors,[]);
+ }finally{preview.destroy();}
+});
+
+test('boost previews show distinct artwork during the buff and apply live adjustments without reloading it',async()=>{
+ const create=require('../../packages/hkd-skills/enemy-preview').create;
+ const visuals=require('../../assets/_script/EnemySkillVisuals');
+ const images=[],canvases=[],drawn=[];
+ const ctx={clearRect(){},save(){},restore(){},transform(){},translate(x,y){this.position=[x,y];},scale(x,y){this.size=[x,y];},
+  drawImage(image){drawn.push({image,position:this.position,size:this.size,alpha:this.globalAlpha});}};
+ const host={ownerDocument:{createElement:()=>({style:{},setAttribute(){},getContext:()=>ctx,remove(){this.removed=true;}})},
+  clientWidth:440,clientHeight:380,appendChild(canvas){canvases.push(canvas);}};
+ const renderer={createLayers:async(_runtime,layers)=>layers.map(description=>({description,skeleton:{}})),
+  loadImage:async url=>{images.push(url);return {url};},tintedImage:(image,color)=>({...image,color}),
+  seek(){},bounds:()=>({minX:-20,maxX:20,minY:0,maxY:60}),drawCanvas(){},destroyCanvas(){}};
+ const preview=create(host,{runtime:()=>({}),renderer});
+ try{
+  preview.play(false);
+  for(const skill of ['haste','damage','move']){
+   const indicator='file:///'+visuals.indicatorPath(skill)+'.png',description={skill,indicator,duration:1,layers:[{uuid:'model'}]};
+   const visual=visuals.effective(skill);
+   await preview.set({settings:{visual},description});
+   const start=drawn.length;
+   preview.seek(.2);assert.equal(drawn.length,start);
+   preview.seek(.5);assert.equal(drawn.at(-1).image.url,indicator);
+   const tuned={...visual,indicatorX:10,indicatorY:-8,indicatorScale:1.3,indicatorOpacity:.6,indicatorColor:'#ff0000',indicatorRate:2};
+   await preview.set({settings:{visual:tuned},description});
+   const pose=visuals.indicatorPose(skill,tuned,.5-.4),current=drawn.at(-1);
+   assert.deepEqual(current.image.color,{r:1,g:0,b:0});assert.deepEqual(current.position,[pose.x,pose.y]);
+   assert.deepEqual(current.size,[pose.scale,-pose.scale]);close(current.alpha,pose.opacity);
+   preview.seek(1.5);assert.equal(canvases[1].hidden,true);
+   preview.seek(.5);assert.equal(canvases[1].hidden,false);
+   await preview.set({settings:{visual:{...tuned,showIndicator:false}},description});assert.equal(canvases[1].hidden,true);
+  }
+  assert.equal(images.length,3);assert.equal(new Set(images).size,3);assert.equal(canvases.length,2);
+ }finally{preview.destroy();}
+ assert(canvases.every(canvas=>canvas.removed));
+});
+
 test('Mystic preview shares the attack-only second of cast recovery and resumes without accumulated passive ticks',()=>{
  const setup=()=>{const model=new Model('mystic',{explosionTime:.2,visual:{castResource:''}},{mode:'basic',moving:true,attackRate:4,targetDistance:100,targets:1,holdSource:.1});model.advance(.25);assert(model.hits>0);assert(model.cast());return model;};
  const model=setup(),before=model.hits,position={...model.hero};assert.equal(model.beam,false);assert.equal(model.channelTarget,null);model.advance(.999);

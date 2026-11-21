@@ -31,6 +31,36 @@ test('prefab export uses safe fixtures while preserving the authored map and blo
  const colliders=data.filter(r=>r.__type__==='cc.PhysicsPolygonCollider');assert.equal(colliders.length,21);assert(colliders.every(r=>r.points.length===3));assert.equal(JSON.stringify(map),before);assert(Math.abs(sum(colliders.map(c=>c.points))-sum(Physics.fixtures(regression)))<1e-6);
 });
 
+test('erasing can leave a subprecision speck that does not prevent map export',()=>{
+ const square=(x,y,w,h)=>[{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];
+ let map=Model.createMap('erased-blocker','Erased blocker','desert');
+ map=Model.polygonBlockers(map,square(0,0,10,10));
+ map=Model.polygonBlockers(map,square(-1,.04,12,12),'erase');
+ map=Model.polygonBlockers(map,square(.04,-1,12,12),'erase');
+ const speck=Model.blockerPolygons(map)[0].points;
+ assert.throws(()=>Physics.fixtures(speck),/physics precision/);
+ assert.deepEqual(Model.validateMap(map),[]);
+ const data=Prefab.skeleton('Speck only',map);
+ Prefab.addEnvironment(root,data,map,{ground:[],assets:{}});
+ assert(!data.some(record=>record._name==='Blocker map-blockers'||record.__type__==='cc.PhysicsPolygonCollider'));
+
+ map=Model.polygonBlockers(map,square(20,20,40,40));
+ const before=JSON.stringify(map),fixtures=Model.blockerFixtures(map);
+ assert.equal(fixtures.length,1);
+ assert.equal(sum(fixtures.map(f=>f.points)),1600);
+ assert.equal(JSON.stringify(map),before,'projection preserves the draft geometry');
+});
+
+test('a larger thin blocker reports its map location during validation, before baking',()=>{
+ const map=Model.createMap('thin-blocker','Thin blocker','desert');
+ map.blockerMask=Blockers.polygonBrush([{x:14,y:23},{x:14.05,y:23},{x:14.05,y:33},{x:14,y:33}]);
+ const [issue]=Model.validateMap(map);
+ assert.match(issue,/X 14\.0, Y 23\.0.*physics precision.*Clear All Map Blockers/);
+ map.blockerMask=[];
+ assert.deepEqual(Model.validateMap(map),[]);
+ assert.deepEqual(Model.blockerFixtures(map),[]);
+});
+
 const engine=process.env.COCOS_ENGINE_PATH||path.join(process.env.ProgramData||'C:/ProgramData','cocos/editors/Creator/2.4.13/resources/engine'),separator=path.join(engine,'cocos2d/core/physics/CCPolygonSeparator.js'),box2d=path.join(engine,'external/box2d/box2d.js');
 test('Creator 2.4.13 separates every projected fixture and Box2D never substitutes a fallback box',{skip:!fs.existsSync(separator)||!fs.existsSync(box2d)},()=>{
  function v2(x=0,y=0){return{x,y,add(p){return v2(this.x+p.x,this.y+p.y);},div(d){return v2(this.x/d,this.y/d);}};}

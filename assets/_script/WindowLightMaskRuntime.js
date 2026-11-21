@@ -27,7 +27,7 @@ function read(frame){
 }
 function trim(){for(var i=0;entries.length>32&&i<entries.length;){var entry=entries[i];if(entry.refs){i++;continue;}entries.splice(i,1);entry.frame.destroy();entry.texture.destroy();}}
 function acquire(source,mask){
- if(!mask||!mask.strokes.length)return null;
+ if(!Mask.hasMask(mask))return null;
  var signature=JSON.stringify(mask),entry=entries.find(function(e){return e.source===source&&e.signature===signature;});
  if(!entry){var data=read(source),texture=new cc.Texture2D();texture.initWithData(Mask.pixels(data.pixels,mask,data.width,data.height),cc.Texture2D.PixelFormat.RGBA8888,data.width,data.height);texture.packable=false;texture.setFilters(cc.Texture2D.Filter.LINEAR,cc.Texture2D.Filter.LINEAR);var frame=new cc.SpriteFrame(texture);frame._uuid=(source._uuid||source.uuid||"window-light")+"@mask:"+(++serial);entry={source:source,signature:signature,texture:texture,frame:frame,refs:0};entries.push(entry);}
  entry.refs++;trim();return entry;

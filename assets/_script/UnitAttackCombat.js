@@ -41,7 +41,8 @@ function opponents(scope) {
 function candidates(scope, exclude) {
   var seen = new Set();
   return opponents(scope).filter(function (actor) {
-    if (!targetLive(actor) || seen.has(actor.node) || exclude && exclude.has(actor.node)) return false;
+    if (!targetLive(actor) || seen.has(actor.node) || exclude && exclude.has(actor.node) ||
+        scope.targeting && !scope.targetingRules.allows(scope.targeting, scope.game, actor, scope.breach)) return false;
     seen.add(actor.node);
     return true;
   });
@@ -127,8 +128,12 @@ function release(owner, side) {
   function current() { return attackCurrent(scope); }
   if (!current()) return;
   if (rules.delivery === "melee") owner.time.Attack = 0;
-  var selected = side === "enemy" ? owner.getUpdateTarget() : null;
+  var targetingRules = side === "enemy" && owner.cfg.EnemyTargeting && require("EnemyTargeting");
+  scope.targetingRules = targetingRules;
+  scope.targeting = targetingRules && targetingRules.settings(owner.cfg);
+  var selected = side === "enemy" ? scope.targeting ? owner.getFind() : owner.getUpdateTarget() : null;
   var target = side === "ally" ? owner.releaseAttackTarget() : selected && selected.canAtt && (selected.actor || selected.building);
+  scope.breach = selected && selected.breach && target;
   if (!current() || !targetLive(target)) return;
   var primary = capture(target, scope);
   scope.origin = Navigation.positionOf(owner.node, game);

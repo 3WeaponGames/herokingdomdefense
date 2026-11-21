@@ -311,11 +311,15 @@ test('the skill and auto badge avoid both commands and their captions in a narro
  assert(badge.bottom>p.top,'The badge sits above the cooldown number');
 });
 
-test('the skill stays above Rally while Follow shares the bottom row and returns to the corner when commands hide',()=>{
- const f=fixture();f.ui.btnAgg=command(f,'Rally',293,-566.516);f.ui.btnFollow=command(f,'Follow',147,-566.516);f.hud.update(f.hero,f.rt);
- const hud=f.hero._skillHUD,b=rect(hud.button),r=rect(f.ui.btnAgg);assert.equal(hud.button.active,true);assert(Math.abs(b.bottom-r.top-12)<1e-9);assert(Math.abs(hud.button.convertToWorldSpaceAR({x:0,y:0}).x-293)<8);assert(b.left>rect(f.ui.btnFollow).right,'The skill remains in the Rally column');
- f.ui.btnAgg.activeInHierarchy=f.ui.btnFollow.activeInHierarchy=false;f.hud.layout(f.hero,f.rt);const hidden=rect(hud.button);assert(hidden.bottom<b.bottom);assert(Math.abs(hidden.bottom+647)<1e-9);
- f.ui.btnAgg.activeInHierarchy=f.ui.btnFollow.activeInHierarchy=true;f.hud.layout(f.hero,f.rt);assert(Math.abs(rect(hud.button).bottom-r.top-12)<1e-9);
+test('the skill sits directly above Follow and uses the highest remaining command when controls hide',()=>{
+ const f=fixture();f.ui.btnAgg=command(f,'Rally',293,-566.516);f.ui.btnFollow=command(f,'Follow',293,-402.032);f.hud.update(f.hero,f.rt);
+ const hud=f.hero._skillHUD,followTop=rect(f.ui.btnFollow).top,rallyTop=rect(f.ui.btnAgg).top;
+ assert.equal(hud.button.active,true);
+ assert(Math.abs(rect(hud.button).bottom-followTop-12)<1e-9);
+ assert(Math.abs(hud.button.convertToWorldSpaceAR({x:0,y:0}).x-293)<1e-9);
+ f.ui.btnFollow.activeInHierarchy=false;f.hud.layout(f.hero,f.rt);assert(Math.abs(rect(hud.button).bottom-rallyTop-12)<1e-9);
+ f.ui.btnAgg.activeInHierarchy=false;f.hud.layout(f.hero,f.rt);assert(Math.abs(rect(hud.button).bottom+647)<1e-9);
+ f.ui.btnAgg.activeInHierarchy=f.ui.btnFollow.activeInHierarchy=true;f.hud.layout(f.hero,f.rt);assert(Math.abs(rect(hud.button).bottom-followTop-12)<1e-9);
 });
 
 test('planning and wave transitions keep the icon visible without enabling casts or world effects',()=>{

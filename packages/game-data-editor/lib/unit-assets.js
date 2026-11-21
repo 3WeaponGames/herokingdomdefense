@@ -56,10 +56,11 @@ function layer(root, component, prefab, files) {
             pages[name] = url.pathToFileURL(texture).href+'?revision='+fs.statSync(texture).mtimeMs;
         }
     }
-    const node = prefab[component.node.__id__], trs = node._trs && node._trs.array;
+    const node = prefab[component.node.__id__], trs = node._trs && node._trs.array, importScale=json(file+'.meta').scale;
     return { uuid, source: relative(root, file), name: node._name, json: skeleton, atlas, pages,
         skin: component.defaultSkin || 'default', animation: component.defaultAnimation || 'idle',
         x: trs ? trs[0] : 0, y: trs ? trs[1] : 0, scaleX: trs ? trs[7] : 1, scaleY: trs ? trs[8] : 1,
+        ...(typeof importScale==='number'&&importScale>0&&importScale!==1?{importScale}:{}),
         skins: (skeleton.skins || []).map(s => s.name), animations: Object.keys(skeleton.animations || {}) };
 }
 function projectile(prefab, type, id) {
@@ -96,6 +97,24 @@ function battleHeroLayers(prefab, gamePrefab, layers) {
         const pose = Maps.multiply(placement, local), scaleX = Math.hypot(pose[0], pose[1]);
         return { ...layer, x: pose[4], y: pose[5], scaleX, scaleY: scaleX ? (pose[0] * pose[3] - pose[1] * pose[2]) / scaleX : 0, rotation: Math.atan2(pose[1], pose[0]) * 180 / Math.PI };
     });
+}
+function battleTroopLayer(prefab, component, description, profile, visual) {
+    const Maps = require('./map-assets'), model = Maps.model(prefab), root = model.byId[model.root];
+    const node = model.byId[component.node.__id__], parent = model.byId[node.parent];
+    const trs = node.source._trs && node.source._trs.array || [0,0,0,0,0,0,1,1,1,1];
+    const hasVisual = Object.keys(visual).length > 0;
+    const base = hasVisual ? Math.abs(trs[8]) : trs[8];
+    const modelScale = profile && profile.scale || 1;
+    const edit = profile && profile.models && profile.models[description.uuid] || {};
+    const sx = base * (visual.scaleX===undefined?1:visual.scaleX) * (visual.mirrorX?-1:1) * modelScale * (edit.scaleX===undefined?1:edit.scaleX);
+    const sy = base * (visual.scaleY===undefined?1:visual.scaleY) * modelScale * (edit.scaleY===undefined?1:edit.scaleY);
+    const angle = 2*Math.atan2(trs[5],trs[6]) + ((visual.rotation||0)+(edit.rotation||0))*Math.PI/180;
+    const c=Math.cos(angle),s=Math.sin(angle);
+    const local = [c*sx,s*sx,-s*sy,c*sy,trs[0]+(visual.x||0)+(edit.x||0),trs[1]+(visual.y||0)+(edit.y||0)];
+    const matrix = parent ? Maps.multiply(parent.world,local) : local;
+    matrix[4]-=root.world[4];matrix[5]-=root.world[5];
+    const skin=profile&&profile.skins&&profile.skins[description.uuid]||description.skin;
+    return {...description,matrix,skin,tint:edit.tint||visual.tint,opacity:(node.source._opacity===undefined?255:node.source._opacity)/255*(edit.opacity===undefined?1:edit.opacity)};
 }
 function describe(root, request) {
     const type = request.type || 'enemy', id = String(request.id || 'hero');
@@ -175,6 +194,12 @@ function describe(root, request) {
         try { if (json(f).some(c => c.__type__ === 'sp.Skeleton' && c._N$skeletonData && sourceSet.has(c._N$skeletonData.__uuid__))) shared.push(relative(root, f)); } catch (_) {}
     });
     const form = UnitRecords.form(type,id), behavior=UnitRecords.behavior(record,id);
+    if(request.battleSpace&&type!=='hero'){
+        const visual=settings&&settings.visuals&&settings.visuals[type+':'+id+':'+form]||{};
+        // The published rig already includes its Characters size and transforms.
+        const liveLook=levelProfile&&!levelProfile.baked?levelProfile:null;
+        layers=layers.map((description,i)=>battleTroopLayer(prefab,chosen[i],description,liveLook,visual));
+    }
     const custom=require('../../../assets/_script/UnitAttackRules').active(record);
     const effect = custom
         ? custom.delivery === 'ranged' ? 'Projectile release' : custom.pattern === 'splash' ? 'Hit and splash damage' : 'Melee hit'
@@ -199,10 +224,11 @@ function describe(root, request) {
         for(const key of keys){const value=speeds[key];if(Object.prototype.hasOwnProperty.call(speeds,key)&&typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=2){unitAnimationSpeed=value;break;}}
     }
     return { type, id, form, key: type + ':' + id + ':' + form, source: relative(root, file), layers, shared, equipment,
+        ...(request.battleSpace?{battleSpace:true}:{}),
         ...(unitAnimationSpeed===undefined?{}:{unitAnimationSpeed}),
         defaultTiming: timing.defaultTiming, timingDefaultSource: timing.timingDefaultSource, timingEvents: timing.timingEvents,
         effect, projectile: shotSettings,
         forms: boss ? (()=>{const profiles=cfg.GameTools&&cfg.GameTools.unitProfiles,linked=profiles&&profiles.bossForms&&profiles.bossForms[id],first=UnitRecords.boss(id)?90010:linked?linked.profileId:Number(id),second=cfg.SoldierCfg[first].Data[2],third=cfg.SoldierCfg[second].Data[2];return[first,second,third].map((id,index)=>({id,label:'Form '+(index+1)}));})() : [],
         ...(type==='ally'?{levels:levels.length?levels:[1],level:request.level||0}:{}),runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
 }
-module.exports = { describe, index, enginePath, invalidate: function () { cachedIndex = null; cachedSpineIndex = null; } };
+module.exports = { describe, index, layer, enginePath, invalidate: function () { cachedIndex = null; cachedSpineIndex = null; } };

@@ -19,6 +19,16 @@ function load(callback) {
 }
 function valid(node) { return node && cc.isValid(node, true); }
 function visualScale(options) { var value=options&&options.scale;return typeof value==='number'&&isFinite(value)&&value>=.1&&value<=10?value:1; }
+function artworkSize(options, flight) { return options.size || flight && flight.size || 48; }
+function artworkScale(descriptor, size, frame) {
+  if (descriptor.visualPrefab) return size / (descriptor.visualPrefab.width || 64);
+  if (descriptor.kind === "spine") return size / (descriptor.width || 64);
+  return size / Math.max(frame.width, frame.height) * (descriptor.visualScale || 1);
+}
+function fallbackFlight(key, cfg) {
+  var behavior = Number(cfg && (cfg.BehaviorTemplate || cfg.CampaignBaseUnit || cfg.ProfileBaseID || cfg.ID));
+  return key === "wall-defense" ? "original:wall-arrow" : behavior === 90008 ? "original:fireball" : behavior === 90005 ? "original:stone" : "original:arrow";
+}
 function copyColor(color) { return color&&typeof color.clone==='function'?color.clone():color; }
 function trailStyle(trail,options,scale) {
   var result=Object.assign({},trail),color=options&&options.trailColor;
@@ -138,7 +148,7 @@ function draw(node, clip, options) {
     if(cc.PhysicsCollider)artwork.getComponentsInChildren(cc.PhysicsCollider).forEach(function(collider){collider.enabled=false;});
     artwork.setParent(node); artwork.setPosition(0, 0); node._projectilePrefab = artwork;
     (function group(branch){branch.group=node.group;(branch.children||[]).forEach(group);})(artwork);
-    node.setScale(options.size / (descriptor.visualPrefab.width || 64));
+    node.setScale(artworkScale(descriptor, options.size));
     if (cc.ParticleSystem) artwork.getComponentsInChildren(cc.ParticleSystem).forEach(function (particle) { if (particle.resetSystem) particle.resetSystem(); });
     if (cc.MotionStreak) artwork.getComponentsInChildren(cc.MotionStreak).forEach(function (trail) { if (trail.reset) trail.reset(); });
     renderer = artwork;
@@ -146,15 +156,15 @@ function draw(node, clip, options) {
     renderer = node.getComponent(sp.Skeleton) || node.addComponent(sp.Skeleton);renderer.premultipliedAlpha=descriptor.premultipliedAlpha!==false; renderer.skeletonData = clip.asset;
     if (descriptor.skin) renderer.setSkin(descriptor.skin);
     renderer.setAnimation(0, descriptor.animation, true);
-    node.setScale(options.size / (descriptor.width || 64));
+    node.setScale(artworkScale(descriptor, options.size));
   } else {
     var first=descriptor.loopFrames&&descriptor.loopFrames.length?descriptor.loopFrames[0]:0;
     renderer = node.getComponent(cc.Sprite) || node.addComponent(cc.Sprite); renderer.spriteFrame = clip.frames[first]; renderer.sizeMode = cc.Sprite.SizeMode.CUSTOM;
     if (cc.macro) { renderer.srcBlendFactor = cc.macro.SRC_ALPHA; renderer.dstBlendFactor = descriptor.additive ? cc.macro.ONE : cc.macro.ONE_MINUS_SRC_ALPHA; }
     node.anchorX=descriptor.visualPivot?descriptor.visualPivot.x:.5;node.anchorY=descriptor.visualPivot?1-descriptor.visualPivot.y:.5;
     var source = clip.frames[first].getOriginalSize();
-    var scale = options.size / Math.max(source.width, source.height);
-    node.setContentSize(source.width * scale * (descriptor.visualScale || 1), source.height * scale * (descriptor.visualScale || 1));
+    var scale = artworkScale(descriptor, options.size, source);
+    node.setContentSize(source.width * scale, source.height * scale);
   }
   node.angle = (options.rotation || 0) + (descriptor.rotation || 0);
   node.color = cc.color(options.tint || "#ffffff");
@@ -287,13 +297,13 @@ View.prototype.begin = function (key, sourceActor) {
       if (descriptor) options.flight = descriptor.id;
     }
     if(!descriptor&&options.scale!==undefined){
-      var cfg=sourceActor&&sourceActor.cfg||{},behavior=Number(cfg.BehaviorTemplate||cfg.CampaignBaseUnit||cfg.ProfileBaseID||cfg.ID),fallback=key==='wall-defense'?'original:wall-arrow':behavior===90008?'original:fireball':behavior===90005?'original:stone':'original:arrow';
+      var fallback=fallbackFlight(key,sourceActor&&sourceActor.cfg);
       descriptor=data.assets.find(function(asset){return asset.id===fallback;});
     }
     if (!descriptor && !options.launch && !options.impact && options.trail === undefined && !options.trailColor) return;
     applied = true;
     if (key === "wall-defense") options.rotation = (options.rotation || 0) + 90;
-    options.size = options.size || descriptor && descriptor.size || 48;
+    options.size = artworkSize(options, descriptor);
     var scale=visualScale(options),trailScale=scale;
     function styleTrails(root,remember){
       if(!cc.MotionStreak||!root||!root.getComponentsInChildren)return;
@@ -384,6 +394,9 @@ exports.prime = function (data) { catalog=data;loading=false;retryAfter=0;var ca
 exports.drawTrail=drawTrail;
 exports.trailPoint=trailPoint;
 exports.visualScale=visualScale;
+exports.artworkSize=artworkSize;
+exports.artworkScale=artworkScale;
+exports.fallbackFlight=fallbackFlight;
 exports.trailStyle=trailStyle;
 exports.release = function (shot) {
   var view = shot._projectileVisual;

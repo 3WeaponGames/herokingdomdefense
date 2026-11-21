@@ -20,8 +20,10 @@ function targetCurrent(record, live) {
 }
 function splashSnapshot(owner, primary, scope) {
   var center = primary.node.getPosition(), world = primary.node.convertToWorldSpaceAR(cc.Vec2.ZERO), radius = owner.cfg.Data[1], records = [];
+  var targeting = owner.cfg.EnemyTargeting && require("EnemyTargeting"), rule = targeting && targeting.settings(owner.cfg);
+  if (rule && !targeting.allows(rule, scope.game, primary)) return { scope: scope, records: records, damage: owner.cfg.Data[0], limit: 0 };
   function include(actor) {
-    if (!actor || actor.uuid === primary.uuid) return;
+    if (!actor || actor.uuid === primary.uuid || rule && !targeting.allows(rule, scope.game, actor)) return;
     var record = skillTarget(actor);if (!targetCurrent(record, true)) return;
     record.position = actor.node.getPosition();record.len = cc.Vec2.distance(record.position, center);
     if (record.len <= radius) records.push(record);
@@ -30,7 +32,7 @@ function splashSnapshot(owner, primary, scope) {
   var buildings = millAttackTargets(scope.data), circle = { position: world, radius: radius };
   for (var index = 0; index < buildings.length; index++) {
     var building = buildings[index], record = skillTarget(building);
-    if (building.uuid === primary.uuid || !targetCurrent(record, true)) continue;
+    if (building.uuid === primary.uuid || !targetCurrent(record, true) || rule && !targeting.allows(rule, scope.game, building)) continue;
     var polygons = building.getWposPhyCol();
     for (var part = 0; part < polygons.length; part++) if (cc.Intersection.polygonCircle(polygons[part], circle)) {
       record.position = building.node.getPosition();record.len = cc.Vec2.distance(record.position, center);records.push(record);break;
@@ -99,7 +101,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
     this.time[r.Attack] = 0;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
-    var n = function () {
+    var n = this.pickAttackVictim(scope.game, function () {
       var forced = require("RelicCombat").tauntedTarget(t);
       if (forced) {
         forced.node.getPosition(t.vec2_2);
@@ -148,7 +150,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
         }
       }
       return e;
-    }();
+    });
     if (n) {
       var victim = skillTarget(n);
       if (!skillCurrent(this, scope, false) || !targetCurrent(victim, true)) return;

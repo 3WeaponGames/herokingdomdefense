@@ -2,6 +2,7 @@
 // Render-only poses, shared across placements. No Cocos scene or gameplay runs.
 const Spine=require('../preview/spine-renderer'),Paint=require('./paint'),M=require('./model'),Shadow=require('../../../assets/_script/BuildingShadow'),Drop=require('../../../assets/_script/BuildingDropShadow');
 const WallGround=require('../../../assets/_script/WallShadowGround');
+const WindowLightMask=require('../../../assets/_script/WindowLightMask');
 function create(options){
  const cache=new Map(),shadows=new Map(),alphas=new Map(),drops=new Map();let closed=false,shadowBytes=0;
  const key=(d,runtime)=>JSON.stringify([runtime,d.source,d.uuid,d.revision,d.skin,d.animation,d.poseTime,d.pages]);
@@ -10,7 +11,8 @@ function create(options){
   const id=key(d,runtime);if(closed||cache.has(id)||!runtime)return;
   const entry={};cache.set(id,entry);
   (async()=>{
-   const spine=require(runtime),layers=await Spine.createLayers(spine,[Object.assign({},d,{x:0,y:0,scaleX:1,scaleY:1,rotation:0})]);
+   // Cache the pose in skeleton space. The placement matrix is applied when drawing it.
+   const spine=require(runtime),layers=await Spine.createLayers(spine,[Object.assign({},d,{matrix:undefined,x:0,y:0,scaleX:1,scaleY:1,rotation:0})]);
    if(closed||cache.get(id)!==entry)return;
    const animation=d.animation||'idle',clip=layers[0].data.findAnimation(animation),time=d.poseTime==='end'&&clip?clip.duration:0;
    Spine.seek(spine,layers,animation,time,false);
@@ -51,7 +53,7 @@ function create(options){
    if(!entry){const image=Shadow.raster(d.regions,d.opacity);if(image){const canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image:{x:image.x,y:image.y,width:image.width,height:image.height},bytes:canvas.width*canvas.height*4};shadows.set(id,entry);shadowBytes+=entry.bytes;while((shadowBytes>32*1024*1024||shadows.size>8)&&shadows.size>1){const first=shadows.keys().next().value,old=shadows.get(first);shadowBytes-=old.bytes;release(old);shadows.delete(first);}}}
    if(entry){Paint.apply(ctx,d.matrix);ctx.translate(entry.image.x,entry.image.y+entry.image.height);ctx.scale(entry.image.width/entry.canvas.width,-entry.image.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
   }
-  else if(part.sprite){if(part.sprite.nightlight&&(part.sprite.warp||part.sprite.warpNodes?.length||part.sprite.erase?.strokes.length))require('../buildings/nightlight-warp').draw(ctx,part.sprite,images);else Paint.sprites(ctx,[part.sprite],images);}
+  else if(part.sprite){if(part.sprite.nightlight&&(part.sprite.warp||part.sprite.warpNodes?.length||WindowLightMask.hasMask(part.sprite.erase)))require('../buildings/nightlight-warp').draw(ctx,part.sprite,images);else Paint.sprites(ctx,[part.sprite],images);}
   else {const d=part.skeleton,e=cache.get(key(d,runtime));if(e&&e.canvas){Paint.apply(ctx,d.matrix);const a=part.silhouetteBounds||e.bounds,c=part.silhouetteCanvas||part.silhouetteBody&&e.body||e.canvas;ctx.translate(a.minX,a.maxY);ctx.scale(a.width/c.width,-a.height/c.height);ctx.drawImage(c,0,0);}}
   ctx.restore();
  }

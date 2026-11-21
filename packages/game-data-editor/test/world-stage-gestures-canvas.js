@@ -14,7 +14,25 @@ async function verify(){
  const settle=async()=>{await state.pending;await pause(5);await raf();await raf();},find=(text,parent)=>Array.from((parent||root).querySelectorAll('button')).find(b=>b.textContent.trim()===text),click=async(text,parent)=>{const b=find(text,parent);if(!b)throw Error('Missing button '+text);await b.onclick();await settle();},field=name=>{const label=Array.from(root.querySelectorAll('.world-inspector label')).find(l=>l.querySelector('span')?.textContent===name);return label&&label.querySelector('input,select');};
  const event=(p,extra)=>{const rect=canvas.getBoundingClientRect();return Object.assign({clientX:rect.left+(canvas.width/2+state.pan.x+p.x*state.zoom)*rect.width/canvas.width,clientY:rect.top+(canvas.height/2+state.pan.y-p.y*state.zoom)*rect.height/canvas.height,pointerId:37,button:0,isPrimary:true,preventDefault(){}},extra);},press=async(p,extra)=>{canvas.onpointerdown(event(p,extra));canvas.onpointerup(event(p,extra));await settle();},current=()=>value.graphs.find(g=>g.id===state.graph),graphButton=id=>Array.from(root.querySelectorAll('[data-graph-id]')).find(b=>b.dataset.graphId===id);
  try{
-  for(let i=0;i<200&&!state.snap;i++)await pause(10);assert(!!state.snap,'isolated stage opens');await settle();await click('Paths');
+  for(let i=0;i<200&&!state.snap;i++)await pause(10);assert(!!state.snap,'isolated stage opens');await settle();
+  await click('Spawns');
+  const taskVersion=version,taskPoint={x:90,y:60};
+  await click('Tasks position');
+  assert(version===taskVersion&&value.tasksPosition===undefined,'entering Tasks placement creates no draft edit');
+  canvas.onkeydown({key:'Escape',preventDefault(){}});
+  assert(state.tool==='select'&&version===taskVersion,'Escape leaves the placement untouched');
+  await click('Tasks position');await press(taskPoint);
+  assert(version===taskVersion+1&&state.tool==='select'&&state.selection[0]==='tasks-position','placing the King commits one undoable draft edit');
+  assert(Math.hypot(value.tasksPosition.x-90,value.tasksPosition.y-60)<1e-7,'Tasks position uses the clicked map coordinates');
+  const placed=clone(value.tasksPosition),dragTo={x:120,y:72};
+  canvas.onpointerdown(event(placed));canvas.onpointermove(event(dragTo));
+  assert(version===taskVersion+1,'moving the King previews before release');
+  canvas.onpointerup(event(dragTo));await settle();
+  assert(version===taskVersion+2&&Math.hypot(value.tasksPosition.x-120,value.tasksPosition.y-72)<1e-7,'dragging moves only the King in one draft edit');
+  await click('Undo');assert(JSON.stringify(value.tasksPosition)===JSON.stringify(placed),'Undo restores the original Tasks position');
+  field('Y').value='120';field('Y').onchange();await settle();
+  assert(value.tasksPosition.y===120&&JSON.stringify(value.hero)===JSON.stringify(original.hero),'editing the King coordinates preserves Hero start');
+  await click('Paths');
   await press(current().nodes[1]);assert(state.selection[0]==='node:point:mid'&&field('X'),'colon-containing node IDs select their exact point');const pendingX=field('X'),unchangedVersion=version;pendingX.focus();pendingX.value='25';pendingX.dispatchEvent(new Event('input',{bubbles:true}));assert(find('Save').disabled===false&&version===unchangedVersion,'a pending first field edit enables Save without writing data');pendingX.onchange();await settle();assert(current().nodes.find(n=>n.id==='point:mid').x===25,'position editing preserves the complete authored node ID');
   const edge=current().edges[0],a=current().nodes[0],b=current().nodes[1];await press({x:a.x+(b.x-a.x)*.3,y:a.y+(b.y-a.y)*.3});assert(state.selection[0]==='edge:'+edge.id,'colon-containing connection IDs select their complete connection');field('Branch weight').value='3';field('Branch weight').onchange();await settle();assert(current().edges.find(e=>e.id==='segment:first').weight===3,'connection settings edit colon-containing edge IDs');
   await press(current().nodes[1]);let release;state.pending=new Promise(resolve=>release=resolve);field('Y').value='125';field('Y').onchange();await graphButton('route:other').onclick();assert(state.graph==='route:other','path navigation can occur while an edit is queued');release();await settle();assert(value.graphs[0].nodes.find(n=>n.id==='point:mid').y===125&&value.graphs[1].nodes.find(n=>n.id==='point:mid').y===100,'queued point changes stay with the original graph');

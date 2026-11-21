@@ -16,6 +16,32 @@ function fixture(t,primary={},secondary={}){
  return {root,service,bytes,req,change,commits:()=>commits};
 }
 
+test('enemy skill visuals use the shared draft and publish to the battle config',t=>{
+ const primary={HeroSkills:{guardian:{future:9}},EnemySkillVisuals:{haste:{future:'keep'}},SoldierCfg:{
+  1:{ID:1,Name:'First',prefab:'First',TransformSkill:{unitId:2,trigger:'health',healthPercent:40}},2:{ID:2,Name:'Next',prefab:'Next'}
+ }};
+ const f=fixture(t,primary),before=f.bytes(),initial=f.service.snapshot();
+ assert.deepEqual(initial.enemyStyles.map(row=>row.id),['enemy:transform','enemy:heal','enemy:haste','enemy:damage','enemy:move','enemy:weaken']);
+ for(const id of ['haste','damage','move'])assert.equal(initial.effective['enemy:'+id].visual.showIndicator,true);
+ const preview=f.service.describe({style:'enemy:transform',model:'enemy:1'});
+ assert.equal(preview.nextForm.request.id,'2');assert.deepEqual(preview.transform,primary.SoldierCfg[1].TransformSkill);
+ assert.equal(f.service.save(f.req()).result.saved,false);
+ assert.throws(()=>f.change('enemy:haste','visual.resource',VFX),/imported Spine effect/);
+ assert.throws(()=>f.change('enemy:haste','visual.opacity',2),/valid enemy skill visual/);
+ const edited=f.change('enemy:haste','visual.tint','#123456');
+ assert.equal(edited.effective['enemy:haste'].visual.tint,'#123456');assert.deepEqual(f.bytes(),before);
+ assert.equal(f.service.undo(f.req()).effective['enemy:haste'].visual.tint,'#ff7676');
+ assert.equal(f.service.redo(f.req()).effective['enemy:haste'].visual.tint,'#123456');
+ assert.throws(()=>f.change('enemy:haste','visual.indicatorRate',0),/valid enemy skill visual/);
+ assert.equal(f.change('enemy:haste','visual.indicatorRate',1.5).effective['enemy:haste'].visual.indicatorRate,1.5);
+ assert.deepEqual(f.bytes(),before);
+ assert.equal(f.service.save(f.req()).result.saved,true);
+ const [battle,mirror]=f.bytes(),saved=JSON.parse(battle);
+ assert.deepEqual(saved.EnemySkillVisuals,{haste:{future:'keep',tint:'#123456',indicatorRate:1.5}});
+ assert.deepEqual(saved.HeroSkills,primary.HeroSkills);assert.deepEqual(saved.SoldierCfg,primary.SoldierCfg);
+ assert.equal(mirror,before[1]);assert.equal(f.commits(),1);
+});
+
 test('a complete preview transform is one atomic draft edit, one undo step and one explicit publication',t=>{
  const primary={HeroSkills:{skirmisher:{extension:{keep:'primary'},visual:{extension:'retain'}}}},secondary={HeroSkills:{skirmisher:{extension:{keep:'mirror'},visual:{mirrorOnly:9}}}},f=fixture(t,primary,secondary),before=f.bytes(),start=f.service.snapshot();
  const changes=[{path:'visual.arcDegrees',value:35},{path:'volleyRange',value:450}];

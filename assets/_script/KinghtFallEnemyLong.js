@@ -48,7 +48,7 @@ var def_KinghtFallEnemyLong = function (t) {
     if (!currentShot() || !cc.isValid(this, true) || this.node !== sourceNode || !cc.isValid(sourceNode, true) || sourceNode._combatGeneration !== sourceGeneration || this._isPooled || this.isDead && this.isDead()) return;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
-    var n = function () {
+    var n = this.pickAttackVictim(game, function () {
       var forced = require("RelicCombat").tauntedTarget(t);
       if (forced) {
         forced.node.getPosition(t.vec2_2);
@@ -97,7 +97,7 @@ var def_KinghtFallEnemyLong = function (t) {
         }
       }
       return e;
-    }();
+    });
     if (n) {
       targetNode = n.node; targetGeneration = targetNode._combatGeneration;
       // Counter bonuses belong to the released shot, not a later pooled life.

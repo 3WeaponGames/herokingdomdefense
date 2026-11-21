@@ -1,4 +1,5 @@
 function millAttackTargets(data) { return data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList(); }
+function targeting(owner) { return owner.cfg && owner.cfg.EnemyTargeting && require("EnemyTargeting").settings(owner.cfg); }
 function incomingCurrent(owner, life, pooled) {
   return cc.isValid(owner, true) && owner.node === life.node && cc.isValid(life.node, true) && owner.cfg === life.cfg && owner.time === life.timers &&
     (life.node._combatGeneration === life.generation && !owner._isPooled || pooled && owner._isPooled && life.node._combatGeneration === (life.generation || 0) + 1) &&
@@ -98,6 +99,7 @@ var def_KinghtFallEnemyBase = function (t) {
     RelicCombat.releaseControl(this);
     RelicRuntime.clearControl(this);
     this.releaseHealingEffects();
+    if (this._enemySkillEffects) require("EnemySkillVisuals").clear(this);
     if (!setupCurrent(this, life)) return false;
     var n = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
@@ -111,11 +113,14 @@ var def_KinghtFallEnemyBase = function (t) {
     this._targetSearchElapsed = 0;
     this._targetSearchCache = null;
     this._unreachableTargets = null;
-    this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    this._objectiveBreach = null;
+    this.cfg = (lease && lease.previewCfg) ||
+      $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     if (this.cfg.UnitAttack) this.cfg = require("UnitAttackRules").runtimeCfg(this.cfg);
     life.cfg = this.cfg;
-    if (this.spAni) this.setLeft(false);
-    this.bornInfo = $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
+    if (this.spAni) this.setLeft(!!(lease && lease.faceLeft));
+    this.bornInfo = lease && lease.bornInfo || $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
+    if (lease && lease.bornInfo) this._routeInterrupted = lease.routeInterrupted;
     var i = this.node.getComponents(cc.CircleCollider);
     if (i[0]) {
       i[0].radius = this.cfg.AttackRange;
@@ -151,6 +156,12 @@ var def_KinghtFallEnemyBase = function (t) {
     this.attack = Math.round(this.cfg.AttackDamage * $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getAttAdd(this.cfg.ID));
     this.time = {}; life.timers = this.time;
     this.time[s.Attack] = 0;
+    if (this.cfg.TransformSkill) this.time.Transform = 0;
+    if (this.cfg.EnemySkills) {
+      var skills = require("EnemySkills");
+      this.time.EnemySkills = skills.begin(this.cfg.EnemySkills);
+      this.time.OriginalSupport = skills.originalEnabled(this.cfg);
+    }
     this.node.getPosition(this.vec2_1);
     this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
     this.doMove();
@@ -163,6 +174,22 @@ var def_KinghtFallEnemyBase = function (t) {
     var frame = { ui: ui, game: game, data: game && game.gameData, epoch: game && game._combatEpoch, stage: game && game.gameStatus,
       node: this.node, generation: this.node && this.node._combatGeneration, timers: this.time }, buffs = this.debuffInfo;
     if (!attackCurrent(this, frame)) return false;
+    var transform = this.cfg && this.cfg.TransformSkill;
+    if (transform && frame.timers.Transform >= 0 && game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && !this._unitTestActor) {
+      var ready;
+      if (transform.trigger === "health") ready = frame.timers.TransformHealthReached;
+      else ready = (frame.timers.Transform += t) >= transform.delay;
+      if (ready) {
+        frame.timers.Transform = -1;
+        game.transformEnemy(this);
+        if (!attackCurrent(this, frame)) return false;
+      }
+    }
+    var casts = frame.timers.EnemySkills;
+    if (casts && casts.length && !this._unitTestActor && game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight) {
+      var owner = this;
+      if (!require("EnemySkills").update(owner, game, casts, t, function () { return attackCurrent(owner, frame); })) return false;
+    }
     // Observe the next frame's physical position, after contacts have resolved.
     // Attack, stun and support waits are intentional and do not count as stalls.
     if (this.state === r.Move && !this._hitReactionPlaying && !this._heroKnockback) Navigation.recoverStranded(this, $z1KinghtFallUIGame.default.instance.ctrGame, t);
@@ -179,6 +206,7 @@ var def_KinghtFallEnemyBase = function (t) {
         if (!attackCurrent(this, frame) || this.debuffInfo !== buffs) return false;
       }
     }
+    if (this._enemyBuffIndicators) require("EnemySkillVisuals").advanceIndicators(this, t);
     if (-1 != frame.timers[s.Attack]) {
       var rate = this.getAttSpeed();
       if (!attackCurrent(this, frame)) return false;
@@ -228,7 +256,13 @@ var def_KinghtFallEnemyBase = function (t) {
               if (!targetNode) { this.doWait(); break; }
             }
             var destination = o && o.tag ? Navigation.attackPositionOf(o, this, game) : Navigation.positionOf(targetNode, game);
-            var movement = Navigation.moveTo(this, game, destination, t);
+            var movement = Navigation.moveTo(this, game, destination, t, o && o.breachRoute);
+            if (o && movement.blockingWall) {
+              this._objectiveBreach = { cfg: this.cfg, goal: o.tag, generation: o.tag._combatGeneration,
+                position: destination, wall: movement.blockingWall };
+              Navigation.reset(this);
+              break;
+            }
             if (movement.directionX) this.setLeft(movement.directionX < 0);
             // Authored waypoints on a collider edge resolve to a safe nearby point.
             if (!o && movement.arrived && !movement.partial) { this.bornInfo.nodeIndex++; Navigation.reset(this); }
@@ -313,6 +347,8 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.getFind = function () {
     var t = this;
     var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+    var rule = targeting(this);
+    if (rule) return require("EnemyTargeting").find(this, game, rule);
     this.node.getPosition(this.vec2_1);
     return function () {
       var e = null;
@@ -404,9 +440,16 @@ var def_KinghtFallEnemyBase = function (t) {
     Navigation.reset(this);
   };
   _ctor.prototype.getUpdateTarget = function () {
-    var forced=RelicCombat.tauntedTarget(this);
+    var rule = targeting(this);
+    var forced=!rule&&RelicCombat.tauntedTarget(this);
     if(forced)return {tag:forced.node,actor:forced,canAtt:cc.Vec2.distance(this.node.getPosition(),forced.node.getPosition())<=this.cfg.AttackRange};
     var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+    // A focused hero entering sight can interrupt the route on this update.
+    if (rule && rule.mode !== "priority") {
+      var objective = require("EnemyTargeting").find(this, game, rule);
+      this._targetSearchCache = objective ? { target: objective } : null;
+      return objective;
+    }
     var cached = this._targetSearchCache;
     if (cached && cached.game === game && cached.cfg === this.cfg && this._targetSearchElapsed < .2) {
       var target = cached.target;
@@ -452,6 +495,12 @@ var def_KinghtFallEnemyBase = function (t) {
     return found;
   };
   _ctor.prototype.onFindList = function () {
+    if (targeting(this)) {
+      var target = this.getFind();
+      if (!target || !target.canAtt) return false;
+      this.doAttackStart();
+      return true;
+    }
     var forced=RelicCombat.tauntedTarget(this);
     if(forced){if(cc.Vec2.distance(this.node.getPosition(),forced.node.getPosition())>this.cfg.AttackRange)return false;this.doAttackStart();return true;}
     var t = this;
@@ -513,6 +562,8 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.doAttackStart = function (startCooldown) {
     if (GameToolsOverrides.isPending(this)) return;
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, node = this.node;
+    var test = this._unitTestActor && game && game._unitTest;
+    if (test && test.breakWalls && test.wallHits.has(this)) return;
     var renderer = this.getSpAni ? this.getSpAni() : this.spAni;
     if (!cc.isValid(renderer, true) || renderer.node && !cc.isValid(renderer.node, true)) return;
     var record = { ui: ui, game: game, data: game && game.gameData, epoch: game && game._combatEpoch, stage: game && game.gameStatus,
@@ -530,7 +581,7 @@ var def_KinghtFallEnemyBase = function (t) {
     if (this._attackAnimation !== record || !attackCurrent(this, record)) return;
     if (this._unitTestActor) {
       this.time[s.Attack] = 0;
-      GameToolsOverrides.applyAttackPlayback(this, "enemy");
+      if (!test || !test.breakWalls || !test.attackWall(this, target)) GameToolsOverrides.applyAttackPlayback(this, "enemy");
       if (!record.entry) this._completeAttackAnimation(renderer, record.entry);
       return;
     }
@@ -547,6 +598,12 @@ var def_KinghtFallEnemyBase = function (t) {
     if (record.configured) _ctor.prototype.doAttackFinish.call(this);
     else this.doAttackFinish();
   };
+  _ctor.prototype.pickAttackVictim = function (game, closest) {
+    var rule = targeting(this);
+    if (!rule) return closest();
+    var selected = require("EnemyTargeting").find(this, game, rule);
+    return selected && selected.canAtt ? selected.actor || selected.building : null;
+  };
   _ctor.prototype.doAttack = function () {
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
     if (!game) return;
@@ -560,7 +617,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
     if (!attackCurrent(this, record)) return;
-    var n = function () {
+    var n = this.pickAttackVictim(game, function () {
       var forced=RelicCombat.tauntedTarget(t);
       if(forced)return cc.Vec2.distance(t.node.getPosition(),forced.node.getPosition())<=t.cfg.AttackRange?forced:null;
       var e = null;
@@ -604,7 +661,7 @@ var def_KinghtFallEnemyBase = function (t) {
         }
       }
       return e;
-    }();
+    });
     if (n) {
       if (!attackCurrent(this, record)) return;
       var targetNode = n.node, targetGeneration = targetNode && targetNode._combatGeneration;
@@ -632,6 +689,13 @@ var def_KinghtFallEnemyBase = function (t) {
       t = RelicCombat.enemyDamage(this, t, source, secondary, context);
       t = GameToolsOverrides.damageTaken(this, "enemy", t);
       this.hp -= t;
+      var transform = this.cfg && this.cfg.TransformSkill;
+      if (t > 0 && transform && transform.trigger === "health" && this.time.Transform >= 0 && this.hp > 0 &&
+          this.hp <= this.hpMax * (transform.healthPercent / 100) && !this._unitTestActor &&
+          game && game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight) {
+        // Resolve the change in the normal combat update after this hit settles.
+        this.time.TransformHealthReached = true;
+      }
       if (BattleSounds.hit) { BattleSounds.hit(this, source, t, { magic: !!secondary, context: context }); if (!incomingCurrent(this, life)) return t; }
       if (t > 0 && this.hp > 0 && cc.resources && !(source && source._styleRuntime && source._styleRuntime.deferHitReaction && source._styleRuntime.deferHitReaction(this, context))) {
         require("UnitHitFeedback").play(this);
@@ -676,7 +740,7 @@ var def_KinghtFallEnemyBase = function (t) {
       return t;
     }
   };
-  _ctor.prototype.freeNode = function () {
+  _ctor.prototype.freeNode = function (transformed) {
     if (this._isPooled) return;
     var owner = this, node = this.node, data = this._combatData || setupLife(this).data;
     var key = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + (this._poolCfgID || this.cfg.ID);
@@ -684,8 +748,10 @@ var def_KinghtFallEnemyBase = function (t) {
     var generation = node._combatGeneration = (node._combatGeneration || 0) + 1;
     function retired() { return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner._isPooled; }
     // Unlink this lease before cleanup can initialize the same component again.
-    if (data) data.delEnemy(this);
+    if (data) data.delEnemy(this, transformed);
     if (!retired()) return;
+    if (transformed === true) { this.delAllBuff(); if (!retired()) return; }
+    if (this._enemySkillEffects) { require("EnemySkillVisuals").clear(this); if (!retired()) return; }
     this._attackAnimation = null;
     Navigation.reset(this);
     this.bornInfo = null;
@@ -720,6 +786,8 @@ var def_KinghtFallEnemyBase = function (t) {
     for (var i = 0; i < n.length; i++) {
       e -= n[i].data.subNum;
     }
+    var boosts = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.DamageAdd);
+    for (var j = 0; j < boosts.length; j++) e += boosts[j].data.addNum;
     if (2 == this.cfg.AttackType) {
       var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff33);
       a && (e -= a.Pamer[0]);
@@ -745,6 +813,8 @@ var def_KinghtFallEnemyBase = function (t) {
     for (var i = 0; i < n.length; i++) {
       e -= n[i].data.subNum;
     }
+    var boosts = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeedAdd);
+    for (var j = 0; j < boosts.length; j++) e += boosts[j].data.addSpeed;
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SlowSpell] && (e -= $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SlowSpell][0]);
     e < 0 && (e = .01);
     return t * e;
@@ -753,12 +823,19 @@ var def_KinghtFallEnemyBase = function (t) {
     var e;
     var n;
     if (!this.isDead()) {
+      var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+      var presentation = game && game._stageAssets && game._stageAssets.options && require("EnemySkillVisuals");
+      var visual = presentation && presentation.fromGame(game, "heal"), life = visual && {
+        node: this.node, generation: this.node._combatGeneration, timers: this.time, cfg: this.cfg,
+        ui: ui, game: game, data: game.gameData, epoch: game._combatEpoch
+      };
       var soundHp = this.hp;
       this.hp += t * this.hpMax;
       this.hp > this.hpMax && (this.hp = this.hpMax);
       if (this.hp > soundHp && BattleSounds.effect) BattleSounds.effect("healing-receive", this);
       null === (e = this.hpctrl) || undefined === e || e.setHp(this.hp, this.hpMax);
-      null === (n = this.hpctrl) || undefined === n || n.showAni();
+      if (!visual || visual.showBuiltin) null === (n = this.hpctrl) || undefined === n || n.showAni();
+      if (visual && this.hp > soundHp && incomingCurrent(this, life)) presentation.show(this, game, visual);
     }
   };
   _ctor.prototype.onChangeSpeed = function () {

@@ -1,9 +1,9 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const root=path.resolve(__dirname,'../..'),Migration=require('./publish-campaign-monsters.cjs'),Definition=require('./campaign-monster-placements.json'),Baseline=require('./fixtures/campaign-monster-balance.json'),Copy=require('./monster-guide-copy.json'),Bake=require('../../packages/hkd-characters/lib/native-bake'),Units=require('../../packages/game-data-editor/lib/unit-assets');
+const root=path.resolve(__dirname,'../..'),Migration=require('./publish-campaign-monsters.cjs'),Definition=require('./campaign-monster-placements.json'),Baseline=require('./fixtures/campaign-monster-balance.json'),Copy=require('./monster-guide-copy.json'),Fighting=require('../../packages/game-data-editor/lib/fighting-profiles');
 const cfg=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),catalog=require('../../assets/resources/localization/catalog.json'),read=relative=>JSON.parse(fs.readFileSync(path.join(root,relative),'utf8'));
 const hash=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
-const aliases=Object.values(cfg.SoldierCfg).filter(row=>row.CampaignBaseUnit),withoutGuide=row=>{const copy=structuredClone(row);delete copy.Guide;return copy;};
+const retired=new Set(Definition.variants.map(unit=>unit.id)),withoutGuide=row=>{const copy=structuredClone(row);delete copy.Guide;return copy;};
 // Saved stage overrides are authoritative. Only a real, matching authored
 // layout exempts its queues from the historical appearance-migration plan.
 // Every untouched stage still retains its exact approved packet assertions.
@@ -36,16 +36,14 @@ test('all sixty stage definitions retain approved queues or matching explicitly 
     for(const row of Definition.plans[key].filter(row=>!authored.has(row.stage)))for(const token of row.proposed.split('#')[1].split(';')){const id=Number(token.split(',')[0]);if(id!==-1){const canonical=cfg.GameTools.unitProfiles.aliases[id]||id,source=sourceFor(canonical);if(cfg.SoldierCfg[source]&&cfg.SoldierCfg[source].MonsterSource)assert(used.has(source),key+' missing an unchanged planned source '+source);}}
   }
 });
-test('legacy aliases stay byte-value equivalent while canonical enemies use the approved fighting balance',()=>{
-  const Fighting=require('../../packages/game-data-editor/lib/fighting-profiles');
-  // The later global balance deliberately scales every unit, including legacy
-  // compatibility records. Project that approved change out of this old hash.
-  for(const [id,digest]of Object.entries(Baseline.unitHashes))if(!Fighting.familyFor(cfg.GameTools,id)||cfg.GameTools.unitProfiles.aliases[id]){const historical=withoutGuide(cfg.SoldierCfg[id]);historical.Health/=1.2;historical.AttackDamage*=2;assert.equal(hash(historical),digest,'Compatibility combat record '+id);}
+test('legacy templates and canonical enemies use their approved fighting balance',()=>{
+  // Project the later global balance out of the original template hashes.
+  for(const [id,digest]of Object.entries(Baseline.unitHashes))if(!retired.has(Number(id))&&!Fighting.familyFor(cfg.GameTools,id)){const historical=withoutGuide(cfg.SoldierCfg[id]);historical.Health/=1.2;historical.AttackDamage*=2;assert.equal(hash(historical),digest,'Compatibility combat record '+id);}
   for(const family of Object.values(cfg.GameTools.unitProfiles.families))for(const [role,id]of Object.entries(family.profiles))for(const [index,field]of Fighting.FIELDS.entries())if(family.baseline[field]!==undefined)assert(Math.abs(cfg.SoldierCfg[id][field]-family.baseline[field]*Fighting.factors(cfg.GameTools,role)[index])<1e-6,id+'/'+field);
   // Icons and global incoming-damage authoring were approved after this
   // migration. Fighting-type-damage tests cover the latter independently.
   const gameplayEntry=(table,entry)=>{const copy=structuredClone(entry);if(table==='unitTypes'){delete copy.icon;delete copy.damageTaken;}return copy;};
-  for(const [table,value]of Object.entries(Baseline.settings)){if(!value||typeof value!=='object'){assert.deepEqual(cfg.GameTools[table],value);continue;}for(const [key,entry]of Object.entries(value)){if(table==='unitTypeAssignments'&&/^enemy:9001[12]:/.test(key))continue;assert.deepEqual(gameplayEntry(table,cfg.GameTools[table][key]),gameplayEntry(table,entry),table+'/'+key);}}
+  for(const [table,value]of Object.entries(Baseline.settings)){if(!value||typeof value!=='object'){assert.deepEqual(cfg.GameTools[table],value);continue;}for(const [key,entry]of Object.entries(value)){if(retired.has(Number(/^enemy:(\d+):/.exec(key)?.[1]))||table==='unitTypeAssignments'&&/^enemy:9001[12]:/.test(key))continue;assert.deepEqual(gameplayEntry(table,cfg.GameTools[table][key]),gameplayEntry(table,entry),table+'/'+key);}}
 });
 
 test('rerunning the migration preserves later authored unit-type icons and unknown fields without writes',t=>{
@@ -64,27 +62,16 @@ test('rerunning the migration preserves later authored unit-type icons and unkno
   assert.equal(plan.files.size,0,'A completed migration must not restore historical icons or normalize later authoring');
   for(const [file,bytes]of before)assert.deepEqual(fs.readFileSync(path.join(temporary,file)),bytes,file);
 });
-test('each campaign variant preserves every baseline combat field, counter, movement setting and gameplay clock',()=>{
-  assert.equal(aliases.length,Definition.variants.length);assert.equal(aliases.length,127);
-  const ignored=new Set(['ID','Name','prefab','loadIcon','Guide','CampaignBaseUnit','AppearanceSourceUnit','BehaviorTemplate']);
-  for(const row of aliases){
-    const base=cfg.SoldierCfg[row.CampaignBaseUnit],source=cfg.SoldierCfg[row.AppearanceSourceUnit];assert(base&&source&&source.MonsterSource);assert.equal(row.BehaviorTemplate,base.ID);assert.equal(row.loadIcon,source.loadIcon);assert(!row.MonsterSource&&!row.MonsterPack);
-    const combat=unit=>Object.fromEntries(Object.entries(unit).filter(([key])=>!ignored.has(key)));assert.deepEqual(combat(row),combat(base),row.ID+' combat');
-    for(const table of ['unitTypeAssignments','visuals','timingDefaults','timings','animationSpeeds'])assert.deepEqual(cfg.GameTools[table]&&cfg.GameTools[table]['enemy:'+row.ID+':default'],cfg.GameTools[table]&&cfg.GameTools[table]['enemy:'+base.ID+':default'],row.ID+'/'+table);
-  }
-});
-test('campaign prefabs keep controller, projectile, physics and transforms while every model retains legacy attack/hit/death durations',()=>{
-  const descriptions=new Map(),describe=id=>{if(!descriptions.has(id))descriptions.set(id,Units.describe(root,{type:'enemy',id,noRuntime:true}));return descriptions.get(id);};
-  for(const row of aliases){
-    const base=cfg.SoldierCfg[row.CampaignBaseUnit],actual=read('assets/KinghtFallEnemy/'+row.prefab+'.prefab'),expected=read('assets/KinghtFallEnemy/'+base.prefab+'.prefab');
-    const oldLayer=describe(base.ID).layers[0],newLayer=describe(row.ID).layers[0];
-    actual[0]._name=expected[0]._name;actual[actual[0].data.__id__]._name=expected[expected[0].data.__id__]._name;actual[actual[0].data.__id__]._id=expected[expected[0].data.__id__]._id;
-    const renderer=actual.find(c=>c.__type__==='sp.Skeleton'&&c._N$skeletonData.__uuid__===newLayer.uuid),old=expected.find(c=>c.__type__==='sp.Skeleton'&&c._N$skeletonData.__uuid__===oldLayer.uuid);
-    renderer._N$skeletonData=old._N$skeletonData;renderer.defaultSkin=old.defaultSkin;renderer.defaultAnimation=old.defaultAnimation;renderer._animationName=old._animationName;renderer._preCacheMode=old._preCacheMode;
-    assert.deepEqual(actual,expected,row.ID+' prefab graph changed beyond the model');
-    for(const clip of ['idle','move','attack','hit','die']){assert(Math.abs(Bake.duration(newLayer.json.animations[clip])-Bake.duration(oldLayer.json.animations[clip]))<1e-6,row.ID+'/'+clip);assert(!newLayer.json.animations[clip].events,'No fabricated authored reference');}
-    const measured=Migration.bounds(newLayer,newLayer.json,fs.readFileSync),reference=Migration.bounds(oldLayer,oldLayer.json,fs.readFileSync);
-    assert(Math.abs(measured.height-reference.height)<.0002,row.ID+' height fit');assert(Math.abs(measured.minY-reference.minY)<.0002,row.ID+' foot position');
+test('retired Campaign IDs resolve to the regular fighting profiles with the same artwork',()=>{
+  for(const appearance of Definition.variants){
+    const id=appearance.id,source=cfg.SoldierCfg[appearance.AppearanceSourceUnit];
+    const profile=cfg.SoldierCfg[Fighting.canonicalId(cfg.GameTools,id)];
+    assert.equal(cfg.SoldierCfg[id],undefined);
+    assert.equal(source.MonsterSource,appearance.source);
+    assert.equal(profile.prefab,source.prefab);
+    assert.equal(profile.CampaignBaseUnit,undefined);
+    assert.equal(Fighting.familyFor(cfg.GameTools,id),Fighting.familyFor(cfg.GameTools,source.ID));
+    for(const table of ['unitTypeAssignments','visuals','timingDefaults','timings','animationSpeeds'])assert.equal(cfg.GameTools[table]?.['enemy:'+id+':default'],undefined,table+'/'+id);
   }
 });
 test('every enemy guide has localized true attack copy, unique source lore and resolvable names without changing stats',()=>{

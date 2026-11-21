@@ -23,6 +23,17 @@ async function verify(){
   assert(red(pixel(reclaim,0,0)),'later road paint reclaims an earlier field cut in chronological order');
   const recut=render(map([road(),field(),road({size:30,points:[{x:-110,y:0},{x:110,y:0}]}),field({size:14})]));
   assert(green(pixel(recut,0,0))&&red(pixel(recut,90,0)),'a subsequent field stroke cuts every prior road while leaving later-road material elsewhere intact');
+  const branch=road({edgeStyle:'clean',edgeSmoothing:.84,size:90,points:[{x:0,y:-145},{x:0,y:145}]});
+  const mixed=map([road(),branch]),mixedBefore=JSON.stringify(mixed),mixedCanvas=render(mixed);
+  assert(red(pixel(mixedCanvas,42,25))&&red(pixel(mixedCanvas,0,85)),'changing edge style and smoothing leaves both inner edges of a same-layer intersection clear');
+  assert(blue(pixel(mixedCanvas,42,125))&&red(pixel(mixedCanvas,0,125)),'the joined branch keeps its real outer border and road surface');
+  const interruptedJoin=render(map([road(),field({assetId:'other',size:15,points:[{x:170,y:130}]}),Object.assign({},branch,{edgeStyle:'textured',edgeSmoothing:.6})]));
+  assert(red(pixel(interruptedJoin,42,25)),'ordinary paint between compatible road strokes cannot bring back an internal edge');
+  const erasedJoin=render(map([road(),field({op:'erase',assetId:null,size:50,points:[{x:0,y:0}]}),branch]));
+  assert(red(pixel(erasedJoin,0,0))&&red(pixel(erasedJoin,42,25)),'a later road refills the eraser opening and joins the original road');
+  const differentLayer=map([road()]);differentLayer.ground.grass.strokes=[branch];
+  assert(blue(pixel(render(differentLayer),42,25)),'roads on different layers retain their separate borders');
+  assert(JSON.stringify(mixed)===mixedBefore,'the shared road outline keeps every authored stroke setting');
   const half=render(map([road(),field({opacity:.5})])),p=pixel(half,0,0),expected=[120,120,55,255];
   assert(p.every((v,i)=>Math.abs(v-expected[i])<=1),'50 percent Field paint blends once with road pixels without a double cut or foundation bleed');
   assert(red(pixel(half,40,0)),'partial Field coverage does not invent an opaque inner road edge');

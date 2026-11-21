@@ -348,7 +348,7 @@
         "StartSliver": 10,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "1#90010,1",
+          "1#91090,1",
           "2#100295,7",
           "3#91062,6",
           "10#91077,6",
@@ -368,7 +368,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 90010,
+            "unitId": 91090,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -6791,7 +6791,7 @@
   "nextBuilding": 22,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "449bb88c5f95470fe31c87a78525fdbeee2594e4df0522443741e98b451435d0",
+  "sourceRevision": "ab4264a6cfb3ee5cef83480c07d17b29960400c919a8ae905254fca58271a17a",
   "templates": {
     "Map03": [
       {

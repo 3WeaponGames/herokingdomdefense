@@ -142,6 +142,24 @@ NavigationGrid.prototype.segmentClear=function(start,end,radius) {
   for(var i=0;i<ids.length;i++)if(this._hitsPolygon(a,b,r,this.polygons[ids[i]].vertices))return false;
   return true;
 };
+NavigationGrid.prototype.firstObstacle = function (start, end, radius, accept) {
+  var r = radiusValue(radius), a = readPoint(start), b = readPoint(end);
+  var candidates = this._query(Math.min(a.x,b.x)-r, Math.min(a.y,b.y)-r, Math.max(a.x,b.x)+r, Math.max(a.y,b.y)+r);
+  var best = -1, fraction = 1, dx = b.x-a.x, dy = b.y-a.y;
+  for (var i = 0; i < candidates.length; i++) {
+    var id = candidates[i], vertices = this.polygons[id].vertices;
+    if (!accept(id) || !this._hitsPolygon(a, b, r, vertices)) continue;
+    // A prefix touches this polygon at or after its first point of contact.
+    var low = 0, high = 1;
+    for (var step = 0; step < 16; step++) {
+      var mid = (low + high) / 2;
+      if (this._hitsPolygon(a, { x: a.x + dx * mid, y: a.y + dy * mid }, r, vertices)) high = mid;
+      else low = mid;
+    }
+    if (best < 0 || high < fraction) { best = id; fraction = high; }
+  }
+  return best < 0 ? null : { index: best, fraction: fraction };
+};
 // One-way terrain: an existing overlap may continue until it exits. Every new
 // obstacle and every re-entry is still forbidden, including the unit's radius.
 function exitPolygonClear(start,end,radius,vertices,outwardOnly) {

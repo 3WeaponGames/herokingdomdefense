@@ -52,6 +52,25 @@ test('hall preview changes the hall model while other placements remain at their
  assert.notDeepEqual(result[1].levels[1].blockers,result[1].levels[3].blockers);
  assert.deepEqual(result[2].levels[1].blockers,result[2].levels[3].blockers);
 });
+test('Maps preview follows each initial branch and caps the preview at its last reachable upgrade',()=>{
+ const f=fixture(),tower=f.stage.buildings.find(b=>b.kind===2),hall=f.stage.buildings.find(b=>b.kind===1);
+ f.stage.buildings=[hall,tower];
+ f.config.BuildEnum[2].InitialChoices=[4];
+ const rows=f.config.BuildEnum[2].levelList;
+ const third=rows.find(row=>row.index===6);
+ const before=JSON.stringify(f.stage),normal=Preview.describe(f.service,f.stage),upgraded=Preview.describe(f.service,f.stage,{buildingLevels:true});
+ const base=(value,level)=>value.images[value.buildings[tower.id].levels[level].sprites[1].frame].url;
+ assert.match(base(upgraded,1),/cannon-1\.png$/);
+ assert.match(base(upgraded,4),/cannon-4\.png$/);
+ assert.match(base(normal,4),/cannon-1\.png$/);
+ assert.equal(upgraded.buildings[hall.id].levels[4].skeletons[0].skin,normal.buildings[hall.id].levels[4].skeletons[0].skin);
+
+ delete third.BranchBuild;
+ const capped=Preview.describe(f.service,f.stage,{buildingLevels:true});
+ assert.match(base(capped,3),/cannon-3\.png$/);
+ assert.equal(base(capped,4),base(capped,3),'an unlinked level 4 cannot replace the terminal level 3');
+ assert.equal(JSON.stringify(f.stage),before);
+});
 test('Appearance initial choices use the actual base and idle weapon layers with ColliderIndex, never upgrade icons',()=>{
  const f=fixture(),tower=f.stage.buildings.find(b=>b.kind===2);f.stage.buildings=[tower];f.config.BuildEnum[2].InitialChoices=[4];
  const row=f.config.BuildEnum[2].levelList[3],result=Preview.describe(f.service,f.stage),level=result.buildings[tower.id].levels[1],owner=f.source.info.byId[tower.template.node],pose=WeaponPose.pose(row.Appearance.weapon,null);

@@ -21,3 +21,20 @@ test('a wave that starts using a removed draft profile blocks Save and preserves
  const removed=await f.invoke('unit-profile-change',{version:f.store.version,id:created.id,action:'remove'});f.worlds.docs['stage:A-1'].data.config.WaveCfg=[{SpawnTimeline:[{unitId:created.id}]}];
  await assert.rejects(f.invoke('save',{version:removed.version}),/now used/);assert(f.store.changes().length);const saved=JSON.parse(fs.readFileSync(path.join(f.root,'assets/KinghtFallConfig/GameJsonCfg.json')));assert(saved.SoldierCfg[created.id]);
 });
+test('Fighting Profiles saves the health trigger and support skills and protects the next form',async t=>{
+ const f=fixture(t),view=await f.invoke('unit-profiles',{id:1});
+ const created=await f.invoke('unit-profile-change',{version:view.version,id:1,action:'add',name:'Next form'});
+ const value={unitId:created.id,trigger:'health',healthPercent:40};
+ const edited=await f.invoke('unit-profile-change',{version:created.version,id:1,action:'set',field:'TransformSkill',value});
+ const heal={interval:3,percent:25,radius:200,maxTargets:3};
+ const support=await f.invoke('unit-profile-change',{version:edited.version,id:1,action:'set',field:'EnemySkills',value:{heal}});
+ const file=path.join(f.root,'assets/KinghtFallConfig/GameJsonCfg.json');
+ const before=JSON.parse(fs.readFileSync(file)).SoldierCfg[1];
+ assert.equal(before.TransformSkill,undefined);assert.equal(before.EnemySkills,undefined);
+ await f.invoke('save',{version:support.version});
+ assert.deepEqual(JSON.parse(fs.readFileSync(file)).SoldierCfg[1],{...before,TransformSkill:value,EnemySkills:{heal}});
+ const next=await f.invoke('unit-profiles',{id:created.id});
+ assert(next.profiles.find(profile=>profile.id===created.id).uses.includes('Transform on 1'));
+ await assert.rejects(f.invoke('unit-profile-change',{version:next.version,id:created.id,action:'remove'}),/Transform on 1/);
+ await assert.rejects(f.invoke('unit-profile-change',{version:next.version,id:created.id,action:'set',field:'TransformSkill',value:{unitId:1,delay:2}}),/previous form/);
+});

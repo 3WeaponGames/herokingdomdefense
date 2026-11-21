@@ -93,6 +93,7 @@ function apply(owner,game,data){
   if(!current||!current.active){apply(owner,game,state.data);return;}
   var nextParent=parentFor(owner,game,row);if(!valid(nextParent)){node.active=false;return;}if(node.parent!==nextParent)node.parent=nextParent;parent=nextParent;
   if(state.hidden||owner.enabled===false||owner.node.activeInHierarchy===false||!owner.index||owner.isDestroyed){Transition.cancel(owner);node.active=false;state._shadowAlpha=0;return;}
+  if(owner._unitTestBreach){node.active=false;return;}
   var phase=Transition.phase(owner);if(!phase.ready){Transition.hold(owner,state);return;}
   var next=geometry(owner)+':ground',settingsKey=JSON.stringify(current.settings),prepared=game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.get(owner,row,current.settings),key=prepared?prepared.key:next+settingsKey,list;
   if(state.key!==key){

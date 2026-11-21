@@ -5,6 +5,7 @@
 const finite=(value,fallback)=>typeof value==='number'&&Number.isFinite(value)?value:fallback;
 const positive=(value,fallback)=>finite(value,0)>0?value:fallback;
 const Pose=require('../../assets/_script/HeroSkillPose');
+const Looks=require('../../assets/_script/ProjectileLooks');
 function animations(actor){return actor?Array.from(new Set((actor.layers||[]).flatMap(layer=>(layer.data.animations||[]).map(animation=>animation.name)))):[];}
 function duration(actor,name){return actor?Math.max(0,...(actor.layers||[]).map(layer=>{const clip=layer.data.findAnimation(name);return clip?finite(clip.duration,0):0;})):0;}
 function union(boxes){
@@ -14,11 +15,38 @@ function union(boxes){
   return{minX,minY,maxX,maxY,width:Math.max(1,maxX-minX),height:Math.max(1,maxY-minY)};
 }
 function placement(actor,options){
-  const box=actor.bounds,width=positive(options.width,150),height=positive(options.height,175),scale=Math.min(width/box.width,height/box.height),facing=(options.facing===-1?-1:1)*(actor.mirrorX?-1:1);
-  return{box,scale,facing,x:finite(options.x,0),groundY:finite(options.groundY,0),centerX:(box.minX+box.maxX)/2};
+  const facing=(options.facing===-1?-1:1)*(actor.mirrorX?-1:1);
+  return{box:actor.bounds,scale:positive(actor.description&&actor.description.worldScale,1),facing,x:finite(options.x,0),groundY:finite(options.groundY,0)};
+}
+function stage(width,actor,target,padding=24){
+  function extents(unit,facing){
+    if(!unit)return {left:25,right:25,top:72,bottom:0};
+    const {box,scale,facing:sign}=placement(unit,{facing});
+    return{left:Math.max(0,-(sign===1?box.minX:-box.maxX)*scale),
+      right:Math.max(0,(sign===1?box.maxX:-box.minX)*scale),top:Math.max(0,box.maxY*scale),bottom:Math.max(0,-box.minY*scale)};
+  }
+  const left=extents(actor,1),right=extents(target,-1),gap=120;
+  const content=left.left+left.right+gap+right.left+right.right+padding*2;
+  width=Math.ceil(Math.max(width,content));
+  const x=padding+(width-content)/2+left.left,goal=x+left.right+gap+right.left;
+  const groundY=Math.ceil(Math.max(310,left.top+padding,right.top+padding,padding+64));
+  return{width,height:Math.ceil(groundY+Math.max(110,left.bottom+padding,right.bottom+padding,padding)),
+    shooter:{x,groundY,facing:1},target:{x:goal,groundY,facing:-1},aim:{x:goal,y:groundY-right.top*.55}};
+}
+function projectileLook(assets, person, assignment, actor) {
+  const model=actor&&actor.description.layers&&actor.description.layers[0];
+  const effects=model&&model.json&&model.json._fantasy&&model.json._fantasy.effects;
+  const options=Object.assign({},person.type==='enemy'&&effects&&effects.projectile,assignment);
+  if(person.type==='hero'&&!options.flight)options.flight=person.defaultFlight;
+  const asset=id=>id&&assets.find(entry=>entry.id===id);
+  const flight=asset(options.flight)||(options.scale!==undefined&&asset(person.scaleFallback))||null;
+  if(person.type==='wall')options.rotation=(options.rotation||0)+90;
+  options.size=Looks.artworkSize(options,flight);
+  return {options,flight,launch:asset(options.launch),impact:asset(options.impact),
+    nativeImpact:!flight&&actor&&actor.launcher&&actor.launcher.impact};
 }
 function muzzle(actor,options){
-  let point=actor&&actor.artwork&&actor.artwork.weapon&&actor.artwork.weapon.muzzle;
+  let point=actor&&actor.artwork&&actor.artwork.weapon&&actor.artwork.weapon.muzzle||actor&&actor.launcher&&actor.launcher.muzzle;
   const arrow=actor&&(actor.layers||[]).find(layer=>layer.description.json._heroMaker&&layer.description.json._heroMaker.role===3);
   if(arrow){
     const tip=Pose.arrowTip(arrow.skeleton,{x:1,y:0},1);
@@ -29,7 +57,7 @@ function muzzle(actor,options){
   }
   if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return null;
   const pose=placement(actor,options||{});
-  return{x:pose.x+(point.x-pose.centerX)*pose.scale*pose.facing,y:pose.groundY+(pose.box.minY-point.y)*pose.scale};
+  return{x:pose.x+point.x*pose.scale*pose.facing,y:pose.groundY-point.y*pose.scale};
 }
 function create(api,options){
   options=options||{};const cache=new Map(),tokens=new Map(),images=new Map();let closed=false;
@@ -44,11 +72,12 @@ function create(api,options){
   async function build(key,token){
     const current=()=>!closed&&tokens.get(key)===token;
     const description=await api.ipc('describe-unit',{key});if(!current())return null;
-    const actor={key,description,profile:description.profile||{},layers:[],runtime:null,mirrorX:!!(description.visuals&&description.visuals.mirrorX)};
+    const actor={key,description,profile:description.profile||{},layers:[],runtime:null,launcher:description.launcher,
+      mirrorX:!description.battleSpace&&!!(description.visuals&&description.visuals.mirrorX)};
     actor.animationSpeed=finite(actor.profile.animationSpeed,finite(description.animationSpeed,finite(description.unitAnimationSpeed,1)));
     if(description.layers&&description.layers.length){
       actor.runtime=api.runtime(description);
-      const visual=description.visuals||{},descriptions=description.layers.map(original=>{
+      const visual=!description.battleSpace&&description.visuals||{},descriptions=description.layers.map(original=>{
         const layer=Object.assign({},original,{x:finite(original.x,0)+finite(visual.x,0),y:finite(original.y,0)+finite(visual.y,0),scaleX:finite(original.scaleX,1)*finite(visual.scaleX,1),scaleY:finite(original.scaleY,1)*finite(visual.scaleY,1),rotation:finite(original.rotation,0)+finite(visual.rotation,0)});
         if(!layer.tint&&visual.tint)layer.tint=visual.tint;return layer;
       });
@@ -58,8 +87,7 @@ function create(api,options){
       actor.attackAnimation=pick(description.attackAnimation||description.animation||'attack',['attack','attack_bow','shoot','idle']);
       actor.hitAnimation=pick(description.hitAnimation||'hit',['hurt','damage','idle']);
       actor.idleAnimation=pick(description.idleAnimation||'idle',['idle','move']);
-      // Use one viewport for the complete motion, otherwise per-frame fitting
-      // makes the shooter grow, shrink and drift while aiming the projectile.
+      // Animation bounds only position the camera. They never scale the rig.
       const boxes=[];actor.animationBounds={};
       for(const name of new Set([actor.idleAnimation,actor.attackAnimation,actor.hitAnimation])){
         const samples=[],length=duration(actor,name);for(let step=0;step<=4;step++){api.renderer.seek(actor.runtime,actor.layers,name,length*step/4,false);samples.push(api.renderer.bounds(actor.runtime,actor.layers));}actor.animationBounds[name]=union(samples);boxes.push(...samples);
@@ -72,6 +100,11 @@ function create(api,options){
       actor.bounds=actor.artwork&&(actor.artwork.frameBounds||actor.artwork.bounds)||{minX:-80,minY:0,maxX:80,maxY:200,width:160,height:200};
       actor.attackAnimation=actor.hitAnimation=actor.idleAnimation='';
     }
+    const launcher=actor.launcher;
+    if(launcher&&launcher.layers){
+      actor.projectileLayers=await api.renderer.createLayers(actor.runtime,launcher.layers);
+    }else if(launcher&&launcher.sprite)actor.projectileImage=await image(launcher.sprite.frame.url);
+    if(!current())return null;
     return actor;
   }
   function load(key){
@@ -80,7 +113,7 @@ function create(api,options){
   }
   function draw(ctx,actor,settings){
     if(closed||!actor)return null;const value=settings||{},pose=placement(actor,value),time=Math.max(0,finite(value.time,0)),name=value.animation||actor.idleAnimation;
-    ctx.save();ctx.translate(pose.x,pose.groundY+pose.box.minY*pose.scale);ctx.scale(pose.scale*pose.facing,-pose.scale);ctx.translate(-pose.centerX,0);
+    ctx.save();ctx.translate(pose.x,pose.groundY);ctx.scale(pose.scale*pose.facing,-pose.scale);
     if(actor.layers.length){
       api.renderer.seek(actor.runtime,actor.layers,name,time,value.loop!==false);api.renderer.drawWorld(actor.runtime,ctx,actor.layers);
     }else{
@@ -92,6 +125,30 @@ function create(api,options){
       }else if(image){ctx.save();ctx.translate(pose.box.minX,pose.box.maxY);ctx.scale(1,-1);ctx.drawImage(image,0,0,pose.box.width,pose.box.height);ctx.restore();}
     }
     ctx.restore();return pose;
+  }
+  function drawFlight(ctx,actor,time,impact){
+    const launcher=actor&&actor.launcher;
+    if(!launcher)return;
+    ctx.save();ctx.scale(1,-1);
+    if(actor.projectileLayers){
+      api.renderer.seek(actor.runtime,actor.projectileLayers,impact?launcher.impact:launcher.animation,time,!impact);
+      api.renderer.drawWorld(actor.runtime,ctx,actor.projectileLayers);
+    }else if(actor.projectileImage){
+      const {frame,matrix,x,y,width,height}=launcher.sprite;
+      ctx.transform(...matrix);ctx.scale(1,-1);ctx.translate(x,-y-height);
+      if(frame.rotated){ctx.translate(0,height);ctx.rotate(-Math.PI/2);}
+      ctx.drawImage(actor.projectileImage,frame.x||0,frame.y||0,frame.rotated?frame.height:frame.width,frame.rotated?frame.width:frame.height,
+        0,0,frame.rotated?height:width,frame.rotated?width:height);
+    }else if(launcher.builtin==='cannon'){
+      ctx.lineWidth=2;ctx.fillStyle='#414754';ctx.strokeStyle='#171c24';ctx.beginPath();ctx.arc(0,0,8,0,2*Math.PI);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#a4b0bd';ctx.beginPath();ctx.arc(-2,3,2,0,2*Math.PI);ctx.fill();
+    }else if(launcher.builtin==='sniper'){
+      for(const [color,width,start,end]of [['#402c16',5,-17,12],['#ffe58b',2,-18,13]]){
+        ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(start,0);ctx.lineTo(end,0);ctx.stroke();
+      }
+      ctx.fillStyle='#fff9da';ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(8,5);ctx.lineTo(8,-5);ctx.fill();
+    }
+    ctx.restore();
   }
   const hits=new Map();
   function defaultHit(ctx,x,y,time,size,sourceActor){
@@ -123,6 +180,6 @@ function create(api,options){
     if(actor&&actor.layers.length&&settings&&settings.animation)api.renderer.seek(actor.runtime,actor.layers,settings.animation,Math.max(0,finite(settings.time,0)),false);
     return muzzle(actor,settings);
   }
-  return{load,draw,muzzle:releaseMuzzle,duration,animations,defaultHit,invalidate,destroy(){closed=true;invalidate();}};
+  return{load,draw,drawFlight,muzzle:releaseMuzzle,duration,animations,defaultHit,invalidate,destroy(){closed=true;invalidate();}};
 }
-module.exports={create,duration,animations,union,placement,muzzle};
+module.exports={create,duration,animations,union,placement,muzzle,stage,projectileLook};

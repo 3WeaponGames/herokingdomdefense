@@ -19,6 +19,20 @@ function releaseBuffEffect(record) {
   if (node._statusBuffOwner === record) delete node._statusBuffOwner;
   $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, node);
 }
+function applyBuffTint(actor) {
+  var body = actor.body;
+  if (!body) return;
+  var records = actor.debuffInfo;
+  for (var index = records.length - 1; index >= 0; index--) {
+    if (!records[index].skillTint) continue;
+    if (!actor._buffTint || actor._buffTint.body !== body) actor._buffTint = { body: body, color: body.color };
+    body.color = new cc.Color().fromHEX(records[index].skillTint);
+    return;
+  }
+  var original = actor._buffTint;
+  delete actor._buffTint;
+  if (original && original.body === body) body.color = original.color || cc.Color.WHITE;
+}
 var exp_KinghtFallInterface = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -91,7 +105,7 @@ var exp_KinghtFallInterface = function (t) {
     }
     return e;
   };
-  _ctor.prototype.addBuff = function (t, e) {
+  _ctor.prototype.addBuff = function (t, e, skill) {
     var n = this, node = this.node, generation = node && node._combatGeneration, buffs = this.debuffInfo;
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, data = game && game.gameData, epoch = game && game._combatEpoch, stage = game && game.gameStatus, effects = ui && ui.ctrEffect;
     function current() {
@@ -102,17 +116,19 @@ var exp_KinghtFallInterface = function (t) {
     }
     if (!current()) return;
     var i = new exp_KinghtFallEnemyBuffInfo(t, e);
+    var kind = skill || (t === p.AttackSpeed && this.navigationTeam === "enemy" && "haste");
+    var presentation = kind && game && game._stageAssets && game._stageAssets.options && require("EnemySkillVisuals");
+    var visual = presentation && presentation.fromGame(game, kind);
+    i.skillTint = visual ? visual.showBuiltin && visual.tint : t === p.AttackSpeed && "#FF7676";
     if (BattleSounds.effect && t === p.MoveSpeed && e.subNum > 0) BattleSounds.effect("slow-apply", this);
     if (BattleSounds.effect && t === p.DamageCut) BattleSounds.effect("debuff-apply", this);
     if (!current()) return;
     // Pool hits may complete synchronously, so register ownership first.
     this.debuffInfo.push(i);
+    if (i.skillTint) applyBuffTint(this);
     switch (t) {
-      case p.AttackSpeed:
-        this.body && (this.body.color = new cc.Color().fromHEX("#FF7676"));
-        break;
       case p.DamageCut:
-        if (!current() || !cc.isValid(effects, true) || ui.ctrEffect !== effects) break;
+        if (visual && !visual.showBuiltin || !current() || !cc.isValid(effects, true) || ui.ctrEffect !== effects) break;
         effects.onBuff($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier10Buff, $z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, function (t) {
           if (!current() || !cc.isValid(effects, true) || ui.ctrEffect !== effects || !cc.isValid(n.ndEffect, true) || buffs.indexOf(i) < 0) {
             $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, t);
@@ -135,6 +151,10 @@ var exp_KinghtFallInterface = function (t) {
           t.getComponentInChildren(sp.Skeleton).setAnimation(0, n.isBig ? "debuff_da" : "debuff_xiao", true);
         });
     }
+    if (visual && current()) {
+      presentation.show(this, game, visual);
+      if (visual.showIndicator && current() && buffs.indexOf(i) >= 0) presentation.addIndicator(this, game, kind, visual, i);
+    }
   };
   _ctor.prototype.delBuff = function (t) {
     var buffs = this.debuffInfo, node = this.node, generation = node && node._combatGeneration;
@@ -149,10 +169,9 @@ var exp_KinghtFallInterface = function (t) {
     var buffs = this.debuffInfo, e = buffs[t];
     if (!e) return;
     buffs.splice(t, 1);
+    if (e.indicator) require("EnemySkillVisuals").removeIndicator(this, e);
+    if (e.skillTint) applyBuffTint(this);
     switch (e.type) {
-      case p.AttackSpeed:
-        this.getBuffList(e.type).length === 0 && this.body && (this.body.color = cc.Color.WHITE);
-        break;
       case p.DamageCut:
         releaseBuffEffect(e);
     }
@@ -162,8 +181,12 @@ var exp_KinghtFallInterface = function (t) {
     var children = effects && Array.isArray(effects.children) ? effects.children.slice() : null, healing = !!(this._healingEffects && this._healingEffects.size), owned = new Set(buffs.map(function (record) { return record.node; }));
     function current() { return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner.debuffInfo === next; }
     this.debuffInfo = next;
+    if (this._enemySkillEffects) require("EnemySkillVisuals").clear(this);
     this.releaseHealingEffects();
-    if (current() && this.body === body && body && cc.isValid(body, true)) body.color = cc.Color.WHITE;
+    if (current() && this.body === body && body && cc.isValid(body, true)) {
+      if (this._buffTint) applyBuffTint(this);
+      else body.color = cc.Color.WHITE;
+    }
     for (var t = 0; t < buffs.length; t++) {
       var e = buffs[t];
       switch (e.type) {

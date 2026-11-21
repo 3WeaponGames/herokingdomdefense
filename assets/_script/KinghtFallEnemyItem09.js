@@ -78,6 +78,7 @@ var def_KinghtFallEnemyItem09 = function (t) {
       n.enemy.addHpPro(strength);
       if (!current()) return "break";
       if (!recipient(n)) return;
+      if (game._stageAssets && game._stageAssets.options && !require("EnemySkillVisuals").fromGame(game, "heal").showBuiltin) return;
       effects.onBuff($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Buff, $z1KinghtFallConfig.KinghtFallPoolName.Soldier9Buff, function (t) {
         var target = n.enemy, pool = $z1KinghtFallConfig.KinghtFallPoolName.Soldier9Buff;
         if (!current() || !recipient(n) || !cc.isValid(target.ndEffect, true)) {

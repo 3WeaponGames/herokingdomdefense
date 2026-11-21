@@ -4,6 +4,41 @@ const C=require('./building-night-light-contract.cjs'),P=require('../../packages
 const read=rel=>JSON.parse(fs.readFileSync(path.join(R,rel),'utf8')),sha=x=>crypto.createHash('sha256').update(x).digest('hex'),hash=x=>sha(JSON.stringify(x)),dir=a=>'assets/KinghtFallIconMap/com/Ani/'+a+'/',slot='building_aperture_rays';
 const runtime=path.join(process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine','extensions/spine/lib/spine.js');
 
+test('the shipped Archer lights stay on the dark window slits at every tier',()=>{
+ const lights=require('../../assets/_script/BuildingNightlight');
+ const mask=require('../../assets/_script/WindowLightMask');
+ const warp=require('../../assets/_script/WindowLightWarp');
+ const image=name=>P.decode(fs.readFileSync(path.join(R,'assets/resources',name+'.png')));
+ for(const file of ['assets/KinghtFallConfig/GameJsonCfg.json','assets/configs/GameJsonCfg.json']){
+  const rows=read(file).BuildEnum[2].levelList.filter(row=>row.Appearance?.sprite.includes('/archer-'));
+  assert.equal(rows.length,4);
+  for(const row of rows){
+   const art=row.Appearance,body=image(art.sprite),emitters=lights.emitters(row);
+   assert.equal(emitters.length,2);
+   for(const emitter of emitters){
+    const settings=lights.value(row,emitter.id),type=lights.lightType(emitter);
+    const source=image(type.sprite),pixels=mask.pixels(source.rgba,settings.erase,source.width,source.height);
+    const project=warp.forType(type.id).mapper(settings.warp,settings.warpNodes);
+    const matrix=lights.glowMatrix(lights.glow(emitter),settings);
+    let visible=0;
+    for(let v=0;v<source.height;v++)for(let u=0;u<source.width;u++){
+     if(pixels[(v*source.width+u)*4+3]<12)continue;
+     const p=project({x:((u+.5)/source.width-.5)*lights.size,y:(.5-(v+.5)/source.height)*lights.size});
+     const [x,y]=lights.point(matrix,p.x,p.y);
+     const fractionX=.5+(x-art.offsetX)/art.width,fractionY=1-(y-art.offsetY)/art.height;
+     assert(fractionY>.43&&fractionY<.58,'a window light crossed onto the roof, door or platform');
+     assert(settings.flipX?fractionX<.5:fractionX>.5,'a light crossed the central post');
+     const at=(Math.floor(fractionY*body.height)*body.width+Math.floor(fractionX*body.width))*4;
+     assert(body.rgba[at+3]>=235&&body.rgba[at]<=46&&body.rgba[at+1]<=40&&body.rgba[at+2]<=36,
+      file+' branch '+row.index+' '+emitter.id+' lights a frame pixel');
+     visible++;
+    }
+    assert(visible>=60,'clipping should leave a visible light inside each window');
+   }
+  }
+ }
+});
+
 test('all new opening lights use the complete original sprite and no custom flat fill',()=>{
  const image=P.decode(fs.readFileSync(path.join(R,'assets/resources/buildings/lighting/native-window-ray.png')));assert.equal(sha(image.rgba),F.source.rgbaSha256);
  for(const [rig]of Object.entries(F.rigs)){const json=read(dir(rig)+rig+'.json');for(const skin of json.skins){const openings=F.openings.filter(o=>o.rig===rig&&o.skin===skin.name);if(!openings.length)continue;const mesh=skin.attachments[slot][slot];openings.forEach((o,i)=>{assert.deepEqual(mesh.uvs.slice(i*14,(i+1)*14),F.source.mesh.uvs);const size=F.source.mesh.triangles.length;assert.deepEqual(mesh.triangles.slice(i*size,(i+1)*size),F.source.mesh.triangles.map(v=>v+i*7));});if(rig!=='mf')assert.deepEqual(skin.attachments.building_aperture_cores||{},{});else{const fit=F.originalWindowFits.find(f=>f.skin===skin.name);assert(fit);assert.deepEqual(skin.attachments.building_aperture_cores.building_aperture_cores.uvs,fit.sourceMesh.uvs);}}}

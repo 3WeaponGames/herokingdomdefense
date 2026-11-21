@@ -46,6 +46,25 @@ test('all three gameplay light types use separate exact sources and reuse their 
 });
 function record(h){return h.state._buildingLighting;}
 function step(h,dt){h.api.update(h.owner,h.state,dt);}
+test('stage preparation and gameplay use an aperture even without brush strokes',()=>{
+ const h=fixture(),source=h.frame(),row=h.owner.buildInfo.cfg;
+ row.Nightlight.lights['light:1'].erase={
+  version:1,strokes:[],apertures:[[[-10,-10],[10,-10],[10,10],[-10,10]]]
+ };
+ const stage=h.maskRuntime.prime({BuildEnum:{2:{levelList:[row]}}},['2'],{
+  'resources/buildings/lighting/native-window-ray:frame':source
+ });
+ h.api.apply(h.owner,h.state);
+ h.resolve(0,source);
+ assert.equal(h.textures.length,1);
+ const [clipped,plain]=record(h).entries;
+ assert.equal(clipped.sprite.spriteFrame.getTexture(),h.textures[0]);
+ assert.equal(plain.sprite.spriteFrame,source);
+ assert.equal(h.textures[0].pixels[3],0);
+ assert.equal(h.textures[0].pixels[(35*70+35)*4+3],200);
+ assert.equal(source.getTexture().pixels[3],200);
+ h.api.disposeOwner(h.owner);stage.dispose();
+});
 test('stage-prepared erased lights reuse their texture, carry edge nodes, and release consumers before their mask',()=>{
  const h=fixture(),W=require('../../assets/_script/WindowLightWarp'),source=h.frame(),pixels=source.getTexture().pixels.slice(),v=h.owner.buildInfo.cfg.Nightlight.lights['light:1'];v.erase={version:1,strokes:[{op:'erase',radius:8,opacity:.5,softness:.8,points:[{x:.5,y:-.5}]}]};v.warpNodes=W.addNode(undefined,[],0,.5);v.warpNodes[0].y+=1;
  const before=JSON.stringify(h.owner.buildInfo.cfg),stage=h.maskRuntime.prime({BuildEnum:{2:{levelList:[h.owner.buildInfo.cfg]}}},['2'],{'resources/buildings/lighting/native-window-ray:frame':source});assert.equal(h.textures.length,1,'mask baking happens during stage admission');h.api.apply(h.owner,h.state);h.resolve(0,source);const r=record(h),entry=r.maskEntries[0],sprite=r.entries[0].sprite,mesh=sprite.spriteFrame;assert.equal(entry.refs,2);assert.equal(h.textures.length,1,'placing the building creates no new mask');assert.equal(mesh.getTexture(),entry.texture);assert.equal(mesh.vertices.x.length,294);assert.equal(r.entries[1].sprite.spriteFrame,source);assert.equal(entry.texture.pixels[(35*70+35)*4+3],100);assert.deepEqual(source.getTexture().pixels,pixels);for(let i=0;i<pixels.length;i+=4)assert.deepEqual(entry.texture.pixels.slice(i,i+3),pixels.slice(i,i+3));assert.equal(JSON.stringify(h.owner.buildInfo.cfg),before);

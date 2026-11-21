@@ -1,7 +1,7 @@
 {
   "name": "hkd-skills",
   "version": "1.0.0",
-  "description": "Hero skills with live, isolated previews and explicit draft saves",
+  "description": "Hero and enemy skills with isolated previews and explicit draft saves",
   "main": "main.js",
   "main-menu": { "Tools/Skills/Skill Editor": { "message": "hkd-skills:open" } },
   "panel": { "main": "panel.js", "type": "dockable", "title": "Skills", "width": 1440, "height": 900, "min-width": 980, "min-height": 600 }

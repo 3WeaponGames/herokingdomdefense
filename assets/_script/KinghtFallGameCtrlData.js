@@ -548,7 +548,7 @@ var def_KinghtFallGameCtrlData = function () {
   _ctor.prototype.addEnemy = function (t) {
     this.enemyList.push(t);
   };
-  _ctor.prototype.delEnemy = function (t) {
+  _ctor.prototype.delEnemy = function (t, transformed) {
     var removed = false;
     for (var e = 0; e < this.enemyList.length; e++) {
       if (this.enemyList[e].uuid == t.uuid) {
@@ -558,6 +558,7 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
     if (!removed) return false;
+    if (transformed === true) return true;
     var n = this.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff03);
     if (n) {
       this.addTime[i.KillSoldier1]++;
