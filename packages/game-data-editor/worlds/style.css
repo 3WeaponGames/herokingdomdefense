@@ -3,7 +3,8 @@
 .world-tool .world-map-delete{color:#f1b5ad;border-color:#775149}
 .world-map .world-stage-preview-picker{gap:5px;min-width:0}
 .world-map .world-stage-preview-picker>span{flex:0 0 auto}
-.world-map .world-stage-preview-picker>select{width:210px;max-width:210px;min-width:110px;flex:1 1 auto}
+.world-map .world-stage-preview-picker>select{width:180px;max-width:180px;min-width:110px;flex:1 1 auto}
+.world-map .world-top .world-map-snap{width:64px}
 .world-map .world-stage-preview-controls{display:flex;align-items:center;gap:7px;flex:0 0 auto}
 .world-map .world-stage-preview-controls label{font-size:11px;gap:4px;white-space:nowrap}
 .world-map .world-stage-preview-controls label>span{flex:0 0 auto}

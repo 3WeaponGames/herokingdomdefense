@@ -75,10 +75,47 @@ async function fixture(custom = {}) {
   const backend = store(custom.catalogs,custom.data), document = { defaultView: {}, activeElement: null }; document.createElement = tag => new Element(tag, document);
   const host = new Element('div', document), calls = { preview: [], scenarios: [], audio: [], seeks:[],plays:[],destroyed: false }; let options;
   const api = { ...backend.api, ipc: (name, request) => name === 'describe' && custom.describe ? custom.describe(request) : backend.api.ipc(name, request), audioURL: item => item.file, createAudio: () => { const media = { pause() {}, removeAttribute() {}, load() {}, play() { calls.audio.push(this.src); return Promise.resolve(); } }; return media; }, createPreview(_host, value) { options = value; return { set: async request => calls.preview.push(copy(request)), setScenario: value => calls.scenarios.push(copy(value)), play(value) {calls.plays.push(value);if(custom.statusOnPlay!==undefined)options.onStatus({time:custom.statusOnPlay,duration:4,playing:false});}, seek(value) {calls.seeks.push(value);options.onStatus({time:value,duration:4,playing:false});}, step() {}, fit() {}, cast() {}, setAudioEnabled() {}, selectHandle() {}, destroy() { calls.destroyed = true; } }; } };
+  if(custom.enemy){
+    const enemy=require('../../packages/hkd-skills/enemy');
+    const ipc=api.ipc;api.createEnemyPreview=api.createPreview;
+    api.ipc=async(name,request)=>{
+      const result=await ipc(name,request);
+      if(!result.styles)return result;
+      result.enemyStyles=enemy.styles;result.enemyModels=[{key:'enemy:1',label:'Sample'},{key:'enemy:2',label:'Next'}];
+      for(const style of enemy.styles){
+        result.fields[style.id]=enemy.fields(style.id);
+        result.effective[style.id]={visual:enemy.Visuals.effective(enemy.idOf(style.id),result.data[style.id]?.visual)};
+      }
+      return result;
+    };
+  }
   const client = Client.mount(host, api); await flush(); await flush();
   const button = title => host.querySelectorAll('button').find(node => node.textContent === title), field = label => host.querySelector('[aria-label="' + label + '"]');
   return { host, client, backend, calls, button, field, options: () => options, async settle() { await client.flush(); await flush(); await flush(); }, close() { client.destroy(); } };
 }
+
+test('enemy skills open a silent recipient preview and update visual drafts from the shared controls',async()=>{
+ const f=await fixture({enemy:true});
+ assert.equal(f.host.querySelectorAll('.style-card').length,12);
+ await f.client.selectStyle('enemy:damage');await f.settle();
+ assert.equal(f.calls.preview.at(-1).style,'enemy:damage');
+ assert.equal(f.field('Recipient tint').value,'#ffc875');
+ const tint=f.field('Recipient tint');tint.value='#445566';tint.onchange();await f.settle();
+ assert.equal(f.calls.preview.at(-1).settings.visual.tint,'#445566');
+ const scale=f.field('Buff effect scale'),enabled=f.field('Show active buff effect');
+ assert.equal(Number(scale.value),1);assert.equal(enabled.checked,true);
+ scale.value=1.25;scale.oninput();await f.settle();
+ assert.equal(f.calls.preview.at(-1).settings.visual.indicatorScale,1.25);
+ enabled.checked=false;enabled.onchange();await f.settle();
+ assert.equal(f.calls.preview.at(-1).settings.visual.showIndicator,false);
+ assert(!f.backend.calls.some(call=>call.name==='save'));assert.deepEqual(f.calls.audio,[]);
+ await f.client.selectStyle('enemy:transform');await f.settle();
+ const form=f.field('Next form');form.value='enemy:2';form.onchange();await f.settle();
+ assert.equal(f.backend.calls.filter(call=>call.name==='describe').at(-1).request.form,'enemy:2');
+ await f.client.selectStyle('fighter');await f.settle();
+ assert.equal(f.calls.preview.at(-1).style,'fighter');assert(f.field('Description'));
+ f.close();
+});
 test('description editing previews real stat changes, inserts placeholders and resets invalid copy without publication',async()=>{
  const f=await fixture({data:{skirmisher:{activeDamage:1.1}}});
  const description=f.field('Description'),template=description.value,preview=()=>f.field('Description preview');assert.equal(description.tagName,'TEXTAREA');assert.match(preview().textContent,/110%/);

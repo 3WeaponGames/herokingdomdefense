@@ -53,6 +53,12 @@ function plan(root,copy,definitions=Definitions){
     row.Guide={description:entry('data.unitguide.'+row.ID+'.description',text.en,text.zh,'Attack and ability description; numeric stats stay dynamic'),lore:entry('data.unitguide.'+row.ID+'.lore',lore.en,lore.zh,'Creature lore')};report.guideRows++;
   }
   const registered=definitions.variants.filter(v=>cfg.SoldierCfg[v.id]);
+  const aliases=cfg.GameTools&&cfg.GameTools.unitProfiles&&cfg.GameTools.unitProfiles.aliases;
+  // A regular profile now provides each retired Campaign ID.
+  if(!registered.length&&aliases&&definitions.variants.every(v=>{
+    const target=cfg.SoldierCfg[aliases[v.id]];
+    return target&&target.prefab&&target.CampaignBaseUnit===undefined;
+  }))return {root,files,reads,report};
   if(registered.length&&registered.length!==definitions.variants.length)throw Error('Partial campaign import: recover the original transaction before retrying.');
   for(const v of registered){const row=cfg.SoldierCfg[v.id];if(row.CampaignBaseUnit!==v.CampaignBaseUnit||row.AppearanceSourceUnit!==v.AppearanceSourceUnit)throw Error('Campaign identity collision: '+v.id);}
   if(!registered.length){

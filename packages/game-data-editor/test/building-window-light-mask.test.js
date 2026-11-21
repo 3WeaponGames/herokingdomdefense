@@ -28,6 +28,26 @@ test('softness blends the brush edge; connected strokes have no gaps and Restore
  const line=stroke({radius:2,opacity:1,points:[{x:-20.5,y:-.5},{x:20.5,y:-.5}]}),erased=Mask.raster(mask(line));for(let x=-20.5;x<=20.5;x++)assert.equal(at(erased,x,-.5),0);
  const restored=Mask.raster(mask(line,{...line,op:'restore'}));assert(restored.every(a=>a===1));const partial=Mask.raster(mask(line,{...line,op:'restore',opacity:.4}));assert(Math.abs(at(partial,.5,-.5)-.4)<1e-7);
 });
+test('apertures keep both brush edits and restored light inside the window panes',()=>{
+ const data=mask();
+ data.apertures=[
+  [[-12,-8],[12,-8],[12,8],[-12,8]],
+  [[-2,-6],[2,-6],[2,6],[-2,6]]
+ ];
+ assert(Mask.valid(data));assert(Mask.hasMask(data));
+ const live=Mask.createRasterizer(70,70),clear=live.update(data);
+ assert.equal(at(clear,6.5,-.5),1);
+ assert.equal(at(clear,.5,-.5),0,'the mullion stays dark');
+ assert.equal(at(clear,14.5,-.5),0,'the frame stays dark');
+ const erase=stroke({radius:5,opacity:1,points:[{x:6.5,y:-.5}]});
+ data.strokes.push(erase);
+ assert.equal(at(live.update(data),6.5,-.5),0);
+ data.strokes.push({...erase,op:'restore',radius:20});
+ const restored=live.update(data);
+ assert.deepEqual(restored,Mask.raster(data));
+ assert.deepEqual(restored,clear);
+ assert(!Mask.valid({...data,apertures:[[[0,0],[1,1],[2,Infinity]]]}));
+});
 test('brush data validates finite bounded strokes and survives light transforms without editing its source coordinates',()=>{
  const erase=mask(stroke()),light={x:10,y:20,angle:37,flipX:true,scaleX:1.2,scaleY:.6,erase},row={Nightlight:{version:1,lights:{'light:1':light},emitters:[{id:'light:1'}]}};assert.deepEqual(T.issues(row.Nightlight),[]);const v=T.value(row,'light:1');assert.deepEqual(v.erase,erase);v.erase.strokes[0].points[0].x=99;assert.equal(erase.strokes[0].points[0].x,.5);
  for(const bad of [mask(stroke({opacity:2})),mask(stroke({radius:0})),mask(stroke({softness:NaN})),mask(stroke({points:[]})),mask(stroke({points:[{x:Infinity,y:0}]})),mask(...Array(129).fill(stroke()))]){assert(!Mask.valid(bad));assert(T.issues({...row.Nightlight,lights:{'light:1':{erase:bad}}}).length);}

@@ -14,6 +14,22 @@ test('generated stage fallback restores authored routes and disabled lane metada
  // Disabled metadata does not create an active runtime spawn marker.
  assert.deepEqual(Maps.model(f.data).nodes.filter(n=>n.kind==='spawn').map(n=>n.lane),[1]);
 });
+test('an authored Tasks position survives prefab export and recovery without becoming an enemy spawn',()=>{
+ const f=fixture(),TaskPosition=require('../../../assets/_script/StageTaskPosition');
+ assert.equal(L.adaptStage(f.root,'A',1,f.config).tasksPosition,undefined);
+ assert.equal(M.stagePlacementIssues(f.stage,f.map).outsideMap.length,0);
+ f.stage.tasksPosition={x:-126.25,y:84.5};
+ const data=P.compact(P.compose(f.root,f.map,f.stage,{ground:[],assets:{}},{})),info=Maps.model(data);
+ const marker=info.nodes.find(n=>n.name===TaskPosition.marker);
+ assert.equal(marker.parent,info.roots.ndPath);assert.deepEqual(marker.position,f.stage.tasksPosition);
+ f.write(f.file,data);const before=tree(f.root),restored=L.adaptStage(f.root,'A',1,f.config);
+ assert.deepEqual(restored.tasksPosition,f.stage.tasksPosition);
+ assert.deepEqual(restored.spawns,f.stage.spawns);assert.deepEqual(tree(f.root),before);
+ f.stage.tasksPosition.x=f.map.size.width;
+ assert.match(M.stagePlacementIssues(f.stage,f.map).outsideMap[0],/Tasks position is outside the map/);
+ f.stage.tasksPosition.x=null;
+ assert.match(M.stagePlacementIssues(f.stage,f.map).invalidCoordinates[0],/Tasks position needs finite X and Y/);
+});
 test('fallback respects explicit native route and spawn moves while retaining authored branch/unknown fields',()=>{
  const f=fixture(),info=Maps.model(f.data),point=info.nodes.find(n=>n.name===require('../../../assets/_script/AuthoredSpawnPlan').pointName(f.stage.graphs[0].id,'start')),spawn=info.nodes.find(n=>n.kind==='spawn');f.data[point.id]._trs.array[0]+=12;f.data[spawn.id]._trs.array[1]+=13;f.write(f.file,f.data);const before=tree(f.root),stage=L.adaptStage(f.root,'A',1,f.config);
  assert.equal(stage.graphs[0].nodes[0].x,22);assert.equal(stage.spawns[0].y,33);assert.equal(stage.spawns[0].name,'North lane');assert.deepEqual(stage.graphs[0].edges,f.stage.graphs[0].edges);assert.deepEqual(stage.graphs[0].future,f.stage.graphs[0].future);assert.deepEqual(tree(f.root),before);

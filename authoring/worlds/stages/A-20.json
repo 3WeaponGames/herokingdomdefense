@@ -387,7 +387,7 @@
         "StartSliver": 6,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "1#90010,1",
+          "1#91090,1",
           "2#100350,7",
           "3#91082,3",
           "13#91030,1"
@@ -406,7 +406,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 90010,
+            "unitId": 91090,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -866,7 +866,7 @@
           "5#91082,4",
           "7#91081,1",
           "8#91089,5",
-          "13#90010,1",
+          "13#91090,1",
           "6#91086,3",
           "11#91096,4",
           "10#91051,1"
@@ -965,7 +965,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 90010,
+            "unitId": 91090,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -6791,7 +6791,7 @@
   "nextBuilding": 21,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "33e02099b2b57dd21339d8fc620101b6fbf75c2131d956ea4af52c655721abf4",
+  "sourceRevision": "0116bed03d7feaa740beb8bd6b95fc223cfb614f394b8cc2672193f064919c45",
   "templates": {
     "Map04": [
       {

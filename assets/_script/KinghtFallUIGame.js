@@ -176,6 +176,7 @@ var def_KinghtFallUIGame = function (t) {
         t.ctrEffect.initData(game.ndUI);
         game.gameData.upMap();
         game.onLateUpdate(0);
+        if (t._battleHud) require("BattleHud").mountTaskSpeaker(t);
         t.initBtnView();
         t.ctrUI.ndGuide.setParent(game.ndPath);
         if (!entry && game.loadGame()) t.onRestart(false);
@@ -842,17 +843,15 @@ var def_KinghtFallUIGame = function (t) {
     }
     this.ndLevelInfo.getChildByName("labName").getComponent(cc.Label).string = this.T(this.ctrGame.gameData.levelCfg.Name);
     this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), this.ctrGame.gameData.round + "/" + this.ctrGame.gameData.levelCfg.WaveCfg.length);
-    if (this.ctrGame.gameData.taskInfo.index >= this.ctrGame.gameData.taskInfo.list.length) {
-      this.ndTask.active = false;
-    } else {
-      var o = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTaskEnem(this.ctrGame.gameData.taskInfo.list[this.ctrGame.gameData.taskInfo.index]);
-      if (!this._battleHud) this.ndTask.active = true;
-      this.ndTask.getChildByName("labName").getComponent(cc.Label).string = this.T(o.Name);
-      this.ndTask.getChildByName("labGet").active = 1 == this.ctrGame.gameData.taskInfo.stage;
-      this.ndTask.getChildByName("labNoFinish").active = 0 == this.ctrGame.gameData.taskInfo.stage;
+    var task = this.ctrGame.gameData.taskInfo, current = task.index < task.list.length;
+    if (current || this._battleHud && task.list.length) {
+      var description = current ? $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTaskEnem(task.list[task.index]).Name : "battle.task.finished";
+      this.ndTask.getChildByName("labName").getComponent(cc.Label).string = this.T(description);
+      this.ndTask.getChildByName("labGet").active = current && task.stage == 1;
+      this.ndTask.getChildByName("labNoFinish").active = current && task.stage == 0;
     }
-    if (this._battleHud) require("BattleHud").updateTasks(this,
-      this.ctrGame.gameData.taskInfo.index < this.ctrGame.gameData.taskInfo.list.length, this.ctrGame.gameData.taskInfo.stage === 1);
+    if (this._battleHud) require("BattleHud").updateTasks(this, task.list.length > 0);
+    else this.ndTask.active = current;
   };
   _ctor.prototype.lateUpdate = function (t) {
     if (this._unitTestPanel) this._unitTestPanel.layout();
@@ -896,16 +895,25 @@ var def_KinghtFallUIGame = function (t) {
     if (signature === this._battleFooterSignature) return;
     this._battleFooterSignature = signature;
     if (coin && !this._footerCoinOffset) this._footerCoinOffset = { x: coin.x - button.x, y: coin.y - button.y };
-    var commandY = bottom + margin - Math.min(rallyBox ? rallyBox.minY : 0, followBox ? followBox.minY : 0);
-    if (rally) rally.setPosition(right - margin - rallyBox.maxX, commandY);
-    if (follow) follow.setPosition(rally ? rally.x + rallyBox.minX - gap - followBox.maxX : right - margin - followBox.maxX, commandY);
-    var groupMinX = startBox.minX;
-    if (shown(coin) && this._footerCoinOffset) {
-      groupMinX = Math.min(groupMinX, this._footerCoinOffset.x + coinBox.minX);
-    }
-    var startX = left + margin - groupMinX;
-    button.setPosition(startX, bottom + margin - startBox.minY);
+    button.setPosition((left + right) / 2, bottom + margin - startBox.minY);
     if (coin && this._footerCoinOffset) coin.setPosition(button.x + this._footerCoinOffset.x, button.y + this._footerCoinOffset.y);
+
+    var commandX = right - margin - Math.max(rallyBox ? rallyBox.maxX : 0, followBox ? followBox.maxX : 0);
+    var commandLeft = commandX + Math.min(rallyBox ? rallyBox.minX : 0, followBox ? followBox.minX : 0);
+    var commandBottom = bottom + margin;
+    // Narrow screens can lift the commands while keeping Start centered.
+    if (shown(button) && button.x + startBox.maxX + gap > commandLeft) {
+      commandBottom = Math.max(commandBottom, button.y + startBox.maxY + gap);
+    }
+    if (shown(coin) && coin.x + coinBox.maxX + gap > commandLeft) {
+      commandBottom = Math.max(commandBottom, coin.y + coinBox.maxY + gap);
+    }
+    if (rally) rally.setPosition(commandX, commandBottom - rallyBox.minY);
+    if (follow) {
+      var followBottom = rally ? rally.y + rallyBox.maxY + gap : commandBottom;
+      follow.setPosition(commandX, followBottom - followBox.minY);
+    }
+
     var restX = left + (right - left) / 4;
     restX = Math.max(left + margin + rod.width * Math.abs(rod.scaleX) / 2, restX);
     var restY = bottom + 180 + rod.height * Math.abs(rod.scaleY) / 2;
@@ -951,8 +959,8 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype._enemyIndicatorObstacles = function () {
     var ui = this.ctrUI.node;
-    var drawer = this._battleHud, hero = this.ctrGame && this.ctrGame.ctrPlay, skill = hero && hero._skillHUD;
-    return [this.btnBuildInfo, drawer ? drawer.handle : this.ndTask, drawer && drawer.open ? drawer.view : null, this.btnSuspend, this.ndCoin, this.ndLevelInfo,
+    var hero = this.ctrGame && this.ctrGame.ctrPlay, skill = hero && hero._skillHUD;
+    return [this.btnBuildInfo, this.ndTask, this.btnSuspend, this.ndCoin, this.ndLevelInfo,
       this.btnStartFight, this.btnAddCoin, this.btnAgg, this.btnFollow, skill && skill.button].filter(function (node) {
       return node && cc.isValid(node) && node.active && node.activeInHierarchy !== false;
     }).map(function (node) { return enemyIndicatorBounds(node, ui); });
@@ -1005,8 +1013,7 @@ var def_KinghtFallUIGame = function (t) {
     var bounds = { minX: -246, maxX: 246, minY: -442, maxY: 442 };
     if (viewport) bounds = { minX: viewport.minX - footprint.minX + 16, maxX: viewport.maxX - footprint.maxX - 16,
       minY: viewport.minY - footprint.minY + 16, maxY: viewport.maxY - footprint.maxY - 16 };
-    // Upcoming waves stay in a single side column, even when the HUD or an
-    // earlier marker blocks their preferred position. Only move down the edge.
+    // Upcoming waves stay on their side while moving around nearby controls.
     if (edge === "left") bounds.maxX = bounds.minX;
     if (edge === "right") bounds.minX = bounds.maxX;
     var position = placeEnemyIndicator(placementTarget || target, footprint, bounds, obstacles, gap === undefined ? 12 : gap);
@@ -1030,17 +1037,19 @@ var def_KinghtFallUIGame = function (t) {
       var b = ui.convertToNodeSpaceAR(cc.v2(Math.min(origin.x + size.width, safe.x + safe.width), Math.min(origin.y + size.height, safe.y + safe.height)));
       viewport = { minX: Math.min(a.x, b.x), maxX: Math.max(a.x, b.x), minY: Math.min(a.y, b.y), maxY: Math.max(a.y, b.y) };
     }
-    var centerX = (viewport.minX + viewport.maxX) / 2;
+    var centerX = (viewport.minX + viewport.maxX) / 2, centerY = (viewport.minY + viewport.maxY) / 2;
+    var rod = this.ctrUI.ndRod;
+    if (rod && rod.active && rod.activeInHierarchy !== false) obstacles.push(enemyIndicatorBounds(rod, ui));
     markers.forEach(function (marker) {
-      var node = marker.record.ndItem, target = marker.target;
-      var side = target.x < centerX ? "left" : "right";
+      var side = marker.target.x < centerX ? "left" : "right";
       (groups[side] || (groups[side] = [])).push(marker);
     });
     Object.keys(groups).forEach(function (side) {
-      var anchor = { x: side === "left" ? viewport.minX : viewport.maxX, y: viewport.maxY };
-      // Fill from the top below existing controls; never spill toward the
-      // battlefield center. Portraits/counts, spawn arrows and clicks stay intact.
-      groups[side].forEach(function (marker) { self._placeEnemyIndicator(marker.record.ndItem, marker.target, obstacles, viewport, anchor, 2, side); });
+      var x = side === "left" ? viewport.minX : viewport.maxX;
+      groups[side].sort(function (a, b) { return Math.abs(b.target.y - centerY) - Math.abs(a.target.y - centerY); });
+      groups[side].forEach(function (marker) {
+        self._placeEnemyIndicator(marker.record.ndItem, marker.target, obstacles, viewport, { x: x, y: marker.target.y }, 2, side);
+      });
     });
   };
   _ctor.prototype._updateOffscreenEnemies = function (obstacles) {
@@ -1217,7 +1226,7 @@ var def_KinghtFallUIGame = function (t) {
                 i._guideIds = e.filter(function (entry) { return entry.id !== -1 && entry.num > 0; }).map(function (entry) { return entry.id; });
                 if (a._bindEnemyGuide) a._bindEnemyGuide(i);
                 var s = a.ctrGame.ndPath.convertToWorldSpaceAR(i.tagNode.getPosition());
-                var l = cc.Camera.main.getWorldToScreenPoint(s);
+                var l = (a.ctrGame.camera || cc.Camera.main).getWorldToScreenPoint(s);
                 var c = a.ctrUI.node.convertToNodeSpaceAR(l);
                 upcomingMarkers.push({ record: i, target: c });
                 i.tag = true;
@@ -1330,8 +1339,9 @@ var def_KinghtFallUIGame = function (t) {
     }
   };
   _ctor.prototype.getTask = function () {
-    if (1 == this.ctrGame.gameData.taskInfo.stage) {
-      var t = this.ctrGame.gameData.taskInfo.reward[this.ctrGame.gameData.taskInfo.index];
+    var info = this.ctrGame.gameData.taskInfo;
+    if (info.index < info.list.length && 1 == info.stage) {
+      var t = info.reward[info.index];
       var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
       var checkpoint = this.ctrGame.getCheckpoint();
       var taskIndex = checkpoint.taskList.index;

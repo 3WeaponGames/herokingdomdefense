@@ -63,10 +63,11 @@ function damageTaken(owner, side, amount) {
   if (!type || type.damageTaken === undefined) return amount;
   return amount * FightingTypeDamage.multiplier(type.damageTaken);
 }
-function cancel(owner) {
-  var entry = pending.get(owner);
+function cancel(owner, queue) {
+  queue = queue || pending;
+  var entry = queue.get(owner);
   if (!entry) return;
-  pending.delete(owner);
+  queue.delete(owner);
   // Only a delayed attack can be pending. Cancelling one must not
   // strand the original melee cooldown at its "waiting for effect" sentinel.
   if (sameOwner(entry) && entry.time && entry.time.Attack === -1) entry.time.Attack = 0;
@@ -94,7 +95,8 @@ function animationPosition(track) {
   var time = trackValue(track, "trackTime");
   return {name:name,time:typeof time==="number"?time:0};
 }
-function attack(owner, type, callback) {
+function attack(owner, type, callback, queue) {
+  queue = queue || pending;
   var relative = applyAttackPlayback(owner, type);
   var settings = config();
   var key = keyFor(owner, type);
@@ -105,7 +107,7 @@ function attack(owner, type, callback) {
   // A missing timing must retain call order, RNG order, and the original stack.
   var validDelay = typeof delay === "number" && isFinite(delay) && delay > 0 && delay <= 10;
   if (!validDelay && speed > 0) return callback.call(owner);
-  cancel(owner);
+  cancel(owner, queue);
   if (!valid(owner) || !valid(owner.node)) return;
   var skeleton = owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody);
   if (!valid(skeleton)) skeleton = null;
@@ -114,7 +116,7 @@ function attack(owner, type, callback) {
   var game = owner._combatGame;
   // Keep the outstanding authored time in source seconds. Per-level playback
   // can change during this windup, including entering/leaving whole-unit mode.
-  pending.set(owner, { owner: owner, node: owner.node, generation: owner.node._combatGeneration, type: type, key: key, time: owner.time, remaining: validDelay ? delay : 0, callback: callback, skeleton: skeleton,
+  queue.set(owner, { owner: owner, node: owner.node, generation: owner.node._combatGeneration, type: type, key: key, time: owner.time, remaining: validDelay ? delay : 0, callback: callback, skeleton: skeleton,
     game: game, gameNode: game && game.node, gameData: game && game.gameData, epoch: game && game._combatEpoch,
     animation: info.name, animationEnd: info.end, animationTime: info.time,
     // Browser TrackEntry objects survive disposal. JSB wrappers may point at
@@ -125,17 +127,20 @@ function tick(dt, fighting) {
   // The caller only needs a post-callback scope check when there was work.
   if (!pending.size) return false;
   if (!fighting) { clear(); return true; }
+  return tickAttacks(dt, pending);
+}
+function tickAttacks(dt, queue) {
   if (!(dt > 0) || !isFinite(dt)) return false;
   // Iterate a snapshot: callbacks may start/cancel other attacks.
-  var work = Array.from(pending.values());
+  var work = Array.from(queue.values());
   for (var i = 0; i < work.length; i++) {
     var entry = work[i], owner = entry.owner;
-    if (pending.get(owner) !== entry) continue;
+    if (queue.get(owner) !== entry) continue;
     var live = sameOwner(entry) && sameBattle(entry) && entry.node.activeInHierarchy !== false && entry.node.active !== false && !owner._isPooled &&
       (!owner.isDead || !owner.isDead()) && (entry.type === "hero" || owner.cfg) && keyFor(owner, entry.type) === entry.key;
-    if (!live) { cancel(owner); continue; }
+    if (!live) { cancel(owner, queue); continue; }
     var skeleton = entry.skeleton;
-    if (skeleton && (!valid(skeleton) || skeleton !== (owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody)))) { cancel(owner); continue; }
+    if (skeleton && (!valid(skeleton) || skeleton !== (owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody)))) { cancel(owner, queue); continue; }
     var relative = applyAttackPlayback(owner, entry.type);
     var control = owner._relicControl;
     if (control && control.node && control.node !== owner.node) control = null;
@@ -163,17 +168,17 @@ function tick(dt, fighting) {
         var time = Math.max(entry.animationTime, typeof observed === "number" ? observed : 0);
         // Named fighting-style attacks are still attacks. Only replacing that
         // queued clip before its natural queue point cancels the pending hit.
-        if (typeof entry.animationEnd === "number" && time + 1e-7 < entry.animationEnd) { cancel(owner); continue; }
+        if (typeof entry.animationEnd === "number" && time + 1e-7 < entry.animationEnd) { cancel(owner, queue); continue; }
       }
     }
     entry.remaining -= effectDelta * playback;
     if (entry.remaining <= 1e-9) {
-      pending.delete(owner);
+      queue.delete(owner);
       entry.callback.call(owner);
       // The hero's original hit callback leaves Attack at -1 when every target
       // has left range. A delayed release must still finish that attack so the
       // hero can acquire another target rather than remaining stuck forever.
-      if (sameOwner(entry) && entry.time && entry.time.Attack === -1 && !isPending(owner)) entry.time.Attack = 0;
+      if (sameOwner(entry) && entry.time && entry.time.Attack === -1 && !queue.has(owner)) entry.time.Attack = 0;
     }
   }
   return true;
@@ -296,6 +301,7 @@ exports.projectileSpeed=function(owner,type,authoredSpeed){
 };
 exports.attack = attack;
 exports.tick = tick;
+exports.tickAttacks = tickAttacks;
 exports.cancel = cancel;
 exports.clear = clear;
 exports.isPending = isPending;

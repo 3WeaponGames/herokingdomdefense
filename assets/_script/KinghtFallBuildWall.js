@@ -1,4 +1,5 @@
 var BattleSounds = require("BattleSounds");
+var Navigation = require("KinghtFallNavigation");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -64,10 +65,53 @@ var def_KinghtFallBuildWall = function (t) {
     t.prototype.start.call(this);
     this.ndAniEffect.node.active = false;
   };
+  _ctor.prototype.getIsWork = function () {
+    return !this._unitTestBreach && t.prototype.getIsWork.call(this);
+  };
+  _ctor.prototype.getLockPoint = function () {
+    return this._unitTestBreach ? null : t.prototype.getLockPoint.call(this);
+  };
+  _ctor.prototype.openUnitTestBreach = function (game) {
+    if (this._unitTestBreach) return this._unitTestBreach;
+    var wall = this, disabled = [];
+    function disable(item, property) {
+      if (!cc.isValid(item, true) || !item[property]) return;
+      disabled.push({ item: item, property: property });
+      item[property] = false;
+    }
+    function restore() {
+      if (wall._unitTestBreach !== restore) return;
+      wall._unitTestBreach = null;
+      disabled.forEach(function (entry) {
+        if (cc.isValid(entry.item, true)) entry.item[entry.property] = true;
+      });
+      Navigation.invalidate(game);
+    }
+    this._unitTestBreach = restore;
+    // Leave the building component active so its disable hook does not cancel
+    // live upgrades and tweens. Only the wall's scenery and fixtures change.
+    var wings = this.ndAniOther || [];
+    [this.node].concat(wings.map(function (part) { return part && part.node; })).forEach(function (node) {
+      if (!cc.isValid(node, true)) return;
+      node.getComponentsInChildren(cc.PhysicsCollider).forEach(function (collider) { disable(collider, "enabled"); });
+    });
+    [this.ndAniMain, this.ndAniDown].concat(wings).forEach(function (part) {
+      if (!part) return;
+      if (part.node === wall.node) disable(part, "enabled");
+      else disable(part.node, "active");
+    });
+    var art = this._buildingAppearance;
+    if (art) disable(art.presentation || art.node, "active");
+    (this.ndLockList || []).forEach(function (node) { disable(node, "active"); });
+    if (this._buildingShadowTransition) require("BuildingShadowTransition").nodes(this).forEach(function (node) { disable(node, "active"); });
+    require("BuildingLighting").hideOwner(this);
+    Navigation.invalidate(game);
+    return restore;
+  };
   // The leaf remains an enemy obstacle while the visual gate admits allies.
   // Use the authored points: upgrade/shut tweens temporarily shrink physics.
   _ctor.prototype.getNavigationGateShapes = function () {
-    if (!this.index || this.isDestroyed || !this.node.activeInHierarchy || this.wallHasGate === false) return [];
+    if (this._unitTestBreach || !this.index || this.isDestroyed || !this.node.activeInHierarchy || this.wallHasGate === false) return [];
     var gate = this;
     return this.node.getComponents(cc.PhysicsPolygonCollider).filter(function (collider) {
       return collider.tag == gate.getColliderIndex();
@@ -120,6 +164,7 @@ var def_KinghtFallBuildWall = function (t) {
     this._gateAttackParts={physical:parts,attack:attack};return attack;
   };
   _ctor.prototype.setLevel = function (e) {
+    if (this._unitTestBreach) this._unitTestBreach();
     // Restore the facing/run data before refitting it. The night presentation
     // wraps that data; treating its wrapper as a new rig reverses north gates
     // again on repeated tier selections and disagrees with prepared shadows.
@@ -175,7 +220,7 @@ var def_KinghtFallBuildWall = function (t) {
   _ctor.prototype.doTime = function () {
     var t;
     var e = this;
-    if (!this.index || this.isDestroyed || this.wallHasGate === false) return;
+    if (this._unitTestBreach || !this.index || this.isDestroyed || this.wallHasGate === false) return;
     var n = this.hasFriendlyAtGate($z1KinghtFallUIGame.default.instance.ctrGame);
     if (n) this._openGateCollider();
     if (n != this.isOpen) {
@@ -296,6 +341,7 @@ var def_KinghtFallBuildWall = function (t) {
     $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game01), this.T(this.buildCfg.name)));
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._unitTestBreach) this._unitTestBreach();
     if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
     if (this._gateFacingRuntime) require("GateFacingRuntime").dispose(this);

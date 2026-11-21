@@ -43,10 +43,10 @@ function replace(target,source,selection){
  if(all){
   for(const key of ['id','variant','level','name','sourceRevision'])copyField(next,target,key);
   for(const key of ['Level','Name'])copyField(next.config,target.config,key);
-  copyField(next.config,source.config,'EnemyProfiles');waves(next);return next;
+  copyField(next.config,source.config,'EnemyProfiles');copyField(next,source,'tasksPosition');waves(next);return next;
  }
  if(selected.includes('settings')){
-  const retained=new Set(['id','variant','level','name','sourceRevision','config','buildings','specials','templates','nextBuilding','nextSpecial','spawns','hero','nextSpawn','graphs']);
+  const retained=new Set(['id','variant','level','name','sourceRevision','config','buildings','specials','templates','nextBuilding','nextSpecial','spawns','hero','tasksPosition','nextSpawn','graphs']);
   for(const key of Object.keys(source))if(!retained.has(key))Object.defineProperty(next,key,{value:merge(own(next,key)?next[key]:undefined,source[key]),writable:true,enumerable:true,configurable:true});
   for(const key of Object.keys(source.config))if(!['Level','Name','WaveCfg','EnemyProfiles','HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock','HomeLevel4Unlock'].includes(key))Object.defineProperty(next.config,key,{value:merge(own(next.config,key)?next.config[key]:undefined,source.config[key]),writable:true,enumerable:true,configurable:true});
  }
@@ -66,7 +66,7 @@ function replace(target,source,selection){
  }
  if(selected.includes('spawns')){
   if(!Array.isArray(source.spawns)||!source.hero||typeof source.hero!=='object'||Array.isArray(source.hero))throw Error('The source stage has invalid spawn points or hero start.');
-  copyField(next,source,'spawns');next.hero=merge(target.hero,source.hero);
+  copyField(next,source,'spawns');copyField(next,source,'tasksPosition');next.hero=merge(target.hero,source.hero);
  }
  if(selected.includes('paths')){
   if(!Array.isArray(source.graphs))throw Error('The source stage has an invalid path list.');

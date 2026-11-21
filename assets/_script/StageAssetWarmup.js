@@ -38,12 +38,36 @@ function plan(config, level, names) {
     });
   });
   var stageUnits=require("./EnemyStageProfiles").records(level,config.SoldierCfg,config.GameTools);
-  unitIds(level).forEach(function (id) { var unit = stageUnits[id]; if (!unit) throw Error("Missing stage enemy " + id); add(names.Enemy, unit.prefab, "prefab"); if (unit.loadIcon) add(unit.loadIcon.indexOf("@icon/") === 0 ? "resources" : names.Enemy, unit.loadIcon.indexOf("@icon/") === 0 ? unit.loadIcon.slice(6) : "icon/" + unit.loadIcon, "frame"); });
+  var enemies = unitIds(level), seen = new Set(enemies);
+  var skillVisuals = config.EnemySkillVisuals, usedSkills = new Set();
+  var skills = require("./EnemySkills"), visuals = require("./EnemySkillVisuals");
+  for (var index = 0; index < enemies.length; index++) {
+    var id = enemies[index], unit = stageUnits[id];
+    if (!unit) throw Error("Missing stage enemy " + id);
+    add(names.Enemy, unit.prefab, "prefab");
+    if (unit.loadIcon) add(unit.loadIcon.indexOf("@icon/") === 0 ? "resources" : names.Enemy, unit.loadIcon.indexOf("@icon/") === 0 ? unit.loadIcon.slice(6) : "icon/" + unit.loadIcon, "frame");
+    var skill = unit.TransformSkill;
+    if (skill && !require("./EnemyTransform").issue(unit, skill, config.SoldierCfg, config.GameTools)) {
+      usedSkills.add("transform");
+      var target = String(skill.unitId);
+      if (!seen.has(target)) { seen.add(target); enemies.push(target); }
+    }
+    var innate = skills.innate(unit);
+    if (innate && skills.originalEnabled(unit)) usedSkills.add(innate);
+    if (unit.EnemySkills) skills.begin(unit.EnemySkills).forEach(function (cast) { usedSkills.add(cast.id); });
+    if (skillVisuals && (unit.BehaviorTemplate || unit.ID) === 90010) usedSkills.add("weaken");
+  }
+  usedSkills.forEach(function (id) {
+    var visual = visuals.effective(id, skillVisuals && skillVisuals[id]);
+    var indicator = visuals.indicatorPath(id);
+    if (indicator && visual.showIndicator && visual.indicatorOpacity) add("resources", indicator, "frame");
+    if (visual.resource && visual.resourceBundle && visual.resourcePath) add(visual.resourceBundle, visual.resourcePath, "spine");
+  });
   Object.keys(allies).forEach(function (id) { var unit = config.AllyCfg && config.AllyCfg[id] || config.SoldierCfg[id]; if (!unit) throw Error("Missing stage ally " + id); add(names.Enemy, "Play" + unit.prefab, "prefab"); });
   Object.keys(config.GoodsCfg||{}).forEach(function(id){var icon=config.GoodsCfg[id].icon;if(typeof icon==='string')add(icon.indexOf('@icon/')===0?'resources':names.IconGood,icon.indexOf('@icon/')===0?icon.slice(6):icon,'frame');});
   var unitTypes=config.GameTools&&config.GameTools.unitTypes||{};Object.keys(unitTypes).forEach(function(id){var icon=unitTypes[id].icon;if(typeof icon==='string')add(icon.indexOf('@icon/')===0?'resources':names.Enemy,icon.indexOf('@icon/')===0?icon.slice(6):'icon/'+icon,'frame');});
   add(names.IconMap, "ItemHp", "prefab"); add(names.Enemy, "ItemHp", "prefab");
-  return {items:out.items,enemies:unitIds(level),allies:Object.keys(allies),kinds:buildingKinds(level)};
+  return {items:out.items,enemies:enemies,allies:Object.keys(allies),kinds:buildingKinds(level)};
 }
 function presentationPlan(config, level, base, catalogs, options, loadedAssets) {
   var out = collector(), add = out.add, profiles = catalogs.characters, parts = {}, selected = [], projectiles = catalogs.projectiles;

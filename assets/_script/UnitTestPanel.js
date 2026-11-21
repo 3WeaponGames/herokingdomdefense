@@ -1,8 +1,10 @@
 "use strict";
 
 var Encounter = require("UnitTestEncounter");
-var WIDTH = 704, HEIGHT = 876;
+var WIDTH = 704, HEIGHT = 1050;
 var COLUMNS = 4, PAGE_SIZE = 12;
+var MOVEMENT = { saved: "Saved", ground: "Ground", flight: "Flight" };
+var TARGETING = { saved: "Saved", castle: "Castle only", hero: "Hero only" };
 var COLORS = {
   panel: "#25313c", border: "#546777", field: "#19232e", card: "#303e4b",
   selected: "#355d76", highlight: "#97dbfc", text: "#f0f5fa", muted: "#b8cad8",
@@ -48,15 +50,18 @@ function label(parent, name, value, x, y, width, height, size, color, left) {
 function button(parent, name, value, x, y, width, height, action, primary) {
   var item = node(parent, name, x, y, width, height);
   var caption = label(item, "Caption", value, 6, 0, width - 12, height, 23);
-  var enabled;
+  var enabled, selected;
   item.on(cc.Node.EventType.TOUCH_END, function (event) {
     event.stopPropagation();
     if (enabled) action();
   });
-  function setEnabled(next) {
-    if (enabled === next) return;
+  function setEnabled(next, highlighted) {
+    if (enabled === next && selected === highlighted) return;
     enabled = next;
-    paint(item, next ? primary ? COLORS.primary : COLORS.card : COLORS.disabled, next ? COLORS.border : COLORS.disabled);
+    selected = highlighted;
+    var fill = primary ? COLORS.primary : selected ? COLORS.selected : COLORS.card;
+    var stroke = selected ? COLORS.highlight : COLORS.border;
+    paint(item, next ? fill : COLORS.disabled, next ? stroke : COLORS.disabled);
     caption.node.color = cc.color(next ? primary ? COLORS.primaryText : COLORS.text : COLORS.muted);
     caption.node.opacity = next ? 255 : 115;
   }
@@ -94,6 +99,18 @@ function stepper(parent, name, x, y, width, cycle) {
     value.string = caption;
     previous.setEnabled(length > 1);
     next.setEnabled(length > 1);
+  };
+}
+
+function choices(parent, name, options, x, y, width, choose) {
+  var group = node(parent, name, x, y, width, 46);
+  var values = Object.keys(options), gap = 8, buttonWidth = (width - gap * (values.length - 1)) / values.length;
+  var buttons = values.map(function (value, index) {
+    var caption = options[value];
+    return button(group, caption, caption, index * (buttonWidth + gap), 0, buttonWidth, 46, function () { choose(value); });
+  });
+  return function (value, enabled) {
+    buttons.forEach(function (button, index) { button.setEnabled(enabled, values[index] === value); });
   };
 }
 
@@ -149,7 +166,7 @@ function open(ui) {
   var spawns = Encounter.spawnPoints(game);
   var enemyBundle = require("KinghtFallConfig").KinghtFallBundelName.Enemy;
   var draft = ui._unitTestDraft || { query: "", count: "1", interval: "0.5", follow: true };
-  var selected = new Set(), profilesByModel = new Map(), focused = null;
+  var selected = new Map(), profilesByModel = new Map(), matchingProfiles = new Map(), focused = null;
   var filtered = [], page = 0;
   var spawnIndex = Math.max(0, spawns.findIndex(function (spawn) { return spawn.id === draft.spawn; }));
   var pending = null, message = "", cards = [], previousLayout;
@@ -168,6 +185,15 @@ function open(ui) {
     return isOpen() && Encounter.canOpen(ui) && ui.ctrGame === game && game.gameData === data && game._combatEpoch === epoch;
   }
   function profileFor(model) { return profilesByModel.get(model) || model.profiles[0]; }
+  function profileOnCard(model) {
+    var choices = matchingProfiles.get(model), preferred = profileFor(model);
+    if (choices.indexOf(preferred) !== -1) return preferred;
+    return choices.find(function (profile) { return selected.has(profile); }) || choices[0];
+  }
+  function focus(profile) {
+    focused = profile || null;
+    if (focused) profilesByModel.set(focused.model, focused);
+  }
   function cancelPending() {
     var request = pending;
     pending = null;
@@ -178,10 +204,15 @@ function open(ui) {
     ui._unitTestPanel = null;
     cancelPending();
     if (!cc.isValid(root, true)) return;
+    var overrides = {};
+    selected.forEach(function (settings, profile) {
+      if (settings.movement || settings.targeting) overrides[profile.id] = settings;
+    });
     ui._unitTestDraft = {
       query: search.string, count: count.string, interval: interval.string,
-      units: Array.from(selected, function (model) { return profileFor(model).id; }),
-      spawn: spawns[spawnIndex] && spawns[spawnIndex].id, follow: draft.follow
+      units: Array.from(selected.keys(), function (profile) { return profile.id; }),
+      overrides: overrides, focusedUnit: focused && focused.id,
+      spawn: spawns[spawnIndex] && spawns[spawnIndex].id, follow: draft.follow, breakWalls: draft.breakWalls
     };
     root.active = false;
     cards.forEach(releasePortrait);
@@ -209,7 +240,7 @@ function open(ui) {
   title.enableBold = true;
   label(panel, "Shortcut", "F7", 550, 20, 56, 46, 23, COLORS.muted);
   button(panel, "Close", "×", 626, 20, 54, 46, close);
-  var search = input(panel, "Search", draft.query, "Search models, packs, or profiles", 24, 84, 656, "SINGLE_LINE", 80);
+  var search = input(panel, "Search", draft.query, "Search models, profiles, or saved behavior", 24, 84, 656, "SINGLE_LINE", 80);
   search.node.on("text-changed", function () { filter(); });
 
   for (var i = 0; i < PAGE_SIZE; i++) {
@@ -227,12 +258,13 @@ function open(ui) {
     event.stopPropagation();
     var model = card.model;
     if (!model || !card.node.active) return;
-    if (selected.has(model)) {
-      selected.delete(model);
-      if (focused === model) focused = Array.from(selected).pop() || null;
+    var profile = profileOnCard(model);
+    if (selected.delete(profile)) {
+      profilesByModel.set(model, profile);
+      if (focused === profile) focus(Array.from(selected.keys()).pop());
     } else {
-      selected.add(model);
-      focused = model;
+      selected.set(profile, {});
+      focus(profile);
     }
     render();
   }
@@ -247,84 +279,129 @@ function open(ui) {
   var profileLabel = label(panel, "Profile label", "Fighting profile", 24, 538, 320, 26, 21, COLORS.muted, true);
   label(panel, "Spawn label", "Spawn point", 368, 538, 312, 26, 21, COLORS.muted, true);
   var profileControl = stepper(panel, "Profile", 24, 567, 312, function (direction) {
-    var choices = focused.profiles;
-    var index = choices.indexOf(profileFor(focused));
-    profilesByModel.set(focused, choices[(index + direction + choices.length) % choices.length]);
+    var profiles = focused.model.profiles, previous = focused, index = profiles.indexOf(previous);
+    var next = profiles[(index + direction + profiles.length) % profiles.length];
+    if (!selected.has(next)) {
+      selected = new Map(Array.from(selected, function (entry) {
+        return entry[0] === previous ? [next, entry[1]] : entry;
+      }));
+    }
+    focus(next);
     render();
   });
   var spawnControl = stepper(panel, "Spawn point", 368, 567, 312, function (direction) {
     spawnIndex = (spawnIndex + direction + spawns.length) % spawns.length;
     render();
   });
+  label(panel, "Selected unit label", "Selected unit", 24, 622, 312, 26, 21, COLORS.muted, true);
+  var behavior = label(panel, "Profile behavior", "", 368, 622, 312, 26, 21, COLORS.highlight, true);
+  var selectedControl = stepper(panel, "Selected unit", 24, 652, 656, function (direction) {
+    var profiles = Array.from(selected.keys()), index = profiles.indexOf(focused);
+    focus(profiles[(index + direction + profiles.length) % profiles.length]);
+    render();
+  });
+  label(panel, "Movement label", "Movement", 24, 707, 312, 26, 21, COLORS.muted, true);
+  label(panel, "Targeting label", "Targeting", 368, 707, 312, 26, 21, COLORS.muted, true);
+  var movementControl = choices(panel, "Movement", MOVEMENT, 24, 735, 312, setOverride.bind(null, "movement"));
+  var targetingControl = choices(panel, "Targeting", TARGETING, 368, 735, 312, setOverride.bind(null, "targeting"));
+  function setOverride(field, value) {
+    var settings = Object.assign({}, selected.get(focused));
+    if (value === "saved") delete settings[field];
+    else settings[field] = value;
+    selected.set(focused, settings);
+    render();
+  }
 
-  label(panel, "Count label", "Count per model", 24, 625, 158, 26, 21, COLORS.muted, true);
-  label(panel, "Spacing label", "Spacing (s)", 206, 625, 158, 26, 21, COLORS.muted, true);
-  label(panel, "Camera label", "Camera", 388, 625, 292, 26, 21, COLORS.muted, true);
-  var count = input(panel, "Count", draft.count, "", 24, 653, 158, "NUMERIC", String(Encounter.MAX_COUNT).length);
-  var interval = input(panel, "Spacing", draft.interval, "", 206, 653, 158, "SINGLE_LINE", 5);
-  var camera = button(panel, "Follow test units", "", 388, 653, 292, 50, function () {
+  label(panel, "Count label", "Count per profile", 24, 800, 148, 26, 21, COLORS.muted, true);
+  label(panel, "Spacing label", "Spacing (s)", 186, 800, 126, 26, 21, COLORS.muted, true);
+  label(panel, "Camera label", "Camera", 326, 800, 198, 26, 21, COLORS.muted, true);
+  label(panel, "Break walls label", "Break walls", 538, 800, 142, 26, 21, COLORS.muted, true);
+  var count = input(panel, "Count", draft.count, "", 24, 828, 148, "NUMERIC", String(Encounter.MAX_COUNT).length);
+  var interval = input(panel, "Spacing", draft.interval, "", 186, 828, 126, "SINGLE_LINE", 5);
+  var camera = button(panel, "Follow test units", "", 326, 828, 198, 50, function () {
     draft.follow = !draft.follow;
     if (run) run.follow = draft.follow;
     render();
   });
+  var wallToggle = button(panel, "Break walls", "", 538, 828, 142, 50, function () {
+    draft.breakWalls = !draft.breakWalls;
+    render();
+  });
 
-  var status = label(panel, "Status", "", 24, 714, 656, 36, 22, COLORS.muted, true);
-  var clearUnits = button(panel, "Clear units", "Clear units", 24, 762, 172, 54, function () {
+  var status = label(panel, "Status", "", 24, 889, 656, 36, 22, COLORS.muted, true);
+  var clearUnits = button(panel, "Clear units", "Clear units", 24, 937, 172, 54, function () {
     cancelPending();
     if (run) run.dispose();
     run = null;
     message = "";
     render();
   });
-  var attack = button(panel, "Play attack", "Play attack", 210, 762, 172, 54, function () {
+  var attack = button(panel, "Play attack", "Play attack", 210, 937, 172, 54, function () {
     if (run) run.playAttack();
     close();
   });
-  var send = button(panel, "Send units", "Send units", 396, 762, 284, 54, sendUnits, true);
-  label(panel, "Preview rules", "Test attacks play without dealing damage.", 24, 830, 656, 26, 20, COLORS.muted, true);
+  var send = button(panel, "Send units", "Send units", 396, 937, 284, 54, sendUnits, true);
+  var previewRules = label(panel, "Preview rules", "", 24, 1005, 656, 26, 20, COLORS.muted, true);
 
   function filter(keepFocusedPage) {
     var terms = search.string.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    matchingProfiles.clear();
     filtered = models.filter(function (model) {
-      return terms.every(function (term) { return model.searchText.indexOf(term) !== -1; });
+      var matches = model.profiles.filter(function (profile) {
+        return terms.every(function (term) { return profile.searchText.indexOf(term) !== -1; });
+      });
+      if (!matches.length) return false;
+      matchingProfiles.set(model, matches);
+      return true;
     });
-    page = keepFocusedPage ? Math.floor(Math.max(0, filtered.indexOf(focused)) / PAGE_SIZE) : 0;
+    page = keepFocusedPage ? Math.floor(Math.max(0, filtered.indexOf(focused && focused.model)) / PAGE_SIZE) : 0;
     render();
   }
   function render() {
     var start = page * PAGE_SIZE;
     cards.forEach(function (card, i) {
       var model = filtered[start + i];
-      drawCard(card, model, selected.has(model), enemyBundle, isOpen);
+      drawCard(card, model, !!model && selected.has(profileOnCard(model)), enemyBundle, isOpen);
     });
     if (filtered.length <= 1) range.string = filtered.length ? "1 model" : "No matching models";
     else range.string = (start + 1) + "–" + Math.min(start + PAGE_SIZE, filtered.length) + " of " + filtered.length + " models";
     range.string += " · " + selected.size + " selected";
     prevPage.setEnabled(page > 0);
     nextPage.setEnabled(start + PAGE_SIZE < filtered.length);
-    profileLabel.string = focused ? "Profile for " + focused.name : "Fighting profile";
-    profileControl(focused ? profileFor(focused).name : "Choose a model", focused ? focused.profiles.length : 0);
+    var model = focused && focused.model, overrides = selected.get(focused) || {};
+    profileLabel.string = model ? "Profile for " + model.name : "Fighting profile";
+    profileControl(focused ? focused.name : "Choose a model", model ? model.profiles.length : 0);
+    var selectedName = model ? [model.name, model.displayPack && model.pack, focused.name].filter(Boolean).join(" · ") : "No units selected";
+    selectedControl(selectedName, selected.size);
+    movementControl(overrides.movement || "saved", !!focused && !pending);
+    targetingControl(overrides.targeting || "saved", !!focused && !pending);
+    behavior.string = focused ?
+      (MOVEMENT[overrides.movement] || focused.movement) + " · " + (TARGETING[overrides.targeting] || focused.targeting) : "";
     spawnControl(spawns.length ? spawns[spawnIndex].name : "No enabled spawns", spawns.length);
     camera.caption.string = draft.follow ? "Follow test units" : "Stay with hero";
+    wallToggle.caption.string = draft.breakWalls ? "On" : "Off";
+    wallToggle.setEnabled(!pending);
+    previewRules.string = draft.breakWalls || run && run.breakWalls ?
+      "Send units applies this setting. Clear units restores walls." : "Test attacks play without dealing damage.";
     send.setEnabled(selected.size > 0 && spawns.length > 0 && !pending);
     clearUnits.setEnabled(!!run || !!pending);
     attack.setEnabled(!!run && !pending);
     status.node.color = cc.color(message || run && run.error ? COLORS.error : COLORS.muted);
-    status.string = message || (pending ? "Loading " + pending.models + (pending.models === 1 ? " model…" : " models…") :
+    status.string = message || (pending ? "Loading " + pending.profiles + (pending.profiles === 1 ? " profile…" : " profiles…") :
       run ? run.error || "Test run · " + run.count + (run.count === 1 ? " unit" : " units") :
       selected.size ? "" : "Click a model to select it.");
   }
   function sendUnits() {
     if (!current() || pending || !selected.size) return;
-    var profiles = Array.from(selected, profileFor);
-    var units = profiles.map(function (profile) { return manager.getSoldierCfgById(profile.id); });
+    var selections = Array.from(selected);
+    var units = selections.map(function (entry) { return manager.getSoldierCfgById(entry[0].id); });
     var spawn = spawns[spawnIndex] && spawns[spawnIndex].id;
-    var perModel = Number(count.string), delay = Number(interval.string);
-    try { Encounter.validate(game, units, perModel, spawn, delay); }
+    var perProfile = Number(count.string), delay = Number(interval.string);
+    try { Encounter.validate(game, units, perProfile, spawn, delay); }
     catch (error) { message = error.message; render(); return; }
     var assets = new Map();
     units.forEach(function (unit) { assets.set(unit.prefab, null); });
-    var request = pending = { models: profiles.length, assets: assets };
+    var request = pending = { profiles: selections.length, assets: assets, breakWalls: draft.breakWalls };
     var remaining = assets.size;
     message = "";
     render();
@@ -335,17 +412,17 @@ function open(ui) {
         if (!current()) { close(); return; }
         if (error || !prefab) {
           var index = units.findIndex(function (unit) { return unit.prefab === path; });
-          message = "Could not load " + profiles[index].model.name + ".";
+          message = "Could not load " + selections[index][0].model.name + ".";
           cancelPending();
           render();
           return;
         }
         assets.set(path, prefab.addRef());
         if (--remaining > 0) return;
-        var batch = profiles.map(function (profile, index) {
-          return { profile: profile, prefab: assets.get(units[index].prefab) };
+        var batch = selections.map(function (entry, index) {
+          return { profile: entry[0], overrides: entry[1], prefab: assets.get(units[index].prefab) };
         });
-        try { run = Encounter.send(game, batch, spawn, perModel, delay, draft.follow); }
+        try { run = Encounter.send(game, batch, spawn, perProfile, delay, draft.follow, request.breakWalls); }
         catch (spawnError) { message = spawnError.message; cancelPending(); render(); return; }
         close();
       });
@@ -361,10 +438,11 @@ function open(ui) {
     saved.forEach(function (id) {
       var profile = available.get(id);
       if (!profile) return;
-      focused = profile.model;
-      selected.add(focused);
-      profilesByModel.set(focused, profile);
+      selected.set(profile, draft.overrides && draft.overrides[id] || {});
+      focus(profile);
     });
+    var preferred = available.get(draft.focusedUnit);
+    if (selected.has(preferred)) focus(preferred);
   }
   layout();
   filter(true);

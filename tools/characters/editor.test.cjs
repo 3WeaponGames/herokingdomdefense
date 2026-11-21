@@ -50,9 +50,9 @@ test('malformed equipment entries are rejected with an authoring error without c
 test('shipped example and every supported base validate without running the game or requiring an engine',()=>{
   const store=new Service(root);assert.equal(store.validate(store.data),true);const units=store.units(),cfg=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8'));
   const imported=Object.values(cfg.SoldierCfg).filter(unit=>unit.MonsterSource);
-  const campaign=Object.values(cfg.SoldierCfg).filter(unit=>unit.CampaignBaseUnit);assert.equal(campaign.length,127);
-  assert.equal(units.length,17+imported.length+campaign.length);assert.equal(imported.length,require('./monster-roster-definitions.json').units.length);assert.equal(units.filter(u=>u.group==='Allies').length,4);assert(!units.some(unit=>cfg.GameTools.unitProfiles.bossForms[unit.id]),'Internal fighting-profile phases inherit their own parent appearance');
-  assert.equal(units.filter(u=>u.type!=='enemy'||Number(u.id)<=90012).length,17,'original hero/allied/campaign bases stay available');
+  assert(!Object.values(cfg.SoldierCfg).some(unit=>unit.CampaignBaseUnit));
+  assert.equal(units.length,17+imported.length);assert.equal(imported.length,require('./monster-roster-definitions.json').units.length);assert.equal(units.filter(u=>u.group==='Allies').length,4);assert(!units.some(unit=>cfg.GameTools.unitProfiles.bossForms[unit.id]),'Internal fighting-profile phases inherit their own parent appearance');
+  assert.equal(units.filter(u=>u.type!=='enemy'||Number(u.id)<=90012).length,17,'Original hero, allies and enemy templates stay available');
   for(const unit of imported)assert(units.some(base=>base.key==='enemy:'+unit.ID+':default'),unit.MonsterSource);
   for(const base of units){const description=store.describe(base,true);assert(description.layers.length);assert.equal(description.runtimePath,null);}
 });

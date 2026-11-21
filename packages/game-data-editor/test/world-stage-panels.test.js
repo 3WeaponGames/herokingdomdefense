@@ -21,6 +21,21 @@ function fixture(){
 function descendants(element){return element.children.flatMap(child=>[child,...descendants(child)]);}
 function dragEvent(clientY=10){return {clientY,preventDefault(){this.prevented=true;},stopPropagation(){},dataTransfer:{setData(){}}};}
 
+test('Tasks position follows Hero start and entering placement leaves the stage draft untouched',()=>{
+ const f=fixture();f.state.tab='Spawns';const before=clone(f.state.snap.value);
+ f.panels.left();
+ const buttons=descendants(f.context.left).filter(node=>node.tagName==='button');
+ const hero=buttons.findIndex(node=>node.textContent==='Hero start');
+ assert.equal(buttons[hero+1].textContent,'Tasks position');
+ buttons[hero+1].onclick();assert.deepEqual(f.state.selection,['tasks-position']);assert.equal(f.state.tool,'tasks-position');
+ f.panels.right();
+ const fields=descendants(f.context.right);
+ assert(fields.some(node=>node.textContent.includes('Click the map to place the Retired King.')));
+ assert(fields.some(node=>node.fieldName==='X'&&node.value===144));
+ assert(fields.some(node=>node.fieldName==='Y'&&node.value===44));
+ assert.equal(f.edits(),0);assert.deepEqual(f.state.snap.value,before);
+});
+
 test('stage identity renders a static number and a separate name without rewriting a localized title',()=>{
  const f=fixture();f.state.tab='Stage';f.state.snap.value.config.Name='[[loc:stage.desert]]';f.state.snap.stageName='7. Desert';const before=clone(f.state.snap.value);f.panels.right();
  const rows=descendants(f.context.right),number=rows.find(row=>row.tagName==='output'&&row.attributes['aria-label']==='Stage number'),name=rows.find(row=>row.fieldName==='Stage name');

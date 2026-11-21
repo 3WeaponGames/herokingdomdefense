@@ -9,7 +9,7 @@ async function verify(){
  function raw(record){const img=record.image,c=Paint.canvas(img.naturalWidth,img.naturalHeight),g=c.getContext('2d');g.drawImage(img,0,0);const value=g.getImageData(0,0,c.width,c.height);c.width=1;c.height=1;return value;}
  function crop(data){let left=data.width,right=-1,top=data.height,bottom=-1;for(let y=0;y<data.height;y++)for(let x=0;x<data.width;x++)if(data.data[(y*data.width+x)*4+3]){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}return {left,top,width:right-left+1,height:bottom-top+1};}
  for(const {biome,pair,defaults} of pairs){
-  const prefix=biome+': ',asset=images[pair.edge.id],before=raw(asset),bounds=crop(before),fillRaw=raw(images[pair.surface.id]),fill=Array.from(fillRaw.data.slice(0,4)),width=defaults.width,half=width/2,depth=Math.min(bounds.height*defaults.edgeScale,width*.45),made=[];
+  const prefix=biome+': ',asset=images[pair.edge.id],originalImage=asset.image,before=raw(asset),bounds=crop(before),fillRaw=raw(images[pair.surface.id]),fill=Array.from(fillRaw.data.slice(0,4)),width=defaults.width,half=width/2,depth=Math.min(bounds.height*defaults.edgeScale,width*.45),made=[];
   const base={mode:'road',assetId:pair.surface.id,edgeAssetId:pair.edge.id,edgeStyle:defaults.edgeStyle,edgeSmoothing:defaults.edgeSmoothing,edgeWidthMode:'fixed',edgeScale:defaults.edgeScale,textureScale:1,size:width,hardness:1,opacity:1,shape:'round',op:'paint'};if(defaults.edgeExterior)base.edgeExterior=defaults.edgeExterior;
   const stroke=(points,extra)=>Object.assign({},base,{points:points.map(p=>({x:p[0],y:p[1]}))},extra),straight=stroke([[-350,0],[350,0]]);
   function render(strokes,w=1100,h=720,dx=0,matrix){const c=Paint.canvas(w,h),g=c.getContext('2d');g.setTransform(1,0,0,-1,w/2+dx,h/2);if(matrix)g.transform.apply(g,matrix);Paint.strokes(g,strokes,images,{canonicalCoverage:true});made.push(c);return c;}
@@ -55,7 +55,7 @@ async function verify(){
    const a=full.getContext('2d').getImageData(0,0,900,700).data,b=pg.getImageData(0,0,900,700).data;let bad=0,maxPremultiplied=0;
    for(let i=0;i<a.length;i+=4){if(Math.abs(a[i+3]-b[i+3])>2)bad++;for(let k=0;k<3;k++){const d=Math.abs(a[i+k]*a[i+3]-b[i+k]*b[i+3])/255;maxPremultiplied=Math.max(maxPremultiplied,d);if(d>2)bad++;}}
    assert(!bad,prefix+'rotated textured roads match across adjacent baked ground tiles');
-   const after=raw(asset);assert(before.data.every((v,i)=>v===after.data[i])&&asset.image.src===wanted.get(pair.edge.id).url,prefix+'original Road up image pixels and source stay unchanged');
+   const after=raw(asset);assert(before.data.every((v,i)=>v===after.data[i])&&asset.image===originalImage&&asset.url===wanted.get(pair.edge.id).url,prefix+'original Road up image pixels and source stay unchanged');
    assert(Roads.stats().bytes<=24*1024*1024,prefix+'authoring raster cache stays within its budget');
    reports.push({biome,surface:pair.surface.name,edge:pair.edge.name,field:pair.field.name,sourceCorrelation:best,sourceRow:chosen.y,sourceChannel:chosen.channel,sourceVariance:chosen.variance,width,edgeScale:defaults.edgeScale,edgeExterior:defaults.edgeExterior||'terrain',sourceEdgeHeight:bounds.height,originalExtent,wideExtent,maxPremultipliedTileDifference:maxPremultiplied});
   }finally{for(const c of made){c.width=1;c.height=1;}Roads.clear();}

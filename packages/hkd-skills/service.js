@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const Settings=require('../../assets/_script/HeroSkillSettings'),Authoring=require('../../assets/_script/HeroSkillAuthoring'),Document=require('../game-data-editor/lib/json-document'),Catalog=require('./catalog');
+const Enemy=require('./enemy');
 const FILES=['assets/KinghtFallConfig/GameJsonCfg.json','assets/configs/GameJsonCfg.json'];
 const FRAME_KEYS=['Frames','Columns','Cell','Fps','Loop'];
 const RESOURCE_PREFIXES=Settings.resourcePrefixes;
@@ -41,13 +42,49 @@ function containers(value,pathParts,label){
 class SkillService{
   constructor(root,options={}){this.root=path.resolve(root);this.options=options;this.commit=options.commit||require('../hkd-characters/lib/asset-transaction').commit;this.version=0;this.read();this.catalogs=options.catalogs||Catalog.index(this.root);this.catalogTime=Date.now();}
   disk(){return FILES.map(relative=>{const file=path.join(this.root,relative),bytes=fs.readFileSync(file),text=bytes.toString('utf8'),config=JSON.parse(text.replace(/^\uFEFF/,''));return {relative,file,bytes,text,config};});}
-  read(){this.saved=this.disk();const original=this.saved[0].config.HeroSkills;if(original!==undefined&&!object(original))throw Error('The saved HeroSkills section must be an object.');this.original=clone(original||{});this.data=clone(this.original);this.revision=crypto.createHash('sha256').update(Buffer.concat(this.saved.map(row=>row.bytes))).digest('hex');this.undoStack=[];this.redoStack=[];this.version++;}
-  dirty(){return !Document.equal(this.original,this.data);}
-  snapshot(result){const fields={},effective={},entries={};for(const style of Settings.styles){fields[style.id]=Settings.fields(style.id);entries[style.id]=Authoring.entries(style.id);effective[style.id]=Settings.effective(style.id,{HeroSkills:this.data});}return {version:this.version,revision:this.revision,data:clone(this.data),effective,dirty:this.dirty(),canUndo:!!this.undoStack.length,canRedo:!!this.redoStack.length,styles:clone(Settings.styles),fields,entries,catalogs:this.catalogs,result:result||null};}
+  read(){
+    this.saved=this.disk();const config=this.saved[0].config;
+    if(config.HeroSkills!==undefined&&!object(config.HeroSkills))throw Error('The saved HeroSkills section must be an object.');
+    if(config.EnemySkillVisuals!==undefined&&!object(config.EnemySkillVisuals))throw Error('The saved EnemySkillVisuals section must be an object.');
+    this.original=clone(config.HeroSkills||{});this.data=clone(this.original);
+    this.originalEnemy=clone(config.EnemySkillVisuals||{});this.enemyData=clone(this.originalEnemy);
+    this.enemyModels=Enemy.models(this.root,config);
+    this.revision=crypto.createHash('sha256').update(Buffer.concat(this.saved.map(row=>row.bytes))).digest('hex');
+    this.undoStack=[];this.redoStack=[];this.version++;
+  }
+  dirty(){return !Document.equal(this.original,this.data)||!Document.equal(this.originalEnemy,this.enemyData);}
+  snapshot(result){
+    const fields={},effective={},entries={};
+    for(const style of Settings.styles){fields[style.id]=Settings.fields(style.id);entries[style.id]=Authoring.entries(style.id);effective[style.id]=Settings.effective(style.id,{HeroSkills:this.data});}
+    for(const style of Enemy.styles){const id=Enemy.idOf(style.id);fields[style.id]=Enemy.fields(style.id);effective[style.id]={visual:Enemy.Visuals.effective(id,this.enemyData[id])};}
+    return {version:this.version,revision:this.revision,data:clone(this.data),effective,dirty:this.dirty(),canUndo:!!this.undoStack.length,canRedo:!!this.redoStack.length,styles:clone(Settings.styles),
+      enemyStyles:clone(Enemy.styles),enemyModels:clone(this.enemyModels),fields,entries,catalogs:this.catalogs,result:result||null};
+  }
   load(){if(!this.dirty()){const latest=this.disk();if(latest.some((row,i)=>!row.bytes.equals(this.saved[i].bytes)))this.read();}if(!this.options.catalogs&&Date.now()-this.catalogTime>1000){this.catalogs=Catalog.index(this.root);this.catalogTime=Date.now();}return this.snapshot();}
   check(request){if(!request||request.version!==this.version||request.revision!==this.revision)throw Error('The skills draft changed in another panel. Reload the latest draft before editing.');}
   field(request){if(!Settings.styles.some(row=>row.id===request.style))throw Error('Choose one of the six hero skills.');const field=Settings.descriptors(request.style).find(row=>row.path===request.path);if(!field)throw Error('Choose an editable skill field.');return field;}
-  remember(stack){stack.push(clone(this.data));if(stack.length>100)stack.shift();}
+  remember(stack){stack.push({data:clone(this.data),enemyData:clone(this.enemyData)});if(stack.length>100)stack.shift();}
+  changeEnemy(request,reset){
+    this.check(request);
+    const id=Enemy.idOf(request.style),field=Enemy.fields(request.style).find(row=>row.path===request.path);
+    if(!field||!reset&&!Enemy.Visuals.valid(field,request.value))throw Error('Choose a valid enemy skill visual setting.');
+    if(!reset&&field.key!=='resource'&&Document.equal(Enemy.Visuals.effective(id,this.enemyData[id])[field.key],request.value))return this.snapshot();
+    const data=clone(this.enemyData);
+    if(data[id]!==undefined&&!object(data[id]))throw Error('Invalid saved enemy skill visual.');
+    const record=data[id]||{};
+    if(reset)delete record[field.key];
+    else record[field.key]=request.value;
+    if(field.key==='resource'){
+      const asset=Enemy.selection(this.catalogs,record.resource);
+      delete record.resourceBundle;delete record.resourcePath;
+      if(asset){record.resourceBundle=asset.bundle;record.resourcePath=asset.path;}
+      if(record.resourceAnimation&&(!asset||!asset.animations.includes(record.resourceAnimation)))delete record.resourceAnimation;
+    }else if(field.key==='resourceAnimation'&&record.resourceAnimation)Enemy.selection(this.catalogs,record.resource,record.resourceAnimation);
+    if(Object.keys(record).length)data[id]=record;else delete data[id];
+    if(Document.equal(data,this.enemyData))return this.snapshot();
+    this.remember(this.undoStack);this.redoStack=[];this.enemyData=data;this.version++;
+    return this.snapshot();
+  }
   asset(kind,id){return (this.catalogs[kind]||[]).find(row=>row.id===id)||null;}
   animations(style,value,phase,previous){
     for(const prefix of RESOURCE_PREFIXES){const clip=Settings.get(value,'visual.'+prefix+'Animation'),edited=!previous||resourceKeys(prefix).some(key=>!Document.equal(Settings.get(value,'visual.'+key),Settings.get(previous,'visual.'+key)));if(clip&&phase!=='rider'&&edited){const asset=this.asset('vfx',Settings.get(value,'visual.'+prefix));if(!asset||asset.kind!=='spine'||!asset.animations.includes(clip))throw Error('The selected VFX animation is no longer available. Choose another animation or Reset before saving.');}}
@@ -55,6 +92,7 @@ class SkillService{
     if(animation&&phase!=='vfx'&&(!previous||animation!==Settings.get(previous,'visual.animation'))){const describe=this.options.describe||require('../game-data-editor/lib/unit-assets').describe,description=describe(this.root,{type:'hero',id:'hero',heroStyle:style,noRuntime:true});if(!Settings.riderAnimations(description).includes(animation))throw Error('Choose an authored attack animation supplied by every rider layer.');}
   }
   change(request){
+    if(Enemy.hasStyle(request&&request.style))return this.changeEnemy(request,false);
     if(Object.prototype.hasOwnProperty.call(request||{},'changes'))return this.changeMany(request);
     this.check(request);const field=this.field(request);if(!Settings.valid(field,request.value))throw Error(field.label+': choose a valid value.');
     if(!['audio','vfx','projectile'].includes(field.type)&&Document.equal(Settings.get(Settings.effective(request.style,{HeroSkills:this.data}),request.path),request.value))return this.snapshot();
@@ -99,16 +137,21 @@ class SkillService{
     if(Document.equal(data,this.data))return this.snapshot();
     this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();
   }
-  reset(request){this.check(request);this.field(request);const data=clone(this.data);containers(data,[request.style].concat(request.path.split('.')),'the draft');if(!data[request.style])return this.snapshot();remove(data[request.style],request.path.split('.'));if(request.path==='visual.projectile')remove(data[request.style],['visual','projectileAsset']);const resource=RESOURCE_PREFIXES.find(prefix=>request.path==='visual.'+prefix);if(resource)for(const key of resourceKeys(resource))remove(data[request.style],['visual',key]);if(/^audio\.(cast|impact|channel)\.clip$/.test(request.path)){const prefix=request.path.split('.').slice(0,-1);for(const key of ['bundle','path'])remove(data[request.style],prefix.concat(key));}if(!Object.keys(data[request.style]).length)delete data[request.style];if(Document.equal(data,this.data))return this.snapshot();this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();}
+  reset(request){if(Enemy.hasStyle(request&&request.style))return this.changeEnemy(request,true);this.check(request);this.field(request);const data=clone(this.data);containers(data,[request.style].concat(request.path.split('.')),'the draft');if(!data[request.style])return this.snapshot();remove(data[request.style],request.path.split('.'));if(request.path==='visual.projectile')remove(data[request.style],['visual','projectileAsset']);const resource=RESOURCE_PREFIXES.find(prefix=>request.path==='visual.'+prefix);if(resource)for(const key of resourceKeys(resource))remove(data[request.style],['visual',key]);if(/^audio\.(cast|impact|channel)\.clip$/.test(request.path)){const prefix=request.path.split('.').slice(0,-1);for(const key of ['bundle','path'])remove(data[request.style],prefix.concat(key));}if(!Object.keys(data[request.style]).length)delete data[request.style];if(Document.equal(data,this.data))return this.snapshot();this.remember(this.undoStack);this.redoStack=[];this.data=data;this.version++;return this.snapshot();}
 
-  undo(request){this.check(request);if(!this.undoStack.length)return this.snapshot();this.remember(this.redoStack);this.data=this.undoStack.pop();this.version++;return this.snapshot();}
-  redo(request){this.check(request);if(!this.redoStack.length)return this.snapshot();this.remember(this.undoStack);this.data=this.redoStack.pop();this.version++;return this.snapshot();}
+  undo(request){this.check(request);if(!this.undoStack.length)return this.snapshot();this.remember(this.redoStack);Object.assign(this,this.undoStack.pop());this.version++;return this.snapshot();}
+  redo(request){this.check(request);if(!this.redoStack.length)return this.snapshot();this.remember(this.undoStack);Object.assign(this,this.redoStack.pop());this.version++;return this.snapshot();}
   discard(request){this.check(request);this.read();return this.snapshot({discarded:true});}
   save(request){
     this.check(request);if(!this.dirty())return this.snapshot({saved:false,files:[]});
     const disk=this.disk();if(disk.some((row,i)=>!row.bytes.equals(this.saved[i].bytes)))throw Error('Game data changed outside this draft. Your changes are intact; reload or discard before saving.');
     if(!this.options.catalogs)this.catalogs=Catalog.index(this.root);
-    const changes=leaves(this.original,this.data),files=new Map(),expected=new Map();
+    const changes=leaves(this.original,this.data),enemyChanges=leaves(this.originalEnemy,this.enemyData),files=new Map(),expected=new Map();
+    for(const id of new Set(enemyChanges.map(change=>change.path[0]))){
+      const record=this.enemyData[id];if(!record||!record.resource)continue;
+      const asset=Enemy.selection(this.catalogs,record.resource,record.resourceAnimation);
+      if(asset.bundle!==record.resourceBundle||asset.path!==record.resourcePath)throw Error('The enemy skill effect moved. Select it again before saving.');
+    }
     const projectileStyles=new Set(changes.filter(change=>change.path[1]==='visual'&&['projectile','projectileAsset'].includes(change.path[2])).map(change=>change.path[0]));
     for(const style of projectileStyles){const id=Settings.get(this.data[style],'visual.projectile');if(!id)continue;const asset=this.asset('projectiles',id);if(!asset)throw Error('The selected projectile is no longer available.');if(!Document.equal(Settings.get(this.data[style],'visual.projectileAsset'),projectileData(asset)))throw Error('The selected projectile changed after selection. Choose it again before saving.');}
     const resourceGroups=new Map();for(const change of changes)for(const prefix of RESOURCE_PREFIXES)if(change.path[1]==='visual'&&change.path[2]!==prefix+'Animation'&&resourceKeys(prefix).includes(change.path[2]))resourceGroups.set(change.path[0]+':'+prefix,[change.path[0],prefix]);
@@ -117,7 +160,14 @@ class SkillService{
     for(const style of new Set(changes.map(change=>change.path[0])))if(this.data[style])this.animations(style,this.data[style],undefined,this.original[style]||{});
     for(const change of changes){const [style,...parts]=change.path,field=Settings.descriptors(style).find(row=>row.path===parts.join('.'));if(field&&change.value!==undefined){if(!Settings.valid(field,change.value))throw Error('Invalid '+field.label);if((field.type==='audio'||field.type==='vfx')&&change.value&&!this.asset(field.type==='audio'?'audio':'vfx',change.value))throw Error('A selected skill asset is no longer available.');}}
     for(const style of new Set(changes.map(change=>change.path[0]))){const value=this.data[style];if(!value)continue;for(const field of Settings.descriptors(style).filter(row=>row.type==='audio'||row.type==='vfx')){const audio=field.type==='audio',selected=audio?audioGroups.has(style+':'+field.path.split('.')[1]):resourceGroups.has(style+':'+field.path.split('.')[1]);if(!selected)continue;const id=Settings.get(value,field.path);if(!id)continue;const asset=this.asset(audio?'audio':'vfx',id);if(!asset)throw Error('A selected skill asset is no longer available.');const prefix=audio?field.path.slice(0,-5):field.path;for(const [saved,source]of audio?[['bundle','bundle'],['path','path']]:[['Bundle','bundle'],['Path','path'],['Kind','kind']]){const derived=Settings.get(value,prefix+(audio?'.':'')+saved);if(derived!==undefined&&derived!==asset[source])throw Error('A selected skill asset moved after selection. Your draft is intact; choose that asset again before saving.');}if(!audio)for(const key of FRAME_KEYS){const derived=Settings.get(value,prefix+key),source=key[0].toLowerCase()+key.slice(1);if(derived!==undefined&&(!asset.flipbook||derived!==asset.flipbook[source]))throw Error('The selected VFX animation layout changed after selection. Your draft is intact; choose that asset again before saving.');}}}
-    for(const row of disk){const next=clone(row.config);if(!object(next.HeroSkills))next.HeroSkills={};for(const change of changes){if(change.value===undefined)remove(next.HeroSkills,change.path);else Settings.set(next.HeroSkills,change.path.join('.'),clone(change.value));}
+    for(const row of disk){
+      if(!changes.length&&row.relative!==FILES[0])continue;
+      const next=clone(row.config);
+      if(enemyChanges.length&&row.relative===FILES[0]){
+        if(Object.keys(this.enemyData).length)next.EnemySkillVisuals=clone(this.enemyData);else delete next.EnemySkillVisuals;
+      }
+      if(changes.length){
+      if(!object(next.HeroSkills))next.HeroSkills={};for(const change of changes){if(change.value===undefined)remove(next.HeroSkills,change.path);else Settings.set(next.HeroSkills,change.path.join('.'),clone(change.value));}
       // Selecting/resetting an asset owns its complete layout in every config
       // copy. A mirror may contain old flipbook fields absent from the primary.
       // Keep unrelated visual extensions while replacing this derived group.
@@ -126,10 +176,14 @@ class SkillService{
       // volume, delay and extension fields still belong to their own drafts.
       for(const [style,phase]of audioGroups.values()){for(const key of ['clip','bundle','path'])remove(next.HeroSkills,[style,'audio',phase,key]);for(const key of ['clip','bundle','path']){const value=Settings.get(this.data[style],'audio.'+phase+'.'+key);if(value!==undefined)Settings.set(next.HeroSkills,style+'.audio.'+phase+'.'+key,clone(value));}}
       for(const style of projectileStyles)for(const key of ['projectile','projectileAsset']){remove(next.HeroSkills,[style,'visual',key]);const value=Settings.get(this.data[style],'visual.'+key);if(value!==undefined)Settings.set(next.HeroSkills,style+'.visual.'+key,clone(value));}
-      if(!Object.keys(next.HeroSkills).length)delete next.HeroSkills;const text=Document.patch(row.text,row.config,next);files.set(row.relative,text);expected.set(row.file,row.bytes);}
+      if(!Object.keys(next.HeroSkills).length)delete next.HeroSkills;
+      }
+      const text=Document.patch(row.text,row.config,next);files.set(row.relative,text);expected.set(row.file,row.bytes);
+    }
     const result=this.commit(this.root,files,expected,FILES[0]);this.read();return this.snapshot(Object.assign({saved:true},result));
   }
   describe(request){
+    if(Enemy.hasStyle(request&&request.style))return Enemy.describe(this,request);
     if(!request||!Settings.styles.some(row=>row.id===request.style))throw Error('Choose one of the six hero skills.');
     const Units=require('../game-data-editor/lib/unit-assets'),describe=this.options.describe||Units.describe;
     const result=describe(this.root,{type:'hero',id:'hero',heroStyle:request.style,noRuntime:!!request.noRuntime,battleSpace:true});

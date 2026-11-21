@@ -56,5 +56,22 @@ function plan(state,rows,stages=[]){
  for(const variant of ['A','B','D'])for(const stage of next[variant].LevelCfg||[])remapWaves(stage,profiles.aliases);
  return{state:next,report};
 }
-function validate(settings,units){const t=table(settings),errors=balanceIssues(settings);if(!t||!t.families)return errors;const selected=new Set();for(const [baseId,family]of Object.entries(t.families)){if(!units[baseId]||!family||!family.profiles){errors.push('Fighting profiles require an existing parent unit.');continue;}if(Object.keys(family.profiles).length!==6)errors.push('Each enemy unit requires exactly six fighting profiles.');for(const role of ROLES){const id=family.profiles[role],entry=t.entries&&t.entries[id];if(!units[id]||!units[id].prefab||selected.has(id)||roleOf(settings,id)!==role||Number(id)!==Number(baseId)&&(!entry||entry.baseId!==Number(baseId)))errors.push('Each enemy unit requires one matching '+role+' profile.');selected.add(id);}}for(const [id,unit]of Object.entries(units))if(unit.prefab&&!(t.aliases&&t.aliases[id])&&!selected.has(Number(id)))errors.push('Every enemy unit requires its six fighting profiles.');for(const [alias,id]of Object.entries(t.aliases||{}))if(!units[alias]||!selected.has(id))errors.push('A legacy unit reference has no fighting profile.');return errors;}
+function validate(settings,units){
+ const t=table(settings),errors=balanceIssues(settings);if(!t||!t.families)return errors;
+ const selected=new Set(),aliases=t.aliases||{};
+ for(const [baseId,family]of Object.entries(t.families)){
+  if(!units[baseId]||!family||!family.profiles){errors.push('Fighting profiles require an existing parent unit.');continue;}
+  if(Object.keys(family.profiles).length!==6)errors.push('Each enemy unit requires exactly six fighting profiles.');
+  for(const role of ROLES){
+   const id=family.profiles[role],entry=t.entries&&t.entries[id];
+   if(!units[id]||!units[id].prefab||selected.has(id)||roleOf(settings,id)!==role||Number(id)!==Number(baseId)&&(!entry||entry.baseId!==Number(baseId)))errors.push('Each enemy unit requires one matching '+role+' profile.');
+   selected.add(id);
+  }
+ }
+ for(const [id,unit]of Object.entries(units))if(unit.prefab&&!aliases[id]&&!selected.has(Number(id)))errors.push('Every enemy unit requires its six fighting profiles.');
+ for(const [alias,id]of Object.entries(aliases)){
+  if(!/^[1-9]\d*$/.test(alias)||!Number.isSafeInteger(Number(alias))||!units[id]?.prefab||!selected.has(id)||aliases[id])errors.push('A legacy unit reference has no fighting profile.');
+ }
+ return errors;
+}
 module.exports={ROLES,FACTORS,FIELDS,factors,balanceIssues,applyBalance,canonicalId,familyFor,roleOf,remapWaves,plan,validate};

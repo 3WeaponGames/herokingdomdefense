@@ -5,7 +5,7 @@ const fs=require('fs'),path=require('path'),Catalog=require('../worlds/unit-cata
 const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
-const STATS={Health:'Health',AttackDamage:'Damage',AttackInterval:'Attack rate',AttackRange:'Attack range',SearchRange:'Search range',Speed:'Movement speed',CounterType:'Countered type',BuildingCross:'Building obstruction',DeathAni:'Death animation duration',Data:'Behavior parameters'};
+const STATS={Health:'Health',AttackDamage:'Damage',AttackInterval:'Attack rate',AttackRange:'Attack range',SearchRange:'Search range',Speed:'Movement speed',CounterType:'Countered type',BuildingCross:'Ground or flight unit',DeathAni:'Death animation duration',Data:'Behavior parameters',EnemyTargeting:'Target priority'};
 const VISUAL={x:0,y:0,scaleX:1,scaleY:1,rotation:0,tint:'#ffffff',mirrorX:false};
 const key=id=>'enemy:'+id+':'+Records.form('enemy',id);
 function characters(root){const file=path.join(root,'assets/resources/characters/catalog.json');return fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):null;}
@@ -41,7 +41,7 @@ function materialize(state){
   if(!/^[1-9]\d*$/.test(id)||!profile||typeof profile!=='object'||Array.isArray(profile)||!Number.isSafeInteger(profile.baseId)||!own(units,id)||!own(units,profile.baseId))throw Error('Invalid profile identifier or default unit.');
   const row=units[id],base=units[profile.baseId];if(!row||!base)throw Error('A profile references a missing default unit.');
   if(entries[profile.baseId]||Number(id)===Number(profile.baseId))throw Error('Profiles must inherit directly from a model default.');
-  if(profile.created){row.prefab=profile.modelPrefab||base.prefab;row.loadIcon=base.loadIcon;}
+  if(profile.created){row.prefab=profile.modelPrefab||base.prefab;row.loadIcon=own(profile,'battleIcon')?profile.battleIcon:base.loadIcon;}
   const fightingFamily=profile.fightingProfile&&Fighting.familyFor(tools,id);
   for(const field of Object.keys(STATS)){
    const factorIndex=Fighting.FIELDS.indexOf(field);
@@ -76,6 +76,9 @@ function reconcile(before,next){
  for(const [id,entry]of Object.entries(entries)){
   if(!oldEntries[id]||!equal(oldEntries[id],entry))continue;
   const old=before.A.SoldierCfg[id],row=next.A.SoldierCfg[id];if(!row||!old)continue;
+  if(entry.created&&!equal(old.loadIcon,row.loadIcon)){
+   if(own(row,'loadIcon'))entry.battleIcon=row.loadIcon;else delete entry.battleIcon;
+  }
   for(const field of Object.keys(STATS))if(!equal(old[field],row[field])){entry.stats=entry.stats||{};entry.omitted=(entry.omitted||[]).filter(value=>value!==field);if(own(row,field))entry.stats[field]=clone(row[field]);else entry.omitted.push(field);}
   const previous=(before.overrides.visuals||{})[key(id)]||{},current=(next.overrides.visuals||{})[key(id)]||{};
   for(const field of Object.keys(VISUAL))if(!equal(previous[field],current[field])){entry.visual=entry.visual||{};entry.omittedVisual=(entry.omittedVisual||[]).filter(item=>item!==field);if(own(current,field))entry.visual[field]=current[field];else delete entry.visual[field];}
@@ -95,6 +98,7 @@ function usages(root,state,id,drafts){
  const folder=path.join(root,'authoring/worlds/stages');if(fs.existsSync(folder))for(const file of fs.readdirSync(folder).filter(file=>file.endsWith('.json'))){try{const stage=JSON.parse(fs.readFileSync(path.join(folder,file),'utf8'));inspect(stage,stage.id||file);}catch(_){result.push('Unverified stage file: '+file);}}
  for(const doc of Object.values(drafts||{}))if(doc.key&&doc.key.startsWith('stage:'))inspect(doc.data,doc.data.id+' (draft)');
  for(const unit of Object.values(state.A.SoldierCfg||{}))if(unit.ID!==Number(id)&&Array.isArray(unit.Data)&&[90010,90011].includes(unit.ID)&&Number(unit.Data[2])===Number(id))result.push('Boss transformation '+unit.ID);
+ for(const unit of Object.values(state.A.SoldierCfg||{}))if(unit.TransformSkill?.unitId===Number(id))result.push('Transform on '+unit.ID);
  return result;
 }
 function describe(root,state,id,drafts){
@@ -104,6 +108,13 @@ function describe(root,state,id,drafts){
 }
 function operation(root,state,request,drafts){
  const next=clone(state),id=Fighting.canonicalId(next.overrides,request.id),{baseId}=family(next,id,characters(root)),units=next.A.SoldierCfg,action=request.action;
+ if(action==='set'&&['TransformSkill','EnemySkills'].includes(request.field)){
+  const skill=request.value===null?undefined:request.value;
+  const problem=require('../units/skills').issue(units[id],request.field,skill,units,next.overrides);
+  if(problem)throw Error(problem);
+  if(skill===undefined)delete units[id][request.field];else units[id][request.field]=clone(skill);
+  return {state:next,selectedId:id};
+ }
  if(Fighting.familyFor(next.overrides,id)&&(['add','duplicate','rename','remove','archive','restore'].includes(action)||request.field==='role'))throw Error('Each unit keeps its six fighting profiles. Choose a profile to edit its values.');
  let selectedId=id,entry;
  if(['add','duplicate'].includes(action)){
@@ -111,19 +122,21 @@ function operation(root,state,request,drafts){
   next.overrides.unitProfiles=clone(metadata(next));const table=next.overrides.unitProfiles;table.entries=table.entries||{};
   let fresh=Math.max(100000,Number(table.nextId)||100000);while(units[fresh]||table.entries[fresh])fresh++;table.nextId=fresh+1;selectedId=fresh;
   const source=action==='duplicate'?id:baseId;units[fresh]=clone(units[source]);units[fresh].ID=fresh;delete units[fresh].MonsterSource;delete units[fresh].AppearanceSourceUnit;delete units[fresh].CampaignBaseUnit;
+  if(action==='add'){delete units[fresh].TransformSkill;delete units[fresh].EnemySkills;}
   const behavior=Records.behavior(units[source],source);if(Records.BEHAVIOR_TEMPLATES.includes(behavior))units[fresh].BehaviorTemplate=behavior;
   units[fresh].MonsterPack=Catalog.rows(config(next),next.catalog||{},null,characters(root)).find(unit=>unit.id===baseId).assetPack;
   if(units[fresh].MonsterPack==='knight-fall')delete units[fresh].MonsterPack;
   entry=action==='duplicate'&&id!==baseId?clone(adopt(next,id,baseId)):{baseId,stats:{},visual:{}};
   Object.assign(entry,{baseId,name:validName(request.name===undefined?(action==='duplicate'?'Copy of profile':'New profile'):request.name),created:true});delete entry.archived;table.entries[fresh]=entry;
   if(action==='duplicate'&&units[source].prefab!==units[baseId].prefab)entry.modelPrefab=units[source].prefab;
+  if(action==='duplicate'&&own(units[source],'loadIcon')&&units[source].loadIcon!==units[baseId].loadIcon)entry.battleIcon=units[source].loadIcon;
   if(action==='duplicate'&&source!==baseId&&own(next.overrides.projectileSpeeds,key(source)))assign(next.overrides,'projectileSpeeds',fresh,next.overrides.projectileSpeeds[key(source)]);
  }else{
   if(id===baseId&&['rename','remove','archive','restore','reset'].includes(action))throw Error('Keep the Default profile for this model.');
   if(id!==baseId)entry=adopt(next,id,baseId);
   if(action==='rename')entry.name=validName(request.name);
   else if(action==='archive'||action==='remove'){
-   const used=usages(root,state,id,drafts);if(action==='remove'&&used.length)throw Error('This profile is used by '+used.length+' wave(s). Replace those selections or archive the profile.');
+   const used=usages(root,state,id,drafts);if(action==='remove'&&used.length)throw Error('This profile is used by '+used.join(', ')+'. Replace those references or archive the profile.');
    if(action==='remove'&&entry.created){delete units[id];delete next.overrides.unitProfiles.entries[id];for(const table of ['visuals','unitTypeAssignments','enemyClasses','timings','timingDefaults','animationSpeeds','projectileSpeeds'])if(next.overrides[table])delete next.overrides[table][key(id)];}
    else entry.archived=true;selectedId=baseId;
   }else if(action==='restore')delete entry.archived;
@@ -156,6 +169,7 @@ function operation(root,state,request,drafts){
 }
 function validName(value){if(typeof value!=='string'||!value.trim()||value.trim().length>80)throw Error('Give the profile a name of 1–80 characters.');return value.trim();}
 function validValue(field,value){
+ if(field==='EnemyTargeting'){const problem=require('../../../assets/_script/EnemyTargeting').issue(value);if(problem)throw Error(problem);return clone(value);}
  if(field==='Data'){if(!Array.isArray(value)||value.some(number=>typeof number!=='number'||!Number.isFinite(number)||number<0))throw Error('Behavior parameters must be nonnegative numbers.');return clone(value);}
  if(field==='CounterType'){if(typeof value!=='string')throw Error('Choose a countered type.');return value;}
  if(field==='tint'){if(!/^#[0-9a-f]{6}$/i.test(value))throw Error('Choose a valid tint.');return value;}
@@ -181,6 +195,7 @@ function validate(state){
   if(entry.archived!==undefined&&typeof entry.archived!=='boolean')issue(at.concat('archived'),'Invalid archived setting.');
   if(entry.created!==undefined&&typeof entry.created!=='boolean')issue(at.concat('created'),'Invalid created setting.');
   if(entry.modelPrefab!==undefined&&(typeof entry.modelPrefab!=='string'||!/^[A-Za-z0-9_-]+$/.test(entry.modelPrefab)))issue(at.concat('modelPrefab'),'Invalid shared model reference.');
+  if(entry.battleIcon!==undefined&&typeof entry.battleIcon!=='string')issue(at.concat('battleIcon'),'Choose a valid battle icon.');
   if(own(entry,'role')&&(typeof entry.role!=='string'||entry.role&&!own(state.overrides.unitTypes,entry.role)))issue(at.concat('role'),'Choose an existing fighting type.');
   if(own(entry,'enemyClass')&&!EnemyClasses.valid(entry.enemyClass))issue(at.concat('enemyClass'),'Choose Normal, Elite or Boss.');
   if(own(entry,'speed')&&entry.speed!==null)try{validValue('speed',entry.speed);}catch(error){issue(at.concat('speed'),error.message);}

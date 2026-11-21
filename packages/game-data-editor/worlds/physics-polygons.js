@@ -11,7 +11,21 @@ const area=points=>Blockers.area(points.map(p=>[p.x,p.y]));
 function representable(points){
  return points.length>=3&&Math.abs(area(points))>MIN_AREA&&points.every((p,i)=>distance(p,points[(i+1)%points.length])>=WELD_DISTANCE);
 }
-function fail(){throw Error('A blocker contour is smaller than the physics precision (0.128 world units). Increase its detail spacing before saving.');}
+function fail(){
+ const error=Error('A blocker contour is smaller than the physics precision (0.128 world units). Increase its detail spacing before saving.');
+ error.code='BLOCKER_PHYSICS_PRECISION';
+ throw error;
+}
+// Erasing almost all of a painted region can leave a disconnected speck.
+// Ignore it only when its entire bounds fit inside the native weld distance.
+function belowPrecision(points){
+ let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+ for(const {x,y} of points){
+  minX=Math.min(minX,x);minY=Math.min(minY,y);
+  maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);
+ }
+ return Math.hypot(maxX-minX,maxY-minY)<WELD_DISTANCE;
+}
 function triangulate(points){
  const remaining=area(points)>0?points.slice():points.slice().reverse(),result=[];
  while(remaining.length>3){
@@ -43,4 +57,4 @@ function fixtures(points){
  // Triangles bypass that recursive split after the bounded vertex weld.
  return triangulate(clean);
 }
-module.exports={fixtures,WELD_DISTANCE,MIN_AREA};
+module.exports={fixtures,belowPrecision,WELD_DISTANCE,MIN_AREA};

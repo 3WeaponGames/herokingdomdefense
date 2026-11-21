@@ -21,7 +21,7 @@ function unitTarget(data,key){
 class ProjectilesService {
   constructor(root){this.root=path.resolve(root);this.relative='assets/resources/projectiles/catalog.json';this.file=path.join(this.root,this.relative);this.version=0;this.focusedUnits=new Set();this.reload();}
   invalidateAssets(){
-    this.trailDefaults=new Map();this.shotSpeeds=new Map();this.portraits=new Map();this.modelDefaults=new Map();
+    this.trailDefaults=new Map();this.shotSpeeds=new Map();this.portraits=new Map();this.modelDefaults=new Map();this.nativeFrames=new Map();this.spriteFrames=null;
     require('../game-data-editor/lib/unit-assets').invalidate();
   }
   reload(){
@@ -91,7 +91,7 @@ class ProjectilesService {
     const data=this.configData,settings=data.GameTools||{},entries=this.readCatalog('assets/resources/localization/catalog.json').entries;
     const label=text=>String(text||'').replace(/\[\[loc:([^\]]+)\]\]/g,(_,key)=>entries[key]&&entries[key].en||key);
     const items=this.readCatalog('assets/resources/hero-items/catalog.json',{assignments:{},profiles:{}});
-    const {select,selectSource}=require('../../assets/_script/ProjectileLooks'),Fighting=require('../game-data-editor/lib/fighting-profiles');
+    const {select,selectSource,fallbackFlight}=require('../../assets/_script/ProjectileLooks'),Fighting=require('../game-data-editor/lib/fighting-profiles');
     const ranged=(row,side)=>UnitAttack.attackType(row)===2||this.focusedUnits.has(side+':'+row.ID);
     const previewTiers=data.EquipCfg.find(row=>row.id===3).levelInfo.map(level=>{const profile=items.profiles[items.assignments['3:'+level.Level]],choice=select({assets:this.data.assets,assignments:{},heroArrowLayer:this.data.heroArrowLayer,heroArrowTiers:this.data.heroArrowTiers},'hero',level.Level,profile,level.EquipSkin);return {level:level.Level,flight:choice.flight||'hero-skin:'+level.EquipSkin,tint:choice.tint};});
     const enemyProjectiles=Object.values(data.SoldierCfg).filter(row=>ranged(row,'enemy')).map(row=>{
@@ -110,11 +110,14 @@ class ProjectilesService {
       if(override===undefined&&who.type==='enemy'&&(who.id>=100000||data.SoldierCfg[who.id].ProfileBaseID))for(const id of require('../../assets/_script/EnemyStageProfiles').referenceIds(data.SoldierCfg[who.id],settings)){const inherited=settings.projectileSpeeds&&settings.projectileSpeeds['enemy:'+id+':'+Records.form('enemy',id)];if(inherited!==undefined){override=inherited;break;}}
       const speed=['hero','enemy','ally'].includes(who.type)&&typeof override==='number'&&Number.isFinite(override)&&override>=1&&override<=20000?override:authoredSpeed;
       const inheritedData={...this.data,assignments:{...this.data.assignments,[who.key]:{}}},inheritedAssignment=selectSource(inheritedData,who.key,who.type==='enemy'?{cfg:data.SoldierCfg[who.id]}:null,settings);
-      return {...who,portrait:this.portrait(who),speed,timingKey:key,launchDelay:finite(delay)?delay:0,defaultDelay,defaultTrail,effectiveAssignment,inheritedAssignment,...(effectiveAssignment.set?{set:effectiveAssignment.set}:{})};
+      return {...who,scaleFallback:fallbackFlight(who.key,who.type==='enemy'?data.SoldierCfg[who.id]:null),portrait:this.portrait(who),speed,timingKey:key,launchDelay:finite(delay)?delay:0,defaultDelay,defaultTrail,effectiveAssignment,inheritedAssignment,...(effectiveAssignment.set?{set:effectiveAssignment.set}:{})};
     });
   }
   dirty(){return !Document.equal(this.original,this.data)||!Document.equal(this.originalSpeeds,this.speeds)||!Document.equal(this.originalTimings||{},this.timings||{});}
-  snapshot(){return {version:this.version,revision:this.revision,data:clone(this.data),speeds:clone(this.speeds),timings:clone(this.timings||{}),dirty:this.dirty(),units:this.units()};}
+  snapshot(){
+    if(!this.spriteFrames)this.spriteFrames=require('./battle-artwork').catalogSpriteFrames(this.root,this.data.assets);
+    return {version:this.version,revision:this.revision,data:clone(this.data),speeds:clone(this.speeds),timings:clone(this.timings||{}),dirty:this.dirty(),units:this.units(),spriteFrames:clone(this.spriteFrames)};
+  }
   check(request){if(!request||request.version!==this.version)throw Error('Another panel changed the projectile drafts. Reload before editing.');}
   load(){if(!this.dirty()&&(hash(fs.readFileSync(this.file))!==this.revision||hash(fs.readFileSync(this.configFile))!==this.configRevision))return this.reload();this.invalidateAssets();return this.snapshot();}
   validate(data){
@@ -211,19 +214,27 @@ class ProjectilesService {
     const units=this.units(),who=request.key==='preview-target'?{type:'enemy',id:90001,key:'preview-target'}:units.find(unit=>unit.key===request.key);if(!who)throw Error('Choose an existing ranged unit.');
     const type=who.type==='wall'?'hero':who.type==='building'?'building':who.type,Assets=require('../game-data-editor/lib/unit-assets');
     const level=type==='ally'?(request.level===undefined?require('../game-data-editor/lib/unit-records').levels(this.configData,type,who.id)[0]:request.level):undefined;
-    const description=Assets.describe(this.root,{type,id:who.id||'hero',levelIndex:who.levelIndex||0,level,heroStyle:'skirmisher',noShared:true,documents:{A:{data:this.configData}}});
+    const description=Assets.describe(this.root,{type,id:who.id||'hero',levelIndex:who.levelIndex||0,level,heroStyle:'skirmisher',noShared:true,battleSpace:true,documents:{A:{data:this.configData}}});
     if(description.projectile&&typeof who.speed==='number')description.projectile={...description.projectile,speed:who.speed};
     const record=type==='enemy'?this.configData.SoldierCfg[who.id]:type==='ally'?this.configData.AllyCfg[who.id]:{};
     const tower=type==='building'?require('../../assets/_script/TowerCombat').settings(this.configData.BuildEnum[who.id].levelList[who.levelIndex||0]):null;
     const profile=require('../game-data-editor/lib/attack-profile').describe(description,this.configData.GameTools||{},{type,id:who.id,record});profile.hitTime=who.launchDelay===undefined?profile.hitTime:who.launchDelay;
     const settings=this.configData.GameTools||{},visuals=clone(settings.visuals&&settings.visuals[description.key]||{});
-    return {...description,key:request.key,profile,visuals,referenceDelay:description.defaultTiming,launchDelay:profile.hitTime,...(who.type==='wall'?{defaultHitKey:'preview-wall-hit',defaultHitAnimation:'jian_1'}:{}),...(type==='enemy'&&require('../game-data-editor/lib/unit-records').behavior(record,who.id)===90008?{defaultHitAnimation:false}:{}),...(tower&&tower.attackType==='cannon'?{defaultHitAnimation:false,defaultHit:{kind:'cannon',splashRadius:tower.splashRadius}}:{}),...(type==='building'?{artwork:require('../game-data-editor/preview/building-artwork').geometry(description.appearance,0)}:{})};
+    let launcher=null;
+    if(request.key!=='preview-target'){
+      const gear=type==='hero'&&this.configData.EquipCfg.find(row=>row.id===3);
+      const legacyArrowSkin=gear&&gear.levelInfo[0].EquipSkin;
+      launcher=require('./battle-artwork').describeLauncher(this.root,{...who,legacyArrowSkin},description,this.data.assets,this.nativeFrames);
+    }
+    const worldScale=type==='building'?require('../../assets/_script/BuildingWorldScale').value(this.configData.BuildEnum[who.id].levelList[who.levelIndex||0]):1;
+    return {...description,key:request.key,profile,visuals,launcher,worldScale,referenceDelay:description.defaultTiming,launchDelay:profile.hitTime,...(who.type==='wall'?{defaultHitKey:'preview-wall-hit',defaultHitAnimation:'jian_1'}:{}),...(type==='enemy'&&require('../game-data-editor/lib/unit-records').behavior(record,who.id)===90008?{defaultHitAnimation:false}:{}),...(tower&&tower.attackType==='cannon'?{defaultHitAnimation:false,defaultHit:{kind:'cannon',splashRadius:tower.splashRadius}}:{}),...(type==='building'?{artwork:require('../game-data-editor/preview/building-artwork').geometry(description.appearance,0)}:{})};
   }
   describeAsset(asset){
     if(asset.kind!=='spine')return {asset,layers:[]};
     const file=path.join(this.root,'assets',asset.bundle||'resources',asset.resource+'.json'),atlas=fs.readFileSync(file.replace(/\.json$/,'.atlas'),'utf8'),pages={};
     const lines=atlas.split(/\r?\n/);lines.forEach((line,i)=>{if(line.trim()&&(!i||!lines[i-1].trim())&&/^(size|format):/.test((lines[i+1]||'').trim()))pages[line.trim()]=url.pathToFileURL(path.join(path.dirname(file),line.trim())).href;});
-    return {asset,runtimePath:require('../game-data-editor/lib/unit-assets').enginePath(),layers:[{name:asset.name,json:parse(fs.readFileSync(file,'utf8')),atlas,pages,skin:asset.skin,x:0,y:0,scaleX:1,scaleY:1,rotation:asset.rotation||0}]};
+    const metadata=fs.existsSync(file+'.meta')?parse(fs.readFileSync(file+'.meta','utf8')):{};
+    return {asset,runtimePath:require('../game-data-editor/lib/unit-assets').enginePath(),layers:[{name:asset.name,json:parse(fs.readFileSync(file,'utf8')),atlas,pages,skin:asset.skin,x:0,y:0,scaleX:1,scaleY:1,importScale:metadata.scale>0?metadata.scale:1}]};
   }
 }
 module.exports={ProjectilesService};

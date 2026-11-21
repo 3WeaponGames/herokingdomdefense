@@ -1,5 +1,6 @@
 'use strict';
 const CombatPreview=require('./combat-preview');
+const Looks=require('../../assets/_script/ProjectileLooks');
 const ProjectileVisuals=require('./projectile-visuals');
 let unitPickerSerial=0;
 
@@ -58,7 +59,8 @@ function mount(root,api){
   const fields=el('div',undefined,left);
   el('h2','Projectile library',center);const search=el('input',undefined,center);search.placeholder='Search projectiles…';search.setAttribute('aria-label','Search projectiles');
   const count=el('small','',center),grid=el('div',undefined,center);grid.className='projectile-grid';
-  const title=el('h2','Preview',right),canvas=el('canvas',undefined,right);canvas.width=720;canvas.height=420;canvas.tabIndex=0;canvas.setAttribute('aria-label','Projectile combat preview');canvas.title='Space pauses or resumes the preview';
+  const title=el('h2','Preview',right),stageView=el('div',undefined,right);stageView.className='projectile-stage';
+  const canvas=el('canvas',undefined,stageView);canvas.width=420;canvas.height=420;canvas.tabIndex=0;canvas.setAttribute('aria-label','Projectile combat preview');canvas.title='Space pauses or resumes the preview';
   const ctx=canvas.getContext('2d'),controls=el('div',undefined,right);controls.className='projectile-play-controls';
   const description=el('p','',right),phase=el('p','',right);phase.className='projectile-phase';phase.setAttribute('aria-live','off');
   el('p','Choose a projectile, match its launch to the attack animation, then Save. Damage and range are edited in Units. Flight speed is in Units for characters and Buildings for towers.',left).className='projectile-note';
@@ -86,7 +88,16 @@ function mount(root,api){
   const effectiveDelay=key=>snapshot.timings&&snapshot.timings[key]!==undefined?snapshot.timings[key]:(snapshot.units.find(person=>person.key===key)||{}).launchDelay||0;
   const invalidDelay=()=>Array.from(delayDrafts).find(([,draft])=>!validDelay(draft.value));
   const pendingTiming=()=>Array.from(delayDrafts).some(([key,draft])=>!validDelay(draft.value)||draft.value!==effectiveDelay(key));
-  function previewSet(){const base=currentSet();if(!base)return null;const set=Object.assign({},base);if(!selectionTouched)for(const role of ['flight','launch','impact'])if(effectiveRow()[role]!==undefined&&(role!=='flight'||effectiveRow()[role]))set[role]=effectiveRow()[role];if(!byId(set.flight))set.flight=byId(who().defaultFlight)?who().defaultFlight:base.flight;for(const role of ['launch','impact'])if(!byId(set[role]))set[role]='';return set;}
+  function previewLook(){
+    const person=who();
+    if(!person)return null;
+    let assignment=effectiveRow();
+    if(selectionTouched||trailTouched||visualDrafts.has(unit)){
+      const catalog={...snapshot.data,assignments:{...snapshot.data.assignments,[unit]:assignmentForSelection()}};
+      assignment={...person.inheritedAssignment,...Looks.select(catalog,unit)};
+    }
+    return CombatPreview.projectileLook(snapshot.data.assets,person,assignment,actor);
+  }
   function storeSelection(){if(selectionTouched||trailTouched||visualDrafts.has(unit))pending.set(unit,{selected,selectionTouched,trailTouched,trailValue});else pending.delete(unit);}
   function assignmentForSelection(key,draft){
     key=key||unit;draft=draft||{selected,selectionTouched,trailTouched,trailValue};
@@ -115,7 +126,7 @@ function mount(root,api){
   };root.addEventListener('keydown',playbackKeyDown);
   const control=(label,input)=>{const wrap=el('label',undefined,fields);el('span',label,wrap);wrap.appendChild(input);return input;};
   function defaultSelection(){const a=effectiveRow(),u=who(),flight=byId(a.flight)?a.flight:u.defaultFlight;return sets().find(s=>s.id===a.set)||sets().find(s=>s.flight===flight)||sets().find(s=>s.category==='Imported arrows')||sets()[0];}
-  function loadActors(){const request=++actorRequest,targetGeneration=generation;actor=null;age=0;combat.load(unit).then(value=>{if(!closed&&request===actorRequest){actor=value;if(!paused)age=0;renderAssignments();}}).catch(warn);if(!target)combat.load('preview-target').then(value=>{if(!closed&&targetGeneration===generation)target=value;}).catch(warn);}
+  function loadActors(){const request=++actorRequest,targetGeneration=generation;actor=null;age=0;combat.load(unit).then(value=>{if(!closed&&request===actorRequest){actor=value;if(!paused)age=0;renderAssignments();renderSelected();}}).catch(warn);if(!target)combat.load('preview-target').then(value=>{if(!closed&&targetGeneration===generation)target=value;}).catch(warn);}
   unitSelect.onchange=()=>{closeUnitPicker(false);storeSelection();unit=unitSelect.value;const draft=pending.get(unit);selectionTouched=!!(draft&&draft.selectionTouched);trailTouched=!!(draft&&draft.trailTouched);const initial=defaultSelection();selected=draft&&draft.selected||initial&&initial.id;trailValue=draft?draft.trailValue:row().trail;mode='all';loadActors();render();};search.oninput=renderLibrary;
   function portraitContent(parent,person){
     const thumb=el('span',undefined,parent);thumb.className='projectile-unit-thumb';const words=person.name.replace(/[^a-z0-9 ]/gi,' ').trim().split(/\s+/),fallback=el('span',words.slice(0,2).map(word=>word[0]||'').join('').toUpperCase()||'?',thumb);fallback.className='projectile-unit-initials';fallback.setAttribute('aria-hidden','true');
@@ -200,36 +211,100 @@ function mount(root,api){
       el('strong',set.name,card);el('small',set.category,card);el('small',[set.launch&&'Launch','Flight',set.impact&&'Hit'].filter(Boolean).join(' · '),card).className='projectile-roles';}
     if(!library.length)el('p','No projectiles match your search.',grid);lockControls();
   }
-  function renderSelected(){const set=previewSet();if(!set)return;if(mode!=='all'&&!set[mode])mode='flight';title.textContent=set.name;for(const [key,btn]of Object.entries(playButtons)){const playing=key===mode&&!paused;btn.disabled=key!=='all'&&!set[key];btn.classList.toggle('active',key===mode);btn.setAttribute('aria-pressed',String(key===mode));btn.textContent=(playing?'Pause ':'Play ')+playbackLabels[key];btn.title=btn.disabled?'This projectile has no '+(key==='impact'?'special on-hit':key)+' effect.':playing?'Pause preview (Space)':key===mode?'Resume preview (Space)':'Loop '+playbackLabels[key];}
-    description.textContent=mode==='all'?who().name+' → target · attack, launch, flight and hit':mode==='flight'?'Stationary flight artwork and animation.':mode==='launch'?'Launch effect · looping':'Projectile on-hit effect · looping';for(const role of ['flight','launch','impact']){const asset=byId(set[role]);if(asset&&asset.kind==='spine')spine(asset);}}
+  function renderSelected(){const look=previewLook();if(!look)return;const available={all:true,flight:true,launch:look.launch,impact:look.impact||look.nativeImpact};if(!available[mode])mode='flight';const set=currentSet();title.textContent=set?set.name:'Preview';for(const [key,btn]of Object.entries(playButtons)){const playing=key===mode&&!paused;btn.disabled=!available[key];btn.classList.toggle('active',key===mode);btn.setAttribute('aria-pressed',String(key===mode));btn.textContent=(playing?'Pause ':'Play ')+playbackLabels[key];btn.title=btn.disabled?'This projectile has no '+(key==='impact'?'special on-hit':key)+' effect.':playing?'Pause preview (Space)':key===mode?'Resume preview (Space)':'Loop '+playbackLabels[key];}
+    description.textContent=mode==='all'?who().name+' → target · In-game scale':mode==='flight'?'Stationary flight · In-game scale':mode==='launch'?'Launch effect · In-game scale':'On-hit effect · In-game scale';for(const role of ['flight','launch','impact']){const asset=look[role];if(asset&&asset.kind==='spine')spine(asset);}}
   function render(){if(!snapshot.units.some(u=>u.key===unit))unit=snapshot.units[0].key;unitSelect.innerHTML='';for(const person of snapshot.units){const option=el('option',person.name,unitSelect);option.value=person.key;}unitSelect.value=unit;renderUnitPicker();if(!selected||!sets().some(s=>s.id===selected)){const set=defaultSelection();selected=set&&set.id;}renderAssignments();renderLibrary();renderSelected();refreshStatus();lockControls();}
   const off=document.createElement('canvas'),mask=document.createElement('canvas');off.width=off.height=mask.width=mask.height=256;const offContext=off.getContext('2d'),maskContext=mask.getContext('2d');
   function clipDuration(asset){if(!asset)return 0;if(asset.kind==='flipbook')return asset.frames/asset.fps;if(asset.kind==='spine'){const entry=spines.get(asset);if(entry)return Math.max(...entry.layers.map(layer=>{const clip=layer.data.findAnimation(asset.animation);return clip?clip.duration:0;}),.1);}return asset.duration||.5;}
   function draw(asset,x,y,time,options,loop){
-    if(!asset||time<0||(!loop&&time>=clipDuration(asset)))return;const size=(options.size||asset.size||48)*(loop&&validScale(options.scale)?options.scale:1);
+    if(!asset||time<0||(!loop&&time>=clipDuration(asset)))return;
+    const size=options.size;
     if(visuals.draw(ctx,asset,{x,y,time,size,rotation:options.rotation||0,tint:options.tint,trail:options.trail,trailColor:options.trailColor,trailDescriptor:trails().find(t=>t.id===options.trail),speed:options.previewSpeed||0,heading:options.previewHeading}))return;
-    offContext.clearRect(0,0,256,256);
-    if(asset.kind==='spine'){const entry=spines.get(asset);if(!entry){spine(asset);return;}api.renderer.seek(entry.runtime,entry.layers,asset.animation,time,!!loop);const tint=options.tint||'#ffffff';for(const layer of entry.layers){const color=layer.skeleton.color;if(color&&color.set)color.set(parseInt(tint.slice(1,3),16)/255,parseInt(tint.slice(3,5),16)/255,parseInt(tint.slice(5,7),16)/255,1);}ctx.save();ctx.translate(x,y);ctx.rotate(-(options.rotation||0)*Math.PI/180);const scale=size/(asset.width||64);ctx.scale(scale,-scale);api.renderer.drawWorld(entry.runtime,ctx,entry.layers);ctx.restore();return;}
-    else{const source=image(asset);if(!source||!source.complete||!source.naturalWidth)return;if(asset.kind==='flipbook'){const map=loop&&asset.loopFrames,frame=map&&map.length?map[Math.floor(time*asset.fps)%map.length]:loop?Math.floor(time*asset.fps)%asset.frames:Math.min(asset.frames-1,Math.floor(time*asset.fps));offContext.drawImage(source,frame%asset.columns*asset.cell,Math.floor(frame/asset.columns)*asset.cell,asset.cell,asset.cell,0,0,256,256);}else{const scale=256/Math.max(source.width,source.height),w=source.width*scale,h=source.height*scale;offContext.drawImage(source,(256-w)/2,(256-h)/2,w,h);}}
-    if(options.tint&&options.tint!=='#ffffff'){maskContext.clearRect(0,0,256,256);maskContext.drawImage(off,0,0);offContext.globalCompositeOperation='multiply';offContext.fillStyle=options.tint;offContext.fillRect(0,0,256,256);offContext.globalCompositeOperation='destination-in';offContext.drawImage(mask,0,0);offContext.globalCompositeOperation='source-over';}
-    ctx.save();if(asset.additive)ctx.globalCompositeOperation='lighter';ctx.translate(x,y);ctx.rotate(-((options.rotation||0)+(asset.rotation||0))*Math.PI/180);const side=size*(asset.visualScale||1),pivot=asset.visualPivot||{x:.5,y:.5};ctx.drawImage(off,-side*pivot.x,-side*pivot.y,side,side);ctx.restore();
+    const angle=-((options.rotation||0)+(asset.rotation||0))*Math.PI/180;
+    if(asset.kind==='spine'){const entry=spines.get(asset);if(!entry){spine(asset);return;}api.renderer.seek(entry.runtime,entry.layers,asset.animation,time,!!loop);const tint=options.tint||'#ffffff';for(const layer of entry.layers){const color=layer.skeleton.color;if(color&&color.set)color.set(parseInt(tint.slice(1,3),16)/255,parseInt(tint.slice(3,5),16)/255,parseInt(tint.slice(5,7),16)/255,1);}ctx.save();ctx.translate(x,y);ctx.rotate(angle);const scale=Looks.artworkScale(asset,size);ctx.scale(scale,-scale);api.renderer.drawWorld(entry.runtime,ctx,entry.layers);ctx.restore();return;}
+    const source=image(asset);if(!source||!source.complete||!source.naturalWidth)return;
+    let frame={x:0,y:0,width:source.naturalWidth,height:source.naturalHeight};
+    if(asset.kind==='flipbook'){
+      const map=loop&&asset.loopFrames,index=Math.floor(time*asset.fps),id=map&&map.length?map[index%map.length]:loop?index%asset.frames:Math.min(asset.frames-1,index);
+      frame={x:id%asset.columns*asset.cell,y:Math.floor(id/asset.columns)*asset.cell,width:asset.cell,height:asset.cell};
+    }else frame=snapshot.spriteFrames?.[asset.id]||frame;
+    const original={width:frame.originalWidth||frame.width,height:frame.originalHeight||frame.height};
+    const scale=Looks.artworkScale(asset,size,original),width=original.width*scale,height=original.height*scale,pivot=asset.visualPivot||{x:.5,y:.5};
+    ctx.save();if(asset.additive)ctx.globalCompositeOperation='lighter';ctx.translate(x,y);ctx.rotate(angle);
+    if(options.tint&&options.tint!=='#ffffff'){
+      offContext.clearRect(0,0,256,256);offContext.drawImage(source,frame.x,frame.y,frame.width,frame.height,0,0,256,256);
+      maskContext.clearRect(0,0,256,256);maskContext.drawImage(off,0,0);offContext.globalCompositeOperation='multiply';offContext.fillStyle=options.tint;offContext.fillRect(0,0,256,256);offContext.globalCompositeOperation='destination-in';offContext.drawImage(mask,0,0);offContext.globalCompositeOperation='source-over';
+      ctx.drawImage(off,-width*pivot.x,-height*pivot.y,width,height);
+    }else ctx.drawImage(source,frame.x,frame.y,frame.width,frame.height,-width*pivot.x,-height*pivot.y,width,height);
+    ctx.restore();
   }
   function drawTrail(x,y,time,speed,options){if(options.trail===false||options.trail==='none'||time<=0)return;const preset=trails().find(t=>t.id===(options.trail===undefined?who().defaultTrail:options.trail)),scale=validScale(options.scale)?options.scale:1;if(preset){visuals.drawTrail(ctx,preset,{x,y,time,size:48*scale,speed,rotation:options.previewHeading||0,trailColor:options.trailColor});return;}if(!who().defaultTrail&&!who().builtinFlight)return;const length=Math.min(x-180,speed*.16);if(length<=0)return;ctx.save();const gradient=ctx.createLinearGradient(x-length,y,x,y);gradient.addColorStop(0,'transparent');gradient.addColorStop(1,options.trailColor||'#fff1c9');ctx.strokeStyle=gradient;ctx.lineWidth=4*scale;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x-length,y);ctx.lineTo(x,y);ctx.stroke();ctx.restore();}
+  function drawFlight(look,x,y,time,heading,speed,nativeImpact){
+    if(time<0)return;
+    const launcher=actor&&actor.launcher||{},sx=launcher.scaleX??1,sy=launcher.scaleY??1;
+    ctx.save();ctx.translate(x,y);ctx.rotate(heading*Math.PI/180);ctx.scale(sx,sy);
+    if(look.flight)draw(look.flight,0,0,time,{...look.options,size:look.options.size*Looks.visualScale(look.options),
+      previewSpeed:speed/Math.max(Math.abs(sx),.001),previewHeading:0},true);
+    else combat.drawFlight(ctx,actor,time,nativeImpact);
+    ctx.restore();
+  }
+  function sizeStage(view){
+    const ratio=window.devicePixelRatio||1,width=Math.ceil(view.width*ratio),height=Math.ceil(view.height*ratio);
+    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
+    const cssWidth=view.width+'px',cssHeight=view.height+'px';
+    if(canvas.style.width!==cssWidth)canvas.style.width=cssWidth;
+    if(canvas.style.height!==cssHeight)canvas.style.height=cssHeight;
+    ctx.setTransform(width/view.width,0,0,height/view.height,0,0);
+  }
   function tick(now){
-    if(closed)return;const dt=last?Math.min((now-last)/1000,.1):0;last=now;if(!paused)age+=dt;ctx.fillStyle='#14202b';ctx.fillRect(0,0,720,420);ctx.fillStyle='#1d2d38';ctx.fillRect(0,310,720,110);ctx.strokeStyle='#3a505d';ctx.beginPath();ctx.moveTo(20,310);ctx.lineTo(700,310);ctx.stroke();
-    if(snapshot&&previewSet()){const set=previewSet(),flight=byId(set.flight),launch=byId(set.launch),impact=byId(set.impact),options=Object.assign({},set);if(!selectionTouched)for(const field of ['size','rotation','tint'])if(effectiveRow()[field]!==undefined)options[field]=effectiveRow()[field];options.trail=trailTouched?trailValue:unit==='hero'?row().trail:effectiveRow().trail;if(options.trail===undefined&&flight&&flight.trail)options.trail=flight.trail;
-      options.scale=visualValue('scale');options.trailColor=validColor(visualValue('trailColor'))?visualValue('trailColor'):undefined;
-      if(options.size===undefined&&who().defaultSize!==undefined)options.size=who().defaultSize;
-      if(mode!=='all'){const asset=byId(set[mode]),duration=clipDuration(asset);draw(asset,360,210,mode==='flight'?age:age%(duration+.45),options,mode==='flight');phase.textContent=mode==='flight'?'Flight · stationary':mode==='launch'?'Launch':'On hit';}
-      else{options.size=options.size||flight&&flight.size||48;const person=who(),speed=typeof person.speed==='number'&&person.speed>0?person.speed:500,playback=actor?actor.animationSpeed:person.animationSpeed||1,marker=delayDrafts.has(unit)&&validDelay(delayDrafts.get(unit).value)?delayDrafts.get(unit).value:effectiveDelay(unit);
-        const shooterPose={x:105,groundY:310,width:190,height:210,facing:1},origin=actor&&combat.muzzle(actor,Object.assign({},shooterPose,{animation:actor.attackAnimation,time:marker}))||{x:180,y:230},delta={x:560-origin.x,y:230-origin.y},heading=Math.atan2(delta.y,delta.x)*180/Math.PI;
-        const delay=playback===0?Infinity:marker/playback,travel=Math.hypot(delta.x,delta.y)/speed,arrival=delay+travel,attackDuration=actor?combat.duration(actor,actor.attackAnimation)/(playback>0?playback:1):1,period=Math.max((Number.isFinite(arrival)?arrival:0)+Math.max(clipDuration(impact),.55)+.55,attackDuration+.4),time=age%period,hitAge=time-arrival;
-        if(actor)combat.draw(ctx,actor,{x:105,groundY:310,width:190,height:210,animation:time<attackDuration?actor.attackAnimation:actor.idleAnimation,time:time<attackDuration?time*playback:(time-attackDuration)*playback,loop:time>=attackDuration,facing:1});
+    if(closed)return;
+    const dt=last?Math.min((now-last)/1000,.1):0;last=now;if(!paused)age+=dt;
+    const look=snapshot&&previewLook(),showUnits=mode==='all',launcher=actor&&actor.launcher||{};
+    const size=look?look.options.size*Looks.visualScale(look.options)*(look.flight?.visualScale||1)*Math.max(1,Math.abs(launcher.scaleX??1),Math.abs(launcher.scaleY??1)):0;
+    const padding=Math.max(24,size*Math.SQRT1_2);
+    const view=CombatPreview.stage(stageView.clientWidth||420,showUnits&&actor,showUnits&&target,padding);
+    sizeStage(view);
+    const ground=view.shooter.groundY;
+    ctx.fillStyle='#14202b';ctx.fillRect(0,0,view.width,view.height);
+    ctx.fillStyle='#1d2d38';ctx.fillRect(0,ground,view.width,view.height-ground);
+    ctx.strokeStyle='#3a505d';ctx.beginPath();ctx.moveTo(0,ground);ctx.lineTo(view.width,ground);ctx.stroke();
+    if(look){
+      const {flight,launch,impact,options}=look,person=who();
+      if(!showUnits){
+        const x=view.width/2,y=(ground+padding)/2;
+        if(mode==='flight')drawFlight(look,x,y,age,0,0);
+        else if(mode==='impact'&&look.nativeImpact)drawFlight(look,x,y,age%1,0,0,true);
+        else{const asset=look[mode];draw(asset,x,y,age%(clipDuration(asset)+.45),options,false);}
+        phase.textContent=mode==='flight'?'Flight · stationary':mode==='launch'?'Launch':'On hit';
+      }else{
+        const speed=person.speed>0?person.speed:500,playback=actor?actor.animationSpeed:person.animationSpeed||1;
+        const marker=delayDrafts.has(unit)&&validDelay(delayDrafts.get(unit).value)?delayDrafts.get(unit).value:effectiveDelay(unit);
+        const origin=actor&&combat.muzzle(actor,{...view.shooter,animation:actor.attackAnimation,time:marker})||{x:view.shooter.x,y:ground-30};
+        const aim=view.aim,delta={x:aim.x-origin.x,y:aim.y-origin.y},heading=Math.atan2(delta.y,delta.x)*180/Math.PI;
+        const delay=playback===0?Infinity:marker/playback,travel=Math.hypot(delta.x,delta.y)/speed,arrival=delay+travel;
+        const attackDuration=actor?combat.duration(actor,actor.attackAnimation)/(playback>0?playback:1):1;
+        const period=Math.max((Number.isFinite(arrival)?arrival:0)+Math.max(clipDuration(impact),.55)+.55,attackDuration+.4);
+        const time=age%period,hitAge=time-arrival,flightAge=time-delay,attacking=time<attackDuration;
+        if(actor)combat.draw(ctx,actor,{...view.shooter,animation:attacking?actor.attackAnimation:actor.idleAnimation,time:(attacking?time:time-attackDuration)*playback,loop:!attacking});
         const reacting=target&&hitAge>=0&&hitAge<combat.duration(target,target.hitAnimation)/1.5;
-        if(target)combat.draw(ctx,target,{x:600,groundY:310,width:150,height:165,animation:reacting?target.hitAnimation:target.idleAnimation,time:reacting?hitAge*1.5:time,loop:!reacting,facing:-1});
-        if(!actor||!target){ctx.fillStyle='#aebdcd';ctx.font='14px system-ui';ctx.textAlign='center';ctx.fillText('Loading preview units…',360,385);}const flightAge=time-delay;draw(launch,origin.x,origin.y,flightAge,Object.assign({},options,{rotation:(options.rotation||0)-heading}),false);
-        if(flightAge>=0&&time<arrival){const ratio=flightAge/travel,x=origin.x+delta.x*ratio,y=origin.y+delta.y*ratio;if(!flight||!flight.visualLayers)drawTrail(x,y,flightAge,speed,Object.assign({},options,{previewHeading:heading}));draw(flight,x,y,flightAge,Object.assign({},options,{previewSpeed:speed,previewHeading:heading,rotation:(options.rotation||0)-heading}),true);}if(hitAge>=0){combat.defaultHit(ctx,560,230,hitAge,70,actor);draw(impact,560,230,hitAge,options,false);}phase.textContent=playback===0?'Animation frozen in Characters':time<delay?'Attack windup':time<arrival?'Launch → flight':hitAge<.55?'Hit':'Ready · repeating';}
-    }if(paused&&snapshot)phase.textContent='Paused · '+phase.textContent;raf=requestAnimationFrame(tick);
+        if(target)combat.draw(ctx,target,{...view.target,animation:reacting?target.hitAnimation:target.idleAnimation,time:reacting?hitAge*1.5:time,loop:!reacting});
+        if(!actor||!target){ctx.fillStyle='#aebdcd';ctx.font='14px system-ui';ctx.textAlign='center';ctx.fillText('Loading preview units…',view.width/2,ground+70);}
+        const effects={...options,rotation:(options.rotation||0)-heading};
+        draw(launch,origin.x,origin.y,flightAge,effects,false);
+        if(flightAge>=0&&time<arrival){
+          const ratio=flightAge/travel,x=origin.x+delta.x*ratio,y=origin.y+delta.y*ratio;
+          if(!flight||!flight.visualLayers)drawTrail(x,y,flightAge,speed,{...options,previewHeading:heading});
+          drawFlight(look,x,y,flightAge,heading,speed);
+        }else if(hitAge>=0){
+          combat.defaultHit(ctx,aim.x,aim.y,hitAge,70,actor);
+          if(look.nativeImpact&&hitAge<.55)drawFlight(look,aim.x,aim.y,hitAge,heading,0,true);
+          draw(impact,aim.x,aim.y,hitAge,effects,false);
+        }
+        phase.textContent=playback===0?'Animation frozen in Characters':time<delay?'Attack windup':time<arrival?'Launch → flight':hitAge<.55?'Hit':'Ready · repeating';
+      }
+    }
+    if(paused&&snapshot)phase.textContent='Paused · '+phase.textContent;
+    raf=requestAnimationFrame(tick);
   }
   function selectFocus(request){
     if(closed||!request||request.sequence<focusSequence||!snapshot.units.some(person=>person.key===request.key))return false;

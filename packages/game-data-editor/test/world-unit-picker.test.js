@@ -35,7 +35,19 @@ test('enemy classes distinguish profiles of one model without changing combat ro
 
 test('saved units expose exactly six fighting profiles per parent without Campaign or Normal profile labels',()=>{
  const root=path.resolve(__dirname,'../../..'),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'))),before=clone(config),localization=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'))),characters=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/characters/catalog.json'))),rows=Catalog.rows(config,localization,null,characters),groups=Catalog.groups(rows);
- assert.equal(groups.length,Object.keys(config.GameTools.unitProfiles.families).length);for(const group of groups){assert.equal(group.units.length,6);assert.equal(Catalog.firstProfile(group.units).unitType,'fighter');assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}assert.deepEqual(config,before);
+ const profiles=config.GameTools.unitProfiles;
+ assert.equal(groups.length,Object.keys(profiles.families).filter(id=>!profiles.aliases[id]).length);
+ assert.equal(new Set(groups.map(group=>group.units[0].name.toLowerCase())).size,groups.length);
+ const pirates=groups.filter(group=>group.units[0].name==='Pirate Ghost');
+ assert.equal(pirates.length,1);assert(pirates[0].units.some(unit=>unit.id===91081));
+ const scorpions=groups.filter(group=>group.units[0].name==='Stone Scorpion');
+ assert.equal(scorpions.length,1);assert(scorpions[0].units.some(unit=>unit.id===91090));
+ for(const [role,id] of Object.entries(profiles.families[90010].profiles)){
+  assert.equal(profiles.aliases[id],profiles.families[91090].profiles[role]);
+  assert(!rows.some(unit=>unit.id===id));
+ }
+ for(const group of groups){assert.equal(group.units.length,6);assert.equal(Catalog.firstProfile(group.units).unitType,'fighter');assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}
+ assert.deepEqual(config,before);
 });
 
 test('appearance grouping resolves references and safely stops at cyclic or missing source records',()=>{

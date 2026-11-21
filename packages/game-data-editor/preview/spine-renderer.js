@@ -10,6 +10,7 @@ async function createLayers(spine, descriptions) {
         await Promise.all(Object.keys(description.pages).map(async name => { images[name] = await loadImage(description.pages[name]); }));
         const atlas = new spine.TextureAtlas(description.atlas, name => new spine.FakeTexture(images[name]));
         const reader = new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas));
+        if (description.importScale !== undefined) reader.scale = description.importScale;
         const data = reader.readSkeletonData(description.json), skeleton = new spine.Skeleton(data);
         if (description.skin && data.findSkin(description.skin)) skeleton.setSkinByName(description.skin);
         skeleton.setToSetupPose(); skeleton.updateWorldTransform();
@@ -155,12 +156,14 @@ function bounds(spine, layers) {
     return isFinite(minX) ? {minX,minY,maxX,maxY,width:Math.max(1,maxX-minX),height:Math.max(1,maxY-minY)} : {minX:-50,minY:0,maxX:50,maxY:100,width:100,height:100};
 }
 function transformPoint(d,x,y) {
-    x*=d.scaleX;y*=d.scaleY;
-    const a=(d.rotation||0)*Math.PI/180,c=Math.cos(a),s=Math.sin(a),px=x*c-y*s+d.x,py=x*s+y*c+d.y,m=d._mountMotion;
+    const a=(d.rotation||0)*Math.PI/180,c=Math.cos(a),s=Math.sin(a),matrix=d.matrix;
+    const px=matrix?matrix[0]*x+matrix[2]*y+matrix[4]:x*d.scaleX*c-y*d.scaleY*s+d.x;
+    const py=matrix?matrix[1]*x+matrix[3]*y+matrix[5]:x*d.scaleX*s+y*d.scaleY*c+d.y,m=d._mountMotion;
     return m?{x:m.a*px+m.b*py+m.x,y:m.c*px+m.d*py+m.y}:{x:px,y:py};
 }
 function inversePoint(d,x,y) {
     const m=d._mountMotion;if(m){const px=x-m.x,py=y-m.y,det=m.a*m.d-m.b*m.c;x=(m.d*px-m.b*py)/det;y=(-m.c*px+m.a*py)/det;}
+    const q=d.matrix;if(q){const px=x-q[4],py=y-q[5],det=q[0]*q[3]-q[1]*q[2];return{x:(q[3]*px-q[2]*py)/det,y:(-q[1]*px+q[0]*py)/det};}
     x-=d.x;y-=d.y;
     if(d.rotation){const a=-d.rotation*Math.PI/180,c=Math.cos(a),s=Math.sin(a),px=x;x=px*c-y*s;y=px*s+y*c;}
     return{x:x/d.scaleX,y:y/d.scaleY};
@@ -182,7 +185,9 @@ function tintedImage(image,color) {
 }
 function drawWorld(spine, ctx, layers) {
     renderPasses(spine,layers).forEach(({layer,pieces}) => {
-        ctx.save();const m=layer.description._mountMotion;if(m)ctx.transform(m.a,m.c,m.b,m.d,m.x,m.y);ctx.translate(layer.description.x,layer.description.y);if(layer.description.rotation)ctx.rotate(layer.description.rotation*Math.PI/180);ctx.scale(layer.description.scaleX,layer.description.scaleY);
+        ctx.save();const d=layer.description,m=d._mountMotion;if(m)ctx.transform(m.a,m.c,m.b,m.d,m.x,m.y);
+        if(d.matrix)ctx.transform(...d.matrix);
+        else{ctx.translate(d.x,d.y);if(d.rotation)ctx.rotate(d.rotation*Math.PI/180);ctx.scale(d.scaleX,d.scaleY);}
         pieces.forEach(g=>{
             ctx.globalAlpha=g.color.a*(layer.description.opacity===undefined?1:layer.description.opacity);
             ctx.globalCompositeOperation=['source-over','lighter','multiply','screen'][g.blend]||'source-over';
@@ -236,4 +241,4 @@ function animationNames(json){
         return Object.entries(clip).some(([key,value])=>key==='bones'?Object.keys(value||{}).length:key!=='slots'?true:Object.entries(value||{}).some(([slot,channels])=>Object.entries(channels).some(([channel,frames])=>channel!=='color'||frames.some(frame=>frame.color!==(setup.get(slot)||'ffffffff')))));
     }).map(([name])=>name);
 }
-module.exports={createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint,hitTest,renderPasses,animationNames};
+module.exports={loadImage,tintedImage,createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint,hitTest,renderPasses,animationNames};

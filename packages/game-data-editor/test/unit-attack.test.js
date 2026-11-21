@@ -50,8 +50,9 @@ function isolatedProject() {
 test('Units shows relevant attack fields, opens Projectiles on the ranged draft, and saves just this unit', async () => {
   const { store, config } = isolatedProject();
   const before = fs.readFileSync(config), f = panelFixture(store);
-  const pathToUnit = ['SoldierCfg', '90001', 'UnitAttack'];
-  f.render('enemy:90001');
+  const id = '91090', key = 'enemy:' + id;
+  const pathToUnit = ['SoldierCfg', id, 'UnitAttack'];
+  f.render(key);
   assert.equal(f.input('Attack delivery').value, 'original');
   assert.equal(f.button('Open Projectile editor'), undefined);
   assert.equal(store.changes().length, 0);
@@ -60,11 +61,11 @@ test('Units shows relevant attack fields, opens Projectiles on the ranged draft,
   await f.edit('Attack pattern', 'splash');
   await f.edit('Splash radius', 110);
   await f.edit('Damage at splash edge (%)', 35);
-  assert.equal(store.draftState().A.SoldierCfg[90001].UnitAttack.splashFalloff, .35);
+  assert.equal(store.draftState().A.SoldierCfg[id].UnitAttack.splashFalloff, .35);
   await f.edit('Attack delivery', 'ranged');
   assert.deepEqual(Array.from(f.input('Attack pattern').children, option => option.value), ['single', 'splash', 'volley', 'piercing', 'chain']);
   await f.button('Open Projectile editor').onclick();
-  assert.equal(f.messages.find(message => message.message === 'game-data-editor:open-projectiles').request.key, 'enemy:90001');
+  assert.equal(f.messages.find(message => message.message === 'game-data-editor:open-projectiles').request.key, key);
   await f.edit('Attack pattern', 'volley');
   await f.edit('Projectiles per attack', 3);
   assert.equal(f.input('Splash radius'), undefined);
@@ -77,11 +78,11 @@ test('Units shows relevant attack fields, opens Projectiles on the ranged draft,
   assert.deepEqual(fs.readFileSync(config), before);
   assert.deepEqual(store.changes().map(change => change.path), [pathToUnit]);
   const expected = { delivery: 'ranged', pattern: 'chain', splashRadius: 110, splashFalloff: .35, shotsPerVolley: 3, pierceTargets: 4, chainHits: 4, chainRange: 170, chainDamageLoss: .2 };
-  assert.deepEqual(store.draftState().A.SoldierCfg[90001].UnitAttack, expected);
+  assert.deepEqual(store.draftState().A.SoldierCfg[id].UnitAttack, expected);
   const saved = store.save({ version: store.version });
   assert.equal(saved.result.saved, true, JSON.stringify(saved.issues));
   const exact = JSON.parse(before);
-  exact.SoldierCfg[90001].UnitAttack = expected;
+  exact.SoldierCfg[id].UnitAttack = expected;
   assert.deepEqual(JSON.parse(fs.readFileSync(config)), exact);
 });
 

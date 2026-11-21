@@ -29,7 +29,7 @@ var def_KinghtFallEnemyAuxiliary = function (t) {
     }
     if (!current() || this.updateCombatTimers(t) === false || !current()) return;
     if (this._hitReactionPlaying) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; return; }
-    this.time[r.Attack] >= 1 && this.doAttackStart();
+    if (this.time[r.Attack] >= 1 && this.time.OriginalSupport !== false) this.doAttackStart();
     if (!current()) return;
     switch (this.state) {
       case $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Idle:

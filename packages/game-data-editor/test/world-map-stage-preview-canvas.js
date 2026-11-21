@@ -12,7 +12,7 @@ async function verify(){
  console.error=(...args)=>{errors.push(args.map(String).join(' '));originalError.apply(console,args);};
  console.warn=(...args)=>{errors.push(args.map(String).join(' '));originalWarn.apply(console,args);};
  const texture=(id,color,size)=>{const canvas=Paint.canvas(size,size),ctx=canvas.getContext('2d');ctx.fillStyle=color;ctx.fillRect(0,0,size,size);return {id,name:id,url:canvas.toDataURL(),width:size,height:size,anchor:{x:.5,y:.5},category:'custom',biomes:M.BIOMES.slice(),depth:'world'};};
- const blue=texture('blue-scenery','#145bea',64),red=texture('red-building','#e82a25',80);
+ const blue=texture('blue-scenery','#145bea',64),red=texture('red-building','#e82a25',80),green=texture('green-upgrade','#2eb355',80);
  const maps={};
  for(const id of ['Map01','Map02']){
   const map=M.createLayer(M.createMap(id,id,'forest',null),'Scenery');
@@ -23,13 +23,14 @@ async function verify(){
  const stages={};
  for(const [id,variant,level,mapId]of [['A-1','A',1,'Map01'],['B-2','B',2,'Map01'],['D-3','D',3,'Map02']])stages[id]={id,variant,level,name:'Stage '+id,mapId,buildings:[{id:1,kind:2,name:'Test tower',x:0,y:0,scale:1,angle:0,enabled:true,unlock:1}],specials:[],spawns:[],graphs:[],waves:[],hero:{x:120,y:-120}};
  const record={origin:{x:0,y:0},sprites:[{frame:red.id,matrix:[1,0,0,1,0,0],width:80,height:80,anchor:{x:.5,y:.5},ground:false}],skeletons:[],blockers:[],step:[],openBlockers:[]};
+ const upgraded=M.clone(record);upgraded.sprites[0].frame=green.id;
  let version=1,draftStage=null,failLoad=null;
  const deferred=new Map();
- const snapshot=key=>({key,version,value:M.clone(key.startsWith('map:')?maps[key.slice(4)]:stages[key.slice(6)]),dirty:key==='stage:'+draftStage,canUndo:false,canRedo:false,issues:[],affected:[],...(key.startsWith('stage:')?{buildingPreview:{runtimePath:null,buildings:{1:{levels:{1:record,2:record,3:record}}},images:{[red.id]:red},errors:[]}}:{})});
+ const snapshot=key=>({key,version,value:M.clone(key.startsWith('map:')?maps[key.slice(4)]:stages[key.slice(6)]),dirty:key==='stage:'+draftStage,canUndo:false,canRedo:false,issues:[],affected:[],...(key.startsWith('stage:')?{buildingPreview:{runtimePath:null,buildings:{1:{levels:{1:record,2:record,3:upgraded,4:upgraded}}},images:{[red.id]:red,[green.id]:green},errors:[]}}:{})});
  const catalog=()=>({version,maps:Object.values(maps).map(map=>({id:map.id,name:map.name,biome:map.biome})),stages:Object.values(stages).map(stage=>({id:stage.id,variant:stage.variant,level:stage.level,name:stage.name,mapId:stage.mapId,dirty:stage.id===draftStage})),library:[blue],images:{},recovery:false,interval:.5});
  const hold=key=>{let release;const promise=new Promise(resolve=>{release=resolve;});const result={promise,release,started:false};if(deferred.has(key))throw Error('Already holding '+key);deferred.set(key,result);return result;};
  async function ipc(name,query){
-  calls.push({name,key:query&&query.key});
+  calls.push({name,key:query&&query.key,placementPreview:query&&query.placementPreview});
   if(name==='world-catalog')return catalog();
   if(name==='world-load'){
    if(query.key===failLoad){failLoad=null;throw Error('Temporary stage preview failure');}
@@ -67,12 +68,22 @@ async function verify(){
   const originalMap=JSON.stringify(state.snap.value),originalVersion=version;
   await clickStage('A-1');await decoded(red.id);
   assert(state.placementStage==='A-1'&&state.placementSnap.value.id==='A-1'&&!state.placementLoading,'clicking a linked stage finishes a read-only placement preview');
-  assert(toolbar.getBoundingClientRect().height<=initialHeight+1,'inline hall and footprint controls do not add another toolbar row at 1300px');
+  assert(toolbar.getBoundingClientRect().height<=initialHeight+1,'inline preview controls do not add another toolbar row at 1300px');
   assert(!!root.querySelector('.world-top [aria-label="Preview hall level"]')&&!!root.querySelector('.world-top [aria-label="Construction footprints"]'),'selected preview controls stay compact and accessible inside the toolbar');
   assert(color(sample('building-in-front',20,10),[232,42,37]),'default scenery behind buildings cannot cover building artwork on real Canvas');
   assert(JSON.stringify(state.snap.value)===originalMap&&version===originalVersion&&!state.snap.dirty,'stage selection preserves the map document, revision and clean state');
   assert(!writes.length&&calls.every(call=>['world-load','world-catalog'].includes(call.name)),'stage browsing performs only read IPC and never Change or Save');
   assert(selector().value==='A-1'&&stageOption('A-1').selected,'selected stage uses the native accessible selection state');
+  const buildingLevel=()=>root.querySelector('[aria-label="Preview building level"]'),hallLevel=()=>root.querySelector('[aria-label="Preview hall level"]');
+  assert(hallLevel().value==='4'&&buildingLevel().value==='1'&&Array.from(buildingLevel().options).map(option=>option.value).join(',')==='1,2,3,4','Hall and Buildings expose separate preview choices');
+  const levelReads=calls.length;
+  buildingLevel().value='4';await buildingLevel().onchange();await decoded(green.id);
+  assert(hallLevel().value==='4'&&color(sample('tower-level-four',20,10),[46,179,85]),'changing Buildings updates a tower without moving the Hall selector');
+  hallLevel().value='3';await hallLevel().onchange();await settle();
+  assert(buildingLevel().value==='4'&&color(sample('tower-level-four-with-hall-three',20,10),[46,179,85]),'changing Hall keeps the selected non-hall building level');
+  assert(calls.length===levelReads&&calls.filter(call=>call.key==='stage:A-1').every(call=>call.placementPreview),'both controls redraw the placement snapshot without further reads or writes');
+  hallLevel().value='4';await hallLevel().onchange();
+  buildingLevel().value='1';await buildingLevel().onchange();await decoded(red.id);
   await hide();await settle();
   assert(!state.placementStage&&!state.placementSnap&&!state.placementLoading&&!(red.id in state.images),'Environment only clears placement selection and decoded stage images');
   assert(color(sample('environment-after-hide',20,10),[20,91,234]),'hiding placements restores the uncovered scenery pixels');

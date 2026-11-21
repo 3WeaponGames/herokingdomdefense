@@ -54,7 +54,7 @@ test('reload invalidates actors, retries unavailable models and rejects pending 
   preview.invalidate();const fresh=await preview.load('hero');assert.equal(fresh.animationSpeed,1.4);resolve({type:'hero',layers:[layer],profile:{animationSpeed:.4}});assert.equal(await stale,null);
   assert.equal(await preview.load('hero'),fresh);assert.equal(calls.filter(call=>call[0]==='ipc').length,3);preview.destroy();
 });
-test('building muzzle matches the drawn barrel after fitting, facing and saved mirror transforms',async()=>{
+test('building muzzle matches the drawn barrel at authored scale with facing and reflection',async()=>{
   const savedImage=global.Image;global.Image=class{set src(value){this.source=value;queueMicrotask(()=>this.onload());}};
   try{
     const bounds={minX:-50,minY:-10,maxX:150,maxY:190,width:200,height:200},artwork={base:{x:0,y:0,width:100,height:100},weapon:{x:40,y:80,width:40,height:20,pivotX:.5,pivotY:.5,flipX:1,angle:0,view:'side',muzzle:{x:60,y:80}},frameBounds:bounds},
@@ -67,10 +67,25 @@ test('building muzzle matches the drawn barrel after fitting, facing and saved m
     for(const [facing,mirrorX]of [[1,false],[-1,false],[1,true]]){
       actor.mirrorX=mirrorX;const settings={x:300,groundY:400,width:100,height:200,facing},ctx=recordingContext();preview.draw(ctx,actor,settings);
       assert.deepEqual(preview.muzzle(actor,settings),ctx.barrel(),'release originates at the rendered weapon image’s right-edge muzzle');
-      assert.equal(preview.muzzle(actor,settings).y,355);
+      assert.equal(preview.muzzle(actor,settings).y,320);
     }
     assert.equal(preview.muzzle({bounds,layers:[]},{}),null);assert.equal(preview.muzzle(null,{}),null);preview.destroy();
   }finally{global.Image=savedImage;}
+});
+
+test('narrow panels extend the preview viewport without rescaling small units or bosses',()=>{
+  const small={bounds:{minX:-10,minY:0,maxX:10,maxY:35,width:20,height:35}};
+  const boss={bounds:{minX:-170,minY:-30,maxX:200,maxY:460,width:370,height:490}};
+  const narrow=Combat.stage(220,boss,small),wide=Combat.stage(1000,boss,small);
+  assert(narrow.width>220);
+  assert(narrow.shooter.groundY>460);
+  assert(narrow.height>490);
+  for(const frame of [narrow,wide]){
+    assert.equal(Combat.placement(boss,frame.shooter).scale,1);
+    assert.equal(Combat.placement(small,frame.target).scale,1);
+    assert(frame.shooter.x+boss.bounds.minX>=0);
+    assert(frame.target.x+small.bounds.maxX<=frame.width);
+  }
 });
 
 test('wall and campaign baseline impacts use independent authored actors and finite animation clocks',async()=>{

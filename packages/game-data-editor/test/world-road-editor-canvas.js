@@ -45,7 +45,8 @@ async function verify(){
   assert(first.points.length===points.length&&first.size===90&&first.textureScale===1.5,'freehand road keeps its turns, chosen width and tiling');
   assert(mergeButton().disabled,'Merge is disabled when a layer has only one brush recipe');
   assert(undo.length===undoBefore+1,'one road gesture creates one undo entry');const afterFirst=clone(map);await click('Undo');assert(map.ground.roads.strokes.length===0&&map.FutureSetting.keep==='original','undo restores the complete road gesture without changing unknown data');await click('Redo');assert(JSON.stringify(map)===JSON.stringify(afterFirst),'redo restores all paired road settings');
-  await stroke([{x:120,y:20},{x:130,y:120},{x:180,y:160}],{shiftKey:true});assert(map.ground.roads.strokes[1].points.length===2,'Shift constrains curved-road input to a single straight centerline');
+  await stroke([{x:120,y:20}],{shiftKey:true});assert(state.roadStart&&map.ground.roads.strokes.length===1,'Shift-click marks the start of a straight road without painting it yet');
+  await stroke([{x:180,y:160}]);assert(map.ground.roads.strokes[1].points.length===2,'the next click completes a straight road centerline');
   await tool('Soft Eraser (E)');await stroke([{x:0,y:0},{x:35,y:10}]);assert(map.ground.roads.strokes[2].op==='erase','the existing eraser can edit a road layer');
   await tool('Hand / pan (H)');assert(!field('Road width')&&!field('Edge scale')&&!field('Paint mode'),'road controls disappear when another tool is selected');
   await choose('field');assert(field('Paint mode').value==='texture'&&field('Hardness')&&!field('Edge scale'),'Field tiles keep the normal terrain brush');await stroke([{x:-60,y:-180},{x:60,y:-140}]);assert(map.ground.roads.strokes[3].mode!=='road'&&map.ground.roads.strokes[3].assetId==='field','ordinary field paint retains its existing stroke format');

@@ -53,6 +53,7 @@ class Store {
         const profileEdit=request.edits.some(edit=>{
             if(edit.doc==='overrides'&&edit.path[0]==='projectileSpeeds')return false;
             if(edit.doc==='A'&&['SoldierCfg','AllyCfg'].includes(edit.path[0])&&edit.path[2]==='UnitAttack')return false;
+            if(edit.doc==='A'&&edit.path[0]==='SoldierCfg'&&['TransformSkill','EnemySkills'].includes(edit.path[2]))return false;
             return true;
         });
         if(profileEdit)require('./unit-profiles').reconcile(this.draftState(),next);

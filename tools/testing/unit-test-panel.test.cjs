@@ -63,7 +63,11 @@ function fixture() {
       const node = new PanelNode('Test actor');
       const actor = {
         node, rigidBody: { active: true }, attacks: 0,
-        initData(id, spawn) { this.cfg = units[id]; placed.push({ id, spawn, path: prefab.path, actor: this }); },
+        initData(id, spawn, lease) {
+          this.cfg = lease.previewCfg || units[id];
+          this.rigidBody.active = !!this.cfg.BuildingCross;
+          placed.push({ id, spawn, path: prefab.path, actor: this });
+        },
         onUpdate() {},
         doAttackStart() { this.attacks++; }
       };
@@ -111,6 +115,73 @@ function fixture() {
     setInput: (name, value) => { get(name).getComponent(EditBox).string = value; }
   };
 }
+
+test('F7 applies the Break walls toggle to the next send and remembers it when reopened', () => {
+  const f = fixture();
+  f.toggle();
+  assert.equal(f.text('Break walls', 'Caption'), 'Off');
+  f.tap('Break walls');
+  assert.equal(f.text('Break walls', 'Caption'), 'On');
+  f.tap('Model 1');
+  f.tap('Send units');
+  f.tap('Break walls');
+  f.complete('unit-1');
+  const run = f.game._unitTest;
+  try {
+    assert.equal(run.breakWalls, true);
+    f.toggle();
+    assert.equal(f.text('Break walls', 'Caption'), 'On');
+    f.tap('Clear units');
+    assert.equal(f.game._unitTest, null);
+  } finally { run.dispose(); }
+});
+
+test('F7 edits and sends different movement and targeting for each selected profile', () => {
+  const f = fixture();
+  Object.assign(f.units[90001], { BuildingCross: 0, EnemyTargeting: { mode: 'hero' } });
+  Object.assign(f.units[90002], { BuildingCross: 1, EnemyTargeting: { mode: 'castle' } });
+  const saved = JSON.stringify(f.units);
+  f.toggle();
+  f.tap('Movement', 'Ground');
+  f.tap('Model 1');
+  assert.equal(f.text('Profile behavior'), 'Flight · Support');
+  f.tap('Movement', 'Ground');
+  f.tap('Targeting', 'Castle only');
+  assert.equal(f.text('Profile behavior'), 'Ground · Castle only');
+  f.tap('Model 2');
+  f.tap('Movement', 'Flight');
+  f.tap('Targeting', 'Hero only');
+  assert.equal(f.text('Profile behavior'), 'Flight · Hero only');
+
+  f.search('Model 02');
+  f.tap('Selected unit', 'Previous');
+  assert.equal(f.text('Selected unit', 'Value'), 'Model 01 · Fighter');
+  assert.equal(f.text('Profile behavior'), 'Ground · Castle only');
+  f.tap('Movement', 'Saved');
+  assert.equal(f.text('Profile behavior'), 'Flight · Castle only');
+  f.tap('Movement', 'Ground');
+  f.tap('Targeting', 'Saved');
+  assert.equal(f.text('Profile behavior'), 'Ground · Support');
+  f.tap('Targeting', 'Castle only');
+  f.toggle();
+  f.toggle();
+  assert.equal(f.text('Profile behavior'), 'Ground · Castle only');
+  assert.equal(f.text('Model range'), '1 model · 2 selected');
+  f.setInput('Count', '2');
+  f.tap('Send units');
+  f.tap('Targeting', 'Hero only');
+  f.complete('unit-2');
+  f.complete('unit-1');
+
+  const run = f.game._unitTest;
+  try {
+    for (let index = 0; index < 3; index++) run.spawnOne();
+    assert.deepEqual(f.placed.map(({ actor }) => [actor.cfg.ID, actor.cfg.BuildingCross, actor.cfg.EnemyTargeting.mode]), [
+      [90001, 1, 'castle'], [90002, 0, 'hero'], [90001, 1, 'castle'], [90002, 0, 'hero']
+    ]);
+    assert.equal(JSON.stringify(f.units), saved);
+  } finally { run.dispose(); }
+});
 
 test('F7 toggles cards across pages and searches, then sends each chosen profile with the shared count and spawn', () => {
   const f = fixture();
@@ -217,4 +288,35 @@ test('F7 uses one prefab for distinct selected models that share the same asset'
   assert.equal(shared.refs, 1);
   run.dispose();
   assert.equal(shared.refs, 0);
+});
+
+test('F7 searches profile behavior and sends Ground Castle and Flight Hero profiles of one model together', () => {
+  const f = fixture();
+  Object.assign(f.units[90001], { AttackType: 1, BuildingCross: 1, EnemyTargeting: { mode: 'castle' } });
+  Object.assign(f.units[91001], { AttackType: 1, BuildingCross: 0, EnemyTargeting: { mode: 'hero' } });
+  f.toggle();
+  f.search('Flight Castle only');
+  assert.equal(f.text('Model range'), 'No matching models · 0 selected');
+  f.search('Hero only Flight');
+  f.tap('Model 1');
+  assert.equal(f.text('Profile', 'Value'), 'Mystic');
+  assert.equal(f.text('Profile behavior'), 'Flight · Hero only');
+  f.search('Ground Castle only');
+  assert.equal(f.get('Model 1', 'Selected').active, false);
+  f.tap('Model 1');
+  assert.equal(f.text('Profile behavior'), 'Ground · Castle only');
+  assert.equal(f.text('Model range'), '1 model · 2 selected');
+  f.toggle();
+  f.toggle();
+  assert.equal(f.text('Model range'), '1 model · 2 selected');
+  f.tap('Send units');
+  f.complete('unit-1-mystic');
+  f.complete('unit-1');
+  const run = f.game._unitTest;
+  try {
+    run.spawnOne();
+    assert.deepEqual(f.placed.map(({ actor }) => [actor.cfg.ID, actor.cfg.BuildingCross, actor.cfg.EnemyTargeting.mode]), [
+      [91001, 0, 'hero'], [90001, 1, 'castle']
+    ]);
+  } finally { run.dispose(); }
 });

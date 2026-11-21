@@ -67,7 +67,7 @@ function issues(v) {
     ["flipX","flipY"].forEach(function(k){if(t[k]!==undefined&&typeof t[k]!=="boolean")errors.push("Invalid night-light "+k+".");});
     var emitter=(Array.isArray(v.emitters)?v.emitters:[]).find(function(e){return e&&e.id===id;});
     if((t.warp!==undefined||t.warpNodes!==undefined)&&!require("./WindowLightWarp").forType(emitter&&emitter.type).valid(t.warp,t.warpNodes))errors.push("Keep finite, separate light points without folding the glow over itself.");
-    if(!require("./WindowLightMask").valid(t.erase))errors.push("Invalid light brush strokes. Use up to 128 strokes and 4096 points per light.");
+    if(!require("./WindowLightMask").valid(t.erase))errors.push("Invalid light aperture or brush strokes. Use up to 128 strokes and 4096 brush points per light.");
   });
   if(v.emitters!==undefined){if(!Array.isArray(v.emitters)||v.emitters.length>MAX_LIGHTS)errors.push("Choose up to 64 window lights per tier.");else{var seen={};v.emitters.forEach(function(e){if(!e||typeof e!=="object"||Array.isArray(e)||!/^light:[1-9]\d{0,8}$/.test(e.id)||seen[e.id])errors.push("Invalid or duplicate window-light ID.");else seen[e.id]=true;});}}
   if(Array.isArray(v.emitters))v.emitters.forEach(function(e){if(e&&!Types.valid(e.type))errors.push("Choose Full, Dim or Circle light.");});

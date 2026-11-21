@@ -81,7 +81,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     this.time[r.Attack] = 0;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
-    var n = function () {
+    var n = this.pickAttackVictim(scope.game, function () {
       var forced = require("RelicCombat").tauntedTarget(t);
       if (forced) {
         forced.node.getPosition(t.vec2_2);
@@ -130,7 +130,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
         }
       }
       return e;
-    }();
+    });
     if (n) {
       var victim = skillTarget(n);
       if (!skillCurrent(this, scope, false) || !targetCurrent(victim, true)) return;
@@ -189,6 +189,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     if (!transformCurrent(this, scope, transform)) return;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     if (this.cfg.UnitAttack) this.cfg = require("UnitAttackRules").runtimeCfg(this.cfg);
+    if (!this._unitTestActor && this.cfg.BuildingCross !== undefined) this.rigidBody.active = !!this.cfg.BuildingCross;
     this.attack = Math.round(this.cfg.AttackDamage * scope.data.getAttAdd(this.cfg.ID));
     this.time = {};
     scope.timers = this.time;
@@ -292,6 +293,8 @@ var def_KinghtFallEnemyItem10 = function (t) {
       t.sort(function (t, e) {
         return t.len - e.len;
       });
+      var targeting = this.cfg.EnemyTargeting && require("EnemyTargeting"), rule = targeting && targeting.settings(this.cfg);
+      if (rule) t = t.filter(function (entry) { return targeting.allows(rule, scope.game, entry.item); });
       for (var p = 0; p < limit; p++) {
         if (!skillCurrent(this, scope, false)) return;
         var f;
@@ -302,7 +305,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
         f.item.addBuff($z1KinghtFallInterface.KinghtFallEnemyBuffType.DamageCut, {
           subNum: strength,
           time: duration
-        });
+        }, "weaken");
       }
     }
   };

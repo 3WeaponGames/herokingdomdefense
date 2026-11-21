@@ -31,7 +31,7 @@ test('saved model mirroring, independent scales and tint are scoped by side/form
  const imported=Object.values(config.SoldierCfg).filter(unit=>unit.MonsterSource);assert.equal(imported.length,require('./monster-roster-definitions.json').units.length);
  const importedKeys=imported.map(unit=>'enemy:'+unit.ID+':default');
  const mirrored=Object.keys(config.GameTools.visuals).filter(k=>k.startsWith('enemy:')&&config.GameTools.visuals[k].mirrorX);
- const campaignKeys=Object.values(config.SoldierCfg).filter(unit=>unit.CampaignBaseUnit).map(unit=>'enemy:'+unit.ID+':default');assert.equal(campaignKeys.length,127);
+ assert(!Object.values(config.SoldierCfg).some(unit=>unit.CampaignBaseUnit));
  const added=Object.keys(config.GameTools.unitProfiles.entries).filter(id=>config.GameTools.unitProfiles.entries[id].fightingProfile).concat(Object.keys(config.GameTools.unitProfiles.bossForms)).map(id=>'enemy:'+id+':default');
- assert.deepEqual(mirrored.sort(),legacyKeys.concat(importedKeys,campaignKeys,added).sort(),'Legacy forms, independent monsters, aliases and all six fighting profiles retain their saved mirror');
+ assert.deepEqual(mirrored.sort(),legacyKeys.concat(importedKeys,added).sort(),'Legacy forms, independent monsters and all six fighting profiles retain their saved mirror');
 });

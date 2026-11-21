@@ -18,6 +18,8 @@ async function verify(){
  await exportCheck(map,'identity');
  let rotated=M.clone(map);rotated.ground.roads.transform={x:15,y:-5,scale:1.1,angle:9};await exportCheck(rotated,'rotated scaled layer');
  let erased=M.stroke(map,'roads',{op:'erase',size:70,shape:'round',hardness:.4,opacity:.5,points:[{x:840,y:-130},{x:980,y:70}]});await exportCheck(erased,'partial soft erase');
+ const mixed=M.stroke(map,'roads',Object.assign({},map.ground.roads.strokes[0],{edgeStyle:'clean',edgeSmoothing:.84,size:95,points:[{x:896,y:-165},{x:896,y:110}]}));
+ await exportCheck(mixed,'joined roads with different edge styles');
  assert(Roads.stats().bytes<=24*1024*1024,'accurate baking retains the bounded road material cache');Roads.clear();return {checks,reports};
 }
 module.exports={verify};

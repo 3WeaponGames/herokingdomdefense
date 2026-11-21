@@ -1120,17 +1120,41 @@ var def_KinghtFallGameCtrl = function (t) {
     }
     this.ndBuildArr2 = [];
   };
-  _ctor.prototype.addEnemy = function (t, e, authoredRoute, preview) {
+  _ctor.prototype.transformEnemy = function (enemy) {
+    var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
+    var skill = enemy.cfg.TransformSkill;
+    if (!enemy.bornInfo || !skill || require("EnemyTransform").issue(enemy.cfg, skill, config.SoldierCfg, config.GameTools)) return;
+    this.addEnemy(skill.unitId, enemy.bornInfo.bornIndex, null, null, enemy);
+  };
+  _ctor.prototype.addEnemy = function (t, e, authoredRoute, preview, transformSource) {
     var announceSound = !!this._battleSounds;
     var n = this;
     var epoch = this._combatEpoch, data = this.gameData, main = this.ndMain, ui = $z1KinghtFallUIGame.default.instance;
+    var sourceNode = transformSource && transformSource.node, sourceGeneration = sourceNode && sourceNode._combatGeneration;
+    function sourceCurrent() {
+      return !transformSource || n.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight &&
+        cc.isValid(transformSource, true) && !transformSource._isPooled && transformSource.bornInfo &&
+        transformSource.node === sourceNode && cc.isValid(sourceNode, true) && sourceNode._combatGeneration === sourceGeneration &&
+        sourceNode.activeInHierarchy !== false && !transformSource.isDead() && transformSource.hp > 0;
+    }
+    if (!sourceCurrent()) return;
     if (-1 != t) {
       var i = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
       var a = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + i.ID;
-      var areaCollides = !!i.BuildingCross;
+      var overrides = preview && preview.overrides;
+      var movement = overrides && overrides.movement, targeting = overrides && overrides.targeting;
+      var overrideMovement = movement === "ground" || movement === "flight";
+      var overrideTargeting = targeting === "castle" || targeting === "hero";
+      var previewCfg;
+      if (overrideMovement || overrideTargeting) {
+        previewCfg = Object.assign({}, i);
+        if (overrideMovement) previewCfg.BuildingCross = movement === "ground" ? 1 : 0;
+        if (overrideTargeting) previewCfg.EnemyTargeting = { mode: targeting };
+      }
+      var areaCollides = !!(previewCfg || i).BuildingCross;
       var o = function (i) {
         var generation = i._combatGeneration, actor = null;
-        function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && n._combatEpoch === epoch && n.gameData === data && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation && (!preview || preview.current()); }
+        function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && n._combatEpoch === epoch && n.gameData === data && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation && (!preview || preview.current()) && sourceCurrent(); }
         function abandon() {
           if (!cc.isValid(i, true) || i._combatGeneration !== generation) return;
           if (preview) { i.active = false; i.destroy(); }
@@ -1141,7 +1165,7 @@ var def_KinghtFallGameCtrl = function (t) {
         if (!current()) { abandon(); return; }
         i.active = true;
         if (!current()) { abandon(); return; }
-        var spawnNode = n.ndPath.getChildByName("ndEnemy" + e);
+        var spawnNode = sourceNode || n.ndPath.getChildByName("ndEnemy" + e);
         if (!spawnNode) { abandon(); cc.warn('Missing authored spawn ' + e); return; }
         var o = actor = i.getComponent($z1KinghtFallEnemyBase.default);
         var previousRoute = n._authoredRouteOverride;
@@ -1149,18 +1173,26 @@ var def_KinghtFallGameCtrl = function (t) {
         try {
           i.setPosition(Navigation.positionOf(spawnNode, n));
           if (!current()) { abandon(); return; }
-          var spawnArea = require('SpawnArea').prepare(o, n, e, areaCollides);
+          var spawnArea = !transformSource && require('SpawnArea').prepare(o, n, e, areaCollides);
           if (spawnArea === null) { cc.warn('Spawn circle '+e+' has no walkable position for enemy '+t);abandon();return; }
           n._authoredRouteOverride = route;
-          var lease = { generation: generation }, initialized = o.initData(t, e, lease);
+          var lease = { generation: generation, previewCfg: previewCfg };
+          if (transformSource) {
+            lease.bornInfo = Object.assign({}, transformSource.bornInfo);
+            lease.routeInterrupted = transformSource._routeInterrupted;
+            lease.faceLeft = transformSource._visualLeft;
+          }
+          var initialized = o.initData(t, e, lease);
           generation = lease.generation;
           if (initialized === false || !current()) { abandon(); return; }
-          if (!require('SpawnArea').apply(o, n, e, spawnArea)) { abandon(); return; }
+          if (transformSource) Navigation.prepareTerrainExit(o, n);
+          else if (!require('SpawnArea').apply(o, n, e, spawnArea)) { abandon(); return; }
           if (!current()) { abandon(); return; }
           if (preview) {
             // Private actors use the same terrain clearance without contacts
             // against the hero, structures, or ordinary combat actors.
             o._unitTestActor = true;
+            o._unitTestTargeting = overrideTargeting;
             o._unitTestRadius = areaCollides ? Navigation.get(n).radius(o, true) : 0;
             o.rigidBody.active = false;
             return o;
@@ -1170,23 +1202,36 @@ var def_KinghtFallGameCtrl = function (t) {
           abandon();
           throw error;
         } finally { if (n._combatEpoch === epoch && n.gameData === data && n._authoredRouteOverride === route) n._authoredRouteOverride = previousRoute; }
+        if (transformSource && data.getEnemyList().indexOf(transformSource) < 0) { abandon(); return; }
         data.addEnemy(o);
-        if (BattleSounds.spawnEnemy) BattleSounds.spawnEnemy(o, announceSound);
+        if (transformSource) {
+          // The next form counts as the same living enemy. Retire the old
+          // actor through the pool so attacks and effects lose its lease.
+          transformSource.freeNode(true);
+          if (n._stageAssets && n._stageAssets.options && frameCurrent(n, ui, data, epoch, $z1KinghtFallModle.KinghtFallGameStage.Fight) &&
+              cc.isValid(i, true) && i._combatGeneration === generation && !o._isPooled) {
+            var visuals = require("EnemySkillVisuals");
+            visuals.show(o, n, visuals.fromGame(n, "transform"));
+          }
+        } else if (BattleSounds.spawnEnemy) BattleSounds.spawnEnemy(o, announceSound);
       };
       if (preview) return preview.current() && o(cc.instantiate(preview.prefab));
       var r = $z1PoolMgr.PoolMgr.getInstance().getNode(a);
       if (r) {
         o(r);
       } else {
+        var bundle = $z1KinghtFallConfig.KinghtFallBundelName.Enemy;
+        var prepared = transformSource && this._stageAssets && this._stageAssets.assets[bundle + "/" + i.prefab + ":prefab"];
+        if (prepared) return o($z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, prepared, 0));
         var pendingData = this.gameData;
-        pendingData.pendingEnemySpawns = (pendingData.pendingEnemySpawns || 0) + 1;
-        this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, i.prefab, function (t) {
-          if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch) return;
+        if (!transformSource) pendingData.pendingEnemySpawns = (pendingData.pendingEnemySpawns || 0) + 1;
+        this.loadPrefab(bundle, i.prefab, function (t) {
+          if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch || !sourceCurrent()) return;
           try {
             // Grow on demand; warming unused rigs stalls the first live spawn.
             r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, t, 0);
             o(r);
-          } finally { pendingData.pendingEnemySpawns--; }
+          } finally { if (!transformSource) pendingData.pendingEnemySpawns--; }
         });
       }
     }

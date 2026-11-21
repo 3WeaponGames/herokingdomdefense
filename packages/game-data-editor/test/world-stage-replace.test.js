@@ -25,6 +25,18 @@ function fixture(){
 }
 function replace(f,scope){const sections=Array.isArray(scope)?scope:scope==='stage'?Replace.SECTIONS:[scope];return f.s.replaceStage({key:'stage:B-20',sourceKey:'stage:A-19',sections,version:f.s.version});}
 
+test('Tasks position transfers with spawns and stays in place for map and stage settings transfers',()=>{
+ const {source,destination}=fixture();
+ source.tasksPosition={x:180,y:60,future:{keep:true}};destination.tasksPosition={x:-140,y:100};
+ assert.deepEqual(Replace.replace(destination,source,['settings']).tasksPosition,destination.tasksPosition);
+ for(const sections of [['spawns'],Replace.SECTIONS]){
+  const placed=Replace.replace(destination,source,sections).tasksPosition;
+  assert.deepEqual(placed,source.tasksPosition);assert.notEqual(placed,source.tasksPosition);
+ }
+ delete source.tasksPosition;
+ assert.equal(Replace.replace(destination,source,['spawns']).tasksPosition,undefined);
+});
+
 for(const scope of Replace.SCOPES)test(scope+' replacement is one detached reversible destination draft and never changes the source or project files',()=>{
  const f=fixture(),files=tree(f.root),sourceBefore=clone(f.s.docs['stage:A-19']),snap=replace(f,scope),after=clone(snap.value);
  assert.equal(snap.key,'stage:B-20');assert.equal(snap.version,2);assert.equal(f.s.undo.length,1);assert.equal(f.s.undo[0].key,'stage:B-20');assert(snap.dirty&&snap.canUndo);assert(fs.existsSync(f.s.recovery));
