@@ -1000,6 +1000,63 @@
       "bones": 17,
       "slots": 9,
       "variantOf": "monster3/Reaper_Blood"
+    },
+    {
+      "id": "monster3/Rhino_Skeleton",
+      "name": "Skeleton Rhino",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Rhino/Rhino_Armor.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/SkeletonVariants/Rhino_Skeleton.json",
+      "uuid": "8466788b-4f9f-5729-a2a1-06ed451a75ad",
+      "resource": "unit-library/monster3/Units/SkeletonVariants/Rhino_Skeleton",
+      "animations": [
+        "move",
+        "hit",
+        "die",
+        "attack",
+        "idle"
+      ],
+      "bones": 24,
+      "slots": 12,
+      "variantOf": "monster3/Rhino_Armor"
+    },
+    {
+      "id": "monster3/WingDemon_SkeletonBat",
+      "name": "Skeleton Bat",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/WingDemon/WingDemon_Vampire.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/SkeletonVariants/WingDemon_SkeletonBat.json",
+      "uuid": "39ad72fa-da82-5bd8-ab19-6af84ea9590e",
+      "resource": "unit-library/monster3/Units/SkeletonVariants/WingDemon_SkeletonBat",
+      "animations": [
+        "idle",
+        "die",
+        "move",
+        "attack",
+        "hit"
+      ],
+      "bones": 18,
+      "slots": 9,
+      "variantOf": "monster3/WingDemon_Vampire"
+    },
+    {
+      "id": "monster3/Winter_SkeletonKing",
+      "name": "Skeleton King",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Skeleton/Skeleton_Warlord.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/SkeletonVariants/Winter_SkeletonKing.json",
+      "uuid": "60e11e30-ae69-5dd6-aec3-920c0023cb5b",
+      "resource": "unit-library/monster3/Units/SkeletonVariants/Winter_SkeletonKing",
+      "animations": [
+        "attack",
+        "die",
+        "move",
+        "hit",
+        "idle"
+      ],
+      "bones": 24,
+      "slots": 11,
+      "variantOf": "monster2/Skeleton_Warlord"
     }
   ],
   "parts": [

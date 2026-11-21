@@ -52713,6 +52713,142 @@
       "BehaviorTemplate": 90002,
       "IsBoss": true
     },
+    "91165": {
+      "ID": 91165,
+      "Name": "[[loc:data.monster-roster.91165.name]]",
+      "prefab": "Monster1_Bird_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster1/bird-skeleton",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.75,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 117.3,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterSource": "monster1/Bird_Skeleton",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91165.description]]"
+      }
+    },
+    "91166": {
+      "ID": 91166,
+      "Name": "[[loc:data.monster-roster.91166.name]]",
+      "prefab": "Monster1_Animal_SkeletonHaunt",
+      "loadIcon": "@icon/icons/monster-roster/monster1/animal-skeletonhaunt",
+      "AttackType": 1,
+      "Health": 60,
+      "AttackDamage": 7.5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 170,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterSource": "monster1/Animal_SkeletonHaunt",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91166.description]]"
+      }
+    },
+    "91167": {
+      "ID": 91167,
+      "Name": "[[loc:data.monster-roster.91167.name]]",
+      "prefab": "Monster3_Rhino_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster3/rhino-skeleton",
+      "AttackType": 1,
+      "Health": 72,
+      "AttackDamage": 7.5,
+      "AttackInterval": 0.67,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 85,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91167.description]]"
+      },
+      "MonsterSource": "monster3/Rhino_Skeleton",
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "91168": {
+      "ID": 91168,
+      "Name": "[[loc:data.monster-roster.91168.name]]",
+      "prefab": "Monster3_WingDemon_SkeletonBat",
+      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 150,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91168.description]]"
+      },
+      "MonsterSource": "monster3/WingDemon_SkeletonBat",
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "91169": {
+      "ID": 91169,
+      "Name": "[[loc:data.monster-roster.91169.name]]",
+      "prefab": "Monster3_Winter_SkeletonKing",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-skeletonking",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 46.875,
+      "AttackInterval": 1.02,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 68,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91169.description]]"
+      },
+      "MonsterSource": "monster3/Winter_SkeletonKing",
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001,
+      "IsBoss": true
+    },
     "100000": {
       "ID": 100000,
       "Name": "[[loc:data.soldiercfg.90001.name]]",
@@ -76562,6 +76698,661 @@
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002,
       "IsBoss": true
+    },
+    "101725": {
+      "ID": 101725,
+      "Name": "[[loc:data.monster-roster.91165.name]]",
+      "prefab": "Monster1_Bird_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster1/bird-skeleton",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91165.description]]"
+      }
+    },
+    "101726": {
+      "ID": 101726,
+      "Name": "[[loc:data.monster-roster.91165.name]]",
+      "prefab": "Monster1_Bird_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster1/bird-skeleton",
+      "AttackType": 1,
+      "Health": 57.6,
+      "AttackDamage": 4.5,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 91.8,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91165.description]]"
+      }
+    },
+    "101727": {
+      "ID": 101727,
+      "Name": "[[loc:data.monster-roster.91165.name]]",
+      "prefab": "Monster1_Bird_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster1/bird-skeleton",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.5,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 112.2,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91165.description]]"
+      }
+    },
+    "101728": {
+      "ID": 101728,
+      "Name": "[[loc:data.monster-roster.91165.name]]",
+      "prefab": "Monster1_Bird_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster1/bird-skeleton",
+      "AttackType": 1,
+      "Health": 52.8,
+      "AttackDamage": 6,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 96.9,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91165.description]]"
+      }
+    },
+    "101729": {
+      "ID": 101729,
+      "Name": "[[loc:data.monster-roster.91165.name]]",
+      "prefab": "Monster1_Bird_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster1/bird-skeleton",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 6.25,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 86.7,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91165.description]]"
+      }
+    },
+    "101730": {
+      "ID": 101730,
+      "Name": "[[loc:data.monster-roster.91166.name]]",
+      "prefab": "Monster1_Animal_SkeletonHaunt",
+      "loadIcon": "@icon/icons/monster-roster/monster1/animal-skeletonhaunt",
+      "AttackType": 1,
+      "Health": 66.66666667,
+      "AttackDamage": 7.89473684,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 147.82608696,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91166.description]]"
+      }
+    },
+    "101731": {
+      "ID": 101731,
+      "Name": "[[loc:data.monster-roster.91166.name]]",
+      "prefab": "Monster1_Animal_SkeletonHaunt",
+      "loadIcon": "@icon/icons/monster-roster/monster1/animal-skeletonhaunt",
+      "AttackType": 1,
+      "Health": 80,
+      "AttackDamage": 7.10526316,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 133.04347826,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91166.description]]"
+      }
+    },
+    "101732": {
+      "ID": 101732,
+      "Name": "[[loc:data.monster-roster.91166.name]]",
+      "prefab": "Monster1_Animal_SkeletonHaunt",
+      "loadIcon": "@icon/icons/monster-roster/monster1/animal-skeletonhaunt",
+      "AttackType": 1,
+      "Health": 60,
+      "AttackDamage": 7.10526316,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 162.60869566,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91166.description]]"
+      }
+    },
+    "101733": {
+      "ID": 101733,
+      "Name": "[[loc:data.monster-roster.91166.name]]",
+      "prefab": "Monster1_Animal_SkeletonHaunt",
+      "loadIcon": "@icon/icons/monster-roster/monster1/animal-skeletonhaunt",
+      "AttackType": 1,
+      "Health": 73.33333334,
+      "AttackDamage": 9.47368421,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 140.43478261,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91166.description]]"
+      }
+    },
+    "101734": {
+      "ID": 101734,
+      "Name": "[[loc:data.monster-roster.91166.name]]",
+      "prefab": "Monster1_Animal_SkeletonHaunt",
+      "loadIcon": "@icon/icons/monster-roster/monster1/animal-skeletonhaunt",
+      "AttackType": 1,
+      "Health": 60,
+      "AttackDamage": 9.86842105,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 125.65217392,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90001,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91166.description]]"
+      }
+    },
+    "101735": {
+      "ID": 101735,
+      "Name": "[[loc:data.monster-roster.91167.name]]",
+      "prefab": "Monster3_Rhino_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster3/rhino-skeleton",
+      "AttackType": 1,
+      "Health": 60,
+      "AttackDamage": 8.33333334,
+      "AttackInterval": 0.74444444,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 94.44444444,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91167.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101736": {
+      "ID": 101736,
+      "Name": "[[loc:data.monster-roster.91167.name]]",
+      "prefab": "Monster3_Rhino_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster3/rhino-skeleton",
+      "AttackType": 1,
+      "Health": 54,
+      "AttackDamage": 7.91666667,
+      "AttackInterval": 0.74444444,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 108.61111111,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91167.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101737": {
+      "ID": 101737,
+      "Name": "[[loc:data.monster-roster.91167.name]]",
+      "prefab": "Monster3_Rhino_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster3/rhino-skeleton",
+      "AttackType": 1,
+      "Health": 54,
+      "AttackDamage": 7.5,
+      "AttackInterval": 0.81888888,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 103.88888888,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91167.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101738": {
+      "ID": 101738,
+      "Name": "[[loc:data.monster-roster.91167.name]]",
+      "prefab": "Monster3_Rhino_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster3/rhino-skeleton",
+      "AttackType": 1,
+      "Health": 66,
+      "AttackDamage": 10,
+      "AttackInterval": 0.67,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 89.72222222,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91167.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101739": {
+      "ID": 101739,
+      "Name": "[[loc:data.monster-roster.91167.name]]",
+      "prefab": "Monster3_Rhino_Skeleton",
+      "loadIcon": "@icon/icons/monster-roster/monster3/rhino-skeleton",
+      "AttackType": 1,
+      "Health": 54,
+      "AttackDamage": 10.41666667,
+      "AttackInterval": 0.63277777,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 80.27777777,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91167.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101740": {
+      "ID": 101740,
+      "Name": "[[loc:data.monster-roster.91168.name]]",
+      "prefab": "Monster3_WingDemon_SkeletonBat",
+      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
+      "AttackType": 1,
+      "Health": 53.33333333,
+      "AttackDamage": 5.26315789,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 130.43478261,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91168.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101741": {
+      "ID": 101741,
+      "Name": "[[loc:data.monster-roster.91168.name]]",
+      "prefab": "Monster3_WingDemon_SkeletonBat",
+      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
+      "AttackType": 1,
+      "Health": 64,
+      "AttackDamage": 4.73684211,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 117.39130435,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91168.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101742": {
+      "ID": 101742,
+      "Name": "[[loc:data.monster-roster.91168.name]]",
+      "prefab": "Monster3_WingDemon_SkeletonBat",
+      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 4.73684211,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 143.47826087,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91168.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101743": {
+      "ID": 101743,
+      "Name": "[[loc:data.monster-roster.91168.name]]",
+      "prefab": "Monster3_WingDemon_SkeletonBat",
+      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
+      "AttackType": 1,
+      "Health": 58.66666666,
+      "AttackDamage": 6.31578947,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 123.91304348,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91168.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101744": {
+      "ID": 101744,
+      "Name": "[[loc:data.monster-roster.91168.name]]",
+      "prefab": "Monster3_WingDemon_SkeletonBat",
+      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 6.57894737,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 110.86956522,
+      "BuildingCross": 0,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91168.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101745": {
+      "ID": 101745,
+      "Name": "[[loc:data.monster-roster.91169.name]]",
+      "prefab": "Monster3_Winter_SkeletonKing",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-skeletonking",
+      "AttackType": 1,
+      "Health": 600,
+      "AttackDamage": 37.5,
+      "AttackInterval": 1.2,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 80,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91169.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001,
+      "IsBoss": true
+    },
+    "101746": {
+      "ID": 101746,
+      "Name": "[[loc:data.monster-roster.91169.name]]",
+      "prefab": "Monster3_Winter_SkeletonKing",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-skeletonking",
+      "AttackType": 1,
+      "Health": 720,
+      "AttackDamage": 33.75,
+      "AttackInterval": 1.08,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 72,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91169.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001,
+      "IsBoss": true
+    },
+    "101747": {
+      "ID": 101747,
+      "Name": "[[loc:data.monster-roster.91169.name]]",
+      "prefab": "Monster3_Winter_SkeletonKing",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-skeletonking",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 35.625,
+      "AttackInterval": 1.2,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 92,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91169.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001,
+      "IsBoss": true
+    },
+    "101748": {
+      "ID": 101748,
+      "Name": "[[loc:data.monster-roster.91169.name]]",
+      "prefab": "Monster3_Winter_SkeletonKing",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-skeletonking",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 33.75,
+      "AttackInterval": 1.32,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 88,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91169.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001,
+      "IsBoss": true
+    },
+    "101749": {
+      "ID": 101749,
+      "Name": "[[loc:data.monster-roster.91169.name]]",
+      "prefab": "Monster3_Winter_SkeletonKing",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-skeletonking",
+      "AttackType": 1,
+      "Health": 660,
+      "AttackDamage": 45,
+      "AttackInterval": 1.08,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 76,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91169.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001,
+      "IsBoss": true
     }
   },
   "TalentCfg": {
@@ -87252,6 +88043,96 @@
       },
       "enemy:101724:default": {
         "attack": 0.45
+      },
+      "enemy:101725:default": {
+        "attack": 0.5
+      },
+      "enemy:101726:default": {
+        "attack": 0.5
+      },
+      "enemy:91165:default": {
+        "attack": 0.5
+      },
+      "enemy:101727:default": {
+        "attack": 0.5
+      },
+      "enemy:101728:default": {
+        "attack": 0.5
+      },
+      "enemy:101729:default": {
+        "attack": 0.5
+      },
+      "enemy:101730:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101731:default": {
+        "attack": 0.4583333
+      },
+      "enemy:91166:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101732:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101733:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101734:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101735:default": {
+        "attack": 0.4583333
+      },
+      "enemy:91167:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101736:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101737:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101738:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101739:default": {
+        "attack": 0.4583333
+      },
+      "enemy:101740:default": {
+        "attack": 0.5
+      },
+      "enemy:101741:default": {
+        "attack": 0.5
+      },
+      "enemy:91168:default": {
+        "attack": 0.5
+      },
+      "enemy:101742:default": {
+        "attack": 0.5
+      },
+      "enemy:101743:default": {
+        "attack": 0.5
+      },
+      "enemy:101744:default": {
+        "attack": 0.5
+      },
+      "enemy:101745:default": {
+        "attack": 0.5
+      },
+      "enemy:101746:default": {
+        "attack": 0.5
+      },
+      "enemy:101747:default": {
+        "attack": 0.5
+      },
+      "enemy:101748:default": {
+        "attack": 0.5
+      },
+      "enemy:101749:default": {
+        "attack": 0.5
+      },
+      "enemy:91169:default": {
+        "attack": 0.5
       }
     },
     "visuals": {
@@ -90434,6 +91315,96 @@
       },
       "enemy:101724:default": {
         "mirrorX": true
+      },
+      "enemy:101725:default": {
+        "mirrorX": true
+      },
+      "enemy:101726:default": {
+        "mirrorX": true
+      },
+      "enemy:91165:default": {
+        "mirrorX": true
+      },
+      "enemy:101727:default": {
+        "mirrorX": true
+      },
+      "enemy:101728:default": {
+        "mirrorX": true
+      },
+      "enemy:101729:default": {
+        "mirrorX": true
+      },
+      "enemy:101730:default": {
+        "mirrorX": true
+      },
+      "enemy:101731:default": {
+        "mirrorX": true
+      },
+      "enemy:91166:default": {
+        "mirrorX": true
+      },
+      "enemy:101732:default": {
+        "mirrorX": true
+      },
+      "enemy:101733:default": {
+        "mirrorX": true
+      },
+      "enemy:101734:default": {
+        "mirrorX": true
+      },
+      "enemy:101735:default": {
+        "mirrorX": true
+      },
+      "enemy:91167:default": {
+        "mirrorX": true
+      },
+      "enemy:101736:default": {
+        "mirrorX": true
+      },
+      "enemy:101737:default": {
+        "mirrorX": true
+      },
+      "enemy:101738:default": {
+        "mirrorX": true
+      },
+      "enemy:101739:default": {
+        "mirrorX": true
+      },
+      "enemy:101740:default": {
+        "mirrorX": true
+      },
+      "enemy:101741:default": {
+        "mirrorX": true
+      },
+      "enemy:91168:default": {
+        "mirrorX": true
+      },
+      "enemy:101742:default": {
+        "mirrorX": true
+      },
+      "enemy:101743:default": {
+        "mirrorX": true
+      },
+      "enemy:101744:default": {
+        "mirrorX": true
+      },
+      "enemy:101745:default": {
+        "mirrorX": true
+      },
+      "enemy:101746:default": {
+        "mirrorX": true
+      },
+      "enemy:101747:default": {
+        "mirrorX": true
+      },
+      "enemy:101748:default": {
+        "mirrorX": true
+      },
+      "enemy:101749:default": {
+        "mirrorX": true
+      },
+      "enemy:91169:default": {
+        "mirrorX": true
       }
     },
     "unitTypes": {
@@ -91540,7 +92511,37 @@
       "enemy:101722:default": "vanguard",
       "enemy:101723:default": "skirmisher",
       "enemy:91164:default": "bruiser",
-      "enemy:101724:default": "mystic"
+      "enemy:101724:default": "mystic",
+      "enemy:101725:default": "fighter",
+      "enemy:101726:default": "guardian",
+      "enemy:91165:default": "vanguard",
+      "enemy:101727:default": "skirmisher",
+      "enemy:101728:default": "bruiser",
+      "enemy:101729:default": "mystic",
+      "enemy:101730:default": "fighter",
+      "enemy:101731:default": "guardian",
+      "enemy:91166:default": "vanguard",
+      "enemy:101732:default": "skirmisher",
+      "enemy:101733:default": "bruiser",
+      "enemy:101734:default": "mystic",
+      "enemy:101735:default": "fighter",
+      "enemy:91167:default": "guardian",
+      "enemy:101736:default": "vanguard",
+      "enemy:101737:default": "skirmisher",
+      "enemy:101738:default": "bruiser",
+      "enemy:101739:default": "mystic",
+      "enemy:101740:default": "fighter",
+      "enemy:101741:default": "guardian",
+      "enemy:91168:default": "vanguard",
+      "enemy:101742:default": "skirmisher",
+      "enemy:101743:default": "bruiser",
+      "enemy:101744:default": "mystic",
+      "enemy:101745:default": "fighter",
+      "enemy:101746:default": "guardian",
+      "enemy:101747:default": "vanguard",
+      "enemy:101748:default": "skirmisher",
+      "enemy:101749:default": "bruiser",
+      "enemy:91169:default": "mystic"
     },
     "unitLevels": {
       "ally:90001:level:2": {
@@ -91616,7 +92617,7 @@
     },
     "unitProfiles": {
       "version": 1,
-      "nextId": 101725,
+      "nextId": 101750,
       "entries": {
         "100000": {
           "baseId": 90001,
@@ -103712,6 +104713,356 @@
           },
           "visual": {},
           "fightingProfile": true
+        },
+        "101725": {
+          "baseId": 91165,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101726": {
+          "baseId": 91165,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 57.6,
+            "AttackDamage": 4.5,
+            "AttackInterval": 0.9,
+            "Speed": 91.8
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101727": {
+          "baseId": 91165,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.5,
+            "AttackInterval": 1.1,
+            "Speed": 112.2
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101728": {
+          "baseId": 91165,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 52.8,
+            "AttackDamage": 6,
+            "AttackInterval": 0.9,
+            "Speed": 96.9
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101729": {
+          "baseId": 91165,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 6.25,
+            "AttackInterval": 0.85,
+            "Speed": 86.7
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101730": {
+          "baseId": 91166,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 66.66666667,
+            "AttackDamage": 7.89473684,
+            "AttackInterval": 1,
+            "Speed": 147.82608696
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101731": {
+          "baseId": 91166,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 80,
+            "AttackDamage": 7.10526316,
+            "AttackInterval": 0.9,
+            "Speed": 133.04347826
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101732": {
+          "baseId": 91166,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 60,
+            "AttackDamage": 7.10526316,
+            "AttackInterval": 1.1,
+            "Speed": 162.60869566
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101733": {
+          "baseId": 91166,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 73.33333334,
+            "AttackDamage": 9.47368421,
+            "AttackInterval": 0.9,
+            "Speed": 140.43478261
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101734": {
+          "baseId": 91166,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 60,
+            "AttackDamage": 9.86842105,
+            "AttackInterval": 0.85,
+            "Speed": 125.65217392
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101735": {
+          "baseId": 91167,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 60,
+            "AttackDamage": 8.33333334,
+            "AttackInterval": 0.74444444,
+            "Speed": 94.44444444
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101736": {
+          "baseId": 91167,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 54,
+            "AttackDamage": 7.91666667,
+            "AttackInterval": 0.74444444,
+            "Speed": 108.61111111
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101737": {
+          "baseId": 91167,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 54,
+            "AttackDamage": 7.5,
+            "AttackInterval": 0.81888888,
+            "Speed": 103.88888888
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101738": {
+          "baseId": 91167,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 66,
+            "AttackDamage": 10,
+            "AttackInterval": 0.67,
+            "Speed": 89.72222222
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101739": {
+          "baseId": 91167,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 54,
+            "AttackDamage": 10.41666667,
+            "AttackInterval": 0.63277777,
+            "Speed": 80.27777777
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101740": {
+          "baseId": 91168,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 53.33333333,
+            "AttackDamage": 5.26315789,
+            "AttackInterval": 1,
+            "Speed": 130.43478261
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101741": {
+          "baseId": 91168,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 64,
+            "AttackDamage": 4.73684211,
+            "AttackInterval": 0.9,
+            "Speed": 117.39130435
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101742": {
+          "baseId": 91168,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 48,
+            "AttackDamage": 4.73684211,
+            "AttackInterval": 1.1,
+            "Speed": 143.47826087
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101743": {
+          "baseId": 91168,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 58.66666666,
+            "AttackDamage": 6.31578947,
+            "AttackInterval": 0.9,
+            "Speed": 123.91304348
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101744": {
+          "baseId": 91168,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 48,
+            "AttackDamage": 6.57894737,
+            "AttackInterval": 0.85,
+            "Speed": 110.86956522
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101745": {
+          "baseId": 91169,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 600,
+            "AttackDamage": 37.5,
+            "AttackInterval": 1.2,
+            "Speed": 80
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101746": {
+          "baseId": 91169,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 720,
+            "AttackDamage": 33.75,
+            "AttackInterval": 1.08,
+            "Speed": 72
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101747": {
+          "baseId": 91169,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 540,
+            "AttackDamage": 35.625,
+            "AttackInterval": 1.2,
+            "Speed": 92
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101748": {
+          "baseId": 91169,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 540,
+            "AttackDamage": 33.75,
+            "AttackInterval": 1.32,
+            "Speed": 88
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101749": {
+          "baseId": 91169,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 660,
+            "AttackDamage": 45,
+            "AttackInterval": 1.08,
+            "Speed": 76
+          },
+          "visual": {},
+          "fightingProfile": true
         }
       },
       "families": {
@@ -106998,6 +108349,101 @@
             "Speed": 89.47368421
           },
           "referenceId": 91164
+        },
+        "91165": {
+          "modelKey": "source:monster1/Bird_Skeleton",
+          "name": "Skeleton Bird",
+          "baseline": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "referenceId": 91165,
+          "profiles": {
+            "fighter": 101725,
+            "guardian": 101726,
+            "vanguard": 91165,
+            "skirmisher": 101727,
+            "bruiser": 101728,
+            "mystic": 101729
+          }
+        },
+        "91166": {
+          "modelKey": "source:monster1/Animal_SkeletonHaunt",
+          "name": "Skeleton Haunt",
+          "baseline": {
+            "Health": 66.66666667,
+            "AttackDamage": 7.89473684,
+            "AttackInterval": 1,
+            "Speed": 147.82608696
+          },
+          "referenceId": 91166,
+          "profiles": {
+            "fighter": 101730,
+            "guardian": 101731,
+            "vanguard": 91166,
+            "skirmisher": 101732,
+            "bruiser": 101733,
+            "mystic": 101734
+          }
+        },
+        "91167": {
+          "modelKey": "source:monster3/Rhino_Skeleton",
+          "name": "Skeleton Rhino",
+          "baseline": {
+            "Health": 60,
+            "AttackDamage": 8.33333334,
+            "AttackInterval": 0.74444444,
+            "Speed": 94.44444444
+          },
+          "referenceId": 91167,
+          "profiles": {
+            "fighter": 101735,
+            "guardian": 91167,
+            "vanguard": 101736,
+            "skirmisher": 101737,
+            "bruiser": 101738,
+            "mystic": 101739
+          }
+        },
+        "91168": {
+          "modelKey": "source:monster3/WingDemon_SkeletonBat",
+          "name": "Skeleton Bat",
+          "baseline": {
+            "Health": 53.33333333,
+            "AttackDamage": 5.26315789,
+            "AttackInterval": 1,
+            "Speed": 130.43478261
+          },
+          "referenceId": 91168,
+          "profiles": {
+            "fighter": 101740,
+            "guardian": 101741,
+            "vanguard": 91168,
+            "skirmisher": 101742,
+            "bruiser": 101743,
+            "mystic": 101744
+          }
+        },
+        "91169": {
+          "modelKey": "source:monster3/Winter_SkeletonKing",
+          "name": "Skeleton King",
+          "baseline": {
+            "Health": 600,
+            "AttackDamage": 37.5,
+            "AttackInterval": 1.2,
+            "Speed": 80
+          },
+          "referenceId": 91169,
+          "profiles": {
+            "fighter": 101745,
+            "guardian": 101746,
+            "vanguard": 101747,
+            "skirmisher": 101748,
+            "bruiser": 101749,
+            "mystic": 91169
+          }
         }
       },
       "aliases": {
@@ -107250,7 +108696,8 @@
       "enemy:91158:default": "boss",
       "enemy:91159:default": "elite",
       "enemy:91161:default": "boss",
-      "enemy:91164:default": "boss"
+      "enemy:91164:default": "boss",
+      "enemy:91169:default": "boss"
     }
   },
   "AllyCfg": {

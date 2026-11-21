@@ -1,0 +1,55 @@
+
+Bird_Skeleton.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bird_Skeleton_Body
+  rotate: false
+  xy: 2, 2
+  size: 168, 198
+  orig: 168, 198
+  offset: 0, 0
+  index: -1
+Bird_Skeleton_Hit
+  rotate: false
+  xy: 174, 2
+  size: 137, 193
+  orig: 137, 193
+  offset: 0, 0
+  index: -1
+Bird_Skeleton_Hit_2
+  rotate: false
+  xy: 315, 2
+  size: 137, 193
+  orig: 137, 193
+  offset: 0, 0
+  index: -1
+u_2fb280bcedf5cf241a0883d1d3d16034
+  rotate: false
+  xy: 456, 2
+  size: 161, 161
+  orig: 161, 161
+  offset: 0, 0
+  index: -1
+Bird_Skeleton_Wing
+  rotate: false
+  xy: 621, 2
+  size: 50, 116
+  orig: 50, 116
+  offset: 0, 0
+  index: -1
+Bird_Skeleton_Wing2
+  rotate: false
+  xy: 675, 2
+  size: 52, 107
+  orig: 52, 107
+  offset: 0, 0
+  index: -1
+u_2924ae1588761d7448d9985db748ffe2
+  rotate: false
+  xy: 731, 2
+  size: 159, 52
+  orig: 159, 52
+  offset: 0, 0
+  index: -1

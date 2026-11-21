@@ -9383,6 +9383,56 @@
       "en": "The ruler of the Sun-Tomb Empire guards its burial halls with a golden crook.",
       "zh": "日陵帝国的统治者挥舞黄金权杖，守卫帝国的陵寝。",
       "context": "Enemy guide appearance · Sun-Tomb Regent"
+    },
+    "data.monster-roster.91165.name": {
+      "en": "Skeleton Bird",
+      "zh": "骷髅鸟",
+      "context": "Skeleton roster · monster1/Bird_Skeleton"
+    },
+    "data.unitguide.91165.description": {
+      "en": "A bone-beaked bird that swoops down on rattling wings.",
+      "zh": "一只长着骨喙的骷髅鸟，拍动骨翼俯冲而下。",
+      "context": "Enemy guide appearance · Skeleton Bird"
+    },
+    "data.monster-roster.91166.name": {
+      "en": "Skeleton Haunt",
+      "zh": "骷髅狐灵",
+      "context": "Skeleton roster · monster1/Animal_SkeletonHaunt"
+    },
+    "data.unitguide.91166.description": {
+      "en": "An undead fox with long ears, a bony tail and a swift pounce.",
+      "zh": "长耳骨尾的不死狐灵，擅长迅猛地扑击。",
+      "context": "Enemy guide appearance · Skeleton Haunt"
+    },
+    "data.monster-roster.91167.name": {
+      "en": "Skeleton Rhino",
+      "zh": "骷髅犀牛",
+      "context": "Skeleton roster · monster3/Rhino_Skeleton"
+    },
+    "data.unitguide.91167.description": {
+      "en": "An armored bone rhino that charges behind a massive ivory horn.",
+      "zh": "披着甲胄的骷髅犀牛，低下巨大的骨角发起冲锋。",
+      "context": "Enemy guide appearance · Skeleton Rhino"
+    },
+    "data.monster-roster.91168.name": {
+      "en": "Skeleton Bat",
+      "zh": "骷髅蝙蝠",
+      "context": "Skeleton roster · monster3/WingDemon_SkeletonBat"
+    },
+    "data.unitguide.91168.description": {
+      "en": "A flying skull with hooked fangs and wings stretched over thin bones.",
+      "zh": "长着弯钩尖牙的飞行骷髅，纤细骨骼支撑着双翼。",
+      "context": "Enemy guide appearance · Skeleton Bat"
+    },
+    "data.monster-roster.91169.name": {
+      "en": "Skeleton King",
+      "zh": "骷髅王",
+      "context": "Skeleton roster · monster3/Winter_SkeletonKing"
+    },
+    "data.unitguide.91169.description": {
+      "en": "A skeletal king in a gilded helmet, wielding a broad sword and a heavy shield.",
+      "zh": "头戴镀金头盔、手持阔剑与重盾的骷髅王。",
+      "context": "Enemy guide appearance · Skeleton King"
     }
   },
   "images": {

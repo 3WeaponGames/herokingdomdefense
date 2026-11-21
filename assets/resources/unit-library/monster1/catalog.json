@@ -1057,6 +1057,44 @@
       "bones": 12,
       "slots": 6,
       "variantOf": "monster1/Beetle_Iron"
+    },
+    {
+      "id": "monster1/Bird_Skeleton",
+      "name": "Skeleton Bird",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Bird/Bird_Snow.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SkeletonVariants/Bird_Skeleton.json",
+      "uuid": "9580ba99-ca27-5993-a89f-e6f5039b3147",
+      "resource": "unit-library/monster1/Units/SkeletonVariants/Bird_Skeleton",
+      "animations": [
+        "move",
+        "die",
+        "idle",
+        "hit",
+        "attack"
+      ],
+      "bones": 15,
+      "slots": 7,
+      "variantOf": "monster1/Bird_Snow"
+    },
+    {
+      "id": "monster1/Animal_SkeletonHaunt",
+      "name": "Skeleton Haunt",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Animal/Animal_Fox.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SkeletonVariants/Animal_SkeletonHaunt.json",
+      "uuid": "0dcb0d83-5306-5143-af17-22ee87168097",
+      "resource": "unit-library/monster1/Units/SkeletonVariants/Animal_SkeletonHaunt",
+      "animations": [
+        "attack",
+        "idle",
+        "move",
+        "die",
+        "hit"
+      ],
+      "bones": 20,
+      "slots": 11,
+      "variantOf": "monster1/Animal_Fox"
     }
   ],
   "parts": [

@@ -1,0 +1,83 @@
+
+Rhino_Skeleton.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Rhino_Skeleton_Hit
+  rotate: false
+  xy: 2, 2
+  size: 223, 218
+  orig: 223, 218
+  offset: 0, 0
+  index: -1
+Rhino_Skeleton_Hit_2
+  rotate: false
+  xy: 229, 2
+  size: 223, 218
+  orig: 223, 218
+  offset: 0, 0
+  index: -1
+Rhino_Skeleton_Body
+  rotate: false
+  xy: 456, 2
+  size: 203, 192
+  orig: 203, 192
+  offset: 0, 0
+  index: -1
+Rhino_Skeleton_Head
+  rotate: false
+  xy: 663, 2
+  size: 159, 176
+  orig: 159, 176
+  offset: 0, 0
+  index: -1
+u_8c9cb914a63619744803e97ab27a6a89
+  rotate: false
+  xy: 826, 2
+  size: 122, 175
+  orig: 122, 175
+  offset: 0, 0
+  index: -1
+u_f6ba4cf216c451b4ca640682f69f4372
+  rotate: false
+  xy: 952, 2
+  size: 248, 69
+  orig: 248, 69
+  offset: 0, 0
+  index: -1
+Rhino_Skeleton_Arm
+  rotate: false
+  xy: 1204, 2
+  size: 56, 63
+  orig: 56, 63
+  offset: 0, 0
+  index: -1
+Rhino_Skeleton_Arm_
+  rotate: false
+  xy: 1264, 2
+  size: 50, 62
+  orig: 50, 62
+  offset: 0, 0
+  index: -1
+Rhino_Skeleton_Leg
+  rotate: false
+  xy: 1318, 2
+  size: 57, 62
+  orig: 57, 62
+  offset: 0, 0
+  index: -1
+Rhino_Skeleton_Leg_
+  rotate: false
+  xy: 1379, 2
+  size: 52, 44
+  orig: 52, 44
+  offset: 0, 0
+  index: -1
+u_2aa63a9ddd663bc4c91705ee11fadcaa
+  rotate: false
+  xy: 1435, 2
+  size: 46, 43
+  orig: 46, 43
+  offset: 0, 0
+  index: -1
