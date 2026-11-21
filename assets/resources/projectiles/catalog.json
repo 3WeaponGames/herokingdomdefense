@@ -15438,6 +15438,15 @@
       "launch": "toon:flash-10",
       "impact": "toon:hit-10",
       "trail": false
+    },
+    "enemy:101719": {
+      "set": "spine-projectile:fly_46",
+      "flight": "spine-projectile:fly_46",
+      "launch": "",
+      "impact": "",
+      "trail": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
+      "trailColor": "#67ff3d",
+      "scale": 1.9
     }
   },
   "heroArrowTiers": [
