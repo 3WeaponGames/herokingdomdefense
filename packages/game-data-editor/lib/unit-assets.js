@@ -175,14 +175,19 @@ function describe(root, request) {
         try { if (json(f).some(c => c.__type__ === 'sp.Skeleton' && c._N$skeletonData && sourceSet.has(c._N$skeletonData.__uuid__))) shared.push(relative(root, f)); } catch (_) {}
     });
     const form = UnitRecords.form(type,id), behavior=UnitRecords.behavior(record,id);
-    const effect = type === 'hero' || record && record.AttackType === 2 ? 'Projectile release' : behavior === 90006 ? 'Attack-speed buff' : behavior === 90009 ? 'Healing pulse' : behavior === 90007 ? 'Hit and splash damage' : 'Melee hit';
+    const custom=require('../../../assets/_script/UnitAttackRules').active(record);
+    const effect = custom
+        ? custom.delivery === 'ranged' ? 'Projectile release' : custom.pattern === 'splash' ? 'Hit and splash damage' : 'Melee hit'
+        : type === 'hero' || record && record.AttackType === 2 ? 'Projectile release' : behavior === 90006 ? 'Attack-speed buff' : behavior === 90009 ? 'Healing pulse' : behavior === 90007 ? 'Hit and splash damage' : 'Melee hit';
     let shotPrefab = prefab;
     if (type === 'hero') {
         shotPrefab = json(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'));
         if (request.battleSpace) layers = battleHeroLayers(prefab, shotPrefab, layers);
     }
     const timing = AttackTimings.fromLayers(layers);
-    const shotSettings=/Projectile/.test(effect)?projectile(shotPrefab,type,behavior):null,speedKey=type+':'+id+':'+form;let savedSpeed=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[speedKey];
+    let shotSettings=/Projectile/.test(effect)?projectile(shotPrefab,type,behavior):null;
+    if(custom&&custom.delivery==='ranged')shotSettings={...(shotSettings||{speed:500}),straight:true,directHoming:['single','volley','chain'].includes(custom.pattern),arrivalRadius:0};
+    const speedKey=type+':'+id+':'+form;let savedSpeed=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[speedKey];
     if(savedSpeed===undefined&&type==='enemy')for(const key of parentKeys){const value=settings&&settings.projectileSpeeds&&settings.projectileSpeeds[key];if(value!==undefined){savedSpeed=value;break;}}
     if(shotSettings&&typeof savedSpeed==='number'&&Number.isFinite(savedSpeed)&&savedSpeed>=1&&savedSpeed<=20000)shotSettings.speed=savedSpeed;
     // Saved whole-unit playback is independent of the model/appearance and of

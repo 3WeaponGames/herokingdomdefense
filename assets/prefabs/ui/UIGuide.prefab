@@ -397,7 +397,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "wqyl_xsyd",
+    "_name": "Retired King portrait",
     "_parent": {
       "__id__": 16
     },
@@ -411,21 +411,21 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 506,
-      "height": 628
+      "width": 158.16,
+      "height": 181.82
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -71.895,
-        102.47,
+        -70,
+        87.5,
         0,
         0,
         0,
         0,
         1,
-        1,
-        1,
+        1.42,
+        1.42,
         1
       ],
       "__type__": "TypedArray"
@@ -434,10 +434,10 @@
   {
     "__type__": "sp.Skeleton",
     "defaultSkin": "default",
-    "defaultAnimation": "speak",
+    "defaultAnimation": "idle",
     "_preCacheMode": 0,
     "premultipliedAlpha": false,
-    "_animationName": "speak",
+    "_animationName": "idle",
     "node": {
       "__id__": 17
     },
@@ -447,7 +447,7 @@
       }
     ],
     "_N$skeletonData": {
-      "__uuid__": "c5c666f7-9820-416a-9810-1af7b229c1d2"
+      "__uuid__": "f92ce77a-d746-5cd7-a406-87693628a476"
     }
   },
   {

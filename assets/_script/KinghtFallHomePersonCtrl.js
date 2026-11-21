@@ -179,7 +179,17 @@ var def_KinghtFallHomePersonCtrl = function (t) {
   _ctor.prototype.showHomeGuide = function () {
     if (!this.node.activeInHierarchy) return;
     var flow = require("TutorialFlow"), guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
-    if (guide.getGroupId() !== 4 || guide.getStepId() !== 1) return;
+    if (guide.getGroupId() !== 4) return;
+    var step = guide.getStepId();
+    if (step === 2 || step === 3) {
+      if (!flow.visible(this._weaponSwitch) || this._weaponPicker || this._gearSkillPopup) return;
+      var gear = this;
+      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 4, this._weaponSwitch, function () {
+        if (flow.active(gear)) require("HeroWeaponPicker").open(gear);
+      });
+      return;
+    }
+    if (step !== 1) return;
     var target;
     for (var row of this.nodeInfo) {
       var button = row.ndInfo && row.ndInfo.getChildByName("btnUpgeade");
@@ -192,6 +202,21 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     flow.scrollTo(this, target);
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 4, target, undefined,
       informational ? { informational: true, text: "[[loc:tutorial.equipment.overview]]" } : undefined);
+  };
+  _ctor.prototype.getWeaponPickerTutorial = function () {
+    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    if (guide.getGroupId() !== 4 || guide.getStepId() !== 3) return null;
+    var rows = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(4);
+    if (!rows[3]) return null;
+    var gear = this;
+    return {
+      text: rows[3].Describe,
+      onComplete: function () {
+        if (!require("TutorialFlow").active(gear) || !guide.advanceStep(4, 3, rows.length)) return false;
+        gear.scheduleOnce(function () { gear.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide); });
+        return true;
+      }
+    };
   };
   _ctor.prototype.onDestroy = function () {
     require("HeroWeaponPicker").close(this);

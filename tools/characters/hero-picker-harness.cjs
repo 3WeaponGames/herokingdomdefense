@@ -21,6 +21,8 @@ function fixture(user,options={}){
  class Label{}Label.HorizontalAlign={LEFT:0,CENTER:1};Label.VerticalAlign={CENTER:1};Label.Overflow={SHRINK:1};
  class Sprite{}Sprite.SizeMode={CUSTOM:0};Sprite.Type={SIMPLE:0,SLICED:1};
  class Mask{}Mask.Type={IMAGE_STENCIL:2};
+ class Skeleton{setAnimation(track,name,loop){this.animation={track,name,loop};}}
+ const sp={Skeleton,SkeletonData:class{}};
  const canvas=Object.assign(new Node('Canvas'),{width:options.width||750,height:options.height||1334}),pending=[],icons=[],previews=[],poseIcons=[],tierFrames=[],sounds=[];
  function frame(resource){let size={width:80,height:40},rect={x:0,y:0,...size};return{key:resource,getOriginalSize:()=>size,getRect:()=>rect,clone:()=>frame(resource),setRect:value=>{rect=value;},setOriginalSize:value=>{size=value;},setOffset(){},destroy(){this.destroyed=true;}};}
  function load(resource,type,callback,bundle){const request={resource,type,callback,bundle};if(bundle)tierFrames.push(resource);if(options.delayed)pending.push(request);else callback(null,frame(resource));}
@@ -32,14 +34,15 @@ function fixture(user,options={}){
   KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:options.config||require('../../assets/KinghtFallConfig/GameJsonCfg.json'),getEquipCfgList:()=>require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg})}},
   HeroSkillSettings:require('../../assets/_script/HeroSkillSettings'),HeroSkillAuthoring:require('../../assets/_script/HeroSkillAuthoring'),HeroSkillDescriptions:require('../../assets/_script/HeroSkillDescriptions'),
   EquipmentIconFit:{apply(sprite,frame){sprite.spriteFrame=frame;}},
-  LanguageMgr:{LanguageMgr:{getInstance:()=>({bindLabel(label,key){label.string=catalog.entries[key][options.language||'en'];}})}},
+  UIMgr:{UIMgr:{getInstance:()=>({uiRoot:canvas})}},
+  LanguageMgr:{LanguageMgr:{getInstance:()=>({bindLabel(label,key){label.string=catalog.entries[key.replace(/^\[\[loc:|\]\]$/g,'')][options.language||'en'];}})}},
   BattleSounds:{effect(id,owner,options){sounds.push({id,owner,options});}},
   HeroItemLooks:{gearImage(slot,level,area,style){icons.push({slot,level,area,style});return{resource:'items/'+style+'/'+slot+'/'+level};},whenReady(callback){ready=callback;return()=>{ready=null;cancels++;};}},
   HeroStylePreview:{create(){const preview={styles:[],setStyle(style){this.styles.push(style);},destroy(){this.destroyed=true;}};previews.push(preview);return preview;}},
   HeroWeaponIcon:{create(parent,_user,style){const value={parent,style,destroy(){this.destroyed=true;}};poseIcons.push(value);return value;}}};
- const context={exports:{},cc,require:name=>modules[name]};
+ const context={exports:{},cc,sp,require:name=>modules[name]};
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroWeaponPicker.js'),'utf8'),context);
  const all=(value=canvas)=>[value,...value.children.flatMap(all)],find=name=>all().find(node=>node.name===name),tap=value=>{if(!value)throw Error('Missing tap target');value.handlers.tap?.({target:value,stopPropagation(){}});};
- return{api:context.exports,cc,Node,canvas,all,find,tap,icons,previews,poseIcons,tierFrames,pending,sounds,ready:()=>ready&&ready(),cancels:()=>cancels};
+ return{api:context.exports,cc,sp,Node,canvas,all,find,tap,icons,previews,poseIcons,tierFrames,pending,sounds,ready:()=>ready&&ready(),cancels:()=>cancels};
 }
 exports.fixture=fixture;

@@ -84,15 +84,18 @@ function convert(position, from, to) {
 function sniperEnd(tower, target, origin, parent) {
   var space = tower.node.parent, center = tower.node.getPosition();
   var start = convert(origin, parent, space), aim = convert(point(target, parent), parent, space);
+  return convert(lineEnd(center, tower.attRange, start, aim), space, parent);
+}
+function lineEnd(center, range, start, aim) {
   var direction = require("./HeroSkillProjectile").unit({ x: aim.x - start.x, y: aim.y - start.y });
   var x = start.x - center.x, y = start.y - center.y;
   var along = x * direction.x + y * direction.y, across = x * direction.y - y * direction.x;
   // Intersect the firing line with the same range circle used to select a target.
-  var inside = tower.attRange * tower.attRange - across * across;
+  var inside = range * range - across * across;
   var travel = inside >= 0 ? Math.max(0, Math.sqrt(inside) - along) : 0;
-  return convert(cc.v2(start.x + direction.x * travel, start.y + direction.y * travel), space, parent);
+  return cc.v2(start.x + direction.x * travel, start.y + direction.y * travel);
 }
-function sniperContacts(enemies, start, end, parent, hits) {
+function sniperContacts(enemies, start, end, parent, hits, positionOf) {
   var projectile = require("./HeroSkillProjectile"), contacts = [], seen = new Set();
   for (var i = 0; i < enemies.length; i++) {
     var actor = enemies[i];
@@ -100,7 +103,8 @@ function sniperContacts(enemies, start, end, parent, hits) {
     seen.add(actor.node);
     var previous = hits.get(actor.node);
     if (previous && previous.generation === actor.node._combatGeneration) continue;
-    var position = point(actor.node, parent), fraction = projectile.segmentEntry(position, start, end, projectile.arrowHitRadius);
+    var position = positionOf ? positionOf(actor) : point(actor.node, parent);
+    var fraction = projectile.segmentEntry(position, start, end, projectile.arrowHitRadius);
     if (fraction === null) continue;
     var entry = capture(actor, position);
     entry.fraction = fraction;
@@ -108,6 +112,10 @@ function sniperContacts(enemies, start, end, parent, hits) {
     contacts.push(entry);
   }
   return contacts.sort(function (a, b) { return a.fraction - b.fraction || a.order - b.order; });
+}
+function splashMultiplier(distance, radius, edge) {
+  if (radius <= 0) return 1;
+  return distance > radius ? 0 : 1 - (1 - edge) * distance / radius;
 }
 function hit(entry, amount, source, onHit, current) {
   if (!(amount > 0) || !isFinite(amount) || !current() || !targetCurrent(entry)) return false;
@@ -131,7 +139,7 @@ function damage(game, target, center, amount, behavior, onHit, source) {
     var position = point(actor.node, game.ndUI), dx = position.x - center.x, dy = position.y - center.y;
     var distance = Math.sqrt(dx * dx + dy * dy);
     if (radius > 0 && distance > radius) continue;
-    var multiplier = radius > 0 ? 1 - (1 - behavior.splashFalloff) * distance / radius : 1;
+    var multiplier = splashMultiplier(distance, radius, behavior && behavior.splashFalloff);
     var entry = capture(actor, position);
     entry.amount = amount * multiplier;
     entries.push(entry);
@@ -146,11 +154,14 @@ exports.validCount = validCount;
 exports.settings = settings;
 exports.live = live;
 exports.point = point;
+exports.convert = convert;
 exports.choose = choose;
 exports.chooseTargets = chooseTargets;
 exports.capture = capture;
 exports.targetCurrent = targetCurrent;
 exports.sniperEnd = sniperEnd;
+exports.lineEnd = lineEnd;
 exports.sniperContacts = sniperContacts;
+exports.splashMultiplier = splashMultiplier;
 exports.hit = hit;
 exports.damage = damage;

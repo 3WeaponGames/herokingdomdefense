@@ -8,6 +8,8 @@ const validSpeed=value=>finite(value)&&value>=.1&&value<=4;
 const validLevel=value=>Number.isInteger(value)&&value>0;
 
 function cooldownStart(type,id,record,description){
+  const custom=require('../../../assets/_script/UnitAttackRules').active(record);
+  if(custom)return custom.delivery==='ranged'?'start':'hit';
   if(['hit','start','hit-unblocked'].includes(description.cooldownStart))return description.cooldownStart;
   record=record||{};
   // Imported and campaign records copy these implemented controller templates.

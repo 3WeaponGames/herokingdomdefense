@@ -60,6 +60,32 @@ function spaced(map,library){
 async function placeDelete(){
  const checks=[],assert=(ok,name)=>{if(!ok)throw Error(name);checks.push(name);};
  {
+  const f=await fixture(),random=Math.random;
+  try{
+   f.state.asset='red';await f.tool('Place one (T)');
+   const input=name=>Array.from(f.root.querySelectorAll('.world-inspector label')).find(label=>label.textContent===name)?.querySelector('input');
+   const checkbox=input('Random Flip X');
+   assert(checkbox?.type==='checkbox'&&!checkbox.checked,'Random Flip X defaults off beside the placement scale controls');
+   const maximum=input('Maximum scale');maximum.value='3';maximum.dispatchEvent(new Event('change'));
+   checkbox.click();await f.settle();
+   assert(f.changes()===0,'Changing placement options does not edit the map');
+   const samples=[.25,.25,.25,.75,.25];
+   Math.random=()=>samples.shift()??random();
+   const place=async x=>{
+    f.down(x,90);await f.up();
+    return f.map().layers.flatMap(layer=>layer.objects).find(o=>o.id===f.state.selection[0]);
+   };
+   const flipped=await place(-80);
+   await f.click('Undo');await f.click('Redo');
+   assert(f.map().layers.some(l=>l.objects.some(o=>o.id===flipped.id&&o.flipX===true)),'Redo restores the placed horizontal flip');
+   const upright=await place(0);
+   assert(flipped.scale===1.5&&upright.scale===1.5&&flipped.flipX===true&&upright.flipX===false,'Horizontal orientation is sampled independently for each scaled placement');
+   input('Random Flip X').click();
+   const unchecked=await place(80);
+   assert(unchecked.scale===1.5&&unchecked.flipX===false&&samples.length===0,'Unchecking Random Flip X keeps future placements upright');
+  }finally{Math.random=random;f.close();}
+ }
+ {
   const f=await fixture(spaced);try{f.state.asset='red';f.canvas.focus();f.key('t');await f.settle();assert(f.state.tool==='place','T selects the one-at-a-time placement tool');assert(!!f.root.querySelector('[aria-label="Place one (T)"]'),'placement tooltip advertises the T shortcut');
    const n=f.map().layers[1].objects.length;f.down(-80,90);await f.up();assert(f.map().layers.reduce((s,l)=>s+l.objects.length,0)===n+1,'left click still places one object');await f.click('Undo');
    const count=f.undo();f.down(-160,0,{button:2});f.move(160,0);await f.up();assert(f.map().layers.every(l=>!l.objects.length),'right-hold sweep deletes every crossed object, including between pointer events');assert(f.undo()===count+1,'one right-delete gesture creates one undo record');await f.click('Undo');assert(f.map().layers[1].objects.length===3,'one Undo restores the entire right-delete sweep');assert(f.state.tool==='place','right deletion preserves the active placement tool');

@@ -905,6 +905,25 @@
       ],
       "bones": 26,
       "slots": 9
+    },
+    {
+      "id": "monster2/Golem_ElderTreant",
+      "name": "Elder Treant",
+      "pack": "monster2",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Golem/Golem_Tree.prefab",
+      "skeleton": "assets/resources/unit-library/monster2/Units/PlantVariants/Golem_ElderTreant.json",
+      "uuid": "0a8ff975-bd37-5222-a72f-e0eeab87aa4b",
+      "resource": "unit-library/monster2/Units/PlantVariants/Golem_ElderTreant",
+      "animations": [
+        "idle",
+        "die",
+        "hit",
+        "attack",
+        "move"
+      ],
+      "bones": 21,
+      "slots": 12,
+      "variantOf": "monster2/Golem_Tree"
     }
   ],
   "parts": [

@@ -188,6 +188,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     var entry = transition.setAnimation(0, transition.defaultAnimation, false);
     if (!transformCurrent(this, scope, transform)) return;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    if (this.cfg.UnitAttack) this.cfg = require("UnitAttackRules").runtimeCfg(this.cfg);
     this.attack = Math.round(this.cfg.AttackDamage * scope.data.getAttAdd(this.cfg.ID));
     this.time = {};
     scope.timers = this.time;

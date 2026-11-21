@@ -1346,6 +1346,31 @@ var def_KinghtFallGameCtrl = function (t) {
       }
     }
   };
+  _ctor.prototype.takeBuildProjectile = function (position) {
+    var node = this.ndBuildArr1.shift();
+    if (!node) (node = cc.instantiate(this.buildBullet.node)).setParent(this.ndUI);
+    node.setSiblingIndex(0);
+    node.active = true;
+    node.setPosition(position);
+    var shot = node.getComponent($z1KinghtFallBulletBuild.default);
+    shot.combatContext = this;
+    if (shot._towerBaseSpeed === undefined) shot._towerBaseSpeed = shot.speed;
+    this.ndBuildArr2.push(shot);
+    return shot;
+  };
+  _ctor.prototype.onShotUnit = function (owner, side) {
+    if (owner.ctrArr && owner.ctrArr.node && owner.getBullet && owner.getAttWpos) {
+      var nativeShot = side === "enemy" ? this.onShotEnemy(owner) : this.onShotSoldier(owner);
+      nativeShot.ctr.setParent(owner);
+      return nativeShot.ctr;
+    }
+    if (!this.buildBullet && !this.ndBuildArr1.length) return null;
+    var origin = this.ndUI.convertToNodeSpaceAR(owner.node.convertToWorldSpaceAR(cc.v2(0, 20)));
+    var shot = this.takeBuildProjectile(origin);
+    shot.speed = GameToolsOverrides.projectileSpeed(owner, side, 500);
+    ProjectileLooks.prepare(shot, this, side + ":" + owner.cfg.ID, owner);
+    return shot;
+  };
   _ctor.prototype.onShotBuild = function (t, e, released) {
     var game = this;
     var towerCombat = require("TowerCombat");
@@ -1379,16 +1404,8 @@ var def_KinghtFallGameCtrl = function (t) {
     var i = hasMuzzle && !behavior.fieldProjectile ? require("BuildingAppearance").muzzle(t, this) : t.getAttPos();
     var o = t.getAttack();
     if (!releaseCurrent()) return;
-    var n = this.ndBuildArr1.shift();
-    n || (n = cc.instantiate(this.buildBullet.node)).setParent(this.ndUI);
-    n.setSiblingIndex(0);
-    n.active = true;
-    n.setPosition(i);
-    var a = n.getComponent($z1KinghtFallBulletBuild.default);
-    this.ndBuildArr2.push(a);
-    if (a._towerBaseSpeed === undefined) a._towerBaseSpeed = a.speed;
+    var a = this.takeBuildProjectile(i), n = a.node;
     a.speed = behavior && behavior.projectileSpeed || a._towerBaseSpeed;
-    a.combatContext = this;
     if (modern) {
       var effects = $z1KinghtFallUIGame.default.instance.ctrEffect;
       ProjectileLooks.prepare(a, this, behavior.projectileLook || towerKey);

@@ -4,6 +4,7 @@ const EnemyClasses=require('./enemy-classes');
 const MapCatalog=require('./map-catalog');
 const HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
+const UnitAttack=require('../../../assets/_script/UnitAttackRules');
 const TowerCombat=require('../../../assets/_script/TowerCombat');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 
@@ -240,6 +241,9 @@ function validate(documents, changes) {
     if(own(unit,'Guide')){
       if(!unit.Guide||typeof unit.Guide!=='object'||Array.isArray(unit.Guide))issue('A',p.concat('Guide'),'Unit guide must retain its object format.');
       else for(const field of ['description','lore'])if(own(unit.Guide,field)&&typeof unit.Guide[field]!=='string')issue('A',p.concat('Guide',field),'Guide text must be a literal string or a localization token.');
+    }
+    if(own(unit,'UnitAttack'))for(const problem of UnitAttack.issues(unit.UnitAttack)){
+      issue('A',problem.field?p.concat('UnitAttack',problem.field):p.concat('UnitAttack'),problem.message);
     }
     ['Health','AttackInterval'].forEach(k=>number('A',p.concat(k),unit[k],Number.MIN_VALUE,false));
     ['AttackDamage','AttackRange','SearchRange','Speed','DeathAni'].forEach(k=>{if(own(unit,k))number('A',p.concat(k),unit[k],0,false);});
@@ -565,7 +569,7 @@ function validate(documents, changes) {
     });
     if(overrides.projectileSpeeds!==undefined&&(!overrides.projectileSpeeds||typeof overrides.projectileSpeeds!=='object'||Array.isArray(overrides.projectileSpeeds)))issue('overrides',['projectileSpeeds'],'Projectile flight speeds must be a unit table.');
     else for(const [key,speed]of Object.entries(overrides.projectileSpeeds||{})){
-      const [type,id,form,...extra]=key.split(':'),record=UnitRecords.record(base,type,id),reachable=!extra.length&&UnitRecords.reachable(base,type,id,form)&&(type==='hero'||record&&record.AttackType===2);
+      const [type,id,form,...extra]=key.split(':'),record=UnitRecords.record(base,type,id),reachable=!extra.length&&UnitRecords.reachable(base,type,id,form)&&(type==='hero'||record&&(record.AttackType===2||record.UnitAttack));
       if(!reachable)issue('overrides',['projectileSpeeds',key],'Choose a reachable ranged unit or the hero.');
       if(typeof speed!=='number'||!Number.isFinite(speed)||speed<1||speed>20000)issue('overrides',['projectileSpeeds',key],'Projectile flight speed must be between 1 and 20000.');
     }

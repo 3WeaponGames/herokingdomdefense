@@ -118,6 +118,7 @@ const messages={
     testing(event,request){reply(event,()=>require('./testing/session').handle(Editor,project(),request));},
     'testing-catalog'(event){reply(event,()=>require('./testing/session').catalog(project()));},
     'open-characters'(event,request){reply(event,()=>{if(!request){Editor.Panel.open('hkd-characters');return true;}return new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-characters:focus',request,(error,result)=>error?reject(Error(String(error))):resolve(result)));});},
+    'open-projectiles'(event,request){reply(event,()=>new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-projectiles:focus',request,(error,result)=>error?reject(Error(String(error))):resolve(result))));},
     'open-panel'(event,kind){reply(event,()=>{open(kind);return true;});},
     'open-map'(event,id){reply(event,()=>{
         if(!require('./lib/map-catalog').has(id))throw Error('Unknown map');

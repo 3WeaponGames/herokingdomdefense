@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "aed48dd7-dd29-5ff8-a5f1-1a1d85990b3a",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 1024,
+  "height": 256,
+  "platformSettings": {},
+  "subMetas": {
+    "retired-king-portrait": {
+      "ver": "1.0.6",
+      "uuid": "37d58d9d-a4dc-531c-ab34-a935cb14ccc5",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "aed48dd7-dd29-5ff8-a5f1-1a1d85990b3a",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1024,
+      "height": 256,
+      "rawWidth": 1024,
+      "rawHeight": 256,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1269,6 +1269,16 @@
       "zh": "<b>兵营招募友军。<color=#106cff>集结</c>命令他们前往你的位置；<color=#106cff>跟随</c>让他们与你同行。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.19.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.19.Describe"
     },
+    "data.guidecfg.21.describe": {
+      "en": "<b><color=#106cff>Switch weapons</c> anytime in Gear. Try different styles for each stage.</b>",
+      "zh": "<b>你可以随时在装备页面<color=#106cff>切换武器</c>。试试不同的战斗风格，看看哪种更适合当前关卡。</b>",
+      "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.20.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.20.Describe"
+    },
+    "data.guidecfg.22.describe": {
+      "en": "Pick another fighting style and tap Equip, or close to keep your Skirmisher's bow and arrow.",
+      "zh": "选择另一种战斗风格并点击装备，或关闭窗口，继续使用游击手的弓箭。",
+      "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.21.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.21.Describe"
+    },
     "data.ingametaskenum.1.name": {
       "en": "Build 1 Tower",
       "zh": "建造1座防御塔",
@@ -11119,6 +11129,11 @@
       "zh": "<b>装备可以在这里升级。推进关卡，解锁更多升级。</b>",
       "context": "Tutorial fallback when current equipment has no available upgrade button"
     },
+    "tutorial.equipment.keepCurrentWeapon": {
+      "en": "Pick another fighting style and tap Equip, or close to keep your current weapon.",
+      "zh": "选择另一种战斗风格并点击装备，或关闭窗口，保留当前武器。",
+      "context": "Weapon picker tutorial when the player has already equipped a different fighting style"
+    },
     "tutorial.talent.overview": {
       "en": "<b>This talent is already unlocked or needs an earlier talent. Close this panel to continue.</b>",
       "zh": "<b>此天赋已解锁，或需要先解锁前置天赋。关闭面板以继续。</b>",
@@ -11150,19 +11165,19 @@
       "context": "Minimal slime variant · monster1/Slime_Ironclad"
     },
     "data.unitguide.91153.description": {
-      "en": "An amber slime encased in steel plates with a brass-edged visor.",
-      "zh": "琥珀色的史莱姆裹在钢甲里，眼前戴着镶黄铜边的面罩。",
+      "en": "A glossy amber slime with a curved steel shell and brass rivets.",
+      "zh": "一只亮泽的琥珀色史莱姆，背上覆盖着带黄铜铆钉的弧形钢甲。",
       "context": "Enemy guide appearance · Ironclad Slime"
     },
     "data.monster-roster.91154.name": {
-      "en": "Spore Slime",
-      "zh": "孢子史莱姆",
+      "en": "Lightning Slime",
+      "zh": "闪电史莱姆",
       "context": "Minimal slime variant · monster1/Slime_Spore"
     },
     "data.unitguide.91154.description": {
-      "en": "A pale slime under a broad pink mushroom cap.",
-      "zh": "浅色的史莱姆顶着一片宽大的粉色蘑菇伞。",
-      "context": "Enemy guide appearance · Spore Slime"
+      "en": "A bright blue slime with a yellow lightning bolt on its back.",
+      "zh": "一只亮蓝色的史莱姆，背上竖着一道黄色闪电。",
+      "context": "Enemy guide appearance · Lightning Slime"
     },
     "data.monster-roster.91155.name": {
       "en": "Honey Slime",
@@ -11223,6 +11238,46 @@
       "en": "A hooded orc with a jade crystal staff, carved charms and a dark violet cloak.",
       "zh": "戴着兜帽的兽人身披深紫斗篷，手持镶有玉色水晶和雕刻符饰的法杖。",
       "context": "Enemy guide appearance · Orc Shaman"
+    },
+    "data.monster-roster.91161.name": {
+      "en": "Elder Treant",
+      "zh": "远古树人",
+      "context": "Deep Forest plant boss · monster2/Golem_ElderTreant"
+    },
+    "data.unitguide.91161.description": {
+      "en": "An ancient tree guardian with a mossy crown and heavy roots. It leaps and crashes down with the force of a falling oak.",
+      "zh": "头顶覆满苔叶、脚下扎着粗大树根的远古树木守卫。它高高跃起，像倒下的橡树一样重重砸落。",
+      "context": "Enemy guide appearance · Elder Treant"
+    },
+    "data.monster-roster.91162.name": {
+      "en": "Brass Scarab",
+      "zh": "黄铜圣甲虫",
+      "context": "Sun-Tomb Empire · monster1/Beetle_BrassScarab"
+    },
+    "data.unitguide.91162.description": {
+      "en": "Gold plates protect its shell as it curls into a rolling charge.",
+      "zh": "金色甲壳保护着它，让它能蜷缩成球滚动冲撞。",
+      "context": "Enemy guide appearance · Brass Scarab"
+    },
+    "data.monster-roster.91163.name": {
+      "en": "Relic Cantor",
+      "zh": "圣物吟唱者",
+      "context": "Sun-Tomb Empire · monster3/Reaper_RelicCantor"
+    },
+    "data.unitguide.91163.description": {
+      "en": "An ivory-masked keeper of the tombs who swings a gilded censer.",
+      "zh": "戴着象牙色面具的陵墓守卫，挥舞着一只镀金香炉。",
+      "context": "Enemy guide appearance · Relic Cantor"
+    },
+    "data.monster-roster.91164.name": {
+      "en": "Sun-Tomb Regent",
+      "zh": "日陵摄政王",
+      "context": "Sun-Tomb Empire · monster3/Reaper_SunTombRegent"
+    },
+    "data.unitguide.91164.description": {
+      "en": "The ruler of the Sun-Tomb Empire guards its burial halls with a golden crook.",
+      "zh": "日陵帝国的统治者挥舞黄金权杖，守卫帝国的陵寝。",
+      "context": "Enemy guide appearance · Sun-Tomb Regent"
     }
   },
   "images": {

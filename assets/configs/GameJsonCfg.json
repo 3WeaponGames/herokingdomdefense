@@ -14448,6 +14448,28 @@
       "Close": 0,
       "Finger": 1,
       "Mask": 1
+    },
+    {
+      "ID": 21,
+      "GuideGroup": 4,
+      "GuideStep": 3,
+      "ShowKing": 1,
+      "Describe": "[[loc:data.guidecfg.21.describe]]",
+      "Offset": -175,
+      "Close": 0,
+      "Finger": 1,
+      "Mask": 1
+    },
+    {
+      "ID": 22,
+      "GuideGroup": 4,
+      "GuideStep": 4,
+      "ShowKing": 0,
+      "Describe": "[[loc:data.guidecfg.22.describe]]",
+      "Offset": 0,
+      "Close": 1,
+      "Finger": 0,
+      "Mask": 0
     }
   ],
   "InGameTaskCfg": [

@@ -50,7 +50,12 @@ class Store {
             if(Array.isArray(edit.path)&&!edit.path.length&&edit.doc.indexOf('map:')===0){if(!Array.isArray(edit.value)||edit.remove)throw Error('A complete serialized map is required');next[edit.doc]=clone(edit.value);}
             else setAt(next[edit.doc],edit.path,edit.value,edit.remove);
         });
-        require('./unit-profiles').reconcile(this.draftState(),next);
+        const profileEdit=request.edits.some(edit=>{
+            if(edit.doc==='overrides'&&edit.path[0]==='projectileSpeeds')return false;
+            if(edit.doc==='A'&&['SoldierCfg','AllyCfg'].includes(edit.path[0])&&edit.path[2]==='UnitAttack')return false;
+            return true;
+        });
+        if(profileEdit)require('./unit-profiles').reconcile(this.draftState(),next);
         if(JSONDocument.equal(next,this.draftState()))return this.snapshot();
         this.undoStack.push(this.draftState());if(this.undoStack.length>100)this.undoStack.shift();this.redoStack=[];this.restore(next);return this.snapshot();
     }

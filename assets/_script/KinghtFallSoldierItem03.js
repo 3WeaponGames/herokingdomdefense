@@ -31,6 +31,7 @@ var def_KinghtFallSoldierItem03 = function (t) {
     this.ndBulletPat.active = false;
   };
   _ctor.prototype.doAttackStart = function () {
+    if (this.cfg && this.cfg.UnitAttack && require("UnitAttackRules").active(this.cfg)) return t.prototype.doAttackStart.call(this);
     if (GameToolsOverrides.isPending(this)) return;
     if (!this.captureAttackTarget()) return;
     this.state = $z1KinghtFallSoldierBase.KinghtFallSoldierStatus.Attack;

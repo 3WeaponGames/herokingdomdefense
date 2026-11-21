@@ -390,8 +390,14 @@ var exp_KinghtFallUserData = function (t) {
     require("HeroWeapons").upgrade(this.data, slot, level, style); this.saveData(); return true;
   };
   _ctor.prototype.setHeroWeapon = function (id) {
+    var previous = this.data.heroWeapon;
     if (!require("HeroWeapons").select(this.data, id)) return false;
-    this.saveData(); return true;
+    if (this.saveData() === false) {
+      if (previous === undefined) delete this.data.heroWeapon;
+      else this.data.heroWeapon = previous;
+      return false;
+    }
+    return true;
   };
   _ctor.prototype.getShopInfo = function (t) {
     for (var e = 0; e < this.data.shopInfo.length; e++) {

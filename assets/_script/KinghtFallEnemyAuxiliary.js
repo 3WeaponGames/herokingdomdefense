@@ -17,6 +17,9 @@ var def_KinghtFallEnemyAuxiliary = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.onUpdate = function (t) {
+    if (this.cfg && this.cfg.UnitAttack && require("UnitAttackRules").active(this.cfg)) {
+      return $z1KinghtFallEnemyBase.default.prototype.onUpdate.call(this, t);
+    }
     if (this.isDead()) return;
     var owner = this, ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
     var node = this.node, generation = node && node._combatGeneration, timers = this.time, data = game && game.gameData, epoch = game && game._combatEpoch, stage = game && game.gameStatus;

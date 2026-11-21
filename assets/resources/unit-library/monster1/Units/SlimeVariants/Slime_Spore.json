@@ -143,10 +143,10 @@
         },
         "Body_bone/Hit": {
           "u_d2bc1cbb5d092bd4a82156a9fa023ffd": {
-            "width": 167,
-            "height": 150,
-            "x": 9.500008,
-            "y": -2.5,
+            "width": 213,
+            "height": 154,
+            "x": 13.500008,
+            "y": -1.5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Slime_Spore_Hit"
@@ -154,10 +154,10 @@
         },
         "Body_bone/Hit_2": {
           "u_ac2d6f32dabde1f4ea684f2feb9836f5": {
-            "width": 167,
-            "height": 150,
-            "x": 9.500008,
-            "y": -2.5,
+            "width": 213,
+            "height": 154,
+            "x": 13.500008,
+            "y": -1.5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Slime_Spore_Hit_2"
@@ -165,10 +165,10 @@
         },
         "Body_bone/Body": {
           "u_544985cd804bc1f449a847b770df9fd9": {
-            "width": 171,
-            "height": 160,
+            "width": 173,
+            "height": 162,
             "x": 1,
-            "y": -4.499995,
+            "y": -3.499995,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Slime_Spore_Body"
@@ -176,10 +176,10 @@
         },
         "Body_bone/Attack": {
           "u_183b1ca582569124593955678e43839e": {
-            "width": 181,
-            "height": 150,
-            "x": -8.999993,
-            "y": -13.000004,
+            "width": 220,
+            "height": 158,
+            "x": 0.500007,
+            "y": -10.000004,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Slime_Spore_Attack"

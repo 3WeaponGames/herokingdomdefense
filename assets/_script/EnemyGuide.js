@@ -83,11 +83,13 @@ function describe(ui, id, live) {
   if (!finite(hpFactor)) hpFactor = 1;
   if (!finite(damageFactor)) damageFactor = 1;
   var hp = actor && finite(actor.hpMax) ? actor.hpMax : cfg.Health * hpFactor;
+  var customAttack = cfg.UnitAttack && require("UnitAttackRules").active(cfg);
+  if (customAttack) cfg = require("UnitAttackRules").runtimeCfg(cfg);
   var damage = read(actor, "getAttack", finite(cfg.AttackDamage) ? Math.round(cfg.AttackDamage * damageFactor) : cfg.AttackType === 3 ? 0 : null);
   var behavior = Number(cfg.CampaignBaseUnit || cfg.BehaviorTemplate || cfg.ID), fallback = "enemyGuide.fallbackMelee";
-  if (behavior === 90006) fallback = "enemyGuide.fallbackBuffer";
-  else if (behavior === 90009) fallback = "enemyGuide.fallbackHealer";
-  else if (cfg.AttackType === 2) fallback = "enemyGuide.fallbackRanged";
+  if (!customAttack && behavior === 90006) fallback = "enemyGuide.fallbackBuffer";
+  else if (!customAttack && behavior === 90009) fallback = "enemyGuide.fallbackHealer";
+  else if (customAttack ? customAttack.delivery === "ranged" : cfg.AttackType === 2) fallback = "enemyGuide.fallbackRanged";
   var range = finite(cfg.AttackRange) ? cfg.AttackRange : behavior === 90006 && cfg.Data ? cfg.Data[2] : behavior === 90009 && cfg.Data ? cfg.Data[1] : null;
   return { id: id, name: cfg.Name, role: roleName(roleId, role), roleId: roleId, roleIcon: role && role.icon, roleTint: role && role.tint || "#ffffff", icon: cfg.loadIcon,
     wave: battle.round, live: !!live, description: cfg.Guide && cfg.Guide.description || fallback, lore: cfg.Guide && cfg.Guide.lore || "",

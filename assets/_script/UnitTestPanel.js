@@ -118,6 +118,7 @@ function drawCard(card, model, selected, enemyBundle, isOpen) {
   if (!model) return;
   if (card.selected !== selected) {
     card.selected = selected;
+    card.check.node.active = selected;
     paint(card.node, selected ? COLORS.selected : COLORS.card, selected ? COLORS.highlight : COLORS.border);
   }
   if (card.model === model) return;
@@ -148,7 +149,8 @@ function open(ui) {
   var spawns = Encounter.spawnPoints(game);
   var enemyBundle = require("KinghtFallConfig").KinghtFallBundelName.Enemy;
   var draft = ui._unitTestDraft || { query: "", count: "1", interval: "0.5", follow: true };
-  var filtered = [], page = 0, profile = null;
+  var selected = new Set(), profilesByModel = new Map(), focused = null;
+  var filtered = [], page = 0;
   var spawnIndex = Math.max(0, spawns.findIndex(function (spawn) { return spawn.id === draft.spawn; }));
   var pending = null, message = "", cards = [], previousLayout;
   var parent = ui.ctrUI.node, root = node(null, "UnitTestOverlay", 0, 0, 0, 0);
@@ -165,14 +167,21 @@ function open(ui) {
   function current() {
     return isOpen() && Encounter.canOpen(ui) && ui.ctrGame === game && game.gameData === data && game._combatEpoch === epoch;
   }
+  function profileFor(model) { return profilesByModel.get(model) || model.profiles[0]; }
+  function cancelPending() {
+    var request = pending;
+    pending = null;
+    if (request) request.assets.forEach(function (prefab) { if (prefab) prefab.decRef(); });
+  }
   function close() {
     if (ui._unitTestPanel !== state) return;
     ui._unitTestPanel = null;
-    pending = null;
+    cancelPending();
     if (!cc.isValid(root, true)) return;
     ui._unitTestDraft = {
       query: search.string, count: count.string, interval: interval.string,
-      unit: profile && profile.id, spawn: spawns[spawnIndex] && spawns[spawnIndex].id, follow: draft.follow
+      units: Array.from(selected, function (model) { return profileFor(model).id; }),
+      spawn: spawns[spawnIndex] && spawns[spawnIndex].id, follow: draft.follow
     };
     root.active = false;
     cards.forEach(releasePortrait);
@@ -209,31 +218,38 @@ function open(ui) {
     icon.sizeMode = cc.Sprite.SizeMode.CUSTOM;
     var caption = label(tile, "Name", "", 7, 68, 144, 26, 20);
     var pack = label(tile, "Asset pack", "", 7, 83, 144, 16, 14, COLORS.muted);
-    var card = { node: tile, sprite: icon, name: caption, pack: pack };
+    var check = label(tile, "Selected", "✓", 128, 3, 24, 26, 22, COLORS.highlight);
+    var card = { node: tile, sprite: icon, name: caption, pack: pack, check: check };
     cards.push(card);
     tile.on(cc.Node.EventType.TOUCH_END, selectModel.bind(null, card));
   }
   function selectModel(card, event) {
     event.stopPropagation();
-    if (!card.model || profile && card.model === profile.model) return;
-    profile = card.model.profiles[0];
+    var model = card.model;
+    if (!model || !card.node.active) return;
+    if (selected.has(model)) {
+      selected.delete(model);
+      if (focused === model) focused = Array.from(selected).pop() || null;
+    } else {
+      selected.add(model);
+      focused = model;
+    }
     render();
   }
 
   function changePage(direction) {
     page += direction;
-    var visible = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-    if (!profile || visible.indexOf(profile.model) === -1) profile = visible[0].profiles[0];
     render();
   }
   var prevPage = button(panel, "Previous page", "‹", 24, 482, 66, 42, function () { changePage(-1); });
   var nextPage = button(panel, "Next page", "›", 614, 482, 66, 42, function () { changePage(1); });
   var range = label(panel, "Model range", "", 100, 482, 504, 42, 22, COLORS.muted);
-  label(panel, "Profile label", "Fighting profile", 24, 538, 320, 26, 21, COLORS.muted, true);
+  var profileLabel = label(panel, "Profile label", "Fighting profile", 24, 538, 320, 26, 21, COLORS.muted, true);
   label(panel, "Spawn label", "Spawn point", 368, 538, 312, 26, 21, COLORS.muted, true);
   var profileControl = stepper(panel, "Profile", 24, 567, 312, function (direction) {
-    var choices = profile.model.profiles;
-    profile = choices[(choices.indexOf(profile) + direction + choices.length) % choices.length];
+    var choices = focused.profiles;
+    var index = choices.indexOf(profileFor(focused));
+    profilesByModel.set(focused, choices[(index + direction + choices.length) % choices.length]);
     render();
   });
   var spawnControl = stepper(panel, "Spawn point", 368, 567, 312, function (direction) {
@@ -241,7 +257,7 @@ function open(ui) {
     render();
   });
 
-  label(panel, "Count label", "Count", 24, 625, 158, 26, 21, COLORS.muted, true);
+  label(panel, "Count label", "Count per model", 24, 625, 158, 26, 21, COLORS.muted, true);
   label(panel, "Spacing label", "Spacing (s)", 206, 625, 158, 26, 21, COLORS.muted, true);
   label(panel, "Camera label", "Camera", 388, 625, 292, 26, 21, COLORS.muted, true);
   var count = input(panel, "Count", draft.count, "", 24, 653, 158, "NUMERIC", String(Encounter.MAX_COUNT).length);
@@ -254,7 +270,7 @@ function open(ui) {
 
   var status = label(panel, "Status", "", 24, 714, 656, 36, 22, COLORS.muted, true);
   var clearUnits = button(panel, "Clear units", "Clear units", 24, 762, 172, 54, function () {
-    pending = null;
+    cancelPending();
     if (run) run.dispose();
     run = null;
     message = "";
@@ -267,66 +283,91 @@ function open(ui) {
   var send = button(panel, "Send units", "Send units", 396, 762, 284, 54, sendUnits, true);
   label(panel, "Preview rules", "Test attacks play without dealing damage.", 24, 830, 656, 26, 20, COLORS.muted, true);
 
-  function filter() {
+  function filter(keepFocusedPage) {
     var terms = search.string.toLowerCase().trim().split(/\s+/).filter(Boolean);
     filtered = models.filter(function (model) {
       return terms.every(function (term) { return model.searchText.indexOf(term) !== -1; });
     });
-    if (!profile || filtered.indexOf(profile.model) === -1) profile = filtered.length ? filtered[0].profiles[0] : null;
-    page = 0;
-    if (profile) page = Math.floor(filtered.indexOf(profile.model) / PAGE_SIZE);
+    page = keepFocusedPage ? Math.floor(Math.max(0, filtered.indexOf(focused)) / PAGE_SIZE) : 0;
     render();
   }
   function render() {
     var start = page * PAGE_SIZE;
     cards.forEach(function (card, i) {
       var model = filtered[start + i];
-      drawCard(card, model, !!(profile && profile.model === model), enemyBundle, isOpen);
+      drawCard(card, model, selected.has(model), enemyBundle, isOpen);
     });
     if (filtered.length <= 1) range.string = filtered.length ? "1 model" : "No matching models";
     else range.string = (start + 1) + "–" + Math.min(start + PAGE_SIZE, filtered.length) + " of " + filtered.length + " models";
+    range.string += " · " + selected.size + " selected";
     prevPage.setEnabled(page > 0);
     nextPage.setEnabled(start + PAGE_SIZE < filtered.length);
-    profileControl(profile ? profile.name : "Choose a model", profile ? profile.model.profiles.length : 0);
+    profileLabel.string = focused ? "Profile for " + focused.name : "Fighting profile";
+    profileControl(focused ? profileFor(focused).name : "Choose a model", focused ? focused.profiles.length : 0);
     spawnControl(spawns.length ? spawns[spawnIndex].name : "No enabled spawns", spawns.length);
     camera.caption.string = draft.follow ? "Follow test units" : "Stay with hero";
-    send.setEnabled(!!profile && spawns.length > 0 && !pending);
+    send.setEnabled(selected.size > 0 && spawns.length > 0 && !pending);
     clearUnits.setEnabled(!!run || !!pending);
     attack.setEnabled(!!run && !pending);
-    status.node.color = cc.color(message ? COLORS.error : COLORS.muted);
-    status.string = message || (pending ? "Loading " + pending.profile.model.name + "…" :
-      run ? run.error || "On stage · " + run.count + " × " + run.profile.model.name :
-      profile ? profile.model.name + " · " + profile.model.pack : "");
+    status.node.color = cc.color(message || run && run.error ? COLORS.error : COLORS.muted);
+    status.string = message || (pending ? "Loading " + pending.models + (pending.models === 1 ? " model…" : " models…") :
+      run ? run.error || "Test run · " + run.count + (run.count === 1 ? " unit" : " units") :
+      selected.size ? "" : "Click a model to select it.");
   }
   function sendUnits() {
-    if (!current() || pending || !profile) return;
-    var unit = manager.getSoldierCfgById(profile.id), spawn = spawns[spawnIndex] && spawns[spawnIndex].id;
-    var total = Number(count.string), delay = Number(interval.string);
-    try { Encounter.validate(game, unit, total, spawn, delay); }
+    if (!current() || pending || !selected.size) return;
+    var profiles = Array.from(selected, profileFor);
+    var units = profiles.map(function (profile) { return manager.getSoldierCfgById(profile.id); });
+    var spawn = spawns[spawnIndex] && spawns[spawnIndex].id;
+    var perModel = Number(count.string), delay = Number(interval.string);
+    try { Encounter.validate(game, units, perModel, spawn, delay); }
     catch (error) { message = error.message; render(); return; }
-    var request = pending = { profile: profile, follow: draft.follow };
+    var assets = new Map();
+    units.forEach(function (unit) { assets.set(unit.prefab, null); });
+    var request = pending = { models: profiles.length, assets: assets };
+    var remaining = assets.size;
     message = "";
     render();
-    loadAsset(enemyBundle, unit.prefab, cc.Prefab, function (error, prefab) {
-      if (!current() || pending !== request) return;
-      pending = null;
-      if (error || !prefab) {
-        message = "Could not load " + request.profile.model.name + ".";
-        render();
-        return;
-      }
-      try { run = Encounter.send(game, prefab, request.profile, spawn, total, delay, request.follow); }
-      catch (spawnError) { message = spawnError.message; render(); return; }
-      close();
+    assets.forEach(function (_, path) {
+      if (pending !== request) return;
+      loadAsset(enemyBundle, path, cc.Prefab, function (error, prefab) {
+        if (pending !== request || assets.get(path)) return;
+        if (!current()) { close(); return; }
+        if (error || !prefab) {
+          var index = units.findIndex(function (unit) { return unit.prefab === path; });
+          message = "Could not load " + profiles[index].model.name + ".";
+          cancelPending();
+          render();
+          return;
+        }
+        assets.set(path, prefab.addRef());
+        if (--remaining > 0) return;
+        var batch = profiles.map(function (profile, index) {
+          return { profile: profile, prefab: assets.get(units[index].prefab) };
+        });
+        try { run = Encounter.send(game, batch, spawn, perModel, delay, draft.follow); }
+        catch (spawnError) { message = spawnError.message; cancelPending(); render(); return; }
+        close();
+      });
     });
   }
 
-  if (draft.unit) models.some(function (model) {
-    profile = model.profiles.find(function (choice) { return choice.id === draft.unit; });
-    return !!profile;
-  });
+  var saved = draft.units || (draft.unit ? [draft.unit] : []);
+  if (saved.length) {
+    var available = new Map();
+    models.forEach(function (model) {
+      model.profiles.forEach(function (profile) { available.set(profile.id, profile); });
+    });
+    saved.forEach(function (id) {
+      var profile = available.get(id);
+      if (!profile) return;
+      focused = profile.model;
+      selected.add(focused);
+      profilesByModel.set(focused, profile);
+    });
+  }
   layout();
-  filter();
+  filter(true);
   root.active = true;
   if (ui.ctrUI.onBlockTouch) ui.ctrUI.onBlockTouch();
   return true;

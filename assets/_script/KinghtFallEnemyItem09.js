@@ -28,7 +28,7 @@ var def_KinghtFallEnemyItem09 = function (t) {
   };
   _ctor.prototype.initData = function (e, n, lease) {
     if (t.prototype.initData.call(this, e, n, lease) === false) return false;
-    this.node.getComponent(cc.CircleCollider).radius = this.cfg.Data[1];
+    if (!this.cfg.UnitAttack || !require("UnitAttackRules").active(this.cfg)) this.node.getComponent(cc.CircleCollider).radius = this.cfg.Data[1];
   };
   _ctor.prototype.doAttack = function () {
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, data = game && game.gameData;
