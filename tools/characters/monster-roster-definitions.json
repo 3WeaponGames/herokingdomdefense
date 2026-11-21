@@ -1994,7 +1994,7 @@
     {
       "id": 91154,
       "source": "monster1/Slime_Spore",
-      "name": "Spore Slime",
+      "name": "Lightning Slime",
       "role": "fighter",
       "behaviorTemplate": 90001,
       "aerial": false,
@@ -2073,6 +2073,58 @@
       "id": 91160,
       "source": "monster3/Reaper_OrcShaman",
       "name": "Orc Shaman",
+      "role": "bruiser",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/Head$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91161,
+      "source": "monster2/Golem_ElderTreant",
+      "name": "Elder Treant",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Eye|Eye2)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91162,
+      "source": "monster1/Beetle_BrassScarab",
+      "name": "Brass Scarab",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91163,
+      "source": "monster3/Reaper_RelicCantor",
+      "name": "Relic Cantor",
+      "role": "bruiser",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/Head$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91164,
+      "source": "monster3/Reaper_SunTombRegent",
+      "name": "Sun-Tomb Regent",
       "role": "bruiser",
       "behaviorTemplate": 90002,
       "aerial": false,

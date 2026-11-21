@@ -17398,6 +17398,28 @@
       "Close": 0,
       "Finger": 1,
       "Mask": 1
+    },
+    {
+      "ID": 21,
+      "GuideGroup": 4,
+      "GuideStep": 3,
+      "ShowKing": 1,
+      "Describe": "[[loc:data.guidecfg.21.describe]]",
+      "Offset": -175,
+      "Close": 0,
+      "Finger": 1,
+      "Mask": 1
+    },
+    {
+      "ID": 22,
+      "GuideGroup": 4,
+      "GuideStep": 4,
+      "ShowKing": 0,
+      "Describe": "[[loc:data.guidecfg.22.describe]]",
+      "Offset": 0,
+      "Close": 1,
+      "Finger": 0,
+      "Mask": 0
     }
   ],
   "InGameTaskCfg": [
@@ -42826,6 +42848,116 @@
       "MonsterSource": "monster3/Reaper_OrcShaman",
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002
+    },
+    "91161": {
+      "ID": 91161,
+      "Name": "[[loc:data.monster-roster.91161.name]]",
+      "prefab": "Monster2_Golem_ElderTreant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/golem-eldertreant",
+      "AttackType": 1,
+      "Health": 720,
+      "AttackDamage": 33.75,
+      "AttackInterval": 1.08,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 85,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterSource": "monster2/Golem_ElderTreant",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91161.description]]"
+      },
+      "IsBoss": true
+    },
+    "91162": {
+      "ID": 91162,
+      "Name": "[[loc:data.monster-roster.91162.name]]",
+      "prefab": "Monster1_Beetle_BrassScarab",
+      "loadIcon": "@icon/icons/monster-roster/monster1/beetle-brassscarab",
+      "AttackType": 1,
+      "Health": 57.6,
+      "AttackDamage": 4.5,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 91.8,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterSource": "monster1/Beetle_BrassScarab",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91162.description]]"
+      }
+    },
+    "91163": {
+      "ID": 91163,
+      "Name": "[[loc:data.monster-roster.91163.name]]",
+      "prefab": "Monster3_Reaper_RelicCantor",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-reliccantor",
+      "AttackType": 1,
+      "Health": 120,
+      "AttackDamage": 12.5,
+      "AttackInterval": 0.67,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 85,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91163.description]]"
+      },
+      "MonsterSource": "monster3/Reaper_RelicCantor",
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "91164": {
+      "ID": 91164,
+      "Name": "[[loc:data.monster-roster.91164.name]]",
+      "prefab": "Monster3_Reaper_SunTombRegent",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-suntombregent",
+      "AttackType": 1,
+      "Health": 660,
+      "AttackDamage": 45,
+      "AttackInterval": 1.08,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 85,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91164.description]]"
+      },
+      "MonsterSource": "monster3/Reaper_SunTombRegent",
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
     },
     "92001": {
       "ID": 92001,
@@ -69753,6 +69885,536 @@
       },
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002
+    },
+    "101705": {
+      "ID": 101705,
+      "Name": "[[loc:data.monster-roster.91161.name]]",
+      "prefab": "Monster2_Golem_ElderTreant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/golem-eldertreant",
+      "AttackType": 1,
+      "Health": 600,
+      "AttackDamage": 37.5,
+      "AttackInterval": 1.2,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 94.44444444,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91161.description]]"
+      },
+      "IsBoss": true
+    },
+    "101706": {
+      "ID": 101706,
+      "Name": "[[loc:data.monster-roster.91161.name]]",
+      "prefab": "Monster2_Golem_ElderTreant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/golem-eldertreant",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 35.625,
+      "AttackInterval": 1.2,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 108.61111111,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91161.description]]"
+      },
+      "IsBoss": true
+    },
+    "101707": {
+      "ID": 101707,
+      "Name": "[[loc:data.monster-roster.91161.name]]",
+      "prefab": "Monster2_Golem_ElderTreant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/golem-eldertreant",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 33.75,
+      "AttackInterval": 1.32,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 103.88888888,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91161.description]]"
+      },
+      "IsBoss": true
+    },
+    "101708": {
+      "ID": 101708,
+      "Name": "[[loc:data.monster-roster.91161.name]]",
+      "prefab": "Monster2_Golem_ElderTreant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/golem-eldertreant",
+      "AttackType": 1,
+      "Health": 660,
+      "AttackDamage": 45,
+      "AttackInterval": 1.08,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 89.72222222,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91161.description]]"
+      },
+      "IsBoss": true
+    },
+    "101709": {
+      "ID": 101709,
+      "Name": "[[loc:data.monster-roster.91161.name]]",
+      "prefab": "Monster2_Golem_ElderTreant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/golem-eldertreant",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 46.875,
+      "AttackInterval": 1.02,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 80.27777777,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91161.description]]"
+      },
+      "IsBoss": true
+    },
+    "101710": {
+      "ID": 101710,
+      "Name": "[[loc:data.monster-roster.91162.name]]",
+      "prefab": "Monster1_Beetle_BrassScarab",
+      "loadIcon": "@icon/icons/monster-roster/monster1/beetle-brassscarab",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91162.description]]"
+      }
+    },
+    "101711": {
+      "ID": 101711,
+      "Name": "[[loc:data.monster-roster.91162.name]]",
+      "prefab": "Monster1_Beetle_BrassScarab",
+      "loadIcon": "@icon/icons/monster-roster/monster1/beetle-brassscarab",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.75,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 117.3,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91162.description]]"
+      }
+    },
+    "101712": {
+      "ID": 101712,
+      "Name": "[[loc:data.monster-roster.91162.name]]",
+      "prefab": "Monster1_Beetle_BrassScarab",
+      "loadIcon": "@icon/icons/monster-roster/monster1/beetle-brassscarab",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.5,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 112.2,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91162.description]]"
+      }
+    },
+    "101713": {
+      "ID": 101713,
+      "Name": "[[loc:data.monster-roster.91162.name]]",
+      "prefab": "Monster1_Beetle_BrassScarab",
+      "loadIcon": "@icon/icons/monster-roster/monster1/beetle-brassscarab",
+      "AttackType": 1,
+      "Health": 52.8,
+      "AttackDamage": 6,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 96.9,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91162.description]]"
+      }
+    },
+    "101714": {
+      "ID": 101714,
+      "Name": "[[loc:data.monster-roster.91162.name]]",
+      "prefab": "Monster1_Beetle_BrassScarab",
+      "loadIcon": "@icon/icons/monster-roster/monster1/beetle-brassscarab",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 6.25,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 86.7,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster1",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91162.description]]"
+      }
+    },
+    "101715": {
+      "ID": 101715,
+      "Name": "[[loc:data.monster-roster.91163.name]]",
+      "prefab": "Monster3_Reaper_RelicCantor",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-reliccantor",
+      "AttackType": 1,
+      "Health": 109.09090909,
+      "AttackDamage": 10.41666666,
+      "AttackInterval": 0.74444444,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 89.47368421,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91163.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101716": {
+      "ID": 101716,
+      "Name": "[[loc:data.monster-roster.91163.name]]",
+      "prefab": "Monster3_Reaper_RelicCantor",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-reliccantor",
+      "AttackType": 1,
+      "Health": 130.90909091,
+      "AttackDamage": 9.375,
+      "AttackInterval": 0.67,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 80.52631579,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91163.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101717": {
+      "ID": 101717,
+      "Name": "[[loc:data.monster-roster.91163.name]]",
+      "prefab": "Monster3_Reaper_RelicCantor",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-reliccantor",
+      "AttackType": 1,
+      "Health": 98.18181818,
+      "AttackDamage": 9.89583333,
+      "AttackInterval": 0.74444444,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102.89473684,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91163.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101718": {
+      "ID": 101718,
+      "Name": "[[loc:data.monster-roster.91163.name]]",
+      "prefab": "Monster3_Reaper_RelicCantor",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-reliccantor",
+      "AttackType": 1,
+      "Health": 98.18181818,
+      "AttackDamage": 9.375,
+      "AttackInterval": 0.81888888,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 98.42105263,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91163.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101719": {
+      "ID": 101719,
+      "Name": "[[loc:data.monster-roster.91163.name]]",
+      "prefab": "Monster3_Reaper_RelicCantor",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-reliccantor",
+      "AttackType": 1,
+      "Health": 98.18181818,
+      "AttackDamage": 13.02083333,
+      "AttackInterval": 0.63277777,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 76.05263158,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91163.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002
+    },
+    "101720": {
+      "ID": 101720,
+      "Name": "[[loc:data.monster-roster.91164.name]]",
+      "prefab": "Monster3_Reaper_SunTombRegent",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-suntombregent",
+      "AttackType": 1,
+      "Health": 600,
+      "AttackDamage": 37.5,
+      "AttackInterval": 1.2,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 89.47368421,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91164.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101721": {
+      "ID": 101721,
+      "Name": "[[loc:data.monster-roster.91164.name]]",
+      "prefab": "Monster3_Reaper_SunTombRegent",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-suntombregent",
+      "AttackType": 1,
+      "Health": 720,
+      "AttackDamage": 33.75,
+      "AttackInterval": 1.08,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 80.52631579,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91164.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101722": {
+      "ID": 101722,
+      "Name": "[[loc:data.monster-roster.91164.name]]",
+      "prefab": "Monster3_Reaper_SunTombRegent",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-suntombregent",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 35.625,
+      "AttackInterval": 1.2,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102.89473684,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91164.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101723": {
+      "ID": 101723,
+      "Name": "[[loc:data.monster-roster.91164.name]]",
+      "prefab": "Monster3_Reaper_SunTombRegent",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-suntombregent",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 33.75,
+      "AttackInterval": 1.32,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 98.42105263,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91164.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101724": {
+      "ID": 101724,
+      "Name": "[[loc:data.monster-roster.91164.name]]",
+      "prefab": "Monster3_Reaper_SunTombRegent",
+      "loadIcon": "@icon/icons/monster-roster/monster3/reaper-suntombregent",
+      "AttackType": 1,
+      "Health": 540,
+      "AttackDamage": 46.875,
+      "AttackInterval": 1.02,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 76.05263158,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91164.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
     }
   },
   "TalentCfg": {
@@ -80887,6 +81549,78 @@
       },
       "enemy:101704:default": {
         "attack": 0.45
+      },
+      "enemy:101705:default": {
+        "attack": 0.3583333
+      },
+      "enemy:91161:default": {
+        "attack": 0.3583333
+      },
+      "enemy:101706:default": {
+        "attack": 0.3583333
+      },
+      "enemy:101707:default": {
+        "attack": 0.3583333
+      },
+      "enemy:101708:default": {
+        "attack": 0.3583333
+      },
+      "enemy:101709:default": {
+        "attack": 0.3583333
+      },
+      "enemy:101710:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91162:default": {
+        "attack": 0.6666667
+      },
+      "enemy:101711:default": {
+        "attack": 0.6666667
+      },
+      "enemy:101712:default": {
+        "attack": 0.6666667
+      },
+      "enemy:101713:default": {
+        "attack": 0.6666667
+      },
+      "enemy:101714:default": {
+        "attack": 0.6666667
+      },
+      "enemy:101715:default": {
+        "attack": 0.45
+      },
+      "enemy:101716:default": {
+        "attack": 0.45
+      },
+      "enemy:101717:default": {
+        "attack": 0.45
+      },
+      "enemy:101718:default": {
+        "attack": 0.45
+      },
+      "enemy:91163:default": {
+        "attack": 0.45
+      },
+      "enemy:101719:default": {
+        "attack": 0.45
+      },
+      "enemy:101720:default": {
+        "attack": 0.45
+      },
+      "enemy:101721:default": {
+        "attack": 0.45
+      },
+      "enemy:101722:default": {
+        "attack": 0.45
+      },
+      "enemy:101723:default": {
+        "attack": 0.45
+      },
+      "enemy:91164:default": {
+        "attack": 0.45
+      },
+      "enemy:101724:default": {
+        "attack": 0.45
       }
     },
     "visuals": {
@@ -84378,6 +85112,78 @@
       },
       "enemy:101704:default": {
         "mirrorX": true
+      },
+      "enemy:101705:default": {
+        "mirrorX": true
+      },
+      "enemy:91161:default": {
+        "mirrorX": true
+      },
+      "enemy:101706:default": {
+        "mirrorX": true
+      },
+      "enemy:101707:default": {
+        "mirrorX": true
+      },
+      "enemy:101708:default": {
+        "mirrorX": true
+      },
+      "enemy:101709:default": {
+        "mirrorX": true
+      },
+      "enemy:101710:default": {
+        "mirrorX": true
+      },
+      "enemy:91162:default": {
+        "mirrorX": true
+      },
+      "enemy:101711:default": {
+        "mirrorX": true
+      },
+      "enemy:101712:default": {
+        "mirrorX": true
+      },
+      "enemy:101713:default": {
+        "mirrorX": true
+      },
+      "enemy:101714:default": {
+        "mirrorX": true
+      },
+      "enemy:101715:default": {
+        "mirrorX": true
+      },
+      "enemy:101716:default": {
+        "mirrorX": true
+      },
+      "enemy:101717:default": {
+        "mirrorX": true
+      },
+      "enemy:101718:default": {
+        "mirrorX": true
+      },
+      "enemy:91163:default": {
+        "mirrorX": true
+      },
+      "enemy:101719:default": {
+        "mirrorX": true
+      },
+      "enemy:101720:default": {
+        "mirrorX": true
+      },
+      "enemy:101721:default": {
+        "mirrorX": true
+      },
+      "enemy:101722:default": {
+        "mirrorX": true
+      },
+      "enemy:101723:default": {
+        "mirrorX": true
+      },
+      "enemy:91164:default": {
+        "mirrorX": true
+      },
+      "enemy:101724:default": {
+        "mirrorX": true
       }
     },
     "unitTypes": {
@@ -85587,7 +86393,31 @@
       "enemy:101702:default": "vanguard",
       "enemy:101703:default": "skirmisher",
       "enemy:91160:default": "bruiser",
-      "enemy:101704:default": "mystic"
+      "enemy:101704:default": "mystic",
+      "enemy:101705:default": "fighter",
+      "enemy:91161:default": "guardian",
+      "enemy:101706:default": "vanguard",
+      "enemy:101707:default": "skirmisher",
+      "enemy:101708:default": "bruiser",
+      "enemy:101709:default": "mystic",
+      "enemy:101710:default": "fighter",
+      "enemy:91162:default": "guardian",
+      "enemy:101711:default": "vanguard",
+      "enemy:101712:default": "skirmisher",
+      "enemy:101713:default": "bruiser",
+      "enemy:101714:default": "mystic",
+      "enemy:101715:default": "fighter",
+      "enemy:101716:default": "guardian",
+      "enemy:101717:default": "vanguard",
+      "enemy:101718:default": "skirmisher",
+      "enemy:91163:default": "bruiser",
+      "enemy:101719:default": "mystic",
+      "enemy:101720:default": "fighter",
+      "enemy:101721:default": "guardian",
+      "enemy:101722:default": "vanguard",
+      "enemy:101723:default": "skirmisher",
+      "enemy:91164:default": "bruiser",
+      "enemy:101724:default": "mystic"
     },
     "unitLevels": {
       "ally:90001:level:2": {
@@ -85663,7 +86493,7 @@
     },
     "unitProfiles": {
       "version": 1,
-      "nextId": 101705,
+      "nextId": 101725,
       "entries": {
         "100000": {
           "baseId": 90001,
@@ -97479,6 +98309,286 @@
           },
           "visual": {},
           "fightingProfile": true
+        },
+        "101705": {
+          "baseId": 91161,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 600,
+            "AttackDamage": 37.5,
+            "AttackInterval": 1.2,
+            "Speed": 94.44444444
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101706": {
+          "baseId": 91161,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 540,
+            "AttackDamage": 35.625,
+            "AttackInterval": 1.2,
+            "Speed": 108.61111111
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101707": {
+          "baseId": 91161,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 540,
+            "AttackDamage": 33.75,
+            "AttackInterval": 1.32,
+            "Speed": 103.88888888
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101708": {
+          "baseId": 91161,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 660,
+            "AttackDamage": 45,
+            "AttackInterval": 1.08,
+            "Speed": 89.72222222
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101709": {
+          "baseId": 91161,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 540,
+            "AttackDamage": 46.875,
+            "AttackInterval": 1.02,
+            "Speed": 80.27777777
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101710": {
+          "baseId": 91162,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101711": {
+          "baseId": 91162,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.75,
+            "AttackInterval": 1,
+            "Speed": 117.3
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101712": {
+          "baseId": 91162,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.5,
+            "AttackInterval": 1.1,
+            "Speed": 112.2
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101713": {
+          "baseId": 91162,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 52.8,
+            "AttackDamage": 6,
+            "AttackInterval": 0.9,
+            "Speed": 96.9
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101714": {
+          "baseId": 91162,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 6.25,
+            "AttackInterval": 0.85,
+            "Speed": 86.7
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101715": {
+          "baseId": 91163,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 109.09090909,
+            "AttackDamage": 10.41666666,
+            "AttackInterval": 0.74444444,
+            "Speed": 89.47368421
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101716": {
+          "baseId": 91163,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 130.90909091,
+            "AttackDamage": 9.375,
+            "AttackInterval": 0.67,
+            "Speed": 80.52631579
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101717": {
+          "baseId": 91163,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 98.18181818,
+            "AttackDamage": 9.89583333,
+            "AttackInterval": 0.74444444,
+            "Speed": 102.89473684
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101718": {
+          "baseId": 91163,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 98.18181818,
+            "AttackDamage": 9.375,
+            "AttackInterval": 0.81888888,
+            "Speed": 98.42105263
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101719": {
+          "baseId": 91163,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 98.18181818,
+            "AttackDamage": 13.02083333,
+            "AttackInterval": 0.63277777,
+            "Speed": 76.05263158
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101720": {
+          "baseId": 91164,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 600,
+            "AttackDamage": 37.5,
+            "AttackInterval": 1.2,
+            "Speed": 89.47368421
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101721": {
+          "baseId": 91164,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 720,
+            "AttackDamage": 33.75,
+            "AttackInterval": 1.08,
+            "Speed": 80.52631579
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101722": {
+          "baseId": 91164,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 540,
+            "AttackDamage": 35.625,
+            "AttackInterval": 1.2,
+            "Speed": 102.89473684
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101723": {
+          "baseId": 91164,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 540,
+            "AttackDamage": 33.75,
+            "AttackInterval": 1.32,
+            "Speed": 98.42105263
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101724": {
+          "baseId": 91164,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 540,
+            "AttackDamage": 46.875,
+            "AttackInterval": 1.02,
+            "Speed": 76.05263158
+          },
+          "visual": {},
+          "fightingProfile": true
         }
       },
       "families": {
@@ -100559,7 +101669,7 @@
         },
         "91154": {
           "modelKey": "source:monster1/Slime_Spore",
-          "name": "Spore Slime",
+          "name": "Lightning Slime",
           "profiles": {
             "fighter": 91154,
             "guardian": 101670,
@@ -100689,6 +101799,82 @@
             "Speed": 89.47368421
           },
           "referenceId": 91160
+        },
+        "91161": {
+          "name": "Elder Treant",
+          "modelKey": "source:monster2/Golem_ElderTreant",
+          "profiles": {
+            "fighter": 101705,
+            "guardian": 91161,
+            "vanguard": 101706,
+            "skirmisher": 101707,
+            "bruiser": 101708,
+            "mystic": 101709
+          },
+          "baseline": {
+            "Health": 600,
+            "AttackDamage": 37.5,
+            "AttackInterval": 1.2,
+            "Speed": 94.44444444
+          },
+          "referenceId": 91161
+        },
+        "91162": {
+          "name": "Brass Scarab",
+          "modelKey": "source:monster1/Beetle_BrassScarab",
+          "profiles": {
+            "fighter": 101710,
+            "guardian": 91162,
+            "vanguard": 101711,
+            "skirmisher": 101712,
+            "bruiser": 101713,
+            "mystic": 101714
+          },
+          "baseline": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "referenceId": 91162
+        },
+        "91163": {
+          "name": "Relic Cantor",
+          "modelKey": "source:monster3/Reaper_RelicCantor",
+          "profiles": {
+            "fighter": 101715,
+            "guardian": 101716,
+            "vanguard": 101717,
+            "skirmisher": 101718,
+            "bruiser": 91163,
+            "mystic": 101719
+          },
+          "baseline": {
+            "Health": 109.09090909,
+            "AttackDamage": 10.41666666,
+            "AttackInterval": 0.74444444,
+            "Speed": 89.47368421
+          },
+          "referenceId": 91163
+        },
+        "91164": {
+          "name": "Sun-Tomb Regent",
+          "modelKey": "source:monster3/Reaper_SunTombRegent",
+          "profiles": {
+            "fighter": 101720,
+            "guardian": 101721,
+            "vanguard": 101722,
+            "skirmisher": 101723,
+            "bruiser": 91164,
+            "mystic": 101724
+          },
+          "baseline": {
+            "Health": 600,
+            "AttackDamage": 37.5,
+            "AttackInterval": 1.2,
+            "Speed": 89.47368421
+          },
+          "referenceId": 91164
         }
       },
       "aliases": {
@@ -100867,7 +102053,9 @@
       "enemy:91156:default": "boss",
       "enemy:91157:default": "boss",
       "enemy:91158:default": "boss",
-      "enemy:91159:default": "elite"
+      "enemy:91159:default": "elite",
+      "enemy:91161:default": "boss",
+      "enemy:91164:default": "boss"
     }
   },
   "AllyCfg": {

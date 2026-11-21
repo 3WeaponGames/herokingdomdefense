@@ -965,7 +965,7 @@
     },
     {
       "id": "monster1/Slime_Spore",
-      "name": "Spore Slime",
+      "name": "Lightning Slime",
       "pack": "monster1",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
       "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Spore.json",
@@ -1038,6 +1038,25 @@
       "bones": 9,
       "slots": 6,
       "variantOf": "monster1/Slime_Purple"
+    },
+    {
+      "id": "monster1/Beetle_BrassScarab",
+      "name": "Brass Scarab",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Beetle/Beetle_Iron.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/SunTombVariants/Beetle_BrassScarab.json",
+      "uuid": "d45a928c-e960-5fbb-aaa1-c6de012b07ff",
+      "resource": "unit-library/monster1/Units/SunTombVariants/Beetle_BrassScarab",
+      "animations": [
+        "move",
+        "idle",
+        "hit",
+        "die",
+        "attack"
+      ],
+      "bones": 12,
+      "slots": 6,
+      "variantOf": "monster1/Beetle_Iron"
     }
   ],
   "parts": [

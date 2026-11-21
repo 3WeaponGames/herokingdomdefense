@@ -1,47 +1,47 @@
 
 Slime_Spore.png
-size: 1024,256
+size: 2048,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Slime_Spore_Body
   rotate: false
   xy: 2, 2
-  size: 171, 160
-  orig: 171, 160
-  offset: 0, 0
-  index: -1
-u_b0f6c00bb569bf8478dd1e9c5ccc51a5
-  rotate: false
-  xy: 177, 2
-  size: 113, 158
-  orig: 113, 158
+  size: 173, 162
+  orig: 173, 162
   offset: 0, 0
   index: -1
 Slime_Spore_Attack
   rotate: false
-  xy: 294, 2
-  size: 181, 150
-  orig: 181, 150
+  xy: 179, 2
+  size: 220, 158
+  orig: 220, 158
+  offset: 0, 0
+  index: -1
+u_b0f6c00bb569bf8478dd1e9c5ccc51a5
+  rotate: false
+  xy: 403, 2
+  size: 113, 158
+  orig: 113, 158
   offset: 0, 0
   index: -1
 Slime_Spore_Hit
   rotate: false
-  xy: 479, 2
-  size: 167, 150
-  orig: 167, 150
+  xy: 520, 2
+  size: 213, 154
+  orig: 213, 154
   offset: 0, 0
   index: -1
 Slime_Spore_Hit_2
   rotate: false
-  xy: 650, 2
-  size: 167, 150
-  orig: 167, 150
+  xy: 737, 2
+  size: 213, 154
+  orig: 213, 154
   offset: 0, 0
   index: -1
 u_5dd6d929e4554704395ec53c54169df4
   rotate: false
-  xy: 821, 2
+  xy: 954, 2
   size: 183, 59
   orig: 183, 59
   offset: 0, 0

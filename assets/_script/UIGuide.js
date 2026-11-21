@@ -265,8 +265,7 @@ var def_UIGuide = function (t) {
       this.tipText.string = t;
       if (this.cfg.showAni) {
         this.spAni.node.active = true;
-        this.spAni.setAnimation(0, "speak", true);
-        this.spAni.addAnimation(0, "idle", true, 2);
+        this.spAni.setAnimation(0, "idle", true);
       } else {
         this.spAni.node.active = false;
       }

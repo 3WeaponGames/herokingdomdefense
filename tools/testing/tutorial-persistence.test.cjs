@@ -23,6 +23,20 @@ test('a failed tutorial journal grants nothing, and a durable retry grants the f
  h.state.failKeys.clear();assert(draw(h));assert.equal(h.player.guideData.getGuideTips(5),1);assert.equal(draw(h),null);
 });
 
+test('a failed weapon save leaves the equipped weapon available for a retry',()=>{
+ const h=harness(),user=h.player.udata;
+ h.state.failKeys.add(user.gameKey);
+ assert.equal(user.setHeroWeapon('fighter'),false);
+ assert.equal(user.getHeroWeapon().id,'skirmisher');
+ assert.equal(user.data.heroWeapon,undefined);
+ h.state.failKeys.clear();
+ assert.equal(user.setHeroWeapon('fighter'),true);
+ assert.equal(harness(h.persist()).player.udata.getHeroWeapon().id,'fighter');
+ h.state.failKeys.add(user.gameKey);
+ assert.equal(user.setHeroWeapon('mystic'),false);
+ assert.equal(user.getHeroWeapon().id,'fighter');
+});
+
 test('tutorial-only draws cannot be used outside the relic lesson or mixed with paid or ad draws',()=>{
  const h=harness(),before=clone(h.player.udata.data);assert.equal(draw(h),null);assert.deepEqual(clone(h.player.udata.data),before);h.player.guideData.setGuideState(5,1);assert.equal(h.player.drawTreasures(box,2,[],false,true),null);assert.equal(h.player.drawTreasures(box,1,[],true,true),null);assert.equal(h.player.drawTreasures(box,1,[{id:2002,num:100}],false,true),null);assert.equal(h.player.guideData.getGuideTips(5),0);
 });

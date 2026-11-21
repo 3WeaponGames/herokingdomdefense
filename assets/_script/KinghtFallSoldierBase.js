@@ -139,6 +139,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this._retaliationPosition = null;
     this._retaliationScope = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t, "ally");
+    if (this.cfg.UnitAttack) this.cfg = require("UnitAttackRules").runtimeCfg(this.cfg);
     life.cfg = this.cfg;
     this._unitBaseCfg = this.cfg;
     if (this.spAni) this.setLeft(false);
@@ -488,10 +489,11 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.doAttackStart = function () {
     if (GameToolsOverrides.isPending(this)) return;
     if (!this.captureAttackTarget()) return;
+    var configured = this.cfg && this.cfg.UnitAttack && require("UnitAttackRules").active(this.cfg);
     this.state = s.Attack;
     this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
-    this.time[l.Attack] = -1;
-    GameToolsOverrides.attack(this, "ally", this.doAttack);
+    this.time[l.Attack] = configured && configured.delivery === "ranged" ? 0 : -1;
+    GameToolsOverrides.attack(this, "ally", configured ? require("UnitAttackCombat").releaseAlly : this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
     var owner = this, ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, node = this.node, generation = node && node._combatGeneration, timers = this.time;

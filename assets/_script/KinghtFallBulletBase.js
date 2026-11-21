@@ -59,6 +59,7 @@ var def_KinghtFallBulletBase = function (t) {
     if (this._projectileVisual) this._projectileVisual.reset();
     this._launchProjectileLook = null;
     this.state = 2;
+    this._unitAttackFlight = null;
     this._shot = null;
     this.callAttack = null;
     this.targetIsLive = null;
@@ -88,6 +89,7 @@ var def_KinghtFallBulletBase = function (t) {
     this.tagPos.x=point.x;this.tagPos.y=point.y;return this.tagPos;
   };
   _ctor.prototype.onUpdate = function (t) {
+    if (this._unitAttackFlight) return require("UnitAttackCombat").advance(this, t);
     if (this._projectileVisual) this._projectileVisual.step(t);
     switch (this.state) {
       case 0:

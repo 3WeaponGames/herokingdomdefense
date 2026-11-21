@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "e270f27f-bb2c-507a-af77-200e613989bc",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "Golem_ElderTreant": {
+      "ver": "1.0.6",
+      "uuid": "f7cb692c-b1a3-52b6-a59c-ce2ab274f572",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "e270f27f-bb2c-507a-af77-200e613989bc",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

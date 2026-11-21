@@ -962,6 +962,44 @@
       "bones": 17,
       "slots": 9,
       "variantOf": "monster3/Reaper_Death"
+    },
+    {
+      "id": "monster3/Reaper_RelicCantor",
+      "name": "Relic Cantor",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Reaper/Reaper_Death.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/SunTombVariants/Reaper_RelicCantor.json",
+      "uuid": "ea31adcc-6a8f-545a-ad7d-030e0ae8a3ea",
+      "resource": "unit-library/monster3/Units/SunTombVariants/Reaper_RelicCantor",
+      "animations": [
+        "idle",
+        "move",
+        "die",
+        "attack",
+        "hit"
+      ],
+      "bones": 17,
+      "slots": 9,
+      "variantOf": "monster3/Reaper_Death"
+    },
+    {
+      "id": "monster3/Reaper_SunTombRegent",
+      "name": "Sun-Tomb Regent",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Reaper/Reaper_Blood.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/SunTombVariants/Reaper_SunTombRegent.json",
+      "uuid": "a02b5c02-31c9-583c-a5a0-66d9eb794a99",
+      "resource": "unit-library/monster3/Units/SunTombVariants/Reaper_SunTombRegent",
+      "animations": [
+        "idle",
+        "move",
+        "die",
+        "attack",
+        "hit"
+      ],
+      "bones": 17,
+      "slots": 9,
+      "variantOf": "monster3/Reaper_Blood"
     }
   ],
   "parts": [

@@ -350,8 +350,8 @@ View.prototype.step = function (dt) {
     var sequence=descriptor.loopFrames;this.renderer.spriteFrame = this.clip.frames[sequence&&sequence.length?sequence[Math.floor(this.age*descriptor.fps)%sequence.length]:Math.floor(this.age * descriptor.fps) % descriptor.frames];
   }
 };
-View.prototype.impact = function (emitImpact) {
-  if (valid(this.node)) this.node.active = false;
+View.prototype.impact = function (emitImpact, continueFlight) {
+  if (!continueFlight && valid(this.node)) this.node.active = false;
   if (emitImpact === false) return;
   var shot = this.shot, bank = this.bank, epoch = bank.owner._combatEpoch;
   bank.effect(this.impactDescriptor, shot.node.parent, shot.node.getPosition(), shot.node.angle, this.options || { size: 48 }, function () { return !bank.dead && bank.owner._combatEpoch === epoch; });

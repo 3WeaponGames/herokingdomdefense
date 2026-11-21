@@ -64,6 +64,7 @@ function mount(root,api){
   el('p','Choose a projectile, match its launch to the attack animation, then Save. Damage and range are edited in Units. Flight speed is in Units for characters and Buildings for towers.',left).className='projectile-note';
   el('p','Silent, looping preview. Click the active Pause button or press Space to pause and resume. Save applies this unit’s projectile, scale, launch delay and trail color.',right).className='projectile-note';
   let snapshot=null,unit='hero',selected=null,selectionTouched=false,trailTouched=false,trailValue;
+  let focusSequence=0;
   let closed=false,queue=Promise.resolve(),raf=0,libraryRaf=0,age=0,last=0,mode='all',paused=false,actor=null,target=null,actorRequest=0,locked=false,generation=0,deferredAssignments=false;
   const eventScope=root.getRootNode(),eventPath=event=>typeof event.composedPath==='function'?event.composedPath():[event.target];
   const focusedElement=()=>{let focused=eventScope.activeElement||document.activeElement;while(focused&&focused.shadowRoot&&focused.shadowRoot.activeElement)focused=focused.shadowRoot.activeElement;return focused;};
@@ -230,7 +231,23 @@ function mount(root,api){
         if(flightAge>=0&&time<arrival){const ratio=flightAge/travel,x=origin.x+delta.x*ratio,y=origin.y+delta.y*ratio;if(!flight||!flight.visualLayers)drawTrail(x,y,flightAge,speed,Object.assign({},options,{previewHeading:heading}));draw(flight,x,y,flightAge,Object.assign({},options,{previewSpeed:speed,previewHeading:heading,rotation:(options.rotation||0)-heading}),true);}if(hitAge>=0){combat.defaultHit(ctx,560,230,hitAge,70,actor);draw(impact,560,230,hitAge,options,false);}phase.textContent=playback===0?'Animation frozen in Characters':time<delay?'Attack windup':time<arrival?'Launch → flight':hitAge<.55?'Hit':'Ready · repeating';}
     }if(paused&&snapshot)phase.textContent='Paused · '+phase.textContent;raf=requestAnimationFrame(tick);
   }
-  run(async()=>{apply(await api.ipc('load',{}));loadActors();});raf=requestAnimationFrame(tick);
-  return{destroy(){closed=true;for(const {scope,listener}of pickerPointerListeners)scope.removeEventListener('pointerdown',listener,true);root.removeEventListener('keydown',playbackKeyDown);actorRequest++;cancelAnimationFrame(raf);cancelAnimationFrame(libraryRaf);combat.destroy();visuals.destroy();root.innerHTML='';images.clear();spines.destroy();}};
+  function selectFocus(request){
+    if(closed||!request||request.sequence<focusSequence||!snapshot.units.some(person=>person.key===request.key))return false;
+    focusSequence=request.sequence;
+    unitSelect.value=request.key;
+    unitSelect.onchange();
+    return true;
+  }
+  function focusUnit(request){
+    return run(async()=>{
+      if(request.sequence<focusSequence)return;
+      const value=await api.ipc('load',{});
+      if(closed)return;
+      apply(value);
+      selectFocus(value.focus&&value.focus.sequence>request.sequence?value.focus:request);
+    });
+  }
+  run(async()=>{const value=await api.ipc('load',{});apply(value);if(!selectFocus(value.focus)&&!closed)loadActors();});raf=requestAnimationFrame(tick);
+  return{focusUnit,destroy(){closed=true;for(const {scope,listener}of pickerPointerListeners)scope.removeEventListener('pointerdown',listener,true);root.removeEventListener('keydown',playbackKeyDown);actorRequest++;cancelAnimationFrame(raf);cancelAnimationFrame(libraryRaf);combat.destroy();visuals.destroy();root.innerHTML='';images.clear();spines.destroy();}};
 }
 module.exports={mount,createSpineCache};

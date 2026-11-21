@@ -112,6 +112,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this._targetSearchCache = null;
     this._unreachableTargets = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    if (this.cfg.UnitAttack) this.cfg = require("UnitAttackRules").runtimeCfg(this.cfg);
     life.cfg = this.cfg;
     if (this.spAni) this.setLeft(false);
     this.bornInfo = $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
@@ -517,6 +518,8 @@ var def_KinghtFallEnemyBase = function (t) {
     var record = { ui: ui, game: game, data: game && game.gameData, epoch: game && game._combatEpoch, stage: game && game.gameStatus,
       node: node, generation: node && node._combatGeneration, timers: this.time, renderer: renderer };
     if (!attackCurrent(this, record)) return;
+    var configured = this.cfg && this.cfg.UnitAttack && require("UnitAttackRules").active(this.cfg);
+    record.configured = !!configured;
     if (this._unitTestActor) {
       var target = this.getUpdateTarget();
       if (target && target.canAtt) this.setLeft(Navigation.attackPositionOf(target, this, game).x < node.x);
@@ -533,14 +536,16 @@ var def_KinghtFallEnemyBase = function (t) {
     }
     // Ranged attacks count their cooldown from animation start; melee waits
     // for its damage release. Both must register the same owned TrackEntry.
-    this.time[s.Attack] = startCooldown === 0 ? 0 : -1;
-    GameToolsOverrides.attack(this, "enemy", this.doAttack);
+    var cooldownAtStart = configured ? configured.delivery === "ranged" : startCooldown === 0;
+    this.time[s.Attack] = cooldownAtStart ? 0 : -1;
+    GameToolsOverrides.attack(this, "enemy", configured ? require("UnitAttackCombat").releaseEnemy : this.doAttack);
   };
   _ctor.prototype._completeAttackAnimation = function (renderer, entry) {
     var record = this._attackAnimation;
     if (!record || record.renderer !== renderer || record.entry !== entry || !attackCurrent(this, record)) return;
     this._attackAnimation = null;
-    this.doAttackFinish();
+    if (record.configured) _ctor.prototype.doAttackFinish.call(this);
+    else this.doAttackFinish();
   };
   _ctor.prototype.doAttack = function () {
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;

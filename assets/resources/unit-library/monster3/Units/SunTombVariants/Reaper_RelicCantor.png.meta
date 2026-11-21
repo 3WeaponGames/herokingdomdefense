@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "16101a70-2f7b-5b2c-ad2f-f8680b689ce2",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "Reaper_RelicCantor": {
+      "ver": "1.0.6",
+      "uuid": "2e76b555-a064-5a20-a550-5965264a9b92",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "16101a70-2f7b-5b2c-ad2f-f8680b689ce2",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

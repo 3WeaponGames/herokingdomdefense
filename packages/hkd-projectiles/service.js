@@ -1,6 +1,8 @@
 'use strict';
 const fs=require('fs'),path=require('path'),crypto=require('crypto'),url=require('url');
 const Document=require('../game-data-editor/lib/json-document');
+const Records=require('../game-data-editor/lib/unit-records');
+const UnitAttack=require('../../assets/_script/UnitAttackRules');
 const {commit}=require('../hkd-characters/lib/asset-transaction');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const parse=text=>JSON.parse(text.replace(/^\uFEFF/,''));
@@ -10,8 +12,14 @@ const finite=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&v
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
 const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 function towers(data){return (data.BuildEnum[2].levelList||[]).map((row,index)=>({row,index,key:'tower:2:'+(index+1)})).filter(item=>item.row.Tower&&['cannon','sniper'].includes(item.row.Tower.attackType));}
+function unitTarget(data,key){
+  const match=typeof key==='string'&&/^(enemy|ally):([1-9]\d*)$/.exec(key);
+  if(!match||!Records.reachable(data,match[1],match[2],Records.form(match[1],match[2])))return null;
+  const type=match[1],id=Number(match[2]);
+  return {key,type,id,record:Records.record(data,type,id)};
+}
 class ProjectilesService {
-  constructor(root){this.root=path.resolve(root);this.relative='assets/resources/projectiles/catalog.json';this.file=path.join(this.root,this.relative);this.version=0;this.reload();}
+  constructor(root){this.root=path.resolve(root);this.relative='assets/resources/projectiles/catalog.json';this.file=path.join(this.root,this.relative);this.version=0;this.focusedUnits=new Set();this.reload();}
   invalidateAssets(){
     this.trailDefaults=new Map();this.shotSpeeds=new Map();this.portraits=new Map();this.modelDefaults=new Map();
     require('../game-data-editor/lib/unit-assets').invalidate();
@@ -20,16 +28,32 @@ class ProjectilesService {
     this.invalidateAssets();this.catalogs=new Map();this.text=fs.readFileSync(this.file,'utf8');this.original=parse(this.text);this.data=clone(this.original);this.revision=hash(this.text);
     this.configRelative='assets/KinghtFallConfig/GameJsonCfg.json';this.configFile=path.join(this.root,this.configRelative);this.configText=fs.readFileSync(this.configFile,'utf8');this.configData=parse(this.configText);this.configRevision=hash(this.configText);
     this.originalSpeeds=Object.fromEntries(towers(this.configData).map(item=>[item.key,require('../../assets/_script/TowerCombat').settings(item.row).projectileSpeed]));this.speeds=clone(this.originalSpeeds);this.timings={};
-    const settings=this.configData.GameTools||{};
     for(const who of this.units()){
-      const animated=['hero','enemy','ally'].includes(who.type),saved=animated?settings.timings&&settings.timings[timingKey(who)]:this.data.assignments[who.key],field=animated?'attack':'launchDelay';
-      // An explicit malformed override suppresses the saved default in combat.
-      // Represent it as zero in the draft without repairing its stored bytes;
-      // retaining its key also lets an explicit Reset restore inheritance.
-      const inherited=animated&&object(saved)&&saved.inherit===true&&!own(saved,'attack');
-      if(saved!==undefined&&!inherited&&(animated||own(saved,field))){const delay=saved&&saved[field];this.timings[who.key]=finite(delay)?delay:0;}
+      const delay=this.savedTiming(who);
+      if(delay!==undefined)this.timings[who.key]=delay;
     }
     this.originalTimings=clone(this.timings);this.version++;return this.snapshot();
+  }
+  savedTiming(who){
+    const animated=['hero','enemy','ally'].includes(who.type),settings=this.configData.GameTools||{};
+    const saved=animated?settings.timings&&settings.timings[timingKey(who)]:this.data.assignments[who.key],field=animated?'attack':'launchDelay';
+    const inherited=animated&&object(saved)&&saved.inherit===true&&!own(saved,'attack');
+    if(saved===undefined||inherited||!animated&&!own(saved,field))return undefined;
+    // Keep malformed overrides resettable without changing their saved bytes.
+    const delay=saved&&saved[field];
+    return finite(delay)?delay:0;
+  }
+  focusUnit(key){
+    if(!this.dirty()&&hash(fs.readFileSync(this.configFile))!==this.configRevision)this.reload();
+    const target=unitTarget(this.configData,key);
+    if(!target)throw Error('Choose an existing unit. Save newly created units before assigning a projectile.');
+    if(UnitAttack.attackType(target.record)!==2&&!this.focusedUnits.has(key)){
+      // The Units panel can open this assignment while its ranged delivery is a draft.
+      this.focusedUnits.add(key);
+      const delay=this.savedTiming(target);
+      if(delay!==undefined)this.timings[key]=this.originalTimings[key]=delay;
+    }
+    return key;
   }
   config(){return clone(this.configData);}
   readCatalog(relative,fallback){
@@ -67,16 +91,17 @@ class ProjectilesService {
     const data=this.configData,settings=data.GameTools||{},entries=this.readCatalog('assets/resources/localization/catalog.json').entries;
     const label=text=>String(text||'').replace(/\[\[loc:([^\]]+)\]\]/g,(_,key)=>entries[key]&&entries[key].en||key);
     const items=this.readCatalog('assets/resources/hero-items/catalog.json',{assignments:{},profiles:{}});
-    const {select,selectSource}=require('../../assets/_script/ProjectileLooks'),Records=require('../game-data-editor/lib/unit-records'),Fighting=require('../game-data-editor/lib/fighting-profiles');
+    const {select,selectSource}=require('../../assets/_script/ProjectileLooks'),Fighting=require('../game-data-editor/lib/fighting-profiles');
+    const ranged=(row,side)=>UnitAttack.attackType(row)===2||this.focusedUnits.has(side+':'+row.ID);
     const previewTiers=data.EquipCfg.find(row=>row.id===3).levelInfo.map(level=>{const profile=items.profiles[items.assignments['3:'+level.Level]],choice=select({assets:this.data.assets,assignments:{},heroArrowLayer:this.data.heroArrowLayer,heroArrowTiers:this.data.heroArrowTiers},'hero',level.Level,profile,level.EquipSkin);return {level:level.Level,flight:choice.flight||'hero-skin:'+level.EquipSkin,tint:choice.tint};});
-    const enemyProjectiles=Object.values(data.SoldierCfg).filter(row=>row.AttackType===2).map(row=>{
+    const enemyProjectiles=Object.values(data.SoldierCfg).filter(row=>ranged(row,'enemy')).map(row=>{
       let defaults=this.modelDefaults.get(row.ID);if(!defaults){defaults={};if(row.MonsterPack==='fantasy-bosses')try{const json=require('../game-data-editor/lib/unit-assets').describe(this.root,{type:'enemy',id:row.ID,noRuntime:true,noShared:true,documents:{A:{data}}}).layers[0].json;defaults=json._fantasy&&json._fantasy.effects&&json._fantasy.effects.projectile||{};}catch(_){/* Missing draft model keeps the original preview. */}this.modelDefaults.set(row.ID,defaults);}
       const family=Fighting.familyFor(settings,row.ID),role=(settings.unitTypeAssignments||{})['enemy:'+row.ID+':'+Records.form('enemy',row.ID)],roleName=role&&((settings.unitTypes||{})[role]||{}).name,legacy=settings.unitProfiles&&settings.unitProfiles.aliases&&settings.unitProfiles.aliases[row.ID],behavior=Records.behavior(row,row.ID);
       return {key:'enemy:'+row.ID,type:'enemy',id:row.ID,name:(family?family.name:label(row.Name))+' · Enemy'+(family&&role?' · '+label(roleName||role):'')+(legacy?' · Legacy '+row.ID:''),speed:500,defaultFlight:defaults.flight||(behavior===90008?'original:fireball':behavior===90005?'original:stone':'original:arrow'),defaultLaunch:defaults.launch,defaultImpact:defaults.impact,defaultSize:defaults.size};
     });
     const buildings=[1,2].flatMap(id=>(data.BuildEnum[id].levelList||[]).map((row,index)=>({key:'tower:'+id+':'+(index+1),type:'building',id,levelIndex:index,name:label(row.Name)+' · '+(id===1?'Castle':'Tower'),speed:this.speeds['tower:'+id+':'+(index+1)]||row.Tower&&row.Tower.projectileSpeed||550,...(row.Tower&&['cannon','sniper'].includes(row.Tower.attackType)?{speedEditable:true,builtinFlight:row.Tower.attackType}:{}),defaultFlight:'original:arrow'})));
     for(const [index,row]of ((data.BuildEnum[5]||{}).levelList||[]).entries())if(row.MillDefense&&row.MillDefense.kind==='scarecrow')buildings.push({key:'tower:5:'+(index+1),type:'building',id:5,levelIndex:index,name:label(row.Name)+' · Scarecrow defense',speed:450,defaultFlight:'original:arrow'});
-    const units=[{key:'hero',type:'hero',id:'hero',name:'Skirmisher hero',speed:500,defaultFlight:previewTiers[0].flight,previewTiers},{key:'tower',type:'building',id:2,levelIndex:0,name:'Castle & arrow towers · shared default',speed:550,defaultFlight:'original:arrow'}].concat(buildings,[{key:'wall-defense',type:'wall',name:'Wall-defense mode · all cards',speed:500,defaultFlight:'original:wall-arrow'}],enemyProjectiles,Object.values(data.AllyCfg||{}).filter(row=>row.AttackType===2).map(row=>({key:'ally:'+row.ID,type:'ally',id:row.ID,name:label(row.Name)+' · Ally',speed:500,defaultFlight:'original:arrow'})));
+    const units=[{key:'hero',type:'hero',id:'hero',name:'Skirmisher hero',speed:500,defaultFlight:previewTiers[0].flight,previewTiers},{key:'tower',type:'building',id:2,levelIndex:0,name:'Castle & arrow towers · shared default',speed:550,defaultFlight:'original:arrow'}].concat(buildings,[{key:'wall-defense',type:'wall',name:'Wall-defense mode · all cards',speed:500,defaultFlight:'original:wall-arrow'}],enemyProjectiles,Object.values(data.AllyCfg||{}).filter(row=>ranged(row,'ally')).map(row=>({key:'ally:'+row.ID,type:'ally',id:row.ID,name:label(row.Name)+' · Ally',speed:500,defaultFlight:'original:arrow'})));
     return units.map(who=>{
       const key=timingKey(who),saved=settings.timingDefaults&&settings.timingDefaults[key],custom=this.timings&&this.timings[who.key],effectiveAssignment=selectSource(this.data,who.key,who.type==='enemy'?{cfg:data.SoldierCfg[who.id]}:null,settings),shared=/^tower:/.test(who.key)&&this.timings&&this.timings.tower;
       const defaultDelay=who.type==='building'?(finite(shared)?shared:0):saved&&finite(saved.attack)?saved.attack:0;
@@ -145,7 +170,7 @@ class ProjectilesService {
   save(request){
     this.check(request);if(!this.dirty())return {...this.snapshot(),result:{saved:false,files:[]}};
     this.validate(this.data);const before=fs.readFileSync(this.file);if(hash(before)!==this.revision)throw Error('Projectile catalog changed outside this draft. Save cancelled; drafts retained.');
-    this.validateSpeeds(this.speeds);const configBefore=fs.readFileSync(this.configFile);if(hash(configBefore)!==this.configRevision)throw Error('Building data changed outside this draft. Save cancelled; projectile drafts retained.');
+    this.validateSpeeds(this.speeds);const configBefore=fs.readFileSync(this.configFile);
     const files=new Map(),catalog=clone(this.data),data=clone(this.configData);
     for(const who of this.units())if(this.timings[who.key]!==this.originalTimings[who.key]){
       const delay=this.timings[who.key];
@@ -165,7 +190,15 @@ class ProjectilesService {
       }
     }
     if(!Document.equal(this.original,catalog))files.set(this.relative,Document.patch(this.text,this.original,catalog));
-    if(!Document.equal(this.originalSpeeds,this.speeds))for(const item of towers(data))if(this.speeds[item.key]!==this.originalSpeeds[item.key])item.row.Tower.projectileSpeed=this.speeds[item.key];if(!Document.equal(this.configData,data))files.set(this.configRelative,Document.patch(this.configText,this.configData,data));
+    if(!Document.equal(this.originalSpeeds,this.speeds))for(const item of towers(data))if(this.speeds[item.key]!==this.originalSpeeds[item.key])item.row.Tower.projectileSpeed=this.speeds[item.key];
+    const writesConfig=!Document.equal(this.configData,data);
+    if(hash(configBefore)!==this.configRevision){
+      // Units can save its attack draft while a separate appearance draft is open.
+      const published=parse(configBefore.toString('utf8'));
+      const edited=[...new Set([...Object.keys(catalog.assignments),...Object.keys(this.original.assignments)])].filter(key=>!Document.equal(catalog.assignments[key],this.original.assignments[key]));
+      if(writesConfig||!edited.length||edited.some(key=>!unitTarget(published,key)))throw Error('Game data changed outside this draft. Save cancelled; projectile drafts retained.');
+    }
+    if(writesConfig)files.set(this.configRelative,Document.patch(this.configText,this.configData,data));
     const result=commit(this.root,files,[[this.file,before],[this.configFile,configBefore]],this.relative);
     this.reload();return {...this.snapshot(),result:{saved:true,...result}};
   }

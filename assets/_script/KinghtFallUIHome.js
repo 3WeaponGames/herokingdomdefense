@@ -328,11 +328,12 @@ var def_KinghtFallUIHome = function (t) {
               if (this.isLock(0)) {
                 return;
               }
-              (r = new $z1UIGuide.GuildCfg()).isWeek = !!g.Close;
-              r.showHand = g.Finger;
-              r.hideMask = !g.Mask;
-              r.tipstring = g.Describe;
-              r.showAni = !!g.ShowKing;
+              if (l >= 2 && (!flow.visible(e) || !n || flow.homeBlocked())) return;
+              if (l === 3) {
+                n();
+                return;
+              }
+              r = flow.config(g);
               switch (l) {
                 case 0:
                   r.lightType = 1;
@@ -355,6 +356,11 @@ var def_KinghtFallUIHome = function (t) {
                   } else {
                     r = null;
                   }
+                  break;
+                case 2:
+                  r.distNode = e;
+                  r.addSize = new cc.Size(16, 16);
+                  r.callBack = n;
               }
               break;
             case 5:

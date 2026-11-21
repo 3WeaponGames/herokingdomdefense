@@ -77,22 +77,23 @@ function catalog(manager, stage, translate) {
   });
 }
 
-function validate(game, unit, count, spawn, interval) {
-  if (!unit || !unit.prefab) throw Error("Choose a unit model.");
+function validate(game, units, count, spawn, interval) {
+  if (!units.length || units.some(function (unit) { return !unit || !unit.prefab; })) throw Error("Choose a unit model.");
   if (!Number.isSafeInteger(count) || count < 1 || count > MAX_COUNT) throw Error("Count must be 1–" + MAX_COUNT + ".");
+  if (count * units.length > MAX_COUNT) throw Error("Send up to " + MAX_COUNT + " units total. Reduce the count or select fewer models.");
   if (!spawnPoints(game).some(function (point) { return point.id === spawn; })) throw Error("Choose a spawn point on this stage.");
   if (!Number.isFinite(interval) || interval < .1 || interval > 10) throw Error("Spacing must be 0.1–10 seconds.");
 }
 
-function Encounter(game, prefab, profile, spawn, count, interval, follow) {
+function Encounter(game, units, spawn, count, interval, follow) {
   this.game = game;
   this.data = game.gameData;
   this.epoch = game._combatEpoch;
-  this.prefab = prefab.addRef();
-  this.profile = profile;
+  this.units = units;
+  this.prefabs = Array.from(new Set(units.map(function (unit) { return unit.prefab; })));
+  this.prefabs.forEach(function (prefab) { prefab.addRef(); });
   this.spawn = spawn;
-  this.count = count;
-  this.remaining = count;
+  this.count = this.remaining = count * units.length;
   this.interval = this.cooldown = interval;
   this.follow = follow;
   this.actors = [];
@@ -106,8 +107,10 @@ Encounter.prototype.current = function () {
 };
 
 Encounter.prototype.spawnOne = function () {
-  var actor = this.game.addEnemy(this.profile.id, this.spawn, null, this);
-  if (!actor) throw Error("Could not place " + this.profile.model.name + " at this spawn.");
+  var unit = this.units[(this.count - this.remaining) % this.units.length];
+  var preview = { prefab: unit.prefab, current: this.current.bind(this) };
+  var actor = this.game.addEnemy(unit.profile.id, this.spawn, null, preview);
+  if (!actor) throw Error("Could not place " + unit.profile.model.name + " at this spawn.");
   this.actors.push(actor);
   this.remaining--;
 };
@@ -169,15 +172,16 @@ Encounter.prototype.dispose = function () {
     actor.node.active = false;
     actor.node.destroy();
   });
-  if (this.prefab) { this.prefab.decRef(); this.prefab = null; }
+  this.prefabs.splice(0).forEach(function (prefab) { prefab.decRef(); });
 };
 
-function send(game, prefab, profile, spawn, count, interval, follow) {
+function send(game, units, spawn, count, interval, follow) {
   var previous = game._unitTest;
-  var test = game._unitTest = new Encounter(game, prefab, profile, spawn, count, interval, follow);
+  var test = game._unitTest = new Encounter(game, units, spawn, count, interval, follow);
   try { test.spawnOne(); }
   catch (error) {
     if (test.current()) game._unitTest = previous;
+    else if (previous) previous.dispose();
     test.dispose();
     throw error;
   }

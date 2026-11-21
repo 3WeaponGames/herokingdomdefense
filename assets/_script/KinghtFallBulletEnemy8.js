@@ -33,6 +33,7 @@ var def_KinghtFallBulletEnemy8 = function (t) {
     if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.onUpdate = function (dt) {
+    if (this._unitAttackFlight) return require("UnitAttackCombat").advance(this, dt);
     if (!(dt > 0) || !isFinite(dt)) return;
     if (this._projectileVisual) this._projectileVisual.step(dt);
     switch (this.state) {

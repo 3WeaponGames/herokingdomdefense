@@ -64,13 +64,19 @@ function scenery(parent) {
 function open(owner) {
   if (owner._weaponPicker) return;
   var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData();
-  var canvas = cc.find("Canvas") || owner.node, root = node(canvas, "Choose fighting style", 0, 0, canvas.width, canvas.height);
+  var tutorial = owner.getWeaponPickerTutorial && owner.getWeaponPickerTutorial();
+  var canvas = require("UIMgr").UIMgr.getInstance().uiRoot || cc.find("Canvas") || owner.node;
+  var root = node(canvas, "Choose fighting style", 0, 0, canvas.width, canvas.height);
   root.zIndex = 10000; root.addComponent(cc.BlockInputEvents); owner._weaponPicker = root;
   var backdrop = root.addComponent(cc.Graphics); backdrop.fillColor = cc.color(0, 0, 0, 185);
   backdrop.rect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height); backdrop.fill();
   var content = node(root, "Weapon choices", 0, 0, WIDTH, HEIGHT); content.addComponent(cc.BlockInputEvents);
-  content.scale = Math.min(1, (canvas.width - 28) / WIDTH, (canvas.height - 48) / HEIGHT);
-  content.y = 100 * content.scale;
+  var dialogueHeight = tutorial ? 148 : 0;
+  function layout() {
+    content.scale = Math.min(1, (canvas.width - 28) / WIDTH, (canvas.height - 48) / (HEIGHT + dialogueHeight));
+    content.y = (100 - dialogueHeight / 2) * content.scale;
+  }
+  layout();
   box(content, "Panel shadow", 0, -118, 684, 1050, 42, "#160e20");
   box(content, "Panel outline", 0, -108, 684, 1050, 42, "#170f20");
   box(content, "Purple frame", 0, -105, 674, 1038, 39, "#853bb5");
@@ -108,6 +114,30 @@ function open(owner) {
     if (error || cancelled || !live(root)) return; font = asset;
     labels.forEach(function (entry) { if (live(entry.node) && !entry._pickerBody) entry.font = font; });
   });
+  var dialogueText, language;
+  if (tutorial) {
+    var dialogue = box(content, "Old King dialogue", 0, 528, 638, dialogueHeight, 23, "#171326");
+    dialogue.addComponent(cc.BlockInputEvents);
+    box(dialogue, "Dialogue rim", 0, 0, 630, 140, 20, "#638abd");
+    box(dialogue, "Dialogue face", 0, 0, 620, 130, 17, "#294970");
+    box(dialogue, "Portrait frame", -245, 0, 114, 120, 16, "#1e3559");
+    var portrait = node(dialogue, "Retired King portrait", -246, -56);
+    portrait.scale = .62;
+    cc.resources.load("characters/retired-king-portrait", sp.SkeletonData, function (error, data) {
+      if (error || !data || cancelled || !live(portrait)) return;
+      var renderer = portrait.addComponent(sp.Skeleton);
+      renderer.premultipliedAlpha = false;
+      renderer.skeletonData = data;
+      renderer.setAnimation(0, "idle", true);
+    });
+    var speaker = paragraph(dialogue, "Speaker", "", 62, 41, 454, 30, 25);
+    speaker.color = cc.color("#ffe5a3");
+    var name = speaker.getComponent(cc.Label);
+    name.isBold = true; name._uiTypography.isBold = true;
+    language = require("LanguageMgr").LanguageMgr.getInstance();
+    language.bindLabel(name, "ui.uiguide.labname.27");
+    dialogueText = paragraph(dialogue, "Dialogue text", "", 62, -16, 454, 82, 24).getComponent(cc.Label);
+  }
   box(content, "Title outline", 0, 402, 490, 91, 27, "#180e21");
   box(content, "Title highlight", 0, 405, 480, 79, 23, "#d282f6");
   box(content, "Purple title", 0, 400, 469, 69, 20, "#9041bf");
@@ -123,10 +153,17 @@ function open(owner) {
     clearIcons();
     if (readyCancel) readyCancel(); preview.destroy();
     if (owner._weaponPicker === root) owner._weaponPicker = null;
+    root.active = false;
     root.destroy();
   }
+  function finishPicker() {
+    if (cancelled || tutorial && tutorial.onComplete() === false) return false;
+    closePicker();
+    if (!tutorial && owner.scheduleHomeGuide) owner.scheduleHomeGuide();
+    return true;
+  }
   root._closePicker = closePicker;
-  closeButton.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); closePicker(); });
+  closeButton.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); finishPicker(); });
   var stage = node(content, "Hero showcase", 0, 250, 300, 224);
   var preview = require("HeroStylePreview").create(stage, user, function (error) {
     if (live(stage) && !stage.getChildByName("Preview unavailable")) label(stage, "Preview unavailable", "Preview unavailable", 0, 0, 280, 35, 22, "#ffffff", 2);
@@ -137,6 +174,8 @@ function open(owner) {
   var grid = node(body, "Style grid"), details = node(body, "Style details"), cardViews = [];
   function render(rebuildCards) {
     if (cancelled || !live(root)) return;
+    var equippedStyle = user.getHeroWeapon().id;
+    if (dialogueText) language.bindLabel(dialogueText, equippedStyle === "skirmisher" ? tutorial.text : "tutorial.equipment.keepCurrentWeapon");
     var build = rebuildCards || !cardViews.length;
     if (build) { clearIcons(); grid.destroyAllChildren(); grid.removeAllChildren(); cardViews = []; }
     details.destroyAllChildren(); details.removeAllChildren(); labels = labels.filter(function (entry) { return live(entry.node); });
@@ -185,14 +224,14 @@ function open(owner) {
       cardIcons.push(require("HeroWeaponIcon").create(pose, user, style.id, function (error) { if (cc.warn) cc.warn("Fighting style icon: " + error.message); }));
       cardViews[index] = frame;
       label(tile, "Style name", style.name, 0, -66, 176, 40, 29);
-      if (user.getHeroWeapon().id === style.id) {
+      if (equippedStyle === style.id) {
         box(tile, "Equipped badge outline", 0, 80, 131, 36, 14, "#111409");
         box(tile, "Equipped badge", 0, 82, 123, 29, 11, "#8ce928");
         label(tile, "Equipped marker", "Equipped", 0, 82, 119, 29, 23, "#173b05", 0);
       }
       tile.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); if (chosen !== style.id) { chosen = style.id; render(); } });
     });
-    var weapon = Weapons.find(chosen), equipped = user.getHeroWeapon().id === chosen;
+    var weapon = Weapons.find(chosen), equipped = equippedStyle === chosen;
     var skill = activeSkill(chosen);
     box(details, "Skill panel outline", 0, -374, 612, 180, 24, "#28436c");
     box(details, "Skill panel rim", 0, -371, 602, 170, 20, "#638abd");
@@ -212,7 +251,8 @@ function open(owner) {
     action.on(cc.Node.EventType.TOUCH_END, function (event) {
       event.stopPropagation();
       if (!equipped && !cancelled && live(action) && user.setHeroWeapon(chosen)) {
-        closePicker(); owner.initView();
+        if (!finishPicker()) render(true);
+        owner.initView();
         require("BattleSounds").effect("ui-selection-confirm", owner, { menu: true });
       }
     });
@@ -221,12 +261,11 @@ function open(owner) {
   function resize() {
     root.setContentSize(canvas.width, canvas.height);
     backdrop.clear(); backdrop.rect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height); backdrop.fill();
-    content.scale = Math.min(1, (canvas.width - 28) / WIDTH, (canvas.height - 48) / HEIGHT);
-    content.y = 100 * content.scale;
+    layout();
   }
   canvas.on(cc.Node.EventType.SIZE_CHANGED, resize);
   render(); readyCancel = require("HeroItemLooks").whenReady(function () { render(true); });
-  root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event.target === root) closePicker(); });
+  root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event.target === root) finishPicker(); });
 }
 function close(owner) {
   closeSkill(owner);
@@ -278,8 +317,12 @@ function openSkill(owner, style) {
   }
   owner._gearSkillPopup = { close: dismissPopup };
   canvas.on(cc.Node.EventType.SIZE_CHANGED, resize);
-  dismiss.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); dismissPopup(); });
-  root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event.target === root) dismissPopup(); });
+  function finishPopup() {
+    dismissPopup();
+    if (owner.scheduleHomeGuide) owner.scheduleHomeGuide();
+  }
+  dismiss.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); finishPopup(); });
+  root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event.target === root) finishPopup(); });
   resize();
 }
 function refreshSkill(owner) {

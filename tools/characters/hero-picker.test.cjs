@@ -5,6 +5,38 @@ const {fixture}=require('./hero-picker-harness.cjs');
 const user=()=>({getHeroWeapon:()=>Weapons.find('guardian'),getHeroWeaponLevel:()=>1});
 const selectable=Weapons.styles.filter(style=>style.id!=='vanguard');
 
+test('the Old King explains the choice while the weapon cards, Equip and Close stay usable',()=>{
+ const data={};
+ let completions=0;
+ const f=fixture({getHeroWeapon:()=>Weapons.selected(data),getHeroWeaponLevel:()=>1,setHeroWeapon:id=>Weapons.select(data,id)});
+ const owner={node:f.canvas,initView(){},getWeaponPickerTutorial:()=>({
+  text:'[[loc:data.guidecfg.22.describe]]',onComplete(){completions++;return true;}
+ })};
+ f.api.open(owner);
+ assert(f.find('Old King dialogue').getComponent(f.cc.BlockInputEvents));
+ assert.match(f.find('Dialogue text').getComponent(f.cc.Label).string,/Skirmisher's bow and arrow/);
+ const portrait=f.find('Retired King portrait').getComponent(f.sp.Skeleton);
+ assert.deepEqual(portrait.animation,{track:0,name:'idle',loop:true});
+ assert.equal(portrait.skeletonData.key,'characters/retired-king-portrait');
+ f.tap(f.find('Style fighter'));
+ assert.equal(completions,0);
+ assert.equal(Weapons.selected(data).id,'skirmisher');
+ f.api.close(owner);
+ assert.equal(completions,0,'A forced dismissal leaves the tutorial pending');
+ f.api.open(owner);
+ f.tap(f.find('Close'));
+ assert.equal(completions,1);
+ assert.equal(Weapons.selected(data).id,'skirmisher');
+ f.api.open(owner);
+ f.tap(f.find('Style fighter'));
+ f.tap(f.find('Equip Fighter'));
+ assert.equal(completions,2);
+ assert.equal(Weapons.selected(data).id,'fighter');
+ f.api.open(owner);
+ assert.match(f.find('Dialogue text').getComponent(f.cc.Label).string,/keep your current weapon/);
+ f.api.close(owner);
+});
+
 test('six square cards center padded weapon poses, keep the Equipped badge above the title, and show a separate frame only behind the selected card',()=>{
  const f=fixture(user()),owner={node:f.canvas};f.api.open(owner);
  const tiles=Weapons.styles.map(style=>f.find('Style '+style.id));assert.equal(new Set(tiles.map(tile=>tile.x)).size,3);assert.equal(new Set(tiles.map(tile=>tile.y)).size,2);

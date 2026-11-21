@@ -17,6 +17,7 @@ const UnitCatalog=require('../worlds/unit-catalog');
 const EnemyClasses=require('../lib/enemy-classes');
 const EnemyBalance=require('./enemy-balance');
 const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
+const UnitAttack=require('../../../assets/_script/UnitAttackRules');
 const EquipmentTiers=require('../../../assets/_script/EquipmentTiers'),HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const ItemAppearance=require('../../hkd-items/appearance');
 const TITLES={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units & Attack Timing','unit-types':'Fighting Types & Pictograms',maps:'Maps',settings:'Battle Settings',testing:'Testing · Managed Test Player'};
@@ -417,7 +418,7 @@ function create(kind){
       }
       const id=Number(row.unitID);this._note(row.unitType==='ally'?'Allied unit: Barracks uses the selected level’s stats and the matching appearance from Characters. Changes apply after Save.':'Enemy unit: its name, model, stats and timing are independent of allies.');
       if(row.unitType==='ally')this._unitLevelStats(row);
-      if(row.record.AttackType===2)this._unitProjectileSpeedField(row);
+      this._unitAttackFields(row);
       if(row.record.MonsterSource)this._note('Imported source: '+row.record.MonsterSource+' · Behavior controller: '+row.record.BehaviorTemplate+'. Names, stats, roles, model transforms and attack timing are editable independently for this unit.');
       if(row.record.CampaignBaseUnit)this._note('Campaign profile: controller '+row.record.CampaignBaseUnit+' · Appearance source unit '+row.record.AppearanceSourceUnit+'. Its initial combat settings preserve the original campaign profile; editing this record changes this profile independently of the source-roster monster.');
       this._unitGuide(row);
@@ -437,7 +438,7 @@ function create(kind){
       for(const [key,label,initial,min,max]of [['x','Offset X',0,-4096,4096],['y','Offset Y',0,-4096,4096],['scaleX','Scale X',1,.01,20],['scaleY','Scale Y',1,.01,20],['rotation','Rotation',0,-3600,3600]])this._field(visualFields,label,visual[key]===undefined?initial:visual[key],value=>setVisual(key,value),{min,max});
       this._field(visualFields,'Model tint',visual.tint||'#ffffff',value=>setVisual('tint',value),{color:true});
       visualFields.appendChild(button('Edit rider, horse & parts',()=>ipc('open-characters').catch(error=>this._status(error.message,true))));
-      const excluded=['Suppressed','CounterType','MonsterSource','MonsterPack','BehaviorTemplate','CampaignBaseUnit','AppearanceSourceUnit','Guide'];
+      const excluded=['Suppressed','CounterType','AttackType','UnitAttack','MonsterSource','MonsterPack','BehaviorTemplate','CampaignBaseUnit','AppearanceSourceUnit','Guide'];
       const profileEntry=(this._data('overrides').unitProfiles||{}).entries;if(row.unitType==='enemy'&&profileEntry&&profileEntry[row.unitID]&&profileEntry[row.unitID].created)excluded.push('prefab','loadIcon','Name');
       this._properties(this._section(row.unitType==='ally'?'Shared unit settings':'Stats & behavior'),'A',row.path,row.record,{table:'SoldierCfg',id:row.unitID,side:row.unitType},excluded.concat(row.unitType==='ally'?UnitLevelStats.FIELDS:[]));
       if(row.unitType==='ally'){
@@ -452,8 +453,59 @@ function create(kind){
       this._note('Attacks per second includes the cooldown, hit windup and full attack animation. Changing the selected level’s animation speed or hit timing recalculates its rate. Perks, movement and interruptions can change the rate during battle.');
     },
     _attackRateField(container,row,level,write,options){return AttackRate.field(this,container,row,level,write,options,ipc);},
-    _unitProjectileSpeedField(row){
-      const table=this._data('overrides').projectileSpeeds,key=row.unitType==='hero'?'hero:hero:default':row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,row.unitID),malformed=table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)),custom=!malformed&&own(table,key),value=custom?table[key]:this._unitProjectileSpeedValue(row),fields=this._section('Projectile flight');
+    _unitAttackFields(row){
+      const fields=this._section('Attack'),attack=UnitAttack.settings(row.record),ranged=UnitAttack.attackType(row.record)===2;
+      const original=({1:'Melee',2:'Ranged',3:'Support'})[row.record.AttackType];
+      const edit=(field,value)=>this._unitAttackEdit(row,field,value).catch(()=>{});
+      this._field(fields,'Attack delivery',attack?attack.delivery:'original',value=>edit('delivery',value),{options:[
+        {value:'original',label:original?'Original ('+original+')':'Original'}, {value:'melee',label:'Melee'}, {value:'ranged',label:'Ranged'}
+      ]});
+      if(ranged){
+        const key=row.unitType+':'+row.unitID;
+        fields.appendChild(button('Open Projectile editor',()=>ipc('open-projectiles',{key}).catch(error=>this._status(error.message,true))));
+      }
+      if(attack){
+        const labels={single:'Single target',splash:'Splash',volley:'Multiple projectiles',piercing:'Piercing',chain:'Chain hits'};
+        this._field(fields,'Attack pattern',attack.pattern,value=>edit('pattern',value),{
+          options:UnitAttack.patterns[attack.delivery].map(value=>({value,label:labels[value]}))
+        });
+        const numeric=(key,label,help,percent=false)=>{
+          const rule=UnitAttack.fields[key];
+          this._field(fields,label,attack[key],value=>edit(key,value),{min:rule.min,max:percent?rule.max*100:rule.max,integer:rule.integer,percent,help});
+        };
+        if(attack.pattern==='splash'){
+          numeric('splashRadius','Splash radius','Distance from the impact point in world units.');
+          numeric('splashFalloff','Damage at splash edge (%)','Damage scales linearly from full damage at the center to this percentage at the edge.',true);
+        }else if(attack.pattern==='volley'){
+          numeric('shotsPerVolley','Projectiles per attack','Fires one projectile at each available target within attack range, up to this count.');
+        }else if(attack.pattern==='piercing'){
+          numeric('pierceTargets','Targets per projectile','Maximum number of targets struck along the projectile’s path, including the first.');
+        }else if(attack.pattern==='chain'){
+          numeric('chainHits','Maximum chain hits','Total number of hits, including the first.');
+          numeric('chainRange','Chain jump range','Maximum distance to the next target in world units.');
+          numeric('chainDamageLoss','Damage lost per jump (%)','Each jump loses this percentage of the previous hit’s base damage. Zero keeps full damage.',true);
+        }
+        if(row.record.AttackDamage===undefined)numeric('attackDamage','Attack damage','Base damage for this attack.');
+        if(row.record.AttackRange===undefined)numeric('attackRange','Attack range','Distance at which this unit can start an attack.');
+      }
+      if(ranged)this._unitProjectileSpeedField(row,fields);
+    },
+    _unitAttackEdit(row,field,value){
+      return this._change(()=>{
+        const record=UnitRecords.record(this._data('A'),row.unitType,row.unitID);
+        if(!record)throw Error('Choose an existing unit.');
+        const saved=record.UnitAttack;
+        if(saved===undefined&&field==='delivery'&&value==='original')return [];
+        const next=Object.assign({},saved,{[field]:value});
+        if(field==='delivery'&&value!=='original'&&!UnitAttack.allowed(value,next.pattern))next.pattern='single';
+        const error=UnitAttack.issues(next)[0];
+        if(error)throw Error(error.message);
+        if(saved&&saved[field]===value&&saved.pattern===next.pattern)return [];
+        return [{doc:'A',path:row.path.concat('UnitAttack'),value:next}];
+      },{skipEmpty:true});
+    },
+    _unitProjectileSpeedField(row,parent){
+      const table=this._data('overrides').projectileSpeeds,key=row.unitType==='hero'?'hero:hero:default':row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,row.unitID),malformed=table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)),custom=!malformed&&own(table,key),value=custom?table[key]:this._unitProjectileSpeedValue(row),fields=parent||this._section('Projectile flight');
       this._field(fields,'Projectile flight speed',value,next=>this._unitProjectileSpeedEdit(row,Number(next)).catch(()=>{}),{numeric:true,min:1,max:20000,commitUnchanged:true,readOnly:malformed,help:'World units per second. Shared across this character’s levels. The hero’s existing projectile-speed bonuses still apply. Reset uses the inherited or authored flight speed.'});
       if(malformed)this._note('The projectile speed table has an invalid format. Refresh or correct that configuration before editing.',true,fields);
       else if(custom)fields.appendChild(button('Reset projectile flight speed',()=>this._unitProjectileSpeedEdit(row,undefined).catch(()=>{}),'gt-mini'));
@@ -469,7 +521,7 @@ function create(kind){
     _unitProjectileSpeedEdit(row,value){
       return this._change(()=>{
         const type=row.unitType,id=type==='hero'?'hero':String(row.unitID),form=UnitRecords.form(type,id),config=this._data('A'),record=type==='hero'?null:UnitRecords.record(config,type,id);
-        if(!UnitRecords.reachable(config,type,id,form)||type!=='hero'&&(!record||record.AttackType!==2))throw Error('Choose an existing ranged unit.');
+        if(!UnitRecords.reachable(config,type,id,form)||type!=='hero'&&UnitAttack.attackType(record)!==2)throw Error('Choose an existing ranged unit.');
         const key=type+':'+id+':'+form,table=this._data('overrides').projectileSpeeds,at=['projectileSpeeds'];
         if(table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)))throw Error('The projectile speed table has an invalid format. Refresh before editing.');
         if(value===undefined)return own(table,key)?[{doc:'overrides',path:Object.keys(table).length===1?at:at.concat(key),remove:true}]:[];

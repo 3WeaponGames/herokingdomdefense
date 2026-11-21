@@ -377,7 +377,8 @@ var def_KinghtFallGameCtrlData = function () {
   };
   _ctor.prototype.getHpAdd = function (t) {
     var e = this.levelCfg.WaveCfg[this.round - 1].HealthCoefficient;
-    if (1 == $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t).AttackType) {
+    var cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    if (1 == (cfg.UnitAttack ? require("UnitAttackRules").attackType(cfg) : cfg.AttackType)) {
       var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff25);
       n && (e -= n.Pamer[0]);
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff38);
