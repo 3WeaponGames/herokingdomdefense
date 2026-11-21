@@ -2208,7 +2208,105 @@
         "resource": "unit-library/runtime/ally-90004-level-4",
         "source": "character-maker/Character"
       }
+    },
+    "character-retired-king": {
+      "name": "Retired King",
+      "base": {
+        "type": "ally",
+        "id": "90001",
+        "source": "character-maker/Character"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "helmet",
+          "sprite": "Helmet/FA_Helmet_045_GoldRed",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Helmet",
+          "bone": "Rider/Body/Head/Helmet",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "helmet_hair",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Character/Helmet_Hair/Body_Helmet_Hair_011",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Hair_Helmet",
+          "bone": "Rider/Body/Head/Hair_Helmet",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "beard",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Character/Beard/Body_Beard_007",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Beard",
+          "bone": "Rider/Body/Head/Beard",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "chest",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Chest/FA_Chest_015_RedSilver",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        },
+        {
+          "id": "staff",
+          "sprite": "HandRight/Staff/FA_WP_Main_Staff_016_GoldRed",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Staff",
+          "bone": "Rider/HandRight/Staff",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "faceless": true,
+      "skinTint": "#ffbdab"
     }
   },
-  "assignments": { "ally:90001:default": "royal-guard", "ally:90002:default": "ally-90001-level-3-3", "ally:90003:default": "crossbowman", "ally:90004:default": "cavalry", "enemy:90001:default": "monster-1", "enemy:90002:default": "monster-2", "enemy:90003:default": "monster-3", "enemy:90004:default": "monster-4", "enemy:90005:default": "monster-5", "enemy:90006:default": "monster-6", "enemy:90007:default": "monster-7", "enemy:90008:default": "monster-8", "enemy:90009:default": "monster-9", "enemy:90010:1": "monster-10", "enemy:90011:2": "monster-11", "enemy:90012:3": "monster-12", "ally:90001:level:1": "ally-90001-level-1-3", "ally:90001:level:2": "ally-90001-level-2-3", "ally:90001:level:3": "ally-90001-level-3-4", "ally:90002:level:1": "ally-90002-level-1-2", "ally:90002:level:2": "ally-90002-level-2-2", "ally:90002:level:3": "ally-90002-level-3-2", "ally:90003:level:1": "ally-90003-level-1-2", "ally:90003:level:2": "ally-90003-level-2", "ally:90003:level:3": "ally-90003-level-3", "ally:90004:level:2": "ally-90004-level-2", "ally:90004:level:3": "ally-90004-level-3", "ally:90004:level:1": "ally-90004-level-1", "ally:90003:level:4": "ally-90003-level-4", "ally:90001:level:4": "ally-90001-level-4", "ally:90002:level:4": "ally-90002-level-4", "ally:90004:level:4": "ally-90004-level-4" }
+  "assignments": { "ally:90001:default": "royal-guard", "ally:90002:default": "ally-90001-level-3-3", "ally:90003:default": "crossbowman", "ally:90004:default": "cavalry", "enemy:90001:default": "monster-1", "enemy:90002:default": "monster-2", "enemy:90003:default": "monster-3", "enemy:90004:default": "monster-4", "enemy:90005:default": "monster-5", "enemy:90006:default": "monster-6", "enemy:90007:default": "monster-7", "enemy:90008:default": "monster-8", "enemy:90009:default": "monster-9", "enemy:90010:1": "monster-10", "enemy:90011:2": "monster-11", "enemy:90012:3": "monster-12", "ally:90001:level:1": "ally-90001-level-1-3", "ally:90001:level:2": "ally-90001-level-2-3", "ally:90001:level:3": "ally-90001-level-3-4", "ally:90002:level:1": "ally-90002-level-1-2", "ally:90002:level:2": "ally-90002-level-2-2", "ally:90002:level:3": "ally-90002-level-3-2", "ally:90003:level:1": "ally-90003-level-1-2", "ally:90003:level:2": "ally-90003-level-2", "ally:90003:level:3": "ally-90003-level-3", "ally:90004:level:2": "ally-90004-level-2", "ally:90004:level:3": "ally-90004-level-3", "ally:90004:level:1": "ally-90004-level-1", "ally:90003:level:4": "ally-90003-level-4", "ally:90001:level:4": "ally-90001-level-4", "ally:90002:level:4": "ally-90002-level-4", "ally:90004:level:4": "ally-90004-level-4" },
+  "characters": {
+    "character-retired-king": {
+      "levels": {}
+    }
+  }
 }
