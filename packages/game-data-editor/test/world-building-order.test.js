@@ -21,7 +21,7 @@ for (const stageMode of [true, false]) test((stageMode ? 'stage editor' : 'map s
   const context = {
     BuildingLayers:require('../worlds/building-layers'),stageMode, state: { snap: { buildingPreview: {} }, images: {}, tab: 'Buildings', selection: [], previewHall: 3 },
     values: () => stage, placementStage: () => stage,
-    stageRecord: building => records[building.id], buildingRuntime: () => null,
+    stageRecord: building => records[building.id], buildingRuntime: () => null, buildingAvailable: () => true,
     buildingRenderer: renderer, ctx: { save() {}, restore() {} },
     Paint: { object(_ctx, object) { calls.push({ name: object.id, scenery: true }); }, apply() {}, matrix: () => [], sprites(_ctx, sprites) { calls.push({ name: sprites[0].frame, y: stage.specials.find(s => s.sprites === sprites).y }); } }
   };
@@ -31,7 +31,7 @@ for (const stageMode of [true, false]) test((stageMode ? 'stage editor' : 'map s
   for (const name of ['tower', 'gate-front', 'gate-rear', 'offer']) assert(index(name) > index('foreground-rock'), name + ' was hidden by foreground scenery');
   assert(index('rear-tree') < index('foreground-rock'), 'scenery retains its own back-to-front order');
   assert(index('tower') < index('offer') && index('offer') < index('gate-rear') && index('gate-front') < index('gate-rear'), 'building sections and offers retain their authored ground order');
-  assert(index('foreground-override') < index('gate-front'), 'Default covers every object layer, including former foreground overrides');
+  assert(index('foreground-override') < index('rear-tree'), 'Ground Y wins over a former foreground override within the same layer');
   assert.equal(index('disabled'), -1);
   assert.equal(JSON.stringify({ stage, records, objects }), before, 'drawing cannot edit map or stage drafts');
   renderer.destroy();

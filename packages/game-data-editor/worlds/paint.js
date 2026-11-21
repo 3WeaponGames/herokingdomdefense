@@ -78,6 +78,33 @@ function groundLayer(ctx,map,layer,key,images,options){
  for(var o of layer.images||[])object(ctx,o,{transform:{}},images);
  strokes(ctx,layer.strokes||[],images,options);ctx.restore();
 }
+// Sort each layer by the transformed ground pivot. Equal pivots use a stable
+// object ID so rearranging rows cannot change the result.
+function objectOrder(map){
+ var records=[];
+ map.layers.forEach(function(layer,index){
+  if(layer.hidden)return;
+  var m=matrix(layer.transform||{});
+  var items=layer.objects.map(function(o){
+   var t=objectMatrix(o),p=o.ground||{x:0,y:0};
+   var y=m[1]*(t[0]*p.x+t[2]*p.y+t[4])+m[3]*(t[1]*p.x+t[3]*p.y+t[5])+m[5];
+   var flat=(!o.legacy||!!o.animationPreset)&&isGroundObject(layer,o);
+   return {o,layer,index,y,flat};
+  });
+  items.sort(function(a,b){return b.y-a.y||(a.o.id<b.o.id?-1:a.o.id>b.o.id?1:0);});
+  for(var item of items)records.push(item);
+ });
+ // Both the baked floor and live floor sprites draw behind the world. Only
+ // the leading flat placements can use these passes without breaking order.
+ var floor=true,bakeFloor=true;
+ for(var record of records){
+  floor=floor&&record.flat;
+  bakeFloor=bakeFloor&&floor&&!record.o.legacy&&!ShadowPolicy.enabled(record.layer,record.o);
+  record.floor=floor;
+  record.ground=bakeFloor;
+ }
+ return records;
+}
 function ground(ctx,map,images,viewport,cache,options){
  var width=ctx.canvas.width,height=ctx.canvas.height,shadows=[];
  function composite(layer,key){
@@ -87,7 +114,7 @@ function ground(ctx,map,images,viewport,cache,options){
   ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=layer.opacity===undefined?1:layer.opacity;ctx.globalCompositeOperation=layer.blend||'source-over';ctx.drawImage(c,0,0);ctx.restore();
  }
  for(var key of map.ground.order||['foundation','roads','grass']){var layer=map.ground[key]||(map.ground.custom||[]).find(function(l){return l.id===key;});if(layer&&layer.purpose==='shadow-paint')shadows.push({layer,key});else composite(layer,key);}
- for(var l of map.layers){if(l.hidden)continue;for(var o of l.objects)if(!o.legacy&&isGroundObject(l,o)&&!ShadowPolicy.enabled(l,o))object(ctx,o,l,images);}
+ for(var item of (options&&options.objectOrder||objectOrder(map)))if(item.ground)object(ctx,item.o,item.layer,images);
  // Ground artwork includes connected river/bridge images. Painted shadows sit
  // over those surfaces while upright scenery and gameplay objects stay above.
  for(var shadow of shadows)composite(shadow.layer,shadow.key);
@@ -139,15 +166,14 @@ function bakeImage(source,placement){
  var w=Math.max(1,Math.ceil(source.width)),h=Math.max(1,Math.ceil(source.height)),c=canvas(w,h),g=c.getContext('2d');smooth(g);g.drawImage(source.image,0,0,w,h);c.complete=true;c.naturalWidth=w;c.naturalHeight=h;return Object.assign({},source,{image:c});
 }
 async function bake(spec){var images=await loadImages(spec),map=spec.map,files=[],groundTiles=[],assetFrames={},W=map.size.width,H=map.size.height;
- for(var y=0;y<H;y+=2048)for(var x=0;x<W;x+=2048){var w=Math.min(2048,W-x),h=Math.min(2048,H-y),c=canvas(w,h),ctx=c.getContext('2d'),view=[1,0,0,-1,W/2-x,H/2-y];ctx.setTransform.apply(ctx,view);ground(ctx,map,images,view,null,{canonicalCoverage:true});var name='ground-'+x+'-'+y;files.push({name,width:w,height:h,png:c.toDataURL('image/png')});groundTiles.push({name,width:w,height:h,x:x+w/2-W/2,y:H/2-y-h/2});}
- var used={},rendered={};for(var layer of map.layers)if(!layer.hidden)for(var o of layer.objects)if(!o.legacy&&(!isGroundObject(layer,o)||ShadowPolicy.enabled(layer,o)))used[assetKey(o)]={source:o.assetId,object:o};
+ var objects=objectOrder(map),options={canonicalCoverage:true,objectOrder:objects};
+ for(var y=0;y<H;y+=2048)for(var x=0;x<W;x+=2048){var w=Math.min(2048,W-x),h=Math.min(2048,H-y),c=canvas(w,h),ctx=c.getContext('2d'),view=[1,0,0,-1,W/2-x,H/2-y];ctx.setTransform.apply(ctx,view);ground(ctx,map,images,view,null,options);var name='ground-'+x+'-'+y;files.push({name,width:w,height:h,png:c.toDataURL('image/png')});groundTiles.push({name,width:w,height:h,x:x+w/2-W/2,y:H/2-y-h/2});}
+ var used={},rendered={};for(var {o,ground:inFloor} of objects)if(!o.legacy&&!inFloor)used[assetKey(o)]={source:o.assetId,object:o};
  var items=Object.keys(used).map(function(id){var source=objectImage(used[id].object,images);if(!source)throw Error('Missing image '+id);source=bakeImage(source,used[id].object);rendered[id]=source;return {id,width:source.image.naturalWidth||source.image.width,height:source.image.naturalHeight||source.image.height,worldWidth:source.width,worldHeight:source.height,anchor:source.anchor};}),packing=atlasPlan(items);assetFrames=packing.assets;
  for(var page of packing.pages){var c=canvas(page.width,page.height),pctx=c.getContext('2d');for(var id of Object.keys(assetFrames))for(var f of assetFrames[id].frames)if(f.atlas===page.name)pctx.drawImage(rendered[id].image,f.sx,f.sy,f.width,f.height,f.trimX,f.trimY,f.width,f.height);files.push({name:page.name,width:page.width,height:page.height,png:c.toDataURL('image/png')});}
- var thumb=canvas(192,312),ctx=thumb.getContext('2d'),scale=Math.min(192/W,312/H),view=[scale,0,0,-scale,96,156];ctx.setTransform.apply(ctx,view);ground(ctx,map,images,view,null,{canonicalCoverage:true});var shadowAPI=getShadows&&getShadows();if(shadowAPI){var shadowView=shadowAPI.create();try{shadowView.draw(ctx,map,images,spec.shadowSettings);}finally{shadowView.destroy();}}var world=[];
- // Match the editor's layer bands before ground-point sorting. Foreground
- // overrides belong to their own layer, and equal feet retain child order.
- map.layers.forEach(function(layer,index){if(!layer.hidden)for(var o of layer.objects)if(o.legacy||!isGroundObject(layer,o))world.push({o,layer,index,order:world.length,y:(function(){var m=matrix(layer.transform),t=objectMatrix(o),p=o.ground||{x:0,y:0};return m[1]*(t[0]*p.x+t[2]*p.y+t[4])+m[3]*(t[1]*p.x+t[3]*p.y+t[5])+m[5];}())});});
- world.sort(function(a,b){return a.index-b.index||(a.o.buildingOverlap==='front'?1:0)-(b.o.buildingOverlap==='front'?1:0)||b.y-a.y||a.order-b.order;}).forEach(function(v){object(ctx,v.o,v.layer,images);});files.push({name:'thumbnail',width:192,height:312,png:thumb.toDataURL('image/png')});return {files,ground:groundTiles,assets:assetFrames};
+ var thumb=canvas(192,312),ctx=thumb.getContext('2d'),scale=Math.min(192/W,312/H),view=[scale,0,0,-scale,96,156];ctx.setTransform.apply(ctx,view);ground(ctx,map,images,view,null,options);var shadowAPI=getShadows&&getShadows();if(shadowAPI){var shadowView=shadowAPI.create();try{shadowView.draw(ctx,map,images,spec.shadowSettings);}finally{shadowView.destroy();}}
+ for(var item of objects)if(!item.ground)object(ctx,item.o,item.layer,images);
+ files.push({name:'thumbnail',width:192,height:312,png:thumb.toDataURL('image/png')});return {files,ground:groundTiles,assets:assetFrames};
 }
-return {animationFrame,smooth,prepareImage,expandStrokes,strokes,atlasPlan,apply,groundLayer,clearMasks,assetKey,objectImage,canvas,matrix,objectMatrix,image,sprites,points,brush,object,ground,loadImages,bake};
+return {animationFrame,smooth,prepareImage,expandStrokes,strokes,atlasPlan,apply,groundLayer,clearMasks,assetKey,objectImage,canvas,matrix,objectMatrix,image,sprites,points,brush,object,objectOrder,ground,loadImages,bake};
 }));

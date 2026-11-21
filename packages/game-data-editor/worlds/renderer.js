@@ -18,14 +18,14 @@ function create(options){
  function clear(){for(const entry of layers.values())release(entry.canvas);layers.clear();blockerCache.clear();release(raster);release(preview);release(objectsRaster);release(shadowRaster);objectShadows.clear();raster=preview=objectsRaster=shadowRaster=null;key=objectsKey=shadowKey=null;bytes=0;imageIds=new WeakMap();imageSerial=0;}
  function ready(images,ids){return Array.from(ids).sort().map(id=>{const s=images[id],i=s&&s.image;if(i&&!imageIds.has(i))imageIds.set(i,++imageSerial);const a=s&&s.anchor;return [id,i?imageIds.get(i):0,i&&i.complete&&i.naturalWidth||0,i&&i.complete&&i.naturalHeight||0,i&&i.src||'',s&&s.url,s&&s.x,s&&s.y,s&&s.width,s&&s.height,a&&a.x,a&&a.y,s&&s.maxMaskEdge,s&&s.nativeScale,s&&s.terrainRole,s&&s.category];});}
  function references(map,layer,id){const ids=new Set();if(layer.baseAsset)ids.add(layer.baseAsset);for(const o of (layer.images||[]).concat(layer.tiles||[]))ids.add(o.assetId);for(const s of layer.strokes||[])for(const id of Terrain.strokeAssets(s))ids.add(id);if(id==='foundation'&&map.legacyGround)for(const s of map.legacyGround.sprites)ids.add(s.frame);return ids;}
- function draw(ctx,map,images,transient){
+ function draw(ctx,map,images,transient,objects=Paint.objectOrder(map)){
   const target=surface(ctx,map),{w,h,view}=target;
   // Reset decoded-image identities before building the cache key, so the first
   // idle redraw can reuse a newly allocated raster even with several textures.
   if(!raster||raster.width!==w||raster.height!==h){clear();raster=Paint.canvas(w,h);}
-  const groundObjects=map.layers.filter(l=>!l.hidden).map(l=>({id:l.id,depth:l.depth,transform:l.transform,objects:l.objects.filter(o=>!o.legacy&&Model.isGroundObject(l,o)&&!ShadowPolicy.enabled(l,o))})).filter(l=>l.objects.length);
-  const needed=new Set();for(const id of map.ground.order||['foundation','roads','grass']){const layer=map.ground[id]||(map.ground.custom||[]).find(l=>l.id===id);if(layer&&!layer.hidden&&layer.opacity!==0)for(const key of references(map,layer,id))needed.add(key);}for(const l of groundObjects)for(const o of l.objects)needed.add(o.assetId);
-  const imageKey=JSON.stringify(ready(images,needed)),next=JSON.stringify([map.id,map.size,view,map.ground,map.legacyGround,groundObjects,imageKey]);
+  const groundObjects=objects.filter(item=>item.ground);
+  const needed=new Set();for(const id of map.ground.order||['foundation','roads','grass']){const layer=map.ground[id]||(map.ground.custom||[]).find(l=>l.id===id);if(layer&&!layer.hidden&&layer.opacity!==0)for(const key of references(map,layer,id))needed.add(key);}for(const {o} of groundObjects)needed.add(o.assetId);
+  const imageKey=JSON.stringify(ready(images,needed)),next=JSON.stringify([map.id,map.size,view,map.ground,map.legacyGround,groundObjects.map(({o,layer})=>[o,layer.transform]),imageKey]);
   if(next!==key){
    const out=raster.getContext('2d');out.setTransform(1,0,0,1,0,0);out.clearRect(0,0,w,h);out.setTransform.apply(out,view);
    Paint.ground(out,map,images,view,(layer,id)=>{
@@ -38,7 +38,7 @@ function create(options){
     if(live&&!roads){if(!preview||preview.width!==w||preview.height!==h){release(preview);preview=Paint.canvas(w,h);}const p=preview.getContext('2d');p.setTransform(1,0,0,1,0,0);p.clearRect(0,0,w,h);p.drawImage(entry.canvas,0,0);p.setTransform.apply(p,view);if(layer.transform)Paint.apply(p,Paint.matrix(layer.transform));Paint.brush(p,strokes[strokes.length-1],images);result=preview;}
     while(bytes>budget&&layers.size>1){const oldest=layers.keys().next().value;if(oldest===id)break;const old=layers.get(oldest);bytes-=old.bytes;release(old.canvas);layers.delete(oldest);}
     return result;
-   });
+   },{objectOrder:objects});
    key=next;builds++;
   }
   composite(ctx,raster,map,target.screen);

@@ -49,7 +49,21 @@ function captureFixture(height=100){
 test('25 map world units is the exact small-scenery cutoff, independent of layer or width',()=>{
   const h=fixture(),plant=h.prop('Wide low plant',500,25,0,99),rock=h.prop('Narrow tall rock',12,25.001,0,1);h.sort();
   assert(plant.root.zIndex<h.hero.node.zIndex,'a low plant stays under the hero even in a high object layer');
-  assert(h.hero.node.zIndex<rock.root.zIndex,'a taller prop covers a unit behind its pivot');
+  assert(rock.root.zIndex<plant.root.zIndex,'the low plant draws in front of taller scenery in a lower layer');
+  plant.root.x=1000;h.sort();
+  assert(h.hero.node.zIndex<rock.root.zIndex,'a distant plant does not lift the hero above a taller prop');
+});
+test('objects in the same layer use ground Y regardless of size, row order, or a former foreground override',()=>{
+  const h=fixture(),cliff=h.prop('Cliff',100,200,0,9),plant=h.prop('Flat prop',100,50,30,9);
+  plant.root._depthMapFlat=true;
+  plant.root._depthMapForeground=true;
+  plant.root._depthGround=new Node('Ground',plant.root,0,5);
+  h.sort();
+  assert(plant.root.zIndex<cliff.root.zIndex,'the higher ground pivot draws behind');
+  plant.root._depthGround.y=-40;
+  h.main.children.reverse();
+  h.sort();
+  assert(cliff.root.zIndex<plant.root.zIndex,'the lower ground pivot draws in front');
 });
 test('large props switch immediately at the authored ground pivot, including ties and subpixel crossings',()=>{
   const h=fixture(),tree=h.prop('Tree',90,150,0,11);tree.root._depthGround=new Node('Ground',tree.root,0,25);
@@ -116,10 +130,17 @@ test('draw order uses the authored hero ground or stable horse origin independen
   for(const [offset,behind]of [[10,false],[10.001,true],[9.999,false]]){h.hero.node._depthGround.y=offset;h.horse.skeletonData.skeletonJson.skeleton.height=5000;h.sort();assert.equal(h.hero.node.zIndex<tree.root.zIndex,behind);}
 });
 test('vertical scale and rotation affect the cutoff while horizontal stretching alone does not',()=>{
-  const h=fixture(),scaled=h.prop('Scaled rock',30,20),wide=h.prop('Stretched grass',20,10),turned=h.prop('Turned log',80,10);
-  scaled.root.scaleY=3;wide.root.scaleX=20;turned.root.angle=90;h.sort();
-  assert(h.hero.node.zIndex<scaled.root.zIndex);assert(h.hero.node.zIndex<turned.root.zIndex);assert(wide.root.zIndex<h.hero.node.zIndex);
-  scaled.root.scaleY=1;turned.root.angle=0;h.sort();assert(scaled.root.zIndex<h.hero.node.zIndex);assert(turned.root.zIndex<h.hero.node.zIndex);
+  for(const [name,width,height,property,transform,affectsHeight] of [
+    ['Scaled rock',30,20,'scaleY',3,true],
+    ['Stretched grass',20,10,'scaleX',20,false],
+    ['Turned log',80,10,'angle',90,true],
+  ]){
+    const h=fixture(),prop=h.prop(name,width,height);h.hero.node.y=5;
+    prop.root[property]=transform;h.sort();
+    assert.equal(h.hero.node.zIndex<prop.root.zIndex,affectsHeight,name);
+    prop.root[property]=property==='angle'?0:1;h.sort();
+    assert(prop.root.zIndex<h.hero.node.zIndex,name);
+  }
 });
 test('hero scale and animated horse bounds cannot change the 25-world-unit scenery cutoff',()=>{
   const h=fixture(),plant=h.prop('Plant',70,25),rock=h.prop('Rock',70,25.001);
@@ -164,7 +185,8 @@ test('contradictory contacts across actors retain foot order, all static roots a
   const node=new Node('Enemy',h.main,0,-10),sprite=node.addComponent(h.Sprite);node.width=30;node.height=80;node.anchorY=0;sprite.enabled=true;node._combatActor={node,spAni:sprite};h.hero.node.y=0;
   for(const x of[0,1000,0]){
     h.hero.node.x=x;h.sort();assert(lower.root.zIndex<upper.root.zIndex);assert(h.hero.node.zIndex<node.zIndex,'rear-to-front actor order remains stable');
-    assert(plant.root.zIndex<h.hero.node.zIndex&&plant.root.zIndex<node.zIndex);
+    assert(upper.root.zIndex<plant.root.zIndex&&plant.root.zIndex<node.zIndex);
+    if(x===0)assert(plant.root.zIndex<h.hero.node.zIndex);
     assert.equal(new Set([plant.root,lower.root,upper.root,h.hero.node,node].map(n=>n.zIndex)).size,5,'contradictory requests never omit a render root');
   }
 });
@@ -176,6 +198,12 @@ test('strict ground Y controls tint at ties and subpixels even when a stale laye
   assert.equal(previous.node.destroyed,false,'crossings retain the inactive render component for reuse');
   assert.equal(h.captures,1,'front and equal-ground actors create no capture');
   h.hero.node.y=.0001;h.update();assert.equal(h.activeMasks,1);assert.equal(h.captures,2);
+});
+
+test('a flat decoration in a front layer never captures a unit even when its art is tall',()=>{
+  const h=captureFixture(80);h.prop.root._depthMapFlat=true;
+  h.hero.node.y=10;h.update();
+  assert.equal(h.captures,0);assert.equal(h.activeMasks,0);
 });
 
 test('the authored ground marker wins, otherwise the horse origin supplies the hero ground',()=>{

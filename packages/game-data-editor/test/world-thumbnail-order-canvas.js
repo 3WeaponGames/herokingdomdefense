@@ -8,7 +8,7 @@ async function verify(){
  const checks=[],assert=(ok,name)=>{if(!ok)throw Error(name);checks.push(name);};
  const client=fs.readFileSync(path.resolve(__dirname,'../worlds/client.js'),'utf8'),start=client.indexOf(' function decorationOrder('),end=client.indexOf(' function selectedObject(',start);
  assert(start>=0&&end>start,'the test uses the shipped editor ordering function');
- const scope={M,state:{drag:null},orderCache:null};vm.createContext(scope);vm.runInContext(client.slice(start,end),scope);
+ const scope={Paint,state:{drag:null},orderCache:null};vm.createContext(scope);vm.runInContext(client.slice(start,end),scope);
  const colors={red:[241,45,43,255],green:[30,180,69,255],blue:[39,87,224,255]},records={};
  for(const id of Object.keys(colors)){
   const image=Paint.canvas(32,32),g=image.getContext('2d');g.fillStyle='rgb('+colors[id].slice(0,3).join(',')+')';g.fillRect(0,0,32,32);
@@ -37,16 +37,29 @@ async function verify(){
  ]);
  await compare('a front layer stays above a rear foreground override',value,'green');
  value=M.clone(value);value.layers.reverse();await compare('reordering object layers changes thumbnail overlap',value,'red');
+ value=map('flat-front',[
+  layer('cliff',[object('cliff','red')]),
+  layer('cacti',[object('cactus','green',{depth:'ground'})])
+ ]);
+ await compare('a ground-depth cactus respects its layer above a cliff',value,'green');
+ value=M.clone(value);value.layers.reverse();
+ await compare('moving the cactus layer behind the cliff restores the floor pass',value,'red');
+ value=M.clone(value);value.layers[0].depth='ground';delete value.layers[0].objects[0].depth;
+ await compare('an explicitly flat layer below a cliff stays behind it',value,'red');
+ value=M.clone(value);value.layers.reverse();
+ await compare('an explicitly flat layer can also draw above a cliff',value,'green');
  value=map('within-layer', [layer('only',[
   object('foreground','red',{ground:{x:0,y:18},buildingOverlap:'front'}),object('ordinary','green',{ground:{x:0,y:-18}})
  ])]);
- await compare('foreground priority remains inside its own layer',value,'red');
+ await compare('a former foreground override does not supersede the ground pivot',value,'green');
  value=map('feet',[layer('only',[object('lower-foot','green',{ground:{x:0,y:-12}}),object('upper-foot','red',{ground:{x:0,y:12}})])]);
  await compare('upright objects retain ground-point Y sorting',value,'green');
+ value.layers[0].objects[0].depth='ground';
+ await compare('a flat object with a lower pivot draws in front of upright art in its layer',value,'green');
  value=M.clone(value);value.layers[0].objects.reverse();await compare('child order never overrides different upright ground points',value,'green');
  value=map('equal-feet',[layer('only',[object('first','red'),object('second','green')])]);
- await compare('equal ground points retain child storage order',value,'green');
- value=M.clone(value);value.layers[0].objects.reverse();await compare('child reordering changes equal-ground overlap',value,'red');
+ await compare('equal ground points use stable object IDs',value,'green');
+ value=M.clone(value);value.layers[0].objects.reverse();await compare('reordering children leaves equal-ground overlap unchanged',value,'green');
  value=map('transformed-foot',[layer('only',[
   object('rotated-flipped','green',{ground:{x:10,y:0},flipX:true,angle:90}),object('origin-foot','red')
  ],{transform:{x:0,y:0,scale:1,angle:15}})]);
@@ -57,9 +70,9 @@ async function verify(){
  await compare('vertical flips reflect the ground point for editor and thumbnail sort order',value,'green');
  value=map('hidden',[layer('visible',[object('visible','green')]),layer('hidden',[object('hidden','red')],{hidden:true})]);
  await compare('hidden layers never cover visible artwork',value,'green');
- value=map('ground-children',[layer('ground',[object('first','red'),object('second','green')],{depth:'ground'})]);
- await compare('ground objects follow child painter order',value,'green');
- value=M.clone(value);value.layers[0].objects.reverse();await compare('ground child reorder changes thumbnail overlap',value,'red');
+ value=map('ground-children',[layer('ground',[object('first','red',{ground:{x:0,y:15}}),object('second','green',{ground:{x:0,y:-15}})],{depth:'ground'})]);
+ await compare('baked ground objects also use their ground pivots',value,'green');
+ value=M.clone(value);value.layers[0].objects.reverse();await compare('baked ground object order ignores child reorder',value,'green');
  value=map('ground-images',[]);value.ground.roads.images=[object('road-image','red')];value.ground.grass.images=[object('grass-image','green')];
  await compare('ground images follow layer painter order',value,'green');
  value=M.clone(value);value.ground.order=['foundation','grass','roads'];await compare('ground image layer reorder changes thumbnail overlap',value,'red');

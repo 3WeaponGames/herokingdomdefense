@@ -24,11 +24,8 @@ function create(options){
   while(bytes>budget&&cache.size>1){var first=cache.keys().next().value,old=cache.get(first);cache.delete(first);bytes-=old.bytes;old.canvas.width=old.canvas.height=1;}return e;
  }
  function draw(ctx,map,images,settings){
-  settings=FX.settings(settings);var ground=[];
-  for(var layer of map.layers||[]){if(layer.hidden)continue;for(var o of layer.objects||[]){if(!Policy.enabled(layer,o))continue;var b=bounds(layer,o,images);if(!b)continue;var e=obtain(layer,o,images,settings,b);if(e){var d=e.image,scale=b.scale;ctx.save();ctx.translate(b.origin.x+d.x*scale,b.origin.y+(d.y+d.height)*scale);ctx.scale(d.width*scale/e.canvas.width,-d.height*scale/e.canvas.height);ctx.drawImage(e.canvas,0,0);ctx.restore();}if(!o.legacy&&o.buildingOverlap!=='front'&&(layer.depth==='ground'||o.depth==='ground'))ground.push({layer:layer,o:o});}}
-  // Opted-in flat artwork stays above its own shadow. Unassigned terrain keeps
-  // its original ground bake, and no collision/depth settings are rewritten.
-  for(var item of ground)Paint.object(ctx,item.o,item.layer,images);
+  settings=FX.settings(settings);
+  for(var layer of map.layers||[]){if(layer.hidden)continue;for(var o of layer.objects||[]){if(!Policy.enabled(layer,o))continue;var b=bounds(layer,o,images);if(!b)continue;var e=obtain(layer,o,images,settings,b);if(e){var d=e.image,scale=b.scale;ctx.save();ctx.translate(b.origin.x+d.x*scale,b.origin.y+(d.y+d.height)*scale);ctx.scale(d.width*scale/e.canvas.width,-d.height*scale/e.canvas.height);ctx.drawImage(e.canvas,0,0);ctx.restore();}}}
  }
  return{draw:draw,clear:clear,destroy:clear,stats:()=>({bytes:bytes,builds:builds,entries:cache.size})};
 }

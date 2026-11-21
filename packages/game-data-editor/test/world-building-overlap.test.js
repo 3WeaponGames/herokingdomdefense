@@ -40,6 +40,31 @@ test('foreground overrides ground depth in the export and texture budget while l
   assert.equal(JSON.stringify(map), before, 'export cannot change authored depth or normalize the saved override');
 });
 
+test('a flat decoration above a cliff exports in its own layer without adding a physical obstacle', () => {
+  let map = mapFixture();
+  map = M.createLayer(map, 'Cliffs');
+  map.layers[1].objects.push({ id: 'cliff', name: 'Cliff', assetId: 'tree', depth: 'world', x: 10, y: 20, scale: 1, angle: 0 });
+  map.layers.reverse();
+  const before = JSON.stringify(map), data = P.skeleton('Flat prop overlap', map);
+  P.addEnvironment(root, data, map, bake);
+
+  const info = Maps.model(data), owner = info.nodes.find(node => node.name === 'Tree');
+  assert.equal(owner.parent, info.roots.ndMain);
+  const component = terrain(data, owner.id)[0];
+  assert.equal(component.groundOnly, true);
+  assert.equal(component.orderedGround, true);
+  assert.equal(component.objectLayerOrder, 1);
+  assert(!owner.components.some(c => c.value.__type__ === L.script(root, 'KinghtFallBuildObstacle')));
+  assert.equal(JSON.stringify(map), before);
+  assert.equal(Budget.estimate(map, { tree: { width: 20, height: 30 } }, {}).groundObjects, 0);
+
+  map.layers.reverse();
+  const behind = P.skeleton('Flat prop behind', map);
+  P.addEnvironment(root, behind, map, bake);
+  assert(!Maps.model(behind).nodes.some(node => node.name === 'Tree'), 'only the lower flat placement is folded into the floor texture');
+  assert.equal(Budget.estimate(map, { tree: { width: 20, height: 30 } }, {}).groundObjects, 1);
+});
+
 test('legacy round trips recover the override and explicit behind reuses the existing component', () => {
   const map = mapFixture(); map.layers[0].objects[0].buildingOverlap = 'front';
   const data = P.skeleton('Overlap', map); P.addEnvironment(root, data, map, bake);

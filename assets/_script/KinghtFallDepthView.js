@@ -1487,7 +1487,7 @@ function sceneryProps(view,ordered,main) {
   ordered.forEach(function(group){
     if(group.actor||group.building||group.owner._depthGroundVisual||group.owner.activeInHierarchy===false||!(group.owner._depthScenery||group.owner._depthMapObject))return;
     var box=sceneryWorldShape(view,group.owner,main);
-    if(box)props.push({group:group,box:box,low:box.maxY-box.minY<=SMALL_SCENERY_HEIGHT});
+    if(box)props.push({group:group,box:box,low:!!group.owner._depthMapFlat||box.maxY-box.minY<=SMALL_SCENERY_HEIGHT});
   });
   return props;
 }
@@ -1521,15 +1521,14 @@ function scenerySpatialCandidates(index,box) {
 function sceneryActorOrder(view,ordered,main,props) {
   if(!props.length)return;
   var hero=view.game.ctrPlay,actors=[],scenery=[],indices=new Map(),initial=new Map(),minimum=0;
-  var low=new Set(props.filter(function(prop){return prop.low;}).map(function(prop){return prop.group;}));
   // Authored scenery is one immutable painter sequence. In particular, pieces
   // of a continuous cliff cannot cross its trees when an actor walks nearby.
   ordered.forEach(function(group){
     if(group.actor){actors.push(group);initial.set(group,scenery.length);}
-    else{indices.set(group,scenery.length);scenery.push(group);if(low.has(group)||group.owner._depthGroundVisual)minimum=scenery.length;}
+    else{indices.set(group,scenery.length);scenery.push(group);if((group.lowScenery&&group.band===-1)||group.owner._depthGroundVisual)minimum=scenery.length;}
   });
   if(!actors.length)return;
-  props=props.filter(function(prop){return !prop.low;});
+  props=props.filter(function(prop){return !prop.low||prop.group.band!==-1;});
   var spatial=scenerySpatialIndex(view,props,actors.length);
   var placements=[];
   actors.sort(function(a,b){return b.ground-a.ground||a.index-b.index;});
@@ -1539,7 +1538,9 @@ function sceneryActorOrder(view,ordered,main,props) {
     if(shape){var visit=function(prop){
       if(!overlaps(shape,prop.box))return;
       var index=indices.get(prop.group);
-      if(actor.ground>prop.group.ground)behind.push(index);else lower=Math.max(lower,index+1);
+      // A short prop stays under a unit where they overlap, without changing
+      // the depth of distant units or the authored scenery order.
+      if(!prop.low&&actor.ground>prop.group.ground)behind.push(index);else lower=Math.max(lower,index+1);
     },candidates=spatial&&scenerySpatialCandidates(spatial,shape);
     if(candidates)for(var i=0;i<candidates.length;i++)visit(props[candidates[i]]);
     else props.forEach(visit);
@@ -1563,7 +1564,7 @@ DepthView.prototype.sort = function () {
     if (!group) {
       var building=!groundVisual&&!!node._depthBuilding,actor=node._combatActor||(node===hero?heroActor:null);
       var ground=actor?actorGroundY(actor,main,heroActor,null,owner):owner._depthGround?point(owner._depthGround,main).y:owner.y;
-      group = { owner:owner, ground:ground, actor:node._combatActor || node === hero ? 1 : 0, index:index, building:building, priority:node._depthMapForeground?1:0, nodes:[] };
+      group = { owner:owner, ground:ground, actor:node._combatActor || node === hero ? 1 : 0, index:index, building:building, priority:!Number.isFinite(node._depthLayerOrder)&&node._depthMapForeground?1:0, nodes:[] };
       group.band = groundVisual ? -1 : building ? node._depthBuildingOrder : node._depthLayerOrder;
       if (!building && !Number.isFinite(group.band) && (node._depthScenery || node._depthMapObject)) group.band = node._depthMapForeground ? 3 : 1;
       if (Number.isFinite(group.band)) maximum = Math.max(maximum, group.band);
@@ -1572,7 +1573,12 @@ DepthView.prototype.sort = function () {
     group.nodes.push(node);
   });
   var ordered = Array.from(groups.values()),scenery=sceneryProps(this,ordered,main);
-  scenery.forEach(function(prop){if(prop.low){prop.group.lowScenery=true;prop.group.band=-1;}});
+  scenery.forEach(function(prop){
+    if(!prop.low)return;
+    prop.group.lowScenery=true;
+    // Older maps without a layer rank keep their original ground pass.
+    if(!Number.isFinite(prop.group.owner._depthLayerOrder))prop.group.band=-1;
+  });
   ordered.forEach(function (group) { if (group.building && !Number.isFinite(group.band)) group.band = maximum + 2; });
   // Actors retain their ground relationship with scenery and complete buildings.
   // One frontier lets actor lookup stay logarithmic in the number of props.
@@ -1799,7 +1805,7 @@ DepthView.prototype.update = function () {
     var sceneryBox=scenery&&shapeSupported&&sceneryWorldShape(self,object.node,self.main,object.sources);
     var sceneryBounds=sceneryBox||box;
     var smallScenery=scenery&&sceneryBounds&&sceneryBounds.maxY-sceneryBounds.minY<=SMALL_SCENERY_HEIGHT;
-    if(!modular&&!object.node._depthGroundVisual&&!smallScenery&&box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
+    if(!modular&&!object.node._depthGroundVisual&&!object.node._depthMapFlat&&!smallScenery&&box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
       // Ground is unconditional: stale/custom layer order cannot tint a unit
       // standing in front of, or exactly level with, an object's ground point.
       if(!(entry.groundY>ground))return;
