@@ -6,6 +6,7 @@ const { execFileSync } = require('node:child_process');
 const { parseArgs } = require('node:util');
 
 const projectRoot = path.resolve(__dirname, '../..');
+const iconLibraryFolders = ['resources/icons/2d-minimal/', 'resources/icons/Pictograms/'];
 // These libraries also serve the Creator panels. Keep entries reached from the
 // shipped scenes, prefabs, game data, and appearance catalogs.
 const optionalFolders = [
@@ -13,6 +14,7 @@ const optionalFolders = [
   'resources/hero-items/baked/',
   'resources/character-parts/Thumbnail/',
   'KinghtFallIconMap/Generated/Maps/',
+  ...iconLibraryFolders,
 ];
 const generatedMountIconPrefix = 'resources/unit-library/mount-icons/';
 const uuidPattern = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/gi;
@@ -20,10 +22,11 @@ const textAsset = /\.(?:anim|atlas|effect|fire|js|json|mtl|plist|prefab|ts|txt)$
 const jsonAsset = /\.(?:anim|fire|json|mtl|prefab)$/i;
 const projectEntries = ['project.json', 'jsconfig.json', 'tsconfig.json', 'settings', 'build-templates'];
 const textureQuality = [
-  [/^(?:KinghtFallIconMap\/(?:Generated\/Maps|Thumbnails)\/|resources\/stage-loading\/)/, 84],
+  [/^(?:KinghtFallIconMap\/(?:Generated\/Maps|Thumbnails)\/|KinghtFallPrefabs\/_res\/textures\/KinghtFallUIHome\/Backgrounds\/|resources\/stage-loading\/)/, 84],
   [/^(?:KinghtFallIconMap\/com\/|KinghtFallIconBuild\/|resources\/(?:buildings|unit-library)\/)/, 86],
   [/^resources\/(?:vfx|projectiles)\//, 92],
 ];
+const losslessTextures = /^(?:KinghtFall(?:IconMap|IconBuild|Prefabs)\/|resources\/(?:buildings|hero-items\/baked|hero-maker|icons|localization\/generated|projectiles|startup|unit-library|vfx)\/)/;
 
 function walk(root, directory = '') {
   return fs.readdirSync(path.join(root, directory), { withFileTypes: true }).flatMap(entry => {
@@ -86,6 +89,10 @@ function indexAssets(assetRoot) {
     const extension = path.posix.extname(file);
     const stem = extension ? file.slice(0, -extension.length) : file;
     const keys = new Set([file, stem, 'assets/' + file, 'db://assets/' + file]);
+    if (iconLibraryFolders.some(folder => file.startsWith(folder))) {
+      // The game also constructs these resource paths from literal icon names.
+      keys.add(path.posix.basename(stem));
+    }
     for (const bundle of ['resources/', 'KinghtFallIconMap/']) {
       if (!file.startsWith(bundle)) continue;
       keys.add(file.slice(bundle.length));
@@ -102,6 +109,20 @@ function indexAssets(assetRoot) {
 
 function planRelease(assetRoot) {
   const { allFiles, assets, byUuid, byPath } = indexAssets(assetRoot);
+  const projectileCatalog = 'resources/projectiles/catalog.json';
+  if (assets.has(projectileCatalog)) {
+    const { trails } = readJson(path.join(assetRoot, projectileCatalog));
+    for (const { bundle, resource, textureUuid } of trails || []) {
+      if (!resource || !textureUuid) continue;
+      const expected = `${bundle || 'resources'}/${resource}`;
+      const actual = byUuid.get(textureUuid.toLowerCase());
+      // The stage loader requests this texture by path, even if a prefab
+      // still references its UUID after an archive renames the source file.
+      if (!byPath.get(expected)?.has(actual)) {
+        throw new Error(`Projectile trail texture path ${expected} is missing for ${textureUuid}. Indexed file: ${actual || '(missing)'}.`);
+      }
+    }
+  }
   const included = new Set();
   const pending = [];
   function include(file) {
@@ -120,7 +141,8 @@ function planRelease(assetRoot) {
     function reference(value) {
       const id = byUuid.get(value.toLowerCase());
       if (id) include(id);
-      for (const match of byPath.get(value) || []) include(match);
+      const resource = value.startsWith('@icon/') ? value.slice(6) : value;
+      for (const match of byPath.get(resource) || []) include(match);
     }
     if (metadata) visitStrings(metadata, reference);
     if (metadata?.importer === 'spine') {
@@ -190,16 +212,17 @@ function convertTextures(root, destination, plan, cwebp) {
   for (const file of plan.included) {
     if (!file.endsWith('.png') || !plan.included.has(file + '.meta')) continue;
     const rule = textureQuality.find(([pattern]) => pattern.test(file));
-    if (!rule) continue;
+    if (!rule && !losslessTextures.test(file)) continue;
     const source = path.join(root, 'assets', file);
     const before = fs.statSync(source).size;
-    if (before < 96 * 1024) continue;
+    const quality = rule && before >= 96 * 1024 ? rule[1] : null;
+    if (quality === null && before < 32 * 1024) continue;
     const output = file.slice(0, -4) + '.webp';
     if (plan.included.has(output)) throw new Error('WebP target already exists: ' + output);
     const target = path.join(destination, 'assets', output);
     fs.mkdirSync(path.dirname(target), { recursive: true });
-    const quality = rule[1];
-    execFileSync(cwebp, ['-quiet', '-q', String(quality), '-alpha_q', '100', '-exact', '-sharp_yuv', source, '-o', target], { windowsHide: true });
+    const options = quality === null ? ['-lossless', '-exact', '-metadata', 'icc'] : ['-q', String(quality), '-alpha_q', '100', '-exact', '-sharp_yuv'];
+    execFileSync(cwebp, ['-quiet', ...options, source, '-o', target], { windowsHide: true });
     const after = fs.statSync(target).size;
     if (after >= before) {
       fs.unlinkSync(target);

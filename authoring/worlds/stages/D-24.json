@@ -862,7 +862,7 @@
           "1#100299,1",
           "2#91119,9",
           "3#91043,2",
-          "4#100636,1",
+          "4#91170,1",
           "5#100301,4",
           "7#100772,1",
           "8#91064,5",
@@ -909,7 +909,7 @@
           {
             "id": "legacy-4-0",
             "spawnId": 4,
-            "unitId": 100636,
+            "unitId": 91170,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -6792,7 +6792,7 @@
   "nextBuilding": 21,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "7f74c6af9f61ae8c247b83fdecbb53e0cb19fdf8d0e409bd4d1834ac07f122a2",
+  "sourceRevision": "18b0f8a56cdd0f462aa420eb490e820f58b53af395d2859d8e6d64115ece3348",
   "templates": {
     "Map04": [
       {

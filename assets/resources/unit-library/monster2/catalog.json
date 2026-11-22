@@ -924,6 +924,25 @@
       "bones": 21,
       "slots": 12,
       "variantOf": "monster2/Golem_Tree"
+    },
+    {
+      "id": "monster2/Alien_CrimsonVampire",
+      "name": "Crimson Vampire Lord",
+      "pack": "monster2",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Alien/Alien_Vampire.prefab",
+      "skeleton": "assets/resources/unit-library/monster2/Units/BiomeBosses/Alien_CrimsonVampire.json",
+      "uuid": "8be0e38f-9ad4-5cfc-a2ea-6f2f0ca1d324",
+      "resource": "unit-library/monster2/Units/BiomeBosses/Alien_CrimsonVampire",
+      "animations": [
+        "hit",
+        "idle",
+        "die",
+        "attack",
+        "move"
+      ],
+      "bones": 14,
+      "slots": 8,
+      "variantOf": "monster2/Alien_Vampire"
     }
   ],
   "parts": [

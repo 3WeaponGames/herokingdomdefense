@@ -15447,6 +15447,13 @@
       "trail": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
       "trailColor": "#67ff3d",
       "scale": 1.9
+    },
+    "enemy:91172": {
+      "set": "toon:projectile-14-ice",
+      "flight": "toon:projectile-14-ice",
+      "launch": "toon:flash-14",
+      "impact": "toon:hit-14",
+      "trail": false
     }
   },
   "heroArrowTiers": [

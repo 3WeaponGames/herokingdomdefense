@@ -72,7 +72,10 @@ function harness(options = {}) {
   Label.HorizontalAlign = Label.VerticalAlign = { CENTER: 1 };
   class Graphics { rect() {} roundRect() {} fill() {} }
   function Prefab() {}
-  const bundle = { load(name, type, done) { h.requests.push({ name, type, done }); }, loadDir(name, type, done) { h.requests.push({ name, type, done }); } };
+  const bundle = {
+    load(name, type, progress, done) { h.requests.push({ name, type, progress, done }); },
+    loadDir(name, type, progress, done) { h.requests.push({ name, type, progress, done }); }
+  };
   const cc = {
     Node, Label, Graphics, Prefab, Asset: function Asset() {}, BlockInputEvents: function () {}, Color: function () {},
     Canvas: {}, winSize: { width: 750, height: 1334 }, macro: { MAX_ZINDEX: 32767 },
@@ -105,7 +108,7 @@ function harness(options = {}) {
   function load(name) {
     const context = {
       exports: {}, require: name => modules[name] || {}, cc, console,
-      setTimeout(fn) { const id = h.nextTimer++; h.timers.set(id, fn); return id; },
+      setTimeout(fn, delay) { const id = h.nextTimer++; h.timers.set(id, { fn, delay }); return id; },
       clearTimeout(id) { h.timers.delete(id); }
     };
     if (options.browser) context.window = { location: { reload() { h.reloads++; } } };
@@ -222,6 +225,39 @@ test('post-startup resource failures offer recovery without the destroyed Loadin
   h.requests[1].done(null, h.asset);
   assert.equal(completed, 1);
   assert.equal(h.timers.size, 0);
+});
+
+test('slow stage assets keep loading as dependencies advance and retain recovery for stalls', () => {
+  const h = harness();
+  let completed = 0, failure;
+  h.resources.loadRes('battle', 'map', h.Prefab, () => completed++, false, 60, 'stage', {
+    idleTimeoutMs: 120000, onError(error) { failure = error; }
+  });
+  const [firstTimer] = h.timers.keys();
+  assert.equal(h.timers.get(firstTimer).delay, 120000);
+  const request = h.requests[0];
+  request.progress(1, 3);
+  assert.equal(h.timers.has(firstTimer), false);
+  const [secondTimer] = h.timers.keys();
+  request.progress(1, 3);
+  assert.equal(h.timers.has(secondTimer), true, 'duplicate progress does not extend the idle period');
+  h.timers.get(secondTimer).fn();
+  assert.match(failure.message, /Asset request timed out: battle\/map/);
+  request.progress(2, 3);
+  request.done(null, h.asset);
+  assert.equal(completed, 0);
+  assert.equal(h.timers.size, 0);
+});
+
+test('construction preparation can delegate watchdogs without masking a failed step', () => {
+  const h = harness();
+  let done, failure;
+  h.resources.loadWithRecovery('construction', callback => { done = callback; }, null,
+    error => { failure = error; }, null, { idleTimeoutMs: 0 });
+  assert.equal(h.timers.size, 0);
+  const issue = Error('menu layout failed');
+  done(issue);
+  assert.equal(failure, issue);
 });
 
 test('runtime bundle and directory failures both retain their original continuation', () => {

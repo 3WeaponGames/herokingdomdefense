@@ -205,8 +205,11 @@ function create(view, config, level) {
     progress:function (value) { loading.progress(value); },
     load:function (item,done,owner) {
       function error(issue,retry,cancel) { manager.showRuntimeRecovery(issue,retry,function () { if (cancel) cancel(); owner.cancel(); if(!view.isclose)view.closeUI(); done(issue); },cancel); }
-      if (item.uuid) manager.loadWithRecovery(item.path,function (callback) { cc.assetManager.loadAny({uuid:item.path,type:types[item.type]},callback); },function (asset) { if (!owner.current()) return done(Error("Stage preparation cancelled")); if (asset.addRef) asset.addRef(); owner.held.push(asset);try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },error,function () { return owner.current(); });
-      else manager.loadRes(item.bundle,item.path,types[item.type],function (asset) { if(!owner.current()){require("ResCacheMgr").ResCacheMgr.getInstance().releaseAssetsFromMap(owner.key);return done(Error("Stage preparation cancelled"));}try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },false,60,owner.key,{onError:error,isCurrent:function () { return owner.current(); }});
+      function current() { return owner.current(); }
+      // Large native maps can spend longer decoding a single dependency before reporting progress.
+      var recovery = {onError:error,isCurrent:current,idleTimeoutMs:cc.sys && cc.sys.isNative ? 120000 : undefined};
+      if (item.uuid) manager.loadWithRecovery(item.path,function (callback,report) { cc.assetManager.loadAny({uuid:item.path,type:types[item.type]},report,callback); },function (asset) { if (!owner.current()) return done(Error("Stage preparation cancelled")); if (asset.addRef) asset.addRef(); owner.held.push(asset);try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },error,current,recovery);
+      else manager.loadRes(item.bundle,item.path,types[item.type],function (asset) { if(!owner.current()){require("ResCacheMgr").ResCacheMgr.getInstance().releaseAssetsFromMap(owner.key);return done(Error("Stage preparation cancelled"));}try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },false,60,owner.key,recovery);
     },
     prime:function (catalogs,assets) { require("CharacterAppearance").prime(catalogs.characters,catalogs.parts,assets); require("HeroBakedLooks").prime(assets); require("ProjectileLooks").prime(catalogs.projectiles); session.lightMasks=require("WindowLightMaskRuntime").prime(config,buildingKinds(level),assets); },
     shadows:function (prefab,owner,progress) { return require("BuildingShadowPreparation").prepare(prefab,config,level,owner,progress); },

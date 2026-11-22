@@ -45349,7 +45349,7 @@
             "1#91030,1",
             "2#91015,9",
             "3#100788,2",
-            "4#91067,1",
+            "4#91172,1",
             "5#91005,4",
             "7#100788,3",
             "8#100798,5",
@@ -45394,7 +45394,7 @@
             {
               "id": "legacy-4-0",
               "spawnId": 4,
-              "unitId": 91067,
+              "unitId": 91172,
               "count": 1,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -46241,7 +46241,7 @@
           "StartSliver": 13,
           "CommerceSliver": 16,
           "RefreshSoldierKind": [
-            "1#91051,1",
+            "1#91171,1",
             "2#91057,9",
             "3#100728,2",
             "4#100726,1",
@@ -46265,7 +46265,7 @@
             {
               "id": "legacy-1-0",
               "spawnId": 1,
-              "unitId": 91051,
+              "unitId": 91171,
               "count": 1,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -47200,7 +47200,7 @@
             "1#100299,1",
             "2#91119,9",
             "3#91043,2",
-            "4#100636,1",
+            "4#91170,1",
             "5#100301,4",
             "7#100772,1",
             "8#91064,5",
@@ -47247,7 +47247,7 @@
             {
               "id": "legacy-4-0",
               "spawnId": 4,
-              "unitId": 100636,
+              "unitId": 91170,
               "count": 1,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -52896,6 +52896,90 @@
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90001,
       "IsBoss": true
+    },
+    "91170": {
+      "ID": 91170,
+      "Name": "[[loc:data.monster-roster.91170.name]]",
+      "prefab": "Monster3_Evilmass_Cinderhorn",
+      "loadIcon": "@icon/icons/monster-roster/monster3/evilmass-cinderhorn",
+      "AttackType": 1,
+      "Health": 742.5,
+      "AttackDamage": 46.8,
+      "AttackInterval": 1.08,
+      "AttackRange": 62,
+      "SearchRange": 220,
+      "Speed": 79.8,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91170.description]]"
+      },
+      "MonsterSource": "monster3/Evilmass_Cinderhorn",
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "91171": {
+      "ID": 91171,
+      "Name": "[[loc:data.monster-roster.91171.name]]",
+      "prefab": "Monster2_Alien_CrimsonVampire",
+      "loadIcon": "@icon/icons/monster-roster/monster2/alien-crimsonvampire",
+      "AttackType": 3,
+      "Health": 657,
+      "AttackInterval": 0.3145,
+      "SearchRange": 0,
+      "Speed": 79.9,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "Data": [
+        0.5,
+        330,
+        10
+      ],
+      "CounterType": "",
+      "MonsterSource": "monster2/Alien_CrimsonVampire",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 0,
+      "AttackRange": 330,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91171.description]]"
+      },
+      "IsBoss": true
+    },
+    "91172": {
+      "ID": 91172,
+      "Name": "[[loc:data.monster-roster.91172.name]]",
+      "prefab": "Monster3_Winter_GlacierYeti",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-glacieryeti",
+      "AttackType": 2,
+      "Health": 792,
+      "AttackDamage": 29.7,
+      "AttackInterval": 1.125,
+      "AttackRange": 250,
+      "SearchRange": 0,
+      "Speed": 67.5,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91172.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90003,
+      "IsBoss": true,
+      "MonsterSource": "monster3/Winter_GlacierYeti"
     },
     "100000": {
       "ID": 100000,
@@ -77401,6 +77485,411 @@
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90001,
       "IsBoss": true
+    },
+    "101750": {
+      "ID": 101750,
+      "Name": "[[loc:data.monster-roster.91170.name]]",
+      "prefab": "Monster3_Evilmass_Cinderhorn",
+      "loadIcon": "@icon/icons/monster-roster/monster3/evilmass-cinderhorn",
+      "AttackType": 1,
+      "Health": 675,
+      "AttackDamage": 39,
+      "AttackInterval": 1.2,
+      "AttackRange": 62,
+      "SearchRange": 220,
+      "Speed": 84,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91170.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101751": {
+      "ID": 101751,
+      "Name": "[[loc:data.monster-roster.91170.name]]",
+      "prefab": "Monster3_Evilmass_Cinderhorn",
+      "loadIcon": "@icon/icons/monster-roster/monster3/evilmass-cinderhorn",
+      "AttackType": 1,
+      "Health": 810,
+      "AttackDamage": 35.1,
+      "AttackInterval": 1.08,
+      "AttackRange": 62,
+      "SearchRange": 220,
+      "Speed": 75.6,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91170.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101752": {
+      "ID": 101752,
+      "Name": "[[loc:data.monster-roster.91170.name]]",
+      "prefab": "Monster3_Evilmass_Cinderhorn",
+      "loadIcon": "@icon/icons/monster-roster/monster3/evilmass-cinderhorn",
+      "AttackType": 1,
+      "Health": 607.5,
+      "AttackDamage": 37.05,
+      "AttackInterval": 1.2,
+      "AttackRange": 62,
+      "SearchRange": 220,
+      "Speed": 96.6,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91170.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101753": {
+      "ID": 101753,
+      "Name": "[[loc:data.monster-roster.91170.name]]",
+      "prefab": "Monster3_Evilmass_Cinderhorn",
+      "loadIcon": "@icon/icons/monster-roster/monster3/evilmass-cinderhorn",
+      "AttackType": 1,
+      "Health": 607.5,
+      "AttackDamage": 35.1,
+      "AttackInterval": 1.32,
+      "AttackRange": 62,
+      "SearchRange": 220,
+      "Speed": 92.4,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91170.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101754": {
+      "ID": 101754,
+      "Name": "[[loc:data.monster-roster.91170.name]]",
+      "prefab": "Monster3_Evilmass_Cinderhorn",
+      "loadIcon": "@icon/icons/monster-roster/monster3/evilmass-cinderhorn",
+      "AttackType": 1,
+      "Health": 607.5,
+      "AttackDamage": 48.75,
+      "AttackInterval": 1.02,
+      "AttackRange": 62,
+      "SearchRange": 220,
+      "Speed": 71.4,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91170.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90002,
+      "IsBoss": true
+    },
+    "101755": {
+      "ID": 101755,
+      "Name": "[[loc:data.monster-roster.91171.name]]",
+      "prefab": "Monster2_Alien_CrimsonVampire",
+      "loadIcon": "@icon/icons/monster-roster/monster2/alien-crimsonvampire",
+      "AttackType": 3,
+      "Health": 730,
+      "AttackInterval": 0.37,
+      "SearchRange": 0,
+      "Speed": 94,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "Data": [
+        0.5,
+        330,
+        10
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 0,
+      "AttackRange": 330,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91171.description]]"
+      },
+      "IsBoss": true
+    },
+    "101756": {
+      "ID": 101756,
+      "Name": "[[loc:data.monster-roster.91171.name]]",
+      "prefab": "Monster2_Alien_CrimsonVampire",
+      "loadIcon": "@icon/icons/monster-roster/monster2/alien-crimsonvampire",
+      "AttackType": 3,
+      "Health": 876,
+      "AttackInterval": 0.333,
+      "SearchRange": 0,
+      "Speed": 84.6,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "Data": [
+        0.5,
+        330,
+        10
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 0,
+      "AttackRange": 330,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91171.description]]"
+      },
+      "IsBoss": true
+    },
+    "101757": {
+      "ID": 101757,
+      "Name": "[[loc:data.monster-roster.91171.name]]",
+      "prefab": "Monster2_Alien_CrimsonVampire",
+      "loadIcon": "@icon/icons/monster-roster/monster2/alien-crimsonvampire",
+      "AttackType": 3,
+      "Health": 657,
+      "AttackInterval": 0.37,
+      "SearchRange": 0,
+      "Speed": 108.1,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "Data": [
+        0.5,
+        330,
+        10
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 0,
+      "AttackRange": 330,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91171.description]]"
+      },
+      "IsBoss": true
+    },
+    "101758": {
+      "ID": 101758,
+      "Name": "[[loc:data.monster-roster.91171.name]]",
+      "prefab": "Monster2_Alien_CrimsonVampire",
+      "loadIcon": "@icon/icons/monster-roster/monster2/alien-crimsonvampire",
+      "AttackType": 3,
+      "Health": 657,
+      "AttackInterval": 0.407,
+      "SearchRange": 0,
+      "Speed": 103.4,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "Data": [
+        0.5,
+        330,
+        10
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 0,
+      "AttackRange": 330,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91171.description]]"
+      },
+      "IsBoss": true
+    },
+    "101759": {
+      "ID": 101759,
+      "Name": "[[loc:data.monster-roster.91171.name]]",
+      "prefab": "Monster2_Alien_CrimsonVampire",
+      "loadIcon": "@icon/icons/monster-roster/monster2/alien-crimsonvampire",
+      "AttackType": 3,
+      "Health": 803,
+      "AttackInterval": 0.333,
+      "SearchRange": 0,
+      "Speed": 89.3,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "Data": [
+        0.5,
+        330,
+        10
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 0,
+      "AttackRange": 330,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91171.description]]"
+      },
+      "IsBoss": true
+    },
+    "101760": {
+      "ID": 101760,
+      "Name": "[[loc:data.monster-roster.91172.name]]",
+      "prefab": "Monster3_Winter_GlacierYeti",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-glacieryeti",
+      "AttackType": 2,
+      "Health": 660,
+      "AttackDamage": 33,
+      "AttackInterval": 1.25,
+      "AttackRange": 250,
+      "SearchRange": 0,
+      "Speed": 75,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91172.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90003,
+      "IsBoss": true
+    },
+    "101761": {
+      "ID": 101761,
+      "Name": "[[loc:data.monster-roster.91172.name]]",
+      "prefab": "Monster3_Winter_GlacierYeti",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-glacieryeti",
+      "AttackType": 2,
+      "Health": 594,
+      "AttackDamage": 31.35,
+      "AttackInterval": 1.25,
+      "AttackRange": 250,
+      "SearchRange": 0,
+      "Speed": 86.25,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91172.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90003,
+      "IsBoss": true
+    },
+    "101762": {
+      "ID": 101762,
+      "Name": "[[loc:data.monster-roster.91172.name]]",
+      "prefab": "Monster3_Winter_GlacierYeti",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-glacieryeti",
+      "AttackType": 2,
+      "Health": 594,
+      "AttackDamage": 29.7,
+      "AttackInterval": 1.375,
+      "AttackRange": 250,
+      "SearchRange": 0,
+      "Speed": 82.5,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91172.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90003,
+      "IsBoss": true
+    },
+    "101763": {
+      "ID": 101763,
+      "Name": "[[loc:data.monster-roster.91172.name]]",
+      "prefab": "Monster3_Winter_GlacierYeti",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-glacieryeti",
+      "AttackType": 2,
+      "Health": 726,
+      "AttackDamage": 39.6,
+      "AttackInterval": 1.125,
+      "AttackRange": 250,
+      "SearchRange": 0,
+      "Speed": 71.25,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91172.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90003,
+      "IsBoss": true
+    },
+    "101764": {
+      "ID": 101764,
+      "Name": "[[loc:data.monster-roster.91172.name]]",
+      "prefab": "Monster3_Winter_GlacierYeti",
+      "loadIcon": "@icon/icons/monster-roster/monster3/winter-glacieryeti",
+      "AttackType": 2,
+      "Health": 594,
+      "AttackDamage": 41.25,
+      "AttackInterval": 1.0625,
+      "AttackRange": 250,
+      "SearchRange": 0,
+      "Speed": 63.75,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91172.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90003,
+      "IsBoss": true
     }
   },
   "TalentCfg": {
@@ -88181,6 +88670,60 @@
       },
       "enemy:91169:default": {
         "attack": 0.5
+      },
+      "enemy:101750:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101751:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101752:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101753:default": {
+        "attack": 0.3333333
+      },
+      "enemy:91170:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101754:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101755:default": {
+        "attack": 0.75
+      },
+      "enemy:101756:default": {
+        "attack": 0.75
+      },
+      "enemy:101757:default": {
+        "attack": 0.75
+      },
+      "enemy:101758:default": {
+        "attack": 0.75
+      },
+      "enemy:101759:default": {
+        "attack": 0.75
+      },
+      "enemy:91171:default": {
+        "attack": 0.75
+      },
+      "enemy:101760:default": {
+        "attack": 0.3333333
+      },
+      "enemy:91172:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101761:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101762:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101763:default": {
+        "attack": 0.3333333
+      },
+      "enemy:101764:default": {
+        "attack": 0.3333333
       }
     },
     "visuals": {
@@ -91453,6 +91996,60 @@
       },
       "enemy:91169:default": {
         "mirrorX": true
+      },
+      "enemy:101750:default": {
+        "mirrorX": true
+      },
+      "enemy:101751:default": {
+        "mirrorX": true
+      },
+      "enemy:101752:default": {
+        "mirrorX": true
+      },
+      "enemy:101753:default": {
+        "mirrorX": true
+      },
+      "enemy:91170:default": {
+        "mirrorX": true
+      },
+      "enemy:101754:default": {
+        "mirrorX": true
+      },
+      "enemy:101755:default": {
+        "mirrorX": true
+      },
+      "enemy:101756:default": {
+        "mirrorX": true
+      },
+      "enemy:101757:default": {
+        "mirrorX": true
+      },
+      "enemy:101758:default": {
+        "mirrorX": true
+      },
+      "enemy:101759:default": {
+        "mirrorX": true
+      },
+      "enemy:91171:default": {
+        "mirrorX": true
+      },
+      "enemy:101760:default": {
+        "mirrorX": true
+      },
+      "enemy:91172:default": {
+        "mirrorX": true
+      },
+      "enemy:101761:default": {
+        "mirrorX": true
+      },
+      "enemy:101762:default": {
+        "mirrorX": true
+      },
+      "enemy:101763:default": {
+        "mirrorX": true
+      },
+      "enemy:101764:default": {
+        "mirrorX": true
       }
     },
     "unitTypes": {
@@ -92589,7 +93186,25 @@
       "enemy:101747:default": "vanguard",
       "enemy:101748:default": "skirmisher",
       "enemy:101749:default": "bruiser",
-      "enemy:91169:default": "mystic"
+      "enemy:91169:default": "mystic",
+      "enemy:101750:default": "fighter",
+      "enemy:101751:default": "guardian",
+      "enemy:101752:default": "vanguard",
+      "enemy:101753:default": "skirmisher",
+      "enemy:91170:default": "bruiser",
+      "enemy:101754:default": "mystic",
+      "enemy:101755:default": "fighter",
+      "enemy:101756:default": "guardian",
+      "enemy:101757:default": "vanguard",
+      "enemy:101758:default": "skirmisher",
+      "enemy:101759:default": "bruiser",
+      "enemy:91171:default": "mystic",
+      "enemy:101760:default": "fighter",
+      "enemy:91172:default": "guardian",
+      "enemy:101761:default": "vanguard",
+      "enemy:101762:default": "skirmisher",
+      "enemy:101763:default": "bruiser",
+      "enemy:101764:default": "mystic"
     },
     "unitLevels": {
       "ally:90001:level:2": {
@@ -92665,7 +93280,7 @@
     },
     "unitProfiles": {
       "version": 1,
-      "nextId": 101750,
+      "nextId": 101765,
       "entries": {
         "100000": {
           "baseId": 90001,
@@ -105111,6 +105726,216 @@
           },
           "visual": {},
           "fightingProfile": true
+        },
+        "101750": {
+          "baseId": 91170,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 675,
+            "AttackDamage": 39,
+            "AttackInterval": 1.2,
+            "Speed": 84
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101751": {
+          "baseId": 91170,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 810,
+            "AttackDamage": 35.1,
+            "AttackInterval": 1.08,
+            "Speed": 75.6
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101752": {
+          "baseId": 91170,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 607.5,
+            "AttackDamage": 37.05,
+            "AttackInterval": 1.2,
+            "Speed": 96.6
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101753": {
+          "baseId": 91170,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 607.5,
+            "AttackDamage": 35.1,
+            "AttackInterval": 1.32,
+            "Speed": 92.4
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101754": {
+          "baseId": 91170,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 607.5,
+            "AttackDamage": 48.75,
+            "AttackInterval": 1.02,
+            "Speed": 71.4
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101755": {
+          "baseId": 91171,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 730,
+            "AttackDamage": 0,
+            "AttackInterval": 0.37,
+            "Speed": 94
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101756": {
+          "baseId": 91171,
+          "name": "Guardian",
+          "created": true,
+          "role": "guardian",
+          "stats": {
+            "Health": 876,
+            "AttackDamage": 0,
+            "AttackInterval": 0.333,
+            "Speed": 84.6
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101757": {
+          "baseId": 91171,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 657,
+            "AttackDamage": 0,
+            "AttackInterval": 0.37,
+            "Speed": 108.1
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101758": {
+          "baseId": 91171,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 657,
+            "AttackDamage": 0,
+            "AttackInterval": 0.407,
+            "Speed": 103.4
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101759": {
+          "baseId": 91171,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 803,
+            "AttackDamage": 0,
+            "AttackInterval": 0.333,
+            "Speed": 89.3
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101760": {
+          "baseId": 91172,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 660,
+            "AttackDamage": 33,
+            "AttackInterval": 1.25,
+            "Speed": 75
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101761": {
+          "baseId": 91172,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 594,
+            "AttackDamage": 31.35,
+            "AttackInterval": 1.25,
+            "Speed": 86.25
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101762": {
+          "baseId": 91172,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 594,
+            "AttackDamage": 29.7,
+            "AttackInterval": 1.375,
+            "Speed": 82.5
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101763": {
+          "baseId": 91172,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 726,
+            "AttackDamage": 39.6,
+            "AttackInterval": 1.125,
+            "Speed": 71.25
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101764": {
+          "baseId": 91172,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 594,
+            "AttackDamage": 41.25,
+            "AttackInterval": 1.0625,
+            "Speed": 63.75
+          },
+          "visual": {},
+          "fightingProfile": true
         }
       },
       "families": {
@@ -108492,6 +109317,63 @@
             "bruiser": 101749,
             "mystic": 91169
           }
+        },
+        "91170": {
+          "modelKey": "source:monster3/Evilmass_Cinderhorn",
+          "name": "Cinderhorn Demon",
+          "baseline": {
+            "Health": 675,
+            "AttackDamage": 39,
+            "AttackInterval": 1.2,
+            "Speed": 84
+          },
+          "referenceId": 91170,
+          "profiles": {
+            "fighter": 101750,
+            "guardian": 101751,
+            "vanguard": 101752,
+            "skirmisher": 101753,
+            "bruiser": 91170,
+            "mystic": 101754
+          }
+        },
+        "91171": {
+          "modelKey": "source:monster2/Alien_CrimsonVampire",
+          "name": "Crimson Vampire Lord",
+          "baseline": {
+            "Health": 730,
+            "AttackDamage": 0,
+            "AttackInterval": 0.37,
+            "Speed": 94
+          },
+          "referenceId": 91171,
+          "profiles": {
+            "fighter": 101755,
+            "guardian": 101756,
+            "vanguard": 101757,
+            "skirmisher": 101758,
+            "bruiser": 101759,
+            "mystic": 91171
+          }
+        },
+        "91172": {
+          "modelKey": "source:monster3/Winter_GlacierYeti",
+          "name": "Glacier Yeti",
+          "baseline": {
+            "Health": 660,
+            "AttackDamage": 33,
+            "AttackInterval": 1.25,
+            "Speed": 75
+          },
+          "referenceId": 91172,
+          "profiles": {
+            "fighter": 101760,
+            "guardian": 91172,
+            "vanguard": 101761,
+            "skirmisher": 101762,
+            "bruiser": 101763,
+            "mystic": 101764
+          }
         }
       },
       "aliases": {
@@ -108745,7 +109627,10 @@
       "enemy:91159:default": "elite",
       "enemy:91161:default": "boss",
       "enemy:91164:default": "boss",
-      "enemy:91169:default": "boss"
+      "enemy:91169:default": "boss",
+      "enemy:91170:default": "boss",
+      "enemy:91171:default": "boss",
+      "enemy:91172:default": "boss"
     }
   },
   "AllyCfg": {

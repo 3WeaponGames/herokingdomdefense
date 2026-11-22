@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "0b6226c1-9e47-5ff4-aad8-6d94078f4252",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "Winter_GlacierYeti": {
+      "ver": "1.0.6",
+      "uuid": "4de9d522-e019-511c-a1aa-95be96cd3e23",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "0b6226c1-9e47-5ff4-aad8-6d94078f4252",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

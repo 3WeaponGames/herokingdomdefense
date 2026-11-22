@@ -50,9 +50,10 @@ var exp_ResourceMgr = function () {
   };
   // Loading handles startup failures. After startup, every request still has an
   // asset-free recovery path; do not leave a success-only continuation stranded.
-  t.prototype.loadWithRecovery = function (name, operation, complete, onError, isCurrent) {
+  t.prototype.loadWithRecovery = function (name, operation, complete, onError, isCurrent, options) {
     var manager = this;
     var progress = this.startupProgress && this.startupProgress.begin(name);
+    var idleTimeoutMs = options && options.idleTimeoutMs !== undefined ? options.idleTimeoutMs : 30000;
     var finished = false;
     var active = false;
     var timer = null;
@@ -66,8 +67,18 @@ var exp_ResourceMgr = function () {
       if (finished || active) return;
       if (isCurrent && !isCurrent()) { cancel(); return; }
       active = true;
-      var settled = false;
-      timer = setTimeout(function () { done(new Error("Asset request timed out: " + name)); }, 30000);
+      var settled = false, completed = 0;
+      function watchForStall() {
+        clearTimeout(timer);
+        // Composite jobs can delegate timeout and recovery to their individual steps.
+        if (idleTimeoutMs > 0) timer = setTimeout(function () { done(new Error("Asset request timed out: " + name)); }, idleTimeoutMs);
+      }
+      function report(loaded, total) {
+        if (settled || finished || !(loaded > completed)) return;
+        completed = loaded;
+        watchForStall();
+        if (progress) progress.progress(loaded, total);
+      }
       function done(error, asset) {
         if (settled || finished) return;
         settled = true;
@@ -76,7 +87,7 @@ var exp_ResourceMgr = function () {
         if (error || !asset) {
           if (isCurrent && !isCurrent()) { cancel(); return; }
           error = error || new Error("Asset request returned no asset: " + name);
-          $z1LogMgr.LogMgr.getInstance().error("Asset load failed: " + name, error);
+          $z1LogMgr.LogMgr.getInstance().error("Asset load failed: " + name, error.stack || error.message || String(error));
           if (manager.loadErrorHandler) manager.loadErrorHandler(error, retry);
           else if (onError) onError(error, retry, cancel);
           else manager.showRuntimeRecovery(error, retry, null, cancel);
@@ -86,7 +97,8 @@ var exp_ResourceMgr = function () {
           complete && complete(asset);
         }
       }
-      try { operation(done, progress && progress.progress); }
+      watchForStall();
+      try { operation(done, report); }
       catch (error) { if (settled) throw error; done(error); }
     };
     retry();
@@ -349,13 +361,13 @@ var exp_ResourceMgr = function () {
       var f = new exp_ResCache(n, i, u, e.cacheTme, s);
       var manager = this;
       this.loadBundle(n, function (bundle) {
-        manager.loadWithRecovery(n + "/" + i, function (done, report) { if (report) bundle.load(i, s, report, done); else bundle.load(i, s, done); }, function (a) {
+        manager.loadWithRecovery(n + "/" + i, function (done, report) { bundle.load(i, s, report, done); }, function (a) {
             a.addRef();
             f.asset = a;
             $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(f, e.autoRelese);
             g && !e.autoRelese && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(g, n, i, s, a);
             l && l(a);
-        }, onError, isCurrent);
+        }, onError, isCurrent, options);
       }, onError, isCurrent);
     } else {
       console.error("请传入具体资源类型，不能是基类asset,路径:", n + "/" + i);
@@ -364,7 +376,7 @@ var exp_ResourceMgr = function () {
   t.prototype.loadDir = function (t, e, n, onError) {
     var manager = this;
     this.loadBundle(t, function (bundle) {
-      manager.loadWithRecovery(t + "/" + e, function (done, report) { if (report) bundle.loadDir(e, cc.Asset, report, done); else bundle.loadDir(e, cc.Asset, done); }, n, onError);
+      manager.loadWithRecovery(t + "/" + e, function (done, report) { bundle.loadDir(e, cc.Asset, report, done); }, n, onError);
     }, onError);
   };
   t.prototype.releaseByBundle = function (t, e) {

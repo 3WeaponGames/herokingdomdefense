@@ -132,12 +132,28 @@ test('unknown prefab storage is a required preparation error and cannot silently
  const h=fixture();let error;h.api.preloadConstruction(h.config,[{}],issue=>error=issue);h.deliver('characters/catalog');assert.match(error.message,/enumerate/);assert.equal(h.instances(),0);assert.equal(h.frames.length,0);
 });
 
-function integrated(options){const h=fixture(options),resourceRequests=[],recoveries=[],menus=[],menuPaint=[],callbacks=[],manager={loadBundle(name,done){done({});},loadRes(...args){resourceRequests.push(args);},loadWithRecovery(name,operation,complete,_error,isCurrent){const record={name,isCurrent,cancelled:false,cancel(){record.cancelled=true;},retry(){if(record.cancelled||isCurrent&&!isCurrent())return;operation((error,value)=>{record.error=error;if(!record.cancelled&&(!isCurrent||isCurrent())&&!error)complete(value);});}};recoveries.push(record);record.retry();return record;},showRuntimeRecovery(error,retry){recoveries.push({name:'resource',error,retry});}},modules={KinghtFallConfig:{KinghtFallBundelName:{Enemy:'units',EnemyAni:'ani',IconMap:'maps',IconBuild:'icons'},KinghtFallUIID:{UIBuildSel:7}},KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:h.config})}},ResourceMgr:{ResourceMgr:{getInstance:()=>manager}},CharacterAppearance:h.api,UIMgr:{UIMgr:{getInstance:()=>({preLoadUI(id,done){menus.push(done);}})}},PreparedBuildingMenus:{prepare(config,ui,done){menuPaint.push(done);}}},context={exports:{},cc:h.cc,require:name=>{assert(modules[name],name);return modules[name];},setTimeout:(fn,delay)=>{const id=Symbol();h.timers.set(id,{callback:fn,delay:delay||0});return id;},clearTimeout:id=>h.timers.delete(id)};vm.runInNewContext(warmSource,context);
+test('each prepared rig renews the inactivity deadline for the remaining construction work', () => {
+ const h=fixture(), assets=[new h.Asset('first'),new h.Asset('second')];
+ let result;
+ h.api.preloadConstruction(h.config,[h.prefab(assets)],(error,value)=>{assert.ifError(error);result=value;});
+ h.deliver('characters/catalog');
+ const [initialWatchdog]=[...h.timers].find(([,timer])=>timer.delay===25000);
+ h.tick();
+ assert.equal(assets[0].parsed,true);
+ assert.equal(assets[1].parsed,false);
+ assert.equal(h.timers.has(initialWatchdog),false);
+ assert([...h.timers.values()].some(timer=>timer.delay===25000));
+ h.drive();
+ assert.equal(result.prepared,4);
+ assert.equal(h.timers.size,0);
+});
+
+function integrated(options){const h=fixture(options),resourceRequests=[],recoveries=[],menus=[],menuPaint=[],callbacks=[],manager={loadBundle(name,done){done({});},loadRes(...args){resourceRequests.push(args);},loadWithRecovery(name,operation,complete,_error,isCurrent,options){const record={name,isCurrent,options,cancelled:false,cancel(){record.cancelled=true;},retry(){if(record.cancelled||isCurrent&&!isCurrent())return;operation((error,value)=>{record.error=error;if(!record.cancelled&&(!isCurrent||isCurrent())&&!error)complete(value);});}};recoveries.push(record);record.retry();return record;},showRuntimeRecovery(error,retry){recoveries.push({name:'resource',error,retry});}},modules={KinghtFallConfig:{KinghtFallBundelName:{Enemy:'units',EnemyAni:'ani',IconMap:'maps',IconBuild:'icons'},KinghtFallUIID:{UIBuildSel:7}},KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:h.config})}},ResourceMgr:{ResourceMgr:{getInstance:()=>manager}},CharacterAppearance:h.api,UIMgr:{UIMgr:{getInstance:()=>({getUICnf(){return {};},preLoadUI(id,done){menus.push(done);}})}},PreparedBuildingMenus:{prepare(config,ui,done){menuPaint.push(done);}}},context={exports:{},cc:h.cc,require:name=>{assert(modules[name],name);return modules[name];},setTimeout:(fn,delay)=>{const id=Symbol();h.timers.set(id,{callback:fn,delay:delay||0});return id;},clearTimeout:id=>h.timers.delete(id)};vm.runInNewContext(warmSource,context);
  function resources(){let at=0;while(resourceRequests[at]){const request=resourceRequests[at++];request[3](request[2]==='prefab'?h.prefab([new h.Asset('default')]):{});h.zeros();}}
  return Object.assign(h,{warm:context.exports,resourceRequests,recoveries,menus,menuPaint,callbacks,resources,manager});}
 
 test('existing Loading integration blocks menu preparation and success until required native data is ready',()=>{
- const h=integrated();h.warm.preload(()=>h.callbacks.push('done'));h.resources();assert.equal(h.menus.length,0);assert.equal(h.recoveries[0].name,'Construction menu preparation');assert.deepEqual(h.callbacks,[]);h.drive();assert.equal(h.menus.length,1);assert.deepEqual(h.callbacks,[]);h.menus[0]();assert.equal(h.menuPaint.length,1);h.menuPaint[0](null,{ready:true});assert.deepEqual(h.callbacks,['done']);assert.equal(h.instances(),0);
+ const h=integrated();h.warm.preload(()=>h.callbacks.push('done'));h.resources();assert.equal(h.menus.length,0);assert.equal(h.recoveries[0].name,'Construction menu preparation');assert.equal(h.recoveries[0].options.idleTimeoutMs,0);assert.deepEqual(h.callbacks,[]);h.drive();assert.equal(h.menus.length,1);assert.deepEqual(h.callbacks,[]);h.menus[0]();assert.equal(h.menuPaint.length,1);h.menuPaint[0](null,{ready:true});assert.deepEqual(h.callbacks,['done']);assert.equal(h.instances(),0);
 });
 
 test('a native runtime failure uses ResourceMgr recovery and retry without reloading queued assets',()=>{

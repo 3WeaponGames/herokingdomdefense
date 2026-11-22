@@ -35,20 +35,27 @@ function preload(done,isCurrent){
  if(director&&director.on&&director.off&&cc.Director&&cc.Director.EVENT_BEFORE_SCENE_LAUNCH)director.on(cc.Director.EVENT_BEFORE_SCENE_LAUNCH,owner.retire);
  function guarded(){if(owner.current())return true;if(active===owner)owner.retire();return false;}
  function remember(handle){if(handle){if(owner.retired||active!==owner){if(handle.cancel)handle.cancel();}else owner.handles.push(handle);}return handle;}
- function recover(name,operation,success){if(!guarded())return;remember(manager.loadWithRecovery(name,function(resolve){if(guarded())operation(resolve);},function(value){if(guarded())success(value);},null,owner.current));}
  function finish(){
   if(!guarded())return;
   complete=true;active=null;
   var waiters=owner.waiters;owner.waiters=[];var first=null;try{cleanup();}catch(error){first=error;}
   waiters.forEach(function(value){try{if(live(value)&&value.done)value.done();}catch(error){if(!first)first=error;}});if(first)throw first;
  }
- function menus(){recover("Construction menu preparation",function(resolve){
-  owner.native=require("CharacterAppearance").preloadConstruction(config,prefabs,function(error){
-   if(!guarded())return;if(error){resolve(error);return;}
-   var ui=require("UIMgr").UIMgr.getInstance();ui.preLoadUI(Config.KinghtFallUIID.UIBuildSel,function(){if(guarded())require("PreparedBuildingMenus").prepare(config,ui,resolve);});
-  },owner.current);
-  if(!owner.current()&&owner.native){owner.native.cancel();owner.native=null;}
- },finish);}
+ function menus(){
+  if(!guarded())return;
+  // Spine preparation, prefab loading and rendering each detect their own stalls.
+  remember(manager.loadWithRecovery("Construction menu preparation",function(resolve){
+   if(!guarded())return;
+   owner.native=require("CharacterAppearance").preloadConstruction(config,prefabs,function(error){
+    if(!guarded())return;
+    if(error){resolve(error);return;}
+    var ui=require("UIMgr").UIMgr.getInstance(),menu=Config.KinghtFallUIID.UIBuildSel;
+    if(!ui.getUICnf(menu)){resolve(new Error("Construction menu prefab is not configured"));return;}
+    ui.preLoadUI(menu,function(){if(guarded())require("PreparedBuildingMenus").prepare(config,ui,resolve);});
+   },owner.current);
+   if(!owner.current()&&owner.native){owner.native.cancel();owner.native=null;}
+  },finish,null,owner.current,{idleTimeoutMs:0}));
+ }
  function next(){
   if(!guarded())return;
   if(position>=queue.length){

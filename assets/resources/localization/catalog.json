@@ -9433,6 +9433,36 @@
       "en": "A skeletal king in a gilded helmet, wielding a broad sword and a heavy shield.",
       "zh": "头戴镀金头盔、手持阔剑与重盾的骷髅王。",
       "context": "Enemy guide appearance · Skeleton King"
+    },
+    "data.monster-roster.91170.name": {
+      "en": "Cinderhorn Demon",
+      "zh": "烬角恶魔",
+      "context": "Minimal lava boss · monster3/Evilmass_Cinderhorn"
+    },
+    "data.unitguide.91170.description": {
+      "en": "Black volcanic armor protects this horned demon as it hammers defenders with ember-hot fists.",
+      "zh": "坚硬的火山岩甲保护着烬角恶魔，它用炽热的双拳猛击守军。",
+      "context": "Enemy guide · Cinderhorn Demon"
+    },
+    "data.monster-roster.91171.name": {
+      "en": "Crimson Vampire Lord",
+      "zh": "猩红吸血鬼领主",
+      "context": "Minimal fire boss · monster2/Alien_CrimsonVampire"
+    },
+    "data.unitguide.91171.description": {
+      "en": "The lord of the fire coven heals nearby monsters from beneath a scarlet, bat-wing collar.",
+      "zh": "火焰集会的领主披着猩红蝠翼高领，为附近的怪物治疗伤势。",
+      "context": "Enemy guide · Crimson Vampire Lord"
+    },
+    "data.monster-roster.91172.name": {
+      "en": "Glacier Yeti",
+      "zh": "冰川雪怪",
+      "context": "Minimal ice boss · monster3/Winter_GlacierYeti"
+    },
+    "data.unitguide.91172.description": {
+      "en": "A shaggy ice giant whose glacier fists hurl shards at defenders from a distance.",
+      "zh": "长着雪白厚毛的冰川巨怪，用冰晶护拳远距离投掷碎冰攻击守军。",
+      "context": "Enemy guide · Glacier Yeti"
     }
   },
   "images": {

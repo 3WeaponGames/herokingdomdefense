@@ -245,6 +245,13 @@ function preloadConstruction(config, prefabs, done, isCurrent) {
       };
       job.schedule = function () {
         if (job.finished || job.frame) return;
+        // A long queue can take many frames even when each rig prepares successfully.
+        clearTimeout(job.watchdog);
+        job.watchdog = setTimeout(function () {
+          if (job.position < job.required) { job.finish(new Error("Required construction Spine preparation timed out.")); return; }
+          job.items.slice(job.position).forEach(function (item) { if (!item.resource) return; var issue = "Optional construction appearance preparation timed out; using prefab appearance."; job.fallbacks.push({ resource: item.resource, message: issue }); if (cc.warn && !failures["construction:" + item.resource]) { failures["construction:" + item.resource] = true; cc.warn("Construction appearance fallback: " + item.resource, issue); } });
+          job.finish();
+        }, 25000);
         job.frame = { job: job, run: job.run }; constructionSteps.push(job.frame); scheduleConstructionFrame();
       };
       job.optionalFailure = function (item, issue) {
@@ -275,11 +282,6 @@ function preloadConstruction(config, prefabs, done, isCurrent) {
         if (item.resource) preparedBakedRuntime(item.resource, item.asset);
         job.position++; job.prepared++; job.schedule();
       };
-      job.watchdog = setTimeout(function () {
-        if (job.position < job.required) { job.finish(new Error("Required construction Spine preparation timed out.")); return; }
-        job.items.slice(job.position).forEach(function (item) { if (!item.resource) return; var issue = "Optional construction appearance preparation timed out; using prefab appearance."; job.fallbacks.push({ resource: item.resource, message: issue }); if (cc.warn && !failures["construction:" + item.resource]) { failures["construction:" + item.resource] = true; cc.warn("Construction appearance fallback: " + item.resource, issue); } });
-        job.finish();
-      }, 25000);
     }
     job.waiters.push(waiter);
     subscription = { cancel: function () { waiter.cancelled = true; if (!job.finished && !job.live()) job.finish(); } };

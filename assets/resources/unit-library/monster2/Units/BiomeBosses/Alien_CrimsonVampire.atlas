@@ -1,0 +1,62 @@
+
+Alien_CrimsonVampire.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Alien_CrimsonVampire_Body
+  rotate: false
+  xy: 2, 2
+  size: 202, 246
+  orig: 202, 246
+  offset: 0, 0
+  index: -1
+Alien_CrimsonVampire_Hit
+  rotate: false
+  xy: 208, 2
+  size: 225, 241
+  orig: 225, 241
+  offset: 0, 0
+  index: -1
+Alien_CrimsonVampire_Hit_2
+  rotate: false
+  xy: 437, 2
+  size: 225, 241
+  orig: 225, 241
+  offset: 0, 0
+  index: -1
+Alien_CrimsonVampire_Attack
+  rotate: false
+  xy: 666, 2
+  size: 152, 162
+  orig: 152, 162
+  offset: 0, 0
+  index: -1
+u_cb87e32b699d78b40946e2d70bd1445d
+  rotate: false
+  xy: 822, 2
+  size: 115, 158
+  orig: 115, 158
+  offset: 0, 0
+  index: -1
+Alien_CrimsonVampire_Attack2
+  rotate: false
+  xy: 941, 2
+  size: 94, 112
+  orig: 94, 112
+  offset: 0, 0
+  index: -1
+Alien_CrimsonVampire_Cape
+  rotate: false
+  xy: 1039, 2
+  size: 77, 112
+  orig: 77, 112
+  offset: 0, 0
+  index: -1
+u_76b0721d273a5624e874e84669b78de2
+  rotate: false
+  xy: 1120, 2
+  size: 215, 69
+  orig: 215, 69
+  offset: 0, 0
+  index: -1

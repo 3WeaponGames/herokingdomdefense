@@ -40,18 +40,18 @@ No SDK copy, executable, DLL, generated entry, benchmark fixture, screenshot, lo
 
 ## Android release size
 
-Creator packages the contents of `resources` and custom asset bundles. The Android staging tool copies the project to a fresh external directory and follows the paths and UUIDs used by the shipped scenes, prefabs, and configuration. It skips unreferenced files in the imported unit library, baked equipment, character editor thumbnails, and generated map artwork. Add new dynamically constructed paths in those folders to the staging roots when introducing a runtime loader.
+Creator packages the contents of `resources` and custom asset bundles. The Android staging tool copies the project to a fresh external directory and follows the paths and UUIDs used by the shipped scenes, prefabs, and configuration. It skips unreferenced files in the imported unit library, baked equipment, character editor thumbnails, generated map artwork, and two icon libraries. Add new dynamically constructed paths in those folders to the staging roots when introducing a runtime loader.
 
-Use Node 22+, `cwebp` from [libwebp](https://developers.google.com/speed/webp/download), and FFmpeg with the `libvorbis` encoder. With both programs on `PATH`, run this from the project root.
+Use Node 22+, `cwebp` from [libwebp](https://developers.google.com/speed/webp/download), and FFmpeg with the `libvorbis` encoder. With both programs on `PATH`, run this from the project root. Use a Git working tree or a UTF-8-aware extractor for a frozen source snapshot. The stage loader uses exact resource paths, so staging checks that projectile trail paths still match their texture IDs.
 
 ```powershell
 $release = Join-Path $env:TEMP ("hkd-android-" + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 node tools/native/prepare-android-release.cjs --out $release --cwebp cwebp --ffmpeg ffmpeg
 ```
 
-The build copy uses WebP for selected large images at their original dimensions with lossless alpha. The music pass uses a lower Vorbis bitrate with the original sample rate and channels. The `android-asset-report.json` file in the copy lists the exact omissions and conversions. Authoring uses the source project, which retains every asset and its original encoding.
+The build copy uses WebP for selected large artwork at its original dimensions with lossless alpha. Other eligible textures use lossless WebP when it saves space. The music pass uses a lower Vorbis bitrate with the original sample rate and channels. The `android-asset-report.json` file in the copy lists the exact omissions and conversions. Authoring uses the source project, which retains every asset and its original encoding.
 
-Open the generated directory in Creator **2.4.13**. Build Android in **Release** mode from this copy with a clean output directory. For an APK for modern ARM devices, select **arm64-v8a**. Use the existing package name and signing key for an update. If you need 32-bit support, measure a separate **armeabi-v7a** APK or let Google Play deliver the device-specific APK from an App Bundle. [Cocos Android build options](https://docs.cocos.com/creator/2.4/manual/en/publish/publish-native.html)
+Open the generated directory in Creator **2.4.13**. Build Android in **Release** mode from this copy with a clean output directory. The project selects **Portrait**. For an APK for modern ARM devices, select **arm64-v8a**. Use the existing package name and signing key for an update. If you need 32-bit support, measure a separate **armeabi-v7a** APK or let Google Play deliver the device-specific APK from an App Bundle. [Cocos Android build options](https://docs.cocos.com/creator/2.4/manual/en/publish/publish-native.html)
 
 Measure the signed APK against the 200 MB budget on the build PC.
 

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "955a6f72-a209-5e50-a284-d6ba26f9a3d7",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "Evilmass_Cinderhorn": {
+      "ver": "1.0.6",
+      "uuid": "362b62c0-cf85-5b51-a067-67f9c3af0e83",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "955a6f72-a209-5e50-a284-d6ba26f9a3d7",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

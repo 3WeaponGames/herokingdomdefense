@@ -1057,6 +1057,44 @@
       "bones": 24,
       "slots": 11,
       "variantOf": "monster2/Skeleton_Warlord"
+    },
+    {
+      "id": "monster3/Evilmass_Cinderhorn",
+      "name": "Cinderhorn Demon",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Evilmass/Evilmass_Knight.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/BiomeBosses/Evilmass_Cinderhorn.json",
+      "uuid": "7bc0672c-f45e-5c4f-a75b-a227ffec3e35",
+      "resource": "unit-library/monster3/Units/BiomeBosses/Evilmass_Cinderhorn",
+      "animations": [
+        "attack",
+        "move",
+        "idle",
+        "die",
+        "hit"
+      ],
+      "bones": 21,
+      "slots": 10,
+      "variantOf": "monster3/Evilmass_Knight"
+    },
+    {
+      "id": "monster3/Winter_GlacierYeti",
+      "name": "Glacier Yeti",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Winter/Winter_Ice.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/BiomeBosses/Winter_GlacierYeti.json",
+      "uuid": "67d19e5c-901a-5bec-a8dc-6df5033add9d",
+      "resource": "unit-library/monster3/Units/BiomeBosses/Winter_GlacierYeti",
+      "animations": [
+        "idle",
+        "hit",
+        "attack",
+        "move",
+        "die"
+      ],
+      "bones": 24,
+      "slots": 9,
+      "variantOf": "monster3/Winter_Ice"
     }
   ],
   "parts": [

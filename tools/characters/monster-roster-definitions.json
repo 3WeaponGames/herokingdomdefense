@@ -2198,6 +2198,45 @@
         "cropHeight": 1,
         "cropWidth": 1
       }
+    },
+    {
+      "id": 91170,
+      "source": "monster3/Evilmass_Cinderhorn",
+      "name": "Cinderhorn Demon",
+      "role": "bruiser",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth)$",
+        "cropHeight": 0.82,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91171,
+      "source": "monster2/Alien_CrimsonVampire",
+      "name": "Crimson Vampire Lord",
+      "role": "mystic",
+      "behaviorTemplate": 90009,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/Body$",
+        "cropHeight": 0.78,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91172,
+      "source": "monster3/Winter_GlacierYeti",
+      "name": "Glacier Yeti",
+      "role": "guardian",
+      "behaviorTemplate": 90003,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/Body$",
+        "cropHeight": 0.83,
+        "cropWidth": 1
+      }
     }
   ]
 }
