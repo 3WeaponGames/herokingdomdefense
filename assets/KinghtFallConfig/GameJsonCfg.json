@@ -3039,8 +3039,8 @@
           "WorldScale": 1.1057875461720448,
           "PurchaseField": {
             "southwest": false,
-            "x": -5.43,
-            "y": 16.28,
+            "x": -14.189999999999996,
+            "y": 21.530000000000005,
             "Reference": {
               "version": 1,
               "distance": 103.59113979486855
@@ -3109,8 +3109,8 @@
             "nextLightId": 5
           },
           "ModelOffset": {
-            "x": -20.75,
-            "y": -9.11
+            "x": -13.28,
+            "y": 3.34
           }
         },
         {
@@ -3344,6 +3344,19 @@
               }
             ],
             "nextLightId": 5
+          },
+          "ModelOffset": {
+            "x": -13.311798668377042,
+            "y": 3.3479975566550695
+          },
+          "PurchaseField": {
+            "southwest": false,
+            "x": -14.048582133109852,
+            "y": 21.40615760192669,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
           }
         },
         {
@@ -3578,6 +3591,19 @@
               }
             ],
             "nextLightId": 5
+          },
+          "ModelOffset": {
+            "x": -13.311798668377042,
+            "y": 3.3479975566550695
+          },
+          "PurchaseField": {
+            "southwest": false,
+            "x": -14.048582133109852,
+            "y": 21.40615760192669,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
           }
         },
         {
@@ -3797,14 +3823,17 @@
             "Reference": {
               "version": 1,
               "distance": 103.59113979486855
-            }
+            },
+            "southwest": false,
+            "x": -11.719999999999999,
+            "y": 12.280000000000001
           },
           "PartScale": {
             "weapon": 1
           },
           "ModelOffset": {
-            "x": -22.36,
-            "y": -5.59
+            "x": -17.9,
+            "y": -2.24
           }
         },
         {
@@ -3939,8 +3968,8 @@
           "WorldScale": 0.7996017392058284,
           "PurchaseField": {
             "southwest": false,
-            "x": 22.59,
-            "y": 14.73,
+            "x": 3.788935794964334,
+            "y": -3.087785065086574,
             "Reference": {
               "version": 1,
               "distance": 103.59113979486855
@@ -4028,6 +4057,10 @@
                 ]
               ]
             }
+          },
+          "ModelOffset": {
+            "x": -18.92,
+            "y": -9.79
           }
         },
         {
@@ -4161,8 +4194,8 @@
           "WorldScale": 0.7996017392058284,
           "PurchaseField": {
             "southwest": false,
-            "x": 25.53,
-            "y": 16.69,
+            "x": 3.788935794964334,
+            "y": -3.087785065086574,
             "Reference": {
               "version": 1,
               "distance": 103.59113979486855
@@ -4250,6 +4283,10 @@
                 ]
               ]
             }
+          },
+          "ModelOffset": {
+            "x": -20.32,
+            "y": -14.68
           }
         },
         {
@@ -4475,11 +4512,14 @@
             "Reference": {
               "version": 1,
               "distance": 103.59113979486855
-            }
+            },
+            "southwest": false,
+            "x": 0.5100000000000044,
+            "y": 0
           },
           "ModelOffset": {
-            "x": -26,
-            "y": -11.49
+            "x": -9.56,
+            "y": -8.92
           }
         },
         {
@@ -4700,7 +4740,20 @@
               ]
             }
           },
-          "WorldScale": 0.78940877015086
+          "WorldScale": 0.78940877015086,
+          "PurchaseField": {
+            "southwest": false,
+            "x": 13.239672465419371,
+            "y": -12.641655475391351,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
+          },
+          "ModelOffset": {
+            "x": -10.24,
+            "y": -16.87
+          }
         },
         {
           "ID": 2,
@@ -4927,7 +4980,20 @@
               ]
             }
           },
-          "WorldScale": 0.78940877015086
+          "WorldScale": 0.78940877015086,
+          "PurchaseField": {
+            "southwest": false,
+            "x": 13.239672465419371,
+            "y": -12.641655475391351,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
+          },
+          "ModelOffset": {
+            "x": -7.230000000000001,
+            "y": -17.47
+          }
         },
         {
           "ID": 2,
@@ -5159,6 +5225,19 @@
               }
             ],
             "nextLightId": 5
+          },
+          "ModelOffset": {
+            "x": -12.43,
+            "y": 8.61
+          },
+          "PurchaseField": {
+            "southwest": false,
+            "x": -14.048582133109852,
+            "y": 21.40615760192669,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
           }
         },
         {
@@ -5363,6 +5442,19 @@
                 ]
               ]
             }
+          },
+          "PurchaseField": {
+            "southwest": false,
+            "x": 3.788935794964334,
+            "y": -3.087785065086574,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
+          },
+          "ModelOffset": {
+            "x": -19.62,
+            "y": -16.08
           }
         },
         {
@@ -5591,14 +5683,18 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": 12.57,
-            "y": 17.05,
+            "x": 13.239672465419371,
+            "y": -12.641655475391351,
             "Reference": {
               "version": 1,
               "distance": 103.59113979486855
             }
           },
-          "WorldScale": 0.78940877015086
+          "WorldScale": 0.78940877015086,
+          "ModelOffset": {
+            "x": -7.829999999999999,
+            "y": -17.47
+          }
         }
       ],
       "InitialChoices": [
@@ -5607,8 +5703,8 @@
         7
       ],
       "UnbuiltPad": {
-        "x": -23.78,
-        "y": -10.5
+        "x": -25.19,
+        "y": -2.97
       }
     },
     "3": {
@@ -5643,8 +5739,8 @@
           ],
           "PurchaseField": {
             "southwest": false,
-            "x": -13.59,
-            "y": 64.53,
+            "x": -20.470000000000002,
+            "y": 69.12000000000002,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -5703,8 +5799,8 @@
           },
           "WorldScale": 0.967311632142044,
           "ModelOffset": {
-            "x": -28.32,
-            "y": 15.62
+            "x": -20.87,
+            "y": 5.88
           },
           "AdUnitPosition": {
             "x": 159.63,
@@ -5792,8 +5888,8 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -16.99,
-            "y": 42.45,
+            "x": -20.470000000000002,
+            "y": 69.12000000000002,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -5801,8 +5897,8 @@
           },
           "WorldScale": 0.967311632142044,
           "ModelOffset": {
-            "x": -28.32,
-            "y": 15.62
+            "x": -26.03,
+            "y": 29.96
           },
           "AdUnitPosition": {
             "x": 159.63,
@@ -5889,8 +5985,8 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -10.19,
-            "y": 44.15,
+            "x": -20.470000000000002,
+            "y": 69.12000000000002,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -5898,8 +5994,8 @@
           },
           "WorldScale": 0.967311632142044,
           "ModelOffset": {
-            "x": -28.32,
-            "y": 15.62
+            "x": -25.3,
+            "y": 28.05
           },
           "AdUnitPosition": {
             "x": 159.63,
@@ -6059,8 +6155,8 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -114.91,
-            "y": 40.33,
+            "x": -15.500000000000004,
+            "y": 67.48,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -6106,8 +6202,8 @@
             "y": -92.57
           },
           "ModelOffset": {
-            "x": -173.68,
-            "y": -8.68
+            "x": 10.509999999999998,
+            "y": 22.670000000000005
           },
           "AdUnitPosition": {
             "x": 227.01,
@@ -6310,12 +6406,21 @@
             "y": -92.57
           },
           "ModelOffset": {
-            "x": -173.68,
-            "y": -8.68
+            "x": 10.509999999999998,
+            "y": 22.670000000000005
           },
           "AdUnitPosition": {
             "x": 227.01,
             "y": 130.63
+          },
+          "PurchaseField": {
+            "southwest": false,
+            "x": -15.500000000000004,
+            "y": 67.48,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           }
         },
         {
@@ -6458,8 +6563,8 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -82.64,
-            "y": 22.69,
+            "x": -15.500000000000004,
+            "y": 67.48,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -6550,8 +6655,8 @@
             "y": -92.57
           },
           "ModelOffset": {
-            "x": -173.68,
-            "y": -8.68
+            "x": -10.65,
+            "y": 38.54
           },
           "AdUnitPosition": {
             "x": 227.01,
@@ -6584,8 +6689,8 @@
           ],
           "PurchaseField": {
             "southwest": false,
-            "x": -62.11,
-            "y": 29.97,
+            "x": -7.260000000000005,
+            "y": 64.1,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -6738,8 +6843,8 @@
             "y": -131.62
           },
           "ModelOffset": {
-            "x": -34.09,
-            "y": 13.96
+            "x": 9.92,
+            "y": 30.73
           },
           "AdUnitPosition": {
             "x": 172.84000000000003,
@@ -6840,8 +6945,8 @@
           "WorldScale": 0.782819775262297,
           "PurchaseField": {
             "southwest": false,
-            "x": -69.94,
-            "y": 22.14,
+            "x": -7.260000000000005,
+            "y": 64.1,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -6852,8 +6957,8 @@
             "y": -131.62
           },
           "ModelOffset": {
-            "x": -34.09,
-            "y": 13.96
+            "x": 12.720000000000002,
+            "y": 42.6
           },
           "AdUnitPosition": {
             "x": 172.84000000000003,
@@ -6953,8 +7058,8 @@
           "WorldScale": 0.782819775262297,
           "PurchaseField": {
             "southwest": false,
-            "x": -66.03,
-            "y": 20.18,
+            "x": -7.260000000000005,
+            "y": 64.1,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -6965,8 +7070,8 @@
             "y": -131.62
           },
           "ModelOffset": {
-            "x": -34.09,
-            "y": 13.96
+            "x": 6.43,
+            "y": 41.21
           },
           "AdUnitPosition": {
             "x": 172.84000000000003,
@@ -6999,8 +7104,8 @@
           ],
           "PurchaseField": {
             "southwest": false,
-            "x": 99.57,
-            "y": 95.41,
+            "x": 18.07,
+            "y": 55.11000000000001,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -7075,8 +7180,8 @@
           },
           "WorldScale": 0.6444508826024902,
           "ModelOffset": {
-            "x": 68.29,
-            "y": 4.69
+            "x": -28.44,
+            "y": -43.66
           },
           "SpawnPosition": {
             "x": -186.77000000000004,
@@ -10993,8 +11098,8 @@
           },
           "WorldScale": 0.6444508826024902,
           "ModelOffset": {
-            "x": 68.29,
-            "y": 4.69
+            "x": -51.71999999999999,
+            "y": -32.02
           },
           "SpawnPosition": {
             "x": -186.77000000000004,
@@ -11095,6 +11200,15 @@
               }
             ],
             "nextLightId": 4
+          },
+          "PurchaseField": {
+            "southwest": false,
+            "x": 18.07,
+            "y": 55.11000000000001,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           }
         },
         {
@@ -11205,8 +11319,8 @@
           },
           "WorldScale": 0.6444508826024902,
           "ModelOffset": {
-            "x": 68.29,
-            "y": 4.69
+            "x": -17.69,
+            "y": -24.85
           },
           "SpawnPosition": {
             "x": -186.77000000000004,
@@ -11307,6 +11421,15 @@
               }
             ],
             "nextLightId": 4
+          },
+          "PurchaseField": {
+            "southwest": false,
+            "x": 18.07,
+            "y": 55.11000000000001,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           }
         },
         {
@@ -11333,8 +11456,8 @@
           "VedioCount": 0,
           "PurchaseField": {
             "southwest": false,
-            "x": -6.8,
-            "y": 42.45,
+            "x": -20.470000000000002,
+            "y": 69.12000000000002,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -11393,8 +11516,8 @@
           },
           "WorldScale": 0.967311632142044,
           "ModelOffset": {
-            "x": -28.32,
-            "y": 15.62
+            "x": -29.11,
+            "y": 32.49
           },
           "AdUnitPosition": {
             "x": 159.63,
@@ -11512,8 +11635,8 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -85.5,
-            "y": 24.59,
+            "x": -15.500000000000004,
+            "y": 67.48,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -11618,8 +11741,8 @@
             "y": -92.57
           },
           "ModelOffset": {
-            "x": -173.68,
-            "y": -8.68
+            "x": -6.42,
+            "y": 37.48
           },
           "AdUnitPosition": {
             "x": 227.01,
@@ -11718,8 +11841,8 @@
           "WorldScale": 0.782819775262297,
           "PurchaseField": {
             "southwest": false,
-            "x": -64.07,
-            "y": 12.35,
+            "x": -7.260000000000005,
+            "y": 64.1,
             "Reference": {
               "version": 1,
               "distance": 141.245830016323
@@ -11730,8 +11853,8 @@
             "y": -131.62
           },
           "ModelOffset": {
-            "x": -34.09,
-            "y": 13.96
+            "x": 6.43,
+            "y": 37.71
           },
           "AdUnitPosition": {
             "x": 172.84000000000003,
@@ -11845,8 +11968,8 @@
           },
           "WorldScale": 0.6444508826024902,
           "ModelOffset": {
-            "x": 68.29,
-            "y": 4.69
+            "x": -12.32,
+            "y": -23.06
           },
           "SpawnPosition": {
             "x": -186.77000000000004,
@@ -11947,6 +12070,15 @@
               }
             ],
             "nextLightId": 4
+          },
+          "PurchaseField": {
+            "southwest": false,
+            "x": 18.07,
+            "y": 55.11000000000001,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           }
         }
       ],
@@ -11957,8 +12089,8 @@
         20
       ],
       "UnbuiltPad": {
-        "x": -13.76,
-        "y": 24.43
+        "x": -14.31,
+        "y": 25.54
       }
     },
     "4": {
@@ -12602,7 +12734,7 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -87.58,
+            "x": -94.35,
             "y": -26.810000000000002,
             "Reference": {
               "version": 1,
@@ -12766,7 +12898,7 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -87.58,
+            "x": -94.35,
             "y": -26.810000000000002,
             "Reference": {
               "version": 1,
@@ -12938,7 +13070,7 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -87.58,
+            "x": -94.35,
             "y": -26.810000000000002,
             "Reference": {
               "version": 1,
@@ -13085,7 +13217,7 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -87.58,
+            "x": -94.35,
             "y": -26.810000000000002,
             "Reference": {
               "version": 1,
@@ -13235,7 +13367,7 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -87.58,
+            "x": -94.35,
             "y": -26.810000000000002,
             "Reference": {
               "version": 1,
@@ -13357,7 +13489,7 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -87.58,
+            "x": -94.35,
             "y": -26.810000000000002,
             "Reference": {
               "version": 1,
@@ -13469,7 +13601,7 @@
           },
           "PurchaseField": {
             "southwest": false,
-            "x": -87.58,
+            "x": -94.35,
             "y": -26.810000000000002,
             "Reference": {
               "version": 1,
@@ -13483,8 +13615,8 @@
         }
       ],
       "UnbuiltPad": {
-        "x": -98.33,
-        "y": -48.23
+        "x": -100.82,
+        "y": -49.23
       }
     },
     "6": {
@@ -17743,7 +17875,7 @@
             {
               "id": "legacy-2-0",
               "spawnId": 2,
-              "unitId": 100245,
+              "unitId": 100248,
               "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -17775,7 +17907,7 @@
             {
               "id": "legacy-2-0",
               "spawnId": 2,
-              "unitId": 100245,
+              "unitId": 100248,
               "count": 4,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -17824,7 +17956,7 @@
             {
               "id": "legacy-2-0",
               "spawnId": 2,
-              "unitId": 100245,
+              "unitId": 100248,
               "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -17832,7 +17964,7 @@
             {
               "id": "legacy-3-0",
               "spawnId": 4,
-              "unitId": 91151,
+              "unitId": 101671,
               "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -17865,7 +17997,7 @@
             {
               "id": "legacy-1-0",
               "spawnId": 1,
-              "unitId": 101674,
+              "unitId": 91157,
               "count": 1,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -17881,7 +18013,7 @@
             {
               "id": "legacy-3-0",
               "spawnId": 3,
-              "unitId": 100245,
+              "unitId": 100248,
               "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -17891,7 +18023,7 @@
               "startSeconds": 0.5,
               "intervalSeconds": 0.5,
               "spawnId": 4,
-              "unitId": 91155,
+              "unitId": 101679,
               "id": "entry-1"
             }
           ]
@@ -42753,7 +42885,7 @@
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 102,
+      "Speed": 142,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -42769,15 +42901,7 @@
         "description": "[[loc:data.unitguide.91154.description]]"
       },
       "EnemyTargeting": {
-        "mode": "priority",
-        "order": [
-          "tower",
-          "building",
-          "wall",
-          "castle",
-          "troops",
-          "hero"
-        ]
+        "mode": "castle"
       }
     },
     "91155": {
@@ -42813,8 +42937,8 @@
       "prefab": "Monster1_Slime_King",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-king",
       "AttackType": 1,
-      "Health": 360,
-      "AttackDamage": 20,
+      "Health": 660,
+      "AttackDamage": 50,
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -42833,7 +42957,16 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91156.description]]"
       },
-      "IsBoss": true
+      "IsBoss": true,
+      "EnemySkills": {
+        "move": {
+          "interval": 15,
+          "percent": 25,
+          "radius": 250,
+          "maxTargets": 15,
+          "duration": 5
+        }
+      }
     },
     "91157": {
       "ID": 91157,
@@ -42841,9 +42974,9 @@
       "prefab": "Monster1_Slime_Abyssal",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-abyssal",
       "AttackType": 1,
-      "Health": 660,
+      "Health": 360,
       "AttackDamage": 45,
-      "AttackInterval": 1.08,
+      "AttackInterval": 1.4519573656463354,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 89.72222222,
@@ -50266,8 +50399,8 @@
       "AttackType": 1,
       "Health": 54,
       "AttackDamage": 7.5,
-      "AttackInterval": 0.81888888,
-      "AttackRange": 50,
+      "AttackInterval": 0.42,
+      "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 103.88888888,
       "BuildingCross": 1,
@@ -50283,6 +50416,10 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91038.description]]",
         "lore": "[[loc:data.unitguide.91038.lore]]"
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100249": {
@@ -65943,15 +66080,7 @@
         "description": "[[loc:data.unitguide.91154.description]]"
       },
       "EnemyTargeting": {
-        "mode": "priority",
-        "order": [
-          "tower",
-          "building",
-          "wall",
-          "castle",
-          "troops",
-          "hero"
-        ]
+        "mode": "castle"
       }
     },
     "101671": {
@@ -65980,15 +66109,7 @@
         "description": "[[loc:data.unitguide.91154.description]]"
       },
       "EnemyTargeting": {
-        "mode": "priority",
-        "order": [
-          "tower",
-          "building",
-          "wall",
-          "castle",
-          "troops",
-          "hero"
-        ]
+        "mode": "castle"
       }
     },
     "101672": {
@@ -66017,15 +66138,7 @@
         "description": "[[loc:data.unitguide.91154.description]]"
       },
       "EnemyTargeting": {
-        "mode": "priority",
-        "order": [
-          "tower",
-          "building",
-          "wall",
-          "castle",
-          "troops",
-          "hero"
-        ]
+        "mode": "castle"
       }
     },
     "101673": {
@@ -66054,15 +66167,7 @@
         "description": "[[loc:data.unitguide.91154.description]]"
       },
       "EnemyTargeting": {
-        "mode": "priority",
-        "order": [
-          "tower",
-          "building",
-          "wall",
-          "castle",
-          "troops",
-          "hero"
-        ]
+        "mode": "castle"
       }
     },
     "101674": {
@@ -66091,15 +66196,7 @@
         "description": "[[loc:data.unitguide.91154.description]]"
       },
       "EnemyTargeting": {
-        "mode": "priority",
-        "order": [
-          "tower",
-          "building",
-          "wall",
-          "castle",
-          "troops",
-          "hero"
-        ]
+        "mode": "castle"
       }
     },
     "101675": {
@@ -66230,6 +66327,10 @@
       "BehaviorTemplate": 90001,
       "Guide": {
         "description": "[[loc:data.unitguide.91155.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "splash"
       }
     },
     "101680": {
@@ -77034,6 +77135,9 @@
       },
       "enemy:100004:default": {
         "attack": 0.5
+      },
+      "enemy:100248:default": {
+        "attack": 0.1916667
       }
     },
     "parameters": {},
@@ -88584,11 +88688,21 @@
           "stats": {
             "Health": 54,
             "AttackDamage": 7.5,
-            "AttackInterval": 0.81888888,
-            "Speed": 103.88888888
+            "AttackInterval": 0.42,
+            "Speed": 103.88888888,
+            "AttackRange": 200
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "timing": {
+            "saved": {
+              "attack": 0.2916667
+            },
+            "custom": {
+              "attack": 0.1916667
+            }
+          },
+          "omitted": []
         },
         "100249": {
           "baseId": 91038,
@@ -102311,7 +102425,7 @@
     },
     "enemyClasses": {
       "enemy:91156:default": "boss",
-      "enemy:91157:default": "boss",
+      "enemy:91157:default": "elite",
       "enemy:91158:default": "boss",
       "enemy:91159:default": "elite",
       "enemy:91161:default": "boss",
@@ -102320,7 +102434,65 @@
       "enemy:91170:default": "boss",
       "enemy:91171:default": "boss",
       "enemy:91172:default": "boss",
-      "enemy:91179:default": "elite"
+      "enemy:91179:default": "elite",
+      "enemy:101680:default": "boss",
+      "enemy:101681:default": "boss",
+      "enemy:101682:default": "boss",
+      "enemy:101683:default": "boss",
+      "enemy:101684:default": "boss",
+      "enemy:101685:default": "elite",
+      "enemy:101686:default": "elite",
+      "enemy:101687:default": "elite",
+      "enemy:101688:default": "elite",
+      "enemy:101689:default": "elite",
+      "enemy:101690:default": "boss",
+      "enemy:101691:default": "boss",
+      "enemy:101692:default": "boss",
+      "enemy:101693:default": "boss",
+      "enemy:101694:default": "boss",
+      "enemy:101695:default": "elite",
+      "enemy:101696:default": "elite",
+      "enemy:101697:default": "elite",
+      "enemy:101698:default": "elite",
+      "enemy:101699:default": "elite",
+      "enemy:101705:default": "boss",
+      "enemy:101706:default": "boss",
+      "enemy:101707:default": "boss",
+      "enemy:101708:default": "boss",
+      "enemy:101709:default": "boss",
+      "enemy:101720:default": "boss",
+      "enemy:101721:default": "boss",
+      "enemy:101722:default": "boss",
+      "enemy:101723:default": "boss",
+      "enemy:101724:default": "boss",
+      "enemy:101745:default": "boss",
+      "enemy:101746:default": "boss",
+      "enemy:101747:default": "boss",
+      "enemy:101748:default": "boss",
+      "enemy:101749:default": "boss",
+      "enemy:101750:default": "boss",
+      "enemy:101751:default": "boss",
+      "enemy:101752:default": "boss",
+      "enemy:101753:default": "boss",
+      "enemy:101754:default": "boss",
+      "enemy:101755:default": "boss",
+      "enemy:101756:default": "boss",
+      "enemy:101757:default": "boss",
+      "enemy:101758:default": "boss",
+      "enemy:101759:default": "boss",
+      "enemy:101760:default": "boss",
+      "enemy:101761:default": "boss",
+      "enemy:101762:default": "boss",
+      "enemy:101763:default": "boss",
+      "enemy:101764:default": "boss",
+      "enemy:101795:default": "elite",
+      "enemy:101796:default": "elite",
+      "enemy:101797:default": "elite",
+      "enemy:101798:default": "elite",
+      "enemy:101799:default": "elite"
+    },
+    "projectileSpeeds": {
+      "enemy:101679:default": 300
     }
   },
   "AllyCfg": {

@@ -183,7 +183,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 100245,
+            "unitId": 100248,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -215,7 +215,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 100245,
+            "unitId": 100248,
             "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -264,7 +264,7 @@
           {
             "id": "legacy-2-0",
             "spawnId": 2,
-            "unitId": 100245,
+            "unitId": 100248,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -272,7 +272,7 @@
           {
             "id": "legacy-3-0",
             "spawnId": 4,
-            "unitId": 91151,
+            "unitId": 101671,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -305,7 +305,7 @@
           {
             "id": "legacy-1-0",
             "spawnId": 1,
-            "unitId": 101674,
+            "unitId": 91157,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -321,7 +321,7 @@
           {
             "id": "legacy-3-0",
             "spawnId": 3,
-            "unitId": 100245,
+            "unitId": 100248,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -331,7 +331,7 @@
             "startSeconds": 0.5,
             "intervalSeconds": 0.5,
             "spawnId": 4,
-            "unitId": 91155,
+            "unitId": 101679,
             "id": "entry-1"
           }
         ]
@@ -1722,8 +1722,8 @@
         "x": -278.24,
         "y": -247.923
       },
-      "x": -137.65591960392143,
-      "y": 889.7256680603979,
+      "x": -164.77462664669324,
+      "y": 880.7842980227275,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -2077,14 +2077,15 @@
       ],
       "purchaseSide": "default",
       "purchaseOffset": {
-        "x": -2.3159563739386044,
-        "y": 70.63666940512678
+        "x": -29.25760678315008,
+        "y": 64.9956021808642
       },
       "renderAfter": "layer-7",
       "spawnPosition": {
         "x": -259.54483831337825,
         "y": -47.47251637304373
-      }
+      },
+      "purchaseOverride": true
     },
     {
       "id": 10,
@@ -2684,8 +2685,8 @@
         "x": -60.323,
         "y": -61.635
       },
-      "x": 150.22301533533718,
-      "y": 986.9811177711728,
+      "x": 165.0768366090906,
+      "y": 995.6130879065355,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -2870,11 +2871,12 @@
           "active": false
         }
       ],
-      "purchaseSide": "flip",
+      "purchaseSide": "default",
       "purchaseOffset": {
-        "x": 82.21645127481972,
-        "y": -32.42338923514015
-      }
+        "x": -90.9034912382572,
+        "y": -30.25650876174285
+      },
+      "purchaseOverride": true
     },
     {
       "id": 17,
@@ -3707,8 +3709,8 @@
       },
       "purchaseSide": "flip",
       "purchaseOffset": {
-        "x": 17.092173878398057,
-        "y": 17.338573816593936
+        "x": -30.010112532087078,
+        "y": 49.50598892619351
       },
       "purchaseOverride": true,
       "renderAfter": "ground"
@@ -4342,7 +4344,7 @@
   "nextBuilding": 23,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "19fd96f1e67ae305a1ad938b7d91f9144f18a11216f395333db6da58d7421f94",
+  "sourceRevision": "3450b04ba0c10f2a1a07d1555b4726bc7c9376fb598ede58f70f98572a1d22cd",
   "templates": {
     "Map01": [
       {
