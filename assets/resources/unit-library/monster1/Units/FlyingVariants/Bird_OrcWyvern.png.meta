@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "3ceaf472-e620-5c87-a6f2-cd10799e33b4",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 256,
+  "platformSettings": {},
+  "subMetas": {
+    "Bird_OrcWyvern": {
+      "ver": "1.0.6",
+      "uuid": "03bcfb07-b387-5109-adf3-7fae062b2383",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "3ceaf472-e620-5c87-a6f2-cd10799e33b4",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 256,
+      "rawWidth": 2048,
+      "rawHeight": 256,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

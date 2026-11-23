@@ -89,8 +89,13 @@ function loadGlows(owner, state, record) {
       resource.frame = frame;
       resource.sprites.forEach(function (sprite) {
         var base=frame;if(sprite._windowLightErase){var entry=require("WindowLightMaskRuntime").acquire(frame,sprite._windowLightErase);if(entry){record.maskEntries.push(entry);base=entry.frame;}}
-        if(sprite._windowLightWarp){var mesh=base.clone(),texture=base.getTexture();mesh.vertices=require("WindowLightWarp").forType(sprite._windowLightType).vertices(sprite._windowLightWarp,base.uv,texture.width,texture.height,sprite._windowLightNodes);mesh._uuid=(base._uuid||base.uuid||"window-light")+"@warp:"+record.meshFrames.length;record.meshFrames.push(mesh);sprite.type=cc.Sprite.Type.MESH;sprite.spriteFrame=mesh;}
-        else sprite.spriteFrame = base;
+        if(sprite._windowLightWarp){
+          var mesh=base.clone(),texture=base.getTexture();
+          mesh.vertices=require("WindowLightWarp").forType(sprite._windowLightType).vertices(
+            sprite._windowLightWarp,base.uv,texture.width,texture.height,sprite._windowLightNodes,base.getOriginalSize());
+          mesh._uuid=(base._uuid||base.uuid||"window-light")+"@warp:"+record.meshFrames.length;
+          record.meshFrames.push(mesh);sprite.type=cc.Sprite.Type.MESH;sprite.spriteFrame=mesh;
+        } else sprite.spriteFrame = base;
       });
       // Loading never activates a light. Its phase/fade alone controls visibility.
     });

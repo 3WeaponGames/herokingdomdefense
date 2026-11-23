@@ -80,7 +80,7 @@ function create(c){
   }
   section(parent,'Spawn points');const rows=el('div',undefined,'world-spawn-list');parent.appendChild(rows);for(const spawn of stage().spawns){const item=button(rows,spawn.name+(spawn.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.spawn=spawn.id;state.selection=['spawn:'+spawn.id];state.tool='select';render();},state.selection.includes('spawn:'+spawn.id));item.setAttribute('aria-current',String(state.selection[0]==='spawn:'+spawn.id));item.setAttribute('aria-pressed',String(state.selection.includes('spawn:'+spawn.id)));}button(parent,'Add spawn on map',()=>{state.tool='spawn';render();});button(parent,'Hero start',()=>{c.cancelDrag();state.selection=['hero'];state.tool='select';render();},state.selection.includes('hero'));
   const tasks=button(parent,'Tasks position',()=>{c.cancelDrag();state.selection=['tasks-position'];state.tool='tasks-position';render();},state.selection.includes('tasks-position'));
-  tasks.title='Click the map to place the Retired King';
+  tasks.title='Click the map to place the Royal Advisor';
  }
  function stageInspector(){
   section(c.right,title(rowForCurrent()));
@@ -111,7 +111,7 @@ function create(c){
   const id=state.selection.find(value=>value==='hero'||value==='tasks-position'||value.startsWith('spawn:'));
   if(id==='tasks-position'){
    section(c.right,'Tasks position');
-   note(c.right,state.tool==='tasks-position'?'Click the map to place the Retired King. Escape cancels placement.':'Drag the marker or edit its coordinates to move the Retired King.');
+   note(c.right,state.tool==='tasks-position'?'Click the map to place the Royal Advisor. Escape cancels placement.':'Drag the marker or edit its coordinates to move the Royal Advisor.');
    const position=TaskPosition.resolve(stage().tasksPosition,stage().hero,state.map&&state.map.size);
    field(c.right,'X',position.x,value=>c.patchSelected('x',value));
    field(c.right,'Y',position.y,value=>c.patchSelected('y',value));

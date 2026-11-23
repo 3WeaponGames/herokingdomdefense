@@ -1809,9 +1809,6 @@ DepthView.prototype.update = function () {
       // Ground is unconditional: stale/custom layer order cannot tint a unit
       // standing in front of, or exactly level with, an object's ground point.
       if(!(entry.groundY>ground))return;
-      // Buildings retain their render priority. A scenery layer conflict is
-      // handled by clipping the rear actor against that scenery's alpha.
-      if(!scenery&&actorDrawnAbove(entry.actor,object))return;
       if(!entry.sources){entry.sources=bodyVisuals(entry.actor);entry.bounds=entry.sources.reduce(function(value,source){return union(value,bounds(source,self.main,cache));},null);}
       if(overlaps(entry.bounds,box)&&(!visible||overlaps(entry.bounds,visible)))hidden.push(entry);
     });
@@ -1829,7 +1826,7 @@ DepthView.prototype.update = function () {
     if (cache.vertexConsumers) hidden.forEach(function (entry) {
       entry.sources.forEach(function (source) { cache.vertexConsumers.set(source, (cache.vertexConsumers.get(source) || 0) + 1); });
     });
-    draw.push({ object: object, box: box, hidden: hidden, scenery: scenery });
+    draw.push({ object: object, box: box, hidden: hidden });
   });
   this._vertexConsumers = cache.vertexConsumers;
   try {
@@ -1869,12 +1866,12 @@ DepthView.prototype.update = function () {
       var shared = false;
       hidden.forEach(function (entry) {
         var mask = object.masks.get(entry.actor) || self.makeMask(object, entry.actor, entry.sources);
-        var above = item.scenery && actorDrawnAbove(entry.actor, object);
+        var above = actorDrawnAbove(entry.actor, object);
         var overlay = object.overlay;
         if (above) {
           // The actor stays in its shared paint slot for other contacts. Cover
           // just its pixels inside this object's silhouette at its own depth.
-          overlay = mask.foreground || (mask.foreground = makeObjectStencil(self.main, "SceneryOcclusion"));
+          overlay = mask.foreground || (mask.foreground = makeObjectStencil(self.main, "ForegroundOcclusion"));
           syncObjectStencil(overlay, object, entry.actor.node.zIndex + 1);
         } else {
           shared = true;

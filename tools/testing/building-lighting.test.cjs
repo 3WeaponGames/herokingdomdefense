@@ -30,7 +30,7 @@ function fixture(){
   const state={node,manual:true},requests=[],owner={node,enabled:true,isDestroyed:false,buildInfo:{cfg:{Appearance:{lighting,unknown:'preserve'}}},_buildingAppearance:state,
     loadSpriteFrame(bundle,file,done){requests.push({bundle,file,done});}};
   owner._buildingManualLights=state;owner._buildingAppearance={node:base};owner.buildInfo.cfg.Nightlight={version:1,emitters:[{id:'light:1'},{id:'light:2'}],lights:{'light:1':{x:-16,y:31},'light:2':{x:17,y:50,scaleX:1.4,scaleY:.6,flipX:true}},future:'keep'};
-  function frame(name='glow',texture){if(!texture){texture=new Texture();texture.pixels=new Uint8Array(70*70*4);for(let i=0;i<texture.pixels.length;i+=4)texture.pixels.set([255,239,17,200],i);}return{name,refs:1,adds:0,releases:0,uv:[0,1,1,1,0,0,1,0],getTexture(){return texture;},clone(){return frame(name+'@clone',texture);},destroy(){this.destroyed=true;},addRef(){this.refs++;this.adds++;},decRef(){this.refs--;this.releases++;}};}
+  function frame(name='glow',texture){if(!texture){texture=new Texture();texture.pixels=new Uint8Array(70*70*4);for(let i=0;i<texture.pixels.length;i+=4)texture.pixels.set([255,239,17,200],i);}return{name,refs:1,adds:0,releases:0,uv:[0,1,1,1,0,0,1,0],getTexture(){return texture;},getOriginalSize(){return{width:texture.width,height:texture.height};},clone(){return frame(name+'@clone',texture);},destroy(){this.destroyed=true;},addRef(){this.refs++;this.adds++;},decRef(){this.refs--;this.releases++;}};}
   function resolve(index=0,value=frame()){requests[index].done(value);return value;}
   return{api:exports,owner,state,node,base,presentation,lighting,requests,resolve,frame,cc,Node,Graphics,maskRuntime,textures};
 }
@@ -40,7 +40,14 @@ test('all three gameplay light types use separate exact sources and reuse their 
  const row=h.owner.buildInfo.cfg;row.Nightlight.emitters[1].type=lightType;const v=row.Nightlight.lights['light:2'];v.warpNodes=D.addNode(undefined,[],0,.5);v.warpNodes[0].y+=.3;v.erase={version:1,strokes:[{op:'erase',radius:8,opacity:.55,softness:.6,flow:true,projection:{matrix:[1,0,0,1],type:lightType,warpNodes:v.warpNodes},points:[{x:-18,y:3,strength:.3}]}]};
  const before=JSON.stringify(row),stage=h.maskRuntime.prime({BuildEnum:{2:{levelList:[row]}}},['2'],{['resources/'+T.lightType(lightType).sprite+':frame']:dim});assert.equal(h.textures.length,1);assert.equal(h.textures[0].width,pixels.width);assert.equal(h.textures[0].height,pixels.height);
  h.api.apply(h.owner,h.state);assert.deepEqual(h.requests.map(r=>r.file),[T.sprite,T.lightType(lightType).sprite]);const full=h.resolve(0);h.resolve(1,dim);const record=h.state._buildingLighting,a=record.entries[0].sprite,b=record.entries[1].sprite;assert.equal(a.spriteFrame,full);assert.equal(b._windowLightType,lightType);assert.equal(b.spriteFrame.getTexture(),h.textures[0]);assert.equal(h.textures.length,1,'placing a dim light reuses the stage mask');assert.equal(record.maskEntries[0].refs,2);
- const vertices=D.vertices(D.controls(),b.spriteFrame.uv,pixels.width,pixels.height,v.warpNodes);assert.deepEqual(b.spriteFrame.vertices.x,vertices.x);assert.equal(JSON.stringify(row),before);for(let i=0;i<pixels.rgba.length;i+=4)assert.deepEqual(Array.from(h.textures[0].pixels.subarray(i,i+3)),Array.from(pixels.rgba.subarray(i,i+3)));
+ const vertices=b.spriteFrame.vertices;
+ // Creator's web and native mesh assemblers scale from original frame pixels
+ // to node units. The outline should land exactly where it does in the editor.
+ D.mesh(D.controls(),v.warpNodes).points.forEach((p,i)=>{
+  near(vertices.x[i]*b.node.width/pixels.width-b.node.anchorX*b.node.width,p.x);
+  near((pixels.height-vertices.y[i])*b.node.height/pixels.height-b.node.anchorY*b.node.height,p.y);
+ });
+ assert.equal(JSON.stringify(row),before);for(let i=0;i<pixels.rgba.length;i+=4)assert.deepEqual(Array.from(h.textures[0].pixels.subarray(i,i+3)),Array.from(pixels.rgba.subarray(i,i+3)));
  h.api.setNight(h.owner,true);h.api.update(h.owner,h.state,.5);assert.equal(record.node.opacity,255);h.api.setNight(h.owner,false);assert.equal(record.node.opacity,0);h.api.dispose(h.owner,h.state);stage.dispose();assert.equal(dim.releases,1);assert.equal(full.releases,1);
  }
 });

@@ -32,7 +32,7 @@ function fixture() {
   Node.EventType = { TOUCH_START: 'start', TOUCH_END: 'end' };
   class Label {} Label.Overflow = { RESIZE_HEIGHT: 3, CLAMP: 1 }; Label.HorizontalAlign = Label.VerticalAlign = { CENTER: 1 };
   class Graphics { rect() {} roundRect() {} fill() {} }
-  const bundle = { load(name, type, done) { requests.push({ name, done }); } };
+  const bundle = { load(name, type, progress, done = progress) { requests.push({ name, done }); } };
   const cc = { Component, Node, Vec2, Vec3, v2: (x, y) => new Vec2(x, y), v3: point => point, Size: function (width, height) { this.width = width; this.height = height; },
     Label, Graphics, Prefab: function Prefab() {}, Asset: function Asset() {}, BlockInputEvents: function () {}, Color: function () {},
     Mask: { Type: { ELLIPSE: 0, RECT: 1 } }, Enum: x => x, _decorator: { ccclass: x => x, property: () => () => {} },

@@ -4,6 +4,7 @@ const test = require('node:test');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const {environment, Node} = require('../navigation/runtime-harness.cjs');
 const {setup, hero} = require('./backend-gameplay-harness.cjs');
+const {method} = require('./global-ad-fixture.cjs');
 const source = path.resolve(__dirname, '../../assets/_script');
 function extra(h, name) {
   const ex = {}, context = {exports:ex, require:h.load, cc:h.cc, sp:{Skeleton:function(){}}, console:{log(){}},
@@ -94,6 +95,39 @@ test('Hero life identity rejects old projectiles through death, revive and resta
   const beforeDeath=shot();p.onDead();assert.equal(beforeDeath.targetIsLive(),false);
   p.onReborn();beforeDeath.callAttack();assert.equal(hits,0);shot().callAttack();assert.equal(hits,1);
   const beforeRestart=shot();p.onRestart();beforeRestart.callAttack();assert.equal(hits,1);shot().callAttack();assert.equal(hits,2);
+});
+test('the revive countdown hides at expiry and stays hidden after the hero returns',()=>{
+  for(const elapsed of [.25,.5]){
+    const {h,p}=playableHero(),scope={cc:h.e.cc,$z1KinghtFallUIGame:h.e.stubs.KinghtFallUIGame,$z1KinghtFallModle:h.e.stubs.KinghtFallModle};
+    const label={string:''},banner={active:false,getChildByName:()=>({getComponent:()=>label})};
+    const onReviveShow=method('KinghtFallUIGame','onReviveShow',scope),updates=[];
+    h.ui.ctrUI={ndReview:banner,setRevive:method('KinghtFallGameUICtrl','setRevive',scope)};
+    h.ui.btnRevive={};h.ui.btnReviveBreak={};
+    p.sendEvent=(name,seconds)=>{
+      assert.equal(name,'ReviveShow');updates.push(seconds);onReviveShow.call(h.ui,seconds);
+    };
+    let finish;
+    p.time.RebornTime=3;
+    p.ctrPlayAni.setDie=done=>done();
+    p.ctrPlayAni.setRevive=done=>{finish=done;};
+    p.hp=0;p.onDead();assert.equal(banner.active,true);assert.equal(label.string,'3');
+    p.onUpdata(2.75);assert.equal(label.string,'0');assert.equal(banner.active,true);
+    p.onUpdata(elapsed);
+    assert.deepEqual(updates,[3,.25,0]);assert.equal(banner.active,false);assert.equal(p.isDead(),true);
+    finish();assert.equal(p.isDead(),false);assert.equal(p.hp,p.hpMax);assert.equal(banner.active,false);
+  }
+});
+test('the final revive UI update can retire its battle without reviving an old hero',()=>{
+  const {h,p}=playableHero();
+  p.time.RebornTime=3;
+  p.ctrPlayAni.setDie=done=>done();
+  p.ctrPlayAni.setRevive=()=>assert.fail('A retired battle started a revive animation');
+  p.onDead();
+  p.sendEvent=(name,seconds)=>{
+    assert.equal(name,'ReviveShow');assert.equal(seconds,0);h.g._combatEpoch++;
+  };
+  p.onUpdata(3);
+  assert.equal(p.isDead(),true);
 });
 test('Obsolete death/revive animation callbacks cannot change the restarted hero life',()=>{
   const {p}=playableHero();let die,revive;

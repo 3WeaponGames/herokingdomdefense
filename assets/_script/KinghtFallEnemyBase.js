@@ -84,6 +84,9 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.start = function () {
     this.setBody(this.spAni.node);
   };
+  _ctor.prototype.lateUpdate = function () {
+    if (this._enemyBuffIndicators) require("EnemySkillVisuals").placeIndicators(this);
+  };
   _ctor.prototype.onPreSolve = function (contact, self, other) {
     Navigation.allowBlockedExit(this, contact, other);
   };
@@ -820,8 +823,6 @@ var def_KinghtFallEnemyBase = function (t) {
     return t * e;
   };
   _ctor.prototype.addHpPro = function (t) {
-    var e;
-    var n;
     if (!this.isDead()) {
       var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
       var presentation = game && game._stageAssets && game._stageAssets.options && require("EnemySkillVisuals");
@@ -833,9 +834,14 @@ var def_KinghtFallEnemyBase = function (t) {
       this.hp += t * this.hpMax;
       this.hp > this.hpMax && (this.hp = this.hpMax);
       if (this.hp > soundHp && BattleSounds.effect) BattleSounds.effect("healing-receive", this);
-      null === (e = this.hpctrl) || undefined === e || e.setHp(this.hp, this.hpMax);
-      if (!visual || visual.showBuiltin) null === (n = this.hpctrl) || undefined === n || n.showAni();
-      if (visual && this.hp > soundHp && incomingCurrent(this, life)) presentation.show(this, game, visual);
+      if (this.hpctrl) this.hpctrl.setHp(this.hp, this.hpMax);
+      if (!visual) {
+        if (this.hpctrl) this.hpctrl.showAni();
+        return;
+      }
+      if (this.hp <= soundHp || !incomingCurrent(this, life)) return;
+      if (visual.showBuiltin) presentation.show(this, game, presentation.healingEffect);
+      if (visual.resource && incomingCurrent(this, life)) presentation.show(this, game, visual);
     }
   };
   _ctor.prototype.onChangeSpeed = function () {

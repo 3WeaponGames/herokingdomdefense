@@ -397,42 +397,6 @@
     },
     "_children": [
       {
-        "__id__": 12
-      },
-      {
-        "__id__": 19
-      },
-      {
-        "__id__": 26
-      },
-      {
-        "__id__": 33
-      },
-      {
-        "__id__": 40
-      },
-      {
-        "__id__": 47
-      },
-      {
-        "__id__": 54
-      },
-      {
-        "__id__": 61
-      },
-      {
-        "__id__": 68
-      },
-      {
-        "__id__": 75
-      },
-      {
-        "__id__": 82
-      },
-      {
-        "__id__": 89
-      },
-      {
         "__id__": 127
       },
       {
@@ -515,6 +479,33 @@
       },
       {
         "__id__": 864
+      },
+      {
+        "__id__": 12
+      },
+      {
+        "__id__": 19
+      },
+      {
+        "__id__": 26
+      },
+      {
+        "__id__": 33
+      },
+      {
+        "__id__": 40
+      },
+      {
+        "__id__": 47
+      },
+      {
+        "__id__": 54
+      },
+      {
+        "__id__": 61
+      },
+      {
+        "__id__": 68
       }
     ],
     "_components": [],
@@ -1010,7 +1001,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "e00adba1-e1f7-4994-adb5-141f9b5580df"
+      "__uuid__": "356f89b1-bc38-4245-ac4e-f511bfdcf03f"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -1274,7 +1265,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "00b68265-ae56-43c1-a18e-1133896b692c"
+      "__uuid__": "43fa83c8-ba47-47bf-ac56-43b0e9693c29"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -1548,7 +1539,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 01 segment 01",
+    "_name": "Snow - Terrace Citadel component 09",
     "_parent": {
       "__id__": 6
     },
@@ -1590,15 +1581,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -174.0793489318413,
-        157.0498474059003,
+        -828.1818530723376,
+        86.98365748250205,
         0,
         0,
         0,
         0,
         1,
-        0.9460834181078331,
-        0.9460834181078331,
+        1.6526004138914059,
+        1.6526004138914059,
         1
       ]
     },
@@ -1741,7 +1732,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "masked-object-352-0-0",
+    "_name": "masked-object-363-0-0",
     "_parent": {
       "__id__": 36
     },
@@ -1761,8 +1752,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 774,
-      "height": 762
+      "width": 150,
+      "height": 356
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1773,7 +1764,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -387,
+        -75,
         0,
         0,
         0,
@@ -1802,7 +1793,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "c5cacb3c-4ee5-48a0-ac84-a5df457994a2"
+      "__uuid__": "ea4eca67-9a64-4bd7-aac3-decee5cff18a"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -1812,7 +1803,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 01 segment 02",
+    "_name": "Glacier Switchback",
     "_parent": {
       "__id__": 6
     },
@@ -1854,15 +1845,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        539.2675483214649,
-        157.0498474059003,
+        144.42857142857144,
+        -678.8571428571429,
         0,
         0,
         0,
         0,
         1,
-        0.9460834181078331,
-        0.9460834181078331,
+        1,
+        1,
         1
       ]
     },
@@ -2005,7 +1996,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "masked-object-353-0-0",
+    "_name": "native-terrain-map-concept-09-terrace-citadel-glacier-switchback-0-0",
     "_parent": {
       "__id__": 43
     },
@@ -2025,8 +2016,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 774,
-      "height": 806
+      "width": 1508,
+      "height": 1808.5714285714284
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2037,7 +2028,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -387,
+        -754,
         0,
         0,
         0,
@@ -2066,7 +2057,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "0a25f931-b82b-49a9-ae0f-a4c0f010eef2"
+      "__uuid__": "eb347984-58ae-425f-a92a-18fea9576dd6"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -2076,7 +2067,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 09",
+    "_name": "Snow - Terrace Citadel component 08",
     "_parent": {
       "__id__": 6
     },
@@ -2118,15 +2109,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -828.1818530723376,
-        86.98365748250205,
+        -819.4912913928254,
+        -741.8415711594927,
         0,
         0,
         0,
         0,
         1,
-        1.6526004138914059,
-        1.6526004138914059,
+        1.356279440642711,
+        1.356279440642711,
         1
       ]
     },
@@ -2269,7 +2260,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "masked-object-363-0-0",
+    "_name": "masked-object-362-0-0",
     "_parent": {
       "__id__": 50
     },
@@ -2289,8 +2280,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 150,
-      "height": 356
+      "width": 172,
+      "height": 428
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2301,7 +2292,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -75,
+        -86,
         0,
         0,
         0,
@@ -2330,7 +2321,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "65c6698a-58ff-44b7-a35c-2f854cc55567"
+      "__uuid__": "6f42c8ea-69cd-432e-ace7-fcece886d22b"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -2340,7 +2331,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 01 segment 03",
+    "_name": "Snow - Terrace Citadel component 07",
     "_parent": {
       "__id__": 6
     },
@@ -2382,15 +2373,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -174.0793489318413,
-        -588.4638860630722,
+        807.5787858354012,
+        -966.9913666133775,
         0,
         0,
         0,
         0,
         1,
-        0.9460834181078331,
-        0.9460834181078331,
+        1.2492146672834419,
+        1.2492146672834419,
         1
       ]
     },
@@ -2533,7 +2524,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "masked-object-354-0-0",
+    "_name": "masked-object-361-0-0",
     "_parent": {
       "__id__": 57
     },
@@ -2553,8 +2544,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 774,
-      "height": 808
+      "width": 194,
+      "height": 410
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2565,7 +2556,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -387,
+        -97,
         0,
         0,
         0,
@@ -2594,7 +2585,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "7023a2ca-9eae-439b-a9fb-7ca1ba770bca"
+      "__uuid__": "01f68458-e7a7-4079-a0f5-886f5b4a1c7e"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -2604,7 +2595,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 01 segment 04",
+    "_name": "Snow - Terrace Citadel component 04",
     "_parent": {
       "__id__": 6
     },
@@ -2646,15 +2637,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        537.0631275664953,
-        -588.4638860630722,
+        566.3617994645156,
+        -1518.4059110769672,
         0,
         0,
         0,
         0,
         1,
-        0.9460834181078331,
-        0.9460834181078331,
+        1.593120570957229,
+        1.593120570957229,
         1
       ]
     },
@@ -2797,7 +2788,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "masked-object-355-0-0",
+    "_name": "masked-object-358-0-0",
     "_parent": {
       "__id__": 64
     },
@@ -2817,8 +2808,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 774,
-      "height": 808
+      "width": 458,
+      "height": 292
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -2829,7 +2820,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -387,
+        -229,
         0,
         0,
         0,
@@ -2858,7 +2849,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "474645ca-b2ed-4830-aef3-43cfce2db738"
+      "__uuid__": "cdd250c7-47c0-47dd-af81-6cbbecbbcf26"
     },
     "_sizeMode": 0,
     "_type": 0,
@@ -2868,7 +2859,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 08",
+    "_name": "Snow - Terrace Citadel component 05",
     "_parent": {
       "__id__": 6
     },
@@ -2910,15 +2901,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -819.4912913928254,
-        -741.8415711594927,
+        -585.6659811787197,
+        -1519.6843123578146,
         0,
         0,
         0,
         0,
         1,
-        1.356279440642711,
-        1.356279440642711,
+        1.3954807667113434,
+        1.3954807667113434,
         1
       ]
     },
@@ -3061,7 +3052,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "masked-object-362-0-0",
+    "_name": "masked-object-359-0-0",
     "_parent": {
       "__id__": 71
     },
@@ -3069,798 +3060,6 @@
     "_components": [
       {
         "__id__": 74
-      }
-    ],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 172,
-      "height": 428
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -86,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "33a58344-bafb-45d3-a93e-3d8db1a787b8"
-    },
-    "_sizeMode": 0,
-    "_type": 0,
-    "node": {
-      "__id__": 73
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 07",
-    "_parent": {
-      "__id__": 6
-    },
-    "_children": [
-      {
-        "__id__": 77
-      },
-      {
-        "__id__": 78
-      }
-    ],
-    "_components": [
-      {
-        "__id__": 76
-      },
-      {
-        "__id__": 79
-      }
-    ],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        807.5787858354012,
-        -966.9913666133775,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1.2492146672834419,
-        1.2492146672834419,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1,
-    "_opacity": 255
-  },
-  {
-    "__type__": "18fdaVPwQRBIrhl5kY8QMeg",
-    "ndMove": [],
-    "node": {
-      "__id__": 75
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Ground",
-    "_parent": {
-      "__id__": 75
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Artwork",
-    "_parent": {
-      "__id__": 75
-    },
-    "_children": [
-      {
-        "__id__": 80
-      }
-    ],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "483a8ja4YhO8bI7DXBqLOcH",
-    "ground": {
-      "__id__": 77
-    },
-    "artwork": {
-      "__id__": 78
-    },
-    "frontOfBuildings": false,
-    "objectLayerOrder": 0,
-    "node": {
-      "__id__": 75
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "masked-object-361-0-0",
-    "_parent": {
-      "__id__": 78
-    },
-    "_children": [],
-    "_components": [
-      {
-        "__id__": 81
-      }
-    ],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 194,
-      "height": 410
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -97,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "11672104-4167-4001-afbf-8dc36f1e8c2f"
-    },
-    "_sizeMode": 0,
-    "_type": 0,
-    "node": {
-      "__id__": 80
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 04",
-    "_parent": {
-      "__id__": 6
-    },
-    "_children": [
-      {
-        "__id__": 84
-      },
-      {
-        "__id__": 85
-      }
-    ],
-    "_components": [
-      {
-        "__id__": 83
-      },
-      {
-        "__id__": 86
-      }
-    ],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        566.3617994645156,
-        -1518.4059110769672,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1.593120570957229,
-        1.593120570957229,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1,
-    "_opacity": 255
-  },
-  {
-    "__type__": "18fdaVPwQRBIrhl5kY8QMeg",
-    "ndMove": [],
-    "node": {
-      "__id__": 82
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Ground",
-    "_parent": {
-      "__id__": 82
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Artwork",
-    "_parent": {
-      "__id__": 82
-    },
-    "_children": [
-      {
-        "__id__": 87
-      }
-    ],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "483a8ja4YhO8bI7DXBqLOcH",
-    "ground": {
-      "__id__": 84
-    },
-    "artwork": {
-      "__id__": 85
-    },
-    "frontOfBuildings": false,
-    "objectLayerOrder": 0,
-    "node": {
-      "__id__": 82
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "masked-object-358-0-0",
-    "_parent": {
-      "__id__": 85
-    },
-    "_children": [],
-    "_components": [
-      {
-        "__id__": 88
-      }
-    ],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 458,
-      "height": 292
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -229,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "32bfed8c-265c-4969-aeef-80b38a223ab6"
-    },
-    "_sizeMode": 0,
-    "_type": 0,
-    "node": {
-      "__id__": 87
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Snow - Terrace Citadel component 05",
-    "_parent": {
-      "__id__": 6
-    },
-    "_children": [
-      {
-        "__id__": 91
-      },
-      {
-        "__id__": 92
-      }
-    ],
-    "_components": [
-      {
-        "__id__": 90
-      },
-      {
-        "__id__": 93
-      }
-    ],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -585.6659811787197,
-        -1519.6843123578146,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1.3954807667113434,
-        1.3954807667113434,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1,
-    "_opacity": 255
-  },
-  {
-    "__type__": "18fdaVPwQRBIrhl5kY8QMeg",
-    "ndMove": [],
-    "node": {
-      "__id__": 89
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Ground",
-    "_parent": {
-      "__id__": 89
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Artwork",
-    "_parent": {
-      "__id__": 89
-    },
-    "_children": [
-      {
-        "__id__": 94
-      }
-    ],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "483a8ja4YhO8bI7DXBqLOcH",
-    "ground": {
-      "__id__": 91
-    },
-    "artwork": {
-      "__id__": 92
-    },
-    "frontOfBuildings": false,
-    "objectLayerOrder": 0,
-    "node": {
-      "__id__": 89
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "masked-object-359-0-0",
-    "_parent": {
-      "__id__": 92
-    },
-    "_children": [],
-    "_components": [
-      {
-        "__id__": 95
       }
     ],
     "_active": true,
@@ -3914,14 +3113,35 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "12c0575b-5e57-4a5b-ae90-5ac5f4925b99"
+      "__uuid__": "767097d7-a425-40dc-afe7-5e02045150f3"
     },
     "_sizeMode": 0,
     "_type": 0,
     "node": {
-      "__id__": 94
+      "__id__": 73
     }
   },
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
   {
     "__type__": "cc.Node",
     "_name": "1",

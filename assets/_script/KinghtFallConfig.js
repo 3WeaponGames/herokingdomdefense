@@ -24,6 +24,8 @@ var exp_KinghtFallBundelName = function () {
   return _ctor;
 }();
 exports.KinghtFallBundelName = exp_KinghtFallBundelName;
+// Native maps and prefabs can spend longer decoding a single dependency.
+exports.BattleAssetLoadOptions = { idleTimeoutMs: 120000, retryOnce: true };
 (function (t) {
   t.UIHome = "KinghtFallUIHome";
   t.UITop = "KinghtFallUITop";
@@ -185,7 +187,8 @@ exports.KinghtFallUICF = ((i = {})[o.UIHome] = {
   showTop: false,
   showMult: false,
   zIndex: $z1Appcfg.OrderLayer.main,
-  bundleName: exp_KinghtFallBundelName.Prefab
+  bundleName: exp_KinghtFallBundelName.Prefab,
+  nativeLoadOptions: exports.BattleAssetLoadOptions
 }, i[o.UIGameBack] = {
   prefab: "game/KinghtFallUIGameBack",
   name: "KinghtFallUIGameBack",

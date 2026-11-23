@@ -659,9 +659,9 @@
       "name": "Slime Green",
       "pack": "monster1",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
-      "skeleton": "assets/resources/unit-library/monster1/Units/Slime_Green.json",
-      "uuid": "96ad2188-474f-5980-b4ea-526ca4118ff2",
-      "resource": "unit-library/monster1/Units/Slime_Green",
+      "skeleton": "assets/resources/unit-library/monster1/Units/CleanStyles/Slime_Green.json",
+      "uuid": "56f18d27-d5a8-53a6-a864-1f56ab8f2d44",
+      "resource": "unit-library/monster1/Units/CleanStyles/Slime_Green",
       "animations": [
         "idle",
         "hit",
@@ -670,16 +670,17 @@
         "attack"
       ],
       "bones": 9,
-      "slots": 6
+      "slots": 6,
+      "variantOf": "assets/resources/unit-library/monster1/Units/Slime_Green.json"
     },
     {
       "id": "monster1/Slime_Purple",
       "name": "Slime Purple",
       "pack": "monster1",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Purple.prefab",
-      "skeleton": "assets/resources/unit-library/monster1/Units/Slime_Purple.json",
-      "uuid": "59b04bb3-0a8b-540a-9cea-7f0b1a58caf1",
-      "resource": "unit-library/monster1/Units/Slime_Purple",
+      "skeleton": "assets/resources/unit-library/monster1/Units/CleanStyles/Slime_Purple.json",
+      "uuid": "ca077383-70a3-59ff-abb0-3f3cb7e00567",
+      "resource": "unit-library/monster1/Units/CleanStyles/Slime_Purple",
       "animations": [
         "idle",
         "hit",
@@ -688,7 +689,8 @@
         "attack"
       ],
       "bones": 9,
-      "slots": 6
+      "slots": 6,
+      "variantOf": "assets/resources/unit-library/monster1/Units/Slime_Purple.json"
     },
     {
       "id": "monster1/Snail_Blue",
@@ -1095,6 +1097,44 @@
       "bones": 20,
       "slots": 11,
       "variantOf": "monster1/Animal_Fox"
+    },
+    {
+      "id": "monster1/Bird_OrcWyvern",
+      "name": "Orc Wyvern",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Bird/Bird_Eagle.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/FlyingVariants/Bird_OrcWyvern.json",
+      "uuid": "feafa4d1-6d3b-5c49-a431-3156d434590d",
+      "resource": "unit-library/monster1/Units/FlyingVariants/Bird_OrcWyvern",
+      "animations": [
+        "move",
+        "die",
+        "idle",
+        "hit",
+        "attack"
+      ],
+      "bones": 15,
+      "slots": 8,
+      "variantOf": "monster1/Bird_Eagle"
+    },
+    {
+      "id": "monster1/Wolf_FeralGhoul",
+      "name": "Feral Ghoul",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Wolf/Wolf_Gray.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/GhoulVariants/Wolf_FeralGhoul.json",
+      "uuid": "5adc8d6b-b6f0-5cec-a7c5-25eac71fda89",
+      "resource": "unit-library/monster1/Units/GhoulVariants/Wolf_FeralGhoul",
+      "animations": [
+        "attack",
+        "die",
+        "hit",
+        "idle",
+        "move"
+      ],
+      "bones": 26,
+      "slots": 11,
+      "variantOf": "monster1/Wolf_Gray"
     }
   ],
   "parts": [

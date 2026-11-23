@@ -5,6 +5,7 @@ const prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs
 const uiSource=fs.readFileSync(path.join(root,'assets/_script/KinghtFallUIGame.js'),'utf8');
 const TaskPosition=require('../../assets/_script/StageTaskPosition'),catalog=require('../../assets/resources/localization/catalog.json');
 const translate=key=>catalog.entries[key]?.en||key;
+const GameStage={Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4};
 
 function fixture(height=1334,position){
  class Component{constructor(){this.enabled=true;}}
@@ -15,17 +16,22 @@ function fixture(height=1334,position){
   _forceUpdateRenderData(){if(!this.node.activeInHierarchy)return;this.measures=(this.measures||0)+1;const width=this.string.length*this.fontSize*.56;if(this.enableWrapText){this.node.height=Math.ceil(width/this.node.width)*this.lineHeight;}else{this.node.width=width;this.node.height=this.lineHeight;}}
  }
  Object.assign(Label,{HorizontalAlign:{CENTER:1},VerticalAlign:{CENTER:1},Overflow:{NONE:0,RESIZE_HEIGHT:3}});
+ class LabelOutline extends Component{}
+ class Button extends Component{constructor(){super();this.interactable=true;}}
+ Button.Transition={SCALE:3};
  class Sprite extends Component{}Object.assign(Sprite,{Type:{SLICED:1},SizeMode:{CUSTOM:0}});
  class Graphics extends Component{
-  clear(){this.points=[];}
+  clear(){this.points=[];this.rectangles=[];}
   fill(){}
+  stroke(){}
+  roundRect(x,y,width,height,radius){this.rectangles.push({x,y,width,height,radius});}
   moveTo(x,y){this.points.push({x,y});}
   lineTo(x,y){this.points.push({x,y});}
   close(){}
  }
  class Skeleton extends Component{setAnimation(track,name,loop){this.animation={track,name,loop};}}
  class Node{
-  constructor(name){Object.assign(this,{name,x:0,y:0,width:100,height:100,anchorX:.5,anchorY:.5,scaleX:1,scaleY:1,opacity:255,active:true,children:[],components:[]});}
+  constructor(name){Object.assign(this,{name,x:0,y:0,width:100,height:100,anchorX:.5,anchorY:.5,scaleX:1,scaleY:1,opacity:255,active:true,children:[],components:[],listeners:new Map()});}
   set parent(value){if(this._parent)this._parent.children.splice(this._parent.children.indexOf(this),1);this._parent=value;if(value)value.children.push(this);}get parent(){return this._parent;}
   get activeInHierarchy(){return this.active&&(!this.parent||this.parent.activeInHierarchy);}
   setContentSize(w,h){if(typeof w==='object')({width:w,height:h}=w);this.width=w;this.height=h;}
@@ -38,24 +44,30 @@ function fixture(height=1334,position){
   getComponent(Type){return this.components.find(c=>c instanceof Type);}
   getComponents(Type){return this.components.filter(c=>c instanceof Type);}
   getComponentsInChildren(Type){return this.getComponents(Type).concat(...this.children.map(n=>n.getComponentsInChildren(Type)));}
+  getComponentInChildren(Type){return this.getComponentsInChildren(Type)[0];}
+  on(event,callback){this.listeners.set(event,callback);}
+  emit(event){this.listeners.get(event)?.();}
   convertToWorldSpaceAR(p){const q={x:this.x+p.x*this.scaleX,y:this.y+p.y*this.scaleY};return this.parent?this.parent.convertToWorldSpaceAR(q):q;}
   convertToNodeSpaceAR(p){const q=this.parent?this.parent.convertToNodeSpaceAR(p):p;return{x:(q.x-this.x)/this.scaleX,y:(q.y-this.y)/this.scaleY};}
  }
+ Node.EventType={TOUCH_END:'touchend'};
  let safe={x:0,y:0,width:750,height},loadKing;
- const cc={Component,Node,Label,Sprite,Graphics,Layout:class extends Component{},Widget:class extends Component{},Mask:class extends Component{},Color:{WHITE:'white'},color:(r,g,b,a)=>({r,g,b,a}),v2:(x,y)=>({x,y}),isValid:n=>!n.destroyed,
+ const cc={Component,Node,Label,LabelOutline,Button,Sprite,Graphics,Layout:class extends Component{},Widget:class extends Component{},Mask:class extends Component{},Color:{WHITE:'white'},color:(r,g,b,a=255)=>({r,g,b,a}),v2:(x,y)=>({x,y}),isValid:n=>!n.destroyed,
   view:{getVisibleOrigin:()=>({x:0,y:0}),getVisibleSize:()=>({width:750,height})},sys:{getSafeAreaRect:()=>safe},Tween:{stopAllByTarget(){}},
   resources:{load(asset,type,callback){assert.equal(asset,'characters/retired-king-portrait');loadKing=()=>callback(null,{type});}}};
  const parent=new Node('ui');parent.setPosition(375,height/2);
  const nodes={};function build(index,p=parent){const s=prefab[index],n=nodes[index]=new Node(s._name),t=s._trs.array;n.parent=p;n.setPosition(t[0],t[1]);n.setContentSize(s._contentSize||{width:100,height:100});Object.assign(n,s._anchorPoint?{anchorX:s._anchorPoint.x,anchorY:s._anchorPoint.y}:{});n.scaleX=t[7];n.scaleY=t[8];n.active=s._active!==false;
+  if(s._color)n.color=cc.color(s._color.r,s._color.g,s._color.b,s._color.a);
   for(const ref of s._children||[])build(ref.__id__,n);
-  for(const ref of s._components||[]){const c=prefab[ref.__id__];if(c.__type__==='cc.Sprite')n.addComponent(Sprite).spriteFrame={uuid:c._spriteFrame?.__uuid__};if(c.__type__==='cc.Label'){const l=n.addComponent(Label);l.fontSize=c._fontSize||40;l.lineHeight=c._lineHeight||40;}}
+  for(const ref of s._components||[]){const c=prefab[ref.__id__];if(c.__type__==='cc.Sprite')n.addComponent(Sprite).spriteFrame={uuid:c._spriteFrame?.__uuid__};if(c.__type__==='cc.LabelOutline')n.addComponent(LabelOutline).enabled=c._enabled!==false;if(c.__type__==='cc.Label'){const l=n.addComponent(Label);l.fontSize=c._fontSize||40;l.lineHeight=c._lineHeight||40;}}
   return n;
  }
  [225,184,189,236,199,165].forEach(i=>build(i));
- for(const[i,text]of Object.entries({190:'Buildings',208:'Pending',173:'4'}))nodes[i].getComponent(Label).string=text;
+ for(const[i,text]of Object.entries({190:'Buildings',208:prefab[209]._string,173:'4'}))nodes[i].getComponent(Label).string=text;
  class Fit extends Component{constructor(){super();this.content=[];}fit(){this.calls=(this.calls||0)+1;nodes[229].getComponent(Label)._forceUpdateRenderData();nodes[225].width=nodes[226].width+nodes[229].width*.5+24;}}
  const fit=nodes[225].addComponent(Fit);fit.content=[nodes[226],nodes[229]];
- const exports={};vm.runInNewContext(source,{exports,cc,sp:{Skeleton,SkeletonData:class {}},require:name=>{assert.equal(name,'StageTaskPosition');return TaskPosition;}});
+ const model={KinghtFallGameStage:GameStage},exports={};
+ vm.runInNewContext(source,{exports,cc,sp:{Skeleton,SkeletonData:class {}},require:name=>({StageTaskPosition:TaskPosition,KinghtFallModle:model})[name]});
  const map=new Node('map');map.setPosition(375,height/2);
  const ndMain=new Node('ndMain'),ndPath=new Node('ndPath'),hero=new Node('ndStar');
  ndMain.parent=ndPath.parent=map;ndMain.group='world';ndPath.setPosition(12,5);hero.parent=ndPath;hero.setPosition(-30,-20);
@@ -66,7 +78,7 @@ function fixture(height=1334,position){
  const ui={ctrGame,T:translate,ctrUI:{node:parent},ndCoin:nodes[225],btnSuspend:nodes[184],btnBuildInfo:nodes[189],ndLevelInfo:nodes[236],ndTask:nodes[199],btnAddCoin:nodes[165]};
  const initStart=uiSource.indexOf('function () {',uiSource.indexOf('_ctor.prototype.initView = '));
  const init=uiSource.slice(initStart,uiSource.lastIndexOf(';',uiSource.indexOf('_ctor.prototype.lateUpdate = ')));
- ui.initView=vm.runInNewContext('('+init+')',{cc,require:()=>exports,$z1KinghtFallModle:{KinghtFallGameStage:{Fight:1}},
+ ui.initView=vm.runInNewContext('('+init+')',{cc,require:()=>exports,$z1KinghtFallModle:model,
   $z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getGameTaskEnem:id=>({Name:{4:'Build 1 Mill',5:'Upgrade 1 Arrow Tower to Level 3 and defend the castle'}[id]})})}},
   $z1KinghtFallTextConfig:{KinghtFallTextConfig:{HomeBattle02:'Wave {0}'}},$z1Utils:{Utils:{StringFormat:(s,v)=>s.replace('{0}',v)}}});
  const settle=()=>{for(let i=0;i<4;i++)exports.layout(ui);};
@@ -76,16 +88,77 @@ function fixture(height=1334,position){
 test('battle header stays inside safe edges, with Pause above Buildings and a compact opaque white title',()=>{
  for(const h of [1334,1688,1900]){const f=fixture(h),u=f.ui;f.setSafe({x:20,y:30,width:710,height:h-90});f.settle();assert.equal(u.ndCoin.x-u.ndCoin.width/2,-375+38);assert(u.btnSuspend.x+38<375-38);assert.equal(u.btnSuspend.x,u.btnBuildInfo.x);assert(u.btnBuildInfo.y+38<u.btnSuspend.y-38);const caption=f.nodes[190];assert.equal(caption.x,0);assert(u.btnBuildInfo.x+caption.x+caption.width*.25<=337);assert.equal(f.nodes[237].opacity,255);assert.equal(f.nodes[237].color,'white');assert.equal(f.nodes[237].getComponent(f.cc.Label).fontSize,68);assert.equal(f.nodes[240].getComponent(f.cc.Label).fontSize,54);}
 });
-test('the Retired King stands at the authored point with an open task and its claim action',()=>{
+test('the Royal Advisor stands at the authored point with an open task and its claim action',()=>{
  const {ui,nodes,cc,loadKing,Skeleton}=fixture(1334,{x:-100,y:65});
  const task=ui.ndTask,info=ui.ctrGame.gameData.taskInfo,king=ui._battleHud.king;
+ assert.equal(king.name,'Royal Advisor');
  assert.deepEqual(king.getPosition(),{x:-88,y:70});assert.equal(king.parent,ui.ctrGame.ndMain);assert.equal(king.group,'world');
  loadKing();assert.deepEqual(king.getComponent(Skeleton).animation,{track:0,name:'idle',loop:true});
  assert.equal(task.parent,ui.ctrUI.node);assert.equal(task.active,true);
- assert.equal(nodes[200].getComponent(cc.Label).string,'Build 1 Mill');assert(nodes[208].active);assert(!nodes[204].active);
- info.stage=1;ui.initView();assert(!nodes[208].active);assert(nodes[204].active);assert.equal(nodes[204].getComponent(cc.Label).string,'Complete · Claim');
+ assert.equal(nodes[200].getComponent(cc.Label).string,'Build 1 Mill');assert(nodes[208].active);
+ assert.equal(nodes[208].getComponent(cc.Label).string,'Pending task');
+ const collect=ui._battleHud.collectButton;
+ assert.equal(collect.active,false);
+ info.stage=1;ui.initView();assert(!nodes[208].active);assert(collect.active);assert.equal(nodes[204].getComponent(cc.Label).string,'Collect');
+ assert.equal(nodes[204].parent,collect);assert(collect.getComponent(cc.Button).interactable);
+ assert(collect.height>=88 && collect.y<0);
  info.index++;info.stage=0;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'Upgrade 1 Arrow Tower to Level 3 and defend the castle');assert(nodes[208].active);
- info.index++;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'All tasks complete');assert(!nodes[208].active);assert(!nodes[204].active);assert(task.active);
+ info.index++;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'All tasks complete');assert(!nodes[208].active);assert(!collect.active);assert(task.active);
+});
+test('only Collect claims the ready task during planning',()=>{
+ const {ui,cc}=fixture(),collect=ui._battleHud.collectButton;
+ for (const button of ['btnStartFight','btnAgg','btnReviveBreak','btnRevive','btnTest']) ui[button]=new cc.Node(button);
+ ui.btnTest.addComponent(cc.Label);
+ ui.ctrUI.setMoveFunc=()=>{};
+ ui.moveFun=()=>{};
+ const claimEvents=[];
+ ui.sendEvent=(...args)=>claimEvents.push(args);
+ ui.getTask=()=>claimEvents.push('collect');
+ const first=uiSource.indexOf('function () {',uiSource.indexOf('_ctor.prototype.initBtnEvent = '));
+ const last=uiSource.lastIndexOf(';',uiSource.indexOf('_ctor.prototype._refreshArmyButtons = '));
+ const bind=vm.runInNewContext('('+uiSource.slice(first,last)+')',{cc,$z1KinghtFallModle:{KinghtFallGameStage:GameStage},
+  $z1KinghtFallConfig:{KinghtFallEventName:{PlayVideoSucc:'resume'}},require:()=>({LanguageMgr:{getInstance:()=>({t:()=> '1×'})}})});
+ bind.call(ui);
+ ui.ctrGame.gameData.taskInfo.stage=1;ui.initView();
+ ui.ndTask.emit(cc.Node.EventType.TOUCH_END);
+ assert.deepEqual(claimEvents,[]);
+ collect.emit('click');
+ assert.deepEqual(claimEvents,[['resume',false],'collect']);
+ ui.ctrGame.gameStatus=GameStage.Transition;
+ collect.emit('click');
+ assert.equal(claimEvents.length,2);
+});
+test('the Advisor and task bubble fade out at dusk and return together in planning',()=>{
+ const {ui,hud}=fixture(),state=ui._battleHud,task=ui.ndTask,advisor=state.king;
+ const info=ui.ctrGame.gameData.taskInfo;
+ info.stage=1;ui.initView();
+ ui.ctrGame.gameStatus=GameStage.Transition;
+ hud.layout(ui,.2);
+ assert(advisor.active&&task.active);
+ assert.equal(advisor.opacity,128);
+ assert.equal(state.taskName.opacity,128);
+ assert.equal(state.collectLabel.opacity,128);
+ assert.equal(state.backdropArt.fillColor.a,60);
+ assert.equal(state.tailArt.fillColor.a,60);
+ assert.equal(state.collectArt.fillColor.a,128);
+ assert.equal(state.collectControl.interactable,false);
+ ui.ctrGame.gameStatus=GameStage.Fight;
+ hud.layout(ui,.2);
+ assert(!advisor.active && !task.active);
+ assert.equal(advisor.opacity,0);
+ ui.ctrGame.gameStatus=GameStage.Transition;
+ hud.layout(ui,.4);assert(!advisor.active);
+ ui.ctrGame.gameStatus=GameStage.Prepare;
+ hud.layout(ui,.2);
+ assert(advisor.active&&task.active);
+ assert.equal(advisor.opacity,128);
+ assert.equal(state.backdropArt.fillColor.a,60);
+ hud.layout(ui,.2);
+ assert.equal(advisor.opacity,255);
+ assert.equal(state.collectLabel.opacity,255);
+ assert.equal(state.backdropArt.fillColor.a,120);
+ assert(state.collectButton.activeInHierarchy && state.collectControl.interactable);
+ assert.equal(info.index,0);assert.equal(info.stage,1);
 });
 test('the visible testing banner reserves top-center space without moving the corner buttons',()=>{
  const f=fixture(),pauseY=f.ui.btnSuspend.y;const badge={active:true,height:44,anchorY:.5,convertToWorldSpaceAR:()=>({x:375,y:1287})};f.cc.Canvas={instance:{node:{getChildByName:()=>badge}}};f.settle();assert(f.ui.ndLevelInfo.y+f.ui.ndLevelInfo.height/2<=1287-667-12);assert.equal(f.ui.btnSuspend.y,pauseY);badge.active=false;f.settle();assert(f.ui.ndLevelInfo.y>1287-667-12-f.ui.ndLevelInfo.height/2);
@@ -98,11 +171,20 @@ test('legacy stages place the King beside Hero start and camera movement only mo
  camera.offset.y=1500;settle();assert.equal(task.active,false);
  camera.offset.y=0;settle();assert.equal(task.active,true);assert.deepEqual(task.getPosition(),original);
 });
-test('the speech bubble uses the task sprite and points upward from below the King near the top edge',()=>{
+test('the translucent white bubble has dark text and points up from below the Advisor near the top edge',()=>{
  const f=fixture(1334,{x:-355,y:540}),task=f.ui.ndTask,state=f.ui._battleHud;
  f.setSafe({x:16,y:0,width:684,height:1280});f.settle();
  const sprite=task.getComponent(f.cc.Sprite);
- assert(sprite.enabled);assert.equal(sprite.type,f.cc.Sprite.Type.SLICED);
+ assert(!sprite.enabled);
+ assert.deepEqual(state.backdropArt.fillColor,{r:255,g:255,b:255,a:120});
+ assert.deepEqual(state.tailArt.fillColor,state.backdropArt.fillColor);
+ assert.equal(task.opacity,255);
+ const [rectangle]=state.backdropArt.rectangles;
+ assert.equal(rectangle.width,task.width);assert.equal(rectangle.height,task.height);
+ for(const id of [200,204,208]) {
+  assert.deepEqual(f.nodes[id].color,{r:9,g:12,b:18,a:255});
+  assert.equal(f.nodes[id].getComponent(f.cc.LabelOutline).enabled,false);
+ }
  assert(task.active);assert(task.x-task.width/2>=16+16-375);assert(task.y+task.height/2<state.king.convertToWorldSpaceAR({x:0,y:0}).y-667);
  assert(state.tail.y>0);assert(state.tailArt.points[1].y>0);
  assert.equal(f.ui.ndLevelInfo.getComponent(f.cc.Sprite).enabled,false);
@@ -112,7 +194,7 @@ test('a retired battle tears down its King and ignores a late Spine load',()=>{
  hud.dispose(ui);loadKing();
  assert(king.destroyed);assert.equal(king.getComponent(Skeleton),undefined);assert.equal(ui._battleHud,null);
 });
-test('long task copy grows its card and stays separate from the Pending or Claim action',()=>{
+test('long task copy grows the bubble and stays clear of its status',()=>{
  const f=fixture(),{ui,nodes}=f,initial=ui.ndTask.height;
  ui.ctrGame.gameData.taskInfo.index=1;ui.initView();f.settle();
  const name=nodes[200],status=nodes[208];assert(ui.ndTask.height>initial);

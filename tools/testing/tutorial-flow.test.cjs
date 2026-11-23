@@ -45,6 +45,10 @@ test('tutorial content keeps the original IDs and includes both translated weapo
  const prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/prefabs/ui/UIGuide.prefab'),'utf8'));
  const portrait=prefab.find(node=>node.__type__==='sp.Skeleton' && node._N$skeletonData?.__uuid__===kingMeta.uuid);
  assert.equal(king._unitLook,'character-retired-king');
+ const profile=require('../../assets/resources/characters/catalog.json').profiles[king._unitLook];
+ const title=catalog.entries['ui.layout.uiguide.27'];
+ assert.equal(profile.name,title.en);
+ for(const language of ['en','zh']) assert.equal(title[language],catalog.entries['ui.uiguide.labname.27'][language]);
  assert(king.animations.idle.bones);
  assert.equal(portrait.defaultAnimation,'idle');
  const scale=prefab[portrait.node.__id__]._trs.array.slice(7,9);

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "9684ec80-f989-5fc8-a282-ec2bbd33031c",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 256,
+  "platformSettings": {},
+  "subMetas": {
+    "WingDemon_FlyingSlime": {
+      "ver": "1.0.6",
+      "uuid": "78942d61-40a5-5836-abb4-ef9d65b9f2c8",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "9684ec80-f989-5fc8-a282-ec2bbd33031c",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 256,
+      "rawWidth": 2048,
+      "rawHeight": 256,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

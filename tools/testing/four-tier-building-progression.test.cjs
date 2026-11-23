@@ -46,7 +46,7 @@ test('actual upgrade eligibility requires castle4 for tier3 defenses and ends at
 test('early campaign halls cap both paid and perk upgrade choices by stage slot',()=>{
  const base=require('./backend-gameplay-harness.cjs').setup().load('KinghtFallBuildBase').default.prototype;
  const buildCfg=config.BuildEnum[1];
- for(const [stage,cap]of [[1,2],[2,3],[3,4],[12,4]]){
+ for(const [stage,cap]of [[1,3],[2,3],[3,4],[12,4]]){
   const Info=buildInfo(1,stage);
   for(const level of [1,2,3,4]){
    const hall={buildCfg,buildInfo:new Info(1,row(1,level)),getBranchCfg:base.getBranchCfg,getUpgradeChoices:base.getUpgradeChoices};

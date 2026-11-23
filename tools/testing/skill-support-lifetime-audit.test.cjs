@@ -1,5 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
+const fs=require('node:fs'),vm=require('node:vm');
 const {setup,Node}=require('./backend-gameplay-harness.cjs');
 function fixture(kind){
  const h=setup(),hits=[],requests=[],freed=[];let sound=null,track=null;
@@ -49,4 +50,54 @@ test('queued healing artwork returns to its pool after recipient, support or bat
 });
 test('current healing artwork attaches once and stale completion cannot return a reused node twice',()=>{
  const f=fixture('KinghtFallEnemyItem09');f.h.d.enemyList=[f.first];f.support.doAttack();const effect=f.effect();f.requests[0](effect);assert.equal(effect.parent,f.first.ndEffect);assert.equal(f.first._healingEffects.size,1);const complete=effect.getComponentInChildren().complete;complete();complete();assert.deepEqual(f.freed,[effect]);assert.equal(f.first._healingEffects.size,0);
+});
+
+test('prepared battles play the healing Spine at the feet of units that regain HP',()=>{
+ const {h,support,requests}=fixture('KinghtFallEnemyItem09');
+ const visuals={},file=require.resolve('../../assets/_script/EnemySkillVisuals');
+ class EffectNode extends Node {
+  setScale(value){this.scaleX=this.scaleY=value;}
+  destroy(){this.destroyed=true;this.setParent(null);}
+ }
+ class Color {fromHEX(hex){this.hex=hex;return this;}}
+ class Skeleton {
+  setCompleteListener(done){this.done=done;}
+  setAnimation(track,name,loop){this.animation={track,name,loop};}
+ }
+ vm.runInNewContext(fs.readFileSync(file,'utf8'),{exports:visuals,cc:{...h.e.cc,Node:EffectNode,Color},sp:{Skeleton}},{filename:file});
+ h.e.stubs.EnemySkillVisuals=visuals;
+ const {resourceBundle,resourcePath}=visuals.healingEffect;
+ const asset={skeletonJson:require('../../assets/'+resourceBundle+'/'+resourcePath+'.json')};
+ const config={};
+ h.g._stageAssets={assets:{[resourceBundle+'/'+resourcePath+':spine']:asset},options:{config}};
+ const bars=[];
+ const units=[85,100].map((hp,index)=>{
+  const unit=h.e.actor('KinghtFallEnemyBase',10+index*10,6,h.g.ndMain);
+  Object.assign(unit,{hp,uuid:'target-'+index,hpctrl:{
+   setHp(current,max){bars.push([current,max]);},
+   showAni(){assert.fail('The old health-bar healing animation must not play');}
+  }});
+  return unit;
+ });
+ h.d.enemyList=units;
+ support.doAttack();
+ const [target,full]=units,[effect]=target._enemySkillEffects;
+ const skeleton=effect.getComponent(Skeleton);
+ assert.deepEqual(bars,[[95,100],[100,100]]);
+ assert.equal(target._enemySkillEffects.size,1);
+ assert.equal(effect.parent,target.node);
+ assert.equal(skeleton.skeletonData,asset);
+ assert.deepEqual(skeleton.animation,{track:0,name:'play',loop:false});
+ assert.equal(full._enemySkillEffects,undefined);
+ assert.deepEqual(requests,[]);
+ target.node.setPosition(15,30);
+ assert.deepEqual(effect.convertToWorldSpaceAR(h.e.cc.v2()),target.node.convertToWorldSpaceAR(h.e.cc.v2()));
+ skeleton.done();
+ assert(effect.destroyed);
+ assert.equal(target._enemySkillEffects.size,0);
+
+ config.EnemySkillVisuals={heal:{showBuiltin:false}};
+ support.doAttack();
+ assert.equal(target.hp,100);
+ assert.equal(target._enemySkillEffects.size,0);
 });

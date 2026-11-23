@@ -425,9 +425,9 @@
       "name": "OrcSmasher Berserker",
       "pack": "monster3",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Berserker.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/OrcSmasher_Berserker.json",
-      "uuid": "133ff2d8-cc27-5990-9598-bedaac8addbc",
-      "resource": "unit-library/monster3/Units/OrcSmasher_Berserker",
+      "skeleton": "assets/resources/unit-library/monster3/Units/CleanStyles/OrcSmasher_Berserker.json",
+      "uuid": "a2c585a2-26c8-5cc0-a3c2-3d2e3623e492",
+      "resource": "unit-library/monster3/Units/CleanStyles/OrcSmasher_Berserker",
       "animations": [
         "die",
         "move",
@@ -436,16 +436,17 @@
         "attack"
       ],
       "bones": 35,
-      "slots": 15
+      "slots": 15,
+      "variantOf": "assets/resources/unit-library/monster3/Units/OrcSmasher_Berserker.json"
     },
     {
       "id": "monster3/OrcSmasher_Red",
       "name": "OrcSmasher Red",
       "pack": "monster3",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Red.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/OrcSmasher_Red.json",
-      "uuid": "782a5afb-d7bf-5075-9656-fcecc353aaba",
-      "resource": "unit-library/monster3/Units/OrcSmasher_Red",
+      "skeleton": "assets/resources/unit-library/monster3/Units/CleanStyles/OrcSmasher_Red.json",
+      "uuid": "02bcf214-7417-523c-a3bc-f79d8647bb42",
+      "resource": "unit-library/monster3/Units/CleanStyles/OrcSmasher_Red",
       "animations": [
         "die",
         "move",
@@ -454,16 +455,17 @@
         "attack"
       ],
       "bones": 35,
-      "slots": 15
+      "slots": 15,
+      "variantOf": "assets/resources/unit-library/monster3/Units/OrcSmasher_Red.json"
     },
     {
       "id": "monster3/OrcSmasher_Warlord",
       "name": "OrcSmasher Warlord",
       "pack": "monster3",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Warlord.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/OrcSmasher_Warlord.json",
-      "uuid": "c493d193-3adb-50b4-92bd-f975a1183739",
-      "resource": "unit-library/monster3/Units/OrcSmasher_Warlord",
+      "skeleton": "assets/resources/unit-library/monster3/Units/CleanStyles/OrcSmasher_Warlord.json",
+      "uuid": "6ca070ec-b138-5c0a-a89f-22473f77fb4b",
+      "resource": "unit-library/monster3/Units/CleanStyles/OrcSmasher_Warlord",
       "animations": [
         "die",
         "move",
@@ -472,16 +474,17 @@
         "attack"
       ],
       "bones": 35,
-      "slots": 15
+      "slots": 15,
+      "variantOf": "assets/resources/unit-library/monster3/Units/OrcSmasher_Warlord.json"
     },
     {
       "id": "monster3/OrcSword_Butcher",
       "name": "OrcSword Butcher",
       "pack": "monster3",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSword_Butcher.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/OrcSword_Butcher.json",
-      "uuid": "43297c23-6701-575d-9281-50a91ee9e1e0",
-      "resource": "unit-library/monster3/Units/OrcSword_Butcher",
+      "skeleton": "assets/resources/unit-library/monster3/Units/CleanStyles/OrcSword_Butcher.json",
+      "uuid": "d8262aee-1a9c-5903-a969-2c38a4db953c",
+      "resource": "unit-library/monster3/Units/CleanStyles/OrcSword_Butcher",
       "animations": [
         "die",
         "move",
@@ -490,16 +493,17 @@
         "attack"
       ],
       "bones": 35,
-      "slots": 13
+      "slots": 13,
+      "variantOf": "assets/resources/unit-library/monster3/Units/OrcSword_Butcher.json"
     },
     {
       "id": "monster3/OrcSword_Rookie",
       "name": "OrcSword Rookie",
       "pack": "monster3",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSword_Rookie.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/OrcSword_Rookie.json",
-      "uuid": "5c035015-7a6a-51f0-800b-280d0debb0a0",
-      "resource": "unit-library/monster3/Units/OrcSword_Rookie",
+      "skeleton": "assets/resources/unit-library/monster3/Units/CleanStyles/OrcSword_Rookie.json",
+      "uuid": "35afd87c-92f7-5fb0-abca-787f1cc7e1ee",
+      "resource": "unit-library/monster3/Units/CleanStyles/OrcSword_Rookie",
       "animations": [
         "die",
         "move",
@@ -508,16 +512,17 @@
         "attack"
       ],
       "bones": 35,
-      "slots": 12
+      "slots": 12,
+      "variantOf": "assets/resources/unit-library/monster3/Units/OrcSword_Rookie.json"
     },
     {
       "id": "monster3/OrcSword_Veteran",
       "name": "OrcSword Veteran",
       "pack": "monster3",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSword_Veteran.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/OrcSword_Veteran.json",
-      "uuid": "d891f610-ad3a-58a3-aa7b-76c049d0ba98",
-      "resource": "unit-library/monster3/Units/OrcSword_Veteran",
+      "skeleton": "assets/resources/unit-library/monster3/Units/CleanStyles/OrcSword_Veteran.json",
+      "uuid": "83d28fe6-fac0-52f5-a26e-22b38a7a820e",
+      "resource": "unit-library/monster3/Units/CleanStyles/OrcSword_Veteran",
       "animations": [
         "die",
         "move",
@@ -526,7 +531,8 @@
         "attack"
       ],
       "bones": 35,
-      "slots": 13
+      "slots": 13,
+      "variantOf": "assets/resources/unit-library/monster3/Units/OrcSword_Veteran.json"
     },
     {
       "id": "monster3/Pumpkin_Orange",
@@ -1095,6 +1101,82 @@
       "bones": 24,
       "slots": 9,
       "variantOf": "monster3/Winter_Ice"
+    },
+    {
+      "id": "monster3/WingDemon_FlyingSlime",
+      "name": "Flying Slime",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/WingDemon/WingDemon_Vampire.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/FlyingVariants/WingDemon_FlyingSlime.json",
+      "uuid": "eb93e42f-ecc9-5858-a242-f3d942697f27",
+      "resource": "unit-library/monster3/Units/FlyingVariants/WingDemon_FlyingSlime",
+      "animations": [
+        "idle",
+        "die",
+        "move",
+        "attack",
+        "hit"
+      ],
+      "bones": 18,
+      "slots": 9,
+      "variantOf": "monster3/WingDemon_Vampire"
+    },
+    {
+      "id": "monster3/OrcSmasher_CryptGhoul",
+      "name": "Crypt Ghoul",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Red.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/GhoulVariants/OrcSmasher_CryptGhoul.json",
+      "uuid": "d3f10b30-ca4d-5a4a-a318-85a474599866",
+      "resource": "unit-library/monster3/Units/GhoulVariants/OrcSmasher_CryptGhoul",
+      "animations": [
+        "die",
+        "move",
+        "idle",
+        "hit",
+        "attack"
+      ],
+      "bones": 35,
+      "slots": 15,
+      "variantOf": "monster3/OrcSmasher_Red"
+    },
+    {
+      "id": "monster3/Raptor_Fire",
+      "name": "Fire Raptor",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Raptor/Raptor_Mechanic.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/RaptorVariants/Raptor_Fire.json",
+      "uuid": "356dacd6-bf2e-55cf-aca1-201f55ecb710",
+      "resource": "unit-library/monster3/Units/RaptorVariants/Raptor_Fire",
+      "animations": [
+        "die",
+        "idle",
+        "attack",
+        "move",
+        "hit"
+      ],
+      "bones": 20,
+      "slots": 9,
+      "variantOf": "monster3/Raptor_Mechanic"
+    },
+    {
+      "id": "monster3/OrcSword_ScarbrowVampire",
+      "name": "Scarbrow Vampire",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSword_Butcher.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/VampireVariants/OrcSword_ScarbrowVampire.json",
+      "uuid": "3fb25216-71d5-5b36-a2d2-3127890762ce",
+      "resource": "unit-library/monster3/Units/VampireVariants/OrcSword_ScarbrowVampire",
+      "animations": [
+        "die",
+        "move",
+        "idle",
+        "hit",
+        "attack"
+      ],
+      "bones": 35,
+      "slots": 13,
+      "variantOf": "monster3/OrcSword_Butcher"
     }
   ],
   "parts": [

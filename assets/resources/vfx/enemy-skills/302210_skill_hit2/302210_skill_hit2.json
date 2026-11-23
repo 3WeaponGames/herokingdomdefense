@@ -1,0 +1,545 @@
+{
+  "skeleton": {
+    "hash": "SOfNoBvL4I5YrABPnckVSTv+zOE",
+    "spine": "3.8.99",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "fps": 30,
+    "images": "./images/",
+    "name": "302210_skill_hit2"
+  },
+  "bones": [
+    {
+      "name": "root",
+      "length": 0,
+      "x": 0,
+      "y": 60,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "shearX": 0,
+      "shearY": 0,
+      "transform": "normal",
+      "skin": false
+    },
+    {
+      "name": "effect1",
+      "parent": "root",
+      "length": 0,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "shearX": 0,
+      "shearY": 0,
+      "transform": "normal",
+      "skin": false
+    },
+    {
+      "name": "skillshangjia",
+      "parent": "effect1",
+      "length": 0,
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "shearX": 0,
+      "shearY": 0,
+      "transform": "normal",
+      "skin": false
+    }
+  ],
+  "slots": [
+    {
+      "name": "skillshangjia",
+      "bone": "skillshangjia",
+      "color": "ffffffff",
+      "blend": "additive"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "skillshangjia": {
+          "effect/skillshangjia_62": {
+            "type": "region",
+            "path": "effect/skillshangjia_62",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_39": {
+            "type": "region",
+            "path": "effect/skillshangjia_39",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_40": {
+            "type": "region",
+            "path": "effect/skillshangjia_40",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_41": {
+            "type": "region",
+            "path": "effect/skillshangjia_41",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_42": {
+            "type": "region",
+            "path": "effect/skillshangjia_42",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_43": {
+            "type": "region",
+            "path": "effect/skillshangjia_43",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_44": {
+            "type": "region",
+            "path": "effect/skillshangjia_44",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_45": {
+            "type": "region",
+            "path": "effect/skillshangjia_45",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_46": {
+            "type": "region",
+            "path": "effect/skillshangjia_46",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_47": {
+            "type": "region",
+            "path": "effect/skillshangjia_47",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_48": {
+            "type": "region",
+            "path": "effect/skillshangjia_48",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_49": {
+            "type": "region",
+            "path": "effect/skillshangjia_49",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_50": {
+            "type": "region",
+            "path": "effect/skillshangjia_50",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_51": {
+            "type": "region",
+            "path": "effect/skillshangjia_51",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_52": {
+            "type": "region",
+            "path": "effect/skillshangjia_52",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_53": {
+            "type": "region",
+            "path": "effect/skillshangjia_53",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_54": {
+            "type": "region",
+            "path": "effect/skillshangjia_54",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_55": {
+            "type": "region",
+            "path": "effect/skillshangjia_55",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_56": {
+            "type": "region",
+            "path": "effect/skillshangjia_56",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_57": {
+            "type": "region",
+            "path": "effect/skillshangjia_57",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_58": {
+            "type": "region",
+            "path": "effect/skillshangjia_58",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_59": {
+            "type": "region",
+            "path": "effect/skillshangjia_59",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_60": {
+            "type": "region",
+            "path": "effect/skillshangjia_60",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          },
+          "effect/skillshangjia_61": {
+            "type": "region",
+            "path": "effect/skillshangjia_61",
+            "color": "ffffffff",
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "rotation": 0,
+            "width": 300,
+            "height": 356
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "play": {
+      "slots": {
+        "skillshangjia": {
+          "attachment": [
+            {
+              "time": 0.03333333507180214,
+              "name": "effect/skillshangjia_39"
+            },
+            {
+              "time": 0.06666667014360428,
+              "name": "effect/skillshangjia_40"
+            },
+            {
+              "time": 0.10000000149011612,
+              "name": "effect/skillshangjia_41"
+            },
+            {
+              "time": 0.13333334028720856,
+              "name": "effect/skillshangjia_42"
+            },
+            {
+              "time": 0.1666666716337204,
+              "name": "effect/skillshangjia_43"
+            },
+            {
+              "time": 0.20000000298023224,
+              "name": "effect/skillshangjia_44"
+            },
+            {
+              "time": 0.23333333432674408,
+              "name": "effect/skillshangjia_45"
+            },
+            {
+              "time": 0.2666666805744171,
+              "name": "effect/skillshangjia_46"
+            },
+            {
+              "time": 0.30000001192092896,
+              "name": "effect/skillshangjia_47"
+            },
+            {
+              "time": 0.3333333432674408,
+              "name": "effect/skillshangjia_48"
+            },
+            {
+              "time": 0.36666667461395264,
+              "name": "effect/skillshangjia_49"
+            },
+            {
+              "time": 0.4000000059604645,
+              "name": "effect/skillshangjia_50"
+            },
+            {
+              "time": 0.4333333373069763,
+              "name": "effect/skillshangjia_51"
+            },
+            {
+              "time": 0.46666666865348816,
+              "name": "effect/skillshangjia_52"
+            },
+            {
+              "time": 0.5,
+              "name": "effect/skillshangjia_53"
+            },
+            {
+              "time": 0.5333333611488342,
+              "name": "effect/skillshangjia_54"
+            },
+            {
+              "time": 0.5666666626930237,
+              "name": "effect/skillshangjia_55"
+            },
+            {
+              "time": 0.6000000238418579,
+              "name": "effect/skillshangjia_56"
+            },
+            {
+              "time": 0.6333333253860474,
+              "name": "effect/skillshangjia_57"
+            },
+            {
+              "time": 0.6666666865348816,
+              "name": "effect/skillshangjia_58"
+            },
+            {
+              "time": 0.699999988079071,
+              "name": "effect/skillshangjia_59"
+            },
+            {
+              "time": 0.7333333492279053,
+              "name": "effect/skillshangjia_60"
+            },
+            {
+              "time": 0.7666666507720947,
+              "name": "effect/skillshangjia_61"
+            },
+            {
+              "time": 0.800000011920929,
+              "name": "effect/skillshangjia_62"
+            },
+            {
+              "time": 0.8333333134651184,
+              "name": null
+            }
+          ]
+        }
+      },
+      "bones": {
+        "root": {
+          "translate": [
+            {
+              "time": 0,
+              "x": 0,
+              "y": 0,
+              "curve": "stepped"
+            },
+            {
+              "time": 0.8666666746139526,
+              "x": 0,
+              "y": 0
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 1,
+              "y": 1,
+              "curve": "stepped"
+            },
+            {
+              "time": 0.8666666746139526,
+              "x": 1,
+              "y": 1
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0,
+              "curve": "stepped"
+            },
+            {
+              "time": 0.8666666746139526,
+              "angle": 0
+            }
+          ],
+          "shear": [
+            {
+              "time": 0,
+              "x": 0,
+              "y": 0,
+              "curve": "stepped"
+            },
+            {
+              "time": 0.8666666746139526,
+              "x": 0,
+              "y": 0
+            }
+          ]
+        },
+        "skillshangjia": {
+          "translate": [
+            {
+              "time": 0,
+              "x": 3.1380271911621094,
+              "y": 85.77194213867188
+            }
+          ]
+        }
+      },
+      "drawOrder": [
+        {
+          "time": 0
+        },
+        {
+          "time": 0.13333334028720856
+        },
+        {
+          "time": 0.9666666388511658
+        }
+      ]
+    }
+  }
+}

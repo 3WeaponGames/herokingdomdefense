@@ -29,6 +29,13 @@ function placeEffect(layer,visual,anchor=[1,0,0,1]) {
     matrix:[xx*c+yx*s,xy*c+yy*s,yx*c-xx*s,yy*c-xy*s,xx*x+yx*y,xy*x+yy*y]});
 }
 
+function includeIndicator(box,pose,padding) {
+  const radius=Visuals.indicatorSize*pose.scale/2+padding;
+  const minX=Math.min(box.minX,pose.x-radius),maxX=Math.max(box.maxX,pose.x+radius);
+  const minY=Math.min(box.minY,pose.y-radius),maxY=Math.max(box.maxY,pose.y+radius);
+  return {minX,minY,maxX,maxY,width:maxX-minX,height:maxY-minY};
+}
+
 function create(host,options) {
   const renderer=options.renderer||Renderer,doc=host.ownerDocument||document;
   const canvas=doc.createElement('canvas');
@@ -39,9 +46,10 @@ function create(host,options) {
   let indicatorCanvas=null;
   let time=0,duration=2,playing=true,scenario={speed:1,repeat:true},frame=null,previous=null;
   const status=error=>options.onStatus?.({playing,time,duration,cast:time>=castAt,error});
+  const showsIndicator=()=>assets.indicator&&visual.showIndicator&&visual.indicatorOpacity;
 
-  function drawIndicator(age,viewport,scale) {
-    if(!assets.indicator||!visual.showIndicator||!visual.indicatorOpacity||age<0||age>=assets.duration){
+  function drawIndicator(pose,viewport,scale) {
+    if(!pose){
       if(indicatorCanvas)indicatorCanvas.hidden=true;
       return;
     }
@@ -55,14 +63,14 @@ function create(host,options) {
     const {width,height,bounds,panY}=viewport;
     if(indicatorCanvas.width!==width)indicatorCanvas.width=width;
     if(indicatorCanvas.height!==height)indicatorCanvas.height=height;
-    const ctx=indicatorCanvas.getContext('2d'),pose=Visuals.indicatorPose(rig.skill,visual,age),size=Visuals.indicatorSize;
+    const ctx=indicatorCanvas.getContext('2d'),size=Visuals.indicatorSize;
     const [r,g,b]=rgb(visual.indicatorColor);
     const image=renderer.tintedImage(assets.indicator,{r,g,b});
     ctx.clearRect(0,0,width,height);
     ctx.save();
     ctx.translate(width/2-(bounds.minX+bounds.maxX)/2*scale,height-12+bounds.minY*scale+panY);
     ctx.scale(scale,-scale);
-    if(rig.effectAnchor)ctx.transform(...rig.effectAnchor,0,0);
+    // Body bounds and the icon's offset already share the preview's battle coordinates.
     ctx.translate(pose.x,pose.y);
     ctx.scale(pose.scale,-pose.scale);
     ctx.globalAlpha=pose.opacity;
@@ -77,9 +85,10 @@ function create(host,options) {
     tint(body,active&&age<assets.duration&&visual.showBuiltin&&visual.tint);
     const layers=body.slice();
     if(active&&visual.showBuiltin&&assets.builtin.length){
-      const clip=clipInfo(assets.builtin),healing=rig.skill==='heal';
+      const healing=rig.skill==='heal'&&Visuals.healingEffect;
+      const clip=clipInfo(assets.builtin,healing&&healing.resourceAnimation);
       if(age<(healing?clip.duration:assets.duration)){
-        if(healing){const box=renderer.bounds(spine,body);assets.builtin[0].description.y=box.maxY+8;}
+        if(healing)placeEffect(assets.builtin[0],healing,rig.effectAnchor);
         renderer.seek(spine,assets.builtin,clip.name,age,!healing);
         layers.push(...assets.builtin);
       }
@@ -93,29 +102,28 @@ function create(host,options) {
     }
     const width=Math.max(64,Math.round(host.clientWidth)),height=Math.max(64,Math.round(host.clientHeight));
     if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;
-    const bounds=fitted||measure(),scale=Math.min((width-32)/bounds.width,(height-24)/bounds.height);
+    const pose=showsIndicator()&&active&&age<assets.duration
+      ? Visuals.indicatorPose(rig.skill,visual,age,renderer.bounds(spine,body)) : null;
+    let bounds=fitted||measure();
+    if(pose)bounds=includeIndicator(bounds,pose,12);
+    const scale=Math.min((width-32)/bounds.width,(height-24)/bounds.height);
     const viewport={width,height,bounds,panY:-(height-24-bounds.height*scale)/2};
     renderer.drawCanvas(spine,canvas,layers,viewport);
-    drawIndicator(age,viewport,scale);
+    drawIndicator(pose,viewport,scale);
   }
 
   function measure() {
-    const body=assets.unit.concat(assets.form),box=renderer.bounds(spine,body);
+    const body=assets.unit.concat(assets.form);
+    let box=renderer.bounds(spine,body);
+    if(showsIndicator())box=includeIndicator(box,Visuals.indicatorPose(rig.skill,visual,0,box),Visuals.indicatorSize*.2*visual.indicatorScale+3);
     let {minX,minY,maxX,maxY}=box;
-    if(visual.showBuiltin&&rig.skill==='heal'&&assets.builtin.length)maxY+=32;
-    if(assets.indicator&&visual.showIndicator&&visual.indicatorOpacity){
-      const [xx,xy,yx,yy]=rig.effectAnchor||[1,0,0,1];
-      const x=xx*visual.indicatorX+yx*visual.indicatorY,y=xy*visual.indicatorX+yy*visual.indicatorY;
-      const extent=Visuals.indicatorSize*.6*visual.indicatorScale+3;
-      const paddingX=extent*(Math.abs(xx)+Math.abs(yx)),paddingY=extent*(Math.abs(xy)+Math.abs(yy));
-      minX=Math.min(minX,x-paddingX);maxX=Math.max(maxX,x+paddingX);
-      minY=Math.min(minY,y-paddingY);maxY=Math.max(maxY,y+paddingY);
-    }
-    if(assets.effect.length){
-      const effect=assets.effect[0],clip=clipInfo(assets.effect,visual.resourceAnimation);
-      placeEffect(effect,visual,(rig.nextForm||rig).effectAnchor);
-      renderer.seek(spine,assets.effect,clip.name,clip.duration*.5,false);
-      const overlay=renderer.bounds(spine,assets.effect);
+    const healing=visual.showBuiltin&&rig.skill==='heal'&&Visuals.healingEffect;
+    for(const [layers,settings] of [[assets.builtin,healing],[assets.effect,visual]]){
+      if(!settings||!layers.length)continue;
+      const clip=clipInfo(layers,settings.resourceAnimation);
+      placeEffect(layers[0],settings,(rig.nextForm||rig).effectAnchor);
+      renderer.seek(spine,layers,clip.name,clip.duration*.5,false);
+      const overlay=renderer.bounds(spine,layers);
       minX=Math.min(minX,overlay.minX);minY=Math.min(minY,overlay.minY);
       maxX=Math.max(maxX,overlay.maxX);maxY=Math.max(maxY,overlay.maxY);
     }

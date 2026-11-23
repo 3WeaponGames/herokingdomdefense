@@ -3405,9 +3405,9 @@
       "context": "assets\\prefabs\\ui\\UIGuide.prefab:labText"
     },
     "ui.uiguide.labname.27": {
-      "en": "Old King",
-      "zh": "老国王",
-      "context": "assets\\prefabs\\ui\\UIGuide.prefab:labName"
+      "en": "Royal Advisor",
+      "zh": "王室顾问",
+      "context": "Weapon picker tutorial speaker"
     },
     "ui.uireport.placeholder_label.18": {
       "en": "Leave your contact details so we can reply",
@@ -4135,13 +4135,13 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labName (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.205": {
-      "en": "Claim",
+      "en": "Collect",
       "zh": "领取",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labGet (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.209": {
-      "en": "Pending",
-      "zh": "未完成",
+      "en": "Pending task",
+      "zh": "待完成任务",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labNoFinish (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.254": {
@@ -4775,8 +4775,8 @@
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureReward.prefab:KinghtFallUITreasureReward/root/btnTen/labDay (localized control layout)"
     },
     "ui.layout.uiguide.27": {
-      "en": "Old King",
-      "zh": "老国王",
+      "en": "Royal Advisor",
+      "zh": "王室顾问",
       "context": "assets\\prefabs\\ui\\UIGuide.prefab:UIGuide/tipBg/labName (localized control layout)"
     },
     "ui.layout.uireport.28": {
@@ -6223,14 +6223,14 @@
       "context": "Battle HUD task drawer toggle"
     },
     "battle.task.ready": {
-      "en": "Complete · Claim",
-      "zh": "已完成 · 领取",
-      "context": "Retired King task bubble claim action"
+      "en": "Collect",
+      "zh": "领取",
+      "context": "Royal Advisor task reward button"
     },
     "battle.task.finished": {
       "en": "All tasks complete",
       "zh": "所有任务均已完成",
-      "context": "Retired King task bubble after the final claim"
+      "context": "Royal Advisor task bubble after the final claim"
     },
     "data.building.cannon-1.name": {
       "en": "Cannon Tower",
@@ -9463,6 +9463,66 @@
       "en": "A shaggy ice giant whose glacier fists hurl shards at defenders from a distance.",
       "zh": "长着雪白厚毛的冰川巨怪，用冰晶护拳远距离投掷碎冰攻击守军。",
       "context": "Enemy guide · Glacier Yeti"
+    },
+    "data.monster-roster.91173.name": {
+      "en": "Flying Slime",
+      "zh": "飞翼史莱姆",
+      "context": "Minimal flying unit · monster3/WingDemon_FlyingSlime"
+    },
+    "data.unitguide.91173.description": {
+      "en": "A mint-green blob that flutters on soft bat wings and dives into defenders.",
+      "zh": "薄荷绿的史莱姆拍动柔软的蝠翼，从空中俯冲撞击守军。",
+      "context": "Enemy guide · Flying Slime"
+    },
+    "data.monster-roster.91174.name": {
+      "en": "Orc Wyvern",
+      "zh": "兽人双足飞龙",
+      "context": "Minimal flying unit · monster1/Bird_OrcWyvern"
+    },
+    "data.unitguide.91174.description": {
+      "en": "The orcs train this olive-scaled wyvern to swoop on defenders from above.",
+      "zh": "兽人驯养这头橄榄绿鳞片的双足飞龙，让它从高空俯冲袭击守军。",
+      "context": "Enemy guide · Orc Wyvern"
+    },
+    "data.monster-roster.91175.name": {
+      "en": "Feral Ghoul",
+      "zh": "狂野食尸鬼",
+      "context": "Minimal ghoul · monster1/Wolf_FeralGhoul"
+    },
+    "data.unitguide.91175.description": {
+      "en": "A low-crawling grave scavenger that rushes forward to bite and claw at defenders.",
+      "zh": "匍匐在墓地里的食尸鬼会猛扑上前，用利齿和爪子攻击守军。",
+      "context": "Enemy guide · Feral Ghoul"
+    },
+    "data.monster-roster.91176.name": {
+      "en": "Crypt Ghoul",
+      "zh": "地穴食尸鬼",
+      "context": "Minimal ghoul · monster3/OrcSmasher_CryptGhoul"
+    },
+    "data.unitguide.91176.description": {
+      "en": "A heavy crypt-dweller that swings a broken tombstone lashed to a wooden haft.",
+      "zh": "身躯沉重的地穴食尸鬼把石碑绑在木柄上，抡起石锤砸向守军。",
+      "context": "Enemy guide · Crypt Ghoul"
+    },
+    "data.monster-roster.91178.name": {
+      "en": "Fire Raptor",
+      "zh": "火焰迅猛兽",
+      "context": "Fire Raptor · monster3/Raptor_Fire"
+    },
+    "data.unitguide.91178.description": {
+      "en": "An ember-colored raptor that lunges and snaps at defenders.",
+      "zh": "披着余烬色外壳的迅猛兽，会猛扑并咬击守军。",
+      "context": "Enemy guide · Fire Raptor"
+    },
+    "data.monster-roster.91179.name": {
+      "en": "Scarbrow Vampire",
+      "zh": "疤眉吸血鬼",
+      "context": "Minimal elite vampire · monster3/OrcSword_ScarbrowVampire"
+    },
+    "data.unitguide.91179.description": {
+      "en": "A scarred vampire knight who advances with a shield and a heavy serrated blade.",
+      "zh": "一位伤痕累累的吸血鬼骑士，持盾挥舞沉重的锯齿剑向前推进。",
+      "context": "Enemy guide · Scarbrow Vampire"
     }
   },
   "images": {
@@ -12747,7 +12807,7 @@
     },
     "ui.layout.kinghtfalluigame.209": {
       "en": {
-        "width": 252,
+        "width": 430,
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
         "height": 68.47999999999999,
@@ -12757,7 +12817,7 @@
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 213,
+        "width": 362,
         "overflow": "RESIZE_HEIGHT",
         "wrap": true
       }
@@ -15594,20 +15654,20 @@
     },
     "ui.layout.uiguide.27": {
       "en": {
-        "width": 393,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
+        "width": 372,
+        "wrap": false,
+        "overflow": "SHRINK",
         "height": 92.64,
         "horizontalAlign": 1,
-        "fontSize": 67,
-        "lineHeight": 78
+        "fontSize": 60,
+        "lineHeight": 70
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 214,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 372,
+        "overflow": "SHRINK",
+        "wrap": false
       }
     },
     "ui.layout.uireport.28": {
@@ -20426,7 +20486,7 @@
       "ui.layout.kinghtfalluiexchangecode.8": "display",
       "ui.layout.kinghtfalluigame.141": "display",
       "ui.layout.kinghtfalluigame.146": "display",
-      "ui.layout.kinghtfalluigame.205": "display",
+      "ui.layout.kinghtfalluigame.205": "body",
       "ui.layout.kinghtfalluigame.254": "display",
       "ui.layout.kinghtfalluigame.294": "display",
       "ui.layout.kinghtfalluigameback.11": "display",

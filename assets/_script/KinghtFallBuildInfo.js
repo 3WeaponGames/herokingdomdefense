@@ -19,7 +19,7 @@ var exp_KinghtFallBuildInfo = function () {
     if (t == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter) {
       var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
       var stage = game && game.gameData && game.gameData.levelCfg;
-      if (stage && (stage.Level === 1 || stage.Level === 2)) this.levelCap = stage.Level + 1;
+      if (stage && (stage.Level === 1 || stage.Level === 2)) this.levelCap = 3;
     }
     if (e) {
       if (e.BranchBuild && e.BranchBuild.length > 0) {

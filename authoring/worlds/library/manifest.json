@@ -19756,6 +19756,30 @@
         "copiedFrom": "terrain-piece-08-longwall-frontier-component-05"
       },
       "nativeScale": 0.5
+    },
+    {
+      "id": "terrain-map-concept-09-terrace-citadel-glacier-switchback",
+      "name": "Snow - Glacier Switchback",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-09-terrace-citadel/glacier-switchback.png",
+      "width": 2639,
+      "height": 3165,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "nativeScale": 0.5714285714285714,
+      "sha256": "69f48dd7ab5ebf15adb44c7576fc1fc16aea82df7abeccc6dde8acb4c564f2a8",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-09-terrace-citadel",
+        "concept": "glacier-switchback",
+        "castShadow": false
+      }
     }
   ],
   "biomes": [

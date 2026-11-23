@@ -61,6 +61,10 @@ function plan(config, level, names) {
     var visual = visuals.effective(id, skillVisuals && skillVisuals[id]);
     var indicator = visuals.indicatorPath(id);
     if (indicator && visual.showIndicator && visual.indicatorOpacity) add("resources", indicator, "frame");
+    if (id === "heal" && visual.showBuiltin) {
+      var healing = visuals.healingEffect;
+      add(healing.resourceBundle, healing.resourcePath, "spine");
+    }
     if (visual.resource && visual.resourceBundle && visual.resourcePath) add(visual.resourceBundle, visual.resourcePath, "spine");
   });
   Object.keys(allies).forEach(function (id) { var unit = config.AllyCfg && config.AllyCfg[id] || config.SoldierCfg[id]; if (!unit) throw Error("Missing stage ally " + id); add(names.Enemy, "Play" + unit.prefab, "prefab"); });
@@ -124,7 +128,7 @@ function presentationPlan(config, level, base, catalogs, options, loadedAssets) 
   }
   resources(options.skills);
   Object.keys(options.effects || {}).forEach(function (key) { add(options.names.Audio, options.effects[key].path, "audio"); });
-  Object.keys(options.prefabs || {}).forEach(function (key) { if (/^Effect/.test(key)) add(options.names.Effect, options.prefabs[key], "prefab"); });
+  Object.keys(options.prefabs || {}).forEach(function (key) { if (/^Effect/.test(key) && key !== "EffectSoldier9Buff") add(options.names.Effect, options.prefabs[key], "prefab"); });
   Object.keys(options.audio || {}).forEach(function (key) { var entry = options.audio[key]; if (entry.path && entry.bundle) add(entry.bundle, entry.path, "audio"); });
   var voices={90001:"royal-knight",90002:"heavy-infantry",90003:"crossbowman",90004:"cavalry"};
   base.allies.forEach(function(id){var name=voices[id];if(!name)return;var path="voices/units/"+name+"/"+name;[1,2,3].forEach(function(tier){[1,2].forEach(function(variant){add(options.names.Audio,path+"-level-"+tier+"-variant-"+variant,"audio");});});["rally","follow"].forEach(function(kind){[1,2,3].forEach(function(variant){add(options.names.Audio,path+"-"+kind+"-variant-"+variant,"audio");});});if(level.EnvironmentBiome)["build","rally","follow"].forEach(function(kind){add(options.names.Audio,path+"-biome-"+level.EnvironmentBiome+"-"+kind,"audio");});});
@@ -206,8 +210,7 @@ function create(view, config, level) {
     load:function (item,done,owner) {
       function error(issue,retry,cancel) { manager.showRuntimeRecovery(issue,retry,function () { if (cancel) cancel(); owner.cancel(); if(!view.isclose)view.closeUI(); done(issue); },cancel); }
       function current() { return owner.current(); }
-      // Large native maps can spend longer decoding a single dependency before reporting progress.
-      var recovery = {onError:error,isCurrent:current,idleTimeoutMs:cc.sys && cc.sys.isNative ? 120000 : undefined};
+      var recovery = Object.assign({onError:error,isCurrent:current}, cc.sys && cc.sys.isNative ? Config.BattleAssetLoadOptions : null);
       if (item.uuid) manager.loadWithRecovery(item.path,function (callback,report) { cc.assetManager.loadAny({uuid:item.path,type:types[item.type]},report,callback); },function (asset) { if (!owner.current()) return done(Error("Stage preparation cancelled")); if (asset.addRef) asset.addRef(); owner.held.push(asset);try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },error,current,recovery);
       else manager.loadRes(item.bundle,item.path,types[item.type],function (asset) { if(!owner.current()){require("ResCacheMgr").ResCacheMgr.getInstance().releaseAssetsFromMap(owner.key);return done(Error("Stage preparation cancelled"));}try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },false,60,owner.key,recovery);
     },

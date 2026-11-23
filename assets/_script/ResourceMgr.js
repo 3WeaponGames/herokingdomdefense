@@ -54,6 +54,7 @@ var exp_ResourceMgr = function () {
     var manager = this;
     var progress = this.startupProgress && this.startupProgress.begin(name);
     var idleTimeoutMs = options && options.idleTimeoutMs !== undefined ? options.idleTimeoutMs : 30000;
+    var retryOnce = options && options.retryOnce;
     var finished = false;
     var active = false;
     var timer = null;
@@ -87,7 +88,15 @@ var exp_ResourceMgr = function () {
         if (error || !asset) {
           if (isCurrent && !isCurrent()) { cancel(); return; }
           error = error || new Error("Asset request returned no asset: " + name);
-          $z1LogMgr.LogMgr.getInstance().error("Asset load failed: " + name, error.stack || error.message || String(error));
+          var detail = error.stack || error.message || String(error);
+          if (retryOnce) {
+            retryOnce = false;
+            if (cc.warn) cc.warn("Retrying asset load: " + name, detail);
+            // Let the engine finish the failed request before requesting the asset again.
+            timer = setTimeout(retry, 0);
+            return;
+          }
+          $z1LogMgr.LogMgr.getInstance().error("Asset load failed: " + name, detail);
           if (manager.loadErrorHandler) manager.loadErrorHandler(error, retry);
           else if (onError) onError(error, retry, cancel);
           else manager.showRuntimeRecovery(error, retry, null, cancel);
@@ -104,10 +113,10 @@ var exp_ResourceMgr = function () {
     retry();
     return { retry: retry, cancel: cancel };
   };
-  t.prototype.loadBundle = function (t, e, onError, isCurrent) {
+  t.prototype.loadBundle = function (t, e, onError, isCurrent, options) {
     var n = cc.assetManager.getBundle(t);
     if (null == n) {
-      return this.loadWithRecovery(t, function (done) { cc.assetManager.loadBundle(t, done); }, e, onError, isCurrent);
+      return this.loadWithRecovery(t, function (done) { cc.assetManager.loadBundle(t, done); }, e, onError, isCurrent, options);
     } else {
       e && e(n);
     }
@@ -368,7 +377,7 @@ var exp_ResourceMgr = function () {
             g && !e.autoRelese && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(g, n, i, s, a);
             l && l(a);
         }, onError, isCurrent, options);
-      }, onError, isCurrent);
+      }, onError, isCurrent, options);
     } else {
       console.error("请传入具体资源类型，不能是基类asset,路径:", n + "/" + i);
     }

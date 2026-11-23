@@ -154,7 +154,7 @@ test('overlapping skill tints restore the earlier buff and then the unit’s aut
   unit.delBuffIdx(0);assert.equal(unit.body.color.hex,'#446688');
 });
 
-test('distinct recipient effects survive overlapping boosts and disappear on expiry or retirement',()=>{
+test('overlapping boost effects follow the recipient overhead and disappear on expiry or retirement',()=>{
   const h=fixture(true,{TransformSkill:{unitId:91090,delay:1}}),unit=h.source,{cc}=h.e;
   const types=h.e.load('KinghtFallInterface').KinghtFallEnemyBuffType;
   const file=require.resolve('../../assets/_script/EnemySkillVisuals'),visuals={};
@@ -165,7 +165,12 @@ test('distinct recipient effects survive overlapping boosts and disappear on exp
   };
   cc.Sprite=class {static SizeMode={CUSTOM:0};};
   cc.Color=class {fromHEX(hex){return {hex};}};
-  vm.runInNewContext(fs.readFileSync(file,'utf8'),{exports:visuals,cc},{filename:file});
+  const renderer={skeletonData:{}},bar=new Node('Hero health bar');
+  let body={minX:-18,maxX:26,maxY:62};
+  unit.getSpAni=()=>renderer;h.g.ctrPlay.ctrHp={node:bar};bar.active=false;
+  const depth={unitBounds(source,root){assert.equal(source,renderer);assert.equal(root,unit.node);return body;},
+    unitReferenceSize(source,root){assert.equal(source,bar);assert.equal(root,unit.node);return {height:12};}};
+  vm.runInNewContext(fs.readFileSync(file,'utf8'),{exports:visuals,cc,require:()=>depth},{filename:file});
   h.e.stubs.EnemySkillVisuals=visuals;
   h.g._stageAssets.options={config:{EnemySkillVisuals:{move:{indicatorColor:'#a2b3c4',indicatorY:-20}}}};
   const frames=['haste','damage','move'].map(id=>({id}));
@@ -180,10 +185,17 @@ test('distinct recipient effects survive overlapping boosts and disappear on exp
     assert.equal(node.getComponent(cc.Sprite).spriteFrame,frames[index]);
     assert.equal(node.width,visuals.indicatorSize);
   });
-  assert.deepEqual([haste.x,damage.x,move.x],[-24,0,24]);
-  assert.equal(move.color.hex,'#a2b3c4');assert.equal(move.y,-20);
+  const iconBottom=node=>node.y-node.height*node.scaleY/2;
+  assert.deepEqual([haste.x,damage.x,move.x],[-20,4,28]);
+  assert.equal(move.color.hex,'#a2b3c4');
+  for(const node of [haste,damage,move])assert(iconBottom(node)>body.maxY+12*1.4);
+  const firstY=damage.y;
+  bar.active=true;unit.lateUpdate();assert.equal(damage.y,firstY);
+  body={minX:-7,maxX:31,maxY:92};unit.lateUpdate();
+  assert.equal(damage.y,firstY+30);assert.equal(damage.x,12);
   unit.updateCombatTimers(.125);
-  assert.equal(haste.destroyed,undefined);assert.notEqual(move.x,24);
+  unit.lateUpdate();
+  assert.equal(haste.destroyed,undefined);assert.notEqual(move.x,36);
   unit.updateCombatTimers(.125);
   assert.equal(haste.destroyed,true);assert.equal(damage.destroyed,undefined);
   unit.updateCombatTimers(.25);
@@ -239,6 +251,19 @@ test('stage preparation loads only the enabled boost images used by native or eq
   assert(['haste','damage','move'].every(id=>loaded(defaults,id)));
   const custom=warmup.plan({...config,EnemySkillVisuals:{damage:{showIndicator:false},move:{indicatorOpacity:0}}},stage,{Enemy:'Enemy'});
   assert(loaded(custom,'haste'));assert(!loaded(custom,'damage'));assert(!loaded(custom,'move'));
+});
+
+test('stage preparation preloads the healing Spine for innate and equipped healers',()=>{
+  const {healingEffect}=require('../../assets/_script/EnemySkillVisuals');
+  const key=healingEffect.resourceBundle+'/'+healingEffect.resourcePath+':spine';
+  const heal=require('../../assets/_script/EnemySkills').definitions.find(skill=>skill.id==='heal').defaults;
+  const units={90009:roster[90009],91001:{...roster[91001],EnemySkills:{heal}},91002:roster[91002]};
+  const config={BuildEnum:{},SoldierCfg:units};
+  const planned=(unitId,cfg=config)=>warmup.plan(cfg,{WaveCfg:[{SpawnTimeline:[{unitId}]}]},{Enemy:'Enemy'}).items;
+  assert(planned(90009).some(asset=>asset.key===key));
+  assert(planned(91001).some(asset=>asset.key===key));
+  assert(!planned(91002).some(asset=>asset.key===key));
+  assert(!planned(90009,{...config,EnemySkillVisuals:{heal:{showBuiltin:false}}}).some(asset=>asset.key===key));
 });
 
 test('saved skill effects use the stage-owned clip and release it with the recipient',()=>{

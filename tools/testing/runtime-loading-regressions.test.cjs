@@ -249,6 +249,47 @@ test('slow stage assets keep loading as dependencies advance and retain recovery
   assert.equal(h.timers.size, 0);
 });
 
+test('battle loading retries a cold bundle and its asset once each before showing recovery', () => {
+  const h = harness({ missingBundle: true });
+  let completed = 0;
+  h.resources.loadRes('battle', 'map', h.Prefab, () => completed++, { idleTimeoutMs: 120_000, retryOnce: true });
+  assert.equal(h.timers.values().next().value.delay, 120_000);
+  h.requests[0].done(Error('bundle read failed'));
+  assert.equal(h.pauses, 0);
+  assert.equal(h.requests.length, 1);
+  const bundleRetry = h.timers.values().next().value;
+  assert.equal(bundleRetry.delay, 0);
+  bundleRetry.fn();
+  h.requests[1].done(null, h.bundle);
+  assert.equal(h.requests[2].name, 'map');
+  assert.equal(h.timers.values().next().value.delay, 120_000);
+  h.requests[2].done(Error('asset read failed'));
+  assert.equal(h.pauses, 0);
+  const assetRetry = h.timers.values().next().value;
+  assert.equal(assetRetry.delay, 0);
+  assetRetry.fn();
+  h.requests[3].done(Error('asset still unavailable'));
+  assert.equal(h.resources.runtimeRecoveryNode.name, 'ResourceRecovery');
+  assert.equal(h.timers.size, 0);
+  h.resources.resolveRuntimeRecovery(true);
+  h.requests[4].done(null, h.asset);
+  assert.equal(completed, 1);
+});
+
+test('an expired stage owner retires a scheduled asset retry', () => {
+  const h = harness();
+  let current = true;
+  h.resources.loadRes('battle', 'map', h.Prefab, () => assert.fail('retired stage loaded'), {
+    retryOnce: true, isCurrent: () => current
+  });
+  h.requests[0].done(Error('asset read failed'));
+  current = false;
+  h.timers.values().next().value.fn();
+  assert.equal(h.requests.length, 1);
+  assert.equal(h.pauses, 0);
+  assert.equal(h.timers.size, 0);
+});
+
 test('construction preparation can delegate watchdogs without masking a failed step', () => {
   const h = harness();
   let done, failure;

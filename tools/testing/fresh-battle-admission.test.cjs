@@ -8,10 +8,15 @@ const RelicRuntime = require('../../assets/_script/RelicRuntime');
 const AuthoredSpawnPlan = require('../../assets/_script/AuthoredSpawnPlan');
 const scripts = path.resolve(__dirname, '../../assets/_script');
 const cost = Number(config.ParameterCfg[60010].Value), stage = 2;
-function fixture(saved) {
+const battleConfig = { exports: {}, require: () => ({ OrderLayer: { main: 3 } }) };
+vm.runInNewContext(fs.readFileSync(path.join(scripts, 'KinghtFallConfig.js'), 'utf8'), battleConfig);
+const battleScreen = battleConfig.exports.KinghtFallUICF[battleConfig.exports.KinghtFallUIID.UIGame];
+function fixture(saved, { native = false } = {}) {
   const disk = harness(saved), player = disk.player, user = player.udata;
   if (!saved) { user.data.powerNum = 100; user.data.powerUpdateTime = 10000; user.data.maxStage = 2; user.saveData(); }
   const requests = [], errors = [], scheduled = [], transitions = [], input = [], events = [], modules = {}, mapSetups = [];
+  const timers = new Map();
+  let time = 0, timerId = 0;
   let mounted, game, manager, partialMapFailure = false;
   const singleton = value => ({ getInstance: () => value });
   function node() { return { active: true, activeInHierarchy: true, getChildByName() { return node(); }, getComponent() { return null; },
@@ -19,7 +24,9 @@ function fixture(saved) {
   const homeView = { node: node() };
   const cc = { Component: function Component() {}, Node: function Node() {}, Prefab: function Prefab() {}, Widget: function Widget() {},
     _decorator: { ccclass: x => x, property: () => () => {} }, js: { getClassName: c => 'cc.' + c.name }, Enum: x => x,
-    isValid: x => !!x && !x.invalid, v2: () => ({}), assetManager: { getBundle: () => ({ load(name, type, done) { requests.push({ name, done }); } }) },
+    sys: { isNative: native },
+    isValid: x => !!x && !x.invalid, v2: () => ({}),
+    assetManager: { getBundle: () => ({ load(name, type, progress, done) { requests.push({ name, done }); } }) },
     instantiate(prefab) { if (prefab.map) return node(); const viewNode = node(); mounted = openBattleView(viewNode); viewNode.getComponent = () => mounted; return viewNode; } };
   const enums = disk.load('KinghtFallEnum'), ids = { UIGame: 'UIGame', UIHome: 'UIHome', UINewGame: 'UINewGame', UIAddStrength: 'UIAddStrength' };
   const data = disk.load('KinghtFallDataMgr').KinghtFallDataMgr.getInstance();
@@ -42,13 +49,17 @@ function fixture(saved) {
     if (modules[name]) return modules[name]; if (!real.has(name)) return { default: function Component() {} };
     const exports = modules[name] = {};
     vm.runInNewContext(fs.readFileSync(path.join(scripts, name + '.js'), 'utf8'), { exports, require: load, cc, sp: { Skeleton: function Skeleton() {} },
-      console: { error() {} }, setTimeout: () => 1, clearTimeout() {}, __extends(child, parent) { child.prototype = Object.create(parent.prototype); child.prototype.constructor = child; },
+      console: { error() {} },
+      setTimeout(fn, delay = 0) { const id = ++timerId; timers.set(id, { fn, at: time + delay }); return id; },
+      clearTimeout(id) { timers.delete(id); },
+      __extends(child, parent) { child.prototype = Object.create(parent.prototype); child.prototype.constructor = child; },
       __decorate: (list, target, key) => key === undefined ? target : undefined, __spreadArrays: (...a) => [].concat(...a) }, { filename: name + '.js' });
     return exports;
   }
   const resource = load('ResourceMgr').ResourceMgr.getInstance(); resource.showRuntimeRecovery = (error, retry, cancel) => { errors.push({ retry, cancel }); };
   manager = load('UIMgr').UIMgr.getInstance(); manager.uiRoot = node();
-  manager.getUICnf = id => ({ name: id, bundleName: 'ui', prefab: id, zIndex: 3 }); manager.updateMainUI = () => {}; manager.popCanShow = () => true;
+  manager.getUICnf = id => id === ids.UIGame ? battleScreen : { name: id, bundleName: 'ui', prefab: id, zIndex: 3 };
+  manager.updateMainUI = () => {}; manager.popCanShow = () => true;
   manager.uistatck.set(ids.UIHome, homeView);
   const transition = { generation: 1 }; manager.captureOpenTransition = () => transition;
   manager.cancelOpenTransition = token => { if (!token || token === transition) transitions.push('cancel'); };
@@ -74,8 +85,16 @@ function fixture(saved) {
   function prefabReady() { success(requests.length - 1, false); assert(mounted); mounted.start(); }
   function mapReady() { success(requests.length - 1, true); }
   function earnedSilver(p = player) { const info = p.missionData.getAchInfoByType(enums.KinghtFallEnumAchiEnum.GetSliver); return info ? info.num : 0; }
+  function advance(ms) {
+    time += ms;
+    for (const [id, timer] of timers) {
+      if (timer.at > time) continue;
+      timers.delete(id);
+      timer.fn();
+    }
+  }
   return { disk, player, user, home, homeView, requests, errors, scheduled, transitions, input, manager, begin, prefabReady, mapReady, earnedSilver,
-    view: () => mounted, mapSetups, breakMap: () => { partialMapFailure = true; }, success };
+    view: () => mounted, mapSetups, breakMap: () => { partialMapFailure = true; }, success, advance };
 }
 
 test('fresh entry waits through transition, prefab and map loads, then journals one debit, checkpoint and initial silver credit', () => {
@@ -119,6 +138,28 @@ test('asset retries deliver one admission and a continued checkpoint never purch
   f.requests.at(-1).done(Error('first map attempt')); f.errors.shift().retry(); f.mapReady();
   const saved = f.disk.persist(), resumed = fixture(saved); resumed.manager.openUIOfCallback('UIGame','none',()=>{},stage); resumed.prefabReady(); resumed.mapReady();
   assert.equal(resumed.user.getPowerNum(), 100 - cost); assert.equal(resumed.earnedSilver(), f.earnedSilver());
+});
+
+test('native Stage 2 entry waits for a slow battle screen and retries a stall without a prompt', () => {
+  const f = fixture(undefined, { native: true });
+  f.begin();
+  assert.equal(f.requests[0].name, battleScreen.prefab);
+  f.advance(31_000);
+  assert.equal(f.requests.length, 1);
+  assert.equal(f.errors.length, 0);
+  f.advance(89_000);
+  assert.equal(f.requests.length, 2);
+  assert.equal(f.requests[1].name, battleScreen.prefab);
+  assert.equal(f.errors.length, 0);
+  f.success(0, false);
+  assert.equal(f.view(), undefined, 'the timed-out callback cannot mount a second battle');
+  assert.equal(f.user.getPowerNum(), 100);
+  assert.equal(f.player.gameData.hasSave(stage), false);
+  f.prefabReady();
+  f.mapReady();
+  assert.equal(f.player.gameData.getRoundNum(stage), 1);
+  assert.equal(f.user.getPowerNum(), 100 - cost);
+  assert.equal(f.errors.length, 0);
 });
 
 test('restart replacement applies the captured relic setup before creating buildings without charging admission', () => {

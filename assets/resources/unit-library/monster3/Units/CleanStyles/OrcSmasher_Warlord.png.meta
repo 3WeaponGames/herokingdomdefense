@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "7585fcf8-78a5-546b-a544-ead64cb6af0e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 512,
+  "platformSettings": {},
+  "subMetas": {
+    "OrcSmasher_Warlord": {
+      "ver": "1.0.6",
+      "uuid": "e4150f9c-4ad1-5b9c-abf0-949f7ba5c918",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "7585fcf8-78a5-546b-a544-ead64cb6af0e",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 512,
+      "rawWidth": 2048,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

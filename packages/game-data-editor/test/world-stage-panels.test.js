@@ -30,7 +30,7 @@ test('Tasks position follows Hero start and entering placement leaves the stage 
  buttons[hero+1].onclick();assert.deepEqual(f.state.selection,['tasks-position']);assert.equal(f.state.tool,'tasks-position');
  f.panels.right();
  const fields=descendants(f.context.right);
- assert(fields.some(node=>node.textContent.includes('Click the map to place the Retired King.')));
+ assert(fields.some(node=>node.textContent.includes('Click the map to place the Royal Advisor.')));
  assert(fields.some(node=>node.fieldName==='X'&&node.value===144));
  assert(fields.some(node=>node.fieldName==='Y'&&node.value===44));
  assert.equal(f.edits(),0);assert.deepEqual(f.state.snap.value,before);

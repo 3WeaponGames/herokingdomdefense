@@ -277,10 +277,12 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         }
         break;
       case r.Dead:
-        this.time[C.Reborn] += t;
-        this.time[C.Reborn] >= this.time[C.RebornTime] && this.onReborn();
+        timers[C.Reborn] += t;
+        var remaining = timers[C.RebornTime] - timers[C.Reborn];
         if (!heroLifeCurrent(this, node, generation, timers, game, data, epoch)) return;
-        this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.ReviveShow, this.time[C.RebornTime] - this.time[C.Reborn]);
+        // Clear the banner before revival advances the hero's life generation.
+        this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.ReviveShow, Math.max(0, remaining));
+        if (remaining <= 0 && heroLifeCurrent(this, node, generation, timers, game, data, epoch)) this.onReborn();
     }
   };
   _ctor.prototype.endRoundGame = function () {

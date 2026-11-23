@@ -4,7 +4,7 @@ const C=require('./building-night-light-contract.cjs'),P=require('../../packages
 const read=rel=>JSON.parse(fs.readFileSync(path.join(R,rel),'utf8')),sha=x=>crypto.createHash('sha256').update(x).digest('hex'),hash=x=>sha(JSON.stringify(x)),dir=a=>'assets/KinghtFallIconMap/com/Ani/'+a+'/',slot='building_aperture_rays';
 const runtime=path.join(process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine','extensions/spine/lib/spine.js');
 
-test('the shipped Archer lights stay on the dark window slits at every tier',()=>{
+test('both Archer windows are the source of soft light at every tier',()=>{
  const lights=require('../../assets/_script/BuildingNightlight');
  const mask=require('../../assets/_script/WindowLightMask');
  const warp=require('../../assets/_script/WindowLightWarp');
@@ -20,20 +20,25 @@ test('the shipped Archer lights stay on the dark window slits at every tier',()=
     const source=image(type.sprite),pixels=mask.pixels(source.rgba,settings.erase,source.width,source.height);
     const project=warp.forType(type.id).mapper(settings.warp,settings.warpNodes);
     const matrix=lights.glowMatrix(lights.glow(emitter),settings);
-    let visible=0;
+    let windowPixels=0,windowPeak=0,peak=0,softSpill=0;
     for(let v=0;v<source.height;v++)for(let u=0;u<source.width;u++){
-     if(pixels[(v*source.width+u)*4+3]<12)continue;
+     const alpha=pixels[(v*source.width+u)*4+3];
+     if(alpha<12)continue;
      const p=project({x:((u+.5)/source.width-.5)*lights.size,y:(.5-(v+.5)/source.height)*lights.size});
      const [x,y]=lights.point(matrix,p.x,p.y);
      const fractionX=.5+(x-art.offsetX)/art.width,fractionY=1-(y-art.offsetY)/art.height;
-     assert(fractionY>.43&&fractionY<.58,'a window light crossed onto the roof, door or platform');
-     assert(settings.flipX?fractionX<.5:fractionX>.5,'a light crossed the central post');
+     const windowSide=settings.flipX?fractionX<.5:fractionX>.5;
      const at=(Math.floor(fractionY*body.height)*body.width+Math.floor(fractionX*body.width))*4;
-     assert(body.rgba[at+3]>=235&&body.rgba[at]<=46&&body.rgba[at+1]<=40&&body.rgba[at+2]<=36,
-      file+' branch '+row.index+' '+emitter.id+' lights a frame pixel');
-     visible++;
+     const opaque=body.rgba[at+3]>=235,dark=opaque&&body.rgba[at]<=46&&body.rgba[at+1]<=40&&body.rgba[at+2]<=36;
+     peak=Math.max(peak,alpha);
+     if(windowSide&&dark&&fractionY>.43&&fractionY<.58){windowPixels++;windowPeak=Math.max(windowPeak,alpha);}
+     if(windowSide&&opaque&&fractionY>.58&&fractionY<.72&&alpha<90)softSpill++;
+     assert(fractionY>=.43&&(Math.abs(fractionX-.5)>=.026||fractionY>=.55),'roof and center post stay clear of the light source');
     }
-    assert(visible>=60,'clipping should leave a visible light inside each window');
+    const name=file+' '+art.sprite+' '+emitter.id;
+    assert(windowPixels>=60,name+' draws on the dark opening');
+    assert.equal(windowPeak,peak,name+' is brightest inside the opening');
+    assert(softSpill>=100,name+' retains the soft falloff below the window');
    }
   }
  }

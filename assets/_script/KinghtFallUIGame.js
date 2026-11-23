@@ -300,7 +300,9 @@ var def_KinghtFallUIGame = function (t) {
       t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
       t.openUI($z1KinghtFallConfig.KinghtFallUIID.UIBuildAtlas);
     });
-    this.ndTask.on(cc.Node.EventType.TOUCH_END, function () {
+    var collect = this._battleHud && this._battleHud.collectButton;
+    (collect || this.ndTask).on(collect ? "click" : cc.Node.EventType.TOUCH_END, function () {
+      if (collect && t.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
       t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
       t.getTask();
     });
@@ -847,7 +849,8 @@ var def_KinghtFallUIGame = function (t) {
     if (current || this._battleHud && task.list.length) {
       var description = current ? $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTaskEnem(task.list[task.index]).Name : "battle.task.finished";
       this.ndTask.getChildByName("labName").getComponent(cc.Label).string = this.T(description);
-      this.ndTask.getChildByName("labGet").active = current && task.stage == 1;
+      var collect = this._battleHud ? this._battleHud.collectButton : this.ndTask.getChildByName("labGet");
+      collect.active = current && task.stage == 1;
       this.ndTask.getChildByName("labNoFinish").active = current && task.stage == 0;
     }
     if (this._battleHud) require("BattleHud").updateTasks(this, task.list.length > 0);
@@ -858,7 +861,7 @@ var def_KinghtFallUIGame = function (t) {
     if (this._enemyGuide || this._enemyGuideMarkersBound) require("EnemyGuide").update(this);
     this.isPauset || this.ctrGame.onLateUpdate(t);
     this._fitBuildingsButton();
-    if (this._battleHud) require("BattleHud").layout(this);
+    if (this._battleHud) require("BattleHud").layout(this, t);
     this._layoutBattleFooter();
     var hero = this.ctrGame && this.ctrGame.ctrPlay;
     if (hero && hero._styleRuntime) require("HeroSkillHUD").layout(hero, hero._styleRuntime);

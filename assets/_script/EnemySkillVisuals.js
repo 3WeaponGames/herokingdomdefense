@@ -7,6 +7,12 @@ var indicators = {
   move: { icon: "Stat_MoveSpeed_02", x: 24 }
 };
 var indicatorSize = 22;
+var healingEffect = {
+  resourceBundle: "resources",
+  resourcePath: "vfx/enemy-skills/302210_skill_hit2/302210_skill_hit2",
+  resourceAnimation: "play",
+  offsetX: 0, offsetY: 0, scale: 1, rotation: 0, opacity: 1, playback: 1, color: "#ffffff"
+};
 var ids = ["transform", "heal", "haste", "damage", "move", "weaken"];
 var numberFields = [
   { key: "offsetX", label: "Horizontal offset", value: 0, min: -1000, max: 1000, step: 1 },
@@ -20,14 +26,17 @@ var numberFields = [
 function fields(id) {
   if (ids.indexOf(id) < 0) return [];
   var result = [], indicator = indicators[id];
-  if (id !== "transform") result.push({ key: "showBuiltin", type: "boolean", label: indicator ? "Show recipient tint" : "Show built-in visual", value: true });
+  var label = indicator ? "Show recipient tint" : "Show built-in visual";
+  if (id === "heal") label = "Show healing effect";
+  if (id !== "transform") result.push({ key: "showBuiltin", type: "boolean", label: label, value: true });
   if (tints[id]) result.push({ key: "tint", type: "color", label: "Recipient tint", value: tints[id], help: "Color applied to the unit for the duration of the buff." });
   if (indicator) result = result.concat([
     { key: "showIndicator", type: "boolean", label: "Show active buff effect", value: true,
-      help: "Stays on the recipient while the boost is active." },
+      help: "Stays above the recipient while the boost is active." },
     { key: "indicatorColor", type: "color", label: "Buff effect tint", value: "#ffffff" },
     { key: "indicatorX", label: "Buff effect horizontal offset", value: indicator.x, min: -1000, max: 1000, step: 1 },
-    { key: "indicatorY", label: "Buff effect vertical offset", value: -15, min: -1000, max: 1000, step: 1 },
+    { key: "indicatorY", label: "Buff effect vertical offset", value: 0, min: -1000, max: 1000, step: 1,
+      help: "Adjusts the height above the recipient. Lower values stop at the clearance above its health bar." },
     { key: "indicatorScale", label: "Buff effect scale", value: 1, min: .05, max: 10 },
     { key: "indicatorOpacity", label: "Buff effect opacity", value: 1, min: 0, max: 1 },
     { key: "indicatorRate", label: "Buff effect animation speed", value: 1, min: .05, max: 4 }
@@ -72,19 +81,40 @@ function indicatorPath(id) {
   return indicators[id] && "icons/2d-minimal/Stats/" + indicators[id].icon;
 }
 
-function indicatorPose(id, visual, age) {
+function indicatorPose(id, visual, age, body, healthBarHeight) {
   var phase = age * visual.indicatorRate * Math.PI * 2;
   var pulse = Math.pow(Math.max(0, Math.sin(phase * (id === "haste" ? 2.5 : 1))), 2);
+  var scale = visual.indicatorScale * (1 + (id === "damage" ? .17 : .07) * pulse);
+  // Reserve the same headroom whether the health bar is visible or hidden.
+  var gap = 1.4 * (healthBarHeight || 10) + Math.max(2, 4 + visual.indicatorY);
   return {
-    x: visual.indicatorX + (id === "move" ? 2.5 * Math.sin(phase * 1.4) : 0),
-    y: visual.indicatorY + (id === "haste" ? 3 * pulse : 0),
-    scale: visual.indicatorScale * (1 + (id === "damage" ? .17 : .07) * pulse),
+    x: (body.minX + body.maxX) / 2 + visual.indicatorX + (id === "move" ? 2.5 * Math.sin(phase * 1.4) : 0),
+    y: body.maxY + gap + indicatorSize * scale / 2 + (id === "haste" ? 3 * pulse : 0),
+    scale: scale,
     opacity: visual.indicatorOpacity * (.84 + .16 * pulse)
   };
 }
 
-function poseIndicator(effect) {
-  var pose = indicatorPose(effect.id, effect.visual, effect.age);
+function indicatorLayout(owner) {
+  var renderer = owner.getSpAni ? owner.getSpAni() : owner.spAni;
+  var transition = owner._transform && owner._transform.renderer;
+  if (transition && transition.node && transition.node.activeInHierarchy) renderer = transition;
+  var depth = renderer && renderer.skeletonData && require("KinghtFallDepthView");
+  var body = depth && depth.unitBounds(renderer, owner.node), height;
+  if (!body) {
+    var x = owner.ndHp ? owner.ndHp.x : 0;
+    body = { minX: x, maxX: x, maxY: owner.ndHp ? owner.ndHp.y : 60 };
+  }
+  var player = owner._combatGame && owner._combatGame.ctrPlay, bar = player && player.ctrHp && player.ctrHp.node;
+  if (depth && cc.isValid(bar, true)) {
+    var scratch = owner._enemyBuffBarScratch || (owner._enemyBuffBarScratch = {});
+    height = depth.unitReferenceSize(bar, owner.node, bar.width, bar.height, scratch).height;
+  }
+  return { body: body, healthBarHeight: height };
+}
+
+function poseIndicator(effect, layout) {
+  var pose = indicatorPose(effect.id, effect.visual, effect.age, layout.body, layout.healthBarHeight);
   effect.node.setPosition(pose.x, pose.y);
   effect.node.setScale(pose.scale);
   effect.node.opacity = Math.round(pose.opacity * 255);
@@ -114,7 +144,7 @@ function addIndicator(owner, game, id, visual, buff) {
   active.set(id, effect);
   buff.indicator = effect;
   (owner._enemySkillEffects || (owner._enemySkillEffects = new Set())).add(node);
-  poseIndicator(effect);
+  poseIndicator(effect, indicatorLayout(owner));
   node.setParent(parent);
   if (!cc.isValid(owner, true) || owner.node !== parent || !cc.isValid(parent, true) ||
       parent._combatGeneration !== generation || node.parent !== parent || owner._isPooled) removeIndicator(owner, buff);
@@ -133,16 +163,21 @@ function removeIndicator(owner, buff) {
 function advanceIndicators(owner, dt) {
   if (!(dt > 0)) return;
   owner._enemyBuffIndicators.forEach(function (effect) {
-    if (!cc.isValid(effect.node, true)) return;
     effect.age += dt;
-    poseIndicator(effect);
+  });
+}
+
+function placeIndicators(owner) {
+  var layout = indicatorLayout(owner);
+  owner._enemyBuffIndicators.forEach(function (effect) {
+    if (cc.isValid(effect.node, true)) poseIndicator(effect, layout);
   });
 }
 
 function show(owner, game, visual) {
   var assets = game && game._stageAssets && game._stageAssets.assets;
   var parent = owner.node;
-  if (!visual.resource || !assets || typeof sp === "undefined" || !cc.isValid(parent, true)) return;
+  if (!visual.resourceBundle || !visual.resourcePath || !assets || typeof sp === "undefined" || !cc.isValid(parent, true)) return;
   var generation = parent._combatGeneration;
   var data = assets[visual.resourceBundle + "/" + visual.resourcePath + ":spine"];
   if (!data) return;
@@ -174,6 +209,7 @@ function show(owner, game, visual) {
 function clear(owner) {
   var effects = owner._enemySkillEffects;
   delete owner._enemyBuffIndicators;
+  delete owner._enemyBuffBarScratch;
   if (!effects) return;
   delete owner._enemySkillEffects;
   effects.forEach(function (node) { if (cc.isValid(node, true)) node.destroy(); });
@@ -184,11 +220,13 @@ exports.fields = fields;
 exports.valid = valid;
 exports.effective = effective;
 exports.fromGame = fromGame;
+exports.healingEffect = healingEffect;
 exports.indicatorPath = indicatorPath;
 exports.indicatorSize = indicatorSize;
 exports.indicatorPose = indicatorPose;
 exports.addIndicator = addIndicator;
 exports.removeIndicator = removeIndicator;
 exports.advanceIndicators = advanceIndicators;
+exports.placeIndicators = placeIndicators;
 exports.show = show;
 exports.clear = clear;

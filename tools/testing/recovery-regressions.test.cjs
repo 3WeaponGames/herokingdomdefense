@@ -81,7 +81,7 @@ test('invalid root shapes and decrypt errors recover; valid save precedence stay
 function resources(options = {}) {
   const h = { errors: [], calls: [], timers: new Map(), nextTimer: 1, assets: [], cache: [] };
   function JsonAsset() {}
-  const bundle = { load(name, type, done) { h.assets.push({ name, type, done }); } };
+  const bundle = { load(name, type, progress, done = progress) { h.assets.push({ name, type, done }); } };
   const args = load('ArgsParseUtils', {}).ArgsParseUtils;
   const mgr = load('ResourceMgr', {
     ArgsParseUtils: { ArgsParseUtils: args },

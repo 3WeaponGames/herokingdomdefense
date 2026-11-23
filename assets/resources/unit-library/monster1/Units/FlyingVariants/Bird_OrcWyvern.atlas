@@ -1,0 +1,62 @@
+
+Bird_OrcWyvern.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bird_OrcWyvern_Hit
+  rotate: false
+  xy: 2, 2
+  size: 263, 236
+  orig: 263, 236
+  offset: 0, 0
+  index: -1
+Bird_OrcWyvern_Hit_2
+  rotate: false
+  xy: 269, 2
+  size: 263, 236
+  orig: 263, 236
+  offset: 0, 0
+  index: -1
+Bird_OrcWyvern_Body
+  rotate: false
+  xy: 536, 2
+  size: 178, 206
+  orig: 178, 206
+  offset: 0, 0
+  index: -1
+u_2fb280bcedf5cf241a0883d1d3d16034
+  rotate: false
+  xy: 718, 2
+  size: 161, 161
+  orig: 161, 161
+  offset: 0, 0
+  index: -1
+Bird_OrcWyvern_Wing
+  rotate: false
+  xy: 883, 2
+  size: 99, 149
+  orig: 99, 149
+  offset: 0, 0
+  index: -1
+Bird_OrcWyvern_Wing2
+  rotate: false
+  xy: 986, 2
+  size: 99, 149
+  orig: 99, 149
+  offset: 0, 0
+  index: -1
+Bird_OrcWyvern_Tail
+  rotate: false
+  xy: 1089, 2
+  size: 104, 68
+  orig: 104, 68
+  offset: 0, 0
+  index: -1
+u_2924ae1588761d7448d9985db748ffe2
+  rotate: false
+  xy: 1197, 2
+  size: 159, 52
+  orig: 159, 52
+  offset: 0, 0
+  index: -1

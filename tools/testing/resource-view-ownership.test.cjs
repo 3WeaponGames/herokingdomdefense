@@ -22,7 +22,7 @@ function fixture(){
  class Prefab extends Asset{} class SpriteFrame extends Asset{} class SkeletonData extends Asset{}
  const cc={Component,Node,Asset,Prefab,SpriteFrame,Label:function(){},Sprite:function(){},Enum:x=>x,
   _decorator:{ccclass:x=>x,property:()=>()=>{}},js:{getClassName:t=>t.name},isValid:x=>!!x&&!x.destroyed,
-  assetManager:{getBundle:()=>({load(file,type,done){h.requests.push({file,type,done});}})},
+ assetManager:{getBundle:()=>({load(file,type,progress,done=progress){h.requests.push({file,type,done});}})},
   tween(){const chain={set(){return chain;},to(){return chain;},start(){return chain;}};return chain;},
   instantiate(asset){const node=asset.makeNode?asset.makeNode():new Node();h.allocations.push(node);return node;}
  };

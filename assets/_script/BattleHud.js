@@ -1,5 +1,8 @@
 "use strict";
 var TaskPosition = require("StageTaskPosition");
+var GameStage = require("KinghtFallModle").KinghtFallGameStage;
+var TASK_BUBBLE_ALPHA = 120;
+var SPEAKER_FADE_SECONDS = .4;
 
 function component(node, Type) { return node && node.getComponent(Type); }
 function disableFit(node) {
@@ -28,15 +31,30 @@ function install(ui) {
   task.parent = root; task.anchorX = task.anchorY = .5;
   disableFit(task); task.active = false;
   var background = component(task, cc.Sprite);
-  if (background) { background.type = cc.Sprite.Type.SLICED; background.sizeMode = cc.Sprite.SizeMode.CUSTOM; }
+  if (background) background.enabled = false;
+  var backdrop = new cc.Node("TaskBubbleBackground"); backdrop.parent = task; backdrop.zIndex = -1;
+  var backdropArt = backdrop.addComponent(cc.Graphics);
   var tail = new cc.Node("TaskBubbleTail"); tail.parent = task;
-  var tailArt = tail.addComponent(cc.Graphics); tailArt.fillColor = cc.color(0, 0, 0, 128);
+  var tailArt = tail.addComponent(cc.Graphics);
+  var collectButton = new cc.Node("CollectTaskReward"); collectButton.parent = task; collectButton.active = false;
+  var collectArt = collectButton.addComponent(cc.Graphics);
+  var collectControl = collectButton.addComponent(cc.Button);
+  collectControl.transition = cc.Button.Transition.SCALE;
+  collectControl.zoomScale = .96;
+  var collectLabel = task.getChildByName("labGet"); collectLabel.parent = collectButton;
+  collectLabel.anchorX = collectLabel.anchorY = .5;
+  collectLabel.setPosition(0, 0);
+  collectLabel.getComponent(cc.Label).string = "[[loc:battle.task.ready]]";
   var rewardAnchor = new cc.Node("BattleTaskFeedback"); rewardAnchor.parent = task; rewardAnchor.zIndex = 10;
   var rewardHint = task.getChildByName("ndAni"); rewardHint.parent = rewardAnchor; rewardHint.active = false;
-  task.getChildByName("labGet").getComponent(cc.Label).string = "[[loc:battle.task.ready]]";
   disableFit(ui.ndLevelInfo);
   var titleBackground = component(ui.ndLevelInfo, cc.Sprite); if (titleBackground) titleBackground.enabled = false;
-  var state = ui._battleHud = { tail: tail, tailArt: tailArt, rewardAnchor: rewardAnchor, rewardHint: rewardHint, hasTasks: false };
+  var state = ui._battleHud = {
+    backdropArt: backdropArt, tail: tail, tailArt: tailArt,
+    taskName: task.getChildByName("labName"), pendingLabel: task.getChildByName("labNoFinish"),
+    collectButton: collectButton, collectControl: collectControl, collectArt: collectArt, collectLabel: collectLabel,
+    rewardAnchor: rewardAnchor, rewardHint: rewardHint, hasTasks: false
+  };
   if (typeof sp !== "undefined" && cc.resources) {
     cc.resources.load("characters/retired-king-portrait", sp.SkeletonData, function (error, data) {
       if (error || !data || ui._battleHud !== state) return;
@@ -59,12 +77,30 @@ function mountTaskSpeaker(ui) {
   var path = game.ndPath, main = game.ndMain;
   var marker = path.getChildByName(TaskPosition.marker), hero = path.getChildByName("ndStar");
   var position = TaskPosition.resolve(marker && marker.getPosition(), hero && hero.getPosition(), game.mapSize);
-  var king = state.king = new cc.Node("Retired King");
+  var king = state.king = new cc.Node("Royal Advisor");
   king.parent = main; king.group = main.group;
   king.setPosition(main.convertToNodeSpaceAR(path.convertToWorldSpaceAR(cc.v2(position.x, position.y))));
   king.setScale(.62);
+  state.speakerOpacity = game.gameStatus === GameStage.Prepare ? 255 : 0;
   if (state.kingData) showKing(king, state.kingData);
   layout(ui);
+}
+function fadeTaskSpeaker(ui, dt) {
+  var state = ui._battleHud, speaker = state.king;
+  if (!speaker) return;
+  var planning = ui.ctrGame.gameStatus === GameStage.Prepare;
+  var opacity = state.speakerOpacity, target = planning ? 255 : 0;
+  if (opacity !== target && dt > 0) {
+    var step = dt * 255 / SPEAKER_FADE_SECONDS;
+    opacity = state.speakerOpacity = planning ? Math.min(target, opacity + step) : Math.max(target, opacity - step);
+  }
+  var alpha = Math.round(opacity);
+  speaker.opacity = alpha;
+  if (state.taskName.opacity !== alpha) {
+    state.taskName.opacity = state.pendingLabel.opacity = state.collectLabel.opacity = state.rewardAnchor.opacity = alpha;
+  }
+  speaker.active = planning || alpha > 0;
+  state.collectControl.interactable = planning && alpha > 0;
 }
 function safeBounds(root) {
   var origin = cc.view.getVisibleOrigin(), visible = cc.view.getVisibleSize();
@@ -134,30 +170,70 @@ function layoutHeader(ui, bounds) {
   wave.y = -titleSize.height / 2 - 4 - waveSize.height / 2;
 }
 function sizeTaskBubble(task, state, width) {
-  var name = task.getChildByName("labName"), claim = task.getChildByName("labGet"), pending = task.getChildByName("labNoFinish");
-  var status = claim.active ? claim : pending.active ? pending : null;
+  var name = state.taskName, pending = state.pendingLabel;
+  var ready = state.collectButton.active;
+  var status = ready ? state.collectLabel : pending.active ? pending : null;
   function signature() {
     return [width, name.getComponent(cc.Label).string, labelMetrics(name), status && status.name,
       status && status.getComponent(cc.Label).string, status && labelMetrics(status)].join("|");
   }
   if (state.taskSignature === signature()) return;
   var description = sizeLabel(name, 62, width - 32, true, 72);
-  var statusHeight = status ? sizeLabel(status, 54, width - 32, true, 64).height + 4 : 0;
+  var gap = ready ? 10 : 4, statusHeight = 0;
+  if (ready) {
+    var buttonWidth = Math.min(220, width - 32);
+    var buttonHeight = Math.max(88, sizeLabel(status, 54, buttonWidth - 28, true, 64).height + 20);
+    state.collectButton.setContentSize(buttonWidth, buttonHeight);
+    statusHeight = buttonHeight + gap;
+  } else if (status) {
+    statusHeight = sizeLabel(status, 54, width - 32, true, 64).height + gap;
+  }
   var height = Math.ceil(description.height + statusHeight + 26);
   task.setContentSize(width, height);
   name.anchorX = name.anchorY = .5;
   name.setPosition(0, statusHeight / 2);
-  if (status) {
-    status.anchorX = status.anchorY = .5;
-    status.setPosition(0, -(description.height + 4) / 2);
+  var row = ready ? state.collectButton : status;
+  if (row) {
+    row.anchorX = row.anchorY = .5;
+    row.setPosition(0, -(description.height + gap) / 2);
   }
   state.rewardAnchor.setPosition(0, height / 2);
   state.taskSignature = signature();
 }
+function paintTaskBubble(task, state, opacity, tailOffset) {
+  var button = state.collectButton;
+  var signature = [task.width, task.height, opacity, tailOffset, button.active, button.width, button.height].join("|");
+  if (state.paintSignature === signature) return;
+  state.paintSignature = signature;
+
+  // Graphics stores its own vertex colors. Fade the shapes through their fill alpha.
+  var fill = cc.color(255, 255, 255, Math.round(TASK_BUBBLE_ALPHA * opacity / 255));
+  var backdrop = state.backdropArt;
+  backdrop.clear();
+  backdrop.fillColor = fill;
+  backdrop.roundRect(-task.width / 2, -task.height / 2, task.width, task.height, 12);
+  backdrop.fill();
+
+  var tail = state.tailArt;
+  tail.clear();
+  tail.fillColor = fill;
+  tail.moveTo(-12, 0); tail.lineTo(0, tailOffset); tail.lineTo(12, 0); tail.close(); tail.fill();
+
+  if (button.active) {
+    var art = state.collectArt;
+    art.clear();
+    art.fillColor = cc.color(224, 247, 233, opacity);
+    art.strokeColor = cc.color(37, 87, 69, opacity);
+    art.lineWidth = 3;
+    art.roundRect(-button.width / 2 + 1.5, -button.height / 2 + 1.5, button.width - 3, button.height - 3, 14.5);
+    art.fill();
+    art.stroke();
+  }
+}
 function layoutTaskBubble(ui, bounds) {
   var state = ui._battleHud, task = ui.ndTask, king = state.king, game = ui.ctrGame;
   var camera = game && (game.camera || cc.Camera && cc.Camera.main);
-  if (!state.hasTasks || !king || !king.activeInHierarchy || !camera) { task.active = false; return; }
+  if (!state.hasTasks || !king || !king.activeInHierarchy || !king.opacity || !camera) { task.active = false; return; }
   var root = ui.ctrUI.node;
   function project(y) {
     return root.convertToNodeSpaceAR(camera.getWorldToScreenPoint(king.convertToWorldSpaceAR(cc.v2(0, y))));
@@ -178,16 +254,14 @@ function layoutTaskBubble(ui, bounds) {
   task.setPosition(x, y);
   var tailX = Math.max(-hw + 28, Math.min(hw - 28, head.x - x));
   var tailY = below ? hh : -hh;
-  if (state.tail.x !== tailX || state.tail.y !== tailY) {
-    state.tail.setPosition(tailX, tailY);
-    var g = state.tailArt;
-    g.clear(); g.moveTo(-12, 0); g.lineTo(0, below ? tailLength : -tailLength); g.lineTo(12, 0); g.close(); g.fill();
-  }
+  if (state.tail.x !== tailX || state.tail.y !== tailY) state.tail.setPosition(tailX, tailY);
+  paintTaskBubble(task, state, king.opacity, below ? tailLength : -tailLength);
 }
-function layout(ui) {
+function layout(ui, dt) {
   if (!ui._battleHud || !cc.view) return;
   var bounds = safeBounds(ui.ctrUI.node);
   layoutHeader(ui, bounds);
+  fadeTaskSpeaker(ui, dt);
   layoutTaskBubble(ui, bounds);
 }
 function updateTasks(ui, hasTasks) {

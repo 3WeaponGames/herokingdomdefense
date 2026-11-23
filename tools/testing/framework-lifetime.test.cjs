@@ -29,7 +29,7 @@ function harness() {
   function SpriteFrame(texture) { Asset.call(this); this.texture = texture; }
   SpriteFrame.prototype = Object.create(Asset.prototype); SpriteFrame.prototype.constructor = SpriteFrame;
   SpriteFrame.prototype.getTexture = function () { return this.texture; };
-  const bundle = { load(file, type, done) { h.requests.push({ file, type, done }); } };
+  const bundle = { load(file, type, progress, done = progress) { h.requests.push({ file, type, done }); } };
   h.cc = {
     Component, Node, Asset, Prefab, Texture2D, SpriteFrame, Enum() {},
     _decorator: { ccclass: value => value, property: () => () => {} },

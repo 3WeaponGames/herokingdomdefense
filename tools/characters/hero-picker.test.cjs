@@ -5,7 +5,7 @@ const {fixture}=require('./hero-picker-harness.cjs');
 const user=()=>({getHeroWeapon:()=>Weapons.find('guardian'),getHeroWeaponLevel:()=>1});
 const selectable=Weapons.styles.filter(style=>style.id!=='vanguard');
 
-test('the Old King explains the choice while the weapon cards, Equip and Close stay usable',()=>{
+test('the Royal Advisor explains the choice while the weapon cards, Equip and Close stay usable',()=>{
  const data={};
  let completions=0;
  const f=fixture({getHeroWeapon:()=>Weapons.selected(data),getHeroWeaponLevel:()=>1,setHeroWeapon:id=>Weapons.select(data,id)});
@@ -13,9 +13,10 @@ test('the Old King explains the choice while the weapon cards, Equip and Close s
   text:'[[loc:data.guidecfg.22.describe]]',onComplete(){completions++;return true;}
  })};
  f.api.open(owner);
- assert(f.find('Old King dialogue').getComponent(f.cc.BlockInputEvents));
+ assert(f.find('Royal Advisor dialogue').getComponent(f.cc.BlockInputEvents));
+ assert.equal(f.find('Speaker').getComponent(f.cc.Label).string,'Royal Advisor');
  assert.match(f.find('Dialogue text').getComponent(f.cc.Label).string,/Skirmisher's bow and arrow/);
- const portrait=f.find('Retired King portrait').getComponent(f.sp.Skeleton);
+ const portrait=f.find('Royal Advisor portrait').getComponent(f.sp.Skeleton);
  assert.deepEqual(portrait.animation,{track:0,name:'idle',loop:true});
  assert.equal(portrait.skeletonData.key,'characters/retired-king-portrait');
  f.tap(f.find('Style fighter'));

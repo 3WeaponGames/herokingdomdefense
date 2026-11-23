@@ -5,47 +5,67 @@ const Preview=require('../../packages/hkd-skills/preview');
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function simulate(model,seconds){for(let time=0;time<seconds;){const dt=Math.min(1/120,seconds-time);model.advance(dt);time+=dt;}return model;}
 
-test('enemy preview draws the built-in recipient clip with the model form identifier intact',async()=>{
+test('enemy preview plays the healing clip once at the ground of the selected model',async()=>{
  const create=require('../../packages/hkd-skills/enemy-preview').create;
- const visual=require('../../assets/_script/EnemySkillVisuals').effective('heal');
- const frames=[],errors=[],description={form:'default',skill:'heal',duration:1,layers:[{uuid:'model'}],builtin:{layers:[{uuid:'heal',animation:'animation'}]}};
+ const visuals=require('../../assets/_script/EnemySkillVisuals'),visual=visuals.effective('heal');
+ const frames=[],errors=[],description={form:'default',skill:'heal',duration:1,effectAnchor:[.8,0,0,.8],
+  layers:[{uuid:'model'}],builtin:{layers:[{uuid:'heal',animation:'play'}]}};
+ let modelHeight=60;
  const host={ownerDocument:{createElement:()=>({style:{},setAttribute(){},remove(){}})},clientWidth:440,clientHeight:380,appendChild(){}};
- const renderer={createLayers:async(_runtime,layers)=>layers.map(description=>({description,skeleton:{},data:{findAnimation(name){assert(name);return {name,duration:1};}}})),
-  seek(){},bounds:()=>({minX:-20,maxX:20,minY:0,maxY:60}),drawCanvas(_runtime,_canvas,layers){frames.push(layers.map(layer=>layer.description.uuid));},destroyCanvas(){}};
+ const renderer={createLayers:async(_runtime,layers)=>layers.map(description=>({description,skeleton:{},data:{findAnimation(name){return name==='play'?{name,duration:1}:null;}}})),
+  seek(_spine,layers,name,time,loop){if(layers[0].description.uuid==='heal')assert.deepEqual([name,loop],['play',false]);},
+  bounds:()=>({minX:-20,maxX:20,minY:0,maxY:modelHeight}),
+  drawCanvas(_runtime,_canvas,layers){frames.push(layers.map(layer=>({...layer.description})));},destroyCanvas(){}};
  const preview=create(host,{runtime:()=>({}),renderer,onStatus(value){if(value.error)errors.push(value.error);}});
  try{
   preview.play(false);await preview.set({settings:{visual},description});
-  assert.deepEqual(frames.at(-1),['model']);preview.seek(.75);
-  assert.deepEqual(frames.at(-1),['model','heal']);assert.deepEqual(errors,[]);
+  const ids=()=>frames.at(-1).map(layer=>layer.uuid);
+  assert.deepEqual(ids(),['model']);
+  preview.seek(.75);
+  assert.deepEqual(ids(),['model','heal']);
+  assert.deepEqual(frames.at(-1)[1].matrix,[.8,0,0,.8,0,0]);
+  modelHeight=160;
+  preview.seek(.85);
+  assert.deepEqual(frames.at(-1)[1].matrix,[.8,0,0,.8,0,0]);
+  preview.seek(1.5);
+  assert.deepEqual(ids(),['model']);
+  assert.deepEqual(errors,[]);
  }finally{preview.destroy();}
 });
 
-test('boost previews show distinct artwork during the buff and apply live adjustments without reloading it',async()=>{
+test('boost previews follow each model overhead and apply live adjustments without reloading artwork',async()=>{
  const create=require('../../packages/hkd-skills/enemy-preview').create;
  const visuals=require('../../assets/_script/EnemySkillVisuals');
  const images=[],canvases=[],drawn=[];
+ let body,view;
  const ctx={clearRect(){},save(){},restore(){},transform(){},translate(x,y){this.position=[x,y];},scale(x,y){this.size=[x,y];},
   drawImage(image){drawn.push({image,position:this.position,size:this.size,alpha:this.globalAlpha});}};
  const host={ownerDocument:{createElement:()=>({style:{},setAttribute(){},getContext:()=>ctx,remove(){this.removed=true;}})},
   clientWidth:440,clientHeight:380,appendChild(canvas){canvases.push(canvas);}};
  const renderer={createLayers:async(_runtime,layers)=>layers.map(description=>({description,skeleton:{}})),
   loadImage:async url=>{images.push(url);return {url};},tintedImage:(image,color)=>({...image,color}),
-  seek(){},bounds:()=>({minX:-20,maxX:20,minY:0,maxY:60}),drawCanvas(){},destroyCanvas(){}};
+  seek(){},bounds:()=>body,drawCanvas(_spine,_canvas,_layers,viewport){view=viewport;},destroyCanvas(){}};
  const preview=create(host,{runtime:()=>({}),renderer});
  try{
   preview.play(false);
   for(const skill of ['haste','damage','move']){
+   body={minX:-20,maxX:20,minY:0,maxY:60,width:40,height:60};
    const indicator='file:///'+visuals.indicatorPath(skill)+'.png',description={skill,indicator,duration:1,layers:[{uuid:'model'}]};
    const visual=visuals.effective(skill);
    await preview.set({settings:{visual},description});
    const start=drawn.length;
    preview.seek(.2);assert.equal(drawn.length,start);
    preview.seek(.5);assert.equal(drawn.at(-1).image.url,indicator);
-   const tuned={...visual,indicatorX:10,indicatorY:-8,indicatorScale:1.3,indicatorOpacity:.6,indicatorColor:'#ff0000',indicatorRate:2};
+   const initialY=drawn.at(-1).position[1];
+   assert(initialY-visuals.indicatorSize*drawn.at(-1).size[0]/2>body.maxY);
+   body={...body,maxY:180,height:180};preview.seek(.5);
+   close(drawn.at(-1).position[1],initialY+120);
+   const tuned={...visual,indicatorX:10,indicatorY:8,indicatorScale:1.3,indicatorOpacity:.6,indicatorColor:'#ff0000',indicatorRate:2};
    await preview.set({settings:{visual:tuned},description});
-   const pose=visuals.indicatorPose(skill,tuned,.5-.4),current=drawn.at(-1);
+   const pose=visuals.indicatorPose(skill,tuned,.5-.4,body),current=drawn.at(-1);
    assert.deepEqual(current.image.color,{r:1,g:0,b:0});assert.deepEqual(current.position,[pose.x,pose.y]);
    assert.deepEqual(current.size,[pose.scale,-pose.scale]);close(current.alpha,pose.opacity);
+   assert(view.bounds.maxY>pose.y+pose.scale*visuals.indicatorSize/2);
    preview.seek(1.5);assert.equal(canvases[1].hidden,true);
    preview.seek(.5);assert.equal(canvases[1].hidden,false);
    await preview.set({settings:{visual:{...tuned,showIndicator:false}},description});assert.equal(canvases[1].hidden,true);

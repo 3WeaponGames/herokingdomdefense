@@ -23,8 +23,9 @@ var def_KinghtFallEnemyItem09 = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.start = function () {
     t.prototype.start.call(this);
-    $z1KinghtFallUIGame.default.instance.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Attack);
-    $z1KinghtFallUIGame.default.instance.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Buff);
+    var ui = $z1KinghtFallUIGame.default.instance, stage = ui.ctrGame && ui.ctrGame._stageAssets;
+    ui.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Attack);
+    if (!stage || !stage.options) ui.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Buff);
   };
   _ctor.prototype.initData = function (e, n, lease) {
     if (t.prototype.initData.call(this, e, n, lease) === false) return false;
@@ -78,7 +79,8 @@ var def_KinghtFallEnemyItem09 = function (t) {
       n.enemy.addHpPro(strength);
       if (!current()) return "break";
       if (!recipient(n)) return;
-      if (game._stageAssets && game._stageAssets.options && !require("EnemySkillVisuals").fromGame(game, "heal").showBuiltin) return;
+      // The stage-owned effect is attached by addHpPro at the recipient's feet.
+      if (game._stageAssets && game._stageAssets.options) return;
       effects.onBuff($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Buff, $z1KinghtFallConfig.KinghtFallPoolName.Soldier9Buff, function (t) {
         var target = n.enemy, pool = $z1KinghtFallConfig.KinghtFallPoolName.Soldier9Buff;
         if (!current() || !recipient(n) || !cc.isValid(target.ndEffect, true)) {

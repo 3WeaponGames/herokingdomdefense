@@ -116,12 +116,12 @@ function open(owner) {
   });
   var dialogueText, language;
   if (tutorial) {
-    var dialogue = box(content, "Old King dialogue", 0, 528, 638, dialogueHeight, 23, "#171326");
+    var dialogue = box(content, "Royal Advisor dialogue", 0, 528, 638, dialogueHeight, 23, "#171326");
     dialogue.addComponent(cc.BlockInputEvents);
     box(dialogue, "Dialogue rim", 0, 0, 630, 140, 20, "#638abd");
     box(dialogue, "Dialogue face", 0, 0, 620, 130, 17, "#294970");
     box(dialogue, "Portrait frame", -245, 0, 114, 120, 16, "#1e3559");
-    var portrait = node(dialogue, "Retired King portrait", -246, -56);
+    var portrait = node(dialogue, "Royal Advisor portrait", -246, -56);
     portrait.scale = .62;
     cc.resources.load("characters/retired-king-portrait", sp.SkeletonData, function (error, data) {
       if (error || !data || cancelled || !live(portrait)) return;

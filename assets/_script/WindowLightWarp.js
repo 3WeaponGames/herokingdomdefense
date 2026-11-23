@@ -51,9 +51,16 @@ function mesh(warp,nodes){
  var data=compile(warp,nodes),points=sourcePoints.map(function(p){var v=apply(p,warp,data);minX=Math.min(minX,v.x);minY=Math.min(minY,v.y);maxX=Math.max(maxX,v.x);maxY=Math.max(maxY,v.y);return v;});
  return{points:points,sourcePoints:sourcePoints,uvs:uvs,triangles:triangles,bounds:{minX:minX,minY:minY,maxX:maxX,maxY:maxY}};
 }
-function vertices(warp,uv,width,height,nodes){
+function vertices(warp,uv,width,height,nodes,originalSize){
  var data=mesh(warp,nodes),result={x:[],y:[],u:[],v:[],nu:[],nv:[],triangles:data.triangles};
- data.points.forEach(function(p,i){var t=data.uvs[i],u=uv[4]+t.u*(uv[6]-uv[4])+t.v*(uv[0]-uv[4]),v=uv[5]+t.u*(uv[7]-uv[5])+t.v*(uv[1]-uv[5]);result.x.push(p.x+SIZE/2);result.y.push(SIZE/2-p.y);result.u.push(u*width);result.v.push(v*height);result.nu.push(u);result.nv.push(v);});return result;
+ var frameWidth=originalSize?originalSize.width:SIZE,frameHeight=originalSize?originalSize.height:SIZE;
+ // Creator's mesh vertices use original frame pixels. UVs use the texture,
+ // which can have different dimensions than the frame or the authoring grid.
+ data.points.forEach(function(p,i){
+  var t=data.uvs[i],u=uv[4]+t.u*(uv[6]-uv[4])+t.v*(uv[0]-uv[4]),v=uv[5]+t.u*(uv[7]-uv[5])+t.v*(uv[1]-uv[5]);
+  result.x.push((p.x/SIZE+.5)*frameWidth);result.y.push((.5-p.y/SIZE)*frameHeight);
+  result.u.push(u*width);result.v.push(v*height);result.nu.push(u);result.nv.push(v);
+ });return result;
 }
 function addNode(warp,nodes,edge,t){
  var list=(nodes||[]).map(function(n){return Object.assign({},n);});if(list.length>=MAX_NODES)throw Error('A light can have up to 24 added edge points.');if(!Number.isInteger(edge)||edge<0||edge>3||!isFinite(t)||t<=0||t>=1)throw Error('Choose a yellow edge.');var p=source(edge,t),target=map(p,warp,nodes);list.push({edge:edge,t:t,x:target.x,y:target.y});if(!nodesValid(list))throw Error('Choose a position farther from an existing point.');return list;

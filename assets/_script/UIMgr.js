@@ -381,16 +381,20 @@ var exp_UIMgr = function () {
       var ordinary = this.uichace.get(t);
       if (!cached && (!ordinary || !ordinary._preparedUIProvider)) cached = ordinary;
       if (cached) show(null, cached);
-      else $z1ResourceMgr.ResourceMgr.getInstance().loadRes(config.bundleName, config.prefab, cc.Prefab, function (prefab) {
-        show(prefab, null);
-      }, { onError: function (error, retry, cancel) {
-        var boundaryError;
-        try { cancel(); } catch (issue) { boundaryError = issue; }
-        try { releaseInput(); } catch (issue) { if (!boundaryError) boundaryError = issue; }
-        finish(false);
-        try { if (owner && !owner.isCurrent()) owner.cancel(); else offerRecovery(error); }
-        finally { if (boundaryError) throw boundaryError; }
-      } });
+      else {
+        var loadOptions = Object.assign({}, cc.sys && cc.sys.isNative ? config.nativeLoadOptions : null);
+        loadOptions.onError = function (error, retry, cancel) {
+          var boundaryError;
+          try { cancel(); } catch (issue) { boundaryError = issue; }
+          try { releaseInput(); } catch (issue) { if (!boundaryError) boundaryError = issue; }
+          finish(false);
+          try { if (owner && !owner.isCurrent()) owner.cancel(); else offerRecovery(error); }
+          finally { if (boundaryError) throw boundaryError; }
+        };
+        $z1ResourceMgr.ResourceMgr.getInstance().loadRes(config.bundleName, config.prefab, cc.Prefab, function (prefab) {
+          show(prefab, null);
+        }, loadOptions);
+      }
     } catch (error) { if (!finished) fail(error); else throw error; }
   };
   _ctor.prototype.getChildByName = function (t) {

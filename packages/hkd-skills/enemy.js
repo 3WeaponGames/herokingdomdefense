@@ -46,18 +46,19 @@ function effect(root,asset) {
   return result;
 }
 
-function builtin(root,id) {
-  const files={
-    heal:'assets/KinghtFallEnemy/ItemHp.prefab',
-    weaken:'assets/KinghtFallEffect/Soldier10Buff.prefab'
-  };
-  if(!files[id])return null;
-  const full=path.join(root,files[id]);
+function builtin(root,id,catalog) {
+  if(id==='heal'){
+    const {resourceBundle,resourcePath,resourceAnimation}=Visuals.healingEffect;
+    const asset=catalog.vfx.find(row=>row.kind==='spine'&&row.bundle===resourceBundle&&row.path===resourcePath);
+    return asset?effect(root,{...asset,animation:resourceAnimation}):null;
+  }
+  if(id!=='weaken')return null;
+  const full=path.join(root,'assets/KinghtFallEffect/Soldier10Buff.prefab');
   if(!fs.existsSync(full))return null;
   const prefab=JSON.parse(fs.readFileSync(full,'utf8')),component=prefab.find(row=>row.__type__==='sp.Skeleton');
   const unitAssets=require('../game-data-editor/lib/unit-assets');
   const layer=unitAssets.layer(root,component,prefab,unitAssets.index(root,true));
-  if(id==='weaken')layer.animation='debuff_xiao';
+  layer.animation='debuff_xiao';
   return {layers:[layer]};
 }
 
@@ -90,7 +91,7 @@ function describe(service,request) {
   const visual=Visuals.effective(id,service.enemyData[id]);
   const asset=selection(service.catalogs,request.resource===undefined?visual.resource:request.resource);
   result.effect=asset?effect(service.root,asset):null;
-  result.builtin=builtin(service.root,id);
+  result.builtin=builtin(service.root,id,service.catalogs);
   const indicator=Visuals.indicatorPath(id);
   if(indicator){
     const file=path.join(service.root,'assets','resources',indicator+'.png');

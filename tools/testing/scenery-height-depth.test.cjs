@@ -70,9 +70,10 @@ test('large props switch immediately at the authored ground pivot, including tie
   for(const [y,behind]of [[25.01,true],[25,false],[24.99,false],[25.001,true]]){h.hero.node.y=y;h.sort();assert.equal(h.hero.node.zIndex<tree.root.zIndex,behind);}
 });
 
-for(const native of [false,true])test('a rock in a front layer cannot suppress a rear-tree silhouette ('+(native?'native':'web')+')',()=>{
-  const h=fixture(),tree=h.prop('Tree',120,180,0,1),stone=h.prop('Rock',100,90,40,9);
-  tree.root._depthGround=new Node('Trunk base',tree.root,0,12);
+for(const native of [false,true])for(const building of [false,true])test('a foreground layer cannot suppress a rear '+(building?'building':'tree')+' silhouette ('+(native?'native':'web')+')',()=>{
+  const h=fixture(),occluder=h.prop(building?'Tower':'Tree',120,180,0,1),stone=h.prop('Rock',100,90,40,9);
+  occluder.root._depthGround=new Node('Ground pivot',occluder.root,0,12);
+  if(building){occluder.root._depthBuilding=true;occluder.root._depthBuildingOrder=1;}
   const other=new Node('Enemy',h.main,0,70);
   const actor={node:other,spAni:other.addComponent(h.Sprite)};
   other._combatActor=actor;
@@ -82,10 +83,10 @@ for(const native of [false,true])test('a rock in a front layer cannot suppress a
   }
   h.hero.spAni=h.horse.node.addComponent(h.Sprite);
   h.hero.spAni.enabled=actor.spAni.enabled=true;
-  const treeRecord={node:tree.root,sources:[tree.sprite],masks:new Map()};
+  const object={node:occluder.root,sources:[occluder.sprite],masks:new Map()};
   let actorCaptures=0;
   Object.setPrototypeOf(h.view,h.DepthView.prototype);
-  Object.assign(h.view,{nativeCapture:native,captureSupported:true,nativeActors:new Map(),objects:[treeRecord],
+  Object.assign(h.view,{nativeCapture:native,captureSupported:true,nativeActors:new Map(),objects:[object],
     snapshot(object){
       object.center={x:0,y:90};object.size={width:120,height:180};object.frame=object.frame||{};
     },
@@ -97,31 +98,35 @@ for(const native of [false,true])test('a rock in a front layer cannot suppress a
   h.view.game.gameData={getSoldierList:()=>[],getEnemyList:()=>[actor]};
   h.hero.node.y=20;
   h.view.update();
-  const mask=treeRecord.masks.get(h.hero),shared=treeRecord.masks.get(actor),overlay=mask.foreground;
-  assert(tree.root.zIndex<stone.root.zIndex&&stone.root.zIndex<h.hero.node.zIndex,'authored layering creates the original conflict');
-  assert.equal(overlay.mask.spriteFrame,treeRecord.frame,'the higher stencil uses the exact tree artwork');
+  assert(occluder.root.zIndex<stone.root.zIndex&&stone.root.zIndex<h.hero.node.zIndex,'authored layering creates the original conflict');
+  const mask=object.masks.get(h.hero),shared=object.masks.get(actor);
+  assert(mask,'rear units receive a silhouette even when a foreground layer lifts their draw order');
+  const overlay=mask.foreground;
+  assert.equal(overlay.mask.spriteFrame,object.frame,'the higher stencil uses the exact occluder artwork');
   assert.equal(overlay.node.zIndex,h.hero.node.zIndex+1);
   assert.equal(mask.node.parent,overlay.node);
-  assert.equal(native?mask.node.opacity:mask.visuals[0].node.opacity,255,'the correction covers the full-color actor under the canopy');
-  assert.equal(shared.node.parent,treeRecord.overlay.node,'a second rear actor retains the shared lower stencil');
+  assert.equal(native?mask.node.opacity:mask.visuals[0].node.opacity,255,'the correction covers the full-color pixels behind the occluder');
+  assert.equal(shared.node.parent,object.overlay.node,'a second rear actor retains the shared lower stencil');
   assert.equal(native?shared.node.opacity:shared.visuals[0].node.opacity,204);
   if(native)assert.equal(actorCaptures,2);
 
   for(const y of [12,11.99]){
     h.hero.node.y=y;h.view.update();
-    assert.equal(mask.node.active,false,'at or in front of the trunk base there is no occlusion');
+    assert.equal(mask.node.active,false,'at or in front of the ground pivot there is no occlusion');
     assert.equal(overlay.node.active,false);
     assert(shared.node.active,'another rear actor stays covered');
   }
   h.hero.node.y=20;h.view.update();
   assert.equal(mask.foreground,overlay,'crossing the root reuses the same stencil');
   assert(overlay.node.active);
-  stone.root.x=600;h.view.update();
-  assert.equal(mask.node.parent,treeRecord.overlay.node,'once the layer conflict clears, use the ordinary tree silhouette');
+  stone.root.x=600;
+  if(building)stone.root.active=false;
+  h.view.update();
+  assert.equal(mask.node.parent,object.overlay.node,'once the layer conflict clears, use the ordinary silhouette');
   assert.equal(overlay.node.active,false);
   h.hero.node.active=false;h.view.update();
   assert(mask.node.destroyed&&overlay.node.destroyed);
-  assert.equal(overlay.mask.spriteFrame,null,'retiring the actor detaches its reference to the tree capture');
+  assert.equal(overlay.mask.spriteFrame,null,'retiring the actor detaches its reference to the capture');
 });
 
 test('draw order uses the authored hero ground or stable horse origin independently of body bounds',()=>{
