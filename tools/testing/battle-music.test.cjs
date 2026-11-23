@@ -23,27 +23,57 @@ test('boss detection follows flags, templates, shared variants and stage-local C
  for(const id of [-1,0,44,99])assert.equal(Music.bossUnit(id,config,level),false);
  config.SoldierCfg[60]={ProfileBaseID:61};config.SoldierCfg[61]={ProfileBaseID:60};assert.equal(Music.bossUnit(60,config,level),false);
 });
-test('timed schedules ignore legacy ghost bosses, zero counts and waits; legacy lanes retain last-write semantics',()=>{
- assert.equal(Music.waveHasBoss({SpawnTimeline:[],RefreshSoldierKind:['1#90010,1']},{}),false);
- assert.equal(Music.waveHasBoss({SpawnTimeline:[{unitId:90010,count:0},{unitId:-1,count:1}]},{}),false);
- assert.equal(Music.waveHasBoss({SpawnTimeline:[{unitId:90010,count:1,startSeconds:120}]},{}),true);
- assert.equal(Music.waveHasBoss({RefreshSoldierKind:['1#90010,1','1#90001,2']},{}),false);
- assert.equal(Music.waveHasBoss({RefreshSoldierKind:['1#-1,5;90010,1']},{}),true);
+test('Boss and Elite music follows saved enemy classes and profile inheritance', () => {
+  const config = {
+    SoldierCfg: { 40: {}, 41: {}, 42: {}, 43: {}, 44: { ProfileBaseID: 40 }, 45: { BehaviorTemplate: 40 }, 46: {} },
+    GameTools: {
+      enemyClasses: { 'enemy:40:default': 'elite', 'enemy:41:default': 'boss', 'enemy:46:default': 'normal' },
+      unitProfiles: {
+        entries: { 42: { baseId: 40 }, 43: { baseId: 45, enemyClass: 'elite' }, 46: { baseId: 40, enemyClass: 'elite' } },
+        aliases: { 60: 40 }
+      }
+    }
+  };
+  const level = { EnemyProfiles: { 1000000000: { baseId: 42 } } };
+  for (const unitId of [40, 41, 42, 43, 44, 60, 1000000000]) {
+    assert.equal(Music.waveHasBossOrElite({ SpawnTimeline: [{ unitId, count: 1 }] }, config, level), true, String(unitId));
+  }
+  for (const unitId of [45, 46]) {
+    assert.equal(Music.waveHasBossOrElite({ SpawnTimeline: [{ unitId, count: 1 }] }, config, level), false, String(unitId));
+  }
 });
-test('the final wave of every stage takes priority over authored or dynamically announced bosses',()=>{
- for(const stage of [1,2,20]){
-  const data={round:2,levelCfg:{Level:stage,WaveCfg:[{}, {SpawnTimeline:[{unitId:90010,count:1}]}]}};
-  assert.equal(Music.battle(data,{}),'final_wave_bgm');assert.equal(Music.battle(data,{},true),'final_wave_bgm');
-  data.round=1;assert.equal(Music.battle(data,{},true),'boss_fight_bgm');
- }
+test('Boss and Elite music uses live schedule entries and respects legacy lane replacements', () => {
+  const config = { GameTools: { enemyClasses: { 'enemy:90001:default': 'elite' } } };
+  assert.equal(Music.waveHasBossOrElite({ SpawnTimeline: [], RefreshSoldierKind: ['1#90010,1'] }, config), false);
+  assert.equal(Music.waveHasBossOrElite({ SpawnTimeline: [{ unitId: 90001, count: 0 }, { unitId: -1, count: 1 }] }, config), false);
+  assert.equal(Music.waveHasBossOrElite({ SpawnTimeline: [{ unitId: 90001, count: 1, startSeconds: 120 }] }, config), true);
+  assert.equal(Music.waveHasBossOrElite({ RefreshSoldierKind: ['1#90010,1', '1#90002,2'] }, config), false);
+  assert.equal(Music.waveHasBossOrElite({ RefreshSoldierKind: ['1#-1,5;90001,1'] }, config), true);
+});
+test('the last wave of the last campaign stage has priority over Boss and Elite music', () => {
+  const eliteWave = { SpawnTimeline: [{ unitId: 90001, count: 1 }] };
+  const bossWave = { SpawnTimeline: [{ unitId: 90010, count: 1 }] };
+  const earlier = { Level: 2, WaveCfg: [{}, eliteWave] };
+  const final = { Level: 20, WaveCfg: [eliteWave, bossWave] };
+  const config = { LevelCfg: [earlier, final], GameTools: { enemyClasses: { 'enemy:90001:default': 'elite' } } };
+  assert.equal(Music.battle({ round: 2, levelCfg: earlier }, config), 'boss_fight_bgm');
+  earlier.WaveCfg[1] = bossWave;
+  assert.equal(Music.battle({ round: 2, levelCfg: earlier }, config), 'boss_fight_bgm');
+  earlier.WaveCfg[1] = {};
+  assert.equal(Music.battle({ round: 2, levelCfg: earlier }, config), 'fight_bgm_3');
+  assert.equal(Music.battle({ round: 1, levelCfg: final }, config), 'boss_fight_bgm');
+  const finale = { round: 2, levelCfg: { ...final } };
+  assert.equal(Music.battle(finale, config), 'final_wave_bgm');
+  assert.equal(Music.battle(finale, config, true), 'final_wave_bgm');
 });
 
 test('the actual game UI selects the wave cue and preserves final-wave precedence on boss announcements',()=>{
  const source=fs.readFileSync(path.join(scripts,'KinghtFallUIGame.js'),'utf8').replace(/\r\n/g,'\n'),config={};
  vm.runInNewContext(fs.readFileSync(path.join(scripts,'KinghtFallConfig.js'),'utf8'),{exports:config,require:()=>({OrderLayer:{}})});
  const calls=[],data={round:1,levelCfg:{Level:2,WaveCfg:[{SpawnTimeline:[]},{SpawnTimeline:[{unitId:90010,count:1}]}]}},ui={ctrGame:{gameData:data}};
+ const campaign={LevelCfg:[{Level:1},data.levelCfg]};
  const start=source.indexOf('_ctor.prototype.playBattleMusic = function'),end=source.indexOf('\n  };',start);
- const method=vm.runInNewContext('('+source.slice(source.indexOf('function',start),end+4)+')',{BattleMusic:Music,$z1KinghtFallConfig:config,$z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:{}})}},$z1AudioMgr:{AudioMgr:{getInstance:()=>({playMusic:(...args)=>calls.push(args)})}}});
+ const method=vm.runInNewContext('('+source.slice(source.indexOf('function',start),end+4)+')',{BattleMusic:Music,$z1KinghtFallConfig:config,$z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:campaign})}},$z1AudioMgr:{AudioMgr:{getInstance:()=>({playMusic:(...args)=>calls.push(args)})}}});
  method.call(ui);assert.equal(calls.at(-1)[0],config.KinghtFallAudioId.fight_bgm_2);
  method.call(ui,true);assert.equal(calls.at(-1)[0],config.KinghtFallAudioId.boss_fight_bgm);
  data.round=2;method.call(ui,true);assert.equal(calls.at(-1)[0],config.KinghtFallAudioId.final_wave_bgm);

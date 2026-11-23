@@ -87,16 +87,46 @@ async function main(){
     await page.close();page=await hostPage('open');
     const fixtureImage=await page.evaluate(()=>{const c=document.createElement('canvas');c.width=c.height=2;const data=new Uint8ClampedArray(16);for(let i=0;i<data.length;i+=4)data.set([80,20,10,128],i);c.getContext('2d').putImageData(new ImageData(data,2,2),0,0);return c.toDataURL().split(',')[1];});
     await page.route('**/asset/__projectile_blend_fixture.png',route=>route.fulfill({contentType:'image/png',body:Buffer.from(fixtureImage,'base64')}));
-    await page.route('**/api/load',async route=>{const response=await route.fetch(),snapshot=await response.json();for(const additive of [true,false]){const id='verify:blend-'+(additive?'additive':'normal');snapshot.data.assets.push({id,name:id,category:'Verifier',role:'flight',kind:'flipbook',image:'__projectile_blend_fixture.png',cell:2,columns:1,frames:1,fps:1,size:48,additive});snapshot.data.sets.push({id,name:id,category:'Verifier',flight:id});}await route.fulfill({response,json:snapshot});});
+    await page.route('**/api/load',async route=>{const response=await route.fetch(),snapshot=await response.json();for(const additive of [true,false]){const id='verify:blend-'+(additive?'additive':'normal');snapshot.data.assets.push({id,name:id,category:'Verifier',role:'flight',kind:'flipbook',image:'__projectile_blend_fixture.png',cell:2,columns:1,frames:1,fps:1,size:48,additive});snapshot.data.sets.push({id,name:id,category:'Verifier',flight:id});}snapshot.data.assignments.hero={...snapshot.data.assignments.hero,trail:false};await route.fulfill({response,json:snapshot});});
     await page.goto('http://127.0.0.1:'+server.address().port);await page.locator('[data-projectile="verify:blend-additive"]').waitFor();
     function pixelNear(actual,expected,label){for(let i=0;i<4;i++)assert(Math.abs(actual[i]-expected[i])<=1,label+': expected '+expected.join(',')+', received '+actual.join(','));}
-    const previewPixel=()=>page.getByLabel('Projectile combat preview',{exact:true}).evaluate(c=>Array.from(c.getContext('2d').getImageData(360,210,1,1).data));
+    const flightCanvas=page.getByLabel('Projectile combat preview',{exact:true});
+    const previewSample=()=>flightCanvas.evaluate(c=>{
+      const x=Math.floor(c.width/2),column=c.getContext('2d').getImageData(x,0,1,Math.floor(c.height/2)).data;
+      for(let i=4;i<column.length;i+=4)if(column[i]!==column[0]||column[i+1]!==column[1]||column[i+2]!==column[2]){
+        const bounds=c.getBoundingClientRect(),y=i/4+2;
+        return {color:Array.from(column.slice(y*4,y*4+4)),position:{x:(x+.5)*bounds.width/c.width,y:(y+.5)*bounds.height/c.height}};
+      }
+      throw Error('Expected stationary artwork above the preview ground.');
+    });
     await page.locator('[data-projectile="verify:blend-additive"]').click();await page.locator('[data-playback-mode="flight"]').click();
     await page.waitForFunction(()=>{const c=window.__projectileRoot.querySelector('[data-projectile="verify:blend-additive"] canvas');return c.getContext('2d').getImageData(60,36,1,1).data[3]>0;});await frames(4);
-    pixelNear(await previewPixel(),[60,42,48,255],'Additive preview composites against its opaque backdrop');
+    pixelNear((await previewSample()).color,[60,42,48,255],'Additive preview composites against its opaque backdrop');
     pixelNear(await page.locator('[data-projectile="verify:blend-additive"] canvas').evaluate(c=>Array.from(c.getContext('2d').getImageData(60,36,1,1).data)),[63,43,50,255],'Additive thumbnail paints its backdrop before lighter blending');
-    await page.locator('[data-projectile="verify:blend-normal"]').click();await frames(4);pixelNear(await previewPixel(),[50,26,26,255],'Normal artwork restores source-over after an additive effect');
+    await page.locator('[data-projectile="verify:blend-normal"]').click();await frames(4);pixelNear((await previewSample()).color,[50,26,26,255],'Normal artwork restores source-over after an additive effect');
     pixelNear(await page.locator('[data-projectile="verify:blend-normal"] canvas').evaluate(c=>Array.from(c.getContext('2d').getImageData(60,36,1,1).data)),[80,20,10,128],'Normal thumbnails retain their alpha');
+    const defaultTrail=page.getByLabel('Projectile trail',{exact:true});
+    assert.equal(await defaultTrail.locator('option').first().textContent(),'Tower arrow trail (default)');
+    await page.getByLabel('Enable trail',{exact:true}).check();
+    assert.equal(await defaultTrail.inputValue(),'trail:bb4d9c1e-b926-4023-9f10-a49134339dcd');
+    await page.locator('[data-projectile="verify:blend-additive"]').click();
+    const eyedropper=page.getByRole('button',{name:'Pick from artwork',exact:true}),hex=page.getByLabel('Trail color hex',{exact:true});
+    const normalArt=page.locator('[data-projectile="verify:blend-normal"] canvas');
+    const expectedColor=await normalArt.evaluate(c=>'#'+Array.from(c.getContext('2d').getImageData(60,36,1,1).data).slice(0,3).map(v=>v.toString(16).padStart(2,'0')).join(''));
+    await eyedropper.click();assert.equal(await eyedropper.getAttribute('aria-pressed'),'true');
+    await normalArt.click();assert.equal(await hex.inputValue(),expectedColor);
+    assert.equal(await eyedropper.getAttribute('aria-pressed'),'false');
+    assert.equal(await page.locator('[data-projectile="verify:blend-additive"]').getAttribute('aria-pressed'),'true','sampling never changes the selected projectile');
+    await eyedropper.click();await page.keyboard.press('Escape');assert.equal(await eyedropper.getAttribute('aria-pressed'),'false');
+    assert.equal(await hex.inputValue(),expectedColor);
+    await eyedropper.click();
+    const preview=await previewSample();
+    await flightCanvas.click({position:preview.position});
+    assert.equal(await hex.inputValue(),'#'+preview.color.slice(0,3).map(v=>v.toString(16).padStart(2,'0')).join(''));
+    await page.getByLabel('Trail color',{exact:true}).evaluate(input=>{input.value='#12ab34';input.dispatchEvent(new Event('change',{bubbles:true}));});
+    assert.equal(await hex.inputValue(),'#12ab34');
+    assert.equal(await page.getByLabel('Trail green',{exact:true}).inputValue(),String(0xab));
+    report.checks.push('Tower Arrow is the standard trail. The eyedropper samples thumbnail colors without switching projectiles, and the palette commits its final color to RGB and hex.');
     await page.evaluate(()=>window.__projectileApp.destroy());assert.equal(saves,0);report.checks.push('Pure additive flipbooks and their opaque thumbnails use additive blending; normal artwork retains alpha and restores source-over.');
     report.after=hashes();assert.deepEqual(report.before,report.after);assert.deepEqual(report.pageErrors,[]);assert.deepEqual(report.requestErrors,[]);report.ok=true;console.log(report.checks.join('\n'));
   }catch(error){report.failure=error.stack;if(page)await page.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});throw error;}

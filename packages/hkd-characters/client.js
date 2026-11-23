@@ -36,7 +36,7 @@ function mount(host,api){
     unitList.title='Shift+Q: previous character · Shift+E: next character';
   }
   const packageFilter=el('select',undefined,library),classFilter=el('select',undefined,library),unitSort=el('select',undefined,library);for(const control of [packageFilter,classFilter,unitSort]){control.className='wide';control.style.marginBottom='7px';control.hidden=itemMode;library.insertBefore(control,unitList);}packageFilter.setAttribute('aria-label','Character package');classFilter.setAttribute('aria-label','Enemy class');unitSort.setAttribute('aria-label','Sort characters');
-  for(const option of [{id:'',label:'All packages'},...UnitPacks.packs]){const entry=el('option',option.label,packageFilter);entry.value=option.id;}
+  for(const option of [{id:'',label:'All packages'},UnitPacks.custom,...UnitPacks.packs]){const entry=el('option',option.label,packageFilter);entry.value=option.id;}
   for(const option of [{value:'',label:'All enemy classes'},...UnitPacks.enemyClasses]){const entry=el('option',option.label,classFilter);entry.value=option.value;}
   for(const [value,label]of [['name','Sort by name'],['package','Sort by package'],['enemy-class','Sort by class: Normal → Boss'],['enemy-class-desc','Sort by class: Boss → Normal']]){const entry=el('option',label,unitSort);entry.value=value;}
   const librarySplit=el('div',undefined,library,'library-splitter'),partLibrary=el('section',undefined,library,'part-library');el('h2','PART LIBRARY',partLibrary);
@@ -280,7 +280,7 @@ function mount(host,api){
     }
     unitFilter.value=filter;
     if(!itemMode){
-      const available=new Set(allListed.map(unit=>UnitPacks.forUnit(unit).id));
+      const available=new Set(allListed.map(unit=>UnitPacks.collectionFor(unit).id));
       for(const option of packageFilter.children)option.hidden=option.disabled=!!option.value&&!available.has(option.value);
       if(!available.has(packageFilter.value))packageFilter.value='';
     }
@@ -298,7 +298,7 @@ function mount(host,api){
         continue;
       }
       const row=button(unitList,undefined,()=>selectRosterUnit(unit),'character-card');
-      row.title=UnitPacks.forUnit(unit).label;
+      row.title=UnitPacks.collectionFor(unit).label;
       row.setAttribute('aria-label',UnitPacks.caption(unit));
       row.setAttribute('aria-current',String(isActive));row.classList.toggle('selected',isActive);
       const portrait=el('span',undefined,row,'character-card-portrait');

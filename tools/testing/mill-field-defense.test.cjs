@@ -56,8 +56,15 @@ test('bomb art uses exact RTS tier2/4/7 pixels and a separate small image from t
 test('every actual Spine crop becomes its own finite attack polygon, including unarmed level1',native,()=>{
  for(const row of config.BuildEnum[5].levelList){const env=setup(row.index),r=env.runtime;r.fighting=true;assert.equal(r.fields.length,row.MillDefense.fields);for(const f of r.fields){assert.equal(f.getWposPhyCol2()[0].tagNode,f.node);assert(f.getWposPhyCol()[0].every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)));}r.destroy();assert.equal(env.listeners.size,0);}
 });
-test('scarecrows fire projectiles only in battle, within range and at the configured cadence',native,()=>{
- const e=setup(2),r=e.runtime,f=r.fields[0],p=f.getAttPos();enemy(e,p.x,p.y);r.update(10);assert.equal(e.shots.length,0);r.fighting=true;r.update(2);assert.equal(e.shots.length,2);r.update(.01);assert.equal(e.shots.length,2);r.update(1.5);assert.equal(e.shots.length,4);e.enemies.forEach(a=>a.node.x+=10000);r.update(10);assert.equal(e.shots.length,4);r.destroy();
+test('scarecrows fire at ground enemies only in battle, within range and at the configured cadence',native,()=>{
+ const e=setup(2),r=e.runtime,p=r.fields[0].getAttPos(),flying=enemy(e,p.x,p.y);
+ flying.cfg={BuildingCross:0};
+ r.fighting=true;r.update(2);assert.equal(e.shots.length,0);
+ const ground=enemy(e,p.x,p.y);
+ r.fighting=false;r.update(10);assert.equal(e.shots.length,0);
+ r.fighting=true;r.update(2);assert.equal(e.shots.length,2);assert(e.shots.every(shot=>shot.t===ground));
+ r.update(.01);assert.equal(e.shots.length,2);r.update(1.5);assert.equal(e.shots.length,4);
+ e.enemies.forEach(a=>a.node.x+=10000);r.update(10);assert.equal(e.shots.length,4);r.destroy();
 });
 test('bomb fields never fire and explode once only on their own lethal damage, with bounded splash',native,()=>{
  const e=setup(5),r=e.runtime,f=r.fields[0],p=f.getAttPos(),near=enemy(e,p.x,p.y),far=enemy(e,p.x+111,p.y);r.fighting=true;r.update(20);assert.equal(e.shots.length,0);assert.equal(f.onAttacked(1),1);assert.equal(near.hp,500);assert.equal(f.onAttacked(Infinity),0);f.onAttacked(999);assert.equal(near.hp,500-r.cfg.damage);assert.equal(far.hp,500);assert.equal(r.fields[1].hp,r.cfg.fieldHp);f.onAttacked(999);assert.equal(near.hp,500-r.cfg.damage);r.tick(.2);assert.equal(f.slot.getAttachment(),null);assert(f.debris.node.active);assert.equal(f.debris.sprite.spriteFrame.name,'buildings/shared/debris');assert.equal(f.addon.color.a,0);r.destroy();

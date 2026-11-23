@@ -2,6 +2,7 @@
 const CombatPreview=require('./combat-preview');
 const Looks=require('../../assets/_script/ProjectileLooks');
 const ProjectileVisuals=require('./projectile-visuals');
+const standardTrailId='trail:bb4d9c1e-b926-4023-9f10-a49134339dcd'; // Tower arrow trail
 let unitPickerSerial=0;
 
 // Imported projectile variants share a small number of atlases. Their static
@@ -40,6 +41,16 @@ function createSpineCache(api,options){
   return{get,load,invalidate,status(){return{resources:resources.size,legacy:legacy.size,bindings:bindings.size};},destroy(){closed=true;invalidate();}};
 }
 
+function artworkColor(surface, clientX, clientY){
+  const bounds=surface.getBoundingClientRect();
+  if(!bounds.width||!bounds.height)return null;
+  const x=Math.floor((clientX-bounds.left)*surface.width/bounds.width);
+  const y=Math.floor((clientY-bounds.top)*surface.height/bounds.height);
+  if(x<0||y<0||x>=surface.width||y>=surface.height)return null;
+  const [r,g,b,alpha]=surface.getContext('2d').getImageData(x,y,1,1).data;
+  return alpha?'#'+[r,g,b].map(channel=>channel.toString(16).padStart(2,'0')).join(''):null;
+}
+
 function mount(root,api){
   const el=(tag,text,parent)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(parent)parent.appendChild(n);return n;};
   const button=(text,parent,fn)=>{const n=el('button',text,parent);n.type='button';n.onclick=fn;return n;},clone=value=>JSON.parse(JSON.stringify(value));
@@ -67,6 +78,7 @@ function mount(root,api){
   el('p','Silent, looping preview. Click the active Pause button or press Space to pause and resume. Save applies this unit’s projectile, scale, launch delay and trail color.',right).className='projectile-note';
   let snapshot=null,unit='hero',selected=null,selectionTouched=false,trailTouched=false,trailValue;
   let focusSequence=0;
+  let colorSampler=null;
   let closed=false,queue=Promise.resolve(),raf=0,libraryRaf=0,age=0,last=0,mode='all',paused=false,actor=null,target=null,actorRequest=0,locked=false,generation=0,deferredAssignments=false;
   const eventScope=root.getRootNode(),eventPath=event=>typeof event.composedPath==='function'?event.composedPath():[event.target];
   const focusedElement=()=>{let focused=eventScope.activeElement||document.activeElement;while(focused&&focused.shadowRoot&&focused.shadowRoot.activeElement)focused=focused.shadowRoot.activeElement;return focused;};
@@ -112,7 +124,7 @@ function mount(root,api){
   function apply(value){if(closed)return;snapshot=value;render();if(value.result)report(value.result.warning||(value.result.saved?'Saved projectile, scale, launch delay and trail color. Reload the game preview to apply.':'No changes; no files written.'),!!value.result.warning);}
   function run(action){queue=queue.then(()=>{if(!closed)return action();}).catch(warn);return queue;}
   function lockControls(){if(locked)for(const input of root.querySelectorAll('button,input,select'))input.disabled=true;}
-  function exclusive(action){if(locked)return;locked=true;lockControls();return run(async()=>{try{await action();}finally{locked=false;if(!closed){for(const input of root.querySelectorAll('button,input,select'))input.disabled=false;if(snapshot)apply(snapshot);}}});}
+  function exclusive(action){if(locked)return;stopColorSampling();locked=true;lockControls();return run(async()=>{try{await action();}finally{locked=false;if(!closed){for(const input of root.querySelectorAll('button,input,select'))input.disabled=false;if(snapshot)apply(snapshot);}}});}
   const save=button('Save',actions,()=>exclusive(async()=>{if(!snapshot)return;if(invalidDelay()||invalidVisual())throw Error('Correct invalid projectile drafts before saving.');storeSelection();if(pendingAssignment()||pendingTiming()){const data=clone(snapshot.data),timings=clone(snapshot.timings||{});for(const [key,draft]of delayDrafts)if(draft.value!==effectiveDelay(key))timings[key]=draft.value;for(const [key,draft]of pending){const next=assignmentForSelection(key,draft);if(Object.keys(next).length)data.assignments[key]=next;else delete data.assignments[key];}snapshot=await api.ipc('change',{version:snapshot.version,data,timings});}const value=await api.ipc('save',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();visualDrafts.clear();apply(value);}));
   const discard=button('Discard drafts',actions,()=>exclusive(async()=>{if(!window.confirm('Discard unsaved projectile, scale, delay and trail changes?'))return;const value=await api.ipc('discard',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();visualDrafts.clear();selected=null;apply(value);}));
   button('Reload',actions,()=>exclusive(async()=>{storeSelection();const value=await api.ipc('load',{});generation++;unitTrigger.dataset.signature='';images.clear();spines.invalidate();visuals.invalidate();combat.invalidate();target=null;if(!selectionTouched)selected=null;apply(value);loadActors();renderSelected();}));save.disabled=discard.disabled=true;
@@ -120,10 +132,32 @@ function mount(root,api){
   const playbackLabels={launch:'launch',flight:'flight',impact:'on hit',all:'all'};
   for(const [key,label]of Object.entries(playbackLabels)){const control=playButtons[key]=button('Play '+label,controls,()=>{if(mode===key)togglePlayback();else{mode=key;paused=false;age=0;last=0;renderSelected();}});control.dataset.playbackMode=key;}
   const playbackKeyDown=event=>{
+    if(colorSampler&&event.key==='Escape'){event.preventDefault();event.stopPropagation();stopColorSampling();refreshStatus();return;}
     if(event.defaultPrevented||!(event.code==='Space'||event.key===' '||event.key==='Spacebar')||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey||!snapshot||locked)return;
     const target=eventPath(event)[0];if(target&&target.closest&&target.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"]),[role="combobox"],[role="listbox"]'))return;
     event.preventDefault();event.stopPropagation();if(!event.repeat)togglePlayback();
   };root.addEventListener('keydown',playbackKeyDown);
+  function stopColorSampling(){
+    if(!colorSampler)return;
+    colorSampler.button.setAttribute('aria-pressed','false');
+    colorSampler=null;
+    root.classList.remove('projectile-sampling-color');
+  }
+  const pickArtworkColor=event=>{
+    if(!colorSampler||locked)return;
+    const surface=eventPath(event).find(value=>value===canvas||value.tagName==='CANVAS'&&grid.contains(value));
+    if(!surface)return;
+    event.preventDefault();event.stopPropagation();
+    let color;
+    try{color=artworkColor(surface,event.clientX,event.clientY);}
+    catch(error){report('Could not sample this artwork. Try the combat preview or enter a color directly.',true);return;}
+    if(!color){report('Click a visible part of the projectile or preview. Esc cancels.');return;}
+    const sampler=colorSampler;
+    stopColorSampling();
+    sampler.apply(color);
+    sampler.button.focus();
+  };
+  root.addEventListener('click',pickArtworkColor,true);
   const control=(label,input)=>{const wrap=el('label',undefined,fields);el('span',label,wrap);wrap.appendChild(input);return input;};
   function defaultSelection(){const a=effectiveRow(),u=who(),flight=byId(a.flight)?a.flight:u.defaultFlight;return sets().find(s=>s.id===a.set)||sets().find(s=>s.flight===flight)||sets().find(s=>s.category==='Imported arrows')||sets()[0];}
   function loadActors(){const request=++actorRequest,targetGeneration=generation;actor=null;age=0;combat.load(unit).then(value=>{if(!closed&&request===actorRequest){actor=value;if(!paused)age=0;renderAssignments();renderSelected();}}).catch(warn);if(!target)combat.load('preview-target').then(value=>{if(!closed&&targetGeneration===generation)target=value;}).catch(warn);}
@@ -164,9 +198,10 @@ function mount(root,api){
     childHost=pointerScope.host;pointerScope=childHost&&childHost.getRootNode();
   }
   function setDelay(value,key){key=key||unit;const existing=delayDrafts.get(key),draft=existing&&Object.is(existing.value,value)?existing:{value,text:String(value)};delayDrafts.set(key,draft);refreshStatus();run(async()=>{if(!validDelay(value))throw Error('Launch delay must be between 0 and 10 seconds.');if(value===effectiveDelay(key)){if(delayDrafts.get(key)===draft){delayDrafts.delete(key);refreshStatus();}return;}const timings=clone(snapshot.timings||{});timings[key]=value;const valueSnapshot=await api.ipc('change',{version:snapshot.version,data:snapshot.data,timings});if(delayDrafts.get(key)===draft)delayDrafts.delete(key);apply(valueSnapshot);age=0;});}
-  fields.onfocusout=event=>{if(deferredAssignments&&event.relatedTarget&&!fields.contains(event.relatedTarget))setTimeout(()=>{if(!closed&&deferredAssignments&&!fields.contains(focusedElement()))renderAssignments(true);},0);};
+  fields.onfocusout=event=>{if(!colorSampler&&deferredAssignments&&event.relatedTarget&&!fields.contains(event.relatedTarget))setTimeout(()=>{if(!closed&&!colorSampler&&deferredAssignments&&!fields.contains(focusedElement()))renderAssignments(true);},0);};
   function renderAssignments(force){
-    const focused=focusedElement();if(!force&&!locked&&fields.dataset.unit===unit&&fields.contains(focused)&&['INPUT','SELECT','BUTTON'].includes(focused.tagName)){deferredAssignments=true;return;}deferredAssignments=false;fields.dataset.unit=unit;
+    const focused=focusedElement();if(!force&&!locked&&fields.dataset.unit===unit&&(colorSampler||fields.contains(focused)&&['INPUT','SELECT','BUTTON'].includes(focused.tagName))){deferredAssignments=true;return;}deferredAssignments=false;fields.dataset.unit=unit;
+    stopColorSampling();
     fields.innerHTML='';const person=who(),assignment=effectiveRow(),set=currentSet();el('h3','Projectile assignment',fields);el('strong',set?set.name:'Choose a projectile',fields).className='projectile-chosen';el('small',selectionTouched?'Selected · Save to assign':assignment.flight?'Current projectile':'Original unit projectile',fields);
     const scaleUnit=unit,scaleValue=visualValue('scale'),scale=el('input');scale.type='number';scale.min='.1';scale.max='10';scale.step='.05';scale.value=scaleValue===undefined?1:scaleValue;scale.setAttribute('aria-invalid',String(scaleValue!==undefined&&!validScale(scaleValue)));control('Projectile scale',scale);
     const scaleSlider=el('input');scaleSlider.type='range';scaleSlider.min='.1';scaleSlider.max='10';scaleSlider.step='.05';scaleSlider.value=validScale(scaleValue)?scaleValue:1;scaleSlider.className='projectile-delay-slider';scaleSlider.setAttribute('aria-label','Projectile scale slider');fields.appendChild(scaleSlider);
@@ -180,20 +215,46 @@ function mount(root,api){
     const reference=actor&&actor.description.referenceDelay;if(Number.isFinite(reference))el('small','Animation reference: '+reference.toFixed(2)+' s',fields).className='projectile-reference';
     button('Reset launch delay',fields,()=>{const key=unit;exclusive(async()=>{const timings=clone(snapshot.timings||{});delete timings[key];const value=await api.ipc('change',{version:snapshot.version,data:snapshot.data,timings});delayDrafts.delete(key);apply(value);age=0;});});
     const nativeTrail=(byId(set&&set.flight)||{}).trail||person.defaultTrail||(byId(set&&set.flight)||{}).visualLayers&&byId(set.flight).visualLayers.some(layer=>layer.kind==='trail');
-    el('h3','Projectile trail',fields);const choice=trailTouched?trailValue:unit==='hero'?row().trail:assignment.trail,enabled=choice===undefined?!!nativeTrail:choice!==false;
+    const standard=trails().find(preset=>preset.id===standardTrailId);
+    el('h3','Projectile trail',fields);const choice=trailTouched?trailValue:unit==='hero'?row().trail:assignment.trail,enabled=choice===undefined?!!nativeTrail:choice!==false&&choice!=='none';
     const check=el('input');check.type='checkbox';check.checked=enabled;const toggle=el('label',undefined,fields);toggle.className='projectile-trail-toggle';toggle.appendChild(check);el('span','Enable trail',toggle);
-    const trail=el('select');trail.setAttribute('aria-label','Projectile trail');el('option','Default trail',trail).value='';for(const preset of trails()){const option=el('option',preset.name,trail);option.value=preset.id;}
-    trail.value=choice||'';trail.disabled=!enabled;
-    const updateTrail=()=>{trailTouched=true;if(check.checked&&!trail.value&&!nativeTrail)trail.value=trails()[0]?trails()[0].id:'';trailValue=check.checked?trail.value||undefined:false;trail.disabled=!check.checked;trailHint.textContent=trailValue===undefined?'Uses the projectile’s default trail or the original unit trail.':check.checked?'Trail shown during Play all.':'Trail disabled for this unit.';if(visualValue('trailColor')===undefined){const preset=trails().find(t=>t.id===(trailValue||nativeTrail)),color=preset&&preset.color||'#ffffff';picker.value=hex.value=color;channels.forEach((channel,index)=>{channel.input.value=parseInt(color.slice(1+index*2,3+index*2),16);channel.output.textContent=channel.input.value;});}age=0;refreshStatus();};check.onchange=updateTrail;trail.onchange=updateTrail;fields.appendChild(trail);
-    const trailHint=el('small',choice===undefined?'Uses the projectile’s default trail or the original unit trail.':enabled?'Trail shown during Play all.':'Trail disabled for this unit.',fields);
+    const trail=el('select');trail.setAttribute('aria-label','Projectile trail');
+    if(standard)el('option',standard.name+' (default)',trail).value=standard.id;
+    for(const preset of trails())if(preset!==standard)el('option',preset.name,trail).value=preset.id;
+    if(nativeTrail||!standard)el('option','Original projectile trail',trail).value='';
+    trail.value=enabled?(choice||(!trailTouched&&typeof nativeTrail==='string'?nativeTrail:'')):standard?.id||'';
+    trail.disabled=!enabled;
+    const trailText=active=>active?trail.value?'Trail shown during Play all.':'Uses the trail from the projectile or unit.':'Trail disabled for this unit.';
+    const updateTrail=()=>{
+      trailTouched=true;trailValue=check.checked?trail.value||undefined:false;
+      trail.disabled=!check.checked;trailHint.textContent=trailText(check.checked);
+      if(visualValue('trailColor')===undefined){
+        const preset=trails().find(entry=>entry.id===(trail.value||nativeTrail));
+        showColor(preset&&preset.color||'#ffffff');
+      }
+      age=0;refreshStatus();
+    };
+    check.onchange=()=>{if(check.checked&&!trail.value&&standard)trail.value=standard.id;updateTrail();};
+    trail.onchange=updateTrail;fields.appendChild(trail);
+    const trailHint=el('small',trailText(enabled),fields);
     const colorUnit=unit,preset=trails().find(t=>t.id===(choice||nativeTrail)),savedColor=visualValue('trailColor'),colorValue=validColor(savedColor)?savedColor:preset&&preset.color||'#ffffff';
     el('h3','Trail color mixer',fields);const colors=el('div',undefined,fields);colors.className='projectile-color-inputs';
     const picker=el('input',undefined,colors);picker.type='color';picker.value=colorValue;picker.setAttribute('aria-label','Trail color');
     const hex=el('input',undefined,colors);hex.type='text';hex.value=savedColor===undefined?colorValue:savedColor;hex.maxLength=7;hex.setAttribute('aria-label','Trail color hex');hex.setAttribute('aria-invalid',String(savedColor!==undefined&&!validColor(savedColor)));
     const channels=[];
-    function mixColor(value){if(!validColor(value))return;picker.value=hex.value=value.toLowerCase();hex.setAttribute('aria-invalid','false');channels.forEach((channel,index)=>{channel.input.value=parseInt(value.slice(1+index*2,3+index*2),16);channel.output.textContent=channel.input.value;});setVisual('trailColor',value.toLowerCase(),colorUnit);}
+    function showColor(value){picker.value=hex.value=value.toLowerCase();hex.setAttribute('aria-invalid','false');channels.forEach((channel,index)=>{channel.input.value=parseInt(value.slice(1+index*2,3+index*2),16);channel.output.textContent=channel.input.value;});}
+    function mixColor(value){if(!validColor(value))return;showColor(value);setVisual('trailColor',value.toLowerCase(),colorUnit);}
+    const eyedropper=button('Pick from artwork',fields,()=>{
+      if(colorSampler){stopColorSampling();refreshStatus();return;}
+      colorSampler={button:eyedropper,apply:mixColor};
+      eyedropper.setAttribute('aria-pressed','true');
+      root.classList.add('projectile-sampling-color');
+      report('Click a color in the library or preview. Esc cancels.');
+    });
+    eyedropper.className='projectile-eyedropper';
+    eyedropper.setAttribute('aria-pressed','false');
     for(const [index,name]of ['Red','Green','Blue'].entries()){const line=el('label',undefined,fields);line.className='projectile-color-channel';el('span',name,line);const input=el('input',undefined,line);input.type='range';input.min='0';input.max='255';input.step='1';input.value=parseInt(colorValue.slice(1+index*2,3+index*2),16);input.setAttribute('aria-label','Trail '+name.toLowerCase());const output=el('output',input.value,line);channels.push({input,output});input.oninput=()=>mixColor('#'+channels.map(channel=>Number(channel.input.value).toString(16).padStart(2,'0')).join(''));}
-    picker.oninput=()=>mixColor(picker.value);hex.oninput=()=>{hex.setAttribute('aria-invalid',String(!validColor(hex.value)));if(validColor(hex.value))mixColor(hex.value);else setVisual('trailColor',hex.value,colorUnit);};
+    picker.onchange=picker.oninput=()=>mixColor(picker.value);hex.oninput=()=>{hex.setAttribute('aria-invalid',String(!validColor(hex.value)));if(validColor(hex.value))mixColor(hex.value);else setVisual('trailColor',hex.value,colorUnit);};
     button('Use default trail color',fields,()=>{setVisual('trailColor',undefined,colorUnit);renderAssignments(true);});
     button('Reset projectile & trail',fields,()=>{const key=unit;exclusive(async()=>{const data=clone(snapshot.data),next=Object.assign({},data.assignments[key]);for(const field of ['set','flight','launch','impact','size','scale','rotation','tint','trail','trailColor'])delete next[field];if(Object.keys(next).length)data.assignments[key]=next;else delete data.assignments[key];const value=await api.ipc('change',{version:snapshot.version,data,timings:snapshot.timings});pending.delete(key);visualDrafts.delete(key);if(unit===key){selectionTouched=trailTouched=false;selected=null;}apply(value);age=0;});});lockControls();
   }
@@ -323,6 +384,6 @@ function mount(root,api){
     });
   }
   run(async()=>{const value=await api.ipc('load',{});apply(value);if(!selectFocus(value.focus)&&!closed)loadActors();});raf=requestAnimationFrame(tick);
-  return{focusUnit,destroy(){closed=true;for(const {scope,listener}of pickerPointerListeners)scope.removeEventListener('pointerdown',listener,true);root.removeEventListener('keydown',playbackKeyDown);actorRequest++;cancelAnimationFrame(raf);cancelAnimationFrame(libraryRaf);combat.destroy();visuals.destroy();root.innerHTML='';images.clear();spines.destroy();}};
+  return{focusUnit,destroy(){closed=true;stopColorSampling();for(const {scope,listener}of pickerPointerListeners)scope.removeEventListener('pointerdown',listener,true);root.removeEventListener('keydown',playbackKeyDown);root.removeEventListener('click',pickArtworkColor,true);actorRequest++;cancelAnimationFrame(raf);cancelAnimationFrame(libraryRaf);combat.destroy();visuals.destroy();root.innerHTML='';images.clear();spines.destroy();}};
 }
 module.exports={mount,createSpineCache};

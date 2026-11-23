@@ -1,4 +1,5 @@
 var BattleSounds = require("BattleSounds");
+var SilverOfferSchedule = require("SilverOfferSchedule");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -263,11 +264,10 @@ var def_KinghtFallGameCtrlData = function () {
         this.appearBusinessPoints.node.active = false;
       }
       this.canNew = false;
-      // The editor numbers Silver offers in their authored map order.
-      // The wave number keeps the same location on retry and resume.
-      var offers = this.businessPoints;
-      var waveIndex = Math.max(0, this.round - 1);
-      this.appearBusinessPoints = offers.length ? offers[waveIndex % offers.length] : null;
+      var offer = this.businessPoints[0];
+      var schedule = offer && SilverOfferSchedule.settings(SilverOfferSchedule.read(offer));
+      this.appearBusinessPoints = schedule && this.businessAdd[a.SilverClaimedWave] !== this.round &&
+        SilverOfferSchedule.appears(schedule, this.round) ? offer : null;
     }
     if ($z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe)) {
       this.appearBusinessPoints && (this.appearBusinessPoints.node.active = false);
@@ -416,7 +416,7 @@ var def_KinghtFallGameCtrlData = function () {
           if (s) {
             switch (s.ndType) {
               case $z1KinghtFallCommerce.KinghtFallCommerceType.Silver:
-                this.businessPoints.push(s);
+                if (!this.businessPoints.length) this.businessPoints.push(s);
                 break;
               case $z1KinghtFallCommerce.KinghtFallCommerceType.Weapon:
                 this.weaponBusinessPoints = require('AuthoredSpawnPlan').offers(this.weaponBusinessPoints, s);
@@ -814,4 +814,5 @@ exports.default = def_KinghtFallGameCtrlData;
   t.Speed = "CommerceSpeed";
   t.Energy1 = "CommerceEnergy1";
   t.Energy2 = "CommerceEnergy2";
+  t.SilverClaimedWave = "CommerceSilverClaimedWave";
 })(a = exports.KinghtFallCommerceKeyType || (exports.KinghtFallCommerceKeyType = {}));

@@ -67,6 +67,30 @@ test('legacy towers retain nearest targeting and no override; partial authored s
   assert.equal(selected, near, 'a keep without authored settings also keeps its nearest-target shot');
 });
 
+test('archer, sniper and main hall can select a flying enemy while a cannon selects the ground enemy', () => {
+  const h = setup();
+  const flying = enemy('flying', 40, 0, 500), ground = enemy('ground', 70, 0);
+  flying.cfg = { BuildingCross: 0 };
+  ground.cfg = { BuildingCross: 1 };
+  h.d.enemyList = [flying, ground];
+  let selected;
+  h.g.onShotBuild = (_source, target) => { selected = target; };
+  for (const [ID, attackType] of [[2, 'arrow'], [2, 'sniper'], [1, 'arrow'], [2, 'cannon']]) {
+    const defender = tower(h, { ID, Tower: { attackType } });
+    selected = null;
+    defender.doAttack();
+    assert.equal(selected, attackType === 'cannon' ? ground : flying, ID + ' ' + attackType);
+  }
+  const cannon = tower(h, { ID: 2, Tower: { attackType: 'cannon' } });
+  cannon.cacheAimTarget(flying);
+  assert.equal(cannon.aimTargetIsLive(), false);
+  h.d.enemyList = [flying];
+  selected = null;
+  cannon.doAttack();
+  assert.equal(selected, null);
+  assert.equal(cannon.time.AttackTime, 1);
+});
+
 test('a killing tower impact cannot apply a relic pulse to a replacement battle', () => {
   for(const type of ['arrow','cannon']){
     const {h,bullet}=shotSetup(),t=tower(h,{Tower:{attackType:type}});
@@ -198,13 +222,19 @@ test('a battle retired during tower launch feedback cannot spawn a piercing shot
   assert.deepEqual(target.hits, []);
 });
 
-test('cannon impact damages current monsters inside its radius even after its initial target dies', () => {
+test('cannon skips flying enemies at release and in the blast, even after its initial ground target dies', () => {
   const { h, bullet } = shotSetup(), t = tower(h, { Tower: { attackType: 'cannon', projectileSpeed: 300, splashRadius: 90 } });
   const primary = enemy('primary', 200, 0), neighbor = enemy('neighbor', 260, 0), outside = enemy('outside', 291, 0);
-  h.d.enemyList = [primary, neighbor, outside]; h.g.onShotBuild(t, primary);
+  const flying = enemy('flying', 205, 0);
+  flying.cfg = { BuildingCross: 0 };
+  h.d.enemyList = [primary, neighbor, outside, flying];
+  h.g.onShotBuild(t, flying);
+  assert.equal(h.g.ndBuildArr2.length, 0);
+  h.g.onShotBuild(t, primary);
   primary.hp = 0; primary.node.active = false; primary.node._combatGeneration++;
   complete(bullet);
   assert.deepEqual(primary.hits, []); assert.deepEqual(neighbor.hits, [50]); assert.deepEqual(outside.hits, []);
+  assert.deepEqual(flying.hits, []);
   assert.equal(bullet.node.x, 200, 'blast is centered on the committed ground position');
 });
 

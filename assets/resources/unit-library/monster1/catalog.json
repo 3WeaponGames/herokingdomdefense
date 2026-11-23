@@ -950,39 +950,39 @@
       "id": "monster1/Slime_Ironclad",
       "name": "Ironclad Slime",
       "pack": "monster1",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Purple.prefab",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Snail/Snail_Blue.prefab",
       "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Ironclad.json",
       "uuid": "2de3ce97-d9b3-523f-a0ec-42fae852fc70",
       "resource": "unit-library/monster1/Units/SlimeVariants/Slime_Ironclad",
       "animations": [
-        "idle",
+        "attack",
         "hit",
-        "die",
+        "idle",
         "move",
-        "attack"
+        "die"
       ],
-      "bones": 9,
-      "slots": 6,
-      "variantOf": "monster1/Slime_Purple"
+      "bones": 15,
+      "slots": 10,
+      "variantOf": "monster1/Snail_Blue"
     },
     {
       "id": "monster1/Slime_Spore",
       "name": "Lightning Slime",
       "pack": "monster1",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Snail/Snail_Blue.prefab",
       "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Spore.json",
       "uuid": "77fc1e20-64aa-5586-a0f5-5ebf8a00229c",
       "resource": "unit-library/monster1/Units/SlimeVariants/Slime_Spore",
       "animations": [
-        "idle",
+        "attack",
         "hit",
-        "die",
+        "idle",
         "move",
-        "attack"
+        "die"
       ],
-      "bones": 9,
-      "slots": 6,
-      "variantOf": "monster1/Slime_Green"
+      "bones": 15,
+      "slots": 10,
+      "variantOf": "monster1/Snail_Blue"
     },
     {
       "id": "monster1/Slime_Honey",

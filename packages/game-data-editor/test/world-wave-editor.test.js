@@ -21,6 +21,35 @@ test('group creation supplies defaults and stable unique IDs without aliases; re
  const keep=clone(wave.SpawnTimeline.filter(entry=>entry.id!==id));W.removeGroup(s,0,id,.5);assert.deepEqual(wave.SpawnTimeline,keep);assert.equal(W.entries(wave,.5).find(entry=>entry.unitId===90006).id,again);
 });
 
+test('linked spawn rows keep independent schedules and run through the existing timeline',()=>{
+ const s=timed(),wave=s.config.WaveCfg[0];wave.SpawnTimeline[0].count=5;
+ const before=clone(wave),id=W.addSpawn(s,0,'first',.5);
+ const link=wave.SpawnTimeline[0].unitGroupId;
+ assert(link);
+ assert.deepEqual(wave.SpawnTimeline.slice(0,3),[{...before.SpawnTimeline[0],unitGroupId:link},...before.SpawnTimeline.slice(1)]);
+ assert.deepEqual(wave.SpawnTimeline[3],{id,unitId:90002,unitGroupId:link,spawnId:2,count:1,startSeconds:.5,intervalSeconds:.5});
+ W.editGroup(s,0,id,{count:4,startSeconds:2,routeGraphId:'two'},.5);
+ const saved=clone(wave),groups=W.unitGroups(W.entries(saved,.5));
+ assert.equal(groups.length,3);
+ assert.deepEqual(groups[0].map(row=>[row.id,row.spawnId,row.count]),[['first',1,5],[id,2,4]]);
+ const {Timeline}=require('../../../assets/_script/AuthoredSpawnPlan'),spawned=[];
+ const runtime=new Timeline(saved.SpawnTimeline);
+ runtime.advance(10,(unitId,spawnId,route)=>{if(unitId===90002)spawned.push([spawnId,route]);});
+ assert.equal(runtime.pending(),false);
+ assert.deepEqual(spawned.filter(([spawnId])=>spawnId===1),Array(5).fill([1,'one']));
+ assert.deepEqual(spawned.filter(([spawnId])=>spawnId===2),Array(4).fill([2,'two']));
+
+ assert.throws(()=>W.addSpawn(s,0,'first',.5),/every enabled spawn/);
+ assert.throws(()=>W.editGroup(s,0,id,{spawnId:1},.5),/already uses that spawn point/);
+ assert.deepEqual(wave,saved);
+ const settings={spawnId:1,count:5,startSeconds:.5,intervalSeconds:.5};
+ W.chooseGroups(s,0,[90005],settings,.5,'first');
+ const updated=s.config.WaveCfg[0],linked=W.unitGroups(W.entries(updated,.5))[0];
+ assert.deepEqual(linked,groups[0].map(row=>({...row,unitId:90005})));
+ W.removeGroup(s,0,id,.5,{allSpawns:true});
+ assert.deepEqual(updated.SpawnTimeline,before.SpawnTimeline.slice(1));
+});
+
 test('edits preserve route and unknown fields until a spawn change makes that route unrelated',()=>{
  const s=timed(),wave=s.config.WaveCfg[0],patch={count:4,future:{keep:[4]}};W.editGroup(s,0,'first',patch,.5);patch.future.keep.push(8);assert.equal(wave.SpawnTimeline[0].routeGraphId,'one');assert.deepEqual(wave.SpawnTimeline[0].future,{keep:[4]});
  W.editGroup(s,0,'first',{spawnId:1},.5);assert.equal(wave.SpawnTimeline[0].routeGraphId,'one');W.editGroup(s,0,'first',{spawnId:2},.5);assert.equal(wave.SpawnTimeline[0].routeGraphId,null);W.editGroup(s,0,'shared',{spawnId:2},.5);assert.equal(wave.SpawnTimeline[1].routeGraphId,'shared');

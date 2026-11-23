@@ -1986,7 +1986,7 @@
       "behaviorTemplate": 90001,
       "aerial": false,
       "portrait": {
-        "pattern": "\\/(?:Body)$",
+        "pattern": "\\/(?:Body|Up|Front)$",
         "cropHeight": 1,
         "cropWidth": 1
       }
@@ -1999,7 +1999,7 @@
       "behaviorTemplate": 90001,
       "aerial": false,
       "portrait": {
-        "pattern": "\\/(?:Body)$",
+        "pattern": "\\/(?:Body|Up|Front)$",
         "cropHeight": 1,
         "cropWidth": 1
       }

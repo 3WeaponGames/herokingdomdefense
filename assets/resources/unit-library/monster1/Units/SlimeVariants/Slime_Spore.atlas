@@ -4,45 +4,73 @@ size: 2048,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-Slime_Spore_Body
+u_06edb22915cb0284896ca5cf285187b8
   rotate: false
   xy: 2, 2
-  size: 173, 162
-  orig: 173, 162
+  size: 207, 203
+  orig: 207, 203
   offset: 0, 0
   index: -1
-Slime_Spore_Attack
+u_7d94bd3b23dd5bc40a93f52470d6ab7b
   rotate: false
-  xy: 179, 2
-  size: 220, 158
-  orig: 220, 158
+  xy: 213, 2
+  size: 191, 187
+  orig: 191, 187
   offset: 0, 0
   index: -1
-u_b0f6c00bb569bf8478dd1e9c5ccc51a5
+u_7fec2adf742fef9419c61481eeeb7a19
   rotate: false
-  xy: 403, 2
-  size: 113, 158
-  orig: 113, 158
+  xy: 408, 2
+  size: 115, 172
+  orig: 115, 172
   offset: 0, 0
   index: -1
-Slime_Spore_Hit
+u_a1225c65d5dd0bb47b2176923bd30427
   rotate: false
-  xy: 520, 2
-  size: 213, 154
-  orig: 213, 154
+  xy: 527, 2
+  size: 189, 155
+  orig: 189, 155
   offset: 0, 0
   index: -1
-Slime_Spore_Hit_2
+u_e1960ec70ce249143931525b20746ab0
   rotate: false
-  xy: 737, 2
-  size: 213, 154
-  orig: 213, 154
+  xy: 720, 2
+  size: 189, 155
+  orig: 189, 155
   offset: 0, 0
   index: -1
-u_5dd6d929e4554704395ec53c54169df4
+u_b028807148e224c42a882969b0682378
   rotate: false
-  xy: 954, 2
-  size: 183, 59
-  orig: 183, 59
+  xy: 913, 2
+  size: 156, 91
+  orig: 156, 91
+  offset: 0, 0
+  index: -1
+u_ef00788c1c75c1344915255fe367c341
+  rotate: false
+  xy: 1073, 2
+  size: 156, 91
+  orig: 156, 91
+  offset: 0, 0
+  index: -1
+u_529365e914b17134e94cb5666d3bb747
+  rotate: false
+  xy: 1233, 2
+  size: 79, 88
+  orig: 79, 88
+  offset: 0, 0
+  index: -1
+u_cb3dc72b233639545b61a0e9e585e2b5
+  rotate: false
+  xy: 1316, 2
+  size: 79, 88
+  orig: 79, 88
+  offset: 0, 0
+  index: -1
+u_422d6b56bfe8fee4a8b901f95ccc8a40
+  rotate: false
+  xy: 1399, 2
+  size: 212, 68
+  orig: 212, 68
   offset: 0, 0
   index: -1

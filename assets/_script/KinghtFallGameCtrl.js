@@ -1,6 +1,7 @@
 var BattleSounds = require("BattleSounds");
 var ProjectileLooks = require("ProjectileLooks");
 var GameToolsOverrides = require("GameToolsOverrides");
+var FlightTargeting = require("FlightTargeting");
 var GameplayAdOwner = require("GameplayAdOwner");
 var i;
 var cc__extends = __extends;
@@ -385,8 +386,9 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ctrPlay.node.getPosition(this.vec2_1);
     if (this.gameData.appearBusinessPoints && this.gameData.appearBusinessPoints.getInClick(this.vec2_1, t)) {
       var silverOfferPoint = this.gameData.appearBusinessPoints, silverOfferNode = silverOfferPoint.node, silverOfferGeneration = silverOfferNode._combatGeneration;
+      var silverOfferWave = this.gameData.round;
       var silverOffer = GameplayAdOwner.begin(this, this, function () {
-        return e.gameData.appearBusinessPoints === silverOfferPoint && cc.isValid(silverOfferPoint, true) && silverOfferPoint.node === silverOfferNode && cc.isValid(silverOfferNode, true) && silverOfferNode._combatGeneration === silverOfferGeneration;
+        return e.gameData.round === silverOfferWave && e.gameData.appearBusinessPoints === silverOfferPoint && cc.isValid(silverOfferPoint, true) && silverOfferPoint.node === silverOfferNode && cc.isValid(silverOfferNode, true) && silverOfferNode._combatGeneration === silverOfferGeneration;
       });
       if (!silverOffer) return;
       var n = function (t) {
@@ -398,6 +400,9 @@ var def_KinghtFallGameCtrl = function (t) {
             if (!current()) return;
             e.gameData.appearBusinessPoints.node.active = false;
             e.gameData.coin += e.gameData.appearBusinessPoints.coinNum;
+            e.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.SilverClaimedWave] = silverOfferWave;
+            e.saveGame();
+            if (!current()) return;
             $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, $z1Utils.Utils.StringFormat(e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom01), e.gameData.appearBusinessPoints.coinNum));
             if (!current()) return;
             $z1KinghtFallUIGame.default.instance.initView();
@@ -1333,19 +1338,22 @@ var def_KinghtFallGameCtrl = function (t) {
     return arrow;
   };
   _ctor.prototype.onPlayAttack = function (t, release) {
+    var hero = this.ctrPlay;
+    if (!FlightTargeting.heroCanTarget(hero, t)) return;
     if (require("HeroWeaponCombat").melee(this, t, release)) return;
     var a = this.ndUI.convertToNodeSpaceAR(this.ctrPlay.getAttWpos());
     var o = this.takeHeroArrow(a, this.ctrPlay._styleProjectileSpeed || 1), n = o.node;
     var r = this.ctrPlay.getAttack(t);
     var s = this.ctrPlay.crit > Math.random();
-    var hero = this.ctrPlay, context = require("RelicCombat").primaryContext(hero, t, r, s, release);
+    var context = require("RelicCombat").primaryContext(hero, t, r, s, release);
     // The hero starts drawing again while this arrow flies. Its impact sound
     // belongs to the released shot, never to the hero's later live charge.
     context.heroStyle = hero.heroStyle;
     context.styleShotCharge = hero._styleShotCharge || 0;
     s && (r *= this.ctrPlay.getCriticalDamage ? this.ctrPlay.getCriticalDamage() : this.ctrPlay.critDam);
     o.setTag(a, t.node, function () {
-      if (cc.isValid(t) && cc.isValid(t.node) && require("RelicCombat").primaryCurrent(context, t, hero) && !context.used) {
+      if (cc.isValid(t) && cc.isValid(t.node) && FlightTargeting.heroCanTarget(hero, t) &&
+          require("RelicCombat").primaryCurrent(context, t, hero) && !context.used) {
         var impactPosition = t.node.getPosition();
         n.active = false;
         $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(impactPosition, "jian_" + hero.ctrPlayAni.arrName);
@@ -1419,12 +1427,15 @@ var def_KinghtFallGameCtrl = function (t) {
   _ctor.prototype.onShotBuild = function (t, e, released) {
     var game = this;
     var towerCombat = require("TowerCombat");
+    var behavior = t.getTowerSettings ? t.getTowerSettings() : null;
     var shotData = this.gameData, shotEpoch = this._combatEpoch, shotStage = this.gameStatus;
     var targetNode = e && e.node, targetGeneration = targetNode && targetNode._combatGeneration;
     function releaseCurrent() {
       return game.gameData === shotData && game._combatEpoch === shotEpoch && game.gameStatus === shotStage &&
-        !t.isDestroyed && towerCombat.live(e) && e.node === targetNode && targetNode._combatGeneration === targetGeneration;
+        !t.isDestroyed && towerCombat.live(e) && towerCombat.canTarget(e, behavior) &&
+        e.node === targetNode && targetNode._combatGeneration === targetGeneration;
     }
+    if (!releaseCurrent()) return;
     var towerKey=t.buildInfo&&t.buildInfo.cfg&&t.buildInfo.cfg.ID&&t.buildInfo.cfg.index?'tower:'+t.buildInfo.cfg.ID+':'+t.buildInfo.cfg.index:'tower';
     if (!released && ProjectileLooks.launchDelay(towerKey) > 0) {
       return ProjectileLooks.queueLaunch(this, towerKey, t, function () {
@@ -1439,7 +1450,6 @@ var def_KinghtFallGameCtrl = function (t) {
       var artwork = require("BuildingAppearance");
       if (artwork.ready && !artwork.ready(t)) return;
     }
-    var behavior = t.getTowerSettings ? t.getTowerSettings() : null;
     if (BattleSounds.attack) BattleSounds.attack(t, "tower", behavior);
     if (!releaseCurrent()) return;
     if (layered && !behavior) behavior = towerCombat.settings({ Tower: {} });

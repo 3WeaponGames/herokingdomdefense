@@ -15,6 +15,8 @@ const Units = require('../lib/unit-assets');
 const Records = require('../lib/unit-records');
 const Profiles = require('../lib/unit-profiles');
 const Catalog = require('../worlds/unit-catalog');
+const Library = require('../../hkd-characters/lib/unit-library');
+const Packs = require('../../hkd-characters/lib/unit-packs');
 const root = path.resolve(__dirname, '../../..');
 const read = relative => JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'));
 const definitions = require('../../../tools/characters/monster-roster-definitions.json').units;
@@ -67,9 +69,9 @@ test('every imported monster is an independent spawnable Units record with its a
     assert.equal(store.changes().length, 0);
 });
 
-test('pack filters, search, wave choices and browsing every new unit leave drafts and files untouched', () => {
+test('pack filters, Custom Units, search and wave choices leave drafts and files untouched', () => {
     const f = panelFixture(), before = f.store.draftState(), configFile = path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json'), bytes = fs.readFileSync(configFile);
-    const options = ['monster3', 'fantasy-monsters', 'fantasy-bosses'].map(value => {
+    const options = ['custom', 'monster3', 'fantasy-monsters', 'fantasy-bosses'].map(value => {
         const option = new f.panel.$unitPack.constructor('option');
         option.value = value;
         return f.panel.$unitPack.appendChild(option);
@@ -77,8 +79,10 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
     const rows = f.panel._rows(), monsters = rows.filter(row => row.record.MonsterSource);
     assert.equal(monsters.length, catalogs.length);
     for (const row of monsters) f.render(row.key);
-    const modelKeys = new Map(Catalog.rows({ ...before.A, GameTools: before.overrides }, before.catalog, null, Profiles.characters(root)).map(unit => [String(unit.id), unit.modelKey]));
-    const modelKey = row => row.unitType === 'enemy' && modelKeys.has(String(row.unitID)) ? modelKeys.get(String(row.unitID)) : row.key;
+    const worldRows = new Map(Catalog.rows({ ...before.A, GameTools: before.overrides }, before.catalog,
+        null, Profiles.characters(root), Library.customSources(root)).map(unit => [String(unit.id), unit]));
+    const modelKey = row => row.unitType === 'enemy' ? worldRows.get(String(row.unitID))?.modelKey || row.key : row.key;
+    const collection = row => worldRows.get(String(row.unitID))?.customUnit ? 'custom' : row.record.MonsterPack;
     const caption = row => row.label.replace(/<[^>]*>/g, '') + '\n' + row.subtitle;
     const listedRows = expected => {
         const byCaption = new Map(expected.map(row => [caption(row), row]));
@@ -88,19 +92,20 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
             return byCaption.get(value);
         });
     };
-    for (const pack of ['all', ...packs, 'campaign','allies']) {
+    for (const pack of ['all', 'custom', ...packs, 'campaign','allies']) {
         f.panel._unitPack = pack; f.panel._selected = null; f.panel.$search.value = ''; f.panel._render();
-        const expected = rows.filter(row => pack === 'all' || (pack === 'allies' ? row.unitType !== 'enemy' : row.unitType === 'enemy' && (pack === 'campaign' ? !row.record.MonsterPack : row.record.MonsterPack === pack)));
+        const expected = rows.filter(row => pack === 'all' || (pack === 'allies' ? row.unitType !== 'enemy' : row.unitType === 'enemy' && (pack === 'campaign' ? !collection(row) : collection(row) === pack)));
         const expectedModels = [...new Set(expected.map(modelKey))].sort(), shown = listedRows(expected);
         // The sidebar shows one model per appearance family; its profile
         // count still includes every scoped record, including boss forms.
         assert.equal(shown.length, expectedModels.length, pack + ' models');
         assert.deepEqual(shown.map(modelKey).sort(), expectedModels, pack + ' model coverage');
         assert.equal(f.panel.$count.textContent, expectedModels.length + ' models · ' + expected.length + ' profiles', pack + ' count');
-        if (pack === 'campaign') {
-            const managed=before.overrides.unitProfiles;assert.equal(expected.length,Object.values(managed.families).filter(f=>!before.A.SoldierCfg[Object.values(f.profiles)[0]].MonsterPack).length*6);
+        if (pack === 'custom') {
+            for (const name of ['Ironclad Slime', 'Lightning Slime', 'Skeleton King', 'Orc Shaman']) assert(shown.some(row => row.label === name), name);
+            assert(!shown.some(row => row.label === 'Blue Snail'));
             const sibling = expected.find(row => expected.some(other => other.key !== row.key && modelKey(other) === modelKey(row)));
-            assert(sibling, 'campaign fixtures include profiles sharing a model');
+            assert(sibling, 'custom units include profiles sharing a model');
             for (const row of expected.filter(row => modelKey(row) === modelKey(sibling)).slice(0, 2)) {
                 f.render(row.key);
                 assert(listedRows(expected).some(shown => shown.key === row.key), row.key + ' remains reachable as the selected profile');
@@ -108,7 +113,7 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
         }
     }
     for (const option of options) {
-        assert.equal(option.hidden, !packs.includes(option.value), option.value);
+        assert.equal(option.hidden, option.value !== 'custom' && !packs.includes(option.value), option.value);
         assert.equal(option.disabled, option.hidden);
     }
     f.panel._unitPack = 'monster1'; f.panel.$search.value = catalogs[0].id; f.panel._renderList();
@@ -117,12 +122,13 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
     f.panel.$search.value = '  Orc  Sword  ';
     f.panel._renderList();
     assert.deepEqual(Array.from(f.panel.$list.children, button => button.children[1].children[0].textContent).sort(),
-        ['Orc Crimson Guard', 'Orc Sword Butcher', 'Orc Sword Rookie', 'Orc Sword Veteran']);
+        ['Orc Sword Butcher', 'Orc Sword Rookie', 'Orc Sword Veteran']);
     f.panel.$search.value = 'rOOkie   SWORD orc';
     f.panel._renderList();
     assert.equal(f.panel.$list.children.length, 1);
     f.panel.$list.children[0].onclick();
     assert.equal(f.panel._rows().find(row => row.key === f.panel._selected).label, 'Orc Sword Rookie');
+    f.panel._unitPack = 'custom';
     f.panel.$search.value = 'shaman orc';
     f.panel._renderList();
     assert.deepEqual(Array.from(f.panel.$list.children, button => button.children[1].children[0].textContent), ['Orc Shaman']);
@@ -136,7 +142,7 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
         assert(choice, row.key + ' wave choice');
         assert(choice.label.includes(row.label));
         assert(choice.label.includes(f.panel._unitRole('enemy', row.unitID)));
-        assert(choice.label.includes(require('../../hkd-characters/lib/unit-packs').info(row.record.MonsterPack).label.replace('Monster Pack','Pack')));
+        assert(choice.label.includes(Packs.info(row.record.MonsterPack).label.replace('Monster Pack','Pack')));
     }
     assert(!choices.some(option => option.value === 90011 || option.value === 90012), 'transformation forms remain unspawnable');
     assert.deepEqual(f.store.draftState(), before);
@@ -182,6 +188,10 @@ test('support Data fields and Character editor keys use controller behavior with
     const { Service } = require('../../hkd-characters/lib/service');
     const units = new Service(root).units();
     const cfg = read('assets/KinghtFallConfig/GameJsonCfg.json');
+    const custom = Packs.list(units, { pack: 'custom' });
+    assert.deepEqual(new Set(custom.map(row => row.appearance)), Library.customSources(root));
+    assert.equal(Packs.list(units, { pack: 'monster1' }).some(row => row.id === '91153'), false);
+    assert.equal(Packs.forUnit(custom.find(row => row.id === '91153')).id, 'monster1');
     for (const unit of Object.values(cfg.SoldierCfg).filter(unit => unit.MonsterSource)) {
         const row = units.find(row => row.type === 'enemy' && row.id === String(unit.ID));
         assert(row, unit.MonsterSource);

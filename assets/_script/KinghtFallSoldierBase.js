@@ -32,6 +32,7 @@ var i;
 var GameToolsOverrides = require("GameToolsOverrides");
 var UnitLevelStats = require("UnitLevelStats");
 var AllyAwareness = require("AllyAwareness");
+var FlightTargeting = require("FlightTargeting");
 var cc__extends = __extends;
 var cc__decorate = __decorate;
 var cc__spreadArrays = __spreadArrays;
@@ -237,7 +238,8 @@ var def_KinghtFallSoldierBase = function (t) {
       }
       var searchRange = this.getAcquireRange();
       if (target && target === this._retaliationTarget && this._retaliationTime > 0) searchRange += target.attackRange || target.cfg && target.cfg.AttackRange || 0;
-      var targetEnded = !!target && (!AllyAwareness.alive(target) || target.node._combatGeneration !== this._orderTargetGeneration);
+      var targetEnded = !!target && (!AllyAwareness.alive(target) || target.node._combatGeneration !== this._orderTargetGeneration ||
+        !FlightTargeting.troopCanTarget(this, target));
       if (target && (targetEnded || cc.Vec2.distance(position, Navigation.positionOf(target.node, game)) > searchRange)) {
         // A defeated target ends the old engagement, not the response to nearby
         // enemies. Search from here before choosing any return-to-post movement.
@@ -384,7 +386,7 @@ var def_KinghtFallSoldierBase = function (t) {
       var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
       for (var n = 0; n < e.length; n++) {
         var i = e[n];
-        if (!i.isDead() && (i.node.getPosition(t.vec2_2), cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1), t.vec2_2.len() <= t.getAcquireRange())) {
+        if (!i.isDead() && FlightTargeting.troopCanTarget(t, i) && (i.node.getPosition(t.vec2_2), cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1), t.vec2_2.len() <= t.getAcquireRange())) {
           return true;
         }
       }
@@ -406,6 +408,7 @@ var def_KinghtFallSoldierBase = function (t) {
     return true;
   };
   _ctor.prototype.assistAttacker = function (attacker, game) {
+    if (!FlightTargeting.troopCanTarget(this, attacker)) return;
     this._continuationTarget = null;
     this._retaliationTarget = this._orderTarget = attacker;
     this._retaliationGeneration = this._orderTargetGeneration = attacker.node._combatGeneration;
@@ -419,7 +422,9 @@ var def_KinghtFallSoldierBase = function (t) {
     var game = $z1KinghtFallUIGame.default.instance.ctrGame, target = this._orderTarget;
     this._validateRetaliation(game);
     target = this._orderTarget;
-    if (AllyAwareness.enemy(game, target, this._orderTargetGeneration)) return cc.Vec2.distance(Navigation.positionOf(this.node, game), Navigation.positionOf(target.node, game)) <= this.attackRange ? target : null;
+    if (AllyAwareness.enemy(game, target, this._orderTargetGeneration) && FlightTargeting.troopCanTarget(this, target)) {
+      return cc.Vec2.distance(Navigation.positionOf(this.node, game), Navigation.positionOf(target.node, game)) <= this.attackRange ? target : null;
+    }
     var found = this.getFind();
     return found && found.canAtt ? found.tag : null;
   };
@@ -432,7 +437,9 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.releaseAttackTarget = function () {
     var intent = this._attackIntent, game = $z1KinghtFallUIGame.default.instance.ctrGame;
     this._attackIntent = null;
-    if (!intent || intent.game !== game || intent.data !== game.gameData || intent.epoch !== game._combatEpoch || intent.ownerGeneration !== this.node._combatGeneration || !AllyAwareness.enemy(game, intent.target, intent.targetGeneration)) return null;
+    if (!intent || intent.game !== game || intent.data !== game.gameData || intent.epoch !== game._combatEpoch ||
+        intent.ownerGeneration !== this.node._combatGeneration || !AllyAwareness.enemy(game, intent.target, intent.targetGeneration) ||
+        !FlightTargeting.troopCanTarget(this, intent.target)) return null;
     return cc.Vec2.distance(Navigation.positionOf(this.node, game), Navigation.positionOf(intent.target.node, game)) <= this.attackRange ? intent.target : null;
   };
   _ctor.prototype._validateRetaliation = function (game) {
@@ -448,7 +455,7 @@ var def_KinghtFallSoldierBase = function (t) {
     var game = $z1KinghtFallUIGame.default.instance.ctrGame;
     this._validateRetaliation(game);
     var attacker = this._retaliationTarget;
-    if (this._retaliationTime > 0 && AllyAwareness.enemy(game, attacker, this._retaliationGeneration)) {
+    if (this._retaliationTime > 0 && AllyAwareness.enemy(game, attacker, this._retaliationGeneration) && FlightTargeting.troopCanTarget(this, attacker)) {
       attacker.node.getPosition(this.vec2_2);
       var retaliationDistance = cc.Vec2.distance(this.vec2_1, this.vec2_2);
       var attackerRange = attacker.attackRange || attacker.cfg && attacker.cfg.AttackRange || 0;
@@ -459,14 +466,14 @@ var def_KinghtFallSoldierBase = function (t) {
     var n = -1;
     var scanRange = this.getAcquireRange();
     var retained = this._orderTarget;
-    if (AllyAwareness.enemy(game, retained, this._orderTargetGeneration)) {
+    if (AllyAwareness.enemy(game, retained, this._orderTargetGeneration) && FlightTargeting.troopCanTarget(this, retained)) {
       var retainedDistance = cc.Vec2.distance(Navigation.positionOf(this.node, game), Navigation.positionOf(retained.node, game));
       if (retainedDistance <= scanRange) return { tag: retained, canAtt: retainedDistance <= this.attackRange };
     }
     var post = !continueCombat && this.isHoldingPosition() && this.rallyPoint && this.rallyPoint.pos;
     for (var i = 0; i < t.length; i++) {
       var a = t[i];
-      if (AllyAwareness.alive(a)) {
+      if (AllyAwareness.alive(a) && FlightTargeting.troopCanTarget(this, a)) {
         if (post && cc.Vec2.distance(post, Navigation.positionOf(a.node, game)) > scanRange) continue;
         a.node.getPosition(this.vec2_2);
         cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
@@ -550,7 +557,7 @@ var def_KinghtFallSoldierBase = function (t) {
       var life = { node: this.node, generation: this.node._combatGeneration, timers: this.time, cfg: this.cfg, ui: ui, game: game, data: game.gameData, epoch: game._combatEpoch };
       t=GameToolsOverrides.damageTaken(this,"ally",t);
       t=require("RelicCombat").allyIncoming(this,t);
-      if (attacker && attacker.node && attacker.isDead && !attacker.isDead()) {
+      if (attacker && attacker.node && attacker.isDead && !attacker.isDead() && FlightTargeting.troopCanTarget(this, attacker)) {
         this._retaliationScope = null;
         this._retaliationTarget = attacker;
         this._retaliationGeneration = attacker.node._combatGeneration;

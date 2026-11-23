@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.KinghtFallCommerceType = undefined;
 var r;
 var $z1Utils = require("Utils");
+var SilverOfferSchedule = require("SilverOfferSchedule");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -24,6 +25,7 @@ var def_KinghtFallCommerce = function (t) {
     e.keepTime = 0;
     e.coinNum = 0;
     e.standTimeMax = 1.5;
+    SilverOfferSchedule.apply(e);
     return e;
   }
   cc__extends(_ctor, t);
@@ -44,6 +46,9 @@ var def_KinghtFallCommerce = function (t) {
     type: cc.Enum(r),
     tooltip: "商业化类型"
   })], _ctor.prototype, "ndType", undefined);
+  cc__decorate([ccp_property({ type: cc.Integer, min: 0 })], _ctor.prototype, "silverOfferCount", undefined);
+  cc__decorate([ccp_property({ type: cc.Integer, min: 1 })], _ctor.prototype, "silverFirstWave", undefined);
+  cc__decorate([ccp_property({ type: cc.Integer, min: 1 })], _ctor.prototype, "silverWaveInterval", undefined);
   cc__decorate([ccp_property({
     type: cc.Sprite,
     tooltip: "商业化类型"

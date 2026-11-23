@@ -1,5 +1,7 @@
 "use strict";
 
+var FlightTargeting = require("./FlightTargeting");
+
 // Per-level tower behavior. Missing settings retain the original arrow tower.
 function number(value, fallback, minimum) {
   return typeof value === "number" && isFinite(value) && value >= minimum ? value : fallback;
@@ -32,6 +34,10 @@ function live(actor) {
   return valid(actor) && !actor._isPooled && valid(actor.node) && actor.node.activeInHierarchy !== false &&
     (!actor.isDead || !actor.isDead()) && !(typeof actor.hp === "number" && actor.hp <= 0);
 }
+function canTarget(actor, behavior) {
+  return !FlightTargeting.isFlying(actor) || !behavior || !behavior.fieldProjectile &&
+    (behavior.attackType === "arrow" || behavior.attackType === "sniper");
+}
 function point(node, parent) {
   if (parent && node.parent !== parent && parent.convertToNodeSpaceAR && node.convertToWorldSpaceAR) {
     // Creator 2.4 distinguishes Vec2 instances from Vec3 inputs. A plain
@@ -48,7 +54,7 @@ function chooseTargets(enemies, origin, range, behavior, parent, count) {
   var limit = range * range;
   for (var i = 0; i < enemies.length; i++) {
     var actor = enemies[i];
-    if (!live(actor) || seen && seen.has(actor.node)) continue;
+    if (!live(actor) || !canTarget(actor, behavior) || seen && seen.has(actor.node)) continue;
     var position = point(actor.node, parent), dx = position.x - origin.x, dy = position.y - origin.y;
     var distance = dx * dx + dy * dy;
     // Match the original strict range boundary and stable nearest tie-break.
@@ -134,7 +140,7 @@ function damage(game, target, center, amount, behavior, onHit, source) {
   var actors = radius > 0 ? game.gameData.getEnemyList().slice() : [target];
   for (var i = 0; i < actors.length; i++) {
     var actor = actors[i];
-    if (!live(actor) || seen.has(actor)) continue;
+    if (!live(actor) || !canTarget(actor, behavior) || seen.has(actor)) continue;
     seen.add(actor);
     var position = point(actor.node, game.ndUI), dx = position.x - center.x, dy = position.y - center.y;
     var distance = Math.sqrt(dx * dx + dy * dy);
@@ -153,6 +159,7 @@ function damage(game, target, center, amount, behavior, onHit, source) {
 exports.validCount = validCount;
 exports.settings = settings;
 exports.live = live;
+exports.canTarget = canTarget;
 exports.point = point;
 exports.convert = convert;
 exports.choose = choose;

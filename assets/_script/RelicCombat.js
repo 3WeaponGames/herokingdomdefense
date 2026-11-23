@@ -3,6 +3,7 @@
 // secondary hits never become primary hits or change authored attack timing.
 var Runtime = require('RelicRuntime');
 var Skills = require('./HeroStyleSkills');
+var FlightTargeting = require('./FlightTargeting');
 function current() { return Runtime.current(); }
 function living(actor) {
   return !!actor && (typeof cc === 'undefined' || !cc.isValid || cc.isValid(actor, true) && (!actor.node || cc.isValid(actor.node, true))) && !actor._isPooled && (!actor.isDead || !actor.isDead()) &&
@@ -153,7 +154,7 @@ function heroAttack(hero, primary, damage) {
   var enemies = data.getEnemyList ? data.getEnemyList() : data.enemyList || [], nearby = [];
   for (var index = 0; index < enemies.length; index++) {
     var enemy = enemies[index], point = position(enemy);
-    if (enemy === primary || !living(enemy) || !point) continue;
+    if (enemy === primary || !living(enemy) || !point || !FlightTargeting.heroCanTarget(hero, enemy)) continue;
     var dx = point.x - center.x, dy = point.y - center.y, distance = dx * dx + dy * dy;
     if (distance <= 200 * 200) {
       if (nearby.length === 2 && distance >= nearby[1].distance) continue;
@@ -192,7 +193,7 @@ function primaryImpact(target, hero, context, damage) {
     var splash = [], targets = data.getEnemyList ? data.getEnemyList() : data.enemyList || [];
     for (var s = 0; s < targets.length; s++) {
       var neighbor = targets[s], location = position(neighbor);
-      if (neighbor === target || !living(neighbor) || !location) continue;
+      if (neighbor === target || !living(neighbor) || !location || !FlightTargeting.heroCanTarget(hero, neighbor)) continue;
       var sx = location.x - context.point.x, sy = location.y - context.point.y;
       if (sx * sx + sy * sy <= gear.splashRadius * gear.splashRadius) splash.push({ enemy:neighbor,node:neighbor.node,generation:generation(neighbor) });
     }
@@ -208,7 +209,7 @@ function primaryImpact(target, hero, context, damage) {
     var dx = center.x - origin.x, dy = center.y - origin.y, length = Math.sqrt(dx * dx + dy * dy);
     for (var i = 0; i < enemies.length; i++) {
       var enemy = enemies[i], point = position(enemy);
-      if (enemy === target || !living(enemy) || !point) continue;
+      if (enemy === target || !living(enemy) || !point || !FlightTargeting.heroCanTarget(hero, enemy)) continue;
       var x = point.x - center.x, y = point.y - center.y, distance = x * x + y * y;
       var along = length > 0 ? (x * dx + y * dy) / length : -1;
       var across = length > 0 ? Math.abs(x * dy - y * dx) / length : Infinity;
@@ -252,7 +253,8 @@ function primaryHeroPerks(target, hero, context) {
   }
 }
 function secondaryHit(target, damage, context, targetGeneration, targetNode) {
-  if (!sameBattle(context) || !living(target) || target.node !== targetNode || generation(target) !== targetGeneration) return;
+  if (!sameBattle(context) || !living(target) || target.node !== targetNode || generation(target) !== targetGeneration ||
+      !FlightTargeting.heroCanTarget(context.hero, target)) return;
   var received = target.onAttacked(damage, context.hero, true);
   if (sameBattle(context) && target.node === targetNode && generation(target) === targetGeneration) feedback(target, received);
 }

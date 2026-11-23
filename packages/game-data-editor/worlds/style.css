@@ -99,9 +99,12 @@
 .world-stages .world-wave-unit-heading>img{width:43px;height:43px;object-fit:contain;flex-shrink:0}
 .world-stages .world-wave-unit-heading>strong{flex:1;min-width:0;font-size:13px;color:#e3edf4;line-height:1.35;overflow-wrap:anywhere}
 .world-stages .world-wave-unit-heading>button{flex-shrink:0;min-height:25px;font-size:10px;padding:4px 6px}
-.world-stages .world-wave-counts{display:grid;grid-template-columns:minmax(76px,.7fr) minmax(0,1.3fr);gap:9px;min-width:0}
-.world-stages .world-wave-counts>label{display:flex;flex-direction:column;align-items:stretch;gap:4px;font-size:11px}
+.world-stages .world-wave-counts{display:grid;grid-template-columns:minmax(60px,.7fr) minmax(0,1.3fr) auto;gap:9px;min-width:0}
+.world-stages .world-wave-counts>label{display:flex;flex-direction:column;align-items:stretch;gap:4px;font-size:11px;min-width:0}
 .world-stages .world-wave-counts>label>input,.world-stages .world-wave-counts>label>select{min-height:31px;width:100%}
+.world-stages .world-wave-spawn-actions{display:flex;align-self:end;gap:4px}
+.world-stages .world-wave-spawn-actions>button{width:30px;min-height:31px;padding:0;font-size:16px}
+.world-stages .world-wave-unit-card-multi .world-wave-spawn-actions{min-width:64px}
 .world-stages .world-wave-unit-card>.world-stage-details{padding:8px;background:#22292f}
 .world-stages .world-stage-wave-overview{width:100%;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}
 .world-stages .world-stage-wave-overview th,.world-stages .world-stage-wave-overview td{padding:7px 4px;text-align:right;border-bottom:1px solid #45515b;overflow-wrap:anywhere}

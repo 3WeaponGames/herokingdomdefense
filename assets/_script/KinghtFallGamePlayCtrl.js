@@ -5,6 +5,7 @@ function heroLifeCurrent(owner, node, generation, timers, game, data, epoch) {
 }
 var BattleSounds = require("BattleSounds");
 var Navigation = require("KinghtFallNavigation");
+var FlightTargeting = require("FlightTargeting");
 var GameToolsOverrides = require("GameToolsOverrides");
 var RelicCombat = require("RelicCombat");
 var RelicRuntime = require("RelicRuntime");
@@ -414,7 +415,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     var e = [];
     for (var n = 0; n < t.length; n++) {
       var i = t[n];
-      if (!i.isDead()) {
+      if (!i.isDead() && FlightTargeting.heroCanTarget(this, i)) {
         i.node.getPosition(this.vec2_2);
         cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
         var a = this.vec2_2.mag();
@@ -454,7 +455,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     var e = [];
     for (var n = 0; n < t.length; n++) {
       var i = t[n];
-      if (!i.isDead()) {
+      if (!i.isDead() && FlightTargeting.heroCanTarget(this, i)) {
         i.node.getPosition(this.vec2_2);
         cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
         var a = this.vec2_2.mag();
