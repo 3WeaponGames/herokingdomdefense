@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const Maps=require('../../packages/game-data-editor/lib/map-assets');
 const root=path.resolve(__dirname,'../..'),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json')));
 const source=fs.readFileSync(path.join(root,'assets/_script/LanguageMgr.js'),'utf8');
-const files=['Map01','Map02','Map03','Map04','Map07','Generated/Stages/A-7'].map(name=>'assets/KinghtFallIconMap/'+name+'.prefab');
+const files=[...require('../../packages/game-data-editor/lib/map-catalog').IDS,'SnowStructures','Generated/Stages/A-7'].map(name=>'assets/KinghtFallIconMap/'+name+'.prefab');
 function fixture(){
   class Node{
     constructor(name){Object.assign(this,{name,children:[],components:[],active:true,activeInHierarchy:true,x:0,y:0,width:171,height:100,angle:0,scaleX:1,scaleY:1});}

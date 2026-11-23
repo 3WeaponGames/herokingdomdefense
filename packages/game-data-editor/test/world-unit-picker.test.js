@@ -19,6 +19,20 @@ test('keeping the initial selection adds other models and leaves the original in
 test('Switch clears only an unrelated route when the spawn changes, including on added groups',()=>{
  const s=stage();W.chooseGroups(s,0,[5,6],Object.assign({},settings,{spawnId:2}),.5,'original');const rows=s.config.WaveCfg[0].SpawnTimeline;assert.equal(rows[0].routeGraphId,null);assert(!rows[2].routeGraphId);assert.deepEqual(rows[0].future,{keep:[1,2]});
 });
+test('the wave row opens the exact unit profile and choosing a different model starts with its default',()=>{
+ const node=(text)=>({textContent:text,children:[],appendChild(child){this.children.push(child);},setAttribute(){}});
+ const buttons=[],fields={},opened=[],chosen=[];
+ const c={el:(_tag,text)=>node(text),button(parent,title,action){const n=node(title);n.onclick=action;parent.appendChild(n);buttons.push(n);return n;},
+  field(parent,title,value,action){const n=node(title);n.value=value;n.onchange=action;fields[title]=n;parent.appendChild(n);return n;},
+  openUnitEditor:id=>opened.push(id)};
+ const units=[{id:101685,name:'Abyssal Slime',modelKey:'slime',unitType:'fighter',fightingProfile:true},{id:91157,name:'Abyssal Slime',modelKey:'slime',unitType:'bruiser',fightingProfile:true,defaultProfile:true},{id:90001,name:'Wolf',modelKey:'wolf'}];
+ require('../worlds/unit-picker').unitField(c,node(),units,90001,id=>chosen.push(id),()=>{},()=>{});
+ assert.deepEqual(buttons.map(button=>button.textContent),['Switch','Profiles…','Unit Editor']);
+ fields.Unit.onchange('slime');buttons[2].onclick();
+ fields.Profile.onchange('101685');buttons[2].onclick();
+ assert.deepEqual(chosen,[91157,101685]);
+ assert.deepEqual(opened,[91157,101685]);
+});
 test('catalog resolves descriptions and filters, including the source asset pack of campaign appearances, without changing config',()=>{
  const config={SoldierCfg:{3:{Name:'[[loc:name]]',Guide:{description:'[[loc:description]]'},prefab:'model',MonsterPack:'monster2'},4:{Name:'Campaign',prefab:'campaign',AppearanceSourceUnit:3},90011:{Name:'Boss form',prefab:'model'}},GameTools:{unitTypes:{mystic:{name:'Mystic'}},unitTypeAssignments:{'enemy:3:default':'mystic'}}},before=clone(config),rows=Catalog.rows(config,{entries:{name:{en:'Acolyte'},description:{en:'Heals nearby allies with radiant spells.'}}});
  assert.equal(rows.length,2);assert.equal(rows[0].description,'Heals nearby allies with radiant spells.');assert.equal(rows[0].unitType,'mystic');assert.equal(rows[1].assetPack,'monster2');assert(Catalog.matches(rows[0],'radiant heals'));assert(!Catalog.matches(rows[0],'radiant archer'));assert.deepEqual(config,before);
@@ -46,7 +60,15 @@ test('saved units expose exactly six fighting profiles per parent without Campai
   assert.equal(profiles.aliases[id],profiles.families[91090].profiles[role]);
   assert(!rows.some(unit=>unit.id===id));
  }
- for(const group of groups){assert.equal(group.units.length,6);assert.equal(Catalog.firstProfile(group.units).unitType,'fighter');assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}
+ for(const group of groups){assert.equal(group.units.length,6);const baseId=Number(group.key.split(':')[1]);assert.equal(Catalog.firstProfile(group.units).id,baseId);assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}
+ const slime=groups.find(group=>group.units.some(unit=>unit.id===91157)),defaultSlime=Catalog.firstProfile(slime.units);
+ assert.equal(defaultSlime.unitType,'bruiser');
+ const draft=stage(),fighter=slime.units.find(unit=>unit.unitType==='fighter');
+ W.chooseGroups(draft,0,[defaultSlime.id],settings,.5);
+ const added=draft.config.WaveCfg[0].SpawnTimeline.at(-1);assert.equal(added.unitId,91157);
+ W.editGroup(draft,0,added.id,{unitId:fighter.id},.5);
+ W.chooseGroups(draft,0,[defaultSlime.id],settings,.5);
+ assert.deepEqual(draft.config.WaveCfg[0].SpawnTimeline.slice(-2).map(unit=>unit.unitId),[fighter.id,91157]);
  assert.deepEqual(config,before);
 });
 

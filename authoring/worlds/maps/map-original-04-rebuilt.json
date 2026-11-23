@@ -185,8 +185,8 @@
       "objects": [
         {
           "id": "object-5",
-          "assetId": "original-map04-native-northwest-snowbank",
-          "name": "Map04 · Northwest Snowbank",
+          "assetId": "snowfield-native-northwest-snowbank",
+          "name": "Snowfield · Northwest Snowbank",
           "x": -475.92499999999995,
           "y": 1255.488,
           "scale": 0.5760626398210291,
@@ -215,8 +215,8 @@
       "objects": [
         {
           "id": "object-6",
-          "assetId": "original-map04-native-northeast-snowbank",
-          "name": "Map04 · Northeast Snowbank",
+          "assetId": "snowfield-native-northeast-snowbank",
+          "name": "Snowfield · Northeast Snowbank",
           "x": 555.258,
           "y": 1219.407,
           "scale": 0.5475746268656715,
@@ -245,8 +245,8 @@
       "objects": [
         {
           "id": "object-7",
-          "assetId": "original-map04-native-west-snowland-strip",
-          "name": "Map04 · Whole Western Snowbank",
+          "assetId": "snowfield-native-west-snowland-strip",
+          "name": "Snowfield · Whole Western Snowbank",
           "x": -649.5,
           "y": -535,
           "scale": 1.3391196528208307,
@@ -275,8 +275,8 @@
       "objects": [
         {
           "id": "object-8",
-          "assetId": "original-map04-native-southcentral-snow-island",
-          "name": "Map04 · South Central Snowbank",
+          "assetId": "snowfield-native-southcentral-snow-island",
+          "name": "Snowfield · South Central Snowbank",
           "x": -69.618,
           "y": -1042,
           "scale": 0.6733238231098431,
@@ -305,8 +305,8 @@
       "objects": [
         {
           "id": "object-1",
-          "assetId": "original-map04-native-left-lake",
-          "name": "Map04 · Left Lake",
+          "assetId": "snowfield-native-left-lake",
+          "name": "Snowfield · Left Lake",
           "x": -513.7140287769785,
           "y": 704.5710000000001,
           "scale": 0.6312949640287769,
@@ -335,8 +335,8 @@
       "objects": [
         {
           "id": "object-2",
-          "assetId": "original-map04-native-right-river",
-          "name": "Map04 · Whole Right River",
+          "assetId": "snowfield-native-right-river",
+          "name": "Snowfield · Whole Right River",
           "x": 637.2185,
           "y": -291.7945000000001,
           "scale": 1.141049906716418,
@@ -365,8 +365,8 @@
       "objects": [
         {
           "id": "object-3",
-          "assetId": "original-map04-native-left-snow-boulder",
-          "name": "Map04 · Left Boulder",
+          "assetId": "snowfield-native-left-snow-boulder",
+          "name": "Snowfield · Left Boulder",
           "x": -844.8077889447236,
           "y": -765.941,
           "scale": 0.1972361809045226,
@@ -395,8 +395,8 @@
       "objects": [
         {
           "id": "object-4",
-          "assetId": "original-map04-native-central-snow-boulders",
-          "name": "Map04 · Central Boulder Pair",
+          "assetId": "snowfield-native-central-snow-boulders",
+          "name": "Snowfield · Central Boulder Pair",
           "x": 56.882000000000005,
           "y": -1361.9009999999998,
           "scale": 0.3274111675126903,
@@ -6543,8 +6543,6 @@
   ],
   "authoringSource": {
     "kind": "original-terrain-reconstruction",
-    "originalMap": "Map04",
-    "originalRevision": "68d56dbf2d28049eeb7971cd260d185c0eb9b828d868bd99e9f80804dca48762",
     "terrainArtwork": {
       "sourcePixelsPerWorldUnit": 2,
       "castShadow": false

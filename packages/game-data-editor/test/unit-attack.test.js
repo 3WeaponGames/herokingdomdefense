@@ -109,6 +109,61 @@ test('existing melee units can receive a projectile draft while Units saves rang
   assert(new ProjectilesService(f.directory).units().some(unit => unit.key === key));
 });
 
+test('Units and Buildings share a draft that can save after Projectiles publishes a launch delay', () => {
+  const f = isolatedProject(), service = new ProjectilesService(f.directory), id = 100248, key = 'enemy:' + id;
+  service.focusUnit(key);
+  const snapshot = service.snapshot(), flight = snapshot.data.assets.find(asset => asset.role === 'flight').id;
+  snapshot.data.assignments[key] = { ...snapshot.data.assignments[key], flight };
+  service.change({ version: snapshot.version, data: snapshot.data, timings: { ...snapshot.timings, [key]: .36 } });
+  assert(service.save({ version: service.version }).result.files.includes(files.A));
+  const published = fs.readFileSync(f.config, 'utf8'), catalog = fs.readFileSync(f.catalog);
+  f.store.change({ version: f.store.version, edits: [
+    { doc: 'A', path: ['SoldierCfg', String(id), 'AttackRange'], value: 200 },
+    { doc: 'A', path: ['SoldierCfg', String(id), 'UnitAttack'], value: { delivery: 'ranged', pattern: 'single' } },
+    { doc: 'A', path: ['BuildEnum', '2', 'levelList', 6, 'ModelOffset'], value: { x: -21.51, y: -13.41 } }
+  ] });
+  const result = f.store.save({ version: f.store.version }).result;
+  assert(result.saved);
+  assert.equal(fs.readFileSync(path.join(result.backup, files.A), 'utf8'), published);
+  const config = JSON.parse(fs.readFileSync(f.config));
+  assert.equal(config.SoldierCfg[id].AttackRange, 200);
+  assert.equal(config.SoldierCfg[id].UnitAttack.delivery, 'ranged');
+  assert.deepEqual(config.BuildEnum[2].levelList[6].ModelOffset, { x: -21.51, y: -13.41 });
+  assert.equal(config.GameTools.unitProfiles.entries[id].stats.AttackRange, 200);
+  assert.equal(config.GameTools.timings[key + ':default'].attack, .36);
+  assert.equal(config.GameTools.unitProfiles.entries[id].timing.custom.attack, .36);
+  assert.deepEqual(config.LevelCfg, JSON.parse(published).LevelCfg);
+  assert.deepEqual(fs.readFileSync(f.catalog), catalog);
+});
+
+test('competing launch delay edits retain the Units draft and the published Projectiles value', () => {
+  const f = isolatedProject(), service = new ProjectilesService(f.directory), id = 100248, key = 'enemy:' + id;
+  service.focusUnit(key);
+  const snapshot = service.snapshot();
+  f.store.change({ version: f.store.version, edits: [
+    { doc: 'overrides', path: ['timings', key + ':default'], value: { attack: .8 } }
+  ] });
+  service.change({ version: snapshot.version, data: snapshot.data, timings: { ...snapshot.timings, [key]: .36 } });
+  service.save({ version: service.version });
+  const before = fs.readFileSync(f.config), draft = f.store.draftState(), undo = f.store.undoStack.slice();
+  assert.throws(() => f.store.save({ version: f.store.version }), /both changed.*timings/);
+  assert.deepEqual(fs.readFileSync(f.config), before);
+  assert.deepEqual(f.store.draftState(), draft);
+  assert.deepEqual(f.store.undoStack, undo);
+});
+
+test('a wave shortcut selects the exact shared profile even when Units already has a search and pack filter', async () => {
+  const f = panelFixture(isolatedProject().store);
+  f.render('enemy:90001');
+  f.panel.$search.value = 'Wolf';
+  f.panel._unitPack = 'allies';
+  await f.panel.run({ unitKey: 'enemy:101685' });
+  assert.equal(f.panel._selected, 'enemy:101685');
+  assert.equal(f.panel.$search.value, '');
+  assert.equal(f.panel._unitPack, 'all');
+  assert(f.input('Attack delivery'));
+});
+
 test('projectile focus opens the panel and delivers the selected unit once', async () => {
   const f = isolatedProject(), plugin = require('../../hkd-projectiles/main');
   const previous = global.Editor, notifications = [];

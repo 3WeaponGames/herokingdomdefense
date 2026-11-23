@@ -3,7 +3,7 @@ const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
 const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
-const themes = { Map01: 'meadow', Map02: 'forest', Map03: 'desert', Map04: 'snowfield', Map07: 'fire' };
+const themes = { Map01: 'meadow', Map02: 'forest', Map03: 'desert', Map07: 'fire', snow: 'snowfield' };
 const biomeThemes = { forest: 'meadow', 'deep-forest': 'forest', autumn: 'forest', desert: 'desert', snow: 'snowfield', ice: 'snowfield', fire: 'fire', lava: 'fire' };
 
 function bus(object = {}) {
@@ -81,9 +81,9 @@ test('every configured stage selects its map background through the real lobby r
     assert.equal(f.sprite.spriteFrame, f.controller[theme]);
   }
   // No deferred loads can overwrite a rapidly selected stage.
-  f.api.showForStage(f.page, 'Map02'); f.api.showForStage(f.page, 'Map04');
+  f.api.showForStage(f.page, 'Map02'); f.api.showForStage(f.page, 'snow');
   assert.equal(f.sprite.spriteFrame.theme, 'snowfield');
-  const count = f.assignments(); f.api.showForStage(f.page, 'Map04');
+  const count = f.assignments(); f.api.showForStage(f.page, 'snow');
   assert.equal(f.assignments(), count, 'same background does not replace its texture again');
   assert.equal(f.api.showForStage({ parent: null, getChildByName() { return null; } }, 'Map01'), false);
 });

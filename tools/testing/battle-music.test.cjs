@@ -6,8 +6,8 @@ const biomes=['forest','deep-forest','autumn','desert','snow','ice','fire','lava
 const ids={forest:'ready_bgm','deep-forest':'deep_forest_ready_bgm',autumn:'autumn_ready_bgm',desert:'desert_ready_bgm',snow:'snow_ready_bgm',ice:'ice_ready_bgm',fire:'fire_ready_bgm',lava:'lava_ready_bgm'};
 test('each biome has a planning cue and explicit biomes override legacy or generated map names',()=>{
  for(const biome of biomes){assert.equal(Music.planning({EnvironmentBiome:biome,prefab:'Map03'}),ids[biome]);assert.equal(Music.planning({EnvironmentMapId:biome}),ids[biome]);}
- for(const [prefab,id]of Object.entries({Map01:'ready_bgm',Map02:'deep_forest_ready_bgm',Map03:'desert_ready_bgm',Map04:'snow_ready_bgm',Map07:'fire_ready_bgm'}))assert.equal(Music.planning({prefab}),id);
- assert.equal(Music.planning({EnvironmentMapId:'unknown',prefab:'Map04'}),'snow_ready_bgm');assert.equal(Music.planning({}),'ready_bgm');
+ for(const [prefab,id]of Object.entries({Map01:'ready_bgm',Map02:'deep_forest_ready_bgm',Map03:'desert_ready_bgm',Map07:'fire_ready_bgm'}))assert.equal(Music.planning({prefab}),id);
+ assert.equal(Music.planning({EnvironmentMapId:'unknown',prefab:'Map03'}),'desert_ready_bgm');assert.equal(Music.planning({}),'ready_bgm');
 });
 test('regular waves cycle all three tracks with a stage offset and stable resume or restart selection',()=>{
  for(let stage=1;stage<=6;stage++){

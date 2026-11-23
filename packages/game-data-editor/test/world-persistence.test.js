@@ -85,6 +85,21 @@ function timedSaveFixture(){
 function moveHero(s){const key='stage:A-1',value=clone(s.snapshot(key).value);value.hero.x+=15;return s.change({key,version:s.version,value});}
 
 function changeWave(s){const key='stage:A-1',value=clone(s.snapshot(key).value);Object.assign(value.config.WaveCfg[0].SpawnTimeline[0],{count:7,intervalSeconds:.5,future:{keep:['wave metadata']}});return s.change({key,version:s.version,value});}
+test('world persistence: Units can publish while a wave draft stays open, and later stage Save keeps the unit edit',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',file=path.join(f.root,L.configFile('A'));
+ const {Store}=require('../lib/store'),units=new Store(f.root,{backupRoot:path.join(f.artifacts,'units'),profileDrafts:()=>s.docs});
+ const original=fs.readFileSync(file),draft=changeWave(s),history=structuredClone(s.undo);
+ assert.deepEqual(fs.readFileSync(file),original);
+ units.change({version:units.version,edits:[{doc:'A',path:['SoldierCfg','90001','AttackRange'],value:200}]});
+ assert(units.save({version:units.version}).result.saved);
+ assert.deepEqual(s.snapshot(key).value,draft.value);
+ assert.deepEqual(s.undo,history);
+ s.options.render=async()=>({files:[],ground:[],assets:{}});
+ assert((await s.save({key,version:s.version})).result.saved);
+ const saved=JSON.parse(fs.readFileSync(file));
+ assert.equal(saved.SoldierCfg[90001].AttackRange,200);
+ assert.equal(saved.LevelCfg[0].WaveCfg[0].SpawnTimeline[0].count,7);
+});
 test('world persistence: stage Save succeeds with a dirty shared map and preserves that map draft, history and recovery',async()=>{
  const f=timedSaveFixture(),s=f.service,key='stage:A-1',mapKey='map:map-test',mapFile=path.join(f.root,'authoring/worlds/maps/map-test.json'),mapBytes=fs.readFileSync(mapFile),manifest=path.join(f.root,'authoring/worlds/library/manifest.json'),manifestBytes=fs.readFileSync(manifest);
  rename(s,mapKey,'Unsaved artwork draft');changeWave(s);const data=clone(s.doc(mapKey).data),original=clone(s.doc(mapKey).original),history=structuredClone(s.undo.filter(item=>item.key===mapKey));let bakedName;

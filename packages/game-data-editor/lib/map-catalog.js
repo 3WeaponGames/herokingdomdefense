@@ -6,7 +6,6 @@ const maps = Object.freeze({
     Map01: Object.freeze({ name: 'Map01 - Legacy', lanes: 9 }),
     Map02: Object.freeze({ name: 'Map02 - Legacy', lanes: 12 }),
     Map03: Object.freeze({ name: 'Map03 - Legacy', lanes: 12 }),
-    Map04: Object.freeze({ name: 'Map04 - Legacy', lanes: 15 }),
     Map07: Object.freeze({ name: 'Map07 - Lava', lanes: 12 })
 });
 const IDS = Object.freeze(Object.keys(maps));

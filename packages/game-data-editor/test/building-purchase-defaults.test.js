@@ -80,7 +80,7 @@ test('a saved purchase reference makes every original map template match the cat
   const category=f.config.BuildEnum[template.kind];for(const row of category.levelList)delete row.PurchaseField;
   const rootRow=category.levelList[0];rootRow.WorldScale=.73;const data=Data.describe(f.service,{id:String(template.kind),levelIndex:0,variant:template.kind===6?'NE':'default'});rootRow.PurchaseField={southwest:false,x:28,y:-13,Reference:data.reference};
   const expected=data.records.southeast.purchaseField.center,delta=Maps.point(data.offsetMatrix,{x:28,y:-13}),target={x:expected.x+delta.x,y:expected.y+delta.y};
-  for(const map of ['Map01','Map02','Map03','Map04','Map07']){
+  for(const map of [...Maps.IDS,'SnowStructures']){
    const source=L.inspect(root,map),stage=L.adaptStage(root,'A',1,{...f.config.LevelCfg[0],prefab:map});
    for(const original of stage.buildings.filter(b=>b.kind===template.kind))for(const row of category.levelList.slice(0,3)){
     row.WorldScale=row===rootRow?.73:1.19;const b={...clone(original),previewBranch:row.index,purchaseOverride:false};delete b.purchaseSide;delete b.purchaseOffset;if(template.kind===6)b.wallFacing='NE';

@@ -9656,13 +9656,13 @@
       "nativeScale": 0.5
     },
     {
-      "id": "original-map04-native-central-snow-boulders",
-      "name": "Map04 · Central Boulder Pair",
+      "id": "snowfield-native-central-snow-boulders",
+      "name": "Snowfield · Central Boulder Pair",
       "category": "rocks",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/central-boulder-pair.png",
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/snowfield/central-boulder-pair.png",
       "width": 1962,
       "height": 3206,
       "anchor": {
@@ -9675,10 +9675,6 @@
       "source": {
         "kind": "authored-terrain-piece",
         "mode": "built-in image_gen edit",
-        "mapId": "Map04",
-        "originalGroups": [
-          "dt4_7"
-        ],
         "fieldColor": "#e5fffe",
         "originalPlacement": {
           "x": 56.882000000000005,
@@ -9701,13 +9697,13 @@
       "nativeScale": 0.5
     },
     {
-      "id": "original-map04-native-left-snow-boulder",
-      "name": "Map04 · Left Boulder",
+      "id": "snowfield-native-left-snow-boulder",
+      "name": "Snowfield · Left Boulder",
       "category": "rocks",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/left-boulder.png",
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/snowfield/left-boulder.png",
       "width": 1876,
       "height": 3354,
       "anchor": {
@@ -9720,10 +9716,6 @@
       "source": {
         "kind": "authored-terrain-piece",
         "mode": "built-in image_gen edit",
-        "mapId": "Map04",
-        "originalGroups": [
-          "dt4_3_1"
-        ],
         "fieldColor": "#e5fffe",
         "originalPlacement": {
           "x": -842.008,
@@ -9746,13 +9738,13 @@
       "nativeScale": 0.5
     },
     {
-      "id": "original-map04-native-left-lake",
-      "name": "Map04 · Left Lake",
+      "id": "snowfield-native-left-lake",
+      "name": "Snowfield · Left Lake",
       "category": "water",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/left-lake.png",
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/snowfield/left-lake.png",
       "width": 2704,
       "height": 2326,
       "anchor": {
@@ -9765,10 +9757,6 @@
       "source": {
         "kind": "authored-terrain-piece",
         "mode": "built-in image_gen edit",
-        "mapId": "Map04",
-        "originalGroups": [
-          "dt4_3_2"
-        ],
         "fieldColor": "#e5fffe",
         "originalPlacement": {
           "x": -506.4960000000001,
@@ -9787,13 +9775,13 @@
       "nativeScale": 0.5
     },
     {
-      "id": "original-map04-native-right-river",
-      "name": "Map04 · Whole Right River",
+      "id": "snowfield-native-right-river",
+      "name": "Snowfield · Whole Right River",
       "category": "water",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/whole-right-river.png",
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/snowfield/whole-right-river.png",
       "width": 1450,
       "height": 4340,
       "anchor": {
@@ -9806,11 +9794,6 @@
       "source": {
         "kind": "authored-terrain-piece",
         "mode": "built-in image_gen edit",
-        "mapId": "Map04",
-        "originalGroups": [
-          "dt4_4_1",
-          "dt4_4_2"
-        ],
         "fieldColor": "#e5fffe",
         "originalPlacement": {
           "x": 637.2185,
@@ -9829,13 +9812,13 @@
       "nativeScale": 0.5
     },
     {
-      "id": "original-map04-native-northwest-snowbank",
-      "name": "Map04 · Northwest Snowbank",
+      "id": "snowfield-native-northwest-snowbank",
+      "name": "Snowfield · Northwest Snowbank",
       "category": "cliffs",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/northwest-snowbank.png",
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/snowfield/northwest-snowbank.png",
       "width": 3290,
       "height": 1912,
       "anchor": {
@@ -9847,7 +9830,6 @@
       "sha256": "2186569ca38231763f9979e8454c4a1974318816ea95a5ccb114c8ae893cf7bd",
       "source": {
         "kind": "authored-terrain-piece",
-        "mapId": "Map04",
         "fieldColor": "#e5fffe",
         "referenceBounds": {
           "minX": -930.425,
@@ -9876,13 +9858,13 @@
       "nativeScale": 0.5
     },
     {
-      "id": "original-map04-native-northeast-snowbank",
-      "name": "Map04 · Northeast Snowbank",
+      "id": "snowfield-native-northeast-snowbank",
+      "name": "Snowfield · Northeast Snowbank",
       "category": "cliffs",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/northeast-snowbank.png",
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/snowfield/northeast-snowbank.png",
       "width": 2830,
       "height": 2224,
       "anchor": {
@@ -9894,7 +9876,6 @@
       "sha256": "81baf86d7b8ce834dfd6661884ae14ac5933a68cbc6f69512dc7de51009c4c38",
       "source": {
         "kind": "authored-terrain-piece",
-        "mapId": "Map04",
         "fieldColor": "#e5fffe",
         "referenceBounds": {
           "minX": 181.758,
@@ -9923,13 +9904,13 @@
       "nativeScale": 0.5
     },
     {
-      "id": "original-map04-native-west-snowland-strip",
-      "name": "Map04 · Whole Western Snowbank",
+      "id": "snowfield-native-west-snowland-strip",
+      "name": "Snowfield · Whole Western Snowbank",
       "category": "cliffs",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/west-snowland-strip.png",
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/snowfield/west-snowland-strip.png",
       "width": 1924,
       "height": 3270,
       "anchor": {
@@ -9941,7 +9922,6 @@
       "sha256": "3ee4fa88bee42f59223d6befba86072dc139c992a8a2141cd4012db571a7f440",
       "source": {
         "kind": "authored-terrain-piece",
-        "mapId": "Map04",
         "fieldColor": "#e5fffe",
         "referenceBounds": {
           "minX": -930,
@@ -9974,13 +9954,13 @@
       "nativeScale": 0.5
     },
     {
-      "id": "original-map04-native-southcentral-snow-island",
-      "name": "Map04 · South Central Snowbank",
+      "id": "snowfield-native-southcentral-snow-island",
+      "name": "Snowfield · South Central Snowbank",
       "category": "cliffs",
       "biomes": [
         "snow"
       ],
-      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/southcentral-snow-island.png",
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/snowfield/southcentral-snow-island.png",
       "width": 2198,
       "height": 2862,
       "anchor": {
@@ -9992,7 +9972,6 @@
       "sha256": "391d43c031fea689d135244c62fe8b7d7616e1e5f884300c283135f5eededabb",
       "source": {
         "kind": "authored-terrain-piece",
-        "mapId": "Map04",
         "fieldColor": "#e5fffe",
         "referenceBounds": {
           "minX": -444.618,

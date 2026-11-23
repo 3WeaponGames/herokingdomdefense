@@ -99,8 +99,13 @@ const messages={
     recover(event,request){reply(event,async()=>{const snapshot=getStore().recover(request),warnings=await refreshImports(snapshot.result.files);if(warnings.length)snapshot.result.warning='Recovered on disk; Creator import needs attention: '+warnings.join('; ');return broadcast(Object.assign(getStore().snapshot(),{result:snapshot.result}));});},
     validate(event){reply(event,()=>getStore().snapshot());},
     save(event,request){reply(event,async()=>{
-        const snapshot=getStore().save(request),warnings=snapshot.result&&snapshot.result.saved?await refreshImports(snapshot.result.files):[];
-        if(snapshot.result&&snapshot.result.saved&&worlds){worlds.indexData=null;worlds.unitCatalogRevision=(worlds.unitCatalogRevision||0)+1;require('./lib/unit-assets').invalidate();}
+        const snapshot=getStore().save(request);
+        if(snapshot.result&&snapshot.result.saved&&worlds){
+            worlds.indexData=null;worlds.unitCatalogRevision=(worlds.unitCatalogRevision||0)+1;
+            require('./lib/unit-assets').invalidate();
+            Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:worlds.version});
+        }
+        const warnings=snapshot.result&&snapshot.result.saved?await refreshImports(snapshot.result.files):[];
         if(warnings.length)snapshot.result.warning='Saved; Creator import needs attention: '+warnings.join('; ');
         return broadcast(Object.assign(getStore().snapshot(),{result:snapshot.result}));
     });},
@@ -119,6 +124,14 @@ const messages={
     'testing-catalog'(event){reply(event,()=>require('./testing/session').catalog(project()));},
     'open-characters'(event,request){reply(event,()=>{if(!request){Editor.Panel.open('hkd-characters');return true;}return new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-characters:focus',request,(error,result)=>error?reject(Error(String(error))):resolve(result)));});},
     'open-projectiles'(event,request){reply(event,()=>new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-projectiles:focus',request,(error,result)=>error?reject(Error(String(error))):resolve(result))));},
+    'open-unit-editor'(event,request){reply(event,async()=>{
+        const id=Number(request&&request.id),docs=getStore().documents;
+        const canonical=require('./lib/fighting-profiles').canonicalId(docs.overrides.data,id);
+        const unit=(docs.A.data.SoldierCfg||{})[canonical];
+        if(!Number.isSafeInteger(id)||id<1||!unit||!unit.prefab)throw Error('Choose a saved enemy unit in the wave.');
+        await Editor.Panel.open('hkd-units',{unitKey:'enemy:'+canonical});
+        return true;
+    });},
     'open-panel'(event,kind){reply(event,()=>{open(kind);return true;});},
     'open-map'(event,id){reply(event,()=>{
         if(!require('./lib/map-catalog').has(id))throw Error('Unknown map');

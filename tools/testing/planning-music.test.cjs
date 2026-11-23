@@ -19,7 +19,7 @@ test('all authored stages select their biome theme on initial planning entry',()
  for(const level of levels){
   h.method.call({levelId:level.Level});
   const call=h.calls.at(-1),asset=exportsConfig.KinghtFallAudioCF[call.id];
-  const biome=level.EnvironmentBiome||({Map01:'forest',Map02:'deep-forest',Map03:'desert',Map04:'snow',Map07:'fire'})[level.EnvironmentMapId||level.prefab]||'forest';
+  const biome=level.EnvironmentBiome||({Map01:'forest',Map02:'deep-forest',Map03:'desert',Map07:'fire'})[level.EnvironmentMapId||level.prefab]||'forest';
   assert.equal(asset.path,'music/planning-'+biome,'stage '+level.Level);
   assert.equal(call.channel,exportsConfig.KinghtFallParameter.BGMusic);
   assert.equal(call.options.length,0,'retain AudioMgr looping and player Music volume defaults');
@@ -38,13 +38,13 @@ test('returning to planning follows the loaded map configuration',()=>{
 test('snow planning music follows explicit biomes and legacy maps without replacing battle music',()=>{
  const h=fixture();
  for(const [config,expected]of [
-  [{prefab:'Map04'},'music/planning-snow'],
-  [{prefab:'Generated/Stages/custom',EnvironmentMapId:'Map04'},'music/planning-snow'],
+  [{prefab:'Generated/Stages/A-20',EnvironmentBiome:'snow'},'music/planning-snow'],
+  [{prefab:'Generated/Stages/custom',EnvironmentMapId:'snow'},'music/planning-snow'],
   [{prefab:'Generated/Stages/custom',EnvironmentBiome:'snow'},'music/planning-snow'],
   [{prefab:'Map03',EnvironmentBiome:'snow'},'music/planning-snow'],
-  [{prefab:'Map04',EnvironmentBiome:'ice'},'music/planning-ice'],
-  [{prefab:'Map04',EnvironmentBiome:'forest'},'music/planning-forest'],
-  [{prefab:'Map04',EnvironmentBiome:'desert'},'music/planning-desert']
+  [{prefab:'Map07',EnvironmentBiome:'ice'},'music/planning-ice'],
+  [{prefab:'Map07',EnvironmentBiome:'forest'},'music/planning-forest'],
+  [{prefab:'Map07',EnvironmentBiome:'desert'},'music/planning-desert']
  ]){
   h.method.call({ctrGame:{gameData:{levelCfg:config}}});
   assert.equal(exportsConfig.KinghtFallAudioCF[h.calls.at(-1).id].path,expected,JSON.stringify(config));

@@ -141,6 +141,7 @@ test('obstacle cloning works through shared draft Store, undo, and explicit save
     const paths = ['assets/KinghtFallConfig/GameJsonCfg.json', 'assets/resources/localization/catalog.json', Maps.fileFor('Map01')];
     paths.forEach(file => { fs.mkdirSync(path.dirname(path.join(temporary, file)), { recursive: true }); fs.copyFileSync(path.join(root, file), path.join(temporary, file)); });
     const store = new Store(temporary), original = fs.readFileSync(path.join(temporary, Maps.fileFor('Map01')), 'utf8');
+    const config = path.join(temporary, paths[0]), originalConfig = fs.readFileSync(config, 'utf8');
     store.addMap('Map01');
     const source = store.snapshot().documents['map:Map01'].data, obstacle = Maps.model(source).owners.find(node => node.kind === 'obstacle');
     const result = Maps.duplicateObstacle(source, obstacle.id, 'map:Map01');
@@ -150,6 +151,7 @@ test('obstacle cloning works through shared draft Store, undo, and explicit save
     store.undo({ version: store.version }); assert.strictEqual(store.snapshot().dirty, false);
     store.redo({ version: store.version }); assert.strictEqual(store.snapshot().dirty, true);
     const saved = store.save({ version: store.version }); assert.deepStrictEqual(saved.result.files, [Maps.fileFor('Map01')]);
+    assert.strictEqual(fs.readFileSync(config, 'utf8'), originalConfig);
     const after = JSON.parse(fs.readFileSync(path.join(temporary, Maps.fileFor('Map01')), 'utf8'));
     assert(Maps.model(after).byId[result.nodeId]);
     const before = JSON.parse(original); before.forEach((record, index) => {

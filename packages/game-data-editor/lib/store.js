@@ -51,6 +51,7 @@ class Store {
             else setAt(next[edit.doc],edit.path,edit.value,edit.remove);
         });
         const profileEdit=request.edits.some(edit=>{
+            if(edit.doc.startsWith('map:'))return false;
             if(edit.doc==='overrides'&&edit.path[0]==='projectileSpeeds')return false;
             if(edit.doc==='A'&&['SoldierCfg','AllyCfg'].includes(edit.path[0])&&edit.path[2]==='UnitAttack')return false;
             if(edit.doc==='A'&&edit.path[0]==='SoldierCfg'&&['TransformSkill','EnemySkills'].includes(edit.path[2]))return false;
@@ -94,16 +95,24 @@ class Store {
         return all;
     }
     saveCandidate(){
-        // Merge disjoint building-light edits and refresh untouched inputs in
+        // Merge supported disjoint edits and refresh untouched inputs in
         // isolation. A failed save must retain the draft and undo/redo history.
         const documents=require('./nightlight-save-merge').documents(this)||require('./shadow-preset-merge').documents(this)||Object.assign({},this.documents);
         const overridesChanged=!JSONDocument.equal(documents.overrides.original,documents.overrides.data);
         Object.keys(documents).filter(id=>!documents[id].virtual).forEach(id=>{
             const d=documents[id],text=fs.readFileSync(this.absolute(d.path),'utf8');
-            if(hash(text)===d.revision)return;
-            if(!JSONDocument.equal(d.original,d.data)||(id==='A'&&overridesChanged))throw Error(d.path+' changed outside these panels. Save cancelled; your drafts are retained.');
+            const revision=hash(text);if(revision===d.revision)return;
+            const dirty=!JSONDocument.equal(d.original,d.data)||(id==='A'&&overridesChanged);
+            const conflict=()=>Error(d.path+' changed outside these panels. Save cancelled; your drafts are retained.');
+            if(dirty&&id!=='A')throw conflict();
             const data=JSON.parse(text.replace(/^\uFEFF/,''));
-            documents[id]={id,path:d.path,original:clone(data),data,text,revision:hash(text)};
+            const published={id,path:d.path,original:clone(data),data,text,revision};
+            if(dirty){
+                const merged=require('./projectile-save-merge').documents(d,documents.overrides,published);
+                if(!merged)throw conflict();
+                Object.assign(documents,merged);return;
+            }
+            documents[id]=published;
             if(id==='A'){
                 const original=data.GameTools===undefined?defaults():clone(data.GameTools);
                 documents.overrides={id:'overrides',path:files.A+'#GameTools',original:clone(original),data:original,revision:documents.A.revision,virtual:true};

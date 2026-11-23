@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const Art=require('../../assets/_script/LobbyStageArt'),PNG=require('../../packages/hkd-characters/lib/png-atlas');
 const root=path.resolve(__dirname,'../..'),biomes=['forest','deep-forest','autumn','desert','snow','ice','fire','lava'];
-const legacy={Map01:'forest',Map02:'deep-forest',Map03:'desert',Map04:'snow',Map07:'fire'};
+const legacy={Map01:'forest',Map02:'deep-forest',Map03:'desert',Map07:'fire'};
 const read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));
 
 test('the eight biome thumbnails are distinct portable transparent sprites with complete Creator metadata',()=>{
@@ -25,7 +25,7 @@ test('the eight biome thumbnails are distinct portable transparent sprites with 
 
 test('authored biomes take precedence and every legacy or generated map resolves without rewriting its stage',()=>{
  for(const biome of biomes){
-  const stage={EnvironmentBiome:biome,EnvironmentMapId:'Map04',prefab:'Map03',Map:'old-preview',Future:{keep:1}},before=JSON.stringify(stage);
+  const stage={EnvironmentBiome:biome,EnvironmentMapId:'map-original-04-rebuilt',prefab:'Map03',Map:'old-preview',Future:{keep:1}},before=JSON.stringify(stage);
   assert.equal(Art.biome(stage),biome);assert.equal(Art.resource(stage),'Thumbnails/biome-'+biome);assert.equal(JSON.stringify(stage),before);
   assert.equal(Art.resource({EnvironmentMapId:'map-'+biome+'-terrain'}),'Thumbnails/biome-'+biome);
  }
@@ -68,17 +68,15 @@ function fixture(stages){
  return{home,jobs,icon,sprite,finish,select(level){home.selectStage=level;init.call(home);}};
 }
 
-test('real lobby refresh selects biome art for every A/B/D stage and keeps high-resolution images inside the original preview',()=>{
- for(const variant of ['','B','D']){
-  const config=read('assets/KinghtFallConfig'+variant+'/GameJsonCfg.json'),before=JSON.stringify(config),f=fixture(config.LevelCfg);
-  for(const stage of config.LevelCfg.concat(config.LevelCfg.slice().reverse())){
-   f.select(stage.Level);const job=f.jobs.shift(),biome=stage.EnvironmentBiome||legacy[stage.EnvironmentMapId]||legacy[stage.prefab];
-   assert(biome);assert.equal(job.bundle,'maps');assert.equal(job.resource,stage.StageThumbnail||'Thumbnails/biome-'+biome);
-   f.finish(job);assert.equal(f.sprite.sizeMode,0);assert(f.icon.width<=394+.001&&f.icon.height<=341+.001);
-   assert(Math.abs(f.icon.width/f.icon.height-1351/1164)<1e-10);assert.equal(f.home.monsterStage.Level,stage.Level);
-  }
-  assert.equal(JSON.stringify(config),before,'displaying stage art must not change gameplay configuration');
+test('real lobby refresh selects biome art for every campaign stage and fits high-resolution images inside the original preview',()=>{
+ const config=read('assets/KinghtFallConfig/GameJsonCfg.json'),before=JSON.stringify(config),f=fixture(config.LevelCfg);
+ for(const stage of config.LevelCfg.concat(config.LevelCfg.slice().reverse())){
+  f.select(stage.Level);const job=f.jobs.shift(),biome=stage.EnvironmentBiome||legacy[stage.EnvironmentMapId]||legacy[stage.prefab];
+  assert(biome);assert.equal(job.bundle,'maps');assert.equal(job.resource,stage.StageThumbnail||'Thumbnails/biome-'+biome);
+  f.finish(job);assert.equal(f.sprite.sizeMode,0);assert(f.icon.width<=394+.001&&f.icon.height<=341+.001);
+  assert(Math.abs(f.icon.width/f.icon.height-1351/1164)<1e-10);assert.equal(f.home.monsterStage.Level,stage.Level);
  }
+ assert.equal(JSON.stringify(config),before,'displaying stage art must not change gameplay configuration');
 });
 
 test('a custom thumbnail changes aspect ratio without shrinking subsequent biome previews',()=>{

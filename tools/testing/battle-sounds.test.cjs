@@ -24,7 +24,7 @@ function fixture(surface = 'lava', options = {}) {
   }
   const node = () => ({ x: 0, y: 0, activeInHierarchy: true, _combatGeneration: 1 });
   const hero = { node: node(), _relicHero: true, hp: 100, hpMax: 100, isDead: () => false };
-  const soldiers = [], enemies = [], data = { levelCfg: { prefab: 'Map04', EnvironmentBiome: surface }, round: 1, getSoldierList: () => soldiers, getEnemyList: () => enemies };
+  const soldiers = [], enemies = [], data = { levelCfg: { prefab: 'Generated/Stages/A-20', EnvironmentBiome: surface }, round: 1, getSoldierList: () => soldiers, getEnemyList: () => enemies };
   const game = { node: node(), gameData: data, _combatEpoch: 1, gameStatus: 0, ctrPlay: hero };
   const ui = { node: node(), ctrGame: game, isclose: false };
   const modules = { BaseMgr: { default: function () {} }, CacheUtils: { CacheUtils: { getData: () => null, saveData: (...v) => writes.push(v), canPlayEffect: () => preferences.effects, canPlayMusin: () => preferences.music } },
@@ -141,8 +141,8 @@ test('only hero movement starts and sustains the horse loop while effects volume
 
 test('explicit biome wins over shared legacy maps, while legacy and invalid values have stable fallbacks', () => {
   const f = fixture('ice'); assert.equal(f.sounds.biome(f.game), 'ice');
-  delete f.data.levelCfg.EnvironmentBiome; assert.equal(f.sounds.biome(f.game), 'snow');
-  f.data.levelCfg.prefab = 'Map02'; assert.equal(f.sounds.biome(f.game), 'deep-forest');
+  f.data.levelCfg.prefab = 'Map02'; assert.equal(f.sounds.biome(f.game), 'ice');
+  delete f.data.levelCfg.EnvironmentBiome; assert.equal(f.sounds.biome(f.game), 'deep-forest');
   f.data.levelCfg.EnvironmentBiome = 'unknown'; f.data.levelCfg.prefab = 'missing'; assert.equal(f.sounds.biome(f.game), 'forest');
 });
 

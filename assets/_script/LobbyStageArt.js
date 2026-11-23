@@ -10,13 +10,14 @@ var images = {
   fire: "Thumbnails/biome-fire",
   lava: "Thumbnails/biome-lava"
 };
-var legacy = { Map01: "forest", Map02: "deep-forest", Map03: "desert", Map04: "snow", Map07: "fire" };
+var legacy = { Map01: "forest", Map02: "deep-forest", Map03: "desert", Map07: "fire" };
 function own(table, key) { return typeof key === "string" && Object.prototype.hasOwnProperty.call(table, key); }
 function mapBiome(id) {
   if (own(images, id)) return id;
   if (own(legacy, id)) return legacy[id];
   if (typeof id !== "string") return null;
-  var original = /^map-original-0([1-4])-rebuilt$/.exec(id);
+  if (id === "map-original-04-rebuilt") return "snow";
+  var original = /^map-original-0([1-3])-rebuilt$/.exec(id);
   if (original) return legacy["Map0" + original[1]];
   var terrain = /^map-(forest|deep-forest|autumn|desert|snow|ice|fire|lava)-terrain$/.exec(id);
   if (terrain) return terrain[1];

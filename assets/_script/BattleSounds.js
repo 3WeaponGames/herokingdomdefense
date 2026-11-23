@@ -3,7 +3,7 @@
 // Presentation only. No saved configuration, RNG for combat, or actor state is changed.
 var Catalog = require("BattleSoundCatalog"), entries = Catalog.effects, serial = 0, menuState = null;
 var BIOMES = ["forest", "deep-forest", "autumn", "desert", "snow", "ice", "fire", "lava"];
-var LEGACY = { Map01: "forest", Map02: "deep-forest", Map03: "desert", Map04: "snow", Map07: "fire" };
+var LEGACY = { Map01: "forest", Map02: "deep-forest", Map03: "desert", Map07: "fire" };
 var SLOTS = { combat: 4, hit: 1, heroHit: 8, heroRelease: 2, heroReady: 1, death: 2, magic: 2, signal: 1, ui: 1 };
 var SKIRMISHER_CUES = ["skirmisher-passive-release", "skirmisher-passive-hit", "skirmisher-passive-charged", "skirmisher-passive-draw-loop", "skirmisher-active-release", "skirmisher-active-hit"];
 function view() { return require("KinghtFallUIGame").default.instance; }

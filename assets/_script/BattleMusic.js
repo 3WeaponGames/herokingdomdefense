@@ -1,7 +1,7 @@
 "use strict";
 // Music selection is deterministic and never changes combat RNG or saved progress.
 var BIOMES = ["forest", "deep-forest", "autumn", "desert", "snow", "ice", "fire", "lava"];
-var LEGACY = { Map01: "forest", Map02: "deep-forest", Map03: "desert", Map04: "snow", Map07: "fire" };
+var LEGACY = { Map01: "forest", Map02: "deep-forest", Map03: "desert", Map07: "fire" };
 var PLANNING = { forest: "ready_bgm", "deep-forest": "deep_forest_ready_bgm", autumn: "autumn_ready_bgm",
   desert: "desert_ready_bgm", snow: "snow_ready_bgm", ice: "ice_ready_bgm", fire: "fire_ready_bgm", lava: "lava_ready_bgm" };
 function biome(level) {
