@@ -2328,6 +2328,19 @@
         "cropHeight": 1,
         "cropWidth": 1
       }
+    },
+    {
+      "id": 91181,
+      "source": "monster3/Raptor_OrcWar",
+      "name": "Orc War Raptor",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head|Jaw)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
     }
   ]
 }

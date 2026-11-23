@@ -43448,6 +43448,33 @@
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002
     },
+    "91181": {
+      "ID": 91181,
+      "Name": "[[loc:data.monster-roster.91181.name]]",
+      "prefab": "Monster3_Raptor_OrcWar",
+      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 150,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91181.description]]"
+      },
+      "MonsterSource": "monster3/Raptor_OrcWar",
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
     "100000": {
       "ID": 100000,
       "Name": "[[loc:data.soldiercfg.90001.name]]",
@@ -69272,6 +69299,136 @@
       },
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002
+    },
+    "101805": {
+      "ID": 101805,
+      "Name": "[[loc:data.monster-roster.91181.name]]",
+      "prefab": "Monster3_Raptor_OrcWar",
+      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
+      "AttackType": 1,
+      "Health": 53.33333333,
+      "AttackDamage": 5.26315789,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 130.43478261,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91181.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101806": {
+      "ID": 101806,
+      "Name": "[[loc:data.monster-roster.91181.name]]",
+      "prefab": "Monster3_Raptor_OrcWar",
+      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
+      "AttackType": 1,
+      "Health": 64,
+      "AttackDamage": 4.73684211,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 117.39130435,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91181.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101807": {
+      "ID": 101807,
+      "Name": "[[loc:data.monster-roster.91181.name]]",
+      "prefab": "Monster3_Raptor_OrcWar",
+      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 4.73684211,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 143.47826087,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91181.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101808": {
+      "ID": 101808,
+      "Name": "[[loc:data.monster-roster.91181.name]]",
+      "prefab": "Monster3_Raptor_OrcWar",
+      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
+      "AttackType": 1,
+      "Health": 58.66666666,
+      "AttackDamage": 6.31578947,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 123.91304348,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91181.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
+    },
+    "101809": {
+      "ID": 101809,
+      "Name": "[[loc:data.monster-roster.91181.name]]",
+      "prefab": "Monster3_Raptor_OrcWar",
+      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 6.57894737,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 110.86956522,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "Guide": {
+        "description": "[[loc:data.unitguide.91181.description]]"
+      },
+      "MonsterPack": "monster3",
+      "BehaviorTemplate": 90001
     }
   },
   "TalentCfg": {
@@ -80232,6 +80389,24 @@
       },
       "enemy:101804:default": {
         "attack": 0.3333333
+      },
+      "enemy:101805:default": {
+        "attack": 0.375
+      },
+      "enemy:101806:default": {
+        "attack": 0.375
+      },
+      "enemy:91181:default": {
+        "attack": 0.375
+      },
+      "enemy:101807:default": {
+        "attack": 0.375
+      },
+      "enemy:101808:default": {
+        "attack": 0.375
+      },
+      "enemy:101809:default": {
+        "attack": 0.375
       }
     },
     "visuals": {
@@ -83684,6 +83859,24 @@
       },
       "enemy:101804:default": {
         "mirrorX": true
+      },
+      "enemy:101805:default": {
+        "mirrorX": true
+      },
+      "enemy:101806:default": {
+        "mirrorX": true
+      },
+      "enemy:91181:default": {
+        "mirrorX": true
+      },
+      "enemy:101807:default": {
+        "mirrorX": true
+      },
+      "enemy:101808:default": {
+        "mirrorX": true
+      },
+      "enemy:101809:default": {
+        "mirrorX": true
       }
     },
     "unitTypes": {
@@ -84880,7 +85073,13 @@
       "enemy:101802:default": "vanguard",
       "enemy:101803:default": "skirmisher",
       "enemy:91180:default": "bruiser",
-      "enemy:101804:default": "mystic"
+      "enemy:101804:default": "mystic",
+      "enemy:101805:default": "fighter",
+      "enemy:101806:default": "guardian",
+      "enemy:91181:default": "vanguard",
+      "enemy:101807:default": "skirmisher",
+      "enemy:101808:default": "bruiser",
+      "enemy:101809:default": "mystic"
     },
     "unitLevels": {
       "ally:90001:level:2": {
@@ -84956,7 +85155,7 @@
     },
     "unitProfiles": {
       "version": 1,
-      "nextId": 101805,
+      "nextId": 101810,
       "entries": {
         "100000": {
           "baseId": 90001,
@@ -98102,6 +98301,76 @@
           },
           "visual": {},
           "fightingProfile": true
+        },
+        "101805": {
+          "baseId": 91181,
+          "role": "fighter",
+          "name": "Fighter",
+          "created": true,
+          "stats": {
+            "Health": 53.33333333,
+            "AttackDamage": 5.26315789,
+            "AttackInterval": 1,
+            "Speed": 130.43478261
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101806": {
+          "baseId": 91181,
+          "role": "guardian",
+          "name": "Guardian",
+          "created": true,
+          "stats": {
+            "Health": 64,
+            "AttackDamage": 4.73684211,
+            "AttackInterval": 0.9,
+            "Speed": 117.39130435
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101807": {
+          "baseId": 91181,
+          "role": "skirmisher",
+          "name": "Skirmisher",
+          "created": true,
+          "stats": {
+            "Health": 48,
+            "AttackDamage": 4.73684211,
+            "AttackInterval": 1.1,
+            "Speed": 143.47826087
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101808": {
+          "baseId": 91181,
+          "role": "bruiser",
+          "name": "Bruiser",
+          "created": true,
+          "stats": {
+            "Health": 58.66666666,
+            "AttackDamage": 6.31578947,
+            "AttackInterval": 0.9,
+            "Speed": 123.91304348
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101809": {
+          "baseId": 91181,
+          "role": "mystic",
+          "name": "Mystic",
+          "created": true,
+          "stats": {
+            "Health": 48,
+            "AttackDamage": 6.57894737,
+            "AttackInterval": 0.85,
+            "Speed": 110.86956522
+          },
+          "visual": {},
+          "fightingProfile": true
         }
       },
       "families": {
@@ -101672,6 +101941,25 @@
             "skirmisher": 101803,
             "bruiser": 91180,
             "mystic": 101804
+          }
+        },
+        "91181": {
+          "modelKey": "source:monster3/Raptor_OrcWar",
+          "name": "Orc War Raptor",
+          "referenceId": 91181,
+          "baseline": {
+            "Health": 53.33333333,
+            "AttackDamage": 5.26315789,
+            "AttackInterval": 1,
+            "Speed": 130.43478261
+          },
+          "profiles": {
+            "fighter": 101805,
+            "guardian": 101806,
+            "vanguard": 91181,
+            "skirmisher": 101807,
+            "bruiser": 101808,
+            "mystic": 101809
           }
         }
       },

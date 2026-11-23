@@ -12,6 +12,30 @@ function buildingRow(building,hall,config){
  }
  return row;
 }
+function previewBuildingRow(building,level,config){
+ const row=buildingRow(building,level,config);
+ if(!row||building.kind===1)return row;
+ const rows=config.BuildEnum[building.kind].levelList;
+ // Follow upgrades from the chosen branch and keep the last available tier.
+ function bestThrough(current){
+  let best=current;
+  for(const index of Array.isArray(current.BranchBuild)?current.BranchBuild:[]){
+   const next=rows.find(row=>row.index===index&&row.level>current.level&&row.level<=level);
+   if(!next)continue;
+   const candidate=bestThrough(next);
+   if(candidate.level>best.level)best=candidate;
+   if(best.level===level)break;
+  }
+  return best;
+ }
+ return bestThrough(row);
+}
+function barracksChoices(config){
+ const category=config&&config.BuildEnum&&config.BuildEnum[3],rows=category&&category.levelList||[];
+ const choices=category&&category.InitialChoices;
+ if(!Array.isArray(choices))return rows.slice(0,1);
+ return Array.from(new Set(choices),index=>rows.find(row=>row.index===index&&row.level===1)).filter(Boolean);
+}
 function colliderIndex(building,hall,config){
  const row=buildingRow(building,hall,config),index=row?row.index:building.kind===1?hall:1,override=row&&row.ColliderIndex;
  // Navigation previews assume eligible buildings are built, using the first
@@ -62,15 +86,22 @@ function preview(service,request){
  for(const graph of stage.graphs.filter(graph=>graph&&Array.isArray(graph.spawnIds)&&graph.spawnIds.includes(spawn.id))){const issues=M.graphIssues(graph);if(routeIds.has(graph.id))issues.push('Duplicate path ID.');routeIds.add(graph.id);if(issues.length)throw Error(issues.join('\n'));}
  if(spawn.radius!==undefined&&(!Number.isFinite(spawn.radius)||spawn.radius<0||spawn.radius>1500))throw Error('Spawn radius must be between 0 and 1500.');
  if(request.graphId){const selected=stage.graphs.find(graph=>graph&&graph.id===request.graphId);if(!selected||!Array.isArray(selected.spawnIds)||!selected.spawnIds.includes(spawn.id))throw Error('Choose a path assigned to the selected spawn.');}
- const hall=request.hall===undefined?3:request.hall,radius=request.radius===undefined?18:request.radius,gate=request.gate||'closed';
+ const hall=request.hall===undefined?3:request.hall,buildingLevel=request.buildingLevel===undefined?1:request.buildingLevel,radius=request.radius===undefined?18:request.radius,gate=request.gate||'closed';
  if(!Number.isInteger(hall)||hall<1||hall>4)throw Error('Choose main hall level 1, 2, 3 or 4.');
+ if(!Number.isInteger(buildingLevel)||buildingLevel<1||buildingLevel>4)throw Error('Choose building level 1, 2, 3 or 4.');
  if(!Number.isFinite(radius)||radius<0)throw Error('Unit radius must be finite and non-negative.');
  if(!['closed','open'].includes(gate))throw Error('Choose an open or closed gate.');
  const Grid=require(path.join(service.root,'assets/_script/NavigationGrid')).NavigationGrid,polygons=M.blockerPolygons(map).map(p=>p.points);
  if(!M.hasGlobalBlockers(map))for(const layer of map.layers)if(!layer.hidden)for(const object of layer.objects)for(const shape of object.polygons||[])polygons.push(shape.map(p=>M.toWorld(layer.transform,M.toWorld(object,M.flipPoint(object,p)))));
  const documents=typeof service.index==='function'?service.index().documents:null,config=service.previewConfig?service.previewConfig():documents&&documents.A,buildings=stage.buildings.filter(b=>b.enabled!==false&&(b.kind===1||(b.unlock||1)<=hall));
  const sourceModels=new Map();
- for(const building of buildings)polygons.push(...buildingPolygons(service,stage,building,hall,gate,config,sourceModels));
+ const choices=barracksChoices(config),types=request.barracksTypes;
+ for(const building of buildings){
+  const choice=building.kind===3&&types&&(choices.find(row=>String(row.index)===types[building.id])||choices[0]);
+  const posed=choice?Object.assign({},building,{previewBranch:choice.index}):building;
+  const row=building.kind!==1&&buildingLevel>1&&previewBuildingRow(posed,buildingLevel,config);
+  polygons.push(...buildingPolygons(service,stage,row?Object.assign({},posed,{previewBranch:row.index}):posed,hall,gate,config,sourceModels));
+ }
  const route=require(path.join(service.root,'assets/_script/AuthoredSpawnPlan')).route(stage.graphs,spawn.id,buildings.map(b=>b.id),request.graphId||null,()=>.25);
  if(!route.length)throw Error('No valid approach is available. Check its graph and conditions.');
  const bounds={minX:-map.size.width/2,minY:-map.size.height/2,maxX:map.size.width/2,maxY:map.size.height/2},grid=new Grid(polygons,bounds,20),points=[{x:spawn.x,y:spawn.y}];
@@ -97,4 +128,4 @@ function preview(service,request){
  }
  return response;
 }
-module.exports={preview,buildingPolygons,buildingColliderData,colliderIndex,buildingRow};
+module.exports={preview,buildingPolygons,buildingColliderData,colliderIndex,buildingRow,previewBuildingRow,barracksChoices};

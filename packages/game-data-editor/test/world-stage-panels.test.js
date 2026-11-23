@@ -87,6 +87,26 @@ test('building cards support the same drag order and keyboard moves without chan
  assert.deepEqual(require('../worlds/stage-card-order').ordered(f.state.snap.value.buildings).map(building=>building.id),[1,8,4]);assert.equal(f.edits(),2);
 });
 
+test('Silver offer numbers identify the same locations after dragging their cards',()=>{
+ const f=fixture();f.state.tab='Buildings';
+ f.state.snap.value.specials=[
+  {id:'offer-1',kind:0,name:'Silver offer'},
+  {id:'offer-2',kind:1,name:'Weapon offer'},
+  {id:'offer-3',kind:0,name:'Silver offer'},
+  {id:'offer-4',kind:0,name:'Silver offer',enabled:false},
+  {id:'offer-5',kind:0,name:'East bend'},
+ ];
+ const before=clone(f.state.snap.value),cards=()=>descendants(f.context.left).filter(node=>node.dataset.specialId);
+ f.panels.left();
+ assert.deepEqual(cards().map(card=>card.textContent),['Silver offer 1','Weapon offer','Silver offer 2','Silver offer 3 · Disabled','Silver offer 4 · East bend']);
+ assert(f.context.left.textContent.includes('one per wave in numbered order'));
+ assert.equal(f.edits(),0);assert.deepEqual(f.state.snap.value,before);
+ const rows=cards();rows[4].ondragstart(dragEvent());rows[0].ondrop(dragEvent());
+ f.panels.left();
+ assert.deepEqual(cards().filter(card=>card.textContent.startsWith('Silver offer')).map(card=>card.textContent),['Silver offer 4 · East bend','Silver offer 1','Silver offer 2','Silver offer 3 · Disabled']);
+ assert.deepEqual(f.state.snap.value.specials.map(({editorOrder,...offer})=>offer),before.specials);
+});
+
 test('cancelled drags, busy documents and drops from another stage cannot create an edit',()=>{
  const f=fixture();f.state.tab='Paths';f.panels.left();const rows=descendants(f.context.left).filter(element=>element.dataset.graphId);
  rows[1].ondragstart(dragEvent());rows[1].ondragend();rows[0].ondrop(dragEvent());assert.equal(f.edits(),0);
@@ -106,6 +126,20 @@ test('Duplicate path sits directly above Delete path, retains spawn references a
 });
 test('rendering every contextual stage tab makes no draft changes or edit requests',()=>{
  const f=fixture(),before=JSON.stringify(f.state.snap.value);for(const tab of ['Stage','Buildings','Spawns','Paths','Waves']){f.state.tab=tab;f.panels.top();f.panels.tabs();f.panels.left();f.panels.right();assert.equal(JSON.stringify(f.state.snap.value),before,tab);}assert.equal(f.edits(),0);
+});
+
+test('the Stage and Buildings tabs can change building levels independently of the hall',()=>{
+ const f=fixture(),before=clone(f.state.snap.value);f.state.previewBuildingLevel=1;
+ const level=()=>descendants(f.context.tabs).find(node=>node.fieldName==='Building preview');
+ for(const tab of ['Stage','Buildings']){
+  f.context.tabs.textContent='';f.state.tab=tab;f.panels.tabs();
+  assert.deepEqual(level().choices,[1,2,3,4]);
+  level().change(4);
+  assert.equal(f.state.previewBuildingLevel,4);
+  assert.equal(f.state.previewHall,3);
+ }
+ assert.deepEqual(f.state.snap.value,before);
+ assert.equal(f.edits(),0);
 });
 
 test('first-upgrade cards are a Buildings-only preview toggle and redraw without editing the stage',()=>{

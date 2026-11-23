@@ -260,11 +260,14 @@ var def_KinghtFallGameCtrlData = function () {
   _ctor.prototype.initCom = function () {
     if (this.canNew) {
       if (this.appearBusinessPoints) {
-        this.appearBusinessPoints.node.active = false, this.appearBusinessPoints = null;
+        this.appearBusinessPoints.node.active = false;
       }
-      if (!this.appearBusinessPoints) {
-        this.canNew = false, this.appearBusinessPoints = this.businessPoints[$z1Utils.Utils.randomRang(0, this.businessPoints.length)];
-      }
+      this.canNew = false;
+      // The editor numbers Silver offers in their authored map order.
+      // The wave number keeps the same location on retry and resume.
+      var offers = this.businessPoints;
+      var waveIndex = Math.max(0, this.round - 1);
+      this.appearBusinessPoints = offers.length ? offers[waveIndex % offers.length] : null;
     }
     if ($z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe)) {
       this.appearBusinessPoints && (this.appearBusinessPoints.node.active = false);

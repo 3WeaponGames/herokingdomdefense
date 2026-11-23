@@ -1,6 +1,36 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const {setup,hero,Node,Vec2,authored}=require('./backend-gameplay-harness.cjs');
 function prefab(id){return ()=>{const node=new Node();node.getComponent=()=>({uuid:String(id),node,initData(){}});return node;};}
+test('Silver offers rotate by wave and keep the same location on retry and resume',()=>{
+ const h=setup({
+  PlatformSetting:{SwitchID:{ShenHe:'review'}},
+  SdkMgr:{SdkMgr:{getInstance:()=>({getCheckVersion:()=>false})}},
+ });
+ const data=h.d,offers=[1,2,3,4].map(id=>({id,node:{active:false},init:h.noop}));
+ Object.assign(data,{
+  canNew:true,businessPoints:offers,baseBuild:{},weaponBusinessPoints:null,horseBusinessPoints:null,
+  levelCfg:{Level:1,WaveCfg:Array.from({length:5},()=>({StartSliver:0}))},
+  loadMonster(){this.round++;},upMap:h.noop,
+ });
+ function shown(offer){
+  assert.equal(data.appearBusinessPoints,offer);
+  assert.deepEqual(offers.filter(point=>point.node.active),offer?[offer]:[]);
+ }
+ data.initCom();shown(offers[0]);
+ data.endRoundGame();shown(offers[1]);
+ data.onRestart(false);shown(offers[1]);
+ data.endRoundGame();shown(offers[2]);
+ data._restoringCheckpoint=true;
+ data.onRestart(false);shown(offers[2]);
+ data.endRoundGame();shown(offers[3]);
+ data.endRoundGame();shown(offers[0]);
+ data.onRestart(true);shown(offers[0]);
+ // The map exports only enabled locations into the runtime list.
+ data.businessPoints=[offers[0],offers[2],offers[3]];
+ data.endRoundGame();shown(offers[2]);
+ data.businessPoints=[];
+ data.onRestart(true);shown(null);
+});
 test('wave completion waits for asynchronous final enemy and emits once',()=>{
  const h=setup();h.d.enemyList=[{uuid:'alive',onUpdate(){}}];h.d.enemyQueue={1:[{id:90001,num:1}]};h.d.packInterval=.5;
  h.d.onUpdata(.6);h.d.delEnemy({uuid:'alive'});assert.equal(h.events.length,0);assert.equal(h.d.pendingEnemySpawns,1);

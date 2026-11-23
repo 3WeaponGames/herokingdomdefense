@@ -56,7 +56,7 @@ const messages={
     'world-stage-thumbnail-folder'(event){reply(event,async()=>{const folder=require('./worlds/stage-thumbnails').list(getWorlds()).folder,shell=require('electron').shell;if(shell.openPath){const error=await shell.openPath(folder);if(error)throw Error(error);}else shell.openItem(folder);return true;});},
     'world-stage-thumbnail-pick'(event){reply(event,()=>new Promise((resolve,reject)=>{const dialog=require('electron').dialog,options={title:'Choose a stage thumbnail',defaultPath:require('./worlds/stage-thumbnails').list(getWorlds()).folder,properties:['openFile'],filters:[{name:'PNG images',extensions:['png']}]};try{const modern=Number((process.versions.electron||'0').split('.')[0])>=6,result=modern?dialog.showOpenDialog(options):dialog.showOpenDialog(options,files=>resolve(files&&files[0]||null));if(result&&result.then)result.then(value=>resolve(value.canceled?null:value.filePaths[0]),reject);else if(Array.isArray(result))resolve(result[0]||null);}catch(error){reject(error);}}));},
     'world-unit-preview'(event,request){reply(event,()=>getWorlds().unitPreview(request));},
-    'world-load'(event,request){reply(event,()=>getWorlds().snapshot(request.key,undefined,{buildingLevels:request.placementPreview===true}));},
+    'world-load'(event,request){reply(event,()=>getWorlds().snapshot(request.key,undefined,{placementPreview:request.placementPreview===true}));},
     'world-copy-stage'(event,request){reply(event,()=>getWorlds().copyStage(request));},
     'world-paste-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().pasteStage(request)));},
     'world-replace-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().replaceStage(request)));},
