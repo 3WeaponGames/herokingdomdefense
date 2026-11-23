@@ -7,30 +7,12 @@ const PurchasePreview=require('./purchase-field-preview'),PurchaseSettings=requi
 const NAMES={1:'Main Hall',2:'Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall / Gate'},files=new Map(),descriptions=new WeakMap();
 const clone=M.clone,number=(v,f)=>typeof v==='number'&&Number.isFinite(v)?v:f,positive=(v,f)=>Math.max(1,number(v,f));
 const WallData=require('../walls/service');
+const Schema=require('../lib/schema');
 function revision(file,dependencies){const stat=fs.statSync(file),value=stat.mtimeMs+':'+stat.ctimeMs+':'+stat.size;if(dependencies)dependencies.set(file,value);return value;}
 function unchanged(dependencies){if(!dependencies)return false;try{for(const [file,value]of dependencies)if(revision(file)!==value)return false;return true;}catch(_){return false;}}
 function read(file,json,dependencies){const version=revision(file,dependencies),old=files.get(file);if(old&&old.revision===version)return old.value;const text=fs.readFileSync(file,'utf8'),value=json?JSON.parse(text.replace(/^\uFEFF/,'')):text;files.set(file,{revision:version,value});return value;}
 function reference(data,ref){const value=ref&&data[ref.__id__];return value&&value.__type__==='cc.Node'?ref.__id__:value&&value.node&&value.node.__id__;}
 function multiply(a,b){return [a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];}
-function previewRow(config,building,level,buildingLevels){
- const row=Navigation.buildingRow(building,level,config);
- if(!row||building.kind===1||!buildingLevels)return row;
- const rows=config.BuildEnum[building.kind].levelList;
- // Stay on the selected construction branch. Use the first path that reaches
- // the requested level, or the highest reachable row when the branch caps.
- function bestThrough(current){
-  let best=current;
-  for(const index of Array.isArray(current.BranchBuild)?current.BranchBuild:[]){
-   const next=rows.find(row=>row.index===index&&row.level>current.level&&row.level<=level);
-   if(!next)continue;
-   const candidate=bestThrough(next);
-   if(candidate.level>best.level)best=candidate;
-   if(best.level===level)break;
-  }
-  return best;
- }
- return bestThrough(row);
-}
 function sprite(info,s,ground){const n=info.byId[s.node];return {frame:s.frame,matrix:n.world.slice(),width:n.width,height:n.height,anchor:clone(n.anchor),color:clone(n.source._color||{r:255,g:255,b:255,a:255}),active:true,ground:!!ground};}
 function skeleton(root,component,info,assetIndex,skin,ground,cache,dependencies){
  const uuid=component._N$skeletonData&&component._N$skeletonData.__uuid__,file=assetIndex.uuids[uuid];
@@ -45,8 +27,10 @@ function appearanceSprites(root,appearance,owner,images,dependencies,partScale){
  if(weapon&&typeof weapon.sprite==='string'&&weapon.sprite){const p=WeaponPose.pose(weapon,null,partScale),a=p.angle*Math.PI/180,c=Math.cos(a),s=Math.sin(a);sprites.push({frame:artwork(root,p.sprite,images,dependencies),matrix:multiply(owner.world,[c*p.flipX,s*p.flipX,-s,c,p.x,p.y]),width:p.width,height:p.height,anchor:{x:p.pivotX,y:p.pivotY},active:true,ground:false,shadowExcluded:true});}
  return sprites;
 }
-function describe(service,stage,{buildingLevels=false}={}){
+function describe(service,stage,{buildingLevels=false,barracksTypes=false}={}){
  const index=service.index(),config=service.previewConfig?service.previewConfig():index.documents.A,buildings={},images={},errors=[],sourceModels=new Map(),assetCache=new Map(),sources=new Map(),dependencies=new Map();let assetIndex=null,needsRuntime=false;
+ const rowForLevel=buildingLevels?Navigation.previewBuildingRow:Navigation.buildingRow;
+ const choices=barracksTypes?Navigation.barracksChoices(config):[],catalogFile=path.join(service.root,'assets/resources/localization/catalog.json');
  let wallAdjustments=null;
  if((stage.buildings||[]).some(building=>building.kind===6))try{wallAdjustments=WallData.readSource(service.root);revision(wallAdjustments.file,dependencies);}catch(error){if(error.code!=='ENOENT')errors.push(error.message);wallAdjustments={data:{version:1,poses:{}},revision:error.code==='ENOENT'?'missing':'unavailable'};}
  // Placement moves and wave edits do not change the source composition. Keep
@@ -54,8 +38,9 @@ function describe(service,stage,{buildingLevels=false}={}){
  // rows. Referenced artwork is checked with cheap file stamps before reuse,
  // so live texture/model replacement does not require editing or saving a draft.
  for(const building of stage.buildings||[]){const id=building.template.prefab;if(!sources.has(id)){try{const data=stage.templates&&stage.templates[id]||service.source(id);sources.set(id,{data,revision:L.hash(JSON.stringify(data))});}catch(error){sources.set(id,{data:null,revision:'missing'});errors.push(error.message);}}}
- const signature=JSON.stringify([buildingLevels,(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseOverride,b.spawnPosition,b.placementVariant,b.angle,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum,config.GameTools&&config.GameTools.buildingShadows,wallAdjustments&&wallAdjustments.revision]),previous=descriptions.get(service);
+ const signature=JSON.stringify([buildingLevels,barracksTypes,(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseOverride,b.spawnPosition,b.placementVariant,b.angle,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum,config.GameTools&&config.GameTools.buildingShadows,wallAdjustments&&wallAdjustments.revision]),previous=descriptions.get(service);
  if(previous&&previous.index===index&&previous.signature===signature&&unchanged(previous.dependencies))return previous.value;
+ const catalog=choices.length>1&&(stage.buildings||[]).some(b=>b.kind===3)&&fs.existsSync(catalogFile)?read(catalogFile,true,dependencies):null;
  for(const authoredBuilding of stage.buildings||[]){
   const building=Purchase.withDefaults(authoredBuilding,config,1,sources.get(authoredBuilding.template.prefab).data);
   const result=buildings[building.id]={name:NAMES[building.kind]||'Building',levels:{}},rawSource=sources.get(building.template.prefab).data;if(!rawSource)continue;let source;try{source=GateSource.project(rawSource,building,service.root);try{source=Purchase.project(source,building);}catch(error){errors.push(error.message);}}catch(error){errors.push(error.message);continue;}let info=sourceModels.get(source);if(!info){try{info=Maps.model(source);sourceModels.set(source,info);}catch(error){errors.push(error.message);continue;}}
@@ -78,9 +63,21 @@ function describe(service,stage,{buildingLevels=false}={}){
   const plateSprites=plate?info.sprites.filter(s=>s.node===plateId&&s.enabled).map(s=>sprite(info,s,true)):[];
   const trigger=plate&&plate.components.find(c=>c.value.__type__==='cc.PolygonCollider');
   const trs=plate&&plate.source._trs&&plate.source._trs.array,step=trigger?(trigger.value.points||[]).map(p=>{const x=p.x/(trs?trs[7]:1),y=p.y/(trs?trs[8]:1),m=plate.world;return {x:m[0]*x+m[2]*y+m[4]-origin.x,y:m[1]*x+m[3]*y+m[5]-origin.y};}):null;
-  for(const hall of [1,2,3,4]){
-   const row=previewRow(config,building,hall,buildingLevels),look=row&&row.Appearance;
-   const branch=buildingLevels&&building.kind!==1&&row?{previewBranch:row.index}:null;
+  const views=[{building,levels:result.levels}];
+  if(building.kind===3&&choices.length>1){
+   const first=Navigation.buildingRow(building,1,config);
+   result.barracksTypes=choices.map((choice,index)=>{
+    const name=Schema.resolve(choice.Name,catalog,'en'),type={id:String(choice.index),label:name&&name!==Schema.token(choice.Name)?name:'Type '+(index+1)};
+    if(!first||first.index!==choice.index){
+     type.levels={};
+     views.push({building:Object.assign({},building,{previewBranch:choice.index}),levels:type.levels});
+    }
+    return type;
+   });
+  }
+  for(const view of views)for(const hall of [1,2,3,4]){
+   const row=rowForLevel(view.building,hall,config),look=row&&row.Appearance;
+   const branch=(buildingLevels||view.building!==building)&&building.kind!==1&&row?{previewBranch:row.index}:null;
    const posed=Object.assign({},building,branch,{x:0,y:0,scale:1,angle:0});
    const level={origin:clone(origin),sprites:plateSprites.concat(native),skeletons:[],blockers:Navigation.buildingPolygons(service,stage,posed,hall,'closed',config,sourceModels),step:step&&clone(step)};
    if(building.kind===6)level.wallOpening=GateFacing.validOpening(component.wallOpening)?component.wallOpening:'outward';
@@ -104,9 +101,9 @@ function describe(service,stage,{buildingLevels=false}={}){
    if(row){const FX=require('../../../assets/_script/BuildingDropShadow'),style=FX.resolve(config.BuildEnum[building.kind],row,config.GameTools);if(style.active){delete level.shadow;level.dropShadow=style.settings;}else if(style.mode==='none')delete level.shadow;}
    if(building.kind===5&&row&&row.PartScale)level.skeletons=level.skeletons.map(d=>{if(!d.ground)return d;const json=require('../../../assets/_script/BuildingPartScale').json(d.json,row);return json===d.json?d:Object.assign({},d,{json,revision:d.revision+':parts:'+JSON.stringify(row.PartScale)});});
    if(row&&row.ModelOffset){const Offset=require('../../../assets/_script/BuildingModelOffset');Object.assign(level,Offset.record(level,Offset.vector(owner.world,Offset.value(row))));}
-   result.levels[hall]=WorldScale.record(level,WorldScale.value(row),false);
-   if(firstUpgradeCard)result.levels[hall].firstUpgradeCard=firstUpgradeCard;
-   if(building.kind===3)try{const marker=require('./barracks-spawn').describe(Object.assign({},authoredBuilding,branch,{x:0,y:0,scale:1,angle:0}),source,config,hall,info);if(marker)result.levels[hall].squadSpawn=marker;}catch(error){errors.push(error.message);}
+   view.levels[hall]=WorldScale.record(level,WorldScale.value(row),false);
+   if(firstUpgradeCard)view.levels[hall].firstUpgradeCard=firstUpgradeCard;
+   if(building.kind===3)try{const marker=require('./barracks-spawn').describe(Object.assign({},authoredBuilding,branch,{x:0,y:0,scale:1,angle:0}),source,config,hall,info);if(marker)view.levels[hall].squadSpawn=marker;}catch(error){errors.push(error.message);}
   }
  }
  let runtimePath=null;if(needsRuntime)try{runtimePath=Units.enginePath();}catch(error){errors.push(error.message);}

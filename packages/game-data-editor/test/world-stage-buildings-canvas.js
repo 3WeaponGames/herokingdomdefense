@@ -6,7 +6,7 @@ async function verify(){
  const root=path.resolve(__dirname,'../../..'),service=new Service(root,{artifacts:path.join(os.tmpdir(),'hkd-stage-art-'+Date.now())}),checks=[],assert=(v,label)=>{if(!v)throw Error(label);checks.push(label);},pause=ms=>new Promise(r=>setTimeout(r,ms)),raf=()=>new Promise(r=>requestAnimationFrame(r));
  let stage=M.clone(service.loadStage('A-1').data),version=1,changes=0;
  stage.buildings.forEach(b=>{b.enabled=true;b.unlock=1;});
- const base=service.catalog(),palette=service.buildingCatalog(),placementCards=service.buildingPlacements(),snapshot=()=>({key:'stage:A-1',version,value:M.clone(stage),buildingPreview:Preview.describe(service,stage),dirty:changes>0,issues:[],canUndo:false,canRedo:false});
+ const base=service.catalog(),palette=service.buildingCatalog(),placementCards=service.buildingPlacements(),snapshot=()=>({key:'stage:A-1',version,value:M.clone(stage),buildingPreview:Preview.describe(service,stage,{buildingLevels:true,barracksTypes:true}),dirty:changes>0,issues:[],canUndo:false,canRedo:false});
  async function ipc(name,q){if(name==='world-catalog')return base;if(name==='world-buildings')return palette;if(name==='world-building-placements')return placementCards;if(name==='world-load')return q.key.startsWith('stage:')?snapshot():service.snapshot(q.key);if(name==='world-change'){assert(q.version===version,'draft edit uses its current revision');stage=M.clone(q.value);version++;changes++;return snapshot();}throw Error('Unavailable in render-only test: '+name);}
  const host=document.createElement('main');host.className='gt-world-host';host.style.cssText='position:fixed;inset:0;display:flex';document.body.appendChild(host);const client=Client.mount(host,{kind:'stages',ipc}),state=client._state;
  try{

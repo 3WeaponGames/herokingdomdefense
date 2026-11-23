@@ -71,6 +71,26 @@ test('Maps preview follows each initial branch and caps the preview at its last 
  assert.equal(base(capped,4),base(capped,3),'an unlinked level 4 cannot replace the terminal level 3');
  assert.equal(JSON.stringify(f.stage),before);
 });
+test('the stage preview describes every barracks type at every level',()=>{
+ const f=fixture(),barracks=f.stage.buildings.find(b=>b.kind===3);
+ f.stage.buildings=[barracks];
+ const before=JSON.stringify({stage:f.stage,config:f.config});
+ const stage=Preview.describe(f.service,f.stage,{buildingLevels:true,barracksTypes:true}),entry=stage.buildings[barracks.id];
+ assert.deepEqual(stage.errors,[]);
+ assert.deepEqual(entry.barracksTypes.map(type=>type.label),['Guard Barracks','Shield Barracks','Crossbow Barracks','Timber Stables']);
+ assert.equal(entry.barracksTypes[0].levels,undefined,'the first type shares the existing records');
+ for(const type of entry.barracksTypes){
+  const rows=f.config.BuildEnum[3].levelList,initial=rows.find(row=>row.index===Number(type.id)),levels=type.levels||entry.levels;
+  for(const level of [1,2,3,4]){
+   const row=rows.find(row=>row.level===level&&row.Data[1]===initial.Data[1]);
+   assert(levels[level].skeletons.some(part=>part.skin===row.Skin),type.label+' level '+level);
+  }
+ }
+ const map=Preview.describe(f.service,f.stage,{buildingLevels:true});
+ assert.equal(map.buildings[barracks.id].barracksTypes,undefined);
+ assert.equal(JSON.stringify({stage:f.stage,config:f.config}),before);
+});
+
 test('Appearance initial choices use the actual base and idle weapon layers with ColliderIndex, never upgrade icons',()=>{
  const f=fixture(),tower=f.stage.buildings.find(b=>b.kind===2);f.stage.buildings=[tower];f.config.BuildEnum[2].InitialChoices=[4];
  const row=f.config.BuildEnum[2].levelList[3],result=Preview.describe(f.service,f.stage),level=result.buildings[tower.id].levels[1],owner=f.source.info.byId[tower.template.node],pose=WeaponPose.pose(row.Appearance.weapon,null);

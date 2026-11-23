@@ -1196,6 +1196,25 @@
       "bones": 21,
       "slots": 10,
       "variantOf": "monster3/Evilmass_Boxer"
+    },
+    {
+      "id": "monster3/Raptor_OrcWar",
+      "name": "Orc War Raptor",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Raptor/Raptor_Swamp.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/RaptorVariants/Raptor_OrcWar.json",
+      "uuid": "c6bac8de-dcf1-52a4-acfe-34dcf0b4d1af",
+      "resource": "unit-library/monster3/Units/RaptorVariants/Raptor_OrcWar",
+      "animations": [
+        "die",
+        "idle",
+        "attack",
+        "move",
+        "hit"
+      ],
+      "bones": 20,
+      "slots": 9,
+      "variantOf": "monster3/Raptor_Swamp"
     }
   ],
   "parts": [

@@ -65,10 +65,8 @@ async function placeDelete(){
    f.state.asset='red';await f.tool('Place one (T)');
    const input=name=>Array.from(f.root.querySelectorAll('.world-inspector label')).find(label=>label.textContent===name)?.querySelector('input');
    const checkbox=input('Random Flip X');
-   assert(checkbox?.type==='checkbox'&&!checkbox.checked,'Random Flip X defaults off beside the placement scale controls');
-   const maximum=input('Maximum scale');maximum.value='3';maximum.dispatchEvent(new Event('change'));
-   checkbox.click();await f.settle();
-   assert(f.changes()===0,'Changing placement options does not edit the map');
+   assert(input('Minimum scale')?.value==='0.7'&&input('Maximum scale')?.value==='1.1','Decoration scale defaults to 0.7–1.1');
+   assert(checkbox?.type==='checkbox'&&checkbox.checked,'Random Flip X defaults on beside the placement scale controls');
    const samples=[.25,.25,.25,.75,.25];
    Math.random=()=>samples.shift()??random();
    const place=async x=>{
@@ -79,10 +77,14 @@ async function placeDelete(){
    await f.click('Undo');await f.click('Redo');
    assert(f.map().layers.some(l=>l.objects.some(o=>o.id===flipped.id&&o.flipX===true)),'Redo restores the placed horizontal flip');
    const upright=await place(0);
-   assert(flipped.scale===1.5&&upright.scale===1.5&&flipped.flipX===true&&upright.flipX===false,'Horizontal orientation is sampled independently for each scaled placement');
-   input('Random Flip X').click();
+   assert(Math.abs(flipped.scale-.8)<1e-9&&Math.abs(upright.scale-.8)<1e-9&&flipped.flipX===true&&upright.flipX===false,'Placements independently sample scale and horizontal orientation using the defaults');
+   const changes=f.changes(),minimum=input('Minimum scale'),maximum=input('Maximum scale');
+   minimum.value='1';minimum.dispatchEvent(new Event('change'));
+   maximum.value='3';maximum.dispatchEvent(new Event('change'));
+   input('Random Flip X').click();await f.settle();
+   assert(f.changes()===changes,'Changing placement options does not edit the map');
    const unchecked=await place(80);
-   assert(unchecked.scale===1.5&&unchecked.flipX===false&&samples.length===0,'Unchecking Random Flip X keeps future placements upright');
+   assert(unchecked.scale===1.5&&unchecked.flipX===false&&samples.length===0,'Future placements use the edited scale range and stay upright when Random Flip X is unchecked');
   }finally{Math.random=random;f.close();}
  }
  {

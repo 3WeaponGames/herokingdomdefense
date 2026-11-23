@@ -52,7 +52,12 @@ function create(c){
   if(state.tab==='Buildings')button(tools,'Place building',()=>{state.tool='building';render();},state.tool==='building');
   if(state.tab==='Spawns')button(tools,'Add spawn',()=>{state.tool='spawn';render();},state.tool==='spawn');
   if(state.tab==='Paths'){button(tools,'Add point',()=>{state.tool='node';render();},state.tool==='node');button(tools,'Connect points',()=>{state.tool='connect';state.connect=null;render();},state.tool==='connect');}
-  if(['Stage','Buildings'].includes(state.tab))field(tools,'Hall preview',state.previewHall,value=>{state.previewHall=value;c.prepareImages();draw();},[1,2,3,4]);
+  if(['Stage','Buildings'].includes(state.tab)){
+   field(tools,'Hall preview',state.previewHall,value=>{state.previewHall=value;c.prepareImages();draw();},[1,2,3,4]);
+   const level=field(tools,'Building preview',state.previewBuildingLevel,value=>{state.previewBuildingLevel=value;render();},[1,2,3,4]);
+   level.setAttribute('aria-label','Preview building level');
+   level.title='Show buildings at this level or their highest available upgrade.';
+  }
   if(state.tab==='Buildings'){
    const cards=field(tools,'First-upgrade cards',state.showFirstUpgradeCards,value=>{state.showFirstUpgradeCards=value;c.prepareImages();draw();});
    cards.title='Show the in-game name cards for the building plots available at this hall level.';
@@ -67,7 +72,22 @@ function create(c){
   }
   if(state.tab==='Buildings'){
    section(parent,'Placed buildings');note(parent,'Drag cards to rearrange them.');const rows=el('div',undefined,'world-building-list'),cards=[];parent.appendChild(rows);for(const b of CardOrder.ordered(stage().buildings)){const item=button(rows,b.name+(b.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.tool='select';state.selection=['building:'+b.id];render();},state.selection.includes('building:'+b.id));item.dataset.buildingId=b.id;item.setAttribute('aria-current',String(state.selection[0]==='building:'+b.id));item.setAttribute('aria-pressed',String(state.selection.includes('building:'+b.id)));cards.push({id:b.id,node:item});}draggable(rows,cards,s=>s.buildings);
-   const offers=stage().specials||[];if(offers.length){section(parent,'Recruit and merchant offers');const list=el('div',undefined,'world-building-list'),offerCards=[];parent.appendChild(list);for(const offer of CardOrder.ordered(offers)){const item=button(list,offer.name+(offer.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.tool='select';state.selection=['special:'+offer.id];render();},state.selection.includes('special:'+offer.id));item.dataset.specialId=offer.id;item.setAttribute('aria-current',String(state.selection[0]==='special:'+offer.id));item.setAttribute('aria-pressed',String(state.selection.includes('special:'+offer.id)));offerCards.push({id:offer.id,node:item});}draggable(list,offerCards,s=>s.specials||[]);}
+   const offers=stage().specials||[];
+   if(offers.length){
+    section(parent,'Recruit and merchant offers');
+    if(offers.filter(offer=>offer.kind===0&&offer.enabled!==false).length>1)note(parent,'Enabled Silver offers appear one per wave in numbered order, then repeat.');
+    const list=el('div',undefined,'world-building-list'),offerCards=[];
+    parent.appendChild(list);
+    for(const offer of CardOrder.ordered(offers)){
+     const label=Names.offerName(stage(),offer)+(offer.enabled===false?' · Disabled':'');
+     const item=button(list,label,()=>{c.cancelDrag();state.tool='select';state.selection=['special:'+offer.id];render();},state.selection.includes('special:'+offer.id));
+     item.dataset.specialId=offer.id;
+     item.setAttribute('aria-current',String(state.selection[0]==='special:'+offer.id));
+     item.setAttribute('aria-pressed',String(state.selection.includes('special:'+offer.id)));
+     offerCards.push({id:offer.id,node:item});
+    }
+    draggable(list,offerCards,s=>s.specials||[]);
+   }
    section(parent,'Add a building');note(parent,'Choose a type, then click the map to place it.');c.buildingPalette(parent);return;
   }
   if(state.tab==='Waves'){
