@@ -17999,7 +17999,7 @@
               "spawnId": 1,
               "unitId": 91157,
               "count": 1,
-              "startSeconds": 0.5,
+              "startSeconds": 2.5,
               "intervalSeconds": 0.5
             },
             {
@@ -18070,7 +18070,7 @@
             {
               "id": "legacy-3-0",
               "spawnId": 4,
-              "unitId": 91151,
+              "unitId": 101656,
               "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -18080,7 +18080,7 @@
               "startSeconds": 2.5,
               "intervalSeconds": 0.5,
               "spawnId": 5,
-              "unitId": 101661,
+              "unitId": 101663,
               "id": "entry-1"
             }
           ]
@@ -18323,7 +18323,7 @@
               "id": "legacy-1-0",
               "spawnId": 1,
               "unitId": 101663,
-              "count": 1,
+              "count": 7,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
             },
@@ -18339,7 +18339,7 @@
               "id": "legacy-3-0",
               "spawnId": 3,
               "unitId": 100245,
-              "count": 4,
+              "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
             },
@@ -18374,6 +18374,22 @@
               "spawnId": 6,
               "unitId": 101676,
               "id": "entry-4"
+            },
+            {
+              "count": 1,
+              "startSeconds": 2.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 5,
+              "unitId": 91157,
+              "id": "entry-5"
+            },
+            {
+              "count": 1,
+              "startSeconds": 2.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 101680,
+              "id": "entry-6"
             }
           ]
         }
@@ -18464,6 +18480,18 @@
         [
           4,
           14
+        ],
+        [
+          4,
+          27
+        ],
+        [
+          4,
+          28
+        ],
+        [
+          2,
+          29
         ]
       ],
       "ChallengeReward": [
@@ -18567,8 +18595,8 @@
             {
               "id": "legacy-1-0",
               "spawnId": 1,
-              "unitId": 91151,
-              "count": 8,
+              "unitId": 101656,
+              "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
             },
@@ -18579,6 +18607,14 @@
               "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 3,
+              "unitId": 91037,
+              "id": "entry-1"
             }
           ]
         },
@@ -18616,7 +18652,7 @@
               "id": "legacy-2-0",
               "spawnId": 2,
               "unitId": 101667,
-              "count": 4,
+              "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
             }
@@ -18668,6 +18704,14 @@
               "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 91037,
+              "id": "entry-1"
             }
           ]
         },
@@ -18698,7 +18742,7 @@
               "id": "legacy-1-0",
               "spawnId": 1,
               "unitId": 101674,
-              "count": 1,
+              "count": 4,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
             },
@@ -18717,6 +18761,14 @@
               "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
+            },
+            {
+              "count": 1,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 91157,
+              "id": "entry-1"
             }
           ]
         },
@@ -18747,7 +18799,7 @@
               "id": "legacy-1-0",
               "spawnId": 1,
               "unitId": 101661,
-              "count": 10,
+              "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
             },
@@ -18763,9 +18815,25 @@
               "id": "legacy-3-0",
               "spawnId": 3,
               "unitId": 100247,
-              "count": 3,
+              "count": 10,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 91037,
+              "id": "entry-1"
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 5,
+              "unitId": 91151,
+              "id": "entry-2"
             }
           ]
         },
@@ -18815,6 +18883,30 @@
               "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 91037,
+              "id": "entry-1"
+            },
+            {
+              "count": 3,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 6,
+              "unitId": 101671,
+              "id": "entry-3"
+            },
+            {
+              "count": 3,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 5,
+              "unitId": 101679,
+              "id": "entry-4"
             }
           ]
         },
@@ -18864,6 +18956,38 @@
               "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 91037,
+              "id": "entry-1"
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 7,
+              "unitId": 101656,
+              "id": "entry-2"
+            },
+            {
+              "count": 3,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 5,
+              "unitId": 101679,
+              "id": "entry-3"
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 6,
+              "unitId": 101671,
+              "id": "entry-4"
             }
           ]
         },
@@ -18874,11 +18998,6 @@
           "AttackCoefficient": 1.6,
           "StartSliver": 8,
           "CommerceSliver": 16,
-          "RefreshSoldierKind": [
-            "1#101661,15",
-            "2#101667,7",
-            "3#100242,2"
-          ],
           "WaveReward": [
             [
               2001,
@@ -18889,30 +19008,87 @@
               5
             ]
           ],
+          "RefreshSoldierKind": [
+            "1#101661,10",
+            "2#101668,5",
+            "3#100247,5"
+          ],
           "SpawnTimeline": [
             {
               "id": "legacy-1-0",
               "spawnId": 1,
               "unitId": 101661,
-              "count": 15,
+              "count": 10,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "intervalSeconds": 0.5,
+              "unitGroupId": "unit-group-1"
             },
             {
               "id": "legacy-2-0",
               "spawnId": 2,
-              "unitId": 101667,
-              "count": 7,
+              "unitId": 101668,
+              "count": 5,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "intervalSeconds": 0.5,
+              "unitGroupId": "unit-group-2"
             },
             {
               "id": "legacy-3-0",
               "spawnId": 3,
-              "unitId": 100242,
-              "count": 2,
+              "unitId": 100247,
+              "count": 10,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 91037,
+              "id": "entry-1"
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 7,
+              "unitId": 101656,
+              "id": "entry-2"
+            },
+            {
+              "count": 3,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 5,
+              "unitId": 101679,
+              "id": "entry-3"
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 6,
+              "unitId": 101671,
+              "id": "entry-4"
+            },
+            {
+              "count": 4,
+              "startSeconds": 2.5,
+              "intervalSeconds": 2.5,
+              "unitId": 101661,
+              "spawnId": 8,
+              "unitGroupId": "unit-group-1",
+              "id": "entry-5"
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "unitId": 101668,
+              "spawnId": 8,
+              "unitGroupId": "unit-group-2",
+              "id": "entry-6"
             }
           ]
         },
@@ -18940,28 +19116,330 @@
           ],
           "SpawnTimeline": [
             {
-              "id": "legacy-1-0",
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
               "spawnId": 1,
-              "unitId": 91156,
-              "count": 1,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "unitId": 91037,
+              "id": "entry-1"
             },
             {
-              "id": "legacy-2-0",
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
               "spawnId": 2,
-              "unitId": 100246,
-              "count": 15,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "unitId": 100248,
+              "id": "entry-2"
             },
             {
-              "id": "legacy-3-0",
-              "spawnId": 3,
-              "unitId": 101657,
               "count": 5,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "intervalSeconds": 0.5,
+              "spawnId": 3,
+              "unitId": 101656,
+              "id": "entry-3"
+            },
+            {
+              "count": 2,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 7,
+              "unitId": 101663,
+              "id": "entry-4"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 8,
+              "unitId": 101666,
+              "id": "entry-5"
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 101671,
+              "id": "entry-6"
+            },
+            {
+              "count": 3,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 5,
+              "unitId": 101679,
+              "id": "entry-7"
+            },
+            {
+              "count": 1,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 6,
+              "unitId": 91157,
+              "id": "entry-8"
+            },
+            {
+              "count": 3,
+              "startSeconds": 0.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 13,
+              "unitId": 101767,
+              "id": "entry-9"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 11,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#91156,1",
+            "2#100246,15",
+            "3#101657,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              3430
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "SpawnTimeline": [
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 91037,
+              "id": "entry-1"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 2,
+              "unitId": 100248,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-2"
+            },
+            {
+              "count": 12,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 3,
+              "unitId": 101656,
+              "id": "entry-3"
+            },
+            {
+              "count": 8,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 7,
+              "unitId": 101663,
+              "id": "entry-4"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 8,
+              "unitId": 101666,
+              "id": "entry-5",
+              "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 8,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 101671,
+              "id": "entry-6"
+            },
+            {
+              "count": 6,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 5,
+              "unitId": 101679,
+              "id": "entry-7"
+            },
+            {
+              "count": 6,
+              "startSeconds": 0.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 13,
+              "unitId": 101767,
+              "id": "entry-9"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "unitId": 101666,
+              "spawnId": 1,
+              "unitGroupId": "unit-group-1",
+              "id": "entry-8"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "unitId": 100248,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-2",
+              "id": "entry-10"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 12,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#91156,1",
+            "2#100246,15",
+            "3#101657,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              3430
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "SpawnTimeline": [
+            {
+              "count": 15,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 91037,
+              "id": "entry-1"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 2,
+              "unitId": 100248,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-2"
+            },
+            {
+              "count": 12,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 3,
+              "unitId": 101656,
+              "id": "entry-3"
+            },
+            {
+              "count": 8,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 7,
+              "unitId": 101663,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 8,
+              "unitId": 101666,
+              "id": "entry-5",
+              "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 8,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 4,
+              "unitId": 101671,
+              "id": "entry-6"
+            },
+            {
+              "count": 10,
+              "startSeconds": 4.5,
+              "intervalSeconds": 4.5,
+              "spawnId": 5,
+              "unitId": 101679,
+              "id": "entry-7",
+              "unitGroupId": "unit-group-3"
+            },
+            {
+              "count": 8,
+              "startSeconds": 0.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 13,
+              "unitId": 101767,
+              "id": "entry-9"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "unitId": 101666,
+              "spawnId": 1,
+              "unitGroupId": "unit-group-1",
+              "id": "entry-8"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "unitId": 100248,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-2",
+              "id": "entry-10"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "unitId": 101679,
+              "spawnId": 1,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-11"
+            },
+            {
+              "count": 8,
+              "startSeconds": 3.5,
+              "intervalSeconds": 2.5,
+              "unitId": 101663,
+              "spawnId": 1,
+              "unitGroupId": "unit-group-4",
+              "id": "entry-12"
+            },
+            {
+              "count": 1,
+              "startSeconds": 6.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 2,
+              "unitId": 101680,
+              "id": "entry-13"
+            },
+            {
+              "count": 1,
+              "startSeconds": 5.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 6,
+              "unitId": 91157,
+              "id": "entry-14"
             }
           ]
         }
@@ -42794,7 +43272,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-magma",
       "AttackType": 1,
       "Health": 48,
-      "AttackDamage": 5,
+      "AttackDamage": 8,
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -42959,11 +43437,11 @@
       },
       "IsBoss": true,
       "EnemySkills": {
-        "move": {
+        "moveSlow": {
           "interval": 15,
-          "percent": 25,
+          "percent": 35,
           "radius": 250,
-          "maxTargets": 15,
+          "maxTargets": 30,
           "duration": 5
         }
       }
@@ -42974,8 +43452,8 @@
       "prefab": "Monster1_Slime_Abyssal",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-abyssal",
       "AttackType": 1,
-      "Health": 360,
-      "AttackDamage": 45,
+      "Health": 260,
+      "AttackDamage": 18,
       "AttackInterval": 1.4519573656463354,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -42994,7 +43472,12 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91157.description]]"
       },
-      "IsBoss": true
+      "IsBoss": true,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "splash",
+        "splashFalloff": 0.2
+      }
     },
     "91158": {
       "ID": 91158,
@@ -50398,8 +50881,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-purple",
       "AttackType": 1,
       "Health": 54,
-      "AttackDamage": 7.5,
-      "AttackInterval": 0.42,
+      "AttackDamage": 6.5,
+      "AttackInterval": 0.52,
       "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 103.88888888,
@@ -65867,8 +66350,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-glacier",
       "AttackType": 2,
       "Health": 54,
-      "AttackDamage": 7.5,
-      "AttackInterval": 0.81888888,
+      "AttackDamage": 5.5,
+      "AttackInterval": 0.32,
       "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 103.88888888,
@@ -65957,7 +66440,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-ironclad",
       "AttackType": 1,
       "Health": 72,
-      "AttackDamage": 7.5,
+      "AttackDamage": 7,
       "AttackInterval": 0.67,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -66091,7 +66574,7 @@
       "AttackType": 1,
       "Health": 43.2,
       "AttackDamage": 4.75,
-      "AttackInterval": 1,
+      "AttackInterval": 2.0172072832218797,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 117.3,
@@ -66310,7 +66793,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-honey",
       "AttackType": 1,
       "Health": 43.2,
-      "AttackDamage": 6.25,
+      "AttackDamage": 5.25,
       "AttackInterval": 0.85,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -66330,7 +66813,13 @@
       },
       "UnitAttack": {
         "delivery": "ranged",
-        "pattern": "splash"
+        "pattern": "splash",
+        "onHit": {
+          "slow": {
+            "percent": 0.2,
+            "duration": 3
+          }
+        }
       }
     },
     "101680": {
@@ -66340,7 +66829,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-king",
       "AttackType": 1,
       "Health": 432,
-      "AttackDamage": 18,
+      "AttackDamage": 21,
       "AttackInterval": 0.9,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -88687,8 +89176,8 @@
           "role": "skirmisher",
           "stats": {
             "Health": 54,
-            "AttackDamage": 7.5,
-            "AttackInterval": 0.42,
+            "AttackDamage": 6.5,
+            "AttackInterval": 0.52,
             "Speed": 103.88888888,
             "AttackRange": 200
           },
@@ -96607,12 +97096,13 @@
           "role": "skirmisher",
           "stats": {
             "Health": 54,
-            "AttackDamage": 7.5,
-            "AttackInterval": 0.81888888,
+            "AttackDamage": 5.5,
+            "AttackInterval": 0.32,
             "Speed": 103.88888888
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "101664": {
           "baseId": 91152,
@@ -96649,12 +97139,13 @@
           "role": "guardian",
           "stats": {
             "Health": 72,
-            "AttackDamage": 7.5,
+            "AttackDamage": 7,
             "AttackInterval": 0.67,
             "Speed": 85
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "101667": {
           "baseId": 91153,
@@ -96720,11 +97211,12 @@
           "stats": {
             "Health": 43.2,
             "AttackDamage": 4.75,
-            "AttackInterval": 1,
+            "AttackInterval": 2.0172072832218797,
             "Speed": 117.3
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "101672": {
           "baseId": 91154,
@@ -96831,12 +97323,13 @@
           "role": "mystic",
           "stats": {
             "Health": 43.2,
-            "AttackDamage": 6.25,
+            "AttackDamage": 5.25,
             "AttackInterval": 0.85,
             "Speed": 86.7
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "101680": {
           "baseId": 91156,
@@ -96845,12 +97338,13 @@
           "role": "guardian",
           "stats": {
             "Health": 432,
-            "AttackDamage": 18,
+            "AttackDamage": 21,
             "AttackInterval": 0.9,
             "Speed": 91.8
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "101681": {
           "baseId": 91156,
@@ -99492,7 +99986,8 @@
             "AttackInterval": 0.74444444,
             "Speed": 94.44444444
           },
-          "referenceId": 100246
+          "referenceId": 100246,
+          "defaultProfileId": 100248
         },
         "91039": {
           "modelKey": "source:monster1/Snail_Blue",
@@ -101625,7 +102120,8 @@
             "AttackInterval": 1,
             "Speed": 102
           },
-          "referenceId": 91151
+          "referenceId": 91151,
+          "defaultProfileId": 101656
         },
         "91152": {
           "modelKey": "source:monster1/Slime_Glacier",
@@ -101644,7 +102140,8 @@
             "AttackInterval": 0.74444444,
             "Speed": 94.44444444
           },
-          "referenceId": 91152
+          "referenceId": 91152,
+          "defaultProfileId": 101663
         },
         "91153": {
           "modelKey": "source:monster1/Slime_Ironclad",
@@ -101663,7 +102160,8 @@
             "AttackInterval": 0.74444444,
             "Speed": 94.44444444
           },
-          "referenceId": 91153
+          "referenceId": 91153,
+          "defaultProfileId": 101666
         },
         "91154": {
           "modelKey": "source:monster1/Slime_Spore",
@@ -101682,7 +102180,8 @@
             "AttackInterval": 1,
             "Speed": 102
           },
-          "referenceId": 91154
+          "referenceId": 91154,
+          "defaultProfileId": 101671
         },
         "91155": {
           "modelKey": "source:monster1/Slime_Honey",
@@ -101701,7 +102200,8 @@
             "AttackInterval": 1,
             "Speed": 102
           },
-          "referenceId": 91155
+          "referenceId": 91155,
+          "defaultProfileId": 101679
         },
         "91156": {
           "modelKey": "source:monster1/Slime_King",
@@ -101720,7 +102220,8 @@
             "AttackInterval": 1,
             "Speed": 102
           },
-          "referenceId": 91156
+          "referenceId": 91156,
+          "defaultProfileId": 101680
         },
         "91157": {
           "modelKey": "source:monster1/Slime_Abyssal",
@@ -102043,7 +102544,8 @@
             "skirmisher": 101767,
             "bruiser": 101768,
             "mystic": 101769
-          }
+          },
+          "defaultProfileId": 101767
         },
         "91174": {
           "modelKey": "source:monster1/Bird_OrcWyvern",

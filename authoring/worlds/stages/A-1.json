@@ -307,7 +307,7 @@
             "spawnId": 1,
             "unitId": 91157,
             "count": 1,
-            "startSeconds": 0.5,
+            "startSeconds": 2.5,
             "intervalSeconds": 0.5
           },
           {
@@ -378,7 +378,7 @@
           {
             "id": "legacy-3-0",
             "spawnId": 4,
-            "unitId": 91151,
+            "unitId": 101656,
             "count": 3,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -388,7 +388,7 @@
             "startSeconds": 2.5,
             "intervalSeconds": 0.5,
             "spawnId": 5,
-            "unitId": 101661,
+            "unitId": 101663,
             "id": "entry-1"
           }
         ]
@@ -631,7 +631,7 @@
             "id": "legacy-1-0",
             "spawnId": 1,
             "unitId": 101663,
-            "count": 1,
+            "count": 7,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
@@ -647,7 +647,7 @@
             "id": "legacy-3-0",
             "spawnId": 3,
             "unitId": 100245,
-            "count": 4,
+            "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
@@ -682,6 +682,22 @@
             "spawnId": 6,
             "unitId": 101676,
             "id": "entry-4"
+          },
+          {
+            "count": 1,
+            "startSeconds": 2.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 5,
+            "unitId": 91157,
+            "id": "entry-5"
+          },
+          {
+            "count": 1,
+            "startSeconds": 2.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "unitId": 101680,
+            "id": "entry-6"
           }
         ]
       }
@@ -4056,7 +4072,7 @@
   "nextBuilding": 23,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "3450b04ba0c10f2a1a07d1555b4726bc7c9376fb598ede58f70f98572a1d22cd",
+  "sourceRevision": "3312af59144593552a2d1ebf4ade51b94adad3d364427890044b255e51546254",
   "templates": {
     "Map01": [
       {

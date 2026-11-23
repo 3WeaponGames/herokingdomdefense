@@ -15462,6 +15462,15 @@
       "impact": "",
       "trail": "trail:bb4d9c1e-b926-4023-9f10-a49134339dcd",
       "trailColor": "#e485ff"
+    },
+    "enemy:101679": {
+      "set": "fantasy:fire-flight",
+      "flight": "fantasy:fire-flight",
+      "launch": "fantasy:fire-impact",
+      "impact": "fantasy:fire-impact",
+      "trail": "trail:bb4d9c1e-b926-4023-9f10-a49134339dcd",
+      "scale": 0.55,
+      "trailColor": "#ffc23d"
     }
   },
   "heroArrowTiers": [

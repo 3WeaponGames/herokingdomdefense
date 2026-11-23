@@ -2220,7 +2220,7 @@
       "parts": [
         {
           "id": "helmet",
-          "sprite": "Helmet/FA_Helmet_045_GoldRed",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_038_SilverBlack",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/Body/Head/Helmet",
           "bone": "Rider/Body/Head/Helmet",
@@ -2284,7 +2284,7 @@
         },
         {
           "id": "staff",
-          "sprite": "HandRight/Staff/FA_WP_Main_Staff_016_GoldRed",
+          "sprite": "HandRight/Staff/FA_WP_Main_Staff_011_Wood",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandRight/Staff",
           "bone": "Rider/HandRight/Staff",
