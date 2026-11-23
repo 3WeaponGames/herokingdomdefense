@@ -15454,6 +15454,13 @@
       "launch": "toon:flash-14",
       "impact": "toon:hit-14",
       "trail": false
+    },
+    "enemy:91152": {
+      "flight": "tiny-kingdom:cannonball",
+      "launch": "toon:flash-10",
+      "impact": "toon:hit-10",
+      "size": 18,
+      "trail": false
     }
   },
   "heroArrowTiers": [

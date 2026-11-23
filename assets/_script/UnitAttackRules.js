@@ -15,6 +15,27 @@ var fields = {
   chainRange: { value: 160, min: 0 },
   chainDamageLoss: { value: .25, min: 0, max: 1 }
 };
+var hitEffects = {
+  slow: {
+    label: "Slow",
+    fields: {
+      percent: {
+        label: "Movement slow (%)", value: .3, min: 0, max: 1, percent: true,
+        help: "Reduces the movement speed of each unit damaged by this attack."
+      },
+      duration: { label: "Slow duration (seconds)", value: 3, min: 0 }
+    }
+  },
+  lifeSteal: {
+    label: "Life steal",
+    fields: {
+      percent: {
+        label: "Life steal (%)", value: .2, min: 0, max: 1, percent: true,
+        help: "Heals the attacker for this percentage of the HP removed from each target."
+      }
+    }
+  }
+};
 
 function object(value) { return !!value && typeof value === "object" && !Array.isArray(value); }
 function allowed(delivery, pattern) {
@@ -55,6 +76,15 @@ function settings(cfg) {
   Object.keys(fields).forEach(function (key) {
     result[key] = resolveNumber(raw, key);
   });
+  if (object(raw.onHit)) {
+    result.onHit = {};
+    Object.keys(hitEffects).forEach(function (id) {
+      var effect = raw.onHit[id], rules = hitEffects[id].fields;
+      if (object(effect) && Object.keys(rules).every(function (key) { return validNumber(effect[key], rules[key]); })) {
+        result.onHit[id] = Object.assign({}, effect);
+      }
+    });
+  }
   return result;
 }
 function issues(raw) {
@@ -72,11 +102,31 @@ function issues(raw) {
       "Enter a percentage between 0 and 100." : "Enter a finite value of at least zero.";
     result.push({ field: key, message: message });
   });
+  if (raw.onHit === undefined) return result;
+  if (!object(raw.onHit)) {
+    result.push({ field: "onHit", message: "On-hit effects must be an object." });
+    return result;
+  }
+  Object.keys(hitEffects).forEach(function (id) {
+    if (!Object.prototype.hasOwnProperty.call(raw.onHit, id)) return;
+    var effect = raw.onHit[id], rules = hitEffects[id].fields;
+    if (!object(effect)) {
+      result.push({ field: ["onHit", id], message: "Effect settings must be an object." });
+      return;
+    }
+    Object.keys(rules).forEach(function (key) {
+      var rule = rules[key];
+      if (validNumber(effect[key], rule)) return;
+      var message = rule.percent ? "Enter a percentage between 0 and 100." : "Enter a finite duration of at least zero seconds.";
+      result.push({ field: ["onHit", id, key], message: message });
+    });
+  });
   return result;
 }
 
 exports.patterns = patterns;
 exports.fields = fields;
+exports.hitEffects = hitEffects;
 exports.allowed = allowed;
 exports.active = active;
 exports.attackType = attackType;

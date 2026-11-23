@@ -1,7 +1,7 @@
 'use strict';
 
 const assert=require('node:assert/strict'),test=require('node:test'),fs=require('node:fs'),vm=require('node:vm');
-const {setup}=require('./backend-gameplay-harness.cjs');
+const {setup,hero}=require('./backend-gameplay-harness.cjs');
 const {Node}=require('../navigation/runtime-harness.cjs');
 const rules=require('../../assets/_script/EnemyTransform');
 const warmup=require('../../assets/_script/StageAssetWarmup');
@@ -127,6 +127,101 @@ test('equipped support skills use their own intervals, ranges, and eligible targ
   for(const opponent of [h.g.ctrPlay,tower])assert.deepEqual(opponent.buffs,[{type:types.DamageCut,subNum:.5,time:5}]);
 });
 
+test('opposing speed debuffs affect the closest eligible defenders and expire independently',()=>{
+  const h=fixture(true,{EnemySkills:{
+    attackSlow:{interval:1,radius:40,maxTargets:1,percent:30,duration:1},
+    moveSlow:{interval:1,radius:40,maxTargets:2,percent:50,duration:2}
+  }}), player=hero(h), troop=h.e.actor('KinghtFallSoldierBase',25,0,h.g.ndMain);
+  h.d.getGameBuff=()=>null;
+  h.source.node.setPosition(0,0);
+  player.node.setParent(h.g.ndMain);player.node.setPosition(10,0);player._regenerationDisabled=true;
+  delete player.getAttSpeed;player.attackSpeed=2;player.moveSpeed=100;
+  delete troop.getSpeed;delete troop.getAttSpeed;troop.cfg={...troop.cfg,Speed:80};troop.attSpeed=3;
+  const ally={node:new Node('caster ally',h.g.ndMain,2,0),hp:100,addBuff(){assert.fail('A caster ally received a debuff');}};
+  const far={node:new Node('outside radius',h.g.ndMain,41,0),hp:100,addBuff(){assert.fail('Out of range');}};
+  h.d.enemyList.push(ally);h.d.soldierList.push(troop,far);
+  h.d.getAttackableBuildList=()=>[{node:new Node('tower',h.g.ndMain,1,0),hp:100,addBuff(){assert.fail('A tower received a unit debuff');}}];
+  h.source.updateCombatTimers(1);
+  assert.equal(player.getAttSpeed(),1.4);
+  assert.equal(player.getSpeed(),50);
+  assert.equal(troop.getAttSpeed(),3);
+  assert.equal(troop.getSpeed(),40);
+  const types=h.load('KinghtFallInterface').KinghtFallEnemyBuffType;
+  player.onUpdata(.5);
+  player.addBuff(types.MoveSlow,{subNum:.5,time:2},'moveSlow');
+  assert.equal(player.getBuffList(types.MoveSlow).length,1);
+  player.addBuff(types.MoveSlow,{subNum:.8,time:.5},'moveSlow');
+  assert(Math.abs(player.getSpeed()-20)<1e-9);
+  player.onUpdata(.5);
+  assert.equal(player.getAttSpeed(),2);
+  assert.equal(player.getSpeed(),50);
+  player.onUpdata(1.5);
+  assert.equal(player.getSpeed(),100);
+});
+
+function prepareOpponentForm(h, formId) {
+  class Skeleton {
+    findAnimation(name) { return ['idle','move'].includes(name); }
+    setSkin(name) { this.skin=name; }
+    setAnimation(_track,name) { this.animation=name; }
+  }
+  h.e.cc.Node=class extends Node{
+    constructor(name){super(name);this.opacity=255;}
+    destroy(){this.destroyed=true;this.setParent(null);}
+  };
+  const file=require.resolve('../../assets/_script/EnemyPolymorph'),exports={};
+  vm.runInNewContext(fs.readFileSync(file,'utf8'),{exports,cc:h.e.cc,sp:{Skeleton},require:h.e.load},{filename:file});
+  h.e.stubs.EnemyPolymorph=exports;
+  h.e.stubs.EnemySkillVisuals=require('../../assets/_script/EnemySkillVisuals');
+  h.units[formId]=roster[formId];
+  h.g._stageAssets.options={config:{SoldierCfg:h.units},names:{Enemy:'Enemy'}};
+  const data=new Node('form prefab'),art=new Node('spAni',data),skeleton=art.addComponent(Skeleton);
+  skeleton.skeletonData={formId};skeleton.defaultSkin='default';art.scaleX=art.scaleY=.5;
+  h.g._stageAssets.assets['Enemy/'+roster[formId].prefab+':prefab']={data};
+  return skeleton.skeletonData;
+}
+
+test('Transform opponents replaces only the look, interrupts pending attacks, and restores the hero and troops',()=>{
+  const h=fixture(true,{EnemySkills:{polymorph:{interval:1,radius:40,maxTargets:2,unitId:91014,duration:2}}});
+  const form=prepareOpponentForm(h,91014), scheduler=h.load('GameToolsOverrides');
+  h.e.stubs.GameToolsOverrides=scheduler;
+  h.e.stubs.HeroMakerRider={clearCombatState(){}};
+  const config=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
+  config.GameTools={timingDefaults:{'hero:hero:default':{attack:.8}}};
+  const player=hero(h),troop=h.e.actor('KinghtFallSoldierItem03',25,0,h.g.ndMain);
+  h.d.getGameBuff=()=>null;
+  h.source.node.setPosition(0,0);
+  player.node.setParent(h.g.ndMain);player.node.setPosition(10,0);
+  player._combatGame=h.g;player._regenerationDisabled=true;player.heroStyle='mystic';
+  player.ctrPlayAni.node=new h.e.cc.Node('hero art');player.ctrPlayAni.node.setParent(player.node);player.ctrPlayAni.node.opacity=192;
+  h.load('HeroStyleRuntime').install(player,{});
+  const runtime=player._styleRuntime;
+  runtime.state.active={kind:'mystic-impact'};runtime.channelTarget=h.source;runtime.beamTarget=h.source;
+  scheduler.attack(player,'hero',()=>assert.fail('The pending windup survived'));
+  assert(scheduler.isPending(player));
+  troop.spAni.node=new h.e.cc.Node('troop art');troop.spAni.node.setParent(troop.node);
+  troop.ctrArr={node:new Node()};troop._targetRefresh=0;
+  const Status=h.e.load('KinghtFallSoldierBase').KinghtFallSoldierStatus;
+  troop.state=Status.Attack;
+  h.d.soldierList.push(troop);
+  const troopNode=troop.node,playerHp=player.hp,formPosition=player.node.getPosition();
+  h.source.updateCombatTimers(1);
+  assert(!scheduler.isPending(player));assert.equal(runtime.state.active,null);assert.equal(runtime.beamTarget,null);assert.equal(runtime.canCast(),false);
+  assert.equal(player.hp,playerHp);assert.deepEqual(player.node.getPosition(),formPosition);
+  assert.equal(troop.node,troopNode);assert.equal(troop.hp,100);assert.equal(troop.state,Status.Idle);
+  const heroForm=player._opposingForm,troopForm=troop._opposingForm;
+  assert.equal(heroForm.renderer.skeletonData,form);assert.equal(troopForm.renderer.skeletonData,form);
+  assert.equal(player.ctrPlayAni.node.opacity,0);assert.equal(troop.spAni.node.opacity,0);
+  assert.equal(h.d.soldierList[0],troop);
+  assert.equal(troop.captureAttackTarget(),false);assert.equal(player.doAttack(),undefined);assert.equal(troop.doAttack(),undefined);
+  troop.doMove();assert.equal(troopForm.renderer.animation,'move');
+  troop.setPause(true);assert.equal(troopForm.renderer.paused,true);troop.setPause(false);
+  player.onUpdata(2);troop.onUpdate(2);
+  assert.equal(player._opposingForm,undefined);assert.equal(troop._opposingForm,undefined);
+  assert.equal(player.ctrPlayAni.node.opacity,192);assert.equal(troop.spAni.node.opacity,255);
+  assert(heroForm.node.destroyed&&troopForm.node.destroyed);
+});
+
 test('the damage and movement buffs affect actual enemy stats until they expire',()=>{
   const h=fixture(true,{}),unit=h.source,base=h.e.load('KinghtFallEnemyBase').default.prototype;
   h.d.getGameBuff=()=>null;
@@ -226,6 +321,17 @@ test('stage preparation includes every reachable form and selection rejects loop
   assert.match(rules.issue(units[91002],{unitId:90011,delay:1},units),/available enemy/);
   assert.match(rules.issue(units[91002],{unitId:91001,delay:0},units),/greater than zero/);
   assert.match(rules.issue(units[91002],{unitId:91001,trigger:'health',healthPercent:101},units),/up to 100/);
+});
+
+test('stage preparation loads the chosen form without adding its abilities to the stage',()=>{
+  const skills=require('../../assets/_script/EnemySkills'),form={...roster[91014],TransformSkill:{unitId:91002,delay:1}};
+  const setting={interval:2,duration:1,maxTargets:1,radius:200,unitId:91014};
+  const units={91001:{...roster[91001],EnemySkills:{polymorph:setting}},91014:form,91002:roster[91002]};
+  const plan=warmup.plan({BuildEnum:{},SoldierCfg:units},{WaveCfg:[{SpawnTimeline:[{unitId:91001}]}]},{Enemy:'Enemy'});
+  assert.deepEqual(plan.enemies,['91001']);
+  assert(plan.items.some(asset=>asset.key==='Enemy/'+form.prefab+':prefab'));
+  assert(!plan.items.some(asset=>asset.key==='Enemy/'+units[91002].prefab+':prefab'));
+  assert.match(skills.issue({polymorph:{...setting,unitId:90011}},units,{}),/available unit model/);
 });
 
 test('stage preparation loads authored enemy effects used by direct and transformed units',()=>{

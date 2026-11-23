@@ -215,6 +215,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       if (cc.v2(0, 0).equals(t)) {
         this.time[C.RenSoundTime] = 0;
         $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().stopEffectName($z1KinghtFallConfig.KinghtFallParameter.RunMusic);
+        if (this._opposingForm) require("EnemyPolymorph").pose(this, false);
         return void this.ctrPlayAni.setIdle();
       }
       this.node.getPosition(this.vec2_1);
@@ -222,6 +223,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       cc.Vec2.scaleAndAdd(this.vec2_1, this.vec2_1, this.vec2_2, this.getSpeed() * e);
       Navigation.moveManual(this, $z1KinghtFallUIGame.default.instance.ctrGame, this.vec2_1);
       this.ctrPlayAni.setMove();
+      if (this._opposingForm) require("EnemyPolymorph").pose(this, true);
       if (!(0 != this.time[C.RenSoundTime] || this.isDead())) {
         this.time[C.RenSoundTime] = 1;
         // BattleSounds follows actual movement and selects the active biome.
@@ -299,12 +301,13 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.getSpeed = function () {
     var t = 1;
-    var slows = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeed);
+    var types = $z1KinghtFallInterface.KinghtFallEnemyBuffType, slows = this.getBuffList(types.MoveSpeed);
     for (var i = 0; i < slows.length; i++) t -= slows[i].data.subNum;
-    return this.moveSpeed * Math.max(0, (t += this.time[C.MoveSpeed] || 0) + ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] || 0) + RelicRuntime.value(RelicRuntime.current(), 120039));
+    return this.moveSpeed * Math.max(0, (t += this.time[C.MoveSpeed] || 0) + ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] || 0) + RelicRuntime.value(RelicRuntime.current(), 120039)) * this.slowMultiplier(types.MoveSlow);
   };
   _ctor.prototype.setPause = function (t) {
     this.ctrPlayAni.setPause(t);
+    if (this._opposingForm) this._opposingForm.renderer.paused = t;
   };
   _ctor.prototype.getWpos = function () {
     return this.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
@@ -404,6 +407,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     }
   };
   _ctor.prototype.onFindEnemy = function () {
+    if (this._opposingForm || !this.slowMultiplier($z1KinghtFallInterface.KinghtFallEnemyBuffType.AttackSlow)) return;
     this.node.getPosition(this.vec2_1);
     var attackRange = this.getAttackRange();
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
@@ -435,6 +439,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.time[C.RecoverCd] = 1;
   };
   _ctor.prototype.doAttack = function () {
+    if (this._opposingForm) return;
     var lifetime = RelicCombat.primaryContext(this, null, 0, false);
     if (!RelicCombat.primaryValid(lifetime, null, this)) return;
     var game = $z1KinghtFallUIGame.default.instance.ctrGame;
@@ -476,6 +481,12 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   _ctor.prototype.doAttackFinish = function () {
     this.tagEnemy = null;
   };
+  _ctor.prototype.interruptAttackForTransform = function () {
+    this.time[C.Attack] = 0;
+    this.tagEnemy = null;
+    if (this._styleRuntime) this._styleRuntime.interruptAttackForTransform();
+    require("EnemyPolymorph").pose(this, this.ctrPlayAni.isMove);
+  };
   _ctor.prototype.getAttack = function (t) {
     var e = this.attack;
     var n = 1;
@@ -500,9 +511,10 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return this.critDam * (1 + (this._heroSecondary && this._heroSecondary.criticalDamage || 0));
   };
   _ctor.prototype.getAttSpeed = function () {
+    if (this._opposingForm) return 0;
     var t = this.attackSpeed;
     var e = 1;
-    var n = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.AttackSpeed);
+    var types = $z1KinghtFallInterface.KinghtFallEnemyBuffType, n = this.getBuffList(types.AttackSpeed);
     for (var i = 0; i < n.length; i++) {
       e += n[i].data.addSpeed;
     }
@@ -513,7 +525,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff18);
       a && (e += a.Pamer[0]);
     }
-    return t * ((e += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.PlayerAttackSpeed] || 0) + ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.AttackSpeed] || 0));
+    return t * ((e += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.PlayerAttackSpeed] || 0) + ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.AttackSpeed] || 0)) * this.slowMultiplier(types.AttackSlow);
   };
   _ctor.prototype.getHpRecoverSpeed = function () {
     var t = 1;

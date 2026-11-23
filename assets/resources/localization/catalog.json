@@ -9245,24 +9245,24 @@
       "context": "Tutorial fallback when the inspected talent has no active unlock action"
     },
     "data.monster-roster.91151.name": {
-      "en": "Magma Slime",
-      "zh": "熔岩史莱姆",
+      "en": "Assassin Slime",
+      "zh": "刺客史莱姆",
       "context": "Minimal slime variant · monster1/Slime_Magma"
     },
     "data.unitguide.91151.description": {
-      "en": "An orange slime with a flame-shaped crest and cracked black crust.",
-      "zh": "长着火焰状尖冠、裹着龟裂黑壳的橙色史莱姆。",
-      "context": "Enemy guide appearance · Magma Slime"
+      "en": "A ruby-red gel rogue with its face hidden in a shadowed hood.",
+      "zh": "一只将面容藏在兜帽阴影中的红色凝胶刺客。",
+      "context": "Enemy guide · Assassin Slime"
     },
     "data.monster-roster.91152.name": {
-      "en": "Glacier Slime",
-      "zh": "冰川史莱姆",
+      "en": "Cannon Slime",
+      "zh": "火炮史莱姆",
       "context": "Minimal slime variant · monster1/Slime_Glacier"
     },
     "data.unitguide.91152.description": {
-      "en": "A low blue slime with jagged ice crystals along its back.",
-      "zh": "低伏的蓝色史莱姆，背上长着锯齿状的冰晶。",
-      "context": "Enemy guide appearance · Glacier Slime"
+      "en": "Fires a cannonball that damages defenders near where it lands.",
+      "zh": "发射炮弹，对落点附近的守军造成范围伤害。",
+      "context": "Enemy guide · Cannon Slime"
     },
     "data.monster-roster.91153.name": {
       "en": "Ironclad Slime",
@@ -9280,9 +9280,9 @@
       "context": "Minimal slime variant · monster1/Slime_Spore"
     },
     "data.unitguide.91154.description": {
-      "en": "A streamlined blue slime that leans forward before it lunges.",
-      "zh": "一只流线型的蓝色史莱姆，扑击前会向前倾身。",
-      "context": "Enemy guide appearance · Lightning Slime"
+      "en": "A fast-looking blue slime in a yellow hard hat that goes for buildings first.",
+      "zh": "戴着黄色安全帽的流线型蓝色史莱姆，优先攻击建筑。",
+      "context": "Enemy guide · Lightning Slime"
     },
     "data.monster-roster.91155.name": {
       "en": "Honey Slime",

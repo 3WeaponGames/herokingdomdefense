@@ -262,7 +262,7 @@ function mount(host, api) {
     enemyControls.hidden=!enemy;
     if(enemy){
       handle.parentElement.hidden=true;cast.hidden=false;cast.textContent='Replay skill';muteBadge.textContent='SILENT · PREVIEW ONLY';
-      const transforming=selected==='enemy:transform',revision=snapshot.revision+':'+transforming;
+      const selfTransform=selected==='enemy:transform',transforming=selfTransform||selected==='enemy:polymorph',revision=snapshot.revision+':'+selected;
       formChoice.parentElement.hidden=!transforming;
       if(modelRevision!==revision){
         function fill(input,choices,placeholder,current){
@@ -271,7 +271,7 @@ function mount(host, api) {
           input.value=choices.some(row=>row.key===current)?current:'';
         }
         const all=snapshot.enemyModels||[],enemies=all.filter(row=>row.key.startsWith('enemy:'));
-        fill(modelChoice,transforming?enemies:all,'Default unit',enemyModel);
+        fill(modelChoice,selfTransform?enemies:all,'Default unit',enemyModel);
         fill(formChoice,enemies,'Equipped form or sample',enemyForm);
         enemyModel=modelChoice.value;enemyForm=formChoice.value;
         modelRevision=revision;

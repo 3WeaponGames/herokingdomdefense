@@ -42687,11 +42687,11 @@
       "Name": "[[loc:data.monster-roster.91152.name]]",
       "prefab": "Monster1_Slime_Glacier",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-glacier",
-      "AttackType": 1,
+      "AttackType": 2,
       "Health": 66,
       "AttackDamage": 10,
       "AttackInterval": 0.67,
-      "AttackRange": 50,
+      "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 89.72222222,
       "BuildingCross": 1,
@@ -42704,9 +42704,15 @@
       "CounterType": "",
       "MonsterSource": "monster1/Slime_Glacier",
       "MonsterPack": "monster1",
-      "BehaviorTemplate": 90001,
+      "BehaviorTemplate": 90003,
       "Guide": {
         "description": "[[loc:data.unitguide.91152.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "splash",
+        "splashRadius": 70,
+        "splashFalloff": 0.5
       }
     },
     "91153": {
@@ -42761,6 +42767,17 @@
       "BehaviorTemplate": 90001,
       "Guide": {
         "description": "[[loc:data.unitguide.91154.description]]"
+      },
+      "EnemyTargeting": {
+        "mode": "priority",
+        "order": [
+          "tower",
+          "building",
+          "wall",
+          "castle",
+          "troops",
+          "hero"
+        ]
       }
     },
     "91155": {
@@ -65615,11 +65632,11 @@
       "Name": "[[loc:data.monster-roster.91152.name]]",
       "prefab": "Monster1_Slime_Glacier",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-glacier",
-      "AttackType": 1,
+      "AttackType": 2,
       "Health": 60,
       "AttackDamage": 8.33333334,
       "AttackInterval": 0.74444444,
-      "AttackRange": 50,
+      "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 94.44444444,
       "BuildingCross": 1,
@@ -65631,9 +65648,15 @@
       ],
       "CounterType": "",
       "MonsterPack": "monster1",
-      "BehaviorTemplate": 90001,
+      "BehaviorTemplate": 90003,
       "Guide": {
         "description": "[[loc:data.unitguide.91152.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "splash",
+        "splashRadius": 70,
+        "splashFalloff": 0.5
       }
     },
     "101661": {
@@ -65641,11 +65664,11 @@
       "Name": "[[loc:data.monster-roster.91152.name]]",
       "prefab": "Monster1_Slime_Glacier",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-glacier",
-      "AttackType": 1,
+      "AttackType": 2,
       "Health": 72,
       "AttackDamage": 7.5,
       "AttackInterval": 0.67,
-      "AttackRange": 50,
+      "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 85,
       "BuildingCross": 1,
@@ -65657,9 +65680,15 @@
       ],
       "CounterType": "",
       "MonsterPack": "monster1",
-      "BehaviorTemplate": 90001,
+      "BehaviorTemplate": 90003,
       "Guide": {
         "description": "[[loc:data.unitguide.91152.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "splash",
+        "splashRadius": 70,
+        "splashFalloff": 0.5
       }
     },
     "101662": {
@@ -65667,11 +65696,11 @@
       "Name": "[[loc:data.monster-roster.91152.name]]",
       "prefab": "Monster1_Slime_Glacier",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-glacier",
-      "AttackType": 1,
+      "AttackType": 2,
       "Health": 54,
       "AttackDamage": 7.91666667,
       "AttackInterval": 0.74444444,
-      "AttackRange": 50,
+      "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 108.61111111,
       "BuildingCross": 1,
@@ -65683,9 +65712,15 @@
       ],
       "CounterType": "",
       "MonsterPack": "monster1",
-      "BehaviorTemplate": 90001,
+      "BehaviorTemplate": 90003,
       "Guide": {
         "description": "[[loc:data.unitguide.91152.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "splash",
+        "splashRadius": 70,
+        "splashFalloff": 0.5
       }
     },
     "101663": {
@@ -65693,11 +65728,11 @@
       "Name": "[[loc:data.monster-roster.91152.name]]",
       "prefab": "Monster1_Slime_Glacier",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-glacier",
-      "AttackType": 1,
+      "AttackType": 2,
       "Health": 54,
       "AttackDamage": 7.5,
       "AttackInterval": 0.81888888,
-      "AttackRange": 50,
+      "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 103.88888888,
       "BuildingCross": 1,
@@ -65709,9 +65744,15 @@
       ],
       "CounterType": "",
       "MonsterPack": "monster1",
-      "BehaviorTemplate": 90001,
+      "BehaviorTemplate": 90003,
       "Guide": {
         "description": "[[loc:data.unitguide.91152.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "splash",
+        "splashRadius": 70,
+        "splashFalloff": 0.5
       }
     },
     "101664": {
@@ -65719,11 +65760,11 @@
       "Name": "[[loc:data.monster-roster.91152.name]]",
       "prefab": "Monster1_Slime_Glacier",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-glacier",
-      "AttackType": 1,
+      "AttackType": 2,
       "Health": 54,
       "AttackDamage": 10.41666667,
       "AttackInterval": 0.63277777,
-      "AttackRange": 50,
+      "AttackRange": 200,
       "SearchRange": 220,
       "Speed": 80.27777777,
       "BuildingCross": 1,
@@ -65735,9 +65776,15 @@
       ],
       "CounterType": "",
       "MonsterPack": "monster1",
-      "BehaviorTemplate": 90001,
+      "BehaviorTemplate": 90003,
       "Guide": {
         "description": "[[loc:data.unitguide.91152.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "splash",
+        "splashRadius": 70,
+        "splashFalloff": 0.5
       }
     },
     "101665": {
@@ -65894,6 +65941,17 @@
       "BehaviorTemplate": 90001,
       "Guide": {
         "description": "[[loc:data.unitguide.91154.description]]"
+      },
+      "EnemyTargeting": {
+        "mode": "priority",
+        "order": [
+          "tower",
+          "building",
+          "wall",
+          "castle",
+          "troops",
+          "hero"
+        ]
       }
     },
     "101671": {
@@ -65920,6 +65978,17 @@
       "BehaviorTemplate": 90001,
       "Guide": {
         "description": "[[loc:data.unitguide.91154.description]]"
+      },
+      "EnemyTargeting": {
+        "mode": "priority",
+        "order": [
+          "tower",
+          "building",
+          "wall",
+          "castle",
+          "troops",
+          "hero"
+        ]
       }
     },
     "101672": {
@@ -65946,6 +66015,17 @@
       "BehaviorTemplate": 90001,
       "Guide": {
         "description": "[[loc:data.unitguide.91154.description]]"
+      },
+      "EnemyTargeting": {
+        "mode": "priority",
+        "order": [
+          "tower",
+          "building",
+          "wall",
+          "castle",
+          "troops",
+          "hero"
+        ]
       }
     },
     "101673": {
@@ -65972,6 +66052,17 @@
       "BehaviorTemplate": 90001,
       "Guide": {
         "description": "[[loc:data.unitguide.91154.description]]"
+      },
+      "EnemyTargeting": {
+        "mode": "priority",
+        "order": [
+          "tower",
+          "building",
+          "wall",
+          "castle",
+          "troops",
+          "hero"
+        ]
       }
     },
     "101674": {
@@ -65998,6 +66089,17 @@
       "BehaviorTemplate": 90001,
       "Guide": {
         "description": "[[loc:data.unitguide.91154.description]]"
+      },
+      "EnemyTargeting": {
+        "mode": "priority",
+        "order": [
+          "tower",
+          "building",
+          "wall",
+          "castle",
+          "troops",
+          "hero"
+        ]
       }
     },
     "101675": {
@@ -101394,7 +101496,7 @@
         },
         "91151": {
           "modelKey": "source:monster1/Slime_Magma",
-          "name": "Magma Slime",
+          "name": "Assassin Slime",
           "profiles": {
             "fighter": 91151,
             "guardian": 101655,
@@ -101413,7 +101515,7 @@
         },
         "91152": {
           "modelKey": "source:monster1/Slime_Glacier",
-          "name": "Glacier Slime",
+          "name": "Cannon Slime",
           "profiles": {
             "fighter": 101660,
             "guardian": 101661,

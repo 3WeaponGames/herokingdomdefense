@@ -32,8 +32,9 @@ function catalog(manager, stage, translate) {
   var profiles = tools.unitProfiles || {}, families = new Map(), byUnit = new Map(), models = new Map();
   Object.keys(profiles.families || {}).forEach(function (key) {
     var family = profiles.families[key];
+    var defaultId = Object.values(family.profiles || {}).includes(family.defaultProfileId) ? family.defaultProfileId : Number(key);
     Object.keys(family.profiles || {}).forEach(function (role) {
-      families.set(Number(family.profiles[role]), { key: key, name: family.name, role: role });
+      families.set(Number(family.profiles[role]), { key: key, name: family.name, role: role, defaultId: defaultId });
     });
   });
   function add(id, unit, custom) {
@@ -58,7 +59,7 @@ function catalog(manager, stage, translate) {
     var support = unit.AttackType === 3 && !(unit.UnitAttack && require("UnitAttackRules").active(unit));
     var targetingName = support ? "Support" : rule ? Targeting.modes.find(function (mode) { return mode.value === rule.mode; }).label : "Nearest target";
     var profile = {
-      id: id, preferred: !custom && role === "fighter", model: model,
+      id: id, preferred: !custom && (family ? id === family.defaultId : role === "fighter"), model: model,
       name: custom ? "Custom · " + custom.name : translate(type && type.name || entry && entry.name) || "Default",
       movement: unit.BuildingCross ? "Ground" : "Flight",
       targeting: targetingName

@@ -258,7 +258,8 @@ function validate(documents, changes) {
       if(problem)issue('A',p.concat('TransformSkill'),problem);
     }
     if(own(unit,'EnemySkills')){
-      const problem=table==='SoldierCfg'&&EnemyTransform.supported(unit,docs.overrides||base.GameTools)?EnemySkills.issue(unit.EnemySkills):'Choose a spawnable enemy profile for skills.';
+      const settings=docs.overrides||base.GameTools;
+      const problem=table==='SoldierCfg'&&EnemyTransform.supported(unit,settings)?EnemySkills.issue(unit.EnemySkills,units,settings):'Choose a spawnable enemy profile for skills.';
       if(problem)issue('A',p.concat('EnemySkills'),problem);
     }
     ['Health','AttackInterval'].forEach(k=>number('A',p.concat(k),unit[k],Number.MIN_VALUE,false));

@@ -1,12 +1,18 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{createRequire}=require('node:module');
-const Schema=require('../lib/schema'),{Store,files}=require('../lib/store'),temporary=require('./owned-temp');
+const Schema=require('../lib/schema'),{Store,files}=require('../lib/store'),Fighting=require('../lib/fighting-profiles'),temporary=require('./owned-temp');
 const root=path.resolve(__dirname,'../../..'),label='Projectile flight speed',clone=value=>JSON.parse(JSON.stringify(value));
 function fixture(store){
   const filename=path.join(__dirname,'building-panel.test.js');let prefix=fs.readFileSync(filename,'utf8').split("test('building catalog")[0];
   prefix=prefix.replace('function fixture()','function fixture(kind,sharedStore)').replace('const store = new Store(project)','const store = sharedStore || new Store(project)').replace(".create('buildings')",'.create(kind)').replace("_kind: 'buildings'",'_kind: kind');
   const context={require:createRequire(filename),__dirname,module:{exports:{}},exports:{},setTimeout,clearTimeout};vm.runInNewContext(prefix+'\nmodule.exports={fixture,fields,all};',context);
-  const f=Object.assign(context.module.exports.fixture('units',store),{fields:context.module.exports.fields,all:context.module.exports.all});f.row=key=>f.panel._rows().find(row=>row.key===key);f.input=()=>f.fields(f.panel.$detail,label)[0];f.reset=()=>f.all(f.panel.$detail,n=>n.tagName==='button'&&n.textContent==='Reset projectile flight speed')[0];return f;
+  const f=Object.assign(context.module.exports.fixture('units',store),{fields:context.module.exports.fields,all:context.module.exports.all});
+  const render=f.render, resolve=key=>key.startsWith('enemy:')?'enemy:'+Fighting.canonicalId(f.store.documents.overrides.data,key.slice(6)):key;
+  f.render=key=>render(resolve(key));
+  f.row=key=>f.panel._rows().find(row=>row.key===resolve(key));
+  f.input=()=>f.fields(f.panel.$detail,label)[0];
+  f.reset=()=>f.all(f.panel.$detail,n=>n.tagName==='button'&&n.textContent==='Reset projectile flight speed')[0];
+  return f;
 }
 function seed(f,value){for(const version of ['original','data']){if(value===undefined)delete f.store.documents.overrides[version].projectileSpeeds;else f.store.documents.overrides[version].projectileSpeeds=clone(value);}f.panel._snapshot=f.store.snapshot();}
 test('Units shows projectile speed for the hero and ranged characters only, without creating defaults or no-op drafts',async()=>{
@@ -15,16 +21,17 @@ test('Units shows projectile speed for the hero and ranged characters only, with
   for(const key of ['enemy:90001','ally:90001']){f.render(key);assert.equal(f.input(),undefined,key+' melee has no flight speed');}
   assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);assert(!f.messages.some(message=>/:(change|save)$/.test(message.message)));
 });
-test('queued speed edits retain the final input and reset only the selected unit while preserving future settings',async()=>{
+test('queued speed edits retain the final input and expose no reset button for a custom speed',async()=>{
   const f=fixture();seed(f,{'enemy:90008:default':900,future:{keep:true}});f.render('hero');const before=f.store.draftState(),input=f.input();
   input.value='650';input.onchange();input.value='500';input.onchange();await f.panel._queue;assert.equal(f.store.draftState().overrides.projectileSpeeds['hero:hero:default'],500);assert.equal(f.input().value,'500');
   const version=f.store.version,changes=f.messages.length;f.input().onchange();await f.panel._queue;assert.equal(f.store.version,version);assert.equal(f.messages.length,changes);
-  await f.reset().onclick();await f.panel._queue;assert.deepEqual(f.store.draftState(),before);assert.equal(f.input().value,'500');
+  assert.equal(f.reset(),undefined);assert.doesNotMatch(f.input().title,/reset/i);
+  await f.panel._unitProjectileSpeedEdit(f.row('hero'));assert.deepEqual(f.store.draftState(),before);assert.equal(f.input().value,'500');
   await f.panel._unitProjectileSpeedEdit(f.row('ally:90003'),775);assert.equal(f.store.draftState().overrides.projectileSpeeds['ally:90003:default'],775);assert.deepEqual(f.store.draftState().A,before.A,'unit balance rows remain unchanged');
   assert(!f.messages.some(message=>message.message==='game-data-editor:save'));
 });
 test('resetting the last newly authored speed returns to a pristine draft and invalid edits preserve existing data',async()=>{
-  const f=fixture();seed(f);f.render('enemy:90003');const before=f.store.draftState();await f.panel._unitProjectileSpeedEdit(f.row('enemy:90003'),1200);await f.reset().onclick();await f.panel._queue;assert.deepEqual(f.store.draftState(),before);
+  const f=fixture();seed(f);f.render('enemy:90003');const before=f.store.draftState();await f.panel._unitProjectileSpeedEdit(f.row('enemy:90003'),1200);await f.panel._unitProjectileSpeedEdit(f.row('enemy:90003'));assert.deepEqual(f.store.draftState(),before);
   for(const value of [0,-1,20001,NaN,Infinity,'600',null])await assert.rejects(f.panel._unitProjectileSpeedEdit(f.row('enemy:90003'),value),/between 1 and 20000/);
   await assert.rejects(f.panel._unitProjectileSpeedEdit(f.row('enemy:90001'),600),/ranged/);assert.deepEqual(f.store.draftState(),before);
   for(const invalid of [null,[],42,'bad']){seed(f,invalid);f.render('hero');const retained=f.store.draftState();assert.equal(f.input().disabled,true);await assert.rejects(f.panel._unitProjectileSpeedEdit(f.row('hero'),600),/invalid format/);assert.deepEqual(f.store.draftState(),retained);}

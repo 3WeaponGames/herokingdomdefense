@@ -1955,7 +1955,7 @@
     {
       "id": 91151,
       "source": "monster1/Slime_Magma",
-      "name": "Magma Slime",
+      "name": "Assassin Slime",
       "role": "fighter",
       "behaviorTemplate": 90001,
       "aerial": false,
@@ -1968,9 +1968,9 @@
     {
       "id": 91152,
       "source": "monster1/Slime_Glacier",
-      "name": "Glacier Slime",
+      "name": "Cannon Slime",
       "role": "bruiser",
-      "behaviorTemplate": 90001,
+      "behaviorTemplate": 90003,
       "aerial": false,
       "portrait": {
         "pattern": "\\/(?:Body)$",

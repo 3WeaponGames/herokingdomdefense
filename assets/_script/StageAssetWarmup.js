@@ -41,6 +41,11 @@ function plan(config, level, names) {
   var enemies = unitIds(level), seen = new Set(enemies);
   var skillVisuals = config.EnemySkillVisuals, usedSkills = new Set();
   var skills = require("./EnemySkills"), visuals = require("./EnemySkillVisuals");
+  var attackRules = require("./UnitAttackRules");
+  function addAttackVisuals(unit) {
+    var attack = attackRules.settings(unit), slow = attack && attack.onHit && attack.onHit.slow;
+    if (slow && slow.percent > 0 && slow.duration > 0) usedSkills.add("moveSlow");
+  }
   for (var index = 0; index < enemies.length; index++) {
     var id = enemies[index], unit = stageUnits[id];
     if (!unit) throw Error("Missing stage enemy " + id);
@@ -54,9 +59,23 @@ function plan(config, level, names) {
     }
     var innate = skills.innate(unit);
     if (innate && skills.originalEnabled(unit)) usedSkills.add(innate);
-    if (unit.EnemySkills) skills.begin(unit.EnemySkills).forEach(function (cast) { usedSkills.add(cast.id); });
+    if (unit.EnemySkills) skills.begin(unit.EnemySkills).forEach(function (cast) {
+      if (cast.id === "polymorph") {
+        var form = skills.form(config.SoldierCfg, config.GameTools, cast.setting.unitId);
+        if (!form) return;
+        add(names.Enemy, form.prefab, "prefab");
+      }
+      usedSkills.add(cast.id);
+    });
     if (skillVisuals && (unit.BehaviorTemplate || unit.ID) === 90010) usedSkills.add("weaken");
+    addAttackVisuals(unit);
   }
+  Object.keys(allies).forEach(function (id) {
+    var unit = config.AllyCfg && config.AllyCfg[id] || config.SoldierCfg[id];
+    if (!unit) throw Error("Missing stage ally " + id);
+    add(names.Enemy, "Play" + unit.prefab, "prefab");
+    addAttackVisuals(unit);
+  });
   usedSkills.forEach(function (id) {
     var visual = visuals.effective(id, skillVisuals && skillVisuals[id]);
     var indicator = visuals.indicatorPath(id);
@@ -67,7 +86,6 @@ function plan(config, level, names) {
     }
     if (visual.resource && visual.resourceBundle && visual.resourcePath) add(visual.resourceBundle, visual.resourcePath, "spine");
   });
-  Object.keys(allies).forEach(function (id) { var unit = config.AllyCfg && config.AllyCfg[id] || config.SoldierCfg[id]; if (!unit) throw Error("Missing stage ally " + id); add(names.Enemy, "Play" + unit.prefab, "prefab"); });
   Object.keys(config.GoodsCfg||{}).forEach(function(id){var icon=config.GoodsCfg[id].icon;if(typeof icon==='string')add(icon.indexOf('@icon/')===0?'resources':names.IconGood,icon.indexOf('@icon/')===0?icon.slice(6):icon,'frame');});
   var unitTypes=config.GameTools&&config.GameTools.unitTypes||{};Object.keys(unitTypes).forEach(function(id){var icon=unitTypes[id].icon;if(typeof icon==='string')add(icon.indexOf('@icon/')===0?'resources':names.Enemy,icon.indexOf('@icon/')===0?icon.slice(6):'icon/'+icon,'frame');});
   add(names.IconMap, "ItemHp", "prefab"); add(names.Enemy, "ItemHp", "prefab");

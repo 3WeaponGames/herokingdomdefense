@@ -105,6 +105,21 @@ var exp_KinghtFallInterface = function (t) {
     }
     return e;
   };
+  _ctor.prototype.slowMultiplier = function (type) {
+    var reduction = 0;
+    for (var record of this.debuffInfo) {
+      if (record.type === type) reduction = Math.max(reduction, record.data.subNum);
+    }
+    return Math.max(0, 1 - reduction);
+  };
+  _ctor.prototype.clearOpposingSkills = function () {
+    if (!this.debuffInfo.length) return;
+    var node = this.node, generation = node._combatGeneration, buffs = this.debuffInfo;
+    for (var type of [p.AttackSlow, p.MoveSlow, p.Polymorph]) {
+      if (this.node !== node || node._combatGeneration !== generation || this.debuffInfo !== buffs) return;
+      this.delBuff(type);
+    }
+  };
   _ctor.prototype.addBuff = function (t, e, skill) {
     var n = this, node = this.node, generation = node && node._combatGeneration, buffs = this.debuffInfo;
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, data = game && game.gameData, epoch = game && game._combatEpoch, stage = game && game.gameStatus, effects = ui && ui.ctrEffect;
@@ -115,16 +130,41 @@ var exp_KinghtFallInterface = function (t) {
         (!game || cc.isValid(game, true) && (!game.node || cc.isValid(game.node, true)) && game.gameData === data && game._combatEpoch === epoch && game.gameStatus === stage);
     }
     if (!current()) return;
+    if (t === p.AttackSlow || t === p.MoveSlow) {
+      // A repeated cast of the same strength refreshes its timer. Different
+      // strengths expire independently so the strongest active slow wins.
+      var previous = buffs.find(function (record) { return record.type === t && record.data.subNum === e.subNum; });
+      if (previous) {
+        previous.timeMax = Math.max(previous.timeMax - previous.time, e.time);
+        previous.time = 0;
+        return;
+      }
+    }
     var i = new exp_KinghtFallEnemyBuffInfo(t, e);
     var kind = skill || (t === p.AttackSpeed && this.navigationTeam === "enemy" && "haste");
     var presentation = kind && game && game._stageAssets && game._stageAssets.options && require("EnemySkillVisuals");
     var visual = presentation && presentation.fromGame(game, kind);
     i.skillTint = visual ? visual.showBuiltin && visual.tint : t === p.AttackSpeed && "#FF7676";
-    if (BattleSounds.effect && t === p.MoveSpeed && e.subNum > 0) BattleSounds.effect("slow-apply", this);
-    if (BattleSounds.effect && t === p.DamageCut) BattleSounds.effect("debuff-apply", this);
+    if (BattleSounds.effect && (t === p.MoveSlow || t === p.MoveSpeed && e.subNum > 0)) BattleSounds.effect("slow-apply", this);
+    if (BattleSounds.effect && (t === p.DamageCut || t === p.AttackSlow)) BattleSounds.effect("debuff-apply", this);
     if (!current()) return;
+    var polymorph = t === p.Polymorph && require("EnemyPolymorph");
+    if (polymorph) {
+      i.form = polymorph.begin(this, game, e.unitId, current);
+      if (!i.form) return false;
+    }
     // Pool hits may complete synchronously, so register ownership first.
     this.debuffInfo.push(i);
+    if (polymorph) {
+      require("GameToolsOverrides").cancel(this);
+      this.interruptAttackForTransform();
+      var index = buffs.indexOf(i);
+      if (!current() || index < 0) {
+        if (index >= 0) buffs.splice(index, 1);
+        polymorph.clear(this, i.form);
+        return false;
+      }
+    }
     if (i.skillTint) applyBuffTint(this);
     switch (t) {
       case p.DamageCut:
@@ -169,6 +209,7 @@ var exp_KinghtFallInterface = function (t) {
     var buffs = this.debuffInfo, e = buffs[t];
     if (!e) return;
     buffs.splice(t, 1);
+    if (e.form) require("EnemyPolymorph").clear(this, e.form);
     if (e.indicator) require("EnemySkillVisuals").removeIndicator(this, e);
     if (e.skillTint) applyBuffTint(this);
     switch (e.type) {
@@ -181,6 +222,7 @@ var exp_KinghtFallInterface = function (t) {
     var children = effects && Array.isArray(effects.children) ? effects.children.slice() : null, healing = !!(this._healingEffects && this._healingEffects.size), owned = new Set(buffs.map(function (record) { return record.node; }));
     function current() { return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner.debuffInfo === next; }
     this.debuffInfo = next;
+    if (this._opposingForm) require("EnemyPolymorph").clear(this, this._opposingForm);
     if (this._enemySkillEffects) require("EnemySkillVisuals").clear(this);
     this.releaseHealingEffects();
     if (current() && this.body === body && body && cc.isValid(body, true)) {
@@ -228,4 +270,7 @@ exports.KinghtFallEnemyBuffInfo = exp_KinghtFallEnemyBuffInfo;
   t[t.DamageCut = 2] = "DamageCut";
   t[t.MoveSpeed = 3] = "MoveSpeed";
   t[t.MoveSpeedAdd = 4] = "MoveSpeedAdd";
+  t[t.AttackSlow = 5] = "AttackSlow";
+  t[t.MoveSlow = 6] = "MoveSlow";
+  t[t.Polymorph = 7] = "Polymorph";
 })(p = exports.KinghtFallEnemyBuffType || (exports.KinghtFallEnemyBuffType = {}));

@@ -21,7 +21,7 @@ test('enemy skill visuals use the shared draft and publish to the battle config'
   1:{ID:1,Name:'First',prefab:'First',TransformSkill:{unitId:2,trigger:'health',healthPercent:40}},2:{ID:2,Name:'Next',prefab:'Next'}
  }};
  const f=fixture(t,primary),before=f.bytes(),initial=f.service.snapshot();
- assert.deepEqual(initial.enemyStyles.map(row=>row.id),['enemy:transform','enemy:heal','enemy:haste','enemy:damage','enemy:move','enemy:weaken']);
+ assert.deepEqual(initial.enemyStyles.map(row=>row.id),['enemy:transform','enemy:heal','enemy:haste','enemy:damage','enemy:move','enemy:weaken','enemy:attackSlow','enemy:moveSlow','enemy:polymorph']);
  for(const id of ['haste','damage','move'])assert.equal(initial.effective['enemy:'+id].visual.showIndicator,true);
  const preview=f.service.describe({style:'enemy:transform',model:'enemy:1'});
  assert.equal(preview.nextForm.request.id,'2');assert.deepEqual(preview.transform,primary.SoldierCfg[1].TransformSkill);

@@ -910,7 +910,7 @@
     },
     {
       "id": "monster1/Slime_Magma",
-      "name": "Magma Slime",
+      "name": "Assassin Slime",
       "pack": "monster1",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
       "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Magma.json",
@@ -929,7 +929,7 @@
     },
     {
       "id": "monster1/Slime_Glacier",
-      "name": "Glacier Slime",
+      "name": "Cannon Slime",
       "pack": "monster1",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Purple.prefab",
       "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Glacier.json",

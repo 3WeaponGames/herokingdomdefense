@@ -1,6 +1,6 @@
 "use strict";
 
-var tints = { haste: "#ff7676", damage: "#ffc875", move: "#75d8ed" };
+var tints = { haste: "#ff7676", damage: "#ffc875", move: "#75d8ed", attackSlow: "#bb8deb", moveSlow: "#7ca9ff" };
 var indicators = {
   haste: { icon: "Stat_AttackSpeed_01", x: -24 },
   damage: { icon: "Stat_Attack_02", x: 0 },
@@ -13,7 +13,7 @@ var healingEffect = {
   resourceAnimation: "play",
   offsetX: 0, offsetY: 0, scale: 1, rotation: 0, opacity: 1, playback: 1, color: "#ffffff"
 };
-var ids = ["transform", "heal", "haste", "damage", "move", "weaken"];
+var ids = ["transform", "heal", "haste", "damage", "move", "weaken", "attackSlow", "moveSlow", "polymorph"];
 var numberFields = [
   { key: "offsetX", label: "Horizontal offset", value: 0, min: -1000, max: 1000, step: 1 },
   { key: "offsetY", label: "Vertical offset", value: 0, min: -1000, max: 1000, step: 1 },
@@ -26,9 +26,9 @@ var numberFields = [
 function fields(id) {
   if (ids.indexOf(id) < 0) return [];
   var result = [], indicator = indicators[id];
-  var label = indicator ? "Show recipient tint" : "Show built-in visual";
+  var label = tints[id] ? "Show recipient tint" : "Show built-in visual";
   if (id === "heal") label = "Show healing effect";
-  if (id !== "transform") result.push({ key: "showBuiltin", type: "boolean", label: label, value: true });
+  if (id !== "transform" && id !== "polymorph") result.push({ key: "showBuiltin", type: "boolean", label: label, value: true });
   if (tints[id]) result.push({ key: "tint", type: "color", label: "Recipient tint", value: tints[id], help: "Color applied to the unit for the duration of the buff." });
   if (indicator) result = result.concat([
     { key: "showIndicator", type: "boolean", label: "Show active buff effect", value: true,
@@ -44,7 +44,7 @@ function fields(id) {
     return Object.assign({ type: "number", group: "Active buff effect", indicator: true }, field);
   }));
   result.push({ key: "resource", type: "vfx", label: "Additional effect", value: "", spineOnly: true, emptyLabel: "No additional effect",
-    help: id === "transform" ? "Spine effect attached to the new form when it appears." : "Spine effect attached to the recipient when the skill applies." },
+    help: id === "transform" || id === "polymorph" ? "Spine effect attached to the new form when it appears." : "Spine effect attached to the recipient when the skill applies." },
     { key: "resourceAnimation", type: "effect-animation", label: "Effect animation", value: "" },
     { key: "color", type: "color", label: "Effect color", value: "#ffffff" });
   return result.concat(numberFields.map(function (field) { return Object.assign({ type: "number" }, field); }));

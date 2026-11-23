@@ -94,7 +94,8 @@ function create(kind){
       if(this._closed)return;
       if(!this._rows().some(row=>row.key===argv.unitKey)){this._status('The selected unit is no longer available.',true);return;}
       this.$search.value='';this._unitPack='all';this.$unitPack.value='all';
-      this.$list.scrollTop=0;this._selectRow(argv.unitKey);
+      this._selectRow(argv.unitKey);
+      this._unitSidebar.reveal(argv.unitKey);
     },
     close(){this._closed=true;if(this._profilePopup)this._profilePopup.close();if(this._unitSidebar)this._unitSidebar.destroy();if(this._blockerClient)this._blockerClient.destroy();if(this._purchaseClient)this._purchaseClient.destroy();if(this._unitKeyHandler)this.$root.removeEventListener('keydown',this._unitKeyHandler,true);if(this._unitPointerHandler)this.$root.removeEventListener('pointerdown',this._unitPointerHandler);if(this._iconPicker)this._iconPicker.destroy();if(this._worldClient)this._worldClient.destroy();if(this._previewClient)this._previewClient.destroy();if(this._mapsClient)this._mapsClient.destroy();if(this._testingClient)this._testingClient.destroy();if(this._refreshTimer)clearTimeout(this._refreshTimer);},
     messages:{'hkd-characters:published'(){if(this._closed)return;if(kind==='units'||kind==='buildings')AttackRate.reload(this,ipc);if(kind==='equipment'){this._itemAssets=null;this._renderList();}if(this._unitSidebar&&this._snapshot){this._unitSidebar.invalidate();this._renderList();}if(this._previewClient)this._previewClient.refreshAppearance();},'game-data-editor:world-changed'(){if(this._worldClient)this._worldClient.changed();},'game-data-editor:world-focus-map'(event,id){if(this._worldClient&&kind==='maps')this._worldClient.focusMap(id);},'game-data-editor:changed'(){if(this._closed||kind==='testing'||this._worldClient)return;if(this._refreshTimer)clearTimeout(this._refreshTimer);this._refreshTimer=setTimeout(()=>this._load(false),80);}},
@@ -510,17 +511,42 @@ function create(kind){
       this._note('Attacks per second includes the cooldown, hit windup and full attack animation. Changing the selected level’s animation speed or hit timing recalculates its rate. Perks, movement and interruptions can change the rate during battle.');
     },
     _enemySkillFields(row){
-      const fields=this._section('Skills');
-      for(const control of Skills.fields(this._data('A'),this._data('overrides'),this._data('catalog'),row.record)){
-        const path=row.path.concat(control.property);
-        const change=value=>this._change(()=>{
-          const units=this._data('A').SoldierCfg,unit=units[row.unitID];
-          const next=control.update(unit[control.property],value);
-          const problem=Skills.issue(unit,control.property,next,units,this._data('overrides'));
-          if(problem)throw Error(problem);
-          return [next===undefined?{doc:'A',path,remove:true}:{doc:'A',path,value:next}];
-        }).catch(()=>{});
-        this._field(fields,control.label,control.value,change,control);
+      const fields=this._section('Skills'),config=this._data('A'),settings=this._data('overrides'),catalog=this._data('catalog');
+      const skills=Skills.entries(row.record),available=skills.filter(skill=>!skill.equipped);
+      const change=(skill,update)=>this._change(()=>{
+        const latest=this._data('A'),overrides=this._data('overrides'),unit=latest.SoldierCfg[row.unitID];
+        if(!unit)throw Error('The unit profile is no longer available.');
+        const property=skill.property,path=row.path.concat(property);
+        const next=update(unit[property],unit,latest,overrides);
+        const problem=Skills.issue(unit,property,next,latest.SoldierCfg,overrides);
+        if(problem)throw Error(problem);
+        return [next===undefined?{doc:'A',path,remove:true}:{doc:'A',path,value:next}];
+      }).catch(()=>{});
+      const equip=(skill,value)=>change(skill,(current,unit,latest,overrides)=>
+        Skills.setSkill(skill,unit,current,value,latest,overrides));
+      if(available.length){
+        const add=node('div',undefined,'gt-fields');add.style.gridColumn='1 / -1';fields.appendChild(add);
+        let choice,formId=0;
+        const form=node('div');form.style.gridColumn='1 / -1';
+        const submit=button('Add skill',()=>choice&&equip(choice,choice.id==='transform'?formId:true),'gt-mini');
+        submit.style.alignSelf='end';submit.style.justifySelf='start';submit.disabled=true;
+        this._field(add,'Skill','',id=>{
+          choice=available.find(skill=>skill.id===id);formId=0;clear(form);
+          submit.disabled=!choice||choice.id==='transform';
+          if(choice?.id==='transform')this._field(form,'Next form',0,value=>{formId=value;submit.disabled=!value;},{
+            options:[{value:0,label:'Choose a unit…'},...Skills.selfForms(config,settings,catalog,row.record)],help:choice.help
+          });
+        },{options:[{value:'',label:'Choose a skill…'},...available.map(skill=>({value:skill.id,label:skill.label}))]});
+        add.appendChild(submit);add.appendChild(form);
+      }
+      for(const skill of skills.filter(entry=>entry.equipped)){
+        const controls=this._section(skill.label,fields);controls.parentNode.style.gridColumn='1 / -1';
+        this._note(skill.help,false,controls).style.gridColumn='1 / -1';
+        for(const control of Skills.fields(config,settings,catalog,row.record,skill)){
+          this._field(controls,control.label,control.value,value=>change(skill,(current,unit,latest,overrides)=>
+            control.update(current,value,unit,latest,overrides)),control);
+        }
+        const remove=button('Remove skill',()=>equip(skill,false),'gt-mini');remove.style.justifySelf='start';controls.appendChild(remove);
       }
       this._unitAttackFields(row,fields);
     },
@@ -599,6 +625,50 @@ function create(kind){
         if(row.record.AttackRange===undefined)numeric('attackRange','Attack range','Distance at which this unit can start an attack.');
       }
       if(ranged)this._unitProjectileSpeedField(row,fields);
+      if(attack)this._unitAttackEffects(fields,row.record.UnitAttack.onHit,edit);
+    },
+    _unitAttackEffects(parent,onHit,edit){
+      const fields=this._section('On-hit effects',parent);
+      fields.parentNode.style.gridColumn='1 / -1';
+      const effects=Object.entries(UnitAttack.hitEffects);
+      const available=effects.filter(([id])=>!own(onHit,id));
+      const change=(id,update)=>edit('onHit',current=>{
+        const settings=current&&typeof current==='object'&&!Array.isArray(current)?current:{};
+        const next=update(settings[id]);
+        if(next===settings[id])return current;
+        const updated={...settings};
+        if(next===undefined)delete updated[id];
+        else updated[id]=next;
+        return Object.keys(updated).length?updated:undefined;
+      });
+      if(available.length){
+        let selected;
+        const add=button('Add effect',()=>selected&&change(selected[0],current=>
+          current??Object.fromEntries(Object.entries(selected[1].fields).map(([key,rule])=>[key,rule.value]))),'gt-mini');
+        add.disabled=true;
+        add.style.alignSelf='end';
+        add.style.justifySelf='start';
+        this._field(fields,'Effect','',id=>{
+          selected=available.find(([value])=>value===id);
+          add.disabled=!selected;
+        },{options:[{value:'',label:'Choose an effect…'},...available.map(([value,effect])=>({value,label:effect.label}))]});
+        fields.appendChild(add);
+      }
+      for(const [id,effect] of effects){
+        if(!own(onHit,id))continue;
+        const controls=this._section(effect.label,fields);
+        controls.parentNode.style.gridColumn='1 / -1';
+        for(const [key,rule] of Object.entries(effect.fields)){
+          const value=onHit[id]?.[key];
+          this._field(controls,rule.label,Number.isFinite(value)?value:rule.value,next=>change(id,current=>
+            current&&current[key]===next?current:{...current,[key]:next}),{
+            min:rule.min,max:rule.percent?rule.max*100:rule.max,percent:rule.percent,help:rule.help
+          });
+        }
+        const remove=button('Remove '+effect.label.toLowerCase(),()=>change(id,()=>undefined),'gt-mini');
+        remove.style.justifySelf='start';
+        controls.appendChild(remove);
+      }
     },
     _unitAttackEdit(row,field,value){
       return this._change(()=>{
@@ -606,19 +676,20 @@ function create(kind){
         if(!record)throw Error('Choose an existing unit.');
         const saved=record.UnitAttack;
         if(saved===undefined&&field==='delivery'&&value==='original')return [];
-        const next=Object.assign({},saved,{[field]:value});
-        if(field==='delivery'&&value!=='original'&&!UnitAttack.allowed(value,next.pattern))next.pattern='single';
+        const nextValue=typeof value==='function'?value(saved&&saved[field]):value;
+        const next=Object.assign({},saved,{[field]:nextValue});
+        if(nextValue===undefined)delete next[field];
+        if(field==='delivery'&&nextValue!=='original'&&!UnitAttack.allowed(nextValue,next.pattern))next.pattern='single';
         const error=UnitAttack.issues(next)[0];
         if(error)throw Error(error.message);
-        if(saved&&saved[field]===value&&saved.pattern===next.pattern)return [];
+        if(saved&&saved[field]===nextValue&&saved.pattern===next.pattern)return [];
         return [{doc:'A',path:row.path.concat('UnitAttack'),value:next}];
       },{skipEmpty:true});
     },
     _unitProjectileSpeedField(row,parent){
       const table=this._data('overrides').projectileSpeeds,key=row.unitType==='hero'?'hero:hero:default':row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,row.unitID),malformed=table!==undefined&&(!table||typeof table!=='object'||Array.isArray(table)),custom=!malformed&&own(table,key),value=custom?table[key]:this._unitProjectileSpeedValue(row),fields=parent||this._section('Projectile flight');
-      this._field(fields,'Projectile flight speed',value,next=>this._unitProjectileSpeedEdit(row,Number(next)).catch(()=>{}),{numeric:true,min:1,max:20000,commitUnchanged:true,readOnly:malformed,help:'World units per second. Shared across this character’s levels. The hero’s existing projectile-speed bonuses still apply. Reset uses the inherited or authored flight speed.'});
+      this._field(fields,'Projectile flight speed',value,next=>this._unitProjectileSpeedEdit(row,Number(next)).catch(()=>{}),{numeric:true,min:1,max:20000,commitUnchanged:true,readOnly:malformed,help:'World units per second. Shared across this character’s levels. The hero’s existing projectile-speed bonuses still apply.'});
       if(malformed)this._note('The projectile speed table has an invalid format. Refresh or correct that configuration before editing.',true,fields);
-      else if(custom)fields.appendChild(button('Reset projectile flight speed',()=>this._unitProjectileSpeedEdit(row,undefined).catch(()=>{}),'gt-mini'));
     },
     _unitProjectileSpeedValue(row){
       const type=row.unitType,settings=this._data('overrides'),table=settings.projectileSpeeds;if(type==='enemy'){

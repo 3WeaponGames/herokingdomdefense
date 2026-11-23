@@ -190,6 +190,19 @@ test('ordered targeting picks the first in-range group and the same rule applies
   assert.deepEqual(f.hits, ['hero','ArrowTower']);
 });
 
+test('Lightning Slime attacks a building ahead of closer defenders and retargets when it is destroyed', () => {
+  const f = pursuit();
+  const row = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91154];
+  const unit = f.make('priority', row, 'KinghtFallEnemyItem01');
+  f.game.ctrPlay.node.x = -90;
+  const tower = f.structure('ArrowTower', -65, 0, 10, 10);
+  assert.equal(unit.getFind().building, tower);
+  unit.doAttack();
+  assert.deepEqual(f.hits, ['ArrowTower']);
+  tower.isDestroyed = true;
+  assert.equal(unit.getFind().actor, f.troop);
+});
+
 test('castle focus takes the shorter breach route around terrain and resumes pursuit after destroying the wall', () => {
   const { e, game, hits, make, structure } = pursuit();
   const unit = make('castle', { AttackRange: 12, SearchRange: 0, Speed: 60 });

@@ -90,12 +90,25 @@ function mount({ workspace, sidebar, detail, list, describe, select }) {
     resize(event.key === 'Home' ? MIN_WIDTH : event.key === 'End' ? max :
       actual + (event.key === 'ArrowRight' ? step : -step));
   };
-  const observer = new ResizeObserver(size);
+  const cards = new Map();
+  let gallery, version, dirty = false, empty, pendingReveal;
+  const observer = new ResizeObserver(() => {
+    size();
+    revealCard();
+  });
   observer.observe(workspace);
+  observer.observe(list);
   size();
 
-  const cards = new Map();
-  let gallery, version, dirty = false, empty;
+  function revealCard() {
+    if (pendingReveal === undefined || !list.clientHeight) return;
+    const record = cards.get(pendingReveal);
+    pendingReveal = undefined;
+    if (!record || record.card.getAttribute('aria-current') !== 'true') return;
+    const bounds = record.card.getBoundingClientRect();
+    const top = bounds.top - list.getBoundingClientRect().top - list.clientTop;
+    list.scrollTop += top + (bounds.height - list.clientHeight) / 2;
+  }
   function cardFor(key) {
     const card = make('button', 'gt-record gt-unit-card');
     card.type = 'button';
@@ -160,8 +173,15 @@ function mount({ workspace, sidebar, detail, list, describe, select }) {
   }
   return {
     render,
+    reveal(key) {
+      pendingReveal = key;
+      revealCard();
+      // A docked tab can become visible before the resize observer runs.
+      if (pendingReveal !== undefined) view.requestAnimationFrame(revealCard);
+    },
     invalidate() { dirty = true; },
     destroy() {
+      pendingReveal = undefined;
       observer.disconnect();
       view.removeEventListener('pointermove', move, true);
       view.removeEventListener('pointerup', end, true);

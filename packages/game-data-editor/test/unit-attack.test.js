@@ -86,6 +86,43 @@ test('Units shows relevant attack fields, opens Projectiles on the ranged draft,
   assert.deepEqual(JSON.parse(fs.readFileSync(config)), exact);
 });
 
+test('on-hit effects are configurable together and save only on the selected unit attack', async () => {
+  const { store, config } = isolatedProject();
+  const before = fs.readFileSync(config), f = panelFixture(store), id = '91155';
+  f.render('enemy:' + id);
+  assert.equal(f.input('Effect'), undefined);
+  await f.edit('Attack delivery', 'ranged');
+  await f.edit('Attack pattern', 'splash');
+  assert.equal(f.button('Add effect').disabled, true);
+  await f.edit('Effect', 'slow');
+  await f.button('Add effect').onclick();
+  assert.equal(f.input('Movement slow (%)').value, '30');
+  await f.edit('Movement slow (%)', 45);
+  await f.edit('Slow duration (seconds)', 2.5);
+  assert.deepEqual(Array.from(f.input('Effect').children, option => option.value), ['', 'lifeSteal']);
+  await f.edit('Effect', 'lifeSteal');
+  await f.button('Add effect').onclick();
+  await f.edit('Life steal (%)', 18);
+  assert.equal(f.input('Effect'), undefined);
+  await assert.rejects(f.edit('Life steal (%)', 110), /between 0 and 100/);
+  await f.edit('Attack delivery', 'melee');
+  await f.edit('Attack pattern', 'single');
+  assert.equal(f.input('Movement slow (%)').value, '45');
+  await f.button('Remove life steal').onclick();
+  assert.equal(f.input('Life steal (%)'), undefined);
+  await f.edit('Effect', 'lifeSteal');
+  await f.button('Add effect').onclick();
+  await f.edit('Life steal (%)', 18);
+  assert.deepEqual(fs.readFileSync(config), before);
+  const expected = JSON.parse(before);
+  expected.SoldierCfg[id].UnitAttack = {
+    delivery: 'melee', pattern: 'single', onHit: { slow: { percent: .45, duration: 2.5 }, lifeSteal: { percent: .18 } }
+  };
+  const saved = store.save({ version: store.version });
+  assert.equal(saved.result.saved, true, JSON.stringify(saved.issues));
+  assert.deepEqual(JSON.parse(fs.readFileSync(config)), expected);
+});
+
 test('existing melee units can receive a projectile draft while Units saves ranged delivery separately', () => {
   const f = isolatedProject(), service = new ProjectilesService(f.directory), key = 'enemy:90001';
   const initialConfig = fs.readFileSync(f.config), initialCatalog = fs.readFileSync(f.catalog);
@@ -152,16 +189,55 @@ test('competing launch delay edits retain the Units draft and the published Proj
   assert.deepEqual(f.store.undoStack, undo);
 });
 
-test('a wave shortcut selects the exact shared profile even when Units already has a search and pack filter', async () => {
-  const f = panelFixture(isolatedProject().store);
+test('a wave shortcut selects and reveals the exact shared profile with existing filters', async () => {
+  const f = panelFixture(isolatedProject().store), key = 'enemy:100248';
+  const revealed = [];
+  let selectedCard;
+  f.panel._unitSidebar = {
+    render(rows, selected) { selectedCard = rows.find(row => row.key === selected); },
+    reveal(profile) {
+      assert.equal(selectedCard.key, profile);
+      revealed.push(profile);
+    }
+  };
   f.render('enemy:90001');
   f.panel.$search.value = 'Wolf';
   f.panel._unitPack = 'allies';
-  await f.panel.run({ unitKey: 'enemy:101685' });
-  assert.equal(f.panel._selected, 'enemy:101685');
+  await f.panel.run({ unitKey: key });
+  assert.equal(f.panel._selected, key);
+  assert.deepEqual(revealed, [key]);
   assert.equal(f.panel.$search.value, '');
   assert.equal(f.panel._unitPack, 'all');
   assert(f.input('Attack delivery'));
+  assert.equal(f.store.changes().length, 0);
+});
+
+test('the Unit Editor saves a chosen default for the model and new waves without rewriting existing waves', async () => {
+  const { store, config } = isolatedProject(), f = panelFixture(store), baseId = 91153;
+  const Catalog = require('../worlds/unit-catalog');
+  const before = fs.readFileSync(config), settings = store.draftState().overrides;
+  const newDefault = settings.unitProfiles.families[baseId].profiles.skirmisher;
+  f.render('enemy:' + baseId);
+  const profile = f.input('Profile');
+  assert.equal(profile.value, String(baseId));
+  profile.value = String(newDefault);
+  await profile.onchange();
+  assert.equal(f.panel._selected, 'enemy:' + newDefault);
+  assert.deepEqual(store.changes().map(change => [change.doc, change.path]), [
+    ['overrides', ['unitProfiles', 'families', String(baseId), 'defaultProfileId']]
+  ]);
+  assert.deepEqual(fs.readFileSync(config), before);
+  assert(store.save({ version: store.version }).result.saved);
+
+  const latest = JSON.parse(fs.readFileSync(config));
+  assert.deepEqual(latest.LevelCfg, JSON.parse(before).LevelCfg);
+  assert.deepEqual(latest.SoldierCfg, JSON.parse(before).SoldierCfg);
+  const group = Catalog.groups(Catalog.rows(latest, store.documents.catalog.data)).find(group => group.key === 'fighting:' + baseId);
+  assert.equal(Catalog.firstProfile(group.units).id, newDefault);
+  await f.panel._load(false);
+  f.render('enemy:91001');
+  f.panel.$list.children.find(card => card.textContent.includes('Ironclad Slime')).onclick();
+  assert.equal(f.input('Profile').value, String(newDefault));
 });
 
 test('projectile focus opens the panel and delivers the selected unit once', async () => {

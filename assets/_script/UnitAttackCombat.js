@@ -61,7 +61,21 @@ function deal(scope, entry, amount, impact, current) {
     amount *= Number(require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getParamsCfgById(parameter));
   }
   var source = sourceCurrent(scope) ? scope.owner : null;
+  var onHit = scope.rules.onHit;
+  var hpBefore = onHit && onHit.lifeSteal && (entry.buildInfo || entry.actor).hp;
   var dealt = entry.actor.onAttacked(amount, source, scope.rules.delivery === "ranged" && scope.side === "enemy");
+  if (onHit && dealt > 0 && isFinite(dealt) && current()) {
+    var slow = onHit.slow, lifeSteal = onHit.lifeSteal;
+    if (slow && slow.percent > 0 && slow.duration > 0 && !entry.buildInfo && entry.actor.addBuff && targetCurrent(entry)) {
+      var types = require("KinghtFallInterface").KinghtFallEnemyBuffType;
+      entry.actor.addBuff(types.MoveSlow, { subNum: slow.percent, time: slow.duration }, "moveSlow");
+    }
+    if (lifeSteal && lifeSteal.percent > 0 && hpBefore > 0 && source && source.hpMax > 0 &&
+        current() && sourceCurrent(scope) && TowerCombat.live(source)) {
+      // Use the resolved damage and cap it to the HP the target had before the hit.
+      require("RelicRuntime").heal(source, Math.min(dealt, hpBefore) * lifeSteal.percent / source.hpMax);
+    }
+  }
   var effects = scope.effects;
   if (!current() || scope.ui.ctrEffect !== effects || !cc.isValid(effects, true)) return true;
   if (cc.isValid(entry.node, true) && entry.actor.node === entry.node && entry.node._combatGeneration === entry.generation) {

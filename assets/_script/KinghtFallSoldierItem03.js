@@ -40,6 +40,7 @@ var def_KinghtFallSoldierItem03 = function (t) {
     GameToolsOverrides.attack(this, "ally", this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
+    if (this._opposingForm) return;
     var t = this, ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
     if (!game) return;
     var data = game.gameData, epoch = game._combatEpoch, stage = game.gameStatus, effects = ui.ctrEffect;

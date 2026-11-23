@@ -117,7 +117,8 @@ var def_KinghtFallEnemyLong = function (t) {
     }
   };
   _ctor.prototype.getAttWpos = function () {
-    return this.node.convertToWorldSpaceAR(this.ctrArr.node.getPosition());
+    var muzzle = this.ctrArr.node;
+    return (muzzle.parent || this.node).convertToWorldSpaceAR(muzzle.getPosition());
   };
   _ctor.prototype.getBullet = function () {
     return this.ndBullet.shift() || cc.instantiate(this.ctrArr.node);

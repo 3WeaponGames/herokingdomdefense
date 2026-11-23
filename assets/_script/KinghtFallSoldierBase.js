@@ -101,6 +101,8 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.initData = function (t, lease) {
     var life = setupLife(this);
     if (lease) lease.generation = life.generation;
+    this.clearOpposingSkills();
+    if (!setupCurrent(this, life)) return false;
     this._combatGame = life.game;
     this._combatData = life.data;
     AllyAwareness.invalidate($z1KinghtFallUIGame.default.instance.ctrGame);
@@ -224,7 +226,7 @@ var def_KinghtFallSoldierBase = function (t) {
       }
       var position = Navigation.positionOf(this.node, game);
       this._validateRetaliation(game);
-      var target = this._orderTarget;
+      var transformed = !!this._opposingForm, target = transformed ? null : this._orderTarget;
       var continueCombat = !!target && this._continuationTarget === target;
       this._retaliationTime = Math.max(0, (this._retaliationTime || 0) - t);
       // Allow a slow unit or a gate detour to finish the response. The timeout
@@ -248,7 +250,7 @@ var def_KinghtFallSoldierBase = function (t) {
       // Combat can interrupt either order, but never consumes its destination.
       // Bound acquisition work instead of scanning every enemy every frame.
       this._targetRefresh -= t;
-      if (this._targetRefresh <= 0) {
+      if (!transformed && this._targetRefresh <= 0) {
         var found = this.getFind(continueCombat);
         target = this._orderTarget = found && found.tag;
         this._orderTargetGeneration = target && target.node._combatGeneration;
@@ -357,20 +359,24 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.setLeft = function (t) {
     this._visualLeft = !!t;
     GameToolsOverrides.applyModel(this, "ally", this.spAni.node, t);
+    if (this._opposingForm) require("EnemyPolymorph").pose(this);
   };
   _ctor.prototype.doWait = function () {
     this.state = s.Wait;
     this.rigidBody.linearVelocity = cc.Vec2.ZERO;
     this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Idle, true);
+    if (this._opposingForm) require("EnemyPolymorph").pose(this, false);
   };
   _ctor.prototype.doIdel = function () {
     this.state = s.Idle;
     this.rigidBody.linearVelocity = cc.Vec2.ZERO;
     this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Idle, true);
+    if (this._opposingForm) require("EnemyPolymorph").pose(this, false);
   };
   _ctor.prototype.doMove = function () {
     this.state = s.Move;
     this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Move, true);
+    if (this._opposingForm) require("EnemyPolymorph").pose(this, true);
   };
   _ctor.prototype.isFind = function () {
     var t = this;
@@ -418,6 +424,7 @@ var def_KinghtFallSoldierBase = function (t) {
     return found && found.canAtt ? found.tag : null;
   };
   _ctor.prototype.captureAttackTarget = function () {
+    if (this._opposingForm || !this.slowMultiplier($z1KinghtFallInterface.KinghtFallEnemyBuffType.AttackSlow)) return false;
     var game = $z1KinghtFallUIGame.default.instance.ctrGame, target = this.getAttackTarget();
     this._attackIntent = target ? { target: target, targetGeneration: target.node._combatGeneration, ownerGeneration: this.node._combatGeneration, game: game, data: game.gameData, epoch: game._combatEpoch } : null;
     return !!target;
@@ -496,6 +503,7 @@ var def_KinghtFallSoldierBase = function (t) {
     GameToolsOverrides.attack(this, "ally", configured ? require("UnitAttackCombat").releaseAlly : this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
+    if (this._opposingForm) return;
     var owner = this, ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, node = this.node, generation = node && node._combatGeneration, timers = this.time;
     if (!game || this._combatGame && this._combatGame !== game) return;
     var data = game.gameData, epoch = game._combatEpoch, stage = game.gameStatus, effects = ui.ctrEffect;
@@ -529,6 +537,12 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.doAttackFinish = function () {
     AllyAwareness.invalidate($z1KinghtFallUIGame.default.instance.ctrGame);
     this.doIdel();
+  };
+  _ctor.prototype.interruptAttackForTransform = function () {
+    this._attackIntent = null;
+    this.time[l.Attack] = 0;
+    if (this.state === s.Attack) this.doIdel();
+    require("EnemyPolymorph").pose(this, this.state === s.Move);
   };
   _ctor.prototype.onAttacked = function (t, attacker) {
     if (!this.isDead()) {
@@ -624,6 +638,8 @@ var def_KinghtFallSoldierBase = function (t) {
     if (!retired()) return;
     if (this.hpctrl) { this.hpctrl.setHp(0, this.hpMax); if (!retired()) return; }
     GameToolsOverrides.cancel(this);
+    this.clearOpposingSkills();
+    if (!retired()) return;
     $z1PoolMgr.PoolMgr.getInstance().freeNode(key, node);
   };
   _ctor.prototype.isDead = function () {
@@ -632,6 +648,7 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.setPause = function (t) {
     this.rigidBody.linearVelocity = cc.Vec2.ZERO;
     this.spAni.paused = t;
+    if (this._opposingForm) this._opposingForm.renderer.paused = t;
   };
   _ctor.prototype.getAttack = function () {
     var t = this.attack;
@@ -653,6 +670,7 @@ var def_KinghtFallSoldierBase = function (t) {
     return t * e;
   };
   _ctor.prototype.getAttSpeed = function () {
+    if (this._opposingForm) return 0;
     var t = this.attSpeed;
     var e = 1;
     var n = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.AttackSpeed);
@@ -665,7 +683,7 @@ var def_KinghtFallSoldierBase = function (t) {
       case 2:
         $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.DartingTalisman] && (e += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.DartingTalisman][0]);
     }
-    return t * e;
+    return t * e * this.slowMultiplier($z1KinghtFallInterface.KinghtFallEnemyBuffType.AttackSlow);
   };
   _ctor.prototype.getSpeed = function () {
     var t = this.cfg.Speed;
@@ -681,7 +699,7 @@ var def_KinghtFallSoldierBase = function (t) {
     var r = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff52);
     r && (e += r.Pamer[0]);
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WindstormBoots] && (e += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WindstormBoots][0]);
-    return t * e;
+    return t * e * this.slowMultiplier($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSlow);
   };
   _ctor.prototype.addHpPro = function (t) {
     if (!this.isDead()) {
@@ -695,6 +713,8 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.setNew = function (lease) {
     var life = setupLife(this);
     if (lease) lease.generation = life.generation;
+    this.clearOpposingSkills();
+    if (!setupCurrent(this, life)) return false;
     AllyAwareness.invalidate($z1KinghtFallUIGame.default.instance.ctrGame);
     this._attackIntent = null;
     this._spawnPending = false;

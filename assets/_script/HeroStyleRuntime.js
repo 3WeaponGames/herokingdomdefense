@@ -64,7 +64,7 @@ Runtime.prototype.timing=function(){
   return Object.assign({playback:playback},timing);
 };
 Runtime.prototype.canCast=function(){
-  if(!this.available() || !Skills.canActivate(this.state,{hp:this.hero.hp}) || this.timing().frozen)return false;
+  if(this.hero._opposingForm || !this.available() || !Skills.canActivate(this.state,{hp:this.hero.hp}) || this.timing().frozen)return false;
   var target=this.state.target;
   return this.state.style!=="mystic" || living(target)&&target.node===this.markNode&&generation(target)===this.markGeneration&&distance(point(this.hero),point(target))<=this.hero.attackRange;
 };
@@ -104,7 +104,7 @@ Runtime.prototype.castRadius=function(){
 };
 Runtime.prototype.tryAutoCast=function(target,basicDamage,critical){
   var h=this.hero,s=this.state,hud=h._skillHUD;
-  if(!AutoSkillCast.get()||this.aiming||hud&&(hud.press||hud.worldTouch||hud.autoPress)||!Skills.canActivate(s,{hp:h.hp})||!this.available())return false;
+  if(h._opposingForm||!AutoSkillCast.get()||this.aiming||hud&&(hud.press||hud.worldTouch||hud.autoPress)||!Skills.canActivate(s,{hp:h.hp})||!this.available())return false;
   if(s.style==="mystic"){
     if(target!==this.channelTarget||target!==s.target||!living(target)||target.node!==this.markNode||generation(target)!==this.markGeneration||!s.mysticCharges)return false;
     var full=Math.min(10,Math.max(1,Math.floor(s.tuning.maxCharges)));
@@ -415,6 +415,16 @@ Runtime.prototype.updateVolley=function(dt){
 };
 Runtime.prototype.vanguardCastOrigin=function(){var cast=this.skillCast;if(!cast)return this.castOrigin;return this.skillArea(cast.aimDirection||cast.direction,1).origin;};
 Runtime.prototype.vanguardCastShape=function(){var cast=this.skillCast;if(!cast)return null;return{origin:this.vanguardCastOrigin(),direction:cast.direction,radius:cast.radius,halfAngle:cast.halfAngle,startWidth:cast.startWidth};};
+Runtime.prototype.interruptAttackForTransform=function(){
+  Skills.cancelActive(this.state);
+  this.aiming=false;
+  this.skillCast=null;
+  this.channelTarget=this.beamTarget=this.beamNode=this.beamVisibleNode=null;
+  this.beamVisibleSince=this.beamVisibleGeneration=undefined;
+  this.beamClock=this.beamWarmup=this.beamElapsed=this.beamSourceTime=0;
+  this.beamFrame=null;
+  require("HeroMakerRider").clearCombatState(this.hero.ctrPlayAni);
+};
 Runtime.prototype.update=function(dt){
   this.refresh();if(!living(this.hero)){
     // Recovery may already have a planning HUD. Retire combat work once, then
@@ -435,7 +445,7 @@ Runtime.prototype.update=function(dt){
   if(this.state!==frameState||this.scope!==frameScope)return;
   if(!this.scopeCurrent(frameScope)){this.clear(true);return;}
   var prior=this.state.active,remaining=dt,guard=0,self=this;
-  var frame=this.state.style==="mystic"?{state:this.state,scope:this.scope,targets:null,blocked:new Set(),ticks:0,aborted:false}:null;this.beamFrame=frame;
+  var frame=this.state.style==="mystic"&&!h._opposingForm?{state:this.state,scope:this.scope,targets:null,blocked:new Set(),ticks:0,aborted:false}:null;this.beamFrame=frame;
   if(this.state.target&&(!living(this.state.target)||this.markNode!==undefined&&this.state.target.node!==this.markNode||this.markGeneration!==undefined&&generation(this.state.target)!==this.markGeneration))Skills.clearTarget(this.state);
   // Advance to each impact before releasing it. New projectiles/effects only
   // receive the part of this frame after their event, including on long frames.
@@ -523,7 +533,7 @@ function install(hero,config){
     try{return base.apply(this,args);}finally{if(block&&this._styleRuntime===rt&&rt.state===state&&this.time===time&&this.node===node&&generation(this)===ownerGeneration)time.Attack=clock===-1?0:clock;}
   });
   wrap(hero,"doAttack",function(base,args){
-    var rt=this._styleRuntime,rider=require('HeroMakerRider');if(rt.state.style==="mystic"||rt.state.active)return;rt.refresh();
+    var rt=this._styleRuntime,rider=require('HeroMakerRider');if(this._opposingForm||rt.state.style==="mystic"||rt.state.active)return;rt.refresh();
     var scope=rt.scope;
     // Movement input can precede this frame's skill update and shot release.
     if(rt.state.style==="skirmisher"&&this._relicMoving)rt.state.charge=0;
@@ -545,7 +555,7 @@ function install(hero,config){
   wrap(hero,"doAttackFinish",function(base,args){var rider=require('HeroMakerRider');if(this._styleRuntime.beamTarget||this._styleRuntime.state.active)return;return base.apply(this,args);});
   wrap(hero,"setLeft",function(base,args){var result=base.apply(this,args),active=this._styleRuntime.state.active;if(active&&this.ctrPlayAni.setBodyLeft)this.ctrPlayAni.setBodyLeft(active.direction.x);return result;});
   [["getAttack","damage"],["getAttSpeed","attackRate"],["getSpeed","move"]].forEach(function(pair){wrap(hero,pair[0],function(base,args){return base.apply(this,args)*(1+(this._styleRuntime.bonus()[pair[1]]||0))*(pair[0]==="getAttack"?(this._styleShot||1):1);});});
-  wrap(hero,"addBuff",function(base,args){var data=args[1],bonus=this._styleRuntime.bonus(),types=require("KinghtFallInterface").KinghtFallEnemyBuffType,slow=data&&args[0]===types.MoveSpeed&&data.subNum>0;if(data&&data.time>0&&(slow||data.stun))args[1]=Object.assign({},data,{time:data.time*(1-(bonus.tenacity||0))});return base.apply(this,args);});
+  wrap(hero,"addBuff",function(base,args){var data=args[1],bonus=this._styleRuntime.bonus(),types=require("KinghtFallInterface").KinghtFallEnemyBuffType,slow=data&&(args[0]===types.MoveSpeed||args[0]===types.MoveSlow)&&data.subNum>0;if(data&&data.time>0&&(slow||data.stun))args[1]=Object.assign({},data,{time:data.time*(1-(bonus.tenacity||0))});return base.apply(this,args);});
   ["onRestart","endRoundGame","onDead","onDestroy"].forEach(function(key){wrap(hero,key,function(base,args){this._styleRuntime.clear(true,key==="onDestroy");return base.apply(this,args);});});
 }
 exports.install=install;exports.Runtime=Runtime;exports.withinArc=withinArc;exports.segmentDistance=segmentDistance;exports.segmentEntry=Projectile.segmentEntry;

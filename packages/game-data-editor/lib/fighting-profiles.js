@@ -21,6 +21,14 @@ function applyBalance(before,next){
 function table(settings){return settings&&settings.unitProfiles;}
 function canonicalId(settings,id){return Number(table(settings)&&table(settings).aliases&&table(settings).aliases[id]||id);}
 function familyFor(settings,id){const t=table(settings);if(!t||!t.families)return null;id=canonicalId(settings,id);const entry=t.entries&&t.entries[id];return t.families[entry?entry.baseId:id]||null;}
+function defaultProfileId(settings,id){
+ const family=familyFor(settings,id);
+ if(!family)return undefined;
+ if(Object.values(family.profiles).includes(family.defaultProfileId))return family.defaultProfileId;
+ id=canonicalId(settings,id);
+ const entry=table(settings).entries?.[id];
+ return entry?entry.baseId:id;
+}
 function roleOf(settings,id){return settings.unitTypeAssignments&&settings.unitTypeAssignments['enemy:'+id+':'+Records.form('enemy',id)]||'fighter';}
 function waves(stage,visit){for(const wave of stage.WaveCfg||stage.config&&stage.config.WaveCfg||[]){if(Array.isArray(wave.SpawnTimeline))for(const row of wave.SpawnTimeline)visit(Number(row.unitId),Number(row.count)||1);else for(const line of wave.RefreshSoldierKind||[])for(const pair of String(line).split('#').slice(1).join('#').split(';')){const [id,count]=pair.split(',').map(Number);if(id)visit(id,count||1);}}}
 function remapWaves(stage,aliases){let changed=0;for(const wave of stage.WaveCfg||stage.config&&stage.config.WaveCfg||[]){if(Array.isArray(wave.SpawnTimeline))for(const row of wave.SpawnTimeline){if(aliases[row.unitId]){row.unitId=aliases[row.unitId];changed++;}}if(Array.isArray(wave.RefreshSoldierKind))wave.RefreshSoldierKind=wave.RefreshSoldierKind.map(line=>{const split=String(line).indexOf('#');if(split<0)return line;return String(line).slice(0,split+1)+String(line).slice(split+1).split(';').map(pair=>{const match=/^(\s*)(\d+)(\s*,.*)$/.exec(pair);if(!match||!aliases[match[2]])return pair;changed++;return match[1]+aliases[match[2]]+match[3];}).join(';');});}return changed;}
@@ -62,6 +70,7 @@ function validate(settings,units){
  for(const [baseId,family]of Object.entries(t.families)){
   if(!units[baseId]||!family||!family.profiles){errors.push('Fighting profiles require an existing parent unit.');continue;}
   if(Object.keys(family.profiles).length!==6)errors.push('Each enemy unit requires exactly six fighting profiles.');
+  if(family.defaultProfileId!==undefined&&!Object.values(family.profiles).includes(family.defaultProfileId))errors.push('Choose a default fighting profile from this unit.');
   for(const role of ROLES){
    const id=family.profiles[role],entry=t.entries&&t.entries[id];
    if(!units[id]||!units[id].prefab||selected.has(id)||roleOf(settings,id)!==role||Number(id)!==Number(baseId)&&(!entry||entry.baseId!==Number(baseId)))errors.push('Each enemy unit requires one matching '+role+' profile.');
@@ -74,4 +83,4 @@ function validate(settings,units){
  }
  return errors;
 }
-module.exports={ROLES,FACTORS,FIELDS,factors,balanceIssues,applyBalance,canonicalId,familyFor,roleOf,remapWaves,plan,validate};
+module.exports={ROLES,FACTORS,FIELDS,factors,balanceIssues,applyBalance,canonicalId,familyFor,defaultProfileId,roleOf,remapWaves,plan,validate};

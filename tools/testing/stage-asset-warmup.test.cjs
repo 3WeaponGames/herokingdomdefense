@@ -7,6 +7,24 @@ const output={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_scrip
 test('stage-only Custom units preload their shared model without registering global records',()=>{
  const data=JSON.parse(JSON.stringify(config)),level=JSON.parse(JSON.stringify(data.LevelCfg[0])),unit=Object.values(data.SoldierCfg).find(row=>row.MonsterSource);level.EnemyProfiles={1000000000:{name:'Custom',baseId:unit.ID,stats:{Health:999}}};level.WaveCfg[0].SpawnTimeline=[{unitId:1000000000,count:1,spawnId:1,startSeconds:0,intervalSeconds:1}];const before=JSON.stringify(data),plan=Warm.plan(data,level,names);assert(plan.items.some(item=>item.bundle===names.Enemy&&item.path===unit.prefab));assert.equal(data.SoldierCfg[1000000000],undefined);assert.equal(JSON.stringify(data),before);
 });
+test('on-hit slows on stage enemies or barracks allies preload the saved slow effect',()=>{
+ const UnitAttack={delivery:'melee',pattern:'single',onHit:{slow:{percent:.3,duration:2}}};
+ const level={prefab:'map',HomeLevel1Unlock:[[3]],WaveCfg:[{SpawnTimeline:[{unitId:91155}]}]};
+ const data={
+  BuildEnum:{3:{levelList:[{Data:[0,90001]}]}},
+  SoldierCfg:{91155:{ID:91155,prefab:'Slime'}},
+  AllyCfg:{90001:{ID:90001,prefab:'Soldier'}},
+  EnemySkillVisuals:{moveSlow:{resource:'11111111-1111-1111-1111-111111111111',resourceBundle:'resources',resourcePath:'vfx/slow'}}
+ };
+ const loads=()=>Warm.plan(data,level,names).items.filter(item=>item.key==='resources/vfx/slow:spine').length;
+ assert.equal(loads(),0);
+ data.SoldierCfg[91155].UnitAttack=UnitAttack;
+ assert.equal(loads(),1);
+ data.AllyCfg[90001].UnitAttack=UnitAttack;
+ assert.equal(loads(),1);
+ delete data.SoldierCfg[91155].UnitAttack;
+ assert.equal(loads(),1);
+});
 test('stage admission preloads the actual dim sprite and deduplicates mixed light types without changing layouts',()=>{
  const data=JSON.parse(JSON.stringify(config));for(const category of Object.values(data.BuildEnum))for(const row of category.levelList||[])delete row.Nightlight;const row=data.BuildEnum[1].levelList[0];row.Nightlight={version:1,lights:{},emitters:[{id:'light:1',type:'dim'},{id:'light:2',type:'dim'}]};
  let p=Warm.plan(data,data.LevelCfg[0],names);assert.equal(p.items.filter(i=>i.path==='buildings/lighting/native-archer-dim-ray').length,1);assert(!p.items.some(i=>i.path==='buildings/lighting/native-window-ray'));row.Nightlight.emitters.push({id:'light:3'});const before=JSON.stringify(data);p=Warm.plan(data,data.LevelCfg[0],names);assert.equal(p.items.filter(i=>i.path==='buildings/lighting/native-window-ray').length,1);assert.equal(JSON.stringify(data),before);

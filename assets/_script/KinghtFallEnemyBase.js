@@ -820,7 +820,7 @@ var def_KinghtFallEnemyBase = function (t) {
     for (var j = 0; j < boosts.length; j++) e += boosts[j].data.addSpeed;
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SlowSpell] && (e -= $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SlowSpell][0]);
     e < 0 && (e = .01);
-    return t * e;
+    return t * e * this.slowMultiplier($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSlow);
   };
   _ctor.prototype.addHpPro = function (t) {
     if (!this.isDead()) {

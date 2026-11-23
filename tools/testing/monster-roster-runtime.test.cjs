@@ -7,6 +7,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { setup, Node, Vec2 } = require('./backend-gameplay-harness.cjs');
 const { environment } = require('../navigation/runtime-harness.cjs');
+const AttackRules = require('../../assets/_script/UnitAttackRules');
 const root = path.resolve(__dirname, '../..');
 const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 const monsters = Object.values(config.SoldierCfg).filter(row => row.MonsterSource);
@@ -107,6 +108,7 @@ test('every imported monster spawns through the shipped enemy factory with its o
 
 function actorFixture(row) {
   const e = environment();
+  e.stubs.UnitAttackRules = AttackRules;
   e.game.gameStatus = e.stubs.KinghtFallModle.KinghtFallGameStage.Fight; e.game._combatEpoch = 1;
   e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById = () => row;
   Object.assign(e.stubs.KinghtFallModle.KinghtFallSoldierAniEnum, { Attack: 'attack', Idle: 'idle', Move: 'move' });
@@ -141,7 +143,7 @@ test('all added monsters initialize their real melee, ranged, buff or healing co
     assert(classFor[row.BehaviorTemplate], row.MonsterSource);
     behaviors.add(row.BehaviorTemplate);
     const f = actorFixture(row), actor = f.actor;
-    assert.equal(actor.cfg, row);
+    assert.deepEqual(actor.cfg, AttackRules.runtimeCfg(row));
     assert(Number.isFinite(actor.hp) && actor.hp > 0, row.MonsterSource);
     if (row.BehaviorTemplate !== 90006 && row.BehaviorTemplate !== 90009) {
       const passive=require('../characters/monster-roster-definitions.json').units.find(unit=>unit.id===row.ID).passive;

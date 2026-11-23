@@ -65,7 +65,8 @@ function builtin(root,id,catalog) {
 function describe(service,request) {
   const id=idOf(request.style),config=service.saved[0].config,models=service.enemyModels;
   const enemies=models.filter(row=>row.key.startsWith('enemy:'));
-  const fallback=id==='weaken'&&models.find(row=>row.key.startsWith('ally:'))||enemies[0];
+  const preset=Skills.definitions.find(row=>row.id===id);
+  const fallback=(id==='weaken'||preset?.opponents)&&models.find(row=>row.key.startsWith('ally:'))||enemies[0];
   const chosen=request.model?models.find(row=>row.key===request.model):fallback;
   if(!chosen||id==='transform'&&!chosen.key.startsWith('enemy:'))throw Error('Choose an available preview unit.');
   const describeUnit=service.options.describe||require('../game-data-editor/lib/unit-assets').describe;
@@ -80,13 +81,16 @@ function describe(service,request) {
     return result;
   }
   const result=unit(chosen);
-  if(id==='transform'){
-    const source=config.SoldierCfg[chosen.key.split(':')[1]],target=source.TransformSkill&&source.TransformSkill.unitId;
+  if(id==='transform'||id==='polymorph'){
+    const self=id==='transform',source=config.SoldierCfg[chosen.key.split(':')[1]];
+    const transform=self?source?.TransformSkill:source?.EnemySkills?.polymorph||
+      Object.values(config.SoldierCfg).find(row=>row.EnemySkills?.polymorph)?.EnemySkills.polymorph;
+    const target=transform?.unitId||preset?.defaults.unitId;
     const equipped=target&&config.SoldierCfg[target]?.prefab?{key:'enemy:'+target}:null;
     const requested=request.form?enemies.find(row=>row.key===request.form):equipped||enemies.find(row=>row!==chosen);
     if(request.form&&!requested)throw Error('Choose an available next form.');
     if(requested)result.nextForm=unit(requested);
-    result.transform=source.TransformSkill||null;
+    result.transform=transform||null;
   }
   const visual=Visuals.effective(id,service.enemyData[id]);
   const asset=selection(service.catalogs,request.resource===undefined?visual.resource:request.resource);
@@ -100,8 +104,7 @@ function describe(service,request) {
   result.model=chosen.key;
   result.skill=id;
   const sourceType=chosen.key.startsWith('ally:')?'AllyCfg':'SoldierCfg',record=config[sourceType][chosen.key.split(':')[1]];
-  const preset=Skills.definitions.find(row=>row.id===id);
-  result.duration=record.EnemySkills?.[id]?.duration||preset?.defaults.duration||1;
+  result.duration=result.transform?.duration||record.EnemySkills?.[id]?.duration||preset?.defaults.duration||1;
   return result;
 }
 

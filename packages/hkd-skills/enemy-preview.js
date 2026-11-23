@@ -80,7 +80,8 @@ function create(host,options) {
 
   function draw() {
     if(!assets||disposed)return;
-    const age=time-castAt,active=age>=0,body=active&&assets.form.length?assets.form:assets.unit;
+    const age=time-castAt,active=age>=0,transformed=active&&assets.form.length&&(rig.skill!=='polymorph'||age<assets.duration);
+    const body=transformed?assets.form:assets.unit;
     renderer.seek(spine,body,'idle',time,true);
     tint(body,active&&age<assets.duration&&visual.showBuiltin&&visual.tint);
     const layers=body.slice();
@@ -95,7 +96,7 @@ function create(host,options) {
     }
     const effect=clipInfo(assets.effect,visual.resourceAnimation,visual.playback);
     if(active&&age<effect.duration){
-      placeEffect(assets.effect[0],visual,(rig.nextForm||rig).effectAnchor);
+      placeEffect(assets.effect[0],visual,(transformed?rig.nextForm:rig).effectAnchor);
       renderer.seek(spine,assets.effect,effect.name,age*visual.playback,false);
       tint(assets.effect,visual.color);
       layers.push(...assets.effect);

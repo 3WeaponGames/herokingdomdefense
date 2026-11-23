@@ -99,6 +99,7 @@ function usages(root,state,id,drafts){
  for(const doc of Object.values(drafts||{}))if(doc.key&&doc.key.startsWith('stage:'))inspect(doc.data,doc.data.id+' (draft)');
  for(const unit of Object.values(state.A.SoldierCfg||{}))if(unit.ID!==Number(id)&&Array.isArray(unit.Data)&&[90010,90011].includes(unit.ID)&&Number(unit.Data[2])===Number(id))result.push('Boss transformation '+unit.ID);
  for(const unit of Object.values(state.A.SoldierCfg||{}))if(unit.TransformSkill?.unitId===Number(id))result.push('Transform on '+unit.ID);
+ for(const unit of Object.values(state.A.SoldierCfg||{}))if(unit.EnemySkills?.polymorph?.unitId===Number(id))result.push('Transform opponents on '+unit.ID);
  return result;
 }
 function describe(root,state,id,drafts){
