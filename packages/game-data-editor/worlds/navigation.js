@@ -68,7 +68,7 @@ function preview(service,request){
  if(!['closed','open'].includes(gate))throw Error('Choose an open or closed gate.');
  const Grid=require(path.join(service.root,'assets/_script/NavigationGrid')).NavigationGrid,polygons=M.blockerPolygons(map).map(p=>p.points);
  if(!M.hasGlobalBlockers(map))for(const layer of map.layers)if(!layer.hidden)for(const object of layer.objects)for(const shape of object.polygons||[])polygons.push(shape.map(p=>M.toWorld(layer.transform,M.toWorld(object,M.flipPoint(object,p)))));
- const documents=typeof service.index==='function'?service.index().documents:null,variant=documents&&documents[stage.variant||'A'],config=service.previewConfig?service.previewConfig(stage.variant||'A'):variant&&variant.BuildEnum?variant:documents&&documents.A,buildings=stage.buildings.filter(b=>b.enabled!==false&&(b.kind===1||(b.unlock||1)<=hall));
+ const documents=typeof service.index==='function'?service.index().documents:null,config=service.previewConfig?service.previewConfig():documents&&documents.A,buildings=stage.buildings.filter(b=>b.enabled!==false&&(b.kind===1||(b.unlock||1)<=hall));
  const sourceModels=new Map();
  for(const building of buildings)polygons.push(...buildingPolygons(service,stage,building,hall,gate,config,sourceModels));
  const route=require(path.join(service.root,'assets/_script/AuthoredSpawnPlan')).route(stage.graphs,spawn.id,buildings.map(b=>b.id),request.graphId||null,()=>.25);

@@ -41,9 +41,9 @@ function display(value){if(value===undefined)return '(not set)';if(value===null)
 function create(kind){
   return Editor.Panel.extend({
     template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:require('./control-theme')(fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:kind==='units'?fs.readFileSync(path.join(__dirname,'../units/sidebar.css'),'utf8'):'')),
-    $:{root:'#root',title:'#title',toolbar:'#toolbar',variant:'#variant',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',searchLabel:'#searchLabel',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
+    $:{root:'#root',title:'#title',toolbar:'#toolbar',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',searchLabel:'#searchLabel',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
     ready(){
-      this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;this._unitPack='all';this._variant='A';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
+      this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;this._unitPack='all';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
       this.$title.textContent=TITLES[kind]||kind;
       if(kind==='maps'||kind==='stages'){
         this.$toolbar.style.display='none';this.$sidebar.style.display='none';this.$preview.style.display='none';this.$issues.hidden=true;this.$root.querySelector('.gt-header').style.display='none';this.$status.style.display='none';this.$footer.style.display='none';
@@ -58,8 +58,6 @@ function create(kind){
         this.$footer.textContent='Managed test player only · persistent isolated profile · previews are muted before launch.';
         this._testingClient=require('../testing/client').mount(this.$detail,{ipc});return;
       }
-      this.$variant.disabled=kind!=='stages';this.$variant.title=kind==='stages'?'B and D replace the entire stage table; other settings are shared from A.':'Shared settings come from A for every variant.';
-      this.$variant.onchange=()=>{this._variant=this.$variant.value;this._selected=null;this._wave=0;this._render();};
       this.$language.onchange=()=>{this._language=this.$language.value;this._render();};
       this.$search.oninput=()=>{if(this._snapshot){if(kind==='units')this.$list.scrollTop=0;this._renderList();}};
       if(kind==='units'){
@@ -131,7 +129,7 @@ function create(kind){
       if(recoveries.length){this._status('An interrupted save needs review before further saves. '+(s.dirty?'Discard drafts before recovery.':''),true);recoveries.forEach(recovery=>{const recover=button('Review interrupted save',()=>this._recover(recovery),'gt-mini');recover.disabled=s.dirty;recover.style.marginLeft='10px';this.$status.appendChild(recover);});}
       const issues=s.issues||[],errors=issues.filter(i=>i.severity==='error');this.$issues.hidden=!issues.length;clear(this.$issues);
       if(issues.length){const details=node('details');details.open=errors.length>0;details.appendChild(node('summary',errors.length?errors.length+' issue(s) to resolve before saving':issues.length+' existing / advisory issue(s) · expand to inspect'));issues.slice(0,15).forEach(i=>details.appendChild(node('p',i.doc+' · '+(i.path||[]).join(' / ')+': '+i.message,i.severity)));if(issues.length>15)details.appendChild(node('p',(issues.length-15)+' additional findings are included in the review.'));this.$issues.appendChild(details);}
-      this.$footer.textContent=kind==='stages'?'Editing variant '+this._variant+'. B/D replace complete stage tables; common stats and settings remain shared from A.':'Edits stay in a shared draft. All previews are silent. Save changes explicitly to update the game.';
+      this.$footer.textContent='Edits stay in a shared draft. All previews are silent. Save changes explicitly to update the game.';
     },
     _render(){
       if(!this._snapshot)return;this._toolbar();
@@ -161,7 +159,7 @@ function create(kind){
     _rows(){
       const data=this._data('A'),rows=[];
       const add=(key,label,subtitle,record,keys,extra)=>rows.push(Object.assign({key:String(key),label,subtitle,record,path:keys,doc:'A'},extra||{}));
-      if(kind==='stages')(this._data(this._variant).LevelCfg||[]).forEach((r,i)=>{const name=this._text(r.Name),label=/^\s*\d+[.)]\s*/.test(name)?name:r.Level+'. '+name;add(i,label,r.prefab+' · '+r.WaveCfg.length+' waves',r,['LevelCfg',i],{doc:this._variant,icon:r.Map});});
+      if(kind==='stages')(this._data("A").LevelCfg||[]).forEach((r,i)=>{const name=this._text(r.Name),label=/^\s*\d+[.)]\s*/.test(name)?name:r.Level+'. '+name;add(i,label,r.prefab+' · '+r.WaveCfg.length+' waves',r,['LevelCfg',i],{doc:"A",icon:r.Map});});
       if(kind==='perks')(data.BuffCfg||[]).forEach((r,i)=>add(r.ID,this._text(r.Name),r.ID+' · '+Schema.RARITIES[r.Quality-1],r,['BuffCfg',i],{icon:r.Image}));
       if(kind==='buildings')rows.push(...Buildings.rows(this));
       if(kind==='equipment'){
@@ -178,7 +176,7 @@ function create(kind){
       }
       if(kind==='unit-types')Object.keys(this._data('overrides').unitTypes||{}).forEach(id=>{const type=this._data('overrides').unitTypes[id],assigned=Object.values(this._data('overrides').unitTypeAssignments||{}).filter(value=>value===id).length;add(id,type.name,id+' - '+assigned+' unit assignment(s)',type,['unitTypes',id],{doc:'overrides',icon:type.icon});});
       if(kind==='settings'){
-        Object.keys(data.ParameterCfg||{}).forEach(id=>{const r=data.ParameterCfg[id];add(id,Schema.human(r.enumKey),'Shared across every stage and variant',r,['ParameterCfg',id]);});
+        Object.keys(data.ParameterCfg||{}).forEach(id=>{const r=data.ParameterCfg[id];add(id,Schema.human(r.enumKey),'Shared across every stage',r,['ParameterCfg',id]);});
         add('buildStandTime','Build standing time','Optional override · current default 1.5 seconds',{},[],{override:true});
       }
       return rows;
@@ -259,7 +257,7 @@ function create(kind){
       const fieldOptions=Object.assign({wide:true,multiline:/description/i.test(label)},options),key=Schema.token(value);if(!key){this._field(container,label,value,v=>this._set(doc,keys,v),fieldOptions);return;}
       const catalog=this._data('catalog'),entry=(catalog.entries||{})[key]||{},language=this._language;
       const wrap=node('div',undefined,'gt-localized');this._field(wrap,label+' · '+language,entry[language]||'',v=>this._set('catalog',['entries',key,language],v),fieldOptions);
-      let usages=0;['A','B','D'].forEach(id=>{const text=JSON.stringify(this._data(id));usages+=(text.split(value).length-1);});
+      const usages=JSON.stringify(this._data('A')).split(value).length-1;
       wrap.appendChild(node('div',usages>1?'Shared wording used by '+usages+' records. Saving this text updates every usage.':'Localized wording. Numbered placeholders must remain intact.','gt-shared'));
       container.appendChild(wrap);
     },
@@ -791,7 +789,7 @@ function create(kind){
         const section=this._section('Construction');this._field(section,'Standing time (seconds)',has?parameters.buildStandTime:1.5,v=>this._set('overrides',['parameters','buildStandTime'],v),{min:0.001,help:'Shared across buildings. Testing-mode instant-build remains a separate testing control.'});
         if(has)section.appendChild(button('Reset to game default',()=>this._change([{doc:'overrides',path:['parameters','buildStandTime'],remove:true}]).catch(()=>{})));return;
       }
-      const r=row.record,p=row.path;this._note('This setting is global. Saving it affects every stage and configuration variant.');
+      const r=row.record,p=row.path;this._note('This setting is global. Saving it affects every stage.');
       const section=this._section(Schema.human(r.enumKey));
       if(/[;,]/.test(r.Value)){
         const groups=r.Value.split(';').map(x=>x.split(','));

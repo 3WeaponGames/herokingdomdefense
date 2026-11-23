@@ -25,7 +25,7 @@ function merge(target,source){
  for(const key of Object.keys(source))Object.defineProperty(next,key,{value:merge(own(next,key)?next[key]:undefined,source[key]),writable:true,enumerable:true,configurable:true});
  return next;
 }
-function canonicalStageKey(key){const match=typeof key==='string'&&/^stage:([ABD])-([1-9]\d*)$/.exec(key);return !!match&&Number.isSafeInteger(Number(match[2]));}
+function canonicalStageKey(key){const match=typeof key==='string'&&/^stage:A-([1-9]\d*)$/.exec(key);return !!match&&Number.isSafeInteger(Number(match[1]));}
 function counter(values,ids){let next=1;for(const value of values.concat(ids.filter(Number.isSafeInteger).map(id=>id+1)))if(Number.isSafeInteger(value)&&value>next)next=value;return next;}
 function spawnCounter(value,source){
  const routeIds=value.graphs.map(graph=>/^route-([1-9]\d*)$/.exec(graph.id)).filter(Boolean).map(match=>Number(match[1]));

@@ -49,34 +49,34 @@ SkeletonKing_Shield
 SkeletonKing_Body
   rotate: false
   xy: 1128, 2
-  size: 130, 122
-  orig: 130, 122
+  size: 131, 123
+  orig: 131, 123
   offset: 0, 0
   index: -1
 SkeletonKing_Weapon
   rotate: false
-  xy: 1262, 2
-  size: 281, 91
-  orig: 281, 91
+  xy: 1263, 2
+  size: 281, 113
+  orig: 281, 113
   offset: 0, 0
   index: -1
 SkeletonKing_Leg
   rotate: false
-  xy: 1547, 2
+  xy: 1548, 2
   size: 34, 63
   orig: 34, 63
   offset: 0, 0
   index: -1
 SkeletonKing_Leg2
   rotate: false
-  xy: 1585, 2
+  xy: 1586, 2
   size: 35, 63
   orig: 35, 63
   offset: 0, 0
   index: -1
 u_e45611b29b2bc0b4285bb2772d26f410
   rotate: false
-  xy: 1624, 2
+  xy: 1625, 2
   size: 181, 58
   orig: 181, 58
   offset: 0, 0

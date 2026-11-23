@@ -14,7 +14,7 @@ function fixture(){
  if(!fixtureFiles){
   const files=new Set(['assets/resources/localization/catalog.json','authoring/worlds/library/manifest.json']);
   for(const id of Maps.IDS)files.add('assets/KinghtFallIconMap/'+id+'.prefab');
-  for(const variant of ['A','B','D']){files.add(L.configFile(variant));for(const row of L.read(root,L.configFile(variant)).LevelCfg){files.add('assets/KinghtFallIconMap/'+row.prefab+'.prefab');if(row.StageThumbnail)files.add(require('../worlds/stage-thumbnails').filename(row.StageThumbnail));const layout='authoring/worlds/stages/'+variant+'-'+row.Level+'.json';if(fs.existsSync(path.join(root,layout))){files.add(layout);const map='authoring/worlds/maps/'+L.read(root,layout).mapId+'.json';if(fs.existsSync(path.join(root,map)))files.add(map);}}}
+  for(const variant of ['A']){files.add(L.configFile(variant));for(const row of L.read(root,L.configFile(variant)).LevelCfg){files.add('assets/KinghtFallIconMap/'+row.prefab+'.prefab');if(row.StageThumbnail)files.add(require('../worlds/stage-thumbnails').filename(row.StageThumbnail));const layout='authoring/worlds/stages/'+variant+'-'+row.Level+'.json';if(fs.existsSync(path.join(root,layout))){files.add(layout);const map='authoring/worlds/maps/'+L.read(root,layout).mapId+'.json';if(fs.existsSync(path.join(root,map)))files.add(map);}}}
   fixtureFiles=Array.from(files).flatMap(file=>fs.existsSync(path.join(root,file+'.meta'))?[file,file+'.meta']:[file]);
   fixtureImages=Array.from(new Set(Object.values(L.index(root).images).map(image=>url.fileURLToPath(image.url))));
  }

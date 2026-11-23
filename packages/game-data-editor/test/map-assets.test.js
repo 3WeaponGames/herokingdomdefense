@@ -10,7 +10,7 @@ const clone = value => JSON.parse(JSON.stringify(value));
 let passed = 0;
 function test(name, fn) { fn(); passed++; console.log('ok - ' + name); }
 const documents = {};
-[['A', 'KinghtFallConfig'], ['B', 'KinghtFallConfigB'], ['D', 'KinghtFallConfigD']].forEach(pair => { documents[pair[0]] = { data: JSON.parse(fs.readFileSync(path.join(root, 'assets', pair[1], 'GameJsonCfg.json'))) }; });
+[['A', 'KinghtFallConfig']].forEach(pair => { documents[pair[0]] = { data: JSON.parse(fs.readFileSync(path.join(root, 'assets', pair[1], 'GameJsonCfg.json'))) }; });
 const hashes = {};
 Maps.IDS.forEach(id => { const file = path.join(root, Maps.fileFor(id)); hashes[file] = crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'); });
 test('runtime maps are inspected without mutations and retain their exact assets', () => {
@@ -27,7 +27,7 @@ test('only allowlisted runtime map paths can be opened', () => {
     assert.throws(() => Maps.loadMap(root, '../../project'), /Unknown runtime map/);
     assert.throws(() => Maps.fileFor('Map1'), /Unknown runtime map/);
 });
-test('map index resolves actual artwork and authored A/B/D stage usages', () => {
+test('map index resolves actual artwork and authored campaign stage usages', () => {
     const index = Maps.loadIndex(root, documents);
     assert.strictEqual(index.length, Maps.IDS.length);
     index.forEach(map => {
@@ -138,7 +138,7 @@ test('route checks reuse the game planner and leave prefab bytes untouched', () 
 test('obstacle cloning works through shared draft Store, undo, and explicit save', () => {
     const Store = require('../lib/store').Store;
     const temporary = temporaryProject('hkd-map-test-');
-    const paths = ['assets/KinghtFallConfig/GameJsonCfg.json', 'assets/KinghtFallConfigB/GameJsonCfg.json', 'assets/KinghtFallConfigD/GameJsonCfg.json', 'assets/resources/localization/catalog.json', Maps.fileFor('Map01')];
+    const paths = ['assets/KinghtFallConfig/GameJsonCfg.json', 'assets/resources/localization/catalog.json', Maps.fileFor('Map01')];
     paths.forEach(file => { fs.mkdirSync(path.dirname(path.join(temporary, file)), { recursive: true }); fs.copyFileSync(path.join(root, file), path.join(temporary, file)); });
     const store = new Store(temporary), original = fs.readFileSync(path.join(temporary, Maps.fileFor('Map01')), 'utf8');
     store.addMap('Map01');

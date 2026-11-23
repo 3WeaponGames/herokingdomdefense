@@ -155,6 +155,7 @@ function dataDescriptor(context, index) {
 function validate(documents, changes) {
   const docs={};Object.keys(documents || {}).forEach(k=>docs[k]=unwrap(documents[k]));
   const issues=[],base=docs.A || {},catalog=docs.catalog || {entries:{}},units=base.SoldierCfg || {},talents=base.TalentCfg || {};
+  const stageDocs=['A','B','D'].filter(doc=>docs[doc]);
   function touched(doc,path) {
     if(!changes) return true;
     return changes.some(change=>{
@@ -163,7 +164,7 @@ function validate(documents, changes) {
         if(p.slice(0,Math.min(p.length,path.length)).every((key,i)=>String(key)===String(path[i]))) return true;
       }
       if(doc==='A'&&path[0]==='BuildEnum')return change.doc==='catalog'||change.doc==='A'&&['SoldierCfg','AllyCfg'].includes((change.path||[])[0])&&path[path.length-2]==='Data'&&path[path.length-1]===1;
-      return doc!=='catalog'&&((change.doc==='A'&&['SoldierCfg','AllyCfg','BuildEnum','TalentCfg','EquipCfg','GoodsCfg'].indexOf((change.path||[])[0])>=0)||['A','B','D'].indexOf(change.doc)>=0&&(change.path||[])[0]==='LevelCfg'||change.doc==='catalog');
+      return doc!=='catalog'&&((change.doc==='A'&&['SoldierCfg','AllyCfg','BuildEnum','TalentCfg','EquipCfg','GoodsCfg'].indexOf((change.path||[])[0])>=0)||stageDocs.includes(change.doc)&&(change.path||[])[0]==='LevelCfg'||change.doc==='catalog');
     });
   }
   function issue(doc,path,message,severity) {issues.push({severity:severity || (touched(doc,path)?'error':'warning'),doc,path,message});}
@@ -173,7 +174,7 @@ function validate(documents, changes) {
     else if(value&&typeof value==='object')Object.keys(value).forEach(k=>checkTokens(value[k],doc,path.concat(Array.isArray(value)?Number(k):k)));
   }
   function rewards(value,doc,path) {if(value===undefined)return;if(!Array.isArray(value))return issue(doc,path,'Rewards must be an array of goods ID and amount pairs.');value.forEach((reward,i)=>{if(!Array.isArray(reward)||reward.length!==2) return issue(doc,path.concat(i),'Reward must contain a goods ID and amount.');number(doc,path.concat(i,1),reward[1],0,true);if(!base.GoodsCfg || !base.GoodsCfg[reward[0]])issue(doc,path.concat(i,0),'Unknown reward item '+reward[0]+'.');});}
-  ['A','B','D'].forEach(doc=>{
+  stageDocs.forEach(doc=>{
     const data=docs[doc]; if(!data)return;
     checkTokens(data,doc,[]);
     (data.LevelCfg || []).forEach((stage,index)=>{
@@ -435,7 +436,7 @@ function validate(documents, changes) {
   (base.EquipCfg||[]).forEach((equipment,i)=>{
     const p=['EquipCfg',i];if(equipment.id!==i+1)issue('A',p.concat('id'),'Equipment IDs must retain their existing order.');
     (equipment.levelInfo||[]).forEach((level,li)=>{const q=p.concat('levelInfo',li);if(level.Level!==li+1||level.ID!==equipment.id)issue('A',q,'Equipment level and owner ID must match their position.');number('A',q.concat('Parameters'),level.Parameters,0,false);number('A',q.concat('GoldCost'),level.GoldCost,0,true);});
-    if(equipment.Unlock){['A','B','D'].forEach(variant=>{const stage=docs[variant]&&docs[variant].LevelCfg&&docs[variant].LevelCfg[equipment.Unlock[0]-1];if(!stage||equipment.Unlock[1]<1||equipment.Unlock[1]>stage.WaveCfg.length)issue('A',p.concat('Unlock'),'Equipment unlock must reference an existing stage/wave in variant '+variant+'.');});}
+    if(equipment.Unlock){stageDocs.forEach(variant=>{const stage=docs[variant]&&docs[variant].LevelCfg&&docs[variant].LevelCfg[equipment.Unlock[0]-1];if(!stage||equipment.Unlock[1]<1||equipment.Unlock[1]>stage.WaveCfg.length)issue('A',p.concat('Unlock'),'Equipment unlock must reference an existing stage/wave in variant '+variant+'.');});}
   });
   if(base.HeroEquipment){
     const settings=base.HeroEquipment,Stats=require('../../../assets/_script/HeroEquipmentStats');

@@ -3,26 +3,26 @@ const assert=require('assert'),fs=require('fs'),path=require('path');
 const Schema=require('../lib/schema');
 const root=path.resolve(__dirname,'../../..');
 const original={};
-['A','B','D'].forEach(key=>original[key]={data:JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig'+(key==='A'?'':key)+'/GameJsonCfg.json'),'utf8'))});
+['A'].forEach(key=>original[key]={data:JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig'+(key==='A'?'':key)+'/GameJsonCfg.json'),'utf8'))});
 original.catalog={data:JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'),'utf8'))};
 original.overrides={data:Schema.clone(original.A.data.GameTools||{version:1,timings:{},parameters:{},perks:{}})};
 const legacyOriginal=Schema.clone(original);
-for(const key of ['A','B','D'])for(const stage of legacyOriginal[key].data.LevelCfg)for(const wave of stage.WaveCfg)delete wave.SpawnTimeline;
+for(const key of ['A'])for(const stage of legacyOriginal[key].data.LevelCfg)for(const wave of stage.WaveCfg)delete wave.SpawnTimeline;
 const baseline=Schema.validate(original),legacyBaseline=Schema.validate(legacyOriginal),fingerprint=i=>i.doc+':'+JSON.stringify(i.path)+':'+i.message,known=new Set(baseline.concat(legacyBaseline).map(fingerprint));
 const fixture=()=>Schema.clone(original);
 const legacyFixture=()=>Schema.clone(legacyOriginal);
 const introduced=docs=>Schema.validate(docs).filter(i=>!known.has(fingerprint(i))&&i.severity==='error');
 let passed=0;function test(name,fn){fn();passed++;console.log('✓ '+name);}
 test('validation leaves every source field unchanged',()=>{const before=JSON.stringify(original);Schema.validate(original);assert.strictEqual(JSON.stringify(original),before);});
-test('all campaign spawn strings round trip including waits without normalization',()=>{let waits=0;['A','B','D'].forEach(variant=>original[variant].data.LevelCfg.forEach(stage=>stage.WaveCfg.forEach(wave=>wave.RefreshSoldierKind.forEach(text=>{const row=Schema.parseSpawn(text);assert.strictEqual(Schema.encodeSpawn(row),text);waits+=row.groups.filter(g=>g.unit===-1).length;}))));assert(waits>0);});
+test('all campaign spawn strings round trip including waits without normalization',()=>{let waits=0;['A'].forEach(variant=>original[variant].data.LevelCfg.forEach(stage=>stage.WaveCfg.forEach(wave=>wave.RefreshSoldierKind.forEach(text=>{const row=Schema.parseSpawn(text);assert.strictEqual(Schema.encodeSpawn(row),text);waits+=row.groups.filter(g=>g.unit===-1).length;}))));assert(waits>0);});
 test('converted schedules validate cleanly while legacy diagnostics still identify original duplicate lanes',()=>{assert.deepStrictEqual(baseline,[]);assert(legacyBaseline.length>0);assert(legacyBaseline.every(i=>i.message.indexOf('Duplicate spawn lane')===0));});
 test('changing one legacy wave count remains valid',()=>{const d=legacyFixture();d.A.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind[0]='1#90001,10';assert.deepStrictEqual(introduced(d),[]);});
 test('a legacy wait consumes spawn ticks and may precede a real unit',()=>{const d=legacyFixture();d.A.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind[0]='1#-1,10;90001,5';assert.deepStrictEqual(introduced(d),[]);});
 test('duplicate legacy lanes cannot be introduced silently',()=>{const d=legacyFixture();d.A.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind.push('1#90002,1');assert(introduced(d).some(i=>/Duplicate spawn lane/.test(i.message)));});
-test('legacy spawn counts are positive integers and units need spawnable prefabs',()=>{const d=legacyFixture();d.B.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind=['1#90011,0'];const errors=introduced(d);assert(errors.some(i=>/cannot spawn/.test(i.message)));assert(errors.some(i=>/positive whole/.test(i.message)));});
+test('legacy spawn counts are positive integers and units need spawnable prefabs',()=>{const d=legacyFixture();d.A.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind=['1#90011,0'];const errors=introduced(d);assert(errors.some(i=>/cannot spawn/.test(i.message)));assert(errors.some(i=>/positive whole/.test(i.message)));});
 test('legacy map lane maximum follows the actual playable map',()=>{const d=legacyFixture();d.A.data.LevelCfg[0].prefab='Map01';d.A.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind=['10#90001,1'];assert(introduced(d).some(i=>/1–9/.test(i.message)));d.A.data.LevelCfg[0].prefab='Map04';assert(!introduced(d).some(i=>/authored lane/.test(i.message)));});
 test('active timed schedules validate counts, timing and units independently of retained legacy strings',()=>{const d=fixture(),wave=d.A.data.LevelCfg[0].WaveCfg[0];wave.RefreshSoldierKind=['999#90011,0'];assert.deepStrictEqual(introduced(d),[]);Object.assign(wave.SpawnTimeline[0],{unitId:90011,count:0,startSeconds:-1,intervalSeconds:-1});const errors=introduced(d);for(const field of ['unitId','count','startSeconds','intervalSeconds'])assert(errors.some(i=>i.path[i.path.length-1]===field),field);});
-test('wave order is validated rather than silently reindexed',()=>{const d=fixture();d.D.data.LevelCfg[0].WaveCfg[0].Wave=2;assert(introduced(d).some(i=>/Wave number/.test(i.message)));assert.strictEqual(d.D.data.LevelCfg[0].WaveCfg[0].Wave,2);});
+test('wave order is validated rather than silently reindexed',()=>{const d=fixture();d.A.data.LevelCfg[0].WaveCfg[0].Wave=2;assert(introduced(d).some(i=>/Wave number/.test(i.message)));assert.strictEqual(d.A.data.LevelCfg[0].WaveCfg[0].Wave,2);});
 
 test('timed quantities remain exactly representable and their final spawn must be reachable',()=>{
  for(const patch of [{count:Number.MAX_SAFE_INTEGER+1},{spawnId:Number.MAX_SAFE_INTEGER+1},{unitId:Number.MAX_SAFE_INTEGER+1},{count:3,intervalSeconds:1e308}]){

@@ -96,7 +96,7 @@ async function main(){
   const sourceFile=path.join(root,'assets/_script/KinghtFallHomeBattleCtrl.js'),sourceText=fs.readFileSync(sourceFile,'utf8').replace(/\r\n/g,'\n'),start=sourceText.indexOf('_ctor.prototype.loadStageMonster = function '),begin=sourceText.indexOf('function ',start),end=sourceText.indexOf('\n  };',begin);
   if(start<0||begin<0||end<0)throw Error('Cannot locate the actual loadStageMonster function');
   const method=sourceText.slice(begin,end+4).replace(/;\s*$/,''),config=read(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'));
-  const input={config,models:modelInputs(config),variants:['A','B','D'].map(name=>({name,stages:read(path.join(root,'assets/KinghtFallConfig'+(name==='A'?'':name)+'/GameJsonCfg.json')).LevelCfg})),method,methodSha256:crypto.createHash('sha256').update(method).digest('hex')};
+  const input={config,models:modelInputs(config),variants:[{name:'A',stages:config.LevelCfg}],method,methodSha256:crypto.createHash('sha256').update(method).digest('hex')};
   let base;
   const server=http.createServer((req,res)=>{try{
     const route=decodeURIComponent(new URL(req.url,'http://localhost').pathname);let file;

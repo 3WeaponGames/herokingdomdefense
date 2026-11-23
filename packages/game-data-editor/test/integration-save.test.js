@@ -10,7 +10,7 @@ const s=new Store(temp,{validators:[schema.validate,(d,c)=>maps.validate(d,c,roo
 const before=s.snapshot(),a=before.documents.A.data,perk=a.BuffCfg.findIndex(p=>p.ID===50053),talent=a.TalentLevelCfg.findIndex(t=>Array.isArray(t.EffectNumber)&&t.EffectNumber.length);
 const edits=[
  {doc:'A',path:['LevelCfg',0,'WaveCfg',0,'SpawnTimeline',0,'count'],value:a.LevelCfg[0].WaveCfg[0].SpawnTimeline[0].count+1},
- {doc:'B',path:['LevelCfg',0,'WaveCfg',0,'StartSliver'],value:before.documents.B.data.LevelCfg[0].WaveCfg[0].StartSliver+1},
+ {doc:'A',path:['LevelCfg',0,'WaveCfg',0,'StartSliver'],value:a.LevelCfg[0].WaveCfg[0].StartSliver+1},
  {doc:'A',path:['BuffCfg',perk,'Pamer',0],value:.15},
  {doc:'A',path:['BuildEnum','1','levelList',0,'Hp'],value:a.BuildEnum['1'].levelList[0].Hp+1},
  {doc:'A',path:['EquipCfg',0,'levelInfo',0,'Parameters'],value:a.EquipCfg[0].levelInfo[0].Parameters+1},
@@ -24,9 +24,9 @@ const node=maps.model(before.documents['map:Map01'].data).nodes.find(n=>n.kind==
 edits.push(maps.moveEdit(before.documents['map:Map01'].data,node.id,{x:node.position.x+1,y:node.position.y},'map:Map01'));
 s.change({version:s.version,edits});const errors=s.snapshot().issues.filter(i=>i.severity==='error');assert.deepStrictEqual(errors,[]);
 paths.forEach(p=>assert.equal(Hash(fs.readFileSync(path.join(temp,p))),original[p],'draft wrote '+p));
-const saved=s.save({version:s.version});assert(saved.result.saved);assert.deepStrictEqual(saved.result.files.sort(),['assets/KinghtFallConfig/GameJsonCfg.json','assets/KinghtFallConfigB/GameJsonCfg.json','assets/KinghtFallIconMap/Map01.prefab'].sort());
+const saved=s.save({version:s.version});assert(saved.result.saved);assert.deepStrictEqual(saved.result.files.sort(),['assets/KinghtFallConfig/GameJsonCfg.json','assets/KinghtFallIconMap/Map01.prefab'].sort());
 const reloaded=new Store(temp);assert.equal(reloaded.snapshot().dirty,false);assert.equal(reloaded.documents.A.data.LevelCfg[0].WaveCfg[0].SpawnTimeline[0].count,a.LevelCfg[0].WaveCfg[0].SpawnTimeline[0].count+1);assert.deepStrictEqual(reloaded.documents.A.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind,a.LevelCfg[0].WaveCfg[0].RefreshSoldierKind);assert.equal(reloaded.documents.A.data.BuffCfg[perk].Pamer[0],.15);assert.equal(reloaded.documents.A.data.GameTools.timings['enemy:90001:default'].attack,.25);assert.equal(reloaded.documents.A.data.ParameterCfg['60018'].Value,'0.45');
-assert.equal(Hash(fs.readFileSync(path.join(temp,Files.D))),original[Files.D]);assert.equal(Hash(fs.readFileSync(path.join(temp,Files.catalog))),original[Files.catalog]);
+assert.equal(Hash(fs.readFileSync(path.join(temp,Files.catalog))),original[Files.catalog]);
 const bytes=fs.readFileSync(path.join(temp,Files.A),'utf8');reloaded.save({version:reloaded.version});assert.equal(fs.readFileSync(path.join(temp,Files.A),'utf8'),bytes);
 paths.forEach(p=>assert.equal(Hash(fs.readFileSync(path.join(root,p))),original[p],'live project was modified '+p));
-console.log('PASS integrated saves for stages, variants, perks, buildings, equipment, talents, units, settings, scoped timing and maps on a temporary project; live data unchanged.');
+console.log('PASS integrated saves for stages, perks, buildings, equipment, talents, units, settings, scoped timing and maps on a temporary project; live data unchanged.');

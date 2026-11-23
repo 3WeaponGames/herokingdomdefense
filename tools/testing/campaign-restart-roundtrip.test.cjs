@@ -10,11 +10,6 @@ const AuthoredSpawnPlan = require('../../assets/_script/AuthoredSpawnPlan');
 const clone = value => JSON.parse(JSON.stringify(value));
 const single = value => ({getInstance: () => value});
 const noop = () => {};
-const variants = {
-  A: authored,
-  B: {...authored, ...require('../../assets/KinghtFallConfigB/GameJsonCfg.json')},
-  D: {...authored, ...require('../../assets/KinghtFallConfigD/GameJsonCfg.json')}
-};
 
 function runtime(disk, config, stage, options = {}) {
   const info = {};
@@ -100,8 +95,9 @@ function claimTask(h) {
   getTask.call({ctrGame: h.g, _battleHud: {rewardHint: hint}, loadSpriteFrame: noop, initView: noop});
 }
 
-for (const [name, config] of Object.entries(variants)) for (const level of config.LevelCfg) {
-  test(`${name} stage ${level.Level}: every authored wave survives retry persistence and restarts its exact full spawn schedule`, () => {
+const config = authored;
+for (const level of config.LevelCfg) {
+  test(`Stage ${level.Level}: every authored wave survives retry persistence and restarts its exact full spawn schedule`, () => {
     const disk = harness(), original = runtime(disk, config, level.Level);
     buildings(original, {1: 4});
     const permanent = [disk.player.udata.data, disk.player.missionData.data].map(clone);

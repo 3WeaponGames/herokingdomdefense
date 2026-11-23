@@ -158,10 +158,10 @@ test('world persistence: stage validation caches only its baseline and shares im
   const first=s.stageIssues(stage,f.map);assert.equal(calls.length,2);const cache=s.stageValidation;freeze(cache.documents);
   const draft=clone(stage);draft.config.InGameCoefficient=-1;const issues=s.stageIssues(freeze(draft),f.map);
   assert.equal(calls.length,3,'each warm draft still receives one complete actual validation');assert(issues.includes('Number must be zero or greater.'));
-  const actual=calls[2].documents;assert.equal(actual.B.data,index.documents.B);assert.equal(actual.D.data,index.documents.D);assert.equal(actual.A.data.SoldierCfg,index.documents.A.SoldierCfg);assert.equal(actual.A.data.FutureTable,index.documents.A.FutureTable);
+  const actual=calls[2].documents;assert.deepEqual(Object.keys(actual).sort(),["A","catalog","overrides"]);assert.equal(actual.A.data.SoldierCfg,index.documents.A.SoldierCfg);assert.equal(actual.A.data.FutureTable,index.documents.A.FutureTable);
   assert.notEqual(actual.A.data,index.documents.A);assert.notEqual(actual.A.data.LevelCfg,index.documents.A.LevelCfg);assert.equal(actual.A.data.LevelCfg[1],index.documents.A.LevelCfg[1]);
   assert.equal(s.stageValidation,cache);assert.equal(JSON.stringify(index.documents),before);assert.deepEqual(stage.config.FutureStage,{values:[1,{keep:true}]});
-  const other=clone(stage);other.id='B-1';other.variant='B';const warm=s.stageIssues(other,f.map);assert.equal(calls.length,4);assert.equal(s.stageValidation,cache,'one baseline is reused across stage variants');
+  const other=clone(stage);other.id='A-2';other.level=2;other.config.Level=2;const warm=s.stageIssues(other,f.map);assert.equal(calls.length,4);assert.equal(s.stageValidation,cache,'one baseline is reused across campaign stages');
   const fresh=new Service(f.root,{artifacts:temporary('hkd-world-persistence-validation-')});assert.deepEqual(fresh.stageIssues(other,f.map),warm);assert.equal(calls.length,6);assert.deepEqual(first,warm);
  }finally{schema.validate=validate;}
 });
@@ -341,7 +341,10 @@ test('world persistence: a committed save returns success plus a warning if exte
 });
 
 test('world persistence: stage identifier aliases cannot create separate authoring documents for one runtime stage',()=>{
- const f=timedSaveFixture(),s=f.service;for(const id of ['A-01','A-0001','B-01','D-01','A-9007199254740992']){const version=s.version,keys=Object.keys(s.docs);assert.throws(()=>s.loadStage(id),/canonical stage identifier/);assert.equal(s.version,version);assert.deepEqual(Object.keys(s.docs),keys);}
+ const f=timedSaveFixture(),s=f.service,version=s.version,keys=Object.keys(s.docs);
+ for(const id of ['A-01','A-0001','A-9007199254740992'])assert.throws(()=>s.loadStage(id),/canonical stage identifier/);
+ for(const id of ['B-01','D-01','B-1','D-1'])assert.throws(()=>s.loadStage(id),/Invalid stage/);
+ assert.equal(s.version,version);assert.deepEqual(Object.keys(s.docs),keys);
  assert.equal(s.loadStage('A-1').data.id,'A-1');assert.equal(s.loadStage('A-1').data.config.Level,1);
 });
 

@@ -46,7 +46,7 @@ function appearanceSprites(root,appearance,owner,images,dependencies,partScale){
  return sprites;
 }
 function describe(service,stage,{buildingLevels=false}={}){
- const index=service.index(),config=service.previewConfig?service.previewConfig(stage.variant||'A'):index.documents[stage.variant||'A']&&index.documents[stage.variant||'A'].BuildEnum?index.documents[stage.variant||'A']:index.documents.A,buildings={},images={},errors=[],sourceModels=new Map(),assetCache=new Map(),sources=new Map(),dependencies=new Map();let assetIndex=null,needsRuntime=false;
+ const index=service.index(),config=service.previewConfig?service.previewConfig():index.documents.A,buildings={},images={},errors=[],sourceModels=new Map(),assetCache=new Map(),sources=new Map(),dependencies=new Map();let assetIndex=null,needsRuntime=false;
  let wallAdjustments=null;
  if((stage.buildings||[]).some(building=>building.kind===6))try{wallAdjustments=WallData.readSource(service.root);revision(wallAdjustments.file,dependencies);}catch(error){if(error.code!=='ENOENT')errors.push(error.message);wallAdjustments={data:{version:1,poses:{}},revision:error.code==='ENOENT'?'missing':'unavailable'};}
  // Placement moves and wave edits do not change the source composition. Keep

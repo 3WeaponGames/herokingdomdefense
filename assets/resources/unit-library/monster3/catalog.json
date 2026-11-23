@@ -1177,6 +1177,25 @@
       "bones": 35,
       "slots": 13,
       "variantOf": "monster3/OrcSword_Butcher"
+    },
+    {
+      "id": "monster3/Evilmass_Dagger",
+      "name": "Evilmass Dagger",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Evilmass/Evilmass_Boxer.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/WeaponVariants/Evilmass_Boxer.json",
+      "uuid": "a773b5ad-59b7-5517-a71c-ce980c3871ca",
+      "resource": "unit-library/monster3/Units/WeaponVariants/Evilmass_Boxer",
+      "animations": [
+        "attack",
+        "move",
+        "idle",
+        "die",
+        "hit"
+      ],
+      "bones": 21,
+      "slots": 10,
+      "variantOf": "monster3/Evilmass_Boxer"
     }
   ],
   "parts": [

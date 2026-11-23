@@ -5,7 +5,7 @@ const source=fs.readFileSync(path.join(__dirname,'../main.js'),'utf8');
 const temporary=[];
 function fixture(){
     const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-main-save-'));temporary.push(root);
-    const data={A:{value:1},B:{value:1},D:{value:1},catalog:{entries:{hello:{en:'Hello'}}}};
+    const data={A:{value:1},catalog:{value:1,entries:{hello:{en:'Hello'}}}};
     Object.keys(files).forEach(id=>{const file=path.join(root,files[id]);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(data[id])+'\n');});
     const store=new Store(root),imports=[],broadcasts=[],timers=new Map(),module={exports:{}};let timerId=0;
     const editor={Project:{path:root},Ipc:{sendToAll:(...args)=>broadcasts.push(args)},assetdb:{refresh:(url,callback)=>imports.push({url,callback})}};
@@ -23,12 +23,12 @@ let checks=0;
 async function test(name,run){await run();checks++;console.log('PASS '+name);}
 (async()=>{
     await test('committed save replies after a single 10-second import deadline and ignores late callbacks',async()=>{
-        const f=fixture();f.edit('A',2);f.edit('B',3);
+        const f=fixture();f.edit('A',2);f.edit('catalog',3);
         const call=f.invoke('save',{version:f.store.version});
-        assert.equal(JSON.parse(f.read('A')).value,2);assert.equal(JSON.parse(f.read('B')).value,3);
+        assert.equal(JSON.parse(f.read('A')).value,2);assert.equal(JSON.parse(f.read('catalog')).value,3);
         assert.equal(f.imports.length,2);assert.equal(f.timers.size,1,'One deadline covers the whole import batch');assert.equal(call.replies.length,0);
         f.expire();const reply=await call.result;
-        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.result.warning.includes('within 10 seconds'));assert(reply.value.result.warning.includes(files.A));assert(reply.value.result.warning.includes(files.B));assert.equal(reply.value.dirty,false);assert.equal(f.timers.size,0);assert.equal(f.broadcasts.filter(([name])=>name==='game-data-editor:changed').length,1);
+        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.result.warning.includes('within 10 seconds'));assert(reply.value.result.warning.includes(files.A));assert(reply.value.result.warning.includes(files.catalog));assert.equal(reply.value.dirty,false);assert.equal(f.timers.size,0);assert.equal(f.broadcasts.filter(([name])=>name==='game-data-editor:changed').length,1);
         f.imports.forEach(item=>{item.callback();item.callback(Error('late import failure'));});await Promise.resolve();
         assert.equal(call.replies.length,1);assert.equal(f.broadcasts.filter(([name])=>name==='game-data-editor:changed').length,1);assert.equal(f.timers.size,0);assert.equal(JSON.parse(f.read('A')).value,2);
     });
@@ -37,14 +37,14 @@ async function test(name,run){await run();checks++;console.log('PASS '+name);}
         assert.ifError(reply.error);assert(reply.value.result.saved);assert.equal(reply.value.result.warning,undefined);assert.equal(f.timers.size,0);assert.equal(call.replies.length,1);
     });
     await test('import callback errors and synchronous throws remain warnings after a successful disk save',async()=>{
-        const f=fixture();f.edit('A',2);f.edit('B',3);
+        const f=fixture();f.edit('A',2);f.edit('catalog',3);
         f.editor.assetdb.refresh=(url,callback)=>{if(url==='db://'+files.A)throw Error('asset database offline');callback('import rejected');};
         const reply=await f.invoke('save',{version:f.store.version}).result;
-        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.result.warning.includes('asset database offline'));assert(reply.value.result.warning.includes('import rejected'));assert.equal(f.timers.size,0);assert.equal(JSON.parse(f.read('A')).value,2);assert.equal(JSON.parse(f.read('B')).value,3);
+        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.result.warning.includes('asset database offline'));assert(reply.value.result.warning.includes('import rejected'));assert.equal(f.timers.size,0);assert.equal(JSON.parse(f.read('A')).value,2);assert.equal(JSON.parse(f.read('catalog')).value,3);
     });
     await test('a draft created in another panel while importing survives the save reply',async()=>{
-        const f=fixture();f.edit('A',2);const call=f.invoke('save',{version:f.store.version});f.edit('B',9);const version=f.store.version;f.imports[0].callback();const reply=await call.result;
-        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.dirty);assert.equal(reply.value.version,version);assert.equal(reply.value.documents.B.data.value,9);assert.equal(JSON.parse(f.read('B')).value,1);assert.equal(reply.value.changes.length,1);assert.equal(reply.value.changes[0].doc,'B');
+        const f=fixture();f.edit('A',2);const call=f.invoke('save',{version:f.store.version});f.edit('catalog',9);const version=f.store.version;f.imports[0].callback();const reply=await call.result;
+        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.dirty);assert.equal(reply.value.version,version);assert.equal(reply.value.documents.catalog.data.value,9);assert.equal(JSON.parse(f.read('catalog')).value,1);assert.equal(reply.value.changes.length,1);assert.equal(reply.value.changes[0].doc,'catalog');
     });
     await test('a no-change Save makes no import request, timer or backup',async()=>{
         const f=fixture(),before=f.read('A');const reply=await f.invoke('save',{version:f.store.version}).result;

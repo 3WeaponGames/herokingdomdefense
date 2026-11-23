@@ -15,7 +15,7 @@ function stageForMap(service,mapId){
  const candidates=new Map();
  for(const entry of (typeof service.stageCatalog==='function'?service.stageCatalog():service.index().stages)||[])candidates.set(entry.id,entry);
  for(const doc of Object.values(service.docs||{}))if(doc.key.startsWith('stage:'))candidates.set(doc.data.id,doc.data);
- const matches=Array.from(candidates.values()).filter(stage=>stage.mapId===mapId).sort((a,b)=>Number(b.variant==='A')-Number(a.variant==='A')||a.level-b.level||String(a.id).localeCompare(String(b.id)));
+ const matches=Array.from(candidates.values()).filter(stage=>/^A-\d+$/.test(stage.id)&&stage.mapId===mapId).sort((a,b)=>a.level-b.level||String(a.id).localeCompare(String(b.id)));
  if(!matches.length)throw Error('Assign this map to a stage in Stages & Waves before starting a gameplay preview.');
  return service.loadStage(matches[0].id).data;
 }
@@ -80,7 +80,7 @@ async function start(Editor,service,request){
   }
   if(!ready)throw Error('Game preview did not finish loading.');
   const config=Object.assign(M.clone(stage.config),P.unlocks(stage),{prefab:'__world_draft__',EnvironmentMapId:map.id,EnvironmentBiome:require('./stage-biome').value(stage.config,map)});
-  await execute(Runtime.source({prefab,config,textures,neededPrefabs,sourcePrefabs:Object.keys(sources),sharedConfig:service.index().documents.A,variantConfig:stage.variant==='A'?null:service.index().documents[stage.variant]}));
+  await execute(Runtime.source({prefab,config,textures,neededPrefabs,sourcePrefabs:Object.keys(sources),sharedConfig:service.index().documents.A}));
   current();
   for(let i=0;i<80;i++){
    current();if(entry.window.isDestroyed())throw Error('Preview was closed');

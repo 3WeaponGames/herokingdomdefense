@@ -6,7 +6,7 @@ function fixture(){
  const write=(file,value)=>{const f=path.join(root,file);fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeFileSync(f,typeof value==='string'||Buffer.isBuffer(value)?value:JSON.stringify(value));return f;};
  const keep=M.createMap('Map01','Map01','forest'),map=M.createMap('map-extra','Extra map','desert'),key='map:map-extra';
  for(const m of [keep,map])write('authoring/worlds/maps/'+m.id+'.json',m);
- for(const v of ['A','B','D'])write(L.configFile(v),{LevelCfg:[],FutureField:{preserve:v}});
+ for(const v of ['A'])write(L.configFile(v),{LevelCfg:[],FutureField:{preserve:v}});
  const output='assets/KinghtFallIconMap/Generated/Maps/map-extra';
  write(output+'/objects-0.png',Buffer.from([0,1,128,255]));write(output+'/objects-0.png.meta',{uuid:'texture-extra',subMetas:{frame:{uuid:'frame-extra'}}});write(output+'.meta',{uuid:'folder-extra'});
  write('authoring/worlds/library/images/shared-environment.png','Shared tree');
@@ -27,11 +27,11 @@ test('deleting an unused map backs up exact files, prunes output and preserves s
  for(const [absolute,hash]of Object.entries(before)){const file=path.relative(f.root,absolute).split(path.sep).join('/');if(plan.files.includes(file))assert.equal(fingerprint(path.join(result.result.backup,file)),hash);else assert.equal(fingerprint(absolute),hash);}
  assert.deepEqual(f.service.index().maps.map(m=>m.id),['Map01']);
 });
-test('every stage variant, saved layout, and unsaved stage reference blocks deletion without saving any draft',()=>{
- for(const source of ['A','B','D','layout','draft']){
-  const f=fixture();if(['A','B','D'].includes(source))f.write(L.configFile(source),{LevelCfg:[{Level:5,EnvironmentMapId:f.map.id}]});
-  if(source==='layout')f.write('authoring/worlds/stages/B-8.json',{id:'B-8',mapId:f.map.id,future:42});
-  if(source==='draft')f.service.docs['stage:D-4']={key:'stage:D-4',original:{mapId:'Map01'},data:{mapId:f.map.id}};
+test('the saved campaign, saved layouts, and unsaved stage references blocks deletion without saving any draft',()=>{
+ for(const source of ['campaign','layout','draft']){
+  const f=fixture();if(source==='campaign')f.write(L.configFile('A'),{LevelCfg:[{Level:5,EnvironmentMapId:f.map.id}]});
+  if(source==='layout')f.write('authoring/worlds/stages/A-8.json',{id:'A-8',mapId:f.map.id,future:42});
+  if(source==='draft')f.service.docs['stage:A-4']={key:'stage:A-4',original:{mapId:'Map01'},data:{mapId:f.map.id}};
   const before=tree(f.root),plan=Maps.inspect(f.service,f.request());assert(plan.stages.length);assert(plan.blocked.some(s=>s.includes('Used by stages')));assert.throws(()=>Maps.remove(f.service,{...f.request(),token:plan.token}),/Used by stages/);assert.deepEqual(tree(f.root),before);assert.equal(f.service.version,1);
  }
 });

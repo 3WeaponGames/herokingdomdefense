@@ -177,12 +177,12 @@ test('premium currency has no repeatable exchange source, and worst Rune overflo
   assert.deepEqual(comparison.map(n => Math.round(n * 100) / 100), [70.5, 164.5, 264.5, 447.5, 747, 1405, 2305, 3550]);
 });
 
-test('catalog and stock load without Cocos, player state or platform services across existing configuration variants', () => {
+test('catalog and stock load without Cocos, player state or platform services with the main campaign configuration', () => {
   for (const name of ['ShopCore', 'ShopCatalog']) {
     const context = { exports: {} }; vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script', name + '.js'), 'utf8'), context);
     assert.equal(typeof context.exports[name === 'ShopCore' ? 'createState' : 'create'], 'function');
   }
-  for (const variant of ['KinghtFallConfig', 'KinghtFallConfigB', 'KinghtFallConfigD']) {
+  for (const variant of ['KinghtFallConfig']) {
     const cfg = Object.assign({}, config, JSON.parse(fs.readFileSync(path.join(root, 'assets', variant, 'GameJsonCfg.json')))), built = Catalog.create(data(cfg));
     Core.validate(Core.createState(built, new Date(2026, 10, 8).getTime(), () => .3), built);
   }

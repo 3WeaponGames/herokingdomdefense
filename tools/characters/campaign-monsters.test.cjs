@@ -16,16 +16,16 @@ function projectStage(stage,variant){
  const projected=structuredClone(stage);for(const wave of projected.WaveCfg)delete wave.SpawnTimeline;
  const remap=line=>line.replace(/(\d+)(?=,)/g,id=>String(cfg.GameTools.unitProfiles.aliases[id]||id));
  for(const row of Definition.plans[variant].filter(row=>row.stage===stage.Level)){const wave=projected.WaveCfg[row.wave-1];assert.equal(wave.RefreshSoldierKind[row.lineIndex],remap(row.proposed),variant+' stage '+stage.Level+' wave '+row.wave+' exact canonical queue');wave.RefreshSoldierKind[row.lineIndex]=row.original;}return projected;}
-test('stage seven retains its explicitly authored Map07 fire environment in every campaign variant',()=>{
+test('stage thirteen retains its authored Map07 fire environment',()=>{
   for(const [key,file]of Object.entries(Migration.CONFIGS)){
-    const stage=read(file).LevelCfg.find(row=>row.Level===7);assert(stage,key+' stage seven');assert.equal(stage.EnvironmentMapId,'Map07',key);assert.equal(stage.EnvironmentBiome,'fire',key);
+    const stage=read(file).LevelCfg.find(row=>row.Level===13);assert(stage,key+' stage thirteen');assert.equal(stage.EnvironmentMapId,'Map07',key);assert.equal(stage.EnvironmentBiome,'fire',key);
   }
 });
-test('all sixty stage definitions retain approved queues or matching explicitly authored overrides',()=>{
+test('all twenty-four stage definitions retain approved queues or matching explicitly authored overrides',()=>{
   const Profiles=require('../../assets/_script/EnemyStageProfiles'),sourceFor=id=>{const entry=cfg.GameTools.unitProfiles.entries[id];return entry?entry.baseId:Number(id);};
   for(const appearance of Definition.variants){const source=cfg.SoldierCfg[appearance.AppearanceSourceUnit];assert(source&&source.MonsterSource,'Historical campaign source model '+appearance.AppearanceSourceUnit+' must remain available');assert(fs.existsSync(path.join(root,'assets/KinghtFallEnemy',source.prefab+'.prefab')),'Historical campaign source prefab '+appearance.AppearanceSourceUnit+' must remain available');}
   for(const [key,file]of Object.entries(Migration.CONFIGS)){
-    const stages=read(file).LevelCfg;assert.equal(stages.length,20);const used=new Set(),authored=new Set(stages.filter(stage=>stage.StageLayoutId).map(stage=>stage.Level));
+    const stages=read(file).LevelCfg;assert.equal(stages.length,24);const used=new Set(),authored=new Set(stages.filter(stage=>stage.StageLayoutId).map(stage=>stage.Level));
     stages.forEach((stage,index)=>{assert.equal(stage.Level,index+1);if(authored.has(stage.Level))assert(Array.isArray(stage.WaveCfg)&&stage.WaveCfg.length);else assert.equal(stage.WaveCfg.length,10);projectStage(stage,key);const units=Profiles.records(stage,cfg.SoldierCfg,cfg.GameTools);for(const wave of stage.WaveCfg){
       const ids=(wave.SpawnTimeline||[]).map(entry=>entry.unitId);for(const line of wave.RefreshSoldierKind)for(const token of line.split('#')[1].split(';')){const id=Number(token.split(',')[0]);if(id!==-1)ids.push(id);}
       for(const id of ids){const unit=units[id];assert(unit,key+' stage '+stage.Level+' references a missing current enemy '+id);const source=sourceFor(unit.ProfileBaseID||id);if(cfg.SoldierCfg[source]&&cfg.SoldierCfg[source].MonsterSource)used.add(source);}

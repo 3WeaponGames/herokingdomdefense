@@ -6,7 +6,7 @@ const clone=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 const hash=text=>crypto.createHash('sha256').update(text).digest('hex');
 const defaults=()=>({version:1,timings:{},parameters:{},perks:{}});
-const files={A:'assets/KinghtFallConfig/GameJsonCfg.json',B:'assets/KinghtFallConfigB/GameJsonCfg.json',D:'assets/KinghtFallConfigD/GameJsonCfg.json',catalog:'assets/resources/localization/catalog.json'};
+const files={A:'assets/KinghtFallConfig/GameJsonCfg.json',catalog:'assets/resources/localization/catalog.json'};
 const reserved=['__proto__','prototype','constructor'];
 function safePath(parts) {if(!Array.isArray(parts)||!parts.length||parts.some(k=>(typeof k!=='number'&&typeof k!=='string')||reserved.indexOf(String(k))>=0))throw Error('Invalid field path');}
 function setAt(data,parts,value,remove) {

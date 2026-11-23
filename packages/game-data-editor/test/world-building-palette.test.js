@@ -39,7 +39,7 @@ test('building placement cards keep six simple names with four compass gate faci
 
 test('browsing building variants leaves sources, config, catalog placements and drafts unchanged',()=>{
  const service=new Service(root,{artifacts:path.join(os.tmpdir(),'hkd-building-palette-read-only')}),catalog=service.buildingCatalog(),index=service.index();
- const files=index.maps.filter(m=>m.path).map(m=>'assets/KinghtFallIconMap/'+m.id+'.prefab').concat(['A','B','D'].map(L.configFile)),before=Object.fromEntries(files.map(file=>[file,fingerprint(path.join(root,file))]));
+ const files=index.maps.filter(m=>m.path).map(m=>'assets/KinghtFallIconMap/'+m.id+'.prefab').concat(['A'].map(L.configFile)),before=Object.fromEntries(files.map(file=>[file,fingerprint(path.join(root,file))]));
  const catalogBefore=JSON.stringify(catalog),configBefore=JSON.stringify(index.documents),version=service.version,cards=service.buildingPlacements();
  assert.deepEqual(Object.fromEntries(files.map(file=>[file,fingerprint(path.join(root,file))])),before);
  assert.equal(JSON.stringify(catalog),catalogBefore);assert.equal(JSON.stringify(index.documents),configBefore);assert.equal(service.version,version);assert.deepEqual(service.docs,{});assert.equal(service.undo.length,0);

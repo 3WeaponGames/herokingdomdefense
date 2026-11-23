@@ -3,13 +3,12 @@
 const Waves=require('./wave-editor'),Paths=require('./path-editor'),Stats=require('./wave-stats'),Model=require('./model'),StageCards=require('./stage-cards-client'),StageProfiles=require('./stage-profile-editor');
 const Names=require('./stage-names'),CardOrder=require('./stage-card-order'),CardDrag=require('./stage-card-drag');
 const TaskPosition=require('../../../assets/_script/StageTaskPosition');
-const SETS=[{value:'A',label:'Default stages'},{value:'B',label:'Alternate configuration B'},{value:'D',label:'Alternate configuration D'}];
 const STAGE_SECTIONS=[
  {value:'buildings',label:'Buildings',description:'All buildings and special offers, including unlock settings and appearance.'},
  {value:'spawns',label:'Spawn points',description:'Enemy spawn points, the hero start and the Tasks position.'},
  {value:'paths',label:'Paths',description:'Every path, point and connection.'},
  {value:'waves',label:'Waves',description:'All waves, including enemies, timing, settings and rewards.'},
- {value:'settings',label:'Map and stage settings',description:'The map choice and other stage settings. The current stage keeps its number, configuration and name.'}
+ {value:'settings',label:'Map and stage settings',description:'The map choice and other stage settings. The current stage keeps its number and name.'}
 ];
 const cleanName=value=>String(value||'').replace(/^\s*(?:Stage\s+)?\d+(?:[.)]\s*|\s*[—–:-]\s*)/i,'').trim();
 const spawnRanges=Names.spawnRanges,pathTitle=Names.pathName;
@@ -40,8 +39,8 @@ function create(c){
  function currentName(){const name=stage().config.Name;return typeof name==='string'&&!/^\[\[loc:/.test(name)?name:state.snap.stageName||rowForCurrent().name;}
  function stageButton(parent,row){const b=button(parent,'',()=>{c.cancelDrag();return c.load('stage:'+row.id);},row.id===stage().id);b.className+=' world-stage-card';b.dataset.stageId=row.id;b.setAttribute('aria-current',String(row.id===stage().id));b.appendChild(el('strong',title(row)));b.appendChild(el('small',(row.waves||0)+' waves · '+((catalog().maps.find(m=>m.id===row.mapId)||{}).name||row.mapId)+(row.dirty?' · Draft':'')));return b;}
  function top(){
-  const parent=c.top;parent.textContent='';const main=el('div',undefined,'world-stage-primary'),label=el('label',undefined,'world-stage-picker');label.appendChild(el('span','Stage'));const picker=select(label,stage().id,catalog().stages.filter(row=>row.variant===state.variant).map(row=>({value:row.id,label:title(row)})),id=>c.load('stage:'+id));picker.setAttribute('aria-label','Stage');main.appendChild(label);
-  const config=el('label',undefined,'world-config-picker');config.appendChild(el('span','Configuration'));const sets=select(config,state.variant,SETS,value=>{state.variant=value;const first=catalog().stages.find(row=>row.variant===value);if(first)c.load('stage:'+first.id);});sets.setAttribute('aria-label','Config');sets.title='Separate A/B-test content sets. Use Default stages for the main configuration.';main.appendChild(config);parent.appendChild(main);
+  const parent=c.top;parent.textContent='';const main=el('div',undefined,'world-stage-primary'),label=el('label',undefined,'world-stage-picker');label.appendChild(el('span','Stage'));const picker=select(label,stage().id,catalog().stages.map(row=>({value:row.id,label:title(row)})),id=>c.load('stage:'+id));picker.setAttribute('aria-label','Stage');main.appendChild(label);
+  parent.appendChild(main);
   const actions=el('div',undefined,'world-stage-header-actions');parent.appendChild(actions);button(actions,'Fit map',c.fit);button(actions,state.previewBusy?'Preparing preview…':'Preview draft',c.startPreview).disabled=!!state.previewBusy;if(state.previewOpen)button(actions,'Close preview',c.closePreview);
   const replace=button(actions,'Replace stage',c.replaceStage);replace.disabled=!catalog().stages.some(row=>row.id!==stage().id);replace.title='Choose a source stage and the sections to replace in this draft. Undo restores it; Save applies it.';
   actions.appendChild(el('span',undefined,'world-spacer'));const undo=button(actions,'Undo',()=>c.action('undo'));undo.disabled=!state.snap.canUndo;undo.title='Undo (Ctrl+Z)';const redo=button(actions,'Redo',()=>c.action('redo'));redo.disabled=!state.snap.canRedo;redo.title='Redo (Ctrl+Shift+Z)';button(actions,'Refresh',c.refresh);button(actions,'Discard',c.discard).disabled=!state.snap.dirty;const save=button(actions,'Save',c.save,state.snap.dirty);save.dataset.action='save';save.disabled=!state.snap.dirty;save.onmousedown=event=>{if(event.button===0)event.preventDefault();};
@@ -64,7 +63,7 @@ function create(c){
  function left(){
   const parent=c.left;parent.textContent='';
   if(state.tab==='Stage'){
-   section(parent,'Stages');const search=el('input');search.type='search';search.placeholder='Find a stage…';search.setAttribute('aria-label','Find a stage');search.value=state.stageSearch;parent.appendChild(search);const rows=el('div',undefined,'world-stage-list');parent.appendChild(rows);for(const row of catalog().stages.filter(row=>row.variant===state.variant))stageButton(rows,row);const filter=()=>{state.stageSearch=search.value;for(const row of rows.children)row.hidden=!row.textContent.toLowerCase().includes(search.value.toLowerCase());};search.oninput=filter;filter();return;
+   section(parent,'Stages');const search=el('input');search.type='search';search.placeholder='Find a stage…';search.setAttribute('aria-label','Find a stage');search.value=state.stageSearch;parent.appendChild(search);const rows=el('div',undefined,'world-stage-list');parent.appendChild(rows);for(const row of catalog().stages)stageButton(rows,row);const filter=()=>{state.stageSearch=search.value;for(const row of rows.children)row.hidden=!row.textContent.toLowerCase().includes(search.value.toLowerCase());};search.oninput=filter;filter();return;
   }
   if(state.tab==='Buildings'){
    section(parent,'Placed buildings');note(parent,'Drag cards to rearrange them.');const rows=el('div',undefined,'world-building-list'),cards=[];parent.appendChild(rows);for(const b of CardOrder.ordered(stage().buildings)){const item=button(rows,b.name+(b.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.tool='select';state.selection=['building:'+b.id];render();},state.selection.includes('building:'+b.id));item.dataset.buildingId=b.id;item.setAttribute('aria-current',String(state.selection[0]==='building:'+b.id));item.setAttribute('aria-pressed',String(state.selection.includes('building:'+b.id)));cards.push({id:b.id,node:item});}draggable(rows,cards,s=>s.buildings);
@@ -238,4 +237,4 @@ function create(c){
  function right(){if(state.tab==='Stage')stageInspector();else if(state.tab==='Waves')waveInspector();else if(state.tab==='Paths')pathInspector();else if(state.tab==='Spawns')spawnInspector();else c.buildingInspector();if(state.snap.issues.length){section(c.right,'Validation');state.snap.issues.slice(0,12).forEach(issue=>note(c.right,issue,true));}}
  return {top,tabs,left,right,title};
 }
-module.exports={create,SETS,STAGE_SECTIONS,pathTitle,pathSubtitle,spawnRanges};
+module.exports={create,STAGE_SECTIONS,pathTitle,pathSubtitle,spawnRanges};

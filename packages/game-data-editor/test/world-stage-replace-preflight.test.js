@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {Service,tree}=require('../worlds/service'),M=require('../worlds/model'),P=require('../worlds/prefab'),Replace=require('../worlds/stage-replace'),temporary=require('./owned-temp');
-const clone=M.clone,key='stage:B-20',sourceKey='stage:A-19';
+const clone=M.clone,key='stage:A-20',sourceKey='stage:A-19';
 function fixture(){
  const root=temporary('hkd-stage-preflight-'),artifacts=temporary('hkd-stage-preflight-artifacts-'),s=new Service(root,{artifacts});
  const maps=['SourceMap','DestinationMap'].map(id=>M.createMap(id,id,'forest'));
@@ -10,9 +10,9 @@ function fixture(){
   spawns:[{id:1,name:'North',enabled:true,x:0,y:100,graphId:'route-1'}],
   graphs:[{id:'route-1',name:'Approach',spawnIds:[1],entry:'start',nodes:[{id:'start',x:0,y:100},{id:'goal',x:0,y:0,goal:true}],edges:[{id:'edge',from:'start',to:'goal',weight:1}]}],
   templates:{Portable:P.skeleton('Portable',maps[0])},config:{Level:19,Name:'Source',HomeLevel1Unlock:[],HomeLevel2Unlock:[],HomeLevel3Unlock:[],WaveCfg:[{id:19,Wave:1,SpawnTimeline:[{id:'group',spawnId:1,unitId:1,count:1,startSeconds:0,intervalSeconds:1}]}]}};
- const destination=clone(source);Object.assign(destination,{id:'B-20',variant:'B',level:20,name:'Destination',sourceRevision:'destination',mapId:'DestinationMap'});Object.assign(destination.config,{Level:20,Name:'Destination'});destination.config.WaveCfg[0].id=20;
+ const destination=clone(source);Object.assign(destination,{id:'A-20',variant:'A',level:20,name:'Destination',sourceRevision:'destination',mapId:'DestinationMap'});Object.assign(destination.config,{Level:20,Name:'Destination'});destination.config.WaveCfg[0].id=20;
  s.indexData={maps:maps.map(map=>({id:map.id,name:map.name,biome:map.biome})),stages:[source,destination].map(stage=>({id:stage.id,variant:stage.variant,level:stage.level,mapId:stage.mapId})),library:[],documents:{}};
- for(const variant of ['A','B','D']){
+ for(const variant of ['A']){
   const config=s.indexData.documents[variant]={BuildEnum:{}},file=path.join(root,'assets/KinghtFallConfig'+(variant==='A'?'':variant)+'/GameJsonCfg.json');
   // The real preview reads saved visual settings independently of the cached
   // authoring index. Supply minimal saved files before recording read-only state.

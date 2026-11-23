@@ -107,7 +107,7 @@ test('backend map dimensions honor both enemy and friendly runtime navigation bu
 test('validation leaves each original map and representative stage unchanged and valid',()=>{
  const root=path.resolve(__dirname,'../../..');
  for(const id of Catalog.IDS){const map=L.adaptMap(root,id),before=JSON.stringify(map);assert.deepEqual(M.validateMap(map),[],id);assert.equal(JSON.stringify(map),before);}
- for(const variant of ['A','B','D']){const s=L.adaptStage(root,variant,1),before=JSON.stringify(s);assert.deepEqual(M.validateStage(s),[],variant);assert.equal(JSON.stringify(s),before);}
+ for(const variant of ['A']){const s=L.adaptStage(root,variant,1),before=JSON.stringify(s);assert.deepEqual(M.validateStage(s),[],variant);assert.equal(JSON.stringify(s),before);}
 });
 
 test('only the exact unavailable legacy zero condition is retained without becoming a fallback route',()=>{
@@ -129,8 +129,8 @@ test('the actual legacy controller and authored planner never select all-zero pa
  }
 });
 
-test('all sixty current campaign configurations recover valid stages without changing their data',()=>{
+test('all twenty-four campaign stages recover valid layouts without changing their data',()=>{
  const root=path.resolve(__dirname,'../../..');let count=0;
- for(const variant of ['A','B','D'])for(const config of L.read(root,L.configFile(variant)).LevelCfg){const s=L.adaptStage(root,variant,config.Level,config),before=JSON.stringify(s);assert.deepEqual(M.validateStage(s),[],s.id);assert.equal(JSON.stringify(s),before);count++;}
- assert.equal(count,60);
+ for(const variant of ['A'])for(const config of L.read(root,L.configFile(variant)).LevelCfg){const s=L.adaptStage(root,variant,config.Level,config),before=JSON.stringify(s);assert.deepEqual(M.validateStage(s),[],s.id);assert.equal(JSON.stringify(s),before);count++;}
+ assert.equal(count,24);
 });

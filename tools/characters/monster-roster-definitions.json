@@ -2315,6 +2315,19 @@
         "cropHeight": 1,
         "cropWidth": 1
       }
+    },
+    {
+      "id": 91180,
+      "source": "monster3/Evilmass_Dagger",
+      "name": "Evilmass Dagger",
+      "role": "bruiser",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth|Arm|Arm2)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
     }
   ]
 }

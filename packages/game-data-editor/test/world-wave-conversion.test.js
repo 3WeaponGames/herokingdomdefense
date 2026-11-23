@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const M=require('../worlds/model'),{Timeline}=require('../../../assets/_script/AuthoredSpawnPlan');
 const root=path.resolve(__dirname,'../../..');
-const files=['assets/KinghtFallConfig/GameJsonCfg.json','assets/KinghtFallConfigB/GameJsonCfg.json','assets/KinghtFallConfigD/GameJsonCfg.json','assets/configs/GameJsonCfg.json'];
+const files=['assets/KinghtFallConfig/GameJsonCfg.json'];
 const read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8').replace(/^\uFEFF/,''));
 
 // An independent simulation of the original runtime queue. Repeated spawn rows
@@ -27,7 +27,7 @@ function assertEquivalent(rows,entries,interval,label){
  assert.equal(JSON.stringify({rows,entries}),before,label+' never mutates source data');
 }
 
-test('all campaign and fallback waves expose explicit schedules and legacy conversion preserves every lane tick',()=>{
+test('all campaign waves expose explicit schedules and legacy conversion preserves every lane tick',()=>{
  const base=read(files[0]),baseInterval=Number(base.ParameterCfg['60018'].Value);let stages=0,enemies=0,expectedEnemies=0;
  for(const file of files){const doc=read(file),interval=Number(doc.ParameterCfg&&doc.ParameterCfg['60018']&&doc.ParameterCfg['60018'].Value)||baseInterval;
   for(const stage of doc.LevelCfg){stages++;assert(Array.isArray(stage.WaveCfg)&&stage.WaveCfg.length,file+' stage '+stage.Level+' keeps an authored wave list');for(const wave of stage.WaveCfg){const label=file+' stage '+stage.Level+' wave '+wave.Wave;
@@ -44,7 +44,7 @@ test('all campaign and fallback waves expose explicit schedules and legacy conve
    assertEquivalent(wave.RefreshSoldierKind,converted,interval,label);
   }}
  }
- assert.equal(stages,96);assert.equal(enemies,expectedEnemies,'conversion preserves every enemy in the current authored lane queues');
+ assert.equal(stages,24);assert.equal(enemies,expectedEnemies,'conversion preserves every enemy in the current authored lane queues');
 });
 
 test('conversion keeps last duplicate lane, independent waits, unit groups and numeric spawn order',()=>{

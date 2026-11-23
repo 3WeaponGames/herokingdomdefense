@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const root=path.resolve(__dirname,'../..'),Maps=require('../../packages/game-data-editor/lib/map-assets'),Catalog=require('../../packages/game-data-editor/lib/map-catalog');
 const {NavigationGrid}=require('../../assets/_script/NavigationGrid'),{Store}=require('../../packages/game-data-editor/lib/store'),{textureMeta}=require('../maps/bake-map.cjs');
 const read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8')),source=Maps.loadMap(root,'Map07').data,info=Maps.model(source),clone=v=>structuredClone(v);
-const configs=['KinghtFallConfig','KinghtFallConfigB','KinghtFallConfigD'].map(folder=>read('assets/'+folder+'/GameJsonCfg.json'));
+const config=read('assets/KinghtFallConfig/GameJsonCfg.json');
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const terrain=info.colliders.filter(c=>c.active&&c.registered&&info.byId[c.owner].kind==='obstacle');
 const grid=new NavigationGrid(terrain.map(c=>c.points),info.bounds,20);
@@ -30,18 +30,18 @@ test('the legacy Stage 7 map keeps valid references and bounded baked textures',
  assert(!info.sprites.some(s=>legacy.has(s.frame)),'old forest textures must not be pulled into the fire map');
 });
 
-test('Stage 7 uses its authored layout with valid unlocks and spawn lanes in each campaign',()=>{
+test('the snow and Map07 fire stages use valid authored layouts, unlocks and spawn lanes',()=>{
  const classes={1:'KinghtFallBuildMainFortress',2:'KinghtFallBuildBartizan',3:'KinghtFallBuildBarracks',4:'KinghtFallBuildHome',5:'KinghtFallBuildMill',6:'KinghtFallBuildWall'};
  const typeByScript=Object.fromEntries(Object.entries(classes).map(([type,name])=>[compressed(read('assets/_script/'+name+'.js.meta').uuid),Number(type)]));
  const expandedMap='map-expansion-snow-staggered-spurs';
- for(const [index,config] of configs.entries()){
-  const expanded=index===0;
-  const stage=config.LevelCfg.find(s=>s.Level===7),seen=new Set([1]),stageSource=read('assets/KinghtFallIconMap/'+stage.prefab+'.prefab'),stageInfo=Maps.model(stageSource),buildings=stageInfo.owners.filter(n=>n.kind==='building'),slots=new Map(buildings.map(n=>[n.slot,{node:n,type:typeByScript[stageSource[n.ownerComponent].__type__]}]));
+ for(const stage of config.LevelCfg.filter(s=>s.Level===7||s.Level===13)){
+  const expanded=stage.Level===7,
+   seen=new Set([1]),stageSource=read('assets/KinghtFallIconMap/'+stage.prefab+'.prefab'),stageInfo=Maps.model(stageSource),buildings=stageInfo.owners.filter(n=>n.kind==='building'),slots=new Map(buildings.map(n=>[n.slot,{node:n,type:typeByScript[stageSource[n.ownerComponent].__type__]}]));
   assert.equal(stage.EnvironmentMapId||stage.prefab,expanded?expandedMap:'Map07');
-  assert.equal(stage.Map,expanded?'Generated/Maps/'+expandedMap+'/thumbnail':'wg_zy_gq7');
+  assert.equal(stage.Map,expanded?'Generated/Maps/'+expandedMap+'/thumbnail':'wg_zy_gq1');
   assert.equal(slots.size,buildings.length,'configured structures have unique site IDs');assert.equal([...slots.values()].filter(b=>b.type===1).length,1);assert.equal(slots.get(1).type,1);
   for(const key of ['HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock'])for(const [type,id]of stage[key]){assert(slots.has(id),'missing site '+id);assert.equal(slots.get(id).type,type,'wrong structure at '+id);assert(!seen.has(id),'duplicate site '+id);seen.add(id);}
-  assert.equal([...seen].filter(id=>slots.get(id).type===6).length,expanded?3:2);
+  assert.equal([...seen].filter(id=>slots.get(id).type===6).length,3);
   for(const wave of stage.WaveCfg){const lanes=Array.isArray(wave.SpawnTimeline)?wave.SpawnTimeline.map(entry=>entry.spawnId):(wave.RefreshSoldierKind||[]).filter(Boolean).map(encoded=>Number(encoded.split('#')[0]));for(const lane of lanes)assert(stageInfo.nodes.some(n=>n.kind==='spawn'&&n.lane===lane),'wave uses a missing entrance');}
  }
 });
@@ -78,7 +78,7 @@ test('dragging a gate keeps separate wall wings, smoke and floor markers aligned
 
 test('opening Stage 7 in a draft store and saving without changes performs no writes',()=>{
  const temp=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-map7-store-'));
- try{const files=['assets/KinghtFallConfig/GameJsonCfg.json','assets/KinghtFallConfigB/GameJsonCfg.json','assets/KinghtFallConfigD/GameJsonCfg.json','assets/resources/localization/catalog.json','assets/KinghtFallIconMap/Map07.prefab'];for(const file of files){fs.mkdirSync(path.dirname(path.join(temp,file)),{recursive:true});fs.copyFileSync(path.join(root,file),path.join(temp,file));}
+ try{const files=['assets/KinghtFallConfig/GameJsonCfg.json','assets/resources/localization/catalog.json','assets/KinghtFallIconMap/Map07.prefab'];for(const file of files){fs.mkdirSync(path.dirname(path.join(temp,file)),{recursive:true});fs.copyFileSync(path.join(root,file),path.join(temp,file));}
   const states=files.map(f=>({file:f,hash:hash(fs.readFileSync(path.join(temp,f))),mtime:fs.statSync(path.join(temp,f)).mtimeMs})),store=new Store(temp,{backupRoot:path.join(temp,'backups')}),snapshot=store.addMap('Map07');assert.equal(snapshot.dirty,false);assert.equal(store.save({version:snapshot.version}).result.noChanges,true);assert(!fs.existsSync(path.join(temp,'backups')));
   for(const item of states){assert.equal(hash(fs.readFileSync(path.join(temp,item.file))),item.hash);assert.equal(fs.statSync(path.join(temp,item.file)).mtimeMs,item.mtime);}
  }finally{const resolved=path.resolve(temp);assert(resolved.startsWith(path.resolve(os.tmpdir())+path.sep)&&path.basename(resolved).startsWith('hkd-map7-store-'));fs.rmSync(resolved,{recursive:true,force:true});}

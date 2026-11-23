@@ -94,7 +94,7 @@ function usages(root,state,id,drafts){
   const used=Array.isArray(wave.SpawnTimeline)&&wave.SpawnTimeline.some(row=>row&&Number(row.unitId)===Number(id))||(Array.isArray(wave.RefreshSoldierKind)?wave.RefreshSoldierKind:[]).some(line=>String(line).split('#').slice(1).join('#').split(';').some(pair=>Number(pair.split(',')[0])===Number(id)));
   if(used){const text=label+' · Wave '+(index+1);if(!seen.has(text)){seen.add(text);result.push(text);}}
  }}
- for(const variant of ['A','B','D'])for(const stage of state[variant].LevelCfg||[])inspect(stage,variant+'-'+stage.Level);
+ for(const variant of ['A','B','D'])for(const stage of state[variant]?.LevelCfg||[])inspect(stage,variant+'-'+stage.Level);
  const folder=path.join(root,'authoring/worlds/stages');if(fs.existsSync(folder))for(const file of fs.readdirSync(folder).filter(file=>file.endsWith('.json'))){try{const stage=JSON.parse(fs.readFileSync(path.join(folder,file),'utf8'));inspect(stage,stage.id||file);}catch(_){result.push('Unverified stage file: '+file);}}
  for(const doc of Object.values(drafts||{}))if(doc.key&&doc.key.startsWith('stage:'))inspect(doc.data,doc.data.id+' (draft)');
  for(const unit of Object.values(state.A.SoldierCfg||{}))if(unit.ID!==Number(id)&&Array.isArray(unit.Data)&&[90010,90011].includes(unit.ID)&&Number(unit.Data[2])===Number(id))result.push('Boss transformation '+unit.ID);

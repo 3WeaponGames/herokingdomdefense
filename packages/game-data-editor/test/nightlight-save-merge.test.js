@@ -17,7 +17,7 @@ function fixture(options) {
         ]}},
         GameTools: {version: 1, timings: {}, parameters: {}, perks: {}, buildingShadows: {global: {projection: 'ground', angle: -74, length: .89}}}
     };
-    const docs = {A: initial, B: {LevelCfg: []}, D: {LevelCfg: []}, catalog: {version: 1, entries: {}}};
+    const docs = {A: initial, catalog: {version: 1, entries: {}}};
     const write = (id, data) => {const file = path.join(root, files[id]);fs.mkdirSync(path.dirname(file), {recursive: true});const text = '\uFEFF' + JSON.stringify(data, null, 2).replace('"spell": 100', '"spell": 1e2').replace(/\n/g, '\r\n') + '\r\n';fs.writeFileSync(file, text);return text;};
     Object.keys(docs).forEach(id => write(id, docs[id]));
     const store = new Store(root, options), read = id => fs.readFileSync(path.join(root, files[id]), 'utf8');

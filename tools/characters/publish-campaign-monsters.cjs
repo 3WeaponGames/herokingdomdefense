@@ -8,7 +8,7 @@ const Bake=require('../../packages/hkd-characters/lib/native-bake');
 const Doc=require('../../packages/game-data-editor/lib/json-document');
 const Tx=require('../../packages/hkd-characters/lib/asset-transaction');
 const clone=value=>structuredClone(value),own=(value,key)=>Object.prototype.hasOwnProperty.call(value,key);
-const CONFIGS={A:'assets/KinghtFallConfig/GameJsonCfg.json',B:'assets/KinghtFallConfigB/GameJsonCfg.json',D:'assets/KinghtFallConfigD/GameJsonCfg.json'};
+const CONFIGS={A:'assets/KinghtFallConfig/GameJsonCfg.json'};
 function retime(rig,reference){
   for(const name of ['idle','move','attack','hit','die']){
     const clip=rig.animations[name],original=reference.animations[name];
@@ -88,7 +88,8 @@ function plan(root,copy,definitions=Definitions){
       }
       report.variants.push({...v,prefab:prefabFile,rig:rigFile,fit:sizing});
     }
-    for(const [key,rows]of Object.entries(definitions.plans)){
+    for(const key of Object.keys(CONFIGS)){
+      const rows=definitions.plans[key]||[];
       report.waves[key]=0;
       for(const row of rows){const wave=docs[key].LevelCfg[row.stage-1].WaveCfg[row.wave-1];if(wave.RefreshSoldierKind[row.lineIndex]!==row.original)throw Error('A campaign wave changed before import: '+key+' '+row.stage+'/'+row.wave+'/'+row.lineIndex);wave.RefreshSoldierKind[row.lineIndex]=row.proposed;report.waves[key]++;}
     }

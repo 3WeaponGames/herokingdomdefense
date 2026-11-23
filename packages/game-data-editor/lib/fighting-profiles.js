@@ -27,7 +27,7 @@ function remapWaves(stage,aliases){let changed=0;for(const wave of stage.WaveCfg
 function plan(state,rows,stages=[]){
  if(table(state.overrides)&&table(state.overrides).families)throw Error('Fighting profiles are already configured; do not reapply the migration.');
  const next=clone(state),cfg=next.A,tools=next.overrides,units=cfg.SoldierCfg,profiles=tools.unitProfiles=Object.assign({version:1,nextId:100000,entries:{}},tools.unitProfiles||{});profiles.families={};profiles.aliases={};profiles.bossForms={};
- const usage=new Map();for(const variant of ['A','B','D'])for(const stage of state[variant].LevelCfg||[])waves(stage,(id,count)=>usage.set(id,(usage.get(id)||0)+count));for(const stage of stages)waves(stage,(id,count)=>usage.set(id,(usage.get(id)||0)+count));
+ const usage=new Map();for(const variant of ['A','B','D'])for(const stage of state[variant]?.LevelCfg||[])waves(stage,(id,count)=>usage.set(id,(usage.get(id)||0)+count));for(const stage of stages)waves(stage,(id,count)=>usage.set(id,(usage.get(id)||0)+count));
  // Legacy controllers retain their own unit identity, including the linked boss.
  // Sharing artwork does not make a healer, summoner or transforming boss the
  // same gameplay unit as its imported roster model.
@@ -53,7 +53,7 @@ function plan(state,rows,stages=[]){
   report.families.push({baseId,name:base.name,referenceId:reference.id,referenceRole,baseline,profiles:family.profiles});
  }
  report.aliases=Object.keys(profiles.aliases).length;
- for(const variant of ['A','B','D'])for(const stage of next[variant].LevelCfg||[])remapWaves(stage,profiles.aliases);
+ for(const variant of ['A','B','D'])for(const stage of next[variant]?.LevelCfg||[])remapWaves(stage,profiles.aliases);
  return{state:next,report};
 }
 function validate(settings,units){

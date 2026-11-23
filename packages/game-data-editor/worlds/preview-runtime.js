@@ -12,7 +12,6 @@ async function install(spec){
  // Use the saved source tables in this isolated window, including newly imported units.
  // Creator may otherwise serve an older cached JsonAsset during ongoing authoring.
  Object.keys(spec.sharedConfig||{}).forEach(function(key){data.data[key]=spec.sharedConfig[key];});
- Object.keys(spec.variantConfig||{}).forEach(function(key){data.data[key]=spec.variantConfig[key];});
  const current=data.getLevelCfgById.bind(data);data.getLevelCfgById=function(id){return Number(id)===spec.config.Level?spec.config:current(id);};
  req('TestMode').TestMode.getInstance().setEnabled(true);
  const enemyBundle=await new Promise((resolve,reject)=>cc.assetManager.loadBundle(req('KinghtFallConfig').KinghtFallBundelName.Enemy,(error,bundle)=>error?reject(error):resolve(bundle)));

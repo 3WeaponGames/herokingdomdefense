@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'../../..');
 
 test('stage building palette exposes six building names without level suffixes, map slots or special offers',()=>{
  const service=new Service(root,{artifacts:path.join(os.tmpdir(),'hkd-building-catalog-read-only')}),index=service.index();
- const files=index.maps.filter(m=>m.path).map(m=>'assets/KinghtFallIconMap/'+m.id+'.prefab').concat(['A','B','D'].map(L.configFile));
+ const files=index.maps.filter(m=>m.path).map(m=>'assets/KinghtFallIconMap/'+m.id+'.prefab').concat(['A'].map(L.configFile));
  const before=Object.fromEntries(files.map(file=>[file,fingerprint(path.join(root,file))]));
  const catalog=service.buildingCatalog();
  assert.deepEqual(catalog.map(b=>b.kind),[1,2,3,4,5,6]);

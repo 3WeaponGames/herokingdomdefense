@@ -309,9 +309,9 @@
         "Skeleton_bone/Roll/Pelvis_bone/Weapon_bone/Weapon": {
           "u_16336f08a1846d144aced9fc00fd7ba5": {
             "width": 281,
-            "height": 91,
+            "height": 113,
             "x": -24,
-            "y": -1,
+            "y": 2,
             "scaleX": 1,
             "scaleY": 1,
             "path": "SkeletonKing_Weapon"
@@ -351,10 +351,10 @@
         },
         "Skeleton_bone/Roll/Pelvis_bone/Body": {
           "u_e8a4f1b855cceee4cb4ec88d35ca7636": {
-            "width": 130.0,
-            "height": 122.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 131,
+            "height": 123,
+            "x": 0.5,
+            "y": -0.5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "SkeletonKing_Body"

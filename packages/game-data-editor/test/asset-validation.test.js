@@ -8,7 +8,7 @@ const Assets = require('../lib/asset-validation');
 const root = path.resolve(__dirname, '../../..');
 const clone = value => JSON.parse(JSON.stringify(value));
 const docs = {}, originals = {};
-[['A', 'KinghtFallConfig'], ['B', 'KinghtFallConfigB'], ['D', 'KinghtFallConfigD']].forEach(pair => {
+[['A', 'KinghtFallConfig']].forEach(pair => {
     const file = path.join(root, 'assets', pair[1], 'GameJsonCfg.json');
     docs[pair[0]] = { data: JSON.parse(fs.readFileSync(file, 'utf8')) };
     originals[file] = crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
@@ -23,9 +23,9 @@ function edited(doc, at, value) {
     return { next, changes: [{ doc, path: at, after: value }] };
 }
 function check(doc, at, value) { const edit = edited(doc, at, value); return Assets.validate(root, edit.next, edit.changes); }
-test('all original A/B/D references resolve in their actual runtime bundles', () => {
+test('all main campaign references resolve in their actual runtime bundles', () => {
     const original = JSON.stringify(docs);
-    assert.deepStrictEqual(Assets.validate(root, docs, ['A', 'B', 'D'].map(doc => ({ doc, path: [] }))), []);
+    assert.deepStrictEqual(Assets.validate(root, docs, ['A'].map(doc => ({ doc, path: [] }))), []);
     assert.strictEqual(JSON.stringify(docs), original);
 });
 test('inspection and unrelated stat edits do not create asset findings', () => {
@@ -47,8 +47,8 @@ test('case, extensions, missing assets, and path traversal are rejected', () => 
     assert.strictEqual(Assets.resourcePath('subfolder/../icon'), false);
 });
 test('stage animation must have the actual home skin and animation', () => {
-    assert.deepStrictEqual(check('B', ['LevelCfg', 0, 'EnemyAni'], 'wqyl_zbb'), []);
-    assert(check('D', ['LevelCfg', 0, 'EnemyAni'], 'missing').some(issue => /Missing resource/.test(issue.message)));
+    assert.deepStrictEqual(check('A', ['LevelCfg', 0, 'EnemyAni'], 'wqyl_zbb'), []);
+    assert(check('A', ['LevelCfg', 0, 'EnemyAni'], 'missing').some(issue => /Missing resource/.test(issue.message)));
     assert(check('A', ['LevelCfg', 0, 'Map'], 'tf_01').length);
 });
 test('unit prefab names require compatible controllers, not mere existence', () => {

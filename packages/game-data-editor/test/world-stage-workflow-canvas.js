@@ -14,10 +14,9 @@ async function verify(options){
   {Wave:2,HealthCoefficient:2,AttackCoefficient:2,StartSliver:20,CommerceSliver:2,WaveReward:['gold'],SpawnTimeline:[{id:'second-wave',spawnId:2,unitId:units[1].id,count:9,startSeconds:5,intervalSeconds:.75}]}
  ]});
  const destination=M.clone(source);Object.assign(destination,{id:'A-2',level:2,name:'Destination stage',sourceRevision:'destination-revision',mapId:'Map02',spawns:[],graphs:[],specials:[],FutureStage:{destination:true}});Object.assign(destination.config,{Level:2,Name:'Destination title',WaveCfg:[{Wave:1,HealthCoefficient:1,AttackCoefficient:1,StartSliver:1,CommerceSliver:0,WaveReward:[],SpawnTimeline:[]}]});
- const alternate=M.clone(source);Object.assign(alternate,{id:'B-1',variant:'B',name:'Alternate stage'});
- service.docs={};for(const value of [source,destination,alternate]){const key='stage:'+value.id;service.docs[key]={key,file:'authoring/worlds/stages/'+value.id+'.json',data:M.clone(value),original:M.clone(value),revision:null};}
+ service.docs={};for(const value of [source,destination]){const key='stage:'+value.id;service.docs[key]={key,file:'authoring/worlds/stages/'+value.id+'.json',data:M.clone(value),original:M.clone(value),revision:null};}
  for(const id of ['Map01','Map02']){const map=M.createMap(id,id,'forest');map.size=map.playable={width:400,height:600};const key='map:'+id;service.docs[key]={key,file:'authoring/worlds/maps/'+id+'.json',data:map,original:M.clone(map),revision:null};}
- const stageRows=[source,destination,alternate].map(s=>({id:s.id,variant:s.variant,level:s.level,name:s.name,mapId:s.mapId,waves:s.config.WaveCfg.length}));
+ const stageRows=[source,destination].map(s=>({id:s.id,variant:s.variant,level:s.level,name:s.name,mapId:s.mapId,waves:s.config.WaveCfg.length}));
  const catalog=()=>Object.assign({},baseCatalog,{version:service.version,stages:stageRows.map(row=>Object.assign({},row,{mapId:service.docs['stage:'+row.id].data.mapId})),maps:['Map01','Map02'].map(id=>({id,name:id,biome:'forest'})),recovery:false,recoveries:[]});
  async function ipc(name,q){calls.push({name,q:M.clone(q||{})});if(name==='world-catalog')return catalog();if(name==='world-buildings')return palette;if(name==='world-building-placements')return placements;if(name==='world-load')return service.snapshot(q.key);if(name==='world-replace-stage')return service.replaceStage(q);if(name==='world-change')return service.change(q);if(name==='world-undo'||name==='world-redo')return service.history(q,name==='world-redo');throw Error('Unavailable in isolated stage test: '+name);}
  const host=document.createElement('main');host.className='gt-world-host';host.style.cssText='position:fixed;inset:0;display:flex';document.body.appendChild(host);const client=Client.mount(host,{kind:'stages',ipc}),state=client._state;
@@ -25,8 +24,8 @@ async function verify(options){
  try{
   await wait(()=>!!state.snap,'Stage panel did not load');await settle();
   const picker=tool().querySelector('select[aria-label="Stage"]'),config=tool().querySelector('select[aria-label="Config"]');
-  assert(!!picker&&!!config,'stage and configuration selectors have explicit accessible labels');
-  assert(Array.from(config.options).some(o=>/Default/.test(o.textContent))&&Array.from(config.options).some(o=>/Alternate/.test(o.textContent)),'configuration choices use Default and Alternate labels');
+  assert(!!picker&&!config,'the campaign has one accessible stage selector');
+  assert(same(Array.from(picker.options,o=>o.value),['A-1','A-2']),'the stage selector lists every campaign stage');
   assert(!!tool().querySelector('.world-side .world-stage-list')&&!tool().querySelector('.world-side').textContent.includes('Map library'),'Stage tab shows stages in the left panel instead of the map library');
   assert(!!button('Replace stage')&&!button('Copy whole stage')&&!button('Paste stage'),'one source-stage replacement control replaces the old copy/paste controls');
   await capture('stage');

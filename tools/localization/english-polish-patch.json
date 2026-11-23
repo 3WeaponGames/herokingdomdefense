@@ -1438,12 +1438,12 @@
     "data.levelcfg.1.name": {
       "en": "1. Frontier Plains",
       "zh": "1.初始平原",
-      "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.0.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.0.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.0.Name"
+      "context": "assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.0.Name"
     },
     "data.levelcfg.8.name": {
       "en": "8. Snowy Expanse",
       "zh": "8.纯白雪原",
-      "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.7.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.7.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.7.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.7.Name"
+      "context": "assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.7.Name"
     },
     "ui.kinghtfalluigame.labnum.270": {
       "en": "Reviving in",

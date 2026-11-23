@@ -52,9 +52,6 @@
 .world-stages .world-stage-picker{flex:1 1 350px;max-width:740px;min-width:240px;gap:10px}
 .world-stages .world-stage-picker>span{flex:0 0 auto;color:#e6edf2;font-size:13px;font-weight:bold}
 .world-stages .world-stage-picker>select{width:auto;flex:1;max-width:none;min-height:36px;padding:7px 9px;font-size:14px;font-weight:bold;background:#20272d;border-color:#566f83}
-.world-stages .world-config-picker{flex:0 1 300px;min-width:240px;gap:8px;color:#aebac4;font-size:11px}
-.world-stages .world-config-picker>span{flex:0 0 auto}
-.world-stages .world-config-picker>select{flex:1;width:auto;max-width:none;min-height:29px;font-size:11px}
 .world-stages .world-stage-header-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
 .world-stages .world-stage-header-actions>button{min-height:28px;padding:5px 9px;font-size:11px;white-space:nowrap}
 .world-stages .world-stage-header-actions>.world-spacer{flex:1 1 12px}

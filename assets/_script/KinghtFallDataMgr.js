@@ -2,97 +2,20 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.KinghtFallDataMgr = undefined;
-var $z1BasePlatform = require("BasePlatform");
-var $z1PlatformSetting = require("PlatformSetting");
 var $z1ResourceMgr = require("ResourceMgr");
-var $z1DataMgr = require("DataMgr");
-var $z1PlayerMgr = require("PlayerMgr");
 var exp_KinghtFallDataMgr = function () {
-  function _ctor() {
-    this.readRemoteCfg = false;
-    this.localCfg = {
-      A: "KinghtFallConfig",
-      B: "KinghtFallConfigB",
-      D: "KinghtFallConfigD"
-    };
-    this.remoteCfg = {
-      A: "zhongwei/KinghtFall/configs",
-      B: "zhongwei/KinghtFall/configsB",
-      D: "zhongwei/KinghtFall/configsD"
-    };
-  }
+  function _ctor() {}
   _ctor.getInstance = function () {
     null == this.instance && (this.instance = new _ctor());
     return this.instance;
   };
-  _ctor.prototype.preload = function (t) {
-    var e = this;
-    if (this.readRemoteCfg) {
-      alert(require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:system.remoteConfigWarning]]"));
-      console.error("注意：当前使用的是本地远程配置文件！！！");
-      var n = this.remoteCfg.A;
-      $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.WEB_LINK && this.remoteCfg.AWeb && (n = this.remoteCfg.AWeb);
-      var l = {
-        dir: n,
-        fileName: "GameJsonCfg.json"
-      };
-      $z1DataMgr.DataMgr.getInstance().loadRemoteTestCfg(l, function (n) {
-        e.data = n;
-        e.reloadConfig($z1PlayerMgr.PlayerMgr.getInstance().getAbType(), t);
-      });
-    } else {
-      n = this.localCfg.A;
-      $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.WEB_LINK && this.localCfg.AWeb && (n = this.localCfg.AWeb);
-      $z1ResourceMgr.ResourceMgr.getInstance().loadRes(n, "GameJsonCfg", cc.JsonAsset, function (n) {
-        e.data = n.json;
-        n.decRef();
-        e.reloadConfig($z1PlayerMgr.PlayerMgr.getInstance().getAbType(), t);
-      });
-    }
-  };
-  _ctor.prototype.reloadConfig = function (t, e) {
-    var n = this;
-    if ("A" != t && "C" != t) {
-      if (this.readRemoteCfg) {
-        var s = this.remoteCfg["" + t];
-        $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.WEB_LINK && this.remoteCfg[t + "Web"] && (s = this.remoteCfg[t + "Web"]);
-        if (s) {
-          var l = {
-            dir: s,
-            fileName: "GameJsonCfg.json"
-          };
-          $z1DataMgr.DataMgr.getInstance().loadRemoteTestCfg(l, function (t) {
-            if (t) {
-              for (var i in t) {
-                n.data[i] = t[i];
-              }
-            }
-            e && e();
-          });
-        } else {
-          e && e();
-        }
-      } else {
-        s = this.localCfg["" + t];
-        $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.WEB_LINK && this.localCfg[t + "Web"] && (s = this.localCfg[t + "Web"]);
-        if (s) {
-          $z1ResourceMgr.ResourceMgr.getInstance().loadRes(s, "GameJsonCfg", cc.JsonAsset, function (t) {
-            var i = t.json;
-            if (i) {
-              for (var a in i) {
-                n.data[a] = i[a];
-              }
-            }
-            t.decRef();
-            e && e();
-          });
-        } else {
-          e && e();
-        }
-      }
-    } else {
-      e && e();
-    }
+  _ctor.prototype.preload = function (done) {
+    var manager = this;
+    $z1ResourceMgr.ResourceMgr.getInstance().loadRes("KinghtFallConfig", "GameJsonCfg", cc.JsonAsset, function (asset) {
+      manager.data = asset.json;
+      asset.decRef();
+      if (done) done();
+    });
   };
   _ctor.prototype.getParamsCfgById = function (t) {
     return this.data.ParameterCfg[t].Value;

@@ -50,7 +50,7 @@ function build(service,request){
  const root=service.root,manifestText=fs.readFileSync(safe(root,MANIFEST),'utf8'),manifest=JSON.parse(manifestText.replace(/^\uFEFF/,'')),asset=manifest.assets.find(record=>record.id===request.assetId)||service.stagedAssets.get(request.assetId);
  if(!asset)throw Error('This asset is no longer in the project library. Refresh the panel.');
  const blocked=[],files=[],revisions={[MANIFEST]:hash(Buffer.from(manifestText))},mapPlans=[],groupPlans=[],maps=[],groups=[],draftKeys=new Set(),sharedAssets=[],mapFiles=listJSON(root,'authoring/worlds/maps');
- for(const variant of ['A','B','D'])revisions[L.configFile(variant)]=fingerprint(safe(root,L.configFile(variant)));
+ const config=L.configFile('A');revisions[config]=fingerprint(safe(root,config));
  let source;
  try{
   source=safe(root,asset.file);

@@ -22,10 +22,11 @@ function build(service,request){
  if(doc&&doc.original!==null&&doc.revision!==revisions[file])blocked.push('The map changed on disk. Refresh it before deleting.');
  const folder='assets/KinghtFallIconMap/Generated/Maps/'+mapId,owned=files(root,folder,true),removals=[file,file+'.meta',...owned,folder+'.meta'].filter(f=>{capture(f);if(revisions[f]!==null&&fs.lstatSync(safe(root,f)).isSymbolicLink())throw Error('Linked map files must be removed before deletion: '+f);return revisions[f]!==null;});
  const used=value=>value&&(value.mapId===mapId||value.EnvironmentMapId===mapId||value.prefab===mapId||typeof value.prefab==='string'&&value.prefab.startsWith('Generated/Maps/'+mapId+'/')||typeof value.Map==='string'&&value.Map.startsWith('Generated/Maps/'+mapId+'/'));
- for(const variant of ['A','B','D']){const cfg=L.configFile(variant);capture(cfg);if(revisions[cfg]!==null)for(const stage of read(root,cfg).LevelCfg||[])if(used(stage))stages.set(variant+'-'+stage.Level,{id:variant+'-'+stage.Level,source:'saved stage'});}
- const stageFiles=files(root,'authoring/worlds/stages').filter(f=>f.endsWith('.json'));
+ const cfg=L.configFile('A');capture(cfg);
+ if(revisions[cfg]!==null)for(const stage of read(root,cfg).LevelCfg||[])if(used(stage)){const id='A-'+stage.Level;stages.set(id,{id,source:'saved stage'});}
+ const stageFiles=files(root,'authoring/worlds/stages').filter(f=>/^A-\d+\.json$/.test(path.basename(f)));
  for(const f of stageFiles){capture(f);const stage=read(root,f);if(used(stage))stages.set(stage.id||path.basename(f,'.json'),{id:stage.id||path.basename(f,'.json'),source:'saved layout'});}
- for(const d of Object.values(service.docs))if(d.key.startsWith('stage:')&&(used(d.data)||used(d.original)))stages.set(d.key.slice(6),{id:d.key.slice(6),source:JSONDoc.equal(d.data,d.original)?'open stage':'stage draft'});
+ for(const d of Object.values(service.docs))if(/^stage:A-\d+$/.test(d.key)&&(used(d.data)||used(d.original)))stages.set(d.key.slice(6),{id:d.key.slice(6),source:JSONDoc.equal(d.data,d.original)?'open stage':'stage draft'});
  if(stages.size)blocked.push('Used by stages '+Array.from(stages.keys()).join(', ')+'. Choose another map for those stages and save them first.');
  // Catch direct references to generated sprite UUIDs, even in a prefab that
  // does not have a corresponding authored stage layout.
