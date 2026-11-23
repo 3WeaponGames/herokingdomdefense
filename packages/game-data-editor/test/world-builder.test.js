@@ -31,6 +31,34 @@ function fixture({legacyLink=false}={}){const directory=temp('hkd-world-project-
  }
  return {directory,artifacts,service:new Service(directory,{artifacts,render:fixtureBake})};}
 
+test('the Silver offer schedule saves to the runtime prefab and reopens in the stage editor',async()=>{
+ const f=fixture(),s=f.service,key='stage:A-1',file='assets/KinghtFallIconMap/Generated/Stages/A-1.prefab';
+ const opened=s.snapshot(key),value=clone(opened.value),offers=value.specials.filter(offer=>offer.kind===0);
+ assert.equal(offers.length,1);
+ assert.equal(opened.dirty,false);
+ const before=fingerprint(path.join(f.directory,file)),schedule={count:2,firstWave:4,interval:5};
+ offers[0].silverSchedule=schedule;
+ const draft=s.change({key,version:opened.version,value});
+ assert.equal(draft.dirty,true);
+ assert.equal(fingerprint(path.join(f.directory,file)),before);
+ const saved=await s.save({key,version:draft.version});
+ assert.equal(saved.result.saved,true);
+ const fresh=new Service(f.directory,{artifacts:f.artifacts,render:fixtureBake}),restored=fresh.snapshot(key);
+ assert.equal(restored.dirty,false);
+ assert.deepEqual(restored.value.specials,value.specials);
+ const scheduleFields=require('../../../assets/_script/SilverOfferSchedule');
+ const componentId=L.script(f.directory,'KinghtFallCommerce');
+ const points=L.read(f.directory,file).filter(component=>component&&component.__type__===componentId&&(component.ndType||0)===0);
+ assert.equal(points.length,1);
+ assert.deepEqual(scheduleFields.read(points[0]),schedule);
+ const imported=L.adaptStage(f.directory,'A',1);
+ assert.deepEqual(imported.specials.find(offer=>offer.kind===0).silverSchedule,schedule);
+ const after=fingerprint(path.join(f.directory,file));
+ const noop=await fresh.save({key,version:restored.version});
+ assert.equal(noop.result.saved,false);
+ assert.equal(fingerprint(path.join(f.directory,file)),after);
+});
+
 test('world authoring: river animation objects stay read-only until placement and survive draft history, Save and reopen',async()=>{
  const f=fixture();
  for(const file of ['assets/KinghtFallIconMap/Map01/Ani/Idle.anim','assets/KinghtFallIconMap/Map02/Ani/Idle1.anim']){const target=path.join(f.directory,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(path.join(root,file),target);fs.copyFileSync(path.join(root,file+'.meta'),target+'.meta');}
@@ -74,6 +102,29 @@ test('world authoring: stage card order and spawn route names round-trip through
 
 test('world authoring: global vector blocker holes survive explicit save, native prefab export, reopen and no-op Save',async()=>{const f=fixture(),s=f.service,snap=s.snapshot('map:Map01'),baseline=L.read(f.directory,L.configFile('A'));let map=M.createLayer(snap.value,'Editable cliff'),layer=map.layers[map.layers.length-1];layer.FutureField={keep:17};layer.transform={x:56,y:-32,scale:1.25,angle:27};layer.polygons=[[{x:-100,y:-60},{x:100,y:-60},{x:100,y:60},{x:-100,y:60}]];const center=M.toWorld(layer.transform,{x:0,y:0});map.blockerMask=[];map=M.polygonBlockers(map,layer.polygons[0].map(p=>M.toWorld(layer.transform,p)),'paint');map=M.stroke(map,M.MAP_BLOCKERS,{size:30,shape:'square',op:'erase',points:[center]});const expectedMask=clone(map.blockerMask),expected=clone(map.layers[map.layers.length-1]),source='assets/KinghtFallIconMap/Map01.prefab',before=fingerprint(path.join(f.directory,source));s.change({key:snap.key,version:s.version,value:map});assert.equal(fingerprint(path.join(f.directory,source)),before);await s.save({key:snap.key,version:s.version});const saved=L.read(f.directory,source),info=Maps.model(saved),owners=info.nodes.filter(n=>n.name==='Blocker '+M.MAP_BLOCKERS);assert(owners.length);const colliders=info.colliders.filter(c=>owners.some(owner=>c.node===owner.id));assert.equal(colliders.length,8);const area=points=>Math.abs(points.reduce((sum,p,i)=>{const q=points[(i+1)%points.length];return sum+p.x*q.y-q.x*p.y;},0))/2;assert(Math.abs(colliders.reduce((sum,c)=>sum+area(c.points),0)-(200*120*1.25*1.25-30*30))<.1,'global rotated outer mask retains exactly its square hole area');assert(!colliders.some(c=>M.pointInPolygon(center,c.points)));assert(colliders.some(c=>M.pointInPolygon(M.toWorld(layer.transform,{x:50,y:0}),c.points)));const cfg=L.read(f.directory,L.configFile('A'));for(const key of Object.keys(baseline).filter(k=>k!=='LevelCfg'))assert.deepEqual(cfg[key],baseline[key]);const fresh=new Service(f.directory,{artifacts:f.artifacts,render:async()=>({files:[],ground:[],assets:{}})}),opened=fresh.snapshot(snap.key),actual=opened.value.layers.find(l=>l.id===layer.id);assert.deepEqual(actual,expected);assert.deepEqual(opened.value.blockerMask,expectedMask);assert.deepEqual(opened.issues,[]);const hash=fingerprint(path.join(f.directory,source)),noop=await fresh.save({key:snap.key,version:fresh.version});assert(!noop.result.saved);assert.deepEqual(noop.result.files,[]);assert.equal(fingerprint(path.join(f.directory,source)),hash);});
 test('world authoring: open and no-op save write nothing; scoped undo and save preserve unrelated config fields',async()=>{const f=fixture(),s=f.service,source='assets/KinghtFallConfig/GameJsonCfg.json',before=fingerprint(path.join(f.directory,source));const snap=s.snapshot('stage:A-1');assert(!snap.dirty);const noop=await s.save({key:snap.key,version:s.version});assert(!noop.result.saved);assert(!fs.existsSync(f.artifacts+'/drafts.json'));assert.equal(fingerprint(path.join(f.directory,source)),before);const value=clone(snap.value);value.hero.x+=20;value.config.CustomUnknown={preserved:true};s.change({key:snap.key,version:s.version,value});assert(fs.existsSync(f.artifacts+'/drafts.json'));s.history({key:snap.key,version:s.version},false);assert(!s.snapshot(snap.key).dirty);s.history({key:snap.key,version:s.version},true);const saved=await s.save({key:snap.key,version:s.version});assert(saved.result.saved);const cfg=L.read(f.directory,source),old=L.read(root,source);assert.deepEqual(cfg.LevelCfg[0].CustomUnknown,{preserved:true});assert.deepEqual(cfg.LevelCfg.slice(1),old.LevelCfg.slice(1));for(const key of Object.keys(old).filter(k=>k!=='LevelCfg'))assert.deepEqual(cfg[key],old[key]);assert.equal(cfg.LevelCfg[0].prefab,'Generated/Stages/A-1');const output=L.read(f.directory,'assets/KinghtFallIconMap/Generated/Stages/A-1.prefab'),model=Maps.model(output);assert.equal(model.owners.filter(n=>n.kind==='building').length,value.buildings.filter(b=>b.enabled!==false).length);assert(model.nodes.some(n=>n.name==='Authored routes'));assert(!s.snapshot(snap.key).dirty);const hash=fingerprint(path.join(f.directory,source));await s.save({key:snap.key,version:s.version});assert.equal(hash,fingerprint(path.join(f.directory,source)));});
+test('a Units attack draft can save after Stages & Waves publishes a new wave count',async()=>{
+ const f=fixture(),worlds=f.service,source=L.configFile('A'),filename=path.join(f.directory,source);
+ const {Store}=require('../lib/store'),Schema=require('../lib/schema'),Waves=require('../worlds/wave-editor');
+ const store=new Store(f.directory,{validators:[Schema.validate],backupRoot:path.join(f.artifacts,'unit-saves')});
+ const snap=worlds.snapshot('stage:A-1'),value=clone(snap.value);
+ const group=Waves.entries(value.config.WaveCfg[0],.5)[0],count=group.count+1;
+ Waves.editGroup(value,0,group.id,{count},.5);
+ worlds.change({key:snap.key,version:snap.version,value});
+ const unitId=String(group.unitId),attack={delivery:'melee',pattern:'single',onHit:{lifeSteal:{percent:.2}}};
+ const before=fs.readFileSync(filename);
+ store.change({version:store.version,edits:[{doc:'A',path:['SoldierCfg',unitId,'UnitAttack'],value:attack}]});
+ assert.deepEqual(fs.readFileSync(filename),before);
+ const waveSave=await worlds.save({key:snap.key,version:worlds.version});
+ assert(waveSave.result.files.includes(source));
+ const afterWave=fs.readFileSync(filename),expected=JSON.parse(afterWave);
+ assert.equal(expected.LevelCfg[0].WaveCfg[0].SpawnTimeline[0].count,count);
+ expected.SoldierCfg[unitId].UnitAttack=attack;
+ const unitSave=store.save({version:store.version});
+ assert.equal(unitSave.result.saved,true);
+ assert.deepEqual(fs.readFileSync(path.join(unitSave.result.backup,source)),afterWave);
+ assert.deepEqual(L.read(f.directory,source),expected);
+ assert.equal(store.snapshot().dirty,false);
+});
 test('world authoring: source conflicts fail without partial writes and retain the draft',async()=>{const f=fixture(),s=f.service,snap=s.snapshot('stage:A-1'),value=clone(snap.value),layout=path.join(f.directory,'authoring/worlds/stages/A-1.json'),layoutBefore=fingerprint(layout);value.hero.x+=10;s.change({key:snap.key,version:s.version,value});const file=path.join(f.directory,L.configFile('A')),cfg=JSON.parse(fs.readFileSync(file));cfg.LevelCfg[0].InGameCoefficient+=.1;fs.writeFileSync(file,JSON.stringify(cfg));const before=fingerprint(file);await assert.rejects(s.save({key:snap.key,version:s.version}),/changed on disk/);assert.equal(fingerprint(file),before);assert(s.snapshot(snap.key).dirty);assert.equal(fingerprint(layout),layoutBefore,'a failed save must neither create nor change the authored layout');});
 test('world authoring: duplicate map save does not rewrite its source map; layer deletion is undoable',async()=>{const f=fixture(),s=f.service,source=path.join(f.directory,'assets/KinghtFallIconMap/Map01.prefab'),before=fingerprint(source);s.snapshot('map:Map01');const snap=s.create({version:s.version,copy:'Map01',name:'My forest'});assert(!snap.value.legacy);assert(snap.value.legacyData);const value=M.createLayer(snap.value,'Cliff');value.layers[value.layers.length-1].blockers=[{size:20,points:[{x:0,y:0}],op:'paint'}];s.change({key:snap.key,version:s.version,value});const layerId=value.layers[value.layers.length-1].id;s.change({key:snap.key,version:s.version,value:M.removeLayer(value,layerId)});s.history({key:snap.key,version:s.version},false);assert(s.snapshot(snap.key).value.layers.some(l=>l.id===layerId));await s.save({key:snap.key,version:s.version});assert.equal(fingerprint(source),before);});
 test('world authoring: discarding a never-saved duplicate removes only its draft and library entry',()=>{const f=fixture(),s=f.service;s.snapshot('map:Map01');const created=s.create({version:s.version,copy:'Map01',name:'Discard me'}),result=s.discard({key:created.key,version:s.version});assert.equal(result.key,'map:Map01');assert(!result.dirty);assert(!s.catalog().maps.some(m=>m.id===created.value.id));assert(!fs.existsSync(path.join(f.directory,'authoring/worlds/maps',created.value.id+'.json')));});

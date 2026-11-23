@@ -41,6 +41,25 @@ test('damage to an ally recruits idle followers while active attack windups and 
  attacking.state=2;retaliating._retaliationTarget=other;retaliating._retaliationGeneration=1;retaliating._retaliationTime=2;
  victim.onAttacked(3,attacker);assert.equal(helper._orderTarget,attacker);assert.equal(attacking._orderTarget,null);assert.equal(retaliating._retaliationTarget,other);assert.equal(victim._retaliationTarget,attacker);assert.equal(victim.hp,97);
 });
+test('troops use their effective attack delivery for acquisition and retaliation against flying enemies',()=>{
+ const h=fixture(),flying=h.enemy(15),ground=h.enemy(30);
+ flying.cfg.BuildingCross=0;ground.cfg.BuildingCross=1;
+ const melee=h.soldier(),ranged=h.soldier(0,0,3),rangedOverride=h.soldier(),meleeOverride=h.soldier(0,0,3);
+ melee.cfg.AttackType=rangedOverride.cfg.AttackType=1;
+ ranged.cfg.AttackType=meleeOverride.cfg.AttackType=2;
+ rangedOverride.cfg.UnitAttack={delivery:'ranged',pattern:'single'};
+ meleeOverride.cfg.UnitAttack={delivery:'melee',pattern:'splash'};
+ for(const [unit,target] of [[melee,ground],[ranged,flying],[rangedOverride,flying],[meleeOverride,ground]]){
+  unit.attackRange=50;
+  unit.node.getPosition(unit.vec2_1);
+  assert.equal(unit.getAttackTarget(),target);
+ }
+ melee.onAttacked(1,flying);
+ assert(!melee._retaliationTarget);
+ assert.equal(meleeOverride._orderTarget,null);
+ assert.equal(ranged._orderTarget,flying);
+ assert.equal(rangedOverride._orderTarget,flying);
+});
 test('ranged attack reach does not expand the victim-observation radius',()=>{
  const h=fixture(),u=h.soldier(150,0,3),attacker=h.enemy(170);u.attackRange=350;u.cfg.SightRange=100;h.p.onAttacked(1,attacker);assert.equal(u._orderTarget,null);
  u.node.setPosition(100,0);h.nextFrame();h.p.onAttacked(1,attacker);assert.equal(u._orderTarget,attacker);

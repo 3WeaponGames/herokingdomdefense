@@ -4,6 +4,7 @@
 var Skills = require("HeroStyleSkills");
 var SkillSettings = require("HeroSkillSettings"), Presentation = require("HeroSkillPresentation");
 var Projectile = require("./HeroSkillProjectile");
+var FlightTargeting = require("./FlightTargeting");
 var Timeline = require("./HeroSkillTimeline");
 var Pose = require('./HeroSkillPose');
 var AutoSkillCast = require("ControlPreferences").autoSkillCast;
@@ -68,14 +69,15 @@ Runtime.prototype.canCast=function(){
   var target=this.state.target;
   return this.state.style!=="mystic" || living(target)&&target.node===this.markNode&&generation(target)===this.markGeneration&&distance(point(this.hero),point(target))<=this.hero.attackRange;
 };
-Runtime.prototype.enemies=function(){return this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList().filter(living):[];};
+Runtime.prototype.canTarget=function(target){return living(target)&&FlightTargeting.heroCanTarget(this.hero,target);};
+Runtime.prototype.enemies=function(){return this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList().filter(this.canTarget,this):[];};
 Runtime.prototype.attackRange=function(){var h=this.hero;return h.getAttackRange?h.getAttackRange():h.attackRange*(1+(h._relicMoving?0:this.bonus().range||0));};
 Runtime.prototype.nearest=function(range,accept){
   var o=point(this.hero),list=this.game&&this.game.gameData.getEnemyList?this.game.gameData.getEnemyList():[],best=null;
   if(range===undefined)range=this.attackRange();
   var limit=range*range;
   for(var i=0;i<list.length;i++){
-    var enemy=list[i];if(!living(enemy))continue;
+    var enemy=list[i];if(!this.canTarget(enemy))continue;
     var d=distanceSquared(o,point(enemy));
     if(d<=limit&&(best===null||d<limit)&&(!accept||accept(enemy))){best=enemy;limit=d;}
   }
@@ -86,14 +88,14 @@ Runtime.prototype.defaultAimTarget=function(range,accept){
   if(range===undefined)range=this.attackRange();
   // A tap follows the hero's current target, but only its current battle and
   // reach. Otherwise acquire afresh instead of retaining stale attack intent.
-  if(list.indexOf(target)>=0&&living(target)&&distanceSquared(point(h),point(target))<=range*range&&(!accept||accept(target)))return target;
+  if(list.indexOf(target)>=0&&this.canTarget(target)&&distanceSquared(point(h),point(target))<=range*range&&(!accept||accept(target)))return target;
   return this.nearest(range,accept);
 };
 Runtime.prototype.projectileAim=function(aim,plan){
-  plan=plan||{target:this.aimTarget,node:this.aimTargetNode,generation:this.aimTargetGeneration,point:this.aimPoint};var self=this,o=point(this.hero),target=plan.target,goal=living(target)&&target.node===plan.node&&generation(target)===plan.generation?Projectile.actorPoint(target,this.game.ndMain):plan.point;
+  plan=plan||{target:this.aimTarget,node:this.aimTargetNode,generation:this.aimTargetGeneration,point:this.aimPoint};var self=this,o=point(this.hero),target=plan.target,goal=this.canTarget(target)&&target.node===plan.node&&generation(target)===plan.generation?Projectile.actorPoint(target,this.game.ndMain):plan.point;
   return Projectile.shot(o,goal,aim||plan.direction||this.aimDirection,function(d){var maker=require('HeroMakerRider'),world=maker.skillOrigin&&maker.skillOrigin(self.hero.ctrPlayAni,d,self.settings.visual.animation);return world?self.game.ndMain.convertToNodeSpaceAR(world):o;});
 };
-Runtime.prototype.setAimTarget=function(target){this.aimTarget=living(target)?target:null;this.aimTargetNode=this.aimTarget&&this.aimTarget.node;this.aimTargetGeneration=generation(target);this.aimPoint=this.aimTarget?Projectile.actorPoint(target,this.game.ndMain):null;this.aimDirection=this.projectileAim().direction;};
+Runtime.prototype.setAimTarget=function(target){this.aimTarget=this.canTarget(target)?target:null;this.aimTargetNode=this.aimTarget&&this.aimTarget.node;this.aimTargetGeneration=generation(target);this.aimPoint=this.aimTarget?Projectile.actorPoint(target,this.game.ndMain):null;this.aimDirection=this.projectileAim().direction;};
 Runtime.prototype.setFreeAim=function(aim){this.aimTarget=this.aimTargetNode=null;this.aimPoint=null;this.aimDirection=direction(aim);};
 Runtime.prototype.screenAim=function(screen){this.refresh();var world=this.game.camera&&this.game.camera.getScreenToWorldPoint?this.game.camera.getScreenToWorldPoint(screen):screen,p=this.game.ndMain.convertToNodeSpaceAR(world),o=point(this.hero);this.aimTarget=this.aimTargetNode=null;this.aimPoint={x:p.x,y:p.y};this.aimDirection=this.state.style==='skirmisher'?this.projectileAim().direction:direction({x:p.x-o.x,y:p.y-o.y});return this.aimDirection;};
 Runtime.prototype.skillArea=function(aim,radius){var maker=require('HeroMakerRider'),world,origin,weaponAim=this.state.style==='vanguard'?Projectile.areaDirection(aim,this.settings.visual.rotation):aim;if(this.state.style==='bruiser'){var renderer=this.hero.ctrPlayAni&&this.hero.ctrPlayAni.spAniBody,body=renderer&&Pose.bodyPoint(renderer);world=body&&renderer.node&&renderer.node.convertToWorldSpaceAR?renderer.node.convertToWorldSpaceAR(cc.v2(body.x,body.y)):null;}else world=maker.weaponOrigin&&maker.weaponOrigin(this.hero.ctrPlayAni,this.state.style,weaponAim,this.settings.visual.animation);origin=world?this.game.ndMain.convertToNodeSpaceAR(world):point(this.hero);return Projectile.area(this.state.style,origin,this.settings.visual,aim,radius);};
@@ -145,7 +147,7 @@ Runtime.prototype.bonus=function(){return Skills.bonuses(this.state,{hp:this.her
 Runtime.prototype.effect=function(kind,origin,radius,aim,halfAngle,resolved){if(this.resolvingState&&this.resolvingState!==this.state)return;var v=this.settings.visual,duration=v.effectDuration/(v.resource?SkillSettings.playbackRate(v.resourcePlaybackRate):1);if(this.effects.length>=MAX_EFFECTS)this.effects.splice(0,this.effects.length-MAX_EFFECTS+1);this.effects.push({kind:kind,x:origin.x,y:origin.y,radius:radius,direction:aim,halfAngle:halfAngle,resolved:!!resolved,remaining:duration,duration:duration});};
 Runtime.prototype.hit=function(target,multiplier,skill,strike,options){
   options=options||{};
-  if(!living(target) || options.node!==undefined&&target.node!==options.node || options.generation!==undefined&&generation(target)!==options.generation || !this.available() || this.resolvingState&&this.resolvingState!==this.state)return 0;
+  if(!this.canTarget(target) || options.node!==undefined&&target.node!==options.node || options.generation!==undefined&&generation(target)!==options.generation || !this.available() || this.resolvingState&&this.resolvingState!==this.state)return 0;
   var hero=this.hero,Combat=require("RelicCombat"),scope=this.scope,state=this.state,targetNode=target.node,targetGeneration=generation(target);
   var damage=options.damage===undefined?hero.getAttack(target)*multiplier:options.damage;
   if(this.state!==state||this.scope!==scope||!this.scopeCurrent(scope)||target.node!==targetNode||generation(target)!==targetGeneration||!living(target))return 0;
@@ -164,7 +166,7 @@ Runtime.prototype.hit=function(target,multiplier,skill,strike,options){
   context.styleSkill=!!skill;context.styleStrike=strike;context.heroStyle=this.state.style;
   if(typeof options.at==='number'&&isFinite(options.at))context.styleImpactAt=options.at;
   if(critical)damage*=hero.getCriticalDamage?hero.getCriticalDamage():hero.critDam;
-  if(this.state!==state||this.scope!==scope||!this.scopeCurrent(scope)||target.node!==targetNode||generation(target)!==targetGeneration||!living(target))return 0;
+  if(this.state!==state||this.scope!==scope||!this.scopeCurrent(scope)||target.node!==targetNode||generation(target)!==targetGeneration||!this.canTarget(target))return 0;
   var impact=point(target);
   var dealt=target.onAttacked(damage,hero,false,context);
   // Damage callbacks may retire this cast or immediately recycle its victim.
@@ -200,7 +202,7 @@ Runtime.prototype.cast=function(aim,shot){
   if(!this.canCast())return false;
   var h=this.hero,s=this.state,scope=this.scope,o=point(h),target=s.target;
   if(!aim&&!directional(s.style)){
-    var nearest=s.style==="mystic"?target:living(h.tagEnemy)&&distance(o,point(h.tagEnemy))<=h.attackRange?h.tagEnemy:this.nearest();
+    var nearest=s.style==="mystic"?target:this.canTarget(h.tagEnemy)&&distance(o,point(h.tagEnemy))<=h.attackRange?h.tagEnemy:this.nearest();
     if(living(nearest))aim={x:point(nearest).x-o.x,y:point(nearest).y-o.y};
     else {var body=h.ctrPlayAni&&h.ctrPlayAni.spAniBody,face=body&&body.node?body.node.scaleX:h.isLeft&&h.isLeft()?-1:1;aim={x:face<0?-1:1,y:0};}
   }
@@ -208,7 +210,7 @@ Runtime.prototype.cast=function(aim,shot){
   if(s.style==='skirmisher'){
     if(!shot){
       var arrowPlan={target:this.aimTarget,node:this.aimTargetNode,generation:this.aimTargetGeneration,point:this.aimPoint,direction:dir};
-      if(!aim&&!arrowPlan.target&&!arrowPlan.point){arrowPlan.target=living(h.tagEnemy)?h.tagEnemy:this.nearest();arrowPlan.node=arrowPlan.target&&arrowPlan.target.node;arrowPlan.generation=generation(arrowPlan.target);if(arrowPlan.target)arrowPlan.point=Projectile.actorPoint(arrowPlan.target,this.game.ndMain);}
+      if(!aim&&!arrowPlan.target&&!arrowPlan.point){arrowPlan.target=this.canTarget(h.tagEnemy)?h.tagEnemy:this.nearest();arrowPlan.node=arrowPlan.target&&arrowPlan.target.node;arrowPlan.generation=generation(arrowPlan.target);if(arrowPlan.target)arrowPlan.point=Projectile.actorPoint(arrowPlan.target,this.game.ndMain);}
       shot=this.projectileAim(dir,arrowPlan);
     }
     dir=shot.direction;

@@ -102,7 +102,7 @@ test('mixed A edits and dirty runtime overrides keep the existing strict revisio
         const f = fixture(), s = f.store;f.edit(0, light(8));
         const p = doc === 'A' ? ['unknown', 'keep'] : ['timings', 'enemy:1:default'];
         s.change({version: s.version, edits: [{doc, path: p, value: doc === 'A' ? false : {attack: .5}}]});
-        const latest = clone(f.initial);latest.LevelCfg[0].WaveCfg[0].count = 9;const bytes = f.write('A', latest), before = state(s);
+        const latest = clone(f.initial);latest.unknown.spell = 111;const bytes = f.write('A', latest), before = state(s);
         assert.throws(() => s.save({version: s.version}), /changed outside/);
         assert.equal(state(s), before);assert.equal(f.read('A'), bytes);
     }

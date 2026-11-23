@@ -87,24 +87,41 @@ test('building cards support the same drag order and keyboard moves without chan
  assert.deepEqual(require('../worlds/stage-card-order').ordered(f.state.snap.value.buildings).map(building=>building.id),[1,8,4]);assert.equal(f.edits(),2);
 });
 
-test('Silver offer numbers identify the same locations after dragging their cards',()=>{
+test('the Buildings list selects the single Silver offer and keeps other merchant types',()=>{
  const f=fixture();f.state.tab='Buildings';
  f.state.snap.value.specials=[
-  {id:'offer-1',kind:0,name:'Silver offer'},
+  {id:'offer-1',kind:0,name:'Silver offer 1'},
   {id:'offer-2',kind:1,name:'Weapon offer'},
-  {id:'offer-3',kind:0,name:'Silver offer'},
-  {id:'offer-4',kind:0,name:'Silver offer',enabled:false},
-  {id:'offer-5',kind:0,name:'East bend'},
+  {id:'offer-3',kind:2,name:'Horse offer',enabled:false},
  ];
  const before=clone(f.state.snap.value),cards=()=>descendants(f.context.left).filter(node=>node.dataset.specialId);
  f.panels.left();
- assert.deepEqual(cards().map(card=>card.textContent),['Silver offer 1','Weapon offer','Silver offer 2','Silver offer 3 · Disabled','Silver offer 4 · East bend']);
- assert(f.context.left.textContent.includes('one per wave in numbered order'));
+ assert.deepEqual(cards().map(card=>card.textContent),['Silver offer','Weapon offer','Horse offer · Disabled']);
+ cards()[0].onclick();assert.deepEqual(f.state.selection,['special:offer-1']);
  assert.equal(f.edits(),0);assert.deepEqual(f.state.snap.value,before);
- const rows=cards();rows[4].ondragstart(dragEvent());rows[0].ondrop(dragEvent());
- f.panels.left();
- assert.deepEqual(cards().filter(card=>card.textContent.startsWith('Silver offer')).map(card=>card.textContent),['Silver offer 4 · East bend','Silver offer 1','Silver offer 2','Silver offer 3 · Disabled']);
- assert.deepEqual(f.state.snap.value.specials.map(({editorOrder,...offer})=>offer),before.specials);
+});
+
+test('Silver offer controls preview scheduled waves and edit only the selected offer draft',()=>{
+ const f=fixture(),stage=f.state.snap.value,errors=[];
+ stage.specials=[{id:'offer-1',kind:0,name:'Silver offer',x:120,y:-135}];
+ stage.config.WaveCfg=Array.from({length:10},(_,index)=>({Wave:index+1}));
+ const client=require('node:fs').readFileSync(require.resolve('../worlds/client'),'utf8');
+ const inspector=client.slice(client.indexOf(' function silverOfferSettings('),client.indexOf(' function renderBuildingInspector('));
+ const render=require('node:vm').runInNewContext('('+inspector+')',{
+  ...f.context,values:()=>f.state.snap.value,message:value=>errors.push(value),
+  SilverOfferSchedule:require('../../../assets/_script/SilverOfferSchedule'),
+ });
+ const offer=()=>f.state.snap.value.specials[0],controls=()=>descendants(f.context.right).filter(node=>node.fieldName);
+ render(offer());
+ assert.deepEqual(controls().map(node=>[node.fieldName,node.value]),[['Total offers',2],['First wave',1],['Wave interval',1]]);
+ assert.match(f.context.right.textContent,/Appears before waves 1, 2\./);
+ assert.equal(f.edits(),0);
+ controls()[1].change(4);controls()[2].change(5);controls()[2].change(0);
+ assert.equal(f.edits(),2);
+ assert.deepEqual(clone(offer()),{...stage.specials[0],silverSchedule:{firstWave:4,interval:5}});
+ assert.deepEqual(errors,['Wave interval must be a whole number of at least 1.']);
+ f.context.right.textContent='';render(offer());
+ assert.match(f.context.right.textContent,/Appears before waves 4, 9\./);
 });
 
 test('cancelled drags, busy documents and drops from another stage cannot create an edit',()=>{
@@ -203,6 +220,38 @@ test('Delete path also clears a matching default graph reference without inventi
 test('wave spawn filters recover after a lane disappears or another stage supplies a different lane without data writes',()=>{
  const f=fixture();f.state.tab='Waves';for(const filter of ['2','99']){f.state.waveSpawnFilter=filter;f.context.right.textContent='';const before=JSON.stringify(f.state.snap.value);f.panels.right();assert.equal(f.state.waveSpawnFilter,'all');assert(descendants(f.context.right).some(element=>element.dataset.entryId==='a'));assert.equal(JSON.stringify(f.state.snap.value),before);}assert.equal(f.edits(),0);
  f.state.snap.value.config.WaveCfg[0].SpawnTimeline.forEach(entry=>entry.spawnId=2);f.state.waveSpawnFilter='1';f.context.right.textContent='';f.panels.right();assert.equal(f.state.waveSpawnFilter,'all');assert(descendants(f.context.right).some(element=>element.dataset.entryId==='a'));assert.equal(f.edits(),0);
+});
+
+test('the spawn plus adds an independently editable count to the same unit card',()=>{
+ const f=fixture();f.state.tab='Waves';f.state.waveSpawnFilter='6';
+ const stage=f.state.snap.value;
+ stage.spawns.push({id:6,name:'Spawn 6',enabled:true},{id:7,name:'Spawn 7',enabled:false});
+ f.state.catalog.units.push({id:4,name:'Other unit'});
+ const entry=stage.config.WaveCfg[0].SpawnTimeline[0];
+ Object.assign(entry,{spawnId:6,count:5,routeGraphId:undefined});
+ const rows=()=>f.state.snap.value.config.WaveCfg[0].SpawnTimeline;
+ const redraw=()=>{f.context.right.textContent='';f.panels.right();};
+ const cards=()=>descendants(f.context.right).filter(node=>node.classList.contains('world-wave-unit-card'));
+ const card=()=>cards().find(node=>node.dataset.entryId==='a');
+ const inputs=name=>descendants(card()).filter(node=>node.fieldName===name);
+ const action=(text,root=card())=>descendants(root).find(node=>node.tagName==='button'&&node.textContent===text);
+
+ redraw();assert.equal(cards().length,1);assert.equal(f.edits(),0);
+ action('+').onclick();redraw();
+ assert.equal(f.edits(),1);assert.equal(f.state.waveSpawnFilter,'all');assert.equal(cards().length,4);
+ assert.deepEqual(inputs('Spawn').map(input=>input.value),[6,1]);
+ assert.deepEqual(inputs('Spawn').map(input=>input.choices.map(choice=>choice.value)),[[6],[1]]);
+ assert(action('+').disabled);assert.equal(inputs('Unit').length,1);
+
+ inputs('Count')[1].change('4');redraw();
+ assert.deepEqual(inputs('Count').map(input=>input.value),[5,4]);
+ inputs('Unit')[0].change('4');redraw();
+ assert.deepEqual(rows().map(({unitId,spawnId,count})=>[unitId,spawnId,count]),[[4,6,5],[3,1,1],[3,1,1],[3,1,1],[4,1,4]]);
+ assert.deepEqual(rows()[0].future,{keep:1});
+ const additional=rows().at(-1).id;
+ action('−',card().children.find(node=>node.dataset.entryId===additional&&node.className==='world-wave-counts')).onclick();
+ redraw();assert.equal(cards().length,4);assert.deepEqual(inputs('Count').map(input=>input.value),[5]);
+ assert(!rows().some(row=>row.id===additional));
 });
 
 test('Add units keeps invalid submissions in the modal and rejects a concurrently replaced wave before writing',()=>{

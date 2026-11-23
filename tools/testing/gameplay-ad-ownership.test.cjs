@@ -6,9 +6,9 @@ function fixture(kind,options={}){
  const calls={saves:0,tracks:0,cosmetics:[],pauses:[],reinitializations:0,closed:0},pending=[],dialogs=[];
  function node(){return {_combatGeneration:1,active:true,activeInHierarchy:true,x:0,y:0,position:{x:0,y:0},children:[],setParent(){},setPosition(){},getPosition(out){out.x=out.y=0;},destroy(){},convertToWorldSpaceAR:p=>p,convertToNodeSpaceAR:p=>p};}
  function point(name){return {node:node(),coinNum:30,getInClick:()=>name===kind,init(){calls.reinitializations++;}};}
- function data(){return {coin:10,businessAdd:{weapon:kind==='weapon2'?1:0,horse:kind==='horse2'?1:0},appearBusinessPoints:point('silver'),weaponBusinessPoints:point(kind==='weapon2'?'weapon2':'weapon1'),horseBusinessPoints:point(kind==='horse2'?'horse2':'horse1')};}
- const K={FlagWeapon:'weapon',FlagHorse:'horse',Attack:'attack',AttackSpeed:'attackSpeed',Speed:'speed'};
- const game={node:node(),gameData:data(),_combatEpoch:1,gameStatus:0,ctrPlay:{node:node(),ctrPlayAni:{setBus:n=>calls.cosmetics.push(n)}},vec2_1:{},saveGame(){calls.saves++;},T:x=>x,camera:{getWorldToScreenPoint:p=>p}};
+ function data(){return {coin:10,round:1,businessAdd:{weapon:kind==='weapon2'?1:0,horse:kind==='horse2'?1:0},appearBusinessPoints:point('silver'),weaponBusinessPoints:point(kind==='weapon2'?'weapon2':'weapon1'),horseBusinessPoints:point(kind==='horse2'?'horse2':'horse1')};}
+ const K={SilverClaimedWave:'silverClaimedWave',FlagWeapon:'weapon',FlagHorse:'horse',Attack:'attack',AttackSpeed:'attackSpeed',Speed:'speed'};
+ const game={node:node(),gameData:data(),_combatEpoch:1,gameStatus:0,ctrPlay:{node:node(),ctrPlayAni:{setBus:n=>calls.cosmetics.push(n)}},vec2_1:{},saveGame(){calls.saves++;calls.savedSilverWave=this.gameData.businessAdd[K.SilverClaimedWave];},T:x=>x,camera:{getWorldToScreenPoint:p=>p}};
  const coin=node();coin.children=[node()];const ui={node:node(),_resourceGeneration:1,ctrGame:game,ndCoin:coin,ctrUI:{node:node()},initView(){},_pauseOwners:new Set(),onPauseGame(value,owner){assert(owner,'Every gameplay ad pause must have an owner');calls.pauses.push(value);if(value)this._pauseOwners.add(owner);else this._pauseOwners.delete(owner);this.isPauset=this._pauseOwners.size>0;if(options.onPause)options.onPause(value,{game,ui});}};
  const holder={default:{instance:ui}},cc={isValid:v=>!!v&&!v.destroyed,Sprite:function(){},v2:(x=0,y=0)=>({x,y}),v3:(x=0,y=0,z=0)=>({x,y,z}),Vec2:{random(){}},instantiate:()=>node(),tween(){const x={set:()=>x,by:()=>x,to:()=>x,call:()=>x,start:()=>x};return x;}};
  const manager={openUI(){if(options.onTips)options.onTips({game,ui});},closeUI(){calls.closed++;},openUIWithOwner(id,from,callbacks,type,callback){const dialog={cancelled:false,cancel(){if(this.cancelled)return;this.cancelled=true;callbacks.onCancel();}};dialogs.push({dialog,callbacks,type,callback});return dialog;}};
@@ -23,7 +23,9 @@ function unchanged(f){assert.equal(f.game.gameData.coin,10);assert.equal(f.calls
 for(const kind of kinds)test(kind+' rewards once and preserves unrelated pause owners',()=>{
  const f=fixture(kind),other={};f.ui._pauseOwners.add(other);f.run();assert.equal(f.pending.length,1);f.pending[0].success();f.pending[0].success();f.pending[0].failure();
  assert.deepEqual([...f.ui._pauseOwners],[other]);assert.equal(f.game._gameplayAds.size,0);assert.equal(f.owner._gameplayAdRequest,null);assert.equal(f.calls.tracks,2);
- if(kind==='silver')assert.equal(f.game.gameData.coin,40);else {assert.equal(f.calls.saves,1);assert.equal(f.calls.cosmetics.length,1);}
+ assert.equal(f.calls.saves,1);
+ if(kind==='silver'){assert.equal(f.game.gameData.coin,40);assert.equal(f.calls.savedSilverWave,1);}
+ else assert.equal(f.calls.cosmetics.length,1);
 });
 for(const kind of kinds)test(kind+' ignores retired success/cancellation without replacement writes or stuck pause',()=>{
  for(const change of ['data','epoch','hero','owner-generation','ui-generation','closed','ui-replaced','game-replaced'])for(const result of ['success','failure']){
@@ -32,6 +34,18 @@ for(const kind of kinds)test(kind+' ignores retired success/cancellation without
   if(change==='ui-generation')f.ui._resourceGeneration++;if(change==='closed')f.ui.isclose=true;if(change==='ui-replaced')f.holder.default.instance={node:f.node()};if(change==='game-replaced')f.ui.ctrGame={};
   f.pending[0][result]();unchanged(f);assert.equal(f.calls.tracks,0,change);assert.equal(oldOwners.size,0);assert.equal(f.calls.reinitializations,0);assert.equal(f.game._gameplayAds.size,0);
  }
+});
+test('a delayed Silver reward cannot claim the same placement in a later wave',()=>{
+ const f=fixture('silver'),point=f.game.gameData.appearBusinessPoints;
+ f.run();
+ f.game.gameData.round++;
+ f.pending[0].success();
+ unchanged(f);
+ assert.equal(f.game.gameData.appearBusinessPoints,point);
+ assert.equal(f.ui._pauseOwners.size,0);
+ f.run();f.pending[1].success();
+ assert.equal(f.game.gameData.coin,40);
+ assert.equal(f.calls.savedSilverWave,2);
 });
 test('same retained UI retirement clears only old pause tokens before the next epoch',()=>{
  const f=fixture('weapon1'),other={};f.ui._pauseOwners.add(other);f.run();f.helper.retire(f.game);f.game._combatEpoch++;f.game.gameData=f.data();f.pending[0].success();assert.deepEqual([...f.ui._pauseOwners],[other]);unchanged(f);assert.equal(f.game._gameplayAds.size,0);

@@ -21,6 +21,44 @@ test('one wave edit preserves all other bytes and creates verified backup',()=>{
 test('drafts undo/redo/discard never write game files',()=>{const f=fixture(),s=f.store;edit(s,'A',['unknown','keep'],false);s.undo({version:s.version});assert(!s.snapshot().dirty);s.redo({version:s.version});assert(s.snapshot().dirty);s.discard({version:s.version});assert(!s.snapshot().dirty);Object.keys(f.docs).forEach(p=>assert.equal(f.read(p),f.docs[p]));});
 test('stale panel mutations are rejected',()=>{const f=fixture(),s=f.store,v=s.version;edit(s,'A',['unknown','keep'],false);assert.throws(()=>s.change({version:v,edits:[{doc:'A',path:['unknown','keep'],value:true}]}),/Another panel/);});
 test('external edits block save while retaining drafts',()=>{const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['unknown','keep'],false);fs.appendFileSync(path.join(f.root,p),' ');assert.throws(()=>s.save({version:s.version}),/changed outside/);assert(s.snapshot().dirty);assert.equal(f.read(p),f.docs[p]+' ');});
+test('published waves merge with other data and virtual override drafts at Save',()=>{
+    const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];
+    edit(s,'A',['unknown','keep'],false);
+    edit(s,'overrides',['timings','enemy:90001:default'],{attack:.5});
+    const published=f.docs[p].replace('"count":5','"count":7');
+    fs.writeFileSync(path.join(f.root,p),published);
+    const before=JSON.stringify(s.draftState()),candidate=s.saveCandidate();
+    assert.equal(candidate.documents.A.data.LevelCfg[0].WaveCfg[0].count,7);
+    assert.equal(JSON.stringify(s.draftState()),before);
+    assert.equal(f.read(p),published);
+    const saved=s.save({version:s.version}),value=JSON.parse(f.read(p));
+    assert.equal(value.LevelCfg[0].WaveCfg[0].count,7);
+    assert.equal(value.unknown.keep,false);
+    assert.equal(value.GameTools.timings['enemy:90001:default'].attack,.5);
+    assert.equal(fs.readFileSync(path.join(saved.result.backup,p),'utf8'),published);
+});
+test('published waves and saved timing defaults both survive a unit data save',()=>{
+    const f=fixture(),s=f.store,p=Object.keys(f.docs)[0],latest=JSON.parse(f.read(p));
+    edit(s,'A',['unknown','keep'],false);
+    latest.LevelCfg[0].WaveCfg[0].count=8;
+    latest.GameTools={timingDefaults:{'enemy:90001:default':{attack:.6}}};
+    fs.writeFileSync(path.join(f.root,p),JSON.stringify(latest));
+    s.save({version:s.version});
+    latest.unknown.keep=false;
+    assert.deepEqual(JSON.parse(f.read(p)),latest);
+});
+test('competing stage edits leave the published wave and the exact draft history intact',()=>{
+    const f=fixture(),s=f.store,p=Object.keys(f.docs)[0],stage=['LevelCfg',0,'WaveCfg',0,'count'];
+    edit(s,'A',stage,8);
+    edit(s,'A',stage,9);
+    s.undo({version:s.version});
+    const before=JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version});
+    const published=f.docs[p].replace('"count":5','"count":7');
+    fs.writeFileSync(path.join(f.root,p),published);
+    assert.throws(()=>s.save({version:s.version}),/both changed LevelCfg/);
+    assert.equal(JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),before);
+    assert.equal(f.read(p),published);
+});
 test('timing save refreshes an untouched catalog without rewriting its external changes',()=>{
     const f=fixture(),s=f.store,p=Object.keys(f.docs)[0],catalog='assets/resources/localization/catalog.json';
     edit(s,'overrides',['timings','enemy:90001:default'],{attack:0.5});

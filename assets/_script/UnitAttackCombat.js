@@ -2,6 +2,7 @@
 
 var Rules = require("./UnitAttackRules");
 var TowerCombat = require("./TowerCombat");
+var FlightTargeting = require("./FlightTargeting");
 var Navigation = require("KinghtFallNavigation");
 var Overrides = require("GameToolsOverrides");
 
@@ -32,6 +33,9 @@ function capture(actor, scope) {
   return entry;
 }
 function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+function canTarget(scope, actor) {
+  return scope.side === "enemy" || scope.rules.delivery === "ranged" || !FlightTargeting.isFlying(actor);
+}
 function opponents(scope) {
   var data = scope.data;
   if (scope.side === "ally") return data.getEnemyList();
@@ -41,7 +45,7 @@ function opponents(scope) {
 function candidates(scope, exclude) {
   var seen = new Set();
   return opponents(scope).filter(function (actor) {
-    if (!targetLive(actor) || seen.has(actor.node) || exclude && exclude.has(actor.node) ||
+    if (!targetLive(actor) || !canTarget(scope, actor) || seen.has(actor.node) || exclude && exclude.has(actor.node) ||
         scope.targeting && !scope.targetingRules.allows(scope.targeting, scope.game, actor, scope.breach)) return false;
     seen.add(actor.node);
     return true;
@@ -55,7 +59,7 @@ function nearby(scope, center, range, exclude) {
   }).filter(function (entry) { return entry.distance <= range; }).sort(function (a, b) { return a.distance - b.distance; });
 }
 function deal(scope, entry, amount, impact, current) {
-  if (!(amount > 0) || !isFinite(amount) || !current() || !targetCurrent(entry)) return false;
+  if (!(amount > 0) || !isFinite(amount) || !current() || !targetCurrent(entry) || !canTarget(scope, entry.actor)) return false;
   if (Overrides.counters(scope.attacker, entry.actor)) {
     var parameter = require("KinghtFallEnum").KinghtFallEnumParameterCfg.RestrainedArms;
     amount *= Number(require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getParamsCfgById(parameter));
@@ -148,7 +152,7 @@ function release(owner, side) {
   var selected = side === "enemy" ? scope.targeting ? owner.getFind() : owner.getUpdateTarget() : null;
   var target = side === "ally" ? owner.releaseAttackTarget() : selected && selected.canAtt && (selected.actor || selected.building);
   scope.breach = selected && selected.breach && target;
-  if (!current() || !targetLive(target)) return;
+  if (!current() || !targetLive(target) || !canTarget(scope, target)) return;
   var primary = capture(target, scope);
   scope.origin = Navigation.positionOf(owner.node, game);
   scope.range = side === "ally" ? owner.attackRange : owner.cfg.AttackRange;

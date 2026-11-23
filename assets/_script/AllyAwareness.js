@@ -1,5 +1,6 @@
 "use strict";
 // Event-driven friendly assistance. No scene-wide searches run on idle frames.
+var FlightTargeting = require("./FlightTargeting");
 var DEFAULT_SIGHT = 240;
 function valid(value) { return !!value && (typeof cc === "undefined" || !cc.isValid || cc.isValid(value, true)); }
 function alive(actor) { return valid(actor) && valid(actor.node) && actor.node.activeInHierarchy !== false && !actor._isPooled && !(typeof actor.hp === "number" && actor.hp <= 0) && (!actor.isDead || !actor.isDead()); }
@@ -66,6 +67,7 @@ function notify(event, damage) {
     if (!current(event, false)) break;
     var record = roster[i], ally = record.actor;
     if (!alive(ally) || generation(ally) !== record.generation || !ally.canAssist) continue;
+    if (!FlightTargeting.troopCanTarget(ally, event.attacker)) { remaining.push(record); continue; }
     if (!ally.canAssist(game)) { var blocked = blockingTarget(ally); guardTarget(bucket, blocked); if (!blocked) remaining.push(record); continue; }
     if (ally === event.victim) { remaining.push(record); continue; }
     var p = point(ally, game), range = sightFromConfig(ally.cfg), dx = p.x - event.position.x, dy = p.y - event.position.y;

@@ -104,7 +104,8 @@ var def_KinghtFallBuildBartizan = function (t) {
   };
   _ctor.prototype.aimTargetIsLive = function () {
     var target = this._towerAimTarget;
-    if (!target || !TowerCombat.live(target) || target.node !== this._towerAimNode || target.node._combatGeneration !== this._towerAimGeneration) return false;
+    if (!target || !TowerCombat.live(target) || target.node !== this._towerAimNode || target.node._combatGeneration !== this._towerAimGeneration ||
+        !TowerCombat.canTarget(target, this.getTowerSettings())) return false;
     var position = TowerCombat.point(target.node, this.node.parent), origin = this.node.getPosition();
     var dx = position.x - origin.x, dy = position.y - origin.y;
     return this.attRange > 0 && dx * dx + dy * dy < this.attRange * this.attRange;

@@ -45,11 +45,9 @@ function refreshTowers(stage){
  for(const building of converted){const candidate=clean(building.name).replace(/^archer tower/i,'Tower');building.name=/ \d+$/.test(candidate)&&!naming.buildings.concat(naming.specials).some(other=>comparableBuildingName(other.name)===candidate.toLowerCase())?candidate:nextBuildingName(naming,'Tower',2);naming.buildings.push(building);}
  return stage;
 }
-function offerName(stage,offer){
+function offerName(offer){
  if(offer.kind!==0)return offer.name;
- const index=(stage.specials||[]).filter(item=>item.kind===0).findIndex(item=>item.id===offer.id);
- if(index<0)return offer.name;
- const label='Silver offer '+(index+1),name=clean(offer.name);
- return name&&!/^silver offer(?: \d+)?$/i.test(name)?label+' · '+name:label;
+ const name=clean(offer.name);
+ return name&&!/^silver offer(?: \d+)?$/i.test(name)?'Silver offer · '+name:'Silver offer';
 }
 module.exports={BUILDING_NAMES,spawnRanges,pathName,generatedPathName,refreshPaths,refreshTowers,nextBuildingName,prepareBuilding,offerName};

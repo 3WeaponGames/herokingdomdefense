@@ -8,7 +8,7 @@ var fields = {
   attackDamage: { value: 5, min: 0 },
   attackRange: { value: 50, ranged: 250, min: 0 },
   splashRadius: { value: 90, min: 0 },
-  splashFalloff: { value: 1, min: 0, max: 1 },
+  splashFalloff: { value: .2, min: 0, max: 1 },
   shotsPerVolley: { value: 2, min: 1, integer: true },
   pierceTargets: { value: 2, min: 1, integer: true },
   chainHits: { value: 3, min: 1, integer: true },

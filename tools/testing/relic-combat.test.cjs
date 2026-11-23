@@ -25,6 +25,19 @@ function primary(h,target,damage=100,critical=false,release){
  return target.onAttacked(damage*(critical?h.p.getCriticalDamage():1),h.p,false,context);
 }
 
+test('hero passive acquisition and release follow the equipped fighting style against flight',()=>{
+ for(const style of ['skirmisher','mystic','fighter','vanguard','bruiser','guardian']){
+  const h=fixture(style),flying=h.enemy(20),ground=h.enemy(40),released=[];
+  flying.cfg.BuildingCross=0;ground.cfg.BuildingCross=1;
+  h.d.enemyList=[flying,ground];h.p.attNum=1;
+  h.g.onPlayAttack=target=>released.push(target);
+  const expected=style==='skirmisher'||style==='mystic'?flying:ground;
+  h.p.onFindEnemy();
+  assert.equal(h.p.tagEnemy,expected,style);
+  assert.deepEqual(released,[expected],style);
+ }
+});
+
 test('a chain callback retiring the battle prevents native multishot from releasing stale attacks',()=>{
  const h=fixture('mystic'),target=h.enemy(),near=h.enemy(20);h.d.enemyList=[target,near];h.d.treasureAdd[120030]=[.4];h.d.relicState={heroAttackCount:7};h.p.attNum=2;h.p.node._combatGeneration=1;let released=0;h.g.onPlayAttack=()=>released++;near.onAttacked=()=>{h.g._combatEpoch++;return 10;};h.p.doAttack();assert.equal(released,0);
 });

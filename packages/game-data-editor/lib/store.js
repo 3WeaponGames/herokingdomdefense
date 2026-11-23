@@ -19,6 +19,39 @@ function setAt(data,parts,value,remove) {
 }
 function issueKey(i){return [i.doc,JSON.stringify(i.path||[]),i.message].join(':');}
 function issueValue(documents,issue){let value=documents[issue.doc]&&documents[issue.doc].data;for(const key of issue.path||[]){if(value==null)return undefined;value=value[key];}return value;}
+
+function mergePublishedCampaign(source, overrides, published) {
+    const {LevelCfg: previousStages, GameTools: previousTools, ...previous} = source.original;
+    const {LevelCfg: savedStages, GameTools: savedTools, ...latest} = published.original;
+    const stagesChanged = !JSONDocument.equal(previousStages, savedStages);
+    const toolsChanged = !JSONDocument.equal(previousTools, savedTools);
+    if ((!stagesChanged && !toolsChanged) || !JSONDocument.equal(previous, latest)) return null;
+
+    const data = clone(source.data);
+    const original = {...source.original};
+    if (stagesChanged) {
+        if (!Array.isArray(previousStages) || !Array.isArray(savedStages)) return null;
+        if (!JSONDocument.equal(previousStages, data.LevelCfg) && !JSONDocument.equal(savedStages, data.LevelCfg)) {
+            throw Error('Stages & Waves and this draft both changed LevelCfg. Your drafts are retained.');
+        }
+        original.LevelCfg = savedStages;
+        data.LevelCfg = clone(savedStages);
+    }
+    // Stage publishes own LevelCfg. Projectiles can also save attack timings
+    // in between reviews, using its existing field-level conflict checks.
+    if (toolsChanged && !JSONDocument.equal(overrides.original, overrides.data)) {
+        return require('./projectile-save-merge').documents({...source, original, data}, overrides, published);
+    }
+    const settings = {...overrides, revision:published.revision};
+    if (toolsChanged) {
+        if (savedTools === undefined) delete data.GameTools;
+        else data.GameTools = clone(savedTools);
+        settings.original = savedTools === undefined ? defaults() : clone(savedTools);
+        settings.data = clone(settings.original);
+    }
+    return {A:{...published, data}, overrides:settings};
+}
+
 class Store {
     constructor(root,options){this.root=path.resolve(root);this.options=options||{};this.version=0;this.documents={};this.undoStack=[];this.redoStack=[];this.load();}
     absolute(relative){const result=path.resolve(this.root,relative);if(!result.startsWith(this.root+path.sep))throw Error('Path leaves project');return result;}
@@ -109,7 +142,7 @@ class Store {
             const data=JSON.parse(text.replace(/^\uFEFF/,''));
             const published={id,path:d.path,original:clone(data),data,text,revision};
             if(dirty){
-                const merged=require('./projectile-save-merge').documents(d,documents.overrides,published);
+                const merged=mergePublishedCampaign(d,documents.overrides,published);
                 if(!merged)throw conflict();
                 Object.assign(documents,merged);return;
             }

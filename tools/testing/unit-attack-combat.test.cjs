@@ -146,6 +146,22 @@ test('ranged splash lands at its launch point after the primary dies and scales 
   assert.deepEqual(f.amounts(), [['center', 100], ['edge', 25]]);
 });
 
+test('only ranged troop splash damages a flying enemy beside a ground target', () => {
+  for (const delivery of ['melee', 'ranged']) {
+    const f = fixture(), ground = f.target('ground', 100), flying = f.target('flying', 130);
+    flying.cfg.BuildingCross = 0;
+    f.d.enemyList = [flying, ground];
+    const owner = f.attacker('KinghtFallSoldierBase', {
+      delivery, pattern: 'splash', splashRadius: 60, splashFalloff: .5
+    }, ground);
+    owner.doAttackStart();
+    if (delivery === 'ranged') f.step(.25);
+    const expected = [['ground', 100]];
+    if (delivery === 'ranged') expected.push(['flying', 75]);
+    assert.deepEqual(f.amounts(), expected);
+  }
+});
+
 test('ranged splash slows each damaged defender at impact and refreshes without stacking', () => {
   const f = fixture(), player = hero(f), troop = f.e.actor('KinghtFallSoldierBase', 130, 20, f.game.ndMain);
   const outside = f.target('outside splash', 161);

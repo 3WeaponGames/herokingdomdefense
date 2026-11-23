@@ -19,6 +19,7 @@ class Service{
   assets(){const original=read(path.join(this.root,'assets/resources/character-parts/catalog.json'));const mounts=this.relativeFile==='assets/resources/characters/catalog.json'&&fs.existsSync(path.join(this.root,'assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json'))?require('./original-mounts').assets():[];return Object.assign({},original,{parts:original.parts.concat(UnitLibrary.load(this.root).parts,mounts)});}
   units(includePortraits=false){
     const cfg=read(path.join(this.root,'assets/KinghtFallConfig/GameJsonCfg.json')),entries=read(path.join(this.root,'assets/resources/localization/catalog.json')).entries;
+    const customSources=UnitLibrary.customSources(this.root),profiles=cfg.GameTools?.unitProfiles?.entries||{};
     const text=value=>String(value||'').replace(/\[\[loc:([^\]]+)\]\]/g,(m,key)=>entries[key]&&entries[key].en||m);
     const portraits=new Map();
     const portrait=reference=>{
@@ -39,7 +40,8 @@ class Service{
       const boss=type==='enemy'&&[90010,90011,90012].includes(row.ID),form=boss?String(row.ID-90009):'default';
       const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(row.ID)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
       const key=type+':'+row.ID+':'+form,p=this.original.profiles[this.original.assignments[key]],source=type==='enemy'&&(row.MonsterSource||row.AppearanceSourceUnit&&cfg.SoldierCfg[row.AppearanceSourceUnit]&&cfg.SoldierCfg[row.AppearanceSourceUnit].MonsterSource||p&&(p.base.appearance||p.base.source||p.baked&&p.baked.source));
-      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(type==='enemy'?{enemyClass:EnemyClasses.resolve(cfg.GameTools,row.ID)}:{}),...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{}),...portrait(row.loadIcon)});
+      const customUnit=type==='enemy'&&Packs.isCustomEnemy(row.ID,cfg.SoldierCfg,profiles,customSources);
+      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(customUnit?{customUnit}:{}),...(type==='enemy'?{enemyClass:EnemyClasses.resolve(cfg.GameTools,row.ID)}:{}),...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{}),...portrait(row.loadIcon)});
     }
     return result;
   }

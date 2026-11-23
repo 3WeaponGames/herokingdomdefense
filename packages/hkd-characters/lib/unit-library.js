@@ -26,6 +26,11 @@ function load(root){
   }
   return {sources,parts};
 }
+function customSources(root){
+  const {sources}=load(root);
+  const ids=new Set(sources.map(source=>source.id));
+  return new Set(sources.filter(source=>source.variantOf!==source.id&&ids.has(source.variantOf)).map(source=>source.id));
+}
 function describe(root,id,noRuntime){
   const unit=load(root).sources.find(source=>source.id===id);
   if(!unit)throw Error('Choose an imported character or monster base.');
@@ -36,4 +41,4 @@ function describe(root,id,noRuntime){
   const layer={name:unit.name,uuid:unit.uuid,json,atlas,pages,skins:json.skins.map(s=>s.name),animations:Object.keys(json.animations).filter(name=>name!=='__fx_ambient'),skin:'default',x:0,y:0,scaleX:1,scaleY:1,angle:0};
   return {source:unit.skeleton,sourceUnit:unit.id,sourcePack:unit.pack,layers:[layer],runtimePath:noRuntime?null:Units.enginePath()};
 }
-module.exports={load,describe};
+module.exports={load,customSources,describe};

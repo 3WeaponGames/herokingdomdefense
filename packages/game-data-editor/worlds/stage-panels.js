@@ -75,11 +75,10 @@ function create(c){
    const offers=stage().specials||[];
    if(offers.length){
     section(parent,'Recruit and merchant offers');
-    if(offers.filter(offer=>offer.kind===0&&offer.enabled!==false).length>1)note(parent,'Enabled Silver offers appear one per wave in numbered order, then repeat.');
     const list=el('div',undefined,'world-building-list'),offerCards=[];
     parent.appendChild(list);
     for(const offer of CardOrder.ordered(offers)){
-     const label=Names.offerName(stage(),offer)+(offer.enabled===false?' · Disabled':'');
+     const label=Names.offerName(offer)+(offer.enabled===false?' · Disabled':'');
      const item=button(list,label,()=>{c.cancelDrag();state.tool='select';state.selection=['special:'+offer.id];render();},state.selection.includes('special:'+offer.id));
      item.dataset.specialId=offer.id;
      item.setAttribute('aria-current',String(state.selection[0]==='special:'+offer.id));
@@ -203,8 +202,9 @@ function create(c){
    },true);
   },'Copy wave');
  }
- function addUnits(existing){
-  const spawns=stage().spawns.filter(spawn=>spawn.enabled!==false||existing&&spawn.id===existing.spawnId);if(!spawns.length)throw Error('Add an enabled spawn point in Spawns first.');
+ function addUnits(existing,group=[]){
+  const occupied=new Set(group.filter(row=>row!==existing).map(row=>String(row.spawnId)));
+  const spawns=stage().spawns.filter(spawn=>existing&&spawn.id===existing.spawnId||spawn.enabled!==false&&!occupied.has(String(spawn.id)));if(!spawns.length)throw Error('Add an enabled spawn point in Spawns first.');
   const selected=new Set(existing?[existing.unitId]:[]),index=state.wave,stageId=stage().id,revision=state.snap.version,target=waveTarget(index),baseline=JSON.stringify(wave());
   let count=existing?existing.count:1,spawnId=existing?existing.spawnId:spawns.some(s=>s.id===state.spawn)?state.spawn:spawns[0].id,start=existing?existing.startSeconds:catalog().interval;
   const interval=existing?existing.intervalSeconds:catalog().interval,units=unitRows().slice();if(existing&&!units.some(unit=>unit.id===existing.unitId))units.unshift({id:existing.unitId,name:'Missing unit: '+existing.unitId});
@@ -217,6 +217,76 @@ function create(c){
    if(unitIds.some(id=>!units.some(unit=>unit.id===id)))throw Error('Choose a unit from the current catalog.');
    return Waves.chooseGroups(s,index,unitIds,settings,catalog().interval,existing?existing.id:undefined);
   },true);},existing?'Apply selection':'Add group');
+ }
+ function waveUnitCard(parent,w,target,group,visible,units){
+  const entry=visible[0],interval=catalog().interval,unit=units.find(unit=>unit.id===entry.unitId);
+  const card=el('div',undefined,'world-wave-unit-card'),heading=el('div',undefined,'world-wave-unit-heading');
+  card.dataset.entryId=entry.id;parent.appendChild(card);card.appendChild(heading);
+  if(unit&&unit.iconUrl){const image=el('img');image.src=unit.iconUrl;heading.appendChild(image);}
+  const name=unit?unitName(unit):'Unit '+entry.unitId;
+  heading.appendChild(el('strong',name));
+  const remove=button(heading,'Remove',()=>waveEdit(target,(s,index)=>Waves.removeGroup(s,index,entry.id,interval,{allSpawns:true})));
+  if(group.length>1){card.classList.add('world-wave-unit-card-multi');remove.title='Remove this unit and all its spawn rows';}
+  const change=(row,key,value)=>waveEdit(target,(s,index)=>Waves.editGroup(s,index,row.id,{[key]:value},interval));
+  const changeUnit=value=>change(entry,'unitId',Number(value));
+  if(c.unitField)c.unitField(card,units,entry.unitId,changeUnit,()=>{
+   if(stage().id!==target.stageId||state.wave!==target.index||waveTargets.get(target.key)!==target||JSON.stringify(wave())!==target.latest)throw Error('This wave changed. Select the current group before switching units.');
+   return addUnits(entry,group);
+  },id=>StageProfiles.open(c,id,(s,customId)=>{
+   if(s.id!==target.stageId||state.wave!==target.index||waveTargets.get(target.key)!==target||JSON.stringify(s.config.WaveCfg[target.index])!==target.latest)throw Error('This wave changed. Reopen Custom.');
+   if(entry.unitId!==customId)Waves.editGroup(s,target.index,entry.id,{unitId:customId},interval);
+  }));
+  else{
+   const choices=units.map(unit=>({value:unit.id,label:unitName(unit)}));
+   if(!choices.some(choice=>String(choice.value)===String(entry.unitId)))choices.unshift({value:entry.unitId,label:'Missing unit: '+entry.unitId});
+   field(card,'Unit',entry.unitId,changeUnit,choices);
+  }
+
+  const free=new Set(Waves.availableSpawns(stage(),group).map(spawn=>String(spawn.id)));
+  const spawns=stage().spawns;
+  for(const row of visible){
+   const counts=el('div',undefined,'world-wave-counts');card.appendChild(counts);
+   if(row!==entry)counts.dataset.entryId=row.id;
+   numericEntry(counts,'Count',row.count,value=>change(row,'count',value),true);
+   const spawnId=String(row.spawnId),choices=spawns.filter(spawn=>String(spawn.id)===spawnId||free.has(String(spawn.id)))
+    .map(spawn=>({value:spawn.id,label:spawn.name+(spawn.enabled===false?' (disabled)':'')}));
+   if(!choices.some(choice=>String(choice.value)===spawnId))choices.unshift({value:row.spawnId,label:'Unavailable spawn: '+row.spawnId});
+   field(counts,'Spawn',row.spawnId,value=>{state.spawn=Number(value);return change(row,'spawnId',state.spawn);},choices);
+   const actions=el('div',undefined,'world-wave-spawn-actions');counts.appendChild(actions);
+   if(group.length>1){
+    const lane=spawns.find(spawn=>String(spawn.id)===spawnId)?.name||'Spawn '+spawnId;
+    const removeSpawn=button(actions,'−',()=>waveEdit(target,(s,index)=>Waves.removeGroup(s,index,row.id,interval)));
+    removeSpawn.title='Remove '+lane+' from this unit';removeSpawn.setAttribute('aria-label',removeSpawn.title);
+   }
+   if(row===entry){
+    const add=button(actions,'+',()=>waveEdit(target,(s,index)=>{
+     Waves.addSpawn(s,index,entry.id,interval);if(state.wave===index)state.waveSpawnFilter='all';
+    }));
+    add.disabled=!free.size;
+    add.title=free.size?'Add another spawn for this unit':'This unit already uses every enabled spawn point';
+    add.setAttribute('aria-label','Add spawn for '+name);
+   }
+  }
+
+  const resolved=Stats.resolve(unit,w),unitStats=el('div',undefined,'world-wave-unit-stats');
+  unitStats.title=Stats.formula(unit,w);unitStats.setAttribute('aria-label','Enemy stats per unit before battle buffs');
+  for(const [label,value,base,multiplier,rounded]of [['HP per unit',resolved.health,resolved.baseHealth,resolved.healthMultiplier,false],['Damage per hit',resolved.damage,resolved.baseDamage,resolved.damageMultiplier,true]]){
+   const stat=el('div',undefined,'world-unit-stat');stat.appendChild(el('span',label));stat.appendChild(el('strong',Stats.format(value)));
+   stat.appendChild(el('small','Base '+Stats.factor(base)+' × '+Stats.factor(multiplier)+(rounded?' · rounded':'')));unitStats.appendChild(stat);
+  }
+  card.appendChild(unitStats);
+
+  for(const row of visible){
+   const lane=spawns.find(spawn=>String(spawn.id)===String(row.spawnId))?.name||'Spawn '+row.spawnId;
+   const title='Timing & route · '+(group.length>1?lane+' · ':'')+row.startSeconds+' s / every '+row.intervalSeconds+' s';
+   const timing=details(title,'wave:'+target.index+':entry:'+row.id+':timing');card.appendChild(timing);
+   if(row!==entry)timing.dataset.entryId=row.id;
+   numericEntry(timing,'Starts at (s)',row.startSeconds,value=>change(row,'startSeconds',value));
+   numericEntry(timing,'Interval (s)',row.intervalSeconds,value=>change(row,'intervalSeconds',value));
+   const routes=[{value:'',label:'Spawn default'}].concat(stage().graphs.filter(graph=>graph.spawnIds.includes(row.spawnId)).map(graph=>({value:graph.id,label:pathTitle(stage(),graph)})));
+   if(row.routeGraphId&&!routes.some(choice=>choice.value===row.routeGraphId))routes.push({value:row.routeGraphId,label:'Unavailable route: '+row.routeGraphId});
+   field(timing,'Route override',row.routeGraphId||'',value=>change(row,'routeGraphId',value||null),routes);
+  }
  }
  function waveInspector(){
   const index=state.wave,waves=stage().config.WaveCfg,w=Array.isArray(waves)&&waves[index];
@@ -236,22 +306,21 @@ function create(c){
    return;
   }
   const target=waveTarget(index),parent=el('section',undefined,'world-wave-editor');
+  const groups=Waves.unitGroups(allEntries),units=unitRows();
   if(state.waveSpawnFilter!=='all'&&!allEntries.some(entry=>String(entry.spawnId)===String(state.waveSpawnFilter)))state.waveSpawnFilter='all';
   c.right.appendChild(parent);
   section(parent,waveLabel(w,index));
-  note(parent,total.units+' units · '+total.groups+' groups · last spawn at '+Number(total.duration.toFixed(2))+' s');
+  note(parent,total.units+' units · '+groups.length+(groups.length===1?' group':' groups')+' · last spawn at '+Number(total.duration.toFixed(2))+' s');
   const actions=el('div',undefined,'world-wave-actions');parent.appendChild(actions);
-  const add=button(actions,'Add units',addUnits,true);add.disabled=!unitRows().length||!stage().spawns.some(spawn=>spawn.enabled!==false);
+  const add=button(actions,'Add units',addUnits,true);add.disabled=!units.length||!stage().spawns.some(spawn=>spawn.enabled!==false);
   copyWaveButton(actions,waves,target);
   const scaling=el('div',undefined,'world-wave-scaling');parent.appendChild(scaling);for(const [key,label]of [['HealthCoefficient','Enemy health ×'],['AttackCoefficient','Enemy attack ×']])numericEntry(scaling,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value));note(scaling,'Applied to every enemy in this wave. HP and damage below are per unit, before battle buffs.');
   if(total.spawnIds.length>1)field(parent,'Show spawns',state.waveSpawnFilter,value=>{state.waveSpawnFilter=value;render();},[{value:'all',label:'All spawn points'}].concat(stage().spawns.map(s=>({value:String(s.id),label:s.name}))));
-  const entries=allEntries.filter(entry=>state.waveSpawnFilter==='all'||String(entry.spawnId)===String(state.waveSpawnFilter));
-  for(const entry of entries){const card=el('div',undefined,'world-wave-unit-card');card.dataset.entryId=entry.id;parent.appendChild(card);const change=(key,value)=>waveEdit(target,(s,index)=>Waves.editGroup(s,index,entry.id,{[key]:value},catalog().interval)),unit=unitRows().find(unit=>unit.id===entry.unitId),heading=el('div',undefined,'world-wave-unit-heading');if(unit&&unit.iconUrl){const image=el('img');image.src=unit.iconUrl;heading.appendChild(image);}heading.appendChild(el('strong',unit?unitName(unit):'Unit '+entry.unitId));button(heading,'Remove',()=>waveEdit(target,(s,index)=>Waves.removeGroup(s,index,entry.id,catalog().interval)));card.appendChild(heading);
-   const unitChoices=unitRows().map(unit=>({value:unit.id,label:unitName(unit)}));if(!unitChoices.some(choice=>String(choice.value)===String(entry.unitId)))unitChoices.unshift({value:entry.unitId,label:'Missing unit: '+entry.unitId});if(c.unitField)c.unitField(card,unitRows(),entry.unitId,value=>change('unitId',Number(value)),()=>{if(stage().id!==target.stageId||state.wave!==target.index||waveTargets.get(target.key)!==target||JSON.stringify(wave())!==target.latest)throw Error('This wave changed. Select the current group before switching units.');return addUnits(entry);},id=>StageProfiles.open(c,id,(s,customId)=>{if(s.id!==target.stageId||state.wave!==target.index||waveTargets.get(target.key)!==target||JSON.stringify(s.config.WaveCfg[index])!==target.latest)throw Error('This wave changed. Reopen Custom.');if(entry.unitId!==customId)Waves.editGroup(s,index,entry.id,{unitId:customId},catalog().interval);}));else field(card,'Unit',entry.unitId,value=>change('unitId',Number(value)),unitChoices);const counts=el('div',undefined,'world-wave-counts');card.appendChild(counts);numericEntry(counts,'Count',entry.count,value=>change('count',value),true);const spawnChoices=stage().spawns.filter(spawn=>spawn.enabled!==false||String(spawn.id)===String(entry.spawnId)).map(spawn=>({value:spawn.id,label:spawn.name+(spawn.enabled===false?' (disabled)':'')}));if(!spawnChoices.some(choice=>String(choice.value)===String(entry.spawnId)))spawnChoices.unshift({value:entry.spawnId,label:'Unavailable spawn: '+entry.spawnId});field(counts,'Spawn',entry.spawnId,value=>{state.spawn=Number(value);return change('spawnId',Number(value));},spawnChoices);
-   const resolved=Stats.resolve(unit,w),unitStats=el('div',undefined,'world-wave-unit-stats');unitStats.title=Stats.formula(unit,w);unitStats.setAttribute('aria-label','Enemy stats per unit before battle buffs');for(const [label,value,base,multiplier,rounded]of [['HP per unit',resolved.health,resolved.baseHealth,resolved.healthMultiplier,false],['Damage per hit',resolved.damage,resolved.baseDamage,resolved.damageMultiplier,true]]){const stat=el('div',undefined,'world-unit-stat');stat.appendChild(el('span',label));stat.appendChild(el('strong',Stats.format(value)));stat.appendChild(el('small','Base '+Stats.factor(base)+' × '+Stats.factor(multiplier)+(rounded?' · rounded':'')));unitStats.appendChild(stat);}card.appendChild(unitStats);
-   const timing=details('Timing & route · '+entry.startSeconds+' s / every '+entry.intervalSeconds+' s','wave:'+index+':entry:'+entry.id+':timing');card.appendChild(timing);numericEntry(timing,'Starts at (s)',entry.startSeconds,value=>change('startSeconds',value));numericEntry(timing,'Interval (s)',entry.intervalSeconds,value=>change('intervalSeconds',value));const routeChoices=[{value:'',label:'Spawn default'}].concat(stage().graphs.filter(graph=>graph.spawnIds.includes(entry.spawnId)).map(graph=>({value:graph.id,label:pathTitle(stage(),graph)})));if(entry.routeGraphId&&!routeChoices.some(choice=>choice.value===entry.routeGraphId))routeChoices.push({value:entry.routeGraphId,label:'Unavailable route: '+entry.routeGraphId});field(timing,'Route override',entry.routeGraphId||'',value=>change('routeGraphId',value||null),routeChoices);
+  for(const group of groups){
+   const visible=group.filter(entry=>state.waveSpawnFilter==='all'||String(entry.spawnId)===String(state.waveSpawnFilter));
+   if(visible.length)waveUnitCard(parent,w,target,group,visible,units);
   }
-  if(!entries.length)note(parent,total.groups?'No groups match this spawn filter. Choose All spawn points.':'This wave has no units yet. Use Add units to create its first group.');
+  if(!groups.length)note(parent,'This wave has no units yet. Use Add units to create its first group.');
   const settings=details('Wave settings & rewards','wave:'+index+':settings');parent.appendChild(settings);for(const [key,label]of [['StartSliver','Starting silver'],['CommerceSliver','Merchant silver']]){const input=numericEntry(settings,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value),true);input.min='0';}button(settings,'Rewards…',()=>c.jsonField('WaveReward',index));button(settings,'Edit schedule JSON…',()=>c.jsonField(w.SpawnTimeline!==undefined?'SpawnTimeline':'RefreshSoldierKind',index));
  }
  function right(){if(state.tab==='Stage')stageInspector();else if(state.tab==='Waves')waveInspector();else if(state.tab==='Paths')pathInspector();else if(state.tab==='Spawns')spawnInspector();else c.buildingInspector();if(state.snap.issues.length){section(c.right,'Validation');state.snap.issues.slice(0,12).forEach(issue=>note(c.right,issue,true));}}

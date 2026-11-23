@@ -1,7 +1,7 @@
 'use strict';
 // Portable authoring data and pure draft operations. No filesystem or game state.
 const Blockers=require('./blockers'),Physics=require('./physics-polygons'),GateFacing=require('../../../assets/_script/GateFacing');
-const StageNames=require('./stage-names');
+const StageNames=require('./stage-names'),SilverOfferSchedule=require('../../../assets/_script/SilverOfferSchedule');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const BIOMES=['forest','deep-forest','autumn','desert','snow','ice','fire','lava'];
 // Portable storage keys. Only foundation is required in the authored draw order.
@@ -209,7 +209,10 @@ function validateStage(stage,map,units){
   }
   if(!count)issues.push('Wave '+wave.Wave+' needs at least one enemy.');
  }
- const specials=(stage.specials||[]).filter(b=>b.enabled!==false),specialIds=new Set();
+ const offers=stage.specials||[],specials=offers.filter(b=>b.enabled!==false),specialIds=new Set();
+ const silverOffers=offers.filter(offer=>offer.kind===0);
+ if(silverOffers.length>1)issues.push('Each stage can have one Silver offer. Delete extra Silver offer placements.');
+ for(const offer of silverOffers)issues.push(...SilverOfferSchedule.issues(offer.silverSchedule));
  for(const s of specials){if(specialIds.has(s.id))issues.push('Duplicate special offer ID.');specialIds.add(s.id);}
  for(const p of buildings.concat(specials)){
   if(p.scale!==undefined&&(!finite(p.scale)||p.scale<=0)||p.angle!==undefined&&!finite(p.angle))issues.push('Placement transforms need positive scale and finite rotation.');

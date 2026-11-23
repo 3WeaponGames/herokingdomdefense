@@ -127,7 +127,7 @@ Runtime.prototype.update = function (dt) {
     if (!field.getIsWork()) return;
     field.cooldown = Math.max(0, field.cooldown - dt);
     if (field.cooldown > 0) return;
-    var target = Combat.choose(runtime.game.gameData.getEnemyList(), field.getAttPos(), runtime.cfg.range, null, runtime.game.ndUI);
+    var target = Combat.choose(runtime.game.gameData.getEnemyList(), field.getAttPos(), runtime.cfg.range, field.getTowerSettings(), runtime.game.ndUI);
     if (target) { field.cooldown = runtime.cfg.interval; runtime.game.onShotBuild(field, target); }
     else field.cooldown = .15;
   });

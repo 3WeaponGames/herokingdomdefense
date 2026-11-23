@@ -18,6 +18,17 @@ function schedule(wave,interval){
  return result;
 }
 function entries(wave,interval){return uniqueEntries(schedule(wave,interval));}
+const linkedId=entry=>typeof entry.unitGroupId==='string'&&entry.unitGroupId.trim()?entry.unitGroupId:null;
+const groupKey=entry=>linkedId(entry)?JSON.stringify([entry.unitGroupId,entry.unitId]):JSON.stringify([entry.id]);
+function unitGroups(rows){
+ const groups=new Map();
+ for(const row of rows){const key=groupKey(row);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(row);}
+ return Array.from(groups.values());
+}
+function availableSpawns(stage,rows){
+ const used=new Set(rows.map(row=>String(row.spawnId)));
+ return (stage.spawns||[]).filter(spawn=>spawn.enabled!==false&&!used.has(String(spawn.id)));
+}
 function summary(wave,interval){
  // Statistics do not need display IDs or detached metadata copies. A single
  // read-only pass also avoids spread-argument limits on large authored waves.
@@ -35,19 +46,51 @@ function validGroup(stage,entry,newGroup){
  if(!Number.isFinite(entry.startSeconds+(entry.count-1)*entry.intervalSeconds))throw Error('The final spawn time must be finite.');
 }
 function validRoute(stage,entry){if(entry.routeGraphId===undefined||entry.routeGraphId===null||entry.routeGraphId==='')return;const graph=(stage.graphs||[]).find(graph=>graph.id===entry.routeGraphId);if(!graph||!(graph.spawnIds||[]).includes(entry.spawnId))throw Error('Choose a path assigned to this spawn.');}
+function nextId(rows,field,prefix){
+ const ids=new Set(rows.map(row=>row[field]));let suffix=1;while(ids.has(prefix+suffix))suffix++;return prefix+suffix;
+}
+function appendGroup(stage,rows,value,interval){
+ const entry=Object.assign({count:1,startSeconds:0,intervalSeconds:fallbackInterval(interval)},clone(value||{}));
+ entry.id=nextId(rows,'id','entry-');
+ validGroup(stage,entry,true);validRoute(stage,entry);rows.push(entry);return entry.id;
+}
 function addGroup(stage,index,value,interval){
- const wave=waveAt(stage,index),next=entries(wave,interval),entry=Object.assign({count:1,startSeconds:0,intervalSeconds:fallbackInterval(interval)},clone(value||{}));
- const ids=new Set(next.map(entry=>entry.id));let suffix=1;while(ids.has('entry-'+suffix))suffix++;entry.id='entry-'+suffix;
- validGroup(stage,entry,true);validRoute(stage,entry);next.push(entry);wave.SpawnTimeline=next;return entry.id;
+ const wave=waveAt(stage,index),next=entries(wave,interval),id=appendGroup(stage,next,value,interval);
+ wave.SpawnTimeline=next;return id;
+}
+function groupRows(rows,entry){
+ if(!linkedId(entry))return [entry];
+ const key=groupKey(entry);return rows.filter(row=>groupKey(row)===key);
+}
+function addSpawn(stage,index,id,interval){
+ const wave=waveAt(stage,index),next=entries(wave,interval),source=next.find(row=>row.id===id);
+ if(!source)throw Error('This unit group no longer exists.');
+ const spawn=availableSpawns(stage,groupRows(next,source))[0];
+ if(!spawn)throw Error('This unit group already uses every enabled spawn point.');
+ // Keep the runtime timeline flat. The link is used by the wave editor.
+ const unitGroupId=linkedId(source)||nextId(next,'unitGroupId','unit-group-');
+ const added=appendGroup(stage,next,{unitId:source.unitId,spawnId:spawn.id,startSeconds:source.startSeconds,
+  intervalSeconds:source.intervalSeconds===0?interval:source.intervalSeconds,unitGroupId},interval);
+ source.unitGroupId=unitGroupId;
+ wave.SpawnTimeline=next;return added;
 }
 function editGroup(stage,index,id,patch,interval){
  const wave=waveAt(stage,index),next=entries(wave,interval),entry=next.find(entry=>entry.id===id);if(!entry)throw Error('This unit group no longer exists.');
  if(!patch||typeof patch!=='object'||Array.isArray(patch))throw Error('Supply the unit group changes.');if(own(patch,'id')&&patch.id!==id)throw Error('Unit group IDs cannot be changed.');
- const previousSpawn=entry.spawnId;Object.assign(entry,clone(patch));validGroup(stage,entry,entry.spawnId!==previousSpawn);
- if(own(patch,'spawnId')&&entry.spawnId!==previousSpawn&&!own(patch,'routeGraphId')&&entry.routeGraphId){const graph=(stage.graphs||[]).find(graph=>graph.id===entry.routeGraphId);if(!graph||!(graph.spawnIds||[]).includes(entry.spawnId))entry.routeGraphId=null;}
- if(own(patch,'routeGraphId'))validRoute(stage,entry);wave.SpawnTimeline=next;return id;
+ const rows=groupRows(next,entry),previousSpawn=entry.spawnId;
+ Object.assign(entry,clone(patch));const moved=entry.spawnId!==previousSpawn;validGroup(stage,entry,moved);
+ if(moved&&rows.some(row=>row!==entry&&String(row.spawnId)===String(entry.spawnId)))throw Error('This unit group already uses that spawn point.');
+ if(moved&&!own(patch,'routeGraphId')&&entry.routeGraphId){const graph=(stage.graphs||[]).find(graph=>graph.id===entry.routeGraphId);if(!graph||!(graph.spawnIds||[]).includes(entry.spawnId))entry.routeGraphId=null;}
+ if(own(patch,'routeGraphId'))validRoute(stage,entry);
+ if(own(patch,'unitId'))for(const row of rows)row.unitId=entry.unitId;
+ wave.SpawnTimeline=next;return id;
 }
-function removeGroup(stage,index,id,interval){const wave=waveAt(stage,index),next=entries(wave,interval),at=next.findIndex(entry=>entry.id===id);if(at<0)throw Error('This unit group no longer exists.');next.splice(at,1);wave.SpawnTimeline=next;return id;}
+function removeGroup(stage,index,id,interval,{allSpawns=false}={}){
+ const wave=waveAt(stage,index),next=entries(wave,interval),entry=next.find(row=>row.id===id);
+ if(!entry)throw Error('This unit group no longer exists.');
+ const removed=new Set(allSpawns?groupRows(next,entry):[entry]);
+ wave.SpawnTimeline=next.filter(row=>!removed.has(row));return id;
+}
 function chooseGroups(stage,index,unitIds,settings,interval,replaceId){
  const chosen=Array.from(new Set(unitIds));if(!chosen.length)throw Error('Select at least one unit model.');
  const source=waveAt(stage,index),next=Object.assign({},stage,{config:Object.assign({},stage.config,{WaveCfg:stage.config.WaveCfg.slice()})});next.config.WaveCfg[index]=clone(source);
@@ -88,4 +131,4 @@ function copyWaveFrom(stage,sourceIndex,destinationIndex,{groups=true,paths=true
  return true;
 }
 function removeWave(stage,index){waveAt(stage,index);const list=waves(stage);if(list.length===1)throw Error('Keep at least one wave in the stage.');const remaining=list.filter((wave,at)=>at!==index);if(remaining.some(wave=>!wave||typeof wave!=='object'||Array.isArray(wave)))throw Error('Repair the other malformed wave rows before removing this wave.');list.splice(index,1);list.forEach((wave,index)=>{wave.Wave=index+1;});return Math.min(index,list.length-1);}
-module.exports={entries,summary,addGroup,editGroup,removeGroup,chooseGroups,addWave,duplicateWave,copyWaveFrom,removeWave};
+module.exports={entries,summary,unitGroups,availableSpawns,addGroup,addSpawn,editGroup,removeGroup,chooseGroups,addWave,duplicateWave,copyWaveFrom,removeWave};

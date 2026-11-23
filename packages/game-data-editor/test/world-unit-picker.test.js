@@ -19,19 +19,42 @@ test('keeping the initial selection adds other models and leaves the original in
 test('Switch clears only an unrelated route when the spawn changes, including on added groups',()=>{
  const s=stage();W.chooseGroups(s,0,[5,6],Object.assign({},settings,{spawnId:2}),.5,'original');const rows=s.config.WaveCfg[0].SpawnTimeline;assert.equal(rows[0].routeGraphId,null);assert(!rows[2].routeGraphId);assert.deepEqual(rows[0].future,{keep:[1,2]});
 });
-test('the wave row opens the exact unit profile and choosing a different model starts with its default',()=>{
- const node=(text)=>({textContent:text,children:[],appendChild(child){this.children.push(child);},setAttribute(){}});
+test('the wave row puts the Units default first and applies its exact profile to the draft',()=>{
+ const node=text=>({
+  children:[],get textContent(){return text;},set textContent(value){text=value;this.children.length=0;},
+  appendChild(child){this.children.push(child);},setAttribute(){}
+ });
  const buttons=[],fields={},opened=[],chosen=[];
  const c={el:(_tag,text)=>node(text),button(parent,title,action){const n=node(title);n.onclick=action;parent.appendChild(n);buttons.push(n);return n;},
-  field(parent,title,value,action){const n=node(title);n.value=value;n.onchange=action;fields[title]=n;parent.appendChild(n);return n;},
+  field(parent,title,value,action,choices){const n=node(title);n.value=String(value);n.onchange=next=>action(typeof value==='number'?Number(next):next);
+   for(const choice of choices)n.appendChild(Object.assign(node(choice.label),{value:String(choice.value)}));fields[title]=n;parent.appendChild(n);return n;},
   openUnitEditor:id=>opened.push(id)};
- const units=[{id:101685,name:'Abyssal Slime',modelKey:'slime',unitType:'fighter',fightingProfile:true},{id:91157,name:'Abyssal Slime',modelKey:'slime',unitType:'bruiser',fightingProfile:true,defaultProfile:true},{id:90001,name:'Wolf',modelKey:'wolf'}];
- require('../worlds/unit-picker').unitField(c,node(),units,90001,id=>chosen.push(id),()=>{},()=>{});
+ const units=[{id:101685,name:'Abyssal Slime',modelKey:'slime',unitType:'fighter',unitTypeName:'Fighter',fightingProfile:true},
+  {id:91157,name:'Abyssal Slime',modelKey:'slime',unitType:'bruiser',unitTypeName:'Bruiser',fightingProfile:true,defaultProfile:true},
+  {id:90001,name:'Wolf',modelKey:'wolf'}];
+ const s=stage();s.config.WaveCfg[0].SpawnTimeline[0].unitId=101685;
+ const before=clone(s),mount=require('../worlds/unit-picker').unitField;
+ const apply=id=>{chosen.push(id);W.editGroup(s,0,'original',{unitId:id},.5);};
+ mount(c,node(),units,101685,apply,()=>{},()=>{});
  assert.deepEqual(buttons.map(button=>button.textContent),['Switch','Profiles…','Unit Editor']);
- fields.Unit.onchange('slime');buttons[2].onclick();
+ assert.equal(fields.Profile.value,'101685');
+ assert.deepEqual(fields.Profile.children.map(option=>option.textContent),['Default (Bruiser)','Fighter','Bruiser']);
+ assert.deepEqual(s,before);
+ fields.Profile.onchange('default');buttons[2].onclick();
+ const expected=clone(before);expected.config.WaveCfg[0].SpawnTimeline[0].unitId=91157;
+ assert.deepEqual(s,expected);
+ fields.Profile.onchange('default');
  fields.Profile.onchange('101685');buttons[2].onclick();
- assert.deepEqual(chosen,[91157,101685]);
+ fields.Unit.onchange('wolf');assert(!fields.Profile.children.some(option=>option.value==='default'));
+ fields.Unit.onchange('slime');assert.equal(fields.Profile.value,'default');
+ assert.deepEqual(chosen,[91157,101685,90001,91157]);
  assert.deepEqual(opened,[91157,101685]);
+ const updated=units.map(unit=>({...unit,defaultProfile:unit.id===101685}));
+ mount(c,node(),updated,91157,apply,()=>{},()=>{});
+ assert.equal(fields.Profile.children[0].textContent,'Default (Fighter)');
+ assert.equal(fields.Profile.value,'91157');
+ assert.deepEqual(s,expected);
+ fields.Profile.onchange('default');assert.deepEqual(s,before);
 });
 test('catalog resolves descriptions and filters, including the source asset pack of campaign appearances, without changing config',()=>{
  const config={SoldierCfg:{3:{Name:'[[loc:name]]',Guide:{description:'[[loc:description]]'},prefab:'model',MonsterPack:'monster2'},4:{Name:'Campaign',prefab:'campaign',AppearanceSourceUnit:3},90011:{Name:'Boss form',prefab:'model'}},GameTools:{unitTypes:{mystic:{name:'Mystic'}},unitTypeAssignments:{'enemy:3:default':'mystic'}}},before=clone(config),rows=Catalog.rows(config,{entries:{name:{en:'Acolyte'},description:{en:'Heals nearby allies with radiant spells.'}}});
@@ -84,5 +107,13 @@ test('saved character appearances take precedence over legacy models and do not 
 test('the complete saved catalog exposes every spawnable unit and read-only model descriptions without creating drafts',()=>{
  const root=path.resolve(__dirname,'../../..'),file=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),before=fs.readFileSync(file),service=new Service(root,{artifacts:path.join(os.tmpdir(),'hkd-picker-readonly-'+process.pid)}),catalog=service.catalog(),config=JSON.parse(before);
  assert.equal(catalog.units.length,Object.values(config.SoldierCfg).filter(unit=>unit.prefab&&![90011,90012].includes(Number(unit.ID))&&!config.GameTools.unitProfiles.aliases[unit.ID]).length);assert(catalog.units.every(unit=>typeof unit.description==='string'&&unit.unitType&&unit.assetPack));assert.equal(catalog.units.find(unit=>unit.id===91001).assetPack,'monster1');
+ for(const name of ['Ironclad Slime','Lightning Slime']){
+  const profiles=catalog.units.filter(unit=>unit.name===name);
+  assert.equal(profiles.length,6);
+  assert(profiles.every(unit=>unit.customUnit&&unit.assetPack==='monster1'));
+ }
+ const snails=catalog.units.filter(unit=>unit.name==='Blue Snail');
+ assert.equal(snails.length,6);
+ assert(snails.every(unit=>!unit.customUnit&&unit.assetPack==='monster1'));
  const documents=clone(service.docs),model=service.unitPreview({id:91001});assert(model.layers.length&&model.layers[0].json&&model.layers[0].atlas&&model.runtimePath);assert.deepEqual(model.shared,[]);assert.equal(service.version,1);assert.deepEqual(service.docs,documents);assert(fs.readFileSync(file).equals(before));assert.throws(()=>service.unitPreview({id:90011}),/spawnable/);
 });

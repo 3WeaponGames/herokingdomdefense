@@ -1,35 +1,62 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const {setup,hero,Node,Vec2,authored}=require('./backend-gameplay-harness.cjs');
 function prefab(id){return ()=>{const node=new Node();node.getComponent=()=>({uuid:String(id),node,initData(){}});return node;};}
-test('Silver offers rotate by wave and keep the same location on retry and resume',()=>{
+function silverStage(schedule) {
  const h=setup({
   PlatformSetting:{SwitchID:{ShenHe:'review'}},
   SdkMgr:{SdkMgr:{getInstance:()=>({getCheckVersion:()=>false})}},
  });
- const data=h.d,offers=[1,2,3,4].map(id=>({id,node:{active:false},init:h.noop}));
- Object.assign(data,{
-  canNew:true,businessPoints:offers,baseBuild:{},weaponBusinessPoints:null,horseBusinessPoints:null,
-  levelCfg:{Level:1,WaveCfg:Array.from({length:5},()=>({StartSliver:0}))},
-  loadMonster(){this.round++;},upMap:h.noop,
+ const offer={node:{active:false},init:h.noop};
+ if (schedule) require('../../assets/_script/SilverOfferSchedule').apply(offer,schedule);
+ Object.assign(h.d,{
+  canNew:true,businessPoints:[offer],baseBuild:{},weaponBusinessPoints:null,horseBusinessPoints:null,
+  levelCfg:{Level:1,WaveCfg:Array.from({length:10},()=>({StartSliver:0}))},
+  taskInfo:{index:0,list:[],stage:0},loadMonster(){this.round++;},upMap:h.noop,
  });
- function shown(offer){
-  assert.equal(data.appearBusinessPoints,offer);
-  assert.deepEqual(offers.filter(point=>point.node.active),offer?[offer]:[]);
+ return {...h,shown(visible){
+  assert.equal(h.d.appearBusinessPoints,visible?offer:null,'wave '+h.d.round);
+  assert.equal(offer.node.active,visible);
+ }};
+}
+
+test('the Silver offer defaults to two waves and can be scheduled for four consecutive waves',()=>{
+ for (const [schedule,count] of [[undefined,2],[{count:4},4],[{count:0},0]]) {
+  const h=silverStage(schedule);
+  h.d.initCom();
+  for(let wave=1;wave<=10;wave++){
+   h.shown(wave<=count);
+   if(wave<10)h.d.endRoundGame();
+  }
  }
- data.initCom();shown(offers[0]);
- data.endRoundGame();shown(offers[1]);
- data.onRestart(false);shown(offers[1]);
- data.endRoundGame();shown(offers[2]);
- data._restoringCheckpoint=true;
- data.onRestart(false);shown(offers[2]);
- data.endRoundGame();shown(offers[3]);
- data.endRoundGame();shown(offers[0]);
- data.onRestart(true);shown(offers[0]);
- // The map exports only enabled locations into the runtime list.
- data.businessPoints=[offers[0],offers[2],offers[3]];
- data.endRoundGame();shown(offers[2]);
- data.businessPoints=[];
- data.onRestart(true);shown(null);
+});
+
+test('a Silver offer scheduled for waves 4 and 9 respects retries and saved claims',()=>{
+ const {harness}=require('./persistence-harness.cjs');
+ const h=silverStage({count:2,firstWave:4,interval:5}),data=h.d;
+ const claimKey=h.load('KinghtFallGameCtrlData').KinghtFallCommerceKeyType.SilverClaimedWave;
+ const disk=harness();
+ h.e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData=()=>disk.player.gameData;
+ data.initCom();h.shown(false);
+ for(let wave=2;wave<=4;wave++){data.endRoundGame();h.shown(wave===4);}
+ data.onRestart(false);h.shown(true);
+ data.businessAdd[claimKey]=4;
+ data.coin+=7;
+ assert(h.g.saveGame());
+ assert(h.g.captureWaveStart());
+ const retry=h.g.getRestartCheckpoint('wave');
+ assert.equal(retry.businessList[claimKey],4);
+ assert(disk.player.gameData.setCheckpoint(retry));
+
+ const resumed=silverStage({count:2,firstWave:4,interval:5});
+ const saved=harness(disk.persist()).player.gameData;
+ resumed.d.round=saved.getCheckpoint(1).roundNum;
+ resumed.d.businessAdd=JSON.parse(JSON.stringify(saved.getBusinessList(1)));
+ resumed.d._restoringCheckpoint=true;
+ resumed.d.onRestart(false);resumed.shown(false);
+ assert.equal(saved.getCheckpoint(1).coin,data.coin);
+ for(let wave=5;wave<=10;wave++){resumed.d.endRoundGame();resumed.shown(wave===9);}
+ resumed.d.onRestart(true);resumed.shown(false);
+ assert.equal(resumed.d.businessAdd[claimKey],undefined);
 });
 test('wave completion waits for asynchronous final enemy and emits once',()=>{
  const h=setup();h.d.enemyList=[{uuid:'alive',onUpdate(){}}];h.d.enemyQueue={1:[{id:90001,num:1}]};h.d.packInterval=.5;

@@ -1,11 +1,15 @@
 'use strict';
 const Catalog=require('./unit-catalog'),Gallery=require('./unit-model-gallery'),Stats=require('./wave-stats'),Classes=require('../lib/enemy-classes');
+const {custom}=require('../../hkd-characters/lib/unit-packs');
+const collection=unit=>unit.customUnit?custom:{id:unit.assetPack||'untyped',label:unit.assetPackName||'Unassigned'};
 function mount(dialog,options){
  const {el,button,field,units,selected,controls,ipc}=options;dialog.classList.add('world-unit-dialog');
  const toolbar=el('div',undefined,'world-unit-picker-toolbar'),search=el('input',undefined,'world-unit-picker-search');search.type='search';search.placeholder='Search names and descriptions…';search.setAttribute('aria-label','Search unit names and descriptions');toolbar.appendChild(search);
  const filters=el('div',undefined,'world-unit-picker-filters');toolbar.appendChild(filters);
- const choices=(key,label)=>[{value:'all',label}].concat(Array.from(new Map(units.map(unit=>[unit[key]||'untyped',unit[key+'Name']||'Unassigned'])),([value,label])=>({value,label})).sort((a,b)=>a.label.localeCompare(b.label)));
- let type='all',pack='all',enemyClass='all';field(filters,'Enemy class',enemyClass,value=>{enemyClass=value;filter();},[{value:'all',label:'All enemy classes'}].concat(Classes.CHOICES));field(filters,'Fighting type',type,value=>{type=value;filter();},choices('unitType','All fighting types'));field(filters,'Asset pack',pack,value=>{pack=value;filter();},choices('assetPack','All asset packs'));
+ const choices=(entries,label)=>[{value:'all',label}].concat(Array.from(new Map(entries),([value,label])=>({value,label})).sort((a,b)=>a.label.localeCompare(b.label)));
+ const packs=units.map(unit=>{const pack=collection(unit);return [pack.id,pack.label];});
+ const types=units.map(unit=>[unit.unitType||'untyped',unit.unitTypeName||'Unassigned']);
+ let type='all',pack='all',enemyClass='all';field(filters,'Enemy class',enemyClass,value=>{enemyClass=value;filter();},[{value:'all',label:'All enemy classes'}].concat(Classes.CHOICES));field(filters,'Fighting type',type,value=>{type=value;filter();},choices(types,'All fighting types'));field(filters,'Asset pack',pack,value=>{pack=value;filter();},choices(packs,'All asset packs'));
  const expand=button(toolbar,'Expand',()=>{const expanded=dialog.classList.toggle('expanded');expand.textContent=expanded?'Restore':'Expand';expand.setAttribute('aria-pressed',String(expanded));});expand.title='Expand the chooser to fill the editor';expand.setAttribute('aria-pressed','false');dialog.appendChild(toolbar);
  controls.classList.add('world-unit-picker-fields');dialog.appendChild(controls);
  const scaling=options.wave?el('div',Stats.multipliers(options.wave)+' · Per unit, before battle buffs.','world-unit-picker-scaling'):null;if(scaling)dialog.appendChild(scaling);
@@ -15,7 +19,7 @@ function mount(dialog,options){
  const gallery=Gallery.create(scroll,id=>ipc('world-unit-preview',{id}),options.initialUnitId),cards=[],models=Catalog.groups(units);let disposed=false,initialFrame=null;
  function selection(){for(const record of cards){const {unit,card,members,entry}=record,on=selected.has(unit.id),chosen=members.filter(member=>selected.has(member.id));card.classList.toggle('active',on);card.setAttribute('aria-pressed',String(on));entry.dataset.selectedIds=JSON.stringify(chosen.map(member=>member.id));const other=chosen.filter(member=>member.id!==unit.id).length;record.other.hidden=!other;record.other.textContent=other+' other profile'+(other===1?'':'s')+' selected';if(record.select)for(const option of record.select.options){const member=members.find(member=>String(member.id)===option.value);option.textContent=(selected.has(member.id)?'✓ ':'')+record.labels.get(member.id);}}const visible=cards.filter(({entry})=>!entry.hidden).length;summary.textContent=selected.size+' selected · '+visible+' of '+models.length+' models · '+units.length+' profiles · '+(options.single?'Click a model to choose one unit.':'Click a model to select or deselect.')+' Drag the lower-right corner to resize.';}
  function show(record,unit){const changed=record.unit.id!==unit.id,enemyClass=Catalog.enemyClass(unit),className=Classes.label(enemyClass);record.unit=unit;record.card.dataset.unitId=unit.id;record.card.dataset.enemyClass=enemyClass;record.card.setAttribute('aria-label',Catalog.name(unit)+' · '+className);record.card.title=[Catalog.name(unit)+' · '+unit.id,Catalog.profileLabel(unit),options.wave&&Stats.formula(unit,options.wave),unit.description,unit.assetPackName].filter(Boolean).join('\n');record.name.textContent=Catalog.name(unit);record.classBadge.textContent=className;record.classBadge.dataset.enemyClass=enemyClass;record.image.alt=Catalog.name(unit)+' model';if(record.stats){record.stats.textContent=[unit.unitTypeName,options.wave?Stats.describe(unit,options.wave):Catalog.profileStats(unit)].filter(Boolean).join(' · ');record.stats.title=options.wave?Stats.formula(unit,options.wave):'Base unit stats';}if(changed)gallery.setUnit(record.card,unit.baseProfileId||unit.id);}
- function filter(){for(const record of cards){const available=record.members.filter(unit=>(!unit.archived||selected.has(unit.id))&&Catalog.matches(unit,search.value)&&(enemyClass==='all'||Catalog.enemyClass(unit)===enemyClass)&&(type==='all'||(unit.unitType||'untyped')===type)&&(pack==='all'||(unit.assetPack||'untyped')===pack));record.available=available;record.entry.hidden=record.card.hidden=!available.length;if(!available.length)continue;const unit=available.find(unit=>unit.id===record.preferredId)||available.find(unit=>selected.has(unit.id))||Catalog.firstProfile(available);show(record,unit);if(record.select){record.select.textContent='';for(const member of available){const option=el('option',record.labels.get(member.id));option.value=String(member.id);option.title=Catalog.profileLabel(member)+' · '+member.id;record.select.appendChild(option);}record.select.value=String(unit.id);record.select.disabled=available.length===1;}}empty.hidden=cards.some(({entry})=>!entry.hidden);selection();scroll.scrollTop=0;}
+ function filter(){for(const record of cards){const available=record.members.filter(unit=>(!unit.archived||selected.has(unit.id))&&Catalog.matches(unit,search.value)&&(enemyClass==='all'||Catalog.enemyClass(unit)===enemyClass)&&(type==='all'||(unit.unitType||'untyped')===type)&&(pack==='all'||collection(unit).id===pack));record.available=available;record.entry.hidden=record.card.hidden=!available.length;if(!available.length)continue;const unit=available.find(unit=>unit.id===record.preferredId)||available.find(unit=>selected.has(unit.id))||Catalog.firstProfile(available);show(record,unit);if(record.select){record.select.textContent='';for(const member of available){const option=el('option',record.labels.get(member.id));option.value=String(member.id);option.title=Catalog.profileLabel(member)+' · '+member.id;record.select.appendChild(option);}record.select.value=String(unit.id);record.select.disabled=available.length===1;}}empty.hidden=cards.some(({entry})=>!entry.hidden);selection();scroll.scrollTop=0;}
  for(const group of models){const members=group.units,initial=members.find(unit=>unit.id===options.initialUnitId)||members.find(unit=>selected.has(unit.id)),unit=initial||Catalog.firstProfile(members),entry=el('div',undefined,'world-unit-entry');entry.dataset.modelKey=group.key;entry.dataset.memberIds=JSON.stringify(members.map(unit=>unit.id));grid.appendChild(entry);const record={entry,members,unit,preferredId:initial&&initial.id,available:members};
   const card=button(entry,'',()=>{const id=record.unit.id;if(options.single){selected.clear();selected.add(id);}else if(selected.has(id))selected.delete(id);else selected.add(id);selection();const error=dialog.querySelector('[role="alert"]');if(error)error.hidden=true;});card.className='world-unit-choice';record.card=card;
   const model=el('span',undefined,'world-unit-model'),image=el('img'),status=el('small','Loading model…','world-unit-model-status');image.draggable=false;model.appendChild(image);model.appendChild(status);card.appendChild(model);record.image=image;record.name=el('span',undefined,'world-unit-model-name');card.appendChild(record.name);record.classBadge=el('span',undefined,'world-unit-enemy-class');card.appendChild(record.classBadge);const check=el('span','✓','world-unit-model-selected');check.setAttribute('aria-hidden','true');card.appendChild(check);
@@ -42,9 +46,29 @@ function unitField(c,parent,units,id,change,switchUnit,profileAction){
  }).title='Open this unit’s shared profile in Units';
  const fields=c.el('div',undefined,'world-wave-unit-fields world-wave-unit-options');row.appendChild(fields);
  const ordered=members=>members.slice().sort((a,b)=>a.fightingProfile&&b.fightingProfile?['fighter','guardian','vanguard','skirmisher','bruiser','mystic'].indexOf(a.unitType)-['fighter','guardian','vanguard','skirmisher','bruiser','mystic'].indexOf(b.unitType):0);
+ const defaultProfile=()=>group.units.find(unit=>unit.defaultProfile&&!unit.archived);
+ const profileValue=()=>current===defaultProfile()?.id?'default':String(current);
+ const profileChoices=()=>{
+  const choices=ordered(group.units).map(unit=>({value:String(unit.id),label:Catalog.profileLabel(unit)}));
+  const preferred=defaultProfile();
+  if(preferred)choices.unshift({value:'default',label:'Default ('+Catalog.profileLabel(preferred)+')'});
+  return choices;
+ };
  const options=()=>groups.filter(item=>item===group||item.units.some(unit=>Catalog.matches(unit,search.value))).map(item=>({value:item.key,label:Catalog.name(item.units[0])}));
- const input=c.field(fields,'Unit',group.key,value=>{const next=groups.find(item=>item.key===value);if(!next||next===group)return;current=Catalog.firstProfile(next.units).id;group=next;profile.textContent='';for(const unit of ordered(group.units)){const option=c.el('option',Catalog.profileLabel(unit));option.value=String(unit.id);profile.appendChild(option);}profile.value=String(current);change(current);},options());input.setAttribute('aria-label','Unit');
- const profile=c.field(fields,'Profile',current,value=>{current=Number(value);change(current);},ordered(group.units).map(unit=>({value:unit.id,label:Catalog.profileLabel(unit)})));profile.setAttribute('aria-label','Profile');
+ const input=c.field(fields,'Unit',group.key,value=>{
+  const next=groups.find(item=>item.key===value);if(!next||next===group)return;
+  group=next;current=Catalog.firstProfile(group.units).id;
+  profile.textContent='';
+  for(const choice of profileChoices()){const option=c.el('option',choice.label);option.value=choice.value;profile.appendChild(option);}
+  profile.value=profileValue();
+  return change(current);
+ },options());input.setAttribute('aria-label','Unit');
+ const profile=c.field(fields,'Profile',profileValue(),value=>{
+  const id=value==='default'?defaultProfile()?.id:Number(value);
+  if(id===current||!group.units.some(unit=>unit.id===id))return;
+  current=id;
+  return change(current);
+ },profileChoices());profile.setAttribute('aria-label','Profile');
  search.oninput=()=>{input.textContent='';for(const choice of options()){const option=c.el('option',choice.label);option.value=choice.value;input.appendChild(option);}input.value=group.key;};return input;
 }
 module.exports={mount,unitField};

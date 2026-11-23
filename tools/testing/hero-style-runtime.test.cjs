@@ -63,6 +63,24 @@ function scene(style,options={}){
  return {...h,hero,rt,enemy,poses,clears,hpUpdates,buffs,retimes,attacks};
 }
 
+test('Mystic beam can attack flight and Bruiser swings skip flight inside their area',()=>{
+ const mystic=scene('mystic',{attackRate:10}),air=mystic.enemy(100),distant=mystic.enemy(150);
+ air.cfg={BuildingCross:0};
+ mystic.rt.update(.25);
+ assert.equal(mystic.rt.channelTarget,air);
+ assert(air.hits.length>0);
+ assert.equal(distant.hits.length,0);
+
+ const bruiser=scene('bruiser'),flying=bruiser.enemy(40),ground=bruiser.enemy(60);
+ flying.cfg={BuildingCross:0};
+ bruiser.hero.tagEnemy=flying;
+ assert.equal(bruiser.rt.defaultAimTarget(),ground);
+ assert(bruiser.rt.cast({x:1,y:0}));
+ bruiser.rt.update(1);
+ assert.equal(flying.hits.length,0);
+ assert(ground.hits.length>0);
+});
+
 for(const style of ['skirmisher','vanguard','guardian','mystic','bruiser'])test(style+' primary hits complete the original combat lesson through the shared impact path',()=>{
  const h=scene(style),target=h.enemy(100);let complete=0,cleared=0;
  h.e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData=()=>({getGuideTips:()=>complete,setGuideTips(){complete++;}});
