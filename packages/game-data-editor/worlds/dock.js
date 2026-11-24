@@ -23,4 +23,86 @@ function attach(options){
  const observer=typeof ResizeObserver==='function'?new ResizeObserver(apply):null;if(observer)observer.observe(main);apply();
  return {apply,size,handles,suspend:cancel,destroy(){cancel();if(observer)observer.disconnect();for(const h of handles)h.remove();}};
 }
-module.exports={attach};
+function attachWaveInspector({main,left,mapView,inspector,onResize,isActive,key='hkd-wave-inspector-width'}){
+ const document=main.ownerDocument,view=document.defaultView,widthProperty='--world-wave-inspector-width';
+ const divider=document.createElement('div');
+ divider.className='world-splitter world-splitter-x world-wave-splitter';
+ divider.hidden=true;divider.tabIndex=0;
+ divider.setAttribute('role','separator');
+ divider.setAttribute('aria-orientation','vertical');
+ divider.setAttribute('aria-label','Resize Waves inspector');
+ divider.title='Drag or use the arrow keys to resize. Double-click to reset.';
+ main.insertBefore(divider,inspector);
+
+ let preferred=0,minimum=0,maximum=0,width=0,drag=null;
+ try{const saved=Number(view.localStorage.getItem(key));if(Number.isFinite(saved)&&saved>0)preferred=saved;}catch(_){}
+ const clamp=value=>Math.max(minimum,Math.min(maximum,Math.round(value)));
+ function paintWidth(){
+  if(divider.hidden||!isActive()||!minimum)return;
+  width=clamp(preferred||minimum);
+  inspector.style.setProperty(widthProperty,width+'px');
+  divider.setAttribute('aria-valuemin',String(minimum));
+  divider.setAttribute('aria-valuemax',String(maximum));
+  divider.setAttribute('aria-valuenow',String(width));
+  divider.setAttribute('aria-valuetext',width+' pixels');
+  onResize();
+ }
+ function apply(){
+  if(divider.hidden||!isActive()||!main.clientWidth)return;
+  inspector.style.removeProperty(widthProperty);
+  minimum=Math.ceil(inspector.getBoundingClientRect().width);
+  const mapMinimum=parseFloat(view.getComputedStyle(mapView).minWidth)||0;
+  maximum=Math.max(minimum,Math.floor(main.clientWidth-left.getBoundingClientRect().width-divider.offsetWidth-mapMinimum));
+  paintWidth();
+ }
+ function persist(){try{view.localStorage.setItem(key,String(preferred));}catch(_){}}
+ function move(event){
+  if(!drag||event.pointerId!==drag.id)return;
+  if(event.pointerType==='mouse'&&event.buttons===0){finish(false);return;}
+  preferred=clamp(drag.width+drag.x-event.clientX);
+  paintWidth();
+ }
+ function finish(cancel){
+  if(!drag)return;
+  const previous=drag;drag=null;
+  divider.classList.remove('dragging');
+  for(const [name,listener] of listeners)view.removeEventListener(name,listener,true);
+  if(cancel){preferred=previous.preferred;paintWidth();}
+  else if(preferred!==previous.preferred)persist();
+  if(divider.hasPointerCapture(previous.id))divider.releasePointerCapture(previous.id);
+ }
+ function end(event){if(drag&&event.pointerId===drag.id)finish(event.type==='pointercancel');}
+ function suspend(){finish(true);}
+ function escape(event){if(event.key==='Escape'){event.preventDefault();event.stopPropagation();suspend();}}
+ const listeners=[['pointermove',move],['pointerup',end],['pointercancel',end],['blur',suspend],['keydown',escape]];
+ divider.onpointerdown=event=>{
+  if(event.button!==0||drag||divider.hidden||!isActive()||maximum===minimum)return;
+  event.preventDefault();
+  divider.focus({preventScroll:true});
+  drag={id:event.pointerId,x:event.clientX,width,preferred};
+  try{divider.setPointerCapture(event.pointerId);}catch(_){}
+  divider.classList.add('dragging');
+  for(const [name,listener] of listeners)view.addEventListener(name,listener,true);
+ };
+ divider.onlostpointercapture=end;
+ divider.ondblclick=()=>{preferred=0;paintWidth();persist();};
+ divider.onkeydown=event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  event.preventDefault();event.stopPropagation();
+  const step=(event.key==='ArrowLeft'?1:-1)*(event.shiftKey?60:20);
+  preferred=event.key==='Home'?0:clamp(event.key==='End'?maximum:width+step);
+  paintWidth();persist();
+ };
+ function show(visible){
+  if(visible===!divider.hidden)return;
+  if(!visible)suspend();
+  divider.hidden=!visible;
+  if(visible)apply();else inspector.style.removeProperty(widthProperty);
+ }
+ const observer=typeof view.ResizeObserver==='function'?new view.ResizeObserver(apply):null;
+ if(observer)observer.observe(main);
+ view.addEventListener('resize',apply);
+ return {apply,show,suspend,destroy(){show(false);if(observer)observer.disconnect();view.removeEventListener('resize',apply);divider.remove();}};
+}
+
+module.exports={attach,attachWaveInspector};

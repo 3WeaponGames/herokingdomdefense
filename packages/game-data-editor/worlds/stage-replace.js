@@ -79,5 +79,10 @@ function replace(target,source,selection){
  if(selected.includes('spawns')||selected.includes('paths'))spawnCounter(next,selected.includes('spawns')?source:null);
  return next;
 }
-function plan(target,source,selection){const selected=sections(selection),value=replace(target,source,selected),info=require('./stage-replace-dependencies').retain(target,value,selected);if(info.retainedSpawnIds.length||info.retainedGraphIds.length)spawnCounter(value);return {value,info};}
+function plan(target,source,selection){
+ const selected=sections(selection),value=replace(target,source,selected),info=require('./stage-replace-dependencies').retain(target,value,selected);
+ if(info.retainedSpawnIds.length||info.retainedGraphIds.length)spawnCounter(value);
+ if(selected.includes('spawns')||selected.includes('waves'))require('./wave-editor').refreshSpawnTiming(value);
+ return {value,info};
+}
 module.exports={SCOPES,SECTIONS,sections,canonicalStageKey,merge,replace,plan};

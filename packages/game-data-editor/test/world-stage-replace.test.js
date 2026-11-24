@@ -25,6 +25,21 @@ function fixture(){
 }
 function replace(f,scope){const sections=Array.isArray(scope)?scope:scope==='stage'?Replace.SECTIONS:[scope];return f.s.replaceStage({key:'stage:A-20',sourceKey:'stage:A-19',sections,version:f.s.version});}
 
+test('transferred waves and spawn defaults resolve inherited fields against the destination spawn',()=>{
+ const {source,destination}=fixture(),spawn=source.spawns[0];
+ spawn.enabled=true;spawn.defaultTiming={startSeconds:2,intervalSeconds:1};
+ const group=source.config.WaveCfg[1].SpawnTimeline[0];
+ group.startSeconds=2;group.inheritSpawnTiming=['startSeconds'];
+ destination.spawns=[{...clone(spawn),defaultTiming:{startSeconds:5,intervalSeconds:2}}];
+ destination.graphs=clone(source.graphs);
+ const copied=Replace.plan(destination,source,['waves']).value;
+ const imported=copied.config.WaveCfg[1].SpawnTimeline[0];
+ assert.deepEqual([imported.startSeconds,imported.intervalSeconds],[5,.4]);
+ const changed=Replace.plan(copied,source,['spawns']).value.config.WaveCfg[1].SpawnTimeline[0];
+ assert.deepEqual([changed.startSeconds,changed.intervalSeconds],[2,.4]);
+ assert.deepEqual([imported.startSeconds,group.startSeconds],[5,2]);
+});
+
 test('Tasks position transfers with spawns and stays in place for map and stage settings transfers',()=>{
  const {source,destination}=fixture();
  source.tasksPosition={x:180,y:60,future:{keep:true}};destination.tasksPosition={x:-140,y:100};

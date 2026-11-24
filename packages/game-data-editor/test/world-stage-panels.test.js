@@ -21,6 +21,95 @@ function fixture(){
 function descendants(element){return element.children.flatMap(child=>[child,...descendants(child)]);}
 function dragEvent(clientY=10){return {clientY,preventDefault(){this.prevented=true;},stopPropagation(){},dataTransfer:{setData(){}}};}
 
+test('spawn and wave timing fields have three step sizes on each side and preserve per-field inheritance',()=>{
+ const f=fixture(),stage=f.state.snap.value,spawn=stage.spawns[0],wave=stage.config.WaveCfg[0];
+ spawn.defaultTiming={startSeconds:1.25,intervalSeconds:.75};
+ Object.assign(wave.SpawnTimeline[0],{count:2,...spawn.defaultTiming,inheritSpawnTiming:['startSeconds','intervalSeconds']});
+ const redraw=()=>{f.context.right.textContent='';f.panels.right();};
+ const find=(predicate,parent=f.context.right)=>descendants(parent).find(predicate);
+ const step=(caption,parent)=>find(node=>node.attributes?.['aria-label']===caption,parent);
+ const lane=()=>f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0];
+ const defaults=()=>f.state.snap.value.spawns[0].defaultTiming;
+ f.state.tab='Spawns';f.state.selection=['spawn:1'];redraw();
+ const section=find(node=>node.tagName==='details'&&node.children[0].textContent==='Default timing');
+ assert(section.open);assert.equal(f.edits(),0);
+ const startRow=find(node=>node.classList.contains('world-timing-row'),section);
+ for(const [side,labels] of [['decrease',['−0.5','−2','−5']],['increase',['+0.5','+2','+5']]]){
+  assert.deepEqual(find(node=>node.classList.contains('world-timing-'+side),startRow).children.map(node=>node.textContent),labels);
+ }
+ step('Increase start time by 0.5 seconds',section).onclick();
+ assert.equal(defaults().startSeconds,1.75);assert.equal(lane().startSeconds,1.75);
+ step('Increase start time by 2 seconds',section).onclick();
+ assert.equal(lane().startSeconds,3.75);
+ step('Increase start time by 5 seconds',section).onclick();
+ assert.equal(lane().startSeconds,8.75);
+ step('Decrease start time by 5 seconds',section).onclick();
+ step('Decrease start time by 2 seconds',section).onclick();
+ assert.equal(lane().startSeconds,1.75);
+ step('Decrease interval by 0.5 seconds',section).onclick();
+ assert.equal(defaults().intervalSeconds,.25);assert.equal(lane().intervalSeconds,.25);
+ assert(step('Decrease interval by 0.5 seconds',section).disabled);
+
+ f.state.tab='Waves';redraw();
+ const card=find(node=>node.dataset.entryId==='a');
+ step('Decrease start time by 0.5 seconds',card).onclick();
+ assert.equal(lane().startSeconds,1.25);
+ assert.deepEqual(lane().inheritSpawnTiming,['intervalSeconds']);
+ assert.equal(defaults().startSeconds,1.75);
+ step('Increase interval by 5 seconds',card).onclick();
+ assert.equal(lane().intervalSeconds,5.25);
+ step('Decrease interval by 2 seconds',card).onclick();
+ assert.equal(lane().intervalSeconds,3.25);
+ assert(!Object.hasOwn(lane(),'inheritSpawnTiming'));
+ redraw();
+ const updatedCard=find(node=>node.dataset.entryId==='a');
+ const reset=find(node=>node.tagName==='button'&&node.textContent==='Use spawn defaults',updatedCard);
+ reset.onclick();
+ assert.deepEqual([lane().startSeconds,lane().intervalSeconds],[1.75,.25]);
+ assert.deepEqual(lane().inheritSpawnTiming,['startSeconds','intervalSeconds']);
+});
+
+test('the wave unit chooser updates inherited start and interval when its spawn changes',()=>{
+ const f=fixture(),stage=f.state.snap.value;
+ stage.spawns[0].defaultTiming={startSeconds:2,intervalSeconds:1};
+ stage.spawns.push({id:2,name:'Spawn 2',enabled:true,defaultTiming:{startSeconds:4,intervalSeconds:1.5}});
+ let chooser,apply;
+ f.context.unitPicker=(dialog,spec)=>{chooser=spec;};
+ f.context.modal=(title,body,action)=>{body(f.context.el('div'));apply=action;};
+ f.state.tab='Waves';f.panels.right();
+ descendants(f.context.right).find(node=>node.tagName==='button'&&node.textContent==='Add units').onclick();
+ const field=label=>descendants(chooser.controls).find(node=>node.fieldName===label);
+ assert.deepEqual([field('Starts at (s)').value,field('Interval (s)').value],[2,1]);
+ field('Starts at (s)').value='2.25';field('Starts at (s)').change(2.25);
+ field('Spawn').change('2');
+ assert.deepEqual([field('Starts at (s)').value,field('Interval (s)').value],['2.25','1.5']);
+ chooser.selected.add(3);apply();
+ const entry=f.state.snap.value.config.WaveCfg[0].SpawnTimeline.at(-1);
+ assert.deepEqual([entry.spawnId,entry.startSeconds,entry.intervalSeconds],[2,2.25,1.5]);
+ assert.deepEqual(entry.inheritSpawnTiming,['intervalSeconds']);
+});
+
+test('the spawn inspector applies defaults to every wave using the selected spawn in one draft edit',()=>{
+ const f=fixture(),stage=f.state.snap.value;
+ stage.spawns[0].defaultTiming={startSeconds:2,intervalSeconds:1.5};
+ stage.spawns.push({id:2,name:'Spawn 2',enabled:true});
+ stage.config.WaveCfg[0].SpawnTimeline[1].spawnId=2;
+ const other=clone(stage.config.WaveCfg[0].SpawnTimeline[1]);
+ f.state.tab='Spawns';f.state.selection=['spawn:1'];f.panels.right();
+ const timing=descendants(f.context.right).find(node=>node.tagName==='details'&&node.children[0].textContent==='Default timing');
+ const apply=timing.children.find(node=>node.tagName==='button'&&node.textContent==='Apply to all wave groups');
+ assert(apply);assert.equal(f.edits(),0);
+ apply.onclick();
+ assert.equal(f.edits(),1);
+ const waves=f.state.snap.value.config.WaveCfg;
+ assert.deepEqual(waves[0].SpawnTimeline[1],other);
+ for(const wave of waves)for(const row of wave.SpawnTimeline.filter(row=>row.spawnId===1)){
+  assert.deepEqual([row.startSeconds,row.intervalSeconds],[2,1.5]);
+  assert.deepEqual(row.inheritSpawnTiming,['startSeconds','intervalSeconds']);
+ }
+ assert.deepEqual(waves[1].RefreshSoldierKind,['1#3,1']);
+});
+
 test('Tasks position follows Hero start and entering placement leaves the stage draft untouched',()=>{
  const f=fixture();f.state.tab='Spawns';const before=clone(f.state.snap.value);
  f.panels.left();
@@ -294,14 +383,53 @@ test('explicit Delete path clears only matching timed route overrides and preser
  const f=fixture(),before=clone(f.state.snap.value);f.state.tab='Paths';f.panels.right();const remove=descendants(f.context.right).find(element=>element.tagName==='button'&&element.textContent==='Delete path');assert(remove);remove.onclick();
  const expected=clone(before);expected.graphs=expected.graphs.filter(graph=>graph.id!=='one');expected.config.WaveCfg[0].SpawnTimeline[0].routeGraphId=null;assert.deepEqual(f.state.snap.value,expected);assert.deepEqual(before.config.WaveCfg[0].SpawnTimeline[0].future,{keep:1});assert(!Object.prototype.hasOwnProperty.call(f.state.snap.value.config.WaveCfg[0].SpawnTimeline[2],'routeGraphId'));assert(!Object.prototype.hasOwnProperty.call(f.state.snap.value.config.WaveCfg[1],'SpawnTimeline'));assert.equal(f.edits(),1);assert.equal(f.state.graph,null);assert.deepEqual(f.state.selection,[]);
 });
-test('detail expansion survives field edits only within the same stage, wave and group context',()=>{
+test('wave timing opens by default and remembers a collapse only within the same stage, wave and group context',()=>{
  const f=fixture();f.state.tab='Waves';f.panels.right();const timing=()=>descendants(f.context.right).find(element=>element.tagName==='details'&&element.children[0].textContent.startsWith('Timing & route'));
- const first=timing();assert.equal(first.open,false);first.isConnected=true;first.open=true;first.ontoggle();
- f.context.right.textContent='';f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0].count=2;f.panels.right();assert.equal(timing().open,true);
+ const first=timing();assert.equal(first.open,true);first.isConnected=true;first.open=false;first.ontoggle();
+ f.context.right.textContent='';f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0].count=2;f.panels.right();assert.equal(timing().open,false);
  // A queued toggle from a detached old element cannot overwrite current state.
- first.isConnected=false;first.open=false;first.ontoggle();f.context.right.textContent='';f.panels.right();assert.equal(timing().open,true);
- f.context.right.textContent='';f.state.wave=1;f.panels.right();assert.equal(timing().open,false);
- f.context.right.textContent='';f.state.wave=0;f.state.snap.value.id='A-8';f.panels.right();assert.equal(timing().open,false);assert.equal(f.edits(),0);
+ first.isConnected=false;first.open=true;first.ontoggle();f.context.right.textContent='';f.panels.right();assert.equal(timing().open,false);
+ f.context.right.textContent='';f.state.wave=1;f.panels.right();assert.equal(timing().open,true);
+ f.context.right.textContent='';f.state.wave=0;f.panels.right();assert.equal(timing().open,false);
+ f.context.right.textContent='';f.state.snap.value.id='A-8';f.panels.right();assert.equal(timing().open,true);assert.equal(f.edits(),0);
+});
+test('bulk wave timing covers every spawn row, respects manual toggles, and writes no draft changes',()=>{
+ const f=fixture(),stage=f.state.snap.value;
+ f.state.tab='Waves';
+ stage.spawns.push({id:2,name:'Spawn 2',enabled:true});
+ const [first,second]=stage.config.WaveCfg[0].SpawnTimeline;
+ first.unitGroupId=second.unitGroupId='linked';
+ second.spawnId=2;
+ const before=clone(stage),nodes=()=>descendants(f.context.right);
+ const redraw=()=>{f.context.right.textContent='';f.panels.right();};
+ const toggle=()=>nodes().find(node=>node.classList.contains('world-wave-timing-toggle'));
+ const timing=()=>nodes().filter(node=>node.tagName==='details'&&node.children[0].textContent.startsWith('Timing & route'));
+ const timingStates=()=>timing().map(panel=>panel.open);
+
+ f.state.waveSpawnFilter='1';redraw();
+ assert.deepEqual(timingStates(),[true,true,true]);
+ assert.equal(toggle().textContent,'Collapse all timing');
+ const settings=nodes().find(node=>node.tagName==='details'&&node.children[0].textContent==='Wave settings & rewards');
+ settings.open=true;
+ toggle().onclick();
+ assert.deepEqual(timingStates(),[false,false,false]);
+ assert.equal(settings.open,true);
+ assert.equal(toggle().textContent,'Expand all timing');
+
+ f.state.waveSpawnFilter='all';redraw();
+ assert.deepEqual(timingStates(),[false,false,false,false]);
+ const section=timing()[0];
+ section.isConnected=true;section.open=true;section.ontoggle();
+ assert.equal(toggle().textContent,'Collapse all timing');
+ toggle().onclick();
+ f.state.wave=1;redraw();
+ assert.deepEqual(timingStates(),[true]);
+ f.state.wave=0;redraw();
+ assert.deepEqual(timingStates(),[false,false,false,false]);
+ toggle().onclick();redraw();
+ assert.deepEqual(timingStates(),[true,true,true,true]);
+ assert.deepEqual(f.state.snap.value,before);
+ assert.equal(f.edits(),0);
 });
 test('selected connection retains editable building conditions without changing graph or edge metadata',()=>{
  const f=fixture();f.state.tab='Paths';f.state.selection=['edge:link'];f.state.snap.value.buildings=[{id:1,name:'Hall',enabled:true},{id:2,name:'Tower',enabled:true}];f.state.snap.value.graphs[0].edges[0].future={keep:1};f.state.snap.value.graphs[0].edges[0].requiresAnyBuilding=[1];const before=clone(f.state.snap.value);f.panels.right();
@@ -331,6 +459,67 @@ test('Delete path also clears a matching default graph reference without inventi
 test('wave spawn filters recover after a lane disappears or another stage supplies a different lane without data writes',()=>{
  const f=fixture();f.state.tab='Waves';for(const filter of ['2','99']){f.state.waveSpawnFilter=filter;f.context.right.textContent='';const before=JSON.stringify(f.state.snap.value);f.panels.right();assert.equal(f.state.waveSpawnFilter,'all');assert(descendants(f.context.right).some(element=>element.dataset.entryId==='a'));assert.equal(JSON.stringify(f.state.snap.value),before);}assert.equal(f.edits(),0);
  f.state.snap.value.config.WaveCfg[0].SpawnTimeline.forEach(entry=>entry.spawnId=2);f.state.waveSpawnFilter='1';f.context.right.textContent='';f.panels.right();assert.equal(f.state.waveSpawnFilter,'all');assert(descendants(f.context.right).some(element=>element.dataset.entryId==='a'));assert.equal(f.edits(),0);
+});
+
+test('wave unit grips preview and commit card order in one draft edit',()=>{
+ const f=fixture(),before=clone(f.state.snap.value);
+ f.state.tab='Waves';
+ const redraw=()=>{f.context.right.textContent='';f.panels.right();};
+ const cards=()=>descendants(f.context.right).filter(node=>node.classList.contains('world-wave-unit-card'));
+ const grip=card=>descendants(card).find(node=>node.classList.contains('world-wave-drag-handle'));
+ redraw();
+ assert.equal(f.edits(),0);
+ const [first,,third]=cards(),handle=grip(third);
+ assert.equal(handle.draggable,true);
+ assert.equal(handle.attributes['aria-label'],'Reorder Unit');
+ assert(!third.draggable);
+ const unrelated=dragEvent();
+ first.ondrop(unrelated);
+ assert(!unrelated.prevented);
+ handle.ondragstart(dragEvent());
+ const over=dragEvent(10);
+ first.ondragover(over);
+ assert(over.prevented&&first.classList.contains('world-card-drop-before'));
+ assert(third.classList.contains('world-card-drag-source'));
+ assert.equal(f.edits(),0);
+ first.ondrop(dragEvent(10));
+ assert.equal(f.edits(),1);
+ const expected=clone(before);
+ expected.config.WaveCfg[0].editorUnitOrder=['c','a','b','d'];
+ assert.deepEqual(f.state.snap.value,expected);
+ redraw();
+ assert.deepEqual(cards().map(node=>node.dataset.entryId),['c','a','b','d']);
+
+ const [moved,following]=cards();
+ grip(moved).ondragstart(dragEvent());
+ grip(moved).ondragend();
+ following.ondrop(dragEvent(90));
+ assert.equal(f.edits(),1);
+ grip(moved).ondragstart(dragEvent());
+ f.state.wave=1;
+ following.ondrop(dragEvent(90));
+ assert.deepEqual(f.state.snap.value,expected);
+ assert.equal(f.edits(),1);
+ redraw();
+ assert.equal(cards().length,1);
+ assert.equal(grip(cards()[0]),undefined);
+});
+
+test('dropping a unit beside a card inserts it in the correct column order',()=>{
+ const f=fixture();f.state.tab='Waves';f.panels.right();
+ const cards=descendants(f.context.right).filter(node=>node.classList.contains('world-wave-unit-card'));
+ const [first,second,third]=cards;
+ first.offsetTop=second.offsetTop=0;
+ first.getBoundingClientRect=()=>({left:20,width:280,top:0,height:100});
+ const grip=descendants(third).find(node=>node.classList.contains('world-wave-drag-handle'));
+ const rightHalf={...dragEvent(10),clientX:250};
+ grip.ondragstart(dragEvent());
+ first.ondragover(rightHalf);
+ assert(first.parentNode.classList.contains('world-card-drag-inline'));
+ assert(first.classList.contains('world-card-drop-after'));
+ first.ondrop(rightHalf);
+ assert.deepEqual(f.state.snap.value.config.WaveCfg[0].editorUnitOrder,['a','c','b','d']);
+ assert.equal(f.edits(),1);
 });
 
 test('the spawn plus adds an independently editable count to the same unit card',()=>{

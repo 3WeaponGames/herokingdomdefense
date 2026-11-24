@@ -75,8 +75,8 @@ test('world authoring: river animation objects stay read-only until placement an
  const before=fingerprint(path.join(f.directory,'authoring/worlds/maps/'+reopened.value.id+'.json'));assert.equal((await fresh.save({key:created.key,version:fresh.version})).result.saved,false);assert.equal(fingerprint(path.join(f.directory,'authoring/worlds/maps/'+reopened.value.id+'.json')),before);
 });
 
-test('world authoring: stage card order and spawn route names round-trip through draft history, Save and reopen without changing gameplay paths',async()=>{
- const Order=require('../worlds/stage-card-order'),Names=require('../worlds/stage-names'),f=fixture(),s=f.service;
+test('world authoring: stage card order and spawn timing round-trip through draft history, Save and reopen',async()=>{
+ const Order=require('../worlds/stage-card-order'),Names=require('../worlds/stage-names'),Waves=require('../worlds/wave-editor'),f=fixture(),s=f.service;
  const configFile=path.join(f.directory,L.configFile('A')),configBefore=L.read(f.directory,L.configFile('A')),configHash=fingerprint(configFile),snap=s.snapshot('stage:A-2');
  assert(!snap.dirty);assert(snap.value.graphs.filter(graph=>graph.legacy).every(graph=>!/^Path\d+(?:_\d+)*$/.test(graph.name)));
  assert(snap.value.buildings.filter(building=>building.kind===2).every(building=>building.name.startsWith('Tower ')));
@@ -84,20 +84,41 @@ test('world authoring: stage card order and spawn route names round-trip through
  const value=clone(snap.value),originalGraphs=clone(value.graphs),originalBuildingIds=value.buildings.map(building=>building.id);
  assert(Order.move(value.graphs,value.graphs.at(-1).id,value.graphs[0].id,false));
  assert(Order.move(value.buildings,value.buildings.at(-1).id,value.buildings[0].id,false));
+ const interval=Number(configBefore.ParameterCfg['60018'].Value)||.5;
+ const waveCards=wave=>Waves.unitGroups(Waves.entries(wave,interval),wave.editorUnitOrder).map(group=>group[0].id);
+ const waveIndex=value.config.WaveCfg.findIndex(wave=>waveCards(wave).length>1);
+ assert(waveIndex>=0,'The stage has a wave with multiple unit cards');
+ const entry=Waves.entries(value.config.WaveCfg[waveIndex],interval)[0];
+ Waves.setSpawnTiming(value,entry.spawnId,'startSeconds',2);
+ Waves.setSpawnTiming(value,entry.spawnId,'intervalSeconds',1);
+ Waves.applySpawnDefaults(value,entry.spawnId,interval);
+ const timed=value.config.WaveCfg[waveIndex].SpawnTimeline.find(row=>row.id===entry.id);
+ assert.deepEqual([timed.startSeconds,timed.intervalSeconds],[2,1]);
+ const expectedWaves=clone(value.config.WaveCfg),cards=waveCards(expectedWaves[waveIndex]);
+ const unitOrder=[cards.at(-1),...cards.slice(0,-1)];
+ expectedWaves[waveIndex].editorUnitOrder=unitOrder;
+ assert(Waves.moveGroup(value,waveIndex,cards.at(-1),cards[0],false,interval));
+ assert.deepEqual(value.config.WaveCfg,expectedWaves);
  value.spawns[0].name='North entrance';Names.refreshPaths(value);
  const pathOrder=Order.ordered(value.graphs).map(graph=>graph.id),buildingOrder=Order.ordered(value.buildings).map(building=>building.id),spawnId=value.spawns[0].id;
  assert(value.graphs.filter(graph=>graph.nameFromSpawns&&graph.spawnIds.includes(spawnId)).every(graph=>graph.name.includes('North entrance')));
  for(const random of [0,.17,.5,.99])assert.deepEqual(Plan.route(value.graphs,spawnId,[],null,()=>random),Plan.route(originalGraphs,spawnId,[],null,()=>random));
  s.change({key:snap.key,version:s.version,value});s.history({key:snap.key,version:s.version},false);assert.deepEqual(s.snapshot(snap.key).value,snap.value);
- s.history({key:snap.key,version:s.version},true);assert.deepEqual(Order.ordered(s.snapshot(snap.key).value.graphs).map(graph=>graph.id),pathOrder);
+ s.history({key:snap.key,version:s.version},true);
+ const redone=s.snapshot(snap.key).value;
+ assert.deepEqual(Order.ordered(redone.graphs).map(graph=>graph.id),pathOrder);
+ assert.deepEqual(waveCards(redone.config.WaveCfg[waveIndex]),unitOrder);
  const saved=await s.save({key:snap.key,version:s.version});assert(saved.result.saved);
  const actual=L.read(f.directory,'authoring/worlds/stages/A-2.json');assert.deepEqual(actual.graphs.map(graph=>graph.id),originalGraphs.map(graph=>graph.id));assert.deepEqual(actual.buildings.map(building=>building.id),originalBuildingIds);
  assert.deepEqual(Order.ordered(actual.graphs).map(graph=>graph.id),pathOrder);assert.deepEqual(Order.ordered(actual.buildings).map(building=>building.id),buildingOrder);
  const fresh=new Service(f.directory,{artifacts:f.artifacts,render:fixtureBake}),opened=fresh.snapshot(snap.key);assert(!opened.dirty);
  assert.deepEqual(Order.ordered(opened.value.graphs).map(graph=>graph.id),pathOrder);assert.deepEqual(Order.ordered(opened.value.buildings).map(building=>building.id),buildingOrder);
  assert.deepEqual(opened.value.graphs.map(graph=>graph.name),actual.graphs.map(graph=>graph.name));
+ assert.deepEqual(waveCards(opened.value.config.WaveCfg[waveIndex]),unitOrder);
+ assert.deepEqual(opened.value.spawns.find(spawn=>spawn.id===entry.spawnId).defaultTiming,{startSeconds:2,intervalSeconds:1});
  const layout=path.join(f.directory,'authoring/worlds/stages/A-2.json'),layoutHash=fingerprint(layout),again=await fresh.save({key:snap.key,version:fresh.version});assert.equal(again.result.saved,false);assert.equal(fingerprint(layout),layoutHash);
  const configAfter=L.read(f.directory,L.configFile('A'));for(const key of Object.keys(configBefore).filter(key=>key!=='LevelCfg'))assert.deepEqual(configAfter[key],configBefore[key]);
+ assert.deepEqual(configAfter.LevelCfg.find(stage=>stage.Level===value.level).WaveCfg,expectedWaves);
 });
 
 test('world authoring: global vector blocker holes survive explicit save, native prefab export, reopen and no-op Save',async()=>{const f=fixture(),s=f.service,snap=s.snapshot('map:Map01'),baseline=L.read(f.directory,L.configFile('A'));let map=M.createLayer(snap.value,'Editable cliff'),layer=map.layers[map.layers.length-1];layer.FutureField={keep:17};layer.transform={x:56,y:-32,scale:1.25,angle:27};layer.polygons=[[{x:-100,y:-60},{x:100,y:-60},{x:100,y:60},{x:-100,y:60}]];const center=M.toWorld(layer.transform,{x:0,y:0});map.blockerMask=[];map=M.polygonBlockers(map,layer.polygons[0].map(p=>M.toWorld(layer.transform,p)),'paint');map=M.stroke(map,M.MAP_BLOCKERS,{size:30,shape:'square',op:'erase',points:[center]});const expectedMask=clone(map.blockerMask),expected=clone(map.layers[map.layers.length-1]),source='assets/KinghtFallIconMap/Map01.prefab',before=fingerprint(path.join(f.directory,source));s.change({key:snap.key,version:s.version,value:map});assert.equal(fingerprint(path.join(f.directory,source)),before);await s.save({key:snap.key,version:s.version});const saved=L.read(f.directory,source),info=Maps.model(saved),owners=info.nodes.filter(n=>n.name==='Blocker '+M.MAP_BLOCKERS);assert(owners.length);const colliders=info.colliders.filter(c=>owners.some(owner=>c.node===owner.id));assert.equal(colliders.length,8);const area=points=>Math.abs(points.reduce((sum,p,i)=>{const q=points[(i+1)%points.length];return sum+p.x*q.y-q.x*p.y;},0))/2;assert(Math.abs(colliders.reduce((sum,c)=>sum+area(c.points),0)-(200*120*1.25*1.25-30*30))<.1,'global rotated outer mask retains exactly its square hole area');assert(!colliders.some(c=>M.pointInPolygon(center,c.points)));assert(colliders.some(c=>M.pointInPolygon(M.toWorld(layer.transform,{x:50,y:0}),c.points)));const cfg=L.read(f.directory,L.configFile('A'));for(const key of Object.keys(baseline).filter(k=>k!=='LevelCfg'))assert.deepEqual(cfg[key],baseline[key]);const fresh=new Service(f.directory,{artifacts:f.artifacts,render:async()=>({files:[],ground:[],assets:{}})}),opened=fresh.snapshot(snap.key),actual=opened.value.layers.find(l=>l.id===layer.id);assert.deepEqual(actual,expected);assert.deepEqual(opened.value.blockerMask,expectedMask);assert.deepEqual(opened.issues,[]);const hash=fingerprint(path.join(f.directory,source)),noop=await fresh.save({key:snap.key,version:fresh.version});assert(!noop.result.saved);assert.deepEqual(noop.result.files,[]);assert.equal(fingerprint(path.join(f.directory,source)),hash);});
