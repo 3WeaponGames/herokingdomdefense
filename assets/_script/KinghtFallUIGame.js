@@ -856,7 +856,7 @@ var def_KinghtFallUIGame = function (t) {
       collect.active = current && task.stage == 1;
       this.ndTask.getChildByName("labNoFinish").active = current && task.stage == 0;
     }
-    if (this._battleHud) require("BattleHud").updateTasks(this, task.list.length > 0);
+    if (this._battleHud) require("BattleHud").updateTasks(this, task);
     else this.ndTask.active = current;
   };
   _ctor.prototype.lateUpdate = function (t) {

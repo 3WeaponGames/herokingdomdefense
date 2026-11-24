@@ -100,6 +100,23 @@ function claimTask(h, silent) {
   return silent ? paid : amount.string;
 }
 
+test('later stages default to two Silver per Advisor task and collect it as battle currency', () => {
+  for (const level of authored.LevelCfg.filter(row => row.Level > 1)) {
+    const h = runtime(harness(), authored, level.Level);
+    const task = clone(h.data.taskInfo);
+    assert(task.reward.length > 0);
+    assert.equal(task.reward.length, task.list.length);
+    assert(task.reward.every(({id,num}) => id === 2003 && num === 2), 'Stage ' + level.Level);
+    if (level.Level === 2) {
+      h.data.taskInfo.stage = 1;
+      const before = h.data.coin, gold = h.disk.player.udata.getGoldNum();
+      assert.equal(claimTask(h), '+2');
+      assert.equal(h.data.coin, before + 2);
+      assert.equal(h.disk.player.udata.getGoldNum(), gold);
+    }
+  }
+});
+
 test('authored Royal Advisor tasks preserve order, repeats and payouts across config edits and free retries', () => {
   const disk = harness(), config = clone(authored), stage = 3, level = config.LevelCfg[stage - 1];
   level.InGameCoefficient = 2;
@@ -310,6 +327,12 @@ for (const level of config.LevelCfg) {
   });
 }
 
+function configWithGoldTasks() {
+  const config = clone(authored);
+  config.InGameTaskCfg[1].Award = [50, 100, 150, 200, 200, 250].map(amount => [2001, amount]);
+  return config;
+}
+
 for (const mode of ['wave', 'stage']) test(`a persisted ${mode} retry cannot roll a second free Covenant house after interruption before replacement loading`, () => {
   const disk = harness(), id = disk.load('KinghtFallEnum').KinghtFallEnumTreasureEnum.CovenantOfPatriarchs;
   const relic = {ID: id, levelInfo: [{param: [1]}]};
@@ -460,7 +483,7 @@ test('wave rollback restores acquired perk ownership, merchant tiers, tasks and 
 });
 
 for (const mode of ['wave', 'stage']) test(`${mode} restart cannot replay an already claimed permanent task Gold reward`, () => {
-  const disk = harness(), h = runtime(disk, authored, 3);
+  const disk = harness(), h = runtime(disk, configWithGoldTasks(), 3);
   buildings(h, {1: 4});
   h.data.coin = 81;
   h.data.taskInfo.list.reverse();
@@ -475,6 +498,7 @@ for (const mode of ['wave', 'stage']) test(`${mode} restart cannot replay an alr
   const loaded = harness(disk.persist()), replacement = runtime(loaded, authored, 3);
   buildings(replacement);
   replacement.g.loadGame();
+  assert.deepEqual(clone(replacement.data.taskInfo.reward), clone(h.data.taskInfo.reward));
   // Completing the original first task again must not make it claimable twice.
   if (replacement.data.taskInfo.index === 0) { replacement.data.taskInfo.stage = 1; replacement.g.saveGame(); claimTask(replacement); }
   assert.equal(loaded.player.udata.getGoldNum(), gold, 'One paid attempt cannot duplicate the same permanent task reward by restarting');
@@ -485,7 +509,7 @@ for (const mode of ['wave', 'stage']) test(`${mode} restart cannot replay an alr
 
 test('unclaimed permanent task completion and claimed battle-only Silver still rewind with the retry baseline', () => {
   for (const stage of [1, 3]) {
-    const h = runtime(harness(), authored, stage);
+    const h = runtime(harness(), stage === 1 ? authored : configWithGoldTasks(), stage);
     buildings(h);
     h.data.coin = 31; h.g.captureWaveStart();
     h.data.taskInfo.stage = 1;
@@ -517,7 +541,7 @@ test('retired relic-save retries cannot overwrite the durable replacement checkp
 
 test('task reward journal failures block restart readiness until one committed claim is recovered', () => {
   for (const boundary of ['journal', 'checkpoint']) {
-    const disk = harness(), h = runtime(disk, authored, 3), record = disk.player.gameData;
+    const disk = harness(), h = runtime(disk, configWithGoldTasks(), 3), record = disk.player.gameData;
     buildings(h); h.g.saveGame(); h.g.captureWaveStart();
     h.data.taskInfo.stage = 1; h.g.saveGame();
     const reward = h.data.taskInfo.reward[0].num * h.data.levelCfg.InGameCoefficient;
@@ -540,7 +564,7 @@ test('task reward journal failures block restart readiness until one committed c
 });
 
 test('all claimed permanent tasks stay exhausted after restart, while an unrelated committed task list cannot skip current tasks', () => {
-  const disk = harness(), h = runtime(disk, authored, 3), record = disk.player.gameData;
+  const disk = harness(), h = runtime(disk, configWithGoldTasks(), 3), record = disk.player.gameData;
   buildings(h); h.g.saveGame(); h.g.captureWaveStart();
   for (let index = 0; index < h.data.taskInfo.list.length; index++) {
     h.data.taskInfo.stage = 1; h.g.saveGame(); claimTask(h);

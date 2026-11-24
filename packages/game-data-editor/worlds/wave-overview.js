@@ -5,9 +5,11 @@ const seconds=value=>Stats.format(value)+' s';
 const scheduledSeconds=value=>Stats.factor(value)+' s';
 
 function create(el){
- let selection,time=0,defeatSeconds=Pressure.DEFAULT_DEFEAT_SECONDS;
- return function render(parent,{key,label,wave,units,interval}){
-  if(key!==selection){selection=key;time=0;}
+ let selection,time=0,preferredRate=Pressure.DEFAULT_DEFEAT_SECONDS,defeatSeconds=preferredRate,selectedRate=null;
+ function render(parent,{key,label,wave,units,interval}){
+  if(key!==selection){selection=key;time=0;selectedRate=null;}
+  const savedBalance=wave?.editorTimingBalance,savedRate=savedBalance?.defeatSeconds;
+  defeatSeconds=selectedRate??(Number.isFinite(savedRate)&&savedRate>0?savedRate:preferredRate);
   const panel=el('section',undefined,'world-wave-overview');
   panel.setAttribute('aria-label',label+' overview');
   parent.appendChild(panel);
@@ -43,6 +45,8 @@ function create(el){
   controls.appendChild(rate);
   const notice=el('small','Timeline estimate unavailable for this schedule.','world-warn');
   controls.appendChild(notice);
+  const breached=el('small',undefined,'world-warn');
+  controls.appendChild(breached);
 
   const table=el('table',undefined,'world-wave-overview-stats'),head=el('thead'),body=el('tbody');
   table.setAttribute('aria-label','Wave totals and estimated pressure');
@@ -73,6 +77,14 @@ function create(el){
    time=Math.min(time,model.duration);
    slider.max=String(model.duration);slider.value=String(time);slider.disabled=!model.projected||model.duration===0;
    notice.hidden=model.projected;
+   const peak=model.peaks.units.value,cap=savedBalance?.peakCap,deadline=savedBalance?.lastSpawnLimit;
+   const problems=[];
+   if(Number.isSafeInteger(cap)&&cap>0&&peak>cap)problems.push('Peak '+Stats.format(peak)+' / '+Stats.format(cap)+' enemies');
+   if(Number.isFinite(deadline)&&deadline>=0&&model.duration>deadline&&!Pressure.coincident(model.duration,deadline)){
+    problems.push('Last spawn '+scheduledSeconds(model.duration)+' / '+scheduledSeconds(deadline));
+   }
+   breached.hidden=!problems.length;
+   breached.textContent=problems.length?'Saved balance limit exceeded · '+problems.join(' · '):'';
    fields.forEach(([name],i)=>{
     const peak=model.peaks[name];
     totals[i].value.textContent=Stats.format(model.totals[name]);
@@ -83,13 +95,15 @@ function create(el){
   }
   slider.oninput=()=>{time=Number(slider.value);showTime();};
   rateInput.onchange=()=>{
+   if(rateInput.isConnected===false)return;
    const next=Number(rateInput.value);
    if(!Number.isFinite(next)||next<=0){rateInput.value=String(defeatSeconds);return;}
    if(next===defeatSeconds)return;
-   model=Pressure.build(wave,units,interval,next);defeatSeconds=next;showModel();
+   model=Pressure.build(wave,units,interval,next);defeatSeconds=selectedRate=preferredRate=next;showModel();
   };
   showModel();
- };
+ }
+ return {render,get defeatSeconds(){return defeatSeconds;}};
 }
 
 module.exports={create};

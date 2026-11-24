@@ -262,14 +262,14 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  dispose=body(dialog);root.appendChild(overlay);activeDialog={overlay,close,dispose:()=>{if(typeof dispose==='function'){dispose();dispose=null;}}};errorBox.hidden=true;errorBox.setAttribute('role','alert');dialog.appendChild(errorBox);
  const actions=el('div',undefined,'world-actions');dialog.appendChild(actions);
  const cancel=button(actions,action?'Cancel':'Close',close);
- if(action)button(actions,label||'Apply to draft',async()=>{
+ const applyButton=action?button(actions,label||'Apply to draft',async()=>{
   if(busy)return;
   if(!isCurrent(context)){errorBox.hidden=false;errorBox.textContent='The document changed. Close this dialog and review the current document.';return;}
   busy=true;const buttons=Array.from(actions.querySelectorAll('button'));buttons.forEach(b=>b.disabled=true);errorBox.hidden=true;
   try{for(const input of dialog.querySelectorAll('input[data-model-value]')){if(input.disabled)continue;if(input.type==='number'&&(input.dataset.invalidNumeric||String(input.value).trim()===''||input.validity&&input.validity.badInput||!Number.isFinite(Number(input.value))))throw Error('Enter a valid number for '+(input.closest('label')&&input.closest('label').querySelector('span')||{textContent:'this field'}).textContent+'.');const pending=input.type==='checkbox'?String(input.checked)!==input.dataset.modelValue:input.value!==input.dataset.modelValue;if(pending&&typeof input.onchange==='function'&&await input.onchange()===false)throw Error('Correct the highlighted value before applying this change.');}await action(dialog);busy=false;close();}
   catch(error){if(!state.closed){errorBox.hidden=false;errorBox.textContent=error.message||String(error);message(errorBox.textContent,true);}}
   finally{busy=false;buttons.forEach(b=>b.disabled=false);}
- },true);
+ },true):null;
  overlay.addEventListener('keydown',event=>{
   if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();return;}
   if(event.key!=='Tab')return;
@@ -279,7 +279,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   event.preventDefault();list[next].focus();
  });
  const focus=dialog.querySelector('input:not([disabled]),select:not([disabled]),textarea:not([disabled]),button:not([disabled])');(focus||dialog).focus({preventScroll:true});
- return {dialog,close};
+ return {dialog,close,applyButton};
 }
 
  function currentContext(){return {key:currentKey(),serial:loadSerial};}
@@ -850,7 +850,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  };input.click();
 }
 
- function jsonField(key,wave){let input;const target=()=>wave===undefined?values().config[key]:(values().config.WaveCfg[wave]||{})[key],original=JSON.stringify(target());modal('Edit '+key,dialog=>{input=el('textarea');input.value=original===undefined?'null':JSON.stringify(target(),null,2);dialog.appendChild(input);},()=>{const value=JSON.parse(input.value);if(['WaveCfg','SpawnTimeline','RefreshSoldierKind','WaveReward','ChallengeReward'].includes(key)&&!Array.isArray(value))throw Error(key+' must be a JSON array.');if(['WaveCfg','SpawnTimeline'].includes(key)&&value.some(row=>!row||typeof row!=='object'||Array.isArray(row)))throw Error(key+' must contain objects.');if(key==='WaveCfg'&&!value.length)throw Error('Keep at least one wave.');if(key==='RefreshSoldierKind'&&value.some(row=>typeof row!=='string'))throw Error('Legacy spawn groups must be strings.');const rewardList=list=>Array.isArray(list)&&list.every(pair=>Array.isArray(pair)&&pair.length===2&&(Number.isSafeInteger(pair[0])&&pair[0]>0||typeof pair[0]==='string'&&pair[0].trim()!=='')&&Number.isSafeInteger(pair[1])&&pair[1]>=0);if(key==='WaveReward'&&!rewardList(value)||key==='ChallengeReward'&&!value.every(rewardList))throw Error('Rewards must contain lists of goods ID and amount pairs.');return edit(stage=>{const owner=wave===undefined?stage.config:stage.config.WaveCfg[wave];if(!owner||JSON.stringify(owner[key])!==original)throw Error('This content changed while the dialog was open. Close it and review the latest value.');if(key==='SpawnTimeline')WaveEditor.preserveTimingOverrides(owner[key],value);owner[key]=value;},true);});}
+ function jsonField(key,wave){let input;const target=()=>wave===undefined?values().config[key]:(values().config.WaveCfg[wave]||{})[key],original=JSON.stringify(target());modal('Edit '+key,dialog=>{input=el('textarea');input.value=original===undefined?'null':JSON.stringify(target(),null,2);dialog.appendChild(input);},()=>{const value=JSON.parse(input.value);if(['WaveCfg','SpawnTimeline','RefreshSoldierKind','WaveReward','ChallengeReward'].includes(key)&&!Array.isArray(value))throw Error(key+' must be a JSON array.');if(['WaveCfg','SpawnTimeline'].includes(key)&&value.some(row=>!row||typeof row!=='object'||Array.isArray(row)))throw Error(key+' must contain objects.');if(key==='WaveCfg'&&!value.length)throw Error('Keep at least one wave.');if(key==='RefreshSoldierKind'&&value.some(row=>typeof row!=='string'))throw Error('Legacy spawn groups must be strings.');const rewardList=list=>Array.isArray(list)&&list.every(pair=>Array.isArray(pair)&&pair.length===2&&(Number.isSafeInteger(pair[0])&&pair[0]>0||typeof pair[0]==='string'&&pair[0].trim()!=='')&&Number.isSafeInteger(pair[1])&&pair[1]>=0);if(key==='WaveReward'&&!rewardList(value)||key==='ChallengeReward'&&!value.every(rewardList))throw Error('Rewards must contain lists of goods ID and amount pairs.');return edit(stage=>{const owner=wave===undefined?stage.config:stage.config.WaveCfg[wave];if(!owner||JSON.stringify(owner[key])!==original)throw Error('This content changed while the dialog was open. Close it and review the latest value.');if(key==='SpawnTimeline')WaveEditor.preserveTimingOverrides(owner[key],value);if(key==='RefreshSoldierKind')WaveEditor.reconcileLegacyTimingLocks(owner,value);owner[key]=value;},true);});}
  function renderTimeline(){bottom.textContent='';bottom.hidden=true;}
  function duplicate(){
  const selected=selectedObject(),ids=state.selection.slice();if(!selected||!selected.object)return;

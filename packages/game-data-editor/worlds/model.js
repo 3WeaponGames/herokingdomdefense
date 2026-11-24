@@ -2,6 +2,7 @@
 // Portable authoring data and pure draft operations. No filesystem or game state.
 const Blockers=require('./blockers'),Physics=require('./physics-polygons'),GateFacing=require('../../../assets/_script/GateFacing');
 const StageNames=require('./stage-names'),SilverOfferSchedule=require('../../../assets/_script/SilverOfferSchedule');
+const SpawnGroups=require('./spawn-groups');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const BIOMES=['forest','deep-forest','autumn','desert','snow','ice','fire','lava'];
 // Portable storage keys. Only foundation is required in the authored draw order.
@@ -69,7 +70,21 @@ function blockerFixtures(map){
 function polygonBlockers(map,points,op){op=op===undefined?'paint':op;const shape=Blockers.polygonBrush(points),regions=mapBlockerRegions(map),result=Blockers.combineMask(regions,shape,op);return result===regions?map:Object.assign({},map,{blockerMask:result});}
 function stroke(map,target,stroke){if(!finite(stroke.size)||stroke.size<=0||!stroke.points||!stroke.points.length||stroke.points.some(p=>!finite(p.x)||!finite(p.y)))throw Error('Brush size and finite points are required.');if(!fixedGround.includes(target)&&!(map.ground.custom||[]).some(l=>l.id===target))return previewBlockerStroke(clone(map),target,stroke);const next=clone(map),layer=groundLayer(next,target);assertEditable(layer);const value=clone(stroke);value.points=value.points.map(p=>toLocal(layer.transform,p));value.size/=(layer.transform&&layer.transform.scale||1);layer.strokes.push(value);return next;}
 function newSpawn(stage,position,map){position=require('./spawn-bounds').constrain({x:position.x,y:position.y,radius:150},map,false);const next=clone(stage),id=next.nextSpawn++;next.spawns.push({id,name:'Spawn '+id,x:position.x,y:position.y,radius:position.radius,enabled:true,graphId:null});const graphId='route-'+id,goal='goal-'+id,entry='entry-'+id;next.graphs.push({id:graphId,name:'',nameFromSpawns:true,spawnIds:[id],entry,nodes:[{id:entry,x:position.x,y:position.y},{id:goal,x:(next.buildings.find(b=>b.kind===1)||next.hero).x,y:(next.buildings.find(b=>b.kind===1)||next.hero).y+100,goal:true}],edges:[{id:'edge-'+id,from:entry,to:goal,weight:1}],legacy:false});next.spawns[next.spawns.length-1].graphId=graphId;return StageNames.refreshPaths(next);}
-function removeSpawn(stage,id){const next=clone(stage);next.spawns=next.spawns.filter(s=>s.id!==id);next.graphs.forEach(g=>{g.spawnIds=g.spawnIds.filter(x=>x!==id);});for(const wave of next.config.WaveCfg){if(wave.SpawnTimeline)wave.SpawnTimeline=wave.SpawnTimeline.filter(e=>e.spawnId!==id);wave.RefreshSoldierKind=(wave.RefreshSoldierKind||[]).filter(row=>Number(row.split('#')[0])!==id);}return next;}
+function removeSpawn(stage,id){
+ const next=clone(stage),legacyPrefix='legacy-'+id+'-';
+ next.spawns=next.spawns.filter(spawn=>spawn.id!==id);
+ SpawnGroups.detach(next,id);
+ for(const graph of next.graphs)graph.spawnIds=graph.spawnIds.filter(spawnId=>spawnId!==id);
+ for(const wave of next.config.WaveCfg){
+  if(wave.SpawnTimeline)wave.SpawnTimeline=wave.SpawnTimeline.filter(entry=>entry.spawnId!==id);
+  wave.RefreshSoldierKind=(wave.RefreshSoldierKind||[]).filter(row=>Number(row.split('#')[0])!==id);
+  if(!Array.isArray(wave.editorManualTimingIds))continue;
+  const locks=wave.editorManualTimingIds.filter(key=>typeof key!=='string'||!key.startsWith(legacyPrefix));
+  if(locks.length===wave.editorManualTimingIds.length)continue;
+  if(locks.length)wave.editorManualTimingIds=locks;else delete wave.editorManualTimingIds;
+ }
+ return next;
+}
 function legacyTimeline(encoded,interval){const entries=[],effective=new Map();for(const row of encoded||[])effective.set(Number(row.split('#')[0]),row);for(const value of Array.from(effective.entries()).sort((a,b)=>a[0]-b[0]).map(pair=>pair[1])){const parts=value.split('#'),spawnId=Number(parts[0]);let tick=1;for(const [i,group]of parts[1].split(';').entries()){const pair=group.split(',').map(Number);if(pair[0]!==-1)entries.push({id:'legacy-'+spawnId+'-'+i,spawnId,unitId:pair[0],count:pair[1],startSeconds:tick*interval,intervalSeconds:interval});tick+=pair[1];}}return entries;}
 function graphIdentifierIssues(graph){
  const issues=[],valid=id=>typeof id==='string'&&id.trim().length>0;
@@ -182,6 +197,7 @@ function validateStage(stage,map,units){
  if(allSpawnIds.size!==allSpawns.length)issues.push('Duplicate spawn ID.');
  for(const spawn of allSpawns)if(spawn.radius!==undefined&&(!finite(spawn.radius)||spawn.radius<0||spawn.radius>1500))issues.push('Spawn radius must be between 0 and 1500.');
  for(const s of allSpawns)if(!Number.isSafeInteger(s.id)||s.id<1)issues.push('Spawn IDs must be positive safe whole numbers.');
+ issues.push(...SpawnGroups.validate(stage));
  // Disabled lanes retain their authored paths for later re-enabling. Only wave
  // groups and active-lane fallbacks need an enabled spawn.
  for(const graph of graphs){if(graphIds.has(graph.id))issues.push('Duplicate path ID.');graphIds.add(graph.id);issues.push(...graphIssues(graph,allSpawnIds,buildingIds));}

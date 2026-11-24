@@ -58,6 +58,7 @@
 .world-stages .world-wave-overview-heading,.world-stages .world-wave-overview-rate{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap}
 .world-stages .world-wave-overview-heading h3{margin:0;font-size:13px}
 .world-stages .world-wave-overview-heading>span,.world-stages .world-wave-overview small{color:#b3c9da;font-size:11px}
+.world-stages .world-wave-overview .world-warn{color:#f5c77e}
 .world-stages .world-wave-overview-time{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center}
 .world-stages .world-wave-overview-time>input{width:100%;min-height:24px;margin:0;padding:0;border:0;background:transparent;accent-color:#8bc7ee}
 .world-stages .world-wave-overview-time>output{min-width:46px;text-align:right;color:#d1eaff}
@@ -132,6 +133,16 @@
 .world-stages .world-wave-editor>.world-note{margin:0}
 .world-stages .world-wave-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .world-stages .world-wave-actions>button{min-height:33px}
+.world-stages .world-wave-actions>.world-wave-balance-button{grid-column:1/-1}
+.world-stages .world-spawn-group{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid #546675;border-radius:5px;background:#252e35}
+.world-stages .world-spawn-group>strong{color:#e3edf4;overflow-wrap:anywhere}
+.world-stages .world-spawn-group-actions,.world-stages .world-spawn-group-members{display:flex;flex-wrap:wrap;gap:5px}
+.world-stages .world-spawn-group-members>button{background:#303e49;border-color:#4c6274}
+.world-stages .world-spawn-group-list{min-height:54px;padding:7px;border:1px solid #556878;border-radius:5px;background:#252d34}
+.world-stages .world-spawn-group-list>strong,.world-stages .world-spawn-group-list>small{padding:1px 2px;color:#dae7f0;overflow-wrap:anywhere}
+.world-stages .world-spawn-group-list>small{color:#a8bac9}
+.world-stages .world-spawn-group-list>button[draggable=true]{cursor:grab}
+.world-stages .world-spawn-group-list.world-spawn-group-drop{border-color:#9dd5ff;background:#35516a;box-shadow:inset 0 0 0 1px #9dd5ff}
 .world-stages .world-wave-editor>.world-wave-timing-toggle{align-self:flex-start;min-height:29px}
 .world-stages .world-wave-unit-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));align-items:start;gap:11px;min-width:0}
 .world-stages .world-wave-unit-card{position:relative;display:flex;flex-direction:column;gap:10px;padding:11px;border:2px solid #697d8d;border-radius:5px;background:#252e35;min-width:0}
@@ -165,6 +176,17 @@
 .world-unit-picker-scaling{flex-shrink:0;padding:8px 10px;border:1px solid #6888a0;border-radius:4px;background:#2b3c49;color:#d5eaff;font-size:11px;line-height:1.45}
 .world-stages .world-modal>div{width:680px;max-width:calc(100% - 36px);max-height:calc(100% - 36px);gap:12px;border-radius:5px}
 .world-stages .world-modal>div>h3{margin:0 0 4px;color:#e1eaf1}
+.world-stages .world-modal>.world-wave-balance-dialog{width:780px}
+.world-stages .world-wave-balance-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}
+.world-stages .world-wave-balance-inputs label>input{width:94px}
+.world-stages .world-wave-balance-preview{align-self:flex-start}
+.world-stages .world-wave-balance-result:empty{display:none}
+.world-stages .world-wave-balance-result{display:flex;flex-direction:column;gap:12px}
+.world-stages .world-wave-balance-result table{width:100%;border-collapse:collapse;text-align:left;font-variant-numeric:tabular-nums}
+.world-stages .world-wave-balance-result th,.world-stages .world-wave-balance-result td{padding:6px 8px;overflow-wrap:anywhere;border-bottom:1px solid #586472}
+.world-stages .world-wave-balance-result thead th{color:#c5d6e4}
+.world-stages .world-wave-balance-metrics tbody td:last-child{background:#2b3e4d;color:#d9efff}
+.world-stages .world-wave-balance-traits{display:block;margin-top:3px;color:#bfd1de;font-size:11px;line-height:1.4}
 .world-stages .world-modal label>span{flex:0 0 80px}
 .world-stages .world-modal label>input,.world-stages .world-modal label>select{flex:1;min-width:0;width:auto}
 .world-stages .world-modal>.world-wave-copy-dialog{width:470px}

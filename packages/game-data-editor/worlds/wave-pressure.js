@@ -169,4 +169,4 @@ function build(wave,units,interval,defeatSeconds=DEFAULT_DEFEAT_SECONDS){
  return {duration,totals,projected:true,peaks:projection.peaks,at:time=>projection.at(Number.isFinite(time)?Math.max(0,Math.min(time,duration)):0)};
 }
 
-module.exports={build,DEFAULT_DEFEAT_SECONDS};
+module.exports={build,DEFAULT_DEFEAT_SECONDS,coincident,defeatTick};

@@ -1,7 +1,8 @@
 "use strict";
 var TaskPosition = require("StageTaskPosition");
 var GameStage = require("KinghtFallModle").KinghtFallGameStage;
-var TASK_BUBBLE_ALPHA = 120;
+var SILVER = require("KinghtFallEnum").KinghtFallEnumGoodsCfg.SilverCoin;
+var TASK_BUBBLE_ALPHA = 240;
 var SPEAKER_FADE_SECONDS = .4;
 
 function component(node, Type) { return node && node.getComponent(Type); }
@@ -45,13 +46,24 @@ function install(ui) {
   collectLabel.anchorX = collectLabel.anchorY = .5;
   collectLabel.setPosition(0, 0);
   collectLabel.getComponent(cc.Label).string = "[[loc:battle.task.ready]]";
+  var taskName = task.getChildByName("labName"), pendingLabel = task.getChildByName("labNoFinish");
+  taskName.color = pendingLabel.color = collectLabel.color = cc.Color.WHITE;
+  var rewardPreview = new cc.Node("TaskRewardPreview"); rewardPreview.parent = task; rewardPreview.active = false;
+  var rewardNumber = new cc.Node("Amount"); rewardNumber.parent = rewardPreview; rewardNumber.color = cc.Color.WHITE;
+  var rewardText = label(rewardNumber, 28), taskFont = component(taskName, cc.Label).font;
+  if (taskFont) rewardText.font = taskFont;
+  var rewardIcon = new cc.Node("Icon"); rewardIcon.parent = rewardPreview;
+  var rewardSprite = rewardIcon.addComponent(cc.Sprite);
+  rewardSprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+  rewardIcon.setContentSize(30, 30);
   var rewardAnchor = new cc.Node("BattleTaskFeedback"); rewardAnchor.parent = task; rewardAnchor.zIndex = 10;
   var rewardHint = task.getChildByName("ndAni"); rewardHint.parent = rewardAnchor; rewardHint.active = false;
   disableFit(ui.ndLevelInfo);
   var titleBackground = component(ui.ndLevelInfo, cc.Sprite); if (titleBackground) titleBackground.enabled = false;
   var state = ui._battleHud = {
     backdropArt: backdropArt, tail: tail, tailArt: tailArt,
-    taskName: task.getChildByName("labName"), pendingLabel: task.getChildByName("labNoFinish"),
+    taskName: taskName, pendingLabel: pendingLabel,
+    rewardPreview: rewardPreview, rewardNumber: rewardNumber, rewardText: rewardText, rewardSprite: rewardSprite,
     collectButton: collectButton, collectControl: collectControl, collectArt: collectArt, collectLabel: collectLabel,
     rewardAnchor: rewardAnchor, rewardHint: rewardHint, hasTasks: false
   };
@@ -97,7 +109,7 @@ function fadeTaskSpeaker(ui, dt) {
   var alpha = Math.round(opacity);
   speaker.opacity = alpha;
   if (state.taskName.opacity !== alpha) {
-    state.taskName.opacity = state.pendingLabel.opacity = state.collectLabel.opacity = state.rewardAnchor.opacity = alpha;
+    state.taskName.opacity = state.pendingLabel.opacity = state.collectLabel.opacity = state.rewardAnchor.opacity = state.rewardPreview.opacity = alpha;
   }
   speaker.active = planning || alpha > 0;
   state.collectControl.interactable = planning && alpha > 0;
@@ -171,31 +183,46 @@ function layoutHeader(ui, bounds) {
 }
 function sizeTaskBubble(task, state, width) {
   var name = state.taskName, pending = state.pendingLabel;
-  var ready = state.collectButton.active;
+  var ready = state.collectButton.active, reward = state.rewardPreview;
   var status = ready ? state.collectLabel : pending.active ? pending : null;
   function signature() {
-    return [width, name.getComponent(cc.Label).string, labelMetrics(name), status && status.name,
-      status && status.getComponent(cc.Label).string, status && labelMetrics(status)].join("|");
+    return [width, name.getComponent(cc.Label).string, labelMetrics(name), reward.active, state.rewardText.string,
+      status && status.name, status && status.getComponent(cc.Label).string, status && labelMetrics(status)].join("|");
   }
   if (state.taskSignature === signature()) return;
   var description = sizeLabel(name, 62, width - 32, true, 72);
-  var gap = ready ? 10 : 4, statusHeight = 0;
+  var rewardGap = 8, rewardHeight = 0, statusGap = ready ? 10 : 4, statusHeight = 0;
+  if (reward.active) {
+    var amount = sizeLabel(state.rewardNumber, 28, 0, false, 32);
+    var icon = state.rewardSprite.node, iconGap = 6;
+    var rewardWidth = amount.width + iconGap + icon.width;
+    rewardHeight = Math.max(amount.height, icon.height);
+    reward.setContentSize(rewardWidth, rewardHeight);
+    state.rewardNumber.setPosition(-rewardWidth / 2 + amount.width / 2, 0);
+    icon.setPosition(rewardWidth / 2 - icon.width / 2, 0);
+  }
   if (ready) {
     var buttonWidth = Math.min(220, width - 32);
-    var buttonHeight = Math.max(88, sizeLabel(status, 54, buttonWidth - 28, true, 64).height + 20);
-    state.collectButton.setContentSize(buttonWidth, buttonHeight);
-    statusHeight = buttonHeight + gap;
+    statusHeight = Math.max(88, sizeLabel(status, 54, buttonWidth - 28, true, 64).height + 20);
+    state.collectButton.setContentSize(buttonWidth, statusHeight);
   } else if (status) {
-    statusHeight = sizeLabel(status, 54, width - 32, true, 64).height + gap;
+    statusHeight = sizeLabel(status, 54, width - 32, true, 64).height;
   }
-  var height = Math.ceil(description.height + statusHeight + 26);
+  var height = Math.ceil(description.height + 26 +
+    (reward.active ? rewardHeight + rewardGap : 0) + (status ? statusHeight + statusGap : 0));
   task.setContentSize(width, height);
   name.anchorX = name.anchorY = .5;
-  name.setPosition(0, statusHeight / 2);
-  var row = ready ? state.collectButton : status;
-  if (row) {
-    row.anchorX = row.anchorY = .5;
-    row.setPosition(0, -(description.height + gap) / 2);
+  var y = height / 2 - 13;
+  name.setPosition(0, y - description.height / 2);
+  y -= description.height;
+  if (reward.active) {
+    reward.setPosition(0, y - rewardGap - rewardHeight / 2);
+    y -= rewardGap + rewardHeight;
+  }
+  var statusRow = ready ? state.collectButton : status;
+  if (statusRow) {
+    statusRow.anchorX = statusRow.anchorY = .5;
+    statusRow.setPosition(0, y - statusGap - statusHeight / 2);
   }
   state.rewardAnchor.setPosition(0, height / 2);
   state.taskSignature = signature();
@@ -207,7 +234,7 @@ function paintTaskBubble(task, state, opacity, tailOffset) {
   state.paintSignature = signature;
 
   // Graphics stores its own vertex colors. Fade the shapes through their fill alpha.
-  var fill = cc.color(255, 255, 255, Math.round(TASK_BUBBLE_ALPHA * opacity / 255));
+  var fill = cc.color(16, 23, 32, Math.round(TASK_BUBBLE_ALPHA * opacity / 255));
   var backdrop = state.backdropArt;
   backdrop.clear();
   backdrop.fillColor = fill;
@@ -222,8 +249,8 @@ function paintTaskBubble(task, state, opacity, tailOffset) {
   if (button.active) {
     var art = state.collectArt;
     art.clear();
-    art.fillColor = cc.color(224, 247, 233, opacity);
-    art.strokeColor = cc.color(37, 87, 69, opacity);
+    art.fillColor = cc.color(36, 68, 61, opacity);
+    art.strokeColor = cc.color(106, 154, 137, opacity);
     art.lineWidth = 3;
     art.roundRect(-button.width / 2 + 1.5, -button.height / 2 + 1.5, button.width - 3, button.height - 3, 14.5);
     art.fill();
@@ -264,9 +291,32 @@ function layout(ui, dt) {
   fadeTaskSpeaker(ui, dt);
   layoutTaskBubble(ui, bounds);
 }
-function updateTasks(ui, hasTasks) {
-  if (!ui._battleHud) return;
-  ui._battleHud.hasTasks = hasTasks;
+function updateTasks(ui, task) {
+  var state = ui._battleHud;
+  if (!state) return;
+  state.hasTasks = task.list.length > 0;
+  var reward = task.index < task.list.length && task.reward && task.reward[task.index];
+  state.rewardPreview.active = !!reward;
+  if (reward) {
+    var multiplier = task.rewardMultiplier === undefined ? ui.ctrGame.gameData.levelCfg.InGameCoefficient : task.rewardMultiplier;
+    var amount = String(reward.id === SILVER ? reward.num : reward.num * (multiplier === undefined ? 1 : multiplier));
+    if (state.rewardText.string !== amount) state.rewardText.string = amount;
+    if (state.rewardItem !== reward.id) {
+      state.rewardItem = reward.id;
+      state.rewardSprite.spriteFrame = null;
+      if (reward.id === SILVER) {
+        state.rewardSprite.spriteFrame = component(ui.ndCoin.children[0], cc.Sprite).spriteFrame;
+      } else {
+        var goods = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getGoodsCfgById(reward.id);
+        if (goods && goods.icon) {
+          var bundle = require("KinghtFallConfig").KinghtFallBundelName.IconGood;
+          ui.loadSpriteFrame(bundle, goods.icon, function (frame) {
+            if (ui._battleHud === state && state.rewardItem === reward.id) state.rewardSprite.spriteFrame = frame;
+          });
+        }
+      }
+    }
+  }
   layout(ui);
 }
 function dispose(ui) {

@@ -1,6 +1,7 @@
 'use strict';
 // Explicit, pure transfers between stage drafts. Never repairs other sections.
 const {clone}=require('./model');
+const SpawnGroups=require('./spawn-groups');
 const own=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
 const SCOPES=Object.freeze(['stage','buildings','spawns','paths','waves']);
 const SECTIONS=Object.freeze(['buildings','spawns','paths','waves','settings']);
@@ -9,7 +10,12 @@ function records(value,name){if(!Array.isArray(value)||value.some(item=>!record(
 function selectedShape(source,selected){
  if(!record(source)||selected.some(section=>['settings','buildings','waves'].includes(section))&&!record(source.config))throw Error('The source stage has an invalid configuration. Repair it before replacing content.');
  if(selected.includes('buildings')){records(source.buildings,'building list');records(source.specials,'special offer list');}
- if(selected.includes('spawns')){records(source.spawns,'spawn point list');if(!record(source.hero))throw Error('The source stage has an invalid hero start. Repair it before replacing content.');}
+ if(selected.includes('spawns')){
+  records(source.spawns,'spawn point list');
+  if(!record(source.hero))throw Error('The source stage has an invalid hero start. Repair it before replacing content.');
+  const [issue]=SpawnGroups.validate(source);
+  if(issue)throw Error('Repair the source stage’s spawn groups before replacing Spawns. '+issue);
+ }
  if(selected.includes('paths')){records(source.graphs,'path list');for(const graph of source.graphs){records(graph.nodes,'path point list');records(graph.edges,'path connection list');if(!Array.isArray(graph.spawnIds))throw Error('The source stage has invalid path spawn associations. Repair it before replacing content.');}}
  if(selected.includes('waves')&&!Array.isArray(source.config.WaveCfg))throw Error('The source stage has an invalid wave list. Repair it before replacing waves.');
 }
@@ -44,10 +50,10 @@ function replace(target,source,selection){
  if(all){
   for(const key of ['id','variant','level','name','sourceRevision'])copyField(next,target,key);
   for(const key of ['Level','Name'])copyField(next.config,target.config,key);
-  copyField(next.config,source.config,'EnemyProfiles');copyField(next,source,'tasksPosition');waves(next);return next;
+  copyField(next.config,source.config,'EnemyProfiles');copyField(next,source,'tasksPosition');copyField(next,source,'spawnGroups');waves(next);return next;
  }
  if(selected.includes('settings')){
-  const retained=new Set(['id','variant','level','name','sourceRevision','config','buildings','specials','templates','nextBuilding','nextSpecial','spawns','hero','tasksPosition','nextSpawn','graphs']);
+  const retained=new Set(['id','variant','level','name','sourceRevision','config','buildings','specials','templates','nextBuilding','nextSpecial','spawns','hero','tasksPosition','nextSpawn','spawnGroups','graphs']);
   for(const key of Object.keys(source))if(!retained.has(key))Object.defineProperty(next,key,{value:merge(own(next,key)?next[key]:undefined,source[key]),writable:true,enumerable:true,configurable:true});
   for(const key of Object.keys(source.config))if(!['Level','Name','WaveCfg','EnemyProfiles','BattleTasks','HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock','HomeLevel4Unlock'].includes(key))Object.defineProperty(next.config,key,{value:merge(own(next.config,key)?next.config[key]:undefined,source.config[key]),writable:true,enumerable:true,configurable:true});
  }
@@ -67,7 +73,7 @@ function replace(target,source,selection){
  }
  if(selected.includes('spawns')){
   if(!Array.isArray(source.spawns)||!source.hero||typeof source.hero!=='object'||Array.isArray(source.hero))throw Error('The source stage has invalid spawn points or hero start.');
-  copyField(next,source,'spawns');copyField(next,source,'tasksPosition');next.hero=merge(target.hero,source.hero);
+  copyField(next,source,'spawns');copyField(next,source,'tasksPosition');copyField(next,source,'spawnGroups');next.hero=merge(target.hero,source.hero);
  }
  if(selected.includes('paths')){
   if(!Array.isArray(source.graphs))throw Error('The source stage has an invalid path list.');

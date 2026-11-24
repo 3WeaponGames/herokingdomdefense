@@ -11,6 +11,7 @@ const EnemySkills=require('../../../assets/_script/EnemySkills');
 const TowerCombat=require('../../../assets/_script/TowerCombat');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 const StageTasks=require('./stage-tasks');
+const {MIN_SPAWN_INTERVAL}=require('./wave-timing');
 
 // Editing metadata. Storage keys and runtime identifiers intentionally stay unchanged.
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o || {}, k);
@@ -200,7 +201,7 @@ function validate(documents, changes) {
           if(!entry||typeof entry!=='object'||Array.isArray(entry))return issue(doc,s,'Each timed spawn group must be an object.');
           number(doc,s.concat('spawnId'),entry.spawnId,1,true);number(doc,s.concat('count'),entry.count,1,true);
           for(const key of ['spawnId','unitId','count'])if(!Number.isSafeInteger(entry[key])||entry[key]<1)issue(doc,s.concat(key),'Spawn IDs and quantities must be positive safe whole numbers.');
-          number(doc,s.concat('startSeconds'),entry.startSeconds,0,false);number(doc,s.concat('intervalSeconds'),entry.intervalSeconds,entry.count>1?0.000001:0,false);
+          number(doc,s.concat('startSeconds'),entry.startSeconds,0,false);number(doc,s.concat('intervalSeconds'),entry.intervalSeconds,entry.count>1?MIN_SPAWN_INTERVAL:0,false);
           if(!Number.isFinite(entry.startSeconds+(entry.count-1)*entry.intervalSeconds))issue(doc,s.concat('intervalSeconds'),'The final spawn time must be finite.');
           if(!stageUnits[entry.unitId]||!stageUnits[entry.unitId].prefab)issue(doc,s.concat('unitId'),'Choose a spawnable unit.');
           total+=entry.count;

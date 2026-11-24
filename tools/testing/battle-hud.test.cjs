@@ -4,6 +4,7 @@ const root=path.resolve(__dirname,'../..'),source=fs.readFileSync(path.join(root
 const prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'),'utf8'));
 const uiSource=fs.readFileSync(path.join(root,'assets/_script/KinghtFallUIGame.js'),'utf8');
 const TaskPosition=require('../../assets/_script/StageTaskPosition'),catalog=require('../../assets/resources/localization/catalog.json');
+const KinghtFallEnum=require('../../assets/_script/KinghtFallEnum');
 const translate=key=>catalog.entries[key]?.en||key;
 const GameStage={Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4};
 
@@ -66,16 +67,19 @@ function fixture(height=1334,position){
  for(const[i,text]of Object.entries({190:'Buildings',208:prefab[209]._string,173:'4'}))nodes[i].getComponent(Label).string=text;
  class Fit extends Component{constructor(){super();this.content=[];}fit(){this.calls=(this.calls||0)+1;nodes[229].getComponent(Label)._forceUpdateRenderData();nodes[225].width=nodes[226].width+nodes[229].width*.5+24;}}
  const fit=nodes[225].addComponent(Fit);fit.content=[nodes[226],nodes[229]];
- const model={KinghtFallGameStage:GameStage},exports={};
- vm.runInNewContext(source,{exports,cc,sp:{Skeleton,SkeletonData:class {}},require:name=>({StageTaskPosition:TaskPosition,KinghtFallModle:model})[name]});
+ const model={KinghtFallGameStage:GameStage},exports={},iconLoads=[];
+ const KinghtFallDataMgr={KinghtFallDataMgr:{getInstance:()=>({getGoodsCfgById:id=>({icon:'item-'+id})})}};
+ const KinghtFallConfig={KinghtFallBundelName:{IconGood:'goods'}};
+ vm.runInNewContext(source,{exports,cc,sp:{Skeleton,SkeletonData:class {}},require:name=>({StageTaskPosition:TaskPosition,KinghtFallModle:model,KinghtFallEnum,KinghtFallDataMgr,KinghtFallConfig})[name]});
  const map=new Node('map');map.setPosition(375,height/2);
  const ndMain=new Node('ndMain'),ndPath=new Node('ndPath'),hero=new Node('ndStar');
  ndMain.parent=ndPath.parent=map;ndMain.group='world';ndPath.setPosition(12,5);hero.parent=ndPath;hero.setPosition(-30,-20);
  if(position){const marker=new Node(TaskPosition.marker);marker.parent=ndPath;marker.setPosition(position);}
  const camera={offset:{x:0,y:0},getWorldToScreenPoint(p){return{x:p.x-this.offset.x,y:p.y-this.offset.y};}};
  const ctrGame={ndMain,ndPath,camera,mapSize:{width:1300,height:1600},gameStatus:0,
-  gameData:{coin:42,round:4,levelCfg:{Name:'5. Peaceful Plains',WaveCfg:Array(10)},taskInfo:{index:0,list:[4,5],stage:0}}};
+  gameData:{coin:42,round:4,levelCfg:{Name:'5. Peaceful Plains',WaveCfg:Array(10),InGameCoefficient:3},taskInfo:{index:0,list:[4,5],stage:0,reward:[{id:2003,num:2},{id:2003,num:2}]}}};
  const ui={ctrGame,T:translate,ctrUI:{node:parent},ndCoin:nodes[225],btnSuspend:nodes[184],btnBuildInfo:nodes[189],ndLevelInfo:nodes[236],ndTask:nodes[199],btnAddCoin:nodes[165]};
+ ui.loadSpriteFrame=(bundle,icon,callback)=>iconLoads.push({bundle,icon,callback});
  const initStart=uiSource.indexOf('function () {',uiSource.indexOf('_ctor.prototype.initView = '));
  const init=uiSource.slice(initStart,uiSource.lastIndexOf(';',uiSource.indexOf('_ctor.prototype.lateUpdate = ')));
  ui.initView=vm.runInNewContext('('+init+')',{cc,require:()=>exports,$z1KinghtFallModle:model,
@@ -83,7 +87,7 @@ function fixture(height=1334,position){
   $z1KinghtFallTextConfig:{KinghtFallTextConfig:{HomeBattle02:'Wave {0}'}},$z1Utils:{Utils:{StringFormat:(s,v)=>s.replace('{0}',v)}}});
  const settle=()=>{for(let i=0;i<4;i++)exports.layout(ui);};
  exports.install(ui);exports.mountTaskSpeaker(ui);ui.initView();settle();
- return {hud:exports,ui,nodes,cc,fit,camera,hero,Skeleton,settle,loadKing,setSafe:s=>{safe=s;}};
+ return {hud:exports,ui,nodes,cc,fit,camera,hero,Skeleton,settle,loadKing,iconLoads,setSafe:s=>{safe=s;}};
 }
 test('battle header stays inside safe edges, with Pause above Buildings and a compact opaque white title',()=>{
  for(const h of [1334,1688,1900]){const f=fixture(h),u=f.ui;f.setSafe({x:20,y:30,width:710,height:h-90});f.settle();assert.equal(u.ndCoin.x-u.ndCoin.width/2,-375+38);assert(u.btnSuspend.x+38<375-38);assert.equal(u.btnSuspend.x,u.btnBuildInfo.x);assert(u.btnBuildInfo.y+38<u.btnSuspend.y-38);const caption=f.nodes[190];assert.equal(caption.x,0);assert(u.btnBuildInfo.x+caption.x+caption.width*.25<=337);assert.equal(f.nodes[237].opacity,255);assert.equal(f.nodes[237].color,'white');assert.equal(f.nodes[237].getComponent(f.cc.Label).fontSize,68);assert.equal(f.nodes[240].getComponent(f.cc.Label).fontSize,54);}
@@ -99,11 +103,35 @@ test('the Royal Advisor stands at the authored point with an open task and its c
  assert.equal(nodes[208].getComponent(cc.Label).string,'Pending task');
  const collect=ui._battleHud.collectButton;
  assert.equal(collect.active,false);
+ const state=ui._battleHud,reward=state.rewardPreview;
+ assert(reward.active);
+ assert.equal(state.rewardText.string,'2');
+ assert.equal(state.rewardSprite.spriteFrame,nodes[226].getComponent(cc.Sprite).spriteFrame);
+ assert(reward.y+reward.height/2 < nodes[200].y-nodes[200].height*.25);
+ assert(reward.y-reward.height/2 > nodes[208].y+nodes[208].height*.25);
  info.stage=1;ui.initView();assert(!nodes[208].active);assert(collect.active);assert.equal(nodes[204].getComponent(cc.Label).string,'Collect');
  assert.equal(nodes[204].parent,collect);assert(collect.getComponent(cc.Button).interactable);
- assert(collect.height>=88 && collect.y<0);
+ assert(collect.height>=88 && collect.y+collect.height/2 < reward.y-reward.height/2);
  info.index++;info.stage=0;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'Upgrade 1 Arrow Tower to Level 3 and defend the castle');assert(nodes[208].active);
- info.index++;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'All tasks complete');assert(!nodes[208].active);assert(!collect.active);assert(task.active);
+ info.index++;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'All tasks complete');assert(!nodes[208].active);assert(!collect.active);assert(!reward.active);assert(task.active);
+});
+test('the Advisor preview reads the current task reward and rejects a stale icon load',()=>{
+ const {ui,nodes,cc,iconLoads}=fixture(),state=ui._battleHud,info=ui.ctrGame.gameData.taskInfo;
+ info.reward[1]={id:2001,num:75};info.index=1;info.rewardMultiplier=2;
+ ui.initView();
+ assert.equal(state.rewardText.string,'150');
+ assert.equal(iconLoads.length,1);
+ assert.equal(iconLoads[0].bundle,'goods');
+ assert.equal(iconLoads[0].icon,'item-2001');
+ info.index=0;ui.initView();
+ const silver=nodes[226].getComponent(cc.Sprite).spriteFrame;
+ iconLoads[0].callback({uuid:'stale-gold'});
+ assert.equal(state.rewardText.string,'2');
+ assert.equal(state.rewardSprite.spriteFrame,silver);
+ info.index=1;ui.initView();
+ const gold={uuid:'gold'};iconLoads[1].callback(gold);
+ assert.equal(state.rewardSprite.spriteFrame,gold);
+ assert.equal(state.rewardNumber.color,'white');
 });
 test('legacy task IDs stored as strings retain their existing Advisor labels',()=>{
  const {ui,nodes,cc}=fixture();
@@ -144,8 +172,8 @@ test('the Advisor and task bubble fade out at dusk and return together in planni
  assert.equal(advisor.opacity,128);
  assert.equal(state.taskName.opacity,128);
  assert.equal(state.collectLabel.opacity,128);
- assert.equal(state.backdropArt.fillColor.a,60);
- assert.equal(state.tailArt.fillColor.a,60);
+ assert.equal(state.backdropArt.fillColor.a,120);
+ assert.equal(state.tailArt.fillColor.a,120);
  assert.equal(state.collectArt.fillColor.a,128);
  assert.equal(state.collectControl.interactable,false);
  ui.ctrGame.gameStatus=GameStage.Fight;
@@ -158,11 +186,12 @@ test('the Advisor and task bubble fade out at dusk and return together in planni
  hud.layout(ui,.2);
  assert(advisor.active&&task.active);
  assert.equal(advisor.opacity,128);
- assert.equal(state.backdropArt.fillColor.a,60);
+ assert.equal(state.backdropArt.fillColor.a,120);
  hud.layout(ui,.2);
  assert.equal(advisor.opacity,255);
  assert.equal(state.collectLabel.opacity,255);
- assert.equal(state.backdropArt.fillColor.a,120);
+ assert.equal(state.rewardPreview.opacity,255);
+ assert.equal(state.backdropArt.fillColor.a,240);
  assert(state.collectButton.activeInHierarchy && state.collectControl.interactable);
  assert.equal(info.index,0);assert.equal(info.stage,1);
 });
@@ -177,18 +206,18 @@ test('legacy stages place the King beside Hero start and camera movement only mo
  camera.offset.y=1500;settle();assert.equal(task.active,false);
  camera.offset.y=0;settle();assert.equal(task.active,true);assert.deepEqual(task.getPosition(),original);
 });
-test('the translucent white bubble has dark text and points up from below the Advisor near the top edge',()=>{
+test('the dark bubble has white text and points up from below the Advisor near the top edge',()=>{
  const f=fixture(1334,{x:-355,y:540}),task=f.ui.ndTask,state=f.ui._battleHud;
  f.setSafe({x:16,y:0,width:684,height:1280});f.settle();
  const sprite=task.getComponent(f.cc.Sprite);
  assert(!sprite.enabled);
- assert.deepEqual(state.backdropArt.fillColor,{r:255,g:255,b:255,a:120});
+ assert.deepEqual(state.backdropArt.fillColor,{r:16,g:23,b:32,a:240});
  assert.deepEqual(state.tailArt.fillColor,state.backdropArt.fillColor);
  assert.equal(task.opacity,255);
  const [rectangle]=state.backdropArt.rectangles;
  assert.equal(rectangle.width,task.width);assert.equal(rectangle.height,task.height);
  for(const id of [200,204,208]) {
-  assert.deepEqual(f.nodes[id].color,{r:9,g:12,b:18,a:255});
+  assert.equal(f.nodes[id].color,'white');
   assert.equal(f.nodes[id].getComponent(f.cc.LabelOutline).enabled,false);
  }
  assert(task.active);assert(task.x-task.width/2>=16+16-375);assert(task.y+task.height/2<state.king.convertToWorldSpaceAR({x:0,y:0}).y-667);

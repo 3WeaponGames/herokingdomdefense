@@ -92,7 +92,7 @@ test('edits preserve route and unknown fields until a spawn change makes that ro
  W.editGroup(s,0,'first',{spawnId:2,routeGraphId:'two'},.5);assert.equal(wave.SpawnTimeline[0].routeGraphId,'two');assert.equal(wave.SpawnTimeline[0].id,'first');
 });
 
-test('spawn default edits update inherited fields while existing wave overrides and legacy waves keep their timing',()=>{
+test('spawn defaults update inherited rows while timing edits lock the entire spawn row',()=>{
  const s=timed(),wave=s.config.WaveCfg[0],original=clone(wave.SpawnTimeline);
  s.config.WaveCfg.push({...stage().config.WaveCfg[0],Wave:2});
  const legacy=clone(s.config.WaveCfg[1]);
@@ -115,13 +115,17 @@ test('spawn default edits update inherited fields while existing wave overrides 
  W.editGroup(s,0,id,{startSeconds:3.25},.5);
  W.setSpawnTiming(s,1,'startSeconds',2.5);
  W.setSpawnTiming(s,1,'intervalSeconds',1.5);
- assert.deepEqual(timing(),[3.25,1.5]);
+ assert.deepEqual(timing(),[3.25,1]);
+ assert(W.isTimingManual(current()));
  assert(!W.inheritsTiming(current(),'startSeconds'));
- assert(W.inheritsTiming(current(),'intervalSeconds'));
+ assert(!W.inheritsTiming(current(),'intervalSeconds'));
+ W.applySpawnDefaults(s,1,.5);
+ assert.deepEqual(timing(),[3.25,1]);
  W.editGroup(s,0,id,{spawnId:2},.5);
- assert.deepEqual(timing(),[3.25,.75]);
+ assert.deepEqual(timing(),[3.25,1]);
  W.editGroup(s,0,id,{},.5,{useSpawnDefaults:true});
  assert.deepEqual(timing(),[4,.75]);
+ assert(!W.isTimingManual(current()));
  const nextLane=W.addSpawn(s,0,'first',.5);
  const added=wave.SpawnTimeline.find(entry=>entry.id===nextLane);
  assert.deepEqual([added.spawnId,added.startSeconds,added.intervalSeconds],[2,4,.75]);
@@ -134,11 +138,127 @@ test('spawn default edits update inherited fields while existing wave overrides 
  wave.SpawnTimeline=editedSchedule;
  W.setSpawnTiming(s,2,'startSeconds',1);
  assert.deepEqual(timing(),[6,.75]);
- assert.deepEqual(current().inheritSpawnTiming,['intervalSeconds']);
+ assert(W.isTimingManual(current()));
+ assert(!Object.hasOwn(current(),'inheritSpawnTiming'));
  const before=clone(s);
  assert.throws(()=>W.setSpawnTiming(s,2,'intervalSeconds',0),/greater than zero/);
  assert.throws(()=>W.setSpawnTiming(s,2,'startSeconds',-.5),/zero or greater/);
  assert.deepEqual(s,before);
+});
+
+test('legacy locks preserve the original queue and follow the schedule when copied or materialized',()=>{
+ const s=stage(),wave=s.config.WaveCfg[0],original=clone(wave);
+ const [first,second]=W.entries(wave,.5);
+ assert.equal(W.setTimingMode(s,0,first.id,'auto',.5),false);
+ assert.deepEqual(wave,original);
+ W.setTimingMode(s,0,first.id,'manual',.5);
+ assert(W.isTimingManual(W.entries(wave,.5)[0]));
+ assert.deepEqual(wave,{...original,editorManualTimingIds:[first.id]});
+
+ const duplicate=W.duplicateWave(s,0),blank=W.addWave(s,0);
+ assert.deepEqual(s.config.WaveCfg[duplicate].editorManualTimingIds,[first.id]);
+ assert(!Object.hasOwn(s.config.WaveCfg[blank],'editorManualTimingIds'));
+ W.copyWaveFrom(s,0,blank,{groups:true,multipliers:false,settings:false});
+ assert(W.isTimingManual(W.entries(s.config.WaveCfg[blank],.5)[0]));
+ W.setTimingMode(s,duplicate,first.id,'auto',.5);
+ assert(!W.isTimingManual(W.entries(s.config.WaveCfg[duplicate],.5)[0]));
+ assert(W.isTimingManual(W.entries(wave,.5)[0]));
+
+ W.applyBalancedTiming(s,0,[{id:second.id,startSeconds:second.startSeconds+.5,intervalSeconds:second.intervalSeconds}],.5);
+ assert.deepEqual(wave.SpawnTimeline[0],{...first,editorManualTiming:true});
+ assert.deepEqual(wave.RefreshSoldierKind,original.RefreshSoldierKind);
+ assert(!Object.hasOwn(wave,'editorManualTimingIds'));
+});
+
+test('typing the same time preserves inheritance and keeps legacy queues in their original format',()=>{
+ const s=timed(),wave=s.config.WaveCfg[0],first=wave.SpawnTimeline[0];
+ first.inheritSpawnTiming=['intervalSeconds','startSeconds','futureTiming'];
+ const before=clone(s);
+ W.editGroup(s,0,first.id,{startSeconds:first.startSeconds},.5);
+ assert.deepEqual(s,before);
+ W.editGroup(s,0,first.id,{startSeconds:3},.5);
+ assert(W.isTimingManual(wave.SpawnTimeline[0]));
+ assert.deepEqual(wave.SpawnTimeline[0].inheritSpawnTiming,['futureTiming']);
+
+ const legacy=stage(),legacyWave=legacy.config.WaveCfg[0],legacyEntry=W.entries(legacyWave,.5)[0],legacyBefore=clone(legacy);
+ W.editGroup(legacy,0,legacyEntry.id,{startSeconds:legacyEntry.startSeconds},.5);
+ assert.deepEqual(legacy,legacyBefore);
+});
+
+test('raw timing edits lock uniquely identifiable imported rows without requiring editor IDs',()=>{
+ const before=[{spawnId:1,unitId:90002,count:3,startSeconds:2,intervalSeconds:.5,inheritSpawnTiming:['startSeconds','intervalSeconds','futureTiming']},
+  {spawnId:2,unitId:90004,count:2,startSeconds:3,intervalSeconds:.5,inheritSpawnTiming:['startSeconds']}];
+ const after=[clone(before[1]),{...clone(before[0]),startSeconds:10}];
+ W.preserveTimingOverrides(before,after);
+ assert.deepEqual(after[0],before[1]);
+ assert(W.isTimingManual(after[1]));
+ assert(!Object.hasOwn(after[1],'id'));
+ assert.deepEqual(after[1].inheritSpawnTiming,['futureTiming']);
+
+ const duplicated=before.map(entry=>({...entry,id:'imported'}));
+ const unchanged=clone(duplicated);
+ W.preserveTimingOverrides(duplicated,unchanged);
+ assert.deepEqual(unchanged,duplicated);
+});
+
+test('raw legacy edits move surviving locks to their batches and retire removed or ambiguous locks',()=>{
+ const wave={RefreshSoldierKind:['1#90002,2;90003,1','2#90004,2','3#90005,1;90005,1'],editorManualTimingIds:['legacy-1-0','legacy-1-1','legacy-2-0','legacy-3-0']};
+ const next=['1#90006,1;-1,1;90002,3','2#90004,2','3#90005,1'];
+ W.reconcileLegacyTimingLocks(wave,next);
+ assert.deepEqual(wave.editorManualTimingIds,['legacy-1-2','legacy-2-0']);
+ assert.deepEqual(wave.RefreshSoldierKind,['1#90002,2;90003,1','2#90004,2','3#90005,1;90005,1']);
+ wave.RefreshSoldierKind=next;
+ assert.deepEqual(W.entries(wave,.5).filter(W.isTimingManual).map(row=>row.unitId),[90002,90004]);
+ assert(!Object.hasOwn(wave,'SpawnTimeline'));
+ const malformed={RefreshSoldierKind:['broken','2#90004,2'],editorManualTimingIds:['legacy-2-0']};
+ W.reconcileLegacyTimingLocks(malformed,['1#90001,1','2#90004,2']);
+ assert.deepEqual(malformed.editorManualTimingIds,['legacy-2-0']);
+});
+
+test('new wave timings enforce the repeated-spawn save interval before changing the draft',()=>{
+ const s=timed(),before=clone(s),below=W.MIN_SPAWN_INTERVAL/2;
+ assert.throws(()=>W.setSpawnTiming(s,1,'intervalSeconds',below),/at least 0\.000001 seconds/);
+ assert.throws(()=>W.editGroup(s,0,'first',{intervalSeconds:below},.5),/at least 0\.000001 seconds/);
+ assert.throws(()=>W.applyBalancedTiming(s,0,[{id:'first',startSeconds:1,intervalSeconds:below}],.5),/at least 0\.000001 seconds/);
+ assert.deepEqual(s,before);
+ assert(W.applyBalancedTiming(s,0,[{id:'first',startSeconds:1,intervalSeconds:W.MIN_SPAWN_INTERVAL}],.5));
+ assert.equal(s.config.WaveCfg[0].SpawnTimeline[0].intervalSeconds,W.MIN_SPAWN_INTERVAL);
+
+ const legacy=stage(),wave=legacy.config.WaveCfg[0],rows=W.entries(wave,below);
+ W.setTimingMode(legacy,0,rows[0].id,'manual',below);
+ const legacyBefore=clone(legacy);
+ assert.throws(()=>W.applyBalancedTiming(legacy,0,[{id:rows[1].id,startSeconds:1,intervalSeconds:W.MIN_SPAWN_INTERVAL}],below),/at least 0\.000001 seconds/);
+ assert.deepEqual(legacy,legacyBefore);
+});
+
+test('balancing commits explicit timings for Auto rows and rejects stale or invalid changes atomically',()=>{
+ const s=timed(),wave=s.config.WaveCfg[0];
+ W.setTimingMode(s,0,'first','manual',.5);
+ const id=W.addGroup(s,0,{unitId:90007,spawnId:1,count:2},.5);
+ const row=()=>wave.SpawnTimeline.find(entry=>entry.id===id);
+ delete wave.SpawnTimeline[1].id;
+ row().future={keep:true};
+ const original=clone(s),proposal={id,startSeconds:3,intervalSeconds:1};
+ for(const invalid of [
+  {id:'first',startSeconds:10,intervalSeconds:2},
+  {id:'missing',startSeconds:10,intervalSeconds:2},
+  {id,startSeconds:6,intervalSeconds:2},
+  {id:'other-lane',startSeconds:-1,intervalSeconds:2}
+ ]){
+  assert.throws(()=>W.applyBalancedTiming(s,0,[proposal,invalid],.5));
+  assert.deepEqual(s,original);
+ }
+ assert.equal(W.applyBalancedTiming(s,0,[row()],.5),false);
+ assert.deepEqual(s,original);
+ assert(W.applyBalancedTiming(s,0,[proposal],.5));
+ assert.equal(row().startSeconds,3);
+ assert.equal(row().intervalSeconds,1);
+ assert(!W.isTimingManual(row()));
+ assert(!Object.hasOwn(row(),'inheritSpawnTiming'));
+ assert.deepEqual(row().future,{keep:true});
+ assert.deepEqual(wave.SpawnTimeline.slice(0,3),original.config.WaveCfg[0].SpawnTimeline.slice(0,3));
+ W.setSpawnTiming(s,1,'startSeconds',9);
+ assert.equal(row().startSeconds,3);
 });
 
 test('applying spawn defaults updates only matching lanes across timed and legacy waves',()=>{

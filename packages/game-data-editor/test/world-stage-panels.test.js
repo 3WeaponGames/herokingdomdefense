@@ -10,10 +10,10 @@ class Element{
  getBoundingClientRect(){return {top:0,height:100};}
  contains(node){return node===this||this.children.some(child=>child.contains(node));}
 }
-function fixture(){
+function fixture(queueEdit=change=>change()){
  const stage={id:'A-7',level:7,variant:'A',mapId:'Map07',hero:{x:0,y:0},buildings:[],spawns:[{id:1,name:'Spawn 1',enabled:true,x:0,y:100}],graphs:[{id:'one',name:'First path',entry:'start',spawnIds:[1],nodes:[{id:'start',x:0,y:100},{id:'goal',x:0,y:0,goal:true}],edges:[{id:'link',from:'start',to:'goal',weight:1}]},{id:'two',name:'Other path',entry:'goal',spawnIds:[1],nodes:[{id:'goal',x:1,y:0,goal:true}],edges:[]}],config:{Level:7,WaveCfg:[{id:7,Wave:1,SpawnTimeline:[{id:'a',unitId:3,spawnId:1,count:1,startSeconds:1,intervalSeconds:1,routeGraphId:'one',future:{keep:1}},{id:'b',unitId:3,spawnId:1,count:1,startSeconds:2,intervalSeconds:1,routeGraphId:'two'},{id:'c',unitId:3,spawnId:1,count:1,startSeconds:3,intervalSeconds:1},{id:'d',unitId:3,spawnId:1,count:1,startSeconds:4,intervalSeconds:1,routeGraphId:null}]},{id:7,Wave:2,RefreshSoldierKind:['1#3,1'],future:{keep:true}}],future:{keep:[1,2]}}};
  const el=(tag,text,cls)=>new Element(tag,text,cls),state={snap:{value:stage,issues:[]},catalog:{interval:.5,stages:[{id:'A-7',variant:'A',level:7,name:'7. Desert',mapId:'Map07',waves:2}],maps:[{id:'Map07',name:'Fire map'}],units:[{id:3,name:'Unit'}]},variant:'A',wave:0,selection:[],previewHall:3,showBlockers:true,snapGrid:0,spawn:1,graph:'one',radius:18,gate:'closed'},noop=()=>{};let edits=0;
- const context={state,el,button(parent,text,handler,active){const button=el('button',text,active?'active':'');button.onclick=handler;parent.appendChild(button);return button;},field(parent,name,value,change,choices){const input=el('input');input.choices=choices;input.value=value;input.fieldName=name;input.change=change;if(typeof value==='boolean')input.checked=value;parent.appendChild(input);return input;},select(parent){const input=el('select');parent.appendChild(input);return input;},section(parent,text){parent.appendChild(el('h3',text));},note(parent,text){parent.appendChild(el('p',text));},edit(change){edits++;const draft=clone(state.snap.value);change(draft);state.snap.value=draft;},render:noop,draw:noop,top:el('div'),tabs:el('div'),left:el('div'),right:el('div'),buildingPalette:noop,buildingInspector:noop};
+ const context={state,el,button(parent,text,handler,active){const button=el('button',text,active?'active':'');button.onclick=handler;parent.appendChild(button);return button;},field(parent,name,value,change,choices){const input=el('input');input.choices=choices;input.value=value;input.fieldName=name;input.change=change;if(typeof value==='boolean')input.checked=value;parent.appendChild(input);return input;},select(parent){const input=el('select');parent.appendChild(input);return input;},section(parent,text){parent.appendChild(el('h3',text));},note(parent,text){parent.appendChild(el('p',text));},edit(change){return queueEdit(()=>{edits++;const draft=clone(state.snap.value);change(draft);state.snap.value=draft;});},render:noop,draw:noop,top:el('div'),tabs:el('div'),left:el('div'),right:el('div'),buildingPalette:noop,buildingInspector:noop};
  for(const name of ['load','fit','startPreview','closePreview','replaceStage','action','refresh','discard','save','cancelDrag','prepareImages','editMap','jsonField','patchSelected','remove','newPath','insertPathNode','removePathNode','navigation','modal'])context[name]=noop;
  context.unitPicker=(dialog,spec)=>{dialog.appendChild(spec.controls);const search=el('input',undefined,'world-unit-picker-search'),grid=el('div',undefined,'world-unit-picker');search.value='';dialog.appendChild(search);dialog.appendChild(grid);const render=()=>{grid.textContent='';for(const unit of spec.units.filter(unit=>require('../worlds/unit-catalog').matches(unit,search.value))){const b=context.button(grid,require('../worlds/unit-catalog').name(unit),()=>{if(spec.selected.has(unit.id))spec.selected.delete(unit.id);else spec.selected.add(unit.id);render();},spec.selected.has(unit.id));b.dataset.unitId=unit.id;b.setAttribute('aria-pressed',String(spec.selected.has(unit.id)));}};search.oninput=render;render();};
  return{state,context,panels:Panels.create(context),edits:()=>edits};
@@ -21,7 +21,159 @@ function fixture(){
 function descendants(element){return element.children.flatMap(child=>[child,...descendants(child)]);}
 function dragEvent(clientY=10){return {clientY,preventDefault(){this.prevented=true;},stopPropagation(){},dataTransfer:{setData(){}}};}
 
-test('spawn and wave timing fields have three step sizes on each side and preserve per-field inheritance',()=>{
+test('the Spawns sidebar moves points into and out of groups and updates the generated name',()=>{
+ const f=fixture();f.state.tab='Spawns';
+ const stage=f.state.snap.value;
+ stage.spawns.push({id:2,name:'Spawn 2'},{id:3,name:'Spawn 3'});
+ stage.spawnGroups=[{id:'north',spawnIds:[1,2]}];
+ const before=clone(stage.spawns),nodes=()=>descendants(f.context.left);
+ const list=id=>nodes().find(node=>node.dataset.spawnGroupId===id);
+ const spawn=id=>nodes().find(node=>node.dataset.spawnId===String(id));
+ function move(id,group){
+  spawn(id).ondragstart(dragEvent());
+  const over=dragEvent();list(group).ondragover(over);
+  assert(over.prevented);
+  assert(list(group).classList.contains('world-spawn-group-drop'));
+  list(group).ondrop(dragEvent());f.panels.left();
+ }
+ f.panels.left();
+ assert(list('north').textContent.startsWith('Spawn group 1 (1, 2)'));
+ move(3,'north');
+ assert(list('north').textContent.startsWith('Spawn group 1 (1, 2, 3)'));
+ move(3,'');
+ assert(list('north').textContent.startsWith('Spawn group 1 (1, 2)'));
+ assert.equal(spawn(3).parentNode,list(''));
+ assert.deepEqual(f.state.snap.value.spawns,before);
+ assert.equal(f.edits(),2);
+ for(const tab of ['Stage','Buildings','Paths','Waves']){
+  f.state.tab=tab;f.panels.left();
+  assert(!nodes().some(node=>node.classList.contains('world-spawn-group-list')));
+ }
+});
+
+test('wave timing balance requires a fresh preview and applies one full-wave draft edit',async()=>{
+ const f=fixture(),stage=f.state.snap.value,wave=stage.config.WaveCfg[0];
+ f.state.tab='Waves';f.state.waveSpawnFilter='1';
+ stage.spawns.push({id:2,name:'Spawn 2',enabled:true});
+ for(const row of wave.SpawnTimeline)row.startSeconds=0;
+ wave.SpawnTimeline[0].editorManualTiming=true;
+ wave.SpawnTimeline[1].spawnId=2;
+ wave.HealthCoefficient=1;wave.AttackCoefficient=1;
+ Object.assign(f.state.catalog.units[0],{health:10,damage:2});
+ let modal,apply;
+ f.context.modal=(title,body,commit)=>{
+  modal={dialog:f.context.el('div'),applyButton:f.context.el('button')};
+  body(modal.dialog);apply=commit;return modal;
+ };
+ const before=clone(stage);
+ f.panels.right();
+ await descendants(f.context.right).find(node=>node.classList.contains('world-wave-balance-button')).onclick();
+ const dialog=()=>descendants(modal.dialog),field=name=>dialog().find(node=>node.tagName==='label'&&node.children[0].textContent===name).children[1];
+ const cap=field('Max enemies alive'),deadline=field('Last spawn by (s)');
+ const preview=dialog().find(node=>node.textContent==='Preview changes');
+ assert.equal(cap.value,'50');assert.equal(deadline.value,'');assert(modal.applyButton.disabled);
+ cap.value='2';deadline.value='3';await preview.onclick();
+ assert.match(modal.dialog.textContent,/at least 4 s/);
+ assert.match(modal.dialog.textContent,/Peak enemies alive4 at 0 s/);
+ assert(modal.applyButton.disabled);
+ deadline.value='8';deadline.oninput();await preview.onclick();
+ assert(!modal.applyButton.disabled);
+ const stats=dialog().find(node=>node.classList.contains('world-wave-balance-metrics'));
+ assert.match(stats.textContent,/Peak enemies alive4 at 0 s2 at/);
+ assert.deepEqual(f.state.snap.value,before);assert.equal(f.edits(),0);
+ deadline.value='7';deadline.oninput();
+ await assert.rejects(apply(),/Preview these settings/);
+ await preview.onclick();await apply();
+ const saved=f.state.snap.value.config.WaveCfg[0];
+ assert.deepEqual(saved.editorTimingBalance,{peakCap:2,lastSpawnLimit:7,defeatSeconds:2});
+ assert.deepEqual(saved.SpawnTimeline[0],wave.SpawnTimeline[0]);
+ assert.equal(f.edits(),1);
+ const measured=require('../worlds/wave-pressure').build(saved,f.state.catalog.units,.5);
+ assert.equal(measured.peaks.units.value,2);assert(measured.duration<=7);
+});
+
+test('balance waits for a queued timing edit and rejects a stale unit catalog review',async()=>{
+ let release;
+ const gate=new Promise(resolve=>{release=resolve;}),f=fixture(change=>gate.then(change));
+ f.state.tab='Waves';f.state.snap.unitCatalogRevision=1;
+ let review;
+ f.context.modal=(title,body,apply)=>{
+  review={dialog:f.context.el('div'),applyButton:f.context.el('button'),apply};
+  body(review.dialog);return review;
+ };
+ f.panels.right();
+ const nodes=descendants(f.context.right);
+ f.state.pending=nodes.find(node=>node.fieldName==='Starts at (s)').change(9);
+ const opening=nodes.find(node=>node.classList.contains('world-wave-balance-button')).onclick();
+ await Promise.resolve();assert.equal(review,undefined);
+ release();await opening;
+ const elements=descendants(review.dialog);
+ elements.find(node=>node.tagName==='label'&&node.children[0].textContent==='Max enemies alive').children[1].value='3';
+ const preview=elements.find(node=>node.textContent==='Preview changes');
+ await preview.onclick();
+ assert.match(review.dialog.textContent,/Last spawn9 s9 s/);
+ assert(!review.applyButton.disabled);
+ assert.equal(f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0].editorManualTiming,true);
+
+ f.state.snap.unitCatalogRevision++;
+ await assert.rejects(review.apply(),/unit stats.*changed/);
+ await preview.onclick();
+ assert.match(review.dialog.textContent,/unit stats.*changed/);
+ assert(review.applyButton.disabled);
+ assert.equal(f.edits(),1);
+});
+
+test('balance plans with the enemy mix below the count cap and previews the unit factors',async()=>{
+ const f=fixture(),wave=f.state.snap.value.config.WaveCfg[0];
+ f.state.tab='Waves';
+ wave.HealthCoefficient=1;wave.AttackCoefficient=1;
+ f.state.catalog.units=[
+  {id:3,name:'Shield',unitType:'guardian',health:120,damage:4,attackRate:1,attack:{delivery:'melee',pattern:'single'}},
+  {id:5,name:'Wyrm',unitType:'mystic',flight:true,health:75,damage:16,attackRate:1,attack:{delivery:'ranged',pattern:'splash',splashRadius:90}},
+  {id:6,name:'Ogre',unitType:'bruiser',enemyClass:'boss',health:360,damage:32,attackRate:1,attack:{delivery:'melee',pattern:'splash'}},
+  {id:7,name:'Bow',unitType:'skirmisher',health:45,damage:6,attackRate:1,attack:{delivery:'ranged',pattern:'single'}}
+ ];
+ const [shield,wyrm,ogre,bow]=wave.SpawnTimeline;
+ Object.assign(shield,{count:3,startSeconds:0,intervalSeconds:.5});
+ Object.assign(wyrm,{unitId:5,count:2,startSeconds:0,intervalSeconds:.5});
+ Object.assign(ogre,{unitId:6,startSeconds:0});
+ Object.assign(bow,{unitId:7,startSeconds:6,editorManualTiming:true});
+ let modal,commit;
+ f.context.modal=(title,body,apply)=>{
+  modal={dialog:f.context.el('div'),applyButton:f.context.el('button')};
+  body(modal.dialog);commit=apply;return modal;
+ };
+ f.panels.right();
+ await descendants(f.context.right).find(node=>node.classList.contains('world-wave-balance-button')).onclick();
+ const nodes=descendants(modal.dialog);
+ nodes.find(node=>node.tagName==='label'&&node.children[0].textContent==='Last spawn by (s)').children[1].value='6';
+ await nodes.find(node=>node.textContent==='Preview changes').onclick();
+ assert.match(modal.dialog.textContent,/Peak weighted threat/);
+ assert.match(modal.dialog.textContent,/Peak spawn burst/);
+ assert(descendants(modal.dialog).some(node=>node.classList.contains('world-wave-balance-traits')&&/Guardian|Flight|Boss/.test(node.textContent)));
+ assert.equal(f.edits(),0);
+ assert.equal(modal.applyButton.disabled,false);
+ await commit();
+ const projected=f.state.snap.value.config.WaveCfg[0];
+ assert.deepEqual(projected.SpawnTimeline.find(row=>row.id===bow.id),bow);
+ assert(projected.SpawnTimeline.some((row,index)=>row.startSeconds!==wave.SpawnTimeline[index].startSeconds||row.intervalSeconds!==wave.SpawnTimeline[index].intervalSeconds));
+ assert.equal(f.edits(),1);
+});
+
+test('wave overview restores each reviewed defeat rate and reports a breached saved limit',()=>{
+ const f=fixture(),[first,second]=f.state.snap.value.config.WaveCfg;
+ f.state.tab='Waves';
+ first.editorTimingBalance={peakCap:1,lastSpawnLimit:3,defeatSeconds:.75};
+ for(const row of first.SpawnTimeline)row.startSeconds=4;
+ second.editorTimingBalance={peakCap:50,lastSpawnLimit:null,defeatSeconds:1.25};
+ const rate=()=>descendants(f.context.top).find(node=>node.attributes?.['aria-label']==='Seconds per defeat');
+ f.panels.top();assert.equal(rate().value,'0.75');
+ assert.match(f.context.top.textContent,/Peak 4 \/ 1 enemies · Last spawn 4 s \/ 3 s/);
+ f.state.wave=1;f.panels.top();assert.equal(rate().value,'1.25');
+ f.state.wave=0;f.panels.top();assert.equal(rate().value,'0.75');assert.equal(f.edits(),0);
+});
+
+test('spawn and wave timing fields have three step sizes on each side and timing overrides lock their row',()=>{
  const f=fixture(),stage=f.state.snap.value,spawn=stage.spawns[0],wave=stage.config.WaveCfg[0];
  spawn.defaultTiming={startSeconds:1.25,intervalSeconds:.75};
  Object.assign(wave.SpawnTimeline[0],{count:2,...spawn.defaultTiming,inheritSpawnTiming:['startSeconds','intervalSeconds']});
@@ -54,7 +206,8 @@ test('spawn and wave timing fields have three step sizes on each side and preser
  const card=find(node=>node.dataset.entryId==='a');
  step('Decrease start time by 0.5 seconds',card).onclick();
  assert.equal(lane().startSeconds,1.25);
- assert.deepEqual(lane().inheritSpawnTiming,['intervalSeconds']);
+ assert.equal(lane().editorManualTiming,true);
+ assert(!Object.hasOwn(lane(),'inheritSpawnTiming'));
  assert.equal(defaults().startSeconds,1.75);
  step('Increase interval by 5 seconds',card).onclick();
  assert.equal(lane().intervalSeconds,5.25);
@@ -67,6 +220,7 @@ test('spawn and wave timing fields have three step sizes on each side and preser
  reset.onclick();
  assert.deepEqual([lane().startSeconds,lane().intervalSeconds],[1.75,.25]);
  assert.deepEqual(lane().inheritSpawnTiming,['startSeconds','intervalSeconds']);
+ assert(!Object.hasOwn(lane(),'editorManualTiming'));
 });
 
 test('the wave unit chooser updates inherited start and interval when its spawn changes',()=>{
@@ -86,7 +240,8 @@ test('the wave unit chooser updates inherited start and interval when its spawn 
  chooser.selected.add(3);apply();
  const entry=f.state.snap.value.config.WaveCfg[0].SpawnTimeline.at(-1);
  assert.deepEqual([entry.spawnId,entry.startSeconds,entry.intervalSeconds],[2,2.25,1.5]);
- assert.deepEqual(entry.inheritSpawnTiming,['intervalSeconds']);
+ assert.equal(entry.editorManualTiming,true);
+ assert(!Object.hasOwn(entry,'inheritSpawnTiming'));
 });
 
 test('the spawn inspector applies defaults to every wave using the selected spawn in one draft edit',()=>{

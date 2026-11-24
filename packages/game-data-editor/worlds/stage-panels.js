@@ -3,6 +3,7 @@
 const Waves=require('./wave-editor'),Paths=require('./path-editor'),Stats=require('./wave-stats'),Model=require('./model'),StageCards=require('./stage-cards-client'),StageProfiles=require('./stage-profile-editor');
 const Names=require('./stage-names'),CardOrder=require('./stage-card-order'),CardDrag=require('./stage-card-drag');
 const WaveOverview=require('./wave-overview');
+const WaveBalance=require('./wave-balance-panel'),SpawnGroups=require('./spawn-groups'),SpawnGroupsPanel=require('./spawn-groups-panel');
 const TaskPosition=require('../../../assets/_script/StageTaskPosition');
 const STAGE_SECTIONS=[
  {value:'buildings',label:'Buildings',description:'All buildings and special offers, including unlock settings and appearance.'},
@@ -60,7 +61,7 @@ function create(c){
   if(state.tab==='Waves'){
    const row=stage().config.WaveCfg?.[state.wave];
    main.classList.add('world-stage-primary-overview');
-   waveOverview(main,{key:stage().id+'\u0000'+state.wave,label:waveLabel(row,state.wave),wave:row,units:unitRows(),interval:catalog().interval});
+   waveOverview.render(main,{key:stage().id+'\u0000'+state.wave,label:waveLabel(row,state.wave),wave:row,units:unitRows(),interval:catalog().interval});
   }
   parent.appendChild(main);
   const actions=el('div',undefined,'world-stage-header-actions');parent.appendChild(actions);button(actions,'Fit map',c.fit);button(actions,state.previewBusy?'Preparing preview…':'Preview draft',c.startPreview).disabled=!!state.previewBusy;if(state.previewOpen)button(actions,'Close preview',c.closePreview);
@@ -72,7 +73,10 @@ function create(c){
   const tools=el('div',undefined,'world-stage-tab-tools');c.tabs.appendChild(tools);
   if(state.tab!=='Waves')button(tools,'Select / move',()=>{state.tool='select';render();},state.tool==='select');
   if(state.tab==='Buildings')button(tools,'Place building',()=>{state.tool='building';render();},state.tool==='building');
-  if(state.tab==='Spawns')button(tools,'Add spawn',()=>{state.tool='spawn';render();},state.tool==='spawn');
+  if(state.tab==='Spawns'){
+   button(tools,'Add spawn',()=>{state.tool='spawn';render();},state.tool==='spawn');
+   button(tools,'Spawn groups',()=>{c.cancelDrag();state.selection=[];state.tool='select';render();});
+  }
   if(state.tab==='Paths'){button(tools,'Add point',()=>{state.tool='node';render();},state.tool==='node');button(tools,'Connect points',()=>{state.tool='connect';state.connect=null;render();},state.tool==='connect');}
   if(['Stage','Buildings'].includes(state.tab)){
    field(tools,'Hall preview',state.previewHall,value=>{state.previewHall=value;c.prepareImages();draw();},[1,2,3,4]);
@@ -118,7 +122,8 @@ function create(c){
   if(state.tab==='Paths'){
    section(parent,'Paths');note(parent,'Choose a route to edit its points on the map. Drag cards to rearrange them.');const rows=el('div',undefined,'world-path-list'),cards=[];parent.appendChild(rows);for(const graph of CardOrder.ordered(stage().graphs)){const b=button(rows,'',()=>{c.cancelDrag();state.graph=graph.id;state.spawn=(stage().spawns.find(spawn=>spawn.enabled!==false&&graph.spawnIds.includes(spawn.id))||{}).id||null;state.selection=[];state.tool='select';render();},state.graph===graph.id);b.dataset.graphId=graph.id;b.setAttribute('aria-current',String(state.graph===graph.id));b.appendChild(el('strong',pathTitle(stage(),graph)));b.appendChild(el('small',pathSubtitle(stage(),graph)));cards.push({id:graph.id,node:b});}draggable(rows,cards,s=>s.graphs);button(parent,'New path',()=>{c.cancelDrag();return c.newPath();});return;
   }
-  section(parent,'Spawn points');const rows=el('div',undefined,'world-spawn-list');parent.appendChild(rows);for(const spawn of stage().spawns){const item=button(rows,spawn.name+(spawn.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.spawn=spawn.id;state.selection=['spawn:'+spawn.id];state.tool='select';render();},state.selection.includes('spawn:'+spawn.id));item.setAttribute('aria-current',String(state.selection[0]==='spawn:'+spawn.id));item.setAttribute('aria-pressed',String(state.selection.includes('spawn:'+spawn.id)));}button(parent,'Add spawn on map',()=>{state.tool='spawn';render();});button(parent,'Hero start',()=>{c.cancelDrag();state.selection=['hero'];state.tool='select';render();},state.selection.includes('hero'));
+  section(parent,'Spawn points');SpawnGroupsPanel.sidebar(parent,c,stage());
+  button(parent,'Add spawn on map',()=>{state.tool='spawn';render();});button(parent,'Hero start',()=>{c.cancelDrag();state.selection=['hero'];state.tool='select';render();},state.selection.includes('hero'));
   const tasks=button(parent,'Tasks position',()=>{c.cancelDrag();state.selection=['tasks-position'];state.tool='tasks-position';render();},state.selection.includes('tasks-position'));
   tasks.title='Click the map to place the Royal Advisor';
  }
@@ -286,10 +291,15 @@ function create(c){
   }
   const spawn=id==='hero'?stage().hero:stage().spawns.find(s=>'spawn:'+s.id===id);
   section(c.right,id==='hero'?'Hero start':'Spawn point');
-  if(!spawn){note(c.right,'Select a spawn on the left or click its marker on the map.');return;}
+  if(!spawn){
+   note(c.right,'Select a spawn on the left or click its marker on the map.');
+   SpawnGroupsPanel.render(c.right,c,stage());
+   return;
+  }
   if(id!=='hero'){
    field(c.right,'Name',spawn.name==null?'':String(spawn.name),value=>c.patchSelected('name',value));
    field(c.right,'Enabled',spawn.enabled!==false,value=>c.patchSelected('enabled',value));
+   SpawnGroupsPanel.assignment(c.right,c,stage(),spawn);
    const radius=field(c.right,'Spawn radius',numericValue(spawn.radius||0),value=>{
     if(!Number.isFinite(value)||value<0||value>1500)throw Error('Choose a radius from 0 to 1500.');
     return c.patchSelected('radius',value);
@@ -312,8 +322,8 @@ function create(c){
   timingEntry(timing,'Starts at (s)',defaults.startSeconds,value=>changeTiming('startSeconds',value));
   timingEntry(timing,'Interval (s)',defaults.intervalSeconds,value=>changeTiming('intervalSeconds',value),()=>true);
   button(timing,'Apply to all wave groups',()=>editTiming(draft=>Waves.applySpawnDefaults(draft,spawn.id,catalog().interval)))
-   .title='Replace timing overrides for this spawn in every wave of the stage.';
-  note(timing,'Applies to wave groups that use this spawn’s defaults.');
+   .title='Apply to Auto rows using this spawn in every wave of the stage.';
+  note(timing,'Auto rows can follow spawn defaults. Manual rows use their own timing.');
   section(c.right,'Routes using this spawn');
   for(const graph of stage().graphs.filter(g=>g.spawnIds.includes(spawn.id)))button(c.right,pathTitle(stage(),graph),()=>{
    c.cancelDrag();state.tab='Paths';state.graph=graph.id;state.spawn=spawn.id;state.selection=[];render();
@@ -346,13 +356,13 @@ function create(c){
  function timingEntry(parent,name,value,change,positive=()=>false){
   const row=el('div',undefined,'world-timing-row');
   const input=field(row,name,numericValue(value),next=>change(Number(next)));
-  input.min='0';input.step='any';input.setAttribute('aria-label',name);
+  input.step='any';input.setAttribute('aria-label',name);
   parent.appendChild(row);
   function stepped(delta){
    const current=numericValue(input.value),adjusted=current+delta;
-   if(!Number.isFinite(adjusted)||current===adjusted||positive()&&adjusted<=0)return null;
+   if(!Number.isFinite(adjusted)||current===adjusted)return null;
    const next=Math.max(0,Number(adjusted.toPrecision(15)));
-   return next===current?null:next;
+   return next===current||positive()&&next<Waves.MIN_SPAWN_INTERVAL?null:next;
   }
   const buttons=[];
   for(const direction of [-1,1]){
@@ -374,7 +384,10 @@ function create(c){
     buttons.push({step,delta});
    }
   }
-  function refresh(){for(const {step,delta} of buttons)step.disabled=stepped(delta)===null;}
+  function refresh(){
+   input.min=String(positive()?Waves.MIN_SPAWN_INTERVAL:0);
+   for(const {step,delta} of buttons)step.disabled=stepped(delta)===null;
+  }
   const oninput=input.oninput;
   input.oninput=()=>{if(oninput)oninput();refresh();};
   refresh();
@@ -433,7 +446,11 @@ function create(c){
   const defaults=()=>Waves.spawnTiming(spawns.find(spawn=>spawn.id===spawnId),interval);
   const timing=existing?{startSeconds:existing.startSeconds,intervalSeconds:existing.intervalSeconds}:defaults();
   const inherited=new Set(Object.keys(timing).filter(key=>!existing||Waves.inheritsTiming(existing,key))),timingFields={};
-  const changeTime=key=>value=>{timing[key]=value;inherited.delete(key);};
+  let customTiming=false;
+  const changeTime=key=>value=>{
+   if(timing[key]===value)return;
+   timing[key]=value;inherited.delete(key);customTiming=true;
+  };
   if(existing&&!units.some(unit=>unit.id===existing.unitId))units.unshift({id:existing.unitId,name:'Missing unit: '+existing.unitId});
   c.modal((existing?'Switch units in Wave ':'Add units to Wave ')+wave().Wave,dialog=>{
    const controls=el('div',undefined,'world-wave-picker-settings');
@@ -446,7 +463,7 @@ function create(c){
    timingFields.startSeconds=timingEntry(controls,'Starts at (s)',timing.startSeconds,changeTime('startSeconds'));
    timingFields.intervalSeconds=timingEntry(controls,'Interval (s)',timing.intervalSeconds,changeTime('intervalSeconds'),()=>count>1);
    return c.unitPicker(dialog,{units,selected,controls,wave:wave(),initialUnitId:existing&&existing.unitId,manageProfiles:false});
-  },()=>{const unitIds=Array.from(selected),settings={spawnId,count,...timing};if(inherited.size)settings.inheritSpawnTiming=Array.from(inherited);return edit(s=>{
+  },()=>{const unitIds=Array.from(selected),settings={spawnId,count,...timing};if(customTiming)settings.editorManualTiming=true;else if(inherited.size)settings.inheritSpawnTiming=Array.from(inherited);return edit(s=>{
    if(s.id!==stageId||state.snap.version!==revision||waveTargets.get(target.key)!==target||JSON.stringify(s.config.WaveCfg[index])!==baseline)throw Error('This wave changed while the dialog was open. Close and reopen the unit chooser.');
    if(!Number.isSafeInteger(settings.count)||settings.count<1)throw Error('Unit count must be a positive whole number.');
    if(unitIds.some(id=>!units.some(unit=>unit.id===id)))throw Error('Choose a unit from the current catalog.');
@@ -519,9 +536,13 @@ function create(c){
 
   for(const row of visible){
    const lane=spawns.find(spawn=>String(spawn.id)===String(row.spawnId))?.name||'Spawn '+row.spawnId;
-   const title='Timing & route · '+(group.length>1?lane+' · ':'')+row.startSeconds+' s / every '+row.intervalSeconds+' s';
+   const manual=Waves.isTimingManual(row);
+   const title='Timing & route · '+(group.length>1?lane+' · ':'')+row.startSeconds+' s / every '+row.intervalSeconds+' s'+(manual?' · Manual':'');
    const timing=timingSection(title,row.id);card.appendChild(timing);
    if(row!==entry)timing.dataset.entryId=row.id;
+   const mode=field(timing,'Timing mode',manual?'manual':'auto',value=>waveEdit(target,(s,index)=>
+    Waves.setTimingMode(s,index,row.id,value,interval)),[{value:'auto',label:'Auto'},{value:'manual',label:'Manual (locked)'}]);
+   mode.title='Auto rows can be balanced. Editing a start or interval locks the row.';
    const start=timingEntry(timing,'Starts at (s)',row.startSeconds,value=>change(row,'startSeconds',value));
    const gap=timingEntry(timing,'Interval (s)',row.intervalSeconds,value=>change(row,'intervalSeconds',value),()=>row.count>1);
    const timingTitle=key=>Waves.inheritsTiming(row,key)?'Uses the spawn’s default until edited':'Wave timing override';
@@ -532,10 +553,37 @@ function create(c){
    const defaults=Waves.spawnTiming(spawns.find(spawn=>spawn.id===row.spawnId),interval);
    if(!Waves.usesSpawnDefaults(row,defaults)){
     button(timing,'Use spawn defaults',()=>waveEdit(target,(s,index)=>
-     Waves.editGroup(s,index,row.id,{},interval,{useSpawnDefaults:true})));
+     Waves.editGroup(s,index,row.id,{},interval,{useSpawnDefaults:true}))).title='Use this spawn’s defaults and switch to Auto timing';
    }
   }
   return {id:group[0].id,node:card,handle};
+ }
+ async function balanceTiming(target){
+  const failure=state.editFailures||0,{index}=target;
+  await state.pending;
+  if(failure!==(state.editFailures||0))throw Error('Correct the last timing edit before opening the balance preview.');
+  const current=state.snap?.value;
+  if(state.closed||state.active===false||state.loading||current?.id!==target.stageId||state.wave!==index||state.tab!=='Waves'||waveTargets.get(target.key)!==target){
+   throw Error('Select the current wave before balancing its timing.');
+  }
+  const source=current.config.WaveCfg[index],fingerprint=JSON.stringify(source),revision=state.snap.version;
+  const unitRevision=state.snap.unitCatalogRevision||0;
+  const interval=catalog().interval,defeatSeconds=waveOverview.defeatSeconds,spawnGroups=SpawnGroups.list(current);
+  const assertCurrent=(draft=stage())=>{
+   if(state.closed||state.active===false||state.loading||draft.id!==target.stageId||state.tab!=='Waves'||state.wave!==index||
+     state.snap.version!==revision||(state.snap.unitCatalogRevision||0)!==unitRevision||JSON.stringify(draft.config.WaveCfg?.[index])!==fingerprint||
+      waveOverview.defeatSeconds!==defeatSeconds||catalog().interval!==interval||JSON.stringify(SpawnGroups.list(draft))!==JSON.stringify(spawnGroups)){
+    throw Error('The wave, unit stats, or timing inputs changed. Reopen Balance wave timing to review the latest values.');
+   }
+  };
+  return WaveBalance.open(c,{label:waveLabel(source,index),wave:source,stage:current,units:unitRows(),interval,defeatSeconds,spawnGroups,assertCurrent,
+   apply:({limits,changes})=>waveEdit(target,(draft,at)=>{
+    assertCurrent(draft);
+    Waves.applyBalancedTiming(draft,at,changes,interval);
+    const updated=draft.config.WaveCfg[at];
+    updated.editorTimingBalance={...updated.editorTimingBalance,...limits};
+   },true)
+  });
  }
  function waveInspector(){
   const index=state.wave,waves=stage().config.WaveCfg,w=Array.isArray(waves)&&waves[index];
@@ -563,6 +611,8 @@ function create(c){
   const actions=el('div',undefined,'world-wave-actions');parent.appendChild(actions);
   const add=button(actions,'Add units',addUnits,true);add.disabled=!units.length||!stage().spawns.some(spawn=>spawn.enabled!==false);
   copyWaveButton(actions,waves,target);
+  const balance=button(actions,'Balance wave timing…',()=>balanceTiming(target));
+  balance.classList.add('world-wave-balance-button');balance.disabled=!total.units;
   const scaling=el('div',undefined,'world-wave-scaling');parent.appendChild(scaling);for(const [key,label]of [['HealthCoefficient','Enemy health ×'],['AttackCoefficient','Enemy attack ×']])numericEntry(scaling,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value));note(scaling,'Applied to every enemy in this wave. HP and damage below are per unit, before battle buffs.');
   if(total.spawnIds.length>1)field(parent,'Show spawns',state.waveSpawnFilter,value=>{state.waveSpawnFilter=value;render();},[{value:'all',label:'All spawn points'}].concat(stage().spawns.map(s=>({value:String(s.id),label:s.name}))));
   const filter=state.waveSpawnFilter,interval=catalog().interval;
