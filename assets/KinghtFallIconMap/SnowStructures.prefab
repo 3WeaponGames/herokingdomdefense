@@ -30,7 +30,9 @@
         "__id__": 1427
       }
     ],
-    "_prefab": null,
+    "_prefab": {
+      "__id__": 1428
+    },
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 1500,
@@ -34759,5 +34761,14 @@
     "groupIndex": 1,
     "_children": [],
     "_components": []
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "asset": {
+      "__id__": 0
+    },
+    "root": {
+      "__id__": 1
+    }
   }
 ]

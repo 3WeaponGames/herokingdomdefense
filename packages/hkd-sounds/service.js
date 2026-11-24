@@ -2,6 +2,12 @@
 const fs = require('fs'), path = require('path');
 const Catalog = require('./catalog'), Document = require('../game-data-editor/lib/json-document');
 const clone = value => JSON.parse(JSON.stringify(value)), COLORS = ['green', 'yellow', 'red'];
+const EMPTY = '{\n  "version": 1,\n  "marks": {}\n}\n';
+function parse(text) {
+  const data = JSON.parse(text.replace(/^\uFEFF/, ''));
+  if (!data || data.version !== 1 || !data.marks || typeof data.marks !== 'object' || Array.isArray(data.marks)) throw Error('The saved sound checklist uses an unsupported format.');
+  return data;
+}
 class SoundService {
   constructor(root, options) {
     this.root = path.resolve(root); this.file = path.join(this.root, 'authoring/audio-review.json'); this.version = 0;
@@ -10,9 +16,8 @@ class SoundService {
   }
   disk() { try { return fs.readFileSync(this.file); } catch (error) { if (error.code === 'ENOENT') return null; throw error; } }
   read() {
-    this.before = this.disk(); this.text = this.before ? this.before.toString('utf8') : '{\n  "version": 1,\n  "marks": {}\n}\n';
-    const data = JSON.parse(this.text.replace(/^\uFEFF/, ''));
-    if (data.version !== 1 || !data.marks || typeof data.marks !== 'object' || Array.isArray(data.marks)) throw Error('The saved sound checklist uses an unsupported format.');
+    const before = this.disk(), data = parse(before ? before.toString('utf8') : EMPTY);
+    this.before = before;
     this.original = data; this.data = clone(data); this.version++;
   }
   dirty() { return !Document.equal(this.original, this.data); }
@@ -36,10 +41,14 @@ class SoundService {
     this.expect(request);
     if (!this.dirty()) return this.snapshot({ saved: false, files: [] });
     const disk = this.disk();
-    if (disk === null ? this.before !== null : this.before === null || !disk.equals(this.before)) throw Error('The saved checklist changed on disk. Your draft is intact; reload or discard before saving.');
-    const text = Document.patch(this.text, this.original, this.data);
-    const result = this.commit(this.root, new Map([['authoring/audio-review.json', text]]), new Map([[this.file, this.before]]), 'authoring/audio-review.json');
-    this.read(); return this.snapshot(Object.assign({ saved: true }, result));
+    const conflict = parts => Error('The saved checklist changed on disk'+(parts.length?' for '+parts.join(' / '):'')+'. Your draft is intact.');
+    if (!disk && this.before) throw conflict([]);
+    const text = disk ? disk.toString('utf8') : EMPTY, latest = parse(text);
+    const marks = Document.merge(this.original.marks, this.data.marks, latest.marks, conflict);
+    const next = Document.patch(text, latest, { ...latest, marks });
+    const result = next === text ? { files: [] } :
+      this.commit(this.root, new Map([['authoring/audio-review.json', next]]), new Map([[this.file, disk]]), 'authoring/audio-review.json');
+    this.read(); return this.snapshot(Object.assign({ saved: !!result.files.length }, result));
   }
   asset(request) {
     const item = this.catalog.items.find(row => row.id === request.id);

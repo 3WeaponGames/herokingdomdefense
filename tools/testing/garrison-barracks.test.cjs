@@ -71,7 +71,7 @@ test('legacy Garrison skins remain available while approved Royal tiers use the 
     const config = read(file); painted.assertConfig(file, config);
     assert.deepEqual(config.BuildEnum['3'].InitialChoices, [11, 14, 17, 20]);
     const rows = config.BuildEnum['3'].levelList;
-    assert.deepEqual(rows.filter(r => [11, 12, 13].includes(r.index)).map(r => r.Data), [[3, 90001, 8], [6, 90001, 8], [9, 90001, 8]]);
+    assert.deepEqual(rows.filter(r => [11, 12, 13].includes(r.index)).map(r => r.Data), [[3, 90001, 8], [5, 90001, 8], [7, 90001, 8]]);
     assert.equal(rows.find(r => r.index === 13).BranchBuild.length, 1);
     assert.equal(rows.find(r => r.index === rows.find(r => r.index === 13).BranchBuild[0]).level, 4);
   }

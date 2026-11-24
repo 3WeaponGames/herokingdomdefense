@@ -97,14 +97,18 @@ test('building identity changes and reordered or deleted levels cannot receive s
     }
 });
 
-test('mixed A edits and dirty runtime overrides keep the existing strict revision guard', () => {
+test('a light draft can be saved with other data and override edits after an independent publish', () => {
     for (const doc of ['A', 'overrides']) {
         const f = fixture(), s = f.store;f.edit(0, light(8));
         const p = doc === 'A' ? ['unknown', 'keep'] : ['timings', 'enemy:1:default'];
         s.change({version: s.version, edits: [{doc, path: p, value: doc === 'A' ? false : {attack: .5}}]});
-        const latest = clone(f.initial);latest.unknown.spell = 111;const bytes = f.write('A', latest), before = state(s);
-        assert.throws(() => s.save({version: s.version}), /changed outside/);
-        assert.equal(state(s), before);assert.equal(f.read('A'), bytes);
+        const latest = clone(f.initial);latest.unknown.spell = 111;f.write('A', latest);
+        assert(s.save({version: s.version}).result.saved);
+        const saved = JSON.parse(f.read('A').replace(/^\uFEFF/, ''));
+        assert.equal(saved.unknown.spell, 111);
+        assert.deepEqual(saved.BuildEnum['3'].levelList[0].Nightlight, light(8));
+        if (doc === 'A') assert.equal(saved.unknown.keep, false);
+        else assert.deepEqual(saved.GameTools.timings['enemy:1:default'], {attack: .5});
     }
 });
 

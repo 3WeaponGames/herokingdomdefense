@@ -11,17 +11,20 @@ function projectPath() {
     if (!root) throw new Error('Open a Cocos project first.');
     return root;
 }
-function read() {
+function read(ifChangedSince, expectedFile) {
     const file = path.join(projectPath(), relativePath);
+    if (expectedFile && file !== expectedFile) throw new Error('The open project changed. Reload the catalog before saving.');
     const text = fs.readFileSync(file, 'utf8');
+    const revision = Catalog.revision(text);
+    if (revision === ifChangedSince) return null;
     const catalog = Catalog.structure(JSON.parse(text.replace(/^\uFEFF/, '')));
-    const result = { catalog, revision: Catalog.revision(text), file, issues: Catalog.validate(catalog) };
+    const result = { catalog, revision, file, issues: Catalog.validate(catalog) };
     Object.defineProperty(result, 'text', { value: text });
     return result;
 }
-function backupAndSave(catalog, revision) {
+function backupAndSave(catalog, revision, expectedFile) {
     Catalog.structure(catalog);
-    const current = read();
+    const current = read(undefined, expectedFile);
     if (current.revision !== revision) throw new Error('The catalog changed on disk. Reload it before saving to avoid overwriting another edit. Export your edits to CSV first if needed.');
     if (JSONDocument.equal(current.catalog, catalog)) return { revision, noChanges: true, saved: false, issues: current.issues };
     const text = JSONDocument.patch(current.text, current.catalog, catalog);
@@ -64,9 +67,10 @@ module.exports = {
     messages: {
         open() { Editor.Panel.open('localization-editor'); },
         load(event) { reply(event, read); },
-        async save(event, catalog, revision) {
+        'save-baseline'(event, revision, file) { reply(event, () => read(revision, file)); },
+        async save(event, catalog, revision, file) {
             let result;
-            try { result = backupAndSave(catalog, revision); }
+            try { result = backupAndSave(catalog, revision, file); }
             catch (error) { event.reply(error.message || String(error)); return; }
             if (result.noChanges) { event.reply(null, result); return; }
             try {

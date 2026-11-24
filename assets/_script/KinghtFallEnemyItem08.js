@@ -1,4 +1,3 @@
-function millAttackTargets(data) { return data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList(); }
 var BattleSounds = require("BattleSounds");
 var GameToolsOverrides = require("GameToolsOverrides");
 var i;
@@ -34,70 +33,25 @@ var def_KinghtFallEnemyItem08 = function (t) {
     this.node.getPosition(this.vec2_1);
     this.rigidBody.active = !this._unitTestActor && (this.cfg.BuildingCross === undefined || !!this.cfg.BuildingCross);
     var e = this.getAttack();
-    var n = this.pickAttackVictim(game, function () {
-      var forced = require("RelicCombat").tauntedTarget(t);
-      if (forced) {
-        forced.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        return t.vec2_2.len() <= t.cfg.AttackRange ? forced : null;
-      }
-      var e = null;
-      var n = -1;
-      var i = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
-      if (!i.isDead()) {
-        i.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        if (t.vec2_2.len() <= t.cfg.AttackRange) {
-          e = i, n = t.vec2_2.len();
-        }
-      }
-      var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
-      for (var o = 0; o < a.length; o++) {
-        if (!(h = a[o]).isDead()) {
-          h.node.getPosition(t.vec2_2);
-          cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-          if (t.vec2_2.len() <= t.cfg.AttackRange && (-1 == n || t.vec2_2.len() < n)) {
-            e = h, n = t.vec2_2.len();
-          }
-        }
-      }
-      var s = {
-        position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
-        radius: t.cfg.AttackRange
-      };
-      var l = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
-      for (var c = 0; c < l.length; c++) {
-        var h;
-        if ((h = l[c]).getIsWork()) {
-          var g = Navigation.attackPartsOf(h);
-          for (var u = 0; u < g.length; u++) {
-            var d = g[u];
-            if (cc.Intersection.polygonCircle(d.points, s)) {
-              var targetDistance = Navigation.polygonDistance(t, d.points, $z1KinghtFallUIGame.default.instance.ctrGame);
-              if (-1 == n || targetDistance < n) {
-                e = h;
-                n = targetDistance;
-              }
-            }
-          }
-        }
-      }
-      return e;
-    });
+    var selected = this.pickAttackTarget(game), n = selected && (selected.actor || selected.building);
     if (n) {
       targetNode = n.node; targetGeneration = targetNode._combatGeneration;
       e = GameToolsOverrides.typeCounterDamage(this, n, e);
-      var impactPoint=Navigation.attackPointOf(n,$z1KinghtFallUIGame.default.instance.ctrGame);this.vec2_2.x=impactPoint.x;this.vec2_2.y=impactPoint.y;
+      var origin = Navigation.positionOf(sourceNode, game);
+      var impact = Navigation.attackPointOf(n, game, origin, selected.polygon);
+      var offset = n.getNavigationGateShapes && targetNode.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(impact)));
+      this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.onShotEnemy(this);
       i.ctr.setParent(this);
       return void i.ctr.setTag(i.pos, n.node, function () {
         if (!currentShot() || n.isDead && n.isDead()) return;
+        if (require("EnemyTargeting").protectingWall(game, origin, n)) return;
         var shooter = cc.isValid(t, true) && t.node === sourceNode && cc.isValid(sourceNode, true) && sourceNode._combatGeneration === sourceGeneration && !t._isPooled ? t : null;
         var received = n.onAttacked(e, shooter, true);
-        if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.showDamageNum) effects.showDamageNum(targetNode.getPosition(), received);
-      });
+        if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.showDamageNum) effects.showDamageNum(offset ? cc.v2(impact) : targetNode.getPosition(), received);
+      }, offset);
     }
   };
   return cc__decorate([ccp_ccclass], _ctor);

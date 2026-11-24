@@ -56,40 +56,64 @@ function live(actor) {
     !actor._isPooled && !actor.isDestroyed && (!actor.isDead || !actor.isDead()) && (!actor.getIsWork || actor.getIsWork()));
 }
 function length(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-function find(unit, game, rule) {
-  var navigation = require("KinghtFallNavigation"), data = game.gameData;
-  var start = navigation.positionOf(unit.node, game);
-  var attackRange = unit.cfg.AttackRange || 0, awareness = attackRange + (unit.cfg.SearchRange || 0);
-  var world = unit.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
+function protectingWall(game, start, actor) {
+  if (kind(game, actor) !== "tower") return null;
+  var Navigation = require("KinghtFallNavigation");
+  return Navigation.wallBetween(game, start, Navigation.positionOf(actor.node, game));
+}
+function buildingTarget(unit, game, building, range, hitRange, breach, pursue) {
+  if (!building || !building.getIsWork || !live(building)) return null;
+  var Navigation = require("KinghtFallNavigation");
+  var parts = Navigation.attackPartsOf(building), nearest = null;
+  var world = unit.node.convertToWorldSpaceAR(cc.Vec2.ZERO), wall = !!building.getNavigationGateShapes, contact;
+  for (var i = 0; i < parts.length; i++) {
+    var part = parts[i];
+    var collider = wall && part.collider;
+    if (part.points.length < 3 || part.tagNode.activeInHierarchy === false ||
+        pursue && !unit.canPursueTarget(part.tagNode, game, collider)) continue;
+    var inSight = !isFinite(range) || cc.Intersection.polygonCircle(part.points, { position: world, radius: range });
+    if (!inSight && !wall) continue;
+    var distance = Navigation.polygonDistance(unit, part.points, game);
+    var canAtt = cc.Intersection.polygonCircle(part.points, { position: world, radius: hitRange });
+    if (!canAtt && wall) {
+      // A large unit can make body contact before its center enters melee range.
+      if (contact === undefined) contact = Navigation.get(game).radius(unit) + 1;
+      canAtt = distance <= contact;
+    }
+    if ((inSight || canAtt) && (!nearest || distance < nearest.distance)) {
+      nearest = { tag: part.tagNode, polygon: part.points, collider: collider, building: building,
+        distance: distance, canAtt: canAtt, breach: !!breach };
+    }
+  }
+  return nearest;
+}
+function refreshBuilding(unit, game, target) {
+  var range = unit.cfg.AttackRange || 0;
+  var selected = buildingTarget(unit, game, target.building, range + (unit.cfg.SearchRange || 0), range, target.breach, true);
+  if (selected && protectingWall(game, require("KinghtFallNavigation").positionOf(unit.node, game), selected.building)) return null;
+  return selected;
+}
+function find(unit, game, rule, attackOnly) {
+  var Navigation = require("KinghtFallNavigation");
+  var data = game.gameData, start = Navigation.positionOf(unit.node, game);
+  var attackRange = unit.cfg.AttackRange || 0, awareness = attackRange + (attackOnly ? 0 : unit.cfg.SearchRange || 0);
   function actorTarget(actor) {
-    if (!live(actor) || !unit.canPursueTarget(actor.node, game)) return null;
-    var distance = length(start, navigation.positionOf(actor.node, game));
+    if (!live(actor) || !attackOnly && !unit.canPursueTarget(actor.node, game)) return null;
+    var distance = length(start, Navigation.positionOf(actor.node, game));
     return distance <= awareness ? { tag: actor.node, actor: actor, distance: distance, canAtt: distance <= attackRange } : null;
   }
-  function buildingTarget(building, range, hitRange, breach) {
-    if (!live(building)) return null;
-    // A breach happens at the blocking face, which can be a wing or the edge
-    // of a wide gate. A short melee attack cannot reach the doorway's center.
-    var parts = breach && building.getWposPhyCol2 ? building.getWposPhyCol2() : navigation.attackPartsOf(building);
-    var nearest = null;
-    for (var i = 0; i < parts.length; i++) {
-      var part = parts[i];
-      if (!unit.canPursueTarget(part.tagNode, game)) continue;
-      if (isFinite(range) && !cc.Intersection.polygonCircle(part.points, { position: world, radius: range })) continue;
-      var distance = navigation.polygonDistance(unit, part.points, game);
-      if (!nearest || distance < nearest.distance) nearest = { tag: part.tagNode, polygon: part.points, building: building,
-        distance: distance, canAtt: cc.Intersection.polygonCircle(part.points, { position: world, radius: hitRange }), breach: !!breach };
-    }
-    return nearest;
-  }
   var target;
-  if (rule.mode === "priority") {
+  if (!rule || rule.mode === "priority") {
     var bestRank = Infinity;
     function consider(actor, building) {
       if (!actor) return;
-      var rank = rule.order.indexOf(kind(game, actor));
+      var rank = rule ? rule.order.indexOf(kind(game, actor)) : 0;
       if (rank < 0 || rank > bestRank) return;
-      var candidate = building ? buildingTarget(actor, awareness, attackRange) : actorTarget(actor);
+      var candidate = building ? buildingTarget(unit, game, actor, awareness, attackRange, false, !attackOnly) : actorTarget(actor);
+      if (candidate && building) {
+        var wall = protectingWall(game, start, actor);
+        if (wall) candidate = buildingTarget(unit, game, wall, awareness, attackRange, true, !attackOnly);
+      }
       if (candidate && (!target || rank < bestRank || candidate.distance < target.distance)) {
         target = candidate;
         bestRank = rank;
@@ -102,23 +126,22 @@ function find(unit, game, rule) {
     return target || null;
   }
 
-  target = rule.mode === "castle" ? buildingTarget(data.baseBuild, Infinity, attackRange) : actorTarget(game.ctrPlay);
+  target = rule.mode === "castle" ? buildingTarget(unit, game, data.baseBuild, Infinity, attackRange, false, true) : actorTarget(game.ctrPlay);
   if (!target || !unit.cfg.BuildingCross) { unit._objectiveBreach = null; return target; }
-  var contact = navigation.get(game).radius(unit) + 1;
+  var contact = Navigation.get(game).radius(unit) + 1;
   if (target.building && target.distance <= contact) target.canAtt = true;
-  var goal = navigation.attackPositionOf(target, unit, game), wall = null, record = unit._objectiveBreach;
+  var goal = Navigation.attackPositionOf(target, unit, game), wall = null, record = unit._objectiveBreach;
   if (record && record.cfg === unit.cfg && record.goal === target.tag && record.generation === target.tag._combatGeneration &&
       (!target.actor || length(record.position, goal) <= 20) && live(record.wall)) wall = record.wall;
   if (!wall && target.canAtt) {
-    var obstacle = navigation.obstructionBetween(unit, game, goal, target.building);
+    var obstacle = Navigation.obstructionBetween(unit, game, goal, target.building);
     if (obstacle) {
       target.canAtt = false;
       if (live(obstacle) && kind(game, obstacle) === "wall") wall = obstacle;
     }
   }
   if (wall) {
-    // The center of a large unit can stop outside its melee radius at contact.
-    var selectedWall = buildingTarget(wall, Infinity, Math.max(attackRange, contact), true);
+    var selectedWall = buildingTarget(unit, game, wall, Infinity, attackRange, true, true);
     if (selectedWall) return selectedWall;
   }
   target.breachRoute = true;
@@ -131,3 +154,5 @@ exports.issue = issue;
 exports.settings = settings;
 exports.allows = allows;
 exports.find = find;
+exports.refreshBuilding = refreshBuilding;
+exports.protectingWall = protectingWall;

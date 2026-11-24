@@ -18,7 +18,7 @@ test('equipment level10 to11 keeps its current tier background, tint, icon and s
  const user={getGoldNum:()=>100000,getMaxStage:()=>100,getMaxOrder:()=>100,getPersonLevel:()=>level,getHeroWeapon:()=>({id:'fighter'})};
  Object.assign(f.cc,{color:x=>x,Sprite:{State:{GRAY:1,NORMAL:0}}});
  f.scope.$z1KinghtFallPlayerMgr={KinghtFallPlayerMgr:singleton({getUserData:()=>user})};f.scope.$z1BaseButton={BaseButton:'baseButton'};
- f.scope.require=name=>name==='EquipmentIconFit'?{apply(sprite,frame){sprite.spriteFrame=frame;sprite.setState=noop;}}:name==='EquipmentTiers'?require('../../assets/_script/EquipmentTiers'):name==='HeroWeapons'?{gear:()=>({name:'gear'})}:assert.fail(name);
+ f.scope.require=name=>name==='EquipmentIconFit'?{apply(sprite,frame){sprite.spriteFrame=frame;sprite.setState=noop;}}:name==='EquipmentTiers'?require('../../assets/_script/EquipmentTiers'):name==='HeroWeapons'?require('../../assets/_script/HeroWeapons'):assert.fail(name);
  const ui={node:node('page'),nodeInfo:[row],levelLimit:50,subNum:1,T:x=>x,renderWeaponUpgrade:noop,refreshCombatPower:noop,ctrPlayAni:{initView:noop},_resourceGeneration:1,isDestroy:false,addRes:noop};
  for(const key of ['resourceOptions','loadSpriteFrame'])ui[key]=method('BaseCtrl',key,f.scope);
  const render=method('KinghtFallHomePersonCtrl','initView',f.scope);render.call(ui);level=11;render.call(ui);assert.equal(f.pending.length,6);[3,4,5,0,1,2].forEach(i=>f.pending[i].call({path:f.pending[i].res}));

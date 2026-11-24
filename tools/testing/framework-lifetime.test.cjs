@@ -103,6 +103,34 @@ test('closing tutorial presses resolve once even on callback failure; movement g
   assert.equal(moves, 2); assert.equal(guide.isclose, false);
 });
 
+test('the Talents dismiss button catches its own touch and closes without running the highlighted action', () => {
+  const h = harness(), handlers = new Map();
+  h.cc.Node.EventType.TOUCH_START = 'touch-start';
+  h.cc.Node.prototype.on = function () {};
+  const guide = new (h.load('UIGuide').default)();
+  guide.mask = { node: { getChildByName: () => ({ on() {} }) } };
+  guide.tipBg = { setPosition() {} };
+  guide.tipText = {};
+  guide.spAni = { node: {} };
+  guide.dismissButton = { on(name, callback, target) { handlers.set(name, callback.bind(target)); } };
+  let dismissed = 0, stopped = 0;
+  guide.cfg = { delay: 1, deviationTipsAll: {},
+    onDismiss() { dismissed++; return true; },
+    onComplete() { assert.fail('Dismissal is a separate decision'); },
+    callBack() { assert.fail('Dismissal cannot activate the highlighted talent'); }
+  };
+  guide.start();
+  guide.showTip('Tap an icon');
+  const event = { stopPropagation() { stopped++; } };
+  assert(guide.dismissButton.active);
+  handlers.get('touch-start')(event);
+  handlers.get('touch-end')(event);
+  handlers.get('touch-end')(event);
+  assert.equal(stopped, 3);
+  assert.equal(dismissed, 1);
+  assert(guide.isclose);
+});
+
 test('event dispatch preserves surviving listeners while additions wait and duplicate removals are complete', () => {
   const h = harness(), target = {}, seen = [];
   function first(value) { seen.push('first:' + value); h.events.off('tick', target, first); h.events.on('tick', target, added); }

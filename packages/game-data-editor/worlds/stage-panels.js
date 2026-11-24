@@ -125,6 +125,132 @@ function create(c){
    const advanced=details('Stage settings','stage-settings');c.right.appendChild(advanced);const labels={InGameCoefficient:'Battle reward multiplier',GoldSupplyCoefficient:'Gold multiplier',ConversionCoefficient:'Conversion multiplier',EquipLevelCap:'Equipment level cap',Challenge:'Challenge ID'};for(const key of Object.keys(stage().config).filter(key=>typeof stage().config[key]==='number'&&key!=='Level'&&key!=='StageFaceUnit'))field(advanced,labels[key]||key,valueOrZero(stage().config[key]),value=>edit(s=>s.config[key]=value));button(advanced,'Challenge rewards…',()=>c.jsonField('ChallengeReward'));
  }
  function valueOrZero(value){return value===undefined?0:value;}
+ function battleTasksInspector(){
+  const data=catalog().battleTasks;
+  if(!data)return;
+  const current=stage(),stageId=current.id,key=current.level===1?1:2,tasks=current.config.BattleTasks;
+  const source=data.defaults[key]||[],random=data.random[key],count=random?data.count[key]??source.length:source.length;
+  const definitions=data.definitions,rewards=data.rewards;
+  const validCount=value=>Number.isSafeInteger(value)&&value>0;
+  const survival=id=>typeof id==='string'&&id.startsWith('survive-');
+  function assignTask(row,definition){
+   const next={...row,taskId:definition.id};
+   if(definition.counted){
+    if(row.taskId!==definition.id||!validCount(row.count))next.count=definition.defaultCount??(survival(definition.id)?1:10);
+   }else delete next.count;
+   return next;
+  }
+  const parent=el('div',undefined,'world-battle-tasks');
+  c.right.appendChild(parent);section(parent,'Battle tasks');
+  let expected=JSON.stringify(tasks);
+  const order=Array.isArray(tasks)?tasks.map((_row,index)=>index):[];
+  const changed=()=>Error('The task list changed. Review it before editing again.');
+  // Follow a row across reorder actions from the same render. Its index is
+  // editor-only since the same task can be assigned to more than one slot.
+  const change=update=>edit(s=>{
+   if(s.id!==stageId||JSON.stringify(s.config.BattleTasks)!==expected)throw changed();
+   update(s.config);expected=JSON.stringify(s.config.BattleTasks);
+  });
+  const changeRow=(index,update)=>change(config=>{
+   const at=order.indexOf(index),rows=config.BattleTasks;
+   if(at<0||!Array.isArray(rows))throw changed();
+   update(rows,at);
+  });
+  if(tasks===undefined){
+   if(!source.length)note(parent,'This stage has no default tasks.');
+   else if(random)note(parent,'The game chooses '+count+' tasks at random from the default pool. Rewards follow their assigned slots.');
+   else note(parent,'The game uses the default tasks in order.');
+   button(parent,'Customize tasks',()=>change(config=>{config.BattleTasks=source.slice(0,count).map(row=>({...row}));}));
+   if(source.length){
+    const pool=details(random?'Default task pool':'Default tasks','battle-tasks-defaults');
+    parent.appendChild(pool);
+    if(random)note(pool,'Customization starts with the first '+Math.min(count,source.length)+' tasks in this list.');
+    const list=el('ul',undefined,'world-battle-task-defaults');pool.appendChild(list);
+    for(const row of random?source:source.slice(0,count)){
+     const task=definitions.find(item=>item.id===row.taskId),reward=rewards.find(item=>item.id===row.rewardId);
+     list.appendChild(el('li',(task?task.label:'Task '+row.taskId)+(random?'':' · '+row.amount+' '+(reward?reward.label:'reward '+row.rewardId))));
+    }
+   }
+   return;
+  }
+  const actions=el('div',undefined,'world-actions');parent.appendChild(actions);
+  button(actions,'Use default tasks',()=>change(config=>{delete config.BattleTasks;}));
+  if(!Array.isArray(tasks)){
+   note(parent,'The saved battle tasks are invalid. Use default tasks to reset them.',true);
+   return;
+  }
+  const add=button(actions,'Add task',()=>change(config=>{
+   const rows=config.BattleTasks;
+   if(!Array.isArray(rows))throw changed();
+   const definition=definitions.find(item=>!rows.some(row=>row&&row.taskId===item.id))||definitions[0];
+   if(!definition||!rewards.length)throw Error('Task and reward choices are unavailable.');
+   const award=source[Math.min(rows.length,source.length-1)];
+   rows.push(assignTask({rewardId:award?award.rewardId:rewards[0].id,amount:award?award.amount:1},definition));
+   order.push(Symbol());
+  }));
+  add.disabled=!definitions.length||!rewards.length;
+  if(!tasks.length){
+   note(parent,'Battle tasks are disabled for this stage. Add a task to enable them.');
+   return;
+  }
+  note(parent,'Tasks appear in this order. The stage reward multiplier applies to persistent rewards. Battle silver uses the base amount.');
+  function choices(items,value,label){
+   const options=items.map(item=>({value:String(item.id),label:item.label}));
+   if(!options.some(item=>item.value===value))options.unshift({value,label:value===''?'Choose '+label:'Unavailable '+label+' '+value});
+   return options;
+  }
+  tasks.forEach((value,index)=>{
+   const row=isWaveRow(value)?value:{},card=el('div',undefined,'world-battle-task-card');
+   const slot='Task '+(index+1);
+   card.dataset.entryId='battle-task-'+index;
+   card.setAttribute('role','group');card.setAttribute('aria-label',slot);
+   card.appendChild(el('strong',slot));parent.appendChild(card);
+   const update=(property,next)=>changeRow(index,(rows,at)=>{rows[at]={...(isWaveRow(rows[at])?rows[at]:{}),[property]:next};});
+   for(const [property,label,items] of [['taskId','Task',definitions],['rewardId','Reward',rewards]]){
+    const id=row[property],selected=Number.isSafeInteger(id)||property==='taskId'&&typeof id==='string'?String(id):'';
+    const labelLower=label.toLowerCase(),options=choices(items,selected,labelLower);
+    const picker=field(card,label,selected,next=>changeRow(index,(rows,at)=>{
+     const choice=items.find(item=>String(item.id)===String(next));
+     if(!choice)throw Error('Choose an available '+labelLower+'.');
+     const current=isWaveRow(rows[at])?rows[at]:{};
+     rows[at]=property==='taskId'?assignTask(current,choice):{...current,rewardId:choice.id};
+    }),options);
+    picker.setAttribute('aria-label',slot+' '+labelLower);
+    picker.title=(options.find(option=>option.value===selected)||{}).label||'';
+   }
+   const definition=definitions.find(item=>item.id===row.taskId);
+   if(definition&&definition.counted){
+    const required=field(card,'Count',numericValue(row.count),next=>changeRow(index,(rows,at)=>{
+     if(rows[at].taskId!==row.taskId)throw changed();
+     if(!validCount(next))throw Error('Enter a whole count of at least 1.');
+     rows[at]={...rows[at],count:next};
+    }));
+    required.min='1';required.step='1';required.setAttribute('aria-label',slot+' count');
+    note(card,survival(row.taskId)
+     ? 'Once active, this task counts consecutive waves with the listed structures built and none destroyed. Losing one of those structures resets the streak.'
+     : 'Only final blows from the listed source count while this task is active.');
+   }
+   const amount=field(card,'Base amount',numericValue(row.amount),next=>{
+    if(Number.isSafeInteger(next)&&next>=0)return update('amount',next);
+    return change(()=>{throw Error('Enter a whole reward amount of zero or greater.');});
+   });
+   amount.min='0';amount.step='1';amount.setAttribute('aria-label',slot+' base amount');
+   const buttons=el('div',undefined,'world-actions');card.appendChild(buttons);
+   for(const [direction,offset] of [['Move up',-1],['Move down',1]]){
+    const move=button(buttons,direction,()=>changeRow(index,(rows,at)=>{
+     const to=at+offset;
+     if(to<0||to>=rows.length)return;
+     [rows[at],rows[to]]=[rows[to],rows[at]];
+     [order[at],order[to]]=[order[to],order[at]];
+    }));
+    move.disabled=index+offset<0||index+offset>=tasks.length;
+    move.setAttribute('aria-label',direction+' '+slot.toLowerCase());
+   }
+   button(buttons,'Remove',()=>changeRow(index,(rows,at)=>{
+    rows.splice(at,1);order.splice(at,1);
+   })).setAttribute('aria-label','Remove '+slot.toLowerCase());
+  });
+ }
  function spawnInspector(){
   const id=state.selection.find(value=>value==='hero'||value==='tasks-position'||value.startsWith('spawn:'));
   if(id==='tasks-position'){
@@ -133,6 +259,7 @@ function create(c){
    const position=TaskPosition.resolve(stage().tasksPosition,stage().hero,state.map&&state.map.size);
    field(c.right,'X',position.x,value=>c.patchSelected('x',value));
    field(c.right,'Y',position.y,value=>c.patchSelected('y',value));
+   battleTasksInspector();
    return;
   }
   const spawn=id==='hero'?stage().hero:stage().spawns.find(s=>'spawn:'+s.id===id);

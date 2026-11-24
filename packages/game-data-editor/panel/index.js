@@ -103,7 +103,13 @@ function create(kind){
     _status(message,error){this.$status.textContent=message;this.$status.className='gt-status'+(error?' error':'');},
     async _load(explicit){try{const snapshot=await ipc(explicit?'refresh':'load');if(this._closed)return;if(explicit){if(kind==='units'||kind==='buildings'){AttackRate.invalidate(this);if(this._previewClient){this._previewClient.destroy();this._previewClient=null;}}const assets=await ipc('asset-index',{refresh:true});if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);if(this._unitSidebar)this._unitSidebar.invalidate();}if(!this._snapshot||snapshot.version!==this._snapshot.version||explicit)this._apply(snapshot);else this._toolbar();}catch(error){this._status(error.message,true);}},
     _apply(snapshot){if(!snapshot||this._closed)return;if(snapshot.result)this._lastResult=snapshot.result;else if(this._snapshot&&snapshot.version!==this._snapshot.version)this._lastResult=null;this._snapshot=snapshot;this._render();},
-    _action(action){this._queue=this._queue.catch(()=>{}).then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);throw error;}});return this._queue.catch(()=>null);},
+    _action(action){
+      // A focused field can enqueue an edit immediately before Ctrl+S.
+      // If that edit failed, saving the older draft would silently omit it.
+      const pending=action==='save'?this._queue:this._queue.catch(()=>{});
+      this._queue=pending.then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);if(action==='save')return null;throw error;}});
+      return this._queue.catch(()=>null);
+    },
     _change(edits,options){
       this._queue=this._queue.catch(()=>{}).then(async()=>{
         try{const changes=typeof edits==='function'?await edits():edits;if(options&&options.skipEmpty&&!changes.length)return this._snapshot;const snapshot=await ipc('change',{version:this._snapshot.version,edits:changes});if(options&&options.keepDetail===this._selected+':'+this._level){this._snapshot=snapshot;this._lastResult=null;this._toolbar();if(!options.skipPreview){const row=this._rows().find(r=>r.key===this._selected);if(row)this._renderPreview(row);}}else this._apply(snapshot);return snapshot;}
@@ -476,7 +482,7 @@ function create(kind){
       if(row.unitType==='enemy')this._field(typeFields,'Enemy class',EnemyClasses.resolve(this._data('overrides'),id),value=>this._change(()=>{if(!EnemyClasses.CHOICES.some(choice=>choice.value===value))throw Error('Choose Normal, Elite or Boss.');const settings=this._data('overrides');if(EnemyClasses.resolve(settings,id)===value)return [];return [{doc:'overrides',path:['enemyClasses'],value:Object.assign({},settings.enemyClasses||{},{[typeKey]:value})}];}),{options:EnemyClasses.CHOICES,help:'Normal, Elite or Boss classification for this enemy profile. Stats, abilities and combat-role counters are edited separately.'});
       this._field(typeFields,'Fighting type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],readOnly:row.unitType==='enemy'&&!!require('../lib/fighting-profiles').familyFor(this._data('overrides'),id),help:'Combat role used for counter bonuses and global damage taken. The Battle icon below overrides the type pictogram for this unit.'});
       const counterType=FightingTypeDamage.counterType(types,assignments[typeKey]);
-      if(counterType!==undefined){
+      if(counterType!==undefined&&row.record.OverrideCounterType!==true){
         this._field(typeFields,'Countered fighting type',types[counterType].name,null,{readOnly:true,help:'Inherited from this unit’s fighting type.'});
       }else{
         this._field(typeFields,'Countered fighting type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
@@ -489,7 +495,7 @@ function create(kind){
         this._field(visualFields,'Model tint',visual.tint||'#ffffff',value=>setVisual('tint',value),{color:true});
         visualFields.appendChild(button('Edit rider, horse & parts',()=>ipc('open-characters').catch(error=>this._status(error.message,true))));
       }
-      const excluded=['Suppressed','CounterType','AttackType','UnitAttack','MonsterSource','MonsterPack','BehaviorTemplate','CampaignBaseUnit','AppearanceSourceUnit','Guide'];
+      const excluded=['Suppressed','CounterType','OverrideCounterType','AttackType','UnitAttack','MonsterSource','MonsterPack','BehaviorTemplate','CampaignBaseUnit','AppearanceSourceUnit','Guide'];
       const stats=this._section(row.unitType==='ally'?'Shared unit settings':'Stats & behavior');
       if(row.unitType==='enemy'){
         excluded.push('prefab','loadIcon','BuildingCross','AttackPriority','EnemyTargeting','TransformSkill','EnemySkills');
@@ -965,7 +971,12 @@ function create(kind){
       changes.forEach(change=>{const tr=node('tr');tr.appendChild(node('td',change.doc+' / '+(change.path||[]).map(Schema.human).join(' / ')));tr.appendChild(node('td',display(change.before),'gt-diff-before'));tr.appendChild(node('td',display(change.after),'gt-diff-after'));table.appendChild(tr);});body.appendChild(table);
       (snapshot.issues||[]).forEach(issue=>body.appendChild(node('p',issue.severity.toUpperCase()+': '+issue.message,issue.severity==='error'?'gt-diff-before':'gt-subtitle')));
       this.$modalActions.appendChild(button('Keep editing',()=>this.$modal.hidden=true));
-      if(changes.length){const save=button('Save '+changes.length+' change(s)',async()=>{save.disabled=true;try{const next=await ipc('save',{version:snapshot.version});this.$modal.hidden=true;this._apply(next);}catch(error){save.disabled=false;body.appendChild(node('p',error.message,'gt-diff-before'));}},'gt-primary');save.disabled=(snapshot.issues||[]).some(i=>i.severity==='error')||(snapshot.recoveries||[]).length>0;this.$modalActions.appendChild(save);}
+      if(changes.length){
+        const failure=node('p','','gt-diff-before');failure.hidden=true;body.appendChild(failure);
+        const save=button('Save '+changes.length+' change(s)',async()=>{save.disabled=true;failure.hidden=true;try{const next=await ipc('save',{version:snapshot.version});this.$modal.hidden=true;this._apply(next);}catch(error){save.disabled=false;failure.textContent=error.message;failure.hidden=false;}},'gt-primary');
+        save.disabled=(snapshot.issues||[]).some(i=>i.severity==='error')||(snapshot.recoveries||[]).length>0;
+        this.$modalActions.appendChild(save);
+      }
     }
   });
 }

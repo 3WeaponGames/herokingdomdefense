@@ -3,12 +3,12 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const root=path.resolve(__dirname,'../..'),config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 const clone=value=>JSON.parse(JSON.stringify(value)),noop=()=>{},single=value=>({getInstance:()=>value});
 function fixture(){
- const requests=[],shown=[],pickers=[],scheduled=[],modules={},ids={UIHome:'home',UIGame:'game',UIBuff:'buff',UITreasureReward:'rewards',UITreasureInfo:'relic-info',UITalentInfo:'talent-info',UIAddCurrency:'currency',UINewModular:'unlock',UIExchangeCode:'code'},visibleUI=new Map();
+ const requests=[],shown=[],pickers=[],scheduled=[],dialogs=[],modules={},ids={UIHome:'home',UIGame:'game',UIBuff:'buff',UITreasureReward:'rewards',UITreasureInfo:'relic-info',UITalentInfo:'talent-info',UIAddCurrency:'currency',UINewModular:'unlock',UIExchangeCode:'code'},visibleUI=new Map();
  let writes=0,failSave=false;
  function Base(){}Base.prototype.saveData=function(){writes++;return !failSave;};
  const node=name=>({name,active:true,activeInHierarchy:true,width:100,height:100,getChildByName(){return null;}});
  const cc={Node:function(){},Component:function(){},Vec2:function(x=0,y=0){this.x=x;this.y=y;},Size:function(w=0,h=0){this.width=w;this.height=h;},v2:(x=0,y=0)=>({x,y}),_decorator:{ccclass:x=>x,property:()=>noop},Enum:x=>x,isValid:x=>!!x&&!x.destroyed};cc.Node.EventType={TOUCH_END:'end'};
- const manager={isopening:false,getUIById:id=>visibleUI.get(id),openUIWithOwner(id,from,callbacks,cfg){const request={id,from,callbacks,cfg};requests.push(request);return{cancel(){callbacks.onCancel();}};}};
+ const manager={isopening:false,getUIById:id=>visibleUI.get(id),openUI(...args){dialogs.push(args);},openUIWithOwner(id,from,callbacks,cfg){const request={id,from,callbacks,cfg};requests.push(request);return{cancel(){callbacks.onCancel();}};}};
  const data={data:config,getGuideCfgById:group=>config.GuideCfg.filter(row=>row.GuideGroup===group).sort((a,b)=>a.GuideStep-b.GuideStep)};
  const player={getGuideData:()=>guide,getUserData:()=>({getTreasureLevel:id=>ownedRelics.has(id)})},ownedRelics=new Set();
  Object.assign(modules,{BaseUI:{default:Base},BaseCtrl:{default:Base},BaseData:{BaseData:Base},BaseButton:{BaseButton:function(){}},Config:{UIID:{UIGuide:'guide'}},UIMgr:{UIMgr:single(manager)},KinghtFallConfig:{KinghtFallUIID:ids,KinghtFallEventName:{NewbieGuide:'guide-event'}},KinghtFallDataMgr:{KinghtFallDataMgr:single(data)},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single(player)},PlayerMgr:{PlayerMgr:single({getTrackData:()=>({youmengTrack:noop})})},GameTrackDataEvent:{TrackId:{}},PlatformSetting:{PlatformSetting:{currentPlatform:'editor'}},BasePlatform:{Platform:{WEB_LINK:'weblink'}},Appcfg:{BaseEventName:{CloseUI:'closed'}},HeroItemLooks:{},HeroWeaponPicker:{},EarnedAds:{},TestMode:{},AudioMgr:{},BattleHud:{layout:noop}});
@@ -30,7 +30,17 @@ function fixture(){
  function close(request=requests.at(-1)){visibleUI.delete('guide');request.cfg.onClosed();}
  function acknowledge(request=requests.at(-1)){assert.equal(request.cfg.onComplete(),true);if(request.cfg.callBack)request.cfg.callBack();close(request);}
  function position(group,step=0){guide.data.GroupId=group;guide.data.stepId=step;}
- return{requests,shown,pickers,scheduled,node,load,cc,manager,visibleUI,data,player,guide,home,game,buff,pad,ownedRelics,owner,ready,close,acknowledge,position,setMainLevel:value=>mainLevel=value,writes:()=>writes,failSave:value=>failSave=value,flush(){let count=0;while(scheduled.length){assert(count++<30,'Unexpected guide scheduling loop');scheduled.shift()();}}};
+ return{requests,shown,pickers,scheduled,dialogs,node,load,cc,manager,visibleUI,data,player,guide,home,game,buff,pad,ownedRelics,owner,ready,close,acknowledge,position,setMainLevel:value=>mainLevel=value,writes:()=>writes,failSave:value=>failSave=value,flush(){let count=0;while(scheduled.length){assert(count++<30,'Unexpected guide scheduling loop');scheduled.shift()();}}};
+}
+
+function talentInfo(h,talent){
+ const info=h.owner('KinghtFallUITalentInfo','talent-info');
+ info.cfg={kindID:talent.ID,GoldCost:1};
+ h.data.getTalentCfg=()=>({});
+ info.btnGold=h.node('gold');info.btnGold.active=false;
+ info.btnVideo=h.node('video');info.btnClose=h.node('close');
+ info.initView=info.initBtnListener=noop;
+ return info;
 }
 
 test('tutorial content keeps the original IDs and includes both translated weapon lessons',()=>{
@@ -53,6 +63,12 @@ test('tutorial content keeps the original IDs and includes both translated weapo
  assert.equal(portrait.defaultAnimation,'idle');
  const scale=prefab[portrait.node.__id__]._trs.array.slice(7,9);
  assert.equal(scale[0],scale[1],'The portrait uses a uniform scale');
+ const guide=prefab.find(node=>node.tipBg), panel=prefab[guide.tipBg.__id__], portraitNode=prefab[portrait.node.__id__];
+ const nameCard=prefab.find(node=>node._name==='labName'), dismiss=prefab[guide.dismissButton.__id__];
+ assert.equal(portraitNode._trs.array[0],nameCard._trs.array[0],'The Advisor is centered over the name card');
+ assert(portraitNode._trs.array[1]<panel._contentSize.height/2,'The name card covers the bottom of the portrait');
+ assert.equal(panel._children[0].__id__,portrait.node.__id__,'The portrait draws behind the dialogue and its name card');
+ assert.equal(dismiss._parent.__id__,guide.tipBg.__id__);assert.equal(dismiss._active,false);
 });
 
 test('tutorial progression commits on acknowledgement, preserves a resumed step and rejects duplicate/stale callbacks',()=>{
@@ -109,10 +125,51 @@ test('all 22 lessons can be acknowledged through current home, battle, perk, equ
  relic.getReward=()=>{draws++;h.ownedRelics.add(120001);h.guide.setGuideTips(5);};relic.onClick=cfg=>details=cfg;
  relic.showHomeGuide();h.ready();h.acknowledge();assert.equal(draws,1);relic.showHomeGuide();h.ready();h.acknowledge();assert.deepEqual(details,{ID:120001});assert.equal(draws,1);
  h.home.startGuide();h.ready();h.acknowledge();
- const talents=h.owner('KinghtFallHomeTalentCtrl','talents');talents.nodeInfo=[{cfgList:[{ID:1000000001}],ndItem:[h.node('sparse-talent')]}];talents.canUnlock=()=>3;talents.showHomeGuide();h.ready();h.acknowledge();
- const info=h.owner('KinghtFallUITalentInfo','talent-info');info.cfg={kindID:1000000001,GoldCost:1};h.data.getTalentCfg=()=>({});info.btnGold=h.node('gold');info.btnGold.active=false;info.btnVideo=h.node('video');info.btnClose=h.node('close');info.initView=info.initBtnListener=noop;info.start();assert.equal(h.ready().cfg.distNode,info.btnVideo);h.acknowledge();assert.equal(h.guide.getGroupId(),7);
+ const talents=h.owner('KinghtFallHomeTalentCtrl','talents'),talent={ID:1000000001};talents.nodeInfo=[{cfgList:[talent],ndItem:[h.node('sparse-talent')]}];talents.canUnlock=()=>3;talents.showHomeGuide();h.ready();h.acknowledge();
+ assert.equal(h.dialogs.length,1);assert.equal(h.dialogs[0][0],'talent-info');assert.equal(h.dialogs[0][2],talent);
+ const info=talentInfo(h,talent);info.start();assert.equal(h.ready().cfg.distNode,info.btnVideo);h.acknowledge();assert.equal(h.guide.getGroupId(),7);
  for(const id of [7,8,9,10,11]){h.game.startGuide(id);h.ready();h.acknowledge();}
  assert.equal(h.shown.length,22);assert.equal(h.guide.getGuideEnd(),true);
+});
+
+for(const detailOpensEarly of [false,true]) test('the Talents guide preserves its details step when the talent dialog '+(detailOpensEarly?'opens during acknowledgement':'loads after the guide closes'),()=>{
+ const h=fixture(), talent={ID:1000000001};
+ h.position(6,1);
+ const talents=h.owner('KinghtFallHomeTalentCtrl','talents');
+ talents.nodeInfo=[{cfgList:[talent],ndItem:[h.node('talent')]}];
+ talents.canUnlock=()=>2;
+ const info=talentInfo(h,talent);
+ function openDetails(){h.visibleUI.set('talent-info',info);info.start();}
+ if(detailOpensEarly)h.manager.openUI=openDetails;
+ talents.showHomeGuide();h.ready();h.acknowledge();
+ h.home.onCloseUI('guide');h.flush();
+ assert.equal(h.guide.getGroupId(),6);assert.equal(h.guide.getStepId(),2);
+ assert.equal(h.writes(),1,'Closing the guide must not reset the saved details step');
+ if(!detailOpensEarly){
+  assert.equal(h.requests.length,1);
+  h.guide.initData();h.home.startGuide();h.flush();assert.equal(h.requests.length,1);
+  openDetails();
+ }
+ assert.equal(h.requests.length,2);
+ assert.equal(h.ready().cfg.distNode,info.btnVideo);
+ h.acknowledge();
+ h.home.onCloseUI('guide');h.flush();
+ h.visibleUI.delete('talent-info');h.home.onCloseUI('talent-info');h.flush();
+ h.guide.initData();talents.showHomeGuide();h.home.startGuide();openDetails();
+ assert.equal(h.requests.length,2);assert.equal(h.guide.getGroupId(),7);
+});
+
+test('dismissing a Talents guide saves completion without opening its highlighted control',()=>{
+ const h=fixture();h.position(6,1);
+ const talents=h.owner('KinghtFallHomeTalentCtrl','talents');
+ talents.nodeInfo=[{cfgList:[{ID:1000000001}],ndItem:[h.node('talent')]}];talents.canUnlock=()=>3;
+ talents.showHomeGuide();
+ const request=h.ready();
+ assert.equal(request.cfg.onDismiss(),true);
+ h.close(request);h.home.onCloseUI('guide');h.flush();
+ assert.equal(request.cfg.onComplete(),false);assert.equal(request.cfg.onDismiss(),false);
+ h.guide.initData();talents.showHomeGuide();
+ assert.equal(h.guide.getGroupId(),7);assert.equal(h.dialogs.length,0);assert.equal(h.requests.length,1);assert.equal(h.writes(),1);
 });
 
 test('cached relic page resumes details on an owned relic and never binds the draw button to the details step',()=>{

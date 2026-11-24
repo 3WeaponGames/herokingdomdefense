@@ -30,11 +30,15 @@ test('Manage types opens the registered panel directly even with a stale main-pr
  assert.deepEqual(f.store.draftState(),before);assert.equal(JSON.stringify(f.store.changes()),changes);assert.deepEqual(fs.readFileSync(file),bytes);
 });
 
-test('Units displays the inherited role counter and keeps legacy counter edits in the draft',async()=>{
+test('Units displays the effective ally counter and keeps counter edits in the draft',async()=>{
  const filename=path.join(__dirname,'building-panel.test.js');let prefix=fs.readFileSync(filename,'utf8').split("test('building catalog")[0];prefix=prefix.replace('function fixture()','function fixture(kind)').replace(".create('buildings')",'.create(kind)').replace("_kind: 'buildings'",'_kind: kind');
  const context={require:createRequire(filename),__dirname,module:{exports:{}},exports:{},setTimeout,clearTimeout,setImmediate};vm.createContext(context);vm.runInContext(prefix+'\nmodule.exports={fixture,fields};',context);const {fixture,fields}=context.module.exports,f=fixture('units'),file=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),bytes=fs.readFileSync(file),before=f.store.draftState();
- const rows=f.panel._rows();assert.equal(rows.length,1+Object.keys(before.overrides.unitProfiles.families).length*6+Object.keys(before.A.AllyCfg).length);assert.deepEqual(Array.from(rows.find(row=>row.key==='ally:90001').path),['AllyCfg','90001']);assert.deepEqual(Array.from(rows.find(row=>row.key==='enemy:90001').path),['SoldierCfg','90001']);
- f.render('ally:90001');assert.equal(f.store.changes().length,0);const inherited=fields(f.panel.$detail,'Countered fighting type')[0];assert(inherited.disabled);assert.equal(inherited.value,'Skirmisher');
+ const ally=f.panel._rows().find(row=>row.key==='ally:90001');
+ assert.deepEqual(Array.from(ally.path),['AllyCfg','90001']);
+ f.render('ally:90001');assert.equal(f.store.changes().length,0);
+ const override=fields(f.panel.$detail,'Countered fighting type')[0];assert(!override.disabled);assert.equal(override.value,'skirmisher');
+ await f.panel._set('A',['AllyCfg','90001','OverrideCounterType'],false);await f.panel._queue;
+ const inherited=fields(f.panel.$detail,'Countered fighting type')[0];assert(inherited.disabled);assert.equal(inherited.value,'Skirmisher');
  await f.panel._change([{doc:'overrides',path:['unitTypes','fighter','counterType'],remove:true}]);await f.panel._queue;
  const counter=fields(f.panel.$detail,'Countered fighting type')[0];assert(counter);assert.equal(counter.children.length,7);assert.deepEqual(Array.from(counter.children,o=>o.value).sort(),['','fighter','skirmisher','vanguard','mystic','bruiser','guardian'].sort());
  counter.value='guardian';counter.onchange();await f.panel._queue;

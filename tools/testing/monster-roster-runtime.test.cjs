@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { setup, Node, Vec2 } = require('./backend-gameplay-harness.cjs');
-const { environment } = require('../navigation/runtime-harness.cjs');
+const { environment, installIntersection } = require('../navigation/runtime-harness.cjs');
 const AttackRules = require('../../assets/_script/UnitAttackRules');
 const root = path.resolve(__dirname, '../..');
 const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
@@ -109,6 +109,7 @@ test('every imported monster spawns through the shipped enemy factory with its o
 function actorFixture(row) {
   const e = environment();
   e.stubs.UnitAttackRules = AttackRules;
+  e.stubs.EnemySkills = require('../../assets/_script/EnemySkills');
   e.game.gameStatus = e.stubs.KinghtFallModle.KinghtFallGameStage.Fight; e.game._combatEpoch = 1;
   e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById = () => row;
   Object.assign(e.stubs.KinghtFallModle.KinghtFallSoldierAniEnum, { Attack: 'attack', Idle: 'idle', Move: 'move' });
@@ -125,6 +126,20 @@ function actorFixture(row) {
   };
   e.game.ctrPlay = target;
   e.game.gameData.enemies = [actor, target];
+  if (row.EnemyTargeting?.mode === 'castle') {
+    installIntersection(e.cc);
+    const collider = e.box(18, 0, 10, 10, true);
+    const castle = e.game.gameData.buildings.at(-1);
+    const points = [[-5, -5], [5, -5], [5, 5], [-5, 5]]
+      .map(([x, y]) => collider.node.convertToWorldSpaceAR(new Vec2(x, y)));
+    Object.assign(castle, {
+      buildInfo: { BuildID: 'CastleCenter' },
+      getIsWork: () => true,
+      getWposPhyCol2: () => [{ tagNode: collider.node, points }],
+      onAttacked: target.onAttacked
+    });
+    e.game.gameData.baseBuild = castle;
+  }
   Object.assign(e.stubs.KinghtFallUIGame.default.instance.ctrEffect, {
     showDamageNum() {}, onMonsterAttack() {},
     onMoveTrack(...args) { effects.push(args); }, onBuff(...args) { effects.push(args); }

@@ -113,3 +113,69 @@ test('building models and wings share authored object-layer slots while ground a
  build.renderLayerOrder=2;DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);assert(cliff.zIndex<owner.zIndex&&owner.zIndex<tree.zIndex,'assigning after Cliffs puts the solid building before Trees');assert.equal(wing.zIndex,owner.zIndex);for(const node of [shadow,fieldParent])assert(node.zIndex<hero.zIndex);
  build.renderLayerOrder=0;DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);assert(owner.zIndex<cliff.zIndex&&owner.zIndex<tree.zIndex,'ground-only slot places the whole building behind all objects');
 });
+
+for (const nativeCapture of [false, true]) test('foreground units stay whole across a building corner and conflicting scenery layers (' + (nativeCapture ? 'native' : 'web') + ')', () => {
+  const { DepthView, Sprite } = load();
+  const main = new Node('ndMain'), building = new Node('Barracks', main), scenery = new Node('Rock', main, 0, -20);
+  building._depthBuilding = true;
+  building._depthBuildingOrder = 7;
+  scenery._depthScenery = true;
+  scenery._depthLayerOrder = 1;
+  function render(node, width, height, anchorY) {
+    Object.assign(node, { width, height, anchorY });
+    const sprite = node.addComponent(Sprite);
+    sprite.enabled = true;
+    return sprite;
+  }
+  const facade = render(building, 220, 240, .25);
+  render(scenery, 220, 180, 0);
+  const actor = name => {
+    const node = new Node(name, main), unit = { node, spAni: render(node, 30, 70, 0), hp: 100 };
+    node._combatActor = unit;
+    return unit;
+  };
+  const hero = actor('Hero'), ally = actor('Ally'), enemy = actor('Enemy');
+  const units = [hero, ally, enemy];
+  const polygon = [new Vec2(-90, 25), new Vec2(0, -45), new Vec2(90, 25), new Vec2(0, 95)];
+  const owner = { node: building, getWposPhyCol2: () => [{ points: polygon }] };
+  const object = { node: building, sources: [facade], baseSources: [facade], masks: new Map(),
+    buildings: [{ owner, base: null, weapon: null, ruins: null }] };
+  let captures = 0;
+  const game = { ctrPlay: hero, gameData: { getSoldierList: () => [ally], getEnemyList: () => [enemy] } };
+  const view = Object.assign(Object.create(DepthView.prototype), {
+    main, game, objects: [object], nativeCapture, nativeActors: new Map(),
+    snapshot(entry) {
+      captures++;
+      Object.assign(entry, { center: { x: 0, y: 0 }, size: { width: 220, height: 240 }, frame: {} });
+    },
+    makeMask(entry, unit) {
+      const overlay = new Node('Overlay', main);
+      overlay._occlusionMask = true;
+      overlay.setContentSize = size => Object.assign(overlay, size);
+      entry.overlay = { node: overlay, mask: {} };
+      const mask = { node: new Node('Silhouette', overlay), visuals: [] };
+      entry.masks.set(unit, mask);
+      return mask;
+    },
+    syncNativeMask() {}
+  });
+  units.forEach(unit => unit.node.setPosition(0, -10));
+  view.update();
+  assert(scenery.zIndex < building.zIndex);
+  assert(units.every(unit => unit.node.zIndex > building.zIndex), 'lower scenery cannot pull a foreground unit behind the building');
+  assert.equal(captures, 0);
+
+  units.forEach((unit, index) => unit.node.setPosition(index === 1 ? 94 : -94, 22));
+  view.update();
+  assert(units.every(unit => unit.node.zIndex > building.zIndex), 'units just outside either corner stay in full color');
+  assert.equal(captures, 0, 'the foreground corner never generates a clipping stencil');
+
+  hero.node.setPosition(0, 100);
+  view.update();
+  const mask = object.masks.get(hero);
+  assert(mask && mask.node.active, 'a unit behind the footprint still follows the normal depth');
+  hero.node.setPosition(94, 25);
+  view.update();
+  assert(hero.node.zIndex > building.zIndex);
+  assert.equal(mask.node.active, false, 'the rear stencil clears on the same frame as the crossing');
+});

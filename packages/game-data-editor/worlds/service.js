@@ -16,11 +16,28 @@ function validJournal(journal){
  return journal.files.every(entry=>entry&&typeof entry.file==='string'&&entry.file&&!files.has(entry.file)&&files.add(entry.file)&&(entry.before===null||hash(entry.before))&&(entry.after===null||hash(entry.after))&&(entry.before!==null||entry.after!==null));
 }
 // Keep the previous complete copy intact when a write fails or the editor stops.
-function atomicWrite(file,content){
+function atomicWrite(file,content,beforeReplace,purpose='write'){
  fs.mkdirSync(path.dirname(file),{recursive:true});
- const temp=file+'.hkd-write-'+process.pid+'-'+id('temp');
- try{fs.writeFileSync(temp,content,{flag:'wx'});fs.renameSync(temp,file);}
+ const temp=file+'.hkd-'+purpose+'-'+process.pid+'-'+id('temp');
+ try{fs.writeFileSync(temp,content,{flag:'wx'});if(beforeReplace)beforeReplace();fs.renameSync(temp,file);}
  finally{if(fs.existsSync(temp))fs.unlinkSync(temp);}
+}
+function stageFields(stage,map){
+ const fields=P.unlocks(stage);
+ if(map.id.startsWith('map-'))fields.Map='Generated/Maps/'+map.id+'/thumbnail';
+ return Object.assign(fields,{EnvironmentMapId:map.id,EnvironmentBiome:StageBiome.value(stage.config,map),StageLayoutId:stage.id,prefab:'Generated/Stages/'+stage.id});
+}
+function stageForSave(doc,latest,map){
+ if(!latest)throw Error('Stage was removed. Your draft is retained.');
+ const base=doc.original.config,stage=clone(doc.data),sourceRevision=L.hash(JSON.stringify(latest));
+ if(sourceRevision===doc.original.sourceRevision){stage.sourceRevision=sourceRevision;return stage;}
+ const conflict=fields=>Error('Stage '+stage.id+' changed on disk at '+fields.join(' / ')+'. Review the saved value and your draft. Your draft is retained.');
+ stage.config=JSONDoc.merge(base,stage.config,latest,conflict);
+ for(const [key,value] of Object.entries(stageFields(stage,map))){
+  if(!equal(base[key],latest[key])&&!equal(value,latest[key]))throw conflict([key]);
+ }
+ stage.sourceRevision=sourceRevision;
+ return stage;
 }
 function freeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.keys(value).forEach(key=>freeze(value[key]));Object.freeze(value);}return value;}
 function localizedStageName(root,name){const key=/^\[\[loc:(.+)\]\]$/.exec(name||'');if(!key)return name;const entry=(L.read(root,'assets/resources/localization/catalog.json').entries||{})[key[1]];return entry&&entry.en||name;}
@@ -44,7 +61,8 @@ class Service{
  catalog(){const index=this.index(),catalog=L.read(this.root,'assets/resources/localization/catalog.json');const text=value=>{const key=/^\[\[loc:(.+)\]\]$/.exec(value||'');const entry=key&&(catalog.entries||{})[key[1]];return entry&&entry.en||value;};const validation=require('../lib/asset-validation'),unitAssets=require('../lib/unit-assets');const buildingLooks={};for(let kind=1;kind<=6;kind++)buildingLooks[kind]=unitAssets.describe(this.root,{type:'building',id:String(kind)});const unitIcon=key=>{try{return url.pathToFileURL(validation.imported(this.root,'resources',key,'sprite').file).href;}catch(_){return null;}};
   const charactersFile='assets/resources/characters/catalog.json',characters=fs.existsSync(path.join(this.root,charactersFile))?L.read(this.root,charactersFile):null;
   const units=UnitCatalog.rows(index.documents.A,catalog,unitIcon,characters,UnitLibrary.customSources(this.root));
-  return {version:this.version,buildingLooks,maps:this.mapCatalog(),stages:this.stageCatalog().map(s=>Object.assign({},s,{name:text(s.name)})),library:index.library,units,interval:Number(index.documents.A.ParameterCfg['60018'].Value)||.5,recovery:this.hadRecovery||this.recoveries().length>0,recoveries:this.recoveries(),images:this.images,collections:Library.summary(this)};}
+  const battleTasks=require('../lib/stage-tasks').catalog(index.documents.A,text);
+  return {version:this.version,buildingLooks,maps:this.mapCatalog(),stages:this.stageCatalog().map(s=>Object.assign({},s,{name:text(s.name)})),library:index.library,units,battleTasks,interval:Number(index.documents.A.ParameterCfg['60018'].Value)||.5,recovery:this.hadRecovery||this.recoveries().length>0,recoveries:this.recoveries(),images:this.images,collections:Library.summary(this)};}
  availableMaps(){return this.index().maps.filter(map=>map.archived!==true);}
  mapCatalog(){return this.availableMaps().map(map=>{const doc=this.docs['map:'+map.id],value=doc?doc.data:map;return {id:map.id,name:value.name,biome:value.biome,thumbnail:this.thumbnail(map.id)};});}
  unitPreview(request){const id=Number(request&&request.id),config=this.index().documents.A,unit=(config.SoldierCfg||{})[id];if(!Number.isSafeInteger(id)||!unit||!unit.prefab||[90011,90012].includes(id))throw Error('Choose a spawnable unit.');const data=require('../lib/unit-assets').describe(this.root,{type:'enemy',id,documents:{A:{data:config}},noShared:true});data.visual=clone((config.GameTools&&config.GameTools.visuals||{})[data.key]||{});return data;}
@@ -131,7 +149,41 @@ class Service{
  create(request){this.expect(request.version);const mapId=id('map'),data=request.copy?clone(this.loadMap(request.copy).data):M.createMap(mapId,request.name,request.biome);data.id=mapId;data.blockerMask=clone(M.mapBlockerRegions(data));if(request.copy){delete data.legacy;delete data.archived;if(request.biome)data.biome=request.biome;}data.name=request.name||'New map';data.images=this.images;this.docs['map:'+mapId]={key:'map:'+mapId,file:'authoring/worlds/maps/'+mapId+'.json',original:null,data,revision:null};if(!this.index().maps.some(m=>m.id===mapId))this.index().maps.push({id:mapId,name:data.name,biome:data.biome,images:{}});this.version++;this.persist();return this.snapshot('map:'+mapId);}
  affected(mapId){return L.read(this.root,campaignFile).LevelCfg.filter(stage=>(stage.EnvironmentMapId||stage.prefab)===mapId).map(stage=>'A-'+stage.Level);}
  recoveries(){const folder=path.join(this.artifacts,'saves'),result=[];if(!fs.existsSync(folder))return result;for(const id of fs.readdirSync(folder)){const file=path.join(folder,id,'journal.json');if(!fs.existsSync(file))continue;let journal;try{journal=JSON.parse(fs.readFileSync(file,'utf8'));}catch(_){result.push({id,status:'invalid',files:0});continue;}if(!validJournal(journal)){result.push({id,status:'invalid',files:0});continue;}if(['committed','rolled-back'].includes(journal.status))continue;result.push({id,status:journal.status,files:journal.files.length});}return result.sort((a,b)=>a.id.localeCompare(b.id));}
- recoverTransaction(request){const pending=this.recoveries(),item=pending[0];if(!item)return this.snapshot(request.key);const folder=path.join(this.artifacts,'saves',item.id),file=path.join(folder,'journal.json');let journal;try{journal=JSON.parse(fs.readFileSync(file,'utf8'));}catch(_){throw Error('Invalid recovery journal. Project files were not changed; inspect the preserved backup at '+file);}if(!validJournal(journal))throw Error('Invalid recovery journal. Project files were not changed; inspect the preserved backup at '+file);for(const entry of journal.files){const current=fingerprint(safe(this.root,entry.file));if(current!==entry.before&&current!==entry.after)throw Error('Concurrent change prevents automatic recovery: '+entry.file+'. Backups are preserved in '+folder);if(entry.before!==null&&fingerprint(path.join(folder,entry.file))!==entry.before)throw Error('Recovery backup is missing or changed: '+entry.file);}for(const entry of journal.files){const target=safe(this.root,entry.file),current=fingerprint(target);if(current===entry.before)continue;if(current!==entry.after)throw Error('Concurrent change during recovery: '+entry.file);if(entry.before===null)fs.unlinkSync(target);else{const temp=target+'.hkd-recover-'+process.pid;try{fs.writeFileSync(temp,fs.readFileSync(path.join(folder,entry.file)),{flag:'wx'});fs.renameSync(temp,target);}finally{if(fs.existsSync(temp))fs.unlinkSync(temp);}}}journal.status='rolled-back';atomicWrite(file,bytes(journal));const removed=new Set();for(const key of Object.keys(this.docs))if(equal(this.docs[key].data,this.docs[key].original)){delete this.docs[key];removed.add(key);}this.undo=this.undo.filter(e=>!removed.has(e.key));this.redo=this.redo.filter(e=>!removed.has(e.key));this.indexData=null;this.palette=null;this.sources={};this.version++;return Object.assign(this.snapshot(request.key),{result:{recovered:true,files:journal.files.map(e=>e.file),backup:folder}});}
+ recoverTransaction(request){
+  const item=this.recoveries()[0];
+  if(!item)return this.snapshot(request.key);
+  const folder=path.join(this.artifacts,'saves',item.id),file=path.join(folder,'journal.json');
+  const invalid=()=>Error('Invalid recovery journal. Project files were not changed; inspect the preserved backup at '+file);
+  let journal;
+  try{journal=JSON.parse(fs.readFileSync(file,'utf8'));}
+  catch(_){throw invalid();}
+  if(!validJournal(journal))throw invalid();
+  for(const entry of journal.files){
+   const current=fingerprint(safe(this.root,entry.file));
+   if(current!==entry.before&&current!==entry.after)throw Error('Concurrent change prevents automatic recovery: '+entry.file+'. Backups are preserved in '+folder);
+   if(entry.before!==null&&fingerprint(path.join(folder,entry.file))!==entry.before)throw Error('Recovery backup is missing or changed: '+entry.file);
+  }
+  for(const entry of journal.files){
+   const target=safe(this.root,entry.file),current=fingerprint(target);
+   if(current===entry.before)continue;
+   const conflict=()=>Error('Concurrent change during recovery: '+entry.file);
+   if(current!==entry.after)throw conflict();
+   if(entry.before===null)fs.unlinkSync(target);
+   else{
+    const restored=fs.readFileSync(path.join(folder,entry.file));
+    if(L.hash(restored)!==entry.before)throw Error('Recovery backup is missing or changed: '+entry.file);
+    atomicWrite(target,restored,()=>{
+     if(fingerprint(target)!==entry.after)throw conflict();
+    },'recover');
+   }
+  }
+  journal.status='rolled-back';atomicWrite(file,bytes(journal));
+  const removed=new Set();
+  for(const key of Object.keys(this.docs))if(equal(this.docs[key].data,this.docs[key].original)){delete this.docs[key];removed.add(key);}
+  this.undo=this.undo.filter(e=>!removed.has(e.key));this.redo=this.redo.filter(e=>!removed.has(e.key));
+  this.indexData=null;this.palette=null;this.sources={};this.version++;
+  return Object.assign(this.snapshot(request.key),{result:{recovered:true,files:journal.files.map(e=>e.file),backup:folder}});
+ }
  persist(){
   const drafts=Object.values(this.docs).filter(d=>!equal(d.data,d.original)),before=fingerprint(this.recovery);
   if(this.recoveryRevision!==undefined&&before!==this.recoveryRevision)throw Error('The external recovery copy changed in another editor. Your in-memory draft is retained. Review '+this.recovery+' before continuing.');
@@ -143,8 +195,9 @@ class Service{
   }
   if(drafts.length){
    const content=bytes({version:1,project:this.root,docs:drafts,stagedAssets:this.index().library.filter(a=>a.stagedFile)});
-   if(fingerprint(this.recovery)!==before)throw Error('The external recovery copy changed while saving the draft. Your in-memory draft is retained.');
-   atomicWrite(this.recovery,content);
+   atomicWrite(this.recovery,content,()=>{
+    if(fingerprint(this.recovery)!==before)throw Error('The external recovery copy changed while saving the draft. Your in-memory draft is retained.');
+   });
   }else if(before!==null)fs.unlinkSync(this.recovery);
   this.recoveryRevision=fingerprint(this.recovery);this.hadRecovery=false;
  }
@@ -205,15 +258,16 @@ class Service{
  if(keepMapDraft&&mapDoc.original===null)throw Error('This stage uses a new unsaved map. Choose Save shared map changes in the stage save review.');
  // A stage can use its saved environment without publishing another panel's
  // draft. Including shared changes is an explicit, single transaction instead.
- const map=keepMapDraft?clone(mapDoc.original):mapDoc.data,library=keepMapDraft?L.loadLibrary(this.root):this.index().library,validationRevisions={};let validation=null;
+ const map=keepMapDraft?clone(mapDoc.original):mapDoc.data,library=keepMapDraft?L.loadLibrary(this.root):this.index().library,validationRevisions={};let validation=null,stageToSave;
  if(!isMap){
   const content=fs.readFileSync(safe(this.root,campaignFile));
   const documents={A:JSON.parse(content.toString('utf8').replace(/^\uFEFF/,''))};
+  stageToSave=stageForSave(doc,documents.A.LevelCfg.find(stage=>stage.Level===doc.data.level),map);
   validationRevisions[campaignFile]=L.hash(content);
   const file='assets/resources/localization/catalog.json',catalogContent=fs.readFileSync(safe(this.root,file));
   validationRevisions[file]=L.hash(catalogContent);validation={index:Object.assign({},this.index(),{documents}),catalogContent};
  }
- const issues=isMap?M.validateMap(map,this.assetTable()):this.stageIssues(doc.data,map,validation).concat(publishMap?M.validateMap(map,this.assetTable()):[]);if(issues.length)throw Error(issues.join('\n'));
+ const issues=isMap?M.validateMap(map,this.assetTable()):this.stageIssues(stageToSave,map,validation).concat(publishMap?M.validateMap(map,this.assetTable()):[]);if(issues.length)throw Error(issues.join('\n'));
  if(!publishMap)M.blockerFixtures(map);
  const affected=publishMap?Array.from(new Set(this.affected(map.id).concat(isMap?[]:[doc.data.id]))):[doc.data.id];for(const stageId of affected){const staged=this.docs['stage:'+stageId];if(publishMap&&staged&&staged!==doc&&!equal(staged.data,staged.original))throw Error('Stage '+stageId+' has an unsaved draft. Save or discard it before updating its shared map.');}
  const originals=Object.assign({},validationRevisions),capture=file=>{if(!Object.prototype.hasOwnProperty.call(originals,file))originals[file]=fingerprint(safe(this.root,file));};capture(doc.file);capture(mapDoc.file);for(const d of [doc,mapDoc]){if(fingerprint(safe(this.root,d.file))!==d.revision)throw Error('Authoring source changed on disk. Draft retained.');}for(const d of [doc,mapDoc])for(const file of Object.keys(d.dependencies||{})){if(fingerprint(safe(this.root,file))!==d.dependencies[file])throw Error('Source prefab changed since this draft was opened. Draft retained.');capture(file);}capture(campaignFile);capture('authoring/worlds/library/manifest.json');const generated=tree(path.join(this.root,'assets/KinghtFallIconMap/Generated'));for(const file of Object.keys(generated))originals[path.relative(this.root,file).split(path.sep).join('/')]=generated[file];if(map.legacy)capture('assets/KinghtFallIconMap/'+map.legacy.prefab+'.prefab');
@@ -221,7 +275,7 @@ class Service{
  // Snapshot every linked layout and unembedded source before asynchronous baking.
  for(const stageId of affected){
   const stageFile='authoring/worlds/stages/'+stageId+'.json';capture(stageFile);
-  const stage=!isMap&&stageId===doc.data.id?clone(doc.data):fs.existsSync(safe(this.root,stageFile))?L.read(this.root,stageFile):null;
+  const stage=!isMap&&stageId===doc.data.id?stageToSave:fs.existsSync(safe(this.root,stageFile))?L.read(this.root,stageFile):null;
   if(!stage)continue;
   const sources=stage.templates||{},embedded=new Set(Object.keys(sources));
   for(const b of stage.buildings.concat(stage.specials))if(!embedded.has(b.template.prefab)){
@@ -256,18 +310,80 @@ class Service{
   }
  }
  if(fingerprint(safe(this.root,doc.file))!==doc.revision)throw Error('Authoring source changed on disk. Draft retained.');
- this.busy=true;try{const baked=await B.bake(this.root,map,library,{artifacts:this.artifacts,render:this.options.render,shadowSettings:this.shadowSettings()});const writes=baked.writes.slice();const serialized=clone(map);delete serialized.images;if(!keepMapDraft)writes.push({file:mapDoc.file,bytes:bytes(serialized)});
+ this.busy=true;try{const baked=await B.bake(this.root,map,library,{artifacts:this.artifacts,render:this.options.render,shadowSettings:this.shadowSettings()});const writes=baked.writes.slice();
+ if(publishMap||!keepMapDraft&&mapDoc.revision===null){
+  const serialized=clone(map);delete serialized.images;writes.push({file:mapDoc.file,bytes:bytes(serialized)});
+ }
  const manifest=L.read(this.root,'authoring/worlds/library/manifest.json'),used=new Set();for(const l of map.layers)for(const o of l.objects)if(o.assetId)used.add(o.assetId);for(const layer of M.groundLayers(map)){if(layer.baseAsset)used.add(layer.baseAsset);for(const s of layer.strokes||[])for(const id of require('./terrain').strokeAssets(s))used.add(id);for(const o of layer.images||[])used.add(o.assetId);}for(const tile of map.ground.foundation.tiles||[])used.add(tile.assetId);for(const a of library.filter(a=>a.stagedFile&&used.has(a.id))){const imported=fs.readFileSync(a.stagedFile);if(L.hash(imported)!==a.sha256)throw Error('Imported source changed. Import it again.');capture(a.file);writes.push({file:a.file,bytes:imported});const record=clone(a);delete record.url;delete record.stagedFile;const existing=manifest.assets.find(x=>x.id===a.id);if(existing)Object.assign(existing,record);else manifest.assets.push(record);}const manifestText=fs.readFileSync(safe(this.root,'authoring/worlds/library/manifest.json'),'utf8');writes.push({file:'authoring/worlds/library/manifest.json',bytes:Buffer.from(JSONDoc.patch(manifestText,JSON.parse(manifestText.replace(/^\uFEFF/,'')),manifest))});
  if(publishMap&&map.legacy){const file='assets/KinghtFallIconMap/'+map.legacy.prefab+'.prefab',original=L.read(this.root,file);writes.push({file,bytes:bytes(P.replaceEnvironment(this.root,original,map,baked))});}
  const configText=fs.readFileSync(safe(this.root,campaignFile),'utf8'),before=JSON.parse(configText.replace(/^\uFEFF/,'')),after=clone(before);
- for(const stageId of affected){const stage=stagePlans[stageId],stageFile='authoring/worlds/stages/'+stageId+'.json';if(!stage){const legacy=after.LevelCfg.find(s=>s.Level===Number(stageId.slice(2)));if(legacy){legacy.EnvironmentMapId=map.id;legacy.EnvironmentBiome=StageBiome.value(legacy,map);}continue;}const at=after.LevelCfg.findIndex(s=>s.Level===stage.level);if(at<0)throw Error('Stage was removed');if(!isMap&&stageId===doc.data.id&&L.hash(JSON.stringify(before.LevelCfg[at]))!==stage.sourceRevision)throw Error('Stage changed on disk. Refresh before saving.');const sources=stage.templates;const file='assets/KinghtFallIconMap/Generated/Stages/'+stage.id+'.prefab',runtime=clone(!isMap&&stageId===doc.data.id?stage.config:before.LevelCfg[at]);if(map.id.startsWith('map-'))runtime.Map='Generated/Maps/'+map.id+'/thumbnail';Object.assign(runtime,P.unlocks(stage),{EnvironmentMapId:map.id,EnvironmentBiome:StageBiome.value(runtime,map),StageLayoutId:stage.id,prefab:'Generated/Stages/'+stage.id});after.LevelCfg[at]=runtime;stage.config=runtime;stage.sourceRevision=L.hash(JSON.stringify(runtime));writes.push({file,bytes:bytes(P.compact(P.compose(this.root,map,stage,baked,sources)))},{file:stageFile,bytes:bytes(stage)});const metaFile=file+'.meta';capture(metaFile);if(!fs.existsSync(safe(this.root,metaFile)))writes.push({file:metaFile,bytes:bytes({ver:'1.2.9',uuid:B.uuid('stage:'+stage.id),importer:'prefab',optimizationPolicy:'AUTO',asyncLoadAssets:false,readonly:false,subMetas:{}})});}
- for(const row of after.LevelCfg)if(row.StageThumbnail)for(const output of require('./stage-thumbnails').plan(this,row.StageThumbnail)){capture(output.file);writes.push(output);}
+ for(const stageId of affected){const stage=stagePlans[stageId],stageFile='authoring/worlds/stages/'+stageId+'.json';if(!stage){const legacy=after.LevelCfg.find(s=>s.Level===Number(stageId.slice(2)));if(legacy){legacy.EnvironmentMapId=map.id;legacy.EnvironmentBiome=StageBiome.value(legacy,map);}continue;}const at=after.LevelCfg.findIndex(s=>s.Level===stage.level);if(at<0)throw Error('Stage was removed');if(!isMap&&stageId===doc.data.id&&L.hash(JSON.stringify(before.LevelCfg[at]))!==stage.sourceRevision)throw Error('Stage changed on disk. Refresh before saving.');const sources=stage.templates;const file='assets/KinghtFallIconMap/Generated/Stages/'+stage.id+'.prefab',runtime=clone(!isMap&&stageId===doc.data.id?stage.config:before.LevelCfg[at]);Object.assign(runtime,stageFields(Object.assign({},stage,{config:runtime}),map));after.LevelCfg[at]=runtime;stage.config=runtime;stage.sourceRevision=L.hash(JSON.stringify(runtime));writes.push({file,bytes:bytes(P.compact(P.compose(this.root,map,stage,baked,sources)))},{file:stageFile,bytes:bytes(stage)});const metaFile=file+'.meta';capture(metaFile);if(!fs.existsSync(safe(this.root,metaFile)))writes.push({file:metaFile,bytes:bytes({ver:'1.2.9',uuid:B.uuid('stage:'+stage.id),importer:'prefab',optimizationPolicy:'AUTO',asyncLoadAssets:false,readonly:false,subMetas:{}})});}
+ if(stageToSave&&stageToSave.config.StageThumbnail){
+  const thumbnails=require('./stage-thumbnails'),resource=stageToSave.config.StageThumbnail,file=thumbnails.filename(resource);
+  capture(file);capture(file+'.meta');capture(thumbnails.FOLDER+'.meta');
+  writes.push(...thumbnails.plan(this,resource));
+ }
  if(!equal(before,after))writes.push({file:campaignFile,bytes:Buffer.from(JSONDoc.patch(configText,before,after))});
  // Sources observed before asynchronous baking must still match, including new files.
  const currentTree=tree(path.join(this.root,'assets/KinghtFallIconMap/Generated'));if(!equal(currentTree,generated))throw Error('Generated assets changed during baking. Draft retained; retry after reviewing the change.');const unique=new Map();for(const w of writes.slice())if(w.file.startsWith('assets/KinghtFallIconMap/Generated/')){let folder=path.posix.dirname(w.file);while(folder.startsWith('assets/KinghtFallIconMap/Generated')){const metaFile=folder+'.meta';if(!fs.existsSync(safe(this.root,metaFile)))writes.push({file:metaFile,bytes:bytes({ver:'1.1.3',uuid:B.uuid('folder:'+folder),importer:'folder',isBundle:false,bundleName:'',priority:1,compressionType:{},optimizeHotUpdate:{},inlineSpriteFrames:{},isRemoteBundle:{},subMetas:{}})});folder=path.posix.dirname(folder);}}writes.forEach(w=>unique.set(w.file,w));for(const w of unique.values()){if(!Object.prototype.hasOwnProperty.call(originals,w.file))originals[w.file]=null;}
  if(this.options.prepareOnly)return {writes:Array.from(unique.values()),originals,affected};
  const result=this.commit(Array.from(unique.values()),originals),reloaded=new Set(publishMap?[doc.key,mapDoc.key]:[doc.key]);for(const key of Object.keys(this.docs)){const d=this.docs[key];if(d===doc||!keepMapDraft&&d===mapDoc||publishMap&&key.startsWith('stage:')&&affected.includes(key.slice(6))){if(key.startsWith('stage:')){reloaded.add(key);if(fs.existsSync(safe(this.root,d.file)))d.data=L.read(this.root,d.file);else if(publishMap){const current=L.read(this.root,campaignFile).LevelCfg.find(s=>s.Level===d.data.level);d.data.config=clone(current);d.data.sourceRevision=L.hash(JSON.stringify(current));for(const b of d.data.buildings.concat(d.data.specials))b.template.revision=fingerprint(safe(this.root,'assets/KinghtFallIconMap/'+b.template.prefab+'.prefab'));}}d.original=clone(d.data);d.revision=fingerprint(safe(this.root,d.file));}}for(const d of Object.values(this.docs))if(equal(d.data,d.original))for(const file of Object.keys(d.dependencies||{}))d.dependencies[file]=fingerprint(safe(this.root,file));this.sources={};this.undo=this.undo.filter(c=>!reloaded.has(c.key));this.redo=this.redo.filter(c=>!reloaded.has(c.key));this.version++;this.indexData=null;this.palette=null;let warning;try{this.persist();}catch(error){warning='Saved on disk, but the external draft recovery copy could not be updated: '+error.message;}return Object.assign(this.snapshot(doc.key),{busy:false,result:Object.assign(result,{affected,sharedMapDraftRetained:keepMapDraft?mapDoc.key:null},warning?{warning}:null)});
  }finally{this.busy=false;}}
- commit(writes,originals){for(const file of Object.keys(originals))if(fingerprint(safe(this.root,file))!==originals[file])throw Error('Concurrent change in '+file+'. Draft retained.');const targets=new Set();for(const w of writes){const target=safe(this.root,w.file),key=process.platform==='win32'?target.toLowerCase():target;if(targets.has(key))throw Error('Duplicate transaction target: '+w.file);targets.add(key);if(!Object.prototype.hasOwnProperty.call(originals,w.file))throw Error('Missing revision guard for '+w.file);}const changed=writes.filter(w=>fingerprint(safe(this.root,w.file))!==(w.bytes===null?null:L.hash(w.bytes)));if(!changed.length)return {saved:false,files:[]};const dir=path.join(this.artifacts,'saves',new Date().toISOString().replace(/[:.]/g,'-')+'-'+id('save'));fs.mkdirSync(dir,{recursive:true});const journal={status:'prepared',files:[]};for(const w of changed){const target=safe(this.root,w.file),before=fs.existsSync(target)?fs.readFileSync(target):null,backup=path.join(dir,w.file);if((before===null?null:L.hash(before))!==originals[w.file])throw Error('Concurrent change in '+w.file+'. Draft retained.');if(before){fs.mkdirSync(path.dirname(backup),{recursive:true});fs.writeFileSync(backup,before);}journal.files.push({file:w.file,before:before?L.hash(before):null,after:w.bytes===null?null:L.hash(w.bytes),created:!before});}const journalFile=path.join(dir,'journal.json');atomicWrite(journalFile,bytes(journal));const applied=[];try{for(const w of changed){const target=safe(this.root,w.file);if(fingerprint(target)!==originals[w.file])throw Error('Concurrent change in '+w.file);if(w.bytes===null){fs.unlinkSync(target);applied.push(w);continue;}fs.mkdirSync(path.dirname(target),{recursive:true});const temp=target+'.hkd-save-'+process.pid;try{fs.writeFileSync(temp,w.bytes);fs.renameSync(temp,target);}finally{if(fs.existsSync(temp))fs.unlinkSync(temp);}applied.push(w);}journal.status='committed';atomicWrite(journalFile,bytes(journal));return {saved:true,files:changed.map(w=>w.file),backup:dir};}catch(error){for(const w of applied.reverse()){const target=safe(this.root,w.file);if(fingerprint(target)!==(w.bytes===null?null:L.hash(w.bytes))){journal.status='recovery-required';continue;}const backup=path.join(dir,w.file);if(fs.existsSync(backup))atomicWrite(target,fs.readFileSync(backup));else fs.unlinkSync(target);}if(journal.status!=='recovery-required')journal.status='rolled-back';atomicWrite(journalFile,bytes(journal));throw Error(error.message+' Backup journal: '+journalFile);}}
+ commit(writes,originals){
+  const check=(file,revision)=>{
+   if(fingerprint(safe(this.root,file))!==revision)throw Error('Concurrent change in '+file+'. Draft retained.');
+  };
+  for(const file of Object.keys(originals))check(file,originals[file]);
+  const targets=new Set();
+  for(const write of writes){
+   const target=safe(this.root,write.file),key=process.platform==='win32'?target.toLowerCase():target;
+   if(targets.has(key))throw Error('Duplicate transaction target: '+write.file);
+   targets.add(key);
+   if(!Object.prototype.hasOwnProperty.call(originals,write.file))throw Error('Missing revision guard for '+write.file);
+  }
+  const changed=writes.filter(write=>originals[write.file]!==(write.bytes===null?null:L.hash(write.bytes)));
+  if(!changed.length)return {saved:false,files:[]};
+
+  const folder=path.join(this.artifacts,'saves',new Date().toISOString().replace(/[:.]/g,'-')+'-'+id('save'));
+  fs.mkdirSync(folder,{recursive:true});
+  const journal={status:'prepared',files:[]};
+  for(const write of changed){
+   const target=safe(this.root,write.file),before=fs.existsSync(target)?fs.readFileSync(target):null;
+   const revision=before===null?null:L.hash(before);
+   if(revision!==originals[write.file])throw Error('Concurrent change in '+write.file+'. Draft retained.');
+   if(before!==null){
+    const backup=path.join(folder,write.file);
+    fs.mkdirSync(path.dirname(backup),{recursive:true});
+    fs.writeFileSync(backup,before,{flag:'wx'});
+   }
+   journal.files.push({file:write.file,before:revision,after:write.bytes===null?null:L.hash(write.bytes),created:before===null});
+  }
+  const journalFile=path.join(folder,'journal.json'),applied=[];
+  atomicWrite(journalFile,bytes(journal));
+  try{
+   for(const [index,write] of changed.entries()){
+    const target=safe(this.root,write.file),entry=journal.files[index],verify=()=>check(entry.file,entry.before);
+    if(write.bytes===null){verify();fs.unlinkSync(target);}
+    else atomicWrite(target,write.bytes,verify,'save');
+    applied.push(entry);
+   }
+   journal.status='committed';
+   atomicWrite(journalFile,bytes(journal));
+   return {saved:true,files:changed.map(write=>write.file),backup:folder};
+  }catch(error){
+   const rollbackErrors=[];
+   for(const entry of applied.reverse()){
+    const target=safe(this.root,entry.file),verify=()=>check(entry.file,entry.after);
+    try{
+     verify();
+     if(entry.before===null)fs.unlinkSync(target);
+     else atomicWrite(target,fs.readFileSync(path.join(folder,entry.file)),verify);
+    }catch(failure){rollbackErrors.push(failure.message);}
+   }
+   journal.status=rollbackErrors.length?'recovery-required':'rolled-back';
+   atomicWrite(journalFile,bytes(journal));
+   throw Error(error.message+(rollbackErrors.length?' Rollback needs recovery: '+rollbackErrors.join('; '):'')+' Backup journal: '+journalFile);
+  }
+ }
 }
 module.exports={Service,safe,tree,fingerprint};

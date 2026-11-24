@@ -81,60 +81,12 @@ var def_KinghtFallEnemyItem10 = function (t) {
     this.time[r.Attack] = 0;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
-    var n = this.pickAttackVictim(scope.game, function () {
-      var forced = require("RelicCombat").tauntedTarget(t);
-      if (forced) {
-        forced.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        return t.vec2_2.len() <= t.cfg.AttackRange ? forced : null;
-      }
-      var e = null;
-      var n = -1;
-      var i = scope.hero;
-      if (!i.isDead()) {
-        i.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        if (t.vec2_2.len() <= t.cfg.AttackRange) {
-          e = i, n = t.vec2_2.len();
-        }
-      }
-      var a = scope.data.getSoldierList();
-      for (var o = 0; o < a.length; o++) {
-        if (!(c = a[o]).isDead()) {
-          c.node.getPosition(t.vec2_2);
-          cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-          if (t.vec2_2.len() <= t.cfg.AttackRange && (-1 == n || t.vec2_2.len() < n)) {
-            e = c, n = t.vec2_2.len();
-          }
-        }
-      }
-      var r = {
-        position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
-        radius: t.cfg.AttackRange
-      };
-      var s = millAttackTargets(scope.data);
-      for (var l = 0; l < s.length; l++) {
-        var c;
-        if ((c = s[l]).getIsWork()) {
-          var h = Navigation.attackPartsOf(c);
-          for (var u = 0; u < h.length; u++) {
-            var d = h[u];
-            if (cc.Intersection.polygonCircle(d.points, r)) {
-              var targetDistance = Navigation.polygonDistance(t, d.points, scope.game);
-              if (-1 == n || targetDistance < n) {
-                e = c;
-                n = targetDistance;
-              }
-            }
-          }
-        }
-      }
-      return e;
-    });
+    var selected = this.pickAttackTarget(scope.game), n = selected && (selected.actor || selected.building);
     if (n) {
       var victim = skillTarget(n);
       if (!skillCurrent(this, scope, false) || !targetCurrent(victim, true)) return;
-      var impact = cc.v2(Navigation.attackPointOf(n,scope.game)), origin = this.vec2_1.clone(), form = this.cfg.BehaviorTemplate || this.cfg.ProfileBaseID || this.cfg.ID;
+      var impact = cc.v2(Navigation.attackPointOf(n, scope.game, Navigation.positionOf(this.node, scope.game), selected.polygon));
+      var origin = this.vec2_1.clone(), form = this.cfg.BehaviorTemplate || this.cfg.ProfileBaseID || this.cfg.ID;
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       var dealt = n.onAttacked(e, t);
       if (!skillCurrent(this, scope, true)) return;

@@ -17,18 +17,39 @@ function setup(width=200,delayed=false){
  const cc={Node,Sprite,color:(r,g,b)=>({r,g,b}),v2:(x,y)=>({x,y}),isValid:n=>!!n&&!n.destroyed,Director:{EVENT_BEFORE_DRAW:'draw'},director:{on:(e,f)=>listeners.add(f),off:(e,f)=>listeners.delete(f)}};
  const m={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BuildingDebris.js'),'utf8'),{cc,exports:m.exports,require:name=>require(path.join(root,'assets/_script',name))});
  const image=new Node('body');image.width=width;image.height=180;image.y=90;
- const native={color:{a:1}},smoke={color:{a:1}},owner={node:new Node('owner'),_buildingAppearance:{node:image},ndAniMain:{timeScale:1,_skeleton:{findSlot:n=>n==='fx'?native:smoke}},loadSpriteFrame(bundle,name,done){requests.push({bundle,name,done});if(!delayed)done(frame);}};
- return{api:m.exports,owner,listeners,requests,frame,native,smoke,Node,cc};
+ const native={color:{a:1}},secondary={color:{a:1}},smoke={color:{a:1}};
+ const slots={fx:native,fx2:secondary,Smoke_04_00034:smoke};
+ const owner={node:new Node('owner'),_buildingAppearance:{node:image},ndAniMain:{timeScale:1,_skeleton:{findSlot:n=>slots[n]}},loadSpriteFrame(bundle,name,done){requests.push({bundle,name,done});if(!delayed)done(frame);}};
+ return{api:m.exports,owner,listeners,requests,frame,native,secondary,smoke,Node,cc};
 }
 test('one native debris texture scales uniformly to the original structure footprint',()=>{
  for(const width of [80,200,500]){const e=setup(width);e.api.capture(e.owner);e.owner.isDestroyed=true;e.api.update(e.owner,.2);const r=e.owner._sharedBuildingDebris.building;assert(!r.node.active);e.api.update(e.owner,.07);assert(r.node.active);assert.equal(r.node.width,width*.7);assert.equal(r.node.height/r.node.width,66/115);assert.equal(r.node.y,0);assert.equal(r.node.color.r,167);assert.equal(e.requests[0].name,'buildings/shared/debris');assert.equal(e.native.color.a,0);assert.equal(e.smoke.color.a,1);e.api.destroy(e.owner);assert.equal(e.listeners.size,0);}
 });
-test('debris waits for its frame and native rubble remains until the shared sprite is ready',()=>{
- const e=setup(200,true);e.api.capture(e.owner);e.owner.isDestroyed=true;e.api.update(e.owner,1);const r=e.owner._sharedBuildingDebris.building;assert(!r.node.active);assert.equal(e.native.color.a,1);e.requests[0].done(e.frame);assert(r.node.active);for(const fn of e.listeners)fn();assert.equal(e.native.color.a,0);e.api.clear(e.owner);assert(r.node.destroyed);assert.equal(e.listeners.size,0);
+test('only one native rubble slot remains while the shared sprite loads',()=>{
+ const e=setup(200,true);e.api.capture(e.owner);e.owner.isDestroyed=true;e.api.update(e.owner,1);const r=e.owner._sharedBuildingDebris.building;
+ assert(!r.node.active);assert.equal(e.native.color.a,1);assert.equal(e.secondary.color.a,0);
+ e.requests[0].done(e.frame);assert(r.node.active);for(const fn of e.listeners)fn();
+ assert.equal(e.native.color.a,0);assert.equal(e.secondary.color.a,0);assert.equal(e.smoke.color.a,1);
+ e.api.clear(e.owner);assert(r.node.destroyed);assert.equal(e.listeners.size,0);
 });
 test('farm debris uses the same resource and repairs remove old nodes without altering shared attachments',()=>{
  const e=setup(),attachment={computeWorldVertices(b,out){out.push(-40,0,40,0,40,30,-40,30);}},field={attachment,slot:{bone:{}}},source={node:new e.Node('plots')};
  e.api.field(e.owner,source,field,true);const r=field.debris;assert(r.node.active);assert.equal(r.sprite.spriteFrame,e.frame);assert.equal(r.node.width,56);e.api.field(e.owner,source,field,false);assert(!r.node.active);assert.equal(field.attachment,attachment);e.api.discard(e.owner,r);assert(r.node.destroyed);assert.equal(e.owner._sharedBuildingDebris.records.length,0);
+});
+test('a mill collapse retires existing crop debris and keeps a single building pile', () => {
+ const e=setup(), attachment={computeWorldVertices(_bone,out){out.push(-40,0,40,0,40,30,-40,30);}};
+ const source={node:new e.Node('plots')}, crop={attachment,slot:{bone:{}}};
+ e.api.field(e.owner,source,crop,true);
+ const old=crop.debris;
+ assert(old.node.active);
+ e.api.capture(e.owner);e.owner.isDestroyed=true;e.api.update(e.owner,1);
+ e.api.field(e.owner,source,crop,true);
+ assert(old.node.destroyed);assert.equal(crop.debris,null);
+ const state=e.owner._sharedBuildingDebris;
+ assert.equal(state.records.length,1);assert(state.building.node.active);
+ e.api.clear(e.owner);
+ e.owner.isDestroyed=false;e.api.field(e.owner,source,crop,true);
+ assert(crop.debris.node.active,'an individually destroyed crop can show rubble again after repair');
 });
 test('native crop regions use four current offset vertices and sample each live bone field once',()=>{
  const e=setup(),offsets=new Float32Array([-40,0,40,0,40,30,-40,30]),matrix={a:0,b:-2,c:1,d:0,worldX:30,worldY:40},reads={},bone={};
@@ -64,6 +85,56 @@ test('unsupported native crop attachments and malformed offsets leave debris hid
 
 const cropEngine=path.join(process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine','extensions/spine/lib/spine.js');
 const cropNativeBinding=path.resolve(cropEngine,'../../../../../cocos2d-x/cocos/scripting/js-bindings/auto/jsb_cocos2dx_spine_auto.cpp');
+test('shipped building destruction rigs replace both rubble slots even after native animation reapplies them', {skip:!fs.existsSync(cropEngine)}, () => {
+ const spine=require(cropEngine);
+ const cfg=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+ for(const native of [false,true]) for(const [name,type] of [['by',3],['cb',1],['mz',4],['mf',5],['jt',2]]){
+  const e=setup(200,true), folder=path.join(root,'assets/KinghtFallIconMap/com/Ani',name);
+  const label=name+(native?'/native':'/web');
+  const json=JSON.parse(fs.readFileSync(path.join(folder,name+'.json'),'utf8'));
+  const atlas=new spine.TextureAtlas(fs.readFileSync(path.join(folder,name+'.atlas'),'utf8'), filename=>{
+   const png=fs.readFileSync(path.join(folder,filename));
+   return new spine.FakeTexture({width:png.readUInt32BE(16),height:png.readUInt32BE(20)});
+  });
+  const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(json);
+  const skeleton=new spine.Skeleton(data), animation=new spine.AnimationState(new spine.AnimationStateData(data));
+  skeleton.setSkinByName(cfg.BuildEnum[type].levelList[0].Skin);
+  skeleton.setToSetupPose();
+  const rig=native?{
+   findSlot:name=>skeleton.findSlot(name),
+   findBone(name){
+    const bone=skeleton.findBone(name);
+    return {isActive:()=>bone.active,setActive:active=>{bone.active=active;}};
+   },
+   getAttachment(index,name){
+    const attachment=skeleton.getAttachment(index,name);
+    return attachment&&{getColor:()=>attachment.color};
+   }
+  }:skeleton;
+  Object.assign(e.owner.ndAniMain,{node:new e.Node(name),skeletonData:{skeletonJson:json},_skeleton:rig,_nativeSkeleton:native?{}:null});
+  e.api.capture(e.owner);e.owner.isDestroyed=true;
+  animation.setAnimation(0,'destroy',false);animation.update(.4);animation.apply(skeleton);
+  const primary=skeleton.findSlot('fx'), secondary=skeleton.findSlot('fx2'), smoke=skeleton.findSlot('Smoke_04_00034');
+  function visible(slot){
+   const attachment=slot.getAttachment();
+   return slot.bone.active&&attachment&&slot.color.a*attachment.color.a>0;
+  }
+  assert(visible(primary)&&visible(secondary),label);
+  const smokeAlpha=smoke.color.a;
+  e.api.update(e.owner,.4);
+  if(native) animation.apply(skeleton);
+  assert(visible(primary)&&!visible(secondary),label);
+  e.requests[0].done(e.frame);
+  if(native) animation.apply(skeleton);
+  assert(!visible(primary)&&!visible(secondary),label);
+  assert.equal(smoke.color.a,smokeAlpha,label);
+  assert.equal(e.owner._sharedBuildingDebris.records.length,1,label);
+  assert(e.owner._sharedBuildingDebris.building.node.active,label);
+  e.api.clear(e.owner);
+  assert(primary.bone.active,label+' restores the per-instance bone for repair');
+  e.api.destroy(e.owner);
+ }
+});
 function nativeCropColor(source){
  // JSB exposes four float properties, not the web Color.set method.
  const values={},color={};for(const key of ['r','g','b','a']){values[key]=Math.fround(source[key]);Object.defineProperty(color,key,{enumerable:true,get:()=>values[key],set:value=>{values[key]=Math.fround(value);}});}
@@ -140,33 +211,46 @@ test('native destruction clocks reveal debris after combat updates stop, includi
 test('retiring a tower native rubble renderer cannot hide or flicker the shared replacement',()=>{
  const e=setup();e.owner._buildingAppearance.deathRubbleFx=new e.Node('native rubble');e.owner._buildingAppearance.deathRubbleSpine={getCurrent:()=>({animation:{name:'destroy'},trackTime:.25})};e.api.capture(e.owner);e.owner.isDestroyed=true;e.api.update(e.owner,.3);assert(e.owner._sharedBuildingDebris.building.node.active);assert(!e.owner._buildingAppearance.deathRubbleFx.active);for(let i=0;i<10;i++)for(const fn of e.listeners)fn();assert(e.owner._sharedBuildingDebris.building.node.active);e.api.destroy(e.owner);
 });
+test('late authored ruins replace the shared rubble in the same draw', () => {
+ const e=setup();
+ e.api.capture(e.owner);e.owner.isDestroyed=true;e.api.update(e.owner,1);
+ const record=e.owner._sharedBuildingDebris.building;
+ assert(record.node.active);
+ e.owner._buildingAppearance.destroyedNode=new e.Node('Authored ruins');
+ e.native.color.a=e.secondary.color.a=1;
+ for(const draw of e.listeners)draw();
+ assert(!record.node.active);assert(e.owner._buildingAppearance.destroyedNode.active);
+ assert.equal(e.native.color.a,0);assert.equal(e.secondary.color.a,0);assert.equal(e.smoke.color.a,1);
+});
 
 function wall(e,left=4,right=4,gate=true){
  const plan=require('../../assets/_script/WallAssembly').layout({nativeVersion:2,left,right,gate,start:'post',end:'post'});
  e.owner.ndAniMain.node=new e.Node('wall');e.owner.ndAniMain.skeletonData={skeletonJson:{wallKit:{layout:plan},skins:[]}};
  return plan;
 }
-test('wall groups share reveal timing and repair/destroy clears every compact pile',()=>{
- const e=setup(200,true);wall(e);e.api.capture(e.owner);const state=e.owner._sharedBuildingDebris,records=state.buildings.slice();
- assert.equal(records.length,3);assert.equal(state.building,records[0]);assert.deepEqual(Array.from(state.groups,g=>[g.kind,g.connections]),[['gate',2],['wall',3],['wall',3]]);
- e.owner.isDestroyed=true;e.api.update(e.owner,1);assert(records.every(r=>!r.node.active));assert.equal(e.native.color.a,1);
- e.requests[0].done(e.frame);assert(records.every(r=>r.node.active));for(const fn of e.listeners)fn();assert.equal(e.native.color.a,0);
- e.owner.isDestroyed=false;e.api.update(e.owner,0);assert(records.every(r=>!r.node.active));
- e.api.clear(e.owner);assert(records.every(r=>r.node.destroyed));assert.equal(state.records.length,0);assert.equal(state.buildings.length,0);assert.equal(e.listeners.size,0);
- e.api.capture(e.owner);assert.equal(state.buildings.length,3);assert(state.buildings.every(r=>!records.includes(r)));e.api.destroy(e.owner);assert.equal(e.owner._sharedBuildingDebris,null);
+test('a wall has one pile with the usual reveal, repair and teardown lifecycle',()=>{
+ const e=setup(200,true);wall(e);e.api.capture(e.owner);const state=e.owner._sharedBuildingDebris,record=state.building;
+ assert.equal(state.records.length,1);assert.equal(state.records[0],record);
+ e.owner.isDestroyed=true;e.api.update(e.owner,1);assert(!record.node.active);assert.equal(e.native.color.a,1);
+ e.requests[0].done(e.frame);assert(record.node.active);for(const fn of e.listeners)fn();assert.equal(e.native.color.a,0);
+ e.owner.isDestroyed=false;e.api.update(e.owner,0);assert(!record.node.active);
+ e.api.clear(e.owner);assert(record.node.destroyed);assert.equal(state.records.length,0);assert.equal(e.listeners.size,0);
+ e.api.capture(e.owner);assert.equal(state.records.length,1);assert.notEqual(state.building,record);
+ e.api.destroy(e.owner);assert.equal(e.owner._sharedBuildingDebris,null);
 });
-test('a second wall collapse replaces all old groups and late resource callbacks cannot revive them',()=>{
- const e=setup(200,true);wall(e);e.api.capture(e.owner);const old=e.owner._sharedBuildingDebris.buildings.slice();wall(e,1,1);e.api.capture(e.owner);
- assert(old.every(r=>r.node.destroyed));assert.equal(e.owner._sharedBuildingDebris.buildings.length,1);assert.equal(e.owner._sharedBuildingDebris.records.length,1);
- e.owner.isDestroyed=true;e.api.update(e.owner,1);e.api.destroy(e.owner);e.requests[0].done(e.frame);assert(old.every(r=>!r.node.active));assert.equal(e.owner._sharedBuildingDebris,null);assert.equal(e.listeners.size,0);
+test('a second wall collapse replaces the old pile and a late frame cannot revive it',()=>{
+ const e=setup(200,true);wall(e);e.api.capture(e.owner);const old=e.owner._sharedBuildingDebris.building;wall(e,1,1);e.api.capture(e.owner);
+ assert(old.node.destroyed);assert.equal(e.owner._sharedBuildingDebris.records.length,1);
+ e.owner.isDestroyed=true;e.api.update(e.owner,1);e.api.destroy(e.owner);e.requests[0].done(e.frame);assert(!old.node.active);assert.equal(e.owner._sharedBuildingDebris,null);assert.equal(e.listeners.size,0);
 });
-test('native wall groups never use the whole-wall bounding box and hide every legacy fx slot after reveal',()=>{
+test('native wall debris stays compact and both legacy slots clear after reveal',()=>{
  const e=setup(),slot={color:{a:1}},down={color:{a:1}};wall(e);delete e.owner.ndAniMain._skeleton;
  e.owner.ndAniMain._nativeSkeleton={getBoundingBox(){throw Error('The aggregate wall bounds must not size its rubble');}};
- e.owner.ndAniMain.findSlot=name=>name==='fx'?slot:null;e.owner.ndAniDown={findSlot:name=>name==='fx'?down:null};
+ e.owner.ndAniMain.findSlot=name=>name==='fx'?slot:null;e.owner.ndAniDown={findSlot:name=>name==='fx2'?down:null};
  let time=.1;e.owner.ndAniMain.getCurrent=()=>({animation:{name:'destroy'},trackTime:time});e.api.capture(e.owner);e.owner.isDestroyed=true;
- for(const fn of e.listeners)fn();assert(e.owner._sharedBuildingDebris.buildings.every(r=>!r.node.active));assert.equal(slot.color.a,1);
- time=1;for(const fn of e.listeners)fn();assert(e.owner._sharedBuildingDebris.buildings.every(r=>r.node.active));assert.equal(slot.color.a,0);assert.equal(down.color.a,0);e.api.destroy(e.owner);
+ const record=e.owner._sharedBuildingDebris.building;
+ for(const fn of e.listeners)fn();assert(!record.node.active);assert.equal(slot.color.a,1);
+ time=1;for(const fn of e.listeners)fn();assert(record.node.active);assert.equal(slot.color.a,0);assert.equal(down.color.a,0);e.api.destroy(e.owner);
 });
 test('the shared resource is the exact shipped mill debris and no tower preloads custom ruins',()=>{
  const {decode}=require('../../packages/hkd-characters/lib/png-atlas'),source=decode(fs.readFileSync(path.join(root,'assets/KinghtFallIconMap/com/Ani/mf/mf.png'))),target=decode(fs.readFileSync(path.join(root,'assets/resources/buildings/shared/debris.png')));

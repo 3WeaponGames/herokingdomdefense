@@ -179,6 +179,83 @@ test('Units and Buildings share a draft that can save after Projectiles publishe
   assert.deepEqual(fs.readFileSync(f.catalog), catalog);
 });
 
+test('Projectiles publishes launch delays and tower speeds over independent Units and Buildings saves', () => {
+  const f = isolatedProject(), service = new ProjectilesService(f.directory), id = 100248, key = 'enemy:' + id;
+  service.focusUnit(key);
+  const snapshot = service.snapshot();
+  const tower = snapshot.units.find(unit => unit.speedEditable);
+  assert(tower);
+  const speed = snapshot.speeds[tower.key] + 25;
+  service.change({ version: snapshot.version, data: snapshot.data,
+    timings: { ...snapshot.timings, [key]: .36 }, speeds: { ...snapshot.speeds, [tower.key]: speed } });
+  f.store.change({ version: f.store.version, edits: [
+    { doc: 'A', path: ['SoldierCfg', String(id), 'AttackRange'], value: 201 },
+    { doc: 'A', path: ['BuildEnum', '2', 'levelList', tower.levelIndex, 'ModelOffset'], value: { x: -12, y: -5 } }
+  ] });
+  assert(f.store.save({ version: f.store.version }).result.saved);
+  assert.deepEqual(service.save({ version: service.version }).result.files, [files.A]);
+  const config = JSON.parse(fs.readFileSync(f.config));
+  assert.equal(config.SoldierCfg[id].AttackRange, 201);
+  assert.equal(config.GameTools.timings[key + ':default'].attack, .36);
+  assert.equal(config.GameTools.unitProfiles.entries[id].timing.custom.attack, .36);
+  assert.deepEqual(config.BuildEnum[2].levelList[tower.levelIndex].ModelOffset, { x: -12, y: -5 });
+  assert.equal(config.BuildEnum[2].levelList[tower.levelIndex].Tower.projectileSpeed, speed);
+});
+
+test('Projectiles refuses to overwrite a competing Unit launch delay', () => {
+  const f = isolatedProject(), service = new ProjectilesService(f.directory), key = 'enemy:100248';
+  service.focusUnit(key);
+  const snapshot = service.snapshot();
+  service.change({ version: snapshot.version, data: snapshot.data, timings: { ...snapshot.timings, [key]: .36 } });
+  f.store.change({ version: f.store.version, edits: [
+    { doc: 'overrides', path: ['timings', key + ':default'], value: { attack: .8 } }
+  ] });
+  assert(f.store.save({ version: f.store.version }).result.saved);
+  const published = fs.readFileSync(f.config);
+  assert.throws(() => service.save({ version: service.version }), /outside this draft.*timings/);
+  assert.deepEqual(fs.readFileSync(f.config), published);
+  assert(service.dirty());
+  assert.equal(service.snapshot().timings[key], .36);
+});
+
+test('Projectiles combines separately published catalog assignments and protects a conflicting assignment', () => {
+  const f = isolatedProject(), service = new ProjectilesService(f.directory);
+  const snapshot = service.snapshot();
+  snapshot.data.assignments.hero = { ...snapshot.data.assignments.hero, scale: 1.9 };
+  service.change({ version: snapshot.version, data: snapshot.data });
+  const external = JSON.parse(fs.readFileSync(f.catalog));
+  external.assignments.tower = { ...external.assignments.tower, trail: false };
+  fs.writeFileSync(f.catalog, JSON.stringify(external));
+  assert.deepEqual(service.save({ version: service.version }).result.files, [projectileFile]);
+  const next = service.snapshot();
+  assert.equal(next.data.assignments.hero.scale, 1.9);
+  assert.equal(next.data.assignments.tower.trail, false);
+
+  next.data.assignments.hero.scale = 2.3;
+  service.change({ version: next.version, data: next.data });
+  const conflict = JSON.parse(fs.readFileSync(f.catalog));
+  conflict.assignments.hero.scale = 1.5;
+  fs.writeFileSync(f.catalog, JSON.stringify(conflict));
+  const published = fs.readFileSync(f.catalog);
+  assert.throws(() => service.save({ version: service.version }), /outside this draft at assignments \/ hero/);
+  assert.deepEqual(fs.readFileSync(f.catalog), published);
+  assert.equal(service.snapshot().data.assignments.hero.scale, 2.3);
+  assert(service.dirty());
+});
+
+test('Projectiles rejects an older assignment snapshot after a Units shortcut exposes a saved melee timing', () => {
+  const f = isolatedProject(), id = 90001, key = 'enemy:' + id;
+  const config = JSON.parse(fs.readFileSync(f.config));
+  config.GameTools.timings[key + ':default'] = { attack: .622 };
+  fs.writeFileSync(f.config, JSON.stringify(config));
+  const service = new ProjectilesService(f.directory), stale = service.snapshot();
+  assert.equal(stale.timings[key], undefined);
+  service.focusUnit(key);
+  assert.throws(() => service.change({ version: stale.version, data: stale.data, timings: stale.timings }), /Another panel changed/);
+  assert.equal(service.snapshot().timings[key], .622);
+  assert.equal(service.dirty(), false);
+});
+
 test('competing launch delay edits retain the Units draft and the published Projectiles value', () => {
   const f = isolatedProject(), service = new ProjectilesService(f.directory), id = 100248, key = 'enemy:' + id;
   service.focusUnit(key);

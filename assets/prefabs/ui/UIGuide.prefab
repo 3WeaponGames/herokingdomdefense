@@ -368,6 +368,9 @@
       },
       {
         "__id__": 26
+      },
+      {
+        "__id__": 35
       }
     ],
     "_prefab": {
@@ -417,15 +420,15 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -70,
-        87.5,
+        -197.188,
+        93,
         0,
         0,
         0,
         0,
         1,
-        1.42,
-        1.42,
+        0.96,
+        0.96,
         1
       ],
       "__type__": "TypedArray"
@@ -684,6 +687,9 @@
     "spAni": {
       "__id__": 18
     },
+    "dismissButton": {
+      "__id__": 35
+    },
     "tipText": {
       "__id__": 24
     },
@@ -710,6 +716,67 @@
     },
     "root": {
       "__id__": 1
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "Dismiss tutorial",
+    "_active": false,
+    "_parent": {
+      "__id__": 16
+    },
+    "_components": [
+      {
+        "__id__": 36
+      }
+    ],
+    "_prefab": {
+      "__id__": 37
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 49,
+      "height": 52
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        263,
+        67,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    }
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_spriteFrame": {
+      "__uuid__": "bd993777-a699-5a89-af3e-35f370101da1"
+    },
+    "node": {
+      "__id__": 35
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "28Og3GfmFJ+IFl1vPQCf1f",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
     }
   }
 ]

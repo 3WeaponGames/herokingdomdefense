@@ -847,7 +847,10 @@ var def_KinghtFallUIGame = function (t) {
     this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), this.ctrGame.gameData.round + "/" + this.ctrGame.gameData.levelCfg.WaveCfg.length);
     var task = this.ctrGame.gameData.taskInfo, current = task.index < task.list.length;
     if (current || this._battleHud && task.list.length) {
-      var description = current ? $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTaskEnem(task.list[task.index]).Name : "battle.task.finished";
+      var id = task.list[task.index];
+      var description = !current ? "battle.task.finished" : (typeof id === "string" && Array.isArray(task.targets) &&
+        require("BattleTaskObjectives").descriptionToken(id, task.targets[task.index], task.progress)) ||
+        $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTaskEnem(id).Name;
       this.ndTask.getChildByName("labName").getComponent(cc.Label).string = this.T(description);
       var collect = this._battleHud ? this._battleHud.collectButton : this.ndTask.getChildByName("labGet");
       collect.active = current && task.stage == 1;
@@ -1341,64 +1344,90 @@ var def_KinghtFallUIGame = function (t) {
       t.play(t.defaultClip.name);
     }
   };
-  _ctor.prototype.getTask = function () {
+  _ctor.prototype.getTask = function (silent) {
     var info = this.ctrGame.gameData.taskInfo;
     if (info.index < info.list.length && 1 == info.stage) {
       var t = info.reward[info.index];
+      var multiplier = info.rewardMultiplier === undefined ? this.ctrGame.gameData.levelCfg.InGameCoefficient : info.rewardMultiplier;
       var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
       var checkpoint = this.ctrGame.getCheckpoint();
       var taskIndex = checkpoint.taskList.index;
       checkpoint.taskList.index++;
       checkpoint.taskList.stage = 0;
-      if (t.id !== $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.SilverCoin) {
-        var granted = player.claimRewards([t], this.ctrGame.gameData.levelCfg.InGameCoefficient, null, function () {
-          return player.getGameData().setCheckpoint(checkpoint);
+      var counted = Array.isArray(info.targets);
+      if (counted) {
+        checkpoint.taskList.progress = 0;
+        delete checkpoint.taskList.waveIntact;
+        delete checkpoint.taskList.scoredRound;
+      }
+      var record = player.getGameData();
+      var silver = t.id === $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.SilverCoin;
+      if (counted && !player.restorePendingRewards()) return false;
+      if (silver) {
+        checkpoint.coin += t.num;
+        if (record.setCheckpoint(checkpoint) === false) return false;
+        this.ctrGame.gameData.coin = checkpoint.coin;
+      } else {
+        if (counted && typeof info.list[taskIndex] === "string") {
+          var saved = record.getTaskInfo(checkpoint.levelNum);
+          // A task may become ready while an earlier checkpoint write is
+          // blocked. Persist readiness before starting its reward journal.
+          if ((!saved || saved.index === taskIndex && saved.stage !== 1) && this.ctrGame.saveGame() === false) return false;
+        }
+        var granted = player.claimRewards([t], multiplier, null, function () {
+          return record.setCheckpoint(checkpoint);
         }, function () {
-          var saved = player.getGameData().data;
+          var saved = record.data;
           return saved.levelNum === checkpoint.levelNum && saved.taskList && saved.taskList.index === taskIndex && saved.taskList.stage === 1;
         });
-        var committedTask = player.getGameData().getTaskInfo();
+        var committedTask = record.getTaskInfo(checkpoint.levelNum);
         // A durable journal may still be retrying individual target writes. Its
         // installed checkpoint is authoritative and must not leave this task claimable.
-        if (!granted && !(committedTask && committedTask.index === taskIndex + 1 && committedTask.stage === 0)) return;
+        if (!granted && !(committedTask && committedTask.index === taskIndex + 1 && committedTask.stage === 0)) return false;
       }
-      switch (t.id) {
-        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.SilverCoin:
-          this.ctrGame.gameData.coin += t.num;
-          var e = this.ndCoin;
-          var n = cc.v2(e.position.x + e.children[0].x, e.position.y + e.children[0].y);
-          var i = this.ndTask.convertToWorldSpaceAR(cc.v2(0, 0));
-          var a = this.ctrUI.node.convertToNodeSpaceAR(i);
-          var o = function () {
-            var t = cc.instantiate(e.children[0]);
-            t.active = true;
-            t.scale = .5;
-            t.setParent(r.ctrUI.node);
-            var i = cc.v2();
-            cc.Vec2.random(i, 40);
-            cc.tween(t).set({
-              position: cc.v3(a.x, a.y, 0)
-            }).by(.2, {
-              position: cc.v3(i.x, i.y, 0)
-            }).to(1, {
-              position: cc.v3(n.x, n.y, 0),
-              scale: 1
-            }).call(function () {
-              t.destroy();
-            }).start();
-          };
-          var r = this;
-          for (var s = 0; s < 10; s++) {
-            o();
-          }
-          break;
+      info.index = checkpoint.taskList.index;
+      info.stage = 0;
+      if (counted) {
+        info.progress = 0;
+        delete info.waveIntact;
+        delete info.scoredRound;
+      }
+      if (silent === true) return true;
+      if (silver) {
+        var e = this.ndCoin;
+        var n = cc.v2(e.position.x + e.children[0].x, e.position.y + e.children[0].y);
+        var i = this.ndTask.convertToWorldSpaceAR(cc.v2(0, 0));
+        var a = this.ctrUI.node.convertToNodeSpaceAR(i);
+        var o = function () {
+          var t = cc.instantiate(e.children[0]);
+          t.active = true;
+          t.scale = .5;
+          t.setParent(r.ctrUI.node);
+          var i = cc.v2();
+          cc.Vec2.random(i, 40);
+          cc.tween(t).set({
+            position: cc.v3(a.x, a.y, 0)
+          }).by(.2, {
+            position: cc.v3(i.x, i.y, 0)
+          }).to(1, {
+            position: cc.v3(n.x, n.y, 0),
+            scale: 1
+          }).call(function () {
+            t.destroy();
+          }).start();
+        };
+        var r = this;
+        for (var s = 0; s < 10; s++) {
+          o();
+        }
       }
       var l = this._battleHud ? this._battleHud.rewardHint : this.ndTask.getChildByName("ndAni");
       var c = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGoodsCfgById(t.id);
       this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, c.icon, function (t) {
         l.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
       });
-      l.getChildByName("labNum").getComponent(cc.Label).string = "+" + t.num * this.ctrGame.gameData.levelCfg.InGameCoefficient;
+      var amount = silver ? t.num : t.num * multiplier;
+      l.getChildByName("labNum").getComponent(cc.Label).string = "+" + amount;
       l.active = true;
       cc.tween(l).set({
         y: 40
@@ -1407,11 +1436,10 @@ var def_KinghtFallUIGame = function (t) {
       }).call(function () {
         l.active = false;
       }).start();
-      this.ctrGame.gameData.taskInfo.index = checkpoint.taskList.index;
-      this.ctrGame.gameData.taskInfo.stage = 0;
-      if (t.id === $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.SilverCoin) this.ctrGame.saveGame();
       this.initView();
+      return true;
     }
+    return false;
   };
   _ctor.prototype.addTask = function (t) {
     this.ctrGame.gameData.taskInfo.index >= this.ctrGame.gameData.taskInfo.list.length || this.ctrGame.gameData.taskInfo.list[this.ctrGame.gameData.taskInfo.index] == t && (this.ctrGame.gameData.taskInfo.stage = 1, this.initView(), this.ctrGame.saveGame());

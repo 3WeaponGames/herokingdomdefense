@@ -3,6 +3,7 @@ const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const { harness, config } = require('./persistence-harness.cjs');
 const Talents = require('../../assets/_script/HeroStyleTalents');
+const Weapons = require('../../assets/_script/HeroWeapons');
 const singleton = value => ({ getInstance: () => value });
 function method(file, name, context) {
   const source = fs.readFileSync(path.join(__dirname, '../../assets/_script', file + '.js'), 'utf8').replace(/\r\n/g, '\n');
@@ -16,7 +17,7 @@ function fixture(settings = config) {
     getTreasureCfgById: id => settings.TreasureCfg.find(row => row.ID === id), getTalentLevelCfg: () => settings.TalentLevelCfg,
     getSignCfg: () => settings.SignCfg };
   const context = { $z1KinghtFallDataMgr: { KinghtFallDataMgr: singleton(manager) }, $z1KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton(h.player) },
-    $z1KinghtFallEnum: h.load('KinghtFallEnum'), require: name => name === 'HeroStyleTalents' ? Talents : {} };
+    $z1KinghtFallEnum: h.load('KinghtFallEnum'), require: name => ({ HeroStyleTalents: Talents, HeroWeapons: Weapons }[name] || {}) };
   return { ...h, user, manager, context, invoke(file, name, owner = {}) { return method(file, name, context).call(owner); } };
 }
 test('Gear badge excludes campaign-capped upgrades and includes an affordable discounted upgrade', () => {
@@ -28,6 +29,17 @@ test('Gear badge excludes campaign-capped upgrades and includes an affordable di
   h.user.data.goldNum = Math.floor(config.EquipCfg[0].levelInfo[8].GoldCost * (1 - relic.levelInfo[0].param[0]));
   assert.equal(h.invoke('KinghtFallModle', 'showRedPerson'), true);
   h.user.data.goldNum--; assert.equal(h.invoke('KinghtFallModle', 'showRedPerson'), false);
+});
+test('Gear badge turns on after the stage clear, including for an affordable sub weapon', () => {
+  const gear = config.EquipCfg.find(row => row.id === 3);
+  const h = fixture({ ...config, EquipCfg: [gear] });
+  h.user.data.goldNum = 1e9;
+  h.user.data.maxStage = 5;
+  h.user.data.maxOrder = 10;
+  assert.equal(h.invoke('KinghtFallModle', 'showRedPerson'), false);
+  h.user.data.maxStage = 6;
+  h.user.data.maxOrder = 0;
+  assert.equal(h.invoke('KinghtFallModle', 'showRedPerson'), true);
 });
 test('Talent badge and panel use the same optional-branch and prior-tier rules', () => {
   const h = fixture(); h.user.data.goldNum = 3400; h.user.data.talentInfo = [1, 2, 3].map(id => ({ id, isLock: true }));

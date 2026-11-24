@@ -68,11 +68,27 @@ test('no-change Save keeps redo, while an explicit successful Save starts histor
  change(s,d=>d.profiles.guard.name='After save');assert.deepEqual(undo(s).data,saved.data,'new edits undo to the baked saved baseline');
 });
 
-test('failed Save leaves history, local draft and external file changes intact',t=>{
+test('overlapping external edits leave save history, local draft and disk intact',t=>{
  const f=fixture(t),s=f.store;
- change(s,d=>d.profiles.guard.name='Local draft');const before=s.snapshot(),external=clone(f.original);external.future.external=true;fs.writeFileSync(f.file,JSON.stringify(external));
- assert.throws(()=>s.save({version:s.version}),/outside this draft/);assert.deepEqual(s.snapshot(),before);assert.deepEqual(JSON.parse(fs.readFileSync(f.file)),external);
+ change(s,d=>d.profiles.guard.name='Local draft');const before=s.snapshot(),external=clone(f.original);external.profiles.guard.name='Disk edit';fs.writeFileSync(f.file,JSON.stringify(external));
+ assert.throws(()=>s.save({version:s.version}),/outside this draft at profiles \/ guard \/ name/);assert.deepEqual(s.snapshot(),before);assert.deepEqual(JSON.parse(fs.readFileSync(f.file)),external);
  undo(s);assert.deepEqual(s.data,f.original);redo(s);assert.equal(s.data.profiles.guard.name,'Local draft');
+});
+
+test('opening a clean character or item draft picks up the latest disk revision without writing',t=>{
+ for(const itemMode of [false,true]){
+   const f=fixture(t,itemMode),s=f.store;
+   const initial=s.version,external=clone(f.original);external.profiles.guard.name='Disk edit';
+   const text='\uFEFF'+JSON.stringify(external,null,2)+'\r\n';fs.writeFileSync(f.file,text);
+   const result=s.load();
+   assert.equal(result.data.profiles.guard.name,'Disk edit');assert.equal(result.dirty,false);
+   assert.equal(result.version,initial+1);assert.equal(fs.readFileSync(f.file,'utf8'),text);
+   change(s,d=>d.profiles.guard.name='New draft');const pending=s.snapshot();
+   fs.writeFileSync(f.file,text.replace('Disk edit','Another save'));
+   const stillEditing=s.load();
+   assert.equal(stillEditing.data.profiles.guard.name,'New draft');assert.equal(stillEditing.version,pending.version);
+   assert.equal(stillEditing.canUndo,true);
+ }
 });
 
 test('a failed asset transaction leaves both history directions usable',t=>{

@@ -9,6 +9,30 @@ function equal(a, b) {
     const ak = Object.keys(a), bk = Object.keys(b);
     return ak.length === bk.length && ak.every(k => own(b, k) && equal(a[k], b[k]));
 }
+function merge(base, draft, disk, onConflict, atomic = () => false, sameRows = () => false) {
+    const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+    const field = (value, key) => value && own(value, key) ? value[key] : undefined;
+    function visit(before, local, saved, path) {
+        if (equal(before, local)) return saved;
+        if (equal(before, saved) || equal(local, saved)) return local;
+        if (atomic(path, before, local, saved)) throw onConflict(path);
+        // Array indices alone cannot identify rows across concurrent edits.
+        if (Array.isArray(before) && Array.isArray(local) && Array.isArray(saved) &&
+            before.length === local.length && before.length === saved.length && sameRows(path, before, local, saved)) {
+            return before.map((row, index) => visit(row, local[index], saved[index], path.concat(index)));
+        }
+        if (!object(local) || !object(saved) || before !== undefined && !object(before)) {
+            throw onConflict(path);
+        }
+        const entries = [];
+        for (const key of new Set([...Object.keys(saved), ...Object.keys(local)])) {
+            const value = visit(field(before, key), field(local, key), field(saved, key), path.concat(key));
+            if (value !== undefined) entries.push([key, value]);
+        }
+        return Object.fromEntries(entries);
+    }
+    return visit(base, draft, disk, []);
+}
 function parse(text) {
     let at = text.charCodeAt(0) === 0xfeff ? 1 : 0;
     const space = () => { while (/\s/.test(text[at] || '') && at < text.length) at++; };
@@ -82,4 +106,4 @@ function diff(before,after,path,result) {
     } else result.push({path,before,after});
     return result;
 }
-module.exports={equal,parse,patch,diff};
+module.exports={equal,merge,parse,patch,diff};

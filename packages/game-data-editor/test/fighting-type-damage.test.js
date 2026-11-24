@@ -90,6 +90,7 @@ test('explicit saves persist percentage settings alone, retain extensions, creat
  assert.deepEqual(JSON.parse(fs.readFileSync(target)),config);assert.equal(Damage.multiplier(JSON.parse(fs.readFileSync(target)).GameTools.unitTypes.guardian.damageTaken),.25);
  assert(fs.readdirSync(backupRoot).length>0);for(const [relative,bytes]of Object.entries(unchanged))assert.deepEqual(fs.readFileSync(path.join(project,relative)),bytes);
  const saved=fs.readFileSync(target),savedStat=fs.statSync(target);assert.equal(store.save({version:store.version}).result.noChanges,true);assert.deepEqual(fs.readFileSync(target),saved);assert.equal(fs.statSync(target).mtimeMs,savedStat.mtimeMs);
- store.change({version:store.version,edits:[{doc:'overrides',path:['unitTypes','guardian','damageTaken','percent'],value:300}]});fs.appendFileSync(target,' ');const draft=store.draftState();
- assert.throws(()=>store.save({version:store.version}),/changed outside/);assert.deepEqual(store.draftState(),draft);assert.equal(JSON.parse(fs.readFileSync(target)).GameTools.unitTypes.guardian.damageTaken.percent,400);
+ store.change({version:store.version,edits:[{doc:'overrides',path:['unitTypes','guardian','damageTaken','percent'],value:300}]});
+ const external=JSON.parse(fs.readFileSync(target));external.GameTools.unitTypes.guardian.damageTaken.percent=250;fs.writeFileSync(target,JSON.stringify(external));const draft=store.draftState();
+ assert.throws(()=>store.save({version:store.version}),/changed outside/);assert.deepEqual(store.draftState(),draft);assert.equal(JSON.parse(fs.readFileSync(target)).GameTools.unitTypes.guardian.damageTaken.percent,250);
 });

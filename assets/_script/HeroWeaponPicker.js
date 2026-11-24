@@ -11,7 +11,7 @@ function box(parent, name, x, y, width, height, radius, color) {
   var value = node(parent, name, x, y, width, height), g = value.addComponent(cc.Graphics);
   g.fillColor = cc.color(color); g.roundRect(-width / 2, -height / 2, width, height, radius); g.fill(); return value;
 }
-function live(value) { return cc.isValid(value, true); }
+function live(value) { return !!value && cc.isValid(value, true); }
 function activeSkill(style) {
   var skill = require("HeroSkillAuthoring").entry(style, "active");
   if (!skill) return null;
@@ -40,16 +40,59 @@ function art(parent, name, resource, x, y, width, height, sliced, tint, loadFram
 }
 function skillIcon(parent, style, x, y, size) {
   var clip = node(parent, "Rounded skill icon", x, y, size, size);
-  var mask = clip.addComponent(cc.Mask);
-  mask.type = cc.Mask.Type.IMAGE_STENCIL;
-  mask.alphaThreshold = .5;
-  cc.resources.load("skills/rounded-icon-mask", cc.SpriteFrame, function (error, frame) {
-    if (error || !frame || !live(clip)) return;
-    mask.spriteFrame = frame;
+  var stencil, mask, iconFrame, display, loading = false, disposed = false;
+  function current() { return !disposed && live(clip); }
+  function applyMask() {
+    // JSB needs the active Mask assembler before changing its stencil.
+    if (!stencil || mask || clip.activeInHierarchy === false) return;
+    mask = clip.addComponent(cc.Mask);
+    mask.type = cc.Mask.Type.IMAGE_STENCIL;
+    mask.alphaThreshold = .5;
+    mask.spriteFrame = stencil;
     clip.setContentSize(size, size);
-    art(clip, "Skill icon", "skills/icons/" + style, 0, 0, size, size, false);
+  }
+  cc.resources.load("skills/rounded-icon-mask", cc.SpriteFrame, function (error, frame) {
+    if (error || !live(frame) || !current()) return;
+    if (frame.addRef) frame.addRef();
+    stencil = frame;
+    applyMask();
   });
-  return clip;
+  var resource = "skills/icons/" + style;
+  art(clip, "Skill icon", resource, 0, 0, size, size, false, null, function (done) {
+    display = done;
+  });
+  function loadIcon(retry) {
+    loading = true;
+    cc.resources.load(resource, cc.SpriteFrame, function (error, frame) {
+      loading = false;
+      if (!current()) return;
+      if (error || !live(frame)) {
+        if (retry) loadIcon(false);
+        return;
+      }
+      // The battle HUD can release its copy while this Gear tab is cached.
+      if (frame.addRef) frame.addRef();
+      iconFrame = frame;
+      display(null, frame);
+    });
+  }
+  function refresh() {
+    if (!current()) return;
+    applyMask();
+    if (!loading && !live(iconFrame)) loadIcon(true);
+  }
+  refresh();
+  return {
+    node: clip,
+    refresh: refresh,
+    destroy: function () {
+      if (disposed) return;
+      disposed = true;
+      if (live(clip)) { clip.active = false; clip.destroy(); }
+      if (live(iconFrame) && iconFrame.decRef) iconFrame.decRef();
+      if (live(stencil) && stencil.decRef) stencil.decRef();
+    }
+  };
 }
 function scenery(parent) {
   var value = node(parent, "Preview scenery"), g = value.addComponent(cc.Graphics);
@@ -84,7 +127,7 @@ function open(owner) {
   box(content, "Inner outline", 0, -103, 648, 1003, 29, "#24152c");
   box(content, "Cream panel", 0, -101, 638, 991, 26, "#f7ebd2");
   scenery(content);
-  var font = null, labels = [], cancelled = false, readyCancel, cardIcons = [], cardFrames = [];
+  var font = null, labels = [], cancelled = false, readyCancel, cardIcons = [], cardFrames = [], detailsSkill;
   function clearIcons() {
     cardIcons.forEach(function (icon) { icon.destroy(); }); cardIcons = [];
     cardFrames.forEach(function (frame) { frame.destroy(); }); cardFrames = [];
@@ -151,6 +194,7 @@ function open(owner) {
     if (cancelled) return; cancelled = true;
     canvas.off(cc.Node.EventType.SIZE_CHANGED, resize);
     clearIcons();
+    if (detailsSkill) detailsSkill.destroy();
     if (readyCancel) readyCancel(); preview.destroy();
     if (owner._weaponPicker === root) owner._weaponPicker = null;
     root.active = false;
@@ -178,6 +222,7 @@ function open(owner) {
     if (dialogueText) language.bindLabel(dialogueText, equippedStyle === "skirmisher" ? tutorial.text : "tutorial.equipment.keepCurrentWeapon");
     var build = rebuildCards || !cardViews.length;
     if (build) { clearIcons(); grid.destroyAllChildren(); grid.removeAllChildren(); cardViews = []; }
+    if (detailsSkill) detailsSkill.destroy();
     details.destroyAllChildren(); details.removeAllChildren(); labels = labels.filter(function (entry) { return live(entry.node); });
     var mainGear = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList().filter(function (gear) { return gear.id === 4; })[0];
     Weapons.styles.forEach(function (style, index) {
@@ -238,7 +283,7 @@ function open(owner) {
     box(details, "Skill panel", 0, -374, 588, 158, 16, "#294970");
     box(details, "Skill icon outline", -232, -374, 122, 122, 20, "#170f20");
     box(details, "Skill icon frame", -232, -372, 114, 114, 17, "#cb7af4");
-    skillIcon(details, chosen, -232, -372, 104);
+    detailsSkill = skillIcon(details, chosen, -232, -372, 104);
     var category = paragraph(details, "Skill category", "ACTIVE SKILL", 59, -316, 434, 20, 17).getComponent(cc.Label);
     category.isBold = true; category._uiTypography.isBold = true;
     var title = label(details, "Skill name", skill.name, 59, -341, 434, 30, 30, "#ffffff", 1); title.getComponent(cc.Label).horizontalAlign = cc.Label.HorizontalAlign.LEFT;
@@ -267,8 +312,10 @@ function open(owner) {
   render(); readyCancel = require("HeroItemLooks").whenReady(function () { render(true); });
   root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event.target === root) finishPicker(); });
 }
-function close(owner) {
+function close(owner, disposing) {
   closeSkill(owner);
+  var button = owner._gearSkillButton;
+  if (disposing && button && button._skillIcon) button._skillIcon.destroy();
   if (!owner._weaponPicker) return;
   if (owner._weaponPicker._closePicker) owner._weaponPicker._closePicker();
   else { owner._weaponPicker.destroy(); owner._weaponPicker = null; }
@@ -290,7 +337,7 @@ function openSkill(owner, style) {
   box(panel, "Skill panel rim", 0, 0, 594, 390, 24, "#cb7af4");
   box(panel, "Skill panel face", 0, 0, 580, 376, 20, "#294970");
   box(panel, "Skill icon frame", -222, 118, 88, 88, 15, "#170f20");
-  skillIcon(panel, style, -222, 118, 80);
+  var icon = skillIcon(panel, style, -222, 118, 80);
   function text(name, value, x, y, width, height, size, wrap) {
     var child = node(panel, name, x, y, width, height), label = child.addComponent(cc.Label);
     label.useSystemFont = true; label.fontFamily = "Arial";
@@ -313,6 +360,7 @@ function openSkill(owner, style) {
   function dismissPopup() {
     canvas.off(cc.Node.EventType.SIZE_CHANGED, resize);
     owner._gearSkillPopup = null;
+    icon.destroy();
     root.active = false; root.destroy();
   }
   owner._gearSkillPopup = { close: dismissPopup };
@@ -331,13 +379,17 @@ function refreshSkill(owner) {
   var style = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon().id;
   var button = owner._gearSkillButton;
   if (!live(button)) {
+    if (button && button._skillIcon) button._skillIcon.destroy();
     button = box(preview.parent, "Fighting skill", preview.x - 96, preview.y + 92, 82, 82, 16, "#170f20");
     box(button, "Skill button rim", 0, 0, 76, 76, 13, "#cb7af4");
     button.zIndex = 20;
     button.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); openSkill(owner, button._skillStyle); });
     owner._gearSkillButton = button;
   }
-  if (style === button._skillStyle) return;
+  if (style === button._skillStyle && button._skillIcon && live(button._skillIcon.node)) {
+    button._skillIcon.refresh();
+    return;
+  }
   closeSkill(owner);
   if (button._skillIcon) button._skillIcon.destroy();
   button._skillStyle = style;

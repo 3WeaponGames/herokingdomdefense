@@ -18,9 +18,11 @@ function targetCurrent(record, live) {
   return cc.isValid(actor, true) && actor.node === record.node && cc.isValid(record.node, true) && record.node._combatGeneration === record.generation && !actor._isPooled &&
     (!live || (!actor.isDead || !actor.isDead()) && !(typeof actor.hp === "number" && actor.hp <= 0) && (!actor.getIsWork || actor.getIsWork()));
 }
-function splashSnapshot(owner, primary, scope) {
-  var center = primary.node.getPosition(), world = primary.node.convertToWorldSpaceAR(cc.Vec2.ZERO), radius = owner.cfg.Data[1], records = [];
-  var targeting = owner.cfg.EnemyTargeting && require("EnemyTargeting"), rule = targeting && targeting.settings(owner.cfg);
+function splashSnapshot(owner, primary, scope, wallImpact) {
+  var center = wallImpact || primary.node.getPosition();
+  var world = wallImpact ? scope.game.ndMain.convertToWorldSpaceAR(wallImpact) : primary.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
+  var radius = owner.cfg.Data[1], records = [], origin = Navigation.positionOf(owner.node, scope.game);
+  var targeting = require("EnemyTargeting"), rule = targeting.settings(owner.cfg);
   if (rule && !targeting.allows(rule, scope.game, primary)) return { scope: scope, records: records, damage: owner.cfg.Data[0], limit: 0 };
   function include(actor) {
     if (!actor || actor.uuid === primary.uuid || rule && !targeting.allows(rule, scope.game, actor)) return;
@@ -32,14 +34,15 @@ function splashSnapshot(owner, primary, scope) {
   var buildings = millAttackTargets(scope.data), circle = { position: world, radius: radius };
   for (var index = 0; index < buildings.length; index++) {
     var building = buildings[index], record = skillTarget(building);
-    if (building.uuid === primary.uuid || !targetCurrent(record, true) || rule && !targeting.allows(rule, scope.game, building)) continue;
+    if (building.uuid === primary.uuid || !targetCurrent(record, true) || rule && !targeting.allows(rule, scope.game, building) ||
+        targeting.protectingWall(scope.game, origin, building)) continue;
     var polygons = building.getWposPhyCol();
     for (var part = 0; part < polygons.length; part++) if (cc.Intersection.polygonCircle(polygons[part], circle)) {
       record.position = building.node.getPosition();record.len = cc.Vec2.distance(record.position, center);records.push(record);break;
     }
   }
   records.sort(function (a, b) { return a.len - b.len; });
-  return { scope: scope, records: records, damage: owner.cfg.Data[0], limit: owner.cfg.Data[2] };
+  return { scope: scope, records: records, damage: owner.cfg.Data[0], limit: owner.cfg.Data[2], origin: origin };
 }
 var BattleSounds = require("BattleSounds");
 var i;
@@ -101,60 +104,12 @@ var def_KinghtFallEnemyItem07 = function (t) {
     this.time[r.Attack] = 0;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
-    var n = this.pickAttackVictim(scope.game, function () {
-      var forced = require("RelicCombat").tauntedTarget(t);
-      if (forced) {
-        forced.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        return t.vec2_2.len() <= t.cfg.AttackRange ? forced : null;
-      }
-      var e = null;
-      var n = -1;
-      var i = scope.hero;
-      if (!i.isDead()) {
-        i.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        if (t.vec2_2.len() <= t.cfg.AttackRange) {
-          e = i, n = t.vec2_2.len();
-        }
-      }
-      var a = scope.data.getSoldierList();
-      for (var o = 0; o < a.length; o++) {
-        if (!(c = a[o]).isDead()) {
-          c.node.getPosition(t.vec2_2);
-          cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-          if (t.vec2_2.len() <= t.cfg.AttackRange && (-1 == n || t.vec2_2.len() < n)) {
-            e = c, n = t.vec2_2.len();
-          }
-        }
-      }
-      var r = {
-        position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
-        radius: t.cfg.AttackRange
-      };
-      var s = millAttackTargets(scope.data);
-      for (var l = 0; l < s.length; l++) {
-        var c;
-        if ((c = s[l]).getIsWork()) {
-          var g = Navigation.attackPartsOf(c);
-          for (var u = 0; u < g.length; u++) {
-            var d = g[u];
-            if (cc.Intersection.polygonCircle(d.points, r)) {
-              var targetDistance = Navigation.polygonDistance(t, d.points, scope.game);
-              if (-1 == n || targetDistance < n) {
-                e = c;
-                n = targetDistance;
-              }
-            }
-          }
-        }
-      }
-      return e;
-    });
+    var selected = this.pickAttackTarget(scope.game), n = selected && (selected.actor || selected.building);
     if (n) {
       var victim = skillTarget(n);
       if (!skillCurrent(this, scope, false) || !targetCurrent(victim, true)) return;
-      var impact = cc.v2(Navigation.attackPointOf(n,scope.game)), release = splashSnapshot(this, n, scope), origin = this.vec2_1.clone();
+      var impact = cc.v2(Navigation.attackPointOf(n, scope.game, Navigation.positionOf(this.node, scope.game), selected.polygon));
+      var release = splashSnapshot(this, n, scope, n.getNavigationGateShapes ? impact : null), origin = this.vec2_1.clone();
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       var dealt = n.onAttacked(e, t);
       if (!skillCurrent(this, scope, true)) return;
@@ -175,7 +130,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
     for (var index = 0; index < release.limit; index++) {
       if (!skillCurrent(this, release.scope, true)) return;
       var record = release.records[index];if (!record) break;
-      if (!targetCurrent(record, true)) continue;
+      if (!targetCurrent(record, true) || require("EnemyTargeting").protectingWall(release.scope.game, release.origin, record.item)) continue;
       var damage = GameToolsOverrides.typeCounterDamage(this, record.item, release.damage);
       var received = record.item.onAttacked(damage, this);
       if (!skillCurrent(this, release.scope, true)) return;

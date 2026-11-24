@@ -39,10 +39,10 @@ function setMainPosition(node, main, position) {
 function activeCollider(collider) {
   return collider.enabled && !collider.sensor && collider.node.activeInHierarchy && (!collider.body || collider.body.active !== false);
 }
-function colliderPoints(collider) {
+function colliderPoints(collider, authoredPoints) {
   var offset = collider.offset || { x: 0, y: 0 };
   var points;
-  if (collider.points) points = collider.points;
+  if (collider.points) points = authoredPoints || collider.points;
   else if (collider.size) {
     var w = collider.size.width / 2, h = collider.size.height / 2;
     points = [{ x: -w, y: -h }, { x: w, y: -h }, { x: w, y: h }, { x: -w, y: h }];
@@ -82,7 +82,7 @@ function Navigation(game) {
   this._frameId = 0;
   this.stats = { searches: 0, noPath: 0, revisions: 0, snapshotBuilds: 0, deferred: 0 };
 }
-Navigation.prototype.shape = function (collider, forcedPoints) {
+Navigation.prototype.shape = function (collider, forcedPoints, authoredPoints) {
   var main = this.game.ndMain, stamp = [], vertices, node = collider.node;
   if (forcedPoints) {
     vertices = forcedPoints.map(function (p) { var local = main.convertToNodeSpaceAR(cc.v2(p)); return { x: Math.round(local.x * 1e4) / 1e4, y: Math.round(local.y * 1e4) / 1e4 }; });
@@ -91,7 +91,7 @@ Navigation.prototype.shape = function (collider, forcedPoints) {
     for (var ancestor = node; ancestor && ancestor !== main; ancestor = ancestor.parent) stamp.push(ancestor, ancestor.x, ancestor.y, ancestor.scaleX, ancestor.scaleY, ancestor.angle, ancestor.skewX, ancestor.skewY);
     var offset = collider.offset || { x: 0, y: 0 };
     stamp.push(offset.x, offset.y, collider.radius, collider.size && collider.size.width, collider.size && collider.size.height);
-    (collider.points || []).forEach(function (p) { stamp.push(p.x, p.y); });
+    (authoredPoints || collider.points || []).forEach(function (p) { stamp.push(p.x, p.y); });
   }
   var cached = this._shapeCache.get(collider);
   if (cached && cached.forced === !!forcedPoints && cached.stamp.length === stamp.length && stamp.every(function (value, index) {
@@ -102,7 +102,7 @@ Navigation.prototype.shape = function (collider, forcedPoints) {
     // movement still invalidates the scene instead of drifting unnoticed.
     return typeof value === "number" && typeof previous === "number" && isFinite(value) && isFinite(previous) && Math.abs(value - previous) <= 1e-12 * Math.max(1, Math.abs(value), Math.abs(previous));
   })) return cached.polygon;
-  if (!vertices) vertices = colliderPoints(collider).map(function (p) { return point(node, main, p); });
+  if (!vertices) vertices = colliderPoints(collider, authoredPoints).map(function (p) { return point(node, main, p); });
   this._shapeCache.set(collider, { forced: !!forcedPoints, stamp: stamp, polygon: vertices });
   return vertices;
 };
@@ -123,12 +123,13 @@ Navigation.prototype.refresh = function () {
       if (polygon.length >= 3) { polygons.push(polygon); terrain.push(shape.collider); owners.push(owner); passages.push(polygon); }
     });
     var nodes = [owner.node].concat((owner.ndAniOther || []).map(function (part) { return part && (part.node || part); }));
+    var wallPoints = destructibleWall(owner) && owner.colPoint;
     nodes.forEach(function (node) {
       if (!node || !node.activeInHierarchy) return;
       colliders(node).forEach(function (collider) {
         if (seen.has(collider) || !activeCollider(collider)) return;
         seen.add(collider);
-        var polygon = navigation.shape(collider);
+        var polygon = navigation.shape(collider, null, wallPoints && wallPoints[collider.uuid]);
         if (polygon.length >= 3) { polygons.push(polygon); terrain.push(collider); owners.push(owner); friendly.push(polygon); friendlyTerrain.push(collider); }
       });
     });
@@ -165,7 +166,7 @@ Navigation.prototype.gridFor = function (unit) {
   return this.friendlyGrid;
 };
 function destructibleWall(owner) {
-  return owner && owner.getNavigationGateShapes && owner.getIsWork && owner.getIsWork();
+  return owner && owner.getNavigationGateShapes && !owner.isDestroyed && owner.getIsWork && owner.getIsWork();
 }
 Navigation.prototype.gridThroughWalls = function () {
   if (!this._breachGrid) {
@@ -178,6 +179,12 @@ exports.obstructionBetween = function (unit, game, goal, exempt) {
   var navigation = get(game); navigation.refresh();
   var grid = navigation.grid, owners = grid.terrainOwners, start = point(unit.node, game.ndMain);
   var hit = grid.firstObstacle(start, goal, 0, function (i) { return owners[i] !== exempt; });
+  return hit ? owners[hit.index] : null;
+};
+exports.wallBetween = function (game, start, goal) {
+  var navigation = get(game); navigation.refresh();
+  var grid = navigation.grid, owners = grid.terrainOwners;
+  var hit = grid.firstObstacle(start, goal, 0, function (i) { return destructibleWall(owners[i]); });
   return hit ? owners[hit.index] : null;
 };
 function recordTerrainExit(unit,navigation,grid,start,radius) {
@@ -577,7 +584,26 @@ exports.attackPartsOf = function (building) {
   if(building.getAttackTargetParts)return building.getAttackTargetParts();
   return building.getWposPhyCol2?building.getWposPhyCol2():building.getWposPhyCol().map(function(points){return{tagNode:building.node,points:points};});
 };
-exports.attackPointOf = function (target, game) { return point(target.node, game.ndMain, target.node._buildingAttackPoint); };
+function polygonAttackPoint(start, polygon, main) {
+  return nearestPolygonPoint(start, polygon.map(function (vertex) {
+    return main.convertToNodeSpaceAR(vertex);
+  }));
+}
+exports.attackPointOf = function (target, game, origin, polygon) {
+  var main = game.ndMain;
+  if (origin && destructibleWall(target)) {
+    if (polygon) return polygonAttackPoint(origin, polygon, main);
+    var closest = null, best = Infinity;
+    exports.attackPartsOf(target).forEach(function (part) {
+      var candidate = polygonAttackPoint(origin, part.points, main);
+      if (!candidate) return;
+      var length = distance(origin, candidate);
+      if (length < best) { closest = candidate; best = length; }
+    });
+    if (closest) return closest;
+  }
+  return point(target.node, main);
+};
 exports.findStandingPoint = function (unit, game, anchor, preferred) {
   var navigation = get(game); navigation.refresh();
   // Every candidate below requires a clear segment from this exact anchor.
@@ -620,12 +646,8 @@ exports.attackPositionOf = function (selection, unit, game) {
   // Building origins can lie behind adjoining cliffs or wall pieces. Approach
   // the same polygon used by combat range checks instead; the planner projects
   // this boundary goal outward by the unit's real physics clearance.
-  var vertices = polygon.map(function (p) {
-    var local = main.convertToNodeSpaceAR(cc.v2(p));
-    return { x: local.x, y: local.y };
-  });
-  var closest = nearestPolygonPoint(start, vertices) || point(selection.tag, main);
-  if (selection.breach || selection.breachRoute) {
+  var closest = polygonAttackPoint(start, polygon, main) || point(selection.tag, main);
+  if (destructibleWall(selection.building) || selection.breachRoute) {
     // Give short-range siege units a precise standing point outside the face.
     // Lattice projection alone can stop a body a full cell away from the wall.
     var navigation = get(game), solid = navigation.gridFor(unit);

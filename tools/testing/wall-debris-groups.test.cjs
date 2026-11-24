@@ -37,51 +37,53 @@ function fixture(id=20,tier=1,options={}){
  function destroy(){module.exports.capture(owner);owner.isDestroyed=true;module.exports.update(owner,1);return owner._sharedBuildingDebris;}
  return {api:module.exports,owner,source,plan,json,adjustments,local,destroy,listeners,frame,native};
 }
-function assertPiles(state){
- assert.equal(state.buildings.length,state.groups.length);assert.equal(state.building,state.buildings[0]);
- for(const record of state.buildings){assert(record.node.active);assert.equal(record.sprite.spriteFrame.name,'shared debris');assert(record.node.width>0&&Number.isFinite(record.node.width));close(record.node.height/record.node.width,66/115,'rubble aspect');close(record.node.x,(record.box.minX+record.box.maxX)/2);close(record.node.y,record.box.minY);}
+function assertPile(state){
+ const record=state.building;
+ assert.equal(state.records.length,1);assert.equal(record,state.records[0]);
+ assert(record.node.active);assert.equal(record.sprite.spriteFrame.name,'shared debris');
+ assert(record.node.width>0&&record.node.width<150,'the pile stays compact');
+ close(record.node.height/record.node.width,66/115,'rubble aspect');
+ return record.node;
 }
 
-test('all actual Map03 gates and tiers leave one compact gate pile and one pile on each connected outer side',()=>{
+test('all actual Map03 gates and tiers leave one compact pile at the doorway',()=>{
  const originalPrefab=JSON.stringify(serialized),originalSources=JSON.stringify(sources);
  for(const id of [18,19,20,21])for(const tier of [1,2,3]){
-  const f=fixture(id,tier),before=JSON.stringify(f.json),state=f.destroy();assert.equal(state.buildings.length,3,`Map03 wall ${id}, tier ${tier}`);assertPiles(state);
-  assert.deepEqual(Array.from(state.groups,g=>g.kind),['gate','wall','wall']);
-  assert.deepEqual(Array.from(state.groups,g=>g.side),['center','left','right']);
-  assert.deepEqual(Array.from(state.groups,g=>g.connections),[2,f.plan.leftCount-1,f.plan.rightCount-1]);
-  assert(state.buildings.every(record=>record.node.width<150),'no pile may stretch to the whole wall footprint');
-  const gate=f.local({x:(f.plan.left.x+f.plan.right.x)/2,y:(f.plan.left.y+f.plan.right.y)/2});close(state.building.node.x,gate.x,'gate center x');close(state.building.node.y,gate.y,'gate ground y');
-  if(id===20){
-   for(const [index,p]of [[1,{x:-161.5,y:103.56870555682207}],[2,{x:177,y:-122.09796110984459}]]){const expected=f.local(p);close(state.buildings[index].node.x,expected.x,'outer group x');close(state.buildings[index].node.y,expected.y,'outer group floor');}
-   assert(f.owner.node.scaleX<0,'the screenshot gate fixture must exercise the mirrored Map03 owner');
-  }
-  assert.equal(JSON.stringify(f.json),before,'capturing debris cannot change a live detached rig');assert.equal(f.native.color.a,0);f.api.clear(f.owner);assert.equal(f.owner._sharedBuildingDebris.records.length,0);assert.equal(f.listeners.size,0);
+  const f=fixture(id,tier),before=JSON.stringify(f.json),pile=assertPile(f.destroy());
+  const gate=f.local({x:(f.plan.left.x+f.plan.right.x)/2,y:(f.plan.left.y+f.plan.right.y)/2});
+  close(pile.x,gate.x,'gate center x');close(pile.y,gate.y,'gate ground y');
+  if(id===20)assert(f.owner.node.scaleX<0,'the fixture exercises a mirrored Map03 owner');
+  assert.equal(JSON.stringify(f.json),before,'capturing debris cannot change a live detached rig');assert.equal(f.native.color.a,0);
+  f.api.clear(f.owner);assert.equal(f.owner._sharedBuildingDebris.records.length,0);assert.equal(f.listeners.size,0);
  }
  assert.equal(JSON.stringify(serialized),originalPrefab);assert.equal(JSON.stringify(sources),originalSources);
 });
 
-test('long bent walls split remaining connections into groups of at most three under scaled and rotated presentation',()=>{
+test('long bent gated walls keep one compact pile under scaled and rotated presentation',()=>{
  const run={nativeVersion:2,left:5,right:7,gate:true,start:'post',end:'post',routes:{left:[{u:0,v:0},{u:-2,v:0},{u:-2,v:3}],right:[{u:0,v:0},{u:4,v:0},{u:4,v:-3}]}},before=clone(run);
- assert(Assembly.valid(run));const f=fixture(20,2,{plan:Kit.layout(run),transform:{angle:37,scaleX:-1.2,scaleY:.8}}),state=f.destroy();assertPiles(state);
- assert.equal(state.groups.length,5);assert.deepEqual(Array.from(state.groups,g=>g.connections),[2,3,1,3,3]);assert.equal(state.groups.reduce((n,g)=>n+g.connections,0),12);assert(state.groups.filter(g=>g.kind==='wall').every(g=>g.connections<=3));assert.deepEqual(run,before);
+ assert(Assembly.valid(run));
+ const f=fixture(20,2,{plan:Kit.layout(run),transform:{angle:37,scaleX:-1.2,scaleY:.8}}),pile=assertPile(f.destroy());
+ const center=f.local(f.plan.nativeOrigin);
+ close(pile.x,center.x);close(pile.y,center.y);assert.deepEqual(run,before);
 });
 
-test('gate-free wall runs group every connection without inventing a central gate pile',()=>{
- const plan=Kit.layout({nativeVersion:2,left:4,right:4,gate:false,start:'post',end:'post'}),f=fixture(20,1,{plan}),state=f.destroy();assertPiles(state);assert.equal(state.groups.length,3);assert(state.groups.every(g=>g.kind==='wall'));assert.deepEqual(Array.from(state.groups,g=>g.connections),[3,3,2]);
+test('a gate-free wall centers its only pile along the built run',()=>{
+ const plan=Kit.layout({nativeVersion:2,left:2,right:4,gate:false,start:'post',end:'post'}),f=fixture(20,1,{plan}),pile=assertPile(f.destroy());
+ const center=f.local(plan.rightPoints[1]);close(pile.x,center.x);close(pile.y,center.y);
 });
 
 test('saved numeric wall-piece offsets are read for pile placement and remain unchanged',()=>{
- const base={version:1,poses:{}},adjustments=Adjustments.edit(base,{tier:2,face:'NE',state:'closed'},{type:'move',id:'wall/left/3',x:18,y:11}),before=clone(adjustments);
- const normal=fixture(20,2),edited=fixture(20,2,{adjustments}),a=normal.destroy(),b=edited.destroy();
- close(a.buildings[0].node.x,b.buildings[0].node.x);close(a.buildings[0].node.y,b.buildings[0].node.y);close(a.buildings[2].node.x,b.buildings[2].node.x);close(a.buildings[2].node.y,b.buildings[2].node.y);
- assert(Math.hypot(a.buildings[1].node.x-b.buildings[1].node.x,a.buildings[1].node.y-b.buildings[1].node.y)>1,'the left pile must follow the authored left wall pieces');assert.deepEqual(adjustments,before);assert.deepEqual(base,{version:1,poses:{}});
+ const base={version:1,poses:{}},adjustments=Adjustments.edit(base,{tier:2,face:'NE',state:'closed'},{type:'move',id:'wall/gateway/left',x:18,y:11}),before=clone(adjustments);
+ const a=assertPile(fixture(20,2).destroy()),b=assertPile(fixture(20,2,{adjustments}).destroy());
+ assert(Math.hypot(a.x-b.x,a.y-b.y)>1,'the pile follows the moved gateway pillar');
+ assert.deepEqual(adjustments,before);assert.deepEqual(base,{version:1,poses:{}});
 });
 
-test('destruction captures the current open-night wall offsets rather than the closed planning pose',()=>{
- const base={version:1,poses:{}},adjustments=Adjustments.edit(base,{tier:2,face:'NE',state:'outward'},{type:'move',id:'wall/left/3',x:18,y:11}),before=clone(adjustments);
+test('destruction captures the current open-night wall offsets',()=>{
+ const base={version:1,poses:{}},adjustments=Adjustments.edit(base,{tier:2,face:'NE',state:'outward'},{type:'move',id:'wall/gateway/left',x:18,y:11}),before=clone(adjustments);
  const closed=fixture(20,2,{adjustments}),open=fixture(20,2,{adjustments,pose:'open_outward_night'}),normal=fixture(20,2,{pose:'open_outward_night'});
  assert(open.json.animations.open_outward_night,'test uses the shipped open-night track');
- const a=closed.destroy(),b=open.destroy(),c=normal.destroy();
- assertPiles(b);assert(Math.hypot(a.buildings[1].node.x-b.buildings[1].node.x,a.buildings[1].node.y-b.buildings[1].node.y)>1,'the captured left rubble must reflect the current open pose');
- close(a.buildings[1].node.x,c.buildings[1].node.x);close(a.buildings[1].node.y,c.buildings[1].node.y);assert.deepEqual(adjustments,before);
+ const a=assertPile(closed.destroy()),b=assertPile(open.destroy()),c=assertPile(normal.destroy());
+ assert(Math.hypot(a.x-b.x,a.y-b.y)>1,'the pile reflects the current open pose');
+ close(a.x,c.x);close(a.y,c.y);assert.deepEqual(adjustments,before);
 });

@@ -19,8 +19,8 @@ var def_KinghtFallBulletEnemy = function (t) {
   _ctor.prototype.setParent = function (t) {
     this.ctrPar = t;
   };
-  _ctor.prototype.setTag = function (t, e, n) {
-    this.bindTarget(e, n);
+  _ctor.prototype.setTag = function (t, e, n, offset) {
+    this.bindTarget(e, n, offset);
     this.readTargetPosition();
     this._dir = cc.v2(this.tagPos.x - t.x, this.tagPos.y - t.y).normalizeSelf();
     this.bullet.active = true;

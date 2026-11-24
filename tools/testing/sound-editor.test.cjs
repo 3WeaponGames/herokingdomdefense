@@ -103,6 +103,16 @@ test('stale panel revisions, invalid marks and disk conflicts retain the draft a
   assert.throws(() => f.service.save({ version: f.service.version }), /changed on disk/); assert.deepEqual(fs.readFileSync(f.review), external); assert(f.service.dirty());
   assert.equal(f.service.discard({ version: f.service.version }).marks[id], 'red');
 });
+test('saving the sound checklist combines independent marks and preserves the published extensions', t => {
+  const f = fixture(t), id = f.service.catalog.items[0].id;
+  f.service.mark({ version: f.service.version, id, color: 'green' });
+  fs.mkdirSync(path.dirname(f.review), { recursive: true });
+  fs.writeFileSync(f.review, '{"version":1,"marks":{"other":"yellow"},"unknown":1.00}');
+  const saved = f.service.save({ version: f.service.version });
+  assert.deepEqual(saved.marks, { other: 'yellow', [id]: 'green' });
+  assert.equal(saved.dirty, false);
+  assert(fs.readFileSync(f.review, 'utf8').includes('"unknown":1.00'));
+});
 test('a write arriving during save preparation is rejected by the guarded transaction', t => {
   const f = fixture(t, '{"version":1,"marks":{}}'), id = f.service.catalog.items[0].id, newer = '{"version":1,"marks":{},"external":true}';
   f.service.mark({ version: f.service.version, id, color: 'yellow' });

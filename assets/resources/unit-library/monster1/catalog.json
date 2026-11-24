@@ -967,7 +967,7 @@
     },
     {
       "id": "monster1/Slime_Spore",
-      "name": "Lightning Slime",
+      "name": "Ram Slime",
       "pack": "monster1",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Snail/Snail_Blue.prefab",
       "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Spore.json",
@@ -1005,7 +1005,7 @@
     },
     {
       "id": "monster1/Slime_King",
-      "name": "Slime King",
+      "name": "Prism Slime King",
       "pack": "monster1",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Green.prefab",
       "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_King.json",
@@ -1024,7 +1024,7 @@
     },
     {
       "id": "monster1/Slime_Abyssal",
-      "name": "Abyssal Slime",
+      "name": "Quake Slime",
       "pack": "monster1",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Slime/Slime_Purple.prefab",
       "skeleton": "assets/resources/unit-library/monster1/Units/SlimeVariants/Slime_Abyssal.json",

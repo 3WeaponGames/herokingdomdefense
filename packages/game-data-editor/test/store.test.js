@@ -20,7 +20,15 @@ test('install/open/no-op save does not create overrides or rewrite bytes',()=>{c
 test('one wave edit preserves all other bytes and creates verified backup',()=>{const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['LevelCfg',0,'WaveCfg',0,'count'],10);assert.equal(f.read(p),f.docs[p]);const result=s.save({version:s.version}).result;assert.equal(f.read(p),f.docs[p].replace('"count":5','"count":10'));assert.equal(fs.readFileSync(path.join(result.backup,p),'utf8'),f.docs[p]);});
 test('drafts undo/redo/discard never write game files',()=>{const f=fixture(),s=f.store;edit(s,'A',['unknown','keep'],false);s.undo({version:s.version});assert(!s.snapshot().dirty);s.redo({version:s.version});assert(s.snapshot().dirty);s.discard({version:s.version});assert(!s.snapshot().dirty);Object.keys(f.docs).forEach(p=>assert.equal(f.read(p),f.docs[p]));});
 test('stale panel mutations are rejected',()=>{const f=fixture(),s=f.store,v=s.version;edit(s,'A',['unknown','keep'],false);assert.throws(()=>s.change({version:v,edits:[{doc:'A',path:['unknown','keep'],value:true}]}),/Another panel/);});
-test('external edits block save while retaining drafts',()=>{const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['unknown','keep'],false);fs.appendFileSync(path.join(f.root,p),' ');assert.throws(()=>s.save({version:s.version}),/changed outside/);assert(s.snapshot().dirty);assert.equal(f.read(p),f.docs[p]+' ');});
+test('formatting-only external revisions are preserved when saving a draft',()=>{
+    const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];
+    edit(s,'A',['unknown','keep'],false);
+    const latest=f.docs[p]+' ';
+    fs.writeFileSync(path.join(f.root,p),latest);
+    const {result}=s.save({version:s.version});
+    assert.equal(f.read(p),latest.replace('"keep":true','"keep":false'));
+    assert.equal(fs.readFileSync(path.join(result.backup,p),'utf8'),latest);
+});
 test('published waves merge with other data and virtual override drafts at Save',()=>{
     const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];
     edit(s,'A',['unknown','keep'],false);
@@ -75,10 +83,60 @@ test('a catalog with draft edits still rejects external changes and retains undo
     assert.throws(()=>s.save({version:s.version}),/changed outside/);
     assert.equal(JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),before);
 });
-test('virtual timing edits treat their physical A file as edited',()=>{
+test('a competing timing in the physical A file blocks the virtual timing draft',()=>{
     const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];edit(s,'overrides',['timings','enemy:90001:default'],{attack:0.5});
-    fs.appendFileSync(path.join(f.root,p),' ');
-    assert.throws(()=>s.save({version:s.version}),/changed outside/);assert.equal(f.read(p),f.docs[p]+' ');assert.equal(s.documents.overrides.data.timings['enemy:90001:default'].attack,0.5);
+    const latest=JSON.parse(f.read(p));latest.GameTools={timings:{'enemy:90001:default':{attack:0.7}}};
+    const bytes=JSON.stringify(latest);fs.writeFileSync(path.join(f.root,p),bytes);
+    assert.throws(()=>s.save({version:s.version}),/GameTools \/ timings \/ enemy:90001:default/);
+    assert.equal(f.read(p),bytes);assert.equal(s.documents.overrides.data.timings['enemy:90001:default'].attack,0.5);
+});
+test('campaign data, override drafts and localized text merge independent publishes together',()=>{
+    const f=fixture(),s=f.store,p=Object.keys(f.docs)[0],catalog='assets/resources/localization/catalog.json';
+    edit(s,'A',['unknown','keep'],false);edit(s,'overrides',['timings','enemy:90001:default'],{attack:.5});
+    edit(s,'catalog',['entries','a','en'],'New English');
+    const latest=JSON.parse(f.read(p));latest.unknown.spell=900;latest.LevelCfg[0].WaveCfg[0].count=9;
+    latest.GameTools={timingDefaults:{'enemy:90001:default':{attack:.25}}};
+    fs.writeFileSync(path.join(f.root,p),JSON.stringify(latest)+'\n');
+    fs.writeFileSync(path.join(f.root,catalog),f.docs[catalog].replace('你好','New Chinese'));
+    const result=s.save({version:s.version});
+    assert(result.result.saved);assert(!result.dirty);
+    latest.unknown.keep=false;latest.GameTools.timings={'enemy:90001:default':{attack:.5}};
+    assert.deepEqual(JSON.parse(f.read(p)),latest);
+    assert.deepEqual(JSON.parse(f.read(catalog)).entries.a,{en:'New English',zh:'New Chinese'});
+});
+test('building settings merge with projectile speed only while level identities match',()=>{
+    for(const reordersLevels of [false,true]){
+        const f=fixture(),s=f.store,p=Object.keys(f.docs)[0],file=path.join(f.root,p);
+        const initial=JSON.parse(f.read(p));
+        initial.BuildEnum={2:{enumValue:2,enumKey:'ArrowTower',levelList:[
+            {ID:2,index:4,level:1,Skin:'arrow',Tower:{projectileSpeed:500},ModelOffset:{x:1,y:2}},
+            {ID:3,index:5,level:2,Skin:'arrow'}
+        ]}};
+        fs.writeFileSync(file,JSON.stringify(initial));s.refresh();
+        edit(s,'A',['BuildEnum','2','levelList',0,'ModelOffset','x'],7);
+        initial.BuildEnum[2].levelList[0].Tower.projectileSpeed=600;
+        if(reordersLevels)initial.BuildEnum[2].levelList.reverse();
+        const published=JSON.stringify(initial);fs.writeFileSync(file,published);
+        if(reordersLevels){
+            assert.throws(()=>s.save({version:s.version}),/BuildEnum \/ 2 \/ levelList/);
+            assert(s.snapshot().dirty);assert.equal(f.read(p),published);
+        }else{
+            assert(s.save({version:s.version}).result.saved);
+            const level=JSON.parse(f.read(p)).BuildEnum[2].levelList[0];
+            assert.equal(level.Tower.projectileSpeed,600);assert.deepEqual(level.ModelOffset,{x:7,y:2});
+        }
+    }
+});
+
+test('loading a clean store picks up external saves, while a dirty store retains its history',()=>{
+    const f=fixture(),s=f.store,p=Object.keys(f.docs)[0],published=f.docs[p].replace('"count":5','"count":7');
+    fs.writeFileSync(path.join(f.root,p),published);
+    const old=s.version,snapshot=s.sync();
+    assert.equal(snapshot.version,old+1);assert.equal(snapshot.documents.A.data.LevelCfg[0].WaveCfg[0].count,7);
+    assert.equal(s.sync().version,snapshot.version);
+    edit(s,'A',['unknown','keep'],false);
+    const version=s.version;fs.writeFileSync(path.join(f.root,p),published.replace('"count":7','"count":8'));
+    assert.equal(s.sync().version,version);assert(s.snapshot().canUndo);assert(s.snapshot().dirty);
 });
 test('latest unedited dependencies are validated against the original baseline',()=>{
     const validate=docs=>docs.catalog.data.entries.a?[ ]:[{doc:'A',path:['unknown','keep'],severity:'error',message:'Missing referenced translation'}];
@@ -101,6 +159,14 @@ test('dependency changes during validation still cancel before any writes',()=>{
     let update=false;const f=fixture({validators:[()=>{if(update)fs.appendFileSync(path.join(f.root,'assets/resources/localization/catalog.json'),' ');return [];}]}),s=f.store;
     edit(s,'overrides',['timings','enemy:90001:default'],{attack:0.5});update=true;
     assert.throws(()=>s.save({version:s.version}),/changed again during save/);assert.equal(f.read(Object.keys(f.docs)[0]),f.docs[Object.keys(f.docs)[0]]);assert(s.changes().length);
+});
+test('an untouched dependency changed during commit causes rollback and retains the draft',()=>{
+    const catalog='assets/resources/localization/catalog.json';
+    let f;f=fixture({beforeCommit:()=>fs.appendFileSync(path.join(f.root,catalog),' ')});
+    const s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['unknown','keep'],false);
+    assert.throws(()=>s.save({version:s.version}),/catalog.json changed again during save/);
+    assert.equal(f.read(p),f.docs[p]);assert.equal(f.read(catalog),f.docs[catalog]+' ');
+    assert(s.snapshot().dirty);
 });
 test('runtime overrides exist only after explicit save and reset removes them',()=>{const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];edit(s,'overrides',['timings','enemy:90001:default'],{attack:0.35});assert(!JSON.parse(f.read(p)).GameTools);s.save({version:s.version});assert.equal(JSON.parse(f.read(p)).GameTools.timings['enemy:90001:default'].attack,0.35);s.change({version:s.version,edits:[{doc:'overrides',path:['timings','enemy:90001:default'],remove:true}]});s.save({version:s.version});assert(!JSON.parse(f.read(p)).GameTools);assert.equal(JSON.parse(f.read(p)).unknown.spell,100);});
 test('saved animation defaults survive custom timing saves and Reset to default',()=>{
@@ -138,10 +204,10 @@ test('external shadow restoration merges with light drafts without changing revi
  assert.equal(JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),before);
  s.save({version:s.version});const saved=JSON.parse(f.read(p));assert.deepStrictEqual(saved.Nightlight,light);assert.deepStrictEqual(saved.GameTools.buildingShadows,preset);assert.equal(saved.GameTools.timings['enemy:1:default'].attack,.5);
 });
-test('external shadow restore retains overlapping shadow drafts and blocks unrelated external edits',()=>{
- for(const overlap of [true,false]){const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['Nightlight'],{version:1,lights:{}});if(overlap)edit(s,'overrides',['buildingShadows'],{global:{angle:3}});
- const before=JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),latest=JSON.parse(f.read(p));latest.GameTools={buildingShadows:{global:{projection:'ground',angle:-74}}};if(!overlap)latest.unknown.spell=900;
- const bytes=JSON.stringify(latest);fs.writeFileSync(path.join(f.root,p),bytes);assert.throws(()=>s.save({version:s.version}),/changed outside/);assert.equal(f.read(p),bytes);assert.equal(JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),before);}
+test('external shadow restore retains overlapping shadow drafts',()=>{
+ const f=fixture(),s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['Nightlight'],{version:1,lights:{}});edit(s,'overrides',['buildingShadows'],{global:{angle:3}});
+ const before=JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),latest=JSON.parse(f.read(p));latest.GameTools={buildingShadows:{global:{projection:'ground',angle:-74}}};
+ const bytes=JSON.stringify(latest);fs.writeFileSync(path.join(f.root,p),bytes);assert.throws(()=>s.save({version:s.version}),/buildingShadows \/ global \/ angle/);assert.equal(f.read(p),bytes);assert.equal(JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),before);
 });
 test('a failed save after a shadow merge retains the restored file and exact draft history',()=>{
  const f=fixture({beforeCommit:()=>{throw Error('disk failure');}}),s=f.store,p=Object.keys(f.docs)[0];edit(s,'A',['Nightlight'],{version:1,lights:{}});const before=JSON.stringify({documents:s.documents,undo:s.undoStack,redo:s.redoStack,version:s.version}),latest=JSON.parse(f.read(p));latest.GameTools={buildingShadows:{global:{projection:'ground'}}};const bytes=JSON.stringify(latest);fs.writeFileSync(path.join(f.root,p),bytes);

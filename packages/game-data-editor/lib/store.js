@@ -20,36 +20,44 @@ function setAt(data,parts,value,remove) {
 function issueKey(i){return [i.doc,JSON.stringify(i.path||[]),i.message].join(':');}
 function issueValue(documents,issue){let value=documents[issue.doc]&&documents[issue.doc].data;for(const key of issue.path||[]){if(value==null)return undefined;value=value[key];}return value;}
 
+function diskConflict(file, field) {
+    const location = field.length ? field.join(' / ') : 'the document';
+    return Error(file+' changed outside these panels. The saved file and this draft both changed '+location+'. Your drafts are retained.');
+}
+function stableBuildingLevels(field, before, draft, saved) {
+    if (field.length !== 3 || field[0] !== 'BuildEnum' || field[2] !== 'levelList') return false;
+    const ids = new Set();
+    return before.every((row,index)=>{
+        if(!row||!own(row,'index')||ids.has(row.index)||!draft[index]||!saved[index])return false;
+        ids.add(row.index);
+        return ['ID','index','level','Skin'].every(key=>JSONDocument.equal(row[key],draft[index][key])&&JSONDocument.equal(row[key],saved[index][key]));
+    });
+}
 function mergePublishedCampaign(source, overrides, published) {
-    const {LevelCfg: previousStages, GameTools: previousTools, ...previous} = source.original;
-    const {LevelCfg: savedStages, GameTools: savedTools, ...latest} = published.original;
-    const stagesChanged = !JSONDocument.equal(previousStages, savedStages);
-    const toolsChanged = !JSONDocument.equal(previousTools, savedTools);
-    if ((!stagesChanged && !toolsChanged) || !JSONDocument.equal(previous, latest)) return null;
+    const {GameTools: previousTools, ...before} = source.original;
+    const {GameTools: savedTools, ...saved} = published.original;
+    const {GameTools: unused, ...draft} = source.data;
+    const conflict = field => diskConflict(source.path, field);
+    const atomicBuilding = (field, previous, edited, current) => field[0] === 'BuildEnum' &&
+        (field.length === 2 && previous && edited && current && ['enumKey','enumValue'].some(key=>
+            !JSONDocument.equal(previous[key],edited[key]) || !JSONDocument.equal(previous[key],current[key])) ||
+        field.length === 5 && field[2] === 'levelList' && field[4] === 'Nightlight');
+    const data = clone(JSONDocument.merge(before, draft, saved, conflict, atomicBuilding, stableBuildingLevels));
+    if (savedTools !== undefined) data.GameTools = clone(savedTools);
+    if (JSONDocument.equal(previousTools, savedTools)) {
+        return {A:{...published, data}, overrides:{...overrides, revision:published.revision}};
+    }
 
-    const data = clone(source.data);
-    const original = {...source.original};
-    if (stagesChanged) {
-        if (!Array.isArray(previousStages) || !Array.isArray(savedStages)) return null;
-        if (!JSONDocument.equal(previousStages, data.LevelCfg) && !JSONDocument.equal(savedStages, data.LevelCfg)) {
-            throw Error('Stages & Waves and this draft both changed LevelCfg. Your drafts are retained.');
-        }
-        original.LevelCfg = savedStages;
-        data.LevelCfg = clone(savedStages);
-    }
-    // Stage publishes own LevelCfg. Projectiles can also save attack timings
-    // in between reviews, using its existing field-level conflict checks.
-    if (toolsChanged && !JSONDocument.equal(overrides.original, overrides.data)) {
-        return require('./projectile-save-merge').documents({...source, original, data}, overrides, published);
-    }
-    const settings = {...overrides, revision:published.revision};
-    if (toolsChanged) {
-        if (savedTools === undefined) delete data.GameTools;
-        else data.GameTools = clone(savedTools);
-        settings.original = savedTools === undefined ? defaults() : clone(savedTools);
-        settings.data = clone(settings.original);
-    }
-    return {A:{...published, data}, overrides:settings};
+    // Empty override tables are virtual until the first actual settings edit.
+    const edited = previousTools === undefined
+        ? Object.fromEntries(Object.entries(overrides.data).filter(([key, value])=>!JSONDocument.equal(value, overrides.original[key])))
+        : overrides.data;
+    const atomic = field => field[0] === 'timings' && field.length === 2 ||
+        field[0] === 'unitProfiles' && field[1] === 'entries' && field[3] === 'timing' && field.length === 4 ||
+        field[0] === 'unitTypes' && field[2] === 'damageTaken' && field.length === 3;
+    const original = savedTools === undefined ? defaults() : clone(savedTools);
+    const merged = JSONDocument.merge(previousTools === undefined ? {} : previousTools, edited, savedTools, field=>conflict(['GameTools', ...field]), atomic);
+    return {A:{...published, data}, overrides:{...overrides, original, data:merged === undefined ? defaults() : clone(merged), revision:published.revision}};
 }
 
 class Store {
@@ -59,10 +67,11 @@ class Store {
     readDocument(id,relative){const file=this.absolute(relative),text=fs.readFileSync(file,'utf8'),data=JSON.parse(text.replace(/^\uFEFF/,''));return{id,path:relative,original:clone(data),data,text,revision:hash(text)};}
     load(){
         const maps=Object.keys(this.documents).filter(id=>id.indexOf('map:')===0).map(id=>({id,path:this.documents[id].path}));
-        this.documents={};Object.keys(files).forEach(id=>{this.documents[id]=this.readDocument(id,files[id]);});
-        maps.forEach(m=>{this.documents[m.id]=this.readDocument(m.id,m.path);});
-        const original=this.documents.A.data.GameTools===undefined?defaults():clone(this.documents.A.data.GameTools);
-        this.documents.overrides={id:'overrides',path:files.A+'#GameTools',original:clone(original),data:original,revision:this.documents.A.revision,virtual:true};
+        const documents={};Object.keys(files).forEach(id=>{documents[id]=this.readDocument(id,files[id]);});
+        maps.forEach(m=>{documents[m.id]=this.readDocument(m.id,m.path);});
+        const original=documents.A.data.GameTools===undefined?defaults():clone(documents.A.data.GameTools);
+        documents.overrides={id:'overrides',path:files.A+'#GameTools',original:clone(original),data:original,revision:documents.A.revision,virtual:true};
+        this.documents=documents;
         this.undoStack=[];this.redoStack=[];this.version++;return this.snapshot();
     }
     checkVersion(request){if(!request||request.version!==this.version)throw Error('Another panel changed these drafts. Refresh this panel and try again.');}
@@ -99,6 +108,10 @@ class Store {
     redo(request){this.checkVersion(request);if(this.redoStack.length){this.undoStack.push(this.draftState());this.restore(this.redoStack.pop());}return this.snapshot();}
     discard(request){this.checkVersion(request);Object.keys(this.documents).forEach(id=>{this.documents[id].data=clone(this.documents[id].original);});this.undoStack=[];this.redoStack=[];this.version++;return this.snapshot();}
     refresh(){if(this.changes().length)throw Error('Save or discard drafts before reloading files');return this.load();}
+    sync(){
+        if(!this.redoStack.length&&!this.changes().length&&Object.values(this.documents).some(d=>!d.virtual&&hash(fs.readFileSync(this.absolute(d.path),'utf8'))!==d.revision))return this.load();
+        return this.snapshot();
+    }
     recoveries(){
         const primary=this.backupFolder(),legacy=this.absolute('local/game-data-editor/backups');
         return [...new Set([primary,legacy])].flatMap(folder=>{
@@ -131,21 +144,18 @@ class Store {
     saveCandidate(){
         // Merge supported disjoint edits and refresh untouched inputs in
         // isolation. A failed save must retain the draft and undo/redo history.
-        const documents=require('./nightlight-save-merge').documents(this)||require('./shadow-preset-merge').documents(this)||Object.assign({},this.documents);
+        const documents=require('./nightlight-save-merge').documents(this)||Object.assign({},this.documents);
         const overridesChanged=!JSONDocument.equal(documents.overrides.original,documents.overrides.data);
         Object.keys(documents).filter(id=>!documents[id].virtual).forEach(id=>{
             const d=documents[id],text=fs.readFileSync(this.absolute(d.path),'utf8');
             const revision=hash(text);if(revision===d.revision)return;
             const dirty=!JSONDocument.equal(d.original,d.data)||(id==='A'&&overridesChanged);
-            const conflict=()=>Error(d.path+' changed outside these panels. Save cancelled; your drafts are retained.');
-            if(dirty&&id!=='A')throw conflict();
             const data=JSON.parse(text.replace(/^\uFEFF/,''));
             const published={id,path:d.path,original:clone(data),data,text,revision};
-            if(dirty){
-                const merged=mergePublishedCampaign(d,documents.overrides,published);
-                if(!merged)throw conflict();
-                Object.assign(documents,merged);return;
+            if(dirty&&id==='A'){
+                Object.assign(documents,mergePublishedCampaign(d,documents.overrides,published));return;
             }
+            if(dirty)published.data=clone(JSONDocument.merge(d.original,d.data,data,field=>diskConflict(d.path,field)));
             documents[id]=published;
             if(id==='A'){
                 const original=data.GameTools===undefined?defaults():clone(data.GameTools);
@@ -178,7 +188,11 @@ class Store {
         if(!prepared.length){this.load();return Object.assign(this.snapshot(),{result:{saved:false,noChanges:true}});}
         // Check all read dependencies too: a referenced unit/map/translation could
         // have changed even when its own document has no draft edit.
-        Object.keys(candidate.documents).filter(id=>!candidate.documents[id].virtual).forEach(id=>{const d=candidate.documents[id];if(hash(fs.readFileSync(this.absolute(d.path),'utf8'))!==d.revision)throw Error(d.path+' changed again during save. Save cancelled; your drafts are retained. Please retry.');});
+        const physical=Object.values(candidate.documents).filter(d=>!d.virtual);
+        const checkRevision=(file,relative,revision)=>{
+            if(hash(fs.readFileSync(file,'utf8'))!==revision)throw Error(relative+' changed again during save. Save cancelled; your drafts are retained. Please retry.');
+        };
+        physical.forEach(d=>checkRevision(this.absolute(d.path),d.path,d.revision));
         const stamp=new Date().toISOString().replace(/[:.]/g,'-')+'-'+crypto.randomBytes(3).toString('hex');
         const backupDir=path.join(this.backupFolder(),stamp);fs.mkdirSync(backupDir,{recursive:true});
         const journal={version:1,status:'prepared',files:prepared.map(p=>({path:p.path,before:hash(p.before),after:hash(p.after)}))};
@@ -188,11 +202,17 @@ class Store {
             prepared.forEach(p=>{const backup=path.join(backupDir,p.path);fs.mkdirSync(path.dirname(backup),{recursive:true});fs.writeFileSync(backup,p.before,'utf8');p.temp=p.file+'.game-tools-'+stamp+'.tmp';fs.writeFileSync(p.temp,p.after,'utf8');});
             fs.writeFileSync(journalFile,JSON.stringify(journal,null,2));
             prepared.forEach((p,index)=>{if(this.options.beforeCommit)this.options.beforeCommit(index,p);checkProfileReferences();if(hash(fs.readFileSync(p.file,'utf8'))!==hash(p.before))throw Error('File changed during save: '+p.path);fs.renameSync(p.temp,p.file);committed.push(p);});
-            prepared.forEach(p=>{if(hash(fs.readFileSync(p.file,'utf8'))!==hash(p.after))throw Error('Saved file verification failed: '+p.path);});
+            const written=new Map(prepared.map(p=>[p.id,hash(p.after)]));
+            physical.forEach(d=>checkRevision(this.absolute(d.path),d.path,written.get(d.id)||d.revision));
             journal.status='complete';fs.writeFileSync(journalFile,JSON.stringify(journal,null,2));
         } catch(error) {
             const recovery=[];
-            committed.reverse().forEach(p=>{try{if(hash(fs.readFileSync(p.file,'utf8'))!==hash(p.after)){recovery.push(p.path);return;}fs.writeFileSync(p.file,p.before,'utf8');}catch(e){recovery.push(p.path);}});
+            committed.reverse().forEach(p=>{try{
+                checkRevision(p.file,p.path,hash(p.after));
+                fs.writeFileSync(p.temp,p.before,{encoding:'utf8',flag:'wx'});
+                checkRevision(p.file,p.path,hash(p.after));
+                fs.renameSync(p.temp,p.file);
+            }catch(e){recovery.push(p.path);}});
             prepared.forEach(p=>{if(p.temp&&fs.existsSync(p.temp))fs.unlinkSync(p.temp);});
             journal.status=recovery.length?'recovery-required':'rolled-back';journal.error=error.message;journal.recovery=recovery;
             fs.writeFileSync(journalFile,JSON.stringify(journal,null,2));

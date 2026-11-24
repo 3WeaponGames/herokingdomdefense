@@ -51,6 +51,10 @@ var def_KinghtFallUITalentInfo = function (t) {
     }
     this.initView();
     this.initBtnListener();
+    this.showTalentGuide();
+  };
+  _ctor.prototype.showTalentGuide = function () {
+    if (!this.cfgInfo || this.isclose) return;
     var flow = require("TutorialFlow"), target = flow.visible(this.btnGold) ? this.btnGold : flow.visible(this.btnVideo) ? this.btnVideo : this.btnClose;
     var informational = target === this.btnClose;
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 6, target, undefined,

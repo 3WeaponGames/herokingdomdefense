@@ -121,17 +121,17 @@ var def_KinghtFallModle = function () {
   };
   _ctor.prototype.showRedPerson = function () {
     var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance(), user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
-    var t = manager.getEquipCfgList(), e = user.getGoldNum(), n = user.getMaxStage(), i = user.getMaxOrder();
+    var t = manager.getEquipCfgList(), e = user.getGoldNum(), n = user.getMaxStage();
+    var weapons = require("HeroWeapons");
     var cap = manager.getLevelCfgById2(n).EquipLevelCap, discount = 1;
     var relic = user.getTreasureLevel($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.ForgeAmulet);
     var effect = relic && manager.getTreasureCfgById($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.ForgeAmulet).levelInfo[relic.level - 1];
     if (effect && effect.param) discount -= effect.param[0];
     for (var a = 0; a < t.length; a++) {
       var o = t[a];
-      var r = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(o.id);
+      var r = user.getPersonLevel(o.id);
       if (r < o.levelInfo.length && r < cap) {
-        var s = true;
-        o.Unlock && (s = o.Unlock[0] < n || !(o.Unlock[0] > n) && o.Unlock[1] < i);
+        var s = weapons.upgradeUnlocked(o, user);
         if (s && e >= Math.floor(o.levelInfo[r - 1].GoldCost * discount)) {
           return true;
         }

@@ -28,10 +28,10 @@ test('explicit Save backs up exact source, preserves unknown fields/format and n
   assert.equal(result.result.saved,true);assert.equal(fs.readFileSync(path.resolve(f.dir,result.result.backup),'utf8'),before);assert(written.includes('"value": 1.00'));assert.equal(JSON.parse(written).profiles.guard.future.keep,13);assert.equal(fs.readFileSync(f.config,'utf8'),config);
   const mtime=fs.statSync(f.file).mtimeMs;assert.equal(f.store.save({version:f.store.version}).result.saved,false);assert.equal(fs.statSync(f.file).mtimeMs,mtime);assert.equal(fs.readdirSync(path.dirname(path.resolve(f.dir,result.result.backup))).length,1);
 });
-test('external edits and competing editor revisions cannot overwrite a saved file or lose the draft',t=>{
+test('overlapping external edits and stale editor revisions cannot overwrite a saved file or lose the draft',t=>{
   const f=fixture(t),version=f.store.version;edit(f.store,data=>data.profiles.guard.name='My draft');assert.throws(()=>f.store.change({version,data:f.store.data}),/another window/);
-  const external=JSON.parse(fs.readFileSync(f.file));external.future.value=77;fs.writeFileSync(f.file,JSON.stringify(external));
-  assert.throws(()=>f.store.save({version:f.store.version}),/outside this draft/);assert.equal(JSON.parse(fs.readFileSync(f.file)).future.value,77);assert.equal(f.store.data.profiles.guard.name,'My draft');
+  const external=JSON.parse(fs.readFileSync(f.file));external.profiles.guard.name='External edit';fs.writeFileSync(f.file,JSON.stringify(external));
+  assert.throws(()=>f.store.save({version:f.store.version}),/outside this draft/);assert.equal(JSON.parse(fs.readFileSync(f.file)).profiles.guard.name,'External edit');assert.equal(f.store.data.profiles.guard.name,'My draft');
 });
 test('invalid textures, slots, bones, transforms and assignments are refused before any writes',t=>{
   const f=fixture(t),before=fs.readFileSync(f.file,'utf8');

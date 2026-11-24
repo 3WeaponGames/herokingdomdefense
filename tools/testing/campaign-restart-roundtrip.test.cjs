@@ -7,13 +7,14 @@ const fs = require('node:fs'), path = require('node:path'), vm = require('node:v
 const {setup, authored, Node, Vec2} = require('./backend-gameplay-harness.cjs');
 const {harness} = require('./persistence-harness.cjs');
 const AuthoredSpawnPlan = require('../../assets/_script/AuthoredSpawnPlan');
+const BattleTaskObjectives = require('../../assets/_script/BattleTaskObjectives');
 const clone = value => JSON.parse(JSON.stringify(value));
 const single = value => ({getInstance: () => value});
 const noop = () => {};
 
 function runtime(disk, config, stage, options = {}) {
   const info = {};
-  const h = setup({AuthoredSpawnPlan, KinghtFallBuildInfo: info,
+  const h = setup({AuthoredSpawnPlan, BattleTaskObjectives, KinghtFallBuildInfo: info,
     KinghtFallEnum: disk.load('KinghtFallEnum'),
     KinghtFallPlayerMgr: {KinghtFallPlayerMgr: single(disk.player)},
     Utils: {Utils: {randomRang: options.randomIndex || (() => 0)}},
@@ -79,20 +80,181 @@ function drain(timeline) {
   return output;
 }
 
-function claimTask(h) {
+function claimTask(h, silent) {
   // Execute the actual UI claim method and durable reward journal; only the
   // floating reward hint and its tween are presentation seams.
   const source = fs.readFileSync(path.resolve(__dirname, '../../assets/_script/KinghtFallUIGame.js'), 'utf8').replace(/\r\n/g, '\n');
   const start = source.indexOf('  _ctor.prototype.getTask = function ');
-  const hint = {getChildByName: () => ({getComponent: () => ({})})};
-  const cc = {Sprite: class Sprite {}, Label: class Label {}, tween() { return {set() {return this;}, to() {return this;}, call() {return this;}, start() {}}; }};
+  const amount = {}, hint = {getChildByName: name => ({getComponent: () => name === 'labNum' ? amount : {}})};
+  const cc = {Sprite: class Sprite {}, Label: class Label {}, Vec2: {random: noop}, v2: (x, y) => ({x, y}), v3: (x, y, z) => ({x, y, z}),
+    instantiate: () => ({setParent: noop}), tween() { return {set() {return this;}, by() {return this;}, to() {return this;}, call() {return this;}, start() {}}; }};
   const getTask = vm.runInNewContext('(' + source.slice(source.indexOf('function ', start), source.indexOf('\n  };', start) + 4) + ')', {
     cc, $z1KinghtFallPlayerMgr: {KinghtFallPlayerMgr: single(h.disk.player)},
     $z1KinghtFallEnum: h.disk.load('KinghtFallEnum'),
     $z1KinghtFallDataMgr: {KinghtFallDataMgr: single({getGoodsCfgById: id => authored.GoodsCfg[id]})},
     $z1KinghtFallConfig: {KinghtFallBundelName: {IconGood: 'goods'}}
   });
-  getTask.call({ctrGame: h.g, _battleHud: {rewardHint: hint}, loadSpriteFrame: noop, initView: noop});
+  const paid = getTask.call({ctrGame: h.g, _battleHud: {rewardHint: hint}, loadSpriteFrame: noop, initView: noop,
+    ndCoin: {position: {x: 0, y: 0}, children: [{x: 0, y: 0}]},
+    ndTask: {convertToWorldSpaceAR: point => point}, ctrUI: {node: {convertToNodeSpaceAR: point => point}}}, silent);
+  return silent ? paid : amount.string;
+}
+
+test('authored Royal Advisor tasks preserve order, repeats and payouts across config edits and free retries', () => {
+  const disk = harness(), config = clone(authored), stage = 3, level = config.LevelCfg[stage - 1];
+  level.InGameCoefficient = 2;
+  level.BattleTasks = [
+    { taskId: 8, rewardId: 2003, amount: 7 },
+    { taskId: 4, rewardId: 2001, amount: 13 },
+    { taskId: 8, rewardId: 2003, amount: 0 }
+  ];
+  const h = runtime(disk, config, stage);
+  const task = clone(h.data.taskInfo);
+  assert.deepEqual(task, { index: 0, list: [8, 4, 8], reward: [{id:2003,num:7},{id:2001,num:13},{id:2003,num:0}], stage: 0, authored: true, rewardMultiplier: 2 });
+  h.data.taskInfo.stage = 1;
+  h.g.saveGame(); h.g.captureWaveStart();
+  const before = h.data.coin;
+  assert.equal(claimTask(h), '+7');
+  assert.equal(h.data.coin, before + 7);
+  assert.equal(h.data.taskInfo.index, 1);
+  level.BattleTasks = [];
+  level.InGameCoefficient = 3;
+  for (const mode of ['wave', 'stage']) {
+    const retry = h.g.getRestartCheckpoint(mode);
+    assert.deepEqual(clone(retry.taskList.list), task.list);
+    assert.deepEqual(clone(retry.taskList.reward), task.reward);
+  }
+  delete config.InGameTaskCfg;
+  const loaded = harness(disk.persist()), replacement = runtime(loaded, config, stage);
+  assert.equal(loaded.player.gameData.getResumeIssue(stage, config), null, 'Saved rewards do not require the live legacy pool');
+  assert.equal(replacement.g.loadGame(), true);
+  assert.deepEqual(clone(replacement.data.taskInfo), {...task, index: 1});
+  assert.equal(replacement.data.coin, before + 7);
+  replacement.data.taskInfo.stage = 1; replacement.g.saveGame();
+  assert.equal(claimTask(replacement), '+26');
+  assert.equal(loaded.player.udata.getGoldNum(), 26);
+  assert.equal(replacement.g.getRestartCheckpoint('stage').taskList.index, 2, 'A free retry cannot replay a claimed permanent reward');
+  loaded.player.gameData.setNewGame(stage);
+  const fresh = runtime(harness(loaded.persist()), config, stage);
+  assert.deepEqual(clone(fresh.data.taskInfo), {index:0,list:[],reward:[],stage:0,authored:true,rewardMultiplier:3});
+});
+
+test('a pre-feature Advisor checkpoint restores legacy rewards even after a stage gains authored tasks', () => {
+  const stage = 3, disk = harness(), config = clone(authored);
+  const previous = { index: 1, list: [8, 4, 1], stage: 1 };
+  disk.player.gameData.setCheckpoint({levelNum:stage,roundNum:1,coin:13,buffList:[],buildingLevel:[],businessList:{},taskList:previous});
+  config.LevelCfg[stage-1].BattleTasks = [{taskId:1,rewardId:2003,amount:99}];
+  assert.equal(disk.player.gameData.getResumeIssue(stage,config), null);
+  const resumed = runtime(disk, config, stage);
+  assert.equal(resumed.g.loadGame(), true);
+  assert.deepEqual(clone(resumed.data.taskInfo), {
+    ...previous, reward: config.InGameTaskCfg[1].Award.slice(0,3).map(([id,num])=>({id,num}))
+  });
+  assert.deepEqual(clone(resumed.g.getRestartCheckpoint('stage').taskList.list),previous.list);
+});
+
+test('counted Advisor tasks only count the requested combat source and restore saved progress', () => {
+  const disk = harness(), config = clone(authored), stage = 3;
+  config.LevelCfg[stage-1].BattleTasks = [
+    {taskId:'kill-tower',rewardId:2003,amount:4,count:2},
+    {taskId:'kill-hero',rewardId:2003,amount:5,count:1},
+    {taskId:8,rewardId:2003,amount:1}
+  ];
+  const first = runtime(disk, config, stage);
+  const kill = (battle, source) => BattleTaskObjectives.recordKill(battle.g, source);
+  first.g.gameStatus = 0;
+  assert(!kill(first,'tower'));
+  first.g.gameStatus = 1;
+  assert(!kill(first,'hero'));
+  assert(kill(first,'tower'));
+  assert.equal(first.data.taskInfo.progress,1);
+  assert(first.g.saveGame());
+  const next = runtime(harness(disk.persist()), config, stage);
+  assert(next.g.loadGame());
+  assert.deepEqual(clone(next.data.taskInfo.targets),[2,1,1]);
+  assert.equal(next.data.taskInfo.progress,1);
+  next.g.gameStatus = 1;
+  assert(kill(next,'tower'));
+  assert(!kill(next,'tower'), 'A ready task cannot collect additional kills');
+  assert.equal(next.disk.player.gameData.getTaskInfo(stage).stage,1);
+  assert.equal(claimTask(next),'+4');
+  assert.equal(next.data.taskInfo.index,1);
+  assert.equal(next.data.taskInfo.progress,0);
+  assert(kill(next,'hero'));
+  assert.equal(next.data.taskInfo.stage,1);
+  assert.equal(claimTask(next),'+5');
+  assert.equal(next.data.taskInfo.list[next.data.taskInfo.index],8);
+});
+
+test('survival objectives only count consecutive clears with a matching structure and score each wave once', () => {
+  const config = clone(authored), stage = 3;
+  config.LevelCfg[stage-1].BattleTasks = [{taskId:'survive-wall',rewardId:2003,amount:7,count:2}];
+  const h = runtime(harness(), config, stage);
+  let intact = true;
+  h.data.bulidPointMap[91] = {buildCfg:{enumValue:6},getIsLock:()=>intact,getIsWork:()=>false,
+    getSave:()=>({point:91,level:intact?1:0})};
+  h.g.gameStatus = 1;
+  h.data.beginBattleTaskWave();
+  assert(!BattleTaskObjectives.recordDestruction(h.g, 'tower'));
+  assert(h.data.finishBattleTaskWave());
+  assert(!h.data.finishBattleTaskWave());
+  assert.equal(h.data.taskInfo.progress,1);
+  h.data.round++;
+  h.data.beginBattleTaskWave();
+  assert(BattleTaskObjectives.recordDestruction(h.g, 'wall'));
+  assert(!h.data.finishBattleTaskWave(), 'Rebuilding by wave end cannot erase a destroyed wall');
+  assert.equal(h.data.taskInfo.progress,0);
+  h.data.round++;
+  intact = false;
+  h.data.beginBattleTaskWave();
+  intact = true;
+  assert(!h.data.finishBattleTaskWave(), 'The qualifying structure must already exist at wave start');
+  h.data.round++;
+  h.data.beginBattleTaskWave();
+  assert(h.data.finishBattleTaskWave());
+  assert(h.g.saveGame());
+  h.data.round++;
+  h.data.beginBattleTaskWave();
+  assert(h.data.finishBattleTaskWave());
+  assert.equal(h.data.taskInfo.progress,2);
+  assert.equal(h.data.taskInfo.stage,1);
+});
+
+for (const [rewardId, amount] of [[2001,13],[2003,7]]) {
+  test('a final counted Advisor reward of '+rewardId+' retries durably before winning and pays once', () => {
+    const disk = harness(), config = clone(authored), stage = 3, level = config.LevelCfg[stage-1];
+    level.WaveCfg = level.WaveCfg.slice(0,1);
+    level.InGameCoefficient = 2;
+    level.BattleTasks = [{taskId:'kill-hero',rewardId,amount,count:1}];
+    const h = runtime(disk, config, stage);
+    h.data.authoredTimeline = null;
+    h.data.enemyQueue = {};
+    h.g.gameStatus = 1;
+    h.ui.getTask = silent => claimTask(h,silent);
+    const before = h.data.coin;
+    assert(BattleTaskObjectives.recordKill(h.g,'hero'));
+    disk.state.failKeys.add(rewardId === 2001 ? disk.player.rewardJournalKey() : disk.player.gameData.gameKey);
+    h.data.tryEndGame();
+    assert.equal(h.data._advisorFinalClaimPending,true);
+    assert.equal(h.data.taskInfo.index,0);
+    assert.equal(h.events.filter(([name])=>name==='GameOver').length,0);
+    disk.state.failKeys.clear();
+    h.data.tryEndGame();
+    h.data.tryEndGame();
+    assert.equal(h.data.taskInfo.index,1);
+    assert.equal(h.events.filter(([name])=>name==='GameOver').length,1);
+    assert.equal(disk.player.udata.getGoldNum(),rewardId===2001?amount*2:0);
+    assert.equal(h.data.coin,before+(rewardId===2003?amount:0));
+    assert.equal(disk.player.gameData.getCheckpoint(stage).taskList.index,1);
+    const resumed = runtime(harness(disk.persist()), config, stage);
+    assert(resumed.g.loadGame());
+    assert.equal(resumed.data.taskInfo.index,1);
+    assert.equal(resumed.data.taskInfo.progress,0);
+    assert(!BattleTaskObjectives.recordKill(resumed.g,'hero'));
+    assert.equal(claimTask(resumed,true),false);
+    assert.equal(resumed.disk.player.udata.getGoldNum(),disk.player.udata.getGoldNum());
+    assert.equal(resumed.data.coin,h.data.coin);
+  });
 }
 
 const config = authored;

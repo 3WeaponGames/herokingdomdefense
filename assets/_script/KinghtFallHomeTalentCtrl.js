@@ -74,17 +74,24 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     if (!this.node.activeInHierarchy) return;
     var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
     if (guide.getGroupId() !== 6 || guide.getStepId() !== 1) return;
-    var flow = require("TutorialFlow"), target;
+    var flow = require("TutorialFlow"), target, talent, controller = this;
+    if (flow.homeBlocked()) return;
     for (var row of this.nodeInfo) {
       for (var index = 0; index < row.cfgList.length; index++) {
         var status = this.canUnlock(row.cfgList[index]);
-        if ((status === 2 || status === 3) && flow.visible(row.ndItem[index])) { target = row.ndItem[index]; break; }
+        if ((status === 2 || status === 3) && flow.visible(row.ndItem[index])) {
+          target = row.ndItem[index];
+          talent = row.cfgList[index];
+          break;
+        }
       }
       if (target) break;
     }
     if (!target) { flow.state(guide, 7, 0); return; }
     flow.scrollTo(this, target);
-    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 6, target);
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 6, target, function () {
+      controller.onClick(talent);
+    });
   };
   _ctor.prototype.initEventListener = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.TalentUpdate, this.initItem);

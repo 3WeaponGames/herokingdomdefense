@@ -164,10 +164,10 @@ test('stale shared drafts and external saved edits cannot overwrite a level appe
   assert.throws(() => f.store.change({ version: stale.version, data: stale.data }), /another window/);
   assert.throws(() => f.store.save({ version: stale.version }), /another window/);
   const external = JSON.parse(fs.readFileSync(f.file));
-  external.future.value = 99;
+  addLevel(external, 2).parts[0].x = 99;
   fs.writeFileSync(f.file, JSON.stringify(external));
   assert.throws(() => save(f), /outside this draft/);
-  assert.equal(JSON.parse(fs.readFileSync(f.file)).future.value, 99);
+  assert.equal(JSON.parse(fs.readFileSync(f.file)).profiles['guard-level-2'].parts[0].x, 99);
   assert.equal(f.store.snapshot().data.profiles['guard-level-2'].parts[0].x, 8);
   assert.equal(f.store.snapshot().dirty, true);
   assert.equal(fs.existsSync(f.home), false);

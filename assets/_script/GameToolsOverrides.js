@@ -37,12 +37,16 @@ function roleOf(owner, settings) {
 function counters(owner, target) {
   if (!owner || !target || !target.cfg && !target.heroStyle) return false;
   var settings = config();
+  var targetRole = roleOf(target, settings);
+  if (owner.cfg && owner.cfg.OverrideCounterType === true && typeof owner.cfg.CounterType === "string") {
+    return !!owner.cfg.CounterType && owner.cfg.CounterType === targetRole;
+  }
   var counter = FightingTypeDamage.counterType(settings && settings.unitTypes, roleOf(owner, settings));
-  if (counter !== undefined) return counter === roleOf(target, settings);
+  if (counter !== undefined) return counter === targetRole;
   if (!owner.cfg) return false;
   var legacy = owner.cfg.CounterType;
   if (legacy === undefined) return !!(owner.cfg.Suppressed && target.cfg && owner.cfg.Suppressed == target.cfg.ID);
-  return !!legacy && legacy === roleOf(target, settings);
+  return !!legacy && legacy === targetRole;
 }
 // Used by hit paths that have no legacy per-unit bonus. Projectiles may pass the
 // source role captured at release.

@@ -24,6 +24,7 @@ Runtime.prototype.apply = function () {
   if (cfg && cfg.PartScale || owner.ndAniDown && owner.ndAniDown._buildingPartScale || this.partScaleState) this.applyPartScale(owner.ndAniDown,cfg);
   if (!this.cfg || !skeleton || !owner.getIsWork()) return;
   var skin = skeleton.skin, runtime = this;
+  var projectileSpeed = Number.isFinite(this.cfg.projectileSpeed) && this.cfg.projectileSpeed > 0 ? this.cfg.projectileSpeed : 450;
   skeleton.slots.forEach(function (slot) {
     var name = slot.data.name;
     if (name.indexOf("td__") !== 0) return;
@@ -34,6 +35,7 @@ Runtime.prototype.apply = function () {
     node._millFieldTarget = true;
     var field = {
       node: node, slot: slot, attachment: attachment, hp: runtime.cfg.fieldHp, hpMax: runtime.cfg.fieldHp,
+      _battleTaskKillSource: runtime.cfg.kind === "scarecrow" ? "scarecrow" : runtime.cfg.kind === "bomb" ? "bomb-mill" : null,
       deathKeys:Presentation.deathKeys(owner.ndAniDown,slot),
       addon: skeleton.findSlot("mill_addon_" + name), cooldown: .3 + runtime.fields.length * .15,
       buildInfo: owner.buildInfo, buildCfg: owner.buildCfg,
@@ -45,7 +47,7 @@ Runtime.prototype.apply = function () {
         // The enemy's existing DamageCut spell also supports field attackers.
         if (type === 2 && value && isFinite(value.subNum) && isFinite(value.time)) this.debuff = {subNum:Math.max(0,value.subNum),time:Math.max(0,value.time)};
       },
-      getTowerSettings: function () { return {attackType:"arrow", fieldProjectile:true, targeting:"nearest", projectileSpeed:450}; },
+      getTowerSettings: function () { return {attackType:"arrow", fieldProjectile:true, targeting:"nearest", projectileSpeed:projectileSpeed}; },
       getAttPos: function () {
         if (runtime.cfg.kind !== "scarecrow") return Combat.point(node, runtime.game.ndUI);
         var bone = slot.bone, source = owner.ndAniDown.node;
@@ -134,8 +136,9 @@ Runtime.prototype.update = function (dt) {
 };
 Runtime.prototype.explode = function (field) {
   var epoch = this.game._combatEpoch, data = this.game.gameData;
+  var edge = this.cfg.splashFalloff;
   Combat.damage(this.game, null, field.getAttPos(), field.getAttack(),
-    {attackType:"cannon",splashRadius:this.cfg.splashRadius,splashFalloff:1}, null, field);
+    {attackType:"cannon",splashRadius:this.cfg.splashRadius,splashFalloff:Number.isFinite(edge) && edge >= 0 && edge <= 1 ? edge : 1}, null, field);
   var game = this.game;
   if (!cc.Graphics || game._combatEpoch !== epoch || game.gameData !== data || !cc.isValid(game.ndUI, true)) return;
   var center = field.getAttPos();

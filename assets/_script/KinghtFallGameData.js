@@ -34,7 +34,7 @@ function sanitizeCheckpoint(data) {
   data.buffList = (Array.isArray(data.buffList) ? data.buffList : []).filter(function (id) { return Number.isInteger(id) && id > 0; });
   if (!data.businessList || typeof data.businessList !== "object" || Array.isArray(data.businessList)) data.businessList = {};
   Object.keys(data.businessList).forEach(function (key) { if (typeof data.businessList[key] !== "number" || !isFinite(data.businessList[key]) || data.businessList[key] < 0) delete data.businessList[key]; });
-  if (data.taskList && (!Number.isInteger(data.taskList.index) || data.taskList.index < 0 || !Array.isArray(data.taskList.list) || !data.taskList.list.every(function (id) { return Number.isInteger(id) && id > 0; }) || [0, 1, 2].indexOf(data.taskList.stage) < 0)) delete data.taskList;
+  if (data.taskList && (!Number.isInteger(data.taskList.index) || data.taskList.index < 0 || !Array.isArray(data.taskList.list) || !data.taskList.list.every(function (id) { return Number.isInteger(id) && id > 0 || typeof id === "string"; }) || [0, 1, 2].indexOf(data.taskList.stage) < 0)) delete data.taskList;
   sanitizeRestartSetup(data);
 }
 function sanitizeRestartSetup(data) {
@@ -73,9 +73,29 @@ var exp_KinghtFallGameData = function (t) {
     if (!Array.isArray(saved.buffList) || saved.buffList.some(function (id) { return !(config.BuffCfg || []).some(function (row) { return row.ID === id; }); })) return "A saved perk is no longer available. Start a new game for this stage.";
     var task = saved.taskList;
     if (task) {
-      var definition = (config.InGameTaskCfg || []).find(function (row) { return row.ID === (saved.levelNum === 1 ? 1 : 2); });
-      if (!definition || !Array.isArray(definition.Award) || !Array.isArray(task.list) || !Number.isInteger(task.index) || task.index < 0 || task.index > task.list.length || task.list.length > definition.Award.length ||
-          task.stage === 1 && task.index >= task.list.length || task.list.some(function (id) { return !(config.InGameTaskEnum || {})[id]; })) return "A saved mission is no longer available. Start a new game for this stage.";
+      var issue = "A saved mission is no longer available. Start a new game for this stage.", counted = false;
+      if (!Array.isArray(task.list) || !Number.isInteger(task.index) || task.index < 0 || task.index > task.list.length ||
+          task.stage === 1 && task.index >= task.list.length || task.list.some(function (id) {
+            if ((config.InGameTaskEnum || {})[id]) return false;
+            if (typeof id !== "string" || !require("BattleTaskObjectives").definition(id)) return true;
+            counted = true;
+            return false;
+          })) return issue;
+      if (counted && (!Array.isArray(task.reward) || !Array.isArray(task.targets) || task.targets.length !== task.list.length ||
+          task.targets.some(function (target) { return !Number.isSafeInteger(target) || target < 1; }) ||
+          !Number.isSafeInteger(task.progress) || task.progress < 0 || task.progress > (task.targets[task.index] || 0) ||
+          task.waveIntact !== undefined && typeof task.waveIntact !== "boolean" ||
+          task.scoredRound !== undefined && (!Number.isSafeInteger(task.scoredRound) || task.scoredRound < 1 || task.scoredRound > saved.roundNum))) return issue;
+      if (task.rewardMultiplier !== undefined && (!Number.isFinite(task.rewardMultiplier) || task.rewardMultiplier < 0)) return issue;
+      if (task.reward !== undefined || task.authored) {
+        if (!Array.isArray(task.reward) || task.reward.length !== task.list.length || task.reward.some(function (reward) {
+          return !reward || !Number.isSafeInteger(reward.id) || reward.id <= 0 || config.GoodsCfg && !config.GoodsCfg[reward.id] ||
+            typeof reward.num !== "number" || !isFinite(reward.num) || reward.num < 0;
+        })) return issue;
+      } else {
+        var definition = (config.InGameTaskCfg || []).find(function (row) { return row.ID === (saved.levelNum === 1 ? 1 : 2); });
+        if (!definition || !Array.isArray(definition.Award) || task.list.length > definition.Award.length) return issue;
+      }
     }
     return null;
   };

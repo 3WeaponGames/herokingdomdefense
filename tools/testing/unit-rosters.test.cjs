@@ -53,7 +53,11 @@ test('runtime ally lookup returns its own record while legacy data without a spl
 });
 test('counter bonuses match the target role across different unit IDs, with separate sides, boss forms and legacy fallback',()=>{
  const settings={unitTypeAssignments:{'enemy:90001:default':'fighter','enemy:90002:default':'fighter','enemy:90003:default':'skirmisher','ally:90001:default':'guardian','enemy:90011:2':'guardian'}};
- const context={exports:{},require:id=>{assert.equal(id,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/GameToolsOverrides.js'),'utf8'),context);const counters=context.exports.counters,source={cfg:{CounterType:'fighter',Suppressed:90003}},enemy=id=>({cfg:{ID:id},navigationTeam:'enemy'});
+ const context={exports:{},require:id=>{
+  if(id==='./FightingTypeDamage')return require('../../assets/_script/FightingTypeDamage');
+  assert.equal(id,'KinghtFallDataMgr');
+  return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};
+ }};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/GameToolsOverrides.js'),'utf8'),context);const counters=context.exports.counters,source={cfg:{CounterType:'fighter',Suppressed:90003}},enemy=id=>({cfg:{ID:id},navigationTeam:'enemy'});
  assert(counters(source,enemy(90001)));assert(counters(source,enemy(90002)));assert(!counters(source,enemy(90003)));assert(!counters(source,{cfg:{ID:90001},navigationTeam:'friendly'}));
  source.cfg.CounterType='guardian';assert(counters(source,{cfg:{ID:90011},spIdx:1,navigationTeam:'enemy'}));assert(!counters(source,{cfg:{ID:90011},spIdx:0,navigationTeam:'enemy'}));
  source.cfg.CounterType='';assert(!counters(source,enemy(90003)));delete source.cfg.CounterType;assert(counters(source,enemy(90003)));assert(!counters(source,enemy(90002)));assert(!counters(source,{}));

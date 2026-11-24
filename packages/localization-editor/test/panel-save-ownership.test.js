@@ -156,21 +156,63 @@ test('an ABA disk revision cannot make an old Save acknowledgement current again
 
 test('a failed Save stays recoverable but obsolete Save errors cannot alter a later loaded draft', async () => {
   const h = fixture(), p = h.panel; await p._load(); h.edit('B');
-  h.files.set(h.file, JSON.stringify(catalog('External'), null, 2) + '\n');
+  const external = JSON.stringify(catalog('External'), null, 2) + '\n'; h.files.set(h.file, external);
   await p._save(); h.flushDrafts(); assert.equal(p._dirty, true); assert.equal(p.$save.disabled, false);
   assert.equal(h.draft().catalog.entries.greeting.en, 'B'); assert.match(h.statuses.at(-1).message, /changed on disk/);
-  h.holdErrors(true); const failed = p._save(); await p._load(); h.edit('D'); h.flushDrafts();
+  h.files.set(h.file, h.original); h.holdErrors(true); const failed = p._save();
+  h.files.set(h.file, external); await h.flush();
+  await p._load(); h.edit('D'); h.flushDrafts();
   const revision = p._revision, recovery = h.storage.get(p._draftKey), statusCount = h.statuses.length;
   h.heldErrors[0](); await failed;
   assert.equal(p._revision, revision); assert.equal(p._dirty, true); assert.equal(h.storage.get(p._draftKey), recovery);
   assert.equal(h.statuses.length, statusCount); assert.equal(h.disk().catalog.entries.greeting.en, 'External');
 });
 
+test('disjoint catalog publishes rebase an open Localization draft and keep later typing separate', async () => {
+  const h = fixture(), p = h.panel; await p._load(); h.edit('From Localization');
+  const disk = catalog();
+  disk.entries['unit-guide.example'] = { en: 'From Units' };
+  const diskBytes = JSON.stringify(disk, null, 2) + '\n'; h.files.set(h.file, diskBytes);
+
+  const saving = p._save();
+  h.edit('Typed after clicking Save');
+  await h.flush();
+  assert.equal(h.compiles.length, 1);
+  assert.equal(h.compiles[0].entries.greeting.en, 'From Localization');
+  assert.equal(h.disk().catalog.entries['unit-guide.example'].en, 'From Units');
+  assert.equal(h.disk().catalog.entries.greeting.en, 'From Localization');
+  h.refreshes[0](); await saving;
+
+  assert.equal(p._revision, h.disk().revision);
+  assert.equal(p._dirty, true);
+  assert.equal(h.draft().catalog.entries.greeting.en, 'Typed after clicking Save');
+  assert.equal(h.draft().catalog.entries['unit-guide.example'].en, 'From Units');
+  const backup = [...h.files.keys()].find(file => file.includes('localization-backups'));
+  assert.equal(h.files.get(backup), diskBytes);
+});
+
+test('an identical external publish adopts the latest revision without another catalog save', async () => {
+  const h = fixture(), p = h.panel; await p._load(); h.edit('Saved elsewhere');
+  const disk = catalog('Saved elsewhere'); disk.future.keep = 'External metadata';
+  const bytes = JSON.stringify(disk); h.files.set(h.file, bytes);
+  await p._save();
+  assert.equal(p._revision, h.disk().revision);
+  assert.equal(p._catalog.future.keep, 'External metadata');
+  assert.equal(p._dirty, false);
+  assert.match(h.statuses.at(-1).message, /already saved/);
+  assert.equal(h.writes(), 0);
+  assert.equal(h.compiles.length, 0);
+  assert.equal(h.refreshes.length, 0);
+  assert.equal(h.files.get(h.file), bytes);
+});
+
 test('closing makes pending Save success/error callbacks inert and preserves the owned draft', async () => {
   for (const failure of [false, true]) {
     const h = fixture(), p = h.panel; await p._load(); h.edit('B');
-    if (failure) { h.files.set(h.file, JSON.stringify(catalog('External'))); h.holdErrors(true); }
-    const saved = p._save(); await h.flush(); h.edit('D'); p.close();
+    if (failure) h.holdErrors(true);
+    const saved = p._save();
+    if (failure) h.files.set(h.file, JSON.stringify(catalog('External')));
+    await h.flush(); h.edit('D'); p.close();
     const recovery = h.storage.get(p._draftKey), statusCount = h.statuses.length, writes = h.draftWrites();
     if (failure) h.heldErrors[0](); else h.refreshes[0](); await saved; h.flushDrafts();
     assert.equal(h.storage.get(p._draftKey), recovery); assert.equal(h.statuses.length, statusCount); assert.equal(h.draftWrites(), writes);

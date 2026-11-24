@@ -36,6 +36,117 @@ test('Tasks position follows Hero start and entering placement leaves the stage 
  assert.equal(f.edits(),0);assert.deepEqual(f.state.snap.value,before);
 });
 
+function battleTaskFixture(level=7){
+ const f=fixture(),stage=f.state.snap.value;
+ stage.level=level;stage.id='A-'+level;stage.config.Level=level;stage.tasksPosition={x:32,y:-12};
+ f.state.tab='Spawns';f.state.selection=['tasks-position'];f.state.tool='select';
+ const first={taskId:4,rewardId:8,amount:3},second={taskId:5,rewardId:9,amount:30},third={taskId:6,rewardId:9,amount:50};
+ f.state.catalog.battleTasks={
+  definitions:[
+   {id:4,label:'Upgrade a tower'},{id:5,label:'Build a mill'},{id:6,label:'Train a squad'},
+   {id:'kill-hero',label:'Defeat enemies with the hero',counted:true,defaultCount:10},
+   {id:'survive-wall',label:'Keep walls intact',counted:true,defaultCount:1},
+  ],
+  rewards:[{id:8,label:'Battle silver'},{id:9,label:'Gold'}],
+  defaults:{1:[second,first],2:[first,second,third]},
+  count:{1:2,2:2},random:{1:false,2:true},
+ };
+ const redraw=()=>{f.context.right.textContent='';f.panels.right();};
+ const button=(label,parent=f.context.right)=>descendants(parent).find(node=>node.tagName==='button'&&node.textContent===label);
+ const cards=()=>descendants(f.context.right).filter(node=>node.classList.contains('world-battle-task-card'));
+ const input=(card,label)=>descendants(card).find(node=>node.fieldName===label);
+ const rows=()=>f.state.snap.value.config.BattleTasks;
+ redraw();
+ return {...f,redraw,button,cards,input,rows};
+}
+
+test('Tasks position previews inherited task settings and customizes only the active stage draft',()=>{
+ for(const level of [1,7]){
+  const f=battleTaskFixture(level),before=clone(f.state.snap.value),original=clone(f.state.catalog.battleTasks);
+  assert.equal(f.rows(),undefined);
+  assert.match(f.context.right.textContent,level===1?/default tasks in order/:/chooses 2 tasks at random/);
+  assert.equal(f.edits(),0);
+  f.button('Customize tasks').onclick();
+  const expected=clone(before);expected.config.BattleTasks=original.defaults[level===1?1:2].slice(0,2);
+  assert.deepEqual(f.state.snap.value,expected);
+  f.redraw();assert.equal(f.cards().length,2);
+  assert.match(f.context.right.textContent,/stage reward multiplier applies to persistent rewards/);
+  assert.equal(f.input(f.context.right,'X').value,32);assert.equal(f.input(f.context.right,'Y').value,-12);
+  assert.deepEqual(f.state.catalog.battleTasks,original);
+ }
+});
+
+test('custom tasks allow repeated task definitions, reward choices, order changes and an empty list',()=>{
+ const f=battleTaskFixture(),original=clone(f.state.snap.value);
+ f.button('Customize tasks').onclick();f.redraw();
+ const first=f.cards()[0],second=f.cards()[1];
+ f.input(second,'Task').change(4);
+ f.input(first,'Reward').change(9);
+ f.input(first,'Base amount').change(0);
+ assert.throws(()=>f.input(first,'Base amount').change(-1),/whole reward amount/);
+ assert.throws(()=>f.input(first,'Base amount').change(1.5),/whole reward amount/);
+ assert.throws(()=>f.input(first,'Reward').change(999),/available reward/);
+ f.button('Move down',first).onclick();
+ f.input(first,'Base amount').change(12);
+ assert.deepEqual(f.rows(),[{taskId:4,rewardId:9,amount:30},{taskId:4,rewardId:9,amount:12}]);
+ f.button('Add task').onclick();
+ assert.deepEqual(f.rows()[2],{taskId:5,rewardId:9,amount:50});
+ f.redraw();const rendered=f.cards();
+ for(const card of rendered)f.button('Remove',card).onclick();
+ assert.deepEqual(f.rows(),[]);
+ f.redraw();assert.match(f.context.right.textContent,/Battle tasks are disabled/);
+ f.button('Use default tasks').onclick();
+ assert.deepEqual(f.state.snap.value,original);
+});
+
+test('task controls cannot overwrite a competing draft update',()=>{
+ const f=battleTaskFixture();
+ f.button('Customize tasks').onclick();f.redraw();
+ const current=f.input(f.cards()[0],'Base amount');
+ f.state.snap.value.config.BattleTasks[0].amount=500;
+ assert.throws(()=>current.change(72),/task list changed/);
+ assert.equal(f.rows()[0].amount,500);
+});
+
+test('the Task picker switches between building tasks and counted objectives with the correct defaults and help',()=>{
+ const f=battleTaskFixture(),original=clone(f.state.snap.value);
+ f.button('Customize tasks').onclick();f.redraw();
+ let [card]=f.cards(),picker=f.input(card,'Task');
+ assert.deepEqual(picker.choices.map(choice=>choice.value),['4','5','6','kill-hero','survive-wall']);
+ assert.equal(f.input(card,'Count'),undefined);
+ picker.change('kill-hero');f.redraw();
+ [card]=f.cards();
+ assert.deepEqual(f.rows()[0],{taskId:'kill-hero',rewardId:8,amount:3,count:10});
+ const required=f.input(card,'Count');
+ assert.deepEqual([required.value,required.min,required.step],[10,'1','1']);
+ assert.match(card.textContent,/Only final blows from the listed source count while this task is active/);
+ for(const invalid of [0,-1,1.5,Number.MAX_SAFE_INTEGER+1]){
+  assert.throws(()=>required.change(invalid),/whole count of at least 1/);
+ }
+ required.change(13);
+ f.button('Move down',card).onclick();
+ required.change(16);
+ assert.equal(f.rows()[1].count,16);
+ f.input(card,'Task').change('survive-wall');
+ assert.throws(()=>required.change(17),/task list changed/);
+ f.redraw();card=f.cards()[1];
+ assert.deepEqual(f.rows()[1],{taskId:'survive-wall',rewardId:8,amount:3,count:1});
+ assert.match(card.textContent,/consecutive waves.*none destroyed.*resets the streak/);
+ f.input(card,'Count').change(3);
+ f.input(card,'Task').change('4');f.redraw();
+ assert.deepEqual(f.rows()[1],{taskId:4,rewardId:8,amount:3});
+ assert.equal(f.input(f.cards()[1],'Count'),undefined);
+ const draft=clone(f.state.snap.value);delete draft.config.BattleTasks;
+ assert.deepEqual(draft,original);
+});
+
+test('Add task initializes Count when the next available objective needs it',()=>{
+ const f=battleTaskFixture();
+ f.button('Customize tasks').onclick();f.redraw();
+ f.button('Add task').onclick();f.button('Add task').onclick();f.button('Add task').onclick();
+ assert.deepEqual(f.rows().slice(-2).map(row=>[row.taskId,row.count]),[['kill-hero',10],['survive-wall',1]]);
+});
+
 test('stage identity renders a static number and a separate name without rewriting a localized title',()=>{
  const f=fixture();f.state.tab='Stage';f.state.snap.value.config.Name='[[loc:stage.desert]]';f.state.snap.stageName='7. Desert';const before=clone(f.state.snap.value);f.panels.right();
  const rows=descendants(f.context.right),number=rows.find(row=>row.tagName==='output'&&row.attributes['aria-label']==='Stage number'),name=rows.find(row=>row.fieldName==='Stage name');

@@ -269,7 +269,13 @@ var def_KinghtFallUIHome = function (t) {
   _ctor.prototype.onCloseUI = function (t) {
     var e = this;
     if (t == $z1Config.UIID.UIGuide) {
-      if (require("TutorialFlow").active(this)) this.scheduleOnce(function () { e.startGuide(); });
+      var flow = require("TutorialFlow");
+      if (flow.active(this)) this.scheduleOnce(function () {
+        var manager = $z1UIMgr.UIMgr.getInstance();
+        var details = manager.getUIById && manager.getUIById($z1KinghtFallConfig.KinghtFallUIID.UITalentInfo);
+        if (flow.active(details) && details.showTalentGuide) details.showTalentGuide();
+        else e.startGuide();
+      });
       return;
     }
     if (t == $z1KinghtFallConfig.KinghtFallUIID.UINewModular) {
@@ -278,6 +284,7 @@ var def_KinghtFallUIHome = function (t) {
       this.scheduleOnce(function () {
         e.startGuide();
       });
+      return;
     }
     if (t == $z1KinghtFallConfig.KinghtFallUIID.UIExchangeCode) {
       this.canGuide = true;
@@ -295,14 +302,16 @@ var def_KinghtFallUIHome = function (t) {
       return;
     }
     if ($z1PlatformSetting.PlatformSetting.currentPlatform != $z1BasePlatform.Platform.WEB_LINK && this.canGuide) {
-      var a = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
+      var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+      var a = guide.getGroupId();
       if (!t || a == t) {
         var o = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(a);
         if (!(o.length <= 0)) {
           var r;
-          var l = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId();
+          var l = guide.getStepId();
           var g = o[l];
           if (!g) return;
+          if (a === 6 && l === 2 && !e) return;
           if (a >= 4 && a <= 6 && l > 0 && !e) { this.resumeGuidePage(a); return; }
           switch (a) {
             case 1:
@@ -403,17 +412,12 @@ var def_KinghtFallUIHome = function (t) {
               if (this.isLock(1)) {
                 return;
               }
-              (r = new $z1UIGuide.GuildCfg()).isWeek = !!g.Close;
-              r.showHand = g.Finger;
-              r.hideMask = !g.Mask;
-              r.tipstring = g.Describe;
-              r.showAni = !!g.ShowKing;
+              r = flow.config(g);
+              r.lightType = 1;
+              r.onDismiss = function () { return flow.state(guide, a + 1, 0); };
               switch (l) {
                 case 0:
-                  r.lightType = 1;
-                  r.addSize = new cc.Size(0, 0);
                   r.distNode = this.togCon.toggleItems[1].node;
-                  r.deviationTipsAll = cc.v2(0, g.Offset || 0);
                   r.callBack = function () {
                     i.togCon.toggleItems[1].isChecked = true;
                     i.showView(i.togCon.toggleItems[1]);
@@ -422,21 +426,17 @@ var def_KinghtFallUIHome = function (t) {
                   break;
                 case 1:
                 case 2:
-                  if (e) {
-                    r.lightType = 1;
-                    r.addSize = new cc.Size(0, 0);
-                    r.distNode = e;
-                    r.deviationTipsAll = cc.v2(0, g.Offset || 0);
-                    n && (r.callBack = n);
-                    $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide16);
-                  } else {
-                    r = null;
-                  }
+                  if (!e || (l === 1 ? typeof n !== "function" || flow.homeBlocked() : n)) return;
+                  r.distNode = e;
+                  r.callBack = n;
+                  $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide16);
+                  break;
               }
+              break;
           }
           if (r) {
             if (options && options.informational) { r.isWeek = true; r.tipstring = options.text || r.tipstring; }
-            flow.present(this, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData(), a, l, o, r);
+            flow.present(this, guide, a, l, o, r);
           }
         }
       }
@@ -445,11 +445,6 @@ var def_KinghtFallUIHome = function (t) {
   _ctor.prototype.resumeGuidePage = function (group) {
     var index = { 4: 0, 5: 3, 6: 1 }[group];
     if (index === undefined || this.isLock(index)) return;
-    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
-    var manager = $z1UIMgr.UIMgr.getInstance();
-    if (group === 6 && guide.getStepId() === 2 && !manager.isopening && !require("TutorialFlow").homeBlocked()) {
-      if (!require("TutorialFlow").state(guide, 6, 1)) return;
-    }
     var toggle = this.togCon.toggleItems[index]; toggle.isChecked = true; this.showView(toggle);
     if (!this.tagNode || !this.tagNode.getComponentsInChildren) return;
     this.tagNode.getComponentsInChildren($z1BaseCtrl.default).forEach(function (controller) {

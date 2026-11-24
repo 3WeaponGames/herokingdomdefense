@@ -39,6 +39,50 @@ test('reward JSON shape errors are diagnostics rather than crashing shared-stage
  for(const value of [{},null,17,'bad']){const d=fixture();d.A.data.LevelCfg[0].WaveCfg[0].WaveReward=value;const before=JSON.stringify(d);assert(introduced(d).some(i=>i.path.includes('WaveReward')));assert.strictEqual(JSON.stringify(d),before);}
  for(const value of [{},null,[{}],[null]]){const d=fixture();d.A.data.LevelCfg[0].ChallengeReward=value;const before=JSON.stringify(d);assert(introduced(d).some(i=>i.path.includes('ChallengeReward')));assert.strictEqual(JSON.stringify(d),before);}
 });
+test('stage battle tasks accept an ordered list or no tasks, and validate every reward',()=>{
+ const d=fixture(),stage=d.A.data.LevelCfg[0],path=['LevelCfg',0,'BattleTasks'];
+ const problems=()=>Schema.validate(d,[{doc:'A',path}]).filter(i=>i.path[2]==='BattleTasks');
+ stage.BattleTasks=[{taskId:4,rewardId:2001,amount:50},{taskId:1,rewardId:2003,amount:0,extension:{keep:true}}];
+ const before=JSON.stringify(stage);assert.deepStrictEqual(problems(),[]);assert.strictEqual(JSON.stringify(stage),before);
+ stage.BattleTasks=[{taskId:999,rewardId:'2001',amount:-1},null,{taskId:1,rewardId:999,amount:1.5}];
+ assert.deepStrictEqual(problems().map(i=>i.path.slice(3)),[[0,'taskId'],[0,'rewardId'],[0,'amount'],[1],[2,'rewardId'],[2,'amount']]);
+ stage.BattleTasks={};assert.deepStrictEqual(problems().map(i=>i.path),[path]);
+ stage.BattleTasks=[];assert.deepStrictEqual(problems(),[]);
+ delete stage.BattleTasks;assert.deepStrictEqual(problems(),[]);
+});
+test('the battle task catalog resolves names and shows the inherited sequence or pool',()=>{
+ const data=original.A.data,labels=require('../lib/stage-tasks').catalog(data,name=>Schema.resolve(name,original.catalog.data,'en'));
+ const [fixed,random]=data.InGameTaskCfg;
+ assert.deepStrictEqual(labels.defaults[1].map(task=>task.taskId),fixed.MissionID);
+ assert.deepStrictEqual(labels.defaults[2].map(task=>task.taskId),random.MissionID);
+ assert.strictEqual(labels.count[1],fixed.MissionID.length);
+ assert.strictEqual(labels.count[2],random.MissionNumber);
+ assert.deepStrictEqual(labels.random,{1:false,2:true});
+ assert.strictEqual(labels.defaults[2][random.MissionID.length-1].amount,random.Award.at(-1)[1]);
+ assert(labels.definitions.some(task=>task.id===1&&task.label==='Build 1 Tower'));
+ assert(labels.rewards.some(reward=>reward.id===2003&&reward.label==='Silver'));
+});
+test('counted Advisor objectives share their catalog, validation and localized progress format',()=>{
+ const Objectives=require('../../../assets/_script/BattleTaskObjectives'),d=fixture(),stage=d.A.data.LevelCfg[0];
+ const catalog=require('../lib/stage-tasks').catalog(d.A.data,name=>Schema.resolve(name,d.catalog.data,'en'));
+ const path=['LevelCfg',0,'BattleTasks'],problems=()=>Schema.validate(d,[{doc:'A',path}]).filter(i=>i.path[2]==='BattleTasks');
+ stage.BattleTasks=Objectives.definitions.map(({id,defaultCount})=>({taskId:id,count:defaultCount,rewardId:2003,amount:5}));
+ assert.equal(stage.BattleTasks.length,8);
+ assert.deepStrictEqual(problems(),[]);
+ for(const row of stage.BattleTasks){
+  assert(catalog.definitions.some(task=>task.id===row.taskId&&task.counted&&task.defaultCount===row.count));
+  const token=Objectives.descriptionToken(row.taskId,row.count,0);
+  const recipe=JSON.parse(decodeURIComponent(token.slice(6,-2)));
+  assert.deepStrictEqual(recipe.params,[0,row.count]);
+  for(const language of ['en','zh'])assert.match(d.catalog.data.entries[recipe.template][language],/\{0\}\/\{1\}/);
+ }
+ for(const count of [undefined,0,-1,1.5,'10',Number.MAX_SAFE_INTEGER+1]){
+  stage.BattleTasks[0].count=count;
+  assert.deepStrictEqual(problems().map(i=>i.path.slice(3)),[[0,'count']]);
+ }
+ stage.BattleTasks[0].taskId='kill-unknown';
+ assert.deepStrictEqual(problems().map(i=>i.path.slice(3)),[[0,'taskId']]);
+});
 test('building branch cycles and unknown barracks units are rejected',()=>{const d=fixture();d.A.data.BuildEnum['1'].levelList[2].BranchBuild=[1];d.A.data.BuildEnum['3'].levelList[0].Data[1]=123;const errors=introduced(d);assert(errors.some(i=>/cycle/.test(i.message)));assert(errors.some(i=>/Barracks unit/.test(i.message)));});
 test('hero equipment stat edits preserve identifiers and source schema',()=>{const d=fixture();d.A.data.EquipCfg[0].levelInfo[0].Parameters=150;assert.deepStrictEqual(introduced(d),[]);d.A.data.EquipCfg[0].levelInfo[0].Level=2;assert(introduced(d).some(i=>/Equipment level/.test(i.message)));});
 test('talent row gaps and missing effect references are rejected',()=>{const d=fixture();d.A.data.TalentLevelCfg[0].Level=2;d.A.data.TalentLevelCfg[0].kindID=999;const errors=introduced(d);assert(errors.some(i=>/skipped progression/.test(i.message)));assert(errors.some(i=>/Talent effect does not exist/.test(i.message)));});
@@ -64,7 +108,13 @@ test('authored attack defaults validate independently from custom timings',()=>{
 test('timing defaults must be a table of bounded numeric markers',()=>{const d=fixture();for(const bad of [null,[],5]){d.overrides.data.timingDefaults=bad;assert(introduced(d).some(i=>/unit timing table/.test(i.message)));}d.overrides.data.timingDefaults={'enemy:90001:default':{attack:NaN}};assert(introduced(d).some(i=>/10 seconds/.test(i.message)));});
 test('disabling the entire available perk pool is rejected',()=>{const d=fixture();d.A.data.BuffCfg.forEach(p=>d.overrides.data.perks[p.ID]={enabled:false});const errors=introduced(d);assert(errors.some(i=>/at least three/.test(i.message)));assert(errors.some(i=>/guaranteed/.test(i.message)));});
 test('unused targeting metadata is read-only rather than a nonfunctional editor control',()=>{assert.strictEqual(Schema.descriptor('AttackPriority').readOnly,true);assert(/does not read/.test(Schema.descriptor('AttackPriority').help));});
-test('stage wave removal validates dependent equipment unlocks',()=>{const d=fixture();d.A.data.LevelCfg[0].WaveCfg.pop();const issues=Schema.validate(d,[{doc:'A',path:['LevelCfg',0,'WaveCfg']}]);assert(issues.some(i=>i.severity==='error'&&/Equipment unlock/.test(i.message)));});
+test('stage wave removal validates dependent equipment unlocks',()=>{
+ const d=fixture(),stage=d.A.data.LevelCfg[0];
+ d.A.data.EquipCfg[0].Unlock=[stage.Level,stage.WaveCfg.length];
+ stage.WaveCfg.pop();
+ const issues=Schema.validate(d,[{doc:'A',path:['LevelCfg',0,'WaveCfg']}]);
+ assert(issues.some(i=>i.severity==='error'&&/Equipment unlock/.test(i.message)));
+});
 test('composite shared settings reject negative, malformed and unknown reward values without changing authored sentinel locks',()=>{const good=fixture();assert(!Schema.validate(good).some(i=>i.path[0]==='ParameterCfg'));for(const [id,value]of [['60005','-5,15'],['60005','5,NaN'],['60005','5'],['60009','999999,10'],['60009','2002,-1'],['60008','-2,0'],['60008','1,-1']]){const d=fixture();d.A.data.ParameterCfg[id].Value=value;assert(Schema.validate(d).some(i=>i.path[0]==='ParameterCfg'&&i.path[1]===id&&i.severity==='error'),id+':'+value);}const legacy=fixture();legacy.A.data.ParameterCfg['60005'].Value='-5,15';const issues=Schema.validate(legacy,[{doc:'A',path:['ParameterCfg','60018','Value']}]).filter(i=>i.path[0]==='ParameterCfg'&&i.path[1]==='60005');assert(issues.length&&issues.every(i=>i.severity==='warning'));});
 test('saved attack playback validates per side and form without seeding any defaults',()=>{
  const d=fixture(),defaults=JSON.stringify(d.overrides.data.timingDefaults);d.overrides.data.animationSpeeds={'enemy:90001:default':1.2,'ally:90004:default':.8,'hero:hero:default':1.1,'enemy:90011:2':1.5};

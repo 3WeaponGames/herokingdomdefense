@@ -1206,7 +1206,7 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
     });
   });
   active.forEach(function (entry) {
-    var actor=entry.actor,feet=point(actor.node,view.main,0,0,cache),hits=[],mismatch=false,base=actor.node.zIndex;
+    var actor=entry.actor,feet=entry.feet||point(actor.node,view.main,0,0,cache),hits=[],mismatch=false,base=actor.node.zIndex;
     // Avoid skinning units unless their feet/body could be near a wall module.
     if (!surfaces.some(function(surface){return behindGate(surface,feet)||actor.node.zIndex<surface.root.zIndex;})) return;
     if (!entry.sources) {
@@ -1444,15 +1444,15 @@ DepthView.prototype.prepareObjects = function () {
 // This cutoff is in map coordinates; camera zoom and hero scale cannot turn
 // underfoot flowers or small stones into occluders.
 var SMALL_SCENERY_HEIGHT = 25;
-function actorGroundY(actor,main,hero,cache,fallback) {
+function actorGroundPoint(actor,main,hero,cache,fallback) {
   var owner=actor.node||fallback,horse=actor===hero&&actor.ctrPlayAni&&actor.ctrPlayAni.spAniMa;
   var ground=owner._depthGround||horse&&horse.node||owner;
-  if(ground===owner&&(!owner.parent||owner.parent===main))return owner.y;
-  return point(ground,main,0,0,cache).y;
+  if(ground===owner&&(!owner.parent||owner.parent===main))return {x:owner.x,y:owner.y};
+  return point(ground,main,0,0,cache);
 }
 function sceneryLocalShape(view,node,sources) {
   var shapes=view._sceneryShapes||(view._sceneryShapes=new WeakMap()),saved=shapes.get(node);
-  if(saved&&saved.stamps.every(function(stamp){var source=stamp[0],child=source.node;return child&&stamp[1]===source.spriteFrame&&stamp[2]===source.skeletonData&&stamp[3]===child.width&&stamp[4]===child.height&&stamp[5]===child.x&&stamp[6]===child.y&&stamp[7]===child.scaleX&&stamp[8]===child.scaleY&&stamp[9]===child.angle&&stamp[10]===source.enabled&&stamp[11]===child.parent&&stamp[12]===child.activeInHierarchy&&stamp[13]===child.anchorX&&stamp[14]===child.anchorY&&stamp[15]===source.trim;}))return saved.box;
+  if(saved&&(!sources||sources.length===saved.stamps.length)&&saved.stamps.every(function(stamp,index){var source=stamp[0],child=source.node;return (!sources||sources[index]===source)&&child&&stamp[1]===source.spriteFrame&&stamp[2]===source.skeletonData&&stamp[3]===child.width&&stamp[4]===child.height&&stamp[5]===child.x&&stamp[6]===child.y&&stamp[7]===child.scaleX&&stamp[8]===child.scaleY&&stamp[9]===child.angle&&stamp[10]===source.enabled&&stamp[11]===child.parent&&stamp[12]===child.activeInHierarchy&&stamp[13]===child.anchorX&&stamp[14]===child.anchorY&&stamp[15]===source.trim;}))return saved.box;
   if(!node.getComponentsInChildren&&!sources)return null;
   sources=sources||(saved?saved.stamps.map(function(stamp){return stamp[0];}):(cc.Sprite?node.getComponentsInChildren(cc.Sprite):[]).concat(sp.Skeleton?node.getComponentsInChildren(sp.Skeleton):[]));
   var box=null;
@@ -1491,6 +1491,55 @@ function sceneryProps(view,ordered,main) {
   });
   return props;
 }
+function modularObject(view, object) {
+  return view.gateOcclusion && object.sources.some(function(source) {
+    var data = source.skeletonData && source.skeletonData.skeletonJson;
+    return data && data.wallKit;
+  });
+}
+function buildingProps(view, groups, main) {
+  var props = [];
+  (view.objects || []).forEach(function(object) {
+    var node = object.node, group = groups.get(node._depthBuildingOwner || node);
+    if (!group || !group.building || node._depthGroundVisual || node.activeInHierarchy === false) return;
+    refreshBuildingSources(object);
+    if (modularObject(view, object)) return;
+    var box = sceneryWorldShape(view, node, main, object.sources);
+    if (box) props.push({group:group, box:box, building:object, ground:point(node._depthGround || node, main).y});
+  });
+  return props;
+}
+function buildingFrontY(object, main, footprints, x, ground) {
+  if (!object.buildings || !Number.isFinite(x)) return ground;
+  var polygons = footprints.get(object);
+  if (!polygons) {
+    polygons = [];
+    object.buildings.forEach(function(binding) {
+      var owner = binding.owner;
+      if (owner.isDestroyed || !owner.getWposPhyCol2 || owner.getIsWork && !owner.getIsWork()) return;
+      owner.getWposPhyCol2().forEach(function(part) {
+        if (part.points.length >= 3 && (!part.collider || !part.collider.sensor)) {
+          polygons.push(part.points.map(function(p) { return main.convertToNodeSpaceAR(p); }));
+        }
+      });
+    });
+    footprints.set(object, polygons);
+  }
+  // A sloping footprint can put its near corner above the model origin.
+  // Compare feet against the near edge at their X, or the closest side tip.
+  var nearest = Infinity, front = Infinity;
+  polygons.forEach(function(polygon) {
+    for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      var a = polygon[j], b = polygon[i], dx = b.x - a.x;
+      var t = dx ? Math.max(0, Math.min(1, (x - a.x) / dx)) : 0;
+      var distance = Math.abs(a.x + t * dx - x);
+      var y = dx ? a.y + t * (b.y - a.y) : Math.min(a.y, b.y);
+      if (distance < nearest - .0001) { nearest = distance; front = y; }
+      else if (distance <= nearest + .0001) front = Math.min(front, y);
+    }
+  });
+  return Number.isFinite(front) ? Math.max(ground, front) : ground;
+}
 // Tall scenery is usually fixed for the whole stage. Reuse a small broadphase
 // while its exact cached boxes and authored order remain unchanged. Oversized
 // props stay in a short always-tested list rather than filling thousands of cells.
@@ -1518,7 +1567,7 @@ function scenerySpatialCandidates(index,box) {
   // Keep the original prop traversal order and its stable topological tie breaks.
   return result.sort(function(a,b){return a-b;});
 }
-function sceneryActorOrder(view,ordered,main,props) {
+function sceneryActorOrder(view,ordered,main,props,footprints) {
   if(!props.length)return;
   var hero=view.game.ctrPlay,actors=[],scenery=[],indices=new Map(),initial=new Map(),minimum=0;
   // Authored scenery is one immutable painter sequence. In particular, pieces
@@ -1540,7 +1589,8 @@ function sceneryActorOrder(view,ordered,main,props) {
       var index=indices.get(prop.group);
       // A short prop stays under a unit where they overlap, without changing
       // the depth of distant units or the authored scenery order.
-      if(!prop.low&&actor.ground>prop.group.ground)behind.push(index);else lower=Math.max(lower,index+1);
+      var ground=prop.building?buildingFrontY(prop.building,main,footprints,actor.feet.x,prop.ground):prop.group.ground;
+      if(!prop.low&&actor.ground>ground)behind.push(index);else lower=Math.max(lower,index+1);
     },candidates=spatial&&scenerySpatialCandidates(spatial,shape);
     if(candidates)for(var i=0;i<candidates.length;i++)visit(props[candidates[i]]);
     else props.forEach(visit);
@@ -1556,15 +1606,16 @@ function sceneryActorOrder(view,ordered,main,props) {
   for(var index=0;index<=scenery.length;index++){while(next<placements.length&&placements[next].slot===index)result.push(placements[next++].group);if(index<scenery.length)result.push(scenery[index]);}
   ordered.splice.apply(ordered,[0,ordered.length].concat(result));
 }
-DepthView.prototype.sort = function () {
+DepthView.prototype.sort = function (footprints) {
   var heroActor=this.game.ctrPlay,hero=heroActor.node,main=this.main,groups=new Map(),maximum=1;
   main.children.forEach(function (node, index) {
     if (node._occlusionMask) return;
     var groundVisual = !!node._depthGroundVisual, owner = groundVisual ? node : node._depthBuildingOwner || node, group = groups.get(owner);
     if (!group) {
       var building=!groundVisual&&!!node._depthBuilding,actor=node._combatActor||(node===hero?heroActor:null);
-      var ground=actor?actorGroundY(actor,main,heroActor,null,owner):owner._depthGround?point(owner._depthGround,main).y:owner.y;
-      group = { owner:owner, ground:ground, actor:node._combatActor || node === hero ? 1 : 0, index:index, building:building, priority:!Number.isFinite(node._depthLayerOrder)&&node._depthMapForeground?1:0, nodes:[] };
+      var feet=actor?actorGroundPoint(actor,main,heroActor,null,owner):null;
+      var ground=feet?feet.y:owner._depthGround?point(owner._depthGround,main).y:owner.y;
+      group = { owner:owner, ground:ground, feet:feet, actor:node._combatActor || node === hero ? 1 : 0, index:index, building:building, priority:!Number.isFinite(node._depthLayerOrder)&&node._depthMapForeground?1:0, nodes:[] };
       group.band = groundVisual ? -1 : building ? node._depthBuildingOrder : node._depthLayerOrder;
       if (!building && !Number.isFinite(group.band) && (node._depthScenery || node._depthMapObject)) group.band = node._depthMapForeground ? 3 : 1;
       if (Number.isFinite(group.band)) maximum = Math.max(maximum, group.band);
@@ -1589,7 +1640,7 @@ DepthView.prototype.sort = function () {
     else if (!Number.isFinite(g.band)) g.band=0;
   });
   ordered.sort(function(a,b){return a.band-b.band||a.priority-b.priority||b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
-  sceneryActorOrder(this,ordered,main,scenery);
+  sceneryActorOrder(this,ordered,main,scenery.concat(buildingProps(this,groups,main)),footprints||new Map());
   // Reserve one step for silhouettes and another for local gate intersections.
   ordered.forEach(function (group,index) { group.nodes.forEach(function(node){node.zIndex=index*4;}); });
   if (main.sortAllChildren) main.sortAllChildren();
@@ -1763,7 +1814,8 @@ DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
 };
 DepthView.prototype.update = function () {
   if (!this.main.activeInHierarchy) return;
-  this.sort();
+  var footprints = new Map();
+  this.sort(footprints);
   if (this.captureSupported === false) return;
   var captureScope=this.nativeCapture?new NativeCaptureScope(this):null;
   if(captureScope){captureScope._sceneRepairOwner=this;this._nativeCaptureScope=captureScope;}
@@ -1780,12 +1832,12 @@ DepthView.prototype.update = function () {
   var actors = [{ actor: game.ctrPlay, tint: ALLY }].concat(game.gameData.getSoldierList().map(function (actor) { return { actor: actor, tint: ALLY }; }), game.gameData.getEnemyList().map(function (actor) { return { actor: actor, tint: ENEMY }; }));
   if (game._unitTest) game._unitTest.actors.forEach(function (actor) { actors.push({ actor: actor, tint: ENEMY }); });
   var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
-  active.forEach(function(entry){entry.groundY=actorGroundY(entry.actor,self.main,game.ctrPlay,cache);});
+  active.forEach(function(entry){entry.feet=actorGroundPoint(entry.actor,self.main,game.ctrPlay,cache);});
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));
   this.objects.forEach(function (object) {
     refreshBuildingSources(object);
     // Modular doors/posts already resolve exact per-surface geometry below.
-    var modular=self.gateOcclusion&&object.sources.some(function(source){return source.skeletonData&&source.skeletonData.skeletonJson&&source.skeletonData.skeletonJson.wallKit;});
+    var modular=modularObject(self,object);
     var perSurfaceOnly=modular&&self.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&typeof sp.Skeleton==="function"&&object.sources.length>0&&object.sources.every(function(source){
       return source instanceof sp.Skeleton&&source._skeleton&&typeof source._skeleton.updateWorldTransform==="function"&&source._nativeSkeleton&&typeof source._nativeSkeleton.getBoundingBox==="function"&&source.skeletonData&&source.skeletonData.skeletonJson&&source.skeletonData.skeletonJson.wallKit;
     });
@@ -1808,9 +1860,10 @@ DepthView.prototype.update = function () {
     if(!modular&&!object.node._depthGroundVisual&&!object.node._depthMapFlat&&!smallScenery&&box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
       // Ground is unconditional: stale/custom layer order cannot tint a unit
       // standing in front of, or exactly level with, an object's ground point.
-      if(!(entry.groundY>ground))return;
+      if(!(entry.feet.y>ground))return;
       if(!entry.sources){entry.sources=bodyVisuals(entry.actor);entry.bounds=entry.sources.reduce(function(value,source){return union(value,bounds(source,self.main,cache));},null);}
-      if(overlaps(entry.bounds,box)&&(!visible||overlaps(entry.bounds,visible)))hidden.push(entry);
+      if(overlaps(entry.bounds,box)&&(!visible||overlaps(entry.bounds,visible))&&
+          entry.feet.y>buildingFrontY(object,self.main,footprints,entry.feet.x,ground))hidden.push(entry);
     });
     var hiddenActors=new Set(hidden.map(function(entry){return entry.actor;}));
     object.masks.forEach(function (mask, actor) {

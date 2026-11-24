@@ -10,10 +10,11 @@ const EnemyClasses=require('../../game-data-editor/lib/enemy-classes');
 const AssetValidation=require('../../game-data-editor/lib/asset-validation');
 const Packs=require('./unit-packs'),Boss=require('./boss-model');
 const clone=value=>JSON.parse(JSON.stringify(value)),hash=text=>crypto.createHash('sha256').update(text).digest('hex');
-function read(file){return JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));}
+function parse(text){return JSON.parse(text.replace(/^\uFEFF/,''));}
+function read(file){return parse(fs.readFileSync(file,'utf8'));}
 class Service{
   constructor(root,options){this.root=path.resolve(root);this.relativeFile=options&&options.file||'assets/resources/characters/catalog.json';this.file=path.join(this.root,this.relativeFile);this.version=0;this.reload();}
-  reload(){const text=fs.readFileSync(this.file,'utf8'),original=JSON.parse(text);this.text=text;this.revision=hash(text);this.original=original;this.data=clone(original);this.undoStack=[];this.redoStack=[];this.version++;return this.snapshot();}
+  reload(text=fs.readFileSync(this.file,'utf8')){const original=parse(text);this.text=text;this.revision=hash(text);this.original=original;this.data=clone(original);this.undoStack=[];this.redoStack=[];this.version++;return this.snapshot();}
   snapshot(){return {version:this.version,revision:this.revision,dirty:!JSONDocument.equal(this.original,this.data),canUndo:!!this.undoStack.length,canRedo:!!this.redoStack.length,data:clone(this.data),savedData:clone(this.original)};}
   check(request){if(!request||request.version!==this.version)throw Error('The character draft changed in another window. Reload the latest draft before editing.');}
   assets(){const original=read(path.join(this.root,'assets/resources/character-parts/catalog.json'));const mounts=this.relativeFile==='assets/resources/characters/catalog.json'&&fs.existsSync(path.join(this.root,'assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json'))?require('./original-mounts').assets():[];return Object.assign({},original,{parts:original.parts.concat(UnitLibrary.load(this.root).parts,mounts)});}
@@ -46,7 +47,13 @@ class Service{
     return result;
   }
   describe(base,noRuntime){if(!this.units().some(u=>u.type===base.type&&u.id===String(base.id)))throw Error('Choose an existing character base.');const description=base.model?require('./current-model').describe(this.root,base,noRuntime):base.source?require('./mounts').describe(this.root,base,noRuntime):Units.describe(this.root,{type:base.type,id:base.id,noRuntime:!!noRuntime});if(!noRuntime)description.previewWorld=require('./preview-reference').world(this.root,base,description);return description;}
-  load(){return {...this.snapshot(),parts:this.assets().parts,units:this.units(true),sources:UnitLibrary.load(this.root).sources};}
+  load(){
+    if(JSONDocument.equal(this.original,this.data)){
+      const text=fs.readFileSync(this.file,'utf8');
+      if(hash(text)!==this.revision)this.reload(text);
+    }
+    return {...this.snapshot(),parts:this.assets().parts,units:this.units(true),sources:UnitLibrary.load(this.root).sources};
+  }
   validate(data){
     if(!data||data.version!==1||!data.profiles||typeof data.profiles!=='object'||Array.isArray(data.profiles)||!data.assignments||typeof data.assignments!=='object'||Array.isArray(data.assignments))throw Error('Invalid character document.');
     const assets=new Map(this.assets().parts.map(p=>[p.id,p])),units=this.validationUnits?this.validationUnits():this.units();
@@ -143,19 +150,23 @@ class Service{
   }
   save(request){
     this.check(request);if(JSONDocument.equal(this.original,this.data))return {...this.snapshot(),result:{saved:false,files:[]}};
-    this.validate(this.data);
-    const before=fs.readFileSync(this.file,'utf8');if(hash(before)!==this.revision)throw Error('The saved character file changed outside this draft. Your draft is intact; reload or copy it before saving.');
-    const appearanceBefore={...this.original},appearanceAfter={...this.data};delete appearanceBefore.unitAnimationSpeeds;delete appearanceAfter.unitAnimationSpeeds;
+    const before=fs.readFileSync(this.file,'utf8'),changedOnDisk=hash(before)!==this.revision;
+    const original=changedOnDisk?parse(before):this.original;
+    const data=changedOnDisk?JSONDocument.merge(this.original,this.data,original,parts=>
+      Error('The saved catalog changed outside this draft at '+parts.join(' / ')+'. Your draft is intact.')):this.data;
+    if(JSONDocument.equal(original,data))return {...this.reload(before),result:{saved:false,files:[]}};
+    const candidate=Object.assign(Object.create(Object.getPrototypeOf(this)),this,{original,data});
+    candidate.validate(data);
+    const appearanceBefore={...original},appearanceAfter={...data};delete appearanceBefore.unitAnimationSpeeds;delete appearanceAfter.unitAnimationSpeeds;
     const speedOnly=this.relativeFile==='assets/resources/characters/catalog.json'&&JSONDocument.equal(appearanceBefore,appearanceAfter);
     // Playback-only edits publish the catalog directly. They must not rebuild
     // fitted models, prefabs, item layers or animation contracts.
-    const baked=speedOnly?{data:clone(this.data),files:new Map(),reads:new Map()}:require('./appearance-build').plan(this.root,this.publication(),this.assets().parts,this.original,this.relativeFile==='assets/resources/characters/catalog.json'?'characters':'items');
-    const output=JSONDocument.patch(before,this.original,baked.data),files=baked.files;
+    const baked=speedOnly?{data:clone(data),files:new Map(),reads:new Map()}:require('./appearance-build').plan(this.root,candidate.publication(),candidate.assets().parts,original,this.relativeFile==='assets/resources/characters/catalog.json'?'characters':'items');
+    const output=JSONDocument.patch(before,original,baked.data),files=baked.files;
     files.set(this.relativeFile,output);baked.reads.set(this.file,Buffer.from(before));
     const result=require('./asset-transaction').commit(this.root,files,baked.reads,this.relativeFile);
     Units.invalidate();
-    this.data=baked.data;this.text=output;this.revision=hash(output);this.original=clone(this.data);this.undoStack=[];this.redoStack=[];this.version++;
-    return {...this.snapshot(),result:Object.assign({saved:true},result)};
+    return {...this.reload(output),result:Object.assign({saved:result.files.length>0},result)};
   }
   partImage(part){return url.pathToFileURL(path.join(this.root,part.image)).href;}
 }

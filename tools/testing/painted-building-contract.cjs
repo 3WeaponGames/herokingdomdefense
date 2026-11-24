@@ -55,26 +55,12 @@ function legacyRead(file,value){
 function withoutAuthoring(value){
  const result=clone(value);for(const family of Object.values(result.BuildEnum||{})){delete family.UnbuiltPad;for(const row of family.levelList||[])for(const key of ['WorldScale','ModelOffset','PartScale','Blocker','Shadow','PurchaseField','SpawnPosition','SpawnPositions','AdUnitPosition','DropShadow','Nightlight'])delete row[key];}return result;
 }
-// Apply reviewed combat changes to the historical artwork baseline.
+// Apply the workbook stats to the historical artwork baseline.
 function currentRow(id,value){
  const row=withoutAuthoring({BuildEnum:{current:{levelList:[value]}}}).BuildEnum.current.levelList[0];
- if(id==='3')row.Data[0]=fixture.barracksCapacities[row.level-1];
- if(id==='1'||id==='2'){
-  const family=progression.families.find(item=>item.category===Number(id)&&item.indices.includes(row.index));
-  const stats=row.level===4?{Hp:family.newTier4Hp,Data:family.newTier4Data}:family.originalStatRows.find(item=>item.index===row.index);
-  row.Hp=stats.Hp;
-  row.Data=stats.Data;
- }
- if(id==='1'){
-  row.Tower={attackType:'arrow',shotsPerVolley:row.level>=3?2:1,projectileSpeed:700};
- }
- if(id==='2'){
-  const mode=row.Tower?.attackType||'arrow';
-  if(mode==='arrow')row.Tower={attackType:'arrow',shotsPerVolley:row.level,projectileSpeed:700};
-  if(mode==='cannon')Object.assign(row.Tower,{splashRadius:10*(row.level+3),splashFalloff:[.1,.15,.2,.25][row.level-1]});
-  if(mode==='sniper')Object.assign(row.Tower,{projectileSpeed:2100,pierceTargets:row.level+1});
- }
- return row;
+ const stats=progression.buildingStats[id+':'+row.index];
+ assert(stats,'reviewed workbook row '+id+'/'+row.index);
+ return Object.assign(row,clone(stats));
 }
 function assertConfig(file,config){
   config=require('./building-night-light-contract.cjs').config(config);

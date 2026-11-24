@@ -3,10 +3,10 @@
     "spine": "3.8.99",
     "images": "",
     "audio": "",
-    "x": -77.2,
-    "y": -2.4,
-    "width": 158.16,
-    "height": 181.82
+    "x": -50.5945945945946,
+    "y": 0,
+    "width": 101.1891891891892,
+    "height": 120
   },
   "bones": [
     {
@@ -496,59 +496,309 @@
   ],
   "slots": [
     {
+      "name": "Rider/HandLeft/Shield",
+      "bone": "Rider/HandLeft/Shield",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandLeft/Sub_Item",
+      "bone": "Rider/HandLeft/Sub_Item",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/Dead/Bone",
+      "bone": "Rider/Dead/Bone",
+      "attachment": "u_694052ddfa2103940ad31009cdf01698",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Dead/Bone2",
+      "bone": "Rider/Dead/Bone2",
+      "attachment": "u_694052ddfa2103940ad31009cdf01698",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Dead/Bone3",
+      "bone": "Rider/Dead/Bone3",
+      "attachment": "u_694052ddfa2103940ad31009cdf01698",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Dead/Bone4",
+      "bone": "Rider/Dead/Bone4",
+      "attachment": "u_694052ddfa2103940ad31009cdf01698",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Dead/Gravestone",
+      "bone": "Rider/Dead/Gravestone",
+      "attachment": "u_2a79d245eb9a7284dbb836208cb837a9",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Dead/Ghost",
+      "bone": "Rider/Dead/Ghost",
+      "attachment": "u_04e3f7427d18b7a4bbbc4dc0556ea034",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Shadow",
+      "bone": "Rider/Shadow",
+      "attachment": "u_304d3052c1658404eb3c53902e5b415c",
+      "color": "ffffff55"
+    },
+    {
+      "name": "Rider/Mount/Mount_Down",
+      "bone": "Rider/Mount/Mount_Down",
+      "color": "ffffff00"
+    },
+    {
       "name": "Rider/Body",
       "bone": "Rider/Body",
       "attachment": "u_0a7e6d409c450e145bcb203db6e508b8",
-      "color": "ffbdabff",
-      "dark": "000000"
+      "color": "ffbdabff"
     },
     {
       "name": "Rider/Body/Chest",
       "bone": "Rider/Body/Chest",
       "attachment": "part_chest",
-      "color": "ffffffff",
-      "dark": "000000"
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/Mount/Mount_Down2",
+      "bone": "Rider/Mount/Mount_Down2",
+      "color": "ffffff00"
     },
     {
       "name": "Rider/Body/Head",
       "bone": "Rider/Body/Head",
       "attachment": "u_ecaa646274c180041a64a55d1ae93f75",
-      "color": "ffbdabff",
-      "dark": "000000"
+      "color": "ffbdabff"
+    },
+    {
+      "name": "Rider/Body/Head/Eye",
+      "bone": "Rider/Body/Head/Eye",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/Body/Head/Ani_Eye/Eye_Defeat",
+      "bone": "Rider/Body/Head/Ani_Eye/Eye_Defeat",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Body/Head/Ani_Eye/Eye_Defeat2",
+      "bone": "Rider/Body/Head/Ani_Eye/Eye_Defeat2",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Body/Head/Ani_Eye/Eye_Stun",
+      "bone": "Rider/Body/Head/Ani_Eye/Eye_Stun",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Body/Head/Ani_Eye/Eye_Stun2",
+      "bone": "Rider/Body/Head/Ani_Eye/Eye_Stun2",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/Body/Head/Hair",
+      "bone": "Rider/Body/Head/Hair",
+      "color": "ffffffff"
     },
     {
       "name": "Rider/Body/Head/Hair_Helmet",
       "bone": "Rider/Body/Head/Hair_Helmet",
       "color": "ffffffff",
-      "attachment": "part_helmet_hair",
-      "dark": "000000"
+      "attachment": "part_helmet_hair"
     },
     {
       "name": "Rider/Body/Head/Beard",
       "bone": "Rider/Body/Head/Beard",
       "color": "ffffffff",
-      "attachment": "part_beard",
-      "dark": "000000"
+      "attachment": "part_beard"
     },
     {
       "name": "Rider/Body/Head/Helmet",
       "bone": "Rider/Body/Head/Helmet",
       "color": "ffffffff",
-      "attachment": "part_helmet",
-      "dark": "000000"
+      "attachment": "part_helmet"
+    },
+    {
+      "name": "Rider/Mount/Mount",
+      "bone": "Rider/Mount/Mount",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/HandRight/Axe",
+      "bone": "Rider/HandRight/Axe",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Crossbow/Crossbow_Down",
+      "bone": "Rider/HandRight/Crossbow/Crossbow_Down",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Sword",
+      "bone": "Rider/HandRight/Sword",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Blunt",
+      "bone": "Rider/HandRight/Blunt",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Spear",
+      "bone": "Rider/HandRight/Spear",
+      "color": "ffffffff"
     },
     {
       "name": "Rider/HandRight/Staff",
       "bone": "Rider/HandRight/Staff",
       "color": "ffffffff",
-      "attachment": "part_staff",
-      "dark": "000000"
+      "attachment": "part_staff"
+    },
+    {
+      "name": "Rider/HandRight/Wand",
+      "bone": "Rider/HandRight/Wand",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Gun",
+      "bone": "Rider/HandRight/Gun",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Tool_Pick",
+      "bone": "Rider/HandRight/Tool_Pick",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Tool_Fishing",
+      "bone": "Rider/HandRight/Tool_Fishing",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Bow/Bow_Line_Up",
+      "bone": "Rider/HandRight/Bow/Bow_Line_Up",
+      "attachment": "u_9f90fbde522357542aa2b7022f2b6fbb",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/HandRight/Bow/Bow_Line_Down",
+      "bone": "Rider/HandRight/Bow/Bow_Line_Down",
+      "attachment": "u_7ad202bb0eb0ce744817aff865490aba",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/HandRight/Crossbow/Crossbow_Line_Up",
+      "bone": "Rider/HandRight/Crossbow/Crossbow_Line_Up",
+      "attachment": "u_215be0e3bf520524180a9eb75e1a2100",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/HandRight/Crossbow/Crossbow_Line_Down",
+      "bone": "Rider/HandRight/Crossbow/Crossbow_Line_Down",
+      "attachment": "u_059ff9c9faacbb743b240b21b78aa618",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/HandRight/Bow/Bow",
+      "bone": "Rider/HandRight/Bow/Bow",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Crossbow/Crossbow",
+      "bone": "Rider/HandRight/Crossbow/Crossbow",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandRight/Bow/Arrow",
+      "bone": "Rider/HandRight/Bow/Arrow",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Rider/HandRight/Crossbow/Bolt",
+      "bone": "Rider/HandRight/Crossbow/Bolt",
+      "color": "ffffff00"
     }
   ],
   "skins": [
     {
       "name": "default",
       "attachments": {
+        "Rider/Dead/Bone": {
+          "u_694052ddfa2103940ad31009cdf01698": {
+            "width": 49,
+            "height": 30,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/Dead/Bone2": {
+          "u_694052ddfa2103940ad31009cdf01698": {
+            "width": 49,
+            "height": 30,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/Dead/Bone3": {
+          "u_694052ddfa2103940ad31009cdf01698": {
+            "width": 49,
+            "height": 30,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/Dead/Bone4": {
+          "u_694052ddfa2103940ad31009cdf01698": {
+            "width": 49,
+            "height": 30,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/Dead/Gravestone": {
+          "u_2a79d245eb9a7284dbb836208cb837a9": {
+            "width": 47,
+            "height": 65,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/Dead/Ghost": {
+          "u_04e3f7427d18b7a4bbbc4dc0556ea034": {
+            "width": 73,
+            "height": 103,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/Shadow": {
+          "u_304d3052c1658404eb3c53902e5b415c": {
+            "width": 68,
+            "height": 28,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/Mount/Mount_Down": {},
         "Rider/Body": {
           "u_0a7e6d409c450e145bcb203db6e508b8": {
             "width": 44,
@@ -572,6 +822,7 @@
             "color": "ffffffff"
           }
         },
+        "Rider/Mount/Mount_Down2": {},
         "Rider/Body/Head": {
           "u_ecaa646274c180041a64a55d1ae93f75": {
             "width": 67,
@@ -582,6 +833,12 @@
             "scaleY": 1
           }
         },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {},
+        "Rider/Body/Head/Hair": {},
         "Rider/Body/Head/Hair_Helmet": {
           "part_helmet_hair": {
             "path": "part_helmet_hair",
@@ -616,11 +873,19 @@
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
-            "width": 118,
-            "height": 106,
+            "width": 120,
+            "height": 108,
             "color": "ffffffff"
           }
         },
+        "Rider/HandLeft/Shield": {},
+        "Rider/HandLeft/Sub_Item": {},
+        "Rider/Mount/Mount": {},
+        "Rider/HandRight/Axe": {},
+        "Rider/HandRight/Crossbow/Crossbow_Down": {},
+        "Rider/HandRight/Sword": {},
+        "Rider/HandRight/Blunt": {},
+        "Rider/HandRight/Spear": {},
         "Rider/HandRight/Staff": {
           "part_staff": {
             "path": "part_staff",
@@ -633,11 +898,59 @@
             "height": 135,
             "color": "ffffffff",
             "_skillTip": {
-              "u": 0.5073529411764706,
-              "v": 0.07777777777777778
+              "u": 0.49264705882352944,
+              "v": 0.16666666666666666
             }
           }
-        }
+        },
+        "Rider/HandRight/Wand": {},
+        "Rider/HandRight/Gun": {},
+        "Rider/HandRight/Tool_Pick": {},
+        "Rider/HandRight/Tool_Fishing": {},
+        "Rider/HandRight/Bow/Bow_Line_Up": {
+          "u_9f90fbde522357542aa2b7022f2b6fbb": {
+            "width": 37,
+            "height": 6,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/HandRight/Bow/Bow_Line_Down": {
+          "u_7ad202bb0eb0ce744817aff865490aba": {
+            "width": 36,
+            "height": 6,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/HandRight/Crossbow/Crossbow_Line_Up": {
+          "u_215be0e3bf520524180a9eb75e1a2100": {
+            "width": 11,
+            "height": 24,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/HandRight/Crossbow/Crossbow_Line_Down": {
+          "u_059ff9c9faacbb743b240b21b78aa618": {
+            "width": 10,
+            "height": 23,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/HandRight/Bow/Bow": {},
+        "Rider/HandRight/Crossbow/Crossbow": {},
+        "Rider/HandRight/Bow/Arrow": {},
+        "Rider/HandRight/Crossbow/Bolt": {}
       }
     }
   ],
@@ -5492,6 +5805,102 @@
         }
       },
       "slots": {
+        "Rider/Dead/Bone": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Dead/Bone2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Dead/Bone3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Dead/Bone4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Dead/Gravestone": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Dead/Ghost": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Shadow": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff55"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff55"
+            }
+          ]
+        },
+        "Rider/Mount/Mount_Down": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
         "Rider/Body": {
           "color": [
             {
@@ -5516,6 +5925,18 @@
             }
           ]
         },
+        "Rider/Mount/Mount_Down2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
         "Rider/Body/Head": {
           "color": [
             {
@@ -5525,6 +5946,78 @@
             {
               "time": 1.8333334,
               "color": "ffbdabff"
+            }
+          ]
+        },
+        "Rider/Body/Head/Eye": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/Body/Head/Hair": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
             }
           ]
         },
@@ -5564,6 +6057,102 @@
             }
           ]
         },
+        "Rider/HandLeft/Shield": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandLeft/Sub_Item": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/Mount/Mount": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/HandRight/Axe": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Crossbow/Crossbow_Down": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Sword": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Blunt": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Spear": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
         "Rider/HandRight/Staff": {
           "color": [
             {
@@ -5573,6 +6162,150 @@
             {
               "time": 1.8333334,
               "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Wand": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Gun": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Tool_Pick": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Tool_Fishing": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Bow/Bow_Line_Up": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/HandRight/Bow/Bow_Line_Down": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/HandRight/Crossbow/Crossbow_Line_Up": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/HandRight/Crossbow/Crossbow_Line_Down": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/HandRight/Bow/Bow": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Crossbow/Crossbow": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Rider/HandRight/Bow/Arrow": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Rider/HandRight/Crossbow/Bolt": {
+          "color": [
+            {
+              "time": 0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1.8333334,
+              "color": "ffffff00"
             }
           ]
         }

@@ -98,9 +98,11 @@ test('normal reload performs no draft/save writes; a failed reload leaves an exi
 
 test('edits during an explicit save remain dirty and recoverable after that save completes', async () => {
   const h = fixture(); h.panel._catalog.entries.greeting.en = 'Submitted'; h.panel._changed();
-  const saving = h.panel._save(); assert.equal(h.requests[0].args[0].entries.greeting.en, 'Submitted');
+  const saving = h.panel._save(); assert.match(h.requests[0].message, /save-baseline/);
   h.panel._catalog.entries.greeting.en = 'Later unsaved edit'; h.panel._changed();
-  h.requests[0].reply(null, { revision: 'r2', noChanges: false, saved: true, artwork: { count: 0 } }); await saving;
+  h.requests[0].reply(null, null); await Promise.resolve();
+  assert.equal(h.requests[1].args[0].entries.greeting.en, 'Submitted');
+  h.requests[1].reply(null, { revision: 'r2', noChanges: false, saved: true, artwork: { count: 0 } }); await saving;
   assert.equal(h.panel._dirty, true); assert.equal(h.panel._revision, 'r2');
   assert.equal(JSON.parse(h.storage.get('inert-draft')).catalog.entries.greeting.en, 'Later unsaved edit');
 });

@@ -108,7 +108,9 @@ test('existing unknown per-level fields remain advisory and survive known stat e
 test('competing panel revisions and external config edits retain level drafts instead of overwriting either source',()=>{
     const f=fixture(),s=f.store,version=s.version;edit(s,{[key(90001,3)]:{Health:120}});
     const state=s.draftState();assert.throws(()=>s.change({version,edits:[{doc:'overrides',path:['unitLevels'],value:{}}]}),/Another panel/);assert.deepEqual(s.draftState(),state);
-    fs.appendFileSync(path.join(f.directory,f.config),' ');const external=f.read(f.config);assert.throws(()=>s.save({version:s.version}),/changed outside/);
+    const published=JSON.parse(f.read(f.config));published.GameTools.unitLevels={...published.GameTools.unitLevels,[key(90001,3)]:{Health:121}};
+    const external=JSON.stringify(published);fs.writeFileSync(path.join(f.directory,f.config),external);
+    assert.throws(()=>s.save({version:s.version}),/changed outside/);
     assert.equal(f.read(f.config),external);assert.deepEqual(s.draftState(),state);assert(s.snapshot().canUndo);
 });
 

@@ -53,7 +53,9 @@ test('isolated unit speed saves retain game timing and unrelated fields, detect 
   const store=new Store(dir,{validators:[Schema.validate],backupRoot:path.join(dir,'backups')}),f=fixture(store),target=path.join(dir,files.A),before=JSON.parse(fs.readFileSync(target,'utf8'));f.render('hero');await f.panel._unitProjectileSpeedEdit(f.row('hero'),720);assert.deepEqual(JSON.parse(fs.readFileSync(target,'utf8')),before);
   const saved=store.save({version:store.version});assert.equal(saved.result.saved,true);const actual=JSON.parse(fs.readFileSync(target,'utf8')),expected=clone(before);expected.GameTools.projectileSpeeds={...expected.GameTools.projectileSpeeds,'hero:hero:default':720};assert.deepEqual(actual,expected);
   const bytes=fs.readFileSync(target),stamp=fs.statSync(target).mtimeMs;assert.equal(store.save({version:store.version}).result.noChanges,true);assert.deepEqual(fs.readFileSync(target),bytes);assert.equal(fs.statSync(target).mtimeMs,stamp);
-  store.change({version:store.version,edits:[{doc:'overrides',path:['projectileSpeeds','hero:hero:default'],value:800}]});fs.appendFileSync(target,' ');const draft=store.draftState();assert.throws(()=>store.save({version:store.version}),/changed outside/);assert.deepEqual(store.draftState(),draft);
+  store.change({version:store.version,edits:[{doc:'overrides',path:['projectileSpeeds','hero:hero:default'],value:800}]});
+  const external=JSON.parse(fs.readFileSync(target));external.GameTools.projectileSpeeds['hero:hero:default']=850;fs.writeFileSync(target,JSON.stringify(external));
+  const draft=store.draftState();assert.throws(()=>store.save({version:store.version}),/changed outside/);assert.deepEqual(store.draftState(),draft);
 });
 test('deleting a created unit profile removes only its projectile speed and preserves other unit overrides',()=>{
   const Profiles=require('../lib/unit-profiles'),state={};for(const [key,file]of Object.entries(files))state[key]=JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));state.overrides=clone(state.A.GameTools);

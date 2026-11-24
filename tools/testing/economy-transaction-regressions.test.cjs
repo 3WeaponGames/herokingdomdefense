@@ -162,6 +162,9 @@ test('legacy sidebar claimed flag remains authoritative without being rewritten'
 });
 function taskScreen(h, restoring = false) {
   const ctx = context(h), savedTask = h.player.gameData.getTaskInfo();
+  const source = fs.readFileSync(path.join(root, 'assets/_script/KinghtFallGameCtrl.js'), 'utf8');
+  const checkpointTasks = /^function checkpointTasks\([^)]*\) \{[\s\S]*?^}/m.exec(source)[0];
+  ctx.checkpointTasks = vm.runInNewContext('(' + checkpointTasks + ')');
   const data = { levelCfg: config.LevelCfg[1], round: 1, coin: 10, buffList: [], businessAdd: {}, getBulidList: () => [], taskInfo: { index: 0, list: [1], stage: 1, reward: [{ id: 2001, num: 50 }] } };
   if (restoring && savedTask) Object.assign(data.taskInfo, clone(savedTask));
   const ctrl = { gameData: data };
@@ -201,6 +204,7 @@ test('checkpoints persist once, include business/tasks, and preserve unknown fie
   t.screen.ctrGame.gameData.businessAdd = { FlagWeapon: 1 }; h.state.writes = 0; t.screen.ctrGame.saveGame();
   assert.equal(h.state.writes, 1);
   const stored = JSON.parse(h.storage.get(h.player.gameData.gameKey)); assert.equal(stored.businessList.FlagWeapon, 1); assert.equal(stored.taskList.stage, 1); assert.equal(stored.future.keep, true);
+  assert.deepEqual(stored.taskList.reward, [{ id: 2001, num: 50 }]);
   assert.deepEqual(stored.relicState, { phoenixUsed: true, heroAttackCount: 7, vampireHealedByWave: { 1: .04 } });
 });
 test('equal-second cloud stamps prefer newer local data while strictly newer server still wins', () => {

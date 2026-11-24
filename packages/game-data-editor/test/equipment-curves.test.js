@@ -76,5 +76,7 @@ test('isolated curve saves retain backups and revision checks, and no-op saves p
  store.change({version:store.version,edits:Curve.plan(store.draftState().A,r,'damage',rule(2,50,2))});const saved=store.save({version:store.version});assert.equal(saved.result.saved,true);
  const data=JSON.parse(fs.readFileSync(target));assert.equal(Loadout.snapshot(data,{personLevel:[1,1,1,1,1,1],heroWeapon:{selected:'fighter',levels:{fighter:{3:1,4:50}}}}).damage,119);
  const stable=fs.readFileSync(target),stamp=fs.statSync(target).mtimeMs;assert.equal(store.save({version:store.version}).result.noChanges,true);assert.deepEqual(fs.readFileSync(target),stable);assert.equal(fs.statSync(target).mtimeMs,stamp);
- store.change({version:store.version,edits:Damage.edits(store.draftState().A,'fighter',{kind:'base',value:25})});fs.appendFileSync(target,' ');assert.throws(()=>store.save({version:store.version}),/changed outside/);assert.equal(JSON.parse(fs.readFileSync(target)).HeroEquipment.damageProgressions.fighter.baseDamage,21);
+ store.change({version:store.version,edits:Damage.edits(store.draftState().A,'fighter',{kind:'base',value:25})});
+ const external=JSON.parse(fs.readFileSync(target));external.HeroEquipment.damageProgressions.fighter.baseDamage=27;fs.writeFileSync(target,JSON.stringify(external));
+ assert.throws(()=>store.save({version:store.version}),/changed outside/);assert.equal(JSON.parse(fs.readFileSync(target)).HeroEquipment.damageProgressions.fighter.baseDamage,27);
 });

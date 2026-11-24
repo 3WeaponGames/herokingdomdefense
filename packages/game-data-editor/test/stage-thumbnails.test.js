@@ -18,6 +18,22 @@ test('explicit stage Save publishes its selected thumbnail and face together, pr
  const saved=L.read(f.root,L.configFile('A')).LevelCfg[0];assert.equal(saved.StageThumbnail,entry.resource);assert.equal(saved.StageFaceUnit,92039);assert.equal(saved.EnemyAni,'wqyl_bb');assert.equal(saved.Name,'Keep title');assert.deepEqual(saved.Future,{keep:9});assert.deepEqual(L.read(f.root,'authoring/worlds/stages/A-1.json').Future,{keep:10});assert(fs.existsSync(path.join(f.root,T.filename(entry.resource)+'.meta')));
  const before=tree(f.root);assert.equal((await s.save({key,version:s.version})).result.saved,false);assert.deepEqual(tree(f.root),before);
 });
+test('stage Save ignores thumbnail imports and broken legacy thumbnail references on other stages',async()=>{
+ const f=fixture(),s=f.service,key='stage:A-1',entry=T.stage(s,{version:s.version,file:f.source}).entry;
+ const file=path.join(f.root,L.configFile('A')),config=L.read(f.root,L.configFile('A'));
+ config.LevelCfg.push({...config.LevelCfg[0],Level:2,StageThumbnail:'obsolete-card'});
+ config.LevelCfg.push({...config.LevelCfg[0],Level:3,StageThumbnail:entry.resource});
+ fs.writeFileSync(file,JSON.stringify(config));
+ const value=s.snapshot(key).value;
+ value.config.Name='Stage with edited title';
+ s.change({key,version:s.version,value});
+ const result=await s.save({key,version:s.version});
+ assert(result.result.saved);
+ const saved=L.read(f.root,L.configFile('A'));
+ assert.equal(saved.LevelCfg[0].Name,'Stage with edited title');
+ assert.deepEqual(saved.LevelCfg.slice(1),config.LevelCfg.slice(1));
+ assert(!fs.existsSync(path.join(f.root,T.filename(entry.resource))));
+});
 test('stage-card validation rejects missing thumbnails, path traversal, invalid units and stale imports',()=>{
  const f=fixture(),s=f.service;assert(T.issues(s,{StageThumbnail:'../escape'},{}).length);assert(T.issues(s,{StageThumbnail:'Thumbnails/missing'},{}).length);assert(T.issues(s,{StageFaceUnit:9999},{}).length);assert.deepEqual(T.issues(s,{Map:'unchanged',EnemyAni:'legacy'},{}),[]);assert.throws(()=>T.stage(s,{version:s.version+1,file:f.source}),/Another panel/);const bad=path.join(f.artifacts,'bad.png');fs.writeFileSync(bad,'not a PNG');assert.throws(()=>T.stage(s,{version:s.version,file:bad}),/valid PNG/);
 });

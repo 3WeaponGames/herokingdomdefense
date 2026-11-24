@@ -21,8 +21,8 @@ var def_KinghtFallBulletEnemy8 = function (t) {
     this.spAni = this.node.getComponentInChildren(sp.Skeleton);
     this.spAni.setAnimation(0, "hit", true);
   };
-  _ctor.prototype.setTag = function (t, e, n) {
-    this.bindTarget(e, n);
+  _ctor.prototype.setTag = function (t, e, n, offset) {
+    this.bindTarget(e, n, offset);
     this.readTargetPosition();
     this._dir = cc.v2(this.tagPos.x - t.x, this.tagPos.y - t.y).normalizeSelf();
     this.bullet.active = true;

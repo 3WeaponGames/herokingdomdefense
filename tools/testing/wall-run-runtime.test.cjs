@@ -27,14 +27,21 @@ function assertGeometry(f){const g=Kit.fixtures(f.plan()),model=f.owner.ndAniMai
 function bentRun(){return Object.assign(Kit.nativeRun({left:2,right:2,gate:true,start:'post',end:'post'}),{left:4,right:2,routes:{left:[{u:0,v:0},{u:-2,v:0},{u:-2,v:2}],right:[{u:0,v:0},{u:2,v:0}]}});}
 
 test('owned wall rubble meshes stay transparent when real Spine reapplies destroy timelines, without changing imported assets or smoke',()=>{
- const f=fixture(),sources=[f.owner.ndAniMain.skeletonData,f.owner.ndAniDown.skeletonData],before=sources.map(source=>JSON.stringify(source.skeletonJson)),spine=require(Units.enginePath());f.Runtime.apply(f.owner);let tested=0;
+ const f=fixture(),sources=[f.owner.ndAniMain.skeletonData,f.owner.ndAniDown.skeletonData],before=sources.map(source=>JSON.stringify(source.skeletonJson)),spine=require(Units.enginePath()),tested=new Set();f.Runtime.apply(f.owner);
  for(const part of f.owner._wallRunRuntime.parts){
-  const json=part.clone.skeletonJson;assert.deepEqual(json.animations.destroy.slots.fx,part.source.skeletonJson.animations.destroy.slots.fx,'Keep the authored effect timeline');
+  const slots=['fx','fx2'],json=part.clone.skeletonJson;
+  for(const name of slots)assert.deepEqual(json.animations.destroy.slots[name],part.source.skeletonJson.animations.destroy.slots[name],'Keep the authored effect timeline');
   const atlas=new spine.TextureAtlas(part.clone.atlasText,()=>new spine.FakeTexture({width:2048,height:2048})),data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(json),skeleton=new spine.Skeleton(data);skeleton.setSkinByName('cq-rts-1');skeleton.setToSetupPose();
-  for(const time of [.2,.5,1,1]){data.findAnimation('destroy').apply(skeleton,0,time,false,null,1,spine.MixBlend.replace,spine.MixDirection.mixIn);const slot=skeleton.findSlot('fx'),attachment=slot&&slot.getAttachment();if(attachment){assert.equal(attachment.color.a,0,'Slot timelines must not resurrect the old rubble');tested++;}}
+  for(const time of [.2,.5,1,1]){
+   data.findAnimation('destroy').apply(skeleton,0,time,false,null,1,spine.MixBlend.replace,spine.MixDirection.mixIn);
+   for(const name of slots){
+    const slot=skeleton.findSlot(name),attachment=slot&&slot.getAttachment();
+    if(attachment){assert.equal(attachment.color.a,0,'Slot timelines must not resurrect the old rubble');tested.add(name);}
+   }
+  }
   for(const skin of json.skins)for(const [slot,attachments]of Object.entries(skin.attachments))if(/smoke/i.test(slot))assert.deepEqual(attachments,part.source.skeletonJson.skins.find(original=>original.name===skin.name).attachments[slot]);
  }
- assert(tested>0);sources.forEach((source,index)=>assert.equal(JSON.stringify(source.skeletonJson),before[index]));f.Runtime.dispose(f.owner);
+ assert.deepEqual(tested,new Set(['fx','fx2']));sources.forEach((source,index)=>assert.equal(JSON.stringify(source.skeletonJson),before[index]));f.Runtime.dispose(f.owner);
 });
 
 test('saved wall visuals refit the requested upgrade tier and source revision without changing imported data or fixtures',()=>{
@@ -99,7 +106,9 @@ test('disabled level fixtures never initialize ghost Box2D shapes during fitting
 test('matched and recovered original CQ2 fitting survive every compass face, local transform and refit',()=>{
  for(const original of [false,true])for(const face of ['NW','NE','SW','SE']){
   const f=fixture({original,adjustmentsData:{version:1,poses:{}}});f.owner.wallFacing=face;const sx=Facing.mirrorX(face)?-1:1;for(const s of [f.owner.ndAniMain,f.owner.ndAniDown,...f.owner.ndAniOther]){const m=s.node.world;s.node.world=[sx*Math.abs(m[0]),0,0,Math.abs(m[3]),m[4],m[5]];}f.owner.ndAniDown.node.world[4]+=17;f.owner.ndAniDown.node.world[5]-=23;
-  const main=f.owner.ndAniMain.skeletonData,down=f.owner.ndAniDown.skeletonData,layout=f.plan();f.Runtime.apply(f.owner);const fitted=f.owner._wallRunRuntime.parts.map(p=>p.clone),t=Maps.multiply(Maps.inverse(f.owner.ndAniDown.node.world),f.owner.ndAniMain.node.world),expected=Kit.fitGatePart(down.skeletonJson,layout,{frameToLocal:t});for(const skin of expected.skins)for(const attachment of Object.values(skin.attachments.fx||{}))attachment.color=(attachment.color||'ffffffff').slice(0,6)+'00';assert.deepEqual(f.owner.ndAniDown.skeletonData.skeletonJson,expected);
+  const main=f.owner.ndAniMain.skeletonData,down=f.owner.ndAniDown.skeletonData,layout=f.plan();f.Runtime.apply(f.owner);const fitted=f.owner._wallRunRuntime.parts.map(p=>p.clone),t=Maps.multiply(Maps.inverse(f.owner.ndAniDown.node.world),f.owner.ndAniMain.node.world),expected=Kit.fitGatePart(down.skeletonJson,layout,{frameToLocal:t});
+  for(const skin of expected.skins)for(const slot of ['fx','fx2'])for(const attachment of Object.values(skin.attachments[slot]||{}))attachment.color=(attachment.color||'ffffffff').slice(0,6)+'00';
+  assert.deepEqual(f.owner.ndAniDown.skeletonData.skeletonJson,expected);
   f.FacingRuntime.apply(f.owner);for(const s of [f.owner.ndAniMain,f.owner.ndAniDown])for(const tier of Kit.skins){const skin=s.skeletonData.skeletonJson.skins.find(s=>s.name===tier);assert(skin);if(original){if(tier===Kit.skins[1])assert.equal(Object.keys(skin.attachments).filter(n=>/^men2_mu/.test(n)).length,2,'Recovered native halves retain authored sliding panels');}else if(s===f.owner.ndAniMain){assert.deepEqual(Object.keys(skin.attachments[Door.slot]),['rts_door_closed']);for(const opening of ['inward','outward'])for(const base of ['open','open_night','shut','shut_night']){const json=s.skeletonData.skeletonJson,clip=Facing.animation(json,base,opening),state=base.startsWith('shut')?'closed':((opening==='inward')!==Facing.reverse(face)?'inward':'outward'),tracks=json.animations[clip].slots;assert.equal(tracks[Door.slot].attachment[0].name,state==='closed'?'rts_door_closed':null);for(const id of ['near','far']){const slot=Door.partSlots[id],attachment=tracks[slot].attachment[0].name;if(state==='closed')assert.equal(attachment,null);else assert.equal(skin.attachments[slot][attachment].path,json.wallDoor.tiers[Kit.skins.indexOf(tier)].states[state].parts.find(part=>part.id===id).path);}}}else assert.deepEqual(skin.attachments,{},'Matched CQ2 never duplicates the door or its posts');}
   const outward=[f.owner.ndAniMain.skeletonData,f.owner.ndAniDown.skeletonData];f.owner.wallRun=JSON.stringify(Kit.nativeRun({left:4,right:3,gate:true,start:'post',end:'post'}));f.Runtime.apply(f.owner);assert(fitted.every(d=>d.destroyed));if(Facing.reverse(face))assert(outward.every(d=>d.destroyed));f.FacingRuntime.apply(f.owner);f.Runtime.dispose(f.owner);assert.strictEqual(f.owner.ndAniMain.skeletonData,main);assert.strictEqual(f.owner.ndAniDown.skeletonData,down);assert.equal(main.refs,1);assert.equal(down.refs,1);
  }

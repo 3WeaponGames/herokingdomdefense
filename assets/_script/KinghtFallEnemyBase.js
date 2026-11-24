@@ -1,4 +1,13 @@
 function millAttackTargets(data) { return data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList(); }
+function battleTaskKillSource(game, source, context) {
+  if (!source) return context && context.barracksProjectile ? "barracks" : null;
+  if (source._unitTestActor) return null;
+  if (source === game.ctrPlay || source._relicHero) return "hero";
+  if (source._battleTaskKillSource) return source._battleTaskKillSource;
+  var type = source.buildInfo && source.buildInfo.BuildID || source.buildCfg && source.buildCfg.enumValue;
+  if (type === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.ArrowTower) return "tower";
+  return source.navigationTeam === "friendly" ? "barracks" : null;
+}
 function targeting(owner) { return owner.cfg && owner.cfg.EnemyTargeting && require("EnemyTargeting").settings(owner.cfg); }
 function incomingCurrent(owner, life, pooled) {
   return cc.isValid(owner, true) && owner.node === life.node && cc.isValid(life.node, true) && owner.cfg === life.cfg && owner.time === life.timers &&
@@ -348,87 +357,18 @@ var def_KinghtFallEnemyBase = function (t) {
     }
   };
   _ctor.prototype.getFind = function () {
-    var t = this;
     var game = $z1KinghtFallUIGame.default.instance.ctrGame;
-    var rule = targeting(this);
-    if (rule) return require("EnemyTargeting").find(this, game, rule);
-    this.node.getPosition(this.vec2_1);
-    return function () {
-      var e = null;
-      var n = -1;
-      var i = -1;
-      var targetPolygon = null;
-      var targetActor = null;
-      var targetBuilding = null;
-      var a = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
-      if (!a.isDead() && t.canPursueTarget(a.node, game)) {
-        a.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        if (t.vec2_2.len() <= t.cfg.AttackRange + t.cfg.SearchRange) {
-          e = a.node, n = t.vec2_2.len(), targetActor = a;
-        }
-      }
-      var o = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
-      for (var r = 0; r < o.length; r++) {
-        if (!(g = o[r]).isDead() && t.canPursueTarget(g.node, game)) {
-          g.node.getPosition(t.vec2_2);
-          cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-          if (t.vec2_2.len() <= t.cfg.AttackRange + t.cfg.SearchRange && (-1 == n || t.vec2_2.len() < n)) {
-            e = g.node, n = t.vec2_2.len(), targetActor = g;
-          }
-        }
-      }
-      var s = {
-        position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
-        radius: t.cfg.AttackRange + t.cfg.SearchRange
-      };
-      var l = {
-        position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
-        radius: t.cfg.AttackRange
-      };
-      var c = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
-      for (var h = 0; h < c.length; h++) {
-        var g;
-        if ((g = c[h]).getIsWork()) {
-          var u = Navigation.attackPartsOf(g);
-          for (var d = 0; d < u.length; d++) {
-            var p = u[d];
-            if (t.canPursueTarget(p.tagNode, game) && cc.Intersection.polygonCircle(p.points, s)) {
-              var targetDistance = Navigation.polygonDistance(t, p.points, $z1KinghtFallUIGame.default.instance.ctrGame);
-              if (-1 == n || targetDistance < n) {
-                i = cc.Intersection.polygonCircle(p.points, l);
-                e = p.tagNode;
-                targetPolygon = p.points;
-                targetActor = null;
-                targetBuilding = g;
-                n = targetDistance;
-              }
-            }
-          }
-        }
-      }
-      if (e) {
-        return {
-          tag: e,
-          canAtt: -1 == i ? n <= t.cfg.AttackRange : i,
-          polygon: targetPolygon,
-          actor: targetActor,
-          building: targetBuilding
-        };
-      } else {
-        return null;
-      }
-    }() || null;
+    return require("EnemyTargeting").find(this, game, targeting(this));
   };
-  _ctor.prototype.canPursueTarget = function (node, game) {
-    var failures = this._unreachableTargets, failure = failures && failures.get(node);
+  _ctor.prototype.canPursueTarget = function (node, game, collider) {
+    var key = collider || node, failures = this._unreachableTargets, failure = failures && failures.get(key);
     if (!failure) return true;
     var navigation = Navigation.get(game); navigation.refresh();
     var start = Navigation.positionOf(this.node, game), target = Navigation.positionOf(node, game);
     if (failure.revision !== navigation.revision || failure.generation !== node._combatGeneration ||
         cc.Vec2.distance(failure.target, target) > 20 ||
         cc.Vec2.distance(failure.start, start) > 20 && (!failure.partial || navigation.grid.segmentClear(start, target, failure.radius))) {
-      failures.delete(node);
+      failures.delete(key);
       return true;
     }
     return false;
@@ -436,7 +376,7 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.rejectNavigationTarget = function (target, game) {
     var failures = this._unreachableTargets || (this._unreachableTargets = new Map());
     if (failures.size >= 16) failures.delete(failures.keys().next().value);
-    failures.set(target.tag, { revision: Navigation.get(game).revision, generation: target.tag._combatGeneration,
+    failures.set(target.collider || target.tag, { revision: Navigation.get(game).revision, generation: target.tag._combatGeneration,
       target: Navigation.positionOf(target.tag, game), start: Navigation.positionOf(this.node, game),
       partial: !!(this._navigationState && this._navigationState.partial), radius: this._navigationState && this._navigationState.radius || 0 });
     this._targetSearchCache = null;
@@ -458,7 +398,7 @@ var def_KinghtFallEnemyBase = function (t) {
       var target = cached.target;
       if (!target) return null;
       var node = target.tag;
-      var valid = node && node.activeInHierarchy !== false && this.canPursueTarget(node, game);
+      var valid = node && node.activeInHierarchy !== false && this.canPursueTarget(node, game, target.collider);
       if (valid && target.actor) {
         valid = !target.actor._isPooled && !target.actor.isDead() && node._combatGeneration === cached.generation;
         if (valid) {
@@ -470,18 +410,9 @@ var def_KinghtFallEnemyBase = function (t) {
           target.canAtt = distance <= this.cfg.AttackRange;
         }
       } else if (valid && target.building) {
-        valid = target.building.getIsWork();
-        if (valid) {
-          var parts = Navigation.attackPartsOf(target.building), polygon = null;
-          for (var i = 0; i < parts.length; i++) if (parts[i].tagNode === node) { polygon = parts[i].points; break; }
-          var circle = { position: this.node.convertToWorldSpaceAR(cc.Vec2.ZERO), radius: this.cfg.AttackRange + this.cfg.SearchRange };
-          valid = !!polygon && cc.Intersection.polygonCircle(polygon, circle);
-          if (valid) {
-            target.polygon = polygon;
-            circle.radius = this.cfg.AttackRange;
-            target.canAtt = cc.Intersection.polygonCircle(polygon, circle);
-          }
-        }
+        var selected = require("EnemyTargeting").refreshBuilding(this, game, target);
+        if (selected) return cached.target = selected;
+        valid = false;
       } else {
         // Unknown/custom target records cannot be validated safely.
         valid = false;
@@ -498,69 +429,10 @@ var def_KinghtFallEnemyBase = function (t) {
     return found;
   };
   _ctor.prototype.onFindList = function () {
-    if (targeting(this)) {
-      var target = this.getFind();
-      if (!target || !target.canAtt) return false;
-      this.doAttackStart();
-      return true;
-    }
-    var forced=RelicCombat.tauntedTarget(this);
-    if(forced){if(cc.Vec2.distance(this.node.getPosition(),forced.node.getPosition())>this.cfg.AttackRange)return false;this.doAttackStart();return true;}
-    var t = this;
-    this.node.getPosition(this.vec2_1);
-    return !!function () {
-      var e = null;
-      var n = -1;
-      var i = -1;
-      var a = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
-      if (!a.isDead()) {
-        a.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        if (t.vec2_2.len() <= t.cfg.AttackRange) {
-          e = a.node, n = t.vec2_2.len();
-        }
-      }
-      var o = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
-      for (var r = 0; r < o.length; r++) {
-        if (!(h = o[r]).isDead()) {
-          h.node.getPosition(t.vec2_2);
-          cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-          if (t.vec2_2.len() <= t.cfg.AttackRange && (-1 == n || t.vec2_2.len() < n)) {
-            e = h.node, n = t.vec2_2.len();
-          }
-        }
-      }
-      var s = {
-        position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
-        radius: t.cfg.AttackRange
-      };
-      var l = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
-      for (var c = 0; c < l.length; c++) {
-        var h;
-        if ((h = l[c]).getIsWork()) {
-          var g = Navigation.attackPartsOf(h);
-          for (var u = 0; u < g.length; u++) {
-            var d = g[u];
-            if (cc.Intersection.polygonCircle(d.points, s)) {
-              var targetDistance = Navigation.polygonDistance(t, d.points, $z1KinghtFallUIGame.default.instance.ctrGame);
-              if (-1 == n || targetDistance < n) {
-                i = true;
-                e = d.tagNode;
-                n = targetDistance;
-              }
-            }
-          }
-        }
-      }
-      if (e) {
-        return {
-          tag: e,
-          canAtt: -1 == i ? n <= t.cfg.AttackRange : i
-        };
-      } else {
-        return null;
-      }
-    }() && (this.doAttackStart(), true);
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+    if (!this.pickAttackTarget(game)) return false;
+    this.doAttackStart();
+    return true;
   };
   _ctor.prototype.doAttackStart = function (startCooldown) {
     if (GameToolsOverrides.isPending(this)) return;
@@ -601,11 +473,14 @@ var def_KinghtFallEnemyBase = function (t) {
     if (record.configured) _ctor.prototype.doAttackFinish.call(this);
     else this.doAttackFinish();
   };
-  _ctor.prototype.pickAttackVictim = function (game, closest) {
-    var rule = targeting(this);
-    if (!rule) return closest();
-    var selected = require("EnemyTargeting").find(this, game, rule);
-    return selected && selected.canAtt ? selected.actor || selected.building : null;
+  _ctor.prototype.pickAttackTarget = function (game) {
+    var rule = targeting(this), forced = !rule && RelicCombat.tauntedTarget(this);
+    if (forced) {
+      return cc.Vec2.distance(this.node.getPosition(), forced.node.getPosition()) <= this.cfg.AttackRange ?
+        { tag: forced.node, actor: forced, canAtt: true } : null;
+    }
+    var selected = require("EnemyTargeting").find(this, game, rule, !rule);
+    return selected && selected.canAtt ? selected : null;
   };
   _ctor.prototype.doAttack = function () {
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
@@ -620,57 +495,14 @@ var def_KinghtFallEnemyBase = function (t) {
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
     if (!attackCurrent(this, record)) return;
-    var n = this.pickAttackVictim(game, function () {
-      var forced=RelicCombat.tauntedTarget(t);
-      if(forced)return cc.Vec2.distance(t.node.getPosition(),forced.node.getPosition())<=t.cfg.AttackRange?forced:null;
-      var e = null;
-      var n = -1;
-      var i = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
-      if (!i.isDead()) {
-        i.node.getPosition(t.vec2_2);
-        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-        if (t.vec2_2.len() <= t.cfg.AttackRange) {
-          e = i, n = t.vec2_2.len();
-        }
-      }
-      var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
-      for (var o = 0; o < a.length; o++) {
-        if (!(c = a[o]).isDead()) {
-          c.node.getPosition(t.vec2_2);
-          cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-          if (t.vec2_2.len() <= t.cfg.AttackRange && (-1 == n || t.vec2_2.len() < n)) {
-            e = c, n = t.vec2_2.len();
-          }
-        }
-      }
-      var r = {
-        position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
-        radius: t.cfg.AttackRange
-      };
-      var s = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
-      for (var l = 0; l < s.length; l++) {
-        var c;
-        if ((c = s[l]).getIsWork()) {
-          var h = Navigation.attackPartsOf(c).map(function(part){return part.points;});
-          for (var g = 0; g < h.length; g++) {
-            var u = h[g];
-            if (cc.Intersection.polygonCircle(u, r)) {
-              var targetDistance = Navigation.polygonDistance(t, u, $z1KinghtFallUIGame.default.instance.ctrGame);
-              if (-1 == n || targetDistance < n) {
-                e = c, n = targetDistance;
-              }
-            }
-          }
-        }
-      }
-      return e;
-    });
+    var selected = this.pickAttackTarget(game), n = selected && (selected.actor || selected.building);
     if (n) {
       if (!attackCurrent(this, record)) return;
       var targetNode = n.node, targetGeneration = targetNode && targetNode._combatGeneration;
-      var impactPoint=Navigation.attackPointOf(n,$z1KinghtFallUIGame.default.instance.ctrGame);this.vec2_2.x=impactPoint.x;this.vec2_2.y=impactPoint.y;
+      var impact = cc.v2(Navigation.attackPointOf(n, game, Navigation.positionOf(this.node, game), selected.polygon));
+      this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
-      var impact = this.vec2_2.clone(), origin = this.vec2_1.clone(), dealt = n.onAttacked(e, t);
+      var origin = this.vec2_1.clone(), dealt = n.onAttacked(e, t);
       if (!attackCurrent(this, record, true) || ui.ctrEffect !== effects || !cc.isValid(effects, true)) return;
       if (cc.isValid(n, true) && n.node === targetNode && cc.isValid(targetNode, true) && targetNode._combatGeneration === targetGeneration && !n._isPooled) effects.showDamageNum(impact, dealt);
       if (!attackCurrent(this, record, true) || ui.ctrEffect !== effects || !cc.isValid(effects, true)) return;
@@ -707,6 +539,16 @@ var def_KinghtFallEnemyBase = function (t) {
       if (this.hp <= 0) {
         Navigation.reset(this);
         this.state = r.Dead;
+        if (t > 0 && !this._unitTestActor && life.data && life.data.recordBattleTask &&
+            game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && incomingCurrent(this, life) &&
+            life.data.getEnemyList().indexOf(this) >= 0) {
+          var taskSource = battleTaskKillSource(game, source, context);
+          // A synchronous death animation can remove the last enemy and close the wave.
+          if (taskSource) {
+            require("BattleTaskObjectives").recordKill(game, taskSource);
+            if (!incomingCurrent(this, life)) return t;
+          }
+        }
         RelicCombat.releaseControl(this);
         RelicRuntime.clearControl(this);
         RelicCombat.enemyKilled(this, source, secondary, context);

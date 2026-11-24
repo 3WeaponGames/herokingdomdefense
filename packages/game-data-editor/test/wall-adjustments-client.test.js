@@ -60,7 +60,8 @@ function backend() {
     if (name === 'wall-adjustments-save') {if (conflict || request.revision !== revision) throw Error('Shared source changed'); const same = JSON.stringify(saved) === JSON.stringify(request.data); if (!same) {saved = clone(request.data); writes++; revision = 'revision-' + (writes + 1);} return {revision, data: clone(saved), result: {saved: !same, files: same ? [] : ['shared-script'], warning}};}
     throw Error('Unexpected IPC: ' + name);
   }
-  return {ipc, calls, delayed, get saved() {return saved;}, get writes() {return writes;}, set conflict(value) {conflict = value;}, set warning(value) {warning = value;}};
+  return {ipc, calls, delayed, get saved() {return saved;}, get writes() {return writes;}, set conflict(value) {conflict = value;}, set warning(value) {warning = value;},
+    publish(data) {saved = clone(data); revision = 'external-revision';}};
 }
 
 function renderer() {
@@ -134,6 +135,43 @@ test('Save cannot overtake a just-queued numeric edit and lose the newer draft',
   await client._elements.buttons.save.onclick(); await pending; await f.settle();
   assert.equal(api.writes, 0); assert.deepEqual(clone(client._state.pieces.find(piece => piece.id === 'door/near').offset), {x: 2, y: 3});
   await client._elements.buttons.save.onclick(); await f.settle(); assert.equal(api.writes, 1); assert.equal(client.hasDraft(), false);
+  client.destroy();
+});
+
+test('Reload combines disjoint wall drafts with the saved source and allows a guarded Save', async () => {
+  const f = await fixture(), {client, api} = f, selectedPose = '1/NW/closed';
+  row(client, 'door/near').onclick(); await f.number('x', 2);
+  const other = clone(api.saved);
+  other.poses[selectedPose] = {offsets: {'door/far': {x: 0, y: 4}}};
+  api.publish(other);
+  await client._elements.buttons.save.onclick();
+  assert.equal(api.writes, 0);
+  await client._elements.buttons.reload.onclick(); await f.settle();
+  assert.equal(api.writes, 0, 'Reload does not publish the merge');
+  assert.equal(client._state.revision, 'external-revision');
+  assert.deepEqual(clone(client._state.data.poses[selectedPose].offsets), {'door/far': {x: 0, y: 4}, 'door/near': {x: 2, y: 0}});
+  await client._elements.buttons.undo.onclick(); await f.settle();
+  assert.deepEqual(clone(client._state.data), other);
+  await client._elements.buttons.redo.onclick(); await f.settle();
+  await client._elements.buttons.save.onclick(); await f.settle();
+  assert.equal(api.writes, 1);
+  assert.equal(client.hasDraft(), false);
+  assert.deepEqual(api.saved.poses[selectedPose].offsets, {'door/far': {x: 0, y: 4}, 'door/near': {x: 2, y: 0}});
+  client.destroy();
+});
+
+test('Reload retains both versions if a draft and the saved wall source edit the same offset', async () => {
+  const f = await fixture(), {client, api} = f, selectedPose = '1/NW/closed';
+  row(client, 'door/near').onclick(); await f.number('x', 2);
+  const draft = clone(client._state.data), other = clone(api.saved);
+  other.poses[selectedPose] = {offsets: {'door/near': {x: 6, y: 0}}};
+  api.publish(other);
+  await client._elements.buttons.reload.onclick(); await f.settle();
+  assert.equal(api.writes, 0);
+  assert.deepEqual(api.saved, other);
+  assert.deepEqual(clone(client._state.data), draft);
+  assert.equal(client._state.revision, 'revision-1');
+  assert.match(client._elements.status.textContent, /changed on disk.*door\/near.*draft is retained/);
   client.destroy();
 });
 

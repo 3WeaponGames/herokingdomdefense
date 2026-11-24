@@ -102,7 +102,7 @@ test('pack filters, Custom Units, search and wave choices leave drafts and files
         assert.deepEqual(shown.map(modelKey).sort(), expectedModels, pack + ' model coverage');
         assert.equal(f.panel.$count.textContent, expectedModels.length + ' models · ' + expected.length + ' profiles', pack + ' count');
         if (pack === 'custom') {
-            for (const name of ['Ironclad Slime', 'Lightning Slime', 'Skeleton King', 'Orc Shaman']) assert(shown.some(row => row.label === name), name);
+            for (const name of ['Ironclad Slime', 'Ram Slime', 'Quake Slime', 'Prism Slime King', 'Skeleton King', 'Orc Shaman']) assert(shown.some(row => row.label === name), name);
             assert(!shown.some(row => row.label === 'Blue Snail'));
             const sibling = expected.find(row => expected.some(other => other.key !== row.key && modelKey(other) === modelKey(row)));
             assert(sibling, 'custom units include profiles sharing a model');

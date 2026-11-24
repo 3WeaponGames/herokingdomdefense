@@ -242,7 +242,7 @@ test('cannon impacts apply each tier’s splash radius and edge damage at the co
   const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
   for (const row of config.BuildEnum[2].levelList.filter(row => row.Tower?.attackType === 'cannon')) {
     const { h, bullet } = shotSetup(), t = tower(h, row);
-    const [damage] = row.Data, radius = [40, 50, 60, 70][row.level - 1], edgeRatio = [.1, .15, .2, .25][row.level - 1];
+    const [damage] = row.Data, radius = [40, 50, 60, 70][row.level - 1], edgeRatio = [.25, .35, .45, .55][row.level - 1];
     t.time.AttackNum = damage;
     const primary = enemy('moving', 100, 0), edge = enemy('edge', 700, 0), arrival = enemy('arrival', 700, 0);
     const outside = enemy('past the blast', 101 + radius, 0);

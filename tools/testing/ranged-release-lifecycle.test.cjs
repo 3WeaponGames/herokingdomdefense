@@ -8,7 +8,7 @@ function fixture(kind,counter=false){
  h.e.stubs.RelicCombat=h.load('RelicCombat');h.e.stubs.GameToolsOverrides=h.e.load('GameToolsOverrides');
  const manager=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();manager.data.GameTools={unitTypeAssignments:{'enemy:90001:default':'melee'}};manager.getParamsCfgById=()=>2;
  const target=kind==='KinghtFallSoldierItem03'?h.e.actor('KinghtFallEnemyBase',10,0,h.g.ndMain):p;target.node._combatGeneration=1;target.cfg={ID:90001};target.navigationTeam='enemy';target.hp=100;target.hpMax=100;
- target.onAttacked=(damage,source)=>{hits.push({damage,source});target.hp-=damage;if(onHit)onHit();return damage;};h.d.enemyList=[target];
+ target.onAttacked=(damage,source,_secondary,context)=>{hits.push({damage,source,context});target.hp-=damage;if(onHit)onHit();return damage;};h.d.enemyList=[target];
  const source=h.e.actor(kind,0,0,h.g.ndMain);source.node._combatGeneration=1;source.cfg={ID:90003,AttackType:2,AttackRange:200,CounterType:counter?(kind==='KinghtFallSoldierItem03'?'melee':'fighter'):''};source.getAttack=()=>10;source.releaseAttackTarget=()=>target;
  h.g.onShotEnemy=h.g.onShotSoldier=()=>({pos:{x:0,y:0},ctr:{setParent(){},setTag(_p,_n,callback){impact=callback;}}});
  const effects=h.ui.ctrEffect={showDamageNum(){feedback.push('number');if(onNumber)onNumber();},onMonsterAttack(){feedback.push('impact');}};
@@ -38,6 +38,11 @@ for(const kind of kinds){
  });
  if(kind!=='KinghtFallEnemyItem08')test(kind+' does not emit a second presentation call when damage feedback retires the battle',()=>{const f=fixture(kind);f.onNumber(()=>f.g._combatEpoch++);f.launch();f.impact();assert.equal(f.hits.length,1);assert.deepEqual(f.feedback,['number']);});
 }
+
+test('a released Crossbow shot retains barracks kill attribution after the shooter is recycled',()=>{
+ const f=fixture('KinghtFallSoldierItem03');f.launch();f.source.node._combatGeneration++;f.impact();
+ assert.equal(f.hits[0].source,null);assert.equal(f.hits[0].context.barracksProjectile,true);
+});
 
 function enemyAnimationFixture(kind){
  const f=fixture(kind),tracks=[],releases=[];let complete,current;

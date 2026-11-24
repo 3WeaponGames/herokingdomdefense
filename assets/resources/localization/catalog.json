@@ -36,15 +36,15 @@
     "data.building.sniper-4.name": {"en":"Royal Sniper Tower","zh":"皇家狙击塔","context":"Approved four-tier building progression"},
     "data.building.sniper-4.description": {"en":"Fires its strongest long-range bolt, piercing more enemies in a straight line.","zh":"发射威力最强的远程弩箭，沿直线贯穿更多敌人。","context":"Approved four-tier building progression"},
     "data.building.royal-infantry-4.name": {"en":"Crown Garrison","zh":"王冠驻军营","context":"Approved four-tier building progression"},
-    "data.building.royal-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Royal Infantry.","zh":"最终升级：加固兵营，可驻扎十二名皇家步兵。","context":"Approved four-tier building progression"},
+    "data.building.royal-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for nine Royal Infantry.","zh":"最终升级：加固兵营，可驻扎九名皇家步兵。","context":"Approved four-tier building progression"},
     "data.building.heavy-infantry-4.name": {"en":"Ironwall Bastion","zh":"铁壁堡垒","context":"Approved four-tier building progression"},
-    "data.building.heavy-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Heavy Infantry.","zh":"最终升级：加固兵营，可驻扎十二名重装步兵。","context":"Approved four-tier building progression"},
+    "data.building.heavy-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for nine Heavy Infantry.","zh":"最终升级：加固兵营，可驻扎九名重装步兵。","context":"Approved four-tier building progression"},
     "data.building.crossbow-4.name": {"en":"Crossbow Stronghold","zh":"弩兵要塞","context":"Approved four-tier building progression"},
-    "data.building.crossbow-4.description": {"en":"Final upgrade: a fortified barracks with room for twelve Crossbow Troopers.","zh":"最终升级：加固兵营，可驻扎十二名弩手。","context":"Approved four-tier building progression"},
+    "data.building.crossbow-4.description": {"en":"Final upgrade: a fortified barracks with room for nine Crossbow Troopers.","zh":"最终升级：加固兵营，可驻扎九名弩手。","context":"Approved four-tier building progression"},
     "data.building.stables-4.name": {"en":"Crown Stables","zh":"王冠马厩","context":"Approved four-tier building progression"},
-    "data.building.stables-4.description": {"en":"Final upgrade: reinforced stables with room for twelve cavalry units.","zh":"最终升级：加固马厩，可驻扎十二名骑兵。","context":"Approved four-tier building progression"},
+    "data.building.stables-4.description": {"en":"Final upgrade: reinforced stables with room for nine cavalry units.","zh":"最终升级：加固马厩，可驻扎九名骑兵。","context":"Approved four-tier building progression"},
     "data.building.farmhouse-4.name": {"en":"Stone Farmhouse","zh":"石砌农舍","context":"Approved four-tier building progression"},
-    "data.building.farmhouse-4.description": {"en":"Final upgrade: improved housing that supplies six silver each wave.","zh":"最终升级：改良农舍，每波提供六枚银币。","context":"Approved four-tier building progression"},
+    "data.building.farmhouse-4.description": {"en":"Final upgrade: improved housing that supplies eight silver each wave while the house survives.","zh":"最终升级：改良农舍，存活时每波提供八枚银币。","context":"Approved four-tier building progression"},
     "data.building.mill-4.name": {"en":"Mill · Lv 4","zh":"磨坊 · 4级","context":"Approved four-tier building progression"},
     "data.building.mill-4.description": {"en":"Final upgrade: an upgraded mill with four farm plots that supplies nine silver each wave.","zh":"最终升级：拥有四块农田的强化磨坊，每波提供九枚银币。","context":"Approved four-tier building progression"},
     "relic.style.requirement": {"en":"Requires: {0}","zh":"适用流派：{0}","context":"Relic tooltip fighting style requirement"},
@@ -793,8 +793,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.1.Name"
     },
     "data.buildenum.4.levellist.2.levelupdescribe": {
-      "en": "Final upgrade: earns 2 silver per wave while the house survives.",
-      "zh": "最终升级：房屋存活时，每波结束获得2白银。",
+      "en": "Upgrade: earns 2 silver per wave while the house survives.",
+      "zh": "升级：房屋存活时，每波结束获得2白银。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.4.levellist.3.name": {
@@ -6232,6 +6232,14 @@
       "zh": "所有任务均已完成",
       "context": "Royal Advisor task bubble after the final claim"
     },
+    "battle.task.objective.kill-hero": {"en":"Enemies defeated by the hero · {0}/{1}","zh":"英雄击败的敌人 · {0}/{1}","context":"Royal Advisor objective progress"},
+    "battle.task.objective.kill-barracks": {"en":"Enemies defeated by barracks units · {0}/{1}","zh":"兵营部队击败的敌人 · {0}/{1}","context":"Royal Advisor objective progress"},
+    "battle.task.objective.kill-tower": {"en":"Enemies defeated by towers · {0}/{1}","zh":"防御塔击败的敌人 · {0}/{1}","context":"Royal Advisor objective progress"},
+    "battle.task.objective.kill-scarecrow": {"en":"Enemies defeated by scarecrows · {0}/{1}","zh":"稻草人击败的敌人 · {0}/{1}","context":"Royal Advisor objective progress"},
+    "battle.task.objective.kill-bomb-mill": {"en":"Enemies defeated by bomb mills · {0}/{1}","zh":"炸弹磨坊击败的敌人 · {0}/{1}","context":"Royal Advisor objective progress"},
+    "battle.task.objective.survive-wall": {"en":"Waves cleared with walls intact · {0}/{1}","zh":"城墙未被摧毁的波次 · {0}/{1}","context":"Royal Advisor objective progress"},
+    "battle.task.objective.survive-tower": {"en":"Waves cleared with towers intact · {0}/{1}","zh":"防御塔未被摧毁的波次 · {0}/{1}","context":"Royal Advisor objective progress"},
+    "battle.task.objective.survive-house": {"en":"Waves cleared with houses intact · {0}/{1}","zh":"房屋未被摧毁的波次 · {0}/{1}","context":"Royal Advisor objective progress"},
     "data.building.cannon-1.name": {
       "en": "Cannon Tower",
       "zh": "加农炮塔",
@@ -6290,8 +6298,8 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.royal-guard.description": {
-      "en": "3 balanced frontline fighters. Upgrade to recruit 6.",
-      "zh": "提供3名均衡的前线战士。升级可招募6名。",
+      "en": "3 balanced frontline fighters. Upgrade to recruit 5.",
+      "zh": "提供3名均衡的前线战士。升级可招募5名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.royal-guard.2.name": {
@@ -6310,8 +6318,8 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.heavy-infantry.description": {
-      "en": "3 tough defenders that hold the line. Upgrade to recruit 6.",
-      "zh": "提供3名坚守战线的重装步兵。升级可招募6名。",
+      "en": "3 tough defenders that hold the line. Upgrade to recruit 5.",
+      "zh": "提供3名坚守战线的重装步兵。升级可招募5名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.heavy-infantry.2.name": {
@@ -6330,8 +6338,8 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.crossbowmen.description": {
-      "en": "3 ranged troops that fight behind the frontline. Upgrade to recruit 6.",
-      "zh": "提供3名在前线后方作战的弩手。升级可招募6名。",
+      "en": "3 ranged troops that fight behind the frontline. Upgrade to recruit 5.",
+      "zh": "提供3名在前线后方作战的弩手。升级可招募5名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.crossbowmen.2.name": {
@@ -6350,8 +6358,8 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.vanguard.description": {
-      "en": "3 mounted troops for rapid repositioning. Upgrade to recruit 6.",
-      "zh": "提供3名可快速转移的骑兵。升级可招募6名。",
+      "en": "3 mounted troops for rapid repositioning. Upgrade to recruit 5.",
+      "zh": "提供3名可快速转移的骑兵。升级可招募5名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.vanguard.2.name": {
@@ -8331,29 +8339,29 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.guide.3.12.description": {
-      "en": "6 balanced frontline fighters. Upgrade to recruit 9.",
-      "zh": "提供6名均衡的前线战士。升级可招募9名。",
+      "en": "5 balanced frontline fighters. Upgrade to recruit 7.",
+      "zh": "提供5名均衡的前线战士。升级可招募7名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.13.description": {"en":"Upgrade: 9 balanced frontline fighters.","zh":"升级：9名攻守兼备的前线战士。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.3.13.description": {"en":"Upgrade: 7 balanced frontline fighters.","zh":"升级：7名攻守兼备的前线战士。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.15.description": {
-      "en": "6 tough defenders that hold the line. Upgrade to recruit 9.",
-      "zh": "提供6名坚守战线的重装步兵。升级可招募9名。",
+      "en": "5 tough defenders that hold the line. Upgrade to recruit 7.",
+      "zh": "提供5名坚守战线的重装步兵。升级可招募7名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.16.description": {"en":"Upgrade: 9 tough defenders that hold the line.","zh":"升级：9名坚韧的守卫，稳固前线。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.3.16.description": {"en":"Upgrade: 7 tough defenders that hold the line.","zh":"升级：7名坚韧的守卫，稳固前线。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.18.description": {
-      "en": "6 ranged troops that fight behind the frontline. Upgrade to recruit 9.",
-      "zh": "提供6名在前线后方作战的弩手。升级可招募9名。",
+      "en": "5 ranged troops that fight behind the frontline. Upgrade to recruit 7.",
+      "zh": "提供5名在前线后方作战的弩手。升级可招募7名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.19.description": {"en":"Upgrade: 9 ranged troops that fight behind the frontline.","zh":"升级：9名在前线后方作战的远程士兵。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.3.19.description": {"en":"Upgrade: 7 ranged troops that fight behind the frontline.","zh":"升级：7名在前线后方作战的远程士兵。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.21.description": {
-      "en": "6 mounted troops for rapid repositioning. Upgrade to recruit 9.",
-      "zh": "提供6名可快速转移的骑兵。升级可招募9名。",
+      "en": "5 mounted troops for rapid repositioning. Upgrade to recruit 7.",
+      "zh": "提供5名可快速转移的骑兵。升级可招募7名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.22.description": {"en":"Upgrade: 9 mounted troops for rapid repositioning.","zh":"升级：9名能够快速转移位置的骑兵。","context":"Buildings · level capabilities and upgrade notes"},
+    "data.building.guide.3.22.description": {"en":"Upgrade: 7 mounted troops for rapid repositioning.","zh":"升级：7名能够快速转移位置的骑兵。","context":"Buildings · level capabilities and upgrade notes"},
     "data.goodscfg.2034.name": {
       "en": "Phoenix Feather",
       "zh": "凤凰之羽",
@@ -9275,14 +9283,14 @@
       "context": "Enemy guide appearance · Ironclad Slime"
     },
     "data.monster-roster.91154.name": {
-      "en": "Lightning Slime",
-      "zh": "闪电史莱姆",
+      "en": "Ram Slime",
+      "zh": "冲撞史莱姆",
       "context": "Minimal slime variant · monster1/Slime_Spore"
     },
     "data.unitguide.91154.description": {
-      "en": "A blue slime in a yellow hard hat with a tool kit on its back. It goes for buildings first.",
-      "zh": "戴着黄色安全帽、背着工具包的蓝色史莱姆，优先攻击建筑。",
-      "context": "Enemy guide · Lightning Slime"
+      "en": "A fast blue slime with a single yellow eye that rams walls in its path.",
+      "zh": "行动迅速的蓝色史莱姆，长着一只黄色的条形眼睛，会撞击挡路的城墙。",
+      "context": "Enemy guide appearance · Ram Slime"
     },
     "data.monster-roster.91155.name": {
       "en": "Honey Slime",
@@ -9295,24 +9303,24 @@
       "context": "Enemy guide appearance · Honey Slime"
     },
     "data.monster-roster.91156.name": {
-      "en": "Slime King",
-      "zh": "史莱姆王",
+      "en": "Prism Slime King",
+      "zh": "棱镜史莱姆之王",
       "context": "Minimal boss · monster1/Slime_King"
     },
     "data.unitguide.91156.description": {
-      "en": "A towering jade slime wearing a jagged gold crown and a gilded mantle.",
-      "zh": "一只高大的翡翠色史莱姆，戴着锯齿金冠，披着金边斗篷。",
-      "context": "Enemy guide appearance · Slime King"
+      "en": "A crowned slime with bright multicolored facets and a single triangular eye.",
+      "zh": "戴着金冠的史莱姆之王，身体有着多彩的棱镜切面，长着一只三角形的眼睛。",
+      "context": "Enemy guide appearance · Prism Slime King"
     },
     "data.monster-roster.91157.name": {
-      "en": "Abyssal Slime",
-      "zh": "深渊史莱姆",
+      "en": "Quake Slime",
+      "zh": "地震史莱姆",
       "context": "Minimal boss · monster1/Slime_Abyssal"
     },
     "data.unitguide.91157.description": {
-      "en": "A massive midnight slime with sweeping bone horns and ember-red eyes.",
-      "zh": "庞大的深色史莱姆，长着弯曲骨角，眼睛泛着火红。",
-      "context": "Enemy guide appearance · Abyssal Slime"
+      "en": "A heavy slate-blue slime with a square amber eye and sweeping bone horns.",
+      "zh": "一只沉重的蓝灰色史莱姆，长着琥珀色方眼和一对弯曲的骨角。",
+      "context": "Enemy guide appearance · Quake Slime"
     },
     "data.monster-roster.91158.name": {
       "en": "Orc Siege Chief",

@@ -37,6 +37,28 @@ test('world transactions: failure after a deletion restores exact binary and emp
  assert.deepEqual(fs.readFileSync(a),original);assert.equal(fs.readFileSync(b).length,0);assert.equal(fs.readFileSync(c,'utf8'),'before');const directories=fs.readdirSync(path.join(f.artifacts,'saves'));assert.equal(directories.length,1);assert.equal(journal(path.join(f.artifacts,'saves',directories[0])).status,'rolled-back');assert.equal(f.service.recoveries().length,0);
 });
 
+test('world transactions: an external edit while writing the staged replacement survives a failed commit',t=>{
+ const f=fixture(t),first='authoring/first.json',second='authoring/second.json',
+  a=f.write(first,'first original'),b=f.write(second,'second original'),
+  originals={[first]:fingerprint(a),[second]:fingerprint(b)},write=fs.writeFileSync;
+ let changed=false;
+ fs.writeFileSync=function(file,...args){
+  write.call(this,file,...args);
+  if(String(file).startsWith(b+'.hkd-save-')){
+   changed=true;
+   write.call(this,b,'external edit');
+  }
+ };
+ try{
+  assert.throws(()=>f.service.commit([{file:first,bytes:Buffer.from('first draft')},{file:second,bytes:Buffer.from('second draft')}],originals),/Concurrent change in authoring\/second.json/);
+ }finally{fs.writeFileSync=write;}
+ assert(changed);
+ assert.equal(fs.readFileSync(a,'utf8'),'first original');
+ assert.equal(fs.readFileSync(b,'utf8'),'external edit');
+ assert.deepEqual(fs.readdirSync(path.dirname(b)).sort(),['first.json','second.json']);
+ assert.equal(f.service.recoveries().length,0);
+});
+
 test('world transactions: a concurrent recreation during rollback is retained and requires explicit recovery',t=>{
  const f=fixture(t),image='authoring/image.png',output='assets/generated/ground.png',a=f.write(image,'original'),b=f.write(output,'before'),originals={[image]:fingerprint(a),[output]:fingerprint(b)},move=fs.renameSync;
  fs.renameSync=function(from,to){if(to===b){fs.writeFileSync(a,'concurrent recreation');throw Error('runtime update failed');}return move.apply(this,arguments);};
@@ -51,6 +73,27 @@ test('world transactions: a crash journal containing deletions is read-only unti
  const records=[{file:image,before:L.hash(oldImage),after:null},{file:manifest,before:L.hash(oldManifest),after:L.hash(newManifest)},{file:created,before:null,after:L.hash(newOutput)}];fs.writeFileSync(path.join(folder,'journal.json'),JSON.stringify({status:'prepared',files:records}));
  assert.equal(f.service.recoveries().length,1);assert(!fs.existsSync(path.join(f.root,image)),'listing recovery never restores an asset');assert.equal(fs.readFileSync(path.join(f.root,manifest),'utf8'),'new');const version=f.service.version;
  const result=f.service.recoverTransaction({key:'map:test'});assert(result.result.recovered);assert.equal(f.service.version,version+1);assert.deepEqual(fs.readFileSync(path.join(f.root,image)),oldImage);assert.equal(fs.readFileSync(path.join(f.root,manifest),'utf8'),'old');assert(!fs.existsSync(path.join(f.root,created)));assert.equal(journal(folder).status,'rolled-back');
+});
+
+test('world transactions: recovery retains an external edit made during backup staging',t=>{
+ const f=fixture(t),file='authoring/record.json',before=Buffer.from('original'),after=Buffer.from('interrupted write');
+ const target=f.write(file,after),folder=path.join(f.artifacts,'saves','interrupted'),backup=path.join(folder,file);
+ fs.mkdirSync(path.dirname(backup),{recursive:true});fs.writeFileSync(backup,before);
+ fs.writeFileSync(path.join(folder,'journal.json'),JSON.stringify({
+  status:'prepared',files:[{file,before:L.hash(before),after:L.hash(after)}]
+ }));
+ const write=fs.writeFileSync;
+ fs.writeFileSync=function(candidate,...args){
+  write.call(this,candidate,...args);
+  if(String(candidate).startsWith(target+'.hkd-recover-'))write.call(this,target,'external edit');
+ };
+ try{
+  assert.throws(()=>f.service.recoverTransaction({key:'map:test'}),/Concurrent change during recovery/);
+ }finally{fs.writeFileSync=write;}
+ assert.equal(fs.readFileSync(target,'utf8'),'external edit');
+ assert.deepEqual(fs.readFileSync(backup),before);
+ assert.equal(journal(folder).status,'prepared');
+ assert.deepEqual(fs.readdirSync(path.dirname(target)),['record.json']);
 });
 
 test('world transactions: malformed all-null tombstones and duplicate targets are rejected before any project writes',t=>{

@@ -29,7 +29,7 @@ var def_KinghtFallBulletBase = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.bindTarget = function (target, attack) {
+  _ctor.prototype.bindTarget = function (target, attack, offset) {
     var bullet = this;
     var generation = target._combatGeneration;
     var actor = target._combatActor;
@@ -37,6 +37,7 @@ var def_KinghtFallBulletBase = function (t) {
     var epoch = game && game._combatEpoch;
     var data = game && game.gameData;
     this.tagNode = target;
+    this.targetOffset = offset || null;
     this.targetIsLive = function () {
       return cc.isValid(target, true) && target.activeInHierarchy !== false &&
         target._combatGeneration === generation &&
@@ -64,6 +65,7 @@ var def_KinghtFallBulletBase = function (t) {
     this.callAttack = null;
     this.targetIsLive = null;
     this.tagNode = null;
+    this.targetOffset = null;
     this.combatContext = null;
     this.bullet.active = false;
   };
@@ -83,10 +85,11 @@ var def_KinghtFallBulletBase = function (t) {
     if (this._launchProjectileLook) this._launchProjectileLook();
   };
   _ctor.prototype.readTargetPosition = function () {
-    var target=this.tagNode,offset=target._buildingAttackPoint;
-    if(!offset)return target.getPosition(this.tagPos);
-    var point=target.parent.convertToNodeSpaceAR(target.convertToWorldSpaceAR(offset));
-    this.tagPos.x=point.x;this.tagPos.y=point.y;return this.tagPos;
+    var target = this.tagNode;
+    if (!this.targetOffset) return target.getPosition(this.tagPos);
+    var impact = this.node.parent.convertToNodeSpaceAR(target.convertToWorldSpaceAR(this.targetOffset));
+    this.tagPos.x = impact.x; this.tagPos.y = impact.y;
+    return this.tagPos;
   };
   _ctor.prototype.onUpdate = function (t) {
     if (this._unitAttackFlight) return require("UnitAttackCombat").advance(this, t);
@@ -144,6 +147,7 @@ var def_KinghtFallBulletBase = function (t) {
     this.time = 2;
     this.callAttack = null;
     this.tagNode = null;
+    this.targetOffset = null;
     this.targetIsLive = null;
     // Impact artwork and damage may immediately return/rebind this pooled
     // projectile. Retire old references before either callback can reuse it.

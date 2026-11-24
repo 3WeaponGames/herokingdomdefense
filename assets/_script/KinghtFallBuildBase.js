@@ -425,41 +425,22 @@ var def_KinghtFallBuildBase = function (t) {
     var frame = navigation && navigation._frameManaged ? navigation._frameId : null;
     var cached = this._combatFootprints;
     if (frame !== null && cached && cached.navigation === navigation && cached.frame === frame && cached.level === this.index) return cached.parts;
-    var t = [];
-    var e = this.node.getComponents(cc.PhysicsPolygonCollider);
-    for (var n = 0; n < e.length; n++) {
-      if ((s = e[n]).tag == this.getColliderIndex()) {
-        var i = [];
-        for (var a = 0; a < s.points.length; a++) {
-          var o = s.points[a];
-          i.push(this.node.convertToWorldSpaceAR(o));
-        }
-        t.push({
-          tagNode: this.node,
-          points: i
+    var parts = [], tag = this.getColliderIndex();
+    var wallPoints = this.getNavigationGateShapes && this.colPoint;
+    var nodes = [this.node].concat(this.ndAniOther.map(function (part) { return part.node; }));
+    nodes.forEach(function (node) {
+      node.getComponents(cc.PhysicsPolygonCollider).forEach(function (collider) {
+        if (collider.tag != tag) return;
+        var offset = collider.offset || cc.Vec2.ZERO;
+        var source = wallPoints && wallPoints[collider.uuid] || collider.points;
+        var points = source.map(function (point) {
+          return node.convertToWorldSpaceAR(cc.v2(point.x + offset.x, point.y + offset.y));
         });
-      }
-    }
-    for (var r = 0; r < this.ndAniOther.length; r++) {
-      var s;
-      e = (s = this.ndAniOther[r].node).getComponents(cc.PhysicsPolygonCollider);
-      for (n = 0; n < e.length; n++) {
-        var l = e[n];
-        if (l.tag == this.getColliderIndex()) {
-          i = [];
-          for (a = 0; a < l.points.length; a++) {
-            o = l.points[a];
-            i.push(s.convertToWorldSpaceAR(o));
-          }
-          t.push({
-            tagNode: s,
-            points: i
-          });
-        }
-      }
-    }
-    if (frame !== null) this._combatFootprints = { navigation: navigation, frame: frame, level: this.index, parts: t };
-    return t;
+        parts.push({ tagNode: node, points: points, collider: collider });
+      });
+    });
+    if (frame !== null) this._combatFootprints = { navigation: navigation, frame: frame, level: this.index, parts: parts };
+    return parts;
   };
   _ctor.prototype.setLight = function (t) {
     require("BuildingNightlightRuntime").apply(this,this.buildInfo&&this.buildInfo.cfg);
@@ -804,12 +785,26 @@ var def_KinghtFallBuildBase = function (t) {
     }
   };
   _ctor.prototype.onDead = function () {
+    var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, data = game && game.gameData;
+    var info = this.buildInfo, epoch = game && game._combatEpoch, round = data && data.round;
+    var taskTracked = !this.isDestroyed && !this._unitTestBreach && data && data.recordBattleTask &&
+      data.bulidPointMap && data.bulidPointMap[this.ID] === this && game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight;
     require("BuildingDebris").capture(this);
     this.cancelUpgrade();
     this._stopColliderTweens();
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.destory, undefined, undefined, { owner: this, game: $z1KinghtFallUIGame.default.instance.ctrGame });
     this.delAllBuff();
+    var newlyDestroyed = !this.isDestroyed;
     this.isDestroyed = true;
+    if (taskTracked && newlyDestroyed && this.buildInfo === info && data.bulidPointMap[this.ID] === this &&
+        $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === game &&
+        game.gameData === data && game._combatEpoch === epoch && data.round === round &&
+        game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight) {
+      var buildTypes = $z1KinghtFallEnum.KinghtFallEnumBuildEnum;
+      var kind = info && info.BuildID || this.buildCfg && this.buildCfg.enumValue;
+      var taskStructure = kind === buildTypes.Wall ? "wall" : kind === buildTypes.ArrowTower ? "tower" : kind === buildTypes.PrivateHouse ? "house" : null;
+      if (taskStructure) require("BattleTaskObjectives").recordDestruction(game, taskStructure);
+    }
     require("BuildingLighting").hideOwner(this);
     require("BuildingAppearance").onDead(this);
     this.ndAniMain.setAnimation(0, r.destroy, false);

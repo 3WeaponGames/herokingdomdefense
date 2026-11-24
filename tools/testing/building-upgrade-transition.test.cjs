@@ -21,7 +21,8 @@ function fixture(family, index) {
   const Info = plainModule('KinghtFallBuildInfo', { ...h.e.stubs, RelicRuntime: h.load('RelicRuntime'), RelicBattle: h.load('RelicBattle') }).KinghtFallBuildInfo;
   infoModule.KinghtFallBuildInfo = Info;
   h.e.stubs.KinghtFallConfig.KinghtFallUIID={UIBuildSel:'building-choice',UIGame:'game'};
-  Object.assign(h.d, { coin: 1000, treasureAddTime: {}, getBaseLevel: () => 4 });
+  // Stage 3 allows the full four-tier upgrade path.
+  Object.assign(h.d, { levelCfg: { ...h.d.levelCfg, Level: 3 }, coin: 1000, treasureAddTime: {}, getBaseLevel: () => 4 });
   Object.assign(h.ui, { canStart: true, isclose: false, addTask: noop, onPauseGame(value) { state.paused = value; } });
   const Type = h.load('KinghtFallBuildBase').default, build = new Type(), cfg = JSON.parse(JSON.stringify(authored.BuildEnum[family]));
   Object.assign(build, { ID: 9, uuid: 'building-9', node: new Node('building'), index, buildCfg: cfg,

@@ -4,7 +4,11 @@ const Store=require('./lib/store').Store;
 const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Fighting Types',maps:'Maps',settings:'Battle Settings',testing:'Testing','progress-reset':'Reset All Progress'};
 let store=null,assets=null,restoreMetadataSave=null,restoreSpineLibrarySave=null,restoreSpineAtlasRefresh=null,worlds=null;
 function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:()=>{const docs=getStore().snapshot().documents;return Object.assign({},docs.A.data,{GameTools:docs.overrides?docs.overrides.data:docs.A.data.GameTools});}});return worlds;}
-function worldBroadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});return snapshot;}
+function worldBroadcast(snapshot){
+    Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});
+    if(snapshot.result&&snapshot.result.saved)Editor.Ipc.sendToAll('game-data-editor:changed');
+    return snapshot;
+}
 function project(){const root=Editor.Project&&Editor.Project.path||Editor.projectPath;if(!root)throw Error('Open HeroKingdomDefense first');return root;}
 function getStore(){
     const root=project();if(!store||store.root!==path.resolve(root)){
@@ -89,8 +93,21 @@ const messages={
     'world-preview'(event,request){reply(event,()=>{getWorlds().expect(request.version);return require('./worlds/preview').start(Editor,getWorlds(),request);});},
     'world-preview-close'(event,request){reply(event,()=>({closed:require('./worlds/preview').shutdown(request?request.owner:undefined)}));},
     'world-recover-stage07'(event,request){reply(event,async()=>worldBroadcast(await require('./worlds/stage07').recover(getWorlds(),request)));},
-    'world-save'(event,request){reply(event,async()=>{const snapshot=await getWorlds().save(request),files=snapshot.result&&snapshot.result.files||[],imports=files.filter(f=>f.startsWith('assets/')&&!f.endsWith('.meta')&&!f.startsWith('assets/KinghtFallIconMap/Generated/')),warnings=await refreshImports(imports.concat(files.some(f=>f.startsWith('assets/KinghtFallIconMap/Generated/'))?['assets/KinghtFallIconMap/Generated']:[]));if(warnings.length)snapshot.result.warning=[snapshot.result.warning,warnings.join('; ')].filter(Boolean).join('; ');return worldBroadcast(snapshot);});},
-    load(event){reply(event,()=>getStore().snapshot());},
+    'world-save'(event,request){reply(event,async()=>{
+        const service=getWorlds(),saved=await service.save(request),result=saved.result;
+        const files=result&&result.files||[],generated='assets/KinghtFallIconMap/Generated';
+        const imports=files.filter(f=>f.startsWith('assets/')&&!f.endsWith('.meta')&&!f.startsWith(generated+'/'));
+        if(files.some(f=>f.startsWith(generated+'/')))imports.push(generated);
+        const warnings=await refreshImports(imports);
+        let snapshot=saved;
+        if(service.version!==saved.version){
+            try{snapshot=Object.assign(service.snapshot(saved.key),{result});}
+            catch(error){warnings.push('The editor changed during import. Reload its latest draft: '+error.message);}
+        }
+        if(result&&warnings.length)result.warning=[result.warning,...warnings].filter(Boolean).join('; ');
+        return worldBroadcast(snapshot);
+    });},
+    load(event){reply(event,()=>getStore().sync());},
     refresh(event){reply(event,()=>{const snapshot=getStore().refresh();assets=null;require('./lib/unit-assets').invalidate();return broadcast(snapshot);});},
     change(event,request){reply(event,()=>broadcast(getStore().change(request)));},
     undo(event,request){reply(event,()=>broadcast(getStore().undo(request)));},

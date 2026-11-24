@@ -66,12 +66,14 @@ test('a new connection needs a priced destination or a retained legacy source pr
   const d=docs(),building=d.A.data.BuildEnum['3'],position=building.levelList.findIndex(level=>level.index===13);
   const level=building.levelList[position],at=['BuildEnum','3','levelList',position,'BranchBuild'];
   assert(!Object.prototype.hasOwnProperty.call(level,'BuildSliverCost'));
+  const target=building.levelList.find(row=>row.index===16);
+  delete target.BuildCost;
   level.BranchBuild=[16];
   assert(buildingIssues(d,[{doc:'A',path:at}]).some(i=>i.severity==='error'&&/destination building level/.test(i.message)));
   assert.equal(Object.prototype.hasOwnProperty.call(level,'BuildSliverCost'),false,'validation never inserts a default cost');
-  building.levelList.find(row=>row.index===16).BuildCost=0;
+  target.BuildCost=0;
   assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0,'An explicit destination cost works without a legacy next-purchase field');
-  delete building.levelList.find(row=>row.index===16).BuildCost;
+  delete target.BuildCost;
   level.BuildSliverCost=0;
   assert.equal(buildingIssues(d,[{doc:'A',path:at},{doc:'A',path:at.slice(0,-1).concat('BuildSliverCost')}]).length,0,'an explicit zero cost is supported');
 });

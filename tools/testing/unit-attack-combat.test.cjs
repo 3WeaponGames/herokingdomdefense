@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { setup, hero, Node } = require('./backend-gameplay-harness.cjs');
+const { PhysicsPolygonCollider } = require('../navigation/runtime-harness.cjs');
 const Rules = require('../../assets/_script/UnitAttackRules');
 
 function fixture() {
@@ -46,9 +47,9 @@ function fixture() {
     const actor = {
       node: new Node(name, game.ndMain, x, y), hp: 1000, cfg: { ID: 90002 }, navigationTeam: 'enemy',
       isDead() { return this.hp <= 0; },
-      onAttacked(amount, source, ranged) {
+      onAttacked(amount, source, ranged, context) {
         this.hp -= amount;
-        hits.push({ name, amount, source, ranged });
+        hits.push({ name, amount, source, ranged, context });
         return amount;
       }
     };
@@ -85,6 +86,38 @@ test('unit attack overrides resolve supported combinations without editing base 
   assert(!Object.hasOwn(draft, 'AttackRange'));
   assert.equal(Rules.settings({ ...original, UnitAttack: { delivery: 'melee', pattern: 'chain' } }), null);
   assert.deepEqual(Rules.issues({ delivery: 'ranged', pattern: 'volley', shotsPerVolley: 1.5 }).map(issue => issue.field), ['shotsPerVolley']);
+});
+
+test('configured enemy missiles and splash respect tower protection through impact and recheck after a breach', () => {
+  const f = fixture(), { game } = f, primary = f.target('troop', 40), tower = f.target('tower', 100);
+  const wall = f.target('wall', 65);
+  wall.buildInfo = { BuildID: 'Wall' };
+  tower.buildInfo = { BuildID: 'ArrowTower' };
+  wall.getNavigationGateShapes = () => [];
+  const collider = wall.node.addComponent(PhysicsPolygonCollider);
+  collider.points = [{ x: -8, y: -90 }, { x: 8, y: -90 }, { x: 8, y: 90 }, { x: -8, y: 90 }];
+  wall.getWposPhyCol2 = () => [{ tagNode: wall.node, points: collider.points.map(point => wall.node.convertToWorldSpaceAR(point)) }];
+  let intact = true;
+  wall.getIsWork = () => intact;
+  game.ctrPlay.isDead = () => true;
+  f.d.getBulidList = f.d.getAttackableBuildList = () => [wall, tower];
+  f.d.getSoldierList = () => [primary];
+  const splash = f.attacker('KinghtFallEnemyBase', { delivery: 'ranged', pattern: 'splash', splashRadius: 100 }, primary);
+  splash.doAttackStart();
+  f.step(1);
+  assert(f.hits.some(hit => hit.name === 'troop'));
+  assert(f.hits.some(hit => hit.name === 'wall'));
+  assert(!f.hits.some(hit => hit.name === 'tower'));
+  intact = false;
+  const shot = f.attacker('KinghtFallEnemyBase', { delivery: 'ranged', pattern: 'single' }, tower);
+  shot.doAttackStart();
+  intact = true;
+  f.step(1);
+  assert(!f.hits.some(hit => hit.name === 'tower'), 'the tower was protected when the missile arrived');
+  intact = false;
+  shot.doAttackStart();
+  f.step(1);
+  assert(f.hits.some(hit => hit.name === 'tower'), 'the same tower was exposed once the wall was broken');
 });
 
 test('an archer changed to melee uses its attack timing and cannon-style splash falloff', () => {
@@ -142,8 +175,10 @@ test('ranged splash lands at its launch point after the primary dies and scales 
   owner.doAttackStart();
   primary.hp = 0;
   primary.node._combatGeneration++;
+  owner.node._combatGeneration++;
   f.step(.5);
   assert.deepEqual(f.amounts(), [['center', 100], ['edge', 25]]);
+  assert(f.hits.every(hit => hit.source === null && hit.context.barracksProjectile === true));
 });
 
 test('only ranged troop splash damages a flying enemy beside a ground target', () => {

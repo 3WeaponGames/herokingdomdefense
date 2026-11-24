@@ -35,6 +35,22 @@ var $z1KinghtFallGamePlayCtrl = require("KinghtFallGamePlayCtrl");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallSoldierBase = require("KinghtFallSoldierBase");
 var Navigation = require("KinghtFallNavigation");
+function checkpointTasks(task, resetIndex) {
+  var reset = resetIndex !== undefined;
+  var saved = { index: reset ? resetIndex : task.index, list: task.list.slice(), stage: reset ? 0 : task.stage };
+  if (Array.isArray(task.reward)) {
+    saved.reward = task.reward.slice(0, task.list.length).map(function (reward) { return { id: reward.id, num: reward.num }; });
+  }
+  if (task.authored) saved.authored = true;
+  if (task.rewardMultiplier !== undefined) saved.rewardMultiplier = task.rewardMultiplier;
+  if (Array.isArray(task.targets)) {
+    saved.targets = task.targets.slice();
+    saved.progress = reset ? 0 : task.progress;
+    if (!reset && typeof task.waveIntact === "boolean") saved.waveIntact = task.waveIntact;
+    if (!reset && Number.isSafeInteger(task.scoredRound)) saved.scoredRound = task.scoredRound;
+  }
+  return saved;
+}
 function armyRole(unit) {
   if (Number(unit.cfg.ID) === 90004) return "flank";
   return unit.cfg.AttackType === 2 ? "rear" : "front";
@@ -153,7 +169,8 @@ var def_KinghtFallGameCtrl = function (t) {
     var saved = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
     var restoring = saved.hasSave(t);
     var checkpoint = restoring && saved.getCheckpoint ? saved.getCheckpoint(t) : null;
-    this.gameData = new $z1KinghtFallGameCtrlData.default(this, t, restoring, checkpoint && checkpoint.restartSetup);
+    var tasks = restoring ? (checkpoint && checkpoint.taskList || (saved.getTaskInfo && saved.getTaskInfo(t)) || null) : undefined;
+    this.gameData = new $z1KinghtFallGameCtrlData.default(this, t, restoring, checkpoint && checkpoint.restartSetup, tasks);
     require("RelicRuntime").restore(this.gameData, checkpoint && checkpoint.relicState);
     this.ctrPlay.initData();
     this.ctrPlay.ndAgg.active = false;
@@ -306,6 +323,11 @@ var def_KinghtFallGameCtrl = function (t) {
     if (this._projectileLooks) { this._projectileLooks.update(t); if (!frameCurrent(this, ui, data, epoch, stage)) return; }
     if (this.gameData && this.gameData._relicSavePending) {
       if (require("RelicRuntime").retry(this.gameData, t) && this.gameData._relicRoundCommitPending) this.gameData.tryEndGame();
+      if (!frameCurrent(this, ui, data, epoch, stage)) return;
+    }
+    if (data && data._advisorFinalClaimPending && stage === $z1KinghtFallModle.KinghtFallGameStage.Fight) {
+      data._advisorFinalClaimRetry -= t;
+      if (data._advisorFinalClaimRetry <= 0) data.tryEndGame();
       if (!frameCurrent(this, ui, data, epoch, stage)) return;
     }
     if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.gameData) {
@@ -1586,11 +1608,7 @@ var def_KinghtFallGameCtrl = function (t) {
         this.ctrPlay.ctrPlayAni.setBus(4);
       }
       var s = record.getTaskInfo(stage);
-      if (s) {
-        this.gameData.taskInfo.index = s.index;
-        this.gameData.taskInfo.list = s.list.slice();
-        this.gameData.taskInfo.stage = s.stage;
-      }
+      if (s) this.gameData.taskInfo = this.gameData.createTaskInfo(s);
       return true;
     }
     return false;
@@ -1625,7 +1643,7 @@ var def_KinghtFallGameCtrl = function (t) {
       if (checkpoint.taskList && floor > checkpoint.taskList.index) {
         // Gold and other permanent rewards remain owned after a retry. Preserve
         // their claimed index so the same paid attempt cannot award them twice.
-        checkpoint.taskList = { index: floor, list: task.list.slice(), stage: 0 };
+        checkpoint.taskList = checkpointTasks(task, floor);
       }
       return checkpoint;
     }
@@ -1638,12 +1656,15 @@ var def_KinghtFallGameCtrl = function (t) {
     if (mode !== "stage") return null;
     // Construct fresh battle data without granting the first wave's permanent
     // silver achievement again. Restarts reuse an already-paid stage entry.
-    var fresh = new $z1KinghtFallGameCtrlData.default(this, stage, true);
+    var latest = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(stage);
+    var keepTasks = data.taskInfo && (data.taskInfo.authored || latest && Array.isArray(latest.BattleTasks));
+    var resetTasks = keepTasks ? checkpointTasks(data.taskInfo, 0) : undefined;
+    var fresh = new $z1KinghtFallGameCtrlData.default(this, stage, true, null, resetTasks);
     fresh.coin += fresh.levelCfg.WaveCfg[0].StartSliver;
     var checkpoint = {
       levelNum: stage, roundNum: 1, coin: fresh.coin, buffList: [],
       buildingLevel: data.getBulidList().map(function (building) { return { point: building.ID, level: 0 }; }),
-      businessList: {}, taskList: { index: fresh.taskInfo.index, list: fresh.taskInfo.list, stage: fresh.taskInfo.stage },
+      businessList: {}, taskList: checkpointTasks(fresh.taskInfo),
       relicState: null, restartSetup: { treasureAddTime: fresh.treasureAddTime }
     };
     return preservePermanentTaskClaims(JSON.parse(JSON.stringify(checkpoint)));
@@ -1657,11 +1678,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.gameData.getBulidList().forEach(function (t) {
       e.push(t.getSave());
     });
-    var n = {
-      index: this.gameData.taskInfo.index,
-      list: this.gameData.taskInfo.list,
-      stage: this.gameData.taskInfo.stage
-    };
+    var n = checkpointTasks(this.gameData.taskInfo);
     var checkpoint = { levelNum: this.gameData.levelCfg.Level, roundNum: this.gameData.round,
       coin: this.gameData.coin, buffList: t, buildingLevel: e,
       businessList: this.gameData.businessAdd, taskList: n,

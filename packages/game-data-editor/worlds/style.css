@@ -89,6 +89,12 @@
 .world-stages .world-stage-details[open]>summary{margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #45505a}
 .world-stages .world-stage-details>label,.world-stages .world-stage-details>button,.world-stages .world-stage-details>.world-note{margin-top:8px}
 .world-stages .world-path-spawns{display:flex;flex-direction:column;gap:8px}
+.world-stages .world-battle-tasks,.world-stages .world-battle-task-card{display:flex;flex-direction:column;gap:9px;min-width:0}
+.world-stages .world-battle-tasks>h3,.world-stages .world-battle-tasks>.world-note{margin:0}
+.world-stages .world-battle-task-card{margin:0;padding:10px;border:1px solid #54616c;border-radius:5px;background:#252e35}
+.world-stages .world-battle-task-card>strong{color:#c7d6e2;font-weight:bold}
+.world-stages .world-battle-task-card>label{display:flex;flex-direction:column;align-items:stretch;gap:4px}
+.world-stages .world-battle-task-defaults{margin:0;padding-left:19px;line-height:1.55}
 .world-stages .world-wave-editor{display:flex;flex-direction:column;gap:11px;min-width:0}
 .world-stages .world-wave-editor>h3{margin:0}
 .world-stages .world-wave-editor>.world-note{margin:0}

@@ -229,16 +229,21 @@ test('shared and stage fighting profiles inherit projectile speed without seedin
   assert.equal(api.projectileSpeed({cfg: {ID: 100001}}, 'enemy', 500), 500, 'malformed explicit override retains its authored fallback');
 });
 
-test('Enemy8 fireballs acquire and follow a moving mirrored doorway center', () => {
+test('Enemy8 fireballs follow their selected wall point through movement, mirroring and reuse', () => {
   const h = setup(), bullet = shot(h, 'Enemy8'), parent = new Node('map'), gate = new Node('gate', parent, 300, 20), origin = new Vec2(0, 0);
-  gate._buildingAttackPoint = new Vec2(80, 40); gate.scaleX = -1;
-  const first = parent.convertToNodeSpaceAR(gate.convertToWorldSpaceAR(gate._buildingAttackPoint));
+  const layer = new Node('projectile layer', parent, 20, 30), offset = new Vec2(80, 40);
+  bullet.node.setParent(layer);
+  gate.scaleX = -1;
+  const first = layer.convertToNodeSpaceAR(gate.convertToWorldSpaceAR(offset));
   let hits = 0; bullet.spAni = {setAnimation() {}}; bullet.node.setPosition(origin);
-  bullet.setTag(origin, gate, () => hits++);
+  bullet.setTag(origin, gate, () => hits++, offset);
   assert.equal(bullet.tagPos.x, first.x); assert.equal(bullet.tagPos.y, first.y);
   assert(Math.abs(bullet.node.angle - Math.atan2(first.y, first.x) * 180 / Math.PI) < 1e-9);
   gate.x = 450; gate.scaleX = 1;
-  const moved = parent.convertToNodeSpaceAR(gate.convertToWorldSpaceAR(gate._buildingAttackPoint));
+  const moved = layer.convertToNodeSpaceAR(gate.convertToWorldSpaceAR(offset));
   bullet.node.setPosition(moved.x - 20, moved.y); bullet.onUpdate(.01);
   assert.equal(hits, 1); assert.equal(bullet.state, 1);
+  const next = new Node('Troop', layer, 90, 150);
+  bullet.setTag(origin, next, () => {});
+  assert.equal(bullet.tagPos.x, 90); assert.equal(bullet.tagPos.y, 150);
 });

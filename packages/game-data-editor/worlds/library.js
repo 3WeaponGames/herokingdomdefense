@@ -24,6 +24,14 @@ async function save(service,request){service.expect(request.version);if(service.
  const manifestFile='authoring/worlds/library/manifest.json',manifestText=fs.readFileSync(path.join(service.root,manifestFile),'utf8'),manifest=JSON.parse(manifestText.replace(/^\uFEFF/,'')),originals={[FILE]:doc.revision,[manifestFile]:L.hash(Buffer.from(manifestText))},writes=[{file:FILE,bytes:bytes(doc.data)}];
  for(const id of Groups.assetIds(doc.data.groups)){const asset=service.assetTable()[id];if(!asset)throw Error('A group asset was removed.');if(asset.stagedFile){const imported=fs.readFileSync(asset.stagedFile);if(L.hash(imported)!==asset.sha256)throw Error('An imported image changed. Import it again.');originals[asset.file]=fingerprint(path.join(service.root,asset.file));writes.push({file:asset.file,bytes:imported});if(!manifest.assets.some(a=>a.id===id)){const record=clone(asset);delete record.url;delete record.stagedFile;manifest.assets.push(record);}}else{if(!manifest.assets.some(a=>a.id===id))throw Error('An asset changed on disk. Refresh the asset library before saving.');const file=path.resolve(service.root,asset.file),relative=path.relative(service.root,file);if(relative==='..'||relative.startsWith('..'+path.sep)||path.isAbsolute(relative)||!fs.existsSync(file))throw Error('A group source image is missing. Restore it before saving the library.');}}
  writes.push({file:manifestFile,bytes:Buffer.from(JSONDoc.patch(manifestText,JSON.parse(manifestText.replace(/^\uFEFF/,'')),manifest))});service.busy=true;
- try{const result=service.commit(writes,originals);doc.original=clone(doc.data);doc.revision=fingerprint(path.join(service.root,FILE));service.undo=service.undo.filter(e=>e.key!==KEY);service.redo=service.redo.filter(e=>e.key!==KEY);service.version++;service.indexData=null;service.palette=null;service.persist();return Object.assign(service.snapshot(request.key),{busy:false,result:Object.assign(result,{librarySaved:true})});}finally{service.busy=false;}
+ try{
+  const result=service.commit(writes,originals);
+  doc.original=clone(doc.data);doc.revision=fingerprint(path.join(service.root,FILE));
+  service.undo=service.undo.filter(e=>e.key!==KEY);service.redo=service.redo.filter(e=>e.key!==KEY);
+  service.version++;service.indexData=null;service.palette=null;
+  try{service.persist();}
+  catch(error){result.warning='Saved on disk, but the external draft recovery copy could not be updated: '+error.message;}
+  return Object.assign(service.snapshot(request.key),{busy:false,result:Object.assign(result,{librarySaved:true})});
+ }finally{service.busy=false;}
 }
 module.exports={KEY,FILE,load,summary,favorite,action,get,place,save};

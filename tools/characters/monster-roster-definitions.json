@@ -1994,12 +1994,12 @@
     {
       "id": 91154,
       "source": "monster1/Slime_Spore",
-      "name": "Lightning Slime",
+      "name": "Ram Slime",
       "role": "fighter",
       "behaviorTemplate": 90001,
       "aerial": false,
       "portrait": {
-        "pattern": "\\/(?:Body|Up|Front)$",
+        "pattern": "\\/Body$",
         "cropHeight": 1,
         "cropWidth": 1
       }
@@ -2020,12 +2020,12 @@
     {
       "id": 91156,
       "source": "monster1/Slime_King",
-      "name": "Slime King",
+      "name": "Prism Slime King",
       "role": "fighter",
       "behaviorTemplate": 90001,
       "aerial": false,
       "portrait": {
-        "pattern": "\\/(?:Body)$",
+        "pattern": "\\/Body$",
         "cropHeight": 1,
         "cropWidth": 1
       }
@@ -2033,12 +2033,12 @@
     {
       "id": 91157,
       "source": "monster1/Slime_Abyssal",
-      "name": "Abyssal Slime",
+      "name": "Quake Slime",
       "role": "bruiser",
       "behaviorTemplate": 90001,
       "aerial": false,
       "portrait": {
-        "pattern": "\\/(?:Body)$",
+        "pattern": "\\/Body$",
         "cropHeight": 1,
         "cropWidth": 1
       }

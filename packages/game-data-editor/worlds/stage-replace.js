@@ -40,6 +40,7 @@ function replace(target,source,selection){
  selectedShape(source,selected);
  if(!target||!target.config||typeof target.config!=='object'||Array.isArray(target.config))throw Error('The current destination stage has an invalid configuration.');
  let next=all?merge(target,source):clone(target);
+ if(selected.includes('settings'))copyField(next.config,source.config,'BattleTasks');
  if(all){
   for(const key of ['id','variant','level','name','sourceRevision'])copyField(next,target,key);
   for(const key of ['Level','Name'])copyField(next.config,target.config,key);
@@ -48,7 +49,7 @@ function replace(target,source,selection){
  if(selected.includes('settings')){
   const retained=new Set(['id','variant','level','name','sourceRevision','config','buildings','specials','templates','nextBuilding','nextSpecial','spawns','hero','tasksPosition','nextSpawn','graphs']);
   for(const key of Object.keys(source))if(!retained.has(key))Object.defineProperty(next,key,{value:merge(own(next,key)?next[key]:undefined,source[key]),writable:true,enumerable:true,configurable:true});
-  for(const key of Object.keys(source.config))if(!['Level','Name','WaveCfg','EnemyProfiles','HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock','HomeLevel4Unlock'].includes(key))Object.defineProperty(next.config,key,{value:merge(own(next.config,key)?next.config[key]:undefined,source.config[key]),writable:true,enumerable:true,configurable:true});
+  for(const key of Object.keys(source.config))if(!['Level','Name','WaveCfg','EnemyProfiles','BattleTasks','HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock','HomeLevel4Unlock'].includes(key))Object.defineProperty(next.config,key,{value:merge(own(next.config,key)?next.config[key]:undefined,source.config[key]),writable:true,enumerable:true,configurable:true});
  }
  if(selected.includes('buildings')){
   if(!Array.isArray(source.buildings)||!Array.isArray(source.specials))throw Error('The source stage has an invalid building list.');

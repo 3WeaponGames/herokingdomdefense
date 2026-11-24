@@ -14,7 +14,7 @@ function advance(guide, group, step, length) {
   else { guide.setGroupId(group + 1); guide.setStepId(0); }
   return true;
 }
-function open(owner, guide, cfg, current, commit) {
+function open(owner, cfg, current, commit) {
   if (!active(owner) || owner._tutorialOpen || !current()) return false;
   if (cfg.distNode && !visible(cfg.distNode)) return false;
   var token = {}, manager = require("UIMgr").UIMgr.getInstance();
@@ -22,12 +22,15 @@ function open(owner, guide, cfg, current, commit) {
   owner._tutorialOpen = token;
   cfg.isCurrent = function () { return active(owner) && owner._tutorialOpen === token && current(); };
   function clear() { if (owner._tutorialOpen === token) owner._tutorialOpen = null; }
-  cfg.onComplete = function () {
-    if (!active(owner) || owner._tutorialOpen !== token || !current()) return false;
-    if (commit() === false) return false;
-    clear();
-    return true;
-  };
+  function acknowledge(action) {
+    return function () {
+      if (!cfg.isCurrent() || action() === false) return false;
+      clear();
+      return true;
+    };
+  }
+  cfg.onComplete = acknowledge(commit);
+  if (cfg.onDismiss) cfg.onDismiss = acknowledge(cfg.onDismiss);
   var closed = cfg.onClosed;
   cfg.onClosed = function () { clear(); if (closed) closed(); };
   try {
@@ -41,11 +44,11 @@ function open(owner, guide, cfg, current, commit) {
 }
 function present(owner, guide, group, step, rows, cfg) {
   if (!rows[step]) return false;
-  return open(owner, guide, cfg, function () { return guide.getGroupId() === group && guide.getStepId() === step; },
+  return open(owner, cfg, function () { return guide.getGroupId() === group && guide.getStepId() === step; },
     function () { return advance(guide, group, step, rows.length); });
 }
 function tip(owner, guide, id, cfg) {
-  return open(owner, guide, cfg, function () { return !guide.getGuideTips(id); }, function () {
+  return open(owner, cfg, function () { return !guide.getGuideTips(id); }, function () {
     if (guide.setGuideTips(id) === false) return false;
     return true;
   });

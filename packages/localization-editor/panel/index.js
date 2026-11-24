@@ -274,7 +274,7 @@ Editor.Panel.extend({
         if (!this._catalog || !this._dirty || this._closed || this._pendingSave) return;
         // Only an adopted Load/Save result changes this epoch. A failed Reload
         // must not invalidate a Save that has already committed to disk.
-        const revisionEpoch = this._revisionEpoch || 0;
+        let revisionEpoch = this._revisionEpoch || 0;
         const sessionGeneration = this._sessionGeneration || 0;
         const current = () => !this._closed && sessionGeneration === (this._sessionGeneration || 0) && revisionEpoch === (this._revisionEpoch || 0);
         let request;
@@ -284,21 +284,39 @@ Editor.Panel.extend({
             this.$save.disabled = true;
             this._status('Saving tables and rebuilding localized artwork…');
             // IPC takes a snapshot so edits made during the save are not marked saved accidentally.
-            const snapshot = JSON.stringify(this._catalog);
+            let snapshot = JSON.stringify(this._catalog);
             request = this._pendingSave = { revision: this._revision, snapshot };
-            const result = await ipc('save', JSON.parse(snapshot), this._revision);
+            const disk = await ipc('save-baseline', request.revision, this._file);
+            if (!current()) return;
+            if (disk) {
+                const original = JSON.parse(this._revisionSnapshot);
+                const conflict = parts => new Error('The catalog changed on disk at ' + parts.join(' / ') + '. Your draft is retained.');
+                const submitted = Catalog.structure(JSONDocument.merge(original, JSON.parse(snapshot), disk.catalog, conflict));
+                const editable = Catalog.structure(JSONDocument.merge(original, this._catalog, disk.catalog, conflict));
+                this._revision = disk.revision;
+                this._revisionEpoch = ++revisionEpoch;
+                this._revisionSnapshot = JSON.stringify(disk.catalog);
+                snapshot = JSON.stringify(submitted);
+                request = this._pendingSave = { revision: this._revision, snapshot };
+                this._catalog = editable;
+                this._populateLocales();
+                this._render();
+            }
+            const result = await ipc('save', JSON.parse(snapshot), request.revision, this._file);
             if (!current()) return;
             this._revision = result.revision;
             this._revisionEpoch = revisionEpoch + 1;
             this._revisionSnapshot = snapshot;
             this._pendingSave = null;
-            this._dirty = JSON.stringify(this._catalog) !== snapshot;
+            this._dirty = !JSONDocument.equal(this._catalog, JSON.parse(snapshot));
             this.$save.disabled = !this._dirty;
             clearTimeout(this._draftTimer);
             if (this._dirty) this._writeDraft(); else localStorage.removeItem(this._draftKey);
             this.$draftInfo.hidden = true;
             this._subtitle();
-            this._status(result.warning || ('Saved. Built ' + (result.artwork && result.artwork.count || 0) + ' artwork files. Restart browser preview to load changes. Backup: ' + result.backup), !!result.warning);
+            const message = result.noChanges ? 'The submitted edits are already saved.' :
+                'Saved. Built ' + (result.artwork && result.artwork.count || 0) + ' artwork files. Restart browser preview to load changes. Backup: ' + result.backup;
+            this._status(result.warning || message, !!result.warning);
         } catch (err) {
             if (!current()) return;
             if (this._pendingSave === request) this._pendingSave = null;

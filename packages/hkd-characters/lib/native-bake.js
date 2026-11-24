@@ -56,21 +56,29 @@ function selectSkin(rig,skinName){
   rig.skins=[Object.assign(clone(chosen),{name:'default',attachments})];
 }
 function bake(root,profile,id,contract,assets,read,options){
-  if(!options&&profile.base.source){
+  const portrait=options&&options.portrait;
+  if(!(options&&options.description)&&profile.base.source){
     const source=Library.load(root).sources.find(s=>s.id===profile.base.source);
     if(source){read(path.join(root,source.skeleton));read(path.join(root,source.skeleton.replace(/\.json$/,'.atlas')));}
     if(profile.base.mount){const horse=profile.base.mount==='legacy-cavalry'?'assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json':'assets/KinghtFallEnemyAni/wqyl_lead/wqyl_lead_ma/wqyl_lead_ma.json';read(path.join(root,horse));read(path.join(root,horse.replace(/\.json$/,'.atlas')));}
   }
   const description=options&&options.description||(profile.base.source?require('./mounts').describe(root,profile.base,true):null);
   if(description&&description.layers.length>1){
-    const pieces=description.layers.map(layer=>bake(root,Object.assign({},profile,{parts:profile.parts.filter(p=>p.layer===layer.uuid)}),id,contract,assets,read,{raw:true,description:{layers:[layer],fitHeight:description.fitHeight}}));
-    const mounts=require('./mounts'),merged=mounts.merge(pieces);mounts.orderMounted(merged.rig,description);mounts.bindRider(root,merged,description);merged.rig._unitSource=profile.base.source;merged.rig._unitLook=id;merged.rig._mountAnimationVersion=mounts.ANIMATION_VERSION;return outputFiles(root,profile,id,merged.rig,merged.pictures,read);
+    const pieces=description.layers.map(layer=>bake(root,Object.assign({},profile,{parts:profile.parts.filter(p=>p.layer===layer.uuid)}),id,contract,assets,read,{raw:true,portrait,description:{layers:[layer],fitHeight:description.fitHeight}}));
+    const mounts=require('./mounts'),merged=mounts.merge(pieces);mounts.orderMounted(merged.rig,description);mounts.bindRider(root,merged,description);merged.rig._unitSource=profile.base.source;merged.rig._unitLook=id;merged.rig._mountAnimationVersion=mounts.ANIMATION_VERSION;return outputFiles(root,profile,id,merged.rig,merged.pictures,read,portrait);
   }
   if(!description)throw Error('Choose a Character Maker or monster base before saving this unit');
   const decode=options&&options.decode||PNG.decode,layer=description.layers[0],rig=clone(layer.json),cut=readAtlas(layer,read,decode),pictures={};
   if(rig._fantasy)require('./boss-model').apply(rig,profile.boss);
   const skinName=profile.skins&&profile.skins[layer.uuid]||layer.skin||'default';
   selectSkin(rig,skinName);
+  if(portrait){
+    const idle=rig.animations.idle;
+    if(!idle)throw Error('The Royal Advisor model must have an idle animation.');
+    rig.animations={idle};
+    delete idle.events;
+    delete rig.events;
+  }
   const attachments=rig.skins[0].attachments,slots=new Map(rig.slots.map(slot=>[slot.name,slot])),replaced=new Set(),hidden=new Set();
   for(const part of profile.parts){
     if(part.layer!==layer.uuid)throw Error('Part belongs to a different imported base: '+part.id);
@@ -102,20 +110,21 @@ function bake(root,profile,id,contract,assets,read,options){
   }
   // A current-unit snapshot already carries its authored gameplay events and
   // gait cadence. Keep those exact clips when fitting equipment onto it.
-  if(!profile.base.currentModel&&!rig._fantasy)retime(rig,contract,!!profile.base.mount);
+  if(!portrait&&!profile.base.currentModel&&!rig._fantasy)retime(rig,contract,!!profile.base.mount);
   // Preserve the old unit's world footprint and combat callback/hit timing.
   // Unmounted locomotion retains the imported gait's own cadence.
   // The hero and every combat statistic/timing table are left untouched.
-  const factor=contract.height/(description.fitHeight||rig.skeleton.height||120),model=profile.models&&profile.models[layer.uuid]||{},scale=profile.scale||1;
+  const factor=portrait?1:contract.height/(description.fitHeight||rig.skeleton.height||120),model=profile.models&&profile.models[layer.uuid]||{},scale=profile.scale||1;
   let fitBone='__game_fit';for(let suffix=2;rig.bones.some(bone=>bone.name===fitBone);suffix++)fitBone='__game_fit_'+suffix;
   rig.bones.unshift({name:fitBone,x:((layer.x||0)*scale+(model.x||0))*factor,y:((layer.y||0)*scale+(model.y||0))*factor,rotation:(layer.angle||0)+(model.rotation||0),scaleX:factor*scale*(layer.scaleX===undefined?1:layer.scaleX)*(model.scaleX===undefined?1:model.scaleX),scaleY:factor*scale*(layer.scaleY===undefined?1:layer.scaleY)*(model.scaleY===undefined?1:model.scaleY)});for(let i=1;i<rig.bones.length;i++)if(!rig.bones[i].parent)rig.bones[i].parent=fitBone;
   for(const skin of rig.skins)for(const variants of Object.values(skin.attachments))for(const a of Object.values(variants))if(a.vertices&&a.uvs&&a.vertices.length!==a.uvs.length)for(let i=0;i<a.vertices.length;){const count=a.vertices[i++];for(let j=0;j<count;j++){a.vertices[i]++;i+=4;}}
   if(model.opacity!==undefined){const fade=color=>color.slice(0,6)+Math.round(parseInt(color.slice(6,8),16)*model.opacity).toString(16).padStart(2,'0');for(const slot of rig.slots)slot.color=fade(slot.color||'ffffffff');for(const anim of Object.values(rig.animations))for(const slot of Object.values(anim.slots||{}))for(const key of slot.color||[])key.color=fade(key.color);}
   if(model.tint){const tint=color=>[0,2,4].map(at=>Math.round(parseInt(color.slice(at,at+2),16)*parseInt(model.tint.slice(at+1,at+3),16)/255).toString(16).padStart(2,'0')).join('')+color.slice(6,8);for(const slot of rig.slots)slot.color=tint(slot.color||'ffffffff');for(const anim of Object.values(rig.animations))for(const slot of Object.values(anim.slots||{}))for(const frame of slot.color||[])frame.color=tint(frame.color);}
-  rig._unitSource=profile.base.source;rig._unitLook=id;rig.skeleton.height=contract.height;rig.skeleton.width*=factor;
+  rig._unitSource=profile.base.source;rig._unitLook=id;
+  if(!portrait){rig.skeleton.height=contract.height;rig.skeleton.width*=factor;}
   require('./mounts').orderMounted(rig,{layers:[]});
   if(options&&options.raw)return{rig,pictures};
-  return outputFiles(root,profile,id,rig,pictures,read);
+  return outputFiles(root,profile,id,rig,pictures,read,portrait);
 }
 function atlasFiles(files,base,pictures){
   const lines=[],textures=[];
@@ -130,11 +139,12 @@ function atlasFiles(files,base,pictures){
   files.set(base+'.atlas.meta',JSON.stringify({ver:'1.0.3',uuid:uuid(base+'.atlas'),importer:'asset',subMetas:{}},null,2)+'\n');
   return textures;
 }
-function outputFiles(root,profile,id,rig,pictures,read){
-  const output='assets/resources/unit-library/runtime/'+id.replace(/[^a-zA-Z0-9_-]/g,'_'),files=new Map([[output+'.json',JSON.stringify(rig,null,2)+'\n']]),textures=atlasFiles(files,output,pictures);
+function outputFiles(root,profile,id,rig,pictures,read,portrait){
+  const resource=portrait||'unit-library/runtime/'+id.replace(/[^a-zA-Z0-9_-]/g,'_');
+  const output='assets/resources/'+resource,files=new Map([[output+'.json',JSON.stringify(rig,null,2)+'\n']]),textures=atlasFiles(files,output,pictures);
   files.set(output+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:uuid(output+'.json'),importer:'spine',textures,scale:1,subMetas:{}},null,2)+'\n');
   preserveMetadata(root,files,read);
-  return{uuid:JSON.parse(files.get(output+'.json.meta')).uuid,resource:output.slice('assets/resources/'.length),files,source:profile.base.source||null};
+  return{uuid:JSON.parse(files.get(output+'.json.meta')).uuid,resource,files,source:profile.base.source||null};
 }
 // Equipment-only ally variants can use the existing authored prefab, including
 // a previously baked one. Read that exact asset through the save transaction;

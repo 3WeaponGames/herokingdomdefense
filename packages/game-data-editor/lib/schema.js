@@ -10,6 +10,7 @@ const EnemyTransform=require('../../../assets/_script/EnemyTransform');
 const EnemySkills=require('../../../assets/_script/EnemySkills');
 const TowerCombat=require('../../../assets/_script/TowerCombat');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
+const StageTasks=require('./stage-tasks');
 
 // Editing metadata. Storage keys and runtime identifiers intentionally stay unchanged.
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o || {}, k);
@@ -29,7 +30,7 @@ const LABELS = {
   AttackType:'Attack behavior',Health:'HP',AttackDamage:'Attack damage',AttackInterval:'Attacks per second',AttackRange:'Attack range',
   SearchRange:'Additional search range',SightRange:'Sight range',Speed:'Movement speed',BuildingCross:'Building collision rule',Suppressed:'Countered unit',DeathAni:'Death duration (seconds)',AttackPriority:'Target priority',loadIcon:'Battle icon',
   kindID:'Talent effect',EffectNumber:'Effect values',vaulePercentage:'Display as percentage',Value:'Value',EffectKey:'Relic mechanic',RequiredHeroStyles:'Required fighting styles',
-  MissionNumber:'Missions per battle',MissionType:'Mission selection mode',MissionID:'Mission pool / sequence',Award:'Mission rewards',
+  MissionNumber:'Missions per battle',MissionType:'Mission selection mode',MissionID:'Mission pool / sequence',Award:'Mission rewards',BattleTasks:'Battle tasks',
   enumValue:'Runtime ID',enumKey:'Behavior identifier',ID:'Record ID',id:'Category ID',
   StaminaLimit:'Maximum stamina',StaminaRecover:'Stamina recovery interval (seconds)',GoldSupply:'Gold reward amount',DiamondSupply:'Diamond reward amount',
   StaminaSupply:'Stamina reward amounts',StaminaBuy:'Stamina purchase cost',SidebarGoldSupply:'Sidebar gold reward',ButtonUnlock:'Menu unlock stage / wave',
@@ -182,6 +183,7 @@ function validate(documents, changes) {
       if(!stage||typeof stage!=='object'||Array.isArray(stage))return issue(doc,p,'Each stage must be an object.');
       const StageProfiles=require('../../../assets/_script/EnemyStageProfiles'),stageUnits=StageProfiles.records(stage,units,docs.overrides||base.GameTools);
       for(const message of StageProfiles.validate(stage,units))issue(doc,p.concat('EnemyProfiles'),message);
+      for(const problem of StageTasks.issues(stage.BattleTasks,base))issue(doc,p.concat('BattleTasks',problem.path),problem.message);
       if(stage.Level!==index+1)issue(doc,p.concat('Level'),'Stage IDs must remain contiguous and match their array position.');
       if(!MapCatalog.has(stage.prefab))issue(doc,p.concat('prefab'),'Choose an authored playable map ('+MapCatalog.IDS.join(', ')+').');
       ['InGameCoefficient','GoldSupplyCoefficient','ConversionCoefficient','EquipLevelCap'].forEach(k=>number(doc,p.concat(k),stage[k],0,k==='EquipLevelCap'));
@@ -267,6 +269,7 @@ function validate(documents, changes) {
     if(table==='AllyCfg'&&own(unit,'SightRange'))number('A',p.concat('SightRange'),unit.SightRange,0,false);
     if(unit.CounterType===undefined&&unit.Suppressed&&!opponents[unit.Suppressed])issue('A',p.concat('Suppressed'),'Opposing unit does not exist.');
     if(unit.CounterType!==undefined&&(typeof unit.CounterType!=='string'||unit.CounterType&&!((docs.overrides||base.GameTools||{}).unitTypes||{})[unit.CounterType]))issue('A',p.concat('CounterType'),'Choose an existing fighting type, or None.');
+    if(own(unit,'OverrideCounterType')&&(table!=='AllyCfg'||typeof unit.OverrideCounterType!=='boolean'||unit.OverrideCounterType&&typeof unit.CounterType!=='string'))issue('A',p.concat('OverrideCounterType'),'An ally counter override requires a saved countered fighting type or None.');
     (unit.AttackPriority||[]).forEach((v,i)=>{if([1,2,3,4].indexOf(v)<0)issue('A',p.concat('AttackPriority',i),'Unknown target priority.');});
     (unit.Data||[]).forEach((v,i)=>number('A',p.concat('Data',i),v,0,false));
     if(table==='SoldierCfg'&&(id==='90010'||id==='90011')&&(!unit.Data||!units[unit.Data[2]]))issue('A',p.concat('Data',2),'Next boss form must exist.');
@@ -311,6 +314,13 @@ function validate(documents, changes) {
           if(own(tower,'splashFalloff')){number('A',at.concat('splashFalloff'),tower.splashFalloff,0,false);if(tower.splashFalloff>1)issue('A',at.concat('splashFalloff'),'Splash edge damage multiplier must not exceed 1.');}
           if(own(tower,'projectileLook')&&typeof tower.projectileLook!=='string')issue('A',at.concat('projectileLook'),'Projectile appearance key must be a string; empty restores the attack type’s default.');
         }
+      }
+      const defense=level.MillDefense;
+      if(id==='5'&&own(defense,'projectileSpeed'))number('A',q.concat('MillDefense','projectileSpeed'),defense.projectileSpeed,Number.MIN_VALUE,false);
+      if(id==='5'&&own(defense,'splashFalloff')){
+        const at=q.concat('MillDefense','splashFalloff');
+        number('A',at,defense.splashFalloff,0,false);
+        if(defense.splashFalloff>1)issue('A',at,'Splash edge damage multiplier must not exceed 1.');
       }
       if(own(level,'Appearance')){
         const appearance=level.Appearance,at=q.concat('Appearance');

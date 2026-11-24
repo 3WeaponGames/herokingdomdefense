@@ -139,9 +139,39 @@ test('stale draft requests cannot mutate or overwrite the current shared draft',
  const f=fixture(t),stale=f.req({style:'fighter',path:'cooldown',value:14});f.change('fighter','cooldown',13);
  for(const method of ['change','undo','redo','discard','save'])assert.throws(()=>f.service[method](stale),/draft changed/);assert.equal(f.service.snapshot().effective.fighter.cooldown,13);assert.equal(f.commits(),0);
 });
-test('a concurrent disk edit to either config rejects Save atomically and retains the draft',t=>{
- const f=fixture(t);f.change('vanguard','strikes',9);const primary=f.bytes()[0],second=path.join(f.root,FILES[1]);fs.appendFileSync(second,' ');
- assert.throws(()=>f.service.save(f.req()),/outside this draft/);assert.equal(f.bytes()[0],primary);assert.equal(f.service.snapshot().effective.vanguard.strikes,9);assert.equal(f.service.snapshot().dirty,true);assert.equal(f.commits(),0);
+test('a concurrent edit to the same skill field in the mirror rejects Save and retains the draft',t=>{
+ const f=fixture(t);f.change('vanguard','strikes',9);
+ const secondary=JSON.parse(f.bytes()[1]);secondary.HeroSkills={vanguard:{strikes:8}};
+ fs.writeFileSync(path.join(f.root,FILES[1]),JSON.stringify(secondary));
+ const before=f.bytes();
+ assert.throws(()=>f.service.save(f.req()),/outside this draft.*strikes/);
+ assert.deepEqual(f.bytes(),before);assert.equal(f.service.snapshot().effective.vanguard.strikes,9);assert.equal(f.service.snapshot().dirty,true);assert.equal(f.commits(),0);
+});
+test('Skills saves across concurrent wave and independent visual edits in the same config',t=>{
+ const f=fixture(t,{EnemySkillVisuals:{haste:{future:'keep'}}});
+ f.change('vanguard','strikes',9);f.change('enemy:haste','visual.tint','#123456');
+ for(const [index,file] of FILES.entries()){
+  const current=JSON.parse(f.bytes()[index]);
+  const unrelated={LevelCfg:[{WaveCfg:[{StartingSilver:8}]}],HeroSkills:{fighter:{cooldown:14}}};
+  if(index===0)current.EnemySkillVisuals.haste.indicatorRate=1.5;
+  fs.writeFileSync(path.join(f.root,file),JSON.stringify({...current,...unrelated})+'\n ');
+ }
+ const saved=f.service.save(f.req());
+ assert.equal(saved.result.saved,true);assert.equal(saved.dirty,false);
+ for(const text of f.bytes()){
+  const config=JSON.parse(text);
+  assert.equal(config.LevelCfg[0].WaveCfg[0].StartingSilver,8);
+  assert.equal(config.HeroSkills.fighter.cooldown,14);assert.equal(config.HeroSkills.vanguard.strikes,9);
+  assert(text.endsWith('\n '));
+ }
+ assert.deepEqual(JSON.parse(f.bytes()[0]).EnemySkillVisuals.haste,{future:'keep',indicatorRate:1.5,tint:'#123456'});
+});
+test('publishing a skill draft already on disk clears it without rewriting either copy',t=>{
+ const f=fixture(t);f.change('vanguard','strikes',9);
+ for(const [index,file] of FILES.entries())fs.writeFileSync(path.join(f.root,file),JSON.stringify({...JSON.parse(f.bytes()[index]),HeroSkills:{vanguard:{strikes:9}}}));
+ const before=f.bytes();
+ const saved=f.service.save(f.req());
+ assert.equal(saved.result.saved,false);assert.equal(saved.dirty,false);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
 });
 test('sound and VFX choices persist UUID and bundle references together; reset removes derived metadata',t=>{
  const f=fixture(t);f.change('mystic','audio.cast.clip',AUDIO);f.change('mystic','audio.cast.volume',.3);f.change('mystic','visual.resource',VFX);

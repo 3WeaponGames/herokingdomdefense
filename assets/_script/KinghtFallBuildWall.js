@@ -150,18 +150,7 @@ var def_KinghtFallBuildWall = function (t) {
     return false;
   };
   _ctor.prototype.getAttackTargetParts = function () {
-    var parts=t.prototype.getWposPhyCol2.call(this);
-    if(this.wallHasGate===false||!parts.length){delete this.node._buildingAttackPoint;return parts;}
-    var cached=this._gateAttackParts;if(cached&&cached.physical===parts)return cached.attack;
-    var root=parts.find(function(part){return part.tagNode===this.node;},this);
-    if(!root||!root.points.length)return parts;
-    var shapes=this.getNavigationGateShapes(),points=shapes.length?shapes[0].points:root.points;
-    var x=0,y=0;points.forEach(function(p){x+=p.x;y+=p.y;});x/=points.length;y/=points.length;
-    // Collision still includes every wing. Only acquisition, range and aiming
-    // use the doorway's center, so a side wall cannot become the attack pivot.
-    this.node._buildingAttackPoint=this.node.convertToNodeSpaceAR(cc.v2(x,y));
-    var attack=[{tagNode:this.node,points:[cc.v2(x-.5,y-.5),cc.v2(x+.5,y-.5),cc.v2(x+.5,y+.5),cc.v2(x-.5,y+.5)]}];
-    this._gateAttackParts={physical:parts,attack:attack};return attack;
+    return this._unitTestBreach ? [] : this.getWposPhyCol2();
   };
   _ctor.prototype.setLevel = function (e) {
     if (this._unitTestBreach) this._unitTestBreach();

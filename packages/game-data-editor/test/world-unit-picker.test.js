@@ -83,7 +83,7 @@ test('saved units expose exactly six fighting profiles per parent without Campai
   assert.equal(profiles.aliases[id],profiles.families[91090].profiles[role]);
   assert(!rows.some(unit=>unit.id===id));
  }
- for(const group of groups){assert.equal(group.units.length,6);const baseId=Number(group.key.split(':')[1]);assert.equal(Catalog.firstProfile(group.units).id,baseId);assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}
+ for(const group of groups){assert.equal(group.units.length,6);const baseId=Number(group.key.split(':')[1]);assert.equal(Catalog.firstProfile(group.units).id,profiles.families[baseId].defaultProfileId??baseId);assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}
  const slime=groups.find(group=>group.units.some(unit=>unit.id===91157)),defaultSlime=Catalog.firstProfile(slime.units);
  assert.equal(defaultSlime.unitType,'bruiser');
  const draft=stage(),fighter=slime.units.find(unit=>unit.unitType==='fighter');
@@ -107,7 +107,7 @@ test('saved character appearances take precedence over legacy models and do not 
 test('the complete saved catalog exposes every spawnable unit and read-only model descriptions without creating drafts',()=>{
  const root=path.resolve(__dirname,'../../..'),file=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),before=fs.readFileSync(file),service=new Service(root,{artifacts:path.join(os.tmpdir(),'hkd-picker-readonly-'+process.pid)}),catalog=service.catalog(),config=JSON.parse(before);
  assert.equal(catalog.units.length,Object.values(config.SoldierCfg).filter(unit=>unit.prefab&&![90011,90012].includes(Number(unit.ID))&&!config.GameTools.unitProfiles.aliases[unit.ID]).length);assert(catalog.units.every(unit=>typeof unit.description==='string'&&unit.unitType&&unit.assetPack));assert.equal(catalog.units.find(unit=>unit.id===91001).assetPack,'monster1');
- for(const name of ['Ironclad Slime','Lightning Slime']){
+ for(const name of ['Ironclad Slime','Ram Slime','Quake Slime','Prism Slime King']){
   const profiles=catalog.units.filter(unit=>unit.name===name);
   assert.equal(profiles.length,6);
   assert(profiles.every(unit=>unit.customUnit&&unit.assetPack==='monster1'));

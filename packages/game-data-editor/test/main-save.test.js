@@ -3,7 +3,7 @@ const assert=require('assert'),fs=require('fs'),os=require('os'),path=require('p
 const {Store,files,hash}=require('../lib/store');
 const source=fs.readFileSync(path.join(__dirname,'../main.js'),'utf8');
 const temporary=[];
-function fixture(){
+function fixture(world){
     const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-main-save-'));temporary.push(root);
     const data={A:{value:1},catalog:{value:1,entries:{hello:{en:'Hello'}}}};
     Object.keys(files).forEach(id=>{const file=path.join(root,files[id]);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(data[id])+'\n');});
@@ -12,7 +12,11 @@ function fixture(){
     // Exercise the real disk transaction through the main-process IPC handler.
     // Domain validation has its own suites; this fixture focuses on post-save
     // Creator import, reply lifetime and concurrent draft preservation.
-    vm.runInNewContext(source,{module,Editor:editor,require:name=>name==='./lib/store'?{Store:class{constructor(){return store;}}}:require(name),setTimeout:(callback,ms)=>{const id=++timerId;timers.set(id,{callback,ms});return id;},clearTimeout:id=>timers.delete(id)},{filename:'game-data-editor/main.js'});
+    vm.runInNewContext(source,{module,Editor:editor,require:name=>{
+        if(name==='./lib/store')return {Store:class{constructor(){return store;}}};
+        if(name==='./worlds/service'&&world)return {Service:class{constructor(){return Object.assign(world,{root});}}};
+        return require(name);
+    },setTimeout:(callback,ms)=>{const id=++timerId;timers.set(id,{callback,ms});return id;},clearTimeout:id=>timers.delete(id)},{filename:'game-data-editor/main.js'});
     const api=module.exports;
     function invoke(action,request){const replies=[];let resolve;const result=new Promise(r=>{resolve=r;});api.messages[action]({reply:(error,value)=>{replies.push({error,value});resolve({error,value});}},request);return{result,replies};}
     function expire(){const active=Array.from(timers.values());assert(active.length,'Expected an import deadline');active.forEach(timer=>{assert.equal(timer.ms,10000);timer.callback();});}
@@ -45,6 +49,21 @@ async function test(name,run){await run();checks++;console.log('PASS '+name);}
     await test('a draft created in another panel while importing survives the save reply',async()=>{
         const f=fixture();f.edit('A',2);const call=f.invoke('save',{version:f.store.version});f.edit('catalog',9);const version=f.store.version;f.imports[0].callback();const reply=await call.result;
         assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.dirty);assert.equal(reply.value.version,version);assert.equal(reply.value.documents.catalog.data.value,9);assert.equal(JSON.parse(f.read('catalog')).value,1);assert.equal(reply.value.changes.length,1);assert.equal(reply.value.changes[0].doc,'catalog');
+    });
+    await test('a stage save reply includes any newer draft created while Creator imports the publish',async()=>{
+        const key='stage:A-1';
+        const world={
+            version:1,dirty:false,
+            snapshot(selected){assert.equal(selected,key);return {key,version:this.version,dirty:this.dirty};},
+            async save(request){assert.equal(request.version,this.version);this.version++;return {...this.snapshot(request.key),result:{saved:true,files:[files.A]}};}
+        };
+        const f=fixture(world),call=f.invoke('world-save',{key,version:1});
+        await new Promise(resolve=>setImmediate(resolve));
+        assert.equal(f.imports.length,1);world.version++;world.dirty=true;f.imports[0].callback();
+        const reply=await call.result;
+        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.dirty);
+        assert.equal(reply.value.version,world.version);
+        assert(f.broadcasts.some(([name,payload])=>name==='game-data-editor:world-changed'&&payload.version===world.version));
     });
     await test('a no-change Save makes no import request, timer or backup',async()=>{
         const f=fixture(),before=f.read('A');const reply=await f.invoke('save',{version:f.store.version}).result;

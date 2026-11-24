@@ -1,5 +1,5 @@
 {
-  "purpose": "Four-tier building contracts for stable IDs, combat stats, cost and ad fields, and walls. Keep and tower combat matches PCMain's Towers and Keep tab. Barracks counts follow the authored 3/6/9/12 curve present in f779943d, 538b58e3 and 46c861c4.",
+  "purpose": "Stable building IDs, routes and colliders plus combat, income and construction prices from Building Stats.xlsx at PCMain 7ae26fb1.",
   "families": [
     {
       "family": "castle",
@@ -10,45 +10,7 @@
         3,
         4
       ],
-      "newTier4Hp": 1000,
-      "newTier4Data": [
-        40,
-        1,
-        375
-      ],
-      "newTier4BuildCost": 20,
-      "colliderIndex": 3,
-      "originalStatRows": [
-        {
-          "index": 1,
-          "Hp": 300,
-          "Data": [
-            18,
-            0.4,
-            300
-          ],
-          "BuildSliverCost": 5
-        },
-        {
-          "index": 2,
-          "Hp": 500,
-          "Data": [
-            25,
-            0.6,
-            325
-          ],
-          "BuildSliverCost": 10
-        },
-        {
-          "index": 3,
-          "Hp": 750,
-          "Data": [
-            32,
-            0.8,
-            350
-          ]
-        }
-      ]
+      "colliderIndex": 3
     },
     {
       "family": "archer",
@@ -59,46 +21,7 @@
         3,
         10
       ],
-      "newTier4Hp": 500,
-      "newTier4Data": [
-        25,
-        2,
-        375
-      ],
-      "newTier4BuildCost": 5,
-      "colliderIndex": 3,
-      "originalStatRows": [
-        {
-          "index": 1,
-          "Hp": 200,
-          "Data": [
-            7,
-            1,
-            300
-          ],
-          "BuildSliverCost": 5
-        },
-        {
-          "index": 2,
-          "Hp": 300,
-          "Data": [
-            13,
-            1.25,
-            325
-          ],
-          "BuildSliverCost": 5
-        },
-        {
-          "index": 3,
-          "Hp": 400,
-          "Data": [
-            20,
-            1.5,
-            350
-          ],
-          "VedioCount": 1
-        }
-      ]
+      "colliderIndex": 3
     },
     {
       "family": "cannon",
@@ -109,45 +32,7 @@
         6,
         11
       ],
-      "newTier4Hp": 500,
-      "newTier4Data": [
-        32,
-        0.42,
-        275
-      ],
-      "newTier4BuildCost": 32,
-      "colliderIndex": 3,
-      "originalStatRows": [
-        {
-          "index": 4,
-          "Hp": 200,
-          "Data": [
-            10,
-            0.25,
-            200
-          ],
-          "BuildSliverCost": 8
-        },
-        {
-          "index": 5,
-          "Hp": 300,
-          "Data": [
-            17,
-            0.28,
-            225
-          ],
-          "BuildSliverCost": 16
-        },
-        {
-          "index": 6,
-          "Hp": 400,
-          "Data": [
-            24,
-            0.35,
-            250
-          ]
-        }
-      ]
+      "colliderIndex": 3
     },
     {
       "family": "sniper",
@@ -158,45 +43,7 @@
         9,
         12
       ],
-      "newTier4Hp": 500,
-      "newTier4Data": [
-        65,
-        0.4,
-        600
-      ],
-      "newTier4BuildCost": 32,
-      "colliderIndex": 3,
-      "originalStatRows": [
-        {
-          "index": 7,
-          "Hp": 200,
-          "Data": [
-            20,
-            0.25,
-            450
-          ],
-          "BuildSliverCost": 8
-        },
-        {
-          "index": 8,
-          "Hp": 300,
-          "Data": [
-            34,
-            0.3,
-            500
-          ],
-          "BuildSliverCost": 16
-        },
-        {
-          "index": 9,
-          "Hp": 400,
-          "Data": [
-            48,
-            0.35,
-            550
-          ]
-        }
-      ]
+      "colliderIndex": 3
     },
     {
       "family": "royal-infantry",
@@ -207,45 +54,7 @@
         13,
         23
       ],
-      "newTier4Hp": 550,
-      "newTier4Data": [
-        12,
-        90001,
-        8
-      ],
-      "newTier4BuildCost": 32,
-      "colliderIndex": 3,
-      "originalStatRows": [
-        {
-          "index": 11,
-          "Hp": 150,
-          "Data": [
-            3,
-            90001,
-            8
-          ],
-          "BuildSliverCost": 8
-        },
-        {
-          "index": 12,
-          "Hp": 250,
-          "Data": [
-            6,
-            90001,
-            8
-          ],
-          "BuildSliverCost": 16
-        },
-        {
-          "index": 13,
-          "Hp": 400,
-          "Data": [
-            9,
-            90001,
-            8
-          ]
-        }
-      ]
+      "colliderIndex": 3
     },
     {
       "family": "heavy-infantry",
@@ -256,45 +65,7 @@
         16,
         24
       ],
-      "newTier4Hp": 550,
-      "newTier4Data": [
-        12,
-        90002,
-        8
-      ],
-      "newTier4BuildCost": 32,
-      "colliderIndex": 4,
-      "originalStatRows": [
-        {
-          "index": 14,
-          "Hp": 150,
-          "Data": [
-            3,
-            90002,
-            8
-          ],
-          "BuildSliverCost": 8
-        },
-        {
-          "index": 15,
-          "Hp": 250,
-          "Data": [
-            6,
-            90002,
-            8
-          ],
-          "BuildSliverCost": 16
-        },
-        {
-          "index": 16,
-          "Hp": 400,
-          "Data": [
-            9,
-            90002,
-            8
-          ]
-        }
-      ]
+      "colliderIndex": 4
     },
     {
       "family": "crossbow",
@@ -305,45 +76,7 @@
         19,
         25
       ],
-      "newTier4Hp": 550,
-      "newTier4Data": [
-        12,
-        90003,
-        8
-      ],
-      "newTier4BuildCost": 32,
-      "colliderIndex": 7,
-      "originalStatRows": [
-        {
-          "index": 17,
-          "Hp": 150,
-          "Data": [
-            3,
-            90003,
-            8
-          ],
-          "BuildSliverCost": 8
-        },
-        {
-          "index": 18,
-          "Hp": 250,
-          "Data": [
-            6,
-            90003,
-            8
-          ],
-          "BuildSliverCost": 16
-        },
-        {
-          "index": 19,
-          "Hp": 400,
-          "Data": [
-            9,
-            90003,
-            8
-          ]
-        }
-      ]
+      "colliderIndex": 7
     },
     {
       "family": "stables",
@@ -354,45 +87,7 @@
         22,
         26
       ],
-      "newTier4Hp": 550,
-      "newTier4Data": [
-        12,
-        90004,
-        8
-      ],
-      "newTier4BuildCost": 32,
-      "colliderIndex": 10,
-      "originalStatRows": [
-        {
-          "index": 20,
-          "Hp": 150,
-          "Data": [
-            3,
-            90004,
-            8
-          ],
-          "BuildSliverCost": 8
-        },
-        {
-          "index": 21,
-          "Hp": 250,
-          "Data": [
-            6,
-            90004,
-            8
-          ],
-          "BuildSliverCost": 16
-        },
-        {
-          "index": 22,
-          "Hp": 400,
-          "Data": [
-            9,
-            90004,
-            8
-          ]
-        }
-      ]
+      "colliderIndex": 10
     },
     {
       "family": "farmhouse",
@@ -403,42 +98,7 @@
         3,
         4
       ],
-      "newTier4Hp": 200,
-      "newTier4Data": [
-        6,
-        0
-      ],
-      "newTier4BuildCost": 2,
-      "colliderIndex": 3,
-      "originalStatRows": [
-        {
-          "index": 1,
-          "Hp": 50,
-          "Data": [
-            1,
-            0
-          ],
-          "BuildSliverCost": 2
-        },
-        {
-          "index": 2,
-          "Hp": 100,
-          "Data": [
-            2,
-            0
-          ],
-          "BuildSliverCost": 2
-        },
-        {
-          "index": 3,
-          "Hp": 150,
-          "Data": [
-            4,
-            0
-          ],
-          "VedioCount": 1
-        }
-      ]
+      "colliderIndex": 3
     },
     {
       "family": "mill",
@@ -449,42 +109,7 @@
         3,
         4
       ],
-      "newTier4Hp": 400,
-      "newTier4Data": [
-        9,
-        0
-      ],
-      "newTier4BuildCost": 6,
-      "colliderIndex": 3,
-      "originalStatRows": [
-        {
-          "index": 1,
-          "Hp": 200,
-          "Data": [
-            3,
-            0
-          ],
-          "BuildSliverCost": 6
-        },
-        {
-          "index": 2,
-          "Hp": 300,
-          "Data": [
-            5,
-            0
-          ],
-          "BuildSliverCost": 6
-        },
-        {
-          "index": 3,
-          "Hp": 300,
-          "Data": [
-            7,
-            0
-          ],
-          "VedioCount": 1
-        }
-      ]
+      "colliderIndex": 3
     }
   ],
   "originalWallDefinition": {
@@ -493,58 +118,9 @@
     "name": "[[loc:data.buildenum.6.name]]",
     "lockCose": 3,
     "levelList": [
-      {
-        "ID": 6,
-        "index": 1,
-        "level": 1,
-        "Name": "[[loc:data.buildenum.6.name]]",
-        "BuildSliverCost": 7,
-        "LevelUpDescribe": "[[loc:data.buildenum.6.levellist.1.levelupdescribe]]",
-        "Icon": "cq_1",
-        "Zoom": 0.35,
-        "Skin": "cq-rts-1",
-        "Hp": 500,
-        "BranchBuild": [
-          2,
-          3
-        ],
-        "Excursion": [
-          -200,
-          28
-        ]
-      },
-      {
-        "ID": 6,
-        "index": 2,
-        "level": 2,
-        "Name": "[[loc:data.buildenum.6.levellist.2.name]]",
-        "BuildSliverCost": 7,
-        "LevelUpDescribe": "[[loc:data.buildenum.6.levellist.2.levelupdescribe]]",
-        "Icon": "cq_2_1",
-        "Zoom": 0.35,
-        "Skin": "cq-rts-2",
-        "Hp": 700,
-        "Excursion": [
-          -200,
-          44
-        ]
-      },
-      {
-        "ID": 6,
-        "index": 3,
-        "level": 2,
-        "Name": "[[loc:data.buildenum.6.levellist.3.name]]",
-        "VedioCount": 1,
-        "LevelUpDescribe": "[[loc:data.buildenum.6.levellist.3.levelupdescribe]]",
-        "Icon": "cp_2_2",
-        "Zoom": 0.35,
-        "Skin": "cq-rts-3",
-        "Hp": 1000,
-        "Excursion": [
-          -200,
-          28
-        ]
-      }
+      {"ID":6,"index":1,"level":1,"Name":"[[loc:data.buildenum.6.name]]","BuildSliverCost":7,"LevelUpDescribe":"[[loc:data.buildenum.6.levellist.1.levelupdescribe]]","Icon":"cq_1","Zoom":0.35,"Skin":"cq-rts-1","Hp":500,"BranchBuild":[2,3],"Excursion":[-200,28]},
+      {"ID":6,"index":2,"level":2,"Name":"[[loc:data.buildenum.6.levellist.2.name]]","BuildSliverCost":7,"LevelUpDescribe":"[[loc:data.buildenum.6.levellist.2.levelupdescribe]]","Icon":"cq_2_1","Zoom":0.35,"Skin":"cq-rts-2","Hp":700,"Excursion":[-200,44]},
+      {"ID":6,"index":3,"level":2,"Name":"[[loc:data.buildenum.6.levellist.3.name]]","VedioCount":1,"LevelUpDescribe":"[[loc:data.buildenum.6.levellist.3.levelupdescribe]]","Icon":"cp_2_2","Zoom":0.35,"Skin":"cq-rts-3","Hp":1000,"Excursion":[-200,28]}
     ]
   },
   "originalInitialChoices": {
@@ -558,6 +134,80 @@
       14,
       17,
       20
+    ]
+  },
+  "buildingStats": {
+    "1:1": {"Hp":300,"BuildCost":3,"VedioCount":0,"Data":[14,0.4,300],"Tower":{"attackType":"arrow","shotsPerVolley":1,"projectileSpeed":700,"targeting":"nearest"}},
+    "1:2": {"Hp":480,"BuildCost":5,"VedioCount":0,"Data":[18.2,0.6,325],"Tower":{"attackType":"arrow","shotsPerVolley":1,"projectileSpeed":700,"targeting":"nearest"}},
+    "1:3": {"Hp":770,"BuildCost":10,"VedioCount":0,"Data":[23.66,0.8,350],"Tower":{"attackType":"arrow","shotsPerVolley":2,"projectileSpeed":700,"targeting":"nearest"}},
+    "1:4": {"Hp":1300,"BuildCost":20,"VedioCount":0,"Data":[30.758,1,375],"Tower":{"attackType":"arrow","shotsPerVolley":2,"projectileSpeed":700,"targeting":"nearest"}},
+    "2:1": {"Hp":200,"BuildCost":3,"VedioCount":0,"Data":[7,1,300],"Tower":{"attackType":"arrow","shotsPerVolley":1,"projectileSpeed":700,"targeting":"nearest"}},
+    "2:2": {"Hp":300,"BuildCost":5,"VedioCount":0,"Data":[13,1.25,325],"Tower":{"attackType":"arrow","shotsPerVolley":2,"projectileSpeed":700,"targeting":"nearest"}},
+    "2:3": {"Hp":450,"BuildCost":8,"VedioCount":0,"Data":[21,1.5,350],"Tower":{"attackType":"arrow","shotsPerVolley":3,"projectileSpeed":700,"targeting":"nearest"}},
+    "2:4": {"Hp":200,"BuildCost":3,"VedioCount":0,"Data":[15,0.25,200],"Tower":{"attackType":"cannon","targeting":"nearest","projectileSpeed":375,"splashRadius":40,"splashFalloff":0.25}},
+    "2:5": {"Hp":300,"BuildCost":5,"VedioCount":0,"Data":[25.5,0.28,225],"Tower":{"attackType":"cannon","targeting":"nearest","projectileSpeed":375,"splashRadius":50,"splashFalloff":0.35}},
+    "2:6": {"Hp":450,"BuildCost":8,"VedioCount":0,"Data":[43.35,0.35,250],"Tower":{"attackType":"cannon","targeting":"nearest","projectileSpeed":375,"splashRadius":60,"splashFalloff":0.45}},
+    "2:7": {"Hp":200,"BuildCost":3,"VedioCount":0,"Data":[20,0.25,450],"Tower":{"attackType":"sniper","targeting":"highestHp","projectileSpeed":2100,"pierceTargets":2,"splashRadius":0,"splashFalloff":1}},
+    "2:8": {"Hp":300,"BuildCost":5,"VedioCount":0,"Data":[34,0.3,500],"Tower":{"attackType":"sniper","targeting":"highestHp","projectileSpeed":2100,"pierceTargets":3,"splashRadius":0,"splashFalloff":1}},
+    "2:9": {"Hp":450,"BuildCost":8,"VedioCount":0,"Data":[57.8,0.35,550],"Tower":{"attackType":"sniper","targeting":"highestHp","projectileSpeed":2100,"pierceTargets":4,"splashRadius":0,"splashFalloff":1}},
+    "2:10": {"Hp":675,"BuildCost":10,"VedioCount":0,"Data":[34,1.9,375],"Tower":{"attackType":"arrow","shotsPerVolley":4,"projectileSpeed":700,"targeting":"nearest"}},
+    "2:11": {"Hp":675,"BuildCost":10,"VedioCount":0,"Data":[56,0.42,275],"Tower":{"attackType":"cannon","targeting":"nearest","projectileSpeed":375,"splashRadius":70,"splashFalloff":0.55}},
+    "2:12": {"Hp":675,"BuildCost":10,"VedioCount":0,"Data":[98.26,0.4,600],"Tower":{"attackType":"sniper","targeting":"highestHp","projectileSpeed":2100,"pierceTargets":5,"splashRadius":0,"splashFalloff":1}},
+    "3:11": {"Hp":150,"BuildCost":4,"VedioCount":0,"Data":[3,90001,8]},
+    "3:12": {"Hp":250,"BuildCost":8,"VedioCount":0,"Data":[5,90001,8]},
+    "3:13": {"Hp":416.666666666667,"BuildCost":10,"VedioCount":0,"Data":[7,90001,8]},
+    "3:14": {"Hp":150,"BuildCost":4,"VedioCount":0,"Data":[3,90002,8]},
+    "3:15": {"Hp":250,"BuildCost":8,"VedioCount":0,"Data":[5,90002,8]},
+    "3:16": {"Hp":416.666666666667,"BuildCost":10,"VedioCount":0,"Data":[7,90002,8]},
+    "3:17": {"Hp":150,"BuildCost":4,"VedioCount":0,"Data":[3,90003,8]},
+    "3:18": {"Hp":250,"BuildCost":8,"VedioCount":0,"Data":[5,90003,8]},
+    "3:19": {"Hp":416.666666666667,"BuildCost":10,"VedioCount":0,"Data":[7,90003,8]},
+    "3:20": {"Hp":150,"BuildCost":4,"VedioCount":0,"Data":[3,90004,8]},
+    "3:21": {"Hp":250,"BuildCost":8,"VedioCount":0,"Data":[5,90004,8]},
+    "3:22": {"Hp":416.666666666667,"BuildCost":10,"VedioCount":0,"Data":[7,90004,8]},
+    "3:23": {"Hp":694.444444444445,"BuildCost":14,"VedioCount":0,"Data":[9,90001,8]},
+    "3:24": {"Hp":694.444444444445,"BuildCost":14,"VedioCount":0,"Data":[9,90002,8]},
+    "3:25": {"Hp":694.444444444445,"BuildCost":14,"VedioCount":0,"Data":[9,90003,8]},
+    "3:26": {"Hp":694.444444444445,"BuildCost":14,"VedioCount":0,"Data":[9,90004,8]},
+    "4:1": {"Hp":50,"BuildCost":2,"VedioCount":0,"Data":[1,0]},
+    "4:2": {"Hp":100,"BuildCost":2,"VedioCount":0,"Data":[2,0]},
+    "4:3": {"Hp":200,"BuildCost":2,"VedioCount":0,"Data":[4,0]},
+    "4:4": {"Hp":400,"BuildCost":2,"VedioCount":0,"Data":[8,0]},
+    "5:1": {"Hp":200,"BuildCost":5,"VedioCount":0,"Data":[2,0],"MillDefense":{"kind":"none","fields":2,"fieldHp":100,"damage":0,"range":260,"interval":1.5,"splashRadius":110}},
+    "5:2": {"Hp":300,"BuildCost":3,"VedioCount":0,"Data":[2,0],"MillDefense":{"kind":"scarecrow","fields":2,"fieldHp":150,"damage":12,"range":210,"interval":1.5,"splashRadius":110,"projectileSpeed":650}},
+    "5:3": {"Hp":450,"BuildCost":3,"VedioCount":0,"Data":[3,0],"MillDefense":{"kind":"scarecrow","fields":3,"fieldHp":187.5,"damage":18,"range":230,"interval":1.3888888888888888,"splashRadius":110,"projectileSpeed":650}},
+    "5:4": {"Hp":675,"BuildCost":4,"VedioCount":0,"Data":[4,0],"MillDefense":{"kind":"scarecrow","fields":4,"fieldHp":234.375,"damage":27,"range":250,"interval":1.3333333333333333,"splashRadius":110,"projectileSpeed":650}},
+    "5:5": {"Hp":300,"BuildCost":3,"VedioCount":0,"Data":[2,0],"MillDefense":{"kind":"bomb","fields":2,"fieldHp":150,"damage":75,"range":260,"interval":1.5,"splashRadius":120,"artRank":1,"splashFalloff":0.75}},
+    "5:6": {"Hp":450,"BuildCost":3,"VedioCount":0,"Data":[3,0],"MillDefense":{"kind":"bomb","fields":3,"fieldHp":187.5,"damage":112.5,"range":260,"interval":1.5,"splashRadius":130,"artRank":2,"splashFalloff":0.75}},
+    "5:7": {"Hp":675,"BuildCost":4,"VedioCount":0,"Data":[4,0],"MillDefense":{"kind":"bomb","fields":4,"fieldHp":234.375,"damage":168.75,"range":260,"interval":1.5,"splashRadius":140,"artRank":3,"splashFalloff":0.75}},
+    "6:1": {"Hp":500,"BuildCost":3,"VedioCount":0},
+    "6:2": {"Hp":700,"BuildCost":7,"VedioCount":0},
+    "6:3": {"Hp":1000,"BuildCost":9,"VedioCount":0}
+  },
+  "troopStats": {
+    "90001": [
+      {"tier":1,"Health":55,"AttackDamage":7,"AttackRange":50,"SearchRange":220,"Speed":102,"attacksPerSecond":1,"counterType":"skirmisher"},
+      {"tier":2,"Health":77,"AttackDamage":8.75,"AttackRange":50,"SearchRange":220,"Speed":107,"attacksPerSecond":1.1,"counterType":"skirmisher"},
+      {"tier":3,"Health":107.8,"AttackDamage":10.9375,"AttackRange":50,"SearchRange":220,"Speed":110,"attacksPerSecond":1.2,"counterType":"skirmisher"},
+      {"tier":4,"Health":150.92,"AttackDamage":13.671875,"AttackRange":50,"SearchRange":220,"Speed":115,"attacksPerSecond":1.3,"counterType":"skirmisher"}
+    ],
+    "90002": [
+      {"tier":1,"Health":85,"AttackDamage":6,"AttackRange":50,"SearchRange":220,"Speed":85,"attacksPerSecond":0.67,"counterType":"skirmisher"},
+      {"tier":2,"Health":136,"AttackDamage":7.2,"AttackRange":50,"SearchRange":220,"Speed":90,"attacksPerSecond":0.72,"counterType":"skirmisher"},
+      {"tier":3,"Health":217.6,"AttackDamage":8.64,"AttackRange":50,"SearchRange":220,"Speed":95,"attacksPerSecond":0.77,"counterType":"skirmisher"},
+      {"tier":4,"Health":348.16,"AttackDamage":10.368,"AttackRange":50,"SearchRange":220,"Speed":100,"attacksPerSecond":0.82,"counterType":"skirmisher"}
+    ],
+    "90003": [
+      {"tier":1,"Health":25,"AttackDamage":6.5,"AttackRange":200,"SearchRange":0,"Speed":68,"attacksPerSecond":0.5,"counterType":"vanguard"},
+      {"tier":2,"Health":37.5,"AttackDamage":7.8,"AttackRange":225,"SearchRange":0,"Speed":73,"attacksPerSecond":0.55,"counterType":"vanguard"},
+      {"tier":3,"Health":56.25,"AttackDamage":9.36,"AttackRange":250,"SearchRange":0,"Speed":78,"attacksPerSecond":0.6,"counterType":"vanguard"},
+      {"tier":4,"Health":84.375,"AttackDamage":11.232,"AttackRange":250,"SearchRange":0,"Speed":83,"attacksPerSecond":0.65,"counterType":"vanguard"}
+    ],
+    "90004": [
+      {"tier":1,"Health":60,"AttackDamage":7.5,"AttackRange":50,"SearchRange":220,"Speed":170,"attacksPerSecond":0.8,"counterType":"guardian"},
+      {"tier":2,"Health":84,"AttackDamage":9,"AttackRange":50,"SearchRange":220,"Speed":180,"attacksPerSecond":0.85,"counterType":"guardian"},
+      {"tier":3,"Health":117.6,"AttackDamage":10.8,"AttackRange":50,"SearchRange":220,"Speed":190,"attacksPerSecond":0.9,"counterType":"guardian"},
+      {"tier":4,"Health":164.64,"AttackDamage":12.96,"AttackRange":50,"SearchRange":220,"Speed":200,"attacksPerSecond":0.95,"counterType":"guardian"}
     ]
   }
 }

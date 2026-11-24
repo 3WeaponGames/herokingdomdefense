@@ -43,7 +43,8 @@ test('compatibility checks retain incompatible checkpoints, unknown fields and e
 });
 test('valid legacy and completed tasks remain resumable with no save or admission charge', () => {
   const h = harness(), record = h.player.gameData;
-  for (const taskList of [undefined, { index: 0, list: [1], stage: 0 }, { index: 1, list: [1], stage: 0 }]) {
+  for (const taskList of [undefined, { index: 0, list: [1], stage: 0 }, { index: 1, list: [1], stage: 0 },
+    { index: 0, list: ['1'], stage: 0 }]) {
     record.setCheckpoint(checkpoint({ buffList: [config.BuffCfg[0].ID], taskList }));
     const disk = h.persist(), power = h.player.udata.getPowerNum();
     assert.equal(record.getResumeIssue(1), null); assert.deepEqual(h.persist(), disk); assert.equal(h.player.udata.getPowerNum(), power);

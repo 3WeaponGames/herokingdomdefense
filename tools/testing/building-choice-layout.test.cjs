@@ -193,7 +193,8 @@ test('every barracks upgrade shows its actual soldier gain and new total in both
     const next=family.levelList.find(row=>row.index===current.BranchBuild[0]);
     p.ui.init({buildCfg:family,buildInfo:{cfg:current}},()=>{},()=>{},[next.index]);
     const row=p.ui._choiceRows[0],label=row.getChildByName('labInfo').getComponent(p.h.cc.Label);
-    assert.equal(label.string,locale==='en'?'+3 soldiers\nTotal after upgrade: '+next.Data[0]:'士兵数量+3\n升级后共'+next.Data[0]+'名士兵');
+    assert.equal(label.string,locale==='en'?'+2 soldiers\nTotal after upgrade: '+next.Data[0]:'士兵数量+2\n升级后共'+next.Data[0]+'名士兵');
+    assert(!row.children.some(child=>child.name==='ndVideo'&&child.active));
     assert(label.enableWrapText);assert.equal(label.fontSize,24);assert(row.getChildByName('labInfo').width<row.width);
   }
   assert.equal(JSON.stringify(family),before,'Showing upgrade totals changed game data');

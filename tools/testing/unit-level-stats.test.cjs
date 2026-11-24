@@ -3,6 +3,41 @@ const assert=require('node:assert/strict'),{test}=require('node:test');
 const Stats=require('../../assets/_script/UnitLevelStats');
 const {environment,near}=require('../navigation/runtime-harness.cjs');
 
+test('all 16 shipped barracks troop tiers use the workbook stats, effective cadence and counter matchups',()=>{
+  const path=require('node:path');
+  const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+  const {troopStats}=require('./four-tier-building-progression.fixture.json');
+  const Cadence=require('../../assets/_script/AttackCadence');
+  const Assets=require('../../packages/game-data-editor/lib/unit-assets');
+  const Profile=require('../../packages/game-data-editor/lib/attack-profile');
+  const root=path.resolve(__dirname,'../..');
+  const settings=config.GameTools;
+  const e=environment();
+  e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data.GameTools=settings;
+  const overrides=e.load('GameToolsOverrides');
+  for(const [id,tiers] of Object.entries(troopStats)){
+    const base=config.AllyCfg[id];
+    for(const {tier,attacksPerSecond,counterType,...expected} of tiers){
+      const record=Stats.resolve(base,settings,tier);
+      const owner={cfg:record,navigationTeam:'friendly',outBuild:{buildInfo:{cfg:{level:tier}}}};
+      const request={type:'ally',id,level:tier,noRuntime:true,record,documents:{A:{data:config},overrides:{data:settings}}};
+      const profile=Profile.describe(Assets.describe(root,request),settings,request);
+      const speed=overrides.attackPlayback(owner,'ally');
+      assert.equal(speed,profile.animationSpeed);
+      const result=Cadence.measure(record.AttackInterval,profile.hitTime,profile.duration,speed,profile.cooldownStart);
+      assert(Math.abs(result.rate-attacksPerSecond)<1e-10,id+' tier '+tier);
+      for(const [field,value] of Object.entries(expected))assert.equal(record[field],value,field+' '+id+' tier '+tier);
+      const role=settings.unitTypeAssignments['ally:'+id+':default'];
+      for(const type of Object.keys(settings.unitTypes)){
+        const target={cfg:{FightingType:type},navigationTeam:'enemy'};
+        assert.equal(overrides.counters(owner,target),type===counterType);
+        const inherited={...owner,cfg:{...record,OverrideCounterType:false}};
+        assert.equal(overrides.counters(inherited,target),type===settings.unitTypes[role].counterType);
+      }
+    }
+  }
+});
+
 const clone=value=>JSON.parse(JSON.stringify(value));
 function fixture(id=90001){
   const e=environment();e.stubs.UnitLevelStats=Stats;

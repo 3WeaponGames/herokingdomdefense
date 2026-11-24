@@ -39,6 +39,20 @@ function containers(value,pathParts,label){
     parent=next;
   }
 }
+function ensureUnchanged(original,latest,next,paths,relative){
+  const values=data=>paths.map(parts=>Settings.get(data,parts.join('.')));
+  const current=values(latest);
+  if(!Document.equal(values(original),current)&&!Document.equal(values(next),current)){
+    throw Error('Game data changed outside this draft at '+paths[0].join(' / ')+' in '+relative+'. Your changes are intact.');
+  }
+}
+function applyChanges(target,changes,relative){
+  for(const change of changes){
+    containers(target,change.path,relative);
+    if(change.value===undefined)remove(target,change.path);
+    else Settings.set(target,change.path.join('.'),clone(change.value));
+  }
+}
 class SkillService{
   constructor(root,options={}){this.root=path.resolve(root);this.options=options;this.commit=options.commit||require('../hkd-characters/lib/asset-transaction').commit;this.version=0;this.read();this.catalogs=options.catalogs||Catalog.index(this.root);this.catalogTime=Date.now();}
   disk(){return FILES.map(relative=>{const file=path.join(this.root,relative),bytes=fs.readFileSync(file),text=bytes.toString('utf8'),config=JSON.parse(text.replace(/^\uFEFF/,''));return {relative,file,bytes,text,config};});}
@@ -144,10 +158,12 @@ class SkillService{
   discard(request){this.check(request);this.read();return this.snapshot({discarded:true});}
   save(request){
     this.check(request);if(!this.dirty())return this.snapshot({saved:false,files:[]});
-    const disk=this.disk();if(disk.some((row,i)=>!row.bytes.equals(this.saved[i].bytes)))throw Error('Game data changed outside this draft. Your changes are intact; reload or discard before saving.');
+    const disk=this.disk();
     if(!this.options.catalogs)this.catalogs=Catalog.index(this.root);
     const changes=leaves(this.original,this.data),enemyChanges=leaves(this.originalEnemy,this.enemyData),files=new Map(),expected=new Map();
-    for(const id of new Set(enemyChanges.map(change=>change.path[0]))){
+    const enemyResources=['resource','resourceBundle','resourcePath','resourceAnimation'];
+    const enemyResourceChanges=new Set(enemyChanges.filter(change=>enemyResources.includes(change.path[1])).map(change=>change.path[0]));
+    for(const id of enemyResourceChanges){
       const record=this.enemyData[id];if(!record||!record.resource)continue;
       const asset=Enemy.selection(this.catalogs,record.resource,record.resourceAnimation);
       if(asset.bundle!==record.resourceBundle||asset.path!==record.resourcePath)throw Error('The enemy skill effect moved. Select it again before saving.');
@@ -156,18 +172,25 @@ class SkillService{
     for(const style of projectileStyles){const id=Settings.get(this.data[style],'visual.projectile');if(!id)continue;const asset=this.asset('projectiles',id);if(!asset)throw Error('The selected projectile is no longer available.');if(!Document.equal(Settings.get(this.data[style],'visual.projectileAsset'),projectileData(asset)))throw Error('The selected projectile changed after selection. Choose it again before saving.');}
     const resourceGroups=new Map();for(const change of changes)for(const prefix of RESOURCE_PREFIXES)if(change.path[1]==='visual'&&change.path[2]!==prefix+'Animation'&&resourceKeys(prefix).includes(change.path[2]))resourceGroups.set(change.path[0]+':'+prefix,[change.path[0],prefix]);
     const audioGroups=new Map(changes.filter(change=>change.path[1]==='audio'&&Settings.audioPhases.includes(change.path[2])&&['clip','bundle','path'].includes(change.path[3])).map(change=>[change.path[0]+':'+change.path[2],[change.path[0],change.path[2]]]));
-    for(const row of disk){if(row.config.HeroSkills!==undefined&&!object(row.config.HeroSkills))throw Error('Invalid HeroSkills section in '+row.relative+'. Nothing was saved.');for(const change of changes)containers(row.config.HeroSkills,change.path,row.relative);}
+    if(changes.length)for(const row of disk)if(row.config.HeroSkills!==undefined&&!object(row.config.HeroSkills))throw Error('Invalid HeroSkills section in '+row.relative+'. Nothing was saved.');
     for(const style of new Set(changes.map(change=>change.path[0])))if(this.data[style])this.animations(style,this.data[style],undefined,this.original[style]||{});
     for(const change of changes){const [style,...parts]=change.path,field=Settings.descriptors(style).find(row=>row.path===parts.join('.'));if(field&&change.value!==undefined){if(!Settings.valid(field,change.value))throw Error('Invalid '+field.label);if((field.type==='audio'||field.type==='vfx')&&change.value&&!this.asset(field.type==='audio'?'audio':'vfx',change.value))throw Error('A selected skill asset is no longer available.');}}
     for(const style of new Set(changes.map(change=>change.path[0]))){const value=this.data[style];if(!value)continue;for(const field of Settings.descriptors(style).filter(row=>row.type==='audio'||row.type==='vfx')){const audio=field.type==='audio',selected=audio?audioGroups.has(style+':'+field.path.split('.')[1]):resourceGroups.has(style+':'+field.path.split('.')[1]);if(!selected)continue;const id=Settings.get(value,field.path);if(!id)continue;const asset=this.asset(audio?'audio':'vfx',id);if(!asset)throw Error('A selected skill asset is no longer available.');const prefix=audio?field.path.slice(0,-5):field.path;for(const [saved,source]of audio?[['bundle','bundle'],['path','path']]:[['Bundle','bundle'],['Path','path'],['Kind','kind']]){const derived=Settings.get(value,prefix+(audio?'.':'')+saved);if(derived!==undefined&&derived!==asset[source])throw Error('A selected skill asset moved after selection. Your draft is intact; choose that asset again before saving.');}if(!audio)for(const key of FRAME_KEYS){const derived=Settings.get(value,prefix+key),source=key[0].toLowerCase()+key.slice(1);if(derived!==undefined&&(!asset.flipbook||derived!==asset.flipbook[source]))throw Error('The selected VFX animation layout changed after selection. Your draft is intact; choose that asset again before saving.');}}}
-    for(const row of disk){
+    for(const [index,row] of disk.entries()){
       if(!changes.length&&row.relative!==FILES[0])continue;
+      const original=this.saved[index].config;
       const next=clone(row.config);
       if(enemyChanges.length&&row.relative===FILES[0]){
-        if(Object.keys(this.enemyData).length)next.EnemySkillVisuals=clone(this.enemyData);else delete next.EnemySkillVisuals;
+        if(next.EnemySkillVisuals!==undefined&&!object(next.EnemySkillVisuals))throw Error('Invalid EnemySkillVisuals section in '+row.relative+'. Nothing was saved.');
+        next.EnemySkillVisuals=next.EnemySkillVisuals||{};
+        applyChanges(next.EnemySkillVisuals,enemyChanges,row.relative);
+        for(const change of enemyChanges)ensureUnchanged(original.EnemySkillVisuals,row.config.EnemySkillVisuals,next.EnemySkillVisuals,[change.path],row.relative);
+        for(const id of enemyResourceChanges)ensureUnchanged(original.EnemySkillVisuals,row.config.EnemySkillVisuals,this.enemyData,enemyResources.map(key=>[id,key]),row.relative);
+        if(!Object.keys(next.EnemySkillVisuals).length)delete next.EnemySkillVisuals;
       }
       if(changes.length){
-      if(!object(next.HeroSkills))next.HeroSkills={};for(const change of changes){if(change.value===undefined)remove(next.HeroSkills,change.path);else Settings.set(next.HeroSkills,change.path.join('.'),clone(change.value));}
+      next.HeroSkills=next.HeroSkills||{};
+      applyChanges(next.HeroSkills,changes,row.relative);
       // Selecting/resetting an asset owns its complete layout in every config
       // copy. A mirror may contain old flipbook fields absent from the primary.
       // Keep unrelated visual extensions while replacing this derived group.
@@ -176,11 +199,22 @@ class SkillService{
       // volume, delay and extension fields still belong to their own drafts.
       for(const [style,phase]of audioGroups.values()){for(const key of ['clip','bundle','path'])remove(next.HeroSkills,[style,'audio',phase,key]);for(const key of ['clip','bundle','path']){const value=Settings.get(this.data[style],'audio.'+phase+'.'+key);if(value!==undefined)Settings.set(next.HeroSkills,style+'.audio.'+phase+'.'+key,clone(value));}}
       for(const style of projectileStyles)for(const key of ['projectile','projectileAsset']){remove(next.HeroSkills,[style,'visual',key]);const value=Settings.get(this.data[style],'visual.'+key);if(value!==undefined)Settings.set(next.HeroSkills,style+'.visual.'+key,clone(value));}
+      const guard=paths=>ensureUnchanged(original.HeroSkills,row.config.HeroSkills,next.HeroSkills,paths,row.relative);
+      for(const change of changes)guard([change.path]);
+      for(const [style,phase]of audioGroups.values())guard(['clip','bundle','path'].map(key=>[style,'audio',phase,key]));
+      for(const style of projectileStyles)guard(['projectile','projectileAsset'].map(key=>[style,'visual',key]));
+      for(const change of changes)for(const prefix of RESOURCE_PREFIXES){
+        const keys=resourceKeys(prefix);
+        if(change.path[1]==='visual'&&keys.includes(change.path[2]))guard(keys.map(key=>[change.path[0],'visual',key]));
+      }
       if(!Object.keys(next.HeroSkills).length)delete next.HeroSkills;
       }
-      const text=Document.patch(row.text,row.config,next);files.set(row.relative,text);expected.set(row.file,row.bytes);
+      const text=Document.patch(row.text,row.config,next);
+      if(text!==row.text)files.set(row.relative,text);
+      expected.set(row.file,row.bytes);
     }
-    const result=this.commit(this.root,files,expected,FILES[0]);this.read();return this.snapshot(Object.assign({saved:true},result));
+    const result=files.size?this.commit(this.root,files,expected,FILES[0]):{files:[]};
+    this.read();return this.snapshot(Object.assign({saved:!!result.files.length},result));
   }
   describe(request){
     if(Enemy.hasStyle(request&&request.style))return Enemy.describe(this,request);

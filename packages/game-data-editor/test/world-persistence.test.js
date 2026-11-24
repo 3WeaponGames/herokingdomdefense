@@ -23,6 +23,25 @@ test('world persistence: group-library import also copies its single verified so
  const restore=changeUploadAfterRead(f.upload,Buffer.from('new external group artwork'));try{await s.saveLibrary({key:f.key,version:s.version});}finally{restore();}
  const file=path.join(f.root,f.asset.file),manifest=L.read(f.root,'authoring/worlds/library/manifest.json').assets.find(a=>a.id===f.asset.id);assert(fs.readFileSync(file).equals(f.original));assert.equal(L.hash(fs.readFileSync(file)),manifest.sha256);assert.notEqual(L.hash(fs.readFileSync(f.upload)),manifest.sha256);
 });
+test('world persistence: library save reports a committed save if recovery cleanup fails',async()=>{
+ const f=stagedImageFixture(),s=f.service,placed=M.place(f.snap.value,'grass-detail',f.asset,{x:0,y:0},1,1,0);
+ s.change({key:f.key,version:s.version,value:placed.map});
+ s.libraryAction({key:f.key,version:s.version,action:'capture',ids:[placed.object.id],name:'Imported group'});
+ const other=Buffer.from('{"otherEditor":true}'),mapDraft=clone(s.snapshot(f.key).value),commit=s.commit;
+ s.commit=function(...args){
+  const result=commit.apply(this,args);
+  fs.writeFileSync(s.recovery,other);
+  return result;
+ };
+ const saved=await s.saveLibrary({key:f.key,version:s.version});
+ assert(saved.result.saved);
+ assert.match(saved.result.warning,/Saved on disk.*recovery copy could not be updated/);
+ assert.equal(L.read(f.root,'authoring/worlds/library/groups.json').groups[0].name,'Imported group');
+ assert.equal(saved.collections.dirty,false);
+ assert.deepEqual(saved.value,mapDraft);
+ assert(saved.dirty&&saved.canUndo);
+ assert.deepEqual(fs.readFileSync(s.recovery),other);
+});
 
 
 function resizeMap(s,width,height){const key='map:map-test',value=clone(s.snapshot(key).value);value.size={width,height};value.playable={width,height};return s.change({key,version:s.version,value});}
@@ -85,6 +104,40 @@ function timedSaveFixture(){
 function moveHero(s){const key='stage:A-1',value=clone(s.snapshot(key).value);value.hero.x+=15;return s.change({key,version:s.version,value});}
 
 function changeWave(s){const key='stage:A-1',value=clone(s.snapshot(key).value);Object.assign(value.config.WaveCfg[0].SpawnTimeline[0],{count:7,intervalSeconds:.5,future:{keep:['wave metadata']}});return s.change({key,version:s.version,value});}
+test('world persistence: Advisor task drafts validate and publish only on the selected stage',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',configPath=L.configFile('A');
+ const initial=L.read(f.root,configPath);
+ initial.InGameTaskEnum={1:{Name:'Build 1 Tower'},4:{Name:'Upgrade the Castle'}};
+ initial.GoodsCfg={2001:{name:'Gold'},2003:{name:'Silver'}};
+ initial.InGameTaskCfg=[{ID:1,MissionNumber:1,MissionType:1,MissionID:[1],Award:[[2003,2]]}];
+ const file=f.write(configPath,initial),before=fs.readFileSync(file);
+ s.refresh({key,version:s.version});
+ function setTasks(tasks){
+  const value=clone(s.snapshot(key).value);
+  if(tasks===undefined)delete value.config.BattleTasks;else value.config.BattleTasks=tasks;
+  return s.change({key,version:s.version,value});
+ }
+ const invalid=setTasks([{taskId:1,rewardId:2003,amount:-1}]);
+ assert(invalid.issues.some(issue=>issue.includes('whole reward amount')));
+ await assert.rejects(s.save({key,version:s.version}),/whole reward amount/);
+ const tasks=[{taskId:4,rewardId:2001,amount:200},{taskId:'kill-hero',count:12,rewardId:2003,amount:8},
+  {taskId:'survive-tower',count:3,rewardId:2001,amount:100}];
+ assert.deepEqual(setTasks(tasks).issues,[]);
+ assert.deepEqual(fs.readFileSync(file),before);
+ assert.equal(s.history({key,version:s.version},false).value.config.BattleTasks[0].amount,-1);
+ assert.deepEqual(s.history({key,version:s.version},true).value.config.BattleTasks,tasks);
+ const {result}=await s.save({key,version:s.version}),published=L.read(f.root,configPath);
+ assert(result.saved);
+ assert.deepEqual(fs.readFileSync(path.join(result.backup,configPath)),before);
+ assert.deepEqual(published.LevelCfg[0].BattleTasks,tasks);
+ assert.deepEqual(published.LevelCfg[1],initial.LevelCfg[1]);
+ assert.deepEqual(published.InGameTaskCfg,initial.InGameTaskCfg);
+ assert.deepEqual(new Service(f.root,{artifacts:temporary('hkd-advisor-reopen-')}).snapshot(key).value.config.BattleTasks,tasks);
+ setTasks([]);await s.save({key,version:s.version});
+ assert.deepEqual(L.read(f.root,configPath).LevelCfg[0].BattleTasks,[]);
+ setTasks(undefined);await s.save({key,version:s.version});
+ assert(!Object.hasOwn(L.read(f.root,configPath).LevelCfg[0],'BattleTasks'));
+});
 test('world persistence: Units can publish while a wave draft stays open, and later stage Save keeps the unit edit',async()=>{
  const f=timedSaveFixture(),s=f.service,key='stage:A-1',file=path.join(f.root,L.configFile('A'));
  const {Store}=require('../lib/store'),units=new Store(f.root,{backupRoot:path.join(f.artifacts,'units'),profileDrafts:()=>s.docs});
@@ -147,6 +200,37 @@ test('world persistence: fresh shared validation permits and preserves unrelated
  const config=L.read(f.root,L.configFile('A'));config.LevelCfg[1].InGameCoefficient=7;config.LevelCfg[1].FutureUnrelated={keep:['new',17]};config.SoldierCfg[90001].Health=123;f.write(L.configFile('A'),config);
  const result=await s.save({key,version:s.version}),saved=L.read(f.root,L.configFile('A'));
  assert(result.result.saved);assert.deepEqual(saved.LevelCfg[1],config.LevelCfg[1]);assert.deepEqual(saved.SoldierCfg,config.SoldierCfg);assert.deepEqual(saved.FutureTable,config.FutureTable);assert.equal(s.snapshot(key).value.hero.x,15);assert(!s.snapshot(key).dirty);
+});
+test('world persistence: wave Save merges an unrelated saved field on that stage and leaves clean map bytes intact',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',mapFile=path.join(f.root,'authoring/worlds/maps/map-test.json');
+ const mapText=JSON.stringify(L.read(f.root,'authoring/worlds/maps/map-test.json'));
+ fs.writeFileSync(mapFile,mapText);
+ s.refresh({key,version:s.version});
+ changeWave(s);
+ const config=L.read(f.root,L.configFile('A')),external={values:[2,{keep:true,external:17}]};
+ config.LevelCfg[0].FutureStage=external;
+ f.write(L.configFile('A'),config);
+ const result=await s.save({key,version:s.version});
+ assert(result.result.saved);
+ const saved=L.read(f.root,L.configFile('A')).LevelCfg[0];
+ assert.deepEqual(saved.FutureStage,external);
+ assert.equal(saved.WaveCfg[0].SpawnTimeline[0].count,7);
+ assert.deepEqual(L.read(f.root,'authoring/worlds/stages/A-1.json').config,saved);
+ assert.equal(fs.readFileSync(mapFile,'utf8'),mapText);
+ assert(!result.dirty);
+});
+test('world persistence: concurrent edits to the same wave schedule retain both versions without baking',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',layoutFile=path.join(f.root,'authoring/worlds/stages/A-1.json');
+ const published=fingerprint(layoutFile),draft=changeWave(s),history=structuredClone(s.undo);
+ const config=L.read(f.root,L.configFile('A'));
+ config.LevelCfg[0].WaveCfg[0].SpawnTimeline[0].count=6;
+ const configFile=f.write(L.configFile('A'),config),revision=fingerprint(configFile);
+ s.options.render=async()=>{assert.fail('Conflicting changes must stop before baking.');};
+ await assert.rejects(s.save({key,version:s.version}),/Stage A-1 changed on disk at WaveCfg.*draft is retained/);
+ assert.equal(fingerprint(layoutFile),published);
+ assert.equal(fingerprint(configFile),revision);
+ assert.deepEqual(s.snapshot(key).value,draft.value);
+ assert.deepEqual(s.undo,history);
 });
 test('world persistence: a localization dependency changed during stage baking rejects all project writes',async()=>{
  const f=timedSaveFixture(),s=f.service,key='stage:A-1',stageFile=path.join(f.root,'authoring/worlds/stages/A-1.json'),before=fingerprint(stageFile),cfgBefore=fingerprint(path.join(f.root,L.configFile('A')));

@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'../..'),config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),mirror=require('../../assets/configs/GameJsonCfg.json'),contract=require('./four-tier-building-progression.fixture.json');
 const Cost=require('../../assets/_script/BuildingCost'),Assets=require('../../packages/game-data-editor/lib/asset-validation');
-const statKeys=['Hp','Data','BuildSliverCost','BuildCost','VedioCount'];
+const statKeys=['Hp','Data','BuildCost','VedioCount','Tower','MillDefense'];
 const row=(category,index)=>config.BuildEnum[category].levelList.find(value=>value.index===index);
 test('ten building families retain stable IDs and follow one straight four-tier path',()=>{
  assert.equal(contract.families.length,10);assert.equal(contract.families.reduce((sum,f)=>sum+f.indices.length,0),40);
@@ -16,15 +16,30 @@ test('ten building families retain stable IDs and follow one straight four-tier 
  assert.deepEqual(contractValues(config).BuildEnum,contractValues(mirror).BuildEnum,'runtime resource mirror retains the same gameplay rows while layout remains authorable');
  for(const [category,choices]of Object.entries(contract.originalInitialChoices))assert.deepEqual(config.BuildEnum[category].InitialChoices,choices);
 });
-test('every existing tier1-3 HP, special value, numeric cost and ad field retains its approved value and presence',()=>{
- let checked=0;for(const family of contract.families)for(const original of family.originalStatRows){const current=row(family.category,original.index);for(const key of statKeys){assert.equal(Object.hasOwn(current,key),Object.hasOwn(original,key),family.family+' '+original.index+' '+key+' presence');if(Object.hasOwn(original,key))assert.deepEqual(current[key],original[key],family.family+' '+original.index+' '+key);}checked++;}assert.equal(checked,30);
- assert.deepEqual(require('./painted-building-contract.cjs').withoutAuthoring(config).BuildEnum[6],require('./painted-building-contract.cjs').withoutAuthoring({BuildEnum:{6:contract.originalWallDefinition}}).BuildEnum[6],'three wall visuals and their original logical levels, prices, skins and blockers stay unchanged');
+test('every construction and upgrade follows the workbook stats and destination silver price',()=>{
+ const checked=new Set();
+ for(const [id,category] of Object.entries(config.BuildEnum)){
+  for(const current of category.levelList||[]){
+   const key=id+':'+current.index,expected=contract.buildingStats[key];
+   assert(expected,key);
+   assert(!checked.has(key),key);
+   checked.add(key);
+   for(const stat of statKeys)assert.deepEqual(current[stat],expected[stat],key+' '+stat);
+   const initial=current.level===1;
+   const sources=initial?[null]:category.levelList.filter(source=>(source.BranchBuild||[]).includes(current.index));
+   assert(sources.length,key+' reachable purchase');
+   for(const source of sources)assert.equal(Cost.value(category,source,current),expected.BuildCost,key+' silver');
+   assert.equal(Cost.video(current,initial),false,key+' ad');
+  }
+ }
+ assert.equal(checked.size,46);
+ assert.deepEqual([...checked].sort(),Object.keys(contract.buildingStats).sort());
 });
-test('fourth-tier stats and destination prices extend the approved progression without reward-ad fallbacks',()=>{
- for(const family of contract.families){const category=config.BuildEnum[family.category],third=row(family.category,family.indices[2]),fourth=row(family.category,family.indices[3]);
-  assert.equal(fourth.Hp,family.newTier4Hp);assert.deepEqual(fourth.Data,family.newTier4Data);assert.equal(fourth.BuildCost,family.newTier4BuildCost);assert.equal(fourth.ColliderIndex,family.colliderIndex);assert.equal(fourth.VedioCount,0);
-  assert.equal(Cost.value(category,third,fourth),family.newTier4BuildCost);assert.equal(Cost.video(fourth,false),false);
-  if(family.category===3){assert.equal(fourth.Data[1],third.Data[1]);assert.equal(fourth.Data[2],third.Data[2]);}
+test('fourth-tier upgrades keep their collider references and troop IDs',()=>{
+ for(const family of contract.families){
+  const third=row(family.category,family.indices[2]),fourth=row(family.category,family.indices[3]);
+  assert.equal(fourth.ColliderIndex,family.colliderIndex);
+  if(family.category===3)assert.deepEqual(fourth.Data.slice(1),third.Data.slice(1));
   if([4,5].includes(family.category))assert.equal(fourth.Data[1],0);
  }
 });
@@ -57,7 +72,7 @@ test('early campaign halls cap both paid and perk upgrade choices by stage slot'
  }
 });
 const dataSource=fs.readFileSync(path.join(root,'assets/_script/KinghtFallGameCtrlData.js'),'utf8');
-function unlockReader(){const match=/_ctor\.prototype\.initData\s*=\s*function\s*\([^)]*\)\s*\{/.exec(dataSource);assert(match);const body=match.index+match[0].length,end=dataSource.indexOf('    var r;',body);assert(end>body);return vm.runInNewContext('(function(){'+dataSource.slice(body,end)+'})');}
+function unlockReader(){const match=/_ctor\.prototype\.initData\s*=\s*function\s*\([^)]*\)\s*\{/.exec(dataSource);assert(match);const body=match.index+match[0].length,end=dataSource.indexOf('    this.taskInfo = this.createTaskInfo',body);assert(end>body);return vm.runInNewContext('(function(){'+dataSource.slice(body,end)+'})');}
 function canLock(){const match=/_ctor\.prototype\.canLock = (function \(t\) \{[\s\S]*?\n  \});/.exec(dataSource);assert(match);return vm.runInNewContext('('+match[1]+')');}
 test('actual runtime unlock initialization keeps legacy stage data untouched and supports optional level4 purchases',()=>{
  const levelCfg={HomeLevel1Unlock:[[2,7]],HomeLevel2Unlock:[[3,9]],HomeLevel3Unlock:[[5,11]]},before=JSON.stringify(levelCfg),owner={levelCfg};unlockReader().call(owner);assert.equal(owner.buildings.length,4);assert.equal(JSON.stringify(owner.buildings.slice(0,3)),JSON.stringify([{level:1,bulidPoint:[7],bulidId:[2]},{level:2,bulidPoint:[9],bulidId:[3]},{level:3,bulidPoint:[11],bulidId:[5]}]));assert.equal(JSON.stringify(levelCfg),before);assert(!Object.hasOwn(levelCfg,'HomeLevel4Unlock'));assert.equal(owner.buildings[3].bulidPoint.length,0);

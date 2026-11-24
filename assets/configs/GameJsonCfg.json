@@ -2185,14 +2185,15 @@
             29
           ],
           "Data": [
-            18,
+            14,
             0.4,
             300
           ],
           "Tower": {
             "attackType": "arrow",
             "shotsPerVolley": 1,
-            "projectileSpeed": 700
+            "projectileSpeed": 700,
+            "targeting": "nearest"
           },
           "WorldScale": 0.8552987190364798,
           "Blocker": {
@@ -2261,7 +2262,9 @@
               "version": 1,
               "distance": 184.66691582414003
             }
-          }
+          },
+          "BuildCost": 3,
+          "VedioCount": 0
         },
         {
           "ID": 1,
@@ -2272,19 +2275,20 @@
           "Icon": "painted-castle-2",
           "Zoom": 0.3,
           "Skin": "cb-painted-2",
-          "Hp": 500,
+          "Hp": 480,
           "BranchBuild": [
             3
           ],
           "Data": [
-            25,
+            18.2,
             0.6,
             325
           ],
           "Tower": {
             "attackType": "arrow",
             "shotsPerVolley": 1,
-            "projectileSpeed": 700
+            "projectileSpeed": 700,
+            "targeting": "nearest"
           },
           "LevelUpDescribe": "[[loc:data.building.guide.1.2.description]]",
           "WorldScale": 0.8552987190364798,
@@ -2440,7 +2444,9 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 5,
+          "VedioCount": 0
         },
         {
           "ID": 1,
@@ -2450,16 +2456,17 @@
           "Icon": "painted-castle-3",
           "Zoom": 0.3,
           "Skin": "cb-painted-3",
-          "Hp": 750,
+          "Hp": 770,
           "Data": [
-            32,
+            23.66,
             0.8,
             350
           ],
           "Tower": {
             "attackType": "arrow",
             "shotsPerVolley": 2,
-            "projectileSpeed": 700
+            "projectileSpeed": 700,
+            "targeting": "nearest"
           },
           "LevelUpDescribe": "[[loc:data.building.guide.1.3.description]]",
           "BranchBuild": [
@@ -2584,7 +2591,9 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 10,
+          "VedioCount": 0
         },
         {
           "ID": 1,
@@ -2594,16 +2603,17 @@
           "Icon": "painted-castle-4",
           "Zoom": 0.3,
           "Skin": "cb-painted-4",
-          "Hp": 1000,
+          "Hp": 1300,
           "Data": [
-            40,
+            30.758,
             1,
             375
           ],
           "Tower": {
             "attackType": "arrow",
             "shotsPerVolley": 2,
-            "projectileSpeed": 700
+            "projectileSpeed": 700,
+            "targeting": "nearest"
           },
           "LevelUpDescribe": "[[loc:data.building.castle-4.description]]",
           "BuildCost": 20,
@@ -2764,7 +2774,8 @@
           "Tower": {
             "attackType": "arrow",
             "shotsPerVolley": 1,
-            "projectileSpeed": 700
+            "projectileSpeed": 700,
+            "targeting": "nearest"
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-1",
@@ -3262,7 +3273,9 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 3,
+          "VedioCount": 0
         },
         {
           "ID": 2,
@@ -3290,7 +3303,8 @@
           "Tower": {
             "attackType": "arrow",
             "shotsPerVolley": 2,
-            "projectileSpeed": 700
+            "projectileSpeed": 700,
+            "targeting": "nearest"
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-2",
@@ -3551,25 +3565,27 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 5,
+          "VedioCount": 0
         },
         {
           "ID": 2,
           "index": 3,
           "level": 3,
           "Name": "[[loc:data.buildenum.2.levellist.3.name]]",
-          "VedioCount": 1,
+          "VedioCount": 0,
           "LevelUpDescribe": "[[loc:data.buildenum.2.levellist.3.levelupdescribe]]",
           "Icon": "painted-archer-3",
           "Zoom": 0.4,
           "Skin": "jt-2-2",
-          "Hp": 400,
+          "Hp": 450,
           "Excursion": [
             -200,
             37
           ],
           "Data": [
-            20,
+            21,
             1.5,
             350
           ],
@@ -3579,7 +3595,8 @@
           "Tower": {
             "attackType": "arrow",
             "shotsPerVolley": 3,
-            "projectileSpeed": 700
+            "projectileSpeed": 700,
+            "targeting": "nearest"
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-3",
@@ -3783,7 +3800,8 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 8
         },
         {
           "ID": 2,
@@ -3800,7 +3818,7 @@
             34
           ],
           "Data": [
-            10,
+            15,
             0.25,
             200
           ],
@@ -3809,7 +3827,7 @@
             "targeting": "nearest",
             "projectileSpeed": 375,
             "splashRadius": 40,
-            "splashFalloff": 0.1
+            "splashFalloff": 0.25
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-1",
@@ -4006,7 +4024,9 @@
           },
           "PartScale": {
             "weapon": 1
-          }
+          },
+          "BuildCost": 3,
+          "VedioCount": 0
         },
         {
           "ID": 2,
@@ -4023,7 +4043,7 @@
             34
           ],
           "Data": [
-            17,
+            25.5,
             0.28,
             225
           ],
@@ -4032,7 +4052,7 @@
             "targeting": "nearest",
             "projectileSpeed": 375,
             "splashRadius": 50,
-            "splashFalloff": 0.15
+            "splashFalloff": 0.35
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-2",
@@ -4229,7 +4249,9 @@
               "version": 1,
               "distance": 103.59113979486855
             }
-          }
+          },
+          "BuildCost": 5,
+          "VedioCount": 0
         },
         {
           "ID": 2,
@@ -4239,14 +4261,14 @@
           "Icon": "painted-cannon-3",
           "Zoom": 0.133,
           "Skin": "jt-2-2",
-          "Hp": 400,
+          "Hp": 450,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            24,
+            43.35,
             0.35,
             250
           ],
@@ -4255,7 +4277,7 @@
             "targeting": "nearest",
             "projectileSpeed": 375,
             "splashRadius": 60,
-            "splashFalloff": 0.2
+            "splashFalloff": 0.45
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-3",
@@ -4451,7 +4473,9 @@
               "version": 1,
               "distance": 103.59113979486855
             }
-          }
+          },
+          "BuildCost": 8,
+          "VedioCount": 0
         },
         {
           "ID": 2,
@@ -4677,7 +4701,9 @@
               "version": 1,
               "distance": 103.59113979486855
             }
-          }
+          },
+          "BuildCost": 3,
+          "VedioCount": 0
         },
         {
           "ID": 2,
@@ -4897,7 +4923,9 @@
                 ]
               ]
             }
-          }
+          },
+          "BuildCost": 5,
+          "VedioCount": 0
         },
         {
           "ID": 2,
@@ -4907,14 +4935,14 @@
           "Icon": "painted-sniper-3",
           "Zoom": 0.133,
           "Skin": "jt-2-2",
-          "Hp": 400,
+          "Hp": 450,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            48,
+            57.8,
             0.35,
             550
           ],
@@ -5124,7 +5152,9 @@
                 ]
               ]
             }
-          }
+          },
+          "BuildCost": 8,
+          "VedioCount": 0
         },
         {
           "ID": 2,
@@ -5136,22 +5166,23 @@
           "Icon": "painted-archer-4",
           "Zoom": 0.4,
           "Skin": "jt-2-2",
-          "Hp": 500,
+          "Hp": 675,
           "Excursion": [
             -200,
             37
           ],
           "Data": [
-            25,
-            2,
+            34,
+            1.9,
             375
           ],
-          "BuildCost": 5,
+          "BuildCost": 10,
           "ColliderIndex": 3,
           "Tower": {
             "attackType": "arrow",
             "shotsPerVolley": 4,
-            "projectileSpeed": 700
+            "projectileSpeed": 700,
+            "targeting": "nearest"
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-4",
@@ -5364,14 +5395,14 @@
           "Icon": "painted-cannon-4",
           "Zoom": 0.133,
           "Skin": "jt-2-2",
-          "Hp": 500,
+          "Hp": 675,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            32,
+            56,
             0.42,
             275
           ],
@@ -5380,7 +5411,7 @@
             "targeting": "nearest",
             "projectileSpeed": 375,
             "splashRadius": 70,
-            "splashFalloff": 0.25
+            "splashFalloff": 0.55
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-4",
@@ -5481,7 +5512,7 @@
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-4.description]]",
-          "BuildCost": 32,
+          "BuildCost": 10,
           "VedioCount": 0,
           "WorldScale": 0.7996017392058284,
           "Blocker": {
@@ -5568,14 +5599,14 @@
           "Icon": "painted-sniper-4",
           "Zoom": 0.133,
           "Skin": "jt-2-2",
-          "Hp": 500,
+          "Hp": 675,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            65,
+            98.26,
             0.4,
             600
           ],
@@ -5691,7 +5722,7 @@
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-4.description]]",
-          "BuildCost": 32,
+          "BuildCost": 10,
           "VedioCount": 0,
           "WorldScale": 0.78940877015086,
           "Blocker": {
@@ -5892,7 +5923,9 @@
               "version": 1,
               "distance": 141.245830016323
             }
-          }
+          },
+          "BuildCost": 4,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -5910,7 +5943,7 @@
             34
           ],
           "Data": [
-            6,
+            5,
             90001,
             8
           ],
@@ -5978,7 +6011,9 @@
               "version": 1,
               "distance": 141.245830016323
             }
-          }
+          },
+          "BuildCost": 8,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -5989,14 +6024,14 @@
           "Icon": "painted-royal-3",
           "Zoom": 0.35,
           "Skin": "by-painted-royal-3",
-          "Hp": 400,
+          "Hp": 416.666666666667,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            9,
+            7,
             90001,
             8
           ],
@@ -6063,7 +6098,9 @@
               "version": 1,
               "distance": 141.245830016323
             }
-          }
+          },
+          "BuildCost": 10,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -7737,7 +7774,9 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 4,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -7755,7 +7794,7 @@
             34
           ],
           "Data": [
-            6,
+            5,
             90002,
             8
           ],
@@ -7929,7 +7968,9 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 8,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -7940,14 +7981,14 @@
           "Icon": "painted-heavy-3",
           "Zoom": 0.35,
           "Skin": "by-painted-heavy-3",
-          "Hp": 400,
+          "Hp": 416.666666666667,
           "ColliderIndex": 4,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            9,
+            7,
             90002,
             8
           ],
@@ -8137,7 +8178,9 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 10,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -8313,7 +8356,9 @@
               }
             ],
             "nextLightId": 5
-          }
+          },
+          "BuildCost": 4,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -8331,7 +8376,7 @@
             34
           ],
           "Data": [
-            6,
+            5,
             90003,
             8
           ],
@@ -8415,7 +8460,9 @@
               "version": 1,
               "distance": 141.245830016323
             }
-          }
+          },
+          "BuildCost": 8,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -8426,14 +8473,14 @@
           "Icon": "painted-crossbow-3",
           "Zoom": 0.35,
           "Skin": "by-painted-crossbow-3",
-          "Hp": 400,
+          "Hp": 416.666666666667,
           "ColliderIndex": 7,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            9,
+            7,
             90003,
             8
           ],
@@ -8516,7 +8563,9 @@
               "version": 1,
               "distance": 141.245830016323
             }
-          }
+          },
+          "BuildCost": 10,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -8618,7 +8667,9 @@
               "version": 1,
               "distance": 141.245830016323
             }
-          }
+          },
+          "BuildCost": 4,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -8636,7 +8687,7 @@
             34
           ],
           "Data": [
-            6,
+            5,
             90004,
             8
           ],
@@ -8711,7 +8762,9 @@
                 ]
               ]
             }
-          }
+          },
+          "BuildCost": 8,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -8722,14 +8775,14 @@
           "Icon": "painted-stable-3",
           "Zoom": 0.35,
           "Skin": "by-painted-stable-3",
-          "Hp": 400,
+          "Hp": 416.666666666667,
           "ColliderIndex": 10,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            9,
+            7,
             90004,
             8
           ],
@@ -8819,7 +8872,9 @@
                 ]
               ]
             }
-          }
+          },
+          "BuildCost": 10,
+          "VedioCount": 0
         },
         {
           "ID": 3,
@@ -8830,18 +8885,18 @@
           "Icon": "painted-royal-4",
           "Zoom": 0.35,
           "Skin": "by-painted-royal-4",
-          "Hp": 550,
+          "Hp": 694.444444444445,
           "ColliderIndex": 3,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            12,
+            9,
             90001,
             8
           ],
-          "BuildCost": 32,
+          "BuildCost": 14,
           "VedioCount": 0,
           "WorldScale": 0.967311632142044,
           "Blocker": {
@@ -8914,18 +8969,18 @@
           "Icon": "painted-heavy-4",
           "Zoom": 0.35,
           "Skin": "by-painted-heavy-4",
-          "Hp": 550,
+          "Hp": 694.444444444445,
           "ColliderIndex": 4,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            12,
+            9,
             90002,
             8
           ],
-          "BuildCost": 32,
+          "BuildCost": 14,
           "VedioCount": 0,
           "WorldScale": 0.8552987190364839,
           "Blocker": {
@@ -9089,18 +9144,18 @@
           "Icon": "painted-crossbow-4",
           "Zoom": 0.35,
           "Skin": "by-painted-crossbow-4",
-          "Hp": 550,
+          "Hp": 694.444444444445,
           "ColliderIndex": 7,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            12,
+            9,
             90003,
             8
           ],
-          "BuildCost": 32,
+          "BuildCost": 14,
           "VedioCount": 0,
           "WorldScale": 0.782819775262297,
           "Blocker": {
@@ -9189,18 +9244,18 @@
           "Icon": "painted-stable-4",
           "Zoom": 0.35,
           "Skin": "by-painted-stable-4",
-          "Hp": 550,
+          "Hp": 694.444444444445,
           "ColliderIndex": 10,
           "Excursion": [
             -200,
             34
           ],
           "Data": [
-            12,
+            9,
             90004,
             8
           ],
-          "BuildCost": 32,
+          "BuildCost": 14,
           "VedioCount": 0,
           "WorldScale": 0.6444508826024902,
           "Blocker": {
@@ -9416,7 +9471,9 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 2,
+          "VedioCount": 0
         },
         {
           "ID": 4,
@@ -9524,19 +9581,21 @@
               }
             ],
             "nextLightId": 2
-          }
+          },
+          "BuildCost": 2,
+          "VedioCount": 0
         },
         {
           "ID": 4,
           "index": 3,
           "level": 3,
           "Name": "[[loc:data.buildenum.4.levellist.3.name]]",
-          "VedioCount": 1,
+          "VedioCount": 0,
           "LevelUpDescribe": "[[loc:data.buildenum.4.levellist.3.levelupdescribe]]",
           "Icon": "painted_farmhouse_3",
           "Zoom": 0.5,
           "Skin": "mz-2-2",
-          "Hp": 150,
+          "Hp": 200,
           "Excursion": [
             -206,
             28
@@ -9657,7 +9716,8 @@
               }
             ],
             "nextLightId": 3
-          }
+          },
+          "BuildCost": 2
         },
         {
           "ID": 4,
@@ -9669,13 +9729,13 @@
           "Icon": "painted_farmhouse_4",
           "Zoom": 0.5,
           "Skin": "mz-3",
-          "Hp": 200,
+          "Hp": 400,
           "Excursion": [
             -206,
             28
           ],
           "Data": [
-            6,
+            8,
             0
           ],
           "BuildCost": 2,
@@ -9819,7 +9879,7 @@
             31
           ],
           "Data": [
-            3,
+            2,
             0
           ],
           "MillDefense": {
@@ -9922,7 +9982,9 @@
               "version": 1,
               "distance": 109.3610585400489
             }
-          }
+          },
+          "BuildCost": 5,
+          "VedioCount": 0
         },
         {
           "ID": 5,
@@ -9940,7 +10002,7 @@
             31
           ],
           "Data": [
-            5,
+            2,
             0
           ],
           "BranchBuild": [
@@ -9951,9 +10013,10 @@
             "fields": 2,
             "fieldHp": 150,
             "damage": 12,
-            "range": 260,
+            "range": 210,
             "interval": 1.5,
-            "splashRadius": 110
+            "splashRadius": 110,
+            "projectileSpeed": 650
           },
           "Blocker": {
             "version": 1,
@@ -10037,25 +10100,27 @@
                 ]
               ]
             }
-          }
+          },
+          "BuildCost": 3,
+          "VedioCount": 0
         },
         {
           "ID": 5,
           "index": 3,
           "level": 3,
           "Name": "[[loc:data.mill.scarecrow.3.name]]",
-          "VedioCount": 1,
+          "VedioCount": 0,
           "LevelUpDescribe": "[[loc:data.mill.scarecrow.3.description]]",
           "Icon": "painted_mill_3",
           "Zoom": 0.35,
           "Skin": "mf-2-2",
-          "Hp": 300,
+          "Hp": 450,
           "Excursion": [
             -202,
             31
           ],
           "Data": [
-            7,
+            3,
             0
           ],
           "BranchBuild": [
@@ -10064,11 +10129,12 @@
           "MillDefense": {
             "kind": "scarecrow",
             "fields": 3,
-            "fieldHp": 180,
+            "fieldHp": 187.5,
             "damage": 18,
-            "range": 260,
-            "interval": 1.5,
-            "splashRadius": 110
+            "range": 230,
+            "interval": 1.3888888888888888,
+            "splashRadius": 110,
+            "projectileSpeed": 650
           },
           "Blocker": {
             "version": 1,
@@ -10160,7 +10226,8 @@
                 ]
               ]
             }
-          }
+          },
+          "BuildCost": 3
         },
         {
           "ID": 5,
@@ -10172,25 +10239,26 @@
           "Icon": "painted_mill_4",
           "Zoom": 0.35,
           "Skin": "mf-3",
-          "Hp": 400,
+          "Hp": 675,
           "Excursion": [
             -202,
             31
           ],
           "Data": [
-            9,
+            4,
             0
           ],
-          "BuildCost": 6,
+          "BuildCost": 4,
           "ColliderIndex": 3,
           "MillDefense": {
             "kind": "scarecrow",
             "fields": 4,
-            "fieldHp": 220,
-            "damage": 24,
-            "range": 260,
-            "interval": 1.5,
-            "splashRadius": 110
+            "fieldHp": 234.375,
+            "damage": 27,
+            "range": 250,
+            "interval": 1.3333333333333333,
+            "splashRadius": 110,
+            "projectileSpeed": 650
           },
           "Blocker": {
             "version": 1,
@@ -10276,7 +10344,7 @@
             31
           ],
           "Data": [
-            5,
+            2,
             0
           ],
           "BranchBuild": [
@@ -10286,11 +10354,12 @@
             "kind": "bomb",
             "fields": 2,
             "fieldHp": 150,
-            "damage": 70,
+            "damage": 75,
             "range": 260,
             "interval": 1.5,
-            "splashRadius": 110,
-            "artRank": 1
+            "splashRadius": 120,
+            "artRank": 1,
+            "splashFalloff": 0.75
           },
           "ColliderIndex": 2,
           "Blocker": {
@@ -10359,25 +10428,27 @@
                 ]
               ]
             }
-          }
+          },
+          "BuildCost": 3,
+          "VedioCount": 0
         },
         {
           "ID": 5,
           "index": 6,
           "level": 3,
           "Name": "[[loc:data.mill.bomb.3.name]]",
-          "VedioCount": 1,
+          "VedioCount": 0,
           "LevelUpDescribe": "[[loc:data.mill.bomb.3.description]]",
           "Icon": "painted_mill_bomb_3",
           "Zoom": 0.35,
           "Skin": "mf-bomb-3",
-          "Hp": 300,
+          "Hp": 450,
           "Excursion": [
             -202,
             31
           ],
           "Data": [
-            7,
+            3,
             0
           ],
           "BranchBuild": [
@@ -10386,12 +10457,13 @@
           "MillDefense": {
             "kind": "bomb",
             "fields": 3,
-            "fieldHp": 180,
-            "damage": 100,
+            "fieldHp": 187.5,
+            "damage": 112.5,
             "range": 260,
             "interval": 1.5,
-            "splashRadius": 110,
-            "artRank": 2
+            "splashRadius": 130,
+            "artRank": 2,
+            "splashFalloff": 0.75
           },
           "ColliderIndex": 3,
           "Blocker": {
@@ -10468,7 +10540,8 @@
                 ]
               ]
             }
-          }
+          },
+          "BuildCost": 3
         },
         {
           "ID": 5,
@@ -10480,26 +10553,27 @@
           "Icon": "painted_mill_bomb_4",
           "Zoom": 0.35,
           "Skin": "mf-bomb-4",
-          "Hp": 400,
+          "Hp": 675,
           "Excursion": [
             -202,
             31
           ],
           "Data": [
-            9,
+            4,
             0
           ],
-          "BuildCost": 6,
+          "BuildCost": 4,
           "ColliderIndex": 3,
           "MillDefense": {
             "kind": "bomb",
             "fields": 4,
-            "fieldHp": 220,
-            "damage": 140,
+            "fieldHp": 234.375,
+            "damage": 168.75,
             "range": 260,
             "interval": 1.5,
-            "splashRadius": 110,
-            "artRank": 3
+            "splashRadius": 140,
+            "artRank": 3,
+            "splashFalloff": 0.75
           },
           "Blocker": {
             "version": 1,
@@ -10784,7 +10858,9 @@
                 }
               }
             }
-          }
+          },
+          "BuildCost": 3,
+          "VedioCount": 0
         },
         {
           "ID": 6,
@@ -10801,14 +10877,16 @@
             -200,
             44
           ],
-          "WorldScale": 1.00025660658486
+          "WorldScale": 1.00025660658486,
+          "BuildCost": 7,
+          "VedioCount": 0
         },
         {
           "ID": 6,
           "index": 3,
           "level": 2,
           "Name": "[[loc:data.buildenum.6.levellist.3.name]]",
-          "VedioCount": 1,
+          "VedioCount": 0,
           "LevelUpDescribe": "[[loc:data.buildenum.6.levellist.3.levelupdescribe]]",
           "Icon": "cp_2_2",
           "Zoom": 0.35,
@@ -10818,7 +10896,8 @@
             -200,
             28
           ],
-          "WorldScale": 1.00025660658486
+          "WorldScale": 1.00025660658486,
+          "BuildCost": 9
         }
       ]
     }
@@ -11336,8 +11415,7 @@
       "EffectType": 2,
       "Describe": "[[loc:data.equipcfg.2.describe]]",
       "Unlock": [
-        1,
-        10
+        2
       ],
       "levelInfo": [
         {
@@ -11847,8 +11925,7 @@
       "EffectType": 3,
       "Describe": "[[loc:data.equipcfg.3.describe]]",
       "Unlock": [
-        2,
-        10
+        5
       ],
       "levelInfo": [
         {
@@ -12683,8 +12760,7 @@
       "EffectType": 4,
       "Describe": "[[loc:data.equipcfg.4.describe]]",
       "Unlock": [
-        3,
-        10
+        4
       ],
       "levelInfo": [
         {
@@ -13194,8 +13270,7 @@
       "EffectType": 5,
       "Describe": "[[loc:data.equipcfg.5.describe]]",
       "Unlock": [
-        4,
-        10
+        3
       ],
       "levelInfo": [
         {
@@ -13455,8 +13530,7 @@
       "EffectType": 6,
       "Describe": "[[loc:data.equipcfg.6.describe]]",
       "Unlock": [
-        5,
-        10
+        6
       ],
       "levelInfo": [
         {

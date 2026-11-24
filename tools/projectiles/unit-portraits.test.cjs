@@ -3,7 +3,11 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const root=path.resolve(__dirname,'../..'),{ProjectilesService}=require('../../packages/hkd-projectiles/service');
 test('every ranged picker entry resolves its configured imported portrait without writing gameplay data',()=>{
   const protectedFiles=['assets/KinghtFallConfig/GameJsonCfg.json','assets/resources/projectiles/catalog.json'],before=protectedFiles.map(file=>fs.readFileSync(path.join(root,file))),service=new ProjectilesService(root),snapshot=service.load();
-  const cfg=service.config();assert.equal(snapshot.units.length,3+Object.values(cfg.SoldierCfg).filter(row=>row.AttackType===2).length+Object.values(cfg.AllyCfg).filter(row=>row.AttackType===2).length+cfg.BuildEnum[1].levelList.length+cfg.BuildEnum[2].levelList.length+cfg.BuildEnum[5].levelList.filter(row=>row.MillDefense&&row.MillDefense.kind==='scarecrow').length);assert.deepEqual(snapshot.units.filter(unit=>unit.key.startsWith('tower:5:')).map(unit=>[unit.key,unit.speed]),[['tower:5:2',450],['tower:5:3',450],['tower:5:4',450]]);
+  const cfg=service.config(),attack=require('../../assets/_script/UnitAttackRules');
+  const ranged=table=>Object.values(table).filter(row=>attack.attackType(row)===2).length;
+  assert.equal(snapshot.units.length,3+ranged(cfg.SoldierCfg)+ranged(cfg.AllyCfg)+cfg.BuildEnum[1].levelList.length+cfg.BuildEnum[2].levelList.length+cfg.BuildEnum[5].levelList.filter(row=>row.MillDefense&&row.MillDefense.kind==='scarecrow').length);
+  const scarecrows=snapshot.units.filter(unit=>unit.key.startsWith('tower:5:'));
+  assert.deepEqual(scarecrows.map(unit=>[unit.key,unit.speed]),[['tower:5:2',650],['tower:5:3',650],['tower:5:4',650]]);
   for(const unit of snapshot.units){assert.equal(typeof unit.portrait,'string',unit.key+' has a portrait');assert(unit.portrait.startsWith('assets/'));assert(fs.existsSync(path.join(root,unit.portrait)),unit.key);assert(fs.existsSync(path.join(root,unit.portrait+'.meta')),unit.key+' retains imported metadata');}
   assert.equal(snapshot.units.find(unit=>unit.key==='enemy:90003').portrait,'assets/resources/icons/enemy-heads/carnivorous-plant.png');
   assert.equal(snapshot.units.find(unit=>unit.key==='enemy:91031').portrait,'assets/resources/icons/monster-roster/monster1/lizard-fire.png');

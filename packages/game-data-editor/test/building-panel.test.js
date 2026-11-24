@@ -201,6 +201,20 @@ test('Save waits for an asynchronous position edit and uses its latest draft rev
     assert.deepEqual(observed,{value,version:before+1});assert.deepEqual(f.messages.filter(m=>['game-data-editor:change','game-data-editor:save'].includes(m.message)).map(m=>m.message),['game-data-editor:change','game-data-editor:save']);
 });
 
+test('Save does not publish an earlier draft after a queued field edit fails', async () => {
+    let saves=0;
+    const f=fixture({onSave(){saves++;}});
+    f.render('3:11',branchPosition(f,'3',11));
+    const edit=f.panel._change(()=>{throw Error('Position could not be calculated');});
+    const save=f.panel._action('save');
+    await assert.rejects(edit,/could not be calculated/);await save;
+    assert.equal(saves,0);
+    assert.equal(f.panel.$status.textContent,'Position could not be calculated');
+    await f.panel._change([{doc:'A',path:['BuildEnum','3','levelList',0,'SpawnPosition'],value:{x:80,y:-120}}]);
+    await f.panel._action('save');
+    assert.equal(saves,1);
+});
+
 test('assigned unit preview forwards only ally timing edits and preserves saved defaults', async () => {
     const f = fixture(), position=branchPosition(f,'3',15); f.render('3:14', position);
     const id = String(f.store.documents.A.data.BuildEnum['3'].levelList[position].Data[1]), key = 'ally:' + id + ':default';
@@ -272,13 +286,13 @@ test('removed Buildings sections and notices stay hidden while every stored prop
 
 test('each building level displays its incoming price, including terminal levels, and edits only its destination cost',async()=>{
     const f=fixture(),before=f.store.draftState();
-    for(const [key,index,expected] of [['1',1,3],['1',3,10],['2:4',4,3],['2:4',5,8],['2:4',6,16],['3:11',13,16],['6',3,7]]){
+    for(const [key,index,expected] of [['1',1,3],['1',3,10],['2:4',4,3],['2:4',5,5],['2:4',6,8],['3:11',13,10],['6',3,9]]){
         const id=key.split(':')[0],position=branchPosition(f,id,index);f.render(key,position);
         const field=fields(f.panel.$detail,'Build / upgrade cost (silver)')[0];assert(field);assert.equal(Number(field.value),expected);
         assert(!f.panel.$detail.textContent.includes('Add next purchase cost'));
         field.onchange();await f.panel._queue;
     }
-    assert.deepEqual(f.store.draftState(),before,'Unchanged inferred prices must not create overrides');assert.equal(f.messages.length,0);
+    assert.deepEqual(f.store.draftState(),before,'Unchanged prices must not create overrides');assert.equal(f.messages.length,0);
     const position=branchPosition(f,'2',6);f.render('2:4',position);const cost=fields(f.panel.$detail,'Build / upgrade cost (silver)')[0];cost.value='21';cost.onchange();await f.panel._queue;
     const expected=clone(before);expected.A.BuildEnum[2].levelList[position].BuildCost=21;
     assert.deepEqual(f.store.draftState(),expected);assert.equal(f.messages.length,1);assert.equal(f.messages[0].message,'game-data-editor:change');

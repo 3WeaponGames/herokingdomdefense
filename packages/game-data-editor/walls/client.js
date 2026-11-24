@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('fs'), path = require('path');
 const Spine = require('../preview/spine-renderer');
+const JSONDoc = require('../lib/json-document');
 const style = require('../panel/control-theme')(fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8'));
 const clone = value => JSON.parse(JSON.stringify(value));
 const stable = value => JSON.stringify(value, (_key, item) => item && typeof item === 'object' && !Array.isArray(item) ? Object.keys(item).sort().reduce((out, key) => {out[key] = item[key]; return out;}, {}) : item);
@@ -63,7 +64,7 @@ function mount(parent, options) {
     footer.className = 'wall-status' + (state.error ? ' error' : '');
     buttons.save.disabled = !state.dirty || busy() || state.invalid.size > 0 || !!state.drag;
     buttons.discard.disabled = !state.dirty || state.saving || state.editing;
-    buttons.reload.disabled = state.saving || state.editing;
+    buttons.reload.disabled = busy() || !!state.drag || !!draggingRow;
     buttons.undo.disabled = !state.undo.length || busy(); buttons.redo.disabled = !state.redo.length || busy();
     for (const key of ['tier', 'face', 'state']) {fields[key].value = String(state.selection[key]); fields[key].disabled = state.saving || state.editing || !!state.drag || !!draggingRow;}
     fields.night.checked = state.night; fields.night.disabled = state.saving || state.editing || !!state.drag || !!draggingRow;
@@ -151,7 +152,37 @@ function mount(parent, options) {
     catch (error) {if (!state.closed) message(error.message + ' Your draft is retained.', true);}
     finally {state.saving = false; toolbar();}
   }
-  function reload() {if (state.dirty) {message('Your draft is retained. Use Discard to reload the saved source.', true); return Promise.resolve();} return load();}
+  async function reload() {
+    if (busy() || state.drag || draggingRow) return;
+    if (!state.dirty) return load();
+    const sequence = ++previewSequence;
+    state.loading = true; toolbar();
+    try {
+      const snapshot = await options.ipc('wall-adjustments-load', {preview: false});
+      if (state.closed || sequence !== previewSequence) return;
+      if (!snapshot || !snapshot.data || !snapshot.revision) throw Error('The shared wall adjustment source could not be loaded.');
+      if (snapshot.revision === state.revision) {
+        state.loading = false;
+        message('The saved wall source is current. Your draft is retained.');
+        return;
+      }
+      const merged = JSONDoc.merge(state.baseline, state.data, snapshot.data,
+        fields => Error('Wall adjustments changed on disk at ' + fields.join(' / ') + '. Your draft is retained.'));
+      state.data = clone(merged);
+      state.baseline = clone(snapshot.data);
+      state.revision = snapshot.revision;
+      const dirty = !JSONDoc.equal(state.data, state.baseline);
+      state.undo = dirty ? [clone(state.baseline)] : [];
+      state.redo = [];
+      message(dirty ? 'Reloaded the saved wall source and kept your draft. Save to apply it.' : 'Reloaded the saved wall source.');
+      await preview();
+    } catch (error) {
+      if (!state.closed && sequence === previewSequence) {
+        state.loading = false;
+        message(error.message, true);
+      }
+    }
+  }
   function discard() {if (state.saving || state.editing) return Promise.resolve(); cancelDrag(); return load();}
 
   function fit() {state.zoom = 1; state.pan = {x: 0, y: 0}; if (state.rendererReady) state.bounds = renderer.bounds(state.spine, state.layers); draw();}

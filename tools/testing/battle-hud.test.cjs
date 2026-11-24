@@ -105,6 +105,12 @@ test('the Royal Advisor stands at the authored point with an open task and its c
  info.index++;info.stage=0;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'Upgrade 1 Arrow Tower to Level 3 and defend the castle');assert(nodes[208].active);
  info.index++;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'All tasks complete');assert(!nodes[208].active);assert(!collect.active);assert(task.active);
 });
+test('legacy task IDs stored as strings retain their existing Advisor labels',()=>{
+ const {ui,nodes,cc}=fixture();
+ ui.ctrGame.gameData.taskInfo.list=['4'];
+ ui.initView();
+ assert.equal(nodes[200].getComponent(cc.Label).string,'Build 1 Mill');
+});
 test('only Collect claims the ready task during planning',()=>{
  const {ui,cc}=fixture(),collect=ui._battleHud.collectButton;
  for (const button of ['btnStartFight','btnAgg','btnReviveBreak','btnRevive','btnTest']) ui[button]=new cc.Node(button);

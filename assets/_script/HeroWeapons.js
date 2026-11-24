@@ -11,6 +11,13 @@ var styles = [
 ];
 function find(id) { return styles.filter(function (style) { return style.id === id; })[0] || null; }
 function selected(data) { return find(data && data.heroWeapon && data.heroWeapon.selected) || styles[0]; }
+function upgradeUnlocked(equipment, user) {
+  var requirement = equipment.Unlock;
+  if (!requirement) return true;
+  var stage = user.getMaxStage(), requiredStage = Number(requirement[0]);
+  // A requirement without a wave unlocks only when settlement advances the stage.
+  return stage > requiredStage || stage === requiredStage && requirement.length > 1 && user.getMaxOrder() > requirement[1];
+}
 function number(value) { return typeof value === "number" && isFinite(value) && value >= 1 ? Math.floor(value) : 1; }
 function level(data, slot, style) {
   var id = style || selected(data).id, levels = data && data.heroWeapon && data.heroWeapon.levels, weapon = levels && levels[id];
@@ -60,6 +67,7 @@ function validate(data, equipment) {
   });
 }
 exports.styles = styles; exports.find = find; exports.selected = selected; exports.level = level;
+exports.upgradeUnlocked = upgradeUnlocked;
 exports.select = select; exports.upgrade = upgrade; exports.itemKey = itemKey; exports.skin = skin;
 exports.gear = gear;
 exports.gearOrder = [1, 2, 5, 4, 3, 6];

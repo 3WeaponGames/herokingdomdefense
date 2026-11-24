@@ -118,10 +118,20 @@ test('wall tiers retain approved pack 2/4/7 repaints, asset bindings and gamepla
   assert.equal(fixture.regions.filter(region => region.native).length, 12);
   const meta = read(dir + 'cq1/cq1.json.meta'), texture = read(dir + 'cq1/' + fixture.page + '.meta');
   assert.equal(meta.textures[1], texture.uuid); assert.equal(texture.premultiplyAlpha, false); assert.equal(texture.packable, false);
+  const { buildingStats, originalWallDefinition } = require('./four-tier-building-progression.fixture.json');
   for (const file of ['assets/KinghtFallConfig/GameJsonCfg.json', 'assets/configs/GameJsonCfg.json']) {
     const wall = require('./painted-building-contract.cjs').withoutAuthoring(read(file)).BuildEnum['6'];
-    for (const row of wall.levelList) {assert.equal(row.Skin, 'cq-rts-' + row.index); row.Skin = originals[row.index - 1];}
-    assert.equal(sha(JSON.stringify(sorted(wall))), fixture.gameplay, 'Only visual bindings may change');
+    for (const row of wall.levelList) {
+      assert.equal(row.Skin, 'cq-rts-' + row.index);
+      assert.equal(row.BuildCost, buildingStats['6:' + row.index].BuildCost);
+      assert.equal(row.VedioCount, 0);
+      row.Skin = originals[row.index - 1];
+      delete row.BuildCost;
+      const original = originalWallDefinition.levelList.find(value => value.index === row.index);
+      if (Object.hasOwn(original, 'VedioCount')) row.VedioCount = original.VedioCount;
+      else delete row.VedioCount;
+    }
+    assert.equal(sha(JSON.stringify(sorted(wall))), fixture.gameplay, 'Only approved art and purchase changes');
   }
 });
 

@@ -62,12 +62,23 @@ test('scarecrows fire at ground enemies only in battle, within range and at the 
  r.fighting=true;r.update(2);assert.equal(e.shots.length,0);
  const ground=enemy(e,p.x,p.y);
  r.fighting=false;r.update(10);assert.equal(e.shots.length,0);
- r.fighting=true;r.update(2);assert.equal(e.shots.length,2);assert(e.shots.every(shot=>shot.t===ground));
+ r.fighting=true;r.update(2);assert.equal(e.shots.length,2);assert(e.shots.every(shot=>shot.t===ground&&shot.f._battleTaskKillSource==='scarecrow'));
+ assert(e.shots.every(shot=>shot.f.getTowerSettings().projectileSpeed===650));
  r.update(.01);assert.equal(e.shots.length,2);r.update(1.5);assert.equal(e.shots.length,4);
- e.enemies.forEach(a=>a.node.x+=10000);r.update(10);assert.equal(e.shots.length,4);r.destroy();
+ e.enemies.forEach(a=>a.node.x+=10000);r.update(10);assert.equal(e.shots.length,4);
+ const legacyDefense={...r.cfg};
+ delete legacyDefense.projectileSpeed;
+ e.owner.buildInfo.cfg={...e.owner.buildInfo.cfg,MillDefense:legacyDefense};
+ r.apply();assert(r.fields.every(field=>field.getTowerSettings().projectileSpeed===450));
+ r.destroy();
 });
 test('bomb fields never fire and explode once only on their own lethal damage, with bounded splash',native,()=>{
- const e=setup(5),r=e.runtime,f=r.fields[0],p=f.getAttPos(),near=enemy(e,p.x,p.y),far=enemy(e,p.x+111,p.y);r.fighting=true;r.update(20);assert.equal(e.shots.length,0);assert.equal(f.onAttacked(1),1);assert.equal(near.hp,500);assert.equal(f.onAttacked(Infinity),0);f.onAttacked(999);assert.equal(near.hp,500-r.cfg.damage);assert.equal(far.hp,500);assert.equal(r.fields[1].hp,r.cfg.fieldHp);f.onAttacked(999);assert.equal(near.hp,500-r.cfg.damage);r.tick(.2);assert.equal(f.slot.getAttachment(),null);assert(f.debris.node.active);assert.equal(f.debris.sprite.spriteFrame.name,'buildings/shared/debris');assert.equal(f.addon.color.a,0);r.destroy();
+ const e=setup(5),r=e.runtime,f=r.fields[0],p=f.getAttPos();
+ const near=enemy(e,p.x,p.y),mid=enemy(e,p.x+60,p.y),far=enemy(e,p.x+121,p.y);
+ let credited;near.onAttacked=function(n,source){this.hp-=n;credited=source._battleTaskKillSource;};
+ r.fighting=true;r.update(20);assert.equal(e.shots.length,0);assert.equal(f.onAttacked(1),1);assert.equal(near.hp,500);assert.equal(f.onAttacked(Infinity),0);f.onAttacked(999);assert.equal(near.hp,500-r.cfg.damage);assert.equal(credited,'bomb-mill');
+ assert.equal(mid.hp,500-75*.875,'halfway to the blast edge, damage falls halfway from full to 75%');
+ assert.equal(far.hp,500);assert.equal(r.fields[1].hp,r.cfg.fieldHp);f.onAttacked(999);assert.equal(near.hp,500-r.cfg.damage);r.tick(.2);assert.equal(f.slot.getAttachment(),null);assert(f.debris.node.active);assert.equal(f.debris.sprite.spriteFrame.name,'buildings/shared/debris');assert.equal(f.addon.color.a,0);r.destroy();
 });
 test('repair, upgrading, selling and round teardown disarm bombs without splash or stale target identities',native,()=>{
  const e=setup(7),r=e.runtime,f=r.fields[0],p=f.getAttPos(),a=enemy(e,p.x,p.y);r.fighting=true;r.apply();assert(f.node.destroyed);assert(f.node._combatGeneration>0);assert.equal(a.hp,500);r.stop();assert.equal(a.hp,500);assert.equal(r.fields.length,0);assert.equal(r.fighting,false);r.apply();assert(r.fields.every(f=>f.hp===f.hpMax));r.destroy();assert.equal(a.hp,500);assert.equal(e.listeners.size,0);
@@ -80,7 +91,19 @@ test('existing enemy attack-reduction spells support scarecrows without changing
 });
 test('field targets supplement only enemy targeting, keeping building saves and navigation roster separate',()=>{
  const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallGameCtrlData.js'),'utf8'),match=source.match(/_ctor.prototype.getAttackableBuildList = (function \(\) \{[\s\S]*?\n  \});/);assert(match);const fn=vm.runInNewContext('('+match[1]+')'),field={},mill={getFieldTargets:()=>[field]},castle={},list=[mill,castle],result=fn.call({getBulidList:()=>list});assert.deepEqual([...result],[mill,castle,field]);assert.equal(list.length,2);
- for(const name of ['Base','Long','Item07','Item08','Item10'])assert(fs.readFileSync(path.join(root,'assets/_script/KinghtFallEnemy'+name+'.js'),'utf8').includes('getAttackableBuildList'));
+ const { environment, Node: GameNode, installIntersection } = require('../navigation/runtime-harness.cjs');
+ const { game, actor, cc } = environment();
+ installIntersection(cc);
+ game.ctrPlay.isDead = () => true;
+ field.node = new GameNode('Crop', game.ndMain, 15, 0);
+ field.getIsWork = () => true;
+ field.getWposPhyCol2 = () => [{ tagNode: field.node, points: [cc.v2(10, -5), cc.v2(20, -5), cc.v2(20, 5), cc.v2(10, 5)] }];
+ game.gameData.getBulidList = () => list;
+ game.gameData.getAttackableBuildList = fn;
+ for (const name of ['Base', 'Long', 'Item07', 'Item08', 'Item10']) {
+  const monster = actor('KinghtFallEnemy' + name, 0, 0);
+  assert.equal(monster.pickAttackTarget(game).building, field);
+ }
 });
 test('mill save hooks retain stable branch IDs and bounded per-field health without a new upgrade menu',()=>{
  const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallBuildMill.js'),'utf8');

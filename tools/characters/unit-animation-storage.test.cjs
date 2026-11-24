@@ -47,9 +47,9 @@ test('mixed speed and appearance edits use the existing appearance transaction',
  const saved=f.store.save({version:f.store.version});assert.equal(builds,1);assert.equal(saved.data.profiles.slime.name,'Renamed slime');assert.equal(saved.data.unitAnimationSpeeds['enemy:91001:default'],1.25);
 });
 
-test('speed-only drafts still refuse stale revisions and external catalog writes without losing edits',t=>{
+test('speed-only drafts still refuse stale revisions and overlapping external writes without losing edits',t=>{
  const f=fixture(t),version=f.store.version;change(f.store,data=>{data.unitAnimationSpeeds={'hero:hero:default':1.4};});const draft=f.store.snapshot();
  assert.throws(()=>f.store.change({version,data:draft.data}),/another window/);
- const external=JSON.parse(f.bytes);external.future.external=true;fs.writeFileSync(f.file,JSON.stringify(external));
- assert.throws(()=>f.store.save({version:f.store.version}),/outside this draft/);assert.deepEqual(f.store.snapshot(),draft);assert.equal(JSON.parse(fs.readFileSync(f.file)).future.external,true);assert.deepEqual(fs.readFileSync(f.config),f.configBytes);
+ const external=JSON.parse(f.bytes);external.unitAnimationSpeeds={'hero:hero:default':.7};fs.writeFileSync(f.file,JSON.stringify(external));
+ assert.throws(()=>f.store.save({version:f.store.version}),/outside this draft/);assert.deepEqual(f.store.snapshot(),draft);assert.equal(JSON.parse(fs.readFileSync(f.file)).unitAnimationSpeeds['hero:hero:default'],.7);assert.deepEqual(fs.readFileSync(f.config),f.configBytes);
 });

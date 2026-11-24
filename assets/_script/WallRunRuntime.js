@@ -87,9 +87,16 @@ function originalSource(prior,component) {
 }
 function makePart(component,source,json) {
   // Shared BuildingDebris owns the rubble. Native Spine reapplies slot-color
-  // timelines after BEFORE_DRAW; hide the old mesh in this owned instance's
-  // attachment color so zero-delta camera updates cannot bring it back.
-  (json.skins||[]).forEach(function(skin){Object.keys(skin.attachments.fx||{}).forEach(function(name){var attachment=skin.attachments.fx[name];attachment.color=(attachment.color||"ffffffff").slice(0,6)+"00";});});
+  // timelines after BEFORE_DRAW, so hide the old meshes in the cloned skin.
+  (json.skins || []).forEach(function(skin) {
+    ["fx", "fx2"].forEach(function(slot) {
+      var attachments = skin.attachments && skin.attachments[slot] || {};
+      Object.keys(attachments).forEach(function(name) {
+        var attachment = attachments[name];
+        attachment.color = (attachment.color || "ffffffff").slice(0, 6) + "00";
+      });
+    });
+  });
   var clone=new sp.SkeletonData();clone.skeletonJson=json;clone.atlasText=source.atlasText;
   clone.textures=(source.textures||[]).slice();clone.textureNames=(source.textureNames||[]).slice();clone.scale=source.scale;
   clone.name=(source.name||"Wall")+" modular";clone._uuid=(source._uuid||"wall")+"@run:"+(++serial);

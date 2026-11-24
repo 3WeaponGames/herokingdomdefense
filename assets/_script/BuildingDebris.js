@@ -12,7 +12,12 @@ function prepare(owner) {
     owner.loadSpriteFrame("resources", RESOURCE, function (frame) {
         if (!valid(owner.node) || owner._sharedBuildingDebris !== state || state.generation !== generation) return;
         state.loading = false;state.frame = frame;
-        state.records.forEach(function (record) { if (valid(record.node) && frame) {record.sprite.spriteFrame = frame;record.node.active = record.visible;} });
+        state.records.forEach(function (record) {
+            if (!valid(record.node) || !frame) return;
+            record.sprite.spriteFrame = frame;
+            if (record !== state.building) record.node.active = record.visible && !owner.isDestroyed;
+        });
+        hideNative(owner);
     });
     return state;
 }
@@ -72,13 +77,13 @@ function bodyBounds(owner) {
         source._skeleton.updateWorldTransform();
         source._skeleton.drawOrder.forEach(function (slot) {
             var a = slot.getAttachment();
-            if (!a || !a.computeWorldVertices || slot.color.a <= 0 || /(?:^fx$|smoke|effect|star|light|guang|night|shadow|qizi|flag)/i.test(slot.data.name)) return;
+            if (!a || !a.computeWorldVertices || slot.color.a <= 0 || /(?:^fx2?$|smoke|effect|star|light|guang|night|shadow|qizi|flag)/i.test(slot.data.name)) return;
             points(source,a,slot,owner,box);
         });
     });
     return box;
 }
-function wallGroups(owner) {
+function wallBounds(owner) {
     var source=owner.ndAniMain,json=source&&source.skeletonData&&source.skeletonData.skeletonJson,plan=json&&json.wallKit&&json.wallKit.layout;
     if(!plan||!Array.isArray(plan.leftPoints)||!Array.isArray(plan.rightPoints))return null;
     var Assembly=require("WallAssembly"),Ground=require("WallShadowGround"),parts=Assembly.pieces(plan),positions={},skin=owner.buildInfo&&owner.buildInfo.cfg&&owner.buildInfo.cfg.Skin||source.defaultSkin;
@@ -90,53 +95,126 @@ function wallGroups(owner) {
     var track=source.getCurrent&&source.getCurrent(0),animation=track&&(track.animation||track.getAnimation&&track.getAnimation()),pose=animation&&(animation.name||animation.getName&&animation.getName())||"idle";
     Ground.contacts(json,skin,matrix,pose).forEach(function(p){var index=Number(p.slot.slice("rts_wall_part_".length));if(parts[index])positions[key(parts[index])]={x:p.x,y:p.y};});
     function fitted(p){return positions[key(p)]||local(p.x,p.y);}
-    var left=plan.leftPoints.map(fitted).reverse(),right=plan.rightPoints.map(fitted),steps=[],groups=[];
+    var left=plan.leftPoints.map(fitted).reverse(),right=plan.rightPoints.map(fitted),steps=[];
     function length(a,b){return Math.hypot(b.x-a.x,b.y-a.y);}
     [left,right].forEach(function(points){for(var i=1;i<points.length;i++){var value=length(points[i-1],points[i]);if(value>0)steps.push(value);}});
     steps.sort(function(a,b){return a-b;});var pitch=steps.length?steps[Math.floor(steps.length/2)]:length(local(0,0),local(Assembly.step.x,Assembly.step.y));
-    function group(points,kind,side,center){
-        var span=0,x=0,y=0;
-        for(var i=1;i<points.length;i++){var size=length(points[i-1],points[i]);span+=size;x+=(points[i-1].x+points[i].x)*size/2;y+=(points[i-1].y+points[i].y)*size/2;}
-        center=center||span>0&&{x:x/span,y:y/span}||points[0];if(!center)return;
-        // A pile covers its small connection group, never the whole wall's
-        // upright bounding box. Exceptionally wide gate openings stay compact.
-        var footprint=Math.max(pitch,kind==="gate"?Math.min(span,pitch*5):span);
-        groups.push({kind:kind,side:side,connections:kind==="gate"?(left.length>1?1:0)+(right.length>1?1:0):points.length-1,
-            box:{minX:center.x-footprint/2,maxX:center.x+footprint/2,minY:center.y,maxY:center.y,scale:.5}});
-    }
-    function connections(points,start,side){for(var i=start;i<points.length-1;i+=3)group(points.slice(i,Math.min(points.length,i+4)),"wall",side);}
+    var center, footprint;
     if(plan.gate&&left[0]&&right[0]){
-        group([left[1]||left[0],left[0],right[0],right[1]||right[0]],"gate","center",{x:(left[0].x+right[0].x)/2,y:(left[0].y+right[0].y)/2});
-        connections(left,1,"left");connections(right,1,"right");
-    }else connections(left.slice().reverse().concat(right.slice(1)),0,"run");
-    return groups.length?groups:null;
+        center={x:(left[0].x+right[0].x)/2,y:(left[0].y+right[0].y)/2};
+        var span=length(left[1]||left[0],left[0])+length(left[0],right[0])+length(right[0],right[1]||right[0]);
+        footprint=Math.max(pitch,Math.min(span,pitch*5));
+    }else{
+        // Use the halfway point along the actual run, including bends.
+        var run=left.slice().reverse().concat(left.length?right.slice(1):right);
+        if(!run.length)return null;
+        var distances=run.slice(1).map(function(p,i){return length(run[i],p);});
+        var half=distances.reduce(function(sum,value){return sum+value;},0)/2;
+        center=run[0];
+        for(var i=0;i<distances.length&&half>0;i++){
+            if(half<=distances[i]){
+                var a=run[i],b=run[i+1],t=half/distances[i];
+                center={x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};
+                break;
+            }
+            half-=distances[i];
+        }
+        footprint=pitch*Math.max(1,Math.min(3,distances.length));
+    }
+    return {minX:center.x-footprint/2,maxX:center.x+footprint/2,minY:center.y,maxY:center.y,scale:.5};
 }
-function layout(owner, record, box, visible) {
-    if (!(box.maxX > box.minX) || !isFinite(box.minY)) {record.visible=false;record.node.active=false;return;}
+function layout(record, box, visible) {
+    if (!(box.maxX > box.minX) || !isFinite(box.minY)) {record.visible=false;return;}
     var width = (box.maxX-box.minX)*(box.scale===undefined?.7:box.scale);
     if(record.node.width!==width||record.node.height!==width*ASPECT)record.node.setContentSize(width,width*ASPECT);
     var x=(box.minX+box.maxX)/2;if(record.node.x!==x||record.node.y!==box.minY)record.node.setPosition(x,box.minY);
-    record.visible = !!visible;record.node.active = record.visible && !!prepare(owner).frame;
+    record.visible = !!visible;
 }
-function layoutBuildings(owner,state,visible){(state.buildings||[state.building]).forEach(function(record){if(record)layout(owner,record,record.box||state.box,visible);});}
+function nativeRubbleBone(entry, muted) {
+    if (!entry.bone || entry.muted === muted) return;
+    var bone = entry.rig.findBone(entry.bone);
+    if (!bone || !bone.setActive || !bone.isActive) return;
+    if (muted) entry.wasActive = bone.isActive();
+    bone.setActive(muted ? false : entry.wasActive);
+    entry.muted = muted;
+}
+function suppressNativeRubble(state, source, rig, hidePrimary) {
+    var json = source.skeletonData && source.skeletonData.skeletonJson;
+    if (!source._nativeSkeleton || !rig || !rig.findBone || !json || !json.slots) return;
+    var entries = state.nativeRubble || (state.nativeRubble = new Map()), entry = entries.get(source);
+    if (!entry || entry.rig !== rig || entry.json !== json) {
+        entry = {rig: rig, json: json, muted: false};
+        entries.set(source, entry);
+        var primary = json.slots.find(function (slot) { return slot.name === "fx"; });
+        var secondary = json.slots.findIndex(function (slot) { return slot.name === "fx2"; });
+        // Native Spine applies the destruction timelines during rendering.
+        // Only disable a leaf bone dedicated to the legacy rubble.
+        if (primary && !(json.bones || []).some(function (bone) { return bone.parent === primary.bone; }) &&
+                !json.slots.some(function (slot) { return slot.bone === primary.bone && slot.name !== "fx" && slot.name !== "fx2"; }))
+            entry.bone = primary.bone;
+        var animations = json.animations || {}, keys = animations.destroy && animations.destroy.slots && animations.destroy.slots.fx2;
+        // The secondary attachment is shared by instances of this rig, so
+        // suppress it only when the slot is reserved for the destruction clip.
+        if (secondary >= 0 && keys && keys.attachment && rig.getAttachment && !json.slots[secondary].attachment &&
+                !Object.keys(animations).some(function (name) {
+                    return name !== "destroy" && animations[name].slots && animations[name].slots.fx2;
+                })) {
+            keys.attachment.forEach(function (key) {
+                var attachment = key.name && rig.getAttachment(secondary, key.name);
+                var color = attachment && (attachment.color || attachment.getColor && attachment.getColor());
+                if (color) color.a = 0;
+            });
+        }
+    }
+    nativeRubbleBone(entry, hidePrimary);
+}
+function restoreNativeRubble(state) {
+    if (!state.nativeRubble) return;
+    state.nativeRubble.forEach(function (entry, source) {
+        if (entry.muted && valid(source) && (!source.node || valid(source.node)) && source._skeleton === entry.rig)
+            nativeRubbleBone(entry, false);
+    });
+    state.nativeRubble.clear();
+}
 function hideNative(owner) {
     var state = owner._sharedBuildingDebris;
-    if (!state || !(state.buildings||[state.building]).some(function(record){return record&&record.node.active;})) return;
-    [owner.ndAniMain,owner.ndAniDown].concat(owner.ndAniOther || []).forEach(function (source) {
-        if(!valid(source)||source.node&&!valid(source.node))return;
-        var slot=source&&(source._skeleton&&source._skeleton.findSlot("fx")||source.findSlot&&source.findSlot("fx"));if(slot)slot.color.a=0;
+    var record = state && state.building;
+    if (!record || !valid(record.node)) return;
+    var art = owner._buildingAppearance, ruins = art && art.destroyedNode;
+    var custom = valid(ruins) && ruins.active && ruins.activeInHierarchy !== false;
+    record.node.active = !!(owner.isDestroyed && record.visible && state.frame && !custom);
+    if (!owner.isDestroyed) return;
+    var replacement = custom || record.node.active;
+    var nativeEffects = art && art.deathRubbleFx;
+    var fallback = valid(nativeEffects) && nativeEffects.active ? art.deathRubbleSpine : owner.ndAniMain;
+    [owner.ndAniMain, owner.ndAniDown, art && art.deathRubbleSpine].concat(owner.ndAniOther || []).forEach(function (source) {
+        if (!valid(source) || source.node && !valid(source.node)) return;
+        var rig = source._skeleton, hidePrimary = replacement || source !== fallback;
+        function hideSlot(name) {
+            var slot = rig && rig.findSlot && rig.findSlot(name) || source.findSlot && source.findSlot(name);
+            if (slot && slot.color) slot.color.a = 0;
+        }
+        hideSlot("fx2");
+        if (hidePrimary) hideSlot("fx");
+        suppressNativeRubble(state, source, rig, hidePrimary);
     });
-    var art=owner._buildingAppearance;if(art&&valid(art.deathRubbleFx))art.deathRubbleFx.active=false;
+    if (replacement && valid(nativeEffects)) nativeEffects.active = false;
 }
 function capture(owner) {
-    var state=prepare(owner);(state.buildings||[state.building]).slice().forEach(function(record){if(record)discard(owner,record);});
+    var state=prepare(owner);
+    restoreNativeRubble(state);
+    state.records.slice().forEach(function(record){discard(owner,record);});
     if(!state.beforeDraw&&cc.director&&cc.director.on&&cc.Director){
         state.beforeDraw=function(){
             // Castle defeat may stop combat updates while its Spine death clip
             // still runs. Use the clip's actual clock whenever it is available.
             var art=owner._buildingAppearance,source=art&&art.deathRubbleSpine||owner.ndAniMain;
-            var track=source&&source.getCurrent&&source.getCurrent(0);
-            if(owner.isDestroyed&&state.building&&track&&track.animation&&track.animation.name==="destroy")layoutBuildings(owner,state,state.building.visible||track.trackTime>=state.reveal);
+            var track=valid(source)&&source.getCurrent&&source.getCurrent(0);
+            var animation=track&&(track.animation||track.getAnimation&&track.getAnimation());
+            if(owner.isDestroyed&&state.building&&valid(state.building.node)&&animation&&(animation.name||animation.getName&&animation.getName())==="destroy"){
+                var time=typeof track.trackTime==="number"?track.trackTime:track.getTrackTime&&track.getTrackTime();
+                layout(state.building,state.box,state.building.visible||time>=state.reveal);
+            }
             hideNative(owner);
         };
         cc.director.on(cc.Director.EVENT_BEFORE_DRAW,state.beforeDraw);
@@ -145,25 +223,28 @@ function capture(owner) {
     var keys=json&&json.animations&&json.animations.destroy&&json.animations.destroy.slots&&json.animations.destroy.slots.fx;
     var reveal=keys&&keys.attachment&&keys.attachment.find(function(key){return key.name;});
     state.reveal=reveal&&typeof reveal.time==='number'?reveal.time:.2667;
-    state.groups=wallGroups(owner);state.box=state.groups?state.groups[0].box:bodyBounds(owner);state.elapsed=0;
-    state.buildings=(state.groups||[{box:state.box}]).map(function(group){var record=create(owner);record.box=group.box;record.group=group;return record;});state.building=state.buildings[0];
+    state.box=wallBounds(owner)||bodyBounds(owner);state.elapsed=0;
+    state.building=create(owner);
 }
 function update(owner, dt) {
     var state=owner._sharedBuildingDebris;
-    if(!state||!state.building)return;
-    if(!owner.isDestroyed){layoutBuildings(owner,state,false);return;}
+    if(!state||!state.building||!valid(state.building.node))return;
+    if(!owner.isDestroyed){state.building.visible=false;hideNative(owner);restoreNativeRubble(state);return;}
     var speed=owner.ndAniMain&&owner.ndAniMain.timeScale;
     state.elapsed+=Math.max(0,Number(dt)||0)*(typeof speed==="number"&&isFinite(speed)?Math.max(0,speed):1);
-    layoutBuildings(owner,state,state.elapsed>=state.reveal);hideNative(owner);
+    layout(state.building,state.box,state.building.visible||state.elapsed>=state.reveal);hideNative(owner);
 }
 function field(owner, source, value, visible) {
-    if(!visible){if(value.debris){value.debris.visible=false;value.debris.node.active=false;}return;}
-    if(!value.debris)value.debris=create(owner);
-    var box=emptyBox();points(source,value.attachment,value.slot,owner,box);layout(owner,value.debris,box,true);
+    if(owner.isDestroyed){discard(owner,value.debris);value.debris=null;return;}
+    if(!visible){if(value.debris&&valid(value.debris.node)){value.debris.visible=false;value.debris.node.active=false;}return;}
+    if(!value.debris||!valid(value.debris.node))value.debris=create(owner);
+    var box=emptyBox();points(source,value.attachment,value.slot,owner,box);layout(value.debris,box,true);
+    value.debris.node.active=value.debris.visible&&!!owner._sharedBuildingDebris.frame;
 }
 function clear(owner) {
     var state=owner._sharedBuildingDebris;if(!state)return;
-    state.records.slice().forEach(function(record){discard(owner,record);});state.building=null;state.buildings=[];state.groups=null;
+    restoreNativeRubble(state);
+    state.records.slice().forEach(function(record){discard(owner,record);});state.building=null;
     if(state.beforeDraw&&cc.director&&cc.director.off){cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.beforeDraw);state.beforeDraw=null;}
 }
 function destroy(owner) { var state=owner._sharedBuildingDebris;if(!state)return;clear(owner);state.generation++;if(state.beforeDraw&&cc.director&&cc.director.off)cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.beforeDraw);owner._sharedBuildingDebris=null; }

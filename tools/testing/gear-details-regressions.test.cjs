@@ -54,6 +54,39 @@ test('max-level and locked equipment states recover correctly when the cached Ge
   assert.equal(cloak.ndInfo.getChildByName('btnLock').active,false);assert.equal(cloak.ndInfo.getChildByName('btnUpgeade').active,true);
 });
 
+test('Gear shows and enforces each stage-clear requirement even after the last wave', () => {
+  const f = fixture(), { owner, user, deps, Label } = f;
+  owner.cfgEquip = require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg;
+  owner.nodeInfo.forEach(row => { row.cfg = owner.cfgEquip[row.type - 1]; });
+  f.levels.fill(1);
+  let stage = 1, purchases = 0;
+  user.getGoldNum = () => 1e9;
+  user.getMaxStage = () => stage;
+  user.getMaxOrder = () => 12;
+  deps.KinghtFallEnum.KinghtFallEnumGoodsCfg = { Coin: 2001 };
+  deps.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance = () => ({
+    getUserData: () => user,
+    purchase() { purchases++; return false; }
+  });
+  for (const [slot, clearStage] of [[2, 2], [5, 3], [4, 4], [3, 5], [6, 6]]) {
+    const row = owner.nodeInfo[slot - 1], lock = row.ndInfo.getChildByName('ndLock');
+    const upgrade = row.ndInfo.getChildByName('btnUpgeade');
+    stage = clearStage;
+    owner.initView();
+    assert.equal(upgrade.active, false);
+    assert.equal(lock.getComponentInChildren(Label).string, 'locked' + clearStage);
+    const before = purchases;
+    owner.onUpgeade(slot);
+    assert.equal(purchases, before);
+    stage++;
+    owner.initView();
+    assert.equal(lock.active, false);
+    assert.equal(upgrade.active, true);
+    owner.onUpgeade(slot);
+    assert.equal(purchases, before + 1);
+  }
+});
+
 test('both upper weapon slots open the picker, lower upgrade icons have no misleading switch action, and upgrade buttons retain their action',()=>{
   const f=fixture(),owner=f.owner;let opened=0,installed=0,upgraded=0;f.deps.HeroWeaponPicker={open(){opened++;},installSwitch(){installed++;}};
   owner.ndItemTop=owner.nodeInfo.map(item=>item.ndItem);owner.ndItemDown=owner.nodeInfo.map(item=>item.ndInfo);owner.labNum=owner.nodeInfo.map(item=>item.labNum);owner.spPower={node:{}};
@@ -72,6 +105,7 @@ test('Gear skill icon follows the equipped style and opens its saved active desc
     off(type) { delete this.handlers[type]; }
     destroy() { this.destroyed=true; this.children.forEach(child=>child.destroy()); }
     child(name) { return this.children.find(child=>child.name===name&&!child.destroyed); }
+    get activeInHierarchy() { return !this.destroyed && this.active !== false && (!this.parent || this.parent.activeInHierarchy); }
   }
   Node.EventType={TOUCH_END:'tap',SIZE_CHANGED:'size'};
   class Graphics { roundRect(){} rect(){} fill(){} clear(){} }
@@ -85,9 +119,25 @@ test('Gear skill icon follows the equipped style and opens its saved active desc
   canvas.setContentSize(750,1334);info.setParent(canvas);preview.setParent(info);preview.setPosition(-206,-89);actor.setParent(preview);
   const owner={node:info,ctrPlayAni:{node:actor}}, loads=[];
   const data={HeroSkills:{bruiser:{cooldown:12,descriptions:{active:'Cleave. Cooldown {cooldown}s.'}}}};
-  let style='bruiser';
+  let style='bruiser', failStencil=false, deferStencil=false, pendingStencil, iconFailures=0;
+  const frames = new Map();
   const cc={Node,Graphics,Label,Sprite,Mask,BlockInputEvents:class{},color:(...args)=>args,isValid:node=>!!node&&!node.destroyed,
-    find:()=>canvas,resources:{load(resource,Type,done){loads.push(resource);done(null,{getOriginalSize:()=>({width:80,height:80})});}}};
+    find:()=>canvas,resources:{load(resource,Type,done){
+      loads.push(resource);
+      const failIcon = resource.startsWith('skills/icons/') && iconFailures > 0;
+      if (failIcon) iconFailures--;
+      if (resource.endsWith('mask') && failStencil || failIcon) {
+        done(Error('transient asset error'));
+        return;
+      }
+      if (!frames.has(resource) || frames.get(resource).destroyed) frames.set(resource, {
+        refs: 0, getOriginalSize: () => ({width:80,height:80}),
+        addRef() { this.refs++; }, decRef() { if (--this.refs === 0) this.destroyed = true; }
+      });
+      const frame = frames.get(resource);
+      if (resource.endsWith('mask') && deferStencil) pendingStencil = () => done(null, frame);
+      else done(null, frame);
+    }}};
   const deps={KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data})}},
     KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>({id:style})})})}}};
   const context={exports:{},cc,require:name=>deps[name]||require('../../assets/_script/'+name)};
@@ -99,6 +149,11 @@ test('Gear skill icon follows the equipped style and opens its saved active desc
   assert.deepEqual(loads,['skills/rounded-icon-mask','skills/icons/bruiser']);
   assert.equal(button.child('Rounded skill icon').components.get(Mask).type,Mask.Type.IMAGE_STENCIL);
   picker.refreshSkill(owner);assert.equal(loads.length,2);
+  const bruiser = frames.get('skills/icons/bruiser');
+  assert.equal(bruiser.refs, 1);
+  bruiser.addRef();
+  bruiser.decRef();
+  assert.equal(bruiser.destroyed, undefined, 'Gear keeps its frame when the battle HUD releases the same asset');
   button.handlers.tap(tap());button.handlers.tap(tap());
   const popup=canvas.child('Fighting skill details'), panel=popup.child('Skill panel outline');
   assert.equal(canvas.children.filter(child=>child.name==='Fighting skill details').length,1);
@@ -108,9 +163,13 @@ test('Gear skill icon follows the equipped style and opens its saved active desc
   assert.equal(popup.width,540);assert.equal(panel.scale,(540-28)/604);
   panel.child('Close').handlers.tap(tap());
   assert.equal(canvas.child('Fighting skill details'),undefined);
-  style='guardian';picker.refreshSkill(owner);
+  style='guardian';failStencil=true;iconFailures=2;picker.refreshSkill(owner);
   assert.equal(info.child('Fighting skill'),button);
+  assert.equal(bruiser.refs, 0);
+  picker.refreshSkill(owner);
   assert.equal(loads.at(-1),'skills/icons/guardian');
+  const current = button.child('Rounded skill icon');
+  assert.equal(current.child('Skill icon').components.get(Sprite).spriteFrame, frames.get('skills/icons/guardian'));
   button.handlers.tap(tap());
   const guardian=canvas.child('Fighting skill details');
   assert.equal(guardian.child('Skill panel outline').child('Skill name').components.get(Label).string,'Iron Bulwark');
@@ -118,6 +177,19 @@ test('Gear skill icon follows the equipped style and opens its saved active desc
   assert.equal(canvas.child('Fighting skill details'),undefined);
   button.handlers.tap(tap());
   picker.close(owner);assert.equal(canvas.child('Fighting skill details'),undefined);assert.equal(canvas.handlers.size,undefined);
+  assert.equal(frames.get('skills/icons/guardian').refs, 1);
+  picker.close(owner, true);
+  assert.equal(frames.get('skills/icons/guardian').refs, 0);
+  style='fighter';failStencil=false;deferStencil=true;picker.refreshSkill(owner);
+  const fighter = button.child('Rounded skill icon');
+  info.active = false;
+  pendingStencil();
+  assert.equal(fighter.components.has(Mask), false);
+  info.active = true;
+  picker.refreshSkill(owner);
+  assert.equal(fighter.components.get(Mask).type, Mask.Type.IMAGE_STENCIL);
+  assert.equal(fighter.child('Skill icon').components.get(Sprite).spriteFrame, frames.get('skills/icons/fighter'));
+  picker.close(owner, true);
   assert.equal(JSON.stringify(data),before);
 });
 

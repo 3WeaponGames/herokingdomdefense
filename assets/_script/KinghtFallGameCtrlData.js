@@ -23,8 +23,12 @@ var $z1KinghtFallBuildBase = require("KinghtFallBuildBase");
 var $z1KinghtFallBuildObstacle = require("KinghtFallBuildObstacle");
 var $z1KinghtFallCommerce = require("KinghtFallCommerce");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
+function battleObjective(task) {
+  var id = task && task.list && task.list[task.index];
+  return typeof id === "string" && Array.isArray(task.targets) ? require("BattleTaskObjectives").definition(id) : null;
+}
 var def_KinghtFallGameCtrlData = function () {
-  function _ctor(t, e, restoring, restartSetup) {
+  function _ctor(t, e, restoring, restartSetup, taskCheckpoint) {
     this.bulidPointMap = {};
     this.obstacles = [];
     this.talentAdd = {};
@@ -46,9 +50,98 @@ var def_KinghtFallGameCtrlData = function () {
     this.ctrPar = t;
     this.levelCfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(e);
     require("EnemyStageProfiles").activate(this.levelCfg);
-    this.initData(restoring, restartSetup);
+    this.initData(restoring, restartSetup, taskCheckpoint);
   }
-  _ctor.prototype.initData = function (restoring, restartSetup) {
+  _ctor.prototype.createTaskInfo = function (checkpoint) {
+    var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+    var task = { index: 0, list: [], reward: [], stage: 0 };
+    // A resumed run always owns its original order. Checkpoints from before
+    // reward snapshots keep the legacy pool's payout for each saved position.
+    if (checkpoint) {
+      task.index = checkpoint.index;
+      task.stage = checkpoint.stage;
+      task.list = checkpoint.list.slice();
+      if (Array.isArray(checkpoint.reward)) {
+        task.reward = checkpoint.reward.map(function (reward) { return reward && { id: reward.id, num: reward.num }; });
+        if (checkpoint.authored) task.authored = true;
+        if (checkpoint.rewardMultiplier !== undefined) task.rewardMultiplier = checkpoint.rewardMultiplier;
+        if (Array.isArray(checkpoint.targets)) {
+          task.targets = checkpoint.targets.slice();
+          task.progress = checkpoint.progress || 0;
+          if (typeof checkpoint.waveIntact === "boolean") task.waveIntact = checkpoint.waveIntact;
+          if (Number.isSafeInteger(checkpoint.scoredRound)) task.scoredRound = checkpoint.scoredRound;
+        }
+        return task;
+      }
+    } else if (checkpoint === undefined && Array.isArray(this.levelCfg.BattleTasks)) {
+      var config = manager.data || {};
+      var targets = [], counted = false;
+      this.levelCfg.BattleTasks.forEach(function (row) {
+        if (!row || !Number.isSafeInteger(row.rewardId) || row.rewardId <= 0 || !Number.isSafeInteger(row.amount) ||
+            row.amount < 0 || config.GoodsCfg && !config.GoodsCfg[row.rewardId]) return;
+        var objective = typeof row.taskId === "string" && require("BattleTaskObjectives").definition(row.taskId);
+        if (objective ? !Number.isSafeInteger(row.count) || row.count < 1 :
+            !Number.isSafeInteger(row.taskId) || row.taskId <= 0 || config.InGameTaskEnum && !config.InGameTaskEnum[row.taskId]) return;
+        task.list.push(row.taskId);
+        task.reward.push({ id: row.rewardId, num: row.amount });
+        targets.push(objective ? row.count : 1);
+        counted = counted || !!objective;
+      });
+      if (counted) { task.targets = targets; task.progress = 0; }
+      task.authored = true;
+      var multiplier = this.levelCfg.InGameCoefficient;
+      task.rewardMultiplier = Number.isFinite(multiplier) && multiplier >= 0 ? multiplier : 1;
+      return task;
+    }
+    var legacy = manager.getGameTask(Number(this.levelCfg.Level) === 1 ? 1 : 2);
+    if (!checkpoint) task.list = (Number(legacy.MissionType) === 2 ?
+      $z1KinghtFallModle.default.getInstance().randomArray(legacy.MissionID, legacy.MissionNumber) : legacy.MissionID).slice();
+    task.reward = legacy.Award.slice(0, task.list.length).map(function (reward) { return { id: reward[0], num: reward[1] }; });
+    return task;
+  };
+  _ctor.prototype.hasBattleTaskStructure = function (target) {
+    var kinds = $z1KinghtFallEnum.KinghtFallEnumBuildEnum;
+    var kind = target === "wall" ? kinds.Wall : target === "tower" ? kinds.ArrowTower : kinds.PrivateHouse;
+    return this.getBulidList().some(function (building) {
+      return building.buildCfg && building.buildCfg.enumValue === kind && building.getIsLock() && !building.isDestroyed;
+    });
+  };
+  _ctor.prototype.beginBattleTaskWave = function () {
+    var task = this.taskInfo, objective = battleObjective(task);
+    if (objective && objective.kind === "survive" && task.stage === 0 && task.scoredRound !== this.round) {
+      task.waveIntact = this.hasBattleTaskStructure(objective.target);
+    }
+  };
+  _ctor.prototype.advanceBattleTask = function () {
+    var task = this.taskInfo, target = task.targets[task.index];
+    task.progress = Math.min(target, task.progress + 1);
+    if (task.progress === target) {
+      task.stage = 1;
+      if (this.ctrPar.saveGame) this.ctrPar.saveGame();
+    }
+    return true;
+  };
+  _ctor.prototype.recordBattleTask = function (kind, tag) {
+    var owner = this.ctrPar, task = this.taskInfo, objective = battleObjective(task);
+    if (!owner || owner.gameData !== this || owner._restartRetired || owner.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Fight ||
+        this._roundCompleted || !objective || task.stage !== 0 || kind !== objective.kind || tag !== objective.target) return false;
+    if (kind === "kill") return this.advanceBattleTask();
+    if (!task.waveIntact) return false;
+    task.waveIntact = false;
+    return true;
+  };
+  _ctor.prototype.finishBattleTaskWave = function () {
+    var task = this.taskInfo, objective = battleObjective(task);
+    if (!objective || objective.kind !== "survive" || task.stage !== 0 ||
+        typeof task.waveIntact !== "boolean" || task.scoredRound === this.round) return false;
+    var intact = task.waveIntact && this.hasBattleTaskStructure(objective.target);
+    task.scoredRound = this.round;
+    delete task.waveIntact;
+    if (intact) return this.advanceBattleTask();
+    task.progress = 0;
+    return false;
+  };
+  _ctor.prototype.initData = function (restoring, restartSetup, taskCheckpoint) {
     var t;
     this.buildings = [];
     var e = this.levelCfg.HomeLevel1Unlock;
@@ -100,23 +193,7 @@ var def_KinghtFallGameCtrlData = function () {
       n.bulidPoint.push(o[1]);
     }
     this.buildings.push(n);
-    var r;
-    var l = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTask(1 == this.levelCfg.Level ? 1 : 2);
-    var h = l.MissionID;
-    r = 2 == l.MissionType ? $z1KinghtFallModle.default.getInstance().randomArray(h, l.MissionNumber) : h;
-    var g = [];
-    for (a = 0; a < l.Award.length; a++) {
-      g.push({
-        id: l.Award[a][0],
-        num: l.Award[a][1]
-      });
-    }
-    this.taskInfo = {
-      index: 0,
-      list: r,
-      reward: g,
-      stage: 0
-    };
+    this.taskInfo = this.createTaskInfo(taskCheckpoint);
     var eligibility = require("RelicEligibility");
     var user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
     this.heroStyle = eligibility.selected(user).id;
@@ -138,7 +215,7 @@ var def_KinghtFallGameCtrlData = function () {
       // between writing a retry checkpoint and loading its replacement map.
       this.treasureAddTime = JSON.parse(JSON.stringify(restartSetup.treasureAddTime));
     } else if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] && Math.random() < this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs][0]) {
-      h = [];
+      var h = [];
       for (var v = 0; v < this.buildings[0].bulidId.length; v++) {
         this.buildings[0].bulidId[v] == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.PrivateHouse && h.push(this.buildings[0].bulidPoint[v]);
       }
@@ -167,6 +244,7 @@ var def_KinghtFallGameCtrlData = function () {
     var t = Number.isInteger(round) && round > 0 && this.levelCfg.WaveCfg[round - 1];
     if (!t) throw new Error("This saved wave is no longer available. Start a new game for this stage.");
     this._roundCompleted = false;
+    this._advisorFinalClaimPending = false;
     this.round = round;
     this.videoCoin = t.CommerceSliver;
     this.enemyQueue = {};
@@ -194,6 +272,7 @@ var def_KinghtFallGameCtrlData = function () {
   };
   _ctor.prototype.loadMonster = function (restoring) {
     this._roundCompleted = false;
+    this._advisorFinalClaimPending = false;
     this.round++;
     var t = this.levelCfg.WaveCfg[this.round - 1];
     if (!restoring) this.coin += t.StartSliver;
@@ -614,11 +693,12 @@ var def_KinghtFallGameCtrlData = function () {
     for (var e in this.enemyQueue) {
       !this.authoredTimeline && Object.prototype.hasOwnProperty.call(this.enemyQueue, e) && (t += this.enemyQueue[e].length);
     }
-    if ((relicCommitReady || !this._roundCompleted) && this.enemyList.length <= 0 && t <= 0 && !(this.pendingEnemySpawns > 0)) {
+    var retryAdvisor = this._advisorFinalClaimPending;
+    if ((relicCommitReady || retryAdvisor || !this._roundCompleted) && this.enemyList.length <= 0 && t <= 0 && !(this.pendingEnemySpawns > 0)) {
       this._roundCompleted = true;
       if (this.captureMillIncome) this.captureMillIncome();
       if(!current())return;
-      if (require("RelicRuntime").active(this)) {
+      if (!retryAdvisor && require("RelicRuntime").active(this)) {
         var coinBefore = this.coin;
         var rewarded=require("RelicBattle").waveCleared(this, hero, round);
         if(!current())return;
@@ -639,6 +719,31 @@ var def_KinghtFallGameCtrlData = function () {
           this._relicRoundCommitPending = true;
           return;
         }
+      }
+      this.finishBattleTaskWave();
+      if (!current()) return;
+      var task = this.taskInfo, readyAdvisor = battleObjective(task) && task.stage === 1;
+      if (round === this.levelCfg.WaveCfg.length && (readyAdvisor || retryAdvisor)) {
+        // The Advisor closes with combat, so finish this earned claim before
+        // settlement retires the paid run's checkpoint.
+        var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+        var completed = player.restorePendingRewards();
+        if (!current()) return;
+        if (completed && readyAdvisor) {
+          completed = !!(ui && ui.getTask && ui.getTask(true));
+          if (!current()) return;
+        }
+        if (completed) {
+          completed = player.restorePendingRewards();
+          if (!current()) return;
+        }
+        if (!completed) {
+          this._advisorFinalClaimPending = true;
+          this._advisorFinalClaimRetry = .5;
+          return;
+        }
+        this._advisorFinalClaimPending = false;
+        if (!current()) return;
       }
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.start_X_Y, this.levelCfg.Level + "_" + this.round);
       if(!current())return;
@@ -750,6 +855,7 @@ var def_KinghtFallGameCtrlData = function () {
     return null;
   };
   _ctor.prototype.startRoundGame = function () {
+    this.beginBattleTaskWave();
     this.setLight(true);
     this.addTime[i.KillSoldier1] = 0;
     this.addTime[i.KillSoldier2] = 0;

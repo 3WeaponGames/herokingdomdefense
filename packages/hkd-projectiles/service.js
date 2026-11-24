@@ -11,12 +11,24 @@ const timingKey=unit=>unit.key==='hero'?'hero:hero:default':['enemy','ally'].inc
 const finite=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=10;
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
 const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
+const libraryFields=['assets','sets','trails','source','heroArrowTiers','heroArrowLayer'];
+const sameLibrary=(a,b)=>libraryFields.every(key=>Document.equal(a[key],b[key]));
 function towers(data){return (data.BuildEnum[2].levelList||[]).map((row,index)=>({row,index,key:'tower:2:'+(index+1)})).filter(item=>item.row.Tower&&['cannon','sniper'].includes(item.row.Tower.attackType));}
 function unitTarget(data,key){
   const match=typeof key==='string'&&/^(enemy|ally):([1-9]\d*)$/.exec(key);
   if(!match||!Records.reachable(data,match[1],match[2],Records.form(match[1],match[2])))return null;
   const type=match[1],id=Number(match[2]);
   return {key,type,id,record:Records.record(data,type,id)};
+}
+function sameTarget(before,latest,key){
+  if(key==='hero'||key==='tower'||key==='wall-defense')return true;
+  const tower=/^tower:(1|2|5):(\d+)$/.exec(key);
+  if(!tower)return !!unitTarget(latest,key);
+  const [ ,id,index]=tower;
+  const row=config=>config.BuildEnum?.[id]?.levelList?.[Number(index)-1];
+  const original=row(before),current=row(latest);
+  return !!(original&&current&&original.level===current.level&&
+    (id==='5'?current.MillDefense?.kind==='scarecrow':original.Tower?.attackType===current.Tower?.attackType));
 }
 class ProjectilesService {
   constructor(root){this.root=path.resolve(root);this.relative='assets/resources/projectiles/catalog.json';this.file=path.join(this.root,this.relative);this.version=0;this.focusedUnits=new Set();this.reload();}
@@ -52,6 +64,7 @@ class ProjectilesService {
       this.focusedUnits.add(key);
       const delay=this.savedTiming(target);
       if(delay!==undefined)this.timings[key]=this.originalTimings[key]=delay;
+      this.version++;
     }
     return key;
   }
@@ -100,7 +113,10 @@ class ProjectilesService {
       return {key:'enemy:'+row.ID,type:'enemy',id:row.ID,name:(family?family.name:label(row.Name))+' · Enemy'+(family&&role?' · '+label(roleName||role):'')+(legacy?' · Legacy '+row.ID:''),speed:500,defaultFlight:defaults.flight||(behavior===90008?'original:fireball':behavior===90005?'original:stone':'original:arrow'),defaultLaunch:defaults.launch,defaultImpact:defaults.impact,defaultSize:defaults.size};
     });
     const buildings=[1,2].flatMap(id=>(data.BuildEnum[id].levelList||[]).map((row,index)=>({key:'tower:'+id+':'+(index+1),type:'building',id,levelIndex:index,name:label(row.Name)+' · '+(id===1?'Castle':'Tower'),speed:this.speeds['tower:'+id+':'+(index+1)]||row.Tower&&row.Tower.projectileSpeed||550,...(row.Tower&&['cannon','sniper'].includes(row.Tower.attackType)?{speedEditable:true,builtinFlight:row.Tower.attackType}:{}),defaultFlight:'original:arrow'})));
-    for(const [index,row]of ((data.BuildEnum[5]||{}).levelList||[]).entries())if(row.MillDefense&&row.MillDefense.kind==='scarecrow')buildings.push({key:'tower:5:'+(index+1),type:'building',id:5,levelIndex:index,name:label(row.Name)+' · Scarecrow defense',speed:450,defaultFlight:'original:arrow'});
+    for(const [index,row]of ((data.BuildEnum[5]||{}).levelList||[]).entries())if(row.MillDefense&&row.MillDefense.kind==='scarecrow'){
+      const speed=row.MillDefense.projectileSpeed;
+      buildings.push({key:'tower:5:'+(index+1),type:'building',id:5,levelIndex:index,name:label(row.Name)+' · Scarecrow defense',speed:Number.isFinite(speed)&&speed>0?speed:450,defaultFlight:'original:arrow'});
+    }
     const units=[{key:'hero',type:'hero',id:'hero',name:'Skirmisher hero',speed:500,defaultFlight:previewTiers[0].flight,previewTiers},{key:'tower',type:'building',id:2,levelIndex:0,name:'Castle & arrow towers · shared default',speed:550,defaultFlight:'original:arrow'}].concat(buildings,[{key:'wall-defense',type:'wall',name:'Wall-defense mode · all cards',speed:500,defaultFlight:'original:wall-arrow'}],enemyProjectiles,Object.values(data.AllyCfg||{}).filter(row=>ranged(row,'ally')).map(row=>({key:'ally:'+row.ID,type:'ally',id:row.ID,name:label(row.Name)+' · Ally',speed:500,defaultFlight:'original:arrow'})));
     return units.map(who=>{
       const key=timingKey(who),saved=settings.timingDefaults&&settings.timingDefaults[key],custom=this.timings&&this.timings[who.key],effectiveAssignment=selectSource(this.data,who.key,who.type==='enemy'?{cfg:data.SoldierCfg[who.id]}:null,settings),shared=/^tower:/.test(who.key)&&this.timings&&this.timings.tower;
@@ -122,7 +138,7 @@ class ProjectilesService {
   load(){if(!this.dirty()&&(hash(fs.readFileSync(this.file))!==this.revision||hash(fs.readFileSync(this.configFile))!==this.configRevision))return this.reload();this.invalidateAssets();return this.snapshot();}
   validate(data){
     if(!object(data)||data.version!==1||!object(data.assignments))throw Error('Invalid projectile catalog');
-    if(!Document.equal(data.assets,this.original.assets)||!Document.equal(data.sets,this.original.sets)||!Document.equal(data.trails,this.original.trails)||!Document.equal(data.source,this.original.source)||!Document.equal(data.heroArrowTiers,this.original.heroArrowTiers)||data.heroArrowLayer!==this.original.heroArrowLayer)throw Error('Projectile library entries are read-only; reimport assets using the importer.');
+    if(!sameLibrary(data,this.original))throw Error('Projectile library entries are read-only; reimport assets using the importer.');
     const units=new Set(this.units().map(u=>u.key)),assets=new Map(data.assets.map(a=>[a.id,a]));
     for(const [key,value]of Object.entries(data.assignments)){
       // Preserve future/legacy assignments unchanged; validate every real edit.
@@ -172,10 +188,18 @@ class ProjectilesService {
   discard(request){this.check(request);return this.reload();}
   save(request){
     this.check(request);if(!this.dirty())return {...this.snapshot(),result:{saved:false,files:[]}};
-    this.validate(this.data);const before=fs.readFileSync(this.file);if(hash(before)!==this.revision)throw Error('Projectile catalog changed outside this draft. Save cancelled; drafts retained.');
-    this.validateSpeeds(this.speeds);const configBefore=fs.readFileSync(this.configFile);
+    this.validate(this.data);const before=fs.readFileSync(this.file),catalogText=before.toString('utf8');
+    const latestCatalog=hash(before)===this.revision?this.original:parse(catalogText);
+    if(!object(latestCatalog)||latestCatalog.version!==1||!object(latestCatalog.assignments)){
+      throw Error('Projectile library changed outside this draft. Save cancelled; drafts retained.');
+    }
+    this.validateSpeeds(this.speeds);const configBefore=fs.readFileSync(this.configFile),latestText=configBefore.toString('utf8');
+    const published=hash(configBefore)===this.configRevision?this.configData:parse(latestText);
     const files=new Map(),catalog=clone(this.data),data=clone(this.configData);
+    const conflict=keys=>Error('Game data changed outside this draft at '+keys.join(' / ')+'. Projectile drafts retained.');
+    const requireTarget=key=>{if(!sameTarget(this.configData,published,key))throw conflict([key]);};
     for(const who of this.units())if(this.timings[who.key]!==this.originalTimings[who.key]){
+      requireTarget(who.key);
       const delay=this.timings[who.key];
       if(['hero','enemy','ally'].includes(who.type)){
         data.GameTools=data.GameTools||{version:1};data.GameTools.timings=data.GameTools.timings||{};
@@ -185,25 +209,46 @@ class ProjectilesService {
         // Profiles materialize their resolved timing on later Units edits. Keep
         // this explicit edit in that same metadata so it cannot be reverted.
         const profile=who.type==='enemy'&&data.GameTools.unitProfiles&&data.GameTools.unitProfiles.entries&&data.GameTools.unitProfiles.entries[who.id];
-        if(object(profile))profile.timing=Object.assign({},object(profile.timing)?profile.timing:{},{saved:clone(data.GameTools.timingDefaults&&data.GameTools.timingDefaults[key]||null),custom:clone(data.GameTools.timings[key]||null)});
+        if(object(profile))profile.timing=Object.assign({},object(profile.timing)?profile.timing:{},{saved:clone(published.GameTools?.timingDefaults?.[key]||null),custom:clone(data.GameTools.timings[key]||null)});
       }else{
         const assignment=Object.assign({},catalog.assignments[who.key]||{});
         if(delay===undefined)delete assignment.launchDelay;else assignment.launchDelay=delay;
         if(Object.keys(assignment).length)catalog.assignments[who.key]=assignment;else delete catalog.assignments[who.key];
       }
     }
-    if(!Document.equal(this.original,catalog))files.set(this.relative,Document.patch(this.text,this.original,catalog));
-    if(!Document.equal(this.originalSpeeds,this.speeds))for(const item of towers(data))if(this.speeds[item.key]!==this.originalSpeeds[item.key])item.row.Tower.projectileSpeed=this.speeds[item.key];
-    const writesConfig=!Document.equal(this.configData,data);
-    if(hash(configBefore)!==this.configRevision){
-      // Units can save its attack draft while a separate appearance draft is open.
-      const published=parse(configBefore.toString('utf8'));
-      const edited=[...new Set([...Object.keys(catalog.assignments),...Object.keys(this.original.assignments)])].filter(key=>!Document.equal(catalog.assignments[key],this.original.assignments[key]));
-      if(writesConfig||!edited.length||edited.some(key=>!unitTarget(published,key)))throw Error('Game data changed outside this draft. Save cancelled; projectile drafts retained.');
+    if(!Document.equal(this.original,catalog)){
+      const keys=new Set([...Object.keys(catalog.assignments),...Object.keys(this.original.assignments)]);
+      for(const key of keys)if(catalog.assignments[key]!==undefined&&!Document.equal(catalog.assignments[key],this.original.assignments[key]))requireTarget(key);
+      if(!sameLibrary(latestCatalog,this.original))throw Error('Projectile library changed outside this draft. Save cancelled; drafts retained.');
+      const nextCatalog=Document.merge(this.original,catalog,latestCatalog,
+        keys=>Error('Projectile catalog changed outside this draft at '+keys.join(' / ')+'. Drafts retained.'),
+        keys=>keys[0]==='assignments'&&keys.length===2);
+      if(!Document.equal(latestCatalog,nextCatalog)){
+        files.set(this.relative,Document.patch(catalogText,latestCatalog,nextCatalog));
+      }
     }
-    if(writesConfig)files.set(this.configRelative,Document.patch(this.configText,this.configData,data));
-    const result=commit(this.root,files,[[this.file,before],[this.configFile,configBefore]],this.relative);
-    this.reload();return {...this.snapshot(),result:{saved:true,...result}};
+    const next=clone(published);
+    if(!Document.equal(this.configData.GameTools,data.GameTools)){
+      const atomic=keys=>keys[0]==='timings'&&keys.length===2||
+        keys[0]==='unitProfiles'&&keys[1]==='entries'&&keys[3]==='timing'&&keys.length===4;
+      next.GameTools=Document.merge(this.configData.GameTools,data.GameTools,published.GameTools,
+        keys=>conflict(['GameTools',...keys]),atomic);
+    }
+    if(!Document.equal(this.originalSpeeds,this.speeds)){
+      const levels=new Map(towers(next).map(item=>[item.key,item.row]));
+      for(const item of towers(this.configData)){
+        const speed=this.speeds[item.key];
+        if(speed===this.originalSpeeds[item.key])continue;
+        requireTarget(item.key);
+        const live=levels.get(item.key);
+        if(!live||live.Tower.attackType!==item.row.Tower.attackType)throw conflict([item.key,'Tower']);
+        live.Tower.projectileSpeed=Document.merge(item.row.Tower.projectileSpeed,speed,live.Tower.projectileSpeed,
+          ()=>conflict([item.key,'projectileSpeed']));
+      }
+    }
+    if(!Document.equal(published,next))files.set(this.configRelative,Document.patch(latestText,published,next));
+    const result=files.size?commit(this.root,files,[[this.file,before],[this.configFile,configBefore]],this.relative):{files:[]};
+    this.reload();return {...this.snapshot(),result:{saved:!!result.files.length,...result}};
   }
   describe(request){
     const asset=this.data.assets.find(a=>a.id===request.id);if(!asset)throw Error('Choose a projectile');

@@ -51,6 +51,7 @@ var def_UIGuide = function (t) {
     e.tipBg = null;
     e.tipText = null;
     e.spAni = null;
+    e.dismissButton = null;
     e.distNode = null;
     e.dirPos = r.TopRight;
     e.canClose = false;
@@ -223,6 +224,16 @@ var def_UIGuide = function (t) {
         }
       }
     }, this);
+    if (this.dismissButton) {
+      this.dismissButton.on(cc.Node.EventType.TOUCH_START, function (event) { event.stopPropagation(); }, this);
+      this.dismissButton.on(cc.Node.EventType.TOUCH_END, this.dismissGuide, this);
+    }
+  };
+  _ctor.prototype.dismissGuide = function (event) {
+    event.stopPropagation();
+    if (this.isclose || this._decisionCompleted || !this.cfg.onDismiss || this.cfg.onDismiss() === false) return;
+    this.canClose = false;
+    this.finishDecision(null, false);
   };
   _ctor.prototype.resolvePress = function (close) {
     if (this.isclose || this._decisionCompleted) return;
@@ -263,6 +274,7 @@ var def_UIGuide = function (t) {
         this.tipBg.setPosition(e);
       }
       this.tipText.string = t;
+      if (this.dismissButton) this.dismissButton.active = !!this.cfg.onDismiss;
       if (this.cfg.showAni) {
         this.spAni.node.active = true;
         this.spAni.setAnimation(0, "idle", true);
@@ -284,6 +296,7 @@ var def_UIGuide = function (t) {
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "tipBg", undefined);
   cc__decorate([ccp_property(cc.RichText)], _ctor.prototype, "tipText", undefined);
   cc__decorate([ccp_property(sp.Skeleton)], _ctor.prototype, "spAni", undefined);
+  cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "dismissButton", undefined);
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1BaseUI.default);
 exports.default = def_UIGuide;

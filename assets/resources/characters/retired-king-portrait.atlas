@@ -14,42 +14,98 @@ part_staff
 part_helmet
   rotate: false
   xy: 74, 2
-  size: 118, 106
-  orig: 118, 106
+  size: 120, 108
+  orig: 120, 108
+  offset: 0, 0
+  index: -1
+u_04e3f7427d18b7a4bbbc4dc0556ea034
+  rotate: false
+  xy: 198, 2
+  size: 73, 103
+  orig: 73, 103
   offset: 0, 0
   index: -1
 part_helmet_hair
   rotate: false
-  xy: 196, 2
+  xy: 275, 2
   size: 98, 100
   orig: 98, 100
   offset: 0, 0
   index: -1
 part_chest
   rotate: false
-  xy: 298, 2
+  xy: 377, 2
   size: 78, 70
   orig: 78, 70
   offset: 0, 0
   index: -1
 part_beard
   rotate: false
-  xy: 380, 2
+  xy: 459, 2
   size: 91, 69
   orig: 91, 69
   offset: 0, 0
   index: -1
+u_2a79d245eb9a7284dbb836208cb837a9
+  rotate: false
+  xy: 554, 2
+  size: 47, 65
+  orig: 47, 65
+  offset: 0, 0
+  index: -1
 u_ecaa646274c180041a64a55d1ae93f75
   rotate: false
-  xy: 475, 2
+  xy: 605, 2
   size: 67, 52
   orig: 67, 52
   offset: 0, 0
   index: -1
 u_0a7e6d409c450e145bcb203db6e508b8
   rotate: false
-  xy: 546, 2
+  xy: 676, 2
   size: 44, 48
   orig: 44, 48
+  offset: 0, 0
+  index: -1
+u_694052ddfa2103940ad31009cdf01698
+  rotate: false
+  xy: 724, 2
+  size: 49, 30
+  orig: 49, 30
+  offset: 0, 0
+  index: -1
+u_304d3052c1658404eb3c53902e5b415c
+  rotate: false
+  xy: 777, 2
+  size: 68, 28
+  orig: 68, 28
+  offset: 0, 0
+  index: -1
+u_215be0e3bf520524180a9eb75e1a2100
+  rotate: false
+  xy: 849, 2
+  size: 11, 24
+  orig: 11, 24
+  offset: 0, 0
+  index: -1
+u_059ff9c9faacbb743b240b21b78aa618
+  rotate: false
+  xy: 864, 2
+  size: 10, 23
+  orig: 10, 23
+  offset: 0, 0
+  index: -1
+u_7ad202bb0eb0ce744817aff865490aba
+  rotate: false
+  xy: 878, 2
+  size: 36, 6
+  orig: 36, 6
+  offset: 0, 0
+  index: -1
+u_9f90fbde522357542aa2b7022f2b6fbb
+  rotate: false
+  xy: 918, 2
+  size: 37, 6
+  orig: 37, 6
   offset: 0, 0
   index: -1

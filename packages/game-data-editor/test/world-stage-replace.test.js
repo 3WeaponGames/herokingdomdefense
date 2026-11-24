@@ -37,6 +37,30 @@ test('Tasks position transfers with spawns and stays in place for map and stage 
  assert.equal(Replace.replace(destination,source,['spawns']).tasksPosition,undefined);
 });
 
+test('Royal Advisor tasks transfer with stage settings and restore defaults when the source uses legacy tasks',()=>{
+ const f=fixture(),source=f.s.docs['stage:A-19'].data,target=f.s.docs['stage:A-20'].data;
+ target.config.BattleTasks=[{taskId:1,rewardId:1,amount:10}];
+ source.config.BattleTasks=[{taskId:3,rewardId:2,amount:30},{taskId:2,rewardId:1,amount:15}];
+ for(const sections of [['settings'],Replace.SECTIONS]){
+  const copied=Replace.replace(target,source,sections);
+  assert.deepEqual(copied.config.BattleTasks,source.config.BattleTasks);
+  assert.notStrictEqual(copied.config.BattleTasks,source.config.BattleTasks);
+ }
+ for(const sections of [['spawns'],['waves']])assert.deepEqual(Replace.replace(target,source,sections).config.BattleTasks,target.config.BattleTasks);
+ source.config.BattleTasks=[];
+ assert.deepEqual(Replace.replace(target,source,['settings']).config.BattleTasks,[]);
+
+ delete source.config.BattleTasks;
+ assert.equal(Object.hasOwn(Replace.replace(target,source,Replace.SECTIONS).config,'BattleTasks'),false);
+ const before=clone(target),files=tree(f.root),result=replace(f,['settings']);
+ assert.equal(Object.hasOwn(result.value.config,'BattleTasks'),false);
+ const recovery=JSON.parse(fs.readFileSync(f.s.recovery,'utf8')).docs.find(doc=>doc.key===result.key);
+ assert.equal(Object.hasOwn(recovery.data.config,'BattleTasks'),false);
+ assert.deepEqual(f.s.history({key:result.key,version:f.s.version},false).value,before);
+ assert.deepEqual(f.s.history({key:result.key,version:f.s.version},true).value,result.value);
+ assert.deepEqual(tree(f.root),files);
+});
+
 for(const scope of Replace.SCOPES)test(scope+' replacement is one detached reversible destination draft and never changes the source or project files',()=>{
  const f=fixture(),files=tree(f.root),sourceBefore=clone(f.s.docs['stage:A-19']),snap=replace(f,scope),after=clone(snap.value);
  assert.equal(snap.key,'stage:A-20');assert.equal(snap.version,2);assert.equal(f.s.undo.length,1);assert.equal(f.s.undo[0].key,'stage:A-20');assert(snap.dirty&&snap.canUndo);assert(fs.existsSync(f.s.recovery));
