@@ -83027,5 +83027,36 @@
   "tasksPosition": {
     "x": 204.93489217345694,
     "y": -6.2702147838916
-  }
+  },
+  "spawnGroups": [
+    {
+      "id": "spawn-group-1",
+      "spawnIds": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "spawn-group-2",
+      "spawnIds": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "spawn-group-3",
+      "spawnIds": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": "spawn-group-4",
+      "spawnIds": [
+        13
+      ]
+    }
+  ]
 }
