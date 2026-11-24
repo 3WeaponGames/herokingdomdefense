@@ -5,6 +5,7 @@
 // the original polygons, not just occupancy samples.
 var EPS = 1e-7;
 var MAX_CELLS = 65536;
+var NO_CANDIDATES = Object.freeze([]);
 var DIRECTIONS = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]];
 var OPPOSITE = [1,0,3,2,7,6,5,4];
 function finite(value) { return typeof value === "number" && isFinite(value); }
@@ -85,6 +86,7 @@ function NavigationGrid(polygons,bounds,cellSize,passages) {
   if(passages!==undefined&&passages!==null&&!Array.isArray(passages))throw new TypeError("Navigation passages must be an array of polygons.");
   this._passages=(passages||[]).map(function(vertices){if(!Array.isArray(vertices)||vertices.length<3)throw new TypeError("Navigation passages need at least three vertices.");return vertices.map(point);});
   var self=this;
+  this._indexColumns=Math.floor((bounds.maxX-bounds.minX)/this._indexSize)+1;
   (polygons||[]).forEach(function(vertices) {
     if(!Array.isArray(vertices)||vertices.length<3)throw new TypeError("Navigation polygons need at least three vertices.");
     var copy=vertices.map(point),box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity};
@@ -93,26 +95,52 @@ function NavigationGrid(polygons,bounds,cellSize,passages) {
     // Relative bucket coordinates stay bounded by the map extent, even when
     // the whole map is translated beyond precise integer world coordinates.
     for(var y=Math.floor((Math.max(box.minY,bounds.minY)-bounds.minY)/self._indexSize);y<=Math.floor((Math.min(box.maxY,bounds.maxY)-bounds.minY)/self._indexSize);y++)for(var x=Math.floor((Math.max(box.minX,bounds.minX)-bounds.minX)/self._indexSize);x<=Math.floor((Math.min(box.maxX,bounds.maxX)-bounds.minX)/self._indexSize);x++) {
-      var key=x+","+y,list=self._index.get(key);if(!list){list=[];self._index.set(key,list);}list.push(id);
+      var key=y*self._indexColumns+x,list=self._index.get(key);if(!list){list=[];self._index.set(key,list);}list.push(id);
     }
   });
   this._queryMarks=new Uint32Array(this.polygons.length);this._querySerial=0;
 }
 
 NavigationGrid.prototype._query=function(minX,minY,maxX,maxY) {
-  var result=[];
+  var result;
   // Off-map escape checks are rare. Avoid indexing unbounded authored polygons
   // while still testing their original, unclipped geometry for those queries.
   if(minX<this.bounds.minX||minY<this.bounds.minY||maxX>this.bounds.maxX||maxY>this.bounds.maxY) {
-    for(var p=0;p<this.polygons.length;p++){var box=this.polygons[p].box;if(box.maxX>=minX&&box.minX<=maxX&&box.maxY>=minY&&box.minY<=maxY)result.push(p);}return result;
+    for(var p=0;p<this.polygons.length;p++){
+      var box=this.polygons[p].box;
+      if(box.maxX>=minX&&box.minX<=maxX&&box.maxY>=minY&&box.minY<=maxY){
+        if(!result)result=[];
+        result.push(p);
+      }
+    }
+    return result||NO_CANDIDATES;
   }
+  var minBoxX=minX-EPS,minBoxY=minY-EPS,maxBoxX=maxX+EPS,maxBoxY=maxY+EPS;
   var serial=++this._querySerial,marks=this._queryMarks,b=this.bounds;
   if(serial>=4294967295){marks.fill(0);this._querySerial=serial=1;}
-  for(var y=Math.floor((minY-b.minY)/this._indexSize);y<=Math.floor((maxY-b.minY)/this._indexSize);y++)for(var x=Math.floor((minX-b.minX)/this._indexSize);x<=Math.floor((maxX-b.minX)/this._indexSize);x++) {
-    var list=this._index.get(x+","+y);if(!list)continue;
-    for(var j=0;j<list.length;j++)if(marks[list[j]]!==serial){marks[list[j]]=serial;result.push(list[j]);}
+  var cellSize=this._indexSize,columns=this._indexColumns;
+  var firstX=Math.floor((minX-b.minX)/cellSize),lastX=Math.floor((maxX-b.minX)/cellSize);
+  var firstY=Math.floor((minY-b.minY)/cellSize),lastY=Math.floor((maxY-b.minY)/cellSize);
+  for(var y=firstY;y<=lastY;y++){
+    var row=y*columns;
+    for(var x=firstX;x<=lastX;x++){
+      var list=this._index.get(row+x);
+      if(!list)continue;
+      for(var j=0;j<list.length;j++){
+        var id=list[j];
+        if(marks[id]===serial)continue;
+        marks[id]=serial;
+        var candidate=this.polygons[id].box;
+        if(candidate.maxX>=minBoxX&&candidate.minX<=maxBoxX&&candidate.maxY>=minBoxY&&candidate.minY<=maxBoxY){
+          if(!result)result=[];
+          result.push(id);
+        }
+      }
+    }
   }
-  return result;
+  // A clear lane does not allocate an array. Nonempty results remain
+  // independent for incremental searches that retain a candidate list.
+  return result||NO_CANDIDATES;
 };
 NavigationGrid.prototype._inBounds=function(p,radius) {
   var b=this.bounds;

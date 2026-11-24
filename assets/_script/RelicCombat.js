@@ -279,8 +279,10 @@ function allyIncoming(actor,damage){
   return bonus>0&&a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<=radius?damage*(1-Math.min(.8,bonus)):damage;
 }
 function tauntedTarget(enemy){
-  var record=enemy&&enemy._heroTaunt,data=current();
-  if(!record||record.remaining<=0||record.data!==data||record.epoch!==(data&&data.ctrPar&&data.ctrPar._combatEpoch)||record.enemyNode&&record.enemyNode!==enemy.node||record.heroNode&&(!record.hero||record.heroNode!==record.hero.node)||record.enemyGeneration!==generation(enemy)||record.generation!==generation(record.hero)||!living(record.hero))return null;
+  var record=enemy&&enemy._heroTaunt;
+  if(!record||record.remaining<=0)return null;
+  var data=current();
+  if(record.data!==data||record.epoch!==(data&&data.ctrPar&&data.ctrPar._combatEpoch)||record.enemyNode&&record.enemyNode!==enemy.node||record.heroNode&&(!record.hero||record.heroNode!==record.hero.node)||record.enemyGeneration!==generation(enemy)||record.generation!==generation(record.hero)||!living(record.hero))return null;
   return record.hero;
 }
 var controlClocks = new WeakMap();
@@ -294,11 +296,12 @@ function controlAnimationClock(enemy,factor) {
   var global=typeof globalSpeed==='number'&&isFinite(globalSpeed)&&globalSpeed>=0?globalSpeed:null;
   controlRenderers(enemy).forEach(function(renderer){
     if(typeof cc!=='undefined'&&cc.isValid&&!cc.isValid(renderer,true))return;
-    var clock=clocks.filter(function(record){return record.renderer===renderer;})[0],current=renderer.timeScale;
+    var clock=clocks.find(function(record){return record.renderer===renderer;}),current=renderer.timeScale;
     if(!clock){clock={renderer:renderer,base:typeof current==='number'&&isFinite(current)?current:1};clocks.push(clock);}
     if(global!==null)clock.base=global;
     else if(clock.applied!==undefined&&typeof current==='number'&&isFinite(current)&&Math.abs(current-clock.applied)>1e-9)clock.base=current;
-    clock.applied=clock.base*factor;renderer.timeScale=clock.applied;
+    clock.applied=clock.base*factor;
+    if(current!==clock.applied)renderer.timeScale=clock.applied;
   });
   if(factor===1)controlClocks.delete(enemy);
 }
@@ -315,6 +318,14 @@ function releaseControl(enemy) {
   releaseFrozenControl(enemy);controlAnimationClock(enemy,1);
 }
 function updateEnemy(enemy, dt) {
+  var status = enemy._relicControl;
+  // Normal actors have no control work. Keep the full path until a paused rig
+  // or slowed component clock has been restored, even after the status clears.
+  if ((!status || !(status.freeze > 0 || status.duration > 0 && status.slow > 0)) &&
+      !enemy._relicPausedRenderers && !controlClocks.has(enemy)) {
+    enemy.onUpdate(dt);
+    return;
+  }
   var control = Runtime.controlDelta(enemy, dt);
   // Scale the renderer component once; saved/package playback stays on its
   // tracks. This matches the scheduler's control delta and handles partial

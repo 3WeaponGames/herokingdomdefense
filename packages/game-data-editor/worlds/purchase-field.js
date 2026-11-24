@@ -1,7 +1,8 @@
 'use strict';
 // Project only the authored purchase-field roots. Models, built collision,
 // prices, upgrades, and original source templates are never changed.
-const Maps=require('../lib/map-assets');
+const Maps=require('../lib/map-assets'),Model=require('./model');
+const {cardMatrix}=require('./purchase-field-preview'),Settings=require('../../../assets/_script/BuildingPurchaseField');
 const cache=new WeakMap(),projected=new WeakMap(),clone=value=>JSON.parse(JSON.stringify(value));
 const SIDES=['default','flip','southwest','southeast'];
 function withDefaults(building,config,hall,source){
@@ -10,7 +11,7 @@ function withDefaults(building,config,hall,source){
  const row=require('./navigation').buildingRow(building,hall||1,config);
  let variant=building.wallFacing||building.placementVariant||'default';
  if(building.kind===6&&!building.wallFacing&&source)variant=require('./gate-facing').facing(source,building);
- const Settings=require('../../../assets/_script/BuildingPurchaseField'),reference=Settings.reference(category,row,variant),basis=geometry(source,Object.assign({},building,{purchaseReference:reference}));
+ const reference=Settings.reference(category,row,variant),basis=geometry(source,Object.assign({},building,{purchaseReference:reference}));
  if(!basis)return building;
  const value=Settings.resolve(category,row,variant,basis);
  return value?Object.assign({},building,{purchaseSide:value.southwest?'flip':'default',purchaseOffset:{x:value.x,y:value.y},purchaseOverride:false,purchaseReference:reference}):building;
@@ -76,12 +77,28 @@ function project(source,building){
  projected.set(result,{source,key});saved.values.set(key,result);while(saved.values.size>16)saved.values.delete(saved.values.keys().next().value);return result;
 }
 function finishExport(source,building,target,mapping){
- if(!building||!valid(building.purchaseSide)&&!building.purchaseOffset)return;
- const info=Maps.model(source),entry=controller(info,building),next=Maps.model(target),scale=building.scale===undefined?1:building.scale,angle=(building.angle||0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
- for(const ref of entry.component.value.ndLockList||[]){const id=reference(source,ref),original=trigger(info,id),node=next.byId[mapping[id]];if(!original||!node)continue;
-  const inverse=Maps.inverse(node.world),trs=node.source._trs.array,component=target[mapping[original.component]],points=component.points||[];
-  component.points=original.points.map((p,i)=>{const x=p.x-entry.owner.position.x,y=p.y-entry.owner.position.y,local=Maps.point(inverse,{x:building.x+(c*x-s*y)*scale,y:building.y+(s*x+c*y)*scale});return Object.assign({},points[i],{x:local.x*trs[7],y:local.y*trs[8]});});
+ if(!building||!building.flipX&&!valid(building.purchaseSide)&&!building.purchaseOffset)return;
+ const info=Maps.model(source),entry=controller(info,building),next=Maps.model(target),scale=building.scale===undefined?1:building.scale,placement=Model.buildingMatrix(building),origin=entry.owner.position;
+ for(const ref of entry.component.value.ndLockList||[]){
+  const id=reference(source,ref),node=next.byId[mapping[id]];
+  if(!node)continue;
+  const inverse=Maps.inverse(node.world),original=trigger(info,id);
+  if(original){
+   const trs=node.source._trs.array,component=target[mapping[original.component]],points=component.points||[];
+   component.points=original.points.map((p,i)=>{const local=Maps.point(inverse,Maps.point(placement,{x:p.x-origin.x,y:p.y-origin.y}));return Object.assign({},points[i],{x:local.x*trs[7],y:local.y*trs[8]});});
+  }
+  if(building.flipX){
+   const card=info.byId[id].children.map(child=>info.byId[child]).find(child=>child.name==='ndLock');
+   if(card&&mapping[card.id]!==undefined)matrix(target[mapping[card.id]],Maps.multiply(inverse,cardMatrix(building,origin,card.world)));
+  }
  }
- const nextOwner=next.byId[mapping[entry.owner.id]],nextController=nextOwner&&nextOwner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(nextController){target[nextController.id].purchaseSide=side(building.purchaseSide);const p=offset(building);target[nextController.id].purchaseOffset={__type__:'cc.Vec2',x:p.x*scale,y:p.y*scale};if(building.purchaseOverride!==undefined)target[nextController.id].purchaseOverride=building.purchaseOverride===true;if(building.placementVariant)target[nextController.id].placementVariant=building.placementVariant;}
+ const nextOwner=next.byId[mapping[entry.owner.id]],nextController=nextOwner&&nextOwner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));
+ if(nextController){
+  const component=target[nextController.id];
+  if(building.flipX)component.purchaseFlipAngle=building.angle||0;
+  if(valid(building.purchaseSide)||building.purchaseOffset){const p=offset(building);component.purchaseSide=side(building.purchaseSide);component.purchaseOffset={__type__:'cc.Vec2',x:p.x*scale,y:p.y*scale};}
+  if(building.purchaseOverride!==undefined)component.purchaseOverride=building.purchaseOverride===true;
+  if(building.placementVariant)component.placementVariant=building.placementVariant;
+ }
 }
-module.exports={geometry,valid,side,angle,offset,project,finishExport,withDefaults};
+module.exports={geometry,valid,side,angle,offset,project,finishExport,withDefaults,reflect:Settings.reflect};

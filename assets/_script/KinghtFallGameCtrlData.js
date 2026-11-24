@@ -531,7 +531,7 @@ var def_KinghtFallGameCtrlData = function () {
     }
     return false;
   };
-  _ctor.prototype.getBulidList = function () {
+  var stockBuildingList = _ctor.prototype.getBulidList = function () {
     var t = [];
     for (var e in this.bulidPointMap) {
       if (Object.prototype.hasOwnProperty.call(this.bulidPointMap, e)) {
@@ -542,7 +542,10 @@ var def_KinghtFallGameCtrlData = function () {
     return t;
   };
   _ctor.prototype.getAttackableBuildList = function () {
-    var buildings = this.getBulidList(), targets = buildings.slice();
+    var list = this.getBulidList, buildings = list.call(this);
+    // The stock lookup already returns a private snapshot. A custom provider
+    // can return shared storage and continues to receive the original copy.
+    var targets = list === stockBuildingList ? buildings : buildings.slice();
     buildings.forEach(function (building) {
       if (building.getFieldTargets) targets = targets.concat(building.getFieldTargets());
     });
@@ -613,9 +616,10 @@ var def_KinghtFallGameCtrlData = function () {
     }
     }
     var roster = this.enemyList, o = 0;
+    var combat = roster.length && require("RelicCombat");
     for (var remaining = roster.length; remaining > 0 && o < roster.length; remaining--) {
       var enemy = roster[o];
-      if (enemy) require("RelicCombat").updateEnemy(enemy, t);
+      if (enemy) combat.updateEnemy(enemy, t);
       if (!current() || this.enemyList !== roster) return;
       if (roster[o] === enemy) o++;
     }

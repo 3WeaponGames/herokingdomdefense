@@ -34,19 +34,21 @@ function create(options){
  function prepare(records,runtime){const keep=new Set();for(const r of records)for(const d of r.skeletons||[]){keep.add(key(d,runtime));ensure(d,runtime);}for(const [id,e] of cache)if(!keep.has(id)){release(e);cache.delete(id);}}
  function parts(building,record){
   if(!record)return [];
-  const origin=record.origin||building.origin||{x:0,y:0},result=[],shadowParts=[];
+  const origin=record.origin||building.origin||{x:0,y:0},matrix=M.buildingMatrix(building),result=[],shadowParts=[];
   if(record.shadow&&record.shadow.regions.length)shadowParts.push({building,record,shadow:record.shadow,ground:true,y:building.y||0});
   if(record.dropShadow)shadowParts.push({building,record,dropShadow:record.dropShadow,ground:true,y:building.y||0});
   if(!record.shadowAboveGround)result.push(...shadowParts);
-  for(const sprite of record.sprites||[])result.push({building,record,sprite,ground:!!sprite.ground,y:M.toWorld(building,{x:sprite.matrix[4]-origin.x,y:sprite.matrix[5]-origin.y}).y});
-  for(const skeleton of record.skeletons||[])result.push({building,record,skeleton,ground:!!skeleton.ground,y:M.toWorld(building,{x:skeleton.matrix[4]-origin.x,y:skeleton.matrix[5]-origin.y}).y});
+  for(const sprite of record.sprites||[])result.push({building,record,sprite,ground:!!sprite.ground,y:M.point(matrix,{x:sprite.matrix[4]-origin.x,y:sprite.matrix[5]-origin.y}).y});
+  for(const skeleton of record.skeletons||[])result.push({building,record,skeleton,ground:!!skeleton.ground,y:M.point(matrix,{x:skeleton.matrix[4]-origin.x,y:skeleton.matrix[5]-origin.y}).y});
   if(record.shadowAboveGround)result.push(...shadowParts);
   return result;
  }
  function draw(ctx,part,images,runtime){
-  const b=part.building,r=part.record,origin=r.origin||b.origin||{x:0,y:0};ctx.save();Paint.apply(ctx,Paint.matrix(b));ctx.translate(-origin.x,-origin.y);
+  const b=part.building,r=part.record,origin=r.origin||b.origin||{x:0,y:0};ctx.save();Paint.apply(ctx,M.buildingMatrix(b));ctx.translate(-origin.x,-origin.y);
   if(part.dropShadow){
-   const settings=Drop.settings(part.dropShadow),source=silhouette(r,images,runtime);if(source){const id=source.key+':'+JSON.stringify(settings);let entry=drops.get(id);if(!entry){const image=Drop.raster(source,settings),canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image};drops.set(id,entry);while(drops.size>6){const first=drops.keys().next().value;release(drops.get(first));drops.delete(first);}}const d=entry.image;ctx.translate(origin.x+d.x,origin.y+d.y+d.height);ctx.scale(d.width/entry.canvas.width,-d.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
+   const settings=Drop.settings(part.dropShadow);
+   if(b.flipX){const light=(settings.angle-(b.angle||0))*Math.PI/180;settings.angle=Math.atan2(Math.sin(light),-Math.cos(light))*180/Math.PI;}
+   const source=silhouette(r,images,runtime);if(source){const id=source.key+':'+JSON.stringify(settings);let entry=drops.get(id);if(!entry){const image=Drop.raster(source,settings),canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image};drops.set(id,entry);while(drops.size>6){const first=drops.keys().next().value;release(drops.get(first));drops.delete(first);}}const d=entry.image;ctx.translate(origin.x+d.x,origin.y+d.y+d.height);ctx.scale(d.width/entry.canvas.width,-d.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
   }
   else if(part.shadow){
    const d=part.shadow,id=JSON.stringify([d.regions,d.opacity]);let entry=shadows.get(id);
@@ -59,7 +61,8 @@ function create(options){
  }
  function hit(building,record,point,images,runtime){
   if(!record)return false;
-  const origin=record.origin||building.origin||{x:0,y:0},p=M.toLocal(building,point);p.x+=origin.x;p.y+=origin.y;
+  const origin=record.origin||building.origin||{x:0,y:0},p=M.toLocal(building,point);
+  p.x=origin.x+(building.flipX===true?-p.x:p.x);p.y+=origin.y;
   const local=matrix=>{const det=matrix[0]*matrix[3]-matrix[1]*matrix[2];if(Math.abs(det)<1e-9)return null;const x=p.x-matrix[4],y=p.y-matrix[5];return {x:(matrix[3]*x-matrix[2]*y)/det,y:(matrix[0]*y-matrix[1]*x)/det};};
   for(const s of record.sprites||[]){const q=local(s.matrix),a=s.anchor||{x:.5,y:0};if(q&&q.x>=-a.x*s.width&&q.x<=(1-a.x)*s.width&&q.y>=-a.y*s.height&&q.y<=(1-a.y)*s.height)return true;}
   for(const d of record.skeletons||[]){const e=cache.get(key(d,runtime)),q=local(d.matrix);if(!e||!e.canvas||!q)continue;const a=e.bounds,x=(q.x-a.minX)/a.width*e.canvas.width,y=(a.maxY-q.y)/a.height*e.canvas.height;if(x>=0&&y>=0&&x<e.canvas.width&&y<e.canvas.height){try{if(e.canvas.getContext('2d').getImageData(Math.floor(x),Math.floor(y),1,1).data[3]>10)return true;}catch(_){return true;}}}

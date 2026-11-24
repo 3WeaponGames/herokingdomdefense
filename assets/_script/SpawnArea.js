@@ -24,7 +24,7 @@ function sampleInBounds(center,radius,random,bounds,body) {
   // nearest in-map fallback so an authored wave never loses an enemy.
   return clamp(center,limits);
 }
-function spread(points,start,center,width,random,walkable,clear) {
+function spread(points,start,center,width,random,walkable,clear,anchorWalkable) {
   if(typeof width!=="number"||!isFinite(width)||!(width>0)||!points.length||!start||!center||!isFinite(start.x)||!isFinite(start.y)||!isFinite(center.x)||!isFinite(center.y))return points.map(function(p){return {x:p.x,y:p.y};});
   var direction={x:points[0].x-center.x,y:points[0].y-center.y};
   if(Math.hypot(direction.x,direction.y)<.001&&points.length>1)direction={x:points[1].x-points[0].x,y:points[1].y-points[0].y};
@@ -37,7 +37,13 @@ function spread(points,start,center,width,random,walkable,clear) {
     if(index===points.length-1)return {x:p.x,y:p.y};
     var previous=index?points[index-1]:center,next=points[index+1]||p,dx=next.x-previous.x,dy=next.y-previous.y,l=Math.hypot(dx,dy);
     if(!l)return {x:p.x,y:p.y};
-    for(var step=0;step<12;step++){var factor=Math.pow(.65,step),candidate={x:p.x-dy/l*offset*factor,y:p.y+dx/l*offset*factor};if((!walkable||walkable(candidate))&&(!clear||clear(p,candidate)))return candidate;}
+    for(var step=0;step<12;step++){
+      var factor=Math.pow(.65,step),candidate={x:p.x-dy/l*offset*factor,y:p.y+dx/l*offset*factor};
+      if((!walkable||walkable(candidate))&&(!clear||clear(p,candidate)))return candidate;
+      // Check the anchor only once a full offset fails. A blocked start
+      // cannot have a clear segment to any of the smaller offsets.
+      if(step===0&&anchorWalkable&&!anchorWalkable(p))break;
+    }
     return {x:p.x,y:p.y};
   });
 }
@@ -67,15 +73,19 @@ function apply(unit,game,spawnId,prepared) {
   var Navigation=require('KinghtFallNavigation'),node=game.ndPath.getChildByName('ndEnemy'+spawnId),center=prepared?prepared.center:Navigation.positionOf(node,game),collides=!unit.rigidBody||unit.rigidBody.active!==false,navigation,body=0;
   if(!(radius>0)&&!(override>0)&&!prepared&&inside(center,bounds))return true;
   if(collides){navigation=Navigation.get(game);navigation.refresh();body=navigation.radius(unit);bounds=navigation.grid.bounds;}
-  var walkable=function(p){return inside(p,bounds)&&(!collides||navigation.grid.isWalkable(p,body));},start=prepared?prepared.start:bounds?sampleInBounds(center,radius,Math.random,bounds,body):sample(center,radius,Math.random);
+  var start=prepared?prepared.start:bounds?sampleInBounds(center,radius,Math.random,bounds,body):sample(center,radius,Math.random);
   if(!start)return false;
   if(bounds)start=clamp(start,bodyBounds(bounds,body));
   unit.node.setPosition(start.x,start.y);
   var width=override===undefined?radius:override;
   if(route&&route.length&&width>0){
-    var points=route.map(function(n){return Navigation.positionOf(n,game);}),shifted=spread(points,start,center,width,Math.random,walkable,function(a,b){return !collides||navigation.grid.segmentClear(a,b,body);});
+    // The ground segment test also checks both endpoints and their body bounds.
+    var inBounds=!collides&&bounds?function(p){return inside(p,bounds);}:null;
+    var clear=collides?function(a,b){return navigation.grid.segmentClear(a,b,body);}:null;
+    var anchorWalkable=collides?function(p){return navigation.grid.isWalkable(p,body);}:null;
+    var points=route.map(function(n){return Navigation.positionOf(n,game);}),shifted=spread(points,start,center,width,Math.random,inBounds,clear,anchorWalkable);
     unit.bornInfo.pathList=shifted.map(function(p){return {position:p,_authoredSpread:true,convertToWorldSpaceAR:function(offset){return game.ndMain.convertToWorldSpaceAR(cc.v2(p.x+(offset&&offset.x||0),p.y+(offset&&offset.y||0)));}};});
   }
-  Navigation.reset(unit);if(collides)Navigation.prepareTerrainExit(unit,game);return true;
+  Navigation.reset(unit);if(collides)Navigation.prepareTerrainExit(unit,game,false,body);return true;
 }
 exports.prepare=prepare;exports.sample=sample;exports.sampleInBounds=sampleInBounds;exports.spread=spread;exports.apply=apply;exports.radius=spawnRadius;exports.mapBounds=mapBounds;

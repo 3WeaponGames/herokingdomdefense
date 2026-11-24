@@ -576,10 +576,11 @@ function create(c){
     throw Error('The wave, unit stats, or timing inputs changed. Reopen Balance wave timing to review the latest values.');
    }
   };
-  return WaveBalance.open(c,{label:waveLabel(source,index),wave:source,stage:current,units:unitRows(),interval,defeatSeconds,spawnGroups,assertCurrent,
-   apply:({limits,changes})=>waveEdit(target,(draft,at)=>{
+  return WaveBalance.open(c,{label:waveLabel(source,index),wave:source,waveIndex:index,stage:current,units:unitRows(),interval,defeatSeconds,spawnGroups,assertCurrent,
+   apply:({limits,changes,manualRows})=>waveEdit(target,(draft,at)=>{
     assertCurrent(draft);
     Waves.applyBalancedTiming(draft,at,changes,interval);
+    for(const id of manualRows)Waves.setTimingMode(draft,at,id,'manual',interval);
     const updated=draft.config.WaveCfg[at];
     updated.editorTimingBalance={...updated.editorTimingBalance,...limits};
    },true)

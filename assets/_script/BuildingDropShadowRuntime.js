@@ -1,5 +1,23 @@
 "use strict";
 var FX=require("BuildingDropShadow"),Transition=require("BuildingShadowTransition"),entries=[],bytes=0,LIMIT=24*1024*1024;
+var presetKeys=Object.keys(FX.defaults||{}).filter(function(key){return key!=="projection";}),presets=new WeakMap();
+function runtimeSettings(category,row,overrides){
+ if(!FX.texturePreset){
+  var current=FX.resolve(category,row,overrides);
+  return current&&current.active?{settings:current.settings,key:JSON.stringify(current.settings)}:null;
+ }
+ var preset=FX.texturePreset(category,row,overrides);
+ if(!preset)return null;
+ var object=typeof preset==="object",saved=object&&presets.get(preset),same=!!saved;
+ for(var i=0;same&&i<presetKeys.length;i++)same=saved.values[i]===preset[presetKeys[i]];
+ if(same)return saved;
+ var settings=FX.settings(preset),result={settings:settings,key:JSON.stringify(settings)};
+ if(object){
+  result.values=presetKeys.map(function(key){return preset[key];});
+  presets.set(preset,result);
+ }
+ return result;
+}
 function valid(n){return !!n&&(!cc.isValid||cc.isValid(n,true));}
 function releaseEntry(entry){if(entry&&entry.refs>0)entry.refs--;trim();}
 function dispose(owner,handoff){if(!handoff)Transition.cancel(owner);var state=owner._buildingDropShadowRuntime;if(!state)return;delete owner._buildingDropShadowRuntime;cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.sync);if(valid(state.sprite))state.sprite.spriteFrame=null;if(valid(state.node))state.node.destroy();releaseEntry(state.entry);}
@@ -89,13 +107,14 @@ function apply(owner,game,data){
  var state=owner._buildingDropShadowRuntime={node:node,child:child,sprite:sprite,data:data,hidden:false,wait:2,releaseEntry:releaseEntry};
  state.sync=function(){
   if(!valid(owner.node)||!valid(node)){dispose(owner);return;}
-  var row=owner.buildInfo&&owner.buildInfo.cfg,category=state.data&&state.data.BuildEnum&&state.data.BuildEnum[row&&row.ID||owner.buildCfg&&owner.buildCfg.enumValue],current=row&&category&&FX.resolve(category,row,state.data.GameTools);
-  if(!current||!current.active){apply(owner,game,state.data);return;}
+  var row=owner.buildInfo&&owner.buildInfo.cfg,category=state.data&&state.data.BuildEnum&&state.data.BuildEnum[row&&row.ID||owner.buildCfg&&owner.buildCfg.enumValue],current=row&&category&&runtimeSettings(category,row,state.data.GameTools);
+  if(!current){apply(owner,game,state.data);return;}
   var nextParent=parentFor(owner,game,row);if(!valid(nextParent)){node.active=false;return;}if(node.parent!==nextParent)node.parent=nextParent;parent=nextParent;
   if(state.hidden||owner.enabled===false||owner.node.activeInHierarchy===false||!owner.index||owner.isDestroyed){Transition.cancel(owner);node.active=false;state._shadowAlpha=0;return;}
   if(owner._unitTestBreach){node.active=false;return;}
   var phase=Transition.phase(owner);if(!phase.ready){Transition.hold(owner,state);return;}
-  var next=geometry(owner)+':ground',settingsKey=JSON.stringify(current.settings),prepared=game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.get(owner,row,current.settings),key=prepared?prepared.key:next+settingsKey,list;
+  var prepared=game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.get(owner,row,current.settings);
+  var next=prepared?null:geometry(owner)+':ground',key=prepared?prepared.key:next+current.key,list;
   if(state.key!==key){
    var entry=prepared||entries.find(function(e){return e.key===key;});
    if(entry){entry.refs++;}
@@ -107,9 +126,7 @@ function apply(owner,game,data){
    if(prior){prior.refs--;trim();}
   }
   if(!state.entry){Transition.hold(owner,state);return;}
-  function p(x,y){return parent.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(x,y)));}
-  var origin=game.ndMain.convertToNodeSpaceAR(owner.node.convertToWorldSpaceAR(cc.v2(0,0))),o=p(origin.x,origin.y),x=p(origin.x+1,origin.y),y=p(origin.x,origin.y+1),a=x.x-o.x,b=x.y-o.y,c=y.x-o.x,d=y.y-o.y,sx=Math.hypot(a,b);
-  node.setPosition(o);node.angle=Math.atan2(b,a)*180/Math.PI;node.scaleX=sx;node.scaleY=sx?(a*d-b*c)/sx:0;
+  Transition.placeGround(state,owner.node,parent,game.ndMain);
   Transition.render(owner,state,phase,true);
  };
  cc.director.on(cc.Director.EVENT_BEFORE_DRAW,state.sync);

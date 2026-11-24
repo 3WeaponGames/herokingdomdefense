@@ -128,7 +128,7 @@ function gateFixture() {
   const pass = new f.GateOcclusion(view);
   const entry = { actor, sources: [], tint: { r: 140, g: 215, b: 255 }, bounds: { minX: -10, maxX: 10, minY: 10, maxY: 50 } };
   return { ...f, main, actor, renderer, pass, entry, grow(nextWidth = 100) { width = nextWidth; entry.bounds.minX = -nextWidth * .6; entry.bounds.maxX = nextWidth * .6; },
-    update(active = [entry]) { pass.update(active, frameCache(), null); } };
+    update(active = [entry], silhouetteActors) { pass.update(active, frameCache(), null, silhouetteActors); } };
 }
 
 test('retained wall intersections keep Masks and Sprites active until their visibility actually changes', () => {
@@ -149,6 +149,47 @@ test('retained wall intersections keep Masks and Sprites active until their visi
   assert.equal(f.pass.leaves.size, 0);
   f.flush(); f.assertSafeReleases();
 });
+
+for (const includeRearGate of [false, true]) {
+  const arrangement = includeRearGate ? 'aligned front and rear roots' : 'one aligned foreground root';
+  test(`reduced tint keeps full-color wall paint with ${arrangement}`, () => {
+    const f = gateFixture();
+    f.actor.node.zIndex = 5;
+    f.entry.tint = { r: 255, g: 115, b: 115 };
+    if (includeRearGate) {
+      const node = new f.Node('rearGate', f.main);
+      node.y = 20;
+      node.zIndex = 2;
+      const renderer = { ...f.renderer, node, _skeleton: { ...f.renderer._skeleton } };
+      f.pass.view.game.gameData.bulidPointMap.rearGate = { ndAniMain: renderer };
+    }
+    f.update();
+    const paint = [...f.pass.leaves.values()].flatMap(records => [...records.values()].map(record => ({
+      record, overlay: record.overlays.get(f.actor)
+    })));
+    assert.equal(paint.length, includeRearGate ? 4 : 2);
+    assert.equal(paint.filter(({ overlay }) => overlay.behind).length, 2);
+    paint.forEach(({ overlay }) => assert.equal(overlay.tint.node.active, overlay.behind));
+    const paintNodes = new Set(paint.map(({ overlay }) => overlay.node));
+    const order = f.main.children.filter(node => paintNodes.has(node));
+
+    f.update([f.entry], new Set());
+    const body = f.pass.actors.get(f.actor);
+    assert.ok(body, 'Aligned gate layers still capture the actor');
+    for (const { record, overlay } of paint) {
+      assert.equal(record.overlays.get(f.actor), overlay);
+      assert.equal(overlay.node.active, true);
+      assert.equal(overlay.mask.spriteFrame, overlay.behind ? body.frame : record.frame);
+      assert.equal(overlay.sprite.spriteFrame, overlay.behind ? record.frame : body.frame);
+      assert.equal(overlay.tint.node.active, false);
+      assert.equal(overlay.tint.sprite.spriteFrame, null);
+    }
+    assert.deepEqual(f.main.children.filter(node => paintNodes.has(node)), order);
+    f.update([f.entry], new Set([f.entry]));
+    paint.forEach(({ overlay }) => assert.equal(overlay.tint.node.active, overlay.behind));
+    f.pass.destroy(); f.flush(); f.assertSafeReleases();
+  });
+}
 
 test('gate tier/pose resizing detaches shared body, leaf and tint frames before reactivating masks', () => {
   const f = gateFixture(); f.update();

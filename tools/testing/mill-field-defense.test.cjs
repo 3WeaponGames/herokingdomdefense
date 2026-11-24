@@ -90,7 +90,22 @@ test('existing enemy attack-reduction spells support scarecrows without changing
  const e=setup(2),r=e.runtime,f=r.fields[0],income=e.owner.buildInfo.cfg.Data[0];f.addBuff(2,{subNum:.5,time:1});assert.equal(f.getAttack(),r.cfg.damage*.5);r.update(2);assert.equal(f.getAttack(),r.cfg.damage);assert.equal(e.owner.buildInfo.cfg.Data[0],income);r.destroy();
 });
 test('field targets supplement only enemy targeting, keeping building saves and navigation roster separate',()=>{
- const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallGameCtrlData.js'),'utf8'),match=source.match(/_ctor.prototype.getAttackableBuildList = (function \(\) \{[\s\S]*?\n  \});/);assert(match);const fn=vm.runInNewContext('('+match[1]+')'),field={},mill={getFieldTargets:()=>[field]},castle={},list=[mill,castle],result=fn.call({getBulidList:()=>list});assert.deepEqual([...result],[mill,castle,field]);assert.equal(list.length,2);
+ const { setup: setupBattle } = require('./backend-gameplay-harness.cjs');
+ const data = setupBattle().d, field = {}, mill = { getFieldTargets: () => [field] }, castle = {}, list = [mill, castle];
+ data.bulidPointMap = { 2: castle, 1: mill };
+ const snapshot = data.getAttackableBuildList();
+ assert.deepEqual([...snapshot], [mill, castle, field]);
+ delete data.bulidPointMap[2];
+ assert.deepEqual([...data.getAttackableBuildList()], [mill, field]);
+ assert.deepEqual([...snapshot], [mill, castle, field]);
+ data.bulidPointMap = { 1: castle };
+ data.getAttackableBuildList().pop();
+ assert.deepEqual([...data.getAttackableBuildList()], [castle]);
+ const fn = data.getAttackableBuildList, shared = [castle];
+ const copy = fn.call({ getBulidList: () => shared });
+ assert.notEqual(copy, shared);
+ assert.deepEqual([...fn.call({ getBulidList: () => list })], [mill, castle, field]);
+ assert.deepEqual(list, [mill, castle]);
  const { environment, Node: GameNode, installIntersection } = require('../navigation/runtime-harness.cjs');
  const { game, actor, cc } = environment();
  installIntersection(cc);

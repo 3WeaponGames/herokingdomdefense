@@ -26,6 +26,39 @@ test('Nested transforms use one main-space radius and convert movement back to t
   near(u.rigidBody.linearVelocity.len(), 0);
 });
 
+test('Clear units and valid detours keep walking when a terrain revision fills the search budget', () => {
+  const e = environment(), nav = e.nav.get(e.game);
+  e.box(0, 45, 40, 55);
+  const detour = e.unit(-100, 45), detourGoal = { x: 100, y: 45 };
+  const walkers = Array.from({ length: 40 }, () => e.unit(-100, -90));
+  const straight = { x: 100, y: -90 };
+  e.nav.moveTo(detour, e.game, detourGoal, 0);
+  const oldPath = detour._navigationState.points;
+  assert(oldPath.length > 1, 'fixture requires a planned detour');
+  walkers.forEach(unit => e.nav.moveTo(unit, e.game, straight, 0));
+  const revision = nav.revision;
+
+  e.box(145, 160, 18, 18);
+  e.nav.beginFrame(e.game);
+  nav._frameSearches = 8;
+  e.nav.moveTo(detour, e.game, detourGoal, .05);
+  assert.equal(detour._navigationState.points, oldPath);
+  assert(distance(detour.node, { x: -100, y: 45 }) > 0);
+  for (const unit of walkers) {
+    const result = e.nav.moveTo(unit, e.game, straight, .05);
+    assert(result.distance > 0, 'a clear route waited for pathfinding');
+  }
+  assert.equal(nav.revision, revision + 1);
+
+  e.box(-58, -90, 20, 55);
+  e.nav.beginFrame(e.game);
+  nav._frameSearches = 8;
+  const before = walkers[0].node.getPosition();
+  const blocked = e.nav.moveTo(walkers[0], e.game, straight, 5);
+  assert.equal(blocked.deferred, true, 'an obstructed route must wait for replanning');
+  near(distance(walkers[0].node, before), 0);
+});
+
 test('Actual obstacle path advances by safe segments, clamps large timesteps, and never skips a nearby corner', () => {
   const e = environment(); e.box(0, 0, 40, 100);
   const u = e.unit(), target = { x: 100, y: 0 }, nav = e.nav.get(e.game);
@@ -71,7 +104,7 @@ test('Unreachable routes clear stale velocity, cache unchanged failures, and rec
   e.setTime(801); e.nav.moveTo(u, e.game, target, 1); assert.equal(nav.stats.searches, 1);
   wall.enabled = false; e.nav.beginFrame(e.game);
   result = e.nav.moveTo(u, e.game, target, 1);
-  assert.equal(result.blocked, false); assert.equal(nav.stats.searches, 2); near(u.node.x, -40);
+  assert.equal(result.blocked, false); assert.equal(nav.stats.searches, 1, 'a newly clear route needs no search'); near(u.node.x, -40);
 });
 
 test('Collider snapshots track active buildings, sensors, body activation, transforms and map bounds', () => {
@@ -333,7 +366,7 @@ test('Combat acquisition and disengagement invalidate close destinations within 
   u.onUpdate(0); near(u._navigationState.target.x, 20);
   u.getFind = () => null;
   u.onUpdate(0.1); near(u._navigationState.target.x, 35); near(u.node.x, 6);
-  assert.equal(e.nav.get(e.game).stats.searches, 3);
+  assert.equal(e.nav.get(e.game).stats.searches, 0, 'all three destinations are directly reachable');
 });
 
 test('Disengaging skips multiple passed waypoints but retains the final objective and transforms', () => {

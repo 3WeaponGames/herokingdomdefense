@@ -52,6 +52,51 @@ test('Building getters stay fresh outside the managed game update', () => {
   assert.equal(gate.getWposPhyCol2()[0].points[0].x, first[0].points[0].x + 15);
 });
 
+test('Building range rejection stays exact at contact and tracks a moved footprint', () => {
+  const e = environment(), gate = building(e), unit = enemy(e);
+  installIntersection(e.cc);
+  e.game.ctrPlay.node.setPosition(300, 0);
+  gate.node.x = -70;
+  e.nav.beginFrame(e.game);
+  const touching = unit.getUpdateTarget();
+  assert.equal(touching.building, gate);
+  assert.equal(touching.canAtt, false, 'an edge exactly at attack range stays outside the strict hit circle');
+
+  gate.node.x -= .25;
+  e.nav.beginFrame(e.game);
+  assert.equal(unit.getUpdateTarget().canAtt, true);
+
+  gate.node.x = 111;
+  e.nav.beginFrame(e.game);
+  assert.equal(unit.getUpdateTarget(), null, 'the old footprint must not keep the moved building in pursuit range');
+});
+
+test('Shared pursuit footprints reuse exact local vertices until the map transform changes', () => {
+  const e = environment();
+  let transforms = 0;
+  class MainNode extends Node {
+    getWorldMatrix(out) {
+      out.m[12] = this.x;
+      out.m[13] = this.y;
+    }
+    convertToNodeSpaceAR(point) {
+      transforms++;
+      return super.convertToNodeSpaceAR(point);
+    }
+  }
+  e.cc.Node = MainNode;
+  e.cc.Mat4 = class { constructor() { this.m = new Float32Array(16); } };
+  const main = e.game.ndMain = new MainNode('main'), unit = enemy(e);
+  const polygon = [e.cc.v2(-50, -20), e.cc.v2(50, -20), e.cc.v2(50, 20), e.cc.v2(-50, 20)];
+  const selected = { polygon, sharedFootprint: true };
+  assert.equal(e.nav.attackPositionOf(selected, unit, e.game).x, -50);
+  assert.equal(e.nav.attackPositionOf(selected, unit, e.game).x, -50);
+  assert.equal(transforms, 4);
+  main.x = 10;
+  assert.equal(e.nav.attackPositionOf(selected, unit, e.game).x, -60);
+  assert.equal(transforms, 8);
+});
+
 test('Cached pursuit checks current attack/search range and target death immediately', () => {
   const e = environment(); installIntersection(e.cc);
   const unit = enemy(e), hero = e.game.ctrPlay;

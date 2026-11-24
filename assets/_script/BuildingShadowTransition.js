@@ -29,6 +29,66 @@ function phase(owner){
 }
 function detach(record){if(valid(record.sprite))record.sprite.spriteFrame=null;if(valid(record.node))record.node.destroy();record.release(record.entry);}
 function cancel(owner){var blend=owner&&owner._buildingShadowTransition;if(!blend)return;delete owner._buildingShadowTransition;blend.old.forEach(detach);}
+
+function ordinaryMatrixNode(node) {
+  var type=cc.Node,prototype=type&&type.prototype;
+  return !!(node&&prototype&&Object.getPrototypeOf(node)===prototype&&!node.is3DNode&&
+    !(cc.PrivateNode&&node instanceof cc.PrivateNode)&&typeof prototype.getWorldMatrix==="function"&&
+    node.getWorldMatrix===prototype.getWorldMatrix&&node.convertToNodeSpaceAR===prototype.convertToNodeSpaceAR&&
+    node.convertToWorldSpaceAR===prototype.convertToWorldSpaceAR);
+}
+function sameGroundMatrix(matrix, old) {
+  var m=matrix.m;
+  return old&&m[0]===old[0]&&m[1]===old[1]&&m[4]===old[2]&&m[5]===old[3]&&
+    m[12]===old[4]&&m[13]===old[5]&&planarGroundMatrix(m);
+}
+function planarGroundMatrix(m) {
+  return !!(m&&m.length===16&&m[2]===0&&m[3]===0&&m[6]===0&&m[7]===0&&m[8]===0&&m[9]===0&&
+    m[10]===1&&m[11]===0&&m[14]===0&&m[15]===1);
+}
+function groundMatrixStamp(matrix) {
+  var m=matrix.m;
+  return planarGroundMatrix(m)&&Number.isFinite(m[0]+m[1]+m[4]+m[5]+m[12]+m[13])?
+    [m[0],m[1],m[4],m[5],m[12],m[13]]:null;
+}
+function placementInputs(state,source,parent,main) {
+  if(cc.ENGINE_VERSION!=="2.4.13"||typeof cc.Mat4!=="function"||!ordinaryMatrixNode(source)||
+    !ordinaryMatrixNode(parent)||main&&main!==parent&&!ordinaryMatrixNode(main)){
+    state.groundPlacement=null;
+    return null;
+  }
+  var saved=state.groundPlacement;
+  if(!saved||saved.source!==source||saved.parent!==parent||saved.main!==main){
+    saved=state.groundPlacement={source:source,parent:parent,main:main,
+      sourceMatrix:new cc.Mat4(),parentMatrix:new cc.Mat4(),mainMatrix:main&&main!==parent?new cc.Mat4():null};
+  }
+  try{
+    source.getWorldMatrix(saved.sourceMatrix);
+    parent.getWorldMatrix(saved.parentMatrix);
+    if(saved.mainMatrix)main.getWorldMatrix(saved.mainMatrix);
+    return saved;
+  }catch(ignored){state.groundPlacement=null;return null;}
+}
+function placeGround(state,source,parent,main) {
+  var node=state.node,saved=placementInputs(state,source,parent,main),output=saved&&saved.output;
+  if(output&&sameGroundMatrix(saved.sourceMatrix,saved.sourceStamp)&&sameGroundMatrix(saved.parentMatrix,saved.parentStamp)&&
+    (!saved.mainMatrix||sameGroundMatrix(saved.mainMatrix,saved.mainStamp))&&
+    node.x===output[0]&&node.y===output[1]&&node.angle===output[2]&&node.scaleX===output[3]&&node.scaleY===output[4])return;
+  var origin=main&&main.convertToNodeSpaceAR(source.convertToWorldSpaceAR(cc.v2(0,0)));
+  function point(x,y){
+    var local=origin?cc.v2(origin.x+x,origin.y+y):cc.v2(x,y);
+    return parent.convertToNodeSpaceAR((main||source).convertToWorldSpaceAR(local));
+  }
+  var o=point(0,0),x=point(1,0),y=point(0,1),a=x.x-o.x,b=x.y-o.y,c=y.x-o.x,d=y.y-o.y,sx=Math.hypot(a,b);
+  node.setPosition(o);node.angle=Math.atan2(b,a)*180/Math.PI;node.scaleX=sx;node.scaleY=sx?(a*d-b*c)/sx:0;
+  if(saved){
+    saved.sourceStamp=groundMatrixStamp(saved.sourceMatrix);
+    saved.parentStamp=groundMatrixStamp(saved.parentMatrix);
+    saved.mainStamp=saved.mainMatrix&&groundMatrixStamp(saved.mainMatrix);
+    saved.output=[node.x,node.y,node.angle,node.scaleX,node.scaleY];
+  }
+}
+
 function begin(owner,retain){
  if(retain===false)cancel(owner);
  var blend=owner._buildingShadowTransition,old=blend?blend.old:[];
@@ -65,4 +125,5 @@ function render(owner,state,current,ready){
  state.node.active=!!state.entry;state._shadowAlpha=alpha;state.node.opacity=Math.round(255*alpha*night);
 }
 exports.phase=phase;exports.begin=begin;exports.cancel=cancel;exports.hold=hold;exports.render=render;exports.landing=landing;
+exports.placeGround=placeGround;
 exports.nodes=function(owner){var blend=owner._buildingShadowTransition;return blend?blend.old.map(function(record){return record.node;}):[];};

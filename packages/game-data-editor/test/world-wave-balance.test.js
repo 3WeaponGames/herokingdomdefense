@@ -3,6 +3,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const Balance=require('../worlds/wave-balance');
+const Pacing=require('../worlds/wave-pacing');
 const Pressure=require('../worlds/wave-pressure');
 const Waves=require('../worlds/wave-editor');
 
@@ -20,6 +21,131 @@ const roleThreats=new Map([
  [7,{weight:1.4,backline:true,support:true,phase:3}],
  [8,{weight:2.5,area:true,backline:true,heavy:true,phase:3}]
 ]);
+
+test('suggests the same cap by wave number and holds at 50 starting at wave 10',()=>{
+ const caps=Array.from({length:12},(_,index)=>Balance.suggestedPeakCap(index+1));
+ assert.deepEqual(caps,[5,9,14,18,22,27,33,39,45,50,50,50]);
+});
+
+test('suggests one to four pushes by stage and calculates their peak times',()=>{
+ assert.deepEqual([1,3,4,6,7,10,11,24].map(Pacing.defaultCount),[1,1,2,2,3,3,4,4]);
+ assert.deepEqual(Pacing.suggestedPeaks(2,26,27,2,null),[5,20]);
+ assert.deepEqual(Pacing.suggestedPeaks(4,55,45,2,null),[5,20,35,50]);
+ assert.deepEqual(Pacing.suggestedPeaks(2,26,27,2,12),[3,12]);
+});
+
+test('Spawn 1 leads a small opening and both sides take part in the two pushes',()=>{
+ const source=wave(...[2,3,4,5,6,1].map(spawn=>row('spawn-'+spawn,spawn,spawn===1?4:5,0,.5)));
+ const original=structuredClone(source);
+ const result=plan(source,{peakCap:26,lastSpawnLimit:23,pushPeaks:[5,20],spawnGroups:[[4,5,6],[3,2,1]]});
+ assert.equal(result.ok,true);
+ assert.equal(result.tactical.after.pacing.distinct,2);
+ const pacing=result.tactical.after.pacing;
+ assert(pacing.opening.value<result.tactical.before.pacing.opening.value);
+ assert(pacing.opening.value<=3);
+ assert(pacing.peaks.every((peak,index)=>Math.abs(peak.time-[5,20][index])<=2));
+ assert(pacing.lulls[0].value<Math.min(...pacing.peaks.map(peak=>peak.value)));
+ const entries=Waves.entries(result.afterWave,.5),first=entries.find(row=>row.spawnId===1);
+ const sides=[entries.filter(row=>row.spawnId<=3),entries.filter(row=>row.spawnId>=4)];
+ assert.equal(first.startSeconds,0);
+ assert(entries.every(row=>row.spawnId===1||row.startSeconds>first.startSeconds));
+ const lastArrival=row=>row.startSeconds+(row.count-1)*row.intervalSeconds;
+ const otherSide=Math.min(...sides[1].map(row=>row.startSeconds));
+ assert(otherSide<=5&&otherSide<Math.max(...sides[0].map(lastArrival)));
+ assert(sides.every(side=>side.some(row=>row.startSeconds<12.5)&&side.some(row=>lastArrival(row)>12.5)));
+ assert(result.after.peak<=26&&result.after.lastSpawn<=23);
+ assert.deepEqual(source,original);
+});
+
+test('finds four separate pushes while preserving the Manual row and validating the final schedule',()=>{
+ const counts=[4,5,5,5,5,5,3,4,5],pushPeaks=[5,20,35,50];
+ const source=wave(...counts.map((count,index)=>row('spawn-'+(index+1),index+1,count,0,.5)),
+  row('manual',5,2,35.25,.75,{editorManualTiming:true,routeGraphId:'keep'}));
+ const options={peakCap:19,lastSpawnLimit:53,pushPeaks,spawnGroups:[[1,2,3],[4,5,6],[7,8,9]]};
+ const result=plan(source,options);
+ assert.equal(result.ok,true);
+ const pacing=result.tactical.after.pacing;
+ assert.equal(pacing.distinct,4);
+ assert(pacing.peaks.every((peak,index)=>Math.abs(peak.time-pushPeaks[index])<=3));
+ const projection=Pressure.build(result.afterWave,[],.5);
+ assert(projection.peaks.units.value<=options.peakCap&&projection.duration<=options.lastSpawnLimit);
+ for(const [index,lull] of pacing.lulls.entries()){
+  assert.equal(lull.value,projection.at(lull.time).units);
+  assert(lull.value<Math.min(pacing.peaks[index].value,pacing.peaks[index+1].value));
+ }
+ const applied=result.afterWave.SpawnTimeline;
+ assert.deepEqual(applied.at(-1),source.SpawnTimeline.at(-1));
+ assert.equal(projection.totals.units,counts.reduce((sum,count)=>sum+count,2));
+ assert(result.changes.every(change=>Number.isInteger(2*change.startSeconds)&&Number.isInteger(2*change.intervalSeconds)));
+});
+
+test('reports the achievable number of pushes for a single spawn row',()=>{
+ const result=plan(wave(row('only',1,5,0,.5)),{peakCap:5,pushPeaks:[5,20,35,50]});
+ assert.equal(result.ok,true);
+ assert.equal(result.tactical.after.pacing.distinct,1);
+ assert(result.after.lastSpawn<=8);
+ assert(result.tactical.after.pacing.opening.value<result.before.peak);
+});
+
+test('requires a later deadline when Spawn 1 cannot lead simultaneous arrivals',()=>{
+ const source=wave(row('other',4,1,0,0),row('first',1,1,0,0));
+ const result=plan(source,{pushPeaks:[5],lastSpawnLimit:0,spawnGroups:[[1],[4]]});
+ assert.equal(result.ok,false);
+ assert.match(result.message,/Spawn 1 sending first/);
+ assert.deepEqual(result.changes,[]);
+});
+
+test('pins spawn-group openings at exact times and reports deadline and Manual conflicts',()=>{
+ const groups=[{id:'north',spawnIds:[1,2,3]},{id:'south',spawnIds:[4,5,6]},{id:'east',spawnIds:[7,8,9]}];
+ const source=wave(...Array.from({length:9},(_,index)=>row('lane-'+index,index+1,3,0,.5)));
+ const opts={peakCap:9,pushPeaks:[5,23],groupStarts:{north:0,south:5,east:20},spawnGroups:groups};
+ const result=plan(source,opts);
+ assert.equal(result.ok,true);
+ assert.equal(result.after.peak,9);
+ for(const group of groups){
+  const times=result.afterWave.SpawnTimeline.filter(row=>group.spawnIds.includes(row.spawnId)).map(row=>row.startSeconds);
+  assert.equal(Math.min(...times),opts.groupStarts[group.id]);
+ }
+ assert.match(plan(source,{...opts,lastSpawnLimit:19}).message,/group 3.*after the last-spawn limit/);
+ const manual=wave(...source.SpawnTimeline,row('pinned',4,1,4,0,{editorManualTiming:true}));
+ assert.match(plan(manual,opts).message,/group 2.*Manual arrival at 4 s/);
+});
+
+test('reviewing proposed row edits checks the exact schedule without running the planner again',()=>{
+ const source=wave(row('first',1,2,0,.5),row('next',2,2,5,.5),row('locked',3,1,6,0,{editorManualTiming:true}));
+ const opts={pushPeaks:[5],peakCap:3,lastSpawnLimit:8};
+ const reviewed=plan(source,{...opts,timingEdits:[{id:'next',startSeconds:5,intervalSeconds:1.5}]});
+ assert.equal(reviewed.ok,true);
+ assert.deepEqual(reviewed.changes,[{id:'next',startSeconds:5,intervalSeconds:1.5}]);
+ assert.equal(reviewed.after.lastSpawn,6.5);
+ assert.deepEqual(reviewed.afterWave.SpawnTimeline[2],source.SpawnTimeline[2]);
+ const withEdit=(startSeconds,intervalSeconds,more={})=>plan(source,{...opts,...more,
+  timingEdits:[{id:'next',startSeconds,intervalSeconds}]});
+ assert.equal(withEdit(5,.25).reason,'invalid-timing');
+ assert.equal(withEdit(0,.5).reason,'spawn-one-order');
+ assert.equal(withEdit(.5,.5).reason,'peak-exceeded');
+ assert.equal(withEdit(7,2).reason,'deadline-exceeded');
+ assert.equal(withEdit(4.5,1,{spawnGroups:[{id:'later',spawnIds:[2]}],groupStarts:{later:5}}).reason,'group-start-conflict');
+});
+
+test('tactical timing tests eight arrivals in half-second steps inside a four-second spawn window',()=>{
+ const source=wave(...[3,5,5,8,5].map((count,index)=>row('lane-'+index,index+1,count,.5,.5,{unitId:index+1})));
+ const profiles=new Map([
+  [1,{weight:2.28,phase:3,area:true,backline:true}],
+  [2,{weight:1.28,phase:2,frontline:true}],
+  [3,{weight:1.33,phase:0,frontline:true}],
+  [4,{weight:1.19,phase:1,frontline:true}],
+  [5,{weight:1.30,phase:1,frontline:true}]
+ ]);
+ const peakCap=Balance.suggestedPeakCap(6);
+ const result=plan(source,{peakCap,lastSpawnLimit:4,unitThreats:profiles});
+ assert.equal(result.ok,true);
+ assert.equal(result.after.lastSpawn,4);
+ assert(result.after.peak<=peakCap);
+ assert(result.tactical.after.peakBurst<result.tactical.before.peakBurst);
+ assert.equal(result.afterWave.SpawnTimeline[3].intervalSeconds,.5);
+ assert(result.changes.every(change=>Number.isInteger(change.startSeconds*2)&&Number.isInteger(change.intervalSeconds*2)));
+});
 
 test('role-aware timing spaces dangerous opening arrivals while preserving locks and the deadline',()=>{
  const source=wave(
@@ -220,22 +346,24 @@ test('prefers keeping the current spawn window when it can meet the peak cap',()
  assert(result.after.peak<=50);
 });
 
-test('handles fractional defeat boundaries on the last-spawn deadline',()=>{
+test('fits a half-second start around fractional Manual spawns and defeat times',()=>{
  const source=wave(row('early',1,3,0,.1,{editorManualTiming:true}),row('move',2,1,.2,0));
- const result=plan(source,{peakCap:1,lastSpawnLimit:.3,defeatSeconds:.1});
+ const result=plan(source,{peakCap:1,lastSpawnLimit:.5,defeatSeconds:.1});
  assert.equal(result.ok,true);
  assert.equal(result.after.peak,1);
- assert.equal(result.changes[0].startSeconds,.3);
- assert.equal(Pressure.build(result.afterWave,[],.5,.1).at(.3).units,1);
+ assert.deepEqual(result.changes,[{id:'move',startSeconds:.5,intervalSeconds:0}]);
+ assert.deepEqual(result.afterWave.SpawnTimeline[0],source.SpawnTimeline[0]);
 });
 
-test('finds a legal fractional interval when a deadline relies on decimal precision',()=>{
+test('reports failure when a deadline would require off-grid Auto timing',()=>{
  const source=wave(row('auto',1,4,0,.25),row('manual',2,1,1.4,0,{editorManualTiming:true}));
+ const before=structuredClone(source);
  const result=plan(source,{peakCap:1,lastSpawnLimit:3.15,defeatSeconds:.7,spawnGroups:[[1],[2]]});
- assert.equal(result.ok,true);
- assert.deepEqual(result.changes.map(change=>change.id),['auto']);
- assert.equal(result.after.peak,1);
- assert(result.after.lastSpawn<=3.15||Pressure.coincident(result.after.lastSpawn,3.15));
+ assert.equal(result.ok,false);
+ assert.equal(result.reason,'search-limit');
+ assert.match(result.message,/0\.5 s steps/);
+ assert.deepEqual(result.changes,[]);
+ assert.deepEqual(source,before);
 });
 
 test('uses available defeat slots before a tight deadline when the original group starts are too late',()=>{
@@ -244,17 +372,19 @@ test('uses available defeat slots before a tight deadline when the original grou
  assert.equal(result.ok,true);
  assert.equal(result.after.peak,1);
  assert(result.after.lastSpawn<=3.5);
- assert(result.changes[0].startSeconds<result.changes[1].startSeconds);
- assert.equal(result.changes[0].intervalSeconds,.5);
+ const [first,second]=result.afterWave.SpawnTimeline;
+ assert(first.startSeconds<second.startSeconds);
+ assert.equal(first.intervalSeconds,1);
 });
 
 test('stretches an Auto row to align with gaps between Manual spawns',()=>{
  const source=wave(row('auto',1,3,.5,1),row('manual',2,3,0,1.4,{editorManualTiming:true}));
- const result=plan(source,{peakCap:1,lastSpawnLimit:3.5,defeatSeconds:.7,spawnGroups:[[1],[2]]});
+ const result=plan(source,{peakCap:1,lastSpawnLimit:4,defeatSeconds:.7,spawnGroups:[[1],[2]]});
  assert.equal(result.ok,true);
- assert.deepEqual(result.changes.map(change=>change.id),['auto']);
+ assert.deepEqual(result.changes,[{id:'auto',startSeconds:1,intervalSeconds:1.5}]);
  assert.equal(result.after.peak,1);
- assert(Pressure.coincident(result.after.lastSpawn,3.5));
+ assert.equal(result.after.lastSpawn,4);
+ assert.deepEqual(result.afterWave.SpawnTimeline[1],source.SpawnTimeline[1]);
 });
 
 test('computed timing uses a saveable interval even when the defeat period is smaller',()=>{

@@ -11,12 +11,13 @@ const read = file => JSON.parse(fs.readFileSync(path.join(root, file), 'utf8'));
 const source = fs.readFileSync(path.join(root, 'assets/_script/KinghtFallItemHp.js'), 'utf8');
 const army = { None: 0, Friend: 1, Enemy: 2 };
 
-function fixture(width = 48) {
+function fixture(width = 48, runtime) {
   const context = {
     exports: {},
-    require: name => name === 'KinghtFallModle' ? { KinghtFallGameArmy: army } : {},
+    require: name => name === 'KinghtFallModle' ? { KinghtFallGameArmy: army } : runtime && runtime.modules[name] || {},
     cc: {
-      Component: function () {}, Label: function () {}, Sprite: function () {},
+      Component: function () {}, Label: function () {}, Sprite: function () {}, director: runtime && runtime.director,
+      isValid: node => !!node,
       _decorator: { ccclass: value => value, property: () => () => {} }
     },
     sp: { Skeleton: function () {} },
@@ -120,6 +121,72 @@ test('partial health uses the correct team fill while death and full health hide
     hp.setProgress(progress);
     assert.equal(hp.node.active, false);
   }
+});
+
+test('health pose resolves its modules lazily and reads the current UI export and depth methods', () => {
+  let uiLoads = 0, depthLoads = 0;
+  const ui = {}, depth = {
+    unitReferenceSize(_bar, _parent, width, height) { return { width, height }; },
+    unitBounds() { return { minX: 0, maxX: 20, maxY: 40 }; },
+    union(_first, box) { return box; }
+  };
+  const withHeroBar = width => ({ instance: { ctrGame: { ctrPlay: { ctrHp: { node: { width, height: 10 } } } } } });
+  const hp = fixture(48, { modules: {
+    get KinghtFallUIGame() { return ++uiLoads === 1 ? {} : ui; },
+    get KinghtFallDepthView() { depthLoads++; return depth; }
+  } });
+  hp.actor = { node: {}, isDead: () => false, spAni: { skeletonData: {} } };
+  hp.node.parent = {};
+  hp.node.setPosition = function(x, y) { this.x = x; this.y = y; };
+  assert.deepEqual([uiLoads, depthLoads], [0, 0]);
+  hp.lateUpdate();
+  assert.equal(hp.node.scaleX, 64 / 48);
+  ui.default = withHeroBar(72);
+  hp.lateUpdate();
+  assert.equal(hp.node.scaleX, 72 / 48);
+  ui.default = withHeroBar(96);
+  depth.unitBounds = () => ({ minX: 0, maxX: 30, maxY: 60 });
+  hp.lateUpdate();
+  assert.equal(hp.node.scaleX, 2);
+  assert.equal(hp.node.x, 15);
+  assert.equal(hp.node.y, 69);
+  assert.deepEqual([uiLoads, depthLoads], [2, 1]);
+});
+
+test('large battles spread troop health-bar pose reads and refresh bars immediately when shown or reparented', () => {
+  let frame = 0, reads = 0, height = 40;
+  const actor = { node: {}, spAni: { skeletonData: {} }, isDead: () => false };
+  const game = { gameData: { enemyList: Array(90), soldierList: Array(9) } };
+  const hp = fixture(48, {
+    director: { getTotalFrames: () => frame },
+    modules: {
+      KinghtFallUIGame: { default: { instance: { ctrGame: game } } },
+      KinghtFallDepthView: {
+        unitReferenceSize: () => ({ width: 64, height: 10 }),
+        unitBounds: () => { reads++; return { minX: 0, maxX: 20, maxY: height }; },
+        union: (_before, box) => box
+      }
+    }
+  });
+  hp.node.parent = {};
+  hp.node.setPosition = function (x, y) { this.x = x; this.y = y; };
+  hp.setType(army.Enemy, actor);
+  hp.lateUpdate();
+  assert.equal(hp.node.y, 49);
+  for (frame = 1; frame <= 8; frame++) hp.lateUpdate();
+  assert.equal(reads, 3);
+  height = 50;
+  hp.onEnable();
+  hp.lateUpdate();
+  assert.equal(hp.node.y, 59);
+  height = 60;
+  hp.node.parent = {};
+  hp.lateUpdate();
+  assert.equal(hp.node.y, 69);
+  game.ctrPlay = actor;
+  height = 70;
+  hp.lateUpdate();
+  assert.equal(hp.node.y, 79);
 });
 
 function bar(file) {

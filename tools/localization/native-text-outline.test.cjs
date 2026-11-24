@@ -52,6 +52,75 @@ test('Antialiasing, translucent strokes and premultiplied textures composite cor
   assert.deepEqual(read(canvas, 4, 4), [32, 128, 0, 160]);
 });
 
+function referenceOutline(source, width, height, radius, color, premultiplied) {
+  const output = new Uint8Array(source);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      let maxAlpha = 0;
+      for (let sy = 0; sy < height; sy++) {
+        for (let sx = 0; sx < width; sx++) {
+          if ((sx - x) ** 2 + (sy - y) ** 2 > radius ** 2) continue;
+          const alpha = source[(sy * width + sx) * 4 + 3];
+          if (alpha > 1) maxAlpha = Math.max(maxAlpha, alpha);
+        }
+      }
+      const offset = (y * width + x) * 4;
+      const fillAlpha = source[offset + 3] / 255;
+      const strokeAlpha = maxAlpha / 255 * color[3] / 255 * (1 - fillAlpha);
+      if (strokeAlpha === 0) continue;
+      const alpha = fillAlpha + strokeAlpha;
+      for (let channel = 0; channel < 3; channel++) {
+        const fill = source[offset + channel] * (premultiplied ? 1 : fillAlpha);
+        const value = fill + color[channel] * strokeAlpha;
+        output[offset + channel] = Math.round(premultiplied ? value : value / alpha);
+      }
+      output[offset + 3] = Math.round(alpha * 255);
+    }
+  }
+  return output;
+}
+
+test('sparse mixed-alpha glyphs match a brute-force circular outline at every pixel', () => {
+  const f = fixture();
+  assert.equal(f.install(), true);
+  const cases = [
+    { width: 17, height: 11, glyphs: [[0, 0, 37], [2, 0, 127], [14, 0, 96], [16, 10, 255], [0, 10, 251], [8, 5, 8], [6, 4, 237], [12, 7, 2]], radii: [1, 2, 3, 5, 8, 20] },
+    { width: 1, height: 8, glyphs: [[0, 0, 173], [0, 5, 12], [0, 7, 210]], radii: [1, 3, 7, 12] },
+    { width: 8, height: 1, glyphs: [[0, 0, 12], [3, 0, 231], [7, 0, 80]], radii: [1, 3, 7, 12] },
+    { width: 7, height: 9, glyphs: [], radii: [1, 4, 11] },
+  ];
+  const color = [145, 30, 91, Math.round(.57 * 255)];
+  for (const { width, height, glyphs, radii } of cases) {
+    for (const premultiplied of [false, true]) {
+      for (const radius of radii) {
+        const canvas = new f.Canvas(width, height);
+        const ctx = canvas._context2D;
+        const fill = (x, y, alpha, color) => pixel(canvas, x, y, [
+          ...color.map(channel => premultiplied ? Math.round(channel * alpha / 255) : channel),
+          alpha,
+        ]);
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            if ((x + 3 * y) % 5 === 0) fill(x, y, 1, [127, 205, 255]);
+          }
+        }
+        for (const [x, y, alpha] of glyphs) fill(x, y, alpha, [70 + x * 10, 187 - y * 10, 18 + (x + y) * 5]);
+        const original = canvas.raw.slice();
+        const expected = referenceOutline(original, width, height, Math.min(radius, Math.max(width, height)), color, premultiplied);
+
+        ctx._setPremultiply(premultiplied);
+        ctx.lineWidth = 2 * radius - 1;
+        ctx.strokeStyle = 'rgba(145,30,91,0.57)';
+        ctx.strokeText('text', 0, 0);
+        ctx.fillText('text', 0, 0);
+
+        assert.deepEqual(Buffer.from(canvas.data), Buffer.from(expected), `${width}×${height}, radius ${radius}, premultiplied ${premultiplied}`);
+        assert.deepEqual(canvas.raw, original);
+      }
+    }
+  }
+});
+
 test('Canvas padding does not grow an outline; pooled canvases clear stale strokes and caches', () => {
   const f = fixture(); f.install(); const canvas = new f.Canvas(), ctx = canvas._context2D;
   for (let y = 0; y < 9; y++) for (let x = 0; x < 9; x++) pixel(canvas, x, y, [255, 255, 255, 1]);

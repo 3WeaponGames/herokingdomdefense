@@ -179,7 +179,12 @@
 .world-stages .world-modal>.world-wave-balance-dialog{width:780px}
 .world-stages .world-wave-balance-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}
 .world-stages .world-wave-balance-inputs label>input{width:94px}
-.world-stages .world-wave-balance-preview{align-self:flex-start}
+.world-stages .world-wave-balance-inputs label[hidden]{display:none}
+.world-stages .world-wave-balance-group-times{padding:8px 10px;border:1px solid #54616c;border-radius:4px}
+.world-stages .world-wave-balance-group-times>summary{cursor:pointer;color:#c5d6e4}
+.world-stages .world-wave-balance-group-times[open]>summary{margin-bottom:8px}
+.world-stages .world-modal .world-wave-balance-group-times label>span{flex-basis:56%;min-width:0;overflow-wrap:anywhere}
+.world-stages .world-wave-balance-actions{display:flex;align-self:flex-start;flex-wrap:wrap;gap:8px}
 .world-stages .world-wave-balance-result:empty{display:none}
 .world-stages .world-wave-balance-result{display:flex;flex-direction:column;gap:12px}
 .world-stages .world-wave-balance-result table{width:100%;border-collapse:collapse;text-align:left;font-variant-numeric:tabular-nums}
@@ -187,6 +192,9 @@
 .world-stages .world-wave-balance-result thead th{color:#c5d6e4}
 .world-stages .world-wave-balance-metrics tbody td:last-child{background:#2b3e4d;color:#d9efff}
 .world-stages .world-wave-balance-traits{display:block;margin-top:3px;color:#bfd1de;font-size:11px;line-height:1.4}
+.world-stages .world-wave-balance-stats{display:flex;flex-direction:column;gap:8px}
+.world-stages .world-wave-balance-changes td:nth-last-child(-n+2){width:18%}
+.world-stages .world-wave-balance-row-time input{width:100%;min-width:0;box-sizing:border-box}
 .world-stages .world-modal label>span{flex:0 0 80px}
 .world-stages .world-modal label>input,.world-stages .world-modal label>select{flex:1;min-width:0;width:auto}
 .world-stages .world-modal>.world-wave-copy-dialog{width:470px}

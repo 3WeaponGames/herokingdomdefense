@@ -92,7 +92,7 @@ test('Follow mode collects units inside the ring, tracks the live hero and remem
   }
   assert(game.pathList.length <= 1, 'follow retained historical hero breadcrumbs');
   assert(!unit.pathList || unit.pathList.pathInfoList.length <= 1);
-  const post = unit.node.position;
+  const post = game.ctrPlay.node.position;
   game.changeAge();
   assert.equal(game.isAgg, false); assert.equal(unit.isAgg, false);
   near(unit.rallyPoint.pos.x, post.x); near(unit.rallyPoint.pos.y, post.y);
@@ -104,6 +104,7 @@ test('Follow mode collects units inside the ring, tracks the live hero and remem
 
 test('A real planner deadline defers follow movement without losing its command, then resumes on the next frame', () => {
   const e = environment(), game = controller(e), unit = soldier(e);
+  e.box(-50, 0, 20, 55);
   e.load('KinghtFallConfig').KinghtFallParameter.FollowMode = 2;
   game.ctrPlay.node.setPosition(0, 0); game.changeAge();
   assert.equal(game.isAgg, true); assert.equal(unit.isAgg, true);
@@ -123,13 +124,14 @@ test('A real planner deadline defers follow movement without losing its command,
   assert.equal(pending.job.work, 1, 'the actual planner yields after its first work unit');
   near(pending.target.x, 0); near(pending.target.y, 0);
   advance(e, unit);
-  near(unit.node.x, -97); near(unit.node.y, 0);
-  assert.equal(unit._navigationState.job, null, 'next frame completes the bounded open-ground route');
+  near(distance(unit.node, { x: -100, y: 0 }), 3);
+  assert.equal(unit._navigationState.job, null, 'next frame completes the bounded detour');
   assert.equal(unit.isAgg, true); assert.equal(game.isAgg, true);
+  const before = unit.node.position;
   game.ctrPlay.node.setPosition(100, 0); game.addPathNode(); advance(e, unit);
-  near(unit.node.x, -94);
+  near(distance(unit.node, before), 3);
   near(unit._navigationState.target.x, 100);
-  const post = unit.node.position; game.changeAge();
+  const post = game.ctrPlay.node.position; game.changeAge();
   assert.equal(unit.isAgg, false); assert.equal(game.isAgg, false);
   near(unit.rallyPoint.pos.x, post.x); near(unit.rallyPoint.pos.y, post.y);
 });

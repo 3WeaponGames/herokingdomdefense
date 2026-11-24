@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "aba4d61c-c96d-4c48-a34c-193f15d83390",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "f92585a8-3215-42fa-ad26-94d3be650617",
+  "size": {
+    "width": 1014,
+    "height": 940
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "native-stage15-cinder-terraces-hill-3-0-0": {
+      "ver": "1.0.6",
+      "uuid": "3be3bf15-d361-4180-ad87-2904677cd678",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "f92585a8-3215-42fa-ad26-94d3be650617",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1010,
+      "height": 936,
+      "rawWidth": 1010,
+      "rawHeight": 936,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

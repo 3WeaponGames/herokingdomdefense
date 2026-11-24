@@ -13,10 +13,11 @@ test('a resting soldier displaced into a wall clearance margin resumes a safe gr
 });
 
 test('resetting a deferred navigation request releases its turn instead of blocking the next active unit',()=>{
- const e=environment(),first=e.unit(-100,0),second=e.unit(-100,20),nav=e.nav.get(e.game),target={x:100,y:0};
+ const e=environment(),first=e.unit(-100,0),second=e.unit(-100,20),f=fakeIncremental(e,3),nav=f.nav,target={x:100,y:0};
  e.nav.beginFrame(e.game);nav._frameSearches=8;
  assert(e.nav.moveTo(first,e.game,target,.1).deferred);e.nav.reset(first);nav._frameSearches=0;
- assert.equal(e.nav.moveTo(second,e.game,target,.1).deferred,undefined,'cancelled requester still owns the head of the queue');
+ assert(e.nav.moveTo(second,e.game,target,.1).pending,'cancelled requester still owns the head of the queue');
+ for(let frame=0;frame<2;frame++){e.nav.beginFrame(e.game);e.nav.moveTo(second,e.game,target,.1);}
  assert(second.node.x>-100);
 });
 
@@ -54,7 +55,21 @@ test('pre-spawn radius measures an inactive root body without including disabled
 });
 
 function fakeIncremental(e,steps){
- const nav=e.nav.get(e.game);nav.refresh();const jobs=[];nav.grid.createSearch=(start,target)=>{const job={done:false,lastWork:1,cancelled:false,count:0,step(){this.count++;if(this.count>=steps){this.done=true;this.result={points:[{...start},{...target}],goal:{...target},reached:true};}},cancel(){this.cancelled=true;}};jobs.push(job);return job;};return {nav,jobs};
+ e.box(0,0,20,90);
+ const nav=e.nav.get(e.game),jobs=[];nav.refresh();
+ function attach(grid, frames=steps){
+  const original=grid.createSearch;
+  grid.createSearch=(...args)=>{
+   const job={done:false,lastWork:1,cancelled:false,count:0,step(){
+    if(++this.count<frames)return;
+    const route=original.apply(grid,args);
+    while(!route.done)route.step(4096);
+    this.result=route.result;route.cancel();this.done=true;
+   },cancel(){this.cancelled=true;}};
+   jobs.push(job);return job;
+  };
+ }
+ attach(nav.grid);return {nav,jobs,attach};
 }
 test('bounded pending searches advance once per frame, retain moving-target progress and release workspace on completion',()=>{
  const e=environment(),unit=e.unit(-100,0),f=fakeIncremental(e,3);let result;
@@ -68,14 +83,14 @@ test('cancelling an in-flight search immediately grants the next active queued u
 });
 
 test('enemy and friendly grids progress independently within a shared frame budget',()=>{
- const e=environment(),enemy=e.unit(),ally=e.unit(-100,20),f=fakeIncremental(e,3);ally.navigationTeam='friendly';f.nav.gridFor(ally).createSearch=f.nav.grid.createSearch;
+ const e=environment(),enemy=e.unit(),ally=e.unit(-100,20),f=fakeIncremental(e,3);ally.navigationTeam='friendly';f.attach(f.nav.gridFor(ally));
  for(let frame=0;frame<3;frame++){e.nav.beginFrame(e.game);e.nav.moveTo(enemy,e.game,{x:100,y:0},.1);e.nav.moveTo(ally,e.game,{x:100,y:20},.1);assert(f.nav._activeSearches.size<=2);assert(f.nav._frameSearchWork<=4096);}
  assert(ally.node.x>-100,'friendly work waited for enemy completion');assert(enemy.node.x>-100);assert.equal(f.jobs.length,2);
 });
 test('geometry revision cancels pending work and drops obsolete grid queues immediately',()=>{
  const e=environment(),first=e.unit(),second=e.unit(-100,20),f=fakeIncremental(e,3),target={x:100,y:0};
  e.nav.beginFrame(e.game);e.nav.moveTo(first,e.game,target,.1);e.nav.moveTo(second,e.game,target,.1);assert(f.nav._requests.size);
- e.box(0,0,20,100);e.nav.beginFrame(e.game);f.nav.refresh();assert(f.jobs[0].cancelled);assert.equal(f.nav._activeSearches.size,0);assert.equal(f.nav._requests.size,0);assert.equal(first._navigationRequestOwner,null);assert.equal(second._navigationRequestOwner,null);
+ e.box(120,-100,20,100);e.nav.beginFrame(e.game);f.nav.refresh();assert(f.jobs[0].cancelled);assert.equal(f.nav._activeSearches.size,0);assert.equal(f.nav._requests.size,0);assert.equal(first._navigationRequestOwner,null);assert.equal(second._navigationRequestOwner,null);
 });
 test('a failed pending query with stale start coordinates cannot reject the current pursuit',()=>{
  const e=environment(),unit=e.unit(),f=fakeIncremental(e,2),search=f.nav.grid.createSearch;
@@ -86,7 +101,7 @@ test('a failed pending query with stale start coordinates cannot reject the curr
 
 test('pending continuations reserve their frame slot before newly arriving queries',()=>{
  const e=environment(),enemy=e.unit(),f=fakeIncremental(e,2);e.nav.beginFrame(e.game);assert(e.nav.moveTo(enemy,e.game,{x:100,y:0},.1).pending);
- const friendGrid=f.nav.gridFor({navigationTeam:'friendly'});friendGrid.createSearch=(start,goal)=>({done:false,lastWork:1,step(){this.done=true;this.result={points:[start,goal],goal,reached:true};},cancel(){}});
+ f.attach(f.nav.gridFor({navigationTeam:'friendly'}),1);
  e.nav.beginFrame(e.game);const results=[];for(let i=0;i<8;i++){const unit=e.unit(-100,20+i);unit.navigationTeam='friendly';results.push(e.nav.moveTo(unit,e.game,{x:100,y:20+i},.1));}
  e.nav.moveTo(enemy,e.game,{x:100,y:0},.1);assert.equal(f.nav._frameSearches,8);assert(results[7].deferred);assert.equal(f.jobs[0].count,2,'existing query lost its reserved continuation');
 });

@@ -94,7 +94,7 @@ test('behind-to-front transitions detach hidden tint consumers before the shared
 });
 
 test('negative control without hidden-tint detachment reproduces release of a still-bound old generation',()=>{
-  const block='if(!hit.behind){bindCapture(tint.mask,null);bindCapture(tint.sprite,null);if(gateClipState&&gateClipState.park)gateClipState.park(tint);}';
+  const block='if(!showTint){bindCapture(tint.mask,null);bindCapture(tint.sprite,null);if(gateClipState&&gateClipState.park)gateClipState.park(tint);}';
   const broken=candidate.replace(block,'');assert.notEqual(broken,candidate,'The negative control removes the actual hidden-tint cleanup');
   const f=fixture(broken),actor=f.active[0].actor,start=actor.node.y;actor.node.zIndex=20;f.update();actor.node.y=start-20;
   assert.throws(()=>f.update(),/old atlas frame is released only after both active and retired consumers detach/);f.pass.destroy();

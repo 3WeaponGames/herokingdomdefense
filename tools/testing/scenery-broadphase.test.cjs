@@ -8,7 +8,7 @@ assert.notEqual(disabled,source,'negative control must exercise the shipped orig
 function host(text=source){
  class Sprite{}class Skeleton{}
  const context={exports:{},cc:{Sprite,v2:(x,y)=>new Vec2(x,y)},sp:{Skeleton}};
- vm.runInNewContext(text+'\nexports.testIndex=scenerySpatialIndex;exports.testCandidates=scenerySpatialCandidates;var overlapCount=0,originalOverlap=overlaps;overlaps=function(a,b){overlapCount++;return originalOverlap(a,b);};exports.overlapCount=function(){return overlapCount;};',context);
+ vm.runInNewContext(text+'\nexports.testIndex=scenerySpatialIndex;exports.testCandidates=scenerySpatialCandidates;exports.matchOcclusion=matchOcclusion;var overlapCount=0,originalOverlap=overlaps;overlaps=function(a,b){overlapCount++;return originalOverlap(a,b);};exports.overlapCount=function(){return overlapCount;};',context);
  const main=new Node('Main'),heroNode=new Node('Hero',main),heroSprite=heroNode.addComponent(Sprite);heroNode.width=30;heroNode.height=80;heroNode.anchorY=0;heroSprite.enabled=true;
  const hero={node:heroNode,spAni:heroSprite};heroNode._combatActor=hero;const view={main,game:{ctrPlay:hero}},props=[],actors=[heroNode];
  main.sortAllChildren=function(){this.children.sort((a,b)=>a.zIndex-b.zIndex);};
@@ -46,6 +46,51 @@ test('tiny workloads skip indexing and stationary boxes reuse an index until ord
 
 test('the broadphase reduces exact comparisons while producing the same full unit/prop/building order',()=>{
  const scenes=pair(grid(157),100);equal(scenes,'cold');const before=scenes.map(h=>h.overlapCount());equal(scenes,'warm');const calls=scenes.map((h,i)=>h.overlapCount()-before[i]);assert(calls[1]<calls[0]/5,JSON.stringify({scan:calls[0],broadphase:calls[1]}));
+});
+
+test('stable depth rows reuse the compact frontier and refresh after pivots, layers and active state change',()=>{
+  const fixtures=[scene(source,grid(85),32),scene(source,grid(85),32)];
+  function compare(){
+    delete fixtures[0].view._depthOrder;
+    assert.equal(fixtures[1].sort(),fixtures[0].sort());
+  }
+  compare();compare();
+  const state=fixtures[1].view._depthOrder,threshold=state.frontier[0];
+  compare();
+  assert.equal(state.frontier[0],threshold);
+  assert(state.frontier.length<8);
+  for(const h of fixtures){
+    const owner=h.props[42].owner;
+    owner._depthLayerOrder=999;
+    owner._depthGround.y+=500;
+  }
+  compare();
+  assert(state.frontier.some(pivot=>pivot.band===999));
+  for(const h of fixtures)h.props[42].owner.active=false;
+  compare();
+  assert(!state.frontier.some(pivot=>pivot.band===999));
+});
+
+test('the mask index preserves actor order and exact contacts across moving and oversized occluders',()=>{
+  const maskScan=source.replace('index = depthSpatialIndex(view, candidates, active.length, "_occlusionDepthIndex")','index = null');
+  assert.notEqual(maskScan,source);
+  const fixtures=[scene(maskScan,[],100),scene(source,[],100)];
+  const objects=grid(130).map(d=>({ground:d.y,box:{minX:d.x-80,minY:d.y,maxX:d.x+80,maxY:d.y+230}}));
+  objects[0].box={minX:-100000,minY:-100000,maxX:100000,maxY:100000};
+  function render(h){
+    const candidates=objects.map(object=>({...object,object,hidden:[]}));
+    const active=h.actors.map(node=>({actor:node._combatActor,feet:{x:node.x,y:node.y}}));
+    const cache={transforms:new Map(),bounds:new Map(),poses:new Set()};
+    const start=h.overlapCount();
+    h.matchOcclusion(h.view,active,candidates,null,cache,new Map());
+    return {actors:candidates.map(c=>Array.from(c.hidden,e=>e.actor.node.name)),calls:h.overlapCount()-start};
+  }
+  for(let frame=0;frame<3;frame++){
+    objects[2].box={...objects[2].box,minX:objects[2].box.minX+300,maxX:objects[2].box.maxX+300};
+    const [old,current]=fixtures.map(render);
+    assert.deepEqual(current.actors,old.actors);
+    assert(current.calls<old.calls/5);
+  }
 });
 
 for(const id of ['map-original-01-rebuilt','Map07'])test('authored '+id+' placements retain exact tree/rock occlusion order',()=>{

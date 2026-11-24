@@ -1,7 +1,7 @@
 'use strict';
 // Explicit facing projects a detached source family. Legacy templates keep
 // their original transforms and data until the author chooses a facing.
-const Maps=require('../lib/map-assets'),Facing=require('../../../assets/_script/GateFacing');
+const Maps=require('../lib/map-assets'),Model=require('./model'),Facing=require('../../../assets/_script/GateFacing');
 const cache=new WeakMap(),projected=new WeakMap(),clone=value=>JSON.parse(JSON.stringify(value));
 function reference(data,ref){const value=ref&&data[ref.__id__];return value&&value.__type__==='cc.Node'?ref.__id__:value&&value.node&&value.node.__id__;}
 function matrix(node,value){
@@ -95,9 +95,9 @@ function compassProject(source,building){
 function finishExport(source,building,target,mapping){
  if(!building||building.kind!==6||!Facing.valid(building.wallFacing)&&!building.wallRotation)return;
  const info=Maps.model(source),owner=info.byId[building.template.node],controller=owner&&owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(!controller)return;
- const next=Maps.model(target),scale=building.scale===undefined?1:building.scale,angle=(building.angle||0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
+ const next=Maps.model(target),placement=Model.buildingMatrix(building);
  for(const ref of controller.value.ndLockList||[]){const id=reference(source,ref),trigger=triggerPoints(info,source,id),node=next.byId[mapping[id]];if(!trigger||!node)continue;const inverse=Maps.inverse(node.world),a=node.source._trs.array,component=target[mapping[trigger.component]],points=component.points||[];
-  component.points=trigger.points.map((p,i)=>{const x=p.x-owner.position.x,y=p.y-owner.position.y,local=Maps.point(inverse,{x:building.x+(c*x-s*y)*scale,y:building.y+(s*x+c*y)*scale});return Object.assign({},points[i],{x:local.x*a[7],y:local.y*a[8]});});
+  component.points=trigger.points.map((p,i)=>{const local=Maps.point(inverse,Maps.point(placement,{x:p.x-owner.position.x,y:p.y-owner.position.y}));return Object.assign({},points[i],{x:local.x*a[7],y:local.y*a[8]});});
  }
 }
 function project(source,building,root){return require('./wall-run').project(compassProject(source,building),building,root);}

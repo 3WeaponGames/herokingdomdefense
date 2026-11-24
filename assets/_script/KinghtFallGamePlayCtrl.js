@@ -412,24 +412,20 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.node.getPosition(this.vec2_1);
     var attackRange = this.getAttackRange();
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
-    var e = [];
+    var closest = null, closestDistance = attackRange;
     for (var n = 0; n < t.length; n++) {
       var i = t[n];
-      if (!i.isDead() && FlightTargeting.heroCanTarget(this, i)) {
-        i.node.getPosition(this.vec2_2);
-        cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
-        var a = this.vec2_2.mag();
-        a <= attackRange && e.push({
-          tag: i,
-          len: a
-        });
+      if (i.isDead()) continue;
+      i.node.getPosition(this.vec2_2);
+      cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
+      var distance = this.vec2_2.mag();
+      if (distance <= closestDistance && (!closest || distance < closestDistance) && FlightTargeting.heroCanTarget(this, i)) {
+        closest = i;
+        closestDistance = distance;
       }
     }
-    if (0 != e.length) {
-      e.sort(function (t, e) {
-        return t.len - e.len;
-      });
-      this.tagEnemy = e[0].tag;
+    if (closest) {
+      this.tagEnemy = closest;
       this.time[C.Attack] = -1;
       this.doAttackStart();
       GameToolsOverrides.attack(this, "hero", this.doAttack);

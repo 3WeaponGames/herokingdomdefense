@@ -19759,6 +19759,256 @@
         "concept": "glacier-switchback",
         "castShadow": false
       }
+    },
+    {
+      "id": "stage15-lava-sheet",
+      "name": "Molten field",
+      "category": "field",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/cinder-terraces/lava-field.png",
+      "width": 1860,
+      "height": 3028,
+      "nativeScale": 1,
+      "defaultScale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "19ac3ab751e72e9434b3e909871541bf383148b2bf56d1ab8fb5ba1f3fa4d5a8",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "cinder-terraces",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage15-cinder-terraces-hill-1",
+      "name": "Western terrace",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/cinder-terraces/hill-1.png",
+      "width": 2096,
+      "height": 2344,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "3bda3f0156566f7755d66b460669e8b2d45794000ef6c3262747b24a94b98ae1",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "cinder-terraces",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage15-cinder-terraces-hill-2",
+      "name": "Eastern terrace",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/cinder-terraces/hill-2.png",
+      "width": 1648,
+      "height": 1900,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "163ec9aa37e45be49ca076596f3022a12946d86ba4834b5fe82b7e0254df21c3",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "cinder-terraces",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage15-cinder-terraces-hill-3",
+      "name": "Southwest shelf",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/cinder-terraces/hill-3.png",
+      "width": 2020,
+      "height": 1872,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "0a82ee7aafc63b5c626d16eaf7a4c8c196c22aa66ab68702ea93c3a26d77bf60",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "cinder-terraces",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage15-cinder-terraces-hill-4",
+      "name": "Southeast shelf",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/cinder-terraces/hill-4.png",
+      "width": 1324,
+      "height": 1772,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "592b44e361cbd9451133044ff075b27a71419b79c41e3b223e8f2286efddda0f",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "cinder-terraces",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage15-cinder-terraces-hill-5",
+      "name": "Keep Landing",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/cinder-terraces/hill-5.png",
+      "width": 1508,
+      "height": 1496,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "7a006603bfce7be9026a685312ae2c31a91127753375f9003fba65e28aad9bb5",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "cinder-terraces",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage15-cinder-terraces-decks",
+      "name": "Raised road decks",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/cinder-terraces/road-decks.png",
+      "width": 1860,
+      "height": 3028,
+      "nativeScale": 1,
+      "defaultScale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "e760c8aeff488a4df4845316a5b3cfed44c246cf1269418dc1a92884d9cc7136",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "cinder-terraces",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage10-edge-switchback-spur-north",
+      "name": "Switchback Spur north",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-07-crescent-ridge/switchback-spur/north.png",
+      "width": 1804,
+      "height": 1112,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "sha256": "c561dcf6842652b751108f22574dcedd01e9efadd78a78721c26417025d8fb3c",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-07-crescent-ridge",
+        "concept": "switchback-spur",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage10-edge-switchback-spur-south",
+      "name": "Switchback Spur south",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-07-crescent-ridge/switchback-spur/south.png",
+      "width": 1920,
+      "height": 1208,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "sha256": "4257f4e0904c6ad474ffd8520df558b147ca778bc9e034ba4578ef99aaf56552",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-07-crescent-ridge",
+        "concept": "switchback-spur",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "stage10-edge-switchback-spur-ridge",
+      "name": "Switchback Spur ridge",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-07-crescent-ridge/switchback-spur/ridge.png",
+      "width": 2604,
+      "height": 4236,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "sha256": "cf374ceacb274b51ecfbeac47dfd88d4f5026f38538328416d88e0e75f46d8a6",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-07-crescent-ridge",
+        "concept": "switchback-spur",
+        "castShadow": false
+      }
     }
   ],
   "biomes": [

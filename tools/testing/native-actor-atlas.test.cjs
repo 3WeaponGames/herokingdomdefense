@@ -72,6 +72,19 @@ test('every animated pose is captured at 60Hz while crop frames and page capacit
   assert.equal(f.atlas.stats().actors,8*120);assert.equal(f.atlas.stats().captures,120);assert.equal(f.textures.length,1);assert.equal(f.frames.length,8);f.atlas.dispose();
 });
 
+test('equal-size crops are rebound to the current actors when eligibility or order changes',()=>{
+  const f=fixture(6);
+  assert.equal(f.atlas.capture(f.items.slice(0,5),1),5);
+  const prior=f.items.slice(0,5).map(item=>({...item.record.frame.rect}));
+  const retired=f.items[0].record.frame;
+  const reordered=[5,2,4,1,3].map(index=>f.items[index]);
+  assert.equal(f.atlas.capture(reordered,2),5);
+  reordered.forEach((item,slot)=>assert.deepEqual({...item.record.frame.rect},prior[slot]));
+  assert.equal(retired.dead,true);
+  assert.deepEqual(Array.from(f.draws.at(-1).selected),reordered.map(item=>item.sources[0]));
+  f.atlas.dispose();
+});
+
 for(const kind of ['physics root','extra component','nested renderers','cached animation','unknown animation mode','unsupported native renderer','retired native handle','unknown dirty buffer','unknown culling buffer','mask ancestor','private node','3D node','skewed source'])test('unsafe '+kind+' uses individual capture fallback without source mutation',()=>{
   const f=fixture(4),item=f.items[0],node=item.sources[0].node;
   if(kind==='physics root')item.actor.node=node;

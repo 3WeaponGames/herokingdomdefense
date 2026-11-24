@@ -6421,5 +6421,47 @@
   "nextSpawn": 16,
   "nextSpecial": 7,
   "sourceRevision": "cb07c7e90105585e34bb6e6576c69273a27120e5c73705308bfad7ae9ae06d35",
-  "templates": {}
+  "templates": {},
+  "spawnGroups": [
+    {
+      "id": "spawn-group-1",
+      "spawnIds": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "spawn-group-2",
+      "spawnIds": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "spawn-group-3",
+      "spawnIds": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": "spawn-group-4",
+      "spawnIds": [
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "id": "spawn-group-5",
+      "spawnIds": [
+        13,
+        14,
+        15
+      ]
+    }
+  ]
 }

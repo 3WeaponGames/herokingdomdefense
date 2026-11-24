@@ -35,3 +35,35 @@ test('saved model mirroring, independent scales and tint are scoped by side/form
  const added=Object.keys(config.GameTools.unitProfiles.entries).filter(id=>config.GameTools.unitProfiles.entries[id].fightingProfile).concat(Object.keys(config.GameTools.unitProfiles.bossForms)).map(id=>'enemy:'+id+':default');
  assert.deepEqual(mirrored.sort(),legacyKeys.concat(importedKeys,added).sort(),'Legacy forms, independent monsters and all six fighting profiles retain their saved mirror');
 });
+
+test('reapplying the same facing leaves unchanged model transforms clean', () => {
+ const data = { GameTools: { visuals: { 'enemy:90001:default': { scaleX: .9, scaleY: .9, x: 2.1, rotation: 12 } } } };
+ const context = { exports: {}, Float32Array, require: () => ({ KinghtFallDataMgr: { getInstance: () => ({ data }) } }), cc: {} };
+ vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/GameToolsOverrides.js'), 'utf8'), context);
+ const node = { _trs: new Float32Array([0, 0, 1, 1]), is3DNode: false };
+ const writes = [];
+ for (const [index, key] of ['x', 'y', 'scaleX', 'scaleY'].entries()) {
+  Object.defineProperty(node, key, {
+   get() { return this._trs[index]; },
+   set(value) { writes.push(key); this._trs[index] = value; }
+  });
+ }
+ let angle = 0;
+ Object.defineProperty(node, 'angle', {
+  get() { return angle; },
+  set(value) { writes.push('angle'); angle = value; }
+ });
+ const owner = { cfg: { ID: 90001 } };
+ context.exports.applyModel(owner, 'enemy', node, false);
+ assert.deepEqual(writes, ['x', 'scaleX', 'scaleY', 'angle']);
+ writes.length = 0;
+ context.exports.applyModel(owner, 'enemy', node, false);
+ assert.deepEqual(writes, []);
+ context.exports.applyModel(owner, 'enemy', node, true);
+ assert.deepEqual(writes, ['scaleX']);
+ node.angle = 18;
+ node.x = 6;
+ context.exports.applyModel(owner, 'enemy', node, true);
+ assert.equal(node.angle, 12);
+ assert.equal(node.x, Math.fround(2.1));
+});

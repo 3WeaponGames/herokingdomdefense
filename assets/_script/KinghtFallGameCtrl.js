@@ -280,7 +280,10 @@ var def_KinghtFallGameCtrl = function (t) {
   _ctor.prototype.onLateUpdate = function () {
     this.ctrPlay.node.getPosition(this.vec2_1);
     this.ctrPlay.node.getPosition(this.vec2_2);
-    this.ctrPlay.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
+    var depth = this._depthView;
+    if (!depth || depth._destroyed || depth.main !== this.ctrPlay.node.parent) {
+      this.ctrPlay.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
+    }
     this.vec2_1.x = cc.misc.clampf(this.vec2_1.x, -this.moveSize.width / 2, this.moveSize.width / 2);
     this.vec2_1.y = cc.misc.clampf(this.vec2_1.y, -this.moveSize.height / 2, this.moveSize.height / 2);
     this.ctrPlay.node.setPosition(this.vec2_1);
@@ -656,7 +659,7 @@ var def_KinghtFallGameCtrl = function (t) {
         animation.addAnimation(0, "idle", true);
       }
     } else {
-      if (this.isAgg) this.holdSelectedFollowers();
+      if (this.isAgg) this.holdSelectedFollowers(Navigation.positionOf(this.ctrPlay.node, this));
       this.isAgg = !this.isAgg;
       this.rallyPoint = null;
       this.pathList = [];
@@ -673,7 +676,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.followCommand = function () {
     if (BattleSounds.effect) BattleSounds.effect(this.isAgg ? "order-hold" : "order-follow", null, { game: this });
-    if (this.isAgg) this.holdSelectedFollowers();
+    if (this.isAgg) this.holdSelectedFollowers(Navigation.positionOf(this.ctrPlay.node, this));
     this.isAgg = !this.isAgg;
     if (this.isAgg) this.gameData.getSoldierList().forEach(function (unit) { unit._followPickupBlocked = false; });
     this.ctrPlay.ndAgg.active = this.isAgg;
@@ -772,13 +775,13 @@ var def_KinghtFallGameCtrl = function (t) {
     if (cc.resources) require("UnitVoices").follow(this, [unit]);
     return true;
   };
-  _ctor.prototype.holdSelectedFollowers = function () {
+  _ctor.prototype.holdSelectedFollowers = function (destination) {
     var changed = false, game = this;
     this.gameData.getSoldierList().forEach(function (unit) {
       if (!unit._followSelected) return;
       unit._followSelected = false;
-      if (!unit.isDead() && unit.node.activeInHierarchy) {
-        unit.setPersonalRallyPoint(Navigation.positionOf(unit.node, game), true);
+      if (!unit.isDead() && !unit._isPooled && unit.node.activeInHierarchy) {
+        unit.setPersonalRallyPoint(destination || Navigation.positionOf(unit.node, game), true);
         changed = true;
       }
       unit.applyArmyOrder(game);

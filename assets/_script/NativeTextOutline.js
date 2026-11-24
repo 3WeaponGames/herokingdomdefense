@@ -9,26 +9,54 @@ function outlinedPixels(source, width, height, radius, color, premultiplied, sha
   var expanded = new Uint8Array(count);
   var pixels = new Uint8Array(source);
   var queue = new Uint32Array(width);
-  var i, x, y;
+  var left = new Uint32Array(height), right = new Uint32Array(height);
+  var i, x, y, row;
   // Cocos fills canvas padding with alpha=1 to prevent texture sampling fringes.
-  for (i = 0; i < count; i++) alpha[i] = source[i * 4 + 3] > 1 ? source[i * 4 + 3] : 0;
-  // A circular max filter preserves the configured outline radius at corners.
-  for (var dy = -radius; dy <= radius; dy++) {
-    var span = Math.floor(Math.sqrt(radius * radius - dy * dy));
-    for (y = Math.max(0, -dy); y < Math.min(height, height - dy); y++) {
-      var row = y * width, target = (y + dy) * width;
-      var head = 0, tail = 0, next = 0;
-      for (x = 0; x < width; x++) {
-        var end = Math.min(width - 1, x + span);
+  for (y = 0; y < height; y++) {
+    row = y * width;
+    left[y] = width;
+    for (x = 0; x < width; x++) {
+      var value = source[(row + x) * 4 + 3];
+      if (value <= 1) continue;
+      alpha[row + x] = value;
+      if (left[y] === width) left[y] = x;
+      right[y] = x + 1;
+    }
+  }
+  // Rows at the same distance on either side of a glyph share a circular
+  // kernel span. Reuse each horizontal max scan for all matching offsets.
+  var furthest = Math.min(radius, height - 1), targets = new Uint32Array(height);
+  for (var first = 0; first <= furthest;) {
+    var span = Math.floor(Math.sqrt(radius * radius - first * first));
+    var last = first;
+    while (last < furthest && Math.floor(Math.sqrt(radius * radius - (last + 1) * (last + 1))) === span) last++;
+    for (y = 0; y < height; y++) {
+      if (!right[y]) continue;
+      row = y * width;
+      var targetsCount = 0;
+      if (first === 0) targets[targetsCount++] = row;
+      for (var dy = Math.max(first, 1); dy <= last; dy++) {
+        if (y >= dy) targets[targetsCount++] = (y - dy) * width;
+        if (y + dy < height) targets[targetsCount++] = (y + dy) * width;
+      }
+      if (!targetsCount) continue;
+      var head = 0, tail = 0, next = left[y];
+      var start = Math.max(0, next - span), limit = Math.min(width, right[y] + span);
+      for (x = start; x < limit; x++) {
+        var end = Math.min(right[y] - 1, x + span);
         while (next <= end) {
           while (tail > head && alpha[row + queue[tail - 1]] <= alpha[row + next]) tail--;
           queue[tail++] = next++;
         }
         while (tail > head && queue[head] < x - span) head++;
-        var value = alpha[row + queue[head]];
-        if (value > expanded[target + x]) expanded[target + x] = value;
+        var maximum = alpha[row + queue[head]];
+        for (var target = 0; target < targetsCount; target++) {
+          var at = targets[target] + x;
+          if (maximum > expanded[at]) expanded[at] = maximum;
+        }
       }
     }
+    first = last + 1;
   }
   for (i = 0; i < count; i++) {
     var offset = i * 4, fillAlpha = source[offset + 3] / 255;

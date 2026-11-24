@@ -3,6 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const root=path.resolve(__dirname,'../..'),source=fs.readFileSync(path.join(root,'assets/_script/NativeUnitGeometry.js'),'utf8');
 function fixture(options={}){
   const counts={offset:0,vertices:0,uvs:0,triangles:0},marker={},failure=Error('native partial failure');let callback;
+  const reflection={properties:[],links:[]};
   class Color{constructor(){this.a=1;}}
   class RegionAttachment{
     constructor(){this.height=20;this.offset=[0,0,0,20,10,20,10,0];}
@@ -44,13 +45,19 @@ function fixture(options={}){
   const exports={},context={exports,cc,spine,sp,Function:NativeFunction};
   if(options.freeze)Object.defineProperty(MeshAttachment.prototype,'setParentMesh',{value:MeshAttachment.prototype.setParentMesh,writable:false,configurable:false});
   const original=RegionAttachment.prototype.updateOffset;
-  if(options.failInstall){
-    const CustomObject=Object.create(Object);CustomObject.defineProperty=function(target,key,descriptor){if(target===MeshAttachment.prototype&&key==='setParentMesh')throw failure;return Object.defineProperty(target,key,descriptor);};context.Object=CustomObject;
+  if(options.failInstall||options.reflect){
+    const CustomObject=Object.create(Object);
+    if(options.failInstall)CustomObject.defineProperty=function(target,key,descriptor){if(target===MeshAttachment.prototype&&key==='setParentMesh')throw failure;return Object.defineProperty(target,key,descriptor);};
+    if(options.reflect){
+      CustomObject.getOwnPropertyDescriptor=function(target,key){reflection.properties.push([target,key]);return Object.getOwnPropertyDescriptor(target,key);};
+      CustomObject.getPrototypeOf=function(target){reflection.links.push(target);return Object.getPrototypeOf(target);};
+    }
+    context.Object=CustomObject;
   }
   vm.runInNewContext(source,context);
   function actor(){const renderer=new Component(),skeleton={};renderer._nativeSkeleton=new SkeletonAnimation();renderer._nativeSkeleton.skeleton=skeleton;renderer._skeleton=skeleton;renderer.skeletonData={skeletonJson:{}};const plan={native:renderer._nativeSkeleton,skeleton,data:renderer.skeletonData,json:renderer.skeletonData.skeletonJson};return{renderer,plan};}
   const owner=actor();
-  return{api:exports,counts,marker,failure,spine,sp,cc,...owner,actor,original,callback(value){callback=value;},scope(){return exports.scope(owner.renderer,owner.plan);}};
+  return{api:exports,counts,reflection,marker,failure,spine,sp,cc,...owner,actor,original,callback(value){callback=value;},scope(){return exports.scope(owner.renderer,owner.plan);}};
 }
 const plain=x=>JSON.parse(JSON.stringify(x));
 
@@ -59,6 +66,48 @@ test('native region and mesh intrinsic vectors are cached while animation deform
   for(let frame=0;frame<60;frame++){assert.equal(f.api.read(scope,region).region[3],20);assert.equal(f.api.read(scope,mesh).vertices[5],20);}
   assert.deepEqual(f.counts,{offset:1,vertices:1,uvs:1,triangles:1});
   assert(!('deform' in f.api.read(scope,mesh)));assert(!('matrices' in f.api.read(scope,region)));
+});
+
+test('warm lookups verify each watched own descriptor and prototype edge once',t=>{
+  const f=fixture({reflect:true}),region=new f.spine.RegionAttachment(),scope=f.scope();
+  assert(f.api.read(scope,region));
+  let oldProperties=2,oldLinks=1; // Own instance aliases and attachment type.
+  for(const check of scope.state.checks){
+    let node=check.target;
+    while(node!==check.owner){oldProperties++;oldLinks++;node=Object.getPrototypeOf(node);}
+    oldProperties++;
+  }
+  for(const missing of scope.state.absent){
+    let node=missing.target;
+    while(node){oldProperties++;oldLinks++;node=Object.getPrototypeOf(node);}
+  }
+  f.reflection.properties.length=f.reflection.links.length=0;
+  assert.equal(f.api.read(scope,region).region[3],20);
+  const reads=new Map();
+  for(const [owner,key] of f.reflection.properties){
+    if(!reads.has(owner))reads.set(owner,new Set());
+    assert(!reads.get(owner).has(key),'repeated own descriptor read for '+key);
+    reads.get(owner).add(key);
+  }
+  assert.equal(new Set(f.reflection.links).size,f.reflection.links.length);
+  assert(f.reflection.properties.length<oldProperties);
+  assert(f.reflection.links.length<oldLinks);
+  t.diagnostic(JSON.stringify({before:{properties:oldProperties,links:oldLinks},
+    after:{properties:f.reflection.properties.length,links:f.reflection.links.length}}));
+});
+
+test('a new prototype link or a formerly absent inherited method retires cached native geometry',()=>{
+  for(const change of ['link','absent']){
+    const f=fixture();
+    if(change==='absent')delete f.spine.SkeletonRenderer.prototype.updateRegion;
+    const region=new f.spine.RegionAttachment(),scope=f.scope();
+    assert(f.api.read(scope,region));
+    if(change==='link'){
+      const parent=Object.create(f.spine.VertexAttachment.prototype,{copyTo:{value:function(){}}});
+      Object.setPrototypeOf(f.spine.MeshAttachment.prototype,parent);
+    }else f.spine.SkeletonRenderer.prototype.updateRegion=function(){};
+    assert.equal(f.api.read(scope,region),null,change);
+  }
 });
 
 test('normal SDK methods, generated property aliases and copyTo targets invalidate geometry shared across actors',()=>{
@@ -166,6 +215,37 @@ test('real health bounds use cached native intrinsic vectors while current weigh
   body.attachment=new f.spine.RegionAttachment();assert.equal(depth.unitBounds(f.renderer,main).maxY,79);assert.equal(f.counts.offset,1);
   body.attachment.updateOffset(40);assert.equal(depth.unitBounds(f.renderer,main).maxY,99);assert.equal(f.counts.offset,2);
   body.color.a=0;assert.equal(depth.unitBounds(f.renderer,main),null);body.color.a=1;bone.active=false;assert.equal(depth.unitBounds(f.renderer,main),null);
+});
+
+test('the optional native bounds helper only handles opted-in health bars with stock slot readers',()=>{
+  const f=fixture(),{environment,Node}=require('../navigation/runtime-harness.cjs'),e=environment(),depth={};
+  Object.assign(f.cc,e.cc,{sys:{isNative:true},ENGINE_VERSION:'2.4.13'});
+  const main=new Node('main'),art=new Node('art',main),region=new f.spine.RegionAttachment();
+  const bone={a:1,b:0,c:0,d:1,worldX:0,worldY:0,active:true};
+  class Slot {
+    getAttachment(){return region;}
+    getData(){return {name:'Body'};}
+    getBone(){return bone;}
+    getColor(){return {a:1};}
+  }
+  const slot=new Slot(); let calls=0,result={minX:0,minY:0,maxX:10,maxY:50};
+  f.spine.Slot=Slot;
+  f.spine._hkdRegionBounds=(native,skeleton)=>{
+    assert.equal(native,f.plan.native);assert.equal(skeleton,f.plan.skeleton);calls++;return result;
+  };
+  Object.assign(f.renderer,{node:art,enabled:true});
+  Object.assign(f.plan.skeleton,{getSlots:()=>[slot],drawOrder:[slot],updateWorldTransform(){}});
+  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallDepthView.js'),'utf8'),{exports:depth,cc:f.cc,sp:f.sp,spine:f.spine,require:()=>f.api});
+  assert.equal(depth.unitBounds(f.renderer,main,{}).maxY,20);
+  assert.equal(calls,0);
+  assert.equal(depth.unitBounds(f.renderer,main,{},true).maxY,50);
+  assert.equal(calls,1);
+  slot.getAttachment=()=>null;
+  assert.equal(depth.unitBounds(f.renderer,main,{},true),null);
+  assert.equal(calls,1);
+  delete slot.getAttachment;result=null;
+  assert.equal(depth.unitBounds(f.renderer,main,{},true).maxY,20);
+  assert.equal(calls,2);
 });
 
 test('both public SpineUtils image helpers invalidate shared actor geometry around native changes and partial failures',()=>{

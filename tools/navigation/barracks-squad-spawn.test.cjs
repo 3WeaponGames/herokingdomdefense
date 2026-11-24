@@ -13,8 +13,8 @@ function safe(f){const nav=f.e.nav.get(f.game),anchor=f.anchor();for(const unit 
 test('one saved squad point transforms with its barracks and takes precedence over legacy numbered slots',()=>{
  const f=fixture(1);f.b.buildInfo.cfg.SpawnPositions={'1':{x:-600,y:-300},future:{keep:true}};const before=JSON.stringify(f.b.buildInfo.cfg);f.b.node.setPosition(140,80);f.b.node.scaleX=f.b.node.scaleY=.8;f.b.node.angle=25;const p=f.b.getPos(0),anchor=f.anchor();assert(Math.hypot(p.x-anchor.x,p.y-anchor.y)<1e-6);f.b.initSoldier();safe(f);assert.equal(JSON.stringify(f.b.buildInfo.cfg),before,'Spawning never rewrites authored positions');
 });
-test('a whole squad and AD bonus units automatically receive stable separate posts around one point',()=>{
- const f=fixture(4);f.b.VideoTimes=2;f.b.initSoldier();assert.equal(f.b.enemyList.length,6);safe(f);const positions=f.b.enemyList.map(u=>({x:u.node.x,y:u.node.y}));for(let i=0;i<positions.length;i++){const p=f.b.getPos(i);assert(Math.hypot(p.x-positions[i].x,p.y-positions[i].y)<1e-6,'Each living unit keeps its own safe post');}assert.equal(f.created(),6);
+test('a whole squad automatically receives stable separate posts around one point',()=>{
+ const f=fixture(6);f.b.initSoldier();assert.equal(f.b.enemyList.length,6);safe(f);const positions=f.b.enemyList.map(u=>({x:u.node.x,y:u.node.y}));for(let i=0;i<positions.length;i++){const p=f.b.getPos(i);assert(Math.hypot(p.x-positions[i].x,p.y-positions[i].y)<1e-6,'Each living unit keeps its own safe post');}assert.equal(f.created(),6);
 });
 test('squad standing searches work around obstacles while retaining unit clearance',()=>{
  const f=fixture(6);f.e.box(135,-185,22,50);f.b.initSoldier();safe(f);assert.equal(f.created(),6);
@@ -54,5 +54,5 @@ test('roster repair preserves the capacity reduction perk and authored bonus sol
  const f=fixture(3),buffs=f.e.stubs.KinghtFallEnum.KinghtFallEnumBuffCfg;let bonus=0;
  f.game.gameData.getGameBuff=id=>id===buffs.Buff43?{}:id===buffs.Buff23&&bonus?{Pamer:[bonus]}:null;
  f.b.initSoldier();f.tick(.3);assert.equal(f.created(),2);assert.equal(f.b.enemyList.filter(Boolean).length,2);
- bonus=2;f.b.VideoTimes=1;f.b.initSoldier();f.tick(.3);assert.equal(f.b.enemyList.filter(Boolean).length,5);assert.equal(f.created(),5);
+ bonus=2;f.b.initSoldier();f.tick(.3);assert.equal(f.b.enemyList.filter(Boolean).length,4);assert.equal(f.created(),4);
 });

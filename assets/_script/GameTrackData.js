@@ -341,10 +341,10 @@ var exp_TrackData = function (t) {
     this.data.listTime[t] = e;
     this.saveData();
   };
-  _ctor.prototype.addTimeByKey = function (t) {
+  _ctor.prototype.addTimeByKey = function (t, persist) {
     this.data.listTime[t] || (this.data.listTime[t] = 0);
     this.data.listTime[t]++;
-    this.saveData();
+    if (persist !== false) this.saveData();
     return this.data.listTime[t];
   };
   return _ctor;

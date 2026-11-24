@@ -5,18 +5,76 @@ var library = null, looks = null, loading = false, retryAt = 0, failures = {}, t
 var nativePartsNotice = false;
 var bakedJobs = {};
 var looksLoading = false, looksCallbacks = [], looksFinish = null;
+var dataManagerModule;
 function skeletonDataId(asset) { return asset && (asset._uuid || asset.uuid); }
 function allyLevel(actor) { return UnitLevelStats.level(actor); }
 function validAnimationSpeed(value) { return typeof value === "number" && isFinite(value) && value >= 0 && value <= 2; }
-function enemyParentKeys(actor){if(!actor.cfg.ProfileBaseID&&actor.cfg.ID<100000)return [];try{var data=require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;return require("EnemyStageProfiles").referenceIds(actor.cfg,data&&data.GameTools).map(function(id){return "enemy:"+id+":"+(id>=90010&&id<=90012?id-90009:"default");});}catch(_){return [];}}
+var own = Object.prototype.hasOwnProperty;
+var enemyKeys = new Map();
+function enemyParentKey(id) {
+  var key = enemyKeys.get(id);
+  if (key === undefined) {
+    key = "enemy:" + id + ":" + (id >= 90010 && id <= 90012 ? id - 90009 : "default");
+    if (enemyKeys.size < 2048) enemyKeys.set(id, key);
+  }
+  return key;
+}
+function stockEnemy(actor, team) {
+  return team === "enemy" && cc.sys && cc.sys.isNative && cc.ENGINE_VERSION === "2.4.13" &&
+    actor && actor.navigationTeam === "enemy" && !actor.getSpAni && actor.spAni &&
+    typeof sp !== "undefined" && sp.Skeleton && Object.getPrototypeOf(actor.spAni) === sp.Skeleton.prototype;
+}
+function profileFrom(profiles, id) {
+  return id && own.call(profiles, id) && plainAppearanceMap(profiles[id]) ? profiles[id] : undefined;
+}
+function validInheritedValue(profiles, value) {
+  return profiles ? !!profileFrom(profiles, value) : validAnimationSpeed(value);
+}
+function inheritedEnemyValue(actor, values, profiles, stock) {
+  var cfg = actor.cfg;
+  if (!cfg.ProfileBaseID && cfg.ID < 100000) return undefined;
+  var settings;
+  try {
+    var dependency = dataManagerModule || require("KinghtFallDataMgr");
+    var data = dependency.KinghtFallDataMgr.getInstance().data;
+    if (!dataManagerModule) dataManagerModule = dependency;
+    settings = data && data.GameTools;
+  } catch (error) { return undefined; }
+
+  if (stock) {
+    var table = settings && settings.unitProfiles;
+    var entries = table && table.entries, forms = table && table.bossForms;
+    var id = cfg.ProfileBaseID || cfg.ID;
+    // Most authored profiles have one parent. Walk the live rows so changing
+    // a parent or a catalog entry takes effect immediately, with no chain array.
+    for (var step = 0; id && Number.isSafeInteger(id) && id > 0 && step < 8; step++) {
+      var value = values[enemyParentKey(id)];
+      if (validInheritedValue(profiles, value)) return value;
+      var entry = entries && entries[id];
+      var form = forms && forms[id];
+      id = entry ? entry.baseId : form && form.source;
+    }
+    if (!id) return undefined;
+  }
+
+  // Keep the authoring lookup for deep, cyclic and non-numeric legacy profiles.
+  var ids;
+  try { ids = require("EnemyStageProfiles").referenceIds(cfg, settings); }
+  catch (error) { return undefined; }
+  for (var i = 0; i < ids.length; i++) {
+    var inherited = values[enemyParentKey(ids[i])];
+    if (validInheritedValue(profiles, inherited)) return inherited;
+  }
+  return undefined;
+}
 function animationSpeed(actor, team) {
   var speeds = looks && looks.unitAnimationSpeeds;
   if (!speeds || !actor || team !== "hero" && !actor.cfg) return undefined;
   var level = team === "ally" && allyLevel(actor), scoped = level && speeds["ally:" + actor.cfg.ID + ":level:" + level];
   if (validAnimationSpeed(scoped)) return scoped;
   var shared = speeds[Core.actorKey(actor, team)];
-  if(team==="enemy"&&!validAnimationSpeed(shared)){var keys=enemyParentKeys(actor);for(var i=0;i<keys.length&&!validAnimationSpeed(shared);i++)shared=speeds[keys[i]];}
-  return validAnimationSpeed(shared) ? shared : undefined;
+  if (validAnimationSpeed(shared)) return shared;
+  return team === "enemy" ? inheritedEnemyValue(actor, speeds, null, stockEnemy(actor, team)) : undefined;
 }
 function preload(done) {
   if (looks || !cc.resources) { if (done) done(); return; }
@@ -37,13 +95,22 @@ function preload(done) {
   try { cc.resources.load("characters/catalog", cc.JsonAsset, finish); }
   catch (issue) { if (settled) throw issue; finish(issue); }
 }
+function enemyLookId(data, actor, stock) {
+  var assignments = data.assignments, profiles = data.profiles;
+  var id = assignments[Core.actorKey(actor, "enemy")];
+  if (profileFrom(profiles, id)) return id;
+  return inheritedEnemyValue(actor, assignments, profiles, stock) || id;
+}
 function assignedLook(data, actor, team) {
   if (!validAppearanceMaps(data)) return { id: undefined, profile: undefined };
-  var key = Core.actorKey(actor, team), level = team === "ally" && allyLevel(actor), own = Object.prototype.hasOwnProperty;
+  if (team === "enemy") {
+    var enemyId = enemyLookId(data, actor, stockEnemy(actor, team));
+    return { id: enemyId, profile: profileFrom(data.profiles, enemyId) };
+  }
+  var key = Core.actorKey(actor, team), level = team === "ally" && allyLevel(actor);
   var exact = level && data.assignments["ally:" + actor.cfg.ID + ":level:" + level];
-  var id = exact && own.call(data.profiles, exact) && plainAppearanceMap(data.profiles[exact]) ? exact : data.assignments[key];
-  if(team==="enemy"&&(!id||!own.call(data.profiles,id)||!plainAppearanceMap(data.profiles[id]))){var keys=enemyParentKeys(actor);for(var i=0;i<keys.length;i++){var inherited=data.assignments[keys[i]];if(inherited&&own.call(data.profiles,inherited)&&plainAppearanceMap(data.profiles[inherited])){id=inherited;break;}}}
-  return { id: id, profile: id && own.call(data.profiles, id) && plainAppearanceMap(data.profiles[id]) ? data.profiles[id] : undefined };
+  var id = profileFrom(data.profiles, exact) ? exact : data.assignments[key];
+  return { id: id, profile: profileFrom(data.profiles, id) };
 }
 function plainAppearanceMap(value) {
   if (!value || Object.prototype.toString.call(value) !== "[object Object]") return false;
@@ -440,14 +507,27 @@ var Appearance = cc.Class({
     var effectData = this.team === "enemy" && actor.spAni && actor.spAni.skeletonData && actor.spAni.skeletonData.skeletonJson;
     var hasAmbient = effectData && effectData._fantasy && effectData._fantasy.effects && effectData._fantasy.effects.ambientAnimation;
     if (hasAmbient || this.fantasyAmbient) { require("FantasyEffects").ambient(actor, require("GameToolsOverrides").animationPlayback(actor, this.team)); this.fantasyAmbient = !!hasAmbient; }
-    var hasFantasyPlayback = effectData && effectData._fantasy && ["fantasy-bosses", "fantasy-monsters"].indexOf(effectData._fantasy.pack) >= 0;
+    var pack = effectData && effectData._fantasy && effectData._fantasy.pack;
+    var hasFantasyPlayback = pack === "fantasy-bosses" || pack === "fantasy-monsters";
     var customPlayback = animationSpeed(actor, this.team) !== undefined;
     if (hasFantasyPlayback || this.fantasyPlayback || customPlayback || this.customPlayback) { require("GameToolsOverrides").applyAnimationPlayback(actor, this.team); this.fantasyPlayback = !!hasFantasyPlayback; this.customPlayback = customPlayback; }
     var maker=makerRider(this);if(maker)maker.removeFollow(actor.ctrPlayAni);
     try {
     if (!looks || !library) load();
     if (!looks || !library || !actor.cfg && this.team !== "hero") return;
-    var selected = assignedLook(looks, actor, this.team), id = selected.id, profile = selected.profile;
+    var id, profile;
+    if (stockEnemy(actor, this.team)) {
+      if (validAppearanceMaps(looks)) {
+        id = enemyLookId(looks, actor, true);
+        profile = profileFrom(looks.profiles, id);
+      }
+      // Ordinary enemies have no alternate rig to restore. Don't collect a
+      // renderer list for an unassigned look or after clearing a removed look.
+      if (!profile) { if (this.models.length) this.clear(); return; }
+    } else {
+      var selected = assignedLook(looks, actor, this.team);
+      id = selected.id; profile = selected.profile;
+    }
     if (this.team === "hero") profile = require("HeroItemLooks").current(profile);
     var renderers = visuals(actor, this.team);
     if (this.team === "ally" && !switchAllyRig(this, actor, renderers, profile)) return;

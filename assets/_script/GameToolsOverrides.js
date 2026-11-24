@@ -4,6 +4,7 @@ var FightingTypeDamage = require("./FightingTypeDamage");
 // Saved combat settings, animation defaults and per-unit authoring overrides. No configuration
 // is created or loaded here. Without either, retain the synchronous legacy path.
 var pending = new Map();
+var dataManagerModule, characterAppearanceModule;
 function valid(value) { return !!value && (!cc.isValid || cc.isValid(value, true)); }
 function sameOwner(entry) {
   return !!entry && valid(entry.owner) && entry.owner.node === entry.node && valid(entry.node) &&
@@ -14,8 +15,14 @@ function sameBattle(entry) {
   return !game || valid(game) && (!entry.gameNode || game.node === entry.gameNode && valid(entry.gameNode) && entry.gameNode.activeInHierarchy !== false) &&
     game.gameData === entry.gameData && game._combatEpoch === entry.epoch;
 }
+function dataManager() {
+  var dependency = dataManagerModule || require("KinghtFallDataMgr");
+  var manager = dependency.KinghtFallDataMgr.getInstance();
+  if (!dataManagerModule) dataManagerModule = dependency;
+  return manager;
+}
 function config() {
-  var data = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
+  var data = dataManager().data;
   return data && data.GameTools;
 }
 function keyFor(owner, type) {
@@ -56,7 +63,7 @@ function typeCounterDamage(owner, target, amount, releasedRole) {
   var counter = FightingTypeDamage.counterType(settings && settings.unitTypes, releasedRole || roleOf(owner, settings));
   if (!counter || counter !== roleOf(target, settings)) return amount;
   var parameter = require("KinghtFallEnum").KinghtFallEnumParameterCfg.RestrainedArms;
-  return amount * Number(require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getParamsCfgById(parameter));
+  return amount * Number(dataManager().getParamsCfgById(parameter));
 }
 function damageTaken(owner, side, amount) {
   if (!(amount > 0) || !owner || side !== "hero" && !owner.cfg) return amount;
@@ -99,6 +106,38 @@ function animationPosition(track) {
   var time = trackValue(track, "trackTime");
   return {name:name,time:typeof time==="number"?time:0};
 }
+var nativeComponent = typeof sp !== "undefined" && sp.Skeleton && sp.Skeleton.prototype;
+var nativeSkeleton = typeof spine !== "undefined" && spine.SkeletonAnimation && spine.SkeletonAnimation.prototype;
+var nativeTrack = typeof spine !== "undefined" && spine.TrackEntry && spine.TrackEntry.prototype;
+var nativeAnimation = typeof spine !== "undefined" && spine.Animation && spine.Animation.prototype;
+var nativeGetCurrent = nativeComponent && nativeComponent.getCurrent;
+var nativeIsCached = nativeComponent && nativeComponent.isAnimationCached;
+var nativeGetCurrentTrack = nativeSkeleton && nativeSkeleton.getCurrent;
+var nativeGetAnimation = nativeTrack && nativeTrack.getAnimation;
+var nativeSetTrackSpeed = nativeTrack && nativeTrack.setTimeScale;
+var nativeGetTrackSpeed = nativeTrack && nativeTrack.getTimeScale;
+var nativeGetAnimationName = nativeAnimation && nativeAnimation.getName;
+var owns = Object.prototype.hasOwnProperty;
+function ownGetter(prototype, property) {
+  var descriptor = prototype && Object.getOwnPropertyDescriptor(prototype, property);
+  return descriptor && descriptor.get;
+}
+var nativePaused = ownGetter(nativeComponent, "paused");
+var nativeTrackAnimation = ownGetter(nativeTrack, "animation");
+var nativeAnimationName = ownGetter(nativeAnimation, "name");
+function stockAttackPoll() {
+  return typeof nativeGetCurrent === "function" && typeof nativeIsCached === "function" &&
+    typeof nativeGetCurrentTrack === "function" && cc.sys && cc.sys.isNative && cc.ENGINE_VERSION === "2.4.13" &&
+    nativePaused && nativeTrackAnimation && nativeAnimationName &&
+    nativePaused === ownGetter(nativeComponent, "paused") &&
+    nativeTrackAnimation === ownGetter(nativeTrack, "animation") && nativeAnimationName === ownGetter(nativeAnimation, "name");
+}
+function stockAttackRenderer(owner, renderer) {
+  return !owner.ctrPlayAni && !owner.getSpAni && renderer === owner.spAni &&
+    Object.getPrototypeOf(renderer) === nativeComponent && renderer.getCurrent === nativeGetCurrent &&
+    renderer.isAnimationCached === nativeIsCached && !owns.call(renderer, "paused") &&
+    renderer._nativeSkeleton && renderer._nativeSkeleton.getCurrent === nativeGetCurrentTrack;
+}
 function attack(owner, type, callback, queue) {
   queue = queue || pending;
   var relative = applyAttackPlayback(owner, type);
@@ -137,6 +176,7 @@ function tickAttacks(dt, queue) {
   if (!(dt > 0) || !isFinite(dt)) return false;
   // Iterate a snapshot: callbacks may start/cancel other attacks.
   var work = Array.from(queue.values());
+  var observation;
   for (var i = 0; i < work.length; i++) {
     var entry = work[i], owner = entry.owner;
     if (queue.get(owner) !== entry) continue;
@@ -145,7 +185,12 @@ function tickAttacks(dt, queue) {
     if (!live) { cancel(owner, queue); continue; }
     var skeleton = entry.skeleton;
     if (skeleton && (!valid(skeleton) || skeleton !== (owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody)))) { cancel(owner, queue); continue; }
-    var relative = applyAttackPlayback(owner, entry.type);
+    var sample;
+    if (entry.type === "enemy" && entry.animation && skeleton && stockAttackPoll() && stockAttackRenderer(owner, skeleton)) {
+      sample = observation || (observation = { renderer: null, track: null, name: null });
+      sample.renderer = skeleton; sample.track = null;
+    }
+    var relative = applyAttackPlayback(owner, entry.type, sample);
     var control = owner._relicControl;
     if (control && control.node && control.node !== owner.node) control = null;
     // RelicCombat releases its pause later in this frame, after this scheduler.
@@ -165,11 +210,20 @@ function tickAttacks(dt, queue) {
     if (!(playback > 0)) continue;
     entry.animationTime += effectDelta * playback;
     if (entry.animation && skeleton && skeleton.getCurrent) {
-      var current = skeleton.getCurrent(0), info = animationPosition(current);
-      if (info.name === entry.animation) entry.animationTime = Math.max(entry.animationTime, info.time);
+      var name, time;
+      if (sample && sample.track) {
+        name = sample.name;
+        time = trackValue(sample.track, "trackTime");
+        sample.track = null;
+        if (typeof time !== "number") time = 0;
+      } else {
+        var current = skeleton.getCurrent(0), info = animationPosition(current);
+        name = info.name; time = info.time;
+      }
+      if (name === entry.animation) entry.animationTime = Math.max(entry.animationTime, time);
       else {
         var observed = entry.browserTrack && trackValue(entry.browserTrack, "trackTime");
-        var time = Math.max(entry.animationTime, typeof observed === "number" ? observed : 0);
+        time = Math.max(entry.animationTime, typeof observed === "number" ? observed : 0);
         // Named fighting-style attacks are still attacks. Only replacing that
         // queued clip before its natural queue point cancels the pending hit.
         if (typeof entry.animationEnd === "number" && time + 1e-7 < entry.animationEnd) { cancel(owner, queue); continue; }
@@ -209,7 +263,10 @@ function defaultPlayback(owner, type) {
 function unitAnimationSpeed(owner, type) {
   // Character data is preloaded before gameplay; this read never creates settings.
   if (!cc.resources) return undefined;
-  return require("CharacterAppearance").animationSpeed(owner, type);
+  var dependency = characterAppearanceModule || require("CharacterAppearance");
+  var speed = dependency.animationSpeed(owner, type);
+  if (!characterAppearanceModule) characterAppearanceModule = dependency;
+  return speed;
 }
 function animationPlayback(owner, type, relative) {
   if (arguments.length < 3) relative = unitAnimationSpeed(owner, type);
@@ -242,10 +299,10 @@ function attackPlayback(owner, type, relative) {
   return validPlayback(value) ? value : defaultPlayback(owner, type);
 }
 var playbackTracks = new WeakMap();
-function applyAttackPlayback(owner, type) {
-  return applyPlayback(owner, type, false);
+function applyAttackPlayback(owner, type, observation) {
+  return applyPlayback(owner, type, false, observation);
 }
-function applyPlayback(owner, type, all) {
+function applyPlayback(owner, type, all, observation) {
   if (!valid(owner)) return;
   var layers = owner.ctrPlayAni, relative = unitAnimationSpeed(owner, type), custom = relative !== undefined;
   if (layers && layers.spAniBody && !valid(layers.spAniBody)) return;
@@ -262,6 +319,16 @@ function applyPlayback(owner, type, all) {
     if (!track) return;
     var animation = track && (track.animation || track.getAnimation && track.getAnimation());
     var name = animation && (animation.name || animation.getName && animation.getName());
+    // The stock JSB setter only changes timeScale. No listener runs and the
+    // track/name stay unchanged during the rest of this synchronous poll.
+    if (observation && renderer === observation.renderer && animation &&
+        nativeGetAnimation && nativeSetTrackSpeed && nativeGetTrackSpeed && nativeGetAnimationName &&
+        Object.getPrototypeOf(track) === nativeTrack && track.getAnimation === nativeGetAnimation &&
+        track.setTimeScale === nativeSetTrackSpeed && track.getTimeScale === nativeGetTrackSpeed &&
+        !owns.call(track, "animation") && Object.getPrototypeOf(animation) === nativeAnimation &&
+        animation.getName === nativeGetAnimationName && !owns.call(animation, "name")) {
+      observation.track = track; observation.name = name;
+    }
     var attack = /^attack(?:_|$)/.test(name);
     if (!all && !attack) return;
     var speed = custom ? animationPlayback(owner, type, relative) : track === hit && track !== primary ? 1 : attack ? attackPlayback(owner, type, relative) : defaultPlayback(owner, type);
@@ -281,15 +348,33 @@ function applyPlayback(owner, type, all) {
   return relative;
 }
 var visualNodes = new WeakMap();
+var emptyVisual = {};
 function applyModel(owner, type, node, left) {
-  var settings = config(), item = settings && settings.visuals && settings.visuals[keyFor(owner, type)] || {};
+  var settings = config(), item = settings && settings.visuals && settings.visuals[keyFor(owner, type)] || emptyVisual;
   var base = visualNodes.get(node);
-  if (!Object.keys(item).length && !base) { node.scaleX = (left ? -1 : 1) * node.scaleY; return; }
+  var direction = left ? -1 : 1;
+  if (!base && (item === emptyVisual || !Object.keys(item).length)) {
+    var facingScale = direction * node.scaleY;
+    if (node.scaleX !== facingScale) node.scaleX = facingScale;
+    return;
+  }
   if (!base) { base = { x: node.x || 0, y: node.y || 0, scale: Math.abs(node.scaleY), angle: node.angle || 0, color: node.color && node.color.clone ? node.color.clone() : node.color }; visualNodes.set(node, base); }
-  node.x = base.x + (item.x || 0); node.y = base.y + (item.y || 0);
-  node.scaleX = base.scale * (item.scaleX === undefined ? 1 : item.scaleX) * facing(owner, type, left);
-  node.scaleY = base.scale * (item.scaleY === undefined ? 1 : item.scaleY);
-  node.angle = base.angle + (item.rotation || 0);
+  var x = base.x + (item.x || 0), y = base.y + (item.y || 0);
+  var scaleX = base.scale * (item.scaleX === undefined ? 1 : item.scaleX) * direction * (item.mirrorX === true ? -1 : 1);
+  var scaleY = base.scale * (item.scaleY === undefined ? 1 : item.scaleY);
+  var angle = base.angle + (item.rotation || 0);
+  // Cocos stores position and scale in Float32. Compare against what the
+  // setter would store so an unchanged authored decimal does not dirty the
+  // Spine hierarchy on every movement update.
+  if (node._trs instanceof Float32Array) {
+    x = Math.fround(x); y = Math.fround(y);
+    scaleX = Math.fround(scaleX); scaleY = Math.fround(scaleY);
+  }
+  if (node.x !== x) node.x = x;
+  if (node.y !== y) node.y = y;
+  if (node.scaleX !== scaleX) node.scaleX = scaleX;
+  if (node.scaleY !== scaleY) node.scaleY = scaleY;
+  if (node.angle !== angle || node.is3DNode && (node.eulerAngles.x !== 0 || node.eulerAngles.y !== 0)) node.angle = angle;
   if (cc.color) node.color = item.tint ? cc.color(item.tint) : base.color;
 }
 exports.projectileSpeed=function(owner,type,authoredSpeed){

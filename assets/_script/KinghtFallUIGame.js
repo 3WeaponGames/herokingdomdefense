@@ -1062,6 +1062,29 @@ var def_KinghtFallUIGame = function (t) {
     var game = this.ctrGame, ui = this.ctrUI.node, camera = game.camera || cc.Camera.main;
     if (game.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Fight) return;
     if (!camera || !game.gameData.getEnemyList) return;
+    var nodeMethods = cc.Node && cc.Node.prototype, cameraMethods = cc.Camera && cc.Camera.prototype;
+    var projection = null;
+    // Creator's stock 2D point helpers rebuild these same matrices on every
+    // call. Reuse them for this pass, while keeping the three transforms in
+    // their original order. Other camera and UI implementations keep their
+    // public point-conversion path.
+    if (cc.ENGINE_VERSION === "2.4.13" && cameraMethods && camera.node && !camera.node.is3DNode &&
+        camera.getWorldToScreenPoint === cameraMethods.getWorldToScreenPoint &&
+        typeof camera.getWorldToScreenMatrix2D === "function" && camera.getWorldToScreenMatrix2D === cameraMethods.getWorldToScreenMatrix2D &&
+        nodeMethods && Object.getPrototypeOf(ui) === nodeMethods && !ui.is3DNode &&
+        ui.convertToNodeSpaceAR === nodeMethods.convertToNodeSpaceAR &&
+        typeof ui.getWorldMatrix === "function" && ui.getWorldMatrix === nodeMethods.getWorldMatrix &&
+        typeof cc.Mat4 === "function" && typeof cc.Mat4.invert === "function" && cc.Vec2 && typeof cc.Vec2.transformMat4 === "function") {
+      var matrices = this._enemyIndicatorMatrices || (this._enemyIndicatorMatrices = {
+        worldToScreen: new cc.Mat4(), uiWorld: new cc.Mat4(), screenToUi: new cc.Mat4(),
+        zero: cc.v2(0, 0), world: cc.v2(0, 0), screen: cc.v2(0, 0)
+      });
+      ui.getWorldMatrix(matrices.uiWorld);
+      if (cc.Mat4.invert(matrices.screenToUi, matrices.uiWorld)) {
+        camera.getWorldToScreenMatrix2D(matrices.worldToScreen);
+        projection = matrices;
+      }
+    }
     var size = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
     var a = ui.convertToNodeSpaceAR(cc.v2(origin.x, origin.y));
     var b = ui.convertToNodeSpaceAR(cc.v2(origin.x + size.width, origin.y + size.height));
@@ -1076,8 +1099,15 @@ var def_KinghtFallUIGame = function (t) {
     var suppressed = this._nearbyEnemyIndicators || (this._nearbyEnemyIndicators = new WeakMap());
     game.gameData.getEnemyList().forEach(function (enemy) {
       if (enemy._isPooled || !cc.isValid(enemy.node, true) || !enemy.node.activeInHierarchy || enemy.isDead()) { suppressed.delete(enemy.node); return; }
-      var screen = camera.getWorldToScreenPoint(enemy.node.convertToWorldSpaceAR(cc.v2(0, 0)));
-      var target = ui.convertToNodeSpaceAR(screen);
+      var target;
+      if (projection && !enemy.node.is3DNode && enemy.node.convertToWorldSpaceAR === nodeMethods.convertToWorldSpaceAR) {
+        var world = enemy.node.convertToWorldSpaceAR(projection.zero, projection.world);
+        cc.Vec2.transformMat4(projection.screen, world, projection.worldToScreen);
+        target = cc.Vec2.transformMat4(cc.v2(0, 0), projection.screen, projection.screenToUi);
+      } else {
+        var screen = camera.getWorldToScreenPoint(enemy.node.convertToWorldSpaceAR(cc.v2(0, 0)));
+        target = ui.convertToNodeSpaceAR(screen);
+      }
       if (target.x >= viewport.minX && target.x <= viewport.maxX && target.y >= viewport.minY && target.y <= viewport.maxY) {
         var key = Math.floor(target.x / cellSize) + ":" + Math.floor(target.y / cellSize);
         (visible[key] || (visible[key] = [])).push(target);

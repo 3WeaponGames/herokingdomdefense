@@ -78,7 +78,7 @@ function describe(service,stage,{buildingLevels=false,barracksTypes=false}={}){
   for(const view of views)for(const hall of [1,2,3,4]){
    const row=rowForLevel(view.building,hall,config),look=row&&row.Appearance;
    const branch=(buildingLevels||view.building!==building)&&building.kind!==1&&row?{previewBranch:row.index}:null;
-   const posed=Object.assign({},building,branch,{x:0,y:0,scale:1,angle:0});
+   const posed=Object.assign({},building,branch,{x:0,y:0,scale:1,angle:0,flipX:false});
    const level={origin:clone(origin),sprites:plateSprites.concat(native),skeletons:[],blockers:Navigation.buildingPolygons(service,stage,posed,hall,'closed',config,sourceModels),step:step&&clone(step)};
    if(building.kind===6)level.wallOpening=GateFacing.validOpening(component.wallOpening)?component.wallOpening:'outward';
    if(plate)level.purchaseField={angle:Purchase.angle(building.purchaseSide||component.purchaseSide),center:{x:plate.position.x-origin.x,y:plate.position.y-origin.y},offset:clone(Purchase.offset(building.purchaseOffset?building:component)),sprites:plateSprites.map(()=>true).concat(nativeSpecs.map(()=>false))};
@@ -103,7 +103,7 @@ function describe(service,stage,{buildingLevels=false,barracksTypes=false}={}){
    if(row&&row.ModelOffset){const Offset=require('../../../assets/_script/BuildingModelOffset');Object.assign(level,Offset.record(level,Offset.vector(owner.world,Offset.value(row))));}
    view.levels[hall]=WorldScale.record(level,WorldScale.value(row),false);
    if(firstUpgradeCard)view.levels[hall].firstUpgradeCard=firstUpgradeCard;
-   if(building.kind===3)try{const marker=require('./barracks-spawn').describe(Object.assign({},authoredBuilding,branch,{x:0,y:0,scale:1,angle:0}),source,config,hall,info);if(marker)view.levels[hall].squadSpawn=marker;}catch(error){errors.push(error.message);}
+   if(building.kind===3)try{const marker=require('./barracks-spawn').describe(Object.assign({},authoredBuilding,branch,{x:0,y:0,scale:1,angle:0,flipX:false}),source,config,hall,info);if(marker)view.levels[hall].squadSpawn=marker;}catch(error){errors.push(error.message);}
   }
  }
  let runtimePath=null;if(needsRuntime)try{runtimePath=Units.enginePath();}catch(error){errors.push(error.message);}

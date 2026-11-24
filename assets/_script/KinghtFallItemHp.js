@@ -8,6 +8,8 @@ var $z1KinghtFallModle = require("KinghtFallModle");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+var nextPosePhase = 0;
+var battleUIModule, depthViewModule;
 var def_KinghtFallItemHp = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -17,6 +19,7 @@ var def_KinghtFallItemHp = function (t) {
     e.spAni = null;
     e.sprPro = null;
     e.guiProStyle = false;
+    e._posePhase = nextPosePhase++ % 4;
     return e;
   }
   cc__extends(_ctor, t);
@@ -35,7 +38,10 @@ var def_KinghtFallItemHp = function (t) {
     }
   };
   _ctor.prototype.setType = function (t, actor) {
-    if (actor) this.actor = actor;
+    if (actor && actor !== this.actor) {
+      this.actor = actor;
+      this._poseReady = false;
+    }
     switch (t) {
       case $z1KinghtFallModle.KinghtFallGameArmy.None:
         this.sprPro = null;
@@ -53,23 +59,38 @@ var def_KinghtFallItemHp = function (t) {
         this.sprPro2 && (this.sprPro2.node.active = true);
     }
   };
+  _ctor.prototype.onEnable = function () {
+    this._poseReady = false;
+  };
   _ctor.prototype.lateUpdate = function () {
     var actor = this.actor;
     if (!actor || !actor.node || !this.node.parent || actor.isDead()) return;
     var parent = this.node.parent;
-    var UI = require("KinghtFallUIGame").default, game = UI && UI.instance && UI.instance.ctrGame;
+    var uiModule = battleUIModule || require("KinghtFallUIGame"), UI = uiModule.default;
+    if (!battleUIModule && UI) battleUIModule = uiModule;
+    var game = UI && UI.instance && UI.instance.ctrGame;
+    var data = game && game.gameData;
+    var population = data && data.enemyList && data.soldierList ? data.enemyList.length + data.soldierList.length : 0;
+    var cadence = population >= 64 ? 4 : population >= 32 ? 2 : 1;
+    var frame = cc.director && cc.director.getTotalFrames && cc.director.getTotalFrames();
+    // The bar moves with the unit every frame. Stagger only the expensive
+    // Spine pose measurement so crowded battles do not sample every bar at once.
+    if (actor !== (game && game.ctrPlay) && !actor.ctrPlayAni && cadence > 1 && Number.isFinite(frame) &&
+      this._poseReady && this._poseParent === parent && (frame + this._posePhase) % cadence !== 0) return;
     var heroBar = game && game.ctrPlay && game.ctrPlay.ctrHp && game.ctrPlay.ctrHp.node;
     if (heroBar && !cc.isValid(heroBar, true)) heroBar = null;
     // All combat units share the hero's GUI Pro bar size, including when the
     // hero bar is hidden at full health. Measuring through the unit's parent
     // cancels inherited model scales for enemies and mounted allies alike.
-    var Depth = require("KinghtFallDepthView"), scratch = this._hpSizeScratch || (this._hpSizeScratch = {});
+    var Depth = depthViewModule || require("KinghtFallDepthView"), scratch = this._hpSizeScratch || (this._hpSizeScratch = {});
     var reference = Depth.unitReferenceSize(heroBar, parent, heroBar ? heroBar.width : 64, heroBar ? heroBar.height : 10, scratch);
+    if (!depthViewModule) depthViewModule = Depth;
     var referenceWidth = reference.width, referenceHeight = reference.height;
     var sources = actor.ctrPlayAni ? Depth.bodyVisuals(actor) : [actor.getSpAni ? actor.getSpAni() : actor.spAni];
+    var nativeHealth = actor.node._combatActor === actor && !actor.ctrPlayAni;
     var box = null;
     sources.forEach(function (renderer) {
-      if (renderer && renderer.skeletonData) box = Depth.union(box, Depth.unitBounds(renderer, parent));
+      if (renderer && renderer.skeletonData) box = Depth.union(box, Depth.unitBounds(renderer, parent, scratch, nativeHealth));
     });
     if (!box) return;
     var width = this.node.width || this.sprPro && this.sprPro.node.width;
@@ -81,8 +102,16 @@ var def_KinghtFallItemHp = function (t) {
     var anchorY = typeof this.node.anchorY === "number" ? this.node.anchorY : .5;
     var x = (box.minX + box.maxX) / 2, y = box.maxY + referenceHeight * (anchorY + .4);
     if (this.node.x !== x || this.node.y !== y) this.node.setPosition(x, y);
-    if (referenceWidth > 0) this.node.scaleX = referenceWidth / width;
-    if (referenceHeight > 0) this.node.scaleY = referenceHeight / (this.node.height || 10);
+    if (referenceWidth > 0) {
+      var scaleX = referenceWidth / width;
+      if (this.node.scaleX !== scaleX) this.node.scaleX = scaleX;
+    }
+    if (referenceHeight > 0) {
+      var scaleY = referenceHeight / (this.node.height || 10);
+      if (this.node.scaleY !== scaleY) this.node.scaleY = scaleY;
+    }
+    this._poseReady = true;
+    this._poseParent = parent;
   };
   _ctor.prototype.setFillProgress = function (sprite, progress) {
     sprite.fillRange = progress;

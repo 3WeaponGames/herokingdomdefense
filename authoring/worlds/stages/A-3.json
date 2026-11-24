@@ -83929,5 +83929,36 @@
         "radius": 150
       }
     ]
-  }
+  },
+  "spawnGroups": [
+    {
+      "id": "spawn-group-1",
+      "spawnIds": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "spawn-group-2",
+      "spawnIds": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "spawn-group-3",
+      "spawnIds": [
+        7
+      ]
+    },
+    {
+      "id": "spawn-group-4",
+      "spawnIds": [
+        8,
+        9
+      ]
+    }
+  ]
 }

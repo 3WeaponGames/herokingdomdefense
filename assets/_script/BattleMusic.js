@@ -83,5 +83,6 @@ function battle(data, config, forceBoss) {
 exports.biome = biome;
 exports.planning = function (level) { return PLANNING[biome(level)]; };
 exports.bossUnit = bossUnit;
+exports.bossOrEliteUnit = bossOrEliteUnit;
 exports.waveHasBossOrElite = waveHasBossOrElite;
 exports.battle = battle;

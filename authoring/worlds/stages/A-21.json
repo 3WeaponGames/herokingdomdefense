@@ -7195,63 +7195,72 @@
       "name": "Spawn 1",
       "x": -897.909,
       "y": 1027.011,
-      "enabled": true
+      "enabled": true,
+      "radius": 32
     },
     {
       "id": 2,
       "name": "Spawn 2",
       "x": -794.717,
       "y": 1002.011,
-      "enabled": true
+      "enabled": true,
+      "radius": 135.2
     },
     {
       "id": 3,
       "name": "Spawn 3",
       "x": -905.427,
       "y": 909.35,
-      "enabled": true
+      "enabled": true,
+      "radius": 24.5
     },
     {
       "id": 4,
       "name": "Spawn 4",
       "x": 772.96,
       "y": 1343.795,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 5,
       "name": "Spawn 5",
       "x": 859.119,
       "y": 1259.276,
-      "enabled": true
+      "enabled": true,
+      "radius": 70.8
     },
     {
       "id": 6,
       "name": "Spawn 6",
       "x": 732.04,
       "y": 1228.076,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 7,
       "name": "Spawn 7",
       "x": -503.628,
       "y": -1255.97,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 8,
       "name": "Spawn 8",
       "x": -411.781,
       "y": -1198.9,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 9,
       "name": "Spawn 9",
       "x": -503.574,
       "y": -1146.421,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 10,
@@ -7800,7 +7809,7 @@
     },
     {
       "id": "route-10",
-      "name": "Spawn 10-12 Route 1",
+      "name": "Spawns 10–12 · Route 1",
       "spawnIds": [
         10,
         12,
@@ -7876,11 +7885,12 @@
           "weight": 1
         }
       ],
-      "legacy": false
+      "legacy": false,
+      "nameFromSpawns": true
     },
     {
       "id": "route-11",
-      "name": "Spawn 10-12 Route 2",
+      "name": "Spawns 10–12 · Route 2",
       "spawnIds": [
         11,
         10,
@@ -7944,11 +7954,12 @@
           "weight": 1
         }
       ],
-      "legacy": false
+      "legacy": false,
+      "nameFromSpawns": true
     },
     {
       "id": "route-12",
-      "name": "Spawn 10-12 Route 3",
+      "name": "Spawns 10–12 · Route 3",
       "spawnIds": [
         12,
         10,
@@ -8000,7 +8011,8 @@
           "weight": 1
         }
       ],
-      "legacy": false
+      "legacy": false,
+      "nameFromSpawns": true
     }
   ],
   "hero": {
@@ -44710,5 +44722,39 @@
         }
       }
     ]
-  }
+  },
+  "spawnGroups": [
+    {
+      "id": "spawn-group-1",
+      "spawnIds": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "spawn-group-2",
+      "spawnIds": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "spawn-group-3",
+      "spawnIds": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": "spawn-group-4",
+      "spawnIds": [
+        10,
+        11,
+        12
+      ]
+    }
+  ]
 }

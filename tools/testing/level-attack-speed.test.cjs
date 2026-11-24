@@ -5,6 +5,7 @@ const {test}=require('node:test');
 const script=path.resolve(__dirname,'../../assets/_script/GameToolsOverrides.js');
 function fixture(settings={}){
   const data={GameTools:settings},modules={
+    './FightingTypeDamage':require('../../assets/_script/FightingTypeDamage'),
     KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data})}},
     HeroWeapons:require('../../assets/_script/HeroWeapons'),
     HeroSkillPose:require('../../assets/_script/HeroSkillPose'),

@@ -102,9 +102,19 @@ test('the corner compositor draws door, unit and pillar in separate layers', {sk
   const main=new Node('main'),node=new Node('wall',main),sign=Facing.mirrorX(face)?-1:1;node.zIndex=40;node.convertToWorldSpaceAR=p=>({x:sign*p.x,y:p.y});const renderer={node,enabled:true,skeletonData:{skeletonJson:value},_skeleton:s,_startSlotIndex:-1,_endSlotIndex:-1,setSlotsRange(a,b){this._startSlotIndex=a;this._endSlotIndex=b;},markForRender(){}},leaf=gateLeaves(renderer,main).find(l=>l.slot.data.name==='rts_wall_leaf_near'),parts=Assembly.pieces(value.wallKit.layout),wall=wallSurfaces(renderer,main).find(l=>l.slot.data.name==='rts_wall_part_'+parts.findIndex(p=>p.gateway==='right'));
   const actor={node:new Node('unit',main)},feet={x:(leaf.start.x+leaf.end.x)/2,y:(leaf.start.y+leaf.end.y)/2-9};actor.node.setPosition(feet.x,feet.y);actor.node.zIndex=44;let bodyCaptures=0;const ranges=[];
   const view={main,game:{gameData:{bulidPointMap:{gate:{ndAniMain:renderer}}}},renderNative(){ranges.push([renderer._startSlotIndex,renderer._endSlotIndex]);},snapshotActor(record){bodyCaptures++;record.frame={body:true,destroy(){}};record.center=feet;record.size={width:40,height:60};}},pass=new GateOcclusion(view);
-  pass.update([{actor,tint:{r:140,g:215,b:255},sources:[{}],bounds:{minX:feet.x-20,maxX:feet.x+20,minY:feet.y,maxY:feet.y+60}}],{poses:new Set(),transforms:new Map(),bounds:new Map()},null);
+  const entry={actor,tint:{r:140,g:215,b:255},sources:[{}],bounds:{minX:feet.x-20,maxX:feet.x+20,minY:feet.y,maxY:feet.y+60}};
+  const drawCache=()=>({poses:new Set(),transforms:new Map(),bounds:new Map()});
+  pass.update([entry],drawCache(),null);
   const records=pass.leaves.get(renderer),doorRecord=records.get(leaf.slot.data.name),wallRecord=records.get(wall.slot.data.name),door=doorRecord.overlays.get(actor),pillar=wallRecord.overlays.get(actor),body=pass.actors.get(actor);
   assert.equal(door.behind,false);assert.equal(door.tint.node.active,false,'Front leaf never receives the occlusion tint');assert.equal(pillar.tint.node.active,true,'Only the pillar in front of the unit receives the tint');assert.equal(pillar.behind,true);assert.equal(door.mask.spriteFrame,doorRecord.frame);assert.equal(door.sprite.spriteFrame,body.frame);assert.equal(pillar.mask.spriteFrame,body.frame);assert.equal(pillar.sprite.spriteFrame,wallRecord.frame);assert.equal(door.node.zIndex,pillar.node.zIndex);assert(main.children.indexOf(door.node)<main.children.indexOf(pillar.node),'Pillar pixels follow restored unit pixels in the same frame');assert.equal(bodyCaptures,1,'One body capture serves every intersecting part');assert(ranges.every(([a,b])=>a===b),'Captures cannot paint neighboring wall or door pieces');assert.equal(renderer._startSlotIndex,-1);assert.equal(renderer._endSlotIndex,-1);
+  pass.update([entry],drawCache(),null,new Set());
+  assert.equal(pillar.tint.node.active,false,'Reduced detail turns off only the tint');
+  assert.equal(pillar.tint.sprite.spriteFrame,null,'Retired tint releases its capture consumer');
+  assert.equal(door.node.active,true,'Gate reconstruction still restores the actor in front of a leaf');
+  assert.equal(pillar.node.active,true,'The pillar still covers the actor behind it');
+  assert.equal(door.sprite.spriteFrame,body.frame);
+  pass.update([entry],drawCache(),null,new Set([entry]));
+  assert.equal(pillar.tint.node.active,true,'A priority silhouette remains visible through the pillar');
   pass.destroy();assert.equal(main.children.length,2,'Only render overlays are removed on cleanup');
  }
 });

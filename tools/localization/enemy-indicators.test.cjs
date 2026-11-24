@@ -138,6 +138,54 @@ test('Proximity uses projected UI coordinates and scales with viewport and canva
  const projected=liveFixture(),world=new Node('World');const nearEnemy=projected.enemy(2450,0),visibleEnemy=projected.enemy(2350,0);nearEnemy.node.setParent(world);visibleEnemy.node.setParent(world);
  projected.state.ctrGame.camera.getWorldToScreenPoint=p=>({x:p.x-2000,y:p.y});assert.equal(projected.count(),0,'world positions must be projected before proximity checks');
 });
+test('Stock 2D camera projections reuse matrices and retain live indicator positions and counts',()=>{
+ const f=liveFixture(),savedCamera=cc.Camera;
+ const transform=(out,value,matrix)=>{
+  const {x,y}=value,m=matrix.m;
+  out.x=m[0]*x+m[4]*y+m[12];out.y=m[1]*x+m[5]*y+m[13];return out;
+ };
+ class Mat4 {
+  constructor(){this.m=new Float32Array(16);this.m[0]=this.m[5]=this.m[10]=this.m[15]=1;}
+  static invert(out,matrix){
+   const m=matrix.m,n=out.m,det=m[0]*m[5]-m[1]*m[4];if(!det)return null;
+   n[0]=m[5]/det;n[1]=-m[1]/det;n[4]=-m[4]/det;n[5]=m[0]/det;
+   n[12]=-n[0]*m[12]-n[4]*m[13];n[13]=-n[1]*m[12]-n[5]*m[13];return out;
+  }
+ }
+ class Camera{
+  constructor(){this.node={is3DNode:false};this.calls=0;this.matrices=0;}
+  getWorldToScreenMatrix2D(out){
+   this.matrices++;const m=out.m;m[0]=0;m[1]=2;m[4]=-2;m[5]=0;m[12]=80;m[13]=-24;return out;
+  }
+  getWorldToScreenPoint(point){this.calls++;return transform({},point,this.getWorldToScreenMatrix2D(new Mat4()));}
+ }
+ Node.prototype.getWorldMatrix=function(out){
+  const p=this.convertToWorldSpaceAR({x:0,y:0}),x=this.convertToWorldSpaceAR({x:1,y:0}),y=this.convertToWorldSpaceAR({x:0,y:1}),m=out.m;
+  m[0]=x.x-p.x;m[1]=x.y-p.y;m[4]=y.x-p.x;m[5]=y.y-p.y;m[12]=p.x;m[13]=p.y;return out;
+ };
+ Object.assign(cc,{Camera,Node,Mat4,Vec2:{transformMat4:transform}});
+ try{
+  const camera=f.state.ctrGame.camera=new Camera();
+  f.canvas.setPosition(32,-24);f.canvas.scaleX=f.canvas.scaleY=.5;f.ui.angle=90;
+  for(let i=0;i<24;i++)f.enemy(i%2?500:-500,97*i-1000,90001+i%2);
+  const capture=()=>f.tick().map(record=>({
+   id:record.id,count:record.count,x:record.ndItem.x,y:record.ndItem.y,angle:record.ndItem.getChildByName('ndArr').angle
+  }));
+  const original=capture();assert(original.length>0);assert.equal(camera.calls,f.enemies.length);
+  camera.calls=camera.matrices=0;cc.ENGINE_VERSION='2.4.13';const reused=capture();
+  assert.equal(camera.calls,0);assert.equal(camera.matrices,1);assert.equal(reused.length,original.length);
+  for(let i=0;i<reused.length;i++){
+   assert.equal(reused[i].id,original[i].id);assert.equal(reused[i].count,original[i].count);
+   for(const key of ['x','y','angle'])near(reused[i][key],original[i][key]);
+  }
+  camera.node.is3DNode=true;camera.calls=camera.matrices=0;
+  capture();assert.equal(camera.calls,f.enemies.length);assert.equal(camera.matrices,f.enemies.length);
+  camera.node.is3DNode=false;camera.getWorldToScreenPoint=point=>Camera.prototype.getWorldToScreenPoint.call(camera,point);
+  camera.calls=camera.matrices=0;capture();assert.equal(camera.calls,f.enemies.length);
+ }finally{
+  cc.Camera=savedCamera;delete cc.Node;delete cc.Mat4;delete cc.Vec2;delete cc.ENGINE_VERSION;delete Node.prototype.getWorldMatrix;
+ }
+});
 test('custom monster pictograms preserve aspect ratio, reject stale callbacks and fall back to the original icon on load failure',()=>{
  const f=fixture(),pending=[],manager=context.$z1KinghtFallDataMgr.KinghtFallDataMgr,previous=manager.getInstance;
  const settings={unitTypes:{wolf:{icon:'@icon/unit-library/wolf',tint:'#80c0ff'}},unitTypeAssignments:{'enemy:90001:default':'wolf','enemy:90002:default':'wolf'}};

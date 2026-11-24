@@ -2,6 +2,8 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto');
 const SOURCE=process.env.HKD_NATIVE_BUILD_SOURCE||path.resolve(__dirname,'../native/build-native-preview.cjs');
 const api=require(SOURCE),sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const unitRegionBounds=require('../native/unit-region-bounds.cjs');
+const manualCameraMatrices = require('../native/manual-camera-matrices.cjs');
 function fixture(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-native-build-'));t.after(()=>{assert(path.basename(root).startsWith('hkd-native-build-')&&path.dirname(root)===os.tmpdir());fs.rmSync(root,{recursive:true,force:true});});return root;}
 function write(file,bytes='fixture'){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,bytes);return file;}
 function projectFixture(project,includes){
@@ -18,7 +20,100 @@ function fakeTools(root){const vs=path.join(root,'VS'),programFiles=path.join(ro
   for(const file of ['Include/10.0.26100.0/um/Windows.h','Include/10.0.26100.0/ucrt/stdio.h','Lib/10.0.26100.0/um/x86/kernel32.lib','Lib/10.0.26100.0/ucrt/x86/ucrt.lib'])write(path.join(programFiles,'Windows Kits/10',file));
   write(path.join(programFiles,'Microsoft Visual Studio/Installer/vswhere.exe'));return{vs,programFiles};
 }
-test('CLI defaults to stock Release and accepts only the explicit cleanup flag',()=>{assert.deepEqual(api.parseArgs(['--sdk-root','SDK','--output-root','OUT','--vs-root','VS']),{sdkRoot:'SDK',outputRoot:'OUT',vsRoot:'VS'});assert.deepEqual(api.parseArgs(['--spine-inline-color-cleanup']),{spineInlineColorCleanup:true});assert.throws(()=>api.parseArgs(['--spine-inline-color-cleanup','false']),/Unknown/);assert.throws(()=>api.parseArgs(['--high-resolution-pacing']),/Unknown/);assert.throws(()=>api.parseArgs(['--sdk-root']),/Unknown/);});
+test('CLI defaults to stock Release and accepts explicit cleanup and region bounds flags',()=>{assert.deepEqual(api.parseArgs(['--sdk-root','SDK','--output-root','OUT','--vs-root','VS']),{sdkRoot:'SDK',outputRoot:'OUT',vsRoot:'VS'});assert.deepEqual(api.parseArgs(['--spine-inline-color-cleanup']),{spineInlineColorCleanup:true});assert.deepEqual(api.parseArgs(['--unit-region-bounds']),{unitRegionBounds:true});assert.deepEqual(api.parseArgs(['--spine-inline-color-cleanup','--unit-region-bounds']),{spineInlineColorCleanup:true,unitRegionBounds:true});assert.throws(()=>api.parseArgs(['--spine-inline-color-cleanup','false']),/Unknown/);assert.throws(()=>api.parseArgs(['--unit-region-bounds','false']),/Unknown/);assert.throws(()=>api.parseArgs(['--high-resolution-pacing']),/Unknown/);assert.throws(()=>api.parseArgs(['--sdk-root']),/Unknown/);});
+test('region bounds applies exact binding anchors only in the clone and verifies its independent receipt',t=>{
+  const root=fixture(t),sdk=path.join(root,'sdk'),clone=path.join(root,'clone'),patch=unitRegionBounds.definition();
+  const before=Buffer.from(patch.changes.map(change=>change.before).join('\n')+'\n');
+  const after=Buffer.from(patch.changes.map(change=>change.after).join('\n')+'\n');
+  const expected={...patch,beforeSha256:sha(before),afterSha256:sha(after)};
+  const installed=write(path.join(sdk,patch.file),before),copied=write(path.join(clone,patch.file),before);
+  assert.deepEqual(api.prepareSourcePatches(clone,false,[expected],'unitRegionBounds'),[]);
+  assert.throws(()=>unitRegionBounds.patchSource(before),/source hash/);
+  const duplicate=Buffer.concat([before,before]);
+  assert.throws(()=>unitRegionBounds.patchSource(duplicate,{...expected,beforeSha256:sha(duplicate)}),/patch anchor/);
+  const patches=api.prepareSourcePatches(clone,true,[expected],'unitRegionBounds');
+  assert.deepEqual(fs.readFileSync(copied),before);
+  const diff=api.writeSourcePatchArtifacts(root,clone,patches);
+  assert.equal(path.basename(diff.file),'unit-region-bounds-diff.json');
+  assert.equal(JSON.parse(fs.readFileSync(diff.file)).feature,'unitRegionBounds');
+  assert.deepEqual(fs.readFileSync(copied),after);
+  assert.deepEqual(fs.readFileSync(installed),before);
+  const backup=path.join(root,'source-patch-backups/unit-region-bounds',patch.file);
+  assert.deepEqual(fs.readFileSync(backup),before);
+  api.verifySourcePatchArtifacts(root,patches,diff);
+  fs.writeFileSync(backup,'drift');
+  assert.throws(()=>api.verifySourcePatchArtifacts(root,patches,diff),/backup changed/);
+});
+
+test('manual camera matrix patch is opt-in, preserves stock dispatch and records the verified clone', t => {
+  const feature = 'manualCameraMatrices';
+  assert.equal(Object.hasOwn(api.parseArgs([]), feature), false);
+  assert.deepEqual(api.parseArgs(['--manual-camera-matrices', '--unit-region-bounds']), {
+    manualCameraMatrices: true, unitRegionBounds: true
+  });
+  assert.throws(() => api.parseArgs(['--manual-camera-matrices', 'false']), /Unknown/);
+
+  const patch = manualCameraMatrices.definition();
+  assert.equal(patch.file, 'cocos/renderer/scene/RenderFlow.cpp');
+  assert.equal(patch.beforeSha256, '91e8fa68945451a6ae12b8a1324fb7e429c78dc69bd06feb3b09fbd7ae2a6f53');
+  assert.equal(patch.afterSha256, '662450d433e2eb61af9a31baf436958b92d1df023ba444a6ded8a97523f01848');
+  const patchedSource = patch.changes.map(change => change.after).join('\n');
+  const dispatch = patch.changes.find(change => change.after.includes('calculateLocalMatrices<true>(-1);'));
+  assert.ok(dispatch, 'The patch adds the manual matrix dispatch');
+  assert.match(dispatch.after, /#if defined\(HKD_MANUAL_MATRIX_SSE2\)[\s\S]*?if \(camera\)\s*\{\s*calculateLocalMatrices<true>\(-1\);\s*calculateWorldMatrix\(\);\s*\}\s*else/);
+  assert.ok(dispatch.after.endsWith(dispatch.before), 'The normal render still reaches the original worker dispatch');
+  assert.match(patchedSource, /calculateLocalMatrices<false>\(tid\)/);
+  assert.match(patchedSource, /_mm_loadu_si128/);
+  assert.match(patchedSource, /freeFlag == SPACE_FREE_FLAG/);
+
+  for (const lineEnding of ['\n', '\r\n']) {
+    const root = fixture(t), sdk = path.join(root, 'sdk'), clone = path.join(root, 'clone');
+    const source = key => Buffer.from(['// before anchors', ...patch.changes.map(change => change[key]), '// after anchors', '']
+      .join('\n').replaceAll('\n', lineEnding));
+    const before = source('before'), expected = source('after');
+    const hashes = { beforeSha256: sha(before), afterSha256: sha(expected) };
+    const fixturePatch = { ...patch, ...hashes };
+    const installed = write(path.join(sdk, patch.file), before), copied = write(path.join(clone, patch.file), before);
+    const originals = [{ file: patch.file, sha256: hashes.beforeSha256 }];
+
+    const disabled = api.prepareSourcePatches(clone, false, [fixturePatch], feature);
+    assert.deepEqual(disabled, []);
+    assert.equal(api.writeSourcePatchArtifacts(root, clone, disabled), null);
+    assert.deepEqual(fs.readFileSync(copied), before);
+    assert.throws(() => manualCameraMatrices.patchSource(before), /source hash/);
+    const duplicate = Buffer.concat([before, before]);
+    assert.throws(() => manualCameraMatrices.patchSource(duplicate, { ...fixturePatch, beforeSha256: sha(duplicate) }), /patch anchor/);
+    assert.throws(() => manualCameraMatrices.patchSource(before, { ...fixturePatch, afterSha256: hashes.beforeSha256 }), /result hash/);
+
+    const prepared = api.prepareSourcePatches(clone, true, [fixturePatch], feature);
+    assert.deepEqual(fs.readFileSync(copied), before);
+    const receipt = { file: patch.file, feature, kind: 'implementation', ...hashes };
+    assert.deepEqual(prepared.map(api.sourcePatchRecord), [receipt]);
+    const diff = api.writeSourcePatchArtifacts(root, clone, prepared);
+    assert.equal(path.basename(diff.file), 'manual-camera-matrices-diff.json');
+    const diffBytes = fs.readFileSync(diff.file);
+    assert.equal(diff.sha256, sha(diffBytes));
+    assert.deepEqual(JSON.parse(diffBytes), {
+      format: 'exact-replacement-v1', feature, patches: [{ ...receipt, changes: patch.changes }]
+    });
+    assert.deepEqual(fs.readFileSync(copied), expected);
+    assert.deepEqual(fs.readFileSync(installed), before);
+    assert.deepEqual(fs.readFileSync(path.join(root, 'source-patch-backups/manual-camera-matrices', patch.file)), before);
+    assert.deepEqual(api.verifySourceFiles(sdk, clone, originals, prepared),
+      api.implementationDigest([{ file: patch.file, sha256: hashes.afterSha256 }]));
+    api.verifySourcePatchArtifacts(root, prepared, diff);
+  }
+});
+
+const creatorSDK=process.env.HKD_CREATOR_SDK_ROOT||(process.platform==='win32'?'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/cocos2d-x':null);
+test('the pristine Creator source accepts the audited region bridge in memory',{skip:!creatorSDK||!fs.existsSync(path.join(creatorSDK,unitRegionBounds.definition().file))},()=>{
+  const patch=unitRegionBounds.definition(),file=path.join(creatorSDK,patch.file),before=fs.readFileSync(file);
+  const after=unitRegionBounds.patchSource(before,patch);
+  assert.equal(sha(after),patch.afterSha256);
+  assert.equal(after.toString().split('ns->defineFunction("_hkdRegionBounds", _SE(js_hkdRegionBounds));').length,2);
+  assert.deepEqual(fs.readFileSync(file),before);
+  assert(!require('../native/spine-inline-color-cleanup.cjs').PATCHES.some(cleanup=>cleanup.file===patch.file));
+});
 test('fresh output must be outside project, SDK, tools and existing builds',t=>{const root=fixture(t),project=path.join(root,'project'),sdk=path.join(root,'sdk'),tools=path.join(root,'tools');[project,sdk,tools].forEach(dir=>fs.mkdirSync(dir));
   for(const bad of [path.join(project,'build'),path.join(sdk,'build'),path.join(tools,'build'),root])assert.throws(()=>api.validateOutput(bad,project,sdk,tools));
   const out=path.join(root,'fresh');assert.equal(api.validateOutput(out,project,sdk,tools),out);assert(!fs.existsSync(out));

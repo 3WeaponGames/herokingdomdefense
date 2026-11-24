@@ -94,11 +94,12 @@ var exp_KinghtFallDailyData = function (t) {
   _ctor.prototype.getOnlineTime = function () {
     return this.data.onlineTime;
   };
-  _ctor.prototype.addOnlineTime = function (t) {
+  _ctor.prototype.addOnlineTime = function (t, persist) {
     undefined === t && (t = 1);
-    this.ensureCurrentDay();
+    var rolledOver = this.ensureCurrentDay(), previous = this.data.onlineTime;
     this.data.onlineTime += t;
-    this.saveData();
+    // Playtime rewards use whole minutes. Persist new eligibility immediately.
+    if (persist !== false || rolledOver || Math.floor(previous / 60) !== Math.floor(this.data.onlineTime / 60)) this.saveData();
     return this.data.onlineTime;
   };
   _ctor.prototype.getOnlineTimeReward = function (t) {

@@ -19,12 +19,14 @@ test('inherited stage markers match authored defaults through owner, placement, 
  near(actual.position,expected);near(actual.local,nodeLocal);assert(actual.inherited);assert(!own(f.building,'spawnPosition'));assert.deepEqual(actual.local.future,{keep:true});assert.equal(JSON.stringify(f),before);
 });
 
-test('one explicit stage exit stays fixed across all barracks branches and tiers while inverse drags retain transforms',()=>{
+test('the destination stays fixed across tiers while a mirrored spawn and inverse drags track placement',()=>{
  const f=fixture(),position=f.building.spawnPosition={x:110,y:-155,future:{keep:17}},before=JSON.stringify(f.building),owner=Maps.model(f.source.data).byId[f.building.template.node],expected=M.toWorld(f.building,Maps.point([owner.world[0],owner.world[1],owner.world[2],owner.world[3],0,0],position));
  for(const [i,row]of f.config.BuildEnum[3].levelList.entries()){
   row.WorldScale=.3+i*.08;row.ModelOffset={x:i*11,y:-i*7};f.building.previewBranch=row.index;
   const record=Spawn.describe(normalized(f.building),f.source.data,f.config,4),marker=Spawn.project(f.building,record);assert(!marker.inherited);near(marker.position,expected);assert.deepEqual(marker.local,position);near(Spawn.toLocal(marker,marker.position),position);
   const moved={x:marker.position.x+44,y:marker.position.y-29},local=Spawn.toLocal(marker,moved);near(Spawn.project(Object.assign({},f.building,{spawnPosition:local}),record).position,moved);
+  const flipped={...f.building,flipX:true},reflected=p=>M.toWorld(f.building,{x:-M.toLocal(f.building,p).x,y:M.toLocal(f.building,p).y});
+  const next=Spawn.project(flipped,record);near(next.spawn,reflected(marker.spawn));near(next.position,reflected(marker.position));near(Spawn.toLocal(next,next.position),position);
  }
  delete f.building.previewBranch;assert.equal(JSON.stringify(f.building),before);
 });
@@ -46,7 +48,7 @@ test('preview records refresh a moved exit without rewriting shared building def
 });
 
 test('stage validation accepts only optional finite barracks overrides and preserves unknown data',()=>{
- const f=fixture(),map=M.createMap('Map01','Map 1','forest'),issues=()=>M.validateStage(f.stage,map).filter(message=>/Squad spawn position/.test(message));
+ const f=fixture(),map=M.createMap('Map01','Map 1','forest'),issues=()=>M.validateStage(f.stage,map).filter(message=>/Initial squad destination/.test(message));
  assert.deepEqual(issues(),[]);f.building.spawnPosition={x:10000,y:-10000,future:'retain'};assert.deepEqual(issues(),[]);assert.equal(f.building.spawnPosition.future,'retain');
  for(const value of [null,[],{x:'10',y:0},{x:Infinity,y:0},{x:10001,y:0}]){f.building.spawnPosition=value;assert(issues().length,'Invalid override accepted: '+JSON.stringify(value));}
  delete f.building.spawnPosition;f.stage.buildings.find(b=>b.kind===2).spawnPosition={x:0,y:0};assert(issues().length);assert.equal(Spawn.describe({kind:2},null,null),null);

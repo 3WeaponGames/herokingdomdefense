@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('node:fs'),path=require('node:path'),Module=require('node:module'),assert=require('node:assert/strict'),{test}=require('node:test');
+const fs=require('node:fs'),path=require('node:path'),Module=require('node:module'),assert=require('node:assert/strict'),vm=require('node:vm'),{test}=require('node:test');
 // Reuse the maintained native RenderFlow model; no game or GPU process starts.
 const project=process.env.HKD_TEST_PROJECT_ROOT||path.resolve(__dirname,'../..'),suite=path.join(project,'tools/testing/native-spine-capture.test.cjs'),owning=path.join(project,'assets/_script/KinghtFallDepthView.js'),localRequire=Module.createRequire(suite);
 const candidate=fs.readFileSync(process.env.HKD_GATE_DEPTH_SOURCE||owning,'utf8');
@@ -49,6 +49,33 @@ for(const unsupported of ['cached Spine','unknown cache API','ParticleSystem','D
 
 test('inactive middleware branches and disabled particle components do not disable the valid optimization',()=>{
  const f=enhance(current.fixture(3)),node=new f.cc.Node('inactive',f.scene);node.activeInHierarchy=false;node._components=[new f.cc.ParticleSystem()];const particle=new f.cc.ParticleSystem();particle.enabled=false;f.renderers[0].node._components.push(particle);const scope=ownedScope(f);assert(scope.prepare());assert.equal(f.updates(),1);scope.finish();
+});
+
+test('a failed batch preflight is not repeated by its individual fallback camera',()=>{
+ const f=enhance(current.fixture(3)),scope=ownedScope(f),node=f.renderers[1].node,original=node._components;
+ const particle=new f.cc.ParticleSystem();original.push(particle);
+ let reads=0;Object.defineProperty(node,'_components',{get(){reads++;return original;}});
+ assert.equal(scope.prepare(),false);const first=reads;assert(first>0);
+ assert.equal(scope.prepare(),false);assert.equal(reads,first);
+ scope.capture(f.renderers[0].node,()=>f.pass(f.renderers[0].node));scope.finish();
+ assert.equal(f.updates(),0);assert(f.renderers.every(r=>r.state.meshes===1));
+ particle.enabled=false;const next=ownedScope(f);assert.equal(next.prepare(),true);
+ assert.equal(f.updates(),1);next.finish();
+});
+
+for(const change of ['mode','disabled','detached','component replaced'])test('a known cached rig skips later scans while live and recovers when '+change,()=>{
+ const f=enhance(current.fixture(4)),blocker=f.renderers[2],unrelated=f.renderers[0].node,components=unrelated._components;
+ Object.getPrototypeOf(blocker).isAnimationCached=function(){return this.cached;};delete blocker.isAnimationCached;
+ vm.runInContext('nativeCacheMode=sp.Skeleton.prototype.isAnimationCached',f.context);blocker.cached=true;
+ let reads=0;Object.defineProperty(unrelated,'_components',{get(){reads++;return components;}});
+ function prepare(){const scope=ownedScope(f);try{return scope.prepare();}finally{scope.finish();}}
+ assert.equal(prepare(),false);assert(reads>0);assert.equal(f.owner._cachedCaptureBlocker,blocker);
+ const first=reads;assert.equal(prepare(),false);assert.equal(reads,first);assert.equal(f.updates(),0);
+ if(change==='mode')blocker.cached=false;
+ if(change==='disabled')blocker.enabled=false;
+ if(change==='detached')f.scene.children.splice(f.scene.children.indexOf(blocker.node),1);
+ if(change==='component replaced')blocker.node._components=[];
+ assert.equal(prepare(),true);assert(reads>first);assert.equal(f.owner._cachedCaptureBlocker,null);assert.equal(f.updates(),1);
 });
 
 test('the Scene activeInHierarchy getter is never queried by the preflight traversal',()=>{

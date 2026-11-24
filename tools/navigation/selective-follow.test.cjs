@@ -16,7 +16,7 @@ function setup(){
  e.tick=(units,frames=1)=>{for(let frame=0;frame<frames;frame++){e.now=(e.now||0)+50;e.setTime(e.now);e.nav.beginFrame(game);game.collectFollowers();units.forEach(u=>u.onUpdate(.05));}};
  return e;
 }
-test('independent Rally leaves collected followers active; release keeps their own posts and both formations resolve in the same frame',()=>{
+test('independent Rally leaves followers active and releasing them sends them to the hero without changing other posts',()=>{
  const e=setup(),game=e.game;game._separateArmyCommands=true;e.load('KinghtFallConfig').KinghtFallParameter.FollowMode=1;
  const followers=[e.soldier(-35),e.soldier(35)],others=[e.soldier(250,0,3),e.soldier(280,0,4)];
  game.followCommand();assert(followers.every(u=>u.isAgg));assert(others.every(u=>!u.isAgg));
@@ -24,8 +24,22 @@ test('independent Rally leaves collected followers active; release keeps their o
  assert(followers.every(u=>u.isAgg&&!u.rallyPoint));assert(others.every(u=>!u.isAgg&&u.rallyPoint.pos.x===70&&u.rallyPoint.pos.y===80));
  e.nav.beginFrame(game);const followSlots=followers.map(u=>game.getArmyOrderGoal(u,{x:70,y:80})),rallySlots=others.map(u=>game.getArmyOrderGoal(u,{x:70,y:80}));
  assert(followSlots.every(s=>s&&!s.pending));assert(rallySlots.every(s=>s&&!s.pending));assert.equal(game._followFormation.members.length,2);assert.equal(game._rallyFormation.members.length,2);
- followers[0].node.setPosition(130,90);game.followCommand();assert(!game.isAgg);near(followers[0].rallyPoint.pos.x,130);assert(game.ndAggFlag.active,'releasing Follow removed the independent rally flag');
- game.ctrPlay.node.setPosition(-220,-100);game.followCommand();assert(!followers[0].isAgg);near(followers[0].rallyPoint.pos.x,130);assert(others.every(u=>u.rallyPoint.pos.x===70));
+ followers[0].node.setPosition(130,90);game.ctrPlay.node.setPosition(195,40);game.followCommand();assert(!game.isAgg);near(followers[0].rallyPoint.pos.x,195);assert(game.ndAggFlag.active,'releasing Follow removed the independent rally flag');
+ game.ctrPlay.node.setPosition(-220,-100);game.followCommand();assert(!followers[0].isAgg);near(followers[0].rallyPoint.pos.x,195);assert(others.every(u=>u.rallyPoint.pos.x===70));
+});
+test('released troops walk toward the captured hero position and accept a newer Rally or Follow command',()=>{
+ const e=setup(),game=e.game;game._separateArmyCommands=true;
+ const unit=e.soldier(-35);
+ game.followCommand();assert(unit.isAgg);
+ const release={x:240,y:15};game.ctrPlay.node.setPosition(release.x,release.y);game.followCommand();
+ assert(!unit.isAgg);assert.deepEqual({...unit.rallyPoint.pos},release);
+ game.ctrPlay.node.setPosition(-280,-100);const before=distance(unit.node,release);e.tick([unit],6);
+ assert(distance(unit.node,release)<before);assert.deepEqual({...unit.rallyPoint.pos},release);
+ game.rallyCommand();near(unit.rallyPoint.pos.x,-280);near(unit.rallyPoint.pos.y,-100);
+ game.ctrPlay.node.setPosition(unit.node.position);game.followCommand();
+ assert(unit.isAgg&&unit._followSelected);assert.equal(unit.rallyPoint,null);assert.equal(unit._rallyOrder,null);
+ game.ctrPlay.node.setPosition(290,30);game.followCommand();near(unit.rallyPoint.pos.x,290);
+ game.ctrPlay.node.setPosition(unit.node.position);game.followCommand();assert(unit.isAgg&&!unit.rallyPoint);
 });
 test('Follow automatically collects units touched by the visible ellipse, while outsiders hold their posts',()=>{
  const e=setup(),a=e.soldier(-40),b=e.soldier(45,0,3),outside=e.soldier(100,40);
@@ -40,9 +54,9 @@ test('separate archer and cavalry groups keep independent posts through repeated
  e.game.changeAge();assert(e.game.selectFollower(archer));archer.node.setPosition(-80,70);e.game.changeAge();
  const archerPost={...archer.rallyPoint.pos};
  e.game.ctrPlay.node.setPosition(180,0);e.game.changeAge();assert(horse.isAgg);
- horse.node.setPosition(120,-65);e.game.changeAge();e.game.ctrPlay.node.setPosition(-150,-150);e.tick([archer,horse],8);
+ horse.node.setPosition(120,-65);e.game.changeAge();e.game.ctrPlay.node.setPosition(-150,-150);e.tick([archer,horse],140);
  assert.deepEqual({...archer.rallyPoint.pos},archerPost);near(distance(archer.node,archerPost),0);
- near(horse.rallyPoint.pos.x,120);near(horse.rallyPoint.pos.y,-65);
+ near(horse.rallyPoint.pos.x,180);near(horse.rallyPoint.pos.y,0);
  assert.equal(e.game.getArmyOrderGoal(archer,archerPost),null,'posted units entered the active follow formation');
 });
 test('overlapping taps recruit separate soldiers and world-camera/Canvas transforms are respected',()=>{
@@ -71,7 +85,7 @@ test('posted units engage enemies within their own sight, respect their post lea
  unit.attackRange=30;unit.cfg={...unit.cfg,SearchRange:160,SightRange:300};e.game.ctrPlay.attackRange=300;
  const enemy={node:new Node('enemy',e.game.ndMain,220,0),attackRange:180,isDead:()=>false};
  enemy.node._combatGeneration=1;e.game.gameData.enemies.push(enemy);
- e.game.changeAge();e.game.changeAge();const post={...unit.rallyPoint.pos};e.tick([unit],10);assert(unit.node.x>-40,'a visible enemy outside melee range was ignored');
+ e.game.changeAge();e.game.ctrPlay.node.setPosition(unit.node.position);e.game.changeAge();const post={...unit.rallyPoint.pos};e.game.ctrPlay.node.setPosition(0,-220);e.tick([unit],10);assert(unit.node.x>-40,'a visible enemy outside melee range was ignored');
  let attacks=0;unit.time.Attack=1;unit.doAttackStart=()=>{attacks++;unit.doIdel();};
  const firePosition=unit.node.x;enemy.node.setPosition(firePosition+20,0);e.tick([unit],5);assert(attacks>0);near(unit.node.x,firePosition);
  enemy.node.setPosition(post.x+310,0);e.tick([unit],90);near(distance(unit.node,post),0);
@@ -96,7 +110,7 @@ test('a selected casualty respawns at its barracks and walks to its last release
  delete unit.isDead;barracks.enemyList=[unit];unit.setParent(barracks);
  Object.assign(barracks,{node:new Node('barracks',e.game.ndMain,-150,-20),getIsWork:()=>true,canAddVideoSoldier:()=>false,_testAdLimitBypass:false,ndVideoSoldier:{},
   time:{Reborn:0,RebornMax:1},ndPro:{active:false,getChildByName:()=>({getComponent:()=>({fillRange:0})})},getPos:()=>new Vec2(-150,-20)});
- e.game.changeAge();e.game.selectFollower(unit);unit.node.setPosition(20,20);e.game.changeAge();
+ e.game.changeAge();e.game.selectFollower(unit);unit.node.setPosition(20,20);e.game.ctrPlay.node.setPosition(20,20);e.game.changeAge();
  e.game.ctrPlay.node.setPosition(20,20);e.game.changeAge();e.game.selectFollower(unit);unit.node.setPosition(70,25);
  unit.onAttacked(1000);assert(!unit._followSelected&&!unit.isAgg);assert.equal(barracks.waitEnemy.length,1);
  barracks.doTime(1.1);assert(unit.node.active);near(unit.node.x,-150);assert(!unit.isAgg);
@@ -109,13 +123,13 @@ test('a selected casualty respawns at its barracks and walks to its last release
 });
 test('barracks checkpoint and replacement roster slots retain posts without changing legacy save fields',()=>{
  const e=setup(),B=e.load('KinghtFallBuildBarracks').default,b=new B(),unit=e.soldier(-20);
- Object.assign(b,{ID:7,index:2,VideoTimes:1,enemyList:[unit]});unit.setParent(b);
+ Object.assign(b,{ID:7,index:2,enemyList:[unit]});unit.setParent(b);
  b.setSoldierRallyPoint(unit,{x:90,y:-60});const saved=JSON.parse(JSON.stringify(b.getSave()));
- assert.deepEqual(saved,{point:7,level:2,data:1,rallyPosts:[{x:90,y:-60}]});
+ assert.deepEqual(saved,{point:7,level:2,data:0,rallyPosts:[{x:90,y:-60}]});
  const copy=new B();Object.assign(copy,{ID:7,buildCfg:{levelList:[1,2,3]},setLevel(value){this.index=value;}});
  copy.setSave(saved);const replacement=e.soldier(-140);replacement.setParent(copy);copy.enemyList=[replacement];replacement.setNew();
  near(replacement.rallyPoint.pos.x,90);near(replacement.rallyPoint.pos.y,-60);
- assert.equal(copy.VideoTimes,1);copy.setSave({point:7,level:1,data:2});assert(!('rallyPosts'in copy.getSave()));
+ copy.setSave({point:7,level:1,data:2});assert(!('rallyPosts'in copy.getSave()));
  copy.setSave({level:1,data:2,rallyPosts:[{x:NaN,y:1},null,{x:4,y:5}]});assert.equal(copy._soldierRallyPosts[0],null);assert.equal(copy._soldierRallyPosts[1],null);
 });
 test('living roster refresh preserves selection while checkpoint writes occur only when releasing a selected group',()=>{

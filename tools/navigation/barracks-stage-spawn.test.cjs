@@ -1,5 +1,5 @@
 'use strict';
-// Stage-local spawn overrides use the real barracks, soldier and navigation
+// Stage-local deployment destinations use the real barracks, soldier and navigation
 // methods. Config lookup, artwork and sound remain inert scene adapters.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const {environment,Node,Vec2,PhysicsCircleCollider,distance}=require('./runtime-harness.cjs');
@@ -25,48 +25,114 @@ function fixture(applyScale=false){
 function expected(f,b,p){return f.game.ndMain.convertToNodeSpaceAR(b.node.convertToWorldSpaceAR(new Vec2(p.x,p.y)));}
 function near(actual,point){assert(distance(actual,point)<1e-6,JSON.stringify({actual:{x:actual.x,y:actual.y},expected:point}));}
 
-test('a stage spawn has precedence over shared squad/legacy defaults, including an exact zero offset',()=>{
- const row={SpawnPosition:{x:35,y:-70,future:'default'},SpawnPositions:{'1':{x:50,y:-80}}},owner={squadSpawnPosition:{x:0,y:0,future:'stage'}},before=JSON.stringify({row,owner});
- assert.equal(Positions.anchor(row,owner),owner.squadSpawnPosition);assert.equal(JSON.stringify({row,owner}),before);
- for(const value of [undefined,null,{x:'0',y:0},{x:NaN,y:0},{x:10001,y:0}])assert.equal(Positions.anchor(row,{squadSpawnPosition:value}),row.SpawnPosition);
- const legacy={SpawnPositions:{'1':{x:50,y:-80}}},legacyBefore=JSON.stringify(legacy);assert.equal(Positions.anchor(legacy,{}),null);assert.equal(Positions.get(legacy,0),legacy.SpawnPositions['1']);assert.equal(JSON.stringify(legacy),legacyBefore);
+
+test('stage destinations stay separate from building spawn defaults and accept a zero offset',()=>{
+ const row={SpawnPosition:{x:35,y:-70},SpawnPositions:{'1':{x:50,y:-80}}},owner={squadSpawnPosition:{x:0,y:0,future:'stage'}},before=JSON.stringify({row,owner});
+ assert.equal(Positions.anchor(row),row.SpawnPosition);
+ assert.equal(Positions.destination(row,owner),owner.squadSpawnPosition);
+ for(const value of [undefined,null,{x:'0',y:0},{x:NaN,y:0},{x:10001,y:0}]) assert.equal(Positions.destination(row,{squadSpawnPosition:value}),null);
+ assert.equal(JSON.stringify({row,owner}),before);
 });
 
-test('the same placed barracks override survives every authored branch and tier with exact transformed coordinates',()=>{
- const f=fixture(),b=f.building(180,90),point={x:140,y:-210};b.node.angle=32;b.node.scaleX=.75;b.node.scaleY=1.15;b.squadSpawnPosition=new Vec2(point.x,point.y);
- for(const row of f.rows){b.setLevel(row.index);assert.equal(b.enemyList.length,1);near(b.enemyList[0].node,expected(f,b,point));assert.equal(b.squadSpawnPosition.x,point.x);assert.equal(b.squadSpawnPosition.y,point.y);assert(b.enemyList[0].node.active&&!b.enemyList[0].isDead());}
- assert.equal(JSON.stringify(authored.BuildEnum[3].levelList),JSON.stringify(f.rows),'Runtime placement never rewrites the shared authored rows');
-});
-
-test('a stage point stays fixed through real WorldScale and ModelOffset upgrades while inherited defaults still follow tier artwork',()=>{
- const f=fixture(true),custom=f.building(-650,0),inherited=f.building(650,0),point={x:80,y:-140},sourceBefore=JSON.stringify(authored.BuildEnum[3].levelList);custom.node.angle=28;custom.node.scaleX=.75;custom.node.scaleY=1.15;custom.squadSpawnPosition=new Vec2(point.x,point.y);const fixed=expected(f,custom,point);
+test('new branch recruits use the building spawn and keep the exact transformed stage destination through upgrades',()=>{
+ const f=fixture(true),b=f.building(180,90),point={x:140,y:-210};
+ b.node.angle=32;b.node.scaleX=-.75;b.node.scaleY=1.15;
+ b.squadSpawnPosition=new Vec2(point.x,point.y);
+ const destination=expected(f,b,point),sourceBefore=JSON.stringify(authored.BuildEnum[3].levelList);
  f.rows.forEach((row,index)=>{row.WorldScale=.5+index*.06;row.ModelOffset={x:60-index*4,y:-25+index*2};});
  for(const row of f.rows){
-  for(const b of [custom,inherited]){const unit=b.enemyList[0];if(unit){unit.hp=0;unit.state=4;unit.node.active=false;unit.rigidBody.active=false;}b.setLevel(row.index);assert(b._buildingWorldScaleRuntime,'The test must apply the real authored owner transform');}
-  near(custom.enemyList[0].node,fixed);near(inherited.enemyList[0].node,expected(f,inherited,row.SpawnPosition));assert.equal(custom.squadSpawnPosition.x,point.x);assert.equal(custom.squadSpawnPosition.y,point.y);assert.equal(f.game.gameData.soldiers.length,2);
+  const previous=b.enemyList[0],position=previous&&previous.node.position;
+  b.setLevel(row.index);
+  const unit=b.enemyList[0];
+  assert.equal(b.enemyList.length,1);
+  assert(b._buildingWorldScaleRuntime&&unit.node.active&&!unit.isDead());
+  near(unit.node,unit===previous?position:expected(f,b,row.SpawnPosition));
+  near(unit.rallyPoint.pos,destination);
+  assert(!('rallyPosts' in b.getSave()),'The editor destination is never recorded as a player order');
  }
+ assert.deepEqual({...b.squadSpawnPosition},point);
  assert.equal(JSON.stringify(authored.BuildEnum[3].levelList),sourceBefore);
 });
 
-test('a stage override affects only its placed barracks and resetting it restores the inherited default',()=>{
- const f=fixture(),custom=f.building(-450,0),inherited=f.building(450,0),row=f.rows[0];custom.squadSpawnPosition=new Vec2(-90,-130);custom.setLevel(row.index);inherited.setLevel(row.index);
- near(custom.enemyList[0].node,expected(f,custom,custom.squadSpawnPosition));near(inherited.enemyList[0].node,expected(f,inherited,row.SpawnPosition));assert.equal(inherited.squadSpawnPosition,null);
- custom.squadSpawnPosition=null;const casualty=custom.enemyList[0];casualty.hp=0;casualty.state=4;casualty.node.active=false;casualty.rigidBody.active=false;custom._placeSoldier(casualty,0);
- near(casualty.node,expected(f,custom,row.SpawnPosition));assert.equal(custom.squadSpawnPosition,null);
+test('a stage destination changes only its own barracks and new troops walk to it',()=>{
+ const f=fixture(),custom=f.building(-450),inherited=f.building(450),row=f.rows[0];
+ custom.squadSpawnPosition=new Vec2(-90,-230);
+ custom.setLevel(row.index);inherited.setLevel(row.index);
+ const unit=custom.enemyList[0],neighbor=inherited.enemyList[0],destination=expected(f,custom,custom.squadSpawnPosition);
+ const spawn=expected(f,custom,row.SpawnPosition),neighborSpawn=expected(f,inherited,row.SpawnPosition);
+ near(unit.node,spawn);near(unit.rallyPoint.pos,destination);
+ near(neighbor.node,neighborSpawn);near(neighbor.rallyPoint.pos,neighborSpawn);
+ for(let frame=0;frame<260;frame++){
+  const before=unit.node.position;
+  f.e.setTime(frame*50);f.e.nav.beginFrame(f.game);unit.onUpdate(.05);
+  assert(distance(before,unit.node)<=unit.getSpeed()*.05+1e-6,'Uses ordinary walking speed');
+ }
+ near(unit.node,destination);near(neighbor.node,neighborSpawn);
+ assert.equal(f.created(),2);
 });
 
-test('an explicit stage origin works with legacy numbered defaults while an unconfigured instance keeps its original slot',()=>{
- const f=fixture(),row=f.rows[0];delete row.SpawnPosition;row.SpawnPositions={'1':{x:55,y:-120,future:'keep'}};const before=JSON.stringify(row),custom=f.building(-450,0),inherited=f.building(450,0);custom.squadSpawnPosition=new Vec2(0,0);custom.setLevel(row.index);inherited.setLevel(row.index);
- near(custom.enemyList[0].node,expected(f,custom,{x:0,y:0}));near(inherited.enemyList[0].node,expected(f,inherited,row.SpawnPositions['1']));assert.equal(inherited.squadSpawnPosition,null);assert.equal(JSON.stringify(row),before);
+test('an explicit origin destination preserves the legacy numbered spawn slot',()=>{
+ const f=fixture(),row=f.rows[0];
+ delete row.SpawnPosition;row.SpawnPositions={'1':{x:55,y:-120,future:'keep'}};
+ const before=JSON.stringify(row),b=f.building(-450);
+ b.squadSpawnPosition=new Vec2(0,0);b.setLevel(row.index);
+ near(b.enemyList[0].node,expected(f,b,row.SpawnPositions['1']));
+ near(b.enemyList[0].rallyPoint.pos,expected(f,b,{x:0,y:0}));
+ assert.equal(JSON.stringify(row),before);
 });
 
-test('casualties respawn at the stage override without changing the saved personal rally point',()=>{
- const f=fixture(),b=f.building(),point={x:-170,y:-130};b.squadSpawnPosition=new Vec2(point.x,point.y);b.setLevel(f.rows[0].index);const unit=b.enemyList[0],rally={x:260,y:180};b.setSoldierRallyPoint(unit,rally);unit.node.setPosition(600,600);unit.hp=0;unit.state=4;unit.node.active=false;unit.rigidBody.active=false;b.addDie(unit);b.time.Reborn=b.time.RebornMax;b.doTime(.05);
- assert.equal(b.enemyList[0],unit);assert.equal(f.created(),1);assert.equal(b.waitEnemy.length,0);assert(unit.node.active&&!unit.isDead());near(unit.node,expected(f,b,point));assert.deepEqual({...b.getSoldierRallyPoint(unit)},rally);assert.equal(b.squadSpawnPosition.x,point.x);
+function respawn(b,unit){
+ unit.hp=0;unit.state=4;unit.node.active=false;unit.rigidBody.active=false;
+ b.addDie(unit);b.time.Reborn=b.time.RebornMax;b.doTime(.05);
+ assert.equal(b.enemyList[0],unit);assert.equal(b.waitEnemy.length,0);
+ assert(unit.node.active&&!unit.isDead());
+}
+
+test('respawns use the building spawn and a saved rally replaces the first destination',()=>{
+ const f=fixture(),b=f.building(),point={x:-170,y:-130},row=f.rows[0];
+ b.squadSpawnPosition=new Vec2(point.x,point.y);b.setLevel(row.index);
+ const unit=b.enemyList[0],spawn=expected(f,b,row.SpawnPosition);
+ near(unit.rallyPoint.pos,expected(f,b,point));
+ respawn(b,unit);near(unit.node,spawn);near(unit.rallyPoint.pos,spawn);
+ const rally={x:260,y:180};unit.setPersonalRallyPoint(rally,true);
+ respawn(b,unit);near(unit.node,spawn);near(unit.rallyPoint.pos,rally);
+ assert.deepEqual({...b.getSoldierRallyPoint(unit)},rally);
+ assert.equal(f.created(),1);assert.equal(b.squadSpawnPosition.x,point.x);
 });
 
-test('a blocked stage override retains the living actor and uses the existing walking egress',()=>{
- const f=fixture(),b=f.building();b.squadSpawnPosition=new Vec2(0,-80);f.e.box(0,-80,120,120);b.setLevel(f.rows[0].index);const unit=b.enemyList[0],nav=f.e.nav.get(f.game);assert(unit.node.active&&!unit.isDead());near(unit.node,{x:0,y:-80});assert(unit._terrainExit);
- let escaped=false;for(let frame=0;frame<500;frame++){const before=unit.node.position;f.e.setTime(frame*50);f.e.nav.beginFrame(f.game);unit.onUpdate(.05);assert(unit.node.active&&!unit.isDead());assert(distance(before,unit.node)<=unit.getSpeed()*.05+1e-6);assert(nav.gridFor(unit).canExitBlocked(before,unit.node,nav.radius(unit)));if(nav.gridFor(unit).isWalkable(unit.node,nav.radius(unit))){escaped=true;break;}}
- assert(escaped);assert.equal(f.created(),1);assert.equal(b.squadSpawnPosition.x,0);assert.equal(b.squadSpawnPosition.y,-80);
+test('a blocked stage destination leaves the spawn on safe ground and does not teleport troops',()=>{
+ const f=fixture(),b=f.building(),row=f.rows[0],point={x:0,y:-380};
+ b.squadSpawnPosition=new Vec2(point.x,point.y);f.e.box(point.x,point.y,120,120);b.setLevel(row.index);
+ const unit=b.enemyList[0],nav=f.e.nav.get(f.game),radius=nav.radius(unit),grid=nav.gridFor(unit),spawn=expected(f,b,row.SpawnPosition);
+ near(unit.node,spawn);
+ for(let frame=0;frame<300;frame++){
+  const before=unit.node.position;
+  f.e.setTime(frame*50);f.e.nav.beginFrame(f.game);unit.onUpdate(.05);
+  assert(unit.node.active&&!unit.isDead());
+  assert(grid.isWalkable(unit.node,radius)&&distance(before,unit.node)<=unit.getSpeed()*.05+1e-6);
+ }
+ assert(distance(unit.node,spawn)>120,'The unit walks toward the projected destination');
+ assert.equal(f.created(),1);
+});
+
+for(const blocked of [false,true])test('a returning soldier scans its '+(blocked?'blocked':'clear')+' doorstep before walking to its post',()=>{
+ const f=fixture(),b=f.building(),row=f.rows[0];row.SpawnPosition={x:-450,y:0};b.setLevel(row.index);
+ const unit=b.enemyList[0],post={x:350,y:0},spawn=expected(f,b,row.SpawnPosition);
+ unit.cfg.SightRange=100;unit.attackRange=42;unit.setPersonalRallyPoint(post,true);
+ delete unit.getFind;delete unit.onFindList;
+ const target=(x,y)=>({node:new Node('enemy',f.game.ndMain,x,y),dead:false,isDead(){return this.dead;}});
+ const first=target(spawn.x+30,spawn.y),later=target(-270,45),attacks=[];
+ f.game.gameData.enemies.push(first,later);
+ unit.doAttackStart=function(){attacks.push(this._orderTarget);this._orderTarget.dead=true;this.time.Attack=0;this.doIdel();};
+ const obstacle=blocked&&f.e.box(spawn.x,spawn.y,90,90);
+ f.e.nav.beginFrame(f.game);
+ respawn(b,unit);near(unit.node,spawn);
+ if(blocked)assert(unit._terrainExit);
+ const step=(frame)=>{f.e.setTime(frame*50);f.e.nav.beginFrame(f.game);unit.onUpdate(.05);};
+ step(0);
+ assert.deepEqual(attacks,[first]);near(unit.node,spawn);
+ if(obstacle)obstacle.enabled=false;
+ for(let frame=1;frame<500;frame++)step(frame);
+ assert.deepEqual(attacks,[first,later]);near(unit.node,post);
+ assert.equal(unit._deployingFromBarracks,false,'Ordinary standing orders resume on arrival');
 });

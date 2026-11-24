@@ -38,6 +38,7 @@ var def_KinghtFallBuildBase = function (t) {
     e.purchaseSide = "";
     e.purchaseOffset = null;
     e.purchaseOverride = false;
+    e.purchaseFlipAngle = null;
     e.placementVariant = "";
     e.renderAfter = "top";
     e.renderLayerOrder = -1;
@@ -253,7 +254,7 @@ var def_KinghtFallBuildBase = function (t) {
         }
         n.ndCoin.setParent(t);
         n.ndCoin.setPosition(cc.Vec2.ZERO);
-        if (n.purchaseSide === "default" || n.purchaseSide === "flip") n._alignPurchaseCost(t);
+        if (n.purchaseSide === "default" || n.purchaseSide === "flip" || Number.isFinite(n.purchaseFlipAngle)) n._alignPurchaseCost(t);
         else n.ndCoin.scaleX = t.parent.scaleX;
         n.ndCoin.active = true;
       } else {
@@ -949,6 +950,7 @@ var def_KinghtFallBuildBase = function (t) {
   cc__decorate([ccp_property({tooltip: "Generated building layer order"})], _ctor.prototype, "renderLayerOrder", undefined);
   cc__decorate([ccp_property({ type: cc.Vec2, tooltip: "Manual purchase field offset" })], _ctor.prototype, "purchaseOffset", undefined);
   cc__decorate([ccp_property({visible:false})], _ctor.prototype, "purchaseOverride", undefined);
+  cc__decorate([ccp_property({visible:false})], _ctor.prototype, "purchaseFlipAngle", undefined);
   cc__decorate([ccp_property({visible:false})], _ctor.prototype, "placementVariant", undefined);
   cc__decorate([ccp_property({
     type: sp.Skeleton,

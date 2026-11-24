@@ -22,6 +22,22 @@ test('zero-offset route spread skips all repeated clearance work and preserves p
  const result=Area.spread(route,{x:0,y:0},{x:0,y:0},20,()=>.5,()=>{checks++;return false;},()=>{checks++;return false;});
  assert.deepEqual(result,route);assert.notEqual(result,route);assert.equal(checks,0);
 });
+test('blocked route anchors skip offset retries and leave the waypoint for normal navigation',()=>{
+ const grid=new Grid([[{x:80,y:-20},{x:120,y:-20},{x:120,y:20},{x:80,y:20}]],
+  {minX:-200,minY:-150,maxX:400,maxY:150},20);
+ const route=[{x:100,y:0},{x:200,y:0}],checked=[];
+ let segmentChecks=0;
+ const lane=Area.spread(route,{x:0,y:40},{x:0,y:0},50,rng(),null,(a,b)=>{
+  segmentChecks++;
+  return grid.segmentClear(a,b,12);
+ },point=>{
+  checked.push(point);
+  return grid.isWalkable(point,12);
+ });
+ assert.deepEqual(checked,[route[0]]);
+ assert.equal(segmentChecks,1);
+ assert.deepEqual(lane,route);
+});
 test('malformed area coordinates/radii cannot produce nonfinite positions or enter rejection loops',()=>{
  for(const radius of [NaN,Infinity,-Infinity,'100'])assert.equal(Area.sample({x:0,y:0},radius,()=>{throw Error('Invalid radius consumed random numbers');}),null);
  for(const center of [null,{x:NaN,y:0},{x:0,y:Infinity}])assert.equal(Area.sample(center,10),null);

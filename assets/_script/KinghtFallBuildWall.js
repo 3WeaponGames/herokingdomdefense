@@ -110,14 +110,16 @@ var def_KinghtFallBuildWall = function (t) {
   };
   // The leaf remains an enemy obstacle while the visual gate admits allies.
   // Use the authored points: upgrade/shut tweens temporarily shrink physics.
-  _ctor.prototype.getNavigationGateShapes = function () {
+  _ctor.prototype.getNavigationGateShapes = function (useLocalPoints) {
     if (this._unitTestBreach || !this.index || this.isDestroyed || !this.node.activeInHierarchy || this.wallHasGate === false) return [];
     var gate = this;
     return this.node.getComponents(cc.PhysicsPolygonCollider).filter(function (collider) {
       return collider.tag == gate.getColliderIndex();
     }).map(function (collider) {
+      var points = gate.colPoint[collider.uuid] || collider.points;
+      if (useLocalPoints) return { collider: collider, localPoints: points };
       var offset = collider.offset || cc.Vec2.ZERO;
-      return { collider: collider, points: (gate.colPoint[collider.uuid] || collider.points).map(function (point) {
+      return { collider: collider, points: points.map(function (point) {
         return collider.node.convertToWorldSpaceAR(cc.v2(point.x + offset.x, point.y + offset.y));
       }) };
     });

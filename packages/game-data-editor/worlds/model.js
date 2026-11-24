@@ -32,6 +32,7 @@ function place(map,layerId,asset,position,min,max,sample){
  const local=toLocal(layer.transform,position),object={id:'object-'+next.nextObject++,assetId:asset.id,name:asset.name,x:local.x,y:local.y,scale:(min+(max-min)*random)*baseScale,angle:0,flipX:false,depth:asset.depth||'world',ground:{x:0,y:0}};if(asset.nativeScale!==undefined)object.nativeSize=true;if(asset.animatedObject)require('./animated-placement').attach(next,object,asset);layer.objects.push(object);return {map:next,object};
 }
 function matrix(t){t=t||{};const angle=(t.angle||0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),scale=t.scale===undefined?1:t.scale;return [c*scale,s*scale,-s*scale,c*scale,t.x||0,t.y||0];}
+function buildingMatrix(building){const result=matrix(building);if(building.flipX===true){result[0]*=-1;result[1]*=-1;}return result;}
 function flipPoint(object,p){return {x:object.flipX?-p.x:p.x,y:object.flipY?-p.y:p.y};}
 function point(m,p){return {x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};}
 function toWorld(t,p){return point(matrix(t),p);}
@@ -193,7 +194,10 @@ function validateStage(stage,map,units){
  for(const b of allBuildings)if(!Number.isSafeInteger(b.id)||b.id<1)issues.push('Building IDs must be positive safe whole numbers.');
  for(const b of buildings){if(![1,2,3,4,5,6].includes(b.kind))issues.push('Choose a valid building type.');if(b.kind!==1&&![1,2,3,4].includes(b.unlock))issues.push('Choose main hall level 1, 2, 3 or 4 for '+b.name);}
  for(const building of stage.buildings||[]){if(building.renderAfter!==undefined&&(typeof building.renderAfter!=='string'||!building.renderAfter))issues.push('Choose an object layer for building placement.');if(building.wallRotation!==undefined&&(building.kind!==6||typeof building.wallRotation!=='number'||!Number.isFinite(building.wallRotation)))issues.push('Wall rotation requires a finite angle on a wall / gate.');if(building.wallOpening!==undefined&&(building.kind!==6||!GateFacing.validOpening(building.wallOpening)))issues.push('Choose an inward or outward gate opening on a wall / gate.');if(building.purchaseSide!==undefined&&!['default','flip','southwest','southeast'].includes(building.purchaseSide))issues.push('Choose Default or Flip for the purchase field.');if(building.purchaseOffset!==undefined&&(!building.purchaseOffset||typeof building.purchaseOffset.x!=='number'||typeof building.purchaseOffset.y!=='number'||!Number.isFinite(building.purchaseOffset.x)||!Number.isFinite(building.purchaseOffset.y)))issues.push('Purchase field offset needs finite X and Y.');}
- for(const building of allBuildings)if(Object.prototype.hasOwnProperty.call(building,'spawnPosition')&&(building.kind!==3||!require('../../../assets/_script/BuildingSpawnPositions').point(building.spawnPosition)))issues.push('Squad spawn position requires a barracks and finite X/Y offsets between -10,000 and 10,000.');
+ for(const building of allBuildings){
+  if(building.flipX!==undefined&&typeof building.flipX!=='boolean')issues.push('Flip building X must be on or off.');
+  if(Object.prototype.hasOwnProperty.call(building,'spawnPosition')&&(building.kind!==3||!require('../../../assets/_script/BuildingSpawnPositions').point(building.spawnPosition)))issues.push('Initial squad destination requires a barracks and finite X/Y offsets between -10,000 and 10,000.');
+ }
  if(allSpawnIds.size!==allSpawns.length)issues.push('Duplicate spawn ID.');
  for(const spawn of allSpawns)if(spawn.radius!==undefined&&(!finite(spawn.radius)||spawn.radius<0||spawn.radius>1500))issues.push('Spawn radius must be between 0 and 1500.');
  for(const s of allSpawns)if(!Number.isSafeInteger(s.id)||s.id<1)issues.push('Spawn IDs must be positive safe whole numbers.');
@@ -240,3 +244,4 @@ function validateStage(stage,map,units){
  return Array.from(new Set(issues));
 }
 module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,mergeGroundStrokes,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,flipPoint,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,blockerFixtures,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,validateMap,stagePlacementIssues,validateStage};
+module.exports.buildingMatrix=buildingMatrix;

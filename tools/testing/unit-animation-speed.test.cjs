@@ -3,13 +3,13 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),Core=require('../../assets/_script/CharacterPartsCore'),Levels=require('../../assets/_script/UnitLevelStats');
 const source=name=>fs.readFileSync(path.join(root,'assets/_script',name+'.js'),'utf8');
-function appearance(){
- const jobs=[],cc={Component:function(){},JsonAsset:function(){},Class(definition){function Component(){}Component.prototype=definition;return Component;},resources:{load(name,_type,done){jobs.push({name,done});}}},context={exports:{},cc,require:name=>({CharacterPartsCore:Core,UnitLevelStats:Levels})[name]};
+function appearance(resolve = () => undefined){
+ const jobs=[],cc={Component:function(){},JsonAsset:function(){},Class(definition){function Component(){}Component.prototype=definition;return Component;},resources:{load(name,_type,done){jobs.push({name,done});}}},context={exports:{},cc,require:name=>({CharacterPartsCore:Core,UnitLevelStats:Levels})[name] || resolve(name)};
  vm.runInNewContext(source('CharacterAppearance'),context);return{api:context.exports,cc,jobs};
 }
 function fixture(catalog={},settings={}){
  const a=appearance();a.api.preload();a.jobs.shift().done(null,{json:catalog});
- const owned=new WeakSet(),context={exports:{},cc:{resources:{},isValid:(value,strict)=>!!value&&!value.destroyed&&(!strict||!value.pendingDestroy)},require(name){if(name==='HeroMakerRider')return{ownsAttackClock:(_controller,renderer)=>owned.has(renderer)};if(name==='CharacterAppearance')return a.api;assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};
+ const owned=new WeakSet(),fightingTypes=require('../../assets/_script/FightingTypeDamage'),context={exports:{},cc:{resources:{},isValid:(value,strict)=>!!value&&!value.destroyed&&(!strict||!value.pendingDestroy)},require(name){if(name==='HeroMakerRider')return{ownsAttackClock:(_controller,renderer)=>owned.has(renderer)};if(name==='CharacterAppearance')return a.api;if(name==='./FightingTypeDamage')return fightingTypes;assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};
  vm.runInNewContext(source('GameToolsOverrides'),context);return{api:context.exports,appearance:a.api,catalog,settings,owned,cc:context.cc};
 }
 function actor(id=94001,pack='fantasy-bosses'){
@@ -130,4 +130,46 @@ test('each pending animation update samples live character speed once and subseq
  catalog.unitAnimationSpeeds['enemy:94001:default']=1;reads=0;assert.equal(f.api.animationPlayback(unit,'enemy'),.25);assert.equal(reads,1);
  reads=0;f.api.tick(.1,true);assert.equal(reads,1);assert.equal(unit.tracks[0].timeScale,.25);
  f.api.clear();delete catalog.unitAnimationSpeeds['enemy:94001:default'];unit.tracks[0].animation.name='idle';reads=0;f.api.applyAnimationPlayback(unit,'enemy');assert.equal(reads,1,'idle updates do not add attack-speed metadata probes');
+});
+
+test('combat resolves dependencies lazily and retains live exported functions and replacement managers',()=>{
+ const counts={data:0,appearance:0}, unit=actor(94001,'monster3');
+ const config=speed=>({data:{GameTools:{animationSpeeds:{'enemy:94001:default':speed}}}});
+ const data={KinghtFallDataMgr:{getInstance:()=>config(1.2)}}, appearances={animationSpeed:()=>.4};
+ const context={exports:{},cc:{isValid:value=>!!value},require(name){
+   if(name==='./FightingTypeDamage')return require('../../assets/_script/FightingTypeDamage');
+   if(name==='CharacterAppearance'){counts.appearance++;return appearances;}
+   assert.equal(name,'KinghtFallDataMgr');
+   return ++counts.data===1?{}:data;
+ }};
+ vm.runInNewContext(source('GameToolsOverrides'),context);
+ const api=context.exports;
+ assert.deepEqual(counts,{data:0,appearance:0},'loading the module must leave cyclic dependencies lazy');
+ assert.throws(()=>api.attackPlayback(unit,'enemy'),/getInstance/);
+ assert.equal(api.attackPlayback(unit,'enemy'),1.2);
+ data.KinghtFallDataMgr={getInstance:()=>config(1.5)};
+ assert.equal(api.attackPlayback(unit,'enemy'),1.5);
+ context.cc.resources={};
+ assert.equal(api.attackPlayback(unit,'enemy'),.4);
+ appearances.animationSpeed=()=>.7;
+ assert.equal(api.attackPlayback(unit,'enemy'),.7);
+ assert.deepEqual(counts,{data:2,appearance:1},'a partial dependency must be retried and completed modules reused');
+});
+
+test('inherited character looks reuse their module while observing live profile tables',()=>{
+ let loads=0;
+ const manager=parent=>({data:{GameTools:{unitProfiles:{entries:{91001:{baseId:parent}}}}}});
+ const data={KinghtFallDataMgr:{getInstance:()=>manager(91002)}};
+ const f=appearance(name=>{
+   if(name==='EnemyStageProfiles')return require('../../assets/_script/EnemyStageProfiles');
+   assert.equal(name,'KinghtFallDataMgr');loads++;return data;
+ });
+ f.api.preload();
+ f.jobs.shift().done(null,{json:{unitAnimationSpeeds:{'enemy:91002:default':.35,'enemy:91003:default':.65}}});
+ const unit=actor(100001,'monster3');unit.cfg.ProfileBaseID=91001;
+ assert.equal(loads,0);
+ assert.equal(f.api.animationSpeed(unit,'enemy'),.35);
+ data.KinghtFallDataMgr={getInstance:()=>manager(91003)};
+ assert.equal(f.api.animationSpeed(unit,'enemy'),.65);
+ assert.equal(loads,1);
 });

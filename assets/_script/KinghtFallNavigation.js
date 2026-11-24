@@ -4,26 +4,29 @@
 var NavigationGrid = require("NavigationGrid").NavigationGrid;
 
 function point(node, main, offset) {
+  if (!offset && node.parent === main) return { x: node.x, y: node.y };
   var p = main.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(offset || { x: 0, y: 0 })));
   return { x: p.x, y: p.y };
 }
 function distance(a, b) { var x = a.x - b.x, y = a.y - b.y; return Math.sqrt(x * x + y * y); }
 function nearestPolygonPoint(start, vertices) {
-  var best = null, bestDistance = Infinity;
+  var bestX, bestY, bestDistance = Infinity;
   for (var i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
     var a = vertices[j], b = vertices[i], dx = b.x - a.x, dy = b.y - a.y;
     var lengthSquared = dx * dx + dy * dy;
     var along = lengthSquared ? Math.max(0, Math.min(1, ((start.x - a.x) * dx + (start.y - a.y) * dy) / lengthSquared)) : 0;
-    var candidate = { x: a.x + along * dx, y: a.y + along * dy }, length = distance(start, candidate);
-    if (length < bestDistance) { best = candidate; bestDistance = length; }
+    var x = a.x + along * dx, y = a.y + along * dy;
+    var gapX = start.x - x, gapY = start.y - y;
+    var gap = gapX * gapX + gapY * gapY;
+    if (gap < bestDistance) { bestX = x; bestY = y; bestDistance = gap; }
   }
-  return best;
+  return bestDistance < Infinity ? { x: bestX, y: bestY } : null;
 }
-exports.polygonDistance = function (unit, polygon, game) {
-  var start = unit.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
+exports.polygonDistance = function (unit, polygon, game, worldOrigin, localOrigin) {
+  var start = worldOrigin || unit.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
   var closest = nearestPolygonPoint(start, polygon);
   if (!closest) return Infinity;
-  return distance(point(unit.node, game.ndMain), game.ndMain.convertToNodeSpaceAR(cc.v2(closest)));
+  return distance(localOrigin || point(unit.node, game.ndMain), game.ndMain.convertToNodeSpaceAR(cc.v2(closest)));
 };
 var ARRIVAL_EPSILON = 0.0001;
 function requestPointChanged(a, b) {
@@ -32,6 +35,10 @@ function requestPointChanged(a, b) {
   return distance(a, b) > (cc.sys && cc.sys.isNative ? .01 : ARRIVAL_EPSILON);
 }
 function setMainPosition(node, main, position) {
+  if (node.parent === main) {
+    node.setPosition(position.x, position.y);
+    return;
+  }
   var world = main.convertToWorldSpaceAR(cc.v2(position));
   var local = node.parent ? node.parent.convertToNodeSpaceAR(world) : world;
   node.setPosition(local.x, local.y);
@@ -74,6 +81,7 @@ function Navigation(game) {
   this._nextRefresh = 0;
   this._refreshPending = true;
   this._shapeCache = new WeakMap();
+  this._shapeStamp = [];
   this._polygons = [];
   this._friendlyPolygons = [];
   this._requests = new Map();
@@ -82,62 +90,97 @@ function Navigation(game) {
   this._frameId = 0;
   this.stats = { searches: 0, noPath: 0, revisions: 0, snapshotBuilds: 0, deferred: 0 };
 }
-Navigation.prototype.shape = function (collider, forcedPoints, authoredPoints) {
-  var main = this.game.ndMain, stamp = [], vertices, node = collider.node;
+function sameShapeStamp(previous, next) {
+  if (previous.length !== next.length) return false;
+  for (var i = 0; i < next.length; i++) {
+    var value = next[i], saved = previous[i];
+    if (value === saved) continue;
+    // Physics world/local round trips can introduce tiny errors. Compare
+    // against the published geometry so genuine subpixel drift accumulates.
+    if (typeof value !== "number" || typeof saved !== "number" || !isFinite(value) || !isFinite(saved) ||
+        Math.abs(value - saved) > 1e-12 * Math.max(1, Math.abs(value), Math.abs(saved))) return false;
+  }
+  return true;
+}
+Navigation.prototype.shape = function (collider, forcedPoints, authoredPoints, roundPoints) {
+  var main = this.game.ndMain, stamp = this._shapeStamp, vertices, node = collider.node;
+  stamp.length = 0;
   if (forcedPoints) {
     vertices = forcedPoints.map(function (p) { var local = main.convertToNodeSpaceAR(cc.v2(p)); return { x: Math.round(local.x * 1e4) / 1e4, y: Math.round(local.y * 1e4) / 1e4 }; });
     vertices.forEach(function (p) { stamp.push(p.x, p.y); });
   } else {
-    for (var ancestor = node; ancestor && ancestor !== main; ancestor = ancestor.parent) stamp.push(ancestor, ancestor.x, ancestor.y, ancestor.scaleX, ancestor.scaleY, ancestor.angle, ancestor.skewX, ancestor.skewY);
+    for (var ancestor = node; ancestor && ancestor !== main; ancestor = ancestor.parent) {
+      stamp.push(ancestor, ancestor.x, ancestor.y, ancestor.scaleX, ancestor.scaleY, ancestor.angle, ancestor.skewX, ancestor.skewY, ancestor.is3DNode);
+      if (ancestor.is3DNode) {
+        var angles = ancestor.eulerAngles;
+        stamp.push(ancestor.z, ancestor.scaleZ, angles.x, angles.y, angles.z);
+      }
+    }
     var offset = collider.offset || { x: 0, y: 0 };
-    stamp.push(offset.x, offset.y, collider.radius, collider.size && collider.size.width, collider.size && collider.size.height);
-    (authoredPoints || collider.points || []).forEach(function (p) { stamp.push(p.x, p.y); });
+    var size = collider.size;
+    stamp.push(offset.x, offset.y, collider.radius, size && size.width, size && size.height);
+    var points = authoredPoints || collider.points;
+    if (points) for (var i = 0; i < points.length; i++) stamp.push(points[i].x, points[i].y);
   }
   var cached = this._shapeCache.get(collider);
-  if (cached && cached.forced === !!forcedPoints && cached.stamp.length === stamp.length && stamp.every(function (value, index) {
-    var previous = cached.stamp[index];
-    if (value === previous) return true;
-    // Cocos round-trips static world/local transforms through physics. Ignore
-    // floating-point noise against the last cached stamp, so cumulative real
-    // movement still invalidates the scene instead of drifting unnoticed.
-    return typeof value === "number" && typeof previous === "number" && isFinite(value) && isFinite(previous) && Math.abs(value - previous) <= 1e-12 * Math.max(1, Math.abs(value), Math.abs(previous));
-  })) return cached.polygon;
+  if (cached && cached.forced === !!forcedPoints && cached.round === !!roundPoints && sameShapeStamp(cached.stamp, stamp)) return cached.polygon;
   if (!vertices) vertices = colliderPoints(collider, authoredPoints).map(function (p) { return point(node, main, p); });
-  this._shapeCache.set(collider, { forced: !!forcedPoints, stamp: stamp, polygon: vertices });
+  if (roundPoints) vertices.forEach(function (p) {
+    p.x = Math.round(p.x * 1e4) / 1e4;
+    p.y = Math.round(p.y * 1e4) / 1e4;
+  });
+  this._shapeCache.set(collider, { forced: !!forcedPoints, round: !!roundPoints, stamp: stamp.slice(), polygon: vertices });
   return vertices;
 };
 Navigation.prototype.refresh = function () {
+  if (this._frameManaged && !this._refreshPending && this._snapshotFrame === this._frameId) return;
   var now = Date.now();
   if (this.grid && !this._refreshPending && now < this._nextRefresh) return;
   this._refreshPending = false;
+  this._snapshotFrame = this._frameId;
   this._nextRefresh = now + 250;
-  var navigation = this, game = this.game, polygons = [], friendly = [], passages = [], terrain = [], owners = [], friendlyTerrain = [], seen = new Set();
+  // Scratch remains private. A changed scan publishes its arrays to the new
+  // grid, where existing movement states can still reference them later.
+  var scratch = this._terrainScan || { polygons: [], friendly: [], passages: [], terrain: [], owners: [], friendlyTerrain: [], seen: new Set() };
+  var navigation = this, game = this.game, polygons = scratch.polygons, friendly = scratch.friendly, passages = scratch.passages;
+  var terrain = scratch.terrain, owners = scratch.owners, friendlyTerrain = scratch.friendlyTerrain, seen = scratch.seen;
+  this._terrainScan = null;
+  polygons.length = friendly.length = passages.length = terrain.length = owners.length = friendlyTerrain.length = 0;
+  seen.clear();
   game.gameData.obstacles.concat(game.gameData.getBulidList()).forEach(function (owner) {
     // Gate wings are sibling nodes referenced as Skeleton components, not
     // descendants of the gate. Their enabled physics shapes still block units.
-    var gateShapes = owner.getNavigationGateShapes ? owner.getNavigationGateShapes() : [];
-    gateShapes.forEach(function (shape) {
-      if (seen.has(shape.collider)) return;
+    var gateShapes = owner.getNavigationGateShapes && owner.getNavigationGateShapes(true);
+    for (var i = 0; gateShapes && i < gateShapes.length; i++) {
+      var shape = gateShapes[i];
+      if (seen.has(shape.collider)) continue;
       seen.add(shape.collider);
-      var polygon = navigation.shape(shape.collider, shape.points);
+      var polygon = navigation.shape(shape.collider, shape.points, shape.localPoints, !!shape.localPoints);
       if (polygon.length >= 3) { polygons.push(polygon); terrain.push(shape.collider); owners.push(owner); passages.push(polygon); }
-    });
-    var nodes = [owner.node].concat((owner.ndAniOther || []).map(function (part) { return part && (part.node || part); }));
+    }
+    var other = owner.ndAniOther;
     var wallPoints = destructibleWall(owner) && owner.colPoint;
-    nodes.forEach(function (node) {
-      if (!node || !node.activeInHierarchy) return;
-      colliders(node).forEach(function (collider) {
-        if (seen.has(collider) || !activeCollider(collider)) return;
+    for (var partIndex = -1; partIndex < (other ? other.length : 0); partIndex++) {
+      var part = other && other[partIndex];
+      var node = partIndex < 0 ? owner.node : part && (part.node || part);
+      if (!node || !node.activeInHierarchy) continue;
+      var shapes = colliders(node);
+      for (var shapeIndex = 0; shapeIndex < shapes.length; shapeIndex++) {
+        var collider = shapes[shapeIndex];
+        if (seen.has(collider) || !activeCollider(collider)) continue;
         seen.add(collider);
-        var polygon = navigation.shape(collider, null, wallPoints && wallPoints[collider.uuid]);
-        if (polygon.length >= 3) { polygons.push(polygon); terrain.push(collider); owners.push(owner); friendly.push(polygon); friendlyTerrain.push(collider); }
-      });
-    });
+        var body = navigation.shape(collider, null, wallPoints && wallPoints[collider.uuid]);
+        if (body.length >= 3) { polygons.push(body); terrain.push(collider); owners.push(owner); friendly.push(body); friendlyTerrain.push(collider); }
+      }
+    }
   });
   var size = game.mapSize;
   var bounds = { minX: -size.width / 2, minY: -size.height / 2, maxX: size.width / 2, maxY: size.height / 2 };
   var same = this.grid && this.grid.bounds.minX === bounds.minX && this.grid.bounds.minY === bounds.minY && this.grid.bounds.maxX === bounds.maxX && this.grid.bounds.maxY === bounds.maxY;
-  same = same && polygons.length === this._polygons.length && friendly.length === this._friendlyPolygons.length && polygons.every(function (p, index) { return p === navigation._polygons[index]; }) && friendly.every(function (p, index) { return p === navigation._friendlyPolygons[index]; });
+  same = same && polygons.length === this._polygons.length && friendly.length === this._friendlyPolygons.length &&
+    polygons.every(function (p, index) { return p === navigation._polygons[index] && owners[index] === navigation.grid.terrainOwners[index]; }) &&
+    friendly.every(function (p, index) { return p === navigation._friendlyPolygons[index]; });
+  if (same) this._terrainScan = scratch;
   if (!same) {
     this._requestUnits.forEach(function(unit){cancelRequest(unit);});
     this._activeSearches.forEach(function(active){cancelRequest(active.unit);});
@@ -188,12 +231,18 @@ exports.wallBetween = function (game, start, goal) {
   return hit ? owners[hit.index] : null;
 };
 function recordTerrainExit(unit,navigation,grid,start,radius) {
-  var candidates=grid._query(start.x-radius,start.y-radius,start.x+radius,start.y+radius),overlap=new Map();
-  for(var i=0;i<candidates.length;i++){var id=candidates[i],collider=grid.terrainColliders&&grid.terrainColliders[id];if(collider&&grid._hitsPolygon(start,start,radius,grid.polygons[id].vertices))overlap.set(collider,grid.polygons[id].vertices);}
+  var candidates=grid._query(start.x-radius,start.y-radius,start.x+radius,start.y+radius),overlap;
+  for(var i=0;i<candidates.length;i++){
+    var id=candidates[i],collider=grid.terrainColliders&&grid.terrainColliders[id];
+    if(collider&&grid._hitsPolygon(start,start,radius,grid.polygons[id].vertices)){
+      if(!overlap)overlap=new Map();
+      overlap.set(collider,grid.polygons[id].vertices);
+    }
+  }
   // Capture overlaps before voluntary movement. This exception can never be
   // acquired by attempting to walk into a new wall during the same step.
-  unit._terrainExit=overlap.size?{owner:navigation,revision:navigation.revision,grid:grid,radius:radius,colliders:overlap}:null;
-  if(overlap.size)exports.enableTerrainContacts(unit);
+  unit._terrainExit=overlap?{owner:navigation,revision:navigation.revision,grid:grid,radius:radius,colliders:overlap}:null;
+  if(overlap)exports.enableTerrainContacts(unit);
 }
 exports.enableTerrainContacts=function(unit){
   var body=unit.rigidBody;if(!body)return;body.enabledContactListener=true;
@@ -207,9 +256,10 @@ exports.allowBlockedExit=function(unit,contact,other){
   var exit=unit._terrainExit,vertices=exit&&exit.colliders.get(other);
   if(vertices&&exit.revision===exit.owner.revision){var start=point(unit.node,exit.owner.game.ndMain);if(exit.grid._hitsPolygon(start,start,exit.radius,vertices))contact.disabledOnce=true;else exit.colliders.delete(other);}
 };
-exports.prepareTerrainExit=function(unit,game,spawn){
+exports.prepareTerrainExit=function(unit,game,spawn,bodyRadius){
   if(unit.rigidBody&&unit.rigidBody.active===false){unit._terrainExit=null;return;}
-  var navigation=get(game),grid=navigation.gridFor(unit),start=point(unit.node,game.ndMain),radius=navigation.radius(unit);
+  var navigation=get(game),grid=navigation.gridFor(unit),start=point(unit.node,game.ndMain);
+  var radius=bodyRadius===undefined?navigation.radius(unit):bodyRadius;
   // Friendly gates are traversable, but a fresh roster member must not park
   // inside their leaf. Use ordinary full-body egress only until it is clear.
   if(spawn&&grid!==navigation.grid&&grid.isWalkable(start,radius)&&!navigation.grid.isWalkable(start,radius)){
@@ -259,7 +309,8 @@ function cancelRequest(unit) {
 Navigation.prototype.radius = function (unit, includeSleepingBody) {
   if (unit._unitTestRadius) return unit._unitTestRadius;
   // Attack/search CircleColliders are deliberately excluded: they are not bodies.
-  var main = this.game.ndMain, center = point(unit.node, main), radius = 8;
+  var main = this.game.ndMain, node = unit.node, center, radiusSquared = 64;
+  var localBody = node.parent === main && !node.is3DNode && !node.skewX && !node.skewY;
   colliders(unit.node).forEach(function (collider) {
     if (!activeCollider(collider)) {
       if (!includeSleepingBody || !collider.enabled || collider.sensor) return;
@@ -269,11 +320,24 @@ Navigation.prototype.radius = function (unit, includeSleepingBody) {
       while (branch && branch !== unit.node && branch.active !== false) branch = branch.parent;
       if (branch !== unit.node) return;
     }
-    colliderPoints(collider).forEach(function (p) {
-      radius = Math.max(radius, distance(center, point(collider.node, main, p)));
-    });
+    if (localBody && collider.node === node) {
+      // Translation and 2D rotation preserve radius in the map's local space.
+      var points = collider.points, offset = points && collider.offset;
+      var offsetX = offset ? offset.x : 0, offsetY = offset ? offset.y : 0;
+      var vertices = points || colliderPoints(collider), scaleX = node.scaleX, scaleY = node.scaleY;
+      for (var i = 0; i < vertices.length; i++) {
+        var x = (vertices[i].x + offsetX) * scaleX, y = (vertices[i].y + offsetY) * scaleY;
+        radiusSquared = Math.max(radiusSquared, x * x + y * y);
+      }
+    } else {
+      if (!center) center = point(node, main);
+      colliderPoints(collider).forEach(function (p) {
+        var world = point(collider.node, main, p), x = center.x - world.x, y = center.y - world.y;
+        radiusSquared = Math.max(radiusSquared, x * x + y * y);
+      });
+    }
   });
-  return Math.ceil((radius + 2) / 4) * 4;
+  return Math.ceil((Math.sqrt(radiusSquared) + 2) / 4) * 4;
 };
 Navigation.prototype.crowdDetour = function (unit, start, target, radius, grid, escapeOnly) {
   var navigation = this, data = this.game.gameData, neighbours = [];
@@ -310,16 +374,15 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly, breach) {
     return { arrived: false, reached: false, partial: false, blocked: false, directionX: 0, distance: 0 };
   }
   var start = point(unit.node, this.game.ndMain);
-  var step = Math.max(0, unit.getSpeed() * dt);
+  var speed = unit.getSpeed(), step = Math.max(0, speed * dt);
   var destination = target, state;
   // Also clear velocity on blocked/finished routes, before any early return.
   if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
   // Some unit types intentionally cross buildings with their physics disabled.
   if (unit._unitTestRadius || !unit.rigidBody || unit.rigidBody.active !== false) {
-    this.refresh();
     var solid = this.gridFor(unit), grid = breach ? this.gridThroughWalls() : solid;
     var radius = unit._unitTestRadius || this.radius(unit);
-    recordTerrainExit(unit,this,solid,start,radius);
+    var startWalkable;
     state = unit._navigationState;
     // Let a bounded in-flight query finish when its moving target advances.
     // Restarting it on every target update can starve pursuit indefinitely.
@@ -328,37 +391,61 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly, breach) {
     if (!changed && state.points) {
       if (state.index >= state.points.length) {
         changed = requestPointChanged(state.target, target) || requestPointChanged(start, state.goal);
-      } else if (grid.isWalkable(start, radius)) {
-        // Crowd contacts can push a body past its cached escape/corner anchor.
-        // Keep moving forward when the next segment has full body clearance;
-        // returning to that exact, possibly occupied anchor can pin a queue.
-        while (state.index + 1 < state.points.length && grid.segmentClear(start, state.points[state.index + 1], radius)) state.index++;
-        changed = !grid.segmentClear(start, state.points[state.index], radius);
       } else {
-        changed = !grid.canExitBlocked(start, state.points[state.index], radius);
+        var clearNext = grid.segmentClear(start, state.points[state.index], radius);
+        startWalkable = clearNext || grid.isWalkable(start, radius);
+        if (startWalkable) {
+          // Crowd contacts can push a body past its cached escape/corner anchor.
+          // Keep moving forward when the next segment has full body clearance.
+          var previousIndex = state.index;
+          while (state.index + 1 < state.points.length && grid.segmentClear(start, state.points[state.index + 1], radius)) state.index++;
+          changed = !clearNext && state.index === previousIndex;
+        } else {
+          changed = !grid.canExitBlocked(start, state.points[state.index], radius);
+        }
       }
     }
+    var goal = changed ? { x: target.x, y: target.y } : null;
+    var direct = !!goal && !escapeOnly && grid.segmentClear(start, goal, radius);
+    // A clear start on the solid grid cannot have a terrain overlap to exit.
+    if (grid === solid && (startWalkable || direct)) unit._terrainExit = null;
+    else recordTerrainExit(unit, this, solid, start, radius);
     if (changed) {
-      if (state && state.job) cancelRequest(unit);
-      if (!this.takeSearchTurn(unit, grid)) {
+      // Directly clear routes should continue even if another actor is using
+      // this grid's incremental search budget.
+      var reuse = !direct && state && state.owner === this && state.revision !== this.revision && state.breach === !!breach && state.exact &&
+        !state.escape && !state.escapeOnly && !escapeOnly && state.points && state.index < state.points.length &&
+        state.radius === radius && !requestPointChanged(state.target, goal) && grid.segmentClear(start, state.points[state.index], radius);
+      if (direct || reuse || state && state.job) cancelRequest(unit);
+      if (reuse) {
+        // Later segments are still checked before moving along them.
+        state.grid = grid;
+        state.revision = this.revision;
+        startWalkable = true;
+      } else if (direct) {
+        state = unit._navigationState = { owner: this, grid: grid, start: start, revision: this.revision, radius: radius, escapeOnly: false, breach: !!breach,
+          target: goal, points: [goal], goal: goal, exact: true, partial: false, escape: null, index: 0 };
+        startWalkable = true;
+      } else if (!this.takeSearchTurn(unit, grid)) {
         this.stats.deferred++;
         return { arrived: false, reached: false, blocked: false, deferred: true, directionX: 0 };
-      }
-      this._frameSearches = (this._frameSearches || 0) + 1;
-      // Enemies advance to a reachable frontier so a distant intact wall can
-      // enter their normal acquisition range. Exact-goal callers still fail
-      // cleanly; a frontier never counts as completing an authored waypoint.
-      var incremental = this._frameManaged && typeof grid.createSearch === "function";
-      var path = incremental ? null : grid.findPath(start, target, radius, unit.navigationTeam === "enemy", !!escapeOnly);
-      this.stats.searches++;
-      if (!incremental && !path) this.stats.noPath++;
-      // An immutable scene cannot yield a different answer for an unchanged
-      // failed request. Retry when geometry, target or unit position changes.
-      state = unit._navigationState = { owner: this, grid: grid, start: start, revision: this.revision, radius: radius, escapeOnly: !!escapeOnly, target: { x: target.x, y: target.y }, points: path && path.points, goal: path && path.goal, exact: !!(path && path.reached), partial: !!(path && path.partial), escape: path && path.escape, index: 0 };
-      if (incremental) {
-        state.job = grid.createSearch(start, target, radius, unit.navigationTeam === "enemy", !!escapeOnly);
-        this._activeSearches.set(grid, { unit: unit, job: state.job, frame: -1, countedFrame: this._frameId });
-        unit._navigationRequestOwner = this; unit._navigationRequestGrid = grid;
+      } else {
+        this._frameSearches = (this._frameSearches || 0) + 1;
+        // Enemies advance to a reachable frontier so a distant intact wall can
+        // enter their normal acquisition range. Exact-goal callers still fail
+        // cleanly; a frontier never counts as completing an authored waypoint.
+        var incremental = this._frameManaged && typeof grid.createSearch === "function";
+        var path = incremental ? null : grid.findPath(start, goal, radius, unit.navigationTeam === "enemy", !!escapeOnly);
+        this.stats.searches++;
+        if (!incremental && !path) this.stats.noPath++;
+        // An immutable scene cannot yield a different answer for an unchanged
+        // failed request. Retry when geometry, target or unit position changes.
+        state = unit._navigationState = { owner: this, grid: grid, start: start, revision: this.revision, radius: radius, escapeOnly: !!escapeOnly, breach: !!breach, target: goal, points: path && path.points, goal: path && path.goal, exact: !!(path && path.reached), partial: !!(path && path.partial), escape: path && path.escape, index: 0 };
+        if (incremental) {
+          state.job = grid.createSearch(start, goal, radius, unit.navigationTeam === "enemy", !!escapeOnly);
+          this._activeSearches.set(grid, { unit: unit, job: state.job, frame: -1, countedFrame: this._frameId });
+          unit._navigationRequestOwner = this; unit._navigationRequestGrid = grid;
+        }
       }
     }
     if (state.job) {
@@ -395,7 +482,8 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly, breach) {
       // segment (or its original controlled escape), never across a new wall.
       if (state.points) {
         var safe = false;
-        if (grid.isWalkable(start, radius)) {
+        startWalkable = grid.isWalkable(start, radius);
+        if (startWalkable) {
           while (state.index + 1 < state.points.length && grid.segmentClear(start, state.points[state.index + 1], radius)) state.index++;
           safe = state.index >= state.points.length || grid.segmentClear(start, state.points[state.index], radius);
         } else safe = state.index >= state.points.length || grid.canExitBlocked(start, state.points[state.index], radius);
@@ -411,11 +499,11 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly, breach) {
     destination = state.points[state.index];
   } else { cancelRequest(unit); unit._navigationState = null; unit._navigationProgress = null; }
   var detouring = false, progress = unit._navigationProgress;
-  if (state && step > 0 && (grid.isWalkable(start, radius) || escapeOnly)) {
+  if (state && step > 0 && (escapeOnly || (startWalkable === undefined ? grid.isWalkable(start, radius) : startWalkable))) {
     if (!progress || progress.owner !== this || progress.revision !== this.revision || distance(progress.target, target) > 20) {
       progress = unit._navigationProgress = { owner: this, revision: this.revision, target: { x: target.x, y: target.y }, point: start, elapsed: 0 };
     }
-    if (distance(progress.point, start) >= Math.max(2, Math.min(8, unit.getSpeed() * .05))) { progress.point = start; progress.elapsed = 0; }
+    if (distance(progress.point, start) >= Math.max(2, Math.min(8, speed * .05))) { progress.point = start; progress.elapsed = 0; }
     else progress.elapsed += Math.min(Math.max(dt, 0), .1);
     if (progress.detour) {
       progress.remaining -= dt;
@@ -453,7 +541,7 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly, breach) {
   var finished = !detouring && (state ? state.index >= state.points.length : arrived);
   // Small target movement is coalesced while travelling, but the old endpoint
   // must never be reported as arrival at a target that has since moved.
-  if (state && requestPointChanged(state.target, target)) finished = false;
+  if (finished && state && requestPointChanged(state.target, target)) finished = false;
   return { arrived: finished, reached: finished && (!state || state.exact), partial: !!(state && state.partial), blocked: false, directionX: destination.x - start.x, distance: travel };
 };
 function get(game) {
@@ -465,7 +553,7 @@ function recoveryBuildings(navigation, grid) {
   if (navigation._recoveryBuildingSource === grid) return navigation._recoveryBuildingGrid;
   var shapes = new Set(), polygons = [];
   navigation.game.gameData.getBulidList().forEach(function (owner) {
-    (owner.getNavigationGateShapes ? owner.getNavigationGateShapes() : []).forEach(function (shape) { shapes.add(shape.collider); });
+    (owner.getNavigationGateShapes ? owner.getNavigationGateShapes(true) : []).forEach(function (shape) { shapes.add(shape.collider); });
     [owner.node].concat((owner.ndAniOther || []).map(function (part) { return part && (part.node || part); })).forEach(function (node) {
       if (node) colliders(node).forEach(function (collider) { shapes.add(collider); });
     });
@@ -479,15 +567,24 @@ function recoveryBuildings(navigation, grid) {
 // made no physical progress for five gameplay seconds, recover to nearby free
 // ground with a clear continuation to its route. Never alter HP or wave counts.
 exports.recoverStranded = function (unit, game, dt) {
-  var speed=unit.getSpeed(),state=unit._navigationState,target=unit._targetSearchCache&&unit._targetSearchCache.target;
-  if (!(dt>0) || !(speed>0) || unit._hitReactionPlaying || target&&target.canAtt || state&&state.job || unit._navigationRequestOwner) { unit._enemyStall=null; return false; }
-  var navigation=get(game),grid=navigation.gridFor(unit),start=point(unit.node,game.ndMain),record=unit._enemyStall;
-  if (!record || record.owner!==navigation || record.revision!==navigation.revision || record.generation!==unit.node._combatGeneration || distance(record.point,start)>=Math.max(.001,Math.min(8,speed*.25))) {
-    unit._enemyStall={owner:navigation,revision:navigation.revision,generation:unit.node._combatGeneration,point:start,elapsed:0};return false;
+  var state=unit._navigationState,target=unit._targetSearchCache&&unit._targetSearchCache.target;
+  if (!(dt>0) || unit._hitReactionPlaying || target&&target.canAtt || state&&state.job || unit._navigationRequestOwner) { unit._enemyStall=null; return false; }
+  var speed=unit.getSpeed();
+  if (!(speed>0)) { unit._enemyStall=null; return false; }
+  var navigation=get(game);
+  navigation.refresh();
+  var start=point(unit.node,game.ndMain),record=unit._enemyStall;
+  var generation=unit.node._combatGeneration;
+  if (!record || record.owner!==navigation || record.revision!==navigation.revision || record.generation!==generation) {
+    unit._enemyStall={owner:navigation,revision:navigation.revision,generation:generation,point:start,elapsed:0};return false;
+  }
+  if (distance(record.point,start)>=Math.max(.001,Math.min(8,speed*.25))) {
+    record.point=start; record.elapsed=0; return false;
   }
   record.elapsed+=Math.min(dt,.1);
   if (record.elapsed<5 || navigation._strandedRecoveryFrame===navigation._frameId) return false;
   navigation._strandedRecoveryFrame=navigation._frameId;
+  var grid=navigation.gridFor(unit);
   // Body measurement scans the collider subtree and transforms its vertices.
   // Ordinary movement already measures it; only repeat that work when this
   // five-second watchdog is actually going to search for a recovery position.
@@ -584,10 +681,43 @@ exports.attackPartsOf = function (building) {
   if(building.getAttackTargetParts)return building.getAttackTargetParts();
   return building.getWposPhyCol2?building.getWposPhyCol2():building.getWposPhyCol().map(function(points){return{tagNode:building.node,points:points};});
 };
-function polygonAttackPoint(start, polygon, main) {
-  return nearestPolygonPoint(start, polygon.map(function (vertex) {
+var attackFootprints = new WeakMap();
+function localAttackFootprint(main, polygon, shared) {
+  var prototype = cc.Node && cc.Node.prototype;
+  if (shared && prototype && main.getWorldMatrix === prototype.getWorldMatrix &&
+      main.convertToNodeSpaceAR === prototype.convertToNodeSpaceAR &&
+      typeof main.getWorldMatrix === "function" && typeof cc.Mat4 === "function" &&
+      !(cc.PrivateNode && main instanceof cc.PrivateNode)) {
+    var scope = attackFootprints.get(main);
+    if (!scope) {
+      scope = { world: new cc.Mat4(), stamp: null, polygons: new WeakMap() };
+      attackFootprints.set(main, scope);
+    }
+    // All enemies can share the current frame's published building footprint.
+    // A camera or scene callback can still move Main before another query.
+    main.getWorldMatrix(scope.world);
+    var matrix = scope.world.m;
+    if (matrix && matrix.length === 16) {
+      var index = 0, stamp = scope.stamp;
+      if (stamp) while (index < 16 && matrix[index] === stamp[index]) index++;
+      if (index !== 16) {
+        scope.stamp = matrix.slice();
+        scope.polygons = new WeakMap();
+      }
+      var saved = scope.polygons.get(polygon);
+      if (!saved) {
+        saved = polygon.map(function (vertex) { return main.convertToNodeSpaceAR(vertex); });
+        scope.polygons.set(polygon, saved);
+      }
+      return saved;
+    }
+  }
+  return polygon.map(function (vertex) {
     return main.convertToNodeSpaceAR(vertex);
-  }));
+  });
+}
+function polygonAttackPoint(start, polygon, main, shared) {
+  return nearestPolygonPoint(start, localAttackFootprint(main, polygon, shared));
 }
 exports.attackPointOf = function (target, game, origin, polygon) {
   var main = game.ndMain;
@@ -646,7 +776,7 @@ exports.attackPositionOf = function (selection, unit, game) {
   // Building origins can lie behind adjoining cliffs or wall pieces. Approach
   // the same polygon used by combat range checks instead; the planner projects
   // this boundary goal outward by the unit's real physics clearance.
-  var closest = polygonAttackPoint(start, polygon, main) || point(selection.tag, main);
+  var closest = polygonAttackPoint(start, polygon, main, selection.sharedFootprint) || point(selection.tag, main);
   if (destructibleWall(selection.building) || selection.breachRoute) {
     // Give short-range siege units a precise standing point outside the face.
     // Lattice projection alone can stop a body a full cell away from the wall.

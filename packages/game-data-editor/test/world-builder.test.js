@@ -95,7 +95,7 @@ test('world authoring: stage card order, spawn groups and spawn timing round-tri
  const timed=value.config.WaveCfg[waveIndex].SpawnTimeline.find(row=>row.id===entry.id);
  assert.deepEqual([timed.startSeconds,timed.intervalSeconds],[2,1]);
  assert(Waves.setTimingMode(value,waveIndex,entry.id,'manual',interval));
- const timingLimits={peakCap:35,lastSpawnLimit:90,defeatSeconds:1.25};
+ const timingLimits={peakCap:35,lastSpawnLimit:90,defeatSeconds:1.25,pushPeaks:[5,null,26],groupStarts:{'spawn-group-1':0,'spawn-group-2':5}};
  value.config.WaveCfg[waveIndex].editorTimingBalance=timingLimits;
  const expectedWaves=clone(value.config.WaveCfg),cards=waveCards(expectedWaves[waveIndex]);
  const unitOrder=[cards.at(-1),...cards.slice(0,-1)];

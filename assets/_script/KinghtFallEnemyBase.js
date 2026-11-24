@@ -197,19 +197,25 @@ var def_KinghtFallEnemyBase = function (t) {
         if (!attackCurrent(this, frame)) return false;
       }
     }
-    var casts = frame.timers.EnemySkills;
+    var casts = frame.timers.EnemySkills, mayChangeLife = false;
     if (casts && casts.length && !this._unitTestActor && game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight) {
       var owner = this;
+      mayChangeLife = true;
       if (!require("EnemySkills").update(owner, game, casts, t, function () { return attackCurrent(owner, frame); })) return false;
     }
     // Observe the next frame's physical position, after contacts have resolved.
     // Attack, stun and support waits are intentional and do not count as stalls.
-    if (this.state === r.Move && !this._hitReactionPlaying && !this._heroKnockback) Navigation.recoverStranded(this, $z1KinghtFallUIGame.default.instance.ctrGame, t);
-    else this._enemyStall = null;
-    if (!attackCurrent(this, frame)) return false;
+    if (this.state === r.Move && !this._hitReactionPlaying && !this._heroKnockback) {
+      mayChangeLife = true;
+      Navigation.recoverStranded(this, game, t);
+    } else this._enemyStall = null;
+    if (mayChangeLife && !attackCurrent(this, frame)) return false;
     this._targetSearchElapsed += t;
-    this.node.getPosition(this.vec2_1);
-    this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
+    var depth = game._depthView;
+    if (!depth || depth._destroyed || depth.main !== this.node.parent) {
+      this.node.getPosition(this.vec2_1);
+      this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
+    }
     for (var n = 0; n < buffs.length; n++) {
       var i = buffs[n];
       if (-1 != i.timeMax) {
@@ -218,10 +224,14 @@ var def_KinghtFallEnemyBase = function (t) {
         if (!attackCurrent(this, frame) || this.debuffInfo !== buffs) return false;
       }
     }
-    if (this._enemyBuffIndicators) require("EnemySkillVisuals").advanceIndicators(this, t);
+    var indicators = this._enemyBuffIndicators;
+    if (indicators) require("EnemySkillVisuals").advanceIndicators(this, t);
     if (-1 != frame.timers[s.Attack]) {
-      var rate = this.getAttSpeed();
-      if (!attackCurrent(this, frame)) return false;
+      // Ordinary unbuffed speed is a cfg read. Extension callbacks and buff
+      // presentation still need the lifetime check before committing timers.
+      var baseRate = this.getAttSpeed === defaultAttackSpeed && !this.debuffInfo.length;
+      var rate = baseRate ? this.cfg.AttackInterval * 1 : this.getAttSpeed();
+      if ((indicators || !baseRate) && !attackCurrent(this, frame)) return false;
       frame.timers[s.Attack] += t * rate;
     }
     if(this._heroKnockback){var push=this._heroKnockback;if(push.owner&&push.owner.knockbackCurrent(push)){this.rigidBody.linearVelocity=cc.Vec2.ZERO;return false;}delete this._heroKnockback;}
@@ -642,8 +652,9 @@ var def_KinghtFallEnemyBase = function (t) {
     e < 0 && (e = 0);
     return t * e;
   };
-  _ctor.prototype.getAttSpeed = function () {
+  var defaultAttackSpeed = _ctor.prototype.getAttSpeed = function () {
     var t = this.cfg.AttackInterval;
+    if (!this.debuffInfo.length) return t * 1;
     var e = 1;
     var n = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.AttackSpeed);
     for (var i = 0; i < n.length; i++) {
@@ -654,15 +665,19 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.getSpeed = function () {
     var t = this.cfg.Speed;
     var e = 1;
-    var n = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeed);
-    for (var i = 0; i < n.length; i++) {
-      e -= n[i].data.subNum;
+    var hasBuffs = this.debuffInfo.length > 0;
+    if (hasBuffs) {
+      var n = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeed);
+      for (var i = 0; i < n.length; i++) {
+        e -= n[i].data.subNum;
+      }
+      var boosts = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeedAdd);
+      for (var j = 0; j < boosts.length; j++) e += boosts[j].data.addSpeed;
     }
-    var boosts = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeedAdd);
-    for (var j = 0; j < boosts.length; j++) e += boosts[j].data.addSpeed;
-    $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SlowSpell] && (e -= $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SlowSpell][0]);
+    var slow = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SlowSpell];
+    if (slow) e -= slow[0];
     e < 0 && (e = .01);
-    return t * e * this.slowMultiplier($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSlow);
+    return t * e * (hasBuffs ? this.slowMultiplier($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSlow) : 1);
   };
   _ctor.prototype.addHpPro = function (t) {
     if (!this.isDead()) {

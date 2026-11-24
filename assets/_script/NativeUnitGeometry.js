@@ -31,27 +31,54 @@ function transparent(original) {
     finally { invalidate(); }
   };
 }
+function compileVerification(state) {
+  var checkedKeys = new Map(), checkedLinks = new Map();
+  var properties = [], links = [];
+  function property(owner, key, expected) {
+    var keys = checkedKeys.get(owner);
+    if (!keys) { keys = new Map(); checkedKeys.set(owner, keys); }
+    if (keys.has(key)) {
+      if (!same(keys.get(key), expected)) throw Error("Conflicting native geometry descriptor " + key);
+      return;
+    }
+    keys.set(key, expected);
+    properties.push({owner: owner, key: key, expected: expected});
+  }
+  function chain(target, key, owner) {
+    while (target !== owner) {
+      if (!target) throw Error("Native geometry descriptor owner changed " + key);
+      property(target, key, undefined);
+      var parent = Object.getPrototypeOf(target);
+      if (!checkedLinks.has(target)) {
+        checkedLinks.set(target, parent);
+        links.push({node: target, parent: parent});
+      }
+      target = parent;
+    }
+  }
+  state.checks.forEach(function (check) {
+    chain(check.target, check.key, check.owner);
+    property(check.owner, check.key, check.expected);
+  });
+  state.absent.forEach(function (missing) { chain(missing.target, missing.key, null); });
+  // Several Spine types inherit one binding. Check its own descriptor once,
+  // and still verify every closer prototype for new shadows or changed links.
+  state.properties = properties;
+  state.links = links;
+}
 function verify(state) {
   if (!nativeRuntime()) return false;
   for (var i = 0; i < state.types.length; i++) {
     var type = state.types[i];
     if (type.namespace[type.name] !== type.Type || type.Type.prototype !== type.prototype) return false;
   }
-  for (i = 0; i < state.checks.length; i++) {
-    var check = state.checks[i], owner = check.target, current = null;
-    while (owner) {
-      current = Object.getOwnPropertyDescriptor(owner, check.key);
-      if (current) break;
-      owner = Object.getPrototypeOf(owner);
-    }
-    if (!current || owner !== check.owner || !same(current, check.expected)) return false;
+  for (i = 0; i < state.links.length; i++) {
+    var link = state.links[i];
+    if (Object.getPrototypeOf(link.node) !== link.parent) return false;
   }
-  for (i = 0; i < state.absent.length; i++) {
-    var missing = state.absent[i], target = missing.target;
-    while (target) {
-      if (Object.getOwnPropertyDescriptor(target, missing.key)) return false;
-      target = Object.getPrototypeOf(target);
-    }
+  for (i = 0; i < state.properties.length; i++) {
+    var check = state.properties[i];
+    if (!same(Object.getOwnPropertyDescriptor(check.owner, check.key), check.expected)) return false;
   }
   return true;
 }
@@ -126,6 +153,7 @@ function prepare() {
     for (var i = 0; i < state.actions.length; i++) {
       var action = state.actions[i]; Object.defineProperty(action.owner, action.key, action.expected);
     }
+    compileVerification(state);
     if (!verify(state)) throw Error("Native geometry descriptor verification failed");
     installed = state; return state;
   } catch (error) {

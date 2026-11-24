@@ -34,4 +34,11 @@ function validLink(link){return !!link&&link.version===1&&Number.isInteger(link.
 function setting(value) {return !!value&&typeof value==='object'&&!Array.isArray(value)&&(!owns(value,'Reference')||validReference(value.Reference))&&(!owns(value,'southwest')||typeof value.southwest==='boolean')&&['x','y'].every(function (k) {return !owns(value,k)||typeof value[k]==='number'&&isFinite(value[k])&&Math.abs(value[k])<=10000;});}
 function valid(value) {return setting(value)&&(!owns(value,'variants')||!!value.variants&&typeof value.variants==='object'&&!Array.isArray(value.variants)&&Object.keys(value.variants).every(function (k) {return /^[A-Za-z][A-Za-z0-9_-]{0,31}$/.test(k)&&['constructor','prototype'].indexOf(k)<0&&setting(value.variants[k]);}));}
 function unbuilt(category,variant){var p=category&&category.UnbuiltPad;if(!p)return null;var v=p.variants&&p.variants[variant]||p;return typeof v.x==='number'&&typeof v.y==='number'&&isFinite(v.x)&&isFinite(v.y)?{x:v.x,y:v.y}:null;}
+function reflect(point,angle){
+  if(!Number.isFinite(angle))return point;
+  // Reflect around the placed building's Y axis in map coordinates.
+  var radians=angle*Math.PI/90,c=Math.cos(radians),s=Math.sin(radians);
+  return {x:-c*point.x-s*point.y,y:-s*point.x+c*point.y};
+}
 exports.unbuilt=unbuilt;exports.reference=reference;exports.validReference=validReference;exports.root=root;exports.variants=variants;exports.resolve=resolve;exports.valid=valid;exports.validVariants=validVariants;exports.validLink=validLink;
+exports.reflect=reflect;

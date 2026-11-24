@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const source=fs.readFileSync(path.resolve(__dirname,'../../assets/_script/BuildingDropShadowRuntime.js'),'utf8');
-function fixture(){
+function fixture({realPreset=false,matrixNode=false}={}){
  const cleanup=[],listeners=new Set();let frame=0,delta=1/60;class Node{constructor(){this.components=[];this.children=[];this.x=this.y=this.angle=0;this.scaleX=this.scaleY=1;this.opacity=255;this.group='world';this.active=true;this.activeInHierarchy=true;}set parent(p){this._parent=p;if(p)p.children.push(this);}get parent(){return this._parent;}addComponent(T){const c=new T();c.node=this;this.components.push(c);return c;}setAnchorPoint(){}setPosition(p,y){this.x=typeof p==='object'?p.x:p;this.y=typeof p==='object'?p.y:y;}setContentSize(){}convertToWorldSpaceAR(p){return{x:this.x+p.x,y:this.y+p.y};}convertToNodeSpaceAR(p){return{x:p.x-this.x,y:p.y-this.y};}destroy(){this.dead=true;cleanup.push(()=>{for(const c of this.components)if(c instanceof Sprite)c.spriteFrame=null;for(const n of this.children)n.destroy();});}}
  class Sprite{set spriteFrame(f){if(this.frame&&this.frame.dead)throw Error('Creator cannot detach a listener from a released SpriteFrame');this.frame=f;}get spriteFrame(){return this.frame;}}Sprite.SizeMode={CUSTOM:1};
  class Texture{constructor(){this.width=this.height=1;}initWithData(){}setFilters(){}readPixels(){return new Uint8Array([0,0,0,255]);}destroy(){this.dead=true;}}Texture.PixelFormat={RGBA8888:1};Texture.Filter={LINEAR:1};
@@ -9,13 +9,60 @@ function fixture(){
  class Camera{}Camera.ClearFlags={COLOR:1,DEPTH:2,STENCIL:4};
  const scene=new Node(),main=new Node(),cc={Node,Sprite,SpriteFrame:Frame,Texture2D:Texture,Camera,RenderTexture:Texture,isValid:v=>!!v&&!v.dead,v2:(x=0,y=0)=>({x,y}),color:()=>({}),macro:{BlendFactor:{ONE:1}},Director:{EVENT_BEFORE_DRAW:1},director:{on(_e,fn){listeners.add(fn);},off(_e,fn){listeners.delete(fn);},getScene:()=>scene,getTotalFrames:()=>frame,getDeltaTime:()=>delta},sys:{isNative:true}};
  const captures=[];let inspect=null;const Depth={DepthView:function(){},union:(_a,b)=>b,bounds:()=>({})};Depth.DepthView.prototype.snapshot=function(o){captures.push(o.sources);if(inspect)inspect();o.texture=new Texture();o.frame=new Frame(o.texture);o.center={x:0,y:0};o.size={width:1,height:1};};
- const FX={resolve:(_c,row)=>({active:true,mode:'individual',settings:row.DropShadow}),raster:()=>({pixels:new Uint8Array(13*1024*1024),pixelWidth:1,pixelHeight:1,width:1,height:1,x:0,y:0})},api={},manual={};
+ let conversions=0,matrixReads=0;
+ if(matrixNode){
+  cc.ENGINE_VERSION='2.4.13';
+  cc.Mat4=class {constructor(){this.m=new Float32Array(16);this.m[10]=this.m[15]=1;}};
+  Node.prototype.getWorldMatrix=function(out){matrixReads++;out.m[0]=this.scaleX;out.m[5]=this.scaleY;out.m[12]=this.x;out.m[13]=this.y;};
+  for(const method of ['convertToWorldSpaceAR','convertToNodeSpaceAR']){
+    const original=Node.prototype[method];
+    Node.prototype[method]=function(p){conversions++;return original.call(this,p);};
+  }
+ }
+ const fx=realPreset?require('../../assets/_script/BuildingDropShadow'):{resolve:(_c,row)=>({active:true,mode:'individual',settings:row.DropShadow})};
+ const FX={...fx,raster:()=>({pixels:new Uint8Array(13*1024*1024),pixelWidth:1,pixelHeight:1,width:1,height:1,x:0,y:0})},api={},manual={};
  const transition={};vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/BuildingShadowTransition.js'),'utf8'),{exports:transition,cc});
  vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/BuildingShadowRuntime.js'),'utf8'),{exports:manual,cc,require:name=>{if(name==='BuildingShadowTransition')return transition;assert.equal(name,'BuildingShadow');return{aboveGround:require('../../assets/_script/BuildingShadow').aboveGround,regions:()=>[],raster:()=>({pixels:new Uint8Array(4),pixelWidth:1,pixelHeight:1,width:1,height:1,x:0,y:0})};}});
  vm.runInNewContext(source,{exports:api,cc,require:name=>name==='BuildingShadowTransition'?transition:name==='BuildingDropShadow'?FX:name==='BuildingShadow'?require('../../assets/_script/BuildingShadow'):name==='WallShadowGround'?require('../../assets/_script/WallShadowGround'):name==='KinghtFallDepthView'?Depth:name==='BuildingShadowRuntime'?manual:{dispose(){},apply(){}}});
  function owner(id){return{ID:id,index:1,enabled:true,node:new Node(),ndAniMain:{node:new Node(),spriteFrame:new Frame(new Texture()),enabled:true},buildCfg:{enumValue:1},buildInfo:{cfg:{ID:1,index:1,DropShadow:{angle:1}}}};}
- const data={BuildEnum:{1:{}}},game={ndMain:main,ndDown:main};function draw(dt=1/60){delta=dt;frame++;for(const fn of [...listeners])fn();}function activate(o){api.apply(o,game,data);draw();draw();draw();assert(o._buildingDropShadowRuntime.node.active);}return{api,manual,transition,owner,activate,draw,cleanup,game,data,Node,Depth,captures,setInspect(fn){inspect=fn;}};
+ const data={BuildEnum:{1:{}}},game={ndMain:main,ndDown:main};function draw(dt=1/60){delta=dt;frame++;for(const fn of [...listeners])fn();}function activate(o){api.apply(o,game,data);draw();draw();draw();assert(o._buildingDropShadowRuntime.node.active);}return{api,manual,transition,owner,activate,draw,cleanup,game,data,Node,Depth,captures,placementCounts:()=>({conversions,matrixReads}),setInspect(fn){inspect=fn;}};
 }
+test('prepared projected shadows reuse unchanged scalar presets and observe in-place authored edits',()=>{
+ const h=fixture({realPreset:true}),owner=h.owner(1),shared={angle:47,opacity:.7},tier={angle:-135,opacity:.2};
+ h.data.GameTools={buildingShadows:{global:shared,tiers:{'1:1':tier}}};
+ const entry=h.api.prepareEntry('prepared',{},{}),seen=[];
+ h.game._stageAssets={shadows:{get(_owner,_row,settings){seen.push(settings);return entry;}}};
+ h.activate(owner);
+ const first=seen.at(-1);
+ assert.equal(first.angle,47);
+ h.draw();assert.equal(seen.at(-1),first);
+ shared.angle=23;h.draw();assert.equal(seen.at(-1).angle,23);assert.notEqual(seen.at(-1),first);
+ owner.buildInfo.cfg.DropShadow={mode:'tier'};
+ h.draw();assert.equal(seen.at(-1).angle,-135);
+ tier.opacity=.4;h.draw();assert.equal(seen.at(-1).opacity,.4);
+ owner.buildInfo.cfg.DropShadow={mode:'individual',settings:{angle:10}};
+ h.draw();assert.equal(seen.at(-1).angle,10);assert.equal(seen.at(-1).projection,'ground');
+ owner.buildInfo.cfg.DropShadow.settings.angle=11;
+ h.draw();assert.equal(seen.at(-1).angle,11);
+ owner.buildInfo.cfg.DropShadow={mode:'none'};
+ h.draw();assert.equal(owner._buildingDropShadowRuntime,undefined);
+ h.api.releaseEntry(entry);
+});
+
+test('stable stock transforms skip repeated shadow projection and still refresh on source and parent movement',()=>{
+ const h=fixture({matrixNode:true}),owner=h.owner(1);
+ owner.node.x=12;
+ h.activate(owner);
+ const state=owner._buildingDropShadowRuntime,start=h.placementCounts();
+ assert.equal(state.node.x,12);
+ h.draw();h.draw();
+ assert.deepEqual(h.placementCounts(),{conversions:start.conversions,matrixReads:start.matrixReads+4});
+ owner.node.x=18;h.draw();assert.equal(state.node.x,18);
+ h.game.ndDown.x=3;h.draw();assert.equal(state.node.x,15);
+ state.node.x=100;h.draw();assert.equal(state.node.x,15);
+ assert(h.placementCounts().conversions>start.conversions);
+});
+
 test('moving Cannon and Sniper mounts never enter the captured base shadow',()=>{
  const h=fixture(),o=h.owner(2);o.ndAniMain.enabled=false;const base={node:new h.Node(),spriteFrame:{}},mount={node:new h.Node(),spriteFrame:{}};o._buildingAppearance={sprite:base,weaponSprite:mount};o.ndAniOther=[mount];assert.deepEqual(Array.from(h.api.sources(o)),[base]);h.activate(o);assert(h.captures.every(list=>list.length===1&&list[0]===base));const frame=o._buildingDropShadowRuntime.sprite.spriteFrame;mount.node.angle=135;mount.node.x+=12;mount.spriteFrame={};h.draw();assert.equal(o._buildingDropShadowRuntime.sprite.spriteFrame,frame);assert.deepEqual(Array.from(h.api.sources(o)),[base]);
 });

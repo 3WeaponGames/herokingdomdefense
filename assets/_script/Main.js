@@ -18,6 +18,33 @@ var $z1GameUserData = require("GameUserData");
 var $z1PlayerMgr = require("PlayerMgr");
 var RenderGuard = require("KinghtFallRenderGuard");
 var Startup = require("StartupPresentation"), StartupProgress = require("StartupProgress");
+var onlineTimeEvents = { 60: "time_1", 180: "time_3", 300: "time_5", 420: "time_7", 600: "time_10",
+  900: "time_15", 1200: "time_20", 1800: "time_30", 3600: "time_1h", 10800: "time_3h", 18000: "time_5h" };
+// At most 14 credited seconds can be pending on either record in a healthy
+// store. Offset the writes to avoid two routine transactions in one frame.
+var onlineTimeSaveInterval = 15, onlineTimeTrackOffset = 7;
+function canWriteOnlineTime(record) {
+  return !record.deferSave && !record.pause && !record.saveBlockedByRecovery && !record.clearPending;
+}
+function canDeferOnlineTime(record) {
+  return canWriteOnlineTime(record) && !record.localSavePending;
+}
+function sameOnlineTimeSave(entry, record) {
+  return entry && entry.record === record && entry.data === record.data &&
+    entry.generation === record._cloudGeneration && entry.revision === record._cloudRevision;
+}
+function rememberOnlineTimeSave(pending, key, record) {
+  if (!sameOnlineTimeSave(pending[key], record)) pending[key] = { record: record, data: record.data,
+    generation: record._cloudGeneration, revision: record._cloudRevision };
+}
+function flushOnlineTimeSave(pending, key, record, retryPending) {
+  var entry = pending[key];
+  if (!entry) return;
+  if (sameOnlineTimeSave(entry, record) && canWriteOnlineTime(record) && (retryPending || !record.localSavePending)) record.saveData();
+  // Other writes include the live counters. A replaced, cleared, or already
+  // persisted record must never be written from an old timer callback.
+  if (pending[key] === entry && !sameOnlineTimeSave(entry, record)) pending[key] = null;
+}
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -89,6 +116,7 @@ var def_Main = function (t) {
     this.scheduleOnce(function () {
       $z1EventMgr.EventMgr.getInstance().emit("WCNGameEnd", "[[loc:system.playTimeLimit]]");
     }, 3);
+    this.startOnlineTimeSaves();
     $z1UIUtils.UIUtils.schedule(this.addTime, this, 1);
     cc.game.on(cc.game.EVENT_SHOW, this.checkDailyRollover, this);
     var e = $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().getCrunetDay();
@@ -97,45 +125,39 @@ var def_Main = function (t) {
   _ctor.prototype.onPlayVideo = function (t) {
     $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.AdsWatch, t);
   };
+  _ctor.prototype.startOnlineTimeSaves = function () {
+    var game = cc.game;
+    if (this._onlineTimeSaves || !cc.sys || !cc.sys.isNative || !game || typeof game.EVENT_HIDE !== "string" ||
+        typeof game.on !== "function" || typeof game.off !== "function") return;
+    game.on(game.EVENT_HIDE, this.flushOnlineTimeSaves, this);
+    this._onlineTimeSaves = { tick: 0, track: null, daily: null };
+  };
+  _ctor.prototype.flushOnlineTimeSaves = function () {
+    var pending = this._onlineTimeSaves;
+    if (!pending) return;
+    if (pending.track) flushOnlineTimeSave(pending, "track", $z1PlayerMgr.PlayerMgr.getInstance().getTrackData(), true);
+    if (pending.daily) flushOnlineTimeSave(pending, "daily", $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData(), true);
+  };
   _ctor.prototype.addTime = function () {
     this.checkDailyRollover();
-    if ($z1PlayerMgr.PlayerMgr.getInstance().getTrackData().getTimeByKey($z1GameTrackData.TimeByKey.ONLINE_TIME) <= 18e3) {
-      switch ($z1PlayerMgr.PlayerMgr.getInstance().getTrackData().addTimeByKey($z1GameTrackData.TimeByKey.ONLINE_TIME)) {
-        case 60:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_1);
-          break;
-        case 180:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_3);
-          break;
-        case 300:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_5);
-          break;
-        case 420:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_7);
-          break;
-        case 600:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_10);
-          break;
-        case 900:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_15);
-          break;
-        case 1200:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_20);
-          break;
-        case 1800:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_30);
-          break;
-        case 3600:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_1h);
-          break;
-        case 10800:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_3h);
-          break;
-        case 18e3:
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.time_5h);
-      }
+    var pending = this._onlineTimeSaves, track = $z1PlayerMgr.PlayerMgr.getInstance().getTrackData();
+    var timeKey = $z1GameTrackData.TimeByKey.ONLINE_TIME, previous = track.getTimeByKey(timeKey);
+    if (previous <= 18e3) {
+      var deferTrack = pending && canDeferOnlineTime(track) && !onlineTimeEvents[Number(previous) + 1];
+      var elapsed = track.addTimeByKey(timeKey, !deferTrack);
+      if (deferTrack) rememberOnlineTimeSave(pending, "track", track);
+      var event = onlineTimeEvents[elapsed];
+      if (event) track.youmengTrack($z1GameTrackDataEvent.TrackId[event]);
     }
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().addOnlineTime();
+    var daily = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData();
+    var deferDaily = pending && canDeferOnlineTime(daily), revision = daily._cloudRevision;
+    daily.addOnlineTime(undefined, !deferDaily);
+    if (deferDaily && revision === daily._cloudRevision) rememberOnlineTimeSave(pending, "daily", daily);
+    if (pending) {
+      pending.tick = (pending.tick + 1) % onlineTimeSaveInterval;
+      if (pending.tick === onlineTimeTrackOffset) flushOnlineTimeSave(pending, "track", track);
+      if (pending.tick === 0) flushOnlineTimeSave(pending, "daily", daily);
+    }
     $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.TimeUpdate);
   };
   _ctor.prototype.checkDailyRollover = function () {
@@ -188,9 +210,14 @@ var def_Main = function (t) {
   };
   _ctor.prototype.onDestroy = function () {
     this._startupGeneration = (this._startupGeneration || 0) + 1;
+    cc.director.getScheduler().unschedule(this.addTime, this);
+    if (this._onlineTimeSaves) {
+      cc.game.off(cc.game.EVENT_HIDE, this.flushOnlineTimeSaves, this);
+      this.flushOnlineTimeSaves();
+      this._onlineTimeSaves = null;
+    }
     if (this.saveNotice && cc.isValid(this.saveNotice)) this.saveNotice.destroy();
     cc.game.off(cc.game.EVENT_SHOW, this.checkDailyRollover, this);
-    cc.director.getScheduler().unschedule(this.addTime, this);
     $z1EventMgr.EventMgr.getInstance().off("SaveFailed", this, this.onSaveFailed);
     $z1EventMgr.EventMgr.getInstance().off("SaveRecovered", this, this.onSaveRecovered);
   };

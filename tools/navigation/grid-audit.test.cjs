@@ -42,6 +42,21 @@ test('query generation wrap preserves deduplication and outside-map polygon chec
  const grid=new NavigationGrid([box(-80,-80,80,80),box(-30,-30,30,30),box(-150,-20,-90,20)],bounds,10),expected=grid._query(-90,-90,90,90);grid._querySerial=4294967294;assert.deepEqual(grid._query(-90,-90,90,90),expected);assert.equal(new Set(expected).size,expected.length);assert.equal(grid._querySerial,1);assert.deepEqual(grid._query(-200,-20,-120,20),[2]);assert.deepEqual(grid._query(-90,-90,90,90),expected);
 });
 
+test('empty candidate scans are read-only and do not share live result lists',()=>{
+ const grid=new NavigationGrid([box(-15,-20,15,20),box(-160,-15,-120,15)],bounds,10);
+ const empty=grid._query(30,20,35,25);
+ assert.deepEqual(empty,[]);
+ assert(Object.isFrozen(empty));
+ assert.equal(grid._query(160,20,180,25),empty,'an empty off-map query reuses the same result');
+ const inner=grid._query(-30,-30,30,30),outer=grid._query(-170,-20,-110,20);
+ assert.deepEqual(inner,[0]);
+ assert.deepEqual(outer,[1]);
+ assert.notEqual(grid._query(-30,-30,30,30),inner);
+ assert.deepEqual(grid._query(35,20,40,25),empty);
+ assert.deepEqual(inner,[0]);
+ assert.deepEqual(outer,[1]);
+});
+
 test('indexed clearance agrees with a full polygon scan at negative, shifted and off-map coordinates',()=>{
  const rng=random();let compared=0;
  for(const shift of [0,-3000,1e12])for(let scene=0;scene<4;scene++){

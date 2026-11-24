@@ -294,6 +294,26 @@ test('freeze release uses only the unfrozen fraction and restores current global
  h.ui.speed=2;h.Combat.releaseControl(enemy);near(enemy.spAni.timeScale,2);assert.equal(enemy.spAni.paused,false);
 });
 
+test('clearing a freeze still restores the paused rig before normal updates resume', () => {
+  const h = fixture(), enemy = h.enemy();
+  h.ui.speed = 2;
+  enemy.spAni.timeScale = 2;
+  const updates = [];
+  enemy.onUpdate = dt => updates.push({ dt, paused: enemy.spAni.paused, speed: enemy.spAni.timeScale });
+  assert(h.Runtime.applyControl(enemy, 1));
+  h.Combat.updateEnemy(enemy, .1);
+  assert.equal(enemy.spAni.paused, true);
+  assert.equal(updates.length, 0);
+
+  h.Runtime.clearControl(enemy);
+  h.Combat.updateEnemy(enemy, .2);
+  h.Combat.updateEnemy(enemy, .3);
+  assert.deepEqual(updates, [
+    { dt: .2, paused: false, speed: 2 },
+    { dt: .3, paused: false, speed: 2 }
+  ]);
+});
+
 test('each restricted hero mechanic produces its real effect only for the intended fighting styles',()=>{
  const styles=['skirmisher','fighter','vanguard','mystic','bruiser','guardian'];
  const cases=[

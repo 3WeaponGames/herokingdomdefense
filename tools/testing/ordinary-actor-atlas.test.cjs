@@ -71,12 +71,81 @@ test('fixed-detail API validates finite bounded scalar and bypasses physical cam
 });
 
 
-test('two ordinary objects keep exact legacy snapshot/actor callback order and never create a private atlas',()=>{
+test('multi-object capture keeps the legacy callback order when the first object renders its snapshot',()=>{
  const a=model(6,{baseline:true,buildingRender:true,objectCount:2}),b=model(6,{buildingRender:true,objectCount:2});a.update();b.update();assert.deepEqual(b.events,a.events);assert.equal(b.v._nativeActorAtlas,null);assert.equal(b.calls.length,a.calls.length);a.v.destroy();b.v.destroy();
 });
 
+test('multi-object capture batches a warm first group and keeps later-only captures after their own snapshot',()=>{
+  const f=model(10,{objectCount:2}),a=model(10,{objectCount:2,baseline:true});
+  for(const fixture of [f,a])fixture.v.objects[0].node.width=20;
+  const before=f.snapshot();
+  f.update();a.update();
+  assert.deepEqual(f.events,['building:building0','prepare','atlas','building:building1','individual','camera','individual','camera','individual','camera']);
+  assert.equal(f.calls[0].selected.length,7);
+  assert.equal(f.calls.length,4);
+  assert.equal(a.calls.length,10);
+  assert.deepEqual(f.snapshot(),before);
+  for(const [index,record] of f.records().entries()){
+    const legacy=a.records()[index];
+    assert.deepEqual({...record.center},{...legacy.center});
+    assert.deepEqual({...record.size},{...legacy.size});
+    assert.equal(f.v.objects[1].masks.get(f.items[index].actor).sprite.spriteFrame,record.frame);
+  }
+  f.v.destroy();a.v.destroy();
+});
+
+function warmStaticObject(fixture, index) {
+  const object=fixture.v.objects[index];
+  const sprite=Object.assign(new fixture.cc.Sprite(),object.sources[0],{spriteFrame:{}});
+  object.sources=[sprite];
+  object.signature=[0,0,1,0,0,1,255,undefined,sprite.spriteFrame];
+  return sprite;
+}
+
+test('unchanged stock Sprite occluders can share an actor batch across several objects',()=>{
+  const f=model(10,{objectCount:3}),a=model(10,{objectCount:3,baseline:true});
+  for(const fixture of [f,a]){
+    // The first object only covers one actor; the later objects share the rest.
+    fixture.v.objects[0].node._trs[0]=-32;
+    fixture.v.objects[0].node.width=2;
+    warmStaticObject(fixture,1);
+    warmStaticObject(fixture,2);
+  }
+  const before=f.snapshot();
+  f.update();a.update();
+  assert.deepEqual(f.events,['building:building0','prepare','atlas','building:building1','building:building2']);
+  assert.equal(f.calls.length,1);
+  assert.equal(f.calls[0].selected.length,10);
+  assert.equal(a.calls.length,10);
+  assert.deepEqual(f.snapshot(),before);
+  for(const [index,record] of f.records().entries()){
+    const legacy=a.records()[index];
+    assert.deepEqual({...record.center},{...legacy.center});
+    assert.deepEqual({...record.size},{...legacy.size});
+    for(const object of f.v.objects.slice(1))assert.equal(object.masks.get(f.items[index].actor).sprite.spriteFrame,record.frame);
+  }
+  f.v.destroy();a.v.destroy();
+});
+
+test('a later Sprite snapshot invalidated by preparation stays in its original camera order',()=>{
+  const f=model(10,{objectCount:2});
+  f.v.objects[0].node.width=20;
+  const later=warmStaticObject(f,1);
+  f.hook(kind=>{
+    if(kind==='prepare'){
+      later.spriteFrame={};
+      f.v.objects[1].invalidated=true;
+    }
+  });
+  f.update();
+  assert.equal(f.calls[0].selected.length,7);
+  assert.equal(f.calls.length,5);
+  assert.deepEqual(f.events.slice(0,6),['building:building0','prepare','atlas','building:building1','camera','individual']);
+  f.v.destroy();
+});
+
 test('transition from one to multiple ordinary objects retires old crops before legacy fallback',()=>{
- const f=model(6,{objectCount:2}),second=f.v.objects.pop();f.update();const records=f.records(),oldFrames=records.map(r=>r.frame),atlas=f.v._nativeActorAtlas;assert.equal(atlas.stats().pages,1);f.v.objects.push(second);f.calls.length=0;f.update();assert.equal(atlas.stats().pages,0);assert(oldFrames.every(frame=>frame.dead));assert(records.every(r=>r.texture&&r.frame&&!r._nativeActorAtlasPage));assert.equal(f.calls.length,6);f.v.destroy();assert(f.textures.every(t=>t.dead));
+ const f=model(6,{objectCount:2}),second=f.v.objects.pop();f.update();const records=f.records(),oldFrames=records.map(r=>r.frame),atlas=f.v._nativeActorAtlas;assert.equal(atlas.stats().pages,1);f.v.objects.push(second);f.v.objects[0].invalidated=true;f.calls.length=0;f.update();assert.equal(atlas.stats().pages,0);assert(oldFrames.every(frame=>frame.dead));assert(records.every(r=>r.texture&&r.frame&&!r._nativeActorAtlasPage));assert.equal(f.calls.length,7);f.v.destroy();assert(f.textures.every(t=>t.dead));
 });
 
 

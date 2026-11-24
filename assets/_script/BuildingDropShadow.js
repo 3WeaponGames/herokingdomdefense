@@ -16,12 +16,23 @@ function group(category,row){
  function reaches(id,seen){if(id===row.index)return true;if(seen.indexOf(id)>=0)return false;seen.push(id);var r=rows.find(function(v){return v.index===id;});return !!r&&(r.BranchBuild||[]).some(function(n){return reaches(n,seen);});}
  var root=rows.find(function(r){return choices.indexOf(r.index)>=0&&reaches(r.index,[]);})||rows[0];return String(category&&category.enumValue||row&&row.ID)+":"+(root?root.index:row.index);
 }
-function resolve(category,row,overrides){
- var m=mode(row),table=overrides&&overrides.buildingShadows||{},key=group(category,row),saved=m==="global"?table.global:m==="tier"?table.tiers&&table.tiers[key]:row&&row.DropShadow&&row.DropShadow.settings;
+function savedPreset(mode,row,table,key){
+ return mode==="global"?table.global:mode==="tier"?table.tiers&&table.tiers[key]:row&&row.DropShadow&&row.DropShadow.settings;
+}
+function shadowSource(row){
  // A previously authored polygon remains a polygon when its old save has no
  // source tag. Generated/default shadows still always use ground projection.
- var source=row&&row.DropShadow&&row.DropShadow.source||(row&&row.Shadow?"polygon":"texture");
+ return row&&row.DropShadow&&row.DropShadow.source||(row&&row.Shadow?"polygon":"texture");
+}
+function resolve(category,row,overrides){
+ var m=mode(row),table=overrides&&overrides.buildingShadows||{},key=group(category,row),saved=savedPreset(m,row,table,key),source=shadowSource(row);
  return{mode:m,source:source,group:key,settings:settings(saved||table.global),active:m!=="none"&&source!=="polygon",saved:valid(saved)};
+}
+function texturePreset(category,row,overrides){
+ var m=mode(row);
+ if(m==="none"||shadowSource(row)==="polygon")return null;
+ var table=overrides&&overrides.buildingShadows||{},key=m==="tier"?group(category,row):null;
+ return savedPreset(m,row,table,key)||table.global||DEFAULTS;
 }
 function transition(category,row,overrides,next){
  var current=resolve(category,row,overrides),table=overrides&&overrides.buildingShadows||{},preset=next==="global"?table.global:next==="tier"?table.tiers&&table.tiers[current.group]:null;
@@ -106,4 +117,5 @@ function raster(source,value,options){
  return{pixels:pixels,pixelWidth:ow,pixelHeight:oh,x:source.x-pad*ux,y:source.y-pad*uy,width:ow*ux,height:oh*uy};
 }
 exports.defaults=DEFAULTS;exports.ranges=RANGES;exports.groundDefaults=GROUND;exports.groundRanges=GROUND_RANGES;exports.valid=valid;exports.settings=settings;exports.mode=mode;exports.group=group;exports.resolve=resolve;exports.transition=transition;exports.raster=raster;
+exports.texturePreset=texturePreset;
 exports.edgeDefaults=EDGE;exports.edgeRanges=EDGE_RANGES;

@@ -67,9 +67,7 @@ function apply(owner, game) {
     }
     if(!state.entry&&!owner._buildingShadowTransition){dispose(owner);return;}
     var source=state.value.body?owner.node:owner.ndAniMain.node;
-    function point(x,y){return node.parent.convertToNodeSpaceAR(source.convertToWorldSpaceAR(cc.v2(x,y)));}
-    var o=point(0,0),x=point(1,0),y=point(0,1),a=x.x-o.x,b=x.y-o.y,c=y.x-o.x,d=y.y-o.y,sx=Math.hypot(a,b);
-    node.setPosition(o);node.angle=Math.atan2(b,a)*180/Math.PI;node.scaleX=sx;node.scaleY=sx?(a*d-b*c)/sx:0;
+    Transition.placeGround(state,source,node.parent);
     Transition.render(owner,state,phase,true);
     if(!state.entry&&!owner._buildingShadowTransition)dispose(owner);
   };

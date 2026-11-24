@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'../..'),source=fs.readFileSync(path.join(root
 function fixture(slots,options={}){
     const e=environment(),exports={},main=new Node('main'),node=new Node('art',main);
     if(options.native){e.cc.sys={isNative:true};e.cc.ENGINE_VERSION=options.version||'2.4.13';}
-    vm.runInNewContext(source,{exports,cc:e.cc,sp:{},spine:options.nativeSpine});
+    vm.runInNewContext(source,{exports,cc:e.cc,sp:options.sp||{},spine:options.nativeSpine});
     const skeleton={drawOrder:slots,bones:slots.map(s=>s.bone),updateWorldTransform(){}},renderer={node,_skeleton:skeleton,skeletonData:{skeletonJson:{}}};
     return {...exports,main,node,renderer,skeleton,cc:e.cc};
 }
@@ -94,7 +94,8 @@ test('verified native health bounds retain immutable slot handles while all curr
     for(let i=0;i<60;i++){f.body.bone.worldY=i;assert.equal(f.unitBounds(f.renderer,f.main).maxY,i+40);}
     assert.equal(f.reads.vectors,1);assert.equal(f.reads.drawOrder,0,'verified native slots copied the entire animated drawOrder each pose');
     assert.equal(f.reads.data,2,'only the first visible and excluded slot need immutable metadata');assert.equal(f.reads.bone,1);assert.equal(f.reads.color,1);
-    assert.equal(f.reads.attachment,60*3,'attachment changes must be detected every evaluation');
+    assert.equal(f.reads.attachment,60*2+1,'visible and empty slots stay live while a verified excluded slot is skipped');
+    f.shadow.attachment=region(500,1200);assert.equal(f.unitBounds(f.renderer,f.main).maxY,99);
     f.body.color.a=0;assert.equal(f.unitBounds(f.renderer,f.main),null);f.body.color.a=1;
     f.body.bone.active=false;assert.equal(f.unitBounds(f.renderer,f.main),null);f.body.bone.active=true;
     f.body.attachment=null;assert.equal(f.unitBounds(f.renderer,f.main),null);
@@ -129,6 +130,18 @@ test('unknown native health APIs and browser arrays keep dynamic public slot tra
         f.body.bone=bone(0,30);assert.equal(f.unitBounds(f.renderer,f.main).maxY,70,change+' cached a mutable browser/unsupported bone');
         assert(f.reads.drawOrder>=2,change+' omitted its public fallback');
     }
+});
+
+test('native health bars use renderer bounds while incomplete slot wrappers are being initialized',()=>{
+    function Skeleton() {}
+    const body=slot('Body',region()),slots=[body,{}],f=fixture(slots,{native:true,sp:{Skeleton}});
+    Object.setPrototypeOf(f.renderer,Skeleton.prototype);
+    f.renderer.enabled=true;
+    f.skeleton.getSlots=()=>slots.slice();
+    f.renderer._nativeSkeleton={getSkeleton:()=>f.skeleton,getBoundingBox:()=>({x:1,y:2,width:25,height:80})};
+    assert.deepEqual(plain(f.unitBounds(f.renderer,f.main)),{minX:1,minY:2,maxX:26,maxY:82});
+    slots[1]=slot('Hat',region(20,60));
+    assert.deepEqual(plain(f.unitBounds(f.renderer,f.main)),{minX:0,minY:0,maxX:20,maxY:60});
 });
 
 test('verified native attachment colors retain handles while alpha, attachments and rig lifetimes stay current',()=>{

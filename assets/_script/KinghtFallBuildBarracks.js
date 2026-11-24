@@ -34,6 +34,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     e.waitEnemy = [];
     e._rosterRequests = {};
     e._rosterSignature = null;
+    e._newSoldiers = new WeakSet();
     e._soldierRallyPosts = [];
     e._spawnRetryTime = 0;
     e.standTimeMax = 1.5;
@@ -73,8 +74,8 @@ var def_KinghtFallBuildBarracks = function (t) {
     var i = (this.stratAge + 360 * t / e) * Math.PI / 180;
     var a = cc.v2(Math.cos(i), Math.sin(i)).multiplyScalar(20);
     var anchor = Navigation.positionOf(this.ndBotnNodeList, game);
-    var positions = this.squadSpawnPosition || this.buildInfo.cfg.SpawnPosition || this.buildInfo.cfg.SpawnPositions ? require("BuildingSpawnPositions") : null;
-    var squad = positions && positions.anchor(this.buildInfo.cfg, this);
+    var positions = this.buildInfo.cfg.SpawnPosition || this.buildInfo.cfg.SpawnPositions ? require("BuildingSpawnPositions") : null;
+    var squad = positions && positions.anchor(this.buildInfo.cfg);
     if (squad) {
       var squadWorld = this.node.convertToWorldSpaceAR(cc.v2(squad.x, squad.y));
       anchor = game.ndMain.convertToNodeSpaceAR(squadWorld);
@@ -139,10 +140,13 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
     unit.node.setPosition(position);
     if (!current()) return false;
-    var lease = { generation: unitGeneration }, renewed = unit.setNew(lease);
+    var initialPost = this._newSoldiers.has(unit) && this.squadSpawnPosition && require("BuildingSpawnPositions").destination(info.cfg, this);
+    if (initialPost) initialPost = game.ndMain.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(initialPost.x, initialPost.y)));
+    var lease = { generation: unitGeneration }, renewed = unit.setNew(lease, { initialPost: initialPost || null });
     if (renewed === false) return false;
     unitGeneration = lease.generation;
     if (!current()) return false;
+    this._newSoldiers.delete(unit);
     Navigation.prepareTerrainExit(unit, game, true);
     unit._spawnPending = false;
     this.waitEnemy = this.waitEnemy.filter(function (waiting) { return waiting !== unit; });
@@ -262,6 +266,7 @@ var def_KinghtFallBuildBarracks = function (t) {
       }
       var roster = owner.enemyList, info = owner.buildInfo, node = owner.node, generation = node._combatGeneration, unitNode = unit.node, unitGeneration = unitNode._combatGeneration;
       owner.enemyList[index] = unit;
+      owner._newSoldiers.add(unit);
       unit.setParent(owner);
       if (unit.initBuffData() === false || !cc.isValid(owner, true) || owner.node !== node || !cc.isValid(node, true) || node._combatGeneration !== generation || owner.buildInfo !== info || owner.enemyList !== roster || roster[index] !== unit || owner.isDestroyed ||
           unit.node !== unitNode || !cc.isValid(unitNode, true) || unitNode._combatGeneration !== unitGeneration || unit._isPooled || game.gameData !== request.data || game._combatEpoch !== request.epoch || $z1KinghtFallUIGame.default.instance !== ui || ui.ctrGame !== game) return;
@@ -344,7 +349,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     type: cc.Node,
     tooltip: "Legacy alternate squad exit"
   })], _ctor.prototype, "ndVideoSoldier", undefined);
-  cc__decorate([ccp_property({ type: cc.Vec2, tooltip: "Stage squad spawn in the original building frame; unset inherits the building default." })], _ctor.prototype, "squadSpawnPosition", undefined);
+  cc__decorate([ccp_property({ type: cc.Vec2, tooltip: "Initial squad destination in the original building frame." })], _ctor.prototype, "squadSpawnPosition", undefined);
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallBuildBase.default);
 exports.default = def_KinghtFallBuildBarracks;

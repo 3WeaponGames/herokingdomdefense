@@ -16,13 +16,27 @@ The tool checks the three original SDK project hashes and a deterministic digest
 
 The three project transformations reproduce the validated Release/O2/MD/fp:precise/C++14 configuration, unique object paths, matching static/Release ABI, missing compatibility includes, and removed SDK build events. Compiler concurrency is capped at six workers. No fast-math, simulation-clock, source-art, worker-threshold, swap-interval, or diagnostic-profiler changes are included.
 
-The engine retains its stock matrix workers, presentation behavior and timer pacing.
+The stock build uses Cocos's original matrix workers. All build variants use the same presentation behavior and timer pacing.
 
 For native Spine lifetime validation, add the value-free `--spine-inline-color-cleanup` flag and use a separate fresh output directory. This opt-in applies an exact, hash-guarded 11-file patch only to the external SDK copy. It retires the seven inline Color handles owned by Skeleton, Slot, SlotData, RegionAttachment and MeshAttachment when those owners are destroyed. Generic Color/base destructors, renderer loops, simulation timing and the installed SDK remain unchanged. Omit the flag for a stock engine build.
 
 All 11 original and resulting source hashes are checked in memory before any feature source is written. Exact originals are retained under `source-patch-backups/spine-inline-color-cleanup/`; `spine-inline-color-cleanup-diff.json` records the literal before/after replacements. Preparation and build manifests record the feature, source hashes, diff hash and separate original/copied implementation digests. Every other copied implementation must remain stock. Modified input SDKs and already-patched inputs are refused.
 
 This option is a native lifetime correction candidate, not an FPS optimization. A successful source transform or tooling test does not establish native correctness or performance. Compiler validation, controlled native lifetime/reuse tests, the gameplay suite and matched frame measurements are required before using its executable as a deployed preview. The builder never launches it or selects it as the default engine.
+
+### Optional native unit health bounds
+
+Add `--unit-region-bounds` when building a separate Windows x86 Release preview with the verified Creator 2.4.13 SDK. This exposes a native helper for eligible live Spine health-bar bounds. The game retains its JavaScript bounds path for rigs the helper cannot validate, including visible mesh attachments. Use the stock build for custom JavaScript overrides of Spine attachment and slot behavior.
+
+The builder patches one binding file in the external SDK copy. It keeps the original file under `source-patch-backups/unit-region-bounds/` and writes `unit-region-bounds-diff.json` for review. The build manifest records the opt-in and the diff hash. You can combine this flag with `--spine-inline-color-cleanup`. The installed SDK requires no changes.
+
+### Optional manual camera matrix optimization
+
+Add `--manual-camera-matrices` for a Windows x86 Release preview that uses the main thread for manual-camera matrix updates and skips clean local matrix slots in groups of four. Manual cameras draw into textures for effects such as unit occlusion. The main camera uses the original matrix dispatch. The optimization is most useful when a frame contains many manual captures.
+
+The builder checks the original and patched `RenderFlow.cpp` hashes and applies the patch to the external SDK copy. The build manifest records the feature and the hash of `manual-camera-matrices-diff.json`. This option can be combined with the other Release build flags above.
+
+### Launch a Release preview
 
 Keep Creator open on this project and let it finish compiling/importing. The launcher consumes Creator's existing native-preview files; it does not generate them. Its checks require the generated `simulator/win32/main.js`, `preview-scene.json` for the normal Start scene, and current `temp/quick-scripts/dst` source maps. Refresh those files through Creator's native preview when needed, then close the stock simulator before launching:
 

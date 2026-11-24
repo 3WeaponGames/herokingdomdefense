@@ -5,6 +5,7 @@
 var ALLY = { r: 140, g: 215, b: 255 }, ENEMY = { r: 255, g: 115, b: 115 };
 var BONE_FIELDS = ["a", "b", "c", "d", "worldX", "worldY", "x", "y", "rotation", "scaleX", "scaleY", "shearX", "shearY", "active"];
 var vertexFrame = 0;
+var nativeCacheMode = typeof sp !== "undefined" && sp.Skeleton && sp.Skeleton.prototype && sp.Skeleton.prototype.isAnimationCached;
 
 // Native camera.render() updates and skins EVERY scheduled Spine before it
 // visits the selected subtree. Battle draws can settle poses through middleware
@@ -16,11 +17,16 @@ function NativeCaptureScope(view) {
   this.refs=this.enabled?(view._nativeCaptureRefs||(view._nativeCaptureRefs=new WeakMap())):null;
 }
 NativeCaptureScope.prototype.same=function(entry) {
-  var renderer=entry.renderer;
-  return !!renderer&&(!cc.isValid||cc.isValid(renderer,true))&&!!renderer.node&&(!cc.isValid||cc.isValid(renderer.node,true))&&renderer._nativeSkeleton===entry.native&&renderer._skeleton===entry.skeleton;
+  var renderer=entry.renderer,isValid=cc.isValid;
+  if(!renderer||(isValid&&!isValid(renderer,true)))return false;
+  var node=renderer.node;
+  return !!node&&(!isValid||isValid(node,true))&&renderer._nativeSkeleton===entry.native&&renderer._skeleton===entry.skeleton;
 };
 NativeCaptureScope.prototype.resolve=function(renderer) {
-  if(!renderer||cc.isValid&&!cc.isValid(renderer,true)||!renderer.node||cc.isValid&&!cc.isValid(renderer.node,true)||renderer.enabled===false||renderer.node.activeInHierarchy===false)return null;
+  var isValid=cc.isValid;
+  if(!renderer||isValid&&!isValid(renderer,true))return null;
+  var node=renderer.node;
+  if(!node||isValid&&!isValid(node,true)||renderer.enabled===false||node.activeInHierarchy===false)return null;
   // Cache mode can change without waiting for another capture. Cached rigs may
   // share native data and must never receive these temporary native writes.
   if(typeof renderer.isAnimationCached!=="function"||renderer.isAnimationCached())return null;
@@ -28,24 +34,29 @@ NativeCaptureScope.prototype.resolve=function(renderer) {
   if(entry&&entry.native===native&&entry.skeleton===skeleton)return entry;
   if(!native||!skeleton||typeof native.paused!=="function"||typeof native.getSkeleton!=="function"||native.getSkeleton()!==skeleton||typeof skeleton.getColor!=="function")return null;
   var color=skeleton.getColor();
-  if(!color||typeof color.a!=="number"||!isFinite(color.a))return null;
+  if(!color)return null;
+  var alpha=color.a;
+  if(typeof alpha!=="number"||!isFinite(alpha))return null;
   entry={renderer:renderer,native:native,skeleton:skeleton,color:color,alpha:0,muted:false};this.refs.set(renderer,entry);return entry;
 };
-NativeCaptureScope.prototype.mute=function(entry) {
-  if(!this.same(entry))return;
+NativeCaptureScope.prototype.mute=function(entry,validated) {
+  if(!validated&&!this.same(entry))return;
   entry.alpha=entry.color.a;entry.muted=true;
   entry.native.paused(true);entry.color.a=0;
 };
-NativeCaptureScope.prototype.unmute=function(entry) {
-  if(!this.same(entry))return;
+NativeCaptureScope.prototype.unmute=function(entry,validated) {
+  if(!validated&&!this.same(entry))return;
   entry.color.a=entry.alpha;entry.native.paused(!!entry.renderer.paused);entry.muted=false;
 };
 function activeNativeRenderers(scene,prepare) {
   // Creator 2.4.13 getComponents filters this own JS array into a fresh result.
   // Append to our one result instead; unknown/custom APIs keep the public path.
   var Type=sp.Skeleton;
+  var Node=cc.Node, nativeGetter=Node&&Node.prototype&&Node.prototype.getComponents;
   var componentArray=!!(cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&
-    typeof cc.Node==="function"&&typeof cc.Node.prototype.getComponents==="function");
+    typeof Node==="function"&&typeof nativeGetter==="function");
+  var Particle=prepare&&cc.ParticleSystem;
+  var Armature=prepare&&typeof dragonBones!=="undefined"&&dragonBones.ArmatureDisplay;
   var pending=scene?[scene]:[],seen=new Set(),renderers=[];
   try {
     while(pending.length) {
@@ -55,28 +66,45 @@ function activeNativeRenderers(scene,prepare) {
       // Scene is the traversal root, not a normal Node: Creator's native
       // Scene.activeInHierarchy getter logs an error instead of reporting it.
       if(node&&node!==scene&&node.activeInHierarchy===false)continue;
-      if(!node||seen.has(node)||typeof node.getComponents!=="function")return null;
+      if(!node||seen.has(node))return null;
+      var getComponents=node.getComponents;
+      if(typeof getComponents!=="function")return null;
       seen.add(node);
       var children=node.children,components,i;
-      var usePrivate=componentArray&&node instanceof cc.Node&&node.getComponents===cc.Node.prototype.getComponents&&Object.prototype.hasOwnProperty.call(node,"_components")&&Array.isArray(node._components);
+      var usePrivate=componentArray&&getComponents===nativeGetter&&node instanceof Node&&Object.prototype.hasOwnProperty.call(node,"_components")&&Array.isArray(node._components);
       if(prepare&&!usePrivate)return null;
-      components=usePrivate?node._components:node.getComponents(Type);
+      components=usePrivate?node._components:getComponents.call(node,Type);
       if(!Array.isArray(children)||!Array.isArray(components))return null;
       var sealed=usePrivate&&!!Type._sealed;
       for(i=0;i<components.length;i++) {
         var component=components[i];
+        var spine=usePrivate&&(sealed?component.constructor===Type:component instanceof Type);
         if(prepare&&component&&component.enabled!==false){
-          var particle=typeof cc.ParticleSystem==="function"&&component instanceof cc.ParticleSystem;
-          var armature=typeof dragonBones!=="undefined"&&typeof dragonBones.ArmatureDisplay==="function"&&component instanceof dragonBones.ArmatureDisplay;
-          if(particle||armature)return null;
-          if(component instanceof Type&&(typeof component.isAnimationCached!=="function"||component.isAnimationCached()))return null;
+          if(typeof Particle==="function"&&component instanceof Particle||typeof Armature==="function"&&component instanceof Armature)return null;
+          // Selected Spine entries are checked by resolve after traversal.
+          // A sealed query may exclude a derived, still-scheduled middleware.
+          if(!spine&&sealed&&component instanceof Type&&(typeof component.isAnimationCached!=="function"||component.isAnimationCached()))return null;
         }
-        if(!usePrivate||(sealed?component.constructor===Type:component instanceof Type))renderers.push(component);
+        if(!usePrivate||spine)renderers.push(component);
       }
       for(i=children.length-1;i>=0;i--)pending.push(children[i]);
     }
   } catch(error) { return null; }
   return renderers;
+}
+function cachedRigInScene(renderer, scene) {
+  if (!renderer || !scene || typeof nativeCacheMode !== "function" || renderer.enabled === false ||
+      renderer.constructor !== sp.Skeleton || renderer.isAnimationCached !== nativeCacheMode || !nativeCacheMode.call(renderer)) return false;
+  // A stock cached rig proves preflight would fail even if other VFX or
+  // actors changed. Revalidate enablement and active scene membership live.
+  var node = renderer.node, parent;
+  if (!node || !Array.isArray(node._components) || node._components.indexOf(renderer) < 0) return false;
+  for (var remaining = 128; node !== scene && remaining > 0; remaining--) {
+    parent = node.parent;
+    if (node.activeInHierarchy === false || !parent || !Array.isArray(parent.children) || parent.children.indexOf(node) < 0) return false;
+    node = parent;
+  }
+  return node === scene;
 }
 // Settle current zero-delta animation poses without generating every rig's
 // vertex/index buffers in the first manual camera. Unsupported middleware keeps
@@ -87,10 +115,24 @@ NativeCaptureScope.prototype.prepare=function() {
   if(this._sceneRepairOwner!==this.view||this.view._nativeCaptureScope!==this)return false;
   if(!this.enabled||this.finished||this.drawing)return false;
   if(this.first)return true;
+  // A fallback can reach prepare through both its batch and its individual
+  // body capture. After an unsupported preflight, use the original camera
+  // for this draw. The next draw can test the new scene state again.
+  if(this.prepareAttempted)return false;
+  this.prepareAttempted=true;
   if(cc.ENGINE_VERSION!=="2.4.13"||typeof middleware==="undefined"||!middleware.MiddlewareManager||typeof middleware.MiddlewareManager.getInstance!=="function")return false;
-  var scene=cc.director.getScene(),renderers=activeNativeRenderers(scene,true),manager;
+  var scene=cc.director.getScene(), blocker=this.view._cachedCaptureBlocker;
+  if (cachedRigInScene(blocker,scene)) return false;
+  this.view._cachedCaptureBlocker=null;
+  var renderers=activeNativeRenderers(scene,true),manager;
   if(!renderers)return false;
-  for(var i=0;i<renderers.length;i++)if(renderers[i].enabled!==false&&!this.resolve(renderers[i]))return false;
+  for(var i=0;i<renderers.length;i++){
+    var renderer=renderers[i];
+    if(renderer.enabled!==false&&!this.resolve(renderer)){
+      if(cachedRigInScene(renderer,scene))this.view._cachedCaptureBlocker=renderer;
+      return false;
+    }
+  }
   try{manager=middleware.MiddlewareManager.getInstance();}catch(error){return false;}
   if(!manager||typeof manager.update!=="function")return false;
   this.drawing=true;
@@ -107,7 +149,7 @@ NativeCaptureScope.prototype.start=function() {
   if(!renderers)renderers=scene&&scene.getComponentsInChildren?scene.getComponentsInChildren(sp.Skeleton):[];
   for(var i=0;i<renderers.length;i++) {
     var entry=this.resolve(renderers[i]);if(!entry)continue;
-    this.entries.push(entry);this.byRenderer.set(entry.renderer,entry);this.mute(entry);
+    this.entries.push(entry);this.byRenderer.set(entry.renderer,entry);this.mute(entry,true);
   }
 };
 NativeCaptureScope.prototype.choose=function(root,renderers) {
@@ -124,7 +166,7 @@ NativeCaptureScope.prototype.choose=function(root,renderers) {
       entry=self.resolve(renderer);if(!entry)return;self.byRenderer.set(renderer,entry);
       if(self.entries.indexOf(entry)<0){entry.alpha=entry.color.a;entry.muted=false;self.entries.push(entry);}
     }
-    if(!self.selected.has(entry)||entry.muted)self.unmute(entry);next.add(entry);
+    if(!self.selected.has(entry)||entry.muted)self.unmute(entry,true);next.add(entry);
   });
   this.selected=next;
 };
@@ -138,7 +180,7 @@ NativeCaptureScope.prototype.finish=function() {
     var entry=this.entries[i];if(!this.same(entry))continue;
     // Selected callbacks may legitimately change alpha. Only muted entries use
     // the value captured before suppression; public pause always stays current.
-    try{if(!entry.muted)entry.alpha=entry.color.a;entry.color.a=entry.alpha;}catch(error){this.view._nativeCaptureDisabled=true;}
+    try{if(entry.muted)entry.color.a=entry.alpha;}catch(error){this.view._nativeCaptureDisabled=true;}
     try{entry.native.paused(!!entry.renderer.paused);}catch(error){this.view._nativeCaptureDisabled=true;}
     entry.muted=false;
   }
@@ -221,8 +263,9 @@ function publicMatrixNode(node) {
 function affineMatrix(matrix) {
   var m=matrix&&matrix.m;
   if(!m||m.length!==16||Object.prototype.toString.call(m)!=="[object Float32Array]")return false;
-  for(var i=0;i<16;i++)if(!Number.isFinite(m[i]))return false;
-  return !(m[2]||m[3]||m[6]||m[7]||m[8]||m[9]||m[11]||m[14])&&m[10]===1&&m[15]===1;
+  return m[2]===0&&m[3]===0&&m[6]===0&&m[7]===0&&m[8]===0&&m[9]===0&&m[11]===0&&m[14]===0&&
+    m[10]===1&&m[15]===1&&Number.isFinite(m[0])&&Number.isFinite(m[1])&&Number.isFinite(m[4])&&
+    Number.isFinite(m[5])&&Number.isFinite(m[12])&&Number.isFinite(m[13]);
 }
 function relativeMatrixState(node,main,cache) {
   if(!cache||!cc.sys||!cc.sys.isNative||cc.ENGINE_VERSION!=="2.4.13"||typeof cc.Mat4!=="function"||typeof cc.Mat4.invert!=="function"||!publicMatrixNode(node)||!publicMatrixNode(main))return null;
@@ -242,20 +285,31 @@ function relativeMatrixState(node,main,cache) {
   }catch(ignored){return null;}
 }
 function point(node, main, x, y, cache) {
-  if(!x&&!y&&node.parent===main){
+  if(!x&&!y){
     var state=relativeMatrixState(node,main,cache);
     // PrivateNode uses anchor-corrected matrix positions; only a plain Node's
     // own local origin is its public x/y position in its direct parent's space.
-    if(state&&Number.isFinite(node.x)&&Number.isFinite(node.y))return{x:node.x,y:node.y};
+    if(state){
+      if(node.parent===main&&Number.isFinite(node.x)&&Number.isFinite(node.y))return{x:node.x,y:node.y};
+      try{
+        node.getWorldMatrix(state.source);
+        if(affineMatrix(state.source)){
+          var source=state.source.m,inverse=state.inverse.m,worldX=source[12],worldY=source[13];
+          return{x:inverse[0]*worldX+inverse[4]*worldY+inverse[12],
+            y:inverse[1]*worldX+inverse[5]*worldY+inverse[13]};
+        }
+      }catch(ignored){}
+    }
   }
   return main.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(x || 0, y || 0)));
 }
-function nodeTransform(source, main, cache) {
-  if (cache && cache.transforms.has(source)) return cache.transforms.get(source);
-  var state=relativeMatrixState(source,main,cache),ox,oy,xx,xy,yx,yy,ready=false;
+function nodeTransform(source, main, cache, readState) {
+  var transforms=cache&&cache.transforms;
+  if (transforms && transforms.has(source)) return transforms.get(source);
+  var state=readState||relativeMatrixState(source,main,cache),ox,oy,xx,xy,yx,yy,ready=false;
   if(state)try{
-    source.getWorldMatrix(state.source);
-    if(affineMatrix(state.source)){
+    if(!readState)source.getWorldMatrix(state.source);
+    if(readState||affineMatrix(state.source)){
       var s=state.source.m,m=state.inverse.m;ox=m[0]*s[12]+m[4]*s[13]+m[12];oy=m[1]*s[12]+m[5]*s[13]+m[13];
       // Keep the public three-point operation order and Float32 inverse values.
       // This avoids extra rounding from a multiplied Float32 relative matrix.
@@ -266,7 +320,7 @@ function nodeTransform(source, main, cache) {
   if(!ready){var o=point(source,main),x=point(source,main,1,0),y=point(source,main,0,1);ox=o.x;oy=o.y;xx=x.x;xy=x.y;yx=y.x;yy=y.y;}
   var a=xx-ox,b=xy-oy,c=yx-ox,d=yy-oy,scale=Math.sqrt(a*a+b*b);
   var value={x:ox,y:oy,a:a,b:b,c:c,d:d,angle:Math.atan2(b,a)*180/Math.PI,scaleX:scale,scaleY:scale?(a*d-b*c)/scale:0};
-  if(cache)cache.transforms.set(source,value);return value;
+  if(transforms)transforms.set(source,value);return value;
 }
 function unitReferenceSize(source, main, width, height, cache) {
   var state = source && relativeMatrixState(source, main, cache);
@@ -502,6 +556,11 @@ function silhouetteAttachment(record) {
   return record.facade;
 }
 var unitBoundsPlans = new WeakMap();
+var nativeRegionBounds = typeof spine !== "undefined" && typeof spine._hkdRegionBounds === "function" && spine._hkdRegionBounds;
+var nativeRegionSlot = nativeRegionBounds && spine.Slot && spine.Slot.prototype;
+var nativeRegionReaders = nativeRegionSlot && ["getAttachment", "getData", "getBone", "getColor"].map(function (key) {
+  return { key: key, read: nativeRegionSlot[key] };
+});
 var unitGeometryModule = null;
 var unitNativeColorTypes = [];
 if (typeof spine !== "undefined" && typeof spine.Color === "function") {
@@ -515,7 +574,7 @@ function unitBoundsPlan(renderer, skeleton) {
   var data = renderer.skeletonData, json = data && data.skeletonJson, native = renderer._nativeSkeleton, plan = unitBoundsPlans.get(renderer);
   if (!plan || plan.skeleton !== skeleton || plan.native !== native || plan.data !== data || plan.json !== json) {
     plan = { skeleton: skeleton, native: native, data: data, json: json, meshes: new WeakMap(), bones: null,
-      matrices: new WeakMap(), colors: new WeakMap(), transforms: new Map(), pass: 0, points: [] };
+      matrices: new WeakMap(), colors: new WeakMap(), pass: 0, points: [] };
     unitBoundsPlans.set(renderer, plan);
   }
   plan.pass++;
@@ -638,7 +697,21 @@ function unitAttachmentVertices(renderer, slot, attachment, output, plan, slotBo
   }
   return output;
 }
-function unitBounds(renderer, main) {
+function regionBoundsForHealth(renderer, skeleton, pose, records) {
+  if (!nativeRegionReaders || spine._hkdRegionBounds !== nativeRegionBounds || !spine.Slot || spine.Slot.prototype !== nativeRegionSlot) return null;
+  for (var i = 0; i < records.length; i++) {
+    var slot = records[i].slot;
+    if (Object.getPrototypeOf(slot) !== nativeRegionSlot) return null;
+    for (var j = 0; j < nativeRegionReaders.length; j++) {
+      var reader = nativeRegionReaders[j];
+      if (slot[reader.key] !== reader.read) return null;
+    }
+  }
+  // The opt-in 2.4.13 preview computes region vertices from the live rig.
+  // Meshes and unsupported renderers stay on the public geometry path.
+  return nativeRegionBounds(renderer._nativeSkeleton, skeleton, pose.x, pose.y, pose.a, pose.b, pose.c, pose.d);
+}
+function unitBounds(renderer, main, coordinates, nativeHealth) {
   if (!renderer || !renderer.node.activeInHierarchy || renderer.enabled === false) return null;
   var skeleton = renderer._skeleton;
   if (!skeleton) return bounds(renderer, main);
@@ -647,21 +720,30 @@ function unitBounds(renderer, main) {
   updatePose(renderer);
   // Reuse only matrix scratch. Each evaluation rereads the source and parent
   // transforms, including edits made twice within the same rendered frame.
-  plan.transforms.clear();
-  var pose = nodeTransform(renderer.node, main, plan), box = null, points = plan.points;
+  var pose = nodeTransform(renderer.node, main, coordinates || plan), box = null, points = plan.points;
   var geometryScope = unitGeometryScope(renderer, plan, records);
-  order.forEach(function (entry) {
-    var slot = records ? entry.slot : entry;
+  if (nativeHealth && geometryScope && nativeRegionReaders) {
+    var liveBounds = regionBoundsForHealth(renderer, skeleton, pose, records);
+    if (liveBounds) return liveBounds;
+  }
+  for (var index = 0; index < order.length; index++) {
+    var entry = order[index];
+    if (records && entry && entry.info && entry.info.excluded) continue;
+    var slot = records && entry ? entry.slot : entry;
+    // Native Spine can briefly expose incomplete slot wrappers during rig
+    // creation. Use its renderer bounds until the live slots are readable.
+    if (!slot || typeof slot.getAttachment !== "function") return bounds(renderer, main);
     var attachment = slot.getAttachment();
     // Most baked equipment slots are empty. Check current visibility before
     // fetching their native SlotData, bone and colour wrappers through JSB.
-    if (!attachment) return;
+    if (!attachment) continue;
     var info = unitSlotInfo(slot, records && entry);
-    if (info.excluded) return;
+    if (info.excluded) continue;
     var bone = info.bone;
-    if (bone.active === false || info.color.a <= .01) return;
+    if (!bone || !info.color) return bounds(renderer, main);
+    if (bone.active === false || info.color.a <= .01) continue;
     var color = unitAttachmentColor(attachment, plan, records);
-    if (color && color.a <= .01) return;
+    if (color && color.a <= .01) continue;
     points.length = 0;
     unitAttachmentVertices(renderer, slot, attachment, points, plan, bone, info.name, geometryScope);
     for (var i = 0; i < points.length; i += 2) {
@@ -671,10 +753,19 @@ function unitBounds(renderer, main) {
       if (!box) box = { minX: x, minY: y, maxX: x, maxY: y };
       else { box.minX = Math.min(box.minX, x); box.maxX = Math.max(box.maxX, x); box.minY = Math.min(box.minY, y); box.maxY = Math.max(box.maxY, y); }
     }
-  });
+  }
   return box;
 }
-function bounds(renderer, main, cache) {
+function spriteBoundsState(node, main, cache) {
+  var state = relativeMatrixState(node, main, cache);
+  if (!state) return null;
+  try {
+    node.getWorldMatrix(state.source);
+    return affineMatrix(state.source) ? state : null;
+  } catch (ignored) { return null; }
+}
+
+function bounds(renderer, main, cache, staticSpriteBounds) {
   if(cache&&cache.bounds.has(renderer))return cache.bounds.get(renderer);
   var node = renderer.node, x, y, w, h;
   if (!node.activeInHierarchy || !renderer.enabled) return null;
@@ -702,9 +793,29 @@ function bounds(renderer, main, cache) {
     w = node.width; h = node.height; x = -w * node.anchorX; y = -h * node.anchorY;
   }
   if (![x, y, w, h].every(Number.isFinite) || w <= 0 || h <= 0) return null;
-  var m=nodeTransform(node,main,cache),ox=m.x+x*m.a+y*m.c,oy=m.y+x*m.b+y*m.d;
+  var state = staticSpriteBounds && typeof cc.Sprite === "function" && renderer instanceof cc.Sprite &&
+    spriteBoundsState(node, main, cache);
+  var stamp, previous = state && staticSpriteBounds.get(renderer);
+  if (state) {
+    // An unchanged static quad can reuse its exact map-space bounds. Include
+    // both world transforms so parent, map and camera layout changes are safe.
+    var world = state.source.m;
+    var prior = previous && previous.stamp;
+    if (prior && x === prior[0] && y === prior[1] && w === prior[2] && h === prior[3] &&
+        world[0] === prior[4] && world[1] === prior[5] && world[4] === prior[6] && world[5] === prior[7] &&
+        world[12] === prior[8] && world[13] === prior[9] &&
+        state.a === prior[10] && state.b === prior[11] && state.c === prior[12] && state.d === prior[13] &&
+        state.x === prior[14] && state.y === prior[15]) {
+      cache.bounds.set(renderer, previous.box);
+      return previous.box;
+    }
+    stamp = [x, y, w, h, world[0], world[1], world[4], world[5], world[12], world[13],
+      state.a, state.b, state.c, state.d, state.x, state.y];
+  }
+  var m=nodeTransform(node,main,cache,state),ox=m.x+x*m.a+y*m.c,oy=m.y+x*m.b+y*m.d;
   var box={minX:ox+Math.min(0,w*m.a)+Math.min(0,h*m.c),minY:oy+Math.min(0,w*m.b)+Math.min(0,h*m.d),maxX:ox+Math.max(0,w*m.a)+Math.max(0,h*m.c),maxY:oy+Math.max(0,w*m.b)+Math.max(0,h*m.d)};
   if(cache)cache.bounds.set(renderer,box);
+  if (state) staticSpriteBounds.set(renderer, { stamp: stamp, box: box });
   return box;
 }
 function viewBounds(game,main) {
@@ -1191,7 +1302,7 @@ GateOcclusion.prototype.retainLeaves = function (draw, liveSources, surfaceRecor
   }
   idle.forEach(function(entry){surfaceRecords.push(entry.record);});
 };
-GateOcclusion.prototype.update = function (active, cache, visible) {
+GateOcclusion.prototype.update = function (active, cache, visible, silhouetteActors) {
   var self=this,view=this.view,draw=++this.draw,surfaces=[],usedActors=new Set(),overlays=[],intersections=[],liveSources=new Set();
   // A retained intersection stays active between draws. Toggling every Mask
   // off/on re-registers node/frame listeners and native render state for the
@@ -1207,8 +1318,11 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
   });
   active.forEach(function (entry) {
     var actor=entry.actor,feet=entry.feet||point(actor.node,view.main,0,0,cache),hits=[],mismatch=false,base=actor.node.zIndex;
+    var showSilhouette=!silhouetteActors||silhouetteActors.has(entry);
     // Avoid skinning units unless their feet/body could be near a wall module.
-    if (!surfaces.some(function(surface){return behindGate(surface,feet)||actor.node.zIndex<surface.root.zIndex;})) return;
+    if (!surfaces.some(function(surface){
+      return behindGate(surface,feet)||actor.node.zIndex<surface.root.zIndex;
+    })) return;
     if (!entry.sources) {
       entry.sources=bodyVisuals(actor);
       entry.bounds=entry.sources.reduce(function(box,source){return union(box,bounds(source,view.main,cache));},null);
@@ -1221,11 +1335,13 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
       if (behind===above) mismatch=true;
       base=Math.max(base,surface.root.zIndex);
     });
+    // Keep the full-color reconstruction even when every piece is in the
+    // expected depth slot. Repainting translucent edges changes the blend.
     if (!mismatch&&!hits.some(function(hit){return hit.behind;})) return;
     var body=self.actors.get(actor);
     if (!body) { body={};self.actors.set(actor,body); }
     usedActors.add(actor);
-    intersections.push({actor:actor,entry:entry,record:body,sources:entry.sources,bounds:entry.bounds,hits:hits,base:base});
+    intersections.push({actor:actor,entry:entry,record:body,sources:entry.sources,bounds:entry.bounds,hits:hits,base:base,showSilhouette:showSilhouette});
   });
   // Settle pending poses once through middleware when the battle scope owns
   // the draw, or through its original first camera. Bodies can share captures
@@ -1275,11 +1391,12 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
       overlays.push({overlay:overlay,base:base,actor:actor.node.zIndex,behind:hit.behind?1:0,root:surface.root.zIndex,order:surface.order});
       // The aggregate wall root cannot decide whether a unit is behind each
       // open leaf. Clip the tint to only the surfaces in front of its feet.
-      var tint=overlay.tint;
-      if(hit.behind){tint.node.setPosition(wall.center.x,wall.center.y);tint.node.setContentSize(wall.size);bindCapture(tint.mask,wall);tint.child.setPosition(body.center.x-wall.center.x,body.center.y-wall.center.y);tint.child.setContentSize(body.size);bindCapture(tint.sprite,body);tint.child.color=cc.color(entry.tint.r,entry.tint.g,entry.tint.b);tint.child.opacity=204;tint.node.zIndex=base+2;overlays.push({overlay:tint,base:base,actor:actor.node.zIndex,behind:2,root:surface.root.zIndex,order:surface.order});}
-      tint.node.active=hit.behind;
-      if(!hit.behind){bindCapture(tint.mask,null);bindCapture(tint.sprite,null);if(gateClipState&&gateClipState.park)gateClipState.park(tint);}
-      if(self.clip){self.clip.sync(overlay,{wall:wall,body:body,paintIsActor:!hit.behind});if(hit.behind)self.clip.sync(tint,{wall:wall,body:body,paintIsActor:true});}
+      var tint=overlay.tint, showTint=hit.behind&&item.showSilhouette;
+      if(showTint)recordSilhouetteHint(view,entry);
+      if(showTint){tint.node.setPosition(wall.center.x,wall.center.y);tint.node.setContentSize(wall.size);bindCapture(tint.mask,wall);tint.child.setPosition(body.center.x-wall.center.x,body.center.y-wall.center.y);tint.child.setContentSize(body.size);bindCapture(tint.sprite,body);tint.child.color=cc.color(entry.tint.r,entry.tint.g,entry.tint.b);tint.child.opacity=204;tint.node.zIndex=base+2;overlays.push({overlay:tint,base:base,actor:actor.node.zIndex,behind:2,root:surface.root.zIndex,order:surface.order});}
+      tint.node.active=showTint;
+      if(!showTint){bindCapture(tint.mask,null);bindCapture(tint.sprite,null);if(gateClipState&&gateClipState.park)gateClipState.park(tint);}
+      if(self.clip){self.clip.sync(overlay,{wall:wall,body:body,paintIsActor:!hit.behind});if(showTint)self.clip.sync(tint,{wall:wall,body:body,paintIsActor:true});}
     });
   });
   if(this.clip)this.clip.prune();
@@ -1450,9 +1567,21 @@ function actorGroundPoint(actor,main,hero,cache,fallback) {
   if(ground===owner&&(!owner.parent||owner.parent===main))return {x:owner.x,y:owner.y};
   return point(ground,main,0,0,cache);
 }
+function sameScenerySources(saved,sources) {
+  if(!saved||sources&&sources.length!==saved.stamps.length)return false;
+  for(var i=0;i<saved.stamps.length;i++){
+    var stamp=saved.stamps[i],source=stamp[0],child=source.node;
+    if(sources&&sources[i]!==source||!child||stamp[1]!==source.spriteFrame||stamp[2]!==source.skeletonData||
+        stamp[3]!==child.width||stamp[4]!==child.height||stamp[5]!==child.x||stamp[6]!==child.y||
+        stamp[7]!==child.scaleX||stamp[8]!==child.scaleY||stamp[9]!==child.angle||stamp[10]!==source.enabled||
+        stamp[11]!==child.parent||stamp[12]!==child.activeInHierarchy||stamp[13]!==child.anchorX||
+        stamp[14]!==child.anchorY||stamp[15]!==source.trim)return false;
+  }
+  return true;
+}
 function sceneryLocalShape(view,node,sources) {
   var shapes=view._sceneryShapes||(view._sceneryShapes=new WeakMap()),saved=shapes.get(node);
-  if(saved&&(!sources||sources.length===saved.stamps.length)&&saved.stamps.every(function(stamp,index){var source=stamp[0],child=source.node;return (!sources||sources[index]===source)&&child&&stamp[1]===source.spriteFrame&&stamp[2]===source.skeletonData&&stamp[3]===child.width&&stamp[4]===child.height&&stamp[5]===child.x&&stamp[6]===child.y&&stamp[7]===child.scaleX&&stamp[8]===child.scaleY&&stamp[9]===child.angle&&stamp[10]===source.enabled&&stamp[11]===child.parent&&stamp[12]===child.activeInHierarchy&&stamp[13]===child.anchorX&&stamp[14]===child.anchorY&&stamp[15]===source.trim;}))return saved.box;
+  if(sameScenerySources(saved,sources))return saved.box;
   if(!node.getComponentsInChildren&&!sources)return null;
   sources=sources||(saved?saved.stamps.map(function(stamp){return stamp[0];}):(cc.Sprite?node.getComponentsInChildren(cc.Sprite):[]).concat(sp.Skeleton?node.getComponentsInChildren(sp.Skeleton):[]));
   var box=null;
@@ -1473,20 +1602,27 @@ function sceneryLocalShape(view,node,sources) {
   });
   if(box)shapes.set(node,{box:box,stamps:sources.map(function(source){var child=source.node;return[source,source.spriteFrame,source.skeletonData,child.width,child.height,child.x,child.y,child.scaleX,child.scaleY,child.angle,source.enabled,child.parent,child.activeInHierarchy,child.anchorX,child.anchorY,source.trim];})});return box;
 }
-function sceneryWorldShape(view,node,main,sources) {
+function sameSceneryAxis(a,b) {
+  return a===b||typeof a==="number"&&typeof b==="number"&&Math.abs(a-b)<.0001;
+}
+function sceneryWorldShape(view,node,main,sources,cache) {
   var local=sceneryLocalShape(view,node,sources);if(!local)return null;
-  var saved=view._sceneryShapes.get(node),stamp=node.parent===main?[node.x,node.y,node.scaleX,node.scaleY,node.angle]:null;
-  if(stamp&&sameStamp(saved.worldStamp,stamp))return saved.world;
-  var m=nodeTransform(node,main),x=m.x+local.minX*m.a+local.minY*m.c,y=m.y+local.minX*m.b+local.minY*m.d,w=local.maxX-local.minX,h=local.maxY-local.minY;
+  var saved=view._sceneryShapes.get(node),stamp=null;
+  if(node.parent===main){
+    var old=saved.worldStamp,nx=node.x,ny=node.y,sx=node.scaleX,sy=node.scaleY,angle=node.angle;
+    if(old&&sameSceneryAxis(old[0],nx)&&sameSceneryAxis(old[1],ny)&&sameSceneryAxis(old[2],sx)&&sameSceneryAxis(old[3],sy)&&sameSceneryAxis(old[4],angle))return saved.world;
+    stamp=[nx,ny,sx,sy,angle];
+  }
+  var m=nodeTransform(node,main,cache),x=m.x+local.minX*m.a+local.minY*m.c,y=m.y+local.minX*m.b+local.minY*m.d,w=local.maxX-local.minX,h=local.maxY-local.minY;
   var box={minX:x+Math.min(0,w*m.a)+Math.min(0,h*m.c),minY:y+Math.min(0,w*m.b)+Math.min(0,h*m.d),maxX:x+Math.max(0,w*m.a)+Math.max(0,h*m.c),maxY:y+Math.max(0,w*m.b)+Math.max(0,h*m.d)};
   saved.worldStamp=stamp;saved.world=box;
   return box;
 }
-function sceneryProps(view,ordered,main) {
+function sceneryProps(view,ordered,main,cache) {
   var props=[];
   ordered.forEach(function(group){
     if(group.actor||group.building||group.owner._depthGroundVisual||group.owner.activeInHierarchy===false||!(group.owner._depthScenery||group.owner._depthMapObject))return;
-    var box=sceneryWorldShape(view,group.owner,main);
+    var box=sceneryWorldShape(view,group.owner,main,undefined,cache);
     if(box)props.push({group:group,box:box,low:!!group.owner._depthMapFlat||box.maxY-box.minY<=SMALL_SCENERY_HEIGHT});
   });
   return props;
@@ -1497,15 +1633,15 @@ function modularObject(view, object) {
     return data && data.wallKit;
   });
 }
-function buildingProps(view, groups, main) {
+function buildingProps(view, groups, main, cache, draw) {
   var props = [];
   (view.objects || []).forEach(function(object) {
     var node = object.node, group = groups.get(node._depthBuildingOwner || node);
-    if (!group || !group.building || node._depthGroundVisual || node.activeInHierarchy === false) return;
+    if (!group || group.draw !== draw || !group.building || node._depthGroundVisual || node.activeInHierarchy === false) return;
     refreshBuildingSources(object);
     if (modularObject(view, object)) return;
-    var box = sceneryWorldShape(view, node, main, object.sources);
-    if (box) props.push({group:group, box:box, building:object, ground:point(node._depthGround || node, main).y});
+    var box = sceneryWorldShape(view, node, main, object.sources, cache);
+    if (box) props.push({group:group, box:box, building:object, ground:point(node._depthGround || node, main, 0, 0, cache).y});
   });
   return props;
 }
@@ -1540,110 +1676,251 @@ function buildingFrontY(object, main, footprints, x, ground) {
   });
   return Number.isFinite(front) ? Math.max(ground, front) : ground;
 }
-// Tall scenery is usually fixed for the whole stage. Reuse a small broadphase
-// while its exact cached boxes and authored order remain unchanged. Oversized
-// props stay in a short always-tested list rather than filling thousands of cells.
-function scenerySpatialIndex(view,props,actorCount) {
+// Reuse the index while its boxes remain in the same sequence. Oversized
+// objects stay in a short always-tested list rather than spanning many cells.
+function depthSpatialIndex(view,props,actorCount,cacheKey) {
   if(props.length<32||actorCount<8||props.length*actorCount<2048)return null;
-  var caches=scenerySpatialIndex.caches||(scenerySpatialIndex.caches=new WeakMap()),saved=caches.get(view),same=saved&&saved.owners.length===props.length;
-  if(same)for(var i=0;i<props.length;i++)if(saved.owners[i]!==props[i].group.owner||saved.boxes[i]!==props[i].box){same=false;break;}
+  var saved=view[cacheKey],same=saved&&saved.boxes.length===props.length;
+  if(same)for(var i=0;i<props.length;i++){
+    var prior=saved.boxes[i],box=props[i].box;
+    if(prior!==box&&(prior.minX!==box.minX||prior.minY!==box.minY||prior.maxX!==box.maxX||prior.maxY!==box.maxY)){same=false;break;}
+  }
   if(same)return saved.disabled?null:saved;
-  saved={owners:[],boxes:[],cells:new Map(),large:[],marks:[],stamp:0,query:[]};
+  saved={boxes:[],cells:new Map(),large:[],marks:[],stamp:0,query:[]};
   for(var i=0;i<props.length;i++){
-    var prop=props[i],box=prop.box; saved.owners.push(prop.group.owner);saved.boxes.push(box);
+    var box=props[i].box; saved.boxes.push(box);
     var left=Math.floor(box.minX/256),right=Math.floor(box.maxX/256),bottom=Math.floor(box.minY/256),top=Math.floor(box.maxY/256),count=(right-left+1)*(top-bottom+1);
     if(!Number.isFinite(count)||count>16||Math.max(Math.abs(left),Math.abs(right),Math.abs(bottom),Math.abs(top))>1048576||right<left||top<bottom){saved.large.push(i);continue;}
     for(var y=bottom;y<=top;y++)for(var x=left;x<=right;x++){var key=x+','+y,cell=saved.cells.get(key);if(!cell)saved.cells.set(key,cell=[]);cell.push(i);}
   }
-  saved.disabled=saved.large.length>props.length/2;caches.set(view,saved);return saved.disabled?null:saved;
+  saved.disabled=saved.large.length>props.length/2;
+  view[cacheKey]=saved;
+  return saved.disabled?null:saved;
 }
-function scenerySpatialCandidates(index,box) {
+function scenerySpatialIndex(view,props,actorCount) {
+  return depthSpatialIndex(view,props,actorCount,"_sceneryDepthIndex");
+}
+function scenerySpatialCandidates(index,box,unordered) {
   var left=Math.floor(box.minX/256),right=Math.floor(box.maxX/256),bottom=Math.floor(box.minY/256),top=Math.floor(box.maxY/256),count=(right-left+1)*(top-bottom+1);
   // A custom/huge actor retains the original scan and its exact edge semantics.
   if(!Number.isFinite(count)||count>16||Math.max(Math.abs(left),Math.abs(right),Math.abs(bottom),Math.abs(top))>1048576||right<left||top<bottom)return null;
   var result=index.query;result.length=0;var stamp=++index.stamp,marks=index.marks;
   for(var i=0;i<index.large.length;i++){var id=index.large[i];marks[id]=stamp;result.push(id);}
   for(var y=bottom;y<=top;y++)for(var x=left;x<=right;x++){var cell=index.cells.get(x+','+y);if(!cell)continue;for(var i=0;i<cell.length;i++){var id=cell[i];if(marks[id]!==stamp){marks[id]=stamp;result.push(id);}}}
-  // Keep the original prop traversal order and its stable topological tie breaks.
-  return result.sort(function(a,b){return a-b;});
+  return unordered?result:result.sort(function(a,b){return a-b;});
 }
-function sceneryActorOrder(view,ordered,main,props,footprints) {
-  if(!props.length)return;
-  var hero=view.game.ctrPlay,actors=[],scenery=[],indices=new Map(),initial=new Map(),minimum=0;
+function compareDepth(a,b) {
+  return a.band-b.band||a.priority-b.priority||b.ground-a.ground||a.actor-b.actor||a.index-b.index;
+}
+function sceneryActorOrder(view,ordered,main,props,footprints,cache) {
+  if(!props.length)return false;
+  var hero=view.game.ctrPlay,actors=[],scenery=[],minimum=0;
   // Authored scenery is one immutable painter sequence. In particular, pieces
   // of a continuous cliff cannot cross its trees when an actor walks nearby.
+  // The previous draw sorted scene children, so unchanged scenery usually
+  // already has the requested order even when actors switch slots.
+  var sceneryOrdered=true;
   ordered.forEach(function(group){
-    if(group.actor){actors.push(group);initial.set(group,scenery.length);}
-    else{indices.set(group,scenery.length);scenery.push(group);if((group.lowScenery&&group.band===-1)||group.owner._depthGroundVisual)minimum=scenery.length;}
+    if(group.actor)actors.push(group);
+    else{
+      if(scenery.length&&compareDepth(scenery[scenery.length-1],group)>0)sceneryOrdered=false;
+      scenery.push(group);
+    }
   });
-  if(!actors.length)return;
+  if(!actors.length)return false;
+  if(!sceneryOrdered)scenery.sort(compareDepth);
+  scenery.forEach(function(group,index){
+    group.scenerySlot=index;
+    if((group.lowScenery&&group.band===-1)||group.owner._depthGroundVisual)minimum=index+1;
+  });
   props=props.filter(function(prop){return !prop.low||prop.group.band!==-1;});
   var spatial=scenerySpatialIndex(view,props,actors.length);
-  var placements=[];
   actors.sort(function(a,b){return b.ground-a.ground||a.index-b.index;});
+  var behind=[];
   actors.forEach(function(actor){
     var owner=actor.owner,component=owner===hero.node?hero:owner._combatActor;
-    var shape=component&&sceneryWorldShape(view,owner,main,bodyVisuals(component)),behind=[],lower=minimum,upper=scenery.length;
+    var shape=component&&sceneryWorldShape(view,owner,main,bodyVisuals(component),cache),lower=minimum,upper=scenery.length;
+    behind.length=0;
     if(shape){var visit=function(prop){
       if(!overlaps(shape,prop.box))return;
-      var index=indices.get(prop.group);
+      var index=prop.group.scenerySlot;
       // A short prop stays under a unit where they overlap, without changing
       // the depth of distant units or the authored scenery order.
       var ground=prop.building?buildingFrontY(prop.building,main,footprints,actor.feet.x,prop.ground):prop.group.ground;
       if(!prop.low&&actor.ground>ground)behind.push(index);else lower=Math.max(lower,index+1);
-    },candidates=spatial&&scenerySpatialCandidates(spatial,shape);
+    },candidates=spatial&&scenerySpatialCandidates(spatial,shape,true);
     if(candidates)for(var i=0;i<candidates.length;i++)visit(props[candidates[i]]);
     else props.forEach(visit);
     }
     // A front/equal-ground actor must remain above every contacted prop. A
     // contradictory behind request cannot reverse the authored scenery or
     // hide that front actor. Compatible behind contacts retain exact depth.
-    behind.forEach(function(index){if(index>=lower)upper=Math.min(upper,index);});
-    var slot=Math.max(lower,Math.min(upper,initial.get(actor)));
-    placements.push({group:actor,slot:slot});minimum=slot;
+    for(var i=0;i<behind.length;i++)if(behind[i]>=lower)upper=Math.min(upper,behind[i]);
+    // The legacy combined sort counted scenery before this actor. Find that
+    // same baseline slot in the already ordered scenery without merging the
+    // actors into it just to immediately split the list again.
+    var left=lower,right=upper;
+    while(left<right){
+      var middle=(left+right)>>1;
+      if(compareDepth(scenery[middle],actor)<0)left=middle+1;
+      else right=middle;
+    }
+    actor.scenerySlot=left;
+    minimum=actor.scenerySlot;
   });
-  var result=[],next=0;
-  for(var index=0;index<=scenery.length;index++){while(next<placements.length&&placements[next].slot===index)result.push(placements[next++].group);if(index<scenery.length)result.push(scenery[index]);}
-  ordered.splice.apply(ordered,[0,ordered.length].concat(result));
+  ordered.length=0;
+  var next=0;
+  for(var index=0;index<=scenery.length;index++){
+    while(next<actors.length&&actors[next].scenerySlot===index)ordered.push(actors[next++]);
+    if(index<scenery.length)ordered.push(scenery[index]);
+  }
+  return true;
 }
-DepthView.prototype.sort = function (footprints) {
-  var heroActor=this.game.ctrPlay,hero=heroActor.node,main=this.main,groups=new Map(),maximum=1;
-  main.children.forEach(function (node, index) {
-    if (node._occlusionMask) return;
+function depthOrderState() {
+  return {groups:new WeakMap(),ordered:[],frontierRows:[],frontierInputs:[],frontier:[],shapes:{transforms:new Map()},sorting:false};
+}
+function depthGroundReads(main, cache) {
+  if (!cache || !cc.sys || !cc.sys.isNative || cc.ENGINE_VERSION !== "2.4.13" || !publicMatrixNode(main)) return null;
+  var prototype=cc.Node.prototype, update=prototype._updateWorldMatrix, ancestry=[];
+  if (typeof update !== "function") return null;
+  for (var node=main;node;node=node._parent) {
+    var type=Object.getPrototypeOf(node);
+    if (ancestry.length>=16 || node._updateWorldMatrix!==update ||
+        type!==prototype && (!cc.Scene || type!==cc.Scene.prototype)) return null;
+    ancestry.push(node);
+  }
+  return {prototype:prototype,update:update,ancestry:ancestry,
+    worldReader:main.getWorldMatrix,toLocal:main.convertToNodeSpaceAR,toWorld:main.convertToWorldSpaceAR};
+}
+function depthGroundY(ground, owner, main, cache, reads) {
+  var state=reads && cache.relativeMatrices;
+  if (state && state.main===main && state.ready &&
+      main.getWorldMatrix===reads.worldReader && main.convertToNodeSpaceAR===reads.toLocal &&
+      main.convertToWorldSpaceAR===reads.toWorld && ground._parent===owner && owner._parent===main &&
+      Object.getPrototypeOf(owner)===reads.prototype && publicMatrixNode(ground) &&
+      !Object.prototype.hasOwnProperty.call(ground,"parent") &&
+      ground._updateWorldMatrix===reads.update && owner._updateWorldMatrix===reads.update &&
+      ground._worldMatDirty===false && owner._worldMatDirty===false) {
+    var i=0, ancestry=reads.ancestry;
+    for (;i<ancestry.length;i++) {
+      var ancestor=ancestry[i];
+      if (ancestor._worldMatDirty!==false || ancestor._updateWorldMatrix!==reads.update ||
+          ancestor._parent!==(ancestry[i+1]||null)) break;
+    }
+    // Creator updates parents recursively and marks their children dirty. A
+    // clean stock two-level ground anchor can use the same native Float32
+    // matrices without copying either one or walking both parent chains.
+    var world=main._worldMatrix, source=ground._worldMatrix;
+    if (i===ancestry.length && affineMatrix(world) && affineMatrix(source)) {
+      var m=world.m;
+      if (state.a===m[0] && state.b===m[1] && state.c===m[4] && state.d===m[5] && state.x===m[12] && state.y===m[13]) {
+        var inverse=state.inverse.m, local=source.m;
+        return inverse[1]*local[12]+inverse[5]*local[13]+inverse[13];
+      }
+    }
+  }
+  return point(ground,main,0,0,cache).y;
+}
+function collectDepthGroups(view, state, draw, cache) {
+  var heroActor=view.game.ctrPlay,hero=heroActor.node,main=view.main,groups=state.groups,maximum=1;
+  var children=main.children,ordered=state.ordered,reads=depthGroundReads(main,cache);
+  ordered.length=0;
+  for(var index=0,length=children.length;index<length;index++){
+    var node=children[index];
+    if(node._occlusionMask)continue;
     var groundVisual = !!node._depthGroundVisual, owner = groundVisual ? node : node._depthBuildingOwner || node, group = groups.get(owner);
-    if (!group) {
+    if (!group || group.draw !== draw) {
+      if(!group){
+        group={owner:owner,nodes:[]};
+        groups.set(owner,group);
+      }
       var building=!groundVisual&&!!node._depthBuilding,actor=node._combatActor||(node===hero?heroActor:null);
-      var feet=actor?actorGroundPoint(actor,main,heroActor,null,owner):null;
-      var ground=feet?feet.y:owner._depthGround?point(owner._depthGround,main).y:owner.y;
-      group = { owner:owner, ground:ground, feet:feet, actor:node._combatActor || node === hero ? 1 : 0, index:index, building:building, priority:!Number.isFinite(node._depthLayerOrder)&&node._depthMapForeground?1:0, nodes:[] };
+      var feet=actor?actorGroundPoint(actor,main,heroActor,cache,owner):null;
+      group.draw=draw;
+      group.nodes.length=0;
+      group.ground=feet?feet.y:owner._depthGround?depthGroundY(owner._depthGround,owner,main,cache,reads):owner.y;
+      group.feet=feet;
+      group.actor=actor?1:0;
+      group.index=index;
+      group.building=building;
+      group.priority=!Number.isFinite(node._depthLayerOrder)&&node._depthMapForeground?1:0;
+      group.lowScenery=false;
+      group.scenerySlot=0;
       group.band = groundVisual ? -1 : building ? node._depthBuildingOrder : node._depthLayerOrder;
       if (!building && !Number.isFinite(group.band) && (node._depthScenery || node._depthMapObject)) group.band = node._depthMapForeground ? 3 : 1;
       if (Number.isFinite(group.band)) maximum = Math.max(maximum, group.band);
-      groups.set(owner, group);
+      ordered.push(group);
     }
     group.nodes.push(node);
-  });
-  var ordered = Array.from(groups.values()),scenery=sceneryProps(this,ordered,main);
-  scenery.forEach(function(prop){
-    if(!prop.low)return;
-    prop.group.lowScenery=true;
-    // Older maps without a layer rank keep their original ground pass.
-    if(!Number.isFinite(prop.group.owner._depthLayerOrder))prop.group.band=-1;
-  });
-  ordered.forEach(function (group) { if (group.building && !Number.isFinite(group.band)) group.band = maximum + 2; });
-  // Actors retain their ground relationship with scenery and complete buildings.
-  // One frontier lets actor lookup stay logarithmic in the number of props.
-  var frontier = ordered.filter(function (g) { return !g.actor && !g.lowScenery && Number.isFinite(g.band) && g.owner.activeInHierarchy !== false; }).sort(function (a,b) { return b.ground-a.ground; }), running = 0;
-  frontier.forEach(function (g) { running = Math.max(running,g.band);g.frontBand = running; });
-  ordered.forEach(function (g) {
-    if (g.actor) { var lo=0,hi=frontier.length;while(lo<hi){var mid=(lo+hi)>>1;if(frontier[mid].ground>=g.ground)lo=mid+1;else hi=mid;}g.band=lo?frontier[lo-1].frontBand:0; }
-    else if (!Number.isFinite(g.band)) g.band=0;
-  });
-  ordered.sort(function(a,b){return a.band-b.band||a.priority-b.priority||b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
-  sceneryActorOrder(this,ordered,main,scenery.concat(buildingProps(this,groups,main)),footprints||new Map());
-  // Reserve one step for silhouettes and another for local gate intersections.
-  ordered.forEach(function (group,index) { group.nodes.forEach(function(node){node.zIndex=index*4;}); });
-  if (main.sortAllChildren) main.sortAllChildren();
+  }
+  return maximum;
+}
+function depthLayerFrontier(state, maximum) {
+  var rows=state.frontierRows,inputs=state.frontierInputs,frontier=state.frontier,unchanged=true;
+  rows.length=0;
+  for(var i=0;i<state.ordered.length;i++){
+    var group=state.ordered[i];
+    if(group.actor)continue;
+    if(group.building&&!Number.isFinite(group.band))group.band=maximum+2;
+    if(!Number.isFinite(group.band)){group.band=0;continue;}
+    if(!group.lowScenery&&group.owner.activeInHierarchy!==false){
+      var j=rows.length*2;
+      if(inputs[j]!==group.ground||inputs[j+1]!==group.band)unchanged=false;
+      rows.push(group);
+    }
+  }
+  // A band only changes at a ground pivot that raises the running maximum.
+  // Most scenery shares a handful of layers, regardless of its object count.
+  if(unchanged&&inputs.length===rows.length*2)return frontier;
+  inputs.length=frontier.length=0;
+  for(var i=0;i<rows.length;i++)inputs.push(rows[i].ground,rows[i].band);
+  rows.sort(function(a,b){return b.ground-a.ground;});
+  var running=0;
+  for(var i=0;i<rows.length;i++){
+    var row=rows[i];
+    if(row.band<=running)continue;
+    running=row.band;
+    var last=frontier[frontier.length-1];
+    if(last&&last.ground===row.ground)last.band=running;
+    else frontier.push({ground:row.ground,band:running});
+  }
+  return frontier;
+}
+DepthView.prototype.sort = function (footprints, cache) {
+  var state=this._depthOrder||(this._depthOrder=depthOrderState());
+  if(state.sorting)state=depthOrderState();
+  state.sorting=true;
+  var shapeCache=cache?state.shapes:null,draw={};
+  if(shapeCache)shapeCache.transforms.clear();
+  try{
+    var main=this.main,maximum=collectDepthGroups(this,state,draw,shapeCache),ordered=state.ordered;
+    var scenery=sceneryProps(this,ordered,main,shapeCache);
+    scenery.forEach(function(prop){
+      if(!prop.low)return;
+      prop.group.lowScenery=true;
+      // Older maps without a layer rank keep their original ground pass.
+      if(!Number.isFinite(prop.group.owner._depthLayerOrder))prop.group.band=-1;
+    });
+    var frontier=depthLayerFrontier(state,maximum);
+    ordered.forEach(function(group){
+      if(!group.actor)return;
+      var lo=0,hi=frontier.length;
+      while(lo<hi){
+        var mid=(lo+hi)>>1;
+        if(frontier[mid].ground>=group.ground)lo=mid+1;
+        else hi=mid;
+      }
+      group.band=lo?frontier[lo-1].band:0;
+    });
+    if(!sceneryActorOrder(this,ordered,main,scenery.concat(buildingProps(this,state.groups,main,shapeCache,draw)),
+        footprints||new Map(),shapeCache))ordered.sort(compareDepth);
+    // Reserve one step for silhouettes and another for local gate intersections.
+    for(var i=0;i<ordered.length;i++){
+      var nodes=ordered[i].nodes,zIndex=i*4;
+      for(var j=0;j<nodes.length;j++)if(nodes[j].zIndex!==zIndex)nodes[j].zIndex=zIndex;
+    }
+    if(main.sortAllChildren)main.sortAllChildren();
+  }finally{state.sorting=false;}
 };
 function makeObjectStencil(main, name) {
   var node = new cc.Node(name);
@@ -1683,20 +1960,23 @@ DepthView.prototype.makeMask = function (object, actor, sources) {
   object.masks.set(actor, result);
   return result;
 };
-DepthView.prototype.snapshot = function (object, box, cache) {
-  var self = this, sources = object.sources;
+function snapshotSignature(view, object, cache) {
   var signature=[];
-  sources.forEach(function (source) {
+  object.sources.forEach(function (source) {
     if (!source.enabled || !source.node.activeInHierarchy) {signature.push("hidden");return;}
-    var m=nodeTransform(source.node,self.main,cache),values=signature;
+    var m=nodeTransform(source.node,view.main,cache),values=signature;
     values.push(m.x,m.y,m.a,m.b,m.c,m.d,source.node.opacity,source.skeletonData);
     if (source instanceof sp.Skeleton && source._skeleton) {
-      if(self.nativeCapture&&nativeAlphaSignature(source,values,self._nativeCaptureScope))return;
+      if(view.nativeCapture&&nativeAlphaSignature(source,values,view._nativeCaptureScope))return;
       values.push(source._skeleton.skin && source._skeleton.skin.name);
       source._skeleton.bones.forEach(function (bone) { values.push(bone.a, bone.b, bone.c, bone.d, bone.worldX, bone.worldY); });
       source._skeleton.slots.forEach(function (slot) { if(apertureSlot(slot))return;var attachment = slot.getAttachment(); values.push(attachment && attachment.name, attachment && attachment.region && attachment.region.name, slot.color.a); Array.prototype.push.apply(values, slot.deform); });
     } else values.push(source.spriteFrame);
   });
+  return signature;
+}
+DepthView.prototype.snapshot = function (object, box, cache) {
+  var self = this, sources = object.sources, signature = snapshotSignature(this, object, cache);
   if (sameStamp(object.signature,signature)) return;
   if (!this.nativeCapture && !object.capture) {
     object.capture = new cc.Node("ObjectAlpha");
@@ -1812,16 +2092,175 @@ DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
   this.renderNative(sources, center, height, record.texture, detail===undefined);
   record.center = center; record.size = { width: width, height: height };
 };
+function occlusionCandidate(view, object, cache, visible) {
+  refreshBuildingSources(object);
+  var node = object.node;
+  if (!node.activeInHierarchy) return null;
+  if (modularObject(view, object)) {
+    // Settle modular wall poses before their exact per-surface tests. Mixed
+    // groups keep the original bounds query and its aperture handling.
+    var perSurfaceOnly = view.nativeCapture && cc.sys && cc.sys.isNative && cc.ENGINE_VERSION === "2.4.13" &&
+      typeof sp.Skeleton === "function" && object.sources.length && object.sources.every(function (source) {
+        return source instanceof sp.Skeleton && source._skeleton && typeof source._skeleton.updateWorldTransform === "function" &&
+          source._nativeSkeleton && typeof source._nativeSkeleton.getBoundingBox === "function" && source.skeletonData &&
+          source.skeletonData.skeletonJson && source.skeletonData.skeletonJson.wallKit;
+      });
+    object.sources.forEach(function (source) {
+      if (perSurfaceOnly) {
+        if (source.node.activeInHierarchy && source.enabled) updatePose(source, cache);
+      } else bounds(source, view.main, cache);
+    });
+    return null;
+  }
+  if (node._depthGroundVisual || node._depthMapFlat) return null;
+  var scenery = !object.buildings;
+  for (var owner = node; scenery && owner && owner !== view.main; owner = owner.parent) {
+    if (owner._depthBuilding || owner._depthBuildingOwner) scenery = false;
+  }
+  var sceneryBox = scenery && node.convertToNodeSpaceAR && view.main.convertToNodeSpaceAR &&
+    sceneryWorldShape(view, node, view.main, object.sources);
+  if (sceneryBox && sceneryBox.maxY - sceneryBox.minY <= SMALL_SCENERY_HEIGHT) return null;
+  var box = object.sources.reduce(function (value, source) {
+    return union(value, bounds(source, view.main, cache, view._staticOcclusionBounds));
+  }, null);
+  if (!box || (visible && !overlaps(box, visible)) ||
+      (scenery && !sceneryBox && box.maxY - box.minY <= SMALL_SCENERY_HEIGHT)) return null;
+  return { object: object, box: box, ground: point(node._depthGround || node, view.main, 0, 0, cache).y, hidden: [] };
+}
+
+function matchOcclusion(view, active, candidates, visible, cache, footprints, silhouetteActors) {
+  if (!candidates.length) return;
+  var region = null, lowest = Infinity, firstZ = Infinity;
+  var index = depthSpatialIndex(view, candidates, active.length, "_occlusionDepthIndex");
+  candidates.forEach(function (candidate) {
+    region = union(region, candidate.box);
+    lowest = Math.min(lowest, candidate.ground);
+    if (silhouetteActors) {
+      var z = candidate.object.node.zIndex;
+      if (Number.isFinite(z)) firstZ = Math.min(firstZ, z);
+    }
+  });
+  active.forEach(function (entry) {
+    // A single animated bounds read and viewport test per actor, regardless
+    // of how many visible objects share its lane.
+    if (!(entry.feet.y > lowest)) return;
+    var showSilhouette = !silhouetteActors || silhouetteActors.has(entry), actorZ = entry.actor.node.zIndex;
+    // Foreground stencils also correct overlap when a shared depth slot puts
+    // the model above scenery that should cover it.
+    if (!showSilhouette && !(Number.isFinite(actorZ) && actorZ >= firstZ)) return;
+    entry.sources = bodyVisuals(entry.actor);
+    entry.bounds = entry.sources.reduce(function (value, source) {
+      return union(value, bounds(source, view.main, cache));
+    }, null);
+    if (!overlaps(entry.bounds, region) || (visible && !overlaps(entry.bounds, visible))) return;
+    function match(candidate) {
+      if ((showSilhouette || actorDrawnAbove(entry.actor, candidate.object)) &&
+          entry.feet.y > candidate.ground && overlaps(entry.bounds, candidate.box) &&
+          entry.feet.y > buildingFrontY(candidate.object, view.main, footprints, entry.feet.x, candidate.ground)) {
+        candidate.hidden.push(entry);
+      }
+    }
+    var nearby = index && scenerySpatialCandidates(index, entry.bounds, true);
+    if (nearby) {
+      for (var i = 0; i < nearby.length; i++) match(candidates[nearby[i]]);
+    } else candidates.forEach(match);
+  });
+}
+
+function warmLaterSnapshots(view, draw, cache) {
+  if (typeof cc.Sprite !== "function") return false;
+  for (var i = 1; i < draw.length; i++) {
+    var object = draw[i].object;
+    if (!object.frame || !cc.isValid(object.frame, true) || !object.texture || !cc.isValid(object.texture, true) ||
+        !object.sources.length || !object.sources.every(function (source) {
+          return source.constructor === cc.Sprite && cc.isValid(source, true) && cc.isValid(source.node, true);
+        }) || !sameStamp(object.signature, snapshotSignature(view, object, cache))) return false;
+  }
+  return true;
+}
+
+function hasBatchSize(draw) {
+  var actors = new Set();
+  for (var i = 0; i < draw.length; i++) {
+    var hidden = draw[i].hidden;
+    for (var j = 0; j < hidden.length; j++) {
+      actors.add(hidden[j].actor);
+      if (actors.size >= 3) return true;
+    }
+  }
+  return false;
+}
+
+function refreshSilhouettePriority(view, state) {
+  var config = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
+  var level = view.game.gameData.levelCfg;
+  if (state.config !== config || state.level !== level) {
+    state.config = config;
+    state.level = level;
+    state.priority = new Map();
+  }
+}
+
+function importantSilhouette(state, entry) {
+  if (entry.tint === ALLY || !state.config) return true;
+  var cfg = entry.actor.cfg, id = cfg && Number(cfg.ID);
+  if (!(id > 0)) return true;
+  if (!state.priority.has(id)) state.priority.set(id, require("BattleMusic").bossOrEliteUnit(id, state.config, state.level));
+  return state.priority.get(id);
+}
+
+function recordSilhouetteHint(view, entry) {
+  var state = view._silhouetteBudget;
+  if (state && !state.reduced && !importantSilhouette(state, entry)) state.visibleHints++;
+}
+
+function ordinarySilhouetteActors(view, actors) {
+  var game = view.game, data = game.gameData, director = cc.director;
+  var state = view._silhouetteBudget;
+  if (state && (actors.length < 48 || state.data !== data || state.epoch !== game._combatEpoch || state.round !== data.round)) {
+    state = view._silhouetteBudget = null;
+  }
+  if (!director || typeof director.getDeltaTime !== "function" || typeof director.getTotalFrames !== "function") return actors;
+  if (actors.length < 64 && (!state || !state.reduced)) {
+    view._silhouetteBudget = null;
+    return actors;
+  }
+  if (!state) {
+    state = view._silhouetteBudget = {
+      data: data, epoch: game._combatEpoch, round: data.round,
+      frame: -1, samples: 0, elapsed: 0, hints: 0, visibleHints: 0, reduced: false
+    };
+  }
+  refreshSilhouettePriority(view, state);
+  var frame = director.getTotalFrames(), dt = director.getDeltaTime();
+  if (!state.reduced && state.frame !== frame && Number.isFinite(dt) && dt > 0) {
+    state.frame = frame;
+    state.elapsed += Math.min(dt, .032);
+    state.hints += state.visibleHints;
+    state.visibleHints = 0;
+    if (++state.samples === 24) {
+      // Slow frames alone are insufficient. Require active optional overlays
+      // throughout the sample, then keep the choice stable for this crowd.
+      state.reduced = state.elapsed / state.samples > 1 / 55 && state.hints >= state.samples;
+      state.elapsed = state.samples = state.hints = 0;
+    }
+  }
+  if (!state.reduced) return actors;
+  if (!state.config) return actors;
+  return actors.filter(function (entry) { return importantSilhouette(state, entry); });
+}
+
 DepthView.prototype.update = function () {
   if (!this.main.activeInHierarchy) return;
   var footprints = new Map();
-  this.sort(footprints);
+  var cache = { transforms: new Map(), bounds: new Map(), poses: new Set() };
+  this.sort(footprints, cache);
   if (this.captureSupported === false) return;
+  if (!this._staticOcclusionBounds && this.nativeCapture) this._staticOcclusionBounds = new WeakMap();
   var captureScope=this.nativeCapture?new NativeCaptureScope(this):null;
   if(captureScope){captureScope._sceneRepairOwner=this;this._nativeCaptureScope=captureScope;}
   try {
   var self = this, game = this.game, visible = viewBounds(game, this.main), draw = [];
-  var cache = { transforms: new Map(), bounds: new Map(), poses: new Set() };
   // Per-actor GPU captures only retain a draw identity. Pose buffers are web-only.
   var nativeDraw = this.nativeCapture ? {} : null;
   if (!this.nativeCapture) {
@@ -1834,71 +2273,74 @@ DepthView.prototype.update = function () {
   var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
   active.forEach(function(entry){entry.feet=actorGroundPoint(entry.actor,self.main,game.ctrPlay,cache);});
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));
+  var candidates = [], byObject = new Map();
   this.objects.forEach(function (object) {
-    refreshBuildingSources(object);
-    // Modular doors/posts already resolve exact per-surface geometry below.
-    var modular=modularObject(self,object);
-    var perSurfaceOnly=modular&&self.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&typeof sp.Skeleton==="function"&&object.sources.length>0&&object.sources.every(function(source){
-      return source instanceof sp.Skeleton&&source._skeleton&&typeof source._skeleton.updateWorldTransform==="function"&&source._nativeSkeleton&&typeof source._nativeSkeleton.getBoundingBox==="function"&&source.skeletonData&&source.skeletonData.skeletonJson&&source.skeletonData.skeletonJson.wallKit;
-    });
-    var box=null;
-    if(object.node.activeInHierarchy){
-      if(perSurfaceOnly){
-        // Retain the original early world-pose settlement, but not the unused
-        // whole-skeleton native bounds query. Mixed/unknown groups stay exact.
-        object.sources.forEach(function(source){if(source.node.activeInHierarchy&&source.enabled)updatePose(source,cache);});
-      }else box=object.sources.reduce(function(value,source){return union(value,bounds(source,self.main,cache));},null);
+    var candidate = occlusionCandidate(self, object, cache, visible);
+    if (candidate) {
+      candidates.push(candidate);
+      byObject.set(object, candidate);
     }
-    var ground=point(object.node._depthGround||object.node,self.main).y;
-    var hidden=[];
-    var scenery=!object.buildings&&!modular;
-    for(var owner=object.node;scenery&&owner&&owner!==self.main;owner=owner.parent)if(owner._depthBuilding||owner._depthBuildingOwner)scenery=false;
-    var shapeSupported=object.node.convertToNodeSpaceAR&&self.main.convertToNodeSpaceAR;
-    var sceneryBox=scenery&&shapeSupported&&sceneryWorldShape(self,object.node,self.main,object.sources);
-    var sceneryBounds=sceneryBox||box;
-    var smallScenery=scenery&&sceneryBounds&&sceneryBounds.maxY-sceneryBounds.minY<=SMALL_SCENERY_HEIGHT;
-    if(!modular&&!object.node._depthGroundVisual&&!object.node._depthMapFlat&&!smallScenery&&box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
-      // Ground is unconditional: stale/custom layer order cannot tint a unit
-      // standing in front of, or exactly level with, an object's ground point.
-      if(!(entry.feet.y>ground))return;
-      if(!entry.sources){entry.sources=bodyVisuals(entry.actor);entry.bounds=entry.sources.reduce(function(value,source){return union(value,bounds(source,self.main,cache));},null);}
-      if(overlaps(entry.bounds,box)&&(!visible||overlaps(entry.bounds,visible))&&
-          entry.feet.y>buildingFrontY(object,self.main,footprints,entry.feet.x,ground))hidden.push(entry);
-    });
-    var hiddenActors=new Set(hidden.map(function(entry){return entry.actor;}));
+  });
+  var silhouetteActors=ordinarySilhouetteActors(this, active);
+  var silhouetteSet=silhouetteActors===active?null:new Set(silhouetteActors);
+  matchOcclusion(this, active, candidates, visible, cache, footprints, silhouetteSet);
+  this.objects.forEach(function (object) {
+    var candidate = byObject.get(object), hidden = candidate && candidate.hidden;
+    var hiddenActors = object.masks.size && hidden && hidden.length ?
+      new Set(hidden.map(function (entry) { return entry.actor; })) : null;
     object.masks.forEach(function (mask, actor) {
-      var visible=hiddenActors.has(actor);
-      mask.node.active=visible;
-      if(!visible&&mask.foreground)mask.foreground.node.active=false;
+      var masked = !!hiddenActors && hiddenActors.has(actor);
+      if (mask.node.active !== masked) mask.node.active = masked;
+      if (!masked && mask.foreground && mask.foreground.node.active) mask.foreground.node.active = false;
       // Visibility transitions stop tint immediately without cycling a
       // continuously visible renderer or discarding a reusable capture.
       if (!cc.isValid(actor.node) || !activeActors.has(actor)) { releaseObjectMask(mask); object.masks.delete(actor); }
     });
-    if (object.overlay && !hidden.length) object.overlay.node.active = false;
-    if (!hidden.length) return;
+    if (!hidden || !hidden.length) {
+      if (object.overlay && object.overlay.node.active) object.overlay.node.active = false;
+      return;
+    }
     if (cache.vertexConsumers) hidden.forEach(function (entry) {
       entry.sources.forEach(function (source) { cache.vertexConsumers.set(source, (cache.vertexConsumers.get(source) || 0) + 1); });
     });
-    draw.push({ object: object, box: box, hidden: hidden });
+    draw.push(candidate);
   });
   this._vertexConsumers = cache.vertexConsumers;
   try {
     var firstSnapshot=false;
     if(this.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"){
-      if(draw.length===1){
+      var batchCount=draw.length===1?1:0, preparedFirst=false, warmLater=false;
+      var multi=draw.length>1&&captureScope&&captureScope.enabled;
+      if(multi)warmLater=(draw[0].hidden.length>=3||hasBatchSize(draw))&&warmLaterSnapshots(this,draw,cache);
+      if(batchCount||multi&&(warmLater||draw[0].hidden.length>=3)){
         // Preserve the first building's signature/capture before zero-time
         // actor callbacks, exactly as in the individual silhouette path.
         this.snapshot(draw[0].object,draw[0].box,cache);firstSnapshot=true;
         if(this._destroyed)return;
+        if(multi&&!captureScope.first){
+          // Settle the original first camera's zero-time events. Additional
+          // bodies can share the batch only when all intervening snapshots
+          // stay warm after those callbacks, so no object camera moves.
+          var previousAtlas=this._nativeActorAtlas,prepared=captureScope.prepare();
+          if(prepared===null||this._destroyed||this._nativeActorAtlas!==previousAtlas)return;
+          preparedFirst=prepared===true&&captureScope.quiet&&!captureScope.finished;
+          if(preparedFirst){
+            if(warmLater&&warmLaterSnapshots(this,draw,cache))batchCount=draw.length;
+            else if(draw[0].hidden.length>=3)batchCount=1;
+          }
+        }
+      }
+      if(batchCount){
         if(!this._nativeActorAtlas)this._nativeActorAtlas=require("NativeActorAtlas").create(this,releaseCapture);
       if(this._nativeActorAtlas){
         var ordinaryAtlas=this._nativeActorAtlas,requests=[],requested=new Set();
-        draw.forEach(function(item){item.hidden.forEach(function(entry){
+        var requestBody=function(entry){
           if(requested.has(entry.actor))return;requested.add(entry.actor);
           var record=self.nativeActors.get(entry.actor);if(!record){record={};self.nativeActors.set(entry.actor,record);}
           requests.push({actor:entry.actor,sources:entry.sources,bounds:entry.bounds,record:record});
-        });});
-        if(requests.length&&captureScope&&captureScope.prepare&&captureScope.prepare()===null)return;
+        };
+        for(var i=0;i<batchCount;i++)draw[i].hidden.forEach(requestBody);
+        if(!preparedFirst&&requests.length&&captureScope&&captureScope.prepare&&captureScope.prepare()===null)return;
         if(this._destroyed||this._nativeActorAtlas!==ordinaryAtlas)return;
         // Unsupported middleware keeps the original unchanged first camera.
         if(requests.length&&captureScope&&!captureScope.first){
@@ -1933,6 +2375,7 @@ DepthView.prototype.update = function () {
         if (mask.node.parent !== overlay.node) mask.node.parent = overlay.node;
         mask.node.active = true;
         mask.node.zIndex = entry.actor.node.zIndex;
+        if (!above) recordSilhouetteHint(self, entry);
         var opacity = above ? 255 : 204;
         if (self.nativeCapture) self.syncNativeMask(mask, entry, object, nativeDraw, opacity);
         else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache, opacity); });
@@ -1940,7 +2383,7 @@ DepthView.prototype.update = function () {
       if (shared) syncObjectStencil(object.overlay, object, object.node.zIndex + 1);
       else object.overlay.node.active = false;
     });
-    if(this.gateOcclusion)this.gateOcclusion.update(active,cache,visible);
+    if(this.gateOcclusion)this.gateOcclusion.update(active,cache,visible,silhouetteSet);
   } finally {
     if(captureScope){captureScope.finish();if(this._nativeCaptureScope===captureScope)this._nativeCaptureScope=null;}
     if (this._nativeRendered) {
@@ -1969,7 +2412,7 @@ DepthView.prototype.update = function () {
 DepthView.prototype.destroy = function () {
   if (this._destroyed) return;
   if(this._nativeCaptureScope)this._nativeCaptureScope.finish();
-  this._nativeCaptureScope=null;this._nativeCaptureRefs=null;
+  this._nativeCaptureScope=null;this._nativeCaptureRefs=null;this._cachedCaptureBlocker=null;
   this._destroyed = true;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
   if(this.gateOcclusion)this.gateOcclusion.destroy();
@@ -1982,6 +2425,7 @@ DepthView.prototype.destroy = function () {
   });
   this._vertexStore = null;
   this._vertexConsumers = null;
+  this._silhouetteBudget = null;
   if (this._depthKinds) {
     this._depthKinds.forEach(function (previous, node) {
       if (previous.building === undefined) delete node._depthBuilding; else node._depthBuilding = previous.building;
@@ -1998,6 +2442,9 @@ DepthView.prototype.destroy = function () {
   });
   this._groundParents=null;
   this._sceneryShapes=null;
+  this._depthOrder=null;
+  this._sceneryDepthIndex=this._occlusionDepthIndex=null;
+  this._staticOcclusionBounds=null;
   if (cc.isValid(this.capture, true)) this.capture.destroy();
   if (cc.isValid(this.cameraNode, true)) this.cameraNode.destroy();
   if (this.nativeMaterial) this.nativeMaterial.destroy();

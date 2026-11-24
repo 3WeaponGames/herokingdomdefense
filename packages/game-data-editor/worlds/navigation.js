@@ -77,7 +77,7 @@ function buildingColliderData(service,stage,building,hall,gate,config,sourceMode
  return scaled({colliders,origin,owner:owner.id},row,owner.world);
 }
 function scaled(data,row,matrix){if(row&&row.ModelOffset){const O=require('../../../assets/_script/BuildingModelOffset'),v=O.vector(matrix,O.value(row));data.colliders=data.colliders.map(c=>Object.assign({},c,{points:c.points.map(p=>({x:p.x+v.x,y:p.y+v.y}))}));}const Scale=require('../../../assets/_script/BuildingWorldScale'),factor=Scale.value(row);if(factor!==1)data.colliders=data.colliders.map(c=>Object.assign({},c,{points:Scale.polygons([c.points],data.origin,factor)[0]}));return data;}
-function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){const data=buildingColliderData(service,stage,building,hall,gate,config,sourceModels);return data.colliders.map(c=>c.points.map(p=>M.toWorld(building,{x:p.x-data.origin.x,y:p.y-data.origin.y})));}
+function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){const data=buildingColliderData(service,stage,building,hall,gate,config,sourceModels),matrix=M.buildingMatrix(building);return data.colliders.map(c=>c.points.map(p=>Maps.point(matrix,{x:p.x-data.origin.x,y:p.y-data.origin.y})));}
 function preview(service,request){
  const stage=service.doc(request.key).data,map=service.loadMap(stage.mapId).data,spawn=Array.isArray(stage.spawns)&&stage.spawns.find(s=>s&&s.id===request.spawnId&&s.enabled!==false);
  if(!spawn)throw Error('Select an enabled spawn');
@@ -117,10 +117,10 @@ function preview(service,request){
  const fallback=!!(request.graphId&&route[0]&&route[0].graphId!==request.graphId),message=(fallback?'The selected conditional path is unavailable; showing its fallback. ':'')+(frontier?'Approach reaches an obstacle frontier. Closed gates may be attacked here.':'Approach reaches the authored goal.');
  const response={points,message,frontier,polygons:polygons.length,fallback},area=require(path.join(service.root,'assets/_script/SpawnArea')),width=route[0]&&route[0].spread===undefined?spawn.radius||0:route[0]&&route[0].spread||0;
  if((spawn.radius||0)>0||width>0){
-  let seed=42871;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;},walkable=p=>grid.isWalkable(p,radius);response.traces=[];
+  let seed=42871;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;},clear=(a,b)=>grid.segmentClear(a,b,radius),anchorWalkable=p=>grid.isWalkable(p,radius);response.traces=[];
   for(let i=0;i<8;i++){
    const start=area.sampleInBounds(spawn,spawn.radius||0,random,bounds,radius);if(!start)continue;
-   const lane=area.spread(route,start,spawn,width,random,walkable,(a,b)=>grid.segmentClear(a,b,radius)),trace=[start];let current=start;
+   const lane=area.spread(route,start,spawn,width,random,null,clear,anchorWalkable),trace=[start];let current=start;
    for(const goal of lane){const result=grid.findPath(current,goal,radius,true),segment=!result?[]:Array.isArray(result)?result:result.points||result.path||[];for(const p of segment){const last=trace[trace.length-1];if(last.x!==p.x||last.y!==p.y)trace.push(p);}if(!segment.length||result.partial)break;current=segment[segment.length-1];}
    response.traces.push(trace);
   }

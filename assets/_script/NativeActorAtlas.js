@@ -81,32 +81,108 @@ function plan(item,description,grid,fixedDetail){
   var resolution=Math.min(fixedDetail===undefined?4:fixedDetail,512/Math.max(width,height)),tw=Math.max(2,Math.ceil(width*resolution)),th=Math.max(2,Math.ceil(height*resolution));
   return {item:item,source:description.sources[0],sources:description.sources,groups:description.groups,order:description.order,capacity:base,record:record,center:{x:(box.minX+box.maxX)/2,y:(box.minY+box.maxY)/2},size:{width:width,height:height},tw:tw,th:th,scale:th/height};
 }
-function shelf(plans,width){
-  var placed=[],x=0,y=0,row=0,used=0;
-  for(var i=0;i<plans.length;i++){
+function shelf(plans,start,width,tiles){
+  var x=0,y=0,row=0,used=0,i;
+  for(i=start;i<plans.length;i++){
     var p=plans[i],w=p.tw+PAD*2,h=p.th+PAD*2;if(w>width)break;
     if(x+w>width){x=0;y+=row;row=0;}if(y+h>LIMIT)break;
-    placed.push({plan:p,x:x+PAD,y:y+PAD});x+=w;row=Math.max(row,h);used=Math.max(used,x);
+    if(tiles){
+      var left=x+PAD,bottom=y+PAD;
+      tiles.push({index:i,x:left,y:bottom,key:left+":"+bottom+":"+p.tw+":"+p.th});
+    }
+    x+=w;row=Math.max(row,h);used=Math.max(used,x);
   }
-  return {tiles:placed,width:used,height:y+row};
+  return {count:i-start,width:used,height:y+row};
 }
 function pack(plans){
   // Try exact row widths as well as regular widths. NPOT clamp textures need
   // no power-of-two padding; 33 medium NPCs must not allocate a 4096² target.
-  var remaining=plans.slice().sort(function(a,b){return b.th-a.th||b.tw-a.tw;}),pages=[];
-  while(remaining.length){
+  var pages=[];
+  for(var start=0;start<plans.length;){
     var widths=new Set([LIMIT]),sum=0;
-    for(var i=0;i<remaining.length;i++){sum+=remaining[i].tw+PAD*2;if(sum>LIMIT)break;widths.add(sum);}
+    for(var i=start;i<plans.length;i++){sum+=plans[i].tw+PAD*2;if(sum>LIMIT)break;widths.add(sum);}
     for(var w=128;w<LIMIT;w+=128)widths.add(w);
-    var best=null;
-    widths.forEach(function(width){var value=shelf(remaining,width);if(value.tiles.length&&(!best||value.tiles.length>best.tiles.length||value.tiles.length===best.tiles.length&&value.width*value.height<best.width*best.height))best=value;});
+    var best=null,bestWidth=0;
+    widths.forEach(function(width){
+      var value=shelf(plans,start,width);
+      if(value.count&&(!best||value.count>best.count||value.count===best.count&&value.width*value.height<best.width*best.height)){
+        best=value;bestWidth=width;
+      }
+    });
     if(!best)return [];
-    pages.push(best);remaining.splice(0,best.tiles.length);
+    best.tiles=[];
+    shelf(plans,start,bestWidth,best.tiles);
+    pages.push(best);start+=best.count;
   }
   return pages;
 }
+function layoutsFor(atlas,plans){
+  plans.sort(function(a,b){return b.th-a.th||b.tw-a.tw;});
+  var cached=atlas.layoutCache,matching=cached&&cached.sizes.length===plans.length*2;
+  for(var i=0;matching&&i<plans.length;i++)matching=cached.sizes[i*2]===plans[i].tw&&cached.sizes[i*2+1]===plans[i].th;
+  if(!matching){
+    var sizes=[];
+    plans.forEach(function(plan){sizes.push(plan.tw,plan.th);});
+    cached=atlas.layoutCache={sizes:sizes,pages:pack(plans)};
+  }
+  // Packing depends only on ordered dimensions. Bind the current poses to
+  // those slots afresh, including when a same-sized unit replaces another.
+  return cached.pages.map(function(page){
+    return {width:page.width,height:page.height,tiles:page.tiles.map(function(tile){
+      return {x:tile.x,y:tile.y,key:tile.key,plan:plans[tile.index]};
+    })};
+  });
+}
 function dirty(node){node._localMatDirty|=cc.Node._LocalDirtyFlag.POSITION|cc.Node._LocalDirtyFlag.SCALE;node._worldMatDirty=true;node._dirtyPtr[0]|=cc.RenderFlow.FLAG_TRANSFORM|cc.RenderFlow.FLAG_WORLD_TRANSFORM|cc.RenderFlow.FLAG_OPACITY;}
 function culling(node,mask){node._cullingMask=mask;node._proxy._cullingMaskPtr[0]=mask;}
+function plainTransformNode(node) {
+  var prototype=cc.Node.prototype;
+  return node&&Object.getPrototypeOf(node)===prototype&&!node.is3DNode&&
+    typeof node.getWorldMatrix==="function"&&node.getWorldMatrix===prototype.getWorldMatrix&&
+    node.convertToWorldSpaceAR===prototype.convertToWorldSpaceAR&&node.convertToNodeSpaceAR===prototype.convertToNodeSpaceAR;
+}
+function pageCoordinates(atlas,main,tiles) {
+  if(atlas.drawing!==1||typeof cc.Mat4!=="function"||typeof cc.Mat4.invert!=="function"||
+      !cc.Vec2||typeof cc.Vec2.transformMat4!=="function"||!plainTransformNode(main))return null;
+  for(var i=0;i<tiles.length;i++){
+    var sources=tiles[i].plan.sources;
+    for(var j=0;j<sources.length;j++){
+      var node=sources[j].node;
+      if(!plainTransformNode(node)||!plainTransformNode(node.parent))return null;
+    }
+  }
+  var state=atlas.pageTransform||(atlas.pageTransform={
+    map:new cc.Mat4(),mapInverse:new cc.Mat4(),parentWorld:new cc.Mat4(),parentInverse:new cc.Mat4(),
+    zero:cc.v2(0,0),world:cc.v2(0,0),local:cc.v2(0,0),goal:cc.v2(0,0)
+  });
+  // All moved sources are leaves. The map and parents cannot move during
+  // the raw transform writes, and the matrices are reacquired for each page.
+  state.parent=null;
+  main.getWorldMatrix(state.map);
+  return cc.Mat4.invert(state.mapInverse,state.map)?state:null;
+}
+function positionForTile(node,main,tile,plan,coordinates) {
+  var old,goal,world;
+  if(coordinates){
+    var parent=node.parent;
+    if(coordinates.parent!==parent){
+      parent.getWorldMatrix(coordinates.parentWorld);
+      coordinates.parent=cc.Mat4.invert(coordinates.parentInverse,coordinates.parentWorld)?parent:null;
+    }
+    if(coordinates.parent){
+      world=node.convertToWorldSpaceAR(coordinates.zero,coordinates.world);
+      old=cc.Vec2.transformMat4(coordinates.local,world,coordinates.mapInverse);
+      goal=coordinates.goal;
+      goal.x=tile.x+plan.tw/2+(old.x-plan.center.x)*plan.scale;
+      goal.y=tile.y+plan.th/2+(old.y-plan.center.y)*plan.scale;
+      world=cc.Vec2.transformMat4(coordinates.world,goal,coordinates.map);
+      return cc.Vec2.transformMat4(coordinates.local,world,coordinates.parentInverse);
+    }
+  }
+  old=point(node,main);
+  goal=cc.v2(tile.x+plan.tw/2+(old.x-plan.center.x)*plan.scale,tile.y+plan.th/2+(old.y-plan.center.y)*plan.scale);
+  return node.parent.convertToNodeSpaceAR(main.convertToWorldSpaceAR(goal));
+}
 function Atlas(view,release){this.view=view;this.releaseRecord=release;this.pages=[];this.disabled=false;this.captures=0;this.actorCaptures=0;this.epoch=0;this.drawing=0;this.disposePending=false;}
 Atlas.prototype.forget=function(record){
   var page=record._nativeActorAtlasPage;
@@ -117,7 +193,7 @@ Atlas.prototype.releasePage=function(page){
   page.records.forEach(function(record){if(record._nativeActorAtlasPage===page){self.releaseRecord(record);delete record.draw;delete record._nativeActorAtlasPage;delete record._nativeActorAtlasRect;}});
   page.records.clear();if(page.texture)page.texture.destroy();page.texture=null;
 };
-Atlas.prototype.dispose=function(){this.epoch++;if(this.drawing){this.disposePending=true;return;}this.disposePending=false;var self=this;this.pages.forEach(function(page){self.releasePage(page);});this.pages=[];};
+Atlas.prototype.dispose=function(){this.epoch++;if(this.drawing){this.disposePending=true;return;}this.disposePending=false;var self=this;this.pages.forEach(function(page){self.releasePage(page);});this.pages=[];this.layoutCache=null;};
 Atlas.prototype.drawPage=function(layout,page,scope){
   var view=this.view,main=view.main,camera=view.camera,origin=main.convertToWorldSpaceAR(cc.v2(0,0)),axis=main.convertToWorldSpaceAR(cc.v2(1,0)),scale=axis.x-origin.x;
   var texture=page.texture,replace=!texture||texture.width<layout.width||texture.height<layout.height||layout.width*layout.height<texture.width*texture.height*.5;
@@ -125,6 +201,7 @@ Atlas.prototype.drawPage=function(layout,page,scope){
   this.drawing++;
   try{
     if(replace){texture=new cc.RenderTexture();texture.initWithSize(layout.width,layout.height,cc.gfx.RB_FMT_S8);}
+    var coordinates=pageCoordinates(this,main,layout.tiles);
     layout.tiles.forEach(function(tile){
       var p=tile.plan;
       if(p.order){
@@ -132,8 +209,7 @@ Atlas.prototype.drawPage=function(layout,page,scope){
         p.order.root._proxy._dirtyPtr[0]|=cc.RenderFlow.FLAG_REORDER_CHILDREN;
       }
       p.sources.forEach(function(source){
-        var node=source.node,old=point(node,main),goal={x:tile.x+p.tw/2+(old.x-p.center.x)*p.scale,y:tile.y+p.th/2+(old.y-p.center.y)*p.scale};
-        var local=node.parent.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(goal.x,goal.y)));
+        var node=source.node,local=positionForTile(node,main,tile,p,coordinates);
         moved.push({node:node,source:source,x:node._trs[0],y:node._trs[1],sx:node._trs[7],sy:node._trs[8],mask:node._cullingMask});
         node._trs[0]=local.x;node._trs[1]=local.y;node._trs[7]*=p.scale;node._trs[8]*=p.scale;dirty(node);
       });
@@ -149,6 +225,7 @@ Atlas.prototype.drawPage=function(layout,page,scope){
     }
   }catch(error){failure=error;
   }finally{
+    if(coordinates)coordinates.parent=null;
     function restore(action){try{action();}catch(error){if(!failure)failure=error;try{action();}catch(ignored){}}}
     for(var i=moved.length-1;i>=0;i--){var m=moved[i],node=m.node;if(!valid(node)||!node._proxy)continue;restore(function(){node._trs[0]=m.x;node._trs[1]=m.y;node._trs[7]=m.sx;node._trs[8]=m.sy;dirty(node);culling(node,m.mask);});}
     for(var orderIndex=ordered.length-1;orderIndex>=0;orderIndex--){
@@ -184,14 +261,14 @@ Atlas.prototype.capture=function(items,draw,fixedDetail){
   if(candidates.length<MIN_ACTORS||!availableMask(main)){this.dispose();return 0;}
   var origin=main.convertToWorldSpaceAR(cc.v2(0,0)),x=main.convertToWorldSpaceAR(cc.v2(1,0)),y=main.convertToWorldSpaceAR(cc.v2(0,1)),sx=x.x-origin.x,sy=y.y-origin.y;
   if(!(sx>0)||Math.abs(sx-sy)>.00001||Math.abs(x.y-origin.y)>.00001||Math.abs(y.x-origin.x)>.00001){this.dispose();return 0;}
-  var grid=fixedDetail===undefined?screenGrid(view):null,layouts=pack(candidates.map(function(row){return plan(row.item,row.description,grid,fixedDetail);})),count=0,used=new Set(),epoch=this.epoch;
+  var grid=fixedDetail===undefined?screenGrid(view):null,layouts=layoutsFor(this,candidates.map(function(row){return plan(row.item,row.description,grid,fixedDetail);})),count=0,used=new Set(),epoch=this.epoch;
   try{
     for(var index=0;index<layouts.length;index++){
       var layout=layouts[index];
       var page=self.pages[index];if(!page)page=self.pages[index]={owner:self,records:new Set(),texture:null};
       if(!self.drawPage(layout,page,scope))break;
       layout.tiles.forEach(function(tile){
-        var p=tile.plan,record=p.record,key=[tile.x,tile.y,p.tw,p.th].join(":");
+        var p=tile.plan,record=p.record,key=tile.key;
         if(record._nativeActorAtlasPage!==page||record._nativeActorAtlasRect!==key||!record.frame||record.frame.getTexture()!==page.texture){
           self.forget(record);self.releaseRecord(record);
           // Creator otherwise takes originalSize from the entire atlas. Masks

@@ -3836,42 +3836,48 @@
       "name": "Spawn 1",
       "x": -897.909,
       "y": 1027.011,
-      "enabled": true
+      "enabled": true,
+      "radius": 32
     },
     {
       "id": 2,
       "name": "Spawn 2",
       "x": -827.7281708538826,
       "y": 1047.718775028453,
-      "enabled": true
+      "enabled": true,
+      "radius": 102.2
     },
     {
       "id": 3,
       "name": "Spawn 3",
       "x": -886.3820937381446,
       "y": 1082.023816774155,
-      "enabled": true
+      "enabled": true,
+      "radius": 43.6
     },
     {
       "id": 4,
       "name": "Spawn 4",
       "x": 772.96,
       "y": 1343.795,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 5,
       "name": "Spawn 5",
       "x": 775.3214124478366,
       "y": 1289.7478500189686,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 6,
       "name": "Spawn 6",
       "x": 709.1861124857735,
       "y": 1300.4466437950505,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     }
   ],
   "graphs": [
@@ -40776,5 +40782,23 @@
   "tasksPosition": {
     "x": 332.29593960926417,
     "y": 546.5721199346527
-  }
+  },
+  "spawnGroups": [
+    {
+      "id": "spawn-group-1",
+      "spawnIds": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "spawn-group-2",
+      "spawnIds": [
+        4,
+        5,
+        6
+      ]
+    }
+  ]
 }

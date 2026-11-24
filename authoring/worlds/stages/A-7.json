@@ -6106,7 +6106,7 @@
   "graphs": [
     {
       "id": "legacy-route-792",
-      "name": "Path_northwest_792",
+      "name": "Spawns 1–3 · Route 1",
       "spawnIds": [
         1,
         2,
@@ -6184,11 +6184,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-807",
-      "name": "Path_northwest_807",
+      "name": "Spawns 1–3 · Route 2",
       "spawnIds": [
         1,
         2,
@@ -6278,11 +6279,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-831",
-      "name": "Path_northwest_831",
+      "name": "Spawns 1–3 · Route 3",
       "spawnIds": [
         1,
         2,
@@ -6360,11 +6362,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-852",
-      "name": "Path_northwest_852",
+      "name": "Spawns 1–3 · Route 4",
       "spawnIds": [
         1,
         2,
@@ -6466,11 +6469,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-873",
-      "name": "Path_northwest_873",
+      "name": "Spawns 1–3 · Route 5",
       "spawnIds": [
         1,
         2,
@@ -6586,11 +6590,12 @@
       "requiresAnyBuilding": [
         30
       ],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-888",
-      "name": "Path_west_888",
+      "name": "Spawns 4–6 · Route 1",
       "spawnIds": [
         4,
         5,
@@ -6656,11 +6661,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-900",
-      "name": "Path_west_900",
+      "name": "Spawns 4–6 · Route 2",
       "spawnIds": [
         4,
         5,
@@ -6752,11 +6758,12 @@
       "requiresAnyBuilding": [
         4
       ],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-918",
-      "name": "Path_south_918",
+      "name": "Spawns 7–9 · Route 1",
       "spawnIds": [
         7,
         8,
@@ -6822,11 +6829,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-930",
-      "name": "Path_south_930",
+      "name": "Spawns 7–9 · Route 2",
       "spawnIds": [
         7,
         8,
@@ -6934,11 +6942,12 @@
         12,
         13
       ],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-948",
-      "name": "Path_southeast_948",
+      "name": "Spawns 10–12 · Route 1",
       "spawnIds": [
         10,
         11,
@@ -6980,11 +6989,12 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "legacy-route-963",
-      "name": "Path_southeast_963",
+      "name": "Spawns 10–12 · Route 2",
       "spawnIds": [
         10,
         11,
@@ -7050,7 +7060,8 @@
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true
+      "legacy": true,
+      "nameFromSpawns": true
     },
     {
       "id": "path-1794260517664",
@@ -165272,5 +165283,39 @@
         "radius": 150
       }
     ]
-  }
+  },
+  "spawnGroups": [
+    {
+      "id": "spawn-group-1",
+      "spawnIds": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "spawn-group-2",
+      "spawnIds": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "id": "spawn-group-3",
+      "spawnIds": [
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "id": "spawn-group-4",
+      "spawnIds": [
+        10,
+        11,
+        12
+      ]
+    }
+  ]
 }
