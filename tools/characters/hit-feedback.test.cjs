@@ -19,6 +19,7 @@ test('all deployed units retain authored hit art or equipped-part white flashes 
 });
 function feedbackFixture(native){
  const tracks=[],plays=[],entries=new WeakMap(),actor={node:{_combatGeneration:1},rigidBody:{linearVelocity:{x:20,y:0}},isDead:()=>false};
+ const baseColor={r:220,g:225,b:240,a:231};
  let useTint=false,tintWrites=0;
  const baseTrack=tracks[0]={animation:{name:'attack'},trackTime:.31};
  function wrap(entry){
@@ -29,15 +30,15 @@ function feedbackFixture(native){
   entries.set(value,entry);return value;
  }
  function original(value){return native?entries.get(value):value;}
- const renderer=actor.spAni={skeletonData:{},findAnimation:name=>name==='hit',
+ const renderer=actor.spAni={node:{color:baseColor},skeletonData:{},findAnimation:name=>name==='hit',
   setAnimation(index,name,loop){assert.equal(index,1);assert.equal(name,'hit');assert.equal(loop,false);const entry={animation:{name},trackTime:0,animationEnd:.24,disposed:false};tracks[1]=entry;plays.push(entry);return wrap(entry);},
   getCurrent:index=>wrap(tracks[index]),setTrackCompleteListener(entry,done){original(entry).complete=done;},setTrackDisposeListener(entry,done){original(entry).dispose=done;},
   clearTrack(index){const old=tracks[index];tracks[index]=null;if(old){old.disposed=true;if(old.dispose)old.dispose();}},setSlotsToSetupPose(){}};
  Object.defineProperty(renderer,'useTint',{get(){return useTint;},set(value){useTint=value;tintWrites++;}});
- const context={exports:{},cc:{Vec2:{ZERO:{x:0,y:0}},Component:class{},isValid:value=>!!value&&!value.destroyed,Class:d=>{function C(){}Object.assign(C.prototype,d);return C;}}};
+ const context={exports:{},cc:{Vec2:{ZERO:{x:0,y:0}},Component:class{},color:(r,g,b,a)=>({r,g,b,a}),isValid:value=>!!value&&!value.destroyed,Class:d=>{function C(){}Object.assign(C.prototype,d);return C;}}};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/UnitHitFeedback.js'),'utf8'),context);
  let feedback;actor.node.getComponent=()=>feedback;actor.node.addComponent=C=>(feedback=new C());
- return{actor,renderer,tracks,plays,baseTrack,tintWrites:()=>tintWrites,hit:()=>context.exports.play(actor),reset:()=>context.exports.reset(actor),feedback:()=>feedback,
+ return{actor,renderer,tracks,plays,baseTrack,baseColor,api:context.exports,tintWrites:()=>tintWrites,hit:()=>context.exports.play(actor),reset:()=>context.exports.reset(actor),feedback:()=>feedback,
   complete(){const entry=tracks[1];entry.trackTime=entry.animationEnd;entry.complete();},dispose(){renderer.clearTrack(1);}};
 }
 
@@ -75,6 +76,58 @@ for(const native of [false,true])test((native?'native':'browser')+' hit polling 
  f.actor._isPooled=true;f.hit();assert.equal(f.plays.length,3);f.actor._isPooled=false;f.actor.node._combatGeneration++;f.hit();
  assert.equal(f.plays.length,4);reused.complete();reused.dispose();assert.equal(f.actor._hitReactionPlaying,true);
  f.reset();assert.equal(f.tracks[1],null);assert.equal(f.actor._hitReactionPlaying,false);assert.equal(f.tracks[0],f.baseTrack);assert.equal(f.baseTrack.trackTime,.31);
+});
+
+for(const native of [false,true])test((native?'native':'browser')+' status colors follow one hit track and restore the current buff tint',()=>{
+ const f=feedbackFixture(native);
+ f.hit();
+ f.api.playStatus(f.actor,['poison','burn','bleed'],()=>true,{});
+ const hit=f.tracks[1];
+ assert.equal(f.plays.length,1);
+ assert.equal(f.actor._statusHitReaction,true);
+ assert(f.renderer.node.color.g>f.renderer.node.color.r);
+ assert.equal(f.renderer.node.color.a,f.baseColor.a);
+ assert.equal(f.api.baseColor(f.renderer.node),f.baseColor);
+ hit.trackTime=.1;
+ f.feedback().update();
+ const orange=f.renderer.node.color;
+ assert(orange.r>orange.g&&orange.g>orange.b);
+ hit.trackTime=.18;
+ f.feedback().update();
+ assert(f.renderer.node.color.g<orange.g);
+ const slowTint={r:124,g:169,b:255,a:231};
+ f.renderer.node.color=slowTint;
+ f.feedback().update();
+ assert.equal(f.api.baseColor(f.renderer.node),slowTint);
+ f.complete();
+ assert.deepEqual(f.renderer.node.color,slowTint);
+ assert.equal(f.actor._hitReactionPlaying,false);
+ assert.equal(f.actor._statusHitReaction,false);
+ assert.equal(f.tracks[0],f.baseTrack);
+});
+
+test('a target without a hit clip briefly stops and flashes, and pause and pool reuse clean up the right reaction',()=>{
+ const f=feedbackFixture(true), ui={isPauset:true,speed:1};
+ const mount={color:{r:255,g:255,b:255,a:255}}, mountColor=mount.color;
+ f.renderer.findAnimation=()=>false;
+ f.actor.spAni=null;
+ f.actor.ctrPlayAni={spAniBody:f.renderer,spAniMa:{node:mount}};
+ f.api.playStatus(f.actor,['burn'],()=>true,ui);
+ assert.equal(f.plays.length,0);
+ assert.equal(f.actor._hitReactionPlaying,true);
+ assert.equal(f.actor.rigidBody.linearVelocity.x,0);
+ assert(mount.color.r>mount.color.g);
+ f.feedback().update(1);
+ assert.equal(f.actor._hitReactionPlaying,true);
+ ui.isPauset=false;
+ f.feedback().update(.18);
+ assert.equal(f.actor._hitReactionPlaying,false);
+ assert.equal(mount.color,mountColor);
+ f.api.playStatus(f.actor,['poison'],()=>true,ui);
+ f.actor.node._combatGeneration++;
+ f.feedback().update(.01);
+ assert.equal(f.actor._statusHitReaction,false);
+ assert.equal(f.renderer.node.color,f.baseColor);
 });
 
 test('native slot reset clears interrupted white flashes at the planning boundary and preserves setup tints',()=>{

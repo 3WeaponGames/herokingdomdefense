@@ -7,7 +7,7 @@ const path = require('node:path');
 const CORE_INPUT = '10d42aa8d41ab27b5d54a6e0b1042b6d576050e3b382968c68e4c452764033af';
 const ADAPTER_INPUT = 'fdceca7fcf63e6d6adf78501adbb364615504f8b1653e78ff0eb57c477a96116';
 const CORE_OUTPUT = 'b705e82dae43badaf4e6ccbfd59aaeba254fff2dba5a19413ee73e3cb8d7ea72';
-const ADAPTER_OUTPUT = '2a3b5cdabc20c2ffae722da77b70f74e3c13fd1c1c01a6898fea4ca37d2b17d8';
+const ADAPTER_OUTPUT = 'ae2efb579e22e1f3bb0fab5731d2a778ba04555d7d088c5716720f4937ab0657';
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const adapterCode = fs.readFileSync(path.join(__dirname, 'targetless-actor-captures-adapter.inc'), 'utf8')
     .replace(/\r\n/g, '\n').trimEnd();
@@ -57,6 +57,10 @@ function patchAdapter(input) {
   } finally {
     if (targetlessRequest) targetlessRequest.validating = false;
   }`);
+
+        const carry = '        var dirty = update && update._hkdCarryDirtyMask && node._dirtyPtr;';
+        source = once(source, carry,
+            '        if (targetlessRequest && update) hkdTargetlessBeforeCarry(targetlessRequest, component, maskAssembler, update);\n' + carry);
 
         // Retain both original execution sites in the grouped dirty queue.
         for (const [dispatch, kind] of [

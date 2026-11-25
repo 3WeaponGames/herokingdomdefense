@@ -1,6 +1,7 @@
 // Capture the actual Creator methods only after the native assemblers load.
 var hkdTargetlessStockData, hkdTargetlessStockColor, hkdTargetlessStockDisable;
 var hkdTargetlessLeaf, hkdTargetlessReady = false, hkdTargetlessRenderers = [];
+var hkdTargetlessMaskWrappers = new WeakMap();
 
 function hkdTargetlessInitialize() {
   if (hkdTargetlessReady) return;
@@ -43,6 +44,39 @@ function hkdTargetlessBeforeValidation(request, component) {
   }
 }
 
+function hkdTargetlessRegisterMaskWrapper(assembler, wrapper, original) {
+  if (!hkdTargetlessReady || original !== hkdTargetlessStockData || typeof original !== "function" ||
+      typeof wrapper !== "function" || wrapper === original || !assembler || assembler._updateRenderData !== wrapper) return false;
+  var component = assembler._renderComp, stock = hkdTargetlessStockComponent(component);
+  if (!stock || !cc.Mask || stock.type !== cc.Mask.prototype || component._assembler !== assembler ||
+      !component.node || component.node._occlusionMask !== true) return false;
+  var data = assembler.updateRenderData;
+  var carry = Object.getOwnPropertyDescriptor(wrapper, "_hkdCarryDirtyMask");
+  if (typeof data !== "function" || stock.data.indexOf(data) < 0 || !carry ||
+      typeof carry.value !== "function" || carry.writable || carry.configurable) return false;
+  // The private generated wrapper owns its immutable carry function. A weak
+  // wrapper key allows retirement without retaining a pooled Mask or assembler.
+  hkdTargetlessMaskWrappers.set(wrapper, { assembler: assembler, component: component, node: component.node, data: data });
+  return true;
+}
+
+function hkdTargetlessOwnsMaskWrapper(component, assembler, wrapper) {
+  var record = hkdTargetlessMaskWrappers.get(wrapper);
+  return !!(record && record.assembler === assembler && record.component === component &&
+    component._assembler === assembler && assembler._renderComp === component &&
+    Object.getPrototypeOf(component) === cc.Mask.prototype && component.node === record.node &&
+    record.node._occlusionMask === true && assembler.updateRenderData === record.data);
+}
+
+function hkdTargetlessBeforeCarry(request, component, assembler, update) {
+  if (request.materialized) return;
+  // Grouped preparation can read or call the carry member before the ordinary
+  // dirty dispatch. An unregistered wrapper must already see a real target.
+  if (update === hkdTargetlessStockData && !("_hkdCarryDirtyMask" in update) ||
+      hkdTargetlessOwnsMaskWrapper(component, assembler, update)) return;
+  hkdTargetlessRequire(request);
+}
+
 function hkdTargetlessBeforeDirty(request, component, assembler, kind) {
   if (request.materialized) return;
   var stock = hkdTargetlessStockComponent(component);
@@ -52,8 +86,7 @@ function hkdTargetlessBeforeDirty(request, component, assembler, kind) {
     if (kind === "color" && method === hkdTargetlessStockColor) return;
     if (kind === "data" && assembler._renderComp === component) {
       if (method === hkdTargetlessStockData && stock.data.indexOf(assembler.updateRenderData) >= 0) return;
-      if (component.node && component.node._occlusionMask === true &&
-          Object.getPrototypeOf(component) === cc.Mask.prototype && typeof method._hkdCarryDirtyMask === "function") return;
+      if (hkdTargetlessOwnsMaskWrapper(component, assembler, method)) return;
     }
   }
   hkdTargetlessRequire(request);
@@ -62,6 +95,7 @@ function hkdTargetlessBeforeDirty(request, component, assembler, kind) {
 var hkdTargetlessAdapter = Object.freeze({
   initialize: hkdTargetlessInitialize,
   beforeValidation: hkdTargetlessBeforeValidation,
+  registerMaskWrapper: hkdTargetlessRegisterMaskWrapper,
   ownsRoute: function (render, renderCamera) {
     return hkdTargetlessReady && render === hkdTargetlessRender && renderCamera === hkdTargetlessRenderCamera &&
       typeof hkdTargetlessLeaf === "function" && spine._hkdTargetlessLeaf === hkdTargetlessLeaf;

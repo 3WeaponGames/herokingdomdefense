@@ -7,7 +7,14 @@ function install(label,input,options){
   label.onpointerdown=event=>{if(event.button!==0||input.disabled)return;event.preventDefault();label.focus();drag={id:event.pointerId,x:event.clientX,value:Number(input.value),moved:false,snapshot:options.begin&&options.begin()};label.setPointerCapture(event.pointerId);};
   label.onpointermove=event=>{if(!drag||event.pointerId!==drag.id)return;const dx=event.clientX-drag.x;if(!drag.moved&&Math.abs(dx)<2)return;drag.moved=true;label.classList.add('scrubbing');update(drag.value+dx*options.step*(event.shiftKey ? .1 : 1));};
   label.onpointerup=()=>finish(false);label.onpointercancel=()=>finish(true);label.onlostpointercapture=()=>finish(true);
-  label.onkeydown=event=>{if(event.key==='Escape'&&drag){event.preventDefault();finish(true);}else if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();update(Number(input.value)+(event.key==='ArrowRight'?1:-1)*options.step*(event.shiftKey ? .1 : 1));options.commit();}};
+  label.onkeydown=event=>{
+    if(event.key==='Escape'&&drag){event.preventDefault();finish(true);return;}
+    if(input.disabled||event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;
+    event.preventDefault();
+    const direction=event.key==='ArrowRight'?1:-1;
+    update(Number(input.value)+direction*options.step*(event.shiftKey ? .1 : 1));
+    options.commit();
+  };
   const cancel=()=>finish(true);
   cancel.commit=()=>finish(false);
   return cancel;

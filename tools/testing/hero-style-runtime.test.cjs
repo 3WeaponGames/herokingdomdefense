@@ -313,6 +313,13 @@ test('Fighter knockback lasts .3 seconds, pauses with battle and releases recycl
  const h=scene('fighter',{hitTime:0}),enemy=h.enemy(100);h.rt.cast({x:1,y:0});assert.equal(enemy.node.x,100);assert(enemy._heroKnockback);h.rt.update(.15);close(enemy.node.x,205);h.ui.isPauset=true;h.rt.update(3);close(enemy.node.x,205);h.ui.isPauset=false;h.rt.update(.15);close(enemy.node.x,240);assert.equal(enemy._heroKnockback,undefined);
  for(const reason of ['round','recycle']){const f=scene('fighter',{hitTime:0}),target=f.enemy(100);f.rt.cast({x:1,y:0});f.rt.update(.1);const at=target.node.x;if(reason==='round')f.hero.endRoundGame();else target.node._combatGeneration++;f.rt.update(1);close(target.node.x,at);assert.equal(target._heroKnockback,undefined);assert.equal(f.rt.knockbacks.length,0);}
  const run=parts=>{const f=scene('fighter',{hitTime:0}),target=f.enemy(100);f.rt.cast({x:1,y:0});parts.forEach(dt=>f.rt.update(dt));return target.node.x;};close(run([.3]),run(Array(30).fill(.01)));
+ const status=scene('fighter',{hitTime:0}),target=status.enemy(100);
+ status.rt.cast({x:1,y:0});status.rt.update(.1);
+ const beforeFlash=target.node.x;
+ target._statusHitReaction=true;status.rt.update(.2);
+ close(target.node.x,beforeFlash);
+ target._statusHitReaction=false;status.rt.update(.3);
+ close(target.node.x,240);assert.equal(target._heroKnockback,undefined);
 });
 test('pause and preparation phase cannot advance skill damage or cooldowns',()=>{
  const h=scene('mystic'),e=h.enemy(100);h.ui.isPauset=true;h.rt.update(2);assert.equal(e.hits.length,0);

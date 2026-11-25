@@ -103,12 +103,28 @@ test('on-hit effects are configurable together and save only on the selected uni
   assert.equal(store.draftState().A.SoldierCfg[id].UnitAttack.onHit, undefined);
   await f.button('Add effect').onclick();
   assert.equal(f.input('Movement slow (%)').value, '45');
-  assert.deepEqual(Array.from(f.input('Effect').children, option => option.value), ['', 'lifeSteal']);
+  assert.deepEqual(Array.from(f.input('Effect').children, option => option.value), ['', 'lifeSteal', 'poison', 'burn', 'bleed']);
   await f.edit('Effect', 'lifeSteal');
   await f.edit('Life steal (%)', 18);
   assert.equal(store.draftState().A.SoldierCfg[id].UnitAttack.onHit.lifeSteal, undefined);
   await f.button('Add effect').onclick();
   assert.equal(f.input('Life steal (%)').value, '18');
+  const damageEffects = [
+    ['poison', 'Poison', 10, 5, 12, 4.5],
+    ['burn', 'Burn', 25, 2, 32, 2.5],
+    ['bleed', 'Bleed', 15, 3, 16, 3.5]
+  ];
+  for (const [effectId, label, defaultDamage, defaultDuration, damage, duration] of damageEffects) {
+    await f.edit('Effect', effectId);
+    const percentLabel = label + ' damage per second (%)';
+    const durationLabel = label + ' duration (seconds)';
+    assert.equal(f.input(percentLabel).value, String(defaultDamage));
+    assert.equal(f.input(durationLabel).value, String(defaultDuration));
+    await f.edit(percentLabel, damage);
+    assert.equal(store.draftState().A.SoldierCfg[id].UnitAttack.onHit[effectId], undefined);
+    await f.button('Add effect').onclick();
+    await f.edit(durationLabel, duration);
+  }
   assert.equal(f.input('Effect'), undefined);
   await assert.rejects(f.edit('Life steal (%)', 110), /between 0 and 100/);
   await f.edit('Attack delivery', 'melee');
@@ -119,10 +135,17 @@ test('on-hit effects are configurable together and save only on the selected uni
   await f.edit('Effect', 'lifeSteal');
   await f.button('Add effect').onclick();
   await f.edit('Life steal (%)', 18);
+  await f.edit('Bleed duration (seconds)', -1);
+  assert.equal(store.draftState().A.SoldierCfg[id].UnitAttack.onHit.bleed.duration, 3.5);
   assert.deepEqual(fs.readFileSync(config), before);
   const expected = JSON.parse(before);
   expected.SoldierCfg[id].UnitAttack = {
-    delivery: 'melee', pattern: 'single', onHit: { slow: { percent: .45, duration: 2.5 }, lifeSteal: { percent: .18 } }
+    delivery: 'melee', pattern: 'single',
+    onHit: {
+      slow: { percent: .45, duration: 2.5 }, lifeSteal: { percent: .18 },
+      poison: { percent: .12, duration: 4.5 }, burn: { percent: .32, duration: 2.5 },
+      bleed: { percent: .16, duration: 3.5 }
+    }
   };
   const saved = store.save({ version: store.version });
   assert.equal(saved.result.saved, true, JSON.stringify(saved.issues));
