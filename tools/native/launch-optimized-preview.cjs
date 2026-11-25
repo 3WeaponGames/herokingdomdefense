@@ -56,6 +56,39 @@ function verifyRelease(manifestFile,revisions){
   const buildRoot=resolved(manifest.build.outputRoot),cloneRoot=resolved(manifest.sdk.cloneRoot);check(inside(directory,buildRoot)&&inside(cloneRoot,buildRoot)&&inside(resolved(manifest.sdk.sharedResourceRoot),cloneRoot),'Release runtime/SDK clone must belong to the declared build root');
   return{manifest,directory,executable,buildRoot,cloneRoot,sharedResourceRoot:resolved(manifest.sdk.sharedResourceRoot)};
 }
+function verifyTerrainResources(release,revisions){
+  const diff=release.manifest.terrainGeometryRevisionDiff;
+  if(release.manifest.features.terrainGeometryRevision!==true){
+    check(!diff,'Unexpected terrain geometry revision receipt on a stock build');
+    return null;
+  }
+  const terrain=require('./terrain-geometry-revision.cjs');
+  check(release.sharedResourceRoot===resolved(path.join(release.cloneRoot,'simulator/win32')),
+    'Terrain geometry revision requires the pinned preview resource layout');
+  const filename=path.join(release.buildRoot,terrain.DIRECTORY+'-diff.json');
+  function ownedRead(file,root){
+    check(inside(resolved(file),root)&&fs.lstatSync(file).isFile(),'Terrain geometry revision file is outside its build: '+file);
+    return readRevision(file,revisions);
+  }
+  check(diff&&diff.format==='exact-replacement-v1'&&typeof diff.file==='string'&&path.isAbsolute(diff.file)&&resolved(diff.file)===resolved(filename),
+    'Missing or invalid terrain geometry revision build receipt');
+  const proof=ownedRead(filename,release.buildRoot);
+  check(hash(proof)===diff.sha256,'Terrain geometry revision build receipt hash mismatch');
+  const rows=terrain.PATCHES.map(patch=>({
+    file:patch.file,feature:terrain.FEATURE,kind:'resource',
+    beforeSha256:patch.beforeSha256,afterSha256:patch.afterSha256,changes:patch.changes
+  }));
+  check(JSON.stringify(json(proof,filename))===JSON.stringify({format:diff.format,feature:terrain.FEATURE,patches:rows}),
+    'Terrain geometry revision build receipt does not match the pinned changes');
+  const files=new Map();
+  for(const patch of terrain.PATCHES){
+    const stock=ownedRead(path.join(release.buildRoot,'source-patch-backups',terrain.DIRECTORY,patch.file),release.buildRoot);
+    const bytes=ownedRead(path.join(release.cloneRoot,patch.file),release.cloneRoot);
+    check(bytes.equals(terrain.patchSource(stock,patch)),'Terrain geometry revision resource hash mismatch: '+patch.file);
+    files.set(patch.file,{stock,bytes});
+  }
+  return {terrain,core:files.get(terrain.CORE),adapter:files.get(terrain.ADAPTER)};
+}
 function verifyCompiled(project,quick,revisions){
   const boot=readRevision(path.join(quick,'__quick_compile__.js'),revisions).toString('utf8'),declarations=[...boot.matchAll(/(?:^|\n)[ \t]*var scripts\s*=\s*(\[[^\r\n]*\]);/g)];check(declarations.length===1,'Unknown Creator quick-compile bootstrap');const scripts=json(Buffer.from(declarations[0][1]),'Creator script registry');check(Array.isArray(scripts),'Creator script registry must be an array');
   const registry=new Set(scripts.map(record=>path.posix.basename(record.path||'','.js'))),proof=[],pending=[path.join(project,'assets/_script')];
@@ -84,20 +117,29 @@ function routeGroupedMaskAdapter(entry,run){
   const file=JSON.stringify(posix(path.join(run,'jsb-adapter',groupedMaskAdapter)));
   return entry.replace(request,(_,indent,cr)=>indent+'require('+file+');'+cr);
 }
+function routeTerrainCore(entry,run){
+  const request=/^([ \t]*)require\('src\/cocos2d-jsb\.js'\);[ \t]*(\r?)$/gm;
+  check([...entry.matchAll(request)].length===1,'Terrain geometry revision requires the standard Creator native core import');
+  const file=JSON.stringify(posix(path.join(run,'src/cocos2d-jsb.js')));
+  return entry.replace(request,(_,indent,cr)=>indent+'require('+file+');'+cr);
+}
 async function prepare(options){
   check(options&&options.creatorProjectRoot&&options.creatorSDKRoot&&options.releaseManifest&&options.outputRoot,'Required options: creatorProjectRoot, creatorSDKRoot, releaseManifest, outputRoot');
   const revisions=new Map(),project=resolved(options.creatorProjectRoot),sdk=sdkRuntime(options.creatorSDKRoot),release=verifyRelease(resolved(options.releaseManifest),revisions);check(resolved(release.manifest.sdk.sourceRoot)===resolved(sdk.root),'Release SDK source does not match creatorSDKRoot');
+  const terrain=verifyTerrainResources(release,revisions);
   const protectedRoots=[project,resolved(sdk.root),release.buildRoot,release.cloneRoot,release.directory,release.sharedResourceRoot],output=external(options.outputRoot,protectedRoots),quick=path.join(project,'temp/quick-scripts/dst'),imports=path.join(project,'library/imports');
   const scripts=verifyCompiled(project,quick,revisions),sceneFile=path.join(sdk.runtime,'preview-scene.json'),sceneBytes=readRevision(sceneFile,revisions),scene=json(sceneBytes,sceneFile);check(Array.isArray(scene)&&scene[0]&&scene[0]._name==='Start','Prepare the normal Start scene in Creator native preview before launching');
   const originalEntry=readRevision(path.join(sdk.runtime,'main.js'),revisions).toString('utf8'),settingsBytes=readRevision(path.join(sdk.runtime,'src/settings.js'),revisions),context={window:{}};vm.runInNewContext(settingsBytes.toString('utf8'),context,{timeout:1000});const settings=context.window._CCSettings;check(settings&&Array.isArray(settings.jsList),'Unknown Creator native settings');relocateEntry(originalEntry,project,quick,imports,path.join(output,'preflight'));
   const adapterSource=path.join(release.sharedResourceRoot,'jsb-adapter');
+  if(terrain)routeTerrainCore(originalEntry,path.join(output,'preflight'));
+  if(terrain||options.groupedMaskQueue===true)routeGroupedMaskAdapter(originalEntry,path.join(output,'preflight'));
   let adapterTransform;
   if(options.groupedMaskQueue===true){
-    routeGroupedMaskAdapter(originalEntry,path.join(output,'preflight'));
     const file=path.join(adapterSource,groupedMaskAdapter);
     check(fs.lstatSync(file).isFile()&&inside(resolved(file),adapterSource),'Grouped mask queue requires a regular adapter in the Release SDK copy');
     const input=readRevision(file,revisions),sourceSha256=hash(input);
-    const deployed=require('./grouped-mask-queue.cjs').patch(input);
+    const grouped=require('./grouped-mask-queue.cjs').patch(terrain?terrain.adapter.stock:input);
+    const deployed=terrain?terrain.terrain.patchGroupedAdapter(grouped):grouped;
     check(Buffer.isBuffer(deployed)&&hash(deployed)!==sourceSha256,'Grouped mask queue did not produce a patched adapter');
     adapterTransform=(relative,bytes)=>{
       if(relative!==groupedMaskAdapter)return bytes;
@@ -114,17 +156,27 @@ async function prepare(options){
   const snapshots=[];snapshots.push(await snapshotTree(imports,path.join(run,'library-imports')));snapshots.push(await snapshotTree(quick,path.join(run,'quick')));
   const adapterSnapshot=await snapshotTree(adapterSource,path.join(run,'jsb-adapter'),adapterTransform);
   snapshots.push(adapterSnapshot);
-  fs.mkdirSync(path.join(run,'src'),{recursive:true});for(const name of ['settings.js','simulator-config.js','asset-record-pipe.js'])fs.writeFileSync(path.join(run,'src',name),readRevision(path.join(sdk.runtime,'src',name),revisions),{flag:'wx'});fs.writeFileSync(path.join(run,'src/cocos2d-jsb.js'),readRevision(path.join(release.sharedResourceRoot,'src/cocos2d-jsb.js'),revisions),{flag:'wx'});
+  fs.mkdirSync(path.join(run,'src'),{recursive:true});for(const name of ['settings.js','simulator-config.js','asset-record-pipe.js'])fs.writeFileSync(path.join(run,'src',name),readRevision(path.join(sdk.runtime,'src',name),revisions),{flag:'wx'});
+  const core=terrain?terrain.core.bytes:readRevision(path.join(release.sharedResourceRoot,'src/cocos2d-jsb.js'),revisions);
+  fs.writeFileSync(path.join(run,'src/cocos2d-jsb.js'),core,{flag:'wx'});
   for(const item of settings.jsList){check(typeof item==='string'&&!path.isAbsolute(item)&&!item.split(/[\\/]/).includes('..'),'Invalid Creator plugin path');const target=path.join(run,'plugins',item);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,readRevision(path.join(project,item),revisions),{flag:'wx'});}
   const bundleProof=[];for(const bundle of bundles){bundle.config.importBase='';bundle.config.nativeBase='';const dir=path.join(run,'assets',bundle.name);fs.mkdirSync(dir,{recursive:true});const config=JSON.stringify(bundle.config);fs.writeFileSync(path.join(dir,'config.json'),config,{flag:'wx'});fs.writeFileSync(path.join(dir,'index.js'),bundle.index,{flag:'wx'});bundleProof.push({name:bundle.name,configSha256:hash(config),indexSha256:hash(bundle.index)});}
   const cfgFile=path.join(sdk.runtime,'config.json'),cfg=json(readRevision(cfgFile,revisions),cfgFile);check(cfg.init_cfg,'Unknown Creator simulator configuration');Object.assign(cfg.init_cfg,{name:'Optimized Preview - MUTED - Separate Save',isWindowTop:false,waitForConnect:false,debugPort:0,consolePort:0,uploadPort:0});fs.writeFileSync(path.join(run,'config.json'),JSON.stringify(cfg));fs.writeFileSync(path.join(run,'preview-scene.json'),sceneBytes);
   let appEntry=relocateEntry(originalEntry,project,quick,imports,run);
   const patches={};
+  if(terrain)appEntry=routeTerrainCore(appEntry,run);
+  if(adapterTransform||terrain)appEntry=routeGroupedMaskAdapter(appEntry,run);
   if(adapterTransform){
-    appEntry=routeGroupedMaskAdapter(appEntry,run);
     const record=adapterSnapshot.files.find(file=>file.path===groupedMaskAdapter);
     check(record&&record.sourceSha256,'Grouped mask queue adapter was not deployed');
     patches.groupedMaskQueue={path:'jsb-adapter/'+record.path,sourceSha256:record.sourceSha256,sha256:record.sha256,bytes:record.bytes,entrySha256:hash(appEntry)};
+  }
+  if(terrain){
+    const adapter=adapterSnapshot.files.find(file=>file.path===groupedMaskAdapter);
+    check(adapter&&(adapter.sourceSha256||adapter.sha256)===hash(terrain.adapter.bytes),
+      'Terrain geometry revision adapter changed while preparing the preview');
+    patches.terrainGeometryRevision={core:{path:'src/cocos2d-jsb.js',sha256:hash(core),bytes:core.length},
+      adapter:{path:'jsb-adapter/'+adapter.path,sha256:adapter.sha256,bytes:adapter.bytes},entrySha256:hash(appEntry)};
   }
   fs.writeFileSync(path.join(run,'app-main.js'),appEntry,{flag:'wx'});
   const entry="jsb.AudioEngine.stopAll();jsb.AudioEngine.play2d=function(){return -1;};jsb.AudioEngine.play2d.__hkdPreviewMuted=true;\nif(!jsb.fileUtils)require('jsb-adapter/jsb-builtin.js');\njsb.fileUtils.setWritablePath("+JSON.stringify(posix(save)+'/')+");\njsb.fileUtils.addSearchPath("+JSON.stringify(posix(release.sharedResourceRoot))+");\nrequire("+JSON.stringify(posix(path.join(run,'app-main.js')))+");\n";fs.writeFileSync(path.join(run,'main.js'),entry);
@@ -132,13 +184,30 @@ async function prepare(options){
   const proof={manifestVersion:1,project,sdkRoot:sdk.root,releaseManifest:resolved(options.releaseManifest),executable:release.executable,executableSha256:release.manifest.runtime.executableSha256,run,save,normalStart:true,mutedBeforeLoad:true,progressIsolation:'Separate persistent preview save. Normal project progress is never copied.',scripts,requiredResources,bundles:bundleProof,inputs:[...revisions.values()],snapshots,patches};fs.writeFileSync(path.join(run,'preview-proof.json'),JSON.stringify(proof,null,2));return{run,save,executable:release.executable,proof};
 }
 function launch(prepared){
-  verifyRelease(prepared.proof.releaseManifest);
+  const release=verifyRelease(prepared.proof.releaseManifest);
+  const terrain=verifyTerrainResources(release);
+  const terrainPatch=prepared.proof.patches?.terrainGeometryRevision;
+  check(!!terrain===!!terrainPatch,'Prepared terrain geometry revision does not match the Release manifest');
   const adapterPatch=prepared.proof.patches?.groupedMaskQueue;
   if(adapterPatch){
     const root=resolved(prepared.run),file=path.join(root,'jsb-adapter',groupedMaskAdapter),entry=path.join(root,'app-main.js');
     check(root===prepared.proof.run&&inside(resolved(file),root)&&inside(resolved(entry),root)&&fs.lstatSync(file).isFile()&&fs.lstatSync(entry).isFile(),'Grouped mask queue files must belong to the prepared preview');
     const bytes=readRevision(file);
     check(bytes.length===adapterPatch.bytes&&hash(bytes)===adapterPatch.sha256&&hash(readRevision(entry))===adapterPatch.entrySha256,'Grouped mask queue adapter or Start entry changed after preparation');
+  }
+  if(terrainPatch){
+    const root=resolved(prepared.run),entry=path.join(root,'app-main.js');
+    check(root===prepared.proof.run,'Terrain geometry revision files must belong to the prepared preview');
+    check(terrainPatch.core?.path==='src/cocos2d-jsb.js'&&terrainPatch.adapter?.path==='jsb-adapter/'+groupedMaskAdapter,
+      'Terrain geometry revision preview receipt has unknown engine paths');
+    for(const record of [terrainPatch.core,terrainPatch.adapter]){
+      const file=path.join(root,record.path);
+      check(inside(resolved(file),root)&&fs.lstatSync(file).isFile(),'Terrain geometry revision file is outside the prepared preview');
+      const bytes=readRevision(file);
+      check(bytes.length===record.bytes&&hash(bytes)===record.sha256,'Terrain geometry revision engine changed after preparation');
+    }
+    check(inside(resolved(entry),root)&&hash(readRevision(entry))===terrainPatch.entrySha256,
+      'Terrain geometry revision Start entry changed after preparation');
   }
   const logPath=path.join(prepared.run,'simulator.log'),log=fs.openSync(logPath,'w');let child;try{child=cp.spawn(prepared.executable,['-workdir',prepared.run,'-writable-path',posix(prepared.save)+'/','-entry','main.js','-resolution','750x1334','-position','550,20','-console','disable'],{cwd:prepared.run,windowsHide:false,stdio:['ignore',log,log]});}finally{fs.closeSync(log);}
   const info={pid:child.pid,executable:prepared.executable,run:prepared.run,save:prepared.save,startedAt:new Date().toISOString(),muted:true,normalStart:true};const processFile=path.join(prepared.run,'process.json');fs.writeFileSync(processFile,JSON.stringify(info,null,2));

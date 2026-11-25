@@ -88,6 +88,22 @@ test('narrow panels extend the preview viewport without rescaling small units or
   }
 });
 
+test('the preview mirrors the complete launch around the shooter and keeps the adjusted point in view',()=>{
+  const shooter={bounds:{minX:-16,minY:0,maxX:31,maxY:50,width:47,height:50}};
+  const target={bounds:{minX:-23,minY:0,maxX:12,maxY:38,width:35,height:38}};
+  for(const launch of [{x:24,y:-54},{x:-420,y:330},{x:420,y:-440}]){
+    const right=Combat.stage(320,shooter,target,24,{facing:1,launch});
+    const left=Combat.stage(320,shooter,target,24,{facing:-1,launch});
+    assert.equal(left.shooter.x+right.shooter.x,right.width);
+    assert.equal(left.target.x+right.target.x,right.width);
+    assert.equal(left.launch.x-left.shooter.x,-launch.x);
+    assert.equal(right.launch.x-right.shooter.x,launch.x);
+    assert.equal(left.launch.y,right.launch.y);
+    assert.equal(right.launch.y-right.shooter.groundY,launch.y);
+    assert(right.launch.x>=24&&right.launch.x<=right.width-24&&right.launch.y>=24&&right.launch.y<=right.height-24);
+  }
+});
+
 test('wall and campaign baseline impacts use independent authored actors and finite animation clocks',async()=>{
   const {api,calls,ctx}=fixture(key=>({type:'effect',animation:key==='preview-wall-hit'?'jian_1':'jian_lv1',layers:[{...layer,json:{animations:key==='preview-wall-hit'?{jian_1:.2}:{jian_lv1:.4}}}]})),preview=Combat.create(api),wall={description:{defaultHitKey:'preview-wall-hit',defaultHitAnimation:'jian_1'}};
   await preview.load('preview-hit');await preview.load('preview-wall-hit');assert.equal(preview.defaultHit(ctx,100,80,.1,70),false);assert.equal(preview.defaultHit(ctx,100,80,.1,70,wall),false);await Promise.resolve();

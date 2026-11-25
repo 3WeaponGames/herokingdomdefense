@@ -1,6 +1,9 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),vm=require('node:vm'),Module=require('node:module'),crypto=require('node:crypto'),{EventEmitter}=require('node:events'),test=require('node:test'),assert=require('node:assert/strict');
 const filename=process.env.HKD_NATIVE_LAUNCHER_SOURCE||path.join(__dirname,'../native/launch-optimized-preview.cjs'),code=fs.readFileSync(filename,'utf8'),sha=b=>crypto.createHash('sha256').update(b).digest('hex'),fixtures=new Set();
+const terrainRevision=require('../native/terrain-geometry-revision.cjs'),groupedMasks=require('../native/grouped-mask-queue.cjs');
+const sdkRoot=process.env.HKD_CREATOR_SDK_ROOT||(process.platform==='win32'?'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/cocos2d-x':null);
+const terrainSDK=!!sdkRoot&&terrainRevision.PATCHES.every(patch=>fs.existsSync(path.join(sdkRoot,patch.file)));
 function write(file,value){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,Buffer.isBuffer(value)||typeof value==='string'?value:JSON.stringify(value));}
 function tree(root){const result={};function scan(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,e.name);if(e.isDirectory())scan(f);else result[path.relative(root,f)]=sha(fs.readFileSync(f));}}scan(root);return result;}
 function fixture(){
@@ -94,6 +97,65 @@ test('grouped mask queue rejects adapter source drift after the preflight check'
  const api=load(f,{patchAdapter:()=>Buffer.from('// isolated patch')});
  await assert.rejects(api.prepare({...f.options,groupedMaskQueue:true}),/Grouped mask queue adapter changed/);
  assert.equal(f.calls.length,0);
+});
+
+function terrainFixture(f){
+ const records=terrainRevision.PATCHES.map(patch=>{
+  const bytes=fs.readFileSync(path.join(sdkRoot,patch.file)),patched=terrainRevision.patchSource(bytes,patch);
+  write(path.join(f.build,'source-patch-backups',terrainRevision.DIRECTORY,patch.file),bytes);
+  write(path.join(f.clone,patch.file),patched);
+  return{...patch,feature:terrainRevision.FEATURE};
+ });
+ const builder=require('../native/build-native-preview.cjs');
+ const diff=builder.sourcePatchDiff(records),diffFile=path.join(f.build,terrainRevision.DIRECTORY+'-diff.json');
+ write(diffFile,diff);
+ f.manifest.features.terrainGeometryRevision=true;
+ f.manifest.terrainGeometryRevisionDiff={file:diffFile,format:'exact-replacement-v1',sha256:sha(diff)};
+ write(f.manifestFile,f.manifest);
+ const entry=path.join(f.native,'main.js');
+ write(entry,fs.readFileSync(entry,'utf8').replace("    require('jsb-adapter/jsb-engine.js');",
+    "    require('src/cocos2d-jsb.js');\n    require('jsb-adapter/jsb-engine.js');"));
+ return diffFile;
+}
+
+test('terrain build resources load in the private muted preview and compose with grouped masks',{skip:!terrainSDK},async()=>{
+ const f=fixture();terrainFixture(f);
+ const before=tree(f.root),api=load(f);
+ const normal=await api.prepare(f.options);
+ const grouped=await api.prepare({...f.options,groupedMaskQueue:true});
+ const input=fs.readFileSync(path.join(sdkRoot,terrainRevision.ADAPTER));
+ const expected=terrainRevision.patchGroupedAdapter(groupedMasks.patch(input));
+ for(const [prepared,compose] of [[normal,false],[grouped,true]]){
+  const proof=prepared.proof.patches.terrainGeometryRevision;
+  const core=path.join(prepared.run,proof.core.path),adapter=path.join(prepared.run,proof.adapter.path),app=path.join(prepared.run,'app-main.js');
+  const entry=fs.readFileSync(app,'utf8'),requireFor=file=>'require('+JSON.stringify(file.split(path.sep).join('/'))+');';
+  assert(entry.includes(requireFor(core))&&entry.includes(requireFor(adapter)));
+  assert(entry.indexOf(requireFor(core))<entry.indexOf(requireFor(adapter)));
+  assert.equal(sha(fs.readFileSync(core)),terrainRevision.PATCHES[0].afterSha256);
+  assert.equal(sha(fs.readFileSync(adapter)),compose?sha(expected):terrainRevision.PATCHES[1].afterSha256);
+  assert.equal(proof.entrySha256,sha(fs.readFileSync(app)));
+  assert.equal(!!prepared.proof.patches.groupedMaskQueue,compose);
+ }
+ for(const [filename,digest] of Object.entries(before))assert.equal(sha(fs.readFileSync(path.join(f.root,filename))),digest);
+ api.launch(grouped);
+ write(path.join(grouped.run,'src/cocos2d-jsb.js'),'edited after preparation');
+ assert.throws(()=>api.launch(grouped),/Terrain geometry revision engine changed/);
+ assert.equal(f.calls.length,1);
+});
+
+test('terrain preview rejects missing receipt, clone drift and unsupported Creator import before output',{skip:!terrainSDK},async()=>{
+ for(const drift of ['receipt','resource','entry']){
+  const f=fixture(),diff=terrainFixture(f);
+  if(drift==='receipt')write(diff,'changed');
+  if(drift==='resource')write(path.join(f.clone,terrainRevision.CORE),'changed');
+  if(drift==='entry'){
+    const entry=path.join(f.native,'main.js');
+    write(entry,fs.readFileSync(entry,'utf8').replace('require(\'src/cocos2d-jsb.js\');','// alternate engine import'));
+  }
+  await assert.rejects(load(f).prepare(f.options),/Terrain geometry revision.*(?:hash mismatch|standard Creator native core import)/);
+  assert(!fs.existsSync(f.output));
+  assert.equal(f.calls.length,0);
+ }
 });
 
 test('CLI prepares a grouped mask queue session without launching when requested',async()=>{

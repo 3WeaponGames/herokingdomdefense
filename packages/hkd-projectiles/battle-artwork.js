@@ -75,6 +75,17 @@ function describeLauncher(root, who, unit, assets, frames) {
     const basis = Maps.transform(body);
     basis[4] = basis[5] = 0;
     launcher.muzzle = Maps.point(basis, point);
+    launcher.leftMuzzle = launcher.muzzle;
+    // Enemy muzzle nodes inside the model inherit its facing transform. The
+    // other prefab markers are read in the actor's unflipped root space.
+    if (type === 'enemy' && anchor && anchor._parent && anchor._parent.__id__ !== actor.node.__id__) {
+      const parent = model.byId[anchor._parent.__id__], bodyNode = model.byId[actor.node.__id__];
+      const layer = (unit.layers || []).find(layer => layer.name === parent.name && layer.matrix);
+      const frame = layer ? layer.matrix : parent.world.slice();
+      if (!layer) { frame[4] -= bodyNode.world[4]; frame[5] -= bodyNode.world[5]; }
+      launcher.muzzle = Maps.point(frame, point);
+      launcher.leftMuzzle = Maps.point(frame, { x: -point.x, y: point.y });
+    }
   }
   if (who.builtinFlight) return { ...launcher, builtin: who.builtinFlight };
   if (!nativeNode) return launcher;

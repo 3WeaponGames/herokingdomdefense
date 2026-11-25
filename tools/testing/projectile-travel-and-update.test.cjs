@@ -28,6 +28,52 @@ function projectile(h, type, id) {
   return shot;
 }
 
+test('native ranged units launch from their muzzle plus the same signed offset after turning',()=>{
+  const h=setup(),game=h.g,looks=h.load('ProjectileLooks');
+  game.ndMain.setPosition(25,-40);game.ndMain.scaleX=1.3;game.ndMain.angle=-20;
+  game.ndUI=new Node('effects',game.node,-48,57);game.ndUI.scaleX=.8;game.ndUI.scaleY=1.2;game.ndUI.angle=30;
+  looks.prime({assets:[],assignments:{
+    'enemy:90003':{launchOffsetX:18.5,launchOffsetY:7},
+    'enemy:100003':{launchOffsetY:-11.25},
+    'ally:90003':{launchOffsetX:18.5,launchOffsetY:-11.25}
+  }});
+  for(const [type,method,cfg]of [
+    ['Enemy','onShotEnemy',{ID:100003,ProfileBaseID:90003}],
+    ['Soldier','onShotSoldier',{ID:90003}]
+  ]){
+    const shot=projectile(h,type,type);
+    shot.node.setSiblingIndex=()=>{};shot.node.getComponent=()=>shot;
+    const actor={cfg,getBullet:()=>shot.node,getAttWpos(){
+      return game.ndMain.convertToWorldSpaceAR(new Vec2(100+(this._visualLeft?-9:9),60));
+    }};
+    for(const facing of [1,-1]){
+      actor._visualLeft=facing===-1;
+      const {pos,ctr}=game[method](actor);
+      assert.equal(ctr,shot);
+      assert.deepEqual(shot.node.getPosition(),pos);
+      const launch=game.ndMain.convertToNodeSpaceAR(game.ndUI.convertToWorldSpaceAR(pos));
+      assert(Math.abs(launch.x-(100+facing*(9+18.5)))<1e-8);
+      assert(Math.abs(launch.y-(60-11.25))<1e-8);
+    }
+  }
+});
+
+test('basic hero arrows take their launch direction from the bow even when the mount faces the other way',()=>{
+  const h=setup(),game=h.g;
+  game.ndUI=new Node('effects');
+  h.load('ProjectileLooks').prime({assets:[],assignments:{hero:{launchOffsetX:15,launchOffsetY:6}}});
+  const bow=new Node('bow');
+  Object.assign(game.ctrPlay,{heroStyle:'skirmisher',ctrPlayAni:{spAniBow:{node:bow}},isLeft:()=>false,
+    getAttWpos:()=>new Vec2(30,50),getAttack:()=>100,crit:-1});
+  let at;
+  game.takeHeroArrow=position=>({node:{},setTag(start){assert.equal(start,position);at=start;}});
+  const target={node:new Node('enemy',game.ndMain,120,0)};
+  for(const facing of [1,-1]){
+    bow.scaleX=facing;game.onPlayAttack(target);
+    assert.deepEqual(at,new Vec2(30+15*facing,56));
+  }
+});
+
 for (const fps of [10, 60]) test('authored tower shot and preview agree at ' + fps + ' FPS', () => {
   const h = setup(), shot = projectile(h, 'Build', 'tower'), target = new Node('target', null, 137.5, 0);
   const dt = 1 / fps;

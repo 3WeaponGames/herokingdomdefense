@@ -27,6 +27,20 @@ function battle(realBase = false) {
   return { ...h, config, types, Game, game, role, bullet, state: () => state };
 }
 
+test('wall-defense cards apply both offsets before starting their upward flight',()=>{
+  const h=battle(),game=h.game;
+  const shot={setGroupID(){},init(){},bullet:{active:true}};
+  const node=shot.node={setPosition(point){this.position=point;},getPosition(){return this.position;},getComponent(){return shot;}};
+  game._bulletPool=[node];
+  game.ndBulletRoot={convertToNodeSpaceAR(point){return {x:point.x-10,y:point.y-20};}};
+  game._cardCtrl.getAtkDamage=()=>20;
+  h.load('ProjectileLooks').prime({assets:[],assignments:{'wall-defense':{launchOffsetX:-14,launchOffsetY:9}}});
+  game.onShootBullet(1,{x:50,y:60},{getCardCfg:()=>({})});
+  assert.equal(node.position.x,26);assert.equal(node.position.y,99);
+  assert.equal(game._bullets[0],shot);
+  assert.equal(node.active,true);
+});
+
 test('Wall Defense samples each target collision box once per frame', () => {
   const h = battle(); h.game._waveRoles = Array.from({ length: 7 }, (_, i) => h.role(h.types.Enemy, 1000 + i * 100));
   h.game._bullets = Array.from({ length: 20 }, () => h.bullet()); h.game.update(1 / 60);

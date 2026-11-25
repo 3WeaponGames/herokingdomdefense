@@ -1367,6 +1367,8 @@ var def_KinghtFallGameCtrl = function (t) {
     if (!FlightTargeting.heroCanTarget(hero, t)) return;
     if (require("HeroWeaponCombat").melee(this, t, release)) return;
     var a = this.ndUI.convertToNodeSpaceAR(this.ctrPlay.getAttWpos());
+    var bow = hero.ctrPlayAni.spAniBow;
+    a = ProjectileLooks.adjustLaunchPoint(a, "hero", bow && bow.node && bow.node.scaleX < 0 ? -1 : 1, this.ndMain, this.ndUI);
     var o = this.takeHeroArrow(a, this.ctrPlay._styleProjectileSpeed || 1), n = o.node;
     var r = this.ctrPlay.getAttack(t);
     var s = this.ctrPlay.crit > Math.random();
@@ -1404,12 +1406,14 @@ var def_KinghtFallGameCtrl = function (t) {
     e.active = true;
     var n = t.getAttWpos();
     var i = this.ndUI.convertToNodeSpaceAR(n);
+    var key = "enemy:" + t.cfg.ID;
+    i = ProjectileLooks.adjustLaunchPoint(i, key, t._visualLeft ? -1 : 1, this.ndMain, this.ndUI, t);
     e.setPosition(i);
     var a = e.getComponent($z1KinghtFallBulletEnemy.default);
     a.combatContext = this;
     if(a._enemyBaseSpeed===undefined)a._enemyBaseSpeed=a.speed;
     a.speed=GameToolsOverrides.projectileSpeed(t,'enemy',a._enemyBaseSpeed);
-    ProjectileLooks.prepare(a, this, "enemy:" + t.cfg.ID, t);
+    ProjectileLooks.prepare(a, this, key, t);
     this.ndEnemyArr.push(a);
     return {
       ctr: a,
@@ -1444,9 +1448,11 @@ var def_KinghtFallGameCtrl = function (t) {
     }
     if (!this.buildBullet && !this.ndBuildArr1.length) return null;
     var origin = this.ndUI.convertToNodeSpaceAR(owner.node.convertToWorldSpaceAR(cc.v2(0, 20)));
+    var key = side + ":" + owner.cfg.ID;
+    origin = ProjectileLooks.adjustLaunchPoint(origin, key, owner._visualLeft ? -1 : 1, this.ndMain, this.ndUI, owner);
     var shot = this.takeBuildProjectile(origin);
     shot.speed = GameToolsOverrides.projectileSpeed(owner, side, 500);
-    ProjectileLooks.prepare(shot, this, side + ":" + owner.cfg.ID, owner);
+    ProjectileLooks.prepare(shot, this, key, owner);
     return shot;
   };
   _ctor.prototype.onShotBuild = function (t, e, released) {
@@ -1484,6 +1490,8 @@ var def_KinghtFallGameCtrl = function (t) {
     var i = hasMuzzle && !behavior.fieldProjectile ? require("BuildingAppearance").muzzle(t, this) : t.getAttPos();
     var o = t.getAttack();
     if (!releaseCurrent()) return;
+    var aimLeft = towerCombat.point(e.node, this.ndMain).x < towerCombat.point(t.node, this.ndMain).x;
+    i = ProjectileLooks.adjustLaunchPoint(i, towerKey, aimLeft ? -1 : 1, this.ndMain, this.ndUI);
     var a = this.takeBuildProjectile(i), n = a.node;
     a.speed = behavior && behavior.projectileSpeed || a._towerBaseSpeed;
     if (modern) {
@@ -1540,12 +1548,14 @@ var def_KinghtFallGameCtrl = function (t) {
     e.active = true;
     var n = t.getAttWpos();
     var i = this.ndUI.convertToNodeSpaceAR(n);
+    var key = "ally:" + t.cfg.ID;
+    i = ProjectileLooks.adjustLaunchPoint(i, key, t._visualLeft ? -1 : 1, this.ndMain, this.ndUI);
     e.setPosition(i);
     var a = e.getComponent($z1KinghtFallBulletSoldier.default);
     a.combatContext = this;
     if(a._allyBaseSpeed===undefined)a._allyBaseSpeed=a.speed;
     a.speed=GameToolsOverrides.projectileSpeed(t,'ally',a._allyBaseSpeed);
-    ProjectileLooks.prepare(a, this, "ally:" + t.cfg.ID);
+    ProjectileLooks.prepare(a, this, key);
     this.ndSoldArr.push(a);
     return {
       ctr: a,

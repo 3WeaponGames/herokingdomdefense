@@ -33,6 +33,33 @@ test('invalid scale and trail color edits are rejected while unchanged legacy me
  for(const trailColor of ['red','#fff','#zzzzzz',123,['#123456'],null]){const data=structuredClone(s.data);data.assignments.hero={trailColor};assert.throws(()=>f.service.change({version:s.version,data}),/color/);}
  const data=structuredClone(s.data);data.assignments.tower={...data.assignments.tower,scale:1.8,trailColor:'#aa77ff'};f.service.change({version:s.version,data});const tier=f.service.load().units.find(u=>/^tower:/.test(u.key));assert.equal(tier.effectiveAssignment.scale,1.8);assert.equal(tier.inheritedAssignment.trailColor,'#aa77ff');
 });
+test('signed launch offsets remain per-unit drafts and inherit independently when reset',t=>{
+ const f=fixture(t),before=fs.readFileSync(f.catalog),cfg=fs.readFileSync(f.config),draft=f.service.load();
+ const key='tower:2:1';
+ draft.data.assignments.tower={...draft.data.assignments.tower,launchOffsetX:18.5,launchOffsetY:-9};
+ draft.data.assignments[key]={...draft.data.assignments[key],launchOffsetX:0,future:{keep:true}};
+ const changed=f.service.change({version:draft.version,data:draft.data});
+ const edited=changed.units.find(who=>who.key===key);
+ assert.equal(edited.effectiveAssignment.launchOffsetX,0);
+ assert.equal(edited.effectiveAssignment.launchOffsetY,-9);
+ assert.deepEqual(fs.readFileSync(f.catalog),before);
+ const saved=f.service.save({version:changed.version});
+ assert.deepEqual(saved.result.files,[f.service.relative]);
+ assert.deepEqual(fs.readFileSync(f.config),cfg);
+ const fresh=new ProjectilesService(f.dir),reset=fresh.load();
+ delete reset.data.assignments[key].launchOffsetX;
+ fresh.change({version:reset.version,data:reset.data});fresh.save({version:fresh.version});
+ assert.equal(fresh.load().units.find(who=>who.key===key).effectiveAssignment.launchOffsetX,18.5);
+ assert.deepEqual(fresh.data.assignments[key].future,{keep:true});
+ assert.equal(fresh.save({version:fresh.version}).result.saved,false);
+});
+test('launch offset validation rejects non-numeric, non-finite and out-of-range edits on either axis',t=>{
+ const {service}=fixture(t),draft=service.load();
+ for(const axis of ['launchOffsetX','launchOffsetY'])for(const value of ['3',null,NaN,Infinity,-4097,4097]){
+  const data=structuredClone(draft.data);data.assignments.hero={...data.assignments.hero,[axis]:value};
+  assert.throws(()=>service.change({version:draft.version,data}),/Launch offsets/);
+ }
+});
 test('set-only assignments select all effects, preserve legacy shared towers and explicitly clear absent effects',()=>{
  const api={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8'),{exports:api});const data={assets:[],sets:[{id:'plain',flight:'arrow'},{id:'magic',flight:'orb',launch:'flash',impact:'hit'}],assignments:{hero:{set:'plain'},tower:{set:'magic'}}};assert.deepEqual(JSON.parse(JSON.stringify(api.select(data,'hero'))),{set:'plain',flight:'arrow',launch:'',impact:''});assert.equal(api.select(data,'tower:2:1').impact,'hit');
 });

@@ -62,6 +62,12 @@ Add `--prefer-nvidia` and use a fresh build output directory to request high-per
 
 The build tool adds the export to `main.cpp` in its external SDK copy and verifies the executable contains the exported DWORD with value 1. The build manifest records the source diff and executable hashes, with the export receipt under `runtime.nvidiaOptimusPreference`. Select that build's manifest when launching the preview. The option can be combined with the other Release build flags.
 
+### Optional terrain geometry revisions
+
+Add `--terrain-geometry-revision` to the Windows x86 Release builder to enable revision tracking for generated static scenery in the native preview. The option patches the verified Creator 2.4.13 core and JSB adapter in the external SDK copy. The battle only uses this tracking for eligible scenery. Unsupported scenery continues through the regular geometry path.
+
+The build writes `terrain-geometry-revision-diff.json` and retains both original resources under `source-patch-backups/terrain-geometry-revision/`. Launch using that build's manifest. The launcher verifies both resources, loads them from the isolated session and records their hashes under `patches.terrainGeometryRevision` in `preview-proof.json`. Add `--grouped-mask-queue` at launch to combine the two options. Builds without the terrain option keep the original core and adapter resources.
+
 ### Launch a Release preview
 
 Keep Creator open on this project and let it finish compiling/importing. The launcher consumes Creator's existing native-preview files; it does not generate them. Its checks require the generated `simulator/win32/main.js`, `preview-scene.json` for the normal Start scene, and current `temp/quick-scripts/dst` source maps. Refresh those files through Creator's native preview when needed, then close the stock simulator before launching:

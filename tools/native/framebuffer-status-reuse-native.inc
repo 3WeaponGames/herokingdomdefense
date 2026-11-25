@@ -118,6 +118,21 @@ void rawMutation()
     mutation.fetch_add(1, std::memory_order_acq_rel);
 }
 
+// The framebuffer status feature already revokes these generations at
+// DeviceGraphics teardown and at both ends of the Win32 GLView lifetime.
+std::uint64_t sceneryAlphaEpoch()
+{
+    const auto life = generation.load(std::memory_order_acquire);
+    const auto raw = mutation.load(std::memory_order_acquire);
+    const auto context = activeContext.load(std::memory_order_acquire);
+    constexpr std::uint64_t limit = 1ULL << 26;
+    if (!context || activeThread.load(std::memory_order_acquire) != GetCurrentThreadId() ||
+        wglGetCurrentContext() != context || life >= limit || raw >= limit ||
+        life != generation.load(std::memory_order_acquire) || raw != mutation.load(std::memory_order_acquire))
+        return 0;
+    return life * limit + raw;
+}
+
 bool arm(const FrameBuffer* target, const Texture2D* color, const RenderBuffer* stencil)
 {
     if (!armed.target && signature(target, color, stencil, armed)) return true;

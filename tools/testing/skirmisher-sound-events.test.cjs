@@ -6,7 +6,7 @@ const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 function scene(config={}){
  const events=[];
  const h=setup({BattleSounds:{charge(){},chargeReady(){events.push({kind:'ready',time:rt.state.time});},skirmisherRelease(_hero,active){events.push({kind:'release',active,time:rt.state.time});},hit(target,source,damage,options){events.push({kind:'hit',target,source,damage,options,time:rt.state.time});}},
-  ProjectileLooks:{prepare(){},currentCatalog:()=>null},HeroMakerRider:{setCombatState(){},clearCombatState(){},isCharging:()=>true,releaseChargedAttack(){},skillTiming:()=>({hit:.1667})},HeroSkillHUD:{clear(){}}});
+  ProjectileLooks:{...require('../../assets/_script/ProjectileLooks'),prepare(){},currentCatalog:()=>null},HeroMakerRider:{setCombatState(){},clearCombatState(){},isCharging:()=>true,releaseChargedAttack(){},skillTiming:()=>({hit:.1667})},HeroSkillHUD:{clear(){}}});
  h.g.gameStatus=1;h.g.mapSize={width:2000,height:1000};h.g._combatEpoch=1;h.ui.isPauset=false;h.d.heroStyle='skirmisher';h.ui.ctrEffect={showDamageNum(){},onMonsterAttack(){}};
  h.e.stubs.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance=()=>({getGuideData:()=>({getGuideTips:()=>true})});
  const hero={heroStyle:'skirmisher',heroRanged:true,node:new Node('hero',h.g.ndMain),hp:500,hpMax:1000,attackRange:500,crit:-1,critDam:1.5,time:{Attack:0},_relicHero:true,_heroSecondary:{},ctrHp:{setHp(){}},

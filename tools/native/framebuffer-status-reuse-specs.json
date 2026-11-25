@@ -3,7 +3,7 @@
     {
       "file": "cocos/renderer/gfx/DeviceGraphics.cpp",
       "beforeSha256": "0da266bbdfa662ac0384508f373864dbe2a51490a52f0ce622f9657a9ae1cda2",
-      "afterSha256": "16c761035e335b85e76c67d43068c8927a51da69aa6dac273cb71ae14a63331a",
+      "afterSha256": "d1e222c0e0007fb1e3e7d82eb08355636258069f24e5d8295bb87bda12e055bc",
       "changes": [
         {
           "before": "RENDERER_BEGIN",
@@ -266,7 +266,7 @@
     "inventory": {
       "file": "cocos/scripting/js-bindings/manual/jsb_spine_manual.cpp",
       "beforeSha256": "7ff2a0a6937c56d53ad652a085e717e5682956c8824234c0b06e2f89bbec1f20",
-      "afterSha256": "f6f7e2d5f08ac896ecd6311ddc13f795669742d0bed08353056be0d56ee7282f",
+      "afterSha256": "9ab752ff63ad3882886314f22a6987b56e5ec000a47d0ea709a71d39798c6745",
       "changes": [
         {
           "before": "bool register_all_spine_manual(se::Object* obj)",
@@ -274,14 +274,14 @@
         },
         {
           "before": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));",
-          "after": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));\n    ns->defineFunction(\"_hkdArmCaptureFramebufferStatus\", _SE(js_hkdArmCaptureFramebufferStatus));"
+          "after": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));\n    ns->defineFunction(\"_hkdArmCaptureFramebufferStatus\", _SE(js_hkdArmCaptureFramebufferStatus));\n#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32\n    ns->defineFunction(\"_hkdReadSceneryAlpha\", _SE(js_hkdReadSceneryAlpha));\n#endif"
         }
       ]
     },
     "both": {
       "file": "cocos/scripting/js-bindings/manual/jsb_spine_manual.cpp",
       "beforeSha256": "a40e92b10a193ed1dea8c9614cc5b2280ac53165db2e829a6959190eeee0b259",
-      "afterSha256": "d92ab875c6a66485f0605d11163e932893ec954975a2ef109275cc5e424d2a81",
+      "afterSha256": "e36ec0cb8c829ca55b13aefe1f5a7d8d601007fc5d222d69a90162de6a7d6a84",
       "changes": [
         {
           "before": "bool register_all_spine_manual(se::Object* obj)",
@@ -289,13 +289,13 @@
         },
         {
           "before": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));",
-          "after": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));\n    ns->defineFunction(\"_hkdArmCaptureFramebufferStatus\", _SE(js_hkdArmCaptureFramebufferStatus));"
+          "after": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));\n    ns->defineFunction(\"_hkdArmCaptureFramebufferStatus\", _SE(js_hkdArmCaptureFramebufferStatus));\n#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32\n    ns->defineFunction(\"_hkdReadSceneryAlpha\", _SE(js_hkdReadSceneryAlpha));\n#endif"
         }
       ]
     }
   },
   "fragments": {
-    "framebuffer-status-reuse-native.inc": "bd34128cf22e0f01f6e2174f813f80d40f2befda5b7fd883c15d47a774cc4fbf",
-    "framebuffer-status-reuse-binding.inc": "d1e19dccdc97043bd5ba1056c8a797b15bdd747a2bf1679e6c4e47f90725f167"
+    "framebuffer-status-reuse-native.inc": "8bddc85b3d72fe4e7568163fd31e7b45805cc723c07f245eee92a6ce4c520954",
+    "framebuffer-status-reuse-binding.inc": "3a9109c4c6cbc131849ab7f43b7d0de6c637bf7dcf64225c8694e62eeefbf290"
   }
 }

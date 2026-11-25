@@ -52,6 +52,21 @@ function complete(bullet) {
   assert.equal(bullet.state, 1, 'projectile arrives');
 }
 
+test('a tower inherits each launch offset and mirrors X when it aims to the other side',()=>{
+  const {h,bullet}=shotSetup(),t=tower(h,{ID:2,index:1});
+  t.getAttPos=()=>new Vec2(7,35);
+  h.load('ProjectileLooks').prime({assets:[],assignments:{
+    tower:{launchOffsetX:22,launchOffsetY:6},
+    'tower:2:1':{launchOffsetY:-3}
+  }});
+  for(const facing of [1,-1]){
+    const target=enemy('target',facing*130,0,100,h.g.ndMain);
+    h.g.onShotBuild(t,target);
+    assert.deepEqual(bullet.node.getPosition(),new Vec2(7+facing*22,32));
+    bullet.freeNode();
+  }
+});
+
 test('legacy towers retain nearest targeting and no override; partial authored settings are supported', () => {
   assert.equal(TowerCombat.settings({}), null);
   assert.deepEqual(TowerCombat.settings({ Tower: { projectileSpeed: 450 } }), {

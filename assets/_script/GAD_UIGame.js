@@ -435,6 +435,7 @@ var def_GAD_UIGame = function (t) {
     i.parent = this.ndBulletRoot;
     var a = this.ndBulletRoot.convertToNodeSpaceAR(e);
     a.y += 50;
+    a = ProjectileLooks.adjustLaunchPoint(a, "wall-defense", 1);
     i.setPosition(a);
     var o = i.getComponent($z1GAD_Bullet.default);
     o._poolGame = this;

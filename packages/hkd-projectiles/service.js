@@ -3,6 +3,7 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto'),url=require
 const Document=require('../game-data-editor/lib/json-document');
 const Records=require('../game-data-editor/lib/unit-records');
 const UnitAttack=require('../../assets/_script/UnitAttackRules');
+const {validLaunchOffset,launchOffsetLimit}=require('../../assets/_script/ProjectileLooks');
 const {commit}=require('../hkd-characters/lib/asset-transaction');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const parse=text=>JSON.parse(text.replace(/^\uFEFF/,''));
@@ -155,6 +156,10 @@ class ProjectilesService {
       if(edited('rotation')&&value.rotation!==undefined&&(!Number.isFinite(value.rotation)||Math.abs(value.rotation)>360))throw Error('Visual rotation must be between -360 and 360.');
       if(edited('tint')&&value.tint!==undefined&&!/^#[a-f0-9]{6}$/i.test(value.tint))throw Error('Choose a valid projectile tint.');
       if(edited('trailColor')&&value.trailColor!==undefined&&(typeof value.trailColor!=='string'||!/^#[a-f0-9]{6}$/i.test(value.trailColor)))throw Error('Choose a valid trail color (#RRGGBB).');
+      for(const field of ['launchOffsetX','launchOffsetY']){
+        if(edited(field)&&value[field]!==undefined&&!validLaunchOffset(value[field]))
+          throw Error('Launch offsets must be between -'+launchOffsetLimit+' and '+launchOffsetLimit+'.');
+      }
       if(edited('launchDelay')&&value.launchDelay!==undefined&&!finite(value.launchDelay))throw Error('Launch delay must be between 0 and 10 seconds.');
       if(edited('set')&&value.set!==undefined&&!(data.sets||[]).some(set=>set.id===value.set))throw Error('Choose an existing projectile set.');
       if(edited('trail')&&value.trail!==undefined&&value.trail!==false&&!(data.trails||[]).some(trail=>trail.id===value.trail))throw Error('Choose an existing projectile trail.');

@@ -1,6 +1,20 @@
 "use strict";
-// Presentation only. No target, attack, collider, or movement values are edited.
-var catalog = null, loading = false, waiting = [], retryAfter = 0;
+var catalog = null, loading = false, waiting = [], retryAfter = 0, hasLaunchOffsets = false;
+var launchOffsetLimit = 4096;
+function validLaunchOffset(value) { return Number.isFinite(value) && Math.abs(value) <= launchOffsetLimit; }
+function launchOffset(options, facing) {
+  var x = options && options.launchOffsetX, y = options && options.launchOffsetY;
+  return {x: validLaunchOffset(x) ? x * (facing === -1 ? -1 : 1) : 0, y: validLaunchOffset(y) ? y : 0};
+}
+function setCatalog(data) {
+  catalog = data;
+  var assignments = data && data.assignments || {};
+  hasLaunchOffsets = Object.keys(assignments).some(function (key) {
+    var entry = assignments[key];
+    return entry && (validLaunchOffset(entry.launchOffsetX) && entry.launchOffsetX !== 0 ||
+      validLaunchOffset(entry.launchOffsetY) && entry.launchOffsetY !== 0);
+  });
+}
 function load(callback) {
   if (catalog) { callback(catalog); return; }
   if (Date.now() < retryAfter || !cc.resources) return;
@@ -10,7 +24,7 @@ function load(callback) {
     cc.resources.load("projectiles/catalog", cc.JsonAsset, function (error, asset) {
     loading = false;
     if (error || !asset || !asset.json) { retryAfter = Date.now() + 1000; waiting.length = 0; return; }
-    catalog = asset.json;
+    setCatalog(asset.json);
     var callbacks = waiting; waiting = [];
     callbacks.forEach(function (ready) { ready(catalog); });
     });
@@ -77,6 +91,22 @@ function select(data, key, level, item, tierSkin) {
 function selectSource(data,key,actor,settings,level,item,tierSkin){
   var result={};if(/^enemy:/.test(key)&&actor&&actor.cfg&&(actor.cfg.ID>=100000||actor.cfg.ProfileBaseID))require("./EnemyStageProfiles").referenceIds(actor.cfg,settings).reverse().forEach(function(id){Object.assign(result,select(data,"enemy:"+id,level,item));});
   return Object.assign(result,select(data,key,level,item,tierSkin));
+}
+function adjustLaunchPoint(point, key, facing, space, parent, actor) {
+  if (!hasLaunchOffsets) return point;
+  var cfg = actor && actor.cfg, settings;
+  if (/^enemy:/.test(key) && cfg && (cfg.ID >= 100000 || cfg.ProfileBaseID)) {
+    var data = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
+    settings = data && data.GameTools;
+  }
+  var offset = launchOffset(selectSource(catalog, key, actor, settings, undefined, undefined, false), facing);
+  if (!offset.x && !offset.y) return point;
+  if (!space || !parent || space === parent) return cc.v2(point.x + offset.x, point.y + offset.y);
+  // Editor distances are measured in map units, independent of actor scale
+  // and of the layer carrying the projectile.
+  var convert = require("./TowerCombat").convert;
+  var base = convert(point, parent, space);
+  return convert({x: base.x + offset.x, y: base.y + offset.y}, space, parent);
 }
 function Bank(owner) { this.owner = owner; this.cache = Object.create(null); this.effects = []; this.pendingEffects = 0; this.pool = []; this.views = new Set(); this.launches = []; this.dead = false; }
 Bank.prototype.get = function (descriptor, callback) {
@@ -390,7 +420,11 @@ exports.queueLaunch=function(owner,key,source,callback,guard){
   var bank=owner._projectileLooks;if(bank.dead)return;
   bank.launches.push({source:source,node:source.node,generation:source.node._combatGeneration,time:source.time,cfg:source.buildInfo&&source.buildInfo.cfg,remaining:delay,epoch:owner._combatEpoch,callback:callback,guard:guard});
 };
-exports.prime = function (data) { catalog=data;loading=false;retryAfter=0;var callbacks=waiting;waiting=[];callbacks.forEach(function(callback){callback(catalog);}); };
+exports.prime = function (data) { setCatalog(data);loading=false;retryAfter=0;var callbacks=waiting;waiting=[];callbacks.forEach(function(callback){callback(catalog);}); };
+exports.adjustLaunchPoint = adjustLaunchPoint;
+exports.launchOffset = launchOffset;
+exports.launchOffsetLimit = launchOffsetLimit;
+exports.validLaunchOffset = validLaunchOffset;
 exports.drawTrail=drawTrail;
 exports.trailPoint=trailPoint;
 exports.visualScale=visualScale;

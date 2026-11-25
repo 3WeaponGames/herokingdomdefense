@@ -17,7 +17,7 @@ test('all 25 Skirmisher arrow upgrades select the correct one of five tier proje
 test('the volley and ordinary bow shots select the same tiered flight artwork',()=>{
  const {setup,Node}=require('./backend-gameplay-harness.cjs'),flights=[];
  let level=1;
- const h=setup({ProjectileLooks:{prepare(shot,_owner,key){
+ const h=setup({ProjectileLooks:{...Looks,prepare(shot,_owner,key){
   shot._launchProjectileLook=()=>{
    const skin=config.EquipCfg.find(row=>row.id===3).levelInfo[level-1].EquipSkin;
    flights.push(Looks.select(data,key,level,null,skin));

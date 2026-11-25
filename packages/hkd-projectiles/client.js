@@ -75,7 +75,23 @@ function mount(root,api){
   const ctx=canvas.getContext('2d'),controls=el('div',undefined,right);controls.className='projectile-play-controls';
   const description=el('p','',right),phase=el('p','',right);phase.className='projectile-phase';phase.setAttribute('aria-live','off');
   el('p','Choose a projectile, match its launch to the attack animation, then Save. Damage and range are edited in Units. Flight speed is in Units for characters and Buildings for towers.',left).className='projectile-note';
-  el('p','Silent, looping preview. Click the active Pause button or press Space to pause and resume. Save applies this unit’s projectile, scale, launch delay and trail color.',right).className='projectile-note';
+  el('p','Silent, looping preview. Click the active Pause button or press Space to pause and resume.',right).className='projectile-note';
+  const launchPanel=el('div',undefined,right);launchPanel.className='projectile-launch';
+  el('h3','Launch point',launchPanel);
+  const launchFields=el('div',undefined,launchPanel);launchFields.className='projectile-launch-fields';
+  const launchInputs=new Map();
+  for(const axis of ['X','Y']){
+    const label=el('label',undefined,launchFields);el('span',axis+' offset',label);
+    const input=el('input',undefined,label);input.type='number';input.step='any';
+    input.min=-Looks.launchOffsetLimit;input.max=Looks.launchOffsetLimit;input.disabled=true;
+    input.setAttribute('aria-label','Launch offset '+axis);
+    launchInputs.set('launchOffset'+axis,input);
+  }
+  const facingLabel=el('label',undefined,launchFields);el('span','Preview facing',facingLabel);
+  const facingSelect=el('select',undefined,facingLabel);facingSelect.disabled=true;
+  facingSelect.setAttribute('aria-label','Preview facing');
+  el('option','Right',facingSelect).value='1';el('option','Left',facingSelect).value='-1';
+  el('small','Offsets are in game units. X mirrors with facing. Positive Y moves up.',launchPanel);
   let snapshot=null,unit='hero',selected=null,selectionTouched=false,trailTouched=false,trailValue;
   let focusSequence=0;
   let colorSampler=null;
@@ -95,7 +111,46 @@ function mount(root,api){
   const validScale=value=>Number.isFinite(value)&&value>=.1&&value<=10,validColor=value=>/^#[a-f0-9]{6}$/i.test(value||'');
   function visualValue(field){const draft=visualDrafts.get(unit);return draft&&Object.prototype.hasOwnProperty.call(draft,field)?draft[field]===undefined?(who().inheritedAssignment||{})[field]:draft[field]:effectiveRow()[field];}
   function setVisual(field,value,key){key=key||unit;visualDrafts.set(key,Object.assign({},visualDrafts.get(key),{[field]:value}));age=0;refreshStatus();}
-  const invalidVisual=()=>Array.from(visualDrafts).find(([,draft])=>draft.scale!==undefined&&!validScale(draft.scale)||draft.trailColor!==undefined&&!validColor(draft.trailColor));
+  function invalidVisual(){
+    for(const draft of visualDrafts.values()){
+      if(Array.from(launchInputs.keys()).some(field=>draft[field]!==undefined&&!Looks.validLaunchOffset(draft[field])))
+        return 'Correct launch offsets (−'+Looks.launchOffsetLimit+' to '+Looks.launchOffsetLimit+').';
+      if(draft.scale!==undefined&&!validScale(draft.scale)||draft.trailColor!==undefined&&!validColor(draft.trailColor))
+        return 'Correct projectile scale (0.1–10×) or trail color (#RRGGBB).';
+    }
+  }
+  function renderLaunchPoint(){
+    const person=who();
+    for(const [field,input]of launchInputs){
+      const value=visualValue(field);
+      input.value=value===undefined?0:Number.isFinite(value)?value:'';
+      input.setAttribute('aria-invalid',String(value!==undefined&&!Looks.validLaunchOffset(value)));
+      input.disabled=false;
+    }
+    facingSelect.disabled=person.type==='wall';
+    if(facingSelect.disabled)facingSelect.value='1';
+    resetLaunch.disabled=false;
+  }
+  function showLaunchPoint(){
+    mode='all';age=0;last=0;
+    renderSelected();
+  }
+  for(const [field,input]of launchInputs)input.oninput=()=>{
+    const value=input.valueAsNumber, valid=Looks.validLaunchOffset(value);
+    const inherited=(who().inheritedAssignment||{})[field];
+    const baseline=Looks.validLaunchOffset(inherited)?inherited:0;
+    input.setAttribute('aria-invalid',String(!valid));
+    setVisual(field,valid&&row()[field]===undefined&&value===baseline?undefined:value);
+    showLaunchPoint();
+  };
+  facingSelect.onchange=showLaunchPoint;
+  const resetLaunch=button('Reset launch point',launchPanel,()=>{
+    const draft=Object.assign({},visualDrafts.get(unit));
+    for(const field of launchInputs.keys())draft[field]=undefined;
+    visualDrafts.set(unit,draft);
+    renderLaunchPoint();showLaunchPoint();refreshStatus();
+  });
+  resetLaunch.disabled=true;
   const validDelay=value=>Number.isFinite(value)&&value>=0&&value<=10;
   const effectiveDelay=key=>snapshot.timings&&snapshot.timings[key]!==undefined?snapshot.timings[key]:(snapshot.units.find(person=>person.key===key)||{}).launchDelay||0;
   const invalidDelay=()=>Array.from(delayDrafts).find(([,draft])=>!validDelay(draft.value));
@@ -120,13 +175,13 @@ function mount(root,api){
     for(const [field,value]of Object.entries(visualDrafts.get(key)||{})){if(value===undefined)delete result[field];else result[field]=value;}return result;
   }
   const pendingAssignment=()=>snapshot&&(JSON.stringify(assignmentForSelection())!==JSON.stringify(row())||Array.from(pending).some(([key,draft])=>key!==unit&&JSON.stringify(assignmentForSelection(key,draft))!==JSON.stringify(snapshot.data.assignments[key]||{})));
-  function refreshStatus(){if(!snapshot)return;const invalid=invalidDelay(),visual=invalidVisual(),dirty=snapshot.dirty||pendingAssignment()||pendingTiming();save.disabled=!!invalid||!!visual||!dirty;discard.disabled=!dirty;report(invalid?'Correct launch delay for '+(snapshot.units.find(person=>person.key===invalid[0])||{}).name+' (0–10 seconds).':visual?'Correct projectile scale (0.1–10×) or trail color (#RRGGBB).':dirty?'Unsaved projectile drafts':'Current data · browsing makes no changes',!!invalid||!!visual);lockControls();}
-  function apply(value){if(closed)return;snapshot=value;render();if(value.result)report(value.result.warning||(value.result.saved?'Saved projectile, scale, launch delay and trail color. Reload the game preview to apply.':'No changes; no files written.'),!!value.result.warning);}
+  function refreshStatus(){if(!snapshot)return;const invalid=invalidDelay(),visual=invalidVisual(),dirty=snapshot.dirty||pendingAssignment()||pendingTiming();save.disabled=!!invalid||!!visual||!dirty;discard.disabled=!dirty;report(invalid?'Correct launch delay for '+(snapshot.units.find(person=>person.key===invalid[0])||{}).name+' (0–10 seconds).':visual||(dirty?'Unsaved projectile drafts':'Current data · browsing makes no changes'),!!invalid||!!visual);lockControls();}
+  function apply(value){if(closed)return;snapshot=value;render();if(value.result)report(value.result.warning||(value.result.saved?'Saved projectile settings. Reload the game preview to apply.':'No changes; no files written.'),!!value.result.warning);}
   function run(action){queue=queue.then(()=>{if(!closed)return action();}).catch(warn);return queue;}
   function lockControls(){if(locked)for(const input of root.querySelectorAll('button,input,select'))input.disabled=true;}
   function exclusive(action){if(locked)return;stopColorSampling();locked=true;lockControls();return run(async()=>{try{await action();}finally{locked=false;if(!closed){for(const input of root.querySelectorAll('button,input,select'))input.disabled=false;if(snapshot)apply(snapshot);}}});}
   const save=button('Save',actions,()=>exclusive(async()=>{if(!snapshot)return;if(invalidDelay()||invalidVisual())throw Error('Correct invalid projectile drafts before saving.');storeSelection();if(pendingAssignment()||pendingTiming()){const data=clone(snapshot.data),timings=clone(snapshot.timings||{});for(const [key,draft]of delayDrafts)if(draft.value!==effectiveDelay(key))timings[key]=draft.value;for(const [key,draft]of pending){const next=assignmentForSelection(key,draft);if(Object.keys(next).length)data.assignments[key]=next;else delete data.assignments[key];}snapshot=await api.ipc('change',{version:snapshot.version,data,timings});}const value=await api.ipc('save',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();visualDrafts.clear();apply(value);}));
-  const discard=button('Discard drafts',actions,()=>exclusive(async()=>{if(!window.confirm('Discard unsaved projectile, scale, delay and trail changes?'))return;const value=await api.ipc('discard',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();visualDrafts.clear();selected=null;apply(value);}));
+  const discard=button('Discard drafts',actions,()=>exclusive(async()=>{if(!window.confirm('Discard unsaved projectile settings?'))return;const value=await api.ipc('discard',{version:snapshot.version});selectionTouched=trailTouched=false;pending.clear();delayDrafts.clear();visualDrafts.clear();selected=null;apply(value);}));
   button('Reload',actions,()=>exclusive(async()=>{storeSelection();const value=await api.ipc('load',{});generation++;unitTrigger.dataset.signature='';images.clear();spines.invalidate();visuals.invalidate();combat.invalidate();target=null;if(!selectionTouched)selected=null;apply(value);loadActors();renderSelected();}));save.disabled=discard.disabled=true;
   function togglePlayback(){if(!snapshot||locked)return;paused=!paused;last=0;renderSelected();}
   const playbackLabels={launch:'launch',flight:'flight',impact:'on hit',all:'all'};
@@ -256,7 +311,16 @@ function mount(root,api){
     for(const [index,name]of ['Red','Green','Blue'].entries()){const line=el('label',undefined,fields);line.className='projectile-color-channel';el('span',name,line);const input=el('input',undefined,line);input.type='range';input.min='0';input.max='255';input.step='1';input.value=parseInt(colorValue.slice(1+index*2,3+index*2),16);input.setAttribute('aria-label','Trail '+name.toLowerCase());const output=el('output',input.value,line);channels.push({input,output});input.oninput=()=>mixColor('#'+channels.map(channel=>Number(channel.input.value).toString(16).padStart(2,'0')).join(''));}
     picker.onchange=picker.oninput=()=>mixColor(picker.value);hex.oninput=()=>{hex.setAttribute('aria-invalid',String(!validColor(hex.value)));if(validColor(hex.value))mixColor(hex.value);else setVisual('trailColor',hex.value,colorUnit);};
     button('Use default trail color',fields,()=>{setVisual('trailColor',undefined,colorUnit);renderAssignments(true);});
-    button('Reset projectile & trail',fields,()=>{const key=unit;exclusive(async()=>{const data=clone(snapshot.data),next=Object.assign({},data.assignments[key]);for(const field of ['set','flight','launch','impact','size','scale','rotation','tint','trail','trailColor'])delete next[field];if(Object.keys(next).length)data.assignments[key]=next;else delete data.assignments[key];const value=await api.ipc('change',{version:snapshot.version,data,timings:snapshot.timings});pending.delete(key);visualDrafts.delete(key);if(unit===key){selectionTouched=trailTouched=false;selected=null;}apply(value);age=0;});});lockControls();
+    button('Reset projectile & trail',fields,()=>{const key=unit;exclusive(async()=>{
+      const data=clone(snapshot.data),next=Object.assign({},data.assignments[key]);
+      for(const field of ['set','flight','launch','impact','size','scale','rotation','tint','trail','trailColor'])delete next[field];
+      if(Object.keys(next).length)data.assignments[key]=next;else delete data.assignments[key];
+      const value=await api.ipc('change',{version:snapshot.version,data,timings:snapshot.timings});pending.delete(key);
+      const draft=visualDrafts.get(key);
+      if(draft){delete draft.scale;delete draft.trailColor;if(!Object.keys(draft).length)visualDrafts.delete(key);}
+      if(unit===key){selectionTouched=trailTouched=false;selected=null;}
+      apply(value);age=0;
+    });});lockControls();
   }
   // Batch artwork completions so a warm library rebuilds its tiles once per frame.
   function scheduleLibraryRender(){if(!closed&&!libraryRaf)libraryRaf=requestAnimationFrame(()=>{libraryRaf=0;renderLibrary();});}
@@ -274,7 +338,7 @@ function mount(root,api){
   }
   function renderSelected(){const look=previewLook();if(!look)return;const available={all:true,flight:true,launch:look.launch,impact:look.impact||look.nativeImpact};if(!available[mode])mode='flight';const set=currentSet();title.textContent=set?set.name:'Preview';for(const [key,btn]of Object.entries(playButtons)){const playing=key===mode&&!paused;btn.disabled=!available[key];btn.classList.toggle('active',key===mode);btn.setAttribute('aria-pressed',String(key===mode));btn.textContent=(playing?'Pause ':'Play ')+playbackLabels[key];btn.title=btn.disabled?'This projectile has no '+(key==='impact'?'special on-hit':key)+' effect.':playing?'Pause preview (Space)':key===mode?'Resume preview (Space)':'Loop '+playbackLabels[key];}
     description.textContent=mode==='all'?who().name+' → target · In-game scale':mode==='flight'?'Stationary flight · In-game scale':mode==='launch'?'Launch effect · In-game scale':'On-hit effect · In-game scale';for(const role of ['flight','launch','impact']){const asset=look[role];if(asset&&asset.kind==='spine')spine(asset);}}
-  function render(){if(!snapshot.units.some(u=>u.key===unit))unit=snapshot.units[0].key;unitSelect.innerHTML='';for(const person of snapshot.units){const option=el('option',person.name,unitSelect);option.value=person.key;}unitSelect.value=unit;renderUnitPicker();if(!selected||!sets().some(s=>s.id===selected)){const set=defaultSelection();selected=set&&set.id;}renderAssignments();renderLibrary();renderSelected();refreshStatus();lockControls();}
+  function render(){if(!snapshot.units.some(u=>u.key===unit))unit=snapshot.units[0].key;unitSelect.innerHTML='';for(const person of snapshot.units){const option=el('option',person.name,unitSelect);option.value=person.key;}unitSelect.value=unit;renderUnitPicker();if(!selected||!sets().some(s=>s.id===selected)){const set=defaultSelection();selected=set&&set.id;}renderAssignments();renderLaunchPoint();renderLibrary();renderSelected();refreshStatus();lockControls();}
   const off=document.createElement('canvas'),mask=document.createElement('canvas');off.width=off.height=mask.width=mask.height=256;const offContext=off.getContext('2d'),maskContext=mask.getContext('2d');
   function clipDuration(asset){if(!asset)return 0;if(asset.kind==='flipbook')return asset.frames/asset.fps;if(asset.kind==='spine'){const entry=spines.get(asset);if(entry)return Math.max(...entry.layers.map(layer=>{const clip=layer.data.findAnimation(asset.animation);return clip?clip.duration:0;}),.1);}return asset.duration||.5;}
   function draw(asset,x,y,time,options,loop){
@@ -299,7 +363,26 @@ function mount(root,api){
     }else ctx.drawImage(source,frame.x,frame.y,frame.width,frame.height,-width*pivot.x,-height*pivot.y,width,height);
     ctx.restore();
   }
-  function drawTrail(x,y,time,speed,options){if(options.trail===false||options.trail==='none'||time<=0)return;const preset=trails().find(t=>t.id===(options.trail===undefined?who().defaultTrail:options.trail)),scale=validScale(options.scale)?options.scale:1;if(preset){visuals.drawTrail(ctx,preset,{x,y,time,size:48*scale,speed,rotation:options.previewHeading||0,trailColor:options.trailColor});return;}if(!who().defaultTrail&&!who().builtinFlight)return;const length=Math.min(x-180,speed*.16);if(length<=0)return;ctx.save();const gradient=ctx.createLinearGradient(x-length,y,x,y);gradient.addColorStop(0,'transparent');gradient.addColorStop(1,options.trailColor||'#fff1c9');ctx.strokeStyle=gradient;ctx.lineWidth=4*scale;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x-length,y);ctx.lineTo(x,y);ctx.stroke();ctx.restore();}
+  function drawTrail(x,y,time,speed,options){
+    if(options.trail===false||options.trail==='none'||time<=0)return;
+    const person=who(),preset=trails().find(t=>t.id===(options.trail===undefined?person.defaultTrail:options.trail));
+    const scale=validScale(options.scale)?options.scale:1, heading=options.previewHeading||0;
+    if(preset){visuals.drawTrail(ctx,preset,{x,y,time,size:48*scale,speed,rotation:heading,trailColor:options.trailColor});return;}
+    if(!person.defaultTrail&&!person.builtinFlight)return;
+    const length=Math.min(time,.16)*speed, radians=heading*Math.PI/180;
+    const tailX=x-length*Math.cos(radians),tailY=y-length*Math.sin(radians);
+    ctx.save();
+    const gradient=ctx.createLinearGradient(tailX,tailY,x,y);
+    gradient.addColorStop(0,'transparent');gradient.addColorStop(1,options.trailColor||'#fff1c9');
+    ctx.strokeStyle=gradient;ctx.lineWidth=4*scale;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(tailX,tailY);ctx.lineTo(x,y);ctx.stroke();ctx.restore();
+  }
+  function drawLaunchMarker(point){
+    ctx.save();ctx.strokeStyle='#75d1e8';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(point.x,point.y,6,0,Math.PI*2);
+    ctx.moveTo(point.x-9,point.y);ctx.lineTo(point.x+9,point.y);
+    ctx.moveTo(point.x,point.y-9);ctx.lineTo(point.x,point.y+9);
+    ctx.stroke();ctx.restore();
+  }
   function drawFlight(look,x,y,time,heading,speed,nativeImpact){
     if(time<0)return;
     const launcher=actor&&actor.launcher||{},sx=launcher.scaleX??1,sy=launcher.scaleY??1;
@@ -310,7 +393,10 @@ function mount(root,api){
     ctx.restore();
   }
   function sizeStage(view){
-    const ratio=window.devicePixelRatio||1,width=Math.ceil(view.width*ratio),height=Math.ceil(view.height*ratio);
+    // Large offsets can scroll beyond the viewport. Cap the backing bitmap
+    // while retaining one game unit per CSS pixel.
+    const ratio=Math.min(window.devicePixelRatio||1,4096/view.width,4096/view.height);
+    const width=Math.ceil(view.width*ratio),height=Math.ceil(view.height*ratio);
     if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
     const cssWidth=view.width+'px',cssHeight=view.height+'px';
     if(canvas.style.width!==cssWidth)canvas.style.width=cssWidth;
@@ -323,14 +409,24 @@ function mount(root,api){
     const look=snapshot&&previewLook(),showUnits=mode==='all',launcher=actor&&actor.launcher||{};
     const size=look?look.options.size*Looks.visualScale(look.options)*(look.flight?.visualScale||1)*Math.max(1,Math.abs(launcher.scaleX??1),Math.abs(launcher.scaleY??1)):0;
     const padding=Math.max(24,size*Math.SQRT1_2);
-    const view=CombatPreview.stage(stageView.clientWidth||420,showUnits&&actor,showUnits&&target,padding);
+    const person=look&&who();
+    const facing=person&&person.type!=='wall'&&facingSelect.value==='-1'?-1:1;
+    let marker, launchPoint;
+    if(showUnits&&look){
+      const draft=delayDrafts.get(unit);
+      marker=draft&&validDelay(draft.value)?draft.value:effectiveDelay(unit);
+      const muzzle=actor&&combat.muzzle(actor,{facing,animation:actor.attackAnimation,time:marker})||{x:0,y:-30};
+      const offset=Looks.launchOffset(look.options,facing);
+      launchPoint={x:(muzzle.x+offset.x)*facing,y:muzzle.y-offset.y};
+    }
+    const view=CombatPreview.stage(stageView.clientWidth||420,showUnits&&actor,showUnits&&target,padding,{facing,launch:launchPoint});
     sizeStage(view);
     const ground=view.shooter.groundY;
     ctx.fillStyle='#14202b';ctx.fillRect(0,0,view.width,view.height);
     ctx.fillStyle='#1d2d38';ctx.fillRect(0,ground,view.width,view.height-ground);
     ctx.strokeStyle='#3a505d';ctx.beginPath();ctx.moveTo(0,ground);ctx.lineTo(view.width,ground);ctx.stroke();
     if(look){
-      const {flight,launch,impact,options}=look,person=who();
+      const {flight,launch,impact,options}=look;
       if(!showUnits){
         const x=view.width/2,y=(ground+padding)/2;
         if(mode==='flight')drawFlight(look,x,y,age,0,0);
@@ -339,8 +435,7 @@ function mount(root,api){
         phase.textContent=mode==='flight'?'Flight · stationary':mode==='launch'?'Launch':'On hit';
       }else{
         const speed=person.speed>0?person.speed:500,playback=actor?actor.animationSpeed:person.animationSpeed||1;
-        const marker=delayDrafts.has(unit)&&validDelay(delayDrafts.get(unit).value)?delayDrafts.get(unit).value:effectiveDelay(unit);
-        const origin=actor&&combat.muzzle(actor,{...view.shooter,animation:actor.attackAnimation,time:marker})||{x:view.shooter.x,y:ground-30};
+        const origin=view.launch;
         const aim=view.aim,delta={x:aim.x-origin.x,y:aim.y-origin.y},heading=Math.atan2(delta.y,delta.x)*180/Math.PI;
         const delay=playback===0?Infinity:marker/playback,travel=Math.hypot(delta.x,delta.y)/speed,arrival=delay+travel;
         const attackDuration=actor?combat.duration(actor,actor.attackAnimation)/(playback>0?playback:1):1;
@@ -350,6 +445,7 @@ function mount(root,api){
         const reacting=target&&hitAge>=0&&hitAge<combat.duration(target,target.hitAnimation)/1.5;
         if(target)combat.draw(ctx,target,{...view.target,animation:reacting?target.hitAnimation:target.idleAnimation,time:reacting?hitAge*1.5:time,loop:!reacting});
         if(!actor||!target){ctx.fillStyle='#aebdcd';ctx.font='14px system-ui';ctx.textAlign='center';ctx.fillText('Loading preview units…',view.width/2,ground+70);}
+        if(actor&&!colorSampler)drawLaunchMarker(origin);
         const effects={...options,rotation:(options.rotation||0)-heading};
         draw(launch,origin.x,origin.y,flightAge,effects,false);
         if(flightAge>=0&&time<arrival){

@@ -18,7 +18,7 @@ function placement(actor,options){
   const facing=(options.facing===-1?-1:1)*(actor.mirrorX?-1:1);
   return{box:actor.bounds,scale:positive(actor.description&&actor.description.worldScale,1),facing,x:finite(options.x,0),groundY:finite(options.groundY,0)};
 }
-function stage(width,actor,target,padding=24){
+function stage(width,actor,target,padding=24,options={}){
   function extents(unit,facing){
     if(!unit)return {left:25,right:25,top:72,bottom:0};
     const {box,scale,facing:sign}=placement(unit,{facing});
@@ -26,12 +26,18 @@ function stage(width,actor,target,padding=24){
       right:Math.max(0,(sign===1?box.maxX:-box.minX)*scale),top:Math.max(0,box.maxY*scale),bottom:Math.max(0,-box.minY*scale)};
   }
   const left=extents(actor,1),right=extents(target,-1),gap=120;
-  const content=left.left+left.right+gap+right.left+right.right+padding*2;
+  const launch=options.launch, facing=options.facing===-1?-1:1;
+  const before=Math.max(left.left,launch?-launch.x:0);
+  const separation=left.right+gap+right.left;
+  const after=Math.max(separation+right.right,launch?launch.x:0);
+  const content=before+after+padding*2;
   width=Math.ceil(Math.max(width,content));
-  const x=padding+(width-content)/2+left.left,goal=x+left.right+gap+right.left;
-  const groundY=Math.ceil(Math.max(310,left.top+padding,right.top+padding,padding+64));
-  return{width,height:Math.ceil(groundY+Math.max(110,left.bottom+padding,right.bottom+padding,padding)),
-    shooter:{x,groundY,facing:1},target:{x:goal,groundY,facing:-1},aim:{x:goal,y:groundY-right.top*.55}};
+  const start=padding+(width-content)/2+before, goal=start+separation;
+  const x=facing===1?start:width-start, targetX=facing===1?goal:width-goal;
+  const groundY=Math.ceil(Math.max(310,left.top+padding,right.top+padding,padding+64,launch?padding-launch.y:0));
+  return{width,height:Math.ceil(groundY+Math.max(110,left.bottom+padding,right.bottom+padding,padding,launch?padding+launch.y:0)),
+    shooter:{x,groundY,facing},target:{x:targetX,groundY,facing:-facing},aim:{x:targetX,y:groundY-right.top*.55},
+    ...(launch?{launch:{x:x+launch.x*facing,y:groundY+launch.y}}:{})};
 }
 function projectileLook(assets, person, assignment, actor) {
   const model=actor&&actor.description.layers&&actor.description.layers[0];
@@ -46,18 +52,25 @@ function projectileLook(assets, person, assignment, actor) {
     nativeImpact:!flight&&actor&&actor.launcher&&actor.launcher.impact};
 }
 function muzzle(actor,options){
-  let point=actor&&actor.artwork&&actor.artwork.weapon&&actor.artwork.weapon.muzzle||actor&&actor.launcher&&actor.launcher.muzzle;
+  if(!actor)return null;
+  const settings=options||{},pose=placement(actor,settings);
+  const weapon=actor.artwork&&actor.artwork.weapon, launcher=actor.launcher;
+  let point=weapon&&weapon.muzzle, mirror=pose.facing;
+  if(!point&&launcher){
+    point=settings.facing===-1&&launcher.leftMuzzle||launcher.muzzle;
+    if(launcher.leftMuzzle)mirror=1;
+  }
   const arrow=actor&&(actor.layers||[]).find(layer=>layer.description.json._heroMaker&&layer.description.json._heroMaker.role===3);
   if(arrow){
     const tip=Pose.arrowTip(arrow.skeleton,{x:1,y:0},1);
     if(tip){const d=arrow.description,x=tip.x*finite(d.scaleX,1),y=tip.y*finite(d.scaleY,1),a=finite(d.rotation,0)*Math.PI/180,m=d._mountMotion;
       point={x:x*Math.cos(a)-y*Math.sin(a)+finite(d.x,0),y:x*Math.sin(a)+y*Math.cos(a)+finite(d.y,0)};
       if(m)point={x:m.a*point.x+m.b*point.y+m.x,y:m.c*point.x+m.d*point.y+m.y};
+      mirror=pose.facing;
     }
   }
   if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return null;
-  const pose=placement(actor,options||{});
-  return{x:pose.x+point.x*pose.scale*pose.facing,y:pose.groundY-point.y*pose.scale};
+  return{x:pose.x+point.x*pose.scale*mirror,y:pose.groundY-point.y*pose.scale};
 }
 function create(api,options){
   options=options||{};const cache=new Map(),tokens=new Map(),images=new Map();let closed=false;

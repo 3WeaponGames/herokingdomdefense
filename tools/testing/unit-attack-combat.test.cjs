@@ -12,7 +12,7 @@ function fixture() {
   const prepared = [], hits = [];
   const h = setup({
     BattleSounds: { attack() {} },
-    ProjectileLooks: { prepare(shot, _game, key) {
+    ProjectileLooks: { ...require('../../assets/_script/ProjectileLooks'), prepare(shot, _game, key) {
       prepared.push(key);
       shot._launchProjectileLook = () => {};
     } }

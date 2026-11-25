@@ -1,5 +1,5 @@
 'use strict';
-const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto');
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto'),vm=require('node:vm');
 const SOURCE=process.env.HKD_NATIVE_BUILD_SOURCE||path.resolve(__dirname,'../native/build-native-preview.cjs');
 const api=require(SOURCE),sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const unitRegionBounds=require('../native/unit-region-bounds.cjs');
@@ -8,6 +8,8 @@ const foregroundStencilReuse = require('../native/foreground-stencil-reuse.cjs')
 const captureRendererInventory = require('../native/capture-renderer-inventory.cjs');
 const captureFramebufferStatus = require('../native/capture-framebuffer-status.cjs');
 const nvidiaOptimus = require('../native/nvidia-optimus.cjs');
+const terrainRevision = require('../native/terrain-geometry-revision.cjs');
+const groupedMasks = require('../native/grouped-mask-queue.cjs');
 function fixture(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-native-build-'));t.after(()=>{assert(path.basename(root).startsWith('hkd-native-build-')&&path.dirname(root)===os.tmpdir());fs.rmSync(root,{recursive:true,force:true});});return root;}
 function write(file,bytes='fixture'){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,bytes);return file;}
 function projectFixture(project,includes){
@@ -114,6 +116,68 @@ test('manual camera matrix patch is opt-in, preserves stock dispatch and records
 });
 
 const creatorSDK=process.env.HKD_CREATOR_SDK_ROOT||(process.platform==='win32'?'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/cocos2d-x':null);
+test('terrain geometry revision is an independent build opt-in',()=>{
+  assert.equal(Object.hasOwn(api.parseArgs([]),terrainRevision.FEATURE),false);
+  assert.deepEqual(api.parseArgs(['--terrain-geometry-revision','--manual-camera-matrices']),{
+    terrainGeometryRevision:true,manualCameraMatrices:true
+  });
+  assert.throws(()=>api.parseArgs(['--terrain-geometry-revision','false']),/Unknown/);
+});
+
+test('terrain engine resources are pinned, versioned and compose with the grouped adapter',{
+  skip:!creatorSDK||!terrainRevision.PATCHES.every(patch=>fs.existsSync(path.join(creatorSDK,patch.file)))
+},t=>{
+  const root=fixture(t),sdk=path.join(root,'sdk'),clone=path.join(root,'clone'),feature=terrainRevision.FEATURE;
+  for(const patch of terrainRevision.PATCHES){
+    const bytes=fs.readFileSync(path.join(creatorSDK,patch.file));
+    write(path.join(sdk,patch.file),bytes);write(path.join(clone,patch.file),bytes);
+    assert.equal(sha(bytes),patch.beforeSha256);
+    assert.throws(()=>terrainRevision.patchSource(Buffer.concat([bytes,Buffer.from(' ')]),patch),/Unsupported terrain geometry revision source/);
+  }
+  assert.deepEqual(api.prepareSourcePatches(clone,false,terrainRevision.PATCHES,feature),[]);
+  const patches=api.prepareSourcePatches(clone,true,terrainRevision.PATCHES,feature);
+  const diff=api.writeSourcePatchArtifacts(root,clone,patches);
+  assert.equal(path.basename(diff.file),'terrain-geometry-revision-diff.json');
+  assert(patches.map(api.sourcePatchRecord).every(record=>record.kind==='resource'));
+  api.verifySourcePatchArtifacts(root,patches,diff);
+  api.verifyResourceFiles(sdk,clone,patches);
+  const core=patches[0].after.toString('utf8');
+  new vm.Script(core);
+  const start=core.indexOf('    (function () {\n      var listeners =');
+  const end=core.indexOf('    })();',start)+'    })();'.length;
+  assert(start>=0&&end>start);
+  const cc={};
+  new vm.Script(core.slice(start,end)).runInNewContext({cc});
+  const tracker=cc._hkdTerrainGeometry,main={},rootNode={},child={};
+  assert.equal(tracker.version,1);
+  assert(Object.isFrozen(tracker));
+  assert.equal(Object.getOwnPropertyDescriptor(cc,'_hkdTerrainGeometry').writable,false);
+  assert.equal(tracker.track([rootNode],[main]),null,'Ancestor set must be owned');
+  const ticket=tracker.track([main,rootNode,child],[main]);
+  assert.equal(tracker.track([main],[]),null);
+  tracker.markMembership(main);
+  assert.equal(ticket.value,0);
+  tracker.markMembership(rootNode);
+  tracker.mark(main);
+  tracker.mark(child);
+  assert.equal(ticket.value,3);
+  tracker.release(ticket,[main,rootNode,child]);
+  const next=tracker.track([main],[]);
+  tracker.release(ticket,[main]);
+  tracker.markMembership(main);
+  assert.equal(next.value,1);
+  assert.match(core,/this\._parent = value \|\| null;\n\s+cc\._hkdTerrainGeometry\.mark\(this\);\n\s+cc\._hkdTerrainGeometry\.markMembership\(oldParent\);/);
+  assert.match(core,/this\._type = value;\n\s+cc\._hkdTerrainGeometry\.mark\(this\);\n\s+this\.setVertsDirty\(\);/);
+  assert.match(core,/this\._objFlags \|= Destroying;\n\s+cc\._hkdTerrainGeometry\.mark\(this\);/);
+  const adapter=patches[1],combined=terrainRevision.patchGroupedAdapter(groupedMasks.patch(adapter.before));
+  new vm.Script(combined.toString('utf8'));
+  assert.match(combined.toString('utf8'),/\.setLocalDirty = function \(flag\) {\n  this\._localMatDirty \|= flag;\n  cc\._hkdTerrainGeometry\.mark\(this\);/);
+  assert.match(combined.toString('utf8'),/RenderFlow\._hkdMaskQueue/);
+  assert.throws(()=>terrainRevision.patchGroupedAdapter(adapter.before),/Unsupported terrain geometry revision source/);
+  fs.appendFileSync(path.join(clone,terrainRevision.CORE),'// drift');
+  assert.throws(()=>api.verifyResourceFiles(sdk,clone,patches),/Copied engine resource changed/);
+});
+
 test('capture framebuffer status is opt-in and includes owned capture target support', () => {
   assert.equal(Object.hasOwn(api.parseArgs([]), 'captureFramebufferStatus'), false);
   assert.deepEqual(api.parseArgs(['--capture-framebuffer-status', '--unit-region-bounds']), {

@@ -48,6 +48,20 @@ test('the default arrow and fireball keep their native renderer dimensions inste
   }
 });
 
+test('launch preview follows model-mounted muzzle markers and keeps actor-root muzzle markers fixed',()=>{
+  const frames=new Map();
+  const straight=Units.describe(root,{type:'enemy',id:90003,battleSpace:true,noRuntime:true,noShared:true});
+  const straightLauncher=describeLauncher(root,{type:'enemy'},straight,assets,frames);
+  assert.deepEqual(straightLauncher.leftMuzzle,straightLauncher.muzzle);
+  const glacier=Units.describe(root,{type:'enemy',id:91152,battleSpace:true,noRuntime:true,noShared:true});
+  const glacierLauncher=describeLauncher(root,{type:'enemy'},glacier,assets,frames);
+  const layer=glacier.layers.find(layer=>layer.name==='spAni');
+  const data=prefab(glacier.source),actor=data.find(row=>row.ctrArr);
+  const anchor=data[data[actor.ctrArr.__id__].node.__id__],offset=Maps.point(Maps.transform(anchor),{x:0,y:0});
+  assert.deepEqual(glacierLauncher.muzzle,Maps.point(layer.matrix,offset));
+  assert.deepEqual(glacierLauncher.leftMuzzle,Maps.point(layer.matrix,{x:-offset.x,y:offset.y}));
+});
+
 test('battle space applies unit size overrides to the prefab scale and keeps published ally looks at their baked size',()=>{
   const id=90003,key='enemy:'+id+':default';
   const describe=state=>Units.describe(root,{type:'enemy',id,noRuntime:true,noShared:true,battleSpace:true,documents:{A:{data:state}}}).layers[0];
