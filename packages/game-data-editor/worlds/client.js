@@ -1038,8 +1038,10 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  function drawFirstUpgradeCard(building,record){
   const card=record&&record.firstUpgradeCard;
   if(!card)return;
-  const sprites=card.sprites.map(sprite=>Object.assign({},sprite,{matrix:PurchasePreview.cardMatrix(building,card.origin,sprite.matrix)}));
-  Paint.sprites(ctx,sprites,state.images);
+  ctx.save();
+  Paint.apply(ctx,M.buildingMatrix(building));
+  Paint.sprites(ctx,card.sprites,state.images,card.origin);
+  ctx.restore();
  }
  function drawBuildingGhost(){
   const ghost=ghostBuilding();if(!ghost||!ghost.record)return;const b=ghost.building,r=ghost.record,parts=buildingRenderer.parts(b,r);

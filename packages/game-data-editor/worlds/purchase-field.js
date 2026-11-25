@@ -2,7 +2,7 @@
 // Project only the authored purchase-field roots. Models, built collision,
 // prices, upgrades, and original source templates are never changed.
 const Maps=require('../lib/map-assets'),Model=require('./model');
-const {cardMatrix}=require('./purchase-field-preview'),Settings=require('../../../assets/_script/BuildingPurchaseField');
+const Settings=require('../../../assets/_script/BuildingPurchaseField');
 const cache=new WeakMap(),projected=new WeakMap(),clone=value=>JSON.parse(JSON.stringify(value));
 const SIDES=['default','flip','southwest','southeast'];
 function withDefaults(building,config,hall,source){
@@ -86,10 +86,6 @@ function finishExport(source,building,target,mapping){
   if(original){
    const trs=node.source._trs.array,component=target[mapping[original.component]],points=component.points||[];
    component.points=original.points.map((p,i)=>{const local=Maps.point(inverse,Maps.point(placement,{x:p.x-origin.x,y:p.y-origin.y}));return Object.assign({},points[i],{x:local.x*trs[7],y:local.y*trs[8]});});
-  }
-  if(building.flipX){
-   const card=info.byId[id].children.map(child=>info.byId[child]).find(child=>child.name==='ndLock');
-   if(card&&mapping[card.id]!==undefined)matrix(target[mapping[card.id]],Maps.multiply(inverse,cardMatrix(building,origin,card.world)));
   }
  }
  const nextOwner=next.byId[mapping[entry.owner.id]],nextController=nextOwner&&nextOwner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));
