@@ -9,7 +9,7 @@ const { PhysicsPolygonCollider } = require('../navigation/runtime-harness.cjs');
 const Rules = require('../../assets/_script/UnitAttackRules');
 
 function fixture() {
-  const prepared = [], hits = [];
+  const prepared = [], hits = [], statusHits = [];
   const h = setup({
     BattleSounds: { attack() {} },
     ProjectileLooks: { ...require('../../assets/_script/ProjectileLooks'), prepare(shot, _game, key) {
@@ -20,6 +20,37 @@ function fixture() {
   const { g: game, e: { cc, stubs } } = h;
   stubs.UnitAttackRules = Rules;
   stubs.GameToolsOverrides = h.e.load('GameToolsOverrides');
+  stubs.CharacterAppearance = { animationSpeed() {} };
+  cc.Node = class extends Node {
+    destroy() { this.destroyed = true; this.setParent(null); }
+  };
+  cc.Graphics = class {
+    clear() { this.badges = []; this.redraws = (this.redraws || 0) + 1; }
+    circle(x, _y, radius) { this.x = radius > 5 ? x : undefined; }
+    stroke() {
+      if (this.x !== undefined) this.badges.push([this.x, this.strokeColor]);
+      this.x = undefined;
+    }
+    ellipse() {}
+    moveTo() {}
+    lineTo() {}
+    bezierCurveTo() {}
+    close() {}
+    fill() {}
+  };
+  cc.color = value => value;
+  stubs.UnitHitFeedback = {
+    play() {},
+    playStatus(actor, effects, current, ui) {
+      assert(current());
+      assert.equal(ui, h.ui);
+      statusHits.push({ actor, effects: Array.from(effects) });
+    }
+  };
+  cc.misc = { clampf: (value, min, max) => Math.max(min, Math.min(max, value)) };
+  const indicatorFile = path.join(__dirname, '../../assets/_script/UnitAttackIndicators.js');
+  const indicators = stubs.UnitAttackIndicators = {};
+  vm.runInNewContext(fs.readFileSync(indicatorFile, 'utf8'), { cc, exports: indicators }, { filename: indicatorFile });
   const scope = { cc, exports: {}, require: h.load };
   const file = path.join(__dirname, '../../assets/_script/UnitAttackCombat.js');
   vm.runInNewContext(fs.readFileSync(file, 'utf8'), scope, { filename: file });
@@ -29,6 +60,8 @@ function fixture() {
   game.ndMain.setPosition(26, -15);
   game.ndUI = new Node('effects', game.node, -43, 69);
   game.ndUI.scaleX = game.ndUI.scaleY = .8;
+  game.moveSize = game.mapSize;
+  game.camera = { node: new Node('camera', game.node) };
   h.ui.ctrEffect = { showDamageNum() {}, onMonsterAttack() {} };
   h.d.getAttackableBuildList = () => [];
   const manager = stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
@@ -69,8 +102,12 @@ function fixture() {
     return actor;
   }
   function step(dt) { game.ndBuildArr2.slice().forEach(shot => shot.onUpdate(dt)); }
+  function layoutEffects() {
+    game.onLateUpdate();
+    return game.ndUI.children.filter(node => node.name === 'On-hit effects');
+  }
   const amounts = () => hits.map(({ name, amount }) => [name, amount]);
-  return { ...h, game, manager, target, attacker, step, prepared, hits, amounts };
+  return { ...h, game, manager, target, attacker, step, layoutEffects, prepared, hits, amounts, statusHits };
 }
 
 test('unit attack overrides resolve supported combinations without editing base records', () => {
@@ -202,6 +239,7 @@ test('ranged splash slows each damaged defender at impact and refreshes without 
   const outside = f.target('outside splash', 161);
   player.node.setParent(f.game.ndMain);
   player.node.setPosition(100, 20);
+  player.ndRange = new Node('hero range');
   player.moveSpeed = 100;
   player.hp = player.hpMax = 500;
   player._regenerationDisabled = true;
@@ -224,6 +262,12 @@ test('ranged splash slows each damaged defender at impact and refreshes without 
   assert.equal(player.getSpeed(), 60);
   assert.equal(troop.getSpeed(), 48);
   assert.equal(outside.hp, 1000);
+  const slowBadges = f.layoutEffects();
+  assert.equal(slowBadges.length, 2);
+  for (const row of slowBadges) assert.deepEqual(row.getComponent(f.e.cc.Graphics).badges, [[0, '#69b9ff']]);
+  const heroX = f.game.ndUI.convertToNodeSpaceAR(player.node.convertToWorldSpaceAR({ x: 0, y: 60 })).x;
+  const heroBadge = slowBadges.find(row => row.x === heroX);
+  assert(heroBadge);
   player.onUpdata(.75);
   owner.doAttackStart();
   f.step(.25);
@@ -233,6 +277,8 @@ test('ranged splash slows each damaged defender at impact and refreshes without 
   assert.equal(player.getSpeed(), 60);
   player.onUpdata(.25);
   assert.equal(player.getSpeed(), 100);
+  assert.equal(f.layoutEffects().length, 1);
+  assert.equal(heroBadge.active, false);
 });
 
 test('melee single and splash can both slow and steal life from damage after mitigation and overkill', () => {
@@ -262,7 +308,162 @@ test('melee single and splash can both slow and steal life from damage after mit
     assert.equal(owner.hp, pattern === 'single' ? 55 : 65);
     assert.equal(lethal.hp <= 0, pattern === 'splash');
     assert.equal(blocked.hp, 1000);
+    const healCue = () => f.game.ndUI.children.find(node => node.name === 'Life steal healing');
+    f.layoutEffects();
+    const cue = healCue(), effects = f.load('UnitAttackCombat');
+    assert(cue);
+    assert.equal(cue.x, f.game.ndUI.convertToNodeSpaceAR(owner.node.convertToWorldSpaceAR({ x: 0, y: 60 })).x + 37);
+    const y = cue.y;
+    effects.tickEffects(f.game, .2);
+    f.layoutEffects();
+    assert(cue.y > y);
+    effects.tickEffects(f.game, .2);
+    f.layoutEffects();
+    assert.equal(healCue(), undefined);
+    assert.equal(cue.active, false);
+    owner.hp = owner.hpMax;
+    owner.doAttackStart();
+    f.layoutEffects();
+    assert.equal(healCue(), undefined, 'a hit at full health does not show healing');
   }
+});
+
+test('Poison, Burn and Bleed display together above the health bar and disappear as they expire', () => {
+  const f = fixture(), victim = f.target('victim', 60);
+  f.e.cc.resources = {};
+  f.d.enemyList = [victim];
+  f.d.onUpdata = f.game.ctrPlay.onUpdata = f.game.ctrPlay.doMove = f.game.collectFollowers = f.noop;
+  const health = new Node('health bar', victim.node, 0, 68);
+  health.height = 10;
+  victim.hpctrl = { node: health };
+  const owner = f.attacker('KinghtFallSoldierBase', {
+    delivery: 'melee', pattern: 'single',
+    onHit: {
+      poison: { percent: .1, duration: 2 }, burn: { percent: .2, duration: 1.5 },
+      bleed: { percent: .3, duration: 1.25 }
+    }
+  }, victim);
+  owner.doAttackStart();
+  const [row] = f.layoutEffects();
+  const graphics = row.getComponent(f.e.cc.Graphics);
+  assert.deepEqual(graphics.badges, [[-26, '#84bf56'], [0, '#e68c45'], [26, '#e76882']]);
+  const healthTop = f.game.ndUI.convertToNodeSpaceAR(health.convertToWorldSpaceAR({ x: 0, y: 5 }));
+  assert.equal(row.x, healthTop.x);
+  assert(row.y - 11 > healthTop.y);
+  const unboostedHeight = row.y;
+  const boost = new Node('active enemy boost', victim.node, 0, 85);
+  boost.width = boost.height = 22;
+  victim._enemyBuffIndicators = new Map([['haste', { node: boost }]]);
+  f.layoutEffects();
+  assert(row.y > unboostedHeight, 'existing boost art gets its own row');
+  boost.active = false;
+  victim.node.x += 20;
+  health.active = false;
+  f.layoutEffects();
+  assert.equal(row.y, unboostedHeight);
+  assert.equal(row.x, healthTop.x + 25, 'the new row follows the unit even if its health bar is hidden');
+  f.game.onUpdate(.5);
+  assert.equal(victim.hp, 900);
+  owner.doAttackStart();
+  assert.deepEqual(f.layoutEffects(), [row]);
+  assert.equal(graphics.redraws, 1, 'refreshing an existing set reuses the badge artwork');
+  f.game.onUpdate(.5);
+  assert.equal(victim.hp, 740);
+  f.game.onUpdate(.75);
+  f.layoutEffects();
+  assert.deepEqual(graphics.badges, [[-13, '#84bf56'], [13, '#e68c45']]);
+  f.game.onUpdate(.25);
+  f.layoutEffects();
+  assert.deepEqual(graphics.badges, [[0, '#84bf56']]);
+  f.game.onUpdate(.5);
+  assert.deepEqual(f.hits.map(hit => hit.amount), [100, 100, 60, 22.5, 30, 5]);
+  assert.deepEqual(f.statusHits.map(hit => hit.effects), [['poison', 'burn', 'bleed'], ['bleed'], ['poison', 'burn'], ['poison']]);
+  assert(f.statusHits.every(hit => hit.actor === victim));
+  assert(f.hits.slice(2).every(hit => !hit.source && hit.ranged && hit.context.barracksProjectile));
+  assert.equal(f.game._unitAttackEffects, null);
+  assert.equal(row.active, false);
+  assert.deepEqual(f.layoutEffects(), []);
+});
+
+test('blocked and lethal damage ticks do not start a status hit reaction', () => {
+  const f = fixture(), victim = f.target('victim', 60), combat = f.load('UnitAttackCombat');
+  f.d.enemyList = [victim];
+  const hit = victim.onAttacked;
+  f.e.cc.resources = {};
+  let shielded = true;
+  victim.onAttacked = function (amount, source, ranged, context) {
+    return !source && shielded ? 0 : hit.call(this, amount, source, ranged, context);
+  };
+  const owner = f.attacker('KinghtFallSoldierBase', {
+    delivery: 'melee', pattern: 'single', onHit: { poison: { percent: .2, duration: 2 } }
+  }, victim);
+  owner.doAttackStart();
+  combat.tickEffects(f.game, 1);
+  assert.equal(victim.hp, 900);
+  assert.deepEqual(f.statusHits, []);
+  shielded = false;
+  victim.hp = 15;
+  combat.tickEffects(f.game, 1);
+  assert(victim.isDead());
+  assert.deepEqual(f.statusHits, []);
+});
+
+test('the hero holds movement during the reaction and uses the same input after it finishes', () => {
+  const f = fixture(), player = hero(f), direction = f.e.cc.v2(1, 0);
+  player.node.setParent(f.game.ndMain);
+  player.setLeft = f.noop;
+  player.getSpeed = () => 100;
+  player.time.RenSoundTime = 1;
+  player.rigidBody.linearVelocity = direction;
+  let idle = 0, move = 0;
+  player.ctrPlayAni.setIdle = () => idle++;
+  player.ctrPlayAni.setMove = () => move++;
+  player._hitReactionPlaying = true;
+  player.doMove(direction, .1, f.game);
+  assert.equal(player.node.x, 0);
+  assert.equal(player.rigidBody.linearVelocity.x, 0);
+  assert.equal(player._relicMoving, false);
+  assert.deepEqual([idle, move], [1, 0]);
+  player._hitReactionPlaying = false;
+  player.doMove(direction, .1, f.game);
+  assert.equal(player.node.x, 10);
+  assert.deepEqual([idle, move], [1, 1]);
+});
+
+test('Burn is applied to structures on ranged impact and expires with its target or wave', () => {
+  const f = fixture(), structure = f.target('structure', 80);
+  const effects = f.load('UnitAttackCombat');
+  structure.buildInfo = { BuildID: 'ArrowTower' };
+  f.d.getAttackableBuildList = () => [structure];
+  const owner = f.attacker('KinghtFallEnemyBase', {
+    delivery: 'ranged', pattern: 'single',
+    onHit: {
+      poison: { percent: .1, duration: 3 }, burn: { percent: .25, duration: 3 },
+      bleed: { percent: .15, duration: 3 }
+    }
+  }, structure);
+  owner.doAttackStart();
+  effects.tickEffects(f.game, 1);
+  assert.equal(structure.hp, 1000);
+  assert.deepEqual(f.layoutEffects(), []);
+  f.step(1);
+  const [firstRow] = f.layoutEffects();
+  assert.deepEqual(firstRow.getComponent(f.e.cc.Graphics).badges, [[0, '#e68c45']]);
+  effects.tickEffects(f.game, 1);
+  assert.equal(structure.hp, 875);
+  structure.node._combatGeneration++;
+  effects.tickEffects(f.game, 1);
+  assert.equal(structure.hp, 875);
+  assert.equal(firstRow.active, false);
+  owner.doAttackStart();
+  f.step(1);
+  const [newRow] = f.layoutEffects();
+  assert.notEqual(newRow, firstRow);
+  f.d.round++;
+  effects.tickEffects(f.game, 1);
+  assert.equal(structure.hp, 775);
+  assert.equal(f.game._unitAttackEffects, null);
+  assert.equal(newRow.active, false);
 });
 
 test('Cannon Slime releases a shell from its mirrored muzzle and splashes nearby defenders on impact', () => {
