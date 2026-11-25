@@ -110,6 +110,20 @@ test('a new prototype link or a formerly absent inherited method retires cached 
   }
 });
 
+test('a non-enumerable accessor shadow retires geometry without invoking the accessor',()=>{
+  const f=fixture(),region=new f.spine.RegionAttachment(),scope=f.scope();
+  assert(f.api.read(scope,region));
+  const prototype=f.spine.MeshAttachment.prototype;
+  assert(!Object.prototype.hasOwnProperty.call(prototype,'getVertices'));
+  let invoked=false;
+  Object.defineProperty(prototype,'getVertices',{configurable:true,get(){invoked=true;return undefined;}});
+  assert.equal(f.api.read(scope,region),null);
+  assert.equal(f.scope(),null);
+  assert.equal(invoked,false);
+  delete prototype.getVertices;
+  assert.equal(f.api.read(scope,region),null,'removing the shadow cannot revive pre-existing cache entries');
+});
+
 test('normal SDK methods, generated property aliases and copyTo targets invalidate geometry shared across actors',()=>{
   const f=fixture(),region=new f.spine.RegionAttachment(),mesh=new f.spine.MeshAttachment(),other=f.actor(),a=f.scope(),b=f.api.scope(other.renderer,other.plan);
   f.api.read(a,region);f.api.read(b,region);assert.equal(region.updateOffset(35),f.marker);
@@ -227,11 +241,16 @@ test('the optional native bounds helper only handles opted-in health bars with s
     getData(){return {name:'Body'};}
     getBone(){return bone;}
     getColor(){return {a:1};}
+    getDeform(){return [];}
   }
   const slot=new Slot(); let calls=0,result={minX:0,minY:0,maxX:10,maxY:50};
   f.spine.Slot=Slot;
-  f.spine._hkdRegionBounds=(native,skeleton)=>{
-    assert.equal(native,f.plan.native);assert.equal(skeleton,f.plan.skeleton);calls++;return result;
+  let arity = 0;
+  f.spine._hkdRegionBounds=(native,skeleton,...coordinates)=>{
+    assert.equal(native,f.plan.native);assert.equal(skeleton,f.plan.skeleton);
+    arity = 2 + coordinates.length;
+    if (arity === 9) assert.equal(coordinates[6],true);
+    calls++;return result;
   };
   Object.assign(f.renderer,{node:art,enabled:true});
   Object.assign(f.plan.skeleton,{getSlots:()=>[slot],drawOrder:[slot],updateWorldTransform(){}});
@@ -240,12 +259,27 @@ test('the optional native bounds helper only handles opted-in health bars with s
   assert.equal(calls,0);
   assert.equal(depth.unitBounds(f.renderer,main,{},true).maxY,50);
   assert.equal(calls,1);
+  assert.equal(arity,8);
   slot.getAttachment=()=>null;
   assert.equal(depth.unitBounds(f.renderer,main,{},true),null);
   assert.equal(calls,1);
   delete slot.getAttachment;result=null;
   assert.equal(depth.unitBounds(f.renderer,main,{},true).maxY,20);
   assert.equal(calls,2);
+  assert.equal(depth.unitBounds(f.renderer,main,{},true,true).maxY,20);
+  assert.equal(calls,2,'an unrecognized mount keeps the public path');
+  f.renderer.skeletonData.skeletonJson._heroMakerMount = {};
+  result = {minX:0,minY:0,maxX:10,maxY:50};
+  assert.equal(depth.unitBounds(f.renderer,main,{},true,true).maxY,50);
+  assert.equal(calls,3);
+  assert.equal(arity,9);
+  slot.getDeform = () => [1,2];
+  assert.equal(depth.unitBounds(f.renderer,main,{},true,true).maxY,20);
+  assert.equal(calls,3,'custom deform readers must use public geometry');
+  delete slot.getDeform;
+  result = null;
+  assert.equal(depth.unitBounds(f.renderer,main,{},true,true).maxY,20);
+  assert.equal(calls,4,'a build without the weighted binding still falls back');
 });
 
 test('both public SpineUtils image helpers invalidate shared actor geometry around native changes and partial failures',()=>{

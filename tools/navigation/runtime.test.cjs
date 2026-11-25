@@ -11,6 +11,84 @@ const engineDir = process.env.COCOS_ENGINE_DIR || 'C:/ProgramData/cocos/editors/
 let passed = 0;
 function test(name, run) { run(); passed++; console.log('PASS ' + name); }
 
+test('Native collider discovery preserves the live stock pre-order and falls back for custom queries', () => {
+  class PhysicsCollider {}
+  class PhysicsPolygonCollider extends PhysicsCollider {}
+  class PhysicsBoxCollider extends PhysicsCollider {}
+  class PhysicsCircleCollider extends PhysicsCollider {}
+  class CustomPolygon extends PhysicsPolygonCollider {}
+  class SearchCollider {}
+  class BaseNode {
+    constructor(components = [], children = []) {
+      this._components = components;
+      this._children = children;
+    }
+    getComponentsInChildren(typeOrClassName) {
+      var constructor = getConstructor(typeOrClassName), components = [];
+      if (constructor) {
+        findComponents(this, constructor, components);
+        findChildComponents(this._children, constructor, components);
+      }
+      return components;
+    }
+  }
+  class SceneNode extends BaseNode {}
+  let stockQueries = 0;
+  function getConstructor(type) { stockQueries++; return type; }
+  function findComponents(node, type, result) {
+    node._components.forEach(component => {
+      if (type._sealed ? component.constructor === type : component instanceof type) result.push(component);
+    });
+  }
+  function findChildComponents(children, type, result) {
+    children.forEach(child => {
+      findComponents(child, type, result);
+      findChildComponents(child._children, type, result);
+    });
+  }
+  const cc = { ENGINE_VERSION: '2.4.13', sys: { isNative: true }, Node: SceneNode, _BaseNode: BaseNode,
+    PhysicsCollider, PhysicsPolygonCollider, PhysicsBoxCollider, PhysicsCircleCollider };
+  const source = fs.readFileSync(path.join(sourceDir, 'KinghtFallNavigation.js'), 'utf8');
+  function loadQuery(host) {
+    const exports = {};
+    vm.runInNewContext(source + '\nexports.collidersForTest = colliders;', {
+      cc: host, exports, Function, require: () => ({ NavigationGrid })
+    });
+    return exports.collidersForTest;
+  }
+  const stock = loadQuery({ ...cc, sys: { isNative: false } });
+  const fused = loadQuery(cc);
+  function compare(node) {
+    const expected = stock(node);
+    stockQueries = 0;
+    assert.deepEqual(Array.from(fused(node)), Array.from(expected));
+    assert.equal(stockQueries, 0, 'supported discovery should use the fused walk');
+  }
+  const polygon = new CustomPolygon(), box = new PhysicsBoxCollider(), circle = new PhysicsCircleCollider();
+  circle.enabled = false;
+  const branch = new SceneNode([polygon]);
+  branch.active = false;
+  const root = new SceneNode([new SearchCollider(), box, new PhysicsCollider()],
+    [branch, new SceneNode([], [new SceneNode([circle])])]);
+  compare(root);
+  root._children.reverse();
+  root._components.unshift(new PhysicsCircleCollider());
+  branch._components.pop();
+  compare(root);
+
+  PhysicsCollider._sealed = true;
+  assert.deepEqual(Array.from(fused(root)), []);
+  assert.equal(stockQueries, 1);
+  PhysicsCollider._sealed = false;
+  Object.defineProperty(PhysicsBoxCollider, Symbol.hasInstance, { configurable: true, value() { return false; } });
+  assert.equal(fused(root).includes(box), false);
+  assert.equal(stockQueries, 2);
+  delete PhysicsBoxCollider[Symbol.hasInstance];
+
+  root.getComponentsInChildren = () => [polygon];
+  assert.deepEqual(Array.from(fused(root)), [polygon]);
+});
+
 test('Nested transforms use one main-space radius and convert movement back to the local parent', () => {
   const e = environment();
   e.game.ndMain.setPosition(350, -200); e.game.ndMain.scaleX = e.game.ndMain.scaleY = 1.3;

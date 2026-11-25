@@ -1,5 +1,6 @@
 var BattleSounds = require("BattleSounds");
 var BattleMusic = require("BattleMusic");
+var battleHudModule;
 var GameplayAdOwner = require("GameplayAdOwner");
 var i;
 var cc__extends = __extends;
@@ -870,67 +871,8 @@ var def_KinghtFallUIGame = function (t) {
     if (hero && hero._styleRuntime) require("HeroSkillHUD").layout(hero, hero._styleRuntime);
   };
   _ctor.prototype._layoutBattleFooter = function () {
-    var control = this.ctrUI, root = control && control.node, rod = control && control.ndRod;
-    if (!root || !rod || !this.btnStartFight || !cc.view) return;
-    var visible = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
-    var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: visible.width, height: visible.height };
-    var a = root.convertToNodeSpaceAR(cc.v2(safe.x, safe.y));
-    var b = root.convertToNodeSpaceAR(cc.v2(safe.x + safe.width, safe.y + safe.height));
-    var left = Math.min(a.x, b.x), right = Math.max(a.x, b.x), bottom = Math.min(a.y, b.y);
-    var margin = 18, gap = 18, button = this.btnStartFight, reward = this._completionReward && this._completionReward.node;
-    function shown(node) { return node && node.active !== false && node.activeInHierarchy !== false; }
-    function box(node, caption) {
-      var sx = Math.abs(node.scaleX), sy = Math.abs(node.scaleY);
-      var bounds = { minX: -node.anchorX * node.width * sx, maxX: (1 - node.anchorX) * node.width * sx,
-        minY: -node.anchorY * node.height * sy, maxY: (1 - node.anchorY) * node.height * sy };
-      if (shown(caption)) {
-        var w = caption.width * Math.abs(caption.scaleX) * sx, h = caption.height * Math.abs(caption.scaleY) * sy;
-        bounds.minX = Math.min(bounds.minX, caption.x * sx - caption.anchorX * w);
-        bounds.maxX = Math.max(bounds.maxX, caption.x * sx + (1 - caption.anchorX) * w);
-        bounds.minY = Math.min(bounds.minY, caption.y * sy - caption.anchorY * h);
-        bounds.maxY = Math.max(bounds.maxY, caption.y * sy + (1 - caption.anchorY) * h);
-      }
-      return bounds;
-    }
-    var startBox = box(button, reward), rally = this.btnAgg, follow = this.btnFollow;
-    var rallyBox = rally && box(rally, rally.getChildByName("labNum"));
-    var followBox = follow && box(follow, follow.getChildByName("labNum"));
-    var coin = this.btnAddCoin, coinBox = coin && box(coin);
-    var signature = [left, right, bottom, shown(button), shown(coin), shown(rally), shown(follow), JSON.stringify(startBox), JSON.stringify(rallyBox), JSON.stringify(followBox),
-      JSON.stringify(coinBox), rod.width, rod.height, rod.scaleX, rod.scaleY].join(":");
-    if (signature === this._battleFooterSignature) return;
-    this._battleFooterSignature = signature;
-    if (coin && !this._footerCoinOffset) this._footerCoinOffset = { x: coin.x - button.x, y: coin.y - button.y };
-    button.setPosition((left + right) / 2, bottom + margin - startBox.minY);
-    if (coin && this._footerCoinOffset) coin.setPosition(button.x + this._footerCoinOffset.x, button.y + this._footerCoinOffset.y);
-
-    var commandX = right - margin - Math.max(rallyBox ? rallyBox.maxX : 0, followBox ? followBox.maxX : 0);
-    var commandLeft = commandX + Math.min(rallyBox ? rallyBox.minX : 0, followBox ? followBox.minX : 0);
-    var commandBottom = bottom + margin;
-    // Narrow screens can lift the commands while keeping Start centered.
-    if (shown(button) && button.x + startBox.maxX + gap > commandLeft) {
-      commandBottom = Math.max(commandBottom, button.y + startBox.maxY + gap);
-    }
-    if (shown(coin) && coin.x + coinBox.maxX + gap > commandLeft) {
-      commandBottom = Math.max(commandBottom, coin.y + coinBox.maxY + gap);
-    }
-    if (rally) rally.setPosition(commandX, commandBottom - rallyBox.minY);
-    if (follow) {
-      var followBottom = rally ? rally.y + rallyBox.maxY + gap : commandBottom;
-      follow.setPosition(commandX, followBottom - followBox.minY);
-    }
-
-    var restX = left + (right - left) / 4;
-    restX = Math.max(left + margin + rod.width * Math.abs(rod.scaleX) / 2, restX);
-    var restY = bottom + 180 + rod.height * Math.abs(rod.scaleY) / 2;
-    if (shown(button)) {
-      var top = button.y + startBox.maxY;
-      if (shown(coin) && restX + rod.width * Math.abs(rod.scaleX) / 2 > coin.x + coinBox.minX) top = Math.max(top, coin.y + coinBox.maxY);
-      restY = Math.max(restY, top + gap + rod.height * Math.abs(rod.scaleY) / 2);
-    }
-    var point = cc.v2(restX, restY);
-    if (rod.parent !== root) point = rod.parent.convertToNodeSpaceAR(root.convertToWorldSpaceAR(point));
-    control.setJoystickRest(point);
+    if (!battleHudModule) battleHudModule = require("BattleHud");
+    battleHudModule.layoutFooter(this);
   };
   _ctor.prototype._bindEnemyGuide = function (record) {
     require("EnemyGuide").bind(this, record);

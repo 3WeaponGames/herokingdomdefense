@@ -4,6 +4,8 @@ const SOURCE=process.env.HKD_NATIVE_BUILD_SOURCE||path.resolve(__dirname,'../nat
 const api=require(SOURCE),sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const unitRegionBounds=require('../native/unit-region-bounds.cjs');
 const manualCameraMatrices = require('../native/manual-camera-matrices.cjs');
+const foregroundStencilReuse = require('../native/foreground-stencil-reuse.cjs');
+const nvidiaOptimus = require('../native/nvidia-optimus.cjs');
 function fixture(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-native-build-'));t.after(()=>{assert(path.basename(root).startsWith('hkd-native-build-')&&path.dirname(root)===os.tmpdir());fs.rmSync(root,{recursive:true,force:true});});return root;}
 function write(file,bytes='fixture'){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,bytes);return file;}
 function projectFixture(project,includes){
@@ -23,6 +25,10 @@ function fakeTools(root){const vs=path.join(root,'VS'),programFiles=path.join(ro
 test('CLI defaults to stock Release and accepts explicit cleanup and region bounds flags',()=>{assert.deepEqual(api.parseArgs(['--sdk-root','SDK','--output-root','OUT','--vs-root','VS']),{sdkRoot:'SDK',outputRoot:'OUT',vsRoot:'VS'});assert.deepEqual(api.parseArgs(['--spine-inline-color-cleanup']),{spineInlineColorCleanup:true});assert.deepEqual(api.parseArgs(['--unit-region-bounds']),{unitRegionBounds:true});assert.deepEqual(api.parseArgs(['--spine-inline-color-cleanup','--unit-region-bounds']),{spineInlineColorCleanup:true,unitRegionBounds:true});assert.throws(()=>api.parseArgs(['--spine-inline-color-cleanup','false']),/Unknown/);assert.throws(()=>api.parseArgs(['--unit-region-bounds','false']),/Unknown/);assert.throws(()=>api.parseArgs(['--high-resolution-pacing']),/Unknown/);assert.throws(()=>api.parseArgs(['--sdk-root']),/Unknown/);});
 test('region bounds applies exact binding anchors only in the clone and verifies its independent receipt',t=>{
   const root=fixture(t),sdk=path.join(root,'sdk'),clone=path.join(root,'clone'),patch=unitRegionBounds.definition();
+  const binding=patch.changes[0].after;
+  assert.match(binding,/if \(args\.size\(\) == 9 && !args\[8\]\.isBoolean\(\)\) return true;/);
+  assert.match(binding,/const bool includeMeshes = args\.size\(\) == 9 && args\[8\]\.toBoolean\(\);/);
+  assert.match(binding,/if \(!includeMeshes \|\| !hkdIncludeHealthMesh\(/);
   const before=Buffer.from(patch.changes.map(change=>change.before).join('\n')+'\n');
   const after=Buffer.from(patch.changes.map(change=>change.after).join('\n')+'\n');
   const expected={...patch,beforeSha256:sha(before),afterSha256:sha(after)};
@@ -106,11 +112,145 @@ test('manual camera matrix patch is opt-in, preserves stock dispatch and records
 });
 
 const creatorSDK=process.env.HKD_CREATOR_SDK_ROOT||(process.platform==='win32'?'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/cocos2d-x':null);
+test('NVIDIA Optimus preference is an independent, value-free opt-in',()=>{
+  assert.equal(Object.hasOwn(api.parseArgs([]),'preferNvidia'),false);
+  assert.deepEqual(api.parseArgs(['--manual-camera-matrices','--prefer-nvidia']),{manualCameraMatrices:true,preferNvidia:true});
+  assert.throws(()=>api.parseArgs(['--prefer-nvidia','false']),/Unknown/);
+});
+
+test('NVIDIA preference patches only the cloned main.cpp and records its source proof',{
+  skip:!creatorSDK||!fs.existsSync(path.join(creatorSDK,nvidiaOptimus.PATCH.file))
+},t=>{
+  const feature='nvidiaOptimusPreference',patch=nvidiaOptimus.PATCH;
+  const root=fixture(t),sdk=path.join(root,'sdk'),clone=path.join(root,'clone');
+  const input=path.join(creatorSDK,patch.file),before=fs.readFileSync(input);
+  assert.equal(sha(before),patch.beforeSha256);
+  const installed=write(path.join(sdk,patch.file),before),copied=write(path.join(clone,patch.file),before);
+  const originals=[{file:patch.file,sha256:patch.beforeSha256}];
+  assert.deepEqual(api.prepareSourcePatches(clone,false,[patch],feature),[]);
+  assert.deepEqual(fs.readFileSync(copied),before);
+  assert.throws(()=>nvidiaOptimus.patchSource(Buffer.concat([before,Buffer.from(' ')])),/source hash/);
+  const prepared=api.prepareSourcePatches(clone,true,[patch],feature);
+  assert.deepEqual(fs.readFileSync(copied),before);
+  const diff=api.writeSourcePatchArtifacts(root,clone,prepared);
+  assert.equal(path.basename(diff.file),'nvidia-optimus-preference-diff.json');
+  assert.equal(JSON.parse(fs.readFileSync(diff.file)).feature,feature);
+  assert.equal(sha(fs.readFileSync(copied)),patch.afterSha256);
+  assert.match(fs.readFileSync(copied,'utf8'),/extern "C" \{\n__declspec\(dllexport\) DWORD NvOptimusEnablement = 0x00000001;/);
+  assert.deepEqual(fs.readFileSync(installed),before);
+  assert.deepEqual(fs.readFileSync(input),before);
+  assert.deepEqual(api.verifySourceFiles(sdk,clone,originals,prepared),api.implementationDigest([{file:patch.file,sha256:patch.afterSha256}]));
+  api.verifySourcePatchArtifacts(root,prepared,diff);
+});
+
+function optimusImage(){
+  const image=pe(),nt=0x80,optional=nt+24,section=optional+224,data=section+40;
+  image.writeUInt16LE(2,nt+6);
+  image.writeUInt32LE(16,optional+92);
+  image.writeUInt32LE(0x1000,optional+96);
+  image.writeUInt32LE(0x100,optional+100);
+  image.write('.rdata',section);
+  image.writeUInt32LE(0x600,section+8);
+  image.writeUInt32LE(0x600,section+16);
+  image.writeUInt32LE(0x40000040,section+36);
+  image.write('.data',data);
+  image.writeUInt32LE(0x100,data+8);
+  image.writeUInt32LE(0x2000,data+12);
+  image.writeUInt32LE(0x100,data+16);
+  image.writeUInt32LE(0x800,data+20);
+  image.writeUInt32LE(0xc0000040,data+36);
+  image.writeUInt32LE(2,0x214);
+  image.writeUInt32LE(2,0x218);
+  image.writeUInt32LE(0x1040,0x21c);
+  image.writeUInt32LE(0x1050,0x220);
+  image.writeUInt32LE(0x1060,0x224);
+  image.writeUInt32LE(0x2004,0x240);
+  image.writeUInt32LE(0x2000,0x244);
+  image.writeUInt32LE(0x1080,0x250);
+  image.writeUInt32LE(0x10a0,0x254);
+  image.writeUInt16LE(1,0x260);
+  image.writeUInt16LE(0,0x262);
+  image.write('NvOptimusEnablement\0',0x280);
+  image.write('ZAnotherExport\0',0x2a0);
+  image.writeUInt32LE(1,0x800);
+  return image;
+}
+
+test('NVIDIA receipt resolves a real initialized data export and validates its DWORD',()=>{
+  assert.deepEqual(nvidiaOptimus.verifyExport(optimusImage()),{
+    symbol:'NvOptimusEnablement',value:1,rva:0x2000,section:'.data'
+  });
+  for(const [mutate,message] of [
+    [bytes=>bytes.writeUInt32LE(0,0x800),/DWORD value 1/],
+    [bytes=>bytes.writeUInt32LE(0x1080,0x244),/forwarded export/],
+    [bytes=>bytes.writeUInt32LE(0x20fe,0x244),/unmapped/],
+    [bytes=>bytes.writeUInt32LE(0x60000060,0x1c4),/initialized readable data/],
+    [bytes=>bytes.writeUInt16LE(2,0x260),/ordinal/],
+    [bytes=>bytes.writeUInt32LE(0x1080,0x254),/duplicate/],
+    [bytes=>bytes[0x280]=0xce,/missing NvOptimusEnablement/],
+    [bytes=>bytes.writeUInt32LE(0,0xf8),/missing export directory/]
+  ]){
+    const bytes=optimusImage();mutate(bytes);
+    assert.throws(()=>nvidiaOptimus.verifyExport(bytes),message);
+  }
+  assert.throws(()=>nvidiaOptimus.verifyExport(Buffer.alloc(12)),/DOS header/);
+  assert.throws(()=>nvidiaOptimus.verifyExport(optimusImage().subarray(0,0x870)),/section range/);
+});
+
+test('foreground stencil reuse is an independent native Release option', () => {
+  assert.equal(Object.hasOwn(api.parseArgs([]), 'foregroundStencilReuse'), false);
+  assert.deepEqual(api.parseArgs(['--foreground-stencil-reuse', '--unit-region-bounds', '--manual-camera-matrices']), {
+    foregroundStencilReuse: true, unitRegionBounds: true, manualCameraMatrices: true
+  });
+  assert.throws(() => api.parseArgs(['--foreground-stencil-reuse', 'false']), /Unknown/);
+  const others = [
+    ...require('../native/spine-inline-color-cleanup.cjs').PATCHES,
+    unitRegionBounds.definition(),
+    manualCameraMatrices.definition()
+  ];
+  const touched = new Set(others.map(patch => patch.file));
+  assert(foregroundStencilReuse.PATCHES.length);
+  for (const patch of foregroundStencilReuse.PATCHES) {
+    assert(!touched.has(patch.file), patch.file);
+    touched.add(patch.file);
+    assert.notEqual(patch.beforeSha256, patch.afterSha256);
+  }
+});
+
+test('foreground stencil patches and exact receipts cover every modified SDK file', {
+  skip: !creatorSDK || !foregroundStencilReuse.PATCHES.every(patch => fs.existsSync(path.join(creatorSDK, patch.file)))
+}, t => {
+  const root = fixture(t), sdk = path.join(root, 'sdk'), clone = path.join(root, 'clone'), originals = [];
+  for (const patch of foregroundStencilReuse.PATCHES) {
+    const bytes = fs.readFileSync(path.join(creatorSDK, patch.file));
+    assert.equal(sha(bytes), patch.beforeSha256);
+    originals.push({ file: patch.file, sha256: patch.beforeSha256 });
+    write(path.join(sdk, patch.file), bytes);
+    write(path.join(clone, patch.file), bytes);
+  }
+  const feature = 'foregroundStencilReuse';
+  const patches = api.prepareSourcePatches(clone, true, foregroundStencilReuse.PATCHES, feature);
+  for (const patch of patches) assert.equal(sha(fs.readFileSync(path.join(clone, patch.file))), patch.beforeSha256);
+  const diff = api.writeSourcePatchArtifacts(root, clone, patches);
+  assert.equal(path.basename(diff.file), 'foreground-stencil-reuse-diff.json');
+  const receipts = JSON.parse(fs.readFileSync(diff.file)).patches;
+  assert.deepEqual(receipts.map(patch => patch.file), patches.map(patch => patch.file));
+  assert(receipts.every(patch => patch.feature === feature));
+  for (const patch of patches) {
+    assert.equal(sha(fs.readFileSync(path.join(clone, patch.file))), patch.afterSha256);
+    assert.equal(sha(fs.readFileSync(path.join(creatorSDK, patch.file))), patch.beforeSha256);
+    assert.equal(sha(fs.readFileSync(path.join(root, 'source-patch-backups/foreground-stencil-reuse', patch.file))), patch.beforeSha256);
+  }
+  api.verifySourceFiles(sdk, clone, originals, patches);
+  api.verifySourcePatchArtifacts(root, patches, diff);
+});
+
 test('the pristine Creator source accepts the audited region bridge in memory',{skip:!creatorSDK||!fs.existsSync(path.join(creatorSDK,unitRegionBounds.definition().file))},()=>{
   const patch=unitRegionBounds.definition(),file=path.join(creatorSDK,patch.file),before=fs.readFileSync(file);
   const after=unitRegionBounds.patchSource(before,patch);
   assert.equal(sha(after),patch.afterSha256);
   assert.equal(after.toString().split('ns->defineFunction("_hkdRegionBounds", _SE(js_hkdRegionBounds));').length,2);
+  assert.equal(after.toString().split('ns->defineFunction("_hkdSampleOneDepthBounds", _SE(js_hkdSampleOneDepthBounds));').length,2);
   assert.deepEqual(fs.readFileSync(file),before);
   assert(!require('../native/spine-inline-color-cleanup.cjs').PATCHES.some(cleanup=>cleanup.file===patch.file));
 });

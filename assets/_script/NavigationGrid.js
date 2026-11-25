@@ -6,6 +6,11 @@
 var EPS = 1e-7;
 var MAX_CELLS = 65536;
 var NO_CANDIDATES = Object.freeze([]);
+var CONTOUR_BAND_HEIGHT = 128;
+var MIN_INDEXED_CONTOUR_EDGES = 24;
+var DISTANCE_BAND_LIMIT = 2048;
+var MAX_DISTANCE_BANDS = 7;
+var contourBands = new WeakMap();
 var DIRECTIONS = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]];
 var OPPOSITE = [1,0,3,2,7,6,5,4];
 function finite(value) { return typeof value === "number" && isFinite(value); }
@@ -43,7 +48,66 @@ function segmentDistance2(a,b,c,d) {
   if (intersects(a,b,c,d)) return 0;
   return Math.min(pointSegmentDistance2(a,c,d),pointSegmentDistance2(b,c,d),pointSegmentDistance2(c,a,b),pointSegmentDistance2(d,a,b));
 }
+function indexContour(vertices) {
+  if (vertices.length < MIN_INDEXED_CONTOUR_EDGES) return;
+  var bands = new Map(), covered = 0, distanceSafe = true;
+  for (var i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+    var a = vertices[j], b = vertices[i];
+    distanceSafe = distanceSafe && Math.max(Math.abs(a.x), Math.abs(a.y)) <= DISTANCE_BAND_LIMIT;
+    // Match the Y interval used by onSegment, including its epsilon. Edges
+    // outside that interval cannot affect either the boundary or winding test.
+    var first = Math.floor((Math.min(a.y, b.y) - EPS) / CONTOUR_BAND_HEIGHT);
+    var last = Math.floor((Math.max(a.y, b.y) + EPS) / CONTOUR_BAND_HEIGHT);
+    covered += last - first + 1;
+    if (!Number.isSafeInteger(first) || !Number.isSafeInteger(last) ||
+        last === Number.MAX_SAFE_INTEGER || covered > vertices.length * 8) return;
+    for (var band = first; band <= last; band++) {
+      var edges = bands.get(band);
+      if (!edges) bands.set(band, edges = []);
+      edges.push(a, b);
+    }
+  }
+  contourBands.set(vertices, { bands: bands, distanceSafe: distanceSafe });
+}
+function bandedDistance(a, b, radius, threshold, vertices, pointOnly) {
+  var contour = vertices.length >= MIN_INDEXED_CONTOUR_EDGES && contourBands.get(vertices);
+  if (!contour || !contour.distanceSafe || radius < 0 ||
+      !(Math.max(radius, Math.abs(a.x), Math.abs(a.y), Math.abs(b.x), Math.abs(b.y)) <= DISTANCE_BAND_LIMIT)) return null;
+
+  // Within these coordinate limits the cross-product roundoff is below EPS,
+  // so a strict-sign intersection must overlap the segment's Y range.
+  // Padding also covers endpoint checks and rounded point projection.
+  var padding = radius + 2 * EPS;
+  var first = Math.floor((Math.min(a.y, b.y) - padding) / CONTOUR_BAND_HEIGHT);
+  var last = Math.floor((Math.max(a.y, b.y) + padding) / CONTOUR_BAND_HEIGHT);
+  if (last - first >= MAX_DISTANCE_BANDS) return null;
+  for (var band = first; band <= last; band++) {
+    var edges = contour.bands.get(band);
+    if (!edges) continue;
+    for (var i = 0; i < edges.length; i += 2) {
+      var distance = pointOnly ? pointSegmentDistance2(a, edges[i], edges[i + 1]) : segmentDistance2(a, b, edges[i], edges[i + 1]);
+      if (distance <= threshold) return true;
+    }
+  }
+  return false;
+}
+function insideIndexed(p, edges) {
+  var result = false;
+  for (var i = 0; i < edges.length; i += 2) {
+    var a = edges[i], b = edges[i + 1];
+    if (onSegment(p, a, b)) return true;
+    if ((a.y > p.y) !== (b.y > p.y) && p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x) {
+      result = !result;
+    }
+  }
+  return result;
+}
 function inside(p,vertices) {
+  var contour = vertices.length >= MIN_INDEXED_CONTOUR_EDGES && contourBands.get(vertices);
+  if (contour) {
+    var edges = contour.bands.get(Math.floor(p.y / CONTOUR_BAND_HEIGHT));
+    return !!edges && insideIndexed(p, edges);
+  }
   var result=false;
   for(var i=0,j=vertices.length-1;i<vertices.length;j=i++) {
     var a=vertices[j],b=vertices[i];
@@ -91,6 +155,7 @@ function NavigationGrid(polygons,bounds,cellSize,passages) {
     if(!Array.isArray(vertices)||vertices.length<3)throw new TypeError("Navigation polygons need at least three vertices.");
     var copy=vertices.map(point),box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity};
     copy.forEach(function(p){box.minX=Math.min(box.minX,p.x);box.maxX=Math.max(box.maxX,p.x);box.minY=Math.min(box.minY,p.y);box.maxY=Math.max(box.maxY,p.y);});
+    indexContour(copy);
     var id=self.polygons.length;self.polygons.push({vertices:copy,box:box});
     // Relative bucket coordinates stay bounded by the map extent, even when
     // the whole map is translated beyond precise integer world coordinates.
@@ -153,6 +218,8 @@ NavigationGrid.prototype.isWalkable=function(value,radius) {
   for(var j=0;j<candidates.length;j++) {
     var vertices=this.polygons[candidates[j]].vertices;
     if(inside(p,vertices))return false;
+    var hit=bandedDistance(p,p,r,threshold,vertices,true);
+    if(hit!==null){if(hit)return false;continue;}
     for(var i=0;i<vertices.length;i++)if(pointSegmentDistance2(p,vertices[i],vertices[(i+1)%vertices.length])<=threshold)return false;
   }
   return true;
@@ -160,6 +227,8 @@ NavigationGrid.prototype.isWalkable=function(value,radius) {
 NavigationGrid.prototype._hitsPolygon=function(a,b,r,vertices) {
   if(inside(a,vertices)||inside(b,vertices))return true;
   var threshold=(r+EPS)*(r+EPS);
+  var hit=bandedDistance(a,b,r,threshold,vertices,false);
+  if(hit!==null)return hit;
   for(var i=0;i<vertices.length;i++)if(segmentDistance2(a,b,vertices[i],vertices[(i+1)%vertices.length])<=threshold)return true;
   return false;
 };

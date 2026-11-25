@@ -61,11 +61,45 @@ function colliderPoints(collider, authoredPoints) {
   } else return [];
   return points.map(function (p) { return { x: p.x + offset.x, y: p.y + offset.y }; });
 }
+function stockColliderQuery() {
+  if (typeof cc === "undefined" || !cc.sys || !cc.sys.isNative || cc.ENGINE_VERSION !== "2.4.13" ||
+      !cc.Node || !cc._BaseNode || typeof Symbol === "undefined" || !Symbol.hasInstance) return null;
+  var query = cc._BaseNode.prototype.getComponentsInChildren;
+  if (typeof query !== "function" || cc.Node.prototype.getComponentsInChildren !== query) return null;
+  var source = Function.prototype.toString.call(query).replace(/\s+/g, "");
+  var body = "getComponentsInChildren(typeOrClassName){varconstructor=getConstructor(typeOrClassName),components=[];if(constructor){findComponents(this,constructor,components);findChildComponents(this._children,constructor,components);}returncomponents;}";
+  if (source !== body && source !== "function" + body) return null;
+  return query;
+}
+var nativeColliderQuery = stockColliderQuery();
+var standardInstanceOf = typeof Symbol !== "undefined" && Function.prototype[Symbol.hasInstance];
+function collectPhysicsShapes(node, base, polygon, box, circle, result) {
+  var components = node._components, children = node._children;
+  for (var i = 0; i < components.length; i++) {
+    var component = components[i];
+    if (component instanceof base &&
+        (component instanceof polygon || component instanceof box || component instanceof circle)) result.push(component);
+  }
+  for (var i = 0; i < children.length; i++) collectPhysicsShapes(children[i], base, polygon, box, circle, result);
+}
 function colliders(node) {
-  if (cc.PhysicsCollider) {
+  var base = cc.PhysicsCollider;
+  if (base) {
+    if (nativeColliderQuery && node instanceof cc.Node && node.getComponentsInChildren === nativeColliderQuery) {
+      var polygon = cc.PhysicsPolygonCollider, box = cc.PhysicsBoxCollider, circle = cc.PhysicsCircleCollider;
+      if (!base._sealed && polygon && box && circle && standardInstanceOf &&
+          base[Symbol.hasInstance] === standardInstanceOf && polygon[Symbol.hasInstance] === standardInstanceOf &&
+          box[Symbol.hasInstance] === standardInstanceOf && circle[Symbol.hasInstance] === standardInstanceOf) {
+        // The stock query walks the live backing arrays in pre-order. Filter
+        // in that walk without building its intermediate PhysicsCollider list.
+        var shapes = [];
+        collectPhysicsShapes(node, base, polygon, box, circle, shapes);
+        return shapes;
+      }
+    }
     // One subtree traversal collects all body types. Keep trigger/search
     // CircleColliders out even in adapters that share their collider base.
-    return node.getComponentsInChildren(cc.PhysicsCollider).filter(function (collider) {
+    return node.getComponentsInChildren(base).filter(function (collider) {
       return cc.PhysicsPolygonCollider && collider instanceof cc.PhysicsPolygonCollider || cc.PhysicsBoxCollider && collider instanceof cc.PhysicsBoxCollider || cc.PhysicsCircleCollider && collider instanceof cc.PhysicsCircleCollider;
     });
   }
@@ -602,6 +636,11 @@ exports.recoverStranded = function (unit, game, dt) {
   // from a live combat target to a different authored route segment.
   if(!(target&&target.tag)&&route&&route.pathList)route.pathList.slice(route.nodeIndex,route.nodeIndex+8).forEach(function(node){if(node&&cc.isValid(node,true))anchor(point(node,game.ndMain));});
   var buildings=recoveryBuildings(navigation,grid);
+  // Every candidate needs a clear segment to a continuation point.
+  if (!anchors.length) {
+    record.elapsed = 3;
+    return false;
+  }
   var actors=game.gameData.getEnemyList().concat(game.gameData.getSoldierList(),[game.ctrPlay]),occupied=[];
   actors.forEach(function(other){if(other!==unit&&other&&other.node&&other.node.activeInHierarchy!==false&&!other._isPooled&&(!other.isDead||!other.isDead()))occupied.push({point:point(other.node,game.ndMain),radius:navigation.radius(other)});});
   function safe(p) {
@@ -610,7 +649,8 @@ exports.recoverStranded = function (unit, game, dt) {
       anchors.some(function(a){return distance(p,a)>1&&grid.segmentClear(p,a,radius);})&&
       occupied.every(function(other){return distance(p,other.point)>radius+other.radius+2;});
   }
-  var step=Math.max(24,radius*2+4),target=anchors[0],angle=target?Math.atan2(target.y-start.y,target.x-start.x):0,candidate=null;
+  var step = Math.max(24, radius * 2 + 4), firstAnchor = anchors[0];
+  var angle = Math.atan2(firstAnchor.y - start.y, firstAnchor.x - start.x), candidate = null;
   for(var ring=1;ring<=8&&!candidate;ring++)for(var turn=0;turn<16;turn++) {
     var direction=angle+turn*Math.PI/8,p={x:start.x+Math.cos(direction)*step*ring,y:start.y+Math.sin(direction)*step*ring};
     if(safe(p)){candidate=p;break;}

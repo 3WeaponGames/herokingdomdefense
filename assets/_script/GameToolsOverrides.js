@@ -90,20 +90,23 @@ function trackValue(track, key) {
   var getter = "get" + key.charAt(0).toUpperCase() + key.slice(1);
   return track && (typeof track[getter] === "function" ? track[getter]() : track[key]);
 }
+function trackTime(track) {
+  return track && (typeof track.getTrackTime === "function" ? track.getTrackTime() : track.trackTime);
+}
 function animationInfo(track) {
   var animation = trackValue(track, "animation"), next = trackValue(track, "next");
   var name = animation && (animation.name || animation.getName && animation.getName());
   var duration = trackValue(track, "animationEnd");
   if (typeof duration !== "number") duration = animation && (animation.duration || animation.getDuration && animation.getDuration());
-  var delay = trackValue(next, "delay"), time = trackValue(track, "trackTime");
+  var delay = trackValue(next, "delay"), time = trackTime(track);
   return {name:name,end:typeof delay==="number"&&delay>=0?delay:duration,time:typeof time==="number"?time:0};
 }
 // This view is used only while polling an already captured delayed hit.
 // Capture still uses animationInfo() for its full authored queue boundary.
 function animationPosition(track) {
-  var animation = trackValue(track, "animation");
+  var animation = track && (typeof track.getAnimation === "function" ? track.getAnimation() : track.animation);
   var name = animation && (animation.name || animation.getName && animation.getName());
-  var time = trackValue(track, "trackTime");
+  var time = trackTime(track);
   return {name:name,time:typeof time==="number"?time:0};
 }
 var nativeComponent = typeof sp !== "undefined" && sp.Skeleton && sp.Skeleton.prototype;
@@ -208,12 +211,13 @@ function tickAttacks(dt, queue) {
     }
     var playback = attackPlayback(owner, entry.type, relative);
     if (!(playback > 0)) continue;
-    entry.animationTime += effectDelta * playback;
+    var advance = effectDelta * playback;
+    entry.animationTime += advance;
     if (entry.animation && skeleton && skeleton.getCurrent) {
       var name, time;
       if (sample && sample.track) {
         name = sample.name;
-        time = trackValue(sample.track, "trackTime");
+        time = trackTime(sample.track);
         sample.track = null;
         if (typeof time !== "number") time = 0;
       } else {
@@ -222,14 +226,14 @@ function tickAttacks(dt, queue) {
       }
       if (name === entry.animation) entry.animationTime = Math.max(entry.animationTime, time);
       else {
-        var observed = entry.browserTrack && trackValue(entry.browserTrack, "trackTime");
+        var observed = entry.browserTrack && trackTime(entry.browserTrack);
         time = Math.max(entry.animationTime, typeof observed === "number" ? observed : 0);
         // Named fighting-style attacks are still attacks. Only replacing that
         // queued clip before its natural queue point cancels the pending hit.
         if (typeof entry.animationEnd === "number" && time + 1e-7 < entry.animationEnd) { cancel(owner, queue); continue; }
       }
     }
-    entry.remaining -= effectDelta * playback;
+    entry.remaining -= advance;
     if (entry.remaining <= 1e-9) {
       queue.delete(owner);
       entry.callback.call(owner);

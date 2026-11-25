@@ -47,7 +47,12 @@ function compound(item,main){
 }
 function availableMask(main){
   var pending=[main];
-  while(pending.length){var node=pending.pop();if(node._cullingMask&MASK)return false;for(var i=0;i<node.children.length;i++)pending.push(node.children[i]);}
+  while(pending.length){
+    var node=pending.pop();
+    if(node._cullingMask&MASK)return false;
+    var children=node.children;
+    for(var i=0;i<children.length;i++)pending.push(children[i]);
+  }
   return true;
 }
 function nativeRenderer(scope,source){try{return !!scope.resolve(source);}catch(error){return false;}}
@@ -270,7 +275,11 @@ Atlas.prototype.capture=function(items,draw,fixedDetail){
       layout.tiles.forEach(function(tile){
         var p=tile.plan,record=p.record,key=tile.key;
         if(record._nativeActorAtlasPage!==page||record._nativeActorAtlasRect!==key||!record.frame||record.frame.getTexture()!==page.texture){
-          self.forget(record);self.releaseRecord(record);
+          self.forget(record);
+          var parked = fixedDetail === 1 && self === view._nativeActorAtlas &&
+            typeof view.parkStandaloneTarget === "function" && view.parkStandaloneTarget(record, self);
+          if (parked === null || self.epoch !== epoch || view._destroyed || !page.texture) return;
+          if (!parked) self.releaseRecord(record);
           // Creator otherwise takes originalSize from the entire atlas. Masks
           // use untrimmed Sprite geometry, so that default shrinks their quad.
           record.frame=new cc.SpriteFrame(page.texture,cc.rect(tile.x,tile.y,p.tw,p.th),false,cc.v2(0,0),{width:p.tw,height:p.th});

@@ -84,17 +84,16 @@ var def_KinghtFallSoldierBase = function (t) {
     this.rigidBody = this.node.getComponent(cc.RigidBody);
     Navigation.enableTerrainContacts(this);
     this.spAni.setCompleteListener(function (e) {
-      switch (e.animation.name) {
-        case $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack:
-          if (!t.isDead() && !t._isPooled) t.doAttackFinish();
-      }
+      var animation = e && (e.animation || (typeof e.getAnimation === "function" && e.getAnimation()));
+      var name = animation && (animation.name || (typeof animation.getName === "function" && animation.getName()));
+      if (name === $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack && !t._isPooled && !t.isDead()) t.doAttackFinish();
     });
   };
   _ctor.prototype.start = function () {
     this.setBody(this.spAni.node);
   };
   _ctor.prototype.onPreSolve = function (contact, self, other) {
-    Navigation.allowBlockedExit(this, contact, other);
+    if (this._terrainExit) Navigation.allowBlockedExit(this, contact, other);
   };
   _ctor.prototype.setParent = function (t) {
     this.outBuild = t;

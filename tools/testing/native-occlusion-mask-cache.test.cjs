@@ -14,7 +14,7 @@ function fixture(options = {}) {
     constructor() {
       this.node = { _occlusionMask: true };
       this.inverted = false; this.type = 2;
-      this.geometry = this.materials = this.dirty = 0;
+      this.geometry = this.materialUpdates = this.dirty = 0;
       this._graphics = {};
     }
   }
@@ -23,7 +23,7 @@ function fixture(options = {}) {
     setUseModel(value) { calls.push(['model', value]); this.model = !!value; },
     setImageStencil(value) { calls.push(['image', value]); this.image = !!value; },
     updateRenderData(mask) {
-      mask.geometry++; mask.materials++;
+      mask.geometry++; mask.materialUpdates++;
       this.setMaskInverted(mask.inverted);
       this.setUseModel(mask.type !== 2);
       this.setImageStencil(mask.type === 2);
@@ -53,7 +53,7 @@ test('generated native masks skip duplicate booleans while all camera geometry, 
     mask.spriteFrame = { camera }; mask.width = 80 + camera; mask.alphaThreshold = camera / 100;
     f.api.sync(mask); f.update(mask);
   }
-  assert.equal(mask.geometry, 100); assert.equal(mask.materials, 100); assert.equal(mask.dirty, 100);
+  assert.equal(mask.geometry, 100); assert.equal(mask.materialUpdates, 100); assert.equal(mask.dirty, 100);
   assert.equal(f.calls.length, 4);
   assert.equal(mask._assembler.inverted, false); assert.equal(mask._assembler.image, true);
   assert.equal(mask._assembler.model, false); assert.equal(mask._graphics._assembler.model, false);
@@ -179,4 +179,192 @@ test('a runtime compatibility change releases cached wrappers and empty input re
   f.api.sync(f.value); f.cc.sys.isNative = false; f.api.sync(f.value);
   assert.equal(Object.hasOwn(a, 'setUseModel'), false);
   for (const value of [null, undefined, {}, false]) assert.doesNotThrow(() => { f.api.sync(value); f.api.dispose(value); });
+});
+
+function captureFixture(grouped = false) {
+  const f = fixture();
+  const main = {}, branch = { _parent: main }, leaf = { _parent: branch };
+  const privateCamera = { _camera: {}, targetTexture: {} };
+  const view = { main, camera: privateCamera };
+  let current = [], waiting = [], rendering = false;
+  const FLAG_UPDATE_RENDER_DATA = 4;
+  const Mask = f.cc.Mask;
+  f.cc.RenderTexture = class RenderTexture { constructor() { this.packable = false; } };
+  Mask.Type = { IMAGE_STENCIL: 2 };
+  const RenderFlow = f.cc.RenderFlow = {
+    FLAG_UPDATE_RENDER_DATA,
+    validateRenderers() {},
+    _nativeFlow: { render() {} },
+    register(node) {
+      if (node._inJsbDirtyList) return;
+      node._inJsbDirtyList = true;
+      (rendering ? waiting : current).push(node);
+    },
+    render: function (scene, dt, camera) {
+      rendering = true;
+      RenderFlow.validateRenderers();
+      try {
+        for (const node of current) {
+          node._inJsbDirtyList = false;
+          const assembler = node._renderComponent._assembler;
+          if (node.flags & FLAG_UPDATE_RENDER_DATA) {
+            node.flags &= ~FLAG_UPDATE_RENDER_DATA;
+            assembler._updateRenderData();
+          }
+        }
+        current = [];
+        this._nativeFlow.render(scene._proxy, dt, camera);
+      } finally {
+        current = waiting;
+        waiting = [];
+        rendering = false;
+      }
+    }
+  };
+  f.cc.Assembler = function Assembler() {};
+  f.cc.Assembler.prototype = f.prototype;
+  f.prototype._updateRenderData = function () {
+    const mask = this._renderComp;
+    this.updateRenderData(mask);
+    mask._vertsDirty = false;
+    mask._materials[0].effect._dirty = false;
+    mask.node._renderFlag |= FLAG_UPDATE_RENDER_DATA;
+  };
+  const mask = f.value, node = mask.node;
+  Object.assign(mask, { _type: 2, isValid: true, alphaThreshold: .1, _spriteFrame: { _texture: new f.cc.RenderTexture() } });
+  mask._materials = [{ effect: { _dirty: false } }];
+  mask._assembler._effect = [mask._materials[0].effect];
+  mask._clearMaterial = { effect: {} };
+  mask._clearGraphics = { _assembler: { _effect: [mask._clearMaterial.effect] } };
+  Object.assign(node, { name: 'ForegroundOcclusion', _parent: main, _renderComponent: mask, flags: 0 });
+  Object.defineProperty(node, '_renderFlag', {
+    get() { return this.flags; },
+    set(flags) {
+      this.flags = flags;
+      if (flags & FLAG_UPDATE_RENDER_DATA) RenderFlow.register(this);
+    }
+  });
+  if (grouped) {
+    RenderFlow._hkdMaskQueue = { scope: null, invalidations: [], invalidate(node) { this.invalidations.push(node); } };
+    delete mask.inverted;
+    Object.setPrototypeOf(node, { _onSetParent() {} });
+    Object.defineProperties(Mask.prototype, {
+      inverted: { get() { return !!this._inverted; }, set(value) { this._inverted = value; } },
+      materials: { get() { return this._materials; }, set(value) { this._materials = value; } }
+    });
+    Mask.prototype._updateMaterial = function () {};
+    Mask.prototype._resetAssembler = function () {};
+    Mask.prototype.getMaterial = function (index) { return this._materials[index]; };
+    Mask.prototype.getMaterials = function () { return this._materials; };
+  }
+  f.api.sync(mask);
+  node._renderFlag = FLAG_UPDATE_RENDER_DATA;
+  return { f, mask, node, view, leaf, RenderFlow, privateCamera,
+    capture(root = leaf, camera = privateCamera._camera) { RenderFlow.render(root, 0, camera); } };
+}
+
+test('disjoint private capture retains the queued mask until a root that can draw it', () => {
+  const g = captureFixture(), { f, mask, node, view, RenderFlow } = g;
+  const original = RenderFlow.render;
+  const finish = f.api.beginCaptureUpdates(view);
+  assert.equal(typeof finish, 'function');
+  g.capture(); g.capture();
+  assert.equal(mask.geometry, 0);
+  assert.equal(node._inJsbDirtyList, true);
+  g.capture(node);
+  assert.equal(mask.geometry, 1);
+  g.capture(); g.capture(view.main);
+  assert.equal(mask.geometry, 2);
+  g.capture(g.leaf, {});
+  assert.equal(mask.geometry, 3);
+  finish();
+  assert.equal(RenderFlow.render, original);
+  g.capture();
+  assert.equal(mask.geometry, 4);
+});
+
+test('dirty vertices, mask changes, and a moved mask still get their normal preparation', () => {
+  const g = captureFixture(), { f, mask, node, view } = g;
+  const finish = f.api.beginCaptureUpdates(view);
+  g.capture();
+  mask.inverted = true;
+  g.capture();
+  assert.equal(mask._assembler.inverted, true);
+  mask.inverted = false;
+  mask._vertsDirty = true;
+  g.capture();
+  assert.equal(mask.geometry, 2);
+  assert.equal(mask._assembler.inverted, false);
+  mask._materials[0].effect._dirty = true;
+  g.capture();
+  assert.equal(mask.geometry, 3);
+  node._parent = g.leaf;
+  g.capture();
+  assert.equal(mask.geometry, 4);
+  finish();
+  f.api.dispose(mask);
+  assert.equal(Object.hasOwn(mask._assembler, '_updateRenderData'), false);
+});
+
+test('capture errors restore dispatch, and unrecognized render hooks keep stock registration', () => {
+  const g = captureFixture(), { f, mask, view, RenderFlow } = g;
+  const original = RenderFlow.render;
+  const native = RenderFlow._nativeFlow.render;
+  const finish = f.api.beginCaptureUpdates(view);
+  try {
+    RenderFlow._nativeFlow.render = () => { throw new Error('capture failed'); };
+    assert.throws(() => g.capture(), /capture failed/);
+  } finally {
+    finish();
+    RenderFlow._nativeFlow.render = native;
+  }
+  assert.equal(RenderFlow.render, original);
+  RenderFlow.render = function (...args) { return original.apply(this, args); };
+  assert.equal(f.api.beginCaptureUpdates(view), null);
+  g.capture();
+  assert.equal(mask.geometry, 1);
+});
+
+test('the verified adapter receives only disjoint capture scopes and a mask-specific eligibility check', () => {
+  const g = captureFixture(true), { f, mask, leaf, view, RenderFlow } = g;
+  const queue = RenderFlow._hkdMaskQueue, canCarry = mask._assembler._updateRenderData._hkdCarryDirtyMask;
+  assert.equal(typeof canCarry, 'function');
+  const received = [];
+  RenderFlow._nativeFlow.render = () => received.push([queue.scope && queue.scope.branch, canCarry()]);
+  const finish = f.api.beginCaptureUpdates(view);
+  g.capture();
+  g.capture(view.main);
+  g.capture(leaf, {});
+  assert.deepEqual(received, [[leaf._parent, true], [null, false], [null, false]]);
+  assert.equal(queue.scope, null);
+  RenderFlow._nativeFlow.render = () => { throw Error('render failed'); };
+  assert.throws(() => g.capture(), /render failed/);
+  assert.equal(queue.scope, null);
+  finish();
+});
+
+test('mask mutations invalidate clean groups and exposed material uses individual dispatch', () => {
+  const g = captureFixture(true), { f, mask, node, view, RenderFlow } = g;
+  const queue = RenderFlow._hkdMaskQueue, canCarry = mask._assembler._updateRenderData._hkdCarryDirtyMask;
+  const checks = [];
+  RenderFlow._nativeFlow.render = () => checks.push(canCarry());
+  const finish = f.api.beginCaptureUpdates(view);
+  g.capture();
+  mask.inverted = true;
+  mask._updateMaterial();
+  mask._resetAssembler();
+  mask.inverted = false;
+  node._onSetParent(view.main);
+  g.capture();
+  assert.deepEqual(queue.invalidations, [node, node, node, node, node]);
+  assert.equal(mask.getMaterial(0), mask._materials[0]);
+  g.capture();
+  assert.deepEqual(checks, [true, true, false]);
+  finish();
+  f.api.dispose(mask);
+  assert.deepEqual(queue.invalidations, [node, node, node, node, node, node, node]);
+  assert.equal(Object.hasOwn(mask, 'inverted'), false);
+  assert.equal(Object.hasOwn(mask, 'materials'), false);
+  assert.equal(Object.hasOwn(mask, 'getMaterial'), false);
+  assert.equal(Object.hasOwn(node, '_onSetParent'), false);
 });

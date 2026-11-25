@@ -7,8 +7,8 @@ const crypto = require('node:crypto');
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const file = 'cocos/scripting/js-bindings/manual/jsb_spine_manual.cpp';
 const originalHash = '6861a6a6edd8f8e01bd8da90ead8ad7193a4421d64a76417a2b988bd70da89cd';
-const resultHash = '319ec88f8d5c23cde2c4dea24e5fc46821b7795ed0a5b5c5bc29c068294f92b8';
-const bindingHash = 'c272d6c67fc89ce4c2d9076a07987127fba3e26a835b86ee6c042e59d98dd406';
+const resultHash = 'e61efcbea60d0fc353e3a4527690e052cd8094b33c2ffc0723c4c8111bff766a';
+const bindingHash = '8f0d9ebc6dcd7fc92df7385b43044a32fa7dcbaaff0428ca9a285e97111946a0';
 
 function definition() {
   const binding = fs.readFileSync(path.join(__dirname, 'unit-region-bounds.inc'), 'utf8').replace(/\r\n/g, '\n');
@@ -21,7 +21,7 @@ function definition() {
     afterSha256: resultHash,
     changes: [
       { before: functionStart, after: '#include <cmath>\n#include <cstring>\n#include "spine-creator-support/SkeletonAnimation.h"\n' + binding + '\n' + functionStart },
-      { before: registration, after: registration + '\n    ns->defineFunction("_hkdRegionBounds", _SE(js_hkdRegionBounds));' }
+      { before: registration, after: registration + '\n    ns->defineFunction("_hkdRegionBounds", _SE(js_hkdRegionBounds));\n    ns->defineFunction("_hkdSampleOneDepthBounds", _SE(js_hkdSampleOneDepthBounds));' }
     ]
   };
 }

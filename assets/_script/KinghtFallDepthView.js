@@ -6,6 +6,7 @@ var ALLY = { r: 140, g: 215, b: 255 }, ENEMY = { r: 255, g: 115, b: 115 };
 var BONE_FIELDS = ["a", "b", "c", "d", "worldX", "worldY", "x", "y", "rotation", "scaleX", "scaleY", "shearX", "shearY", "active"];
 var vertexFrame = 0;
 var nativeCacheMode = typeof sp !== "undefined" && sp.Skeleton && sp.Skeleton.prototype && sp.Skeleton.prototype.isAnimationCached;
+var nativeCaptureComponentQuery = typeof cc !== "undefined" && cc.Node && cc.Node.prototype && cc.Node.prototype.getComponents;
 
 // Native camera.render() updates and skins EVERY scheduled Spine before it
 // visits the selected subtree. Battle draws can settle poses through middleware
@@ -141,14 +142,63 @@ NativeCaptureScope.prototype.prepare=function() {
   if(!this.enabled||this.finished)return false;
   try{this.first=true;this.start();return true;}catch(error){this.disable();return false;}
 };
-NativeCaptureScope.prototype.start=function() {
-  this.quiet=true;
-  var scene=cc.director.getScene(),renderers=activeNativeRenderers(scene);
+function stockCaptureRenderers(scene) {
+  var renderers=activeNativeRenderers(scene);
   // Older/limited hosts retain the original collection API. No native state
   // has been changed while probing the public active-tree traversal.
-  if(!renderers)renderers=scene&&scene.getComponentsInChildren?scene.getComponentsInChildren(sp.Skeleton):[];
+  return renderers||(scene&&scene.getComponentsInChildren?scene.getComponentsInChildren(sp.Skeleton):[]);
+}
+NativeCaptureScope.prototype.captureEntries=function(renderers) {
+  var entries=[];
   for(var i=0;i<renderers.length;i++) {
-    var entry=this.resolve(renderers[i]);if(!entry)continue;
+    var entry=this.resolve(renderers[i]);
+    if(entry)entries.push(entry);
+  }
+  return entries;
+};
+NativeCaptureScope.prototype.captureInventoryEntries=function(scene) {
+  var view=this.view,sys=cc.sys,Node=cc.Node,Type=sp.Skeleton,game=view.game;
+  var binding=typeof spine!=="undefined"&&spine._hkdCaptureRealtimeInventory;
+  if(!scene||!game||!sys||!sys.isNative||!sys.OS_WINDOWS||sys.os!==sys.OS_WINDOWS||cc.ENGINE_VERSION!=="2.4.13"||
+    typeof binding!=="function"||!Node||!Node.prototype||typeof nativeCaptureComponentQuery!=="function"||
+    Node.prototype.getComponents!==nativeCaptureComponentQuery||!Type||!Type.prototype||
+    typeof nativeCacheMode!=="function"||Type.prototype.isAnimationCached!==nativeCacheMode) {
+    view._nativeCaptureInventory=null;
+    return null;
+  }
+  var state=view._nativeCaptureInventory;
+  if(!state||state.scene!==scene||state.data!==game.gameData||state.epoch!==game._combatEpoch||
+    state.binding!==binding||state.Node!==Node||state.Type!==Type) {
+    state=view._nativeCaptureInventory={scene:scene,data:game.gameData,epoch:game._combatEpoch,
+      binding:binding,Node:Node,Type:Type,ranks:new WeakMap(),verified:false,rejected:false};
+  }
+  if(state.rejected)return null;
+  var renderers;
+  try {
+    renderers=require("NativeCaptureInventory").collect(scene,binding.call(spine),Node,Type,state.ranks,nativeCacheMode);
+  } catch(error) {
+    renderers=null;
+  }
+  if(!renderers) {
+    state.verified=false;
+    return null;
+  }
+  var candidate=this.captureEntries(renderers);
+  if(state.verified)return candidate;
+  // Certify the order and full set of writable renderers before using a new
+  // inventory in this battle. This comparison itself never mutes a rig.
+  var stock=this.captureEntries(stockCaptureRenderers(scene));
+  state.verified=stock.length===candidate.length&&stock.every(function(entry,i){return entry===candidate[i];});
+  state.rejected=!state.verified;
+  return stock;
+};
+NativeCaptureScope.prototype.start=function() {
+  this.quiet=true;
+  var scene=cc.director.getScene(),entries=this.captureInventoryEntries(scene);
+  var renderers=entries||stockCaptureRenderers(scene);
+  for(var i=0;i<renderers.length;i++) {
+    var entry=entries?entries[i]:this.resolve(renderers[i]);
+    if(!entry)continue;
     this.entries.push(entry);this.byRenderer.set(entry.renderer,entry);this.mute(entry,true);
   }
 };
@@ -561,6 +611,7 @@ var nativeRegionSlot = nativeRegionBounds && spine.Slot && spine.Slot.prototype;
 var nativeRegionReaders = nativeRegionSlot && ["getAttachment", "getData", "getBone", "getColor"].map(function (key) {
   return { key: key, read: nativeRegionSlot[key] };
 });
+var nativeMeshDeformReader = nativeRegionSlot && nativeRegionSlot.getDeform;
 var unitGeometryModule = null;
 var unitNativeColorTypes = [];
 if (typeof spine !== "undefined" && typeof spine.Color === "function") {
@@ -697,21 +748,23 @@ function unitAttachmentVertices(renderer, slot, attachment, output, plan, slotBo
   }
   return output;
 }
-function regionBoundsForHealth(renderer, skeleton, pose, records) {
+function regionBoundsForHealth(renderer, skeleton, pose, records, weightedMount) {
   if (!nativeRegionReaders || spine._hkdRegionBounds !== nativeRegionBounds || !spine.Slot || spine.Slot.prototype !== nativeRegionSlot) return null;
   for (var i = 0; i < records.length; i++) {
     var slot = records[i].slot;
     if (Object.getPrototypeOf(slot) !== nativeRegionSlot) return null;
+    if (weightedMount && slot.getDeform !== nativeMeshDeformReader) return null;
     for (var j = 0; j < nativeRegionReaders.length; j++) {
       var reader = nativeRegionReaders[j];
       if (slot[reader.key] !== reader.read) return null;
     }
   }
-  // The opt-in 2.4.13 preview computes region vertices from the live rig.
-  // Meshes and unsupported renderers stay on the public geometry path.
+  // The authored mount also passes its live weighted vertices and deforms
+  // through the opt-in preview binding. Older builds decline the extra flag.
+  if (weightedMount) return nativeRegionBounds(renderer._nativeSkeleton, skeleton, pose.x, pose.y, pose.a, pose.b, pose.c, pose.d, true);
   return nativeRegionBounds(renderer._nativeSkeleton, skeleton, pose.x, pose.y, pose.a, pose.b, pose.c, pose.d);
 }
-function unitBounds(renderer, main, coordinates, nativeHealth) {
+function unitBounds(renderer, main, coordinates, nativeHealth, weightedMount) {
   if (!renderer || !renderer.node.activeInHierarchy || renderer.enabled === false) return null;
   var skeleton = renderer._skeleton;
   if (!skeleton) return bounds(renderer, main);
@@ -722,8 +775,9 @@ function unitBounds(renderer, main, coordinates, nativeHealth) {
   // transforms, including edits made twice within the same rendered frame.
   var pose = nodeTransform(renderer.node, main, coordinates || plan), box = null, points = plan.points;
   var geometryScope = unitGeometryScope(renderer, plan, records);
-  if (nativeHealth && geometryScope && nativeRegionReaders) {
-    var liveBounds = regionBoundsForHealth(renderer, skeleton, pose, records);
+  if (nativeHealth && geometryScope && nativeRegionReaders &&
+      (!weightedMount || nativeMeshDeformReader && plan.json && plan.json._heroMakerMount)) {
+    var liveBounds = regionBoundsForHealth(renderer, skeleton, pose, records, weightedMount);
     if (liveBounds) return liveBounds;
   }
   for (var index = 0; index < order.length; index++) {
@@ -765,28 +819,49 @@ function spriteBoundsState(node, main, cache) {
   } catch (ignored) { return null; }
 }
 
+var sampleNativeDepthBounds = typeof spine !== "undefined" && typeof spine._hkdSampleOneDepthBounds === "function" && spine._hkdSampleOneDepthBounds;
+var stockDepthBounds = sampleNativeDepthBounds && spine.SkeletonAnimation && spine.SkeletonAnimation.prototype.getBoundingBox;
+var stockDepthPose = sampleNativeDepthBounds && spine.Skeleton && spine.Skeleton.prototype.updateWorldTransform;
+var nativeDepthResult = stockDepthBounds && stockDepthPose && new Float32Array(4);
+function readNativeDepthBounds(renderer, native, cache) {
+  var skeleton = renderer._skeleton;
+  if (renderer.constructor !== sp.Skeleton || spine._hkdSampleOneDepthBounds !== sampleNativeDepthBounds ||
+      native.getBoundingBox !== stockDepthBounds ||
+      skeleton.updateWorldTransform !== stockDepthPose) return false;
+  var update = !cache || !cache.poses.has(renderer);
+  if (!sampleNativeDepthBounds(native, skeleton, update, nativeDepthResult)) return false;
+  if (cache && update) cache.poses.add(renderer);
+  return true;
+}
+
 function bounds(renderer, main, cache, staticSpriteBounds) {
   if(cache&&cache.bounds.has(renderer))return cache.bounds.get(renderer);
   var node = renderer.node, x, y, w, h;
   if (!node.activeInHierarchy || !renderer.enabled) return null;
   if (renderer instanceof sp.Skeleton && renderer._skeleton) {
     // Spine node sizes are authored setup bounds, not the current animated pose.
-    updatePose(renderer,cache);
-    if (renderer._nativeSkeleton) {
-      // JSB exposes animated skeleton-local bounds on the native renderer.
-      var nativeBounds = nativePhysicalBounds(renderer);
-      x = nativeBounds.x; y = nativeBounds.y; w = nativeBounds.width; h = nativeBounds.height;
+    if (nativeDepthResult && renderer._nativeSkeleton &&
+        readNativeDepthBounds(renderer, renderer._nativeSkeleton, cache)) {
+      // Native keeps pose updates at the original per-renderer read.
+      x = nativeDepthResult[0]; y = nativeDepthResult[1]; w = nativeDepthResult[2]; h = nativeDepthResult[3];
     } else {
-      var retained = retainBoundsGeometry(renderer, cache);
-      var geometry = retained ? retained.box : ordinaryBounds(renderer, cache);
-      if (geometry) {
-        x = geometry.minX; y = geometry.minY; w = geometry.maxX - x; h = geometry.maxY - y;
+      updatePose(renderer,cache);
+      if (renderer._nativeSkeleton) {
+        // JSB exposes animated skeleton-local bounds on the native renderer.
+        var nativeBounds = nativePhysicalBounds(renderer);
+        x = nativeBounds.x; y = nativeBounds.y; w = nativeBounds.width; h = nativeBounds.height;
       } else {
-        // Spine Vector2.set takes (x, y); Creator Vec2.set takes another vector.
-        var vector = function () { return { x: 0, y: 0, set: function (x, y) { this.x = x; this.y = y; } }; };
-        var offset = vector(), size = vector();
-        renderer._skeleton.getBounds(offset, size, cache ? cache.boundsScratch || (cache.boundsScratch = []) : []);
-        x = offset.x; y = offset.y; w = size.x; h = size.y;
+        var retained = retainBoundsGeometry(renderer, cache);
+        var geometry = retained ? retained.box : ordinaryBounds(renderer, cache);
+        if (geometry) {
+          x = geometry.minX; y = geometry.minY; w = geometry.maxX - x; h = geometry.maxY - y;
+        } else {
+          // Spine Vector2.set takes (x, y); Creator Vec2.set takes another vector.
+          var vector = function () { return { x: 0, y: 0, set: function (x, y) { this.x = x; this.y = y; } }; };
+          var offset = vector(), size = vector();
+          renderer._skeleton.getBounds(offset, size, cache ? cache.boundsScratch || (cache.boundsScratch = []) : []);
+          x = offset.x; y = offset.y; w = size.x; h = size.y;
+        }
       }
     }
   } else {
@@ -1199,6 +1274,116 @@ function releaseCapture(record) {
   if (record.texture) record.texture.destroy();
   record.frame = record.texture = null;
 }
+
+var STANDALONE_TARGET_LIMIT = 96, STANDALONE_TARGET_BYTES = 8 * 1024 * 1024;
+var standaloneTextureProperties = ["_format", "_premultiplyAlpha", "_flipY", "_minFilter", "_magFilter",
+  "_mipFilter", "_wrapS", "_wrapT", "_genMipmaps", "_anisotropy", "_isAlphaAtlas", "_packable"];
+
+function dropStandaloneTarget(state, record) {
+  var target = state.parked.get(record);
+  if (!target) return null;
+  state.parked.delete(record);
+  state.bytes -= target.bytes;
+  return target;
+}
+
+function disposeStandaloneTarget(target) {
+  if (target && cc.isValid(target.texture, true)) target.texture.destroy();
+}
+
+function clearStandaloneTargets(view) {
+  var state = view._standaloneTargets;
+  if (!state) return;
+  view._standaloneTargets = null;
+  state.finished = true;
+  state.parked.forEach(disposeStandaloneTarget);
+  state.parked.clear();
+  state.bytes = 0;
+}
+
+function standaloneTargets(view, create) {
+  var state = view._standaloneTargets;
+  if (!state && !create) return null;
+  var reset = typeof spine !== "undefined" && spine._hkdResetStandaloneTarget;
+  if (!view.nativeCapture || cc.ENGINE_VERSION !== "2.4.13" || typeof reset !== "function" ||
+      !cc.director || typeof cc.director.getScene !== "function" || view._destroyed) {
+    clearStandaloneTargets(view);
+    return null;
+  }
+  var context = cc.game && cc.game._renderContext;
+  var scene = cc.director.getScene(), game = view.game;
+  var supported = scene && context && game;
+  if (state && (!supported || state.scene !== scene || state.context !== context ||
+      state.data !== game.gameData || state.epoch !== game._combatEpoch || state.reset !== reset)) {
+    clearStandaloneTargets(view);
+    state = null;
+  }
+  if (!state && supported && create) {
+    state = view._standaloneTargets = { scene: scene, context: context, data: game.gameData,
+      epoch: game._combatEpoch, reset: reset, parked: new Map(), owned: new WeakMap(), bytes: 0, finished: false };
+  }
+  return state;
+}
+
+DepthView.prototype.parkStandaloneTarget = function (record, atlas) {
+  var state = this._standaloneTargets, target = state && state.owned.get(record);
+  var frame = record.frame, texture = record.texture, consumers = record.consumers;
+  if (!target || !(target.bytes <= STANDALONE_TARGET_BYTES) || state.finished ||
+      this._destroyed || this._nativeActorAtlas !== atlas ||
+      record._nativeActorAtlasPage || target.texture !== texture || !frame ||
+      frame.getTexture() !== texture || this.camera.targetTexture === texture) return false;
+
+  // Detach the old frame before parking its backing storage. A consumer can
+  // synchronously replace the record, so keep the old identities throughout.
+  state.owned.delete(record);
+  if (consumers) Array.from(consumers).forEach(function (renderer) {
+    if (renderer.spriteFrame === frame) {
+      if (gateClipState) gateClipState.unbind(renderer);
+      if (renderer.spriteFrame === frame) renderer.spriteFrame = null;
+    }
+    if (!record.frame || renderer.spriteFrame !== record.frame || record.frame === frame) {
+      consumers.delete(renderer);
+      if (captureOwners.get(renderer) === record) captureOwners.delete(renderer);
+    }
+  });
+  var replaced = record.frame !== frame || record.texture !== texture;
+  if (!replaced) record.frame = record.texture = null;
+  if (record.frame !== frame && cc.isValid(frame, true)) frame.destroy();
+  if (replaced || state.finished || this._destroyed || cc.director.getScene() !== state.scene ||
+      this._nativeActorAtlas !== atlas) {
+    if (record.texture !== texture) disposeStandaloneTarget(target);
+    return null;
+  }
+  disposeStandaloneTarget(dropStandaloneTarget(state, record));
+  while (state.parked.size && (state.parked.size >= STANDALONE_TARGET_LIMIT ||
+      state.bytes + target.bytes > STANDALONE_TARGET_BYTES)) {
+    disposeStandaloneTarget(dropStandaloneTarget(state, state.parked.keys().next().value));
+  }
+  target.atlas = atlas;
+  state.parked.set(record, target);
+  state.bytes += target.bytes;
+  return true;
+};
+
+function takeStandaloneTarget(view, state, record, width, height) {
+  var target = state && !state.finished && dropStandaloneTarget(state, record);
+  if (!target) return null;
+  var texture = target.texture, reused = false;
+  try {
+    if (target.atlas !== view._nativeActorAtlas || !cc.isValid(texture, true) ||
+        texture.width !== width || texture.height !== height ||
+        texture._framebuffer !== target.framebuffer || texture._texture !== target.storage ||
+        texture._depthStencilBuffer !== target.stencil ||
+        !standaloneTextureProperties.every(function (key, index) { return texture[key] === target.properties[index]; }) ||
+        !state.reset(target.framebuffer, target.storage, target.stencil)) return null;
+    reused = true;
+    return texture;
+  } catch (error) {
+    return null;
+  } finally {
+    if (!reused) disposeStandaloneTarget(target);
+  }
+}
 // A unit can be in front of an open leaf and behind its adjoining pillar.
 // Resolve the intersecting parts together: restore the unit over rear parts,
 // then paint foreground parts over its body, in the source's painter order.
@@ -1427,6 +1612,139 @@ GateOcclusion.prototype.destroy = function () {
   if(this.surfaceAtlas)this.surfaceAtlas.dispose();
 };
 
+var foregroundStencilHost;
+function foregroundStencilSupport() {
+  if (!cc.sys || !cc.sys.isNative || cc.sys.os !== cc.sys.OS_WINDOWS || cc.ENGINE_VERSION !== "2.4.13" ||
+      typeof renderer === "undefined" || !renderer.RenderFlow || typeof renderer.NodeProxy !== "function" ||
+      typeof renderer._hkdForegroundStencilBegin !== "function" || typeof renderer._hkdForegroundStencilTag !== "function" ||
+      typeof renderer._hkdForegroundStencilEnd !== "function" || !cc.RenderFlow || !cc.renderer ||
+      cc.renderer._flow !== cc.RenderFlow || !cc.director || typeof cc.director.getTotalFrames !== "function" ||
+      typeof cc.director.on !== "function" || !cc.Director || !cc.Director.EVENT_BEFORE_SCENE_LAUNCH) return null;
+  if (foregroundStencilHost) return foregroundStencilHost;
+  var prototype = renderer.RenderFlow.prototype, flow = cc.RenderFlow._nativeFlow;
+  if (!flow || Object.getPrototypeOf(flow) !== prototype || typeof prototype.render !== "function" ||
+      flow.render !== prototype.render) return null;
+  return foregroundStencilHost = {
+    api: renderer, prototype: prototype, flow: flow, render: prototype.render,
+    adapter: cc.RenderFlow.render, begin: renderer._hkdForegroundStencilBegin,
+    tag: renderer._hkdForegroundStencilTag, end: renderer._hkdForegroundStencilEnd
+  };
+}
+
+function foregroundStencilProxy(batch, record, object, frame) {
+  var overlay = record.foreground, root = overlay && overlay.node, mask = overlay && overlay.mask;
+  var child = record.node, sprite = record.sprite, proxy = root && root._proxy;
+  if (!root || !mask || !child || !sprite || !frame || object.frame !== frame || !object.center || !object.size ||
+      !cc.isValid(frame, true) || !cc.isValid(object.node, true) || !object.node.activeInHierarchy ||
+      !cc.isValid(root, true) || !cc.isValid(mask, true) || !cc.isValid(child, true) || !cc.isValid(sprite, true) ||
+      Object.getPrototypeOf(root) !== cc.Node.prototype || Object.getPrototypeOf(mask) !== cc.Mask.prototype ||
+      Object.getPrototypeOf(child) !== cc.Node.prototype || Object.getPrototypeOf(sprite) !== cc.Sprite.prototype ||
+      !root._occlusionMask || root.parent !== batch.view.main || !root.activeInHierarchy ||
+      root._renderComponent !== mask || mask.node !== root || !mask.enabled || mask.enabledInHierarchy === false ||
+      mask.inverted || mask.type !== cc.Mask.Type.IMAGE_STENCIL || mask.spriteFrame !== frame || captureOwners.get(mask) !== object ||
+      root.children.length !== 1 || root.children[0] !== child || child.parent !== root || !child.activeInHierarchy ||
+      child._renderComponent !== sprite || sprite.node !== child || !sprite.enabled || sprite.enabledInHierarchy === false ||
+      root.anchorX !== .5 || root.anchorY !== .5 || root.scaleX !== 1 || root.scaleY !== 1 ||
+      root.angle || root.skewX || root.skewY || root.is3DNode || !(root.width > 0) || !(root.height > 0) ||
+      !(proxy instanceof batch.host.api.NodeProxy) || proxy._owner !== root) return null;
+  return proxy;
+}
+
+function NativeForegroundStencil(view, host) {
+  this.view = view;
+  this.host = host;
+  this.entries = [];
+}
+NativeForegroundStencil.prototype.current = function () {
+  var view = this.view, game = view.game;
+  return !this.cancelled && !view._destroyed && view.captureSupported && game._depthView === view &&
+    game.ndMain === view.main && game.gameData === this.data && game._combatEpoch === this.epoch &&
+    view.main.activeInHierarchy && cc.director.getScene() === this.scene && cc.director.getTotalFrames() === this.frame;
+};
+NativeForegroundStencil.prototype.clear = function () {
+  this.cancelled = true;
+  this.entries.length = 0;
+  if (this.host.pending === this) this.host.pending = null;
+  if (this.armed) {
+    this.armed = false;
+    this.host.end.call(this.host.api);
+  }
+};
+NativeForegroundStencil.prototype.begin = function () {
+  if (this.collecting || this.host.active) return null;
+  this.scene = cc.director.getScene();
+  this.frame = cc.director.getTotalFrames();
+  this.data = this.view.game.gameData;
+  this.epoch = this.view.game._combatEpoch;
+  this.cancelled = false;
+  this.collecting = true;
+  return this;
+};
+NativeForegroundStencil.prototype.finish = function (completed) {
+  this.collecting = false;
+  if (!completed || !this.entries.length || !this.current() || !installForegroundStencil(this.host)) {
+    this.clear();
+    return;
+  }
+  if (this.host.pending) this.host.pending.clear();
+  this.host.pending = this;
+};
+NativeForegroundStencil.prototype.tag = function () {
+  var host = this.host, entries = this.entries, source, first, tagged;
+  for (var i = 0; i < entries.length && !this.cancelled; i += 4) {
+    var id = entries[i + 3];
+    if (source !== id) { source = id; first = null; tagged = false; }
+    var proxy = foregroundStencilProxy(this, entries[i], entries[i + 1], entries[i + 2]);
+    if (!proxy || this.cancelled) continue;
+    if (!first) { first = proxy; continue; }
+    if (!this.armed) {
+      if (!this.current() || !host.begin.call(host.api)) return;
+      this.armed = true;
+    }
+    if ((!tagged && !host.tag.call(host.api, first, id)) || !host.tag.call(host.api, proxy, id)) {
+      this.clear();
+      return;
+    }
+    tagged = true;
+  }
+};
+
+function installForegroundStencil(host) {
+  var api = host.api, flow = cc.RenderFlow, prototype = host.prototype;
+  if (cc.renderer._flow !== flow || flow._nativeFlow !== host.flow || flow.render !== host.adapter ||
+      api._hkdForegroundStencilBegin !== host.begin || api._hkdForegroundStencilTag !== host.tag ||
+      api._hkdForegroundStencilEnd !== host.end) return false;
+  if (host.wrapper) return prototype.render === host.wrapper && host.flow.render === host.wrapper;
+  if (prototype.render !== host.render || host.flow.render !== host.render) return false;
+  var original = host.render;
+  function renderForegroundStencil(sceneProxy, dt, camera) {
+    if (host.active) host.active.clear();
+    var batch = host.pending;
+    if (!batch) return original.apply(this, arguments);
+    if (!batch.current()) batch.clear();
+    else if (this === host.flow && arguments.length === 3 && camera === null && batch.scene &&
+        sceneProxy === batch.scene._proxy && flow.render === host.adapter) {
+      host.pending = null;
+      host.active = batch;
+      try {
+        try { batch.tag(); } catch (error) { batch.clear(); }
+        return original.apply(this, arguments);
+      } finally {
+        try { batch.clear(); } finally { host.active = null; }
+      }
+    }
+    return original.apply(this, arguments);
+  }
+  try { prototype.render = renderForegroundStencil; } catch (error) { return false; }
+  if (prototype.render !== renderForegroundStencil) return false;
+  host.wrapper = renderForegroundStencil;
+  cc.director.on(cc.Director.EVENT_BEFORE_SCENE_LAUNCH, function () {
+    if (host.pending) host.pending.clear();
+    if (host.active) host.active.clear();
+  });
+  return host.flow.render === host.wrapper;
+}
+
 function DepthView(game) {
   this.game = game;
   this.main = game.ndMain;
@@ -1434,6 +1752,8 @@ function DepthView(game) {
   // Native captures live renderers on the GPU, including their current mesh
   // deformation and draw order. Browser uses its existing copied-pose pass.
   this.nativeCapture = !!(cc.sys && cc.sys.isNative);
+  var stencilHost = this.nativeCapture && foregroundStencilSupport();
+  this._foregroundStencil = stencilHost ? new NativeForegroundStencil(this, stencilHost) : null;
   this.captureSupported = !this.nativeCapture;
   this.nativeActors = new Map();
   this._nativeActorAtlas = null;
@@ -1886,6 +2206,109 @@ function depthLayerFrontier(state, maximum) {
   }
   return frontier;
 }
+
+// Creator 2.4.13 source, preview and minified native forms of the input invalidation walk.
+var BATTLE_DIRTY_WALKS = [
+  `function (node) {
+    let selListeners = this._nodeListenersMap[node._id];
+    if (selListeners) {
+      for (let j = 0, len = selListeners.length; j < len; j++) {
+        let selListener = selListeners[j];
+        let listenerID = selListener._getListenerID();
+        if (this._dirtyListeners[listenerID] == null)
+          this._dirtyListeners[listenerID] = true;
+      }
+    }
+    if (node.childrenCount > 0) {
+      let children = node._children;
+      for (let i = 0, len = children.length; i < len; i++) {
+        this._setDirtyForNode(children[i]);
+      }
+    }
+  }`,
+  `function _setDirtyForNode(node) {
+    var selListeners = this._nodeListenersMap[node._id];
+    if (selListeners) for (var j = 0, len = selListeners.length; j < len; j++) {
+      var selListener = selListeners[j];
+      var listenerID = selListener._getListenerID();
+      null == this._dirtyListeners[listenerID] && (this._dirtyListeners[listenerID] = true);
+    }
+    if (node.childrenCount > 0) {
+      var children = node._children;
+      for (var i = 0, _len = children.length; i < _len; i++) this._setDirtyForNode(children[i]);
+    }
+  }`,
+  `function(t) {
+    var e = this._nodeListenersMap[t._id];
+    if (e) for (var i = 0, n = e.length; i < n; i++) {
+      var r = e[i]._getListenerID();
+      null == this._dirtyListeners[r] && (this._dirtyListeners[r] = !0);
+    }
+    if (t.childrenCount > 0) for (var s = t._children, o = 0, a = s.length; o < a; o++) this._setDirtyForNode(s[o]);
+  }`
+].map(normalizeBattleDirtyWalk);
+var lastBattleDirtyWalk, knownBattleDirtyWalk;
+
+function normalizeBattleDirtyWalk(source) {
+  return source.replace(/\/\/[^\r\n]*/g, "").replace(/\s+/g, "");
+}
+function supportedBattleDirtyWalk(walk) {
+  if (typeof walk !== "function") return false;
+  if (lastBattleDirtyWalk !== walk) {
+    lastBattleDirtyWalk = walk;
+    knownBattleDirtyWalk = BATTLE_DIRTY_WALKS.indexOf(normalizeBattleDirtyWalk(Function.prototype.toString.call(walk))) >= 0;
+  }
+  return knownBattleDirtyWalk;
+}
+function battleListenersOutside(main, manager) {
+  var property = Object.getOwnPropertyDescriptor(manager, "_nodeListenersMap");
+  var registry = property && property.value;
+  if (!registry || Object.getPrototypeOf(registry) !== Object.prototype ||
+      !cc._BaseNode || !cc.EventListener || !/^Node\./.test(main._id)) return false;
+  // The stock lookup can see inherited keys. Accept a standard Node ID registry.
+  var prototypeKeys = Object.getOwnPropertyNames(Object.prototype);
+  for (var i = 0; i < prototypeKeys.length; i++) if (/^Node\./.test(prototypeKeys[i])) return false;
+  var keys = Object.getOwnPropertyNames(registry);
+  var priority = cc.EventListener.prototype._getSceneGraphPriority;
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i], data = Object.getOwnPropertyDescriptor(registry, key);
+    var row = data && data.value;
+    if (!Array.isArray(row) || Object.getPrototypeOf(row) !== Array.prototype || !row.length) return false;
+    var owner;
+    for (var j = 0; j < row.length; j++) {
+      var item = Object.getOwnPropertyDescriptor(row, j), listener = item && item.value;
+      var target = listener && Object.getOwnPropertyDescriptor(listener, "_node");
+      var node = target && target.value;
+      if (!(node instanceof cc._BaseNode) || node._id !== key || (j && node !== owner) ||
+          listener._getSceneGraphPriority !== priority) return false;
+      owner = node;
+    }
+    var remaining = 128;
+    for (; owner && remaining; owner = owner._parent, remaining--) if (owner === main) return false;
+    if (owner) return false;
+  }
+  return true;
+}
+function sortBattleChildren(main) {
+  if (!main.sortAllChildren) return;
+  var manager = main._reorderChildDirty && cc.ENGINE_VERSION === "2.4.13" &&
+    cc.internal && cc.internal.eventManager;
+  var property = manager && Object.getOwnPropertyDescriptor(manager, "_setDirtyForNode");
+  var stock = property && property.value;
+  if (!property || !property.writable || !supportedBattleDirtyWalk(stock)) return main.sortAllChildren();
+  // The stock sort changes arrival order and can invoke listeners before invalidation.
+  // Check the current registry at the invalidation call, then immediately restore the walk.
+  function dirty(node) {
+    if (manager._setDirtyForNode === dirty) manager._setDirtyForNode = stock;
+    if (this !== manager || node !== main || !battleListenersOutside(main, manager)) return stock.call(this, node);
+  }
+  manager._setDirtyForNode = dirty;
+  try {
+    return main.sortAllChildren();
+  } finally {
+    if (manager._setDirtyForNode === dirty) manager._setDirtyForNode = stock;
+  }
+}
 DepthView.prototype.sort = function (footprints, cache) {
   var state=this._depthOrder||(this._depthOrder=depthOrderState());
   if(state.sorting)state=depthOrderState();
@@ -1919,7 +2342,7 @@ DepthView.prototype.sort = function (footprints, cache) {
       var nodes=ordered[i].nodes,zIndex=i*4;
       for(var j=0;j<nodes.length;j++)if(nodes[j].zIndex!==zIndex)nodes[j].zIndex=zIndex;
     }
-    if(main.sortAllChildren)main.sortAllChildren();
+    sortBattleChildren(main);
   }finally{state.sorting=false;}
 };
 function makeObjectStencil(main, name) {
@@ -2008,12 +2431,44 @@ DepthView.prototype.snapshot = function (object, box, cache) {
   }
   object.center = center; object.size = { width: width, height: height }; object.signature = signature;
 };
+function captureProjection(view, center, height) {
+  var main = view.main, p = cc.Node && cc.Node.prototype;
+  if (!cc.sys || !cc.sys.isNative || cc.ENGINE_VERSION !== "2.4.13" || !p ||
+      Object.getPrototypeOf(main) !== p || main.is3DNode ||
+      main.getWorldMatrix !== p.getWorldMatrix || typeof p.getWorldMatrix !== "function" ||
+      main.convertToWorldSpaceAR !== p.convertToWorldSpaceAR || typeof cc.Mat4 !== "function") return null;
+  var state = view._captureProjection || (view._captureProjection = { matrix: new cc.Mat4(), pose: {} });
+  main.getWorldMatrix(state.matrix);
+  var m = state.matrix.m;
+  if (!m || m.length !== 16) return null;
+  var a = m[0], b = m[1], c = m[4], d = m[5], tx = m[12], ty = m[13];
+  if (!Number.isFinite(a) || !Number.isFinite(b) || !Number.isFinite(c) ||
+      !Number.isFinite(d) || !Number.isFinite(tx) || !Number.isFinite(ty) ||
+      !Number.isFinite(center.x) || !Number.isFinite(center.y)) return null;
+  // Keep Creator's Vec2 operation order and read live transforms on every
+  // capture so synchronous changes to the map affect the next camera.
+  var originX = a * 0 + c * 0 + tx, originY = b * 0 + d * 0 + ty;
+  var upX = a * 0 + c + tx, upY = b * 0 + d + ty, pose = state.pose;
+  var x = center.x || 0, y = center.y || 0;
+  pose.x = a * x + c * y + tx;
+  pose.y = b * x + d * y + ty;
+  pose.ortho = height * Math.hypot(upX - originX, upY - originY) / 2;
+  return pose;
+}
 DepthView.prototype.renderNative = function (sources, center, height, texture, actorMask) {
-  var origin = this.main.convertToWorldSpaceAR(cc.v2(0, 0));
-  var up = this.main.convertToWorldSpaceAR(cc.v2(0, 1));
-  var position = this.main.convertToWorldSpaceAR(cc.v2(center.x, center.y));
-  this.cameraNode.setPosition(position.x, position.y, 0);
-  this.camera.orthoSize = height * Math.hypot(up.x - origin.x, up.y - origin.y) / 2;
+  var projection = captureProjection(this, center, height);
+  if (projection) {
+    // Copy the scalar before setPosition can dispatch a nested capture.
+    var ortho = projection.ortho;
+    this.cameraNode.setPosition(projection.x, projection.y, 0);
+    this.camera.orthoSize = ortho;
+  } else {
+    var origin = this.main.convertToWorldSpaceAR(cc.v2(0, 0));
+    var up = this.main.convertToWorldSpaceAR(cc.v2(0, 1));
+    var position = this.main.convertToWorldSpaceAR(cc.v2(center.x, center.y));
+    this.cameraNode.setPosition(position.x, position.y, 0);
+    this.camera.orthoSize = height * Math.hypot(up.x - origin.x, up.y - origin.y) / 2;
+  }
   this.camera.targetTexture = texture;
   var camera = this.camera, first = true, scope=this._nativeCaptureScope, owned=!scope&&this.nativeCapture&&cc.sys&&cc.sys.isNative;
   if(owned){scope=new NativeCaptureScope(this);this._nativeCaptureScope=scope;}
@@ -2084,10 +2539,20 @@ DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
   var tw = Math.max(2, Math.ceil(width * resolution)), th = Math.max(2, Math.ceil(height * resolution));
   if (!record.texture || record.texture.width !== tw || record.texture.height !== th) {
     releaseCapture(record);
-    record.texture = new cc.RenderTexture();
-    record.texture.initWithSize(tw, th, cc.gfx.RB_FMT_S8);
+    var state = detail === undefined && standaloneTargets(this, true);
+    record.texture = takeStandaloneTarget(this, state, record, tw, th);
+    if (!record.texture) {
+      record.texture = new cc.RenderTexture();
+      record.texture.initWithSize(tw, th, cc.gfx.RB_FMT_S8);
+    }
     record.frame = new cc.SpriteFrame(record.texture);
     record.frame.setFlipY(true);
+    if (state && !state.finished) {
+      var texture = record.texture;
+      state.owned.set(record, { texture: texture, framebuffer: texture._framebuffer,
+        storage: texture._texture, stencil: texture._depthStencilBuffer, bytes: tw * th * 8,
+        properties: standaloneTextureProperties.map(function (key) { return texture[key]; }) });
+    }
   }
   this.renderNative(sources, center, height, record.texture, detail===undefined);
   record.center = center; record.size = { width: width, height: height };
@@ -2251,6 +2716,9 @@ function ordinarySilhouetteActors(view, actors) {
 }
 
 DepthView.prototype.update = function () {
+  standaloneTargets(this, false);
+  var stencil = this._foregroundStencil;
+  if (stencil) stencil.clear();
   if (!this.main.activeInHierarchy) return;
   var footprints = new Map();
   var cache = { transforms: new Map(), bounds: new Map(), poses: new Set() };
@@ -2259,7 +2727,11 @@ DepthView.prototype.update = function () {
   if (!this._staticOcclusionBounds && this.nativeCapture) this._staticOcclusionBounds = new WeakMap();
   var captureScope=this.nativeCapture?new NativeCaptureScope(this):null;
   if(captureScope){captureScope._sceneRepairOwner=this;this._nativeCaptureScope=captureScope;}
+  var stencilBatch = stencil && stencil.begin(), stencilComplete = false, finishMaskUpdates;
   try {
+  if (captureScope && nativeMaskState && typeof nativeMaskState.beginCaptureUpdates === "function") {
+    finishMaskUpdates = nativeMaskState.beginCaptureUpdates(this);
+  }
   var self = this, game = this.game, visible = viewBounds(game, this.main), draw = [];
   // Per-actor GPU captures only retain a draw identity. Pose buffers are web-only.
   var nativeDraw = this.nativeCapture ? {} : null;
@@ -2358,7 +2830,7 @@ DepthView.prototype.update = function () {
     draw.forEach(function (item,index) {
       var object = item.object, box = item.box, hidden = item.hidden;
       if(index||!firstSnapshot)self.snapshot(object, box,cache);
-      var shared = false;
+      var shared = false, firstForeground = null, firstFrame, grouped = false;
       hidden.forEach(function (entry) {
         var mask = object.masks.get(entry.actor) || self.makeMask(object, entry.actor, entry.sources);
         var above = actorDrawnAbove(entry.actor, object);
@@ -2379,6 +2851,16 @@ DepthView.prototype.update = function () {
         var opacity = above ? 255 : 204;
         if (self.nativeCapture) self.syncNativeMask(mask, entry, object, nativeDraw, opacity);
         else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache, opacity); });
+        if (stencilBatch && !stencilBatch.cancelled && above) {
+          // Reuse requires at least two foreground masks of this same capture.
+          // Do not allocate candidates or touch the native renderer for singletons.
+          if (!firstForeground) { firstForeground = mask; firstFrame = object.frame; }
+          else {
+            if (!grouped) stencilBatch.entries.push(firstForeground, object, firstFrame, index + 1);
+            stencilBatch.entries.push(mask, object, object.frame, index + 1);
+            grouped = true;
+          }
+        }
       });
       if (shared) syncObjectStencil(object.overlay, object, object.node.zIndex + 1);
       else object.overlay.node.active = false;
@@ -2400,19 +2882,32 @@ DepthView.prototype.update = function () {
   if (this.nativeCapture) this.nativeActors.forEach(function (record, actor) {
     if (cc.isValid(actor.node) && activeActors.has(actor)) return;
     if(self._nativeActorAtlas)self._nativeActorAtlas.forget(record);
+    var targets = self._standaloneTargets;
+    if (targets) disposeStandaloneTarget(dropStandaloneTarget(targets, record));
     releaseCapture(record);
     self.nativeActors.delete(actor);
   });
   // New/relocated stencil nodes must follow their object in this same draw.
-  if (this.main.sortAllChildren) this.main.sortAllChildren();
+  sortBattleChildren(this.main);
+  stencilComplete = true;
   } finally {
-    if(captureScope){captureScope.finish();if(this._nativeCaptureScope===captureScope)this._nativeCaptureScope=null;}
+    var captureFinished = false;
+    try {
+      if(captureScope){captureScope.finish();if(this._nativeCaptureScope===captureScope)this._nativeCaptureScope=null;}
+      captureFinished = true;
+    } finally {
+      try { if (finishMaskUpdates) finishMaskUpdates(); }
+      finally { if (stencilBatch) stencilBatch.finish(stencilComplete && captureFinished); }
+    }
   }
 };
 DepthView.prototype.destroy = function () {
   if (this._destroyed) return;
+  clearStandaloneTargets(this);
+  if (this._foregroundStencil) this._foregroundStencil.clear();
+  this._foregroundStencil = null;
   if(this._nativeCaptureScope)this._nativeCaptureScope.finish();
-  this._nativeCaptureScope=null;this._nativeCaptureRefs=null;this._cachedCaptureBlocker=null;
+  this._nativeCaptureScope=null;this._nativeCaptureRefs=null;this._cachedCaptureBlocker=null;this._nativeCaptureInventory=null;
   this._destroyed = true;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
   if(this.gateOcclusion)this.gateOcclusion.destroy();

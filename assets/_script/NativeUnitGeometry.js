@@ -2,6 +2,7 @@
 // Actor attachment geometry is shared by native skins. Cache only intrinsic
 // vectors; animation matrices, slot deforms and all visibility stay live.
 var epoch = 0, installed = null, disabled = false;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
 function invalidate() { epoch++; }
 function retire() { disabled = true; invalidate(); return null; }
 function descriptor(object, key) {
@@ -78,7 +79,11 @@ function verify(state) {
   }
   for (i = 0; i < state.properties.length; i++) {
     var check = state.properties[i];
-    if (!same(Object.getOwnPropertyDescriptor(check.owner, check.key), check.expected)) return false;
+    if (check.expected === undefined) {
+      // Missing shadows need only an own-property test. Accessor shadows count
+      // as changes without invoking them.
+      if (hasOwnProperty.call(check.owner, check.key)) return false;
+    } else if (!same(Object.getOwnPropertyDescriptor(check.owner, check.key), check.expected)) return false;
   }
   return true;
 }

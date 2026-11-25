@@ -14,17 +14,17 @@ function fixture(){
  write(path.join(native,'preview-scene.json'),[{_name:'Start'}]);write(path.join(native,'config.json'),{init_cfg:{name:'Simulator',debugPort:5086,consolePort:5087,uploadPort:5088,isWindowTop:true}});
  write(path.join(native,'src/settings.js'),"window._CCSettings={jsList:['assets/_script/NativeTextureFormatCompat.js']};");write(path.join(native,'src/simulator-config.js'),'// current Creator simulator settings');write(path.join(native,'src/asset-record-pipe.js'),'// current Creator record pipe');
  const p=project.split(path.sep).join('/'),q=quick.split(path.sep).join('/'),i=imports.split(path.sep).join('/');
- write(path.join(native,'main.js'),"window.__quick_compile_project__.destPath = '"+q+"/';cc.assetManager.init({importBase:'"+i+"/',nativeBase:'"+i+"/'});function plugin(x){return '"+p+"/' + x;}require('"+q+"/' + '__quick_compile__.js');cc.game.resume();");
+ write(path.join(native,'main.js'),"window.__quick_compile_project__.destPath = '"+q+"/';cc.assetManager.init({importBase:'"+i+"/',nativeBase:'"+i+"/'});function plugin(x){return '"+p+"/' + x;}require('"+q+"/' + '__quick_compile__.js');\n    require('jsb-adapter/jsb-engine.js');\ncc.game.resume();");
  write(path.join(shared,'src/cocos2d-jsb.js'),'// cloned SDK engine');write(path.join(shared,'jsb-adapter/jsb-engine.js'),'// cloned native adapter');write(path.join(shared,'jsb-adapter/jsb-builtin.js'),'// cloned native builtin');
  const executable=path.join(bin,'simulator.exe');write(executable,'MZ fixture release executable - never launched');write(path.join(bin,'dependency.dll'),'fixture DLL');const runtimeFiles=['simulator.exe','dependency.dll'].map(relativePath=>{const bytes=fs.readFileSync(path.join(bin,relativePath));return{relativePath,bytes:bytes.length,sha256:sha(bytes)};});
  const manifest={kind:'hkd-native-preview-release',manifestVersion:1,creatorVersion:'2.4.13',sdk:{sourceRoot:sdk,cloneRoot:clone,sharedResourceRoot:shared},build:{configuration:'Release',platform:'Win32',architecture:'x86',outputRoot:build},features:{highResolutionPacing:false},runtime:{directory:bin,executable,executableSha256:sha(fs.readFileSync(executable)),files:runtimeFiles},abi:{CC_STATIC:1,COCOS2D_DEBUG:0,USE_V8_DEBUGGER:0,NDEBUG:1}},manifestFile=path.join(build,'build-manifest.json');write(manifestFile,manifest);
  const f={root,project,sdk,native,build,clone,shared,bin,output,quick,imports,imported,sourceFile,resources,manifest,manifestFile,executable,metaIds,calls:[],logs:[],fetchHook:null,copyHook:null,options:{creatorProjectRoot:project,creatorSDKRoot:sdk,releaseManifest:manifestFile,outputRoot:output}};fixtures.add(f);return f;
 }
-function load(f,{cli=false,prepareOnly=false}={}){
+function load(f,{cli=false,prepareOnly=false,groupedMaskQueue=false,patchAdapter}={}){
  const child=new EventEmitter();child.pid=4321;child.killed=false;child.kill=function(){this.killed=true;f.kills=(f.kills||0)+1;this.emit('exit',0,'SIGTERM');return true;};f.child=child;
- const processMock=new EventEmitter();processMock.argv=['node',filename,...Object.entries(f.options).flatMap(([key,value])=>[({creatorProjectRoot:'--creator-project-root',creatorSDKRoot:'--creator-sdk-root',releaseManifest:'--release-manifest',outputRoot:'--output-root'})[key],value]),...(prepareOnly?['--prepare-only']:[])];processMock.exitCode=0;f.process=processMock;
+ const processMock=new EventEmitter();processMock.argv=['node',filename,...Object.entries(f.options).flatMap(([key,value])=>[({creatorProjectRoot:'--creator-project-root',creatorSDKRoot:'--creator-sdk-root',releaseManifest:'--release-manifest',outputRoot:'--output-root'})[key],value]),...(prepareOnly?['--prepare-only']:[]),...(groupedMaskQueue?['--grouped-mask-queue']:[])];processMock.exitCode=0;f.process=processMock;
  const host=Object.create(fs),promises={...fs.promises,async writeFile(file,...rest){if(f.copyHook)f.copyHook(file);return fs.promises.writeFile(file,...rest);}};Object.defineProperty(host,'promises',{value:promises});
- const module={exports:{}},local=Module.createRequire(filename),requireMock=name=>name==='node:fs'?host:name==='node:child_process'?{spawn(exe,args,options){f.calls.push({exe,args,options});return child;}}:local(name);requireMock.main=cli?module:{};
+ const module={exports:{}},local=Module.createRequire(filename),requireMock=name=>name==='node:fs'?host:name==='node:child_process'?{spawn(exe,args,options){f.calls.push({exe,args,options});return child;}}:name==='./grouped-mask-queue.cjs'&&patchAdapter?{patch:patchAdapter}:local(name);requireMock.main=cli?module:{};
  vm.runInNewContext(code,{require:requireMock,module,__dirname:path.dirname(filename),Buffer,URL,AbortSignal,process:processMock,console:{log:s=>f.logs.push(s),error:s=>f.logs.push(s)},fetch:async url=>{if(f.fetchHook)f.fetchHook(url);const name=decodeURIComponent(new URL(url).pathname.split('/')[2]);return{ok:true,json:async()=>JSON.parse(JSON.stringify(name==='resources'?f.resources:{}))};}},{filename});return module.exports;
 }
 async function waitFor(fn){for(let i=0;i<200;i++){if(fn())return;await new Promise(resolve=>setTimeout(resolve,10));}throw Error('Timed out waiting for fixture launcher');}
@@ -54,9 +54,58 @@ test('launch uses only the verified owned executable/save and closes its log des
 
 test('binary drift between prepare and launch refuses to spawn',async()=>{const f=fixture(),api=load(f),p=await api.prepare(f.options);write(f.executable,'changed after preparation');assert.throws(()=>api.launch(p),/hash mismatch/);assert.equal(f.calls.length,0);});
 
+test('grouped mask queue is opt-in, isolated and verified against the actual deployed adapter',async()=>{
+ const f=fixture(),stock=fs.readFileSync(path.join(f.shared,'jsb-adapter/jsb-engine.js')),patched=Buffer.from('// supported grouped mask queue fixture\n');
+ let calls=0;const api=load(f,{patchAdapter(input){calls++;assert.deepEqual(input,stock);return patched;}});
+ const before=tree(f.root),normal=await api.prepare(f.options);
+ assert.equal(calls,0);assert.equal(normal.proof.patches.groupedMaskQueue,undefined);
+ assert(fs.readFileSync(path.join(normal.run,'app-main.js'),'utf8').includes("require('jsb-adapter/jsb-engine.js');"));
+ const prepared=await api.prepare({...f.options,groupedMaskQueue:true}),proof=prepared.proof.patches.groupedMaskQueue;
+ assert.equal(calls,1);assert.equal(f.calls.length,0);
+ const adapter=path.join(prepared.run,proof.path),entry=path.join(prepared.run,'app-main.js');
+ assert.deepEqual(fs.readFileSync(adapter),patched);
+ assert.equal(proof.sourceSha256,sha(stock));assert.equal(proof.sha256,sha(fs.readFileSync(adapter)));
+ assert.equal(proof.entrySha256,sha(fs.readFileSync(entry)));
+ assert(fs.readFileSync(entry,'utf8').includes('require('+JSON.stringify(adapter.split(path.sep).join('/'))+');'));
+ const snapshot=prepared.proof.snapshots[2].files.find(row=>row.path==='jsb-engine.js');
+ assert.equal(snapshot.sourceBytes,stock.length);assert.equal(snapshot.bytes,patched.length);assert.equal(snapshot.sha256,proof.sha256);
+ for(const [file,digest]of Object.entries(before))assert.equal(sha(fs.readFileSync(path.join(f.root,file))),digest);
+ api.launch(prepared);assert.equal(f.calls.length,1);
+ write(adapter,stock);
+ assert.throws(()=>api.launch(prepared),/Grouped mask queue adapter or Start entry changed/);
+ write(adapter,patched);write(entry,'// modified entry after preparation');
+ assert.throws(()=>api.launch(prepared),/Grouped mask queue adapter or Start entry changed/);
+ assert.equal(f.calls.length,1);
+});
+
+test('grouped mask queue rejects unsupported adapter and unknown Creator import before creating output',async()=>{
+ const f=fixture(),failed=load(f,{patchAdapter(){throw Error('Unsupported grouped mask queue adapter');}});
+ await assert.rejects(failed.prepare({...f.options,groupedMaskQueue:true}),/Unsupported grouped mask queue adapter/);
+ const nativeEntry=path.join(f.native,'main.js');
+ write(nativeEntry,fs.readFileSync(nativeEntry,'utf8').replace("    require('jsb-adapter/jsb-engine.js');","    // require('jsb-adapter/jsb-engine.js');"));
+ const unknown=load(f,{patchAdapter(){assert.fail('Unknown entry should be rejected before patching');}});
+ await assert.rejects(unknown.prepare({...f.options,groupedMaskQueue:true}),/standard Creator native adapter import/);
+ assert(!fs.existsSync(f.output));assert.equal(f.calls.length,0);
+});
+
+test('grouped mask queue rejects adapter source drift after the preflight check',async()=>{
+ const f=fixture();
+ f.fetchHook=()=>write(path.join(f.shared,'jsb-adapter/jsb-engine.js'),'edited after preflight');
+ const api=load(f,{patchAdapter:()=>Buffer.from('// isolated patch')});
+ await assert.rejects(api.prepare({...f.options,groupedMaskQueue:true}),/Grouped mask queue adapter changed/);
+ assert.equal(f.calls.length,0);
+});
+
+test('CLI prepares a grouped mask queue session without launching when requested',async()=>{
+ const f=fixture();let calls=0;
+ load(f,{cli:true,prepareOnly:true,groupedMaskQueue:true,patchAdapter(){calls++;return Buffer.from('// grouped preview');}});
+ await waitFor(()=>f.logs.some(s=>String(s).includes('Prepared only')));
+ assert.equal(calls,1);assert.equal(f.calls.length,0);
+});
+
 test('CLI prepare-only starts no child and SIGINT stops only its exact owned child with listener cleanup',async()=>{const f=fixture();load(f,{cli:true,prepareOnly:true});await waitFor(()=>f.logs.some(s=>String(s).includes('Prepared only')));assert.equal(f.calls.length,0);const g=fixture();load(g,{cli:true});await waitFor(()=>g.calls.length===1&&g.process.listenerCount('SIGINT')===1);g.process.emit('SIGINT');assert.equal(g.kills,1);assert.equal(g.process.listenerCount('SIGINT'),0);assert(g.child.killed);});
 
-test('CLI argument parsing is parameterized and rejects missing/unknown flags',()=>{const f=fixture(),api=load(f);const parsed=api.parseArgs(['--creator-project-root','project','--creator-sdk-root','sdk','--release-manifest','manifest','--output-root','outside','--prepare-only']);assert.equal(parsed.creatorProjectRoot,'project');assert(parsed.prepareOnly);assert.throws(()=>api.parseArgs(['--battle-fixture','1']),/Unknown/);assert.throws(()=>api.parseArgs(['--creator-sdk-root']),/incomplete/);});
+test('CLI argument parsing is parameterized and rejects missing/unknown flags',()=>{const f=fixture(),api=load(f);const parsed=api.parseArgs(['--creator-project-root','project','--creator-sdk-root','sdk','--release-manifest','manifest','--output-root','outside','--prepare-only','--grouped-mask-queue']);assert.equal(parsed.creatorProjectRoot,'project');assert(parsed.prepareOnly);assert(parsed.groupedMaskQueue);assert(!api.parseArgs([]).groupedMaskQueue);assert.throws(()=>api.parseArgs(['--battle-fixture','1']),/Unknown/);assert.throws(()=>api.parseArgs(['--creator-sdk-root']),/incomplete/);});
 
  test('Creator bootstrap template comments are ignored when locating the actual script registry',async()=>{const f=fixture(),boot=path.join(f.quick,'__quick_compile__.js');fs.appendFileSync(boot,'// var scripts = ${scripts};\n');const p=await load(f).prepare(f.options);assert.equal(p.proof.scripts.length,1);});
 

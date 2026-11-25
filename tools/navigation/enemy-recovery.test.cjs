@@ -153,6 +153,10 @@ test('stationary attacks, support waits, zero speed and deferred navigation neve
 test('stranded watchdog defers collider measurements until an actual recovery attempt',()=>{
  const e=environment(),u=e.unit(-100,0),nav=e.nav.get(e.game),measure=nav.radius;
  e.game.mapSize={width:4000,height:4000};
+ const data=e.game.gameData;
+ let rosterReads=0;
+ data.getEnemyList=()=>{rosterReads++;return data.enemies;};
+ data.getSoldierList=()=>{rosterReads++;return data.soldiers;};
  let measurements=0;nav.radius=function(...args){if(args[0]===u)measurements++;return measure.apply(this,args);};
  // Continued physical progress keeps the watchdog cold for an entire wave.
  for(let frame=0;frame<600;frame++){
@@ -172,4 +176,15 @@ test('stranded watchdog defers collider measurements until an actual recovery at
  }
  assert.equal(measurements,1,'the bounded recovery attempt must measure current body clearance');
  assert.deepEqual(u.node.position,still,'no authored continuation may relocate the actor');
+ assert.equal(u._enemyStall.elapsed,3,'a failed attempt leaves two seconds until the next try');
+ assert.equal(nav._strandedRecoveryFrame,nav._frameId,'a failed attempt consumes the frame budget');
+ for(let frame=0;frame<19;frame++){
+  e.nav.beginFrame(e.game);assert.equal(e.nav.recoverStranded(u,e.game,.1),false);
+ }
+ assert.equal(measurements,1,'the watchdog must wait before retrying');
+ for(let frame=0;frame<2&&measurements===1;frame++){
+  e.nav.beginFrame(e.game);assert.equal(e.nav.recoverStranded(u,e.game,.1),false);
+ }
+ assert.equal(measurements,2,'the watchdog retries after two seconds');
+ assert.equal(rosterReads,0,'there is no need to scan actors without a continuation point');
 });

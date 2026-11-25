@@ -88,9 +88,13 @@ var def_KinghtFallItemHp = function (t) {
     var referenceWidth = reference.width, referenceHeight = reference.height;
     var sources = actor.ctrPlayAni ? Depth.bodyVisuals(actor) : [actor.getSpAni ? actor.getSpAni() : actor.spAni];
     var nativeHealth = actor.node._combatActor === actor && !actor.ctrPlayAni;
+    var heroMount = game && actor === game.ctrPlay && actor.node._combatActor === actor &&
+      actor.ctrHp === this && actor.ctrPlayAni && actor.ctrPlayAni.spAniMa;
     var box = null;
     sources.forEach(function (renderer) {
-      if (renderer && renderer.skeletonData) box = Depth.union(box, Depth.unitBounds(renderer, parent, scratch, nativeHealth));
+      if (!renderer || !renderer.skeletonData) return;
+      var weightedMount = renderer === heroMount;
+      box = Depth.union(box, Depth.unitBounds(renderer, parent, scratch, nativeHealth || weightedMount, weightedMount));
     });
     if (!box) return;
     var width = this.node.width || this.sprPro && this.sprPro.node.width;
