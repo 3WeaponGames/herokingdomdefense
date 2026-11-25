@@ -63,7 +63,7 @@ test('all eight biome presets use their reviewed edge scale with a consistent in
  for(const [biome,name,width] of expected){
   const selected=asset(name),pair=Terrain.roadPair(selected,library,biome),value=Terrain.roadDefaults(selected,library,biome);
   const ordinary={biome,width,edgeScale:biome==='lava'?.75:1,edgeSmoothing:.6,edgeStyle:'textured'};
-  assert.deepEqual(value,biome==='lava'?Object.assign(ordinary,{edgeExterior:'cutout'}):ordinary);
+  assert.deepEqual(value,biome==='lava'?Object.assign(ordinary,{edgeExterior:'lava-contact'}):ordinary);
   assert(width-2*Math.max(1,pair.edge.height-2)*value.edgeScale>=90);
   assert(width-2*Math.max(1,pair.edge.height-2)*value.edgeScale<95);
   assert.equal(Object.prototype.hasOwnProperty.call(value,'edgeExterior'),biome==='lava');

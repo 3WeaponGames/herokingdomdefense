@@ -26,11 +26,29 @@ async function verify(){
  const semi=render([Object.assign({},straight,{opacity:.5}),Object.assign({},erase,{opacity:.5})]);assert(pixel(semi,0,0)[3]>=63&&pixel(semi,0,0)[3]<=65,'partial erasing preserves authored Lava opacity');
  const sameLayer=render([Object.assign({},straight,{opacity:.5}),Object.assign({},erase,{opacity:.5})],1000,600,{x:0,y:0},null,background);assert(pixel(sameLayer,0,0)[3]>=126&&pixel(sameLayer,0,0)[3]<=129,'partial erasing remains chronological over same-layer background artwork');
  const fork=[stroke([[-250,0],[250,0]]),stroke([[0,0],[0,210]])],joined=render(fork);assert(near(pixel(joined,0,0),[243,142,92])&&pixel(joined,0,0)[3]===255,'joined Lava roads have no rock or glow stripe across their intersection');
+ const contact={edgeExterior:'lava-contact'},exterior=render([Object.assign({},straight,contact)]);
+ function edgeOrder(canvas,x,side){const result=[];for(let y=170;y>=0;y--){
+  const p=pixel(canvas,x,y*side);
+  const band=p[3]<250?null:near(p,[245,215,110])?'glow':near(p,[243,142,92])?'road':p[0]<220&&p[1]<130?'rock':null;
+  if(band&&result.at(-1)!==band)result.push(band);
+ }return result.join(' ');}
+ for(const side of [-1,1])for(const x of [-140,0,140]){
+  assert(edgeOrder(exterior,x,side)==='glow rock road','Lava edge reads lava contact, rock, road from either side');
+  assert(edgeOrder(cutout,x,side)==='rock glow road','Previously authored cutout still renders as saved');
+ }
+ const contactFork=render(fork.map(s=>Object.assign({},s,contact)));
+ assert(near(pixel(contactFork,0,85),[243,142,92]),'The exterior glow does not cross the road at a junction');
  const loop=render([stroke([[-230,-180],[230,-180],[230,180],[-230,180],[-230,-180]],{size:180})],1000,700);assert(pixel(loop,0,0)[3]===0,'closed Lava roads retain their central island');
  const isolated=render([stroke([[-300,-180],[300,-180]],{size:180}),stroke([[-300,180],[300,180]],{size:180})],1000,700);assert(pixel(isolated,0,0)[3]===0,'nearby Lava roads do not bridge the gap between them');
- const a=.37,s=.8,matrix=[Math.cos(a)*s,Math.sin(a)*s,-Math.sin(a)*s,Math.cos(a)*s,12,-8],full=render(fork,800,700,{x:0,y:0},matrix),parts=Paint.canvas(800,700),pg=parts.getContext('2d');for(let x=0;x<800;x+=400)pg.drawImage(render(fork,400,700,{x:200-x,y:0},matrix),x,0);
- const fd=full.getContext('2d').getImageData(0,0,800,700).data,pd=pg.getImageData(0,0,800,700).data;let bad=0,max=0;for(let i=0;i<fd.length;i+=4){if(Math.abs(fd[i+3]-pd[i+3])>2)bad++;for(let k=0;k<3;k++){const d=Math.abs(fd[i+k]*fd[i+3]-pd[i+k]*pd[i+3])/255;max=Math.max(max,d);if(d>2)bad++;}}
- assert(!bad,'rotated and scaled Lava cutout coverage stays seamless across baked tiles');
+ const a=.37,s=.8,matrix=[Math.cos(a)*s,Math.sin(a)*s,-Math.sin(a)*s,Math.cos(a)*s,12,-8];
+ let bad=0,max=0;
+ for(const roads of [fork,fork.map(stroke=>({...stroke,...contact}))]){
+  const full=render(roads,800,700,{x:0,y:0},matrix),parts=Paint.canvas(800,700),pg=parts.getContext('2d');
+  for(let x=0;x<800;x+=400)pg.drawImage(render(roads,400,700,{x:200-x,y:0},matrix),x,0);
+  const fd=full.getContext('2d').getImageData(0,0,800,700).data,pd=pg.getImageData(0,0,800,700).data;
+  for(let i=0;i<fd.length;i+=4){if(Math.abs(fd[i+3]-pd[i+3])>2)bad++;for(let k=0;k<3;k++){const d=Math.abs(fd[i+k]*fd[i+3]-pd[i+k]*pd[i+3])/255;max=Math.max(max,d);if(d>2)bad++;}}
+ }
+ assert(!bad,'rotated and scaled Lava edges stay seamless across baked tiles in both modes');
  const baseline=render([old]),bd=baseline.getContext('2d').getImageData(0,0,1000,600).data;let legacyBad=0,legacyMax=0;for(let i=0;i<ld.length;i+=4){if(Math.abs(ld[i+3]-bd[i+3])>2)legacyBad++;for(let k=0;k<3;k++){const d=Math.abs(ld[i+k]*ld[i+3]-bd[i+k]*bd[i+3])/255;legacyMax=Math.max(legacyMax,d);if(d>2)legacyBad++;}}assert(!legacyBad,'legacy Lava rendering remains unchanged without the explicit exterior mode');
  assert(Roads.stats().bytes<=24*1024*1024,'Lava cutout rasters respect the authoring cache budget');
  return {checks,haloPixelsRemoved:removed,underlyingImagePixelsRevealed:revealed,tileDifference:{bad,max},legacyDifference:{bad:legacyBad,max:legacyMax},cache:Roads.stats()};

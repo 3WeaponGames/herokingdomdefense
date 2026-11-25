@@ -378,7 +378,8 @@
           "assetId": "env-1bd5d3305589f094d81280b946821ac6",
           "edgeAssetId": "env-a84be0c02f1ba3e44ab953d506e5b74d",
           "name": "Upper basalt steps",
-          "key": "map-expansion-lava-ember-stair-road-1"
+          "key": "map-expansion-lava-ember-stair-road-1",
+          "edgeExterior": "lava-contact"
         },
         {
           "id": "west-step-gap",
@@ -554,7 +555,8 @@
           "assetId": "env-1bd5d3305589f094d81280b946821ac6",
           "edgeAssetId": "env-a84be0c02f1ba3e44ab953d506e5b74d",
           "name": "West crossing",
-          "key": "map-expansion-lava-ember-stair-road-2"
+          "key": "map-expansion-lava-ember-stair-road-2",
+          "edgeExterior": "lava-contact"
         },
         {
           "id": "south-open-field",
@@ -738,7 +740,8 @@
           "assetId": "env-1bd5d3305589f094d81280b946821ac6",
           "edgeAssetId": "env-a84be0c02f1ba3e44ab953d506e5b74d",
           "name": "South basalt spine",
-          "key": "map-expansion-lava-ember-stair-road-3"
+          "key": "map-expansion-lava-ember-stair-road-3",
+          "edgeExterior": "lava-contact"
         },
         {
           "id": "east-ember-route",
@@ -914,7 +917,8 @@
           "assetId": "env-1bd5d3305589f094d81280b946821ac6",
           "edgeAssetId": "env-a84be0c02f1ba3e44ab953d506e5b74d",
           "name": "East crossing",
-          "key": "map-expansion-lava-ember-stair-road-4"
+          "key": "map-expansion-lava-ember-stair-road-4",
+          "edgeExterior": "lava-contact"
         }
       ]
     },
@@ -955,7 +959,8 @@
         }
       ],
       "blockers": [],
-      "globalShadow": false
+      "globalShadow": false,
+      "hidden": true
     },
     {
       "id": "terrain-objects",
@@ -970,16 +975,17 @@
       "objects": [
         {
           "id": "object-123",
-          "assetId": "stage15-cinder-terraces-hill-1",
           "name": "Western terrace",
-          "x": -376,
-          "y": 24,
+          "assetId": "orange-stage-15-hill-1",
+          "x": -355,
+          "y": 38,
           "scale": 1,
           "angle": 0,
-          "opacity": 1,
-          "depth": "world",
           "nativeSize": true,
+          "depth": "world",
           "flipX": false,
+          "flipY": false,
+          "opacity": 1,
           "globalShadow": false,
           "ground": {
             "x": 0,
@@ -989,16 +995,17 @@
         },
         {
           "id": "object-124",
-          "assetId": "stage15-cinder-terraces-hill-2",
           "name": "Eastern terrace",
-          "x": 492,
-          "y": 396,
+          "assetId": "orange-stage-15-hill-2",
+          "x": 471,
+          "y": 428,
           "scale": 1,
           "angle": 0,
-          "opacity": 1,
-          "depth": "world",
           "nativeSize": true,
+          "depth": "world",
           "flipX": false,
+          "flipY": false,
+          "opacity": 1,
           "globalShadow": false,
           "ground": {
             "x": 0,
@@ -1008,16 +1015,17 @@
         },
         {
           "id": "object-125",
-          "assetId": "stage15-cinder-terraces-hill-3",
           "name": "Southwest shelf",
-          "x": -369,
-          "y": -1270,
+          "assetId": "orange-stage-15-hill-3",
+          "x": -351,
+          "y": -1240,
           "scale": 1,
           "angle": 0,
-          "opacity": 1,
-          "depth": "world",
           "nativeSize": true,
+          "depth": "world",
           "flipX": false,
+          "flipY": false,
+          "opacity": 1,
           "globalShadow": false,
           "ground": {
             "x": 0,
@@ -1027,16 +1035,17 @@
         },
         {
           "id": "object-127",
-          "assetId": "stage15-cinder-terraces-hill-4",
           "name": "Southeast shelf",
-          "x": 603,
-          "y": -1110,
+          "assetId": "orange-stage-15-hill-4",
+          "x": 592,
+          "y": -1082,
           "scale": 1,
           "angle": 0,
-          "opacity": 1,
-          "depth": "world",
           "nativeSize": true,
+          "depth": "world",
           "flipX": false,
+          "flipY": false,
+          "opacity": 1,
           "globalShadow": false,
           "ground": {
             "x": 0,
@@ -1046,16 +1055,17 @@
         },
         {
           "id": "object-129",
-          "assetId": "stage15-cinder-terraces-hill-5",
           "name": "Keep Landing",
+          "assetId": "orange-stage-15-hill-5",
           "x": 371,
-          "y": -258,
+          "y": -234,
           "scale": 1,
           "angle": 0,
-          "opacity": 1,
-          "depth": "world",
           "nativeSize": true,
+          "depth": "world",
           "flipX": false,
+          "flipY": false,
+          "opacity": 1,
           "globalShadow": false,
           "ground": {
             "x": 0,
@@ -9766,6 +9776,15 @@
       "concept": "cinder-terraces",
       "ground": "molten field",
       "terraces": [
+        "object-123",
+        "object-124",
+        "object-125",
+        "object-127",
+        "object-129"
+      ],
+      "surface": "Lava road orange",
+      "edge": "thin lava rim with outline-only north-facing crests",
+      "terrainIds": [
         "object-123",
         "object-124",
         "object-125",

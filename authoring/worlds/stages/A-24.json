@@ -5832,122 +5832,122 @@
     {
       "id": 1,
       "name": "Spawn 1",
-      "x": -586,
-      "y": 739.5,
+      "x": -822,
+      "y": -503.5,
       "enabled": true,
-      "radius": 86
+      "radius": 52
     },
     {
       "id": 2,
       "name": "Spawn 2",
-      "x": -521,
-      "y": 725.5,
+      "x": -834,
+      "y": -573.5,
       "enabled": true,
-      "radius": 108
+      "radius": 64
     },
     {
       "id": 3,
       "name": "Spawn 3",
-      "x": -453,
-      "y": 745.5,
+      "x": -822,
+      "y": -621.5,
       "enabled": true,
-      "radius": 110
+      "radius": 42
     },
     {
       "id": 4,
       "name": "Spawn 4",
-      "x": -49,
-      "y": 1247.5,
+      "x": -66,
+      "y": 1450.5,
       "enabled": true,
-      "radius": 114
+      "radius": 42
     },
     {
       "id": 5,
       "name": "Spawn 5",
-      "x": 22,
-      "y": 1231.5,
+      "x": 18,
+      "y": 1456.5,
       "enabled": true,
-      "radius": 106
+      "radius": 62
     },
     {
       "id": 6,
       "name": "Spawn 6",
-      "x": 103,
-      "y": 1234.5,
+      "x": 98,
+      "y": 1434.5,
       "enabled": true,
-      "radius": 128
+      "radius": 42
     },
     {
       "id": 7,
       "name": "Spawn 7",
-      "x": 480,
-      "y": 697.5,
+      "x": 830,
+      "y": 778.5,
       "enabled": true,
-      "radius": 150
+      "radius": 42
     },
     {
       "id": 8,
       "name": "Spawn 8",
-      "x": 581,
-      "y": 701.5,
+      "x": 840,
+      "y": 734.5,
       "enabled": true,
-      "radius": 118
+      "radius": 58
     },
     {
       "id": 9,
       "name": "Spawn 9",
-      "x": 660,
-      "y": 700.5,
+      "x": 772,
+      "y": 684.5,
       "enabled": true,
-      "radius": 98
+      "radius": 55
     },
     {
       "id": 10,
       "name": "Spawn 10",
-      "x": -200,
-      "y": -1120.5,
+      "x": -94,
+      "y": -1411.5,
       "enabled": true,
-      "radius": 150
+      "radius": 50
     },
     {
       "id": 11,
       "name": "Spawn 11",
-      "x": -109,
-      "y": -1159.5,
+      "x": -74,
+      "y": -1473.5,
       "enabled": true,
-      "radius": 150
+      "radius": 45
     },
     {
       "id": 12,
       "name": "Spawn 12",
-      "x": -135,
-      "y": -1212.5,
+      "x": -4,
+      "y": -1465.5,
       "enabled": true,
-      "radius": 110
+      "radius": 53
     },
     {
       "id": 13,
       "name": "Spawn 13",
-      "x": 100,
-      "y": -1165.5,
+      "x": 94,
+      "y": -1419.5,
       "enabled": true,
-      "radius": 146
+      "radius": 56
     },
     {
       "id": 14,
       "name": "Spawn 14",
-      "x": 193,
-      "y": -1201.5,
+      "x": 118,
+      "y": -1473.5,
       "enabled": true,
-      "radius": 102
+      "radius": 44
     },
     {
       "id": 15,
       "name": "Spawn 15",
-      "x": 240,
-      "y": -1132.5,
+      "x": 30,
+      "y": -1409.5,
       "enabled": true,
-      "radius": 150
+      "radius": 109
     }
   ],
   "graphs": [
@@ -5959,8 +5959,14 @@
         2,
         3
       ],
-      "entry": "legacy-route-798-0",
+      "entry": "legacy-route-798-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-798-ground-entry",
+          "x": -676,
+          "y": -555.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-798-0",
           "goal": false,
@@ -6005,6 +6011,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-798-edge-ground-entry",
+          "from": "legacy-route-798-ground-entry",
+          "to": "legacy-route-798-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-798-edge-0",
           "from": "legacy-route-798-0",
@@ -6054,8 +6066,14 @@
         2,
         3
       ],
-      "entry": "legacy-route-813-0",
+      "entry": "legacy-route-813-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-813-ground-entry",
+          "x": -676,
+          "y": -555.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-813-0",
           "goal": false,
@@ -6094,6 +6112,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-813-edge-ground-entry",
+          "from": "legacy-route-813-ground-entry",
+          "to": "legacy-route-813-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-813-edge-0",
           "from": "legacy-route-813-0",
@@ -6140,8 +6164,14 @@
         5,
         6
       ],
-      "entry": "legacy-route-831-0",
+      "entry": "legacy-route-831-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-831-ground-entry",
+          "x": 18,
+          "y": 1328.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-831-0",
           "goal": false,
@@ -6192,6 +6222,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-831-edge-ground-entry",
+          "from": "legacy-route-831-ground-entry",
+          "to": "legacy-route-831-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-831-edge-0",
           "from": "legacy-route-831-0",
@@ -6247,8 +6283,14 @@
         5,
         6
       ],
-      "entry": "legacy-route-843-0",
+      "entry": "legacy-route-843-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-843-ground-entry",
+          "x": 18,
+          "y": 1328.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-843-0",
           "goal": false,
@@ -6293,6 +6335,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-843-edge-ground-entry",
+          "from": "legacy-route-843-ground-entry",
+          "to": "legacy-route-843-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-843-edge-0",
           "from": "legacy-route-843-0",
@@ -6344,8 +6392,14 @@
         8,
         9
       ],
-      "entry": "legacy-route-858-0",
+      "entry": "legacy-route-858-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-858-ground-entry",
+          "x": 696,
+          "y": 712.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-858-0",
           "goal": false,
@@ -6378,6 +6432,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-858-edge-ground-entry",
+          "from": "legacy-route-858-ground-entry",
+          "to": "legacy-route-858-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-858-edge-0",
           "from": "legacy-route-858-0",
@@ -6415,8 +6475,14 @@
         8,
         9
       ],
-      "entry": "legacy-route-873-0",
+      "entry": "legacy-route-873-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-873-ground-entry",
+          "x": 696,
+          "y": 712.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-873-0",
           "goal": false,
@@ -6479,6 +6545,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-873-edge-ground-entry",
+          "from": "legacy-route-873-ground-entry",
+          "to": "legacy-route-873-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-873-edge-0",
           "from": "legacy-route-873-0",
@@ -6548,8 +6620,14 @@
         11,
         12
       ],
-      "entry": "legacy-route-888-0",
+      "entry": "legacy-route-888-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-888-ground-entry",
+          "x": -64,
+          "y": -1287.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-888-0",
           "goal": false,
@@ -6588,6 +6666,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-888-edge-ground-entry",
+          "from": "legacy-route-888-ground-entry",
+          "to": "legacy-route-888-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-888-edge-0",
           "from": "legacy-route-888-0",
@@ -6631,8 +6715,14 @@
         11,
         12
       ],
-      "entry": "legacy-route-900-0",
+      "entry": "legacy-route-900-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-900-ground-entry",
+          "x": -64,
+          "y": -1287.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-900-0",
           "goal": false,
@@ -6719,6 +6809,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-900-edge-ground-entry",
+          "from": "legacy-route-900-ground-entry",
+          "to": "legacy-route-900-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-900-edge-0",
           "from": "legacy-route-900-0",
@@ -6812,8 +6908,14 @@
         11,
         12
       ],
-      "entry": "legacy-route-915-0",
+      "entry": "legacy-route-915-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-915-ground-entry",
+          "x": -64,
+          "y": -1287.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-915-0",
           "goal": false,
@@ -6858,6 +6960,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-915-edge-ground-entry",
+          "from": "legacy-route-915-ground-entry",
+          "to": "legacy-route-915-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-915-edge-0",
           "from": "legacy-route-915-0",
@@ -6909,8 +7017,14 @@
         14,
         15
       ],
-      "entry": "legacy-route-927-0",
+      "entry": "legacy-route-927-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-927-ground-entry",
+          "x": 98,
+          "y": -1285.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-927-0",
           "goal": false,
@@ -6949,6 +7063,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-927-edge-ground-entry",
+          "from": "legacy-route-927-ground-entry",
+          "to": "legacy-route-927-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-927-edge-0",
           "from": "legacy-route-927-0",
@@ -6992,8 +7112,14 @@
         14,
         15
       ],
-      "entry": "legacy-route-939-0",
+      "entry": "legacy-route-939-ground-entry",
       "nodes": [
+        {
+          "id": "legacy-route-939-ground-entry",
+          "x": 98,
+          "y": -1285.5,
+          "goal": false
+        },
         {
           "id": "legacy-route-939-0",
           "goal": false,
@@ -7038,6 +7164,12 @@
         }
       ],
       "edges": [
+        {
+          "id": "legacy-route-939-edge-ground-entry",
+          "from": "legacy-route-939-ground-entry",
+          "to": "legacy-route-939-0",
+          "weight": 1
+        },
         {
           "id": "legacy-route-939-edge-0",
           "from": "legacy-route-939-0",
