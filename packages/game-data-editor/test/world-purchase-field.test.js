@@ -31,7 +31,7 @@ test('recovered generated layouts keep their selected field without drift and re
  const changed={...b,wallFacing:'NW'},next=Purchase.project(Gate.project(recovered,changed),changed),info=Maps.model(next),entry=controller(info,next,changed),plate=entry.locks[0];assert(plate.position.x-entry.owner.position.x>0);assert(plate.position.y-entry.owner.position.y<0);close([plate.world[1],plate.world[2]],[0,0]);assert(plate.world[0]>0&&plate.world[3]>0);
 });
 
-test('building X flip mirrors its art, physics, and purchase position while keeping the upgrade card readable',()=>{
+test('building X flip mirrors the name card, purchase field, and fixtures together',()=>{
  const f=fixture('Map07',3),b={...f.building,x:123,y:-245,angle:23,scale:1.4,purchaseSide:'flip',purchaseOffset:{x:8,y:12},purchaseOverride:true};
  const map=M.createMap('flip-test','Flip test','forest'),stage={...f.stage,buildings:[b],specials:[],spawns:[],graphs:[]};
  const build=building=>{
@@ -46,8 +46,9 @@ test('building X flip mirrors its art, physics, and purchase position while keep
  close([flipped.owner.position.x,flipped.owner.position.y],[b.x,b.y]);
  const left=base.owner.world,right=flipped.owner.world;
  compare({x:left[4]+left[0],y:left[5]+left[1]},{x:right[4]+right[0],y:right[5]+right[1]});
- compare(base.field.position,flipped.field.position);compare(base.card.position,flipped.card.position);
- close(base.card.world.slice(0,4),flipped.card.world.slice(0,4));
+ for(const key of ['field','card'])for(const p of [{x:0,y:0},{x:1,y:0},{x:0,y:1}]){
+  compare(Maps.point(base[key].world,p),Maps.point(flipped[key].world,p));
+ }
  step(base.info,base.field).forEach((point,i)=>compare(point,step(flipped.info,flipped.field)[i]));
  const fixtures=record=>record.info.colliders.filter(c=>c.node===record.owner.id&&c.type==='cc.PhysicsPolygonCollider');
  const a=fixtures(base),c=fixtures(flipped);assert(a.length>0);assert.equal(a.length,c.length);
@@ -56,7 +57,7 @@ test('building X flip mirrors its art, physics, and purchase position while keep
  assert.equal(JSON.stringify(f.source.data),before);
 });
 
-test('tier purchase defaults retain the flipped placement and upright card after repeated application',()=>{
+test('tier purchase defaults mirror both cards after repeated application',()=>{
  const f=fixture('Map07',3),b={...f.building,x:123,y:-245,angle:23,scale:1.4,purchaseOverride:false};
  const config=L.read(root,L.configFile('A')),category=config.BuildEnum[3],map=M.createMap('flip-runtime','Flip runtime','forest');
  const {environment,Node}=require('../../../tools/navigation/runtime-harness.cjs'),e=environment();
@@ -76,12 +77,14 @@ test('tier purchase defaults retain the flipped placement and upright card after
   const card=instantiate(cardId);
   return {node,ndLockList,card,buildCfg:category,buildInfo:{cfg:null},purchaseSide:data.purchaseSide,purchaseOffset:data.purchaseOffset,placementVariant:data.placementVariant,purchaseFlipAngle:data.purchaseFlipAngle};
  }
- const base=runtimeOwner(false),mirror=runtimeOwner(true),position=(n,x=0,y=0)=>n.convertToWorldSpaceAR(e.cc.v2(x,y)),basis=n=>{const o=position(n),x=position(n,1,0),y=position(n,0,1);return [x.x-o.x,x.y-o.y,y.x-o.x,y.y-o.y];},normal=basis(mirror.card);
+ const base=runtimeOwner(false),mirror=runtimeOwner(true),position=(n,x=0,y=0)=>n.convertToWorldSpaceAR(e.cc.v2(x,y));
  function compare(a,c){const q=M.toLocal(b,a),p=M.toWorld(b,{x:-q.x,y:q.y});close([c.x,c.y],[p.x,p.y]);}
- for(const row of [...category.levelList.slice(0,4),category.levelList[1],category.levelList[0]]) {
+ const alternate={...category.levelList[1],PurchaseField:{southwest:true,x:7,y:9}};
+ for(const row of [...category.levelList.slice(0,4),alternate,category.levelList[0]]) {
   for(const owner of [base,mirror]){owner.buildInfo.cfg=row;runtime.apply(owner);runtime.applyUnbuilt(owner);}
-  compare(position(base.ndLockList[0]),position(mirror.ndLockList[0]));
-  compare(position(base.card),position(mirror.card));
-  close(basis(mirror.card),normal);
+  for(const [x,y] of [[0,0],[1,0],[0,1]]){
+   compare(position(base.ndLockList[0],x,y),position(mirror.ndLockList[0],x,y));
+   compare(position(base.card,x,y),position(mirror.card,x,y));
+  }
  }
 });

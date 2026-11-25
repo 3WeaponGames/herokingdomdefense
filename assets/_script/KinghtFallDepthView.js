@@ -2158,7 +2158,9 @@ function collectDepthGroups(view, state, draw, cache) {
       var building=!groundVisual&&!!node._depthBuilding,actor=node._combatActor||(node===hero?heroActor:null);
       var feet=actor?actorGroundPoint(actor,main,heroActor,cache,owner):null;
       group.draw=draw;
-      group.nodes.length=0;
+      // Keep the backing storage for groups that draw only one node.
+      group.nodes[0]=node;
+      if(group.nodes.length>1)group.nodes.length=1;
       group.ground=feet?feet.y:owner._depthGround?depthGroundY(owner._depthGround,owner,main,cache,reads):owner.y;
       group.feet=feet;
       group.actor=actor?1:0;
@@ -2171,8 +2173,7 @@ function collectDepthGroups(view, state, draw, cache) {
       if (!building && !Number.isFinite(group.band) && (node._depthScenery || node._depthMapObject)) group.band = node._depthMapForeground ? 3 : 1;
       if (Number.isFinite(group.band)) maximum = Math.max(maximum, group.band);
       ordered.push(group);
-    }
-    group.nodes.push(node);
+    }else group.nodes.push(node);
   }
   return maximum;
 }

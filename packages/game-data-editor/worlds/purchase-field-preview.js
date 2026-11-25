@@ -1,11 +1,5 @@
 'use strict';
-const Maps=require('../lib/map-assets'),Model=require('./model'),{clone}=Model;
-
-function cardMatrix(building,origin,pose){
- const position=Maps.point(Model.buildingMatrix(building),{x:pose[4]-origin.x,y:pose[5]-origin.y});
- const upright=Maps.multiply(Model.matrix(building),pose);
- return upright.slice(0,4).concat(position.x,position.y);
-}
+const Maps=require('../lib/map-assets'),{clone}=require('./model');
 
 function describeNameCard(info,owner,field,offset,padScale){
  const card=field&&field.children.map(id=>info.byId[id]).find(node=>node&&node.name==='ndLock');
@@ -32,4 +26,4 @@ function translate(record,delta){
  if(card&&card.followsPurchaseField)next.firstUpgradeCard=Object.assign({},card,{sprites:card.sprites.map(move)});
  return next;
 }
-module.exports={describeNameCard,translate,cardMatrix};
+module.exports={describeNameCard,translate};
