@@ -520,7 +520,8 @@ function refinePushes(rows,initial,context,horizon,free,groups,locked,cap,checkO
  }
  if(ordered.length<times.length)return refineTiming(rows,context,horizon,free,groups,cap,checkOrder);
  const cumulative=[0];
- for(const row of ordered)cumulative.push(cumulative.at(-1)+row.count*profiles.get(row.id).weight);
+ for(const [index,row] of ordered.entries())cumulative.push(cumulative[index]+row.count*profiles.get(row.id).weight);
+ const totalWeight=cumulative[ordered.length];
  const opener=!spawnOneFirst&&locked.some(row=>row.startSeconds<=pacing.openingEnd)?null:ordered[0];
  const support=groupsToPlace[1]?.[0];
  const follow=snapTiming(Math.min(SECOND_GROUP_LEAD,times[0]),Math.ceil);
@@ -531,9 +532,9 @@ function refinePushes(rows,initial,context,horizon,free,groups,locked,cap,checkO
  for(const firstShare of times.length>1?[.65,1,1.35]:[1]){
   const bounds=[0];
   for(let index=1;index<times.length;index++){
-   const weight=cumulative.at(-1)*(index-1+firstShare)/(times.length-1+firstShare);
+   const weight=totalWeight*(index-1+firstShare)/(times.length-1+firstShare);
    const last=ordered.length-(times.length-index);
-   let split=bounds.at(-1)+1;
+   let split=bounds[index-1]+1;
    if(index===1&&support&&last>=2)split=2;
    while(split<last&&Math.abs(cumulative[split+1]-weight)<Math.abs(cumulative[split]-weight))split++;
    bounds.push(split);
@@ -631,7 +632,8 @@ function plan(wave,{
    .map(({index})=>index);
   let chosen=baseline,after=initial;
   if(free.length&&pacing){
-   const desiredEnd=snapTiming(Math.min(Number.MAX_VALUE,pacing.times.at(-1)+Pacing.PEAK_TOLERANCE),Math.ceil);
+   const {times}=pacing;
+   const desiredEnd=snapTiming(Math.min(Number.MAX_VALUE,times[times.length-1]+Pacing.PEAK_TOLERANCE),Math.ceil);
    const horizon=Math.min(Math.max(baseline.after.lastSpawn,desiredEnd),lastSpawnLimit??Infinity);
    if(Number.isSafeInteger(defeatTick(horizon,defeatSeconds))){
     const shaped=refinePushes(rows,initial,context,horizon,free,groups,locked,peakCap,checkOrder);

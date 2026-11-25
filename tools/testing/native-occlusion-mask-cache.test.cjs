@@ -343,6 +343,38 @@ test('the verified adapter receives only disjoint capture scopes and a mask-spec
   finish();
 });
 
+test('only the owned targetless actor route carries masks without a physical target', () => {
+  const g = captureFixture(true), { f, leaf, view, RenderFlow, privateCamera } = g;
+  const original = RenderFlow.render;
+  const renderCamera = RenderFlow.renderCamera = (camera, root) => RenderFlow.render(root, 0, camera);
+  const adapter = RenderFlow._hkdTargetlessAdapter = {
+    ownsRoute(render, camera) { return render === original && camera === renderCamera; }
+  };
+  const queue = RenderFlow._hkdMaskQueue, branches = [];
+  RenderFlow._nativeFlow.render = () => branches.push(queue.scope && queue.scope.branch);
+  const finish = f.api.beginCaptureUpdates(view);
+  privateCamera.targetTexture = null;
+  assert.equal(f.api.ownsTargetlessRoute(view), true);
+  assert.equal(f.api.ownsTargetlessRoute({ ...view }), false);
+  g.capture();
+  RenderFlow._hkdTargetlessRequest = { root: leaf, camera: privateCamera, view };
+  g.capture();
+  g.capture(view.main);
+  g.capture(leaf, {});
+  RenderFlow._hkdTargetlessAdapter = { ...adapter };
+  assert.equal(f.api.ownsTargetlessRoute(view), false);
+  g.capture();
+  RenderFlow._hkdTargetlessAdapter = adapter;
+  RenderFlow.renderCamera = () => {};
+  assert.equal(f.api.ownsTargetlessRoute(view), false);
+  RenderFlow.renderCamera = renderCamera;
+  assert.deepEqual(branches, [null, leaf._parent, null, null, null]);
+  assert.equal(queue.scope, null);
+  finish();
+  assert.equal(RenderFlow.render, original);
+  assert.equal(f.api.ownsTargetlessRoute(view), false);
+});
+
 test('mask mutations invalidate clean groups and exposed material uses individual dispatch', () => {
   const g = captureFixture(true), { f, mask, node, view, RenderFlow } = g;
   const queue = RenderFlow._hkdMaskQueue, canCarry = mask._assembler._updateRenderData._hkdCarryDirtyMask;

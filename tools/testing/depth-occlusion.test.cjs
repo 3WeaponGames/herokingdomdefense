@@ -12,6 +12,90 @@ function load(cc = {}, sp = {}, spine) {
   return context.exports;
 }
 
+test('empty actor captures keep capacity and publish a frame only after the original target is drawn', () => {
+  for (const mode of ['targetless', 'materialized', 'multiple contacts', 'foreign route', 'throw']) {
+    const events = [], actor = {}, drawId = {}, oldDraw = {};
+    class Node {
+      setPosition(x, y) { this.x = Math.fround(x); this.y = Math.fround(y); }
+      getWorldMatrix() { events.push('camera matrix'); }
+    }
+    class Camera {
+      beforeDraw() { events.push('camera projection'); }
+      render() { throw new Error('Unexpected extra camera'); }
+    }
+    Camera.ClearFlags = { COLOR: 1, DEPTH: 2, STENCIL: 4 };
+    class Skeleton { isAnimationCached() { return this.cached; } }
+    const renderer = actor.spAni = Object.assign(new Skeleton(), { enabled: true, _nativeSkeleton: {},
+      _skeleton: { slots: [] }, node: { childrenCount: 0, activeInHierarchy: true, _proxy: {} } });
+    renderer.node._renderComponent = renderer;
+    const blocker = Object.assign(new Skeleton(), { enabled: true, cached: true });
+    const scene = { children: [] };
+    blocker.node = { parent: scene, _components: [blocker], activeInHierarchy: true };
+    scene.children.push(blocker.node);
+    const texture = { width: 64, height: 96, _framebuffer: {} };
+    const record = { draw: oldDraw, texture };
+    const cameraNode = new Node(), camera = Object.assign(new Camera(), { node: cameraNode, enabled: false, _camera: {}, targetTexture: null });
+    const selected = { muted: false };
+    const scope = {
+      enabled: true, first: true, prepareAttempted: true, selected: new Set([selected]),
+      byRenderer: new Map([[renderer, selected]]),
+      resolve() { return selected; },
+      same(row) { return row === selected; },
+      capture(node, draw) {
+        assert.equal(node, renderer.node);
+        this.drawing = this.quiet = true;
+        try { draw(); } finally { this.drawing = false; }
+      }
+    };
+    const view = { camera, cameraNode, _cachedCaptureBlocker: blocker, _nativeCaptureScope: scope,
+      nativeActors: new Map([[actor, record]]), _nativeActorAtlas: { forget() { events.push('prepare original texture'); } } };
+    const RenderFlow = {
+      _nativeFlow: {}, FLAG_WORLD_TRANSFORM: 1, FLAG_OPACITY: 2,
+      renderCamera(nativeCamera, root) {
+        const request = this._hkdTargetlessRequest;
+        assert.equal(nativeCamera, camera._camera);
+        assert.equal(root, renderer.node);
+        assert.ok(request.revalidate());
+        assert.equal(camera.targetTexture, null);
+        events.push('original logical visit');
+        if (mode === 'targetless') { request.result = 2; return; }
+        assert.ok(request.materialize());
+        assert.ok(request.materialize());
+        assert.equal(camera.targetTexture, texture);
+        events.push('original physical draw');
+        if (mode === 'throw') throw new Error('Camera failed');
+        request.result = 1;
+      }
+    };
+    const context = {
+      exports: {}, cc: { Node, Camera, RenderFlow, Mat4: class {}, director: { getScene: () => scene } }, sp: { Skeleton },
+      spine: { _hkdTargetlessLeaf() {} }, route: { ownsTargetlessRoute: () => mode !== 'foreign route' }
+    };
+    vm.runInNewContext(source + '\nnativeMaskState=route; captureProjection=function(){return {x:1.5,y:-0.25,ortho:48};};\n' +
+      'exports.captureEmptyActor=captureEmptyActor;', context);
+    const entry = { actor, sources: [renderer] }, center = { x: 0, y: 0 }, size = { width: 64, height: 96 };
+    const coverage = { isCurrent: () => true, isEmpty: () => true };
+    const contacts = { draw: [{ hidden: mode === 'multiple contacts' ? [entry, entry] : [entry] }] };
+    const run = () => context.exports.captureEmptyActor(view, entry, drawId, {}, null, coverage, {}, center, size, contacts);
+    if (mode === 'throw') assert.throws(run, /Camera failed/);
+    else {
+      const result = run();
+      assert.equal(result?.result ?? 0, mode === 'targetless' ? 2 : mode === 'materialized' ? 1 : 0);
+      if (result) assert.equal(result.record, record);
+    }
+    assert.equal(camera.targetTexture, null);
+    assert.ok(!RenderFlow._hkdTargetlessRequest);
+    assert.equal(record.draw, mode === 'materialized' ? drawId : oldDraw);
+    if (mode === 'multiple contacts' || mode === 'foreign route') assert.deepEqual(events, []);
+    else {
+      const expected = ['camera matrix', 'camera projection', 'original logical visit'];
+      if (mode !== 'targetless') expected.push('prepare original texture', 'original physical draw');
+      assert.deepEqual(events, expected);
+    }
+    if (mode === 'targetless' || mode === 'materialized') assert.equal(record.size, size);
+  }
+});
+
 test('native stage keeps drawing while the silhouette material loads and releases captures on exit', () => {
   const events = [];
   let loadEffect, destroyed = 0;

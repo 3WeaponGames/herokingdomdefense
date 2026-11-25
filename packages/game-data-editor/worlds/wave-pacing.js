@@ -29,7 +29,7 @@ function suggestedPeaks(count,units,cap,rate,deadline,latestGroupStart=0){
  const scale=Math.max(count*.5,Math.min(duration,deadline??Infinity))/nominal;
  const targets=[];
  for(let index=0;index<count;index++){
-  targets.push(Math.max((targets.at(-1)??0)+.5,Math.round((5+index*spacing)*scale*2)/2));
+  targets.push(Math.max((targets[index-1]??0)+.5,Math.round((5+index*spacing)*scale*2)/2));
  }
  return targets;
 }

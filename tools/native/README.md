@@ -68,6 +68,12 @@ Add `--terrain-geometry-revision` to the Windows x86 Release builder to enable r
 
 The build writes `terrain-geometry-revision-diff.json` and retains both original resources under `source-patch-backups/terrain-geometry-revision/`. Launch using that build's manifest. The launcher verifies both resources, loads them from the isolated session and records their hashes under `patches.terrainGeometryRevision` in `preview-proof.json`. Add `--grouped-mask-queue` at launch to combine the two options. Builds without the terrain option keep the original core and adapter resources.
 
+### Optional empty actor capture optimization
+
+Add `--targetless-actor-captures` to both the Windows x86 Release build and its preview launch. The build requires `--capture-framebuffer-status` and `--terrain-geometry-revision`. The launch flag selects the verified core and grouped mask adapter for the supplied build manifest.
+
+In crowded scenes, the preview can skip preparing a render target when it proves that an ordinary enemy's scenery capture has no reader. The original animation update, middleware render and actor order still run at that capture position. When an observer needs the target, the preview binds the original texture and completes the physical render in the same pass. The build emits `targetless-actor-captures-diff.json` for the native source changes. The isolated preview records the deployed resources in `preview-proof.json`.
+
 ### Launch a Release preview
 
 Keep Creator open on this project and let it finish compiling/importing. The launcher consumes Creator's existing native-preview files; it does not generate them. Its checks require the generated `simulator/win32/main.js`, `preview-scene.json` for the normal Start scene, and current `temp/quick-scripts/dst` source maps. Refresh those files through Creator's native preview when needed, then close the stock simulator before launching:

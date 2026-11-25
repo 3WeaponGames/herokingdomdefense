@@ -39,13 +39,19 @@ function beginCaptureUpdates(view) {
   if (source.indexOf("RenderFlow.validateRenderers()") < 0 || source.indexOf("assembler._updateRenderData()") < 0 ||
       source.indexOf("this._nativeFlow.render(scene._proxy, dt, camera)") < 0) return null;
   var queue = groupedQueue();
-  var scope = { main: view.main, camera: view.camera, branch: null, running: false, update: update };
+  var adapter = queue && flow._hkdTargetlessAdapter;
+  var targetless = adapter && typeof adapter.ownsRoute === "function" && adapter.ownsRoute(original, flow.renderCamera);
+  var scope = { view: view, main: view.main, camera: view.camera, branch: null, running: false, update: update,
+    original: original, render: render, targetlessAdapter: targetless ? adapter : null };
   function render(root, delta, camera) {
     var previous = scope.branch, running = scope.running, earlierQueue = queue && queue.scope;
     // A mask is outside this draw only if it belongs to a different map branch.
     // An atlas or full-scene root can still traverse the mask before GPU culling.
+    var request = scope.targetlessAdapter && scope.targetlessAdapter === flow._hkdTargetlessAdapter &&
+      flow._hkdTargetlessRequest;
     scope.branch = !running && this === flow && delta === 0 && camera === scope.camera._camera &&
-      scope.camera.targetTexture ? mapBranch(root, scope.main) : null;
+      (scope.camera.targetTexture || request && request.root === root && request.camera === scope.camera &&
+        request.view === view) ? mapBranch(root, scope.main) : null;
     scope.running = true;
     if (queue) queue.scope = scope.branch ? scope : null;
     try { return original.apply(this, arguments); }
@@ -62,6 +68,12 @@ function beginCaptureUpdates(view) {
     if (captureUpdates === scope) captureUpdates = null;
     if (flow.render === render) flow.render = original;
   };
+}
+function ownsTargetlessRoute(view) {
+  var scope = captureUpdates, flow = cc.RenderFlow;
+  return !!(scope && scope.view === view && flow && flow.render === scope.render &&
+    scope.targetlessAdapter && scope.targetlessAdapter === flow._hkdTargetlessAdapter &&
+    scope.targetlessAdapter.ownsRoute(scope.original, flow.renderCamera));
 }
 function stopObserving(record) {
   var watched = record.maskObservers;
@@ -245,3 +257,4 @@ function sync(mask) {
 exports.sync = sync;
 exports.dispose = dispose;
 exports.beginCaptureUpdates = beginCaptureUpdates;
+exports.ownsTargetlessRoute = ownsTargetlessRoute;

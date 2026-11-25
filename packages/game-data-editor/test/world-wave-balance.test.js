@@ -57,12 +57,22 @@ test('Spawn 1 leads a small opening and both sides take part in the two pushes',
  assert.deepEqual(source,original);
 });
 
-test('finds four separate pushes while preserving the Manual row and validating the final schedule',()=>{
- const counts=[4,5,5,5,5,5,3,4,5],pushPeaks=[5,20,35,50];
+test('finds four separate pushes without Array.prototype.at and preserves the Manual row',()=>{
+ const counts=[4,5,5,5,5,5,3,4,5];
  const source=wave(...counts.map((count,index)=>row('spawn-'+(index+1),index+1,count,0,.5)),
   row('manual',5,2,35.25,.75,{editorManualTiming:true,routeGraphId:'keep'}));
- const options={peakCap:19,lastSpawnLimit:53,pushPeaks,spawnGroups:[[1,2,3],[4,5,6],[7,8,9]]};
- const result=plan(source,options);
+ const total=counts.reduce((sum,count)=>sum+count,2);
+ const options={peakCap:19,lastSpawnLimit:53,spawnGroups:[[1,2,3],[4,5,6],[7,8,9]]};
+ const at=Array.prototype.at;
+ let pushPeaks,result;
+ try{
+  Array.prototype.at=undefined;
+  pushPeaks=Pacing.suggestedPeaks(4,total,options.peakCap,2,options.lastSpawnLimit);
+  result=plan(source,{...options,pushPeaks});
+ }finally{
+  Array.prototype.at=at;
+ }
+ assert.deepEqual(pushPeaks,[5,20,35,50]);
  assert.equal(result.ok,true);
  const pacing=result.tactical.after.pacing;
  assert.equal(pacing.distinct,4);
@@ -75,7 +85,7 @@ test('finds four separate pushes while preserving the Manual row and validating 
  }
  const applied=result.afterWave.SpawnTimeline;
  assert.deepEqual(applied.at(-1),source.SpawnTimeline.at(-1));
- assert.equal(projection.totals.units,counts.reduce((sum,count)=>sum+count,2));
+ assert.equal(projection.totals.units,total);
  assert(result.changes.every(change=>Number.isInteger(2*change.startSeconds)&&Number.isInteger(2*change.intervalSeconds)));
 });
 

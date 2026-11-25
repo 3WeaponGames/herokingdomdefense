@@ -89,6 +89,33 @@ function verifyTerrainResources(release,revisions){
   }
   return {terrain,core:files.get(terrain.CORE),adapter:files.get(terrain.ADAPTER)};
 }
+function verifyTargetlessRelease(release,terrain,revisions){
+  const {features,targetlessActorCapturesDiff:diff}=release.manifest;
+  check(features.targetlessActorCaptures===true&&features.captureFramebufferStatus===true&&terrain,
+    '--targetless-actor-captures requires a targetless Release build with terrain geometry revisions and capture framebuffer status');
+  const targetless=require('./targetless-actor-captures.cjs');
+  const {sourcePatchDiff}=require('./build-native-preview.cjs');
+  const directory=targetless.DIRECTORY;
+  const file=path.join(release.buildRoot,directory+'-diff.json');
+  check(diff&&diff.format==='exact-replacement-v1'&&typeof diff.file==='string'&&path.isAbsolute(diff.file)&&resolved(diff.file)===resolved(file),
+    'Missing or invalid targetless actor captures build receipt');
+  function ownedRead(source,root){
+    check(inside(resolved(source),root)&&fs.lstatSync(source).isFile(),'Targetless actor captures file is outside its build: '+source);
+    return readRevision(source,revisions);
+  }
+  const patchRecords=targetless.definitions(features).map(patch=>({...patch,feature:targetless.FEATURE}));
+  const receipt=ownedRead(file,release.buildRoot);
+  check(hash(receipt)===diff.sha256&&receipt.equals(sourcePatchDiff(patchRecords)),
+    'Targetless actor captures build receipt does not match the pinned native changes');
+  for(const patch of patchRecords){
+    const before=ownedRead(path.join(release.buildRoot,'source-patch-backups',directory,patch.file),release.buildRoot);
+    const after=ownedRead(path.join(release.cloneRoot,patch.file),release.cloneRoot);
+    check(hash(before)===patch.beforeSha256&&hash(after)===patch.afterSha256,'Targetless actor captures native source hash mismatch: '+patch.file);
+  }
+  check(readRevision(release.executable,revisions).includes(Buffer.from('_hkdTargetlessLeaf\0')),
+    'Targetless actor captures Release executable is missing the native binding');
+  return {resources:require('./targetless-actor-captures-resources.cjs'),nativeDiffSha256:diff.sha256};
+}
 function verifyCompiled(project,quick,revisions){
   const boot=readRevision(path.join(quick,'__quick_compile__.js'),revisions).toString('utf8'),declarations=[...boot.matchAll(/(?:^|\n)[ \t]*var scripts\s*=\s*(\[[^\r\n]*\]);/g)];check(declarations.length===1,'Unknown Creator quick-compile bootstrap');const scripts=json(Buffer.from(declarations[0][1]),'Creator script registry');check(Array.isArray(scripts),'Creator script registry must be an array');
   const registry=new Set(scripts.map(record=>path.posix.basename(record.path||'','.js'))),proof=[],pending=[path.join(project,'assets/_script')];
@@ -127,19 +154,23 @@ async function prepare(options){
   check(options&&options.creatorProjectRoot&&options.creatorSDKRoot&&options.releaseManifest&&options.outputRoot,'Required options: creatorProjectRoot, creatorSDKRoot, releaseManifest, outputRoot');
   const revisions=new Map(),project=resolved(options.creatorProjectRoot),sdk=sdkRuntime(options.creatorSDKRoot),release=verifyRelease(resolved(options.releaseManifest),revisions);check(resolved(release.manifest.sdk.sourceRoot)===resolved(sdk.root),'Release SDK source does not match creatorSDKRoot');
   const terrain=verifyTerrainResources(release,revisions);
+  const targetless=options.targetlessActorCaptures===true?verifyTargetlessRelease(release,terrain,revisions):null;
+  const groupedMaskQueue=!!targetless||options.groupedMaskQueue===true;
   const protectedRoots=[project,resolved(sdk.root),release.buildRoot,release.cloneRoot,release.directory,release.sharedResourceRoot],output=external(options.outputRoot,protectedRoots),quick=path.join(project,'temp/quick-scripts/dst'),imports=path.join(project,'library/imports');
   const scripts=verifyCompiled(project,quick,revisions),sceneFile=path.join(sdk.runtime,'preview-scene.json'),sceneBytes=readRevision(sceneFile,revisions),scene=json(sceneBytes,sceneFile);check(Array.isArray(scene)&&scene[0]&&scene[0]._name==='Start','Prepare the normal Start scene in Creator native preview before launching');
   const originalEntry=readRevision(path.join(sdk.runtime,'main.js'),revisions).toString('utf8'),settingsBytes=readRevision(path.join(sdk.runtime,'src/settings.js'),revisions),context={window:{}};vm.runInNewContext(settingsBytes.toString('utf8'),context,{timeout:1000});const settings=context.window._CCSettings;check(settings&&Array.isArray(settings.jsList),'Unknown Creator native settings');relocateEntry(originalEntry,project,quick,imports,path.join(output,'preflight'));
   const adapterSource=path.join(release.sharedResourceRoot,'jsb-adapter');
   if(terrain)routeTerrainCore(originalEntry,path.join(output,'preflight'));
-  if(terrain||options.groupedMaskQueue===true)routeGroupedMaskAdapter(originalEntry,path.join(output,'preflight'));
+  if(terrain||groupedMaskQueue)routeGroupedMaskAdapter(originalEntry,path.join(output,'preflight'));
+  const targetlessCore=targetless&&targetless.resources.patchCore(terrain.core.bytes);
   let adapterTransform;
-  if(options.groupedMaskQueue===true){
+  if(groupedMaskQueue){
     const file=path.join(adapterSource,groupedMaskAdapter);
     check(fs.lstatSync(file).isFile()&&inside(resolved(file),adapterSource),'Grouped mask queue requires a regular adapter in the Release SDK copy');
     const input=readRevision(file,revisions),sourceSha256=hash(input);
     const grouped=require('./grouped-mask-queue.cjs').patch(terrain?terrain.adapter.stock:input);
-    const deployed=terrain?terrain.terrain.patchGroupedAdapter(grouped):grouped;
+    const composed=terrain?terrain.terrain.patchGroupedAdapter(grouped):grouped;
+    const deployed=targetless?targetless.resources.patchAdapter(composed):composed;
     check(Buffer.isBuffer(deployed)&&hash(deployed)!==sourceSha256,'Grouped mask queue did not produce a patched adapter');
     adapterTransform=(relative,bytes)=>{
       if(relative!==groupedMaskAdapter)return bytes;
@@ -157,7 +188,7 @@ async function prepare(options){
   const adapterSnapshot=await snapshotTree(adapterSource,path.join(run,'jsb-adapter'),adapterTransform);
   snapshots.push(adapterSnapshot);
   fs.mkdirSync(path.join(run,'src'),{recursive:true});for(const name of ['settings.js','simulator-config.js','asset-record-pipe.js'])fs.writeFileSync(path.join(run,'src',name),readRevision(path.join(sdk.runtime,'src',name),revisions),{flag:'wx'});
-  const core=terrain?terrain.core.bytes:readRevision(path.join(release.sharedResourceRoot,'src/cocos2d-jsb.js'),revisions);
+  const core=targetlessCore||(terrain?terrain.core.bytes:readRevision(path.join(release.sharedResourceRoot,'src/cocos2d-jsb.js'),revisions));
   fs.writeFileSync(path.join(run,'src/cocos2d-jsb.js'),core,{flag:'wx'});
   for(const item of settings.jsList){check(typeof item==='string'&&!path.isAbsolute(item)&&!item.split(/[\\/]/).includes('..'),'Invalid Creator plugin path');const target=path.join(run,'plugins',item);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,readRevision(path.join(project,item),revisions),{flag:'wx'});}
   const bundleProof=[];for(const bundle of bundles){bundle.config.importBase='';bundle.config.nativeBase='';const dir=path.join(run,'assets',bundle.name);fs.mkdirSync(dir,{recursive:true});const config=JSON.stringify(bundle.config);fs.writeFileSync(path.join(dir,'config.json'),config,{flag:'wx'});fs.writeFileSync(path.join(dir,'index.js'),bundle.index,{flag:'wx'});bundleProof.push({name:bundle.name,configSha256:hash(config),indexSha256:hash(bundle.index)});}
@@ -178,6 +209,12 @@ async function prepare(options){
     patches.terrainGeometryRevision={core:{path:'src/cocos2d-jsb.js',sha256:hash(core),bytes:core.length},
       adapter:{path:'jsb-adapter/'+adapter.path,sha256:adapter.sha256,bytes:adapter.bytes},entrySha256:hash(appEntry)};
   }
+  if(targetless){
+    const {core,adapter,entrySha256}=patches.terrainGeometryRevision;
+    patches.targetlessActorCaptures={nativeDiffSha256:targetless.nativeDiffSha256,entrySha256,
+      core:{...core,sourceSha256:targetless.resources.CORE_INPUT},
+      adapter:{...adapter,sourceSha256:targetless.resources.ADAPTER_INPUT}};
+  }
   fs.writeFileSync(path.join(run,'app-main.js'),appEntry,{flag:'wx'});
   const entry="jsb.AudioEngine.stopAll();jsb.AudioEngine.play2d=function(){return -1;};jsb.AudioEngine.play2d.__hkdPreviewMuted=true;\nif(!jsb.fileUtils)require('jsb-adapter/jsb-builtin.js');\njsb.fileUtils.setWritablePath("+JSON.stringify(posix(save)+'/')+");\njsb.fileUtils.addSearchPath("+JSON.stringify(posix(release.sharedResourceRoot))+");\nrequire("+JSON.stringify(posix(path.join(run,'app-main.js')))+");\n";fs.writeFileSync(path.join(run,'main.js'),entry);
   assertRevisions(revisions);for(const snapshot of snapshots)check(JSON.stringify(walk(snapshot.source))===JSON.stringify(snapshot.files.map(file=>({path:file.path.split('/').join(path.sep),bytes:file.sourceBytes??file.bytes,mtimeMs:file.sourceMtimeMs,ctimeMs:file.sourceCtimeMs}))),'Snapshot source changed after copy: '+snapshot.source);
@@ -189,6 +226,20 @@ function launch(prepared){
   const terrainPatch=prepared.proof.patches?.terrainGeometryRevision;
   check(!!terrain===!!terrainPatch,'Prepared terrain geometry revision does not match the Release manifest');
   const adapterPatch=prepared.proof.patches?.groupedMaskQueue;
+  const targetlessPatch=prepared.proof.patches?.targetlessActorCaptures;
+  if(terrainPatch&&!targetlessPatch)check(terrainPatch.core?.sha256===hash(terrain.core.bytes),
+    'Prepared Creator core does not match the stock terrain route');
+  if(targetlessPatch){
+    const targetless=verifyTargetlessRelease(release,terrain);
+    const resources=targetless.resources;
+    check(prepared.executable===release.executable&&prepared.proof.executableSha256===release.manifest.runtime.executableSha256&&
+      targetlessPatch.nativeDiffSha256===targetless.nativeDiffSha256&&adapterPatch&&
+      targetlessPatch.core?.sourceSha256===resources.CORE_INPUT&&targetlessPatch.core.sha256===resources.CORE_OUTPUT&&
+      targetlessPatch.adapter?.sourceSha256===resources.ADAPTER_INPUT&&targetlessPatch.adapter.sha256===resources.ADAPTER_OUTPUT&&
+      terrainPatch.core?.sha256===resources.CORE_OUTPUT&&terrainPatch.adapter?.sha256===resources.ADAPTER_OUTPUT&&
+      targetlessPatch.entrySha256===terrainPatch.entrySha256,
+      'Targetless actor captures preview receipt does not match the verified Release and engine resources');
+  }
   if(adapterPatch){
     const root=resolved(prepared.run),file=path.join(root,'jsb-adapter',groupedMaskAdapter),entry=path.join(root,'app-main.js');
     check(root===prepared.proof.run&&inside(resolved(file),root)&&inside(resolved(entry),root)&&fs.lstatSync(file).isFile()&&fs.lstatSync(entry).isFile(),'Grouped mask queue files must belong to the prepared preview');
@@ -215,7 +266,7 @@ function launch(prepared){
   child.once('exit',(code,signal)=>{info.endedAt=new Date().toISOString();info.exitCode=code;info.signal=signal||null;fs.writeFileSync(processFile,JSON.stringify(info,null,2));});
   return child;
 }
-function parseArgs(argv){const result={};const names={'--creator-project-root':'creatorProjectRoot','--creator-sdk-root':'creatorSDKRoot','--release-manifest':'releaseManifest','--output-root':'outputRoot','--creator-preview-url':'creatorPreviewURL'};for(let i=0;i<argv.length;i++){const arg=argv[i];if(arg==='--prepare-only')result.prepareOnly=true;else if(arg==='--grouped-mask-queue')result.groupedMaskQueue=true;else if(arg==='--help')result.help=true;else{check(names[arg]&&argv[i+1]&&!argv[i+1].startsWith('--'),'Unknown or incomplete argument: '+arg);result[names[arg]]=argv[++i];}}return result;}
-const usage='node tools/native/launch-optimized-preview.cjs --creator-project-root <project> --creator-sdk-root <cocos2d-x> --release-manifest <release-manifest.json> --output-root <external-folder> [--creator-preview-url http://127.0.0.1:7456/] [--prepare-only] [--grouped-mask-queue]';
+function parseArgs(argv){const result={};const names={'--creator-project-root':'creatorProjectRoot','--creator-sdk-root':'creatorSDKRoot','--release-manifest':'releaseManifest','--output-root':'outputRoot','--creator-preview-url':'creatorPreviewURL'};for(let i=0;i<argv.length;i++){const arg=argv[i];if(arg==='--prepare-only')result.prepareOnly=true;else if(arg==='--grouped-mask-queue')result.groupedMaskQueue=true;else if(arg==='--targetless-actor-captures')result.targetlessActorCaptures=true;else if(arg==='--help')result.help=true;else{check(names[arg]&&argv[i+1]&&!argv[i+1].startsWith('--'),'Unknown or incomplete argument: '+arg);result[names[arg]]=argv[++i];}}return result;}
+const usage='node tools/native/launch-optimized-preview.cjs --creator-project-root <project> --creator-sdk-root <cocos2d-x> --release-manifest <release-manifest.json> --output-root <external-folder> [--creator-preview-url http://127.0.0.1:7456/] [--prepare-only] [--grouped-mask-queue] [--targetless-actor-captures]';
 if(require.main===module){let options;try{options=parseArgs(process.argv.slice(2));}catch(error){console.error(error.message+'\n'+usage);process.exitCode=1;}if(options){if(options.help)console.log(usage);else{console.log('Preparing normal optimized preview: MUTED, SEPARATE SAVE.');prepare(options).then(prepared=>{console.log('Save: '+prepared.save+'\nLogs: '+path.join(prepared.run,'simulator.log'));if(options.prepareOnly){console.log('Prepared only; simulator not started.');return;}const child=launch(prepared),stop=()=>{if(!child.killed)child.kill();};process.once('SIGINT',stop);child.once('error',error=>{process.removeListener('SIGINT',stop);console.error(error.message);process.exitCode=1;});child.once('exit',code=>{process.removeListener('SIGINT',stop);console.log('Preview closed.');process.exitCode=code||0;});}).catch(error=>{console.error(error.message);process.exitCode=1;});}}}
 module.exports={prepare,launch,parseArgs};

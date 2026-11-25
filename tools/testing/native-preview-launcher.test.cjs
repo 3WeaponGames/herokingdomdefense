@@ -158,6 +158,78 @@ test('terrain preview rejects missing receipt, clone drift and unsupported Creat
  }
 });
 
+function targetlessFixture(f){
+ terrainFixture(f);
+ const builder=require('../native/build-native-preview.cjs'),targetless=require('../native/targetless-actor-captures.cjs');
+ const earlier=new Map();
+ for(const module of [require('../native/capture-renderer-inventory.cjs'),require('../native/capture-framebuffer-status.cjs')]){
+  for(const patch of module.definitions(false)){
+   const before=earlier.get(patch.file)||fs.readFileSync(path.join(sdkRoot,patch.file));
+   earlier.set(patch.file,module.patchSource(before,patch));
+  }
+ }
+ const patches=targetless.definitions().map(patch=>{
+  const before=earlier.get(patch.file)||fs.readFileSync(path.join(sdkRoot,patch.file));
+  write(path.join(f.build,'source-patch-backups',targetless.DIRECTORY,patch.file),before);
+  write(path.join(f.clone,patch.file),targetless.patchSource(before,patch));
+  return {...patch,feature:targetless.FEATURE};
+ });
+ const diff=builder.sourcePatchDiff(patches),file=path.join(f.build,targetless.DIRECTORY+'-diff.json');
+ write(file,diff);
+ Object.assign(f.manifest.features,{captureFramebufferStatus:true,targetlessActorCaptures:true});
+ f.manifest.targetlessActorCapturesDiff={file,format:'exact-replacement-v1',sha256:sha(diff)};
+ const executable=Buffer.from('MZ isolated launcher fixture\0_hkdTargetlessLeaf\0');
+ write(f.executable,executable);
+ f.manifest.runtime.executableSha256=sha(executable);
+ Object.assign(f.manifest.runtime.files.find(row=>row.relativePath==='simulator.exe'),{bytes:executable.length,sha256:sha(executable)});
+ write(f.manifestFile,f.manifest);
+ return {firstPatchedSource:path.join(f.clone,patches[0].file)};
+}
+
+test('targetless routing is an explicit opt-in that composes verified private core and grouped adapter',{skip:!terrainSDK},async()=>{
+ const f=fixture(),api=load(f);
+ targetlessFixture(f);
+ const normal=await api.prepare(f.options);
+ assert(!normal.proof.patches.targetlessActorCaptures&&!normal.proof.patches.groupedMaskQueue);
+ const prepared=await api.prepare({...f.options,targetlessActorCaptures:true});
+ const expected=require('../native/targetless-actor-captures-resources.cjs');
+ const proof=prepared.proof.patches.targetlessActorCaptures;
+ assert.equal(proof.nativeDiffSha256,f.manifest.targetlessActorCapturesDiff.sha256);
+ assert.equal(proof.core.sourceSha256,expected.CORE_INPUT);
+ assert.equal(proof.adapter.sourceSha256,expected.ADAPTER_INPUT);
+ for(const [record,digest] of [[proof.core,expected.CORE_OUTPUT],[proof.adapter,expected.ADAPTER_OUTPUT]]){
+  assert.equal(record.sha256,digest);
+  assert.equal(sha(fs.readFileSync(path.join(prepared.run,record.path))),digest);
+ }
+ assert(prepared.proof.patches.groupedMaskQueue&&prepared.proof.patches.terrainGeometryRevision);
+ const core=path.join(prepared.run,proof.core.path),adapter=path.join(prepared.run,proof.adapter.path);
+ const app=fs.readFileSync(path.join(prepared.run,'app-main.js'),'utf8');
+ const requireFor=file=>'require('+JSON.stringify(file.split(path.sep).join('/'))+');';
+ assert(app.indexOf(requireFor(core))>=0&&app.indexOf(requireFor(core))<app.indexOf(requireFor(adapter)));
+ const boot=fs.readFileSync(path.join(prepared.run,'main.js'),'utf8');
+ assert(boot.indexOf('play2d=function(){return -1;}')<boot.indexOf('/app-main.js'));
+ assert.equal(f.calls.length,0);
+ api.launch(prepared);
+ assert.equal(f.calls.length,1);
+ delete prepared.proof.patches.targetlessActorCaptures;
+ assert.throws(()=>api.launch(prepared),/stock terrain route/);
+ prepared.proof.patches.targetlessActorCaptures=proof;
+ write(core,'changed during launch');
+ assert.throws(()=>api.launch(prepared),/Terrain geometry revision engine changed/);
+ assert.equal(f.calls.length,1);
+});
+
+test('targetless preflight rejects a stock Release or drifted targetless native implementation',{skip:!terrainSDK},async()=>{
+ const f=fixture(),api=load(f);
+ await assert.rejects(api.prepare({...f.options,targetlessActorCaptures:true}),/requires a targetless Release build/);
+ assert(!fs.existsSync(f.output));
+ const {firstPatchedSource}=targetlessFixture(f);
+ write(firstPatchedSource,'changed verified native source');
+ await assert.rejects(api.prepare({...f.options,targetlessActorCaptures:true}),/native source hash mismatch/);
+ assert(!fs.existsSync(f.output));
+ assert.equal(f.calls.length,0);
+});
+
 test('CLI prepares a grouped mask queue session without launching when requested',async()=>{
  const f=fixture();let calls=0;
  load(f,{cli:true,prepareOnly:true,groupedMaskQueue:true,patchAdapter(){calls++;return Buffer.from('// grouped preview');}});

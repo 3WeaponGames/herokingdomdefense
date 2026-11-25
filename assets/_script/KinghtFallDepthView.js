@@ -869,7 +869,8 @@ function bounds(renderer, main, cache, staticSpriteBounds) {
   } else {
     w = node.width; h = node.height; x = -w * node.anchorX; y = -h * node.anchorY;
   }
-  if (![x, y, w, h].every(Number.isFinite) || w <= 0 || h <= 0) return null;
+  if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(w) ||
+      !Number.isFinite(h) || w <= 0 || h <= 0) return null;
   var state = staticSpriteBounds && typeof cc.Sprite === "function" && renderer instanceof cc.Sprite &&
     spriteBoundsState(node, main, cache);
   var stamp, previous = state && staticSpriteBounds.get(renderer);
@@ -2572,18 +2573,11 @@ DepthView.prototype.syncNativeMask = function (mask, entry, object, drawId, opac
   mask.node.color = cc.color(entry.tint.r, entry.tint.g, entry.tint.b);
   mask.node.opacity = opacity === undefined ? 204 : opacity;
 };
-DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
-  var center = { x: (box.minX + box.maxX) / 2, y: (box.minY + box.maxY) / 2 };
-  // Retain capacity across animation frames. Tiny changes in animated bounds
-  // must not recreate GPU textures and SpriteFrames for every hidden unit.
-  var width = Math.max(record.size ? record.size.width : 0, Math.ceil((box.maxX - box.minX + 4) / 32) * 32);
-  var height = Math.max(record.size ? record.size.height : 0, Math.ceil((box.maxY - box.minY + 4) / 32) * 32);
-  var resolution = Math.min(detail || 1, 512 / Math.max(width, height));
-  var tw = Math.max(2, Math.ceil(width * resolution)), th = Math.max(2, Math.ceil(height * resolution));
+function actorCaptureTexture(view, record, detail, tw, th) {
   if (!record.texture || record.texture.width !== tw || record.texture.height !== th) {
     releaseCapture(record);
-    var state = detail === undefined && standaloneTargets(this, true);
-    record.texture = takeStandaloneTarget(this, state, record, tw, th);
+    var state = detail === undefined && standaloneTargets(view, true);
+    record.texture = takeStandaloneTarget(view, state, record, tw, th);
     if (!record.texture) {
       record.texture = new cc.RenderTexture();
       record.texture.initWithSize(tw, th, cc.gfx.RB_FMT_S8);
@@ -2597,7 +2591,18 @@ DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
         properties: standaloneTextureProperties.map(function (key) { return texture[key]; }) });
     }
   }
-  this.renderNative(sources, center, height, record.texture, detail===undefined, detail===undefined ? record : undefined);
+  return record.texture;
+}
+DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
+  var center = { x: (box.minX + box.maxX) / 2, y: (box.minY + box.maxY) / 2 };
+  // Retain capacity across animation frames. Tiny changes in animated bounds
+  // must not recreate GPU textures and SpriteFrames for every hidden unit.
+  var width = Math.max(record.size ? record.size.width : 0, Math.ceil((box.maxX - box.minX + 4) / 32) * 32);
+  var height = Math.max(record.size ? record.size.height : 0, Math.ceil((box.maxY - box.minY + 4) / 32) * 32);
+  var resolution = Math.min(detail || 1, 512 / Math.max(width, height));
+  var tw = Math.max(2, Math.ceil(width * resolution)), th = Math.max(2, Math.ceil(height * resolution));
+  var texture = actorCaptureTexture(this, record, detail, tw, th);
+  this.renderNative(sources, center, height, texture, detail===undefined, detail===undefined ? record : undefined);
   record.center = center; record.size = { width: width, height: height };
 };
 function occlusionCandidate(view, object, cache, visible, retained) {
@@ -2659,8 +2664,9 @@ function matchOcclusion(view, active, candidates, visible, cache, footprints, si
     // Foreground stencils also correct overlap when a shared depth slot puts
     // the model above scenery that should cover it.
     if (!showSilhouette && !(Number.isFinite(actorZ) && actorZ >= firstZ)) return;
-    entry.sources = bodyVisuals(entry.actor);
-    entry.bounds = entry.sources.reduce(function (value, source) {
+    var sources = bodyVisuals(entry.actor);
+    entry.sources = sources;
+    entry.bounds = sources.length === 1 ? bounds(sources[0], view.main, cache) : sources.reduce(function (value, source) {
       return union(value, bounds(source, view.main, cache));
     }, null);
     if (!overlaps(entry.bounds, region) || (visible && !overlaps(entry.bounds, visible))) return;
@@ -2796,7 +2802,106 @@ function canHideForegroundScenery(view, object, entry) {
     actorDrawnAbove(entry.actor, object);
 }
 
-function hideEmptyForeground(view, object, entry, drawId, mask, coverage, alpha) {
+function singleCaptureContact(contacts, actor) {
+  var counts = contacts.counts;
+  if (!counts) {
+    counts = contacts.counts = new Map();
+    contacts.draw.forEach(function (item) {
+      item.hidden.forEach(function (entry) {
+        counts.set(entry.actor, (counts.get(entry.actor) || 0) + 1);
+      });
+    });
+  }
+  return counts.get(actor) === 1;
+}
+
+function captureEmptyActor(view, entry, drawId, object, mask, coverage, alpha, center, size, contacts) {
+  var scope = view._nativeCaptureScope, flow = cc.RenderFlow;
+  var run = typeof spine !== "undefined" && spine._hkdTargetlessLeaf;
+  if (!contacts || !scope || !scope.first || !scope.enabled || scope.finished || scope.drawing ||
+      !scope.prepareAttempted || !flow || flow._hkdTargetlessRequest || typeof run !== "function" ||
+      !nativeMaskState.ownsTargetlessRoute(view)) return null;
+  var scene = cc.director.getScene(), actor = entry.actor;
+  if (!cachedRigInScene(view._cachedCaptureBlocker, scene) || !singleCaptureContact(contacts, actor)) return null;
+  var source = entry.sources.length === 1 && entry.sources[0], node = source && source.node;
+  var camera = view.camera, cameraNode = view.cameraNode;
+  if (!source || source !== actor.spAni || Object.getPrototypeOf(source) !== sp.Skeleton.prototype || !source.enabled ||
+      !node || node._renderComponent !== source || node.childrenCount !== 0 || node.activeInHierarchy !== true ||
+      !node._proxy || !scope.resolve(source) || !camera || camera.targetTexture || camera.enabled !== false ||
+      camera.alignWithScreen || camera.beforeDraw !== cc.Camera.prototype.beforeDraw ||
+      camera.render !== cc.Camera.prototype.render || !cameraNode || cameraNode !== camera.node ||
+      cameraNode.getWorldMatrix !== cc.Node.prototype.getWorldMatrix) return null;
+  var projection = captureProjection(view, center, size.height);
+  if (!projection) return null;
+  var x = projection.x, y = projection.y, ortho = projection.ortho;
+  var originalRecord = view.nativeActors.get(actor), materializedRecord;
+  var request = {
+    view: view, root: node, camera: camera, nativeCamera: camera._camera, flow: flow._nativeFlow,
+    run: run, materialized: false, result: 0,
+    materialize: function () {
+      if (request.materialized) return true;
+      if (view._destroyed || cc.director.getScene() !== scene ||
+          view._nativeCaptureScope !== scope || camera !== view.camera) return false;
+      // Before any observer, bind the same lazily acquired actor texture
+      // the ordinary camera would use at its current lens and position.
+      var record = view.nativeActors.get(actor);
+      if (!record) { record = {}; view.nativeActors.set(actor, record); }
+      if (view._nativeActorAtlas) view._nativeActorAtlas.forget(record);
+      var resolution = Math.min(1, 512 / Math.max(size.width, size.height));
+      var tw = Math.max(2, Math.ceil(size.width * resolution)), th = Math.max(2, Math.ceil(size.height * resolution));
+      var texture = actorCaptureTexture(view, record, undefined, tw, th);
+      if (!texture || !texture._framebuffer) return false;
+      camera.targetTexture = texture;
+      materializedRecord = record;
+      request.materialized = true;
+      return true;
+    },
+    revalidate: function () {
+      var selected = scope.byRenderer.get(source);
+      return flow._hkdTargetlessRequest === request && nativeMaskState.ownsTargetlessRoute(view) &&
+        view._nativeCaptureScope === scope && scope.enabled && scope.drawing && scope.quiet &&
+        !scope.finished && !view._destroyed && cc.director.getScene() === scene &&
+        node.activeInHierarchy === true && node._renderComponent === source && node.childrenCount === 0 &&
+        scope.selected.size === 1 && selected && !selected.muted && scope.selected.has(selected) && scope.same(selected) &&
+        view.nativeActors.get(actor) === originalRecord && camera === view.camera && camera._camera === request.nativeCamera &&
+        !camera.targetTexture && cameraNode.x === Math.fround(x) && cameraNode.y === Math.fround(y) && camera.orthoSize === ortho &&
+        coverage.isCurrent(alpha, object) && isStockForegroundMask(view, mask, coverage) && coverage.isEmpty(alpha, object, center, size);
+    }
+  };
+  try {
+    cameraNode.setPosition(x, y, 0);
+    camera.orthoSize = ortho;
+    camera.clearFlags = cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL | cc.Camera.ClearFlags.COLOR;
+    scope.capture(node, function () {
+      if (!scope.enabled || !scope.quiet || !scope.drawing || scope.finished) return;
+      node._renderFlag |= flow.FLAG_WORLD_TRANSFORM | flow.FLAG_OPACITY;
+      view._nativeRendered = true;
+      capturePhysical(source, function () {
+        cameraNode.getWorldMatrix(view._targetlessCameraMatrix || (view._targetlessCameraMatrix = new cc.Mat4()));
+        camera.beforeDraw();
+        if (!nativeMaskState.ownsTargetlessRoute(view)) return;
+        flow._hkdTargetlessRequest = request;
+        try { flow.renderCamera(camera._camera, node); }
+        finally { flow._hkdTargetlessRequest = null; }
+      });
+    }, null);
+  } finally {
+    if (camera.targetTexture) camera.targetTexture = null;
+  }
+  if (!request.result) return null;
+  if (request.result === 1 && !materializedRecord || request.result === 2 && request.materialized ||
+      request.result !== 1 && request.result !== 2) throw new Error("Invalid standalone actor capture result");
+  // Record the original capacity even when the engine had no pixels to publish.
+  var record = materializedRecord || originalRecord;
+  if (!record) { record = {}; view.nativeActors.set(actor, record); }
+  record.center = center;
+  record.size = size;
+  if (request.result === 1) record.draw = drawId;
+  request.record = record;
+  return request;
+}
+
+function hideEmptyForeground(view, object, entry, drawId, mask, coverage, alpha, contacts) {
   // Another camera or mask update can invalidate the current texture receipt,
   // including between two actors whose atlas entries are already published.
   if (!coverage.isCurrent(alpha, object)) return false;
@@ -2810,11 +2915,15 @@ function hideEmptyForeground(view, object, entry, drawId, mask, coverage, alpha)
   };
   if (!center || !size || !coverage.isEmpty(alpha, object, center, size)) return false;
 
-  // Preserve the original camera at this point. The live capture may change
-  // the resource or dimensions before the stock mask would publish them.
-  record = captureNativeActor(view, entry, drawId);
-  if (!published && (!coverage.isCurrent(alpha, object) || !isStockForegroundMask(view, mask, coverage) ||
-      !coverage.isEmpty(alpha, object, record.center, record.size))) return false;
+  if (!published) {
+    var capture = contacts && captureEmptyActor(view, entry, drawId, object, mask, coverage, alpha, center, size, contacts);
+    if (!capture || capture.result !== 2) {
+      // A physical draw can change the resource before publishing the mask.
+      record = capture ? capture.record : captureNativeActor(view, entry, drawId);
+      if (!coverage.isCurrent(alpha, object) || !isStockForegroundMask(view, mask, coverage) ||
+          !coverage.isEmpty(alpha, object, record.center, record.size)) return false;
+    }
+  }
   if (mask) {
     if (mask.node.active) mask.node.active = false;
     if (mask.foreground && mask.foreground.node.active) mask.foreground.node.active = false;
@@ -2896,7 +3005,7 @@ DepthView.prototype.update = function () {
   });
   this._vertexConsumers = cache.vertexConsumers;
   try {
-    var firstSnapshot=false;
+    var firstSnapshot=false, emptyCaptureContacts;
     if(this.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"){
       var batchCount=draw.length===1?1:0, preparedFirst=false, warmLater=false;
       var multi=draw.length>1&&captureScope&&captureScope.enabled;
@@ -2919,6 +3028,9 @@ DepthView.prototype.update = function () {
           }
         }
       }
+      if (coverage && multi && !batchCount && nativeMaskState &&
+          nativeMaskState.ownsTargetlessRoute && nativeMaskState.ownsTargetlessRoute(this) &&
+          typeof spine._hkdTargetlessLeaf === "function") emptyCaptureContacts = { draw: draw };
       if(batchCount){
         if(!this._nativeActorAtlas)this._nativeActorAtlas=require("NativeActorAtlas").create(this,releaseCapture);
       if(this._nativeActorAtlas){
@@ -2956,7 +3068,7 @@ DepthView.prototype.update = function () {
             alphaChecked = true;
             alpha = coverage.readAlpha(self, object, coverageDraw);
           }
-          if (alpha && hideEmptyForeground(self, object, entry, nativeDraw, mask, coverage, alpha)) return;
+          if (alpha && hideEmptyForeground(self, object, entry, nativeDraw, mask, coverage, alpha, emptyCaptureContacts)) return;
         }
         if (!mask) mask = self.makeMask(object, entry.actor, entry.sources);
         if (coverage) suppressedForegroundMasks.delete(mask.node);
