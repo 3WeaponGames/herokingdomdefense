@@ -257,39 +257,100 @@ NavigationGrid.prototype.firstObstacle = function (start, end, radius, accept) {
   }
   return best < 0 ? null : { index: best, fraction: fraction };
 };
-// One-way terrain: an existing overlap may continue until it exits. Every new
-// obstacle and every re-entry is still forbidden, including the unit's radius.
-function exitPolygonClear(start,end,radius,vertices,outwardOnly) {
+function clipAxis(range,p,d,lo,hi){
+  if (lo>hi) return false;
+  if(Math.abs(d)<EPS)return p>=lo&&p<=hi;
+  var a=(lo-p)/d,b=(hi-p)/d;
+  range[0]=Math.max(range[0],Math.min(a,b));
+  range[1]=Math.min(range[1],Math.max(a,b));
+  return range[0]<=range[1];
+}
+function circleInterval(start,dx,dy,length2,center,radius){
+  var x=start.x-center.x,y=start.y-center.y,c=x*x+y*y-radius*radius;
+  if(!length2)return c<=0?[0,1]:null;
+  var b=x*dx+y*dy,disc=b*b-length2*c;
+  if(disc<0)return null;
+  var root=Math.sqrt(disc);
+  return [(-b-root)/length2,(-b+root)/length2];
+}
+// Fractions of a segment where a circular body contacts the polygon.
+function polygonIntervals(start,end,radius,vertices) {
   var dx=end.x-start.x,dy=end.y-start.y,rr=radius+EPS,intervals=[],times=[0,1],length2=dx*dx+dy*dy;
+  function add(lo,hi){lo=Math.max(0,lo);hi=Math.min(1,hi);if(lo<=hi)intervals.push([lo,hi]);}
+  for(var i=0;i<vertices.length;i++){
+    var a=vertices[i],b=vertices[(i+1)%vertices.length],ex=b.x-a.x,ey=b.y-a.y,len=Math.hypot(ex,ey),den=dx*ey-dy*ex;
+    if(Math.abs(den)>EPS){var ax=a.x-start.x,ay=a.y-start.y,t=(ax*ey-ay*ex)/den,u=(ax*dy-ay*dx)/den;if(t>0&&t<1&&u>=0&&u<=1)times.push(t);}
+    var circle=circleInterval(start,dx,dy,length2,a,rr);
+    if(circle)add(circle[0],circle[1]);
+    if(!len)continue;
+    var x=start.x-a.x,y=start.y-a.y,range=[0,1];
+    if(clipAxis(range,(x*ex+y*ey)/len,(dx*ex+dy*ey)/len,0,len)&&clipAxis(range,(x*-ey+y*ex)/len,(dx*-ey+dy*ex)/len,-rr,rr))add(range[0],range[1]);
+  }
+  times.sort(function(a,b){return a-b;});
+  for(var j=1;j<times.length;j++){var lo=times[j-1],hi=times[j],middle=(lo+hi)/2;if(inside({x:start.x+dx*middle,y:start.y+dy*middle},vertices))add(lo,hi);}
+  intervals.sort(function(a,b){return a[0]-b[0];});
+  var count=0;
+  for(var k=0;k<intervals.length;k++){
+    var next=intervals[k],last=intervals[count-1];
+    if(last&&next[0]<=last[1]+EPS)last[1]=Math.max(last[1],next[1]);
+    else intervals[count++]=next;
+  }
+  intervals.length=count;
+  return intervals;
+}
+// One-way terrain permits a single exit from an existing body overlap.
+function exitPolygonClear(start,end,radius,vertices,outwardOnly) {
   if(outwardOnly) {
-    // Touching a wall must never become permission to walk through it on the
-    // next frame. An existing manual overlap may slide or move outward only.
-    var previous=clearance(start,vertices),steps=Math.max(1,Math.ceil(Math.sqrt(length2)/2));
-    if(previous<=rr)for(var step=1;step<=steps;step++) {
-      var f=step/steps,current=clearance({x:start.x+dx*f,y:start.y+dy*f},vertices);
+    var previous=clearance(start,vertices),steps=Math.max(1,Math.ceil(distance(start,end)/2));
+    if(previous<=radius+EPS)for(var step=1;step<=steps;step++) {
+      var f=step/steps,current=clearance({x:start.x+(end.x-start.x)*f,y:start.y+(end.y-start.y)*f},vertices);
       if(current+EPS<previous)return false;
       previous=current;
     }
   }
-  function add(lo,hi){lo=Math.max(0,lo);hi=Math.min(1,hi);if(lo<=hi)intervals.push([lo,hi]);}
-  function circle(center){var x=start.x-center.x,y=start.y-center.y,c=x*x+y*y-rr*rr;if(!length2){if(c<=0)add(0,1);return;}var b=x*dx+y*dy,disc=b*b-length2*c;if(disc<0)return;var root=Math.sqrt(disc);add((-b-root)/length2,(-b+root)/length2);}
-  function clip(range,p,d,lo,hi){if(Math.abs(d)<EPS)return p>=lo&&p<=hi;var a=(lo-p)/d,b=(hi-p)/d;range[0]=Math.max(range[0],Math.min(a,b));range[1]=Math.min(range[1],Math.max(a,b));return range[0]<=range[1];}
-  for(var i=0;i<vertices.length;i++){
-    var a=vertices[i],b=vertices[(i+1)%vertices.length],ex=b.x-a.x,ey=b.y-a.y,len=Math.hypot(ex,ey),den=dx*ey-dy*ex;
-    if(Math.abs(den)>EPS){var ax=a.x-start.x,ay=a.y-start.y,t=(ax*ey-ay*ex)/den,u=(ax*dy-ay*dx)/den;if(t>0&&t<1&&u>=0&&u<=1)times.push(t);}
-    circle(a);if(!len)continue;
-    var x=start.x-a.x,y=start.y-a.y,range=[0,1];
-    if(clip(range,(x*ex+y*ey)/len,(dx*ex+dy*ey)/len,0,len)&&clip(range,(x*-ey+y*ex)/len,(dx*-ey+dy*ex)/len,-rr,rr))add(range[0],range[1]);
-  }
-  times.sort(function(a,b){return a-b;});
-  for(var j=1;j<times.length;j++){var lo=times[j-1],hi=times[j],middle=(lo+hi)/2;if(inside({x:start.x+dx*middle,y:start.y+dy*middle},vertices))add(lo,hi);}
-  if(!intervals.length)return true;
-  intervals.sort(function(a,b){return a[0]-b[0];});
-  if(intervals[0][0]>EPS)return false;
-  var endOfOverlap=intervals[0][1];
-  for(var k=1;k<intervals.length;k++){if(intervals[k][0]>endOfOverlap+EPS)return false;endOfOverlap=Math.max(endOfOverlap,intervals[k][1]);}
-  return true;
+  var intervals=polygonIntervals(start,end,radius,vertices);
+  return !intervals.length||intervals.length===1&&intervals[0][0]<=EPS;
 }
+function firstGap(intervals,from,to,padding){
+  intervals.sort(function(a,b){return a[0]-b[0];});
+  for(var i=0;i<intervals.length;i++){
+    var interval=intervals[i];
+    if(interval[0]-padding>from)break;
+    from=Math.max(from,interval[1]+padding);
+    if(from>to)return null;
+  }
+  return from<=to?from:null;
+}
+NavigationGrid.prototype.spawnExit = function (start, end, radius, ownBlocker, reserved) {
+  var dx=end.x-start.x,dy=end.y-start.y,length2=dx*dx+dy*dy,length=Math.sqrt(length2),bounds=this.bounds;
+  var span=[0,1];
+  if(!length||!clipAxis(span,start.x,dx,bounds.minX+radius,bounds.maxX-radius)||
+      !clipAxis(span,start.y,dy,bounds.minY+radius,bounds.maxY-radius))return null;
+  var padding=.05/length,footprint=[];
+  var ids=this._query(Math.min(start.x,end.x)-radius,Math.min(start.y,end.y)-radius,Math.max(start.x,end.x)+radius,Math.max(start.y,end.y)+radius);
+  for(var i=0;i<ids.length;i++){
+    var id=ids[i],intervals=polygonIntervals(start,end,radius,this.polygons[id].vertices);
+    if(ownBlocker(id)){
+      for(var j=0;j<intervals.length;j++)footprint.push(intervals[j]);
+    } else if(intervals.length){
+      // An adjacent obstacle may be left if the origin already touches it.
+      // Stop at the first new obstruction in this direction.
+      var next=0;
+      if(intervals[0][0]<=EPS)footprint.push(intervals[next++]);
+      if(intervals[next])span[1]=Math.min(span[1],intervals[next][0]-padding);
+    }
+  }
+  var edge=firstGap(footprint,span[0],span[1],padding);
+  if(edge===null)return null;
+  for(var k=0;k<reserved.length;k++){
+    var actor=reserved[k],occupied=circleInterval(start,dx,dy,length2,actor.pos,actor.clearance);
+    if(occupied)footprint.push(occupied);
+  }
+  var at=firstGap(footprint,edge,span[1],padding);
+  if(at===null)return null;
+  var position={x:start.x+dx*at,y:start.y+dy*at};
+  return this.isWalkable(position,radius)?{position:position,distance:at*length,extra:(at-edge)*length}:null;
+};
 NavigationGrid.prototype.canExitBlocked=function(start,end,radius,outwardOnly) {
   var a=readPoint(start),b=readPoint(end),r=radiusValue(radius),bounds=this.bounds;
   function inward(from,to,min,max){return from<min-EPS?to>=from-EPS&&to<=max+EPS:from>max+EPS?to<=from+EPS&&to>=min-EPS:to>=min-EPS&&to<=max+EPS;}

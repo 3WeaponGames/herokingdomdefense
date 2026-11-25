@@ -2,7 +2,7 @@
 // Stage-local deployment destinations use the real barracks, soldier and navigation
 // methods. Config lookup, artwork and sound remain inert scene adapters.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const {environment,Node,Vec2,PhysicsCircleCollider,distance}=require('./runtime-harness.cjs');
+const {environment,Node,Vec2,PhysicsBoxCollider,PhysicsCircleCollider,distance}=require('./runtime-harness.cjs');
 const Positions=require('../../assets/_script/BuildingSpawnPositions');
 const authored=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 const clone=value=>JSON.parse(JSON.stringify(value));
@@ -25,6 +25,107 @@ function fixture(applyScale=false){
 function expected(f,b,p){return f.game.ndMain.convertToNodeSpaceAR(b.node.convertToWorldSpaceAR(new Vec2(p.x,p.y)));}
 function near(actual,point){assert(distance(actual,point)<1e-6,JSON.stringify({actual:{x:actual.x,y:actual.y},expected:point}));}
 
+function barracksFootprint(f, building, width, height){
+ const blocker=building.node.addComponent(PhysicsBoxCollider);
+ blocker.size={width,height};
+ f.game.gameData.buildings.push(building);
+ return blocker;
+}
+
+function assertExitOnRay(f, unit, spawn, destination){
+ const length=distance(spawn,destination),dx=(destination.x-spawn.x)/length,dy=(destination.y-spawn.y)/length;
+ const departure=unit.node.position,x=departure.x-spawn.x,y=departure.y-spawn.y;
+ assert(x*dx+y*dy>0&&Math.abs(x*dy-y*dx)<1e-6,'The departure faces the destination');
+ const nav=f.e.nav.get(f.game),radius=nav.radius(unit,true);
+ assert(nav.grid.isWalkable(departure,radius), 'The entire body clears the building');
+ assert(!nav.grid.isWalkable({x:departure.x-dx*.1,y:departure.y-dy*.1},radius), 'The position is right outside the blocker');
+ assert.equal(unit._terrainExit,null);
+}
+
+test('a centered spawn uses the first destination for recruits and the last rally for casualties',()=>{
+ const f=fixture(),b=f.building(),[first,upgrade]=f.rows;
+ first.SpawnPosition=upgrade.SpawnPosition={x:0,y:0};
+ const north={x:0,y:330},south={x:0,y:-320};
+ b.squadSpawnPosition=new Vec2(south.x,south.y);
+ barracksFootprint(f,b,84,156);
+ b.setLevel(first.index);
+ const original=b.enemyList[0],origin=expected(f,b,first.SpawnPosition);
+ assertExitOnRay(f,original,origin,south);
+ near(original.rallyPoint.pos,south);
+
+ original.setPersonalRallyPoint(north,true);
+ respawn(b,original);
+ assertExitOnRay(f,original,origin,north);
+ near(original.rallyPoint.pos,north);
+
+ const beforeUpgrade=original.node.position;
+ const buff=f.e.stubs.KinghtFallEnum.KinghtFallEnumBuffCfg.Buff23;
+ f.game.gameData.getGameBuff=id=>id===buff?{Pamer:[1]}:null;
+ b.setLevel(upgrade.index);
+ assert.equal(b.enemyList.length,2);
+ near(original.node,beforeUpgrade);
+ const recruited=b.enemyList[1],departure=recruited.node.position;
+ assertExitOnRay(f,recruited,origin,south);
+ near(recruited.rallyPoint.pos,south);
+ for(let frame=1;frame<=20;frame++){
+  f.e.setTime(frame*50);f.e.nav.beginFrame(f.game);recruited.onUpdate(.05);
+ }
+ assert(distance(recruited.node,south)<distance(departure,south));
+});
+
+test('a mirrored and rotated barracks uses its current tier footprint and stage destination',()=>{
+ const f=fixture(true),b=f.building(-150,210),row=f.rows[0];
+ b.node.angle=32;b.node.scaleX=-.85;b.node.scaleY=1.3;
+ b.squadSpawnPosition=new Vec2(-140,-230);
+ row.SpawnPosition={x:0,y:0};
+ const destination=expected(f,b,b.squadSpawnPosition);
+ const oldGrid=f.e.nav.get(f.game);oldGrid.refresh();
+ barracksFootprint(f,b,178,130);
+ b.setLevel(row.index);
+ near(b.enemyList[0].rallyPoint.pos,destination);
+ assertExitOnRay(f,b.enemyList[0],expected(f,b,row.SpawnPosition),destination);
+});
+
+test('a blocked ray sends a crowded squad to open ground on the same side',()=>{
+ const f=fixture(),b=f.building(),row=f.rows[0],origin={x:0,y:0};
+ row.SpawnPosition=origin;
+ b.squadSpawnPosition=new Vec2(0,420);
+ barracksFootprint(f,b,170,100);
+ const obstacle=f.e.box(0,86,50,60);
+ const buff=f.e.stubs.KinghtFallEnum.KinghtFallEnumBuffCfg.Buff23;
+ f.game.gameData.getGameBuff=id=>id===buff?{Pamer:[5]}:null;
+ b.setLevel(row.index);
+ const nav=f.e.nav.get(f.game),grid=nav.grid;
+ const polygon=grid.polygons[grid.terrainColliders.indexOf(obstacle)].vertices;
+ assert.equal(b.enemyList.length,6);
+ b.enemyList.forEach((unit,index)=>{
+  const radius=nav.radius(unit,true),spawn=unit.node.position;
+  assert(unit.node.active&&!unit._spawnPending);
+  assert(spawn.y>0&&grid.isWalkable(spawn,radius), 'Each recruit fits north of the barracks center');
+  assert(!grid._hitsPolygon(origin,spawn,radius,polygon), 'A second blocker cannot be crossed');
+  for(let other=0;other<index;other++){
+   const member=b.enemyList[other];
+   assert(distance(member.node,spawn)>=radius+nav.radius(member,true)+4-1e-6, 'Squad bodies stay separate');
+  }
+ });
+});
+
+test('a fully blocked barracks retries the same recruit when room becomes available',()=>{
+ const f=fixture(),b=f.building(),row=f.rows[0];
+ f.game.mapSize={width:160,height:160};
+ row.SpawnPosition={x:0,y:0};b.squadSpawnPosition=new Vec2(0,-72);
+ const blocker=barracksFootprint(f,b,180,180);
+ b.setLevel(row.index);
+ const unit=b.enemyList[0];
+ assert(unit._spawnPending&&!unit.node.active);
+ assert.equal(f.created(),1);
+ blocker.size={width:65,height:60};
+ f.e.setTime(300);f.e.nav.beginFrame(f.game);b.doTime(.3);
+ assert(unit.node.active&&!unit._spawnPending&&!unit.isDead());
+ assert.equal(f.created(),1);
+ assert.equal(b.enemyList[0],unit);
+ assertExitOnRay(f,unit,row.SpawnPosition,b.squadSpawnPosition);
+});
 
 test('stage destinations stay separate from building spawn defaults and accept a zero offset',()=>{
  const row={SpawnPosition:{x:35,y:-70},SpawnPositions:{'1':{x:50,y:-80}}},owner={squadSpawnPosition:{x:0,y:0,future:'stage'}},before=JSON.stringify({row,owner});

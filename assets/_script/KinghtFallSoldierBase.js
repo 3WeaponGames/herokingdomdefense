@@ -799,13 +799,24 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.getWpos = function () {
     return this.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
   };
+  _ctor.prototype._savedRallyPoint = function () {
+    return this.outBuild && this.outBuild.getSoldierRallyPoint && this.outBuild.getSoldierRallyPoint(this);
+  };
+  _ctor.prototype.getDeploymentDestination = function (game, initialPost) {
+    var legacyRally = game.rallyPoint && game.rallyPoint.pos;
+    if (game._separateArmyCommands || $z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2) {
+      var retained = !this._initialBarracksPost && this._personalRallyPoint;
+      return this._savedRallyPoint() || (retained && retained.pos) || initialPost || (!game._separateArmyCommands && legacyRally);
+    }
+    return legacyRally || (game.isAgg ? Navigation.positionOf(game.ctrPlay.node, game) : initialPost);
+  };
   _ctor.prototype.applyArmyOrder = function (game, deployment) {
     this._continuationTarget = null;
     Navigation.reset(this);
     var initialPost = deployment && deployment.initialPost;
     this._separateArmyCommands = !!game._separateArmyCommands;
     if (this._separateArmyCommands || $z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2) {
-      var saved = this.outBuild && this.outBuild.getSoldierRallyPoint && this.outBuild.getSoldierRallyPoint(this);
+      var saved = this._savedRallyPoint();
       var order = this._rallyOrder;
       if (saved) this.setPersonalRallyPoint(saved, false);
       this._rallyOrder = order;
