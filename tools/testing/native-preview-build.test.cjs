@@ -5,6 +5,8 @@ const api=require(SOURCE),sha=bytes=>crypto.createHash('sha256').update(bytes).d
 const unitRegionBounds=require('../native/unit-region-bounds.cjs');
 const manualCameraMatrices = require('../native/manual-camera-matrices.cjs');
 const foregroundStencilReuse = require('../native/foreground-stencil-reuse.cjs');
+const captureRendererInventory = require('../native/capture-renderer-inventory.cjs');
+const captureFramebufferStatus = require('../native/capture-framebuffer-status.cjs');
 const nvidiaOptimus = require('../native/nvidia-optimus.cjs');
 function fixture(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-native-build-'));t.after(()=>{assert(path.basename(root).startsWith('hkd-native-build-')&&path.dirname(root)===os.tmpdir());fs.rmSync(root,{recursive:true,force:true});});return root;}
 function write(file,bytes='fixture'){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,bytes);return file;}
@@ -112,6 +114,38 @@ test('manual camera matrix patch is opt-in, preserves stock dispatch and records
 });
 
 const creatorSDK=process.env.HKD_CREATOR_SDK_ROOT||(process.platform==='win32'?'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/cocos2d-x':null);
+test('capture framebuffer status is opt-in and includes owned capture target support', () => {
+  assert.equal(Object.hasOwn(api.parseArgs([]), 'captureFramebufferStatus'), false);
+  assert.deepEqual(api.parseArgs(['--capture-framebuffer-status', '--unit-region-bounds']), {
+    captureFramebufferStatus: true, captureRendererInventory: true, unitRegionBounds: true
+  });
+  assert.throws(() => api.parseArgs(['--capture-framebuffer-status', 'false']), /Unknown/);
+});
+
+test('capture framebuffer status composes with both supported inventory source variants', {
+  skip: !creatorSDK || !captureFramebufferStatus.definitions().every(patch => fs.existsSync(path.join(creatorSDK, patch.file)))
+}, t => {
+  const root = fixture(t), feature = 'captureFramebufferStatus';
+  for (const withBounds of [false, true]) {
+    const clone = path.join(root, String(withBounds), 'source');
+    const preceding = captureRendererInventory.definitions(withBounds);
+    const definitions = captureFramebufferStatus.definitions(withBounds);
+    assert.equal(definitions.length, 8);
+    for (const { file } of definitions.concat(preceding)) {
+      write(path.join(clone, file), fs.readFileSync(path.join(creatorSDK, file)));
+    }
+    const bounds = api.prepareSourcePatches(clone, withBounds, [unitRegionBounds.definition()], 'unitRegionBounds');
+    const inventory = api.prepareSourcePatches(clone, true, preceding, 'captureRendererInventory', bounds);
+    const status = api.prepareSourcePatches(clone, true, definitions, feature, inventory);
+    const sdkSpine = status.find(patch => patch.file.endsWith('/jsb_spine_manual.cpp'));
+    const stockInventory = inventory.find(patch => patch.file === sdkSpine.file);
+    assert.equal(sdkSpine.beforeSha256, stockInventory.afterSha256);
+    assert.match(sdkSpine.after.toString(), /defineFunction\("_hkdArmCaptureFramebufferStatus"/);
+    assert.throws(() => captureFramebufferStatus.patchSource(Buffer.concat([sdkSpine.before, Buffer.from(' ')]),
+      definitions.find(patch => patch.file === sdkSpine.file)), /source hash/);
+  }
+});
+
 test('NVIDIA Optimus preference is an independent, value-free opt-in',()=>{
   assert.equal(Object.hasOwn(api.parseArgs([]),'preferNvidia'),false);
   assert.deepEqual(api.parseArgs(['--manual-camera-matrices','--prefer-nvidia']),{manualCameraMatrices:true,preferNvidia:true});

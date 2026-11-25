@@ -1276,6 +1276,7 @@ function releaseCapture(record) {
 }
 
 var STANDALONE_TARGET_LIMIT = 96, STANDALONE_TARGET_BYTES = 8 * 1024 * 1024;
+var standaloneFramebufferStatusArmed = false;
 var standaloneTextureProperties = ["_format", "_premultiplyAlpha", "_flipY", "_minFilter", "_magFilter",
   "_mipFilter", "_wrapS", "_wrapT", "_genMipmaps", "_anisotropy", "_isAlphaAtlas", "_packable"];
 
@@ -2455,7 +2456,7 @@ function captureProjection(view, center, height) {
   pose.ortho = height * Math.hypot(upX - originX, upY - originY) / 2;
   return pose;
 }
-DepthView.prototype.renderNative = function (sources, center, height, texture, actorMask) {
+DepthView.prototype.renderNative = function (sources, center, height, texture, actorMask, standaloneRecord) {
   var projection = captureProjection(this, center, height);
   if (projection) {
     // Copy the scalar before setPosition can dispatch a nested capture.
@@ -2473,13 +2474,37 @@ DepthView.prototype.renderNative = function (sources, center, height, texture, a
   var camera = this.camera, first = true, scope=this._nativeCaptureScope, owned=!scope&&this.nativeCapture&&cc.sys&&cc.sys.isNative;
   if(owned){scope=new NativeCaptureScope(this);this._nativeCaptureScope=scope;}
   var active=sources.filter(function(source){return source.enabled&&source.node.activeInHierarchy;}),batch=null,self=this;
+  var statusArm = actorMask === true && standaloneRecord && typeof spine !== "undefined" && spine._hkdArmCaptureFramebufferStatus;
   function drawOne(source) {
     // JSB refreshes matrices globally but consumes Sprite flags only in the
     // selected subtree. Restore the selected node's flags before every pass.
     if(cc.RenderFlow)source.node._renderFlag|=cc.RenderFlow.FLAG_WORLD_TRANSFORM|cc.RenderFlow.FLAG_OPACITY;
     camera.clearFlags=cc.Camera.ClearFlags.DEPTH|cc.Camera.ClearFlags.STENCIL|(first?cc.Camera.ClearFlags.COLOR:0);
     self._nativeRendered=true;
-    capturePhysical(source,function(){camera.render(source.node);});first=false;
+    capturePhysical(source, function () {
+      var node = source.node;
+      var state = typeof statusArm === "function" && !standaloneFramebufferStatusArmed &&
+        active.length === 1 && !batch && scope && scope.enabled && scope.quiet && scope.drawing && !scope.finished &&
+        scope._sceneRepairOwner === self && self._nativeCaptureScope === scope &&
+        node._renderComponent === source && node.childrenCount === 0 &&
+        Object.getPrototypeOf(source) === sp.Skeleton.prototype && self._standaloneTargets;
+      var target = state && !state.finished && state.scene === cc.director.getScene() && state.owned.get(standaloneRecord);
+      if (!target || target.texture !== texture || camera.targetTexture !== texture || !cc.isValid(texture, true) ||
+          target.framebuffer !== texture._framebuffer || target.storage !== texture._texture ||
+          target.stencil !== texture._depthStencilBuffer) {
+        camera.render(node);
+        return;
+      }
+      // Arm only the owned target for this synchronous camera. The engine
+      // still binds it, publishes its attachments and clears it as usual.
+      standaloneFramebufferStatusArmed = true;
+      try {
+        statusArm(target.framebuffer, target.storage, target.stencil);
+        camera.render(node);
+      } finally {
+        try { statusArm(); } finally { standaloneFramebufferStatusArmed = false; }
+      }
+    });first=false;
   }
   function drawGroup(group) {
     // A native write failure restores the entire scope. In that case keep the
@@ -2554,7 +2579,7 @@ DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
         properties: standaloneTextureProperties.map(function (key) { return texture[key]; }) });
     }
   }
-  this.renderNative(sources, center, height, record.texture, detail===undefined);
+  this.renderNative(sources, center, height, record.texture, detail===undefined, detail===undefined ? record : undefined);
   record.center = center; record.size = { width: width, height: height };
 };
 function occlusionCandidate(view, object, cache, visible) {
