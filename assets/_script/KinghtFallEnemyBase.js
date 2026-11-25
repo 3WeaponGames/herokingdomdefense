@@ -97,7 +97,7 @@ var def_KinghtFallEnemyBase = function (t) {
     if (this._enemyBuffIndicators) require("EnemySkillVisuals").placeIndicators(this);
   };
   _ctor.prototype.onPreSolve = function (contact, self, other) {
-    Navigation.allowBlockedExit(this, contact, other);
+    if (this._terrainExit) Navigation.allowBlockedExit(this, contact, other);
   };
   _ctor.prototype.initData = function (t, e, lease) {
     var life = setupLife(this);

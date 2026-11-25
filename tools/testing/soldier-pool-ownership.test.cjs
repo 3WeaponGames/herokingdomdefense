@@ -36,6 +36,33 @@ test('ordinary roster deletion still destroys the soldier instead of transferrin
  const h=fixture(),actor=h.spawn(),node=actor.node;h.d.delSoldier(actor);assert.equal(h.d.getSoldierList().length,0);assert.equal(node.pendingDestroy,true);assert.equal(h.pool._nodes.size(),0);h.flush();assert.equal(node.destroyed,true);
 });
 
+test('soldier attack completion handles native track getters and missing animation data', () => {
+ const h = setup(), actor = h.e.actor('KinghtFallSoldierItem01');
+ h.e.stubs.KinghtFallModle.KinghtFallSoldierAniEnum.Attack = 'attack';
+ let complete, finishes = 0;
+ actor.spAni.setCompleteListener = listener => { complete = listener; };
+ actor.doAttackFinish = () => { finishes++; };
+ actor.onLoad();
+
+ complete();
+ complete({});
+ complete({ getAnimation: () => null });
+ complete({ animation: { name: 'idle' } });
+ assert.equal(finishes, 0);
+
+ complete({ animation: { name: 'attack' } });
+ const nativeAttack = { getAnimation: () => ({ getName: () => 'attack' }) };
+ complete(nativeAttack);
+ assert.equal(finishes, 2);
+
+ actor._isPooled = true;
+ complete(nativeAttack);
+ actor._isPooled = false;
+ actor.isDead = () => true;
+ complete(nativeAttack);
+ assert.equal(finishes, 2);
+});
+
 test('a pending-destroy pooled entry is discarded while a healthy queued node remains reusable',engineOptions,()=>{
  const h=fixture(),healthy=h.manager.getNode(h.key),pending=h.manager.getNode(h.key);h.manager.freeNode(h.key,healthy);h.manager.freeNode(h.key,pending);pending.destroy();const allocations=h.allocated.length;
  assert.equal(h.manager.getNode(h.key),healthy);assert.equal(h.pool._nodes.size(),0);assert.equal(h.allocated.length,allocations);h.flush();assert(h.e.cc.isValid(healthy,true));

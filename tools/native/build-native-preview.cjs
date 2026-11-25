@@ -8,11 +8,17 @@ const {inspect} = require('./pe-imports.cjs');
 const spineCleanup = require('./spine-inline-color-cleanup.cjs');
 const unitRegionBounds = require('./unit-region-bounds.cjs');
 const manualCameraMatrices = require('./manual-camera-matrices.cjs');
+const foregroundStencilReuse = require('./foreground-stencil-reuse.cjs');
+const captureRendererInventory = require('./capture-renderer-inventory.cjs');
+const nvidiaOptimus = require('./nvidia-optimus.cjs');
 
 const SOURCE_PATCHES = {
   spineInlineColorCleanup: { directory: 'spine-inline-color-cleanup', patchSource: spineCleanup.patchSource },
   unitRegionBounds: { directory: 'unit-region-bounds', patchSource: unitRegionBounds.patchSource },
-  manualCameraMatrices: { directory: 'manual-camera-matrices', patchSource: manualCameraMatrices.patchSource }
+  manualCameraMatrices: { directory: 'manual-camera-matrices', patchSource: manualCameraMatrices.patchSource },
+  foregroundStencilReuse: { directory: 'foreground-stencil-reuse', patchSource: foregroundStencilReuse.patchSource },
+  captureRendererInventory: { directory: 'capture-renderer-inventory', patchSource: captureRendererInventory.patchSource },
+  nvidiaOptimusPreference: { directory: 'nvidia-optimus-preference', patchSource: nvidiaOptimus.patchSource }
 };
 
 const PROJECTS = [
@@ -70,14 +76,17 @@ function cloneFile(clone, relative) {
   requireThat(!fs.lstatSync(file).isSymbolicLink()&&fs.lstatSync(file).isFile()&&inside(canonical(file),root),'Copied source escaped SDK clone: '+relative);
   return file;
 }
-function prepareSourcePatches(clone, enabled, definitions=spineCleanup.PATCHES, feature='spineInlineColorCleanup') {
+function prepareSourcePatches(clone, enabled, definitions=spineCleanup.PATCHES, feature='spineInlineColorCleanup', previous=[]) {
   if(!enabled)return [];
   const seen=new Set();
   const patchSource=SOURCE_PATCHES[feature].patchSource;
   // Prepare every result before the caller writes any source file.
   return definitions.map(patch=>{
     requireThat(!seen.has(patch.file),'Duplicate copied source patch: '+patch.file);seen.add(patch.file);
-    const before=fs.readFileSync(cloneFile(clone,patch.file)),after=patchSource(before,patch);
+    // Overlapping features pin the previous feature's exact output hash.
+    const prior=previous.findLast(item=>item.file===patch.file);
+    const before=prior?prior.after:fs.readFileSync(cloneFile(clone,patch.file));
+    const after=patchSource(before,patch);
     return {file:patch.file,feature,before,after,beforeSha256:patch.beforeSha256,afterSha256:patch.afterSha256,changes:patch.changes};
   });
 }
@@ -103,10 +112,13 @@ function verifySourcePatchArtifacts(output, patches, diff) {
   for(const patch of patches){const backup=path.join(output,'source-patch-backups',directory,patch.file);requireThat(inside(canonical(backup),canonical(output))&&sha(fs.readFileSync(backup))===patch.beforeSha256,'Source patch backup changed during build: '+patch.file);}
 }
 function expectedImplementation(entries, patches) {
-  const overrides=new Map(patches.map(patch=>[patch.file,patch]));
-  requireThat(overrides.size===patches.length,'Duplicate copied source override');
-  for(const patch of patches)requireThat(entries.some(entry=>entry.file===patch.file&&entry.sha256===patch.beforeSha256)&&isImplementation(patch.file),'Unknown copied source override: '+patch.file);
-  return entries.filter(entry=>isImplementation(entry.file)).map(entry=>({...entry,sha256:overrides.has(entry.file)?overrides.get(entry.file).afterSha256:entry.sha256}));
+  const expected=new Map(entries.filter(entry=>isImplementation(entry.file)).map(entry=>[entry.file,{...entry}]));
+  for(const patch of patches){
+    const current=expected.get(patch.file);
+    requireThat(current&&current.sha256===patch.beforeSha256,'Unknown copied source override: '+patch.file);
+    current.sha256=patch.afterSha256;
+  }
+  return [...expected.values()];
 }
 function verifySourceFiles(sdk, clone, entries, patches) {
   const expected=expectedImplementation(entries,patches),names=expected.map(entry=>entry.file).sort(order);
@@ -246,12 +258,15 @@ function parseArgs(args) {
     if(arg==='--spine-inline-color-cleanup'){result.spineInlineColorCleanup=true;continue;}
     if(arg==='--unit-region-bounds'){result.unitRegionBounds=true;continue;}
     if(arg==='--manual-camera-matrices'){result.manualCameraMatrices=true;continue;}
+    if(arg==='--foreground-stencil-reuse'){result.foregroundStencilReuse=true;continue;}
+    if(arg==='--capture-renderer-inventory'){result.captureRendererInventory=true;continue;}
+    if(arg==='--prefer-nvidia'){result.preferNvidia=true;continue;}
     requireThat(keys[arg] && args[i+1] && !args[i+1].startsWith('--'),'Unknown/missing argument: '+arg);result[keys[arg]]=args[++i];
   }return result;
 }
 function main(args) {
   const options=parseArgs(args);
-  if(options.help){console.log('node tools/native/build-native-preview.cjs --sdk-root <Creator2.4.13/resources/cocos2d-x> --output-root <fresh external directory> [--project-root <project>] [--vs-root <VS2022>] [--windows-sdk-root <Windows Kits/10>] [--windows-sdk-version <10.0.x.0>] [--spine-inline-color-cleanup] [--unit-region-bounds] [--manual-camera-matrices]');return;}
+  if(options.help){console.log('node tools/native/build-native-preview.cjs --sdk-root <Creator2.4.13/resources/cocos2d-x> --output-root <fresh external directory> [--project-root <project>] [--vs-root <VS2022>] [--windows-sdk-root <Windows Kits/10>] [--windows-sdk-version <10.0.x.0>] [--spine-inline-color-cleanup] [--unit-region-bounds] [--manual-camera-matrices] [--foreground-stencil-reuse] [--capture-renderer-inventory] [--prefer-nvidia]');return;}
   requireThat(process.platform==='win32','This build tool supports Windows only');requireThat(options.sdkRoot&&options.outputRoot,'--sdk-root and --output-root are required');
   const sdk=fs.realpathSync.native(options.sdkRoot),project=fs.realpathSync.native(options.projectRoot||path.resolve(__dirname,'../..')),output=validateOutput(options.outputRoot,project,sdk);
   requireThat(JSON.parse(fs.readFileSync(path.join(project,'project.json'),'utf8')).version==='2.4.13','Project must use Creator2.4.13; supply --project-root if this tool is outside tools/native');
@@ -264,15 +279,25 @@ function main(args) {
   const cleanupPatches=prepareSourcePatches(clone,options.spineInlineColorCleanup);
   const regionPatches=options.unitRegionBounds?prepareSourcePatches(clone,true,[unitRegionBounds.definition()],'unitRegionBounds'):[];
   const matrixPatches=options.manualCameraMatrices?prepareSourcePatches(clone,true,[manualCameraMatrices.definition()],'manualCameraMatrices'):[];
-  const sourcePatches=cleanupPatches.concat(regionPatches,matrixPatches);
+  const stencilPatches=prepareSourcePatches(clone,options.foregroundStencilReuse,foregroundStencilReuse.PATCHES,'foregroundStencilReuse');
+  const inventoryPatches=options.captureRendererInventory?
+    prepareSourcePatches(clone,true,captureRendererInventory.definitions(options.unitRegionBounds),'captureRendererInventory',regionPatches):[];
+  const nvidiaPatches=prepareSourcePatches(clone,options.preferNvidia,[nvidiaOptimus.PATCH],'nvidiaOptimusPreference');
+  const sourcePatches=cleanupPatches.concat(regionPatches,matrixPatches,stencilPatches,inventoryPatches,nvidiaPatches);
   const features={highResolutionPacing:false,spineInlineColorCleanup:!!options.spineInlineColorCleanup};
   const copiedExpected=implementationDigest(expectedImplementation(sourceFiles,sourcePatches));
   const sourceDiff=writeSourcePatchArtifacts(output,clone,cleanupPatches);
   const regionDiff=writeSourcePatchArtifacts(output,clone,regionPatches);
   const matrixDiff=writeSourcePatchArtifacts(output,clone,matrixPatches);
+  const stencilDiff=writeSourcePatchArtifacts(output,clone,stencilPatches);
+  const inventoryDiff=writeSourcePatchArtifacts(output,clone,inventoryPatches);
+  const nvidiaDiff=writeSourcePatchArtifacts(output,clone,nvidiaPatches);
   const extraSourceDiffs={};
   if(regionDiff){features.unitRegionBounds=true;extraSourceDiffs.unitRegionBoundsDiff=regionDiff;}
   if(matrixDiff){features.manualCameraMatrices=true;extraSourceDiffs.manualCameraMatricesDiff=matrixDiff;}
+  if(stencilDiff){features.foregroundStencilReuse=true;extraSourceDiffs.foregroundStencilReuseDiff=stencilDiff;}
+  if(inventoryDiff){features.captureRendererInventory=true;extraSourceDiffs.captureRendererInventoryDiff=inventoryDiff;}
+  if(nvidiaDiff){features.nvidiaOptimusPreference=true;extraSourceDiffs.nvidiaOptimusPreferenceDiff=nvidiaDiff;}
   const patches=[];
   for(const item of PROJECTS){const file=path.join(clone,item.file),before=fs.readFileSync(file,'utf8'),after=patchProject(before,item,output);fs.writeFileSync(file,after);patches.push({file:item.file,beforeSha256:item.sha256,afterSha256:sha(Buffer.from(after))});fs.mkdirSync(path.join(output,'obj',path.basename(file,'.vcxproj'),'objects'),{recursive:true});}
   verifyProjects(clone);
@@ -291,8 +316,22 @@ function main(args) {
   verifySourcePatchArtifacts(output,cleanupPatches,sourceDiff);
   verifySourcePatchArtifacts(output,regionPatches,regionDiff);
   verifySourcePatchArtifacts(output,matrixPatches,matrixDiff);
+  verifySourcePatchArtifacts(output,stencilPatches,stencilDiff);
+  verifySourcePatchArtifacts(output,inventoryPatches,inventoryDiff);
+  verifySourcePatchArtifacts(output,nvidiaPatches,nvidiaDiff);
+  if(inventoryDiff)requireThat(fs.readFileSync(executable).includes(Buffer.from('_hkdCaptureRealtimeInventory\0')),'Release simulator omitted capture renderer inventory binding');
   requireThat(copiedImplementation.sha256===copiedExpected.sha256&&copiedImplementation.count===copiedExpected.count,'Copied SDK implementation digest changed');
-  const manifest={kind:'hkd-native-preview-release',manifestVersion:1,createdAt:new Date().toISOString(),creatorVersion:'2.4.13',sdk:{sourceRoot:sdk,cloneRoot:clone,sharedResourceRoot:path.join(clone,'simulator/win32'),implementation:digest,copiedImplementation},build:{configuration:'Release',platform:'Win32',architecture:'x86',outputRoot:output,compileFlags:flags},features,sourceDiff,...extraSourceDiffs,runtime:{directory:bin,executable,executableSha256:sha(fs.readFileSync(executable)),...runtime},toolchain:tools,abi:{CC_STATIC:1,COCOS2D_DEBUG:0,USE_V8_DEBUGGER:0,NDEBUG:1},patches,tooling:inventory(__dirname).filter(item=>/\.cjs$/.test(item.file)||options.unitRegionBounds&&item.file==='unit-region-bounds.inc'),launched:false};
+  const tooling=inventory(__dirname).filter(item=>
+    /\.cjs$/.test(item.file) ||
+    options.unitRegionBounds && item.file==='unit-region-bounds.inc' ||
+    options.foregroundStencilReuse && /^foreground-stencil-reuse(?:-.*)?\.inc$/.test(item.file) ||
+    options.captureRendererInventory && /^capture-renderer-inventory-(?:native|binding|clear)\.inc$/.test(item.file));
+  const executableBytes=fs.readFileSync(executable),executableSha256=sha(executableBytes);
+  if(nvidiaDiff){
+    requireThat(runtime.files.some(file=>file.relativePath==='simulator.exe'&&file.sha256===executableSha256),'Release simulator changed during export verification');
+    runtime.nvidiaOptimusPreference=nvidiaOptimus.verifyExport(executableBytes);
+  }
+  const manifest={kind:'hkd-native-preview-release',manifestVersion:1,createdAt:new Date().toISOString(),creatorVersion:'2.4.13',sdk:{sourceRoot:sdk,cloneRoot:clone,sharedResourceRoot:path.join(clone,'simulator/win32'),implementation:digest,copiedImplementation},build:{configuration:'Release',platform:'Win32',architecture:'x86',outputRoot:output,compileFlags:flags},features,sourceDiff,...extraSourceDiffs,runtime:{directory:bin,executable,executableSha256,...runtime},toolchain:tools,abi:{CC_STATIC:1,COCOS2D_DEBUG:0,USE_V8_DEBUGGER:0,NDEBUG:1},patches,tooling,launched:false};
   const manifestFile=path.join(output,'build-manifest.json');fs.writeFileSync(manifestFile,JSON.stringify(manifest,null,2)+'\n');console.log('Release simulator built without launching. Manifest: '+manifestFile);
 }
 if(require.main===module){try{main(process.argv.slice(2));}catch(error){console.error('Native preview build refused/failed: '+error.message);process.exitCode=1;}}

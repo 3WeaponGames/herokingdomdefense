@@ -19994,7 +19994,7 @@
       ],
       "file": "authoring/worlds/library/images/terrain-redesign/map-concept-07-crescent-ridge/switchback-spur/ridge.png",
       "width": 2604,
-      "height": 4236,
+      "height": 4144,
       "nativeScale": 0.5,
       "defaultScale": 1,
       "depth": "world",
@@ -20002,11 +20002,436 @@
         "x": 0.5,
         "y": 0
       },
-      "sha256": "cf374ceacb274b51ecfbeac47dfd88d4f5026f38538328416d88e0e75f46d8a6",
+      "sha256": "a6ab219e525bca182e7895febf88ecc95202fb896d264f6a229dd9b851717ee3",
       "source": {
         "kind": "authored-terrain-piece",
         "mapId": "map-concept-07-crescent-ridge",
         "concept": "switchback-spur",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-15-hill-1",
+      "name": "Western terrace",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1956,
+      "height": 2204,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/orange-cliffs/hill-1.png",
+      "sha256": "aa81afa0c960a268a0147c0e1b56004b3323ae5cfad696f9c15215f72ada5c58",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-15-hill-2",
+      "name": "Eastern terrace",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1508,
+      "height": 1720,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/orange-cliffs/hill-2.png",
+      "sha256": "f6a392bb489ebe47abbf430f93320166d71fa9add9977bcb5da0b3351955fb50",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-15-hill-3",
+      "name": "Southwest shelf",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1892,
+      "height": 1712,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/orange-cliffs/hill-3.png",
+      "sha256": "6a21d53a85e113f824bd42f09c78054c581b97b234086b514f3ebeb245a99fe2",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-15-hill-4",
+      "name": "Southeast shelf",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1176,
+      "height": 1600,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/orange-cliffs/hill-4.png",
+      "sha256": "498a44f78cbaaf368b2f88dbea9caf0c7c2cd7ecded3820dd46e4402dbd0f232",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-15-hill-5",
+      "name": "Keep Landing",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1452,
+      "height": 1368,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-expansion-lava-ember-stair/orange-cliffs/hill-5.png",
+      "sha256": "5d5a85819c3469f8f8150a5a69ffc6aea911a8264188aace6948c7705483ee63",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-expansion-lava-ember-stair",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-16-hill-1",
+      "name": "Northwest crown",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1816,
+      "height": 2020,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-04-broken-crown/orange-cliffs/hill-1.png",
+      "sha256": "c0a50a84e3ec9fd1a30f20367a55885f81f4aacbb21d4d1bcbf09ff231cc55d0",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-04-broken-crown",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-16-hill-2",
+      "name": "Northeast crown",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1620,
+      "height": 1396,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-04-broken-crown/orange-cliffs/hill-2.png",
+      "sha256": "5a25252df8b91cf1c7ea0f73f1a351e29b65ce4e680dc703d1d624ac156a063a",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-04-broken-crown",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-16-hill-3",
+      "name": "Southern crown",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 2320,
+      "height": 1064,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-04-broken-crown/orange-cliffs/hill-3.png",
+      "sha256": "409784679c28a6ceff068bcc38f4b7a7c6a5e7ecd916594f9a7e220ef731257f",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-04-broken-crown",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-16-hill-4",
+      "name": "Orange Cap",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1248,
+      "height": 1944,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-04-broken-crown/orange-cliffs/hill-4.png",
+      "sha256": "931f07a81c24fd9bcea9dead645694ef846d131e638ba58cd9b0894511629140",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-04-broken-crown",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-16-hill-5",
+      "name": "Central basalt spur",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 336,
+      "height": 336,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-04-broken-crown/orange-cliffs/hill-5.png",
+      "sha256": "fe84f87c04bdf1c1b8cad6142624767ecea417c3a25072908dc72eea78ed2a85",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-04-broken-crown",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-16-hill-6",
+      "name": "Eastern crown",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1040,
+      "height": 2936,
+      "nativeScale": 0.5,
+      "defaultScale": 1,
+      "depth": "world",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-concept-04-broken-crown/orange-cliffs/hill-6.png",
+      "sha256": "4b57c88eaa12029a9bd7219293fcf849179b61c08dca4fa4800ddd2f7c9fa434",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-concept-04-broken-crown",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-24-rock-hills-1-1",
+      "name": "Connected rock hills 1.1",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1407,
+      "height": 1569,
+      "nativeScale": 0.6666666666666666,
+      "defaultScale": 1,
+      "depth": "ground",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-lava-basalt-causeways/orange-cliffs/rock-hills-1-1.png",
+      "sha256": "4ec25dcff9eaeb19c945349a32265255566fb68742b60cd5d252b0e467f4e794",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-24-rock-hills-1-2",
+      "name": "Connected rock hills 1.2",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1407,
+      "height": 1569,
+      "nativeScale": 0.6666666666666666,
+      "defaultScale": 1,
+      "depth": "ground",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-lava-basalt-causeways/orange-cliffs/rock-hills-1-2.png",
+      "sha256": "513be1377e013d1c6f67a6c089c3cff97617b7a89be584b6394d66f78d2050e8",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-24-rock-hills-2-1",
+      "name": "Connected rock hills 2.1",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1407,
+      "height": 1560,
+      "nativeScale": 0.6666666666666666,
+      "defaultScale": 1,
+      "depth": "ground",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-lava-basalt-causeways/orange-cliffs/rock-hills-2-1.png",
+      "sha256": "cd737176529c517e80836e60ef9cfd7e36ef7906a27e8ba81e04f6d18ba8763c",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-24-rock-hills-2-2",
+      "name": "Connected rock hills 2.2",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1407,
+      "height": 1560,
+      "nativeScale": 0.6666666666666666,
+      "defaultScale": 1,
+      "depth": "ground",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-lava-basalt-causeways/orange-cliffs/rock-hills-2-2.png",
+      "sha256": "bb219ecc8415b6b3b0873df5ba1200d2ee3d15c12ec7524131599c731aa9c42c",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-24-rock-hills-3-1",
+      "name": "Connected rock hills 3.1",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1407,
+      "height": 1560,
+      "nativeScale": 0.6666666666666666,
+      "defaultScale": 1,
+      "depth": "ground",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-lava-basalt-causeways/orange-cliffs/rock-hills-3-1.png",
+      "sha256": "e206531b4f91e81eeb4491813509c0e82c6d38d3c133b9fe0cb22a3520498a79",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways",
+        "concept": "orange-cliffs",
+        "castShadow": false
+      }
+    },
+    {
+      "id": "orange-stage-24-rock-hills-3-2",
+      "name": "Connected rock hills 3.2",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "width": 1407,
+      "height": 1560,
+      "nativeScale": 0.6666666666666666,
+      "defaultScale": 1,
+      "depth": "ground",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "file": "authoring/worlds/library/images/terrain-redesign/map-biome-lava-basalt-causeways/orange-cliffs/rock-hills-3-2.png",
+      "sha256": "fbdf2ee01e71683828346a555e7296d73c1c2103714665c2a723e486f629b5d7",
+      "source": {
+        "kind": "authored-terrain-piece",
+        "mapId": "map-biome-lava-basalt-causeways",
+        "concept": "orange-cliffs",
         "castShadow": false
       }
     }

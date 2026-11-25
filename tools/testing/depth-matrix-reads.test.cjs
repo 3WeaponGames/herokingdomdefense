@@ -14,7 +14,7 @@ function host(text,apiExpression='({point,nodeTransform,gateLeaves,wallSurfaces,
   const counts={world:0,main:0,source:0,inverse:0,vec2:0,mat4:0};
   class Mat4{constructor(){counts.mat4++;this.m=new Float32Array(16);this.m[0]=this.m[5]=this.m[10]=this.m[15]=1;}}
   Mat4.copy=copy;Mat4.invert=function(out,a){counts.inverse++;return invert(out,a);};
-  class Vec2{constructor(x=0,y=0){counts.vec2++;this.x=x;this.y=y;}}
+  class Vec2{constructor(x=0,y=0){counts.vec2++;this.x=x||0;this.y=y||0;}}
   Vec2.transformMat4=(out,a,mat)=>{const x=a.x,y=a.y,m=mat.m;out.x=m[0]*x+m[4]*y+m[12];out.y=m[1]*x+m[5]*y+m[13];return out;};
   class Node{
     constructor(name,parent){this.name=name;this._parent=parent||null;this.children=[];if(parent)parent.children.push(this);this.local=new Mat4();this._worldMatrix=new Mat4();this._worldMatDirty=true;this.is3DNode=false;this.activeInHierarchy=true;}
@@ -45,6 +45,35 @@ function numeric(value){return Object.fromEntries(Object.entries(value));}
 function setup(h,values){const root=new h.Node('root').set(...values[0]),main=new h.Node('main',root).set(...values[1]),group=new h.Node('group',main).set(...values[2]),node=new h.Node('source',group).set(...values[3]);return{root,main,group,node};}
 let seed=3874521;function random(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
 function affine(){const angle=random()*Math.PI*2,a=Math.cos(angle),b=Math.sin(angle),sx=(random()<.5?-1:1)*(.2+random()*2),sy=(random()<.5?-1:1)*(.2+random()*2),skew=(random()-.5)*.6;return[a*sx,b*sx,(a*skew-b)*sy,(b*skew+a)*sy,(random()-.5)*10000,(random()-.5)*10000];}
+
+test('manual capture projection reads the live map matrix once and preserves the stock camera coordinates', () => {
+  const h = host(candidate, '({captureProjection})');
+  const parent = new h.Node('parent'), main = new h.Node('main', parent);
+  const view = {main};
+  for (let frame = 0; frame < 100; frame++) {
+    parent.set(...affine());
+    main.set(...affine());
+    const center = {x: (random() - .5) * 10000, y: (random() - .5) * 10000};
+    const height = 32 * (frame % 16 + 1);
+    const origin = main.convertToWorldSpaceAR(h.cc.v2(0, 0));
+    const up = main.convertToWorldSpaceAR(h.cc.v2(0, 1));
+    const position = main.convertToWorldSpaceAR(h.cc.v2(center.x, center.y));
+    h.reset();
+    const projection = h.api.captureProjection(view, center, height);
+    assert.deepEqual({...projection}, {
+      x: position.x, y: position.y, ortho: height * Math.hypot(up.x - origin.x, up.y - origin.y) / 2
+    });
+    assert.equal(h.counts.main, 1);
+    assert.equal(h.counts.vec2, 0);
+  }
+  const zeroView = {main: new h.Node('main').set(1, 1, 1, 1, -0, -0)};
+  const zeroCenter = {x: -0, y: -0}, actual = h.api.captureProjection(zeroView, zeroCenter, 32);
+  const zero = zeroView.main.convertToWorldSpaceAR(h.cc.v2(zeroCenter.x, zeroCenter.y));
+  assert.deepEqual({x: actual.x, y: actual.y}, {x: zero.x, y: zero.y});
+  const convert = main.convertToWorldSpaceAR;
+  main.convertToWorldSpaceAR = (...args) => convert.apply(main, args);
+  assert.equal(h.api.captureProjection(view, {x: 0, y: 0}, 64), null);
+});
 
 test('native atlas pages reuse stock coordinate matrices with exact placement and refresh between pages',()=>{
   const source=fs.readFileSync(path.join(project,'assets/_script/NativeActorAtlas.js'),'utf8');

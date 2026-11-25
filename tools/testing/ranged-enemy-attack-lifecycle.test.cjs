@@ -3,6 +3,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { environment, Node, distance } = require('../navigation/runtime-harness.cjs');
 const authored = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+const fireLizard = authored.SoldierCfg[authored.GameTools.unitProfiles.aliases[92039]];
+const timingKey = `enemy:${fireLizard.ID}:default`;
 
 const families = ['KinghtFallEnemyLong', 'KinghtFallEnemyItem03', 'KinghtFallEnemyItem05', 'KinghtFallEnemyItem08'];
 function fixture(kind = 'KinghtFallEnemyItem03', settings) {
@@ -11,7 +13,7 @@ function fixture(kind = 'KinghtFallEnemyItem03', settings) {
   e.game._combatEpoch = 1; e.game.gameStatus = 1;
   e.stubs.KinghtFallModle.KinghtFallSoldierAniEnum.Attack = 'attack';
   e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data = settings ? { GameTools: settings } : {};
-  unit.cfg = { ...authored.SoldierCfg[92039] };
+  unit.cfg = { ...fireLizard };
   unit.node._combatGeneration = 1;
   unit.time.Attack = 1;
   unit.bornInfo = { nodeIndex: 0, pathList: [new Node('objective', e.game.ndMain, 300, 0)] };
@@ -54,9 +56,8 @@ test('Fire Lizard and every ranged family finish repeated attacks and resume rou
 
 test('ranged cooldown starts with the animation while saved defaults and custom windups retain their exact release times', () => {
   for (const kind of families) for (const custom of [false, true]) {
-    const key = 'enemy:92039:default';
-    const settings = { timingDefaults: { [key]: { attack: .4 } } };
-    if (custom) settings.timings = { [key]: { attack: .8 } };
+    const settings = { timingDefaults: { [timingKey]: { attack: .4 } } };
+    if (custom) settings.timings = { [timingKey]: { attack: .8 } };
     const f = fixture(kind, settings), delay = custom ? .8 : .4;
     f.unit.doAttackStart();
     assert.equal(f.unit.time.Attack, 0, kind + ' inherited the melee release sentinel');
@@ -73,7 +74,7 @@ test('ranged cooldown starts with the animation while saved defaults and custom 
 
 test('finishing a ranged clip keeps a later authored hit pending and cannot schedule a duplicate attack', () => {
   for (const kind of families) {
-    const f = fixture(kind, { timings: { 'enemy:92039:default': { attack: .8 } } });
+    const f = fixture(kind, { timings: { [timingKey]: { attack: .8 } } });
     f.unit.doAttackStart(); const first = f.renderer.entry;
     f.overrides.tick(.5, true); f.renderer.complete(first);
     assert.equal(f.unit.state, 0);

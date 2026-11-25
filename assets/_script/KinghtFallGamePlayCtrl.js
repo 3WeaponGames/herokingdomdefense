@@ -233,7 +233,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     }
   };
   _ctor.prototype.onPreSolve = function (contact, self, other) {
-    Navigation.allowBlockedExit(this, contact, other);
+    if (this._terrainExit) Navigation.allowBlockedExit(this, contact, other);
   };
   _ctor.prototype.setLeft = function (t) {
     this.ctrPlayAni.setMaLeft(t);

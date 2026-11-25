@@ -57,6 +57,38 @@ test('empty candidate scans are read-only and do not share live result lists',()
  assert.deepEqual(outer,[1]);
 });
 
+test('large contours keep tangencies at positive and negative band boundaries', () => {
+ const contour=[];
+ for(let i=0;i<8;i++)contour.push({x:-64+i*16,y:-128});
+ for(let i=0;i<8;i++)contour.push({x:64,y:-128+i*32});
+ for(let i=0;i<8;i++)contour.push({x:64-i*16,y:128});
+ for(let i=0;i<8;i++)contour.push({x:-64,y:128-i*32});
+ for(const outline of [contour,contour.slice().reverse()]){
+  const grid=new NavigationGrid([outline],{minX:-200,minY:-200,maxX:200,maxY:200},20);
+  for(const side of [-1,1]){
+   const y=128*side;
+   assert.equal(grid.isWalkable({x:0,y:y-side*0.001}),false);
+   assert.equal(grid.isWalkable({x:0,y}),false);
+   assert.equal(grid.isWalkable({x:0,y:y+side*0.001}),true);
+   assert.equal(grid.segmentClear({x:-100,y},{x:100,y}),false);
+   assert.equal(grid.segmentClear({x:-100,y:y+side*0.001},{x:100,y:y+side*0.001}),true);
+   const radius=16, tangent=y+side*radius, clear=tangent+side*0.001;
+   assert.equal(grid.isWalkable({x:0,y:tangent},radius),false);
+   assert.equal(grid.isWalkable({x:0,y:clear},radius),true);
+   const start={x:-100,y:tangent}, end={x:100,y:tangent};
+   assert.equal(grid.segmentClear(start,end,radius),false);
+   const hit=grid.firstObstacle(start,end,radius,()=>true);
+   assert(hit&&hit.index===0&&hit.fraction>0&&hit.fraction<1);
+   const clearStart={x:start.x,y:clear}, clearEnd={x:end.x,y:clear};
+   assert.equal(grid.segmentClear(clearStart,clearEnd,radius),true);
+   assert.equal(grid.firstObstacle(clearStart,clearEnd,radius,()=>true),null);
+  }
+  const from={x:0,y:-160}, to={x:0,y:160};
+  assert(grid.isWalkable(from,16)&&grid.isWalkable(to,16));
+  assert.equal(grid.segmentClear(from,to,16),false);
+ }
+});
+
 test('indexed clearance agrees with a full polygon scan at negative, shifted and off-map coordinates',()=>{
  const rng=random();let compared=0;
  for(const shift of [0,-3000,1e12])for(let scene=0;scene<4;scene++){

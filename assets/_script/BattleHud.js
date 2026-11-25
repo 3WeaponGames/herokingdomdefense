@@ -12,8 +12,20 @@ function disableFit(node) {
   });
 }
 function fitCoin(node) {
-  var text = node.getComponentsInChildren(cc.Label).map(function (l) { return [l.string, l.fontSize, l.lineHeight, l.font && l.font.uuid].join(":"); }).join("|");
-  if (node._battleCoinSignature === text) return; node._battleCoinSignature = text;
+  var labels = node.getComponentsInChildren(cc.Label), inputs = node._battleCoinInputs;
+  var changed = !inputs || inputs.length !== labels.length * 4;
+  if (!inputs) inputs = node._battleCoinInputs = [];
+  for (var i = 0; i < labels.length; i++) {
+    var label = labels[i], offset = i * 4, font = label.font && label.font.uuid;
+    if (inputs[offset] !== label.string || inputs[offset + 1] !== label.fontSize ||
+        inputs[offset + 2] !== label.lineHeight || inputs[offset + 3] !== font) {
+      inputs[offset] = label.string; inputs[offset + 1] = label.fontSize;
+      inputs[offset + 2] = label.lineHeight; inputs[offset + 3] = font;
+      changed = true;
+    }
+  }
+  if (!changed) return;
+  inputs.length = labels.length * 4;
   (node.getComponents(cc.Component) || []).forEach(function (c) { if (c.enabled && Array.isArray(c.content) && c.fit) c.fit(); });
 }
 function label(node, size) {
@@ -114,12 +126,59 @@ function fadeTaskSpeaker(ui, dt) {
   speaker.active = planning || alpha > 0;
   state.collectControl.interactable = planning && alpha > 0;
 }
-function safeBounds(root) {
+var nativeNode = cc.Node && cc.Node.prototype, nativeScene = cc.Scene && cc.Scene.prototype;
+var nativeToLocal = nativeNode && nativeNode.convertToNodeSpaceAR;
+var nativeUpdateWorld = nativeNode && nativeNode._updateWorldMatrix;
+function settledMatrix(root) {
+  if (!nativeUpdateWorld || !cc.sys.isNative || cc.ENGINE_VERSION !== "2.4.13" ||
+      root.convertToNodeSpaceAR !== nativeToLocal || Object.getPrototypeOf(root) !== nativeNode) return null;
+  // The stock converter updates ancestors first. Reuse its old result only
+  // when it would leave the world matrix and descendant dirty flags intact.
+  for (var node = root, depth = 0; node; node = node._parent) {
+    var type = Object.getPrototypeOf(node);
+    if (++depth > 16 || node._worldMatDirty !== false || node._updateWorldMatrix !== nativeUpdateWorld ||
+        type !== nativeNode && type !== nativeScene) return null;
+  }
+  var matrix = root._worldMatrix && root._worldMatrix.m;
+  if (!matrix || matrix.length !== 16 || matrix[2] || matrix[3] || matrix[6] || matrix[7] ||
+      matrix[8] || matrix[9] || matrix[11] || matrix[15] !== 1) return null;
+  var determinant = (matrix[0] * matrix[5] - matrix[1] * matrix[4]) * matrix[10];
+  return determinant && Number.isFinite(determinant) ? matrix : null;
+}
+function safeBounds(root, cache, clamp) {
   var origin = cc.view.getVisibleOrigin(), visible = cc.view.getVisibleSize();
   var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: visible.width, height: visible.height };
-  var a = root.convertToNodeSpaceAR(cc.v2(Math.max(origin.x, safe.x), Math.max(origin.y, safe.y)));
-  var b = root.convertToNodeSpaceAR(cc.v2(Math.min(origin.x + visible.width, safe.x + safe.width), Math.min(origin.y + visible.height, safe.y + safe.height)));
-  return { left: Math.min(a.x, b.x), right: Math.max(a.x, b.x), bottom: Math.min(a.y, b.y), top: Math.max(a.y, b.y) };
+  var x = clamp ? Math.max(origin.x, safe.x) : safe.x, y = clamp ? Math.max(origin.y, safe.y) : safe.y;
+  var right = safe.x + safe.width, top = safe.y + safe.height;
+  if (clamp) {
+    right = Math.min(origin.x + visible.width, right);
+    top = Math.min(origin.y + visible.height, top);
+  }
+  var matrix, previous = cache.matrix, i;
+  if (cache.root === root && Object.is(cache.worldLeft, x) && Object.is(cache.worldBottom, y) &&
+      Object.is(cache.worldRight, right) && Object.is(cache.worldTop, top)) {
+    matrix = settledMatrix(root);
+    if (matrix) {
+      for (i = 0; i < 16; i++) {
+        if (!Object.is(matrix[i], previous[i])) break;
+      }
+      if (i === 16) return cache.bounds;
+    }
+  }
+  var a = root.convertToNodeSpaceAR(cc.v2(x, y)), b = root.convertToNodeSpaceAR(cc.v2(right, top));
+  var left = Math.min(a.x, b.x), localRight = Math.max(a.x, b.x), bottom = Math.min(a.y, b.y), localTop = Math.max(a.y, b.y);
+  var bounds = cache.bounds;
+  if (!bounds || !Object.is(bounds.left, left) || !Object.is(bounds.right, localRight) ||
+      !Object.is(bounds.bottom, bottom) || !Object.is(bounds.top, localTop)) {
+    bounds = cache.bounds = { left: left, right: localRight, bottom: bottom, top: localTop };
+  }
+  matrix = settledMatrix(root);
+  if (matrix) {
+    for (i = 0; i < 16 && Number.isFinite(matrix[i]); i++) previous[i] = matrix[i];
+    cache.root = i === 16 ? root : null;
+    cache.worldLeft = x; cache.worldBottom = y; cache.worldRight = right; cache.worldTop = top;
+  } else cache.root = null;
+  return bounds;
 }
 function sizeLabel(node, fontSize, width, wrap, lineHeight) {
   var text = label(node, fontSize);
@@ -133,8 +192,12 @@ function rewardSpacing(ui) {
   var button = ui.btnAddCoin, row = button && button.getChildByName("lay1"); if (!row || row.children.length < 3) return;
   var video = row.children[0], silver = row.children[1], amount = row.getChildByName("labNum"); if (!amount) return;
   var text = amount.getComponent(cc.Label);
-  var signature = [text.string, text.fontSize, text.font && text.font.uuid, amount.width, video.width, video.scaleX, silver.width, silver.scaleX].join(":");
-  if (row._battleRewardSignature === signature) return;
+  var inputs = row._battleRewardInputs || (row._battleRewardInputs = {});
+  var font = text.font && text.font.uuid;
+  if (inputs.string === text.string && inputs.fontSize === text.fontSize && inputs.font === font &&
+      inputs.amountWidth === amount.width && inputs.amountScale === amount.scaleX &&
+      inputs.videoWidth === video.width && inputs.videoScale === video.scaleX &&
+      inputs.silverWidth === silver.width && inputs.silverScale === silver.scaleX && inputs.anchor === button.anchorX) return;
   disableFit(row);
   text.overflow = cc.Label.Overflow.NONE; text.enableWrapText = false;
   if (text._forceUpdateRenderData) text._forceUpdateRenderData();
@@ -145,7 +208,28 @@ function rewardSpacing(ui) {
   button.width = Math.max(131, width + 24);
   row.x = button.width * (.5 - button.anchorX) - width / 2;
   var sprite = button.getComponent(cc.Sprite); if (sprite) sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
-  row._battleRewardSignature = [text.string, text.fontSize, text.font && text.font.uuid, amount.width, video.width, video.scaleX, silver.width, silver.scaleX].join(":");
+  inputs.string = text.string; inputs.fontSize = text.fontSize; inputs.font = font;
+  inputs.amountWidth = amount.width; inputs.amountScale = amount.scaleX;
+  inputs.videoWidth = video.width; inputs.videoScale = video.scaleX;
+  inputs.silverWidth = silver.width; inputs.silverScale = silver.scaleX; inputs.anchor = button.anchorX;
+}
+function headerLabelChanged(row, node, includeText) {
+  var text = node && component(node, cc.Label), font = text && text.font && text.font.uuid;
+  if (!text) {
+    var hadLabel = !!row.node;
+    row.node = null;
+    return hadLabel;
+  }
+  var string = includeText ? text.string : null;
+  if (row.node === node && row.string === string && row.width === node.width && row.height === node.height &&
+      row.x === node.x && row.y === node.y && row.scaleX === node.scaleX && row.scaleY === node.scaleY &&
+      row.fontSize === text.fontSize && row.lineHeight === text.lineHeight && row.font === font &&
+      row.family === text.fontFamily && row.overflow === text.overflow && row.wrap === text.enableWrapText) return false;
+  row.node = node; row.string = string; row.width = node.width; row.height = node.height;
+  row.x = node.x; row.y = node.y; row.scaleX = node.scaleX; row.scaleY = node.scaleY;
+  row.fontSize = text.fontSize; row.lineHeight = text.lineHeight; row.font = font; row.family = text.fontFamily;
+  row.overflow = text.overflow; row.wrap = text.enableWrapText;
+  return true;
 }
 function layoutHeader(ui, bounds) {
   var state = ui._battleHud, root = ui.ctrUI.node, coin = ui.ndCoin, pause = ui.btnSuspend, buildings = ui.btnBuildInfo;
@@ -153,14 +237,22 @@ function layoutHeader(ui, bounds) {
   if (badge && badge.active && badge.activeInHierarchy !== false) badgeFloor = root.convertToNodeSpaceAR(badge.convertToWorldSpaceAR(cc.v2(0, -badge.height * badge.anchorY))).y - 12;
   fitCoin(coin); rewardSpacing(ui);
   var name = ui.ndLevelInfo.getChildByName("labName"), wave = ui.ndLevelInfo.getChildByName("labOrder");
-  var signature = [bounds.left, bounds.right, bounds.top, badgeFloor, coin.width, coin.height, name.getComponent(cc.Label).string, wave.getComponent(cc.Label).string,
-    [name, wave, buildings.getChildByName("labNum")].map(labelMetrics).join(";")].join("|");
-  if (signature === state.signature) return; state.signature = signature;
+  var buildingCaption = buildings.getChildByName("labNum");
+  var inputs = state.headerInputs || (state.headerInputs = { name: {}, wave: {}, caption: {} });
+  var nameChanged = headerLabelChanged(inputs.name, name, true);
+  var waveChanged = headerLabelChanged(inputs.wave, wave, true);
+  var captionChanged = headerLabelChanged(inputs.caption, buildingCaption, false);
+  if (!nameChanged && !waveChanged && !captionChanged &&
+      inputs.left === bounds.left && inputs.right === bounds.right && inputs.top === bounds.top && inputs.badgeFloor === badgeFloor &&
+      inputs.coinWidth === coin.width && inputs.coinHeight === coin.height && inputs.pauseWidth === pause.width &&
+      inputs.pauseHeight === pause.height && inputs.buildWidth === buildings.width && inputs.buildHeight === buildings.height) return;
+  inputs.left = bounds.left; inputs.right = bounds.right; inputs.top = bounds.top; inputs.badgeFloor = badgeFloor;
+  inputs.coinWidth = coin.width; inputs.coinHeight = coin.height; inputs.pauseWidth = pause.width; inputs.pauseHeight = pause.height;
+  inputs.buildWidth = buildings.width; inputs.buildHeight = buildings.height;
   [coin, pause, buildings].forEach(function (node) { var widget = node.getComponent(cc.Widget); if (widget) widget.enabled = false; });
   var margin = 18, center = (bounds.left + bounds.right) / 2;
   var rowY = bounds.top - Math.max(60, margin + coin.height / 2, margin + pause.height / 2);
   coin.setPosition(bounds.left + margin + coin.width / 2, rowY);
-  var buildingCaption = buildings.getChildByName("labNum");
   var controlHalfWidth = Math.max(pause.width / 2, buildings.width / 2, buildingCaption ? buildingCaption.width * Math.abs(buildingCaption.scaleX) / 2 : 0);
   var controlsX = bounds.right - margin - 12 - controlHalfWidth;
   pause.setPosition(controlsX, rowY);
@@ -180,6 +272,92 @@ function layoutHeader(ui, bounds) {
     Math.min(bounds.top - margin, badgeFloor) - titleHeight / 2);
   ui.ndLevelInfo.setContentSize(width, titleHeight); ui.ndLevelInfo.setPosition(titleX, titleY);
   wave.y = -titleSize.height / 2 - 4 - waveSize.height / 2;
+}
+function shown(node) {
+  return !!node && node.active !== false && node.activeInHierarchy !== false;
+}
+function footerBox(box, node, caption) {
+  if (!node) {
+    var removed = !!box.node;
+    box.node = null; box.visible = false;
+    return removed;
+  }
+  var sx = Math.abs(node.scaleX), sy = Math.abs(node.scaleY), visible = shown(node);
+  var minX = -node.anchorX * node.width * sx, maxX = (1 - node.anchorX) * node.width * sx;
+  var minY = -node.anchorY * node.height * sy, maxY = (1 - node.anchorY) * node.height * sy;
+  if (shown(caption)) {
+    var w = caption.width * Math.abs(caption.scaleX) * sx, h = caption.height * Math.abs(caption.scaleY) * sy;
+    minX = Math.min(minX, caption.x * sx - caption.anchorX * w);
+    maxX = Math.max(maxX, caption.x * sx + (1 - caption.anchorX) * w);
+    minY = Math.min(minY, caption.y * sy - caption.anchorY * h);
+    maxY = Math.max(maxY, caption.y * sy + (1 - caption.anchorY) * h);
+  }
+  if (box.node === node && box.visible === visible &&
+      box.minX === minX && box.maxX === maxX && box.minY === minY && box.maxY === maxY) return false;
+  box.node = node; box.visible = visible;
+  box.minX = minX; box.maxX = maxX; box.minY = minY; box.maxY = maxY;
+  return true;
+}
+function positionJoystick(control, rod, root, state, force) {
+  var parent = rod.parent, point = cc.v2(state.restX, state.restY);
+  if (parent !== root) point = parent.convertToNodeSpaceAR(root.convertToWorldSpaceAR(point));
+  if (force || state.control !== control || state.joystick !== rod || state.restParent !== parent ||
+      state.restLocalX !== point.x || state.restLocalY !== point.y) {
+    control.setJoystickRest(point);
+    state.control = control; state.joystick = rod; state.restParent = parent;
+    state.restLocalX = point.x; state.restLocalY = point.y;
+  }
+}
+function layoutFooter(ui) {
+  var control = ui.ctrUI, root = control && control.node, rod = control && control.ndRod;
+  var button = ui.btnStartFight, rally = ui.btnAgg, follow = ui.btnFollow, coin = ui.btnAddCoin;
+  if (!root || !rod || !button || !cc.view) return;
+  var state = ui._battleFooterLayout || (ui._battleFooterLayout = {
+    bounds: { matrix: [] }, start: {}, rally: {}, follow: {}, coin: {}
+  });
+  var bounds = safeBounds(root, state.bounds, false), left = bounds.left, right = bounds.right, bottom = bounds.bottom;
+  var startBox = state.start, rallyBox = state.rally, followBox = state.follow, coinBox = state.coin;
+  var startChanged = footerBox(startBox, button, ui._completionReward && ui._completionReward.node);
+  var rallyChanged = footerBox(rallyBox, rally, rally && rally.getChildByName("labNum"));
+  var followChanged = footerBox(followBox, follow, follow && follow.getChildByName("labNum"));
+  var coinChanged = footerBox(coinBox, coin);
+  if (!startChanged && !rallyChanged && !followChanged && !coinChanged &&
+      state.left === left && state.right === right && state.bottom === bottom &&
+      state.rodWidth === rod.width && state.rodHeight === rod.height && state.rodScaleX === rod.scaleX && state.rodScaleY === rod.scaleY) {
+    if (state.control !== control || state.joystick !== rod || rod.parent !== root || state.restParent !== root)
+      positionJoystick(control, rod, root, state, false);
+    return;
+  }
+  state.left = left; state.right = right; state.bottom = bottom;
+  state.rodWidth = rod.width; state.rodHeight = rod.height; state.rodScaleX = rod.scaleX; state.rodScaleY = rod.scaleY;
+  var margin = 18, gap = 18;
+  if (coin && !ui._footerCoinOffset) ui._footerCoinOffset = { x: coin.x - button.x, y: coin.y - button.y };
+  button.setPosition((left + right) / 2, bottom + margin - startBox.minY);
+  if (coin && ui._footerCoinOffset) coin.setPosition(button.x + ui._footerCoinOffset.x, button.y + ui._footerCoinOffset.y);
+  var commandX = right - margin - Math.max(rally ? rallyBox.maxX : 0, follow ? followBox.maxX : 0);
+  var commandLeft = commandX + Math.min(rally ? rallyBox.minX : 0, follow ? followBox.minX : 0);
+  var commandBottom = bottom + margin;
+  // Narrow screens can lift the commands while keeping Start centered.
+  if (startBox.visible && button.x + startBox.maxX + gap > commandLeft) {
+    commandBottom = Math.max(commandBottom, button.y + startBox.maxY + gap);
+  }
+  if (coinBox.visible && coin.x + coinBox.maxX + gap > commandLeft) {
+    commandBottom = Math.max(commandBottom, coin.y + coinBox.maxY + gap);
+  }
+  if (rally) rally.setPosition(commandX, commandBottom - rallyBox.minY);
+  if (follow) {
+    var followBottom = rally ? rally.y + rallyBox.maxY + gap : commandBottom;
+    follow.setPosition(commandX, followBottom - followBox.minY);
+  }
+  var rodHalfWidth = rod.width * Math.abs(rod.scaleX) / 2, rodHalfHeight = rod.height * Math.abs(rod.scaleY) / 2;
+  state.restX = Math.max(left + margin + rodHalfWidth, left + (right - left) / 4);
+  state.restY = bottom + 180 + rodHalfHeight;
+  if (startBox.visible) {
+    var top = button.y + startBox.maxY;
+    if (coinBox.visible && state.restX + rodHalfWidth > coin.x + coinBox.minX) top = Math.max(top, coin.y + coinBox.maxY);
+    state.restY = Math.max(state.restY, top + gap + rodHalfHeight);
+  }
+  positionJoystick(control, rod, root, state, true);
 }
 function sizeTaskBubble(task, state, width) {
   var name = state.taskName, pending = state.pendingLabel;
@@ -286,7 +464,8 @@ function layoutTaskBubble(ui, bounds) {
 }
 function layout(ui, dt) {
   if (!ui._battleHud || !cc.view) return;
-  var bounds = safeBounds(ui.ctrUI.node);
+  var state = ui._battleHud, cache = state.headerBounds || (state.headerBounds = { matrix: [] });
+  var bounds = safeBounds(ui.ctrUI.node, cache, true);
   layoutHeader(ui, bounds);
   fadeTaskSpeaker(ui, dt);
   layoutTaskBubble(ui, bounds);
@@ -328,3 +507,4 @@ function dispose(ui) {
   if (cc.isValid(ui.ndTask, true)) ui.ndTask.active = false;
 }
 exports.install = install; exports.layout = layout; exports.updateTasks = updateTasks; exports.mountTaskSpeaker = mountTaskSpeaker; exports.rewardSpacing = rewardSpacing; exports.dispose = dispose;
+exports.layoutFooter = layoutFooter;

@@ -20,6 +20,39 @@ function borderPixels(img){
  found={data:rgba,width:w,height:h};borders.set(img,found);return found;
 }
 
+// Road up Lava has the heat at the bottom of the source strip. Road contours
+// sample from the outside in. Keep the rock silhouette and put the bright
+// contact band in front of the rock, then fade its orange base into the stone.
+function lavaContactBorder(texture){
+ if(texture.lavaContact)return texture.lavaContact;
+ var w=texture.width,h=texture.height,src=texture.data,data=new Uint8ClampedArray(src.length);
+ var foot=Math.max(1,Math.round(h*.14)),glow=Math.max(1,Math.round(h*.09)),warm=Math.max(1,Math.round(h*.11));
+ var stoneEnd=Math.min(h-foot,Math.round(h*.54));
+ for(var x=0;x<w;x++){
+  var crest=0;
+  while(crest<stoneEnd&&!src[(crest*w+x)*4+3])crest++;
+  if(crest===stoneEnd)continue;
+  for(var y=crest;y<stoneEnd+foot;y++){
+   var d=y-crest,at=(y*w+x)*4;
+   if(d<glow){
+    data[at]=245;data[at+1]=215;data[at+2]=110;
+    data[at+3]=src[((crest+Math.min(d,stoneEnd-crest-1))*w+x)*4+3];
+   }else if(d<foot){
+    var heat=(foot-d)/(foot-glow);
+    data[at]=139+94*heat;data[at+1]=86+40*heat;data[at+2]=61+6*heat;data[at+3]=255;
+   }else{
+    var stone=((y-foot)*w+x)*4,ember=Math.max(0,1-(d-foot)/warm)*.23;
+    data[at]=src[stone]*(1-ember)+233*ember;
+    data[at+1]=src[stone+1]*(1-ember)+126*ember;
+    data[at+2]=src[stone+2]*(1-ember)+67*ember;
+    data[at+3]=src[stone+3];
+   }
+  }
+ }
+ texture.lavaContact={data:data,width:w,height:h};
+ return texture.lavaContact;
+}
+
 function smoothing(stroke){return Math.max(0,Math.min(1,Number(stroke.edgeSmoothing)||0));}
 function smoothBorder(texture,amount){
  if(!amount)return texture;
@@ -151,7 +184,7 @@ function raster(first,outline,images){
  var result=canvas(w,h),r=result.getContext('2d'),tiling=(first.textureScale||1)*(first.nativeSize===true&&fill.nativeScale||1),texture=borderPixels(fill.image),pixels=new ImageData(w,h),flat=true,source=texture.data;
  for(var i=4;i<source.length;i+=4)if(source[i]!==source[0]||source[i+1]!==source[1]||source[i+2]!==source[2]||source[i+3]!==source[3]){flat=false;break;}
  for(var y=0;y<h;y++)for(var x=0;x<w;x++){var at=(y*w+x)*4;if(flat){pixels.data[at]=source[0];pixels.data[at+1]=source[1];pixels.data[at+2]=source[2];}else{var u=Math.floor(((left+(x+.5)/scale)/tiling%texture.width+texture.width)%texture.width),v=Math.floor(((-top+(y+.5)/scale)/tiling%texture.height+texture.height)%texture.height),sp=(v*texture.width+u)*4;pixels.data[at]=source[sp];pixels.data[at+1]=source[sp+1];pixels.data[at+2]=source[sp+2];}pixels.data[at+3]=255;}
-  if(ready(border)){var amount=smoothing(first),textured=first.edgeStyle==='textured',tex=textured?borderPixels(border.image):smoothBorder(borderPixels(border.image),amount),edgeScale=(first.edgeScale||1)*(first.nativeSize===true&&border.nativeScale||1),maxDepth=tex.height*edgeScale*scale,repeat=Math.max(1,tex.width*edgeScale*scale),center=[];for(var s of strokes)if(s.op!=='erase'){var ps=s.points;for(var j=0;j<Math.max(1,ps.length-1);j++){var a=ps[j],b=ps[Math.min(j+1,ps.length-1)];center.push({a:[(a.x-left)*scale,(top-a.y)*scale],b:[(b.x-left)*scale,(top-b.y)*scale],width:s.size*scale});}}function depthAt(p){var width=0,nearest=Infinity,nearestWidth=minWidth*scale;for(var line of center){var d=dist2(p,line.a,line.b),radius=line.width/2;if(d<=Math.pow(radius+2,2))width=Math.max(width,line.width);if(d<nearest){nearest=d;nearestWidth=line.width;}}var local=width||nearestWidth;return local<4?.001:Math.max(.25,Math.min(maxDepth,local*(first.edgeWidthMode==='fixed'?.45:.25)));}var paths=regions.map(function(region){return region.map(function(ring){return simplifyRing(ring,.8);});}),allRings=[].concat.apply([],paths),eraseLines=[];for(var s of strokes)if(s.op==='erase')for(var j=0;j<Math.max(1,s.points.length-1);j++){var a=s.points[j],b=s.points[Math.min(j+1,s.points.length-1)];eraseLines.push({a:[(a.x-left)*scale,(top-a.y)*scale],b:[(b.x-left)*scale,(top-b.y)*scale],radius:s.size*scale/2});}var patches=[];for(var region of paths)for(var i=0;i<region.length;i++){var ring=region[i];if(amount&&i===0){var rounded=roundOuter(ring,amount,depthAt,allRings,alpha,w,h,eraseLines);ring=region[i]=rounded.ring;for(var patch of rounded.patches)patches.push(patch.map(function(p){return [left+p[0]/scale,top-p[1]/scale];}));}if(!amount&&!textured)ribbon(pixels.data,w,h,ring,tex,repeat,depthAt,maxDepth);}if(amount||textured){var shape=canvas(w,h),sg=shape.getContext('2d');sg.putImageData(new ImageData(alpha,w,h),0,0);sg.setTransform(scale,0,0,-scale,-left*scale,top*scale);patchCoverage(sg,{patches:patches});alpha=sg.getImageData(0,0,w,h).data;smoothBand(pixels.data,w,h,paths,tex,edgeScale*scale,depthAt,alpha,textured&&first.edgeExterior==='cutout');}}
+  if(ready(border)){var amount=smoothing(first),textured=first.edgeStyle==='textured',lavaContact=first.edgeExterior==='lava-contact',sourceBorder=borderPixels(border.image),edgeTexture=lavaContact?lavaContactBorder(sourceBorder):sourceBorder,tex=textured?edgeTexture:smoothBorder(edgeTexture,amount),edgeScale=(first.edgeScale||1)*(first.nativeSize===true&&border.nativeScale||1),maxDepth=tex.height*edgeScale*scale,repeat=Math.max(1,tex.width*edgeScale*scale),center=[];for(var s of strokes)if(s.op!=='erase'){var ps=s.points;for(var j=0;j<Math.max(1,ps.length-1);j++){var a=ps[j],b=ps[Math.min(j+1,ps.length-1)];center.push({a:[(a.x-left)*scale,(top-a.y)*scale],b:[(b.x-left)*scale,(top-b.y)*scale],width:s.size*scale});}}function depthAt(p){var width=0,nearest=Infinity,nearestWidth=minWidth*scale;for(var line of center){var d=dist2(p,line.a,line.b),radius=line.width/2;if(d<=Math.pow(radius+2,2))width=Math.max(width,line.width);if(d<nearest){nearest=d;nearestWidth=line.width;}}var local=width||nearestWidth;return local<4?.001:Math.max(.25,Math.min(maxDepth,local*(first.edgeWidthMode==='fixed'?.45:.25)));}var paths=regions.map(function(region){return region.map(function(ring){return simplifyRing(ring,.8);});}),allRings=[].concat.apply([],paths),eraseLines=[];for(var s of strokes)if(s.op==='erase')for(var j=0;j<Math.max(1,s.points.length-1);j++){var a=s.points[j],b=s.points[Math.min(j+1,s.points.length-1)];eraseLines.push({a:[(a.x-left)*scale,(top-a.y)*scale],b:[(b.x-left)*scale,(top-b.y)*scale],radius:s.size*scale/2});}var patches=[];for(var region of paths)for(var i=0;i<region.length;i++){var ring=region[i];if(amount&&i===0){var rounded=roundOuter(ring,amount,depthAt,allRings,alpha,w,h,eraseLines);ring=region[i]=rounded.ring;for(var patch of rounded.patches)patches.push(patch.map(function(p){return [left+p[0]/scale,top-p[1]/scale];}));}if(!amount&&!textured&&!lavaContact)ribbon(pixels.data,w,h,ring,tex,repeat,depthAt,maxDepth);}if(amount||textured||lavaContact){var shape=canvas(w,h),sg=shape.getContext('2d');sg.putImageData(new ImageData(alpha,w,h),0,0);sg.setTransform(scale,0,0,-scale,-left*scale,top*scale);patchCoverage(sg,{patches:patches});alpha=sg.getImageData(0,0,w,h).data;smoothBand(pixels.data,w,h,paths,tex,edgeScale*scale,depthAt,alpha,lavaContact||textured&&first.edgeExterior==='cutout');}}
  r.setTransform(1,0,0,1,0,0);r.putImageData(pixels,0,0);
  found={canvas:result,left:left,right:right,top:top,bottom:bottom,scale:scale,patches:patches||[],bytes:w*h*4+(patches||[]).reduce(function(n,p){return n+p.length*16;},0)};builds++;while(bytes+found.bytes>MAX_BYTES&&cache.size){var oldest=cache.keys().next().value;bytes-=cache.get(oldest).bytes;cache.delete(oldest);}if(found.bytes<=MAX_BYTES){cache.set(key,found);bytes+=found.bytes;}return found;
 }

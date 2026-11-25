@@ -80,7 +80,7 @@ test('33 overlapping actors use discovered surface keys instead of repeating nat
 
 // Exercise the real fallback branch as a counterfactual, without keeping a copy
 // of production code or changing renderer identity/ABI between the two scenes.
-const fallbackSource=source.replace('var perSurfaceOnly=modular&&','var perSurfaceOnly=false&&modular&&');
+const fallbackSource=source.replace('var perSurfaceOnly = view.nativeCapture &&','var perSurfaceOnly = false && view.nativeCapture &&');
 assert.notEqual(fallbackSource,source,'The focused negative control must disable the actual bounds shortcut');
 class NativeRenderer{}
 let nativeAlias=aliasText.replace('const {GateOcclusion,gateLeaves}=helpers.load(cc)','const {GateOcclusion,gateLeaves,DepthView}=helpers.load(cc,{Skeleton:NativeRenderer})')

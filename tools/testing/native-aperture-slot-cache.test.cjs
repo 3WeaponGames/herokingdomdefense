@@ -34,3 +34,56 @@ test('unknown native identity/getter APIs fall back without changing mutable-slo
 test('cached native apertures still restore attachments and timestamp after bounds failures',()=>{
  const api=load(),f=fixture(true),originals=f.slots.slice(126).map(value=>value.attachment);api.tail(f.renderer);f.renderer._nativeSkeleton.getBoundingBox=()=>{throw Error('native bounds failed');};assert.throws(()=>api.bounds(f.renderer),/native bounds failed/);for(let index=126;index<128;index++){assert.equal(f.slots[index].attachment,originals[index-126]);assert.equal(f.slots[index].time,index);}assert.equal(f.counts().reads,1);
 });
+
+test('native occlusion bounds retain projection, once-per-draw pose updates and ordered fallback', () => {
+  const { environment, Node } = require('../navigation/runtime-harness.cjs');
+  const e = environment(), trace = [], depth = {};
+  const rect = {x: -6, y: -2, width: 12, height: 16};
+  const main = new Node('map');
+  const art = new Node('art', main, 10, 20);
+  art.angle = 35;
+  art.scaleX = -2;
+  let accepted = true;
+  class Component {}
+  class Skeleton {
+    updateWorldTransform() { trace.push('pose'); }
+  }
+  class SkeletonAnimation {
+    getBoundingBox() { trace.push('bounds'); return rect; }
+  }
+  const renderer = Object.assign(new Component(), {
+    node: art, enabled: true, _skeleton: new Skeleton(), _nativeSkeleton: new SkeletonAnimation()
+  });
+  const spine = { Skeleton, SkeletonAnimation, _hkdSampleOneDepthBounds(native, skeleton, needsPose, output) {
+    assert.equal(native, renderer._nativeSkeleton);
+    assert.equal(skeleton, renderer._skeleton);
+    trace.push(['native', needsPose]);
+    if (!accepted) return false;
+    output.set([rect.x, rect.y, rect.width, rect.height]);
+    return true;
+  }};
+  const cc = { ...e.cc, sys: {isNative: true} };
+  vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/KinghtFallDepthView.js'),'utf8'),
+    { exports: depth, cc, sp: {Skeleton: Component}, spine });
+  const makeCache = () => ({ bounds: new Map(), poses: new Set(), transforms: new Map() });
+  const stock = makeCache();
+  accepted = false;
+  const expected = depth.bounds(renderer, main, stock);
+  assert.deepEqual(trace.splice(0), [['native',true], 'pose', 'bounds']);
+  assert(stock.poses.has(renderer));
+
+  accepted = true;
+  const fast = makeCache();
+  assert.deepEqual(depth.bounds(renderer, main, fast), expected);
+  assert.deepEqual(trace.splice(0), [['native',true]]);
+  assert(fast.poses.has(renderer));
+  assert.equal(depth.bounds(renderer, main, fast), fast.bounds.get(renderer));
+  assert.deepEqual(trace, []);
+  fast.bounds.delete(renderer);
+  assert.deepEqual(depth.bounds(renderer, main, fast), expected);
+  assert.deepEqual(trace.splice(0), [['native',false]]);
+
+  renderer._skeleton.updateWorldTransform = function () { trace.push('custom pose'); };
+  assert.deepEqual(depth.bounds(renderer, main, makeCache()), expected);
+  assert.deepEqual(trace.splice(0), ['custom pose','bounds']);
+});

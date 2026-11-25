@@ -323,15 +323,21 @@ test('real Spine pose, attachments, deform, draw order and alpha survive flat si
   assert.equal(to.slots[0].color.r, .3);
   assert.equal(to.slots[0].darkColor, null);
 });
+function authoredGatePrefabs() {
+  const directory = path.join(root, 'assets/KinghtFallIconMap');
+  const maps = fs.readdirSync(directory).filter(name => /^Map\d+\.prefab$/.test(name)).map(name => {
+    const prefab = JSON.parse(fs.readFileSync(path.join(directory, name)));
+    return { name, prefab, containers: prefab.filter(n => /^\d+-cq-[LR]$/.test(n._name || '')) };
+  }).filter(map => map.containers.length);
+  assert.ok(maps.length, 'Expected authored gate fixtures');
+  return maps;
+}
 test('every authored gate side has independently positioned Spine sections to interleave with units', () => {
-  for (let map = 1; map <= 4; map++) {
-    const prefab = JSON.parse(fs.readFileSync(path.join(root, `assets/KinghtFallIconMap/Map0${map}.prefab`)));
-    const containers = prefab.filter(n => /^\d+-cq-[LR]$/.test(n._name || ''));
-    assert.ok(containers.length);
+  for (const { name, prefab, containers } of authoredGatePrefabs()) {
     for (const container of containers) {
       const parts = (container._children || []).map(r => prefab[r.__id__]).filter(n => (n._components || []).some(r => prefab[r.__id__].__type__ === 'sp.Skeleton'));
       assert.ok(parts.length >= 1);
-      if (parts.length > 1) assert.ok(new Set(parts.map(p => p._trs.array[1])).size > 1, `Map0${map} ${container._name} contains distinct ground heights`);
+      if (parts.length > 1) assert.ok(new Set(parts.map(p => p._trs.array[1])).size > 1, `${name} ${container._name} contains distinct ground heights`);
     }
   }
 });
@@ -345,11 +351,10 @@ test('flattening every authored gate preserves mirrored visuals, collider world 
   }
   class Skeleton {}
   const { DepthView } = load({ v2: (x, y) => new geometry.Vec2(x, y), Sprite: class {} }, { Skeleton });
-  for (let map = 1; map <= 4; map++) {
-    const a = JSON.parse(fs.readFileSync(path.join(root, `assets/KinghtFallIconMap/Map0${map}.prefab`)));
+  for (const { prefab: a, containers } of authoredGatePrefabs()) {
     const scene = new Node('scene', null, 120, 83); scene.scaleX = scene.scaleY = .8;
     const main = new Node('ndMain', scene, -22, 35), parts = [];
-    for (const authored of a.filter(n => /^\d+-cq-[LR]$/.test(n._name || ''))) {
+    for (const authored of containers) {
       const t = authored._trs.array, container = new Node(authored._name, main, t[0], t[1]);
       for (const ref of authored._children || []) {
         const value = a[ref.__id__], components = (value._components || []).map(r => a[r.__id__]);

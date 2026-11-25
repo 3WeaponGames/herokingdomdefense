@@ -29,7 +29,7 @@ function roadDefaults(asset,library,context){
  const height=Number.isFinite(pair.edge.height)?pair.edge.height:2;
  const edgeScale=biome==='lava'?.75:1;
  const defaults={biome,width:Math.ceil((90+2*Math.max(1,height-2)*edgeScale)/5)*5,edgeScale,edgeSmoothing:.6,edgeStyle:'textured'};
- if(biome==='lava')defaults.edgeExterior='cutout';
+ if(biome==='lava')defaults.edgeExterior='lava-contact';
  return defaults;
 }
 function strokeAssets(stroke){const ids=[],active=new Set(),pending=[{stroke}];while(pending.length){const item=pending.pop(),s=item.stroke;if(item.exit){active.delete(s);continue;}if(!s)continue;if(s.mode==='merged'){if(!Array.isArray(s.strokes))throw Error('Merged paint groups need an array of brush strokes.');if(active.has(s))throw Error('Merged paint groups cannot contain cycles.');active.add(s);pending.push({stroke:s,exit:true});for(let i=s.strokes.length-1;i>=0;i--)pending.push({stroke:s.strokes[i]});}else if(s.op!=='erase'){if(s.assetId)ids.push(s.assetId);if(s.mode==='road'&&s.edgeAssetId)ids.push(s.edgeAssetId);}}return ids;}
