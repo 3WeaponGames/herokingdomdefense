@@ -123,7 +123,21 @@ void planStage(const std::vector<Item>& items, uint32_t cullingMask)
 {
     uint32_t drawCount;
     const auto* recorded = draws(drawCount);
-    if (!drawCount || items.size() > CommandCapacity) return;
+    if (drawCount < 3 || items.size() < 9 || items.size() > CommandCapacity) return;
+
+    // One earlier key is required for a hit. The final hit is discarded
+    // by the stock rollback unless another valid triple follows it.
+    // Matching clear identities greedily bounds the number of valid triples.
+    uint32_t recordIndex = 0;
+    unsigned compatible = 0;
+    for (const auto& item : items) {
+        while (recordIndex < drawCount && !(recorded[recordIndex].cullingMask & cullingMask)) ++recordIndex;
+        if (recordIndex == drawCount) break;
+        if (item.model != recorded[recordIndex].clear) continue;
+        ++recordIndex;
+        if (++compatible == 3) break;
+    }
+    if (compatible < 3) return;
 
     GLint stencilBits = 0;
     glGetIntegerv(GL_STENCIL_BITS, &stencilBits);

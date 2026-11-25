@@ -56,7 +56,7 @@ ${clearMask}`
   {
     file: 'cocos/renderer/renderer/BaseRenderer.cpp',
     beforeSha256: '8109802ebbc07b8cc6fd22065498f717ee6444d1b87573e988b3f4c58b34e98c',
-    afterSha256: '2ac0be5a46b926acfd3fbd4f5c0c3ce55b204fd756b504919e7aa0e60d0550d1',
+    afterSha256: '8841497e50a92aafb853f1f9f6cc4428a2a4e712ad8d3bfdabd9686aebf23cdb',
     changes: [
       {
         before: rendererNamespace,
