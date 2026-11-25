@@ -136,13 +136,13 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     rider.queue(this, this.spAniHand, attackName);
     rider.attack(this, attackName);
   };
-  _ctor.prototype.setIdle = function () {
+  _ctor.prototype.setIdle = function (keepMountGait) {
     var t;
     if (this.isMove) {
       this.isMove = false;
       if (!this.isDie) {
         var rider = require("HeroMakerRider");
-        if (!rider.setMoving || !rider.setMoving(this, false)) {
+        if (!rider.setMoving || !rider.setMoving(this, false, keepMountGait)) {
           if (!rider.attacking(this)) rider.setLocomotion(this, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle);
         }
         null === (t = this.spAniSmoke) || undefined === t || t.setAnimation(0, "move_3", false);

@@ -168,12 +168,16 @@ function enableCombatMotion(controller){if(controller)combatMotion.add(controlle
 // Input can change movement before the skill simulation observes a position
 // delta. Switch only the horse immediately; the rider keeps its attack entry,
 // authored callbacks and the single lateUpdate synchronization pass.
-function setMoving(controller,moving){
+function setMoving(controller,moving,keepMountGait){
   if(!controller||!metadata(controller)||!mountMetadata(controller)||controller.isDie)return false;
   controller.isMove=!!moving;
   if(moving)releaseChargedAttack(controller);
   var state=combatStates.get(controller),horse=controller.spAniMa;
   if(moving&&state&&state.charge){combatStates.delete(controller);releaseCombatPose(controller);return true;}
+  if(!moving&&keepMountGait){
+    var track=current(horse);
+    if(name(track)==='move'&&loop(track))return true;
+  }
   ensureLocomotion(horse,moving?'move':'idle');
   return true;
 }

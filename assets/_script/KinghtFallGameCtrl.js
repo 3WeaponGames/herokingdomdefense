@@ -380,7 +380,7 @@ var def_KinghtFallGameCtrl = function (t) {
         updateProjectiles(this.ndBuildArr2, t, this, ui, data, epoch, stage);
     }
     if (!frameCurrent(this, ui, data, epoch, stage)) return;
-    this.ctrPlay.doMove(this.moveDir, t);
+    this.ctrPlay.doMove(this.moveDir, t, stage === $z1KinghtFallModle.KinghtFallGameStage.Fight ? this : null);
     if (!frameCurrent(this, ui, data, epoch, stage)) return;
     // Skill geometry and world effects share the hero's final movement position
     // for this simulation step. Advancing them in the actor's stat update made

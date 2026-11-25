@@ -209,7 +209,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.tagEnemy = null;
     this.delAllBuff();
   };
-  _ctor.prototype.doMove = function (t, e) {
+  _ctor.prototype.doMove = function (t, e, fight) {
     this._relicMoving = !this.isDead() && !!(t.x || t.y);
     if (this.state != r.Reborn) {
       this.setLeft(t.x);
@@ -217,7 +217,9 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         this.time[C.RenSoundTime] = 0;
         $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().stopEffectName($z1KinghtFallConfig.KinghtFallParameter.RunMusic);
         if (this._opposingForm) require("EnemyPolymorph").pose(this, false);
-        return void this.ctrPlayAni.setIdle();
+        var runtime = fight && this._styleRuntime;
+        var keepMountGait = runtime && runtime.retainsMountGait && runtime.retainsMountGait(fight, e);
+        return void this.ctrPlayAni.setIdle(keepMountGait);
       }
       this.node.getPosition(this.vec2_1);
       cc.Vec2.normalize(this.vec2_2, t);

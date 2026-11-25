@@ -29,6 +29,29 @@ test('a moving horse keeps its locomotion source clock during retimed rider atta
  for(const native of [false,true]){const f=controllerFixture(native),{actor,rider}=f;actor.setMove();actor.spAniMa.track.timeScale=.8;actor.spAniMa.track.trackTime=.4;actor.setAttack();assert(rider.retimeAttack(actor,.6));assert.equal(actor.spAniMa.track.animation.name,'move');close(actor.spAniMa.track.timeScale,.8);close(actor.spAniMa.track.trackTime,.4);for(const key of ['spAniBody','spAniDrap','spAniHead','spAniArrow','spAniBow','spAniHand'])close(actor[key].track.timeScale,.1667/.6);f.step(.2);close(actor.spAniMa.track.trackTime,.56);rider.clearCombatState(actor);actor.setAttack();assert(rider.setAttackPlayback(actor,1.4));close(actor.spAniBody.track.timeScale,1.4);close(actor.spAniMa.track.timeScale,.8);}
 });
 
+test('continuous displacement across zero-input updates preserves the mounted move track and attack callbacks',()=>{
+ for(const native of [false,true]){
+  const f=controllerFixture(native),{actor,rider}=f,horse=actor.spAniMa;
+  const hit=[];actor.setAttackEvent(()=>hit.push('release'));actor.setAttackEnd(()=>hit.push('end'));
+  actor.setMove();actor.setAttack();assert(rider.retimeAttack(actor,.6));
+  const track=horse.track,starts=horse.sets.length;
+  track.trackTime=.4;track.timeScale=.8;
+  for(let frame=0;frame<10;frame++){
+   actor.setIdle(true);
+   assert.equal(actor.isMove,false,'the input-side idle state is still applied');
+   assert.equal(horse.track,track,'the immediate idle request does not destroy the active move track');
+   rider.setCombatState(actor,{moving:true,deferUpdate:true});
+   f.step(.13);
+  }
+  assert.equal(horse.sets.length,starts);
+  close(horse.track.trackTime,.4+10*.13*.8);
+  assert.deepEqual(hit,['release']);
+  f.step(2);assert.deepEqual(hit,['release','end']);
+  actor.setIdle(false);assert.equal(horse.track.animation.name,'idle');
+  assert.equal(horse.sets.length,starts+1);
+ }
+});
+
 test('the preview owns only the single cast recovery and resumes ordinary attacks without any hidden late repeats',()=>{
  const settings=Settings.defaults('skirmisher'),model=new Model('skirmisher',settings,{mode:'active',targets:1,targetDistance:100,attackRate:20,attackSourceHit:.1667,attackSourceDuration:.8333,attackPlayback:1,impactDelay:.1667});model.advance(.5);assert(model.state.active);assert.equal(model.events.filter(e=>e.kind==='release'&&e.skill).length,1);assert.equal(model.events.filter(e=>e.kind==='release'&&!e.skill).length,0);model.advance(2);assert.equal(model.state.active,null);assert(model.events.some(e=>e.kind==='release'&&!e.skill));assert.equal(model.riderVolleyPose,undefined);assert.equal(model.events.filter(e=>e.kind==='release'&&e.skill).length,1);
 });
