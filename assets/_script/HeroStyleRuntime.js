@@ -20,6 +20,7 @@ function valid(value) {
 }
 function living(actor) { return valid(actor) && valid(actor.node) && !actor._isPooled && actor.node.activeInHierarchy !== false && actor.hp > 0 && (!actor.isDead || !actor.isDead()); }
 function distance(a,b) { return Math.hypot(a.x-b.x,a.y-b.y); }
+function displaced(current,previous,dt) { return distance(current,previous)>Math.max(1e-7,.01*dt); }
 function distanceSquared(a,b) { var x=a.x-b.x,y=a.y-b.y;return x*x+y*y; }
 function direction(value) {
   var x=value&&value.x,y=value&&value.y;
@@ -427,6 +428,17 @@ Runtime.prototype.interruptAttackForTransform=function(){
   this.beamFrame=null;
   require("HeroMakerRider").clearCombatState(this.hero.ctrPlayAni);
 };
+// Input movement is applied immediately before the style update. During an
+// ordinary frame with continuing displacement, the confirmed visual gait will
+// still be Move even though the old input-side state must switch to Idle.
+Runtime.prototype.retainsMountGait=function(game,dt){
+  var hero=this.hero;
+  if(this.game!==game||!this.scopeCurrent(this.scope)||!this.ui||this.ui.isclose||this.ui.isPauset||
+      hero._opposingForm||!hero.ctrPlayAni||!hero.ctrPlayAni.isMove||!living(hero)||
+      this.state.style==="mystic"||this.state.active||this.aiming||this.projectiles.length||AutoSkillCast.get()||
+      !(dt>0)||!isFinite(dt))return false;
+  return displaced(point(hero),this.lastPosition,dt);
+};
 Runtime.prototype.update=function(dt){
   this.refresh();if(!living(this.hero)){
     // Recovery may already have a planning HUD. Retire combat work once, then
@@ -441,7 +453,7 @@ Runtime.prototype.update=function(dt){
   // Compare actual velocity, not one frame's distance: slow movement must not
   // turn into standing still solely because the display refreshes faster.
   // Archer movement input also cancels its stationary draw before displacement.
-  var h=this.hero,pos=point(h),moving=distance(pos,this.lastPosition)>Math.max(1e-7,.01*dt)||this.state.style==="skirmisher"&&!!h._relicMoving;this.lastPosition={x:pos.x,y:pos.y};this.moving=moving;
+  var h=this.hero,pos=point(h),moving=displaced(pos,this.lastPosition,dt)||this.state.style==="skirmisher"&&!!h._relicMoving;this.lastPosition={x:pos.x,y:pos.y};this.moving=moving;
   var frameState=this.state,frameScope=this.scope;
   if(dt>0&&frameState.style!=="mystic")this.tryAutoCast();
   if(this.state!==frameState||this.scope!==frameScope)return;

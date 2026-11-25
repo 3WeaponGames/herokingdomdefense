@@ -114,6 +114,21 @@ test('slow movement remains movement at different frame rates while Archer input
  for(const style of ['skirmisher','vanguard']){const h=scene(style);h.hero._relicMoving=true;h.g.moveDir={x:1,y:0};if(style==='skirmisher')h.rt.state.charge=1;h.rt.update(.01);assert(h.poses.at(-1).moving);assert.equal(h.rt.state.charge,0);if(style==='skirmisher')assert.equal(h.poses.at(-1).charge,0);else assert.equal(h.rt.moving,false);}
 });
 
+test('mounted idle coalescing uses actual displacement only in an ordinary live battle frame',()=>{
+ const h=scene('vanguard');h.hero.ctrPlayAni.isMove=true;
+ assert.equal(h.rt.retainsMountGait(h.g,.016),false,'there is no owned runtime scope before the first update');
+ h.rt.update(.016);
+ assert.equal(h.rt.retainsMountGait(h.g,.016),false,'a motionless hero starts idle normally');
+ h.hero.node.x+=.01;
+ assert(h.rt.retainsMountGait(h.g,.016));
+ h.rt.aiming=true;assert.equal(h.rt.retainsMountGait(h.g,.016),false);h.rt.aiming=false;
+ h.ui.isPauset=true;assert.equal(h.rt.retainsMountGait(h.g,.016),false);h.ui.isPauset=false;
+ h.rt.update(.016);assert(h.rt.moving);assert(h.poses.at(-1).moving);
+ assert.equal(h.rt.retainsMountGait(h.g,.016),false,'the next stationary frame can select idle');
+ h.hero.node.x+=.01;h.g._combatEpoch=(h.g._combatEpoch||0)+1;
+ assert.equal(h.rt.retainsMountGait(h.g,.016),false,'retired runtimes cannot keep an old animation');
+});
+
 test('Bruiser damage and attack speed increase as HP falls and its authored charm heals fractional primary-hit damage',()=>{
  const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),Stats=require('../../assets/_script/HeroEquipmentStats'),h=scene('bruiser');
  h.hero._heroSecondary=Stats.secondary(config,'bruiser',2);h.hero.hp=900;
