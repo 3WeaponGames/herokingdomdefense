@@ -774,6 +774,62 @@ exports.attackPointOf = function (target, game, origin, polygon) {
   }
   return point(target.node, main);
 };
+function standingReservations(unit, game, navigation, radius) {
+  var reserved = [];
+  game.gameData.getSoldierList().concat(game.gameData.getEnemyList(), [game.ctrPlay]).forEach(function (other) {
+    if (other === unit || !other || !other.node || !other.node.activeInHierarchy || other._isPooled || other.isDead && other.isDead()) return;
+    var clearance = radius + Math.max(other._spawnBodyRadius || 0, navigation.radius(other)) + 4;
+    reserved.push({ pos: point(other.node, game.ndMain), clearance: clearance });
+    if (!other.isAgg && other._standingGoal) reserved.push({ pos: other._standingGoal.pos, clearance: clearance });
+  });
+  return reserved;
+}
+// Undefined leaves ordinary placement in charge. Null means a barracks with
+// an overlapping spawn origin has no clear nearby spot for this soldier yet.
+exports.spawnOutsideBarracks = function (unit, game, barracks, anchor, destination) {
+  var navigation = get(game);
+  navigation.refresh();
+  var grid = navigation.grid, radius = unit._spawnBodyRadius;
+  function ownBlocker(index) { return grid.terrainOwners[index] === barracks; }
+  var touching = grid._query(anchor.x-radius,anchor.y-radius,anchor.x+radius,anchor.y+radius);
+  var closest = null, nearest = Infinity;
+  for (var i = 0; i < touching.length; i++) {
+    var id = touching[i], polygon = grid.polygons[id].vertices;
+    if (!ownBlocker(id) || !grid._hitsPolygon(anchor, anchor, radius, polygon)) continue;
+    var edge = nearestPolygonPoint(anchor, polygon), gap = distance(anchor, edge);
+    if (gap < nearest) { closest = edge; nearest = gap; }
+  }
+  if (!closest) return undefined;
+
+  var step = radius * 2 + 6, reach = 0;
+  grid.terrainOwners.forEach(function (owner, id) {
+    if (owner !== barracks) return;
+    var box = grid.polygons[id].box;
+    var x = Math.max(Math.abs(box.minX - anchor.x), Math.abs(box.maxX - anchor.x));
+    var y = Math.max(Math.abs(box.minY - anchor.y), Math.abs(box.maxY - anchor.y));
+    reach = Math.max(reach, Math.hypot(x, y));
+  });
+  reach += radius + step * 3;
+  var directed = destination && distance(anchor, destination) > ARRIVAL_EPSILON;
+  var end = directed ? destination : closest;
+  var heading = Math.atan2(end.y - anchor.y, end.x - anchor.x);
+  var reserved = standingReservations(unit, game, navigation, radius);
+  var best = null, bestSide = Infinity, bestScore = Infinity;
+  for (var ray = 0; ray < 24; ray++) {
+    var turn = (ray % 2 ? 1 : -1) * Math.ceil(ray / 2) * Math.PI / 12;
+    var side = directed && Math.abs(turn) > Math.PI / 2 + 1e-7 ? 1 : 0;
+    if (side > bestSide || directed && side === bestSide && Math.abs(turn) > bestScore) break;
+    var direction = heading + turn;
+    var probe = { x: anchor.x + Math.cos(direction) * reach, y: anchor.y + Math.sin(direction) * reach };
+    var clear = grid.spawnExit(anchor, probe, radius, ownBlocker, reserved);
+    if (!clear) continue;
+    // Prefer the destination side. Use room beside waiting squadmates before
+    // placing a unit farther from the building on the same line.
+    var score = directed ? Math.abs(turn) + clear.extra / step * Math.PI / 6 : clear.distance;
+    if (side < bestSide || score < bestScore) { best = clear.position; bestSide = side; bestScore = score; }
+  }
+  return best;
+};
 exports.findStandingPoint = function (unit, game, anchor, preferred) {
   var navigation = get(game); navigation.refresh();
   // Every candidate below requires a clear segment from this exact anchor.
@@ -781,13 +837,7 @@ exports.findStandingPoint = function (unit, game, anchor, preferred) {
   // scan on each waiting soldier update. Keep zero-radius passage semantics.
   if (!navigation.grid.isWalkable(anchor, 0)) return null;
   var radius = Math.max(unit._spawnBodyRadius || 0, navigation.radius(unit));
-  var grid = navigation.gridFor(unit), reserved = [];
-  game.gameData.getSoldierList().concat(game.gameData.getEnemyList(), [game.ctrPlay]).forEach(function (other) {
-    if (other === unit || !other || !other.node || !other.node.activeInHierarchy || other._isPooled || other.isDead && other.isDead()) return;
-    var clearance = radius + Math.max(other._spawnBodyRadius || 0, navigation.radius(other)) + 4;
-    reserved.push({ pos: point(other.node, game.ndMain), clearance: clearance });
-    if (!other.isAgg && other._standingGoal) reserved.push({ pos: other._standingGoal.pos, clearance: clearance });
-  });
+  var grid = navigation.gridFor(unit), reserved = standingReservations(unit, game, navigation, radius);
   function clear(candidate) {
     if (!grid.isWalkable(candidate, radius) || !navigation.grid.segmentClear(anchor, candidate, 0)) return false;
     return reserved.every(function (other) { return distance(candidate, other.pos) >= other.clearance; });

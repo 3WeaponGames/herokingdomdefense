@@ -55,6 +55,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     this.time = {};
     this.ndPro.active = false;
     if (this.buildInfo.cfg) {
+      Navigation.invalidate($z1KinghtFallUIGame.default.instance.ctrGame);
       this.time[r.Reborn] = 0;
       this.time[r.RebornMax] = RelicBattle.replacementInterval(RelicRuntime.current(), this.buildInfo.cfg.Data[2]);
       this.initSoldier();
@@ -68,7 +69,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     if (BattleSounds.effect) BattleSounds.effect("barracks-squad-spawn", this);
     if (cc.resources) require("UnitVoices").announce(this);
   };
-  _ctor.prototype.getPos = function (t) {
+  _ctor.prototype.getPos = function (t, initialPost) {
     var game = $z1KinghtFallUIGame.default.instance.ctrGame, unit = this.enemyList[t];
     var e = Math.max(1, this._soldierCount(game));
     var i = (this.stratAge + 360 * t / e) * Math.PI / 180;
@@ -97,6 +98,14 @@ var def_KinghtFallBuildBarracks = function (t) {
     if (!unit) return preferred;
     unit._spawnBodyRadius = Math.max(unit._spawnBodyRadius || 0, Navigation.get(game).radius(unit, true));
     if (!this._spawnPosts) this._spawnPosts = [];
+    if (squad || custom) {
+      var destination = unit.getDeploymentDestination(game, initialPost);
+      var exit = Navigation.spawnOutsideBarracks(unit, game, this, anchor, destination);
+      if (exit !== undefined) {
+        delete this._spawnPosts[t];
+        return exit && cc.v2(exit.x, exit.y);
+      }
+    }
     var position = Navigation.findStandingPoint(unit, game, anchor, custom ? preferred : this._spawnPosts[t] || preferred);
     if(!position&&!custom&&!squad&&this.ndVideoSoldier&&this.ndVideoSoldier.convertToWorldSpaceAR){
       // Older map templates can leave their formation marker inside a cliff
@@ -125,7 +134,9 @@ var def_KinghtFallBuildBarracks = function (t) {
     var node = this.node, generation = node._combatGeneration, info = this.buildInfo, roster = this.enemyList, unitNode = unit.node, unitGeneration = unitNode._combatGeneration;
     function current() { return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner.buildInfo === info && owner.enemyList === roster && roster[index] === unit && !owner.isDestroyed &&
       unit.node === unitNode && cc.isValid(unitNode, true) && unitNode._combatGeneration === unitGeneration && !unit._isPooled && $z1KinghtFallUIGame.default.instance === ui && ui.ctrGame === game && game.gameData === data && game._combatEpoch === epoch; }
-    var position = this.getPos(index);
+    var initialPost = this._newSoldiers.has(unit) && this.squadSpawnPosition && require("BuildingSpawnPositions").destination(info.cfg, this);
+    if (initialPost) initialPost = game.ndMain.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(initialPost.x, initialPost.y)));
+    var position = this.getPos(index, initialPost);
     if (!position) {
       // Keep the owned roster slot without putting a body inside terrain or
       // reporting a combat death. A later retry can use newly cleared ground.
@@ -140,8 +151,6 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
     unit.node.setPosition(position);
     if (!current()) return false;
-    var initialPost = this._newSoldiers.has(unit) && this.squadSpawnPosition && require("BuildingSpawnPositions").destination(info.cfg, this);
-    if (initialPost) initialPost = game.ndMain.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(initialPost.x, initialPost.y)));
     var lease = { generation: unitGeneration }, renewed = unit.setNew(lease, { initialPost: initialPost || null });
     if (renewed === false) return false;
     unitGeneration = lease.generation;
