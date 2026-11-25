@@ -50,6 +50,12 @@ The builder verifies and patches two files in its external SDK copy. It keeps or
 
 This build also lets the battle renderer reuse individual unit render targets after a switch away from the actor atlas. The native binding resets color and stencil on the exact target before the original capture. The battle keeps up to 96 idle targets within an estimated 8 MiB and releases them as actors and scenes retire. Unsupported targets use the original allocation path.
 
+### Optional capture framebuffer validation reuse
+
+Add `--capture-framebuffer-status` for a Windows x86 Release preview that reuses the completeness result for an unchanged, owned actor capture framebuffer. The flag enables capture renderer inventory and retained actor render targets. The original camera, attachment writes, clear and draw still run. Framebuffer or attachment changes and graphics device or context recreation invalidate the stored result. Unrecognized captures use the original status check.
+
+The builder applies the verified source patches to its external SDK copy and records their hashes in `capture-framebuffer-status-diff.json`. Launch the resulting Release manifest with the current compiled game scripts to exercise the optimization.
+
 ### Optional NVIDIA graphics preference
 
 Add `--prefer-nvidia` and use a fresh build output directory to request high-performance NVIDIA graphics for the Windows x86 Release simulator on Optimus systems. The NVIDIA driver reads the `NvOptimusEnablement` export at startup. The active adapter still depends on the machine and its graphics policy. [NVIDIA Optimus rendering policies](https://developer.download.nvidia.com/devzone/devcenter/gamegraphics/files/OptimusRenderingPolicies.pdf)

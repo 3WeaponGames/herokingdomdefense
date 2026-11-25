@@ -1,0 +1,301 @@
+{
+  "units": [
+    {
+      "file": "cocos/renderer/gfx/DeviceGraphics.cpp",
+      "beforeSha256": "0da266bbdfa662ac0384508f373864dbe2a51490a52f0ce622f9657a9ae1cda2",
+      "afterSha256": "16c761035e335b85e76c67d43068c8927a51da69aa6dac273cb71ae14a63331a",
+      "changes": [
+        {
+          "before": "RENDERER_BEGIN",
+          "afterFragment": "framebuffer-status-reuse-native.inc"
+        },
+        {
+          "before": "void DeviceGraphics::destroy() {",
+          "after": "void DeviceGraphics::destroy() {\n    hkdFramebufferStatus::resetDevice();"
+        },
+        {
+          "before": "    initCaps();",
+          "after": "    initCaps();\n    hkdFramebufferStatus::resetDevice();"
+        },
+        {
+          "before": "DeviceGraphics::~DeviceGraphics()\n{",
+          "after": "DeviceGraphics::~DeviceGraphics()\n{\n    hkdFramebufferStatus::resetDevice();"
+        },
+        {
+          "before": "    auto result = glCheckFramebufferStatus(GL_FRAMEBUFFER);",
+          "after": "    const auto hkdStatusTicket = hkdFramebufferStatus::consume(fb);\n    auto result = GL_FRAMEBUFFER_COMPLETE;\n    if (!hkdFramebufferStatus::reuse(hkdStatusTicket)) {\n        result = glCheckFramebufferStatus(GL_FRAMEBUFFER);\n        if (result == GL_FRAMEBUFFER_COMPLETE) hkdFramebufferStatus::remember(hkdStatusTicket);\n        else if (hkdStatusTicket.target) hkdFramebufferStatus::invalidate(fb);\n    }"
+        }
+      ]
+    },
+    {
+      "file": "cocos/renderer/gfx/FrameBuffer.cpp",
+      "beforeSha256": "a0fe2a15b431371f80345c5e93489b2461be544facabef7746494d4bbcc937f6",
+      "afterSha256": "cc734e38f33fede5b0865d7f8728b95b484f9e129e677f3abb715aac79dfd743",
+      "changes": [
+        {
+          "before": "#include \"FrameBuffer.h\"",
+          "after": "#include \"FrameBuffer.h\"\nnamespace cocos2d { namespace renderer { class FrameBuffer; } }\nnamespace hkdFramebufferStatus { void invalidate(const cocos2d::renderer::FrameBuffer*); }"
+        },
+        {
+          "before": "FrameBuffer::destroy()\n{",
+          "after": "FrameBuffer::destroy()\n{\n    hkdFramebufferStatus::invalidate(this);"
+        },
+        {
+          "before": "FrameBuffer::init(DeviceGraphics* device, uint16_t width, uint16_t height)\n{",
+          "after": "FrameBuffer::init(DeviceGraphics* device, uint16_t width, uint16_t height)\n{\n    hkdFramebufferStatus::invalidate(this);"
+        },
+        {
+          "before": "FrameBuffer::setColorBuffer(RenderTarget* rt, int index)\n{",
+          "after": "FrameBuffer::setColorBuffer(RenderTarget* rt, int index)\n{\n    hkdFramebufferStatus::invalidate(this);"
+        },
+        {
+          "before": "FrameBuffer::setColorBuffers(const std::vector<RenderTarget*>& renderTargets)\n{",
+          "after": "FrameBuffer::setColorBuffers(const std::vector<RenderTarget*>& renderTargets)\n{\n    hkdFramebufferStatus::invalidate(this);"
+        },
+        {
+          "before": "FrameBuffer::setDepthBuffer(RenderTarget* rt)\n{",
+          "after": "FrameBuffer::setDepthBuffer(RenderTarget* rt)\n{\n    hkdFramebufferStatus::invalidate(this);"
+        },
+        {
+          "before": "FrameBuffer::setStencilBuffer(RenderTarget* rt)\n{",
+          "after": "FrameBuffer::setStencilBuffer(RenderTarget* rt)\n{\n    hkdFramebufferStatus::invalidate(this);"
+        },
+        {
+          "before": "FrameBuffer::setDepthStencilBuffer(RenderTarget* rt)\n{",
+          "after": "FrameBuffer::setDepthStencilBuffer(RenderTarget* rt)\n{\n    hkdFramebufferStatus::invalidate(this);"
+        }
+      ]
+    },
+    {
+      "file": "cocos/scripting/js-bindings/manual/jsb_opengl_manual.cpp",
+      "beforeSha256": "e391a74ff3bd1b38d42ab108c280fc2bed6b63a6899bc8be101f483cffbf661e",
+      "afterSha256": "c77ecdf0a8ce5f53ff2381baa42aac62b30ced409828d2249572fcb2cdd9cadb",
+      "changes": [
+        {
+          "before": "#include \"jsb_opengl_manual.hpp\"",
+          "after": "#include \"jsb_opengl_manual.hpp\"\nnamespace hkdFramebufferStatus { void rawMutation(); }"
+        },
+        {
+          "before": "            glFramebufferRenderbuffer(target, GL_DEPTH_ATTACHMENT, renderbuffertarget, renderbuffer);",
+          "after": "            hkdFramebufferStatus::rawMutation();\n            glFramebufferRenderbuffer(target, GL_DEPTH_ATTACHMENT, renderbuffertarget, renderbuffer);"
+        },
+        {
+          "before": "            glFramebufferRenderbuffer(target, GL_STENCIL_ATTACHMENT, renderbuffertarget, renderbuffer);",
+          "after": "            hkdFramebufferStatus::rawMutation();\n            glFramebufferRenderbuffer(target, GL_STENCIL_ATTACHMENT, renderbuffertarget, renderbuffer);"
+        },
+        {
+          "before": "            glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);",
+          "after": "            hkdFramebufferStatus::rawMutation();\n            glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);"
+        },
+        {
+          "before": "        glRenderbufferStorage(target, internalformat, width, height);",
+          "after": "        hkdFramebufferStatus::rawMutation();\n        glRenderbufferStorage(target, internalformat, width, height);"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glDeleteTextures(1, &_id));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glDeleteTextures(1, &_id));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glDeleteTextures(1, &id));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glDeleteTextures(1, &id));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glDeleteTextures(1, &id));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glDeleteTextures(1, &id));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glDeleteRenderbuffers(1, &_id));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glDeleteRenderbuffers(1, &_id));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glDeleteRenderbuffers(1, &renderBufferId));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glDeleteRenderbuffers(1, &renderBufferId));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glDeleteRenderbuffers(1, &id));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glDeleteRenderbuffers(1, &id));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glDeleteFramebuffers(1, &_id));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glDeleteFramebuffers(1, &_id));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glDeleteFramebuffers(1, &frameBufferId));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glDeleteFramebuffers(1, &frameBufferId));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glDeleteFramebuffers(1, &id));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glDeleteFramebuffers(1, &id));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glCompressedTexImage2D((GLenum)arg0 , (GLint)arg1 , (GLenum)arg2 , (GLsizei)arg3 , (GLsizei)arg4 , (GLint)arg5 , (GLsizei)count , (GLvoid*)arg6  ));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glCompressedTexImage2D((GLenum)arg0 , (GLint)arg1 , (GLenum)arg2 , (GLsizei)arg3 , (GLsizei)arg4 , (GLint)arg5 , (GLsizei)count , (GLvoid*)arg6  ));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glCopyTexImage2D((GLenum)arg0 , (GLint)arg1 , (GLenum)arg2 , (GLint)arg3 , (GLint)arg4 , (GLsizei)arg5 , (GLsizei)arg6 , (GLint)arg7  ));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glCopyTexImage2D((GLenum)arg0 , (GLint)arg1 , (GLenum)arg2 , (GLint)arg3 , (GLint)arg4 , (GLsizei)arg5 , (GLsizei)arg6 , (GLint)arg7  ));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glCopyTexImage2D((GLenum)p[1], (GLint)p[2], (GLenum)p[3], (GLint)p[4], (GLint)p[5], (GLsizei)p[6], (GLsizei)p[7], (GLint)p[8]));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glCopyTexImage2D((GLenum)p[1], (GLint)p[2], (GLenum)p[3], (GLint)p[4], (GLint)p[5], (GLsizei)p[6], (GLsizei)p[7], (GLint)p[8]));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glFramebufferTexture2D((GLenum)arg0 , (GLenum)arg1 , (GLenum)arg2 , textureId , (GLint)arg4  ));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glFramebufferTexture2D((GLenum)arg0 , (GLenum)arg1 , (GLenum)arg2 , textureId , (GLint)arg4  ));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glFramebufferTexture2D((GLenum)p[1], (GLenum)p[2], (GLenum)p[3], (GLuint)p[4], (GLint)p[5]));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glFramebufferTexture2D((GLenum)p[1], (GLenum)p[2], (GLenum)p[3], (GLuint)p[4], (GLint)p[5]));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glGenerateMipmap((GLenum)arg0  ));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glGenerateMipmap((GLenum)arg0  ));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glGenerateMipmap((GLenum)p[1]));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glGenerateMipmap((GLenum)p[1]));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glTexImage2D((GLenum)target , (GLint)level , (GLint)internalformat , (GLsizei)width , (GLsizei)height , (GLint)border , (GLenum)format , (GLenum)type , (GLvoid*)pixels));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glTexImage2D((GLenum)target , (GLint)level , (GLint)internalformat , (GLsizei)width , (GLsizei)height , (GLint)border , (GLenum)format , (GLenum)type , (GLvoid*)pixels));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glTexParameterf((GLenum)arg0 , (GLenum)arg1 , (GLfloat)arg2  ));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glTexParameterf((GLenum)arg0 , (GLenum)arg1 , (GLfloat)arg2  ));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glTexParameterf((GLenum)p[1], (GLenum)p[2], p[3]));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glTexParameterf((GLenum)p[1], (GLenum)p[2], p[3]));"
+        },
+        {
+          "before": "    JSB_GL_CHECK(glTexParameteri((GLenum)arg0 , (GLenum)arg1 , (GLint)arg2  ));",
+          "after": "    hkdFramebufferStatus::rawMutation();\n    JSB_GL_CHECK(glTexParameteri((GLenum)arg0 , (GLenum)arg1 , (GLint)arg2  ));"
+        },
+        {
+          "before": "                JSB_GL_CHECK_VOID(glTexParameteri((GLenum)p[1], (GLenum)p[2], (GLint)p[3]));",
+          "after": "                hkdFramebufferStatus::rawMutation();\n                JSB_GL_CHECK_VOID(glTexParameteri((GLenum)p[1], (GLenum)p[2], (GLint)p[3]));"
+        }
+      ]
+    },
+    {
+      "file": "cocos/renderer/gfx/RenderBuffer.cpp",
+      "beforeSha256": "e87aab4d97458962c0495bd06a4666e0f8844b88a2b3f5bb55fdd0db894b4fa4",
+      "afterSha256": "12c69ee8ca9df001d3a9c25a93b6bc7bcdd9322b6670bbbe42484d514e5ad1fa",
+      "changes": [
+        {
+          "before": "#include \"RenderBuffer.h\"",
+          "after": "#include \"RenderBuffer.h\"\nnamespace hkdFramebufferStatus { void storageMutation(bool, unsigned int); }"
+        },
+        {
+          "before": "RenderBuffer::~RenderBuffer()\n{",
+          "after": "RenderBuffer::~RenderBuffer()\n{\n    hkdFramebufferStatus::storageMutation(true, _glID);"
+        },
+        {
+          "before": "bool RenderBuffer::init(DeviceGraphics* device, Format format, uint16_t width, uint16_t height)\n{",
+          "after": "bool RenderBuffer::init(DeviceGraphics* device, Format format, uint16_t width, uint16_t height)\n{\n    hkdFramebufferStatus::storageMutation(true, _glID);"
+        },
+        {
+          "before": "bool RenderBuffer::update (uint16_t width, uint16_t height) {",
+          "after": "bool RenderBuffer::update (uint16_t width, uint16_t height) {\n    hkdFramebufferStatus::storageMutation(true, _glID);"
+        }
+      ]
+    },
+    {
+      "file": "cocos/renderer/gfx/Texture.cpp",
+      "beforeSha256": "5f7f15871df9f7a0d874f0ce858c9fd15891d3bb9825ef58b7315c4da8fbbeca",
+      "afterSha256": "49a53d5daa1294844efeaf24b23ef37d8ece4397fb9867b2102a0038625035f2",
+      "changes": [
+        {
+          "before": "#include \"Texture.h\"",
+          "after": "#include \"Texture.h\"\nnamespace hkdFramebufferStatus { void storageMutation(bool, unsigned int); }"
+        },
+        {
+          "before": "Texture::~Texture()\n{",
+          "after": "Texture::~Texture()\n{\n    hkdFramebufferStatus::storageMutation(false, _glID);"
+        },
+        {
+          "before": "bool Texture::init(DeviceGraphics* device)\n{",
+          "after": "bool Texture::init(DeviceGraphics* device)\n{\n    hkdFramebufferStatus::storageMutation(false, _glID);"
+        }
+      ]
+    },
+    {
+      "file": "cocos/renderer/gfx/Texture2D.cpp",
+      "beforeSha256": "1260e4afcb6fe5d464e76a25ac4c49c9f2e6741af496e23254091d441301b89b",
+      "afterSha256": "66560db2ae69f6638a2b827162cab1bce006af10318f0f68772cac33d2f37516",
+      "changes": [
+        {
+          "before": "#include \"Texture2D.h\"",
+          "after": "#include \"Texture2D.h\"\nnamespace hkdFramebufferStatus { void storageMutation(bool, unsigned int); }"
+        },
+        {
+          "before": "void Texture2D::update(const Options& options)\n{",
+          "after": "void Texture2D::update(const Options& options)\n{\n    hkdFramebufferStatus::storageMutation(false, _glID);"
+        },
+        {
+          "before": "void Texture2D::setImage(const ImageOption& option)\n{",
+          "after": "void Texture2D::setImage(const ImageOption& option)\n{\n    hkdFramebufferStatus::storageMutation(false, _glID);"
+        }
+      ]
+    },
+    {
+      "file": "cocos/platform/desktop/CCGLView-desktop.cpp",
+      "beforeSha256": "f8c1ea04ad330817c671b6b9d7455216855aa022acbaff2f4c39b271c1d857f8",
+      "afterSha256": "5ce13b15bde213cd9c7d78a744ccd3df35c824fccc56c29e1a2355b71350b763",
+      "changes": [
+        {
+          "before": "#include \"platform/desktop/CCGLView-desktop.h\"",
+          "after": "#include \"platform/desktop/CCGLView-desktop.h\"\nnamespace hkdFramebufferStatus { void closeContext(); void openContext(); }"
+        },
+        {
+          "before": ", _mouseY(0.0f)\n{",
+          "after": ", _mouseY(0.0f)\n{\n    hkdFramebufferStatus::closeContext();"
+        },
+        {
+          "before": "    Application::getInstance()->updateViewSize(width * _scale, height * _scale);",
+          "after": "    Application::getInstance()->updateViewSize(width * _scale, height * _scale);\n    if (glfwGetCurrentContext() == _mainWindow) hkdFramebufferStatus::openContext();"
+        },
+        {
+          "before": "GLView::~GLView()\n{",
+          "after": "GLView::~GLView()\n{\n    hkdFramebufferStatus::closeContext();"
+        }
+      ]
+    }
+  ],
+  "spine": {
+    "inventory": {
+      "file": "cocos/scripting/js-bindings/manual/jsb_spine_manual.cpp",
+      "beforeSha256": "7ff2a0a6937c56d53ad652a085e717e5682956c8824234c0b06e2f89bbec1f20",
+      "afterSha256": "f6f7e2d5f08ac896ecd6311ddc13f795669742d0bed08353056be0d56ee7282f",
+      "changes": [
+        {
+          "before": "bool register_all_spine_manual(se::Object* obj)",
+          "afterFragment": "framebuffer-status-reuse-binding.inc"
+        },
+        {
+          "before": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));",
+          "after": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));\n    ns->defineFunction(\"_hkdArmCaptureFramebufferStatus\", _SE(js_hkdArmCaptureFramebufferStatus));"
+        }
+      ]
+    },
+    "both": {
+      "file": "cocos/scripting/js-bindings/manual/jsb_spine_manual.cpp",
+      "beforeSha256": "a40e92b10a193ed1dea8c9614cc5b2280ac53165db2e829a6959190eeee0b259",
+      "afterSha256": "d92ab875c6a66485f0605d11163e932893ec954975a2ef109275cc5e424d2a81",
+      "changes": [
+        {
+          "before": "bool register_all_spine_manual(se::Object* obj)",
+          "afterFragment": "framebuffer-status-reuse-binding.inc"
+        },
+        {
+          "before": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));",
+          "after": "    ns->defineFunction(\"disposeSkeletonData\", _SE(js_register_spine_disposeSkeletonData));\n    ns->defineFunction(\"_hkdArmCaptureFramebufferStatus\", _SE(js_hkdArmCaptureFramebufferStatus));"
+        }
+      ]
+    }
+  },
+  "fragments": {
+    "framebuffer-status-reuse-native.inc": "bd34128cf22e0f01f6e2174f813f80d40f2befda5b7fd883c15d47a774cc4fbf",
+    "framebuffer-status-reuse-binding.inc": "d1e19dccdc97043bd5ba1056c8a797b15bdd747a2bf1679e6c4e47f90725f167"
+  }
+}

@@ -6,8 +6,8 @@ const vm = require('node:vm');
 const { test } = require('node:test');
 const root = path.resolve(__dirname, '../..');
 const source = fs.readFileSync(path.join(root, 'assets/_script/KinghtFallDepthView.js'), 'utf8');
-function load(cc = {}, sp = {}) {
-  const context = { exports: {}, cc, sp };
+function load(cc = {}, sp = {}, spine) {
+  const context = { exports: {}, cc, sp, spine };
   vm.runInNewContext(source, context);
   return context.exports;
 }
@@ -81,6 +81,50 @@ test('native captures select only live visual nodes and restore the camera even 
   sources[1].node.fail = true;
   assert.throws(() => DepthView.prototype.renderNative.call(view, sources, { x: 0, y: 0 }, 80, {}), /GPU failure/);
   assert.equal(camera.targetTexture, null);
+});
+
+test('framebuffer status reuse only arms a live owned target during a settled standalone capture', () => {
+  class Skeleton {}
+  const scene = {}, events = [];
+  const { DepthView } = load({
+    v2: (x, y) => ({ x, y }), isValid: value => !!value,
+    director: { getScene: () => scene }, Camera: { ClearFlags: { COLOR: 1, DEPTH: 2, STENCIL: 4 } }
+  }, { Skeleton }, {
+    _hkdArmCaptureFramebufferStatus(...args) { events.push(args.length ? args : 'disarm'); }
+  });
+  const source = Object.assign(new Skeleton(), { enabled: true, node: { activeInHierarchy: true, childrenCount: 0 } });
+  source.node._renderComponent = source;
+  const framebuffer = {}, storage = {}, stencil = {};
+  const texture = { width: 64, height: 96, _framebuffer: framebuffer, _texture: storage, _depthStencilBuffer: stencil };
+  const record = { texture };
+  let fail = false;
+  const camera = { render(node) { events.push(node); if (fail) throw Error('GPU failure'); } };
+  const view = { main: { convertToWorldSpaceAR: point => point }, camera, cameraNode: { setPosition() {} },
+    renderNative: DepthView.prototype.renderNative, _standaloneTargets: {
+      scene, owned: new WeakMap([[record, { texture, framebuffer, storage, stencil }]])
+    } };
+  const scope = { enabled: true, quiet: false, _sceneRepairOwner: view, capture(root, draw) {
+    this.drawing = true;
+    try { draw(); } finally { this.drawing = false; }
+  } };
+  view._nativeCaptureScope = scope;
+  const draw = () => DepthView.prototype.snapshotActor.call(view, record, [source], { minX: 0, minY: 0, maxX: 60, maxY: 92 });
+  draw();
+  assert.deepEqual(events.splice(0), [source.node]);
+  scope.quiet = true;
+  draw();
+  assert.deepEqual(events.splice(0), [[framebuffer, storage, stencil], source.node, 'disarm']);
+  texture._texture = {};
+  draw();
+  assert.deepEqual(events.splice(0), [source.node]);
+  texture._texture = storage;
+  fail = true;
+  assert.throws(draw, /GPU failure/);
+  assert.deepEqual(events.splice(0), [[framebuffer, storage, stencil], source.node, 'disarm']);
+  assert.equal(camera.targetTexture, null);
+  fail = false;
+  draw();
+  assert.deepEqual(events, [[framebuffer, storage, stencil], source.node, 'disarm']);
 });
 
 test('one native actor capture serves multiple occluders and refreshes with the next animated frame', () => {
